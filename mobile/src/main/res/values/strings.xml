@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">Device Manager</string>
+    <string name="device_admin_label">Device manager</string>
+    <string name="device_admin_desc">Allows controlling your mobile device from your wearable device</string>
+
+    <string name="pref_category_general">General</string>
+    <string name="pref_category_permissions">Permissions</string>
+    <string name="pref_hide_app_icon_title">Hide app icon</string>
+    <string name="pref_hide_app_icon_summary">Hide the app icon from your launcher</string>
+    <string name="pref_grant_admin_perms_title">Device administrator permissions</string>
+    <string name="pref_grant_admin_perms_summary">Tap to grant permission</string>
+    <string name="pref_perms_granted">Permissions granted!</string>
+</resources>
