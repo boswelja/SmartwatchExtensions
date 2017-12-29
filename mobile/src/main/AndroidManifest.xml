@@ -5,6 +5,7 @@
 
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY" />
 
     <application
         android:allowBackup="false"
@@ -13,7 +14,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name="com.boswelja.devicemanager.LauncherActivity">
+        <activity android:name="com.boswelja.devicemanager.ui.LauncherActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -22,7 +23,7 @@
         </activity>
 
         <activity
-            android:name=".MainActivity">
+            android:name=".ui.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <action android:name="android.intent.action.VIEW" />
@@ -30,7 +31,7 @@
         </activity>
 
         <receiver
-            android:name="com.boswelja.devicemanager.DeviceAdminReceiver"
+            android:name="com.boswelja.devicemanager.receiver.DeviceAdminReceiver"
             android:label="@string/device_admin_label"
             android:description="@string/device_admin_desc"
             android:permission="android.permission.BIND_DEVICE_ADMIN">
@@ -42,10 +43,11 @@
             </intent-filter>
         </receiver>
 
-        <service android:name="com.boswelja.devicemanager.WearMessageReceiverService">
+        <service android:name="com.boswelja.devicemanager.receiver.WearMessageReceiverService">
             <intent-filter>
                 <action android:name="com.google.android.gms.wearable.MESSAGE_RECEIVED" />
                 <data android:scheme="wear" android:host="*" android:pathPrefix="/lock_phone" />
+                <data android:scheme="wear" android:host="*" android:pathPrefix="/change_dnd_state" />
             </intent-filter>
         </service>
     </application>

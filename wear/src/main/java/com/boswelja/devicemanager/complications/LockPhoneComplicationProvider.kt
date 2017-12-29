@@ -1,4 +1,4 @@
-package com.boswelja.devicemanager
+package com.boswelja.devicemanager.complications
 
 import android.app.PendingIntent
 import android.content.Intent
@@ -7,6 +7,8 @@ import android.support.wearable.complications.ComplicationData
 import android.support.wearable.complications.ComplicationManager
 import android.support.wearable.complications.ComplicationProviderService
 import android.util.Log
+import com.boswelja.devicemanager.R
+import com.boswelja.devicemanager.common.Config
 
 class LockPhoneComplicationProvider : ComplicationProviderService() {
 

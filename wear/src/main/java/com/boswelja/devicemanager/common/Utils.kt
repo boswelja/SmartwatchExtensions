@@ -1,4 +1,4 @@
-package com.boswelja.devicemanager
+package com.boswelja.devicemanager.common
 
 import com.google.android.gms.common.api.GoogleApiClient
 import com.google.android.gms.wearable.CapabilityApi

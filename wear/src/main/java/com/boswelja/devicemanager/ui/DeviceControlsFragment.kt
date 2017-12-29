@@ -1,4 +1,4 @@
-package com.boswelja.devicemanager
+package com.boswelja.devicemanager.ui
 
 import android.app.Fragment
 import android.os.Bundle
@@ -8,6 +8,9 @@ import android.support.wear.widget.WearableRecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.boswelja.devicemanager.common.Config
+import com.boswelja.devicemanager.MainOption
+import com.boswelja.devicemanager.R
 
 class DeviceControlsFragment: Fragment() {
 

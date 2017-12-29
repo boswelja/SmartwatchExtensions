@@ -5,6 +5,7 @@
 
     <uses-feature android:name="android.hardware.type.watch" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY" />
 
     <application
         android:allowBackup="false"
@@ -22,7 +23,7 @@
             android:value="@integer/google_play_services_version" />
 
         <activity
-            android:name="com.boswelja.devicemanager.MainActivity"
+            android:name="com.boswelja.devicemanager.ui.MainActivity"
             android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -30,16 +31,20 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="android.support.wearable.activity.ConfirmationActivity"/>
+
+        <activity
+            android:name="android.support.wearable.activity.ConfirmationActivity"/>
+
         <receiver
-            android:name=".ActionReceiver"
+            android:name=".complications.ActionReceiver"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.boswelja.devicemanager.intent.action.PERFORM_ACTION"/>
             </intent-filter>
         </receiver>
+
         <service
-            android:name=".LockPhoneComplicationProvider"
+            android:name=".complications.LockPhoneComplicationProvider"
             android:icon="@drawable/ic_phonelink_lock"
             android:label="@string/lock_phone_label"
             android:permission="com.google.android.wearable.permission.BIND_COMPLICATION_PROVIDER">

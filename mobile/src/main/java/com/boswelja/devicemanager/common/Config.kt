@@ -1,4 +1,4 @@
-package com.boswelja.devicemanager
+package com.boswelja.devicemanager.common
 
 object Config {
 

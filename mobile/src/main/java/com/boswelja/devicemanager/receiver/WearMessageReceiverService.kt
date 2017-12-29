@@ -1,7 +1,8 @@
-package com.boswelja.devicemanager
+package com.boswelja.devicemanager.receiver
 
 import android.app.admin.DevicePolicyManager
 import android.content.Context
+import com.boswelja.devicemanager.common.Config
 import com.google.android.gms.wearable.MessageEvent
 import com.google.android.gms.wearable.WearableListenerService
 

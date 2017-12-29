@@ -1,4 +1,4 @@
-package com.boswelja.devicemanager
+package com.boswelja.devicemanager.complications
 
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -6,6 +6,9 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.wearable.activity.ConfirmationActivity
 import android.util.Log
+import com.boswelja.devicemanager.common.Config
+import com.boswelja.devicemanager.common.Utils
+import com.boswelja.devicemanager.ui.MainActivity
 import com.google.android.gms.common.api.GoogleApiClient
 import com.google.android.gms.wearable.Node
 import com.google.android.gms.wearable.Wearable

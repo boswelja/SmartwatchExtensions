@@ -1,8 +1,10 @@
-package com.boswelja.devicemanager
+package com.boswelja.devicemanager.ui
 
 import android.os.Bundle
 import android.preference.Preference
 import android.preference.PreferenceFragment
+import com.boswelja.devicemanager.common.Config
+import com.boswelja.devicemanager.R
 
 class SettingsFragment: PreferenceFragment(), Preference.OnPreferenceChangeListener, Preference.OnPreferenceClickListener {
 

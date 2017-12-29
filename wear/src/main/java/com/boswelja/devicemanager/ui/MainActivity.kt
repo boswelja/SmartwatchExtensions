@@ -1,4 +1,4 @@
-package com.boswelja.devicemanager
+package com.boswelja.devicemanager.ui
 
 import android.content.Intent
 import android.net.Uri
@@ -7,6 +7,10 @@ import android.support.wearable.activity.ConfirmationActivity
 import android.support.wearable.activity.WearableActivity
 import android.util.Log
 import android.view.View
+import com.boswelja.devicemanager.BuildConfig
+import com.boswelja.devicemanager.common.Config
+import com.boswelja.devicemanager.R
+import com.boswelja.devicemanager.common.Utils
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.api.GoogleApiClient
 import com.google.android.gms.wearable.CapabilityApi

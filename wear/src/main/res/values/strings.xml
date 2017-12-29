@@ -1,7 +1,7 @@
 <resources>
-    <string name="app_name">Device Manager</string>
+    <string name="app_name">Wearable Extensions</string>
     <string name="companion_app_missing">Companion app missing</string>
-    <string name="companion_app_missing_desc">Install the companion app on your device?</string>
+    <string name="companion_app_missing_desc">Install the companion app on your phone?</string>
     <string name="lock_phone_label">Lock phone</string>
     <string name="cancel">Cancel</string>
     <string name="ok">OK</string>

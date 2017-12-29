@@ -1,4 +1,4 @@
-package com.boswelja.devicemanager
+package com.boswelja.devicemanager.ui
 
 import android.content.Intent
 import android.support.v7.widget.RecyclerView
@@ -7,6 +7,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import com.boswelja.devicemanager.common.Config
+import com.boswelja.devicemanager.MainOption
+import com.boswelja.devicemanager.R
 
 class MainAdapter(private val options: ArrayList<MainOption>): RecyclerView.Adapter<MainAdapter.ViewHolder>() {
 

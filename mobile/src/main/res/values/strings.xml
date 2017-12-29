@@ -1,7 +1,7 @@
 <resources>
-    <string name="app_name">Device Manager</string>
-    <string name="device_admin_label">Device manager</string>
-    <string name="device_admin_desc">Allows controlling your mobile device from your wearable device</string>
+    <string name="app_name">Wearable Extensions</string>
+    <string name="device_admin_label">@string/app_name</string>
+    <string name="device_admin_desc">Allows locking your mobile device from your wearable device</string>
 
     <string name="pref_category_general">General</string>
     <string name="pref_category_permissions">Permissions</string>

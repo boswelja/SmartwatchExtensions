@@ -1,4 +1,4 @@
-package com.boswelja.devicemanager
+package com.boswelja.devicemanager.ui
 
 import android.app.admin.DevicePolicyManager
 import android.content.ComponentName
@@ -8,6 +8,9 @@ import android.content.pm.PackageManager
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
+import com.boswelja.devicemanager.common.Config
+import com.boswelja.devicemanager.receiver.DeviceAdminReceiver
+import com.boswelja.devicemanager.R
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.api.GoogleApiClient
 import com.google.android.gms.wearable.Wearable
