@@ -15,6 +15,8 @@ class WearMessageReceiverService: WearableListenerService() {
             Config.LOCK_PHONE_PATH -> {
                 if (devicePolicyManager.isAdminActive(DeviceAdminReceiver().getWho(this))) {
                     devicePolicyManager.lockNow()
+                } else {
+                    Utils.requestDeviceAdminPerms(this)
                 }
             }
         }

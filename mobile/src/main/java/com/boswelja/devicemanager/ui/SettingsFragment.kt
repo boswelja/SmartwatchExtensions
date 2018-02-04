@@ -15,7 +15,7 @@ class SettingsFragment: PreferenceFragment(), Preference.OnPreferenceChangeListe
         return when (preference?.key) {
             Config.GRANT_PERMS_PREF_KEY -> {
                 if (!mainActivity.isDeviceAdmin()) {
-                    mainActivity.requestDeviceAdminPerms()
+                    Utils.requestDeviceAdminPerms(mainActivity.deviceAdminReceiver)
                 }
                 true
             }

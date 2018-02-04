@@ -17,8 +17,9 @@ import com.google.android.gms.wearable.Wearable
 
 class MainActivity : AppCompatActivity(), GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
+    private var TAG = "MainActivity"
     private var devicePolicyManager: DevicePolicyManager? = null
-    private var deviceAdminReceiver: ComponentName? = null
+    var deviceAdminReceiver: ComponentName? = null
     private var settingsFragment: SettingsFragment? = null
     private lateinit var googleApiClient: GoogleApiClient
 
@@ -48,15 +49,15 @@ class MainActivity : AppCompatActivity(), GoogleApiClient.ConnectionCallbacks, G
     }
 
     override fun onConnected(p0: Bundle?) {
-        Log.d("MainActivity", "GoogleApiClient connected")
+        Log.d(TAG, "GoogleApiClient connected")
     }
 
     override fun onConnectionSuspended(p0: Int) {
-        Log.d("MainActivity", "GoogleApiClient connection suspended")
+        Log.d(TAG, "GoogleApiClient connection suspended")
     }
 
     override fun onConnectionFailed(p0: ConnectionResult) {
-        Log.d("MainActivity", "GoogleApiClient connection failed")
+        Log.d(TAG, "GoogleApiClient connection failed")
     }
 
     override fun onPause() {
@@ -71,13 +72,6 @@ class MainActivity : AppCompatActivity(), GoogleApiClient.ConnectionCallbacks, G
         googleApiClient.connect()
     }
 
-    fun requestDeviceAdminPerms() {
-        val intent = Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN)
-        intent.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN, deviceAdminReceiver)
-        intent.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION, getString(R.string.device_admin_desc))
-        startActivityForResult(intent, Config.DEVICE_ADMIN_REQUEST_CODE)
-    }
-
     fun isDeviceAdmin(): Boolean {
         return devicePolicyManager!!.isAdminActive(deviceAdminReceiver)
     }
@@ -85,9 +79,9 @@ class MainActivity : AppCompatActivity(), GoogleApiClient.ConnectionCallbacks, G
     fun changeAppIconVisibility(hide: Boolean) {
         val componentName = ComponentName(this, LauncherActivity::class.java)
         if (hide) {
-            packageManager.setComponentEnabledSetting(componentName,PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP)
+            packageManager.setComponentEnabledSetting(componentName, PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP)
         } else {
-            packageManager.setComponentEnabledSetting(componentName,PackageManager.COMPONENT_ENABLED_STATE_ENABLED, PackageManager.DONT_KILL_APP)
+            packageManager.setComponentEnabledSetting(componentName, PackageManager.COMPONENT_ENABLED_STATE_ENABLED, PackageManager.DONT_KILL_APP)
         }
     }
 }
