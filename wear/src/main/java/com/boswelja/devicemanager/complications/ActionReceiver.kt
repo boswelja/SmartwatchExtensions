@@ -54,25 +54,34 @@ class ActionReceiver: BroadcastReceiver(), GoogleApiClient.ConnectionCallbacks {
 
     private fun lockDevice(node: Node?) {
         val intent = Intent(context, ConfirmationActivity::class.java)
-        if (googleApiClient.isConnected && node != null) {
-            Wearable.MessageApi.sendMessage(googleApiClient, node.id, Config.LOCK_PHONE_PATH, null)
-                    .setResultCallback {
-                        if (it.status.isSuccess) {
-                            intent.putExtra(ConfirmationActivity.EXTRA_ANIMATION_TYPE,
-                                    ConfirmationActivity.SUCCESS_ANIMATION)
-                        } else {
-                            intent.putExtra(ConfirmationActivity.EXTRA_ANIMATION_TYPE,
-                                    ConfirmationActivity.FAILURE_ANIMATION)
-                        }
-                    }
-        } else if (!googleApiClient.isConnecting && !googleApiClient.isConnected) {
-            googleApiClient.connect()
-            intent.putExtra(ConfirmationActivity.EXTRA_ANIMATION_TYPE,
-                    ConfirmationActivity.FAILURE_ANIMATION)
-        } else {
-            intent.putExtra(ConfirmationActivity.EXTRA_ANIMATION_TYPE,
-                    ConfirmationActivity.FAILURE_ANIMATION)
-        }
+        //if (googleApiClient.isConnected && node != null) {
+        //    Wearable.MessageApi.sendMessage(googleApiClient, node.id, Config.LOCK_PHONE_PATH, null)
+        //            .setResultCallback {
+        //                if (it.status.isSuccess) {
+        //                    intent.putExtra(ConfirmationActivity.EXTRA_ANIMATION_TYPE,
+        //                            ConfirmationActivity.SUCCESS_ANIMATION)
+        //                } else {
+        //                    intent.putExtra(ConfirmationActivity.EXTRA_ANIMATION_TYPE,
+        //                            ConfirmationActivity.FAILURE_ANIMATION)
+        //                }
+        //            }
+        //} else if (!googleApiClient.isConnecting && !googleApiClient.isConnected) {
+        //    googleApiClient.connect()
+        //    intent.putExtra(ConfirmationActivity.EXTRA_ANIMATION_TYPE,
+        //            ConfirmationActivity.FAILURE_ANIMATION)
+        //} else {
+        //    intent.putExtra(ConfirmationActivity.EXTRA_ANIMATION_TYPE,
+        //            ConfirmationActivity.FAILURE_ANIMATION)
+        //}
+        Task.await(Wearable
+            .getMessageClient(context)
+            .sendMessage(
+                node.id,
+                Config.LOCK_PHONE_PATH,
+                null
+            )
+            .addOnSuccessListener()
+            .addOnFailListener())
         context.startActivity(intent)
     }
 }

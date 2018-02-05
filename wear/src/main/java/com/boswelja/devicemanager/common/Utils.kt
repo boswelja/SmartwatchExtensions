@@ -7,23 +7,35 @@ import com.google.android.gms.wearable.Wearable
 
 object Utils {
 
-    fun isCompanionAppInstalled(googleApiClient: GoogleApiClient, capabilityCallbacks: CapabilityCallbacks) {
-        Wearable.CapabilityApi.getCapability(
-                googleApiClient,
+    fun isCompanionAppInstalled(context: Context, capabilityCallbacks: CapabilityCallbacks) {
+        //Wearable.CapabilityApi.getCapability(
+        //        googleApiClient,
+        //        Config.CAPABILITY_PHONE_APP,
+        //        CapabilityApi.FILTER_REACHABLE)
+        //        .setResultCallback { getCapabilityResult ->
+        //            if (getCapabilityResult.status.isSuccess) {
+        //                val node = getCapabilityResult.capability.nodes.lastOrNull()
+        //                if (node != null) {
+        //                    capabilityCallbacks.capableDeviceFound(node)
+        //                } else {
+        //                    capabilityCallbacks.noCapableDevices()
+        //                }
+        //            } else {
+        //                capabilityCallbacks.noCapableDevices()
+        //            }
+        //        }
+        val capabilityInfo = Task.await(Wearable
+            .getCapabilityClient(context)
+            .getCapability(
                 Config.CAPABILITY_PHONE_APP,
-                CapabilityApi.FILTER_REACHABLE)
-                .setResultCallback { getCapabilityResult ->
-                    if (getCapabilityResult.status.isSuccess) {
-                        val node = getCapabilityResult.capability.nodes.lastOrNull()
-                        if (node != null) {
-                            capabilityCallbacks.capableDeviceFound(node)
-                        } else {
-                            capabilityCallbacks.noCapableDevices()
-                        }
-                    } else {
-                        capabilityCallbacks.noCapableDevices()
-                    }
-                }
+                CapabilityClient.FILTER_REACHABLE
+            ))
+        val node = capabilityInfo.nodes.lastOrNull()
+        if (node != null) {
+            capabilityCallbacks.capableDeviceFound(node)
+        } else {
+            capabilityCallbacks.noCapableDevices()
+        }
     }
 
     interface CapabilityCallbacks {

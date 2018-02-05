@@ -29,12 +29,6 @@ class MainAdapter(private val options: ArrayList<MainOption>): RecyclerView.Adap
                     intent.action = Config.INTENT_PERFORM_ACTION
                     holder.itemView.context.sendBroadcast(intent)
                 }
-                Config.TYPE_TOGGLE_WIFI -> {
-                    val intent = Intent()
-                    intent.putExtra("action", option.type)
-                    intent.action = Config.INTENT_PERFORM_ACTION
-                    holder.itemView.context.sendBroadcast(intent)
-                }
             }
         }
     }
