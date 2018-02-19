@@ -2,12 +2,17 @@ package com.boswelja.devicemanager.common
 
 object Config {
 
-    val LOCK_PHONE_PATH: String = "/lock_phone"
+    const val LOCK_PHONE_PATH = "/lock_phone"
 
-    val DEVICE_ADMIN_REQUEST_CODE: Int = 665
+    const val BATTERY_PERCENT_JOB_ID = 5656299
 
-    val HIDE_APP_ICON_KEY = "hide_app_icon"
-    val GRANT_PERMS_PREF_KEY = "grant_admin_perms"
+    const val DEVICE_ADMIN_REQUEST_CODE = 665
 
-    val CAPABILITY_WATCH_APP = "device_manager_wear_app"
+    const val HIDE_APP_ICON_KEY = "hide_app_icon"
+    const val GRANT_PERMS_PREF_KEY = "grant_admin_perms"
+    const val BATTERY_SYNC_ENABLED_KEY = "battery_sync_enabled"
+    const val BATTERY_SYNC_INTERVAL_KEY = "battery_sync_interval"
+    const val BATTERY_SYNC_NOW_KEY = "battery_sync_now"
+
+    const val CAPABILITY_WATCH_APP = "extensions_wear_app"
 }

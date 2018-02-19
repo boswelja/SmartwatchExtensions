@@ -14,7 +14,28 @@
         android:title="@string/pref_category_permissions">
         <Preference
             android:key="grant_admin_perms"
-            android:title="@string/pref_grant_admin_perms_title"
-            android:summary="@string/pref_grant_admin_perms_summary" />
+            android:title="@string/pref_admin_perms_title"
+            android:summary="@string/pref_admin_perms_summary_missing" />
     </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="Battery Sync">
+        <SwitchPreference
+            android:key="battery_sync_enabled"
+            android:title="Battery Sync Enabled"
+            android:summary="Sync your phones battery status to your watch"
+            android:defaultValue="false"/>
+        <ListPreference
+            android:key="battery_sync_interval"
+            android:title="Battery Sync Interval"
+            android:dependency="battery_sync_enabled"
+            android:defaultValue="600000"
+            android:entries="@array/battery_refresh_interval"
+            android:entryValues="@array/battery_refresh_interval_values"/>
+        <Preference
+            android:key="battery_sync_now"
+            android:title="Re-sync battery stats to watch"
+            android:dependency="battery_sync_enabled" />
+    </PreferenceCategory>
+
 </PreferenceScreen>

@@ -15,18 +15,12 @@ import com.google.android.gms.wearable.Wearable
 
 class ActionReceiver: BroadcastReceiver(), GoogleApiClient.ConnectionCallbacks {
 
-    private lateinit var googleApiClient: GoogleApiClient
     private var actionType: Int? = Config.TYPE_EMPTY
     private lateinit var context: Context
 
     override fun onReceive(context: Context, intent: Intent?) {
         this.context = context
         actionType = intent?.getIntExtra("action", Config.TYPE_EMPTY)
-        googleApiClient = GoogleApiClient.Builder(context)
-                .addApi(Wearable.API)
-                .addConnectionCallbacks(this)
-                .build()
-        googleApiClient.connect()
     }
 
 
@@ -43,7 +37,7 @@ class ActionReceiver: BroadcastReceiver(), GoogleApiClient.ConnectionCallbacks {
                         lockDevice(node)
                     }
                 }
-                Utils.isCompanionAppInstalled(googleApiClient, capabilityCallback)
+                Utils.isCompanionAppInstalled(context, capabilityCallback)
             }
         }
     }
@@ -73,15 +67,20 @@ class ActionReceiver: BroadcastReceiver(), GoogleApiClient.ConnectionCallbacks {
         //    intent.putExtra(ConfirmationActivity.EXTRA_ANIMATION_TYPE,
         //            ConfirmationActivity.FAILURE_ANIMATION)
         //}
-        Task.await(Wearable
-            .getMessageClient(context)
-            .sendMessage(
-                node.id,
-                Config.LOCK_PHONE_PATH,
-                null
-            )
-            .addOnSuccessListener()
-            .addOnFailListener())
-        context.startActivity(intent)
+        Wearable
+                .getMessageClient(context)
+                .sendMessage(
+                    node!!.id,
+                    Config.LOCK_PHONE_PATH,
+                    null
+                )
+                .addOnSuccessListener({
+                    intent.putExtra(ConfirmationActivity.EXTRA_ANIMATION_TYPE, ConfirmationActivity.SUCCESS_ANIMATION)
+                    context.startActivity(intent)
+                })
+                .addOnFailureListener({
+                    intent.putExtra(ConfirmationActivity.EXTRA_ANIMATION_TYPE, ConfirmationActivity.FAILURE_ANIMATION)
+                    context.startActivity(intent)
+                })
     }
 }

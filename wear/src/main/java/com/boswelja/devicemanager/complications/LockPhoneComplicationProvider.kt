@@ -12,14 +12,16 @@ import com.boswelja.devicemanager.common.Config
 
 class LockPhoneComplicationProvider : ComplicationProviderService() {
 
+    private val tag = "LockPhoneComplicationProvider"
+
     override fun onComplicationUpdate(complicationId: Int, type: Int, complicationManager: ComplicationManager?) {
-        Log.d("LockPhoneComplicationProvider", "onComplicationUpdate() id: " + complicationId)
+        Log.d(tag, "onComplicationUpdate() id: " + complicationId)
 
     }
 
     override fun onComplicationActivated(complicationId: Int, type: Int, manager: ComplicationManager?) {
         super.onComplicationActivated(complicationId, type, manager)
-        Log.d("LockPhoneComplicationProvider", "Complication activated")
+        Log.d(tag, "Complication activated")
 
         if (type != ComplicationData.TYPE_ICON) {
             manager?.noUpdateRequired(complicationId)
@@ -39,6 +41,6 @@ class LockPhoneComplicationProvider : ComplicationProviderService() {
 
     override fun onComplicationDeactivated(complicationId: Int) {
         super.onComplicationDeactivated(complicationId)
-        Log.d("LockPhoneComplicationProvider", "Complication activated")
+        Log.d(tag, "Complication deactivated")
     }
 }

@@ -33,7 +33,7 @@ class DeviceControlsFragment: Fragment() {
 
     private class CustomScrollingLayoutCallback: WearableLinearLayoutManager.LayoutCallback() {
 
-        private val MAX_ICON_PROGRESS = 0.7f
+        private val maxIconProgress = 0.7f
         private var mProgressToCenter: Float = 0.0f
         override fun onLayoutFinished(child: View?, parent: RecyclerView?) {
             // Figure out % progress from top to bottom
@@ -43,7 +43,7 @@ class DeviceControlsFragment: Fragment() {
             // Normalize for center
             mProgressToCenter = Math.abs(0.5f - yRelativeToCenterOffset)
             // Adjust to the maximum scale
-            mProgressToCenter = Math.min(mProgressToCenter, MAX_ICON_PROGRESS)
+            mProgressToCenter = Math.min(mProgressToCenter, maxIconProgress)
 
             child.scaleX = 1 - mProgressToCenter
             child.scaleY = 1 - mProgressToCenter

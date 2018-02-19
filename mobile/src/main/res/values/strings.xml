@@ -7,7 +7,20 @@
     <string name="pref_category_permissions">Permissions</string>
     <string name="pref_hide_app_icon_title">Hide app icon</string>
     <string name="pref_hide_app_icon_summary">Hide the app icon from your launcher</string>
-    <string name="pref_grant_admin_perms_title">Device administrator permissions</string>
-    <string name="pref_grant_admin_perms_summary">Tap to grant permission</string>
-    <string name="pref_perms_granted">Permissions granted!</string>
+    <string name="pref_admin_perms_title">Device administrator permissions</string>
+    <string name="pref_admin_perms_summary_missing">Tap to grant permission</string>
+    <string name="pref_admin_perms_summary_granted">Permissions granted!</string>
+
+    <string-array name="battery_refresh_interval">
+        <item>15 minutes</item>
+        <item>20 minutes</item>
+        <item>30 minutes</item>
+        <item>1 hour</item>
+    </string-array>
+    <string-array name="battery_refresh_interval_values">
+        <item>900000</item>
+        <item>1200000</item>
+        <item>1800000</item>
+        <item>3600000</item>
+    </string-array>
 </resources>
