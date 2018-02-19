@@ -14,5 +14,4 @@ object Config {
     const val BATTERY_SYNC_INTERVAL_KEY = "battery_sync_interval"
     const val BATTERY_SYNC_NOW_KEY = "battery_sync_now"
 
-    const val CAPABILITY_WATCH_APP = "extensions_wear_app"
 }

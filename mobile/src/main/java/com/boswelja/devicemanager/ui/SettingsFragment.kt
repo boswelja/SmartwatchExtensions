@@ -1,19 +1,13 @@
 package com.boswelja.devicemanager.ui
 
-import android.content.Intent
-import android.content.IntentFilter
-import android.os.BatteryManager
 import android.os.Bundle
 import android.preference.ListPreference
 import android.preference.Preference
 import android.preference.PreferenceFragment
 import android.support.design.widget.Snackbar
-import android.util.Log
 import com.boswelja.devicemanager.common.Config
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.Utils
-import com.google.android.gms.wearable.PutDataMapRequest
-import com.google.android.gms.wearable.Wearable
 
 class SettingsFragment: PreferenceFragment(), Preference.OnPreferenceChangeListener, Preference.OnPreferenceClickListener {
 
@@ -30,17 +24,7 @@ class SettingsFragment: PreferenceFragment(), Preference.OnPreferenceChangeListe
                 true
             }
             Config.BATTERY_SYNC_NOW_KEY -> {
-                val ifilter = IntentFilter(Intent.ACTION_BATTERY_CHANGED)
-                val batteryStatus = mainActivity.registerReceiver(null, ifilter)
-                val batteryPct = ((batteryStatus.getIntExtra(BatteryManager.EXTRA_LEVEL, -1) / (batteryStatus.getIntExtra(BatteryManager.EXTRA_SCALE, -1).toFloat())) * 100).toInt()
-                Log.d("BatteryInfoUpdate", batteryPct.toString())
-
-                val dataClient = Wearable.getDataClient(context)
-                val putDataMapReq = PutDataMapRequest.create("/batteryPercent")
-                putDataMapReq.dataMap.putInt("com.boswelja.devicemanager.batterypercent", batteryPct)
-                val putDataReq = putDataMapReq.asPutDataRequest()
-                Log.d("BatteryInfoUpdate", putDataReq.uri.toString())
-                dataClient.putDataItem(putDataReq)
+                Utils.updateBatteryStats(context)
                 Snackbar.make(view, "Re-synced battery info to watch", Snackbar.LENGTH_SHORT).show()
                 true
             }
