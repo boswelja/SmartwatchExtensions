@@ -35,13 +35,9 @@
         <activity
             android:name="android.support.wearable.activity.ConfirmationActivity"/>
 
-        <receiver
-            android:name=".complications.ActionReceiver"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="com.boswelja.devicemanager.intent.action.PERFORM_ACTION"/>
-            </intent-filter>
-        </receiver>
+        <service
+            android:name=".complications.ActionService"
+            android:exported="false" />
 
         <service
             android:name=".complications.PhoneBatteryComplicationProvider"

@@ -15,32 +15,28 @@ class LockPhoneComplicationProvider : ComplicationProviderService() {
     private val tag = "LockPhoneComplicationProvider"
 
     override fun onComplicationUpdate(complicationId: Int, type: Int, complicationManager: ComplicationManager?) {
-        Log.d(tag, "onComplicationUpdate() id: " + complicationId)
-
+        setComplication(type, complicationId, complicationManager!!)
     }
 
     override fun onComplicationActivated(complicationId: Int, type: Int, manager: ComplicationManager?) {
         super.onComplicationActivated(complicationId, type, manager)
-        Log.d(tag, "Complication activated")
+        setComplication(type, complicationId, manager!!)
+    }
 
+    private fun setComplication(type: Int, id: Int,  manager: ComplicationManager) {
         if (type != ComplicationData.TYPE_ICON) {
-            manager?.noUpdateRequired(complicationId)
+            manager.noUpdateRequired(id)
             return
         }
 
-        val intent = Intent()
-        intent.action = Config.INTENT_PERFORM_ACTION
-        intent.putExtra("action", Config.TYPE_LOCK_PHONE)
-        val pendingIntent = PendingIntent.getBroadcast(this, 101, intent, PendingIntent.FLAG_CANCEL_CURRENT)
+        val intent = Intent(this, ActionService::class.java)
+        intent.putExtra(Config.INTENT_ACTION_EXTRA, Config.LOCK_PHONE_PATH)
+        val pendingIntent = PendingIntent.getService(this, 101, intent, PendingIntent.FLAG_CANCEL_CURRENT)
         val complicationData = ComplicationData.Builder(type)
                 .setIcon(Icon.createWithResource(this, R.drawable.ic_phonelink_lock))
+                .setBurnInProtectionIcon(Icon.createWithResource(this, R.drawable.ic_phonelink_lock_darkened))
                 .setTapAction(pendingIntent)
                 .build()
-        manager?.updateComplicationData(complicationId, complicationData)
-    }
-
-    override fun onComplicationDeactivated(complicationId: Int) {
-        super.onComplicationDeactivated(complicationId)
-        Log.d(tag, "Complication deactivated")
+        manager.updateComplicationData(id, complicationData)
     }
 }
