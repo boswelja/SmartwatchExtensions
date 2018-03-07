@@ -8,7 +8,5 @@ object Config {
 
     const val CAPABILITY_PHONE_APP = "extensions_mobile_app"
 
-    const val INTENT_PERFORM_ACTION = "com.boswelja.devicemanager.intent.action.PERFORM_ACTION"
-
     const val INTENT_ACTION_EXTRA = "action"
 }

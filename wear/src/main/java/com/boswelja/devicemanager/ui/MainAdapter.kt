@@ -10,6 +10,7 @@ import android.widget.TextView
 import com.boswelja.devicemanager.common.Config
 import com.boswelja.devicemanager.MainOption
 import com.boswelja.devicemanager.R
+import com.boswelja.devicemanager.complications.ActionService
 
 class MainAdapter(private val options: ArrayList<MainOption>): RecyclerView.Adapter<MainAdapter.ViewHolder>() {
 
@@ -24,10 +25,9 @@ class MainAdapter(private val options: ArrayList<MainOption>): RecyclerView.Adap
         holder?.itemView?.setOnClickListener {
             when (option.type) {
                 Config.TYPE_LOCK_PHONE -> {
-                    val intent = Intent()
-                    intent.putExtra("action", option.type)
-                    intent.action = Config.INTENT_PERFORM_ACTION
-                    holder.itemView.context.sendBroadcast(intent)
+                    val intent = Intent(holder.itemView.context, ActionService::class.java)
+                    intent.putExtra(Config.INTENT_ACTION_EXTRA, Config.LOCK_PHONE_PATH)
+                    holder.itemView.context.startService(intent)
                 }
             }
         }

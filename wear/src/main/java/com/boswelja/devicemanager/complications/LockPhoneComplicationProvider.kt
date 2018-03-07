@@ -3,16 +3,14 @@ package com.boswelja.devicemanager.complications
 import android.app.PendingIntent
 import android.content.Intent
 import android.graphics.drawable.Icon
+import android.os.Build
 import android.support.wearable.complications.ComplicationData
 import android.support.wearable.complications.ComplicationManager
 import android.support.wearable.complications.ComplicationProviderService
-import android.util.Log
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.Config
 
 class LockPhoneComplicationProvider : ComplicationProviderService() {
-
-    private val tag = "LockPhoneComplicationProvider"
 
     override fun onComplicationUpdate(complicationId: Int, type: Int, complicationManager: ComplicationManager?) {
         setComplication(type, complicationId, complicationManager!!)
@@ -31,7 +29,12 @@ class LockPhoneComplicationProvider : ComplicationProviderService() {
 
         val intent = Intent(this, ActionService::class.java)
         intent.putExtra(Config.INTENT_ACTION_EXTRA, Config.LOCK_PHONE_PATH)
-        val pendingIntent = PendingIntent.getService(this, 101, intent, PendingIntent.FLAG_CANCEL_CURRENT)
+        val pendingIntent: PendingIntent
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            pendingIntent = PendingIntent.getForegroundService(this, 101, intent, PendingIntent.FLAG_CANCEL_CURRENT)
+        } else {
+            pendingIntent = PendingIntent.getService(this, 101, intent, PendingIntent.FLAG_CANCEL_CURRENT)
+        }
         val complicationData = ComplicationData.Builder(type)
                 .setIcon(Icon.createWithResource(this, R.drawable.ic_phonelink_lock))
                 .setBurnInProtectionIcon(Icon.createWithResource(this, R.drawable.ic_phonelink_lock_darkened))
