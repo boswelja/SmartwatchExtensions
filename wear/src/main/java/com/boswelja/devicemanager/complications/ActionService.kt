@@ -1,3 +1,10 @@
+/* Copyright (C) 2018 Jack Boswell <boswelja@outlook.com>
+ *
+ * This file is part of Wearable Extensions
+ *
+ * This file, and any part of the Wearable Extensions app/s cannot be copied and/or distributed
+ * without permission from Jack Boswell (boswelja) <boswela@outlook.com>
+ */
 package com.boswelja.devicemanager.complications
 
 import android.app.Notification
@@ -8,7 +15,7 @@ import android.os.Build
 import android.os.IBinder
 import android.support.wearable.activity.ConfirmationActivity
 import android.util.Log
-import com.boswelja.devicemanager.common.Config
+import com.boswelja.devicemanager.common.References
 import com.boswelja.devicemanager.common.Utils
 import com.boswelja.devicemanager.ui.MainActivity
 import com.google.android.gms.wearable.Node
@@ -35,8 +42,8 @@ class ActionService : Service() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        action = intent!!.getStringExtra(Config.INTENT_ACTION_EXTRA)
-        val capabilityCallback = object: Utils.CapabilityCallbacks {
+        action = intent!!.getStringExtra(References.INTENT_ACTION_EXTRA)
+        val capabilityCallback = object : Utils.CapabilityCallbacks {
             override fun noCapableDevices() {
                 val activityIntent = Intent(this@ActionService, MainActivity::class.java)
                 startActivity(activityIntent)

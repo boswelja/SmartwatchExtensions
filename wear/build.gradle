@@ -4,39 +4,40 @@ apply plugin: 'kotlin-android-extensions'
 apply from: '../constants.gradle'
 
 android {
-    //noinspection GroovyAssignabilityCheck
-    compileSdkVersion versions.compileSdk
-    //noinspection GroovyAssignabilityCheck
-    buildToolsVersion versions.buildTools
-    defaultConfig {
-        applicationId versions.packageName
-        minSdkVersion 25
-        //noinspection GroovyAssignabilityCheck
-        targetSdkVersion versions.compileSdk
-        versionCode versions.versionCode
-        versionName versions.versionName
-    }
-    buildTypes {
-        //noinspection GroovyMissingReturnStatement
-        release {
-            postprocessing {
-                removeUnusedCode true
-                removeUnusedResources true
-                obfuscate true
-                optimizeCode true
-                proguardFile 'proguard-rules.pro'
-            }
-        }
-    }
+	//noinspection GroovyAssignabilityCheck
+	compileSdkVersion versions.compileSdk
+	//noinspection GroovyAssignabilityCheck
+	buildToolsVersion versions.buildTools
+	defaultConfig {
+		applicationId versions.packageName
+		minSdkVersion 25
+		//noinspection GroovyAssignabilityCheck
+		targetSdkVersion versions.compileSdk
+		versionCode versions.versionCode
+		versionName versions.versionName
+	}
+	buildTypes {
+		//noinspection GroovyMissingReturnStatement
+		release {
+			postprocessing {
+				removeUnusedCode true
+				removeUnusedResources true
+				obfuscate true
+				optimizeCode true
+				proguardFile 'proguard-rules.pro'
+			}
+		}
+	}
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation"org.jetbrains.kotlin:kotlin-stdlib-jre8:$kotlin_version"
-    implementation "com.google.android.support:wearable:$versions.wearableLib"
-    implementation "com.google.android.gms:play-services-wearable:$versions.googleLib"
-    implementation "com.android.support:wear:$versions.supportLib"
-    implementation "com.android.support:support-v4:$versions.supportLib"
-    implementation "com.android.support.constraint:constraint-layout:1.0.2"
-    compileOnly "com.google.android.wearable:wearable:$versions.wearableLib"
+	implementation fileTree(dir: 'libs', include: ['*.jar'])
+	implementation"org.jetbrains.kotlin:kotlin-stdlib-jre8:$kotlin_version"
+	implementation "com.google.android.support:wearable:$versions.wearableLib"
+	implementation "com.google.android.gms:play-services-wearable:$versions.googleLib"
+	implementation "com.android.support:wear:$versions.supportLib"
+	implementation "com.android.support:percent:$versions.supportLib"
+	implementation "com.android.support:support-v4:$versions.supportLib"
+	implementation "com.android.support.constraint:constraint-layout:1.0.2"
+	compileOnly "com.google.android.wearable:wearable:$versions.wearableLib"
 }

@@ -1,3 +1,10 @@
+/* Copyright (C) 2018 Jack Boswell <boswelja@outlook.com>
+ *
+ * This file is part of Wearable Extensions
+ *
+ * This file, and any part of the Wearable Extensions app/s cannot be copied and/or distributed
+ * without permission from Jack Boswell (boswelja) <boswela@outlook.com>
+ */
 package com.boswelja.devicemanager.ui
 
 import android.app.admin.DeviceAdminReceiver
@@ -8,12 +15,15 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
-import com.boswelja.devicemanager.common.Config
+import android.widget.FrameLayout
+import com.boswelja.devicemanager.common.References
 import com.boswelja.devicemanager.R
+import com.boswelja.devicemanager.service.DnDSyncService
 import com.boswelja.devicemanager.tasks.BatteryInfoUpdate
 import com.google.android.gms.wearable.PutDataMapRequest
 import com.google.android.gms.wearable.Wearable
@@ -27,30 +37,42 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        val contentView = FrameLayout(this)
+        contentView.id = R.id.fragment_holder
+        setContentView(contentView)
 
         jobScheduler = getSystemService(Context.JOB_SCHEDULER_SERVICE) as JobScheduler
 
-        devicePolicyManager =  getSystemService(Context.DEVICE_POLICY_SERVICE) as DevicePolicyManager
+        devicePolicyManager = getSystemService(Context.DEVICE_POLICY_SERVICE) as DevicePolicyManager
         deviceAdminReceiver = DeviceAdminReceiver().getWho(this)
 
         settingsFragment = SettingsFragment()
         fragmentManager.beginTransaction().replace(R.id.fragment_holder, settingsFragment).commit()
 
         val prefs = PreferenceManager.getDefaultSharedPreferences(this)
-        val battSyncEnabled = prefs.getBoolean(Config.BATTERY_SYNC_ENABLED_KEY, false)
+        val battSyncEnabled = prefs.getBoolean(References.BATTERY_SYNC_ENABLED_KEY, false)
         if (battSyncEnabled) {
-            if (jobScheduler.getPendingJob(Config.BATTERY_PERCENT_JOB_ID) == null) {
-                createBatterySyncJob(prefs.getString(Config.BATTERY_SYNC_INTERVAL_KEY, "600000").toLong())
+            if (jobScheduler.getPendingJob(References.BATTERY_PERCENT_JOB_ID) == null) {
+                createBatterySyncJob(prefs.getString(References.BATTERY_SYNC_INTERVAL_KEY, "600000").toLong())
             }
         } else {
             stopBatterySyncJob()
+        }
+
+        val dndSyncEnabled = prefs.getBoolean(References.DND_SYNC_ENABLED_KEY, false)
+        if (dndSyncEnabled) {
+            val intent = Intent(this, DnDSyncService::class.java)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                startForegroundService(intent)
+            } else {
+                startService(intent)
+            }
         }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         when (requestCode) {
-            Config.DEVICE_ADMIN_REQUEST_CODE -> {
+            References.DEVICE_ADMIN_REQUEST_CODE -> {
                 settingsFragment.updateAdminSummary()
             }
         }
@@ -70,7 +92,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun createBatterySyncJob(intervalMs: Long) {
-        val jobInfo = JobInfo.Builder(Config.BATTERY_PERCENT_JOB_ID, ComponentName(packageName, BatteryInfoUpdate::class.java.name))
+        val jobInfo = JobInfo.Builder(References.BATTERY_PERCENT_JOB_ID, ComponentName(packageName, BatteryInfoUpdate::class.java.name))
         jobInfo.setPeriodic(intervalMs)
         jobInfo.setPersisted(true)
         jobScheduler.schedule(jobInfo.build())
@@ -78,8 +100,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun stopBatterySyncJob() {
-        if (jobScheduler.getPendingJob(Config.BATTERY_PERCENT_JOB_ID) != null) {
-            jobScheduler.cancel(Config.BATTERY_PERCENT_JOB_ID)
+        if (jobScheduler.getPendingJob(References.BATTERY_PERCENT_JOB_ID) != null) {
+            jobScheduler.cancel(References.BATTERY_PERCENT_JOB_ID)
             Log.d("MainActivity", "Cancelled battery sync")
         }
         val dataClient = Wearable.getDataClient(this)

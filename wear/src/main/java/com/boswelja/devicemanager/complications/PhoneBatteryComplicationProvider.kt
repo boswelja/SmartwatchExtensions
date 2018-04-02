@@ -1,3 +1,10 @@
+/* Copyright (C) 2018 Jack Boswell <boswelja@outlook.com>
+ *
+ * This file is part of Wearable Extensions
+ *
+ * This file, and any part of the Wearable Extensions app/s cannot be copied and/or distributed
+ * without permission from Jack Boswell (boswelja) <boswela@outlook.com>
+ */
 package com.boswelja.devicemanager.complications
 
 import android.graphics.drawable.Icon
@@ -8,16 +15,15 @@ import android.support.wearable.complications.ComplicationProviderService
 import android.support.wearable.complications.ComplicationText
 import android.util.Log
 import com.boswelja.devicemanager.R
-import com.boswelja.devicemanager.common.Config
+import com.boswelja.devicemanager.common.References
 
 class PhoneBatteryComplicationProvider : ComplicationProviderService() {
 
     private val tag = "PhoneBatteryComplicationProvider"
 
     override fun onComplicationUpdate(complicationId: Int, type: Int, manager: ComplicationManager?) {
-        Log.d(tag, "onComplicationUpdate() id: " + complicationId)
+        Log.d(tag, "onComplicationUpdate() id: $complicationId")
         manager?.updateComplicationData(complicationId, createComplication())
-        Log.d(tag, "Complication updated")
     }
 
     override fun onComplicationDeactivated(complicationId: Int) {
@@ -27,7 +33,7 @@ class PhoneBatteryComplicationProvider : ComplicationProviderService() {
 
     private fun createComplication(): ComplicationData {
         val prefs = PreferenceManager.getDefaultSharedPreferences(this)
-        val percent = prefs.getInt(Config.BATTERY_PERCENT_KEY, 0)
+        val percent = prefs.getInt(References.BATTERY_PERCENT_KEY, 0)
         return if (percent > 0) {
             ComplicationData.Builder(ComplicationData.TYPE_RANGED_VALUE)
                     .setShortText(ComplicationText.plainText(percent.toString() + "%"))

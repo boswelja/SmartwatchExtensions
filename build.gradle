@@ -1,28 +1,48 @@
-apply from: './constants.gradle'
-
 buildscript {
-    apply from: './constants.gradle'
-    ext.kotlin_version = '1.2.21'
-    repositories {
-        google()
-        jcenter()
-    }
-    dependencies {
-        classpath "com.android.tools.build:gradle:$versions.gradlePlugin"
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+	apply from: './constants.gradle'
+	ext.kotlin_version = '1.2.31'
+	repositories {
+		google()
+		jcenter()
+	}
+	dependencies {
+		classpath "com.android.tools.build:gradle:$versions.gradlePlugin"
+		classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
 
-        // NOTE: Do not place your application dependencies here; they belong
-        // in the individual module build.gradle files
-    }
+		// NOTE: Do not place your application dependencies here; they belong
+		// in the individual module build.gradle files
+	}
+}
+
+plugins {
+	id "com.diffplug.gradle.spotless" version "3.10.0"
 }
 
 allprojects {
-    repositories {
-        google()
-        jcenter()
-    }
+	repositories {
+		google()
+		jcenter()
+	}
 }
 
-task clean(type: Delete) {
-    delete rootProject.buildDir
+spotless {
+	format 'misc', {
+		target '**/*.gradle', '**/*.md', '**/.gitignore'
+
+		trimTrailingWhitespace()
+		indentWithTabs()
+		endWithNewline()
+	}
+	kotlin {
+		target '**/*.kt'
+		ktlint()
+
+		licenseHeaderFile 'License'	// License header
+	}
+	kotlinGradle {
+		target '*.gradle.kts', 'additionalScripts/*.gradle.kts'
+
+		ktlint()
+
+	}
 }

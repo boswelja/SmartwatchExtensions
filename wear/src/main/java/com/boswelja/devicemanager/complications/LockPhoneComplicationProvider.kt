@@ -1,3 +1,10 @@
+/* Copyright (C) 2018 Jack Boswell <boswelja@outlook.com>
+ *
+ * This file is part of Wearable Extensions
+ *
+ * This file, and any part of the Wearable Extensions app/s cannot be copied and/or distributed
+ * without permission from Jack Boswell (boswelja) <boswela@outlook.com>
+ */
 package com.boswelja.devicemanager.complications
 
 import android.app.PendingIntent
@@ -7,8 +14,9 @@ import android.os.Build
 import android.support.wearable.complications.ComplicationData
 import android.support.wearable.complications.ComplicationManager
 import android.support.wearable.complications.ComplicationProviderService
+import android.support.wearable.complications.ComplicationText
 import com.boswelja.devicemanager.R
-import com.boswelja.devicemanager.common.Config
+import com.boswelja.devicemanager.common.References
 
 class LockPhoneComplicationProvider : ComplicationProviderService() {
 
@@ -21,14 +29,14 @@ class LockPhoneComplicationProvider : ComplicationProviderService() {
         setComplication(type, complicationId, manager!!)
     }
 
-    private fun setComplication(type: Int, id: Int,  manager: ComplicationManager) {
-        if (type != ComplicationData.TYPE_ICON) {
+    private fun setComplication(type: Int, id: Int, manager: ComplicationManager) {
+        if (type != ComplicationData.TYPE_SHORT_TEXT) {
             manager.noUpdateRequired(id)
             return
         }
 
         val intent = Intent(this, ActionService::class.java)
-        intent.putExtra(Config.INTENT_ACTION_EXTRA, Config.LOCK_PHONE_PATH)
+        intent.putExtra(References.INTENT_ACTION_EXTRA, References.LOCK_PHONE_PATH)
         val pendingIntent: PendingIntent
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             pendingIntent = PendingIntent.getForegroundService(this, 101, intent, PendingIntent.FLAG_CANCEL_CURRENT)
@@ -37,7 +45,7 @@ class LockPhoneComplicationProvider : ComplicationProviderService() {
         }
         val complicationData = ComplicationData.Builder(type)
                 .setIcon(Icon.createWithResource(this, R.drawable.ic_phonelink_lock))
-                .setBurnInProtectionIcon(Icon.createWithResource(this, R.drawable.ic_phonelink_lock_darkened))
+                .setShortText(ComplicationText.plainText(getString(R.string.lock_phone_label)))
                 .setTapAction(pendingIntent)
                 .build()
         manager.updateComplicationData(id, complicationData)

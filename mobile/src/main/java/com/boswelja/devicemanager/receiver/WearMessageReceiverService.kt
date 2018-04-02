@@ -1,24 +1,28 @@
+/* Copyright (C) 2018 Jack Boswell <boswelja@outlook.com>
+ *
+ * This file is part of Wearable Extensions
+ *
+ * This file, and any part of the Wearable Extensions app/s cannot be copied and/or distributed
+ * without permission from Jack Boswell (boswelja) <boswela@outlook.com>
+ */
 package com.boswelja.devicemanager.receiver
 
 import android.app.admin.DeviceAdminReceiver
 import android.app.admin.DevicePolicyManager
 import android.content.Context
-import com.boswelja.devicemanager.common.Config
-import com.boswelja.devicemanager.common.Utils
+import com.boswelja.devicemanager.common.References
 import com.google.android.gms.wearable.MessageEvent
 import com.google.android.gms.wearable.WearableListenerService
 
-class WearMessageReceiverService: WearableListenerService() {
+class WearMessageReceiverService : WearableListenerService() {
 
     override fun onMessageReceived(messageEvent: MessageEvent?) {
         val devicePolicyManager: DevicePolicyManager = getSystemService(Context.DEVICE_POLICY_SERVICE) as DevicePolicyManager
         val messagePath = messageEvent?.path
         when (messagePath) {
-            Config.LOCK_PHONE_PATH -> {
+            References.LOCK_PHONE_PATH -> {
                 if (devicePolicyManager.isAdminActive(DeviceAdminReceiver().getWho(this))) {
                     devicePolicyManager.lockNow()
-                } else {
-                    Utils.requestDeviceAdminPerms(this)
                 }
             }
         }

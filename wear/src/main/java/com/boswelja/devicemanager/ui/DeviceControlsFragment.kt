@@ -1,3 +1,10 @@
+/* Copyright (C) 2018 Jack Boswell <boswelja@outlook.com>
+ *
+ * This file is part of Wearable Extensions
+ *
+ * This file, and any part of the Wearable Extensions app/s cannot be copied and/or distributed
+ * without permission from Jack Boswell (boswelja) <boswela@outlook.com>
+ */
 package com.boswelja.devicemanager.ui
 
 import android.app.Fragment
@@ -8,11 +15,11 @@ import android.support.wear.widget.WearableRecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.boswelja.devicemanager.common.Config
+import com.boswelja.devicemanager.common.References
 import com.boswelja.devicemanager.MainOption
 import com.boswelja.devicemanager.R
 
-class DeviceControlsFragment: Fragment() {
+class DeviceControlsFragment : Fragment() {
 
     private var recyclerView: WearableRecyclerView? = null
 
@@ -27,11 +34,11 @@ class DeviceControlsFragment: Fragment() {
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val optionsList = ArrayList<MainOption>()
-        optionsList.add(MainOption(R.drawable.ic_phonelink_lock, getString(R.string.lock_phone_label), Config.TYPE_LOCK_PHONE))
+        optionsList.add(MainOption(R.drawable.ic_phonelink_lock, getString(R.string.lock_phone_label), References.TYPE_LOCK_PHONE))
         recyclerView?.adapter = MainAdapter(optionsList)
     }
 
-    private class CustomScrollingLayoutCallback: WearableLinearLayoutManager.LayoutCallback() {
+    private class CustomScrollingLayoutCallback : WearableLinearLayoutManager.LayoutCallback() {
 
         private val maxIconProgress = 0.7f
         private var mProgressToCenter: Float = 0.0f
@@ -48,6 +55,5 @@ class DeviceControlsFragment: Fragment() {
             child.scaleX = 1 - mProgressToCenter
             child.scaleY = 1 - mProgressToCenter
         }
-
     }
 }

@@ -72,13 +72,19 @@
 
             <meta-data
                 android:name="android.support.wearable.complications.SUPPORTED_TYPES"
-                android:value="ICON"/>
+                android:value="SHORT_TEXT"/>
         </service>
 
         <service android:name=".BatteryUpdateListener">
             <intent-filter>
                 <action android:name="com.google.android.gms.wearable.DATA_CHANGED" />
-                <data android:scheme="wear" android:host="*" android:path="/batteryPercent" />
+                <data android:scheme="wear" android:host="*" android:path="/batteryStatus" />
+            </intent-filter>
+        </service>
+        <service android:name=".DnDSyncListener">
+            <intent-filter>
+                <action android:name="com.google.android.gms.wearable.DATA_CHANGED" />
+                <data android:scheme="wear" android:host="*" android:path="/dndStatus" />
             </intent-filter>
         </service>
     </application>

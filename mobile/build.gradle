@@ -4,36 +4,36 @@ apply plugin: 'kotlin-android-extensions'
 apply from: '../constants.gradle'
 
 android {
-    //noinspection GroovyAssignabilityCheck
-    compileSdkVersion versions.compileSdk
-    //noinspection GroovyAssignabilityCheck
-    buildToolsVersion versions.buildTools
-    defaultConfig {
-        applicationId versions.packageName
-        minSdkVersion 24
-        //noinspection GroovyAssignabilityCheck
-        targetSdkVersion versions.compileSdk
-        versionCode versions.versionCode
-        versionName versions.versionName
-    }
-    buildTypes {
-        //noinspection GroovyMissingReturnStatement
-        release {
-            postprocessing {
-                removeUnusedCode true
-                removeUnusedResources true
-                obfuscate true
-                optimizeCode true
-                proguardFile 'proguard-rules.pro'
-            }
-        }
-    }
+	//noinspection GroovyAssignabilityCheck
+	compileSdkVersion versions.compileSdk
+	//noinspection GroovyAssignabilityCheck
+	buildToolsVersion versions.buildTools
+	defaultConfig {
+		applicationId versions.packageName
+		minSdkVersion 24
+		//noinspection GroovyAssignabilityCheck
+		targetSdkVersion versions.compileSdk
+		versionCode versions.versionCode
+		versionName versions.versionName
+	}
+	buildTypes {
+		//noinspection GroovyMissingReturnStatement
+		release {
+			postprocessing {
+				removeUnusedCode true
+				removeUnusedResources true
+				obfuscate true
+				optimizeCode true
+				proguardFile 'proguard-rules.pro'
+			}
+		}
+	}
 }
 
 dependencies {
-    implementation"org.jetbrains.kotlin:kotlin-stdlib-jre8:$kotlin_version"
-    implementation "com.android.support:appcompat-v7:$versions.supportLib"
-    implementation "com.android.support:design:$versions.supportLib"
-    implementation "com.android.support:support-v13:$versions.supportLib"
-    implementation "com.google.android.gms:play-services-wearable:$versions.googleLib"
+	implementation"org.jetbrains.kotlin:kotlin-stdlib-jre8:$kotlin_version"
+	implementation "com.android.support:appcompat-v7:$versions.supportLib"
+	implementation "com.android.support:design:$versions.supportLib"
+	implementation "com.android.support:support-v13:$versions.supportLib"
+	implementation "com.google.android.gms:play-services-wearable:$versions.googleLib"
 }

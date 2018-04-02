@@ -1,3 +1,10 @@
+/* Copyright (C) 2018 Jack Boswell <boswelja@outlook.com>
+ *
+ * This file is part of Wearable Extensions
+ *
+ * This file, and any part of the Wearable Extensions app/s cannot be copied and/or distributed
+ * without permission from Jack Boswell (boswelja) <boswela@outlook.com>
+ */
 package com.boswelja.devicemanager.ui
 
 import android.content.Intent
@@ -8,7 +15,7 @@ import android.support.wearable.activity.WearableActivity
 import android.view.View
 import android.widget.Toast
 import com.boswelja.devicemanager.BuildConfig
-import com.boswelja.devicemanager.common.Config
+import com.boswelja.devicemanager.common.References
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.Utils
 import com.google.android.gms.wearable.CapabilityClient
@@ -31,11 +38,11 @@ class MainActivity : WearableActivity() {
         Wearable
                 .getCapabilityClient(this)
                 .getCapability(
-                        Config.CAPABILITY_PHONE_APP,
+                        References.CAPABILITY_PHONE_APP,
                         CapabilityClient.FILTER_REACHABLE
                 )
                 .addOnSuccessListener {
-                    val capabilityCallbacks = object: Utils.CapabilityCallbacks {
+                    val capabilityCallbacks = object : Utils.CapabilityCallbacks {
                         override fun capableDeviceFound(node: Node?) {
                             showControlsFragment()
                         }
@@ -63,12 +70,12 @@ class MainActivity : WearableActivity() {
         val confirmationFragment = ConfirmationFragment()
         confirmationFragment.setHeaderText(getString(R.string.companion_app_missing))
         confirmationFragment.setDescText(getString(R.string.companion_app_missing_desc))
-        confirmationFragment.setButtonCallback(object: ConfirmationFragment.ButtonCallbacks {
+        confirmationFragment.setButtonCallback(object : ConfirmationFragment.ButtonCallbacks {
             override fun onAccept() {
                 val intent = Intent(this@MainActivity, ConfirmationActivity::class.java)
                 intent.putExtra(ConfirmationActivity.EXTRA_ANIMATION_TYPE,
                         ConfirmationActivity.OPEN_ON_PHONE_ANIMATION)
-                val capabilityCallback = object: Utils.CapabilityCallbacks {
+                val capabilityCallback = object : Utils.CapabilityCallbacks {
                     override fun noCapableDevices() {
                         Toast.makeText(this@MainActivity, "No device paired", Toast.LENGTH_LONG).show()
                     }
@@ -98,5 +105,4 @@ class MainActivity : WearableActivity() {
                 .commit()
         controlsFragmentActive = false
     }
-
 }
