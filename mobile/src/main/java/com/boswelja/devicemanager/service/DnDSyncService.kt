@@ -20,7 +20,6 @@ import android.os.Build
 import android.os.IBinder
 import android.preference.PreferenceManager
 import android.support.v4.app.NotificationCompat
-import android.widget.Toast
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.References
 import com.google.android.gms.wearable.PutDataMapRequest
@@ -74,7 +73,6 @@ class DnDSyncService : Service() {
     }
 
     private fun setWatchDnD(isActive: Boolean) {
-        Toast.makeText(this, "Set watch DnD: $isActive", Toast.LENGTH_SHORT).show()
         val dataClient = Wearable.getDataClient(this)
         val putDataMapReq = PutDataMapRequest.create("/dndStatus")
         putDataMapReq.dataMap.putBoolean("com.boswelja.devicemanager.dndenabled", isActive)

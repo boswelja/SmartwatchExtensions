@@ -1,8 +1,8 @@
 ext.versions = [
-		versionCode: 14,
-		versionName: "1.4",
+		versionCode: 15,
+		versionName: "1.5",
 		compileSdk: 27,
-		supportLib: "27.1.0",
+		supportLib: "27.1.1",
 		gradlePlugin: "3.2.0-alpha08",
 		googleLib: "12.0.1",
 		wearableLib: "2.3.0",

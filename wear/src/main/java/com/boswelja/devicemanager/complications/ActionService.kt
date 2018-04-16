@@ -7,12 +7,12 @@
  */
 package com.boswelja.devicemanager.complications
 
-import android.app.Notification
 import android.app.NotificationChannel
 import android.app.Service
 import android.content.Intent
 import android.os.Build
 import android.os.IBinder
+import android.support.v4.app.NotificationCompat
 import android.support.wearable.activity.ConfirmationActivity
 import android.util.Log
 import com.boswelja.devicemanager.common.References
@@ -31,12 +31,12 @@ class ActionService : Service() {
 
     override fun onCreate() {
         super.onCreate()
-        val notification: Notification.Builder = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            Notification
-                    .Builder(this, NotificationChannel.DEFAULT_CHANNEL_ID)
+        val channelId = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel.DEFAULT_CHANNEL_ID
         } else {
-            Notification.Builder(this)
+            "default"
         }
+        val notification: NotificationCompat.Builder = NotificationCompat.Builder(this, channelId)
         notification.setContentTitle("Locking your phone...")
         startForeground(312, notification.build())
     }

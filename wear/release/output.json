@@ -1,1 +1,1 @@
-[{"outputType":{"type":"APK"},"apkInfo":{"type":"MAIN","splits":[],"versionCode":911},"path":"mobile-release.apk","properties":{"packageId":"com.boswelja.devicemanager","split":"","minSdkVersion":"24"}}]
+[{"outputType":{"type":"APK"},"apkInfo":{"type":"MAIN","splits":[],"versionCode":15,"versionName":"1.5","enabled":true,"outputFile":"mobile-release.apk","fullName":"release","baseName":"release"},"path":"mobile-release.apk","properties":{}}]
