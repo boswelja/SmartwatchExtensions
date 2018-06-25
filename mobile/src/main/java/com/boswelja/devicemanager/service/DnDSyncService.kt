@@ -39,6 +39,8 @@ class DnDSyncService : Service() {
     override fun onCreate() {
         super.onCreate()
 
+        prefs = PreferenceManager.getDefaultSharedPreferences(this)
+
         notificationManager = getSystemService(NotificationManager::class.java)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             notificationManager.deleteNotificationChannel(References.DND_SYNC_NOTIFICATION_CHANNEL_ID)
@@ -48,6 +50,9 @@ class DnDSyncService : Service() {
                 notiChannel.enableVibration(false)
                 notiChannel.setShowBadge(false)
                 notificationManager.createNotificationChannel(notiChannel)
+            }
+            if (Build.VERSION.CODENAME == "P" && !prefs.getBoolean(References.DND_SYNC_WHEN_PRIORITY_ONLY, false)) {
+                prefs.edit().putBoolean(References.DND_SYNC_WHEN_PRIORITY_ONLY, true).apply()
             }
         }
         val notiBuilder: NotificationCompat.Builder = NotificationCompat.Builder(this, References.DND_SYNC_NOTIFICATION_CHANNEL_ID)
@@ -59,7 +64,6 @@ class DnDSyncService : Service() {
                 .setOngoing(true)
         startForeground(155216, notiBuilder.build())
 
-        prefs = PreferenceManager.getDefaultSharedPreferences(this)
 
         val intentFilter = IntentFilter()
         intentFilter.addAction(NotificationManager.ACTION_INTERRUPTION_FILTER_CHANGED)

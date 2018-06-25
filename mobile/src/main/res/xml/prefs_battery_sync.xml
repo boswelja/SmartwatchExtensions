@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory
+        android:title="@string/pref_category_battery_sync">
+
+        <SwitchPreference
+            android:key="battery_sync_enabled"
+            android:title="@string/pref_battery_sync_enabled_title"
+            android:summary="@string/pref_battery_sync_enabled_summary"
+            android:defaultValue="false"/>
+
+        <ListPreference
+            android:key="battery_sync_interval"
+            android:title="@string/pref_battery_sync_interval_title"
+            android:dependency="battery_sync_enabled"
+            android:defaultValue="600000"
+            android:entries="@array/battery_refresh_interval"
+            android:entryValues="@array/battery_refresh_interval_values"/>
+
+        <Preference
+            android:key="battery_sync_now"
+            android:title="@string/pref_battery_sync_resync_title"
+            android:dependency="battery_sync_enabled" />
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

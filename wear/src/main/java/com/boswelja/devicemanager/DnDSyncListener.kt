@@ -32,7 +32,7 @@ class DnDSyncListener : WearableListenerService() {
                         notificationManager.setInterruptionFilter(NotificationManager.INTERRUPTION_FILTER_ALL)
                     }
                 } else {
-                    Toast.makeText(this, "You need to grant permission via ADB", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "You need to grant permissions via ADB", Toast.LENGTH_SHORT).show()
                 }
             }
         }

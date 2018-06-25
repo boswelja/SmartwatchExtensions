@@ -126,6 +126,8 @@ class SettingsFragment : PreferenceFragment(), Preference.OnPreferenceChangeList
 
         mainActivity = activity as MainActivity
         addPreferencesFromResource(R.xml.prefs)
+        addPreferencesFromResource(R.xml.prefs_battery_sync)
+        addPreferencesFromResource(R.xml.prefs_dnd_sync)
 
         val hideAppIconPref = findPreference(References.HIDE_APP_ICON_KEY)
         hideAppIconPref.onPreferenceChangeListener = this
@@ -147,9 +149,11 @@ class SettingsFragment : PreferenceFragment(), Preference.OnPreferenceChangeList
         dndSyncEnabledPref.onPreferenceChangeListener = this
         dndSyncEnabledPref.onPreferenceClickListener = this
 
-        dndSyncWhenPref = findPreference(References.DND_SYNC_WHEN_KEY) as MultiSelectListPreference
-        dndSyncWhenPref.onPreferenceChangeListener = this
-        updateDndSyncWhenSummary(dndSyncWhenPref.values)
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) {
+            dndSyncWhenPref = findPreference(References.DND_SYNC_WHEN_KEY) as MultiSelectListPreference
+            dndSyncWhenPref.onPreferenceChangeListener = this
+            updateDndSyncWhenSummary(dndSyncWhenPref.values)
+        }
     }
 
     override fun onResume() {

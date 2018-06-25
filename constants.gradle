@@ -1,11 +1,10 @@
 ext.versions = [
-		versionCode: 15,
-		versionName: "1.5",
-		compileSdk: 27,
-		supportLib: "27.1.1",
-		gradlePlugin: "3.2.0-alpha08",
-		googleLib: "12.0.1",
+		versionCode: 1600,
+		versionName: "1.6.0.0",
+		compileSdk: 28,
+		supportLib: "28.0.0-alpha3",
+		gradlePlugin: "3.2.0-alpha18",
 		wearableLib: "2.3.0",
 		packageName: "com.boswelja.devicemanager",
-		buildTools: "27.0.3"
+		buildTools: "28.0.0-rc2"
 ]

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory
+        android:title="Do Not Disturb Sync">
+
+        <SwitchPreference
+            android:key="dnd_sync_enabled"
+            android:title="DnD Sync Enabled"
+            android:summary="Sync Do Not Disturb status between your phone and watch"
+            android:defaultValue="false" />
+
+        <MultiSelectListPreference
+            android:key="dnd_sync_when"
+            android:dependency="dnd_sync_enabled"
+            android:title="Enable DnD when you switch to"
+            android:summary="Nothing"
+            android:entries="@array/pref_dnd_sync_when"
+            android:entryValues="@array/pref_dnd_sync_when_values"
+            android:defaultValue="@array/pref_dnd_sync_when_default_values" />
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

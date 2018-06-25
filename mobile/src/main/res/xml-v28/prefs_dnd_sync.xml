@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory
+        android:title="Do Not Disturb Sync">
+
+        <SwitchPreference
+            android:key="dnd_sync_enabled"
+            android:title="DnD Sync Enabled"
+            android:summary="Sync Do Not Disturb status between your phone and watch"
+            android:defaultValue="false" />
+
+    </PreferenceCategory>
+
+</PreferenceScreen>
