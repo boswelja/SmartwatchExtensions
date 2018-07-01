@@ -8,6 +8,7 @@
             android:key="dnd_sync_enabled"
             android:title="DnD Sync Enabled"
             android:summary="Sync Do Not Disturb status between your phone and watch"
+            android:icon="@drawable/ic_do_not_disturb"
             android:defaultValue="false" />
 
         <MultiSelectListPreference

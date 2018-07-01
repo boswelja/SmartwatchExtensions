@@ -7,14 +7,13 @@
  */
 package com.boswelja.devicemanager.ui
 
-import android.app.Fragment
 import android.os.Bundle
-import android.support.v7.widget.RecyclerView
-import android.support.wear.widget.WearableLinearLayoutManager
-import android.support.wear.widget.WearableRecyclerView
+import androidx.wear.widget.WearableLinearLayoutManager
+import androidx.wear.widget.WearableRecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import com.boswelja.devicemanager.common.References
 import com.boswelja.devicemanager.MainOption
 import com.boswelja.devicemanager.R
@@ -23,18 +22,19 @@ class DeviceControlsFragment : Fragment() {
 
     private var recyclerView: WearableRecyclerView? = null
 
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater?.inflate(R.layout.fragment_device_controls, container, false)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        val view = inflater.inflate(R.layout.fragment_device_controls, container, false)
         recyclerView = view?.findViewById(R.id.recycler_view)
         recyclerView?.layoutManager = WearableLinearLayoutManager(context, CustomScrollingLayoutCallback())
         recyclerView?.isEdgeItemsCenteringEnabled = true
         return view
     }
 
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val optionsList = ArrayList<MainOption>()
         optionsList.add(MainOption(R.drawable.ic_phonelink_lock, getString(R.string.lock_phone_label), References.TYPE_LOCK_PHONE))
+        optionsList.add(MainOption(R.drawable.ic_battery_unknown, "Phone charge unknown", References.TYPE_PHONE_BATTERY))
         recyclerView?.adapter = MainAdapter(optionsList)
     }
 
@@ -42,7 +42,7 @@ class DeviceControlsFragment : Fragment() {
 
         private val maxIconProgress = 0.7f
         private var mProgressToCenter: Float = 0.0f
-        override fun onLayoutFinished(child: View?, parent: RecyclerView?) {
+        override fun onLayoutFinished(child: View?, parent: androidx.recyclerview.widget.RecyclerView?) {
             // Figure out % progress from top to bottom
             val centerOffset = child?.height?.toFloat()!! / 2.0f / parent?.height?.toFloat()!!
             val yRelativeToCenterOffset = child.y / parent.height + centerOffset

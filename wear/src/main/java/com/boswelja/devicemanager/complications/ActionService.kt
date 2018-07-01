@@ -12,12 +12,11 @@ import android.app.Service
 import android.content.Intent
 import android.os.Build
 import android.os.IBinder
-import android.support.v4.app.NotificationCompat
+import androidx.core.app.NotificationCompat
 import android.support.wearable.activity.ConfirmationActivity
 import android.util.Log
 import com.boswelja.devicemanager.common.References
 import com.boswelja.devicemanager.common.Utils
-import com.boswelja.devicemanager.ui.MainActivity
 import com.google.android.gms.wearable.Node
 import com.google.android.gms.wearable.Wearable
 
@@ -45,8 +44,7 @@ class ActionService : Service() {
         action = intent!!.getStringExtra(References.INTENT_ACTION_EXTRA)
         val capabilityCallback = object : Utils.CapabilityCallbacks {
             override fun noCapableDevices() {
-                val activityIntent = Intent(this@ActionService, MainActivity::class.java)
-                startActivity(activityIntent)
+                onFailed()
             }
 
             override fun capableDeviceFound(node: Node?) {

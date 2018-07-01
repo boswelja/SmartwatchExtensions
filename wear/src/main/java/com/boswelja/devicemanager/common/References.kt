@@ -9,6 +9,7 @@ package com.boswelja.devicemanager.common
 
 object References {
     const val TYPE_LOCK_PHONE: Int = 1
+    const val TYPE_PHONE_BATTERY: Int = 2
 
     const val LOCK_PHONE_PATH: String = "/lock_phone"
 

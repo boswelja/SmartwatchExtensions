@@ -18,7 +18,7 @@ import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.preference.PreferenceManager
-import android.support.v7.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatActivity
 import android.util.Log
 import android.widget.FrameLayout
 import com.boswelja.devicemanager.common.References
@@ -47,7 +47,7 @@ class MainActivity : AppCompatActivity() {
         deviceAdminReceiver = DeviceAdminReceiver().getWho(this)
 
         settingsFragment = SettingsFragment()
-        fragmentManager.beginTransaction().replace(R.id.fragment_holder, settingsFragment).commit()
+        supportFragmentManager.beginTransaction().replace(R.id.fragment_holder, settingsFragment).commit()
 
         val prefs = PreferenceManager.getDefaultSharedPreferences(this)
         val battSyncEnabled = prefs.getBoolean(References.BATTERY_SYNC_ENABLED_KEY, false)

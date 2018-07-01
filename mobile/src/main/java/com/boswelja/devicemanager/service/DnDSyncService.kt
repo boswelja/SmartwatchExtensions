@@ -19,7 +19,8 @@ import android.os.Binder
 import android.os.Build
 import android.os.IBinder
 import android.preference.PreferenceManager
-import android.support.v4.app.NotificationCompat
+import android.util.Log
+import androidx.core.app.NotificationCompat
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.References
 import com.google.android.gms.wearable.PutDataMapRequest
@@ -51,7 +52,7 @@ class DnDSyncService : Service() {
                 notiChannel.setShowBadge(false)
                 notificationManager.createNotificationChannel(notiChannel)
             }
-            if (Build.VERSION.CODENAME == "P" && !prefs.getBoolean(References.DND_SYNC_WHEN_PRIORITY_ONLY, false)) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P && !prefs.getBoolean(References.DND_SYNC_WHEN_PRIORITY_ONLY, false)) {
                 prefs.edit().putBoolean(References.DND_SYNC_WHEN_PRIORITY_ONLY, true).apply()
             }
         }
@@ -64,6 +65,7 @@ class DnDSyncService : Service() {
                 .setOngoing(true)
         startForeground(155216, notiBuilder.build())
 
+        setDnD()
 
         val intentFilter = IntentFilter()
         intentFilter.addAction(NotificationManager.ACTION_INTERRUPTION_FILTER_CHANGED)
@@ -82,28 +84,33 @@ class DnDSyncService : Service() {
         putDataMapReq.dataMap.putBoolean("com.boswelja.devicemanager.dndenabled", isActive)
         val putDataReq = putDataMapReq.asPutDataRequest()
         dataClient.putDataItem(putDataReq)
+        Log.d("DnDSyncService", "DnD Active: $isActive")
+    }
+
+    private fun setDnD() {
+        when (notificationManager.currentInterruptionFilter) {
+            NotificationManager.INTERRUPTION_FILTER_ALARMS -> {
+                setWatchDnD(prefs.getBoolean(References.DND_SYNC_WHEN_ALARMS_ONLY, true))
+            }
+            NotificationManager.INTERRUPTION_FILTER_ALL -> {
+                setWatchDnD(false)
+            }
+            NotificationManager.INTERRUPTION_FILTER_NONE -> {
+                setWatchDnD(prefs.getBoolean(References.DND_SYNC_WHEN_TOTAL_SILENCE, true))
+            }
+            NotificationManager.INTERRUPTION_FILTER_PRIORITY -> {
+                setWatchDnD(prefs.getBoolean(References.DND_SYNC_WHEN_PRIORITY_ONLY, false))
+            }
+            NotificationManager.INTERRUPTION_FILTER_UNKNOWN -> {
+                setWatchDnD(false)
+            }
+        }
     }
 
     private inner class DnDChangeReceiver : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             if (intent!!.action == NotificationManager.ACTION_INTERRUPTION_FILTER_CHANGED) {
-                when (notificationManager.currentInterruptionFilter) {
-                    NotificationManager.INTERRUPTION_FILTER_ALARMS -> {
-                        setWatchDnD(prefs.getBoolean(References.DND_SYNC_WHEN_ALARMS_ONLY, true))
-                    }
-                    NotificationManager.INTERRUPTION_FILTER_ALL -> {
-                        setWatchDnD(false)
-                    }
-                    NotificationManager.INTERRUPTION_FILTER_NONE -> {
-                        setWatchDnD(prefs.getBoolean(References.DND_SYNC_WHEN_TOTAL_SILENCE, true))
-                    }
-                    NotificationManager.INTERRUPTION_FILTER_PRIORITY -> {
-                        setWatchDnD(prefs.getBoolean(References.DND_SYNC_WHEN_PRIORITY_ONLY, false))
-                    }
-                    NotificationManager.INTERRUPTION_FILTER_UNKNOWN -> {
-                        setWatchDnD(false)
-                    }
-                }
+                setDnD()
             }
         }
     }

@@ -11,9 +11,9 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.support.wearable.activity.ConfirmationActivity
-import android.support.wearable.activity.WearableActivity
 import android.view.View
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import com.boswelja.devicemanager.BuildConfig
 import com.boswelja.devicemanager.common.References
 import com.boswelja.devicemanager.R
@@ -24,7 +24,7 @@ import com.google.android.gms.wearable.Wearable
 import com.google.android.wearable.intent.RemoteIntent
 import com.google.android.wearable.playstore.PlayStoreAvailability
 
-class MainActivity : WearableActivity() {
+class MainActivity : AppCompatActivity() {
 
     private lateinit var fragmentHolder: View
     private var controlsFragmentActive = false
@@ -56,7 +56,7 @@ class MainActivity : WearableActivity() {
     }
 
     private fun showControlsFragment() {
-        val fragmentTransaction = fragmentManager.beginTransaction()
+        val fragmentTransaction = supportFragmentManager.beginTransaction()
         if (!controlsFragmentActive) {
             fragmentTransaction.replace(R.id.fragment_holder,
                     DeviceControlsFragment())
@@ -66,7 +66,7 @@ class MainActivity : WearableActivity() {
     }
 
     private fun showConfirmationFragment() {
-        val fragmentTransaction = fragmentManager.beginTransaction()
+        val fragmentTransaction = supportFragmentManager.beginTransaction()
         val confirmationFragment = ConfirmationFragment()
         confirmationFragment.setHeaderText(getString(R.string.companion_app_missing))
         confirmationFragment.setDescText(getString(R.string.companion_app_missing_desc))

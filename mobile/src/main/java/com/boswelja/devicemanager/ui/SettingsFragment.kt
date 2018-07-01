@@ -16,19 +16,15 @@ import android.content.ServiceConnection
 import android.os.Build
 import android.os.Bundle
 import android.os.IBinder
-import android.preference.ListPreference
-import android.preference.MultiSelectListPreference
-import android.preference.Preference
-import android.preference.PreferenceFragment
-import android.preference.SwitchPreference
-import android.support.design.widget.Snackbar
+import com.google.android.material.snackbar.Snackbar
 import android.widget.Toast
+import androidx.preference.*
 import com.boswelja.devicemanager.common.References
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.Utils
 import com.boswelja.devicemanager.service.DnDSyncService
 
-class SettingsFragment : PreferenceFragment(), Preference.OnPreferenceChangeListener, Preference.OnPreferenceClickListener {
+class SettingsFragment : PreferenceFragmentCompat(), Preference.OnPreferenceChangeListener, Preference.OnPreferenceClickListener {
 
     private lateinit var mainActivity: MainActivity
     private lateinit var grantAdminPermPref: Preference
@@ -39,13 +35,13 @@ class SettingsFragment : PreferenceFragment(), Preference.OnPreferenceChangeList
         return when (preference?.key) {
             References.GRANT_PERMS_PREF_KEY -> {
                 if (!mainActivity.isDeviceAdmin()) {
-                    Utils.requestDeviceAdminPerms(context)
+                    Utils.requestDeviceAdminPerms(context!!)
                 }
                 true
             }
             References.BATTERY_SYNC_NOW_KEY -> {
-                Utils.updateBatteryStats(context)
-                Snackbar.make(view, "Re-synced battery info to watch", Snackbar.LENGTH_SHORT).show()
+                Utils.updateBatteryStats(context!!)
+                Snackbar.make(view!!, "Re-synced battery info to watch", Snackbar.LENGTH_SHORT).show()
                 true
             }
             else -> false
@@ -61,7 +57,7 @@ class SettingsFragment : PreferenceFragment(), Preference.OnPreferenceChangeList
             References.BATTERY_SYNC_INTERVAL_KEY -> {
                 val listPref = preference as ListPreference
                 val value = newValue.toString().toLong()
-                preference.summary = listPref.entries[listPref.entryValues.indexOf(value.toString())]
+                listPref.summary = listPref.entries[listPref.entryValues.indexOf(value.toString())]
                 mainActivity.createBatterySyncJob(value)
                 true
             }
@@ -77,28 +73,28 @@ class SettingsFragment : PreferenceFragment(), Preference.OnPreferenceChangeList
                 if (newValue!! == true) {
                     AlertDialog.Builder(context)
                             .setTitle("Additional setup required")
-                            .setMessage("You need to connect your watch to your PC and execute the following command via ADB: ${context.getString(R.string.dnd_sync_adb_command)}")
-                            .setPositiveButton("Done", { _, _ ->
+                            .setMessage("You need to connect your watch to your PC and execute the following command via ADB: ${context!!.getString(R.string.dnd_sync_adb_command)}")
+                            .setPositiveButton("Done") { _, _ ->
                                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                                    activity.startForegroundService(Intent(context, DnDSyncService::class.java))
+                                    activity?.startForegroundService(Intent(context, DnDSyncService::class.java))
                                 } else {
-                                    activity.startService(Intent(context, DnDSyncService::class.java))
+                                    activity?.startService(Intent(context, DnDSyncService::class.java))
                                 }
-                            })
-                            .setNegativeButton("Cancel", { _, _ ->
+                            }
+                            .setNegativeButton("Cancel") { _, _ ->
                                 preference.sharedPreferences.edit().putBoolean(References.DND_SYNC_ENABLED_KEY, false)
                                 (preference as SwitchPreference).isChecked = false
-                            })
-                            .setNeutralButton("Copy to Clipboard", { _, _ ->
-                                val clipboardManager = context.getSystemService(ClipboardManager::class.java) as ClipboardManager
-                                val clip = ClipData.newPlainText("DnD sync ADB command", context.getString(R.string.dnd_sync_adb_command))
+                            }
+                            .setNeutralButton("Copy to Clipboard") { _, _ ->
+                                val clipboardManager = context!!.getSystemService(ClipboardManager::class.java) as ClipboardManager
+                                val clip = ClipData.newPlainText("DnD sync ADB command", context!!.getString(R.string.dnd_sync_adb_command))
                                 clipboardManager.primaryClip = clip
                                 Toast.makeText(context, "Copied to clipboard", Toast.LENGTH_SHORT).show()
                                 (preference as SwitchPreference).isChecked = false
-                            })
+                            }
                             .show()
                 } else {
-                    (activity.bindService(Intent(context, DnDSyncService::class.java), ServiceConn(), 0))
+                    (activity!!.bindService(Intent(context, DnDSyncService::class.java), ServiceConn(), 0))
                 }
                 true
             }
@@ -121,9 +117,7 @@ class SettingsFragment : PreferenceFragment(), Preference.OnPreferenceChangeList
         }
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
+    override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         mainActivity = activity as MainActivity
         addPreferencesFromResource(R.xml.prefs)
         addPreferencesFromResource(R.xml.prefs_battery_sync)
