@@ -15,9 +15,9 @@ import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.boswelja.devicemanager.BuildConfig
-import com.boswelja.devicemanager.common.References
 import com.boswelja.devicemanager.R
-import com.boswelja.devicemanager.common.Utils
+import com.boswelja.devicemanager.Utils
+import com.boswelja.devicemanager.common.References
 import com.google.android.gms.wearable.CapabilityClient
 import com.google.android.gms.wearable.Node
 import com.google.android.gms.wearable.Wearable

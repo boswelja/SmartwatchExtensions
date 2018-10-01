@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Wearable Extensions</string>
+    <string name="app_name">@string/global_app_name</string>
     <string name="device_admin_label">@string/app_name</string>
     <string name="device_admin_desc">Allows locking your mobile device from your wearable device</string>
 
@@ -27,21 +27,6 @@
         <item>1800000</item>
         <item>3600000</item>
     </string-array>
-    <string-array name="pref_dnd_sync_when">
-        <item>Priority Only</item>
-        <item>Alarms Only</item>
-        <item>Total Silence</item>
-    </string-array>
-    <string-array name="pref_dnd_sync_when_values">
-        <item>dnd_sync_priority_only</item>
-        <item>dnd_sync_alarms_only</item>
-        <item>dnd_sync_total_silence</item>
-    </string-array>
-    <string-array name="pref_dnd_sync_when_default_values">
-        <item>dnd_sync_alarms_only</item>
-        <item>dnd_sync_total_silence</item>
-    </string-array>
 
-    <string name="dnd_sync_adb_command">adb shell settings put secure enabled_notification_listeners com.google.android.wearable.app/com.google.android
-.clockwork.stream.NotificationCollectorService:com.boswelja.devicemanager/com.boswelja.devicemanager.DnDSyncListener</string>
+    <string name="dnd_sync_adb_command">adb shell settings put secure enabled_notification_listeners com.google.android.wearable.app/com.google.android.clockwork.stream.NotificationCollectorService:com.boswelja.devicemanager/com.boswelja.devicemanager.common.DnDSyncListener</string>
 </resources>

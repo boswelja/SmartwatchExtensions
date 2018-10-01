@@ -5,18 +5,18 @@
  * This file, and any part of the Wearable Extensions app/s cannot be copied and/or distributed
  * without permission from Jack Boswell (boswelja) <boswela@outlook.com>
  */
-package com.boswelja.devicemanager.complications
+package com.boswelja.devicemanager.service
 
 import android.app.NotificationChannel
 import android.app.Service
 import android.content.Intent
 import android.os.Build
 import android.os.IBinder
-import androidx.core.app.NotificationCompat
 import android.support.wearable.activity.ConfirmationActivity
 import android.util.Log
+import androidx.core.app.NotificationCompat
+import com.boswelja.devicemanager.Utils
 import com.boswelja.devicemanager.common.References
-import com.boswelja.devicemanager.common.Utils
 import com.google.android.gms.wearable.Node
 import com.google.android.gms.wearable.Wearable
 
@@ -36,7 +36,7 @@ class ActionService : Service() {
             "default"
         }
         val notification: NotificationCompat.Builder = NotificationCompat.Builder(this, channelId)
-        notification.setContentTitle("Locking your phone...")
+        notification.setContentTitle("Communicating with your phone")
         startForeground(312, notification.build())
     }
 
@@ -44,38 +44,41 @@ class ActionService : Service() {
         action = intent!!.getStringExtra(References.INTENT_ACTION_EXTRA)
         val capabilityCallback = object : Utils.CapabilityCallbacks {
             override fun noCapableDevices() {
-                onFailed()
+                when (action) {
+                    References.LOCK_PHONE_PATH -> onFailed("Failed to lock your phone")
+                    References.REQUEST_BATTERY_UPDATE_PATH -> onFailed("Failed to update phone battery stats")
+                }
             }
 
             override fun capableDeviceFound(node: Node?) {
-                lockDevice(node)
+                sendMessage(node)
             }
         }
         Utils.isCompanionAppInstalled(this, capabilityCallback)
         return START_NOT_STICKY
     }
 
-    private fun onFailed() {
-        Log.d("ActionService", "Failed to lock phone")
+    private fun onFailed(message: String) {
+        Log.d("ActionService", message)
         val intent = Intent(this, ConfirmationActivity::class.java)
         intent.putExtra(ConfirmationActivity.EXTRA_ANIMATION_TYPE, ConfirmationActivity.FAILURE_ANIMATION)
-        intent.putExtra(ConfirmationActivity.EXTRA_MESSAGE, "Failed to lock your phone")
+        intent.putExtra(ConfirmationActivity.EXTRA_MESSAGE, message)
         startActivity(intent)
         stopForeground(true)
         stopSelf()
     }
 
-    private fun onSuccess() {
-        Log.d("ActionService", "Phone locked")
+    private fun onSuccess(message: String) {
+        Log.d("ActionService", message)
         val intent = Intent(this, ConfirmationActivity::class.java)
         intent.putExtra(ConfirmationActivity.EXTRA_ANIMATION_TYPE, ConfirmationActivity.SUCCESS_ANIMATION)
-        intent.putExtra(ConfirmationActivity.EXTRA_MESSAGE, "Locked your phone")
+        intent.putExtra(ConfirmationActivity.EXTRA_MESSAGE, message)
         startActivity(intent)
         stopForeground(true)
         stopSelf()
     }
 
-    private fun lockDevice(node: Node?) {
+    private fun sendMessage(node: Node?) {
         Wearable.getMessageClient(this)
                 .sendMessage(
                     node!!.id,
@@ -83,10 +86,10 @@ class ActionService : Service() {
                     null
                 )
                 .addOnSuccessListener {
-                    onSuccess()
+                    onSuccess("Request succeeded")
                 }
                 .addOnFailureListener {
-                    onFailed()
+                    onFailed("Request failed")
                 }
     }
 }

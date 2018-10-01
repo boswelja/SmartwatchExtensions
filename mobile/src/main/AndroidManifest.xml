@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.boswelja.devicemanager">
 
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY" />
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
@@ -17,7 +15,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name="com.boswelja.devicemanager.ui.LauncherActivity">
+
+        <activity android:name=".ui.LauncherActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -25,8 +24,7 @@
             </intent-filter>
         </activity>
 
-        <activity
-            android:name=".ui.MainActivity">
+        <activity android:name=".ui.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <action android:name="android.intent.action.VIEW" />
@@ -35,35 +33,51 @@
 
         <receiver
             android:name="android.app.admin.DeviceAdminReceiver"
-            android:label="@string/device_admin_label"
             android:description="@string/device_admin_desc"
+            android:label="@string/device_admin_label"
             android:permission="android.permission.BIND_DEVICE_ADMIN">
             <meta-data
                 android:name="android.app.device_admin"
-                android:resource="@xml/device_admin_policies"/>
+                android:resource="@xml/device_admin_policies" />
+
             <intent-filter>
-                <action android:name="android.app.action.DEVICE_ADMIN_ENABLED"/>
+                <action android:name="android.app.action.DEVICE_ADMIN_ENABLED" />
             </intent-filter>
         </receiver>
-
         <receiver
-                android:name=".receiver.BootReceiver"
-                android:exported="false">
+            android:name=".common.BootReceiver"
+            android:exported="false">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
 
-        <service android:name=".tasks.BatteryInfoUpdate"
+        <service
+            android:name=".tasks.BatteryInfoUpdate"
             android:permission="android.permission.BIND_JOB_SERVICE" />
+        <service
+            android:name=".common.DnDHandler"
+            android:exported="false" />
 
-        <service android:name=".service.DnDSyncService"
-                 android:exported="false" />
+        <service android:name=".common.DnDSyncListener">
+            <intent-filter>
+                <action android:name="com.google.android.gms.wearable.DATA_CHANGED" />
+                <data android:scheme="wear" android:host="*" android:path="/dndStatus" />
+            </intent-filter>
+        </service>
 
-        <service android:name="com.boswelja.devicemanager.receiver.WearMessageReceiverService">
+        <service android:name=".receiver.WearMessageReceiverService">
             <intent-filter>
                 <action android:name="com.google.android.gms.wearable.MESSAGE_RECEIVED" />
-                <data android:scheme="wear" android:host="*" android:pathPrefix="/lock_phone" />
+
+                <data
+                    android:host="*"
+                    android:pathPrefix="/lock_phone"
+                    android:scheme="wear" />
+                <data
+                    android:host="*"
+                    android:pathPrefix="/request_battery_update"
+                    android:scheme="wear" />
             </intent-filter>
         </service>
     </application>

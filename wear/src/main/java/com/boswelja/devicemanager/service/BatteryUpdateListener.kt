@@ -5,7 +5,7 @@
  * This file, and any part of the Wearable Extensions app/s cannot be copied and/or distributed
  * without permission from Jack Boswell (boswelja) <boswela@outlook.com>
  */
-package com.boswelja.devicemanager
+package com.boswelja.devicemanager.service
 
 import android.content.ComponentName
 import android.preference.PreferenceManager
@@ -20,8 +20,8 @@ import com.google.android.gms.wearable.WearableListenerService
 class BatteryUpdateListener : WearableListenerService() {
 
     override fun onDataChanged(dataEvents: DataEventBuffer?) {
+        val preferenceManager = PreferenceManager.getDefaultSharedPreferences(this)
         for (event: DataEvent in dataEvents!!) {
-            val preferenceManager = PreferenceManager.getDefaultSharedPreferences(this)
             when (event.type) {
                 DataEvent.TYPE_CHANGED -> {
                     val dataMap = DataMapItem.fromDataItem(event.dataItem).dataMap

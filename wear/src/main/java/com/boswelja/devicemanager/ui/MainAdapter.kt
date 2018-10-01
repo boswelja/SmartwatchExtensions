@@ -10,16 +10,16 @@ package com.boswelja.devicemanager.ui
 import android.content.Intent
 import android.content.SharedPreferences
 import android.preference.PreferenceManager
-import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import com.boswelja.devicemanager.common.References
+import androidx.recyclerview.widget.RecyclerView
 import com.boswelja.devicemanager.MainOption
 import com.boswelja.devicemanager.R
-import com.boswelja.devicemanager.complications.ActionService
+import com.boswelja.devicemanager.common.References
+import com.boswelja.devicemanager.service.ActionService
 
 class MainAdapter(private val options: ArrayList<MainOption>) : RecyclerView.Adapter<MainAdapter.ViewHolder>() {
 
@@ -40,6 +40,11 @@ class MainAdapter(private val options: ArrayList<MainOption>) : RecyclerView.Ada
                 }
             }
             References.TYPE_PHONE_BATTERY -> {
+                holder.itemView.setOnClickListener {
+                    val intent = Intent(holder.itemView.context, ActionService::class.java)
+                    intent.putExtra(References.INTENT_ACTION_EXTRA, References.REQUEST_BATTERY_UPDATE_PATH)
+                    holder.itemView.context.startService(intent)
+                }
                 val sharedPrefs = PreferenceManager.getDefaultSharedPreferences(holder.itemView.context)
                 sharedPrefs.registerOnSharedPreferenceChangeListener { _, key ->
                     if (key == References.BATTERY_PERCENT_KEY) {

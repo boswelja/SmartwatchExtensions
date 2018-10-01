@@ -11,15 +11,17 @@
             android:icon="@drawable/ic_do_not_disturb"
             android:defaultValue="false" />
 
-        <MultiSelectListPreference
-            android:key="dnd_sync_when"
+        <CheckBoxPreference
+            android:key="dnd_sync_send"
             android:dependency="dnd_sync_enabled"
-            android:title="Enable DnD when you switch to"
-            android:summary="Nothing"
-            android:entries="@array/pref_dnd_sync_when"
-            android:entryValues="@array/pref_dnd_sync_when_values"
-            android:defaultValue="@array/pref_dnd_sync_when_default_values" />
+            android:title="Phone to Watch sync"
+            android:defaultValue="true" />
 
+        <CheckBoxPreference
+            android:key="dnd_sync_receive"
+            android:dependency="dnd_sync_enabled"
+            android:title="Watch to Phone sync"
+            android:defaultValue="false" />
     </PreferenceCategory>
 
 </PreferenceScreen>

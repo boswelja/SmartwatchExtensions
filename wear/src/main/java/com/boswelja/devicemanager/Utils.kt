@@ -5,9 +5,10 @@
  * This file, and any part of the Wearable Extensions app/s cannot be copied and/or distributed
  * without permission from Jack Boswell (boswelja) <boswela@outlook.com>
  */
-package com.boswelja.devicemanager.common
+package com.boswelja.devicemanager
 
 import android.content.Context
+import com.boswelja.devicemanager.common.References
 import com.google.android.gms.wearable.CapabilityClient
 import com.google.android.gms.wearable.Node
 import com.google.android.gms.wearable.Wearable
@@ -18,8 +19,8 @@ object Utils {
         Wearable
                 .getCapabilityClient(context)
                 .getCapability(
-                    References.CAPABILITY_PHONE_APP,
-                    CapabilityClient.FILTER_REACHABLE
+                        References.CAPABILITY_PHONE_APP,
+                        CapabilityClient.FILTER_REACHABLE
                 )
                 .addOnSuccessListener {
                     val node = it.nodes.lastOrNull()
@@ -32,7 +33,6 @@ object Utils {
     }
 
     interface CapabilityCallbacks {
-
         fun capableDeviceFound(node: Node?)
 
         fun noCapableDevices()

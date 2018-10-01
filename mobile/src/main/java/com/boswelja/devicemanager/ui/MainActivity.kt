@@ -18,12 +18,13 @@ import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.preference.PreferenceManager
-import androidx.appcompat.app.AppCompatActivity
 import android.util.Log
 import android.widget.FrameLayout
-import com.boswelja.devicemanager.common.References
+import androidx.appcompat.app.AppCompatActivity
 import com.boswelja.devicemanager.R
-import com.boswelja.devicemanager.service.DnDSyncService
+import com.boswelja.devicemanager.common.DnDHandler
+import com.boswelja.devicemanager.common.PreferenceKey
+import com.boswelja.devicemanager.common.References
 import com.boswelja.devicemanager.tasks.BatteryInfoUpdate
 import com.google.android.gms.wearable.PutDataMapRequest
 import com.google.android.gms.wearable.Wearable
@@ -50,18 +51,18 @@ class MainActivity : AppCompatActivity() {
         supportFragmentManager.beginTransaction().replace(R.id.fragment_holder, settingsFragment).commit()
 
         val prefs = PreferenceManager.getDefaultSharedPreferences(this)
-        val battSyncEnabled = prefs.getBoolean(References.BATTERY_SYNC_ENABLED_KEY, false)
+        val battSyncEnabled = prefs.getBoolean(PreferenceKey.BATTERY_SYNC_ENABLED_KEY, false)
         if (battSyncEnabled) {
             if (jobScheduler.getPendingJob(References.BATTERY_PERCENT_JOB_ID) == null) {
-                createBatterySyncJob(prefs.getString(References.BATTERY_SYNC_INTERVAL_KEY, "600000").toLong())
+                createBatterySyncJob(prefs.getString(PreferenceKey.BATTERY_SYNC_INTERVAL_KEY, "600000")!!.toLong())
             }
         } else {
             stopBatterySyncJob()
         }
 
-        val dndSyncEnabled = prefs.getBoolean(References.DND_SYNC_ENABLED_KEY, false)
-        if (dndSyncEnabled) {
-            val intent = Intent(this, DnDSyncService::class.java)
+        if (prefs.getBoolean(PreferenceKey.DND_SYNC_ENABLED_KEY, false) &&
+                prefs.getBoolean(PreferenceKey.DND_SYNC_SEND_KEY, true)) {
+            val intent = Intent(this, DnDHandler::class.java)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 startForegroundService(intent)
             } else {

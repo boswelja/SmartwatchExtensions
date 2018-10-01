@@ -1,0 +1,38 @@
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+apply from: '../constants.gradle'
+
+android {
+    compileSdkVersion versions.compileSdk
+    buildToolsVersion versions.buildTools
+
+    defaultConfig {
+        minSdkVersion 23
+        targetSdkVersion versions.compileSdk
+        versionCode 1
+        versionName "1.0"
+
+    }
+
+    buildTypes {
+        //noinspection GroovyMissingReturnStatement
+        release {
+            postprocessing {
+                removeUnusedCode true
+                removeUnusedResources false
+                obfuscate true
+                optimizeCode true
+                proguardFile 'proguard-rules.pro'
+            }
+        }
+    }
+
+}
+
+dependencies {
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+
+    implementation "com.google.android.gms:play-services-wearable:$versions.playServicesWearable"
+    implementation "androidx.appcompat:appcompat:$versions.androidx"
+}

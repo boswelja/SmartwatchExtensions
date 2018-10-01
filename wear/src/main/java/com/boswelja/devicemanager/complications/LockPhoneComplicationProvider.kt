@@ -17,6 +17,7 @@ import android.support.wearable.complications.ComplicationProviderService
 import android.support.wearable.complications.ComplicationText
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.References
+import com.boswelja.devicemanager.service.ActionService
 
 class LockPhoneComplicationProvider : ComplicationProviderService() {
 
@@ -38,10 +39,10 @@ class LockPhoneComplicationProvider : ComplicationProviderService() {
         val intent = Intent(this, ActionService::class.java)
         intent.putExtra(References.INTENT_ACTION_EXTRA, References.LOCK_PHONE_PATH)
         val pendingIntent: PendingIntent
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            pendingIntent = PendingIntent.getForegroundService(this, 101, intent, PendingIntent.FLAG_CANCEL_CURRENT)
+        pendingIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            PendingIntent.getForegroundService(this, 101, intent, PendingIntent.FLAG_CANCEL_CURRENT)
         } else {
-            pendingIntent = PendingIntent.getService(this, 101, intent, PendingIntent.FLAG_CANCEL_CURRENT)
+            PendingIntent.getService(this, 101, intent, PendingIntent.FLAG_CANCEL_CURRENT)
         }
         val complicationData = ComplicationData.Builder(type)
                 .setIcon(Icon.createWithResource(this, R.drawable.ic_phonelink_lock))

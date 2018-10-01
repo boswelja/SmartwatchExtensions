@@ -10,6 +10,7 @@ package com.boswelja.devicemanager.receiver
 import android.app.admin.DeviceAdminReceiver
 import android.app.admin.DevicePolicyManager
 import android.content.Context
+import com.boswelja.devicemanager.Utils
 import com.boswelja.devicemanager.common.References
 import com.google.android.gms.wearable.MessageEvent
 import com.google.android.gms.wearable.WearableListenerService
@@ -24,6 +25,9 @@ class WearMessageReceiverService : WearableListenerService() {
                 if (devicePolicyManager.isAdminActive(DeviceAdminReceiver().getWho(this))) {
                     devicePolicyManager.lockNow()
                 }
+            }
+            References.REQUEST_BATTERY_UPDATE_PATH -> {
+                Utils.updateBatteryStats(this)
             }
         }
     }

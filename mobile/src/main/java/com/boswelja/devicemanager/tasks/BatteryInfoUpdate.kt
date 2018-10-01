@@ -9,7 +9,7 @@ package com.boswelja.devicemanager.tasks
 
 import android.app.job.JobParameters
 import android.app.job.JobService
-import com.boswelja.devicemanager.common.Utils
+import com.boswelja.devicemanager.Utils
 
 class BatteryInfoUpdate : JobService() {
 

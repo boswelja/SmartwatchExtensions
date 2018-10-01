@@ -8,15 +8,15 @@
 package com.boswelja.devicemanager.ui
 
 import android.os.Bundle
-import androidx.wear.widget.WearableLinearLayoutManager
-import androidx.wear.widget.WearableRecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import com.boswelja.devicemanager.common.References
+import androidx.wear.widget.WearableLinearLayoutManager
+import androidx.wear.widget.WearableRecyclerView
 import com.boswelja.devicemanager.MainOption
 import com.boswelja.devicemanager.R
+import com.boswelja.devicemanager.common.References
 
 class DeviceControlsFragment : Fragment() {
 
