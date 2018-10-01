@@ -52,6 +52,15 @@ class SettingsFragment : PreferenceFragmentCompat(), Preference.OnPreferenceChan
                 Snackbar.make(view!!, "Re-synced battery info to watch", Snackbar.LENGTH_SHORT).show()
                 true
             }
+            "notification_settings" -> {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    val settingsIntent = Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS)
+                            .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                            .putExtra(Settings.EXTRA_APP_PACKAGE, context!!.packageName)
+                    startActivity(settingsIntent)
+                }
+                true
+            }
             else -> false
         }
     }
@@ -148,6 +157,10 @@ class SettingsFragment : PreferenceFragmentCompat(), Preference.OnPreferenceChan
         addPreferencesFromResource(R.xml.prefs)
         addPreferencesFromResource(R.xml.prefs_battery_sync)
         addPreferencesFromResource(R.xml.prefs_dnd_sync)
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            findPreference("notification_settings").onPreferenceClickListener = this
+        }
 
         val hideAppIconPref = findPreference(PreferenceKey.HIDE_APP_ICON_KEY)
         hideAppIconPref.onPreferenceChangeListener = this
