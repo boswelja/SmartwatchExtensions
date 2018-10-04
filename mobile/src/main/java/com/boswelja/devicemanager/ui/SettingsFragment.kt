@@ -32,21 +32,16 @@ import com.google.android.material.snackbar.Snackbar
 class SettingsFragment : PreferenceFragmentCompat(), Preference.OnPreferenceChangeListener, Preference.OnPreferenceClickListener {
 
     private lateinit var mainActivity: MainActivity
-    private lateinit var grantAdminPermPref: Preference
+    private lateinit var lockPhoneEnabledPref: SwitchPreference
     private lateinit var batterySyncIntervalPref: ListPreference
     private lateinit var dndSyncPhoneToWatchPref: CheckBoxPreference
     private lateinit var dndSyncWatchToPhonePref: CheckBoxPreference
     private lateinit var sharedPrefs: SharedPreferences
     private lateinit var notificationManager: NotificationManager
+    private var isGrantingAdminPerms = false
 
     override fun onPreferenceClick(preference: Preference?): Boolean {
         return when (preference?.key) {
-            PreferenceKey.GRANT_PERMS_PREF_KEY -> {
-                if (!mainActivity.isDeviceAdmin()) {
-                    Utils.requestDeviceAdminPerms(context!!)
-                }
-                true
-            }
             PreferenceKey.BATTERY_SYNC_NOW_KEY -> {
                 Utils.updateBatteryStats(context!!)
                 Snackbar.make(view!!, "Re-synced battery info to watch", Snackbar.LENGTH_SHORT).show()
@@ -70,6 +65,32 @@ class SettingsFragment : PreferenceFragmentCompat(), Preference.OnPreferenceChan
             PreferenceKey.HIDE_APP_ICON_KEY -> {
                 mainActivity.changeAppIconVisibility(newValue!! == true)
                 true
+            }
+            PreferenceKey.LOCK_PHONE_ENABLED -> {
+                val value = newValue == true
+                if (!mainActivity.isDeviceAdmin()) {
+                    AlertDialog.Builder(context!!)
+                            .setTitle("Missing Permissions")
+                            .setMessage("This app requires device administrator permissions to be able to lock your phone.")
+                            .setPositiveButton("Grant") { _, _ ->
+                                isGrantingAdminPerms = true
+                                Utils.requestDeviceAdminPerms(context!!)
+                            }
+                            .setNegativeButton("Cancel") { _, _ ->
+                                preference.sharedPreferences.edit()
+                                        .putBoolean(preference.key, false)
+                                        .apply()
+                                (preference as SwitchPreference).isChecked = false
+                            }
+                            .show()
+                } else {
+                    preference.sharedPreferences.edit()
+                            .putBoolean(preference.key, value)
+                            .apply()
+                    (preference as SwitchPreference).isChecked = value
+                    Utils.updateWatchPrefs(context!!)
+                }
+                false
             }
             PreferenceKey.BATTERY_SYNC_INTERVAL_KEY -> {
                 val listPref = preference as ListPreference
@@ -155,19 +176,31 @@ class SettingsFragment : PreferenceFragmentCompat(), Preference.OnPreferenceChan
         mainActivity = activity as MainActivity
 
         addPreferencesFromResource(R.xml.prefs)
+        addPreferencesFromResource(R.xml.prefs_lock_phone)
         addPreferencesFromResource(R.xml.prefs_battery_sync)
         addPreferencesFromResource(R.xml.prefs_dnd_sync)
 
+        setupGeneralPrefs()
+        setupPhoneLockPrefs()
+        setupBatterySyncPrefs()
+        setupDnDPrefs()
+    }
+
+    private fun setupGeneralPrefs() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             findPreference("notification_settings").onPreferenceClickListener = this
         }
 
         val hideAppIconPref = findPreference(PreferenceKey.HIDE_APP_ICON_KEY)
         hideAppIconPref.onPreferenceChangeListener = this
+    }
 
-        grantAdminPermPref = findPreference(PreferenceKey.GRANT_PERMS_PREF_KEY)
-        grantAdminPermPref.onPreferenceClickListener = this
+    private fun setupPhoneLockPrefs() {
+        lockPhoneEnabledPref = findPreference(PreferenceKey.LOCK_PHONE_ENABLED) as SwitchPreference
+        lockPhoneEnabledPref.onPreferenceChangeListener = this
+    }
 
+    private fun setupBatterySyncPrefs() {
         batterySyncIntervalPref = findPreference(PreferenceKey.BATTERY_SYNC_INTERVAL_KEY) as ListPreference
         batterySyncIntervalPref.onPreferenceChangeListener = this
         batterySyncIntervalPref.summary = batterySyncIntervalPref.entry
@@ -177,7 +210,9 @@ class SettingsFragment : PreferenceFragmentCompat(), Preference.OnPreferenceChan
 
         val batterySyncForcePref = findPreference(PreferenceKey.BATTERY_SYNC_NOW_KEY)
         batterySyncForcePref.onPreferenceClickListener = this
+    }
 
+    private fun setupDnDPrefs() {
         val dndSyncEnabledPref = findPreference(PreferenceKey.DND_SYNC_ENABLED_KEY)
         dndSyncEnabledPref.onPreferenceChangeListener = this
         dndSyncEnabledPref.onPreferenceClickListener = this
@@ -189,19 +224,6 @@ class SettingsFragment : PreferenceFragmentCompat(), Preference.OnPreferenceChan
         dndSyncWatchToPhonePref = findPreference(PreferenceKey.DND_SYNC_RECEIVE_KEY) as CheckBoxPreference
         dndSyncWatchToPhonePref.onPreferenceChangeListener = this
         updateDndWatchToPhoneSyncSummary()
-    }
-
-    override fun onResume() {
-        super.onResume()
-        updateAdminSummary()
-    }
-
-    fun updateAdminSummary() {
-        if (mainActivity.isDeviceAdmin()) {
-            grantAdminPermPref.summary = getString(R.string.pref_admin_perms_summary_granted)
-        } else {
-            grantAdminPermPref.summary = getString(R.string.pref_admin_perms_summary_missing)
-        }
     }
 
     private fun updateDndPhoneToWatchSyncSummary() {
@@ -231,6 +253,17 @@ class SettingsFragment : PreferenceFragmentCompat(), Preference.OnPreferenceChan
             } else {
                 sharedPrefs.edit().putBoolean(PreferenceKey.DND_SYNC_RECEIVE_KEY, false).apply()
             }
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (isGrantingAdminPerms) {
+            val isAdmin = mainActivity.isDeviceAdmin()
+            sharedPrefs.edit().putBoolean(PreferenceKey.LOCK_PHONE_ENABLED, isAdmin).apply()
+            lockPhoneEnabledPref.isChecked = isAdmin
+            isGrantingAdminPerms = false
+            Utils.updateWatchPrefs(context!!)
         }
     }
 }

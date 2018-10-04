@@ -10,6 +10,7 @@ object PreferenceKey {
     const val DND_SYNC_ENABLED_KEY = "dnd_sync_enabled"
     const val DND_SYNC_SEND_KEY = "dnd_sync_send"
     const val DND_SYNC_RECEIVE_KEY = "dnd_sync_receive"
+    const val LOCK_PHONE_ENABLED = "lock_phone_enabled"
 
     const val DEVICE_UID = "uid"
 

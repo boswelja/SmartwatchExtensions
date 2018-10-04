@@ -44,12 +44,14 @@ object Utils {
         val dndSyncEnabled = prefs.getBoolean(PreferenceKey.DND_SYNC_ENABLED_KEY, false)
         val dndSyncSend = prefs.getBoolean(PreferenceKey.DND_SYNC_SEND_KEY, false)
         val dndSyncReceive = prefs.getBoolean(PreferenceKey.DND_SYNC_RECEIVE_KEY, false)
+        val lockPhoneEnabled = prefs.getBoolean(PreferenceKey.LOCK_PHONE_ENABLED, false)
 
         val dataClient = Wearable.getDataClient(context)
         val putDataMapReq = PutDataMapRequest.create("/preferenceChange")
         putDataMapReq.dataMap.putBoolean(References.DND_SYNC_ENABLED_PATH, dndSyncEnabled)
         putDataMapReq.dataMap.putBoolean(References.DND_SYNC_SEND_PATH, dndSyncSend)
         putDataMapReq.dataMap.putBoolean(References.DND_SYNC_RECEIVE_PATH, dndSyncReceive)
+        putDataMapReq.dataMap.putBoolean(References.LOCK_PHONE_PATH, lockPhoneEnabled)
         putDataMapReq.setUrgent()
         dataClient.putDataItem(putDataMapReq.asPutDataRequest())
     }

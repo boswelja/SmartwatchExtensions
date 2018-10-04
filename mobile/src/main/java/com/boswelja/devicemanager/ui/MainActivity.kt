@@ -74,7 +74,7 @@ class MainActivity : AppCompatActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         when (requestCode) {
             References.DEVICE_ADMIN_REQUEST_CODE -> {
-                settingsFragment.updateAdminSummary()
+                //settingsFragment.updateAdminSummary()
             }
         }
     }

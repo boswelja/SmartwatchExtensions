@@ -18,7 +18,7 @@
                                 <PersistentState>
                                   <option name="values">
                                     <map>
-                                      <entry key="url" value="jar:file:/C:/android-studio/plugins/android/lib/android.jar!/images/material_design_icons/device/ic_battery_unknown_black_24dp.xml" />
+                                      <entry key="url" value="jar:file:/C:/android-studio/plugins/android/lib/android.jar!/images/material_design_icons/communication/ic_phonelink_lock_black_24dp.xml" />
                                     </map>
                                   </option>
                                 </PersistentState>
@@ -29,7 +29,7 @@
                         <option name="values">
                           <map>
                             <entry key="color" value="ffffff" />
-                            <entry key="outputName" value="ic_battery_unknown" />
+                            <entry key="outputName" value="ic_phonelink_lock" />
                             <entry key="sourceFile" value="C:\Users\boswe" />
                           </map>
                         </option>

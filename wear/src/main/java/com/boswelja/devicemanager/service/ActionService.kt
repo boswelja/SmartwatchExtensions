@@ -12,10 +12,12 @@ import android.app.Service
 import android.content.Intent
 import android.os.Build
 import android.os.IBinder
+import android.preference.PreferenceManager
 import android.support.wearable.activity.ConfirmationActivity
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.boswelja.devicemanager.Utils
+import com.boswelja.devicemanager.common.PreferenceKey
 import com.boswelja.devicemanager.common.References
 import com.google.android.gms.wearable.Node
 import com.google.android.gms.wearable.Wearable
@@ -51,7 +53,19 @@ class ActionService : Service() {
             }
 
             override fun capableDeviceFound(node: Node?) {
-                sendMessage(node)
+                val prefs = PreferenceManager.getDefaultSharedPreferences(this@ActionService)
+                when (action) {
+                    References.LOCK_PHONE_PATH -> {
+                        if (prefs.getBoolean(PreferenceKey.LOCK_PHONE_ENABLED, false)) {
+                            sendMessage(node)
+                        } else {
+                            onFailed("Phone locking has been disabled")
+                        }
+                    }
+                    References.REQUEST_BATTERY_UPDATE_PATH -> {
+                        sendMessage(node)
+                    }
+                }
             }
         }
         Utils.isCompanionAppInstalled(this, capabilityCallback)

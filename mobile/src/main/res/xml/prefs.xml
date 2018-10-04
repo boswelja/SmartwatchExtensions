@@ -12,14 +12,4 @@
 
     </PreferenceCategory>
 
-    <PreferenceCategory
-        android:title="@string/pref_category_permissions">
-
-        <Preference
-            android:key="grant_admin_perms"
-            android:title="@string/pref_admin_perms_title"
-            android:summary="@string/pref_admin_perms_summary_missing" />
-
-    </PreferenceCategory>
-
 </PreferenceScreen>

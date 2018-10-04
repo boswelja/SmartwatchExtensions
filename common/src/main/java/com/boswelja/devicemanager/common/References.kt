@@ -15,6 +15,7 @@ object References {
     const val DND_SYNC_ENABLED_PATH = "com.boswelja.devicemanager.dndsyncenabled"
     const val DND_SYNC_SEND_PATH = "com.boswelja.devicemanager.dndsyncsend"
     const val DND_SYNC_RECEIVE_PATH = "com.boswelja.devicemanager.dndsyncreceive"
+    const val LOCK_PHONE_ENABLED_PATH = "com.boswelja.devicemanager.lockphoneenabled"
 
     const val LOCK_PHONE_PATH = "/lock_phone"
     const val REQUEST_BATTERY_UPDATE_PATH = "/request_battery_update"

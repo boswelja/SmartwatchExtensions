@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory
+        android:title="Phone Locking">
+
+        <SwitchPreference
+            android:key="lock_phone_enabled"
+            android:icon="@drawable/ic_phonelink_lock"
+            android:title="Remote phone locking"
+            android:summary="Allow locking your phone from your wearable" />
+
+    </PreferenceCategory>
+
+</PreferenceScreen>
