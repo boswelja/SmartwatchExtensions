@@ -20,6 +20,8 @@ import com.google.android.gms.wearable.WearableListenerService
  */
 class DnDSyncListener : WearableListenerService() {
 
+    private val tag = "DnDSyncListener"
+
     override fun onDataChanged(dataEventBuffer: DataEventBuffer) {
         super.onDataChanged(dataEventBuffer)
 
@@ -39,12 +41,12 @@ class DnDSyncListener : WearableListenerService() {
                             notificationManager.setInterruptionFilter(NotificationManager.INTERRUPTION_FILTER_ALL)
                         }
                     } else {
-                        Log.d("DnDSyncListener", "Change triggered by this device, skipping")
+                        Log.d(tag, "Change triggered by this device, skipping")
                     }
                 }
             }
         } else {
-            Log.d("DnDSyncListener", "Device currently not receiving DnD changes")
+            Log.d(tag, "Device currently not receiving DnD changes")
         }
     }
 }

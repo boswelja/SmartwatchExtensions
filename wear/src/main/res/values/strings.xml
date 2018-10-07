@@ -5,4 +5,23 @@
     <string name="lock_phone_label">Lock phone</string>
     <string name="cancel">Cancel</string>
     <string name="ok">OK</string>
+
+    <string name="phone_battery_desc">Phone battery at %s%%</string>
+    <string name="phone_battery_unknown_long">Phone battery info not available</string>
+    <string name="phone_battery_unknown_short">N/A</string>
+    <string name="phone_battery_percent">%s%%</string>
+    <string name="phone_battery_update_failed">Failed to update phone battery stats</string>
+
+    <string name="phone_lock_failed_message">Failed to lock your phone</string>
+    <string name="phone_lock_disabled_message">Phone locking has been disabled</string>
+
+    <string name="request_success_message">Request succeeded</string>
+    <string name="request_failed_message">Request failed</string>
+
+    <string name="communicating_noti_title">Communicating with your phone</string>
+
+    <string name="no_device_paired">No device paired</string>
+
+    <string name="play_store_app_link">market://details?id=%s</string>
+    <string name="play_store_web_link">https://play.google.com/store/apps/details?id=%s</string>
 </resources>

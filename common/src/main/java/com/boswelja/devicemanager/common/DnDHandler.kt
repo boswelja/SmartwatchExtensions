@@ -18,6 +18,8 @@ import com.google.android.gms.wearable.Wearable
 
 class DnDHandler : Service() {
 
+    private val tag = "DnDHandler"
+
     private lateinit var prefs: SharedPreferences
     private lateinit var notificationManager: NotificationManager
     private var dndChangeReceiver: DnDChangeReceiver? = null
@@ -31,38 +33,43 @@ class DnDHandler : Service() {
 
     override fun onCreate() {
         super.onCreate()
+        Log.d(tag, "Service starting")
+
         prefs = PreferenceManager.getDefaultSharedPreferences(this)
         prefs.registerOnSharedPreferenceChangeListener(prefChangeListener)
 
+        Log.d(tag, "Getting UID")
         uuid = CommonUtils.getUID(prefs)
 
         notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
-        updateDnDSyncSend()
-
+        Log.d(tag, "Creating Notification channel")
         createNotificationChannel()
+    }
 
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        Log.d(tag, "Creating notification")
         val notiBuilder: NotificationCompat.Builder = NotificationCompat.Builder(this, References.DND_SYNC_NOTIFICATION_CHANNEL_ID)
                 .setAutoCancel(false)
                 .setShowWhen(false)
-                .setContentTitle("DnD Sync Active")
-                .setContentText("Syncing Do Not Disturb status between your phone and watch")
+                .setContentTitle(getString(R.string.dnd_sync_active_noti_title))
+                .setContentText(getString(R.string.dnd_sync_active_noti_desc))
                 .setSmallIcon(R.drawable.ic_sync)
                 .setOngoing(true)
                 .setPriority(NotificationCompat.PRIORITY_LOW)
         startForeground(155216, notiBuilder.build())
 
-        updateDnD()
-    }
+        updateDnDSyncSend()
 
-    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        updateDnD()
+
         return START_STICKY
     }
 
     fun updateDnDSyncSend() {
         val newValue = prefs.getBoolean(PreferenceKey.DND_SYNC_SEND_KEY, dndSyncSend)
         if (newValue != dndSyncSend) {
-            Log.d("DnDHandler", "DnD Sync Send changed to" + newValue.toString())
+            Log.d(tag, "DnD Sync Send changed to" + newValue.toString())
             dndSyncSend = newValue
             dndSyncSendChanged()
         }
@@ -102,22 +109,22 @@ class DnDHandler : Service() {
                         (currentInterruptFilter == NotificationManager.INTERRUPTION_FILTER_PRIORITY) ||
                         (currentInterruptFilter == NotificationManager.INTERRUPTION_FILTER_NONE)
         val dataClient = Wearable.getDataClient(this)
-        val putDataMapReq = PutDataMapRequest.create("/dndStatus")
+        val putDataMapReq = PutDataMapRequest.create(References.DND_STATUS_KEY)
         putDataMapReq.dataMap.putBoolean(References.NEW_DND_STATE_PATH, dndEnabled)
         putDataMapReq.dataMap.putString(References.NEW_DND_STATE_CHANGED_BY_PATH, CommonUtils.getUID(this))
         putDataMapReq.setUrgent()
         dataClient.putDataItem(putDataMapReq.asPutDataRequest())
-        Log.d("DnDSyncService", "DnD Active: $dndEnabled")
+        Log.d(tag, "DnD Active: $dndEnabled")
     }
 
     override fun onDestroy() {
-        super.onDestroy()
         if (dndSyncSend && dndChangeReceiver != null) {
             try {
                 unregisterReceiver(dndChangeReceiver)
             } catch (ignored: IllegalArgumentException) {}
         }
-        Log.d("DnDHandler", "Stopping service")
+        Log.d(tag, "Stopping service")
+        super.onDestroy()
     }
 
     private inner class PreferenceChangeListener : SharedPreferences.OnSharedPreferenceChangeListener {
@@ -136,7 +143,7 @@ class DnDHandler : Service() {
     private inner class DnDChangeReceiver : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             if (intent!!.action == NotificationManager.ACTION_INTERRUPTION_FILTER_CHANGED) {
-                Log.d("DnDHandler", "DnD Changed")
+                Log.d(tag, "DnD Changed")
                 updateDnD()
             }
         }

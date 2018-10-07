@@ -44,10 +44,10 @@ class SettingsFragment : PreferenceFragmentCompat(), Preference.OnPreferenceChan
         return when (preference?.key) {
             PreferenceKey.BATTERY_SYNC_NOW_KEY -> {
                 Utils.updateBatteryStats(context!!)
-                Snackbar.make(view!!, "Re-synced battery info to watch", Snackbar.LENGTH_SHORT).show()
+                Snackbar.make(view!!, getString(R.string.pref_battery_sync_resync_complete), Snackbar.LENGTH_SHORT).show()
                 true
             }
-            "notification_settings" -> {
+            PreferenceKey.NOTIFICATION_SETTINGS_KEY -> {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                     val settingsIntent = Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS)
                             .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
@@ -70,13 +70,13 @@ class SettingsFragment : PreferenceFragmentCompat(), Preference.OnPreferenceChan
                 val value = newValue == true
                 if (!mainActivity.isDeviceAdmin()) {
                     AlertDialog.Builder(context!!)
-                            .setTitle("Missing Permissions")
-                            .setMessage("This app requires device administrator permissions to be able to lock your phone.")
-                            .setPositiveButton("Grant") { _, _ ->
+                            .setTitle(R.string.grant_device_admin_perm_dialog_title)
+                            .setMessage(R.string.grant_device_admin_perm_dialog_message)
+                            .setPositiveButton(R.string.dialog_button_grant) { _, _ ->
                                 isGrantingAdminPerms = true
                                 Utils.requestDeviceAdminPerms(context!!)
                             }
-                            .setNegativeButton("Cancel") { _, _ ->
+                            .setNegativeButton(R.string.dialog_button_cancel) { _, _ ->
                                 preference.sharedPreferences.edit()
                                         .putBoolean(preference.key, false)
                                         .apply()
@@ -111,9 +111,9 @@ class SettingsFragment : PreferenceFragmentCompat(), Preference.OnPreferenceChan
                 if (newValue!! == true) {
                     //TODO Actually check if watch has correct permissions
                     AlertDialog.Builder(context)
-                            .setTitle("Additional setup required")
-                            .setMessage("You need to connect your watch to your PC and execute the following command via ADB: ${context!!.getString(R.string.dnd_sync_adb_command)}")
-                            .setPositiveButton("Done") { _, _ ->
+                            .setTitle(R.string.dnd_sync_adb_dialog_title)
+                            .setMessage(String.format(getString(R.string.dnd_sync_adb_dialog_message), getString(R.string.dnd_sync_adb_command)))
+                            .setPositiveButton(R.string.dialog_button_done) { _, _ ->
                                 preference.sharedPreferences.edit().putBoolean(PreferenceKey.DND_SYNC_ENABLED_KEY, true)
                                 (preference as SwitchPreference).isChecked = true
                                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -123,18 +123,18 @@ class SettingsFragment : PreferenceFragmentCompat(), Preference.OnPreferenceChan
                                 }
                                 Utils.updateWatchPrefs(context!!)
                             }
-                            .setNegativeButton("Cancel") { _, _ ->
+                            .setNegativeButton(R.string.dialog_button_cancel) { _, _ ->
                                 preference.sharedPreferences.edit().putBoolean(PreferenceKey.DND_SYNC_ENABLED_KEY, false)
                                 (preference as SwitchPreference).isChecked = false
                                 Utils.updateWatchPrefs(context!!)
                             }
-                            .setNeutralButton("Copy to Clipboard") { _, _ ->
+                            .setNeutralButton(R.string.dialog_button_copy) { _, _ ->
                                 preference.sharedPreferences.edit().putBoolean(PreferenceKey.DND_SYNC_ENABLED_KEY, false)
                                 (preference as SwitchPreference).isChecked = false
                                 val clipboardManager = context!!.getSystemService(ClipboardManager::class.java) as ClipboardManager
                                 val clip = ClipData.newPlainText("DnD sync ADB command", context!!.getString(R.string.dnd_sync_adb_command))
                                 clipboardManager.primaryClip = clip
-                                Toast.makeText(context, "Copied to clipboard", Toast.LENGTH_SHORT).show()
+                                Toast.makeText(context, getString(R.string.copied_to_clipboard), Toast.LENGTH_SHORT).show()
                                 Utils.updateWatchPrefs(context!!)
                             }
                             .show()
@@ -149,7 +149,6 @@ class SettingsFragment : PreferenceFragmentCompat(), Preference.OnPreferenceChan
                 val value = newValue == true
                 preference.sharedPreferences.edit().putBoolean(preference.key, value).apply()
                 dndSyncPhoneToWatchPref.isChecked = value
-                updateDndPhoneToWatchSyncSummary()
                 Utils.updateWatchPrefs(context!!)
                 false
             }
@@ -158,10 +157,9 @@ class SettingsFragment : PreferenceFragmentCompat(), Preference.OnPreferenceChan
                 preference.sharedPreferences.edit().putBoolean(preference.key, value).apply()
                 dndSyncWatchToPhonePref.isChecked = value
                 if (notificationManager.isNotificationPolicyAccessGranted) {
-                    updateDndWatchToPhoneSyncSummary()
                     Utils.updateWatchPrefs(context!!)
                 } else {
-                    Toast.makeText(context, "Please grant Wearable Extensions permission to change Do Not Disturb state", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, getString(R.string.request_noti_policy_access_message), Toast.LENGTH_SHORT).show()
                     startActivityForResult(Intent(Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS), 12345)
                 }
                 false
@@ -188,7 +186,7 @@ class SettingsFragment : PreferenceFragmentCompat(), Preference.OnPreferenceChan
 
     private fun setupGeneralPrefs() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            findPreference("notification_settings").onPreferenceClickListener = this
+            findPreference(PreferenceKey.NOTIFICATION_SETTINGS_KEY).onPreferenceClickListener = this
         }
 
         val hideAppIconPref = findPreference(PreferenceKey.HIDE_APP_ICON_KEY)
@@ -219,36 +217,15 @@ class SettingsFragment : PreferenceFragmentCompat(), Preference.OnPreferenceChan
 
         dndSyncPhoneToWatchPref = findPreference(PreferenceKey.DND_SYNC_SEND_KEY) as CheckBoxPreference
         dndSyncPhoneToWatchPref.onPreferenceChangeListener = this
-        updateDndPhoneToWatchSyncSummary()
 
         dndSyncWatchToPhonePref = findPreference(PreferenceKey.DND_SYNC_RECEIVE_KEY) as CheckBoxPreference
         dndSyncWatchToPhonePref.onPreferenceChangeListener = this
-        updateDndWatchToPhoneSyncSummary()
-    }
-
-    private fun updateDndPhoneToWatchSyncSummary() {
-        val syncPhoneToWatch = sharedPrefs.getBoolean(PreferenceKey.DND_SYNC_SEND_KEY, true)
-        if (syncPhoneToWatch) {
-            dndSyncPhoneToWatchPref.summary = "Syncing DnD state from your phone to your watch"
-        } else {
-            dndSyncPhoneToWatchPref.summary = "Not syncing DnD state from your phone to your watch"
-        }
-    }
-
-    private fun updateDndWatchToPhoneSyncSummary() {
-        val syncWatchToPhone = sharedPrefs.getBoolean(PreferenceKey.DND_SYNC_RECEIVE_KEY, false)
-        if (syncWatchToPhone) {
-            dndSyncWatchToPhonePref.summary = "Syncing DnD state from your watch to your phone"
-        } else {
-            dndSyncWatchToPhonePref.summary = "Not syncing DnD state from your watch to your phone"
-        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == 12345) {
             if (notificationManager.isNotificationPolicyAccessGranted) {
-                updateDndWatchToPhoneSyncSummary()
                 Utils.updateWatchPrefs(context!!)
             } else {
                 sharedPrefs.edit().putBoolean(PreferenceKey.DND_SYNC_RECEIVE_KEY, false).apply()

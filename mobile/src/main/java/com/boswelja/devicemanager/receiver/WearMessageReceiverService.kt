@@ -21,12 +21,12 @@ class WearMessageReceiverService : WearableListenerService() {
         val devicePolicyManager: DevicePolicyManager = getSystemService(Context.DEVICE_POLICY_SERVICE) as DevicePolicyManager
         val messagePath = messageEvent?.path
         when (messagePath) {
-            References.LOCK_PHONE_PATH -> {
+            References.LOCK_PHONE_KEY -> {
                 if (devicePolicyManager.isAdminActive(DeviceAdminReceiver().getWho(this))) {
                     devicePolicyManager.lockNow()
                 }
             }
-            References.REQUEST_BATTERY_UPDATE_PATH -> {
+            References.REQUEST_BATTERY_UPDATE_KEY -> {
                 Utils.updateBatteryStats(this)
             }
         }

@@ -16,6 +16,7 @@ import android.preference.PreferenceManager
 import android.support.wearable.activity.ConfirmationActivity
 import android.util.Log
 import androidx.core.app.NotificationCompat
+import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.Utils
 import com.boswelja.devicemanager.common.PreferenceKey
 import com.boswelja.devicemanager.common.References
@@ -23,6 +24,8 @@ import com.google.android.gms.wearable.Node
 import com.google.android.gms.wearable.Wearable
 
 class ActionService : Service() {
+
+    private val tag = "ActionService"
 
     override fun onBind(intent: Intent?): IBinder? {
         return null
@@ -38,7 +41,7 @@ class ActionService : Service() {
             "default"
         }
         val notification: NotificationCompat.Builder = NotificationCompat.Builder(this, channelId)
-        notification.setContentTitle("Communicating with your phone")
+        notification.setContentTitle(getString(R.string.communicating_noti_title))
         startForeground(312, notification.build())
     }
 
@@ -47,22 +50,22 @@ class ActionService : Service() {
         val capabilityCallback = object : Utils.CapabilityCallbacks {
             override fun noCapableDevices() {
                 when (action) {
-                    References.LOCK_PHONE_PATH -> onFailed("Failed to lock your phone")
-                    References.REQUEST_BATTERY_UPDATE_PATH -> onFailed("Failed to update phone battery stats")
+                    References.LOCK_PHONE_KEY -> onFailed(getString(R.string.phone_lock_failed_message))
+                    References.REQUEST_BATTERY_UPDATE_KEY -> onFailed(getString(R.string.phone_battery_update_failed))
                 }
             }
 
             override fun capableDeviceFound(node: Node?) {
                 val prefs = PreferenceManager.getDefaultSharedPreferences(this@ActionService)
                 when (action) {
-                    References.LOCK_PHONE_PATH -> {
+                    References.LOCK_PHONE_KEY -> {
                         if (prefs.getBoolean(PreferenceKey.LOCK_PHONE_ENABLED, false)) {
                             sendMessage(node)
                         } else {
-                            onFailed("Phone locking has been disabled")
+                            onFailed(getString(R.string.phone_lock_disabled_message))
                         }
                     }
-                    References.REQUEST_BATTERY_UPDATE_PATH -> {
+                    References.REQUEST_BATTERY_UPDATE_KEY -> {
                         sendMessage(node)
                     }
                 }
@@ -73,7 +76,7 @@ class ActionService : Service() {
     }
 
     private fun onFailed(message: String) {
-        Log.d("ActionService", message)
+        Log.d(tag, message)
         val intent = Intent(this, ConfirmationActivity::class.java)
         intent.putExtra(ConfirmationActivity.EXTRA_ANIMATION_TYPE, ConfirmationActivity.FAILURE_ANIMATION)
         intent.putExtra(ConfirmationActivity.EXTRA_MESSAGE, message)
@@ -83,7 +86,7 @@ class ActionService : Service() {
     }
 
     private fun onSuccess(message: String) {
-        Log.d("ActionService", message)
+        Log.d(tag, message)
         val intent = Intent(this, ConfirmationActivity::class.java)
         intent.putExtra(ConfirmationActivity.EXTRA_ANIMATION_TYPE, ConfirmationActivity.SUCCESS_ANIMATION)
         intent.putExtra(ConfirmationActivity.EXTRA_MESSAGE, message)
@@ -100,10 +103,10 @@ class ActionService : Service() {
                     null
                 )
                 .addOnSuccessListener {
-                    onSuccess("Request succeeded")
+                    onSuccess(getString(R.string.request_success_message))
                 }
                 .addOnFailureListener {
-                    onFailed("Request failed")
+                    onFailed(getString(R.string.request_failed_message))
                 }
     }
 }

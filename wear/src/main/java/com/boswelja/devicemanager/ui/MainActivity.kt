@@ -77,14 +77,15 @@ class MainActivity : AppCompatActivity() {
                         ConfirmationActivity.OPEN_ON_PHONE_ANIMATION)
                 val capabilityCallback = object : Utils.CapabilityCallbacks {
                     override fun noCapableDevices() {
-                        Toast.makeText(this@MainActivity, "No device paired", Toast.LENGTH_LONG).show()
+                        Toast.makeText(this@MainActivity, getString(R.string.no_device_paired), Toast.LENGTH_LONG).show()
+                        this@MainActivity.finish()
                     }
                     override fun capableDeviceFound(node: Node?) {
                         val playStoreIntent = Intent(Intent.ACTION_VIEW)
                         if (PlayStoreAvailability.getPlayStoreAvailabilityOnPhone(this@MainActivity) == PlayStoreAvailability.PLAY_STORE_ON_PHONE_AVAILABLE) {
-                            playStoreIntent.data = Uri.parse("market://details?id=" + BuildConfig.APPLICATION_ID)
+                            playStoreIntent.data = Uri.parse(String.format(getString(R.string.play_store_app_link), BuildConfig.APPLICATION_ID))
                         } else {
-                            playStoreIntent.data = Uri.parse("https://play.google.com/store/apps/details?id=" + BuildConfig.APPLICATION_ID)
+                            playStoreIntent.data = Uri.parse(String.format(getString(R.string.play_store_web_link), BuildConfig.APPLICATION_ID))
                         }
                         playStoreIntent.addCategory(Intent.CATEGORY_BROWSABLE)
                         RemoteIntent.startRemoteActivity(this@MainActivity,

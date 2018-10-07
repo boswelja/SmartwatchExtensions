@@ -37,7 +37,7 @@ class LockPhoneComplicationProvider : ComplicationProviderService() {
         }
 
         val intent = Intent(this, ActionService::class.java)
-        intent.putExtra(References.INTENT_ACTION_EXTRA, References.LOCK_PHONE_PATH)
+        intent.putExtra(References.INTENT_ACTION_EXTRA, References.LOCK_PHONE_KEY)
         val pendingIntent: PendingIntent
         pendingIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             PendingIntent.getForegroundService(this, 101, intent, PendingIntent.FLAG_CANCEL_CURRENT)

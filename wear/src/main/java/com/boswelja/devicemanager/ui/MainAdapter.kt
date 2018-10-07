@@ -35,14 +35,14 @@ class MainAdapter(private val options: ArrayList<MainOption>) : RecyclerView.Ada
                 holder.icon.setImageResource(option.iconRes)
                 holder.itemView.setOnClickListener {
                     val intent = Intent(holder.itemView.context, ActionService::class.java)
-                    intent.putExtra(References.INTENT_ACTION_EXTRA, References.LOCK_PHONE_PATH)
+                    intent.putExtra(References.INTENT_ACTION_EXTRA, References.LOCK_PHONE_KEY)
                     holder.itemView.context.startService(intent)
                 }
             }
             References.TYPE_PHONE_BATTERY -> {
                 holder.itemView.setOnClickListener {
                     val intent = Intent(holder.itemView.context, ActionService::class.java)
-                    intent.putExtra(References.INTENT_ACTION_EXTRA, References.REQUEST_BATTERY_UPDATE_PATH)
+                    intent.putExtra(References.INTENT_ACTION_EXTRA, References.REQUEST_BATTERY_UPDATE_KEY)
                     holder.itemView.context.startService(intent)
                 }
                 val sharedPrefs = PreferenceManager.getDefaultSharedPreferences(holder.itemView.context)
@@ -60,9 +60,9 @@ class MainAdapter(private val options: ArrayList<MainOption>) : RecyclerView.Ada
     private fun updateBatteryPercent(holder: ViewHolder, sharedPrefs: SharedPreferences) {
         val phoneBattery = sharedPrefs.getInt(References.BATTERY_PERCENT_KEY, -1)
         if (phoneBattery > -1) {
-            holder.label.text = "Phone at $phoneBattery%"
+            holder.label.text = String.format(holder.itemView.context.getString(R.string.phone_battery_desc), phoneBattery)
         } else {
-            holder.label.text = "Phone battery info not available"
+            holder.label.text = holder.itemView.context.getString(R.string.phone_battery_unknown_long)
         }
         when (phoneBattery) {
             -1 -> holder.icon.setImageResource(R.drawable.ic_battery_unknown)

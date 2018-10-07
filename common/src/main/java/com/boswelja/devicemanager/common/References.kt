@@ -10,15 +10,21 @@ package com.boswelja.devicemanager.common
 object References {
 
     const val DND_SYNC_NOTIFICATION_CHANNEL_ID = "dnd_sync"
+
+    const val BATTERY_PERCENT_KEY = "/batteryPercent"
+    const val DND_STATUS_KEY = "/dndStatus"
+    // Shared Preferences paths
     const val NEW_DND_STATE_PATH = "com.boswelja.devicemanager.dndenabled"
     const val NEW_DND_STATE_CHANGED_BY_PATH = "com.boswelja.devicemanager.dndchangedby"
     const val DND_SYNC_ENABLED_PATH = "com.boswelja.devicemanager.dndsyncenabled"
     const val DND_SYNC_SEND_PATH = "com.boswelja.devicemanager.dndsyncsend"
     const val DND_SYNC_RECEIVE_PATH = "com.boswelja.devicemanager.dndsyncreceive"
     const val LOCK_PHONE_ENABLED_PATH = "com.boswelja.devicemanager.lockphoneenabled"
+    const val BATTERY_PERCENT_PATH = "com.boswelja.devicemanager.batterypercent"
 
-    const val LOCK_PHONE_PATH = "/lock_phone"
-    const val REQUEST_BATTERY_UPDATE_PATH = "/request_battery_update"
+    // Message keys
+    const val LOCK_PHONE_KEY = "/lock_phone"
+    const val REQUEST_BATTERY_UPDATE_KEY = "/request_battery_update"
 
     const val BATTERY_PERCENT_JOB_ID = 5656299
 
@@ -26,8 +32,6 @@ object References {
 
     const val TYPE_LOCK_PHONE: Int = 1
     const val TYPE_PHONE_BATTERY: Int = 2
-
-    const val BATTERY_PERCENT_KEY = "/batteryPercent"
 
     const val CAPABILITY_PHONE_APP = "extensions_mobile_app"
 

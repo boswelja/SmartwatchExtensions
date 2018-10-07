@@ -4,14 +4,11 @@ apply plugin: 'kotlin-android-extensions'
 apply from: '../constants.gradle'
 
 android {
-	//noinspection GroovyAssignabilityCheck
 	compileSdkVersion versions.compileSdk
-	//noinspection GroovyAssignabilityCheck
 	buildToolsVersion versions.buildTools
 	defaultConfig {
 		applicationId versions.packageName
 		minSdkVersion 24
-		//noinspection GroovyAssignabilityCheck
 		targetSdkVersion versions.compileSdk
 		versionCode versions.versionCode + 10000
 		versionName versions.versionName

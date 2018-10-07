@@ -4,17 +4,21 @@
     <string name="device_admin_desc">Allows locking your mobile device from your wearable device</string>
 
     <string name="pref_category_general">General</string>
-    <string name="pref_category_permissions">Permissions</string>
     <string name="pref_hide_app_icon_title">Hide app icon</string>
     <string name="pref_hide_app_icon_summary">Hide the app icon from your launcher</string>
-    <string name="pref_admin_perms_title">Device administrator permissions</string>
-    <string name="pref_admin_perms_summary_missing">Tap to grant permission</string>
-    <string name="pref_admin_perms_summary_granted">Permissions granted!</string>
+
+    <string name="pref_notification_settings_title">Notification Settings</string>
+
+    <string name="pref_category_lock_phone">Phone Locking</string>
+    <string name="pref_lock_phone_enabled_title">Remote phone locking</string>
+    <string name="pref_lock_phone_enabled_desc">Allow locking your phone from your wearable</string>
+
     <string name="pref_category_battery_sync">Battery Sync</string>
     <string name="pref_battery_sync_enabled_title">Battery Sync</string>
     <string name="pref_battery_sync_enabled_summary">Sync your phone battery percent to your watch. This enabled the use of the battery percent complication.</string>
     <string name="pref_battery_sync_interval_title">Sync Interval</string>
     <string name="pref_battery_sync_resync_title">Re-Sync Battery Percent to Watch</string>
+    <string name="pref_battery_sync_resync_complete">Re-synced battery info to watch</string>
     <string-array name="battery_refresh_interval">
         <item>15 minutes</item>
         <item>20 minutes</item>
@@ -28,5 +32,29 @@
         <item>3600000</item>
     </string-array>
 
+    <string name="dnd_sync_adb_dialog_title">Additional setup required</string>
+    <string name="dnd_sync_adb_dialog_message">You need to connect your watch to your PC and execute the following command via ADB: %s</string>
     <string name="dnd_sync_adb_command">adb shell settings put secure enabled_notification_listeners com.google.android.wearable.app/com.google.android.clockwork.stream.NotificationCollectorService:com.boswelja.devicemanager/com.boswelja.devicemanager.common.DnDSyncListener</string>
+
+    <string name="request_noti_policy_access_message">Please grant Wearable Extensions permission to change Do Not Disturb state</string>
+
+    <string name="pref_category_dnd_sync">Do Not Disturb Sync</string>
+    <string name="pref_dnd_sync_enabled_title">DnD Sync Enabled</string>
+    <string name="pref_dnd_sync_enabled_desc">Sync Do Not Disturb status between your phone and watch</string>
+    <string name="pref_dnd_sync_phone_to_watch_title">Phone to Watch Sync</string>
+    <string name="pref_dnd_sync_phone_to_watch_summary_on">Syncing DnD state from your phone to your watch</string>
+    <string name="pref_dnd_sync_phone_to_watch_summary_off">Not syncing DnD state from your phone to your watch</string>
+    <string name="pref_dnd_sync_watch_to_phone_title">Watch to Phone Sync</string>
+    <string name="pref_dnd_sync_watch_to_phone_summary_on">Syncing DnD state from your watch to your phone</string>
+    <string name="pref_dnd_sync_watch_to_phone_summary_off">Not syncing DnD state from your watch to your phone</string>
+
+    <string name="grant_device_admin_perm_dialog_title">Missing Permission</string>
+    <string name="grant_device_admin_perm_dialog_message">This app requires device administrator permissions to be able to lock your phone.</string>
+
+    <string name="dialog_button_grant">Grant</string>
+    <string name="dialog_button_cancel">Cancel</string>
+    <string name="dialog_button_done">Done</string>
+    <string name="dialog_button_copy">Copy to Clipboard</string>
+
+    <string name="copied_to_clipboard">Copied to clipboard</string>
 </resources>

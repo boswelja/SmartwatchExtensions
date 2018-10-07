@@ -37,7 +37,7 @@ class PhoneBatteryComplicationProvider : ComplicationProviderService() {
 
     private fun createComplication(type: Int): ComplicationData {
         val intent = Intent(this, ActionService::class.java)
-        intent.putExtra(References.INTENT_ACTION_EXTRA, References.REQUEST_BATTERY_UPDATE_PATH)
+        intent.putExtra(References.INTENT_ACTION_EXTRA, References.REQUEST_BATTERY_UPDATE_KEY)
         val pendingIntent: PendingIntent
         pendingIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             PendingIntent.getForegroundService(this, 101, intent, PendingIntent.FLAG_CANCEL_CURRENT)
@@ -47,7 +47,7 @@ class PhoneBatteryComplicationProvider : ComplicationProviderService() {
 
         val prefs = PreferenceManager.getDefaultSharedPreferences(this)
         val percent = prefs.getInt(References.BATTERY_PERCENT_KEY, 0)
-        val text = if (percent > -1) percent.toString() + "%" else "N/A"
+        val text = if (percent > -1) String.format(getString(R.string.phone_battery_percent), percent) else getString(R.string.phone_battery_unknown_short)
         val data = ComplicationData.Builder(type)
                 .setShortText(ComplicationText.plainText(text))
                 .setIcon(Icon.createWithResource(this, R.drawable.ic_smartphone_battery))

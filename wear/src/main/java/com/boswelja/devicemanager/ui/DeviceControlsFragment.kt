@@ -34,7 +34,7 @@ class DeviceControlsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         val optionsList = ArrayList<MainOption>()
         optionsList.add(MainOption(R.drawable.ic_phonelink_lock, getString(R.string.lock_phone_label), References.TYPE_LOCK_PHONE))
-        optionsList.add(MainOption(R.drawable.ic_battery_unknown, "Phone charge unknown", References.TYPE_PHONE_BATTERY))
+        optionsList.add(MainOption(R.drawable.ic_battery_unknown, getString(R.string.phone_battery_unknown_long), References.TYPE_PHONE_BATTERY))
         recyclerView?.adapter = MainAdapter(optionsList)
     }
 

@@ -12,7 +12,7 @@
 
         <Preference
             android:key="notification_settings"
-            android:title="Notification Settings" />
+            android:title="@string/pref_notification_settings_title" />
 
     </PreferenceCategory>
 

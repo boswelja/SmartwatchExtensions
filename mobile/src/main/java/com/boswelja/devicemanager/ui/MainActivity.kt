@@ -31,6 +31,8 @@ import com.google.android.gms.wearable.Wearable
 
 class MainActivity : AppCompatActivity() {
 
+    private val tag = "MainActivity"
+
     private lateinit var devicePolicyManager: DevicePolicyManager
     private lateinit var deviceAdminReceiver: ComponentName
     private lateinit var settingsFragment: SettingsFragment
@@ -71,14 +73,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        when (requestCode) {
-            References.DEVICE_ADMIN_REQUEST_CODE -> {
-                //settingsFragment.updateAdminSummary()
-            }
-        }
-    }
-
     fun isDeviceAdmin(): Boolean {
         return devicePolicyManager.isAdminActive(deviceAdminReceiver)
     }
@@ -97,17 +91,17 @@ class MainActivity : AppCompatActivity() {
         jobInfo.setPeriodic(intervalMs)
         jobInfo.setPersisted(true)
         jobScheduler.schedule(jobInfo.build())
-        Log.d("MainActivity", "Started battery sync with " + intervalMs + "ms interval")
+        Log.d(tag, "Started battery sync with " + intervalMs + "ms interval")
     }
 
     fun stopBatterySyncJob() {
         if (jobScheduler.getPendingJob(References.BATTERY_PERCENT_JOB_ID) != null) {
             jobScheduler.cancel(References.BATTERY_PERCENT_JOB_ID)
-            Log.d("MainActivity", "Cancelled battery sync")
+            Log.d(tag, "Cancelled battery sync")
         }
         val dataClient = Wearable.getDataClient(this)
-        val putDataMapReq = PutDataMapRequest.create("/batteryPercent")
-        putDataMapReq.dataMap.remove("com.boswelja.devicemanager.batterypercent")
+        val putDataMapReq = PutDataMapRequest.create(References.BATTERY_PERCENT_KEY)
+        putDataMapReq.dataMap.remove(References.BATTERY_PERCENT_PATH)
         val putDataReq = putDataMapReq.asPutDataRequest()
         dataClient.putDataItem(putDataReq)
     }

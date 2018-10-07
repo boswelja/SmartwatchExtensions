@@ -25,7 +25,7 @@ class BatteryUpdateListener : WearableListenerService() {
             when (event.type) {
                 DataEvent.TYPE_CHANGED -> {
                     val dataMap = DataMapItem.fromDataItem(event.dataItem).dataMap
-                    val percent = dataMap.getInt("com.boswelja.devicemanager.batterypercent")
+                    val percent = dataMap.getInt(References.BATTERY_PERCENT_PATH)
                     preferenceManager.edit().putInt(References.BATTERY_PERCENT_KEY, percent).apply()
                 }
                 DataEvent.TYPE_DELETED -> {

@@ -13,9 +13,11 @@ import com.google.android.gms.wearable.WearableListenerService
 
 class PreferenceChangeListener : WearableListenerService() {
 
+    private val tag = "PreferenceChangeListener"
+
     override fun onDataChanged(dataEvents: DataEventBuffer?) {
         super.onDataChanged(dataEvents)
-        Log.d("PreferenceChangeListener", "Received change")
+        Log.d(tag, "Received change")
         dataEvents?.forEach { event ->
             val dataMap = DataMapItem.fromDataItem(event.dataItem).dataMap
 
@@ -24,7 +26,7 @@ class PreferenceChangeListener : WearableListenerService() {
             val dndReceiving = dataMap.getBoolean(References.DND_SYNC_SEND_PATH)
             val dndSending = dataMap.getBoolean(References.DND_SYNC_RECEIVE_PATH)
 
-            val lockPhoneEnabled = dataMap.getBoolean(References.LOCK_PHONE_PATH)
+            val lockPhoneEnabled = dataMap.getBoolean(References.LOCK_PHONE_ENABLED_PATH)
 
             val prefs = PreferenceManager.getDefaultSharedPreferences(this)
             prefs.edit()
@@ -35,7 +37,7 @@ class PreferenceChangeListener : WearableListenerService() {
                     .apply()
 
             if (dndSyncEnabled && dndSending) {
-                Log.d("PreferenceChangeListener", "Starting service")
+                Log.d(tag, "Starting service")
                 val intent = Intent(applicationContext, DnDHandler::class.java)
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                     startForegroundService(intent)
@@ -43,7 +45,7 @@ class PreferenceChangeListener : WearableListenerService() {
                     startService(intent)
                 }
             }
-            Log.d("PreferenceChangeListener", "Prefs updated")
+            Log.d(tag, "Prefs updated")
         }
     }
 }

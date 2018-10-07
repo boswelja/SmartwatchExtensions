@@ -51,7 +51,7 @@ object Utils {
         putDataMapReq.dataMap.putBoolean(References.DND_SYNC_ENABLED_PATH, dndSyncEnabled)
         putDataMapReq.dataMap.putBoolean(References.DND_SYNC_SEND_PATH, dndSyncSend)
         putDataMapReq.dataMap.putBoolean(References.DND_SYNC_RECEIVE_PATH, dndSyncReceive)
-        putDataMapReq.dataMap.putBoolean(References.LOCK_PHONE_PATH, lockPhoneEnabled)
+        putDataMapReq.dataMap.putBoolean(References.LOCK_PHONE_ENABLED_PATH, lockPhoneEnabled)
         putDataMapReq.setUrgent()
         dataClient.putDataItem(putDataMapReq.asPutDataRequest())
     }
