@@ -10,14 +10,14 @@ android {
 		applicationId versions.packageName
 		minSdkVersion 24
 		targetSdkVersion versions.compileSdk
-		versionCode versions.versionCode + 10000
+		versionCode versions.versionCode + 100000000
 		versionName versions.versionName
 	}
 	buildTypes {
 		//noinspection GroovyMissingReturnStatement
 		release {
 			postprocessing {
-				removeUnusedCode true
+				removeUnusedCode false
 				removeUnusedResources true
 				obfuscate true
 				optimizeCode true
