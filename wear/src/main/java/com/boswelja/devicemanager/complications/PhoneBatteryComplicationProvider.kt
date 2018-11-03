@@ -40,9 +40,9 @@ class PhoneBatteryComplicationProvider : ComplicationProviderService() {
         intent.putExtra(References.INTENT_ACTION_EXTRA, References.REQUEST_BATTERY_UPDATE_KEY)
         val pendingIntent: PendingIntent
         pendingIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            PendingIntent.getForegroundService(this, 101, intent, PendingIntent.FLAG_CANCEL_CURRENT)
+            PendingIntent.getForegroundService(this, 101, intent, PendingIntent.FLAG_UPDATE_CURRENT)
         } else {
-            PendingIntent.getService(this, 101, intent, PendingIntent.FLAG_CANCEL_CURRENT)
+            PendingIntent.getService(this, 101, intent, PendingIntent.FLAG_UPDATE_CURRENT)
         }
 
         val prefs = PreferenceManager.getDefaultSharedPreferences(this)

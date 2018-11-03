@@ -9,17 +9,20 @@ package com.boswelja.devicemanager.service
 
 import android.app.NotificationChannel
 import android.app.Service
+import android.content.ComponentName
 import android.content.Intent
 import android.os.Build
 import android.os.IBinder
 import android.preference.PreferenceManager
 import android.support.wearable.activity.ConfirmationActivity
+import android.support.wearable.complications.ProviderUpdateRequester
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.Utils
 import com.boswelja.devicemanager.common.PreferenceKey
 import com.boswelja.devicemanager.common.References
+import com.boswelja.devicemanager.complications.PhoneBatteryComplicationProvider
 import com.google.android.gms.wearable.Node
 import com.google.android.gms.wearable.Wearable
 
@@ -64,6 +67,8 @@ class ActionService : Service() {
                         } else {
                             onFailed(getString(R.string.phone_lock_disabled_message))
                         }
+                        val providerUpdateRequester = ProviderUpdateRequester(this@ActionService, ComponentName(packageName, PhoneBatteryComplicationProvider::class.java.name))
+                        providerUpdateRequester.requestUpdateAll()
                     }
                     References.REQUEST_BATTERY_UPDATE_KEY -> {
                         sendMessage(node)

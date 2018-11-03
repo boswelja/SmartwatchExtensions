@@ -40,9 +40,9 @@ class LockPhoneComplicationProvider : ComplicationProviderService() {
         intent.putExtra(References.INTENT_ACTION_EXTRA, References.LOCK_PHONE_KEY)
         val pendingIntent: PendingIntent
         pendingIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            PendingIntent.getForegroundService(this, 101, intent, PendingIntent.FLAG_CANCEL_CURRENT)
+            PendingIntent.getForegroundService(this, 101, intent, PendingIntent.FLAG_UPDATE_CURRENT)
         } else {
-            PendingIntent.getService(this, 101, intent, PendingIntent.FLAG_CANCEL_CURRENT)
+            PendingIntent.getService(this, 101, intent, PendingIntent.FLAG_UPDATE_CURRENT)
         }
         val complicationData = ComplicationData.Builder(type)
                 .setIcon(Icon.createWithResource(this, R.drawable.ic_phonelink_lock))
