@@ -24,6 +24,12 @@ android {
 				proguardFile 'proguard-rules.pro'
 			}
 		}
+		debug {
+			defaultConfig {
+				versionCode versions.versionCodeDebug + 100000000
+				versionName versions.versionName + "-DEBUG"
+			}
+		}
 	}
 }
 
