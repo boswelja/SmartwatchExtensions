@@ -7,6 +7,7 @@
  */
 package com.boswelja.devicemanager.ui
 
+import android.annotation.SuppressLint
 import android.app.admin.DeviceAdminReceiver
 import android.app.admin.DevicePolicyManager
 import android.app.job.JobInfo
@@ -15,11 +16,15 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.PowerManager
 import android.preference.PreferenceManager
+import android.provider.Settings
 import android.util.Log
 import android.widget.FrameLayout
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.DnDHandler
@@ -38,6 +43,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var settingsFragment: SettingsFragment
     private lateinit var jobScheduler: JobScheduler
 
+    @SuppressLint("BatteryLife")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val contentView = FrameLayout(this)
@@ -69,6 +75,25 @@ class MainActivity : AppCompatActivity() {
                 startForegroundService(intent)
             } else {
                 startService(intent)
+            }
+        }
+        if (prefs.getBoolean(PreferenceKey.CHECK_BATTERY_OPTIMISATION, true)) {
+            val pwm = getSystemService(PowerManager::class.java)
+            val isOptimisingBattery = !pwm.isIgnoringBatteryOptimizations(packageName)
+            if (isOptimisingBattery) {
+                AlertDialog.Builder(this)
+                        .setTitle("Battery Optimisation")
+                        .setMessage("Android is optimising this app's battery use. This can cause issues with certain functions. Would you like to disable it?")
+                        .setPositiveButton("Yes") { _, _ ->
+                            run {
+                                val intent = Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS)
+                                intent.data = Uri.parse("package:$packageName")
+                                startActivity(intent)
+                            }
+                        }
+                        .setNeutralButton("Don't ask again") { _, _ -> prefs.edit().putBoolean(PreferenceKey.CHECK_BATTERY_OPTIMISATION, false).apply() }
+                        .setNegativeButton("No") { dialog, _ -> dialog.dismiss() }
+                        .show()
             }
         }
     }
