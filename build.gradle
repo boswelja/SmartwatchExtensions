@@ -41,6 +41,5 @@ spotless {
 		target '*.gradle.kts', 'additionalScripts/*.gradle.kts'
 
 		ktlint()
-
 	}
 }

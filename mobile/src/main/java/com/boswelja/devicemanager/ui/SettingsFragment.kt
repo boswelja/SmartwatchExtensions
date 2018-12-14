@@ -9,10 +9,7 @@ package com.boswelja.devicemanager.ui
 
 import android.app.AlertDialog
 import android.app.NotificationManager
-import android.content.ClipData
-import android.content.ClipboardManager
-import android.content.Intent
-import android.content.SharedPreferences
+import android.content.*
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
@@ -135,7 +132,7 @@ class SettingsFragment : PreferenceFragmentCompat(), Preference.OnPreferenceChan
                             .setNeutralButton(R.string.dialog_button_copy) { _, _ ->
                                 preference.sharedPreferences.edit().putBoolean(PreferenceKey.DND_SYNC_ENABLED_KEY, false)
                                 (preference as SwitchPreference).isChecked = false
-                                val clipboardManager = context!!.getSystemService(ClipboardManager::class.java) as ClipboardManager
+                                val clipboardManager = context!!.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
                                 val clip = ClipData.newPlainText("DnD sync ADB command", context!!.getString(R.string.dnd_sync_adb_command))
                                 clipboardManager.primaryClip = clip
                                 Toast.makeText(context, getString(R.string.copied_to_clipboard), Toast.LENGTH_SHORT).show()
@@ -160,7 +157,7 @@ class SettingsFragment : PreferenceFragmentCompat(), Preference.OnPreferenceChan
                 val value = newValue == true
                 preference.sharedPreferences.edit().putBoolean(preference.key, value).apply()
                 dndSyncWatchToPhonePref.isChecked = value
-                if (notificationManager.isNotificationPolicyAccessGranted) {
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M || notificationManager.isNotificationPolicyAccessGranted) {
                     Utils.updateWatchPrefs(context!!)
                 } else {
                     Toast.makeText(context, getString(R.string.request_noti_policy_access_message), Toast.LENGTH_SHORT).show()
@@ -173,19 +170,23 @@ class SettingsFragment : PreferenceFragmentCompat(), Preference.OnPreferenceChan
     }
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
-        notificationManager = context?.getSystemService(NotificationManager::class.java)!!
+        notificationManager = context?.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         sharedPrefs = PreferenceManager.getDefaultSharedPreferences(context)
         mainActivity = activity as MainActivity
 
         addPreferencesFromResource(R.xml.prefs)
-        addPreferencesFromResource(R.xml.prefs_lock_phone)
-        addPreferencesFromResource(R.xml.prefs_battery_sync)
-        addPreferencesFromResource(R.xml.prefs_dnd_sync)
-
         setupGeneralPrefs()
+
+        addPreferencesFromResource(R.xml.prefs_lock_phone)
         setupPhoneLockPrefs()
+
+        addPreferencesFromResource(R.xml.prefs_battery_sync)
         setupBatterySyncPrefs()
-        setupDnDPrefs()
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            addPreferencesFromResource(R.xml.prefs_dnd_sync)
+            setupDnDPrefs()
+        }
     }
 
     private fun setupGeneralPrefs() {
@@ -229,7 +230,7 @@ class SettingsFragment : PreferenceFragmentCompat(), Preference.OnPreferenceChan
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == 12345) {
-            if (notificationManager.isNotificationPolicyAccessGranted) {
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M || notificationManager.isNotificationPolicyAccessGranted) {
                 Utils.updateWatchPrefs(context!!)
             } else {
                 sharedPrefs.edit().putBoolean(PreferenceKey.DND_SYNC_RECEIVE_KEY, false).apply()

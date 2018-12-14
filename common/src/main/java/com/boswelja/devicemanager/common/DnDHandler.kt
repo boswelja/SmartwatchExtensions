@@ -12,10 +12,12 @@ import android.os.Build
 import android.os.IBinder
 import android.preference.PreferenceManager
 import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import com.google.android.gms.wearable.PutDataMapRequest
 import com.google.android.gms.wearable.Wearable
 
+@RequiresApi(Build.VERSION_CODES.M)
 class DnDHandler : Service() {
 
     private val tag = "DnDHandler"

@@ -14,6 +14,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.os.BatteryManager
 import android.preference.PreferenceManager
+import android.util.Log
 import com.boswelja.devicemanager.common.PreferenceKey
 import com.boswelja.devicemanager.common.References
 import com.google.android.gms.wearable.PutDataMapRequest
@@ -37,6 +38,7 @@ object Utils {
         val putDataMapReq = PutDataMapRequest.create("/batteryStatus")
         putDataMapReq.dataMap.putInt(References.BATTERY_PERCENT_PATH, batteryPct)
         putDataMapReq.dataMap.putBoolean(References.BATTERY_CHARGING, charging)
+        Log.d("updateBatteryStats", charging.toString() + " " + batteryPct.toString())
         val putDataReq = putDataMapReq.asPutDataRequest()
         dataClient.putDataItem(putDataReq)
     }

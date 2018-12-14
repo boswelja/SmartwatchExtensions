@@ -26,6 +26,7 @@ import android.util.Log
 import android.widget.FrameLayout
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import com.boswelja.devicemanager.Compat
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.DnDHandler
 import com.boswelja.devicemanager.common.PreferenceKey
@@ -61,7 +62,7 @@ class MainActivity : AppCompatActivity() {
         val prefs = PreferenceManager.getDefaultSharedPreferences(this)
         val battSyncEnabled = prefs.getBoolean(PreferenceKey.BATTERY_SYNC_ENABLED_KEY, false)
         if (battSyncEnabled) {
-            if (jobScheduler.getPendingJob(References.BATTERY_PERCENT_JOB_ID) == null) {
+            if (Compat.getPendingJob(jobScheduler, References.BATTERY_PERCENT_JOB_ID) == null) {
                 createBatterySyncJob(prefs.getString(PreferenceKey.BATTERY_SYNC_INTERVAL_KEY, "600000")!!.toLong())
             }
         } else {
@@ -71,14 +72,10 @@ class MainActivity : AppCompatActivity() {
         if (prefs.getBoolean(PreferenceKey.DND_SYNC_ENABLED_KEY, false) &&
                 prefs.getBoolean(PreferenceKey.DND_SYNC_SEND_KEY, true)) {
             val intent = Intent(this, DnDHandler::class.java)
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                startForegroundService(intent)
-            } else {
-                startService(intent)
-            }
+            Compat.startService(this, intent)
         }
-        if (prefs.getBoolean(PreferenceKey.CHECK_BATTERY_OPTIMISATION, true)) {
-            val pwm = getSystemService(PowerManager::class.java)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && prefs.getBoolean(PreferenceKey.CHECK_BATTERY_OPTIMISATION, true)) {
+            val pwm = getSystemService(Context.POWER_SERVICE) as PowerManager
             val isOptimisingBattery = !pwm.isIgnoringBatteryOptimizations(packageName)
             if (isOptimisingBattery) {
                 AlertDialog.Builder(this)
@@ -120,7 +117,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun stopBatterySyncJob() {
-        if (jobScheduler.getPendingJob(References.BATTERY_PERCENT_JOB_ID) != null) {
+        if (Compat.getPendingJob(jobScheduler, References.BATTERY_PERCENT_JOB_ID) != null) {
             jobScheduler.cancel(References.BATTERY_PERCENT_JOB_ID)
             Log.d(tag, "Cancelled battery sync")
         }
