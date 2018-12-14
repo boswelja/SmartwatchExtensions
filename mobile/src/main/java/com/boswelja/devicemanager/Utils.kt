@@ -32,9 +32,11 @@ object Utils {
         val iFilter = IntentFilter(Intent.ACTION_BATTERY_CHANGED)
         val batteryStatus = context.registerReceiver(null, iFilter)
         val batteryPct = ((batteryStatus?.getIntExtra(BatteryManager.EXTRA_LEVEL, -1)!! / batteryStatus.getIntExtra(BatteryManager.EXTRA_SCALE, -1).toFloat()) * 100).toInt()
+        val charging = batteryStatus.getIntExtra(BatteryManager.EXTRA_STATUS, -1) == BatteryManager.BATTERY_STATUS_CHARGING
         val dataClient = Wearable.getDataClient(context)
         val putDataMapReq = PutDataMapRequest.create("/batteryStatus")
-        putDataMapReq.dataMap.putInt("com.boswelja.devicemanager.batterypercent", batteryPct)
+        putDataMapReq.dataMap.putInt(References.BATTERY_PERCENT_PATH, batteryPct)
+        putDataMapReq.dataMap.putBoolean(References.BATTERY_CHARGING, charging)
         val putDataReq = putDataMapReq.asPutDataRequest()
         dataClient.putDataItem(putDataReq)
     }
@@ -44,6 +46,7 @@ object Utils {
         val dndSyncEnabled = prefs.getBoolean(PreferenceKey.DND_SYNC_ENABLED_KEY, false)
         val dndSyncSend = prefs.getBoolean(PreferenceKey.DND_SYNC_SEND_KEY, false)
         val dndSyncReceive = prefs.getBoolean(PreferenceKey.DND_SYNC_RECEIVE_KEY, false)
+        val phoneBatteryChargedNoti = prefs.getBoolean(PreferenceKey.BATTERY_PHONE_FULL_CHARGE_NOTI_KEY, false)
         val lockPhoneEnabled = prefs.getBoolean(PreferenceKey.LOCK_PHONE_ENABLED, false)
 
         val dataClient = Wearable.getDataClient(context)
@@ -51,6 +54,7 @@ object Utils {
         putDataMapReq.dataMap.putBoolean(References.DND_SYNC_ENABLED_PATH, dndSyncEnabled)
         putDataMapReq.dataMap.putBoolean(References.DND_SYNC_SEND_PATH, dndSyncSend)
         putDataMapReq.dataMap.putBoolean(References.DND_SYNC_RECEIVE_PATH, dndSyncReceive)
+        putDataMapReq.dataMap.putBoolean(References.BATTERY_PHONE_FULL_CHARGE_NOTI_PATH, phoneBatteryChargedNoti)
         putDataMapReq.dataMap.putBoolean(References.LOCK_PHONE_ENABLED_PATH, lockPhoneEnabled)
         putDataMapReq.setUrgent()
         dataClient.putDataItem(putDataMapReq.asPutDataRequest())

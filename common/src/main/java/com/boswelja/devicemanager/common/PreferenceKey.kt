@@ -6,6 +6,7 @@ object PreferenceKey {
     const val BATTERY_SYNC_ENABLED_KEY = "battery_sync_enabled"
     const val BATTERY_SYNC_INTERVAL_KEY = "battery_sync_interval"
     const val BATTERY_SYNC_NOW_KEY = "battery_sync_now"
+    const val BATTERY_PHONE_FULL_CHARGE_NOTI_KEY = "battery_phone_full_charge"
     const val DND_SYNC_ENABLED_KEY = "dnd_sync_enabled"
     const val DND_SYNC_SEND_KEY = "dnd_sync_send"
     const val DND_SYNC_RECEIVE_KEY = "dnd_sync_receive"

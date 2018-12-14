@@ -26,6 +26,8 @@ class PreferenceChangeListener : WearableListenerService() {
             val dndReceiving = dataMap.getBoolean(References.DND_SYNC_SEND_PATH)
             val dndSending = dataMap.getBoolean(References.DND_SYNC_RECEIVE_PATH)
 
+            val phoneBatteryChargedNoti = dataMap.getBoolean(References.BATTERY_PHONE_FULL_CHARGE_NOTI_PATH)
+
             val lockPhoneEnabled = dataMap.getBoolean(References.LOCK_PHONE_ENABLED_PATH)
 
             val prefs = PreferenceManager.getDefaultSharedPreferences(this)
@@ -33,6 +35,7 @@ class PreferenceChangeListener : WearableListenerService() {
                     .putBoolean(PreferenceKey.DND_SYNC_ENABLED_KEY, dndSyncEnabled)
                     .putBoolean(PreferenceKey.DND_SYNC_SEND_KEY, dndSending)
                     .putBoolean(PreferenceKey.DND_SYNC_RECEIVE_KEY, dndReceiving)
+                    .putBoolean(PreferenceKey.BATTERY_PHONE_FULL_CHARGE_NOTI_KEY, phoneBatteryChargedNoti)
                     .putBoolean(PreferenceKey.LOCK_PHONE_ENABLED, lockPhoneEnabled)
                     .apply()
 

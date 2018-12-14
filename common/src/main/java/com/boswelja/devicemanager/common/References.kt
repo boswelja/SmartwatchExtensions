@@ -13,6 +13,7 @@ object References {
 
     const val BATTERY_PERCENT_KEY = "/batteryPercent"
     const val DND_STATUS_KEY = "/dndStatus"
+
     // Shared Preferences paths
     const val NEW_DND_STATE_PATH = "com.boswelja.devicemanager.dndenabled"
     const val NEW_DND_STATE_CHANGED_BY_PATH = "com.boswelja.devicemanager.dndchangedby"
@@ -21,6 +22,8 @@ object References {
     const val DND_SYNC_RECEIVE_PATH = "com.boswelja.devicemanager.dndsyncreceive"
     const val LOCK_PHONE_ENABLED_PATH = "com.boswelja.devicemanager.lockphoneenabled"
     const val BATTERY_PERCENT_PATH = "com.boswelja.devicemanager.batterypercent"
+    const val BATTERY_CHARGING = "com.boswelja.devicemanager.batterycharging"
+    const val BATTERY_PHONE_FULL_CHARGE_NOTI_PATH = "com.boswelja.devicemanager.phonebattfullchargenotienabled"
 
     // Message keys
     const val LOCK_PHONE_KEY = "/lock_phone"

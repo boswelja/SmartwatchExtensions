@@ -24,6 +24,11 @@
             android:title="@string/pref_battery_sync_resync_title"
             android:dependency="battery_sync_enabled" />
 
+        <CheckBoxPreference
+            android:key="battery_phone_full_charge"
+            android:title="Battery Fully Charged Notification"
+            android:dependency="battery_sync_enabled" />
+
     </PreferenceCategory>
 
 </PreferenceScreen>

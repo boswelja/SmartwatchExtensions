@@ -107,6 +107,10 @@ class SettingsFragment : PreferenceFragmentCompat(), Preference.OnPreferenceChan
                 }
                 true
             }
+            PreferenceKey.BATTERY_PHONE_FULL_CHARGE_NOTI_KEY -> {
+                Utils.updateWatchPrefs(context!!)
+                true
+            }
             PreferenceKey.DND_SYNC_ENABLED_KEY -> {
                 if (newValue!! == true) {
                     //TODO Actually check if watch has correct permissions
