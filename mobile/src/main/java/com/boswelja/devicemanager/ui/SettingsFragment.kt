@@ -174,7 +174,7 @@ class SettingsFragment : PreferenceFragmentCompat(), Preference.OnPreferenceChan
         sharedPrefs = PreferenceManager.getDefaultSharedPreferences(context)
         mainActivity = activity as MainActivity
 
-        addPreferencesFromResource(R.xml.prefs)
+        addPreferencesFromResource(R.xml.prefs_general)
         setupGeneralPrefs()
 
         addPreferencesFromResource(R.xml.prefs_lock_phone)
