@@ -23,7 +23,6 @@ import android.os.PowerManager
 import android.preference.PreferenceManager
 import android.provider.Settings
 import android.util.Log
-import android.widget.FrameLayout
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.boswelja.devicemanager.Compat
@@ -47,9 +46,8 @@ class MainActivity : AppCompatActivity() {
     @SuppressLint("BatteryLife")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val contentView = FrameLayout(this)
-        contentView.id = R.id.fragment_holder
-        setContentView(contentView)
+
+        setContentView(R.layout.activity_main)
 
         jobScheduler = getSystemService(Context.JOB_SCHEDULER_SERVICE) as JobScheduler
 
