@@ -187,6 +187,8 @@ class SettingsFragment : PreferenceFragmentCompat(), Preference.OnPreferenceChan
             addPreferencesFromResource(R.xml.prefs_dnd_sync)
             setupDnDPrefs()
         }
+
+        addPreferencesFromResource(R.xml.prefs_about)
     }
 
     private fun setupGeneralPrefs() {
