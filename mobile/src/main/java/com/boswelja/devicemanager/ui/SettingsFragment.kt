@@ -14,6 +14,7 @@ import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import android.widget.Toast
+import androidx.core.app.NotificationManagerCompat
 import androidx.preference.CheckBoxPreference
 import androidx.preference.ListPreference
 import androidx.preference.Preference
@@ -29,6 +30,7 @@ import com.google.android.material.snackbar.Snackbar
 class SettingsFragment : PreferenceFragmentCompat(), Preference.OnPreferenceChangeListener, Preference.OnPreferenceClickListener {
 
     private lateinit var mainActivity: MainActivity
+    private lateinit var notiSettingsPref: Preference
     private lateinit var lockPhoneEnabledPref: SwitchPreference
     private lateinit var batterySyncIntervalPref: ListPreference
     private lateinit var dndSyncPhoneToWatchPref: CheckBoxPreference
@@ -45,12 +47,12 @@ class SettingsFragment : PreferenceFragmentCompat(), Preference.OnPreferenceChan
                 true
             }
             PreferenceKey.NOTIFICATION_SETTINGS_KEY -> {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    val settingsIntent = Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS)
-                            .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                            .putExtra(Settings.EXTRA_APP_PACKAGE, context!!.packageName)
-                    startActivity(settingsIntent)
-                }
+                val settingsIntent = Intent("android.settings.APP_NOTIFICATION_SETTINGS")
+                        .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                        .putExtra("android.provider.extra.APP_PACKAGE", context!!.packageName)
+                        .putExtra("app_package", context!!.packageName)
+                        .putExtra("app_uid", context!!.applicationInfo.uid)
+                startActivity(settingsIntent)
                 true
             }
             "pref_donate" -> {
@@ -180,6 +182,7 @@ class SettingsFragment : PreferenceFragmentCompat(), Preference.OnPreferenceChan
 
         addPreferencesFromResource(R.xml.prefs_general)
         setupGeneralPrefs()
+        updateNotiSettingStatus()
 
         addPreferencesFromResource(R.xml.prefs_lock_phone)
         setupPhoneLockPrefs()
@@ -197,12 +200,13 @@ class SettingsFragment : PreferenceFragmentCompat(), Preference.OnPreferenceChan
     }
 
     private fun setupGeneralPrefs() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            findPreference(PreferenceKey.NOTIFICATION_SETTINGS_KEY).onPreferenceClickListener = this
-        }
-
         val hideAppIconPref = findPreference(PreferenceKey.HIDE_APP_ICON_KEY)
         hideAppIconPref.onPreferenceChangeListener = this
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            notiSettingsPref = findPreference(PreferenceKey.NOTIFICATION_SETTINGS_KEY)
+            notiSettingsPref.onPreferenceClickListener = this
+        }
     }
 
     private fun setupPhoneLockPrefs() {
@@ -258,6 +262,18 @@ class SettingsFragment : PreferenceFragmentCompat(), Preference.OnPreferenceChan
             lockPhoneEnabledPref.isChecked = isAdmin
             isGrantingAdminPerms = false
             Utils.updateWatchPrefs(context!!)
+        }
+        updateNotiSettingStatus()
+    }
+
+    private fun updateNotiSettingStatus() {
+        val notisEnabled = NotificationManagerCompat.from(context!!).areNotificationsEnabled()
+        if (notisEnabled) {
+            notiSettingsPref.icon = context?.getDrawable(R.drawable.ic_notifications)
+            notiSettingsPref.summary = "Notifications are enabled for this app"
+        } else {
+            notiSettingsPref.icon = context?.getDrawable(R.drawable.ic_notifications_off)
+            notiSettingsPref.summary = "Notifications are disabled for this app"
         }
     }
 }
