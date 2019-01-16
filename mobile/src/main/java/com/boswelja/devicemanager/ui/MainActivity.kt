@@ -33,6 +33,7 @@ import com.boswelja.devicemanager.common.References
 import com.boswelja.devicemanager.tasks.BatteryInfoUpdate
 import com.google.android.gms.wearable.PutDataMapRequest
 import com.google.android.gms.wearable.Wearable
+import com.google.android.material.snackbar.Snackbar
 
 class MainActivity : AppCompatActivity() {
 
@@ -124,5 +125,9 @@ class MainActivity : AppCompatActivity() {
         putDataMapReq.dataMap.remove(References.BATTERY_PERCENT_PATH)
         val putDataReq = putDataMapReq.asPutDataRequest()
         dataClient.putDataItem(putDataReq)
+    }
+
+    fun createSnackbar(message: String) {
+        Snackbar.make(findViewById(R.id.fragment_holder), message, Snackbar.LENGTH_LONG).show()
     }
 }
