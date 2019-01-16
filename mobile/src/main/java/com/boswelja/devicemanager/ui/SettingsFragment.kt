@@ -53,6 +53,10 @@ class SettingsFragment : PreferenceFragmentCompat(), Preference.OnPreferenceChan
                 }
                 true
             }
+            "pref_donate" -> {
+                DonationDialogFragment().show(activity?.supportFragmentManager, "DonationDialog")
+                true
+            }
             else -> false
         }
     }
@@ -189,6 +193,7 @@ class SettingsFragment : PreferenceFragmentCompat(), Preference.OnPreferenceChan
         }
 
         addPreferencesFromResource(R.xml.prefs_about)
+        setupAboutPrefs()
     }
 
     private fun setupGeneralPrefs() {
@@ -227,6 +232,11 @@ class SettingsFragment : PreferenceFragmentCompat(), Preference.OnPreferenceChan
 
         dndSyncWatchToPhonePref = findPreference(PreferenceKey.DND_SYNC_RECEIVE_KEY) as CheckBoxPreference
         dndSyncWatchToPhonePref.onPreferenceChangeListener = this
+    }
+
+    private fun setupAboutPrefs() {
+        val donatePref = findPreference("pref_donate")
+        donatePref.onPreferenceClickListener = this
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

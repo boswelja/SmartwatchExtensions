@@ -6,6 +6,10 @@
         android:title="About">
 
         <Preference
+            android:key="pref_donate"
+            android:title="Donate" />
+
+        <Preference
             android:title="Version"
             android:summary="@string/app_version_name" />
 
