@@ -16,7 +16,7 @@
         android:fontFamily="sans-serif-medium"
         android:letterSpacing="0.0075"
         android:textColor="?android:textColorPrimary"
-        android:text="Donate"/>
+        android:text="@string/donate_title"/>
 
     <ProgressBar
         android:id="@+id/loading_spinner"
@@ -37,7 +37,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/donation_rv"
-        android:text="Cancel"
+        android:text="@string/btn_cancel"
         android:layout_alignParentStart="true"
         android:layout_marginStart="8dp"
         style="@style/Widget.MaterialComponents.Button.TextButton"/>

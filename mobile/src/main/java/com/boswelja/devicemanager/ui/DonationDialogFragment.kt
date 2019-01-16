@@ -22,7 +22,8 @@ class DonationDialogFragment :
         ConsumeResponseListener{
 
     private lateinit var recyclerView: RecyclerView
-    private lateinit var loadingSpinenr: ProgressBar
+    private lateinit var loadingSpinner: ProgressBar
+    private lateinit var cancelBtn: MaterialButton
 
     private lateinit var billingClient: BillingClient
     private val skus = listOf(
@@ -41,13 +42,13 @@ class DonationDialogFragment :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val cancelButton = view.findViewById<MaterialButton>(R.id.cancel_btn)
-        cancelButton.setOnClickListener {
+        cancelBtn = view.findViewById(R.id.cancel_btn)
+        cancelBtn.setOnClickListener {
             dismiss()
         }
 
         recyclerView = view.findViewById(R.id.donation_rv)
-        loadingSpinenr = view.findViewById(R.id.loading_spinner)
+        loadingSpinner = view.findViewById(R.id.loading_spinner)
 
         billingClient = BillingClient.newBuilder(view.context).setListener(this).build()
         billingClient.startConnection(this)
@@ -67,6 +68,9 @@ class DonationDialogFragment :
                     billingClient.consumeAsync(purchase.purchaseToken, null)
                 }
             }
+        } else {
+            dismiss()
+            (activity as MainActivity).createSnackbar(getString(R.string.donation_failed))
         }
     }
 
@@ -77,6 +81,9 @@ class DonationDialogFragment :
             recyclerView.adapter = DonationAdapter(skuDetailsList, this)
             setLoading(false)
 
+        } else {
+            dismiss()
+            (activity as MainActivity).createSnackbar(getString(R.string.donation_failed))
         }
     }
 
@@ -87,12 +94,15 @@ class DonationDialogFragment :
                 billingClient.consumeAsync(purchase.purchaseToken, this)
             }
 
+        } else {
+            dismiss()
+            (activity as MainActivity).createSnackbar(getString(R.string.donation_failed))
         }
     }
 
     override fun onConsumeResponse(responseCode: Int, purchaseToken: String?) {
         dismiss()
-        (activity as MainActivity).createSnackbar("Thanks for donating!")
+        (activity as MainActivity).createSnackbar(getString(R.string.donation_processed))
     }
 
     override fun onBillingServiceDisconnected() {
@@ -106,16 +116,19 @@ class DonationDialogFragment :
 
     private fun setLoading(loading: Boolean) {
         if (loading) {
-            recyclerView.visibility = View.GONE
-            loadingSpinenr.visibility = View.VISIBLE
+            recyclerView.visibility = View.INVISIBLE
+            loadingSpinner.visibility = View.VISIBLE
+            cancelBtn.visibility = View.INVISIBLE
         } else {
 
             recyclerView.visibility = View.VISIBLE
-            loadingSpinenr.visibility = View.GONE
+            loadingSpinner.visibility = View.GONE
+            cancelBtn.visibility = View.VISIBLE
         }
     }
 
     fun launchBillingFlow(sku: SkuDetails?) {
+        setLoading(true)
         val flowParams = BillingFlowParams.newBuilder()
                 .setSkuDetails(sku)
                 .build()

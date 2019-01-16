@@ -55,6 +55,11 @@
     <string name="dialog_button_cancel">Cancel</string>
     <string name="dialog_button_done">Done</string>
     <string name="dialog_button_copy">Copy to Clipboard</string>
-
     <string name="copied_to_clipboard">Copied to clipboard</string>
+
+    <string name="btn_cancel">Cancel</string>
+
+    <string name="donate_title">Donate</string>
+    <string name="donation_processed">Thanks for donating!</string>
+    <string name="donation_failed">Failed to process donation</string>
 </resources>
