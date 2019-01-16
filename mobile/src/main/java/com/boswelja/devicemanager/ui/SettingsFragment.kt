@@ -56,7 +56,7 @@ class SettingsFragment : PreferenceFragmentCompat(), Preference.OnPreferenceChan
                 true
             }
             "pref_donate" -> {
-                DonationDialogFragment().show(activity?.supportFragmentManager, "DonationDialog")
+                DonationDialogFragment().show(activity?.supportFragmentManager!!, "DonationDialog")
                 true
             }
             else -> false
@@ -200,7 +200,7 @@ class SettingsFragment : PreferenceFragmentCompat(), Preference.OnPreferenceChan
     }
 
     private fun setupGeneralPrefs() {
-        val hideAppIconPref = findPreference(PreferenceKey.HIDE_APP_ICON_KEY)
+        val hideAppIconPref = findPreference(PreferenceKey.HIDE_APP_ICON_KEY) as CheckBoxPreference
         hideAppIconPref.onPreferenceChangeListener = this
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -219,15 +219,15 @@ class SettingsFragment : PreferenceFragmentCompat(), Preference.OnPreferenceChan
         batterySyncIntervalPref.onPreferenceChangeListener = this
         batterySyncIntervalPref.summary = batterySyncIntervalPref.entry
 
-        val batterySyncEnabledPref = findPreference(PreferenceKey.BATTERY_SYNC_ENABLED_KEY)
+        val batterySyncEnabledPref = findPreference(PreferenceKey.BATTERY_SYNC_ENABLED_KEY) as SwitchPreference
         batterySyncEnabledPref.onPreferenceChangeListener = this
 
-        val batterySyncForcePref = findPreference(PreferenceKey.BATTERY_SYNC_NOW_KEY)
+        val batterySyncForcePref = findPreference(PreferenceKey.BATTERY_SYNC_NOW_KEY) as Preference
         batterySyncForcePref.onPreferenceClickListener = this
     }
 
     private fun setupDnDPrefs() {
-        val dndSyncEnabledPref = findPreference(PreferenceKey.DND_SYNC_ENABLED_KEY)
+        val dndSyncEnabledPref = findPreference(PreferenceKey.DND_SYNC_ENABLED_KEY) as SwitchPreference
         dndSyncEnabledPref.onPreferenceChangeListener = this
         dndSyncEnabledPref.onPreferenceClickListener = this
 
@@ -239,7 +239,7 @@ class SettingsFragment : PreferenceFragmentCompat(), Preference.OnPreferenceChan
     }
 
     private fun setupAboutPrefs() {
-        val donatePref = findPreference("pref_donate")
+        val donatePref = findPreference("pref_donate") as Preference
         donatePref.onPreferenceClickListener = this
     }
 

@@ -25,7 +25,7 @@ import android.provider.Settings
 import android.util.Log
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import com.boswelja.devicemanager.Compat
+import com.boswelja.devicemanager.common.Compat
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.DnDHandler
 import com.boswelja.devicemanager.common.PreferenceKey

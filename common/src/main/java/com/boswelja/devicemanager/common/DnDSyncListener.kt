@@ -7,7 +7,6 @@
  */
 package com.boswelja.devicemanager.common
 
-import android.app.NotificationManager
 import android.preference.PreferenceManager
 import android.util.Log
 import com.google.android.gms.wearable.DataEvent
@@ -33,13 +32,8 @@ class DnDSyncListener : WearableListenerService() {
                     val dataMap = DataMapItem.fromDataItem(event.dataItem).dataMap
                     val changedByUID = dataMap.getString(References.NEW_DND_STATE_CHANGED_BY_PATH)
                     if (changedByUID != CommonUtils.getUID(this)) {
-                        val notificationManager = getSystemService(NotificationManager::class.java)
                         val dndEnabled = dataMap.getBoolean(References.NEW_DND_STATE_PATH)
-                        if (dndEnabled) {
-                            notificationManager.setInterruptionFilter(NotificationManager.INTERRUPTION_FILTER_PRIORITY)
-                        } else {
-                            notificationManager.setInterruptionFilter(NotificationManager.INTERRUPTION_FILTER_ALL)
-                        }
+                        Compat.setInterruptionFilter(this, dndEnabled)
                     } else {
                         Log.d(tag, "Change triggered by this device, skipping")
                     }
