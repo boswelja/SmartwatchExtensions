@@ -7,11 +7,13 @@
 
         <Preference
             android:key="pref_donate"
-            android:title="Donate" />
+            android:title="Donate"
+            android:icon="@drawable/ic_favorite" />
 
         <Preference
             android:title="Version"
-            android:summary="@string/app_version_name" />
+            android:summary="@string/app_version_name"
+            android:icon="@drawable/ic_info" />
 
     </PreferenceCategory>
 
