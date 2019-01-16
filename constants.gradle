@@ -1,7 +1,7 @@
 ext.versions = [
 		versionCode: getDate(),
 		versionCodeDebug: getTime(),
-		versionName: "1.7.0.1",
+		versionName: "1.8.0",
 		compileSdk: 28,
 		gradlePlugin: '3.5.0-alpha01',
 		wearableLib: "2.4.0",
