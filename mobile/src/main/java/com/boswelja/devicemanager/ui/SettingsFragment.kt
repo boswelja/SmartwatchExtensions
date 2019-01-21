@@ -7,13 +7,13 @@
  */
 package com.boswelja.devicemanager.ui
 
-import android.app.AlertDialog
 import android.app.NotificationManager
 import android.content.*
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.core.app.NotificationManagerCompat
 import androidx.preference.CheckBoxPreference
 import androidx.preference.ListPreference
@@ -117,7 +117,7 @@ class SettingsFragment : PreferenceFragmentCompat(), Preference.OnPreferenceChan
             PreferenceKey.DND_SYNC_ENABLED_KEY -> {
                 if (newValue!! == true) {
                     //TODO Actually check if watch has correct permissions
-                    AlertDialog.Builder(context)
+                    AlertDialog.Builder(context!!)
                             .setTitle(R.string.dnd_sync_adb_dialog_title)
                             .setMessage(String.format(getString(R.string.dnd_sync_adb_dialog_message), getString(R.string.dnd_sync_adb_command)))
                             .setPositiveButton(R.string.dialog_button_done) { _, _ ->

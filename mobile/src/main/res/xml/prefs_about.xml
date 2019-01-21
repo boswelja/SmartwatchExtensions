@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen
+<androidx.preference.PreferenceScreen
     xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <PreferenceCategory
+    <androidx.preference.PreferenceCategory
         android:title="About">
 
-        <Preference
+        <androidx.preference.Preference
             android:key="pref_donate"
             android:title="Donate"
             android:icon="@drawable/ic_favorite" />
 
-        <Preference
+        <androidx.preference.Preference
             android:title="Version"
             android:summary="@string/app_version_name"
             android:icon="@drawable/ic_info" />
 
-    </PreferenceCategory>
+    </androidx.preference.PreferenceCategory>
 
-</PreferenceScreen>
+</androidx.preference.PreferenceScreen>

@@ -122,7 +122,9 @@ class MainActivity : AppCompatActivity() {
         }
         val dataClient = Wearable.getDataClient(this)
         val putDataMapReq = PutDataMapRequest.create(References.BATTERY_PERCENT_KEY)
-        putDataMapReq.dataMap.remove(References.BATTERY_PERCENT_PATH)
+        if (putDataMapReq.dataMap.containsKey(References.BATTERY_PERCENT_PATH)) {
+            putDataMapReq.dataMap.remove(References.BATTERY_PERCENT_PATH)
+        }
         val putDataReq = putDataMapReq.asPutDataRequest()
         dataClient.putDataItem(putDataReq)
     }
