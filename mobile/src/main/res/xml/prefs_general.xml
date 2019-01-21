@@ -10,6 +10,10 @@
             android:title="@string/pref_hide_app_icon_title"
             android:summary="@string/pref_hide_app_icon_summary" />
 
+        <Preference
+            android:key="notification_settings"
+            android:title="@string/pref_notification_settings_title" />
+
     </PreferenceCategory>
 
 </PreferenceScreen>
