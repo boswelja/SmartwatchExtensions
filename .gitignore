@@ -3,7 +3,12 @@
 /local.properties
 /.idea/workspace.xml
 /.idea/libraries
+/.idea/caches
 .DS_Store
 /build
 /captures
 .externalNativeBuild
+/release
+/common/release
+/mobile/release
+/wear/release
