@@ -11,6 +11,10 @@ object References {
 
     const val DND_SYNC_NOTIFICATION_CHANNEL_ID = "dnd_sync"
 
+    // Data map paths
+    const val BATTERY_STATUS_PATH = "/batteryStatus"
+    const val PREFERENCE_CHANGE_PATH = "/preferenceChange"
+
     const val BATTERY_PERCENT_KEY = "/batteryPercent"
     const val DND_STATUS_KEY = "/dndStatus"
 

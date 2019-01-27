@@ -17,7 +17,6 @@ class PreferenceChangeListener : WearableListenerService() {
 
     override fun onDataChanged(dataEvents: DataEventBuffer?) {
         super.onDataChanged(dataEvents)
-        Log.d(tag, "Received change")
         dataEvents?.forEach { event ->
             val dataMap = DataMapItem.fromDataItem(event.dataItem).dataMap
 

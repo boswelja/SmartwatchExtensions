@@ -35,10 +35,9 @@ object Utils {
         val batteryPct = ((batteryStatus?.getIntExtra(BatteryManager.EXTRA_LEVEL, -1)!! / batteryStatus.getIntExtra(BatteryManager.EXTRA_SCALE, -1).toFloat()) * 100).toInt()
         val charging = batteryStatus.getIntExtra(BatteryManager.EXTRA_STATUS, -1) == BatteryManager.BATTERY_STATUS_CHARGING
         val dataClient = Wearable.getDataClient(context)
-        val putDataMapReq = PutDataMapRequest.create("/batteryStatus")
+        val putDataMapReq = PutDataMapRequest.create(References.BATTERY_STATUS_PATH)
         putDataMapReq.dataMap.putInt(References.BATTERY_PERCENT_PATH, batteryPct)
         putDataMapReq.dataMap.putBoolean(References.BATTERY_CHARGING, charging)
-        Log.d("updateBatteryStats", charging.toString() + " " + batteryPct.toString())
         val putDataReq = putDataMapReq.asPutDataRequest()
         dataClient.putDataItem(putDataReq)
     }
@@ -52,7 +51,7 @@ object Utils {
         val lockPhoneEnabled = prefs.getBoolean(PreferenceKey.LOCK_PHONE_ENABLED, false)
 
         val dataClient = Wearable.getDataClient(context)
-        val putDataMapReq = PutDataMapRequest.create("/preferenceChange")
+        val putDataMapReq = PutDataMapRequest.create(References.PREFERENCE_CHANGE_PATH)
         putDataMapReq.dataMap.putBoolean(References.DND_SYNC_ENABLED_PATH, dndSyncEnabled)
         putDataMapReq.dataMap.putBoolean(References.DND_SYNC_SEND_PATH, dndSyncSend)
         putDataMapReq.dataMap.putBoolean(References.DND_SYNC_RECEIVE_PATH, dndSyncReceive)
