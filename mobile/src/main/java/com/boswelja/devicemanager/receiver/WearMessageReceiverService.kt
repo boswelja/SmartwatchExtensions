@@ -18,10 +18,10 @@ import com.google.android.gms.wearable.WearableListenerService
 class WearMessageReceiverService : WearableListenerService() {
 
     override fun onMessageReceived(messageEvent: MessageEvent?) {
-        val devicePolicyManager: DevicePolicyManager = getSystemService(Context.DEVICE_POLICY_SERVICE) as DevicePolicyManager
         val messagePath = messageEvent?.path
         when (messagePath) {
             References.LOCK_PHONE_KEY -> {
+                val devicePolicyManager: DevicePolicyManager = getSystemService(Context.DEVICE_POLICY_SERVICE) as DevicePolicyManager
                 if (devicePolicyManager.isAdminActive(DeviceAdminReceiver().getWho(this))) {
                     devicePolicyManager.lockNow()
                 }
