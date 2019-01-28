@@ -15,16 +15,13 @@ import android.provider.Settings
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.NotificationManagerCompat
-import androidx.preference.CheckBoxPreference
-import androidx.preference.ListPreference
-import androidx.preference.Preference
-import androidx.preference.PreferenceFragmentCompat
-import androidx.preference.PreferenceManager
-import androidx.preference.SwitchPreference
+import androidx.preference.*
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.Utils
 import com.boswelja.devicemanager.common.DnDHandler
 import com.boswelja.devicemanager.common.PreferenceKey
+import com.boswelja.devicemanager.preference.SeekbarDialogPrefFragment
+import com.boswelja.devicemanager.preference.SeekbarDialogPreference
 import com.google.android.material.snackbar.Snackbar
 
 class SettingsFragment : PreferenceFragmentCompat(), Preference.OnPreferenceChangeListener, Preference.OnPreferenceClickListener {
@@ -32,7 +29,6 @@ class SettingsFragment : PreferenceFragmentCompat(), Preference.OnPreferenceChan
     private lateinit var mainActivity: MainActivity
     private lateinit var notiSettingsPref: Preference
     private lateinit var lockPhoneEnabledPref: SwitchPreference
-    private lateinit var batterySyncIntervalPref: ListPreference
     private lateinit var dndSyncPhoneToWatchPref: CheckBoxPreference
     private lateinit var dndSyncWatchToPhonePref: CheckBoxPreference
     private lateinit var sharedPrefs: SharedPreferences
@@ -95,19 +91,17 @@ class SettingsFragment : PreferenceFragmentCompat(), Preference.OnPreferenceChan
                 }
                 false
             }
-            PreferenceKey.BATTERY_SYNC_INTERVAL_KEY -> {
-                val listPref = preference as ListPreference
-                val value = newValue.toString().toLong()
-                listPref.summary = listPref.entries[listPref.entryValues.indexOf(value.toString())]
-                mainActivity.createBatterySyncJob(value)
-                true
-            }
             PreferenceKey.BATTERY_SYNC_ENABLED_KEY -> {
                 if (newValue!! == true) {
-                    mainActivity.createBatterySyncJob(batterySyncIntervalPref.value.toLong())
+                    val sharedPrefs = preference.sharedPreferences
+                    mainActivity.createBatterySyncJob(sharedPrefs.getInt(PreferenceKey.BATTERY_SYNC_INTERVAL_KEY, 90000).toLong())
                 } else {
                     mainActivity.stopBatterySyncJob()
                 }
+                true
+            }
+            PreferenceKey.BATTERY_SYNC_INTERVAL_KEY -> {
+                mainActivity.createBatterySyncJob((newValue as Int).toLong())
                 true
             }
             PreferenceKey.BATTERY_PHONE_FULL_CHARGE_NOTI_KEY -> {
@@ -215,12 +209,11 @@ class SettingsFragment : PreferenceFragmentCompat(), Preference.OnPreferenceChan
     }
 
     private fun setupBatterySyncPrefs() {
-        batterySyncIntervalPref = findPreference(PreferenceKey.BATTERY_SYNC_INTERVAL_KEY) as ListPreference
-        batterySyncIntervalPref.onPreferenceChangeListener = this
-        batterySyncIntervalPref.summary = batterySyncIntervalPref.entry
-
         val batterySyncEnabledPref = findPreference(PreferenceKey.BATTERY_SYNC_ENABLED_KEY) as SwitchPreference
         batterySyncEnabledPref.onPreferenceChangeListener = this
+
+        val batterySyncIntervalPref = findPreference(PreferenceKey.BATTERY_SYNC_INTERVAL_KEY)
+        batterySyncIntervalPref.onPreferenceChangeListener = this
 
         val batterySyncForcePref = findPreference(PreferenceKey.BATTERY_SYNC_NOW_KEY) as Preference
         batterySyncForcePref.onPreferenceClickListener = this
@@ -264,6 +257,17 @@ class SettingsFragment : PreferenceFragmentCompat(), Preference.OnPreferenceChan
             Utils.updateWatchPrefs(context!!)
         }
         updateNotiSettingStatus()
+    }
+
+    override fun onDisplayPreferenceDialog(preference: Preference?) {
+        when (preference) {
+            is SeekbarDialogPreference -> {
+                val frag = SeekbarDialogPrefFragment.newInstance(preference.key)
+                frag.setTargetFragment(this, 0)
+                frag.show(fragmentManager!!, "SeekbarDialogPreference")
+            }
+            else -> super.onDisplayPreferenceDialog(preference)
+        }
     }
 
     private fun updateNotiSettingStatus() {

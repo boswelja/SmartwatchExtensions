@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.preference.PreferenceScreen
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <androidx.preference.PreferenceCategory
         android:title="@string/pref_category_battery_sync">
@@ -12,13 +13,15 @@
             android:icon="@drawable/ic_battery"
             android:defaultValue="false"/>
 
-        <androidx.preference.ListPreference
+        <com.boswelja.devicemanager.preference.SeekbarDialogPreference
             android:key="battery_sync_interval"
             android:title="@string/pref_battery_sync_interval_title"
             android:dependency="battery_sync_enabled"
             android:defaultValue="900000"
-            android:entries="@array/battery_refresh_interval"
-            android:entryValues="@array/battery_refresh_interval_values"/>
+            android:positiveButtonText="Save"
+            app:minValue="900000"
+            app:maxValue="3600000"
+            app:stepSize="60000" />
 
         <androidx.preference.Preference
             android:key="battery_sync_now"
