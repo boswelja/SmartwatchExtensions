@@ -7,13 +7,13 @@
  */
 package com.boswelja.devicemanager.service
 
-import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.ComponentName
 import android.os.Build
 import android.preference.PreferenceManager
 import android.support.wearable.complications.ProviderUpdateRequester
+import androidx.core.app.NotificationCompat
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.PreferenceKey
 import com.boswelja.devicemanager.common.References
@@ -50,13 +50,11 @@ class BatteryUpdateListener : WearableListenerService() {
 
     private fun sendChargedNoti() {
         val notificationManager = getSystemService(NotificationManager::class.java)
-        val noti = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel("phone_charged", "Phone Fully Charged", NotificationManager.IMPORTANCE_DEFAULT)
             notificationManager.createNotificationChannel(channel)
-            Notification.Builder(this, "phone_charged")
-        } else {
-            Notification.Builder(this)
         }
+        val noti = NotificationCompat.Builder(this, "phone_charged")
         noti.setSmallIcon(R.drawable.ic_battery_full)
         noti.setContentTitle("Phone fully charged")
         noti.setContentText("Your phone is fully charged")
