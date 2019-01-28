@@ -44,6 +44,6 @@ class SeekbarDialogPreference(context: Context, attrs: AttributeSet?, defStyleAt
     }
 
     public fun setSummary() {
-        summary = String.format(context.getString(R.string.battery_refresh_summary), TimeUnit.MILLISECONDS.toMinutes(value.toLong()))
+        summary = String.format(context.getString(R.string.battery_sync_interval_summary), TimeUnit.MILLISECONDS.toMinutes(value.toLong()))
     }
 }
