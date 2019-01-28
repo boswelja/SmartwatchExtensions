@@ -17,13 +17,6 @@ android {
 		//noinspection GroovyMissingReturnStatement
 		debug {
 			applicationIdSuffix ".debug"
-			postprocessing {
-				removeUnusedCode true
-				removeUnusedResources true
-				obfuscate true
-				optimizeCode true
-				proguardFile 'proguard-rules.pro'
-			}
 		}
 		release {
 			postprocessing {
