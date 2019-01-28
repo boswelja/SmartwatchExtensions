@@ -25,6 +25,7 @@ import android.provider.Settings
 import android.util.Log
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import com.boswelja.devicemanager.common.Compat
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.DnDHandler
@@ -48,6 +49,8 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+
         setContentView(R.layout.activity_main)
 
         jobScheduler = getSystemService(Context.JOB_SCHEDULER_SERVICE) as JobScheduler
@@ -62,7 +65,7 @@ class MainActivity : AppCompatActivity() {
         val battSyncEnabled = prefs.getBoolean(PreferenceKey.BATTERY_SYNC_ENABLED_KEY, false)
         if (battSyncEnabled) {
             if (Compat.getPendingJob(jobScheduler, References.BATTERY_PERCENT_JOB_ID) == null) {
-                createBatterySyncJob(prefs.getString(PreferenceKey.BATTERY_SYNC_INTERVAL_KEY, "600000")!!.toLong())
+                createBatterySyncJob(prefs.getInt(PreferenceKey.BATTERY_SYNC_INTERVAL_KEY, 900000).toLong())
             }
         } else {
             stopBatterySyncJob()

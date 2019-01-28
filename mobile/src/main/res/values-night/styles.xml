@@ -1,12 +1,10 @@
 <resources>
 
-    <style name="BaseTheme" parent="Theme.MaterialComponents.Light">
+    <style name="BaseTheme" parent="Theme.MaterialComponents">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="preferenceTheme">@style/PreferenceThemeOverlay.v14.Material</item>
     </style>
-
-    <style name="AppTheme" parent="BaseTheme"/>
 
 </resources>
