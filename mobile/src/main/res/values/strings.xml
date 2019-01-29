@@ -6,7 +6,10 @@
     <string name="pref_category_general">General</string>
     <string name="pref_hide_app_icon_title">Hide app icon</string>
     <string name="pref_hide_app_icon_summary">Hide the app icon from your launcher</string>
-    <string name="pref_notification_settings_title">Notification Settings</string>
+    <string name="pref_hide_app_icon_warning_message">Are you sure? To open Wearable Extensions again you\'ll need to use an activity launcher.</string>
+    <string name="pref_noti_settings_title">Notification Settings</string>
+    <string name="pref_noti_settings_summary_enabled">Notifications are enabled</string>
+    <string name="pref_noti_settings_summary_disabled">Notifications are disabled</string>
 
     <string name="pref_category_lock_phone">Phone Locking</string>
     <string name="pref_lock_phone_enabled_title">Remote phone locking</string>
@@ -19,6 +22,10 @@
     <string name="battery_sync_interval_summary">%s minutes</string>
     <string name="pref_battery_sync_resync_title">Re-Sync Battery Percent to Watch</string>
     <string name="pref_battery_sync_resync_complete">Re-synced battery info to watch</string>
+    <string name="pref_battery_charged_noti_title">Battery Fully Charged Notification</string>
+
+    <string name="pref_about_donate_title">Donate</string>
+    <string name="pref_about_version_title">Version</string>
 
     <string name="dnd_sync_adb_dialog_title">Additional setup required</string>
     <string name="dnd_sync_adb_dialog_message">You need to connect your watch to your PC and execute the following command via ADB: %s</string>
@@ -42,8 +49,14 @@
     <string name="dialog_button_grant">Grant</string>
     <string name="dialog_button_cancel">Cancel</string>
     <string name="dialog_button_done">Done</string>
+    <string name="dialog_button_yes">Yes</string>
+    <string name="dialog_button_no">No</string>
+    <string name="dialog_button_not_again">Don\'t ask again</string>
     <string name="dialog_button_copy">Copy to Clipboard</string>
     <string name="copied_to_clipboard">Copied to clipboard</string>
+
+    <string name="dialog_battery_optimisation_warn_title">Battery Optimisation</string>
+    <string name="dialog_battery_optimisation_warn_message">Android is optimising this app\'s battery use. This can cause issues with certain functions. Would you like to disable it?</string>
 
     <string name="btn_cancel">Cancel</string>
 

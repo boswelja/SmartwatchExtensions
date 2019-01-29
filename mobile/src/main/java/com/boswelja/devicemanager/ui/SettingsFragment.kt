@@ -281,10 +281,10 @@ class SettingsFragment : PreferenceFragmentCompat(), Preference.OnPreferenceChan
         val notisEnabled = NotificationManagerCompat.from(context!!).areNotificationsEnabled()
         if (notisEnabled) {
             notiSettingsPref.icon = context?.getDrawable(R.drawable.ic_notifications)
-            notiSettingsPref.summary = "Notifications are enabled for this app"
+            notiSettingsPref.summary = getString(R.string.pref_noti_settings_summary_enabled)
         } else {
             notiSettingsPref.icon = context?.getDrawable(R.drawable.ic_notifications_off)
-            notiSettingsPref.summary = "Notifications are disabled for this app"
+            notiSettingsPref.summary = getString(R.string.pref_noti_settings_summary_disabled)
         }
     }
 }

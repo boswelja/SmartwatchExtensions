@@ -22,7 +22,6 @@ import android.os.Bundle
 import android.os.PowerManager
 import android.preference.PreferenceManager
 import android.provider.Settings
-import android.util.Log
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
@@ -37,8 +36,6 @@ import com.google.android.gms.wearable.Wearable
 import com.google.android.material.snackbar.Snackbar
 
 class MainActivity : AppCompatActivity() {
-
-    private val tag = "MainActivity"
 
     private lateinit var devicePolicyManager: DevicePolicyManager
     private lateinit var deviceAdminReceiver: ComponentName
@@ -81,17 +78,17 @@ class MainActivity : AppCompatActivity() {
             val isOptimisingBattery = !pwm.isIgnoringBatteryOptimizations(packageName)
             if (isOptimisingBattery) {
                 AlertDialog.Builder(this)
-                        .setTitle("Battery Optimisation")
-                        .setMessage("Android is optimising this app's battery use. This can cause issues with certain functions. Would you like to disable it?")
-                        .setPositiveButton("Yes") { _, _ ->
+                        .setTitle(getString(R.string.dialog_battery_optimisation_warn_title))
+                        .setMessage(getString(R.string.dialog_battery_optimisation_warn_message))
+                        .setPositiveButton(R.string.dialog_button_yes) { _, _ ->
                             run {
                                 val intent = Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS)
                                 intent.data = Uri.parse("package:$packageName")
                                 startActivity(intent)
                             }
                         }
-                        .setNeutralButton("Don't ask again") { _, _ -> prefs.edit().putBoolean(PreferenceKey.CHECK_BATTERY_OPTIMISATION, false).apply() }
-                        .setNegativeButton("No") { dialog, _ -> dialog.dismiss() }
+                        .setNeutralButton(R.string.dialog_button_not_again) { _, _ -> prefs.edit().putBoolean(PreferenceKey.CHECK_BATTERY_OPTIMISATION, false).apply() }
+                        .setNegativeButton(R.string.dialog_button_no) { dialog, _ -> dialog.dismiss() }
                         .show()
             }
         }
@@ -115,13 +112,11 @@ class MainActivity : AppCompatActivity() {
         jobInfo.setPeriodic(intervalMs)
         jobInfo.setPersisted(true)
         jobScheduler.schedule(jobInfo.build())
-        Log.d(tag, "Started battery sync with " + intervalMs + "ms interval")
     }
 
     fun stopBatterySyncJob() {
         if (Compat.getPendingJob(jobScheduler, References.BATTERY_PERCENT_JOB_ID) != null) {
             jobScheduler.cancel(References.BATTERY_PERCENT_JOB_ID)
-            Log.d(tag, "Cancelled battery sync")
         }
         val dataClient = Wearable.getDataClient(this)
         val putDataMapReq = PutDataMapRequest.create(References.BATTERY_PERCENT_KEY)

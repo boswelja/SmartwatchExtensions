@@ -9,7 +9,7 @@
             android:key="hide_app_icon"
             android:title="@string/pref_hide_app_icon_title"
             android:summary="@string/pref_hide_app_icon_summary"
-            android:dialogMessage="Are you sure? To open Wearable Extensions again you'll need an activity launcher."/>
+            android:dialogMessage="@string/pref_hide_app_icon_warning_message"/>
 
         <androidx.preference.Preference
             android:key="notification_settings"

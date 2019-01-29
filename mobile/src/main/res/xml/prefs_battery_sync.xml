@@ -30,7 +30,7 @@
 
         <androidx.preference.CheckBoxPreference
             android:key="battery_phone_full_charge"
-            android:title="Battery Fully Charged Notification"
+            android:title="@string/pref_battery_charged_noti_title"
             android:dependency="battery_sync_enabled" />
 
     </androidx.preference.PreferenceCategory>
