@@ -1,4 +1,4 @@
-package com.boswelja.devicemanager.preference
+package com.boswelja.devicemanager.preference.seekbardialog
 
 import android.os.Bundle
 import android.view.View
@@ -23,7 +23,7 @@ class SeekbarDialogPrefFragment : PreferenceDialogFragmentCompat() {
                 if (positiveResult) {
                     pref.sharedPreferences.edit().putInt(key, pref.value).apply()
                     pref.setSummary()
-                    pref.onPreferenceChangeListener.onPreferenceChange(pref, pref.value)
+                    pref.onPreferenceChangeListener?.onPreferenceChange(pref, pref.value)
                 } else {
                     pref.value = pref.sharedPreferences.getInt(key, 900000)
                 }

@@ -13,7 +13,7 @@
             android:icon="@drawable/ic_battery"
             android:defaultValue="false"/>
 
-        <com.boswelja.devicemanager.preference.SeekbarDialogPreference
+        <com.boswelja.devicemanager.preference.seekbardialog.SeekbarDialogPreference
             android:key="battery_sync_interval"
             android:title="@string/pref_battery_sync_interval_title"
             android:dependency="battery_sync_enabled"

@@ -5,10 +5,11 @@
     <androidx.preference.PreferenceCategory
         android:title="@string/pref_category_general">
 
-        <androidx.preference.CheckBoxPreference
+        <com.boswelja.devicemanager.preference.confirmationdialog.ConfirmationDialogPreference
             android:key="hide_app_icon"
             android:title="@string/pref_hide_app_icon_title"
-            android:summary="@string/pref_hide_app_icon_summary" />
+            android:summary="@string/pref_hide_app_icon_summary"
+            android:dialogMessage="Are you sure? To open Wearable Extensions again you'll need an activity launcher."/>
 
         <androidx.preference.Preference
             android:key="notification_settings"

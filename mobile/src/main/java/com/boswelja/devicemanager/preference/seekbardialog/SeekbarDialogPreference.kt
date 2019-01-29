@@ -1,4 +1,4 @@
-package com.boswelja.devicemanager.preference
+package com.boswelja.devicemanager.preference.seekbardialog
 
 import android.content.Context
 import android.content.res.TypedArray

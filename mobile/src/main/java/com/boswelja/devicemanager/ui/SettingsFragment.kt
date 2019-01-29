@@ -20,8 +20,10 @@ import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.Utils
 import com.boswelja.devicemanager.common.DnDHandler
 import com.boswelja.devicemanager.common.PreferenceKey
-import com.boswelja.devicemanager.preference.SeekbarDialogPrefFragment
-import com.boswelja.devicemanager.preference.SeekbarDialogPreference
+import com.boswelja.devicemanager.preference.confirmationdialog.ConfirmationDialogPrefFragment
+import com.boswelja.devicemanager.preference.confirmationdialog.ConfirmationDialogPreference
+import com.boswelja.devicemanager.preference.seekbardialog.SeekbarDialogPrefFragment
+import com.boswelja.devicemanager.preference.seekbardialog.SeekbarDialogPreference
 import com.google.android.material.snackbar.Snackbar
 
 class SettingsFragment : PreferenceFragmentCompat(), Preference.OnPreferenceChangeListener, Preference.OnPreferenceClickListener {
@@ -194,7 +196,7 @@ class SettingsFragment : PreferenceFragmentCompat(), Preference.OnPreferenceChan
     }
 
     private fun setupGeneralPrefs() {
-        val hideAppIconPref = findPreference(PreferenceKey.HIDE_APP_ICON_KEY) as CheckBoxPreference
+        val hideAppIconPref = findPreference(PreferenceKey.HIDE_APP_ICON_KEY)
         hideAppIconPref.onPreferenceChangeListener = this
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -264,7 +266,12 @@ class SettingsFragment : PreferenceFragmentCompat(), Preference.OnPreferenceChan
             is SeekbarDialogPreference -> {
                 val frag = SeekbarDialogPrefFragment.newInstance(preference.key)
                 frag.setTargetFragment(this, 0)
-                frag.show(fragmentManager!!, "SeekbarDialogPreference")
+                frag.show(fragmentManager!!, "SeekbarDialogPrefFragment")
+            }
+            is ConfirmationDialogPreference -> {
+                val frag = ConfirmationDialogPrefFragment.newInstance(preference.key)
+                frag.setTargetFragment(this, 0)
+                frag.show(fragmentManager!!, "ConfirmationDialogPrefFragment")
             }
             else -> super.onDisplayPreferenceDialog(preference)
         }
