@@ -18,6 +18,7 @@ import androidx.core.app.NotificationManagerCompat
 import androidx.preference.*
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.Utils
+import com.boswelja.devicemanager.common.CommonUtils
 import com.boswelja.devicemanager.common.DnDHandler
 import com.boswelja.devicemanager.common.PreferenceKey
 import com.boswelja.devicemanager.preference.confirmationdialog.ConfirmationDialogPrefFragment
@@ -40,7 +41,7 @@ class SettingsFragment : PreferenceFragmentCompat(), Preference.OnPreferenceChan
     override fun onPreferenceClick(preference: Preference?): Boolean {
         return when (preference?.key) {
             PreferenceKey.BATTERY_SYNC_NOW_KEY -> {
-                Utils.updateBatteryStats(context!!)
+                CommonUtils.updateBatteryStats(context!!)
                 Snackbar.make(view!!, getString(R.string.pref_battery_sync_resync_complete), Snackbar.LENGTH_SHORT).show()
                 true
             }
@@ -107,6 +108,7 @@ class SettingsFragment : PreferenceFragmentCompat(), Preference.OnPreferenceChan
                 true
             }
             PreferenceKey.BATTERY_PHONE_FULL_CHARGE_NOTI_KEY -> {
+                preference.sharedPreferences.edit().putBoolean(PreferenceKey.BATTERY_PHONE_FULL_CHARGE_NOTI_KEY, newValue!! == true).apply()
                 Utils.updateWatchPrefs(context!!)
                 true
             }
@@ -219,6 +221,9 @@ class SettingsFragment : PreferenceFragmentCompat(), Preference.OnPreferenceChan
 
         val batterySyncForcePref = findPreference(PreferenceKey.BATTERY_SYNC_NOW_KEY) as Preference
         batterySyncForcePref.onPreferenceClickListener = this
+
+        val batterySyncPhoneChargedNotiPref = findPreference(PreferenceKey.BATTERY_PHONE_FULL_CHARGE_NOTI_KEY)
+        batterySyncPhoneChargedNotiPref.onPreferenceChangeListener = this
     }
 
     private fun setupDnDPrefs() {

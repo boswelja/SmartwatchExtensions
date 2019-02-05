@@ -19,7 +19,7 @@ object Utils {
         Wearable
                 .getCapabilityClient(context)
                 .getCapability(
-                        References.CAPABILITY_PHONE_APP,
+                        References.CAPABILITY_APP,
                         CapabilityClient.FILTER_REACHABLE
                 )
                 .addOnSuccessListener {

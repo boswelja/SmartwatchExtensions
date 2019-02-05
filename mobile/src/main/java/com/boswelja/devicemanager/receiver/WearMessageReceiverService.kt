@@ -11,6 +11,7 @@ import android.app.admin.DeviceAdminReceiver
 import android.app.admin.DevicePolicyManager
 import android.content.Context
 import com.boswelja.devicemanager.Utils
+import com.boswelja.devicemanager.common.CommonUtils
 import com.boswelja.devicemanager.common.References
 import com.google.android.gms.wearable.MessageEvent
 import com.google.android.gms.wearable.WearableListenerService
@@ -27,7 +28,7 @@ class WearMessageReceiverService : WearableListenerService() {
                 }
             }
             References.REQUEST_BATTERY_UPDATE_KEY -> {
-                Utils.updateBatteryStats(this)
+                CommonUtils.updateBatteryStats(this)
             }
         }
     }

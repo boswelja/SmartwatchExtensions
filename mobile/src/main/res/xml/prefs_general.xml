@@ -13,7 +13,7 @@
 
         <androidx.preference.Preference
             android:key="notification_settings"
-            android:title="@string/pref_notification_settings_title" />
+            android:title="@string/pref_noti_settings_title" />
 
     </androidx.preference.PreferenceCategory>
 

@@ -38,7 +38,7 @@ class MainActivity : AppCompatActivity() {
         Wearable
                 .getCapabilityClient(this)
                 .getCapability(
-                        References.CAPABILITY_PHONE_APP,
+                        References.CAPABILITY_APP,
                         CapabilityClient.FILTER_REACHABLE
                 )
                 .addOnSuccessListener {

@@ -40,8 +40,11 @@ object References {
     const val TYPE_LOCK_PHONE: Int = 1
     const val TYPE_PHONE_BATTERY: Int = 2
 
-    const val CAPABILITY_PHONE_APP = "extensions_mobile_app"
+    const val CAPABILITY_APP = "extensions_app"
 
     const val INTENT_ACTION_EXTRA = "action"
+
+    const val DEVICE_PHONE = "phone"
+    const val DEVICE_WATCH = "wear"
 
 }

@@ -20,9 +20,12 @@
     <string name="pref_battery_sync_enabled_summary">Sync your phone battery percent to your watch. This enabled the use of the battery percent complication.</string>
     <string name="pref_battery_sync_interval_title">Sync Interval</string>
     <string name="battery_sync_interval_summary">%s minutes</string>
-    <string name="pref_battery_sync_resync_title">Re-Sync Battery Percent to Watch</string>
+    <string name="pref_battery_sync_resync_title">Re-Sync Battery Status</string>
     <string name="pref_battery_sync_resync_complete">Re-synced battery info to watch</string>
-    <string name="pref_battery_charged_noti_title">Battery Fully Charged Notification</string>
+    <string name="pref_phone_battery_charged_noti_title">Phone Battery Fully Charged Notification</string>
+    <string name="pref_phone_battery_charged_noti_summary">Get a notification on your watch when your phone is above 90% charged</string>
+    <string name="pref_watch_battery_charged_noti_title">Watch Battery Fully Charged Notification</string>
+    <string name="pref_watch_battery_charged_noti_summary">Get a notification on your phone when your watch is above 90% charged</string>
 
     <string name="pref_about_donate_title">Donate</string>
     <string name="pref_about_version_title">Version</string>

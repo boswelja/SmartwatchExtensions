@@ -38,12 +38,12 @@ class SeekbarDialogPreference(context: Context, attrs: AttributeSet?, defStyleAt
         value = if (defaultValue != null) {
             defaultValue as Int
         } else {
-            sharedPreferences.getInt(PreferenceKey.BATTERY_SYNC_INTERVAL_KEY, 900000)
+            sharedPreferences.getInt(key, 0)
         }
         setSummary()
     }
 
-    public fun setSummary() {
+    fun setSummary() {
         summary = String.format(context.getString(R.string.battery_sync_interval_summary), TimeUnit.MILLISECONDS.toMinutes(value.toLong()))
     }
 }

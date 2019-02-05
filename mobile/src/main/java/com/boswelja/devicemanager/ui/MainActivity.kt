@@ -30,7 +30,7 @@ import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.DnDHandler
 import com.boswelja.devicemanager.common.PreferenceKey
 import com.boswelja.devicemanager.common.References
-import com.boswelja.devicemanager.tasks.BatteryInfoUpdate
+import com.boswelja.devicemanager.common.BatteryInfoUpdate
 import com.google.android.gms.wearable.PutDataMapRequest
 import com.google.android.gms.wearable.Wearable
 import com.google.android.material.snackbar.Snackbar

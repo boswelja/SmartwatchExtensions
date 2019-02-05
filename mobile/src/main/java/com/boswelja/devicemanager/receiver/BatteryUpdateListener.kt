@@ -5,16 +5,16 @@
  * This file, and any part of the Wearable Extensions app/s cannot be copied and/or distributed
  * without permission from Jack Boswell (boswelja) <boswela@outlook.com>
  */
-package com.boswelja.devicemanager.service
+package com.boswelja.devicemanager.receiver
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.content.Context
 import android.os.Build
 import android.preference.PreferenceManager
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.boswelja.devicemanager.R
-import com.boswelja.devicemanager.common.CommonUtils
 import com.boswelja.devicemanager.common.PreferenceKey
 import com.boswelja.devicemanager.common.References
 import com.google.android.gms.wearable.*
@@ -31,7 +31,7 @@ class BatteryUpdateListener : WearableListenerService() {
 //                    val charging = dataMap.getBoolean(References.BATTERY_CHARGING)
 //                    preferenceManager.edit().putInt(References.BATTERY_PERCENT_KEY, percent).apply()
 //
-//                    if (preferenceManager.getBoolean(PreferenceKey.BATTERY_PHONE_FULL_CHARGE_NOTI_KEY, false) && percent > 90 && charging) {
+//                    if (preferenceManager.getBoolean(PreferenceKey.BATTERY_WATCH_FULL_CHARGE_NOTI_KEY, false) && percent > 90 && charging) {
 //                        sendChargedNoti()
 //                    }
 //                }
@@ -40,8 +40,7 @@ class BatteryUpdateListener : WearableListenerService() {
 //                }
 //            }
 //        }
-//        val providerUpdateRequester = ProviderUpdateRequester(this, ComponentName(packageName, PhoneBatteryComplicationProvider::class.java.name))
-//        providerUpdateRequester.requestUpdateAll()
+//        dataEvents.release()
 //    }
 
     override fun onMessageReceived(messageEvent: MessageEvent?) {
@@ -54,26 +53,23 @@ class BatteryUpdateListener : WearableListenerService() {
             val charging = messageSplit[1] == "true"
             preferenceManager.edit().putInt(References.BATTERY_PERCENT_KEY, percent).apply()
 
-            Log.d("BatteryUpdateListener", preferenceManager.getBoolean(PreferenceKey.BATTERY_PHONE_FULL_CHARGE_NOTI_KEY, false).toString())
-            if (preferenceManager.getBoolean(PreferenceKey.BATTERY_PHONE_FULL_CHARGE_NOTI_KEY, false) && percent > 90 && charging) {
+            if (preferenceManager.getBoolean(PreferenceKey.BATTERY_WATCH_FULL_CHARGE_NOTI_KEY, false) && percent > 90 && charging) {
                 sendChargedNoti()
             }
-            CommonUtils.updateBatteryStats(this)
         }
     }
 
     private fun sendChargedNoti() {
-        Log.d("BatteryUpdateListener", "Phone charged, notifying...")
-        val notificationManager = getSystemService(NotificationManager::class.java)
+        val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channel = NotificationChannel("phone_charged", "Phone Fully Charged", NotificationManager.IMPORTANCE_HIGH)
+            val channel = NotificationChannel("watch_charged", "Watch Fully Charged", NotificationManager.IMPORTANCE_HIGH)
             channel.enableVibration(true)
             notificationManager.createNotificationChannel(channel)
         }
-        val noti = NotificationCompat.Builder(this, "phone_charged")
+        val noti = NotificationCompat.Builder(this, "watch_charged")
         noti.setSmallIcon(R.drawable.ic_battery_full)
-        noti.setContentTitle("Phone fully charged")
-        noti.setContentText("Your phone is fully charged")
+        noti.setContentTitle("Watch fully charged")
+        noti.setContentText("Your watch is fully charged")
         noti.setLocalOnly(true)
         notificationManager.notify(123, noti.build())
     }

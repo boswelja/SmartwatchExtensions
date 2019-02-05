@@ -5,11 +5,10 @@
  * This file, and any part of the Wearable Extensions app/s cannot be copied and/or distributed
  * without permission from Jack Boswell (boswelja) <boswela@outlook.com>
  */
-package com.boswelja.devicemanager.tasks
+package com.boswelja.devicemanager.common
 
 import android.app.job.JobParameters
 import android.app.job.JobService
-import com.boswelja.devicemanager.Utils
 
 class BatteryInfoUpdate : JobService() {
 
@@ -18,7 +17,7 @@ class BatteryInfoUpdate : JobService() {
     }
 
     override fun onStartJob(params: JobParameters?): Boolean {
-        Utils.updateBatteryStats(this)
+        CommonUtils.updateBatteryStats(this)
         jobFinished(params, true)
         return false
     }

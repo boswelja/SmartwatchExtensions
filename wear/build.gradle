@@ -15,6 +15,9 @@ android {
     }
     buildTypes {
         //noinspection GroovyMissingReturnStatement
+        debug {
+            applicationIdSuffix ".debug"
+        }
         release {
             postprocessing {
                 removeUnusedCode true

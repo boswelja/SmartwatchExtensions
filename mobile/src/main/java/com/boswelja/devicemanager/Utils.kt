@@ -11,10 +11,7 @@ import android.app.admin.DeviceAdminReceiver
 import android.app.admin.DevicePolicyManager
 import android.content.Context
 import android.content.Intent
-import android.content.IntentFilter
-import android.os.BatteryManager
 import android.preference.PreferenceManager
-import android.util.Log
 import com.boswelja.devicemanager.common.PreferenceKey
 import com.boswelja.devicemanager.common.References
 import com.google.android.gms.wearable.PutDataMapRequest
@@ -27,19 +24,6 @@ object Utils {
         intent.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN, DeviceAdminReceiver().getWho(context))
         intent.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION, context.getString(R.string.device_admin_desc))
         context.startActivity(intent)
-    }
-
-    fun updateBatteryStats(context: Context) {
-        val iFilter = IntentFilter(Intent.ACTION_BATTERY_CHANGED)
-        val batteryStatus = context.registerReceiver(null, iFilter)
-        val batteryPct = ((batteryStatus?.getIntExtra(BatteryManager.EXTRA_LEVEL, -1)!! / batteryStatus.getIntExtra(BatteryManager.EXTRA_SCALE, -1).toFloat()) * 100).toInt()
-        val charging = batteryStatus.getIntExtra(BatteryManager.EXTRA_STATUS, -1) == BatteryManager.BATTERY_STATUS_CHARGING
-        val dataClient = Wearable.getDataClient(context)
-        val putDataMapReq = PutDataMapRequest.create(References.BATTERY_STATUS_PATH)
-        putDataMapReq.dataMap.putInt(References.BATTERY_PERCENT_PATH, batteryPct)
-        putDataMapReq.dataMap.putBoolean(References.BATTERY_CHARGING, charging)
-        val putDataReq = putDataMapReq.asPutDataRequest()
-        dataClient.putDataItem(putDataReq)
     }
 
     fun updateWatchPrefs(context: Context) {
