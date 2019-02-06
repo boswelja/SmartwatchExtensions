@@ -3,4 +3,11 @@
 
     <string name="dnd_sync_active_noti_title">DnD Sync Active</string>
     <string name="dnd_sync_active_noti_desc">Syncing Do Not Disturb status between your phone and watch</string>
+
+    <string name="companion_device_type">Device</string>
+
+    <string name="device_charged_noti_channel_key">companion_device_charged</string>
+    <string name="device_charged_noti_channel_name">%s Charged</string>
+    <string name="device_charged_noti_title">%s Charged</string>
+    <string name="device_charged_noti_desc">Your %s is charged to above 90\%</string>
 </resources>

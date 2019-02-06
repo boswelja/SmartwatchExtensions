@@ -24,4 +24,6 @@
 
     <string name="play_store_app_link">market://details?id=%s</string>
     <string name="play_store_web_link">https://play.google.com/store/apps/details?id=%s</string>
+
+    <string name="companion_device_type">Phone</string>
 </resources>

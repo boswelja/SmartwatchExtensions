@@ -66,4 +66,6 @@
     <string name="donate_title">Donate</string>
     <string name="donation_processed">Thanks for donating!</string>
     <string name="donation_failed">Failed to process donation</string>
+
+    <string name="companion_device_type">Watch</string>
 </resources>

@@ -34,7 +34,7 @@ class PreferenceChangeListener : WearableListenerService() {
                     .putBoolean(PreferenceKey.DND_SYNC_ENABLED_KEY, dndSyncEnabled)
                     .putBoolean(PreferenceKey.DND_SYNC_SEND_KEY, dndSending)
                     .putBoolean(PreferenceKey.DND_SYNC_RECEIVE_KEY, dndReceiving)
-                    .putBoolean(PreferenceKey.BATTERY_PHONE_FULL_CHARGE_NOTI_KEY, phoneBatteryChargedNoti)
+                    .putBoolean(PreferenceKey.BATTERY_FULL_CHARGE_NOTI_KEY, phoneBatteryChargedNoti)
                     .putBoolean(PreferenceKey.LOCK_PHONE_ENABLED, lockPhoneEnabled)
                     .apply()
 
