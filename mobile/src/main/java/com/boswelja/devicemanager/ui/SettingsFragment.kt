@@ -25,6 +25,7 @@ import com.boswelja.devicemanager.preference.confirmationdialog.ConfirmationDial
 import com.boswelja.devicemanager.preference.confirmationdialog.ConfirmationDialogPreference
 import com.boswelja.devicemanager.preference.seekbardialog.SeekbarDialogPrefFragment
 import com.boswelja.devicemanager.preference.seekbardialog.SeekbarDialogPreference
+import com.boswelja.devicemanager.widget.WatchBatteryWidget
 import com.google.android.material.snackbar.Snackbar
 
 class SettingsFragment : PreferenceFragmentCompat(), Preference.OnPreferenceChangeListener, Preference.OnPreferenceClickListener {
@@ -95,13 +96,19 @@ class SettingsFragment : PreferenceFragmentCompat(), Preference.OnPreferenceChan
                 false
             }
             PreferenceKey.BATTERY_SYNC_ENABLED_KEY -> {
-                if (newValue!! == true) {
-                    val sharedPrefs = preference.sharedPreferences
+                val sharedPrefs = preference.sharedPreferences
+                val value = newValue == true
+                sharedPrefs.edit().putBoolean(preference.key, value).apply()
+                (preference as SwitchPreference).isChecked = value
+                if (value) {
                     mainActivity.createBatterySyncJob(sharedPrefs.getInt(PreferenceKey.BATTERY_SYNC_INTERVAL_KEY, 90000).toLong())
+                    CommonUtils.updateBatteryStats(context!!)
                 } else {
                     mainActivity.stopBatterySyncJob()
                 }
-                true
+                Utils.updateWatchPrefs(context!!)
+                WatchBatteryWidget.updateWidget(context!!)
+                false
             }
             PreferenceKey.BATTERY_SYNC_INTERVAL_KEY -> {
                 mainActivity.createBatterySyncJob((newValue as Int).toLong())

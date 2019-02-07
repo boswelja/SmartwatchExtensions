@@ -27,6 +27,7 @@ object References {
     const val LOCK_PHONE_ENABLED_PATH = "com.boswelja.devicemanager.lockphoneenabled"
     const val BATTERY_PERCENT_PATH = "com.boswelja.devicemanager.batterypercent"
     const val BATTERY_PHONE_FULL_CHARGE_NOTI_PATH = "com.boswelja.devicemanager.phonebattfullchargenotienabled"
+    const val BATTERY_SYNC_ENABLED_PATH = "com.boswelja.devicemanager.batterysync"
 
     // Message keys
     const val LOCK_PHONE_KEY = "/lock_phone"

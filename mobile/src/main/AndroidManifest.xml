@@ -83,13 +83,21 @@
             </intent-filter>
         </service>
 
-
         <service android:name=".receiver.WatchBatteryUpdateListener">
             <intent-filter>
                 <action android:name="com.google.android.gms.wearable.MESSAGE_RECEIVED" />
                 <data android:scheme="wear" android:host="*" android:path="/batteryStatus" />
             </intent-filter>
         </service>
+
+        <receiver android:name=".widget.WatchBatteryWidget">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widget_watch_battery_metadata" />
+        </receiver>
     </application>
 
 </manifest>

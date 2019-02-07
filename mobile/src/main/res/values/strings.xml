@@ -68,4 +68,7 @@
     <string name="donation_failed">Failed to process donation</string>
 
     <string name="companion_device_type">Watch</string>
+
+    <string name="watch_battery_status">Watch %s%% charged</string>
+    <string name="battery_sync_disabled">Battery Sync is disabled</string>
 </resources>

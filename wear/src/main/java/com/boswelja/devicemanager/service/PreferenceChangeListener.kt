@@ -26,6 +26,7 @@ class PreferenceChangeListener : WearableListenerService() {
             val dndSending = dataMap.getBoolean(References.DND_SYNC_RECEIVE_PATH)
 
             val phoneBatteryChargedNoti = dataMap.getBoolean(References.BATTERY_PHONE_FULL_CHARGE_NOTI_PATH)
+            val batterySyncEnabled = dataMap.getBoolean(References.BATTERY_SYNC_ENABLED_PATH)
 
             val lockPhoneEnabled = dataMap.getBoolean(References.LOCK_PHONE_ENABLED_PATH)
 
@@ -36,6 +37,7 @@ class PreferenceChangeListener : WearableListenerService() {
                     .putBoolean(PreferenceKey.DND_SYNC_RECEIVE_KEY, dndReceiving)
                     .putBoolean(PreferenceKey.BATTERY_FULL_CHARGE_NOTI_KEY, phoneBatteryChargedNoti)
                     .putBoolean(PreferenceKey.LOCK_PHONE_ENABLED, lockPhoneEnabled)
+                    .putBoolean(PreferenceKey.BATTERY_SYNC_ENABLED_KEY, batterySyncEnabled)
                     .apply()
 
             if (dndSyncEnabled && dndSending) {
@@ -46,6 +48,11 @@ class PreferenceChangeListener : WearableListenerService() {
                 } else {
                     startService(intent)
                 }
+            }
+
+            if (!batterySyncEnabled) {
+                prefs.edit().remove(References.BATTERY_PERCENT_KEY).apply()
+                Log.d(tag, "Cleared battery percent")
             }
             Log.d(tag, "Prefs updated")
         }

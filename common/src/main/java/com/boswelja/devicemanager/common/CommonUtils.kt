@@ -62,13 +62,19 @@ object CommonUtils {
                         Log.d("updateBatteryStats", "No available nodes")
                     }
                 }
+    }
 
-        //val dataClient = Wearable.getDataClient(context)
-        //val putDataMapReq = PutDataMapRequest.create(References.BATTERY_STATUS_PATH)
-        //putDataMapReq.dataMap.putInt(References.BATTERY_PERCENT_PATH, batteryPct)
-        //putDataMapReq.dataMap.putBoolean(References.BATTERY_CHARGING, charging)
-        //val putDataReq = putDataMapReq.asPutDataRequest()
-        //dataClient.putDataItem(putDataReq)
+    fun getBatteryIndicator(percent: Int) : Int {
+        return when (percent) {
+            in 1..24 -> R.drawable.ic_battery_20
+            in 25..44 -> R.drawable.ic_battery_30
+            in 45..54 -> R.drawable.ic_battery_50
+            in 55..64 -> R.drawable.ic_battery_60
+            in 65..84 -> R.drawable.ic_battery_80
+            in 85..94 -> R.drawable.ic_battery_90
+            in 95..100 -> R.drawable.ic_battery_full
+            else -> R.drawable.ic_battery_unknown
+        }
     }
 
 }

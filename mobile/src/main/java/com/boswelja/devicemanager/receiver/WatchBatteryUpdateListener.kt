@@ -8,11 +8,12 @@
 package com.boswelja.devicemanager.receiver
 
 import com.boswelja.devicemanager.common.BatteryUpdateListener
+import com.boswelja.devicemanager.widget.WatchBatteryWidget
 
 class WatchBatteryUpdateListener : BatteryUpdateListener() {
 
     override fun onBatteryUpdate(percent: Int, charging: Boolean) {
-        //TODO("Update widget here")
+        WatchBatteryWidget.updateWidget(this)
     }
 
 }

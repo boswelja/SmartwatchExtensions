@@ -18,6 +18,8 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.boswelja.devicemanager.MainOption
 import com.boswelja.devicemanager.R
+import com.boswelja.devicemanager.common.CommonUtils
+import com.boswelja.devicemanager.common.PreferenceKey
 import com.boswelja.devicemanager.common.References
 import com.boswelja.devicemanager.service.ActionService
 
@@ -40,15 +42,22 @@ class MainAdapter(private val options: ArrayList<MainOption>) : RecyclerView.Ada
                 }
             }
             References.TYPE_PHONE_BATTERY -> {
-                holder.itemView.setOnClickListener {
-                    val intent = Intent(holder.itemView.context, ActionService::class.java)
-                    intent.putExtra(References.INTENT_ACTION_EXTRA, References.REQUEST_BATTERY_UPDATE_KEY)
-                    holder.itemView.context.startService(intent)
-                }
                 val sharedPrefs = PreferenceManager.getDefaultSharedPreferences(holder.itemView.context)
+                holder.itemView.setOnClickListener {
+                    if (sharedPrefs.getBoolean(PreferenceKey.BATTERY_SYNC_ENABLED_KEY, false)) {
+                        val intent = Intent(holder.itemView.context, ActionService::class.java)
+                        intent.putExtra(References.INTENT_ACTION_EXTRA, References.REQUEST_BATTERY_UPDATE_KEY)
+                        holder.itemView.context.startService(intent)
+                    }
+                }
                 sharedPrefs.registerOnSharedPreferenceChangeListener { _, key ->
-                    if (key == References.BATTERY_PERCENT_KEY) {
-                        updateBatteryPercent(holder, sharedPrefs)
+                    when (key) {
+                        References.BATTERY_PERCENT_KEY -> {
+                            updateBatteryPercent(holder, sharedPrefs)
+                        }
+                        PreferenceKey.BATTERY_SYNC_ENABLED_KEY -> {
+                            updateBatteryPercent(holder, sharedPrefs)
+                        }
                     }
                 }
                 updateBatteryPercent(holder, sharedPrefs)
@@ -59,21 +68,15 @@ class MainAdapter(private val options: ArrayList<MainOption>) : RecyclerView.Ada
 
     private fun updateBatteryPercent(holder: ViewHolder, sharedPrefs: SharedPreferences) {
         val phoneBattery = sharedPrefs.getInt(References.BATTERY_PERCENT_KEY, -1)
+        val batterySyncEnabled = sharedPrefs.getBoolean(PreferenceKey.BATTERY_SYNC_ENABLED_KEY, false)
         if (phoneBattery > -1) {
             holder.label.text = String.format(holder.itemView.context.getString(R.string.phone_battery_desc), phoneBattery)
+        } else if (!batterySyncEnabled) {
+            holder.label.text = holder.itemView.context.getString(R.string.battery_sync_disabled)
         } else {
             holder.label.text = holder.itemView.context.getString(R.string.phone_battery_unknown_long)
         }
-        when (phoneBattery) {
-            -1 -> holder.icon.setImageResource(R.drawable.ic_battery_unknown)
-            in 1..24 -> holder.icon.setImageResource(R.drawable.ic_battery_20)
-            in 25..44 -> holder.icon.setImageResource(R.drawable.ic_battery_30)
-            in 45..54 -> holder.icon.setImageResource(R.drawable.ic_battery_50)
-            in 55..64 -> holder.icon.setImageResource(R.drawable.ic_battery_60)
-            in 65..84 -> holder.icon.setImageResource(R.drawable.ic_battery_80)
-            in 85..94 -> holder.icon.setImageResource(R.drawable.ic_battery_90)
-            in 95..100 -> holder.icon.setImageResource(R.drawable.ic_battery_full)
-        }
+        holder.icon.setImageResource(CommonUtils.getBatteryIndicator(phoneBattery))
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {

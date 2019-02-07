@@ -11,6 +11,7 @@
     <string name="phone_battery_unknown_short">N/A</string>
     <string name="phone_battery_percent">%s%%</string>
     <string name="phone_battery_update_failed">Failed to update phone battery stats</string>
+    <string name="battery_sync_disabled">Battery Sync disabled</string>
 
     <string name="phone_lock_failed_message">Failed to lock your phone</string>
     <string name="phone_lock_disabled_message">Phone locking has been disabled</string>
