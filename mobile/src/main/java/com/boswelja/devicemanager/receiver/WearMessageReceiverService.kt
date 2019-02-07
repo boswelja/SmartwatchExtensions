@@ -10,7 +10,6 @@ package com.boswelja.devicemanager.receiver
 import android.app.admin.DeviceAdminReceiver
 import android.app.admin.DevicePolicyManager
 import android.content.Context
-import com.boswelja.devicemanager.Utils
 import com.boswelja.devicemanager.common.CommonUtils
 import com.boswelja.devicemanager.common.References
 import com.google.android.gms.wearable.MessageEvent

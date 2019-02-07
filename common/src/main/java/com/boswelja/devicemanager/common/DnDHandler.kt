@@ -71,7 +71,7 @@ class DnDHandler : Service() {
     fun updateDnDSyncSend() {
         val newValue = prefs.getBoolean(PreferenceKey.DND_SYNC_SEND_KEY, dndSyncSend)
         if (newValue != dndSyncSend) {
-            Log.d(tag, "DnD Sync Send changed to" + newValue.toString())
+            Log.d(tag, "DnD Sync Send changed to: $newValue")
             dndSyncSend = newValue
             dndSyncSendChanged()
         }

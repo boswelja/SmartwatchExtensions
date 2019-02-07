@@ -5,7 +5,6 @@ import android.content.res.TypedArray
 import android.util.AttributeSet
 import androidx.preference.DialogPreference
 import com.boswelja.devicemanager.R
-import com.boswelja.devicemanager.common.PreferenceKey
 import java.util.concurrent.TimeUnit
 
 class SeekbarDialogPreference(context: Context, attrs: AttributeSet?, defStyleAttr: Int, defStyleRes: Int) : DialogPreference(context, attrs, defStyleAttr, defStyleRes) {
