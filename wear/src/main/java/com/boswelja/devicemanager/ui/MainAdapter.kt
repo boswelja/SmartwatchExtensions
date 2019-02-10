@@ -76,7 +76,7 @@ class MainAdapter(private val options: ArrayList<MainOption>) : RecyclerView.Ada
         } else {
             holder.label.text = holder.itemView.context.getString(R.string.phone_battery_unknown_long)
         }
-        holder.icon.setImageResource(CommonUtils.getBatteryIndicator(phoneBattery))
+        holder.icon.setImageResource(CommonUtils.getPhoneBatteryIndicator(phoneBattery))
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {

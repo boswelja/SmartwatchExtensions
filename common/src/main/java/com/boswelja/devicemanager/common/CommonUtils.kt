@@ -77,4 +77,30 @@ object CommonUtils {
         }
     }
 
+    fun getWatchBatteryIndicator(percent: Int) : Int {
+        return when (percent) {
+            in 1..24 -> R.drawable.ic_watch_battery_20
+            in 25..44 -> R.drawable.ic_watch_battery_30
+            in 45..54 -> R.drawable.ic_watch_battery_50
+            in 55..64 -> R.drawable.ic_watch_battery_60
+            in 65..84 -> R.drawable.ic_watch_battery_80
+            in 85..94 -> R.drawable.ic_watch_battery_90
+            in 95..100 -> R.drawable.ic_watch_battery_full
+            else -> R.drawable.ic_watch_battery_unknown
+        }
+    }
+
+
+    fun getPhoneBatteryIndicator(percent: Int) : Int {
+        return when (percent) {
+            in 1..24 -> R.drawable.ic_phone_battery_20
+            in 25..44 -> R.drawable.ic_phone_battery_30
+            in 45..54 -> R.drawable.ic_phone_battery_50
+            in 55..64 -> R.drawable.ic_phone_battery_60
+            in 65..84 -> R.drawable.ic_phone_battery_80
+            in 85..94 -> R.drawable.ic_phone_battery_90
+            in 95..100 -> R.drawable.ic_phone_battery_full
+            else -> R.drawable.ic_phone_battery_unknown
+        }
+    }
 }

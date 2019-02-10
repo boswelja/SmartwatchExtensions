@@ -18,6 +18,7 @@ import android.support.wearable.complications.ComplicationProviderService
 import android.support.wearable.complications.ComplicationText
 import android.util.Log
 import com.boswelja.devicemanager.R
+import com.boswelja.devicemanager.common.CommonUtils
 import com.boswelja.devicemanager.common.References
 import com.boswelja.devicemanager.service.ActionService
 
@@ -50,7 +51,7 @@ class PhoneBatteryComplicationProvider : ComplicationProviderService() {
         val text = if (percent > -1) String.format(getString(R.string.phone_battery_percent), percent) else getString(R.string.phone_battery_unknown_short)
         val data = ComplicationData.Builder(type)
                 .setShortText(ComplicationText.plainText(text))
-                .setIcon(Icon.createWithResource(this, R.drawable.ic_smartphone_battery))
+                .setIcon(Icon.createWithResource(this, CommonUtils.getPhoneBatteryIndicator(percent)))
                 .setTapAction(pendingIntent)
         if (type == ComplicationData.TYPE_RANGED_VALUE) {
             data.setMaxValue(1.0f)

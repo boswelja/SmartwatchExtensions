@@ -28,10 +28,10 @@ class WatchBatteryWidget : AppWidgetProvider() {
                 val activityIntent = PendingIntent.getActivity(context, 0, Intent(context, MainActivity::class.java), 0)
                 remoteViews.setOnClickPendingIntent(R.id.widget_background, activityIntent)
                 if (batterySyncEnabled) {
-                    remoteViews.setImageViewResource(R.id.battery_indicator, CommonUtils.getBatteryIndicator(percent))
+                    remoteViews.setImageViewResource(R.id.battery_indicator, CommonUtils.getWatchBatteryIndicator(percent))
                     remoteViews.setTextViewText(R.id.battery_indicator_text, context?.getString(R.string.watch_battery_status, percent.toString()))
                 } else {
-                    remoteViews.setImageViewResource(R.id.battery_indicator, R.drawable.ic_battery_unknown)
+                    remoteViews.setImageViewResource(R.id.battery_indicator, R.drawable.ic_watch_battery_unknown)
                     remoteViews.setTextViewText(R.id.battery_indicator_text, context?.getString(R.string.battery_sync_disabled))
                 }
                 appWidgetManager?.updateAppWidget(widgetId, remoteViews)

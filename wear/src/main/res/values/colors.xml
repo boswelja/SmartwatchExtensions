@@ -6,5 +6,5 @@
     <color name="dark_ui_element">#666666</color>
     <color name="light_ui_element">#8c8c8c</color>
     <color name="active_ui_element">#a6a6a6</color>
-    <color name="accent">#FFFFFF</color>
+    <color name="colorAccent">#FFFFFF</color>
 </resources>

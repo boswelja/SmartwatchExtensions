@@ -43,7 +43,7 @@
 
         <service
             android:name=".complications.PhoneBatteryComplicationProvider"
-            android:icon="@drawable/ic_smartphone_battery"
+            android:icon="@drawable/ic_phone_battery_full"
             android:label="Phone Battery Status"
             android:permission="com.google.android.wearable.permission.BIND_COMPLICATION_PROVIDER">
             <intent-filter>
