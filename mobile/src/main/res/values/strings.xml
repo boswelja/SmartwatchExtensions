@@ -69,6 +69,6 @@
 
     <string name="companion_device_type">Watch</string>
 
-    <string name="watch_battery_status">Watch %s%% charged</string>
-    <string name="battery_sync_disabled">Battery Sync is disabled</string>
+    <string name="watch_battery_status">%s%%</string>
+    <string name="battery_sync_disabled">Battery Sync disabled</string>
 </resources>
