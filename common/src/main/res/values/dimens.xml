@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="phone_battery_inset_top">10dp</dimen>
-    <dimen name="phone_battery_inset_left">12dp</dimen>
-    <dimen name="phone_battery_inset_right">12dp</dimen>
-    <dimen name="phone_battery_inset_bottom">14dp</dimen>
+    <dimen name="phone_battery_inset_top">6dp</dimen>
+    <dimen name="phone_battery_inset_left">8dp</dimen>
+    <dimen name="phone_battery_inset_right">8dp</dimen>
+    <dimen name="phone_battery_inset_bottom">10dp</dimen>
 
-    <dimen name="watch_battery_inset_top">16dp</dimen>
-    <dimen name="watch_battery_inset_left">16dp</dimen>
-    <dimen name="watch_battery_inset_right">16dp</dimen>
-    <dimen name="watch_battery_inset_bottom">16dp</dimen>
+    <dimen name="watch_battery_inset_top">14dp</dimen>
+    <dimen name="watch_battery_inset_left">14dp</dimen>
+    <dimen name="watch_battery_inset_right">14dp</dimen>
+    <dimen name="watch_battery_inset_bottom">14dp</dimen>
 </resources>
