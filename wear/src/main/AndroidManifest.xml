@@ -35,7 +35,9 @@
         </activity>
 
         <activity
-            android:name="android.support.wearable.activity.ConfirmationActivity"/>
+            android:name="androidx.wear.activity.ConfirmationActivity"/>
+
+        <activity android:name=".ui.ConfirmInstallActivity" />
 
         <service
             android:name=".service.ActionService"
