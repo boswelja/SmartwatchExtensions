@@ -7,6 +7,8 @@ import android.content.Context
 import android.content.Intent
 import android.media.AudioManager
 import android.os.Build
+import android.text.Html
+import android.text.Spanned
 
 object Compat {
 
@@ -42,6 +44,14 @@ object Compat {
             } else {
                 audioManager.ringerMode = AudioManager.RINGER_MODE_NORMAL
             }
+        }
+    }
+
+    fun htmlFormat(text: String) : Spanned {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            Html.fromHtml(text, Html.FROM_HTML_MODE_LEGACY)
+        } else {
+            Html.fromHtml(text)
         }
     }
 }

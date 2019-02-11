@@ -19,6 +19,7 @@ import androidx.preference.*
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.Utils
 import com.boswelja.devicemanager.common.CommonUtils
+import com.boswelja.devicemanager.common.Compat
 import com.boswelja.devicemanager.common.DnDHandler
 import com.boswelja.devicemanager.common.PreferenceKey
 import com.boswelja.devicemanager.preference.confirmationdialog.ConfirmationDialogPrefFragment
@@ -122,10 +123,11 @@ class SettingsFragment : PreferenceFragmentCompat(), Preference.OnPreferenceChan
             PreferenceKey.DND_SYNC_ENABLED_KEY -> {
                 if (newValue!! == true) {
                     //TODO Actually check if watch has correct permissions
+                    val command = getString(R.string.dnd_sync_adb_command)
                     AlertDialog.Builder(context!!)
                             .setTitle(R.string.dnd_sync_adb_dialog_title)
-                            .setMessage(String.format(getString(R.string.dnd_sync_adb_dialog_message), getString(R.string.dnd_sync_adb_command)))
-                            .setPositiveButton(R.string.dialog_button_done) { _, _ ->
+                            .setMessage(Compat.htmlFormat(String.format(getString(R.string.dnd_sync_adb_dialog_message), command)))
+                            .setPositiveButton(R.string.dialog_button_done) { dialog, _ ->
                                 preference.sharedPreferences.edit().putBoolean(PreferenceKey.DND_SYNC_ENABLED_KEY, true)
                                 (preference as SwitchPreference).isChecked = true
                                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -134,20 +136,19 @@ class SettingsFragment : PreferenceFragmentCompat(), Preference.OnPreferenceChan
                                     activity?.startService(Intent(context, DnDHandler::class.java))
                                 }
                                 Utils.updateWatchPrefs(context!!)
+                                dialog.cancel()
                             }
-                            .setNegativeButton(R.string.dialog_button_cancel) { _, _ ->
+                            .setNegativeButton(R.string.dialog_button_cancel) { dialog, _ ->
                                 preference.sharedPreferences.edit().putBoolean(PreferenceKey.DND_SYNC_ENABLED_KEY, false)
                                 (preference as SwitchPreference).isChecked = false
                                 Utils.updateWatchPrefs(context!!)
+                                dialog.cancel()
                             }
-                            .setNeutralButton(R.string.dialog_button_copy) { _, _ ->
+                            .setNeutralButton(R.string.dialog_button_share) { dialog, _ ->
                                 preference.sharedPreferences.edit().putBoolean(PreferenceKey.DND_SYNC_ENABLED_KEY, false)
                                 (preference as SwitchPreference).isChecked = false
-                                val clipboardManager = context!!.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-                                val clip = ClipData.newPlainText("DnD sync ADB command", context!!.getString(R.string.dnd_sync_adb_command))
-                                clipboardManager.primaryClip = clip
-                                Toast.makeText(context, getString(R.string.copied_to_clipboard), Toast.LENGTH_SHORT).show()
                                 Utils.updateWatchPrefs(context!!)
+                                Utils.shareText(context!!, command)
                             }
                             .show()
                 } else {
