@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/widget_background"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -13,15 +12,16 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:src="@drawable/ic_battery_unknown"
-        android:layout_weight="3"/>
+        android:layout_weight="10"/>
 
     <TextView
         android:id="@+id/battery_indicator_text"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
         android:textColor="@color/colorAccent"
-        android:gravity="center_horizontal"
+        android:gravity="center"
         android:layout_weight="1"
-        app:autoSizeTextType="uniform"/>
+        android:text="@string/battery_sync_disabled"
+        android:textSize="18sp"/>
 
 </LinearLayout>
