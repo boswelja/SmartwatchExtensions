@@ -18,7 +18,7 @@
                                 <PersistentState>
                                   <option name="values">
                                     <map>
-                                      <entry key="url" value="jar:file:/C:/android-studio/plugins/android/lib/android.jar!/images/material_design_icons/hardware/ic_phone_android_black_24dp.xml" />
+                                      <entry key="url" value="jar:file:/C:/android-studio/plugins/android/lib/android.jar!/images/material_design_icons/device/ic_battery_alert_black_24dp.xml" />
                                     </map>
                                   </option>
                                 </PersistentState>
@@ -28,7 +28,7 @@
                         </option>
                         <option name="values">
                           <map>
-                            <entry key="outputName" value="ic_phone" />
+                            <entry key="outputName" value="ic_battery_alert" />
                             <entry key="sourceFile" value="C:\Users\boswe" />
                           </map>
                         </option>

@@ -64,11 +64,8 @@ class PhoneBatteryComplicationProvider : ComplicationProviderService() {
     }
 
     private fun createIcon(percent: Int) : Icon {
-        val drawable = getDrawable(CommonUtils.getPhoneBatteryIndicator(percent))!!
-        val bitmap = Bitmap.createBitmap(drawable.intrinsicWidth, drawable.intrinsicHeight, Bitmap.Config.ARGB_8888)
-        val canvas = Canvas(bitmap)
-        drawable.setBounds(0, 0, canvas.width, canvas.height)
-        drawable.draw(canvas)
-        return Icon.createWithBitmap(bitmap)
+        val drawable = getDrawable(R.drawable.ic_phone_battery)!!
+        drawable.level = percent
+        return Icon.createWithBitmap(CommonUtils.drawableToBitmap(drawable))
     }
 }
