@@ -6,7 +6,7 @@
     <string name="cancel">Cancel</string>
     <string name="ok">OK</string>
 
-    <string name="phone_battery_desc">Phone battery at %s%%</string>
+    <string name="phone_battery_desc">%s%% phone battery</string>
     <string name="phone_battery_unknown_long">Phone battery info not available</string>
     <string name="phone_battery_unknown_short">N/A</string>
     <string name="phone_battery_percent">%s%%</string>
