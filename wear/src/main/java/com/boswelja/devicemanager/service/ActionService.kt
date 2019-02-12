@@ -14,10 +14,10 @@ import android.content.Intent
 import android.os.Build
 import android.os.IBinder
 import android.preference.PreferenceManager
-import android.support.wearable.activity.ConfirmationActivity
 import android.support.wearable.complications.ProviderUpdateRequester
 import android.util.Log
 import androidx.core.app.NotificationCompat
+import androidx.wear.activity.ConfirmationActivity
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.Utils
 import com.boswelja.devicemanager.common.PreferenceKey
