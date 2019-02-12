@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <level-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:maxLevel="0" android:drawable="@drawable/ic_phone_battery_unknown" />
     <item android:maxLevel="15" android:drawable="@drawable/ic_phone_battery_low" />
     <item android:maxLevel="25" android:drawable="@drawable/ic_phone_battery_20" />
     <item android:maxLevel="40" android:drawable="@drawable/ic_phone_battery_30" />
