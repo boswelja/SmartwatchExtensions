@@ -18,9 +18,9 @@ class ConfirmationDialogPreference(context: Context, attrs: AttributeSet?, defSt
 
     private lateinit var checkbox: AppCompatCheckBox
 
-    val showOnEnable: Boolean
-    val showOnDisable: Boolean
-    val allowDisable: Boolean
+    private val showOnEnable: Boolean
+    private val showOnDisable: Boolean
+    private val allowDisable: Boolean
 
     init {
         widgetLayoutResource = R.layout.pref_widget_checkbox
