@@ -7,7 +7,6 @@
  */
 package com.boswelja.devicemanager.ui
 
-import android.annotation.SuppressLint
 import android.app.admin.DeviceAdminReceiver
 import android.app.admin.DevicePolicyManager
 import android.app.job.JobInfo
@@ -15,14 +14,13 @@ import android.app.job.JobScheduler
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.content.pm.PackageManager
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.PowerManager
 import android.preference.PreferenceManager
-import android.provider.Settings
-import androidx.appcompat.app.AlertDialog
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import com.boswelja.devicemanager.common.Compat
@@ -41,8 +39,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var deviceAdminReceiver: ComponentName
     private lateinit var settingsFragment: SettingsFragment
     private lateinit var jobScheduler: JobScheduler
+    private lateinit var prefs: SharedPreferences
 
-    @SuppressLint("BatteryLife")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -58,7 +56,7 @@ class MainActivity : AppCompatActivity() {
         settingsFragment = SettingsFragment()
         supportFragmentManager.beginTransaction().replace(R.id.fragment_holder, settingsFragment).commit()
 
-        val prefs = PreferenceManager.getDefaultSharedPreferences(this)
+        prefs = PreferenceManager.getDefaultSharedPreferences(this)
         val battSyncEnabled = prefs.getBoolean(PreferenceKey.BATTERY_SYNC_ENABLED_KEY, false)
         if (battSyncEnabled) {
             if (Compat.getPendingJob(jobScheduler, References.BATTERY_PERCENT_JOB_ID) == null) {
@@ -72,25 +70,6 @@ class MainActivity : AppCompatActivity() {
                 prefs.getBoolean(PreferenceKey.DND_SYNC_SEND_KEY, true)) {
             val intent = Intent(this, DnDHandler::class.java)
             Compat.startService(this, intent)
-        }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && prefs.getBoolean(PreferenceKey.CHECK_BATTERY_OPTIMISATION, true)) {
-            val pwm = getSystemService(Context.POWER_SERVICE) as PowerManager
-            val isOptimisingBattery = !pwm.isIgnoringBatteryOptimizations(packageName)
-            if (isOptimisingBattery) {
-                AlertDialog.Builder(this)
-                        .setTitle(getString(R.string.dialog_battery_optimisation_warn_title))
-                        .setMessage(getString(R.string.dialog_battery_optimisation_warn_message))
-                        .setPositiveButton(R.string.dialog_button_yes) { _, _ ->
-                            run {
-                                val intent = Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS)
-                                intent.data = Uri.parse("package:$packageName")
-                                startActivity(intent)
-                            }
-                        }
-                        .setNeutralButton(R.string.dialog_button_not_again) { _, _ -> prefs.edit().putBoolean(PreferenceKey.CHECK_BATTERY_OPTIMISATION, false).apply() }
-                        .setNegativeButton(R.string.dialog_button_no) { dialog, _ -> dialog.dismiss() }
-                        .show()
-            }
         }
     }
 

@@ -13,7 +13,7 @@ object PreferenceKey {
     const val DND_SYNC_RECEIVE_KEY = "dnd_sync_receive"
     const val LOCK_PHONE_ENABLED = "lock_phone_enabled"
     const val NOTIFICATION_SETTINGS_KEY = "notification_settings"
-    const val CHECK_BATTERY_OPTIMISATION = "battery_optimisation_check_enabled"
+    const val BATTERY_OPT_KEY = "battery_optimisation"
 
     const val DEVICE_UID = "uid"
 

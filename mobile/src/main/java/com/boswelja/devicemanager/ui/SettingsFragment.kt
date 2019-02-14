@@ -9,9 +9,12 @@ package com.boswelja.devicemanager.ui
 
 import android.app.NotificationManager
 import android.content.*
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.PowerManager
 import android.provider.Settings
+import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.NotificationManagerCompat
@@ -33,6 +36,7 @@ class SettingsFragment : PreferenceFragmentCompat(), Preference.OnPreferenceChan
 
     private lateinit var mainActivity: MainActivity
     private lateinit var notiSettingsPref: Preference
+    private lateinit var batteryOptPref: ConfirmationDialogPreference
     private lateinit var lockPhoneEnabledPref: SwitchPreference
     private lateinit var dndSyncPhoneToWatchPref: CheckBoxPreference
     private lateinit var dndSyncWatchToPhonePref: CheckBoxPreference
@@ -127,7 +131,7 @@ class SettingsFragment : PreferenceFragmentCompat(), Preference.OnPreferenceChan
                     AlertDialog.Builder(context!!)
                             .setTitle(R.string.dnd_sync_adb_dialog_title)
                             .setMessage(Compat.htmlFormat(String.format(getString(R.string.dnd_sync_adb_dialog_message), command)))
-                            .setPositiveButton(R.string.dialog_button_done) { dialog, _ ->
+                            .setPositiveButton(R.string.dialog_button_done) { _, _ ->
                                 preference.sharedPreferences.edit().putBoolean(PreferenceKey.DND_SYNC_ENABLED_KEY, true)
                                 (preference as SwitchPreference).isChecked = true
                                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -136,15 +140,13 @@ class SettingsFragment : PreferenceFragmentCompat(), Preference.OnPreferenceChan
                                     activity?.startService(Intent(context, DnDHandler::class.java))
                                 }
                                 Utils.updateWatchPrefs(context!!)
-                                dialog.cancel()
                             }
-                            .setNegativeButton(R.string.dialog_button_cancel) { dialog, _ ->
+                            .setNegativeButton(R.string.dialog_button_cancel) { _, _ ->
                                 preference.sharedPreferences.edit().putBoolean(PreferenceKey.DND_SYNC_ENABLED_KEY, false)
                                 (preference as SwitchPreference).isChecked = false
                                 Utils.updateWatchPrefs(context!!)
-                                dialog.cancel()
                             }
-                            .setNeutralButton(R.string.dialog_button_share) { dialog, _ ->
+                            .setNeutralButton(R.string.dialog_button_share) { _, _ ->
                                 preference.sharedPreferences.edit().putBoolean(PreferenceKey.DND_SYNC_ENABLED_KEY, false)
                                 (preference as SwitchPreference).isChecked = false
                                 Utils.updateWatchPrefs(context!!)
@@ -177,7 +179,16 @@ class SettingsFragment : PreferenceFragmentCompat(), Preference.OnPreferenceChan
                 }
                 false
             }
-            else -> false
+            PreferenceKey.BATTERY_OPT_KEY -> {
+                Log.d("SettingsFragment", "Requesting battery opt ignore")
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && newValue == true) {
+                    val intent = Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS)
+                    intent.data = Uri.parse("package:${context?.packageName}")
+                    startActivity(intent)
+                }
+                false
+            }
+            else -> true
         }
     }
 
@@ -188,7 +199,6 @@ class SettingsFragment : PreferenceFragmentCompat(), Preference.OnPreferenceChan
 
         addPreferencesFromResource(R.xml.prefs_general)
         setupGeneralPrefs()
-        updateNotiSettingStatus()
 
         addPreferencesFromResource(R.xml.prefs_lock_phone)
         setupPhoneLockPrefs()
@@ -209,9 +219,13 @@ class SettingsFragment : PreferenceFragmentCompat(), Preference.OnPreferenceChan
         val hideAppIconPref = findPreference(PreferenceKey.HIDE_APP_ICON_KEY)
         hideAppIconPref.onPreferenceChangeListener = this
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            notiSettingsPref = findPreference(PreferenceKey.NOTIFICATION_SETTINGS_KEY)
-            notiSettingsPref.onPreferenceClickListener = this
+        notiSettingsPref = findPreference(PreferenceKey.NOTIFICATION_SETTINGS_KEY)
+        notiSettingsPref.onPreferenceClickListener = this
+        updateNotiSettingStatus()
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            batteryOptPref = findPreference(PreferenceKey.BATTERY_OPT_KEY) as ConfirmationDialogPreference
+            batteryOptPref.onPreferenceChangeListener = this
         }
     }
 
@@ -272,6 +286,11 @@ class SettingsFragment : PreferenceFragmentCompat(), Preference.OnPreferenceChan
             Utils.updateWatchPrefs(context!!)
         }
         updateNotiSettingStatus()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            val pwm = context?.getSystemService(Context.POWER_SERVICE) as PowerManager
+            val isIgnoringBattery = pwm.isIgnoringBatteryOptimizations(context?.packageName)
+            batteryOptPref.setValue(isIgnoringBattery)
+        }
     }
 
     override fun onDisplayPreferenceDialog(preference: Preference?) {

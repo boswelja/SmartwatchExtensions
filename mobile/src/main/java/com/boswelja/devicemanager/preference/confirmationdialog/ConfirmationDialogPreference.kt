@@ -7,7 +7,6 @@ import androidx.appcompat.widget.AppCompatCheckBox
 import androidx.preference.DialogPreference
 import androidx.preference.PreferenceViewHolder
 import com.boswelja.devicemanager.R
-import com.boswelja.devicemanager.common.PreferenceKey
 
 class ConfirmationDialogPreference(context: Context, attrs: AttributeSet?, defStyleAttr: Int, defStyleRes: Int) : DialogPreference(context, attrs, defStyleAttr, defStyleRes) {
 
@@ -19,8 +18,17 @@ class ConfirmationDialogPreference(context: Context, attrs: AttributeSet?, defSt
 
     private lateinit var checkbox: AppCompatCheckBox
 
+    val showOnEnable: Boolean
+    val showOnDisable: Boolean
+    val allowDisable: Boolean
+
     init {
         widgetLayoutResource = R.layout.pref_widget_checkbox
+        val styledAttrs = context.obtainStyledAttributes(attrs, R.styleable.ConfirmationDialogPreference, defStyleAttr, defStyleRes)
+        showOnEnable = styledAttrs.getBoolean(R.styleable.ConfirmationDialogPreference_showOnEnable, true)
+        showOnDisable = styledAttrs.getBoolean(R.styleable.ConfirmationDialogPreference_showOnDisable, true)
+        allowDisable = styledAttrs.getBoolean(R.styleable.ConfirmationDialogPreference_allowDisable, true)
+        styledAttrs.recycle()
     }
 
     override fun onGetDefaultValue(a: TypedArray?, index: Int): Any {
@@ -31,7 +39,7 @@ class ConfirmationDialogPreference(context: Context, attrs: AttributeSet?, defSt
         value = if (defaultValue != null) {
             defaultValue as Boolean
         } else {
-            sharedPreferences.getBoolean(PreferenceKey.HIDE_APP_ICON_KEY, false)
+            sharedPreferences.getBoolean(key, false)
         }
     }
 
@@ -42,18 +50,24 @@ class ConfirmationDialogPreference(context: Context, attrs: AttributeSet?, defSt
     }
 
     override fun onClick() {
-        if (!value) {
-            super.onClick()
-        } else {
-            setValue(false)
-            sharedPreferences.edit().putBoolean(key, value).apply()
-            onPreferenceChangeListener?.onPreferenceChange(this, value)
+        if ((value && allowDisable) || !value) {
+            if ((!value && showOnEnable) || (value && showOnDisable)) {
+                super.onClick()
+            } else {
+                setValue(!value)
+            }
         }
     }
 
     fun setValue(newValue: Boolean) {
-        value = newValue
-        checkbox.isChecked = value
+        if (value != newValue) {
+            value = newValue
+            try {
+                checkbox.isChecked = value
+            } catch (ignored: UninitializedPropertyAccessException) {}
+            sharedPreferences.edit().putBoolean(key, value).apply()
+            onPreferenceChangeListener?.onPreferenceChange(this, value)
+        }
     }
 
     fun getValue() : Boolean {

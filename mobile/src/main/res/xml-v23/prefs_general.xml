@@ -18,6 +18,12 @@
             android:key="notification_settings"
             android:title="@string/pref_noti_settings_title" />
 
+        <com.boswelja.devicemanager.preference.confirmationdialog.ConfirmationDialogPreference
+            android:key="battery_optimisation"
+            android:title="Disable Battery Optimisation"
+            android:summary="Disable Android Battery Optimisation for this app"
+            android:dialogMessage="Keeping Battery Optimisation on for this app can cause numerous issues with different functions of this app. Battery status may stop syncing automatically, syncing Do not Disturb may not work correctly and so on. The effects may vary from device to device, but we recommend disabling it to ensure everything works correctly."
+            app:allowDisable="false"/>
     </androidx.preference.PreferenceCategory>
 
 </androidx.preference.PreferenceScreen>

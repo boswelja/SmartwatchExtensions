@@ -9,10 +9,8 @@ class ConfirmationDialogPrefFragment : PreferenceDialogFragmentCompat() {
 
     override fun onDialogClosed(positiveResult: Boolean) {
         val pref = preference as ConfirmationDialogPreference
-        if (pref.getValue() != positiveResult) {
-            pref.sharedPreferences.edit().putBoolean(key, positiveResult).apply()
-            pref.setValue(positiveResult)
-            pref.onPreferenceChangeListener?.onPreferenceChange(pref, positiveResult)
+        if (positiveResult) {
+            pref.setValue(!pref.getValue())
         }
 
     }
