@@ -18,6 +18,11 @@
             android:key="notification_settings"
             android:title="@string/pref_noti_settings_title" />
 
+        <androidx.preference.Preference
+            android:key="daynight_switch"
+            android:title="@string/pref_daynight_switch_title"
+            android:icon="@drawable/ic_daynight_pref"/>
+
     </androidx.preference.PreferenceCategory>
 
 </androidx.preference.PreferenceScreen>

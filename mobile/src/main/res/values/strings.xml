@@ -10,6 +10,11 @@
     <string name="pref_noti_settings_title">Notification Settings</string>
     <string name="pref_noti_settings_summary_enabled">Notifications are enabled</string>
     <string name="pref_noti_settings_summary_disabled">Notifications are disabled</string>
+    <string name="pref_battery_opt_title">Disable Battery Optimisation</string>
+    <string name="pref_battery_opt_summary_disabled">Battery Optimisation is disabled for this app.</string>
+    <string name="pref_battery_opt_summary_enabled">Battery Optimisation is enabled for this app.</string>
+    <string name="pref_battery_opt_dialog_message">Keeping Battery Optimisation on for this app can cause numerous issues with different functions of this app. The effects may vary from device to device, but we recommend disabling it to ensure everything works correctly.</string>
+    <string name="pref_daynight_switch_title">Switch to dark theme</string>
 
     <string name="pref_category_lock_phone">Phone Locking</string>
     <string name="pref_lock_phone_enabled_title">Remote phone locking</string>

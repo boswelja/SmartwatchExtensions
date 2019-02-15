@@ -11,9 +11,13 @@ import android.app.admin.DeviceAdminReceiver
 import android.app.admin.DevicePolicyManager
 import android.content.Context
 import android.content.Intent
+import android.content.res.Configuration
 import android.preference.PreferenceManager
+import android.util.Log
+import androidx.appcompat.app.AppCompatDelegate
 import com.boswelja.devicemanager.common.PreferenceKey
 import com.boswelja.devicemanager.common.References
+import com.boswelja.devicemanager.ui.MainActivity
 import com.google.android.gms.wearable.PutDataMapRequest
 import com.google.android.gms.wearable.Wearable
 
@@ -54,5 +58,20 @@ object Utils {
             type = "text/plain"
         }
         context.startActivity(intent)
+    }
+
+    fun switchDayNightMode(activity: MainActivity) {
+        val prefs = PreferenceManager.getDefaultSharedPreferences(activity)
+        val currentNightMode = (activity.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK)
+        when (currentNightMode) {
+            Configuration.UI_MODE_NIGHT_NO -> {
+                Log.d("switchDayNightMode", "Night mode off, switching on")
+                prefs.edit().putInt(PreferenceKey.DAYNIGHT_SWITCH_KEY, AppCompatDelegate.MODE_NIGHT_YES).apply()
+            }
+            else -> {
+                prefs.edit().putInt(PreferenceKey.DAYNIGHT_SWITCH_KEY, AppCompatDelegate.MODE_NIGHT_NO).apply()
+            }
+        }
+        activity.recreate()
     }
 }

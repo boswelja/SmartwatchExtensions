@@ -16,11 +16,8 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
-import android.os.Build
 import android.os.Bundle
-import android.os.PowerManager
 import android.preference.PreferenceManager
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import com.boswelja.devicemanager.common.Compat
@@ -44,7 +41,8 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+        prefs = PreferenceManager.getDefaultSharedPreferences(this)
+        AppCompatDelegate.setDefaultNightMode(prefs.getInt(PreferenceKey.DAYNIGHT_SWITCH_KEY, AppCompatDelegate.MODE_NIGHT_NO))
 
         setContentView(R.layout.activity_main)
 
@@ -56,7 +54,6 @@ class MainActivity : AppCompatActivity() {
         settingsFragment = SettingsFragment()
         supportFragmentManager.beginTransaction().replace(R.id.fragment_holder, settingsFragment).commit()
 
-        prefs = PreferenceManager.getDefaultSharedPreferences(this)
         val battSyncEnabled = prefs.getBoolean(PreferenceKey.BATTERY_SYNC_ENABLED_KEY, false)
         if (battSyncEnabled) {
             if (Compat.getPendingJob(jobScheduler, References.BATTERY_PERCENT_JOB_ID) == null) {

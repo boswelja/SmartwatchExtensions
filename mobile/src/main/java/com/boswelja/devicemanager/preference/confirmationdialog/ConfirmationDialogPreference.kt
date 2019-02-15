@@ -61,12 +61,13 @@ class ConfirmationDialogPreference(context: Context, attrs: AttributeSet?, defSt
 
     fun setValue(newValue: Boolean) {
         if (value != newValue) {
-            value = newValue
-            try {
-                checkbox.isChecked = value
-            } catch (ignored: UninitializedPropertyAccessException) {}
-            sharedPreferences.edit().putBoolean(key, value).apply()
-            onPreferenceChangeListener?.onPreferenceChange(this, value)
+            if ((onPreferenceChangeListener == null) || (onPreferenceChangeListener?.onPreferenceChange(this, newValue) == true)) {
+                value = newValue
+                try {
+                    checkbox.isChecked = value
+                } catch (ignored: UninitializedPropertyAccessException) {}
+                sharedPreferences.edit().putBoolean(key, value).apply()
+            }
         }
     }
 

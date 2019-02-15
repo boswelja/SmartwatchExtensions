@@ -7,6 +7,7 @@
  */
 package com.boswelja.devicemanager.ui
 
+import android.annotation.SuppressLint
 import android.app.NotificationManager
 import android.content.*
 import android.net.Uri
@@ -16,6 +17,7 @@ import android.os.PowerManager
 import android.provider.Settings
 import android.util.Log
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.NotificationManagerCompat
 import androidx.preference.*
@@ -64,10 +66,15 @@ class SettingsFragment : PreferenceFragmentCompat(), Preference.OnPreferenceChan
                 DonationDialogFragment().show(activity?.supportFragmentManager!!, "DonationDialog")
                 true
             }
+            PreferenceKey.DAYNIGHT_SWITCH_KEY -> {
+                Utils.switchDayNightMode(mainActivity)
+                true
+            }
             else -> false
         }
     }
 
+    @SuppressLint("BatteryLife")
     override fun onPreferenceChange(preference: Preference?, newValue: Any?): Boolean {
         return when (preference?.key) {
             PreferenceKey.HIDE_APP_ICON_KEY -> {
@@ -120,19 +127,19 @@ class SettingsFragment : PreferenceFragmentCompat(), Preference.OnPreferenceChan
                 true
             }
             PreferenceKey.BATTERY_PHONE_FULL_CHARGE_NOTI_KEY -> {
-                preference.sharedPreferences.edit().putBoolean(PreferenceKey.BATTERY_PHONE_FULL_CHARGE_NOTI_KEY, newValue!! == true).apply()
+                preference.sharedPreferences.edit().putBoolean(preference.key, newValue!! == true).apply()
                 Utils.updateWatchPrefs(context!!)
-                true
+                false
             }
             PreferenceKey.DND_SYNC_ENABLED_KEY -> {
-                if (newValue!! == true) {
+                if (newValue == true) {
                     //TODO Actually check if watch has correct permissions
                     val command = getString(R.string.dnd_sync_adb_command)
                     AlertDialog.Builder(context!!)
                             .setTitle(R.string.dnd_sync_adb_dialog_title)
                             .setMessage(Compat.htmlFormat(String.format(getString(R.string.dnd_sync_adb_dialog_message), command)))
                             .setPositiveButton(R.string.dialog_button_done) { _, _ ->
-                                preference.sharedPreferences.edit().putBoolean(PreferenceKey.DND_SYNC_ENABLED_KEY, true)
+                                preference.sharedPreferences.edit().putBoolean(preference.key, true)
                                 (preference as SwitchPreference).isChecked = true
                                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                                     activity?.startForegroundService(Intent(context, DnDHandler::class.java))
@@ -142,19 +149,19 @@ class SettingsFragment : PreferenceFragmentCompat(), Preference.OnPreferenceChan
                                 Utils.updateWatchPrefs(context!!)
                             }
                             .setNegativeButton(R.string.dialog_button_cancel) { _, _ ->
-                                preference.sharedPreferences.edit().putBoolean(PreferenceKey.DND_SYNC_ENABLED_KEY, false)
+                                preference.sharedPreferences.edit().putBoolean(preference.key, false)
                                 (preference as SwitchPreference).isChecked = false
                                 Utils.updateWatchPrefs(context!!)
                             }
                             .setNeutralButton(R.string.dialog_button_share) { _, _ ->
-                                preference.sharedPreferences.edit().putBoolean(PreferenceKey.DND_SYNC_ENABLED_KEY, false)
+                                preference.sharedPreferences.edit().putBoolean(preference.key, false)
                                 (preference as SwitchPreference).isChecked = false
                                 Utils.updateWatchPrefs(context!!)
                                 Utils.shareText(context!!, command)
                             }
                             .show()
                 } else {
-                    preference.sharedPreferences.edit().putBoolean(PreferenceKey.DND_SYNC_ENABLED_KEY, false)
+                    preference.sharedPreferences.edit().putBoolean(preference.key, false)
                     (preference as SwitchPreference).isChecked = false
                     Utils.updateWatchPrefs(context!!)
                 }
@@ -186,7 +193,7 @@ class SettingsFragment : PreferenceFragmentCompat(), Preference.OnPreferenceChan
                     intent.data = Uri.parse("package:${context?.packageName}")
                     startActivity(intent)
                 }
-                false
+                true
             }
             else -> true
         }
@@ -221,12 +228,15 @@ class SettingsFragment : PreferenceFragmentCompat(), Preference.OnPreferenceChan
 
         notiSettingsPref = findPreference(PreferenceKey.NOTIFICATION_SETTINGS_KEY)
         notiSettingsPref.onPreferenceClickListener = this
-        updateNotiSettingStatus()
+        updateNotiSettingSummary()
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             batteryOptPref = findPreference(PreferenceKey.BATTERY_OPT_KEY) as ConfirmationDialogPreference
             batteryOptPref.onPreferenceChangeListener = this
         }
+
+        val dayNightSwitchPref = findPreference(PreferenceKey.DAYNIGHT_SWITCH_KEY)
+        dayNightSwitchPref.onPreferenceClickListener = this
     }
 
     private fun setupPhoneLockPrefs() {
@@ -285,11 +295,12 @@ class SettingsFragment : PreferenceFragmentCompat(), Preference.OnPreferenceChan
             isGrantingAdminPerms = false
             Utils.updateWatchPrefs(context!!)
         }
-        updateNotiSettingStatus()
+        updateNotiSettingSummary()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             val pwm = context?.getSystemService(Context.POWER_SERVICE) as PowerManager
             val isIgnoringBattery = pwm.isIgnoringBatteryOptimizations(context?.packageName)
             batteryOptPref.setValue(isIgnoringBattery)
+            updateBatteryOptSummary(isIgnoringBattery)
         }
     }
 
@@ -309,7 +320,7 @@ class SettingsFragment : PreferenceFragmentCompat(), Preference.OnPreferenceChan
         }
     }
 
-    private fun updateNotiSettingStatus() {
+    private fun updateNotiSettingSummary() {
         val notisEnabled = NotificationManagerCompat.from(context!!).areNotificationsEnabled()
         if (notisEnabled) {
             notiSettingsPref.icon = context?.getDrawable(R.drawable.ic_notifications)
@@ -318,5 +329,21 @@ class SettingsFragment : PreferenceFragmentCompat(), Preference.OnPreferenceChan
             notiSettingsPref.icon = context?.getDrawable(R.drawable.ic_notifications_off)
             notiSettingsPref.summary = getString(R.string.pref_noti_settings_summary_disabled)
         }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.M)
+    private fun updateBatteryOptSummary(value: Boolean) {
+        val summaryRes = if (value) {
+            R.string.pref_battery_opt_summary_disabled
+        } else {
+            R.string.pref_battery_opt_summary_enabled
+        }
+        val iconRes = if (value) {
+            R.drawable.ic_check
+        } else {
+            R.drawable.ic_warning
+        }
+        batteryOptPref.setSummary(summaryRes)
+        batteryOptPref.setIcon(iconRes)
     }
 }
