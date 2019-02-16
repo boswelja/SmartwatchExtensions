@@ -7,4 +7,6 @@
     <color name="light_ui_element">#8c8c8c</color>
     <color name="active_ui_element">#a6a6a6</color>
     <color name="colorAccent">#FFFFFF</color>
+
+    <color name="launcher_background">#333</color>
 </resources>
