@@ -74,4 +74,13 @@ object CommonUtils {
         drawable.draw(canvas)
         return bitmap
     }
+
+    fun boolToByteArray(b: Boolean) : ByteArray {
+        val byte: Byte = if (b) {
+            1
+        } else {
+            0
+        }
+        return byteArrayOf(byte)
+    }
 }

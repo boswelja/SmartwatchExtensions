@@ -32,10 +32,9 @@ object References {
     // Message keys
     const val LOCK_PHONE_KEY = "/lock_phone"
     const val REQUEST_BATTERY_UPDATE_KEY = "/request_battery_update"
+    const val REQUEST_DND_ACCESS_STATUS = "/request_dnd_access_status"
 
     const val BATTERY_PERCENT_JOB_ID = 5656299
-
-    const val DEVICE_ADMIN_REQUEST_CODE = 665
 
     const val TYPE_LOCK_PHONE: Int = 1
     const val TYPE_PHONE_BATTERY: Int = 2
@@ -43,8 +42,5 @@ object References {
     const val CAPABILITY_APP = "extensions_app"
 
     const val INTENT_ACTION_EXTRA = "action"
-
-    const val DEVICE_PHONE = "phone"
-    const val DEVICE_WATCH = "wear"
 
 }

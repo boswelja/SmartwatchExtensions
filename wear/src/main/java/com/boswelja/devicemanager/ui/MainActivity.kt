@@ -26,7 +26,6 @@ class MainActivity : AppCompatActivity() {
         fragmentHolder = findViewById(R.id.fragment_holder)
 
         showControlsFragment()
-
     }
 
     override fun onResume() {
@@ -40,8 +39,6 @@ class MainActivity : AppCompatActivity() {
             }
         }
         Utils.isCompanionAppInstalled(this, capabilityCallbacks)
-
-        Utils.checkDnDAccess(this)
     }
 
     private fun showControlsFragment() {
