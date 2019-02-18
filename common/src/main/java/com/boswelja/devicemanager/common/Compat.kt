@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package com.boswelja.devicemanager.common
 
 import android.app.NotificationManager
