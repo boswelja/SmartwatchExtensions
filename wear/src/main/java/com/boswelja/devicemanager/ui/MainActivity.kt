@@ -18,7 +18,6 @@ import com.google.android.gms.wearable.Node
 class MainActivity : AppCompatActivity() {
 
     private lateinit var fragmentHolder: View
-    private var controlsFragmentActive = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,6 +27,11 @@ class MainActivity : AppCompatActivity() {
 
         showControlsFragment()
 
+    }
+
+    override fun onResume() {
+        super.onResume()
+
         val capabilityCallbacks = object : Utils.CapabilityCallbacks {
             override fun capableDeviceFound(node: Node?) {}
 
@@ -36,6 +40,8 @@ class MainActivity : AppCompatActivity() {
             }
         }
         Utils.isCompanionAppInstalled(this, capabilityCallbacks)
+
+        Utils.checkDnDAccess(this)
     }
 
     private fun showControlsFragment() {
@@ -43,7 +49,6 @@ class MainActivity : AppCompatActivity() {
         fragmentTransaction.replace(R.id.fragment_holder,
                 DeviceControlsFragment())
                 .commit()
-        controlsFragmentActive = true
     }
 
     private fun showInstallAppActivity() {

@@ -15,6 +15,7 @@ object PreferenceKey {
     const val NOTIFICATION_SETTINGS_KEY = "notification_settings"
     const val BATTERY_OPT_KEY = "battery_optimisation"
     const val DAYNIGHT_SWITCH_KEY = "daynight_switch"
+    const val DND_ACCESS_STATUS_KEY = "dnd_access"
 
     const val DEVICE_UID = "uid"
 
