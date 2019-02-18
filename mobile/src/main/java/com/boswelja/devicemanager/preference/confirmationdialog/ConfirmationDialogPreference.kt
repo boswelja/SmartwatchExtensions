@@ -3,7 +3,7 @@ package com.boswelja.devicemanager.preference.confirmationdialog
 import android.content.Context
 import android.content.res.TypedArray
 import android.util.AttributeSet
-import androidx.appcompat.widget.AppCompatCheckBox
+import android.widget.CompoundButton
 import androidx.preference.DialogPreference
 import androidx.preference.PreferenceViewHolder
 import com.boswelja.devicemanager.R
@@ -16,19 +16,25 @@ class ConfirmationDialogPreference(context: Context, attrs: AttributeSet?, defSt
 
     private var value = false
 
-    private lateinit var checkbox: AppCompatCheckBox
+    private lateinit var compoundButton: CompoundButton
 
     private val showOnEnable: Boolean
     private val showOnDisable: Boolean
     private val allowDisable: Boolean
+    private val useSwitch: Boolean
 
     init {
-        widgetLayoutResource = R.layout.pref_widget_checkbox
         val styledAttrs = context.obtainStyledAttributes(attrs, R.styleable.ConfirmationDialogPreference, defStyleAttr, defStyleRes)
         showOnEnable = styledAttrs.getBoolean(R.styleable.ConfirmationDialogPreference_showOnEnable, true)
         showOnDisable = styledAttrs.getBoolean(R.styleable.ConfirmationDialogPreference_showOnDisable, true)
         allowDisable = styledAttrs.getBoolean(R.styleable.ConfirmationDialogPreference_allowDisable, true)
+        useSwitch = styledAttrs.getBoolean(R.styleable.ConfirmationDialogPreference_useSwitch, false)
         styledAttrs.recycle()
+        widgetLayoutResource = if (useSwitch) {
+            R.layout.pref_widget_switch
+        } else {
+            R.layout.pref_widget_checkbox
+        }
     }
 
     override fun onGetDefaultValue(a: TypedArray?, index: Int): Any {
@@ -45,8 +51,8 @@ class ConfirmationDialogPreference(context: Context, attrs: AttributeSet?, defSt
 
     override fun onBindViewHolder(holder: PreferenceViewHolder?) {
         super.onBindViewHolder(holder)
-        checkbox = holder?.itemView?.findViewById(R.id.checkbox)!!
-        checkbox.isChecked = value
+        compoundButton = holder?.itemView?.findViewById(R.id.widget)!!
+        compoundButton.isChecked = value
     }
 
     override fun onClick() {
@@ -64,7 +70,7 @@ class ConfirmationDialogPreference(context: Context, attrs: AttributeSet?, defSt
             if ((onPreferenceChangeListener == null) || (onPreferenceChangeListener?.onPreferenceChange(this, newValue) == true)) {
                 value = newValue
                 try {
-                    checkbox.isChecked = value
+                    compoundButton.isChecked = value
                 } catch (ignored: UninitializedPropertyAccessException) {}
                 sharedPreferences.edit().putBoolean(key, value).apply()
             }
