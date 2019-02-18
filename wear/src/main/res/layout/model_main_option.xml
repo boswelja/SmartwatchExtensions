@@ -11,7 +11,7 @@
     android:paddingBottom="4dp"
     android:background="?android:attr/selectableItemBackground">
 
-    <ImageView
+    <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/icon"
         android:layout_width="0dp"
         android:layout_height="match_parent"
@@ -23,7 +23,7 @@
         app:layout_constraintDimensionRatio="1:1"
         tools:ignore="ContentDescription" />
 
-    <TextView
+    <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/label"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -31,11 +31,12 @@
         android:maxLines="2"
         android:paddingStart="8dp"
         android:paddingEnd="8dp"
-        android:textSize="16sp"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:textColor="?android:textColorPrimary"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/icon"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.5" />
+        app:layout_constraintTop_toTopOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

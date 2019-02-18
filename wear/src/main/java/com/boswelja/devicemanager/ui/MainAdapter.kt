@@ -61,7 +61,6 @@ class MainAdapter(private val options: ArrayList<MainOption>) : RecyclerView.Ada
                     }
                 }
                 updateBatteryPercent(holder, sharedPrefs)
-
             }
         }
     }
