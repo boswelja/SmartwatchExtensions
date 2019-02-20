@@ -5,4 +5,5 @@
     <color name="colorAccent">#2962FF</color>
 
     <color name="widgetBackground">#CCFFFFFF</color>
+    <color name="windowBackground">#FFFFFF</color>
 </resources>

@@ -51,20 +51,24 @@ class DnDHandler : Service() {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         Log.d(tag, "Creating notification")
-        val notiBuilder: NotificationCompat.Builder = NotificationCompat.Builder(this, References.DND_SYNC_NOTIFICATION_CHANNEL_ID)
-                .setAutoCancel(false)
-                .setShowWhen(false)
-                .setContentTitle(getString(R.string.dnd_sync_active_noti_title))
-                .setContentText(getString(R.string.dnd_sync_active_noti_desc))
-                .setSmallIcon(R.drawable.ic_sync)
-                .setOngoing(true)
-                .setPriority(NotificationCompat.PRIORITY_LOW)
-        startForeground(155216, notiBuilder.build())
 
         updateDnDSyncSend()
 
-        updateDnD()
+        if (dndSyncSend) {
+            val notiBuilder: NotificationCompat.Builder = NotificationCompat.Builder(this, References.DND_SYNC_NOTIFICATION_CHANNEL_ID)
+                    .setAutoCancel(false)
+                    .setShowWhen(false)
+                    .setContentTitle(getString(R.string.dnd_sync_active_noti_title))
+                    .setContentText(getString(R.string.dnd_sync_active_noti_desc))
+                    .setSmallIcon(R.drawable.ic_sync)
+                    .setOngoing(true)
+                    .setPriority(NotificationCompat.PRIORITY_LOW)
+            startForeground(155216, notiBuilder.build())
 
+            updateDnD()
+        } else {
+            stopForeground(true)
+        }
         return START_STICKY
     }
 

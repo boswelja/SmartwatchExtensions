@@ -36,7 +36,7 @@
     <string name="pref_about_version_title">Version</string>
 
     <string name="dnd_sync_adb_dialog_title">Additional setup required</string>
-    <string name="dnd_sync_adb_dialog_message">You need to connect your watch to your PC and execute the following command via ADB: <b>%s</b></string>
+    <string name="dnd_sync_adb_dialog_message">In order for this app to be able to change Do not Disturb status on your watch, you need to connect your watch to your PC and, with USB Debugging enabled, execute the below command via ADB. Once complete, tap next.</string>
     <string name="dnd_sync_adb_command">adb shell settings put secure enabled_notification_listeners com.google.android.wearable.app/com.google.android.clockwork.stream.NotificationCollectorService:com.boswelja.devicemanager/com.boswelja.devicemanager.common.DnDSyncListener</string>
 
     <string name="request_noti_policy_access_message">Please grant Wearable Extensions permission to change Do Not Disturb state</string>
@@ -59,6 +59,7 @@
     <string name="dialog_button_done">Done</string>
     <string name="dialog_button_yes">Yes</string>
     <string name="dialog_button_no">No</string>
+    <string name="dialog_button_next">Next</string>
     <string name="dialog_button_not_again">Don\'t ask again</string>
     <string name="dialog_button_share">Share</string>
     <string name="copied_to_clipboard">Copied to clipboard</string>
@@ -66,7 +67,6 @@
     <string name="dialog_battery_optimisation_warn_title">Battery Optimisation</string>
     <string name="dialog_battery_optimisation_warn_message">Android is optimising this app\'s battery use. This can cause issues with certain functions. Would you like to disable it?</string>
 
-    <string name="btn_cancel">Cancel</string>
 
     <string name="donate_title">Donate</string>
     <string name="donation_processed">Thanks for donating!</string>

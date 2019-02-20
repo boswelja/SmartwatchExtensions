@@ -19,7 +19,7 @@ class DonationDialogFragment :
         BillingClientStateListener,
         SkuDetailsResponseListener,
         PurchasesUpdatedListener,
-        ConsumeResponseListener{
+        ConsumeResponseListener {
 
     private lateinit var recyclerView: RecyclerView
     private lateinit var loadingSpinner: ProgressBar
