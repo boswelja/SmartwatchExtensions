@@ -35,6 +35,7 @@ class SettingsFragment : PreferenceFragmentCompat(), Preference.OnPreferenceChan
 
     private lateinit var notiSettingsPref: Preference
     private lateinit var batteryOptPref: ConfirmationDialogPreference
+    private lateinit var batterySyncPhoneChargedNotiPref: CheckBoxPreference
     private lateinit var lockPhoneEnabledPref: SwitchPreference
     private lateinit var dndSyncPhoneToWatchPref: SwitchPreference
     private lateinit var dndSyncWatchToPhonePref: SwitchPreference
@@ -125,7 +126,9 @@ class SettingsFragment : PreferenceFragmentCompat(), Preference.OnPreferenceChan
                 true
             }
             PreferenceKey.BATTERY_PHONE_FULL_CHARGE_NOTI_KEY -> {
-                preference.sharedPreferences.edit().putBoolean(preference.key, newValue!! == true).apply()
+                val value = newValue == true
+                preference.sharedPreferences.edit().putBoolean(preference.key, value).apply()
+                batterySyncPhoneChargedNotiPref.isChecked = value
                 Utils.updateWatchPrefs(context!!)
                 false
             }
@@ -186,7 +189,7 @@ class SettingsFragment : PreferenceFragmentCompat(), Preference.OnPreferenceChan
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         notificationManager = context?.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         mainActivity = activity as MainActivity
-        sharedPrefs = mainActivity.sharedPrefs
+        sharedPrefs = PreferenceManager.getDefaultSharedPreferences(context!!)
 
         addPreferencesFromResource(R.xml.prefs_general)
         setupGeneralPrefs()
@@ -238,7 +241,7 @@ class SettingsFragment : PreferenceFragmentCompat(), Preference.OnPreferenceChan
         val batterySyncForcePref = findPreference(PreferenceKey.BATTERY_SYNC_NOW_KEY) as Preference
         batterySyncForcePref.onPreferenceClickListener = this
 
-        val batterySyncPhoneChargedNotiPref = findPreference(PreferenceKey.BATTERY_PHONE_FULL_CHARGE_NOTI_KEY)
+        batterySyncPhoneChargedNotiPref = findPreference(PreferenceKey.BATTERY_PHONE_FULL_CHARGE_NOTI_KEY) as CheckBoxPreference
         batterySyncPhoneChargedNotiPref.onPreferenceChangeListener = this
     }
 

@@ -21,8 +21,8 @@ android {
 			postprocessing {
 				removeUnusedCode true
 				removeUnusedResources true
-				obfuscate false
-				optimizeCode false
+				obfuscate true
+				optimizeCode true
 				proguardFile 'proguard-rules.pro'
 			}
 		}
