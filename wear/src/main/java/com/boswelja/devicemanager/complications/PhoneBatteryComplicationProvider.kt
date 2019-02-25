@@ -9,8 +9,6 @@ package com.boswelja.devicemanager.complications
 
 import android.app.PendingIntent
 import android.content.Intent
-import android.graphics.Bitmap
-import android.graphics.Canvas
 import android.graphics.drawable.Icon
 import android.os.Build
 import android.preference.PreferenceManager

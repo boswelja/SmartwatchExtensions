@@ -3,16 +3,12 @@ package com.boswelja.devicemanager.common
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.content.SharedPreferences
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.drawable.Drawable
 import android.os.BatteryManager
-import android.preference.PreferenceManager
-import android.util.Log
 import com.google.android.gms.wearable.CapabilityClient
 import com.google.android.gms.wearable.Wearable
-import java.util.*
 
 object CommonUtils {
 

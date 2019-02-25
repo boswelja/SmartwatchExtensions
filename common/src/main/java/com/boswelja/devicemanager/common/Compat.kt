@@ -9,8 +9,6 @@ import android.content.Context
 import android.content.Intent
 import android.media.AudioManager
 import android.os.Build
-import android.text.Html
-import android.text.Spanned
 
 object Compat {
 

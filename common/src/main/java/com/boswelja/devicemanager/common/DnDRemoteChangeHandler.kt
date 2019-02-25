@@ -8,7 +8,6 @@
 package com.boswelja.devicemanager.common
 
 import android.preference.PreferenceManager
-import android.util.Log
 import com.google.android.gms.wearable.DataEvent
 import com.google.android.gms.wearable.DataEventBuffer
 import com.google.android.gms.wearable.DataMapItem
