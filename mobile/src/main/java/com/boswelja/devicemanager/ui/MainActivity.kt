@@ -7,6 +7,7 @@
  */
 package com.boswelja.devicemanager.ui
 
+import android.app.NotificationManager
 import android.app.admin.DeviceAdminReceiver
 import android.app.admin.DevicePolicyManager
 import android.app.job.JobInfo
@@ -16,6 +17,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.preference.PreferenceManager
 import androidx.appcompat.app.AppCompatActivity
@@ -37,6 +39,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var settingsFragment: SettingsFragment
     private lateinit var jobScheduler: JobScheduler
     private lateinit var prefs: SharedPreferences
+    private lateinit var notiManager: NotificationManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,6 +53,8 @@ class MainActivity : AppCompatActivity() {
 
         devicePolicyManager = getSystemService(Context.DEVICE_POLICY_SERVICE) as DevicePolicyManager
         deviceAdminReceiver = DeviceAdminReceiver().getWho(this)
+
+        notiManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
         settingsFragment = SettingsFragment()
         supportFragmentManager.beginTransaction().replace(R.id.fragment_holder, settingsFragment).commit()
@@ -66,6 +71,13 @@ class MainActivity : AppCompatActivity() {
         if (prefs.getBoolean(PreferenceKey.DND_SYNC_SEND_KEY, false)) {
             val intent = Intent(this, DnDLocalChangeListener::class.java)
             Compat.startService(this, intent)
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !notiManager.isNotificationPolicyAccessGranted) {
+            prefs.edit().putBoolean(PreferenceKey.DND_SYNC_RECEIVE_KEY, false).apply()
         }
     }
 

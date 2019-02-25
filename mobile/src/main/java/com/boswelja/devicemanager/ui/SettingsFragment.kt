@@ -33,12 +33,13 @@ import com.google.android.material.snackbar.Snackbar
 
 class SettingsFragment : PreferenceFragmentCompat(), Preference.OnPreferenceChangeListener, Preference.OnPreferenceClickListener {
 
-    private lateinit var mainActivity: MainActivity
     private lateinit var notiSettingsPref: Preference
     private lateinit var batteryOptPref: ConfirmationDialogPreference
     private lateinit var lockPhoneEnabledPref: SwitchPreference
-    private lateinit var dndSyncPhoneToWatchPref: CheckBoxPreference
-    private lateinit var dndSyncWatchToPhonePref: CheckBoxPreference
+    private lateinit var dndSyncPhoneToWatchPref: SwitchPreference
+    private lateinit var dndSyncWatchToPhonePref: SwitchPreference
+
+    private lateinit var mainActivity: MainActivity
     private lateinit var sharedPrefs: SharedPreferences
     private lateinit var notificationManager: NotificationManager
     private var isGrantingAdminPerms = false
@@ -144,8 +145,8 @@ class SettingsFragment : PreferenceFragmentCompat(), Preference.OnPreferenceChan
                         }
                     })
                 } else {
-                    preference.sharedPreferences.edit().putBoolean(preference.key, !value).apply()
-                    dndSyncPhoneToWatchPref.isChecked = !value
+                    preference.sharedPreferences.edit().putBoolean(preference.key, value).apply()
+                    dndSyncPhoneToWatchPref.isChecked = value
                     Utils.updateWatchPrefs(context!!)
                     context?.stopService(Intent(context!!, DnDLocalChangeListener::class.java))
                 }
@@ -155,6 +156,7 @@ class SettingsFragment : PreferenceFragmentCompat(), Preference.OnPreferenceChan
             PreferenceKey.DND_SYNC_RECEIVE_KEY -> {
                 val value = newValue == true
                 preference.sharedPreferences.edit().putBoolean(preference.key, value).apply()
+                dndSyncWatchToPhonePref.isChecked = value
                 if (value) {
                     dndSyncWatchToPhonePref.isChecked = value
                     if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M || notificationManager.isNotificationPolicyAccessGranted) {
@@ -241,10 +243,10 @@ class SettingsFragment : PreferenceFragmentCompat(), Preference.OnPreferenceChan
     }
 
     private fun setupDnDPrefs() {
-        dndSyncPhoneToWatchPref = findPreference(PreferenceKey.DND_SYNC_SEND_KEY) as CheckBoxPreference
+        dndSyncPhoneToWatchPref = findPreference(PreferenceKey.DND_SYNC_SEND_KEY) as SwitchPreference
         dndSyncPhoneToWatchPref.onPreferenceChangeListener = this
 
-        dndSyncWatchToPhonePref = findPreference(PreferenceKey.DND_SYNC_RECEIVE_KEY) as CheckBoxPreference
+        dndSyncWatchToPhonePref = findPreference(PreferenceKey.DND_SYNC_RECEIVE_KEY) as SwitchPreference
         dndSyncWatchToPhonePref.onPreferenceChangeListener = this
     }
 
