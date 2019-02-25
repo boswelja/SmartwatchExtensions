@@ -18,9 +18,8 @@ class BootReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context?, intent: Intent?) {
         if (intent!!.action == Intent.ACTION_BOOT_COMPLETED) {
             val prefs = PreferenceManager.getDefaultSharedPreferences(context)
-            if (prefs.getBoolean(PreferenceKey.DND_SYNC_ENABLED_KEY, false) &&
-                    prefs.getBoolean(PreferenceKey.DND_SYNC_SEND_KEY, false)) {
-                val serviceIntent = Intent(context, DnDHandler::class.java)
+            if (prefs.getBoolean(PreferenceKey.DND_SYNC_SEND_KEY, false)) {
+                val serviceIntent = Intent(context, DnDLocalChangeListener::class.java)
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                     context!!.startForegroundService(serviceIntent)
                 } else {

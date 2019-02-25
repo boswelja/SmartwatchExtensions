@@ -7,8 +7,10 @@
  */
 package com.boswelja.devicemanager.ui
 
+import android.content.ComponentName
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.PagerSnapHelper
@@ -18,6 +20,7 @@ import androidx.wear.widget.WearableRecyclerView
 import com.boswelja.devicemanager.MainOption
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.Utils
+import com.boswelja.devicemanager.common.DnDLocalChangeListener
 import com.boswelja.devicemanager.common.References
 import com.google.android.gms.wearable.Node
 
@@ -39,6 +42,8 @@ class MainActivity : AppCompatActivity() {
             adapter = MainAdapter(optionsList)
         }
         PagerSnapHelper().attachToRecyclerView(recyclerView)
+
+        Log.d("MainActivity", ComponentName(this, DnDLocalChangeListener::class.java).flattenToString())
     }
 
     override fun onResume() {

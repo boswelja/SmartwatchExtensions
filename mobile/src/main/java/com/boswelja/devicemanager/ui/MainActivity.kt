@@ -22,7 +22,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import com.boswelja.devicemanager.common.Compat
 import com.boswelja.devicemanager.R
-import com.boswelja.devicemanager.common.DnDHandler
+import com.boswelja.devicemanager.common.DnDLocalChangeListener
 import com.boswelja.devicemanager.common.PreferenceKey
 import com.boswelja.devicemanager.common.References
 import com.boswelja.devicemanager.common.BatteryInfoUpdate
@@ -63,9 +63,8 @@ class MainActivity : AppCompatActivity() {
             stopBatterySyncJob()
         }
 
-        if (prefs.getBoolean(PreferenceKey.DND_SYNC_ENABLED_KEY, false) &&
-                prefs.getBoolean(PreferenceKey.DND_SYNC_SEND_KEY, true)) {
-            val intent = Intent(this, DnDHandler::class.java)
+        if (prefs.getBoolean(PreferenceKey.DND_SYNC_SEND_KEY, false)) {
+            val intent = Intent(this, DnDLocalChangeListener::class.java)
             Compat.startService(this, intent)
         }
     }

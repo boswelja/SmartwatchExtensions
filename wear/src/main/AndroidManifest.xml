@@ -93,7 +93,7 @@
             </intent-filter>
         </service>
 
-        <service android:name=".common.DnDSyncListener">
+        <service android:name=".common.DnDRemoteChangeListener">
             <intent-filter>
                 <action android:name="com.google.android.gms.wearable.DATA_CHANGED" />
                 <data android:scheme="wear" android:host="*" android:path="/dndStatus" />
@@ -108,7 +108,7 @@
         </service>
 
         <service
-            android:name=".common.DnDHandler"
+            android:name=".common.DnDLocalChangeListener"
             android:exported="false" />
 
         <receiver

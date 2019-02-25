@@ -32,7 +32,6 @@ object Utils {
 
     fun updateWatchPrefs(context: Context) {
         val prefs = PreferenceManager.getDefaultSharedPreferences(context)
-        val dndSyncEnabled = prefs.getBoolean(PreferenceKey.DND_SYNC_ENABLED_KEY, false)
         val dndSyncSend = prefs.getBoolean(PreferenceKey.DND_SYNC_SEND_KEY, false)
         val dndSyncReceive = prefs.getBoolean(PreferenceKey.DND_SYNC_RECEIVE_KEY, false)
         val phoneBatteryChargedNoti = prefs.getBoolean(PreferenceKey.BATTERY_PHONE_FULL_CHARGE_NOTI_KEY, false)
@@ -41,7 +40,6 @@ object Utils {
 
         val dataClient = Wearable.getDataClient(context)
         val putDataMapReq = PutDataMapRequest.create(References.PREFERENCE_CHANGE_PATH)
-        putDataMapReq.dataMap.putBoolean(References.DND_SYNC_ENABLED_PATH, dndSyncEnabled)
         putDataMapReq.dataMap.putBoolean(References.DND_SYNC_SEND_PATH, dndSyncSend)
         putDataMapReq.dataMap.putBoolean(References.DND_SYNC_RECEIVE_PATH, dndSyncReceive)
         putDataMapReq.dataMap.putBoolean(References.BATTERY_PHONE_FULL_CHARGE_NOTI_PATH, phoneBatteryChargedNoti)

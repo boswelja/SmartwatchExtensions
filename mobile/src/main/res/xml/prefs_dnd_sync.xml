@@ -1,21 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.preference.PreferenceScreen
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
     <androidx.preference.PreferenceCategory
         android:title="@string/pref_category_dnd_sync">
 
-        <androidx.preference.SwitchPreference
-            android:key="dnd_sync_enabled"
-            android:title="@string/pref_dnd_sync_enabled_title"
-            android:summary="@string/pref_dnd_sync_enabled_desc"
-            android:icon="@drawable/ic_do_not_disturb"
-            android:defaultValue="false" />
-
         <androidx.preference.CheckBoxPreference
             android:key="dnd_sync_send"
-            android:dependency="dnd_sync_enabled"
             android:title="@string/pref_dnd_sync_phone_to_watch_title"
             android:summaryOn="@string/pref_dnd_sync_phone_to_watch_summary_on"
             android:summaryOff="@string/pref_dnd_sync_phone_to_watch_summary_off"
@@ -23,11 +14,10 @@
 
         <androidx.preference.CheckBoxPreference
             android:key="dnd_sync_receive"
-            android:dependency="dnd_sync_enabled"
             android:title="@string/pref_dnd_sync_watch_to_phone_title"
             android:summaryOn="@string/pref_dnd_sync_watch_to_phone_summary_on"
             android:summaryOff="@string/pref_dnd_sync_watch_to_phone_summary_off"
-            android:defaultValue="true" />
+            android:defaultValue="false" />
     </androidx.preference.PreferenceCategory>
 
 </androidx.preference.PreferenceScreen>

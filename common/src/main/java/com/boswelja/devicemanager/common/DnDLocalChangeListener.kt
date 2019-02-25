@@ -18,9 +18,9 @@ import com.google.android.gms.wearable.PutDataMapRequest
 import com.google.android.gms.wearable.Wearable
 
 @RequiresApi(Build.VERSION_CODES.M)
-class DnDHandler : Service() {
+class DnDLocalChangeListener : Service() {
 
-    private val tag = "DnDHandler"
+    private val tag = "DnDLocalChangeListener"
 
     private lateinit var prefs: SharedPreferences
     private lateinit var notificationManager: NotificationManager
@@ -136,9 +136,10 @@ class DnDHandler : Service() {
     private inner class PreferenceChangeListener : SharedPreferences.OnSharedPreferenceChangeListener {
         override fun onSharedPreferenceChanged(prefs: SharedPreferences?, key: String?) {
             when (key) {
-                PreferenceKey.DND_SYNC_SEND_KEY -> updateDnDSyncSend()
-                PreferenceKey.DND_SYNC_ENABLED_KEY -> {
-                    if (!prefs?.getBoolean(key, false)!!) {
+                PreferenceKey.DND_SYNC_SEND_KEY -> {
+                    if (prefs?.getBoolean(key, false)!!) {
+                        updateDnDSyncSend()
+                    } else {
                         stopForeground(true)
                     }
                 }

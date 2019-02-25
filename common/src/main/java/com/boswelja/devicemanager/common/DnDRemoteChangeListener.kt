@@ -17,9 +17,9 @@ import com.google.android.gms.wearable.WearableListenerService
 /**
  * Receives changes in DnD state
  */
-class DnDSyncListener : WearableListenerService() {
+class DnDRemoteChangeListener : WearableListenerService() {
 
-    private val tag = "DnDSyncListener"
+    private val tag = "DnDRemoteChangeListener"
 
     override fun onDataChanged(dataEventBuffer: DataEventBuffer) {
         super.onDataChanged(dataEventBuffer)
