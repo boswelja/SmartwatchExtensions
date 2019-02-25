@@ -17,9 +17,7 @@ import com.google.android.gms.wearable.WearableListenerService
 /**
  * Receives changes in DnD state
  */
-class DnDRemoteChangeListener : WearableListenerService() {
-
-    private val tag = "DnDRemoteChangeListener"
+class DnDRemoteChangeHandler : WearableListenerService() {
 
     override fun onDataChanged(dataEventBuffer: DataEventBuffer) {
         super.onDataChanged(dataEventBuffer)
@@ -30,17 +28,10 @@ class DnDRemoteChangeListener : WearableListenerService() {
             dataEventBuffer.forEach { event ->
                 if (event.type == DataEvent.TYPE_CHANGED) {
                     val dataMap = DataMapItem.fromDataItem(event.dataItem).dataMap
-                    val changedByUID = dataMap.getString(References.NEW_DND_STATE_CHANGED_BY_PATH)
-                    if (changedByUID != CommonUtils.getUID(this)) {
-                        val dndEnabled = dataMap.getBoolean(References.NEW_DND_STATE_PATH)
-                        Compat.setInterruptionFilter(this, dndEnabled)
-                    } else {
-                        Log.d(tag, "Change triggered by this device, skipping")
-                    }
+                    val dndEnabled = dataMap.getBoolean(References.NEW_DND_STATE_PATH)
+                    Compat.setInterruptionFilter(this, dndEnabled)
                 }
             }
-        } else {
-            Log.d(tag, "Device currently not receiving DnD changes")
         }
     }
 }

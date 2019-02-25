@@ -7,7 +7,6 @@
  */
 package com.boswelja.devicemanager.ui
 
-import android.app.NotificationManager
 import android.app.admin.DeviceAdminReceiver
 import android.app.admin.DevicePolicyManager
 import android.app.job.JobInfo
@@ -17,7 +16,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
-import android.os.Build
 import android.os.Bundle
 import android.preference.PreferenceManager
 import androidx.appcompat.app.AppCompatActivity
@@ -38,14 +36,13 @@ class MainActivity : AppCompatActivity() {
     private lateinit var deviceAdminReceiver: ComponentName
     private lateinit var settingsFragment: SettingsFragment
     private lateinit var jobScheduler: JobScheduler
-    private lateinit var prefs: SharedPreferences
-    private lateinit var notiManager: NotificationManager
+    lateinit var sharedPrefs: SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        prefs = PreferenceManager.getDefaultSharedPreferences(this)
-        AppCompatDelegate.setDefaultNightMode(prefs.getInt(PreferenceKey.DAYNIGHT_SWITCH_KEY, AppCompatDelegate.MODE_NIGHT_NO))
+        sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this)
+        AppCompatDelegate.setDefaultNightMode(sharedPrefs.getInt(PreferenceKey.DAYNIGHT_SWITCH_KEY, AppCompatDelegate.MODE_NIGHT_NO))
 
         setContentView(R.layout.activity_main)
 
@@ -54,30 +51,21 @@ class MainActivity : AppCompatActivity() {
         devicePolicyManager = getSystemService(Context.DEVICE_POLICY_SERVICE) as DevicePolicyManager
         deviceAdminReceiver = DeviceAdminReceiver().getWho(this)
 
-        notiManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-
         settingsFragment = SettingsFragment()
         supportFragmentManager.beginTransaction().replace(R.id.fragment_holder, settingsFragment).commit()
 
-        val battSyncEnabled = prefs.getBoolean(PreferenceKey.BATTERY_SYNC_ENABLED_KEY, false)
+        val battSyncEnabled = sharedPrefs.getBoolean(PreferenceKey.BATTERY_SYNC_ENABLED_KEY, false)
         if (battSyncEnabled) {
             if (Compat.getPendingJob(jobScheduler, References.BATTERY_PERCENT_JOB_ID) == null) {
-                createBatterySyncJob(prefs.getInt(PreferenceKey.BATTERY_SYNC_INTERVAL_KEY, 900000).toLong())
+                createBatterySyncJob(sharedPrefs.getInt(PreferenceKey.BATTERY_SYNC_INTERVAL_KEY, 900000).toLong())
             }
         } else {
             stopBatterySyncJob()
         }
 
-        if (prefs.getBoolean(PreferenceKey.DND_SYNC_SEND_KEY, false)) {
+        if (sharedPrefs.getBoolean(PreferenceKey.DND_SYNC_SEND_KEY, false)) {
             val intent = Intent(this, DnDLocalChangeListener::class.java)
             Compat.startService(this, intent)
-        }
-    }
-
-    override fun onResume() {
-        super.onResume()
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !notiManager.isNotificationPolicyAccessGranted) {
-            prefs.edit().putBoolean(PreferenceKey.DND_SYNC_RECEIVE_KEY, false).apply()
         }
     }
 

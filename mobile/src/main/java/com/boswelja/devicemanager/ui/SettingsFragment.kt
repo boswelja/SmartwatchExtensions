@@ -185,8 +185,8 @@ class SettingsFragment : PreferenceFragmentCompat(), Preference.OnPreferenceChan
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         notificationManager = context?.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        sharedPrefs = PreferenceManager.getDefaultSharedPreferences(context)
         mainActivity = activity as MainActivity
+        sharedPrefs = mainActivity.sharedPrefs
 
         addPreferencesFromResource(R.xml.prefs_general)
         setupGeneralPrefs()
@@ -281,6 +281,10 @@ class SettingsFragment : PreferenceFragmentCompat(), Preference.OnPreferenceChan
             val isIgnoringBattery = pwm.isIgnoringBatteryOptimizations(context?.packageName)
             batteryOptPref.setValue(isIgnoringBattery)
             updateBatteryOptSummary(isIgnoringBattery)
+            if (!notificationManager.isNotificationPolicyAccessGranted) {
+                sharedPrefs.edit().putBoolean(PreferenceKey.DND_SYNC_RECEIVE_KEY, false).apply()
+                dndSyncWatchToPhonePref.isChecked = false
+            }
         }
     }
 
