@@ -19,5 +19,4 @@ class PhoneBatteryUpdateListener : BatteryUpdateListener() {
         CommonUtils.updateBatteryStats(this)
         ProviderUpdateRequester(this, ComponentName(packageName, PhoneBatteryComplicationProvider::class.java.name)).requestUpdateAll()
     }
-
 }

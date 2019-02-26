@@ -1,9 +1,15 @@
+/* Copyright (C) 2018 Jack Boswell <boswelja@outlook.com>
+ *
+ * This file is part of Wearable Extensions
+ *
+ * This file, and any part of the Wearable Extensions app/s cannot be copied and/or distributed
+ * without permission from Jack Boswell (boswelja) <boswela@outlook.com>
+ */
 package com.boswelja.devicemanager.ui
 
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,8 +24,7 @@ import com.google.android.gms.wearable.CapabilityClient
 import com.google.android.gms.wearable.MessageClient
 import com.google.android.gms.wearable.Wearable
 
-class DnDSyncDialogFragment :
-        DialogFragment() {
+class DnDSyncDialogFragment : DialogFragment() {
 
     private lateinit var messages: View
     private lateinit var loadingSpinner: ProgressBar
@@ -35,7 +40,6 @@ class DnDSyncDialogFragment :
     private val listener = MessageClient.OnMessageReceivedListener {
         if (it.path == References.REQUEST_DND_ACCESS_STATUS) {
             val hasDnDAccess = it.data[0].toInt() == 1
-            Log.d("DnDSyncDialogFragment", hasDnDAccess.toString())
             onResponse(hasDnDAccess)
         }
     }
@@ -57,11 +61,11 @@ class DnDSyncDialogFragment :
             dismiss()
         }
         confirmBtn = view.findViewById(R.id.confirm_button)
-        confirmBtn.setOnClickListener{
+        confirmBtn.setOnClickListener {
             checkPermission()
         }
         shareBtn = view.findViewById(R.id.share_btn)
-        shareBtn.setOnClickListener{
+        shareBtn.setOnClickListener {
             Utils.shareText(context!!, getString(R.string.dnd_sync_adb_command))
         }
     }

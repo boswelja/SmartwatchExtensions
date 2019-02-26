@@ -9,7 +9,9 @@ package com.boswelja.devicemanager.ui
 
 import android.annotation.SuppressLint
 import android.app.NotificationManager
-import android.content.*
+import android.content.Context
+import android.content.Intent
+import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -20,10 +22,17 @@ import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.NotificationManagerCompat
-import androidx.preference.*
+import androidx.preference.CheckBoxPreference
+import androidx.preference.Preference
+import androidx.preference.PreferenceFragmentCompat
+import androidx.preference.PreferenceManager
+import androidx.preference.SwitchPreference
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.Utils
-import com.boswelja.devicemanager.common.*
+import com.boswelja.devicemanager.common.CommonUtils
+import com.boswelja.devicemanager.common.Compat
+import com.boswelja.devicemanager.common.DnDLocalChangeListener
+import com.boswelja.devicemanager.common.PreferenceKey
 import com.boswelja.devicemanager.preference.confirmationdialog.ConfirmationDialogPrefFragment
 import com.boswelja.devicemanager.preference.confirmationdialog.ConfirmationDialogPreference
 import com.boswelja.devicemanager.preference.seekbardialog.SeekbarDialogPrefFragment
@@ -137,7 +146,7 @@ class SettingsFragment : PreferenceFragmentCompat(), Preference.OnPreferenceChan
                 if (value) {
                     val dndDialog = DnDSyncDialogFragment()
                     dndDialog.show(mainActivity.supportFragmentManager, "DnDSyncDialogFragment")
-                    dndDialog.setResponseListener(object: DnDSyncDialogFragment.ResponseListener {
+                    dndDialog.setResponseListener(object : DnDSyncDialogFragment.ResponseListener {
                         override fun onResponse(success: Boolean) {
                             preference.sharedPreferences.edit().putBoolean(preference.key, success).apply()
                             dndSyncPhoneToWatchPref.isChecked = success

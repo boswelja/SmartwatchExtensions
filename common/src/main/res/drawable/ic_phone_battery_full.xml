@@ -2,7 +2,7 @@
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:drawable="@drawable/ic_phone" />
     <item
-        android:drawable="@drawable/ic_battery_full"
+        android:drawable="@drawable/battery_full"
         android:top="@dimen/phone_battery_inset_top"
         android:bottom="@dimen/phone_battery_inset_bottom"
         android:left="@dimen/phone_battery_inset_left"

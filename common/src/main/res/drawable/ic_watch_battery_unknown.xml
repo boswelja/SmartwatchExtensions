@@ -3,7 +3,7 @@
     <item
         android:drawable="@drawable/ic_watch" />
     <item
-        android:drawable="@drawable/ic_battery_unknown"
+        android:drawable="@drawable/battery_unknown"
         android:top="@dimen/watch_battery_inset_top"
         android:bottom="@dimen/watch_battery_inset_bottom"
         android:left="@dimen/watch_battery_inset_left"

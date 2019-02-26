@@ -42,7 +42,7 @@ object Utils {
         fun noCapableDevices()
     }
 
-    fun checkDnDAccess(context: Context) : Boolean {
+    fun checkDnDAccess(context: Context): Boolean {
         val notiManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         val hasDnDAccess = notiManager.isNotificationPolicyAccessGranted
         val prefs = PreferenceManager.getDefaultSharedPreferences(context)

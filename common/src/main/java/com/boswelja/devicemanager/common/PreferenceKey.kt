@@ -1,3 +1,10 @@
+/* Copyright (C) 2018 Jack Boswell <boswelja@outlook.com>
+ *
+ * This file is part of Wearable Extensions
+ *
+ * This file, and any part of the Wearable Extensions app/s cannot be copied and/or distributed
+ * without permission from Jack Boswell (boswelja) <boswela@outlook.com>
+ */
 package com.boswelja.devicemanager.common
 
 object PreferenceKey {
@@ -15,5 +22,4 @@ object PreferenceKey {
     const val BATTERY_OPT_KEY = "battery_optimisation"
     const val DAYNIGHT_SWITCH_KEY = "daynight_switch"
     const val DND_ACCESS_STATUS_KEY = "dnd_access"
-
 }

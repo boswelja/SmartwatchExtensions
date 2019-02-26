@@ -1,3 +1,10 @@
+/* Copyright (C) 2018 Jack Boswell <boswelja@outlook.com>
+ *
+ * This file is part of Wearable Extensions
+ *
+ * This file, and any part of the Wearable Extensions app/s cannot be copied and/or distributed
+ * without permission from Jack Boswell (boswelja) <boswela@outlook.com>
+ */
 package com.boswelja.devicemanager.common
 
 import android.content.Context
@@ -33,7 +40,7 @@ object CommonUtils {
                 }
     }
 
-    fun drawableToBitmap(drawable: Drawable) : Bitmap {
+    fun drawableToBitmap(drawable: Drawable): Bitmap {
         val bitmap = Bitmap.createBitmap(drawable.intrinsicWidth, drawable.intrinsicHeight, Bitmap.Config.ARGB_8888)
         val canvas = Canvas(bitmap)
         drawable.setBounds(0, 0, canvas.width, canvas.height)
@@ -41,7 +48,7 @@ object CommonUtils {
         return bitmap
     }
 
-    fun boolToByteArray(b: Boolean) : ByteArray {
+    fun boolToByteArray(b: Boolean): ByteArray {
         val byte: Byte = if (b) {
             1
         } else {

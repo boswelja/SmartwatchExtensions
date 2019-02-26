@@ -3,7 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:drawable="@drawable/ic_watch" />
     <item
-        android:drawable="@drawable/ic_battery_20"
+        android:drawable="@drawable/battery_20"
         android:top="@dimen/watch_battery_inset_top"
         android:bottom="@dimen/watch_battery_inset_bottom"
         android:left="@dimen/watch_battery_inset_left"

@@ -15,5 +15,4 @@ class WatchBatteryUpdateListener : BatteryUpdateListener() {
     override fun onBatteryUpdate(percent: Int, charging: Boolean) {
         WatchBatteryWidget.updateWidget(this)
     }
-
 }

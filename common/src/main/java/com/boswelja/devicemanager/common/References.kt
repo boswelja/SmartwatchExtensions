@@ -40,5 +40,4 @@ object References {
     const val CAPABILITY_APP = "extensions_app"
 
     const val INTENT_ACTION_EXTRA = "action"
-
 }

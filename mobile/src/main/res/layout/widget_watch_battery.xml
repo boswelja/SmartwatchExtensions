@@ -11,7 +11,7 @@
         android:id="@+id/battery_indicator"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:src="@drawable/ic_battery_unknown"
+        android:src="@drawable/battery_unknown"
         android:layout_weight="10"/>
 
     <TextView

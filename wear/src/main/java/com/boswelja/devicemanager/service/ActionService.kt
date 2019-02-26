@@ -15,7 +15,6 @@ import android.os.Build
 import android.os.IBinder
 import android.preference.PreferenceManager
 import android.support.wearable.complications.ProviderUpdateRequester
-import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.wear.activity.ConfirmationActivity
 import com.boswelja.devicemanager.R
@@ -27,8 +26,6 @@ import com.google.android.gms.wearable.Node
 import com.google.android.gms.wearable.Wearable
 
 class ActionService : Service() {
-
-    private val tag = "ActionService"
 
     override fun onBind(intent: Intent?): IBinder? {
         return null
@@ -81,7 +78,6 @@ class ActionService : Service() {
     }
 
     private fun onFailed(message: String) {
-        Log.d(tag, message)
         val intent = Intent(this, ConfirmationActivity::class.java)
         intent.putExtra(ConfirmationActivity.EXTRA_ANIMATION_TYPE, ConfirmationActivity.FAILURE_ANIMATION)
         intent.putExtra(ConfirmationActivity.EXTRA_MESSAGE, message)
@@ -91,7 +87,6 @@ class ActionService : Service() {
     }
 
     private fun onSuccess(message: String) {
-        Log.d(tag, message)
         val intent = Intent(this, ConfirmationActivity::class.java)
         intent.putExtra(ConfirmationActivity.EXTRA_ANIMATION_TYPE, ConfirmationActivity.SUCCESS_ANIMATION)
         intent.putExtra(ConfirmationActivity.EXTRA_MESSAGE, message)

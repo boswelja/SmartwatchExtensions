@@ -1,3 +1,10 @@
+/* Copyright (C) 2018 Jack Boswell <boswelja@outlook.com>
+ *
+ * This file is part of Wearable Extensions
+ *
+ * This file, and any part of the Wearable Extensions app/s cannot be copied and/or distributed
+ * without permission from Jack Boswell (boswelja) <boswela@outlook.com>
+ */
 package com.boswelja.devicemanager.common
 
 import android.app.NotificationChannel
@@ -41,12 +48,11 @@ class DnDLocalChangeListener : Service() {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         val notiBuilder: NotificationCompat.Builder = NotificationCompat.Builder(this, References.DND_SYNC_NOTIFICATION_CHANNEL_ID)
-                .setAutoCancel(false)
-                .setShowWhen(false)
                 .setContentTitle(getString(R.string.dnd_sync_active_noti_title))
                 .setContentText(getString(R.string.dnd_sync_active_noti_desc))
                 .setSmallIcon(R.drawable.ic_sync)
                 .setOngoing(true)
+                .setShowWhen(false)
                 .setPriority(NotificationCompat.PRIORITY_LOW)
         startForeground(155216, notiBuilder.build())
 
