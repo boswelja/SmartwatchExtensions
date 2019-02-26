@@ -37,7 +37,7 @@
 
     <string name="dnd_sync_adb_dialog_title">Additional setup required</string>
     <string name="dnd_sync_adb_dialog_message">In order for this app to be able to change Do not Disturb status on your watch, you need to connect your watch to your PC and, with USB Debugging enabled, execute the below command via ADB. Once complete, tap next.</string>
-    <string name="dnd_sync_adb_command">adb shell settings put secure enabled_notification_listeners com.google.android.wearable.app/com.google.android.clockwork.stream.NotificationCollectorService:com.boswelja.devicemanager/com.boswelja.devicemanager.common.DnDLocalChangeListener</string>
+    <string name="dnd_sync_adb_command">adb shell settings put secure enabled_notification_listeners com.google.android.wearable.app/com.google.android.clockwork.stream.NotificationCollectorService:%s</string>
 
     <string name="request_noti_policy_access_message">Please grant Wearable Extensions permission to change Do Not Disturb state</string>
 

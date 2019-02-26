@@ -7,6 +7,7 @@
  */
 package com.boswelja.devicemanager.ui
 
+import android.content.ComponentName
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
@@ -16,9 +17,11 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ProgressBar
 import android.widget.Toast
+import androidx.appcompat.widget.AppCompatTextView
 import androidx.fragment.app.DialogFragment
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.Utils
+import com.boswelja.devicemanager.common.DnDLocalChangeListener
 import com.boswelja.devicemanager.common.References
 import com.google.android.gms.wearable.CapabilityClient
 import com.google.android.gms.wearable.MessageClient
@@ -52,6 +55,7 @@ class DnDSyncDialogFragment : DialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        val adbCommand = getString(R.string.dnd_sync_adb_command).format(ComponentName(context!!, DnDLocalChangeListener::class.java).flattenToString())
         messageClient = Wearable.getMessageClient(context!!)
         messages = view.findViewById(R.id.messages)
         loadingSpinner = view.findViewById(R.id.loading_spinner)
@@ -66,8 +70,11 @@ class DnDSyncDialogFragment : DialogFragment() {
         }
         shareBtn = view.findViewById(R.id.share_btn)
         shareBtn.setOnClickListener {
-            Utils.shareText(context!!, getString(R.string.dnd_sync_adb_command))
+            Utils.shareText(context!!, adbCommand)
         }
+
+        val adbCommandTextView = view.findViewById<AppCompatTextView>(R.id.command_string)
+        adbCommandTextView.text = adbCommand
     }
 
     private fun setLoading(loading: Boolean) {
