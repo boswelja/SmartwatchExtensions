@@ -2,7 +2,7 @@ ext.versions = [
     versionCode: getDate(),
     versionName: "1.9.0",
     compileSdk: 28,
-    gradlePlugin: '3.5.0-alpha05',
+    gradlePlugin: '3.5.0-alpha06',
     wearableLib: "2.4.0",
     playServicesWearable: "16.0.1",
     packageName: "com.boswelja.devicemanager",
