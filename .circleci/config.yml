@@ -1,6 +1,6 @@
 version: 2
 jobs:
-	build:
+  build:
     working_directory: ~/code
     docker:
       - image: circleci/android:api-28-alpha
@@ -25,3 +25,4 @@ jobs:
               command: ./gradlew build
           - store_test_results:
               path: app/build/test-results
+  
