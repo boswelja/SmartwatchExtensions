@@ -10,6 +10,7 @@ package com.boswelja.devicemanager
 import android.app.NotificationManager
 import android.content.Context
 import android.preference.PreferenceManager
+import android.util.Log
 import com.boswelja.devicemanager.common.PreferenceKey
 import com.boswelja.devicemanager.common.References
 import com.google.android.gms.wearable.CapabilityClient
@@ -41,13 +42,14 @@ object Utils {
         fun noCapableDevices()
     }
 
-    fun checkDnDAccess(context: Context) : Boolean {
+    fun checkDnDAccess(context: Context): Boolean {
         val notiManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         val hasDnDAccess = notiManager.isNotificationPolicyAccessGranted
         val prefs = PreferenceManager.getDefaultSharedPreferences(context)
         if (hasDnDAccess != prefs.getBoolean(PreferenceKey.DND_ACCESS_STATUS_KEY, false)) {
             prefs.edit().putBoolean(PreferenceKey.DND_ACCESS_STATUS_KEY, hasDnDAccess).apply()
         }
+        Log.d("Utils", hasDnDAccess.toString())
         return hasDnDAccess
     }
 }

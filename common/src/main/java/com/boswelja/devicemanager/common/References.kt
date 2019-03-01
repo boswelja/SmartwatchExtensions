@@ -20,8 +20,6 @@ object References {
 
     // Shared Preferences paths
     const val NEW_DND_STATE_PATH = "com.boswelja.devicemanager.dndenabled"
-    const val NEW_DND_STATE_CHANGED_BY_PATH = "com.boswelja.devicemanager.dndchangedby"
-    const val DND_SYNC_ENABLED_PATH = "com.boswelja.devicemanager.dndsyncenabled"
     const val DND_SYNC_SEND_PATH = "com.boswelja.devicemanager.dndsyncsend"
     const val DND_SYNC_RECEIVE_PATH = "com.boswelja.devicemanager.dndsyncreceive"
     const val LOCK_PHONE_ENABLED_PATH = "com.boswelja.devicemanager.lockphoneenabled"
@@ -42,5 +40,4 @@ object References {
     const val CAPABILITY_APP = "extensions_app"
 
     const val INTENT_ACTION_EXTRA = "action"
-
 }

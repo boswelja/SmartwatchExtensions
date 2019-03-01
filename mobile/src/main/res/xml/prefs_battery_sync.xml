@@ -10,7 +10,7 @@
             android:key="battery_sync_enabled"
             android:title="@string/pref_battery_sync_enabled_title"
             android:summary="@string/pref_battery_sync_enabled_summary"
-            android:icon="@drawable/ic_battery_full"
+            android:icon="@drawable/battery_full"
             android:defaultValue="false"/>
 
         <com.boswelja.devicemanager.preference.seekbardialog.SeekbarDialogPreference

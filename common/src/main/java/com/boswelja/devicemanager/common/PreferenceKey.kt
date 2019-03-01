@@ -1,3 +1,10 @@
+/* Copyright (C) 2018 Jack Boswell <boswelja@outlook.com>
+ *
+ * This file is part of Wearable Extensions
+ *
+ * This file, and any part of the Wearable Extensions app/s cannot be copied and/or distributed
+ * without permission from Jack Boswell (boswelja) <boswela@outlook.com>
+ */
 package com.boswelja.devicemanager.common
 
 object PreferenceKey {
@@ -8,7 +15,6 @@ object PreferenceKey {
     const val BATTERY_SYNC_NOW_KEY = "battery_sync_now"
     const val BATTERY_PHONE_FULL_CHARGE_NOTI_KEY = "battery_phone_full_charge"
     const val BATTERY_FULL_CHARGE_NOTI_KEY = "battery_full_charge"
-    const val DND_SYNC_ENABLED_KEY = "dnd_sync_enabled"
     const val DND_SYNC_SEND_KEY = "dnd_sync_send"
     const val DND_SYNC_RECEIVE_KEY = "dnd_sync_receive"
     const val LOCK_PHONE_ENABLED = "lock_phone_enabled"
@@ -16,7 +22,4 @@ object PreferenceKey {
     const val BATTERY_OPT_KEY = "battery_optimisation"
     const val DAYNIGHT_SWITCH_KEY = "daynight_switch"
     const val DND_ACCESS_STATUS_KEY = "dnd_access"
-
-    const val DEVICE_UID = "uid"
-
 }

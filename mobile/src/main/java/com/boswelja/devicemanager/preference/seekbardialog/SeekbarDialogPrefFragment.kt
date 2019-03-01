@@ -1,3 +1,10 @@
+/* Copyright (C) 2018 Jack Boswell <boswelja@outlook.com>
+ *
+ * This file is part of Wearable Extensions
+ *
+ * This file, and any part of the Wearable Extensions app/s cannot be copied and/or distributed
+ * without permission from Jack Boswell (boswelja) <boswela@outlook.com>
+ */
 package com.boswelja.devicemanager.preference.seekbardialog
 
 import android.os.Bundle
@@ -49,7 +56,6 @@ class SeekbarDialogPrefFragment : PreferenceDialogFragmentCompat() {
             override fun onStartTrackingTouch(seekBar: SeekBar?) {}
 
             override fun onStopTrackingTouch(seekBar: SeekBar?) {}
-
         })
 
         val increase = view.findViewById<AppCompatImageButton>(R.id.increase)!!
@@ -67,7 +73,7 @@ class SeekbarDialogPrefFragment : PreferenceDialogFragmentCompat() {
     }
 
     companion object {
-        fun newInstance(key: String) : SeekbarDialogPrefFragment {
+        fun newInstance(key: String): SeekbarDialogPrefFragment {
             val frag = SeekbarDialogPrefFragment()
             val b = Bundle(1)
             b.putString(ARG_KEY, key)

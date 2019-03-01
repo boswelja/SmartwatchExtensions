@@ -1,3 +1,10 @@
+/* Copyright (C) 2018 Jack Boswell <boswelja@outlook.com>
+ *
+ * This file is part of Wearable Extensions
+ *
+ * This file, and any part of the Wearable Extensions app/s cannot be copied and/or distributed
+ * without permission from Jack Boswell (boswelja) <boswela@outlook.com>
+ */
 package com.boswelja.devicemanager.ui
 
 import android.graphics.Color
@@ -10,7 +17,15 @@ import android.widget.ProgressBar
 import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.android.billingclient.api.*
+import com.android.billingclient.api.BillingClient
+import com.android.billingclient.api.BillingClientStateListener
+import com.android.billingclient.api.BillingFlowParams
+import com.android.billingclient.api.ConsumeResponseListener
+import com.android.billingclient.api.Purchase
+import com.android.billingclient.api.PurchasesUpdatedListener
+import com.android.billingclient.api.SkuDetails
+import com.android.billingclient.api.SkuDetailsParams
+import com.android.billingclient.api.SkuDetailsResponseListener
 import com.boswelja.devicemanager.R
 import com.google.android.material.button.MaterialButton
 
@@ -19,7 +34,7 @@ class DonationDialogFragment :
         BillingClientStateListener,
         SkuDetailsResponseListener,
         PurchasesUpdatedListener,
-        ConsumeResponseListener{
+        ConsumeResponseListener {
 
     private lateinit var recyclerView: RecyclerView
     private lateinit var loadingSpinner: ProgressBar
@@ -80,7 +95,6 @@ class DonationDialogFragment :
             recyclerView.layoutManager = LinearLayoutManager(recyclerView.context, RecyclerView.VERTICAL, false)
             recyclerView.adapter = DonationAdapter(skuDetailsList, this)
             setLoading(false)
-
         } else {
             dismiss()
             (activity as MainActivity).createSnackbar(getString(R.string.donation_failed))
@@ -93,7 +107,6 @@ class DonationDialogFragment :
             for (purchase in purchases) {
                 billingClient.consumeAsync(purchase.purchaseToken, this)
             }
-
         } else {
             dismiss()
             (activity as MainActivity).createSnackbar(getString(R.string.donation_failed))

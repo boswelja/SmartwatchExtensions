@@ -9,8 +9,6 @@ package com.boswelja.devicemanager.complications
 
 import android.app.PendingIntent
 import android.content.Intent
-import android.graphics.Bitmap
-import android.graphics.Canvas
 import android.graphics.drawable.Icon
 import android.os.Build
 import android.preference.PreferenceManager
@@ -18,7 +16,6 @@ import android.support.wearable.complications.ComplicationData
 import android.support.wearable.complications.ComplicationManager
 import android.support.wearable.complications.ComplicationProviderService
 import android.support.wearable.complications.ComplicationText
-import android.util.Log
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.CommonUtils
 import com.boswelja.devicemanager.common.References
@@ -26,16 +23,8 @@ import com.boswelja.devicemanager.service.ActionService
 
 class PhoneBatteryComplicationProvider : ComplicationProviderService() {
 
-    private val tag = "PhoneBatteryComplicationProvider"
-
     override fun onComplicationUpdate(complicationId: Int, type: Int, manager: ComplicationManager?) {
-        Log.d(tag, "onComplicationUpdate() id: $complicationId")
         manager?.updateComplicationData(complicationId, createComplication(type))
-    }
-
-    override fun onComplicationDeactivated(complicationId: Int) {
-        super.onComplicationDeactivated(complicationId)
-        Log.d(tag, "Complication deactivated")
     }
 
     private fun createComplication(type: Int): ComplicationData {
@@ -63,7 +52,7 @@ class PhoneBatteryComplicationProvider : ComplicationProviderService() {
         return data.build()
     }
 
-    private fun createIcon(percent: Int) : Icon {
+    private fun createIcon(percent: Int): Icon {
         val drawable = getDrawable(R.drawable.ic_phone_battery)!!
         drawable.level = percent
         return Icon.createWithBitmap(CommonUtils.drawableToBitmap(drawable))

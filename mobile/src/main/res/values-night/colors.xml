@@ -2,7 +2,8 @@
 <resources>
     <color name="colorPrimary">#212121</color>
     <color name="colorPrimaryDark">#000000</color>
-    <color name="colorAccent">#2979FF</color>
+    <color name="colorAccent">#448AFF</color>
 
     <color name="widgetBackground">#CC333333</color>
+    <color name="windowBackground">#333333</color>
 </resources>

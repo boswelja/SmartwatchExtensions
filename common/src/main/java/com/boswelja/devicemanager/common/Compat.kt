@@ -1,5 +1,10 @@
-@file:Suppress("DEPRECATION")
-
+/* Copyright (C) 2018 Jack Boswell <boswelja@outlook.com>
+ *
+ * This file is part of Wearable Extensions
+ *
+ * This file, and any part of the Wearable Extensions app/s cannot be copied and/or distributed
+ * without permission from Jack Boswell (boswelja) <boswela@outlook.com>
+ */
 package com.boswelja.devicemanager.common
 
 import android.app.NotificationManager
@@ -9,12 +14,10 @@ import android.content.Context
 import android.content.Intent
 import android.media.AudioManager
 import android.os.Build
-import android.text.Html
-import android.text.Spanned
 
 object Compat {
 
-    fun getPendingJob(jobScheduler: JobScheduler, id: Int) : JobInfo? {
+    fun getPendingJob(jobScheduler: JobScheduler, id: Int): JobInfo? {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             jobScheduler.getPendingJob(id)
         } else {
@@ -46,14 +49,6 @@ object Compat {
             } else {
                 audioManager.ringerMode = AudioManager.RINGER_MODE_NORMAL
             }
-        }
-    }
-
-    fun htmlFormat(text: String) : Spanned {
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            Html.fromHtml(text, Html.FROM_HTML_MODE_LEGACY)
-        } else {
-            Html.fromHtml(text)
         }
     }
 }

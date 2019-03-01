@@ -1,10 +1,17 @@
+/* Copyright (C) 2018 Jack Boswell <boswelja@outlook.com>
+ *
+ * This file is part of Wearable Extensions
+ *
+ * This file, and any part of the Wearable Extensions app/s cannot be copied and/or distributed
+ * without permission from Jack Boswell (boswelja) <boswela@outlook.com>
+ */
 package com.boswelja.devicemanager.service
 
 import android.content.Intent
 import android.os.Build
 import android.preference.PreferenceManager
 import android.util.Log
-import com.boswelja.devicemanager.common.DnDHandler
+import com.boswelja.devicemanager.common.DnDLocalChangeListener
 import com.boswelja.devicemanager.common.PreferenceKey
 import com.boswelja.devicemanager.common.References
 import com.google.android.gms.wearable.DataEventBuffer
@@ -20,7 +27,6 @@ class PreferenceChangeListener : WearableListenerService() {
         dataEvents?.forEach { event ->
             val dataMap = DataMapItem.fromDataItem(event.dataItem).dataMap
 
-            val dndSyncEnabled = dataMap.getBoolean(References.DND_SYNC_ENABLED_PATH)
             // Inverted because when phone is sending, watch is receiving
             val dndReceiving = dataMap.getBoolean(References.DND_SYNC_SEND_PATH)
             val dndSending = dataMap.getBoolean(References.DND_SYNC_RECEIVE_PATH)
@@ -32,7 +38,6 @@ class PreferenceChangeListener : WearableListenerService() {
 
             val prefs = PreferenceManager.getDefaultSharedPreferences(this)
             prefs.edit()
-                    .putBoolean(PreferenceKey.DND_SYNC_ENABLED_KEY, dndSyncEnabled)
                     .putBoolean(PreferenceKey.DND_SYNC_SEND_KEY, dndSending)
                     .putBoolean(PreferenceKey.DND_SYNC_RECEIVE_KEY, dndReceiving)
                     .putBoolean(PreferenceKey.BATTERY_FULL_CHARGE_NOTI_KEY, phoneBatteryChargedNoti)
@@ -40,9 +45,9 @@ class PreferenceChangeListener : WearableListenerService() {
                     .putBoolean(PreferenceKey.BATTERY_SYNC_ENABLED_KEY, batterySyncEnabled)
                     .apply()
 
-            if (dndSyncEnabled && dndSending) {
+            if (dndSending) {
                 Log.d(tag, "Starting service")
-                val intent = Intent(applicationContext, DnDHandler::class.java)
+                val intent = Intent(applicationContext, DnDLocalChangeListener::class.java)
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                     startForegroundService(intent)
                 } else {

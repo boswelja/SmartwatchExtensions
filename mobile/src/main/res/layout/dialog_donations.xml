@@ -37,8 +37,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/donation_rv"
-        android:text="@string/btn_cancel"
-        android:layout_alignParentStart="true"
+        android:text="@string/dialog_button_cancel"
+        android:layout_alignParentEnd="true"
         android:layout_marginStart="8dp"
         style="@style/Widget.MaterialComponents.Button.TextButton"/>
 </RelativeLayout>

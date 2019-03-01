@@ -18,7 +18,6 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.boswelja.devicemanager.MainOption
 import com.boswelja.devicemanager.R
-import com.boswelja.devicemanager.common.CommonUtils
 import com.boswelja.devicemanager.common.PreferenceKey
 import com.boswelja.devicemanager.common.References
 import com.boswelja.devicemanager.service.ActionService
@@ -77,7 +76,7 @@ class MainAdapter(private val options: ArrayList<MainOption>) : RecyclerView.Ada
         }
         val drawable = holder.icon.context.getDrawable(R.drawable.ic_phone_battery)!!
         drawable.level = phoneBattery
-        holder.icon.setImageBitmap(CommonUtils.drawableToBitmap(drawable))
+        holder.icon.setImageDrawable(drawable)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {

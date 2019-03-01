@@ -9,7 +9,9 @@ package com.boswelja.devicemanager.ui
 
 import android.annotation.SuppressLint
 import android.app.NotificationManager
-import android.content.*
+import android.content.Context
+import android.content.Intent
+import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -20,12 +22,16 @@ import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.NotificationManagerCompat
-import androidx.preference.*
+import androidx.preference.CheckBoxPreference
+import androidx.preference.Preference
+import androidx.preference.PreferenceFragmentCompat
+import androidx.preference.PreferenceManager
+import androidx.preference.SwitchPreference
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.Utils
 import com.boswelja.devicemanager.common.CommonUtils
 import com.boswelja.devicemanager.common.Compat
-import com.boswelja.devicemanager.common.DnDHandler
+import com.boswelja.devicemanager.common.DnDLocalChangeListener
 import com.boswelja.devicemanager.common.PreferenceKey
 import com.boswelja.devicemanager.preference.confirmationdialog.ConfirmationDialogPrefFragment
 import com.boswelja.devicemanager.preference.confirmationdialog.ConfirmationDialogPreference
@@ -36,12 +42,14 @@ import com.google.android.material.snackbar.Snackbar
 
 class SettingsFragment : PreferenceFragmentCompat(), Preference.OnPreferenceChangeListener, Preference.OnPreferenceClickListener {
 
-    private lateinit var mainActivity: MainActivity
     private lateinit var notiSettingsPref: Preference
     private lateinit var batteryOptPref: ConfirmationDialogPreference
+    private lateinit var batterySyncPhoneChargedNotiPref: CheckBoxPreference
     private lateinit var lockPhoneEnabledPref: SwitchPreference
-    private lateinit var dndSyncPhoneToWatchPref: CheckBoxPreference
-    private lateinit var dndSyncWatchToPhonePref: CheckBoxPreference
+    private lateinit var dndSyncPhoneToWatchPref: SwitchPreference
+    private lateinit var dndSyncWatchToPhonePref: SwitchPreference
+
+    private lateinit var mainActivity: MainActivity
     private lateinit var sharedPrefs: SharedPreferences
     private lateinit var notificationManager: NotificationManager
     private var isGrantingAdminPerms = false
@@ -127,62 +135,50 @@ class SettingsFragment : PreferenceFragmentCompat(), Preference.OnPreferenceChan
                 true
             }
             PreferenceKey.BATTERY_PHONE_FULL_CHARGE_NOTI_KEY -> {
-                preference.sharedPreferences.edit().putBoolean(preference.key, newValue!! == true).apply()
+                val value = newValue == true
+                preference.sharedPreferences.edit().putBoolean(preference.key, value).apply()
+                batterySyncPhoneChargedNotiPref.isChecked = value
                 Utils.updateWatchPrefs(context!!)
-                false
-            }
-            PreferenceKey.DND_SYNC_ENABLED_KEY -> {
-                if (newValue == true) {
-                    //TODO Actually check if watch has correct permissions
-                    val command = getString(R.string.dnd_sync_adb_command)
-                    AlertDialog.Builder(context!!)
-                            .setTitle(R.string.dnd_sync_adb_dialog_title)
-                            .setMessage(Compat.htmlFormat(String.format(getString(R.string.dnd_sync_adb_dialog_message), command)))
-                            .setPositiveButton(R.string.dialog_button_done) { _, _ ->
-                                preference.sharedPreferences.edit().putBoolean(preference.key, true)
-                                (preference as SwitchPreference).isChecked = true
-                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                                    activity?.startForegroundService(Intent(context, DnDHandler::class.java))
-                                } else {
-                                    activity?.startService(Intent(context, DnDHandler::class.java))
-                                }
-                                Utils.updateWatchPrefs(context!!)
-                            }
-                            .setNegativeButton(R.string.dialog_button_cancel) { _, _ ->
-                                preference.sharedPreferences.edit().putBoolean(preference.key, false)
-                                (preference as SwitchPreference).isChecked = false
-                                Utils.updateWatchPrefs(context!!)
-                            }
-                            .setNeutralButton(R.string.dialog_button_share) { _, _ ->
-                                preference.sharedPreferences.edit().putBoolean(preference.key, false)
-                                (preference as SwitchPreference).isChecked = false
-                                Utils.updateWatchPrefs(context!!)
-                                Utils.shareText(context!!, command)
-                            }
-                            .show()
-                } else {
-                    preference.sharedPreferences.edit().putBoolean(preference.key, false)
-                    (preference as SwitchPreference).isChecked = false
-                    Utils.updateWatchPrefs(context!!)
-                }
                 false
             }
             PreferenceKey.DND_SYNC_SEND_KEY -> {
                 val value = newValue == true
-                preference.sharedPreferences.edit().putBoolean(preference.key, value).apply()
-                dndSyncPhoneToWatchPref.isChecked = value
-                Utils.updateWatchPrefs(context!!)
+                if (value) {
+                    val dndDialog = DnDSyncDialogFragment()
+                    dndDialog.show(mainActivity.supportFragmentManager, "DnDSyncDialogFragment")
+                    dndDialog.setResponseListener(object : DnDSyncDialogFragment.ResponseListener {
+                        override fun onResponse(success: Boolean) {
+                            preference.sharedPreferences.edit().putBoolean(preference.key, success).apply()
+                            dndSyncPhoneToWatchPref.isChecked = success
+                            Utils.updateWatchPrefs(context!!)
+                            if (success) {
+                                Compat.startService(context!!, Intent(context!!, DnDLocalChangeListener::class.java))
+                            }
+                        }
+                    })
+                } else {
+                    preference.sharedPreferences.edit().putBoolean(preference.key, value).apply()
+                    dndSyncPhoneToWatchPref.isChecked = value
+                    Utils.updateWatchPrefs(context!!)
+                    context?.stopService(Intent(context!!, DnDLocalChangeListener::class.java))
+                }
+                Log.d("SettingsFragment", value.toString())
                 false
             }
             PreferenceKey.DND_SYNC_RECEIVE_KEY -> {
                 val value = newValue == true
                 preference.sharedPreferences.edit().putBoolean(preference.key, value).apply()
                 dndSyncWatchToPhonePref.isChecked = value
-                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M || notificationManager.isNotificationPolicyAccessGranted) {
-                    Utils.updateWatchPrefs(context!!)
+                if (value) {
+                    dndSyncWatchToPhonePref.isChecked = value
+                    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M || notificationManager.isNotificationPolicyAccessGranted) {
+                        Utils.updateWatchPrefs(context!!)
+                    } else {
+                        Toast.makeText(context, getString(R.string.request_noti_policy_access_message), Toast.LENGTH_SHORT).show()
+                        startActivityForResult(Intent(Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS), 12345)
+                    }
                 } else {
-                    Toast.makeText(context, getString(R.string.request_noti_policy_access_message), Toast.LENGTH_SHORT).show()
-                    startActivityForResult(Intent(Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS), 12345)
+                    Utils.updateWatchPrefs(context!!)
                 }
                 false
             }
@@ -201,8 +197,8 @@ class SettingsFragment : PreferenceFragmentCompat(), Preference.OnPreferenceChan
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         notificationManager = context?.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        sharedPrefs = PreferenceManager.getDefaultSharedPreferences(context)
         mainActivity = activity as MainActivity
+        sharedPrefs = PreferenceManager.getDefaultSharedPreferences(context!!)
 
         addPreferencesFromResource(R.xml.prefs_general)
         setupGeneralPrefs()
@@ -254,19 +250,15 @@ class SettingsFragment : PreferenceFragmentCompat(), Preference.OnPreferenceChan
         val batterySyncForcePref = findPreference(PreferenceKey.BATTERY_SYNC_NOW_KEY) as Preference
         batterySyncForcePref.onPreferenceClickListener = this
 
-        val batterySyncPhoneChargedNotiPref = findPreference(PreferenceKey.BATTERY_PHONE_FULL_CHARGE_NOTI_KEY)
+        batterySyncPhoneChargedNotiPref = findPreference(PreferenceKey.BATTERY_PHONE_FULL_CHARGE_NOTI_KEY) as CheckBoxPreference
         batterySyncPhoneChargedNotiPref.onPreferenceChangeListener = this
     }
 
     private fun setupDnDPrefs() {
-        val dndSyncEnabledPref = findPreference(PreferenceKey.DND_SYNC_ENABLED_KEY) as SwitchPreference
-        dndSyncEnabledPref.onPreferenceChangeListener = this
-        dndSyncEnabledPref.onPreferenceClickListener = this
-
-        dndSyncPhoneToWatchPref = findPreference(PreferenceKey.DND_SYNC_SEND_KEY) as CheckBoxPreference
+        dndSyncPhoneToWatchPref = findPreference(PreferenceKey.DND_SYNC_SEND_KEY) as SwitchPreference
         dndSyncPhoneToWatchPref.onPreferenceChangeListener = this
 
-        dndSyncWatchToPhonePref = findPreference(PreferenceKey.DND_SYNC_RECEIVE_KEY) as CheckBoxPreference
+        dndSyncWatchToPhonePref = findPreference(PreferenceKey.DND_SYNC_RECEIVE_KEY) as SwitchPreference
         dndSyncWatchToPhonePref.onPreferenceChangeListener = this
     }
 
@@ -301,6 +293,10 @@ class SettingsFragment : PreferenceFragmentCompat(), Preference.OnPreferenceChan
             val isIgnoringBattery = pwm.isIgnoringBatteryOptimizations(context?.packageName)
             batteryOptPref.setValue(isIgnoringBattery)
             updateBatteryOptSummary(isIgnoringBattery)
+            if (!notificationManager.isNotificationPolicyAccessGranted) {
+                sharedPrefs.edit().putBoolean(PreferenceKey.DND_SYNC_RECEIVE_KEY, false).apply()
+                dndSyncWatchToPhonePref.isChecked = false
+            }
         }
     }
 

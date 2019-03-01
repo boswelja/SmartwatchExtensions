@@ -22,7 +22,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import com.boswelja.devicemanager.common.Compat
 import com.boswelja.devicemanager.R
-import com.boswelja.devicemanager.common.DnDHandler
+import com.boswelja.devicemanager.common.DnDLocalChangeListener
 import com.boswelja.devicemanager.common.PreferenceKey
 import com.boswelja.devicemanager.common.References
 import com.boswelja.devicemanager.common.BatteryInfoUpdate
@@ -36,13 +36,13 @@ class MainActivity : AppCompatActivity() {
     private lateinit var deviceAdminReceiver: ComponentName
     private lateinit var settingsFragment: SettingsFragment
     private lateinit var jobScheduler: JobScheduler
-    private lateinit var prefs: SharedPreferences
+    private lateinit var sharedPrefs: SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        prefs = PreferenceManager.getDefaultSharedPreferences(this)
-        AppCompatDelegate.setDefaultNightMode(prefs.getInt(PreferenceKey.DAYNIGHT_SWITCH_KEY, AppCompatDelegate.MODE_NIGHT_NO))
+        sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this)
+        AppCompatDelegate.setDefaultNightMode(sharedPrefs.getInt(PreferenceKey.DAYNIGHT_SWITCH_KEY, AppCompatDelegate.MODE_NIGHT_NO))
 
         setContentView(R.layout.activity_main)
 
@@ -54,18 +54,17 @@ class MainActivity : AppCompatActivity() {
         settingsFragment = SettingsFragment()
         supportFragmentManager.beginTransaction().replace(R.id.fragment_holder, settingsFragment).commit()
 
-        val battSyncEnabled = prefs.getBoolean(PreferenceKey.BATTERY_SYNC_ENABLED_KEY, false)
+        val battSyncEnabled = sharedPrefs.getBoolean(PreferenceKey.BATTERY_SYNC_ENABLED_KEY, false)
         if (battSyncEnabled) {
             if (Compat.getPendingJob(jobScheduler, References.BATTERY_PERCENT_JOB_ID) == null) {
-                createBatterySyncJob(prefs.getInt(PreferenceKey.BATTERY_SYNC_INTERVAL_KEY, 900000).toLong())
+                createBatterySyncJob(sharedPrefs.getInt(PreferenceKey.BATTERY_SYNC_INTERVAL_KEY, 900000).toLong())
             }
         } else {
             stopBatterySyncJob()
         }
 
-        if (prefs.getBoolean(PreferenceKey.DND_SYNC_ENABLED_KEY, false) &&
-                prefs.getBoolean(PreferenceKey.DND_SYNC_SEND_KEY, true)) {
-            val intent = Intent(this, DnDHandler::class.java)
+        if (sharedPrefs.getBoolean(PreferenceKey.DND_SYNC_SEND_KEY, false)) {
+            val intent = Intent(this, DnDLocalChangeListener::class.java)
             Compat.startService(this, intent)
         }
     }

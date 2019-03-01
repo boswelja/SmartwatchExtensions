@@ -8,7 +8,6 @@
 package com.boswelja.devicemanager.common
 
 import android.preference.PreferenceManager
-import android.util.Log
 import com.google.android.gms.wearable.DataEvent
 import com.google.android.gms.wearable.DataEventBuffer
 import com.google.android.gms.wearable.DataMapItem
@@ -17,9 +16,7 @@ import com.google.android.gms.wearable.WearableListenerService
 /**
  * Receives changes in DnD state
  */
-class DnDSyncListener : WearableListenerService() {
-
-    private val tag = "DnDSyncListener"
+class DnDRemoteChangeHandler : WearableListenerService() {
 
     override fun onDataChanged(dataEventBuffer: DataEventBuffer) {
         super.onDataChanged(dataEventBuffer)
@@ -30,17 +27,10 @@ class DnDSyncListener : WearableListenerService() {
             dataEventBuffer.forEach { event ->
                 if (event.type == DataEvent.TYPE_CHANGED) {
                     val dataMap = DataMapItem.fromDataItem(event.dataItem).dataMap
-                    val changedByUID = dataMap.getString(References.NEW_DND_STATE_CHANGED_BY_PATH)
-                    if (changedByUID != CommonUtils.getUID(this)) {
-                        val dndEnabled = dataMap.getBoolean(References.NEW_DND_STATE_PATH)
-                        Compat.setInterruptionFilter(this, dndEnabled)
-                    } else {
-                        Log.d(tag, "Change triggered by this device, skipping")
-                    }
+                    val dndEnabled = dataMap.getBoolean(References.NEW_DND_STATE_PATH)
+                    Compat.setInterruptionFilter(this, dndEnabled)
                 }
             }
-        } else {
-            Log.d(tag, "Device currently not receiving DnD changes")
         }
     }
 }
