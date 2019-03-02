@@ -10,7 +10,7 @@ package com.boswelja.devicemanager.common
 import android.app.job.JobParameters
 import android.app.job.JobService
 
-class BatteryInfoUpdate : JobService() {
+class BatteryUpdateJob : JobService() {
 
     override fun onStopJob(params: JobParameters?): Boolean {
         return true

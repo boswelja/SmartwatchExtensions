@@ -9,7 +9,9 @@ package com.boswelja.devicemanager.common
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.Context
+import android.content.Intent
 import android.os.Build
 import android.preference.PreferenceManager
 import androidx.core.app.NotificationCompat
@@ -27,8 +29,15 @@ abstract class BatteryUpdateListener : WearableListenerService() {
             val charging = messageSplit[1] == "true"
             preferenceManager.edit().putInt(References.BATTERY_PERCENT_KEY, percent).apply()
 
-            if (preferenceManager.getBoolean(PreferenceKey.BATTERY_FULL_CHARGE_NOTI_KEY, false) && percent > 90 && charging) {
+            if (preferenceManager.getBoolean(PreferenceKey.BATTERY_FULL_CHARGE_NOTI_KEY, false) &&
+                    !preferenceManager.getBoolean(PreferenceKey.BATTERY_CHARGED_NOTI_ACKNOWLEDGED, false) &&
+                    percent > 90 &&
+                    charging) {
                 sendChargedNoti()
+            }
+
+            if (!charging) {
+                preferenceManager.edit().putBoolean(PreferenceKey.BATTERY_CHARGED_NOTI_ACKNOWLEDGED, false).apply()
             }
 
             onBatteryUpdate(percent, charging)
@@ -49,7 +58,12 @@ abstract class BatteryUpdateListener : WearableListenerService() {
         noti.setContentTitle(getString(R.string.device_charged_noti_title, companionDeviceName))
         noti.setContentText(getString(R.string.device_charged_noti_desc, companionDeviceName))
         noti.setLocalOnly(true)
-        notificationManager.notify(123, noti.build())
+
+        val intent = Intent(this, NotificationDismissedService::class.java)
+        val deleteIntent = PendingIntent.getService(this, 0, intent, 0)
+        noti.setDeleteIntent(deleteIntent)
+
+        notificationManager.notify(References.NOTIFICATION_ID, noti.build())
     }
 
     abstract fun onBatteryUpdate(percent: Int, charging: Boolean)

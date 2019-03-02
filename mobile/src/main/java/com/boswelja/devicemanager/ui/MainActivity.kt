@@ -25,7 +25,7 @@ import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.DnDLocalChangeListener
 import com.boswelja.devicemanager.common.PreferenceKey
 import com.boswelja.devicemanager.common.References
-import com.boswelja.devicemanager.common.BatteryInfoUpdate
+import com.boswelja.devicemanager.common.BatteryUpdateJob
 import com.google.android.gms.wearable.PutDataMapRequest
 import com.google.android.gms.wearable.Wearable
 import com.google.android.material.snackbar.Snackbar
@@ -83,7 +83,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun createBatterySyncJob(intervalMs: Long) {
-        val jobInfo = JobInfo.Builder(References.BATTERY_PERCENT_JOB_ID, ComponentName(packageName, BatteryInfoUpdate::class.java.name))
+        val jobInfo = JobInfo.Builder(References.BATTERY_PERCENT_JOB_ID, ComponentName(packageName, BatteryUpdateJob::class.java.name))
         jobInfo.setPeriodic(intervalMs)
         jobInfo.setPersisted(true)
         jobScheduler.schedule(jobInfo.build())

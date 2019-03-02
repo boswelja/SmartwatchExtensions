@@ -33,6 +33,7 @@ object References {
     const val REQUEST_DND_ACCESS_STATUS = "/request_dnd_access_status"
 
     const val BATTERY_PERCENT_JOB_ID = 5656299
+    const val NOTIFICATION_ID = 29137
 
     const val TYPE_LOCK_PHONE: Int = 1
     const val TYPE_PHONE_BATTERY: Int = 2
