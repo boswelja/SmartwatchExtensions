@@ -24,16 +24,16 @@ class DnDRemoteChangeHandler : WearableListenerService() {
         val prefs = PreferenceManager.getDefaultSharedPreferences(this)
         val dndReceiving = prefs.getBoolean(PreferenceKey.DND_SYNC_RECEIVE_KEY, false)
         if (dndReceiving) {
-            dataEventBuffer.forEach { event ->
-                if (event.type == DataEvent.TYPE_CHANGED) {
-                    val dataMap = DataMapItem.fromDataItem(event.dataItem).dataMap
-                    val sender = dataMap.getString(References.SENDER_UUID)
-                    if (sender != CommonUtils.getUUID(this)) {
-                        val dndEnabled = dataMap.getBoolean(References.NEW_DND_STATE_PATH)
-                        Compat.setInterruptionFilter(this, dndEnabled)
-                    }
+            val dataEvent = dataEventBuffer.last()
+            if (dataEvent.type == DataEvent.TYPE_CHANGED) {
+                val dataMap = DataMapItem.fromDataItem(dataEvent.dataItem).dataMap
+                val sender = dataMap.getString(References.SENDER_UUID)
+                if (sender != CommonUtils.getUUID(this)) {
+                    val dndEnabled = dataMap.getBoolean(References.NEW_DND_STATE_PATH)
+                    Compat.setInterruptionFilter(this, dndEnabled)
                 }
             }
+            dataEventBuffer.release()
         }
     }
 }
