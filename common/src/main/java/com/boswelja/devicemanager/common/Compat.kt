@@ -14,7 +14,6 @@ import android.content.Context
 import android.content.Intent
 import android.media.AudioManager
 import android.os.Build
-import androidx.core.content.ContextCompat
 
 object Compat {
 
@@ -50,14 +49,6 @@ object Compat {
             } else {
                 audioManager.ringerMode = AudioManager.RINGER_MODE_NORMAL
             }
-        }
-    }
-
-    fun getColor(context: Context, color: Int): Int {
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            context.getColor(color)
-        } else {
-            ContextCompat.getColor(context, color)
         }
     }
 }
