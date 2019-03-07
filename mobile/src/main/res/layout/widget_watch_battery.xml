@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/widget_background"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -11,14 +12,16 @@
         android:id="@+id/battery_indicator"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:src="@drawable/battery_unknown"
-        android:layout_weight="10"/>
+        android:src="@drawable/ic_watch_battery_unknown"
+        android:tint="@color/widgetForeground"
+        android:layout_weight="10"
+        tools:ignore="ContentDescription" />
 
     <TextView
         android:id="@+id/battery_indicator_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColor="@color/colorAccent"
+        android:textColor="@color/widgetForeground"
         android:gravity="center"
         android:layout_weight="1"
         android:text="@string/battery_sync_disabled"
