@@ -26,7 +26,7 @@ abstract class BatteryUpdateListener : WearableListenerService() {
             val message = String(messageEvent.data, Charsets.UTF_8)
             val messageSplit = message.split("|")
             val percent = messageSplit[0].toInt()
-            val charging = messageSplit[1] == "true"
+            val charging = messageSplit[1] == true.toString()
             preferenceManager.edit().putInt(References.BATTERY_PERCENT_KEY, percent).apply()
 
             if (preferenceManager.getBoolean(PreferenceKey.BATTERY_FULL_CHARGE_NOTI_KEY, false) &&

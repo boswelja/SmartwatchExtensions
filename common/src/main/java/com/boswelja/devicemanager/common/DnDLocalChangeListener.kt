@@ -70,7 +70,7 @@ class DnDLocalChangeListener : Service() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             notificationManager.deleteNotificationChannel(References.DND_SYNC_NOTIFICATION_CHANNEL_ID)
             if (notificationManager.getNotificationChannel(References.DND_SYNC_NOTIFICATION_CHANNEL_ID) == null) {
-                val notiChannel = NotificationChannel(References.DND_SYNC_NOTIFICATION_CHANNEL_ID, "DnD Sync", NotificationManager.IMPORTANCE_LOW)
+                val notiChannel = NotificationChannel(References.DND_SYNC_NOTIFICATION_CHANNEL_ID, getString(R.string.dnd_sync_noti_channel_name), NotificationManager.IMPORTANCE_LOW)
                 notiChannel.enableLights(false)
                 notiChannel.enableVibration(false)
                 notiChannel.setShowBadge(false)

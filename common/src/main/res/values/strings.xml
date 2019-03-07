@@ -1,6 +1,7 @@
 <resources>
     <string name="global_app_name">Wearable Extensions</string>
 
+    <string name="dnd_sync_noti_channel_name">Do Not Disturb Sync</string>
     <string name="dnd_sync_active_noti_title">DnD Sync Active</string>
     <string name="dnd_sync_active_noti_desc">Syncing Do Not Disturb status between your devices</string>
 
