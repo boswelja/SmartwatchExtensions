@@ -48,7 +48,7 @@ abstract class BatteryUpdateListener : WearableListenerService() {
         val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         val notiChannelKey = getString(R.string.device_charged_noti_channel_key)
         val companionDeviceName = getString(R.string.companion_device_type)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && notificationManager.getNotificationChannel(notiChannelKey) == null) {
             val channel = NotificationChannel(notiChannelKey, getString(R.string.device_charged_noti_channel_name, companionDeviceName), NotificationManager.IMPORTANCE_HIGH)
             channel.enableVibration(true)
             notificationManager.createNotificationChannel(channel)

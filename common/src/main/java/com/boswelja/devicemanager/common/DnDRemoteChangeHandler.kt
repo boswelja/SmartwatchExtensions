@@ -27,8 +27,11 @@ class DnDRemoteChangeHandler : WearableListenerService() {
             dataEventBuffer.forEach { event ->
                 if (event.type == DataEvent.TYPE_CHANGED) {
                     val dataMap = DataMapItem.fromDataItem(event.dataItem).dataMap
-                    val dndEnabled = dataMap.getBoolean(References.NEW_DND_STATE_PATH)
-                    Compat.setInterruptionFilter(this, dndEnabled)
+                    val sender = dataMap.getString(References.SENDER_UUID)
+                    if (sender != CommonUtils.getUUID(this)) {
+                        val dndEnabled = dataMap.getBoolean(References.NEW_DND_STATE_PATH)
+                        Compat.setInterruptionFilter(this, dndEnabled)
+                    }
                 }
             }
         }

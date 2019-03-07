@@ -14,8 +14,10 @@ import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.drawable.Drawable
 import android.os.BatteryManager
+import android.preference.PreferenceManager
 import com.google.android.gms.wearable.CapabilityClient
 import com.google.android.gms.wearable.Wearable
+import java.util.UUID
 
 object CommonUtils {
 
@@ -55,5 +57,18 @@ object CommonUtils {
             0
         }
         return byteArrayOf(byte)
+    }
+
+    fun getUUID(context: Context) : String {
+        val prefs = PreferenceManager.getDefaultSharedPreferences(context)
+        var uuid: String
+        try {
+            uuid = prefs.getString(PreferenceKey.DEVICE_UUID_KEY, "")!!
+            UUID.fromString(uuid)
+        } catch (e: IllegalArgumentException) {
+            uuid = UUID.randomUUID().toString()
+            prefs.edit().putString(PreferenceKey.DEVICE_UUID_KEY, uuid).apply()
+        }
+        return uuid
     }
 }

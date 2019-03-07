@@ -17,6 +17,7 @@ object References {
 
     const val BATTERY_PERCENT_KEY = "/batteryPercent"
     const val DND_STATUS_KEY = "/dndStatus"
+    const val SENDER_UUID = "/senderUUID"
 
     // Shared Preferences paths
     const val NEW_DND_STATE_PATH = "com.boswelja.devicemanager.dndenabled"
