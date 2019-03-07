@@ -107,11 +107,11 @@ class DnDSyncDialogFragment : DialogFragment() {
 
     private fun onResponse(hasDnDAccess: Boolean) {
         if (hasDnDAccess) {
-            (activity as MainActivity).createSnackbar("Permissions Granted!")
+            (activity as MainActivity).createSnackbar(getString(R.string.dnd_sync_watch_permission_granted))
             dismiss()
         } else {
             setLoading(false)
-            Toast.makeText(context!!, "Permission not granted, please try again", Toast.LENGTH_LONG).show()
+            Toast.makeText(context!!, getString(R.string.dnd_sync_watch_permission_not_granted), Toast.LENGTH_LONG).show()
         }
         responseListener?.onResponse(hasDnDAccess)
     }

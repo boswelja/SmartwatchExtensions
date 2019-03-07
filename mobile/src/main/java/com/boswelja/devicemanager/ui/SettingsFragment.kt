@@ -17,7 +17,6 @@ import android.os.Build
 import android.os.Bundle
 import android.os.PowerManager
 import android.provider.Settings
-import android.util.Log
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
@@ -70,7 +69,7 @@ class SettingsFragment : PreferenceFragmentCompat(), Preference.OnPreferenceChan
                 startActivity(settingsIntent)
                 true
             }
-            "pref_donate" -> {
+            PreferenceKey.DONATE_KEY -> {
                 DonationDialogFragment().show(activity?.supportFragmentManager!!, "DonationDialog")
                 true
             }
@@ -162,7 +161,6 @@ class SettingsFragment : PreferenceFragmentCompat(), Preference.OnPreferenceChan
                     Utils.updateWatchPrefs(context!!)
                     context?.stopService(Intent(context!!, DnDLocalChangeListener::class.java))
                 }
-                Log.d("SettingsFragment", value.toString())
                 false
             }
             PreferenceKey.DND_SYNC_RECEIVE_KEY -> {
@@ -183,7 +181,6 @@ class SettingsFragment : PreferenceFragmentCompat(), Preference.OnPreferenceChan
                 false
             }
             PreferenceKey.BATTERY_OPT_KEY -> {
-                Log.d("SettingsFragment", "Requesting battery opt ignore")
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && newValue == true) {
                     val intent = Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS)
                     intent.data = Uri.parse("package:${context?.packageName}")
@@ -263,7 +260,7 @@ class SettingsFragment : PreferenceFragmentCompat(), Preference.OnPreferenceChan
     }
 
     private fun setupAboutPrefs() {
-        val donatePref = findPreference("pref_donate") as Preference
+        val donatePref = findPreference(PreferenceKey.DONATE_KEY) as Preference
         donatePref.onPreferenceClickListener = this
     }
 

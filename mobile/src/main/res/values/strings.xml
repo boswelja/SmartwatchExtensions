@@ -67,6 +67,8 @@
     <string name="dialog_battery_optimisation_warn_title">Battery Optimisation</string>
     <string name="dialog_battery_optimisation_warn_message">Android is optimising this app\'s battery use. This can cause issues with certain functions. Would you like to disable it?</string>
 
+    <string name="dnd_sync_watch_permission_granted">Permission Granted!</string>
+    <string name="dnd_sync_watch_permission_not_granted">Permission not granted, please try again</string>
 
     <string name="donate_title">Donate</string>
     <string name="donation_processed">Thanks for donating!</string>
