@@ -8,6 +8,7 @@
 package com.boswelja.devicemanager.common
 
 import android.preference.PreferenceManager
+import android.util.Log
 import com.google.android.gms.wearable.DataEvent
 import com.google.android.gms.wearable.DataEventBuffer
 import com.google.android.gms.wearable.DataMapItem
@@ -27,11 +28,8 @@ class DnDRemoteChangeHandler : WearableListenerService() {
             val dataEvent = dataEventBuffer.last()
             if (dataEvent.type == DataEvent.TYPE_CHANGED) {
                 val dataMap = DataMapItem.fromDataItem(dataEvent.dataItem).dataMap
-                val sender = dataMap.getString(References.SENDER_UUID)
-                if (sender != CommonUtils.getUUID(this)) {
-                    val dndEnabled = dataMap.getBoolean(References.NEW_DND_STATE_PATH)
-                    Compat.setInterruptionFilter(this, dndEnabled)
-                }
+                val dndEnabled = dataMap.getBoolean(References.NEW_DND_STATE_PATH)
+                Compat.setInterruptionFilter(this, dndEnabled)
             }
             dataEventBuffer.release()
         }

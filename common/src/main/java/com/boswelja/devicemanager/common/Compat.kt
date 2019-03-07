@@ -34,21 +34,36 @@ object Compat {
         }
     }
 
-    fun setInterruptionFilter(context: Context, dndEnabled: Boolean) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-            if (dndEnabled) {
-                notificationManager.setInterruptionFilter(NotificationManager.INTERRUPTION_FILTER_PRIORITY)
+    fun setInterruptionFilter(context: Context, requestedDnDState: Boolean) {
+        if (requestedDnDState != dndEnabled(context)) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+                if (requestedDnDState) {
+                    notificationManager.setInterruptionFilter(NotificationManager.INTERRUPTION_FILTER_PRIORITY)
+                } else {
+                    notificationManager.setInterruptionFilter(NotificationManager.INTERRUPTION_FILTER_ALL)
+                }
             } else {
-                notificationManager.setInterruptionFilter(NotificationManager.INTERRUPTION_FILTER_ALL)
+                val audioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
+                if (requestedDnDState) {
+                    audioManager.ringerMode = AudioManager.RINGER_MODE_SILENT
+                } else {
+                    audioManager.ringerMode = AudioManager.RINGER_MODE_NORMAL
+                }
             }
+        }
+    }
+
+    private fun dndEnabled(context: Context): Boolean {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            val currentInterruptFilter = notificationManager.currentInterruptionFilter
+            (currentInterruptFilter == NotificationManager.INTERRUPTION_FILTER_ALARMS) ||
+                    (currentInterruptFilter == NotificationManager.INTERRUPTION_FILTER_PRIORITY) ||
+                    (currentInterruptFilter == NotificationManager.INTERRUPTION_FILTER_NONE)
         } else {
             val audioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
-            if (dndEnabled) {
-                audioManager.ringerMode = AudioManager.RINGER_MODE_SILENT
-            } else {
-                audioManager.ringerMode = AudioManager.RINGER_MODE_NORMAL
-            }
+            audioManager.ringerMode == AudioManager.RINGER_MODE_SILENT
         }
     }
 }

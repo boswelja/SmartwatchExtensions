@@ -88,7 +88,6 @@ class DnDLocalChangeListener : Service() {
         val dataClient = Wearable.getDataClient(this)
         val putDataMapReq = PutDataMapRequest.create(References.DND_STATUS_KEY)
         putDataMapReq.dataMap.putBoolean(References.NEW_DND_STATE_PATH, dndEnabled)
-        putDataMapReq.dataMap.putString(References.SENDER_UUID, CommonUtils.getUUID(this))
         putDataMapReq.setUrgent()
         dataClient.putDataItem(putDataMapReq.asPutDataRequest())
     }
