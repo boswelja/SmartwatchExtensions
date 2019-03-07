@@ -61,11 +61,8 @@ object CommonUtils {
 
     fun getUUID(context: Context) : String {
         val prefs = PreferenceManager.getDefaultSharedPreferences(context)
-        var uuid: String
-        try {
-            uuid = prefs.getString(PreferenceKey.DEVICE_UUID_KEY, "")!!
-            UUID.fromString(uuid)
-        } catch (e: IllegalArgumentException) {
+        var uuid = prefs.getString(PreferenceKey.DEVICE_UUID_KEY, "")
+        if (uuid.isNullOrBlank()) {
             uuid = UUID.randomUUID().toString()
             prefs.edit().putString(PreferenceKey.DEVICE_UUID_KEY, uuid).apply()
         }
