@@ -15,10 +15,12 @@ import android.preference.PreferenceManager
 class BootReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context?, intent: Intent?) {
-        val prefs = PreferenceManager.getDefaultSharedPreferences(context)
-        if (prefs.getBoolean(PreferenceKey.DND_SYNC_SEND_KEY, false)) {
-            val serviceIntent = Intent(context, DnDLocalChangeListener::class.java)
-            Compat.startService(context!!, serviceIntent)
+        if (intent?.action == Intent.ACTION_BOOT_COMPLETED) {
+            val prefs = PreferenceManager.getDefaultSharedPreferences(context)
+            if (prefs.getBoolean(PreferenceKey.DND_SYNC_SEND_KEY, false)) {
+                val serviceIntent = Intent(context, DnDLocalChangeListener::class.java)
+                Compat.startService(context!!, serviceIntent)
+            }
         }
     }
 }

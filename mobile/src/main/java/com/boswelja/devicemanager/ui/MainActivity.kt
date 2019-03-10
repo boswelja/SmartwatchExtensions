@@ -20,14 +20,11 @@ import android.os.Bundle
 import android.preference.PreferenceManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
-import com.boswelja.devicemanager.common.Compat
 import com.boswelja.devicemanager.R
+import com.boswelja.devicemanager.common.BatteryUpdateJob
+import com.boswelja.devicemanager.common.Compat
 import com.boswelja.devicemanager.common.DnDLocalChangeListener
 import com.boswelja.devicemanager.common.PreferenceKey
-import com.boswelja.devicemanager.common.References
-import com.boswelja.devicemanager.common.BatteryUpdateJob
-import com.google.android.gms.wearable.PutDataMapRequest
-import com.google.android.gms.wearable.Wearable
 import com.google.android.material.snackbar.Snackbar
 
 class MainActivity : AppCompatActivity() {

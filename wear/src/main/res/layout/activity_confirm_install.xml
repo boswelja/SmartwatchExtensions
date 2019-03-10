@@ -1,61 +1,68 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.wear.widget.BoxInsetLayout
+<layout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:fillViewport="true"
-    tools:deviceId="wear">
-    <RelativeLayout
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <androidx.wear.widget.BoxInsetLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:boxedEdges="all">
+        android:fillViewport="true"
+        tools:deviceId="wear">
 
-        <TextView
-            android:id="@+id/heading"
-            android:textSize="16sp"
-            android:layout_alignParentTop="true"
-            android:gravity="center_horizontal"
-            android:textColor="@android:color/primary_text_dark"
-            android:paddingTop="@dimen/confirmation_padding"
-            android:paddingStart="@dimen/confirmation_padding"
-            android:paddingEnd="@dimen/confirmation_padding"
-            android:paddingBottom="8dp"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/companion_app_missing"/>
+            android:layout_height="match_parent"
+            app:boxedEdges="all">
 
-        <TextView
-            android:id="@+id/description"
-            android:textSize="14sp"
-            android:textColor="@android:color/secondary_text_dark"
-            android:layout_below="@+id/heading"
-            android:gravity="center_horizontal"
-            android:paddingStart="@dimen/confirmation_padding"
-            android:paddingEnd="@dimen/confirmation_padding"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/companion_app_missing_desc"/>
+            <TextView
+                android:id="@+id/heading"
+                android:textSize="16sp"
+                android:layout_alignParentTop="true"
+                android:gravity="center_horizontal"
+                android:textColor="@android:color/primary_text_dark"
+                android:paddingTop="@dimen/confirmation_padding"
+                android:paddingStart="@dimen/confirmation_padding"
+                android:paddingEnd="@dimen/confirmation_padding"
+                android:paddingBottom="8dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/companion_app_missing"/>
 
-        <androidx.wear.widget.CircularProgressLayout
-            android:id="@+id/cancel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="4dp"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentBottom="true"
-            app:backgroundColor="@color/light_ui_element"
-            app:colorSchemeColors="@color/active_ui_element"
-            app:strokeWidth="4dp">
+            <TextView
+                android:id="@+id/description"
+                android:textSize="14sp"
+                android:textColor="@android:color/secondary_text_dark"
+                android:layout_below="@+id/heading"
+                android:gravity="center_horizontal"
+                android:paddingStart="@dimen/confirmation_padding"
+                android:paddingEnd="@dimen/confirmation_padding"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/companion_app_missing_desc"/>
 
-            <ImageView
-                android:src="@drawable/ic_close"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:contentDescription="@string/cancel" />
+            <androidx.wear.widget.CircularProgressLayout
+                android:id="@+id/cancel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="4dp"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentBottom="true"
+                app:backgroundColor="@color/light_ui_element"
+                app:colorSchemeColors="@color/active_ui_element"
+                app:strokeWidth="4dp">
 
-        </androidx.wear.widget.CircularProgressLayout>
+                <ImageView
+                    android:src="@drawable/ic_close"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:contentDescription="@string/cancel" />
 
-    </RelativeLayout>
-</androidx.wear.widget.BoxInsetLayout>
+            </androidx.wear.widget.CircularProgressLayout>
+
+        </RelativeLayout>
+
+    </androidx.wear.widget.BoxInsetLayout>
+
+</layout>
+
