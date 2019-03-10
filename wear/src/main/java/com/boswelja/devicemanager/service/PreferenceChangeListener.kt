@@ -10,7 +10,6 @@ package com.boswelja.devicemanager.service
 import android.content.Intent
 import android.os.Build
 import android.preference.PreferenceManager
-import android.util.Log
 import com.boswelja.devicemanager.common.DnDLocalChangeListener
 import com.boswelja.devicemanager.common.PreferenceKey
 import com.boswelja.devicemanager.common.References
@@ -19,8 +18,6 @@ import com.google.android.gms.wearable.DataMapItem
 import com.google.android.gms.wearable.WearableListenerService
 
 class PreferenceChangeListener : WearableListenerService() {
-
-    private val tag = "PreferenceChangeListener"
 
     override fun onDataChanged(dataEvents: DataEventBuffer?) {
         super.onDataChanged(dataEvents)
@@ -46,7 +43,6 @@ class PreferenceChangeListener : WearableListenerService() {
                     .apply()
 
             if (dndSending) {
-                Log.d(tag, "Starting service")
                 val intent = Intent(applicationContext, DnDLocalChangeListener::class.java)
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                     startForegroundService(intent)
@@ -57,9 +53,7 @@ class PreferenceChangeListener : WearableListenerService() {
 
             if (!batterySyncEnabled) {
                 prefs.edit().remove(PreferenceKey.BATTERY_PERCENT_KEY).apply()
-                Log.d(tag, "Cleared battery percent")
             }
-            Log.d(tag, "Prefs updated")
         }
     }
 }
