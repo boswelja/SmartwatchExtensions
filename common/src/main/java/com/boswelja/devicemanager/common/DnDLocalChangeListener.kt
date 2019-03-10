@@ -43,18 +43,29 @@ class DnDLocalChangeListener : Service() {
 
         notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
-        createNotificationChannel()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && notificationManager.getNotificationChannel(References.DND_SYNC_NOTI_CHANNEL_ID) == null) {
+            val notiChannel = NotificationChannel(
+                    References.DND_SYNC_NOTI_CHANNEL_ID,
+                    getString(R.string.dnd_sync_noti_channel_name),
+                    NotificationManager.IMPORTANCE_LOW).apply {
+                enableLights(false)
+                enableVibration(false)
+                setShowBadge(false)
+            }
+            notificationManager.createNotificationChannel(notiChannel)
+        }
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        val notiBuilder: NotificationCompat.Builder = NotificationCompat.Builder(this, References.DND_SYNC_NOTIFICATION_CHANNEL_ID)
+        val notiBuilder = NotificationCompat.Builder(this, References.DND_SYNC_NOTI_CHANNEL_ID)
                 .setContentTitle(getString(R.string.dnd_sync_active_noti_title))
                 .setContentText(getString(R.string.dnd_sync_active_noti_desc))
                 .setSmallIcon(R.drawable.ic_sync)
                 .setOngoing(true)
                 .setShowWhen(false)
                 .setPriority(NotificationCompat.PRIORITY_LOW)
-        startForeground(155216, notiBuilder.build())
+                .build()
+        startForeground(155216, notiBuilder)
 
         val intentFilter = IntentFilter()
         intentFilter.addAction(NotificationManager.ACTION_INTERRUPTION_FILTER_CHANGED)
@@ -64,19 +75,6 @@ class DnDLocalChangeListener : Service() {
         updateDnD()
 
         return START_STICKY
-    }
-
-    private fun createNotificationChannel() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            notificationManager.deleteNotificationChannel(References.DND_SYNC_NOTIFICATION_CHANNEL_ID)
-            if (notificationManager.getNotificationChannel(References.DND_SYNC_NOTIFICATION_CHANNEL_ID) == null) {
-                val notiChannel = NotificationChannel(References.DND_SYNC_NOTIFICATION_CHANNEL_ID, getString(R.string.dnd_sync_noti_channel_name), NotificationManager.IMPORTANCE_LOW)
-                notiChannel.enableLights(false)
-                notiChannel.enableVibration(false)
-                notiChannel.setShowBadge(false)
-                notificationManager.createNotificationChannel(notiChannel)
-            }
-        }
     }
 
     private fun updateDnD() {

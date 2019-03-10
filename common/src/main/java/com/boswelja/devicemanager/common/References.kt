@@ -9,7 +9,8 @@ package com.boswelja.devicemanager.common
 
 object References {
 
-    const val DND_SYNC_NOTIFICATION_CHANNEL_ID = "dnd_sync"
+    const val DND_SYNC_NOTI_CHANNEL_ID = "dnd_sync"
+    const val BATTERY_CHARGED_NOTI_CHANEL_ID = "companion_device_charged"
 
     // Data map paths
     const val BATTERY_STATUS_PATH = "/batteryStatus"
