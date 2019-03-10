@@ -21,4 +21,8 @@ class BatteryUpdateJob : JobService() {
         jobFinished(params, true)
         return false
     }
+
+    companion object {
+        const val BATTERY_PERCENT_JOB_ID = 5656299
+    }
 }

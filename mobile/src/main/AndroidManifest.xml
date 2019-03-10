@@ -64,7 +64,7 @@
         <service android:name=".common.DnDRemoteChangeHandler">
             <intent-filter>
                 <action android:name="com.google.android.gms.wearable.DATA_CHANGED" />
-                <data android:scheme="wear" android:host="*" android:path="/dndStatus" />
+                <data android:scheme="wear" android:host="*" android:path="/dnd_status" />
             </intent-filter>
         </service>
 
@@ -86,7 +86,7 @@
         <service android:name=".receiver.WatchBatteryUpdateListener">
             <intent-filter>
                 <action android:name="com.google.android.gms.wearable.MESSAGE_RECEIVED" />
-                <data android:scheme="wear" android:host="*" android:path="/batteryStatus" />
+                <data android:scheme="wear" android:host="*" android:path="/battery_status" />
             </intent-filter>
         </service>
 

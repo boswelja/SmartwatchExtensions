@@ -31,27 +31,27 @@ class MainAdapter(private val options: ArrayList<MainOption>) : RecyclerView.Ada
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val option = options[position]
         when (option.type) {
-            References.TYPE_LOCK_PHONE -> {
+            MainOption.Type.LOCK_PHONE -> {
                 holder.label.text = option.label
                 holder.icon.setImageResource(option.iconRes)
                 holder.itemView.setOnClickListener {
                     val intent = Intent(holder.itemView.context, ActionService::class.java)
-                    intent.putExtra(References.INTENT_ACTION_EXTRA, References.LOCK_PHONE_KEY)
+                    intent.putExtra(ActionService.INTENT_ACTION_EXTRA, References.LOCK_PHONE_PATH)
                     holder.itemView.context.startService(intent)
                 }
             }
-            References.TYPE_PHONE_BATTERY -> {
+            MainOption.Type.PHONE_BATTERY -> {
                 val sharedPrefs = PreferenceManager.getDefaultSharedPreferences(holder.itemView.context)
                 holder.itemView.setOnClickListener {
                     if (sharedPrefs.getBoolean(PreferenceKey.BATTERY_SYNC_ENABLED_KEY, false)) {
                         val intent = Intent(holder.itemView.context, ActionService::class.java)
-                        intent.putExtra(References.INTENT_ACTION_EXTRA, References.REQUEST_BATTERY_UPDATE_KEY)
+                        intent.putExtra(ActionService.INTENT_ACTION_EXTRA, References.REQUEST_BATTERY_UPDATE_PATH)
                         holder.itemView.context.startService(intent)
                     }
                 }
                 sharedPrefs.registerOnSharedPreferenceChangeListener { _, key ->
                     when (key) {
-                        References.BATTERY_PERCENT_KEY -> {
+                        PreferenceKey.BATTERY_PERCENT_KEY -> {
                             updateBatteryPercent(holder, sharedPrefs)
                         }
                         PreferenceKey.BATTERY_SYNC_ENABLED_KEY -> {
@@ -65,7 +65,7 @@ class MainAdapter(private val options: ArrayList<MainOption>) : RecyclerView.Ada
     }
 
     private fun updateBatteryPercent(holder: ViewHolder, sharedPrefs: SharedPreferences) {
-        val phoneBattery = sharedPrefs.getInt(References.BATTERY_PERCENT_KEY, -1)
+        val phoneBattery = sharedPrefs.getInt(PreferenceKey.BATTERY_PERCENT_KEY, -1)
         val batterySyncEnabled = sharedPrefs.getBoolean(PreferenceKey.BATTERY_SYNC_ENABLED_KEY, false)
         if (phoneBattery > -1) {
             holder.label.text = String.format(holder.itemView.context.getString(R.string.phone_battery_desc), phoneBattery)

@@ -18,10 +18,10 @@ class MessageListener : WearableListenerService() {
 
     override fun onMessageReceived(messageEvent: MessageEvent?) {
         when (messageEvent?.path) {
-            References.REQUEST_DND_ACCESS_STATUS -> {
+            References.REQUEST_DND_ACCESS_STATUS_PATH -> {
                 val hasDnDAccess: Boolean = Utils.checkDnDAccess(this)
                 Wearable.getMessageClient(this)
-                        .sendMessage(messageEvent.sourceNodeId, References.REQUEST_DND_ACCESS_STATUS, boolToByteArray(hasDnDAccess))
+                        .sendMessage(messageEvent.sourceNodeId, References.REQUEST_DND_ACCESS_STATUS_PATH, boolToByteArray(hasDnDAccess))
             }
         }
     }

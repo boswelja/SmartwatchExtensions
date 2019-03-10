@@ -7,4 +7,11 @@
  */
 package com.boswelja.devicemanager
 
-class MainOption(val iconRes: Int, val label: String, val type: Int)
+class MainOption(val iconRes: Int, val label: String, val type: Type) {
+
+    enum class Type {
+        LOCK_PHONE,
+        PHONE_BATTERY
+    }
+
+}

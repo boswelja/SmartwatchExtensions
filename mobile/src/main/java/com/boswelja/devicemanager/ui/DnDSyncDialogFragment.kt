@@ -41,7 +41,7 @@ class DnDSyncDialogFragment : DialogFragment() {
     private var responseListener: ResponseListener? = null
 
     private val listener = MessageClient.OnMessageReceivedListener {
-        if (it.path == References.REQUEST_DND_ACCESS_STATUS) {
+        if (it.path == References.REQUEST_DND_ACCESS_STATUS_PATH) {
             val hasDnDAccess = it.data[0].toInt() == 1
             onResponse(hasDnDAccess)
         }
@@ -99,7 +99,7 @@ class DnDSyncDialogFragment : DialogFragment() {
                 .addOnCompleteListener {
                     if (it.isSuccessful) {
                         for (node in it.result?.nodes!!) {
-                            messageClient.sendMessage(node?.id!!, References.REQUEST_DND_ACCESS_STATUS, null)
+                            messageClient.sendMessage(node?.id!!, References.REQUEST_DND_ACCESS_STATUS_PATH, null)
                         }
                     }
                 }

@@ -24,4 +24,5 @@ object PreferenceKey {
     const val DND_ACCESS_STATUS_KEY = "dnd_access"
     const val BATTERY_CHARGED_NOTI_SENT = "battery_charged_notified"
     const val DONATE_KEY = "pref_donate"
+    const val BATTERY_PERCENT_KEY = "battery_percent"
 }

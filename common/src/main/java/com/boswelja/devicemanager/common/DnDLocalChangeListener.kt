@@ -85,7 +85,7 @@ class DnDLocalChangeListener : Service() {
                         (currentInterruptFilter == NotificationManager.INTERRUPTION_FILTER_NONE)
         val dataClient = Wearable.getDataClient(this)
         val putDataMapReq = PutDataMapRequest.create(References.DND_STATUS_KEY)
-        putDataMapReq.dataMap.putBoolean(References.NEW_DND_STATE_PATH, dndEnabled)
+        putDataMapReq.dataMap.putBoolean(References.NEW_DND_STATE_KEY, dndEnabled)
         putDataMapReq.setUrgent()
         dataClient.putDataItem(putDataMapReq.asPutDataRequest())
     }

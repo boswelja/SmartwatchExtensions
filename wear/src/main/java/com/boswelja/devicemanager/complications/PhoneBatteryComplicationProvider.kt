@@ -18,6 +18,7 @@ import android.support.wearable.complications.ComplicationProviderService
 import android.support.wearable.complications.ComplicationText
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.CommonUtils
+import com.boswelja.devicemanager.common.PreferenceKey
 import com.boswelja.devicemanager.common.References
 import com.boswelja.devicemanager.service.ActionService
 
@@ -29,7 +30,7 @@ class PhoneBatteryComplicationProvider : ComplicationProviderService() {
 
     private fun createComplication(type: Int): ComplicationData {
         val intent = Intent(this, ActionService::class.java)
-        intent.putExtra(References.INTENT_ACTION_EXTRA, References.REQUEST_BATTERY_UPDATE_KEY)
+        intent.putExtra(ActionService.INTENT_ACTION_EXTRA, References.REQUEST_BATTERY_UPDATE_PATH)
         val pendingIntent: PendingIntent
         pendingIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             PendingIntent.getForegroundService(this, 101, intent, PendingIntent.FLAG_UPDATE_CURRENT)
@@ -38,7 +39,7 @@ class PhoneBatteryComplicationProvider : ComplicationProviderService() {
         }
 
         val prefs = PreferenceManager.getDefaultSharedPreferences(this)
-        val percent = prefs.getInt(References.BATTERY_PERCENT_KEY, -1)
+        val percent = prefs.getInt(PreferenceKey.BATTERY_PERCENT_KEY, -1)
         val text = if (percent > -1) String.format(getString(R.string.phone_battery_percent), percent) else getString(R.string.phone_battery_unknown_short)
         val data = ComplicationData.Builder(type)
                 .setShortText(ComplicationText.plainText(text))

@@ -46,19 +46,19 @@ class ActionService : Service() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        action = intent!!.getStringExtra(References.INTENT_ACTION_EXTRA)
+        action = intent!!.getStringExtra(INTENT_ACTION_EXTRA)
         val capabilityCallback = object : Utils.CapabilityCallbacks {
             override fun noCapableDevices() {
                 when (action) {
-                    References.LOCK_PHONE_KEY -> onFailed(getString(R.string.phone_lock_failed_message))
-                    References.REQUEST_BATTERY_UPDATE_KEY -> onFailed(getString(R.string.phone_battery_update_failed))
+                    References.LOCK_PHONE_PATH -> onFailed(getString(R.string.phone_lock_failed_message))
+                    References.REQUEST_BATTERY_UPDATE_PATH -> onFailed(getString(R.string.phone_battery_update_failed))
                 }
             }
 
             override fun capableDeviceFound(node: Node?) {
                 val prefs = PreferenceManager.getDefaultSharedPreferences(this@ActionService)
                 when (action) {
-                    References.LOCK_PHONE_KEY -> {
+                    References.LOCK_PHONE_PATH -> {
                         if (prefs.getBoolean(PreferenceKey.LOCK_PHONE_ENABLED, false)) {
                             sendMessage(node)
                         } else {
@@ -67,7 +67,7 @@ class ActionService : Service() {
                         val providerUpdateRequester = ProviderUpdateRequester(this@ActionService, ComponentName(packageName, PhoneBatteryComplicationProvider::class.java.name))
                         providerUpdateRequester.requestUpdateAll()
                     }
-                    References.REQUEST_BATTERY_UPDATE_KEY -> {
+                    References.REQUEST_BATTERY_UPDATE_PATH -> {
                         sendMessage(node)
                     }
                 }
@@ -108,5 +108,9 @@ class ActionService : Service() {
                 .addOnFailureListener {
                     onFailed(getString(R.string.request_failed_message))
                 }
+    }
+
+    companion object {
+        const val INTENT_ACTION_EXTRA = "action"
     }
 }

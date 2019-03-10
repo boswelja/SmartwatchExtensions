@@ -56,7 +56,7 @@ class MainActivity : AppCompatActivity() {
 
         val battSyncEnabled = sharedPrefs.getBoolean(PreferenceKey.BATTERY_SYNC_ENABLED_KEY, false)
         if (battSyncEnabled) {
-            if (Compat.getPendingJob(jobScheduler, References.BATTERY_PERCENT_JOB_ID) == null) {
+            if (Compat.getPendingJob(jobScheduler, BatteryUpdateJob.BATTERY_PERCENT_JOB_ID) == null) {
                 createBatterySyncJob(sharedPrefs.getInt(PreferenceKey.BATTERY_SYNC_INTERVAL_KEY, 900000).toLong())
             }
         } else {
@@ -83,23 +83,16 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun createBatterySyncJob(intervalMs: Long) {
-        val jobInfo = JobInfo.Builder(References.BATTERY_PERCENT_JOB_ID, ComponentName(packageName, BatteryUpdateJob::class.java.name))
+        val jobInfo = JobInfo.Builder(BatteryUpdateJob.BATTERY_PERCENT_JOB_ID, ComponentName(packageName, BatteryUpdateJob::class.java.name))
         jobInfo.setPeriodic(intervalMs)
         jobInfo.setPersisted(true)
         jobScheduler.schedule(jobInfo.build())
     }
 
     fun stopBatterySyncJob() {
-        if (Compat.getPendingJob(jobScheduler, References.BATTERY_PERCENT_JOB_ID) != null) {
-            jobScheduler.cancel(References.BATTERY_PERCENT_JOB_ID)
+        if (Compat.getPendingJob(jobScheduler, BatteryUpdateJob.BATTERY_PERCENT_JOB_ID) != null) {
+            jobScheduler.cancel(BatteryUpdateJob.BATTERY_PERCENT_JOB_ID)
         }
-        val dataClient = Wearable.getDataClient(this)
-        val putDataMapReq = PutDataMapRequest.create(References.BATTERY_PERCENT_KEY)
-        if (putDataMapReq.dataMap.containsKey(References.BATTERY_PERCENT_PATH)) {
-            putDataMapReq.dataMap.remove(References.BATTERY_PERCENT_PATH)
-        }
-        val putDataReq = putDataMapReq.asPutDataRequest()
-        dataClient.putDataItem(putDataReq)
     }
 
     fun createSnackbar(message: String) {

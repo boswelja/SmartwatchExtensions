@@ -18,7 +18,6 @@ import androidx.wear.widget.WearableRecyclerView
 import com.boswelja.devicemanager.MainOption
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.Utils
-import com.boswelja.devicemanager.common.References
 import com.google.android.gms.wearable.Node
 
 class MainActivity : AppCompatActivity() {
@@ -31,8 +30,8 @@ class MainActivity : AppCompatActivity() {
 
         recyclerView = findViewById(R.id.recycler_view)
         val optionsList = ArrayList<MainOption>()
-        optionsList.add(MainOption(R.drawable.ic_phonelink_lock, getString(R.string.lock_phone_label), References.TYPE_LOCK_PHONE))
-        optionsList.add(MainOption(R.drawable.ic_phone_battery, getString(R.string.phone_battery_unknown_long), References.TYPE_PHONE_BATTERY))
+        optionsList.add(MainOption(R.drawable.ic_phonelink_lock, getString(R.string.lock_phone_label), MainOption.Type.LOCK_PHONE))
+        optionsList.add(MainOption(R.drawable.ic_phone_battery, getString(R.string.phone_battery_unknown_long), MainOption.Type.PHONE_BATTERY))
         recyclerView.apply {
             layoutManager = WearableLinearLayoutManager(context, CustomScrollingLayoutCallback())
             isEdgeItemsCenteringEnabled = true

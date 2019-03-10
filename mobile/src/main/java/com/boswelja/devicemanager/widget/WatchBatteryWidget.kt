@@ -18,7 +18,6 @@ import android.widget.RemoteViews
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.CommonUtils
 import com.boswelja.devicemanager.common.PreferenceKey
-import com.boswelja.devicemanager.common.References
 import com.boswelja.devicemanager.ui.MainActivity
 
 class WatchBatteryWidget : AppWidgetProvider() {
@@ -28,7 +27,7 @@ class WatchBatteryWidget : AppWidgetProvider() {
 
         if (appWidgetIds != null && !appWidgetIds.isEmpty()) {
             val sharedPrefs = PreferenceManager.getDefaultSharedPreferences(context)
-            val percent = sharedPrefs.getInt(References.BATTERY_PERCENT_KEY, 0)
+            val percent = sharedPrefs.getInt(PreferenceKey.BATTERY_PERCENT_KEY, 0)
             val batterySyncEnabled = sharedPrefs.getBoolean(PreferenceKey.BATTERY_SYNC_ENABLED_KEY, false)
             for (widgetId in appWidgetIds) {
                 val remoteViews = RemoteViews(context?.packageName, R.layout.widget_watch_battery)

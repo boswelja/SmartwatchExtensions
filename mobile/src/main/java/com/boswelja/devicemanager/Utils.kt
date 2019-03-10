@@ -40,11 +40,11 @@ object Utils {
 
         val dataClient = Wearable.getDataClient(context)
         val putDataMapReq = PutDataMapRequest.create(References.PREFERENCE_CHANGE_PATH)
-        putDataMapReq.dataMap.putBoolean(References.DND_SYNC_SEND_PATH, dndSyncSend)
-        putDataMapReq.dataMap.putBoolean(References.DND_SYNC_RECEIVE_PATH, dndSyncReceive)
-        putDataMapReq.dataMap.putBoolean(References.BATTERY_PHONE_FULL_CHARGE_NOTI_PATH, phoneBatteryChargedNoti)
-        putDataMapReq.dataMap.putBoolean(References.LOCK_PHONE_ENABLED_PATH, lockPhoneEnabled)
-        putDataMapReq.dataMap.putBoolean(References.BATTERY_SYNC_ENABLED_PATH, batterySyncEnabled)
+        putDataMapReq.dataMap.putBoolean(References.DND_SYNC_SEND_KEY, dndSyncSend)
+        putDataMapReq.dataMap.putBoolean(References.DND_SYNC_RECEIVE_KEY, dndSyncReceive)
+        putDataMapReq.dataMap.putBoolean(References.BATTERY_PHONE_FULL_CHARGE_NOTI_KEY, phoneBatteryChargedNoti)
+        putDataMapReq.dataMap.putBoolean(References.LOCK_PHONE_ENABLED_KEY, lockPhoneEnabled)
+        putDataMapReq.dataMap.putBoolean(References.BATTERY_SYNC_ENABLED_KEY, batterySyncEnabled)
         putDataMapReq.setUrgent()
         dataClient.putDataItem(putDataMapReq.asPutDataRequest())
     }

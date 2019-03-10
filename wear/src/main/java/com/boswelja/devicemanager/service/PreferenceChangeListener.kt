@@ -28,13 +28,13 @@ class PreferenceChangeListener : WearableListenerService() {
             val dataMap = DataMapItem.fromDataItem(event.dataItem).dataMap
 
             // Inverted because when phone is sending, watch is receiving
-            val dndReceiving = dataMap.getBoolean(References.DND_SYNC_SEND_PATH)
-            val dndSending = dataMap.getBoolean(References.DND_SYNC_RECEIVE_PATH)
+            val dndReceiving = dataMap.getBoolean(References.DND_SYNC_SEND_KEY)
+            val dndSending = dataMap.getBoolean(References.DND_SYNC_RECEIVE_KEY)
 
-            val phoneBatteryChargedNoti = dataMap.getBoolean(References.BATTERY_PHONE_FULL_CHARGE_NOTI_PATH)
-            val batterySyncEnabled = dataMap.getBoolean(References.BATTERY_SYNC_ENABLED_PATH)
+            val phoneBatteryChargedNoti = dataMap.getBoolean(References.BATTERY_PHONE_FULL_CHARGE_NOTI_KEY)
+            val batterySyncEnabled = dataMap.getBoolean(References.BATTERY_SYNC_ENABLED_KEY)
 
-            val lockPhoneEnabled = dataMap.getBoolean(References.LOCK_PHONE_ENABLED_PATH)
+            val lockPhoneEnabled = dataMap.getBoolean(References.LOCK_PHONE_ENABLED_KEY)
 
             val prefs = PreferenceManager.getDefaultSharedPreferences(this)
             prefs.edit()
@@ -56,7 +56,7 @@ class PreferenceChangeListener : WearableListenerService() {
             }
 
             if (!batterySyncEnabled) {
-                prefs.edit().remove(References.BATTERY_PERCENT_KEY).apply()
+                prefs.edit().remove(PreferenceKey.BATTERY_PERCENT_KEY).apply()
                 Log.d(tag, "Cleared battery percent")
             }
             Log.d(tag, "Prefs updated")
