@@ -67,7 +67,7 @@ abstract class BatteryUpdateListener : WearableListenerService() {
             notificationManager.createNotificationChannel(channel)
         }
 
-        notificationManager.notify(References.NOTIFICATION_ID, noti)
+        notificationManager.notify(AtomicCounter.getInt(), noti)
         prefs.edit().putBoolean(PreferenceKey.BATTERY_CHARGED_NOTI_SENT, true).apply()
     }
 

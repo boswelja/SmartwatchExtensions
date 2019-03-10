@@ -33,8 +33,5 @@ object References {
     const val REQUEST_BATTERY_UPDATE_PATH = "/request_battery_update"
     const val REQUEST_DND_ACCESS_STATUS_PATH = "/request_dnd_access_status"
 
-    //TODO Make this generate a new ID each time
-    const val NOTIFICATION_ID = 29137
-
     const val CAPABILITY_APP = "extensions_app"
 }
