@@ -64,6 +64,7 @@ class DnDLocalChangeListener : Service() {
                 .setOngoing(true)
                 .setShowWhen(false)
                 .setPriority(NotificationCompat.PRIORITY_LOW)
+                .setVisibility(NotificationCompat.VISIBILITY_SECRET)
                 .build()
         startForeground(155216, notiBuilder)
 
