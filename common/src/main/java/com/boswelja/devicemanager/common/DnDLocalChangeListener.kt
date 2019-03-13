@@ -63,6 +63,7 @@ class DnDLocalChangeListener : Service() {
                 .setSmallIcon(R.drawable.ic_sync)
                 .setOngoing(true)
                 .setShowWhen(false)
+                .setUsesChronometer(false)
                 .setPriority(NotificationCompat.PRIORITY_LOW)
                 .setVisibility(NotificationCompat.VISIBILITY_SECRET)
                 .build()
