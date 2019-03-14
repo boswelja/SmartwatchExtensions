@@ -16,9 +16,9 @@ import android.content.Intent
 import android.media.AudioManager
 import android.os.Build
 
+@SuppressLint("ObsoleteSdkInt")
 object Compat {
 
-    @SuppressLint("ObsoleteSdkInt")
     fun getPendingJob(jobScheduler: JobScheduler, id: Int): JobInfo? {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             jobScheduler.getPendingJob(id)
@@ -36,7 +36,6 @@ object Compat {
         }
     }
 
-    @SuppressLint("ObsoleteSdkInt")
     fun setInterruptionFilter(context: Context, requestedDnDState: Boolean) {
         if (requestedDnDState != dndEnabled(context)) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -57,7 +56,6 @@ object Compat {
         }
     }
 
-    @SuppressLint("ObsoleteSdkInt")
     private fun dndEnabled(context: Context): Boolean {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
