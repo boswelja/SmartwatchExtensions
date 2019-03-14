@@ -42,8 +42,6 @@
     <string name="request_noti_policy_access_message">Please grant Wearable Extensions permission to change Do Not Disturb state</string>
 
     <string name="pref_category_dnd_sync">Do Not Disturb Sync</string>
-    <string name="pref_dnd_sync_enabled_title">DnD Sync Enabled</string>
-    <string name="pref_dnd_sync_enabled_desc">Sync Do Not Disturb status between your phone and watch</string>
     <string name="pref_dnd_sync_phone_to_watch_title">Phone to Watch Sync</string>
     <string name="pref_dnd_sync_phone_to_watch_summary_on">Syncing DnD state from your phone to your watch</string>
     <string name="pref_dnd_sync_phone_to_watch_summary_off">Not syncing DnD state from your phone to your watch</string>
@@ -56,16 +54,8 @@
 
     <string name="dialog_button_grant">Grant</string>
     <string name="dialog_button_cancel">Cancel</string>
-    <string name="dialog_button_done">Done</string>
-    <string name="dialog_button_yes">Yes</string>
-    <string name="dialog_button_no">No</string>
     <string name="dialog_button_next">Next</string>
-    <string name="dialog_button_not_again">Don\'t ask again</string>
     <string name="dialog_button_share">Share</string>
-    <string name="copied_to_clipboard">Copied to clipboard</string>
-
-    <string name="dialog_battery_optimisation_warn_title">Battery Optimisation</string>
-    <string name="dialog_battery_optimisation_warn_message">Android is optimising this app\'s battery use. This can cause issues with certain functions. Would you like to disable it?</string>
 
     <string name="dnd_sync_watch_permission_granted">Permission Granted!</string>
     <string name="dnd_sync_watch_permission_not_granted">Permission not granted, please try again</string>
