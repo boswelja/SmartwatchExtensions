@@ -7,12 +7,15 @@
  */
 package com.boswelja.devicemanager.service
 
+import android.content.ComponentName
 import android.content.Intent
 import android.os.Build
 import android.preference.PreferenceManager
+import android.support.wearable.complications.ProviderUpdateRequester
 import com.boswelja.devicemanager.common.DnDLocalChangeListener
 import com.boswelja.devicemanager.common.PreferenceKey
 import com.boswelja.devicemanager.common.References
+import com.boswelja.devicemanager.complications.PhoneBatteryComplicationProvider
 import com.google.android.gms.wearable.DataEventBuffer
 import com.google.android.gms.wearable.DataMapItem
 import com.google.android.gms.wearable.WearableListenerService
@@ -53,6 +56,7 @@ class PreferenceChangeListener : WearableListenerService() {
 
             if (!batterySyncEnabled) {
                 prefs.edit().remove(PreferenceKey.BATTERY_PERCENT_KEY).apply()
+                ProviderUpdateRequester(this, ComponentName(packageName, PhoneBatteryComplicationProvider::class.java.name)).requestUpdateAll()
             }
         }
     }
