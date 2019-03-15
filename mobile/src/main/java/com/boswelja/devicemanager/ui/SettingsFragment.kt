@@ -197,9 +197,6 @@ class SettingsFragment : PreferenceFragmentCompat(), Preference.OnPreferenceChan
         mainActivity = activity as MainActivity
         sharedPrefs = PreferenceManager.getDefaultSharedPreferences(context!!)
 
-        addPreferencesFromResource(R.xml.prefs_general)
-        setupGeneralPrefs()
-
         addPreferencesFromResource(R.xml.prefs_lock_phone)
         setupPhoneLockPrefs()
 
@@ -210,6 +207,9 @@ class SettingsFragment : PreferenceFragmentCompat(), Preference.OnPreferenceChan
             addPreferencesFromResource(R.xml.prefs_dnd_sync)
             setupDnDPrefs()
         }
+
+        addPreferencesFromResource(R.xml.prefs_general)
+        setupGeneralPrefs()
 
         addPreferencesFromResource(R.xml.prefs_about)
         setupAboutPrefs()
