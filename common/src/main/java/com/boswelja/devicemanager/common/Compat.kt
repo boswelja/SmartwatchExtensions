@@ -39,11 +39,15 @@ object Compat {
     fun setInterruptionFilter(context: Context, requestedDnDState: Boolean) {
         if (requestedDnDState != dndEnabled(context)) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-                if (requestedDnDState) {
-                    notificationManager.setInterruptionFilter(NotificationManager.INTERRUPTION_FILTER_PRIORITY)
-                } else {
-                    notificationManager.setInterruptionFilter(NotificationManager.INTERRUPTION_FILTER_ALL)
+                try {
+                    val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+                    if (requestedDnDState) {
+                        notificationManager.setInterruptionFilter(NotificationManager.INTERRUPTION_FILTER_PRIORITY)
+                    } else {
+                        notificationManager.setInterruptionFilter(NotificationManager.INTERRUPTION_FILTER_ALL)
+                    }
+                } catch (e: SecurityException) {
+                    e.printStackTrace()
                 }
             } else {
                 val audioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
