@@ -40,6 +40,8 @@ class DnDSyncDialogFragment : DialogFragment() {
 
     private var responseListener: ResponseListener? = null
 
+    private var isInitialCheck = true
+
     private val listener = MessageClient.OnMessageReceivedListener {
         if (it.path == References.REQUEST_DND_ACCESS_STATUS_PATH) {
             val hasDnDAccess = it.data[0].toInt() == 1
@@ -55,26 +57,29 @@ class DnDSyncDialogFragment : DialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val adbCommand = getString(R.string.dnd_sync_adb_command).format(ComponentName(context!!, DnDLocalChangeListener::class.java).flattenToString())
-        messageClient = Wearable.getMessageClient(context!!)
         messages = view.findViewById(R.id.messages)
         loadingSpinner = view.findViewById(R.id.loading_spinner)
-
         cancelBtn = view.findViewById(R.id.cancel_btn)
+        confirmBtn = view.findViewById(R.id.confirm_button)
+        shareBtn = view.findViewById(R.id.share_btn)
+
+        val adbCommand = getString(R.string.dnd_sync_adb_command).format(ComponentName(context!!, DnDLocalChangeListener::class.java).flattenToString())
+        messageClient = Wearable.getMessageClient(context!!)
+
         cancelBtn.setOnClickListener {
             dismiss()
         }
-        confirmBtn = view.findViewById(R.id.confirm_button)
         confirmBtn.setOnClickListener {
             checkPermission()
         }
-        shareBtn = view.findViewById(R.id.share_btn)
         shareBtn.setOnClickListener {
             Utils.shareText(context!!, adbCommand)
         }
 
         val adbCommandTextView = view.findViewById<AppCompatTextView>(R.id.command_string)
         adbCommandTextView.text = adbCommand
+
+        checkPermission()
     }
 
     private fun setLoading(loading: Boolean) {
@@ -107,12 +112,19 @@ class DnDSyncDialogFragment : DialogFragment() {
 
     private fun onResponse(hasDnDAccess: Boolean) {
         if (hasDnDAccess) {
-            (activity as MainActivity).createSnackbar(getString(R.string.dnd_sync_watch_permission_granted))
             dismiss()
+            if (!isInitialCheck) {
+                (activity as MainActivity).createSnackbar(getString(R.string.dnd_sync_watch_permission_granted))
+                isInitialCheck = false
+            }
         } else {
             setLoading(false)
-            Toast.makeText(context!!, getString(R.string.dnd_sync_watch_permission_not_granted), Toast.LENGTH_LONG).show()
+            if (!isInitialCheck) {
+                Toast.makeText(context!!, getString(R.string.dnd_sync_watch_permission_not_granted), Toast.LENGTH_LONG).show()
+                isInitialCheck = false
+            }
         }
+        messageClient.removeListener(listener)
         responseListener?.onResponse(hasDnDAccess)
     }
 
@@ -122,6 +134,7 @@ class DnDSyncDialogFragment : DialogFragment() {
 
     override fun dismiss() {
         super.dismiss()
+        isInitialCheck = true
         messageClient.removeListener(listener)
     }
 
