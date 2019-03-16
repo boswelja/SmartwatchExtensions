@@ -15,6 +15,7 @@ import android.content.Context
 import android.content.Intent
 import android.media.AudioManager
 import android.os.Build
+import android.preference.PreferenceManager
 
 @SuppressLint("ObsoleteSdkInt")
 object Compat {
@@ -48,6 +49,8 @@ object Compat {
                     }
                 } catch (e: SecurityException) {
                     e.printStackTrace()
+                    val prefs = PreferenceManager.getDefaultSharedPreferences(context)
+                    prefs.edit().putBoolean(PreferenceKey.DND_SYNC_RECEIVE_KEY, false).apply()
                 }
             } else {
                 val audioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
