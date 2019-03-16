@@ -68,4 +68,6 @@
 
     <string name="watch_battery_status">%s%%</string>
     <string name="battery_sync_disabled">Battery Sync disabled</string>
+
+    <string name="no_watch_found">No connected watches found running Wearable Extensions</string>
 </resources>

@@ -103,8 +103,14 @@ class DnDSyncDialogFragment : DialogFragment() {
                 .getCapability(References.CAPABILITY_APP, CapabilityClient.FILTER_REACHABLE)
                 .addOnCompleteListener {
                     if (it.isSuccessful) {
-                        for (node in it.result?.nodes!!) {
-                            messageClient.sendMessage(node?.id!!, References.REQUEST_DND_ACCESS_STATUS_PATH, null)
+                        val nodes = it.result?.nodes
+                        if (nodes.isNullOrEmpty()) {
+                            (activity as MainActivity).createSnackbar(getString(R.string.no_watch_found))
+                            dismiss()
+                        } else {
+                            for (node in nodes) {
+                                messageClient.sendMessage(node?.id!!, References.REQUEST_DND_ACCESS_STATUS_PATH, null)
+                            }
                         }
                     }
                 }
