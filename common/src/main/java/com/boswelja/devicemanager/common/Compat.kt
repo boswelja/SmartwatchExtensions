@@ -25,7 +25,7 @@ object Compat {
             jobScheduler.getPendingJob(id)
         } else {
             val jobs = jobScheduler.allPendingJobs
-            jobs.first { j -> j.id == id }
+            jobs.firstOrNull { j -> j.id == id }
         }
     }
 
