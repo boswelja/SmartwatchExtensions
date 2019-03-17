@@ -10,7 +10,7 @@ package com.boswelja.devicemanager.common
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.preference.PreferenceManager
+import androidx.preference.PreferenceManager
 
 class BootReceiver : BroadcastReceiver() {
 

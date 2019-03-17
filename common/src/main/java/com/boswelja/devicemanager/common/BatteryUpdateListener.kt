@@ -12,8 +12,8 @@ import android.app.NotificationManager
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Build
-import android.preference.PreferenceManager
 import androidx.core.app.NotificationCompat
+import androidx.preference.PreferenceManager
 import com.google.android.gms.wearable.MessageEvent
 import com.google.android.gms.wearable.WearableListenerService
 

@@ -10,8 +10,8 @@ package com.boswelja.devicemanager.service
 import android.content.ComponentName
 import android.content.Intent
 import android.os.Build
-import android.preference.PreferenceManager
 import android.support.wearable.complications.ProviderUpdateRequester
+import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.common.DnDLocalChangeListener
 import com.boswelja.devicemanager.common.PreferenceKey
 import com.boswelja.devicemanager.common.References

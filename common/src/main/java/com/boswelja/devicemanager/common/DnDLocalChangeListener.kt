@@ -17,9 +17,9 @@ import android.content.IntentFilter
 import android.content.SharedPreferences
 import android.os.Build
 import android.os.IBinder
-import android.preference.PreferenceManager
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
+import androidx.preference.PreferenceManager
 import com.google.android.gms.wearable.PutDataMapRequest
 import com.google.android.gms.wearable.Wearable
 

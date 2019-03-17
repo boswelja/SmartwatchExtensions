@@ -13,8 +13,8 @@ import android.appwidget.AppWidgetProvider
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
-import android.preference.PreferenceManager
 import android.widget.RemoteViews
+import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.CommonUtils
 import com.boswelja.devicemanager.common.PreferenceKey

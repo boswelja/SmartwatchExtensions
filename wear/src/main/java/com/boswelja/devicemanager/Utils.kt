@@ -9,7 +9,7 @@ package com.boswelja.devicemanager
 
 import android.app.NotificationManager
 import android.content.Context
-import android.preference.PreferenceManager
+import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.common.PreferenceKey
 import com.boswelja.devicemanager.common.References
 import com.google.android.gms.wearable.CapabilityClient

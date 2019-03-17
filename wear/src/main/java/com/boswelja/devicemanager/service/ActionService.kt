@@ -13,9 +13,9 @@ import android.content.ComponentName
 import android.content.Intent
 import android.os.Build
 import android.os.IBinder
-import android.preference.PreferenceManager
 import android.support.wearable.complications.ProviderUpdateRequester
 import androidx.core.app.NotificationCompat
+import androidx.preference.PreferenceManager
 import androidx.wear.activity.ConfirmationActivity
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.Utils
