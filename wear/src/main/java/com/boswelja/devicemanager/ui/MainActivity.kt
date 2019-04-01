@@ -50,16 +50,12 @@ class MainActivity : AppCompatActivity() {
             override fun capableDeviceFound(node: Node?) {}
 
             override fun noCapableDevices() {
-                showInstallAppActivity()
+                val intent = Intent(this@MainActivity, ConfirmInstallActivity::class.java)
+                startActivity(intent)
+                finish()
             }
         }
         Utils.isCompanionAppInstalled(this, capabilityCallbacks)
-    }
-
-    private fun showInstallAppActivity() {
-        val intent = Intent(this, ConfirmInstallActivity::class.java)
-        startActivity(intent)
-        finish()
     }
 
     class CustomScrollingLayoutCallback : WearableLinearLayoutManager.LayoutCallback() {
