@@ -1,11 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#F5F5F5</color>
-    <color name="colorPrimaryDark">#E0E0E0</color>
-    <color name="colorAccent">#000000</color>
+    <color name="colorPrimary">#9c27b0</color>
+    <color name="colorPrimaryDark">#6a0080</color>
+    <color name="colorAccent">@color/colorPrimary</color>
+
+    <color name="nav_bar_color">#FAFAFA</color>
+    <color name="nav_bar_divider_color">#1f000000</color>
 
     <color name="widgetBackground">#CCFFFFFF</color>
     <color name="widgetForeground">#000000</color>
 
     <color name="windowBackground">#FFFFFF</color>
+
+    <color name="icon_tint">@color/colorAccent</color>
 </resources>
