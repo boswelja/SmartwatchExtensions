@@ -16,7 +16,7 @@ import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.Utils
 import com.boswelja.devicemanager.common.AtomicCounter
-import com.boswelja.devicemanager.common.Compat
+import com.boswelja.devicemanager.common.CommonUtils
 import com.boswelja.devicemanager.common.PreferenceKey
 
 class DnDSyncWithTheaterModeListener : Service() {
@@ -87,13 +87,11 @@ class DnDSyncWithTheaterModeListener : Service() {
     }
 
     private inner class TheaterModeObserver(handler: Handler) : ContentObserver(handler) {
-
         override fun onChange(selfChange: Boolean) {
             super.onChange(selfChange)
             val context = this@DnDSyncWithTheaterModeListener
             val isTheaterModeOn = Utils.isTheaterModeOn(context)
-            Compat.setInterruptionFilter(context, isTheaterModeOn)
+            CommonUtils.updateDnD(context, isTheaterModeOn)
         }
-
     }
 }

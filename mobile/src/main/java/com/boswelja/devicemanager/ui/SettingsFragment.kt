@@ -288,18 +288,9 @@ class SettingsFragment : PreferenceFragmentCompat(), Preference.OnPreferenceChan
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         when (requestCode) {
-            12345 -> {
+            12345 or 54321-> {
                 if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M || notificationManager.isNotificationPolicyAccessGranted) {
                     Utils.updateWatchPrefs(context!!)
-                } else {
-                    sharedPrefs.edit().putBoolean(PreferenceKey.DND_SYNC_RECEIVE_KEY, false).apply()
-                }
-            }
-            54321 -> {
-                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M || notificationManager.isNotificationPolicyAccessGranted) {
-                    Utils.updateWatchPrefs(context!!)
-                } else {
-                    sharedPrefs.edit().putBoolean(PreferenceKey.DND_SYNC_WITH_THEATER_MODE_KEY, false).apply()
                 }
             }
         }
@@ -323,6 +314,8 @@ class SettingsFragment : PreferenceFragmentCompat(), Preference.OnPreferenceChan
             if (!notificationManager.isNotificationPolicyAccessGranted) {
                 sharedPrefs.edit().putBoolean(PreferenceKey.DND_SYNC_RECEIVE_KEY, false).apply()
                 dndSyncWatchToPhonePref.isChecked = false
+                sharedPrefs.edit().putBoolean(PreferenceKey.DND_SYNC_WITH_THEATER_MODE_KEY, false).apply()
+                dndSyncWithTheaterModePref.isChecked = false
             }
         }
     }

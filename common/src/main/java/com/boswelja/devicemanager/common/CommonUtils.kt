@@ -15,6 +15,7 @@ import android.graphics.Canvas
 import android.graphics.drawable.Drawable
 import android.os.BatteryManager
 import com.google.android.gms.wearable.CapabilityClient
+import com.google.android.gms.wearable.PutDataMapRequest
 import com.google.android.gms.wearable.Wearable
 
 object CommonUtils {
@@ -38,6 +39,19 @@ object CommonUtils {
                                 message.toByteArray(Charsets.UTF_8))
                     }
                 }
+    }
+
+    fun updateDnD(context: Context) {
+        val dndEnabled = Compat.dndEnabled(context)
+        CommonUtils.updateDnD(context, dndEnabled)
+    }
+
+    fun updateDnD(context: Context, dndEnabled: Boolean) {
+        val dataClient = Wearable.getDataClient(context)
+        val putDataMapReq = PutDataMapRequest.create(References.DND_STATUS_KEY)
+        putDataMapReq.dataMap.putBoolean(References.NEW_DND_STATE_KEY, dndEnabled)
+        putDataMapReq.setUrgent()
+        dataClient.putDataItem(putDataMapReq.asPutDataRequest())
     }
 
     fun drawableToBitmap(drawable: Drawable): Bitmap {

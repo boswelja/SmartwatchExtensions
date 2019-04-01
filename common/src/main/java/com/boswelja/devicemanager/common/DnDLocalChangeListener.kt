@@ -20,8 +20,6 @@ import android.os.IBinder
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import androidx.preference.PreferenceManager
-import com.google.android.gms.wearable.PutDataMapRequest
-import com.google.android.gms.wearable.Wearable
 
 @RequiresApi(Build.VERSION_CODES.M)
 class DnDLocalChangeListener : Service() {
@@ -74,22 +72,9 @@ class DnDLocalChangeListener : Service() {
         if (dndChangeReceiver == null) dndChangeReceiver = DnDChangeReceiver()
         registerReceiver(dndChangeReceiver, intentFilter)
 
-        updateDnD()
+        CommonUtils.updateDnD(this)
 
         return START_STICKY
-    }
-
-    private fun updateDnD() {
-        val currentInterruptFilter = notificationManager.currentInterruptionFilter
-        val dndEnabled: Boolean =
-                (currentInterruptFilter == NotificationManager.INTERRUPTION_FILTER_ALARMS) ||
-                        (currentInterruptFilter == NotificationManager.INTERRUPTION_FILTER_PRIORITY) ||
-                        (currentInterruptFilter == NotificationManager.INTERRUPTION_FILTER_NONE)
-        val dataClient = Wearable.getDataClient(this)
-        val putDataMapReq = PutDataMapRequest.create(References.DND_STATUS_KEY)
-        putDataMapReq.dataMap.putBoolean(References.NEW_DND_STATE_KEY, dndEnabled)
-        putDataMapReq.setUrgent()
-        dataClient.putDataItem(putDataMapReq.asPutDataRequest())
     }
 
     override fun onDestroy() {
@@ -114,7 +99,7 @@ class DnDLocalChangeListener : Service() {
     private inner class DnDChangeReceiver : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             if (intent!!.action == NotificationManager.ACTION_INTERRUPTION_FILTER_CHANGED) {
-                updateDnD()
+                CommonUtils.updateDnD(this@DnDLocalChangeListener)
             }
         }
     }

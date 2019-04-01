@@ -63,7 +63,7 @@ object Compat {
         }
     }
 
-    private fun dndEnabled(context: Context): Boolean {
+    fun dndEnabled(context: Context): Boolean {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             val currentInterruptFilter = notificationManager.currentInterruptionFilter
