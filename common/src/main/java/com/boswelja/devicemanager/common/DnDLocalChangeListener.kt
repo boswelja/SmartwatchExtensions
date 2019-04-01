@@ -103,12 +103,10 @@ class DnDLocalChangeListener : Service() {
 
     private inner class PreferenceChangeListener : SharedPreferences.OnSharedPreferenceChangeListener {
         override fun onSharedPreferenceChanged(prefs: SharedPreferences?, key: String?) {
-            when (key) {
-                PreferenceKey.DND_SYNC_SEND_KEY -> {
-                    if (!prefs?.getBoolean(key, false)!!) {
-                        stopForeground(true)
-                    }
-                }
+            if (key == PreferenceKey.DND_SYNC_SEND_KEY &&
+                    !prefs?.getBoolean(key, false)!!) {
+                stopForeground(true)
+                stopSelf()
             }
         }
     }

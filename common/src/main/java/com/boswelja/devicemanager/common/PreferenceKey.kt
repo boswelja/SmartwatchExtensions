@@ -27,6 +27,7 @@ object PreferenceKey {
 
     const val DND_SYNC_SEND_KEY = "dnd_sync_send"
     const val DND_SYNC_RECEIVE_KEY = "dnd_sync_receive"
+    const val DND_SYNC_WITH_THEATER_MODE_KEY = "dnd_sync_with_theater"
 
     const val DND_ACCESS_STATUS_KEY = "dnd_access"
 

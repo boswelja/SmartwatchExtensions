@@ -5,22 +5,28 @@ import android.app.NotificationManager
 import android.app.Service
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.database.ContentObserver
 import android.os.Build
 import android.os.Handler
 import android.os.IBinder
 import android.provider.Settings
 import androidx.core.app.NotificationCompat
+import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.Utils
 import com.boswelja.devicemanager.common.AtomicCounter
 import com.boswelja.devicemanager.common.Compat
+import com.boswelja.devicemanager.common.PreferenceKey
 
-class TheaterModeListenerService : Service() {
+class DnDSyncWithTheaterModeListener : Service() {
 
     private val dndSyncWithTheaterModeNotiCategoryKey = "dnd_sync_with_theater_mode"
 
     private val theaterModeObserver = TheaterModeObserver(Handler())
+    private val preferenceChangeListener = PreferenceChangeListener()
+
+    private lateinit var sharedPrefs: SharedPreferences
 
     override fun onBind(intent: Intent?): IBinder? {
         return null
@@ -28,9 +34,14 @@ class TheaterModeListenerService : Service() {
 
     override fun onCreate() {
         super.onCreate()
+
+        sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this)
+        sharedPrefs.registerOnSharedPreferenceChangeListener(preferenceChangeListener)
+
         applicationContext.contentResolver.registerContentObserver(
                 Settings.Global.CONTENT_URI, true,
                 theaterModeObserver)
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val notiManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             val channel = NotificationChannel(
@@ -62,13 +73,24 @@ class TheaterModeListenerService : Service() {
     override fun onDestroy() {
         super.onDestroy()
         applicationContext.contentResolver.unregisterContentObserver(theaterModeObserver)
+        sharedPrefs.unregisterOnSharedPreferenceChangeListener(preferenceChangeListener)
+    }
+
+    private inner class PreferenceChangeListener : SharedPreferences.OnSharedPreferenceChangeListener {
+        override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
+            if (key == PreferenceKey.DND_SYNC_WITH_THEATER_MODE_KEY &&
+                    !sharedPreferences?.getBoolean(key, false)!!) {
+                stopForeground(true)
+                stopSelf()
+            }
+        }
     }
 
     private inner class TheaterModeObserver(handler: Handler) : ContentObserver(handler) {
 
         override fun onChange(selfChange: Boolean) {
             super.onChange(selfChange)
-            val context = this@TheaterModeListenerService
+            val context = this@DnDSyncWithTheaterModeListener
             val isTheaterModeOn = Utils.isTheaterModeOn(context)
             Compat.setInterruptionFilter(context, isTheaterModeOn)
         }

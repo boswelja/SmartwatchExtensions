@@ -112,7 +112,7 @@
             android:exported="false" />
 
         <service
-            android:name=".service.TheaterModeListenerService"
+            android:name=".service.DnDSyncWithTheaterModeListener"
             android:exported="false" />
 
         <receiver

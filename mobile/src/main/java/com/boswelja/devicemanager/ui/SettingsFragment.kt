@@ -47,6 +47,7 @@ class SettingsFragment : PreferenceFragmentCompat(), Preference.OnPreferenceChan
     private lateinit var lockPhoneEnabledPref: SwitchPreference
     private lateinit var dndSyncPhoneToWatchPref: SwitchPreference
     private lateinit var dndSyncWatchToPhonePref: SwitchPreference
+    private lateinit var dndSyncWithTheaterModePref: SwitchPreference
 
     private lateinit var mainActivity: MainActivity
     private lateinit var sharedPrefs: SharedPreferences
@@ -180,6 +181,23 @@ class SettingsFragment : PreferenceFragmentCompat(), Preference.OnPreferenceChan
                 }
                 false
             }
+            PreferenceKey.DND_SYNC_WITH_THEATER_MODE_KEY -> {
+                val value = newValue == true
+                preference.sharedPreferences.edit().putBoolean(preference.key, value).apply()
+                dndSyncWithTheaterModePref.isChecked = value
+                if (value) {
+                    dndSyncWithTheaterModePref.isChecked = value
+                    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M || notificationManager.isNotificationPolicyAccessGranted) {
+                        Utils.updateWatchPrefs(context!!)
+                    } else {
+                        Toast.makeText(context, getString(R.string.request_noti_policy_access_message), Toast.LENGTH_SHORT).show()
+                        startActivityForResult(Intent(Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS), 54321)
+                    }
+                } else {
+                    Utils.updateWatchPrefs(context!!)
+                }
+                false
+            }
             PreferenceKey.BATTERY_OPT_KEY -> {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && newValue == true) {
                     val intent = Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS)
@@ -257,6 +275,9 @@ class SettingsFragment : PreferenceFragmentCompat(), Preference.OnPreferenceChan
 
         dndSyncWatchToPhonePref = findPreference(PreferenceKey.DND_SYNC_RECEIVE_KEY) as SwitchPreference
         dndSyncWatchToPhonePref.onPreferenceChangeListener = this
+
+        dndSyncWithTheaterModePref = findPreference(PreferenceKey.DND_SYNC_WITH_THEATER_MODE_KEY) as SwitchPreference
+        dndSyncWithTheaterModePref.onPreferenceChangeListener = this
     }
 
     private fun setupAboutPrefs() {
@@ -266,11 +287,20 @@ class SettingsFragment : PreferenceFragmentCompat(), Preference.OnPreferenceChan
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == 12345) {
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M || notificationManager.isNotificationPolicyAccessGranted) {
-                Utils.updateWatchPrefs(context!!)
-            } else {
-                sharedPrefs.edit().putBoolean(PreferenceKey.DND_SYNC_RECEIVE_KEY, false).apply()
+        when (requestCode) {
+            12345 -> {
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M || notificationManager.isNotificationPolicyAccessGranted) {
+                    Utils.updateWatchPrefs(context!!)
+                } else {
+                    sharedPrefs.edit().putBoolean(PreferenceKey.DND_SYNC_RECEIVE_KEY, false).apply()
+                }
+            }
+            54321 -> {
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M || notificationManager.isNotificationPolicyAccessGranted) {
+                    Utils.updateWatchPrefs(context!!)
+                } else {
+                    sharedPrefs.edit().putBoolean(PreferenceKey.DND_SYNC_WITH_THEATER_MODE_KEY, false).apply()
+                }
             }
         }
     }
