@@ -27,4 +27,7 @@
     <string name="play_store_web_link">https://play.google.com/store/apps/details?id=%s</string>
 
     <string name="companion_device_type">Phone</string>
+
+    <string name="dnd_sync_with_theater_mode_noti_title">DnD Sync with Theater Mode</string>
+    <string name="dnd_sync_with_theater_mode_noti_content">Syncing DnD state with Theater Mode</string>
 </resources>

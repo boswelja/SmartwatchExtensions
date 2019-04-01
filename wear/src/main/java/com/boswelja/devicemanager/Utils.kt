@@ -9,6 +9,7 @@ package com.boswelja.devicemanager
 
 import android.app.NotificationManager
 import android.content.Context
+import android.provider.Settings
 import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.common.PreferenceKey
 import com.boswelja.devicemanager.common.References
@@ -49,5 +50,9 @@ object Utils {
             prefs.edit().putBoolean(PreferenceKey.DND_ACCESS_STATUS_KEY, hasDnDAccess).apply()
         }
         return hasDnDAccess
+    }
+
+    fun isTheaterModeOn(context: Context): Boolean {
+        return Settings.Global.getInt(context.contentResolver, "theater_mode_on", 0) == 1
     }
 }

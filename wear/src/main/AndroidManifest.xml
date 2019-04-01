@@ -111,6 +111,10 @@
             android:name=".common.DnDLocalChangeListener"
             android:exported="false" />
 
+        <service
+            android:name=".service.TheaterModeListenerService"
+            android:exported="false" />
+
         <receiver
             android:name=".common.BootReceiver"
             android:exported="false">

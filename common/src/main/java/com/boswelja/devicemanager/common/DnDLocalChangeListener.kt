@@ -67,7 +67,7 @@ class DnDLocalChangeListener : Service() {
                 .setPriority(NotificationCompat.PRIORITY_LOW)
                 .setVisibility(NotificationCompat.VISIBILITY_SECRET)
                 .build()
-        startForeground(155216, notiBuilder)
+        startForeground(AtomicCounter.getInt(), notiBuilder)
 
         val intentFilter = IntentFilter()
         intentFilter.addAction(NotificationManager.ACTION_INTERRUPTION_FILTER_CHANGED)
