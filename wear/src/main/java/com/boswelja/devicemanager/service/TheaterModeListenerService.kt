@@ -23,7 +23,6 @@ class TheaterModeListenerService : Service() {
     private val theaterModeObserver = TheaterModeObserver(Handler())
 
     override fun onBind(intent: Intent?): IBinder? {
-        //TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
         return null
     }
 
