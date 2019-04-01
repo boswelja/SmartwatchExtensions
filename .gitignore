@@ -2,11 +2,5 @@
 .gradle
 /local.properties
 /.idea
-/build
-/release
-/common/release
-/mobile/release
-/wear/release
-/mobile/build
-/wear/build
-/common/build
+**/build
+**/release
