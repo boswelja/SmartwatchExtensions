@@ -9,17 +9,19 @@ package com.boswelja.devicemanager
 
 import android.app.admin.DeviceAdminReceiver
 import android.app.admin.DevicePolicyManager
+import android.app.job.JobInfo
+import android.app.job.JobScheduler
+import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
 import android.util.Log
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.preference.PreferenceManager
+import com.boswelja.devicemanager.common.BatteryUpdateJob
+import com.boswelja.devicemanager.common.Compat
 import com.boswelja.devicemanager.common.PreferenceKey
-import com.boswelja.devicemanager.common.References
 import com.boswelja.devicemanager.ui.MainActivity
-import com.google.android.gms.wearable.PutDataMapRequest
-import com.google.android.gms.wearable.Wearable
 
 object Utils {
 
@@ -28,27 +30,6 @@ object Utils {
         intent.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN, DeviceAdminReceiver().getWho(context))
         intent.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION, context.getString(R.string.device_admin_desc))
         context.startActivity(intent)
-    }
-
-    fun updateWatchPrefs(context: Context) {
-        val prefs = PreferenceManager.getDefaultSharedPreferences(context)
-        val dndSyncSend = prefs.getBoolean(PreferenceKey.DND_SYNC_SEND_KEY, false)
-        val dndSyncReceive = prefs.getBoolean(PreferenceKey.DND_SYNC_RECEIVE_KEY, false)
-        val dndSyncWithTheater = prefs.getBoolean(PreferenceKey.DND_SYNC_WITH_THEATER_MODE_KEY, false)
-        val phoneBatteryChargedNoti = prefs.getBoolean(PreferenceKey.BATTERY_PHONE_FULL_CHARGE_NOTI_KEY, false)
-        val lockPhoneEnabled = prefs.getBoolean(PreferenceKey.LOCK_PHONE_ENABLED, false)
-        val batterySyncEnabled = prefs.getBoolean(PreferenceKey.BATTERY_SYNC_ENABLED_KEY, false)
-
-        val dataClient = Wearable.getDataClient(context)
-        val putDataMapReq = PutDataMapRequest.create(References.PREFERENCE_CHANGE_PATH)
-        putDataMapReq.dataMap.putBoolean(References.DND_SYNC_SEND_KEY, dndSyncSend)
-        putDataMapReq.dataMap.putBoolean(References.DND_SYNC_RECEIVE_KEY, dndSyncReceive)
-        putDataMapReq.dataMap.putBoolean(References.DND_SYNC_WITH_THEATER_KEY, dndSyncWithTheater)
-        putDataMapReq.dataMap.putBoolean(References.BATTERY_PHONE_FULL_CHARGE_NOTI_KEY, phoneBatteryChargedNoti)
-        putDataMapReq.dataMap.putBoolean(References.LOCK_PHONE_ENABLED_KEY, lockPhoneEnabled)
-        putDataMapReq.dataMap.putBoolean(References.BATTERY_SYNC_ENABLED_KEY, batterySyncEnabled)
-        putDataMapReq.setUrgent()
-        dataClient.putDataItem(putDataMapReq.asPutDataRequest())
     }
 
     fun shareText(context: Context, text: String) {
@@ -73,5 +54,25 @@ object Utils {
             }
         }
         activity.recreate()
+    }
+
+    fun createBatterySyncJob(context: Context) {
+        val prefs = PreferenceManager.getDefaultSharedPreferences(context)
+        Utils.createBatterySyncJob(context, prefs.getInt(PreferenceKey.BATTERY_SYNC_INTERVAL_KEY, 900000).toLong())
+    }
+
+    fun createBatterySyncJob(context: Context, intervalMs: Long) {
+        val jobScheduler = context.getSystemService(Context.JOB_SCHEDULER_SERVICE) as JobScheduler
+        val jobInfo = JobInfo.Builder(BatteryUpdateJob.BATTERY_PERCENT_JOB_ID, ComponentName(context.packageName, BatteryUpdateJob::class.java.name))
+        jobInfo.setPeriodic(intervalMs)
+        jobInfo.setPersisted(true)
+        jobScheduler.schedule(jobInfo.build())
+    }
+
+    fun stopBatterySyncJob(context: Context) {
+        val jobScheduler = context.getSystemService(Context.JOB_SCHEDULER_SERVICE) as JobScheduler
+        if (Compat.getPendingJob(jobScheduler, BatteryUpdateJob.BATTERY_PERCENT_JOB_ID) != null) {
+            jobScheduler.cancel(BatteryUpdateJob.BATTERY_PERCENT_JOB_ID)
+        }
     }
 }

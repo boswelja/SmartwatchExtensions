@@ -9,8 +9,6 @@ package com.boswelja.devicemanager.ui
 
 import android.app.admin.DeviceAdminReceiver
 import android.app.admin.DevicePolicyManager
-import android.app.job.JobInfo
-import android.app.job.JobScheduler
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
@@ -21,6 +19,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.R
+import com.boswelja.devicemanager.Utils
 import com.boswelja.devicemanager.common.BatteryUpdateJob
 import com.boswelja.devicemanager.common.Compat
 import com.boswelja.devicemanager.common.DnDLocalChangeListener
@@ -32,7 +31,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var devicePolicyManager: DevicePolicyManager
     private lateinit var deviceAdminReceiver: ComponentName
     private lateinit var settingsFragment: SettingsFragment
-    private lateinit var jobScheduler: JobScheduler
     private lateinit var sharedPrefs: SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -43,7 +41,6 @@ class MainActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_main)
 
-        jobScheduler = getSystemService(Context.JOB_SCHEDULER_SERVICE) as JobScheduler
 
         devicePolicyManager = getSystemService(Context.DEVICE_POLICY_SERVICE) as DevicePolicyManager
         deviceAdminReceiver = DeviceAdminReceiver().getWho(this)
@@ -53,14 +50,14 @@ class MainActivity : AppCompatActivity() {
 
         val battSyncEnabled = sharedPrefs.getBoolean(PreferenceKey.BATTERY_SYNC_ENABLED_KEY, false)
         if (battSyncEnabled) {
-            if (Compat.getPendingJob(jobScheduler, BatteryUpdateJob.BATTERY_PERCENT_JOB_ID) == null) {
-                createBatterySyncJob(sharedPrefs.getInt(PreferenceKey.BATTERY_SYNC_INTERVAL_KEY, 900000).toLong())
+            if (Compat.getPendingJob(this, BatteryUpdateJob.BATTERY_PERCENT_JOB_ID) == null) {
+                Utils.createBatterySyncJob(this)
             }
         } else {
-            stopBatterySyncJob()
+            Utils.stopBatterySyncJob(this)
         }
 
-        if (sharedPrefs.getBoolean(PreferenceKey.DND_SYNC_SEND_KEY, false)) {
+        if (sharedPrefs.getBoolean(PreferenceKey.DND_SYNC_PHONE_TO_WATCH_KEY, false)) {
             val intent = Intent(this, DnDLocalChangeListener::class.java)
             Compat.startService(this, intent)
         }
@@ -76,19 +73,6 @@ class MainActivity : AppCompatActivity() {
             packageManager.setComponentEnabledSetting(componentName, PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP)
         } else {
             packageManager.setComponentEnabledSetting(componentName, PackageManager.COMPONENT_ENABLED_STATE_ENABLED, PackageManager.DONT_KILL_APP)
-        }
-    }
-
-    fun createBatterySyncJob(intervalMs: Long) {
-        val jobInfo = JobInfo.Builder(BatteryUpdateJob.BATTERY_PERCENT_JOB_ID, ComponentName(packageName, BatteryUpdateJob::class.java.name))
-        jobInfo.setPeriodic(intervalMs)
-        jobInfo.setPersisted(true)
-        jobScheduler.schedule(jobInfo.build())
-    }
-
-    fun stopBatterySyncJob() {
-        if (Compat.getPendingJob(jobScheduler, BatteryUpdateJob.BATTERY_PERCENT_JOB_ID) != null) {
-            jobScheduler.cancel(BatteryUpdateJob.BATTERY_PERCENT_JOB_ID)
         }
     }
 

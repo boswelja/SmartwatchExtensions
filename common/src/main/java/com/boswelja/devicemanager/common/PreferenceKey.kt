@@ -25,8 +25,8 @@ object PreferenceKey {
     const val BATTERY_CHARGED_NOTI_SENT = "battery_charged_notified"
     const val BATTERY_PERCENT_KEY = "battery_percent"
 
-    const val DND_SYNC_SEND_KEY = "dnd_sync_send"
-    const val DND_SYNC_RECEIVE_KEY = "dnd_sync_receive"
+    const val DND_SYNC_PHONE_TO_WATCH_KEY = "dnd_sync_phone_to_watch"
+    const val DND_SYNC_WATCH_TO_PHONE_KEY = "dnd_sync_watch_to_phone"
     const val DND_SYNC_WITH_THEATER_MODE_KEY = "dnd_sync_with_theater"
 
     const val DND_ACCESS_STATUS_KEY = "dnd_access"

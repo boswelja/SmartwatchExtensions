@@ -9,6 +9,7 @@ package com.boswelja.devicemanager.common
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.app.PendingIntent
 import android.app.Service
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -28,6 +29,7 @@ class DnDLocalChangeListener : Service() {
     private lateinit var notificationManager: NotificationManager
     private var dndChangeReceiver: DnDChangeReceiver? = null
     private val prefChangeListener: PreferenceChangeListener = PreferenceChangeListener()
+    private var sendPrefkey = ""
 
     override fun onBind(p0: Intent?): IBinder? {
         return null
@@ -35,6 +37,13 @@ class DnDLocalChangeListener : Service() {
 
     override fun onCreate() {
         super.onCreate()
+
+        val isPhone = resources.getBoolean(R.bool.device_is_phone)
+        sendPrefkey = if (isPhone) {
+            PreferenceKey.DND_SYNC_PHONE_TO_WATCH_KEY
+        } else {
+            PreferenceKey.DND_SYNC_WATCH_TO_PHONE_KEY
+        }
 
         prefs = PreferenceManager.getDefaultSharedPreferences(this)
         prefs.registerOnSharedPreferenceChangeListener(prefChangeListener)
@@ -55,9 +64,12 @@ class DnDLocalChangeListener : Service() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        val launchIntent = packageManager.getLaunchIntentForPackage(packageName)
+        val notiTapIntent = PendingIntent.getActivity(this, AtomicCounter.getInt(), launchIntent, PendingIntent.FLAG_CANCEL_CURRENT)
         val notiBuilder = NotificationCompat.Builder(this, References.DND_SYNC_NOTI_CHANNEL_ID)
                 .setContentTitle(getString(R.string.dnd_sync_active_noti_title))
                 .setContentText(getString(R.string.dnd_sync_active_noti_desc))
+                .setContentIntent(notiTapIntent)
                 .setSmallIcon(R.drawable.ic_sync)
                 .setOngoing(true)
                 .setShowWhen(false)
@@ -88,7 +100,7 @@ class DnDLocalChangeListener : Service() {
 
     private inner class PreferenceChangeListener : SharedPreferences.OnSharedPreferenceChangeListener {
         override fun onSharedPreferenceChanged(prefs: SharedPreferences?, key: String?) {
-            if (key == PreferenceKey.DND_SYNC_SEND_KEY &&
+            if (key == sendPrefkey &&
                     !prefs?.getBoolean(key, false)!!) {
                 stopForeground(true)
                 stopSelf()

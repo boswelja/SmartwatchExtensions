@@ -20,6 +20,11 @@ import androidx.preference.PreferenceManager
 @SuppressLint("ObsoleteSdkInt")
 object Compat {
 
+    fun getPendingJob(context: Context, id: Int): JobInfo? {
+        val jobScheduler = context.getSystemService(Context.JOB_SCHEDULER_SERVICE) as JobScheduler
+        return Compat.getPendingJob(jobScheduler, id)
+    }
+
     fun getPendingJob(jobScheduler: JobScheduler, id: Int): JobInfo? {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             jobScheduler.getPendingJob(id)
@@ -50,7 +55,13 @@ object Compat {
                 } catch (e: SecurityException) {
                     e.printStackTrace()
                     val prefs = PreferenceManager.getDefaultSharedPreferences(context)
-                    prefs.edit().putBoolean(PreferenceKey.DND_SYNC_RECEIVE_KEY, false).apply()
+                    val isPhone = context.resources.getBoolean(R.bool.device_is_phone)
+                    val receivingKey = if (isPhone) {
+                        PreferenceKey.DND_SYNC_WATCH_TO_PHONE_KEY
+                    } else {
+                        PreferenceKey.DND_SYNC_PHONE_TO_WATCH_KEY
+                    }
+                    prefs.edit().putBoolean(receivingKey, false).apply()
                 }
             } else {
                 val audioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
