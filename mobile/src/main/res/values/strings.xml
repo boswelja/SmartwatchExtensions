@@ -20,17 +20,9 @@
     <string name="pref_lock_phone_enabled_title">Remote phone locking</string>
     <string name="pref_lock_phone_enabled_desc">Allow locking your phone from your wearable</string>
 
-    <string name="pref_category_battery_sync">Battery Sync</string>
-    <string name="pref_battery_sync_enabled_title">Battery Sync</string>
-    <string name="pref_battery_sync_enabled_summary">Sync device battery percentages between each other.</string>
-    <string name="pref_battery_sync_interval_title">Sync Interval</string>
     <string name="battery_sync_interval_summary">%s minutes</string>
     <string name="pref_battery_sync_resync_title">Force Sync Battery Status</string>
     <string name="pref_battery_sync_resync_complete">Successfully synced battery info</string>
-    <string name="pref_phone_battery_charged_noti_title">Phone Battery Fully Charged Notification</string>
-    <string name="pref_phone_battery_charged_noti_summary">Get a notification on your watch when your phone is above 90\% charged</string>
-    <string name="pref_watch_battery_charged_noti_title">Watch Battery Fully Charged Notification</string>
-    <string name="pref_watch_battery_charged_noti_summary">Get a notification on your phone when your watch is above 90\% charged</string>
 
     <string name="pref_about_donate_title">Donate</string>
     <string name="pref_about_version_title">Version</string>
@@ -40,17 +32,6 @@
     <string name="dnd_sync_adb_command">adb shell settings put secure enabled_notification_listeners com.google.android.wearable.app/com.google.android.clockwork.stream.NotificationCollectorService:%s</string>
 
     <string name="request_noti_policy_access_message">Please grant Wearable Extensions permission to change Do Not Disturb state</string>
-
-    <string name="pref_category_dnd_sync">Do Not Disturb Sync</string>
-    <string name="pref_dnd_sync_phone_to_watch_title">Phone to Watch Sync</string>
-    <string name="pref_dnd_sync_phone_to_watch_summary_on">Syncing DnD state from your phone to your watch</string>
-    <string name="pref_dnd_sync_phone_to_watch_summary_off">Not syncing DnD state from your phone to your watch</string>
-    <string name="pref_dnd_sync_watch_to_phone_title">Watch to Phone Sync</string>
-    <string name="pref_dnd_sync_watch_to_phone_summary_on">Syncing DnD state from your watch to your phone</string>
-    <string name="pref_dnd_sync_watch_to_phone_summary_off">Not syncing DnD state from your watch to your phone</string>
-    <string name="pref_dnd_sync_with_theater_title">DnD Sync with Theater mode</string>
-    <string name="pref_dnd_sync_with_theater_summary_on">Syncing DnD state with watch Theater mode</string>
-    <string name="pref_dnd_sync_with_theater_summary_off">Not syncing DnD state with watch Theater mode</string>
 
     <string name="grant_device_admin_perm_dialog_title">Missing Permission</string>
     <string name="grant_device_admin_perm_dialog_message">This app requires device administrator permissions to be able to lock your phone.</string>

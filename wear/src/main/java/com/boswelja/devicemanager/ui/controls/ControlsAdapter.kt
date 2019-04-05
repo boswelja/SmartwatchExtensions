@@ -5,7 +5,7 @@
  * This file, and any part of the Wearable Extensions app/s cannot be copied and/or distributed
  * without permission from Jack Boswell (boswelja) <boswela@outlook.com>
  */
-package com.boswelja.devicemanager.ui
+package com.boswelja.devicemanager.ui.controls
 
 import android.content.Intent
 import android.content.SharedPreferences
@@ -22,7 +22,7 @@ import com.boswelja.devicemanager.common.PreferenceKey
 import com.boswelja.devicemanager.common.References
 import com.boswelja.devicemanager.service.ActionService
 
-class MainAdapter(private val options: ArrayList<MainOption>) : RecyclerView.Adapter<MainAdapter.ViewHolder>() {
+class ControlsAdapter(private val options: ArrayList<MainOption>) : RecyclerView.Adapter<ControlsAdapter.ViewHolder>() {
 
     override fun getItemCount(): Int {
         return options.size

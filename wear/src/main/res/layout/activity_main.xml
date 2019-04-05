@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<androidx.wear.widget.drawer.WearableDrawerLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -9,16 +9,18 @@
     tools:context="com.boswelja.devicemanager.ui.MainActivity"
     tools:deviceIds="wear">
 
-    <androidx.wear.widget.WearableRecyclerView
+    <FrameLayout
+        android:id="@+id/fragment_holder"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/recycler_view"
-        android:scrollbars="vertical"
-        android:scrollbarAlwaysDrawVerticalTrack="true"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        tools:deviceIds="wear" />
+        android:clipToPadding="false"/>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <androidx.wear.widget.drawer.WearableNavigationDrawerView
+        android:id="@+id/navigation_drawer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:navigationStyle="multiPage"
+        android:background="@color/light_background"
+        app:enableAutoPeek="true" />
+
+</androidx.wear.widget.drawer.WearableDrawerLayout>

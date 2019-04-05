@@ -20,7 +20,7 @@ object PreferenceKey {
     const val BATTERY_SYNC_INTERVAL_KEY = "battery_sync_interval"
     const val BATTERY_SYNC_NOW_KEY = "battery_sync_now"
     const val BATTERY_PHONE_FULL_CHARGE_NOTI_KEY = "battery_phone_full_charge"
-    const val BATTERY_FULL_CHARGE_NOTI_KEY = "battery_full_charge"
+    const val BATTERY_WATCH_FULL_CHARGE_NOTI_KEY = "battery_watch_full_charge"
 
     const val BATTERY_CHARGED_NOTI_SENT = "battery_charged_notified"
     const val BATTERY_PERCENT_KEY = "battery_percent"

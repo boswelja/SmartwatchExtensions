@@ -9,6 +9,7 @@ import com.boswelja.devicemanager.common.PreferenceKey
 import com.boswelja.devicemanager.common.R
 import com.boswelja.devicemanager.common.prefsynclayer.PreferenceSyncKeys.BATTERY_PHONE_FULL_CHARGE_NOTI_KEY
 import com.boswelja.devicemanager.common.prefsynclayer.PreferenceSyncKeys.BATTERY_SYNC_ENABLED_KEY
+import com.boswelja.devicemanager.common.prefsynclayer.PreferenceSyncKeys.BATTERY_WATCH_FULL_CHARGE_NOTI_KEY
 import com.boswelja.devicemanager.common.prefsynclayer.PreferenceSyncKeys.DND_SYNC_PHONE_TO_WATCH_KEY
 import com.boswelja.devicemanager.common.prefsynclayer.PreferenceSyncKeys.DND_SYNC_WATCH_TO_PHONE_KEY
 import com.boswelja.devicemanager.common.prefsynclayer.PreferenceSyncKeys.DND_SYNC_WITH_THEATER_KEY
@@ -30,8 +31,9 @@ abstract class BasePreferenceChangeReceiver : WearableListenerService() {
             val dndSyncWatchToPhone = dataMap.getBoolean(DND_SYNC_WATCH_TO_PHONE_KEY)
             val dndSyncWithTheater = dataMap.getBoolean(DND_SYNC_WITH_THEATER_KEY)
 
-            val phoneBatteryChargedNoti = dataMap.getBoolean(BATTERY_PHONE_FULL_CHARGE_NOTI_KEY)
             val batterySyncEnabled = dataMap.getBoolean(BATTERY_SYNC_ENABLED_KEY)
+            val phoneBatteryChargedNoti = dataMap.getBoolean(BATTERY_PHONE_FULL_CHARGE_NOTI_KEY)
+            val watchBatteryChargedNoti = dataMap.getBoolean(BATTERY_WATCH_FULL_CHARGE_NOTI_KEY)
 
             val lockPhoneEnabled = dataMap.getBoolean(LOCK_PHONE_ENABLED_KEY)
 
@@ -40,7 +42,8 @@ abstract class BasePreferenceChangeReceiver : WearableListenerService() {
                     .putBoolean(PreferenceKey.DND_SYNC_PHONE_TO_WATCH_KEY, dndSyncPhoneToWatch)
                     .putBoolean(PreferenceKey.DND_SYNC_WATCH_TO_PHONE_KEY, dndSyncWatchToPhone)
                     .putBoolean(PreferenceKey.DND_SYNC_WITH_THEATER_MODE_KEY, dndSyncWithTheater)
-                    .putBoolean(PreferenceKey.BATTERY_FULL_CHARGE_NOTI_KEY, phoneBatteryChargedNoti)
+                    .putBoolean(PreferenceKey.BATTERY_PHONE_FULL_CHARGE_NOTI_KEY, phoneBatteryChargedNoti)
+                    .putBoolean(PreferenceKey.BATTERY_WATCH_FULL_CHARGE_NOTI_KEY, watchBatteryChargedNoti)
                     .putBoolean(PreferenceKey.LOCK_PHONE_ENABLED, lockPhoneEnabled)
                     .putBoolean(PreferenceKey.BATTERY_SYNC_ENABLED_KEY, batterySyncEnabled)
                     .apply()

@@ -9,43 +9,35 @@ package com.boswelja.devicemanager.ui
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import androidx.recyclerview.widget.PagerSnapHelper
-import androidx.recyclerview.widget.RecyclerView
-import androidx.wear.widget.WearableLinearLayoutManager
-import androidx.wear.widget.WearableRecyclerView
-import com.boswelja.devicemanager.MainOption
+import androidx.fragment.app.Fragment
+import androidx.wear.widget.drawer.WearableNavigationDrawerView
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.Utils
+import com.boswelja.devicemanager.ui.controls.ControlsFragment
+import com.boswelja.devicemanager.ui.navigation.NavigationDrawerAdapter
+import com.boswelja.devicemanager.ui.navigation.NavigationDrawerSections
 import com.google.android.gms.wearable.Node
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), WearableNavigationDrawerView.OnItemSelectedListener {
 
-    private lateinit var recyclerView: WearableRecyclerView
+    private lateinit var navigationDrawer: WearableNavigationDrawerView
+    private val controlsFragment = ControlsFragment()
+    private var settingsFragment = SettingsFragment()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
-        recyclerView = findViewById(R.id.recycler_view)
-        val optionsList = ArrayList<MainOption>()
-        optionsList.add(MainOption(R.drawable.ic_phonelink_lock, getString(R.string.lock_phone_label), MainOption.Type.LOCK_PHONE))
-        optionsList.add(MainOption(R.drawable.ic_phone_battery, getString(R.string.phone_battery_unknown_long), MainOption.Type.PHONE_BATTERY))
-        recyclerView.apply {
-            layoutManager = WearableLinearLayoutManager(context, CustomScrollingLayoutCallback())
-            isEdgeItemsCenteringEnabled = true
-            adapter = MainAdapter(optionsList)
-        }
-        PagerSnapHelper().attachToRecyclerView(recyclerView)
+        navigationDrawer = findViewById(R.id.navigation_drawer)
+        navigationDrawer.setAdapter(NavigationDrawerAdapter(this))
+        navigationDrawer.addOnItemSelectedListener(this)
+        navigate(controlsFragment)
     }
 
     override fun onResume() {
         super.onResume()
-        checkForCompanion()
-    }
 
-    private fun checkForCompanion() {
+        // Check for companion app
         val capabilityCallbacks = object : Utils.CapabilityCallbacks {
             override fun capableDeviceFound(node: Node?) {}
 
@@ -58,21 +50,22 @@ class MainActivity : AppCompatActivity() {
         Utils.isCompanionAppInstalled(this, capabilityCallbacks)
     }
 
-    class CustomScrollingLayoutCallback : WearableLinearLayoutManager.LayoutCallback() {
+    private fun navigate(fragment: Fragment) {
+        val transaction = supportFragmentManager.beginTransaction()
+        transaction.replace(R.id.fragment_holder, fragment)
+        transaction.commit()
+    }
 
-        private var mProgressToCenter: Float = 0f
-
-        override fun onLayoutFinished(child: View, parent: RecyclerView) {
-            child.apply {
-                val centerOffset = height.toFloat() / 2.0f / parent.height.toFloat()
-                val yRelativeToCenterOffset = y / parent.height + centerOffset
-
-                mProgressToCenter = Math.abs(0.5f - yRelativeToCenterOffset)
-                mProgressToCenter = Math.min(mProgressToCenter, 0.65f)
-
-                scaleX = 1 - mProgressToCenter
-                scaleY = 1 - mProgressToCenter
+    override fun onItemSelected(pos: Int) {
+        val itemSection = NavigationDrawerSections.values()[pos]
+        when (itemSection) {
+            NavigationDrawerSections.Controls -> {
+                navigate(controlsFragment)
+            }
+            NavigationDrawerSections.Settings -> {
+                navigate(settingsFragment)
             }
         }
     }
+
 }

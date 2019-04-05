@@ -40,13 +40,20 @@ import com.boswelja.devicemanager.preference.seekbardialog.SeekbarDialogPreferen
 import com.boswelja.devicemanager.widget.WatchBatteryWidget
 import com.google.android.material.snackbar.Snackbar
 
-class SettingsFragment : PreferenceFragmentCompat(), Preference.OnPreferenceChangeListener, Preference.OnPreferenceClickListener {
+class SettingsFragment :
+        PreferenceFragmentCompat(),
+        Preference.OnPreferenceChangeListener,
+        Preference.OnPreferenceClickListener,
+        SharedPreferences.OnSharedPreferenceChangeListener {
 
     private lateinit var preferenceSyncLayer: PreferenceSyncLayer
 
+    private lateinit var batterySyncEnabledPref: SwitchPreference
+    private lateinit var batteryPhoneChargedNotiPref: CheckBoxPreference
+    private lateinit var batteryWatchChargedNotiPref: CheckBoxPreference
+
     private lateinit var notiSettingsPref: Preference
     private lateinit var batteryOptPref: ConfirmationDialogPreference
-    private lateinit var batterySyncPhoneChargedNotiPref: CheckBoxPreference
     private lateinit var lockPhoneEnabledPref: SwitchPreference
     private lateinit var dndSyncPhoneToWatchPref: SwitchPreference
     private lateinit var dndSyncWatchToPhonePref: SwitchPreference
@@ -55,7 +62,34 @@ class SettingsFragment : PreferenceFragmentCompat(), Preference.OnPreferenceChan
     private lateinit var mainActivity: MainActivity
     private lateinit var sharedPrefs: SharedPreferences
     private lateinit var notificationManager: NotificationManager
+
     private var isGrantingAdminPerms = false
+
+    override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
+        when (key) {
+            PreferenceKey.LOCK_PHONE_ENABLED -> {
+                lockPhoneEnabledPref.isChecked = sharedPreferences?.getBoolean(key, false) == true
+            }
+            PreferenceKey.BATTERY_SYNC_ENABLED_KEY -> {
+                batterySyncEnabledPref.isChecked = sharedPreferences?.getBoolean(key, false) == true
+            }
+            PreferenceKey.BATTERY_PHONE_FULL_CHARGE_NOTI_KEY -> {
+                batteryPhoneChargedNotiPref.isChecked = sharedPreferences?.getBoolean(key, false) == true
+            }
+            PreferenceKey.BATTERY_WATCH_FULL_CHARGE_NOTI_KEY -> {
+                batteryWatchChargedNotiPref.isChecked = sharedPreferences?.getBoolean(key, false) == true
+            }
+            PreferenceKey.DND_SYNC_PHONE_TO_WATCH_KEY -> {
+                dndSyncPhoneToWatchPref.isChecked = sharedPreferences?.getBoolean(key, false) == true
+            }
+            PreferenceKey.DND_SYNC_WATCH_TO_PHONE_KEY -> {
+                dndSyncWatchToPhonePref.isChecked = sharedPreferences?.getBoolean(key, false) == true
+            }
+            PreferenceKey.DND_SYNC_WITH_THEATER_MODE_KEY -> {
+                dndSyncWithTheaterModePref.isChecked = sharedPreferences?.getBoolean(key, false) == true
+            }
+        }
+    }
 
     override fun onPreferenceClick(preference: Preference?): Boolean {
         return when (preference?.key) {
@@ -89,7 +123,7 @@ class SettingsFragment : PreferenceFragmentCompat(), Preference.OnPreferenceChan
     override fun onPreferenceChange(preference: Preference?, newValue: Any?): Boolean {
         return when (preference?.key) {
             PreferenceKey.HIDE_APP_ICON_KEY -> {
-                mainActivity.changeAppIconVisibility(newValue!! == true)
+                mainActivity.changeAppIconVisibility(newValue == true)
                 true
             }
             PreferenceKey.LOCK_PHONE_ENABLED -> {
@@ -103,26 +137,22 @@ class SettingsFragment : PreferenceFragmentCompat(), Preference.OnPreferenceChan
                                 Utils.requestDeviceAdminPerms(context!!)
                             }
                             .setNegativeButton(R.string.dialog_button_cancel) { _, _ ->
-                                preference.sharedPreferences.edit()
+                                sharedPrefs.edit()
                                         .putBoolean(preference.key, false)
                                         .apply()
-                                (preference as SwitchPreference).isChecked = false
                             }
                             .show()
                 } else {
-                    preference.sharedPreferences.edit()
+                    sharedPrefs.edit()
                             .putBoolean(preference.key, value)
                             .apply()
-                    (preference as SwitchPreference).isChecked = value
                     preferenceSyncLayer.updateData()
                 }
                 false
             }
             PreferenceKey.BATTERY_SYNC_ENABLED_KEY -> {
-                val sharedPrefs = preference.sharedPreferences
                 val value = newValue == true
                 sharedPrefs.edit().putBoolean(preference.key, value).apply()
-                (preference as SwitchPreference).isChecked = value
                 if (value) {
                     Utils.createBatterySyncJob(context!!)
                     CommonUtils.updateBatteryStats(context!!)
@@ -140,7 +170,12 @@ class SettingsFragment : PreferenceFragmentCompat(), Preference.OnPreferenceChan
             PreferenceKey.BATTERY_PHONE_FULL_CHARGE_NOTI_KEY -> {
                 val value = newValue == true
                 preference.sharedPreferences.edit().putBoolean(preference.key, value).apply()
-                batterySyncPhoneChargedNotiPref.isChecked = value
+                preferenceSyncLayer.updateData()
+                false
+            }
+            PreferenceKey.BATTERY_WATCH_FULL_CHARGE_NOTI_KEY -> {
+                val value = newValue == true
+                preference.sharedPreferences.edit().putBoolean(preference.key, value).apply()
                 preferenceSyncLayer.updateData()
                 false
             }
@@ -152,7 +187,6 @@ class SettingsFragment : PreferenceFragmentCompat(), Preference.OnPreferenceChan
                     dndDialog.setResponseListener(object : DnDSyncDialogFragment.ResponseListener {
                         override fun onResponse(success: Boolean) {
                             preference.sharedPreferences.edit().putBoolean(preference.key, success).apply()
-                            dndSyncPhoneToWatchPref.isChecked = success
                             preferenceSyncLayer.updateData()
                             if (success) {
                                 Compat.startService(context!!, Intent(context!!, DnDLocalChangeListener::class.java))
@@ -161,7 +195,6 @@ class SettingsFragment : PreferenceFragmentCompat(), Preference.OnPreferenceChan
                     })
                 } else {
                     preference.sharedPreferences.edit().putBoolean(preference.key, value).apply()
-                    dndSyncPhoneToWatchPref.isChecked = value
                     preferenceSyncLayer.updateData()
                     context?.stopService(Intent(context!!, DnDLocalChangeListener::class.java))
                 }
@@ -170,9 +203,7 @@ class SettingsFragment : PreferenceFragmentCompat(), Preference.OnPreferenceChan
             PreferenceKey.DND_SYNC_WATCH_TO_PHONE_KEY -> {
                 val value = newValue == true
                 preference.sharedPreferences.edit().putBoolean(preference.key, value).apply()
-                dndSyncWatchToPhonePref.isChecked = value
                 if (value) {
-                    dndSyncWatchToPhonePref.isChecked = value
                     if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M || notificationManager.isNotificationPolicyAccessGranted) {
                         preferenceSyncLayer.updateData()
                     } else {
@@ -187,9 +218,7 @@ class SettingsFragment : PreferenceFragmentCompat(), Preference.OnPreferenceChan
             PreferenceKey.DND_SYNC_WITH_THEATER_MODE_KEY -> {
                 val value = newValue == true
                 preference.sharedPreferences.edit().putBoolean(preference.key, value).apply()
-                dndSyncWithTheaterModePref.isChecked = value
                 if (value) {
-                    dndSyncWithTheaterModePref.isChecked = value
                     if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M || notificationManager.isNotificationPolicyAccessGranted) {
                         preferenceSyncLayer.updateData()
                     } else {
@@ -223,10 +252,8 @@ class SettingsFragment : PreferenceFragmentCompat(), Preference.OnPreferenceChan
         addPreferencesFromResource(R.xml.prefs_battery_sync)
         setupBatterySyncPrefs()
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            addPreferencesFromResource(R.xml.prefs_dnd_sync)
-            setupDnDPrefs()
-        }
+        addPreferencesFromResource(R.xml.prefs_dnd_sync)
+        setupDnDPrefs()
 
         addPreferencesFromResource(R.xml.prefs_lock_phone)
         setupPhoneLockPrefs()
@@ -236,57 +263,62 @@ class SettingsFragment : PreferenceFragmentCompat(), Preference.OnPreferenceChan
 
         addPreferencesFromResource(R.xml.prefs_about)
         setupAboutPrefs()
+
+        sharedPrefs.registerOnSharedPreferenceChangeListener(this)
     }
 
     private fun setupGeneralPrefs() {
-        val hideAppIconPref = findPreference(PreferenceKey.HIDE_APP_ICON_KEY)
+        val hideAppIconPref = findPreference<Preference>(PreferenceKey.HIDE_APP_ICON_KEY)!!
         hideAppIconPref.onPreferenceChangeListener = this
 
-        notiSettingsPref = findPreference(PreferenceKey.NOTIFICATION_SETTINGS_KEY)
+        notiSettingsPref = findPreference(PreferenceKey.NOTIFICATION_SETTINGS_KEY)!!
         notiSettingsPref.onPreferenceClickListener = this
         updateNotiSettingSummary()
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            batteryOptPref = findPreference(PreferenceKey.BATTERY_OPT_KEY) as ConfirmationDialogPreference
+            batteryOptPref = findPreference(PreferenceKey.BATTERY_OPT_KEY)!!
             batteryOptPref.onPreferenceChangeListener = this
         }
 
-        val dayNightSwitchPref = findPreference(PreferenceKey.DAYNIGHT_SWITCH_KEY)
+        val dayNightSwitchPref = findPreference<Preference>(PreferenceKey.DAYNIGHT_SWITCH_KEY)!!
         dayNightSwitchPref.onPreferenceClickListener = this
     }
 
     private fun setupPhoneLockPrefs() {
-        lockPhoneEnabledPref = findPreference(PreferenceKey.LOCK_PHONE_ENABLED) as SwitchPreference
+        lockPhoneEnabledPref = findPreference(PreferenceKey.LOCK_PHONE_ENABLED)!!
         lockPhoneEnabledPref.onPreferenceChangeListener = this
     }
 
     private fun setupBatterySyncPrefs() {
-        val batterySyncEnabledPref = findPreference(PreferenceKey.BATTERY_SYNC_ENABLED_KEY) as SwitchPreference
+        batterySyncEnabledPref = findPreference(PreferenceKey.BATTERY_SYNC_ENABLED_KEY)!!
         batterySyncEnabledPref.onPreferenceChangeListener = this
 
-        val batterySyncIntervalPref = findPreference(PreferenceKey.BATTERY_SYNC_INTERVAL_KEY)
+        val batterySyncIntervalPref = findPreference<SeekbarDialogPreference>(PreferenceKey.BATTERY_SYNC_INTERVAL_KEY)!!
         batterySyncIntervalPref.onPreferenceChangeListener = this
 
-        val batterySyncForcePref = findPreference(PreferenceKey.BATTERY_SYNC_NOW_KEY) as Preference
+        val batterySyncForcePref = findPreference<Preference>(PreferenceKey.BATTERY_SYNC_NOW_KEY)!!
         batterySyncForcePref.onPreferenceClickListener = this
 
-        batterySyncPhoneChargedNotiPref = findPreference(PreferenceKey.BATTERY_PHONE_FULL_CHARGE_NOTI_KEY) as CheckBoxPreference
-        batterySyncPhoneChargedNotiPref.onPreferenceChangeListener = this
+        batteryPhoneChargedNotiPref = findPreference(PreferenceKey.BATTERY_PHONE_FULL_CHARGE_NOTI_KEY)!!
+        batteryPhoneChargedNotiPref.onPreferenceChangeListener = this
+
+        batteryWatchChargedNotiPref = findPreference(PreferenceKey.BATTERY_WATCH_FULL_CHARGE_NOTI_KEY)!!
+        batteryWatchChargedNotiPref.onPreferenceChangeListener = this
     }
 
     private fun setupDnDPrefs() {
-        dndSyncPhoneToWatchPref = findPreference(PreferenceKey.DND_SYNC_PHONE_TO_WATCH_KEY) as SwitchPreference
+        dndSyncPhoneToWatchPref = findPreference(PreferenceKey.DND_SYNC_PHONE_TO_WATCH_KEY)!!
         dndSyncPhoneToWatchPref.onPreferenceChangeListener = this
 
-        dndSyncWatchToPhonePref = findPreference(PreferenceKey.DND_SYNC_WATCH_TO_PHONE_KEY) as SwitchPreference
+        dndSyncWatchToPhonePref = findPreference(PreferenceKey.DND_SYNC_WATCH_TO_PHONE_KEY)!!
         dndSyncWatchToPhonePref.onPreferenceChangeListener = this
 
-        dndSyncWithTheaterModePref = findPreference(PreferenceKey.DND_SYNC_WITH_THEATER_MODE_KEY) as SwitchPreference
+        dndSyncWithTheaterModePref = findPreference(PreferenceKey.DND_SYNC_WITH_THEATER_MODE_KEY)!!
         dndSyncWithTheaterModePref.onPreferenceChangeListener = this
     }
 
     private fun setupAboutPrefs() {
-        val donatePref = findPreference(PreferenceKey.DONATE_KEY) as Preference
+        val donatePref = findPreference<Preference>(PreferenceKey.DONATE_KEY)!!
         donatePref.onPreferenceClickListener = this
     }
 
@@ -306,7 +338,6 @@ class SettingsFragment : PreferenceFragmentCompat(), Preference.OnPreferenceChan
         if (isGrantingAdminPerms) {
             val isAdmin = mainActivity.isDeviceAdmin()
             sharedPrefs.edit().putBoolean(PreferenceKey.LOCK_PHONE_ENABLED, isAdmin).apply()
-            lockPhoneEnabledPref.isChecked = isAdmin
             isGrantingAdminPerms = false
             preferenceSyncLayer.updateData()
         }
@@ -324,6 +355,11 @@ class SettingsFragment : PreferenceFragmentCompat(), Preference.OnPreferenceChan
                 preferenceSyncLayer.updateData()
             }
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        sharedPrefs.unregisterOnSharedPreferenceChangeListener(this)
     }
 
     override fun onDisplayPreferenceDialog(preference: Preference?) {

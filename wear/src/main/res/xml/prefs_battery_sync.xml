@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.preference.PreferenceScreen
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
     <androidx.preference.PreferenceCategory
         android:title="@string/pref_category_battery_sync">
@@ -10,23 +8,7 @@
             android:key="battery_sync_enabled"
             android:title="@string/pref_battery_sync_enabled_title"
             android:summary="@string/pref_battery_sync_enabled_summary"
-            android:icon="@drawable/battery_full"
             android:defaultValue="false"/>
-
-        <com.boswelja.devicemanager.preference.seekbardialog.SeekbarDialogPreference
-            android:key="battery_sync_interval"
-            android:title="@string/pref_battery_sync_interval_title"
-            android:dependency="battery_sync_enabled"
-            android:defaultValue="900000"
-            android:positiveButtonText="Save"
-            app:minValue="900000"
-            app:maxValue="3600000"
-            app:stepSize="60000" />
-
-        <androidx.preference.Preference
-            android:key="battery_sync_now"
-            android:title="@string/pref_battery_sync_resync_title"
-            android:dependency="battery_sync_enabled" />
 
         <androidx.preference.CheckBoxPreference
             android:key="battery_phone_full_charge"
@@ -42,4 +24,4 @@
 
     </androidx.preference.PreferenceCategory>
 
-</androidx.preference.PreferenceScreen>
+</PreferenceScreen>
