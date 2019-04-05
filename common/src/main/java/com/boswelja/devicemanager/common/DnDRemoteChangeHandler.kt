@@ -22,12 +22,14 @@ class DnDRemoteChangeHandler : WearableListenerService() {
         super.onDataChanged(dataEventBuffer)
 
         val prefs = PreferenceManager.getDefaultSharedPreferences(this)
+
         val isPhone = resources.getBoolean(R.bool.device_is_phone)
         val receivingKey = if (isPhone) {
             PreferenceKey.DND_SYNC_WATCH_TO_PHONE_KEY
         } else {
             PreferenceKey.DND_SYNC_PHONE_TO_WATCH_KEY
         }
+
         val dndReceiving = prefs.getBoolean(receivingKey, false)
         if (dndReceiving ||
                 (isPhone && prefs.getBoolean(PreferenceKey.DND_SYNC_WITH_THEATER_MODE_KEY, false))) {

@@ -22,7 +22,7 @@ class BootReceiver : BroadcastReceiver() {
                     (!isPhone && prefs.getBoolean(PreferenceKey.DND_SYNC_WATCH_TO_PHONE_KEY, false)))
             if (isSending) {
                 val serviceIntent = Intent(context, DnDLocalChangeListener::class.java)
-                Compat.startService(context!!, serviceIntent)
+                Compat.startForegroundService(context!!, serviceIntent)
             }
         }
     }

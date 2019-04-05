@@ -21,23 +21,23 @@ class PreferenceSyncLayer(context: Context) {
 
     fun updateData() {
         // Get updated prefs
+        val batterySyncEnabled = localPrefs.getBoolean(PreferenceKey.BATTERY_SYNC_ENABLED_KEY, false)
+        val phoneBatteryChargedNoti = localPrefs.getBoolean(PreferenceKey.BATTERY_PHONE_FULL_CHARGE_NOTI_KEY, false)
+        val watchBatteryChargedNoti = localPrefs.getBoolean(PreferenceKey.BATTERY_WATCH_FULL_CHARGE_NOTI_KEY, false)
         val dndSyncPhoneToWatch = localPrefs.getBoolean(PreferenceKey.DND_SYNC_PHONE_TO_WATCH_KEY, false)
         val dndSyncWatchToPhone = localPrefs.getBoolean(PreferenceKey.DND_SYNC_WATCH_TO_PHONE_KEY, false)
         val dndSyncWithTheater = localPrefs.getBoolean(PreferenceKey.DND_SYNC_WITH_THEATER_MODE_KEY, false)
-        val phoneBatteryChargedNoti = localPrefs.getBoolean(PreferenceKey.BATTERY_PHONE_FULL_CHARGE_NOTI_KEY, false)
-        val watchBatteryChargedNoti = localPrefs.getBoolean(PreferenceKey.BATTERY_WATCH_FULL_CHARGE_NOTI_KEY, false)
         val lockPhoneEnabled = localPrefs.getBoolean(PreferenceKey.LOCK_PHONE_ENABLED, false)
-        val batterySyncEnabled = localPrefs.getBoolean(PreferenceKey.BATTERY_SYNC_ENABLED_KEY, false)
 
         // Create updated prefs object
         val syncedPrefUpdateReq = PutDataMapRequest.create(PREFERENCE_CHANGE_PATH)
+        syncedPrefUpdateReq.dataMap.putBoolean(BATTERY_SYNC_ENABLED_KEY, batterySyncEnabled)
+        syncedPrefUpdateReq.dataMap.putBoolean(BATTERY_PHONE_FULL_CHARGE_NOTI_KEY, phoneBatteryChargedNoti)
+        syncedPrefUpdateReq.dataMap.putBoolean(BATTERY_WATCH_FULL_CHARGE_NOTI_KEY, watchBatteryChargedNoti)
         syncedPrefUpdateReq.dataMap.putBoolean(DND_SYNC_PHONE_TO_WATCH_KEY, dndSyncPhoneToWatch)
         syncedPrefUpdateReq.dataMap.putBoolean(DND_SYNC_WATCH_TO_PHONE_KEY, dndSyncWatchToPhone)
         syncedPrefUpdateReq.dataMap.putBoolean(DND_SYNC_WITH_THEATER_KEY, dndSyncWithTheater)
-        syncedPrefUpdateReq.dataMap.putBoolean(BATTERY_PHONE_FULL_CHARGE_NOTI_KEY, phoneBatteryChargedNoti)
-        syncedPrefUpdateReq.dataMap.putBoolean(BATTERY_WATCH_FULL_CHARGE_NOTI_KEY, watchBatteryChargedNoti)
         syncedPrefUpdateReq.dataMap.putBoolean(LOCK_PHONE_ENABLED_KEY, lockPhoneEnabled)
-        syncedPrefUpdateReq.dataMap.putBoolean(BATTERY_SYNC_ENABLED_KEY, batterySyncEnabled)
 
         // Send updated prefs
         syncedPrefUpdateReq.setUrgent()

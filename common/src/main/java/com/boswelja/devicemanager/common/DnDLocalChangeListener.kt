@@ -29,7 +29,7 @@ class DnDLocalChangeListener : Service() {
     private lateinit var notificationManager: NotificationManager
     private var dndChangeReceiver: DnDChangeReceiver? = null
     private val prefChangeListener: PreferenceChangeListener = PreferenceChangeListener()
-    private var sendPrefkey = ""
+    private var sendPrefKey = ""
 
     override fun onBind(p0: Intent?): IBinder? {
         return null
@@ -39,7 +39,7 @@ class DnDLocalChangeListener : Service() {
         super.onCreate()
 
         val isPhone = resources.getBoolean(R.bool.device_is_phone)
-        sendPrefkey = if (isPhone) {
+        sendPrefKey = if (isPhone) {
             PreferenceKey.DND_SYNC_PHONE_TO_WATCH_KEY
         } else {
             PreferenceKey.DND_SYNC_WATCH_TO_PHONE_KEY
@@ -84,7 +84,7 @@ class DnDLocalChangeListener : Service() {
         if (dndChangeReceiver == null) dndChangeReceiver = DnDChangeReceiver()
         registerReceiver(dndChangeReceiver, intentFilter)
 
-        CommonUtils.updateDnD(this)
+        CommonUtils.updateInterruptionFilter(this)
 
         return START_STICKY
     }
@@ -100,7 +100,7 @@ class DnDLocalChangeListener : Service() {
 
     private inner class PreferenceChangeListener : SharedPreferences.OnSharedPreferenceChangeListener {
         override fun onSharedPreferenceChanged(prefs: SharedPreferences?, key: String?) {
-            if (key == sendPrefkey &&
+            if (key == sendPrefKey &&
                     !prefs?.getBoolean(key, false)!!) {
                 stopForeground(true)
                 stopSelf()
@@ -111,7 +111,7 @@ class DnDLocalChangeListener : Service() {
     private inner class DnDChangeReceiver : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             if (intent!!.action == NotificationManager.ACTION_INTERRUPTION_FILTER_CHANGED) {
-                CommonUtils.updateDnD(this@DnDLocalChangeListener)
+                CommonUtils.updateInterruptionFilter(this@DnDLocalChangeListener)
             }
         }
     }

@@ -18,8 +18,14 @@ import com.google.android.gms.wearable.CapabilityClient
 import com.google.android.gms.wearable.PutDataMapRequest
 import com.google.android.gms.wearable.Wearable
 
+/*
+ * A collection of utility functions used by most, if not all modules
+ */
 object CommonUtils {
 
+    /**
+     * Sends a battery status update to connected devices.
+     */
     fun updateBatteryStats(context: Context) {
         val iFilter = IntentFilter(Intent.ACTION_BATTERY_CHANGED)
         val batteryStatus = context.registerReceiver(null, iFilter)
@@ -41,19 +47,33 @@ object CommonUtils {
                 }
     }
 
-    fun updateDnD(context: Context) {
-        val dndEnabled = Compat.dndEnabled(context)
-        CommonUtils.updateDnD(context, dndEnabled)
+    /**
+     * Ensure Interruption Filter state is properly synced between devices.
+     */
+    fun updateInterruptionFilter(context: Context) {
+        val interruptionFilterEnabled = Compat.interruptionFilterEnabled(context)
+        CommonUtils.updateInterruptionFilter(context, interruptionFilterEnabled)
     }
 
-    fun updateDnD(context: Context, dndEnabled: Boolean) {
+    /**
+     * Sets a new Interruption Filter state across devices.
+     * @param interruptionFilterEnabled Whether Interruption Filter should be enabled.
+     */
+    fun updateInterruptionFilter(context: Context, interruptionFilterEnabled: Boolean) {
         val dataClient = Wearable.getDataClient(context)
         val putDataMapReq = PutDataMapRequest.create(References.DND_STATUS_KEY)
-        putDataMapReq.dataMap.putBoolean(References.NEW_DND_STATE_KEY, dndEnabled)
+        putDataMapReq.dataMap.putBoolean(References.NEW_DND_STATE_KEY, interruptionFilterEnabled)
         putDataMapReq.setUrgent()
         dataClient.putDataItem(putDataMapReq.asPutDataRequest())
     }
 
+    /**
+     * Converts a Drawable to a Bitmap.
+     * @param drawable Input Drawable.
+     * @return Output Bitmap.
+     * @see Drawable
+     * @see Bitmap
+     */
     fun drawableToBitmap(drawable: Drawable): Bitmap {
         val bitmap = Bitmap.createBitmap(drawable.intrinsicWidth, drawable.intrinsicHeight, Bitmap.Config.ARGB_8888)
         val canvas = Canvas(bitmap)
@@ -62,6 +82,9 @@ object CommonUtils {
         return bitmap
     }
 
+    /**
+     * Converts a single Boolean to a ByteArray
+     */
     fun boolToByteArray(b: Boolean): ByteArray {
         val byte: Byte = if (b) {
             1

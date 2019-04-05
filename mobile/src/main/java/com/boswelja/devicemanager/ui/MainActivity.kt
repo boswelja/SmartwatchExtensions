@@ -20,7 +20,7 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.Utils
-import com.boswelja.devicemanager.common.BatteryUpdateJob
+import com.boswelja.devicemanager.BatteryUpdateJob
 import com.boswelja.devicemanager.common.Compat
 import com.boswelja.devicemanager.common.DnDLocalChangeListener
 import com.boswelja.devicemanager.common.PreferenceKey
@@ -59,7 +59,7 @@ class MainActivity : AppCompatActivity() {
 
         if (sharedPrefs.getBoolean(PreferenceKey.DND_SYNC_PHONE_TO_WATCH_KEY, false)) {
             val intent = Intent(this, DnDLocalChangeListener::class.java)
-            Compat.startService(this, intent)
+            Compat.startForegroundService(this, intent)
         }
     }
 

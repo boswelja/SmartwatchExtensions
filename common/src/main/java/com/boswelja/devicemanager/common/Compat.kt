@@ -17,14 +17,29 @@ import android.media.AudioManager
 import android.os.Build
 import androidx.preference.PreferenceManager
 
+/*
+ * Compatibility layer to aid support for different Android versions
+ */
 @SuppressLint("ObsoleteSdkInt")
 object Compat {
 
+    /**
+     * Finds pending jobs from {@link JobScheduler} matching the given ID.
+     * @param id ID of the job to find.
+     * @return JobInfo object, null if not found.
+     * @see JobInfo
+     */
     fun getPendingJob(context: Context, id: Int): JobInfo? {
         val jobScheduler = context.getSystemService(Context.JOB_SCHEDULER_SERVICE) as JobScheduler
         return Compat.getPendingJob(jobScheduler, id)
     }
 
+    /**
+     * Finds pending jobs from {@link JobScheduler} matching the given ID.
+     * @param id ID of the job to find.
+     * @return JobInfo object, null if not found.
+     * @see JobInfo
+     */
     fun getPendingJob(jobScheduler: JobScheduler, id: Int): JobInfo? {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             jobScheduler.getPendingJob(id)
@@ -34,7 +49,11 @@ object Compat {
         }
     }
 
-    fun startService(context: Context, intent: Intent) {
+    /**
+     * Starts a service in the foreground.
+     * @param intent Intent for the service.
+     */
+    fun startForegroundService(context: Context, intent: Intent) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             context.startForegroundService(intent)
         } else {
@@ -42,12 +61,17 @@ object Compat {
         }
     }
 
-    fun setInterruptionFilter(context: Context, requestedDnDState: Boolean) {
-        if (requestedDnDState != dndEnabled(context)) {
+    /**
+     * Set the system's current Interruption Filter state, or set silent mode if
+     * Interruption Filter doesn't exist.
+     * @param interruptionFilterOn Specify the new Interruption Filter state.
+     */
+    fun setInterruptionFilter(context: Context, interruptionFilterOn: Boolean) {
+        if (interruptionFilterOn != interruptionFilterEnabled(context)) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 try {
                     val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-                    if (requestedDnDState) {
+                    if (interruptionFilterOn) {
                         notificationManager.setInterruptionFilter(NotificationManager.INTERRUPTION_FILTER_PRIORITY)
                     } else {
                         notificationManager.setInterruptionFilter(NotificationManager.INTERRUPTION_FILTER_ALL)
@@ -65,7 +89,7 @@ object Compat {
                 }
             } else {
                 val audioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
-                if (requestedDnDState) {
+                if (interruptionFilterOn) {
                     audioManager.ringerMode = AudioManager.RINGER_MODE_SILENT
                 } else {
                     audioManager.ringerMode = AudioManager.RINGER_MODE_NORMAL
@@ -74,7 +98,12 @@ object Compat {
         }
     }
 
-    fun dndEnabled(context: Context): Boolean {
+    /**
+     * Checks whether or not Interruption Filter is currently active, or check silent
+     * mode state if Interruption Filter is unavailable.
+     * @return Whether or not Interruption Filter is enabled.
+     */
+    fun interruptionFilterEnabled(context: Context): Boolean {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             val currentInterruptFilter = notificationManager.currentInterruptionFilter

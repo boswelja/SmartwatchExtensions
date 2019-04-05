@@ -27,25 +27,25 @@ abstract class BasePreferenceChangeReceiver : WearableListenerService() {
         dataEvents?.forEach { event ->
             val dataMap = DataMapItem.fromDataItem(event.dataItem).dataMap
 
+            val batterySyncEnabled = dataMap.getBoolean(BATTERY_SYNC_ENABLED_KEY)
+            val batteryPhoneChargedNoti = dataMap.getBoolean(BATTERY_PHONE_FULL_CHARGE_NOTI_KEY)
+            val batteryWatchChargedNoti = dataMap.getBoolean(BATTERY_WATCH_FULL_CHARGE_NOTI_KEY)
+
             val dndSyncPhoneToWatch = dataMap.getBoolean(DND_SYNC_PHONE_TO_WATCH_KEY)
             val dndSyncWatchToPhone = dataMap.getBoolean(DND_SYNC_WATCH_TO_PHONE_KEY)
             val dndSyncWithTheater = dataMap.getBoolean(DND_SYNC_WITH_THEATER_KEY)
-
-            val batterySyncEnabled = dataMap.getBoolean(BATTERY_SYNC_ENABLED_KEY)
-            val phoneBatteryChargedNoti = dataMap.getBoolean(BATTERY_PHONE_FULL_CHARGE_NOTI_KEY)
-            val watchBatteryChargedNoti = dataMap.getBoolean(BATTERY_WATCH_FULL_CHARGE_NOTI_KEY)
 
             val lockPhoneEnabled = dataMap.getBoolean(LOCK_PHONE_ENABLED_KEY)
 
             prefs = PreferenceManager.getDefaultSharedPreferences(this)
             prefs.edit()
+                    .putBoolean(PreferenceKey.BATTERY_SYNC_ENABLED_KEY, batterySyncEnabled)
+                    .putBoolean(PreferenceKey.BATTERY_PHONE_FULL_CHARGE_NOTI_KEY, batteryPhoneChargedNoti)
+                    .putBoolean(PreferenceKey.BATTERY_WATCH_FULL_CHARGE_NOTI_KEY, batteryWatchChargedNoti)
                     .putBoolean(PreferenceKey.DND_SYNC_PHONE_TO_WATCH_KEY, dndSyncPhoneToWatch)
                     .putBoolean(PreferenceKey.DND_SYNC_WATCH_TO_PHONE_KEY, dndSyncWatchToPhone)
                     .putBoolean(PreferenceKey.DND_SYNC_WITH_THEATER_MODE_KEY, dndSyncWithTheater)
-                    .putBoolean(PreferenceKey.BATTERY_PHONE_FULL_CHARGE_NOTI_KEY, phoneBatteryChargedNoti)
-                    .putBoolean(PreferenceKey.BATTERY_WATCH_FULL_CHARGE_NOTI_KEY, watchBatteryChargedNoti)
                     .putBoolean(PreferenceKey.LOCK_PHONE_ENABLED, lockPhoneEnabled)
-                    .putBoolean(PreferenceKey.BATTERY_SYNC_ENABLED_KEY, batterySyncEnabled)
                     .apply()
 
             val isPhone = resources.getBoolean(R.bool.device_is_phone)
@@ -59,7 +59,7 @@ abstract class BasePreferenceChangeReceiver : WearableListenerService() {
 
     private fun startLocalDnDListenerService() {
         val intent = Intent(applicationContext, DnDLocalChangeListener::class.java)
-        Compat.startService(applicationContext, intent)
+        Compat.startForegroundService(applicationContext, intent)
     }
 
     abstract fun handleStartServices(dndSyncWithTheater: Boolean, batterySyncEnabled: Boolean)

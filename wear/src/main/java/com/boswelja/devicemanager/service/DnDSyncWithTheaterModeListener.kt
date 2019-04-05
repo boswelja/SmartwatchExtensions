@@ -91,7 +91,7 @@ class DnDSyncWithTheaterModeListener : Service() {
             super.onChange(selfChange)
             val context = this@DnDSyncWithTheaterModeListener
             val isTheaterModeOn = Utils.isTheaterModeOn(context)
-            CommonUtils.updateDnD(context, isTheaterModeOn)
+            CommonUtils.updateInterruptionFilter(context, isTheaterModeOn)
         }
     }
 }

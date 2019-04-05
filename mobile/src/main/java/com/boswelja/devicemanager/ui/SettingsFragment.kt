@@ -189,7 +189,7 @@ class SettingsFragment :
                             preference.sharedPreferences.edit().putBoolean(preference.key, success).apply()
                             preferenceSyncLayer.updateData()
                             if (success) {
-                                Compat.startService(context!!, Intent(context!!, DnDLocalChangeListener::class.java))
+                                Compat.startForegroundService(context!!, Intent(context!!, DnDLocalChangeListener::class.java))
                             }
                         }
                     })

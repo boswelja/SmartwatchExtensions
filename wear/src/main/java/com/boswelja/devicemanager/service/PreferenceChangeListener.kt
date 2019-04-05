@@ -23,7 +23,7 @@ class PreferenceChangeListener : BasePreferenceChangeReceiver() {
             ProviderUpdateRequester(this, ComponentName(packageName, PhoneBatteryComplicationProvider::class.java.name)).requestUpdateAll()
         }
         if (dndSyncWithTheater) {
-            Compat.startService(this, Intent(applicationContext, DnDSyncWithTheaterModeListener::class.java))
+            Compat.startForegroundService(this, Intent(applicationContext, DnDSyncWithTheaterModeListener::class.java))
         }
     }
 
