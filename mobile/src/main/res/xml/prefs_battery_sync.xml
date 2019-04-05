@@ -13,6 +13,11 @@
             android:icon="@drawable/battery_full"
             android:defaultValue="false"/>
 
+        <androidx.preference.Preference
+            android:key="battery_sync_now"
+            android:title="@string/pref_battery_sync_resync_title"
+            android:dependency="battery_sync_enabled" />
+
         <com.boswelja.devicemanager.preference.seekbardialog.SeekbarDialogPreference
             android:key="battery_sync_interval"
             android:title="@string/pref_battery_sync_interval_title"
@@ -23,10 +28,6 @@
             app:maxValue="3600000"
             app:stepSize="60000" />
 
-        <androidx.preference.Preference
-            android:key="battery_sync_now"
-            android:title="@string/pref_battery_sync_resync_title"
-            android:dependency="battery_sync_enabled" />
 
         <androidx.preference.CheckBoxPreference
             android:key="battery_phone_full_charge"
