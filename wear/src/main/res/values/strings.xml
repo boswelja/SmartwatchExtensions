@@ -33,4 +33,6 @@
 
     <string name="navigation_controls_title">Phone Controls</string>
     <string name="navigation_settings_title">Settings</string>
+
+    <string name="additional_setup_required">Additional setup required</string>
 </resources>

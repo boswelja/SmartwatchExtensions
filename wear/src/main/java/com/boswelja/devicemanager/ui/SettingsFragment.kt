@@ -1,5 +1,6 @@
 package com.boswelja.devicemanager.ui
 
+import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -10,8 +11,10 @@ import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.SwitchPreference
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.wear.activity.ConfirmationActivity
 import androidx.wear.widget.WearableRecyclerView
 import com.boswelja.devicemanager.R
+import com.boswelja.devicemanager.Utils
 import com.boswelja.devicemanager.common.PreferenceKey
 import com.boswelja.devicemanager.common.prefsynclayer.PreferenceSyncLayer
 
@@ -60,13 +63,28 @@ class SettingsFragment :
             PreferenceKey.BATTERY_PHONE_FULL_CHARGE_NOTI_KEY,
             PreferenceKey.BATTERY_WATCH_FULL_CHARGE_NOTI_KEY -> {
                 val value = newValue == true
-                if (value != prefs.getBoolean(key, false)) {
-                    prefs.edit().putBoolean(key, value).apply()
-                    preferenceSyncLayer.updateData()
-                }
+                prefs.edit().putBoolean(key, value).apply()
+                preferenceSyncLayer.updateData()
                 false
             }
             PreferenceKey.DND_SYNC_PHONE_TO_WATCH_KEY -> {
+                val value = newValue == true
+                if (value) {
+                    val canEnableSync = Utils.checkDnDAccess(context!!)
+                    if (canEnableSync) {
+                        prefs.edit().putBoolean(key, value).apply()
+                        preferenceSyncLayer.updateData()
+                    } else {
+                        val intent = Intent(context, ConfirmationActivity::class.java).apply {
+                            putExtra(ConfirmationActivity.EXTRA_ANIMATION_TYPE, ConfirmationActivity.FAILURE_ANIMATION)
+                            putExtra(ConfirmationActivity.EXTRA_MESSAGE, getString(R.string.additional_setup_required))
+                        }
+                        startActivity(intent)
+                    }
+                } else {
+                    prefs.edit().putBoolean(key, value).apply()
+                    preferenceSyncLayer.updateData()
+                }
                 false
             }
             PreferenceKey.DND_SYNC_WATCH_TO_PHONE_KEY -> {
