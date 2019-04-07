@@ -23,14 +23,10 @@ class ControlsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        recyclerView = view.findViewById(R.id.recycler_view)
-        val optionsList = ArrayList<MainOption>()
-        optionsList.add(MainOption(R.drawable.ic_phonelink_lock, getString(R.string.lock_phone_label), MainOption.Type.LOCK_PHONE))
-        optionsList.add(MainOption(R.drawable.ic_phone_battery, getString(R.string.phone_battery_unknown_long), MainOption.Type.PHONE_BATTERY))
-        recyclerView.apply {
+        recyclerView = view.findViewById<WearableRecyclerView>(R.id.recycler_view).apply {
             layoutManager = WearableLinearLayoutManager(context, CustomScrollingLayoutCallback())
             isEdgeItemsCenteringEnabled = true
-            adapter = ControlsAdapter(optionsList)
+            adapter = ControlsAdapter()
         }
         PagerSnapHelper().attachToRecyclerView(recyclerView)
     }

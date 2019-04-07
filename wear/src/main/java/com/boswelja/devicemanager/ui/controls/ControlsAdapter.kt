@@ -16,31 +16,33 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.RecyclerView
-import com.boswelja.devicemanager.MainOption
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.PreferenceKey
 import com.boswelja.devicemanager.common.References
 import com.boswelja.devicemanager.service.ActionService
 
-class ControlsAdapter(private val options: ArrayList<MainOption>) : RecyclerView.Adapter<ControlsAdapter.ViewHolder>() {
+class ControlsAdapter : RecyclerView.Adapter<ControlsAdapter.ViewHolder>() {
+
+    private val controls = ControlItems.values()
 
     override fun getItemCount(): Int {
-        return options.size
+        return controls.size
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val option = options[position]
-        when (option.type) {
-            MainOption.Type.LOCK_PHONE -> {
-                holder.label.text = option.label
-                holder.icon.setImageResource(option.iconRes)
+        val context = holder.itemView.context
+        val control = controls[position]
+        when (control) {
+            ControlItems.LockPhone -> {
+                holder.label.text = context.getString(control.titleRes)
+                holder.icon.setImageResource(control.drawableRes)
                 holder.itemView.setOnClickListener {
                     val intent = Intent(holder.itemView.context, ActionService::class.java)
                     intent.putExtra(ActionService.INTENT_ACTION_EXTRA, References.LOCK_PHONE_PATH)
                     holder.itemView.context.startService(intent)
                 }
             }
-            MainOption.Type.PHONE_BATTERY -> {
+            ControlItems.PhoneBattery -> {
                 val sharedPrefs = PreferenceManager.getDefaultSharedPreferences(holder.itemView.context)
                 holder.itemView.setOnClickListener {
                     if (sharedPrefs.getBoolean(PreferenceKey.BATTERY_SYNC_ENABLED_KEY, false)) {
@@ -51,9 +53,7 @@ class ControlsAdapter(private val options: ArrayList<MainOption>) : RecyclerView
                 }
                 sharedPrefs.registerOnSharedPreferenceChangeListener { _, key ->
                     when (key) {
-                        PreferenceKey.BATTERY_PERCENT_KEY -> {
-                            updateBatteryPercent(holder, sharedPrefs)
-                        }
+                        PreferenceKey.BATTERY_PERCENT_KEY,
                         PreferenceKey.BATTERY_SYNC_ENABLED_KEY -> {
                             updateBatteryPercent(holder, sharedPrefs)
                         }
