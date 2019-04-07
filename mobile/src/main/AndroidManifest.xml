@@ -84,6 +84,10 @@
                     android:host="*"
                     android:pathPrefix="/launch_app"
                     android:scheme="wear" />
+                <data
+                    android:host="*"
+                    android:pathPrefix="/request_phone_dnd_access_status"
+                    android:scheme="wear" />
             </intent-filter>
         </service>
 

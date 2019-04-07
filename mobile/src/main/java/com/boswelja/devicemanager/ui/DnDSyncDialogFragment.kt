@@ -43,7 +43,7 @@ class DnDSyncDialogFragment : DialogFragment() {
     private var isInitialCheck = true
 
     private val listener = MessageClient.OnMessageReceivedListener {
-        if (it.path == References.REQUEST_DND_ACCESS_STATUS_PATH) {
+        if (it.path == References.REQUEST_WATCH_DND_ACCESS_STATUS_PATH) {
             val hasDnDAccess = it.data[0].toInt() == 1
             onResponse(hasDnDAccess)
         }
@@ -109,7 +109,7 @@ class DnDSyncDialogFragment : DialogFragment() {
                             dismiss()
                         } else {
                             for (node in nodes) {
-                                messageClient.sendMessage(node?.id!!, References.REQUEST_DND_ACCESS_STATUS_PATH, null)
+                                messageClient.sendMessage(node?.id!!, References.REQUEST_WATCH_DND_ACCESS_STATUS_PATH, null)
                             }
                         }
                     }

@@ -45,10 +45,6 @@ object Utils {
     fun checkDnDAccess(context: Context): Boolean {
         val notiManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         val hasDnDAccess = notiManager.isNotificationPolicyAccessGranted
-        val prefs = PreferenceManager.getDefaultSharedPreferences(context)
-        if (hasDnDAccess != prefs.getBoolean(PreferenceKey.DND_ACCESS_STATUS_KEY, false)) {
-            prefs.edit().putBoolean(PreferenceKey.DND_ACCESS_STATUS_KEY, hasDnDAccess).apply()
-        }
         return hasDnDAccess
     }
 

@@ -30,7 +30,5 @@ object PreferenceKey {
     const val DND_SYNC_WATCH_TO_PHONE_KEY = "dnd_sync_watch_to_phone"
     const val DND_SYNC_WITH_THEATER_MODE_KEY = "dnd_sync_with_theater"
 
-    const val DND_ACCESS_STATUS_KEY = "dnd_access"
-
     const val DONATE_KEY = "pref_donate"
 }
