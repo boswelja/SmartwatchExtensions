@@ -10,8 +10,10 @@ package com.boswelja.devicemanager.receiver
 import android.app.admin.DeviceAdminReceiver
 import android.app.admin.DevicePolicyManager
 import android.content.Context
+import android.content.Intent
 import com.boswelja.devicemanager.common.CommonUtils
 import com.boswelja.devicemanager.common.References
+import com.boswelja.devicemanager.ui.MainActivity
 import com.google.android.gms.wearable.MessageEvent
 import com.google.android.gms.wearable.WearableListenerService
 
@@ -28,6 +30,12 @@ class WearMessageReceiverService : WearableListenerService() {
             }
             References.REQUEST_BATTERY_UPDATE_PATH -> {
                 CommonUtils.updateBatteryStats(this)
+            }
+            References.REQUEST_LAUNCH_APP_PATH -> {
+                val key = String(messageEvent.data, Charsets.UTF_8)
+                val intent = Intent(this, MainActivity::class.java)
+                intent.putExtra(MainActivity.EXTRA_PREFERENCE_KEY, key)
+                startActivity(intent)
             }
         }
     }

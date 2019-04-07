@@ -75,8 +75,9 @@ class SettingsFragment :
                         prefs.edit().putBoolean(key, value).apply()
                         preferenceSyncLayer.updateData()
                     } else {
+                        Utils.launchMobileApp(context!!, key)
                         val intent = Intent(context, ConfirmationActivity::class.java).apply {
-                            putExtra(ConfirmationActivity.EXTRA_ANIMATION_TYPE, ConfirmationActivity.FAILURE_ANIMATION)
+                            putExtra(ConfirmationActivity.EXTRA_ANIMATION_TYPE, ConfirmationActivity.OPEN_ON_PHONE_ANIMATION)
                             putExtra(ConfirmationActivity.EXTRA_MESSAGE, getString(R.string.additional_setup_required))
                         }
                         startActivity(intent)

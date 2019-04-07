@@ -21,6 +21,7 @@ object References {
 
     // Message paths
     const val LOCK_PHONE_PATH = "/lock_phone"
+    const val REQUEST_LAUNCH_APP_PATH = "/launch_app"
     const val BATTERY_STATUS_PATH = "/battery_status"
     const val REQUEST_BATTERY_UPDATE_PATH = "/request_battery_update"
     const val REQUEST_DND_ACCESS_STATUS_PATH = "/request_dnd_access_status"

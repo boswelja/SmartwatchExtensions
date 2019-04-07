@@ -55,4 +55,14 @@ object Utils {
     fun isTheaterModeOn(context: Context): Boolean {
         return Settings.Global.getInt(context.contentResolver, "theater_mode_on", 0) == 1
     }
+
+    fun launchMobileApp(context: Context, key: String) {
+        Wearable.getCapabilityClient(context)
+                .getCapability(References.CAPABILITY_APP, CapabilityClient.FILTER_REACHABLE)
+                .addOnSuccessListener { capabilityInfo ->
+                    val nodeId = capabilityInfo.nodes.firstOrNull { it.isNearby }?.id ?: capabilityInfo.nodes.firstOrNull()?.id!!
+                    Wearable.getMessageClient(context)
+                            .sendMessage(nodeId, References.REQUEST_LAUNCH_APP_PATH, key.toByteArray(Charsets.UTF_8))
+                }
+    }
 }

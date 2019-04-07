@@ -80,6 +80,10 @@
                     android:host="*"
                     android:pathPrefix="/request_battery_update"
                     android:scheme="wear" />
+                <data
+                    android:host="*"
+                    android:pathPrefix="/launch_app"
+                    android:scheme="wear" />
             </intent-filter>
         </service>
 

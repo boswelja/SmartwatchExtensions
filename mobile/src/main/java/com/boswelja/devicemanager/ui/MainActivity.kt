@@ -41,12 +41,10 @@ class MainActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_main)
 
-
         devicePolicyManager = getSystemService(Context.DEVICE_POLICY_SERVICE) as DevicePolicyManager
         deviceAdminReceiver = DeviceAdminReceiver().getWho(this)
 
-        settingsFragment = SettingsFragment()
-        supportFragmentManager.beginTransaction().replace(R.id.fragment_holder, settingsFragment).commit()
+        showSettingsFragment()
 
         val battSyncEnabled = sharedPrefs.getBoolean(PreferenceKey.BATTERY_SYNC_ENABLED_KEY, false)
         if (battSyncEnabled) {
@@ -60,6 +58,18 @@ class MainActivity : AppCompatActivity() {
         if (sharedPrefs.getBoolean(PreferenceKey.DND_SYNC_PHONE_TO_WATCH_KEY, false)) {
             val intent = Intent(this, DnDLocalChangeListener::class.java)
             Compat.startForegroundService(this, intent)
+        }
+    }
+
+    private fun showSettingsFragment() {
+        settingsFragment = SettingsFragment()
+        supportFragmentManager.beginTransaction().replace(R.id.fragment_holder, settingsFragment).commit()
+
+        if (intent != null) {
+            val intentKey = intent.getStringExtra(EXTRA_PREFERENCE_KEY)
+            if (!intentKey.isNullOrEmpty()) {
+                settingsFragment.scrollToPreference(intentKey)
+            }
         }
     }
 
@@ -78,5 +88,9 @@ class MainActivity : AppCompatActivity() {
 
     fun createSnackbar(message: String) {
         Snackbar.make(findViewById(R.id.fragment_holder), message, Snackbar.LENGTH_LONG).show()
+    }
+
+    companion object {
+        const val EXTRA_PREFERENCE_KEY = "extra_preference_key"
     }
 }
