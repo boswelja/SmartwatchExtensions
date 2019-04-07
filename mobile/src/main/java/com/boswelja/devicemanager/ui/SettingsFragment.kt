@@ -146,7 +146,7 @@ class SettingsFragment :
                     sharedPrefs.edit()
                             .putBoolean(preference.key, value)
                             .apply()
-                    preferenceSyncLayer.updateData()
+                    preferenceSyncLayer.pushNewData()
                 }
                 false
             }
@@ -159,7 +159,7 @@ class SettingsFragment :
                 } else {
                     Utils.stopBatterySyncJob(context!!)
                 }
-                preferenceSyncLayer.updateData()
+                preferenceSyncLayer.pushNewData()
                 WatchBatteryWidget.updateWidget(context!!)
                 false
             }
@@ -170,13 +170,13 @@ class SettingsFragment :
             PreferenceKey.BATTERY_PHONE_FULL_CHARGE_NOTI_KEY -> {
                 val value = newValue == true
                 preference.sharedPreferences.edit().putBoolean(preference.key, value).apply()
-                preferenceSyncLayer.updateData()
+                preferenceSyncLayer.pushNewData()
                 false
             }
             PreferenceKey.BATTERY_WATCH_FULL_CHARGE_NOTI_KEY -> {
                 val value = newValue == true
                 preference.sharedPreferences.edit().putBoolean(preference.key, value).apply()
-                preferenceSyncLayer.updateData()
+                preferenceSyncLayer.pushNewData()
                 false
             }
             PreferenceKey.DND_SYNC_PHONE_TO_WATCH_KEY -> {
@@ -187,7 +187,7 @@ class SettingsFragment :
                     dndDialog.setResponseListener(object : DnDSyncDialogFragment.ResponseListener {
                         override fun onResponse(success: Boolean) {
                             preference.sharedPreferences.edit().putBoolean(preference.key, success).apply()
-                            preferenceSyncLayer.updateData()
+                            preferenceSyncLayer.pushNewData()
                             if (success) {
                                 Compat.startForegroundService(context!!, Intent(context!!, DnDLocalChangeListener::class.java))
                             }
@@ -195,7 +195,7 @@ class SettingsFragment :
                     })
                 } else {
                     preference.sharedPreferences.edit().putBoolean(preference.key, value).apply()
-                    preferenceSyncLayer.updateData()
+                    preferenceSyncLayer.pushNewData()
                     context?.stopService(Intent(context!!, DnDLocalChangeListener::class.java))
                 }
                 false
@@ -205,13 +205,13 @@ class SettingsFragment :
                 preference.sharedPreferences.edit().putBoolean(preference.key, value).apply()
                 if (value) {
                     if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M || notificationManager.isNotificationPolicyAccessGranted) {
-                        preferenceSyncLayer.updateData()
+                        preferenceSyncLayer.pushNewData()
                     } else {
                         Toast.makeText(context, getString(R.string.request_noti_policy_access_message), Toast.LENGTH_SHORT).show()
                         startActivityForResult(Intent(Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS), 12345)
                     }
                 } else {
-                    preferenceSyncLayer.updateData()
+                    preferenceSyncLayer.pushNewData()
                 }
                 false
             }
@@ -220,13 +220,13 @@ class SettingsFragment :
                 preference.sharedPreferences.edit().putBoolean(preference.key, value).apply()
                 if (value) {
                     if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M || notificationManager.isNotificationPolicyAccessGranted) {
-                        preferenceSyncLayer.updateData()
+                        preferenceSyncLayer.pushNewData()
                     } else {
                         Toast.makeText(context, getString(R.string.request_noti_policy_access_message), Toast.LENGTH_SHORT).show()
                         startActivityForResult(Intent(Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS), 54321)
                     }
                 } else {
-                    preferenceSyncLayer.updateData()
+                    preferenceSyncLayer.pushNewData()
                 }
                 false
             }
@@ -327,7 +327,7 @@ class SettingsFragment :
         when (requestCode) {
             12345 or 54321-> {
                 if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M || notificationManager.isNotificationPolicyAccessGranted) {
-                    preferenceSyncLayer.updateData()
+                    preferenceSyncLayer.pushNewData()
                 }
             }
         }
@@ -339,7 +339,7 @@ class SettingsFragment :
             val isAdmin = mainActivity.isDeviceAdmin()
             sharedPrefs.edit().putBoolean(PreferenceKey.LOCK_PHONE_ENABLED, isAdmin).apply()
             isGrantingAdminPerms = false
-            preferenceSyncLayer.updateData()
+            preferenceSyncLayer.pushNewData()
         }
         updateNotiSettingSummary()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -352,7 +352,7 @@ class SettingsFragment :
                 dndSyncWatchToPhonePref.isChecked = false
                 sharedPrefs.edit().putBoolean(PreferenceKey.DND_SYNC_WITH_THEATER_MODE_KEY, false).apply()
                 dndSyncWithTheaterModePref.isChecked = false
-                preferenceSyncLayer.updateData()
+                preferenceSyncLayer.pushNewData()
             }
         }
     }

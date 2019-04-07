@@ -19,7 +19,7 @@ class PreferenceSyncLayer(context: Context) {
     private val localPrefs = PreferenceManager.getDefaultSharedPreferences(context)
     private val dataClient = Wearable.getDataClient(context)
 
-    fun updateData() {
+    fun pushNewData() {
         // Get updated prefs
         val batterySyncEnabled = localPrefs.getBoolean(PreferenceKey.BATTERY_SYNC_ENABLED_KEY, false)
         val phoneBatteryChargedNoti = localPrefs.getBoolean(PreferenceKey.BATTERY_PHONE_FULL_CHARGE_NOTI_KEY, false)

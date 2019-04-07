@@ -78,7 +78,7 @@ class SettingsFragment :
             PreferenceKey.BATTERY_WATCH_FULL_CHARGE_NOTI_KEY -> {
                 val value = newValue == true
                 prefs.edit().putBoolean(key, value).apply()
-                preferenceSyncLayer.updateData()
+                preferenceSyncLayer.pushNewData()
                 false
             }
             PreferenceKey.DND_SYNC_PHONE_TO_WATCH_KEY -> {
@@ -87,13 +87,13 @@ class SettingsFragment :
                     val canEnableSync = Utils.checkDnDAccess(context!!)
                     if (canEnableSync) {
                         prefs.edit().putBoolean(key, value).apply()
-                        preferenceSyncLayer.updateData()
+                        preferenceSyncLayer.pushNewData()
                     } else {
                         notifyAdditionalSetupRequired(key)
                     }
                 } else {
                     prefs.edit().putBoolean(key, value).apply()
-                    preferenceSyncLayer.updateData()
+                    preferenceSyncLayer.pushNewData()
                 }
                 false
             }
@@ -120,7 +120,7 @@ class SettingsFragment :
                             }
                 } else {
                     prefs.edit().putBoolean(key, value).apply()
-                    preferenceSyncLayer.updateData()
+                    preferenceSyncLayer.pushNewData()
                 }
                 false
             }
@@ -204,7 +204,7 @@ class SettingsFragment :
         messageClient.removeListener(listener)
         if (hasAccess) {
             prefs.edit().putBoolean(changingKey, hasAccess).apply()
-            preferenceSyncLayer.updateData()
+            preferenceSyncLayer.pushNewData()
         } else {
             notifyAdditionalSetupRequired(changingKey)
         }
