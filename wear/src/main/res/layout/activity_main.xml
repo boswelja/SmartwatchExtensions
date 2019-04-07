@@ -12,8 +12,7 @@
     <FrameLayout
         android:id="@+id/fragment_holder"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:clipToPadding="false"/>
+        android:layout_height="match_parent"/>
 
     <androidx.wear.widget.drawer.WearableNavigationDrawerView
         android:id="@+id/navigation_drawer"

@@ -33,7 +33,6 @@
         android:paddingEnd="8dp"
         android:textSize="20sp"
         android:textColor="?android:textColorPrimary"
-        android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/icon"

@@ -161,23 +161,6 @@ class SettingsFragment :
         prefs.registerOnSharedPreferenceChangeListener(this)
     }
 
-    private fun notifyAdditionalSetupRequired(key: String) {
-        Utils.launchMobileApp(context!!, key)
-        val intent = Intent(context, ConfirmationActivity::class.java).apply {
-            putExtra(ConfirmationActivity.EXTRA_ANIMATION_TYPE, ConfirmationActivity.OPEN_ON_PHONE_ANIMATION)
-            putExtra(ConfirmationActivity.EXTRA_MESSAGE, getString(R.string.additional_setup_required))
-        }
-        startActivity(intent)
-    }
-
-    private fun notifyError() {
-        val intent = Intent(context, ConfirmationActivity::class.java).apply {
-            putExtra(ConfirmationActivity.EXTRA_ANIMATION_TYPE, ConfirmationActivity.FAILURE_ANIMATION)
-            putExtra(ConfirmationActivity.EXTRA_MESSAGE, getString(R.string.error))
-        }
-        startActivity(intent)
-    }
-
     private fun setupBatterySyncPrefs() {
         batterySyncEnabledPref = findPreference(PreferenceKey.BATTERY_SYNC_ENABLED_KEY)!!
         batterySyncEnabledPref.onPreferenceChangeListener = this
@@ -198,6 +181,23 @@ class SettingsFragment :
 
         dndSyncWithTheaterPref = findPreference(PreferenceKey.DND_SYNC_WITH_THEATER_MODE_KEY)!!
         dndSyncWithTheaterPref.onPreferenceChangeListener = this
+    }
+
+    private fun notifyAdditionalSetupRequired(key: String) {
+        Utils.launchMobileApp(context!!, key)
+        val intent = Intent(context, ConfirmationActivity::class.java).apply {
+            putExtra(ConfirmationActivity.EXTRA_ANIMATION_TYPE, ConfirmationActivity.OPEN_ON_PHONE_ANIMATION)
+            putExtra(ConfirmationActivity.EXTRA_MESSAGE, getString(R.string.additional_setup_required))
+        }
+        startActivity(intent)
+    }
+
+    private fun notifyError() {
+        val intent = Intent(context, ConfirmationActivity::class.java).apply {
+            putExtra(ConfirmationActivity.EXTRA_ANIMATION_TYPE, ConfirmationActivity.FAILURE_ANIMATION)
+            putExtra(ConfirmationActivity.EXTRA_MESSAGE, getString(R.string.error))
+        }
+        startActivity(intent)
     }
 
     private fun onDnDAccessResponse(hasAccess: Boolean) {
