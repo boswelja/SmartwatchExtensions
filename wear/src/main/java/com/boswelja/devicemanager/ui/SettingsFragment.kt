@@ -16,7 +16,11 @@ import androidx.wear.widget.WearableRecyclerView
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.Utils
 import com.boswelja.devicemanager.common.PreferenceKey
+import com.boswelja.devicemanager.common.References
 import com.boswelja.devicemanager.common.prefsynclayer.PreferenceSyncLayer
+import com.google.android.gms.wearable.CapabilityClient
+import com.google.android.gms.wearable.MessageClient
+import com.google.android.gms.wearable.Wearable
 
 class SettingsFragment :
         PreferenceFragmentCompat(),
@@ -25,6 +29,7 @@ class SettingsFragment :
 
     private lateinit var prefs: SharedPreferences
     private lateinit var preferenceSyncLayer: PreferenceSyncLayer
+    private lateinit var messageClient: MessageClient
 
     private lateinit var batterySyncEnabledPref: SwitchPreference
     private lateinit var batteryPhoneChargedNotiPref: CheckBoxPreference
@@ -32,6 +37,15 @@ class SettingsFragment :
     private lateinit var dndSyncPhoneToWatchPref: SwitchPreference
     private lateinit var dndSyncWatchToPhonePref: SwitchPreference
     private lateinit var dndSyncWithTheaterPref: SwitchPreference
+
+    private var changingKey = ""
+
+    private val listener = MessageClient.OnMessageReceivedListener {
+        if (it.path == References.REQUEST_PHONE_DND_ACCESS_STATUS_PATH) {
+            val hasDnDAccess = it.data[0].toInt() == 1
+            onDnDAccessResponse(hasDnDAccess)
+        }
+    }
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
         when (key) {
@@ -75,12 +89,7 @@ class SettingsFragment :
                         prefs.edit().putBoolean(key, value).apply()
                         preferenceSyncLayer.updateData()
                     } else {
-                        Utils.launchMobileApp(context!!, key)
-                        val intent = Intent(context, ConfirmationActivity::class.java).apply {
-                            putExtra(ConfirmationActivity.EXTRA_ANIMATION_TYPE, ConfirmationActivity.OPEN_ON_PHONE_ANIMATION)
-                            putExtra(ConfirmationActivity.EXTRA_MESSAGE, getString(R.string.additional_setup_required))
-                        }
-                        startActivity(intent)
+                        notifyAdditionalSetupRequired(key)
                     }
                 } else {
                     prefs.edit().putBoolean(key, value).apply()
@@ -88,10 +97,31 @@ class SettingsFragment :
                 }
                 false
             }
-            PreferenceKey.DND_SYNC_WATCH_TO_PHONE_KEY -> {
-                false
-            }
+            PreferenceKey.DND_SYNC_WATCH_TO_PHONE_KEY,
             PreferenceKey.DND_SYNC_WITH_THEATER_MODE_KEY -> {
+                val value = newValue == true
+                if (value) {
+                    changingKey = key
+                    messageClient.addListener(listener)
+                    Wearable.getCapabilityClient(context!!)
+                            .getCapability(References.CAPABILITY_APP, CapabilityClient.FILTER_REACHABLE)
+                            .addOnCompleteListener {
+                                if (it.isSuccessful) {
+                                    val nodes = it.result?.nodes
+                                    if (!nodes.isNullOrEmpty()) {
+                                        val node = nodes.first { node -> node.isNearby }
+                                        messageClient.sendMessage(node?.id!!, References.REQUEST_PHONE_DND_ACCESS_STATUS_PATH, null)
+                                    } else {
+                                        notifyError()
+                                    }
+                                } else {
+                                    notifyError()
+                                }
+                            }
+                } else {
+                    prefs.edit().putBoolean(key, value).apply()
+                    preferenceSyncLayer.updateData()
+                }
                 false
             }
             else -> true
@@ -103,6 +133,7 @@ class SettingsFragment :
 
         preferenceSyncLayer = PreferenceSyncLayer(context!!)
         prefs = preferenceManager.sharedPreferences
+        messageClient = Wearable.getMessageClient(context!!)
     }
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
@@ -130,6 +161,23 @@ class SettingsFragment :
         prefs.registerOnSharedPreferenceChangeListener(this)
     }
 
+    private fun notifyAdditionalSetupRequired(key: String) {
+        Utils.launchMobileApp(context!!, key)
+        val intent = Intent(context, ConfirmationActivity::class.java).apply {
+            putExtra(ConfirmationActivity.EXTRA_ANIMATION_TYPE, ConfirmationActivity.OPEN_ON_PHONE_ANIMATION)
+            putExtra(ConfirmationActivity.EXTRA_MESSAGE, getString(R.string.additional_setup_required))
+        }
+        startActivity(intent)
+    }
+
+    private fun notifyError() {
+        val intent = Intent(context, ConfirmationActivity::class.java).apply {
+            putExtra(ConfirmationActivity.EXTRA_ANIMATION_TYPE, ConfirmationActivity.FAILURE_ANIMATION)
+            putExtra(ConfirmationActivity.EXTRA_MESSAGE, getString(R.string.error))
+        }
+        startActivity(intent)
+    }
+
     private fun setupBatterySyncPrefs() {
         batterySyncEnabledPref = findPreference(PreferenceKey.BATTERY_SYNC_ENABLED_KEY)!!
         batterySyncEnabledPref.onPreferenceChangeListener = this
@@ -150,5 +198,15 @@ class SettingsFragment :
 
         dndSyncWithTheaterPref = findPreference(PreferenceKey.DND_SYNC_WITH_THEATER_MODE_KEY)!!
         dndSyncWithTheaterPref.onPreferenceChangeListener = this
+    }
+
+    private fun onDnDAccessResponse(hasAccess: Boolean) {
+        messageClient.removeListener(listener)
+        if (hasAccess) {
+            prefs.edit().putBoolean(changingKey, hasAccess).apply()
+            preferenceSyncLayer.updateData()
+        } else {
+            notifyAdditionalSetupRequired(changingKey)
+        }
     }
 }

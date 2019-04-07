@@ -9,7 +9,6 @@ import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import androidx.wear.widget.WearableLinearLayoutManager
 import androidx.wear.widget.WearableRecyclerView
-import com.boswelja.devicemanager.MainOption
 import com.boswelja.devicemanager.R
 
 class ControlsFragment : Fragment() {
