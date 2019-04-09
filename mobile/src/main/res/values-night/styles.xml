@@ -1,10 +1,11 @@
 <resources>
 
-    <style name="BaseTheme" parent="Theme.MaterialComponents">
+    <style name="BaseTheme" parent="Theme.MaterialComponents.NoActionBar">
         <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorPrimaryDark">@color/statusBarColor</item>
+        <item name="colorAccent">@color/colorPrimary</item>
         <item name="preferenceTheme">@style/PreferenceThemeOverlay.v14.Material</item>
+        <item name="android:windowBackground">@color/windowBackground</item>
     </style>
 
 </resources>

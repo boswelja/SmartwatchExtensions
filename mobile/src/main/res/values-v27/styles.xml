@@ -2,8 +2,10 @@
 <resources>
 
     <style name="AppTheme" parent="BaseTheme">
-        <item name="android:windowLightNavigationBar">@bool/light_nav_bar</item>
-        <item name="android:navigationBarColor">@color/nav_bar_color</item>
-        <item name="android:navigationBarDividerColor">@color/nav_bar_divider_color</item>
+        <item name="android:windowLightNavigationBar">@bool/lightNavigationBar</item>
+        <item name="android:navigationBarColor">@color/navBarColor</item>
+        <item name="android:navigationBarDividerColor">@color/navBarDividerColor</item>
+        <item name="android:windowLightStatusBar">@bool/lightStatusBar</item>
     </style>
+
 </resources>

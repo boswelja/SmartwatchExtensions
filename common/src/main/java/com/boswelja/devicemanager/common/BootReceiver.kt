@@ -17,9 +17,9 @@ class BootReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context?, intent: Intent?) {
         if (intent?.action == Intent.ACTION_BOOT_COMPLETED) {
             val prefs = PreferenceManager.getDefaultSharedPreferences(context)
-            val isPhone = context?.resources?.getBoolean(R.bool.device_is_phone) == true
-            val isSending = (isPhone && prefs.getBoolean(PreferenceKey.DND_SYNC_PHONE_TO_WATCH_KEY, false) ||
-                    (!isPhone && prefs.getBoolean(PreferenceKey.DND_SYNC_WATCH_TO_PHONE_KEY, false)))
+            val isPhone = context?.resources?.getBoolean(R.bool.deviceIsPhone) == true
+            val isSending = (isPhone && prefs.getBoolean(PreferenceKey.INTERRUPT_FILTER_SYNC_TO_WATCH_KEY, false) ||
+                    (!isPhone && prefs.getBoolean(PreferenceKey.INTERRUPT_FILTER_SYNC_TO_PHONE_KEY, false)))
             if (isSending) {
                 val serviceIntent = Intent(context, DnDLocalChangeListener::class.java)
                 Compat.startForegroundService(context!!, serviceIntent)

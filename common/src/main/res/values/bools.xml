@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <resources>
-    <bool name="device_is_phone">false</bool>
+    <bool name="deviceIsPhone">false</bool>
 </resources>

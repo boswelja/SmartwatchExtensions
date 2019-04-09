@@ -78,7 +78,7 @@ class DnDSyncWithTheaterModeListener : Service() {
 
     private inner class PreferenceChangeListener : SharedPreferences.OnSharedPreferenceChangeListener {
         override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
-            if (key == PreferenceKey.DND_SYNC_WITH_THEATER_MODE_KEY &&
+            if (key == PreferenceKey.INTERRUPT_FILTER_ON_WITH_THEATER_KEY &&
                     !sharedPreferences?.getBoolean(key, false)!!) {
                 stopForeground(true)
                 stopSelf()

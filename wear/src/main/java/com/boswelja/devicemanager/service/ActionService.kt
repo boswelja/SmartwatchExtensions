@@ -59,7 +59,7 @@ class ActionService : Service() {
                 val prefs = PreferenceManager.getDefaultSharedPreferences(this@ActionService)
                 when (action) {
                     References.LOCK_PHONE_PATH -> {
-                        if (prefs.getBoolean(PreferenceKey.LOCK_PHONE_ENABLED, false)) {
+                        if (prefs.getBoolean(PreferenceKey.PHONE_LOCKING_ENABLED_KEY, false)) {
                             sendMessage(node)
                         } else {
                             onFailed(getString(R.string.phone_lock_disabled_message))

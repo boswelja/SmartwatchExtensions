@@ -69,7 +69,7 @@ class SeekbarDialogPrefFragment : PreferenceDialogFragmentCompat() {
     }
 
     private fun updateProgressText() {
-        progressText.text = String.format(context?.getString(R.string.battery_sync_interval_summary)!!, TimeUnit.MILLISECONDS.toMinutes((preference as SeekbarDialogPreference).value.toLong()))
+        progressText.text = String.format(context?.getString(R.string.pref_battery_sync_interval_summary)!!, TimeUnit.MILLISECONDS.toMinutes((preference as SeekbarDialogPreference).value.toLong()))
     }
 
     companion object {

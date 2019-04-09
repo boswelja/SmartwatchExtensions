@@ -7,7 +7,7 @@
 
         <androidx.preference.SwitchPreference
             android:key="lock_phone_enabled"
-            android:icon="@drawable/ic_phonelink_lock"
+            android:icon="@drawable/pref_ic_phone_lock"
             android:title="@string/pref_lock_phone_enabled_title"
             android:summary="@string/pref_lock_phone_enabled_desc" />
 

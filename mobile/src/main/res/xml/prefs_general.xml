@@ -4,6 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <androidx.preference.PreferenceCategory
+        android:key="general_category"
         android:title="@string/pref_category_general">
 
         <com.boswelja.devicemanager.preference.confirmationdialog.ConfirmationDialogPreference
@@ -15,13 +16,19 @@
             app:showOnDisable="false"/>
 
         <androidx.preference.Preference
-            android:key="notification_settings"
+            android:key="show_noti_settings"
             android:title="@string/pref_noti_settings_title" />
 
         <androidx.preference.Preference
             android:key="daynight_switch"
             android:title="@string/pref_daynight_switch_title"
-            android:icon="@drawable/ic_daynight_pref"/>
+            android:icon="@drawable/pref_ic_daynight"/>
+
+        <com.boswelja.devicemanager.preference.confirmationdialog.ConfirmationDialogPreference
+            android:key="battery_optimisation_status"
+            android:title="@string/pref_battery_opt_title"
+            android:dialogMessage="@string/pref_battery_opt_dialog_message"
+            app:allowDisable="false"/>
 
     </androidx.preference.PreferenceCategory>
 

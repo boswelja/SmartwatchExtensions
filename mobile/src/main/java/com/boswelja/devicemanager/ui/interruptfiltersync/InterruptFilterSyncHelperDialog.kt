@@ -5,7 +5,7 @@
  * This file, and any part of the Wearable Extensions app/s cannot be copied and/or distributed
  * without permission from Jack Boswell (boswelja) <boswela@outlook.com>
  */
-package com.boswelja.devicemanager.ui
+package com.boswelja.devicemanager.ui.interruptfiltersync
 
 import android.content.ComponentName
 import android.graphics.Color
@@ -23,11 +23,12 @@ import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.Utils
 import com.boswelja.devicemanager.common.DnDLocalChangeListener
 import com.boswelja.devicemanager.common.References
+import com.boswelja.devicemanager.ui.MainActivity
 import com.google.android.gms.wearable.CapabilityClient
 import com.google.android.gms.wearable.MessageClient
 import com.google.android.gms.wearable.Wearable
 
-class DnDSyncDialogFragment : DialogFragment() {
+class InterruptFilterSyncHelperDialog : DialogFragment() {
 
     private lateinit var messages: View
     private lateinit var loadingSpinner: ProgressBar

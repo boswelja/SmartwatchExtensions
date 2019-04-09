@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorAccent">#d05ce3</color>
+    <color name="statusBarColor">#000000</color>
+    <color name="navBarColor">#000000</color>
+    <color name="navBarDividerColor">#000000</color>
 
-    <color name="nav_bar_color">#000000</color>
-    <color name="nav_bar_divider_color">#000000</color>
-
-    <color name="widgetBackground">#CC333333</color>
+    <color name="widgetBackground">#CC000000</color>
     <color name="widgetForeground">#FFFFFF</color>
 
-    <color name="windowBackground">#333333</color>
+    <color name="windowBackground">#000000</color>
+    <color name="dialogBackground">#212121</color>
 </resources>

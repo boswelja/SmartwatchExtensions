@@ -7,29 +7,33 @@
  */
 package com.boswelja.devicemanager
 
-import android.app.admin.DeviceAdminReceiver
 import android.app.admin.DevicePolicyManager
 import android.app.job.JobInfo
 import android.app.job.JobScheduler
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.content.res.Configuration
-import android.util.Log
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.preference.PreferenceManager
+import com.boswelja.devicemanager.DeviceAdminChangeReceiver.Companion.DEVICE_ADMIN_ENABLED_KEY
 import com.boswelja.devicemanager.common.Compat
 import com.boswelja.devicemanager.common.PreferenceKey
-import com.boswelja.devicemanager.ui.MainActivity
+import com.boswelja.devicemanager.ui.LauncherActivity
+import com.boswelja.devicemanager.ui.SettingsFragment.Companion.SWITCH_DAYNIGHT_MODE_KEY
 
 object Utils {
 
     fun requestDeviceAdminPerms(context: Context) {
         val intent = Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN)
-        intent.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN, DeviceAdminReceiver().getWho(context))
+        intent.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN, DeviceAdminChangeReceiver().getWho(context))
         intent.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION, context.getString(R.string.device_admin_desc))
         context.startActivity(intent)
     }
+
+    fun isDeviceAdminEnabled(context: Context): Boolean = PreferenceManager.getDefaultSharedPreferences(context).getBoolean(DEVICE_ADMIN_ENABLED_KEY, false)
 
     fun shareText(context: Context, text: String) {
         val intent = Intent().apply {
@@ -40,16 +44,15 @@ object Utils {
         context.startActivity(intent)
     }
 
-    fun switchDayNightMode(activity: MainActivity) {
+    fun switchDayNightMode(activity: AppCompatActivity) {
         val prefs = PreferenceManager.getDefaultSharedPreferences(activity)
         val currentNightMode = (activity.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK)
         when (currentNightMode) {
             Configuration.UI_MODE_NIGHT_NO -> {
-                Log.d("switchDayNightMode", "Night mode off, switching on")
-                prefs.edit().putInt(PreferenceKey.DAYNIGHT_SWITCH_KEY, AppCompatDelegate.MODE_NIGHT_YES).apply()
+                prefs.edit().putInt(SWITCH_DAYNIGHT_MODE_KEY, AppCompatDelegate.MODE_NIGHT_YES).apply()
             }
             else -> {
-                prefs.edit().putInt(PreferenceKey.DAYNIGHT_SWITCH_KEY, AppCompatDelegate.MODE_NIGHT_NO).apply()
+                prefs.edit().putInt(SWITCH_DAYNIGHT_MODE_KEY, AppCompatDelegate.MODE_NIGHT_NO).apply()
             }
         }
         activity.recreate()
@@ -72,6 +75,16 @@ object Utils {
         val jobScheduler = context.getSystemService(Context.JOB_SCHEDULER_SERVICE) as JobScheduler
         if (Compat.getPendingJob(jobScheduler, BatteryUpdateJob.BATTERY_PERCENT_JOB_ID) != null) {
             jobScheduler.cancel(BatteryUpdateJob.BATTERY_PERCENT_JOB_ID)
+        }
+    }
+
+    fun setAppLauncherIconVisibility(context: Context, visible: Boolean) {
+        val componentName = ComponentName(context, LauncherActivity::class.java)
+        val packageManager = context.packageManager
+        if (visible) {
+            packageManager.setComponentEnabledSetting(componentName, PackageManager.COMPONENT_ENABLED_STATE_ENABLED, PackageManager.DONT_KILL_APP)
+        } else {
+            packageManager.setComponentEnabledSetting(componentName, PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP)
         }
     }
 }

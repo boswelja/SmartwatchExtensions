@@ -38,11 +38,11 @@ class DnDLocalChangeListener : Service() {
     override fun onCreate() {
         super.onCreate()
 
-        val isPhone = resources.getBoolean(R.bool.device_is_phone)
+        val isPhone = resources.getBoolean(R.bool.deviceIsPhone)
         sendPrefKey = if (isPhone) {
-            PreferenceKey.DND_SYNC_PHONE_TO_WATCH_KEY
+            PreferenceKey.INTERRUPT_FILTER_SYNC_TO_WATCH_KEY
         } else {
-            PreferenceKey.DND_SYNC_WATCH_TO_PHONE_KEY
+            PreferenceKey.INTERRUPT_FILTER_SYNC_TO_PHONE_KEY
         }
 
         prefs = PreferenceManager.getDefaultSharedPreferences(this)

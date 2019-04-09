@@ -24,10 +24,16 @@ class PreferenceSyncLayer(context: Context) {
         val batterySyncEnabled = localPrefs.getBoolean(PreferenceKey.BATTERY_SYNC_ENABLED_KEY, false)
         val phoneBatteryChargedNoti = localPrefs.getBoolean(PreferenceKey.BATTERY_PHONE_FULL_CHARGE_NOTI_KEY, false)
         val watchBatteryChargedNoti = localPrefs.getBoolean(PreferenceKey.BATTERY_WATCH_FULL_CHARGE_NOTI_KEY, false)
-        val dndSyncPhoneToWatch = localPrefs.getBoolean(PreferenceKey.DND_SYNC_PHONE_TO_WATCH_KEY, false)
-        val dndSyncWatchToPhone = localPrefs.getBoolean(PreferenceKey.DND_SYNC_WATCH_TO_PHONE_KEY, false)
-        val dndSyncWithTheater = localPrefs.getBoolean(PreferenceKey.DND_SYNC_WITH_THEATER_MODE_KEY, false)
-        val lockPhoneEnabled = localPrefs.getBoolean(PreferenceKey.LOCK_PHONE_ENABLED, false)
+        val dndSyncPhoneToWatch = localPrefs.getBoolean(PreferenceKey.INTERRUPT_FILTER_SYNC_TO_WATCH_KEY, false)
+        val dndSyncWatchToPhone = localPrefs.getBoolean(PreferenceKey.INTERRUPT_FILTER_SYNC_TO_PHONE_KEY, false)
+        val dndSyncWithTheater = localPrefs.getBoolean(PreferenceKey.INTERRUPT_FILTER_ON_WITH_THEATER_KEY, false)
+        val lockPhoneEnabled = localPrefs.getBoolean(PreferenceKey.PHONE_LOCKING_ENABLED_KEY, false)
+
+        if (!batterySyncEnabled) {
+            localPrefs.edit()
+                    .remove(PreferenceKey.BATTERY_PERCENT_KEY)
+                    .remove(PreferenceKey.BATTERY_SYNC_LAST_WHEN_KEY).apply()
+        }
 
         // Create updated prefs object
         val syncedPrefUpdateReq = PutDataMapRequest.create(PREFERENCE_CHANGE_PATH)

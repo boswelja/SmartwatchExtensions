@@ -3,44 +3,31 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <androidx.preference.PreferenceCategory
-        android:title="@string/pref_category_battery_sync">
+    <androidx.preference.SwitchPreference
+        android:key="battery_sync_enabled"
+        android:title="@string/pref_battery_sync_enable_title"
+        android:defaultValue="false"/>
 
-        <androidx.preference.SwitchPreference
-            android:key="battery_sync_enabled"
-            android:title="@string/pref_battery_sync_enabled_title"
-            android:summary="@string/pref_battery_sync_enabled_summary"
-            android:icon="@drawable/battery_full"
-            android:defaultValue="false"/>
+    <androidx.preference.SeekBarPreference
+        android:key="battery_sync_interval"
+        android:title="@string/pref_battery_sync_interval_title"
+        android:summary="@string/pref_battery_sync_interval_summary"
+        android:dependency="battery_sync_enabled"
+        android:defaultValue="15"
+        android:max="60"
+        app:showSeekBarValue="true"
+        app:min="15" />
 
-        <androidx.preference.Preference
-            android:key="battery_sync_now"
-            android:title="@string/pref_battery_sync_resync_title"
-            android:dependency="battery_sync_enabled" />
+    <androidx.preference.CheckBoxPreference
+        android:key="battery_phone_full_charge"
+        android:title="@string/pref_phone_battery_charged_noti_title"
+        android:summary="@string/pref_phone_battery_charged_noti_summary"
+        android:dependency="battery_sync_enabled" />
 
-        <com.boswelja.devicemanager.preference.seekbardialog.SeekbarDialogPreference
-            android:key="battery_sync_interval"
-            android:title="@string/pref_battery_sync_interval_title"
-            android:dependency="battery_sync_enabled"
-            android:defaultValue="900000"
-            android:positiveButtonText="Save"
-            app:minValue="900000"
-            app:maxValue="3600000"
-            app:stepSize="60000" />
-
-
-        <androidx.preference.CheckBoxPreference
-            android:key="battery_phone_full_charge"
-            android:title="@string/pref_phone_battery_charged_noti_title"
-            android:summary="@string/pref_phone_battery_charged_noti_summary"
-            android:dependency="battery_sync_enabled" />
-
-        <androidx.preference.CheckBoxPreference
-            android:key="battery_watch_full_charge"
-            android:title="@string/pref_watch_battery_charged_noti_title"
-            android:summary="@string/pref_watch_battery_charged_noti_summary"
-            android:dependency="battery_sync_enabled" />
-
-    </androidx.preference.PreferenceCategory>
+    <androidx.preference.CheckBoxPreference
+        android:key="battery_watch_full_charge"
+        android:title="@string/pref_watch_battery_charged_noti_title"
+        android:summary="@string/pref_watch_battery_charged_noti_summary"
+        android:dependency="battery_sync_enabled" />
 
 </androidx.preference.PreferenceScreen>

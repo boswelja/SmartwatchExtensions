@@ -20,7 +20,9 @@
     <string name="pref_lock_phone_enabled_title">Remote phone locking</string>
     <string name="pref_lock_phone_enabled_desc">Allow locking your phone from your wearable</string>
 
-    <string name="battery_sync_interval_summary">%s minutes</string>
+    <string name="pref_battery_sync_enable_title">Enable Battery Sync</string>
+    <string name="pref_battery_sync_interval_title">Sync Interval</string>
+    <string name="pref_battery_sync_interval_summary">Battery Sync interval in minutes</string>
     <string name="pref_battery_sync_resync_title">Force Sync Battery Status</string>
     <string name="pref_battery_sync_resync_complete">Successfully synced battery info</string>
 
@@ -50,8 +52,18 @@
 
     <string name="companion_device_type">Watch</string>
 
-    <string name="watch_battery_status">%s%%</string>
+    <string name="percent_string">%s%%</string>
     <string name="battery_sync_disabled">Battery Sync disabled</string>
 
     <string name="no_watch_found">No connected watches found running Wearable Extensions</string>
+
+    <string name="last_updated_under_minute">Last updated less than a minute ago</string>
+    <string name="last_updated_minute">Last updated %s minute ago</string>
+    <string name="last_updated_minutes">Last updated %s minutes ago</string>
+
+    <string name="menu_search_title">Search</string>
+    <string name="menu_help_title">Help</string>
+
+    <string name="dnd_sync_title">Do not Disturb Sync</string>
+    <string name="dnd_sync_summary">Sync Do not Disturb state</string>
 </resources>

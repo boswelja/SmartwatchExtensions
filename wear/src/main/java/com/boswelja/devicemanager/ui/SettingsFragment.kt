@@ -58,13 +58,13 @@ class SettingsFragment :
             PreferenceKey.BATTERY_WATCH_FULL_CHARGE_NOTI_KEY -> {
                 batteryWatchChargedNotiPref.isChecked = sharedPreferences?.getBoolean(key, false) == true
             }
-            PreferenceKey.DND_SYNC_PHONE_TO_WATCH_KEY -> {
+            PreferenceKey.INTERRUPT_FILTER_SYNC_TO_WATCH_KEY -> {
                 dndSyncPhoneToWatchPref.isChecked = sharedPreferences?.getBoolean(key, false) == true
             }
-            PreferenceKey.DND_SYNC_WATCH_TO_PHONE_KEY -> {
+            PreferenceKey.INTERRUPT_FILTER_SYNC_TO_PHONE_KEY -> {
                 dndSyncWatchToPhonePref.isChecked = sharedPreferences?.getBoolean(key, false) == true
             }
-            PreferenceKey.DND_SYNC_WITH_THEATER_MODE_KEY -> {
+            PreferenceKey.INTERRUPT_FILTER_ON_WITH_THEATER_KEY -> {
                 dndSyncWithTheaterPref.isChecked = sharedPreferences?.getBoolean(key, false) == true
             }
         }
@@ -81,7 +81,7 @@ class SettingsFragment :
                 preferenceSyncLayer.pushNewData()
                 false
             }
-            PreferenceKey.DND_SYNC_PHONE_TO_WATCH_KEY -> {
+            PreferenceKey.INTERRUPT_FILTER_SYNC_TO_WATCH_KEY -> {
                 val value = newValue == true
                 if (value) {
                     val canEnableSync = Utils.checkDnDAccess(context!!)
@@ -97,8 +97,8 @@ class SettingsFragment :
                 }
                 false
             }
-            PreferenceKey.DND_SYNC_WATCH_TO_PHONE_KEY,
-            PreferenceKey.DND_SYNC_WITH_THEATER_MODE_KEY -> {
+            PreferenceKey.INTERRUPT_FILTER_SYNC_TO_PHONE_KEY,
+            PreferenceKey.INTERRUPT_FILTER_ON_WITH_THEATER_KEY -> {
                 val value = newValue == true
                 if (value) {
                     changingKey = key
@@ -173,13 +173,13 @@ class SettingsFragment :
     }
 
     private fun setupDnDSyncPrefs() {
-        dndSyncPhoneToWatchPref = findPreference(PreferenceKey.DND_SYNC_PHONE_TO_WATCH_KEY)!!
+        dndSyncPhoneToWatchPref = findPreference(PreferenceKey.INTERRUPT_FILTER_SYNC_TO_WATCH_KEY)!!
         dndSyncPhoneToWatchPref.onPreferenceChangeListener = this
 
-        dndSyncWatchToPhonePref = findPreference(PreferenceKey.DND_SYNC_WATCH_TO_PHONE_KEY)!!
+        dndSyncWatchToPhonePref = findPreference(PreferenceKey.INTERRUPT_FILTER_SYNC_TO_PHONE_KEY)!!
         dndSyncWatchToPhonePref.onPreferenceChangeListener = this
 
-        dndSyncWithTheaterPref = findPreference(PreferenceKey.DND_SYNC_WITH_THEATER_MODE_KEY)!!
+        dndSyncWithTheaterPref = findPreference(PreferenceKey.INTERRUPT_FILTER_ON_WITH_THEATER_KEY)!!
         dndSyncWithTheaterPref.onPreferenceChangeListener = this
     }
 

@@ -79,11 +79,11 @@ object Compat {
                 } catch (e: SecurityException) {
                     e.printStackTrace()
                     val prefs = PreferenceManager.getDefaultSharedPreferences(context)
-                    val isPhone = context.resources.getBoolean(R.bool.device_is_phone)
+                    val isPhone = context.resources.getBoolean(R.bool.deviceIsPhone)
                     val receivingKey = if (isPhone) {
-                        PreferenceKey.DND_SYNC_WATCH_TO_PHONE_KEY
+                        PreferenceKey.INTERRUPT_FILTER_SYNC_TO_PHONE_KEY
                     } else {
-                        PreferenceKey.DND_SYNC_PHONE_TO_WATCH_KEY
+                        PreferenceKey.INTERRUPT_FILTER_SYNC_TO_WATCH_KEY
                     }
                     prefs.edit().putBoolean(receivingKey, false).apply()
                 }

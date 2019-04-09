@@ -6,14 +6,14 @@
         android:title="About">
 
         <androidx.preference.Preference
-            android:key="pref_donate"
+            android:key="show_donate_dialog"
             android:title="@string/pref_about_donate_title"
-            android:icon="@drawable/ic_favorite" />
+            android:icon="@drawable/pref_ic_donate" />
 
         <androidx.preference.Preference
             android:title="@string/pref_about_version_title"
             android:summary="@string/app_version_name"
-            android:icon="@drawable/ic_info" />
+            android:icon="@drawable/pref_ic_about" />
 
     </androidx.preference.PreferenceCategory>
 

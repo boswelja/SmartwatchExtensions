@@ -42,13 +42,13 @@ abstract class BasePreferenceChangeReceiver : WearableListenerService() {
                     .putBoolean(PreferenceKey.BATTERY_SYNC_ENABLED_KEY, batterySyncEnabled)
                     .putBoolean(PreferenceKey.BATTERY_PHONE_FULL_CHARGE_NOTI_KEY, batteryPhoneChargedNoti)
                     .putBoolean(PreferenceKey.BATTERY_WATCH_FULL_CHARGE_NOTI_KEY, batteryWatchChargedNoti)
-                    .putBoolean(PreferenceKey.DND_SYNC_PHONE_TO_WATCH_KEY, dndSyncPhoneToWatch)
-                    .putBoolean(PreferenceKey.DND_SYNC_WATCH_TO_PHONE_KEY, dndSyncWatchToPhone)
-                    .putBoolean(PreferenceKey.DND_SYNC_WITH_THEATER_MODE_KEY, dndSyncWithTheater)
-                    .putBoolean(PreferenceKey.LOCK_PHONE_ENABLED, lockPhoneEnabled)
+                    .putBoolean(PreferenceKey.INTERRUPT_FILTER_SYNC_TO_WATCH_KEY, dndSyncPhoneToWatch)
+                    .putBoolean(PreferenceKey.INTERRUPT_FILTER_SYNC_TO_PHONE_KEY, dndSyncWatchToPhone)
+                    .putBoolean(PreferenceKey.INTERRUPT_FILTER_ON_WITH_THEATER_KEY, dndSyncWithTheater)
+                    .putBoolean(PreferenceKey.PHONE_LOCKING_ENABLED_KEY, lockPhoneEnabled)
                     .apply()
 
-            val isPhone = resources.getBoolean(R.bool.device_is_phone)
+            val isPhone = resources.getBoolean(R.bool.deviceIsPhone)
             if ((isPhone && dndSyncPhoneToWatch) || (!isPhone && dndSyncWatchToPhone)) {
                 startLocalDnDListenerService()
             }

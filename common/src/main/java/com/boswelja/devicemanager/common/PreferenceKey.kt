@@ -9,16 +9,10 @@ package com.boswelja.devicemanager.common
 
 object PreferenceKey {
 
-    const val HIDE_APP_ICON_KEY = "hide_app_icon"
-    const val NOTIFICATION_SETTINGS_KEY = "notification_settings"
-    const val BATTERY_OPT_KEY = "battery_optimisation"
-    const val DAYNIGHT_SWITCH_KEY = "daynight_switch"
-
-    const val LOCK_PHONE_ENABLED = "lock_phone_enabled"
+    const val PHONE_LOCKING_ENABLED_KEY = "lock_phone_enabled"
 
     const val BATTERY_SYNC_LAST_WHEN_KEY = "battery_sync_last_when"
     const val BATTERY_SYNC_ENABLED_KEY = "battery_sync_enabled"
-    const val BATTERY_SYNC_NOW_KEY = "battery_sync_now"
     const val BATTERY_SYNC_INTERVAL_KEY = "battery_sync_interval"
     const val BATTERY_PHONE_FULL_CHARGE_NOTI_KEY = "battery_phone_full_charge"
     const val BATTERY_WATCH_FULL_CHARGE_NOTI_KEY = "battery_watch_full_charge"
@@ -26,9 +20,7 @@ object PreferenceKey {
     const val BATTERY_CHARGED_NOTI_SENT = "battery_charged_notified"
     const val BATTERY_PERCENT_KEY = "battery_percent"
 
-    const val DND_SYNC_PHONE_TO_WATCH_KEY = "dnd_sync_phone_to_watch"
-    const val DND_SYNC_WATCH_TO_PHONE_KEY = "dnd_sync_watch_to_phone"
-    const val DND_SYNC_WITH_THEATER_MODE_KEY = "dnd_sync_with_theater"
-
-    const val DONATE_KEY = "pref_donate"
+    const val INTERRUPT_FILTER_SYNC_TO_WATCH_KEY = "dnd_sync_phone_to_watch"
+    const val INTERRUPT_FILTER_SYNC_TO_PHONE_KEY = "dnd_sync_watch_to_phone"
+    const val INTERRUPT_FILTER_ON_WITH_THEATER_KEY = "dnd_sync_with_theater"
 }
