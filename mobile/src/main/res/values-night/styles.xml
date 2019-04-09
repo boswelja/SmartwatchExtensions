@@ -1,11 +1,3 @@
 <resources>
-
-    <style name="BaseTheme" parent="Theme.MaterialComponents.NoActionBar">
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/statusBarColor</item>
-        <item name="colorAccent">@color/colorPrimary</item>
-        <item name="preferenceTheme">@style/PreferenceThemeOverlay.v14.Material</item>
-        <item name="android:windowBackground">@color/windowBackground</item>
-    </style>
-
+    <style name="BaseTheme.DayNight" parent="Theme.MaterialComponents.NoActionBar" />
 </resources>

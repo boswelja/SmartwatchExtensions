@@ -6,7 +6,7 @@
     android:layout_height="match_parent">
 
     <include
-        layout="@layout/toolbar"
+        layout="@layout/common_toolbar"
         app:layout_constraintTop_toTopOf="parent"/>
 
     <FrameLayout

@@ -64,7 +64,7 @@ class InterruptFilterSyncHelperDialog : DialogFragment() {
         confirmBtn = view.findViewById(R.id.confirm_button)
         shareBtn = view.findViewById(R.id.share_btn)
 
-        val adbCommand = getString(R.string.dnd_sync_adb_command).format(ComponentName(context!!, DnDLocalChangeListener::class.java).flattenToString())
+        val adbCommand = getString(R.string.interrupt_filter_access_adb_command).format(ComponentName(context!!, DnDLocalChangeListener::class.java).flattenToString())
         messageClient = Wearable.getMessageClient(context!!)
 
         cancelBtn.setOnClickListener {
@@ -121,13 +121,13 @@ class InterruptFilterSyncHelperDialog : DialogFragment() {
         if (hasDnDAccess) {
             dismiss()
             if (!isInitialCheck) {
-                (activity as MainActivity).createSnackbar(getString(R.string.dnd_sync_watch_permission_granted))
+                (activity as MainActivity).createSnackbar(getString(R.string.interrupt_filter_sync_to_watch_perm_granted_message))
                 isInitialCheck = false
             }
         } else {
             setLoading(false)
             if (!isInitialCheck) {
-                Toast.makeText(context!!, getString(R.string.dnd_sync_watch_permission_not_granted), Toast.LENGTH_LONG).show()
+                Toast.makeText(context!!, getString(R.string.interrupt_filter_sync_to_watch_perm_denied_message), Toast.LENGTH_LONG).show()
                 isInitialCheck = false
             }
         }

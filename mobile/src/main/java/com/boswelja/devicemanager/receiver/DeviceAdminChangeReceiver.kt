@@ -1,4 +1,4 @@
-package com.boswelja.devicemanager
+package com.boswelja.devicemanager.receiver
 
 import android.app.admin.DeviceAdminReceiver
 import android.content.Context

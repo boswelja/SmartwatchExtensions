@@ -1,6 +1,8 @@
 <resources>
 
-    <style name="BaseTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
+    <style name="BaseTheme.DayNight" parent="Theme.MaterialComponents.Light.NoActionBar" />
+
+    <style name="BaseTheme" parent="BaseTheme.DayNight">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/statusBarColor</item>
         <item name="colorAccent">@color/colorPrimary</item>
@@ -8,6 +10,6 @@
         <item name="android:windowBackground">@color/windowBackground</item>
     </style>
 
-    <style name="AppTheme" parent="BaseTheme"/>
+    <style name="AppTheme" parent="BaseTheme" />
 
 </resources>

@@ -53,7 +53,7 @@ class BatterySyncPreferenceWidgetFragment :
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.battery_sync_settings_widget, container, false)
+        return inflater.inflate(R.layout.settings_widget_battery_sync, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -75,7 +75,7 @@ class BatterySyncPreferenceWidgetFragment :
         val batteryPercent = sharedPreferences.getInt(BATTERY_PERCENT_KEY, 0)
         if (batteryPercent > 0) {
             watchBatteryIndicator.setImageLevel(batteryPercent)
-            watchBatteryPercent.text = getString(R.string.percent_string, batteryPercent.toString())
+            watchBatteryPercent.text = getString(R.string.battery_sync_percent_short, batteryPercent.toString())
         } else {
             watchBatteryIndicator.setImageLevel(0)
             watchBatteryPercent.text = getString(R.string.battery_sync_disabled)
@@ -88,9 +88,9 @@ class BatterySyncPreferenceWidgetFragment :
             val lastUpdatedMilliseconds = System.currentTimeMillis() - sharedPreferences.getLong(BATTERY_SYNC_LAST_WHEN_KEY, 0)
             val lastUpdatedTimeMinutes = TimeUnit.MILLISECONDS.toMinutes(lastUpdatedMilliseconds).toInt()
             val lastUpdatedString = when {
-                lastUpdatedTimeMinutes < 1 -> getString(R.string.last_updated_under_minute)
-                lastUpdatedTimeMinutes == 1 -> getString(R.string.last_updated_minute, lastUpdatedTimeMinutes.toString())
-                else -> getString(R.string.last_updated_minutes, lastUpdatedTimeMinutes.toString())
+                lastUpdatedTimeMinutes < 1 -> getString(R.string.battery_sync_last_updated_under_minute)
+                lastUpdatedTimeMinutes == 1 -> getString(R.string.battery_sync_last_updated_minute, lastUpdatedTimeMinutes.toString())
+                else -> getString(R.string.battery_sync_last_updated_minutes, lastUpdatedTimeMinutes.toString())
             }
             watchBatteryLastUpdated.text = lastUpdatedString
             watchBatteryUpdateNowHolder.visibility = View.VISIBLE

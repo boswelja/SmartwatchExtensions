@@ -42,7 +42,7 @@
             android:parentActivityName=".ui.MainActivity" />
 
         <receiver
-            android:name=".DeviceAdminChangeReceiver"
+            android:name=".receiver.DeviceAdminChangeReceiver"
             android:description="@string/device_admin_desc"
             android:label="@string/device_admin_label"
             android:permission="android.permission.BIND_DEVICE_ADMIN">
@@ -76,7 +76,7 @@
             </intent-filter>
         </service>
 
-        <service android:name=".receiver.WearMessageReceiverService">
+        <service android:name=".receiver.WatchMessageReceiver">
             <intent-filter>
                 <action android:name="com.google.android.gms.wearable.MESSAGE_RECEIVED" />
 
@@ -99,7 +99,7 @@
             </intent-filter>
         </service>
 
-        <service android:name=".receiver.WatchBatteryUpdateListener">
+        <service android:name=".receiver.WatchBatteryUpdateReceiver">
             <intent-filter>
                 <action android:name="com.google.android.gms.wearable.MESSAGE_RECEIVED" />
                 <data android:scheme="wear" android:host="*" android:path="/battery_status" />
@@ -115,7 +115,7 @@
                 android:resource="@xml/widget_watch_battery_metadata" />
         </receiver>
 
-        <service android:name=".RemotePreferenceChangeListener">
+        <service android:name=".receiver.RemotePreferenceChangeReceiver">
             <intent-filter>
                 <action android:name="com.google.android.gms.wearable.DATA_CHANGED" />
                 <data android:scheme="wear" android:host="*" android:path="/preference_change" />

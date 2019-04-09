@@ -2,12 +2,14 @@ package com.boswelja.devicemanager.ui.base
 
 import android.os.Bundle
 import android.view.View
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.preference.PreferenceFragmentCompat
 import com.boswelja.devicemanager.R
+import com.boswelja.devicemanager.ui.MainActivity.Companion.EXTRA_PREFERENCE_KEY
 
 abstract class BasePreferenceActivity : BaseToolbarActivity() {
+
+    private lateinit var preferenceFragment: PreferenceFragmentCompat
 
     abstract fun createPreferenceFragment() : PreferenceFragmentCompat
     abstract fun createWidgetFragment() : Fragment?
@@ -21,8 +23,9 @@ abstract class BasePreferenceActivity : BaseToolbarActivity() {
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
+        preferenceFragment = createPreferenceFragment()
         supportFragmentManager.beginTransaction()
-                .replace(R.id.fragment_holder, createPreferenceFragment())
+                .replace(R.id.fragment_holder, preferenceFragment)
                 .commit()
 
         val widgetFragment = createWidgetFragment()
@@ -32,6 +35,14 @@ abstract class BasePreferenceActivity : BaseToolbarActivity() {
                     .commit()
         } else {
             findViewById<View>(R.id.widget_divider).visibility = View.GONE
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (intent != null && !intent.getStringExtra(EXTRA_PREFERENCE_KEY).isNullOrEmpty()) {
+            val key = intent.getStringExtra(EXTRA_PREFERENCE_KEY)
+            preferenceFragment.scrollToPreference(key)
         }
     }
 }

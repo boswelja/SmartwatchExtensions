@@ -5,7 +5,7 @@
  * This file, and any part of the Wearable Extensions app/s cannot be copied and/or distributed
  * without permission from Jack Boswell (boswelja) <boswela@outlook.com>
  */
-package com.boswelja.devicemanager.ui
+package com.boswelja.devicemanager.ui.donate
 
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
@@ -27,6 +27,7 @@ import com.android.billingclient.api.SkuDetails
 import com.android.billingclient.api.SkuDetailsParams
 import com.android.billingclient.api.SkuDetailsResponseListener
 import com.boswelja.devicemanager.R
+import com.boswelja.devicemanager.ui.MainActivity
 import com.google.android.material.button.MaterialButton
 
 class DonationDialogFragment :
@@ -85,7 +86,7 @@ class DonationDialogFragment :
             }
         } else {
             dismiss()
-            (activity as MainActivity).createSnackbar(getString(R.string.donation_failed))
+            (activity as MainActivity).createSnackbar(getString(R.string.donation_failed_message))
         }
     }
 
@@ -97,7 +98,7 @@ class DonationDialogFragment :
             setLoading(false)
         } else {
             dismiss()
-            (activity as MainActivity).createSnackbar(getString(R.string.donation_failed))
+            (activity as MainActivity).createSnackbar(getString(R.string.donation_failed_message))
         }
     }
 
@@ -109,13 +110,13 @@ class DonationDialogFragment :
             }
         } else {
             dismiss()
-            (activity as MainActivity).createSnackbar(getString(R.string.donation_failed))
+            (activity as MainActivity).createSnackbar(getString(R.string.donation_failed_message))
         }
     }
 
     override fun onConsumeResponse(responseCode: Int, purchaseToken: String?) {
         dismiss()
-        (activity as MainActivity).createSnackbar(getString(R.string.donation_processed))
+        (activity as MainActivity).createSnackbar(getString(R.string.donation_processed_message))
     }
 
     override fun onBillingServiceDisconnected() {

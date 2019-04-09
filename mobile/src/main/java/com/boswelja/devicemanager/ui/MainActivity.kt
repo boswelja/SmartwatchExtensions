@@ -11,13 +11,15 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.preference.PreferenceManager
+import com.boswelja.devicemanager.BatteryUpdateJob
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.Utils
-import com.boswelja.devicemanager.BatteryUpdateJob
 import com.boswelja.devicemanager.common.Compat
 import com.boswelja.devicemanager.common.DnDLocalChangeListener
 import com.boswelja.devicemanager.common.PreferenceKey
 import com.boswelja.devicemanager.ui.base.BaseToolbarActivity
+import com.boswelja.devicemanager.ui.batterysync.BatterySyncPreferenceActivity
+import com.boswelja.devicemanager.ui.interruptfiltersync.InterruptFilterSyncPreferenceActivity
 import com.google.android.material.snackbar.Snackbar
 
 class MainActivity : BaseToolbarActivity() {
@@ -54,6 +56,33 @@ class MainActivity : BaseToolbarActivity() {
     private fun showSettingsFragment() {
         settingsFragment = SettingsFragment()
         supportFragmentManager.beginTransaction().replace(R.id.fragment_holder, settingsFragment).commit()
+        if (intent != null && !intent.getStringExtra(EXTRA_PREFERENCE_KEY).isNullOrEmpty()) {
+            val key = intent.getStringExtra(EXTRA_PREFERENCE_KEY)
+            when (key) {
+                PreferenceKey.PHONE_LOCKING_ENABLED_KEY,
+                SettingsFragment.HIDE_APP_ICON_KEY,
+                SettingsFragment.OPEN_NOTI_SETTINGS_KEY,
+                SettingsFragment.SWITCH_DAYNIGHT_MODE_KEY,
+                SettingsFragment.BATTERY_OPTIMISATION_STATUS_KEY -> {
+                    settingsFragment.scrollToPreference(key)
+                }
+                PreferenceKey.BATTERY_SYNC_ENABLED_KEY,
+                PreferenceKey.BATTERY_SYNC_INTERVAL_KEY,
+                PreferenceKey.BATTERY_PHONE_FULL_CHARGE_NOTI_KEY,
+                PreferenceKey.BATTERY_WATCH_FULL_CHARGE_NOTI_KEY -> {
+                    val intent = Intent(this, BatterySyncPreferenceActivity::class.java)
+                    intent.putExtra(EXTRA_PREFERENCE_KEY, key)
+                    startActivity(intent)
+                }
+                PreferenceKey.INTERRUPT_FILTER_SYNC_TO_WATCH_KEY,
+                PreferenceKey.INTERRUPT_FILTER_SYNC_TO_PHONE_KEY,
+                PreferenceKey.INTERRUPT_FILTER_ON_WITH_THEATER_KEY -> {
+                    val intent = Intent(this, InterruptFilterSyncPreferenceActivity::class.java)
+                    intent.putExtra(EXTRA_PREFERENCE_KEY, key)
+                    startActivity(intent)
+                }
+            }
+        }
 
         if (intent != null) {
             val intentKey = intent.getStringExtra(EXTRA_PREFERENCE_KEY)

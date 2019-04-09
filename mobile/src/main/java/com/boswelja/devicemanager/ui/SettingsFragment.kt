@@ -22,7 +22,7 @@ import androidx.preference.Preference
 import androidx.preference.PreferenceCategory
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.SwitchPreference
-import com.boswelja.devicemanager.DeviceAdminChangeReceiver.Companion.DEVICE_ADMIN_ENABLED_KEY
+import com.boswelja.devicemanager.receiver.DeviceAdminChangeReceiver.Companion.DEVICE_ADMIN_ENABLED_KEY
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.Utils
 import com.boswelja.devicemanager.common.PreferenceKey.PHONE_LOCKING_ENABLED_KEY
@@ -30,6 +30,7 @@ import com.boswelja.devicemanager.common.prefsynclayer.PreferenceSyncLayer
 import com.boswelja.devicemanager.preference.confirmationdialog.ConfirmationDialogPrefFragment
 import com.boswelja.devicemanager.preference.confirmationdialog.ConfirmationDialogPreference
 import com.boswelja.devicemanager.ui.batterysync.BatterySyncPreferenceActivity
+import com.boswelja.devicemanager.ui.donate.DonationDialogFragment
 import com.boswelja.devicemanager.ui.interruptfiltersync.InterruptFilterSyncPreferenceActivity
 
 class SettingsFragment :
@@ -109,8 +110,8 @@ class SettingsFragment :
                 val value = newValue == true
                 if (!Utils.isDeviceAdminEnabled(context!!)) {
                     AlertDialog.Builder(context!!)
-                            .setTitle(R.string.grant_device_admin_perm_dialog_title)
-                            .setMessage(R.string.grant_device_admin_perm_dialog_message)
+                            .setTitle(R.string.device_admin_perm_grant_dialog_title)
+                            .setMessage(R.string.device_admin_perm_grant_dialog_message)
                             .setPositiveButton(R.string.dialog_button_grant) { _, _ ->
                                 Utils.requestDeviceAdminPerms(context!!)
                             }
@@ -157,12 +158,12 @@ class SettingsFragment :
         val notificationsAllowed = NotificationManagerCompat.from(context!!).areNotificationsEnabled()
         if (notificationsAllowed) {
             openNotiSettingsPreference.apply {
-                summary = getString(R.string.pref_noti_settings_summary_enabled)
+                summary = getString(R.string.pref_noti_status_summary_enabled)
                 setIcon(R.drawable.pref_ic_notifications_enabled)
             }
         } else {
             openNotiSettingsPreference.apply {
-                summary = getString(R.string.pref_noti_settings_summary_disabled)
+                summary = getString(R.string.pref_noti_status_summary_disabled)
                 setIcon(R.drawable.pref_ic_notifications_disabled)
             }
         }
@@ -172,12 +173,12 @@ class SettingsFragment :
                     .isIgnoringBatteryOptimizations(context?.packageName!!)
             if (isIgnoringBatteryOptimisation) {
                 batteryOptimisationStatusPreference.apply {
-                    summary = getString(R.string.pref_battery_opt_summary_disabled)
-                    setIcon(R.drawable.ic_check)
+                    summary = getString(R.string.pref_battery_opt_status_summary_disabled)
+                    setIcon(R.drawable.pref_ic_ok)
                 }
             } else {
                 batteryOptimisationStatusPreference.apply {
-                    summary = getString(R.string.pref_battery_opt_summary_enabled)
+                    summary = getString(R.string.pref_battery_opt_status_summary_enabled)
                     setIcon(R.drawable.pref_ic_warning)
                 }
             }

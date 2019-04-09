@@ -17,7 +17,7 @@
 
         <androidx.preference.Preference
             android:key="show_noti_settings"
-            android:title="@string/pref_noti_settings_title" />
+            android:title="@string/pref_noti_status_title" />
 
         <androidx.preference.Preference
             android:key="daynight_switch"
@@ -26,8 +26,8 @@
 
         <com.boswelja.devicemanager.preference.confirmationdialog.ConfirmationDialogPreference
             android:key="battery_optimisation_status"
-            android:title="@string/pref_battery_opt_title"
-            android:dialogMessage="@string/pref_battery_opt_dialog_message"
+            android:title="@string/pref_battery_opt_status_title"
+            android:dialogMessage="@string/pref_battery_opt_status_toggle_warning_message"
             app:allowDisable="false"/>
 
     </androidx.preference.PreferenceCategory>

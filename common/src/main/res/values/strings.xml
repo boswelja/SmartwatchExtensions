@@ -25,8 +25,8 @@
     <string name="battery_sync_title">Battery Sync</string>
     <string name="pref_battery_sync_enabled_title">Battery Sync</string>
     <string name="battery_sync_summary">Sync device battery percentages between each other.</string>
-    <string name="pref_phone_battery_charged_noti_title">Phone Battery Fully Charged Notification</string>
-    <string name="pref_phone_battery_charged_noti_summary">Get a notification on your watch when your phone is above 90\% charged</string>
-    <string name="pref_watch_battery_charged_noti_title">Watch Battery Fully Charged Notification</string>
-    <string name="pref_watch_battery_charged_noti_summary">Get a notification on your phone when your watch is above 90\% charged</string>
+    <string name="pref_battery_sync_phone_charged_noti_title">Phone Battery Fully Charged Notification</string>
+    <string name="pref_battery_sync_phone_charged_noti_summary">Get a notification on your watch when your phone is above 90\% charged</string>
+    <string name="pref_battery_sync_watch_charged_noti_title">Watch Battery Fully Charged Notification</string>
+    <string name="pref_battery_sync_watch_charged_noti_summary">Get a notification on your phone when your watch is above 90\% charged</string>
 </resources>

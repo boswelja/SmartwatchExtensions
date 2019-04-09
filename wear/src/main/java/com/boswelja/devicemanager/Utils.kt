@@ -10,8 +10,6 @@ package com.boswelja.devicemanager
 import android.app.NotificationManager
 import android.content.Context
 import android.provider.Settings
-import androidx.preference.PreferenceManager
-import com.boswelja.devicemanager.common.PreferenceKey
 import com.boswelja.devicemanager.common.References
 import com.google.android.gms.wearable.CapabilityClient
 import com.google.android.gms.wearable.Node
@@ -44,8 +42,7 @@ object Utils {
 
     fun checkDnDAccess(context: Context): Boolean {
         val notiManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        val hasDnDAccess = notiManager.isNotificationPolicyAccessGranted
-        return hasDnDAccess
+        return notiManager.isNotificationPolicyAccessGranted
     }
 
     fun isTheaterModeOn(context: Context): Boolean {

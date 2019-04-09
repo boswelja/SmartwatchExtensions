@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="colorPrimary">#9c27b0</color>
-    <color name="statusBarColor">#666666</color>
 
+    <color name="statusBarColor">#666666</color>
     <color name="navBarColor">#FFFFFF</color>
     <color name="navBarDividerColor">#1f000000</color>
 

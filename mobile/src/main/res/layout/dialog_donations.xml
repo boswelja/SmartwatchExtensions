@@ -16,7 +16,7 @@
         android:fontFamily="sans-serif-medium"
         android:letterSpacing="0.0075"
         android:textColor="?android:textColorPrimary"
-        android:text="@string/donate_title"/>
+        android:text="@string/dialog_donate_title"/>
 
     <ProgressBar
         android:id="@+id/loading_spinner"

@@ -11,14 +11,14 @@
 
         <androidx.preference.CheckBoxPreference
             android:key="battery_phone_full_charge"
-            android:title="@string/pref_phone_battery_charged_noti_title"
-            android:summary="@string/pref_phone_battery_charged_noti_summary"
+            android:title="@string/pref_battery_sync_phone_charged_noti_title"
+            android:summary="@string/pref_battery_sync_phone_charged_noti_summary"
             android:dependency="battery_sync_enabled" />
 
         <androidx.preference.CheckBoxPreference
             android:key="battery_watch_full_charge"
-            android:title="@string/pref_watch_battery_charged_noti_title"
-            android:summary="@string/pref_watch_battery_charged_noti_summary"
+            android:title="@string/pref_battery_sync_watch_charged_noti_title"
+            android:summary="@string/pref_battery_sync_watch_charged_noti_summary"
             android:dependency="battery_sync_enabled" />
 
     </androidx.preference.PreferenceCategory>

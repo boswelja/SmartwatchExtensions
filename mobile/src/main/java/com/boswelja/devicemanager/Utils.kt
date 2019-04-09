@@ -18,9 +18,10 @@ import android.content.res.Configuration
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.preference.PreferenceManager
-import com.boswelja.devicemanager.DeviceAdminChangeReceiver.Companion.DEVICE_ADMIN_ENABLED_KEY
+import com.boswelja.devicemanager.receiver.DeviceAdminChangeReceiver.Companion.DEVICE_ADMIN_ENABLED_KEY
 import com.boswelja.devicemanager.common.Compat
 import com.boswelja.devicemanager.common.PreferenceKey
+import com.boswelja.devicemanager.receiver.DeviceAdminChangeReceiver
 import com.boswelja.devicemanager.ui.LauncherActivity
 import com.boswelja.devicemanager.ui.SettingsFragment.Companion.SWITCH_DAYNIGHT_MODE_KEY
 

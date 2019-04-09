@@ -20,7 +20,7 @@ import com.google.android.gms.wearable.MessageEvent
 import com.google.android.gms.wearable.Wearable
 import com.google.android.gms.wearable.WearableListenerService
 
-class WearMessageReceiverService : WearableListenerService() {
+class WatchMessageReceiver : WearableListenerService() {
 
     override fun onMessageReceived(messageEvent: MessageEvent?) {
         val messagePath = messageEvent?.path
