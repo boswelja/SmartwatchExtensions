@@ -3,27 +3,21 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <androidx.preference.PreferenceCategory
-        android:title="@string/pref_category_dnd_sync">
+        android:title="@string/pref_category_interrupt_filter_sync_title">
 
         <androidx.preference.SwitchPreference
             android:key="dnd_sync_phone_to_watch"
-            android:title="@string/pref_dnd_sync_phone_to_watch_title"
-            android:summaryOn="@string/pref_dnd_sync_phone_to_watch_summary_on"
-            android:summaryOff="@string/pref_dnd_sync_phone_to_watch_summary_off"
+            android:title="@string/pref_interrupt_filter_sync_to_watch_title"
             android:defaultValue="false" />
 
         <androidx.preference.SwitchPreference
             android:key="dnd_sync_watch_to_phone"
-            android:title="@string/pref_dnd_sync_watch_to_phone_title"
-            android:summaryOn="@string/pref_dnd_sync_watch_to_phone_summary_on"
-            android:summaryOff="@string/pref_dnd_sync_watch_to_phone_summary_off"
+            android:title="@string/pref_interrupt_filter_sync_to_phone_title"
             android:defaultValue="false" />
 
         <androidx.preference.SwitchPreference
             android:key="dnd_sync_with_theater"
-            android:title="@string/pref_dnd_sync_with_theater_title"
-            android:summaryOn="@string/pref_dnd_sync_with_theater_summary_on"
-            android:summaryOff="@string/pref_dnd_sync_with_theater_summary_off"
+            android:title="@string/pref_interrupt_filter_sync_with_theater_title"
             android:defaultValue="false" />
 
     </androidx.preference.PreferenceCategory>
