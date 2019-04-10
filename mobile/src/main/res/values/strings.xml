@@ -14,6 +14,8 @@
     <string name="device_admin_perm_grant_dialog_message">This app requires device administrator permissions to be able to lock your phone</string>
 
     <!-- Battery Sync preference strings -->
+    <string name="main_battery_sync_title">Battery Sync</string>
+    <string name="main_battery_sync_summary">Sync device battery percentages between each other</string>
     <string name="pref_battery_sync_enable_title">Enable Battery Sync</string>
     <string name="pref_battery_sync_interval_title">Sync Interval</string>
     <string name="pref_battery_sync_interval_summary">Sync interval in minutes</string>
@@ -28,10 +30,16 @@
     <string name="battery_sync_percent_short">%s%%</string>
 
     <!-- Interruption Filter Sync preference strings -->
-    <string name="interrupt_filter_sync_title">Do not Disturb Sync</string>
-    <string name="interrupt_filter_sync_summary">Sync Do not Disturb state</string>
+    <string name="main_interrupt_filter_sync_title">Do not Disturb Sync</string>
+    <string name="main_interrupt_filter_sync_summary">Sync Do not Disturb state between your devices</string>
+    <string name="pref_interrupt_filter_sync_to_watch_title">Phone to Watch Sync</string>
+    <string name="pref_interrupt_filter_sync_to_watch_summary">Sync DnD state to your watch from your phone</string>
     <string name="pref_interrupt_filter_sync_to_watch_dialog_title">Additional setup required</string>
     <string name="pref_interrupt_filter_sync_to_watch_dialog_message">In order for this app to be able to change Do not Disturb status on your watch, you need to connect your watch to your PC and, with USB Debugging enabled, execute the below command via ADB. Once complete, tap next.</string>
+    <string name="pref_interrupt_filter_sync_to_phone_title">Watch to Phone Sync</string>
+    <string name="pref_interrupt_filter_sync_to_phone_summary">Sync DnD state from your phone to your watch</string>
+    <string name="pref_interrupt_filter_sync_with_theater_title">Sync with watch Theater mode</string>
+    <string name="pref_interrupt_filter_sync_with_theater_summary">Sync your phone DnD state with theater mode on your watch</string>
     <string name="interrupt_filter_access_adb_command">adb shell settings put secure enabled_notification_listeners com.google.android.wearable.app/com.google.android.clockwork.stream.NotificationCollectorService:%s</string>
     <string name="interrupt_filter_sync_to_watch_perm_granted_message">Permission Granted!</string>
     <string name="interrupt_filter_sync_to_watch_perm_denied_message">Permission not granted, please try again</string>

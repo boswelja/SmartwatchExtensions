@@ -4,13 +4,13 @@
     <androidx.preference.Preference
         android:key="show_battery_sync_prefs"
         android:icon="@drawable/battery_full"
-        android:title="@string/battery_sync_title"
-        android:summary="@string/battery_sync_summary" />
+        android:title="@string/main_battery_sync_title"
+        android:summary="@string/main_battery_sync_summary" />
 
     <androidx.preference.Preference
         android:key="show_interrupt_filter_sync_prefs"
         android:icon="@drawable/pref_ic_interrupt_filter"
-        android:title="@string/interrupt_filter_sync_title"
-        android:summary="@string/interrupt_filter_sync_summary" />
+        android:title="@string/main_interrupt_filter_sync_title"
+        android:summary="@string/main_interrupt_filter_sync_summary" />
 
 </androidx.preference.PreferenceScreen>
