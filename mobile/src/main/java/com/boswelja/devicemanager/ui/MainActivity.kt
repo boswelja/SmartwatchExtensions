@@ -15,7 +15,7 @@ import com.boswelja.devicemanager.BatteryUpdateJob
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.Utils
 import com.boswelja.devicemanager.common.Compat
-import com.boswelja.devicemanager.common.DnDLocalChangeListener
+import com.boswelja.devicemanager.common.interruptfiltersync.InterruptFilterLocalChangeListener
 import com.boswelja.devicemanager.common.PreferenceKey
 import com.boswelja.devicemanager.ui.base.BaseToolbarActivity
 import com.boswelja.devicemanager.ui.batterysync.BatterySyncPreferenceActivity
@@ -48,7 +48,7 @@ class MainActivity : BaseToolbarActivity() {
         }
 
         if (sharedPrefs.getBoolean(PreferenceKey.INTERRUPT_FILTER_SYNC_TO_WATCH_KEY, false)) {
-            val intent = Intent(this, DnDLocalChangeListener::class.java)
+            val intent = Intent(this, InterruptFilterLocalChangeListener::class.java)
             Compat.startForegroundService(this, intent)
         }
     }

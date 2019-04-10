@@ -4,7 +4,7 @@ import android.content.Intent
 import android.content.SharedPreferences
 import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.common.Compat
-import com.boswelja.devicemanager.common.DnDLocalChangeListener
+import com.boswelja.devicemanager.common.interruptfiltersync.InterruptFilterLocalChangeListener
 import com.boswelja.devicemanager.common.PreferenceKey
 import com.boswelja.devicemanager.common.R
 import com.boswelja.devicemanager.common.prefsynclayer.PreferenceSyncKeys.BATTERY_PHONE_FULL_CHARGE_NOTI_KEY
@@ -58,7 +58,7 @@ abstract class BasePreferenceChangeReceiver : WearableListenerService() {
     }
 
     private fun startLocalDnDListenerService() {
-        val intent = Intent(applicationContext, DnDLocalChangeListener::class.java)
+        val intent = Intent(applicationContext, InterruptFilterLocalChangeListener::class.java)
         Compat.startForegroundService(applicationContext, intent)
     }
 

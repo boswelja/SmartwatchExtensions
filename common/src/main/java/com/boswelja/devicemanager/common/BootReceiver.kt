@@ -11,6 +11,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import androidx.preference.PreferenceManager
+import com.boswelja.devicemanager.common.interruptfiltersync.InterruptFilterLocalChangeListener
 
 class BootReceiver : BroadcastReceiver() {
 
@@ -21,7 +22,7 @@ class BootReceiver : BroadcastReceiver() {
             val isSending = (isPhone && prefs.getBoolean(PreferenceKey.INTERRUPT_FILTER_SYNC_TO_WATCH_KEY, false) ||
                     (!isPhone && prefs.getBoolean(PreferenceKey.INTERRUPT_FILTER_SYNC_TO_PHONE_KEY, false)))
             if (isSending) {
-                val serviceIntent = Intent(context, DnDLocalChangeListener::class.java)
+                val serviceIntent = Intent(context, InterruptFilterLocalChangeListener::class.java)
                 Compat.startForegroundService(context!!, serviceIntent)
             }
         }

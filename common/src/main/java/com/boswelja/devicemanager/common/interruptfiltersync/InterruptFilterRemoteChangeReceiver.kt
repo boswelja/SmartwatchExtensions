@@ -5,9 +5,13 @@
  * This file, and any part of the Wearable Extensions app/s cannot be copied and/or distributed
  * without permission from Jack Boswell (boswelja) <boswela@outlook.com>
  */
-package com.boswelja.devicemanager.common
+package com.boswelja.devicemanager.common.interruptfiltersync
 
 import androidx.preference.PreferenceManager
+import com.boswelja.devicemanager.common.Compat
+import com.boswelja.devicemanager.common.PreferenceKey
+import com.boswelja.devicemanager.common.R
+import com.boswelja.devicemanager.common.References
 import com.google.android.gms.wearable.DataEvent
 import com.google.android.gms.wearable.DataEventBuffer
 import com.google.android.gms.wearable.DataMapItem
@@ -16,7 +20,7 @@ import com.google.android.gms.wearable.WearableListenerService
 /**
  * Receives changes in DnD state
  */
-class DnDRemoteChangeHandler : WearableListenerService() {
+class InterruptFilterRemoteChangeReceiver : WearableListenerService() {
 
     override fun onDataChanged(dataEventBuffer: DataEventBuffer) {
         super.onDataChanged(dataEventBuffer)

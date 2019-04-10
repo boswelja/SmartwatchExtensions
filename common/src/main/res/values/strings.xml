@@ -1,5 +1,6 @@
-<resources>
-    <string name="global_app_name">Wearable Extensions</string>
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <string name="global_app_name" tools:keep="@string/global_app_name">Wearable Extensions</string>
 
     <string name="dnd_sync_noti_channel_name">Do not Disturb Sync</string>
     <string name="dnd_sync_active_noti_title">DnD Sync Active</string>
@@ -11,22 +12,4 @@
     <string name="device_charged_noti_title">%s Charged</string>
     <string name="device_charged_noti_desc">Your %s is charged to above 90%%</string>
 
-    <string name="pref_category_dnd_sync">Do Not Disturb Sync</string>
-    <string name="pref_dnd_sync_phone_to_watch_title">Phone to Watch Sync</string>
-    <string name="pref_dnd_sync_phone_to_watch_summary_on">Syncing DnD state from your phone to your watch</string>
-    <string name="pref_dnd_sync_phone_to_watch_summary_off">Not syncing DnD state from your phone to your watch</string>
-    <string name="pref_dnd_sync_watch_to_phone_title">Watch to Phone Sync</string>
-    <string name="pref_dnd_sync_watch_to_phone_summary_on">Syncing DnD state from your watch to your phone</string>
-    <string name="pref_dnd_sync_watch_to_phone_summary_off">Not syncing DnD state from your watch to your phone</string>
-    <string name="pref_dnd_sync_with_theater_title">DnD Sync with Theater mode</string>
-    <string name="pref_dnd_sync_with_theater_summary_on">Syncing DnD state with watch Theater mode</string>
-    <string name="pref_dnd_sync_with_theater_summary_off">Not syncing DnD state with watch Theater mode</string>
-
-    <string name="battery_sync_title">Battery Sync</string>
-    <string name="pref_battery_sync_enabled_title">Battery Sync</string>
-    <string name="battery_sync_summary">Sync device battery percentages between each other.</string>
-    <string name="pref_battery_sync_phone_charged_noti_title">Phone Battery Fully Charged Notification</string>
-    <string name="pref_battery_sync_phone_charged_noti_summary">Get a notification on your watch when your phone is above 90\% charged</string>
-    <string name="pref_battery_sync_watch_charged_noti_title">Watch Battery Fully Charged Notification</string>
-    <string name="pref_battery_sync_watch_charged_noti_summary">Get a notification on your phone when your watch is above 90\% charged</string>
 </resources>

@@ -1,4 +1,5 @@
 <resources>
+
     <string name="app_name">@string/global_app_name</string>
     <string name="companion_device_type">Watch</string>
 

@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<level-list xmlns:android="http://schemas.android.com/apk/res/android">
+<level-list
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    tools:keep="@drawable/ic_watch_battery">
     <item android:maxLevel="0" android:drawable="@drawable/ic_watch_battery_unknown" />
     <item android:maxLevel="15" android:drawable="@drawable/ic_watch_battery_low" />
     <item android:maxLevel="25" android:drawable="@drawable/ic_watch_battery_20" />

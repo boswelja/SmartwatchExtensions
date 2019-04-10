@@ -14,7 +14,7 @@ import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.SwitchPreference
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.Compat
-import com.boswelja.devicemanager.common.DnDLocalChangeListener
+import com.boswelja.devicemanager.common.interruptfiltersync.InterruptFilterLocalChangeListener
 import com.boswelja.devicemanager.common.PreferenceKey.INTERRUPT_FILTER_ON_WITH_THEATER_KEY
 import com.boswelja.devicemanager.common.PreferenceKey.INTERRUPT_FILTER_SYNC_TO_PHONE_KEY
 import com.boswelja.devicemanager.common.PreferenceKey.INTERRUPT_FILTER_SYNC_TO_WATCH_KEY
@@ -59,14 +59,14 @@ class InterruptFilterSyncPreferenceFragment :
                             preference.sharedPreferences.edit().putBoolean(preference.key, success).apply()
                             preferenceSyncLayer.pushNewData()
                             if (success) {
-                                Compat.startForegroundService(context!!, Intent(context!!, DnDLocalChangeListener::class.java))
+                                Compat.startForegroundService(context!!, Intent(context!!, InterruptFilterLocalChangeListener::class.java))
                             }
                         }
                     })
                 } else {
                     preference.sharedPreferences.edit().putBoolean(preference.key, value).apply()
                     preferenceSyncLayer.pushNewData()
-                    context?.stopService(Intent(context!!, DnDLocalChangeListener::class.java))
+                    context?.stopService(Intent(context!!, InterruptFilterLocalChangeListener::class.java))
                 }
                 false
             }

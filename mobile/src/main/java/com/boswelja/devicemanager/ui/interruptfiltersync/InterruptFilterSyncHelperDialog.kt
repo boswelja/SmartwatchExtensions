@@ -21,7 +21,7 @@ import androidx.appcompat.widget.AppCompatTextView
 import androidx.fragment.app.DialogFragment
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.Utils
-import com.boswelja.devicemanager.common.DnDLocalChangeListener
+import com.boswelja.devicemanager.common.interruptfiltersync.InterruptFilterLocalChangeListener
 import com.boswelja.devicemanager.common.References
 import com.boswelja.devicemanager.ui.MainActivity
 import com.google.android.gms.wearable.CapabilityClient
@@ -64,7 +64,7 @@ class InterruptFilterSyncHelperDialog : DialogFragment() {
         confirmBtn = view.findViewById(R.id.confirm_button)
         shareBtn = view.findViewById(R.id.share_btn)
 
-        val adbCommand = getString(R.string.interrupt_filter_access_adb_command).format(ComponentName(context!!, DnDLocalChangeListener::class.java).flattenToString())
+        val adbCommand = getString(R.string.interrupt_filter_access_adb_command).format(ComponentName(context!!, InterruptFilterLocalChangeListener::class.java).flattenToString())
         messageClient = Wearable.getMessageClient(context!!)
 
         cancelBtn.setOnClickListener {

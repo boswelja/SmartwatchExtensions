@@ -66,10 +66,10 @@
             android:name=".BatteryUpdateJob"
             android:permission="android.permission.BIND_JOB_SERVICE" />
         <service
-            android:name=".common.DnDLocalChangeListener"
+            android:name=".common.interruptfiltersync.InterruptFilterLocalChangeListener"
             android:exported="false" />
 
-        <service android:name=".common.DnDRemoteChangeHandler">
+        <service android:name=".common.interruptfiltersync.InterruptFilterRemoteChangeReceiver">
             <intent-filter>
                 <action android:name="com.google.android.gms.wearable.DATA_CHANGED" />
                 <data android:scheme="wear" android:host="*" android:path="/dnd_status" />
