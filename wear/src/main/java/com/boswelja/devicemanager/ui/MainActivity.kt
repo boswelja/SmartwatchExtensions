@@ -17,7 +17,6 @@ import com.boswelja.devicemanager.Utils
 import com.boswelja.devicemanager.ui.controls.ControlsFragment
 import com.boswelja.devicemanager.ui.navigation.NavigationDrawerAdapter
 import com.boswelja.devicemanager.ui.navigation.NavigationDrawerSections
-import com.google.android.gms.wearable.Node
 
 class MainActivity : AppCompatActivity(), WearableNavigationDrawerView.OnItemSelectedListener {
 
@@ -32,22 +31,17 @@ class MainActivity : AppCompatActivity(), WearableNavigationDrawerView.OnItemSel
         navigationDrawer.setAdapter(NavigationDrawerAdapter(this))
         navigationDrawer.addOnItemSelectedListener(this)
         navigate(controlsFragment)
-    }
-
-    override fun onResume() {
-        super.onResume()
 
         // Check for companion app
-        val capabilityCallbacks = object : Utils.CapabilityCallbacks {
-            override fun capableDeviceFound(node: Node?) {}
-
-            override fun noCapableDevices() {
-                val intent = Intent(this@MainActivity, ConfirmInstallActivity::class.java)
-                startActivity(intent)
-                finish()
-            }
-        }
-        Utils.isCompanionAppInstalled(this, capabilityCallbacks)
+        Utils.getCompanionNode(this)
+                .addOnCompleteListener {
+                    val node = it.result?.nodes?.lastOrNull()
+                    if (node == null) {
+                        val intent = Intent(this@MainActivity, ConfirmInstallActivity::class.java)
+                        startActivity(intent)
+                        finish()
+                    }
+                }
     }
 
     private fun navigate(fragment: Fragment) {

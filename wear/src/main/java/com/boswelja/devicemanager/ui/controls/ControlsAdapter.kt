@@ -32,13 +32,13 @@ class ControlsAdapter : RecyclerView.Adapter<ControlsAdapter.ViewHolder>() {
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val context = holder.itemView.context
         val control = controls[position]
+        holder.icon.setImageResource(control.drawableRes)
         when (control) {
             ControlItems.LockPhone -> {
                 holder.label.text = context.getString(control.titleRes)
-                holder.icon.setImageResource(control.drawableRes)
                 holder.itemView.setOnClickListener {
                     val intent = Intent(holder.itemView.context, ActionService::class.java)
-                    intent.putExtra(ActionService.INTENT_ACTION_EXTRA, References.LOCK_PHONE_PATH)
+                    intent.putExtra(ActionService.EXTRA_ACTION, References.LOCK_PHONE_PATH)
                     holder.itemView.context.startService(intent)
                 }
             }
@@ -47,7 +47,7 @@ class ControlsAdapter : RecyclerView.Adapter<ControlsAdapter.ViewHolder>() {
                 holder.itemView.setOnClickListener {
                     if (sharedPrefs.getBoolean(PreferenceKey.BATTERY_SYNC_ENABLED_KEY, false)) {
                         val intent = Intent(holder.itemView.context, ActionService::class.java)
-                        intent.putExtra(ActionService.INTENT_ACTION_EXTRA, References.REQUEST_BATTERY_UPDATE_PATH)
+                        intent.putExtra(ActionService.EXTRA_ACTION, References.REQUEST_BATTERY_UPDATE_PATH)
                         holder.itemView.context.startService(intent)
                     }
                 }
@@ -65,22 +65,20 @@ class ControlsAdapter : RecyclerView.Adapter<ControlsAdapter.ViewHolder>() {
     }
 
     private fun updateBatteryPercent(holder: ViewHolder, sharedPrefs: SharedPreferences) {
-        val phoneBattery = sharedPrefs.getInt(PreferenceKey.BATTERY_PERCENT_KEY, -1)
+        val phoneBattery = sharedPrefs.getInt(PreferenceKey.BATTERY_PERCENT_KEY, 0)
         val batterySyncEnabled = sharedPrefs.getBoolean(PreferenceKey.BATTERY_SYNC_ENABLED_KEY, false)
-        if (phoneBattery > -1) {
+        if (phoneBattery > 0) {
             holder.label.text = String.format(holder.itemView.context.getString(R.string.phone_battery_desc), phoneBattery)
         } else if (!batterySyncEnabled) {
             holder.label.text = holder.itemView.context.getString(R.string.battery_sync_disabled)
         } else {
             holder.label.text = holder.itemView.context.getString(R.string.phone_battery_unknown_long)
         }
-        val drawable = holder.icon.context.getDrawable(R.drawable.ic_phone_battery)!!
-        drawable.level = phoneBattery
-        holder.icon.setImageDrawable(drawable)
+        holder.icon.drawable.level = phoneBattery
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.model_main_option, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.model_control, parent, false)
         return ViewHolder(view)
     }
 

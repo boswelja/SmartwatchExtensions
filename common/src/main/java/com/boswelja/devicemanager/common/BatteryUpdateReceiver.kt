@@ -17,7 +17,7 @@ import androidx.preference.PreferenceManager
 import com.google.android.gms.wearable.MessageEvent
 import com.google.android.gms.wearable.WearableListenerService
 
-abstract class BatteryUpdateListener : WearableListenerService() {
+abstract class BatteryUpdateReceiver : WearableListenerService() {
 
     private lateinit var prefs: SharedPreferences
 

@@ -5,7 +5,7 @@
  * This file, and any part of the Wearable Extensions app/s cannot be copied and/or distributed
  * without permission from Jack Boswell (boswelja) <boswela@outlook.com>
  */
-package com.boswelja.devicemanager.service
+package com.boswelja.devicemanager.receiver
 
 import android.content.ComponentName
 import android.content.Intent
@@ -13,17 +13,20 @@ import android.support.wearable.complications.ProviderUpdateRequester
 import com.boswelja.devicemanager.common.Compat
 import com.boswelja.devicemanager.common.PreferenceKey
 import com.boswelja.devicemanager.common.prefsynclayer.BasePreferenceChangeReceiver
-import com.boswelja.devicemanager.complications.PhoneBatteryComplicationProvider
+import com.boswelja.devicemanager.complication.PhoneBatteryComplicationProvider
+import com.boswelja.devicemanager.service.InterruptFilterSyncWithTheaterListener
 
-class PreferenceChangeListener : BasePreferenceChangeReceiver() {
+class PreferenceChangeReceiver : BasePreferenceChangeReceiver() {
 
     override fun handleStartServices(dndSyncWithTheater: Boolean, batterySyncEnabled: Boolean) {
+
         if (!batterySyncEnabled) {
             prefs.edit().remove(PreferenceKey.BATTERY_PERCENT_KEY).apply()
             ProviderUpdateRequester(this, ComponentName(packageName, PhoneBatteryComplicationProvider::class.java.name)).requestUpdateAll()
         }
+
         if (dndSyncWithTheater) {
-            Compat.startForegroundService(this, Intent(applicationContext, DnDSyncWithTheaterModeListener::class.java))
+            Compat.startForegroundService(this, Intent(applicationContext, InterruptFilterSyncWithTheaterListener::class.java))
         }
     }
 

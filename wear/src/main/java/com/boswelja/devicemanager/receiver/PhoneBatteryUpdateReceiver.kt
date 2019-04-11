@@ -5,15 +5,15 @@
  * This file, and any part of the Wearable Extensions app/s cannot be copied and/or distributed
  * without permission from Jack Boswell (boswelja) <boswela@outlook.com>
  */
-package com.boswelja.devicemanager.service
+package com.boswelja.devicemanager.receiver
 
 import android.content.ComponentName
 import android.support.wearable.complications.ProviderUpdateRequester
-import com.boswelja.devicemanager.common.BatteryUpdateListener
+import com.boswelja.devicemanager.common.BatteryUpdateReceiver
 import com.boswelja.devicemanager.common.CommonUtils
-import com.boswelja.devicemanager.complications.PhoneBatteryComplicationProvider
+import com.boswelja.devicemanager.complication.PhoneBatteryComplicationProvider
 
-class PhoneBatteryUpdateListener : BatteryUpdateListener() {
+class PhoneBatteryUpdateReceiver : BatteryUpdateReceiver() {
 
     override fun onBatteryUpdate(percent: Int, charging: Boolean) {
         CommonUtils.updateBatteryStats(this)

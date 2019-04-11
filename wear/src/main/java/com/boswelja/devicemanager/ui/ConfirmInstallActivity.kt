@@ -15,9 +15,9 @@ import android.view.View
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.wear.activity.ConfirmationActivity
 import androidx.wear.widget.CircularProgressLayout
 import com.boswelja.devicemanager.BuildConfig
+import com.boswelja.devicemanager.ConfirmationActivityHandler
 import com.boswelja.devicemanager.R
 import com.google.android.wearable.intent.RemoteIntent
 import com.google.android.wearable.playstore.PlayStoreAvailability
@@ -55,9 +55,6 @@ class ConfirmInstallActivity : AppCompatActivity(), CircularProgressLayout.OnTim
         if (showPlayStoreOnPhone) {
             val isAndroidPhone = PhoneDeviceType.getPhoneDeviceType(this) == PhoneDeviceType.DEVICE_TYPE_ANDROID
             if (isAndroidPhone) {
-                val intent = Intent(this, ConfirmationActivity::class.java)
-                intent.putExtra(ConfirmationActivity.EXTRA_ANIMATION_TYPE,
-                        ConfirmationActivity.OPEN_ON_PHONE_ANIMATION)
                 val playStoreIntent = Intent(Intent.ACTION_VIEW)
                 if (PlayStoreAvailability.getPlayStoreAvailabilityOnPhone(this@ConfirmInstallActivity) == PlayStoreAvailability.PLAY_STORE_ON_PHONE_AVAILABLE) {
                     playStoreIntent.data = Uri.parse(String.format(getString(R.string.play_store_app_link), BuildConfig.APPLICATION_ID))
@@ -69,6 +66,7 @@ class ConfirmInstallActivity : AppCompatActivity(), CircularProgressLayout.OnTim
                         playStoreIntent,
                         null)
                 startActivity(intent)
+                ConfirmationActivityHandler.openOnPhoneAnimation(this)
             } else {
                 Toast.makeText(this, "iOS isn't supported by this app", Toast.LENGTH_LONG).show()
             }

@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     <item>
-        <!-- drawable/circle_card_icon.xml -->
         <shape android:shape="oval">
-            <solid android:color="@color/dark_ui_element"/>
+            <solid android:color="@color/darkUIElement"/>
         </shape>
     </item>
 </layer-list>

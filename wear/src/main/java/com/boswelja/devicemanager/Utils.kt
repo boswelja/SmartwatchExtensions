@@ -11,33 +11,16 @@ import android.app.NotificationManager
 import android.content.Context
 import android.provider.Settings
 import com.boswelja.devicemanager.common.References
+import com.google.android.gms.tasks.Task
 import com.google.android.gms.wearable.CapabilityClient
-import com.google.android.gms.wearable.Node
+import com.google.android.gms.wearable.CapabilityInfo
 import com.google.android.gms.wearable.Wearable
 
 object Utils {
 
-    fun isCompanionAppInstalled(context: Context, capabilityCallbacks: CapabilityCallbacks) {
-        Wearable
-                .getCapabilityClient(context)
-                .getCapability(
-                        References.CAPABILITY_APP,
-                        CapabilityClient.FILTER_REACHABLE
-                )
-                .addOnSuccessListener {
-                    val node = it.nodes.lastOrNull()
-                    if (node != null) {
-                        capabilityCallbacks.capableDeviceFound(node)
-                    } else {
-                        capabilityCallbacks.noCapableDevices()
-                    }
-                }
-    }
-
-    interface CapabilityCallbacks {
-        fun capableDeviceFound(node: Node?)
-
-        fun noCapableDevices()
+    fun getCompanionNode(context: Context): Task<CapabilityInfo> {
+        return Wearable.getCapabilityClient(context)
+                .getCapability(References.CAPABILITY_APP, CapabilityClient.FILTER_REACHABLE)
     }
 
     fun checkDnDAccess(context: Context): Boolean {
@@ -50,12 +33,10 @@ object Utils {
     }
 
     fun launchMobileApp(context: Context, key: String) {
-        Wearable.getCapabilityClient(context)
-                .getCapability(References.CAPABILITY_APP, CapabilityClient.FILTER_REACHABLE)
-                .addOnSuccessListener { capabilityInfo ->
-                    val nodeId = capabilityInfo.nodes.firstOrNull { it.isNearby }?.id ?: capabilityInfo.nodes.firstOrNull()?.id!!
-                    Wearable.getMessageClient(context)
-                            .sendMessage(nodeId, References.REQUEST_LAUNCH_APP_PATH, key.toByteArray(Charsets.UTF_8))
-                }
+        getCompanionNode(context).addOnSuccessListener { capabilityInfo ->
+            val nodeId = capabilityInfo.nodes.firstOrNull { it.isNearby }?.id ?: capabilityInfo.nodes.firstOrNull()?.id!!
+            Wearable.getMessageClient(context)
+                    .sendMessage(nodeId, References.REQUEST_LAUNCH_APP_PATH, key.toByteArray(Charsets.UTF_8))
+        }
     }
 }

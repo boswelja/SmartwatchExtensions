@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/dark_background"
+    android:background="@color/windowBackground"
     tools:context="com.boswelja.devicemanager.ui.MainActivity"
     tools:deviceIds="wear">
 
@@ -19,7 +19,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:navigationStyle="multiPage"
-        android:background="@color/light_background"
+        android:background="@color/navDrawerBackground"
         app:enableAutoPeek="true" />
 
 </androidx.wear.widget.drawer.WearableDrawerLayout>

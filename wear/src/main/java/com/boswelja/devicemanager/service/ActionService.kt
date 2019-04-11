@@ -16,12 +16,13 @@ import android.os.IBinder
 import android.support.wearable.complications.ProviderUpdateRequester
 import androidx.core.app.NotificationCompat
 import androidx.preference.PreferenceManager
-import androidx.wear.activity.ConfirmationActivity
+import com.boswelja.devicemanager.ConfirmationActivityHandler
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.Utils
+import com.boswelja.devicemanager.common.AtomicCounter
 import com.boswelja.devicemanager.common.PreferenceKey
 import com.boswelja.devicemanager.common.References
-import com.boswelja.devicemanager.complications.PhoneBatteryComplicationProvider
+import com.boswelja.devicemanager.complication.PhoneBatteryComplicationProvider
 import com.google.android.gms.wearable.Node
 import com.google.android.gms.wearable.Wearable
 
@@ -41,76 +42,57 @@ class ActionService : Service() {
             "default"
         }
         val notification: NotificationCompat.Builder = NotificationCompat.Builder(this, channelId)
-        notification.setContentTitle(getString(R.string.communicating_noti_title))
-        startForeground(312, notification.build())
+        notification.setContentTitle(getString(R.string.noti_action_service_title))
+        notification.setContentText(getString(R.string.noti_action_service_content))
+        notification.setSmallIcon(R.drawable.ic_sync)
+        startForeground(AtomicCounter.getInt(), notification.build())
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        action = intent!!.getStringExtra(INTENT_ACTION_EXTRA)
-        val capabilityCallback = object : Utils.CapabilityCallbacks {
-            override fun noCapableDevices() {
-                when (action) {
-                    References.LOCK_PHONE_PATH -> onFailed(getString(R.string.phone_lock_failed_message))
-                    References.REQUEST_BATTERY_UPDATE_PATH -> onFailed(getString(R.string.phone_battery_update_failed))
-                }
-            }
+        action = intent!!.getStringExtra(EXTRA_ACTION)
 
-            override fun capableDeviceFound(node: Node?) {
-                val prefs = PreferenceManager.getDefaultSharedPreferences(this@ActionService)
-                when (action) {
-                    References.LOCK_PHONE_PATH -> {
-                        if (prefs.getBoolean(PreferenceKey.PHONE_LOCKING_ENABLED_KEY, false)) {
-                            sendMessage(node)
-                        } else {
-                            onFailed(getString(R.string.phone_lock_disabled_message))
+        Utils.getCompanionNode(this)
+                .addOnCompleteListener {
+                    if (it.isSuccessful && !it.result?.nodes.isNullOrEmpty()) {
+                        val node = it.result?.nodes?.last()
+                        val prefs = PreferenceManager.getDefaultSharedPreferences(this@ActionService)
+                        when (action) {
+                            References.LOCK_PHONE_PATH -> {
+                                if (prefs.getBoolean(PreferenceKey.PHONE_LOCKING_ENABLED_KEY, false)) {
+                                    sendMessage(node)
+                                } else {
+                                    ConfirmationActivityHandler.failAnimation(this@ActionService, getString(R.string.phone_lock_disabled_message))
+                                }
+                                val providerUpdateRequester = ProviderUpdateRequester(this@ActionService, ComponentName(packageName, PhoneBatteryComplicationProvider::class.java.name))
+                                providerUpdateRequester.requestUpdateAll()
+                            }
+                            References.REQUEST_BATTERY_UPDATE_PATH -> {
+                                sendMessage(node)
+                            }
                         }
-                        val providerUpdateRequester = ProviderUpdateRequester(this@ActionService, ComponentName(packageName, PhoneBatteryComplicationProvider::class.java.name))
-                        providerUpdateRequester.requestUpdateAll()
-                    }
-                    References.REQUEST_BATTERY_UPDATE_PATH -> {
-                        sendMessage(node)
+                    } else {
+                        when (action) {
+                            References.LOCK_PHONE_PATH -> ConfirmationActivityHandler.failAnimation(this@ActionService, getString(R.string.phone_lock_failed_message))
+                            References.REQUEST_BATTERY_UPDATE_PATH -> ConfirmationActivityHandler.failAnimation(this@ActionService, getString(R.string.phone_battery_update_failed))
+                        }
                     }
                 }
-            }
-        }
-        Utils.isCompanionAppInstalled(this, capabilityCallback)
+
         return START_NOT_STICKY
-    }
-
-    private fun onFailed(message: String) {
-        val intent = Intent(this, ConfirmationActivity::class.java)
-        intent.putExtra(ConfirmationActivity.EXTRA_ANIMATION_TYPE, ConfirmationActivity.FAILURE_ANIMATION)
-        intent.putExtra(ConfirmationActivity.EXTRA_MESSAGE, message)
-        startActivity(intent)
-        stopForeground(true)
-        stopSelf()
-    }
-
-    private fun onSuccess(message: String) {
-        val intent = Intent(this, ConfirmationActivity::class.java)
-        intent.putExtra(ConfirmationActivity.EXTRA_ANIMATION_TYPE, ConfirmationActivity.SUCCESS_ANIMATION)
-        intent.putExtra(ConfirmationActivity.EXTRA_MESSAGE, message)
-        startActivity(intent)
-        stopForeground(true)
-        stopSelf()
     }
 
     private fun sendMessage(node: Node?) {
         Wearable.getMessageClient(this)
-                .sendMessage(
-                    node!!.id,
-                    action,
-                    null
-                )
+                .sendMessage(node!!.id, action, null)
                 .addOnSuccessListener {
-                    onSuccess(getString(R.string.request_success_message))
+                    ConfirmationActivityHandler.successAnimation(this, getString(R.string.request_success_message))
                 }
                 .addOnFailureListener {
-                    onFailed(getString(R.string.request_failed_message))
+                    ConfirmationActivityHandler.failAnimation(this, getString(R.string.request_failed_message))
                 }
     }
 
     companion object {
-        const val INTENT_ACTION_EXTRA = "action"
+        const val EXTRA_ACTION = "action"
     }
 }

@@ -1,6 +1,5 @@
 package com.boswelja.devicemanager.ui
 
-import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -11,14 +10,13 @@ import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.SwitchPreference
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.wear.activity.ConfirmationActivity
 import androidx.wear.widget.WearableRecyclerView
+import com.boswelja.devicemanager.ConfirmationActivityHandler
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.Utils
 import com.boswelja.devicemanager.common.PreferenceKey
 import com.boswelja.devicemanager.common.References
 import com.boswelja.devicemanager.common.prefsynclayer.PreferenceSyncLayer
-import com.google.android.gms.wearable.CapabilityClient
 import com.google.android.gms.wearable.MessageClient
 import com.google.android.gms.wearable.Wearable
 
@@ -40,10 +38,10 @@ class SettingsFragment :
 
     private var changingKey = ""
 
-    private val listener = MessageClient.OnMessageReceivedListener {
+    private val interruptFilterAccessListener = MessageClient.OnMessageReceivedListener {
         if (it.path == References.REQUEST_PHONE_DND_ACCESS_STATUS_PATH) {
-            val hasDnDAccess = it.data[0].toInt() == 1
-            onDnDAccessResponse(hasDnDAccess)
+            val hasAccess = it.data[0].toInt() == 1
+            onInterruptFilterAccessResponse(hasAccess)
         }
     }
 
@@ -102,22 +100,20 @@ class SettingsFragment :
                 val value = newValue == true
                 if (value) {
                     changingKey = key
-                    messageClient.addListener(listener)
-                    Wearable.getCapabilityClient(context!!)
-                            .getCapability(References.CAPABILITY_APP, CapabilityClient.FILTER_REACHABLE)
-                            .addOnCompleteListener {
-                                if (it.isSuccessful) {
-                                    val nodes = it.result?.nodes
-                                    if (!nodes.isNullOrEmpty()) {
-                                        val node = nodes.first { node -> node.isNearby }
-                                        messageClient.sendMessage(node?.id!!, References.REQUEST_PHONE_DND_ACCESS_STATUS_PATH, null)
-                                    } else {
-                                        notifyError()
-                                    }
-                                } else {
-                                    notifyError()
-                                }
+                    messageClient.addListener(interruptFilterAccessListener)
+                    Utils.getCompanionNode(context!!).addOnCompleteListener {
+                        if (it.isSuccessful) {
+                            val nodes = it.result?.nodes
+                            if (!nodes.isNullOrEmpty()) {
+                                val node = nodes.first { node -> node.isNearby }
+                                messageClient.sendMessage(node?.id!!, References.REQUEST_PHONE_DND_ACCESS_STATUS_PATH, null)
+                            } else {
+                                notifyError()
                             }
+                        } else {
+                            notifyError()
+                        }
+                    }
                 } else {
                     prefs.edit().putBoolean(key, value).apply()
                     preferenceSyncLayer.pushNewData()
@@ -140,7 +136,7 @@ class SettingsFragment :
         addPreferencesFromResource(R.xml.prefs_battery_sync)
         setupBatterySyncPrefs()
 
-        addPreferencesFromResource(R.xml.prefs_dnd_sync)
+        addPreferencesFromResource(R.xml.prefs_interrupt_filter_sync)
         setupDnDSyncPrefs()
     }
 
@@ -185,23 +181,15 @@ class SettingsFragment :
 
     private fun notifyAdditionalSetupRequired(key: String) {
         Utils.launchMobileApp(context!!, key)
-        val intent = Intent(context, ConfirmationActivity::class.java).apply {
-            putExtra(ConfirmationActivity.EXTRA_ANIMATION_TYPE, ConfirmationActivity.OPEN_ON_PHONE_ANIMATION)
-            putExtra(ConfirmationActivity.EXTRA_MESSAGE, getString(R.string.additional_setup_required))
-        }
-        startActivity(intent)
+        ConfirmationActivityHandler.openOnPhoneAnimation(context!!, getString(R.string.additional_setup_required))
     }
 
     private fun notifyError() {
-        val intent = Intent(context, ConfirmationActivity::class.java).apply {
-            putExtra(ConfirmationActivity.EXTRA_ANIMATION_TYPE, ConfirmationActivity.FAILURE_ANIMATION)
-            putExtra(ConfirmationActivity.EXTRA_MESSAGE, getString(R.string.error))
-        }
-        startActivity(intent)
+        ConfirmationActivityHandler.failAnimation(context!!, getString(R.string.error))
     }
 
-    private fun onDnDAccessResponse(hasAccess: Boolean) {
-        messageClient.removeListener(listener)
+    private fun onInterruptFilterAccessResponse(hasAccess: Boolean) {
+        messageClient.removeListener(interruptFilterAccessListener)
         if (hasAccess) {
             prefs.edit().putBoolean(changingKey, hasAccess).apply()
             preferenceSyncLayer.pushNewData()

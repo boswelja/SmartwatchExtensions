@@ -21,7 +21,8 @@
 
     <string name="pref_category_battery_sync_title">Battery Sync</string>
 
-    <string name="communicating_noti_title">Communicating with your phone</string>
+    <string name="noti_action_service_title">Communicating with your phone</string>
+    <string name="noti_action_service_content">Please wait…</string>
 
     <string name="no_device_paired">No device paired</string>
 

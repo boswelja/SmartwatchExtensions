@@ -19,7 +19,7 @@ import com.boswelja.devicemanager.common.AtomicCounter
 import com.boswelja.devicemanager.common.CommonUtils
 import com.boswelja.devicemanager.common.PreferenceKey
 
-class DnDSyncWithTheaterModeListener : Service() {
+class InterruptFilterSyncWithTheaterListener : Service() {
 
     private val dndSyncWithTheaterModeNotiCategoryKey = "dnd_sync_with_theater_mode"
 
@@ -89,7 +89,7 @@ class DnDSyncWithTheaterModeListener : Service() {
     private inner class TheaterModeObserver(handler: Handler) : ContentObserver(handler) {
         override fun onChange(selfChange: Boolean) {
             super.onChange(selfChange)
-            val context = this@DnDSyncWithTheaterModeListener
+            val context = this@InterruptFilterSyncWithTheaterListener
             val isTheaterModeOn = Utils.isTheaterModeOn(context)
             CommonUtils.updateInterruptionFilter(context, isTheaterModeOn)
         }

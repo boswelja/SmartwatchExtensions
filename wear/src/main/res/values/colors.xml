@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <color name="colorPrimary">#9c27b0</color>
-    <color name="dark_background">#000000</color>
-    <color name="light_background">#44104d</color>
-    <color name="dark_ui_element">#5b1566</color>
-    <color name="light_ui_element">#7c1f8c</color>
-    <color name="active_ui_element">#9423a6</color>
     <color name="colorAccent">#ec80ff</color>
 
-    <color name="launcher_background">#333</color>
+    <color name="darkUIElement">#5b1566</color>
+    <color name="lightUIElement">#7c1f8c</color>
+    <color name="activeUIElement">#9423a6</color>
+
+    <color name="windowBackground">#000000</color>
+    <color name="navDrawerBackground">#44104d</color>
+
 </resources>

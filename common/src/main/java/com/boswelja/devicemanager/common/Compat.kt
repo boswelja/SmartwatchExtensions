@@ -9,6 +9,7 @@ package com.boswelja.devicemanager.common
 
 import android.annotation.SuppressLint
 import android.app.NotificationManager
+import android.app.PendingIntent
 import android.app.job.JobInfo
 import android.app.job.JobScheduler
 import android.content.Context
@@ -61,6 +62,13 @@ object Compat {
         }
     }
 
+    fun getForegroundService(context: Context, intent: Intent): PendingIntent {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            PendingIntent.getForegroundService(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+        } else {
+            PendingIntent.getService(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+        }
+    }
     /**
      * Set the system's current Interruption Filter state, or set silent mode if
      * Interruption Filter doesn't exist.
