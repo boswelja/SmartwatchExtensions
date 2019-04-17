@@ -13,6 +13,10 @@ import com.boswelja.devicemanager.R
 
 class ControlsFragment : Fragment() {
 
+    private val curvedScrollingLayout = CustomScrollingLayoutCallback()
+    private val controlsAdapter = ControlsAdapter()
+    private val pagerSnapHelper = PagerSnapHelper()
+
     private lateinit var recyclerView: WearableRecyclerView
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -23,11 +27,11 @@ class ControlsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         recyclerView = view.findViewById<WearableRecyclerView>(R.id.recycler_view).apply {
-            layoutManager = WearableLinearLayoutManager(context, CustomScrollingLayoutCallback())
+            layoutManager = WearableLinearLayoutManager(context, curvedScrollingLayout)
             isEdgeItemsCenteringEnabled = true
-            adapter = ControlsAdapter()
+            adapter = controlsAdapter
         }
-        PagerSnapHelper().attachToRecyclerView(recyclerView)
+        pagerSnapHelper.attachToRecyclerView(recyclerView)
     }
 
     class CustomScrollingLayoutCallback : WearableLinearLayoutManager.LayoutCallback() {
