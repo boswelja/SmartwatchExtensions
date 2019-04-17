@@ -52,7 +52,7 @@ object CommonUtils {
      */
     fun updateInterruptionFilter(context: Context) {
         val interruptionFilterEnabled = Compat.interruptionFilterEnabled(context)
-        CommonUtils.updateInterruptionFilter(context, interruptionFilterEnabled)
+        updateInterruptionFilter(context, interruptionFilterEnabled)
     }
 
     /**

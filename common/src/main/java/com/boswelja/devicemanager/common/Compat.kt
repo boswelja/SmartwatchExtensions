@@ -32,7 +32,7 @@ object Compat {
      */
     fun getPendingJob(context: Context, id: Int): JobInfo? {
         val jobScheduler = context.getSystemService(Context.JOB_SCHEDULER_SERVICE) as JobScheduler
-        return Compat.getPendingJob(jobScheduler, id)
+        return getPendingJob(jobScheduler, id)
     }
 
     /**
