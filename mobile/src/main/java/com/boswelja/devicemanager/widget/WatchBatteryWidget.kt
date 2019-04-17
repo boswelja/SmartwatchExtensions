@@ -25,7 +25,7 @@ class WatchBatteryWidget : AppWidgetProvider() {
     override fun onUpdate(context: Context?, appWidgetManager: AppWidgetManager?, appWidgetIds: IntArray?) {
         super.onUpdate(context, appWidgetManager, appWidgetIds)
 
-        if (appWidgetIds != null && !appWidgetIds.isEmpty()) {
+        if (appWidgetIds != null && appWidgetIds.isNotEmpty()) {
             val sharedPrefs = PreferenceManager.getDefaultSharedPreferences(context)
             val percent = sharedPrefs.getInt(PreferenceKey.BATTERY_PERCENT_KEY, 0)
             val batterySyncEnabled = sharedPrefs.getBoolean(PreferenceKey.BATTERY_SYNC_ENABLED_KEY, false)

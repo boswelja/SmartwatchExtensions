@@ -3,10 +3,6 @@
     <string name="app_name">@string/global_app_name</string>
     <string name="companion_device_type">Watch</string>
 
-    <!-- Menu strings -->
-    <string name="menu_search_title">Search</string>
-    <string name="menu_help_title">Help</string>
-
     <!-- Device Admin strings -->
     <string name="device_admin_label">@string/app_name</string>
     <string name="device_admin_desc">Allows locking your phone from your watch</string>

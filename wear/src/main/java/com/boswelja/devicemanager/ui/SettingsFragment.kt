@@ -69,8 +69,7 @@ class SettingsFragment :
     }
 
     override fun onPreferenceChange(preference: Preference?, newValue: Any?): Boolean {
-        val key = preference?.key!!
-        return when (key) {
+        return when (val key = preference?.key) {
             PreferenceKey.BATTERY_SYNC_ENABLED_KEY,
             PreferenceKey.BATTERY_PHONE_FULL_CHARGE_NOTI_KEY,
             PreferenceKey.BATTERY_WATCH_FULL_CHARGE_NOTI_KEY -> {

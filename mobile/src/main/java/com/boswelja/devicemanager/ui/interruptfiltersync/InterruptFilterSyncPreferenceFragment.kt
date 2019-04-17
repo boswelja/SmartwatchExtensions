@@ -47,8 +47,7 @@ class InterruptFilterSyncPreferenceFragment :
     }
 
     override fun onPreferenceChange(preference: Preference?, newValue: Any?): Boolean {
-        val key = preference?.key
-        return when (key) {
+        return when (preference?.key) {
             INTERRUPT_FILTER_SYNC_TO_WATCH_KEY -> {
                 val value = newValue == true
                 if (value) {

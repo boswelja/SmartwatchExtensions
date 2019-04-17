@@ -22,6 +22,7 @@ import androidx.preference.Preference
 import androidx.preference.PreferenceCategory
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.SwitchPreference
+import com.boswelja.devicemanager.BuildConfig
 import com.boswelja.devicemanager.receiver.DeviceAdminChangeReceiver.Companion.DEVICE_ADMIN_ENABLED_KEY
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.Utils
@@ -61,8 +62,7 @@ class SettingsFragment :
     }
 
     override fun onPreferenceClick(preference: Preference?): Boolean {
-        val key = preference?.key!!
-        return when (key) {
+        return when (preference?.key) {
             OPEN_BATTERY_SYNC_PREF_KEY -> {
                 val intent = Intent(context!!, BatterySyncPreferenceActivity::class.java)
                 context!!.startActivity(intent)
@@ -99,8 +99,7 @@ class SettingsFragment :
 
     @SuppressLint("BatteryLife")
     override fun onPreferenceChange(preference: Preference?, newValue: Any?): Boolean {
-        val key = preference?.key!!
-        return when (key) {
+        return when (preference?.key) {
             HIDE_APP_ICON_KEY -> {
                 Utils.setAppLauncherIconVisibility(context!!, newValue == true)
                 true
@@ -217,7 +216,9 @@ class SettingsFragment :
         }
 
         addPreferencesFromResource(R.xml.prefs_about)
-        findPreference<Preference>(OPEN_DONATE_DIALOG_KEY)!!.onPreferenceClickListener = this
+        val openDonateDialogPreference = findPreference<Preference>(OPEN_DONATE_DIALOG_KEY)!!
+        openDonateDialogPreference.isEnabled = !BuildConfig.DEBUG
+        openDonateDialogPreference.onPreferenceClickListener = this
     }
 
     override fun onDisplayPreferenceDialog(preference: Preference?) {

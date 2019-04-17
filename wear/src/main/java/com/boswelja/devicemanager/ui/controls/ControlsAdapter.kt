@@ -82,7 +82,7 @@ class ControlsAdapter : RecyclerView.Adapter<ControlsAdapter.ViewHolder>() {
         return ViewHolder(view)
     }
 
-    class ViewHolder(itemView: View) : androidx.recyclerview.widget.RecyclerView.ViewHolder(itemView) {
+    class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val icon: ImageView = itemView.findViewById(R.id.icon)
         val label: TextView = itemView.findViewById(R.id.label)
     }

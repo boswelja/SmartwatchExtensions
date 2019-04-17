@@ -47,8 +47,7 @@ object Utils {
 
     fun switchDayNightMode(activity: AppCompatActivity) {
         val prefs = PreferenceManager.getDefaultSharedPreferences(activity)
-        val currentNightMode = (activity.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK)
-        when (currentNightMode) {
+        when ((activity.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK)) {
             Configuration.UI_MODE_NIGHT_NO -> {
                 prefs.edit().putInt(SWITCH_DAYNIGHT_MODE_KEY, AppCompatDelegate.MODE_NIGHT_YES).apply()
             }
@@ -61,7 +60,7 @@ object Utils {
 
     fun createBatterySyncJob(context: Context) {
         val prefs = PreferenceManager.getDefaultSharedPreferences(context)
-        Utils.createBatterySyncJob(context, prefs.getInt(PreferenceKey.BATTERY_SYNC_INTERVAL_KEY, 900000).toLong())
+        createBatterySyncJob(context, prefs.getInt(PreferenceKey.BATTERY_SYNC_INTERVAL_KEY, 900000).toLong())
     }
 
     fun createBatterySyncJob(context: Context, intervalMs: Long) {

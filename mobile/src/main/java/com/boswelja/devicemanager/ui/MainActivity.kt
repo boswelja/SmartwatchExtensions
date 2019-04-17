@@ -57,8 +57,7 @@ class MainActivity : BaseToolbarActivity() {
         settingsFragment = SettingsFragment()
         supportFragmentManager.beginTransaction().replace(R.id.fragment_holder, settingsFragment).commit()
         if (intent != null && !intent.getStringExtra(EXTRA_PREFERENCE_KEY).isNullOrEmpty()) {
-            val key = intent.getStringExtra(EXTRA_PREFERENCE_KEY)
-            when (key) {
+            when (val key = intent.getStringExtra(EXTRA_PREFERENCE_KEY)) {
                 PreferenceKey.PHONE_LOCKING_ENABLED_KEY,
                 SettingsFragment.HIDE_APP_ICON_KEY,
                 SettingsFragment.OPEN_NOTI_SETTINGS_KEY,
