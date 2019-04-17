@@ -26,10 +26,13 @@ class MainActivity : AppCompatActivity(), WearableNavigationDrawerView.OnItemSel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         setContentView(R.layout.activity_main)
+
         navigationDrawer = findViewById(R.id.navigation_drawer)
         navigationDrawer.setAdapter(NavigationDrawerAdapter(this))
         navigationDrawer.addOnItemSelectedListener(this)
+
         navigate(controlsFragment)
 
         // Check for companion app
@@ -51,8 +54,7 @@ class MainActivity : AppCompatActivity(), WearableNavigationDrawerView.OnItemSel
     }
 
     override fun onItemSelected(pos: Int) {
-        val itemSection = NavigationDrawerSections.values()[pos]
-        when (itemSection) {
+        when (NavigationDrawerSections.values()[pos]) {
             NavigationDrawerSections.Controls -> {
                 navigate(controlsFragment)
             }
