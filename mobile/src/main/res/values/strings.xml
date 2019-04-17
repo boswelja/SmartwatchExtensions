@@ -35,7 +35,7 @@
     <string name="pref_interrupt_filter_sync_to_phone_title">Watch to Phone Sync</string>
     <string name="pref_interrupt_filter_sync_to_phone_summary">Sync DnD state from your phone to your watch</string>
     <string name="pref_interrupt_filter_sync_with_theater_title">Sync with watch Theater mode</string>
-    <string name="pref_interrupt_filter_sync_with_theater_summary">Sync your phone DnD state with theater mode on your watch</string>
+    <string name="pref_interrupt_filter_sync_with_theater_summary">Sync DnD state with Wear OS theater mode</string>
     <string name="interrupt_filter_access_adb_command">adb shell settings put secure enabled_notification_listeners com.google.android.wearable.app/com.google.android.clockwork.stream.NotificationCollectorService:%s</string>
     <string name="interrupt_filter_sync_to_watch_perm_granted_message">Permission Granted!</string>
     <string name="interrupt_filter_sync_to_watch_perm_denied_message">Permission not granted, please try again</string>
@@ -54,7 +54,11 @@
     <string name="pref_noti_status_title">Notification Settings</string>
     <string name="pref_noti_status_summary_enabled">Notifications are enabled</string>
     <string name="pref_noti_status_summary_disabled">Notifications are disabled</string>
-    <string name="pref_daynight_switch_title">Switch to dark theme</string>
+    <string name="pref_daynight_title">App Theme</string>
+    <string name="pref_daynight_option_light">Light</string>
+    <string name="pref_daynight_option_dark">Dark</string>
+    <string name="pref_daynight_option_battery">Set by Battery Saver</string>
+    <string name="pref_daynight_option_system">Use system default</string>
     <string name="pref_battery_opt_status_title">Disable Battery Optimisation</string>
     <string name="pref_battery_opt_status_summary_disabled">Battery Optimisation is disabled for this app.</string>
     <string name="pref_battery_opt_status_summary_enabled">Battery Optimisation is enabled for this app.</string>

@@ -9,7 +9,10 @@ import com.boswelja.devicemanager.ui.SettingsFragment
 abstract class BaseDayNightActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        AppCompatDelegate.setDefaultNightMode(PreferenceManager.getDefaultSharedPreferences(this).getInt(SettingsFragment.SWITCH_DAYNIGHT_MODE_KEY, AppCompatDelegate.MODE_NIGHT_NO))
+        val nightMode = PreferenceManager.getDefaultSharedPreferences(this).getString(
+                SettingsFragment.DAYNIGHT_MODE_KEY,
+                AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM.toString())!!.toInt()
+        AppCompatDelegate.setDefaultNightMode(nightMode)
         super.onCreate(savedInstanceState)
     }
 }

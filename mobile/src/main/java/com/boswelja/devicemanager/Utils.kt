@@ -23,7 +23,7 @@ import com.boswelja.devicemanager.common.Compat
 import com.boswelja.devicemanager.common.PreferenceKey
 import com.boswelja.devicemanager.receiver.DeviceAdminChangeReceiver
 import com.boswelja.devicemanager.ui.LauncherActivity
-import com.boswelja.devicemanager.ui.SettingsFragment.Companion.SWITCH_DAYNIGHT_MODE_KEY
+import com.boswelja.devicemanager.ui.SettingsFragment.Companion.DAYNIGHT_MODE_KEY
 
 object Utils {
 
@@ -43,19 +43,6 @@ object Utils {
             type = "text/plain"
         }
         context.startActivity(intent)
-    }
-
-    fun switchDayNightMode(activity: AppCompatActivity) {
-        val prefs = PreferenceManager.getDefaultSharedPreferences(activity)
-        when ((activity.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK)) {
-            Configuration.UI_MODE_NIGHT_NO -> {
-                prefs.edit().putInt(SWITCH_DAYNIGHT_MODE_KEY, AppCompatDelegate.MODE_NIGHT_YES).apply()
-            }
-            else -> {
-                prefs.edit().putInt(SWITCH_DAYNIGHT_MODE_KEY, AppCompatDelegate.MODE_NIGHT_NO).apply()
-            }
-        }
-        activity.recreate()
     }
 
     fun createBatterySyncJob(context: Context) {

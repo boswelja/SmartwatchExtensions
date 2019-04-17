@@ -19,10 +19,12 @@
             android:key="show_noti_settings"
             android:title="@string/pref_noti_status_title" />
 
-        <androidx.preference.Preference
-            android:key="daynight_switch"
-            android:title="@string/pref_daynight_switch_title"
-            android:icon="@drawable/pref_ic_daynight"/>
+        <androidx.preference.ListPreference
+            android:key="daynight_mode"
+            android:title="@string/pref_daynight_title"
+            android:icon="@drawable/pref_ic_daynight"
+            android:entries="@array/pref_daynight_mode_entries"
+            android:entryValues="@array/pref_daynight_mode_entry_values" />
 
         <com.boswelja.devicemanager.preference.confirmationdialog.ConfirmationDialogPreference
             android:key="battery_optimisation_status"

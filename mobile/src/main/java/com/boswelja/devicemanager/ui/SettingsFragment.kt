@@ -18,6 +18,7 @@ import android.os.PowerManager
 import android.provider.Settings
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.NotificationManagerCompat
+import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceCategory
 import androidx.preference.PreferenceFragmentCompat
@@ -46,6 +47,7 @@ class SettingsFragment :
 
     private lateinit var openNotiSettingsPreference: Preference
     private lateinit var batteryOptimisationStatusPreference: ConfirmationDialogPreference
+    private lateinit var daynightModePreference: ListPreference
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
         when (key) {
@@ -58,6 +60,7 @@ class SettingsFragment :
             PHONE_LOCKING_ENABLED_KEY -> {
                 phoneLockPreference.isChecked = sharedPreferences!!.getBoolean(key, false)
             }
+            DAYNIGHT_MODE_KEY -> activity?.recreate()
         }
     }
 
@@ -83,10 +86,6 @@ class SettingsFragment :
                     intent.putExtra("app_uid", context?.applicationInfo?.uid!!)
                 }
                 startActivity(intent)
-                true
-            }
-            SWITCH_DAYNIGHT_MODE_KEY -> {
-                Utils.switchDayNightMode(activity as MainActivity)
                 true
             }
             OPEN_DONATE_DIALOG_KEY -> {
@@ -167,6 +166,8 @@ class SettingsFragment :
             }
         }
 
+        daynightModePreference.summary = daynightModePreference.entry
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             val isIgnoringBatteryOptimisation = (context?.getSystemService(Context.POWER_SERVICE) as PowerManager)
                     .isIgnoringBatteryOptimizations(context?.packageName!!)
@@ -207,7 +208,7 @@ class SettingsFragment :
         findPreference<ConfirmationDialogPreference>(HIDE_APP_ICON_KEY)!!.onPreferenceChangeListener = this
         openNotiSettingsPreference = findPreference(OPEN_NOTI_SETTINGS_KEY)!!
         openNotiSettingsPreference.onPreferenceClickListener = this
-        findPreference<Preference>(SWITCH_DAYNIGHT_MODE_KEY)!!.onPreferenceClickListener = this
+        daynightModePreference = findPreference(DAYNIGHT_MODE_KEY)!!
         batteryOptimisationStatusPreference = findPreference(BATTERY_OPTIMISATION_STATUS_KEY)!!
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
             findPreference<PreferenceCategory>("general_category")!!.removePreference(batteryOptimisationStatusPreference)
@@ -238,7 +239,7 @@ class SettingsFragment :
 
         const val HIDE_APP_ICON_KEY = "hide_app_icon"
         const val OPEN_NOTI_SETTINGS_KEY = "show_noti_settings"
-        const val SWITCH_DAYNIGHT_MODE_KEY = "daynight_switch"
+        const val DAYNIGHT_MODE_KEY = "daynight_mode"
         const val BATTERY_OPTIMISATION_STATUS_KEY = "battery_optimisation_status"
 
         const val OPEN_DONATE_DIALOG_KEY = "show_donate_dialog"

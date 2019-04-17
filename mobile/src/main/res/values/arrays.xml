@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Day/Night switching entries -->
+    <string-array name="pref_daynight_mode_entries">
+        <item>@string/pref_daynight_option_light</item>
+        <item>@string/pref_daynight_option_dark</item>
+        <item>@string/pref_daynight_option_battery</item>
+        <item>@string/pref_daynight_option_system</item>
+    </string-array>
+    <string-array name="pref_daynight_mode_entry_values">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>-1</item>
+    </string-array>
+</resources>
