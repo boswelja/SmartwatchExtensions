@@ -69,20 +69,23 @@ class InterruptFilterLocalChangeListener : Service() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        val launchIntent = packageManager.getLaunchIntentForPackage(packageName)
-        val notiTapIntent = PendingIntent.getActivity(this, AtomicCounter.getInt(), launchIntent, PendingIntent.FLAG_CANCEL_CURRENT)
         val notiBuilder = NotificationCompat.Builder(this, References.DND_SYNC_NOTI_CHANNEL_ID)
                 .setContentTitle(getString(R.string.dnd_sync_active_noti_title))
                 .setContentText(getString(R.string.dnd_sync_active_noti_desc))
-                .setContentIntent(notiTapIntent)
                 .setSmallIcon(R.drawable.ic_sync)
                 .setOngoing(true)
                 .setShowWhen(false)
                 .setUsesChronometer(false)
                 .setPriority(NotificationCompat.PRIORITY_LOW)
                 .setVisibility(NotificationCompat.VISIBILITY_SECRET)
-                .build()
-        startForeground(AtomicCounter.getInt(), notiBuilder)
+
+        val launchIntent = packageManager.getLaunchIntentForPackage(packageName)
+        if (launchIntent != null) {
+            val notiTapIntent = PendingIntent.getActivity(this, AtomicCounter.getInt(), launchIntent, PendingIntent.FLAG_CANCEL_CURRENT)
+            notiBuilder.setContentIntent(notiTapIntent)
+        }
+
+        startForeground(AtomicCounter.getInt(), notiBuilder.build())
 
         val intentFilter = IntentFilter()
         intentFilter.addAction(NotificationManager.ACTION_INTERRUPTION_FILTER_CHANGED)
