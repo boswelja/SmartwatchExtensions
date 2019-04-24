@@ -154,6 +154,9 @@ class SettingsFragment :
                 (activity as MainActivity).elevateToolbar(recyclerView.canScrollVertically(-1))
             }
         })
+        val padding = Utils.complexTypeDp(resources, 8f)
+        recyclerView.clipToPadding = false
+        recyclerView.setPadding(0, padding.toInt(), 0, padding.toInt())
         return recyclerView
     }
 

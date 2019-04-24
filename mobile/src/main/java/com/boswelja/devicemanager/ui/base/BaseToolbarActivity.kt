@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.util.TypedValue
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import com.boswelja.devicemanager.R
+import com.boswelja.devicemanager.Utils
 import com.google.android.material.appbar.AppBarLayout
 
 abstract class BaseToolbarActivity : BaseDayNightActivity() {
@@ -26,7 +27,7 @@ abstract class BaseToolbarActivity : BaseDayNightActivity() {
             toolbarElevated = elevate
             val appBarLayout = findViewById<AppBarLayout>(R.id.appbarlayout)
             val elevation = if (elevate) {
-                TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 6f, resources.displayMetrics)
+                Utils.complexTypeDp(resources, 6f)
             } else {
                 0f
             }
