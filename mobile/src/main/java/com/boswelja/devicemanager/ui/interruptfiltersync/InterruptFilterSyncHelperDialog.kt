@@ -18,17 +18,17 @@ import android.widget.Button
 import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.appcompat.widget.AppCompatTextView
-import androidx.fragment.app.DialogFragment
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.Utils
 import com.boswelja.devicemanager.common.interruptfiltersync.InterruptFilterLocalChangeListener
 import com.boswelja.devicemanager.common.References
+import com.boswelja.devicemanager.ui.base.BaseDialogFragment
 import com.boswelja.devicemanager.ui.main.MainActivity
 import com.google.android.gms.wearable.CapabilityClient
 import com.google.android.gms.wearable.MessageClient
 import com.google.android.gms.wearable.Wearable
 
-class InterruptFilterSyncHelperDialog : DialogFragment() {
+class InterruptFilterSyncHelperDialog : BaseDialogFragment() {
 
     private lateinit var messages: View
     private lateinit var loadingSpinner: ProgressBar

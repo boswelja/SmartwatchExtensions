@@ -12,7 +12,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ProgressBar
-import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.android.billingclient.api.BillingClient
@@ -25,11 +24,12 @@ import com.android.billingclient.api.SkuDetails
 import com.android.billingclient.api.SkuDetailsParams
 import com.android.billingclient.api.SkuDetailsResponseListener
 import com.boswelja.devicemanager.R
+import com.boswelja.devicemanager.ui.base.BaseDialogFragment
 import com.boswelja.devicemanager.ui.main.MainActivity
 import com.google.android.material.button.MaterialButton
 
 class DonationDialogFragment :
-        DialogFragment(),
+        BaseDialogFragment(),
         BillingClientStateListener,
         SkuDetailsResponseListener,
         PurchasesUpdatedListener,
@@ -47,11 +47,6 @@ class DonationDialogFragment :
             "donate5",
             "donate10"
     )
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setStyle(STYLE_NO_TITLE, R.style.AppTheme_AlertDialog)
-    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.dialog_donations, container, false)
