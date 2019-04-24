@@ -3,7 +3,7 @@
 
     <androidx.preference.Preference
         android:key="show_battery_sync_prefs"
-        android:icon="@drawable/battery_full"
+        android:icon="@drawable/pref_ic_battery_sync"
         android:title="@string/main_battery_sync_title"
         android:summary="@string/main_battery_sync_summary" />
 
