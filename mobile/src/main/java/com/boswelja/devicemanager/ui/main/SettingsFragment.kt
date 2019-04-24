@@ -23,7 +23,6 @@ import androidx.core.app.NotificationManagerCompat
 import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceCategory
-import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.SwitchPreference
 import androidx.recyclerview.widget.RecyclerView
 import com.boswelja.devicemanager.BuildConfig
@@ -34,12 +33,13 @@ import com.boswelja.devicemanager.common.PreferenceKey.PHONE_LOCKING_ENABLED_KEY
 import com.boswelja.devicemanager.common.prefsynclayer.PreferenceSyncLayer
 import com.boswelja.devicemanager.preference.confirmationdialog.ConfirmationDialogPrefFragment
 import com.boswelja.devicemanager.preference.confirmationdialog.ConfirmationDialogPreference
+import com.boswelja.devicemanager.ui.base.BasePreferenceFragment
 import com.boswelja.devicemanager.ui.batterysync.BatterySyncPreferenceActivity
 import com.boswelja.devicemanager.ui.donate.DonationDialogFragment
 import com.boswelja.devicemanager.ui.interruptfiltersync.InterruptFilterSyncPreferenceActivity
 
 class SettingsFragment :
-        PreferenceFragmentCompat(),
+        BasePreferenceFragment(),
         SharedPreferences.OnSharedPreferenceChangeListener,
         Preference.OnPreferenceClickListener,
         Preference.OnPreferenceChangeListener {
@@ -154,9 +154,6 @@ class SettingsFragment :
                 (activity as MainActivity).elevateToolbar(recyclerView.canScrollVertically(-1))
             }
         })
-        val padding = Utils.complexTypeDp(resources, 8f)
-        recyclerView.clipToPadding = false
-        recyclerView.setPadding(0, padding.toInt(), 0, padding.toInt())
         return recyclerView
     }
 

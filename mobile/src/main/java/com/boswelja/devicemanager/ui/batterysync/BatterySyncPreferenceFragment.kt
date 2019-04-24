@@ -15,11 +15,12 @@ import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_SYNC_ENABLED_KEY
 import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_SYNC_INTERVAL_KEY
 import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_WATCH_FULL_CHARGE_NOTI_KEY
 import com.boswelja.devicemanager.common.prefsynclayer.PreferenceSyncLayer
+import com.boswelja.devicemanager.ui.base.BasePreferenceFragment
 import com.boswelja.devicemanager.widget.WatchBatteryWidget
 import java.util.concurrent.TimeUnit
 
 class BatterySyncPreferenceFragment :
-        PreferenceFragmentCompat(),
+        BasePreferenceFragment(),
         SharedPreferences.OnSharedPreferenceChangeListener,
         Preference.OnPreferenceChangeListener {
 

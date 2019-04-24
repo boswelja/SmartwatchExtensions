@@ -10,7 +10,6 @@ import android.provider.Settings
 import android.util.Log
 import android.widget.Toast
 import androidx.preference.Preference
-import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.SwitchPreference
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.Compat
@@ -19,9 +18,10 @@ import com.boswelja.devicemanager.common.PreferenceKey.INTERRUPT_FILTER_ON_WITH_
 import com.boswelja.devicemanager.common.PreferenceKey.INTERRUPT_FILTER_SYNC_TO_PHONE_KEY
 import com.boswelja.devicemanager.common.PreferenceKey.INTERRUPT_FILTER_SYNC_TO_WATCH_KEY
 import com.boswelja.devicemanager.common.prefsynclayer.PreferenceSyncLayer
+import com.boswelja.devicemanager.ui.base.BasePreferenceFragment
 
 class InterruptFilterSyncPreferenceFragment :
-        PreferenceFragmentCompat(),
+        BasePreferenceFragment(),
         SharedPreferences.OnSharedPreferenceChangeListener,
         Preference.OnPreferenceChangeListener{
 

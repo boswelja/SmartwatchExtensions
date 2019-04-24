@@ -13,7 +13,7 @@
         android:id="@+id/widget_holder"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/toolbar" />
+        app:layout_constraintTop_toBottomOf="@id/appbarlayout" />
 
     <View
         android:id="@+id/widget_divider"
@@ -27,7 +27,6 @@
         android:id="@+id/fragment_holder"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginTop="8dp"
         app:layout_constraintTop_toBottomOf="@id/widget_divider"
         app:layout_constraintBottom_toBottomOf="parent"/>
 
