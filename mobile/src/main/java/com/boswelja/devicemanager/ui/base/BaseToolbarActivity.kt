@@ -31,7 +31,7 @@ abstract class BaseToolbarActivity : BaseDayNightActivity() {
                 0f
             }
             ObjectAnimator.ofFloat(appBarLayout, "elevation", elevation).apply {
-                duration = 200
+                duration = 250
                 interpolator = FastOutSlowInInterpolator()
                 start()
             }
