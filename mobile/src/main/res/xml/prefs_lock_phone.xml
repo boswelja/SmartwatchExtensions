@@ -3,7 +3,8 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <androidx.preference.PreferenceCategory
-        android:title="@string/pref_category_lock_phone">
+        android:title="@string/pref_category_lock_phone"
+        android:selectable="false">
 
         <androidx.preference.SwitchPreference
             android:key="lock_phone_enabled"

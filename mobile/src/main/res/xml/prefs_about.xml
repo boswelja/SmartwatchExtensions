@@ -3,7 +3,8 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <androidx.preference.PreferenceCategory
-        android:title="About">
+        android:title="About"
+        android:selectable="false">
 
         <androidx.preference.Preference
             android:key="show_donate_dialog"

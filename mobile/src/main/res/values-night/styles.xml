@@ -1,3 +1,7 @@
 <resources>
+
     <style name="BaseTheme.DayNight" parent="Theme.MaterialComponents.NoActionBar" />
+
+    <style name="BaseTheme.AlertDialog" parent="Theme.MaterialComponents.Dialog" />
+
 </resources>

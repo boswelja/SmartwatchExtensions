@@ -218,7 +218,7 @@ class SettingsFragment :
 
         addPreferencesFromResource(R.xml.prefs_about)
         val openDonateDialogPreference = findPreference<Preference>(OPEN_DONATE_DIALOG_KEY)!!
-        openDonateDialogPreference.isEnabled = !BuildConfig.DEBUG
+        //openDonateDialogPreference.isEnabled = !BuildConfig.DEBUG
         openDonateDialogPreference.onPreferenceClickListener = this
     }
 

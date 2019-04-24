@@ -7,12 +7,20 @@
  */
 package com.boswelja.devicemanager.preference.confirmationdialog
 
+import android.app.Dialog
 import android.os.Bundle
 import androidx.preference.PreferenceDialogFragmentCompat
+import com.boswelja.devicemanager.R
 
 class ConfirmationDialogPrefFragment : PreferenceDialogFragmentCompat() {
 
     private var key: String = ""
+
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        val dialog = super.onCreateDialog(savedInstanceState)
+        dialog.window?.setBackgroundDrawableResource(R.drawable.dialog_background)
+        return dialog
+    }
 
     override fun onDialogClosed(positiveResult: Boolean) {
         val pref = preference as ConfirmationDialogPreference
