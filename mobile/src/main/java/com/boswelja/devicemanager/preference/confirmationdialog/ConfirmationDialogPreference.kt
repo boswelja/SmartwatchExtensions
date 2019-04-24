@@ -59,7 +59,7 @@ class ConfirmationDialogPreference(context: Context, attrs: AttributeSet?, defSt
     override fun onBindViewHolder(holder: PreferenceViewHolder?) {
         super.onBindViewHolder(holder)
         compoundButton = holder?.itemView?.findViewById(R.id.widget)!!
-        compoundButton.isChecked = value
+        setButtonChecked(value)
     }
 
     override fun onClick() {
@@ -77,10 +77,19 @@ class ConfirmationDialogPreference(context: Context, attrs: AttributeSet?, defSt
             if ((onPreferenceChangeListener == null) || (onPreferenceChangeListener?.onPreferenceChange(this, newValue) == true)) {
                 value = newValue
                 try {
-                    compoundButton.isChecked = value
+                    setButtonChecked(value)
                 } catch (ignored: UninitializedPropertyAccessException) {}
                 sharedPreferences.edit().putBoolean(key, value).apply()
             }
+        }
+    }
+
+    private fun setButtonChecked(checked: Boolean) {
+        compoundButton.isChecked = checked
+        if (checked) {
+            compoundButton.contentDescription = context.getString(R.string.content_description_enabled)
+        } else {
+            compoundButton.contentDescription = context.getString(R.string.content_description_disabled)
         }
     }
 

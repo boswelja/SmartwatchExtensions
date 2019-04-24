@@ -77,6 +77,10 @@
     <string name="dialog_button_next">Next</string>
     <string name="dialog_button_share">Share</string>
 
+    <!-- Content Description strings -->
+    <string name="content_description_enabled">Enabled</string>
+    <string name="content_description_disabled">Disabled</string>
+
     <string name="no_watch_found">No connected watches found running Wearable Extensions</string>
 
 </resources>
