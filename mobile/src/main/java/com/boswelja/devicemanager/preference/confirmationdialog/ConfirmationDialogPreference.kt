@@ -28,20 +28,14 @@ class ConfirmationDialogPreference(context: Context, attrs: AttributeSet?, defSt
     private val showOnEnable: Boolean
     private val showOnDisable: Boolean
     private val allowDisable: Boolean
-    private val useSwitch: Boolean
 
     init {
         val styledAttrs = context.obtainStyledAttributes(attrs, R.styleable.ConfirmationDialogPreference, defStyleAttr, defStyleRes)
         showOnEnable = styledAttrs.getBoolean(R.styleable.ConfirmationDialogPreference_showOnEnable, true)
         showOnDisable = styledAttrs.getBoolean(R.styleable.ConfirmationDialogPreference_showOnDisable, true)
         allowDisable = styledAttrs.getBoolean(R.styleable.ConfirmationDialogPreference_allowDisable, true)
-        useSwitch = styledAttrs.getBoolean(R.styleable.ConfirmationDialogPreference_useSwitch, false)
         styledAttrs.recycle()
-        widgetLayoutResource = if (useSwitch) {
-            R.layout.pref_widget_switch
-        } else {
-            R.layout.pref_widget_checkbox
-        }
+        widgetLayoutResource = R.layout.pref_widget_checkbox
     }
 
     override fun onGetDefaultValue(a: TypedArray?, index: Int): Any {

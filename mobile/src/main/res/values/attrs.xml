@@ -5,7 +5,6 @@
         <attr name="showOnEnable" format="boolean" />
         <attr name="showOnDisable" format="boolean" />
         <attr name="allowDisable" format="boolean" />
-        <attr name="useSwitch" format="boolean" />
     </declare-styleable>
 
 </resources>
