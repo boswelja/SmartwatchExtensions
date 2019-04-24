@@ -113,6 +113,9 @@ class InterruptFilterSyncHelperDialog : DialogFragment() {
                                 messageClient.sendMessage(node?.id!!, References.REQUEST_WATCH_DND_ACCESS_STATUS_PATH, null)
                             }
                         }
+                    } else {
+                        (activity as MainActivity).createSnackbar(getString(R.string.no_watch_found))
+                        dismiss()
                     }
                 }
     }
