@@ -4,6 +4,7 @@ import android.app.admin.DeviceAdminReceiver
 import android.content.Context
 import android.content.Intent
 import androidx.preference.PreferenceManager
+import com.boswelja.devicemanager.common.PreferenceKey
 
 class DeviceAdminChangeReceiver : DeviceAdminReceiver() {
 
@@ -14,8 +15,10 @@ class DeviceAdminChangeReceiver : DeviceAdminReceiver() {
     }
 
     override fun onDisabled(context: Context?, intent: Intent?) {
-        PreferenceManager.getDefaultSharedPreferences(context).edit()
+        PreferenceManager.getDefaultSharedPreferences(context)
+                .edit()
                 .putBoolean(DEVICE_ADMIN_ENABLED_KEY, false)
+                .putBoolean(PreferenceKey.PHONE_LOCKING_ENABLED_KEY, false)
                 .apply()
     }
 
