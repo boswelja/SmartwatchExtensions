@@ -10,6 +10,7 @@ package com.boswelja.devicemanager.ui
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import com.boswelja.devicemanager.ui.main.MainActivity
 
 class LauncherActivity : Activity() {
 

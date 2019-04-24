@@ -11,8 +11,6 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.preference.PreferenceManager
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.boswelja.devicemanager.BatteryUpdateJob
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.Utils
@@ -28,7 +26,6 @@ class MainActivity : BaseToolbarActivity() {
 
     private lateinit var settingsFragment: SettingsFragment
     private lateinit var sharedPrefs: SharedPreferences
-    private lateinit var rvNotifications: RecyclerView
 
     override fun getContentViewId(): Int {
         return R.layout.activity_main
