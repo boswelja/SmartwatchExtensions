@@ -15,7 +15,7 @@ import android.content.Intent
 import android.os.Build
 import com.boswelja.devicemanager.common.CommonUtils
 import com.boswelja.devicemanager.common.References
-import com.boswelja.devicemanager.ui.MainActivity
+import com.boswelja.devicemanager.ui.main.MainActivity
 import com.google.android.gms.wearable.MessageEvent
 import com.google.android.gms.wearable.Wearable
 import com.google.android.gms.wearable.WearableListenerService

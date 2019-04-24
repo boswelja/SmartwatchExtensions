@@ -4,7 +4,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.preference.PreferenceManager
-import com.boswelja.devicemanager.ui.SettingsFragment
+import com.boswelja.devicemanager.ui.main.SettingsFragment
 
 abstract class BaseDayNightActivity : AppCompatActivity() {
 

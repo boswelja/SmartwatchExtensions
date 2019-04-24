@@ -5,7 +5,7 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.preference.PreferenceFragmentCompat
 import com.boswelja.devicemanager.R
-import com.boswelja.devicemanager.ui.MainActivity.Companion.EXTRA_PREFERENCE_KEY
+import com.boswelja.devicemanager.ui.main.MainActivity.Companion.EXTRA_PREFERENCE_KEY
 
 abstract class BasePreferenceActivity : BaseToolbarActivity() {
 

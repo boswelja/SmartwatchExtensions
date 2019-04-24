@@ -27,7 +27,7 @@ import com.android.billingclient.api.SkuDetails
 import com.android.billingclient.api.SkuDetailsParams
 import com.android.billingclient.api.SkuDetailsResponseListener
 import com.boswelja.devicemanager.R
-import com.boswelja.devicemanager.ui.MainActivity
+import com.boswelja.devicemanager.ui.main.MainActivity
 import com.google.android.material.button.MaterialButton
 
 class DonationDialogFragment :

@@ -18,7 +18,7 @@ import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.CommonUtils
 import com.boswelja.devicemanager.common.PreferenceKey
-import com.boswelja.devicemanager.ui.MainActivity
+import com.boswelja.devicemanager.ui.main.MainActivity
 
 class WatchBatteryWidget : AppWidgetProvider() {
 

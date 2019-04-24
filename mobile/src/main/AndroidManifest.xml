@@ -26,7 +26,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".ui.MainActivity">
+        <activity android:name=".ui.main.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <action android:name="android.intent.action.VIEW" />
@@ -35,11 +35,11 @@
 
         <activity
             android:name=".ui.batterysync.BatterySyncPreferenceActivity"
-            android:parentActivityName=".ui.MainActivity" />
+            android:parentActivityName=".ui.main.MainActivity" />
 
         <activity
             android:name=".ui.interruptfiltersync.InterruptFilterSyncPreferenceActivity"
-            android:parentActivityName=".ui.MainActivity" />
+            android:parentActivityName=".ui.main.MainActivity" />
 
         <receiver
             android:name=".receiver.DeviceAdminChangeReceiver"

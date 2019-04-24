@@ -23,7 +23,7 @@ import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.Utils
 import com.boswelja.devicemanager.common.interruptfiltersync.InterruptFilterLocalChangeListener
 import com.boswelja.devicemanager.common.References
-import com.boswelja.devicemanager.ui.MainActivity
+import com.boswelja.devicemanager.ui.main.MainActivity
 import com.google.android.gms.wearable.CapabilityClient
 import com.google.android.gms.wearable.MessageClient
 import com.google.android.gms.wearable.Wearable
