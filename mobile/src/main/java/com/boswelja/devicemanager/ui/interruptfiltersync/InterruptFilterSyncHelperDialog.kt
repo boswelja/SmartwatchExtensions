@@ -8,8 +8,6 @@
 package com.boswelja.devicemanager.ui.interruptfiltersync
 
 import android.content.ComponentName
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -51,7 +49,6 @@ class InterruptFilterSyncHelperDialog : BaseDialogFragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        dialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         return inflater.inflate(R.layout.dialog_dnd_sync, container, false)
     }
 
