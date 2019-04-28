@@ -7,13 +7,12 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/statusBarColor</item>
         <item name="colorAccent">@color/colorPrimary</item>
-        <item name="preferenceTheme">@style/PreferenceThemeOverlay.v14.Material</item>
         <item name="android:windowBackground">@color/windowBackground</item>
         <item name="alertDialogTheme">@style/AppTheme.AlertDialog</item>
     </style>
 
     <style name="AppTheme" parent="BaseTheme" />
-    
+
     <style name="AppTheme.AlertDialog" parent="BaseTheme.AlertDialog">
         <item name="android:windowBackground">@drawable/dialog_background</item>
         <item name="colorAccent">@color/colorPrimary</item>
