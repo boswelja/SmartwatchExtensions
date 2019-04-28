@@ -12,11 +12,9 @@
         android:paddingStart="16dp"
         android:paddingTop="16dp"
         android:paddingEnd="16dp"
-        android:textSize="20sp"
-        android:fontFamily="sans-serif-medium"
-        android:letterSpacing="0.0075"
         android:textColor="?android:textColorPrimary"
-        android:text="@string/pref_interrupt_filter_sync_to_watch_dialog_title"/>
+        android:text="@string/pref_interrupt_filter_sync_to_watch_dialog_title"
+        style="@style/TextAppearance.MaterialComponents.Headline6"/>
 
     <FrameLayout
         android:id="@+id/content"
@@ -37,16 +35,15 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="16sp"
-                android:text="@string/pref_interrupt_filter_sync_to_watch_dialog_message"/>
+                android:text="@string/pref_interrupt_filter_sync_to_watch_dialog_message"
+                style="@style/TextAppearance.MaterialComponents.Body1"/>
 
             <TextView
                 android:id="@+id/command_string"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                android:text="@string/interrupt_filter_access_adb_command"/>
+                android:text="@string/interrupt_filter_access_adb_command"
+                style="@style/TextAppearance.MaterialComponents.Body1"/>
         </LinearLayout>
 
         <ProgressBar

@@ -20,9 +20,9 @@
             android:id="@+id/last_updated_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="16sp"
             android:layout_marginEnd="4dp"
-            android:textColor="?android:textColorSecondary" />
+            android:textColor="?android:textColorSecondary"
+            style="@style/TextAppearance.MaterialComponents.Body1"/>
 
         <androidx.appcompat.widget.AppCompatImageView
             android:layout_width="wrap_content"
@@ -36,9 +36,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
-        android:textSize="22sp"
         android:textColor="?android:textColorPrimary"
-        app:layout_constraintBottom_toTopOf="@id/updated_time_holder"/>
+        app:layout_constraintBottom_toTopOf="@id/updated_time_holder"
+        style="@style/TextAppearance.MaterialComponents.Headline5"/>
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/watch_battery_indicator"
