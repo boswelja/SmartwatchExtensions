@@ -2,6 +2,7 @@
 
     <style name="BaseTheme.DayNight" parent="Theme.MaterialComponents.Light.NoActionBar" />
     <style name="BaseTheme.AlertDialog" parent="Theme.MaterialComponents.Light.Dialog" />
+    <style name="BaseTheme.AppBarLayout" parent="Widget.MaterialComponents.Toolbar" />
 
     <style name="BaseTheme" parent="BaseTheme.DayNight">
         <item name="colorPrimary">@color/colorPrimary</item>
@@ -9,9 +10,14 @@
         <item name="colorAccent">@color/colorPrimary</item>
         <item name="android:windowBackground">@color/windowBackground</item>
         <item name="alertDialogTheme">@style/AppTheme.AlertDialog</item>
+        <item name="toolbarStyle">@style/AppTheme.Toolbar</item>
     </style>
 
     <style name="AppTheme" parent="BaseTheme" />
+
+    <style name="AppTheme.Toolbar" parent="BaseTheme.AppBarLayout">
+        <item name="android:background">@color/windowBackground</item>
+    </style>
 
     <style name="AppTheme.AlertDialog" parent="BaseTheme.AlertDialog">
         <item name="android:windowBackground">@drawable/dialog_background</item>
