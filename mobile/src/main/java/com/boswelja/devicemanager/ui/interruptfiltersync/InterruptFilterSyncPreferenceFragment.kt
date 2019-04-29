@@ -52,7 +52,6 @@ class InterruptFilterSyncPreferenceFragment :
                 val value = newValue == true
                 if (value) {
                     val dndDialog = InterruptFilterSyncHelperDialog()
-                    dndDialog.show(activity?.supportFragmentManager!!, "InterruptFilterSyncHelperDialog")
                     dndDialog.setResponseListener(object : InterruptFilterSyncHelperDialog.ResponseListener {
                         override fun onResponse(success: Boolean) {
                             preference.sharedPreferences.edit().putBoolean(preference.key, success).apply()
@@ -62,6 +61,7 @@ class InterruptFilterSyncPreferenceFragment :
                             }
                         }
                     })
+                    dndDialog.show(activity?.supportFragmentManager!!, "InterruptFilterSyncHelperDialog")
                 } else {
                     preference.sharedPreferences.edit().putBoolean(preference.key, value).apply()
                     preferenceSyncLayer.pushNewData()
