@@ -23,7 +23,7 @@ object CommonUtils {
     /**
      * Sends a battery status update to connected devices.
      */
-    fun updateBatteryStats(context: Context) {
+    fun updateBatteryStats(context: Context, target: String) {
         val iFilter = IntentFilter(Intent.ACTION_BATTERY_CHANGED)
         val batteryStatus = context.registerReceiver(null, iFilter)
         val batteryPct = ((batteryStatus?.getIntExtra(BatteryManager.EXTRA_LEVEL, -1)!! / batteryStatus.getIntExtra(BatteryManager.EXTRA_SCALE, -1).toFloat()) * 100).toInt()
@@ -31,7 +31,7 @@ object CommonUtils {
         val message = "$batteryPct|$charging"
 
         Wearable.getCapabilityClient(context)
-                .getCapability(References.CAPABILITY_APP, CapabilityClient.FILTER_REACHABLE)
+                .getCapability(target, CapabilityClient.FILTER_REACHABLE)
                 .addOnSuccessListener { capabilityInfo ->
                     val nodeId = capabilityInfo.nodes.firstOrNull { it.isNearby }?.id ?: capabilityInfo.nodes.firstOrNull()?.id
                     if (nodeId != null) {

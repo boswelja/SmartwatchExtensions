@@ -32,7 +32,7 @@ class WatchMessageReceiver : WearableListenerService() {
                 }
             }
             References.REQUEST_BATTERY_UPDATE_PATH -> {
-                CommonUtils.updateBatteryStats(this)
+                CommonUtils.updateBatteryStats(this, References.CAPABILITY_WATCH_APP)
             }
             References.REQUEST_LAUNCH_APP_PATH -> {
                 val key = String(messageEvent.data, Charsets.UTF_8)

@@ -20,7 +20,7 @@ object Utils {
 
     fun getCompanionNode(context: Context): Task<CapabilityInfo> {
         return Wearable.getCapabilityClient(context)
-                .getCapability(References.CAPABILITY_APP, CapabilityClient.FILTER_REACHABLE)
+                .getCapability(References.CAPABILITY_PHONE_APP, CapabilityClient.FILTER_REACHABLE)
     }
 
     fun checkDnDAccess(context: Context): Boolean {

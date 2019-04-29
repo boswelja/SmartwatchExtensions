@@ -99,7 +99,7 @@ class InterruptFilterSyncHelperDialog : BaseDialogFragment() {
         messageClient.addListener(listener)
 
         Wearable.getCapabilityClient(context!!)
-                .getCapability(References.CAPABILITY_APP, CapabilityClient.FILTER_REACHABLE)
+                .getCapability(References.CAPABILITY_WATCH_APP, CapabilityClient.FILTER_REACHABLE)
                 .addOnCompleteListener {
                     if (it.isSuccessful) {
                         val nodes = it.result?.nodes

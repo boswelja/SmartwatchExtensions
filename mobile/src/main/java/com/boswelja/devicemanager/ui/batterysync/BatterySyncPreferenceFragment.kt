@@ -13,6 +13,7 @@ import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_PHONE_FULL_CHARGE
 import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_SYNC_ENABLED_KEY
 import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_SYNC_INTERVAL_KEY
 import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_WATCH_FULL_CHARGE_NOTI_KEY
+import com.boswelja.devicemanager.common.References
 import com.boswelja.devicemanager.common.prefsynclayer.PreferenceSyncLayer
 import com.boswelja.devicemanager.ui.base.BasePreferenceFragment
 import com.boswelja.devicemanager.widget.WatchBatteryWidget
@@ -53,7 +54,7 @@ class BatterySyncPreferenceFragment :
                 sharedPreferences.edit().putBoolean(preference.key, value).apply()
                 if (value) {
                     Utils.createBatterySyncJob(context!!)
-                    CommonUtils.updateBatteryStats(context!!)
+                    CommonUtils.updateBatteryStats(context!!, References.CAPABILITY_WATCH_APP)
                 } else {
                     Utils.stopBatterySyncJob(context!!)
                 }
