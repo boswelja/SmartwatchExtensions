@@ -14,9 +14,9 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.widget.RemoteViews
+import androidx.core.graphics.drawable.toBitmap
 import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.R
-import com.boswelja.devicemanager.common.CommonUtils
 import com.boswelja.devicemanager.common.PreferenceKey
 import com.boswelja.devicemanager.ui.main.MainActivity
 
@@ -41,7 +41,7 @@ class WatchBatteryWidget : AppWidgetProvider() {
                     remoteViews.setTextViewText(R.id.battery_indicator_text, context.getString(R.string.battery_sync_disabled))
                     battDrawable.level = 0
                 }
-                remoteViews.setImageViewBitmap(R.id.battery_indicator, CommonUtils.drawableToBitmap(battDrawable))
+                remoteViews.setImageViewBitmap(R.id.battery_indicator, battDrawable.toBitmap())
                 appWidgetManager?.updateAppWidget(widgetId, remoteViews)
             }
         }

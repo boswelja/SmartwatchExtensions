@@ -19,6 +19,7 @@ import androidx.appcompat.widget.AppCompatTextView
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.Utils
 import com.boswelja.devicemanager.common.interruptfiltersync.InterruptFilterLocalChangeListener
+import com.boswelja.devicemanager.common.Extensions.fromByteArray
 import com.boswelja.devicemanager.common.References
 import com.boswelja.devicemanager.ui.base.BaseDialogFragment
 import com.boswelja.devicemanager.ui.main.MainActivity
@@ -43,7 +44,7 @@ class InterruptFilterSyncHelperDialog : BaseDialogFragment() {
 
     private val listener = MessageClient.OnMessageReceivedListener {
         if (it.path == References.REQUEST_WATCH_DND_ACCESS_STATUS_PATH) {
-            val hasDnDAccess = it.data[0].toInt() == 1
+            val hasDnDAccess = Boolean.fromByteArray(it.data)
             onResponse(hasDnDAccess)
         }
     }

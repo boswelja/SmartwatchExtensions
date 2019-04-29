@@ -8,7 +8,7 @@
 package com.boswelja.devicemanager.receiver
 
 import com.boswelja.devicemanager.Utils
-import com.boswelja.devicemanager.common.CommonUtils.boolToByteArray
+import com.boswelja.devicemanager.common.Extensions.toByteArray
 import com.boswelja.devicemanager.common.References
 import com.google.android.gms.wearable.MessageEvent
 import com.google.android.gms.wearable.Wearable
@@ -24,7 +24,7 @@ class MessageReceiver : WearableListenerService() {
                         .sendMessage(
                                 messageEvent.sourceNodeId,
                                 References.REQUEST_WATCH_DND_ACCESS_STATUS_PATH,
-                                boolToByteArray(hasDnDAccess))
+                                hasDnDAccess.toByteArray())
             }
         }
     }

@@ -10,9 +10,6 @@ package com.boswelja.devicemanager.common
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.graphics.Bitmap
-import android.graphics.Canvas
-import android.graphics.drawable.Drawable
 import android.os.BatteryManager
 import com.google.android.gms.wearable.CapabilityClient
 import com.google.android.gms.wearable.PutDataMapRequest
@@ -65,32 +62,5 @@ object CommonUtils {
         putDataMapReq.dataMap.putBoolean(References.NEW_DND_STATE_KEY, interruptionFilterEnabled)
         putDataMapReq.setUrgent()
         dataClient.putDataItem(putDataMapReq.asPutDataRequest())
-    }
-
-    /**
-     * Converts a Drawable to a Bitmap.
-     * @param drawable Input Drawable.
-     * @return Output Bitmap.
-     * @see Drawable
-     * @see Bitmap
-     */
-    fun drawableToBitmap(drawable: Drawable): Bitmap {
-        val bitmap = Bitmap.createBitmap(drawable.intrinsicWidth, drawable.intrinsicHeight, Bitmap.Config.ARGB_8888)
-        val canvas = Canvas(bitmap)
-        drawable.setBounds(0, 0, canvas.width, canvas.height)
-        drawable.draw(canvas)
-        return bitmap
-    }
-
-    /**
-     * Converts a single Boolean to a ByteArray
-     */
-    fun boolToByteArray(b: Boolean): ByteArray {
-        val byte: Byte = if (b) {
-            1
-        } else {
-            0
-        }
-        return byteArrayOf(byte)
     }
 }

@@ -14,6 +14,7 @@ import androidx.wear.widget.WearableRecyclerView
 import com.boswelja.devicemanager.ConfirmationActivityHandler
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.Utils
+import com.boswelja.devicemanager.common.Extensions.fromByteArray
 import com.boswelja.devicemanager.common.PreferenceKey
 import com.boswelja.devicemanager.common.References
 import com.boswelja.devicemanager.common.prefsynclayer.PreferenceSyncLayer
@@ -40,7 +41,7 @@ class SettingsFragment :
 
     private val interruptFilterAccessListener = MessageClient.OnMessageReceivedListener {
         if (it.path == References.REQUEST_PHONE_DND_ACCESS_STATUS_PATH) {
-            val hasAccess = it.data[0].toInt() == 1
+            val hasAccess = Boolean.fromByteArray(it.data)
             onInterruptFilterAccessResponse(hasAccess)
         }
     }

@@ -14,6 +14,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import com.boswelja.devicemanager.common.CommonUtils
+import com.boswelja.devicemanager.common.Extensions.toByteArray
 import com.boswelja.devicemanager.common.References
 import com.boswelja.devicemanager.ui.main.MainActivity
 import com.google.android.gms.wearable.MessageEvent
@@ -47,7 +48,10 @@ class WatchMessageReceiver : WearableListenerService() {
                     true
                 }
                 Wearable.getMessageClient(this)
-                        .sendMessage(messageEvent.sourceNodeId!!, References.REQUEST_PHONE_DND_ACCESS_STATUS_PATH, CommonUtils.boolToByteArray(hasDnDAccess))
+                        .sendMessage(
+                                messageEvent.sourceNodeId!!,
+                                References.REQUEST_PHONE_DND_ACCESS_STATUS_PATH,
+                                hasDnDAccess.toByteArray())
             }
         }
     }

@@ -13,9 +13,9 @@ import android.support.wearable.complications.ComplicationData
 import android.support.wearable.complications.ComplicationManager
 import android.support.wearable.complications.ComplicationProviderService
 import android.support.wearable.complications.ComplicationText
+import androidx.core.graphics.drawable.toBitmap
 import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.R
-import com.boswelja.devicemanager.common.CommonUtils
 import com.boswelja.devicemanager.common.Compat
 import com.boswelja.devicemanager.common.PreferenceKey
 import com.boswelja.devicemanager.common.References
@@ -50,6 +50,6 @@ class PhoneBatteryComplicationProvider : ComplicationProviderService() {
     private fun createIcon(percent: Int): Icon {
         val drawable = getDrawable(R.drawable.ic_phone_battery)!!
         drawable.level = percent
-        return Icon.createWithBitmap(CommonUtils.drawableToBitmap(drawable))
+        return Icon.createWithBitmap(drawable.toBitmap())
     }
 }

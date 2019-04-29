@@ -2,7 +2,6 @@ package com.boswelja.devicemanager.ui.base
 
 import android.animation.ObjectAnimator
 import android.os.Bundle
-import android.util.TypedValue
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.Utils
