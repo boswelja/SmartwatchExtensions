@@ -2,6 +2,7 @@ package com.boswelja.devicemanager.ui.base
 
 import android.animation.ObjectAnimator
 import android.os.Bundle
+import android.view.MenuItem
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.Utils
@@ -19,6 +20,13 @@ abstract class BaseToolbarActivity : BaseDayNightActivity() {
         setContentView(getContentViewId())
 
         setSupportActionBar(findViewById(R.id.toolbar))
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        if (item?.itemId == android.R.id.home) {
+            onBackPressed()
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     fun elevateToolbar(elevate: Boolean) {
