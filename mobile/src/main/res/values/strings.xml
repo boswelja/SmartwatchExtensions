@@ -70,12 +70,14 @@
     <string name="donation_processed_message">Thanks for donating!</string>
     <string name="donation_failed_message">Failed to process donation</string>
     <string name="pref_about_version_title">Version</string>
+    <string name="dialog_changelog_title">Changelog</string>
 
     <!-- Dialog button strings -->
     <string name="dialog_button_grant">Grant</string>
     <string name="dialog_button_cancel">Cancel</string>
     <string name="dialog_button_next">Next</string>
     <string name="dialog_button_share">Share</string>
+    <string name="dialog_button_close">Close</string>
 
     <!-- Content Description strings -->
     <string name="content_description_enabled">Enabled</string>

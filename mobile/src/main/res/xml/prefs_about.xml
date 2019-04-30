@@ -11,6 +11,7 @@
             android:icon="@drawable/pref_ic_donate" />
 
         <androidx.preference.Preference
+            android:key="version"
             android:title="@string/pref_about_version_title"
             android:summary="@string/app_version_name"
             android:icon="@drawable/pref_ic_about" />

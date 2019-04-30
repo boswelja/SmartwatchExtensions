@@ -37,6 +37,7 @@ import com.boswelja.devicemanager.ui.base.BasePreferenceFragment
 import com.boswelja.devicemanager.ui.batterysync.BatterySyncPreferenceActivity
 import com.boswelja.devicemanager.ui.donate.DonationDialogFragment
 import com.boswelja.devicemanager.ui.interruptfiltersync.InterruptFilterSyncPreferenceActivity
+import com.boswelja.devicemanager.ui.version.ChangelogDialogFragment
 
 class SettingsFragment :
         BasePreferenceFragment(),
@@ -93,6 +94,10 @@ class SettingsFragment :
             }
             OPEN_DONATE_DIALOG_KEY -> {
                 DonationDialogFragment().show(activity?.supportFragmentManager!!, "DonationDialog")
+                true
+            }
+            VERSION_KEY -> {
+                ChangelogDialogFragment().show(activity?.supportFragmentManager!!, "ChangelogDialog")
                 true
             }
             else -> false
@@ -233,6 +238,8 @@ class SettingsFragment :
         val openDonateDialogPreference = findPreference<Preference>(OPEN_DONATE_DIALOG_KEY)!!
         openDonateDialogPreference.isEnabled = !BuildConfig.DEBUG
         openDonateDialogPreference.onPreferenceClickListener = this
+        val versionPreference = findPreference<Preference>(VERSION_KEY)!!
+        versionPreference.onPreferenceClickListener = this
     }
 
     override fun onDisplayPreferenceDialog(preference: Preference?) {
@@ -256,5 +263,6 @@ class SettingsFragment :
         const val BATTERY_OPTIMISATION_STATUS_KEY = "battery_optimisation_status"
 
         const val OPEN_DONATE_DIALOG_KEY = "show_donate_dialog"
+        const val VERSION_KEY = "version"
     }
 }
