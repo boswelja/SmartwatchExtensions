@@ -16,6 +16,7 @@
     </string-array>
 
     <string-array name="version_changelog">
+        <item>\u2022 Due to the size of this update, previous settings have been cleared</item>
         <item>\u2022 You can now change some settings from your watch</item>
         <item>\u2022 App Theme changing has been reworked, with more options</item>
         <item>\u2022 The app\'s accent colour is now purple</item>
