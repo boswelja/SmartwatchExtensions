@@ -11,8 +11,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.BatteryManager
-import android.os.Build
-import androidx.core.app.NotificationManagerCompat
 import com.google.android.gms.wearable.CapabilityClient
 import com.google.android.gms.wearable.PutDataMapRequest
 import com.google.android.gms.wearable.Wearable
@@ -64,22 +62,5 @@ object CommonUtils {
         putDataMapReq.dataMap.putBoolean(References.NEW_DND_STATE_KEY, interruptionFilterEnabled)
         putDataMapReq.setUrgent()
         dataClient.putDataItem(putDataMapReq.asPutDataRequest())
-    }
-
-    /**
-     * Checks whether or not notifications are enabled for this app.
-     * @param channelId ID of the notification channel to check. Ignored on platforms below API26
-     * and can be left null to check whether notifications are enabled overall for this app.
-     * @return True if notifications are enabled, False otherwise.
-     */
-    fun notificationsEnabled(context: Context, channelId: String? = null) : Boolean {
-        val notificationManager = NotificationManagerCompat.from(context)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && !channelId.isNullOrBlank()) {
-            val channel = notificationManager.getNotificationChannel(channelId)
-            if (channel != null) {
-                return channel.importance != NotificationManagerCompat.IMPORTANCE_NONE
-            }
-        }
-        return notificationManager.areNotificationsEnabled()
     }
 }

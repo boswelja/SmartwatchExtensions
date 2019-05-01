@@ -9,12 +9,14 @@ import androidx.preference.SwitchPreference
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.Utils
 import com.boswelja.devicemanager.common.CommonUtils
+import com.boswelja.devicemanager.common.Compat
 import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_PHONE_FULL_CHARGE_NOTI_KEY
 import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_SYNC_ENABLED_KEY
 import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_SYNC_INTERVAL_KEY
 import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_WATCH_FULL_CHARGE_NOTI_KEY
 import com.boswelja.devicemanager.common.References
 import com.boswelja.devicemanager.common.prefsynclayer.PreferenceSyncLayer
+import com.boswelja.devicemanager.ui.base.BasePreferenceActivity
 import com.boswelja.devicemanager.ui.base.BasePreferenceFragment
 import com.boswelja.devicemanager.widget.WatchBatteryWidget
 import java.util.concurrent.TimeUnit
@@ -87,6 +89,14 @@ class BatterySyncPreferenceFragment :
     override fun onResume() {
         super.onResume()
         preferenceManager.sharedPreferences.registerOnSharedPreferenceChangeListener(this)
+        if (preferenceManager.sharedPreferences.getBoolean(BATTERY_WATCH_FULL_CHARGE_NOTI_KEY, false) &&
+                !Compat.notificationsEnabled(context!!, References.BATTERY_CHARGED_NOTI_CHANEL_ID)) {
+            preferenceManager.sharedPreferences.edit()
+                    .putBoolean(BATTERY_WATCH_FULL_CHARGE_NOTI_KEY, false)
+                    .apply()
+            (activity as BasePreferenceActivity).createSnackbar(getString(R.string.battery_sync_watch_charged_noti_channel_disabled))
+            preferenceSyncLayer.pushNewData()
+        }
     }
 
     override fun onPause() {
