@@ -13,7 +13,6 @@ import android.app.job.JobScheduler
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.content.res.Resources
 import android.util.TypedValue
 import androidx.preference.PreferenceManager
@@ -21,7 +20,6 @@ import com.boswelja.devicemanager.receiver.DeviceAdminChangeReceiver.Companion.D
 import com.boswelja.devicemanager.common.Compat
 import com.boswelja.devicemanager.common.PreferenceKey
 import com.boswelja.devicemanager.receiver.DeviceAdminChangeReceiver
-import com.boswelja.devicemanager.ui.LauncherActivity
 
 object Utils {
 
@@ -60,16 +58,6 @@ object Utils {
         val jobScheduler = context.getSystemService(Context.JOB_SCHEDULER_SERVICE) as JobScheduler
         if (Compat.getPendingJob(jobScheduler, BatteryUpdateJob.BATTERY_PERCENT_JOB_ID) != null) {
             jobScheduler.cancel(BatteryUpdateJob.BATTERY_PERCENT_JOB_ID)
-        }
-    }
-
-    fun setAppLauncherIconVisibility(context: Context, visible: Boolean) {
-        val componentName = ComponentName(context, LauncherActivity::class.java)
-        val packageManager = context.packageManager
-        if (visible) {
-            packageManager.setComponentEnabledSetting(componentName, PackageManager.COMPONENT_ENABLED_STATE_ENABLED, PackageManager.DONT_KILL_APP)
-        } else {
-            packageManager.setComponentEnabledSetting(componentName, PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP)
         }
     }
 

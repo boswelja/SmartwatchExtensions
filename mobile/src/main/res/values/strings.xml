@@ -49,9 +49,6 @@
 
     <!-- General preference strings -->
     <string name="pref_category_general">General</string>
-    <string name="pref_hide_app_icon_title">Hide app icon</string>
-    <string name="pref_hide_app_icon_summary">Hide the app icon from your launcher</string>
-    <string name="pref_hide_app_icon_warning_message">Are you sure? To open Wearable Extensions again you\'ll need to use an activity launcher or have access to the watch battery widget</string>
     <string name="pref_noti_status_title">Notification Settings</string>
     <string name="pref_noti_status_summary_enabled">Notifications are enabled</string>
     <string name="pref_noti_status_summary_disabled">Notifications are disabled</string>

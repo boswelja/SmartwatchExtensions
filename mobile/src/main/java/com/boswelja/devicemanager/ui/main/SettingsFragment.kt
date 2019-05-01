@@ -107,10 +107,6 @@ class SettingsFragment :
     @SuppressLint("BatteryLife")
     override fun onPreferenceChange(preference: Preference?, newValue: Any?): Boolean {
         return when (preference?.key) {
-            HIDE_APP_ICON_KEY -> {
-                Utils.setAppLauncherIconVisibility(context!!, newValue == true)
-                true
-            }
             PHONE_LOCKING_ENABLED_KEY -> {
                 val sharedPreferences = preference.sharedPreferences
                 val value = newValue == true
@@ -223,7 +219,6 @@ class SettingsFragment :
         phoneLockPreference.onPreferenceChangeListener = this
 
         addPreferencesFromResource(R.xml.prefs_general)
-        findPreference<ConfirmationDialogPreference>(HIDE_APP_ICON_KEY)!!.onPreferenceChangeListener = this
         openNotiSettingsPreference = findPreference(OPEN_NOTI_SETTINGS_KEY)!!
         openNotiSettingsPreference.onPreferenceClickListener = this
         daynightModePreference = findPreference(DAYNIGHT_MODE_KEY)!!
@@ -257,7 +252,6 @@ class SettingsFragment :
         const val OPEN_BATTERY_SYNC_PREF_KEY = "show_battery_sync_prefs"
         const val OPEN_INTERRUPT_FILTER_SYNC_PREF_KEY = "show_interrupt_filter_sync_prefs"
 
-        const val HIDE_APP_ICON_KEY = "hide_app_icon"
         const val OPEN_NOTI_SETTINGS_KEY = "show_noti_settings"
         const val DAYNIGHT_MODE_KEY = "daynight_mode"
         const val BATTERY_OPTIMISATION_STATUS_KEY = "battery_optimisation_status"

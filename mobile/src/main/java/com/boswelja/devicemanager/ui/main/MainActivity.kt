@@ -76,7 +76,6 @@ class MainActivity : BaseToolbarActivity() {
         if (intent != null && !intent.getStringExtra(EXTRA_PREFERENCE_KEY).isNullOrEmpty()) {
             when (val key = intent.getStringExtra(EXTRA_PREFERENCE_KEY)) {
                 PreferenceKey.PHONE_LOCKING_ENABLED_KEY,
-                SettingsFragment.HIDE_APP_ICON_KEY,
                 SettingsFragment.OPEN_NOTI_SETTINGS_KEY,
                 SettingsFragment.DAYNIGHT_MODE_KEY,
                 SettingsFragment.BATTERY_OPTIMISATION_STATUS_KEY -> {

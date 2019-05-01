@@ -7,14 +7,6 @@
         android:key="general_category"
         android:title="@string/pref_category_general">
 
-        <com.boswelja.devicemanager.preference.confirmationdialog.ConfirmationDialogPreference
-            android:key="hide_app_icon"
-            android:title="@string/pref_hide_app_icon_title"
-            android:summary="@string/pref_hide_app_icon_summary"
-            android:dialogMessage="@string/pref_hide_app_icon_warning_message"
-            app:showOnEnable="true"
-            app:showOnDisable="false" />
-
         <androidx.preference.Preference
             android:key="show_noti_settings"
             android:title="@string/pref_noti_status_title" />
