@@ -15,9 +15,9 @@
     <string name="pref_battery_sync_enable_title">Enable Battery Sync</string>
     <string name="pref_battery_sync_interval_title">Sync Interval</string>
     <string name="pref_battery_sync_interval_summary">Sync interval in minutes</string>
-    <string name="pref_battery_sync_phone_charged_noti_title">Phone Battery Fully Charged Notification</string>
+    <string name="pref_battery_sync_phone_charged_noti_title">Phone Charged Notification</string>
     <string name="pref_battery_sync_phone_charged_noti_summary">Get a notification on your watch when your phone is above 90\% charged</string>
-    <string name="pref_battery_sync_watch_charged_noti_title">Watch Battery Fully Charged Notification</string>
+    <string name="pref_battery_sync_watch_charged_noti_title">Watch Charged Notification</string>
     <string name="pref_battery_sync_watch_charged_noti_summary">Get a notification on your phone when your watch is above 90\% charged</string>
     <string name="battery_sync_disabled">Battery Sync disabled</string>
     <string name="battery_sync_last_updated_under_minute">Last updated less than a minute ago</string>
@@ -58,7 +58,7 @@
     <string name="pref_daynight_option_light">Light</string>
     <string name="pref_daynight_option_dark">Dark</string>
     <string name="pref_daynight_option_battery">Set by Battery Saver</string>
-    <string name="pref_daynight_option_system">Use system default</string>
+    <string name="pref_daynight_option_system">Follow System</string>
     <string name="pref_battery_opt_status_title">Disable Battery Optimisation</string>
     <string name="pref_battery_opt_status_summary_disabled">Battery Optimisation is disabled for this app.</string>
     <string name="pref_battery_opt_status_summary_enabled">Battery Optimisation is enabled for this app.</string>

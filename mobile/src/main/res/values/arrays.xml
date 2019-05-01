@@ -24,10 +24,10 @@
         <item>\u2022 Battery Sync and Do not Disturb Sync have been moved to their own screens</item>
         <item>\u2022 You can now sync Do not Disturb state with Theater Mode on your watch</item>
         <item>\u2022 Added this changelog dialog</item>
-        <item>\u2022 Dialog themes should be more consistent now</item>
-        <item>\u2022 Fixed a bug where you could get stuck infinitely loading when trying to enable \'Phone to Watch Sync\' in DnD Sync</item>
+        <item>\u2022 Dialog styles should be more consistent now</item>
+        <item>\u2022 Fixed a bug where you could get stuck infinitely loading when trying to enable \'Phone to Watch Sync\'</item>
         <item>\u2022 Reduced the occurrence of crashing when tapping on the DnD Sync notification</item>
-        <item>\u2022 Fix a potential RemoteServiceException when performing an action like updating battery stats from your watch</item>
+        <item>\u2022 Fix a potential crash when locking your phone or updating battery stats from your watch</item>
         <item>\u2022 Many more bug fixes</item>
     </string-array>
 </resources>
