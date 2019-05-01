@@ -6,11 +6,6 @@ import com.boswelja.devicemanager.ui.base.BasePreferenceActivity
 
 class BatterySyncPreferenceActivity : BasePreferenceActivity() {
 
-    override fun createPreferenceFragment(): PreferenceFragmentCompat {
-        return BatterySyncPreferenceFragment()
-    }
-
-    override fun createWidgetFragment(): Fragment? {
-        return BatterySyncPreferenceWidgetFragment()
-    }
+    override fun createPreferenceFragment(): PreferenceFragmentCompat = BatterySyncPreferenceFragment()
+    override fun createWidgetFragment(): Fragment? = BatterySyncPreferenceWidgetFragment()
 }

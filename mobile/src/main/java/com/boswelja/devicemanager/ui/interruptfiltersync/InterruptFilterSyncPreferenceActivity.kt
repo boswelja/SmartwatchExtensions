@@ -6,11 +6,6 @@ import com.boswelja.devicemanager.ui.base.BasePreferenceActivity
 
 class InterruptFilterSyncPreferenceActivity : BasePreferenceActivity() {
 
-    override fun createPreferenceFragment(): PreferenceFragmentCompat {
-        return InterruptFilterSyncPreferenceFragment()
-    }
-
-    override fun createWidgetFragment(): Fragment? {
-        return null
-    }
+    override fun createPreferenceFragment(): PreferenceFragmentCompat = InterruptFilterSyncPreferenceFragment()
+    override fun createWidgetFragment(): Fragment? = null
 }

@@ -30,9 +30,7 @@ class MainActivity : BaseToolbarActivity() {
     private lateinit var settingsFragment: SettingsFragment
     private lateinit var sharedPrefs: SharedPreferences
 
-    override fun getContentViewId(): Int {
-        return R.layout.activity_main
-    }
+    override fun getContentViewId(): Int = R.layout.activity_main
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

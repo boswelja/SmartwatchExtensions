@@ -15,9 +15,7 @@ abstract class BasePreferenceActivity : BaseToolbarActivity() {
     abstract fun createPreferenceFragment() : PreferenceFragmentCompat
     abstract fun createWidgetFragment() : Fragment?
 
-    override fun getContentViewId(): Int {
-        return R.layout.activity_settings
-    }
+    override fun getContentViewId(): Int = R.layout.activity_settings
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
