@@ -23,7 +23,6 @@ import com.boswelja.devicemanager.ui.base.BaseToolbarActivity
 import com.boswelja.devicemanager.ui.batterysync.BatterySyncPreferenceActivity
 import com.boswelja.devicemanager.ui.interruptfiltersync.InterruptFilterSyncPreferenceActivity
 import com.boswelja.devicemanager.ui.version.ChangelogDialogFragment
-import com.google.android.material.snackbar.Snackbar
 
 class MainActivity : BaseToolbarActivity() {
 
@@ -105,10 +104,6 @@ class MainActivity : BaseToolbarActivity() {
                 settingsFragment.scrollToPreference(intentKey)
             }
         }
-    }
-
-    fun createSnackbar(message: String) {
-        Snackbar.make(findViewById(R.id.fragment_holder), message, Snackbar.LENGTH_LONG).show()
     }
 
     companion object {

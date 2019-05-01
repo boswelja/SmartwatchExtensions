@@ -7,6 +7,7 @@ import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.Utils
 import com.google.android.material.appbar.AppBarLayout
+import com.google.android.material.snackbar.Snackbar
 
 abstract class BaseToolbarActivity : BaseDayNightActivity() {
 
@@ -32,7 +33,7 @@ abstract class BaseToolbarActivity : BaseDayNightActivity() {
     fun elevateToolbar(elevate: Boolean) {
         if (toolbarElevated != elevate) {
             toolbarElevated = elevate
-            val appBarLayout = findViewById<AppBarLayout>(R.id.appbarlayout)
+            val appBarLayout = findViewById<AppBarLayout>(R.id.appbar_layout)
             val elevation = if (elevate) {
                 Utils.complexTypeDp(resources, 6f)
             } else {
@@ -46,4 +47,7 @@ abstract class BaseToolbarActivity : BaseDayNightActivity() {
         }
     }
 
+    fun createSnackBar(message: String) {
+        Snackbar.make(findViewById(R.id.fragment_holder), message, Snackbar.LENGTH_LONG).show()
+    }
 }

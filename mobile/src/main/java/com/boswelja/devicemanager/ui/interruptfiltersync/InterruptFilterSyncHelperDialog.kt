@@ -103,7 +103,7 @@ class InterruptFilterSyncHelperDialog : BaseDialogFragment() {
                     if (it.isSuccessful) {
                         val nodes = it.result?.nodes
                         if (nodes.isNullOrEmpty()) {
-                            (activity as InterruptFilterSyncPreferenceActivity).createSnackbar(getString(R.string.no_watch_found))
+                            (activity as InterruptFilterSyncPreferenceActivity).createSnackBar(getString(R.string.no_watch_found))
                             dismiss()
                         } else {
                             for (node in nodes) {
@@ -111,7 +111,7 @@ class InterruptFilterSyncHelperDialog : BaseDialogFragment() {
                             }
                         }
                     } else {
-                        (activity as InterruptFilterSyncPreferenceActivity).createSnackbar(getString(R.string.no_watch_found))
+                        (activity as InterruptFilterSyncPreferenceActivity).createSnackBar(getString(R.string.no_watch_found))
                         dismiss()
                     }
                 }
@@ -121,7 +121,7 @@ class InterruptFilterSyncHelperDialog : BaseDialogFragment() {
         if (hasDnDAccess) {
             dismiss()
             if (!isInitialCheck) {
-                (activity as InterruptFilterSyncPreferenceActivity).createSnackbar(getString(R.string.interrupt_filter_sync_to_watch_perm_granted_message))
+                (activity as InterruptFilterSyncPreferenceActivity).createSnackBar(getString(R.string.interrupt_filter_sync_to_watch_perm_granted_message))
                 isInitialCheck = false
             }
         } else {

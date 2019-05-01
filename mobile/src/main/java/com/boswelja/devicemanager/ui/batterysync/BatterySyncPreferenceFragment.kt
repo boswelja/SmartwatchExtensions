@@ -94,7 +94,7 @@ class BatterySyncPreferenceFragment :
             preferenceManager.sharedPreferences.edit()
                     .putBoolean(BATTERY_WATCH_FULL_CHARGE_NOTI_KEY, false)
                     .apply()
-            (activity as BasePreferenceActivity).createSnackbar(getString(R.string.battery_sync_watch_charged_noti_channel_disabled))
+            (activity as BasePreferenceActivity).createSnackBar(getString(R.string.battery_sync_watch_charged_noti_channel_disabled))
             preferenceSyncLayer.pushNewData()
         }
     }

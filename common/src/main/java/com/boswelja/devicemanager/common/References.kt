@@ -17,7 +17,7 @@ object References {
 
     // DnD Sync
     const val DND_STATUS_KEY = "/dnd_status"
-    const val NEW_DND_STATE_KEY = "$packageName.dndenabled"
+    const val NEW_DND_STATE_KEY = "$packageName.interrupt-filter-enabled"
 
     // Message paths
     const val LOCK_PHONE_PATH = "/lock_phone"

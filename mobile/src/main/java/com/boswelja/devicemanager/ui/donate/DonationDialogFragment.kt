@@ -83,7 +83,7 @@ class DonationDialogFragment :
             }
         } else {
             dismiss()
-            (activity as MainActivity).createSnackbar(getString(R.string.donation_failed_message))
+            (activity as MainActivity).createSnackBar(getString(R.string.donation_failed_message))
         }
     }
 
@@ -95,7 +95,7 @@ class DonationDialogFragment :
             setLoading(false)
         } else {
             dismiss()
-            (activity as MainActivity).createSnackbar(getString(R.string.donation_failed_message))
+            (activity as MainActivity).createSnackBar(getString(R.string.donation_failed_message))
         }
     }
 
@@ -107,13 +107,13 @@ class DonationDialogFragment :
             }
         } else {
             dismiss()
-            (activity as MainActivity).createSnackbar(getString(R.string.donation_failed_message))
+            (activity as MainActivity).createSnackBar(getString(R.string.donation_failed_message))
         }
     }
 
     override fun onConsumeResponse(responseCode: Int, purchaseToken: String?) {
         dismiss()
-        (activity as MainActivity).createSnackbar(getString(R.string.donation_processed_message))
+        (activity as MainActivity).createSnackBar(getString(R.string.donation_processed_message))
     }
 
     override fun onBillingServiceDisconnected() {
@@ -121,8 +121,8 @@ class DonationDialogFragment :
     }
 
     override fun dismiss() {
-        billingClient.endConnection()
         super.dismiss()
+        billingClient.endConnection()
     }
 
     private fun setLoading(loading: Boolean) {
@@ -131,7 +131,6 @@ class DonationDialogFragment :
             loadingSpinner.visibility = View.VISIBLE
             cancelBtn.visibility = View.INVISIBLE
         } else {
-
             recyclerView.visibility = View.VISIBLE
             loadingSpinner.visibility = View.GONE
             cancelBtn.visibility = View.VISIBLE

@@ -6,14 +6,14 @@ object PreferenceSyncKeys {
 
     private const val packageName = "com.boswelja.devicemanager"
 
-    const val BATTERY_SYNC_ENABLED_KEY = "$packageName.batterysync"
-    const val BATTERY_PHONE_FULL_CHARGE_NOTI_KEY = "$packageName.phonebattfullchargenotienabled"
-    const val BATTERY_WATCH_FULL_CHARGE_NOTI_KEY = "$packageName.watchbattfullchargenotienabled"
+    const val BATTERY_SYNC_ENABLED_KEY = "$packageName.battery-sync"
+    const val BATTERY_PHONE_FULL_CHARGE_NOTI_KEY = "$packageName.phone-charge-noti-enabled"
+    const val BATTERY_WATCH_FULL_CHARGE_NOTI_KEY = "$packageName.watch-charge-noti-enabled"
 
-    const val DND_SYNC_PHONE_TO_WATCH_KEY = "$packageName.dndsyncphonetowatch"
-    const val DND_SYNC_WATCH_TO_PHONE_KEY = "$packageName.dndsyncwatchtophone"
-    const val DND_SYNC_WITH_THEATER_KEY = "$packageName.dndsyncwiththeater"
+    const val DND_SYNC_PHONE_TO_WATCH_KEY = "$packageName.interrupt-filter-sync-to-watch"
+    const val DND_SYNC_WATCH_TO_PHONE_KEY = "$packageName.interrupt-filter-sync-to-phone"
+    const val DND_SYNC_WITH_THEATER_KEY = "$packageName.interrupt-filter-sync-with-theater"
 
-    const val LOCK_PHONE_ENABLED_KEY = "$packageName.lockphoneenabled"
+    const val LOCK_PHONE_ENABLED_KEY = "$packageName.lock-phone-enabled"
 
 }
