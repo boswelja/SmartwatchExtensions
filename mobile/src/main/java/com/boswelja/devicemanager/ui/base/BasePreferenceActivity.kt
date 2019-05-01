@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import androidx.preference.PreferenceFragmentCompat
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.ui.main.MainActivity.Companion.EXTRA_PREFERENCE_KEY
+import com.google.android.material.snackbar.Snackbar
 
 abstract class BasePreferenceActivity : BaseToolbarActivity() {
 
@@ -44,5 +45,9 @@ abstract class BasePreferenceActivity : BaseToolbarActivity() {
             val key = intent.getStringExtra(EXTRA_PREFERENCE_KEY)
             preferenceFragment.scrollToPreference(key)
         }
+    }
+
+    fun createSnackbar(message: String) {
+        Snackbar.make(findViewById(R.id.fragment_holder), message, Snackbar.LENGTH_LONG).show()
     }
 }
