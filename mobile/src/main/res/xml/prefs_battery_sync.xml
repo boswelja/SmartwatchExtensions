@@ -6,7 +6,7 @@
     <androidx.preference.SwitchPreference
         android:key="battery_sync_enabled"
         android:title="@string/pref_battery_sync_enable_title"
-        android:defaultValue="false"/>
+        android:defaultValue="false" />
 
     <androidx.preference.SeekBarPreference
         android:key="battery_sync_interval"

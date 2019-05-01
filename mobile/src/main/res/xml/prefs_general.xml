@@ -13,7 +13,7 @@
             android:summary="@string/pref_hide_app_icon_summary"
             android:dialogMessage="@string/pref_hide_app_icon_warning_message"
             app:showOnEnable="true"
-            app:showOnDisable="false"/>
+            app:showOnDisable="false" />
 
         <androidx.preference.Preference
             android:key="show_noti_settings"
@@ -24,13 +24,14 @@
             android:title="@string/pref_daynight_title"
             android:icon="@drawable/pref_ic_daynight"
             android:entries="@array/pref_daynight_mode_entries"
-            android:entryValues="@array/pref_daynight_mode_entry_values" />
+            android:entryValues="@array/pref_daynight_mode_entry_values"
+            android:defaultValue="-1" />
 
         <com.boswelja.devicemanager.preference.confirmationdialog.ConfirmationDialogPreference
             android:key="battery_optimisation_status"
             android:title="@string/pref_battery_opt_status_title"
             android:dialogMessage="@string/pref_battery_opt_status_toggle_warning_message"
-            app:allowDisable="false"/>
+            app:allowDisable="false" />
 
     </androidx.preference.PreferenceCategory>
 
