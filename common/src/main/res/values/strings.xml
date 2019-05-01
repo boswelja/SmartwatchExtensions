@@ -12,4 +12,6 @@
     <string name="device_charged_noti_title">%s Charged</string>
     <string name="device_charged_noti_desc">Your %s is charged to above 90%%</string>
 
+    <string name="bullet">\u2022</string>
+
 </resources>
