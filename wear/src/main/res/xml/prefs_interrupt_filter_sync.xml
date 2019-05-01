@@ -6,17 +6,17 @@
         android:title="@string/pref_category_interrupt_filter_sync_title">
 
         <androidx.preference.SwitchPreference
-            android:key="dnd_sync_phone_to_watch"
+            android:key="interrupt_filter_sync_to_watch"
             android:title="@string/pref_interrupt_filter_sync_to_watch_title"
             android:defaultValue="false" />
 
         <androidx.preference.SwitchPreference
-            android:key="dnd_sync_watch_to_phone"
+            android:key="interrupt_filter_sync_to_phone"
             android:title="@string/pref_interrupt_filter_sync_to_phone_title"
             android:defaultValue="false" />
 
         <androidx.preference.SwitchPreference
-            android:key="dnd_sync_with_theater"
+            android:key="interrupt_filter_sync_with_theater"
             android:title="@string/pref_interrupt_filter_sync_with_theater_title"
             android:defaultValue="false" />
 
