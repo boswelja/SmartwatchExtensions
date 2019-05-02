@@ -6,9 +6,9 @@
     <dimen name="phone_battery_inset_right">8dp</dimen>
     <dimen name="phone_battery_inset_bottom">8dp</dimen>
 
-    <dimen name="watch_battery_inset_top">14dp</dimen>
-    <dimen name="watch_battery_inset_left">14dp</dimen>
-    <dimen name="watch_battery_inset_right">14dp</dimen>
-    <dimen name="watch_battery_inset_bottom">14dp</dimen>
+    <dimen name="watch_battery_inset_top">16dp</dimen>
+    <dimen name="watch_battery_inset_left">16dp</dimen>
+    <dimen name="watch_battery_inset_right">16dp</dimen>
+    <dimen name="watch_battery_inset_bottom">16dp</dimen>
 
 </resources>
