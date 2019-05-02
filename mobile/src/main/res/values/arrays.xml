@@ -23,6 +23,7 @@
         <item>Icons are now outline variants where possible</item>
         <item>Battery Sync and Do not Disturb Sync have been moved to their own screens</item>
         <item>You can now sync Do not Disturb state with Theater Mode on your watch</item>
+        <item>Battery icons should be more accurate now</item>
         <item>Added this changelog dialog</item>
         <item>Dialog styles should be more consistent now</item>
         <item>Removed \'Hide app icon\' setting</item>
