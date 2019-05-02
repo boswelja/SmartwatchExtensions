@@ -18,19 +18,16 @@ import com.google.android.gms.wearable.Wearable
 
 object Utils {
 
-    fun getCompanionNode(context: Context): Task<CapabilityInfo> {
-        return Wearable.getCapabilityClient(context)
-                .getCapability(References.CAPABILITY_PHONE_APP, CapabilityClient.FILTER_REACHABLE)
-    }
+    fun getCompanionNode(context: Context): Task<CapabilityInfo> =
+            Wearable.getCapabilityClient(context)
+                    .getCapability(References.CAPABILITY_PHONE_APP, CapabilityClient.FILTER_REACHABLE)
 
-    fun checkDnDAccess(context: Context): Boolean {
-        val notiManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        return notiManager.isNotificationPolicyAccessGranted
-    }
+    fun checkDnDAccess(context: Context): Boolean =
+            (context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager)
+                    .isNotificationPolicyAccessGranted
 
-    fun isTheaterModeOn(context: Context): Boolean {
-        return Settings.Global.getInt(context.contentResolver, "theater_mode_on", 0) == 1
-    }
+    fun isTheaterModeOn(context: Context): Boolean =
+            Settings.Global.getInt(context.contentResolver, "theater_mode_on", 0) == 1
 
     fun launchMobileApp(context: Context, key: String) {
         getCompanionNode(context).addOnSuccessListener { capabilityInfo ->
