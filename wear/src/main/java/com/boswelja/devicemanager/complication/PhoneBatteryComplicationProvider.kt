@@ -23,8 +23,8 @@ import com.boswelja.devicemanager.service.ActionService
 
 class PhoneBatteryComplicationProvider : ComplicationProviderService() {
 
-    override fun onComplicationUpdate(complicationId: Int, type: Int, manager: ComplicationManager?) {
-        manager?.updateComplicationData(complicationId, createComplication(type))
+    override fun onComplicationUpdate(complicationId: Int, type: Int, complicationManager: ComplicationManager?) {
+        complicationManager?.updateComplicationData(complicationId, createComplication(type))
     }
 
     private fun createComplication(type: Int): ComplicationData {

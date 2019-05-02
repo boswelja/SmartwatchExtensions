@@ -11,8 +11,6 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.support.wearable.phone.PhoneDeviceType
-import android.view.View
-import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.wear.widget.CircularProgressLayout
@@ -22,36 +20,28 @@ import com.boswelja.devicemanager.R
 import com.google.android.wearable.intent.RemoteIntent
 import com.google.android.wearable.playstore.PlayStoreAvailability
 
-class ConfirmInstallActivity : AppCompatActivity(), CircularProgressLayout.OnTimerFinishedListener, View.OnClickListener {
+class ConfirmInstallActivity : AppCompatActivity() {
 
-    private var header: TextView? = null
-    private var description: TextView? = null
-    private var circularProgressLayout: CircularProgressLayout? = null
+    private lateinit var circularProgressLayout: CircularProgressLayout
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_confirm_install)
 
-        header = findViewById(R.id.heading)
-        description = findViewById(R.id.description)
         circularProgressLayout = findViewById<CircularProgressLayout>(R.id.cancel).apply {
-            onTimerFinishedListener = this@ConfirmInstallActivity
-            setOnClickListener(this@ConfirmInstallActivity)
-            totalTime = 5000
+            onTimerFinishedListener = CircularProgressLayout.OnTimerFinishedListener {
+                terminateApp(true)
+            }
+            setOnClickListener {
+                terminateApp(false)
+            }
+            totalTime = 7500
             startTimer()
         }
     }
 
-    override fun onTimerFinished(layout: CircularProgressLayout?) {
-        terminateApp(true)
-    }
-
-    override fun onClick(v: View?) {
-        terminateApp(false)
-    }
-
     private fun terminateApp(showPlayStoreOnPhone: Boolean) {
-        circularProgressLayout?.stopTimer()
+        circularProgressLayout.stopTimer()
         if (showPlayStoreOnPhone) {
             val isAndroidPhone = PhoneDeviceType.getPhoneDeviceType(this) == PhoneDeviceType.DEVICE_TYPE_ANDROID
             if (isAndroidPhone) {
@@ -65,10 +55,9 @@ class ConfirmInstallActivity : AppCompatActivity(), CircularProgressLayout.OnTim
                 RemoteIntent.startRemoteActivity(this@ConfirmInstallActivity,
                         playStoreIntent,
                         null)
-                startActivity(intent)
                 ConfirmationActivityHandler.openOnPhoneAnimation(this)
             } else {
-                Toast.makeText(this, "iOS isn't supported by this app", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, getString(R.string.ios_incompatible_message), Toast.LENGTH_LONG).show()
             }
         }
         finishAndRemoveTask()

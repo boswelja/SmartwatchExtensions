@@ -28,9 +28,7 @@ import com.google.android.gms.wearable.Wearable
 
 class ActionService : Service() {
 
-    override fun onBind(intent: Intent?): IBinder? {
-        return null
-    }
+    override fun onBind(intent: Intent?): IBinder? = null
 
     private lateinit var action: String
 

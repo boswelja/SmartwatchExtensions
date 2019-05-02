@@ -47,4 +47,6 @@
     <string name="pref_interrupt_filter_sync_to_watch_title">Phone to Watch Sync</string>
     <string name="pref_interrupt_filter_sync_to_phone_title">Watch to Phone Sync</string>
     <string name="pref_interrupt_filter_sync_with_theater_title">Sync with Theater Mode</string>
+
+    <string name="ios_incompatible_message">Wearable Extensions doesn\'t support iOS</string>
 </resources>

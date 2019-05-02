@@ -25,9 +25,7 @@ class ControlsAdapter : RecyclerView.Adapter<ControlsAdapter.ViewHolder>() {
 
     private val controls = ControlItems.values()
 
-    override fun getItemCount(): Int {
-        return controls.size
-    }
+    override fun getItemCount(): Int = controls.size
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val context = holder.itemView.context

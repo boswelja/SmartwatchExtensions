@@ -28,9 +28,7 @@ class InterruptFilterSyncWithTheaterListener : Service() {
 
     private lateinit var sharedPrefs: SharedPreferences
 
-    override fun onBind(intent: Intent?): IBinder? {
-        return null
-    }
+    override fun onBind(intent: Intent?): IBinder? = null
 
     override fun onCreate() {
         super.onCreate()

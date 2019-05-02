@@ -24,14 +24,13 @@ class LockPhoneComplicationProvider : ComplicationProviderService() {
         setComplication(type, complicationId, complicationManager!!)
     }
 
-    override fun onComplicationActivated(complicationId: Int, type: Int, manager: ComplicationManager?) {
-        super.onComplicationActivated(complicationId, type, manager)
-        setComplication(type, complicationId, manager!!)
+    override fun onComplicationActivated(complicationId: Int, type: Int, complicationManager: ComplicationManager?) {
+        setComplication(type, complicationId, complicationManager!!)
     }
 
-    private fun setComplication(type: Int, id: Int, manager: ComplicationManager) {
+    private fun setComplication(type: Int, id: Int, complicationManager: ComplicationManager) {
         if (type != ComplicationData.TYPE_SHORT_TEXT) {
-            manager.noUpdateRequired(id)
+            complicationManager.noUpdateRequired(id)
             return
         }
 
@@ -44,6 +43,6 @@ class LockPhoneComplicationProvider : ComplicationProviderService() {
                 .setShortText(ComplicationText.plainText(getString(R.string.lock_phone_label)))
                 .setTapAction(pendingIntent)
                 .build()
-        manager.updateComplicationData(id, complicationData)
+        complicationManager.updateComplicationData(id, complicationData)
     }
 }

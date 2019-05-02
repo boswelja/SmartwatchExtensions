@@ -8,9 +8,7 @@ class NavigationDrawerAdapter(private val mainActivity: MainActivity) : Wearable
 
     private val sections = NavigationDrawerSections.values()
 
-    override fun getCount(): Int {
-        return sections.size
-    }
+    override fun getCount(): Int = sections.size
 
     override fun getItemDrawable(pos: Int): Drawable {
         val item = sections[pos]
