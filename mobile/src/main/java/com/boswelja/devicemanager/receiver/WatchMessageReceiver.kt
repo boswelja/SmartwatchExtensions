@@ -31,9 +31,8 @@ class WatchMessageReceiver : WearableListenerService() {
                     devicePolicyManager.lockNow()
                 }
             }
-            References.REQUEST_BATTERY_UPDATE_PATH -> {
+            References.REQUEST_BATTERY_UPDATE_PATH ->
                 CommonUtils.updateBatteryStats(this, References.CAPABILITY_WATCH_APP)
-            }
             References.REQUEST_LAUNCH_APP_PATH -> {
                 val key = String(messageEvent.data, Charsets.UTF_8)
                 val intent = Intent(this, MainActivity::class.java)

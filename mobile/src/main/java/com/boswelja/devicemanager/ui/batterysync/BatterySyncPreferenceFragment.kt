@@ -61,7 +61,7 @@ class BatterySyncPreferenceFragment :
                     Utils.stopBatterySyncJob(context!!)
                 }
                 preferenceSyncLayer.pushNewData()
-                WatchBatteryWidget.updateWidget(context!!)
+                WatchBatteryWidget.updateWidgets(context!!)
                 false
             }
             BATTERY_SYNC_INTERVAL_KEY -> {

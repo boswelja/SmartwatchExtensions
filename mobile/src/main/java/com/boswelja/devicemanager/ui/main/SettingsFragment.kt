@@ -230,19 +230,22 @@ class SettingsFragment :
         }
 
         addPreferencesFromResource(R.xml.prefs_about)
-        val openDonateDialogPreference = findPreference<Preference>(OPEN_DONATE_DIALOG_KEY)!!
-        openDonateDialogPreference.isEnabled = !BuildConfig.DEBUG
-        openDonateDialogPreference.onPreferenceClickListener = this
-        val versionPreference = findPreference<Preference>(VERSION_KEY)!!
-        versionPreference.onPreferenceClickListener = this
+        findPreference<Preference>(OPEN_DONATE_DIALOG_KEY)!!.apply {
+            isEnabled = !BuildConfig.DEBUG
+            onPreferenceClickListener = this@SettingsFragment
+        }
+        findPreference<Preference>(VERSION_KEY)!!.apply {
+            onPreferenceClickListener = this@SettingsFragment
+        }
     }
 
     override fun onDisplayPreferenceDialog(preference: Preference?) {
         when (preference) {
             is ConfirmationDialogPreference -> {
-                val frag = ConfirmationDialogPrefFragment.newInstance(preference.key)
-                frag.setTargetFragment(this, 0)
-                frag.show(fragmentManager!!, "ConfirmationDialogPrefFragment")
+                ConfirmationDialogPrefFragment.newInstance(preference.key).apply {
+                    setTargetFragment(this, 0)
+                    show(fragmentManager!!, "ConfirmationDialogPrefFragment")
+                }
             }
             else -> super.onDisplayPreferenceDialog(preference)
         }

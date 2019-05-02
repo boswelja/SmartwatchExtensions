@@ -38,9 +38,7 @@ class ConfirmationDialogPreference(context: Context, attrs: AttributeSet?, defSt
         widgetLayoutResource = R.layout.pref_widget_checkbox
     }
 
-    override fun onGetDefaultValue(a: TypedArray?, index: Int): Any {
-        return a?.getBoolean(index, false)!!
-    }
+    override fun onGetDefaultValue(a: TypedArray?, index: Int): Any = a?.getBoolean(index, false)!!
 
     override fun onSetInitialValue(defaultValue: Any?) {
         value = if (defaultValue != null) {

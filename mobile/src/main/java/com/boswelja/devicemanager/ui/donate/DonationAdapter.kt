@@ -23,9 +23,7 @@ class DonationAdapter(private val skus: List<SkuDetails>, private val dialogFrag
         return ViewHolder(view)
     }
 
-    override fun getItemCount(): Int {
-        return skus.count()
-    }
+    override fun getItemCount(): Int = skus.count()
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val sku = skus[position]

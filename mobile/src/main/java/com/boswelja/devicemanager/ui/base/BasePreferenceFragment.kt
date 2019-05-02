@@ -10,10 +10,10 @@ import com.boswelja.devicemanager.Utils
 abstract class BasePreferenceFragment : PreferenceFragmentCompat() {
 
     override fun onCreateRecyclerView(inflater: LayoutInflater?, parent: ViewGroup?, savedInstanceState: Bundle?): RecyclerView {
-        val recyclerView = super.onCreateRecyclerView(inflater, parent, savedInstanceState)
         val padding = Utils.complexTypeDp(resources, 8f)
-        recyclerView.clipToPadding = false
-        recyclerView.setPadding(0, padding.toInt(), 0, padding.toInt())
-        return recyclerView
+        return super.onCreateRecyclerView(inflater, parent, savedInstanceState).apply {
+            clipToPadding = false
+            setPadding(0, padding.toInt(), 0, padding.toInt())
+        }
     }
 }

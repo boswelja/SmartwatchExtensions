@@ -72,36 +72,32 @@ class MainActivity : BaseToolbarActivity() {
     private fun showSettingsFragment() {
         settingsFragment = SettingsFragment()
         supportFragmentManager.beginTransaction().replace(R.id.fragment_holder, settingsFragment).commit()
-        if (intent != null && !intent.getStringExtra(EXTRA_PREFERENCE_KEY).isNullOrEmpty()) {
-            when (val key = intent.getStringExtra(EXTRA_PREFERENCE_KEY)) {
-                PreferenceKey.PHONE_LOCKING_ENABLED_KEY,
-                SettingsFragment.OPEN_NOTI_SETTINGS_KEY,
-                SettingsFragment.DAYNIGHT_MODE_KEY,
-                SettingsFragment.BATTERY_OPTIMISATION_STATUS_KEY -> {
-                    settingsFragment.scrollToPreference(key)
-                }
-                PreferenceKey.BATTERY_SYNC_ENABLED_KEY,
-                PreferenceKey.BATTERY_SYNC_INTERVAL_KEY,
-                PreferenceKey.BATTERY_PHONE_FULL_CHARGE_NOTI_KEY,
-                PreferenceKey.BATTERY_WATCH_FULL_CHARGE_NOTI_KEY -> {
-                    val intent = Intent(this, BatterySyncPreferenceActivity::class.java)
-                    intent.putExtra(EXTRA_PREFERENCE_KEY, key)
-                    startActivity(intent)
-                }
-                PreferenceKey.INTERRUPT_FILTER_SYNC_TO_WATCH_KEY,
-                PreferenceKey.INTERRUPT_FILTER_SYNC_TO_PHONE_KEY,
-                PreferenceKey.INTERRUPT_FILTER_ON_WITH_THEATER_KEY -> {
-                    val intent = Intent(this, InterruptFilterSyncPreferenceActivity::class.java)
-                    intent.putExtra(EXTRA_PREFERENCE_KEY, key)
-                    startActivity(intent)
-                }
-            }
-        }
-
         if (intent != null) {
-            val intentKey = intent.getStringExtra(EXTRA_PREFERENCE_KEY)
-            if (!intentKey.isNullOrEmpty()) {
-                settingsFragment.scrollToPreference(intentKey)
+            val key = intent.getStringExtra(EXTRA_PREFERENCE_KEY)
+            if (!key.isNullOrBlank()) {
+                when (key) {
+                    PreferenceKey.PHONE_LOCKING_ENABLED_KEY,
+                    SettingsFragment.OPEN_NOTI_SETTINGS_KEY,
+                    SettingsFragment.DAYNIGHT_MODE_KEY,
+                    SettingsFragment.BATTERY_OPTIMISATION_STATUS_KEY -> {
+                        settingsFragment.scrollToPreference(key)
+                    }
+                    PreferenceKey.BATTERY_SYNC_ENABLED_KEY,
+                    PreferenceKey.BATTERY_SYNC_INTERVAL_KEY,
+                    PreferenceKey.BATTERY_PHONE_FULL_CHARGE_NOTI_KEY,
+                    PreferenceKey.BATTERY_WATCH_FULL_CHARGE_NOTI_KEY -> {
+                        val intent = Intent(this, BatterySyncPreferenceActivity::class.java)
+                        intent.putExtra(EXTRA_PREFERENCE_KEY, key)
+                        startActivity(intent)
+                    }
+                    PreferenceKey.INTERRUPT_FILTER_SYNC_TO_WATCH_KEY,
+                    PreferenceKey.INTERRUPT_FILTER_SYNC_TO_PHONE_KEY,
+                    PreferenceKey.INTERRUPT_FILTER_ON_WITH_THEATER_KEY -> {
+                        val intent = Intent(this, InterruptFilterSyncPreferenceActivity::class.java)
+                        intent.putExtra(EXTRA_PREFERENCE_KEY, key)
+                        startActivity(intent)
+                    }
+                }
             }
         }
     }

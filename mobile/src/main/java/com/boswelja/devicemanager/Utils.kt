@@ -24,13 +24,16 @@ import com.boswelja.devicemanager.receiver.DeviceAdminChangeReceiver
 object Utils {
 
     fun requestDeviceAdminPerms(context: Context) {
-        val intent = Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN)
-        intent.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN, DeviceAdminChangeReceiver().getWho(context))
-        intent.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION, context.getString(R.string.device_admin_desc))
+        val intent = Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN).apply {
+            putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN, DeviceAdminChangeReceiver().getWho(context))
+            putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION, context.getString(R.string.device_admin_desc))
+        }
         context.startActivity(intent)
     }
 
-    fun isDeviceAdminEnabled(context: Context): Boolean = PreferenceManager.getDefaultSharedPreferences(context).getBoolean(DEVICE_ADMIN_ENABLED_KEY, false)
+    fun isDeviceAdminEnabled(context: Context): Boolean =
+            PreferenceManager.getDefaultSharedPreferences(context)
+                    .getBoolean(DEVICE_ADMIN_ENABLED_KEY, false)
 
     fun shareText(context: Context, text: String) {
         val intent = Intent().apply {
@@ -48,9 +51,12 @@ object Utils {
 
     fun createBatterySyncJob(context: Context, intervalMs: Long) {
         val jobScheduler = context.getSystemService(Context.JOB_SCHEDULER_SERVICE) as JobScheduler
-        val jobInfo = JobInfo.Builder(BatteryUpdateJob.BATTERY_PERCENT_JOB_ID, ComponentName(context.packageName, BatteryUpdateJob::class.java.name))
-        jobInfo.setPeriodic(intervalMs)
-        jobInfo.setPersisted(true)
+        val jobInfo = JobInfo.Builder(
+                BatteryUpdateJob.BATTERY_PERCENT_JOB_ID,
+                ComponentName(context.packageName, BatteryUpdateJob::class.java.name)).apply {
+            setPeriodic(intervalMs)
+            setPersisted(true)
+        }
         jobScheduler.schedule(jobInfo.build())
     }
 
@@ -61,5 +67,6 @@ object Utils {
         }
     }
 
-    fun complexTypeDp(resources: Resources, dp: Float) = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, resources.displayMetrics)
+    fun complexTypeDp(resources: Resources, dp: Float) =
+            TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, resources.displayMetrics)
 }

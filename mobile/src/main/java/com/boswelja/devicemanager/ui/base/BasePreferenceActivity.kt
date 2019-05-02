@@ -3,15 +3,14 @@ package com.boswelja.devicemanager.ui.base
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
-import androidx.preference.PreferenceFragmentCompat
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.ui.main.MainActivity.Companion.EXTRA_PREFERENCE_KEY
 
 abstract class BasePreferenceActivity : BaseToolbarActivity() {
 
-    private lateinit var preferenceFragment: PreferenceFragmentCompat
+    private lateinit var preferenceFragment: BasePreferenceFragment
 
-    abstract fun createPreferenceFragment() : PreferenceFragmentCompat
+    abstract fun createPreferenceFragment() : BasePreferenceFragment
     abstract fun createWidgetFragment() : Fragment?
 
     override fun getContentViewId(): Int = R.layout.activity_settings

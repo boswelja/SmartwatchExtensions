@@ -48,12 +48,13 @@ class WatchBatteryWidget : AppWidgetProvider() {
     }
 
     companion object {
-        fun updateWidget(context: Context) {
-            val intent = Intent(context, WatchBatteryWidget::class.java)
-            intent.action = AppWidgetManager.ACTION_APPWIDGET_UPDATE
+        fun updateWidgets(context: Context) {
             val ids = AppWidgetManager.getInstance(context)
                     .getAppWidgetIds(ComponentName(context, WatchBatteryWidget::class.java))
-            intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids)
+            val intent = Intent(context, WatchBatteryWidget::class.java).apply {
+                action = AppWidgetManager.ACTION_APPWIDGET_UPDATE
+                putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids)
+            }
             context.sendBroadcast(intent)
         }
     }

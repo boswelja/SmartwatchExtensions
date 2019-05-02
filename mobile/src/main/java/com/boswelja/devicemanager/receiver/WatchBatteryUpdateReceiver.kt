@@ -13,6 +13,6 @@ import com.boswelja.devicemanager.widget.WatchBatteryWidget
 class WatchBatteryUpdateReceiver : BatteryUpdateReceiver() {
 
     override fun onBatteryUpdate(percent: Int, charging: Boolean) {
-        WatchBatteryWidget.updateWidget(this)
+        WatchBatteryWidget.updateWidgets(this)
     }
 }

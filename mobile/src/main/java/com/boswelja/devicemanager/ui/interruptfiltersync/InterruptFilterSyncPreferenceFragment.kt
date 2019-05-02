@@ -51,19 +51,22 @@ class InterruptFilterSyncPreferenceFragment :
             INTERRUPT_FILTER_SYNC_TO_WATCH_KEY -> {
                 val value = newValue == true
                 if (value) {
-                    val dndDialog = InterruptFilterSyncHelperDialog()
-                    dndDialog.setResponseListener(object : InterruptFilterSyncHelperDialog.ResponseListener {
-                        override fun onResponse(success: Boolean) {
-                            preference.sharedPreferences.edit().putBoolean(preference.key, success).apply()
-                            preferenceSyncLayer.pushNewData()
-                            if (success) {
-                                Compat.startForegroundService(context!!, Intent(context!!, InterruptFilterLocalChangeListener::class.java))
+                    InterruptFilterSyncHelperDialog().apply {
+                        setResponseListener(object : InterruptFilterSyncHelperDialog.ResponseListener {
+                            override fun onResponse(success: Boolean) {
+                                preference.sharedPreferences.edit()
+                                        .putBoolean(preference.key, success).apply()
+                                preferenceSyncLayer.pushNewData()
+                                if (success) {
+                                    Compat.startForegroundService(context!!, Intent(context!!, InterruptFilterLocalChangeListener::class.java))
+                                }
                             }
-                        }
-                    })
-                    dndDialog.show(activity?.supportFragmentManager!!, "InterruptFilterSyncHelperDialog")
+                        })
+                        show(activity?.supportFragmentManager!!, "InterruptFilterSyncHelperDialog")
+                    }
                 } else {
-                    preference.sharedPreferences.edit().putBoolean(preference.key, value).apply()
+                    preference.sharedPreferences.edit()
+                            .putBoolean(preference.key, value).apply()
                     preferenceSyncLayer.pushNewData()
                     context?.stopService(Intent(context!!, InterruptFilterLocalChangeListener::class.java))
                 }
