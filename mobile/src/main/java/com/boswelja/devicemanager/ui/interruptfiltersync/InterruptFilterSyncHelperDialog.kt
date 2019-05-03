@@ -106,9 +106,7 @@ class InterruptFilterSyncHelperDialog : BaseDialogFragment() {
                             (activity as InterruptFilterSyncPreferenceActivity).createSnackBar(getString(R.string.no_watch_found))
                             dismiss()
                         } else {
-                            for (node in nodes) {
-                                messageClient.sendMessage(node?.id!!, References.REQUEST_WATCH_DND_ACCESS_STATUS_PATH, null)
-                            }
+                            messageClient.sendMessage(nodes.first().id!!, References.REQUEST_WATCH_DND_ACCESS_STATUS_PATH, null)
                         }
                     } else {
                         (activity as InterruptFilterSyncPreferenceActivity).createSnackBar(getString(R.string.no_watch_found))

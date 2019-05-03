@@ -62,7 +62,7 @@ class InterruptFilterSyncPreferenceFragment :
                                 }
                             }
                         })
-                        show(activity?.supportFragmentManager!!, "InterruptFilterSyncHelperDialog")
+                        show(this@InterruptFilterSyncPreferenceFragment.activity?.supportFragmentManager!!, "InterruptFilterSyncHelperDialog")
                     }
                 } else {
                     preference.sharedPreferences.edit()

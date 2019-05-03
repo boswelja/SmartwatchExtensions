@@ -243,7 +243,7 @@ class SettingsFragment :
         when (preference) {
             is ConfirmationDialogPreference -> {
                 ConfirmationDialogPrefFragment.newInstance(preference.key).apply {
-                    setTargetFragment(this, 0)
+                    setTargetFragment(this@SettingsFragment, 0)
                     show(fragmentManager!!, "ConfirmationDialogPrefFragment")
                 }
             }
