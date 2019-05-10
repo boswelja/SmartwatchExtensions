@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="settings_widget_battery_sync_start_margin">48dp</dimen>
+    <dimen name="settings_widget_battery_sync_end_margin">16dp</dimen>
+
+</resources>

@@ -96,7 +96,7 @@ class BatterySyncPreferenceWidgetFragment :
             watchBatteryLastUpdated.text = lastUpdatedString
             watchBatteryUpdateNowHolder.visibility = View.VISIBLE
         } else {
-            watchBatteryUpdateNowHolder.visibility = View.INVISIBLE
+            watchBatteryUpdateNowHolder.visibility = View.GONE
         }
     }
 }

@@ -3,50 +3,73 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="200dp">
-
-    <LinearLayout
-        android:id="@+id/updated_time_holder"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:padding="8dp"
-        android:background="?selectableItemBackground"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
-
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/last_updated_time"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="4dp"
-            android:textColor="?android:textColorSecondary"
-            style="@style/TextAppearance.MaterialComponents.Body1"/>
-
-        <androidx.appcompat.widget.AppCompatImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_refresh" />
-
-    </LinearLayout>
-
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/watch_battery_percent"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_horizontal"
-        android:textColor="?android:textColorPrimary"
-        app:layout_constraintBottom_toTopOf="@id/updated_time_holder"
-        style="@style/TextAppearance.MaterialComponents.Headline5"/>
+    android:layout_height="180dp"
+    android:layout_marginStart="@dimen/settings_widget_battery_sync_start_margin"
+    android:layout_marginEnd="@dimen/settings_widget_battery_sync_end_margin">
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/watch_battery_indicator"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
         android:padding="8dp"
         android:src="@drawable/ic_watch_battery"
+        android:scaleType="centerCrop"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintDimensionRatio="3:4"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/watch_battery_percent"/>
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/watch_battery_indicator">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/watch_battery_percent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="20dp"
+            android:gravity="center_horizontal"
+            android:textColor="?android:textColorPrimary"
+            style="@style/TextAppearance.MaterialComponents.Headline4" />
+
+        <RelativeLayout
+            android:id="@+id/updated_time_holder"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?selectableItemBackground"
+            android:orientation="horizontal"
+            android:paddingStart="8dp"
+            android:paddingTop="4dp"
+            android:paddingEnd="8dp"
+            android:paddingBottom="4dp">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/last_updated_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:layout_marginEnd="4dp"
+                android:textColor="?android:textColorSecondary"
+                android:layout_alignParentStart="true"
+                android:layout_toStartOf="@id/refresh_icon"
+                android:layout_centerVertical="true"
+                style="@style/TextAppearance.MaterialComponents.Body1" />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/refresh_icon"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:src="@drawable/ic_refresh"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true" />
+
+        </RelativeLayout>
+    </LinearLayout>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
