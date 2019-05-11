@@ -28,8 +28,8 @@
         <item>Dialog styles should be more consistent now</item>
         <item>Removed \'Hide app icon\' setting</item>
         <item>Fixed a bug where you could get stuck infinitely loading when trying to enable \'Phone to Watch Sync\'</item>
-        <item>Reduced the occurrence of crashing when tapping on the DnD Sync notification</item>
+        <item>Fixed crashing when tapping on the DnD Sync notification</item>
         <item>Fix a potential crash when locking your phone or updating battery stats from your watch</item>
-        <item>Many more bug fixes</item>
+        <item>Fixed a few more bugs</item>
     </string-array>
 </resources>
