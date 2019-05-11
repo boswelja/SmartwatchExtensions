@@ -6,7 +6,7 @@ jobs:
         - master
     working_directory: ~/code
     docker:
-      - image: circleci/android:api-28-alpha
+      - image: circleci/android:api-28
     environment:
       JVM_OPTS: -Xmx1024m
     steps:
