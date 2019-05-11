@@ -41,11 +41,9 @@ class DonationDialogFragment :
 
     private lateinit var billingClient: BillingClient
     private val skus = listOf(
-            "donate1",
-            "donate2",
-            "donate3",
-            "donate5",
-            "donate10"
+            "donation_small",
+            "donation_medium",
+            "donation_large"
     )
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
