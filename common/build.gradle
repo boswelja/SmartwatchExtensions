@@ -29,9 +29,9 @@ android {
 }
 
 dependencies {
-    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$versions.kotlin_version"
 
-    implementation "com.google.android.gms:play-services-wearable:$versions.playServicesWearable"
-    implementation 'androidx.appcompat:appcompat:1.1.0-alpha05'
-    implementation 'androidx.preference:preference:1.1.0-alpha05'
+    implementation "com.google.android.gms:play-services-wearable:$versions.play_services_wearable"
+    implementation "androidx.appcompat:appcompat:$versions.androidx_appcompat"
+    implementation "androidx.preference:preference:$versions.androidx_preference"
 }

@@ -31,12 +31,15 @@ android {
 
 dependencies {
     implementation project(":common")
-    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-    implementation "com.google.android.support:wearable:$versions.wearableLib"
-    implementation "com.google.android.gms:play-services-wearable:$versions.playServicesWearable"
-    implementation 'androidx.core:core-ktx:1.2.0-alpha01'
-    implementation "androidx.wear:wear:1.0.0"
-    implementation 'androidx.appcompat:appcompat:1.1.0-alpha05'
-    implementation 'androidx.preference:preference:1.1.0-alpha05'
-    compileOnly "com.google.android.wearable:wearable:$versions.wearableLib"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$versions.kotlin_version"
+
+    implementation "androidx.core:core-ktx:$versions.androidx_core_ktx"
+    implementation "androidx.wear:wear:$versions.androidx_wear"
+    implementation "androidx.appcompat:appcompat:$versions.androidx_appcompat"
+    implementation "androidx.preference:preference:$versions.androidx_preference"
+
+    implementation "com.google.android.support:wearable:$versions.wearable_support_lib"
+    implementation "com.google.android.gms:play-services-wearable:$versions.play_services_wearable"
+
+    compileOnly "com.google.android.wearable:wearable:$versions.wearable_support_lib"
 }
