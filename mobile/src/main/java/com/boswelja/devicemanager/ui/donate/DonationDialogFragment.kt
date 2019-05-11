@@ -61,7 +61,10 @@ class DonationDialogFragment :
         recyclerView = view.findViewById(R.id.donation_rv)
         loadingSpinner = view.findViewById(R.id.loading_spinner)
 
-        billingClient = BillingClient.newBuilder(view.context).setListener(this).build()
+        billingClient = BillingClient.newBuilder(view.context)
+                .setListener(this)
+                .enablePendingPurchases()
+                .build()
         billingClient.startConnection(this)
     }
 
@@ -80,6 +83,11 @@ class DonationDialogFragment :
                     dismiss()
                     (activity as MainActivity).createSnackBar(getString(R.string.donation_failed_message))
                 }
+                val purchaseQuery = billingClient.queryPurchases(BillingClient.SkuType.INAPP)
+                if (purchaseQuery.billingResult.responseCode == BillingClient.BillingResponseCode.OK &&
+                        !purchaseQuery.purchasesList.isNullOrEmpty()) {
+                    handlePurchases(purchaseQuery.purchasesList)
+                }
             }
         } else {
             dismiss()
@@ -94,15 +102,7 @@ class DonationDialogFragment :
     override fun onPurchasesUpdated(billingResult: BillingResult, purchases: List<Purchase>?) {
         if (billingResult.responseCode == BillingClient.BillingResponseCode.OK
                 && !purchases.isNullOrEmpty()) {
-            setLoading(true)
-            for (purchase in purchases) {
-                if (!purchase.isAcknowledged) {
-                    val consumePurchaseParams = ConsumeParams.newBuilder()
-                            .setPurchaseToken(purchase.purchaseToken)
-                            .build()
-                    billingClient.consumeAsync(consumePurchaseParams, this)
-                }
-            }
+            handlePurchases(purchases)
         } else {
             dismiss()
             (activity as MainActivity).createSnackBar(getString(R.string.donation_failed_message))
@@ -117,6 +117,23 @@ class DonationDialogFragment :
     override fun onDestroy() {
         super.onDestroy()
         billingClient.endConnection()
+    }
+
+    private fun handlePurchases(purchases: List<Purchase>) {
+        setLoading(true)
+        for (purchase in purchases) {
+            if (!purchase.isAcknowledged) {
+                if (purchase.purchaseState == Purchase.PurchaseState.PURCHASED) {
+                    val consumePurchaseParams = ConsumeParams.newBuilder()
+                            .setPurchaseToken(purchase.purchaseToken)
+                            .build()
+                    billingClient.consumeAsync(consumePurchaseParams, this)
+                } else if (purchase.purchaseState == Purchase.PurchaseState.PENDING) {
+                    dismiss()
+                    (activity as MainActivity).createSnackBar(getString(R.string.donation_pending_message))
+                }
+            }
+        }
     }
 
     private fun setLoading(loading: Boolean) {
