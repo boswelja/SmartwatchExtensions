@@ -17,12 +17,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.android.billingclient.api.BillingClient
 import com.android.billingclient.api.BillingClientStateListener
 import com.android.billingclient.api.BillingFlowParams
+import com.android.billingclient.api.BillingResult
+import com.android.billingclient.api.ConsumeParams
 import com.android.billingclient.api.ConsumeResponseListener
 import com.android.billingclient.api.Purchase
 import com.android.billingclient.api.PurchasesUpdatedListener
 import com.android.billingclient.api.SkuDetails
 import com.android.billingclient.api.SkuDetailsParams
-import com.android.billingclient.api.SkuDetailsResponseListener
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.ui.base.BaseDialogFragment
 import com.boswelja.devicemanager.ui.main.MainActivity
@@ -31,7 +32,6 @@ import com.google.android.material.button.MaterialButton
 class DonationDialogFragment :
         BaseDialogFragment(),
         BillingClientStateListener,
-        SkuDetailsResponseListener,
         PurchasesUpdatedListener,
         ConsumeResponseListener {
 
@@ -67,18 +67,20 @@ class DonationDialogFragment :
         billingClient.startConnection(this)
     }
 
-    override fun onBillingSetupFinished(responseCode: Int) {
-        if (responseCode == BillingClient.BillingResponse.OK) {
+    override fun onBillingSetupFinished(billingResult: BillingResult) {
+        if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
             val params = SkuDetailsParams.newBuilder()
                     .setSkusList(skus)
                     .setType(BillingClient.SkuType.INAPP)
-            billingClient.querySkuDetailsAsync(params.build(), this)
-
-            // Consume any previous purchases
-            val purchases = billingClient.queryPurchases(BillingClient.SkuType.INAPP)
-            if (purchases.responseCode == BillingClient.BillingResponse.OK && purchases.purchasesList != null) {
-                for (purchase in purchases.purchasesList) {
-                    billingClient.consumeAsync(purchase.purchaseToken, null)
+            billingClient.querySkuDetailsAsync(params.build()) { skuResult, skuDetailsList ->
+                if (skuResult.responseCode == BillingClient.BillingResponseCode.OK && skuDetailsList != null) {
+                    skuDetailsList.sortBy { it.priceAmountMicros }
+                    recyclerView.layoutManager = LinearLayoutManager(recyclerView.context, RecyclerView.VERTICAL, false)
+                    recyclerView.adapter = DonationAdapter(skuDetailsList, this)
+                    setLoading(false)
+                } else {
+                    dismiss()
+                    (activity as MainActivity).createSnackBar(getString(R.string.donation_failed_message))
                 }
             }
         } else {
@@ -87,23 +89,21 @@ class DonationDialogFragment :
         }
     }
 
-    override fun onSkuDetailsResponse(responseCode: Int, skuDetailsList: MutableList<SkuDetails>?) {
-        if (responseCode == BillingClient.BillingResponse.OK && skuDetailsList != null) {
-            skuDetailsList.sortBy { it.priceAmountMicros }
-            recyclerView.layoutManager = LinearLayoutManager(recyclerView.context, RecyclerView.VERTICAL, false)
-            recyclerView.adapter = DonationAdapter(skuDetailsList, this)
-            setLoading(false)
-        } else {
-            dismiss()
-            (activity as MainActivity).createSnackBar(getString(R.string.donation_failed_message))
-        }
+    override fun onBillingServiceDisconnected() {
+        dismiss()
     }
 
-    override fun onPurchasesUpdated(responseCode: Int, purchases: MutableList<Purchase>?) {
-        if (responseCode == BillingClient.BillingResponse.OK && purchases != null) {
+    override fun onPurchasesUpdated(billingResult: BillingResult, purchases: List<Purchase>?) {
+        if (billingResult.responseCode == BillingClient.BillingResponseCode.OK
+                && !purchases.isNullOrEmpty()) {
             setLoading(true)
             for (purchase in purchases) {
-                billingClient.consumeAsync(purchase.purchaseToken, this)
+                if (!purchase.isAcknowledged) {
+                    val consumePurchaseParams = ConsumeParams.newBuilder()
+                            .setPurchaseToken(purchase.purchaseToken)
+                            .build()
+                    billingClient.consumeAsync(consumePurchaseParams, this)
+                }
             }
         } else {
             dismiss()
@@ -111,17 +111,13 @@ class DonationDialogFragment :
         }
     }
 
-    override fun onConsumeResponse(responseCode: Int, purchaseToken: String?) {
+    override fun onConsumeResponse(billingResult: BillingResult, purchaseToken: String?) {
         dismiss()
         (activity as MainActivity).createSnackBar(getString(R.string.donation_processed_message))
     }
 
-    override fun onBillingServiceDisconnected() {
-        dismiss()
-    }
-
-    override fun dismiss() {
-        super.dismiss()
+    override fun onDestroy() {
+        super.onDestroy()
         billingClient.endConnection()
     }
 

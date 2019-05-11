@@ -36,11 +36,11 @@ android {
 dependencies {
     implementation project(":common")
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-    implementation 'com.android.billingclient:billing:1.2'
-    implementation 'androidx.core:core-ktx:1.1.0-alpha05'
-    implementation 'androidx.constraintlayout:constraintlayout:2.0.0-alpha5'
-    implementation 'androidx.appcompat:appcompat:1.1.0-alpha04'
-    implementation 'androidx.preference:preference:1.1.0-alpha04'
-    implementation 'com.google.android.material:material:1.1.0-alpha05'
+    implementation 'com.android.billingclient:billing:2.0.0'
+    implementation 'androidx.core:core-ktx:1.2.0-alpha01'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.0-beta1'
+    implementation 'androidx.appcompat:appcompat:1.1.0-alpha05'
+    implementation 'androidx.preference:preference:1.1.0-alpha05'
+    implementation 'com.google.android.material:material:1.1.0-alpha06'
     implementation "com.google.android.gms:play-services-wearable:$versions.playServicesWearable"
 }
