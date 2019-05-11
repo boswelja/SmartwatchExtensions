@@ -11,26 +11,17 @@ import android.content.Intent
 import android.graphics.drawable.Icon
 import android.support.wearable.complications.ComplicationData
 import android.support.wearable.complications.ComplicationManager
-import android.support.wearable.complications.ComplicationProviderService
 import android.support.wearable.complications.ComplicationText
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.Compat
 import com.boswelja.devicemanager.common.References
 import com.boswelja.devicemanager.service.ActionService
 
-class LockPhoneComplicationProvider : ComplicationProviderService() {
+class LockPhoneComplicationProvider : BaseComplicationProviderService() {
 
-    override fun onComplicationUpdate(complicationId: Int, type: Int, complicationManager: ComplicationManager?) {
-        setComplication(type, complicationId, complicationManager!!)
-    }
-
-    override fun onComplicationActivated(complicationId: Int, type: Int, complicationManager: ComplicationManager?) {
-        setComplication(type, complicationId, complicationManager!!)
-    }
-
-    private fun setComplication(type: Int, id: Int, complicationManager: ComplicationManager) {
+    override fun onCreateComplication(complicationId: Int, type: Int, manager: ComplicationManager?) {
         if (type != ComplicationData.TYPE_SHORT_TEXT) {
-            complicationManager.noUpdateRequired(id)
+            manager?.noUpdateRequired(complicationId)
             return
         }
 
@@ -43,6 +34,7 @@ class LockPhoneComplicationProvider : ComplicationProviderService() {
                 .setShortText(ComplicationText.plainText(getString(R.string.lock_phone_label)))
                 .setTapAction(pendingIntent)
                 .build()
-        complicationManager.updateComplicationData(id, complicationData)
+
+        manager?.updateComplicationData(complicationId, complicationData)
     }
 }
