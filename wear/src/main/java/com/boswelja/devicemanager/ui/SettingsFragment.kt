@@ -8,6 +8,7 @@ import androidx.preference.CheckBoxPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.SwitchPreference
+import androidx.preference.TwoStatePreference
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.wear.widget.WearableRecyclerView
@@ -30,13 +31,6 @@ class SettingsFragment :
     private lateinit var preferenceSyncLayer: PreferenceSyncLayer
     private lateinit var messageClient: MessageClient
 
-    private lateinit var batterySyncEnabledPref: SwitchPreference
-    private lateinit var batteryPhoneChargedNotiPref: CheckBoxPreference
-    private lateinit var batteryWatchChargedNotiPref: CheckBoxPreference
-    private lateinit var dndSyncPhoneToWatchPref: SwitchPreference
-    private lateinit var dndSyncWatchToPhonePref: SwitchPreference
-    private lateinit var dndSyncWithTheaterPref: SwitchPreference
-
     private var changingKey = ""
 
     private val interruptFilterAccessListener = MessageClient.OnMessageReceivedListener {
@@ -47,25 +41,9 @@ class SettingsFragment :
     }
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
-        when (key) {
-            PreferenceKey.BATTERY_SYNC_ENABLED_KEY -> {
-                batterySyncEnabledPref.isChecked = sharedPreferences?.getBoolean(key, false) == true
-            }
-            PreferenceKey.BATTERY_PHONE_FULL_CHARGE_NOTI_KEY -> {
-                batteryPhoneChargedNotiPref.isChecked = sharedPreferences?.getBoolean(key, false) == true
-            }
-            PreferenceKey.BATTERY_WATCH_FULL_CHARGE_NOTI_KEY -> {
-                batteryWatchChargedNotiPref.isChecked = sharedPreferences?.getBoolean(key, false) == true
-            }
-            PreferenceKey.INTERRUPT_FILTER_SYNC_TO_WATCH_KEY -> {
-                dndSyncPhoneToWatchPref.isChecked = sharedPreferences?.getBoolean(key, false) == true
-            }
-            PreferenceKey.INTERRUPT_FILTER_SYNC_TO_PHONE_KEY -> {
-                dndSyncWatchToPhonePref.isChecked = sharedPreferences?.getBoolean(key, false) == true
-            }
-            PreferenceKey.INTERRUPT_FILTER_ON_WITH_THEATER_KEY -> {
-                dndSyncWithTheaterPref.isChecked = sharedPreferences?.getBoolean(key, false) == true
-            }
+        if (!key.isNullOrBlank()) {
+            val newValue = sharedPreferences?.getBoolean(key, false) == true
+            findPreference<TwoStatePreference>(key)?.isChecked = newValue
         }
     }
 
@@ -158,25 +136,25 @@ class SettingsFragment :
     }
 
     private fun setupBatterySyncPrefs() {
-        batterySyncEnabledPref = findPreference(PreferenceKey.BATTERY_SYNC_ENABLED_KEY)!!
-        batterySyncEnabledPref.onPreferenceChangeListener = this
+        findPreference<SwitchPreference>(PreferenceKey.BATTERY_SYNC_ENABLED_KEY)!!
+                .onPreferenceChangeListener = this
 
-        batteryPhoneChargedNotiPref = findPreference(PreferenceKey.BATTERY_PHONE_FULL_CHARGE_NOTI_KEY)!!
-        batteryPhoneChargedNotiPref.onPreferenceChangeListener = this
+        findPreference<CheckBoxPreference>(PreferenceKey.BATTERY_PHONE_FULL_CHARGE_NOTI_KEY)!!
+                .onPreferenceChangeListener = this
 
-        batteryWatchChargedNotiPref = findPreference(PreferenceKey.BATTERY_WATCH_FULL_CHARGE_NOTI_KEY)!!
-        batteryWatchChargedNotiPref.onPreferenceChangeListener = this
+        findPreference<CheckBoxPreference>(PreferenceKey.BATTERY_WATCH_FULL_CHARGE_NOTI_KEY)!!
+                .onPreferenceChangeListener = this
     }
 
     private fun setupDnDSyncPrefs() {
-        dndSyncPhoneToWatchPref = findPreference(PreferenceKey.INTERRUPT_FILTER_SYNC_TO_WATCH_KEY)!!
-        dndSyncPhoneToWatchPref.onPreferenceChangeListener = this
+        findPreference<SwitchPreference>(PreferenceKey.INTERRUPT_FILTER_SYNC_TO_WATCH_KEY)!!
+                .onPreferenceChangeListener = this
 
-        dndSyncWatchToPhonePref = findPreference(PreferenceKey.INTERRUPT_FILTER_SYNC_TO_PHONE_KEY)!!
-        dndSyncWatchToPhonePref.onPreferenceChangeListener = this
+        findPreference<SwitchPreference>(PreferenceKey.INTERRUPT_FILTER_SYNC_TO_PHONE_KEY)!!
+                .onPreferenceChangeListener = this
 
-        dndSyncWithTheaterPref = findPreference(PreferenceKey.INTERRUPT_FILTER_ON_WITH_THEATER_KEY)!!
-        dndSyncWithTheaterPref.onPreferenceChangeListener = this
+        findPreference<SwitchPreference>(PreferenceKey.INTERRUPT_FILTER_ON_WITH_THEATER_KEY)!!
+                .onPreferenceChangeListener = this
     }
 
     private fun notifyAdditionalSetupRequired(key: String) {
