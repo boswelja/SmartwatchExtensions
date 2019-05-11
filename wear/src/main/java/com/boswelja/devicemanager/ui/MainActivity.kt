@@ -20,18 +20,18 @@ import com.boswelja.devicemanager.ui.navigation.NavigationDrawerSections
 
 class MainActivity : AppCompatActivity(), WearableNavigationDrawerView.OnItemSelectedListener {
 
-    private lateinit var navigationDrawer: WearableNavigationDrawerView
     private val controlsFragment = ControlsFragment()
-    private var settingsFragment = SettingsFragment()
+    private var settingsFragment: SettingsFragment? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         setContentView(R.layout.activity_main)
 
-        navigationDrawer = findViewById(R.id.navigation_drawer)
-        navigationDrawer.setAdapter(NavigationDrawerAdapter(this))
-        navigationDrawer.addOnItemSelectedListener(this)
+        findViewById<WearableNavigationDrawerView>(R.id.navigation_drawer).apply {
+            setAdapter(NavigationDrawerAdapter(this@MainActivity))
+            addOnItemSelectedListener(this@MainActivity)
+        }
 
         navigate(controlsFragment)
 
@@ -40,17 +40,21 @@ class MainActivity : AppCompatActivity(), WearableNavigationDrawerView.OnItemSel
                 .addOnCompleteListener {
                     val node = it.result?.nodes?.lastOrNull()
                     if (node == null) {
-                        val intent = Intent(this@MainActivity, ConfirmInstallActivity::class.java)
-                        startActivity(intent)
-                        finish()
+                        showInstallMobileAppActivity()
                     }
                 }
     }
 
+    private fun showInstallMobileAppActivity() {
+        val intent = Intent(this@MainActivity, InstallMobileAppActivity::class.java)
+        startActivity(intent)
+        finish()
+    }
+
     private fun navigate(fragment: Fragment) {
-        val transaction = supportFragmentManager.beginTransaction()
-        transaction.replace(R.id.fragment_holder, fragment)
-        transaction.commit()
+        supportFragmentManager.beginTransaction()
+                .replace(R.id.fragment_holder, fragment)
+                .commit()
     }
 
     override fun onItemSelected(pos: Int) {
@@ -59,9 +63,11 @@ class MainActivity : AppCompatActivity(), WearableNavigationDrawerView.OnItemSel
                 navigate(controlsFragment)
             }
             NavigationDrawerSections.Settings -> {
-                navigate(settingsFragment)
+                if (settingsFragment == null) {
+                    settingsFragment = SettingsFragment()
+                }
+                navigate(settingsFragment!!)
             }
         }
     }
-
 }

@@ -20,7 +20,7 @@ import com.boswelja.devicemanager.R
 import com.google.android.wearable.intent.RemoteIntent
 import com.google.android.wearable.playstore.PlayStoreAvailability
 
-class ConfirmInstallActivity : AppCompatActivity() {
+class InstallMobileAppActivity : AppCompatActivity() {
 
     private lateinit var circularProgressLayout: CircularProgressLayout
 
@@ -46,13 +46,13 @@ class ConfirmInstallActivity : AppCompatActivity() {
             val isAndroidPhone = PhoneDeviceType.getPhoneDeviceType(this) == PhoneDeviceType.DEVICE_TYPE_ANDROID
             if (isAndroidPhone) {
                 val playStoreIntent = Intent(Intent.ACTION_VIEW)
-                if (PlayStoreAvailability.getPlayStoreAvailabilityOnPhone(this@ConfirmInstallActivity) == PlayStoreAvailability.PLAY_STORE_ON_PHONE_AVAILABLE) {
+                if (PlayStoreAvailability.getPlayStoreAvailabilityOnPhone(this@InstallMobileAppActivity) == PlayStoreAvailability.PLAY_STORE_ON_PHONE_AVAILABLE) {
                     playStoreIntent.data = Uri.parse(String.format(getString(R.string.play_store_app_link), BuildConfig.APPLICATION_ID))
                 } else {
                     playStoreIntent.data = Uri.parse(String.format(getString(R.string.play_store_web_link), BuildConfig.APPLICATION_ID))
                 }
                 playStoreIntent.addCategory(Intent.CATEGORY_BROWSABLE)
-                RemoteIntent.startRemoteActivity(this@ConfirmInstallActivity,
+                RemoteIntent.startRemoteActivity(this@InstallMobileAppActivity,
                         playStoreIntent,
                         null)
                 ConfirmationActivityHandler.openOnPhoneAnimation(this)
