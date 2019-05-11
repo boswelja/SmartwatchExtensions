@@ -1,4 +1,4 @@
-/* Copyright (C) 2018 Jack Boswell <boswelja@outlook.com>
+/* Copyright (C) 2019 Jack Boswell <boswelja@outlook.com>
  *
  * This file is part of Wearable Extensions
  *
@@ -131,7 +131,7 @@ object Compat {
      * and can be left null to check whether notifications are enabled overall for this app.
      * @return True if notifications are enabled, False otherwise.
      */
-    fun notificationsEnabled(context: Context, channelId: String? = null) : Boolean {
+    fun notificationsEnabled(context: Context, channelId: String? = null): Boolean {
         val notificationManager = NotificationManagerCompat.from(context)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && !channelId.isNullOrBlank()) {
             val channel = notificationManager.getNotificationChannel(channelId)

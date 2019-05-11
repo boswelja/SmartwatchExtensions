@@ -1,3 +1,10 @@
+/* Copyright (C) 2019 Jack Boswell <boswelja@outlook.com>
+ *
+ * This file is part of Wearable Extensions
+ *
+ * This file, and any part of the Wearable Extensions app/s cannot be copied and/or distributed
+ * without permission from Jack Boswell (boswelja) <boswela@outlook.com>
+ */
 package com.boswelja.devicemanager.ui.interruptfiltersync
 
 import android.app.NotificationManager
@@ -23,7 +30,7 @@ import com.boswelja.devicemanager.ui.base.BasePreferenceFragment
 class InterruptFilterSyncPreferenceFragment :
         BasePreferenceFragment(),
         SharedPreferences.OnSharedPreferenceChangeListener,
-        Preference.OnPreferenceChangeListener{
+        Preference.OnPreferenceChangeListener {
 
     private lateinit var preferenceSyncLayer: PreferenceSyncLayer
     private lateinit var notificationManager: NotificationManager

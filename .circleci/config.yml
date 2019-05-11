@@ -21,8 +21,14 @@ jobs:
             - ~/.gradle
           key: jars-{{ checksum "build.gradle" }}-{{ checksum "mobile/build.gradle" }}-{{ checksum "wear/build.gradle" }}
       - run:
-          name: Run Linting
+          name: Linting
           command: ./gradlew lint test
+      - run:
+          name: Spotless Kotlin
+          command: ./gradlew spotlessKotlinCheck
+      - run:
+          name: Spotless Misc
+          command: ./gradlew spotlessMiscCheck
       - run:
           name: Build Project
           command: ./gradlew build

@@ -1,4 +1,4 @@
-/* Copyright (C) 2018 Jack Boswell <boswelja@outlook.com>
+/* Copyright (C) 2019 Jack Boswell <boswelja@outlook.com>
  *
  * This file is part of Wearable Extensions
  *
@@ -59,7 +59,7 @@ class MainActivity : BaseToolbarActivity() {
     private fun checkVersion() {
         val oldVersion = sharedPrefs.getString(APP_VERSION_KEY, "")
         val currentVersion = getString(R.string.app_version_name)
-        if (oldVersion.isNullOrBlank() || oldVersion != currentVersion){
+        if (oldVersion.isNullOrBlank() || oldVersion != currentVersion) {
             ChangelogDialogFragment().show(supportFragmentManager, "ChangelogDialog")
             sharedPrefs.edit()
                     .clear()

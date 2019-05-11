@@ -11,10 +11,34 @@ buildscript {
     }
 }
 
+plugins {
+    id "com.diffplug.gradle.spotless" version "3.23.0"
+}
+
 allprojects {
     repositories {
         google()
         jcenter()
         mavenCentral()
+    }
+
+    apply plugin: "com.diffplug.gradle.spotless"
+}
+
+spotless {
+    kotlin {
+        target '**/*.kt'
+
+        ktlint()
+        endWithNewline()
+
+        licenseHeaderFile 'License'
+    }
+    format 'misc', {
+        target '**/*.gradle', '**/.gitignore'
+
+        trimTrailingWhitespace()
+        indentWithSpaces()
+        endWithNewline()
     }
 }

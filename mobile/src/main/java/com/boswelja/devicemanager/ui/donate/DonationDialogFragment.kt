@@ -1,4 +1,4 @@
-/* Copyright (C) 2018 Jack Boswell <boswelja@outlook.com>
+/* Copyright (C) 2019 Jack Boswell <boswelja@outlook.com>
  *
  * This file is part of Wearable Extensions
  *
@@ -108,8 +108,8 @@ class DonationDialogFragment :
     }
 
     override fun onPurchasesUpdated(billingResult: BillingResult, purchases: List<Purchase>?) {
-        if (billingResult.responseCode == BillingClient.BillingResponseCode.OK
-                && !purchases.isNullOrEmpty()) {
+        if (billingResult.responseCode == BillingClient.BillingResponseCode.OK &&
+                !purchases.isNullOrEmpty()) {
             handlePurchases(purchases)
         } else {
             dismiss()
