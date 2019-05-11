@@ -35,6 +35,8 @@ class DonationDialogFragment :
         PurchasesUpdatedListener,
         ConsumeResponseListener {
 
+    private var billingConnectionRetryCounter = 0
+
     private lateinit var recyclerView: RecyclerView
     private lateinit var loadingSpinner: ProgressBar
     private lateinit var cancelBtn: MaterialButton
@@ -96,7 +98,13 @@ class DonationDialogFragment :
     }
 
     override fun onBillingServiceDisconnected() {
-        dismiss()
+        if (billingConnectionRetryCounter < 3) {
+            billingConnectionRetryCounter++
+            billingClient.startConnection(this)
+        } else {
+            dismiss()
+            (activity as MainActivity).createSnackBar(getString(R.string.donation_connection_failed_message))
+        }
     }
 
     override fun onPurchasesUpdated(billingResult: BillingResult, purchases: List<Purchase>?) {
