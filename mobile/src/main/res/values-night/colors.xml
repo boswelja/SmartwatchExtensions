@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
+    <color name="colorPrimary">#ab47bc</color>
+
     <color name="statusBarColor">#000000</color>
     <color name="navBarColor">#000000</color>
     <color name="navBarDividerColor">#000000</color>
@@ -9,4 +12,5 @@
 
     <color name="windowBackground">#000000</color>
     <color name="dialogBackground">#212121</color>
+
 </resources>
