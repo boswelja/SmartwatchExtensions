@@ -27,7 +27,7 @@ class PreferenceSyncLayer(context: Context) {
     private val dataClient = Wearable.getDataClient(context)
 
     fun pushNewData() {
-        // Get updated prefs
+        // Get updated sharedPreferences
         val batterySyncEnabled = localPrefs.getBoolean(PreferenceKey.BATTERY_SYNC_ENABLED_KEY, false)
         val phoneBatteryChargedNoti = localPrefs.getBoolean(PreferenceKey.BATTERY_PHONE_FULL_CHARGE_NOTI_KEY, false)
         val watchBatteryChargedNoti = localPrefs.getBoolean(PreferenceKey.BATTERY_WATCH_FULL_CHARGE_NOTI_KEY, false)
@@ -42,7 +42,7 @@ class PreferenceSyncLayer(context: Context) {
                     .remove(PreferenceKey.BATTERY_SYNC_LAST_WHEN_KEY).apply()
         }
 
-        // Create updated prefs object
+        // Create updated sharedPreferences object
         val syncedPrefUpdateReq = PutDataMapRequest.create(PREFERENCE_CHANGE_PATH)
         syncedPrefUpdateReq.dataMap.putBoolean(BATTERY_SYNC_ENABLED_KEY, batterySyncEnabled)
         syncedPrefUpdateReq.dataMap.putBoolean(BATTERY_PHONE_FULL_CHARGE_NOTI_KEY, phoneBatteryChargedNoti)
@@ -52,7 +52,7 @@ class PreferenceSyncLayer(context: Context) {
         syncedPrefUpdateReq.dataMap.putBoolean(DND_SYNC_WITH_THEATER_KEY, dndSyncWithTheater)
         syncedPrefUpdateReq.dataMap.putBoolean(LOCK_PHONE_ENABLED_KEY, lockPhoneEnabled)
 
-        // Send updated prefs
+        // Send updated sharedPreferences
         syncedPrefUpdateReq.setUrgent()
         dataClient.putDataItem(syncedPrefUpdateReq.asPutDataRequest())
     }

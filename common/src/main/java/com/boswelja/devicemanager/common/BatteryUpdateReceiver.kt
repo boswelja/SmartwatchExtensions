@@ -19,11 +19,13 @@ import com.google.android.gms.wearable.WearableListenerService
 
 abstract class BatteryUpdateReceiver : WearableListenerService() {
 
-    private lateinit var prefs: SharedPreferences
+    lateinit var sharedPreferences: SharedPreferences
+
+    abstract fun sendChargeNotiEnabled(): Boolean
 
     override fun onMessageReceived(messageEvent: MessageEvent?) {
         if (messageEvent?.path == References.BATTERY_STATUS_PATH) {
-            prefs = PreferenceManager.getDefaultSharedPreferences(this)
+            val prefs = PreferenceManager.getDefaultSharedPreferences(this)
             val message = String(messageEvent.data, Charsets.UTF_8)
             val messageSplit = message.split("|")
             val percent = messageSplit[0].toInt()
@@ -33,11 +35,7 @@ abstract class BatteryUpdateReceiver : WearableListenerService() {
                     .putInt(PreferenceKey.BATTERY_PERCENT_KEY, percent)
                     .apply()
 
-            val isPhone = resources.getBoolean(R.bool.deviceIsPhone)
-
-            val sendChargeNotiEnabled = (isPhone && prefs.getBoolean(PreferenceKey.BATTERY_WATCH_FULL_CHARGE_NOTI_KEY, false) ||
-                    (!isPhone && prefs.getBoolean(PreferenceKey.BATTERY_PHONE_FULL_CHARGE_NOTI_KEY, false)))
-            if (sendChargeNotiEnabled &&
+            if (sendChargeNotiEnabled() &&
                     !prefs.getBoolean(PreferenceKey.BATTERY_CHARGED_NOTI_SENT, false) &&
                     percent > 90 &&
                     charging) {
@@ -75,7 +73,7 @@ abstract class BatteryUpdateReceiver : WearableListenerService() {
         }
 
         notificationManager.notify(AtomicCounter.getInt(), noti)
-        prefs.edit().putBoolean(PreferenceKey.BATTERY_CHARGED_NOTI_SENT, true).apply()
+        sharedPreferences.edit().putBoolean(PreferenceKey.BATTERY_CHARGED_NOTI_SENT, true).apply()
     }
 
     abstract fun onBatteryUpdate(percent: Int, charging: Boolean)

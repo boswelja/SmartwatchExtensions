@@ -23,18 +23,18 @@ import androidx.core.app.NotificationCompat
 import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.common.AtomicCounter
 import com.boswelja.devicemanager.common.CommonUtils
-import com.boswelja.devicemanager.common.PreferenceKey
 import com.boswelja.devicemanager.common.R
 import com.boswelja.devicemanager.common.References
 
 @RequiresApi(Build.VERSION_CODES.M)
-class InterruptFilterLocalChangeListener : Service() {
+abstract class BaseInterruptFilterLocalChangeListener : Service() {
 
     private lateinit var prefs: SharedPreferences
     private lateinit var notificationManager: NotificationManager
     private var dndChangeReceiver: DnDChangeReceiver? = null
     private val prefChangeListener: PreferenceChangeListener = PreferenceChangeListener()
-    private var sendPrefKey = ""
+
+    abstract val interruptFilterSendEnabledKey: String
 
     override fun onBind(p0: Intent?): IBinder? {
         return null
@@ -42,13 +42,6 @@ class InterruptFilterLocalChangeListener : Service() {
 
     override fun onCreate() {
         super.onCreate()
-
-        val isPhone = resources.getBoolean(R.bool.deviceIsPhone)
-        sendPrefKey = if (isPhone) {
-            PreferenceKey.INTERRUPT_FILTER_SYNC_TO_WATCH_KEY
-        } else {
-            PreferenceKey.INTERRUPT_FILTER_SYNC_TO_PHONE_KEY
-        }
 
         prefs = PreferenceManager.getDefaultSharedPreferences(this)
         prefs.registerOnSharedPreferenceChangeListener(prefChangeListener)
@@ -108,7 +101,7 @@ class InterruptFilterLocalChangeListener : Service() {
 
     private inner class PreferenceChangeListener : SharedPreferences.OnSharedPreferenceChangeListener {
         override fun onSharedPreferenceChanged(prefs: SharedPreferences?, key: String?) {
-            if (key == sendPrefKey &&
+            if (key == interruptFilterSendEnabledKey &&
                     !prefs?.getBoolean(key, false)!!) {
                 stopForeground(true)
                 stopSelf()
@@ -119,7 +112,7 @@ class InterruptFilterLocalChangeListener : Service() {
     private inner class DnDChangeReceiver : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             if (intent!!.action == NotificationManager.ACTION_INTERRUPTION_FILTER_CHANGED) {
-                CommonUtils.updateInterruptionFilter(this@InterruptFilterLocalChangeListener)
+                CommonUtils.updateInterruptionFilter(this@BaseInterruptFilterLocalChangeListener)
             }
         }
     }

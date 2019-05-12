@@ -4,6 +4,4 @@
     <bool name="lightNavigationBar">true</bool>
     <bool name="lightStatusBar">true</bool>
 
-    <bool name="deviceIsPhone">true</bool>
-
 </resources>

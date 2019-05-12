@@ -11,10 +11,14 @@ import android.content.ComponentName
 import android.support.wearable.complications.ProviderUpdateRequester
 import com.boswelja.devicemanager.common.BatteryUpdateReceiver
 import com.boswelja.devicemanager.common.CommonUtils
+import com.boswelja.devicemanager.common.PreferenceKey
 import com.boswelja.devicemanager.common.References
 import com.boswelja.devicemanager.complication.PhoneBatteryComplicationProvider
 
 class PhoneBatteryUpdateReceiver : BatteryUpdateReceiver() {
+
+    override fun sendChargeNotiEnabled(): Boolean =
+            sharedPreferences.getBoolean(PreferenceKey.BATTERY_WATCH_FULL_CHARGE_NOTI_KEY, false)
 
     override fun onBatteryUpdate(percent: Int, charging: Boolean) {
         CommonUtils.updateBatteryStats(this, References.CAPABILITY_PHONE_APP)

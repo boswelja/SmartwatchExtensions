@@ -10,6 +10,9 @@ package com.boswelja.devicemanager
 import android.app.NotificationManager
 import android.content.Context
 import android.provider.Settings
+import androidx.preference.PreferenceManager
+import com.boswelja.devicemanager.common.Compat
+import com.boswelja.devicemanager.common.PreferenceKey
 import com.boswelja.devicemanager.common.References
 import com.google.android.gms.tasks.Task
 import com.google.android.gms.wearable.CapabilityClient
@@ -34,6 +37,28 @@ object Utils {
             val nodeId = capabilityInfo.nodes.firstOrNull { it.isNearby }?.id ?: capabilityInfo.nodes.firstOrNull()?.id!!
             Wearable.getMessageClient(context)
                     .sendMessage(nodeId, References.REQUEST_LAUNCH_APP_PATH, key.toByteArray(Charsets.UTF_8))
+        }
+    }
+
+    /**
+     * Set the system's current Interruption Filter state, or set silent mode if
+     * Interruption Filter doesn't exist.
+     * @param interruptionFilterOn Specify the new Interruption Filter state.
+     */
+    fun setInterruptionFilter(context: Context, interruptionFilterOn: Boolean) {
+        if (interruptionFilterOn != Compat.interruptionFilterEnabled(context)) {
+            try {
+                val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+                if (interruptionFilterOn) {
+                    notificationManager.setInterruptionFilter(NotificationManager.INTERRUPTION_FILTER_PRIORITY)
+                } else {
+                    notificationManager.setInterruptionFilter(NotificationManager.INTERRUPTION_FILTER_ALL)
+                }
+            } catch (e: SecurityException) {
+                e.printStackTrace()
+                val prefs = PreferenceManager.getDefaultSharedPreferences(context)
+                prefs.edit().putBoolean(PreferenceKey.INTERRUPT_FILTER_SYNC_TO_WATCH_KEY, false).apply()
+            }
         }
     }
 }

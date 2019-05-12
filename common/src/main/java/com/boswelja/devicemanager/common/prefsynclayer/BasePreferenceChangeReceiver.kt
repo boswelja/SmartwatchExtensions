@@ -7,13 +7,9 @@
  */
 package com.boswelja.devicemanager.common.prefsynclayer
 
-import android.content.Intent
 import android.content.SharedPreferences
 import androidx.preference.PreferenceManager
-import com.boswelja.devicemanager.common.Compat
-import com.boswelja.devicemanager.common.interruptfiltersync.InterruptFilterLocalChangeListener
 import com.boswelja.devicemanager.common.PreferenceKey
-import com.boswelja.devicemanager.common.R
 import com.boswelja.devicemanager.common.prefsynclayer.PreferenceSyncKeys.BATTERY_PHONE_FULL_CHARGE_NOTI_KEY
 import com.boswelja.devicemanager.common.prefsynclayer.PreferenceSyncKeys.BATTERY_SYNC_ENABLED_KEY
 import com.boswelja.devicemanager.common.prefsynclayer.PreferenceSyncKeys.BATTERY_WATCH_FULL_CHARGE_NOTI_KEY
@@ -38,9 +34,9 @@ abstract class BasePreferenceChangeReceiver : WearableListenerService() {
             val batteryPhoneChargedNoti = dataMap.getBoolean(BATTERY_PHONE_FULL_CHARGE_NOTI_KEY)
             val batteryWatchChargedNoti = dataMap.getBoolean(BATTERY_WATCH_FULL_CHARGE_NOTI_KEY)
 
-            val dndSyncPhoneToWatch = dataMap.getBoolean(DND_SYNC_PHONE_TO_WATCH_KEY)
-            val dndSyncWatchToPhone = dataMap.getBoolean(DND_SYNC_WATCH_TO_PHONE_KEY)
-            val dndSyncWithTheater = dataMap.getBoolean(DND_SYNC_WITH_THEATER_KEY)
+            val interruptFilterSyncToPhone = dataMap.getBoolean(DND_SYNC_WATCH_TO_PHONE_KEY)
+            val interruptFilterSyncToWatch = dataMap.getBoolean(DND_SYNC_PHONE_TO_WATCH_KEY)
+            val interruptFilterSyncWithTheater = dataMap.getBoolean(DND_SYNC_WITH_THEATER_KEY)
 
             val lockPhoneEnabled = dataMap.getBoolean(LOCK_PHONE_ENABLED_KEY)
 
@@ -49,25 +45,24 @@ abstract class BasePreferenceChangeReceiver : WearableListenerService() {
                     .putBoolean(PreferenceKey.BATTERY_SYNC_ENABLED_KEY, batterySyncEnabled)
                     .putBoolean(PreferenceKey.BATTERY_PHONE_FULL_CHARGE_NOTI_KEY, batteryPhoneChargedNoti)
                     .putBoolean(PreferenceKey.BATTERY_WATCH_FULL_CHARGE_NOTI_KEY, batteryWatchChargedNoti)
-                    .putBoolean(PreferenceKey.INTERRUPT_FILTER_SYNC_TO_WATCH_KEY, dndSyncPhoneToWatch)
-                    .putBoolean(PreferenceKey.INTERRUPT_FILTER_SYNC_TO_PHONE_KEY, dndSyncWatchToPhone)
-                    .putBoolean(PreferenceKey.INTERRUPT_FILTER_ON_WITH_THEATER_KEY, dndSyncWithTheater)
+                    .putBoolean(PreferenceKey.INTERRUPT_FILTER_SYNC_TO_PHONE_KEY, interruptFilterSyncToPhone)
+                    .putBoolean(PreferenceKey.INTERRUPT_FILTER_SYNC_TO_WATCH_KEY, interruptFilterSyncToWatch)
+                    .putBoolean(PreferenceKey.INTERRUPT_FILTER_ON_WITH_THEATER_KEY, interruptFilterSyncWithTheater)
                     .putBoolean(PreferenceKey.PHONE_LOCKING_ENABLED_KEY, lockPhoneEnabled)
                     .apply()
 
-            val isPhone = resources.getBoolean(R.bool.deviceIsPhone)
-            if ((isPhone && dndSyncPhoneToWatch) || (!isPhone && dndSyncWatchToPhone)) {
-                startLocalDnDListenerService()
-            }
-
-            handleStartServices(dndSyncWithTheater, batterySyncEnabled)
+            handleStartServices(
+                    interruptFilterSyncToPhone,
+                    interruptFilterSyncToWatch,
+                    interruptFilterSyncWithTheater,
+                    batterySyncEnabled)
         }
     }
 
-    private fun startLocalDnDListenerService() {
-        val intent = Intent(applicationContext, InterruptFilterLocalChangeListener::class.java)
-        Compat.startForegroundService(applicationContext, intent)
-    }
-
-    abstract fun handleStartServices(dndSyncWithTheater: Boolean, batterySyncEnabled: Boolean)
+    abstract fun handleStartServices(
+        interruptFilterSyncToPhone: Boolean,
+        interruptFilterSyncToWatch: Boolean,
+        interruptFilterSyncWithTheater: Boolean,
+        batterySyncEnabled: Boolean
+    )
 }

@@ -14,18 +14,28 @@ import com.boswelja.devicemanager.common.Compat
 import com.boswelja.devicemanager.common.PreferenceKey
 import com.boswelja.devicemanager.common.prefsynclayer.BasePreferenceChangeReceiver
 import com.boswelja.devicemanager.complication.PhoneBatteryComplicationProvider
+import com.boswelja.devicemanager.service.InterruptFilterLocalChangeListener
 import com.boswelja.devicemanager.service.InterruptFilterSyncWithTheaterListener
 
 class PreferenceChangeReceiver : BasePreferenceChangeReceiver() {
 
-    override fun handleStartServices(dndSyncWithTheater: Boolean, batterySyncEnabled: Boolean) {
+    override fun handleStartServices(
+        interruptFilterSyncToPhone: Boolean,
+        interruptFilterSyncToWatch: Boolean,
+        interruptFilterSyncWithTheater: Boolean,
+        batterySyncEnabled: Boolean
+    ) {
+        if (interruptFilterSyncToPhone) {
+            val intent = Intent(this, InterruptFilterLocalChangeListener::class.java)
+            Compat.startForegroundService(this, intent)
+        }
 
         if (!batterySyncEnabled) {
             prefs.edit().remove(PreferenceKey.BATTERY_PERCENT_KEY).apply()
             ProviderUpdateRequester(this, ComponentName(packageName, PhoneBatteryComplicationProvider::class.java.name)).requestUpdateAll()
         }
 
-        if (dndSyncWithTheater) {
+        if (interruptFilterSyncWithTheater) {
             Compat.startForegroundService(this, Intent(applicationContext, InterruptFilterSyncWithTheaterListener::class.java))
         }
     }

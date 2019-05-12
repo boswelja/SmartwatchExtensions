@@ -10,19 +10,21 @@ package com.boswelja.devicemanager.common
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import androidx.preference.PreferenceManager
-import com.boswelja.devicemanager.common.interruptfiltersync.InterruptFilterLocalChangeListener
+import com.boswelja.devicemanager.common.interruptfiltersync.BaseInterruptFilterLocalChangeListener
 
-class BootReceiver : BroadcastReceiver() {
+abstract class BootReceiver : BroadcastReceiver() {
+
+    lateinit var sharedPreferences: SharedPreferences
+
+    abstract fun isInterruptFilterSyncSending(): Boolean
 
     override fun onReceive(context: Context?, intent: Intent?) {
         if (intent?.action == Intent.ACTION_BOOT_COMPLETED) {
-            val prefs = PreferenceManager.getDefaultSharedPreferences(context)
-            val isPhone = context?.resources?.getBoolean(R.bool.deviceIsPhone) == true
-            val isSending = (isPhone && prefs.getBoolean(PreferenceKey.INTERRUPT_FILTER_SYNC_TO_WATCH_KEY, false) ||
-                    (!isPhone && prefs.getBoolean(PreferenceKey.INTERRUPT_FILTER_SYNC_TO_PHONE_KEY, false)))
-            if (isSending) {
-                val serviceIntent = Intent(context, InterruptFilterLocalChangeListener::class.java)
+            sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
+            if (isInterruptFilterSyncSending()) {
+                val serviceIntent = Intent(context, BaseInterruptFilterLocalChangeListener::class.java)
                 Compat.startForegroundService(context!!, serviceIntent)
             }
         }

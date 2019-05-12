@@ -7,6 +7,7 @@
  */
 package com.boswelja.devicemanager
 
+import android.app.NotificationManager
 import android.app.admin.DevicePolicyManager
 import android.app.job.JobInfo
 import android.app.job.JobScheduler
@@ -14,6 +15,8 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.res.Resources
+import android.media.AudioManager
+import android.os.Build
 import android.util.TypedValue
 import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.receiver.DeviceAdminChangeReceiver.Companion.DEVICE_ADMIN_ENABLED_KEY
@@ -64,6 +67,37 @@ object Utils {
         val jobScheduler = context.getSystemService(Context.JOB_SCHEDULER_SERVICE) as JobScheduler
         if (Compat.getPendingJob(jobScheduler, BatteryUpdateJob.BATTERY_PERCENT_JOB_ID) != null) {
             jobScheduler.cancel(BatteryUpdateJob.BATTERY_PERCENT_JOB_ID)
+        }
+    }
+
+    /**
+     * Set the system's current Interruption Filter state, or set silent mode if
+     * Interruption Filter doesn't exist.
+     * @param interruptionFilterOn Specify the new Interruption Filter state.
+     */
+    fun setInterruptionFilter(context: Context, interruptionFilterOn: Boolean) {
+        if (interruptionFilterOn != Compat.interruptionFilterEnabled(context)) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                try {
+                    val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+                    if (interruptionFilterOn) {
+                        notificationManager.setInterruptionFilter(NotificationManager.INTERRUPTION_FILTER_PRIORITY)
+                    } else {
+                        notificationManager.setInterruptionFilter(NotificationManager.INTERRUPTION_FILTER_ALL)
+                    }
+                } catch (e: SecurityException) {
+                    e.printStackTrace()
+                    val prefs = PreferenceManager.getDefaultSharedPreferences(context)
+                    prefs.edit().putBoolean(PreferenceKey.INTERRUPT_FILTER_SYNC_TO_PHONE_KEY, false).apply()
+                }
+            } else {
+                val audioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
+                if (interruptionFilterOn) {
+                    audioManager.ringerMode = AudioManager.RINGER_MODE_SILENT
+                } else {
+                    audioManager.ringerMode = AudioManager.RINGER_MODE_NORMAL
+                }
+            }
         }
     }
 
