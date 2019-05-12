@@ -82,8 +82,7 @@ class DonationDialogFragment :
                     recyclerView.adapter = DonationAdapter(skuDetailsList, this)
                     setLoading(false)
                 } else {
-                    dismiss()
-                    (activity as MainActivity).createSnackBar(getString(R.string.donation_failed_message))
+                    dismissAndShowMessage(R.string.donation_failed_message)
                 }
                 val purchaseQuery = billingClient.queryPurchases(BillingClient.SkuType.INAPP)
                 if (purchaseQuery.billingResult.responseCode == BillingClient.BillingResponseCode.OK &&
@@ -92,8 +91,7 @@ class DonationDialogFragment :
                 }
             }
         } else {
-            dismiss()
-            (activity as MainActivity).createSnackBar(getString(R.string.donation_failed_message))
+            dismissAndShowMessage(R.string.donation_failed_message)
         }
     }
 
@@ -102,8 +100,7 @@ class DonationDialogFragment :
             billingConnectionRetryCounter++
             billingClient.startConnection(this)
         } else {
-            dismiss()
-            (activity as MainActivity).createSnackBar(getString(R.string.donation_connection_failed_message))
+            dismissAndShowMessage(R.string.donation_connection_failed_message)
         }
     }
 
@@ -112,14 +109,12 @@ class DonationDialogFragment :
                 !purchases.isNullOrEmpty()) {
             handlePurchases(purchases)
         } else {
-            dismiss()
-            (activity as MainActivity).createSnackBar(getString(R.string.donation_failed_message))
+            dismissAndShowMessage(R.string.donation_failed_message)
         }
     }
 
     override fun onConsumeResponse(billingResult: BillingResult, purchaseToken: String?) {
-        dismiss()
-        (activity as MainActivity).createSnackBar(getString(R.string.donation_processed_message))
+        dismissAndShowMessage(R.string.donation_processed_message)
     }
 
     override fun onDestroy() {
@@ -138,9 +133,16 @@ class DonationDialogFragment :
                     billingClient.consumeAsync(consumePurchaseParams, this)
                 } else if (purchase.purchaseState == Purchase.PurchaseState.PENDING) {
                     dismiss()
-                    (activity as MainActivity).createSnackBar(getString(R.string.donation_pending_message))
+                    dismissAndShowMessage(R.string.donation_pending_message)
                 }
             }
+        }
+    }
+
+    private fun dismissAndShowMessage(messageStringRes: Int) {
+        dismiss()
+        if (activity != null) {
+            (activity as MainActivity).createSnackBar(getString(messageStringRes))
         }
     }
 
