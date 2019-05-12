@@ -25,6 +25,6 @@
         android:gravity="center"
         android:layout_weight="1"
         android:text="@string/battery_sync_disabled"
-        android:textSize="18sp"/>
+        android:textSize="18sp" />
 
 </LinearLayout>
