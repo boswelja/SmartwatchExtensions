@@ -7,6 +7,7 @@
  */
 package com.boswelja.devicemanager.ui.donate
 
+import android.content.DialogInterface
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -120,6 +121,12 @@ class DonationDialogFragment :
     override fun onDestroy() {
         super.onDestroy()
         billingClient.endConnection()
+    }
+
+    override fun onDismiss(dialog: DialogInterface) {
+        try {
+            super.onDismiss(dialog)
+        } catch (_: IllegalStateException) { }
     }
 
     private fun handlePurchases(purchases: List<Purchase>) {
