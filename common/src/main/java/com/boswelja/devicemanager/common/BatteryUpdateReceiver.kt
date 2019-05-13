@@ -22,28 +22,29 @@ abstract class BatteryUpdateReceiver : WearableListenerService() {
     lateinit var sharedPreferences: SharedPreferences
 
     abstract fun sendChargeNotiEnabled(): Boolean
+    abstract fun onBatteryUpdate(percent: Int, charging: Boolean)
 
     override fun onMessageReceived(messageEvent: MessageEvent?) {
         if (messageEvent?.path == References.BATTERY_STATUS_PATH) {
-            val prefs = PreferenceManager.getDefaultSharedPreferences(this)
+            sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
             val message = String(messageEvent.data, Charsets.UTF_8)
             val messageSplit = message.split("|")
             val percent = messageSplit[0].toInt()
             val charging = messageSplit[1] == true.toString()
-            prefs.edit()
+            sharedPreferences.edit()
                     .putLong(PreferenceKey.BATTERY_SYNC_LAST_WHEN_KEY, System.currentTimeMillis())
                     .putInt(PreferenceKey.BATTERY_PERCENT_KEY, percent)
                     .apply()
 
             if (sendChargeNotiEnabled() &&
-                    !prefs.getBoolean(PreferenceKey.BATTERY_CHARGED_NOTI_SENT, false) &&
+                    !sharedPreferences.getBoolean(PreferenceKey.BATTERY_CHARGED_NOTI_SENT, false) &&
                     percent > 90 &&
                     charging) {
                 sendChargedNoti()
             }
 
             if (!charging) {
-                prefs.edit().putBoolean(PreferenceKey.BATTERY_CHARGED_NOTI_SENT, false).apply()
+                sharedPreferences.edit().putBoolean(PreferenceKey.BATTERY_CHARGED_NOTI_SENT, false).apply()
             }
 
             onBatteryUpdate(percent, charging)
@@ -75,6 +76,4 @@ abstract class BatteryUpdateReceiver : WearableListenerService() {
         notificationManager.notify(AtomicCounter.getInt(), noti)
         sharedPreferences.edit().putBoolean(PreferenceKey.BATTERY_CHARGED_NOTI_SENT, true).apply()
     }
-
-    abstract fun onBatteryUpdate(percent: Int, charging: Boolean)
 }
