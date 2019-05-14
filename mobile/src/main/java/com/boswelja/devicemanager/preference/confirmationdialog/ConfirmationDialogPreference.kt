@@ -78,11 +78,6 @@ class ConfirmationDialogPreference(context: Context, attrs: AttributeSet?, defSt
 
     private fun setButtonChecked(checked: Boolean) {
         compoundButton.isChecked = checked
-        if (checked) {
-            compoundButton.contentDescription = context.getString(R.string.content_description_enabled)
-        } else {
-            compoundButton.contentDescription = context.getString(R.string.content_description_disabled)
-        }
     }
 
     fun getValue(): Boolean {

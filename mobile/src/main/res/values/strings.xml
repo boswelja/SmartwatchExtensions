@@ -80,8 +80,7 @@
     <string name="dialog_button_close">Close</string>
 
     <!-- Content Description strings -->
-    <string name="content_description_enabled">Enabled</string>
-    <string name="content_description_disabled">Disabled</string>
+    <string name="content_description_loading">Loading</string>
 
     <string name="no_watch_found">No connected watches found running Wearable Extensions</string>
 

@@ -49,8 +49,9 @@
         <ProgressBar
             android:id="@+id/loading_spinner"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:visibility="gone"/>
+            android:layout_height="56dp"
+            android:visibility="gone"
+            android:contentDescription="@string/content_description_loading" />
     </FrameLayout>
 
     <com.google.android.material.button.MaterialButton
