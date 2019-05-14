@@ -4,7 +4,8 @@
 
     <string name="dnd_sync_noti_channel_name">Do not Disturb Sync</string>
     <string name="dnd_sync_active_noti_title">DnD Sync Active</string>
-    <string name="dnd_sync_active_noti_desc">Syncing Do not Disturb status between your devices</string>
+    <string name="dnd_sync_active_noti_desc">Syncing Do not Disturb state between your
+        devices</string>
 
     <string name="companion_device_type">Device</string>
 

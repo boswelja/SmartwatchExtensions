@@ -33,6 +33,7 @@
 
     <string name="dnd_sync_with_theater_mode_noti_title">DnD Sync with Theater Mode</string>
     <string name="dnd_sync_with_theater_mode_noti_content">Syncing DnD state with Theater Mode</string>
+    <string name="dnd_sync_active_noti_desc">Syncing DnD state between your devices</string>
 
     <string name="navigation_controls_title">Phone Controls</string>
     <string name="navigation_settings_title">Settings</string>
