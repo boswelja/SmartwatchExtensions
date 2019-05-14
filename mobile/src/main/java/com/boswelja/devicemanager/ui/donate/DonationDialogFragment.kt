@@ -117,9 +117,9 @@ class DonationDialogFragment :
         dismissAndShowMessage(R.string.donation_processed_message)
     }
 
-    override fun onDestroy() {
+    override fun dismiss() {
         billingClient.endConnection()
-        super.onDestroy()
+        super.dismiss()
     }
 
     private fun handlePurchases(purchases: List<Purchase>) {
@@ -132,7 +132,6 @@ class DonationDialogFragment :
                             .build()
                     billingClient.consumeAsync(consumePurchaseParams, this)
                 } else if (purchase.purchaseState == Purchase.PurchaseState.PENDING) {
-                    dismiss()
                     dismissAndShowMessage(R.string.donation_pending_message)
                 }
             }
