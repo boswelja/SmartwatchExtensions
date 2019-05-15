@@ -30,13 +30,13 @@ abstract class BasePreferenceActivity : BaseToolbarActivity() {
         preferenceFragment = createPreferenceFragment()
         supportFragmentManager.beginTransaction()
                 .replace(R.id.fragment_holder, preferenceFragment)
-                .commitAllowingStateLoss()
+                .commit()
 
         val widgetFragment = createWidgetFragment()
         if (widgetFragment != null) {
             supportFragmentManager.beginTransaction()
                     .replace(R.id.widget_holder, widgetFragment)
-                    .commitAllowingStateLoss()
+                    .commit()
         } else {
             findViewById<View>(R.id.widget_divider).visibility = View.GONE
         }
