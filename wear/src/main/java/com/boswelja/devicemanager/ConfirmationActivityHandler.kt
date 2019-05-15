@@ -21,6 +21,7 @@ object ConfirmationActivityHandler {
     private fun createIntent(context: Context, message: String?) =
             Intent(context, ConfirmationActivity::class.java)
                     .putExtra(EXTRA_MESSAGE, message)
+                    .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
 
     fun openOnPhoneAnimation(context: Context, message: String? = null) {
         val intent = createIntent(context, message)
