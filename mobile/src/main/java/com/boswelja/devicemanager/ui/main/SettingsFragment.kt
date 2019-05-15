@@ -218,7 +218,7 @@ class SettingsFragment :
         phoneLockPreference = findPreference(PHONE_LOCKING_ENABLED_KEY)!!
         phoneLockPreference.onPreferenceChangeListener = this
 
-        addPreferencesFromResource(R.xml.prefs_general)
+        addPreferencesFromResource(R.xml.prefs_app_settings)
         openNotiSettingsPreference = findPreference(OPEN_NOTI_SETTINGS_KEY)!!
         openNotiSettingsPreference.onPreferenceClickListener = this
         daynightModePreference = findPreference(DAYNIGHT_MODE_KEY)!!

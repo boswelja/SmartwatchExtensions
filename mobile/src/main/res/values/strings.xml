@@ -48,7 +48,7 @@
     <string name="pref_lock_phone_enabled_desc">Allow locking your phone from your wearable</string>
 
     <!-- General preference strings -->
-    <string name="pref_category_general">General</string>
+    <string name="pref_category_app_settings">App Settings</string>
     <string name="pref_noti_status_title">Notification Settings</string>
     <string name="pref_noti_status_summary_enabled">Notifications are enabled</string>
     <string name="pref_noti_status_summary_disabled">Notifications are disabled</string>
