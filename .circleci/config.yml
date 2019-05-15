@@ -24,11 +24,14 @@ jobs:
           name: Linting
           command: ./gradlew lint test
       - run:
+          name: Spotless Misc
+          command: ./gradlew spotlessMiscCheck
+      - run:
           name: Spotless Kotlin
           command: ./gradlew spotlessKotlinCheck
       - run:
-          name: Spotless Misc
-          command: ./gradlew spotlessMiscCheck
+          name: Spotless XML
+          command: ./gradlew spotlessXmlCheck
       - run:
           name: Build Project
           command: ./gradlew build
