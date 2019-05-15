@@ -30,8 +30,7 @@ class AppManagerService : Service() {
     private lateinit var messageClient: MessageClient
 
     private val messageReceiver = MessageClient.OnMessageReceivedListener {
-        val messagePath = it.path
-        when (messagePath) {
+        when (it.path) {
             GET_ALL_PACKAGES -> {
                 val packagesToSend = ArrayList<AppPackageInfo>()
                 packageManager.getInstalledPackages(0).forEach { packageInfo ->
@@ -61,13 +60,13 @@ class AppManagerService : Service() {
                     (action == Intent.ACTION_PACKAGE_ADDED ||
                     action == Intent.ACTION_PACKAGE_REMOVED)) {
                 if (!intent.getBooleanExtra(Intent.EXTRA_REPLACING, false)) {
-                    val packageInfo = AppPackageInfo(packageManager.getPackageInfo(intent.dataString, 0))
                     when (action) {
                         Intent.ACTION_PACKAGE_ADDED -> {
+                            val packageInfo = AppPackageInfo(packageManager.getPackageInfo(intent.dataString, 0))
                             sendAppAddedMessage(packageInfo)
                         }
                         Intent.ACTION_PACKAGE_REMOVED -> {
-                            sendAppRemovedMessage(packageInfo)
+                            sendAppRemovedMessage(intent.dataString)
                         }
                     }
                 }
@@ -97,13 +96,13 @@ class AppManagerService : Service() {
         super.onDestroy()
     }
 
-    private fun sendAppRemovedMessage(packageInfo: AppPackageInfo) {
+    private fun sendAppRemovedMessage(packageName: String?) {
         Utils.getCompanionNode(this)
                 .addOnCompleteListener {
                     if (it.isSuccessful) {
                         val node = it.result?.nodes?.firstOrNull()
                         if (node != null) {
-                            val data = packageInfo.toByteArray()
+                            val data = packageName?.toByteArray(Charsets.UTF_8)
                             messageClient.sendMessage(node.id!!, PACKAGE_REMOVED, data)
                         }
                     }

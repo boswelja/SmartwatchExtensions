@@ -13,4 +13,10 @@
         android:title="@string/main_interrupt_filter_sync_title"
         android:summary="@string/main_interrupt_filter_sync_summary" />
 
+    <androidx.preference.Preference
+        android:key="show_app_manager"
+        android:icon="@drawable/pref_ic_app_manager"
+        android:title="App Manager"
+        android:summary="Manage apps installed on your watch" />
+
 </androidx.preference.PreferenceScreen>
