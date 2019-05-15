@@ -42,6 +42,10 @@
     <string name="interrupt_filter_sync_to_watch_perm_denied_message">Permission not granted, please try again</string>
     <string name="interrupt_filter_sync_request_policy_access_message">Please grant Wearable Extensions permission to change Do Not Disturb state</string>
 
+    <!-- App Manager strings -->
+    <string name="main_app_manager_title">App Manager</string>
+    <string name="main_app_manager_summary">Manage apps installed on your watch</string>
+
     <!-- Phone Lock preference strings -->
     <string name="pref_category_lock_phone">Phone Locking</string>
     <string name="pref_lock_phone_enabled_title">Remote phone locking</string>

@@ -16,7 +16,7 @@
     <androidx.preference.Preference
         android:key="show_app_manager"
         android:icon="@drawable/pref_ic_app_manager"
-        android:title="App Manager"
-        android:summary="Manage apps installed on your watch" />
+        android:title="@string/main_app_manager_title"
+        android:summary="@string/main_app_manager_summary" />
 
 </androidx.preference.PreferenceScreen>
