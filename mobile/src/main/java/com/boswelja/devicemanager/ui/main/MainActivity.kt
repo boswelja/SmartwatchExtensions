@@ -64,16 +64,18 @@ class MainActivity : BaseToolbarActivity() {
     private fun checkVersion() {
         val oldVersion = sharedPrefs.getString(APP_VERSION_KEY, "")
         val currentVersion = getString(R.string.app_version_name)
-        if (oldVersion.isNullOrBlank() || oldVersion != currentVersion) {
+        if (oldVersion.isNullOrBlank()) {
             val devicePolicyManager = getSystemService(Context.DEVICE_POLICY_SERVICE) as DevicePolicyManager
             val isDeviceAdminGranted = devicePolicyManager.isAdminActive(ComponentName(this, DeviceAdminChangeReceiver::class.java))
-            ChangelogDialogFragment().show(supportFragmentManager, "ChangelogDialog")
             sharedPrefs.edit()
                     .clear()
                     .putString(APP_VERSION_KEY, currentVersion)
                     .putBoolean(DEVICE_ADMIN_ENABLED_KEY, isDeviceAdminGranted)
                     .commit()
             PreferenceSyncLayer(this).pushNewData()
+        }
+        if (oldVersion != currentVersion) {
+            ChangelogDialogFragment().show(supportFragmentManager, "ChangelogDialog")
         }
     }
 

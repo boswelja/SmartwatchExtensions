@@ -16,5 +16,5 @@ ext.versions = [
 ]
 
 static def getDate() {
-    return new Date().format('yyyyMMdd').toInteger()
+    return new Date().format('yyyyMMdd').toInteger() + 1
 }
