@@ -8,6 +8,9 @@
 package com.boswelja.devicemanager.ui.main
 
 import android.annotation.SuppressLint
+import android.app.admin.DevicePolicyManager
+import android.content.ComponentName
+import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
@@ -19,6 +22,8 @@ import com.boswelja.devicemanager.common.Compat
 import com.boswelja.devicemanager.common.interruptfiltersync.BaseInterruptFilterLocalChangeListener
 import com.boswelja.devicemanager.common.PreferenceKey
 import com.boswelja.devicemanager.common.prefsynclayer.PreferenceSyncLayer
+import com.boswelja.devicemanager.receiver.DeviceAdminChangeReceiver
+import com.boswelja.devicemanager.receiver.DeviceAdminChangeReceiver.Companion.DEVICE_ADMIN_ENABLED_KEY
 import com.boswelja.devicemanager.ui.base.BaseToolbarActivity
 import com.boswelja.devicemanager.ui.batterysync.BatterySyncPreferenceActivity
 import com.boswelja.devicemanager.ui.interruptfiltersync.InterruptFilterSyncPreferenceActivity
@@ -60,10 +65,13 @@ class MainActivity : BaseToolbarActivity() {
         val oldVersion = sharedPrefs.getString(APP_VERSION_KEY, "")
         val currentVersion = getString(R.string.app_version_name)
         if (oldVersion.isNullOrBlank() || oldVersion != currentVersion) {
+            val devicePolicyManager = getSystemService(Context.DEVICE_POLICY_SERVICE) as DevicePolicyManager
+            val isDeviceAdminGranted = devicePolicyManager.isAdminActive(ComponentName(this, DeviceAdminChangeReceiver::class.java))
             ChangelogDialogFragment().show(supportFragmentManager, "ChangelogDialog")
             sharedPrefs.edit()
                     .clear()
                     .putString(APP_VERSION_KEY, currentVersion)
+                    .putBoolean(DEVICE_ADMIN_ENABLED_KEY, isDeviceAdminGranted)
                     .commit()
             PreferenceSyncLayer(this).pushNewData()
         }
