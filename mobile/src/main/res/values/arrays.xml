@@ -23,6 +23,8 @@
         <item>Icons are now outline variants where possible</item>
         <item>Battery Sync and Do not Disturb Sync have been moved to their own screens</item>
         <item>You can now sync Do not Disturb state with Theater Mode on your watch</item>
+        <item>Renamed "General" settings to "App Settings" to better reflect the contents</item>
+        <item>Made the helper dialog for enabling DnD Phone to Watch Sync less intimidating</item>
         <item>Battery icons should be more accurate now</item>
         <item>Added this changelog dialog</item>
         <item>Dialog styles should be more consistent now</item>
@@ -30,6 +32,7 @@
         <item>Fixed a bug where you could get stuck infinitely loading when trying to enable \'Phone to Watch Sync\'</item>
         <item>Fixed crashing when tapping on the DnD Sync notification</item>
         <item>Fix a potential crash when locking your phone or updating battery stats from your watch</item>
+        <item>Fix Device Admin permissions not being detected after the latest update</item>
         <item>Fixed a few more bugs</item>
     </string-array>
 </resources>
