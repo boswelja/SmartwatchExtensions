@@ -1,6 +1,6 @@
 ext.versions = [
         versionCode: getDate(),
-        versionName: "2.0.1",
+        versionName: "2.0.2",
         compileSdk: 28,
         packageName: "com.boswelja.devicemanager",
         buildTools: "28.0.3",
@@ -16,5 +16,5 @@ ext.versions = [
 ]
 
 static def getDate() {
-    return new Date().format('yyyyMMdd').toInteger() + 1
+    return new Date().format('yyyyMMdd').toInteger()
 }
