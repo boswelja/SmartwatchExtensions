@@ -117,9 +117,9 @@ class DonationDialogFragment :
         dismissAndShowMessage(R.string.donation_processed_message)
     }
 
-    override fun dismiss() {
+    override fun onDestroy() {
+        super.onDestroy()
         billingClient.endConnection()
-        super.dismiss()
     }
 
     private fun handlePurchases(purchases: List<Purchase>) {
@@ -139,7 +139,7 @@ class DonationDialogFragment :
     }
 
     private fun dismissAndShowMessage(messageStringRes: Int) {
-        dismiss()
+        dismissAllowingStateLoss()
         if (activity != null) {
             (activity as MainActivity).createSnackBar(getString(messageStringRes))
         }

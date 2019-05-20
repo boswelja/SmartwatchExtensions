@@ -11,10 +11,8 @@ import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.preference.CheckBoxPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
-import androidx.preference.SwitchPreference
 import androidx.preference.TwoStatePreference
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -23,7 +21,12 @@ import com.boswelja.devicemanager.ConfirmationActivityHandler
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.Utils
 import com.boswelja.devicemanager.common.Extensions.fromByteArray
-import com.boswelja.devicemanager.common.PreferenceKey
+import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_PHONE_FULL_CHARGE_NOTI_KEY
+import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_SYNC_ENABLED_KEY
+import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_WATCH_FULL_CHARGE_NOTI_KEY
+import com.boswelja.devicemanager.common.PreferenceKey.INTERRUPT_FILTER_ON_WITH_THEATER_KEY
+import com.boswelja.devicemanager.common.PreferenceKey.INTERRUPT_FILTER_SYNC_TO_PHONE_KEY
+import com.boswelja.devicemanager.common.PreferenceKey.INTERRUPT_FILTER_SYNC_TO_WATCH_KEY
 import com.boswelja.devicemanager.common.References
 import com.boswelja.devicemanager.common.prefsynclayer.PreferenceSyncLayer
 import com.google.android.gms.wearable.MessageClient
@@ -48,23 +51,30 @@ class SettingsFragment :
     }
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
-        if (!key.isNullOrBlank()) {
-            val newValue = sharedPreferences?.getBoolean(key, false) == true
-            findPreference<TwoStatePreference>(key)?.isChecked = newValue
+        when (key) {
+            BATTERY_SYNC_ENABLED_KEY,
+            BATTERY_PHONE_FULL_CHARGE_NOTI_KEY,
+            BATTERY_WATCH_FULL_CHARGE_NOTI_KEY,
+            INTERRUPT_FILTER_SYNC_TO_WATCH_KEY,
+            INTERRUPT_FILTER_SYNC_TO_PHONE_KEY,
+            INTERRUPT_FILTER_ON_WITH_THEATER_KEY -> {
+                val newValue = sharedPreferences?.getBoolean(key, false) == true
+                findPreference<TwoStatePreference>(key)?.isChecked = newValue
+            }
         }
     }
 
     override fun onPreferenceChange(preference: Preference?, newValue: Any?): Boolean {
         return when (val key = preference?.key) {
-            PreferenceKey.BATTERY_SYNC_ENABLED_KEY,
-            PreferenceKey.BATTERY_PHONE_FULL_CHARGE_NOTI_KEY,
-            PreferenceKey.BATTERY_WATCH_FULL_CHARGE_NOTI_KEY -> {
+            BATTERY_SYNC_ENABLED_KEY,
+            BATTERY_PHONE_FULL_CHARGE_NOTI_KEY,
+            BATTERY_WATCH_FULL_CHARGE_NOTI_KEY -> {
                 val value = newValue == true
                 prefs.edit().putBoolean(key, value).apply()
                 preferenceSyncLayer.pushNewData()
                 false
             }
-            PreferenceKey.INTERRUPT_FILTER_SYNC_TO_WATCH_KEY -> {
+            INTERRUPT_FILTER_SYNC_TO_WATCH_KEY -> {
                 val value = newValue == true
                 if (value) {
                     val canEnableSync = Utils.checkDnDAccess(context!!)
@@ -80,8 +90,8 @@ class SettingsFragment :
                 }
                 false
             }
-            PreferenceKey.INTERRUPT_FILTER_SYNC_TO_PHONE_KEY,
-            PreferenceKey.INTERRUPT_FILTER_ON_WITH_THEATER_KEY -> {
+            INTERRUPT_FILTER_SYNC_TO_PHONE_KEY,
+            INTERRUPT_FILTER_ON_WITH_THEATER_KEY -> {
                 val value = newValue == true
                 if (value) {
                     changingKey = key
@@ -143,24 +153,24 @@ class SettingsFragment :
     }
 
     private fun setupBatterySyncPrefs() {
-        findPreference<SwitchPreference>(PreferenceKey.BATTERY_SYNC_ENABLED_KEY)!!
+        findPreference<TwoStatePreference>(BATTERY_SYNC_ENABLED_KEY)!!
                 .onPreferenceChangeListener = this
 
-        findPreference<CheckBoxPreference>(PreferenceKey.BATTERY_PHONE_FULL_CHARGE_NOTI_KEY)!!
+        findPreference<TwoStatePreference>(BATTERY_PHONE_FULL_CHARGE_NOTI_KEY)!!
                 .onPreferenceChangeListener = this
 
-        findPreference<CheckBoxPreference>(PreferenceKey.BATTERY_WATCH_FULL_CHARGE_NOTI_KEY)!!
+        findPreference<TwoStatePreference>(BATTERY_WATCH_FULL_CHARGE_NOTI_KEY)!!
                 .onPreferenceChangeListener = this
     }
 
     private fun setupDnDSyncPrefs() {
-        findPreference<SwitchPreference>(PreferenceKey.INTERRUPT_FILTER_SYNC_TO_WATCH_KEY)!!
+        findPreference<TwoStatePreference>(INTERRUPT_FILTER_SYNC_TO_WATCH_KEY)!!
                 .onPreferenceChangeListener = this
 
-        findPreference<SwitchPreference>(PreferenceKey.INTERRUPT_FILTER_SYNC_TO_PHONE_KEY)!!
+        findPreference<TwoStatePreference>(INTERRUPT_FILTER_SYNC_TO_PHONE_KEY)!!
                 .onPreferenceChangeListener = this
 
-        findPreference<SwitchPreference>(PreferenceKey.INTERRUPT_FILTER_ON_WITH_THEATER_KEY)!!
+        findPreference<TwoStatePreference>(INTERRUPT_FILTER_ON_WITH_THEATER_KEY)!!
                 .onPreferenceChangeListener = this
     }
 

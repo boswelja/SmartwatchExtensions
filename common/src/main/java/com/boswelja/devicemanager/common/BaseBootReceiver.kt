@@ -12,20 +12,19 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import androidx.preference.PreferenceManager
-import com.boswelja.devicemanager.common.interruptfiltersync.BaseInterruptFilterLocalChangeListener
 
-abstract class BootReceiver : BroadcastReceiver() {
+abstract class BaseBootReceiver : BroadcastReceiver() {
 
     lateinit var sharedPreferences: SharedPreferences
 
     abstract fun isInterruptFilterSyncSending(): Boolean
+    abstract fun startInterruptFilterSyncService(context: Context?)
 
     override fun onReceive(context: Context?, intent: Intent?) {
         if (intent?.action == Intent.ACTION_BOOT_COMPLETED) {
             sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
             if (isInterruptFilterSyncSending()) {
-                val serviceIntent = Intent(context, BaseInterruptFilterLocalChangeListener::class.java)
-                Compat.startForegroundService(context!!, serviceIntent)
+                startInterruptFilterSyncService(context)
             }
         }
     }

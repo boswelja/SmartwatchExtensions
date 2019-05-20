@@ -8,6 +8,9 @@
 package com.boswelja.devicemanager.ui.main
 
 import android.annotation.SuppressLint
+import android.app.admin.DevicePolicyManager
+import android.content.ComponentName
+import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
@@ -16,9 +19,11 @@ import com.boswelja.devicemanager.BatteryUpdateJob
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.Utils
 import com.boswelja.devicemanager.common.Compat
-import com.boswelja.devicemanager.common.interruptfiltersync.BaseInterruptFilterLocalChangeListener
 import com.boswelja.devicemanager.common.PreferenceKey
 import com.boswelja.devicemanager.common.prefsynclayer.PreferenceSyncLayer
+import com.boswelja.devicemanager.receiver.DeviceAdminChangeReceiver
+import com.boswelja.devicemanager.receiver.DeviceAdminChangeReceiver.Companion.DEVICE_ADMIN_ENABLED_KEY
+import com.boswelja.devicemanager.service.InterruptFilterLocalChangeListener
 import com.boswelja.devicemanager.ui.base.BaseToolbarActivity
 import com.boswelja.devicemanager.ui.batterysync.BatterySyncPreferenceActivity
 import com.boswelja.devicemanager.ui.interruptfiltersync.InterruptFilterSyncPreferenceActivity
@@ -50,7 +55,7 @@ class MainActivity : BaseToolbarActivity() {
         }
 
         if (sharedPrefs.getBoolean(PreferenceKey.INTERRUPT_FILTER_SYNC_TO_WATCH_KEY, false)) {
-            val intent = Intent(this, BaseInterruptFilterLocalChangeListener::class.java)
+            val intent = Intent(this, InterruptFilterLocalChangeListener::class.java)
             Compat.startForegroundService(this, intent)
         }
     }
@@ -59,13 +64,18 @@ class MainActivity : BaseToolbarActivity() {
     private fun checkVersion() {
         val oldVersion = sharedPrefs.getString(APP_VERSION_KEY, "")
         val currentVersion = getString(R.string.app_version_name)
-        if (oldVersion.isNullOrBlank() || oldVersion != currentVersion) {
-            ChangelogDialogFragment().show(supportFragmentManager, "ChangelogDialog")
+        if (oldVersion.isNullOrBlank()) {
+            val devicePolicyManager = getSystemService(Context.DEVICE_POLICY_SERVICE) as DevicePolicyManager
+            val isDeviceAdminGranted = devicePolicyManager.isAdminActive(ComponentName(this, DeviceAdminChangeReceiver::class.java))
             sharedPrefs.edit()
                     .clear()
                     .putString(APP_VERSION_KEY, currentVersion)
+                    .putBoolean(DEVICE_ADMIN_ENABLED_KEY, isDeviceAdminGranted)
                     .commit()
             PreferenceSyncLayer(this).pushNewData()
+        }
+        if (oldVersion != currentVersion) {
+            ChangelogDialogFragment().show(supportFragmentManager, "ChangelogDialog")
         }
     }
 

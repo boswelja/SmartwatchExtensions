@@ -8,8 +8,10 @@
 package com.boswelja.devicemanager.service
 
 import android.app.NotificationChannel
+import android.app.NotificationManager
 import android.app.Service
 import android.content.ComponentName
+import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.IBinder
@@ -34,15 +36,14 @@ class ActionService : Service() {
 
     override fun onCreate() {
         super.onCreate()
-        val channelId = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel.DEFAULT_CHANNEL_ID
-        } else {
-            "default"
-        }
-        val notification: NotificationCompat.Builder = NotificationCompat.Builder(this, channelId)
-        notification.setContentTitle(getString(R.string.noti_action_service_title))
-        notification.setContentText(getString(R.string.noti_action_service_content))
-        notification.setSmallIcon(R.drawable.ic_sync)
+
+        createNotificationChannel()
+        val notification: NotificationCompat.Builder =
+                NotificationCompat.Builder(this, ACTION_SERVICE_NOTI_CHANNEL_ID).apply {
+                    setContentTitle(getString(R.string.noti_action_service_title))
+                    setContentText(getString(R.string.noti_action_service_content))
+                    setSmallIcon(R.drawable.ic_sync)
+                }
         startForeground(AtomicCounter.getInt(), notification.build())
     }
 
@@ -90,7 +91,20 @@ class ActionService : Service() {
                 }
     }
 
+    private fun createNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val channel = NotificationChannel(
+                    ACTION_SERVICE_NOTI_CHANNEL_ID,
+                    getString(R.string.noti_channel_action_service_title),
+                    NotificationManager.IMPORTANCE_LOW)
+            (getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager)
+                    .createNotificationChannel(channel)
+        }
+    }
+
     companion object {
         const val EXTRA_ACTION = "action"
+
+        private const val ACTION_SERVICE_NOTI_CHANNEL_ID = "action_service"
     }
 }

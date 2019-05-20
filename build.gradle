@@ -41,4 +41,11 @@ spotless {
         indentWithSpaces()
         endWithNewline()
     }
+    format 'xml', {
+        target '**/*.xml'
+
+        trimTrailingWhitespace()
+        indentWithSpaces()
+        endWithNewline()
+    }
 }

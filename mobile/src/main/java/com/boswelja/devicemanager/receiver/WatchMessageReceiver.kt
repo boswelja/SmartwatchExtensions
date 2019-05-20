@@ -37,6 +37,7 @@ class WatchMessageReceiver : WearableListenerService() {
                 val key = String(messageEvent.data, Charsets.UTF_8)
                 val intent = Intent(this, MainActivity::class.java)
                 intent.putExtra(MainActivity.EXTRA_PREFERENCE_KEY, key)
+                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
                 startActivity(intent)
             }
             References.REQUEST_PHONE_DND_ACCESS_STATUS_PATH -> {

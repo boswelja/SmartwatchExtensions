@@ -5,7 +5,7 @@
 
     <androidx.preference.PreferenceCategory
         android:key="general_category"
-        android:title="@string/pref_category_general">
+        android:title="@string/pref_category_app_settings">
 
         <androidx.preference.Preference
             android:key="show_noti_settings"

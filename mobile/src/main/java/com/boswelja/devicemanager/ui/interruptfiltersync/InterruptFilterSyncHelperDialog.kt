@@ -14,8 +14,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ProgressBar
+import android.widget.TextView
 import android.widget.Toast
-import androidx.appcompat.widget.AppCompatTextView
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.Utils
 import com.boswelja.devicemanager.common.Extensions.fromByteArray
@@ -28,7 +28,7 @@ import com.google.android.gms.wearable.Wearable
 
 class InterruptFilterSyncHelperDialog : BaseDialogFragment() {
 
-    private lateinit var messages: View
+    private lateinit var message: TextView
     private lateinit var loadingSpinner: ProgressBar
 
     private lateinit var cancelBtn: Button
@@ -49,13 +49,13 @@ class InterruptFilterSyncHelperDialog : BaseDialogFragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.dialog_dnd_sync, container, false)
+        return inflater.inflate(R.layout.dialog_interrupt_filter_sync, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        messages = view.findViewById(R.id.messages)
+        message = view.findViewById(R.id.message)
         loadingSpinner = view.findViewById(R.id.loading_spinner)
         cancelBtn = view.findViewById(R.id.cancel_btn)
         confirmBtn = view.findViewById(R.id.confirm_button)
@@ -74,18 +74,15 @@ class InterruptFilterSyncHelperDialog : BaseDialogFragment() {
             Utils.shareText(context!!, adbCommand)
         }
 
-        val adbCommandTextView = view.findViewById<AppCompatTextView>(R.id.command_string)
-        adbCommandTextView.text = adbCommand
-
         checkPermission()
     }
 
     private fun setLoading(loading: Boolean) {
         if (loading) {
-            messages.visibility = View.GONE
+            message.visibility = View.GONE
             loadingSpinner.visibility = View.VISIBLE
         } else {
-            messages.visibility = View.VISIBLE
+            message.visibility = View.VISIBLE
             loadingSpinner.visibility = View.GONE
         }
         confirmBtn.isEnabled = !loading
