@@ -15,9 +15,9 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.boswelja.devicemanager.R
+import com.boswelja.devicemanager.common.Extensions.addFromByteArray
 import com.boswelja.devicemanager.common.appmanager.AppManagerReferences
 import com.boswelja.devicemanager.common.appmanager.AppPackageInfo
-import com.boswelja.devicemanager.ui.main.MainActivity
 import com.google.android.gms.wearable.MessageClient
 import com.google.android.gms.wearable.Wearable
 
@@ -25,19 +25,22 @@ class AppManagerFragment : Fragment() {
 
     private lateinit var messageClient: MessageClient
 
-    private val appsAdapter = AppsAdapter()
+    private lateinit var appsRecyclerView: RecyclerView
 
     private val messageListener = MessageClient.OnMessageReceivedListener {
         when (it.path) {
             AppManagerReferences.PACKAGE_ADDED -> {
                 val appPackageInfo = AppPackageInfo.fromByteArray(it.data)
-                appsAdapter.add(appPackageInfo)
+                (appsRecyclerView.adapter as AppsAdapter).add(appPackageInfo)
             }
             AppManagerReferences.PACKAGE_REMOVED -> {
                 val appPackageName = String(it.data, Charsets.UTF_8)
-                appsAdapter.remove(appPackageName)
+                (appsRecyclerView.adapter as AppsAdapter).remove(appPackageName)
             }
             AppManagerReferences.GET_ALL_PACKAGES -> {
+                val allApps = ArrayList<AppPackageInfo>()
+                allApps.addFromByteArray(it.data)
+                (appsRecyclerView.adapter as AppsAdapter).setAllApps(allApps)
             }
         }
     }
@@ -54,15 +57,15 @@ class AppManagerFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        view.findViewById<RecyclerView>(R.id.apps_recyclerview).apply {
+        appsRecyclerView = view.findViewById<RecyclerView>(R.id.apps_recyclerview).apply {
             layoutManager = LinearLayoutManager(
                     context!!,
                     LinearLayoutManager.VERTICAL,
                     false)
-            adapter = appsAdapter
+            adapter = AppsAdapter()
             addOnScrollListener(object : RecyclerView.OnScrollListener() {
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                    (activity as MainActivity).elevateToolbar(recyclerView.canScrollVertically(-1))
+                    (activity as AppManagerActivity).elevateToolbar(recyclerView.canScrollVertically(-1))
                 }
             })
         }
@@ -78,7 +81,7 @@ class AppManagerFragment : Fragment() {
         messageClient.removeListener(messageListener)
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+    fun setShowSystemApps(show: Boolean) {
+        (appsRecyclerView.adapter as AppsAdapter).setShowSystemApps(show)
     }
 }

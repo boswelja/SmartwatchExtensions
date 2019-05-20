@@ -7,9 +7,13 @@
  */
 package com.boswelja.devicemanager.receiver
 
+import android.content.Intent
 import com.boswelja.devicemanager.Utils
+import com.boswelja.devicemanager.common.Compat
 import com.boswelja.devicemanager.common.Extensions.toByteArray
 import com.boswelja.devicemanager.common.References
+import com.boswelja.devicemanager.common.appmanager.AppManagerReferences
+import com.boswelja.devicemanager.service.AppManagerService
 import com.google.android.gms.wearable.MessageEvent
 import com.google.android.gms.wearable.Wearable
 import com.google.android.gms.wearable.WearableListenerService
@@ -25,6 +29,10 @@ class MessageReceiver : WearableListenerService() {
                                 messageEvent.sourceNodeId,
                                 References.REQUEST_WATCH_DND_ACCESS_STATUS_PATH,
                                 hasDnDAccess.toByteArray())
+            }
+            AppManagerReferences.START_SERVICE -> {
+                val intent = Intent(this, AppManagerService::class.java)
+                Compat.startForegroundService(this, intent)
             }
         }
     }

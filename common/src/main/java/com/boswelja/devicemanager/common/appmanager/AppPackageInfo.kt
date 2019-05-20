@@ -10,7 +10,6 @@ package com.boswelja.devicemanager.common.appmanager
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
-import android.graphics.drawable.Drawable
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.IOException
@@ -24,11 +23,18 @@ class AppPackageInfo(packageManager: PackageManager, packageInfo: PackageInfo) :
     val versionName: String = packageInfo.versionName
 
     val packageName: String = packageInfo.packageName
+    val label: String = getApplicationLabel(packageManager, packageInfo)
 
     val packageEnabled: Boolean = packageInfo.applicationInfo?.enabled == true
-    val isSystemApp: Boolean = (packageInfo.applicationInfo?.flags?.and((ApplicationInfo.FLAG_SYSTEM or ApplicationInfo.FLAG_UPDATED_SYSTEM_APP))) == 0
+    val isSystemApp: Boolean = (packageInfo.applicationInfo?.flags?.and((ApplicationInfo.FLAG_SYSTEM or ApplicationInfo.FLAG_UPDATED_SYSTEM_APP))) != 0
 
-    val packageIcon: Drawable = packageManager.getApplicationIcon(packageName)
+    private fun getApplicationLabel(packageManager: PackageManager, packageInfo: PackageInfo): String {
+        var applicationName = packageManager.getApplicationLabel(packageInfo.applicationInfo)
+        if (applicationName.isNullOrBlank()) {
+            applicationName = packageName
+        }
+        return applicationName.toString()
+    }
 
     @Throws(IOException::class)
     fun toByteArray(): ByteArray {

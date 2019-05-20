@@ -7,13 +7,19 @@
  */
 package com.boswelja.devicemanager.service
 
+import android.app.NotificationChannel
+import android.app.NotificationManager
 import android.app.Service
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.os.Build
 import android.os.IBinder
+import androidx.core.app.NotificationCompat
+import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.Utils
+import com.boswelja.devicemanager.common.AtomicCounter
 import com.boswelja.devicemanager.common.Compat
 import com.boswelja.devicemanager.common.Extensions.toByteArray
 import com.boswelja.devicemanager.common.appmanager.AppManagerReferences.GET_ALL_PACKAGES
@@ -31,14 +37,6 @@ class AppManagerService : Service() {
 
     private val messageReceiver = MessageClient.OnMessageReceivedListener {
         when (it.path) {
-            GET_ALL_PACKAGES -> {
-                val packagesToSend = ArrayList<AppPackageInfo>()
-                packageManager.getInstalledPackages(0).forEach { packageInfo ->
-                    val appPackageInfo = AppPackageInfo(packageInfo)
-                    packagesToSend.add(appPackageInfo)
-                }
-                sendAllAppsMessage(packagesToSend)
-            }
             REQUEST_UNINSTALL_PACKAGE -> {
                 if (it.data != null && it.data.isNotEmpty()) {
                     val intentSender = Compat.getForegroundService(this@AppManagerService, Intent(PACKAGE_UNINSTALL_RESULT)).intentSender
@@ -56,13 +54,11 @@ class AppManagerService : Service() {
     private val packageChangeReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             val action = intent?.action
-            if (intent != null &&
-                    (action == Intent.ACTION_PACKAGE_ADDED ||
-                    action == Intent.ACTION_PACKAGE_REMOVED)) {
+            if (intent != null) {
                 if (!intent.getBooleanExtra(Intent.EXTRA_REPLACING, false)) {
                     when (action) {
                         Intent.ACTION_PACKAGE_ADDED -> {
-                            val packageInfo = AppPackageInfo(packageManager.getPackageInfo(intent.dataString, 0))
+                            val packageInfo = AppPackageInfo(packageManager, packageManager.getPackageInfo(intent.dataString, 0))
                             sendAppAddedMessage(packageInfo)
                         }
                         Intent.ACTION_PACKAGE_REMOVED -> {
@@ -90,10 +86,37 @@ class AppManagerService : Service() {
         registerReceiver(packageChangeReceiver, packageEventIntentFilter)
     }
 
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        createNotification()
+        sendAllAppsMessage()
+        return START_STICKY
+    }
+
     override fun onDestroy() {
         unregisterReceiver(packageChangeReceiver)
         messageClient.removeListener(messageReceiver)
         super.onDestroy()
+    }
+
+    private fun createNotification() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            val channel = NotificationChannel(
+                    "app_manager_service",
+                    "App Manager Service Running",
+                    NotificationManager.IMPORTANCE_LOW)
+            notificationManager.createNotificationChannel(channel)
+        }
+        val noti = NotificationCompat.Builder(this, "app_manager_service")
+                .setContentTitle("App Manager Running")
+                .setContentText("App Manager is currently running on your phone")
+                .setSmallIcon(R.drawable.ic_sync)
+                .setOngoing(true)
+                .setShowWhen(false)
+                .setUsesChronometer(false)
+                .setPriority(NotificationCompat.PRIORITY_LOW)
+                .build()
+        startForeground(AtomicCounter.getInt(), noti)
     }
 
     private fun sendAppRemovedMessage(packageName: String?) {
@@ -122,13 +145,18 @@ class AppManagerService : Service() {
                 }
     }
 
-    private fun sendAllAppsMessage(packages: ArrayList<AppPackageInfo>) {
+    private fun sendAllAppsMessage() {
+        val packagesToSend = ArrayList<AppPackageInfo>()
+        packageManager.getInstalledPackages(0).forEach { packageInfo ->
+            val appPackageInfo = AppPackageInfo(packageManager, packageInfo)
+            packagesToSend.add(appPackageInfo)
+        }
         Utils.getCompanionNode(this)
                 .addOnCompleteListener {
                     if (it.isSuccessful) {
                         val node = it.result?.nodes?.firstOrNull()
                         if (node != null) {
-                            val data = packages.toByteArray()
+                            val data = packagesToSend.toByteArray()
                             messageClient.sendMessage(node.id!!, GET_ALL_PACKAGES, data)
                         }
                     }
