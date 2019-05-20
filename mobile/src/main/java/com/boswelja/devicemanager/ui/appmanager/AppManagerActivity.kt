@@ -66,7 +66,7 @@ class AppManagerActivity : BaseToolbarActivity() {
                 appManagerFragment.setShowSystemApps(showSystemApps)
                 true
             }
-            else -> false
+            else -> super.onOptionsItemSelected(item)
         }
     }
     private fun startAppManagerService() {
