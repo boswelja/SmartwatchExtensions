@@ -25,20 +25,17 @@ class AppManagerFragment : Fragment() {
 
     private lateinit var messageClient: MessageClient
 
-    private val apps = ArrayList<AppPackageInfo>()
+    private val appsAdapter = AppsAdapter()
 
     private val messageListener = MessageClient.OnMessageReceivedListener {
         when (it.path) {
             AppManagerReferences.PACKAGE_ADDED -> {
                 val appPackageInfo = AppPackageInfo.fromByteArray(it.data)
-                apps.add(appPackageInfo)
+                appsAdapter.add(appPackageInfo)
             }
             AppManagerReferences.PACKAGE_REMOVED -> {
                 val appPackageName = String(it.data, Charsets.UTF_8)
-                val appPackageInfo = apps.firstOrNull { appPackageInfo -> appPackageInfo.packageName == appPackageName }
-                if (appPackageInfo != null) {
-                    apps.remove(appPackageInfo)
-                }
+                appsAdapter.remove(appPackageName)
             }
             AppManagerReferences.GET_ALL_PACKAGES -> {
             }
@@ -62,6 +59,7 @@ class AppManagerFragment : Fragment() {
                     context!!,
                     LinearLayoutManager.VERTICAL,
                     false)
+            adapter = appsAdapter
             addOnScrollListener(object : RecyclerView.OnScrollListener() {
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                     (activity as MainActivity).elevateToolbar(recyclerView.canScrollVertically(-1))

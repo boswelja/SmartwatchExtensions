@@ -7,7 +7,10 @@
  */
 package com.boswelja.devicemanager.common.appmanager
 
+import android.content.pm.ApplicationInfo
 import android.content.pm.PackageInfo
+import android.content.pm.PackageManager
+import android.graphics.drawable.Drawable
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.IOException
@@ -15,7 +18,7 @@ import java.io.ObjectInputStream
 import java.io.ObjectOutputStream
 import java.io.Serializable
 
-class AppPackageInfo(packageInfo: PackageInfo) : Serializable {
+class AppPackageInfo(packageManager: PackageManager, packageInfo: PackageInfo) : Serializable {
 
     val versionCode: Int = packageInfo.versionCode
     val versionName: String = packageInfo.versionName
@@ -23,6 +26,9 @@ class AppPackageInfo(packageInfo: PackageInfo) : Serializable {
     val packageName: String = packageInfo.packageName
 
     val packageEnabled: Boolean = packageInfo.applicationInfo?.enabled == true
+    val isSystemApp: Boolean = (packageInfo.applicationInfo?.flags?.and((ApplicationInfo.FLAG_SYSTEM or ApplicationInfo.FLAG_UPDATED_SYSTEM_APP))) == 0
+
+    val packageIcon: Drawable = packageManager.getApplicationIcon(packageName)
 
     @Throws(IOException::class)
     fun toByteArray(): ByteArray {
