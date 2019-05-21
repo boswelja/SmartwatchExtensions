@@ -25,7 +25,6 @@ import com.boswelja.devicemanager.common.appmanager.AppPackageInfo
 import com.google.android.gms.wearable.CapabilityClient
 import com.google.android.gms.wearable.MessageClient
 import com.google.android.gms.wearable.Wearable
-import java.nio.charset.Charset
 
 class AppManagerFragment : Fragment() {
 
