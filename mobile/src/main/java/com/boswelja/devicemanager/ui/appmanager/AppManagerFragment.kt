@@ -7,7 +7,9 @@
  */
 package com.boswelja.devicemanager.ui.appmanager
 
+import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -66,7 +68,7 @@ class AppManagerFragment : Fragment() {
                     context!!,
                     LinearLayoutManager.VERTICAL,
                     false)
-            adapter = AppsAdapter()
+            adapter = AppsAdapter(this@AppManagerFragment)
             addOnScrollListener(object : RecyclerView.OnScrollListener() {
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                     (activity as AppManagerActivity).elevateToolbar(recyclerView.canScrollVertically(-1))
@@ -87,6 +89,20 @@ class AppManagerFragment : Fragment() {
         messageClient.removeListener(messageListener)
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        when (requestCode) {
+            APP_INFO_ACTIVITY_REQUEST_CODE -> {
+                val app = data?.extras?.getSerializable(AppInfoActivity.EXTRA_APP_INFO) as AppPackageInfo?
+                when (resultCode) {
+                    AppInfoActivity.RESPONSE_REQUEST_UNINSTALL -> {
+
+                    }
+                }
+            }
+            else -> super.onActivityResult(requestCode, resultCode, data)
+        }
+    }
+
     private fun setLoading(loading: Boolean) {
         if (loading) {
             appsLoadingSpinner.visibility = View.VISIBLE
@@ -97,7 +113,18 @@ class AppManagerFragment : Fragment() {
         }
     }
 
+    fun onItemClick(appPackageInfo: AppPackageInfo) {
+        Log.d("AppManagerFragment", "Clicked ${appPackageInfo.packageName}")
+        val intent = Intent(context, AppInfoActivity::class.java)
+        intent.putExtra(AppInfoActivity.EXTRA_APP_INFO, appPackageInfo)
+        startActivityForResult(intent, APP_INFO_ACTIVITY_REQUEST_CODE)
+    }
+
     fun setShowSystemApps(show: Boolean) {
         (appsRecyclerView.adapter as AppsAdapter).setShowSystemApps(show)
+    }
+
+    companion object {
+        private const val APP_INFO_ACTIVITY_REQUEST_CODE = 726687
     }
 }

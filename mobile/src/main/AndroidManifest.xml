@@ -36,6 +36,7 @@
         <activity android:name=".ui.interruptfiltersync.InterruptFilterSyncPreferenceActivity" />
 
         <activity android:name=".ui.appmanager.AppManagerActivity" />
+        <activity android:name=".ui.appmanager.AppInfoActivity" />
 
         <receiver
             android:name=".receiver.DeviceAdminChangeReceiver"

@@ -17,7 +17,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.appmanager.AppPackageInfo
 
-class AppsAdapter : RecyclerView.Adapter<AppsAdapter.AppItemViewHolder>() {
+class AppsAdapter(private val fragment: AppManagerFragment) : RecyclerView.Adapter<AppsAdapter.AppItemViewHolder>() {
 
     private var showSystem: Boolean = false
 
@@ -39,6 +39,9 @@ class AppsAdapter : RecyclerView.Adapter<AppsAdapter.AppItemViewHolder>() {
             holder.appIconView.setImageDrawable(icon)
         } catch (_: PackageManager.NameNotFoundException) {
             holder.appIconView.setImageResource(R.drawable.ic_app_icon_missing)
+        }
+        holder.itemView.setOnClickListener {
+            fragment.onItemClick(app)
         }
     }
 
