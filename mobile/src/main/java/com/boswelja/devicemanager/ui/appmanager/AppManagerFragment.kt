@@ -125,6 +125,6 @@ class AppManagerFragment : Fragment() {
     }
 
     companion object {
-        private const val APP_INFO_ACTIVITY_REQUEST_CODE = 726687
+        private const val APP_INFO_ACTIVITY_REQUEST_CODE = 22668
     }
 }
