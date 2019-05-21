@@ -11,6 +11,7 @@
         <item name="android:windowBackground">@color/windowBackground</item>
         <item name="alertDialogTheme">@style/AppTheme.AlertDialog</item>
         <item name="toolbarStyle">@style/AppTheme.Toolbar</item>
+        <item name="materialButtonStyle">@style/AppTheme.Button</item>
     </style>
 
     <style name="AppTheme" parent="BaseTheme" />
@@ -23,6 +24,10 @@
         <item name="android:windowBackground">@drawable/dialog_background</item>
         <item name="colorAccent">@color/colorPrimary</item>
         <item name="colorPrimary">@color/colorPrimary</item>
+    </style>
+
+    <style name="AppTheme.Button" parent="Widget.MaterialComponents.Button">
+        <item name="cornerRadius">@dimen/corner_radius</item>
     </style>
 
 </resources>
