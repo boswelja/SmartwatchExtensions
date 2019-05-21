@@ -7,6 +7,7 @@
  */
 package com.boswelja.devicemanager.ui.appmanager
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
@@ -14,6 +15,7 @@ import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.Utils
 import com.boswelja.devicemanager.common.appmanager.AppPackageInfo
 import com.boswelja.devicemanager.ui.base.BaseToolbarActivity
+import com.google.android.material.button.MaterialButton
 
 class AppInfoActivity : BaseToolbarActivity() {
 
@@ -27,20 +29,29 @@ class AppInfoActivity : BaseToolbarActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         app = intent?.extras?.getSerializable(EXTRA_APP_INFO) as AppPackageInfo
+
         setAppInfo()
+        setupButtons()
     }
 
     private fun setAppInfo() {
-        if (app != null) {
-            findViewById<AppCompatImageView>(R.id.app_icon).setImageDrawable(Utils.getAppIcon(this, app.packageName))
-            findViewById<AppCompatTextView>(R.id.app_name).text = app.label
-            findViewById<AppCompatTextView>(R.id.app_desc).text = app.versionName
+        findViewById<AppCompatImageView>(R.id.app_icon).setImageDrawable(Utils.getAppIcon(this, app.packageName))
+        findViewById<AppCompatTextView>(R.id.app_name).text = app.label
+        findViewById<AppCompatTextView>(R.id.app_desc).text = app.versionName
+    }
+
+    private fun setupButtons() {
+        findViewById<MaterialButton>(R.id.uninstall_button).setOnClickListener {
+            val intent = Intent()
+            intent.putExtra(EXTRA_APP_INFO, app)
+            setResult(RESULT_REQUEST_UNINSTALL, intent)
+            finish()
         }
     }
 
     companion object {
         const val EXTRA_APP_INFO = "extra_app_info"
 
-        const val RESPONSE_REQUEST_UNINSTALL = 718181
+        const val RESULT_REQUEST_UNINSTALL = 718181
     }
 }

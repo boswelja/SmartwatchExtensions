@@ -40,9 +40,9 @@ class AppManagerService : Service() {
             REQUEST_UNINSTALL_PACKAGE -> {
                 if (it.data != null && it.data.isNotEmpty()) {
                     val intentSender = Compat.getForegroundService(this@AppManagerService, Intent(PACKAGE_UNINSTALL_RESULT)).intentSender
-                    val appPackageInfo = AppPackageInfo.fromByteArray(it.data)
+                    val packageName = String(it.data, Charsets.UTF_8)
                     packageManager.packageInstaller
-                            .uninstall(appPackageInfo.packageName, intentSender)
+                            .uninstall(packageName, intentSender)
                 }
             }
             STOP_SERVICE -> {

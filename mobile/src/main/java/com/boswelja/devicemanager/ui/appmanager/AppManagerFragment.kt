@@ -19,10 +19,13 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.Extensions.addFromByteArray
+import com.boswelja.devicemanager.common.References
 import com.boswelja.devicemanager.common.appmanager.AppManagerReferences
 import com.boswelja.devicemanager.common.appmanager.AppPackageInfo
+import com.google.android.gms.wearable.CapabilityClient
 import com.google.android.gms.wearable.MessageClient
 import com.google.android.gms.wearable.Wearable
+import java.nio.charset.Charset
 
 class AppManagerFragment : Fragment() {
 
@@ -92,9 +95,10 @@ class AppManagerFragment : Fragment() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         when (requestCode) {
             APP_INFO_ACTIVITY_REQUEST_CODE -> {
-                val app = data?.extras?.getSerializable(AppInfoActivity.EXTRA_APP_INFO) as AppPackageInfo?
+                val app = data?.extras?.getSerializable(AppInfoActivity.EXTRA_APP_INFO) as AppPackageInfo
                 when (resultCode) {
-                    AppInfoActivity.RESPONSE_REQUEST_UNINSTALL -> {
+                    AppInfoActivity.RESULT_REQUEST_UNINSTALL -> {
+                        sendUninstallRequestMessage(app)
                     }
                 }
             }
@@ -110,6 +114,19 @@ class AppManagerFragment : Fragment() {
             appsLoadingSpinner.visibility = View.GONE
             appsRecyclerView.visibility = View.VISIBLE
         }
+    }
+
+    private fun sendUninstallRequestMessage(appPackageInfo: AppPackageInfo) {
+        Wearable.getCapabilityClient(context!!)
+                .getCapability(References.CAPABILITY_WATCH_APP, CapabilityClient.FILTER_REACHABLE)
+                .addOnCompleteListener {
+                    if (it.isSuccessful) {
+                        val node = it.result?.nodes?.firstOrNull { node -> node.isNearby }
+                        if (node != null) {
+                            messageClient.sendMessage(node.id, AppManagerReferences.REQUEST_UNINSTALL_PACKAGE, appPackageInfo.packageName.toByteArray(Charsets.UTF_8))
+                        }
+                    }
+                }
     }
 
     fun onItemClick(appPackageInfo: AppPackageInfo) {
