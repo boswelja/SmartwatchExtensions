@@ -11,6 +11,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ProgressBar
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -26,6 +27,7 @@ class AppManagerFragment : Fragment() {
     private lateinit var messageClient: MessageClient
 
     private lateinit var appsRecyclerView: RecyclerView
+    private lateinit var appsLoadingSpinner: ProgressBar
 
     private val messageListener = MessageClient.OnMessageReceivedListener {
         when (it.path) {
@@ -41,6 +43,7 @@ class AppManagerFragment : Fragment() {
                 val allApps = ArrayList<AppPackageInfo>()
                 allApps.addFromByteArray(it.data)
                 (appsRecyclerView.adapter as AppsAdapter).setAllApps(allApps)
+                setLoading(false)
             }
         }
     }
@@ -57,6 +60,7 @@ class AppManagerFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        appsLoadingSpinner = view.findViewById(R.id.apps_loading_spinner)
         appsRecyclerView = view.findViewById<RecyclerView>(R.id.apps_recyclerview).apply {
             layoutManager = LinearLayoutManager(
                     context!!,
@@ -69,6 +73,8 @@ class AppManagerFragment : Fragment() {
                 }
             })
         }
+
+        setLoading(true)
     }
 
     override fun onResume() {
@@ -79,6 +85,16 @@ class AppManagerFragment : Fragment() {
     override fun onPause() {
         super.onPause()
         messageClient.removeListener(messageListener)
+    }
+
+    private fun setLoading(loading: Boolean) {
+        if (loading) {
+            appsLoadingSpinner.visibility = View.VISIBLE
+            appsRecyclerView.visibility = View.INVISIBLE
+        } else {
+            appsLoadingSpinner.visibility = View.GONE
+            appsRecyclerView.visibility = View.VISIBLE
+        }
     }
 
     fun setShowSystemApps(show: Boolean) {
