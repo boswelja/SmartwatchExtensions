@@ -33,7 +33,7 @@ class AppsAdapter : RecyclerView.Adapter<AppsAdapter.AppItemViewHolder>() {
         val context = holder.itemView.context
         val app = getAppInfo(position)
         holder.appNameView.text = app.label
-        holder.appDescView.text = app.isSystemApp.toString()
+        holder.appDescView.text = app.versionName
         try {
             val icon = context.packageManager.getApplicationIcon(app.packageName)
             holder.appIconView.setImageDrawable(icon)
