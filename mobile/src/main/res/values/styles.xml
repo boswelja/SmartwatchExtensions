@@ -12,6 +12,7 @@
         <item name="alertDialogTheme">@style/AppTheme.AlertDialog</item>
         <item name="toolbarStyle">@style/AppTheme.Toolbar</item>
         <item name="materialButtonStyle">@style/AppTheme.Button</item>
+        <item name="popupMenuStyle">@style/AppTheme.PopupMenu</item>
     </style>
 
     <style name="AppTheme" parent="BaseTheme" />
@@ -28,6 +29,10 @@
 
     <style name="AppTheme.Button" parent="Widget.MaterialComponents.Button">
         <item name="cornerRadius">@dimen/corner_radius</item>
+    </style>
+
+    <style name="AppTheme.PopupMenu" parent="Widget.MaterialComponents.PopupMenu">
+        <item name="android:popupBackground">@drawable/dialog_background</item>
     </style>
 
 </resources>
