@@ -7,7 +7,6 @@
  */
 package com.boswelja.devicemanager.ui.appmanager
 
-import android.content.pm.PackageManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,6 +14,7 @@ import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.recyclerview.widget.RecyclerView
 import com.boswelja.devicemanager.R
+import com.boswelja.devicemanager.Utils
 import com.boswelja.devicemanager.common.appmanager.AppPackageInfo
 
 class AppsAdapter(private val fragment: AppManagerFragment) : RecyclerView.Adapter<AppsAdapter.AppItemViewHolder>() {
@@ -34,12 +34,7 @@ class AppsAdapter(private val fragment: AppManagerFragment) : RecyclerView.Adapt
         val app = getAppInfo(position)
         holder.appNameView.text = app.label
         holder.appDescView.text = app.versionName
-        try {
-            val icon = context.packageManager.getApplicationIcon(app.packageName)
-            holder.appIconView.setImageDrawable(icon)
-        } catch (_: PackageManager.NameNotFoundException) {
-            holder.appIconView.setImageResource(R.drawable.ic_app_icon_missing)
-        }
+        holder.appIconView.setImageDrawable(Utils.getAppIcon(context, app.packageName))
         holder.itemView.setOnClickListener {
             fragment.onItemClick(app)
         }

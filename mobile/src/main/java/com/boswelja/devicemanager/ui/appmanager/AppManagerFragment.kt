@@ -95,7 +95,6 @@ class AppManagerFragment : Fragment() {
                 val app = data?.extras?.getSerializable(AppInfoActivity.EXTRA_APP_INFO) as AppPackageInfo?
                 when (resultCode) {
                     AppInfoActivity.RESPONSE_REQUEST_UNINSTALL -> {
-
                     }
                 }
             }

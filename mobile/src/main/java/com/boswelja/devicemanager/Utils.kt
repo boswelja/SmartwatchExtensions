@@ -14,7 +14,9 @@ import android.app.job.JobScheduler
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.content.res.Resources
+import android.graphics.drawable.Drawable
 import android.media.AudioManager
 import android.os.Build
 import android.util.TypedValue
@@ -98,6 +100,14 @@ object Utils {
                     audioManager.ringerMode = AudioManager.RINGER_MODE_NORMAL
                 }
             }
+        }
+    }
+
+    fun getAppIcon(context: Context, packageName: String): Drawable? {
+        return try {
+            context.packageManager.getApplicationIcon(packageName)
+        } catch (_: PackageManager.NameNotFoundException) {
+            context.getDrawable(R.drawable.ic_app_icon_missing)
         }
     }
 
