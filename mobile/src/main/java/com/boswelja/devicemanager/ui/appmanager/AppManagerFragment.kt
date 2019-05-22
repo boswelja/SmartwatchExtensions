@@ -42,7 +42,7 @@ class AppManagerFragment : Fragment() {
             AppManagerReferences.PACKAGE_REMOVED -> {
                 val appPackageName = String(it.data, Charsets.UTF_8)
                 val adapter = (appsRecyclerView.adapter as AppsAdapter)
-                Snackbar.make(view!!, "Uninstalled ${adapter.getFromPackageName(appPackageName)}", Snackbar.LENGTH_LONG)
+                Snackbar.make(view!!, "Uninstalled ${adapter.getFromPackageName(appPackageName)?.label}", Snackbar.LENGTH_LONG).show()
                 adapter.remove(appPackageName)
             }
             AppManagerReferences.GET_ALL_PACKAGES -> {
