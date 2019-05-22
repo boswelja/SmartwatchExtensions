@@ -17,10 +17,10 @@ import android.content.IntentFilter
 import android.os.Build
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
+import androidx.core.net.toUri
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.Utils
 import com.boswelja.devicemanager.common.AtomicCounter
-import com.boswelja.devicemanager.common.Compat
 import com.boswelja.devicemanager.common.Extensions.toByteArray
 import com.boswelja.devicemanager.common.appmanager.AppManagerReferences.GET_ALL_PACKAGES
 import com.boswelja.devicemanager.common.appmanager.AppManagerReferences.PACKAGE_ADDED
@@ -39,10 +39,13 @@ class AppManagerService : Service() {
         when (it.path) {
             REQUEST_UNINSTALL_PACKAGE -> {
                 if (it.data != null && it.data.isNotEmpty()) {
-                    val intentSender = Compat.getForegroundService(this@AppManagerService, Intent(PACKAGE_UNINSTALL_RESULT)).intentSender
                     val packageName = String(it.data, Charsets.UTF_8)
-                    packageManager.packageInstaller
-                            .uninstall(packageName, intentSender)
+                    val intent = Intent(Intent.ACTION_DELETE, "package:$packageName".toUri())
+                    startActivity(intent)
+//                    val intentSender = Compat.getForegroundService(this@AppManagerService, Intent(PACKAGE_UNINSTALL_RESULT)).intentSender
+//                    val packageName = String(it.data, Charsets.UTF_8)
+//                    packageManager.packageInstaller
+//                            .uninstall(packageName, intentSender)
                 }
             }
             STOP_SERVICE -> {
@@ -58,11 +61,11 @@ class AppManagerService : Service() {
                 if (!intent.getBooleanExtra(Intent.EXTRA_REPLACING, false)) {
                     when (action) {
                         Intent.ACTION_PACKAGE_ADDED -> {
-                            val packageInfo = AppPackageInfo(packageManager, packageManager.getPackageInfo(intent.dataString, 0))
+                            val packageInfo = AppPackageInfo(packageManager, packageManager.getPackageInfo(intent.data?.encodedSchemeSpecificPart, 0))
                             sendAppAddedMessage(packageInfo)
                         }
                         Intent.ACTION_PACKAGE_REMOVED -> {
-                            sendAppRemovedMessage(intent.dataString)
+                            sendAppRemovedMessage(intent.data?.encodedSchemeSpecificPart)
                         }
                     }
                 }
@@ -161,9 +164,5 @@ class AppManagerService : Service() {
                         }
                     }
                 }
-    }
-
-    companion object {
-        const val PACKAGE_UNINSTALL_RESULT = "package_uninstall_result"
     }
 }
