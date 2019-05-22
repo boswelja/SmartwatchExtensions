@@ -32,12 +32,12 @@ class AppInfoActivity : BaseToolbarActivity() {
 
         setAppInfo()
         setupButtons()
+        setMiscInfo()
     }
 
     private fun setAppInfo() {
         findViewById<AppCompatImageView>(R.id.app_icon).setImageDrawable(Utils.getAppIcon(this, app.packageName))
         findViewById<AppCompatTextView>(R.id.app_name).text = app.label
-        findViewById<AppCompatTextView>(R.id.app_desc).text = app.versionName
     }
 
     private fun setupButtons() {
@@ -49,6 +49,13 @@ class AppInfoActivity : BaseToolbarActivity() {
                 finish()
             }
             isEnabled = app.packageName != packageName
+        }
+    }
+
+    private fun setMiscInfo() {
+        val versionString = "${getString(R.string.app_info_version_prefix)} ${app.versionName}"
+        findViewById<AppCompatTextView>(R.id.app_version_view).apply {
+            text = versionString
         }
     }
 

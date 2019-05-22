@@ -31,15 +31,6 @@
             android:textColor="?android:textColorPrimary"
             style="@style/TextAppearance.MaterialComponents.Headline6" />
 
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/app_desc"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/app_name"
-            android:layout_centerHorizontal="true"
-            android:textColor="?android:textColorSecondary"
-            style="@style/TextAppearance.MaterialComponents.Subtitle1" />
-
     </RelativeLayout>
 
     <View
@@ -60,7 +51,7 @@
             android:id="@+id/uninstall_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Uninstall"
+            android:text="@string/app_info_uninstall_button"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -72,4 +63,22 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="?android:attr/listDivider" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/app_version_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="?android:textColorSecondary"
+            style="@style/TextAppearance.MaterialComponents.Body2" />
+
+    </LinearLayout>
 </LinearLayout>

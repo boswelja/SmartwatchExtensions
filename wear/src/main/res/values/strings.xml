@@ -51,4 +51,8 @@
     <string name="pref_interrupt_filter_sync_with_theater_title">Sync with Theater Mode</string>
 
     <string name="ios_incompatible_message">Wearable Extensions doesn\'t support iOS</string>
+
+    <string name="app_manager_service_noti_channel_title">App Manager Service Running</string>
+    <string name="app_manager_service_noti_title">App Manager Running</string>
+    <string name="app_manager_service_noti_desc">App Manager is currently running on your phone</string>
 </resources>

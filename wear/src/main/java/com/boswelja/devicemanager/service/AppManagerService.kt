@@ -106,14 +106,14 @@ class AppManagerService : Service() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             val channel = NotificationChannel(
-                    "app_manager_service",
-                    "App Manager Service Running",
+                    APP_MANAGER_NOTI_CHANNEL_ID,
+                    getString(R.string.app_manager_service_noti_channel_title),
                     NotificationManager.IMPORTANCE_LOW)
             notificationManager.createNotificationChannel(channel)
         }
-        val noti = NotificationCompat.Builder(this, "app_manager_service")
-                .setContentTitle("App Manager Running")
-                .setContentText("App Manager is currently running on your phone")
+        val noti = NotificationCompat.Builder(this, APP_MANAGER_NOTI_CHANNEL_ID)
+                .setContentTitle(getString(R.string.app_manager_service_noti_title))
+                .setContentText(getString(R.string.app_manager_service_noti_desc))
                 .setSmallIcon(R.drawable.ic_sync)
                 .setOngoing(true)
                 .setShowWhen(false)
@@ -166,5 +166,9 @@ class AppManagerService : Service() {
                         }
                     }
                 }
+    }
+
+    companion object {
+        private const val APP_MANAGER_NOTI_CHANNEL_ID = "app_manager_service"
     }
 }
