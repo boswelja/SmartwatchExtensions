@@ -93,7 +93,7 @@ class AppManagerService : Service() {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         createNotification()
         sendAllAppsMessage()
-        return START_STICKY
+        return START_NOT_STICKY
     }
 
     override fun onDestroy() {
