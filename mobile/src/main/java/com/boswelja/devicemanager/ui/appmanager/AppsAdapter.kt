@@ -7,6 +7,7 @@
  */
 package com.boswelja.devicemanager.ui.appmanager
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -49,6 +50,16 @@ class AppsAdapter(private val fragment: AppManagerFragment) : RecyclerView.Adapt
         return app
     }
 
+    private fun getVisibleIndex(packageName: String): Int {
+        var index = -1
+        if (!showSystem) {
+            index = apps.filter { !it.isSystemApp }.indexOfFirst { it.packageName == packageName }
+        } else {
+            apps.indexOfFirst { it.packageName == packageName }
+        }
+        return index
+    }
+
     private fun count(): Int {
         return if (showSystem) {
             apps.count()
@@ -65,17 +76,19 @@ class AppsAdapter(private val fragment: AppManagerFragment) : RecyclerView.Adapt
     }
 
     fun add(app: AppPackageInfo) {
-        apps.add(app)
-        apps.sortBy { it.label }
-        val index = apps.indexOf(app)
-        notifyItemInserted(index)
+        if (apps.firstOrNull { it.packageName == app.packageName } == null) {
+            apps.add(app)
+            apps.sortBy { it.label }
+            val index = getVisibleIndex(app.packageName)
+            notifyItemInserted(index)
+        }
     }
 
     fun remove(packageName: String) {
-        val appToRemove = apps.firstOrNull { it.packageName == packageName }
-        if (appToRemove != null) {
-            val index = apps.indexOf(appToRemove)
-            apps.remove(appToRemove)
+        val index = getVisibleIndex(packageName)
+        Log.d("AppsAdapter", "Removing $packageName at $index")
+        if (index > -1) {
+            apps.removeAt(index)
             notifyItemRemoved(index)
         }
     }
