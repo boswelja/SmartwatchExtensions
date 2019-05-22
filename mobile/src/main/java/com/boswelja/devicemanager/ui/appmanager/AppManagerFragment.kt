@@ -131,6 +131,7 @@ class AppManagerFragment : Fragment() {
     }
 
     fun onItemClick(appPackageInfo: AppPackageInfo) {
+        (activity as AppManagerActivity).startAppManagerService()
         val intent = Intent(context, AppInfoActivity::class.java)
         intent.putExtra(AppInfoActivity.EXTRA_APP_INFO, appPackageInfo)
         startActivityForResult(intent, APP_INFO_ACTIVITY_REQUEST_CODE)

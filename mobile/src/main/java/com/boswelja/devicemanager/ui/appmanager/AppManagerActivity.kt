@@ -51,7 +51,7 @@ class AppManagerActivity : BaseToolbarActivity() {
                 }
     }
 
-    private fun startAppManagerService() {
+    fun startAppManagerService() {
         Wearable.getCapabilityClient(this)
                 .getCapability(References.CAPABILITY_WATCH_APP, CapabilityClient.FILTER_REACHABLE)
                 .addOnCompleteListener {
