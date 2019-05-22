@@ -41,11 +41,14 @@ class AppInfoActivity : BaseToolbarActivity() {
     }
 
     private fun setupButtons() {
-        findViewById<MaterialButton>(R.id.uninstall_button).setOnClickListener {
-            val intent = Intent()
-            intent.putExtra(EXTRA_APP_INFO, app)
-            setResult(RESULT_REQUEST_UNINSTALL, intent)
-            finish()
+        findViewById<MaterialButton>(R.id.uninstall_button).apply {
+            setOnClickListener {
+                val intent = Intent()
+                intent.putExtra(EXTRA_APP_INFO, app)
+                setResult(RESULT_REQUEST_UNINSTALL, intent)
+                finish()
+            }
+            isEnabled = app.packageName != packageName
         }
     }
 

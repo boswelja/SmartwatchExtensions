@@ -7,7 +7,6 @@
  */
 package com.boswelja.devicemanager.common.appmanager
 
-import android.content.pm.ApplicationInfo
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import java.io.ByteArrayInputStream
@@ -24,9 +23,6 @@ class AppPackageInfo(packageManager: PackageManager, packageInfo: PackageInfo) :
 
     val packageName: String = packageInfo.packageName
     val label: String = getApplicationLabel(packageManager, packageInfo)
-
-    val packageEnabled: Boolean = packageInfo.applicationInfo?.enabled == true
-    val isSystemApp: Boolean = (packageInfo.applicationInfo?.flags?.and((ApplicationInfo.FLAG_SYSTEM or ApplicationInfo.FLAG_UPDATED_SYSTEM_APP))) != 0
 
     private fun getApplicationLabel(packageManager: PackageManager, packageInfo: PackageInfo): String {
         var applicationName = packageManager.getApplicationLabel(packageInfo.applicationInfo)

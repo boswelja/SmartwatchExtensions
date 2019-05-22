@@ -14,6 +14,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.pm.ApplicationInfo
 import android.os.Build
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
@@ -151,8 +152,9 @@ class AppManagerService : Service() {
     private fun sendAllAppsMessage() {
         val packagesToSend = ArrayList<AppPackageInfo>()
         packageManager.getInstalledPackages(0).forEach { packageInfo ->
-            val appPackageInfo = AppPackageInfo(packageManager, packageInfo)
-            packagesToSend.add(appPackageInfo)
+            if ((packageInfo.applicationInfo?.flags?.and((ApplicationInfo.FLAG_SYSTEM or ApplicationInfo.FLAG_UPDATED_SYSTEM_APP))) == 0) {
+                packagesToSend.add(AppPackageInfo(packageManager, packageInfo))
+            }
         }
         Utils.getCompanionNode(this)
                 .addOnCompleteListener {

@@ -7,7 +7,6 @@
  */
 package com.boswelja.devicemanager.ui.appmanager
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,8 +19,6 @@ import com.boswelja.devicemanager.common.appmanager.AppPackageInfo
 
 class AppsAdapter(private val fragment: AppManagerFragment) : RecyclerView.Adapter<AppsAdapter.AppItemViewHolder>() {
 
-    private var showSystem: Boolean = false
-
     private val apps = ArrayList<AppPackageInfo>()
 
     override fun getItemCount(): Int = count()
@@ -32,7 +29,7 @@ class AppsAdapter(private val fragment: AppManagerFragment) : RecyclerView.Adapt
 
     override fun onBindViewHolder(holder: AppItemViewHolder, position: Int) {
         val context = holder.itemView.context
-        val app = getAppInfo(position)
+        val app = apps[position]
         holder.appNameView.text = app.label
         holder.appDescView.text = app.versionName
         holder.appIconView.setImageDrawable(Utils.getAppIcon(context, app.packageName))
@@ -41,56 +38,27 @@ class AppsAdapter(private val fragment: AppManagerFragment) : RecyclerView.Adapt
         }
     }
 
-    private fun getAppInfo(position: Int): AppPackageInfo {
-        var app = apps[position]
-        if (!showSystem) {
-            val filteredApps = apps.filter { !it.isSystemApp }
-            app = filteredApps[position]
-        }
-        return app
-    }
-
-    private fun getVisibleIndex(packageName: String): Int {
-        var index = -1
-        if (!showSystem) {
-            index = apps.filter { !it.isSystemApp }.indexOfFirst { it.packageName == packageName }
-        } else {
-            apps.indexOfFirst { it.packageName == packageName }
-        }
-        return index
-    }
-
-    private fun count(): Int {
-        return if (showSystem) {
-            apps.count()
-        } else {
-            apps.count { !it.isSystemApp }
-        }
-    }
-
-    fun setShowSystemApps(show: Boolean) {
-        if (showSystem != show) {
-            showSystem = show
-            notifyDataSetChanged()
-        }
-    }
+    private fun count(): Int = apps.count()
 
     fun add(app: AppPackageInfo) {
         if (apps.firstOrNull { it.packageName == app.packageName } == null) {
             apps.add(app)
             apps.sortBy { it.label }
-            val index = getVisibleIndex(app.packageName)
+            val index = apps.indexOf(app)
             notifyItemInserted(index)
         }
     }
 
     fun remove(packageName: String) {
-        val index = getVisibleIndex(packageName)
-        Log.d("AppsAdapter", "Removing $packageName at $index")
+        val index = apps.indexOfFirst { it.packageName == packageName }
         if (index > -1) {
             apps.removeAt(index)
             notifyItemRemoved(index)
         }
+    }
+
+    fun getFromPackageName(packageName: String): AppPackageInfo? {
+        return apps.firstOrNull { it.packageName == packageName }
     }
 
     fun setAllApps(appsToSet: ArrayList<AppPackageInfo>) {

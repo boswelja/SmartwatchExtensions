@@ -9,7 +9,6 @@ package com.boswelja.devicemanager.ui.appmanager
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -25,6 +24,7 @@ import com.boswelja.devicemanager.common.appmanager.AppPackageInfo
 import com.google.android.gms.wearable.CapabilityClient
 import com.google.android.gms.wearable.MessageClient
 import com.google.android.gms.wearable.Wearable
+import com.google.android.material.snackbar.Snackbar
 
 class AppManagerFragment : Fragment() {
 
@@ -41,7 +41,9 @@ class AppManagerFragment : Fragment() {
             }
             AppManagerReferences.PACKAGE_REMOVED -> {
                 val appPackageName = String(it.data, Charsets.UTF_8)
-                (appsRecyclerView.adapter as AppsAdapter).remove(appPackageName)
+                val adapter = (appsRecyclerView.adapter as AppsAdapter)
+                Snackbar.make(view!!, "Uninstalled ${adapter.getFromPackageName(appPackageName)}", Snackbar.LENGTH_LONG)
+                adapter.remove(appPackageName)
             }
             AppManagerReferences.GET_ALL_PACKAGES -> {
                 val allApps = ArrayList<AppPackageInfo>()
@@ -94,9 +96,9 @@ class AppManagerFragment : Fragment() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         when (requestCode) {
             APP_INFO_ACTIVITY_REQUEST_CODE -> {
-                val app = data?.extras?.getSerializable(AppInfoActivity.EXTRA_APP_INFO) as AppPackageInfo
                 when (resultCode) {
                     AppInfoActivity.RESULT_REQUEST_UNINSTALL -> {
+                        val app = data?.extras?.getSerializable(AppInfoActivity.EXTRA_APP_INFO) as AppPackageInfo
                         sendUninstallRequestMessage(app)
                     }
                 }
@@ -129,14 +131,9 @@ class AppManagerFragment : Fragment() {
     }
 
     fun onItemClick(appPackageInfo: AppPackageInfo) {
-        Log.d("AppManagerFragment", "Clicked ${appPackageInfo.packageName}")
         val intent = Intent(context, AppInfoActivity::class.java)
         intent.putExtra(AppInfoActivity.EXTRA_APP_INFO, appPackageInfo)
         startActivityForResult(intent, APP_INFO_ACTIVITY_REQUEST_CODE)
-    }
-
-    fun setShowSystemApps(show: Boolean) {
-        (appsRecyclerView.adapter as AppsAdapter).setShowSystemApps(show)
     }
 
     companion object {

@@ -8,8 +8,6 @@
 package com.boswelja.devicemanager.ui.appmanager
 
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuItem
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.References
 import com.boswelja.devicemanager.common.appmanager.AppManagerReferences
@@ -53,22 +51,6 @@ class AppManagerActivity : BaseToolbarActivity() {
                 }
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.activity_app_manager_toolbar_menu, menu)
-        return true
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        return when (item?.itemId) {
-            R.id.menu_item_show_system -> {
-                item.isChecked = !item.isChecked
-                val showSystemApps = item.isChecked
-                appManagerFragment.setShowSystemApps(showSystemApps)
-                true
-            }
-            else -> super.onOptionsItemSelected(item)
-        }
-    }
     private fun startAppManagerService() {
         Wearable.getCapabilityClient(this)
                 .getCapability(References.CAPABILITY_WATCH_APP, CapabilityClient.FILTER_REACHABLE)
