@@ -9,15 +9,10 @@ package com.boswelja.devicemanager.common
 
 object References {
 
-    private const val packageName = "com.boswelja.devicemanager"
+    const val packageName = "com.boswelja.devicemanager"
 
     // Notification channel IDs
-    const val DND_SYNC_NOTI_CHANNEL_ID = "dnd_sync"
     const val BATTERY_CHARGED_NOTI_CHANEL_ID = "companion_device_charged"
-
-    // DnD Sync
-    const val DND_STATUS_KEY = "/dnd_status"
-    const val NEW_DND_STATE_KEY = "$packageName.interrupt-filter-enabled"
 
     // Message paths
     const val LOCK_PHONE_PATH = "/lock_phone"

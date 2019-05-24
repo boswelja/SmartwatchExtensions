@@ -12,7 +12,6 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.os.BatteryManager
 import com.google.android.gms.wearable.CapabilityClient
-import com.google.android.gms.wearable.PutDataMapRequest
 import com.google.android.gms.wearable.Wearable
 
 /*
@@ -42,25 +41,5 @@ object CommonUtils {
                                 message.toByteArray(Charsets.UTF_8))
                     }
                 }
-    }
-
-    /**
-     * Ensure Interruption Filter state is properly synced between devices.
-     */
-    fun updateInterruptionFilter(context: Context) {
-        val interruptionFilterEnabled = Compat.interruptionFilterEnabled(context)
-        updateInterruptionFilter(context, interruptionFilterEnabled)
-    }
-
-    /**
-     * Sets a new Interruption Filter state across devices.
-     * @param interruptionFilterEnabled Whether Interruption Filter should be enabled.
-     */
-    fun updateInterruptionFilter(context: Context, interruptionFilterEnabled: Boolean) {
-        val dataClient = Wearable.getDataClient(context)
-        val putDataMapReq = PutDataMapRequest.create(References.DND_STATUS_KEY)
-        putDataMapReq.dataMap.putBoolean(References.NEW_DND_STATE_KEY, interruptionFilterEnabled)
-        putDataMapReq.setUrgent()
-        dataClient.putDataItem(putDataMapReq.asPutDataRequest())
     }
 }
