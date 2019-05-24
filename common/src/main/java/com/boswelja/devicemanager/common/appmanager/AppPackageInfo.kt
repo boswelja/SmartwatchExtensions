@@ -9,6 +9,7 @@ package com.boswelja.devicemanager.common.appmanager
 
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
+import androidx.core.content.pm.PackageInfoCompat
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.IOException
@@ -18,7 +19,7 @@ import java.io.Serializable
 
 class AppPackageInfo(packageManager: PackageManager, packageInfo: PackageInfo) : Serializable {
 
-    val versionCode: Int = packageInfo.versionCode
+    val versionCode: Long = PackageInfoCompat.getLongVersionCode(packageInfo)
     val versionName: String = packageInfo.versionName
 
     val packageName: String = packageInfo.packageName
