@@ -5,7 +5,7 @@
  * This file, and any part of the Wearable Extensions app/s cannot be copied and/or distributed
  * without permission from Jack Boswell (boswelja) <boswela@outlook.com>
  */
-package com.boswelja.devicemanager.common
+package com.boswelja.devicemanager.common.batterysync
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -14,6 +14,10 @@ import android.content.SharedPreferences
 import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.preference.PreferenceManager
+import com.boswelja.devicemanager.common.AtomicCounter
+import com.boswelja.devicemanager.common.PreferenceKey
+import com.boswelja.devicemanager.common.R
+import com.boswelja.devicemanager.common.batterysync.BatterySyncReferences.BATTERY_STATUS_PATH
 import com.google.android.gms.wearable.MessageEvent
 import com.google.android.gms.wearable.WearableListenerService
 
@@ -25,7 +29,7 @@ abstract class BatteryUpdateReceiver : WearableListenerService() {
     abstract fun onBatteryUpdate(percent: Int, charging: Boolean)
 
     override fun onMessageReceived(messageEvent: MessageEvent?) {
-        if (messageEvent?.path == References.BATTERY_STATUS_PATH) {
+        if (messageEvent?.path == BATTERY_STATUS_PATH) {
             sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
             val message = String(messageEvent.data, Charsets.UTF_8)
             val messageSplit = message.split("|")
@@ -55,16 +59,9 @@ abstract class BatteryUpdateReceiver : WearableListenerService() {
         val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         val companionDeviceName = getString(R.string.companion_device_type)
 
-        val noti = NotificationCompat.Builder(this, References.BATTERY_CHARGED_NOTI_CHANEL_ID)
-                .setSmallIcon(R.drawable.battery_full)
-                .setContentTitle(getString(R.string.device_charged_noti_title, companionDeviceName))
-                .setContentText(getString(R.string.device_charged_noti_desc, companionDeviceName))
-                .setLocalOnly(true)
-                .build()
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && notificationManager.getNotificationChannel(References.BATTERY_CHARGED_NOTI_CHANEL_ID) == null) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && notificationManager.getNotificationChannel(BATTERY_CHARGED_NOTI_CHANEL_ID) == null) {
             val channel = NotificationChannel(
-                    References.BATTERY_CHARGED_NOTI_CHANEL_ID,
+                    BATTERY_CHARGED_NOTI_CHANEL_ID,
                     getString(R.string.device_charged_noti_channel_name, getString(R.string.companion_device_type)),
                     NotificationManager.IMPORTANCE_HIGH).apply {
                 enableVibration(true)
@@ -73,7 +70,19 @@ abstract class BatteryUpdateReceiver : WearableListenerService() {
             notificationManager.createNotificationChannel(channel)
         }
 
+        val noti = NotificationCompat.Builder(this, BATTERY_CHARGED_NOTI_CHANEL_ID)
+                .setSmallIcon(R.drawable.battery_full)
+                .setContentTitle(getString(R.string.device_charged_noti_title, companionDeviceName))
+                .setContentText(getString(R.string.device_charged_noti_desc, companionDeviceName))
+                .setLocalOnly(true)
+                .build()
+
         notificationManager.notify(AtomicCounter.getInt(), noti)
         sharedPreferences.edit().putBoolean(PreferenceKey.BATTERY_CHARGED_NOTI_SENT, true).apply()
+    }
+
+    companion object {
+
+        const val BATTERY_CHARGED_NOTI_CHANEL_ID = "companion_device_charged"
     }
 }

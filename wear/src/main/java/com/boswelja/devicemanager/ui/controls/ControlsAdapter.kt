@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.PreferenceKey
 import com.boswelja.devicemanager.common.References
+import com.boswelja.devicemanager.common.batterysync.BatterySyncReferences
 import com.boswelja.devicemanager.service.ActionService
 
 class ControlsAdapter : RecyclerView.Adapter<ControlsAdapter.ViewHolder>() {
@@ -45,7 +46,7 @@ class ControlsAdapter : RecyclerView.Adapter<ControlsAdapter.ViewHolder>() {
                 holder.itemView.setOnClickListener {
                     if (sharedPrefs.getBoolean(PreferenceKey.BATTERY_SYNC_ENABLED_KEY, false)) {
                         val intent = Intent(holder.itemView.context, ActionService::class.java)
-                        intent.putExtra(ActionService.EXTRA_ACTION, References.REQUEST_BATTERY_UPDATE_PATH)
+                        intent.putExtra(ActionService.EXTRA_ACTION, BatterySyncReferences.REQUEST_BATTERY_UPDATE_PATH)
                         holder.itemView.context.startService(intent)
                     }
                 }

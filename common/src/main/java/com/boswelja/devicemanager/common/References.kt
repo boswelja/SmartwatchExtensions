@@ -11,14 +11,9 @@ object References {
 
     const val packageName = "com.boswelja.devicemanager"
 
-    // Notification channel IDs
-    const val BATTERY_CHARGED_NOTI_CHANEL_ID = "companion_device_charged"
-
     // Message paths
     const val LOCK_PHONE_PATH = "/lock_phone"
     const val REQUEST_LAUNCH_APP_PATH = "/launch_app"
-    const val BATTERY_STATUS_PATH = "/battery_status"
-    const val REQUEST_BATTERY_UPDATE_PATH = "/request_battery_update"
     const val REQUEST_PHONE_DND_ACCESS_STATUS_PATH = "/request_phone_dnd_access_status"
     const val REQUEST_WATCH_DND_ACCESS_STATUS_PATH = "/request_watch_dnd_access_status"
 

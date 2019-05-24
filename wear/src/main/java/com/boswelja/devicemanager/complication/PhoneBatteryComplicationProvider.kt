@@ -17,7 +17,7 @@ import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.Compat
 import com.boswelja.devicemanager.common.PreferenceKey
-import com.boswelja.devicemanager.common.References
+import com.boswelja.devicemanager.common.batterysync.BatterySyncReferences.REQUEST_BATTERY_UPDATE_PATH
 import com.boswelja.devicemanager.service.ActionService
 
 class PhoneBatteryComplicationProvider : BaseComplicationProviderService() {
@@ -29,7 +29,7 @@ class PhoneBatteryComplicationProvider : BaseComplicationProviderService() {
         }
 
         val intent = Intent(this, ActionService::class.java)
-        intent.putExtra(ActionService.EXTRA_ACTION, References.REQUEST_BATTERY_UPDATE_PATH)
+        intent.putExtra(ActionService.EXTRA_ACTION, REQUEST_BATTERY_UPDATE_PATH)
         val pendingIntent = Compat.getForegroundService(this, intent)
 
         val prefs = PreferenceManager.getDefaultSharedPreferences(this)

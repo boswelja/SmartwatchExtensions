@@ -17,11 +17,11 @@ import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.fragment.app.Fragment
 import com.boswelja.devicemanager.R
-import com.boswelja.devicemanager.common.CommonUtils
 import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_PERCENT_KEY
 import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_SYNC_ENABLED_KEY
 import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_SYNC_LAST_WHEN_KEY
 import com.boswelja.devicemanager.common.References
+import com.boswelja.devicemanager.common.batterysync.BatterySyncUtils.updateBatteryStats
 import java.util.concurrent.TimeUnit
 
 class BatterySyncPreferenceWidgetFragment :
@@ -74,7 +74,7 @@ class BatterySyncPreferenceWidgetFragment :
         watchBatteryUpdateNowHolder = view.findViewById<View>(R.id.updated_time_holder)
         watchBatteryUpdateNowHolder.setOnClickListener {
             if (sharedPreferences.getBoolean(BATTERY_SYNC_ENABLED_KEY, false)) {
-                CommonUtils.updateBatteryStats(context!!, References.CAPABILITY_WATCH_APP)
+                updateBatteryStats(context!!, References.CAPABILITY_WATCH_APP)
             }
         }
     }
