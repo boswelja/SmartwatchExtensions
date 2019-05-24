@@ -9,8 +9,8 @@ package com.boswelja.devicemanager
 
 import android.app.job.JobParameters
 import android.app.job.JobService
-import com.boswelja.devicemanager.common.CommonUtils
 import com.boswelja.devicemanager.common.References
+import com.boswelja.devicemanager.common.batterysync.BatterySyncUtils.updateBatteryStats
 
 class BatteryUpdateJob : JobService() {
 
@@ -19,7 +19,7 @@ class BatteryUpdateJob : JobService() {
     }
 
     override fun onStartJob(params: JobParameters?): Boolean {
-        CommonUtils.updateBatteryStats(this, References.CAPABILITY_WATCH_APP)
+        updateBatteryStats(this, References.CAPABILITY_WATCH_APP)
         jobFinished(params, true)
         return false
     }

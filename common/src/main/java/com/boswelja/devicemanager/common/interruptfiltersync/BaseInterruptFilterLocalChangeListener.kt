@@ -22,9 +22,8 @@ import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.common.AtomicCounter
-import com.boswelja.devicemanager.common.CommonUtils
 import com.boswelja.devicemanager.common.R
-import com.boswelja.devicemanager.common.References
+import com.boswelja.devicemanager.common.interruptfiltersync.InterruptFilterSyncUtils.updateInterruptionFilter
 
 @RequiresApi(Build.VERSION_CODES.M)
 abstract class BaseInterruptFilterLocalChangeListener : Service() {
@@ -48,9 +47,9 @@ abstract class BaseInterruptFilterLocalChangeListener : Service() {
 
         notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && notificationManager.getNotificationChannel(References.DND_SYNC_NOTI_CHANNEL_ID) == null) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && notificationManager.getNotificationChannel(INTERRUPT_FINTER_SYNC_NOTI_CHANNEL_ID) == null) {
             val notiChannel = NotificationChannel(
-                    References.DND_SYNC_NOTI_CHANNEL_ID,
+                    INTERRUPT_FINTER_SYNC_NOTI_CHANNEL_ID,
                     getString(R.string.dnd_sync_noti_channel_name),
                     NotificationManager.IMPORTANCE_LOW).apply {
                 enableLights(false)
@@ -62,7 +61,7 @@ abstract class BaseInterruptFilterLocalChangeListener : Service() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        val notiBuilder = NotificationCompat.Builder(this, References.DND_SYNC_NOTI_CHANNEL_ID)
+        val notiBuilder = NotificationCompat.Builder(this, INTERRUPT_FINTER_SYNC_NOTI_CHANNEL_ID)
                 .setContentTitle(getString(R.string.dnd_sync_active_noti_title))
                 .setContentText(getString(R.string.dnd_sync_active_noti_desc))
                 .setSmallIcon(R.drawable.ic_sync)
@@ -85,7 +84,7 @@ abstract class BaseInterruptFilterLocalChangeListener : Service() {
         if (dndChangeReceiver == null) dndChangeReceiver = DnDChangeReceiver()
         registerReceiver(dndChangeReceiver, intentFilter)
 
-        CommonUtils.updateInterruptionFilter(this)
+        updateInterruptionFilter(this)
 
         return START_STICKY
     }
@@ -112,8 +111,12 @@ abstract class BaseInterruptFilterLocalChangeListener : Service() {
     private inner class DnDChangeReceiver : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             if (intent!!.action == NotificationManager.ACTION_INTERRUPTION_FILTER_CHANGED) {
-                CommonUtils.updateInterruptionFilter(this@BaseInterruptFilterLocalChangeListener)
+                updateInterruptionFilter(this@BaseInterruptFilterLocalChangeListener)
             }
         }
+    }
+
+    companion object {
+        private const val INTERRUPT_FINTER_SYNC_NOTI_CHANNEL_ID = "dnd_sync"
     }
 }

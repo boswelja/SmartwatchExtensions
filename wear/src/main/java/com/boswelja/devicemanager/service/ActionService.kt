@@ -24,6 +24,7 @@ import com.boswelja.devicemanager.Utils
 import com.boswelja.devicemanager.common.AtomicCounter
 import com.boswelja.devicemanager.common.PreferenceKey
 import com.boswelja.devicemanager.common.References
+import com.boswelja.devicemanager.common.batterysync.BatterySyncReferences
 import com.boswelja.devicemanager.complication.PhoneBatteryComplicationProvider
 import com.google.android.gms.wearable.Node
 import com.google.android.gms.wearable.Wearable
@@ -65,14 +66,14 @@ class ActionService : Service() {
                                 val providerUpdateRequester = ProviderUpdateRequester(this@ActionService, ComponentName(packageName, PhoneBatteryComplicationProvider::class.java.name))
                                 providerUpdateRequester.requestUpdateAll()
                             }
-                            References.REQUEST_BATTERY_UPDATE_PATH -> {
+                            BatterySyncReferences.REQUEST_BATTERY_UPDATE_PATH -> {
                                 sendMessage(node)
                             }
                         }
                     } else {
                         when (action) {
                             References.LOCK_PHONE_PATH -> ConfirmationActivityHandler.failAnimation(this@ActionService, getString(R.string.phone_lock_failed_message))
-                            References.REQUEST_BATTERY_UPDATE_PATH -> ConfirmationActivityHandler.failAnimation(this@ActionService, getString(R.string.phone_battery_update_failed))
+                            BatterySyncReferences.REQUEST_BATTERY_UPDATE_PATH -> ConfirmationActivityHandler.failAnimation(this@ActionService, getString(R.string.phone_battery_update_failed))
                         }
                     }
                 }

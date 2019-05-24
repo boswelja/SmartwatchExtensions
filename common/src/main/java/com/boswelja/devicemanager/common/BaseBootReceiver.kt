@@ -17,15 +17,12 @@ abstract class BaseBootReceiver : BroadcastReceiver() {
 
     lateinit var sharedPreferences: SharedPreferences
 
-    abstract fun isInterruptFilterSyncSending(): Boolean
-    abstract fun startInterruptFilterSyncService(context: Context?)
+    abstract fun onBootCompleted(context: Context?)
 
     override fun onReceive(context: Context?, intent: Intent?) {
         if (intent?.action == Intent.ACTION_BOOT_COMPLETED) {
             sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
-            if (isInterruptFilterSyncSending()) {
-                startInterruptFilterSyncService(context)
-            }
+            onBootCompleted(context)
         }
     }
 }

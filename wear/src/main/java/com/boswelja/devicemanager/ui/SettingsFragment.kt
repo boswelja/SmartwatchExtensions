@@ -28,6 +28,7 @@ import com.boswelja.devicemanager.common.PreferenceKey.INTERRUPT_FILTER_ON_WITH_
 import com.boswelja.devicemanager.common.PreferenceKey.INTERRUPT_FILTER_SYNC_TO_PHONE_KEY
 import com.boswelja.devicemanager.common.PreferenceKey.INTERRUPT_FILTER_SYNC_TO_WATCH_KEY
 import com.boswelja.devicemanager.common.References
+import com.boswelja.devicemanager.common.interruptfiltersync.InterruptFilterSyncReferences.REQUEST_INTERRUPT_FILTER_ACCESS_STATUS_PATH
 import com.boswelja.devicemanager.common.prefsynclayer.PreferenceSyncLayer
 import com.google.android.gms.wearable.MessageClient
 import com.google.android.gms.wearable.Wearable
@@ -44,7 +45,7 @@ class SettingsFragment :
     private var changingKey = ""
 
     private val interruptFilterAccessListener = MessageClient.OnMessageReceivedListener {
-        if (it.path == References.REQUEST_PHONE_DND_ACCESS_STATUS_PATH) {
+        if (it.path == REQUEST_INTERRUPT_FILTER_ACCESS_STATUS_PATH) {
             val hasAccess = Boolean.fromByteArray(it.data)
             onInterruptFilterAccessResponse(hasAccess)
         }
@@ -101,7 +102,7 @@ class SettingsFragment :
                             val nodes = it.result?.nodes
                             if (!nodes.isNullOrEmpty()) {
                                 val node = nodes.first { node -> node.isNearby }
-                                messageClient.sendMessage(node?.id!!, References.REQUEST_PHONE_DND_ACCESS_STATUS_PATH, null)
+                                messageClient.sendMessage(node?.id!!, REQUEST_INTERRUPT_FILTER_ACCESS_STATUS_PATH, null)
                             } else {
                                 notifyError()
                             }

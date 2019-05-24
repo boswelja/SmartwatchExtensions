@@ -20,6 +20,7 @@ import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.Utils
 import com.boswelja.devicemanager.common.Extensions.fromByteArray
 import com.boswelja.devicemanager.common.References
+import com.boswelja.devicemanager.common.interruptfiltersync.InterruptFilterSyncReferences.REQUEST_INTERRUPT_FILTER_ACCESS_STATUS_PATH
 import com.boswelja.devicemanager.service.InterruptFilterLocalChangeListener
 import com.boswelja.devicemanager.ui.base.BaseDialogFragment
 import com.google.android.gms.wearable.CapabilityClient
@@ -42,7 +43,7 @@ class InterruptFilterSyncHelperDialog : BaseDialogFragment() {
     private var isInitialCheck = true
 
     private val listener = MessageClient.OnMessageReceivedListener {
-        if (it.path == References.REQUEST_WATCH_DND_ACCESS_STATUS_PATH) {
+        if (it.path == REQUEST_INTERRUPT_FILTER_ACCESS_STATUS_PATH) {
             val hasDnDAccess = Boolean.fromByteArray(it.data)
             onResponse(hasDnDAccess)
         }
@@ -103,7 +104,7 @@ class InterruptFilterSyncHelperDialog : BaseDialogFragment() {
                             (activity as InterruptFilterSyncPreferenceActivity).createSnackBar(getString(R.string.no_watch_found))
                             dismiss()
                         } else {
-                            messageClient.sendMessage(nodes.first().id!!, References.REQUEST_WATCH_DND_ACCESS_STATUS_PATH, null)
+                            messageClient.sendMessage(nodes.first().id!!, REQUEST_INTERRUPT_FILTER_ACCESS_STATUS_PATH, null)
                         }
                     } else {
                         (activity as InterruptFilterSyncPreferenceActivity).createSnackBar(getString(R.string.no_watch_found))

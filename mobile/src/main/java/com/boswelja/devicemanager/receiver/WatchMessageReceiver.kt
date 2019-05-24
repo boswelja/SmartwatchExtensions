@@ -13,9 +13,11 @@ import android.app.admin.DevicePolicyManager
 import android.content.Context
 import android.content.Intent
 import android.os.Build
-import com.boswelja.devicemanager.common.CommonUtils
 import com.boswelja.devicemanager.common.Extensions.toByteArray
 import com.boswelja.devicemanager.common.References
+import com.boswelja.devicemanager.common.batterysync.BatterySyncReferences
+import com.boswelja.devicemanager.common.batterysync.BatterySyncUtils
+import com.boswelja.devicemanager.common.interruptfiltersync.InterruptFilterSyncReferences.REQUEST_INTERRUPT_FILTER_ACCESS_STATUS_PATH
 import com.boswelja.devicemanager.ui.main.MainActivity
 import com.google.android.gms.wearable.MessageEvent
 import com.google.android.gms.wearable.Wearable
@@ -31,8 +33,8 @@ class WatchMessageReceiver : WearableListenerService() {
                     devicePolicyManager.lockNow()
                 }
             }
-            References.REQUEST_BATTERY_UPDATE_PATH ->
-                CommonUtils.updateBatteryStats(this, References.CAPABILITY_WATCH_APP)
+            BatterySyncReferences.REQUEST_BATTERY_UPDATE_PATH ->
+                BatterySyncUtils.updateBatteryStats(this, References.CAPABILITY_WATCH_APP)
             References.REQUEST_LAUNCH_APP_PATH -> {
                 val key = String(messageEvent.data, Charsets.UTF_8)
                 val intent = Intent(this, MainActivity::class.java)
@@ -40,7 +42,7 @@ class WatchMessageReceiver : WearableListenerService() {
                 intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
                 startActivity(intent)
             }
-            References.REQUEST_PHONE_DND_ACCESS_STATUS_PATH -> {
+            REQUEST_INTERRUPT_FILTER_ACCESS_STATUS_PATH -> {
                 val hasDnDAccess = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                     val notiManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
                     notiManager.isNotificationPolicyAccessGranted
@@ -50,7 +52,7 @@ class WatchMessageReceiver : WearableListenerService() {
                 Wearable.getMessageClient(this)
                         .sendMessage(
                                 messageEvent.sourceNodeId!!,
-                                References.REQUEST_PHONE_DND_ACCESS_STATUS_PATH,
+                                REQUEST_INTERRUPT_FILTER_ACCESS_STATUS_PATH,
                                 hasDnDAccess.toByteArray())
             }
         }

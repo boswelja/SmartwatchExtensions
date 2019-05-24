@@ -9,7 +9,7 @@ package com.boswelja.devicemanager.common.interruptfiltersync
 
 import android.content.SharedPreferences
 import androidx.preference.PreferenceManager
-import com.boswelja.devicemanager.common.References
+import com.boswelja.devicemanager.common.interruptfiltersync.InterruptFilterSyncReferences.NEW_INTERRUPT_FILTER_STATE_KEY
 import com.google.android.gms.wearable.DataEvent
 import com.google.android.gms.wearable.DataEventBuffer
 import com.google.android.gms.wearable.DataMapItem
@@ -35,7 +35,7 @@ abstract class BaseInterruptFilterRemoteChangeReceiver : WearableListenerService
             val dataEvent = dataEventBuffer.last()
             if (dataEvent.type == DataEvent.TYPE_CHANGED) {
                 val dataMap = DataMapItem.fromDataItem(dataEvent.dataItem).dataMap
-                val interruptFilterEnabled = dataMap.getBoolean(References.NEW_DND_STATE_KEY)
+                val interruptFilterEnabled = dataMap.getBoolean(NEW_INTERRUPT_FILTER_STATE_KEY)
                 setInterruptionFilter(interruptFilterEnabled)
             }
             dataEventBuffer.release()

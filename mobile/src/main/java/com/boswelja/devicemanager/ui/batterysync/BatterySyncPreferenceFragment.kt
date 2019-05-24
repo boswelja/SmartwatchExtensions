@@ -15,13 +15,14 @@ import androidx.preference.SeekBarPreference
 import androidx.preference.SwitchPreference
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.Utils
-import com.boswelja.devicemanager.common.CommonUtils
 import com.boswelja.devicemanager.common.Compat
 import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_PHONE_FULL_CHARGE_NOTI_KEY
 import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_SYNC_ENABLED_KEY
 import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_SYNC_INTERVAL_KEY
 import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_WATCH_FULL_CHARGE_NOTI_KEY
 import com.boswelja.devicemanager.common.References
+import com.boswelja.devicemanager.common.batterysync.BatterySyncUtils.updateBatteryStats
+import com.boswelja.devicemanager.common.batterysync.BatteryUpdateReceiver
 import com.boswelja.devicemanager.common.prefsynclayer.PreferenceSyncLayer
 import com.boswelja.devicemanager.ui.base.BasePreferenceActivity
 import com.boswelja.devicemanager.ui.base.BasePreferenceFragment
@@ -63,7 +64,7 @@ class BatterySyncPreferenceFragment :
                 sharedPreferences.edit().putBoolean(preference.key, value).apply()
                 if (value) {
                     Utils.createBatterySyncJob(context!!)
-                    CommonUtils.updateBatteryStats(context!!, References.CAPABILITY_WATCH_APP)
+                    updateBatteryStats(context!!, References.CAPABILITY_WATCH_APP)
                 } else {
                     Utils.stopBatterySyncJob(context!!)
                 }
@@ -97,7 +98,7 @@ class BatterySyncPreferenceFragment :
         super.onResume()
         preferenceManager.sharedPreferences.registerOnSharedPreferenceChangeListener(this)
         if (preferenceManager.sharedPreferences.getBoolean(BATTERY_WATCH_FULL_CHARGE_NOTI_KEY, false) &&
-                !Compat.notificationsEnabled(context!!, References.BATTERY_CHARGED_NOTI_CHANEL_ID)) {
+                !Compat.notificationsEnabled(context!!, BatteryUpdateReceiver.BATTERY_CHARGED_NOTI_CHANEL_ID)) {
             preferenceManager.sharedPreferences.edit()
                     .putBoolean(BATTERY_WATCH_FULL_CHARGE_NOTI_KEY, false)
                     .apply()

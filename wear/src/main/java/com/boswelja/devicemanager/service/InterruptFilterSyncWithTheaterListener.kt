@@ -23,8 +23,8 @@ import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.Utils
 import com.boswelja.devicemanager.common.AtomicCounter
-import com.boswelja.devicemanager.common.CommonUtils
 import com.boswelja.devicemanager.common.PreferenceKey
+import com.boswelja.devicemanager.common.interruptfiltersync.InterruptFilterSyncUtils.updateInterruptionFilter
 
 class InterruptFilterSyncWithTheaterListener : Service() {
 
@@ -96,7 +96,7 @@ class InterruptFilterSyncWithTheaterListener : Service() {
             super.onChange(selfChange)
             val context = this@InterruptFilterSyncWithTheaterListener
             val isTheaterModeOn = Utils.isTheaterModeOn(context)
-            CommonUtils.updateInterruptionFilter(context, isTheaterModeOn)
+            updateInterruptionFilter(context, isTheaterModeOn)
         }
     }
 }
