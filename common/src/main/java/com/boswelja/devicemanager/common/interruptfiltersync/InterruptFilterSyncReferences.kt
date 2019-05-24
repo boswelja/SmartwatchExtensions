@@ -13,4 +13,6 @@ object InterruptFilterSyncReferences {
 
     const val INTERRUPT_FILTER_STATUS_PATH = "/dnd_status"
     const val NEW_INTERRUPT_FILTER_STATE_KEY = "${References.packageName}.interrupt-filter-enabled"
+    const val REQUEST_INTERRUPT_FILTER_ACCESS_STATUS_PATH = "/request_phone_dnd_access_status"
+
 }

@@ -14,8 +14,6 @@ object References {
     // Message paths
     const val LOCK_PHONE_PATH = "/lock_phone"
     const val REQUEST_LAUNCH_APP_PATH = "/launch_app"
-    const val REQUEST_PHONE_DND_ACCESS_STATUS_PATH = "/request_phone_dnd_access_status"
-    const val REQUEST_WATCH_DND_ACCESS_STATUS_PATH = "/request_watch_dnd_access_status"
 
     const val CAPABILITY_PHONE_APP = "extensions_phone_app"
     const val CAPABILITY_WATCH_APP = "extensions_watch_app"
