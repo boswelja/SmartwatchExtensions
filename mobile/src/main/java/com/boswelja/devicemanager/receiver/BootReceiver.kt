@@ -16,11 +16,15 @@ import com.boswelja.devicemanager.service.InterruptFilterLocalChangeListener
 
 class BootReceiver : BaseBootReceiver() {
 
-    override fun isInterruptFilterSyncSending(): Boolean {
+    override fun onBootCompleted(context: Context?) {
+        if (isInterruptFilterSyncSending()) startInterruptFilterSyncService(context)
+    }
+
+    private fun isInterruptFilterSyncSending(): Boolean {
         return sharedPreferences.getBoolean(INTERRUPT_FILTER_SYNC_TO_PHONE_KEY, false)
     }
 
-    override fun startInterruptFilterSyncService(context: Context?) {
+    private fun startInterruptFilterSyncService(context: Context?) {
         val intent = Intent(context, InterruptFilterLocalChangeListener::class.java)
         Compat.startForegroundService(context!!, intent)
     }
