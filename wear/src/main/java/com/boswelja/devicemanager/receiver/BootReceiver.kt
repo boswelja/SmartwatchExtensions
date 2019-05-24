@@ -19,7 +19,7 @@ import com.boswelja.devicemanager.service.InterruptFilterSyncWithTheaterListener
 class BootReceiver : BaseBootReceiver() {
 
     override fun onBootCompleted(context: Context?) {
-        if (sharedPreferences.getBoolean(INTERRUPT_FILTER_SYNC_TO_PHONE_KEY, false)){
+        if (sharedPreferences.getBoolean(INTERRUPT_FILTER_SYNC_TO_PHONE_KEY, false)) {
             startInterruptFilterLocalChangeListener(context)
         }
         if (sharedPreferences.getBoolean(INTERRUPT_FILTER_ON_WITH_THEATER_KEY, false)) {
