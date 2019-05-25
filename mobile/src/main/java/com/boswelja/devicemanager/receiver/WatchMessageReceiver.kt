@@ -17,7 +17,7 @@ import com.boswelja.devicemanager.common.Extensions.toByteArray
 import com.boswelja.devicemanager.common.References
 import com.boswelja.devicemanager.common.batterysync.BatterySyncReferences
 import com.boswelja.devicemanager.common.batterysync.BatterySyncUtils
-import com.boswelja.devicemanager.common.interruptfiltersync.InterruptFilterSyncReferences.REQUEST_INTERRUPT_FILTER_ACCESS_STATUS_PATH
+import com.boswelja.devicemanager.common.interruptfiltersync.InterruptFilterSyncReferences
 import com.boswelja.devicemanager.ui.main.MainActivity
 import com.google.android.gms.wearable.MessageEvent
 import com.google.android.gms.wearable.Wearable
@@ -33,8 +33,6 @@ class WatchMessageReceiver : WearableListenerService() {
                     devicePolicyManager.lockNow()
                 }
             }
-            BatterySyncReferences.REQUEST_BATTERY_UPDATE_PATH ->
-                BatterySyncUtils.updateBatteryStats(this, References.CAPABILITY_WATCH_APP)
             References.REQUEST_LAUNCH_APP_PATH -> {
                 val key = String(messageEvent.data, Charsets.UTF_8)
                 val intent = Intent(this, MainActivity::class.java)
@@ -42,7 +40,9 @@ class WatchMessageReceiver : WearableListenerService() {
                 intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
                 startActivity(intent)
             }
-            REQUEST_INTERRUPT_FILTER_ACCESS_STATUS_PATH -> {
+            BatterySyncReferences.REQUEST_BATTERY_UPDATE_PATH ->
+                BatterySyncUtils.updateBatteryStats(this, References.CAPABILITY_WATCH_APP)
+            InterruptFilterSyncReferences.REQUEST_INTERRUPT_FILTER_ACCESS_STATUS_PATH -> {
                 val hasDnDAccess = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                     val notiManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
                     notiManager.isNotificationPolicyAccessGranted
@@ -52,7 +52,7 @@ class WatchMessageReceiver : WearableListenerService() {
                 Wearable.getMessageClient(this)
                         .sendMessage(
                                 messageEvent.sourceNodeId!!,
-                                REQUEST_INTERRUPT_FILTER_ACCESS_STATUS_PATH,
+                                InterruptFilterSyncReferences.REQUEST_INTERRUPT_FILTER_ACCESS_STATUS_PATH,
                                 hasDnDAccess.toByteArray())
             }
         }

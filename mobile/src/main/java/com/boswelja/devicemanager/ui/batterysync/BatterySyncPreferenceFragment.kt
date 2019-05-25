@@ -13,8 +13,8 @@ import androidx.preference.CheckBoxPreference
 import androidx.preference.Preference
 import androidx.preference.SeekBarPreference
 import androidx.preference.SwitchPreference
+import com.boswelja.devicemanager.BatteryUpdateJob
 import com.boswelja.devicemanager.R
-import com.boswelja.devicemanager.Utils
 import com.boswelja.devicemanager.common.Compat
 import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_PHONE_FULL_CHARGE_NOTI_KEY
 import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_SYNC_ENABLED_KEY
@@ -63,10 +63,10 @@ class BatterySyncPreferenceFragment :
                 val value = newValue == true
                 sharedPreferences.edit().putBoolean(preference.key, value).apply()
                 if (value) {
-                    Utils.createBatterySyncJob(context!!)
+                    BatteryUpdateJob.startJob(context!!)
                     updateBatteryStats(context!!, References.CAPABILITY_WATCH_APP)
                 } else {
-                    Utils.stopBatterySyncJob(context!!)
+                    BatteryUpdateJob.stopJob(context!!)
                 }
                 preferenceSyncLayer.pushNewData()
                 WatchBatteryWidget.updateWidgets(context!!)
@@ -75,7 +75,7 @@ class BatterySyncPreferenceFragment :
             BATTERY_SYNC_INTERVAL_KEY -> {
                 val value = (newValue as Int).toLong()
                 val syncTimeMillis = TimeUnit.MINUTES.toMillis(value)
-                Utils.createBatterySyncJob(context!!, syncTimeMillis)
+                BatteryUpdateJob.startJob(context!!, syncTimeMillis)
                 true
             }
             BATTERY_PHONE_FULL_CHARGE_NOTI_KEY,

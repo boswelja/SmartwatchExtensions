@@ -8,7 +8,7 @@
 package com.boswelja.devicemanager.receiver
 
 import android.content.Intent
-import com.boswelja.devicemanager.Utils
+import com.boswelja.devicemanager.BatteryUpdateJob
 import com.boswelja.devicemanager.common.Compat
 import com.boswelja.devicemanager.common.prefsynclayer.BasePreferenceChangeReceiver
 import com.boswelja.devicemanager.service.InterruptFilterLocalChangeListener
@@ -26,9 +26,9 @@ class RemotePreferenceChangeReceiver : BasePreferenceChangeReceiver() {
             Compat.startForegroundService(this, intent)
         }
         if (batterySyncEnabled) {
-            Utils.createBatterySyncJob(this)
+            BatteryUpdateJob.startJob(this)
         } else {
-            Utils.stopBatterySyncJob(this)
+            BatteryUpdateJob.stopJob(this)
         }
     }
 }

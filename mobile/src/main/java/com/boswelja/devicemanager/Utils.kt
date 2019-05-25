@@ -9,9 +9,6 @@ package com.boswelja.devicemanager
 
 import android.app.NotificationManager
 import android.app.admin.DevicePolicyManager
-import android.app.job.JobInfo
-import android.app.job.JobScheduler
-import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -47,29 +44,6 @@ object Utils {
             type = "text/plain"
         }
         context.startActivity(intent)
-    }
-
-    fun createBatterySyncJob(context: Context) {
-        val prefs = PreferenceManager.getDefaultSharedPreferences(context)
-        createBatterySyncJob(context, prefs.getInt(PreferenceKey.BATTERY_SYNC_INTERVAL_KEY, 900000).toLong())
-    }
-
-    fun createBatterySyncJob(context: Context, intervalMs: Long) {
-        val jobScheduler = context.getSystemService(Context.JOB_SCHEDULER_SERVICE) as JobScheduler
-        val jobInfo = JobInfo.Builder(
-                BatteryUpdateJob.BATTERY_PERCENT_JOB_ID,
-                ComponentName(context.packageName, BatteryUpdateJob::class.java.name)).apply {
-            setPeriodic(intervalMs)
-            setPersisted(true)
-        }
-        jobScheduler.schedule(jobInfo.build())
-    }
-
-    fun stopBatterySyncJob(context: Context) {
-        val jobScheduler = context.getSystemService(Context.JOB_SCHEDULER_SERVICE) as JobScheduler
-        if (Compat.getPendingJob(jobScheduler, BatteryUpdateJob.BATTERY_PERCENT_JOB_ID) != null) {
-            jobScheduler.cancel(BatteryUpdateJob.BATTERY_PERCENT_JOB_ID)
-        }
     }
 
     /**
