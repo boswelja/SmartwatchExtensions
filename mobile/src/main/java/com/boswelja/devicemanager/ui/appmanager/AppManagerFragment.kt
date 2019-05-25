@@ -38,6 +38,7 @@ class AppManagerFragment : Fragment() {
             AppManagerReferences.PACKAGE_ADDED -> {
                 val appPackageInfo = AppPackageInfo.fromByteArray(it.data)
                 (appsRecyclerView.adapter as AppsAdapter).add(appPackageInfo)
+                (activity as AppManagerActivity).createSnackBar("${getString(R.string.app_manager_installed_prefix)} ${appPackageInfo.label}")
             }
             AppManagerReferences.PACKAGE_REMOVED -> {
                 val appPackageName = String(it.data, Charsets.UTF_8)
@@ -101,6 +102,7 @@ class AppManagerFragment : Fragment() {
                     AppInfoActivity.RESULT_REQUEST_UNINSTALL -> {
                         val app = data?.extras?.getSerializable(AppInfoActivity.EXTRA_APP_INFO) as AppPackageInfo
                         sendUninstallRequestMessage(app)
+                        (activity as AppManagerActivity).createSnackBar(getString(R.string.app_manager_continue_on_watch))
                     }
                 }
             }

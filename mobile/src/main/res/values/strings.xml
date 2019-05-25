@@ -48,6 +48,8 @@
     <string name="app_info_version_prefix">Version:</string>
     <string name="app_info_uninstall_button">Uninstall</string>
     <string name="app_manager_uninstalled_prefix">Uninstalled</string>
+    <string name="app_manager_installed_prefix">Installed</string>
+    <string name="app_manager_continue_on_watch">Continue on your Watch</string>
 
     <!-- Phone Lock preference strings -->
     <string name="pref_category_lock_phone">Phone Locking</string>
