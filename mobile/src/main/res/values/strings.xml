@@ -49,7 +49,8 @@
     <string name="app_info_uninstall_button">Uninstall</string>
     <string name="app_manager_uninstalled_prefix">Uninstalled</string>
     <string name="app_manager_installed_prefix">Installed</string>
-    <string name="app_manager_continue_on_watch">Continue on your Watch</string>
+    <string name="app_manager_continue_on_watch">Continue on your watch</string>
+    <string name="app_manager_unable_to_connect">Unable to connect to watch</string>
 
     <!-- Phone Lock preference strings -->
     <string name="pref_category_lock_phone">Phone Locking</string>
