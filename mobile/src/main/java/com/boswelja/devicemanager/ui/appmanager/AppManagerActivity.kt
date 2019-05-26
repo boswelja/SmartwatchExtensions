@@ -37,21 +37,16 @@ class AppManagerActivity : BaseToolbarActivity() {
                 .commit()
 
         messageClient = Wearable.getMessageClient(this)
+    }
+
+    override fun onResume() {
+        super.onResume()
         startAppManagerService()
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        Wearable.getCapabilityClient(this)
-                .getCapability(References.CAPABILITY_WATCH_APP, CapabilityClient.FILTER_REACHABLE)
-                .addOnCompleteListener {
-                    if (it.isSuccessful) {
-                        val node = it.result?.nodes?.firstOrNull { node -> node.isNearby }
-                        if (node != null) {
-                            messageClient.sendMessage(node.id, AppManagerReferences.STOP_SERVICE, null)
-                        }
-                    }
-                }
+    override fun onPause() {
+        super.onPause()
+        stopAppManagerService()
     }
 
     fun startAppManagerService() {
@@ -76,5 +71,18 @@ class AppManagerActivity : BaseToolbarActivity() {
             Toast.makeText(this, getString(R.string.app_manager_unable_to_connect), Toast.LENGTH_LONG).show()
             finish()
         }
+    }
+
+    fun stopAppManagerService() {
+        Wearable.getCapabilityClient(this)
+                .getCapability(References.CAPABILITY_WATCH_APP, CapabilityClient.FILTER_REACHABLE)
+                .addOnCompleteListener {
+                    if (it.isSuccessful) {
+                        val node = it.result?.nodes?.firstOrNull { node -> node.isNearby }
+                        if (node != null) {
+                            messageClient.sendMessage(node.id, AppManagerReferences.STOP_SERVICE, null)
+                        }
+                    }
+                }
     }
 }
