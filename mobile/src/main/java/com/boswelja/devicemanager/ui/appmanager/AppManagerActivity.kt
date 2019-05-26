@@ -25,7 +25,7 @@ class AppManagerActivity : BaseToolbarActivity() {
 
     private val appManagerFragment = AppManagerFragment()
 
-    private var retryConenctCounter = 0
+    private var retryConnectCounter = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,7 +55,7 @@ class AppManagerActivity : BaseToolbarActivity() {
     }
 
     fun startAppManagerService() {
-        if (retryConenctCounter < 3) {
+        if (retryConnectCounter < 3) {
             Wearable.getCapabilityClient(this)
                     .getCapability(References.CAPABILITY_WATCH_APP, CapabilityClient.FILTER_REACHABLE)
                     .addOnCompleteListener {
@@ -64,11 +64,11 @@ class AppManagerActivity : BaseToolbarActivity() {
                             if (node != null) {
                                 messageClient.sendMessage(node.id, AppManagerReferences.START_SERVICE, null)
                             } else {
-                                retryConenctCounter += 1
+                                retryConnectCounter += 1
                                 startAppManagerService()
                             }
                         } else {
-                            retryConenctCounter += 1
+                            retryConnectCounter += 1
                             startAppManagerService()
                         }
                     }
