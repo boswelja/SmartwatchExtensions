@@ -66,7 +66,7 @@ object Utils {
     fun isAppInstalled(packageManager: PackageManager, packageName: String): Boolean {
         try {
             packageManager.getApplicationInfo(packageName, 0)
-        } catch(_: Exception) {
+        } catch (_: Exception) {
             return false
         }
         return true
