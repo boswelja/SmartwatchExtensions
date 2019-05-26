@@ -21,6 +21,7 @@ import androidx.core.app.NotificationCompat
 import androidx.core.net.toUri
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.Utils
+import com.boswelja.devicemanager.Utils.isAppInstalled
 import com.boswelja.devicemanager.common.AtomicCounter
 import com.boswelja.devicemanager.common.Extensions.toByteArray
 import com.boswelja.devicemanager.common.appmanager.AppManagerReferences.GET_ALL_PACKAGES
@@ -41,12 +42,12 @@ class AppManagerService : Service() {
             REQUEST_UNINSTALL_PACKAGE -> {
                 if (it.data != null && it.data.isNotEmpty()) {
                     val packageName = String(it.data, Charsets.UTF_8)
-                    val intent = Intent(Intent.ACTION_DELETE, "package:$packageName".toUri())
-                    startActivity(intent)
-//                    val intentSender = Compat.getForegroundService(this@AppManagerService, Intent(PACKAGE_UNINSTALL_RESULT)).intentSender
-//                    val packageName = String(it.data, Charsets.UTF_8)
-//                    packageManager.packageInstaller
-//                            .uninstall(packageName, intentSender)
+                    if (isAppInstalled(packageManager, packageName)) {
+                        val intent = Intent(Intent.ACTION_DELETE, "package:$packageName".toUri())
+                        startActivity(intent)
+                    } else {
+                        sendAppRemovedMessage(packageName)
+                    }
                 }
             }
             STOP_SERVICE -> {

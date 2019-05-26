@@ -9,6 +9,7 @@ package com.boswelja.devicemanager
 
 import android.app.NotificationManager
 import android.content.Context
+import android.content.pm.PackageManager
 import android.provider.Settings
 import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.common.Compat
@@ -60,5 +61,14 @@ object Utils {
                 prefs.edit().putBoolean(PreferenceKey.INTERRUPT_FILTER_SYNC_TO_WATCH_KEY, false).apply()
             }
         }
+    }
+
+    fun isAppInstalled(packageManager: PackageManager, packageName: String): Boolean {
+        try {
+            packageManager.getApplicationInfo(packageName, 0)
+        } catch(_: Exception) {
+            return false
+        }
+        return true
     }
 }
