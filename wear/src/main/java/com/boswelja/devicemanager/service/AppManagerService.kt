@@ -196,9 +196,7 @@ class AppManagerService : Service() {
         if (timer != null) {
             try {
                 timer?.cancel()
-            } catch (e: Exception) {
-
-            }
+            } catch (_: Exception) { }
         }
         if (recreate) timer = Timer()
     }
