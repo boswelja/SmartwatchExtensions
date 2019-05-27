@@ -38,14 +38,7 @@ import java.util.TimerTask
 class AppManagerService : Service() {
 
     private lateinit var messageClient: MessageClient
-
-    private val timer = Timer()
-    private val stopServiceTimerTask = object : TimerTask() {
-        override fun run() {
-            stopForeground(true)
-            stopSelf()
-        }
-    }
+    private var timer: Timer? = null
 
     private val messageReceiver = MessageClient.OnMessageReceivedListener {
         when (it.path) {
@@ -113,7 +106,11 @@ class AppManagerService : Service() {
     override fun onDestroy() {
         unregisterReceiver(packageChangeReceiver)
         messageClient.removeListener(messageReceiver)
-        timer.cancel()
+        try {
+            cancelTimer(false)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
         super.onDestroy()
     }
 
@@ -184,9 +181,28 @@ class AppManagerService : Service() {
     }
 
     private fun resetStopServiceTimer() {
-        timer.cancel()
-        timer.schedule(stopServiceTimerTask, java.util.concurrent.TimeUnit.MINUTES.toMillis(15))
+        cancelTimer(true)
+
+        val stopServiceTimerTask = object : TimerTask() {
+            override fun run() {
+                stopForeground(true)
+                stopSelf()
+            }
+        }
+        timer?.schedule(stopServiceTimerTask, java.util.concurrent.TimeUnit.MINUTES.toMillis(15))
     }
+
+    private fun cancelTimer(recreate: Boolean) {
+        if (timer != null) {
+            try {
+                timer?.cancel()
+            } catch (e: Exception) {
+
+            }
+        }
+        if (recreate) timer = Timer()
+    }
+
     companion object {
         private const val APP_MANAGER_NOTI_CHANNEL_ID = "app_manager_service"
     }
