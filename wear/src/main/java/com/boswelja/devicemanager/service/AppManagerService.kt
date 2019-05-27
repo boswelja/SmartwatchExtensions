@@ -40,7 +40,7 @@ class AppManagerService : Service() {
     private lateinit var messageClient: MessageClient
 
     private val timer = Timer()
-    private val stopServiceTimerTask = object: TimerTask() {
+    private val stopServiceTimerTask = object : TimerTask() {
         override fun run() {
             stopForeground(true)
             stopSelf()
