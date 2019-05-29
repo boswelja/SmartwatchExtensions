@@ -42,6 +42,8 @@ class AppPackageInfo(packageManager: PackageManager, packageInfo: PackageInfo) :
     }
 
     companion object {
+        private const val serialVersionUID: Long = 1
+
         @Throws(IOException::class, ClassNotFoundException::class)
         fun fromByteArray(byteArray: ByteArray): AppPackageInfo {
             ObjectInputStream(ByteArrayInputStream(byteArray)).use {
