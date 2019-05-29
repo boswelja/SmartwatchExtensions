@@ -14,7 +14,6 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.content.pm.ApplicationInfo
 import android.os.Build
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
@@ -23,13 +22,13 @@ import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.Utils
 import com.boswelja.devicemanager.Utils.isAppInstalled
 import com.boswelja.devicemanager.common.AtomicCounter
-import com.boswelja.devicemanager.common.Extensions.toByteArray
 import com.boswelja.devicemanager.common.appmanager.AppManagerReferences.GET_ALL_PACKAGES
 import com.boswelja.devicemanager.common.appmanager.AppManagerReferences.PACKAGE_ADDED
 import com.boswelja.devicemanager.common.appmanager.AppManagerReferences.PACKAGE_REMOVED
 import com.boswelja.devicemanager.common.appmanager.AppManagerReferences.REQUEST_UNINSTALL_PACKAGE
 import com.boswelja.devicemanager.common.appmanager.AppManagerReferences.STOP_SERVICE
 import com.boswelja.devicemanager.common.appmanager.AppPackageInfo
+import com.boswelja.devicemanager.common.appmanager.AppPackageInfoList
 import com.google.android.gms.wearable.MessageClient
 import com.google.android.gms.wearable.Wearable
 import java.util.Timer
@@ -162,12 +161,7 @@ class AppManagerService : Service() {
     }
 
     private fun sendAllAppsMessage() {
-        val packagesToSend = ArrayList<AppPackageInfo>()
-        packageManager.getInstalledPackages(0).forEach { packageInfo ->
-            if ((packageInfo.applicationInfo?.flags?.and((ApplicationInfo.FLAG_SYSTEM or ApplicationInfo.FLAG_UPDATED_SYSTEM_APP))) == 0) {
-                packagesToSend.add(AppPackageInfo(packageManager, packageInfo))
-            }
-        }
+        val packagesToSend = AppPackageInfoList(packageManager)
         Utils.getCompanionNode(this)
                 .addOnCompleteListener {
                     if (it.isSuccessful) {

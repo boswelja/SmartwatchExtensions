@@ -17,10 +17,10 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.boswelja.devicemanager.R
-import com.boswelja.devicemanager.common.Extensions.addFromByteArray
 import com.boswelja.devicemanager.common.References
 import com.boswelja.devicemanager.common.appmanager.AppManagerReferences
 import com.boswelja.devicemanager.common.appmanager.AppPackageInfo
+import com.boswelja.devicemanager.common.appmanager.AppPackageInfoList
 import com.google.android.gms.wearable.CapabilityClient
 import com.google.android.gms.wearable.MessageClient
 import com.google.android.gms.wearable.Wearable
@@ -38,18 +38,17 @@ class AppManagerFragment : Fragment() {
             AppManagerReferences.PACKAGE_ADDED -> {
                 val appPackageInfo = AppPackageInfo.fromByteArray(it.data)
                 (appsRecyclerView.adapter as AppsAdapter).add(appPackageInfo)
-                (activity as AppManagerActivity).createSnackBar("${getString(R.string.app_manager_installed_prefix)} ${appPackageInfo.label}")
+                (activity as AppManagerActivity).createSnackBar("${getString(R.string.app_manager_installed_prefix)} ${appPackageInfo.packageLabel}")
             }
             AppManagerReferences.PACKAGE_REMOVED -> {
                 val appPackageName = String(it.data, Charsets.UTF_8)
                 val adapter = (appsRecyclerView.adapter as AppsAdapter)
-                val uninstalledMessage = "${getString(R.string.app_manager_uninstalled_prefix)} ${adapter.getFromPackageName(appPackageName)?.label}"
+                val uninstalledMessage = "${getString(R.string.app_manager_uninstalled_prefix)} ${adapter.getFromPackageName(appPackageName)?.packageLabel}"
                 Snackbar.make(view!!, uninstalledMessage, Snackbar.LENGTH_LONG).show()
                 adapter.remove(appPackageName)
             }
             AppManagerReferences.GET_ALL_PACKAGES -> {
-                val allApps = ArrayList<AppPackageInfo>()
-                allApps.addFromByteArray(it.data)
+                val allApps = AppPackageInfoList.fromByteArray(it.data)
                 (appsRecyclerView.adapter as AppsAdapter).setAllApps(allApps)
                 setLoading(false)
             }

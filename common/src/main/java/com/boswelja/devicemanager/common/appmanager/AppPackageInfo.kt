@@ -23,7 +23,7 @@ class AppPackageInfo(packageManager: PackageManager, packageInfo: PackageInfo) :
     val versionName: String = packageInfo.versionName
 
     val packageName: String = packageInfo.packageName
-    val label: String = getApplicationLabel(packageManager, packageInfo)
+    val packageLabel: String = getApplicationLabel(packageManager, packageInfo)
 
     private fun getApplicationLabel(packageManager: PackageManager, packageInfo: PackageInfo): String {
         var applicationName = packageManager.getApplicationLabel(packageInfo.applicationInfo)
@@ -42,7 +42,7 @@ class AppPackageInfo(packageManager: PackageManager, packageInfo: PackageInfo) :
     }
 
     companion object {
-        private const val serialVersionUID: Long = 1
+        const val serialVersionUID: Long = 1
 
         @Throws(IOException::class, ClassNotFoundException::class)
         fun fromByteArray(byteArray: ByteArray): AppPackageInfo {

@@ -7,11 +7,6 @@
  */
 package com.boswelja.devicemanager.common
 
-import java.io.ByteArrayInputStream
-import java.io.ByteArrayOutputStream
-import java.io.ObjectInputStream
-import java.io.ObjectOutputStream
-
 object Extensions {
 
     /**
@@ -31,20 +26,5 @@ object Extensions {
      */
     fun Boolean.Companion.fromByteArray(byteArray: ByteArray): Boolean {
         return byteArray[0].toInt() == 1
-    }
-
-    fun ArrayList<*>.toByteArray(): ByteArray {
-        ByteArrayOutputStream().use {
-            ObjectOutputStream(it).use { objectOutputStream -> objectOutputStream.writeObject(this) }
-            return it.toByteArray()
-        }
-    }
-
-    @Throws(ClassCastException::class)
-    fun <T> ArrayList<T>.addFromByteArray(byteArray: ByteArray) {
-        ObjectInputStream(ByteArrayInputStream(byteArray)).use {
-            val listToAdd = it.readObject() as ArrayList<T>
-            this.addAll(listToAdd)
-        }
     }
 }

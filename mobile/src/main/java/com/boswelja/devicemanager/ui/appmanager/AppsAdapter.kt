@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.Utils
 import com.boswelja.devicemanager.common.appmanager.AppPackageInfo
+import com.boswelja.devicemanager.common.appmanager.AppPackageInfoList
 
 class AppsAdapter(private val fragment: AppManagerFragment) : RecyclerView.Adapter<AppsAdapter.AppItemViewHolder>() {
 
@@ -30,7 +31,7 @@ class AppsAdapter(private val fragment: AppManagerFragment) : RecyclerView.Adapt
     override fun onBindViewHolder(holder: AppItemViewHolder, position: Int) {
         val context = holder.itemView.context
         val app = apps[position]
-        holder.appNameView.text = app.label
+        holder.appNameView.text = app.packageLabel
         holder.appDescView.text = app.versionName
         holder.appIconView.setImageDrawable(Utils.getAppIcon(context, app.packageName))
         holder.itemView.setOnClickListener {
@@ -43,7 +44,7 @@ class AppsAdapter(private val fragment: AppManagerFragment) : RecyclerView.Adapt
     fun add(app: AppPackageInfo) {
         if (apps.firstOrNull { it.packageName == app.packageName } == null) {
             apps.add(app)
-            apps.sortBy { it.label }
+            apps.sortBy { it.packageLabel }
             val index = apps.indexOf(app)
             notifyItemInserted(index)
         }
@@ -61,10 +62,10 @@ class AppsAdapter(private val fragment: AppManagerFragment) : RecyclerView.Adapt
         return apps.firstOrNull { it.packageName == packageName }
     }
 
-    fun setAllApps(appsToSet: ArrayList<AppPackageInfo>) {
+    fun setAllApps(appsToSet: AppPackageInfoList) {
         apps.clear()
         apps.addAll(appsToSet)
-        apps.sortBy { it.label }
+        apps.sortBy { it.packageLabel }
         notifyDataSetChanged()
     }
 
