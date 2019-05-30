@@ -37,6 +37,10 @@ class BatterySyncPreferenceWidgetFragment :
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
         when (key) {
+            BATTERY_SYNC_ENABLED_KEY -> {
+                updateWatchBatteryPercent()
+                updateWatchBatterySyncLastTime()
+            }
             BATTERY_PERCENT_KEY -> updateWatchBatteryPercent()
             BATTERY_SYNC_LAST_WHEN_KEY -> updateWatchBatterySyncLastTime()
         }
@@ -80,10 +84,13 @@ class BatterySyncPreferenceWidgetFragment :
     }
 
     private fun updateWatchBatteryPercent() {
+        val batterySyncEnabled = sharedPreferences.getBoolean(BATTERY_SYNC_ENABLED_KEY, false)
         val batteryPercent = sharedPreferences.getInt(BATTERY_PERCENT_KEY, 0)
-        if (batteryPercent > 0) {
-            watchBatteryIndicator.setImageLevel(batteryPercent)
-            watchBatteryPercent.text = getString(R.string.battery_sync_percent_short, batteryPercent.toString())
+        if (batterySyncEnabled) {
+            if (batteryPercent > 0) {
+                watchBatteryIndicator.setImageLevel(batteryPercent)
+                watchBatteryPercent.text = getString(R.string.battery_sync_percent_short, batteryPercent.toString())
+            }
         } else {
             watchBatteryIndicator.setImageLevel(0)
             watchBatteryPercent.text = getString(R.string.battery_sync_disabled)
@@ -91,8 +98,9 @@ class BatterySyncPreferenceWidgetFragment :
     }
 
     private fun updateWatchBatterySyncLastTime() {
+        val batterySyncEnabled = sharedPreferences.getBoolean(BATTERY_SYNC_ENABLED_KEY, false)
         val batteryPercent = sharedPreferences.getInt(BATTERY_PERCENT_KEY, 0)
-        if (batteryPercent > 0) {
+        if (batterySyncEnabled && batteryPercent > 0) {
             val lastUpdatedMilliseconds = System.currentTimeMillis() - sharedPreferences.getLong(BATTERY_SYNC_LAST_WHEN_KEY, 0)
             val lastUpdatedTimeMinutes = TimeUnit.MILLISECONDS.toMinutes(lastUpdatedMilliseconds).toInt()
             val lastUpdatedString = when {
