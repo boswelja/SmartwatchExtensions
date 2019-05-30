@@ -8,7 +8,6 @@
 package com.boswelja.devicemanager.receiver
 
 import android.app.NotificationManager
-import android.app.admin.DeviceAdminReceiver
 import android.app.admin.DevicePolicyManager
 import android.content.Context
 import android.content.Intent
@@ -29,7 +28,7 @@ class WatchMessageReceiver : WearableListenerService() {
         when (messageEvent?.path) {
             References.LOCK_PHONE_PATH -> {
                 val devicePolicyManager: DevicePolicyManager = getSystemService(Context.DEVICE_POLICY_SERVICE) as DevicePolicyManager
-                if (devicePolicyManager.isAdminActive(DeviceAdminReceiver().getWho(this))) {
+                if (devicePolicyManager.isAdminActive(DeviceAdminChangeReceiver().getWho(this))) {
                     devicePolicyManager.lockNow()
                 }
             }
