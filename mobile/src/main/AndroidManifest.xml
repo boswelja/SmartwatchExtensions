@@ -63,7 +63,7 @@
             android:name=".service.InterruptFilterLocalChangeListener"
             android:exported="false" />
 
-        <service android:name=".receiver.InterruptFilterRemoteChangeListener">
+        <service android:name=".receiver.InterruptFilterRemoteChangeReceiver">
             <intent-filter>
                 <action android:name="com.google.android.gms.wearable.DATA_CHANGED" />
                 <data android:scheme="wear" android:host="*" android:path="/dnd_status" />

@@ -27,7 +27,6 @@ import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_WATCH_FULL_CHARGE
 import com.boswelja.devicemanager.common.PreferenceKey.INTERRUPT_FILTER_ON_WITH_THEATER_KEY
 import com.boswelja.devicemanager.common.PreferenceKey.INTERRUPT_FILTER_SYNC_TO_PHONE_KEY
 import com.boswelja.devicemanager.common.PreferenceKey.INTERRUPT_FILTER_SYNC_TO_WATCH_KEY
-import com.boswelja.devicemanager.common.References
 import com.boswelja.devicemanager.common.interruptfiltersync.InterruptFilterSyncReferences.REQUEST_INTERRUPT_FILTER_ACCESS_STATUS_PATH
 import com.boswelja.devicemanager.common.prefsynclayer.PreferenceSyncLayer
 import com.google.android.gms.wearable.MessageClient

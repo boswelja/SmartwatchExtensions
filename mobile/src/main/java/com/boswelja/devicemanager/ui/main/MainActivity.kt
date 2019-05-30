@@ -17,7 +17,6 @@ import android.os.Bundle
 import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.BatteryUpdateJob
 import com.boswelja.devicemanager.R
-import com.boswelja.devicemanager.Utils
 import com.boswelja.devicemanager.common.Compat
 import com.boswelja.devicemanager.common.PreferenceKey
 import com.boswelja.devicemanager.common.prefsynclayer.PreferenceSyncLayer
@@ -47,11 +46,9 @@ class MainActivity : BaseToolbarActivity() {
 
         val battSyncEnabled = sharedPrefs.getBoolean(PreferenceKey.BATTERY_SYNC_ENABLED_KEY, false)
         if (battSyncEnabled) {
-            if (Compat.getPendingJob(this, BatteryUpdateJob.BATTERY_PERCENT_JOB_ID) == null) {
-                Utils.createBatterySyncJob(this)
-            }
+            BatteryUpdateJob.startJob(this)
         } else {
-            Utils.stopBatterySyncJob(this)
+            BatteryUpdateJob.stopJob(this)
         }
 
         if (sharedPrefs.getBoolean(PreferenceKey.INTERRUPT_FILTER_SYNC_TO_WATCH_KEY, false)) {
