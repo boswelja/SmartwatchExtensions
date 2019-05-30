@@ -27,7 +27,7 @@ class AppPackageInfo(packageManager: PackageManager, packageInfo: PackageInfo) :
     val packageLabel: String = getApplicationLabel(packageManager, packageInfo)
 
     val isSystemApp: Boolean = isSystemApp(packageInfo)
-    val hasLaunchActivity: Boolean =hasLaunchActivity(packageManager)
+    val hasLaunchActivity: Boolean = hasLaunchActivity(packageManager)
 
     private fun getApplicationLabel(packageManager: PackageManager, packageInfo: PackageInfo): String {
         var applicationName = packageManager.getApplicationLabel(packageInfo.applicationInfo)
