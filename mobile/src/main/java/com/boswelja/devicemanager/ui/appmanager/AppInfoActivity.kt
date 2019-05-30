@@ -64,9 +64,8 @@ class AppInfoActivity : BaseToolbarActivity() {
     }
 
     private fun setMiscInfo() {
-        val versionString = "${getString(R.string.app_info_version_prefix)} ${app.versionName}"
         findViewById<AppCompatTextView>(R.id.app_version_view).apply {
-            text = versionString
+            text = getString(R.string.app_info_version_prefix).format(app.versionName)
         }
     }
 
