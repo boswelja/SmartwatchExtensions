@@ -5,8 +5,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/windowBackground"
-    tools:context="com.boswelja.devicemanager.ui.MainActivity"
+    android:background="@color/windowBackgroundBlack"
+    tools:context="com.boswelja.devicemanager.ui.main.MainActivity"
     tools:deviceIds="wear">
 
     <FrameLayout

@@ -37,6 +37,7 @@ dependencies {
     implementation "androidx.wear:wear:$versions.androidx_wear"
     implementation "androidx.appcompat:appcompat:$versions.androidx_appcompat"
     implementation "androidx.preference:preference:$versions.androidx_preference"
+    implementation "androidx.constraintlayout:constraintlayout:2.0.0-beta1"
 
     implementation "com.google.android.support:wearable:$versions.wearable_support_lib"
     implementation "com.google.android.gms:play-services-wearable:$versions.play_services_wearable"
