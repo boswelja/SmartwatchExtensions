@@ -17,5 +17,6 @@
 
     <string-array name="version_changelog">
         <item>Wear OS app got a redesign</item>
+        <item>Fix phone locking</item>
     </string-array>
 </resources>
