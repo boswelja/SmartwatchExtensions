@@ -5,7 +5,7 @@
  * This file, and any part of the Wearable Extensions app/s cannot be copied and/or distributed
  * without permission from Jack Boswell (boswelja) <boswela@outlook.com>
  */
-package com.boswelja.devicemanager.ui
+package com.boswelja.devicemanager.ui.main
 
 import android.content.Intent
 import android.os.Bundle
@@ -14,13 +14,14 @@ import androidx.fragment.app.Fragment
 import androidx.wear.widget.drawer.WearableNavigationDrawerView
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.Utils
-import com.boswelja.devicemanager.ui.controls.ControlsFragment
+import com.boswelja.devicemanager.ui.InstallMobileAppActivity
+import com.boswelja.devicemanager.ui.SettingsFragment
 import com.boswelja.devicemanager.ui.navigation.NavigationDrawerAdapter
 import com.boswelja.devicemanager.ui.navigation.NavigationDrawerSections
 
 class MainActivity : AppCompatActivity(), WearableNavigationDrawerView.OnItemSelectedListener {
 
-    private val controlsFragment = ControlsFragment()
+    private val controlsFragment = MainFragment()
     private var settingsFragment: SettingsFragment? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {

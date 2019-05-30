@@ -9,7 +9,7 @@ package com.boswelja.devicemanager.ui.navigation
 
 import android.graphics.drawable.Drawable
 import androidx.wear.widget.drawer.WearableNavigationDrawerView
-import com.boswelja.devicemanager.ui.MainActivity
+import com.boswelja.devicemanager.ui.main.MainActivity
 
 class NavigationDrawerAdapter(private val mainActivity: MainActivity) : WearableNavigationDrawerView.WearableNavigationDrawerAdapter() {
 

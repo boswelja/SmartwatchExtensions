@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="confirmation_padding">0dp</dimen>
+    <dimen name="main_view_bottom_margin">64dp</dimen>
 </resources>
