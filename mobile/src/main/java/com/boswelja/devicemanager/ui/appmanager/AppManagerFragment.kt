@@ -103,6 +103,11 @@ class AppManagerFragment : Fragment() {
                         sendUninstallRequestMessage(app)
                         (activity as AppManagerActivity).createSnackBar(getString(R.string.app_manager_continue_on_watch))
                     }
+                    AppInfoActivity.RESULT_REQUEST_OPEN -> {
+                        val app = data?.extras?.getSerializable(AppInfoActivity.EXTRA_APP_INFO) as AppPackageInfo
+                        sendOpenRequestMessage(app)
+                        (activity as AppManagerActivity).createSnackBar(getString(R.string.app_manager_continue_on_watch))
+                    }
                 }
             }
             else -> super.onActivityResult(requestCode, resultCode, data)
@@ -127,6 +132,19 @@ class AppManagerFragment : Fragment() {
                         val node = it.result?.nodes?.firstOrNull { node -> node.isNearby }
                         if (node != null) {
                             messageClient.sendMessage(node.id, AppManagerReferences.REQUEST_UNINSTALL_PACKAGE, appPackageInfo.packageName.toByteArray(Charsets.UTF_8))
+                        }
+                    }
+                }
+    }
+
+    private fun sendOpenRequestMessage(appPackageInfo: AppPackageInfo) {
+        Wearable.getCapabilityClient(context!!)
+                .getCapability(References.CAPABILITY_WATCH_APP, CapabilityClient.FILTER_REACHABLE)
+                .addOnCompleteListener {
+                    if (it.isSuccessful) {
+                        val node = it.result?.nodes?.firstOrNull { node -> node.isNearby }
+                        if (node != null) {
+                            messageClient.sendMessage(node.id, AppManagerReferences.REQUEST_OPEN_PACKAGE, appPackageInfo.packageName.toByteArray(Charsets.UTF_8))
                         }
                     }
                 }

@@ -7,6 +7,7 @@
  */
 package com.boswelja.devicemanager.common.appmanager
 
+import android.content.pm.ApplicationInfo
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import androidx.core.content.pm.PackageInfoCompat
@@ -25,6 +26,9 @@ class AppPackageInfo(packageManager: PackageManager, packageInfo: PackageInfo) :
     val packageName: String = packageInfo.packageName
     val packageLabel: String = getApplicationLabel(packageManager, packageInfo)
 
+    val isSystemApp: Boolean = isSystemApp(packageInfo)
+    val hasLaunchActivity: Boolean =hasLaunchActivity(packageManager)
+
     private fun getApplicationLabel(packageManager: PackageManager, packageInfo: PackageInfo): String {
         var applicationName = packageManager.getApplicationLabel(packageInfo.applicationInfo)
         if (applicationName.isNullOrBlank()) {
@@ -32,6 +36,12 @@ class AppPackageInfo(packageManager: PackageManager, packageInfo: PackageInfo) :
         }
         return applicationName.toString()
     }
+
+    private fun isSystemApp(packageInfo: PackageInfo): Boolean =
+            (packageInfo.applicationInfo?.flags?.and((ApplicationInfo.FLAG_SYSTEM or ApplicationInfo.FLAG_UPDATED_SYSTEM_APP))) != 0
+
+    private fun hasLaunchActivity(packageManager: PackageManager): Boolean =
+            packageManager.getLaunchIntentForPackage(packageName) != null
 
     @Throws(IOException::class)
     fun toByteArray(): ByteArray {
@@ -42,7 +52,7 @@ class AppPackageInfo(packageManager: PackageManager, packageInfo: PackageInfo) :
     }
 
     companion object {
-        const val serialVersionUID: Long = 1
+        const val serialVersionUID: Long = 3
 
         @Throws(IOException::class, ClassNotFoundException::class)
         fun fromByteArray(byteArray: ByteArray): AppPackageInfo {

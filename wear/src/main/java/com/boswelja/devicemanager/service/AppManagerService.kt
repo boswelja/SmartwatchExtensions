@@ -25,6 +25,7 @@ import com.boswelja.devicemanager.common.AtomicCounter
 import com.boswelja.devicemanager.common.appmanager.AppManagerReferences.GET_ALL_PACKAGES
 import com.boswelja.devicemanager.common.appmanager.AppManagerReferences.PACKAGE_ADDED
 import com.boswelja.devicemanager.common.appmanager.AppManagerReferences.PACKAGE_REMOVED
+import com.boswelja.devicemanager.common.appmanager.AppManagerReferences.REQUEST_OPEN_PACKAGE
 import com.boswelja.devicemanager.common.appmanager.AppManagerReferences.REQUEST_UNINSTALL_PACKAGE
 import com.boswelja.devicemanager.common.appmanager.AppManagerReferences.STOP_SERVICE
 import com.boswelja.devicemanager.common.appmanager.AppPackageInfo
@@ -49,6 +50,16 @@ class AppManagerService : Service() {
                         startActivity(intent)
                     } else {
                         sendAppRemovedMessage(packageName)
+                    }
+                }
+                resetStopServiceTimer()
+            }
+            REQUEST_OPEN_PACKAGE -> {
+                if (it.data != null && it.data.isNotEmpty()) {
+                    val packageName = String(it.data, Charsets.UTF_8)
+                    val intent = packageManager.getLaunchIntentForPackage(packageName)
+                    if (intent != null) {
+                        startActivity(intent)
                     }
                 }
                 resetStopServiceTimer()

@@ -46,6 +46,7 @@
     <string name="main_app_manager_title">App Manager</string>
     <string name="main_app_manager_summary">Manage apps installed on your watch</string>
     <string name="app_info_version_prefix">Version:</string>
+    <string name="app_info_open_button">Open</string>
     <string name="app_info_uninstall_button">Uninstall</string>
     <string name="app_manager_uninstalled_prefix">Uninstalled</string>
     <string name="app_manager_installed_prefix">Installed</string>

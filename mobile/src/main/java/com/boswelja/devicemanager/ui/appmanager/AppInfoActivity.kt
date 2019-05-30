@@ -9,6 +9,7 @@ package com.boswelja.devicemanager.ui.appmanager
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
 import com.boswelja.devicemanager.R
@@ -41,6 +42,16 @@ class AppInfoActivity : BaseToolbarActivity() {
     }
 
     private fun setupButtons() {
+        findViewById<MaterialButton>(R.id.open_button).apply {
+            setOnClickListener {
+                Log.d("AppinfoActivity", app.packageName)
+                val intent = Intent()
+                intent.putExtra(EXTRA_APP_INFO, app)
+                setResult(RESULT_REQUEST_OPEN, intent)
+                finish()
+            }
+            isEnabled = app.hasLaunchActivity
+        }
         findViewById<MaterialButton>(R.id.uninstall_button).apply {
             setOnClickListener {
                 val intent = Intent()
@@ -48,7 +59,7 @@ class AppInfoActivity : BaseToolbarActivity() {
                 setResult(RESULT_REQUEST_UNINSTALL, intent)
                 finish()
             }
-            isEnabled = app.packageName != packageName
+            isEnabled = (app.packageName != packageName && !app.isSystemApp)
         }
     }
 
@@ -63,5 +74,6 @@ class AppInfoActivity : BaseToolbarActivity() {
         const val EXTRA_APP_INFO = "extra_app_info"
 
         const val RESULT_REQUEST_UNINSTALL = 718181
+        const val RESULT_REQUEST_OPEN = 181817
     }
 }

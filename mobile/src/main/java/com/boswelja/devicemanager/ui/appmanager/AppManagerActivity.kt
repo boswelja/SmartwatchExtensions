@@ -37,15 +37,12 @@ class AppManagerActivity : BaseToolbarActivity() {
                 .commit()
 
         messageClient = Wearable.getMessageClient(this)
-    }
 
-    override fun onResume() {
-        super.onResume()
         startAppManagerService()
     }
 
-    override fun onPause() {
-        super.onPause()
+    override fun onDestroy() {
+        super.onDestroy()
         stopAppManagerService()
     }
 

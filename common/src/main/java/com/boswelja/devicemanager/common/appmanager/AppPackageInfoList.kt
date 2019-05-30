@@ -1,6 +1,5 @@
 package com.boswelja.devicemanager.common.appmanager
 
-import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
@@ -14,9 +13,10 @@ class AppPackageInfoList(packageManager: PackageManager) : List<AppPackageInfo>,
     private val appsList: List<AppPackageInfo>
 
     init {
-        appsList = packageManager.getInstalledPackages(0).filter { packageInfo ->
-            (packageInfo.applicationInfo?.flags?.and((ApplicationInfo.FLAG_SYSTEM or ApplicationInfo.FLAG_UPDATED_SYSTEM_APP))) == 0
-        }.map { AppPackageInfo(packageManager, it) }
+        val allPackages = packageManager.getInstalledPackages(0).map {
+            AppPackageInfo(packageManager, it)
+        }
+        appsList = filterAppsList(allPackages)
     }
 
     override val size: Int
@@ -42,6 +42,12 @@ class AppPackageInfoList(packageManager: PackageManager) : List<AppPackageInfo>,
 
     override fun subList(fromIndex: Int, toIndex: Int): List<AppPackageInfo> = appsList.subList(fromIndex, toIndex)
 
+    private fun filterAppsList(apps: List<AppPackageInfo>): List<AppPackageInfo> =
+            apps.filter {
+                (!blacklistedApps.contains(it.packageName)) &&
+                        ((it.isSystemApp && it.hasLaunchActivity) || (!it.isSystemApp))
+            }
+
     @Throws(IOException::class)
     fun toByteArray(): ByteArray {
         ByteArrayOutputStream().use {
@@ -51,6 +57,9 @@ class AppPackageInfoList(packageManager: PackageManager) : List<AppPackageInfo>,
     }
 
     companion object {
+        private val blacklistedApps = arrayOf(
+                "com.google.android.gms"
+        )
         const val serialVersionUID: Long = 4638100436427186094L
 
         fun fromByteArray(byteArray: ByteArray): AppPackageInfoList {
