@@ -16,7 +16,7 @@ import com.boswelja.devicemanager.common.Extensions.toByteArray
 import com.boswelja.devicemanager.common.References.CAPABILITY_WATCH_APP
 import com.boswelja.devicemanager.common.References.LOCK_PHONE_PATH
 import com.boswelja.devicemanager.common.References.REQUEST_LAUNCH_APP_PATH
-import com.boswelja.devicemanager.common.batterysync.References
+import com.boswelja.devicemanager.common.batterysync.References.REQUEST_BATTERY_UPDATE_PATH
 import com.boswelja.devicemanager.common.batterysync.Utils
 import com.boswelja.devicemanager.common.dndsync.References.REQUEST_INTERRUPT_FILTER_ACCESS_STATUS_PATH
 import com.boswelja.devicemanager.ui.main.MainActivity
@@ -41,7 +41,7 @@ class WatchMessageReceiver : WearableListenerService() {
                 intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
                 startActivity(intent)
             }
-            References.REQUEST_BATTERY_UPDATE_PATH ->
+            REQUEST_BATTERY_UPDATE_PATH ->
                 Utils.updateBatteryStats(this, CAPABILITY_WATCH_APP)
             REQUEST_INTERRUPT_FILTER_ACCESS_STATUS_PATH -> {
                 val hasDnDAccess = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
