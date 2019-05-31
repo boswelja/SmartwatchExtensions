@@ -26,8 +26,7 @@ class AppPackageInfoList(packageManager: PackageManager) : List<AppPackageInfo>,
         appsList = filterAppsList(allPackages)
     }
 
-    override val size: Int
-        get() = appsList.size
+    override val size: Int = appsList.size
 
     override fun contains(element: AppPackageInfo): Boolean = appsList.contains(element)
 
@@ -67,7 +66,7 @@ class AppPackageInfoList(packageManager: PackageManager) : List<AppPackageInfo>,
         private val blacklistedApps = arrayOf(
                 "com.google.android.gms"
         )
-        const val serialVersionUID: Long = 4638100436427186094L
+        const val serialVersionUID: Long = 2
 
         fun fromByteArray(byteArray: ByteArray): AppPackageInfoList {
             ObjectInputStream(ByteArrayInputStream(byteArray)).use {
