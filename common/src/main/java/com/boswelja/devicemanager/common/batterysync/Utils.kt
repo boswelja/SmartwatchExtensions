@@ -30,11 +30,10 @@ object Utils {
         Wearable.getCapabilityClient(context)
                 .getCapability(target, CapabilityClient.FILTER_REACHABLE)
                 .addOnSuccessListener { capabilityInfo ->
-                    val nodeId = capabilityInfo.nodes.firstOrNull { it.isNearby }?.id ?: capabilityInfo.nodes.firstOrNull()?.id
-                    if (nodeId != null) {
+                    for (node in capabilityInfo.nodes) {
                         val messageClient = Wearable.getMessageClient(context)
                         messageClient.sendMessage(
-                                nodeId,
+                                node.id,
                                 BATTERY_STATUS_PATH,
                                 message.toByteArray(Charsets.UTF_8))
                     }
