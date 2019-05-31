@@ -7,6 +7,7 @@
  */
 package com.boswelja.devicemanager.common.interruptfiltersync
 
+import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
@@ -28,28 +29,38 @@ import com.boswelja.devicemanager.common.interruptfiltersync.InterruptFilterSync
 @RequiresApi(Build.VERSION_CODES.M)
 abstract class BaseInterruptFilterLocalChangeListener : Service() {
 
-    private lateinit var prefs: SharedPreferences
+    private lateinit var preferences: SharedPreferences
     private lateinit var notificationManager: NotificationManager
-    private var dndChangeReceiver: DnDChangeReceiver? = null
-    private val prefChangeListener: PreferenceChangeListener = PreferenceChangeListener()
+    private var interruptFilterChangeReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            if (intent!!.action == NotificationManager.ACTION_INTERRUPTION_FILTER_CHANGED) {
+                updateInterruptionFilter(this@BaseInterruptFilterLocalChangeListener)
+            }
+        }
+    }
+    private val preferenceChangeListener = SharedPreferences.OnSharedPreferenceChangeListener { sharedPreferences, key ->
+        if (key == interruptFilterSendEnabledKey &&
+                !sharedPreferences.getBoolean(key, false)) {
+            stopForeground(true)
+            stopSelf()
+        }
+    }
 
     abstract val interruptFilterSendEnabledKey: String
 
-    override fun onBind(p0: Intent?): IBinder? {
-        return null
-    }
+    override fun onBind(p0: Intent?): IBinder? = null
 
     override fun onCreate() {
         super.onCreate()
 
-        prefs = PreferenceManager.getDefaultSharedPreferences(this)
-        prefs.registerOnSharedPreferenceChangeListener(prefChangeListener)
+        preferences = PreferenceManager.getDefaultSharedPreferences(this)
+        preferences.registerOnSharedPreferenceChangeListener(preferenceChangeListener)
 
         notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && notificationManager.getNotificationChannel(INTERRUPT_FINTER_SYNC_NOTI_CHANNEL_ID) == null) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && notificationManager.getNotificationChannel(INTERRUPT_FILTER_SYNC_NOTI_CHANNEL_ID) == null) {
             val notiChannel = NotificationChannel(
-                    INTERRUPT_FINTER_SYNC_NOTI_CHANNEL_ID,
+                    INTERRUPT_FILTER_SYNC_NOTI_CHANNEL_ID,
                     getString(R.string.dnd_sync_noti_channel_name),
                     NotificationManager.IMPORTANCE_LOW).apply {
                 enableLights(false)
@@ -61,7 +72,33 @@ abstract class BaseInterruptFilterLocalChangeListener : Service() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        val notiBuilder = NotificationCompat.Builder(this, INTERRUPT_FINTER_SYNC_NOTI_CHANNEL_ID)
+        startForeground(AtomicCounter.getInt(), createNotification())
+
+        val intentFilter = IntentFilter().apply {
+            addAction(NotificationManager.ACTION_INTERRUPTION_FILTER_CHANGED)
+        }
+        registerReceiver(interruptFilterChangeReceiver, intentFilter)
+
+        updateInterruptionFilter(this)
+
+        return START_STICKY
+    }
+
+    override fun onDestroy() {
+        try {
+            unregisterReceiver(interruptFilterChangeReceiver)
+        } catch (ignored: IllegalArgumentException) {}
+        preferences.unregisterOnSharedPreferenceChangeListener(preferenceChangeListener)
+        super.onDestroy()
+    }
+
+    private fun createNotification(): Notification {
+        val notiTapIntent = PendingIntent.getActivity(this,
+                AtomicCounter.getInt(),
+                packageManager.getLaunchIntentForPackage(packageName),
+                PendingIntent.FLAG_CANCEL_CURRENT)
+
+        return NotificationCompat.Builder(this, INTERRUPT_FILTER_SYNC_NOTI_CHANNEL_ID)
                 .setContentTitle(getString(R.string.dnd_sync_active_noti_title))
                 .setContentText(getString(R.string.dnd_sync_active_noti_desc))
                 .setSmallIcon(R.drawable.ic_sync)
@@ -70,42 +107,8 @@ abstract class BaseInterruptFilterLocalChangeListener : Service() {
                 .setUsesChronometer(false)
                 .setPriority(NotificationCompat.PRIORITY_LOW)
                 .setVisibility(NotificationCompat.VISIBILITY_SECRET)
-
-        val launchIntent = packageManager.getLaunchIntentForPackage(packageName)
-        if (launchIntent != null) {
-            val notiTapIntent = PendingIntent.getActivity(this, AtomicCounter.getInt(), launchIntent, PendingIntent.FLAG_CANCEL_CURRENT)
-            notiBuilder.setContentIntent(notiTapIntent)
-        }
-
-        startForeground(AtomicCounter.getInt(), notiBuilder.build())
-
-        val intentFilter = IntentFilter()
-        intentFilter.addAction(NotificationManager.ACTION_INTERRUPTION_FILTER_CHANGED)
-        if (dndChangeReceiver == null) dndChangeReceiver = DnDChangeReceiver()
-        registerReceiver(dndChangeReceiver, intentFilter)
-
-        updateInterruptionFilter(this)
-
-        return START_STICKY
-    }
-
-    override fun onDestroy() {
-        if (dndChangeReceiver != null) {
-            try {
-                unregisterReceiver(dndChangeReceiver)
-            } catch (ignored: IllegalArgumentException) {}
-        }
-        super.onDestroy()
-    }
-
-    private inner class PreferenceChangeListener : SharedPreferences.OnSharedPreferenceChangeListener {
-        override fun onSharedPreferenceChanged(prefs: SharedPreferences?, key: String?) {
-            if (key == interruptFilterSendEnabledKey &&
-                    !prefs?.getBoolean(key, false)!!) {
-                stopForeground(true)
-                stopSelf()
-            }
-        }
+                .setContentIntent(notiTapIntent)
+                .build()
     }
 
     private inner class DnDChangeReceiver : BroadcastReceiver() {
@@ -117,6 +120,6 @@ abstract class BaseInterruptFilterLocalChangeListener : Service() {
     }
 
     companion object {
-        private const val INTERRUPT_FINTER_SYNC_NOTI_CHANNEL_ID = "dnd_sync"
+        private const val INTERRUPT_FILTER_SYNC_NOTI_CHANNEL_ID = "dnd_sync"
     }
 }
