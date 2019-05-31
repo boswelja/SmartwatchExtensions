@@ -17,7 +17,7 @@ import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.common.Compat
 import com.boswelja.devicemanager.common.PreferenceKey
 import com.boswelja.devicemanager.common.References
-import com.boswelja.devicemanager.common.batterysync.BatterySyncUtils.updateBatteryStats
+import com.boswelja.devicemanager.common.batterysync.Utils.updateBatteryStats
 
 class BatteryUpdateJob : JobService() {
 

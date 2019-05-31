@@ -21,7 +21,7 @@ import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_PERCENT_KEY
 import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_SYNC_ENABLED_KEY
 import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_SYNC_LAST_WHEN_KEY
 import com.boswelja.devicemanager.common.References
-import com.boswelja.devicemanager.common.batterysync.BatterySyncUtils.updateBatteryStats
+import com.boswelja.devicemanager.common.batterysync.Utils.updateBatteryStats
 import java.util.concurrent.TimeUnit
 
 class BatterySyncPreferenceWidgetFragment :

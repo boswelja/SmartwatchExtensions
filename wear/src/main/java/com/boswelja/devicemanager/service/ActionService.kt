@@ -17,8 +17,8 @@ import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.Utils
 import com.boswelja.devicemanager.common.PreferenceKey
 import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_SYNC_ENABLED_KEY
-import com.boswelja.devicemanager.common.References
-import com.boswelja.devicemanager.common.batterysync.BatterySyncReferences
+import com.boswelja.devicemanager.common.References.LOCK_PHONE_PATH
+import com.boswelja.devicemanager.common.batterysync.References.REQUEST_BATTERY_UPDATE_PATH
 import com.boswelja.devicemanager.complication.PhoneBatteryComplicationProvider
 import com.google.android.gms.wearable.Node
 import com.google.android.gms.wearable.Wearable
@@ -36,7 +36,7 @@ class ActionService : IntentService("ActionService") {
                         val node = it.result?.nodes?.last()
                         val prefs = PreferenceManager.getDefaultSharedPreferences(this@ActionService)
                         when (action) {
-                            References.LOCK_PHONE_PATH -> {
+                            LOCK_PHONE_PATH -> {
                                 if (prefs.getBoolean(PreferenceKey.PHONE_LOCKING_ENABLED_KEY, false)) {
                                     sendMessage(node)
                                 } else {
@@ -45,7 +45,7 @@ class ActionService : IntentService("ActionService") {
                                 val providerUpdateRequester = ProviderUpdateRequester(this@ActionService, ComponentName(packageName, PhoneBatteryComplicationProvider::class.java.name))
                                 providerUpdateRequester.requestUpdateAll()
                             }
-                            BatterySyncReferences.REQUEST_BATTERY_UPDATE_PATH -> {
+                            REQUEST_BATTERY_UPDATE_PATH -> {
                                 if (prefs.getBoolean(BATTERY_SYNC_ENABLED_KEY, false)) {
                                     sendMessage(node)
                                 } else {
@@ -55,8 +55,8 @@ class ActionService : IntentService("ActionService") {
                         }
                     } else {
                         when (action) {
-                            References.LOCK_PHONE_PATH -> ConfirmationActivityHandler.failAnimation(this@ActionService, getString(R.string.phone_lock_failed_message))
-                            BatterySyncReferences.REQUEST_BATTERY_UPDATE_PATH -> ConfirmationActivityHandler.failAnimation(this@ActionService, getString(R.string.phone_battery_update_failed))
+                            LOCK_PHONE_PATH -> ConfirmationActivityHandler.failAnimation(this@ActionService, getString(R.string.phone_lock_failed_message))
+                            REQUEST_BATTERY_UPDATE_PATH -> ConfirmationActivityHandler.failAnimation(this@ActionService, getString(R.string.phone_battery_update_failed))
                         }
                     }
                 }

@@ -10,10 +10,10 @@ package com.boswelja.devicemanager.service
 import android.os.Build
 import androidx.annotation.RequiresApi
 import com.boswelja.devicemanager.common.PreferenceKey
-import com.boswelja.devicemanager.common.interruptfiltersync.BaseInterruptFilterLocalChangeListener
+import com.boswelja.devicemanager.common.dndsync.BaseDnDLocalChangeListener
 
 @RequiresApi(Build.VERSION_CODES.M)
-class InterruptFilterLocalChangeListener : BaseInterruptFilterLocalChangeListener() {
+class DnDLocalChangeListener : BaseDnDLocalChangeListener() {
 
     override val interruptFilterSendEnabledKey: String = PreferenceKey.INTERRUPT_FILTER_SYNC_TO_WATCH_KEY
 }

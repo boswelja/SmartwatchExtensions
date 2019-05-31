@@ -17,7 +17,7 @@ import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.common.AtomicCounter
 import com.boswelja.devicemanager.common.PreferenceKey
 import com.boswelja.devicemanager.common.R
-import com.boswelja.devicemanager.common.batterysync.BatterySyncReferences.BATTERY_STATUS_PATH
+import com.boswelja.devicemanager.common.batterysync.References.BATTERY_STATUS_PATH
 import com.google.android.gms.wearable.MessageEvent
 import com.google.android.gms.wearable.WearableListenerService
 

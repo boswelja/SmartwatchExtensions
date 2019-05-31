@@ -23,8 +23,8 @@ import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_PERCENT_KEY
 import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_SYNC_ENABLED_KEY
 import com.boswelja.devicemanager.common.PreferenceKey.PHONE_LOCKING_ENABLED_KEY
-import com.boswelja.devicemanager.common.References
-import com.boswelja.devicemanager.common.batterysync.BatterySyncReferences
+import com.boswelja.devicemanager.common.References.LOCK_PHONE_PATH
+import com.boswelja.devicemanager.common.batterysync.References.REQUEST_BATTERY_UPDATE_PATH
 import com.boswelja.devicemanager.service.ActionService
 
 class MainFragment : Fragment() {
@@ -82,7 +82,7 @@ class MainFragment : Fragment() {
         phoneBatteryTapToRefresh = view.findViewById(R.id.phone_battery_indicator_tap_to_refresh_label)
         view.findViewById<RelativeLayout>(R.id.phone_battery_view).setOnClickListener {
             val intent = Intent(context, ActionService::class.java)
-            intent.putExtra(ActionService.EXTRA_ACTION, BatterySyncReferences.REQUEST_BATTERY_UPDATE_PATH)
+            intent.putExtra(ActionService.EXTRA_ACTION, REQUEST_BATTERY_UPDATE_PATH)
             context?.startService(intent)
         }
     }
@@ -91,7 +91,7 @@ class MainFragment : Fragment() {
         phoneLockingLabelView = view.findViewById(R.id.phone_locking_text)
         view.findViewById<RelativeLayout>(R.id.phone_locking_view).setOnClickListener {
             val intent = Intent(context, ActionService::class.java)
-            intent.putExtra(ActionService.EXTRA_ACTION, References.LOCK_PHONE_PATH)
+            intent.putExtra(ActionService.EXTRA_ACTION, LOCK_PHONE_PATH)
             context?.startService(intent)
         }
     }

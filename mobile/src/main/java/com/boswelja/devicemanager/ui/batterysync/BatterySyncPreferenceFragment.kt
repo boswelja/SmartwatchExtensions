@@ -21,7 +21,7 @@ import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_SYNC_ENABLED_KEY
 import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_SYNC_INTERVAL_KEY
 import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_WATCH_FULL_CHARGE_NOTI_KEY
 import com.boswelja.devicemanager.common.References
-import com.boswelja.devicemanager.common.batterysync.BatterySyncUtils.updateBatteryStats
+import com.boswelja.devicemanager.common.batterysync.Utils.updateBatteryStats
 import com.boswelja.devicemanager.common.batterysync.BatteryUpdateReceiver
 import com.boswelja.devicemanager.common.prefsynclayer.PreferenceSyncLayer
 import com.boswelja.devicemanager.ui.base.BasePreferenceActivity

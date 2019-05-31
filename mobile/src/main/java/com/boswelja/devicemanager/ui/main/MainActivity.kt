@@ -22,7 +22,7 @@ import com.boswelja.devicemanager.common.PreferenceKey
 import com.boswelja.devicemanager.common.prefsynclayer.PreferenceSyncLayer
 import com.boswelja.devicemanager.receiver.DeviceAdminChangeReceiver
 import com.boswelja.devicemanager.receiver.DeviceAdminChangeReceiver.Companion.DEVICE_ADMIN_ENABLED_KEY
-import com.boswelja.devicemanager.service.InterruptFilterLocalChangeListener
+import com.boswelja.devicemanager.service.DnDLocalChangeListener
 import com.boswelja.devicemanager.ui.base.BaseToolbarActivity
 import com.boswelja.devicemanager.ui.batterysync.BatterySyncPreferenceActivity
 import com.boswelja.devicemanager.ui.interruptfiltersync.InterruptFilterSyncPreferenceActivity
@@ -52,7 +52,7 @@ class MainActivity : BaseToolbarActivity() {
         }
 
         if (sharedPrefs.getBoolean(PreferenceKey.INTERRUPT_FILTER_SYNC_TO_WATCH_KEY, false)) {
-            val intent = Intent(this, InterruptFilterLocalChangeListener::class.java)
+            val intent = Intent(this, DnDLocalChangeListener::class.java)
             Compat.startForegroundService(this, intent)
         }
     }

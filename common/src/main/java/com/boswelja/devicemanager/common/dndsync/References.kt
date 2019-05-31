@@ -5,13 +5,13 @@
  * This file, and any part of the Wearable Extensions app/s cannot be copied and/or distributed
  * without permission from Jack Boswell (boswelja) <boswela@outlook.com>
  */
-package com.boswelja.devicemanager.common.interruptfiltersync
+package com.boswelja.devicemanager.common.dndsync
 
 import com.boswelja.devicemanager.common.References
 
-object InterruptFilterSyncReferences {
+object References {
 
-    const val INTERRUPT_FILTER_STATUS_PATH = "/dnd_status"
-    const val NEW_INTERRUPT_FILTER_STATE_KEY = "${References.packageName}.interrupt-filter-enabled"
+    const val DND_STATUS_PATH = "/dnd_status"
+    const val NEW_DND_STATE_KEY = "${References.packageName}.dnd-enabled"
     const val REQUEST_INTERRUPT_FILTER_ACCESS_STATUS_PATH = "/request_phone_dnd_access_status"
 }

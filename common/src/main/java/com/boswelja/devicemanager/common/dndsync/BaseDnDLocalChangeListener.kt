@@ -5,7 +5,7 @@
  * This file, and any part of the Wearable Extensions app/s cannot be copied and/or distributed
  * without permission from Jack Boswell (boswelja) <boswela@outlook.com>
  */
-package com.boswelja.devicemanager.common.interruptfiltersync
+package com.boswelja.devicemanager.common.dndsync
 
 import android.app.Notification
 import android.app.NotificationChannel
@@ -24,17 +24,17 @@ import androidx.core.app.NotificationCompat
 import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.common.AtomicCounter
 import com.boswelja.devicemanager.common.R
-import com.boswelja.devicemanager.common.interruptfiltersync.InterruptFilterSyncUtils.updateInterruptionFilter
+import com.boswelja.devicemanager.common.dndsync.Utils.updateInterruptionFilter
 
 @RequiresApi(Build.VERSION_CODES.M)
-abstract class BaseInterruptFilterLocalChangeListener : Service() {
+abstract class BaseDnDLocalChangeListener : Service() {
 
     private lateinit var preferences: SharedPreferences
     private lateinit var notificationManager: NotificationManager
     private var interruptFilterChangeReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             if (intent!!.action == NotificationManager.ACTION_INTERRUPTION_FILTER_CHANGED) {
-                updateInterruptionFilter(this@BaseInterruptFilterLocalChangeListener)
+                updateInterruptionFilter(this@BaseDnDLocalChangeListener)
             }
         }
     }
@@ -114,7 +114,7 @@ abstract class BaseInterruptFilterLocalChangeListener : Service() {
     private inner class DnDChangeReceiver : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             if (intent!!.action == NotificationManager.ACTION_INTERRUPTION_FILTER_CHANGED) {
-                updateInterruptionFilter(this@BaseInterruptFilterLocalChangeListener)
+                updateInterruptionFilter(this@BaseDnDLocalChangeListener)
             }
         }
     }

@@ -9,13 +9,12 @@ package com.boswelja.devicemanager.receiver
 
 import com.boswelja.devicemanager.Utils
 import com.boswelja.devicemanager.common.PreferenceKey
-import com.boswelja.devicemanager.common.interruptfiltersync.BaseInterruptFilterRemoteChangeReceiver
+import com.boswelja.devicemanager.common.dndsync.BaseDnDRemoteChangeReceiver
 
-class InterruptFilterRemoteChangeReceiver : BaseInterruptFilterRemoteChangeReceiver() {
+class DnDRemoteChangeReceiver : BaseDnDRemoteChangeReceiver() {
 
     override fun isReceiving(): Boolean =
-            sharedPreferences.getBoolean(PreferenceKey.INTERRUPT_FILTER_SYNC_TO_PHONE_KEY, false) ||
-                    sharedPreferences.getBoolean(PreferenceKey.INTERRUPT_FILTER_ON_WITH_THEATER_KEY, false)
+            sharedPreferences.getBoolean(PreferenceKey.INTERRUPT_FILTER_SYNC_TO_WATCH_KEY, false)
 
     override fun setInterruptionFilter(interruptFilterEnabled: Boolean) {
         Utils.setInterruptionFilter(this, interruptFilterEnabled)

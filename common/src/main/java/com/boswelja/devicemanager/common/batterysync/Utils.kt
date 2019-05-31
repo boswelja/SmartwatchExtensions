@@ -11,11 +11,11 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.BatteryManager
-import com.boswelja.devicemanager.common.batterysync.BatterySyncReferences.BATTERY_STATUS_PATH
+import com.boswelja.devicemanager.common.batterysync.References.BATTERY_STATUS_PATH
 import com.google.android.gms.wearable.CapabilityClient
 import com.google.android.gms.wearable.Wearable
 
-object BatterySyncUtils {
+object Utils {
 
     /**
      * Sends a battery status update to connected devices.

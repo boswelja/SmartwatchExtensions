@@ -5,16 +5,16 @@
  * This file, and any part of the Wearable Extensions app/s cannot be copied and/or distributed
  * without permission from Jack Boswell (boswelja) <boswela@outlook.com>
  */
-package com.boswelja.devicemanager.common.interruptfiltersync
+package com.boswelja.devicemanager.common.dndsync
 
 import android.content.Context
 import com.boswelja.devicemanager.common.Compat
-import com.boswelja.devicemanager.common.interruptfiltersync.InterruptFilterSyncReferences.INTERRUPT_FILTER_STATUS_PATH
-import com.boswelja.devicemanager.common.interruptfiltersync.InterruptFilterSyncReferences.NEW_INTERRUPT_FILTER_STATE_KEY
+import com.boswelja.devicemanager.common.dndsync.References.DND_STATUS_PATH
+import com.boswelja.devicemanager.common.dndsync.References.NEW_DND_STATE_KEY
 import com.google.android.gms.wearable.PutDataMapRequest
 import com.google.android.gms.wearable.Wearable
 
-object InterruptFilterSyncUtils {
+object Utils {
 
     /**
      * Ensure Interruption Filter state is properly synced between devices.
@@ -30,8 +30,8 @@ object InterruptFilterSyncUtils {
      */
     fun updateInterruptionFilter(context: Context, interruptionFilterEnabled: Boolean) {
         val dataClient = Wearable.getDataClient(context)
-        val putDataMapReq = PutDataMapRequest.create(INTERRUPT_FILTER_STATUS_PATH)
-        putDataMapReq.dataMap.putBoolean(NEW_INTERRUPT_FILTER_STATE_KEY, interruptionFilterEnabled)
+        val putDataMapReq = PutDataMapRequest.create(DND_STATUS_PATH)
+        putDataMapReq.dataMap.putBoolean(NEW_DND_STATE_KEY, interruptionFilterEnabled)
         putDataMapReq.setUrgent()
         dataClient.putDataItem(putDataMapReq.asPutDataRequest())
     }

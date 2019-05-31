@@ -7,7 +7,7 @@
  */
 package com.boswelja.devicemanager.common.prefsynclayer
 
-object PreferenceSyncKeys {
+internal object PreferenceSyncKeys {
 
     const val PREFERENCE_CHANGE_PATH = "/preference_change"
 

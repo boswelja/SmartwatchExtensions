@@ -11,7 +11,7 @@ import android.content.Intent
 import com.boswelja.devicemanager.BatteryUpdateJob
 import com.boswelja.devicemanager.common.Compat
 import com.boswelja.devicemanager.common.prefsynclayer.BasePreferenceChangeReceiver
-import com.boswelja.devicemanager.service.InterruptFilterLocalChangeListener
+import com.boswelja.devicemanager.service.DnDLocalChangeListener
 
 class RemotePreferenceChangeReceiver : BasePreferenceChangeReceiver() {
 
@@ -22,7 +22,7 @@ class RemotePreferenceChangeReceiver : BasePreferenceChangeReceiver() {
         batterySyncEnabled: Boolean
     ) {
         if (interruptFilterSyncToWatch) {
-            val intent = Intent(this, InterruptFilterLocalChangeListener::class.java)
+            val intent = Intent(this, DnDLocalChangeListener::class.java)
             Compat.startForegroundService(this, intent)
         }
         if (batterySyncEnabled) {
