@@ -30,17 +30,6 @@ object Compat {
      * @return JobInfo object, null if not found.
      * @see JobInfo
      */
-    fun getPendingJob(context: Context, id: Int): JobInfo? {
-        val jobScheduler = context.getSystemService(Context.JOB_SCHEDULER_SERVICE) as JobScheduler
-        return getPendingJob(jobScheduler, id)
-    }
-
-    /**
-     * Finds pending jobs from {@link JobScheduler} matching the given ID.
-     * @param id ID of the job to find.
-     * @return JobInfo object, null if not found.
-     * @see JobInfo
-     */
     fun getPendingJob(jobScheduler: JobScheduler, id: Int): JobInfo? {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             jobScheduler.getPendingJob(id)
