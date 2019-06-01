@@ -11,7 +11,6 @@ import android.app.NotificationManager
 import android.app.admin.DevicePolicyManager
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.content.res.Resources
 import android.graphics.drawable.Drawable
 import android.media.AudioManager
@@ -80,8 +79,8 @@ object Utils {
     fun getAppIcon(context: Context, packageName: String): Drawable? {
         return try {
             context.packageManager.getApplicationIcon(packageName)
-        } catch (_: PackageManager.NameNotFoundException) {
-            context.getDrawable(R.drawable.ic_app_icon_missing)
+        } catch (ignored: Exception) {
+            context.getDrawable(R.drawable.ic_app_icon_unknown)
         }
     }
 
