@@ -1,11 +1,18 @@
+/* Copyright (C) 2019 Jack Boswell <boswelja@outlook.com>
+ *
+ * This file is part of Wearable Extensions
+ *
+ * This file, and any part of the Wearable Extensions app/s cannot be copied and/or distributed
+ * without permission from Jack Boswell (boswelja) <boswela@outlook.com>
+ */
 package com.boswelja.devicemanager.ui.appmanager
 
 import com.boswelja.devicemanager.common.appmanager.AppPackageInfo
 
-class AppSection(public val sectionTitleRes: Int, public val appsInSection: ArrayList<AppPackageInfo>) {
+internal class AppSection(val sectionTitleRes: Int, val appsInSection: ArrayList<AppPackageInfo>) {
 
-    public fun countIncludingHeader(): Int =
+    fun countIncludingHeader(): Int =
             count() + 1
 
-    public fun count(): Int = appsInSection.count()
+    fun count(): Int = appsInSection.count()
 }
