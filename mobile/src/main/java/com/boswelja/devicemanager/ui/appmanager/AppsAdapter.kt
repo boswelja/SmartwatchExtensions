@@ -18,8 +18,6 @@ import com.boswelja.devicemanager.Utils
 import com.boswelja.devicemanager.common.appmanager.AppPackageInfo
 import com.boswelja.devicemanager.common.appmanager.AppPackageInfoList
 
-
-
 class AppsAdapter(private val fragment: AppManagerFragment) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private val userApps = ArrayList<AppPackageInfo>()
@@ -136,8 +134,8 @@ class AppsAdapter(private val fragment: AppManagerFragment) : RecyclerView.Adapt
     fun setAllApps(appsToSet: AppPackageInfoList) {
         userApps.clear()
         systemApps.clear()
-        userApps.addAll(appsToSet.filterNot {it.isSystemApp}.toTypedArray().sortedBy { it.packageLabel })
-        systemApps.addAll(appsToSet.filter {it.isSystemApp}.toTypedArray().sortedBy {it.packageLabel})
+        userApps.addAll(appsToSet.filterNot { it.isSystemApp }.toTypedArray().sortedBy { it.packageLabel })
+        systemApps.addAll(appsToSet.filter { it.isSystemApp }.toTypedArray().sortedBy { it.packageLabel })
         notifyDataSetChanged()
     }
 
