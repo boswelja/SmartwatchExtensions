@@ -53,7 +53,7 @@ class AppsAdapter(private val fragment: AppManagerFragment) : RecyclerView.Adapt
                 SectionHeader(LayoutInflater.from(parent.context).inflate(R.layout.common_recyclerview_section_header, parent, false))
             }
             else -> {
-                AppItemViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.fragment_app_manager_item, parent, false))
+                AppItemViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.common_recyclerview_item_icon_two_line, parent, false))
             }
         }
     }
@@ -149,9 +149,9 @@ class AppsAdapter(private val fragment: AppManagerFragment) : RecyclerView.Adapt
     }
 
     inner class AppItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val appIconView: AppCompatImageView = itemView.findViewById(R.id.app_icon)
-        val appNameView: AppCompatTextView = itemView.findViewById(R.id.app_package_name)
-        val appDescView: AppCompatTextView = itemView.findViewById(R.id.app_desc)
+        val appIconView: AppCompatImageView = itemView.findViewById(R.id.icon)
+        val appNameView: AppCompatTextView = itemView.findViewById(R.id.top_line)
+        val appDescView: AppCompatTextView = itemView.findViewById(R.id.bottom_line)
     }
 
     inner class SectionHeader(itemView: View) : RecyclerView.ViewHolder(itemView) {

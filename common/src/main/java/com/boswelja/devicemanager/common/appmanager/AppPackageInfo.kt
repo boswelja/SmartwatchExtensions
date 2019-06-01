@@ -29,6 +29,11 @@ class AppPackageInfo(packageManager: PackageManager, packageInfo: PackageInfo) :
     val isSystemApp: Boolean = isSystemApp(packageInfo)
     val hasLaunchActivity: Boolean = hasLaunchActivity(packageManager)
 
+    val installTime: Long = packageInfo.firstInstallTime
+    val lastUpdateTime: Long = packageInfo.lastUpdateTime
+
+    val requestedPermissions: Array<String>? = packageInfo.requestedPermissions
+
     private fun getApplicationLabel(packageManager: PackageManager, packageInfo: PackageInfo): String {
         var applicationName = packageManager.getApplicationLabel(packageInfo.applicationInfo)
         if (applicationName.isNullOrBlank()) {
@@ -52,7 +57,7 @@ class AppPackageInfo(packageManager: PackageManager, packageInfo: PackageInfo) :
     }
 
     companion object {
-        const val serialVersionUID: Long = 3
+        const val serialVersionUID: Long = 4
 
         @Throws(IOException::class, ClassNotFoundException::class)
         fun fromByteArray(byteArray: ByteArray): AppPackageInfo {

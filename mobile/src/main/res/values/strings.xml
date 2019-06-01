@@ -46,8 +46,12 @@
     <string name="main_app_manager_title">App Manager</string>
     <string name="main_app_manager_summary">Manage apps installed on your watch</string>
     <string name="app_info_version_prefix">Version %s</string>
+    <string name="app_info_first_installed_prefix">First installed: %s</string>
+    <string name="app_info_last_updated_prefix">Last updated: %s</string>
     <string name="app_info_open_button">Open</string>
     <string name="app_info_uninstall_button">Uninstall</string>
+    <string name="app_info_requested_permissions_title">Requested Permissions</string>
+    <string name="app_info_requested_permissions_none">No permissions requested</string>
     <string name="app_manager_uninstalled_prefix">Uninstalled</string>
     <string name="app_manager_installed_prefix">Installed</string>
     <string name="app_manager_continue_on_watch">Continue on your watch</string>

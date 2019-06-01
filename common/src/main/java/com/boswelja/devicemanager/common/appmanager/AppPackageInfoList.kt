@@ -20,7 +20,7 @@ class AppPackageInfoList(packageManager: PackageManager) : List<AppPackageInfo>,
     private val appsList: List<AppPackageInfo>
 
     init {
-        val allPackages = packageManager.getInstalledPackages(0).map {
+        val allPackages = packageManager.getInstalledPackages(PackageManager.GET_PERMISSIONS).map {
             AppPackageInfo(packageManager, it)
         }
         appsList = filterAppsList(allPackages)
