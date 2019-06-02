@@ -101,12 +101,12 @@ class BatterySyncPreferenceWidgetFragment :
         val batterySyncEnabled = sharedPreferences.getBoolean(BATTERY_SYNC_ENABLED_KEY, false)
         val batteryPercent = sharedPreferences.getInt(BATTERY_PERCENT_KEY, 0)
         if (batterySyncEnabled && batteryPercent > 0) {
-            val lastUpdatedMilliseconds = System.currentTimeMillis() - sharedPreferences.getLong(BATTERY_SYNC_LAST_WHEN_KEY, 0)
-            val lastUpdatedTimeMinutes = TimeUnit.MILLISECONDS.toMinutes(lastUpdatedMilliseconds).toInt()
-            val lastUpdatedString = when {
-                lastUpdatedTimeMinutes < 1 -> getString(R.string.battery_sync_last_updated_under_minute)
-                lastUpdatedTimeMinutes == 1 -> getString(R.string.battery_sync_last_updated_minute, lastUpdatedTimeMinutes.toString())
-                else -> getString(R.string.battery_sync_last_updated_minutes, lastUpdatedTimeMinutes.toString())
+            val lastUpdatedMillis = System.currentTimeMillis() - sharedPreferences.getLong(BATTERY_SYNC_LAST_WHEN_KEY, 0)
+            val lastUpdatedMinutes = TimeUnit.MILLISECONDS.toMinutes(lastUpdatedMillis).toInt()
+            val lastUpdatedString = if (lastUpdatedMinutes < 1) {
+                getString(R.string.battery_sync_last_updated_under_minute)
+            }else {
+                resources.getQuantityString(R.plurals.battery_sync_last_updated_minutes, lastUpdatedMinutes, lastUpdatedMinutes)
             }
             watchBatteryLastUpdated.text = lastUpdatedString
             watchBatteryUpdateNowHolder.visibility = View.VISIBLE
