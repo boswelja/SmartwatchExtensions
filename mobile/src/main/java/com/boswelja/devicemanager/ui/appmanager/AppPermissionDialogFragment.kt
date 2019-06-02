@@ -1,5 +1,6 @@
 package com.boswelja.devicemanager.ui.appmanager
 
+import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.pm.PackageManager
 import android.os.Bundle
@@ -11,6 +12,7 @@ class AppPermissionDialogFragment(private val requestedPermissions: Array<String
 
     private lateinit var permissions: Array<String>
 
+    @SuppressLint("DefaultLocale")
     override fun onCreate(savedInstanceState: Bundle?) {
         val processedPermissions = ArrayList<String>()
         for (permission in requestedPermissions) {
