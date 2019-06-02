@@ -73,6 +73,7 @@ class MainActivity : BaseToolbarActivity() {
         }
         if (oldVersion != currentVersion) {
             ChangelogDialogFragment().show(supportFragmentManager, "ChangelogDialog")
+            sharedPrefs.edit().putString(APP_VERSION_KEY, currentVersion).apply()
         }
     }
 

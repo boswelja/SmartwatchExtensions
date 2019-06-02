@@ -12,6 +12,7 @@ import android.app.admin.DevicePolicyManager
 import android.content.Context
 import android.content.Intent
 import android.content.res.Resources
+import android.graphics.drawable.Drawable
 import android.media.AudioManager
 import android.os.Build
 import android.util.TypedValue
@@ -72,6 +73,14 @@ object Utils {
                     audioManager.ringerMode = AudioManager.RINGER_MODE_NORMAL
                 }
             }
+        }
+    }
+
+    fun getAppIcon(context: Context, packageName: String): Drawable? {
+        return try {
+            context.packageManager.getApplicationIcon(packageName)
+        } catch (ignored: Exception) {
+            context.getDrawable(R.drawable.ic_app_icon_unknown)
         }
     }
 

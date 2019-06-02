@@ -42,6 +42,24 @@
     <string name="interrupt_filter_sync_to_watch_perm_denied_message">Permission not granted, please try again</string>
     <string name="interrupt_filter_sync_request_policy_access_message">Please grant Wearable Extensions permission to change Do Not Disturb state</string>
 
+    <!-- App Manager strings -->
+    <string name="main_app_manager_title">App Manager</string>
+    <string name="main_app_manager_summary">Manage apps installed on your watch</string>
+    <string name="app_info_version_prefix">Version %s</string>
+    <string name="app_info_first_installed_prefix">First installed: %s</string>
+    <string name="app_info_last_updated_prefix">Last updated: %s</string>
+    <string name="app_info_open_button">Open</string>
+    <string name="app_info_uninstall_button">Uninstall</string>
+    <string name="app_info_requested_permissions_title">Requested Permissions</string>
+    <string name="app_info_requested_permissions_none">No permissions requested</string>
+    <string name="app_manager_loading_text">Loading…</string>
+    <string name="app_manager_uninstalled_prefix">Uninstalled</string>
+    <string name="app_manager_installed_prefix">Installed</string>
+    <string name="app_manager_continue_on_watch">Continue on your watch</string>
+    <string name="app_manager_unable_to_connect">Unable to connect to watch</string>
+    <string name="app_manager_section_user_apps">User Installed Apps</string>
+    <string name="app_manager_section_system_apps">System Apps</string>
+
     <!-- Phone Lock preference strings -->
     <string name="pref_category_lock_phone">Phone Locking</string>
     <string name="pref_lock_phone_enabled_title">Remote phone locking</string>

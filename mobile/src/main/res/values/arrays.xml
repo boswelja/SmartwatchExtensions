@@ -16,6 +16,7 @@
     </string-array>
 
     <string-array name="version_changelog">
+        <item>Added a new feature, App Manager!</item>
         <item>Wear OS app got a redesign</item>
         <item>Fix phone locking</item>
     </string-array>

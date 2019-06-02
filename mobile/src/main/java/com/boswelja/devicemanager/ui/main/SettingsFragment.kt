@@ -33,6 +33,7 @@ import com.boswelja.devicemanager.common.PreferenceKey.PHONE_LOCKING_ENABLED_KEY
 import com.boswelja.devicemanager.common.prefsynclayer.PreferenceSyncLayer
 import com.boswelja.devicemanager.preference.confirmationdialog.ConfirmationDialogPrefFragment
 import com.boswelja.devicemanager.preference.confirmationdialog.ConfirmationDialogPreference
+import com.boswelja.devicemanager.ui.appmanager.AppManagerActivity
 import com.boswelja.devicemanager.ui.base.BasePreferenceFragment
 import com.boswelja.devicemanager.ui.batterysync.BatterySyncPreferenceActivity
 import com.boswelja.devicemanager.ui.donate.DonationDialogFragment
@@ -77,6 +78,11 @@ class SettingsFragment :
             }
             OPEN_INTERRUPT_FILTER_SYNC_PREF_KEY -> {
                 val intent = Intent(context!!, InterruptFilterSyncPreferenceActivity::class.java)
+                context!!.startActivity(intent)
+                true
+            }
+            OPEN_APP_MANAGER_KEY -> {
+                val intent = Intent(context!!, AppManagerActivity::class.java)
                 context!!.startActivity(intent)
                 true
             }
@@ -213,6 +219,7 @@ class SettingsFragment :
         addPreferencesFromResource(R.xml.prefs_main)
         findPreference<Preference>(OPEN_BATTERY_SYNC_PREF_KEY)!!.onPreferenceClickListener = this
         findPreference<Preference>(OPEN_INTERRUPT_FILTER_SYNC_PREF_KEY)!!.onPreferenceClickListener = this
+        findPreference<Preference>(OPEN_APP_MANAGER_KEY)!!.onPreferenceClickListener = this
 
         addPreferencesFromResource(R.xml.prefs_lock_phone)
         phoneLockPreference = findPreference(PHONE_LOCKING_ENABLED_KEY)!!
@@ -254,6 +261,7 @@ class SettingsFragment :
     companion object {
         const val OPEN_BATTERY_SYNC_PREF_KEY = "show_battery_sync_prefs"
         const val OPEN_INTERRUPT_FILTER_SYNC_PREF_KEY = "show_interrupt_filter_sync_prefs"
+        const val OPEN_APP_MANAGER_KEY = "show_app_manager"
 
         const val OPEN_NOTI_SETTINGS_KEY = "show_noti_settings"
         const val DAYNIGHT_MODE_KEY = "daynight_mode"

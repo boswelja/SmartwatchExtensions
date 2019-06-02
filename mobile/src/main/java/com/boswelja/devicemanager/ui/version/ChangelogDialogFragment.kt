@@ -15,12 +15,12 @@ import com.boswelja.devicemanager.ui.base.BaseDialogFragment
 
 class ChangelogDialogFragment : BaseDialogFragment() {
 
-    private lateinit var changelog: Array<CharSequence>
+    private lateinit var changelog: Array<String>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         val rawChangelog = context?.resources?.getStringArray(R.array.version_changelog)!!
         val bullet = context?.getString(R.string.bullet)!!
-        val processedChangelog = ArrayList<CharSequence>()
+        val processedChangelog = ArrayList<String>()
         for (change in rawChangelog) {
             processedChangelog.add("$bullet $change")
         }
