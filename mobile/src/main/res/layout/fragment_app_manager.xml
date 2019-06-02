@@ -18,10 +18,25 @@
         app:fastScrollHorizontalThumbDrawable="@drawable/fastscroll_thumb_drawable"
         app:fastScrollHorizontalTrackDrawable="@drawable/fastscroll_track_drawable" />
 
-    <ProgressBar
-        android:id="@+id/apps_loading_spinner"
+    <LinearLayout
+        android:id="@+id/loading_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true" />
+        android:orientation="vertical"
+        android:layout_centerInParent="true"
+        android:gravity="center_horizontal">
+
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="?android:textColorPrimary"
+            android:text="@string/app_manager_loading_text"
+            android:padding="8dp"
+            style="@style/TextAppearance.MaterialComponents.Body1" />
+    </LinearLayout>
 
 </RelativeLayout>

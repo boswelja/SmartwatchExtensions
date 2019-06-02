@@ -52,6 +52,7 @@
     <string name="app_info_uninstall_button">Uninstall</string>
     <string name="app_info_requested_permissions_title">Requested Permissions</string>
     <string name="app_info_requested_permissions_none">No permissions requested</string>
+    <string name="app_manager_loading_text">Loading…</string>
     <string name="app_manager_uninstalled_prefix">Uninstalled</string>
     <string name="app_manager_installed_prefix">Installed</string>
     <string name="app_manager_continue_on_watch">Continue on your watch</string>
