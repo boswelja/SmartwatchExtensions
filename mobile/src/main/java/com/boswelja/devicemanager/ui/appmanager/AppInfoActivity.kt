@@ -26,6 +26,7 @@ class AppInfoActivity : BaseToolbarActivity() {
     override fun getContentViewId(): Int = R.layout.activity_app_info
 
     private lateinit var app: AppPackageInfo
+    private lateinit var requestedPermissionsDialog: AppPermissionDialogFragment
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,6 +35,9 @@ class AppInfoActivity : BaseToolbarActivity() {
 
         app = intent?.extras?.getSerializable(EXTRA_APP_INFO) as AppPackageInfo
 
+        if (!app.requestedPermissions.isNullOrEmpty()) {
+            requestedPermissionsDialog = AppPermissionDialogFragment(app.requestedPermissions!!)
+        }
         setAppInfo()
         setupButtons()
         setupRequestedPermissions()
@@ -69,16 +73,20 @@ class AppInfoActivity : BaseToolbarActivity() {
 
     private fun setupRequestedPermissions() {
         val permissionItemView = findViewById<FrameLayout>(R.id.permissions_info)
+        val requestsNoPermissions = !app.requestedPermissions.isNullOrEmpty()
         permissionItemView.findViewById<AppCompatTextView>(R.id.top_line).apply {
             text = getString(R.string.app_info_requested_permissions_title)
         }
         permissionItemView.findViewById<AppCompatTextView>(R.id.bottom_line).apply {
-            text = if (app.requestedPermissions.isNullOrEmpty()) {
-                getString(R.string.app_info_requested_permissions_none)
-            } else {
+            text = if (requestsNoPermissions) {
                 val requestedPermissionCount = app.requestedPermissions!!.size
                 resources.getQuantityString(R.plurals.app_info_requested_permissions_count, requestedPermissionCount, requestedPermissionCount)
+            } else {
+                getString(R.string.app_info_requested_permissions_none)
             }
+        }
+        permissionItemView.setOnClickListener {
+            requestedPermissionsDialog.show(supportFragmentManager, "RequestedPermissionsDialog")
         }
     }
 
