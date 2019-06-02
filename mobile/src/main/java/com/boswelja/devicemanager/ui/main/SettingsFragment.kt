@@ -20,6 +20,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.NotificationManagerCompat
+import androidx.core.net.toUri
 import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceCategory
@@ -94,6 +95,14 @@ class SettingsFragment :
                 } else {
                     intent.putExtra("app_package", context?.packageName!!)
                     intent.putExtra("app_uid", context?.applicationInfo?.uid!!)
+                }
+                startActivity(intent)
+                true
+            }
+            LEAVE_REVIEW_KEY -> {
+                val intent = Intent(Intent.ACTION_VIEW).apply {
+                    data = "https://play.google.com/store/apps/details?id=${context?.packageName}".toUri()
+                    setPackage("com.android.vending")
                 }
                 startActivity(intent)
                 true
@@ -237,6 +246,10 @@ class SettingsFragment :
         }
 
         addPreferencesFromResource(R.xml.prefs_about)
+        findPreference<Preference>(LEAVE_REVIEW_KEY)!!.apply {
+            isEnabled = !BuildConfig.DEBUG
+            onPreferenceClickListener = this@SettingsFragment
+        }
         findPreference<Preference>(OPEN_DONATE_DIALOG_KEY)!!.apply {
             isEnabled = !BuildConfig.DEBUG
             onPreferenceClickListener = this@SettingsFragment
@@ -267,6 +280,7 @@ class SettingsFragment :
         const val DAYNIGHT_MODE_KEY = "daynight_mode"
         const val BATTERY_OPTIMISATION_STATUS_KEY = "battery_optimisation_status"
 
+        const val LEAVE_REVIEW_KEY = "review"
         const val OPEN_DONATE_DIALOG_KEY = "show_donate_dialog"
         const val VERSION_KEY = "version"
     }

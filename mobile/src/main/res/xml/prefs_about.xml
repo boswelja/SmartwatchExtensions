@@ -6,6 +6,11 @@
         android:title="About">
 
         <androidx.preference.Preference
+            android:key="review"
+            android:title="@string/pref_about_review_title"
+            android:icon="@drawable/pref_ic_review" />
+
+        <androidx.preference.Preference
             android:key="show_donate_dialog"
             android:title="@string/pref_about_donate_title"
             android:icon="@drawable/pref_ic_donate" />
