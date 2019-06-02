@@ -98,8 +98,8 @@ class InterruptFilterSyncHelperDialog : BaseDialogFragment() {
         Wearable.getCapabilityClient(context!!)
                 .getCapability(References.CAPABILITY_WATCH_APP, CapabilityClient.FILTER_REACHABLE)
                 .addOnCompleteListener {
-                    if (it.isSuccessful) {
-                        val nodes = it.result?.nodes
+                    if (it.isSuccessful && it.result != null && activity != null) {
+                        val nodes = it.result!!.nodes
                         if (nodes.isNullOrEmpty()) {
                             (activity as InterruptFilterSyncPreferenceActivity).createSnackBar(getString(R.string.no_watch_found))
                             dismiss()
