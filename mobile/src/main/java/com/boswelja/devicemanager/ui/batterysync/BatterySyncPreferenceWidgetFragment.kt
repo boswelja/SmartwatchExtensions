@@ -105,7 +105,7 @@ class BatterySyncPreferenceWidgetFragment :
             val lastUpdatedMinutes = TimeUnit.MILLISECONDS.toMinutes(lastUpdatedMillis).toInt()
             val lastUpdatedString = if (lastUpdatedMinutes < 1) {
                 getString(R.string.battery_sync_last_updated_under_minute)
-            }else {
+            } else {
                 resources.getQuantityString(R.plurals.battery_sync_last_updated_minutes, lastUpdatedMinutes, lastUpdatedMinutes)
             }
             watchBatteryLastUpdated.text = lastUpdatedString
