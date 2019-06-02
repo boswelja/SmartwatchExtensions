@@ -32,13 +32,10 @@ import com.boswelja.devicemanager.common.appmanager.AppPackageInfo
 import com.boswelja.devicemanager.common.appmanager.AppPackageInfoList
 import com.google.android.gms.wearable.MessageClient
 import com.google.android.gms.wearable.Wearable
-import java.util.Timer
-import java.util.TimerTask
 
 class AppManagerService : Service() {
 
     private lateinit var messageClient: MessageClient
-    private var timer: Timer? = null
 
     private val messageReceiver = MessageClient.OnMessageReceivedListener {
         when (it.path) {
@@ -52,7 +49,6 @@ class AppManagerService : Service() {
                         sendAppRemovedMessage(packageName)
                     }
                 }
-                resetStopServiceTimer()
             }
             REQUEST_OPEN_PACKAGE -> {
                 if (it.data != null && it.data.isNotEmpty()) {
@@ -62,7 +58,6 @@ class AppManagerService : Service() {
                         startActivity(intent)
                     }
                 }
-                resetStopServiceTimer()
             }
             STOP_SERVICE -> {
                 stopForeground(true)
@@ -85,7 +80,6 @@ class AppManagerService : Service() {
                         }
                     }
                 }
-                resetStopServiceTimer()
             }
         }
     }
@@ -109,18 +103,12 @@ class AppManagerService : Service() {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         createNotification()
         sendAllAppsMessage()
-        resetStopServiceTimer()
         return START_NOT_STICKY
     }
 
     override fun onDestroy() {
         unregisterReceiver(packageChangeReceiver)
         messageClient.removeListener(messageReceiver)
-        try {
-            cancelTimer(false)
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
         super.onDestroy()
     }
 
@@ -183,27 +171,6 @@ class AppManagerService : Service() {
                         }
                     }
                 }
-    }
-
-    private fun resetStopServiceTimer() {
-        cancelTimer(true)
-
-        val stopServiceTimerTask = object : TimerTask() {
-            override fun run() {
-                stopForeground(true)
-                stopSelf()
-            }
-        }
-        timer?.schedule(stopServiceTimerTask, java.util.concurrent.TimeUnit.MINUTES.toMillis(15))
-    }
-
-    private fun cancelTimer(recreate: Boolean) {
-        if (timer != null) {
-            try {
-                timer?.cancel()
-            } catch (_: Exception) { }
-        }
-        if (recreate) timer = Timer()
     }
 
     companion object {
