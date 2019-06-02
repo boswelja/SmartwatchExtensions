@@ -70,7 +70,7 @@ class AppManagerActivity : BaseToolbarActivity() {
         }
     }
 
-    fun stopAppManagerService() {
+    private fun stopAppManagerService() {
         Wearable.getCapabilityClient(this)
                 .getCapability(References.CAPABILITY_WATCH_APP, CapabilityClient.FILTER_REACHABLE)
                 .addOnCompleteListener {

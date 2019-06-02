@@ -42,7 +42,7 @@ class AppInfoActivity : BaseToolbarActivity() {
     }
 
     private fun setAppInfo() {
-        findViewById<AppCompatImageView>(R.id.icon).setImageDrawable(Utils.getAppIcon(this, app.packageName))
+        findViewById<AppCompatImageView>(R.id.app_icon).setImageDrawable(Utils.getAppIcon(this, app.packageName))
         findViewById<AppCompatTextView>(R.id.app_name).text = app.packageLabel
     }
 
