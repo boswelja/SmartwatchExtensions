@@ -76,7 +76,8 @@ class AppInfoActivity : BaseToolbarActivity() {
             text = if (app.requestedPermissions.isNullOrEmpty()) {
                 getString(R.string.app_info_requested_permissions_none)
             } else {
-                resources.getQuantityText(app.requestedPermissions!!.size, R.plurals.app_info_requested_permissions_count)
+                val requestedPermissionCount = app.requestedPermissions!!.size
+                resources.getQuantityString(R.plurals.app_info_requested_permissions_count, requestedPermissionCount, requestedPermissionCount)
             }
         }
     }
