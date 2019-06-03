@@ -12,7 +12,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.preference.PreferenceFragmentCompat
 import androidx.recyclerview.widget.RecyclerView
-import com.boswelja.devicemanager.Utils
+import com.boswelja.devicemanager.common.Utils
 
 abstract class BasePreferenceFragment : PreferenceFragmentCompat() {
 

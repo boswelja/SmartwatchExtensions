@@ -21,7 +21,7 @@ import com.boswelja.devicemanager.ui.navigation.NavigationDrawerSections
 
 class MainActivity : AppCompatActivity(), WearableNavigationDrawerView.OnItemSelectedListener {
 
-    private val controlsFragment = MainFragment()
+    private val mainFragment = MainFragment()
     private var settingsFragment: SettingsFragment? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -34,7 +34,7 @@ class MainActivity : AppCompatActivity(), WearableNavigationDrawerView.OnItemSel
             addOnItemSelectedListener(this@MainActivity)
         }
 
-        navigate(controlsFragment)
+        navigate(mainFragment)
 
         // Check for companion app
         Utils.getCompanionNode(this)
@@ -60,8 +60,8 @@ class MainActivity : AppCompatActivity(), WearableNavigationDrawerView.OnItemSel
 
     override fun onItemSelected(pos: Int) {
         when (NavigationDrawerSections.values()[pos]) {
-            NavigationDrawerSections.Controls -> {
-                navigate(controlsFragment)
+            NavigationDrawerSections.Main -> {
+                navigate(mainFragment)
             }
             NavigationDrawerSections.Settings -> {
                 if (settingsFragment == null) {

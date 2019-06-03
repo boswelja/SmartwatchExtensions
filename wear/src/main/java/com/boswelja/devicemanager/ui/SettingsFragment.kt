@@ -37,7 +37,7 @@ class SettingsFragment :
         Preference.OnPreferenceChangeListener,
         SharedPreferences.OnSharedPreferenceChangeListener {
 
-    private lateinit var prefs: SharedPreferences
+    private lateinit var sharedPreferences: SharedPreferences
     private lateinit var preferenceSyncLayer: PreferenceSyncLayer
     private lateinit var messageClient: MessageClient
 
@@ -70,7 +70,7 @@ class SettingsFragment :
             BATTERY_PHONE_FULL_CHARGE_NOTI_KEY,
             BATTERY_WATCH_FULL_CHARGE_NOTI_KEY -> {
                 val value = newValue == true
-                prefs.edit().putBoolean(key, value).apply()
+                sharedPreferences.edit().putBoolean(key, value).apply()
                 preferenceSyncLayer.pushNewData()
                 false
             }
@@ -79,13 +79,13 @@ class SettingsFragment :
                 if (value) {
                     val canEnableSync = Utils.checkDnDAccess(context!!)
                     if (canEnableSync) {
-                        prefs.edit().putBoolean(key, value).apply()
+                        sharedPreferences.edit().putBoolean(key, value).apply()
                         preferenceSyncLayer.pushNewData()
                     } else {
                         notifyAdditionalSetupRequired(key)
                     }
                 } else {
-                    prefs.edit().putBoolean(key, value).apply()
+                    sharedPreferences.edit().putBoolean(key, value).apply()
                     preferenceSyncLayer.pushNewData()
                 }
                 false
@@ -110,7 +110,7 @@ class SettingsFragment :
                         }
                     }
                 } else {
-                    prefs.edit().putBoolean(key, value).apply()
+                    sharedPreferences.edit().putBoolean(key, value).apply()
                     preferenceSyncLayer.pushNewData()
                 }
                 false
@@ -123,7 +123,7 @@ class SettingsFragment :
         super.onCreate(savedInstanceState)
 
         preferenceSyncLayer = PreferenceSyncLayer(context!!)
-        prefs = preferenceManager.sharedPreferences
+        sharedPreferences = preferenceManager.sharedPreferences
         messageClient = Wearable.getMessageClient(context!!)
     }
 
@@ -144,12 +144,12 @@ class SettingsFragment :
 
     override fun onPause() {
         super.onPause()
-        prefs.unregisterOnSharedPreferenceChangeListener(this)
+        sharedPreferences.unregisterOnSharedPreferenceChangeListener(this)
     }
 
     override fun onResume() {
         super.onResume()
-        prefs.registerOnSharedPreferenceChangeListener(this)
+        sharedPreferences.registerOnSharedPreferenceChangeListener(this)
     }
 
     private fun setupBatterySyncPrefs() {
@@ -186,7 +186,7 @@ class SettingsFragment :
     private fun onInterruptFilterAccessResponse(hasAccess: Boolean) {
         messageClient.removeListener(interruptFilterAccessListener)
         if (hasAccess) {
-            prefs.edit().putBoolean(changingKey, hasAccess).apply()
+            sharedPreferences.edit().putBoolean(changingKey, hasAccess).apply()
             preferenceSyncLayer.pushNewData()
         } else {
             notifyAdditionalSetupRequired(changingKey)
