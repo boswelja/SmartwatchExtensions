@@ -11,11 +11,9 @@ import android.app.NotificationManager
 import android.app.admin.DevicePolicyManager
 import android.content.Context
 import android.content.Intent
-import android.content.res.Resources
 import android.graphics.drawable.Drawable
 import android.media.AudioManager
 import android.os.Build
-import android.util.TypedValue
 import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.receiver.DeviceAdminChangeReceiver.Companion.DEVICE_ADMIN_ENABLED_KEY
 import com.boswelja.devicemanager.common.Compat
@@ -83,5 +81,4 @@ object Utils {
             context.getDrawable(R.drawable.ic_app_icon_unknown)
         }
     }
-
 }
