@@ -14,7 +14,6 @@ import android.content.SharedPreferences
 import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.preference.PreferenceManager
-import com.boswelja.devicemanager.common.AtomicCounter
 import com.boswelja.devicemanager.common.PreferenceKey
 import com.boswelja.devicemanager.common.R
 import com.boswelja.devicemanager.common.batterysync.References.BATTERY_STATUS_PATH
@@ -25,7 +24,7 @@ abstract class BatteryUpdateReceiver : WearableListenerService() {
 
     lateinit var sharedPreferences: SharedPreferences
 
-    abstract fun sendChargeNotiEnabled(): Boolean
+    abstract fun shouldNotifyDeviceCharged(): Boolean
     abstract fun onBatteryUpdate(percent: Int, charging: Boolean)
 
     override fun onMessageReceived(messageEvent: MessageEvent?) {
@@ -40,7 +39,8 @@ abstract class BatteryUpdateReceiver : WearableListenerService() {
                     .putInt(PreferenceKey.BATTERY_PERCENT_KEY, percent)
                     .apply()
 
-            if (sendChargeNotiEnabled() &&
+            val shouldNotifyDeviceCharged = shouldNotifyDeviceCharged()
+            if (shouldNotifyDeviceCharged &&
                     !sharedPreferences.getBoolean(PreferenceKey.BATTERY_CHARGED_NOTI_SENT, false) &&
                     percent > 90 &&
                     charging) {
@@ -49,6 +49,7 @@ abstract class BatteryUpdateReceiver : WearableListenerService() {
 
             if (!charging) {
                 sharedPreferences.edit().putBoolean(PreferenceKey.BATTERY_CHARGED_NOTI_SENT, false).apply()
+                if (shouldNotifyDeviceCharged) cancelChargedNoti()
             }
 
             onBatteryUpdate(percent, charging)
@@ -77,12 +78,18 @@ abstract class BatteryUpdateReceiver : WearableListenerService() {
                 .setLocalOnly(true)
                 .build()
 
-        notificationManager.notify(AtomicCounter.getInt(), noti)
+        notificationManager.notify(BATTERY_CHARGED_NOTI_ID, noti)
         sharedPreferences.edit().putBoolean(PreferenceKey.BATTERY_CHARGED_NOTI_SENT, true).apply()
+    }
+
+    private fun cancelChargedNoti() {
+        val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager.cancel(BATTERY_CHARGED_NOTI_ID)
     }
 
     companion object {
 
         const val BATTERY_CHARGED_NOTI_CHANEL_ID = "companion_device_charged"
+        const val BATTERY_CHARGED_NOTI_ID = 408565
     }
 }
