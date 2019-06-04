@@ -86,7 +86,9 @@ class AppInfoActivity : BaseToolbarActivity() {
             }
         }
         permissionItemView.setOnClickListener {
-            requestedPermissionsDialog.show(supportFragmentManager, "RequestedPermissionsDialog")
+            if (app.requestedPermissions!!.isNotEmpty()) {
+                requestedPermissionsDialog.show(supportFragmentManager, "RequestedPermissionsDialog")
+            }
         }
     }
 
