@@ -30,15 +30,14 @@ class UpdateHandler(private val activity: AppCompatActivity) {
         val currentVersion = BuildConfig.VERSION_CODE
         if (oldVersion < currentVersion) {
             ChangelogDialogFragment().show(activity.supportFragmentManager, "ChangelogDialog")
-            sharedPreferences.edit().putInt(APP_VERSION_KEY, currentVersion).apply()
-        }
-        when {
-            oldVersion < 120190605 -> {
-                sharedPreferences.edit()
+            val preferenceEditor = sharedPreferences.edit()
+            preferenceEditor.putInt(APP_VERSION_KEY, currentVersion)
+            if (oldVersion < 120190605) {
+                preferenceEditor
                         .remove("battery_phone_full_charge")
                         .remove("battery_watch_full_charge")
-                        .apply()
             }
+            preferenceEditor.apply()
         }
     }
 
