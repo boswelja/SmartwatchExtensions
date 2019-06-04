@@ -1,6 +1,6 @@
 ext.versions = [
         versionCode: getDate(),
-        versionName: "2.1.0",
+        versionName: "2.1.1",
         compileSdk: 28,
         packageName: "com.boswelja.devicemanager",
         buildTools: "28.0.3",

@@ -18,6 +18,8 @@
     <string-array name="version_changelog">
         <item>Added a new feature, App Manager!</item>
         <item>Wear OS app got a redesign</item>
+        <item>Warn about DnD Sync from Phone to Watch being experimental</item>
+        <item>Fixed a crash that could occur when setting up DnD Sync from Phone to Watch</item>
         <item>Fix phone locking</item>
     </string-array>
 </resources>
