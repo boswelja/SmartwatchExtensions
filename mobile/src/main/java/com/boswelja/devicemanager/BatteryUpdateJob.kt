@@ -15,9 +15,10 @@ import android.content.ComponentName
 import android.content.Context
 import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.common.Compat
-import com.boswelja.devicemanager.common.PreferenceKey
+import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_SYNC_INTERVAL_KEY
 import com.boswelja.devicemanager.common.References
 import com.boswelja.devicemanager.common.batterysync.Utils.updateBatteryStats
+import java.util.concurrent.TimeUnit
 
 class BatteryUpdateJob : JobService() {
 
@@ -37,7 +38,9 @@ class BatteryUpdateJob : JobService() {
 
         fun startJob(context: Context) {
             val prefs = PreferenceManager.getDefaultSharedPreferences(context)
-            startJob(context, prefs.getInt(PreferenceKey.BATTERY_SYNC_INTERVAL_KEY, 900000).toLong())
+            val syncIntervalMinutes = prefs.getInt(BATTERY_SYNC_INTERVAL_KEY, 15).toLong()
+            val syncIntervalMillis = TimeUnit.MINUTES.toMillis(syncIntervalMinutes)
+            startJob(context, syncIntervalMillis)
         }
 
         fun startJob(context: Context, intervalMs: Long) {
