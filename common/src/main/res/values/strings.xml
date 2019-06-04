@@ -10,6 +10,6 @@
 
     <string name="device_charged_noti_channel_name">%s Charged</string>
     <string name="device_charged_noti_title">%s Charged</string>
-    <string name="device_charged_noti_desc">Your %s is charged to above $s%%</string>
+    <string name="device_charged_noti_desc">Your %s is charged to above %s%%</string>
 
 </resources>

@@ -18,7 +18,7 @@ import com.boswelja.devicemanager.complication.PhoneBatteryComplicationProvider
 class PhoneBatteryUpdateReceiver : BatteryUpdateReceiver() {
 
     override fun shouldNotifyDeviceCharged(): Boolean =
-            sharedPreferences.getBoolean(PreferenceKey.BATTERY_WATCH_FULL_CHARGE_NOTI_KEY, false)
+            sharedPreferences.getBoolean(PreferenceKey.BATTERY_WATCH_CHARGE_NOTI_KEY, false)
 
     override fun onBatteryUpdate(percent: Int, charging: Boolean) {
         updateBatteryStats(this, References.CAPABILITY_PHONE_APP)

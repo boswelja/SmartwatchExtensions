@@ -17,10 +17,10 @@ import com.boswelja.devicemanager.BatteryUpdateJob
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.Compat
 import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_CHARGE_THRESHOLD_KEY
-import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_PHONE_FULL_CHARGE_NOTI_KEY
+import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_PHONE_CHARGE_NOTI_KEY
 import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_SYNC_ENABLED_KEY
 import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_SYNC_INTERVAL_KEY
-import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_WATCH_FULL_CHARGE_NOTI_KEY
+import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_WATCH_CHARGE_NOTI_KEY
 import com.boswelja.devicemanager.common.References
 import com.boswelja.devicemanager.common.batterysync.Utils.updateBatteryStats
 import com.boswelja.devicemanager.common.batterysync.BatteryUpdateReceiver
@@ -41,30 +41,15 @@ class BatterySyncPreferenceFragment :
     private lateinit var batterySyncIntervalPreference: SeekBarPreference
     private lateinit var batterySyncPhoneChargedNotiPreference: CheckBoxPreference
     private lateinit var batterySyncWatchChargedNotiPreference: CheckBoxPreference
-    private lateinit var batterySyncChargeThresholdPreference: SeekBarPreference
+    private lateinit var batteryChargeThresholdPreference: SeekBarPreference
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
         when (key) {
             BATTERY_SYNC_ENABLED_KEY -> {
-                batterySyncEnabledPreference.isChecked = sharedPreferences?.getBoolean(key, false)!!
-            }
-            BATTERY_PHONE_FULL_CHARGE_NOTI_KEY -> {
-                batterySyncPhoneChargedNotiPreference.isChecked = sharedPreferences?.getBoolean(key, false)!!
-            }
-            BATTERY_WATCH_FULL_CHARGE_NOTI_KEY -> {
-                batterySyncWatchChargedNotiPreference.isChecked = sharedPreferences?.getBoolean(key, false)!!
-            }
-        }
-    }
-
-    override fun onPreferenceChange(preference: Preference?, newValue: Any?): Boolean {
-        val key = preference?.key!!
-        val sharedPreferences = preference.sharedPreferences
-        return when (key) {
-            BATTERY_SYNC_ENABLED_KEY -> {
-                val value = newValue == true
-                sharedPreferences.edit().putBoolean(preference.key, value).apply()
-                if (value) {
+                val newValue = sharedPreferences?.getBoolean(key, false)!!
+                batterySyncEnabledPreference.isChecked = newValue
+                setBatteryChargeThresholdEnabled()
+                if (newValue) {
                     BatteryUpdateJob.startJob(context!!)
                     updateBatteryStats(context!!, References.CAPABILITY_WATCH_APP)
                 } else {
@@ -72,20 +57,35 @@ class BatterySyncPreferenceFragment :
                 }
                 preferenceSyncLayer.pushNewData()
                 WatchBatteryWidget.updateWidgets(context!!)
-                false
             }
+            BATTERY_PHONE_CHARGE_NOTI_KEY -> {
+                batterySyncPhoneChargedNotiPreference.isChecked = sharedPreferences?.getBoolean(key, false)!!
+                setBatteryChargeThresholdEnabled()
+            }
+            BATTERY_WATCH_CHARGE_NOTI_KEY -> {
+                batterySyncWatchChargedNotiPreference.isChecked = sharedPreferences?.getBoolean(key, false)!!
+                setBatteryChargeThresholdEnabled()
+            }
+        }
+    }
+
+    override fun onPreferenceChange(preference: Preference?, newValue: Any?): Boolean {
+        return when (preference?.key!!) {
             BATTERY_SYNC_INTERVAL_KEY -> {
                 val value = (newValue as Int).toLong()
                 val syncTimeMillis = TimeUnit.MINUTES.toMillis(value)
                 BatteryUpdateJob.startJob(context!!, syncTimeMillis)
                 true
             }
-            BATTERY_PHONE_FULL_CHARGE_NOTI_KEY,
-            BATTERY_WATCH_FULL_CHARGE_NOTI_KEY -> {
+            BATTERY_PHONE_CHARGE_NOTI_KEY,
+            BATTERY_WATCH_CHARGE_NOTI_KEY -> {
                 val value = newValue == true
                 preference.sharedPreferences.edit().putBoolean(preference.key, value).apply()
                 preferenceSyncLayer.pushNewData()
                 false
+            }
+            BATTERY_CHARGE_THRESHOLD_KEY -> {
+                true
             }
             else -> true
         }
@@ -99,10 +99,10 @@ class BatterySyncPreferenceFragment :
     override fun onResume() {
         super.onResume()
         preferenceManager.sharedPreferences.registerOnSharedPreferenceChangeListener(this)
-        if (preferenceManager.sharedPreferences.getBoolean(BATTERY_WATCH_FULL_CHARGE_NOTI_KEY, false) &&
+        if (preferenceManager.sharedPreferences.getBoolean(BATTERY_WATCH_CHARGE_NOTI_KEY, false) &&
                 !Compat.notificationsEnabled(context!!, BatteryUpdateReceiver.BATTERY_CHARGED_NOTI_CHANEL_ID)) {
             preferenceManager.sharedPreferences.edit()
-                    .putBoolean(BATTERY_WATCH_FULL_CHARGE_NOTI_KEY, false)
+                    .putBoolean(BATTERY_WATCH_CHARGE_NOTI_KEY, false)
                     .apply()
             (activity as BasePreferenceActivity).createSnackBar(getString(R.string.battery_sync_watch_charged_noti_channel_disabled))
             preferenceSyncLayer.pushNewData()
@@ -119,14 +119,24 @@ class BatterySyncPreferenceFragment :
 
         batterySyncEnabledPreference = findPreference(BATTERY_SYNC_ENABLED_KEY)!!
         batterySyncIntervalPreference = findPreference(BATTERY_SYNC_INTERVAL_KEY)!!
-        batterySyncPhoneChargedNotiPreference = findPreference(BATTERY_PHONE_FULL_CHARGE_NOTI_KEY)!!
-        batterySyncWatchChargedNotiPreference = findPreference(BATTERY_WATCH_FULL_CHARGE_NOTI_KEY)!!
-        batterySyncChargeThresholdPreference = findPreference(BATTERY_CHARGE_THRESHOLD_KEY)!!
+        batterySyncPhoneChargedNotiPreference = findPreference(BATTERY_PHONE_CHARGE_NOTI_KEY)!!
+        batterySyncWatchChargedNotiPreference = findPreference(BATTERY_WATCH_CHARGE_NOTI_KEY)!!
+        batteryChargeThresholdPreference = findPreference(BATTERY_CHARGE_THRESHOLD_KEY)!!
 
         batterySyncEnabledPreference.onPreferenceChangeListener = this
         batterySyncIntervalPreference.onPreferenceChangeListener = this
         batterySyncPhoneChargedNotiPreference.onPreferenceChangeListener = this
         batterySyncWatchChargedNotiPreference.onPreferenceChangeListener = this
-        batterySyncChargeThresholdPreference.onPreferenceChangeListener = this
+        batteryChargeThresholdPreference.onPreferenceChangeListener = this
+
+        setBatteryChargeThresholdEnabled()
+    }
+
+    private fun setBatteryChargeThresholdEnabled() {
+        val sharedPreferences = batteryChargeThresholdPreference.sharedPreferences
+        batteryChargeThresholdPreference.isEnabled =
+                sharedPreferences.getBoolean(BATTERY_SYNC_ENABLED_KEY, false) &&
+                        (sharedPreferences.getBoolean(BATTERY_PHONE_CHARGE_NOTI_KEY, false) ||
+                                sharedPreferences.getBoolean(BATTERY_WATCH_CHARGE_NOTI_KEY, false))
     }
 }

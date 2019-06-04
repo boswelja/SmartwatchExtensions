@@ -14,8 +14,8 @@ object PreferenceKey {
     const val BATTERY_SYNC_LAST_WHEN_KEY = "battery_sync_last_when"
     const val BATTERY_SYNC_ENABLED_KEY = "battery_sync_enabled"
     const val BATTERY_SYNC_INTERVAL_KEY = "battery_sync_interval"
-    const val BATTERY_PHONE_FULL_CHARGE_NOTI_KEY = "battery_phone_charge_noti"
-    const val BATTERY_WATCH_FULL_CHARGE_NOTI_KEY = "battery_watch_charge_noti"
+    const val BATTERY_PHONE_CHARGE_NOTI_KEY = "battery_phone_charge_noti"
+    const val BATTERY_WATCH_CHARGE_NOTI_KEY = "battery_watch_charge_noti"
     const val BATTERY_CHARGE_THRESHOLD_KEY = "battery_charge_threshold"
 
     const val BATTERY_CHARGED_NOTI_SENT = "battery_charged_notified"

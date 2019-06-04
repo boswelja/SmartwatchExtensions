@@ -54,8 +54,8 @@ class WatchMessageReceiver : WearableListenerService() {
                     }
                     PreferenceKey.BATTERY_SYNC_ENABLED_KEY,
                     PreferenceKey.BATTERY_SYNC_INTERVAL_KEY,
-                    PreferenceKey.BATTERY_PHONE_FULL_CHARGE_NOTI_KEY,
-                    PreferenceKey.BATTERY_WATCH_FULL_CHARGE_NOTI_KEY -> {
+                    PreferenceKey.BATTERY_PHONE_CHARGE_NOTI_KEY,
+                    PreferenceKey.BATTERY_WATCH_CHARGE_NOTI_KEY -> {
                         val intent = Intent(this, BatterySyncPreferenceActivity::class.java).apply {
                             putExtra(EXTRA_PREFERENCE_KEY, key)
                             flags = Intent.FLAG_ACTIVITY_NEW_TASK

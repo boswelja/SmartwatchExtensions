@@ -14,7 +14,7 @@ import com.boswelja.devicemanager.widget.WatchBatteryWidget
 class WatchBatteryUpdateReceiver : BatteryUpdateReceiver() {
 
     override fun shouldNotifyDeviceCharged(): Boolean =
-            sharedPreferences.getBoolean(PreferenceKey.BATTERY_PHONE_FULL_CHARGE_NOTI_KEY, false)
+            sharedPreferences.getBoolean(PreferenceKey.BATTERY_PHONE_CHARGE_NOTI_KEY, false)
 
     override fun onBatteryUpdate(percent: Int, charging: Boolean) {
         WatchBatteryWidget.updateWidgets(this)

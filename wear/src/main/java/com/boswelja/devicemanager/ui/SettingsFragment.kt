@@ -21,9 +21,9 @@ import com.boswelja.devicemanager.ConfirmationActivityHandler
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.Utils
 import com.boswelja.devicemanager.common.Extensions.fromByteArray
-import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_PHONE_FULL_CHARGE_NOTI_KEY
+import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_PHONE_CHARGE_NOTI_KEY
 import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_SYNC_ENABLED_KEY
-import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_WATCH_FULL_CHARGE_NOTI_KEY
+import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_WATCH_CHARGE_NOTI_KEY
 import com.boswelja.devicemanager.common.PreferenceKey.INTERRUPT_FILTER_ON_WITH_THEATER_KEY
 import com.boswelja.devicemanager.common.PreferenceKey.INTERRUPT_FILTER_SYNC_TO_PHONE_KEY
 import com.boswelja.devicemanager.common.PreferenceKey.INTERRUPT_FILTER_SYNC_TO_WATCH_KEY
@@ -53,8 +53,8 @@ class SettingsFragment :
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
         when (key) {
             BATTERY_SYNC_ENABLED_KEY,
-            BATTERY_PHONE_FULL_CHARGE_NOTI_KEY,
-            BATTERY_WATCH_FULL_CHARGE_NOTI_KEY,
+            BATTERY_PHONE_CHARGE_NOTI_KEY,
+            BATTERY_WATCH_CHARGE_NOTI_KEY,
             INTERRUPT_FILTER_SYNC_TO_WATCH_KEY,
             INTERRUPT_FILTER_SYNC_TO_PHONE_KEY,
             INTERRUPT_FILTER_ON_WITH_THEATER_KEY -> {
@@ -67,8 +67,8 @@ class SettingsFragment :
     override fun onPreferenceChange(preference: Preference?, newValue: Any?): Boolean {
         return when (val key = preference?.key) {
             BATTERY_SYNC_ENABLED_KEY,
-            BATTERY_PHONE_FULL_CHARGE_NOTI_KEY,
-            BATTERY_WATCH_FULL_CHARGE_NOTI_KEY -> {
+            BATTERY_PHONE_CHARGE_NOTI_KEY,
+            BATTERY_WATCH_CHARGE_NOTI_KEY -> {
                 val value = newValue == true
                 sharedPreferences.edit().putBoolean(key, value).apply()
                 preferenceSyncLayer.pushNewData()
@@ -156,10 +156,10 @@ class SettingsFragment :
         findPreference<TwoStatePreference>(BATTERY_SYNC_ENABLED_KEY)!!
                 .onPreferenceChangeListener = this
 
-        findPreference<TwoStatePreference>(BATTERY_PHONE_FULL_CHARGE_NOTI_KEY)!!
+        findPreference<TwoStatePreference>(BATTERY_PHONE_CHARGE_NOTI_KEY)!!
                 .onPreferenceChangeListener = this
 
-        findPreference<TwoStatePreference>(BATTERY_WATCH_FULL_CHARGE_NOTI_KEY)!!
+        findPreference<TwoStatePreference>(BATTERY_WATCH_CHARGE_NOTI_KEY)!!
                 .onPreferenceChangeListener = this
     }
 
