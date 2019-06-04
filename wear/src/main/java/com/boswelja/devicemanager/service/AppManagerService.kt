@@ -44,6 +44,7 @@ class AppManagerService : Service() {
                     val packageName = String(it.data, Charsets.UTF_8)
                     if (isAppInstalled(packageManager, packageName)) {
                         val intent = Intent(Intent.ACTION_DELETE, "package:$packageName".toUri())
+                        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
                         startActivity(intent)
                     } else {
                         sendAppRemovedMessage(packageName)
@@ -54,6 +55,7 @@ class AppManagerService : Service() {
                 if (it.data != null && it.data.isNotEmpty()) {
                     val packageName = String(it.data, Charsets.UTF_8)
                     val intent = packageManager.getLaunchIntentForPackage(packageName)
+                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
                     if (intent != null) {
                         startActivity(intent)
                     }
