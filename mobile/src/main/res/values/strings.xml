@@ -79,7 +79,7 @@
     <string name="pref_battery_opt_status_toggle_warning_message">Keeping Battery Optimisation on for this app can cause numerous issues with different functions of this app. The effects may vary from device to device, but we recommend disabling it to ensure everything works correctly.</string>
 
     <!-- About preference strings -->
-    <string name="pref_about_review_title">Leave a Review</string>
+    <string name="pref_about_review_title">Rate &amp; Review</string>
     <string name="pref_about_donate_title">Donate</string>
     <string name="dialog_donate_title">Donate</string>
     <string name="donation_processed_message">Thanks for donating!</string>
