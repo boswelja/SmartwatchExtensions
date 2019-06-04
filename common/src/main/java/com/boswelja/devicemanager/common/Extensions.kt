@@ -22,9 +22,13 @@ object Extensions {
     }
 
     /**
-     * Convert a length 1 ByteArray to a Boolean
+     * Convert a length 1 ByteArray to a Boolean, returns false if the given ByteArray is empty
      */
     fun Boolean.Companion.fromByteArray(byteArray: ByteArray): Boolean {
-        return byteArray[0].toInt() == 1
+        return if (byteArray.isNotEmpty()) {
+            byteArray[0].toInt() == 1
+        } else {
+            false
+        }
     }
 }
