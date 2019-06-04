@@ -32,7 +32,7 @@ class AppPackageInfo(packageManager: PackageManager, packageInfo: PackageInfo) :
     val installTime: Long = packageInfo.firstInstallTime
     val lastUpdateTime: Long = packageInfo.lastUpdateTime
 
-    val requestedPermissions: Array<String> = buildPackagePermissions(packageManager, packageInfo)
+    val requestedPermissions: Array<String>? = packageInfo.requestedPermissions
 
     private fun getApplicationLabel(packageManager: PackageManager, packageInfo: PackageInfo): String {
         var applicationName = packageManager.getApplicationLabel(packageInfo.applicationInfo)
@@ -48,21 +48,6 @@ class AppPackageInfo(packageManager: PackageManager, packageInfo: PackageInfo) :
     private fun hasLaunchActivity(packageManager: PackageManager): Boolean =
             packageManager.getLaunchIntentForPackage(packageName) != null
 
-    private fun buildPackagePermissions(packageManager: PackageManager, packageInfo: PackageInfo): Array<String> {
-        val processedPermissions = ArrayList<String>()
-        val requestedPermissions = packageInfo.requestedPermissions
-        for (permission in requestedPermissions) {
-            try {
-                val permissionInfo = packageManager.getPermissionInfo(permission, PackageManager.GET_META_DATA)
-                processedPermissions.add(permissionInfo.loadLabel(packageManager).toString().capitalize())
-            } catch (ignored: Exception) {
-                processedPermissions.add(permission)
-            }
-        }
-        processedPermissions.sort()
-        return processedPermissions.toTypedArray()
-    }
-
     @Throws(IOException::class)
     fun toByteArray(): ByteArray {
         ByteArrayOutputStream().use {
@@ -72,7 +57,7 @@ class AppPackageInfo(packageManager: PackageManager, packageInfo: PackageInfo) :
     }
 
     companion object {
-        const val serialVersionUID: Long = 5
+        const val serialVersionUID: Long = 4
 
         @Throws(IOException::class, ClassNotFoundException::class)
         fun fromByteArray(byteArray: ByteArray): AppPackageInfo {
