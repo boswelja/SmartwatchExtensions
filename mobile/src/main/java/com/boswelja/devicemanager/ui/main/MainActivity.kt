@@ -23,12 +23,9 @@ class MainActivity : BaseToolbarActivity() {
     override fun getContentViewId(): Int = R.layout.activity_main
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        UpdateHandler(this)
-
         super.onCreate(savedInstanceState)
-
+        UpdateHandler(this)
         sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this)
-
         showSettingsFragment()
     }
 
