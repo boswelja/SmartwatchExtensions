@@ -18,16 +18,29 @@
         app:showSeekBarValue="true"
         app:min="15" />
 
-    <androidx.preference.CheckBoxPreference
-        android:key="battery_phone_full_charge"
-        android:title="@string/pref_battery_sync_phone_charged_noti_title"
-        android:summary="@string/pref_battery_sync_phone_charged_noti_summary"
-        android:dependency="battery_sync_enabled" />
+    <PreferenceCategory android:title="Charge Notifications">
 
-    <androidx.preference.CheckBoxPreference
-        android:key="battery_watch_full_charge"
-        android:title="@string/pref_battery_sync_watch_charged_noti_title"
-        android:summary="@string/pref_battery_sync_watch_charged_noti_summary"
-        android:dependency="battery_sync_enabled" />
+        <androidx.preference.CheckBoxPreference
+            android:key="battery_phone_charge_noti"
+            android:title="@string/pref_battery_sync_phone_charged_noti_title"
+            android:summary="@string/pref_battery_sync_phone_charged_noti_summary"
+            android:dependency="battery_sync_enabled" />
+
+        <androidx.preference.CheckBoxPreference
+            android:key="battery_watch_charge_noti"
+            android:title="@string/pref_battery_sync_watch_charged_noti_title"
+            android:summary="@string/pref_battery_sync_watch_charged_noti_summary"
+            android:dependency="battery_sync_enabled" />
+
+        <androidx.preference.SeekBarPreference
+            android:key="battery_charge_threshold"
+            android:title="Battery Charged Threshold"
+            android:summary="Adjust the minimum charge percent to consider your device charged"
+            android:defaultValue="90"
+            android:max="100"
+            app:showSeekBarValue="true"
+            app:min="50" />
+
+    </PreferenceCategory>
 
 </androidx.preference.PreferenceScreen>

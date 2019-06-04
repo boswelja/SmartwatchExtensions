@@ -16,6 +16,7 @@ import androidx.preference.SwitchPreference
 import com.boswelja.devicemanager.BatteryUpdateJob
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.Compat
+import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_CHARGE_THRESHOLD_KEY
 import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_PHONE_FULL_CHARGE_NOTI_KEY
 import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_SYNC_ENABLED_KEY
 import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_SYNC_INTERVAL_KEY
@@ -40,6 +41,7 @@ class BatterySyncPreferenceFragment :
     private lateinit var batterySyncIntervalPreference: SeekBarPreference
     private lateinit var batterySyncPhoneChargedNotiPreference: CheckBoxPreference
     private lateinit var batterySyncWatchChargedNotiPreference: CheckBoxPreference
+    private lateinit var batterySyncChargeThresholdPreference: SeekBarPreference
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
         when (key) {
@@ -119,10 +121,12 @@ class BatterySyncPreferenceFragment :
         batterySyncIntervalPreference = findPreference(BATTERY_SYNC_INTERVAL_KEY)!!
         batterySyncPhoneChargedNotiPreference = findPreference(BATTERY_PHONE_FULL_CHARGE_NOTI_KEY)!!
         batterySyncWatchChargedNotiPreference = findPreference(BATTERY_WATCH_FULL_CHARGE_NOTI_KEY)!!
+        batterySyncChargeThresholdPreference = findPreference(BATTERY_CHARGE_THRESHOLD_KEY)!!
 
         batterySyncEnabledPreference.onPreferenceChangeListener = this
         batterySyncIntervalPreference.onPreferenceChangeListener = this
         batterySyncPhoneChargedNotiPreference.onPreferenceChangeListener = this
         batterySyncWatchChargedNotiPreference.onPreferenceChangeListener = this
+        batterySyncChargeThresholdPreference.onPreferenceChangeListener = this
     }
 }

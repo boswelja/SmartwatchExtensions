@@ -7,13 +7,16 @@
  */
 package com.boswelja.devicemanager.ui.base
 
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
+import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.R
-import com.boswelja.devicemanager.ui.main.MainActivity.Companion.EXTRA_PREFERENCE_KEY
 
 abstract class BasePreferenceActivity : BaseToolbarActivity() {
+
+    lateinit var sharedPreferences: SharedPreferences
 
     private lateinit var preferenceFragment: BasePreferenceFragment
 
@@ -24,6 +27,8 @@ abstract class BasePreferenceActivity : BaseToolbarActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 

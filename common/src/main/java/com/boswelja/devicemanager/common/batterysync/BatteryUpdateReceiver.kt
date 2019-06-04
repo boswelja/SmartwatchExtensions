@@ -40,11 +40,11 @@ abstract class BatteryUpdateReceiver : WearableListenerService() {
                     .apply()
 
             val shouldNotifyDeviceCharged = shouldNotifyDeviceCharged()
-            if (shouldNotifyDeviceCharged &&
-                    !sharedPreferences.getBoolean(PreferenceKey.BATTERY_CHARGED_NOTI_SENT, false) &&
-                    percent > 90 &&
-                    charging) {
-                sendChargedNoti()
+            if (shouldNotifyDeviceCharged) {
+                val chargeThreshold = sharedPreferences.getInt(PreferenceKey.BATTERY_CHARGE_THRESHOLD_KEY, 90)
+                if (percent > chargeThreshold && !sharedPreferences.getBoolean(PreferenceKey.BATTERY_CHARGED_NOTI_SENT, false)) {
+                    sendChargedNoti(chargeThreshold)
+                }
             }
 
             if (!charging) {
@@ -56,7 +56,7 @@ abstract class BatteryUpdateReceiver : WearableListenerService() {
         }
     }
 
-    private fun sendChargedNoti() {
+    private fun sendChargedNoti(chargeThreshold: Int) {
         val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         val companionDeviceName = getString(R.string.companion_device_type)
 
@@ -74,7 +74,7 @@ abstract class BatteryUpdateReceiver : WearableListenerService() {
         val noti = NotificationCompat.Builder(this, BATTERY_CHARGED_NOTI_CHANEL_ID)
                 .setSmallIcon(R.drawable.battery_full)
                 .setContentTitle(getString(R.string.device_charged_noti_title, companionDeviceName))
-                .setContentText(getString(R.string.device_charged_noti_desc, companionDeviceName))
+                .setContentText(getString(R.string.device_charged_noti_desc).format(companionDeviceName, chargeThreshold))
                 .setLocalOnly(true)
                 .build()
 

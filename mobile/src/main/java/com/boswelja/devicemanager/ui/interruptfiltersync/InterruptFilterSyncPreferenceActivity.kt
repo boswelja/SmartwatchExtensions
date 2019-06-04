@@ -7,7 +7,12 @@
  */
 package com.boswelja.devicemanager.ui.interruptfiltersync
 
+import android.content.Intent
+import android.os.Bundle
 import androidx.fragment.app.Fragment
+import com.boswelja.devicemanager.common.Compat
+import com.boswelja.devicemanager.common.PreferenceKey
+import com.boswelja.devicemanager.service.DnDLocalChangeListener
 import com.boswelja.devicemanager.ui.base.BasePreferenceActivity
 import com.boswelja.devicemanager.ui.base.BasePreferenceFragment
 
@@ -15,4 +20,13 @@ class InterruptFilterSyncPreferenceActivity : BasePreferenceActivity() {
 
     override fun createPreferenceFragment(): BasePreferenceFragment = InterruptFilterSyncPreferenceFragment()
     override fun createWidgetFragment(): Fragment? = null
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        if (sharedPreferences.getBoolean(PreferenceKey.INTERRUPT_FILTER_SYNC_TO_WATCH_KEY, false)) {
+            val intent = Intent(this, DnDLocalChangeListener::class.java)
+            Compat.startForegroundService(this, intent)
+        }
+    }
 }

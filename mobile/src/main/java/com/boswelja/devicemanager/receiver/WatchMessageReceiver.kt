@@ -13,13 +13,18 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import com.boswelja.devicemanager.common.Extensions.toByteArray
+import com.boswelja.devicemanager.common.PreferenceKey
 import com.boswelja.devicemanager.common.References.CAPABILITY_WATCH_APP
 import com.boswelja.devicemanager.common.References.LOCK_PHONE_PATH
 import com.boswelja.devicemanager.common.References.REQUEST_LAUNCH_APP_PATH
 import com.boswelja.devicemanager.common.batterysync.References.REQUEST_BATTERY_UPDATE_PATH
 import com.boswelja.devicemanager.common.batterysync.Utils
 import com.boswelja.devicemanager.common.dndsync.References.REQUEST_INTERRUPT_FILTER_ACCESS_STATUS_PATH
+import com.boswelja.devicemanager.ui.base.BaseToolbarActivity.Companion.EXTRA_PREFERENCE_KEY
+import com.boswelja.devicemanager.ui.batterysync.BatterySyncPreferenceActivity
+import com.boswelja.devicemanager.ui.interruptfiltersync.InterruptFilterSyncPreferenceActivity
 import com.boswelja.devicemanager.ui.main.MainActivity
+import com.boswelja.devicemanager.ui.main.SettingsFragment
 import com.google.android.gms.wearable.MessageEvent
 import com.google.android.gms.wearable.Wearable
 import com.google.android.gms.wearable.WearableListenerService
@@ -36,8 +41,39 @@ class WatchMessageReceiver : WearableListenerService() {
             }
             REQUEST_LAUNCH_APP_PATH -> {
                 val key = String(messageEvent.data, Charsets.UTF_8)
+                when (key) {
+                    PreferenceKey.PHONE_LOCKING_ENABLED_KEY,
+                    SettingsFragment.OPEN_NOTI_SETTINGS_KEY,
+                    SettingsFragment.DAYNIGHT_MODE_KEY,
+                    SettingsFragment.BATTERY_OPTIMISATION_STATUS_KEY -> {
+                        val intent = Intent(this, MainActivity::class.java).apply {
+                            putExtra(EXTRA_PREFERENCE_KEY, key)
+                            flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                        }
+                        startActivity(intent)
+                    }
+                    PreferenceKey.BATTERY_SYNC_ENABLED_KEY,
+                    PreferenceKey.BATTERY_SYNC_INTERVAL_KEY,
+                    PreferenceKey.BATTERY_PHONE_FULL_CHARGE_NOTI_KEY,
+                    PreferenceKey.BATTERY_WATCH_FULL_CHARGE_NOTI_KEY -> {
+                        val intent = Intent(this, BatterySyncPreferenceActivity::class.java).apply {
+                            putExtra(EXTRA_PREFERENCE_KEY, key)
+                            flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                        }
+                        startActivity(intent)
+                    }
+                    PreferenceKey.INTERRUPT_FILTER_SYNC_TO_WATCH_KEY,
+                    PreferenceKey.INTERRUPT_FILTER_SYNC_TO_PHONE_KEY,
+                    PreferenceKey.INTERRUPT_FILTER_ON_WITH_THEATER_KEY -> {
+                        val intent = Intent(this, InterruptFilterSyncPreferenceActivity::class.java).apply {
+                            putExtra(EXTRA_PREFERENCE_KEY, key)
+                            flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                        }
+                        startActivity(intent)
+                    }
+                }
                 val intent = Intent(this, MainActivity::class.java)
-                intent.putExtra(MainActivity.EXTRA_PREFERENCE_KEY, key)
+                intent.putExtra(EXTRA_PREFERENCE_KEY, key)
                 intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
                 startActivity(intent)
             }
