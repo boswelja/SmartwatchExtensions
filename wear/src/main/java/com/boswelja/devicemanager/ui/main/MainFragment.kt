@@ -56,7 +56,7 @@ class MainFragment : BaseSharedPreferenceFragment() {
     }
 
     private fun padContentTop(clearOtherPadding: Boolean) {
-        val paddingDp =  Utils.complexTypeDp(resources, 72.0f).toInt()
+        val paddingDp = Utils.complexTypeDp(resources, 72.0f).toInt()
         view?.findViewById<LinearLayout>(R.id.content)!!.apply {
             if (clearOtherPadding) {
                 setPadding(0, paddingDp, 0, 0)
@@ -67,7 +67,7 @@ class MainFragment : BaseSharedPreferenceFragment() {
     }
 
     private fun padContentBottom(clearOtherPadding: Boolean) {
-        val paddingDp =  Utils.complexTypeDp(resources, 72.0f).toInt()
+        val paddingDp = Utils.complexTypeDp(resources, 72.0f).toInt()
         view?.findViewById<LinearLayout>(R.id.content)!!.apply {
             if (clearOtherPadding) {
                 setPadding(0, 0, 0, paddingDp)

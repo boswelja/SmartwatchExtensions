@@ -35,7 +35,7 @@ class BatterySyncFragment : BaseSharedPreferenceFragment() {
     private var phoneBatteryIndicatorIconView: AppCompatImageView? = null
     private var phoneBatteryIndicatorTextView: AppCompatTextView? = null
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View?  {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return if (sharedPreferences.getBoolean(BATTERY_SYNC_ENABLED_KEY, false)) {
             inflater.inflate(R.layout.fragment_battery_sync, container, false)
         } else {
