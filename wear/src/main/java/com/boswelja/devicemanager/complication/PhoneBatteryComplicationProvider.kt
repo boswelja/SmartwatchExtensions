@@ -7,6 +7,7 @@
  */
 package com.boswelja.devicemanager.complication
 
+import android.app.PendingIntent
 import android.content.Intent
 import android.graphics.drawable.Icon
 import android.support.wearable.complications.ComplicationData
@@ -30,7 +31,7 @@ class PhoneBatteryComplicationProvider : BaseComplicationProviderService() {
 
         val intent = Intent(this, ActionService::class.java)
         intent.putExtra(ActionService.EXTRA_ACTION, REQUEST_BATTERY_UPDATE_PATH)
-        val pendingIntent = Compat.getForegroundService(this, intent)
+        val pendingIntent = PendingIntent.getService(this, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT)
 
         val prefs = PreferenceManager.getDefaultSharedPreferences(this)
         val percent = prefs.getInt(PreferenceKey.BATTERY_PERCENT_KEY, 0)
