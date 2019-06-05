@@ -34,8 +34,8 @@
 
         <androidx.preference.SeekBarPreference
             android:key="battery_charge_threshold"
-            android:title="Battery Charged Threshold"
-            android:summary="Adjust the minimum charge percent to consider your device charged"
+            android:title="@string/pref_battery_sync_charge_threshold_title"
+            android:summary="@string/pref_battery_sync_charge_threshold_summary"
             android:defaultValue="90"
             android:max="100"
             app:showSeekBarValue="true"
