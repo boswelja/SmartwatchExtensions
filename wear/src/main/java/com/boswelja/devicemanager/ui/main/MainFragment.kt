@@ -78,25 +78,30 @@ class MainFragment : BaseSharedPreferenceFragment() {
     }
 
     private fun recreateView() {
-        if (batterySyncFragment != null &&
-                lockPhoneFragment != null) {
-            fragmentManager?.beginTransaction()!!
-                    .setCustomAnimations(R.anim.slide_in_from_left, R.anim.slide_out_to_right)
-                    .remove(batterySyncFragment!!)
-                    .remove(lockPhoneFragment!!)
-                    .commit()
+        try {
+            if (batterySyncFragment != null &&
+                    lockPhoneFragment != null) {
+                fragmentManager?.beginTransaction()!!
+                        .setCustomAnimations(R.anim.slide_in_from_left, R.anim.slide_out_to_right)
+                        .remove(batterySyncFragment!!)
+                        .remove(lockPhoneFragment!!)
+                        .commit()
+            }
+            batterySyncFragment = BatterySyncFragment()
+            lockPhoneFragment = LockPhoneFragment()
+            if (!sharedPreferences.getBoolean(PreferenceKey.BATTERY_SYNC_ENABLED_KEY, false)) {
+                padContentTop(false)
+                padContentBottom(false)
+                addFragment(lockPhoneFragment!!)
+                addFragment(batterySyncFragment!!)
+            } else {
+                padContentBottom(true)
+                addFragment(batterySyncFragment!!)
+                addFragment(lockPhoneFragment!!)
+            }
+        } catch (e: IllegalStateException) {
+            e.printStackTrace()
         }
-        batterySyncFragment = BatterySyncFragment()
-        lockPhoneFragment = LockPhoneFragment()
-        if (!sharedPreferences.getBoolean(PreferenceKey.BATTERY_SYNC_ENABLED_KEY, false)) {
-            padContentTop(false)
-            padContentBottom(false)
-            addFragment(lockPhoneFragment!!)
-            addFragment(batterySyncFragment!!)
-        } else {
-            padContentBottom(true)
-            addFragment(batterySyncFragment!!)
-            addFragment(lockPhoneFragment!!)
-        }
+
     }
 }
