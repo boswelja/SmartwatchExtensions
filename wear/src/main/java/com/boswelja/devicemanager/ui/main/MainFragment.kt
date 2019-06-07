@@ -18,6 +18,7 @@ import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.PreferenceKey
 import com.boswelja.devicemanager.common.Utils
 import com.boswelja.devicemanager.ui.base.BaseSharedPreferenceFragment
+import java.util.concurrent.TimeUnit
 
 class MainFragment : BaseSharedPreferenceFragment() {
 
@@ -79,8 +80,8 @@ class MainFragment : BaseSharedPreferenceFragment() {
 
     private fun recreateView() {
         try {
-            if (batterySyncFragment != null &&
-                    lockPhoneFragment != null) {
+            val hadExistingFragments = batterySyncFragment != null && lockPhoneFragment != null
+            if (hadExistingFragments) {
                 fragmentManager?.beginTransaction()!!
                         .setCustomAnimations(R.anim.slide_in_from_left, R.anim.slide_out_to_right)
                         .remove(batterySyncFragment!!)
@@ -90,11 +91,19 @@ class MainFragment : BaseSharedPreferenceFragment() {
             batterySyncFragment = BatterySyncFragment()
             lockPhoneFragment = LockPhoneFragment()
             if (!sharedPreferences.getBoolean(PreferenceKey.BATTERY_SYNC_ENABLED_KEY, false)) {
+                if (hadExistingFragments) {
+                    lockPhoneFragment!!.postponeEnterTransition(500, TimeUnit.MILLISECONDS)
+                    batterySyncFragment!!.postponeEnterTransition(750, TimeUnit.MILLISECONDS)
+                }
                 padContentTop(false)
                 padContentBottom(false)
                 addFragment(lockPhoneFragment!!)
                 addFragment(batterySyncFragment!!)
             } else {
+                if (hadExistingFragments) {
+                    batterySyncFragment!!.postponeEnterTransition(500, TimeUnit.MILLISECONDS)
+                    lockPhoneFragment!!.postponeEnterTransition(750, TimeUnit.MILLISECONDS)
+                }
                 padContentBottom(true)
                 addFragment(batterySyncFragment!!)
                 addFragment(lockPhoneFragment!!)
