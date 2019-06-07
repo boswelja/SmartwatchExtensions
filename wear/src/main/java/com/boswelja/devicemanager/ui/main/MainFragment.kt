@@ -52,6 +52,7 @@ class MainFragment : BaseSharedPreferenceFragment() {
     private fun addFragment(fragment: Fragment) {
         fragmentManager?.beginTransaction()!!
                 .setCustomAnimations(R.anim.slide_in_from_left, R.anim.slide_out_to_right)
+                .setReorderingAllowed(true)
                 .add(R.id.content, fragment)
                 .commit()
     }
@@ -92,8 +93,7 @@ class MainFragment : BaseSharedPreferenceFragment() {
             lockPhoneFragment = LockPhoneFragment()
             if (!sharedPreferences.getBoolean(PreferenceKey.BATTERY_SYNC_ENABLED_KEY, false)) {
                 if (hadExistingFragments) {
-                    lockPhoneFragment!!.postponeEnterTransition(500, TimeUnit.MILLISECONDS)
-                    batterySyncFragment!!.postponeEnterTransition(750, TimeUnit.MILLISECONDS)
+                    batterySyncFragment!!.postponeEnterTransition(200, TimeUnit.MILLISECONDS)
                 }
                 padContentTop(false)
                 padContentBottom(false)
@@ -101,8 +101,7 @@ class MainFragment : BaseSharedPreferenceFragment() {
                 addFragment(batterySyncFragment!!)
             } else {
                 if (hadExistingFragments) {
-                    batterySyncFragment!!.postponeEnterTransition(500, TimeUnit.MILLISECONDS)
-                    lockPhoneFragment!!.postponeEnterTransition(750, TimeUnit.MILLISECONDS)
+                    lockPhoneFragment!!.postponeEnterTransition(200, TimeUnit.MILLISECONDS)
                 }
                 padContentBottom(true)
                 addFragment(batterySyncFragment!!)
