@@ -16,6 +16,7 @@ internal object PreferenceSyncKeys {
     const val BATTERY_SYNC_ENABLED_KEY = "$packageName.battery-sync"
     const val BATTERY_PHONE_FULL_CHARGE_NOTI_KEY = "$packageName.phone-charge-noti-enabled"
     const val BATTERY_WATCH_FULL_CHARGE_NOTI_KEY = "$packageName.watch-charge-noti-enabled"
+    const val BATTERY_CHARGE_THRESHOLD = "$packageName.battery-charge-threshold"
 
     const val DND_SYNC_PHONE_TO_WATCH_KEY = "$packageName.interrupt-filter-sync-to-watch"
     const val DND_SYNC_WATCH_TO_PHONE_KEY = "$packageName.interrupt-filter-sync-to-phone"

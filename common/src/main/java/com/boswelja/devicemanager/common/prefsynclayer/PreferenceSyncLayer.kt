@@ -10,6 +10,7 @@ package com.boswelja.devicemanager.common.prefsynclayer
 import android.content.Context
 import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.common.PreferenceKey
+import com.boswelja.devicemanager.common.prefsynclayer.PreferenceSyncKeys.BATTERY_CHARGE_THRESHOLD
 import com.boswelja.devicemanager.common.prefsynclayer.PreferenceSyncKeys.BATTERY_PHONE_FULL_CHARGE_NOTI_KEY
 import com.boswelja.devicemanager.common.prefsynclayer.PreferenceSyncKeys.BATTERY_SYNC_ENABLED_KEY
 import com.boswelja.devicemanager.common.prefsynclayer.PreferenceSyncKeys.BATTERY_WATCH_FULL_CHARGE_NOTI_KEY
@@ -31,6 +32,7 @@ class PreferenceSyncLayer(context: Context) {
         val batterySyncEnabled = localPrefs.getBoolean(PreferenceKey.BATTERY_SYNC_ENABLED_KEY, false)
         val phoneBatteryChargedNoti = localPrefs.getBoolean(PreferenceKey.BATTERY_PHONE_CHARGE_NOTI_KEY, false)
         val watchBatteryChargedNoti = localPrefs.getBoolean(PreferenceKey.BATTERY_WATCH_CHARGE_NOTI_KEY, false)
+        val batteryChargeThreshold = localPrefs.getInt(PreferenceKey.BATTERY_CHARGE_THRESHOLD_KEY, 90)
         val dndSyncPhoneToWatch = localPrefs.getBoolean(PreferenceKey.INTERRUPT_FILTER_SYNC_TO_WATCH_KEY, false)
         val dndSyncWatchToPhone = localPrefs.getBoolean(PreferenceKey.INTERRUPT_FILTER_SYNC_TO_PHONE_KEY, false)
         val dndSyncWithTheater = localPrefs.getBoolean(PreferenceKey.INTERRUPT_FILTER_ON_WITH_THEATER_KEY, false)
@@ -47,6 +49,7 @@ class PreferenceSyncLayer(context: Context) {
         syncedPrefUpdateReq.dataMap.putBoolean(BATTERY_SYNC_ENABLED_KEY, batterySyncEnabled)
         syncedPrefUpdateReq.dataMap.putBoolean(BATTERY_PHONE_FULL_CHARGE_NOTI_KEY, phoneBatteryChargedNoti)
         syncedPrefUpdateReq.dataMap.putBoolean(BATTERY_WATCH_FULL_CHARGE_NOTI_KEY, watchBatteryChargedNoti)
+        syncedPrefUpdateReq.dataMap.putInt(BATTERY_CHARGE_THRESHOLD, batteryChargeThreshold)
         syncedPrefUpdateReq.dataMap.putBoolean(DND_SYNC_PHONE_TO_WATCH_KEY, dndSyncPhoneToWatch)
         syncedPrefUpdateReq.dataMap.putBoolean(DND_SYNC_WATCH_TO_PHONE_KEY, dndSyncWatchToPhone)
         syncedPrefUpdateReq.dataMap.putBoolean(DND_SYNC_WITH_THEATER_KEY, dndSyncWithTheater)

@@ -10,6 +10,7 @@ package com.boswelja.devicemanager.common.prefsynclayer
 import android.content.SharedPreferences
 import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.common.PreferenceKey
+import com.boswelja.devicemanager.common.prefsynclayer.PreferenceSyncKeys.BATTERY_CHARGE_THRESHOLD
 import com.boswelja.devicemanager.common.prefsynclayer.PreferenceSyncKeys.BATTERY_PHONE_FULL_CHARGE_NOTI_KEY
 import com.boswelja.devicemanager.common.prefsynclayer.PreferenceSyncKeys.BATTERY_SYNC_ENABLED_KEY
 import com.boswelja.devicemanager.common.prefsynclayer.PreferenceSyncKeys.BATTERY_WATCH_FULL_CHARGE_NOTI_KEY
@@ -33,6 +34,7 @@ abstract class BasePreferenceChangeReceiver : WearableListenerService() {
             val batterySyncEnabled = dataMap.getBoolean(BATTERY_SYNC_ENABLED_KEY)
             val batteryPhoneChargedNoti = dataMap.getBoolean(BATTERY_PHONE_FULL_CHARGE_NOTI_KEY)
             val batteryWatchChargedNoti = dataMap.getBoolean(BATTERY_WATCH_FULL_CHARGE_NOTI_KEY)
+            val batteryChargeThreshold = dataMap.getInt(BATTERY_CHARGE_THRESHOLD)
 
             val interruptFilterSyncToPhone = dataMap.getBoolean(DND_SYNC_WATCH_TO_PHONE_KEY)
             val interruptFilterSyncToWatch = dataMap.getBoolean(DND_SYNC_PHONE_TO_WATCH_KEY)
@@ -45,6 +47,7 @@ abstract class BasePreferenceChangeReceiver : WearableListenerService() {
                     .putBoolean(PreferenceKey.BATTERY_SYNC_ENABLED_KEY, batterySyncEnabled)
                     .putBoolean(PreferenceKey.BATTERY_PHONE_CHARGE_NOTI_KEY, batteryPhoneChargedNoti)
                     .putBoolean(PreferenceKey.BATTERY_WATCH_CHARGE_NOTI_KEY, batteryWatchChargedNoti)
+                    .putInt(PreferenceKey.BATTERY_CHARGE_THRESHOLD_KEY, batteryChargeThreshold)
                     .putBoolean(PreferenceKey.INTERRUPT_FILTER_SYNC_TO_PHONE_KEY, interruptFilterSyncToPhone)
                     .putBoolean(PreferenceKey.INTERRUPT_FILTER_SYNC_TO_WATCH_KEY, interruptFilterSyncToWatch)
                     .putBoolean(PreferenceKey.INTERRUPT_FILTER_ON_WITH_THEATER_KEY, interruptFilterSyncWithTheater)
