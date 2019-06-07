@@ -66,6 +66,7 @@ class BatterySyncPreferenceFragment :
                 batterySyncWatchChargedNotiPreference.isChecked = sharedPreferences?.getBoolean(key, false)!!
                 setBatteryChargeThresholdEnabled()
             }
+            BATTERY_CHARGE_THRESHOLD_KEY -> updateChargeNotiPrefSummaries()
         }
     }
 
@@ -129,7 +130,14 @@ class BatterySyncPreferenceFragment :
         batterySyncWatchChargedNotiPreference.onPreferenceChangeListener = this
         batteryChargeThresholdPreference.onPreferenceChangeListener = this
 
+        updateChargeNotiPrefSummaries()
         setBatteryChargeThresholdEnabled()
+    }
+
+    private fun updateChargeNotiPrefSummaries() {
+        val chargeThreshold = batteryChargeThresholdPreference.value
+        batterySyncPhoneChargedNotiPreference.summary = getString(R.string.pref_battery_sync_phone_charged_noti_summary).format(chargeThreshold)
+        batterySyncWatchChargedNotiPreference.summary = getString(R.string.pref_battery_sync_watch_charged_noti_summary).format(chargeThreshold)
     }
 
     private fun setBatteryChargeThresholdEnabled() {

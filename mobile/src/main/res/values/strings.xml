@@ -16,9 +16,9 @@
     <string name="pref_battery_sync_interval_title">Sync Interval</string>
     <string name="pref_battery_sync_interval_summary">Sync interval in minutes</string>
     <string name="pref_battery_sync_phone_charged_noti_title">Phone Charged Notification</string>
-    <string name="pref_battery_sync_phone_charged_noti_summary">Get a notification on your watch when your phone is above 90\% charged</string>
+    <string name="pref_battery_sync_phone_charged_noti_summary">Get a notification on your watch when your phone is above %s%% charged</string>
     <string name="pref_battery_sync_watch_charged_noti_title">Watch Charged Notification</string>
-    <string name="pref_battery_sync_watch_charged_noti_summary">Get a notification on your phone when your watch is above 90\% charged</string>
+    <string name="pref_battery_sync_watch_charged_noti_summary">Get a notification on your phone when your watch is above %s%% charged</string>
     <string name="pref_battery_sync_charge_threshold_title">Battery Charge Threshold</string>
     <string name="pref_battery_sync_charge_threshold_summary">Adjust the minimum charge percent to consider your device charged</string>
     <string name="battery_sync_watch_charged_noti_channel_disabled">Watch charged notifications were disabled in notification settings</string>
