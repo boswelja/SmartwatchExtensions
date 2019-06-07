@@ -55,7 +55,7 @@ class AppManagerService : Service() {
                 if (it.data != null && it.data.isNotEmpty()) {
                     val packageName = String(it.data, Charsets.UTF_8)
                     val intent = packageManager.getLaunchIntentForPackage(packageName)
-                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                    intent?.flags = Intent.FLAG_ACTIVITY_NEW_TASK
                     if (intent != null) {
                         startActivity(intent)
                     }
