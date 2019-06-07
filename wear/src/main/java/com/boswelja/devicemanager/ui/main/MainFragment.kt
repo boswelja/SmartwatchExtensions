@@ -110,6 +110,5 @@ class MainFragment : BaseSharedPreferenceFragment() {
         } catch (e: IllegalStateException) {
             e.printStackTrace()
         }
-
     }
 }

@@ -16,7 +16,6 @@ import android.support.wearable.complications.ComplicationText
 import androidx.core.graphics.drawable.toBitmap
 import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.R
-import com.boswelja.devicemanager.common.Compat
 import com.boswelja.devicemanager.common.PreferenceKey
 import com.boswelja.devicemanager.common.batterysync.References.REQUEST_BATTERY_UPDATE_PATH
 import com.boswelja.devicemanager.service.ActionService
