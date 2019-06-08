@@ -20,5 +20,4 @@
             android:dependency="battery_sync_enabled" />
 
     </androidx.preference.PreferenceCategory>
-
 </PreferenceScreen>
