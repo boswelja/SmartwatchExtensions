@@ -10,12 +10,12 @@
             android:defaultValue="false"/>
 
         <androidx.preference.CheckBoxPreference
-            android:key="battery_phone_full_charge"
+            android:key="battery_phone_charge_noti"
             android:title="@string/pref_battery_sync_phone_charged_noti_title"
             android:dependency="battery_sync_enabled" />
 
         <androidx.preference.CheckBoxPreference
-            android:key="battery_watch_full_charge"
+            android:key="battery_watch_charge_noti"
             android:title="@string/pref_battery_sync_watch_charged_noti_title"
             android:dependency="battery_sync_enabled" />
 
