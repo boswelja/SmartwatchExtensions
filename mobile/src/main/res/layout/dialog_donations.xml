@@ -41,7 +41,6 @@
         android:layout_below="@id/content_holder"
         android:text="@string/dialog_button_cancel"
         android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
         android:layout_margin="8dp"
         style="@style/Widget.MaterialComponents.Button.TextButton"/>
 </RelativeLayout>
