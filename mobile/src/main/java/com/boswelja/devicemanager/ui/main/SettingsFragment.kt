@@ -88,15 +88,17 @@ class SettingsFragment :
                 true
             }
             OPEN_NOTI_SETTINGS_KEY -> {
-                val intent = Intent()
-                intent.action = "android.settings.APP_NOTIFICATION_SETTINGS"
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    intent.putExtra(Settings.EXTRA_APP_PACKAGE, context?.packageName!!)
-                } else {
-                    intent.putExtra("app_package", context?.packageName!!)
-                    intent.putExtra("app_uid", context?.applicationInfo?.uid!!)
-                }
-                startActivity(intent)
+                Intent().apply {
+                    flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                        action = Settings.ACTION_APP_NOTIFICATION_SETTINGS
+                        putExtra(Settings.EXTRA_APP_PACKAGE, context?.packageName!!)
+                    } else {
+                        action = "android.settings.APP_NOTIFICATION_SETTINGS"
+                        putExtra("app_package", context?.packageName!!)
+                        putExtra("app_uid", context?.applicationInfo?.uid!!)
+                    }
+                }.also { startActivity(it) }
                 true
             }
             LEAVE_REVIEW_KEY -> {
