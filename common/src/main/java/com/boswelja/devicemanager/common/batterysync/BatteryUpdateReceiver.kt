@@ -42,7 +42,7 @@ abstract class BatteryUpdateReceiver : WearableListenerService() {
             val shouldNotifyDeviceCharged = shouldNotifyDeviceCharged()
             if (shouldNotifyDeviceCharged) {
                 val chargeThreshold = sharedPreferences.getInt(PreferenceKey.BATTERY_CHARGE_THRESHOLD_KEY, 90)
-                if (percent > chargeThreshold && !sharedPreferences.getBoolean(PreferenceKey.BATTERY_CHARGED_NOTI_SENT, false)) {
+                if (percent >= chargeThreshold && !sharedPreferences.getBoolean(PreferenceKey.BATTERY_CHARGED_NOTI_SENT, false)) {
                     sendChargedNoti(chargeThreshold)
                 }
             }
