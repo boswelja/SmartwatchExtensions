@@ -73,18 +73,21 @@ class SettingsFragment :
     override fun onPreferenceClick(preference: Preference?): Boolean {
         return when (preference?.key) {
             OPEN_BATTERY_SYNC_PREF_KEY -> {
-                val intent = Intent(context!!, BatterySyncPreferenceActivity::class.java)
-                context!!.startActivity(intent)
+                Intent(context!!, BatterySyncPreferenceActivity::class.java).also {
+                    startActivity(it)
+                }
                 true
             }
             OPEN_INTERRUPT_FILTER_SYNC_PREF_KEY -> {
-                val intent = Intent(context!!, InterruptFilterSyncPreferenceActivity::class.java)
-                context!!.startActivity(intent)
+                Intent(context!!, InterruptFilterSyncPreferenceActivity::class.java).also {
+                    startActivity(it)
+                }
                 true
             }
             OPEN_APP_MANAGER_KEY -> {
-                val intent = Intent(context!!, AppManagerActivity::class.java)
-                context!!.startActivity(intent)
+                Intent(context!!, AppManagerActivity::class.java).also {
+                    startActivity(it)
+                }
                 true
             }
             OPEN_NOTI_SETTINGS_KEY -> {
@@ -102,11 +105,10 @@ class SettingsFragment :
                 true
             }
             LEAVE_REVIEW_KEY -> {
-                val intent = Intent(Intent.ACTION_VIEW).apply {
+                Intent(Intent.ACTION_VIEW).apply {
                     data = "https://play.google.com/store/apps/details?id=${context?.packageName}".toUri()
                     setPackage("com.android.vending")
-                }
-                startActivity(intent)
+                }.also { startActivity(it) }
                 true
             }
             OPEN_DONATE_DIALOG_KEY -> {

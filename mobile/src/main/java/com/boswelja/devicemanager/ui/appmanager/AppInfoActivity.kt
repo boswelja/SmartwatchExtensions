@@ -52,22 +52,32 @@ class AppInfoActivity : BaseToolbarActivity() {
 
     private fun setupButtons() {
         findViewById<MaterialButton>(R.id.open_button).apply {
-            setOnClickListener {
-                val intent = Intent()
-                intent.putExtra(EXTRA_APP_INFO, app)
-                setResult(RESULT_REQUEST_OPEN, intent)
-                finish()
-            }
             isEnabled = app.hasLaunchActivity
+
+            if (isEnabled) {
+                setOnClickListener {
+                    Intent().apply {
+                        putExtra(EXTRA_APP_INFO, app)
+                    }.also {
+                        setResult(RESULT_REQUEST_OPEN, it)
+                        finish()
+                    }
+                }
+            }
         }
         findViewById<MaterialButton>(R.id.uninstall_button).apply {
-            setOnClickListener {
-                val intent = Intent()
-                intent.putExtra(EXTRA_APP_INFO, app)
-                setResult(RESULT_REQUEST_UNINSTALL, intent)
-                finish()
-            }
             isEnabled = (app.packageName != packageName && !app.isSystemApp)
+
+            if (isEnabled) {
+                setOnClickListener {
+                    Intent().apply {
+                        putExtra(EXTRA_APP_INFO, app)
+                    }.also {
+                        setResult(RESULT_REQUEST_UNINSTALL, it)
+                        finish()
+                    }
+                }
+            }
         }
     }
 

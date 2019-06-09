@@ -35,12 +35,13 @@ object Utils {
                     .getBoolean(DEVICE_ADMIN_ENABLED_KEY, false)
 
     fun shareText(context: Context, text: String) {
-        val intent = Intent().apply {
+        Intent().apply {
             action = Intent.ACTION_SEND
             putExtra(Intent.EXTRA_TEXT, text)
             type = "text/plain"
+        }.also {
+            context.startActivity(it)
         }
-        context.startActivity(intent)
     }
 
     /**
