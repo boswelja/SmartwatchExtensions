@@ -1,0 +1,12 @@
+package com.boswelja.devicemanager.ui.main.messages
+
+import com.boswelja.devicemanager.R
+
+internal enum class Message(val iconRes: Int, val labelRes: Int, val shortLabelRes: Int, val descRes: Int = 0, val buttonLabelRes: Int = 0) {
+    BatteryOptWarning(
+            R.drawable.pref_ic_warning,
+            R.string.message_battery_opt_warning_label,
+            R.string.message_battery_opt_warning_label_short,
+            R.string.message_battery_opt_warning_desc,
+            R.string.message_button_turn_off)
+}

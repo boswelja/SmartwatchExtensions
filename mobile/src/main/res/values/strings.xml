@@ -75,10 +75,6 @@
     <string name="pref_daynight_option_dark">Dark</string>
     <string name="pref_daynight_option_battery">Set by Battery Saver</string>
     <string name="pref_daynight_option_system">Follow System</string>
-    <string name="pref_battery_opt_status_title">Disable Battery Optimisation</string>
-    <string name="pref_battery_opt_status_summary_disabled">Battery Optimisation is disabled for this app.</string>
-    <string name="pref_battery_opt_status_summary_enabled">Battery Optimisation is enabled for this app.</string>
-    <string name="pref_battery_opt_status_toggle_warning_message">Keeping Battery Optimisation on for this app can cause numerous issues with different functions of this app. The effects may vary from device to device, but we recommend disabling it to ensure everything works correctly.</string>
 
     <!-- About preference strings -->
     <string name="pref_about_review_title">Rate &amp; Review</string>
@@ -97,6 +93,15 @@
     <string name="dialog_button_next">Next</string>
     <string name="dialog_button_share">Share</string>
     <string name="dialog_button_close">Close</string>
+
+    <!-- Message strings -->
+    <string name="message_battery_opt_warning_label_short">Battery Optimisation</string>
+    <string name="message_battery_opt_warning_label">Disable Battery Optimisation</string>
+    <string name="message_battery_opt_warning_desc">Battery Optimisation can cause problems with Battery Sync among other things, it\'s recommended to turn it off for Wearable Extensions</string>
+    <string name="message_button_turn_off">Turn off</string>
+    <string name="message_snackbar_undo_remove">You will no longer see %s warnings</string>
+
+    <string name="snackbar_action_undo">Undo</string>
 
     <!-- Content Description strings -->
     <string name="content_description_loading">Loading</string>

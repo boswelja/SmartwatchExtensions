@@ -7,14 +7,10 @@
  */
 package com.boswelja.devicemanager.ui.main
 
-import android.annotation.SuppressLint
-import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.os.PowerManager
 import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -23,7 +19,7 @@ import androidx.core.app.NotificationManagerCompat
 import androidx.core.net.toUri
 import androidx.preference.ListPreference
 import androidx.preference.Preference
-import androidx.preference.PreferenceCategory
+import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.SwitchPreference
 import androidx.recyclerview.widget.RecyclerView
 import com.boswelja.devicemanager.BuildConfig
@@ -35,14 +31,13 @@ import com.boswelja.devicemanager.common.prefsynclayer.PreferenceSyncLayer
 import com.boswelja.devicemanager.preference.confirmationdialog.ConfirmationDialogPrefFragment
 import com.boswelja.devicemanager.preference.confirmationdialog.ConfirmationDialogPreference
 import com.boswelja.devicemanager.ui.appmanager.AppManagerActivity
-import com.boswelja.devicemanager.ui.base.BasePreferenceFragment
 import com.boswelja.devicemanager.ui.batterysync.BatterySyncPreferenceActivity
 import com.boswelja.devicemanager.ui.donate.DonationDialogFragment
 import com.boswelja.devicemanager.ui.interruptfiltersync.InterruptFilterSyncPreferenceActivity
 import com.boswelja.devicemanager.ui.version.ChangelogDialogFragment
 
 class SettingsFragment :
-        BasePreferenceFragment(),
+        PreferenceFragmentCompat(),
         SharedPreferences.OnSharedPreferenceChangeListener,
         Preference.OnPreferenceClickListener,
         Preference.OnPreferenceChangeListener {
@@ -52,7 +47,6 @@ class SettingsFragment :
     private lateinit var phoneLockPreference: SwitchPreference
 
     private lateinit var openNotiSettingsPreference: Preference
-    private lateinit var batteryOptimisationStatusPreference: ConfirmationDialogPreference
     private lateinit var daynightModePreference: ListPreference
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
@@ -123,7 +117,6 @@ class SettingsFragment :
         }
     }
 
-    @SuppressLint("BatteryLife")
     override fun onPreferenceChange(preference: Preference?, newValue: Any?): Boolean {
         return when (preference?.key) {
             PHONE_LOCKING_ENABLED_KEY -> {
@@ -150,14 +143,6 @@ class SettingsFragment :
                 }
                 false
             }
-            BATTERY_OPTIMISATION_STATUS_KEY -> {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && newValue == true) {
-                    val intent = Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS)
-                    intent.data = Uri.parse("package:${context?.packageName}")
-                    startActivity(intent)
-                }
-                true
-            }
             else -> false
         }
     }
@@ -168,13 +153,9 @@ class SettingsFragment :
     }
 
     override fun onCreateRecyclerView(inflater: LayoutInflater?, parent: ViewGroup?, savedInstanceState: Bundle?): RecyclerView {
-        val recyclerView = super.onCreateRecyclerView(inflater, parent, savedInstanceState)
-        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                (activity as MainActivity).elevateToolbar(recyclerView.canScrollVertically(-1))
-            }
-        })
-        return recyclerView
+        return super.onCreateRecyclerView(inflater, parent, savedInstanceState).apply {
+            isNestedScrollingEnabled = true
+        }
     }
 
     override fun onResume() {
@@ -200,25 +181,6 @@ class SettingsFragment :
         }
 
         daynightModePreference.summary = daynightModePreference.entry
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            val isIgnoringBatteryOptimisation = (context?.getSystemService(Context.POWER_SERVICE) as PowerManager)
-                    .isIgnoringBatteryOptimizations(context?.packageName!!)
-            if (isIgnoringBatteryOptimisation) {
-                batteryOptimisationStatusPreference.apply {
-                    summary = getString(R.string.pref_battery_opt_status_summary_disabled)
-                    setIcon(R.drawable.pref_ic_ok)
-                }
-            } else {
-                batteryOptimisationStatusPreference.apply {
-                    summary = getString(R.string.pref_battery_opt_status_summary_enabled)
-                    setIcon(R.drawable.pref_ic_warning)
-                }
-            }
-            preferenceManager.sharedPreferences.edit()
-                    .putBoolean(BATTERY_OPTIMISATION_STATUS_KEY, isIgnoringBatteryOptimisation)
-                    .apply()
-        }
     }
 
     override fun onDestroy() {
@@ -242,12 +204,6 @@ class SettingsFragment :
         openNotiSettingsPreference = findPreference(OPEN_NOTI_SETTINGS_KEY)!!
         openNotiSettingsPreference.onPreferenceClickListener = this
         daynightModePreference = findPreference(DAYNIGHT_MODE_KEY)!!
-        batteryOptimisationStatusPreference = findPreference(BATTERY_OPTIMISATION_STATUS_KEY)!!
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-            findPreference<PreferenceCategory>("general_category")!!.removePreference(batteryOptimisationStatusPreference)
-        } else {
-            batteryOptimisationStatusPreference.onPreferenceChangeListener = this
-        }
 
         addPreferencesFromResource(R.xml.prefs_about)
         findPreference<Preference>(LEAVE_REVIEW_KEY)!!.apply {
@@ -282,7 +238,6 @@ class SettingsFragment :
 
         const val OPEN_NOTI_SETTINGS_KEY = "show_noti_settings"
         const val DAYNIGHT_MODE_KEY = "daynight_mode"
-        const val BATTERY_OPTIMISATION_STATUS_KEY = "battery_optimisation_status"
 
         const val LEAVE_REVIEW_KEY = "review"
         const val OPEN_DONATE_DIALOG_KEY = "show_donate_dialog"

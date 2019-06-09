@@ -5,13 +5,13 @@
 
     <color name="statusBarColor">#666666</color>
     <color name="navBarColor">#FFFFFF</color>
-    <color name="navBarDividerColor">#1f000000</color>
 
     <color name="widgetBackground">#CCFFFFFF</color>
     <color name="widgetForeground">#000000</color>
 
     <color name="windowBackground">#FFFFFF</color>
     <color name="dialogBackground">@color/windowBackground</color>
+    <color name="dividerColor">#1f000000</color>
 
     <color name="iconTint">@color/colorPrimary</color>
 

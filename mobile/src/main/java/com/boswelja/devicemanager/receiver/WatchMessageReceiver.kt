@@ -44,8 +44,7 @@ class WatchMessageReceiver : WearableListenerService() {
                 when (key) {
                     PreferenceKey.PHONE_LOCKING_ENABLED_KEY,
                     SettingsFragment.OPEN_NOTI_SETTINGS_KEY,
-                    SettingsFragment.DAYNIGHT_MODE_KEY,
-                    SettingsFragment.BATTERY_OPTIMISATION_STATUS_KEY -> {
+                    SettingsFragment.DAYNIGHT_MODE_KEY -> {
                         val intent = Intent(this, MainActivity::class.java).apply {
                             putExtra(EXTRA_PREFERENCE_KEY, key)
                             flags = Intent.FLAG_ACTIVITY_NEW_TASK
