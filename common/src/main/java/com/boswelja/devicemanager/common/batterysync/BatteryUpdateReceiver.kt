@@ -47,7 +47,7 @@ abstract class BatteryUpdateReceiver : WearableListenerService() {
                 }
             }
 
-            if (!charging) {
+            if (!charging && sharedPreferences.getBoolean(PreferenceKey.BATTERY_CHARGED_NOTI_SENT, false)) {
                 sharedPreferences.edit().putBoolean(PreferenceKey.BATTERY_CHARGED_NOTI_SENT, false).apply()
                 if (shouldNotifyDeviceCharged) cancelChargedNoti()
             }
