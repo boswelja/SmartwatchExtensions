@@ -161,8 +161,7 @@ internal class MessagesAdapter(private val fragment: MessageFragment) :
                         val iconRight = itemView.left + iconMargin + icon.intrinsicWidth
                         icon.setBounds(iconLeft, iconTop, iconRight, iconBottom)
                         icon.alpha = Math.min(((dX - icon.intrinsicWidth - iconMargin) * alphaMultiplier).toInt(), iconMaxAlpha)
-                    } else {
-                        icon.setBounds(0, 0, 0, 0)
+                        icon.draw(c)
                     }
 
                     swipeToRightBackground.setBounds(itemView.left, itemView.top,
@@ -179,23 +178,14 @@ internal class MessagesAdapter(private val fragment: MessageFragment) :
                         val iconRight = itemView.right - iconMargin
                         icon.setBounds(iconLeft, iconTop, iconRight, iconBottom)
                         icon.alpha = Math.min(((dX + icon.intrinsicWidth + iconMargin) * alphaMultiplier * -1).toInt(), iconMaxAlpha)
-                    } else {
-                        icon.setBounds(0, 0, 0, 0)
+                        icon.draw(c)
                     }
 
                     swipeToLeftBackground.setBounds(itemView.right + dX.toInt() - backgroundCornerOffset,
                             itemView.top, itemView.right, itemView.bottom)
                     swipeToLeftBackground.draw(c)
                 }
-                else -> {
-                    swipeToLeftBackground.setBounds(0, 0, 0, 0)
-                    swipeToRightBackground.setBounds(0, 0, 0, 0)
-                    icon.setBounds(0, 0, 0, 0)
-                    swipeToLeftBackground.draw(c)
-                    swipeToRightBackground.draw(c)
-                }
             }
-            icon.draw(c)
         }
     }
 }
