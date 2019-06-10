@@ -74,7 +74,7 @@ class MessageFragment : Fragment() {
         Snackbar.make(view!!,
                 getString(R.string.message_snackbar_undo_remove)
                         .format(getString(message.shortLabelRes)),
-                Snackbar.LENGTH_LONG).apply {
+                Snackbar.LENGTH_INDEFINITE).apply {
             setAction(R.string.snackbar_action_undo) {
                 when (message) {
                     Message.BatteryOptWarning -> {

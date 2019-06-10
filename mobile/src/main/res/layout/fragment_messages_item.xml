@@ -6,6 +6,7 @@
     android:layout_height="wrap_content"
     android:padding="8dp"
     android:layout_margin="8dp"
+    android:scrollbars="none"
     android:background="@drawable/message_background">
 
     <androidx.appcompat.widget.AppCompatImageView

@@ -8,6 +8,7 @@
 package com.boswelja.devicemanager.ui.main
 
 import android.content.SharedPreferences
+import android.os.Build
 import android.os.Bundle
 import androidx.core.widget.NestedScrollView
 import androidx.preference.PreferenceManager
@@ -31,8 +32,10 @@ class MainActivity : BaseToolbarActivity() {
         sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this)
 
         findViewById<NestedScrollView>(R.id.scroll_view).apply {
-            setOnScrollChangeListener { _: NestedScrollView?, _: Int, scrollY: Int, _: Int, _: Int ->
-                elevateToolbar(scrollY != 0)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                setOnScrollChangeListener { _: NestedScrollView?, _: Int, scrollY: Int, _: Int, _: Int ->
+                    elevateToolbar(scrollY != 0)
+                }
             }
         }
 
