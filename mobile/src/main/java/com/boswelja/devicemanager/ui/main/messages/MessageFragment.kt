@@ -38,7 +38,7 @@ class MessageFragment : Fragment() {
             adapter = MessagesAdapter(this@MessageFragment)
             (itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
         }
-        val itemTouchHelper = ItemTouchHelper(MessagesAdapter.SwipeDismissCallback(recyclerView.adapter as MessagesAdapter))
+        val itemTouchHelper = ItemTouchHelper(MessagesAdapter.SwipeDismissCallback(recyclerView.adapter as MessagesAdapter, context!!))
         itemTouchHelper.attachToRecyclerView(recyclerView)
     }
 
