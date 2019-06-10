@@ -87,6 +87,9 @@ class MessageFragment : Fragment() {
         }.show()
     }
 
+    internal fun startAnimation() {
+    }
+
     companion object {
         private const val IGNORE_BATTERY_OPT_WARNING_KEY = "ignore_battery_opt_warning"
     }

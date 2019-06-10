@@ -15,7 +15,6 @@ import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Build
 import android.provider.Settings
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -31,6 +30,12 @@ internal class MessagesAdapter(private val fragment: MessageFragment) :
         RecyclerView.Adapter<MessagesAdapter.MessageItemViewHolder>() {
 
     private val messages = ArrayList<Message>()
+    private lateinit var recyclerView: RecyclerView
+
+    override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
+        super.onAttachedToRecyclerView(recyclerView)
+        this.recyclerView = recyclerView
+    }
 
     override fun getItemCount(): Int = messages.count()
 
@@ -57,6 +62,7 @@ internal class MessagesAdapter(private val fragment: MessageFragment) :
         }
         holder.itemView.setOnClickListener {
             holder.toggleExpanded()
+            fragment.startAnimation()
             notifyItemChanged(holder.adapterPosition)
         }
     }
@@ -80,6 +86,7 @@ internal class MessagesAdapter(private val fragment: MessageFragment) :
     fun notifyMessage(message: Message) {
         if (!messages.contains(message)) {
             messages.add(message)
+            fragment.startAnimation()
             notifyItemInserted(messages.indexOf(message))
         }
     }
@@ -94,6 +101,7 @@ internal class MessagesAdapter(private val fragment: MessageFragment) :
         if (messages.contains(message)) {
             messages.indexOf(message).also {
                 messages.removeAt(it)
+                fragment.startAnimation()
                 notifyItemRemoved(it)
             }
         }
@@ -115,7 +123,6 @@ internal class MessagesAdapter(private val fragment: MessageFragment) :
 
         fun toggleExpanded() {
             isExpanded = !isExpanded
-            Log.d("MessagesAdapter", "toggleExpanded: $isExpanded")
             val itemViewPadding = Utils.complexTypeDp(itemView.resources, 8f).toInt()
             if (isExpanded) {
                 labelView.maxLines = 2
