@@ -10,7 +10,7 @@ android {
         applicationId versions.packageName
         minSdkVersion 21
         targetSdkVersion versions.compileSdk
-        versionCode versions.versionCode + 100000000
+        versionCode versions.versionCode
         versionName versions.versionName
     }
     buildTypes {

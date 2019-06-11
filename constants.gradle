@@ -1,5 +1,5 @@
 ext.versions = [
-        versionCode: getDate(),
+        versionCode: generateVersionCode(),
         versionName: "2.1.2",
         compileSdk: 29,
         packageName: "com.boswelja.devicemanager",
@@ -15,6 +15,48 @@ ext.versions = [
         androidx_preference: "1.1.0-beta01"
 ]
 
-static def getDate() {
-    return new Date().format('yyyyMMdd').toInteger()
+static def generateVersionCode() {
+    def versionBuildKey = 'version.build_number'
+    def versionPropFile = new File('version.properties')
+    def versionBuild
+    def versionProps = new Properties()
+    if (!versionPropFile.canRead()) {
+        if (versionPropFile.createNewFile()) {
+            versionProps.load(new FileInputStream(versionPropFile))
+        }
+    } else {
+        versionProps.load(new FileInputStream(versionPropFile))
+    }
+
+    if (versionProps.containsKey(versionBuildKey) && !isOldData(versionPropFile.lastModified())) {
+        versionBuild = versionProps.get(versionBuildKey).toInteger() + 1
+    } else {
+        versionBuild = 0
+    }
+    if (versionBuild <= 99) {
+        versionProps.put(versionBuildKey, versionBuild.toString())
+        versionProps.store(new FileWriter(versionPropFile), null)
+    } else {
+        throw new Exception("Build limit reached")
+    }
+    def buildNumber = String.format("%02d", versionBuild)
+
+    def dateSection = new Date().format('yyyyMMdd').toString()
+    return dateSection.concat(buildNumber).toInteger()
+}
+
+static def isOldData(Long timestamp) {
+    Calendar lastBuildDate = Calendar.getInstance()
+    lastBuildDate.setTimeInMillis(timestamp)
+    lastBuildDate.set(Calendar.HOUR_OF_DAY, 0)
+    lastBuildDate.set(Calendar.MINUTE, 0)
+    lastBuildDate.set(Calendar.SECOND, 0)
+    lastBuildDate.set(Calendar.MILLISECOND, 0)
+    Calendar currentDate = Calendar.getInstance()
+    currentDate.setTimeInMillis(System.currentTimeMillis())
+    currentDate.set(Calendar.HOUR_OF_DAY, 0)
+    currentDate.set(Calendar.MINUTE, 0)
+    currentDate.set(Calendar.SECOND, 0)
+    currentDate.set(Calendar.MILLISECOND, 0)
+    return lastBuildDate < currentDate
 }
