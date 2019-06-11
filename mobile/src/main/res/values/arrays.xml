@@ -22,6 +22,7 @@
         <item>Added a messages list at the top of the main activity to let you know of any problems</item>
         <item>Wear OS app got a redesign</item>
         <item>Warn about DnD Sync from Phone to Watch being experimental</item>
+        <item>Fixed phantom notifications caused by charge notifications</item>
         <item>Fixed a crash that could occur when setting up DnD Sync from Phone to Watch</item>
         <item>Fix phone locking</item>
     </string-array>
