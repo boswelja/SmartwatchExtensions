@@ -98,17 +98,21 @@ class InterruptFilterSyncHelperDialog : BaseDialogFragment() {
         Wearable.getCapabilityClient(context!!)
                 .getCapability(References.CAPABILITY_WATCH_APP, CapabilityClient.FILTER_REACHABLE)
                 .addOnCompleteListener {
-                    if (it.isSuccessful && it.result != null && activity != null) {
-                        val nodes = it.result!!.nodes
-                        if (nodes.isNullOrEmpty()) {
+                    try {
+                        if (it.isSuccessful && it.result != null && activity != null) {
+                            val nodes = it.result!!.nodes
+                            if (nodes.isNullOrEmpty()) {
+                                (activity as InterruptFilterSyncPreferenceActivity).createSnackBar(getString(R.string.no_watch_found))
+                                dismiss()
+                            } else {
+                                messageClient.sendMessage(nodes.first().id!!, REQUEST_INTERRUPT_FILTER_ACCESS_STATUS_PATH, null)
+                            }
+                        } else {
                             (activity as InterruptFilterSyncPreferenceActivity).createSnackBar(getString(R.string.no_watch_found))
                             dismiss()
-                        } else {
-                            messageClient.sendMessage(nodes.first().id!!, REQUEST_INTERRUPT_FILTER_ACCESS_STATUS_PATH, null)
                         }
-                    } else {
-                        (activity as InterruptFilterSyncPreferenceActivity).createSnackBar(getString(R.string.no_watch_found))
-                        dismiss()
+                    } catch (e: IllegalStateException) {
+                        e.printStackTrace()
                     }
                 }
     }
