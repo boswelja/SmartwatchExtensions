@@ -55,7 +55,7 @@ abstract class BaseToolbarActivity : BaseDayNightActivity() {
     }
 
     fun createSnackBar(message: String) {
-        Snackbar.make(findViewById(R.id.fragment_holder), message, Snackbar.LENGTH_LONG).show()
+        Snackbar.make(findViewById(R.id.content_view), message, Snackbar.LENGTH_LONG).show()
     }
 
     companion object {

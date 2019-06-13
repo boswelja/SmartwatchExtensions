@@ -99,16 +99,16 @@ class InterruptFilterSyncHelperDialog : BaseDialogFragment() {
                 .getCapability(References.CAPABILITY_WATCH_APP, CapabilityClient.FILTER_REACHABLE)
                 .addOnCompleteListener {
                     try {
-                        if (it.isSuccessful && it.result != null && activity != null) {
+                        if (it.isSuccessful && it.result != null) {
                             val nodes = it.result!!.nodes
                             if (nodes.isNullOrEmpty()) {
-                                (activity as InterruptFilterSyncPreferenceActivity).createSnackBar(getString(R.string.no_watch_found))
+                                createSnackbar(getString(R.string.no_watch_found))
                                 dismiss()
                             } else {
                                 messageClient.sendMessage(nodes.first().id!!, REQUEST_INTERRUPT_FILTER_ACCESS_STATUS_PATH, null)
                             }
                         } else {
-                            (activity as InterruptFilterSyncPreferenceActivity).createSnackBar(getString(R.string.no_watch_found))
+                            createSnackbar(getString(R.string.no_watch_found))
                             dismiss()
                         }
                     } catch (e: IllegalStateException) {
@@ -121,7 +121,7 @@ class InterruptFilterSyncHelperDialog : BaseDialogFragment() {
         if (hasDnDAccess) {
             dismiss()
             if (!isInitialCheck) {
-                (activity as InterruptFilterSyncPreferenceActivity).createSnackBar(getString(R.string.interrupt_filter_sync_to_watch_perm_granted_message))
+                createSnackbar(getString(R.string.interrupt_filter_sync_to_watch_perm_granted_message))
                 isInitialCheck = false
             }
         } else {
@@ -137,6 +137,12 @@ class InterruptFilterSyncHelperDialog : BaseDialogFragment() {
 
     fun setResponseListener(responseListener: ResponseListener) {
         this.responseListener = responseListener
+    }
+
+    private fun createSnackbar(message: String) {
+        if (activity != null) {
+            (activity as InterruptFilterSyncPreferenceActivity).createSnackBar(message)
+        }
     }
 
     override fun dismiss() {
