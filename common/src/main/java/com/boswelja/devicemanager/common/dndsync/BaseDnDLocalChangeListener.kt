@@ -54,20 +54,24 @@ abstract class BaseDnDLocalChangeListener : Service() {
         super.onCreate()
 
         preferences = PreferenceManager.getDefaultSharedPreferences(this)
-        preferences.registerOnSharedPreferenceChangeListener(preferenceChangeListener)
+        if (preferences.getBoolean(interruptFilterSendEnabledKey, false)) {
+            preferences.registerOnSharedPreferenceChangeListener(preferenceChangeListener)
 
-        notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && notificationManager.getNotificationChannel(INTERRUPT_FILTER_SYNC_NOTI_CHANNEL_ID) == null) {
-            val notiChannel = NotificationChannel(
-                    INTERRUPT_FILTER_SYNC_NOTI_CHANNEL_ID,
-                    getString(R.string.dnd_sync_noti_channel_name),
-                    NotificationManager.IMPORTANCE_LOW).apply {
-                enableLights(false)
-                enableVibration(false)
-                setShowBadge(false)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && notificationManager.getNotificationChannel(INTERRUPT_FILTER_SYNC_NOTI_CHANNEL_ID) == null) {
+                val notiChannel = NotificationChannel(
+                        INTERRUPT_FILTER_SYNC_NOTI_CHANNEL_ID,
+                        getString(R.string.dnd_sync_noti_channel_name),
+                        NotificationManager.IMPORTANCE_LOW).apply {
+                    enableLights(false)
+                    enableVibration(false)
+                    setShowBadge(false)
+                }
+                notificationManager.createNotificationChannel(notiChannel)
             }
-            notificationManager.createNotificationChannel(notiChannel)
+        } else {
+            stopSelf()
         }
     }
 
