@@ -12,7 +12,7 @@ import com.boswelja.devicemanager.Utils
 import com.boswelja.devicemanager.common.Compat
 import com.boswelja.devicemanager.common.Extensions.toByteArray
 import com.boswelja.devicemanager.common.appmanager.AppManagerReferences
-import com.boswelja.devicemanager.common.dndsync.References.REQUEST_INTERRUPT_FILTER_ACCESS_STATUS_PATH
+import com.boswelja.devicemanager.common.interruptfiltersync.References.REQUEST_INTERRUPT_FILTER_ACCESS_STATUS_PATH
 import com.boswelja.devicemanager.service.AppManagerService
 import com.google.android.gms.wearable.MessageEvent
 import com.google.android.gms.wearable.Wearable

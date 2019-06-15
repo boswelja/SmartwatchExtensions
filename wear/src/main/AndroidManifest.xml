@@ -110,7 +110,7 @@
         </service>
 
         <service
-            android:name=".service.DnDLocalChangeListener"
+            android:name=".service.InterruptFilterLocalChangeListener"
             android:exported="false" />
 
         <service

@@ -5,11 +5,11 @@
  * This file, and any part of the Wearable Extensions app/s cannot be copied and/or distributed
  * without permission from Jack Boswell (boswelja) <boswela@outlook.com>
  */
-package com.boswelja.devicemanager.common.dndsync
+package com.boswelja.devicemanager.common.interruptfiltersync
 
 import android.content.SharedPreferences
 import androidx.preference.PreferenceManager
-import com.boswelja.devicemanager.common.dndsync.References.NEW_DND_STATE_KEY
+import com.boswelja.devicemanager.common.interruptfiltersync.References.NEW_DND_STATE_KEY
 import com.google.android.gms.wearable.DataEvent
 import com.google.android.gms.wearable.DataEventBuffer
 import com.google.android.gms.wearable.DataMapItem
@@ -18,7 +18,7 @@ import com.google.android.gms.wearable.WearableListenerService
 /**
  * Receives changes in DnD state
  */
-abstract class BaseDnDRemoteChangeReceiver : WearableListenerService() {
+abstract class BaseInterruptFilterRemoteChangeReceiver : WearableListenerService() {
 
     lateinit var sharedPreferences: SharedPreferences
 

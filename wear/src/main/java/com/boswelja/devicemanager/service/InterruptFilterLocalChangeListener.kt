@@ -8,9 +8,9 @@
 package com.boswelja.devicemanager.service
 
 import com.boswelja.devicemanager.common.PreferenceKey
-import com.boswelja.devicemanager.common.dndsync.BaseDnDLocalChangeListener
+import com.boswelja.devicemanager.common.interruptfiltersync.BaseInterruptFilterLocalChangeListener
 
-class DnDLocalChangeListener : BaseDnDLocalChangeListener() {
+class InterruptFilterLocalChangeListener : BaseInterruptFilterLocalChangeListener() {
 
     override val interruptFilterSendEnabledKey: String = PreferenceKey.INTERRUPT_FILTER_SYNC_TO_PHONE_KEY
 }

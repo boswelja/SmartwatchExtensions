@@ -12,7 +12,7 @@ import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.boswelja.devicemanager.common.Compat
 import com.boswelja.devicemanager.common.PreferenceKey
-import com.boswelja.devicemanager.service.DnDLocalChangeListener
+import com.boswelja.devicemanager.service.InterruptFilterLocalChangeListener
 import com.boswelja.devicemanager.ui.base.BasePreferenceActivity
 import com.boswelja.devicemanager.ui.base.BasePreferenceFragment
 
@@ -25,7 +25,7 @@ class InterruptFilterSyncPreferenceActivity : BasePreferenceActivity() {
         super.onCreate(savedInstanceState)
 
         if (sharedPreferences.getBoolean(PreferenceKey.INTERRUPT_FILTER_SYNC_TO_WATCH_KEY, false)) {
-            val intent = Intent(this, DnDLocalChangeListener::class.java)
+            val intent = Intent(this, InterruptFilterLocalChangeListener::class.java)
             Compat.startForegroundService(this, intent)
         }
     }

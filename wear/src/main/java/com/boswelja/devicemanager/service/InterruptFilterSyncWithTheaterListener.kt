@@ -24,7 +24,7 @@ import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.Utils
 import com.boswelja.devicemanager.common.AtomicCounter
 import com.boswelja.devicemanager.common.PreferenceKey
-import com.boswelja.devicemanager.common.dndsync.Utils.updateInterruptionFilter
+import com.boswelja.devicemanager.common.interruptfiltersync.Utils.updateInterruptionFilter
 
 class InterruptFilterSyncWithTheaterListener : Service() {
 

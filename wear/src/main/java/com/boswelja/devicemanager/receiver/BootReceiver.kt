@@ -13,7 +13,7 @@ import com.boswelja.devicemanager.common.BaseBootReceiver
 import com.boswelja.devicemanager.common.Compat
 import com.boswelja.devicemanager.common.PreferenceKey.INTERRUPT_FILTER_ON_WITH_THEATER_KEY
 import com.boswelja.devicemanager.common.PreferenceKey.INTERRUPT_FILTER_SYNC_TO_PHONE_KEY
-import com.boswelja.devicemanager.service.DnDLocalChangeListener
+import com.boswelja.devicemanager.service.InterruptFilterLocalChangeListener
 import com.boswelja.devicemanager.service.InterruptFilterSyncWithTheaterListener
 
 class BootReceiver : BaseBootReceiver() {
@@ -28,7 +28,7 @@ class BootReceiver : BaseBootReceiver() {
     }
 
     private fun startInterruptFilterLocalChangeListener(context: Context?) {
-        val intent = Intent(context, DnDLocalChangeListener::class.java)
+        val intent = Intent(context, InterruptFilterLocalChangeListener::class.java)
         Compat.startForegroundService(context!!, intent)
     }
 

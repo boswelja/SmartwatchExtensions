@@ -9,9 +9,9 @@ package com.boswelja.devicemanager.receiver
 
 import com.boswelja.devicemanager.Utils
 import com.boswelja.devicemanager.common.PreferenceKey
-import com.boswelja.devicemanager.common.dndsync.BaseDnDRemoteChangeReceiver
+import com.boswelja.devicemanager.common.interruptfiltersync.BaseInterruptFilterRemoteChangeReceiver
 
-class DnDRemoteChangeReceiver : BaseDnDRemoteChangeReceiver() {
+class DnDRemoteChangeReceiver : BaseInterruptFilterRemoteChangeReceiver() {
 
     override fun isReceiving(): Boolean =
             sharedPreferences.getBoolean(PreferenceKey.INTERRUPT_FILTER_SYNC_TO_WATCH_KEY, false)

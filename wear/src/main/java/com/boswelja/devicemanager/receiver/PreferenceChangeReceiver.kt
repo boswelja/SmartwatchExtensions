@@ -14,7 +14,7 @@ import com.boswelja.devicemanager.common.Compat
 import com.boswelja.devicemanager.common.PreferenceKey
 import com.boswelja.devicemanager.common.prefsynclayer.BasePreferenceChangeReceiver
 import com.boswelja.devicemanager.complication.PhoneBatteryComplicationProvider
-import com.boswelja.devicemanager.service.DnDLocalChangeListener
+import com.boswelja.devicemanager.service.InterruptFilterLocalChangeListener
 import com.boswelja.devicemanager.service.InterruptFilterSyncWithTheaterListener
 
 class PreferenceChangeReceiver : BasePreferenceChangeReceiver() {
@@ -26,7 +26,7 @@ class PreferenceChangeReceiver : BasePreferenceChangeReceiver() {
         batterySyncEnabled: Boolean
     ) {
         if (interruptFilterSyncToPhone) {
-            val intent = Intent(this, DnDLocalChangeListener::class.java)
+            val intent = Intent(this, InterruptFilterLocalChangeListener::class.java)
             Compat.startForegroundService(this, intent)
         }
 

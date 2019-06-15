@@ -51,6 +51,7 @@
                 <action android:name="android.app.action.DEVICE_ADMIN_ENABLED" />
             </intent-filter>
         </receiver>
+
         <receiver
             android:name=".receiver.BootReceiver"
             android:exported="false">
@@ -62,11 +63,12 @@
         <service
             android:name=".BatteryUpdateJob"
             android:permission="android.permission.BIND_JOB_SERVICE" />
+
         <service
-            android:name=".service.DnDLocalChangeListener"
+            android:name=".service.InterruptFilterLocalChangeListener"
             android:exported="false" />
 
-        <service android:name=".receiver.DnDRemoteChangeReceiver">
+        <service android:name=".receiver.InterruptFilterRemoteChangeReceiver">
             <intent-filter>
                 <action android:name="com.google.android.gms.wearable.DATA_CHANGED" />
                 <data android:scheme="wear" android:host="*" android:path="/dnd_status" />

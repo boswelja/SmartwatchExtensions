@@ -51,14 +51,6 @@ object Compat {
         }
     }
 
-    fun getForegroundService(context: Context, intent: Intent): PendingIntent {
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            PendingIntent.getForegroundService(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
-        } else {
-            PendingIntent.getService(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
-        }
-    }
-
     /**
      * Checks whether or not Interruption Filter is currently active, or check silent
      * mode state if Interruption Filter is unavailable.
