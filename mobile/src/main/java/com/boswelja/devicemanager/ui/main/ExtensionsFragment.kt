@@ -74,7 +74,7 @@ class ExtensionsFragment :
     }
 
     override fun onPreferenceChange(preference: Preference?, newValue: Any?): Boolean {
-        return when (preference?.key) {
+        return when (val key = preference?.key) {
             PHONE_LOCKING_ENABLED_KEY -> {
                 val sharedPreferences = preference.sharedPreferences
                 val value = newValue == true
@@ -87,15 +87,15 @@ class ExtensionsFragment :
                             }
                             .setNegativeButton(R.string.dialog_button_cancel) { _, _ ->
                                 sharedPreferences.edit()
-                                        .putBoolean(preference.key, false)
+                                        .putBoolean(key, false)
                                         .apply()
                             }
                             .show()
                 } else {
                     sharedPreferences.edit()
-                            .putBoolean(preference.key, value)
+                            .putBoolean(key, value)
                             .apply()
-                    preferenceSyncLayer.pushNewData()
+                    preferenceSyncLayer.pushNewData(key)
                 }
                 false
             }

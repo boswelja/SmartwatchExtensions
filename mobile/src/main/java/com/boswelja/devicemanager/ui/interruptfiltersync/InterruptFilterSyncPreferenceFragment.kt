@@ -54,7 +54,7 @@ class InterruptFilterSyncPreferenceFragment :
     }
 
     override fun onPreferenceChange(preference: Preference?, newValue: Any?): Boolean {
-        return when (preference?.key) {
+        return when (val key = preference?.key) {
             INTERRUPT_FILTER_SYNC_TO_WATCH_KEY -> {
                 val value = newValue == true
                 if (value) {
@@ -62,8 +62,8 @@ class InterruptFilterSyncPreferenceFragment :
                         setResponseListener(object : InterruptFilterSyncHelperDialog.ResponseListener {
                             override fun onResponse(success: Boolean) {
                                 preference.sharedPreferences.edit()
-                                        .putBoolean(preference.key, success).apply()
-                                preferenceSyncLayer.pushNewData()
+                                        .putBoolean(key, success).apply()
+                                preferenceSyncLayer.pushNewData(key)
                                 if (success) {
                                     Compat.startForegroundService(context!!, Intent(context!!, InterruptFilterLocalChangeListener::class.java))
                                 }
@@ -73,8 +73,8 @@ class InterruptFilterSyncPreferenceFragment :
                     }
                 } else {
                     preference.sharedPreferences.edit()
-                            .putBoolean(preference.key, value).apply()
-                    preferenceSyncLayer.pushNewData()
+                            .putBoolean(key, value).apply()
+                    preferenceSyncLayer.pushNewData(key)
                     context?.stopService(Intent(context!!, InterruptFilterLocalChangeListener::class.java))
                 }
                 false
@@ -82,16 +82,16 @@ class InterruptFilterSyncPreferenceFragment :
             INTERRUPT_FILTER_SYNC_TO_PHONE_KEY,
             INTERRUPT_FILTER_ON_WITH_THEATER_KEY -> {
                 val value = newValue == true
-                preference.sharedPreferences.edit().putBoolean(preference.key, value).apply()
+                preference.sharedPreferences.edit().putBoolean(key, value).apply()
                 if (value) {
                     if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M || notificationManager.isNotificationPolicyAccessGranted) {
-                        preferenceSyncLayer.pushNewData()
+                        preferenceSyncLayer.pushNewData(key)
                     } else {
                         Toast.makeText(context, getString(R.string.interrupt_filter_sync_request_policy_access_message), Toast.LENGTH_SHORT).show()
                         startActivityForResult(Intent(Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS), 12345)
                     }
                 } else {
-                    preferenceSyncLayer.pushNewData()
+                    preferenceSyncLayer.pushNewData(key)
                 }
                 false
             }

@@ -55,7 +55,7 @@ class BatterySyncPreferenceFragment :
                 } else {
                     BatteryUpdateJob.stopJob(context!!)
                 }
-                preferenceSyncLayer.pushNewData()
+                preferenceSyncLayer.pushNewData(key)
                 WatchBatteryWidget.updateWidgets(context!!)
             }
             BATTERY_PHONE_CHARGE_NOTI_KEY -> {
@@ -66,12 +66,15 @@ class BatterySyncPreferenceFragment :
                 batterySyncWatchChargedNotiPreference.isChecked = sharedPreferences?.getBoolean(key, false)!!
                 setBatteryChargeThresholdEnabled()
             }
-            BATTERY_CHARGE_THRESHOLD_KEY -> updateChargeNotiPrefSummaries()
+            BATTERY_CHARGE_THRESHOLD_KEY -> {
+                updateChargeNotiPrefSummaries()
+                preferenceSyncLayer.pushNewData(key)
+            }
         }
     }
 
     override fun onPreferenceChange(preference: Preference?, newValue: Any?): Boolean {
-        return when (preference?.key!!) {
+        return when (val key = preference?.key) {
             BATTERY_SYNC_INTERVAL_KEY -> {
                 val value = (newValue as Int).toLong()
                 val syncTimeMillis = TimeUnit.MINUTES.toMillis(value)
@@ -82,11 +85,8 @@ class BatterySyncPreferenceFragment :
             BATTERY_WATCH_CHARGE_NOTI_KEY -> {
                 val value = newValue == true
                 preference.sharedPreferences.edit().putBoolean(preference.key, value).apply()
-                preferenceSyncLayer.pushNewData()
+                preferenceSyncLayer.pushNewData(key)
                 false
-            }
-            BATTERY_CHARGE_THRESHOLD_KEY -> {
-                true
             }
             else -> true
         }

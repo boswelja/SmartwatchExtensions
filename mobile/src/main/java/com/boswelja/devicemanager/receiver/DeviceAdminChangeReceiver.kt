@@ -20,7 +20,6 @@ class DeviceAdminChangeReceiver : DeviceAdminReceiver() {
         PreferenceManager.getDefaultSharedPreferences(context).edit()
                 .putBoolean(DEVICE_ADMIN_ENABLED_KEY, true)
                 .apply()
-        PreferenceSyncLayer(context!!).pushNewData()
     }
 
     override fun onDisabled(context: Context?, intent: Intent?) {
@@ -29,7 +28,7 @@ class DeviceAdminChangeReceiver : DeviceAdminReceiver() {
                 .putBoolean(DEVICE_ADMIN_ENABLED_KEY, false)
                 .putBoolean(PreferenceKey.PHONE_LOCKING_ENABLED_KEY, false)
                 .apply()
-        PreferenceSyncLayer(context!!).pushNewData()
+        PreferenceSyncLayer(context!!).pushNewData(PreferenceKey.PHONE_LOCKING_ENABLED_KEY)
     }
 
     companion object {
