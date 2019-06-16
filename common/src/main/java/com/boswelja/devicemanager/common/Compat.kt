@@ -9,7 +9,6 @@ package com.boswelja.devicemanager.common
 
 import android.annotation.SuppressLint
 import android.app.NotificationManager
-import android.app.PendingIntent
 import android.app.job.JobInfo
 import android.app.job.JobScheduler
 import android.content.Context

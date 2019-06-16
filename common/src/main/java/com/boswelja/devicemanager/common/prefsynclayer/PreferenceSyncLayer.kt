@@ -10,15 +10,6 @@ package com.boswelja.devicemanager.common.prefsynclayer
 import android.content.Context
 import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.common.PreferenceKey
-import com.boswelja.devicemanager.common.prefsynclayer.PreferenceSyncKeys.BATTERY_CHARGE_THRESHOLD
-import com.boswelja.devicemanager.common.prefsynclayer.PreferenceSyncKeys.BATTERY_PHONE_FULL_CHARGE_NOTI_KEY
-import com.boswelja.devicemanager.common.prefsynclayer.PreferenceSyncKeys.BATTERY_SYNC_ENABLED_KEY
-import com.boswelja.devicemanager.common.prefsynclayer.PreferenceSyncKeys.BATTERY_WATCH_FULL_CHARGE_NOTI_KEY
-import com.boswelja.devicemanager.common.prefsynclayer.PreferenceSyncKeys.DND_SYNC_PHONE_TO_WATCH_KEY
-import com.boswelja.devicemanager.common.prefsynclayer.PreferenceSyncKeys.DND_SYNC_WATCH_TO_PHONE_KEY
-import com.boswelja.devicemanager.common.prefsynclayer.PreferenceSyncKeys.DND_SYNC_WITH_THEATER_KEY
-import com.boswelja.devicemanager.common.prefsynclayer.PreferenceSyncKeys.LOCK_PHONE_ENABLED_KEY
-import com.boswelja.devicemanager.common.prefsynclayer.PreferenceSyncKeys.PREFERENCE_CHANGE_PATH
 import com.google.android.gms.wearable.PutDataMapRequest
 import com.google.android.gms.wearable.Wearable
 
@@ -46,17 +37,42 @@ class PreferenceSyncLayer(context: Context) {
 
         // Create updated sharedPreferences object
         val syncedPrefUpdateReq = PutDataMapRequest.create(PREFERENCE_CHANGE_PATH)
-        syncedPrefUpdateReq.dataMap.putBoolean(BATTERY_SYNC_ENABLED_KEY, batterySyncEnabled)
-        syncedPrefUpdateReq.dataMap.putBoolean(BATTERY_PHONE_FULL_CHARGE_NOTI_KEY, phoneBatteryChargedNoti)
-        syncedPrefUpdateReq.dataMap.putBoolean(BATTERY_WATCH_FULL_CHARGE_NOTI_KEY, watchBatteryChargedNoti)
-        syncedPrefUpdateReq.dataMap.putInt(BATTERY_CHARGE_THRESHOLD, batteryChargeThreshold)
-        syncedPrefUpdateReq.dataMap.putBoolean(DND_SYNC_PHONE_TO_WATCH_KEY, dndSyncPhoneToWatch)
-        syncedPrefUpdateReq.dataMap.putBoolean(DND_SYNC_WATCH_TO_PHONE_KEY, dndSyncWatchToPhone)
-        syncedPrefUpdateReq.dataMap.putBoolean(DND_SYNC_WITH_THEATER_KEY, dndSyncWithTheater)
-        syncedPrefUpdateReq.dataMap.putBoolean(LOCK_PHONE_ENABLED_KEY, lockPhoneEnabled)
+        syncedPrefUpdateReq.dataMap.putBoolean(PreferenceKey.BATTERY_SYNC_ENABLED_KEY, batterySyncEnabled)
+        syncedPrefUpdateReq.dataMap.putBoolean(PreferenceKey.BATTERY_PHONE_CHARGE_NOTI_KEY, phoneBatteryChargedNoti)
+        syncedPrefUpdateReq.dataMap.putBoolean(PreferenceKey.BATTERY_WATCH_CHARGE_NOTI_KEY, watchBatteryChargedNoti)
+        syncedPrefUpdateReq.dataMap.putInt(PreferenceKey.BATTERY_CHARGE_THRESHOLD_KEY, batteryChargeThreshold)
+        syncedPrefUpdateReq.dataMap.putBoolean(PreferenceKey.INTERRUPT_FILTER_SYNC_TO_WATCH_KEY, dndSyncPhoneToWatch)
+        syncedPrefUpdateReq.dataMap.putBoolean(PreferenceKey.INTERRUPT_FILTER_SYNC_TO_PHONE_KEY, dndSyncWatchToPhone)
+        syncedPrefUpdateReq.dataMap.putBoolean(PreferenceKey.INTERRUPT_FILTER_ON_WITH_THEATER_KEY, dndSyncWithTheater)
+        syncedPrefUpdateReq.dataMap.putBoolean(PreferenceKey.PHONE_LOCKING_ENABLED_KEY, lockPhoneEnabled)
 
         // Send updated sharedPreferences
         syncedPrefUpdateReq.setUrgent()
         dataClient.putDataItem(syncedPrefUpdateReq.asPutDataRequest())
+    }
+
+    fun pushNewData(key: String) {
+        val syncedPrefUpdateReq = PutDataMapRequest.create(PREFERENCE_CHANGE_PATH)
+        when (key) {
+            PreferenceKey.PHONE_LOCKING_ENABLED_KEY,
+            PreferenceKey.BATTERY_SYNC_ENABLED_KEY,
+            PreferenceKey.BATTERY_PHONE_CHARGE_NOTI_KEY,
+            PreferenceKey.BATTERY_WATCH_CHARGE_NOTI_KEY -> {
+                val newValue = localPrefs.getBoolean(key, false)
+                syncedPrefUpdateReq.dataMap.putBoolean(key, newValue)
+            }
+            PreferenceKey.BATTERY_CHARGE_THRESHOLD_KEY -> {
+                val newValue = localPrefs.getInt(key, 90)
+                syncedPrefUpdateReq.dataMap.putInt(key, newValue)
+            }
+        }
+        if (!syncedPrefUpdateReq.dataMap.isEmpty) {
+            syncedPrefUpdateReq.setUrgent()
+            dataClient.putDataItem(syncedPrefUpdateReq.asPutDataRequest())
+        }
+    }
+
+    companion object {
+        const val PREFERENCE_CHANGE_PATH = "/preference_change"
     }
 }

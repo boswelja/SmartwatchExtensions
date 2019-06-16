@@ -10,25 +10,28 @@ package com.boswelja.devicemanager.receiver
 import android.content.Intent
 import com.boswelja.devicemanager.BatteryUpdateJob
 import com.boswelja.devicemanager.common.Compat
+import com.boswelja.devicemanager.common.PreferenceKey
 import com.boswelja.devicemanager.common.prefsynclayer.BasePreferenceChangeReceiver
 import com.boswelja.devicemanager.service.InterruptFilterLocalChangeListener
 
 class RemotePreferenceChangeReceiver : BasePreferenceChangeReceiver() {
 
-    override fun handleStartServices(
-        interruptFilterSyncToPhone: Boolean,
-        interruptFilterSyncToWatch: Boolean,
-        interruptFilterSyncWithTheater: Boolean,
-        batterySyncEnabled: Boolean
-    ) {
-        if (interruptFilterSyncToWatch) {
-            val intent = Intent(this, InterruptFilterLocalChangeListener::class.java)
-            Compat.startForegroundService(this, intent)
-        }
-        if (batterySyncEnabled) {
-            BatteryUpdateJob.startJob(this)
-        } else {
-            BatteryUpdateJob.stopJob(this)
+    override fun onPreferenceChanged(key: String, newValue: Any) {
+        when (key) {
+            PreferenceKey.BATTERY_SYNC_ENABLED_KEY -> {
+                if (newValue == true) {
+                    BatteryUpdateJob.startJob(this)
+                } else {
+                    BatteryUpdateJob.stopJob(this)
+                }
+            }
+            PreferenceKey.INTERRUPT_FILTER_SYNC_TO_WATCH_KEY -> {
+                if (newValue == true) {
+                    Intent(this, InterruptFilterLocalChangeListener::class.java).also {
+                        Compat.startForegroundService(this, it)
+                    }
+                }
+            }
         }
     }
 }

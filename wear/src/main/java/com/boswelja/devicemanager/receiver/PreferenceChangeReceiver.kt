@@ -19,24 +19,28 @@ import com.boswelja.devicemanager.service.InterruptFilterSyncWithTheaterListener
 
 class PreferenceChangeReceiver : BasePreferenceChangeReceiver() {
 
-    override fun handleStartServices(
-        interruptFilterSyncToPhone: Boolean,
-        interruptFilterSyncToWatch: Boolean,
-        interruptFilterSyncWithTheater: Boolean,
-        batterySyncEnabled: Boolean
-    ) {
-        if (interruptFilterSyncToPhone) {
-            val intent = Intent(this, InterruptFilterLocalChangeListener::class.java)
-            Compat.startForegroundService(this, intent)
-        }
-
-        if (!batterySyncEnabled) {
-            prefs.edit().remove(PreferenceKey.BATTERY_PERCENT_KEY).apply()
-            ProviderUpdateRequester(this, ComponentName(packageName, PhoneBatteryComplicationProvider::class.java.name)).requestUpdateAll()
-        }
-
-        if (interruptFilterSyncWithTheater) {
-            Compat.startForegroundService(this, Intent(applicationContext, InterruptFilterSyncWithTheaterListener::class.java))
+    override fun onPreferenceChanged(key: String, newValue: Any) {
+        when (key) {
+            PreferenceKey.BATTERY_SYNC_ENABLED_KEY -> {
+                if (newValue == false) {
+                    prefs.edit().remove(PreferenceKey.BATTERY_PERCENT_KEY).apply()
+                    ProviderUpdateRequester(this, ComponentName(packageName, PhoneBatteryComplicationProvider::class.java.name)).requestUpdateAll()
+                }
+            }
+            PreferenceKey.INTERRUPT_FILTER_SYNC_TO_PHONE_KEY -> {
+                if (newValue == true) {
+                    Intent(this, InterruptFilterLocalChangeListener::class.java).also {
+                        Compat.startForegroundService(this, it)
+                    }
+                }
+            }
+            PreferenceKey.INTERRUPT_FILTER_ON_WITH_THEATER_KEY -> {
+                if (newValue == true) {
+                    Intent(this, InterruptFilterSyncWithTheaterListener::class.java).also {
+                        Compat.startForegroundService(this, it)
+                    }
+                }
+            }
         }
     }
 }
