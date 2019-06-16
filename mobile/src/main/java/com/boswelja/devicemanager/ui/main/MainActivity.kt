@@ -68,7 +68,7 @@ class MainActivity :
         }
     }
 
-    private fun handleNavigation(selectedItemId: Int) : Boolean {
+    private fun handleNavigation(selectedItemId: Int): Boolean {
         return when (selectedItemId) {
             R.id.extensions_navigation -> {
                 showExtensionsFragment()
