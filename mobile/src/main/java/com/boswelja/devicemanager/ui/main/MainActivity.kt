@@ -9,6 +9,7 @@ package com.boswelja.devicemanager.ui.main
 
 import android.content.SharedPreferences
 import android.os.Bundle
+import androidx.fragment.app.Fragment
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.UpdateHandler
 import com.boswelja.devicemanager.common.PreferenceKey
@@ -86,7 +87,7 @@ class MainActivity :
 
     private fun showExtensionsFragment() {
         val extensionsFragment = ExtensionsFragment()
-        supportFragmentManager.beginTransaction().replace(R.id.fragment_holder, extensionsFragment).commit()
+        navigate(extensionsFragment)
         if (intent != null) {
             val key = intent.getStringExtra(EXTRA_PREFERENCE_KEY)
             if (key == PreferenceKey.PHONE_LOCKING_ENABLED_KEY) {
@@ -97,16 +98,25 @@ class MainActivity :
 
     private fun showMessagesFragment() {
         val messagesFragment = MessageFragment()
-        supportFragmentManager.beginTransaction().replace(R.id.fragment_holder, messagesFragment).commit()
+        navigate(messagesFragment)
     }
 
     private fun showAppSettingsFragment() {
         val settingsFragment = AppSettingsFragment()
-        supportFragmentManager.beginTransaction().replace(R.id.fragment_holder, settingsFragment).commit()
+        navigate(settingsFragment)
     }
 
     private fun showAppInfoFragment() {
         val appInfoFragment = AppInfoFragment()
-        supportFragmentManager.beginTransaction().replace(R.id.fragment_holder, appInfoFragment).commit()
+        navigate(appInfoFragment)
+    }
+
+    private fun navigate(fragment: Fragment) {
+        try {
+            supportFragmentManager.beginTransaction()
+                    .setCustomAnimations(R.anim.fade_in, R.anim.fade_out)
+                    .replace(R.id.fragment_holder, fragment)
+                    .commit()
+        } catch (_: IllegalStateException) {}
     }
 }
