@@ -2,25 +2,20 @@
 <androidx.preference.PreferenceScreen
     xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <androidx.preference.PreferenceCategory
-        android:title="About">
+    <androidx.preference.Preference
+        android:key="review"
+        android:title="@string/pref_about_review_title"
+        android:icon="@drawable/pref_ic_review" />
 
-        <androidx.preference.Preference
-            android:key="review"
-            android:title="@string/pref_about_review_title"
-            android:icon="@drawable/pref_ic_review" />
+    <androidx.preference.Preference
+        android:key="show_donate_dialog"
+        android:title="@string/pref_about_donate_title"
+        android:icon="@drawable/pref_ic_donate" />
 
-        <androidx.preference.Preference
-            android:key="show_donate_dialog"
-            android:title="@string/pref_about_donate_title"
-            android:icon="@drawable/pref_ic_donate" />
-
-        <androidx.preference.Preference
-            android:key="version"
-            android:title="@string/pref_about_version_title"
-            android:summary="@string/app_version_name"
-            android:icon="@drawable/pref_ic_about" />
-
-    </androidx.preference.PreferenceCategory>
+    <androidx.preference.Preference
+        android:key="version"
+        android:title="@string/pref_about_version_title"
+        android:summary="@string/app_version_name"
+        android:icon="@drawable/pref_ic_about" />
 
 </androidx.preference.PreferenceScreen>

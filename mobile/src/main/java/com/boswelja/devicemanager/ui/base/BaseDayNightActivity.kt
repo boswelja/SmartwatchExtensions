@@ -7,19 +7,44 @@
  */
 package com.boswelja.devicemanager.ui.base
 
+import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.preference.PreferenceManager
-import com.boswelja.devicemanager.ui.main.SettingsFragment
 
-abstract class BaseDayNightActivity : AppCompatActivity() {
+abstract class BaseDayNightActivity :
+        AppCompatActivity(),
+        SharedPreferences.OnSharedPreferenceChangeListener {
+
+    lateinit var sharedPreferences: SharedPreferences
+
+    override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
+        when (key) {
+            DAYNIGHT_MODE_KEY -> recreate()
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        val nightMode = PreferenceManager.getDefaultSharedPreferences(this).getString(
-                SettingsFragment.DAYNIGHT_MODE_KEY,
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
+        val nightMode = sharedPreferences.getString(
+                DAYNIGHT_MODE_KEY,
                 AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM.toString())!!.toInt()
         AppCompatDelegate.setDefaultNightMode(nightMode)
         super.onCreate(savedInstanceState)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        sharedPreferences.registerOnSharedPreferenceChangeListener(this)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        sharedPreferences.unregisterOnSharedPreferenceChangeListener(this)
+    }
+
+    companion object {
+        const val DAYNIGHT_MODE_KEY = "daynight_mode"
     }
 }

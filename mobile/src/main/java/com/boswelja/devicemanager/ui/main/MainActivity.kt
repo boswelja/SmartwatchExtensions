@@ -8,19 +8,33 @@
 package com.boswelja.devicemanager.ui.main
 
 import android.content.SharedPreferences
-import android.os.Build
 import android.os.Bundle
-import androidx.core.widget.NestedScrollView
-import androidx.preference.PreferenceManager
+import androidx.fragment.app.Fragment
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.UpdateHandler
 import com.boswelja.devicemanager.common.PreferenceKey
 import com.boswelja.devicemanager.ui.base.BaseToolbarActivity
 import com.boswelja.devicemanager.ui.main.messages.MessageFragment
+import com.google.android.material.bottomnavigation.BottomNavigationView
 
-class MainActivity : BaseToolbarActivity() {
+class MainActivity :
+        BaseToolbarActivity() {
 
-    private lateinit var sharedPrefs: SharedPreferences
+    private lateinit var bottomNavigationView: BottomNavigationView
+
+    private val extensionsFragment = ExtensionsFragment()
+    private var messagesFragment: MessageFragment? = null
+    private var appSettingsFragment: AppSettingsFragment? = null
+    private var appInfoFragment: AppInfoFragment? = null
+
+    override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
+        super.onSharedPreferenceChanged(sharedPreferences, key)
+        when (key) {
+            MessageFragment.MESSAGE_COUNT_KEY -> {
+                updateMessagesBadge()
+            }
+        }
+    }
 
     override fun getContentViewId(): Int = R.layout.activity_main
 
@@ -29,37 +43,84 @@ class MainActivity : BaseToolbarActivity() {
 
         UpdateHandler(this)
 
-        sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this)
+        MessageFragment.updateMessageCount(this)
 
-        findViewById<NestedScrollView>(R.id.scroll_view).apply {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                setOnScrollChangeListener { _: NestedScrollView?, _: Int, scrollY: Int, _: Int, _: Int ->
-                    elevateToolbar(scrollY != 0)
-                }
-            }
+        bottomNavigationView = findViewById(R.id.bottom_navigation)
+        bottomNavigationView.setOnNavigationItemSelectedListener {
+            handleNavigation(it.itemId)
         }
-
-        showMessageFragment()
-        showSettingsFragment()
     }
 
-    private fun showMessageFragment() {
-        val messageFragment = MessageFragment()
-        supportFragmentManager.beginTransaction()
-                .replace(R.id.message_fragment_holder, messageFragment)
-                .commit()
+    override fun onResume() {
+        super.onResume()
+        handleNavigation(bottomNavigationView.selectedItemId)
+        updateMessagesBadge()
     }
 
-    private fun showSettingsFragment() {
-        val settingsFragment = SettingsFragment()
-        supportFragmentManager.beginTransaction().replace(R.id.settings_fragment_holder, settingsFragment).commit()
+    private fun updateMessagesBadge() {
+        val messages = sharedPreferences.getInt(MessageFragment.MESSAGE_COUNT_KEY, 0)
+        if (messages > 0) {
+            bottomNavigationView.showBadge(R.id.messages_navigation).apply {
+                number = messages
+            }
+        } else {
+            bottomNavigationView.removeBadge(R.id.messages_navigation)
+        }
+    }
+
+    private fun handleNavigation(selectedItemId: Int): Boolean {
+        return when (selectedItemId) {
+            R.id.extensions_navigation -> {
+                showExtensionsFragment()
+                true
+            }
+            R.id.messages_navigation -> {
+                showMessagesFragment()
+                true
+            }
+            R.id.settings_navigation -> {
+                showAppSettingsFragment()
+                true
+            }
+            R.id.app_info_navigation -> {
+                showAppInfoFragment()
+                true
+            }
+            else -> false
+        }
+    }
+
+    private fun showExtensionsFragment() {
+        navigate(extensionsFragment)
         if (intent != null) {
             val key = intent.getStringExtra(EXTRA_PREFERENCE_KEY)
-            if (key == PreferenceKey.PHONE_LOCKING_ENABLED_KEY ||
-                    key == SettingsFragment.OPEN_NOTI_SETTINGS_KEY ||
-                    key == SettingsFragment.DAYNIGHT_MODE_KEY) {
-                settingsFragment.scrollToPreference(key)
+            if (key == PreferenceKey.PHONE_LOCKING_ENABLED_KEY) {
+                extensionsFragment.scrollToPreference(key)
             }
         }
+    }
+
+    private fun showMessagesFragment() {
+        if (messagesFragment == null) messagesFragment = MessageFragment()
+        navigate(messagesFragment!!)
+    }
+
+    private fun showAppSettingsFragment() {
+        if (appSettingsFragment == null) appSettingsFragment = AppSettingsFragment()
+        navigate(appSettingsFragment!!)
+    }
+
+    private fun showAppInfoFragment() {
+        if (appInfoFragment == null) appInfoFragment = AppInfoFragment()
+        navigate(appInfoFragment!!)
+    }
+
+    private fun navigate(fragment: Fragment) {
+        try {
+            supportFragmentManager.beginTransaction()
+                    .setCustomAnimations(R.anim.fade_in, R.anim.fade_out)
+                    .replace(R.id.fragment_holder, fragment)
+                    .commit()
+        } catch (_: IllegalStateException) {}
     }
 }

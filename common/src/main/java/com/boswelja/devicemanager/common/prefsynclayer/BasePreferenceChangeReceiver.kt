@@ -47,7 +47,6 @@ abstract class BasePreferenceChangeReceiver : WearableListenerService() {
                 }
                 editPrefs.apply()
             }
-
         }
     }
 

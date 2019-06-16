@@ -17,10 +17,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.preference.PreferenceManager
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.SimpleItemAnimator
 import com.boswelja.devicemanager.R
 import com.google.android.material.snackbar.Snackbar
 
@@ -43,7 +43,7 @@ class MessageFragment : Fragment() {
         recyclerView.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = MessagesAdapter(this@MessageFragment)
-            (itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
+            addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
         }
         val itemTouchHelper = ItemTouchHelper(MessagesAdapter.SwipeDismissCallback(recyclerView.adapter as MessagesAdapter, context!!))
         itemTouchHelper.attachToRecyclerView(recyclerView)
@@ -52,6 +52,7 @@ class MessageFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         checkBatteryOptimisation()
+        sharedPreferences.edit().putInt(MESSAGE_COUNT_KEY, recyclerView.adapter!!.itemCount).apply()
     }
 
     private fun checkBatteryOptimisation() {
@@ -72,8 +73,7 @@ class MessageFragment : Fragment() {
                 sharedPreferences.edit().putBoolean(IGNORE_BATTERY_OPT_WARNING_KEY, true).apply()
         }
         Snackbar.make(view!!,
-                getString(R.string.message_snackbar_undo_remove)
-                        .format(getString(message.shortLabelRes)),
+                getString(R.string.message_snackbar_undo_remove).format(getString(message.shortLabelRes)),
                 Snackbar.LENGTH_INDEFINITE).apply {
             setAction(R.string.snackbar_action_undo) {
                 when (message) {
@@ -87,10 +87,24 @@ class MessageFragment : Fragment() {
         }.show()
     }
 
-    internal fun startAnimation() {
-    }
-
     companion object {
+        const val MESSAGE_COUNT_KEY = "message_count"
+
+        fun updateMessageCount(context: Context) {
+            val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
+            var messages = 0
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !sharedPreferences.getBoolean(IGNORE_BATTERY_OPT_WARNING_KEY, false)) {
+                val isIgnoringBatteryOptimisation = (context.getSystemService(Context.POWER_SERVICE) as PowerManager)
+                        .isIgnoringBatteryOptimizations(context.packageName!!)
+                if (!isIgnoringBatteryOptimisation) {
+                    messages += 1
+                }
+            }
+            sharedPreferences.edit()
+                    .putInt(MESSAGE_COUNT_KEY, messages)
+                    .apply()
+        }
+
         private const val IGNORE_BATTERY_OPT_WARNING_KEY = "ignore_battery_opt_warning"
     }
 }

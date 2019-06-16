@@ -9,20 +9,10 @@ package com.boswelja.devicemanager.ui.main
 
 import android.content.Intent
 import android.content.SharedPreferences
-import android.os.Build
 import android.os.Bundle
-import android.provider.Settings
-import android.view.LayoutInflater
-import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
-import androidx.core.app.NotificationManagerCompat
-import androidx.core.net.toUri
-import androidx.preference.ListPreference
 import androidx.preference.Preference
-import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.SwitchPreference
-import androidx.recyclerview.widget.RecyclerView
-import com.boswelja.devicemanager.BuildConfig
 import com.boswelja.devicemanager.receiver.DeviceAdminChangeReceiver.Companion.DEVICE_ADMIN_ENABLED_KEY
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.Utils
@@ -31,13 +21,12 @@ import com.boswelja.devicemanager.common.prefsynclayer.PreferenceSyncLayer
 import com.boswelja.devicemanager.preference.confirmationdialog.ConfirmationDialogPrefFragment
 import com.boswelja.devicemanager.preference.confirmationdialog.ConfirmationDialogPreference
 import com.boswelja.devicemanager.ui.appmanager.AppManagerActivity
+import com.boswelja.devicemanager.ui.base.BasePreferenceFragment
 import com.boswelja.devicemanager.ui.batterysync.BatterySyncPreferenceActivity
-import com.boswelja.devicemanager.ui.donate.DonationDialogFragment
 import com.boswelja.devicemanager.ui.interruptfiltersync.InterruptFilterSyncPreferenceActivity
-import com.boswelja.devicemanager.ui.version.ChangelogDialogFragment
 
-class SettingsFragment :
-        PreferenceFragmentCompat(),
+class ExtensionsFragment :
+        BasePreferenceFragment(),
         SharedPreferences.OnSharedPreferenceChangeListener,
         Preference.OnPreferenceClickListener,
         Preference.OnPreferenceChangeListener {
@@ -45,9 +34,6 @@ class SettingsFragment :
     private lateinit var preferenceSyncLayer: PreferenceSyncLayer
 
     private lateinit var phoneLockPreference: SwitchPreference
-
-    private lateinit var openNotiSettingsPreference: Preference
-    private lateinit var daynightModePreference: ListPreference
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
         when (key) {
@@ -60,7 +46,6 @@ class SettingsFragment :
             PHONE_LOCKING_ENABLED_KEY -> {
                 phoneLockPreference.isChecked = sharedPreferences!!.getBoolean(key, false)
             }
-            DAYNIGHT_MODE_KEY -> activity?.recreate()
         }
     }
 
@@ -82,35 +67,6 @@ class SettingsFragment :
                 Intent(context!!, AppManagerActivity::class.java).also {
                     startActivity(it)
                 }
-                true
-            }
-            OPEN_NOTI_SETTINGS_KEY -> {
-                Intent().apply {
-                    flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                        action = Settings.ACTION_APP_NOTIFICATION_SETTINGS
-                        putExtra(Settings.EXTRA_APP_PACKAGE, context?.packageName!!)
-                    } else {
-                        action = "android.settings.APP_NOTIFICATION_SETTINGS"
-                        putExtra("app_package", context?.packageName!!)
-                        putExtra("app_uid", context?.applicationInfo?.uid!!)
-                    }
-                }.also { startActivity(it) }
-                true
-            }
-            LEAVE_REVIEW_KEY -> {
-                Intent(Intent.ACTION_VIEW).apply {
-                    data = "https://play.google.com/store/apps/details?id=${context?.packageName}".toUri()
-                    setPackage("com.android.vending")
-                }.also { startActivity(it) }
-                true
-            }
-            OPEN_DONATE_DIALOG_KEY -> {
-                DonationDialogFragment().show(activity?.supportFragmentManager!!, "DonationDialog")
-                true
-            }
-            VERSION_KEY -> {
-                ChangelogDialogFragment().show(activity?.supportFragmentManager!!, "ChangelogDialog")
                 true
             }
             else -> false
@@ -152,12 +108,6 @@ class SettingsFragment :
         preferenceManager.sharedPreferences.registerOnSharedPreferenceChangeListener(this)
     }
 
-    override fun onCreateRecyclerView(inflater: LayoutInflater?, parent: ViewGroup?, savedInstanceState: Bundle?): RecyclerView {
-        return super.onCreateRecyclerView(inflater, parent, savedInstanceState).apply {
-            isNestedScrollingEnabled = true
-        }
-    }
-
     override fun onResume() {
         super.onResume()
         val isDeviceAdminEnabled = Utils.isDeviceAdminEnabled(context!!)
@@ -166,21 +116,6 @@ class SettingsFragment :
                     .putBoolean(PHONE_LOCKING_ENABLED_KEY, false)
                     .apply()
         }
-
-        val notificationsAllowed = NotificationManagerCompat.from(context!!).areNotificationsEnabled()
-        if (notificationsAllowed) {
-            openNotiSettingsPreference.apply {
-                summary = getString(R.string.pref_noti_status_summary_enabled)
-                setIcon(R.drawable.pref_ic_notifications_enabled)
-            }
-        } else {
-            openNotiSettingsPreference.apply {
-                summary = getString(R.string.pref_noti_status_summary_disabled)
-                setIcon(R.drawable.pref_ic_notifications_disabled)
-            }
-        }
-
-        daynightModePreference.summary = daynightModePreference.entry
     }
 
     override fun onDestroy() {
@@ -199,32 +134,14 @@ class SettingsFragment :
         addPreferencesFromResource(R.xml.prefs_lock_phone)
         phoneLockPreference = findPreference(PHONE_LOCKING_ENABLED_KEY)!!
         phoneLockPreference.onPreferenceChangeListener = this
-
-        addPreferencesFromResource(R.xml.prefs_app_settings)
-        openNotiSettingsPreference = findPreference(OPEN_NOTI_SETTINGS_KEY)!!
-        openNotiSettingsPreference.onPreferenceClickListener = this
-        daynightModePreference = findPreference(DAYNIGHT_MODE_KEY)!!
-
-        addPreferencesFromResource(R.xml.prefs_about)
-        findPreference<Preference>(LEAVE_REVIEW_KEY)!!.apply {
-            isEnabled = !BuildConfig.DEBUG
-            onPreferenceClickListener = this@SettingsFragment
-        }
-        findPreference<Preference>(OPEN_DONATE_DIALOG_KEY)!!.apply {
-            isEnabled = !BuildConfig.DEBUG
-            onPreferenceClickListener = this@SettingsFragment
-        }
-        findPreference<Preference>(VERSION_KEY)!!.apply {
-            onPreferenceClickListener = this@SettingsFragment
-        }
     }
 
     override fun onDisplayPreferenceDialog(preference: Preference?) {
         when (preference) {
             is ConfirmationDialogPreference -> {
                 ConfirmationDialogPrefFragment.newInstance(preference.key).apply {
-                    setTargetFragment(this@SettingsFragment, 0)
-                    show(this@SettingsFragment.fragmentManager!!, "ConfirmationDialogPrefFragment")
+                    setTargetFragment(this@ExtensionsFragment, 0)
+                    show(this@ExtensionsFragment.fragmentManager!!, "ConfirmationDialogPrefFragment")
                 }
             }
             else -> super.onDisplayPreferenceDialog(preference)
@@ -235,12 +152,5 @@ class SettingsFragment :
         const val OPEN_BATTERY_SYNC_PREF_KEY = "show_battery_sync_prefs"
         const val OPEN_INTERRUPT_FILTER_SYNC_PREF_KEY = "show_interrupt_filter_sync_prefs"
         const val OPEN_APP_MANAGER_KEY = "show_app_manager"
-
-        const val OPEN_NOTI_SETTINGS_KEY = "show_noti_settings"
-        const val DAYNIGHT_MODE_KEY = "daynight_mode"
-
-        const val LEAVE_REVIEW_KEY = "review"
-        const val OPEN_DONATE_DIALOG_KEY = "show_donate_dialog"
-        const val VERSION_KEY = "version"
     }
 }
