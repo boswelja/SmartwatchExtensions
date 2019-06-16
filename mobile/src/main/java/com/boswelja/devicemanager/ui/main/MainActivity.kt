@@ -9,7 +9,6 @@ package com.boswelja.devicemanager.ui.main
 
 import android.content.SharedPreferences
 import android.os.Bundle
-import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.UpdateHandler
 import com.boswelja.devicemanager.common.PreferenceKey
@@ -20,9 +19,16 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 class MainActivity :
         BaseToolbarActivity() {
 
-    private lateinit var sharedPrefs: SharedPreferences
-
     private lateinit var bottomNavigationView: BottomNavigationView
+
+    override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
+        super.onSharedPreferenceChanged(sharedPreferences, key)
+        when (key) {
+            MessageFragment.MESSAGE_COUNT_KEY -> {
+                updateMessagesBadge()
+            }
+        }
+    }
 
     override fun getContentViewId(): Int = R.layout.activity_main
 
@@ -31,10 +37,9 @@ class MainActivity :
 
         UpdateHandler(this)
 
-        sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this)
+        MessageFragment.updateMessageCount(this)
 
         bottomNavigationView = findViewById(R.id.bottom_navigation)
-
         bottomNavigationView.setOnNavigationItemSelectedListener {
             handleNavigation(it.itemId)
         }
@@ -43,6 +48,18 @@ class MainActivity :
     override fun onResume() {
         super.onResume()
         handleNavigation(bottomNavigationView.selectedItemId)
+        updateMessagesBadge()
+    }
+
+    private fun updateMessagesBadge() {
+        val messages = sharedPreferences.getInt(MessageFragment.MESSAGE_COUNT_KEY, 0)
+        if (messages > 0) {
+            bottomNavigationView.showBadge(R.id.messages_navigation).apply {
+                number = messages
+            }
+        } else {
+            bottomNavigationView.removeBadge(R.id.messages_navigation)
+        }
     }
 
     private fun handleNavigation(selectedItemId: Int) : Boolean {

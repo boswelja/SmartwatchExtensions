@@ -52,18 +52,13 @@ internal class MessagesAdapter(private val fragment: MessageFragment) :
         }
         if (message.buttonLabelRes != 0) {
             holder.dividerView.visibility = View.VISIBLE
-            holder.expandedActionButton.visibility = View.VISIBLE
-            holder.expandedActionButton.apply {
+            holder.actionButton.visibility = View.VISIBLE
+            holder.actionButton.apply {
                 setText(message.buttonLabelRes)
                 setOnClickListener {
                     handleMessageActionClick(holder, message)
                 }
             }
-        }
-        holder.itemView.setOnClickListener {
-            holder.toggleExpanded()
-            fragment.startAnimation()
-            notifyItemChanged(holder.adapterPosition)
         }
     }
 
@@ -86,7 +81,6 @@ internal class MessagesAdapter(private val fragment: MessageFragment) :
     fun notifyMessage(message: Message) {
         if (!messages.contains(message)) {
             messages.add(message)
-            fragment.startAnimation()
             notifyItemInserted(messages.indexOf(message))
         }
     }
@@ -101,7 +95,6 @@ internal class MessagesAdapter(private val fragment: MessageFragment) :
         if (messages.contains(message)) {
             messages.indexOf(message).also {
                 messages.removeAt(it)
-                fragment.startAnimation()
                 notifyItemRemoved(it)
             }
         }
@@ -113,29 +106,8 @@ internal class MessagesAdapter(private val fragment: MessageFragment) :
         val iconView: AppCompatImageView = itemView.findViewById(R.id.message_icon)
         val labelView: AppCompatTextView = itemView.findViewById(R.id.message_label)
         val descView: AppCompatTextView = itemView.findViewById(R.id.message_desc)
-        val expandedActionButton: MaterialButton = itemView.findViewById(R.id.message_action_button)
+        val actionButton: MaterialButton = itemView.findViewById(R.id.message_action_button)
         val dividerView: View = itemView.findViewById(R.id.divider)
-
-        private val expandedIndicatorView: AppCompatImageView = itemView.findViewById(R.id.message_expanded_indicator)
-        private val expandedContentsHolder: View = itemView.findViewById(R.id.message_expanded_content_holder)
-
-        private var isExpanded = false
-
-        fun toggleExpanded() {
-            isExpanded = !isExpanded
-            val itemViewPadding = Utils.complexTypeDp(itemView.resources, 8f).toInt()
-            if (isExpanded) {
-                labelView.maxLines = 2
-                expandedIndicatorView.setImageResource(R.drawable.ic_expand_less)
-                expandedContentsHolder.visibility = View.VISIBLE
-                itemView.setPadding(itemViewPadding, itemViewPadding, itemViewPadding, 0)
-            } else {
-                labelView.maxLines = 1
-                expandedIndicatorView.setImageResource(R.drawable.ic_expand_more)
-                expandedContentsHolder.visibility = View.GONE
-                itemView.setPadding(itemViewPadding, itemViewPadding, itemViewPadding, itemViewPadding)
-            }
-        }
     }
 
     class SwipeDismissCallback(private val adapter: MessagesAdapter, context: Context) : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
@@ -143,10 +115,8 @@ internal class MessagesAdapter(private val fragment: MessageFragment) :
         private val alphaMultiplier: Int = 3
 
         private val icon: Drawable = context.getDrawable(R.drawable.ic_delete)!!
-        private val swipeToLeftBackground: Drawable = context.getDrawable(R.drawable.recyclerview_swipe_to_left_background)!!
-        private val swipeToRightBackground = context.getDrawable(R.drawable.recyclerview_swipe_to_right_background)!!
-        private val backgroundCornerOffset = context.resources.getDimension(R.dimen.corner_radius).toInt() * 2
-        private val iconMargin = Utils.complexTypeDp(context.resources, 8f).toInt()
+        private val swipeBackground: Drawable = context.getDrawable(R.drawable.recyclerview_swipe_background)!!
+        private val iconMargin = Utils.complexTypeDp(context.resources, 16f).toInt()
         private val iconMaxAlpha = icon.alpha
 
         override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder): Boolean = false
@@ -171,10 +141,10 @@ internal class MessagesAdapter(private val fragment: MessageFragment) :
                         icon.draw(c)
                     }
 
-                    swipeToRightBackground.setBounds(itemView.left, itemView.top,
-                            itemView.left + dX.toInt() + backgroundCornerOffset,
+                    swipeBackground.setBounds(itemView.left, itemView.top,
+                            itemView.left + dX.toInt(),
                             itemView.bottom)
-                    swipeToRightBackground.draw(c)
+                    swipeBackground.draw(c)
                 }
                 dX < 0 -> {
                     val itemView = viewHolder.itemView
@@ -188,9 +158,9 @@ internal class MessagesAdapter(private val fragment: MessageFragment) :
                         icon.draw(c)
                     }
 
-                    swipeToLeftBackground.setBounds(itemView.right + dX.toInt() - backgroundCornerOffset,
+                    swipeBackground.setBounds(itemView.right + dX.toInt(),
                             itemView.top, itemView.right, itemView.bottom)
-                    swipeToLeftBackground.draw(c)
+                    swipeBackground.draw(c)
                 }
             }
         }

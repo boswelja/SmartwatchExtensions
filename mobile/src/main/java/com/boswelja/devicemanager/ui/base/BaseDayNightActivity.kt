@@ -17,7 +17,7 @@ abstract class BaseDayNightActivity :
         AppCompatActivity(),
         SharedPreferences.OnSharedPreferenceChangeListener {
 
-    private lateinit var sharedPreferences: SharedPreferences
+    lateinit var sharedPreferences: SharedPreferences
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
         when (key) {
