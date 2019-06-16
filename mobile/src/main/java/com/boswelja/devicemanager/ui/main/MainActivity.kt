@@ -22,6 +22,11 @@ class MainActivity :
 
     private lateinit var bottomNavigationView: BottomNavigationView
 
+    private val extensionsFragment = ExtensionsFragment()
+    private var messagesFragment: MessageFragment? = null
+    private var appSettingsFragment: AppSettingsFragment? = null
+    private var appInfoFragment: AppInfoFragment? = null
+
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
         super.onSharedPreferenceChanged(sharedPreferences, key)
         when (key) {
@@ -86,7 +91,6 @@ class MainActivity :
     }
 
     private fun showExtensionsFragment() {
-        val extensionsFragment = ExtensionsFragment()
         navigate(extensionsFragment)
         if (intent != null) {
             val key = intent.getStringExtra(EXTRA_PREFERENCE_KEY)
@@ -97,18 +101,18 @@ class MainActivity :
     }
 
     private fun showMessagesFragment() {
-        val messagesFragment = MessageFragment()
-        navigate(messagesFragment)
+        if (messagesFragment == null) messagesFragment = MessageFragment()
+        navigate(messagesFragment!!)
     }
 
     private fun showAppSettingsFragment() {
-        val settingsFragment = AppSettingsFragment()
-        navigate(settingsFragment)
+        if (appSettingsFragment == null) appSettingsFragment = AppSettingsFragment()
+        navigate(appSettingsFragment!!)
     }
 
     private fun showAppInfoFragment() {
-        val appInfoFragment = AppInfoFragment()
-        navigate(appInfoFragment)
+        if (appInfoFragment == null) appInfoFragment = AppInfoFragment()
+        navigate(appInfoFragment!!)
     }
 
     private fun navigate(fragment: Fragment) {
