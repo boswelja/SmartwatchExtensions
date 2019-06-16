@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/extensions_navigation"
+        android:title="Extensions"
+        android:icon="@drawable/watch" />
+
+    <item
+        android:id="@+id/messages_navigation"
+        android:title="Messages"
+        android:icon="@drawable/nav_ic_messages" />
+
+    <item
+        android:id="@+id/settings_navigation"
+        android:title="@string/pref_category_app_settings"
+        android:icon="@drawable/nav_ic_app_settings" />
+
+    <item
+        android:id="@+id/app_info_navigation"
+        android:title="About"
+        android:icon="@drawable/pref_ic_about" />
+
+</menu>

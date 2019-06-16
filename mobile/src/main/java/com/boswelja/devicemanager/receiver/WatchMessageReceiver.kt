@@ -24,7 +24,7 @@ import com.boswelja.devicemanager.ui.base.BaseToolbarActivity.Companion.EXTRA_PR
 import com.boswelja.devicemanager.ui.batterysync.BatterySyncPreferenceActivity
 import com.boswelja.devicemanager.ui.interruptfiltersync.InterruptFilterSyncPreferenceActivity
 import com.boswelja.devicemanager.ui.main.MainActivity
-import com.boswelja.devicemanager.ui.main.SettingsFragment
+import com.boswelja.devicemanager.ui.main.ExtensionsFragment
 import com.google.android.gms.wearable.MessageEvent
 import com.google.android.gms.wearable.Wearable
 import com.google.android.gms.wearable.WearableListenerService
@@ -42,9 +42,7 @@ class WatchMessageReceiver : WearableListenerService() {
             REQUEST_LAUNCH_APP_PATH -> {
                 val key = String(messageEvent.data, Charsets.UTF_8)
                 when (key) {
-                    PreferenceKey.PHONE_LOCKING_ENABLED_KEY,
-                    SettingsFragment.OPEN_NOTI_SETTINGS_KEY,
-                    SettingsFragment.DAYNIGHT_MODE_KEY -> {
+                    PreferenceKey.PHONE_LOCKING_ENABLED_KEY -> {
                         val intent = Intent(this, MainActivity::class.java).apply {
                             putExtra(EXTRA_PREFERENCE_KEY, key)
                             flags = Intent.FLAG_ACTIVITY_NEW_TASK
