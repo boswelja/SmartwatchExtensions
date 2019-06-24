@@ -14,6 +14,9 @@ import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.UpdateHandler
 import com.boswelja.devicemanager.common.PreferenceKey
 import com.boswelja.devicemanager.ui.base.BaseToolbarActivity
+import com.boswelja.devicemanager.ui.main.appinfo.AppInfoFragment
+import com.boswelja.devicemanager.ui.main.appsettings.AppSettingsFragment
+import com.boswelja.devicemanager.ui.main.extensions.ExtensionsFragment
 import com.boswelja.devicemanager.ui.main.messages.MessageFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
