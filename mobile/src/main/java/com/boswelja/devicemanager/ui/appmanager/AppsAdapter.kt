@@ -120,8 +120,8 @@ class AppsAdapter(private val fragment: AppManagerFragment) : RecyclerView.Adapt
     fun remove(packageName: String) {
         for (section in data) {
             val apps = section.appsInSection
-            val index = apps.indexOfFirst { it.packageName == packageName }
-            if (index > -1) {
+            val index = apps.indexOfFirst { it.packageName == packageName } + 1
+            if (index > 0) {
                 apps.removeAt(index)
                 notifyItemRemoved(index)
             }
