@@ -44,7 +44,7 @@ dependencies {
     implementation "com.android.billingclient:billing:2.0.0"
 
     implementation "androidx.core:core-ktx:$versions.androidx_core_ktx"
-    implementation "androidx.constraintlayout:constraintlayout:2.0.0-beta1"
+    implementation "androidx.constraintlayout:constraintlayout:2.0.0-beta2"
     implementation "androidx.appcompat:appcompat:$versions.androidx_appcompat"
     implementation "androidx.preference:preference:$versions.androidx_preference"
 
