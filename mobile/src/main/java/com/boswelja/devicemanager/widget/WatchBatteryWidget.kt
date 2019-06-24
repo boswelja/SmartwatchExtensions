@@ -23,25 +23,29 @@ import com.boswelja.devicemanager.ui.main.MainActivity
 class WatchBatteryWidget : AppWidgetProvider() {
 
     override fun onUpdate(context: Context?, appWidgetManager: AppWidgetManager?, appWidgetIds: IntArray?) {
-        super.onUpdate(context, appWidgetManager, appWidgetIds)
-
         if (appWidgetIds != null && appWidgetIds.isNotEmpty()) {
             val sharedPrefs = PreferenceManager.getDefaultSharedPreferences(context)
             val percent = sharedPrefs.getInt(PreferenceKey.BATTERY_PERCENT_KEY, 0)
             val batterySyncEnabled = sharedPrefs.getBoolean(PreferenceKey.BATTERY_SYNC_ENABLED_KEY, false)
             for (widgetId in appWidgetIds) {
                 val remoteViews = RemoteViews(context?.packageName, R.layout.widget_watch_battery)
-                val activityIntent = PendingIntent.getActivity(context, 0, Intent(context, MainActivity::class.java), 0)
-                remoteViews.setOnClickPendingIntent(R.id.widget_background, activityIntent)
-                val battDrawable = context?.getDrawable(R.drawable.ic_watch_battery)!!
+
+                PendingIntent.getActivity(context, 0, Intent(context, MainActivity::class.java), 0).also {
+                    remoteViews.setOnClickPendingIntent(R.id.widget_background, it)
+                }
+
+                context?.getDrawable(R.drawable.ic_watch_battery)!!.apply {
+                    level = percent
+                }.also {
+                    remoteViews.setImageViewBitmap(R.id.battery_indicator, it.toBitmap())
+                }
+
                 if (batterySyncEnabled) {
                     remoteViews.setTextViewText(R.id.battery_indicator_text, context.getString(R.string.battery_sync_percent_short, percent.toString()))
-                    battDrawable.level = percent
                 } else {
                     remoteViews.setTextViewText(R.id.battery_indicator_text, context.getString(R.string.battery_sync_disabled))
-                    battDrawable.level = 0
                 }
-                remoteViews.setImageViewBitmap(R.id.battery_indicator, battDrawable.toBitmap())
+
                 appWidgetManager?.updateAppWidget(widgetId, remoteViews)
             }
         }
