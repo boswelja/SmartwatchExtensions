@@ -12,7 +12,8 @@ ext.versions = [
         androidx_core_ktx: "1.2.0-alpha02",
         androidx_wear: "1.0.0",
         androidx_appcompat: "1.1.0-beta01",
-        androidx_preference: "1.1.0-beta01"
+        androidx_preference: "1.1.0-beta01",
+        androidx_constraintlayout: "2.0.0-beta2"
 ]
 
 static def generateVersionCode() {
