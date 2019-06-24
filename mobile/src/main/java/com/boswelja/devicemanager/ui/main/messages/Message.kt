@@ -15,5 +15,11 @@ internal enum class Message(val iconRes: Int, val labelRes: Int, val shortLabelR
             R.string.message_battery_opt_warning_label,
             R.string.message_battery_opt_warning_label_short,
             R.string.message_battery_opt_warning_desc,
-            R.string.message_button_turn_off)
+            R.string.message_battery_opt_warning_button_label),
+    WatchChargeNotiWarning(
+            R.drawable.pref_ic_warning,
+            R.string.message_watch_charge_noti_warning_label,
+            R.string.message_watch_charge_noti_warning_label_short,
+            R.string.message_watch_charge_noti_warning_desc,
+            R.string.message_watch_charge_noti_warning_button_label)
 }

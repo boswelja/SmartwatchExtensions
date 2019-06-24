@@ -54,6 +54,12 @@ class MessageFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         checkBatteryOptimisation()
+        checkWatchChargeNoti()
+        (activity as MainActivity).updateMessagesBadge()
+    }
+
+    override fun onPause() {
+        super.onPause()
         (activity as MainActivity).updateMessagesBadge()
     }
 
@@ -66,10 +72,22 @@ class MessageFragment : Fragment() {
         }
     }
 
+    private fun checkWatchChargeNoti() {
+        val shouldShowMessage = MessageChecker.shouldShowWatchChargeNotiMessage(context!!)
+        if (shouldShowMessage) {
+            (recyclerView.adapter as MessagesAdapter).notifyMessage(Message.WatchChargeNotiWarning)
+        } else {
+            (recyclerView.adapter as MessagesAdapter).dismissMessage(Message.WatchChargeNotiWarning)
+        }
+    }
+
     internal fun dismissMessage(message: Message) {
         when (message) {
             Message.BatteryOptWarning ->
                 MessageChecker.setIgnoreBatteryOpt(context!!, true)
+            Message.WatchChargeNotiWarning -> {
+                MessageChecker.setIgnoreWatchCharge(context!!, true)
+            }
         }
         Snackbar.make(view!!,
                 getString(R.string.message_snackbar_undo_remove).format(getString(message.shortLabelRes)),
@@ -79,6 +97,10 @@ class MessageFragment : Fragment() {
                     Message.BatteryOptWarning -> {
                         MessageChecker.setIgnoreBatteryOpt(context, false)
                         checkBatteryOptimisation()
+                    }
+                    Message.WatchChargeNotiWarning -> {
+                        MessageChecker.setIgnoreWatchCharge(context, false)
+                        checkWatchChargeNoti()
                     }
                 }
             }

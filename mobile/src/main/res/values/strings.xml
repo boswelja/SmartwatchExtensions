@@ -98,7 +98,11 @@
     <string name="message_battery_opt_warning_label_short">Battery Optimisation</string>
     <string name="message_battery_opt_warning_label">Disable Battery Optimisation</string>
     <string name="message_battery_opt_warning_desc">Battery Optimisation can cause problems with Battery Sync among other things, it\'s recommended to turn it off for Wearable Extensions</string>
-    <string name="message_button_turn_off">Turn off</string>
+    <string name="message_battery_opt_warning_button_label">Turn off</string>
+    <string name="message_watch_charge_noti_warning_label_short">Watch Charge Notification</string>
+    <string name="message_watch_charge_noti_warning_label">Watch Charge Notifications Not Working</string>
+    <string name="message_watch_charge_noti_warning_desc">Watch Charge Notifications have been disabled in Notification Settings. Please use the option in Battery Sync settings to disable charge notifications</string>
+    <string name="message_watch_charge_noti_warning_button_label">Open Notification Settings</string>
     <string name="message_snackbar_undo_remove">You will no longer see %s warnings</string>
     <string name="message_none_label">No new messages</string>
 

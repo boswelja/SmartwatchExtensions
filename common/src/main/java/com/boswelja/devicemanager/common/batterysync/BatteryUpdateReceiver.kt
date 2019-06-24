@@ -60,9 +60,9 @@ abstract class BatteryUpdateReceiver : WearableListenerService() {
         val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         val companionDeviceName = getString(R.string.companion_device_type)
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && notificationManager.getNotificationChannel(BATTERY_CHARGED_NOTI_CHANEL_ID) == null) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && notificationManager.getNotificationChannel(BATTERY_CHARGED_NOTI_CHANNEL_ID) == null) {
             val channel = NotificationChannel(
-                    BATTERY_CHARGED_NOTI_CHANEL_ID,
+                    BATTERY_CHARGED_NOTI_CHANNEL_ID,
                     getString(R.string.device_charged_noti_channel_name, getString(R.string.companion_device_type)),
                     NotificationManager.IMPORTANCE_HIGH).apply {
                 enableVibration(true)
@@ -71,7 +71,7 @@ abstract class BatteryUpdateReceiver : WearableListenerService() {
             notificationManager.createNotificationChannel(channel)
         }
 
-        val noti = NotificationCompat.Builder(this, BATTERY_CHARGED_NOTI_CHANEL_ID)
+        val noti = NotificationCompat.Builder(this, BATTERY_CHARGED_NOTI_CHANNEL_ID)
                 .setSmallIcon(R.drawable.battery_full)
                 .setContentTitle(getString(R.string.device_charged_noti_title, companionDeviceName))
                 .setContentText(getString(R.string.device_charged_noti_desc).format(companionDeviceName, chargeThreshold))
@@ -89,7 +89,7 @@ abstract class BatteryUpdateReceiver : WearableListenerService() {
 
     companion object {
 
-        const val BATTERY_CHARGED_NOTI_CHANEL_ID = "companion_device_charged"
+        const val BATTERY_CHARGED_NOTI_CHANNEL_ID = "companion_device_charged"
         const val BATTERY_CHARGED_NOTI_ID = 408565
     }
 }

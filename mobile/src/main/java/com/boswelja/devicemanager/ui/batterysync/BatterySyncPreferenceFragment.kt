@@ -101,7 +101,7 @@ class BatterySyncPreferenceFragment :
         super.onResume()
         preferenceManager.sharedPreferences.registerOnSharedPreferenceChangeListener(this)
         if (preferenceManager.sharedPreferences.getBoolean(BATTERY_WATCH_CHARGE_NOTI_KEY, false) &&
-                !Compat.notificationsEnabled(context!!, BatteryUpdateReceiver.BATTERY_CHARGED_NOTI_CHANEL_ID)) {
+                !Compat.notificationsEnabled(context!!, BatteryUpdateReceiver.BATTERY_CHARGED_NOTI_CHANNEL_ID)) {
             preferenceManager.sharedPreferences.edit()
                     .putBoolean(BATTERY_WATCH_CHARGE_NOTI_KEY, false)
                     .apply()

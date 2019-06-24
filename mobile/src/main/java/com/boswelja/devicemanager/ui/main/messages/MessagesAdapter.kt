@@ -65,9 +65,9 @@ internal class MessagesAdapter(private val fragment: MessageFragment) :
 
     @SuppressLint("BatteryLife")
     private fun handleMessageActionClick(holder: MessageItemViewHolder, message: Message) {
+        val context = holder.itemView.context
         when (message) {
             Message.BatteryOptWarning -> {
-                val context = holder.itemView.context
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                     Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS).apply {
                         data = Uri.parse("package:${context?.packageName}")
@@ -75,6 +75,19 @@ internal class MessagesAdapter(private val fragment: MessageFragment) :
                         context.startActivity(it)
                     }
                 }
+            }
+            Message.WatchChargeNotiWarning -> {
+                Intent().apply {
+                    flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                        action = Settings.ACTION_APP_NOTIFICATION_SETTINGS
+                        putExtra(Settings.EXTRA_APP_PACKAGE, context?.packageName!!)
+                    } else {
+                        action = "android.settings.APP_NOTIFICATION_SETTINGS"
+                        putExtra("app_package", context?.packageName!!)
+                        putExtra("app_uid", context?.applicationInfo?.uid!!)
+                    }
+                }.also { context.startActivity(it) }
             }
         }
     }
