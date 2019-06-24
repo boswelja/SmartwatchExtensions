@@ -7,14 +7,11 @@
  */
 package com.boswelja.devicemanager.ui.main
 
-import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.wear.widget.drawer.WearableNavigationDrawerView
 import com.boswelja.devicemanager.R
-import com.boswelja.devicemanager.Utils
-import com.boswelja.devicemanager.ui.InstallMobileAppActivity
 import com.boswelja.devicemanager.ui.SettingsFragment
 import com.boswelja.devicemanager.ui.navigation.NavigationDrawerAdapter
 import com.boswelja.devicemanager.ui.navigation.NavigationDrawerSections
@@ -29,27 +26,12 @@ class MainActivity : AppCompatActivity(), WearableNavigationDrawerView.OnItemSel
 
         setContentView(R.layout.activity_main)
 
+        navigate(mainFragment)
+
         findViewById<WearableNavigationDrawerView>(R.id.navigation_drawer).apply {
             setAdapter(NavigationDrawerAdapter(this@MainActivity))
             addOnItemSelectedListener(this@MainActivity)
         }
-
-        navigate(mainFragment)
-
-        // Check for companion app
-        Utils.getCompanionNode(this)
-                .addOnCompleteListener {
-                    val node = it.result?.nodes?.lastOrNull()
-                    if (node == null) {
-                        showInstallMobileAppActivity()
-                    }
-                }
-    }
-
-    private fun showInstallMobileAppActivity() {
-        val intent = Intent(this@MainActivity, InstallMobileAppActivity::class.java)
-        startActivity(intent)
-        finish()
     }
 
     private fun navigate(fragment: Fragment) {

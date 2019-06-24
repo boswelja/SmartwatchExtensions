@@ -35,10 +35,7 @@
             </intent-filter>
         </activity>
 
-        <activity
-            android:name="androidx.wear.activity.ConfirmationActivity"/>
-
-        <activity android:name=".ui.InstallMobileAppActivity" />
+        <activity android:name="androidx.wear.activity.ConfirmationActivity"/>
 
         <service
             android:name=".service.ActionService"
