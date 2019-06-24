@@ -16,6 +16,7 @@
     </string-array>
 
     <string-array name="version_changelog">
+        <item>Added a Privacy Policy</item>
         <item>Make use of a bottom navigation bar in the phone app</item>
         <item>New app manager fallback icon</item>
         <item>New messages view, this shows warnings related to app functionality</item>

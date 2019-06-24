@@ -9,6 +9,7 @@ package com.boswelja.devicemanager.ui.main.appinfo
 
 import android.content.Intent
 import android.os.Bundle
+import androidx.browser.customtabs.CustomTabsIntent
 import androidx.core.net.toUri
 import androidx.preference.Preference
 import com.boswelja.devicemanager.BuildConfig
@@ -21,8 +22,20 @@ class AppInfoFragment :
         BasePreferenceFragment(),
         Preference.OnPreferenceClickListener {
 
+    private var customTabsIntent: CustomTabsIntent? = null
+
     override fun onPreferenceClick(preference: Preference?): Boolean {
         return when (preference?.key) {
+            OPEN_PRIVACY_POLICY_KEY -> {
+                if (customTabsIntent == null) {
+                    customTabsIntent = CustomTabsIntent.Builder().apply {
+                        addDefaultShareMenuItem()
+                        setShowTitle(true)
+                    }.build()
+                }
+                customTabsIntent!!.launchUrl(context, getString(R.string.privacy_policy_url).toUri())
+                true
+            }
             LEAVE_REVIEW_KEY -> {
                 Intent(Intent.ACTION_VIEW).apply {
                     data = "https://play.google.com/store/apps/details?id=${context?.packageName}".toUri()
@@ -44,6 +57,9 @@ class AppInfoFragment :
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         addPreferencesFromResource(R.xml.prefs_about)
+        findPreference<Preference>(OPEN_PRIVACY_POLICY_KEY)!!.apply {
+            onPreferenceClickListener = this@AppInfoFragment
+        }
         findPreference<Preference>(LEAVE_REVIEW_KEY)!!.apply {
             isEnabled = !BuildConfig.DEBUG
             onPreferenceClickListener = this@AppInfoFragment
@@ -57,7 +73,13 @@ class AppInfoFragment :
         }
     }
 
+    override fun onPause() {
+        super.onPause()
+        customTabsIntent = null
+    }
+
     companion object {
+        const val OPEN_PRIVACY_POLICY_KEY = "privacy_policy"
         const val LEAVE_REVIEW_KEY = "review"
         const val OPEN_DONATE_DIALOG_KEY = "show_donate_dialog"
         const val VERSION_KEY = "version"
