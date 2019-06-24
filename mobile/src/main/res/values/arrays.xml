@@ -16,14 +16,9 @@
     </string-array>
 
     <string-array name="version_changelog">
-        <item>Added a new feature, App Manager!</item>
-        <item>Added a setting to adjust the minimum charge threshold for battery notifications</item>
-        <item>Added a charge threshold setting for battery charged notifications</item>
-        <item>Added a messages list at the top of the main activity to let you know of any problems</item>
-        <item>Wear OS app got a redesign</item>
-        <item>Warn about DnD Sync from Phone to Watch being experimental</item>
-        <item>Fixed phantom notifications caused by charge notifications</item>
-        <item>Fixed a crash that could occur when setting up DnD Sync from Phone to Watch</item>
-        <item>Fix phone locking</item>
+        <item>Make use of a bottom navigation bar in the phone app</item>
+        <item>New app manager fallback icon</item>
+        <item>New messages view, this shows warnings related to app functionality</item>
+        <item>Under-the-hood performance improvements</item>
     </string-array>
 </resources>
