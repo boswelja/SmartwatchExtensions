@@ -22,6 +22,8 @@ class AppsAdapter(private val fragment: AppManagerFragment) : RecyclerView.Adapt
 
     private val data = ArrayList<AppSection>()
 
+    private val fallbackIcon = fragment.context?.getDrawable(R.drawable.ic_app_icon_unknown)
+
     override fun getItemCount(): Int {
         var count = 0
         for (section in data) {
@@ -73,7 +75,7 @@ class AppsAdapter(private val fragment: AppManagerFragment) : RecyclerView.Adapt
                 if (app != null) {
                     holder.appNameView.text = app.packageLabel
                     holder.appDescView.text = app.versionName
-                    holder.appIconView.setImageDrawable(Utils.getAppIcon(context, app.packageName))
+                    holder.appIconView.setImageDrawable(Utils.getAppIcon(context, app.packageName, fallbackIcon))
                     holder.itemView.setOnClickListener {
                         fragment.onItemClick(app)
                     }

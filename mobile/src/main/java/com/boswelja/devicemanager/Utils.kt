@@ -75,11 +75,11 @@ object Utils {
         }
     }
 
-    fun getAppIcon(context: Context, packageName: String): Drawable? {
+    fun getAppIcon(context: Context, packageName: String, fallbackIcon: Drawable? = null): Drawable? {
         return try {
             context.packageManager.getApplicationIcon(packageName)
         } catch (ignored: Exception) {
-            context.getDrawable(R.drawable.ic_app_icon_unknown)
+            fallbackIcon ?: context.getDrawable(R.drawable.ic_app_icon_unknown)
         }
     }
 }
