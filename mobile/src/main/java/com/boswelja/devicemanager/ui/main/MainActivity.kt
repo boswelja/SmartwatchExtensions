@@ -7,7 +7,6 @@
  */
 package com.boswelja.devicemanager.ui.main
 
-import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.boswelja.devicemanager.R
@@ -17,6 +16,7 @@ import com.boswelja.devicemanager.ui.base.BaseToolbarActivity
 import com.boswelja.devicemanager.ui.main.appinfo.AppInfoFragment
 import com.boswelja.devicemanager.ui.main.appsettings.AppSettingsFragment
 import com.boswelja.devicemanager.ui.main.extensions.ExtensionsFragment
+import com.boswelja.devicemanager.ui.main.messages.MessageChecker
 import com.boswelja.devicemanager.ui.main.messages.MessageFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
@@ -30,23 +30,12 @@ class MainActivity :
     private var appSettingsFragment: AppSettingsFragment? = null
     private var appInfoFragment: AppInfoFragment? = null
 
-    override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
-        super.onSharedPreferenceChanged(sharedPreferences, key)
-        when (key) {
-            MessageFragment.MESSAGE_COUNT_KEY -> {
-                updateMessagesBadge()
-            }
-        }
-    }
-
     override fun getContentViewId(): Int = R.layout.activity_main
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         UpdateHandler(this)
-
-        MessageFragment.updateMessageCount(this)
 
         bottomNavigationView = findViewById(R.id.bottom_navigation)
         bottomNavigationView.setOnNavigationItemSelectedListener {
@@ -58,17 +47,6 @@ class MainActivity :
         super.onResume()
         handleNavigation(bottomNavigationView.selectedItemId)
         updateMessagesBadge()
-    }
-
-    private fun updateMessagesBadge() {
-        val messages = sharedPreferences.getInt(MessageFragment.MESSAGE_COUNT_KEY, 0)
-        if (messages > 0) {
-            bottomNavigationView.showBadge(R.id.messages_navigation).apply {
-                number = messages
-            }
-        } else {
-            bottomNavigationView.removeBadge(R.id.messages_navigation)
-        }
     }
 
     private fun handleNavigation(selectedItemId: Int): Boolean {
@@ -125,5 +103,16 @@ class MainActivity :
                     .replace(R.id.fragment_holder, fragment)
                     .commit()
         } catch (_: IllegalStateException) {}
+    }
+
+    fun updateMessagesBadge() {
+        val messageCount = MessageChecker.countMessages(this)
+        if (messageCount > 0) {
+            bottomNavigationView.showBadge(R.id.messages_navigation).apply {
+                number = messageCount
+            }
+        } else {
+            bottomNavigationView.removeBadge(R.id.messages_navigation)
+        }
     }
 }
