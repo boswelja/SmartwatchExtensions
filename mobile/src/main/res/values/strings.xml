@@ -100,6 +100,7 @@
     <string name="message_battery_opt_warning_desc">Battery Optimisation can cause problems with Battery Sync among other things, it\'s recommended to turn it off for Wearable Extensions</string>
     <string name="message_button_turn_off">Turn off</string>
     <string name="message_snackbar_undo_remove">You will no longer see %s warnings</string>
+    <string name="message_none_label">No new messages</string>
 
     <string name="snackbar_action_undo">Undo</string>
 

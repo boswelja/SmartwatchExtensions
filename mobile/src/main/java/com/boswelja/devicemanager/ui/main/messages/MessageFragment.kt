@@ -15,6 +15,7 @@ import android.os.PowerManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -27,7 +28,9 @@ import com.google.android.material.snackbar.Snackbar
 class MessageFragment : Fragment() {
 
     private lateinit var sharedPreferences: SharedPreferences
+
     private lateinit var recyclerView: RecyclerView
+    private lateinit var noMessagesView: LinearLayout
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,7 +42,8 @@ class MessageFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        recyclerView = view as RecyclerView
+        noMessagesView = view.findViewById(R.id.no_messages_view)
+        recyclerView = view.findViewById(R.id.messages_recyclerview)
         recyclerView.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = MessagesAdapter(this@MessageFragment)
@@ -85,6 +89,16 @@ class MessageFragment : Fragment() {
                 }
             }
         }.show()
+    }
+
+    internal fun setHasMessages(hasMessages: Boolean) {
+        noMessagesView.apply {
+            visibility = if (hasMessages) {
+                View.GONE
+            } else {
+                View.VISIBLE
+            }
+        }
     }
 
     companion object {

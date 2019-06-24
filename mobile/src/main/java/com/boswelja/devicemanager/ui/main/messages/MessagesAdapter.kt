@@ -25,6 +25,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.Utils
 import com.google.android.material.button.MaterialButton
+import kotlin.math.min
 
 internal class MessagesAdapter(private val fragment: MessageFragment) :
         RecyclerView.Adapter<MessagesAdapter.MessageItemViewHolder>() {
@@ -82,6 +83,7 @@ internal class MessagesAdapter(private val fragment: MessageFragment) :
         if (!messages.contains(message)) {
             messages.add(message)
             notifyItemInserted(messages.indexOf(message))
+            fragment.setHasMessages(itemCount > 0)
         }
     }
 
@@ -96,13 +98,13 @@ internal class MessagesAdapter(private val fragment: MessageFragment) :
             messages.indexOf(message).also {
                 messages.removeAt(it)
                 notifyItemRemoved(it)
+                fragment.setHasMessages(itemCount > 0)
             }
         }
         if (allowUndo) fragment.dismissMessage(message)
     }
 
     class MessageItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-
         val iconView: AppCompatImageView = itemView.findViewById(R.id.message_icon)
         val labelView: AppCompatTextView = itemView.findViewById(R.id.message_label)
         val descView: AppCompatTextView = itemView.findViewById(R.id.message_desc)
@@ -137,7 +139,7 @@ internal class MessagesAdapter(private val fragment: MessageFragment) :
                         val iconLeft = itemView.left + iconMargin
                         val iconRight = itemView.left + iconMargin + icon.intrinsicWidth
                         icon.setBounds(iconLeft, iconTop, iconRight, iconBottom)
-                        icon.alpha = Math.min(((dX - icon.intrinsicWidth - iconMargin) * alphaMultiplier).toInt(), iconMaxAlpha)
+                        icon.alpha = min(((dX - icon.intrinsicWidth - iconMargin) * alphaMultiplier).toInt(), iconMaxAlpha)
                         icon.draw(c)
                     }
 
@@ -154,7 +156,7 @@ internal class MessagesAdapter(private val fragment: MessageFragment) :
                         val iconLeft = itemView.right - iconMargin - icon.intrinsicWidth
                         val iconRight = itemView.right - iconMargin
                         icon.setBounds(iconLeft, iconTop, iconRight, iconBottom)
-                        icon.alpha = Math.min(((dX + icon.intrinsicWidth + iconMargin) * alphaMultiplier * -1).toInt(), iconMaxAlpha)
+                        icon.alpha = min(((dX + icon.intrinsicWidth + iconMargin) * alphaMultiplier * -1).toInt(), iconMaxAlpha)
                         icon.draw(c)
                     }
 
