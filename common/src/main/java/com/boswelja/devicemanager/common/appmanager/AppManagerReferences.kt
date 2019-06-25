@@ -19,4 +19,6 @@ object AppManagerReferences {
 
     const val START_SERVICE = "/start_app_manager_service"
     const val STOP_SERVICE = "/stop_app_manager_service"
+
+    const val ERROR = "/app_manager_error"
 }

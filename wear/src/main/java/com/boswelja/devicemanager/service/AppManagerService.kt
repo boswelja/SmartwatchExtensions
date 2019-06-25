@@ -22,6 +22,7 @@ import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.Utils
 import com.boswelja.devicemanager.Utils.isAppInstalled
 import com.boswelja.devicemanager.common.AtomicCounter
+import com.boswelja.devicemanager.common.appmanager.AppManagerReferences.ERROR
 import com.boswelja.devicemanager.common.appmanager.AppManagerReferences.GET_ALL_PACKAGES
 import com.boswelja.devicemanager.common.appmanager.AppManagerReferences.PACKAGE_ADDED
 import com.boswelja.devicemanager.common.appmanager.AppManagerReferences.PACKAGE_REMOVED
@@ -74,7 +75,7 @@ class AppManagerService : Service() {
                 if (!intent.getBooleanExtra(Intent.EXTRA_REPLACING, false)) {
                     when (action) {
                         Intent.ACTION_PACKAGE_ADDED -> {
-                            val packageInfo = AppPackageInfo(packageManager, packageManager.getPackageInfo(intent.data?.encodedSchemeSpecificPart, 0))
+                            val packageInfo = AppPackageInfo(packageManager, packageManager.getPackageInfo(intent.data?.encodedSchemeSpecificPart!!, 0))
                             sendAppAddedMessage(packageInfo)
                         }
                         Intent.ACTION_PACKAGE_REMOVED -> {
@@ -161,18 +162,38 @@ class AppManagerService : Service() {
                 }
     }
 
-    private fun sendAllAppsMessage() {
-        val packagesToSend = AppPackageInfoList(packageManager)
+    private fun sendErrorMessage() {
         Utils.getCompanionNode(this)
                 .addOnCompleteListener {
                     if (it.isSuccessful) {
                         val node = it.result?.nodes?.firstOrNull()
                         if (node != null) {
-                            val data = packagesToSend.toByteArray()
-                            messageClient.sendMessage(node.id!!, GET_ALL_PACKAGES, data)
+                            messageClient.sendMessage(node.id!!, ERROR, null)
                         }
                     }
+                    stopForeground(true)
+                    stopSelf()
                 }
+    }
+
+    private fun sendAllAppsMessage() {
+        try {
+            val packagesToSend = AppPackageInfoList(packageManager)
+            Utils.getCompanionNode(this)
+                    .addOnCompleteListener {
+                        if (it.isSuccessful) {
+                            val node = it.result?.nodes?.firstOrNull()
+                            if (node != null) {
+                                val data = packagesToSend.toByteArray()
+                                messageClient.sendMessage(node.id!!, GET_ALL_PACKAGES, data)
+                            }
+                        }
+                    }
+        } catch (e: IllegalStateException) {
+            e.printStackTrace()
+            sendErrorMessage()
+        }
+
     }
 
     companion object {
