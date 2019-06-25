@@ -193,7 +193,6 @@ class AppManagerService : Service() {
             e.printStackTrace()
             sendErrorMessage()
         }
-
     }
 
     companion object {

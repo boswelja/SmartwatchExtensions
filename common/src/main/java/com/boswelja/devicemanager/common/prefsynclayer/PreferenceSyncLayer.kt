@@ -60,7 +60,7 @@ class PreferenceSyncLayer(context: Context) {
             PreferenceKey.BATTERY_WATCH_CHARGE_NOTI_KEY,
             PreferenceKey.INTERRUPT_FILTER_SYNC_TO_PHONE_KEY,
             PreferenceKey.INTERRUPT_FILTER_SYNC_TO_WATCH_KEY,
-            PreferenceKey.INTERRUPT_FILTER_ON_WITH_THEATER_KEY-> {
+            PreferenceKey.INTERRUPT_FILTER_ON_WITH_THEATER_KEY -> {
                 val newValue = localPrefs.getBoolean(key, false)
                 syncedPrefUpdateReq.dataMap.putBoolean(key, newValue)
             }
