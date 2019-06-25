@@ -35,9 +35,11 @@ object Utils {
 
     fun launchMobileApp(context: Context, key: String) {
         getCompanionNode(context).addOnSuccessListener { capabilityInfo ->
-            val nodeId = capabilityInfo.nodes.firstOrNull { it.isNearby }?.id ?: capabilityInfo.nodes.firstOrNull()?.id!!
-            Wearable.getMessageClient(context)
-                    .sendMessage(nodeId, References.REQUEST_LAUNCH_APP_PATH, key.toByteArray(Charsets.UTF_8))
+            val nodeId = capabilityInfo.nodes.firstOrNull { it.isNearby }?.id ?: capabilityInfo.nodes.firstOrNull()?.id
+            if (nodeId != null) {
+                Wearable.getMessageClient(context)
+                        .sendMessage(nodeId, References.REQUEST_LAUNCH_APP_PATH, key.toByteArray(Charsets.UTF_8))
+            }
         }
     }
 
