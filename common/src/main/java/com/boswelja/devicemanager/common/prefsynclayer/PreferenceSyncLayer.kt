@@ -24,9 +24,9 @@ class PreferenceSyncLayer(context: Context) {
         val phoneBatteryChargedNoti = localPrefs.getBoolean(PreferenceKey.BATTERY_PHONE_CHARGE_NOTI_KEY, false)
         val watchBatteryChargedNoti = localPrefs.getBoolean(PreferenceKey.BATTERY_WATCH_CHARGE_NOTI_KEY, false)
         val batteryChargeThreshold = localPrefs.getInt(PreferenceKey.BATTERY_CHARGE_THRESHOLD_KEY, 90)
-        val dndSyncPhoneToWatch = localPrefs.getBoolean(PreferenceKey.INTERRUPT_FILTER_SYNC_TO_WATCH_KEY, false)
-        val dndSyncWatchToPhone = localPrefs.getBoolean(PreferenceKey.INTERRUPT_FILTER_SYNC_TO_PHONE_KEY, false)
-        val dndSyncWithTheater = localPrefs.getBoolean(PreferenceKey.INTERRUPT_FILTER_ON_WITH_THEATER_KEY, false)
+        val interruptFilterSyncToWatch = localPrefs.getBoolean(PreferenceKey.INTERRUPT_FILTER_SYNC_TO_WATCH_KEY, false)
+        val interruptFilterSyncToPhone = localPrefs.getBoolean(PreferenceKey.INTERRUPT_FILTER_SYNC_TO_PHONE_KEY, false)
+        val interruptFilterSyncWithTheater = localPrefs.getBoolean(PreferenceKey.INTERRUPT_FILTER_ON_WITH_THEATER_KEY, false)
         val lockPhoneEnabled = localPrefs.getBoolean(PreferenceKey.PHONE_LOCKING_ENABLED_KEY, false)
 
         if (!batterySyncEnabled) {
@@ -41,9 +41,9 @@ class PreferenceSyncLayer(context: Context) {
         syncedPrefUpdateReq.dataMap.putBoolean(PreferenceKey.BATTERY_PHONE_CHARGE_NOTI_KEY, phoneBatteryChargedNoti)
         syncedPrefUpdateReq.dataMap.putBoolean(PreferenceKey.BATTERY_WATCH_CHARGE_NOTI_KEY, watchBatteryChargedNoti)
         syncedPrefUpdateReq.dataMap.putInt(PreferenceKey.BATTERY_CHARGE_THRESHOLD_KEY, batteryChargeThreshold)
-        syncedPrefUpdateReq.dataMap.putBoolean(PreferenceKey.INTERRUPT_FILTER_SYNC_TO_WATCH_KEY, dndSyncPhoneToWatch)
-        syncedPrefUpdateReq.dataMap.putBoolean(PreferenceKey.INTERRUPT_FILTER_SYNC_TO_PHONE_KEY, dndSyncWatchToPhone)
-        syncedPrefUpdateReq.dataMap.putBoolean(PreferenceKey.INTERRUPT_FILTER_ON_WITH_THEATER_KEY, dndSyncWithTheater)
+        syncedPrefUpdateReq.dataMap.putBoolean(PreferenceKey.INTERRUPT_FILTER_SYNC_TO_WATCH_KEY, interruptFilterSyncToWatch)
+        syncedPrefUpdateReq.dataMap.putBoolean(PreferenceKey.INTERRUPT_FILTER_SYNC_TO_PHONE_KEY, interruptFilterSyncToPhone)
+        syncedPrefUpdateReq.dataMap.putBoolean(PreferenceKey.INTERRUPT_FILTER_ON_WITH_THEATER_KEY, interruptFilterSyncWithTheater)
         syncedPrefUpdateReq.dataMap.putBoolean(PreferenceKey.PHONE_LOCKING_ENABLED_KEY, lockPhoneEnabled)
 
         // Send updated sharedPreferences
@@ -57,7 +57,10 @@ class PreferenceSyncLayer(context: Context) {
             PreferenceKey.PHONE_LOCKING_ENABLED_KEY,
             PreferenceKey.BATTERY_SYNC_ENABLED_KEY,
             PreferenceKey.BATTERY_PHONE_CHARGE_NOTI_KEY,
-            PreferenceKey.BATTERY_WATCH_CHARGE_NOTI_KEY -> {
+            PreferenceKey.BATTERY_WATCH_CHARGE_NOTI_KEY,
+            PreferenceKey.INTERRUPT_FILTER_SYNC_TO_PHONE_KEY,
+            PreferenceKey.INTERRUPT_FILTER_SYNC_TO_WATCH_KEY,
+            PreferenceKey.INTERRUPT_FILTER_ON_WITH_THEATER_KEY-> {
                 val newValue = localPrefs.getBoolean(key, false)
                 syncedPrefUpdateReq.dataMap.putBoolean(key, newValue)
             }
