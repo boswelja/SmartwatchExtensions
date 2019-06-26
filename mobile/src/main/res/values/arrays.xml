@@ -19,8 +19,10 @@
         <item>Added a Privacy Policy</item>
         <item>Make use of a bottom navigation bar in the phone app</item>
         <item>New app manager fallback icon</item>
+        <item>Performance optimisations for Wear OS app</item>
         <item>New messages view, this shows warnings related to app functionality</item>
         <item>Under-the-hood performance improvements</item>
         <item>Fixed App Manager removing the wrong item from the adapter on app uninstall</item>
+        <item>Fixed phone locking not turning on properly when device admin permissions need to be granted</item>
     </string-array>
 </resources>
