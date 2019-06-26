@@ -7,50 +7,40 @@
  */
 package com.boswelja.devicemanager.ui.main
 
+import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.Fragment
-import androidx.wear.widget.drawer.WearableNavigationDrawerView
+import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.R
-import com.boswelja.devicemanager.ui.SettingsFragment
-import com.boswelja.devicemanager.ui.navigation.NavigationDrawerAdapter
-import com.boswelja.devicemanager.ui.navigation.NavigationDrawerSections
+import com.boswelja.devicemanager.common.PreferenceKey
+import com.boswelja.devicemanager.ui.main.shortcuts.AppShortcutsFragment
 
-class MainActivity : AppCompatActivity(), WearableNavigationDrawerView.OnItemSelectedListener {
+class MainActivity : AppCompatActivity() {
 
-    private val mainFragment = MainFragment()
-    private var settingsFragment: SettingsFragment? = null
+    private lateinit var sharedPreferences: SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         setContentView(R.layout.activity_main)
 
-        navigate(mainFragment)
-
-        findViewById<WearableNavigationDrawerView>(R.id.navigation_drawer).apply {
-            setAdapter(NavigationDrawerAdapter(this@MainActivity))
-            addOnItemSelectedListener(this@MainActivity)
-        }
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
+        createView()
     }
 
-    private fun navigate(fragment: Fragment) {
-        supportFragmentManager.beginTransaction()
-                .replace(R.id.fragment_holder, fragment)
-                .commit()
-    }
-
-    override fun onItemSelected(pos: Int) {
-        when (NavigationDrawerSections.values()[pos]) {
-            NavigationDrawerSections.Main -> {
-                navigate(mainFragment)
+    private fun createView() {
+        supportFragmentManager.beginTransaction().apply {
+            if (!sharedPreferences.getBoolean(PreferenceKey.BATTERY_SYNC_ENABLED_KEY, false) or
+                    sharedPreferences.getBoolean(PreferenceKey.PHONE_LOCKING_ENABLED_KEY, false)) {
+                add(R.id.content, LockPhoneFragment())
+                add(R.id.content, BatterySyncFragment())
+            } else {
+                add(R.id.content, BatterySyncFragment())
+                add(R.id.content, LockPhoneFragment())
             }
-            NavigationDrawerSections.Settings -> {
-                if (settingsFragment == null) {
-                    settingsFragment = SettingsFragment()
-                }
-                navigate(settingsFragment!!)
-            }
+            add(R.id.content, AppShortcutsFragment())
+        }.also {
+            it.commit()
         }
     }
 }

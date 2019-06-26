@@ -1,25 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.wear.widget.drawer.WearableDrawerLayout
+<ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
+    android:nestedScrollingEnabled="true"
     android:background="@color/windowBackgroundBlack"
-    tools:context="com.boswelja.devicemanager.ui.main.MainActivity"
     tools:deviceIds="wear">
 
-    <FrameLayout
-        android:id="@+id/fragment_holder"
+    <LinearLayout
+        android:id="@+id/content"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingTop="72dp"
+        android:paddingBottom="72dp" />
 
-    <androidx.wear.widget.drawer.WearableNavigationDrawerView
-        android:id="@+id/navigation_drawer"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:navigationStyle="multiPage"
-        android:background="@color/navDrawerBackground"
-        app:enableAutoPeek="true" />
-
-</androidx.wear.widget.drawer.WearableDrawerLayout>
+</ScrollView>

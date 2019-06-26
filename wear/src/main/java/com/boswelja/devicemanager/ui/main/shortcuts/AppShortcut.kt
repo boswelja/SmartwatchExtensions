@@ -5,11 +5,10 @@
  * This file, and any part of the Wearable Extensions app/s cannot be copied and/or distributed
  * without permission from Jack Boswell (boswelja) <boswela@outlook.com>
  */
-package com.boswelja.devicemanager.ui.navigation
+package com.boswelja.devicemanager.ui.main.shortcuts
 
 import com.boswelja.devicemanager.R
 
-enum class NavigationDrawerSections(val titleRes: Int, val drawableRes: Int) {
-    Main(R.string.navigation_controls_title, R.drawable.phone),
-    Settings(R.string.navigation_settings_title, R.drawable.ic_settings);
+enum class AppShortcut(val iconRes: Int, val labelRes: Int) {
+    Settings(R.drawable.ic_settings, R.string.navigation_settings_title)
 }

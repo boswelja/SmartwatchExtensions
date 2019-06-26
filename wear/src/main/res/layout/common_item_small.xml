@@ -1,27 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/phone_locking_view"
     android:layout_width="match_parent"
-    android:layout_height="56dp"
+    android:layout_height="48dp"
+    android:paddingStart="4dp"
+    android:paddingEnd="4dp"
     android:background="?selectableItemBackground">
 
     <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/phone_locking_icon"
-        android:layout_width="56dp"
-        android:layout_height="56dp"
+        android:id="@+id/icon_view"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         android:padding="8dp"
-        android:layout_alignParentStart="true"
-        app:srcCompat="@drawable/ic_phone_lock" />
+        android:layout_alignParentStart="true" />
 
     <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/phone_locking_text"
+        android:id="@+id/label_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:layout_toEndOf="@id/phone_locking_icon"
+        android:layout_toEndOf="@id/icon_view"
         android:textSize="18sp"
-        android:textColor="?android:textColorPrimary" />
+        android:textColor="?android:textColorPrimary"
+        android:maxLines="1"
+        android:ellipsize="end" />
 
 </RelativeLayout>

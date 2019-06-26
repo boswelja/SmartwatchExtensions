@@ -5,7 +5,7 @@
  * This file, and any part of the Wearable Extensions app/s cannot be copied and/or distributed
  * without permission from Jack Boswell (boswelja) <boswela@outlook.com>
  */
-package com.boswelja.devicemanager.ui
+package com.boswelja.devicemanager.ui.settings
 
 import android.content.SharedPreferences
 import android.os.Bundle
@@ -37,9 +37,8 @@ class SettingsFragment :
         Preference.OnPreferenceChangeListener,
         SharedPreferences.OnSharedPreferenceChangeListener {
 
-    private lateinit var sharedPreferences: SharedPreferences
     private lateinit var preferenceSyncLayer: PreferenceSyncLayer
-    private lateinit var messageClient: MessageClient
+    private lateinit var sharedPreferences: SharedPreferences
 
     private var changingKey = ""
 
@@ -94,6 +93,7 @@ class SettingsFragment :
             INTERRUPT_FILTER_ON_WITH_THEATER_KEY -> {
                 val value = newValue == true
                 if (value) {
+                    val messageClient = Wearable.getMessageClient(preference.context)
                     changingKey = key
                     messageClient.addListener(interruptFilterAccessListener)
                     Utils.getCompanionNode(context!!).addOnCompleteListener {
@@ -121,10 +121,8 @@ class SettingsFragment :
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         preferenceSyncLayer = PreferenceSyncLayer(context!!)
         sharedPreferences = preferenceManager.sharedPreferences
-        messageClient = Wearable.getMessageClient(context!!)
     }
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
@@ -184,7 +182,7 @@ class SettingsFragment :
     }
 
     private fun onInterruptFilterAccessResponse(hasAccess: Boolean) {
-        messageClient.removeListener(interruptFilterAccessListener)
+        Wearable.getMessageClient(context!!).removeListener(interruptFilterAccessListener)
         if (hasAccess) {
             sharedPreferences.edit().putBoolean(changingKey, hasAccess).apply()
             preferenceSyncLayer.pushNewData()
