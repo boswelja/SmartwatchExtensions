@@ -13,7 +13,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ProgressBar
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
 import com.boswelja.devicemanager.R
@@ -26,35 +25,26 @@ import com.boswelja.devicemanager.ui.base.BaseSharedPreferenceFragment
 class BatterySyncFragment : BaseSharedPreferenceFragment() {
 
     private val batteryInfoChangeListener = SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
-        if (key == BATTERY_PERCENT_KEY) {
-            updatePhoneBatteryInfo()
+        when (key) {
+            BATTERY_SYNC_ENABLED_KEY,
+            BATTERY_PERCENT_KEY -> {
+                updatePhoneBatteryInfo()
+            }
         }
     }
 
-    private var phoneBatteryProgressBar: ProgressBar? = null
     private var phoneBatteryIndicatorIconView: AppCompatImageView? = null
     private var phoneBatteryIndicatorTextView: AppCompatTextView? = null
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return if (sharedPreferences.getBoolean(BATTERY_SYNC_ENABLED_KEY, false)) {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
             inflater.inflate(R.layout.fragment_battery_sync, container, false)
-        } else {
-            inflater.inflate(R.layout.fragment_battery_sync_disabled, container, false)
-        }
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        if (sharedPreferences.getBoolean(BATTERY_SYNC_ENABLED_KEY, false)) {
-            phoneBatteryProgressBar = view.findViewById(R.id.phone_battery_progress_bar)
-            phoneBatteryIndicatorIconView = view.findViewById(R.id.phone_battery_indicator_icon)
-            phoneBatteryIndicatorTextView = view.findViewById(R.id.phone_battery_indicator_text_view)
-        } else {
-            phoneBatteryProgressBar = null
-            phoneBatteryIndicatorIconView = null
-            phoneBatteryIndicatorTextView = null
-        }
+        phoneBatteryIndicatorIconView = view.findViewById(R.id.phone_battery_indicator_icon)
+        phoneBatteryIndicatorTextView = view.findViewById(R.id.phone_battery_indicator_text_view)
+
         view.setOnClickListener {
             val intent = Intent(context, ActionService::class.java)
             intent.putExtra(ActionService.EXTRA_ACTION, References.REQUEST_BATTERY_UPDATE_PATH)
@@ -75,11 +65,12 @@ class BatterySyncFragment : BaseSharedPreferenceFragment() {
 
     private fun updatePhoneBatteryInfo() {
         val batterySyncEnabled = sharedPreferences.getBoolean(BATTERY_SYNC_ENABLED_KEY, false)
+        val batteryPercent = sharedPreferences.getInt(BATTERY_PERCENT_KEY, 0)
+        phoneBatteryIndicatorIconView?.drawable?.level = batteryPercent
         if (batterySyncEnabled) {
-            val batteryPercent = sharedPreferences.getInt(BATTERY_PERCENT_KEY, 0)
-            phoneBatteryProgressBar?.progress = batteryPercent
-            phoneBatteryIndicatorIconView?.drawable?.level = batteryPercent
             phoneBatteryIndicatorTextView?.text = getString(R.string.phone_battery_percent).format(batteryPercent)
+        } else {
+            phoneBatteryIndicatorTextView?.text = getString(R.string.battery_sync_disabled)
         }
     }
 }

@@ -1,66 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/phone_locking_view"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="?selectableItemBackgroundBorderless">
+    android:layout_height="56dp"
+    android:background="@color/windowBackgroundBlack"
+    android:foreground="?selectableItemBackground">
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintDimensionRatio="1:1">
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/phone_battery_indicator_icon"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:padding="8dp"
+        android:layout_alignParentStart="true"
+        app:srcCompat="@drawable/ic_phone_battery" />
 
-        <ProgressBar
-            android:id="@+id/phone_battery_progress_bar"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:indeterminate="false"
-            android:max="100"
-            android:progress="65"
-            android:progressDrawable="@drawable/circular_progressbar"
-            style="@style/Widget.AppCompat.ProgressBar.Horizontal" />
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/phone_battery_indicator_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_toEndOf="@id/phone_battery_indicator_icon"
+        android:textSize="18sp"
+        android:textColor="?android:textColorPrimary" />
 
-        <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_centerInParent="true">
-
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/phone_battery_indicator_icon"
-                android:layout_width="64dp"
-                android:layout_height="64dp"
-                android:layout_alignParentStart="true"
-                app:srcCompat="@drawable/ic_phone_battery" />
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_toEndOf="@id/phone_battery_indicator_icon"
-                android:layout_centerVertical="true">
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/phone_battery_indicator_text_view"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="18sp"
-                    android:textColor="?android:attr/textColorPrimary" />
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/phone_battery_indicator_tap_to_refresh_label"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="14sp"
-                    android:textColor="?android:attr/textColorSecondary"
-                    android:text="@string/phone_battery_indicator_tap_to_refresh" />
-
-            </LinearLayout>
-        </RelativeLayout>
-    </RelativeLayout>
-</androidx.constraintlayout.widget.ConstraintLayout>
+</RelativeLayout>
