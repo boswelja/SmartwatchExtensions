@@ -1,3 +1,5 @@
+import java.util.concurrent.TimeUnit
+
 ext.versions = [
         versionCode: generateVersionCode(),
         versionName: "2.2.0",
@@ -19,6 +21,7 @@ ext.versions = [
 static def generateVersionCode() {
     def versionBuildKey = 'version.build_number'
     def versionPropFile = new File('version.properties')
+    def lastModified = versionPropFile.lastModified()
     def versionBuild
     def versionProps = new Properties()
     if (!versionPropFile.canRead()) {
@@ -29,14 +32,16 @@ static def generateVersionCode() {
         versionProps.load(new FileInputStream(versionPropFile))
     }
 
-    if (versionProps.containsKey(versionBuildKey) && !isOldData(versionPropFile.lastModified())) {
-        versionBuild = versionProps.get(versionBuildKey).toInteger() + 1
+    if (versionProps.containsKey(versionBuildKey) && !isOldData(lastModified)) {
+        versionBuild = versionProps.get(versionBuildKey).toInteger()
     } else {
         versionBuild = 0
     }
-    if (versionBuild <= 99) {
-        versionProps.put(versionBuildKey, versionBuild.toString())
-        versionProps.store(new FileWriter(versionPropFile), null)
+    if (versionBuild < 99) {
+        if (shouldIncrementVersion(lastModified)) {
+            versionProps.put(versionBuildKey, (versionBuild + 1).toString())
+            versionProps.store(new FileWriter(versionPropFile), null)
+        }
     } else {
         throw new Exception("Build limit reached")
     }
@@ -46,6 +51,17 @@ static def generateVersionCode() {
     return dateSection.concat(buildNumber).toInteger()
 }
 
+static def shouldIncrementVersion(Long lastEditedTimestamp) {
+    Calendar lastBuildDate = Calendar.getInstance()
+    lastBuildDate.setTimeInMillis(lastEditedTimestamp)
+
+    Calendar currentDate = Calendar.getInstance()
+    currentDate.setTimeInMillis(System.currentTimeMillis())
+
+    Long minimumDiff = TimeUnit.MINUTES.toMillis(1)
+    return (currentDate.timeInMillis - lastBuildDate.timeInMillis) >= minimumDiff
+}
+
 static def isOldData(Long timestamp) {
     Calendar lastBuildDate = Calendar.getInstance()
     lastBuildDate.setTimeInMillis(timestamp)
@@ -53,6 +69,7 @@ static def isOldData(Long timestamp) {
     lastBuildDate.set(Calendar.MINUTE, 0)
     lastBuildDate.set(Calendar.SECOND, 0)
     lastBuildDate.set(Calendar.MILLISECOND, 0)
+
     Calendar currentDate = Calendar.getInstance()
     currentDate.setTimeInMillis(System.currentTimeMillis())
     currentDate.set(Calendar.HOUR_OF_DAY, 0)
