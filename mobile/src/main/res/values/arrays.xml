@@ -17,6 +17,7 @@
 
     <string-array name="version_changelog">
         <item>Added a Privacy Policy</item>
+        <item>Added watch version info display to the \'About\' section</item>
         <item>Make use of a bottom navigation bar in the phone app</item>
         <item>New app manager fallback icon</item>
         <item>Performance optimisations for Wear OS app</item>
