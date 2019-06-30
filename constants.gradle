@@ -58,7 +58,7 @@ static def shouldIncrementVersion(Long lastEditedTimestamp) {
     Calendar currentDate = Calendar.getInstance()
     currentDate.setTimeInMillis(System.currentTimeMillis())
 
-    Long minimumDiff = TimeUnit.MINUTES.toMillis(1)
+    Long minimumDiff = TimeUnit.SECONDS.toMillis(30)
     return (currentDate.timeInMillis - lastBuildDate.timeInMillis) >= minimumDiff
 }
 
