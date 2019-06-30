@@ -85,7 +85,7 @@ internal class MessagesAdapter(private val fragment: MessageFragment) :
                     } else {
                         action = "android.settings.APP_NOTIFICATION_SETTINGS"
                         putExtra("app_package", context?.packageName!!)
-                        putExtra("app_uid", context?.applicationInfo?.uid!!)
+                        putExtra("app_uid", context.applicationInfo?.uid!!)
                     }
                 }.also { context.startActivity(it) }
             }

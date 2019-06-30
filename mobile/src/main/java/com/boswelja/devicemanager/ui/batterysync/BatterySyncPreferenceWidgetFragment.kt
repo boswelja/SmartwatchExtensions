@@ -75,7 +75,7 @@ class BatterySyncPreferenceWidgetFragment :
         watchBatteryPercent = view.findViewById(R.id.watch_battery_percent)
         watchBatteryLastUpdated = view.findViewById(R.id.last_updated_time)
 
-        watchBatteryUpdateNowHolder = view.findViewById<View>(R.id.updated_time_holder)
+        watchBatteryUpdateNowHolder = view.findViewById(R.id.updated_time_holder)
         watchBatteryUpdateNowHolder.setOnClickListener {
             if (sharedPreferences.getBoolean(BATTERY_SYNC_ENABLED_KEY, false)) {
                 updateBatteryStats(context!!, References.CAPABILITY_WATCH_APP)
