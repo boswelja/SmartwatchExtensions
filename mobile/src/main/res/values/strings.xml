@@ -77,10 +77,13 @@
     <string name="pref_daynight_option_system">Follow System</string>
 
     <!-- About preference strings -->
+    <string name="pref_category_about_versions">Versions</string>
     <string name="pref_about_priv_policy_title">Privacy Policy</string>
     <string name="pref_about_review_title">Rate &amp; Review</string>
     <string name="pref_about_donate_title">Donate</string>
-    <string name="pref_about_version_title">Version</string>
+    <string name="pref_about_phone_version_title">Phone Version: %s</string>
+    <string name="pref_about_watch_version_title">Watch Version: %s</string>
+    <string name="pref_about_watch_version_title_placeholder">Watch Version Loading</string>
     <string name="dialog_donate_title">Donate</string>
     <string name="donation_processed_message">Thanks for donating!</string>
     <string name="donation_failed_message">Failed to process donation</string>

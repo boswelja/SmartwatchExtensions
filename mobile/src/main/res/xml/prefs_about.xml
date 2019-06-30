@@ -22,11 +22,14 @@
             android:title="@string/pref_about_donate_title"
             android:icon="@drawable/pref_ic_donate" />
 
-        <androidx.preference.Preference
-            android:key="version"
-            android:title="@string/pref_about_version_title"
-            android:summary="@string/app_version_name"
-            android:icon="@drawable/pref_ic_about" />
+        <PreferenceCategory android:title="@string/pref_category_about_versions">
 
+            <androidx.preference.Preference android:key="phone_app_version" />
+
+            <androidx.preference.Preference
+                android:key="watch_app_version"
+                android:title="@string/pref_about_watch_version_title_placeholder"/>
+
+        </PreferenceCategory>
     </androidx.preference.PreferenceCategory>
 </androidx.preference.PreferenceScreen>

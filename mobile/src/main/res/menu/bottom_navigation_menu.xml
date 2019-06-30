@@ -19,6 +19,6 @@
     <item
         android:id="@+id/app_info_navigation"
         android:title="About"
-        android:icon="@drawable/pref_ic_about" />
+        android:icon="@drawable/nav_ic_about" />
 
 </menu>

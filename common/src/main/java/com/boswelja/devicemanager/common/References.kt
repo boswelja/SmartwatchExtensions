@@ -15,6 +15,8 @@ object References {
     const val LOCK_PHONE_PATH = "/lock_phone"
     const val REQUEST_LAUNCH_APP_PATH = "/launch_app"
 
+    const val REQUEST_APP_VERSION = "/request_app_version"
+
     const val CAPABILITY_PHONE_APP = "extensions_phone_app"
     const val CAPABILITY_WATCH_APP = "extensions_watch_app"
 }
