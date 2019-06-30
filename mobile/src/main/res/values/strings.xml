@@ -66,7 +66,6 @@
     <string name="pref_lock_phone_enabled_desc">Allow locking your phone from your wearable</string>
 
     <!-- General preference strings -->
-    <string name="pref_category_app_settings">App Settings</string>
     <string name="pref_noti_status_title">Notification Settings</string>
     <string name="pref_noti_status_summary_enabled">Notifications are enabled</string>
     <string name="pref_noti_status_summary_disabled">Notifications are disabled</string>
@@ -109,6 +108,12 @@
     <string name="message_watch_charge_noti_warning_button_label">Open Notification Settings</string>
     <string name="message_snackbar_undo_remove">You will no longer see %s warnings</string>
     <string name="message_none_label">No new messages</string>
+
+    <!-- Bottom Navigation Bar strings -->
+    <string name="bottom_nav_extensions_label">Extensions</string>
+    <string name="bottom_nav_messages_label">Messages</string>
+    <string name="bottom_nav_app_settings_label">App Settings</string>
+    <string name="bottom_nav_about_label">About</string>
 
     <string name="snackbar_action_undo">Undo</string>
 
