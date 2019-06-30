@@ -57,7 +57,7 @@
     <string name="app_manager_installed_prefix">Installed</string>
     <string name="app_manager_continue_on_watch">Continue on your watch</string>
     <string name="app_manager_unable_to_connect">Unable to connect to watch</string>
-    <string name="app_manager_section_user_apps">User Installed Apps</string>
+    <string name="app_manager_section_user_apps">User Apps</string>
     <string name="app_manager_section_system_apps">System Apps</string>
 
     <!-- Phone Lock preference strings -->
