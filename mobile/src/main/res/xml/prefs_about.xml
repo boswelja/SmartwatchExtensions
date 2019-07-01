@@ -24,7 +24,7 @@
 
         <androidx.preference.Preference
             android:key="show_changelog"
-            android:title="Changelog"
+            android:title="@string/pref_about_changelog_title"
             android:icon="@drawable/pref_ic_changelog" />
 
     </androidx.preference.PreferenceCategory>
