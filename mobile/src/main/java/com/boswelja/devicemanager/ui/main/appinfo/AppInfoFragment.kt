@@ -29,13 +29,14 @@ class AppInfoFragment :
     private var customTabsIntent: CustomTabsIntent? = null
 
     private lateinit var messageClient: MessageClient
+    private lateinit var watchVersionPreference: Preference
 
     private val messageListener = MessageClient.OnMessageReceivedListener {
 
         when (it.path) {
             References.REQUEST_APP_VERSION -> {
                 val data = String(it.data, Charsets.UTF_8).split("|")
-                findPreference<Preference>(WATCH_VERSION_KEY)!!.apply {
+                watchVersionPreference.apply {
                     title = getString(R.string.pref_about_watch_version_title).format(data[0])
                     summary = data[1]
                 }
@@ -87,6 +88,8 @@ class AppInfoFragment :
                 .addOnCompleteListener {
                     if (it.isSuccessful && it.result != null && !it.result?.nodes.isNullOrEmpty()) {
                         messageClient.sendMessage(it.result!!.nodes.first { node -> node.isNearby }.id, References.REQUEST_APP_VERSION, null)
+                    } else {
+                        watchVersionPreference.title = getString(R.string.pref_about_watch_version_failed)
                     }
                 }
     }
@@ -111,6 +114,7 @@ class AppInfoFragment :
             title = getString(R.string.pref_about_phone_version_title).format(BuildConfig.VERSION_NAME)
             summary = BuildConfig.VERSION_CODE.toString()
         }
+        watchVersionPreference = findPreference(WATCH_VERSION_KEY)!!
     }
 
     override fun onPause() {
