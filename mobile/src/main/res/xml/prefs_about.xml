@@ -22,14 +22,20 @@
             android:title="@string/pref_about_donate_title"
             android:icon="@drawable/pref_ic_donate" />
 
-        <PreferenceCategory android:title="@string/pref_category_about_versions">
+        <androidx.preference.Preference
+            android:key="show_changelog"
+            android:title="Changelog"
+            android:icon="@drawable/pref_ic_changelog" />
 
-            <androidx.preference.Preference android:key="phone_app_version" />
+    </androidx.preference.PreferenceCategory>
 
-            <androidx.preference.Preference
-                android:key="watch_app_version"
-                android:title="@string/pref_about_watch_version_title_placeholder"/>
+    <androidx.preference.PreferenceCategory android:title="@string/pref_category_about_versions">
 
-        </PreferenceCategory>
+        <androidx.preference.Preference android:key="phone_app_version" />
+
+        <androidx.preference.Preference
+            android:key="watch_app_version"
+            android:title="@string/pref_about_watch_version_title_placeholder"/>
+
     </androidx.preference.PreferenceCategory>
 </androidx.preference.PreferenceScreen>

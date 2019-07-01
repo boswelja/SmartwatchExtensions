@@ -66,7 +66,7 @@ class AppInfoFragment :
                 DonationDialogFragment().show(activity?.supportFragmentManager!!, "DonationDialog")
                 true
             }
-            PHONE_VERSION_KEY -> {
+            OPEN_CHANGELOG_KEY -> {
                 ChangelogDialogFragment().show(activity?.supportFragmentManager!!, "ChangelogDialog")
                 true
             }
@@ -104,8 +104,10 @@ class AppInfoFragment :
             isEnabled = !BuildConfig.DEBUG
             onPreferenceClickListener = this@AppInfoFragment
         }
-        findPreference<Preference>(PHONE_VERSION_KEY)!!.apply {
+        findPreference<Preference>(OPEN_CHANGELOG_KEY)!!.apply {
             onPreferenceClickListener = this@AppInfoFragment
+        }
+        findPreference<Preference>(PHONE_VERSION_KEY)!!.apply {
             title = getString(R.string.pref_about_phone_version_title).format(BuildConfig.VERSION_NAME)
             summary = BuildConfig.VERSION_CODE.toString()
         }
@@ -121,6 +123,7 @@ class AppInfoFragment :
         const val OPEN_PRIVACY_POLICY_KEY = "privacy_policy"
         const val LEAVE_REVIEW_KEY = "review"
         const val OPEN_DONATE_DIALOG_KEY = "show_donate_dialog"
+        const val OPEN_CHANGELOG_KEY = "show_changelog"
         const val PHONE_VERSION_KEY = "phone_app_version"
         const val WATCH_VERSION_KEY = "watch_app_version"
     }
