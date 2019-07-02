@@ -5,14 +5,14 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.5.0-beta05'
+        classpath 'com.android.tools.build:gradle:3.6.0-alpha04'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$versions.kotlin_version"
-        classpath 'com.google.gms:google-services:4.2.0'
+        classpath 'com.google.gms:google-services:4.3.0'
     }
 }
 
 plugins {
-    id "com.diffplug.gradle.spotless" version "3.23.0"
+    id "com.diffplug.gradle.spotless" version "3.23.1"
 }
 
 allprojects {
