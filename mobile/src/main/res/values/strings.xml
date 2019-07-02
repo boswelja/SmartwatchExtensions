@@ -31,16 +31,13 @@
     <string name="main_interrupt_filter_sync_summary">Sync Do not Disturb state between your devices</string>
     <string name="pref_interrupt_filter_sync_to_watch_title">Phone to Watch Sync</string>
     <string name="pref_interrupt_filter_sync_to_watch_summary">EXPERIMENTAL Sync DnD state to your watch from your phone</string>
-    <string name="pref_interrupt_filter_sync_to_watch_dialog_title">Additional setup required</string>
-    <string name="pref_interrupt_filter_sync_to_watch_dialog_message">EXPERIMENTAL\nIn order for this app to be able to change Do not Disturb status on your watch, you need to connect your watch to your PC and, with USB Debugging enabled, execute a command via ADB. To get a copy of the command, tap Share. Once complete, tap next.</string>
     <string name="pref_interrupt_filter_sync_to_phone_title">Watch to Phone Sync</string>
     <string name="pref_interrupt_filter_sync_to_phone_summary">Sync DnD state from your phone to your watch</string>
     <string name="pref_interrupt_filter_sync_with_theater_title">Sync with watch Theater mode</string>
     <string name="pref_interrupt_filter_sync_with_theater_summary">Sync DnD state with Wear OS theater mode</string>
     <string name="interrupt_filter_access_adb_command">adb shell settings put secure enabled_notification_listeners com.google.android.wearable.app/com.google.android.clockwork.stream.NotificationCollectorService:%s</string>
-    <string name="interrupt_filter_sync_to_watch_perm_granted_message">Permission Granted!</string>
-    <string name="interrupt_filter_sync_to_watch_perm_denied_message">Permission not granted, please try again</string>
     <string name="interrupt_filter_sync_request_policy_access_message">Please grant Wearable Extensions permission to change Do Not Disturb state</string>
+    <string name="interrupt_filter_sync_helper_loading_text">Please wait…</string>
 
     <!-- App Manager strings -->
     <string name="main_app_manager_title">App Manager</string>
@@ -95,8 +92,6 @@
     <!-- Dialog button strings -->
     <string name="dialog_button_grant">Grant</string>
     <string name="dialog_button_cancel">Cancel</string>
-    <string name="dialog_button_next">Next</string>
-    <string name="dialog_button_share">Share</string>
     <string name="dialog_button_close">Close</string>
 
     <!-- Message strings -->
@@ -118,11 +113,6 @@
     <string name="bottom_nav_about_label">About</string>
 
     <string name="snackbar_action_undo">Undo</string>
-
-    <!-- Content Description strings -->
-    <string name="content_description_loading">Loading</string>
-
-    <string name="no_watch_found">No connected watches found running Wearable Extensions</string>
 
     <string name="bullet">\u2022</string>
 

@@ -34,6 +34,7 @@
         <activity android:name=".ui.batterysync.BatterySyncPreferenceActivity" />
 
         <activity android:name=".ui.interruptfiltersync.InterruptFilterSyncPreferenceActivity" />
+        <activity android:name=".ui.interruptfiltersync.helper.InterruptFilterSyncHelperActivity" />
 
         <activity android:name=".ui.appmanager.AppManagerActivity" />
         <activity android:name=".ui.appmanager.AppInfoActivity" />

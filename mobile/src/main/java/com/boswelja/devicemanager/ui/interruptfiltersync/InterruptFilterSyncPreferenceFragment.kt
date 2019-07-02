@@ -14,7 +14,6 @@ import android.content.SharedPreferences
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
-import android.util.Log
 import android.widget.Toast
 import androidx.preference.Preference
 import androidx.preference.SwitchPreference
@@ -26,6 +25,7 @@ import com.boswelja.devicemanager.common.PreferenceKey.INTERRUPT_FILTER_SYNC_TO_
 import com.boswelja.devicemanager.common.prefsynclayer.PreferenceSyncLayer
 import com.boswelja.devicemanager.service.InterruptFilterLocalChangeListener
 import com.boswelja.devicemanager.ui.base.BasePreferenceFragment
+import com.boswelja.devicemanager.ui.interruptfiltersync.helper.InterruptFilterSyncHelperActivity
 
 class InterruptFilterSyncPreferenceFragment :
         BasePreferenceFragment(),
@@ -58,19 +58,7 @@ class InterruptFilterSyncPreferenceFragment :
             INTERRUPT_FILTER_SYNC_TO_WATCH_KEY -> {
                 val value = newValue == true
                 if (value) {
-                    InterruptFilterSyncHelperDialog().apply {
-                        setResponseListener(object : InterruptFilterSyncHelperDialog.ResponseListener {
-                            override fun onResponse(success: Boolean) {
-                                preference.sharedPreferences.edit()
-                                        .putBoolean(key, success).apply()
-                                preferenceSyncLayer.pushNewData(key)
-                                if (success) {
-                                    Compat.startForegroundService(context!!, Intent(context!!, InterruptFilterLocalChangeListener::class.java))
-                                }
-                            }
-                        })
-                        show(this@InterruptFilterSyncPreferenceFragment.activity?.supportFragmentManager!!, "InterruptFilterSyncHelperDialog")
-                    }
+                    startActivityForResult(Intent(context, InterruptFilterSyncHelperActivity::class.java), HELPER_REQUEST_CODE)
                 } else {
                     preference.sharedPreferences.edit()
                             .putBoolean(key, value).apply()
@@ -88,7 +76,7 @@ class InterruptFilterSyncPreferenceFragment :
                         preferenceSyncLayer.pushNewData(key)
                     } else {
                         Toast.makeText(context, getString(R.string.interrupt_filter_sync_request_policy_access_message), Toast.LENGTH_SHORT).show()
-                        startActivityForResult(Intent(Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS), 12345)
+                        startActivity(Intent(Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS))
                     }
                 } else {
                     preferenceSyncLayer.pushNewData(key)
@@ -138,14 +126,22 @@ class InterruptFilterSyncPreferenceFragment :
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        Log.d("InterruptFilterSettings", "onActivityResult")
         when (requestCode) {
-            12345 -> {
-                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M || notificationManager.isNotificationPolicyAccessGranted) {
-                    preferenceSyncLayer.pushNewData()
+            HELPER_REQUEST_CODE -> {
+                when (resultCode) {
+                    InterruptFilterSyncHelperActivity.RESULT_OK -> {
+                        interruptFilterSyncToWatchPreference.isChecked = true
+                        interruptFilterSyncToWatchPreference.sharedPreferences.edit()
+                                .putBoolean(INTERRUPT_FILTER_SYNC_TO_WATCH_KEY, true).apply()
+                        preferenceSyncLayer.pushNewData(INTERRUPT_FILTER_SYNC_TO_WATCH_KEY)
+                        Compat.startForegroundService(context!!, Intent(context!!, InterruptFilterLocalChangeListener::class.java))
+                    }
                 }
             }
         }
+    }
+
+    companion object {
+        private const val HELPER_REQUEST_CODE = 12345
     }
 }
