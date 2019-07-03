@@ -20,7 +20,7 @@
         <item>Added watch version info display to the \'About\' section</item>
         <item>Make use of a bottom navigation bar in the phone app</item>
         <item>New app manager fallback icon</item>
-        <item>Redesigned Interrupt Filter Sync helper</item>
+        <item>Redesigned Do not Disturb Sync helper</item>
         <item>Performance optimisations for Wear OS app</item>
         <item>New messages view, this shows warnings related to app functionality</item>
         <item>Under-the-hood performance improvements</item>
