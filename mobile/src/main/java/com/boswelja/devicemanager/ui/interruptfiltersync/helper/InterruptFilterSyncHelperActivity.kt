@@ -25,7 +25,7 @@ class InterruptFilterSyncHelperActivity : BaseToolbarActivity() {
             if (hasNotiPolicyAccess) {
                 showAllSetFragment()
             } else {
-                startSetup()
+                showSetupFragment()
             }
         }
     }
@@ -74,9 +74,14 @@ class InterruptFilterSyncHelperActivity : BaseToolbarActivity() {
         changeFragment(AllSetFragment())
     }
 
-    private fun startSetup() {
-        if (setupFragment == null) setupFragment = SetupFragment()
-        changeFragment(setupFragment!!)
+    private fun showSetupFragment() {
+        if (setupFragment == null) {
+            setupFragment = SetupFragment()
+            changeFragment(setupFragment!!)
+        } else {
+            setupFragment!!.setErrorMessage("Permission not granted, try again")
+            changeFragment(setupFragment!!, reverse = true)
+        }
     }
 
     private fun changeFragment(fragment: Fragment, animate: Boolean = true, reverse: Boolean = false) {
