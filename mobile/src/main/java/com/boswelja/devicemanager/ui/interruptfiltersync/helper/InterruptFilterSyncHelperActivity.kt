@@ -26,7 +26,7 @@ class InterruptFilterSyncHelperActivity : BaseToolbarActivity() {
     private var messageClient: MessageClient? = null
 
     private val loadingFragment: LoadingFragment = LoadingFragment()
-    private val errorFragment: ErrorFragment = ErrorFragment()
+    private var errorFragment: ErrorFragment? = null
     private var setupFragment: SetupFragment? = null
 
     private val messageListener = MessageClient.OnMessageReceivedListener {
@@ -42,8 +42,7 @@ class InterruptFilterSyncHelperActivity : BaseToolbarActivity() {
             REQUEST_SDK_INT_PATH -> {
                 val sdkInt = BigInteger(it.data).toInt()
                 if (sdkInt > Build.VERSION_CODES.O) {
-                    errorFragment.watchVersionIncompatible = true
-                    showErrorFragment()
+                    setWatchVersionError()
                 } else {
                     checkWatchNotiAccess(false)
                 }
@@ -85,9 +84,21 @@ class InterruptFilterSyncHelperActivity : BaseToolbarActivity() {
         changeFragment(loadingFragment, animate = animate, reverse = reverse)
     }
 
+    private fun setWatchVersionError() {
+        if (errorFragment == null) errorFragment = ErrorFragment()
+        errorFragment!!.watchVersionIncompatible = true
+        showErrorFragment()
+    }
+
+    private fun setWatchNullError() {
+        if (errorFragment == null) errorFragment = ErrorFragment()
+        errorFragment!!.watchUnreachable = true
+        showErrorFragment()
+    }
+
     private fun showErrorFragment() {
         setResult(RESULT_FAILED)
-        changeFragment(errorFragment)
+        changeFragment(errorFragment!!)
     }
 
     private fun showAllSetFragment() {
@@ -129,8 +140,7 @@ class InterruptFilterSyncHelperActivity : BaseToolbarActivity() {
                         val node = it.result!!.nodes.first { node -> node.isNearby }
                         messageClient!!.sendMessage(node.id, REQUEST_SDK_INT_PATH, null)
                     } else {
-                        errorFragment.watchUnreachable = true
-                        showErrorFragment()
+                        setWatchNullError()
                     }
                 }
     }
@@ -144,8 +154,7 @@ class InterruptFilterSyncHelperActivity : BaseToolbarActivity() {
                         val node = it.result!!.nodes.first { node -> node.isNearby }
                         messageClient!!.sendMessage(node.id, REQUEST_INTERRUPT_FILTER_ACCESS_STATUS_PATH, null)
                     } else {
-                        errorFragment.watchUnreachable = true
-                        showErrorFragment()
+                        setWatchNullError()
                     }
                 }
     }
