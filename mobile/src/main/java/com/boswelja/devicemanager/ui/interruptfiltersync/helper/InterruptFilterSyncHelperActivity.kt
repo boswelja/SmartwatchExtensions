@@ -33,6 +33,7 @@ class InterruptFilterSyncHelperActivity : BaseToolbarActivity() {
     override fun getContentViewId(): Int = R.layout.activity_interrupt_filter_sync_helper
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        setResult(RESULT_USER_DISMISSED)
         super.onCreate(savedInstanceState)
         if (!androidVersionCompatible()) {
             showIncompatibleFragment()
@@ -53,14 +54,14 @@ class InterruptFilterSyncHelperActivity : BaseToolbarActivity() {
         }
         messageClient = Wearable.getMessageClient(this)
         messageClient!!.addListener(messageListener)
-        checkWatchNotiAccess()
+        checkWatchNotiAccess(animate = false)
     }
 
     private fun androidVersionCompatible(): Boolean =
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
 
-    private fun showLoading() {
-        changeFragment(loadingFragment)
+    private fun showLoading(animate: Boolean, reverse: Boolean = false) {
+        changeFragment(loadingFragment, animate = animate, reverse = reverse)
     }
 
     private fun showIncompatibleFragment() {
@@ -78,14 +79,23 @@ class InterruptFilterSyncHelperActivity : BaseToolbarActivity() {
         changeFragment(setupFragment!!)
     }
 
-    private fun changeFragment(fragment: Fragment) {
-        supportFragmentManager.beginTransaction()
-                .replace(R.id.fragment_holder, fragment)
-                .commit()
+    private fun changeFragment(fragment: Fragment, animate: Boolean = true, reverse: Boolean = false) {
+        supportFragmentManager.beginTransaction().apply {
+            if (animate) {
+                if (reverse) {
+                    setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right)
+                } else {
+                    setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)
+                }
+            }
+            replace(R.id.fragment_holder, fragment)
+        }.also {
+            it.commit()
+        }
     }
 
-    fun checkWatchNotiAccess() {
-        showLoading()
+    fun checkWatchNotiAccess(animate: Boolean = true) {
+        showLoading(animate = animate)
         Wearable.getCapabilityClient(this)
                 .getCapability(References.CAPABILITY_WATCH_APP, CapabilityClient.FILTER_REACHABLE)
                 .addOnCompleteListener {
@@ -101,5 +111,6 @@ class InterruptFilterSyncHelperActivity : BaseToolbarActivity() {
     companion object {
         const val RESULT_OK = 0
         const val RESULT_FAILED = 1
+        const val RESULT_USER_DISMISSED = 2
     }
 }

@@ -128,14 +128,13 @@ class InterruptFilterSyncPreferenceFragment :
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         when (requestCode) {
             HELPER_REQUEST_CODE -> {
-                when (resultCode) {
-                    InterruptFilterSyncHelperActivity.RESULT_OK -> {
-                        interruptFilterSyncToWatchPreference.isChecked = true
-                        interruptFilterSyncToWatchPreference.sharedPreferences.edit()
-                                .putBoolean(INTERRUPT_FILTER_SYNC_TO_WATCH_KEY, true).apply()
-                        preferenceSyncLayer.pushNewData(INTERRUPT_FILTER_SYNC_TO_WATCH_KEY)
-                        Compat.startForegroundService(context!!, Intent(context!!, InterruptFilterLocalChangeListener::class.java))
-                    }
+                val enabled = resultCode == InterruptFilterSyncHelperActivity.RESULT_OK
+                interruptFilterSyncToWatchPreference.isChecked = enabled
+                interruptFilterSyncToWatchPreference.sharedPreferences.edit()
+                        .putBoolean(INTERRUPT_FILTER_SYNC_TO_WATCH_KEY, enabled).apply()
+                preferenceSyncLayer.pushNewData(INTERRUPT_FILTER_SYNC_TO_WATCH_KEY)
+                if (enabled) {
+                    Compat.startForegroundService(context!!, Intent(context!!, InterruptFilterLocalChangeListener::class.java))
                 }
             }
         }

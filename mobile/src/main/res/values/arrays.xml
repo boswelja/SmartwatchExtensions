@@ -26,4 +26,12 @@
         <item>Fixed App Manager removing the wrong item from the adapter on app uninstall</item>
         <item>Fixed phone locking not turning on properly when device admin permissions need to be granted</item>
     </string-array>
+
+    <string-array name="interrupt_filter_sync_to_watch_steps">
+        <item>On your computer, make sure you have access to ADB. If you don\'t, you\'ll need to install ADB from https://forum.xda-developers.com/showthread.php?t=2317790</item>
+        <item>Enable ADB on your watch. This can be done by navigating to Settings -> System -> About, then tapping \'Build number\' until developer mode is enabled. Then, from Settings, navigate to \'Developer Options\'. Scroll down and enable \'ADB Debugging\'. If your watch doesn\'t support USB data transfer, you\'ll need to enable \'Debug over Wi-Fi\' as well</item>
+        <item>Connect your watch to your computer, either by USB (if your watch supports it) or via Wi-Fi (You\'ll need to run \'adb connect\' followed by your watch IP address)</item>
+        <item>Run the following command: %s</item>
+        <item>Tap \'Next\'</item>
+    </string-array>
 </resources>
