@@ -53,7 +53,7 @@ internal class SetupFragment : Fragment() {
         }
     }
 
-    private fun createTextView(viewPadding: Int, textString: String) : AppCompatTextView {
+    private fun createTextView(viewPadding: Int, textString: String): AppCompatTextView {
         return AppCompatTextView(context).apply {
             layoutParams = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT)
             text = textString
