@@ -19,6 +19,5 @@ internal class AllSetFragment : Fragment() {
                 activity?.finish()
             }
         }
-
     }
 }

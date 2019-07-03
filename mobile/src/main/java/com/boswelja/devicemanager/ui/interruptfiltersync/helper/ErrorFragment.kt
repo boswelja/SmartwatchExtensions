@@ -1,0 +1,39 @@
+package com.boswelja.devicemanager.ui.interruptfiltersync.helper
+
+import android.os.Build
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.appcompat.widget.AppCompatTextView
+import androidx.fragment.app.Fragment
+import com.boswelja.devicemanager.R
+import com.google.android.material.button.MaterialButton
+
+internal class ErrorFragment : Fragment() {
+
+    private val phoneVersionIncompatible: Boolean = Build.VERSION.SDK_INT < Build.VERSION_CODES.M
+
+    var watchVersionIncompatible: Boolean = false
+    var watchUnreachable: Boolean = false
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
+            inflater.inflate(R.layout.fragment_interrupt_filter_sync_helper_error, container, false)
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        if (watchVersionIncompatible) {
+            view.findViewById<AppCompatTextView>(R.id.watch_version_incompatible_text)!!.visibility = View.VISIBLE
+        }
+        if (phoneVersionIncompatible) {
+            view.findViewById<AppCompatTextView>(R.id.phone_version_incompatible_text)!!.visibility = View.VISIBLE
+        }
+        if (watchUnreachable) {
+            view.findViewById<AppCompatTextView>(R.id.watch_unreachable_text)!!.visibility = View.VISIBLE
+        }
+        view.findViewById<MaterialButton>(R.id.finish_button)!!.apply {
+            setOnClickListener {
+                activity?.finish()
+            }
+        }
+    }
+}

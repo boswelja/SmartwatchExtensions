@@ -7,25 +7,39 @@ import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.Extensions.fromByteArray
 import com.boswelja.devicemanager.common.References
 import com.boswelja.devicemanager.common.interruptfiltersync.References.REQUEST_INTERRUPT_FILTER_ACCESS_STATUS_PATH
+import com.boswelja.devicemanager.common.interruptfiltersync.References.REQUEST_SDK_INT_PATH
 import com.boswelja.devicemanager.ui.base.BaseToolbarActivity
 import com.google.android.gms.wearable.CapabilityClient
 import com.google.android.gms.wearable.MessageClient
 import com.google.android.gms.wearable.Wearable
+import java.math.BigInteger
 
 class InterruptFilterSyncHelperActivity : BaseToolbarActivity() {
 
     private var messageClient: MessageClient? = null
 
     private val loadingFragment: LoadingFragment = LoadingFragment()
+    private val errorFragment: ErrorFragment = ErrorFragment()
     private var setupFragment: SetupFragment? = null
 
     private val messageListener = MessageClient.OnMessageReceivedListener {
-        if (it.path == REQUEST_INTERRUPT_FILTER_ACCESS_STATUS_PATH) {
-            val hasNotiPolicyAccess = Boolean.fromByteArray(it.data)
-            if (hasNotiPolicyAccess) {
-                showAllSetFragment()
-            } else {
-                showSetupFragment()
+        when (it.path) {
+            REQUEST_INTERRUPT_FILTER_ACCESS_STATUS_PATH -> {
+                val hasNotiPolicyAccess = Boolean.fromByteArray(it.data)
+                if (hasNotiPolicyAccess) {
+                    showAllSetFragment()
+                } else {
+                    showSetupFragment()
+                }
+            }
+            REQUEST_SDK_INT_PATH -> {
+                val sdkInt = BigInteger(it.data).toInt()
+                if (sdkInt > Build.VERSION_CODES.O) {
+                    errorFragment.watchVersionIncompatible = true
+                    showErrorFragment()
+                } else {
+                    checkWatchNotiAccess(false)
+                }
             }
         }
     }
@@ -36,7 +50,7 @@ class InterruptFilterSyncHelperActivity : BaseToolbarActivity() {
         setResult(RESULT_USER_DISMISSED)
         super.onCreate(savedInstanceState)
         if (!androidVersionCompatible()) {
-            showIncompatibleFragment()
+            showErrorFragment()
         } else {
             init()
         }
@@ -54,7 +68,7 @@ class InterruptFilterSyncHelperActivity : BaseToolbarActivity() {
         }
         messageClient = Wearable.getMessageClient(this)
         messageClient!!.addListener(messageListener)
-        checkWatchNotiAccess(animate = false)
+        checkWatchSystemVersion()
     }
 
     private fun androidVersionCompatible(): Boolean =
@@ -64,9 +78,9 @@ class InterruptFilterSyncHelperActivity : BaseToolbarActivity() {
         changeFragment(loadingFragment, animate = animate, reverse = reverse)
     }
 
-    private fun showIncompatibleFragment() {
+    private fun showErrorFragment() {
         setResult(RESULT_FAILED)
-        changeFragment(IncompatibleFragment())
+        changeFragment(errorFragment)
     }
 
     private fun showAllSetFragment() {
@@ -99,6 +113,21 @@ class InterruptFilterSyncHelperActivity : BaseToolbarActivity() {
         }
     }
 
+    private fun checkWatchSystemVersion() {
+        showLoading(animate = false)
+        Wearable.getCapabilityClient(this)
+                .getCapability(References.CAPABILITY_WATCH_APP, CapabilityClient.FILTER_REACHABLE)
+                .addOnCompleteListener {
+                    if (it.isSuccessful && it.result != null && !it.result!!.nodes.isNullOrEmpty()) {
+                        val node = it.result!!.nodes.first { node -> node.isNearby }
+                        messageClient!!.sendMessage(node.id, REQUEST_SDK_INT_PATH, null)
+                    } else {
+                        errorFragment.watchUnreachable = true
+                        showErrorFragment()
+                    }
+                }
+    }
+
     fun checkWatchNotiAccess(animate: Boolean = true) {
         showLoading(animate = animate)
         Wearable.getCapabilityClient(this)
@@ -108,7 +137,8 @@ class InterruptFilterSyncHelperActivity : BaseToolbarActivity() {
                         val node = it.result!!.nodes.first { node -> node.isNearby }
                         messageClient!!.sendMessage(node.id, REQUEST_INTERRUPT_FILTER_ACCESS_STATUS_PATH, null)
                     } else {
-                        showIncompatibleFragment()
+                        errorFragment.watchUnreachable = true
+                        showErrorFragment()
                     }
                 }
     }

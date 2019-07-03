@@ -92,6 +92,7 @@
                 <data android:scheme="wear" android:host="*" android:path="/request_noti_policy_access_status" />
                 <data android:scheme="wear" android:host="*" android:path="/start_app_manager_service" />
                 <data android:scheme="wear" android:host="*" android:path="/request_app_version" />
+                <data android:scheme="wear" android:host="*" android:path="/request_sdk_int" />
             </intent-filter>
         </service>
 
