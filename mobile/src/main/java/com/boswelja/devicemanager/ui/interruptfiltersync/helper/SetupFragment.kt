@@ -37,12 +37,7 @@ internal class SetupFragment : Fragment() {
         view.findViewById<LinearLayout>(R.id.steps_holder)!!.also { stepsHolder ->
             val textViewPadding = Utils.complexTypeDp(resources, 4.0f).toInt()
             if (errorMessage != null) {
-                AppCompatTextView(context).apply {
-                    layoutParams = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT)
-                    text = errorMessage
-                    textSize = 16.0f
-                    setTextIsSelectable(true)
-                    setPadding(0, textViewPadding, 0, textViewPadding)
+                createTextView(textViewPadding, errorMessage!!).apply {
                     setTextColor(Color.RED)
                 }.also { textView ->
                     stepsHolder.addView(textView)
@@ -51,16 +46,20 @@ internal class SetupFragment : Fragment() {
             val steps = resources.getStringArray(R.array.interrupt_filter_sync_to_watch_steps)
             for (i in 0 until steps.size) {
                 val stepText = "${i + 1}. ${steps[i]}"
-                AppCompatTextView(context).apply {
-                    layoutParams = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT)
-                    text = stepText
-                    textSize = 16.0f
-                    setTextIsSelectable(true)
-                    setPadding(0, textViewPadding, 0, textViewPadding)
-                }.also { textView ->
+                createTextView(textViewPadding, stepText).also { textView ->
                     stepsHolder.addView(textView)
                 }
             }
+        }
+    }
+
+    private fun createTextView(viewPadding: Int, textString: String) : AppCompatTextView {
+        return AppCompatTextView(context).apply {
+            layoutParams = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT)
+            text = textString
+            textSize = 16.0f
+            setTextIsSelectable(true)
+            setPadding(0, viewPadding, 0, viewPadding)
         }
     }
 
