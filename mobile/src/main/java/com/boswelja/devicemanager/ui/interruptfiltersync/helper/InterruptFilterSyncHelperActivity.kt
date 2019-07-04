@@ -127,7 +127,11 @@ class InterruptFilterSyncHelperActivity : BaseToolbarActivity() {
             }
             replace(R.id.fragment_holder, fragment)
         }.also {
-            it.commit()
+            try {
+                it.commit()
+            } catch (e: IllegalStateException) {
+                e.printStackTrace()
+            }
         }
     }
 

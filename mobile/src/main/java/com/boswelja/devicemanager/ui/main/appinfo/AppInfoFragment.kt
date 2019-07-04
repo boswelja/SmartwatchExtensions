@@ -86,10 +86,14 @@ class AppInfoFragment :
         Wearable.getCapabilityClient(context!!)
                 .getCapability(References.CAPABILITY_WATCH_APP, CapabilityClient.FILTER_REACHABLE)
                 .addOnCompleteListener {
-                    if (it.isSuccessful && it.result != null && !it.result?.nodes.isNullOrEmpty()) {
-                        messageClient.sendMessage(it.result!!.nodes.first { node -> node.isNearby }.id, References.REQUEST_APP_VERSION, null)
-                    } else {
-                        watchVersionPreference.title = getString(R.string.pref_about_watch_version_failed)
+                    try {
+                        if (it.isSuccessful && it.result != null && !it.result?.nodes.isNullOrEmpty()) {
+                            messageClient.sendMessage(it.result!!.nodes.first { node -> node.isNearby }.id, References.REQUEST_APP_VERSION, null)
+                        } else {
+                            watchVersionPreference.title = getString(R.string.pref_about_watch_version_failed)
+                        }
+                    } catch (e: IllegalStateException) {
+                        e.printStackTrace()
                     }
                 }
     }
