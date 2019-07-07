@@ -64,13 +64,10 @@
         android:id="@+id/finish_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/interrupt_filter_sync_helper_button_finish"
         android:layout_margin="16dp"
-        android:padding="8dp"
+        android:text="@string/interrupt_filter_sync_helper_button_finish"
+        app:icon="@drawable/ic_check"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:icon="@drawable/ic_check"
-        app:iconGravity="end"
-        app:iconPadding="2dp"
-        style="@style/Widget.MaterialComponents.Button.OutlinedButton" />
+        style="@style/AppTheme.Button.Outlined.IconRight" />
 </androidx.constraintlayout.widget.ConstraintLayout>
