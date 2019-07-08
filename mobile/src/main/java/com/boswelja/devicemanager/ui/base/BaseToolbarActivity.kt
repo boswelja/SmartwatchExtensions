@@ -35,9 +35,9 @@ abstract class BaseToolbarActivity : BaseDayNightActivity() {
         connectedWatchId = sharedPreferences.getString(CONNECTED_WATCH_ID_KEY, null)
         val connectedWatchName = sharedPreferences.getString(CONNECTED_WATCH_NAME_KEY, "")
         supportActionBar!!.subtitle = if (!connectedWatchName.isNullOrBlank()) {
-            "Connected to $connectedWatchName"
+            getString(R.string.connected_watch_label).format(connectedWatchName)
         } else {
-            "No watch found"
+            getString(R.string.connected_watch_null_label)
         }
     }
 

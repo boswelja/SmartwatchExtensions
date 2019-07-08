@@ -121,6 +121,10 @@
     <string name="bottom_nav_app_settings_label">App Settings</string>
     <string name="bottom_nav_about_label">About</string>
 
+    <!-- Connected watch strings -->
+    <string name="connected_watch_null_label">No connected watch</string>
+    <string name="connected_watch_label">Connected to %s</string>
+
     <string name="snackbar_action_undo">Undo</string>
 
     <string name="bullet">\u2022</string>
