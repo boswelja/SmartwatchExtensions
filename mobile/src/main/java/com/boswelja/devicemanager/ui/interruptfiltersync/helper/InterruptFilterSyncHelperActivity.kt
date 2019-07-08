@@ -139,13 +139,16 @@ class InterruptFilterSyncHelperActivity : BaseToolbarActivity() {
         showLoading(animate = false)
         Wearable.getCapabilityClient(this)
                 .getCapability(References.CAPABILITY_WATCH_APP, CapabilityClient.FILTER_REACHABLE)
-                .addOnCompleteListener {
-                    if (it.isSuccessful && it.result != null && !it.result!!.nodes.isNullOrEmpty()) {
-                        val node = it.result!!.nodes.first { node -> node.isNearby }
+                .addOnSuccessListener {
+                    if (it != null && !it.nodes.isNullOrEmpty()) {
+                        val node = it.nodes.first { node -> node.isNearby }
                         messageClient!!.sendMessage(node.id, REQUEST_SDK_INT_PATH, null)
                     } else {
                         setWatchNullError()
                     }
+                }
+                .addOnFailureListener {
+                    setWatchNullError()
                 }
     }
 
@@ -153,13 +156,16 @@ class InterruptFilterSyncHelperActivity : BaseToolbarActivity() {
         showLoading(animate = animate)
         Wearable.getCapabilityClient(this)
                 .getCapability(References.CAPABILITY_WATCH_APP, CapabilityClient.FILTER_REACHABLE)
-                .addOnCompleteListener {
-                    if (it.isSuccessful && it.result != null && !it.result!!.nodes.isNullOrEmpty()) {
-                        val node = it.result!!.nodes.first { node -> node.isNearby }
+                .addOnSuccessListener {
+                    if (it != null && !it.nodes.isNullOrEmpty()) {
+                        val node = it.nodes.first { node -> node.isNearby }
                         messageClient!!.sendMessage(node.id, REQUEST_INTERRUPT_FILTER_ACCESS_STATUS_PATH, null)
                     } else {
                         setWatchNullError()
                     }
+                }
+                .addOnFailureListener {
+                    setWatchNullError()
                 }
     }
 
