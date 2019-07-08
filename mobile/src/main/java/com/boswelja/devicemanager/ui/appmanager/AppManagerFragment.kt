@@ -30,7 +30,8 @@ class AppManagerFragment : Fragment() {
     private lateinit var messageClient: MessageClient
 
     private lateinit var appsRecyclerView: RecyclerView
-    private lateinit var loadingView: View
+
+    private var allAppsCache: AppPackageInfoList? = null
 
     private val messageListener = MessageClient.OnMessageReceivedListener {
         when (it.path) {
@@ -45,11 +46,6 @@ class AppManagerFragment : Fragment() {
                 val uninstalledMessage = "${getString(R.string.app_manager_uninstalled_prefix)} ${adapter.getFromPackageName(appPackageName)?.packageLabel}"
                 Snackbar.make(view!!, uninstalledMessage, Snackbar.LENGTH_LONG).show()
                 adapter.remove(appPackageName)
-            }
-            AppManagerReferences.GET_ALL_PACKAGES -> {
-                val allApps = AppPackageInfoList.fromByteArray(it.data)
-                (appsRecyclerView.adapter as AppsAdapter).setAllApps(allApps)
-                setLoading(false)
             }
         }
     }
@@ -66,7 +62,6 @@ class AppManagerFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        loadingView = view.findViewById(R.id.loading_view)
         appsRecyclerView = view.findViewById<RecyclerView>(R.id.apps_recyclerview).apply {
             layoutManager = LinearLayoutManager(
                     context!!,
@@ -79,8 +74,9 @@ class AppManagerFragment : Fragment() {
                 }
             })
         }
-
-        setLoading(true)
+        if (allAppsCache != null) {
+            setAllApps(allAppsCache!!)
+        }
     }
 
     override fun onResume() {
@@ -113,16 +109,6 @@ class AppManagerFragment : Fragment() {
         }
     }
 
-    private fun setLoading(loading: Boolean) {
-        if (loading) {
-            loadingView.visibility = View.VISIBLE
-            appsRecyclerView.visibility = View.INVISIBLE
-        } else {
-            loadingView.visibility = View.GONE
-            appsRecyclerView.visibility = View.VISIBLE
-        }
-    }
-
     private fun sendUninstallRequestMessage(appPackageInfo: AppPackageInfo) {
         Wearable.getCapabilityClient(context!!)
                 .getCapability(References.CAPABILITY_WATCH_APP, CapabilityClient.FILTER_REACHABLE)
@@ -147,6 +133,15 @@ class AppManagerFragment : Fragment() {
                         }
                     }
                 }
+    }
+
+    fun setAllApps(apps: AppPackageInfoList) {
+        try {
+            (appsRecyclerView.adapter as AppsAdapter).setAllApps(apps)
+            allAppsCache = null
+        } catch (e: UninitializedPropertyAccessException) {
+            allAppsCache = apps
+        }
     }
 
     fun onItemClick(appPackageInfo: AppPackageInfo) {
