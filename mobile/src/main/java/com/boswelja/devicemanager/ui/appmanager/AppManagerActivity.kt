@@ -10,12 +10,10 @@ package com.boswelja.devicemanager.ui.appmanager
 import android.os.Bundle
 import android.widget.Toast
 import com.boswelja.devicemanager.R
-import com.boswelja.devicemanager.common.References
 import com.boswelja.devicemanager.common.appmanager.AppManagerReferences
 import com.boswelja.devicemanager.common.appmanager.AppPackageInfoList
 import com.boswelja.devicemanager.ui.base.BaseToolbarActivity
 import com.boswelja.devicemanager.ui.base.LoadingFragment
-import com.google.android.gms.wearable.CapabilityClient
 import com.google.android.gms.wearable.MessageClient
 import com.google.android.gms.wearable.Wearable
 
@@ -36,8 +34,6 @@ class AppManagerActivity : BaseToolbarActivity() {
             }
         }
     }
-
-    private var retryConnectCounter = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -83,23 +79,8 @@ class AppManagerActivity : BaseToolbarActivity() {
     }
 
     fun startAppManagerService() {
-        if (retryConnectCounter < 3) {
-            Wearable.getCapabilityClient(this)
-                    .getCapability(References.CAPABILITY_WATCH_APP, CapabilityClient.FILTER_REACHABLE)
-                    .addOnCompleteListener {
-                        if (it.isSuccessful) {
-                            val node = it.result?.nodes?.firstOrNull { node -> node.isNearby }
-                            if (node != null) {
-                                messageClient.sendMessage(node.id, AppManagerReferences.START_SERVICE, null)
-                            } else {
-                                retryConnectCounter += 1
-                                startAppManagerService()
-                            }
-                        } else {
-                            retryConnectCounter += 1
-                            startAppManagerService()
-                        }
-                    }
+        if (!connectedWatchId.isNullOrEmpty()) {
+            messageClient.sendMessage(connectedWatchId!!, AppManagerReferences.START_SERVICE, null)
         } else {
             Toast.makeText(this, getString(R.string.app_manager_unable_to_connect), Toast.LENGTH_LONG).show()
             finish()
@@ -107,15 +88,8 @@ class AppManagerActivity : BaseToolbarActivity() {
     }
 
     private fun stopAppManagerService() {
-        Wearable.getCapabilityClient(this)
-                .getCapability(References.CAPABILITY_WATCH_APP, CapabilityClient.FILTER_REACHABLE)
-                .addOnCompleteListener {
-                    if (it.isSuccessful) {
-                        val node = it.result?.nodes?.firstOrNull { node -> node.isNearby }
-                        if (node != null) {
-                            messageClient.sendMessage(node.id, AppManagerReferences.STOP_SERVICE, null)
-                        }
-                    }
-                }
+        if (!connectedWatchId.isNullOrEmpty()) {
+            messageClient.sendMessage(connectedWatchId!!, AppManagerReferences.STOP_SERVICE, null)
+        }
     }
 }

@@ -12,12 +12,10 @@ import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.Extensions.fromByteArray
-import com.boswelja.devicemanager.common.References
 import com.boswelja.devicemanager.common.interruptfiltersync.References.REQUEST_INTERRUPT_FILTER_ACCESS_STATUS_PATH
 import com.boswelja.devicemanager.common.interruptfiltersync.References.REQUEST_SDK_INT_PATH
 import com.boswelja.devicemanager.ui.base.BaseToolbarActivity
 import com.boswelja.devicemanager.ui.base.LoadingFragment
-import com.google.android.gms.wearable.CapabilityClient
 import com.google.android.gms.wearable.MessageClient
 import com.google.android.gms.wearable.Wearable
 import java.math.BigInteger
@@ -138,36 +136,20 @@ class InterruptFilterSyncHelperActivity : BaseToolbarActivity() {
 
     private fun checkWatchSystemVersion() {
         showLoading(animate = false)
-        Wearable.getCapabilityClient(this)
-                .getCapability(References.CAPABILITY_WATCH_APP, CapabilityClient.FILTER_REACHABLE)
-                .addOnSuccessListener {
-                    if (it != null && !it.nodes.isNullOrEmpty()) {
-                        val node = it.nodes.first { node -> node.isNearby }
-                        messageClient!!.sendMessage(node.id, REQUEST_SDK_INT_PATH, null)
-                    } else {
-                        setWatchNullError()
-                    }
-                }
-                .addOnFailureListener {
-                    setWatchNullError()
-                }
+        if (!connectedWatchId.isNullOrEmpty()) {
+            messageClient!!.sendMessage(connectedWatchId!!, REQUEST_SDK_INT_PATH, null)
+        } else {
+            setWatchNullError()
+        }
     }
 
     fun checkWatchNotiAccess(animate: Boolean = true) {
         showLoading(animate = animate)
-        Wearable.getCapabilityClient(this)
-                .getCapability(References.CAPABILITY_WATCH_APP, CapabilityClient.FILTER_REACHABLE)
-                .addOnSuccessListener {
-                    if (it != null && !it.nodes.isNullOrEmpty()) {
-                        val node = it.nodes.first { node -> node.isNearby }
-                        messageClient!!.sendMessage(node.id, REQUEST_INTERRUPT_FILTER_ACCESS_STATUS_PATH, null)
-                    } else {
-                        setWatchNullError()
-                    }
-                }
-                .addOnFailureListener {
-                    setWatchNullError()
-                }
+        if (!connectedWatchId.isNullOrEmpty()) {
+            messageClient!!.sendMessage(connectedWatchId!!, REQUEST_INTERRUPT_FILTER_ACCESS_STATUS_PATH, null)
+        } else {
+            setWatchNullError()
+        }
     }
 
     companion object {

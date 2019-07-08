@@ -12,6 +12,8 @@ import android.os.Bundle
 import android.view.MenuItem
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import com.boswelja.devicemanager.R
+import com.boswelja.devicemanager.References.CONNECTED_WATCH_ID_KEY
+import com.boswelja.devicemanager.References.CONNECTED_WATCH_NAME_KEY
 import com.boswelja.devicemanager.common.Utils
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.snackbar.Snackbar
@@ -19,6 +21,8 @@ import com.google.android.material.snackbar.Snackbar
 abstract class BaseToolbarActivity : BaseDayNightActivity() {
 
     private var toolbarElevated = false
+
+    var connectedWatchId: String? = null
 
     abstract fun getContentViewId(): Int
 
@@ -28,6 +32,13 @@ abstract class BaseToolbarActivity : BaseDayNightActivity() {
         setContentView(getContentViewId())
 
         setSupportActionBar(findViewById(R.id.toolbar))
+        connectedWatchId = sharedPreferences.getString(CONNECTED_WATCH_ID_KEY, null)
+        val connectedWatchName = sharedPreferences.getString(CONNECTED_WATCH_NAME_KEY, "")
+        supportActionBar!!.subtitle = if (!connectedWatchName.isNullOrBlank()) {
+            "Connected to $connectedWatchName"
+        } else {
+            "No watch found"
+        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

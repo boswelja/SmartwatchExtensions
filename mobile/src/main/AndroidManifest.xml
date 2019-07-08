@@ -22,7 +22,7 @@
         android:theme="@style/AppTheme"
         tools:ignore="UnusedAttribute">
 
-        <activity android:name=".ui.main.MainActivity">
+        <activity android:name=".ui.EntryActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <action android:name="android.intent.action.VIEW" />
@@ -31,13 +31,27 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".ui.batterysync.BatterySyncPreferenceActivity" />
+        <activity
+            android:name=".ui.main.MainActivity"
+            android:exported="false" />
 
-        <activity android:name=".ui.interruptfiltersync.InterruptFilterSyncPreferenceActivity" />
-        <activity android:name=".ui.interruptfiltersync.helper.InterruptFilterSyncHelperActivity" />
+        <activity
+            android:name=".ui.batterysync.BatterySyncPreferenceActivity"
+            android:exported="false" />
 
-        <activity android:name=".ui.appmanager.AppManagerActivity" />
-        <activity android:name=".ui.appmanager.AppInfoActivity" />
+        <activity
+            android:name=".ui.interruptfiltersync.InterruptFilterSyncPreferenceActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.interruptfiltersync.helper.InterruptFilterSyncHelperActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".ui.appmanager.AppManagerActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.appmanager.AppInfoActivity"
+            android:exported="false" />
 
         <receiver
             android:name=".receiver.DeviceAdminChangeReceiver"

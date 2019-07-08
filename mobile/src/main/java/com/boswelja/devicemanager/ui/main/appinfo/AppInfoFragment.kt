@@ -16,9 +16,9 @@ import com.boswelja.devicemanager.BuildConfig
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.References
 import com.boswelja.devicemanager.ui.base.BasePreferenceFragment
+import com.boswelja.devicemanager.ui.base.BaseToolbarActivity
 import com.boswelja.devicemanager.ui.donate.DonationDialogFragment
 import com.boswelja.devicemanager.ui.version.ChangelogDialogFragment
-import com.google.android.gms.wearable.CapabilityClient
 import com.google.android.gms.wearable.MessageClient
 import com.google.android.gms.wearable.Wearable
 
@@ -83,19 +83,12 @@ class AppInfoFragment :
     override fun onResume() {
         super.onResume()
         messageClient.addListener(messageListener)
-        Wearable.getCapabilityClient(context!!)
-                .getCapability(References.CAPABILITY_WATCH_APP, CapabilityClient.FILTER_REACHABLE)
-                .addOnCompleteListener {
-                    try {
-                        if (it.isSuccessful && it.result != null && !it.result?.nodes.isNullOrEmpty()) {
-                            messageClient.sendMessage(it.result!!.nodes.first { node -> node.isNearby }.id, References.REQUEST_APP_VERSION, null)
-                        } else {
-                            watchVersionPreference.title = getString(R.string.pref_about_watch_version_failed)
-                        }
-                    } catch (e: IllegalStateException) {
-                        e.printStackTrace()
-                    }
-                }
+        val connectedWatchId = (activity as BaseToolbarActivity).connectedWatchId
+        if (!connectedWatchId.isNullOrEmpty()) {
+            messageClient.sendMessage(connectedWatchId, References.REQUEST_APP_VERSION, null)
+        } else {
+            watchVersionPreference.title = getString(R.string.pref_about_watch_version_failed)
+        }
     }
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
