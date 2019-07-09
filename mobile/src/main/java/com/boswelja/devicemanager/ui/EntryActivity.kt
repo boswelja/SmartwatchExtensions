@@ -37,8 +37,21 @@ class EntryActivity : AppCompatActivity() {
                                 .putString(CONNECTED_WATCH_NAME_KEY, node.displayName)
                                 .apply()
                         startMainActivity()
+                    } else {
+                        setNoWatchesFound()
                     }
                 }
+                .addOnFailureListener {
+                    setNoWatchesFound()
+                }
+    }
+
+    private fun setNoWatchesFound() {
+        PreferenceManager.getDefaultSharedPreferences(this)
+                .edit()
+                .putString(CONNECTED_WATCH_ID_KEY, "")
+                .putString(CONNECTED_WATCH_NAME_KEY, "")
+                .apply()
     }
 
     private fun startMainActivity() {
