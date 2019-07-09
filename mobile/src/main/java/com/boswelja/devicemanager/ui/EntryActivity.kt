@@ -19,6 +19,7 @@ import com.boswelja.devicemanager.ui.main.MainActivity
 import com.google.android.gms.wearable.CapabilityClient
 import com.google.android.gms.wearable.Wearable
 
+@Suppress("ApplySharedPref")
 class EntryActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -30,19 +31,24 @@ class EntryActivity : AppCompatActivity() {
                 .getCapability(References.CAPABILITY_WATCH_APP, CapabilityClient.FILTER_REACHABLE)
                 .addOnSuccessListener {
                     if (it != null && !it.nodes.isNullOrEmpty()) {
-                        val node = it.nodes.first { n -> n.isNearby }
-                        PreferenceManager.getDefaultSharedPreferences(this)
-                                .edit()
-                                .putString(CONNECTED_WATCH_ID_KEY, node.id)
-                                .putString(CONNECTED_WATCH_NAME_KEY, node.displayName)
-                                .apply()
-                        startMainActivity()
+                        val node = it.nodes.firstOrNull { n -> n.isNearby }
+                        if (node != null) {
+                            PreferenceManager.getDefaultSharedPreferences(this)
+                                    .edit()
+                                    .putString(CONNECTED_WATCH_ID_KEY, node.id)
+                                    .putString(CONNECTED_WATCH_NAME_KEY, node.displayName)
+                                    .commit()
+                        } else {
+                            setNoWatchesFound()
+                        }
                     } else {
                         setNoWatchesFound()
                     }
+                    startMainActivity()
                 }
                 .addOnFailureListener {
                     setNoWatchesFound()
+                    startMainActivity()
                 }
     }
 
@@ -51,7 +57,7 @@ class EntryActivity : AppCompatActivity() {
                 .edit()
                 .putString(CONNECTED_WATCH_ID_KEY, "")
                 .putString(CONNECTED_WATCH_NAME_KEY, "")
-                .apply()
+                .commit()
     }
 
     private fun startMainActivity() {
