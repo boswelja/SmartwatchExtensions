@@ -13,8 +13,8 @@ ext.versions = [
         play_services_wearable: "17.0.0",
         androidx_core_ktx: "1.2.0-alpha02",
         androidx_wear: "1.0.0",
-        androidx_appcompat: "1.1.0-beta01",
-        androidx_preference: "1.1.0-beta01",
+        androidx_appcompat: "1.1.0-rc01",
+        androidx_preference: "1.1.0-rc01",
         androidx_constraintlayout: "2.0.0-beta2"
 ]
 
@@ -58,7 +58,7 @@ static def shouldIncrementVersion(Long lastEditedTimestamp) {
     Calendar currentDate = Calendar.getInstance()
     currentDate.setTimeInMillis(System.currentTimeMillis())
 
-    Long minimumDiff = TimeUnit.SECONDS.toMillis(30)
+    Long minimumDiff = TimeUnit.SECONDS.toMillis(45)
     return (currentDate.timeInMillis - lastBuildDate.timeInMillis) >= minimumDiff
 }
 

@@ -36,7 +36,7 @@ dependencies {
     implementation "androidx.core:core-ktx:$versions.androidx_core_ktx"
     implementation "androidx.wear:wear:$versions.androidx_wear"
     implementation "androidx.appcompat:appcompat:$versions.androidx_appcompat"
-    implementation "androidx.preference:preference:$versions.androidx_preference"
+    implementation "androidx.preference:preference-ktx:$versions.androidx_preference"
     implementation "androidx.constraintlayout:constraintlayout:$versions.androidx_constraintlayout"
 
     implementation "com.google.android.support:wearable:$versions.wearable_support_lib"
