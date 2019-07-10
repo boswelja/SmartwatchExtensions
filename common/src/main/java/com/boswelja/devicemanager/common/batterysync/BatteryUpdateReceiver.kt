@@ -13,6 +13,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.os.Build
 import androidx.core.app.NotificationCompat
+import androidx.core.content.edit
 import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.common.PreferenceKey
 import com.boswelja.devicemanager.common.R
@@ -34,10 +35,10 @@ abstract class BatteryUpdateReceiver : WearableListenerService() {
             val messageSplit = message.split("|")
             val percent = messageSplit[0].toInt()
             val charging = messageSplit[1] == true.toString()
-            sharedPreferences.edit()
-                    .putLong(PreferenceKey.BATTERY_SYNC_LAST_WHEN_KEY, System.currentTimeMillis())
-                    .putInt(PreferenceKey.BATTERY_PERCENT_KEY, percent)
-                    .apply()
+            sharedPreferences.edit {
+                putLong(PreferenceKey.BATTERY_SYNC_LAST_WHEN_KEY, System.currentTimeMillis())
+                putInt(PreferenceKey.BATTERY_PERCENT_KEY, percent)
+            }
 
             val shouldNotifyDeviceCharged = shouldNotifyDeviceCharged()
             if (charging && shouldNotifyDeviceCharged) {

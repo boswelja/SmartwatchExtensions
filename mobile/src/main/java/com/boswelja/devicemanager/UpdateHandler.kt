@@ -8,6 +8,7 @@
 package com.boswelja.devicemanager
 
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.edit
 import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.ui.version.ChangelogDialogFragment
 
@@ -30,14 +31,13 @@ class UpdateHandler(private val activity: AppCompatActivity) {
         val currentVersion = BuildConfig.VERSION_CODE
         if (oldVersion < currentVersion) {
             ChangelogDialogFragment().show(activity.supportFragmentManager, "ChangelogDialog")
-            val preferenceEditor = sharedPreferences.edit()
-            preferenceEditor.putInt(APP_VERSION_KEY, currentVersion)
-            if (oldVersion < 120190605) {
-                preferenceEditor
-                        .remove("battery_phone_full_charge")
-                        .remove("battery_watch_full_charge")
+            sharedPreferences.edit {
+                putInt(APP_VERSION_KEY, currentVersion)
+                if (oldVersion < 120190605) {
+                    remove("battery_phone_full_charge")
+                    remove("battery_watch_full_charge")
+                }
             }
-            preferenceEditor.apply()
         }
     }
 

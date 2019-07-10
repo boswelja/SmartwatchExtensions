@@ -8,8 +8,10 @@
 package com.boswelja.devicemanager.ui
 
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.edit
 import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.References.CONNECTED_WATCH_ID_KEY
@@ -19,25 +21,26 @@ import com.boswelja.devicemanager.ui.main.MainActivity
 import com.google.android.gms.wearable.CapabilityClient
 import com.google.android.gms.wearable.Wearable
 
-@Suppress("ApplySharedPref")
 class EntryActivity : AppCompatActivity() {
+
+    private lateinit var sharedPreferences: SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         setContentView(R.layout.activity_entry_point)
 
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
         Wearable.getCapabilityClient(this)
                 .getCapability(References.CAPABILITY_WATCH_APP, CapabilityClient.FILTER_REACHABLE)
                 .addOnSuccessListener {
                     if (it != null && !it.nodes.isNullOrEmpty()) {
                         val node = it.nodes.firstOrNull { n -> n.isNearby }
                         if (node != null) {
-                            PreferenceManager.getDefaultSharedPreferences(this)
-                                    .edit()
-                                    .putString(CONNECTED_WATCH_ID_KEY, node.id)
-                                    .putString(CONNECTED_WATCH_NAME_KEY, node.displayName)
-                                    .commit()
+                            sharedPreferences.edit(commit = true) {
+                                putString(CONNECTED_WATCH_ID_KEY, node.id)
+                                putString(CONNECTED_WATCH_NAME_KEY, node.displayName)
+                            }
                         } else {
                             setNoWatchesFound()
                         }
@@ -53,11 +56,10 @@ class EntryActivity : AppCompatActivity() {
     }
 
     private fun setNoWatchesFound() {
-        PreferenceManager.getDefaultSharedPreferences(this)
-                .edit()
-                .putString(CONNECTED_WATCH_ID_KEY, "")
-                .putString(CONNECTED_WATCH_NAME_KEY, "")
-                .commit()
+        sharedPreferences.edit(commit = true) {
+            putString(CONNECTED_WATCH_ID_KEY, "")
+            putString(CONNECTED_WATCH_NAME_KEY, "")
+        }
     }
 
     private fun startMainActivity() {
