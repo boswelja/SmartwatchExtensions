@@ -10,7 +10,7 @@ package com.boswelja.devicemanager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.edit
 import androidx.preference.PreferenceManager
-import com.boswelja.devicemanager.ui.version.ChangelogDialogFragment
+import com.boswelja.devicemanager.ui.changelog.ChangelogDialogFragment
 
 class UpdateHandler(private val activity: AppCompatActivity) {
 

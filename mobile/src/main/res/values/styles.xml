@@ -12,6 +12,7 @@
         <item name="alertDialogTheme">@style/AppTheme.AlertDialog</item>
         <item name="toolbarStyle">@style/AppTheme.Toolbar</item>
         <item name="materialButtonStyle">@style/AppTheme.Button</item>
+        <item name="bottomSheetDialogTheme">@style/AppTheme.BottomSheetDialog</item>
     </style>
 
     <style name="AppTheme" parent="BaseTheme" />
@@ -38,6 +39,20 @@
         <item name="iconPadding">4dp</item>
         <item name="iconGravity">end</item>
         <item name="cornerRadius">@dimen/corner_radius</item>
+    </style>
+
+    <style name="AppTheme.BottomSheetDialog" parent="Theme.MaterialComponents.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/AppTheme.BottomSheet</item>
+    </style>
+
+    <style name="AppTheme.BottomSheet" parent="Widget.MaterialComponents.BottomSheet.Modal">
+        <item name="shapeAppearance">@style/AppTheme.ShapeAppearance.LargeComponent</item>
+    </style>
+
+    <style name="AppTheme.ShapeAppearance.LargeComponent" parent="ShapeAppearance.MaterialComponents.LargeComponent">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">@dimen/corner_radius</item>
+        <item name="android:backgroundTint">@color/dialogBackground</item>
     </style>
 
 </resources>
