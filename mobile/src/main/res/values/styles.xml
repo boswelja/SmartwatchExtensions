@@ -3,6 +3,7 @@
     <style name="BaseTheme.DayNight" parent="Theme.MaterialComponents.Light.NoActionBar" />
     <style name="BaseTheme.AlertDialog" parent="Theme.MaterialComponents.Light.Dialog" />
     <style name="BaseTheme.AppBarLayout" parent="Widget.MaterialComponents.Toolbar" />
+    <style name="BaseTheme.BottomSheetDialog" parent="Theme.MaterialComponents.Light.BottomSheetDialog" />
 
     <style name="BaseTheme" parent="BaseTheme.DayNight">
         <item name="colorPrimary">@color/colorPrimary</item>
@@ -41,7 +42,7 @@
         <item name="cornerRadius">@dimen/corner_radius</item>
     </style>
 
-    <style name="AppTheme.BottomSheetDialog" parent="Theme.MaterialComponents.BottomSheetDialog">
+    <style name="AppTheme.BottomSheetDialog" parent="BaseTheme.BottomSheetDialog">
         <item name="bottomSheetStyle">@style/AppTheme.BottomSheet</item>
     </style>
 

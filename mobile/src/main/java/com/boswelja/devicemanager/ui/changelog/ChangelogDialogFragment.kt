@@ -37,17 +37,9 @@ class ChangelogDialogFragment : BottomSheetDialogFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        (view as RecyclerView).apply {
+        view.findViewById<RecyclerView>(R.id.changelog_recyclerview).apply {
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
             adapter = ChangelogAdapter(changelog)
         }
     }
-
-//    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-//        return AlertDialog.Builder(context!!)
-//                .setPositiveButton(R.string.dialog_button_close) { dialog, _ -> dialog.dismiss() }
-//                .setItems(changelog, null)
-//                .setTitle(R.string.dialog_changelog_title)
-//                .create()
-//    }
 }
