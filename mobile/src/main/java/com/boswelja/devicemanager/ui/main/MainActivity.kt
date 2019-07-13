@@ -107,12 +107,9 @@ class MainActivity :
 
     fun updateMessagesBadge() {
         val messageCount = MessageChecker.countMessages(this)
-        if (messageCount > 0) {
-            bottomNavigationView.showBadge(R.id.messages_navigation).apply {
-                number = messageCount
-            }
-        } else {
-            bottomNavigationView.removeBadge(R.id.messages_navigation)
+        bottomNavigationView.getOrCreateBadge(R.id.messages_navigation).apply {
+            number = messageCount
+            isVisible = messageCount > 0
         }
     }
 }
