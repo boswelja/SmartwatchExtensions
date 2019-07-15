@@ -61,7 +61,7 @@ class LockPhoneFragment : BaseSharedPreferenceFragment() {
         phoneLockingLabelView.text = if (phoneLockingEnabled) {
             getString(R.string.lock_phone_label)
         } else {
-            getString(R.string.phone_lock_disabled_message)
+            getString(R.string.lock_phone_disabled_message)
         }
     }
 }

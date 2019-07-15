@@ -40,7 +40,7 @@ class ActionService : IntentService("ActionService") {
                                 if (prefs.getBoolean(PreferenceKey.PHONE_LOCKING_ENABLED_KEY, false)) {
                                     sendMessage(node)
                                 } else {
-                                    ConfirmationActivityHandler.failAnimation(this@ActionService, getString(R.string.phone_lock_disabled_message))
+                                    ConfirmationActivityHandler.failAnimation(this@ActionService, getString(R.string.lock_phone_disabled_message))
                                 }
                                 val providerUpdateRequester = ProviderUpdateRequester(this@ActionService, ComponentName(packageName, PhoneBatteryComplicationProvider::class.java.name))
                                 providerUpdateRequester.requestUpdateAll()
@@ -55,7 +55,7 @@ class ActionService : IntentService("ActionService") {
                         }
                     } else {
                         when (action) {
-                            LOCK_PHONE_PATH -> ConfirmationActivityHandler.failAnimation(this@ActionService, getString(R.string.phone_lock_failed_message))
+                            LOCK_PHONE_PATH -> ConfirmationActivityHandler.failAnimation(this@ActionService, getString(R.string.lock_phone_failed_message))
                             REQUEST_BATTERY_UPDATE_PATH -> ConfirmationActivityHandler.failAnimation(this@ActionService, getString(R.string.phone_battery_update_failed))
                         }
                     }
