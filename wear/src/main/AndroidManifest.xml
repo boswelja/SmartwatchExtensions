@@ -115,10 +115,6 @@
             android:exported="false" />
 
         <service
-            android:name=".service.InterruptFilterSyncWithTheaterListener"
-            android:exported="false" />
-
-        <service
             android:name=".service.AppManagerService"
             android:exported="false" />
 

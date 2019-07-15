@@ -10,7 +10,6 @@ package com.boswelja.devicemanager
 import android.app.NotificationManager
 import android.content.Context
 import android.content.pm.PackageManager
-import android.provider.Settings
 import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.common.Compat
 import com.boswelja.devicemanager.common.PreferenceKey
@@ -29,9 +28,6 @@ object Utils {
     fun checkDnDAccess(context: Context): Boolean =
             (context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager)
                     .isNotificationPolicyAccessGranted
-
-    fun isTheaterModeOn(context: Context): Boolean =
-            Settings.Global.getInt(context.contentResolver, "theater_mode_on", 0) == 1
 
     fun launchMobileApp(context: Context, key: String) {
         getCompanionNode(context).addOnSuccessListener { capabilityInfo ->

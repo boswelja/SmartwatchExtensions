@@ -15,7 +15,6 @@ import com.boswelja.devicemanager.common.PreferenceKey
 import com.boswelja.devicemanager.common.prefsynclayer.BasePreferenceChangeReceiver
 import com.boswelja.devicemanager.complication.PhoneBatteryComplicationProvider
 import com.boswelja.devicemanager.service.InterruptFilterLocalChangeListener
-import com.boswelja.devicemanager.service.InterruptFilterSyncWithTheaterListener
 
 class PreferenceChangeReceiver : BasePreferenceChangeReceiver() {
 
@@ -27,16 +26,10 @@ class PreferenceChangeReceiver : BasePreferenceChangeReceiver() {
                     ProviderUpdateRequester(this, ComponentName(packageName, PhoneBatteryComplicationProvider::class.java.name)).requestUpdateAll()
                 }
             }
-            PreferenceKey.INTERRUPT_FILTER_SYNC_TO_PHONE_KEY -> {
-                if (newValue == true) {
-                    Intent(this, InterruptFilterLocalChangeListener::class.java).also {
-                        Compat.startForegroundService(this, it)
-                    }
-                }
-            }
+            PreferenceKey.INTERRUPT_FILTER_SYNC_TO_PHONE_KEY,
             PreferenceKey.INTERRUPT_FILTER_ON_WITH_THEATER_KEY -> {
                 if (newValue == true) {
-                    Intent(this, InterruptFilterSyncWithTheaterListener::class.java).also {
+                    Intent(this, InterruptFilterLocalChangeListener::class.java).also {
                         Compat.startForegroundService(this, it)
                     }
                 }

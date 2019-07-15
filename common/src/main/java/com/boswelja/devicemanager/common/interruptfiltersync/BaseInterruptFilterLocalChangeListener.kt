@@ -62,7 +62,7 @@ abstract class BaseInterruptFilterLocalChangeListener : Service() {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && notificationManager.getNotificationChannel(INTERRUPT_FILTER_SYNC_NOTI_CHANNEL_ID) == null) {
                 val notiChannel = NotificationChannel(
                         INTERRUPT_FILTER_SYNC_NOTI_CHANNEL_ID,
-                        getString(R.string.dnd_sync_noti_channel_name),
+                        getString(R.string.interrupt_filter_sync_noti_channel_name),
                         NotificationManager.IMPORTANCE_LOW).apply {
                     enableLights(false)
                     enableVibration(false)
@@ -103,8 +103,8 @@ abstract class BaseInterruptFilterLocalChangeListener : Service() {
                 PendingIntent.FLAG_CANCEL_CURRENT)
 
         return NotificationCompat.Builder(this, INTERRUPT_FILTER_SYNC_NOTI_CHANNEL_ID)
-                .setContentTitle(getString(R.string.dnd_sync_active_noti_title))
-                .setContentText(getString(R.string.dnd_sync_active_noti_desc))
+                .setContentTitle(getString(R.string.interrupt_filter_sync_active_noti_title))
+                .setContentText(getString(R.string.interrupt_filter_sync_to_phone_noti_desc))
                 .setSmallIcon(R.drawable.ic_sync)
                 .setOngoing(true)
                 .setShowWhen(false)
