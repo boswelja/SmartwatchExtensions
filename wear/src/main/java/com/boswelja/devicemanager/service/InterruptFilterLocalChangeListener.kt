@@ -7,8 +7,16 @@
  */
 package com.boswelja.devicemanager.service
 
-import android.app.*
-import android.content.*
+import android.app.Notification
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
+import android.app.Service
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
+import android.content.SharedPreferences
 import android.database.ContentObserver
 import android.os.Build
 import android.os.Handler
@@ -175,4 +183,4 @@ class InterruptFilterLocalChangeListener : Service() {
 
     companion object {
         private const val INTERRUPT_FILTER_SYNC_NOTI_CHANNEL_ID = "dnd_sync"
-    }}
+    } }
