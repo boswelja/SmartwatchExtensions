@@ -2,7 +2,7 @@ import java.util.concurrent.TimeUnit
 
 ext.versions = [
         versionCode: generateVersionCode(),
-        versionName: "2.2.0",
+        versionName: "2.2.1",
         compileSdk: 29,
         packageName: "com.boswelja.devicemanager",
         buildTools: "29.0.1",
