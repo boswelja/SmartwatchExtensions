@@ -25,8 +25,9 @@ class InterruptFilterSyncPreferenceActivity : BasePreferenceActivity() {
         super.onCreate(savedInstanceState)
 
         if (sharedPreferences.getBoolean(PreferenceKey.INTERRUPT_FILTER_SYNC_TO_WATCH_KEY, false)) {
-            val intent = Intent(this, InterruptFilterLocalChangeListener::class.java)
-            Compat.startForegroundService(this, intent)
+            Intent(this, InterruptFilterLocalChangeListener::class.java).also {
+                Compat.startForegroundService(this, it)
+            }
         }
     }
 }
