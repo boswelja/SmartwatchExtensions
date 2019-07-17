@@ -97,7 +97,7 @@ class SettingsFragment :
                     changingKey = key
                     messageClient.addListener(interruptFilterAccessListener)
                     Utils.getCompanionNode(context!!).addOnCompleteListener {
-                        if (it.isSuccessful) {
+                        if (it.isSuccessful && it.result != null) {
                             val nodes = it.result?.nodes
                             if (!nodes.isNullOrEmpty()) {
                                 val node = nodes.first { node -> node.isNearby }
