@@ -41,7 +41,7 @@ class InterruptFilterSyncHelperActivity : BaseToolbarActivity() {
             REQUEST_SDK_INT_PATH -> {
                 val sdkInt = BigInteger(it.data).toInt()
                 if (sdkInt > Build.VERSION_CODES.O) {
-                    setWatchVersionError()
+                    showWatchVersionError()
                 } else {
                     checkWatchNotiAccess(false)
                 }
@@ -55,7 +55,7 @@ class InterruptFilterSyncHelperActivity : BaseToolbarActivity() {
         setResult(RESULT_USER_DISMISSED)
         super.onCreate(savedInstanceState)
         if (!androidVersionCompatible()) {
-            showErrorFragment()
+            showPhoneVersionIncompatible()
         } else {
             init()
         }
@@ -83,13 +83,18 @@ class InterruptFilterSyncHelperActivity : BaseToolbarActivity() {
         changeFragment(loadingFragment, animate = animate, reverse = reverse)
     }
 
-    private fun setWatchVersionError() {
+    private fun showWatchVersionError() {
         if (errorFragment == null) errorFragment = ErrorFragment()
         errorFragment!!.watchVersionIncompatible = true
         showErrorFragment()
     }
 
-    private fun setWatchNullError() {
+    private fun showPhoneVersionIncompatible() {
+        if (errorFragment == null) errorFragment = ErrorFragment()
+        showErrorFragment()
+    }
+
+    private fun showWatchNullError() {
         if (errorFragment == null) errorFragment = ErrorFragment()
         errorFragment!!.watchUnreachable = true
         showErrorFragment()
@@ -139,7 +144,7 @@ class InterruptFilterSyncHelperActivity : BaseToolbarActivity() {
         if (!connectedWatchId.isNullOrEmpty()) {
             messageClient!!.sendMessage(connectedWatchId!!, REQUEST_SDK_INT_PATH, null)
         } else {
-            setWatchNullError()
+            showWatchNullError()
         }
     }
 
@@ -148,7 +153,7 @@ class InterruptFilterSyncHelperActivity : BaseToolbarActivity() {
         if (!connectedWatchId.isNullOrEmpty()) {
             messageClient!!.sendMessage(connectedWatchId!!, REQUEST_INTERRUPT_FILTER_ACCESS_STATUS_PATH, null)
         } else {
-            setWatchNullError()
+            showWatchNullError()
         }
     }
 
