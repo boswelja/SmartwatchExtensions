@@ -96,7 +96,6 @@
     <string name="donation_failed_message">Failed to process donation</string>
     <string name="donation_pending_message">Your donation is now pending, come back here later</string>
     <string name="donation_connection_failed_message">Failed to connect to Google Play</string>
-    <string name="dialog_changelog_title">Changelog</string>
 
     <!-- Dialog button strings -->
     <string name="dialog_button_grant">Grant</string>

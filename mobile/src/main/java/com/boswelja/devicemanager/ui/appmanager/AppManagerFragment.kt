@@ -29,7 +29,7 @@ class AppManagerFragment : Fragment() {
 
     private lateinit var messageClient: MessageClient
 
-    private lateinit var appsRecyclerView: RecyclerView
+    private var appsRecyclerView: RecyclerView? = null
 
     private var allAppsCache: AppPackageInfoList? = null
 
@@ -37,12 +37,12 @@ class AppManagerFragment : Fragment() {
         when (it.path) {
             AppManagerReferences.PACKAGE_ADDED -> {
                 val appPackageInfo = AppPackageInfo.fromByteArray(it.data)
-                (appsRecyclerView.adapter as AppsAdapter).add(appPackageInfo)
+                (appsRecyclerView?.adapter as AppsAdapter).add(appPackageInfo)
                 (activity as AppManagerActivity).createSnackBar("${getString(R.string.app_manager_installed_prefix)} ${appPackageInfo.packageLabel}")
             }
             AppManagerReferences.PACKAGE_REMOVED -> {
                 val appPackageName = String(it.data, Charsets.UTF_8)
-                val adapter = (appsRecyclerView.adapter as AppsAdapter)
+                val adapter = (appsRecyclerView?.adapter as AppsAdapter)
                 val uninstalledMessage = "${getString(R.string.app_manager_uninstalled_prefix)} ${adapter.getFromPackageName(appPackageName)?.packageLabel}"
                 Snackbar.make(view!!, uninstalledMessage, Snackbar.LENGTH_LONG).show()
                 adapter.remove(appPackageName)
@@ -137,7 +137,7 @@ class AppManagerFragment : Fragment() {
 
     fun setAllApps(apps: AppPackageInfoList) {
         try {
-            (appsRecyclerView.adapter as AppsAdapter).setAllApps(apps)
+            (appsRecyclerView?.adapter as AppsAdapter).setAllApps(apps)
             allAppsCache = null
         } catch (e: UninitializedPropertyAccessException) {
             allAppsCache = apps

@@ -29,7 +29,7 @@ class LockPhoneFragment : BaseSharedPreferenceFragment() {
         }
     }
 
-    private lateinit var phoneLockingLabelView: AppCompatTextView
+    private var phoneLockingLabelView: AppCompatTextView? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
             inflater.inflate(R.layout.fragment_lock_phone, container, false)
@@ -58,7 +58,7 @@ class LockPhoneFragment : BaseSharedPreferenceFragment() {
 
     private fun updatePhoneLockingView() {
         val phoneLockingEnabled = sharedPreferences.getBoolean(PreferenceKey.PHONE_LOCKING_ENABLED_KEY, false)
-        phoneLockingLabelView.text = if (phoneLockingEnabled) {
+        phoneLockingLabelView?.text = if (phoneLockingEnabled) {
             getString(R.string.lock_phone_label)
         } else {
             getString(R.string.lock_phone_disabled_message)

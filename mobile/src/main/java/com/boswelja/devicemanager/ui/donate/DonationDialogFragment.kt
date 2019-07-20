@@ -37,9 +37,9 @@ class DonationDialogFragment :
 
     private var billingConnectionRetryCounter = 0
 
-    private lateinit var recyclerView: RecyclerView
-    private lateinit var loadingSpinner: ProgressBar
-    private lateinit var cancelBtn: MaterialButton
+    private var recyclerView: RecyclerView? = null
+    private var loadingSpinner: ProgressBar? = null
+    private var cancelBtn: MaterialButton? = null
 
     private lateinit var billingClient: BillingClient
     private val skus = listOf(
@@ -56,7 +56,7 @@ class DonationDialogFragment :
         super.onViewCreated(view, savedInstanceState)
 
         cancelBtn = view.findViewById(R.id.cancel_btn)
-        cancelBtn.setOnClickListener {
+        cancelBtn!!.setOnClickListener {
             dismiss()
         }
 
@@ -78,8 +78,8 @@ class DonationDialogFragment :
             billingClient.querySkuDetailsAsync(params.build()) { skuResult, skuDetailsList ->
                 if (skuResult.responseCode == BillingClient.BillingResponseCode.OK && skuDetailsList != null) {
                     skuDetailsList.sortBy { it.priceAmountMicros }
-                    recyclerView.layoutManager = LinearLayoutManager(recyclerView.context, RecyclerView.VERTICAL, false)
-                    recyclerView.adapter = DonationAdapter(skuDetailsList, this)
+                    recyclerView?.layoutManager = LinearLayoutManager(recyclerView?.context, RecyclerView.VERTICAL, false)
+                    recyclerView?.adapter = DonationAdapter(skuDetailsList, this)
                     setLoading(false)
                 } else {
                     dismissAndShowMessage(R.string.donation_failed_message)
@@ -147,13 +147,13 @@ class DonationDialogFragment :
 
     private fun setLoading(loading: Boolean) {
         if (loading) {
-            recyclerView.visibility = View.INVISIBLE
-            loadingSpinner.visibility = View.VISIBLE
-            cancelBtn.visibility = View.INVISIBLE
+            recyclerView?.visibility = View.INVISIBLE
+            loadingSpinner?.visibility = View.VISIBLE
+            cancelBtn?.visibility = View.INVISIBLE
         } else {
-            recyclerView.visibility = View.VISIBLE
-            loadingSpinner.visibility = View.GONE
-            cancelBtn.visibility = View.VISIBLE
+            recyclerView?.visibility = View.VISIBLE
+            loadingSpinner?.visibility = View.GONE
+            cancelBtn?.visibility = View.VISIBLE
         }
     }
 

@@ -30,10 +30,10 @@ class BatterySyncPreferenceWidgetFragment :
 
     private lateinit var sharedPreferences: SharedPreferences
 
-    private lateinit var watchBatteryIndicator: AppCompatImageView
-    private lateinit var watchBatteryPercent: AppCompatTextView
-    private lateinit var watchBatteryLastUpdated: AppCompatTextView
-    private lateinit var watchBatteryUpdateNowHolder: View
+    private var watchBatteryIndicator: AppCompatImageView? = null
+    private var watchBatteryPercent: AppCompatTextView? = null
+    private var watchBatteryLastUpdated: AppCompatTextView? = null
+    private var watchBatteryUpdateNowHolder: View? = null
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
         when (key) {
@@ -75,10 +75,11 @@ class BatterySyncPreferenceWidgetFragment :
         watchBatteryPercent = view.findViewById(R.id.watch_battery_percent)
         watchBatteryLastUpdated = view.findViewById(R.id.last_updated_time)
 
-        watchBatteryUpdateNowHolder = view.findViewById(R.id.updated_time_holder)
-        watchBatteryUpdateNowHolder.setOnClickListener {
-            if (sharedPreferences.getBoolean(BATTERY_SYNC_ENABLED_KEY, false)) {
-                updateBatteryStats(context!!, References.CAPABILITY_WATCH_APP)
+        watchBatteryUpdateNowHolder = view.findViewById<View>(R.id.updated_time_holder).apply {
+            setOnClickListener {
+                if (sharedPreferences.getBoolean(BATTERY_SYNC_ENABLED_KEY, false)) {
+                    updateBatteryStats(context!!, References.CAPABILITY_WATCH_APP)
+                }
             }
         }
     }
@@ -88,12 +89,12 @@ class BatterySyncPreferenceWidgetFragment :
         val batteryPercent = sharedPreferences.getInt(BATTERY_PERCENT_KEY, 0)
         if (batterySyncEnabled) {
             if (batteryPercent > 0) {
-                watchBatteryIndicator.setImageLevel(batteryPercent)
-                watchBatteryPercent.text = getString(R.string.battery_sync_percent_short, batteryPercent.toString())
+                watchBatteryIndicator?.setImageLevel(batteryPercent)
+                watchBatteryPercent?.text = getString(R.string.battery_sync_percent_short, batteryPercent.toString())
             }
         } else {
-            watchBatteryIndicator.setImageLevel(0)
-            watchBatteryPercent.text = getString(R.string.battery_sync_disabled)
+            watchBatteryIndicator?.setImageLevel(0)
+            watchBatteryPercent?.text = getString(R.string.battery_sync_disabled)
         }
     }
 
@@ -108,10 +109,10 @@ class BatterySyncPreferenceWidgetFragment :
             } else {
                 resources.getQuantityString(R.plurals.battery_sync_last_updated_minutes, lastUpdatedMinutes, lastUpdatedMinutes)
             }
-            watchBatteryLastUpdated.text = lastUpdatedString
-            watchBatteryUpdateNowHolder.visibility = View.VISIBLE
+            watchBatteryLastUpdated?.text = lastUpdatedString
+            watchBatteryUpdateNowHolder?.visibility = View.VISIBLE
         } else {
-            watchBatteryUpdateNowHolder.visibility = View.GONE
+            watchBatteryUpdateNowHolder?.visibility = View.GONE
         }
     }
 }

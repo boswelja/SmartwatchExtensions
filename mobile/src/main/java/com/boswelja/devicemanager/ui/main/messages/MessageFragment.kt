@@ -27,8 +27,8 @@ class MessageFragment : Fragment() {
 
     private lateinit var sharedPreferences: SharedPreferences
 
-    private lateinit var recyclerView: RecyclerView
-    private lateinit var noMessagesView: LinearLayout
+    private var recyclerView: RecyclerView? = null
+    private var noMessagesView: LinearLayout? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,14 +41,14 @@ class MessageFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         noMessagesView = view.findViewById(R.id.no_messages_view)
-        recyclerView = view.findViewById(R.id.messages_recyclerview)
-        recyclerView.apply {
+        recyclerView = view.findViewById<RecyclerView>(R.id.messages_recyclerview).apply {
             layoutManager = LinearLayoutManager(context)
             adapter = MessagesAdapter(this@MessageFragment)
             addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
+        }.also {
+            val itemTouchHelper = ItemTouchHelper(MessagesAdapter.SwipeDismissCallback(it.adapter as MessagesAdapter, context!!))
+            itemTouchHelper.attachToRecyclerView(it)
         }
-        val itemTouchHelper = ItemTouchHelper(MessagesAdapter.SwipeDismissCallback(recyclerView.adapter as MessagesAdapter, context!!))
-        itemTouchHelper.attachToRecyclerView(recyclerView)
     }
 
     override fun onResume() {
@@ -66,18 +66,18 @@ class MessageFragment : Fragment() {
     private fun checkBatteryOptimisation() {
         val shouldShowMessage = MessageChecker.shouldShowBatteryOptMessage(context!!)
         if (shouldShowMessage) {
-            (recyclerView.adapter as MessagesAdapter).notifyMessage(Message.BatteryOptWarning)
+            (recyclerView?.adapter as MessagesAdapter).notifyMessage(Message.BatteryOptWarning)
         } else {
-            (recyclerView.adapter as MessagesAdapter).dismissMessage(Message.BatteryOptWarning)
+            (recyclerView?.adapter as MessagesAdapter).dismissMessage(Message.BatteryOptWarning)
         }
     }
 
     private fun checkWatchChargeNoti() {
         val shouldShowMessage = MessageChecker.shouldShowWatchChargeNotiMessage(context!!)
         if (shouldShowMessage) {
-            (recyclerView.adapter as MessagesAdapter).notifyMessage(Message.WatchChargeNotiWarning)
+            (recyclerView?.adapter as MessagesAdapter).notifyMessage(Message.WatchChargeNotiWarning)
         } else {
-            (recyclerView.adapter as MessagesAdapter).dismissMessage(Message.WatchChargeNotiWarning)
+            (recyclerView?.adapter as MessagesAdapter).dismissMessage(Message.WatchChargeNotiWarning)
         }
     }
 
@@ -108,7 +108,7 @@ class MessageFragment : Fragment() {
     }
 
     internal fun setHasMessages(hasMessages: Boolean) {
-        noMessagesView.apply {
+        noMessagesView!!.apply {
             visibility = if (hasMessages) {
                 View.GONE
             } else {

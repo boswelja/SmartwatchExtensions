@@ -34,16 +34,6 @@ object Utils {
             PreferenceManager.getDefaultSharedPreferences(context)
                     .getBoolean(DEVICE_ADMIN_ENABLED_KEY, false)
 
-    fun shareText(context: Context, text: String) {
-        Intent().apply {
-            action = Intent.ACTION_SEND
-            putExtra(Intent.EXTRA_TEXT, text)
-            type = "text/plain"
-        }.also {
-            context.startActivity(it)
-        }
-    }
-
     /**
      * Set the system's current Interruption Filter state, or set silent mode if
      * Interruption Filter doesn't exist.
