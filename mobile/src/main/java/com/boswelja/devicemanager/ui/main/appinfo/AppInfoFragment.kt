@@ -32,7 +32,6 @@ class AppInfoFragment :
     private lateinit var watchVersionPreference: Preference
 
     private val messageListener = MessageClient.OnMessageReceivedListener {
-
         when (it.path) {
             References.REQUEST_APP_VERSION -> {
                 val data = String(it.data, Charsets.UTF_8).split("|")
@@ -56,9 +55,20 @@ class AppInfoFragment :
                 customTabsIntent!!.launchUrl(context, getString(R.string.privacy_policy_url).toUri())
                 true
             }
+            SHARE_APP_KEY -> {
+                Intent().apply {
+                    action = Intent.ACTION_SEND
+                    putExtra(Intent.EXTRA_TEXT, getAppStoreLink())
+                    putExtra(Intent.EXTRA_TITLE, preference.title)
+                    type = "text/plain"
+                }.also {
+                    startActivity(Intent.createChooser(it, null))
+                }
+                true
+            }
             LEAVE_REVIEW_KEY -> {
                 Intent(Intent.ACTION_VIEW).apply {
-                    data = "https://play.google.com/store/apps/details?id=${context?.packageName}".toUri()
+                    data = getAppStoreLink().toUri()
                     setPackage("com.android.vending")
                 }.also { startActivity(it) }
                 true
@@ -96,6 +106,11 @@ class AppInfoFragment :
         findPreference<Preference>(OPEN_PRIVACY_POLICY_KEY)!!.apply {
             onPreferenceClickListener = this@AppInfoFragment
         }
+        findPreference<Preference>(SHARE_APP_KEY)!!.apply {
+            isEnabled = !BuildConfig.DEBUG
+            title = getString(R.string.pref_about_share_title).format(getString(R.string.app_name))
+            onPreferenceClickListener = this@AppInfoFragment
+        }
         findPreference<Preference>(LEAVE_REVIEW_KEY)!!.apply {
             isEnabled = !BuildConfig.DEBUG
             onPreferenceClickListener = this@AppInfoFragment
@@ -120,8 +135,12 @@ class AppInfoFragment :
         messageClient.removeListener(messageListener)
     }
 
+    private fun getAppStoreLink(): String =
+            "https://play.google.com/store/apps/details?id=${context?.packageName}"
+
     companion object {
         const val OPEN_PRIVACY_POLICY_KEY = "privacy_policy"
+        const val SHARE_APP_KEY = "share"
         const val LEAVE_REVIEW_KEY = "review"
         const val OPEN_DONATE_DIALOG_KEY = "show_donate_dialog"
         const val OPEN_CHANGELOG_KEY = "show_changelog"
