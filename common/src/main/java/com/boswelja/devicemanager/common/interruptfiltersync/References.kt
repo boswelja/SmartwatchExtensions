@@ -15,4 +15,6 @@ object References {
     const val NEW_DND_STATE_KEY = "${References.packageName}.dnd-enabled"
     const val REQUEST_INTERRUPT_FILTER_ACCESS_STATUS_PATH = "/request_noti_policy_access_status"
     const val REQUEST_SDK_INT_PATH = "/request_sdk_int"
+
+    const val INTERRUPT_FILTER_SYNC_NOTI_CHANNEL_ID = "dnd_sync"
 }

@@ -28,7 +28,9 @@ import com.boswelja.devicemanager.common.PreferenceKey.INTERRUPT_FILTER_ON_WITH_
 import com.boswelja.devicemanager.common.PreferenceKey.INTERRUPT_FILTER_SYNC_TO_PHONE_KEY
 import com.boswelja.devicemanager.common.R
 import com.boswelja.devicemanager.common.interruptfiltersync.InterruptFilterChangeReceiver
+import com.boswelja.devicemanager.common.interruptfiltersync.References.INTERRUPT_FILTER_SYNC_NOTI_CHANNEL_ID
 import com.boswelja.devicemanager.common.interruptfiltersync.Utils
+import com.boswelja.devicemanager.common.interruptfiltersync.Utils.createNotiChannel
 import com.boswelja.devicemanager.ui.main.MainActivity
 
 class InterruptFilterLocalChangeListener : Service() {
@@ -70,16 +72,8 @@ class InterruptFilterLocalChangeListener : Service() {
         setInterruptFilterToPhone(sharedPreferences.getBoolean(INTERRUPT_FILTER_SYNC_TO_PHONE_KEY, false))
         setInterruptFilterOnWithTheater(sharedPreferences.getBoolean(INTERRUPT_FILTER_ON_WITH_THEATER_KEY, false))
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && notificationManager.getNotificationChannel(INTERRUPT_FILTER_SYNC_NOTI_CHANNEL_ID) == null) {
-            val notiChannel = NotificationChannel(
-                    INTERRUPT_FILTER_SYNC_NOTI_CHANNEL_ID,
-                    getString(R.string.interrupt_filter_sync_noti_channel_name),
-                    NotificationManager.IMPORTANCE_LOW).apply {
-                enableLights(false)
-                enableVibration(false)
-                setShowBadge(false)
-            }
-            notificationManager.createNotificationChannel(notiChannel)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            createNotiChannel(this)
         }
         startForeground(notificationId, createNotification())
         Utils.updateInterruptionFilter(this)
@@ -176,7 +170,4 @@ class InterruptFilterLocalChangeListener : Service() {
         private fun isTheaterModeOn(context: Context): Boolean =
                 Settings.Global.getInt(context.contentResolver, "theater_mode_on", 0) == 1
     }
-
-    companion object {
-        private const val INTERRUPT_FILTER_SYNC_NOTI_CHANNEL_ID = "dnd_sync"
-    } }
+}

@@ -8,7 +8,6 @@
 package com.boswelja.devicemanager.common.interruptfiltersync
 
 import android.app.Notification
-import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.app.Service
@@ -23,13 +22,14 @@ import androidx.core.app.NotificationCompat
 import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.common.AtomicCounter
 import com.boswelja.devicemanager.common.R
+import com.boswelja.devicemanager.common.interruptfiltersync.References.INTERRUPT_FILTER_SYNC_NOTI_CHANNEL_ID
+import com.boswelja.devicemanager.common.interruptfiltersync.Utils.createNotiChannel
 import com.boswelja.devicemanager.common.interruptfiltersync.Utils.updateInterruptionFilter
 
 @RequiresApi(Build.VERSION_CODES.M)
 abstract class BaseInterruptFilterLocalChangeListener : Service() {
 
     private lateinit var preferences: SharedPreferences
-    private lateinit var notificationManager: NotificationManager
     private var interruptFilterChangeReceiver = object : InterruptFilterChangeReceiver() {
         override fun onInterruptFilterChanged(context: Context, interruptFilterEnabled: Boolean) {
             updateInterruptionFilter(this@BaseInterruptFilterLocalChangeListener, interruptFilterEnabled)
@@ -53,19 +53,8 @@ abstract class BaseInterruptFilterLocalChangeListener : Service() {
         preferences = PreferenceManager.getDefaultSharedPreferences(this)
         if (preferences.getBoolean(interruptFilterSendEnabledKey, false)) {
             preferences.registerOnSharedPreferenceChangeListener(preferenceChangeListener)
-
-            notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && notificationManager.getNotificationChannel(INTERRUPT_FILTER_SYNC_NOTI_CHANNEL_ID) == null) {
-                val notiChannel = NotificationChannel(
-                        INTERRUPT_FILTER_SYNC_NOTI_CHANNEL_ID,
-                        getString(R.string.interrupt_filter_sync_noti_channel_name),
-                        NotificationManager.IMPORTANCE_LOW).apply {
-                    enableLights(false)
-                    enableVibration(false)
-                    setShowBadge(false)
-                }
-                notificationManager.createNotificationChannel(notiChannel)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                createNotiChannel(this)
             }
         } else {
             stopSelf()
@@ -110,9 +99,5 @@ abstract class BaseInterruptFilterLocalChangeListener : Service() {
                 .setVisibility(NotificationCompat.VISIBILITY_SECRET)
                 .setContentIntent(notiTapIntent)
                 .build()
-    }
-
-    companion object {
-        private const val INTERRUPT_FILTER_SYNC_NOTI_CHANNEL_ID = "dnd_sync"
     }
 }
