@@ -8,7 +8,6 @@
 package com.boswelja.devicemanager.common.interruptfiltersync
 
 import android.content.Context
-import android.util.Log
 import com.boswelja.devicemanager.common.Compat
 import com.boswelja.devicemanager.common.interruptfiltersync.References.DND_STATUS_PATH
 import com.boswelja.devicemanager.common.interruptfiltersync.References.NEW_DND_STATE_KEY
@@ -22,7 +21,6 @@ object Utils {
      */
     fun updateInterruptionFilter(context: Context) {
         val interruptionFilterEnabled = Compat.interruptionFilterEnabled(context)
-        Log.d("updateInterruptFilter", interruptionFilterEnabled.toString())
         updateInterruptionFilter(context, interruptionFilterEnabled)
     }
 

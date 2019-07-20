@@ -15,9 +15,6 @@ import com.google.android.gms.wearable.DataEventBuffer
 import com.google.android.gms.wearable.DataMapItem
 import com.google.android.gms.wearable.WearableListenerService
 
-/**
- * Receives changes in DnD state
- */
 abstract class BaseInterruptFilterRemoteChangeReceiver : WearableListenerService() {
 
     lateinit var sharedPreferences: SharedPreferences

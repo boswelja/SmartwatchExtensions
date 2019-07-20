@@ -12,7 +12,6 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.app.Service
-import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
@@ -22,13 +21,13 @@ import android.os.Build
 import android.os.Handler
 import android.os.IBinder
 import android.provider.Settings
-import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.common.AtomicCounter
 import com.boswelja.devicemanager.common.PreferenceKey.INTERRUPT_FILTER_ON_WITH_THEATER_KEY
 import com.boswelja.devicemanager.common.PreferenceKey.INTERRUPT_FILTER_SYNC_TO_PHONE_KEY
 import com.boswelja.devicemanager.common.R
+import com.boswelja.devicemanager.common.interruptfiltersync.InterruptFilterChangeReceiver
 import com.boswelja.devicemanager.common.interruptfiltersync.Utils
 import com.boswelja.devicemanager.ui.main.MainActivity
 
@@ -39,12 +38,9 @@ class InterruptFilterLocalChangeListener : Service() {
 
     private var interruptFilterSyncToPhone: Boolean = false
     private var interruptFilterSyncWithTheater: Boolean = false
-    private var interruptFilterChangeReceiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context?, intent: Intent?) {
-            Log.d("interruptFilterChangeRec", "Broadcast received")
-            if (intent!!.action == NotificationManager.ACTION_INTERRUPTION_FILTER_CHANGED) {
-                Utils.updateInterruptionFilter(this@InterruptFilterLocalChangeListener)
-            }
+    private var interruptFilterChangeReceiver = object : InterruptFilterChangeReceiver() {
+        override fun onInterruptFilterChanged(context: Context, interruptFilterEnabled: Boolean) {
+            Utils.updateInterruptionFilter(this@InterruptFilterLocalChangeListener, interruptFilterEnabled)
         }
     }
 

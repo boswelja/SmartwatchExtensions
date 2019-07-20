@@ -12,7 +12,6 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.app.Service
-import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
@@ -31,11 +30,9 @@ abstract class BaseInterruptFilterLocalChangeListener : Service() {
 
     private lateinit var preferences: SharedPreferences
     private lateinit var notificationManager: NotificationManager
-    private var interruptFilterChangeReceiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context?, intent: Intent?) {
-            if (intent!!.action == NotificationManager.ACTION_INTERRUPTION_FILTER_CHANGED) {
-                updateInterruptionFilter(this@BaseInterruptFilterLocalChangeListener)
-            }
+    private var interruptFilterChangeReceiver = object : InterruptFilterChangeReceiver() {
+        override fun onInterruptFilterChanged(context: Context, interruptFilterEnabled: Boolean) {
+            updateInterruptionFilter(this@BaseInterruptFilterLocalChangeListener, interruptFilterEnabled)
         }
     }
     private val preferenceChangeListener = SharedPreferences.OnSharedPreferenceChangeListener { sharedPreferences, key ->
@@ -113,14 +110,6 @@ abstract class BaseInterruptFilterLocalChangeListener : Service() {
                 .setVisibility(NotificationCompat.VISIBILITY_SECRET)
                 .setContentIntent(notiTapIntent)
                 .build()
-    }
-
-    private inner class DnDChangeReceiver : BroadcastReceiver() {
-        override fun onReceive(context: Context?, intent: Intent?) {
-            if (intent!!.action == NotificationManager.ACTION_INTERRUPTION_FILTER_CHANGED) {
-                updateInterruptionFilter(this@BaseInterruptFilterLocalChangeListener)
-            }
-        }
     }
 
     companion object {
