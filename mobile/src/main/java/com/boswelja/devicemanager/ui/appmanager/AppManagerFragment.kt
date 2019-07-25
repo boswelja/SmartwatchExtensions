@@ -139,7 +139,7 @@ class AppManagerFragment : Fragment() {
         try {
             (appsRecyclerView?.adapter as AppsAdapter).setAllApps(apps)
             allAppsCache = null
-        } catch (e: UninitializedPropertyAccessException) {
+        } catch (e: Exception) {
             allAppsCache = apps
         }
     }
