@@ -16,17 +16,7 @@
     </string-array>
 
     <string-array name="version_changelog">
-        <item>Added a Privacy Policy</item>
-        <item>Added watch app version display</item>
-        <item>New messages view. This can show some warnings related to app functionality, but currently not all warnings</item>
-        <item>Show which watch the app is connected to in the toolbar</item>
-        <item>Make use of a bottom navigation bar in the phone app</item>
-        <item>Minor App Manager UI tweaks</item>
-        <item>Redesigned Do not Disturb Sync helper</item>
-        <item>Performance improvements for both phone and wearable app</item>
-        <item>Improvements to DnD Sync to phone and sync with theater mode</item>
-        <item>Fixed App Manager removing the wrong item from the list when apps are uninstall</item>
-        <item>Fixed phone locking not turning on properly when device admin permissions need to be granted</item>
+        <item>Clean up resources</item>
     </string-array>
 
     <string-array name="interrupt_filter_sync_to_watch_steps">
