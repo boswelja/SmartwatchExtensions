@@ -74,14 +74,15 @@ object Compat {
      * and can be left null to check whether notifications are enabled overall for this app.
      * @return True if notifications are enabled, False otherwise.
      */
-    fun notificationsEnabled(context: Context, channelId: String? = null): Boolean {
-        val notificationManager = NotificationManagerCompat.from(context)
+    fun areNotificationsEnabled(context: Context, channelId: String? = null): Boolean {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && !channelId.isNullOrBlank()) {
-            val channel = notificationManager.getNotificationChannel(channelId)
-            if (channel != null) {
-                return channel.importance != NotificationManagerCompat.IMPORTANCE_NONE
+            (context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager).also {
+                val channel = it.getNotificationChannel(channelId)
+                return channel != null && channel.importance != NotificationManager.IMPORTANCE_NONE
             }
+        } else {
+            return NotificationManagerCompat.from(context).areNotificationsEnabled()
+
         }
-        return notificationManager.areNotificationsEnabled()
     }
 }

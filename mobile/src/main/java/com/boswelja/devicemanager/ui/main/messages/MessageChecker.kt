@@ -39,7 +39,7 @@ object MessageChecker {
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
         return !sharedPreferences.getBoolean(IGNORE_WATCH_CHARGE_NOTI_WARNING_KEY, false) &&
                 sharedPreferences.getBoolean(PreferenceKey.BATTERY_WATCH_CHARGE_NOTI_KEY, false) &&
-                !Compat.notificationsEnabled(context, BatteryUpdateReceiver.BATTERY_CHARGED_NOTI_CHANNEL_ID)
+                !Compat.areNotificationsEnabled(context, BatteryUpdateReceiver.BATTERY_CHARGED_NOTI_CHANNEL_ID)
     }
 
     fun setIgnoreBatteryOpt(context: Context, ignoring: Boolean) {

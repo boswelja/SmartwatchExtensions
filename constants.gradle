@@ -11,7 +11,7 @@ ext.versions = [
 
         wearable_support_lib     : "2.4.0",
         play_services_wearable   : "17.0.0",
-        androidx_core_ktx        : "1.2.0-alpha03",
+        androidx_core_ktx        : "1.0.2",
         androidx_wear            : "1.0.0",
         androidx_appcompat       : "1.1.0-rc01",
         androidx_preference      : "1.1.0-rc01",
