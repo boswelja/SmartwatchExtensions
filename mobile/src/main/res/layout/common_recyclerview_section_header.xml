@@ -19,7 +19,7 @@
         android:textColor="@color/colorPrimary"
         android:gravity="center_vertical"
         android:layout_marginStart="16dp"
-        android:paddingStart="72dp"
+        android:paddingStart="56dp"
         android:paddingEnd="8dp"
         android:layout_marginTop="16dp"
         android:layout_marginBottom="8dp"
