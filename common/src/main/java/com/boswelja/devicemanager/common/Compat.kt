@@ -82,7 +82,6 @@ object Compat {
             }
         } else {
             return NotificationManagerCompat.from(context).areNotificationsEnabled()
-
         }
     }
 }
