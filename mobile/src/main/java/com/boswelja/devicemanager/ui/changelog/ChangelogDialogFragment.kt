@@ -22,7 +22,7 @@ class ChangelogDialogFragment : BottomSheetDialogFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         val rawChangelog = context?.resources?.getStringArray(R.array.version_changelog)!!
-        val bullet = context?.getString(R.string.bullet)!!
+        val bullet = context?.getString(R.string.changelog_change_prefix)!!
         val processedChangelog = ArrayList<String>()
         for (change in rawChangelog) {
             processedChangelog.add("$bullet $change")
