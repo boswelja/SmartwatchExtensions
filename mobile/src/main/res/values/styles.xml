@@ -48,6 +48,7 @@
 
     <style name="AppTheme.BottomSheet" parent="Widget.MaterialComponents.BottomSheet.Modal">
         <item name="shapeAppearance">@style/AppTheme.ShapeAppearance.LargeComponent</item>
+        <item name="backgroundTint">@color/dialogBackground</item>
     </style>
 
     <style name="AppTheme.ShapeAppearance.LargeComponent" parent="ShapeAppearance.MaterialComponents.LargeComponent">
