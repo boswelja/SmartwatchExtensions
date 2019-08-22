@@ -17,6 +17,7 @@
 
     <string-array name="version_changelog">
         <item>Clean up resources</item>
+        <item>Improvements to App Manager UI</item>
     </string-array>
 
     <string-array name="interrupt_filter_sync_to_watch_steps">
