@@ -126,6 +126,7 @@
 
     <string name="snackbar_action_undo">Undo</string>
 
+    <string name="changelog_sheet_title">What\'s New</string>
     <string name="bullet">\u2022</string>
 
     <string name="privacy_policy_url">https://github.com/boswelja/PublicDocs/blob/master/PrivacyPolicies/WearableExtensions.md#privacy-policy</string>
