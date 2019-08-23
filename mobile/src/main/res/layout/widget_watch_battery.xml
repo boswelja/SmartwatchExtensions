@@ -1,30 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/widget_background"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@drawable/widget_background"
-    android:orientation="vertical">
+    android:layout_height="match_parent">
 
     <ImageView
-        android:id="@+id/battery_indicator"
+        android:id="@+id/widget_background"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:src="@drawable/watch_battery_unknown"
-        android:tint="@color/widgetForeground"
-        android:layout_weight="10"
-        tools:ignore="ContentDescription" />
+        android:layout_height="match_parent" />
 
-    <TextView
-        android:id="@+id/battery_indicator_text"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textColor="@color/widgetForeground"
-        android:gravity="center"
-        android:layout_weight="1"
-        android:text="@string/battery_sync_disabled"
-        android:textSize="18sp" />
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-</LinearLayout>
+        <ImageView
+            android:id="@+id/battery_indicator"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:src="@drawable/watch_battery_unknown"
+            android:tint="@color/widgetForeground"
+            android:layout_weight="10"
+            tools:ignore="ContentDescription" />
+
+        <TextView
+            android:id="@+id/battery_indicator_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/widgetForeground"
+            android:gravity="center"
+            android:layout_weight="1"
+            android:text="@string/battery_sync_disabled"
+            android:textSize="18sp" />
+    </LinearLayout>
+</FrameLayout>
+
