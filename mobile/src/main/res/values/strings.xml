@@ -82,8 +82,8 @@
 
     <!-- Widget Customisation strings -->
     <string name="pref_category_widget_customisation">Widget Customisation</string>
-    <string name="pref_show_widget_background_title">Show Widget Background</string>
-    <string name="pref_widget_background_opacity_title">Widget Background Opacity</string>
+    <string name="pref_show_widget_background_title">Show Background</string>
+    <string name="pref_widget_background_opacity_title">Background Opacity</string>
 
     <!-- About preference strings -->
     <string name="pref_category_about_versions">Versions</string>
