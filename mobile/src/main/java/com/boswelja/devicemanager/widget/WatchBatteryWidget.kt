@@ -13,7 +13,6 @@ import android.appwidget.AppWidgetProvider
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
-import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.widget.RemoteViews
@@ -63,7 +62,7 @@ class WatchBatteryWidget : AppWidgetProvider() {
             }
         } else {
             Log.d("WatchBatteryWidget", "No background")
-            remoteViews.setInt(R.id.widget_background, "setBackgroundColor", Color.TRANSPARENT)
+            remoteViews.setInt(R.id.widget_background, "setBackgroundColor", 0)
         }
 
         context?.getDrawable(R.drawable.ic_watch_battery)!!.apply {
