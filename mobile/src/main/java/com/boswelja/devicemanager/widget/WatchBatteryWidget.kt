@@ -56,7 +56,7 @@ class WatchBatteryWidget : AppWidgetProvider() {
         }
 
         if (sharedPrefs.getBoolean(SHOW_WIDGET_BACKGROUND_KEY, true)) {
-            val opacity = sharedPrefs.getInt(WIDGET_BACKGROUND_OPACITY_KEY, 80)
+            val opacity = sharedPrefs.getInt(WIDGET_BACKGROUND_OPACITY_KEY, 60)
             val calculatedAlpha = ((opacity / 100.0f) * 255).toInt()
             context?.getDrawable(R.drawable.widget_background)!!.apply {
                 alpha = calculatedAlpha
