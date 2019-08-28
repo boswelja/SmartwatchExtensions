@@ -7,7 +7,7 @@
     <color name="navBarColor">#000000</color>
     <color name="dividerColor">#1fffffff</color>
 
-    <color name="widgetBackground">#CC000000</color>
+    <color name="widgetBackground">#000000</color>
     <color name="widgetForeground">#FFFFFF</color>
 
     <color name="windowBackground">#000000</color>

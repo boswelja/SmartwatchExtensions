@@ -8,7 +8,7 @@
     <color name="statusBarColor">#666666</color>
     <color name="navBarColor">#FFFFFF</color>
 
-    <color name="widgetBackground">#CCFFFFFF</color>
+    <color name="widgetBackground">#FFFFFF</color>
     <color name="widgetForeground">#000000</color>
 
     <color name="windowBackground">#FFFFFF</color>
