@@ -36,10 +36,13 @@ class WatchBatteryWidget : AppWidgetProvider() {
     }
 
     override fun onAppWidgetOptionsChanged(context: Context?, appWidgetManager: AppWidgetManager?, appWidgetId: Int, newOptions: Bundle?) {
-        val options = appWidgetManager?.getAppWidgetOptions(appWidgetId)!!
-        val height = options.getInt(AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT)
-        val width = options.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH)
-        updateView(context, appWidgetManager, appWidgetId, width, height)
+        if (newOptions != null &&
+                (newOptions.containsKey(AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT) ||
+                newOptions.containsKey(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH))) {
+            val height = newOptions.getInt(AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT)
+            val width = newOptions.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH)
+            updateView(context, appWidgetManager, appWidgetId, width, height)
+        }
     }
 
     private fun updateView(context: Context?, appWidgetManager: AppWidgetManager?, appWidgetId: Int, width: Int, height: Int) {
