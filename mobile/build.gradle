@@ -38,13 +38,13 @@ android {
 dependencies {
     implementation project(":common")
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$versions.kotlin_version"
-    implementation "com.android.billingclient:billing:2.0.0"
+    implementation 'com.android.billingclient:billing:2.0.3'
 
     implementation "androidx.core:core-ktx:$versions.androidx_core_ktx"
     implementation "androidx.appcompat:appcompat:$versions.androidx_appcompat"
     implementation "androidx.preference:preference-ktx:$versions.androidx_preference"
     implementation "androidx.constraintlayout:constraintlayout:$versions.androidx_constraintlayout"
-    implementation "androidx.browser:browser:1.0.0"
+    implementation 'androidx.browser:browser:1.2.0-alpha07'
 
     implementation 'com.google.android.material:material:1.1.0-alpha09'
     implementation "com.google.android.gms:play-services-wearable:$versions.play_services_wearable"
