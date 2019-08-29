@@ -8,6 +8,7 @@
 package com.boswelja.devicemanager.ui.main.appsettings
 
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
@@ -17,13 +18,24 @@ import androidx.preference.Preference
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.ui.base.BaseDayNightActivity.Companion.DAYNIGHT_MODE_KEY
 import com.boswelja.devicemanager.ui.base.BasePreferenceFragment
+import com.boswelja.devicemanager.widget.WatchBatteryWidget
 
 class AppSettingsFragment :
         BasePreferenceFragment(),
-        Preference.OnPreferenceClickListener {
+        Preference.OnPreferenceClickListener,
+        SharedPreferences.OnSharedPreferenceChangeListener {
 
     private lateinit var openNotiSettingsPreference: Preference
     private lateinit var daynightModePreference: ListPreference
+
+    override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, preferenceKey: String?) {
+        when (preferenceKey) {
+            SHOW_WIDGET_BACKGROUND_KEY,
+            WIDGET_BACKGROUND_OPACITY_KEY -> {
+                WatchBatteryWidget.updateWidgets(context!!)
+            }
+        }
+    }
 
     override fun onPreferenceClick(preference: Preference?): Boolean {
         return when (preference?.key) {
@@ -68,9 +80,19 @@ class AppSettingsFragment :
         }
 
         daynightModePreference.summary = daynightModePreference.entry
+
+        sharedPreferences.registerOnSharedPreferenceChangeListener(this)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        sharedPreferences.unregisterOnSharedPreferenceChangeListener(this)
     }
 
     companion object {
         const val OPEN_NOTI_SETTINGS_KEY = "show_noti_settings"
+
+        const val  SHOW_WIDGET_BACKGROUND_KEY = "show_widget_background"
+        const val  WIDGET_BACKGROUND_OPACITY_KEY = "widget_background_opacity"
     }
 }

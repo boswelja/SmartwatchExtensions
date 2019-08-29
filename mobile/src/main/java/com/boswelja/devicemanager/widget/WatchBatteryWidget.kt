@@ -21,6 +21,8 @@ import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.PreferenceKey
 import com.boswelja.devicemanager.ui.main.MainActivity
+import com.boswelja.devicemanager.ui.main.appsettings.AppSettingsFragment.Companion.SHOW_WIDGET_BACKGROUND_KEY
+import com.boswelja.devicemanager.ui.main.appsettings.AppSettingsFragment.Companion.WIDGET_BACKGROUND_OPACITY_KEY
 
 class WatchBatteryWidget : AppWidgetProvider() {
 
@@ -84,8 +86,6 @@ class WatchBatteryWidget : AppWidgetProvider() {
     }
 
     companion object {
-        const val  SHOW_WIDGET_BACKGROUND_KEY = "show_widget_background"
-        const val  WIDGET_BACKGROUND_OPACITY_KEY = "widget_background_opacity"
 
         fun updateWidgets(context: Context) {
             val ids = AppWidgetManager.getInstance(context)

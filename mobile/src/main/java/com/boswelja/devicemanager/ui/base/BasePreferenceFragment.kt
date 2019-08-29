@@ -7,14 +7,23 @@
  */
 package com.boswelja.devicemanager.ui.base
 
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.preference.PreferenceFragmentCompat
+import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.RecyclerView
 import com.boswelja.devicemanager.common.Utils
 
 abstract class BasePreferenceFragment : PreferenceFragmentCompat() {
+
+    lateinit var sharedPreferences: SharedPreferences
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context!!)
+    }
 
     override fun onCreateRecyclerView(inflater: LayoutInflater?, parent: ViewGroup?, savedInstanceState: Bundle?): RecyclerView {
         val padding = Utils.complexTypeDp(resources, 8f)
