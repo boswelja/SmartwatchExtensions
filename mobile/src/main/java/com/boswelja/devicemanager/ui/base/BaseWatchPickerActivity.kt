@@ -22,8 +22,7 @@ abstract class BaseWatchPickerActivity :
     var connectedWatchId: String? = null
 
     override fun onItemSelected(adapterView: AdapterView<*>?, selectedView: View?, position: Int, id: Long) {
-        Log.d("onItemSelected", "Selected watch $id at pos $position")
-
+        connectedWatchId = id.toString(36)
     }
 
     override fun onNothingSelected(p0: AdapterView<*>?) {
@@ -57,6 +56,10 @@ abstract class BaseWatchPickerActivity :
             return connectedWatches.count()
         }
 
+        override fun getItemId(position: Int): Long {
+            return connectedWatches[position].id.toLong(36)
+        }
+
         override fun getDropDownView(position: Int, convertView: View?, parent: ViewGroup): View =
                 getItemView(position, convertView, parent)
 
@@ -69,7 +72,7 @@ abstract class BaseWatchPickerActivity :
                 view = layoutInflater.inflate(R.layout.common_spinner_item_two_line, parent, false)
             }
             view!!.findViewById<AppCompatTextView>(R.id.title).text = connectedWatches[position].displayName
-            view!!.findViewById<AppCompatTextView>(R.id.subtitle).text = "Connected"
+            view.findViewById<AppCompatTextView>(R.id.subtitle).text = "Connected"
             return view
         }
     }
