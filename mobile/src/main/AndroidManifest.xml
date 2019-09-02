@@ -22,7 +22,7 @@
         android:theme="@style/AppTheme"
         tools:ignore="UnusedAttribute">
 
-        <activity android:name=".ui.EntryActivity">
+        <activity android:name=".ui.main.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <action android:name="android.intent.action.VIEW" />
@@ -30,10 +30,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <activity
-            android:name=".ui.main.MainActivity"
-            android:exported="false" />
 
         <activity
             android:name=".ui.batterysync.BatterySyncPreferenceActivity"
