@@ -12,7 +12,7 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import com.boswelja.devicemanager.R
 
-abstract class BasePreferenceActivity : BaseToolbarActivity() {
+abstract class BasePreferenceActivity : BaseWatchPickerActivity() {
 
     private lateinit var preferenceFragment: BasePreferenceFragment
 
