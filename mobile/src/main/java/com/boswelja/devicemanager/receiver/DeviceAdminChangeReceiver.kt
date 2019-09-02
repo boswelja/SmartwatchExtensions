@@ -12,16 +12,19 @@ import android.content.Context
 import android.content.Intent
 import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.common.PreferenceKey
+import com.boswelja.devicemanager.common.References
 import com.boswelja.devicemanager.common.prefsynclayer.PreferenceSyncLayer
+import com.google.android.gms.wearable.CapabilityClient
+import com.google.android.gms.wearable.Wearable
 
 class DeviceAdminChangeReceiver : DeviceAdminReceiver() {
 
-    override fun onEnabled(context: Context?, intent: Intent?) {
-        PreferenceManager.getDefaultSharedPreferences(context).edit()
-                .putBoolean(DEVICE_ADMIN_ENABLED_KEY, true)
-                .apply()
-        PreferenceSyncLayer(context!!).pushNewData(PreferenceKey.PHONE_LOCKING_ENABLED_KEY)
-    }
+//    override fun onEnabled(context: Context?, intent: Intent?) {
+//        PreferenceManager.getDefaultSharedPreferences(context).edit()
+//                .putBoolean(DEVICE_ADMIN_ENABLED_KEY, true)
+//                .apply()
+//        PreferenceSyncLayer(context!!).pushNewData(PreferenceKey.PHONE_LOCKING_ENABLED_KEY)
+//    }
 
     override fun onDisabled(context: Context?, intent: Intent?) {
         PreferenceManager.getDefaultSharedPreferences(context)
@@ -29,7 +32,13 @@ class DeviceAdminChangeReceiver : DeviceAdminReceiver() {
                 .putBoolean(DEVICE_ADMIN_ENABLED_KEY, false)
                 .putBoolean(PreferenceKey.PHONE_LOCKING_ENABLED_KEY, false)
                 .apply()
-        PreferenceSyncLayer(context!!).pushNewData(PreferenceKey.PHONE_LOCKING_ENABLED_KEY)
+        Wearable.getCapabilityClient(context!!)
+                .getCapability(References.CAPABILITY_WATCH_APP, CapabilityClient.FILTER_REACHABLE)
+                .addOnSuccessListener {
+                    for (node in it.nodes) {
+                        PreferenceSyncLayer(context, node.id).pushNewData(PreferenceKey.PHONE_LOCKING_ENABLED_KEY)
+                    }
+                }
     }
 
     companion object {

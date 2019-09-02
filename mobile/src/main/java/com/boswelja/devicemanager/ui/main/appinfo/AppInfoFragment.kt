@@ -74,11 +74,11 @@ class AppInfoFragment :
                 true
             }
             OPEN_DONATE_DIALOG_KEY -> {
-                DonationDialogFragment().show(activity?.supportFragmentManager!!, "DonationDialog")
+                DonationDialogFragment().show(activity.supportFragmentManager, "DonationDialog")
                 true
             }
             OPEN_CHANGELOG_KEY -> {
-                ChangelogDialogFragment().show(activity?.supportFragmentManager!!, "ChangelogDialog")
+                ChangelogDialogFragment().show(activity.supportFragmentManager, "ChangelogDialog")
                 true
             }
             else -> false

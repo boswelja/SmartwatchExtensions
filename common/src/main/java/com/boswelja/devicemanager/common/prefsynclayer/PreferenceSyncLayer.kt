@@ -13,10 +13,11 @@ import com.boswelja.devicemanager.common.PreferenceKey
 import com.google.android.gms.wearable.PutDataMapRequest
 import com.google.android.gms.wearable.Wearable
 
-class PreferenceSyncLayer(context: Context) {
+class PreferenceSyncLayer(context: Context, nodeId: String) {
 
     private val localPrefs = PreferenceManager.getDefaultSharedPreferences(context)
     private val dataClient = Wearable.getDataClient(context)
+    private val preferenceChangePath = "/preference-change_${nodeId}"
 
     fun pushNewData() {
         // Get updated sharedPreferences
@@ -36,7 +37,7 @@ class PreferenceSyncLayer(context: Context) {
         }
 
         // Create updated sharedPreferences object
-        val syncedPrefUpdateReq = PutDataMapRequest.create(PREFERENCE_CHANGE_PATH)
+        val syncedPrefUpdateReq = PutDataMapRequest.create(preferenceChangePath)
         syncedPrefUpdateReq.dataMap.putBoolean(PreferenceKey.BATTERY_SYNC_ENABLED_KEY, batterySyncEnabled)
         syncedPrefUpdateReq.dataMap.putBoolean(PreferenceKey.BATTERY_PHONE_CHARGE_NOTI_KEY, phoneBatteryChargedNoti)
         syncedPrefUpdateReq.dataMap.putBoolean(PreferenceKey.BATTERY_WATCH_CHARGE_NOTI_KEY, watchBatteryChargedNoti)
@@ -52,7 +53,7 @@ class PreferenceSyncLayer(context: Context) {
     }
 
     fun pushNewData(key: String) {
-        val syncedPrefUpdateReq = PutDataMapRequest.create(PREFERENCE_CHANGE_PATH)
+        val syncedPrefUpdateReq = PutDataMapRequest.create(preferenceChangePath)
         when (key) {
             PreferenceKey.PHONE_LOCKING_ENABLED_KEY,
             PreferenceKey.BATTERY_SYNC_ENABLED_KEY,
@@ -73,9 +74,5 @@ class PreferenceSyncLayer(context: Context) {
             syncedPrefUpdateReq.setUrgent()
             dataClient.putDataItem(syncedPrefUpdateReq.asPutDataRequest())
         }
-    }
-
-    companion object {
-        const val PREFERENCE_CHANGE_PATH = "/preference_change"
     }
 }

@@ -89,7 +89,7 @@ class InterruptFilterSyncPreferenceFragment :
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        preferenceSyncLayer = PreferenceSyncLayer(context!!)
+        preferenceSyncLayer = PreferenceSyncLayer(context!!, activity.connectedWatchId!!)
         notificationManager = context?.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
     }
 

@@ -25,7 +25,6 @@ import com.boswelja.devicemanager.common.References
 import com.boswelja.devicemanager.common.batterysync.Utils.updateBatteryStats
 import com.boswelja.devicemanager.common.batterysync.BatteryUpdateReceiver
 import com.boswelja.devicemanager.common.prefsynclayer.PreferenceSyncLayer
-import com.boswelja.devicemanager.ui.base.BasePreferenceActivity
 import com.boswelja.devicemanager.ui.base.BasePreferenceFragment
 import com.boswelja.devicemanager.widget.WatchBatteryWidget
 import java.util.concurrent.TimeUnit
@@ -94,7 +93,7 @@ class BatterySyncPreferenceFragment :
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        preferenceSyncLayer = PreferenceSyncLayer(context!!)
+        preferenceSyncLayer = PreferenceSyncLayer(context!!, activity.connectedWatchId!!)
     }
 
     override fun onResume() {
@@ -105,7 +104,7 @@ class BatterySyncPreferenceFragment :
             preferenceManager.sharedPreferences.edit()
                     .putBoolean(BATTERY_WATCH_CHARGE_NOTI_KEY, false)
                     .apply()
-            (activity as BasePreferenceActivity).createSnackBar(getString(R.string.battery_sync_watch_charged_noti_channel_disabled))
+            activity.createSnackBar(getString(R.string.battery_sync_watch_charged_noti_channel_disabled))
             preferenceSyncLayer.pushNewData()
         }
     }

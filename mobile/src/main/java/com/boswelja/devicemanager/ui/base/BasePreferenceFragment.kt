@@ -19,6 +19,7 @@ import com.boswelja.devicemanager.common.Utils
 abstract class BasePreferenceFragment : PreferenceFragmentCompat() {
 
     lateinit var sharedPreferences: SharedPreferences
+    val activity: BasePreferenceActivity = getActivity() as BasePreferenceActivity
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

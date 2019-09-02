@@ -121,7 +121,11 @@ class SettingsFragment :
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        preferenceSyncLayer = PreferenceSyncLayer(context!!)
+        Wearable.getNodeClient(context!!)
+                .localNode
+                .addOnSuccessListener {
+                    preferenceSyncLayer = PreferenceSyncLayer(context!!, it.id)
+                }
         sharedPreferences = preferenceManager.sharedPreferences
     }
 

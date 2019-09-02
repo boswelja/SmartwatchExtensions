@@ -124,7 +124,7 @@ class ExtensionsFragment :
     }
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
-        preferenceSyncLayer = PreferenceSyncLayer(context!!)
+        preferenceSyncLayer = PreferenceSyncLayer(context!!, activity.connectedWatchId!!)
 
         addPreferencesFromResource(R.xml.prefs_main)
         findPreference<Preference>(OPEN_BATTERY_SYNC_PREF_KEY)!!.onPreferenceClickListener = this
