@@ -13,5 +13,12 @@
         android:layout_height="wrap_content"
         android:minHeight="?attr/actionBarSize"
         android:clipToPadding="false"
-        android:animateLayoutChanges="true" />
+        android:animateLayoutChanges="true">
+
+        <androidx.appcompat.widget.AppCompatSpinner
+            android:id="@+id/watch_picker_spinner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+    </androidx.appcompat.widget.Toolbar>
 </com.google.android.material.appbar.AppBarLayout>

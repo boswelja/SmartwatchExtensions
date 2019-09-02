@@ -7,7 +7,7 @@
     android:layout_height="match_parent">
 
     <include
-        layout="@layout/common_toolbar"
+        layout="@layout/common_spinner_toolbar"
         app:layout_constraintTop_toTopOf="parent" />
 
     <FrameLayout
