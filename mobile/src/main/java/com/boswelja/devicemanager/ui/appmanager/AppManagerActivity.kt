@@ -12,12 +12,12 @@ import android.widget.Toast
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.appmanager.AppManagerReferences
 import com.boswelja.devicemanager.common.appmanager.AppPackageInfoList
-import com.boswelja.devicemanager.ui.base.BaseToolbarActivity
+import com.boswelja.devicemanager.ui.base.BaseWatchPickerActivity
 import com.boswelja.devicemanager.ui.base.LoadingFragment
 import com.google.android.gms.wearable.MessageClient
 import com.google.android.gms.wearable.Wearable
 
-class AppManagerActivity : BaseToolbarActivity() {
+class AppManagerActivity : BaseWatchPickerActivity() {
 
     override fun getContentViewId(): Int = R.layout.activity_app_manager
 

@@ -16,7 +16,7 @@ import com.boswelja.devicemanager.BuildConfig
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.References
 import com.boswelja.devicemanager.ui.base.BasePreferenceFragment
-import com.boswelja.devicemanager.ui.base.BaseToolbarActivity
+import com.boswelja.devicemanager.ui.base.BaseWatchPickerActivity
 import com.boswelja.devicemanager.ui.donate.DonationDialogFragment
 import com.boswelja.devicemanager.ui.changelog.ChangelogDialogFragment
 import com.google.android.gms.wearable.MessageClient
@@ -93,7 +93,7 @@ class AppInfoFragment :
     override fun onResume() {
         super.onResume()
         messageClient.addListener(messageListener)
-        val connectedWatchId = (activity as BaseToolbarActivity).connectedWatchId
+        val connectedWatchId = (activity as BaseWatchPickerActivity).connectedWatchId
         if (!connectedWatchId.isNullOrEmpty()) {
             messageClient.sendMessage(connectedWatchId, References.REQUEST_APP_VERSION, null)
         } else {
