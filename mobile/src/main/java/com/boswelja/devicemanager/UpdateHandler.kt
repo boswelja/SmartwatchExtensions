@@ -33,9 +33,8 @@ class UpdateHandler(private val activity: AppCompatActivity) {
             ChangelogDialogFragment().show(activity.supportFragmentManager, "ChangelogDialog")
             sharedPreferences.edit {
                 putInt(APP_VERSION_KEY, currentVersion)
-                if (oldVersion < 120190605) {
-                    remove("battery_phone_full_charge")
-                    remove("battery_watch_full_charge")
+                if (oldVersion < 2019090243) {
+                    remove("connected_watch_name")
                 }
             }
         }
