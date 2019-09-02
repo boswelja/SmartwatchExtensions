@@ -29,10 +29,11 @@ abstract class BaseWatchPickerActivity :
         connectedWatchId = id.toString(36)
         sharedPreferences.edit {
             putString(CONNECTED_WATCH_ID_KEY, connectedWatchId)
+            apply()
         }
     }
 
-    override fun onNothingSelected(p0: AdapterView<*>?) {}
+    override fun onNothingSelected(p0: AdapterView<*>?) { }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,6 +42,8 @@ abstract class BaseWatchPickerActivity :
             onItemSelectedListener = this@BaseWatchPickerActivity
             adapter = WatchPickerAdapter(this@BaseWatchPickerActivity)
         }
+
+        connectedWatchId = sharedPreferences.getString(CONNECTED_WATCH_ID_KEY, "")
 
         loadConnectedWatches()
     }
@@ -54,7 +57,10 @@ abstract class BaseWatchPickerActivity :
                             .addOnSuccessListener {
                                 val allCapableNodes = it.nodes
                                 for (watch in allConnectedNodes) {
-                                    (watchPickerSpinner.adapter as WatchPickerAdapter).add(Watch(watch, hasApp = allCapableNodes.contains(watch)))
+                                    val index = (watchPickerSpinner.adapter as WatchPickerAdapter).add(Watch(watch, hasApp = allCapableNodes.contains(watch)))
+                                    if (watch.id == connectedWatchId) {
+                                        watchPickerSpinner.setSelection(index)
+                                    }
                                 }
                                 (watchPickerSpinner.adapter as WatchPickerAdapter).notifyDataSetChanged()
                             }
@@ -81,8 +87,9 @@ abstract class BaseWatchPickerActivity :
             return watches[position].id.toLong(36)
         }
 
-        override fun add(newWatch: Watch?) {
-            if (newWatch != null) watches.add(newWatch)
+        fun add(newWatch: Watch): Int {
+            watches.add(newWatch)
+            return watches.indexOf(newWatch)
         }
 
         override fun addAll(collection: MutableCollection<out Watch>) {
