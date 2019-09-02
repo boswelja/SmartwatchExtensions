@@ -25,6 +25,9 @@ class AppManagerActivity : BaseToolbarActivity() {
 
     private var appManagerFragment: AppManagerFragment? = null
 
+    private var isServiceRunning: Boolean = false
+    var canStopService: Boolean = true
+
     private val messageListener = MessageClient.OnMessageReceivedListener {
         when (it.path) {
             AppManagerReferences.GET_ALL_PACKAGES -> {
@@ -45,18 +48,18 @@ class AppManagerActivity : BaseToolbarActivity() {
                 .commit()
 
         messageClient = Wearable.getMessageClient(this)
-
-        startAppManagerService()
     }
 
     override fun onResume() {
         super.onResume()
         messageClient.addListener(messageListener)
+        startAppManagerService()
     }
 
     override fun onPause() {
         super.onPause()
         messageClient.removeListener(messageListener)
+        if (canStopService) stopAppManagerService()
     }
 
     override fun onDestroy() {
@@ -78,17 +81,21 @@ class AppManagerActivity : BaseToolbarActivity() {
         }
     }
 
-    fun startAppManagerService() {
-        if (!connectedWatchId.isNullOrEmpty()) {
-            messageClient.sendMessage(connectedWatchId!!, AppManagerReferences.START_SERVICE, null)
-        } else {
-            Toast.makeText(this, getString(R.string.app_manager_unable_to_connect), Toast.LENGTH_LONG).show()
-            finish()
+    private fun startAppManagerService() {
+        if (!isServiceRunning) {
+            if (!connectedWatchId.isNullOrEmpty()) {
+                isServiceRunning = true
+                messageClient.sendMessage(connectedWatchId!!, AppManagerReferences.START_SERVICE, null)
+            } else {
+                Toast.makeText(this, getString(R.string.app_manager_unable_to_connect), Toast.LENGTH_LONG).show()
+                finish()
+            }
         }
     }
 
     private fun stopAppManagerService() {
-        if (!connectedWatchId.isNullOrEmpty()) {
+        if (!connectedWatchId.isNullOrEmpty() && isServiceRunning) {
+            isServiceRunning = false
             messageClient.sendMessage(connectedWatchId!!, AppManagerReferences.STOP_SERVICE, null)
         }
     }

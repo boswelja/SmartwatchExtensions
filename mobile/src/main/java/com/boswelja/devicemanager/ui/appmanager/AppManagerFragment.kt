@@ -28,6 +28,7 @@ import com.google.android.material.snackbar.Snackbar
 class AppManagerFragment : Fragment() {
 
     private lateinit var messageClient: MessageClient
+    private lateinit var appManagerActivity: AppManagerActivity
 
     private var appsRecyclerView: RecyclerView? = null
 
@@ -54,6 +55,7 @@ class AppManagerFragment : Fragment() {
         super.onCreate(savedInstanceState)
 
         messageClient = Wearable.getMessageClient(context!!)
+        appManagerActivity = activity as AppManagerActivity
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
@@ -70,7 +72,7 @@ class AppManagerFragment : Fragment() {
             adapter = AppsAdapter(this@AppManagerFragment)
             addOnScrollListener(object : RecyclerView.OnScrollListener() {
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                    (activity as AppManagerActivity).elevateToolbar(recyclerView.canScrollVertically(-1))
+                    appManagerActivity.elevateToolbar(recyclerView.canScrollVertically(-1))
                 }
             })
         }
@@ -92,16 +94,17 @@ class AppManagerFragment : Fragment() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         when (requestCode) {
             APP_INFO_ACTIVITY_REQUEST_CODE -> {
+                appManagerActivity.canStopService = true
                 when (resultCode) {
                     AppInfoActivity.RESULT_REQUEST_UNINSTALL -> {
                         val app = data?.extras?.getSerializable(AppInfoActivity.EXTRA_APP_INFO) as AppPackageInfo
                         sendUninstallRequestMessage(app)
-                        (activity as AppManagerActivity).createSnackBar(getString(R.string.app_manager_continue_on_watch))
+                        appManagerActivity.createSnackBar(getString(R.string.app_manager_continue_on_watch))
                     }
                     AppInfoActivity.RESULT_REQUEST_OPEN -> {
                         val app = data?.extras?.getSerializable(AppInfoActivity.EXTRA_APP_INFO) as AppPackageInfo
                         sendOpenRequestMessage(app)
-                        (activity as AppManagerActivity).createSnackBar(getString(R.string.app_manager_continue_on_watch))
+                        appManagerActivity.createSnackBar(getString(R.string.app_manager_continue_on_watch))
                     }
                 }
             }
@@ -136,16 +139,16 @@ class AppManagerFragment : Fragment() {
     }
 
     fun setAllApps(apps: AppPackageInfoList) {
-        try {
+        allAppsCache = try {
             (appsRecyclerView?.adapter as AppsAdapter).setAllApps(apps)
-            allAppsCache = null
+            null
         } catch (e: Exception) {
-            allAppsCache = apps
+            apps
         }
     }
 
     fun onItemClick(appPackageInfo: AppPackageInfo) {
-        (activity as AppManagerActivity).startAppManagerService()
+        appManagerActivity.canStopService = false
         val intent = Intent(context, AppInfoActivity::class.java)
         intent.putExtra(AppInfoActivity.EXTRA_APP_INFO, appPackageInfo)
         startActivityForResult(intent, APP_INFO_ACTIVITY_REQUEST_CODE)
