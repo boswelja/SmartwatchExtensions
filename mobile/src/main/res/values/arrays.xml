@@ -20,6 +20,7 @@
         <item>Improvements to App Manager UI</item>
         <item>Improvements to Changelog UI</item>
         <item>Add widget background customisation, find it in \'App Settings\'</item>
+        <item>Add support for multiple watches</item>
         <item>Fix being unable to open Settings on the Wear OS app</item>
         <item>Significantly reduce the chance of App Manager service getting stuck running on your watch</item>
     </string-array>
