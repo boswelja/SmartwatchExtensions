@@ -44,7 +44,7 @@ internal class SetupFragment : Fragment() {
                 }
             }
             val steps = resources.getStringArray(R.array.interrupt_filter_sync_to_watch_steps)
-            for (i in 0 until steps.size) {
+            for (i in steps.indices) {
                 val stepText = "${i + 1}. ${steps[i]}"
                 createTextView(textViewPadding, stepText).also { textView ->
                     stepsHolder.addView(textView)

@@ -20,8 +20,7 @@ import com.boswelja.devicemanager.ui.main.messages.MessageChecker
 import com.boswelja.devicemanager.ui.main.messages.MessageFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
-class MainActivity :
-        BaseToolbarActivity() {
+class MainActivity : BaseToolbarActivity() {
 
     private lateinit var bottomNavigationView: BottomNavigationView
 
