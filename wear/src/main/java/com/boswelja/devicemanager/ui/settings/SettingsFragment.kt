@@ -39,6 +39,7 @@ class SettingsFragment :
 
     private lateinit var preferenceSyncLayer: PreferenceSyncLayer
     private lateinit var sharedPreferences: SharedPreferences
+    private var messageClient: MessageClient? = null
 
     private var changingKey = ""
 
@@ -93,15 +94,15 @@ class SettingsFragment :
             INTERRUPT_FILTER_ON_WITH_THEATER_KEY -> {
                 val value = newValue == true
                 if (value) {
-                    val messageClient = Wearable.getMessageClient(preference.context)
+                    messageClient = Wearable.getMessageClient(preference.context)
                     changingKey = key
-                    messageClient.addListener(interruptFilterAccessListener)
+                    messageClient!!.addListener(interruptFilterAccessListener)
                     Utils.getCompanionNode(context!!).addOnCompleteListener {
                         if (it.isSuccessful && it.result != null) {
                             val nodes = it.result?.nodes
                             if (!nodes.isNullOrEmpty()) {
                                 val node = nodes.first { node -> node.isNearby }
-                                messageClient.sendMessage(node?.id!!, REQUEST_INTERRUPT_FILTER_ACCESS_STATUS_PATH, null)
+                                messageClient!!.sendMessage(node?.id!!, REQUEST_INTERRUPT_FILTER_ACCESS_STATUS_PATH, null)
                             } else {
                                 notifyError()
                             }
@@ -182,12 +183,14 @@ class SettingsFragment :
     }
 
     private fun onInterruptFilterAccessResponse(hasAccess: Boolean) {
-        Wearable.getMessageClient(context!!).removeListener(interruptFilterAccessListener)
-        if (hasAccess) {
-            sharedPreferences.edit().putBoolean(changingKey, hasAccess).apply()
-            preferenceSyncLayer.pushNewData()
-        } else {
-            notifyAdditionalSetupRequired(changingKey)
+        messageClient?.removeListener(interruptFilterAccessListener)
+        if (changingKey.isNotEmpty()) {
+            if (hasAccess) {
+                sharedPreferences.edit().putBoolean(changingKey, hasAccess).apply()
+                preferenceSyncLayer.pushNewData()
+            } else {
+                notifyAdditionalSetupRequired(changingKey)
+            }
         }
     }
 }
