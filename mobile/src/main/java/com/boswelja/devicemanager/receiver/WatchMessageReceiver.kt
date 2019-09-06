@@ -20,7 +20,7 @@ import com.boswelja.devicemanager.common.References.REQUEST_LAUNCH_APP_PATH
 import com.boswelja.devicemanager.common.batterysync.References.REQUEST_BATTERY_UPDATE_PATH
 import com.boswelja.devicemanager.common.batterysync.Utils
 import com.boswelja.devicemanager.common.interruptfiltersync.References.REQUEST_INTERRUPT_FILTER_ACCESS_STATUS_PATH
-import com.boswelja.devicemanager.ui.base.BaseToolbarActivity.Companion.EXTRA_PREFERENCE_KEY
+import com.boswelja.devicemanager.ui.base.BasePreferenceActivity.Companion.EXTRA_PREFERENCE_KEY
 import com.boswelja.devicemanager.ui.batterysync.BatterySyncPreferenceActivity
 import com.boswelja.devicemanager.ui.interruptfiltersync.InterruptFilterSyncPreferenceActivity
 import com.boswelja.devicemanager.ui.main.MainActivity

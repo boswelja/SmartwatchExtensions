@@ -27,8 +27,8 @@ class UpdateHandler(private val activity: AppCompatActivity) {
 
     @Throws(ClassCastException::class)
     private fun ensureUpdated() {
-        val oldVersion = sharedPreferences.getInt(APP_VERSION_KEY, 0)
         val currentVersion = BuildConfig.VERSION_CODE
+        val oldVersion = sharedPreferences.getInt(APP_VERSION_KEY, currentVersion)
         if (oldVersion < currentVersion) {
             ChangelogDialogFragment().show(activity.supportFragmentManager, "ChangelogDialog")
             sharedPreferences.edit {

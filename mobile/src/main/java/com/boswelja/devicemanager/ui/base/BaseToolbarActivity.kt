@@ -58,8 +58,4 @@ abstract class BaseToolbarActivity : BaseDayNightActivity() {
     fun createSnackBar(message: String) {
         Snackbar.make(findViewById(R.id.content_view), message, Snackbar.LENGTH_LONG).show()
     }
-
-    companion object {
-        const val EXTRA_PREFERENCE_KEY = "extra_preference_key"
-    }
 }

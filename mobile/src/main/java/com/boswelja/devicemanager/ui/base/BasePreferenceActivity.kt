@@ -48,4 +48,8 @@ abstract class BasePreferenceActivity : BaseWatchPickerActivity() {
             preferenceFragment.scrollToPreference(key)
         }
     }
+
+    companion object {
+        const val EXTRA_PREFERENCE_KEY = "extra_preference_key"
+    }
 }
