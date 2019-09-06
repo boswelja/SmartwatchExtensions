@@ -128,7 +128,7 @@
         <service android:name=".receiver.RemotePreferenceChangeReceiver">
             <intent-filter>
                 <action android:name="com.google.android.gms.wearable.DATA_CHANGED" />
-                <data android:scheme="wear" android:host="*" android:path="/preference_change" />
+                <data android:scheme="wear" android:host="*" android:pathPrefix="/preference-change_" />
             </intent-filter>
         </service>
     </application>

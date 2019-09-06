@@ -13,8 +13,13 @@ import com.boswelja.devicemanager.common.Compat
 import com.boswelja.devicemanager.common.PreferenceKey
 import com.boswelja.devicemanager.common.prefsynclayer.BasePreferenceChangeReceiver
 import com.boswelja.devicemanager.service.InterruptFilterLocalChangeListener
+import com.google.android.gms.wearable.DataEventBuffer
 
 class RemotePreferenceChangeReceiver : BasePreferenceChangeReceiver() {
+
+    override fun onPreferenceChangeReceived(preferenceChangeEvents: DataEventBuffer?) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
 
     override fun onPreferenceChanged(key: String, newValue: Any) {
         when (key) {
