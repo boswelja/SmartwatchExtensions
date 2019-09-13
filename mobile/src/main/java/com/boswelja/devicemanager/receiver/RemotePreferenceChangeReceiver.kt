@@ -8,7 +8,9 @@
 package com.boswelja.devicemanager.receiver
 
 import android.content.Intent
+import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.BatteryUpdateJob
+import com.boswelja.devicemanager.References.CONNECTED_WATCH_ID_KEY
 import com.boswelja.devicemanager.common.Compat
 import com.boswelja.devicemanager.common.PreferenceKey
 import com.boswelja.devicemanager.common.prefsynclayer.BasePreferenceChangeReceiver
@@ -18,7 +20,17 @@ import com.google.android.gms.wearable.DataEventBuffer
 class RemotePreferenceChangeReceiver : BasePreferenceChangeReceiver() {
 
     override fun onPreferenceChangeReceived(preferenceChangeEvents: DataEventBuffer?) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        if (preferenceChangeEvents != null) {
+            val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
+            val selectedNodeId = sharedPreferences.getString(CONNECTED_WATCH_ID_KEY, "")
+            if (!selectedNodeId.isNullOrEmpty()) {
+                for (event in preferenceChangeEvents) {
+                    if (event.dataItem.uri.toString().endsWith(selectedNodeId)) {
+                        handlePreferenceChange(event)
+                    }
+                }
+            }
+        }
     }
 
     override fun onPreferenceChanged(key: String, newValue: Any) {

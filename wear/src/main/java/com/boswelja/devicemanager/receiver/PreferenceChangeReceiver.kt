@@ -10,7 +10,6 @@ package com.boswelja.devicemanager.receiver
 import android.content.ComponentName
 import android.content.Intent
 import android.support.wearable.complications.ProviderUpdateRequester
-import android.util.Log
 import com.boswelja.devicemanager.common.Compat
 import com.boswelja.devicemanager.common.PreferenceKey
 import com.boswelja.devicemanager.common.prefsynclayer.BasePreferenceChangeReceiver
@@ -23,16 +22,11 @@ import com.google.android.gms.wearable.Wearable
 class PreferenceChangeReceiver : BasePreferenceChangeReceiver() {
 
     override fun onPreferenceChangeReceived(preferenceChangeEvents: DataEventBuffer?) {
-        Log.d("PreferenceChangeReceiver", "Preference change received")
         if (preferenceChangeEvents != null) {
             val currentNodeId = Tasks.await(Wearable.getNodeClient(this).localNode).id
-            Log.d("PreferenceChangeReceiver", "Current nodeId: $currentNodeId")
             for (event in preferenceChangeEvents) {
                 if (event.dataItem.uri.toString().endsWith(currentNodeId)) {
-                    Log.d("PreferenceChangeReceiver", "Handling preference change")
                     handlePreferenceChange(event)
-                } else {
-                    Log.d("PreferenceChangeReceiver", "Preference change not targeted at this device")
                 }
             }
         }
