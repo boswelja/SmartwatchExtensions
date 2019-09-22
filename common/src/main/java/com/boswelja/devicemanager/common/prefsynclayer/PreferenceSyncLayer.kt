@@ -8,10 +8,13 @@
 package com.boswelja.devicemanager.common.prefsynclayer
 
 import android.content.Context
+import android.util.Log
+import androidx.core.content.edit
 import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.common.PreferenceKey
 import com.google.android.gms.tasks.Task
 import com.google.android.gms.wearable.DataItem
+import com.google.android.gms.wearable.DataMapItem
 import com.google.android.gms.wearable.PutDataMapRequest
 import com.google.android.gms.wearable.Wearable
 
@@ -20,6 +23,38 @@ class PreferenceSyncLayer(context: Context, nodeId: String) {
     private val localPrefs = PreferenceManager.getDefaultSharedPreferences(context)
     private val dataClient = Wearable.getDataClient(context)
     private val preferenceChangePath = "/preference-change_$nodeId"
+
+    init {
+        getCurrentData()
+                .addOnSuccessListener {
+                    val dataMap = DataMapItem.fromDataItem(it).dataMap
+                    if (!dataMap.isEmpty) {
+                        localPrefs.edit {
+                            for (key in dataMap.keySet()) {
+                                when (key) {
+                                    PreferenceKey.PHONE_LOCKING_ENABLED_KEY,
+                                    PreferenceKey.BATTERY_SYNC_ENABLED_KEY,
+                                    PreferenceKey.BATTERY_PHONE_CHARGE_NOTI_KEY,
+                                    PreferenceKey.BATTERY_WATCH_CHARGE_NOTI_KEY,
+                                    PreferenceKey.INTERRUPT_FILTER_SYNC_TO_WATCH_KEY,
+                                    PreferenceKey.INTERRUPT_FILTER_SYNC_TO_PHONE_KEY,
+                                    PreferenceKey.INTERRUPT_FILTER_ON_WITH_THEATER_KEY -> {
+                                        val newValue = dataMap.getBoolean(key)
+                                        putBoolean(key, newValue)
+                                    }
+                                    PreferenceKey.BATTERY_CHARGE_THRESHOLD_KEY -> {
+                                        val newValue = dataMap.getInt(key)
+                                        putInt(key, newValue)
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                .addOnFailureListener {
+                    Log.d("PreferenceSyncLayer", "Failed to get current watch prefs")
+                }
+    }
 
     fun pushNewData() {
         // Get updated sharedPreferences
