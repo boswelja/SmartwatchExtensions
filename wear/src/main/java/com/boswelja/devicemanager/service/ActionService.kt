@@ -28,7 +28,7 @@ class ActionService : IntentService("ActionService") {
     private lateinit var action: String
 
     override fun onHandleIntent(intent: Intent?) {
-        action = intent!!.getStringExtra(EXTRA_ACTION)
+        action = intent?.getStringExtra(EXTRA_ACTION)!!
 
         Utils.getCompanionNode(this)
                 .addOnCompleteListener {

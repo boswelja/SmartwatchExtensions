@@ -27,11 +27,6 @@ android {
             }
         }
     }
-
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-    }
 }
 
 dependencies {
@@ -44,7 +39,7 @@ dependencies {
     implementation "androidx.preference:preference-ktx:$versions.androidx_preference"
     implementation "androidx.constraintlayout:constraintlayout:$versions.androidx_constraintlayout"
 
-    implementation "com.google.android.support:wearable:${versions.wearable_support_lib}"
+    implementation "com.google.android.support:wearable:$versions.wearable_support_lib"
     implementation "com.google.android.gms:play-services-wearable:$versions.play_services_wearable"
 
     compileOnly "com.google.android.wearable:wearable:$versions.wearable_support_lib"
