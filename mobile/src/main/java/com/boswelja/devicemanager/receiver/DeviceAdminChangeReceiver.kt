@@ -13,7 +13,6 @@ import android.content.Intent
 import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.common.PreferenceKey
 import com.boswelja.devicemanager.common.References
-import com.boswelja.devicemanager.common.prefsynclayer.PreferenceSyncService
 import com.google.android.gms.wearable.CapabilityClient
 import com.google.android.gms.wearable.Wearable
 
