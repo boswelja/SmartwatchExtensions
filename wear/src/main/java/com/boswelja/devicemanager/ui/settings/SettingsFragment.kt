@@ -7,6 +7,8 @@
  */
 package com.boswelja.devicemanager.ui.settings
 
+import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -28,7 +30,7 @@ import com.boswelja.devicemanager.common.PreferenceKey.INTERRUPT_FILTER_ON_WITH_
 import com.boswelja.devicemanager.common.PreferenceKey.INTERRUPT_FILTER_SYNC_TO_PHONE_KEY
 import com.boswelja.devicemanager.common.PreferenceKey.INTERRUPT_FILTER_SYNC_TO_WATCH_KEY
 import com.boswelja.devicemanager.common.interruptfiltersync.References.REQUEST_INTERRUPT_FILTER_ACCESS_STATUS_PATH
-import com.boswelja.devicemanager.common.prefsynclayer.PreferenceSyncLayer
+import com.boswelja.devicemanager.common.prefsynclayer.PreferenceSyncService
 import com.google.android.gms.wearable.MessageClient
 import com.google.android.gms.wearable.Wearable
 
@@ -37,7 +39,21 @@ class SettingsFragment :
         Preference.OnPreferenceChangeListener,
         SharedPreferences.OnSharedPreferenceChangeListener {
 
-    private lateinit var preferenceSyncLayer: PreferenceSyncLayer
+    private val preferenceSyncServiceConnection = object : PreferenceSyncService.PreferenceSyncServiceConnection() {
+        override fun onPreferenceSyncServiceBound(preferenceSyncService: PreferenceSyncService) {
+            this@SettingsFragment.preferenceSyncService = preferenceSyncService
+            Wearable.getNodeClient(context!!)
+                    .localNode
+                    .addOnSuccessListener {
+                        this@SettingsFragment.preferenceSyncService?.setConnectedNodeId(it.id)
+                    }
+        }
+
+        override fun onPreferenceSyncServiceUnbound() {
+            preferenceSyncService = null
+        }
+    }
+    private var preferenceSyncService: PreferenceSyncService? = null
     private lateinit var sharedPreferences: SharedPreferences
     private var messageClient: MessageClient? = null
 
@@ -71,7 +87,7 @@ class SettingsFragment :
             BATTERY_WATCH_CHARGE_NOTI_KEY -> {
                 val value = newValue == true
                 sharedPreferences.edit().putBoolean(key, value).apply()
-                preferenceSyncLayer.pushNewData()
+                preferenceSyncService?.pushNewData()
                 false
             }
             INTERRUPT_FILTER_SYNC_TO_WATCH_KEY -> {
@@ -80,13 +96,13 @@ class SettingsFragment :
                     val canEnableSync = Utils.checkDnDAccess(context!!)
                     if (canEnableSync) {
                         sharedPreferences.edit().putBoolean(key, value).apply()
-                        preferenceSyncLayer.pushNewData()
+                        preferenceSyncService?.pushNewData()
                     } else {
                         notifyAdditionalSetupRequired(key)
                     }
                 } else {
                     sharedPreferences.edit().putBoolean(key, value).apply()
-                    preferenceSyncLayer.pushNewData()
+                    preferenceSyncService?.pushNewData()
                 }
                 false
             }
@@ -112,7 +128,7 @@ class SettingsFragment :
                     }
                 } else {
                     sharedPreferences.edit().putBoolean(key, value).apply()
-                    preferenceSyncLayer.pushNewData()
+                    preferenceSyncService?.pushNewData()
                 }
                 false
             }
@@ -122,11 +138,7 @@ class SettingsFragment :
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Wearable.getNodeClient(context!!)
-                .localNode
-                .addOnSuccessListener {
-                    preferenceSyncLayer = PreferenceSyncLayer(context!!, it.id)
-                }
+        context?.bindService(Intent(context, PreferenceSyncService::class.java), preferenceSyncServiceConnection, Context.BIND_AUTO_CREATE)
         sharedPreferences = preferenceManager.sharedPreferences
     }
 
@@ -191,7 +203,7 @@ class SettingsFragment :
         if (changingKey.isNotEmpty()) {
             if (hasAccess) {
                 sharedPreferences.edit().putBoolean(changingKey, hasAccess).apply()
-                preferenceSyncLayer.pushNewData()
+                preferenceSyncService?.pushNewData()
             } else {
                 notifyAdditionalSetupRequired(changingKey)
             }

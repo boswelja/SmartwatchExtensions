@@ -7,6 +7,8 @@
  */
 package com.boswelja.devicemanager.ui.base
 
+import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -15,15 +17,28 @@ import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.RecyclerView
 import com.boswelja.devicemanager.common.Utils
+import com.boswelja.devicemanager.common.prefsynclayer.PreferenceSyncService
 
 abstract class BasePreferenceFragment : PreferenceFragmentCompat() {
 
+    private val preferenceSyncServiceConnection = object : PreferenceSyncService.PreferenceSyncServiceConnection() {
+        override fun onPreferenceSyncServiceBound(preferenceSyncService: PreferenceSyncService) {
+            this@BasePreferenceFragment.preferenceSyncService = preferenceSyncService
+        }
+
+        override fun onPreferenceSyncServiceUnbound() {
+            preferenceSyncService = null
+        }
+    }
+
+    var preferenceSyncService: PreferenceSyncService? = null
     lateinit var sharedPreferences: SharedPreferences
     lateinit var activity: BaseWatchPickerActivity
 
     override fun onCreate(savedInstanceState: Bundle?) {
         activity = getActivity() as BaseWatchPickerActivity
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context!!)
+        context?.bindService(Intent(context, PreferenceSyncService::class.java), preferenceSyncServiceConnection, Context.BIND_AUTO_CREATE)
 
         super.onCreate(savedInstanceState)
     }

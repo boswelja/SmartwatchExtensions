@@ -17,7 +17,6 @@ import com.boswelja.devicemanager.receiver.DeviceAdminChangeReceiver.Companion.D
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.Utils
 import com.boswelja.devicemanager.common.PreferenceKey.PHONE_LOCKING_ENABLED_KEY
-import com.boswelja.devicemanager.common.prefsynclayer.PreferenceSyncLayer
 import com.boswelja.devicemanager.preference.confirmationdialog.ConfirmationDialogPrefFragment
 import com.boswelja.devicemanager.preference.confirmationdialog.ConfirmationDialogPreference
 import com.boswelja.devicemanager.ui.appmanager.AppManagerActivity
@@ -30,8 +29,6 @@ class ExtensionsFragment :
         SharedPreferences.OnSharedPreferenceChangeListener,
         Preference.OnPreferenceClickListener,
         Preference.OnPreferenceChangeListener {
-
-    private lateinit var preferenceSyncLayer: PreferenceSyncLayer
 
     private lateinit var phoneLockPreference: SwitchPreference
 
@@ -95,7 +92,7 @@ class ExtensionsFragment :
                     sharedPreferences.edit()
                             .putBoolean(key, value)
                             .apply()
-                    preferenceSyncLayer.pushNewData(key)
+                    preferenceSyncService?.pushNewData(key)
                 }
                 false
             }
@@ -124,8 +121,6 @@ class ExtensionsFragment :
     }
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
-        preferenceSyncLayer = PreferenceSyncLayer(context!!, activity.connectedWatchId!!)
-
         addPreferencesFromResource(R.xml.prefs_main)
         findPreference<Preference>(OPEN_BATTERY_SYNC_PREF_KEY)!!.onPreferenceClickListener = this
         findPreference<Preference>(OPEN_INTERRUPT_FILTER_SYNC_PREF_KEY)!!.onPreferenceClickListener = this

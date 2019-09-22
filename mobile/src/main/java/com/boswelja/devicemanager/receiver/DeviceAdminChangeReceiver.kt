@@ -13,7 +13,7 @@ import android.content.Intent
 import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.common.PreferenceKey
 import com.boswelja.devicemanager.common.References
-import com.boswelja.devicemanager.common.prefsynclayer.PreferenceSyncLayer
+import com.boswelja.devicemanager.common.prefsynclayer.PreferenceSyncService
 import com.google.android.gms.wearable.CapabilityClient
 import com.google.android.gms.wearable.Wearable
 
@@ -35,9 +35,9 @@ class DeviceAdminChangeReceiver : DeviceAdminReceiver() {
         Wearable.getCapabilityClient(context!!)
                 .getCapability(References.CAPABILITY_WATCH_APP, CapabilityClient.FILTER_REACHABLE)
                 .addOnSuccessListener {
-                    for (node in it.nodes) {
-                        PreferenceSyncLayer(context, node.id).pushNewData(PreferenceKey.PHONE_LOCKING_ENABLED_KEY)
-                    }
+//                    for (node in it.nodes) {
+//                        PreferenceSyncService(context, node.id).pushNewData(PreferenceKey.PHONE_LOCKING_ENABLED_KEY)
+//                    }
                 }
     }
 

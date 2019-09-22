@@ -22,7 +22,6 @@ import com.boswelja.devicemanager.common.Compat
 import com.boswelja.devicemanager.common.PreferenceKey.INTERRUPT_FILTER_ON_WITH_THEATER_KEY
 import com.boswelja.devicemanager.common.PreferenceKey.INTERRUPT_FILTER_SYNC_TO_PHONE_KEY
 import com.boswelja.devicemanager.common.PreferenceKey.INTERRUPT_FILTER_SYNC_TO_WATCH_KEY
-import com.boswelja.devicemanager.common.prefsynclayer.PreferenceSyncLayer
 import com.boswelja.devicemanager.service.InterruptFilterLocalChangeListener
 import com.boswelja.devicemanager.ui.base.BasePreferenceFragment
 import com.boswelja.devicemanager.ui.interruptfiltersync.helper.InterruptFilterSyncHelperActivity
@@ -32,7 +31,6 @@ class InterruptFilterSyncPreferenceFragment :
         SharedPreferences.OnSharedPreferenceChangeListener,
         Preference.OnPreferenceChangeListener {
 
-    private lateinit var preferenceSyncLayer: PreferenceSyncLayer
     private lateinit var notificationManager: NotificationManager
 
     private lateinit var interruptFilterSyncToWatchPreference: SwitchPreference
@@ -62,7 +60,7 @@ class InterruptFilterSyncPreferenceFragment :
                 } else {
                     preference.sharedPreferences.edit()
                             .putBoolean(key, value).apply()
-                    preferenceSyncLayer.pushNewData(key)
+                    preferenceSyncService?.pushNewData(key)
                     context?.stopService(Intent(context!!, InterruptFilterLocalChangeListener::class.java))
                 }
                 false
@@ -73,13 +71,13 @@ class InterruptFilterSyncPreferenceFragment :
                 preference.sharedPreferences.edit().putBoolean(key, value).apply()
                 if (value) {
                     if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M || notificationManager.isNotificationPolicyAccessGranted) {
-                        preferenceSyncLayer.pushNewData(key)
+                        preferenceSyncService?.pushNewData(key)
                     } else {
                         Toast.makeText(context, getString(R.string.interrupt_filter_sync_request_policy_access_message), Toast.LENGTH_SHORT).show()
                         startActivity(Intent(Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS))
                     }
                 } else {
-                    preferenceSyncLayer.pushNewData(key)
+                    preferenceSyncService?.pushNewData(key)
                 }
                 false
             }
@@ -89,7 +87,6 @@ class InterruptFilterSyncPreferenceFragment :
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        preferenceSyncLayer = PreferenceSyncLayer(context!!, activity.connectedWatchId!!)
         notificationManager = context?.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
     }
 
@@ -132,7 +129,7 @@ class InterruptFilterSyncPreferenceFragment :
                 interruptFilterSyncToWatchPreference.isChecked = enabled
                 interruptFilterSyncToWatchPreference.sharedPreferences.edit()
                         .putBoolean(INTERRUPT_FILTER_SYNC_TO_WATCH_KEY, enabled).apply()
-                preferenceSyncLayer.pushNewData(INTERRUPT_FILTER_SYNC_TO_WATCH_KEY)
+                preferenceSyncService?.pushNewData(INTERRUPT_FILTER_SYNC_TO_WATCH_KEY)
                 if (enabled) {
                     Compat.startForegroundService(context!!, Intent(context!!, InterruptFilterLocalChangeListener::class.java))
                 }

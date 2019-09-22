@@ -24,7 +24,6 @@ import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_WATCH_CHARGE_NOTI
 import com.boswelja.devicemanager.common.References
 import com.boswelja.devicemanager.common.batterysync.Utils.updateBatteryStats
 import com.boswelja.devicemanager.common.batterysync.BatteryUpdateReceiver
-import com.boswelja.devicemanager.common.prefsynclayer.PreferenceSyncLayer
 import com.boswelja.devicemanager.ui.base.BasePreferenceFragment
 import com.boswelja.devicemanager.widget.WatchBatteryWidget
 import java.util.concurrent.TimeUnit
@@ -33,8 +32,6 @@ class BatterySyncPreferenceFragment :
         BasePreferenceFragment(),
         SharedPreferences.OnSharedPreferenceChangeListener,
         Preference.OnPreferenceChangeListener {
-
-    private lateinit var preferenceSyncLayer: PreferenceSyncLayer
 
     private lateinit var batterySyncEnabledPreference: SwitchPreference
     private lateinit var batterySyncIntervalPreference: SeekBarPreference
@@ -54,7 +51,7 @@ class BatterySyncPreferenceFragment :
                 } else {
                     BatteryUpdateJob.stopJob(context!!)
                 }
-                preferenceSyncLayer.pushNewData(key)
+                preferenceSyncService?.pushNewData(key)
                 WatchBatteryWidget.updateWidgets(context!!)
             }
             BATTERY_PHONE_CHARGE_NOTI_KEY -> {
@@ -67,7 +64,7 @@ class BatterySyncPreferenceFragment :
             }
             BATTERY_CHARGE_THRESHOLD_KEY -> {
                 updateChargeNotiPrefSummaries()
-                preferenceSyncLayer.pushNewData(key)
+                preferenceSyncService?.pushNewData(key)
             }
         }
     }
@@ -84,16 +81,11 @@ class BatterySyncPreferenceFragment :
             BATTERY_WATCH_CHARGE_NOTI_KEY -> {
                 val value = newValue == true
                 preference.sharedPreferences.edit().putBoolean(preference.key, value).apply()
-                preferenceSyncLayer.pushNewData(key)
+                preferenceSyncService?.pushNewData(key)
                 false
             }
             else -> true
         }
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        preferenceSyncLayer = PreferenceSyncLayer(context!!, activity.connectedWatchId!!)
     }
 
     override fun onResume() {
@@ -105,7 +97,7 @@ class BatterySyncPreferenceFragment :
                     .putBoolean(BATTERY_WATCH_CHARGE_NOTI_KEY, false)
                     .apply()
             activity.createSnackBar(getString(R.string.battery_sync_watch_charged_noti_channel_disabled))
-            preferenceSyncLayer.pushNewData()
+            preferenceSyncService?.pushNewData()
         }
     }
 
