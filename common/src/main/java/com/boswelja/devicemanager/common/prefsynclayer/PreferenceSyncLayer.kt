@@ -25,35 +25,7 @@ class PreferenceSyncLayer(context: Context, nodeId: String) {
     private val preferenceChangePath = "/preference-change_$nodeId"
 
     init {
-        getCurrentData()
-                .addOnSuccessListener {
-                    val dataMap = DataMapItem.fromDataItem(it).dataMap
-                    if (!dataMap.isEmpty) {
-                        localPrefs.edit {
-                            for (key in dataMap.keySet()) {
-                                when (key) {
-                                    PreferenceKey.PHONE_LOCKING_ENABLED_KEY,
-                                    PreferenceKey.BATTERY_SYNC_ENABLED_KEY,
-                                    PreferenceKey.BATTERY_PHONE_CHARGE_NOTI_KEY,
-                                    PreferenceKey.BATTERY_WATCH_CHARGE_NOTI_KEY,
-                                    PreferenceKey.INTERRUPT_FILTER_SYNC_TO_WATCH_KEY,
-                                    PreferenceKey.INTERRUPT_FILTER_SYNC_TO_PHONE_KEY,
-                                    PreferenceKey.INTERRUPT_FILTER_ON_WITH_THEATER_KEY -> {
-                                        val newValue = dataMap.getBoolean(key)
-                                        putBoolean(key, newValue)
-                                    }
-                                    PreferenceKey.BATTERY_CHARGE_THRESHOLD_KEY -> {
-                                        val newValue = dataMap.getInt(key)
-                                        putInt(key, newValue)
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-                .addOnFailureListener {
-                    Log.d("PreferenceSyncLayer", "Failed to get current watch prefs")
-                }
+        updateLocalPrefs()
     }
 
     fun pushNewData() {
@@ -111,6 +83,38 @@ class PreferenceSyncLayer(context: Context, nodeId: String) {
             syncedPrefUpdateReq.setUrgent()
             dataClient.putDataItem(syncedPrefUpdateReq.asPutDataRequest())
         }
+    }
+
+    fun updateLocalPrefs() {
+        getCurrentData()
+                .addOnSuccessListener {
+                    val dataMap = DataMapItem.fromDataItem(it).dataMap
+                    if (!dataMap.isEmpty) {
+                        localPrefs.edit {
+                            for (key in dataMap.keySet()) {
+                                when (key) {
+                                    PreferenceKey.PHONE_LOCKING_ENABLED_KEY,
+                                    PreferenceKey.BATTERY_SYNC_ENABLED_KEY,
+                                    PreferenceKey.BATTERY_PHONE_CHARGE_NOTI_KEY,
+                                    PreferenceKey.BATTERY_WATCH_CHARGE_NOTI_KEY,
+                                    PreferenceKey.INTERRUPT_FILTER_SYNC_TO_WATCH_KEY,
+                                    PreferenceKey.INTERRUPT_FILTER_SYNC_TO_PHONE_KEY,
+                                    PreferenceKey.INTERRUPT_FILTER_ON_WITH_THEATER_KEY -> {
+                                        val newValue = dataMap.getBoolean(key)
+                                        putBoolean(key, newValue)
+                                    }
+                                    PreferenceKey.BATTERY_CHARGE_THRESHOLD_KEY -> {
+                                        val newValue = dataMap.getInt(key)
+                                        putInt(key, newValue)
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                .addOnFailureListener {
+                    Log.d("PreferenceSyncLayer", "Failed to get current watch prefs")
+                }
     }
 
     fun getCurrentData(): Task<DataItem> {
