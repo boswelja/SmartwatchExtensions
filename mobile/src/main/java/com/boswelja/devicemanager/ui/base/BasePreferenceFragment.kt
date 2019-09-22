@@ -38,9 +38,18 @@ abstract class BasePreferenceFragment : PreferenceFragmentCompat() {
     override fun onCreate(savedInstanceState: Bundle?) {
         activity = getActivity() as BaseWatchPickerActivity
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context!!)
-        context?.bindService(Intent(context, PreferenceSyncService::class.java), preferenceSyncServiceConnection, Context.BIND_AUTO_CREATE)
 
         super.onCreate(savedInstanceState)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        context?.bindService(Intent(context, PreferenceSyncService::class.java), preferenceSyncServiceConnection, Context.BIND_AUTO_CREATE)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        context?.unbindService(preferenceSyncServiceConnection)
     }
 
     override fun onCreateRecyclerView(inflater: LayoutInflater?, parent: ViewGroup?, savedInstanceState: Bundle?): RecyclerView {
