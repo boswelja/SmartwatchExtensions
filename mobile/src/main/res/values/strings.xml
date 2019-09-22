@@ -41,8 +41,8 @@
     <string name="interrupt_filter_sync_helper_all_set_title">All Set!</string>
     <string name="interrupt_filter_sync_helper_all_set_message">Tap \'Finish\' below to enable Phone to Watch Sync</string>
     <string name="interrupt_filter_sync_helper_error_title">Error</string>
-    <string name="interrupt_filter_sync_helper_error_watch_version">Your watch is running an incompatible Android OS (Android version is newer than Oreo 8.0)</string>
-    <string name="interrupt_filter_sync_helper_error_phone_version">Your phone is running an incompatible Android OS (Android Version older than Marshmallow 6.0)</string>
+    <string name="interrupt_filter_sync_helper_error_watch_version">Your watch is running an incompatible Android OS (System version newer than 8.0)\nThe required permission cannot be granted on watches running system versions newer than 8.0</string>
+    <string name="interrupt_filter_sync_helper_error_phone_version">Your phone is running an incompatible Android OS (Android Version older than 6.0)\nDo not Disturb is not available on Android versions below 6.0</string>
     <string name="interrupt_filter_sync_helper_error_watch_null">No connected watches found running Wearable Extensions</string>
     <string name="interrupt_filter_sync_helper_setup_title">Setup</string>
     <string name="interrupt_filter_sync_helper_button_finish">Finish</string>
