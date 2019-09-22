@@ -10,6 +10,9 @@ package com.boswelja.devicemanager.common.prefsynclayer
 import android.content.Context
 import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.common.PreferenceKey
+import com.google.android.gms.tasks.Task
+import com.google.android.gms.wearable.DataItem
+import com.google.android.gms.wearable.DataMap
 import com.google.android.gms.wearable.PutDataMapRequest
 import com.google.android.gms.wearable.Wearable
 
@@ -74,5 +77,10 @@ class PreferenceSyncLayer(context: Context, nodeId: String) {
             syncedPrefUpdateReq.setUrgent()
             dataClient.putDataItem(syncedPrefUpdateReq.asPutDataRequest())
         }
+    }
+
+    fun getCurrentData(): Task<DataItem> {
+        val uri = PutDataMapRequest.create(preferenceChangePath).uri
+        return dataClient.getDataItem(uri)
     }
 }
