@@ -12,7 +12,6 @@ import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.common.PreferenceKey
 import com.google.android.gms.tasks.Task
 import com.google.android.gms.wearable.DataItem
-import com.google.android.gms.wearable.DataMap
 import com.google.android.gms.wearable.PutDataMapRequest
 import com.google.android.gms.wearable.Wearable
 
@@ -20,7 +19,7 @@ class PreferenceSyncLayer(context: Context, nodeId: String) {
 
     private val localPrefs = PreferenceManager.getDefaultSharedPreferences(context)
     private val dataClient = Wearable.getDataClient(context)
-    private val preferenceChangePath = "/preference-change_${nodeId}"
+    private val preferenceChangePath = "/preference-change_$nodeId"
 
     fun pushNewData() {
         // Get updated sharedPreferences
