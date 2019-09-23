@@ -7,8 +7,6 @@
  */
 package com.boswelja.devicemanager.ui.base
 
-import android.content.Context
-import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -21,17 +19,6 @@ import com.boswelja.devicemanager.common.prefsynclayer.PreferenceSyncService
 
 abstract class BasePreferenceFragment : PreferenceFragmentCompat() {
 
-    private val preferenceSyncServiceConnection = object : PreferenceSyncService.PreferenceSyncServiceConnection() {
-        override fun onPreferenceSyncServiceBound(preferenceSyncService: PreferenceSyncService) {
-            this@BasePreferenceFragment.preferenceSyncService = preferenceSyncService
-        }
-
-        override fun onPreferenceSyncServiceUnbound() {
-            preferenceSyncService = null
-        }
-    }
-
-    var preferenceSyncService: PreferenceSyncService? = null
     lateinit var sharedPreferences: SharedPreferences
     lateinit var activity: BaseWatchPickerActivity
 
@@ -42,21 +29,15 @@ abstract class BasePreferenceFragment : PreferenceFragmentCompat() {
         super.onCreate(savedInstanceState)
     }
 
-    override fun onResume() {
-        super.onResume()
-        context?.bindService(Intent(context, PreferenceSyncService::class.java), preferenceSyncServiceConnection, Context.BIND_AUTO_CREATE)
-    }
-
-    override fun onPause() {
-        super.onPause()
-        context?.unbindService(preferenceSyncServiceConnection)
-    }
-
     override fun onCreateRecyclerView(inflater: LayoutInflater?, parent: ViewGroup?, savedInstanceState: Bundle?): RecyclerView {
         val padding = Utils.complexTypeDp(resources, 8f)
         return super.onCreateRecyclerView(inflater, parent, savedInstanceState).apply {
             clipToPadding = false
             setPadding(0, padding.toInt(), 0, padding.toInt())
         }
+    }
+
+    fun getPreferenceSyncService(): PreferenceSyncService? {
+        return activity.preferenceSyncService
     }
 }

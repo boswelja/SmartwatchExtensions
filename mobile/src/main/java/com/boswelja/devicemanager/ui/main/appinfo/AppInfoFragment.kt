@@ -93,7 +93,7 @@ class AppInfoFragment :
     override fun onResume() {
         super.onResume()
         messageClient.addListener(messageListener)
-        val connectedWatchId = (activity as BaseWatchPickerActivity).connectedWatchId
+        val connectedWatchId = activity.connectedWatchId
         if (!connectedWatchId.isNullOrEmpty()) {
             messageClient.sendMessage(connectedWatchId, References.REQUEST_APP_VERSION, null)
         } else {

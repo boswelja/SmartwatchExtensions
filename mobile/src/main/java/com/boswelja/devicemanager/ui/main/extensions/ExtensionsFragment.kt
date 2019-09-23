@@ -92,7 +92,7 @@ class ExtensionsFragment :
                     sharedPreferences.edit()
                             .putBoolean(key, value)
                             .apply()
-                    preferenceSyncService?.pushNewData(key)
+                    getPreferenceSyncService()?.pushNewData(key)
                 }
                 false
             }

@@ -60,7 +60,7 @@ class InterruptFilterSyncPreferenceFragment :
                 } else {
                     preference.sharedPreferences.edit()
                             .putBoolean(key, value).apply()
-                    preferenceSyncService?.pushNewData(key)
+                    getPreferenceSyncService()?.pushNewData(key)
                     context?.stopService(Intent(context!!, InterruptFilterLocalChangeListener::class.java))
                 }
                 false
@@ -71,13 +71,13 @@ class InterruptFilterSyncPreferenceFragment :
                 preference.sharedPreferences.edit().putBoolean(key, value).apply()
                 if (value) {
                     if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M || notificationManager.isNotificationPolicyAccessGranted) {
-                        preferenceSyncService?.pushNewData(key)
+                        getPreferenceSyncService()?.pushNewData(key)
                     } else {
                         Toast.makeText(context, getString(R.string.interrupt_filter_sync_request_policy_access_message), Toast.LENGTH_SHORT).show()
                         startActivity(Intent(Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS))
                     }
                 } else {
-                    preferenceSyncService?.pushNewData(key)
+                    getPreferenceSyncService()?.pushNewData(key)
                 }
                 false
             }
@@ -129,7 +129,7 @@ class InterruptFilterSyncPreferenceFragment :
                 interruptFilterSyncToWatchPreference.isChecked = enabled
                 interruptFilterSyncToWatchPreference.sharedPreferences.edit()
                         .putBoolean(INTERRUPT_FILTER_SYNC_TO_WATCH_KEY, enabled).apply()
-                preferenceSyncService?.pushNewData(INTERRUPT_FILTER_SYNC_TO_WATCH_KEY)
+                getPreferenceSyncService()?.pushNewData(INTERRUPT_FILTER_SYNC_TO_WATCH_KEY)
                 if (enabled) {
                     Compat.startForegroundService(context!!, Intent(context!!, InterruptFilterLocalChangeListener::class.java))
                 }
