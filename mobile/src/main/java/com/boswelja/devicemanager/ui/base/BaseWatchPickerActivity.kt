@@ -30,7 +30,7 @@ import com.google.android.gms.wearable.Wearable
 abstract class BaseWatchPickerActivity :
         BaseToolbarActivity(),
         AdapterView.OnItemSelectedListener,
-        PreferenceSyncService.PreferenceSyncListener {
+        PreferenceSyncService.PreferenceSyncCallback {
 
     private val preferenceSyncServiceConnection = object : PreferenceSyncService.PreferenceSyncServiceConnection() {
         override fun onPreferenceSyncServiceBound(preferenceSyncService: PreferenceSyncService) {

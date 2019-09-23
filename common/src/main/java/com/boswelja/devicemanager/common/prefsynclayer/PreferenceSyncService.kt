@@ -28,7 +28,7 @@ import com.google.android.gms.wearable.Wearable
 class PreferenceSyncService : Service() {
 
     private val binder: PreferenceSyncBinder = PreferenceSyncBinder()
-    private val preferenceSyncListeners: ArrayList<PreferenceSyncListener> = ArrayList()
+    private val preferenceSyncCallbacks: ArrayList<PreferenceSyncCallback> = ArrayList()
 
     private var nodeId: String = ""
     private var preferenceChangePath = ""
@@ -56,17 +56,17 @@ class PreferenceSyncService : Service() {
         preferenceChangePath = "/preference-change_$nodeId"
     }
 
-    fun registerPreferenceSyncListener(preferenceSyncListener: PreferenceSyncListener): Boolean {
-        if (!preferenceSyncListeners.contains(preferenceSyncListener)) {
-            preferenceSyncListeners.add(preferenceSyncListener)
+    fun registerPreferenceSyncListener(preferenceSyncCallback: PreferenceSyncCallback): Boolean {
+        if (!preferenceSyncCallbacks.contains(preferenceSyncCallback)) {
+            preferenceSyncCallbacks.add(preferenceSyncCallback)
             return true
         }
         return false
     }
 
-    fun unregisterPreferenceSyncListener(preferenceSyncListener: PreferenceSyncListener): Boolean {
-        if (preferenceSyncListeners.contains(preferenceSyncListener)) {
-            preferenceSyncListeners.remove(preferenceSyncListener)
+    fun unregisterPreferenceSyncListener(preferenceSyncCallback: PreferenceSyncCallback): Boolean {
+        if (preferenceSyncCallbacks.contains(preferenceSyncCallback)) {
+            preferenceSyncCallbacks.remove(preferenceSyncCallback)
             return true
         }
         return false
@@ -136,7 +136,7 @@ class PreferenceSyncService : Service() {
     }
 
     fun setConnectedNodeId(nodeId: String) {
-        for (preferenceSyncListener in preferenceSyncListeners) {
+        for (preferenceSyncListener in preferenceSyncCallbacks) {
             preferenceSyncListener.onConnectedNodeChanging()
         }
         this.nodeId = nodeId
@@ -162,14 +162,14 @@ class PreferenceSyncService : Service() {
                                     PreferenceKey.INTERRUPT_FILTER_ON_WITH_THEATER_KEY -> {
                                         val newValue = dataMap.getBoolean(key)
                                         putBoolean(key, newValue)
-                                        for (preferenceSyncListener in preferenceSyncListeners) {
+                                        for (preferenceSyncListener in preferenceSyncCallbacks) {
                                             preferenceSyncListener.onLocalPreferenceUpdated(key)
                                         }
                                     }
                                     PreferenceKey.BATTERY_CHARGE_THRESHOLD_KEY -> {
                                         val newValue = dataMap.getInt(key)
                                         putInt(key, newValue)
-                                        for (preferenceSyncListener in preferenceSyncListeners) {
+                                        for (preferenceSyncListener in preferenceSyncCallbacks) {
                                             preferenceSyncListener.onLocalPreferenceUpdated(key)
                                         }
                                     }
@@ -177,12 +177,12 @@ class PreferenceSyncService : Service() {
                             }
                         }
                     }
-                    for (preferenceSyncListener in preferenceSyncListeners) {
+                    for (preferenceSyncListener in preferenceSyncCallbacks) {
                         preferenceSyncListener.onConnectedNodeChanged(true)
                     }
                 }
                 .addOnFailureListener {
-                    for (preferenceSyncListener in preferenceSyncListeners) {
+                    for (preferenceSyncListener in preferenceSyncCallbacks) {
                         preferenceSyncListener.onConnectedNodeChanged(false)
                     }
                 }
@@ -208,7 +208,7 @@ class PreferenceSyncService : Service() {
         }
     }
 
-    interface PreferenceSyncListener {
+    interface PreferenceSyncCallback {
         fun onConnectedNodeChanging()
         fun onConnectedNodeChanged(success: Boolean)
         fun onLocalPreferenceUpdated(preferenceKey: String)
