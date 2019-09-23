@@ -8,6 +8,7 @@
 package com.boswelja.devicemanager.ui.base
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -20,6 +21,7 @@ import androidx.core.content.edit
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.References.CONNECTED_WATCH_ID_KEY
 import com.boswelja.devicemanager.common.References
+import com.boswelja.devicemanager.common.prefsynclayer.PreferenceSyncService
 import com.google.android.gms.wearable.CapabilityClient
 import com.google.android.gms.wearable.Node
 import com.google.android.gms.wearable.Wearable
@@ -28,6 +30,17 @@ abstract class BaseWatchPickerActivity :
         BaseToolbarActivity(),
         AdapterView.OnItemSelectedListener {
 
+    private val preferenceSyncServiceConnection = object : PreferenceSyncService.PreferenceSyncServiceConnection() {
+        override fun onPreferenceSyncServiceBound(preferenceSyncService: PreferenceSyncService) {
+            this@BaseWatchPickerActivity.preferenceSyncService = preferenceSyncService
+        }
+
+        override fun onPreferenceSyncServiceUnbound() {
+            preferenceSyncService = null
+        }
+    }
+
+    var preferenceSyncService: PreferenceSyncService? = null
     var connectedWatchId: String? = null
 
     private lateinit var watchPickerSpinner: AppCompatSpinner
@@ -38,6 +51,7 @@ abstract class BaseWatchPickerActivity :
             putString(CONNECTED_WATCH_ID_KEY, connectedWatchId)
             apply()
         }
+        preferenceSyncService?.setConnectedNodeId(connectedWatchId!!)
     }
 
     override fun onNothingSelected(p0: AdapterView<*>?) { }
@@ -53,6 +67,16 @@ abstract class BaseWatchPickerActivity :
         connectedWatchId = sharedPreferences.getString(CONNECTED_WATCH_ID_KEY, "")
 
         loadConnectedWatches()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        bindService(Intent(this, PreferenceSyncService::class.java), preferenceSyncServiceConnection, Context.BIND_AUTO_CREATE)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        unbindService(preferenceSyncServiceConnection)
     }
 
     private fun loadConnectedWatches() {
