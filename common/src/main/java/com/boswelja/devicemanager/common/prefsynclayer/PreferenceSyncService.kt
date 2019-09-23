@@ -44,6 +44,12 @@ class PreferenceSyncService : Service() {
         super.onCreate()
         localPrefs = PreferenceManager.getDefaultSharedPreferences(this)
         dataClient = Wearable.getDataClient(this)
+        Log.d("PreferenceSyncService", "Service starting")
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        Log.d("PreferenceSyncService", "Service stopping")
     }
 
     private fun updatePreferenceChangePath() {
@@ -176,7 +182,6 @@ class PreferenceSyncService : Service() {
                     }
                 }
                 .addOnFailureListener {
-                    Log.d("PreferenceSyncLayer", "Failed to get current watch prefs")
                     for (preferenceSyncListener in preferenceSyncListeners) {
                         preferenceSyncListener.onConnectedNodeChanged(false)
                     }

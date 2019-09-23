@@ -131,6 +131,8 @@
                 <data android:scheme="wear" android:host="*" android:pathPrefix="/preference-change_" />
             </intent-filter>
         </service>
+
+        <service android:name=".common.prefsynclayer.PreferenceSyncService" />
     </application>
 
 </manifest>

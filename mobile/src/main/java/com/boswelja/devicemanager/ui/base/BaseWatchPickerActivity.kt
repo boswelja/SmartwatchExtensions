@@ -10,6 +10,7 @@ package com.boswelja.devicemanager.ui.base
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -28,15 +29,19 @@ import com.google.android.gms.wearable.Wearable
 
 abstract class BaseWatchPickerActivity :
         BaseToolbarActivity(),
-        AdapterView.OnItemSelectedListener {
+        AdapterView.OnItemSelectedListener,
+        PreferenceSyncService.PreferenceSyncListener {
 
     private val preferenceSyncServiceConnection = object : PreferenceSyncService.PreferenceSyncServiceConnection() {
         override fun onPreferenceSyncServiceBound(preferenceSyncService: PreferenceSyncService) {
+            preferenceSyncService.registerPreferenceSyncListener(this@BaseWatchPickerActivity)
             this@BaseWatchPickerActivity.preferenceSyncService = preferenceSyncService
+            Log.d("BaseWatchPickerActivity", "Service bound")
         }
 
         override fun onPreferenceSyncServiceUnbound() {
             preferenceSyncService = null
+            Log.d("BaseWatchPickerActivity", "Service unbound")
         }
     }
 
@@ -56,6 +61,21 @@ abstract class BaseWatchPickerActivity :
 
     override fun onNothingSelected(p0: AdapterView<*>?) { }
 
+    override fun onConnectedNodeChanging() {
+        Log.d("BaseWatchPickerActivity", "onConnectedNodeChanging")
+        watchPickerSpinner.isEnabled = false
+    }
+
+    override fun onConnectedNodeChanged(success: Boolean) {
+        Log.d("BaseWatchPickerActivity", "onConnectedNodeChanged")
+        watchPickerSpinner.isEnabled = true
+    }
+
+    override fun onLocalPreferenceUpdated(preferenceKey: String) {
+        Log.d("BaseWatchPickerActivity", "onLocalPreferenceUpdate")
+
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -67,15 +87,22 @@ abstract class BaseWatchPickerActivity :
         connectedWatchId = sharedPreferences.getString(CONNECTED_WATCH_ID_KEY, "")
 
         loadConnectedWatches()
+
+        bindService(Intent(this, PreferenceSyncService::class.java), preferenceSyncServiceConnection, Context.BIND_AUTO_CREATE)
     }
 
     override fun onResume() {
         super.onResume()
-        bindService(Intent(this, PreferenceSyncService::class.java), preferenceSyncServiceConnection, Context.BIND_AUTO_CREATE)
+        preferenceSyncService?.registerPreferenceSyncListener(this)
     }
 
     override fun onPause() {
         super.onPause()
+        preferenceSyncService?.unregisterPreferenceSyncListener(this)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
         unbindService(preferenceSyncServiceConnection)
     }
 
