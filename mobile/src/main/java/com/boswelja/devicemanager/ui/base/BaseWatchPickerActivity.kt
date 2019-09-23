@@ -73,7 +73,6 @@ abstract class BaseWatchPickerActivity :
 
     override fun onLocalPreferenceUpdated(preferenceKey: String) {
         Log.d("BaseWatchPickerActivity", "onLocalPreferenceUpdate")
-
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

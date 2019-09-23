@@ -16,7 +16,6 @@ import com.boswelja.devicemanager.BuildConfig
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.References
 import com.boswelja.devicemanager.ui.base.BasePreferenceFragment
-import com.boswelja.devicemanager.ui.base.BaseWatchPickerActivity
 import com.boswelja.devicemanager.ui.donate.DonationDialogFragment
 import com.boswelja.devicemanager.ui.changelog.ChangelogDialogFragment
 import com.google.android.gms.wearable.MessageClient
