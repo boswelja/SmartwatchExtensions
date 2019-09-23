@@ -156,10 +156,16 @@ class PreferenceSyncService : Service() {
                                     PreferenceKey.INTERRUPT_FILTER_ON_WITH_THEATER_KEY -> {
                                         val newValue = dataMap.getBoolean(key)
                                         putBoolean(key, newValue)
+                                        for (preferenceSyncListener in preferenceSyncListeners) {
+                                            preferenceSyncListener.onLocalPreferenceUpdated(key)
+                                        }
                                     }
                                     PreferenceKey.BATTERY_CHARGE_THRESHOLD_KEY -> {
                                         val newValue = dataMap.getInt(key)
                                         putInt(key, newValue)
+                                        for (preferenceSyncListener in preferenceSyncListeners) {
+                                            preferenceSyncListener.onLocalPreferenceUpdated(key)
+                                        }
                                     }
                                 }
                             }
