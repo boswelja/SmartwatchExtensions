@@ -26,5 +26,3 @@ jobs:
       - run:
           name: Build Project
           command: ./gradlew build
-      - store_test_results:
-          path: app/build/test-results
