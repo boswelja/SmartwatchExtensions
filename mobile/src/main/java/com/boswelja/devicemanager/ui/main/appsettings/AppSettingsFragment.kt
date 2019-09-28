@@ -92,7 +92,7 @@ class AppSettingsFragment :
     companion object {
         const val OPEN_NOTI_SETTINGS_KEY = "show_noti_settings"
 
-        const val  SHOW_WIDGET_BACKGROUND_KEY = "show_widget_background"
-        const val  WIDGET_BACKGROUND_OPACITY_KEY = "widget_background_opacity"
+        const val SHOW_WIDGET_BACKGROUND_KEY = "show_widget_background"
+        const val WIDGET_BACKGROUND_OPACITY_KEY = "widget_background_opacity"
     }
 }
