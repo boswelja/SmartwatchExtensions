@@ -1,34 +1,28 @@
 version: 2
 jobs:
   build:
-    working_directory: ~/code
+    working_directory: ~/WearableExtensions
     docker:
       - image: circleci/android:api-29
     environment:
-      JVM_OPTS: -Xmx1024m
+      JVM_OPTS: -Xmx1280m
     steps:
       - checkout
       - restore_cache:
-          key: jars-{{ checksum "build.gradle" }}-{{ checksum "mobile/build.gradle" }}-{{ checksum "wear/build.gradle" }}
+          key: jars-{{ checksum "build.gradle" }}-{{ checksum "common/build.gradle" }}-{{ checksum "mobile/build.gradle" }}-{{ checksum "wear/build.gradle" }}
       - run:
           name: Download Dependencies
           command: ./gradlew androidDependencies
       - save_cache:
           paths:
             - ~/.gradle
-          key: jars-{{ checksum "build.gradle" }}-{{ checksum "mobile/build.gradle" }}-{{ checksum "wear/build.gradle" }}
+          key: jars-{{ checksum "build.gradle" }}-{{ checksum "common/build.gradle" }}-{{ checksum "mobile/build.gradle" }}-{{ checksum "wear/build.gradle" }}
       - run:
           name: Linting
           command: ./gradlew lint test
       - run:
-          name: Spotless Misc
-          command: ./gradlew spotlessMiscCheck
-      - run:
-          name: Spotless Kotlin
-          command: ./gradlew spotlessKotlinCheck
-      - run:
-          name: Spotless XML
-          command: ./gradlew spotlessXmlCheck
+          name: Spotless
+          command: ./gradlew spotlessCheck
       - run:
           name: Build Project
           command: ./gradlew build
