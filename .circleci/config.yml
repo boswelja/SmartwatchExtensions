@@ -18,23 +18,14 @@ jobs:
             - ~/.gradle
           key: jars-{{ checksum "build.gradle" }}-{{ checksum "common/build.gradle" }}-{{ checksum "mobile/build.gradle" }}-{{ checksum "wear/build.gradle" }}
       - run:
-          name: Linting :common
-          command: ./gradlew :common:lint test
+          name: Code Quality Check :common
+          command: ./gradlew :common:lint test :common:spotlessCheck
       - run:
-          name: Linting :mobile
-          command: ./gradlew :mobile:lint test
+          name: Code Quality Check :mobile
+          command: ./gradlew :mobile:lint test :mobile:spotlessCheck
       - run:
-          name: Linting :wear
-          command: ./gradlew :wear:lint test
-      - run:
-          name: SpotlessChecking :common
-          command: ./gradlew :common:spotlessCheck
-      - run:
-          name: SpotlessChecking :mobile
-          command: ./gradlew :mobile:spotlessCheck
-      - run:
-          name: SpotlessChecking :wear
-          command: ./gradlew :wear:spotlessCheck
+          name: Code Quality Check :wear
+          command: ./gradlew :wear:lint test :wear:spotlessCheck
       - run:
           name: Build :common
           command: ./gradlew :common:build
