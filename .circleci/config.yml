@@ -24,5 +24,11 @@ jobs:
           name: Spotless
           command: ./gradlew spotlessCheck
       - run:
-          name: Build Project
-          command: ./gradlew build
+          name: Build :common
+          command: ./gradlew :common:build
+      - run:
+          name: Build :mobile
+          command: ./gradlew :mobile:build
+      - run:
+          name: Build :wear
+          command: ./gradlew :wear:build
