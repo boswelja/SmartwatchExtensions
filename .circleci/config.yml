@@ -1,36 +1,37 @@
-version: 2
+version: 2.1
 jobs:
   build:
-    working_directory: ~/code
+    working_directory: ~/WearableExtensions
     docker:
       - image: circleci/android:api-29
     environment:
-      JVM_OPTS: -Xmx1024m
+      JVM_OPTS: -Xmx1280m
     steps:
       - checkout
       - restore_cache:
-          key: jars-{{ checksum "build.gradle" }}-{{ checksum "mobile/build.gradle" }}-{{ checksum "wear/build.gradle" }}
+          key: jars-{{ checksum "build.gradle" }}-{{ checksum "common/build.gradle" }}-{{ checksum "mobile/build.gradle" }}-{{ checksum "wear/build.gradle" }}
       - run:
           name: Download Dependencies
           command: ./gradlew androidDependencies
       - save_cache:
           paths:
             - ~/.gradle
-          key: jars-{{ checksum "build.gradle" }}-{{ checksum "mobile/build.gradle" }}-{{ checksum "wear/build.gradle" }}
+          key: jars-{{ checksum "build.gradle" }}-{{ checksum "common/build.gradle" }}-{{ checksum "mobile/build.gradle" }}-{{ checksum "wear/build.gradle" }}
       - run:
-          name: Linting
-          command: ./gradlew lint test
+          name: Code Quality Check :common
+          command: ./gradlew :common:lint :common:spotlessCheck
       - run:
-          name: Spotless Misc
-          command: ./gradlew spotlessMiscCheck
+          name: Code Quality Check :mobile
+          command: ./gradlew :mobile:lint :mobile:spotlessCheck
       - run:
-          name: Spotless Kotlin
-          command: ./gradlew spotlessKotlinCheck
+          name: Code Quality Check :wear
+          command: ./gradlew :wear:lint :wear:spotlessCheck
       - run:
-          name: Spotless XML
-          command: ./gradlew spotlessXmlCheck
+          name: Build :common
+          command: ./gradlew :common:build
       - run:
-          name: Build Project
-          command: ./gradlew build
-      - store_test_results:
-          path: app/build/test-results
+          name: Build :mobile
+          command: ./gradlew :mobile:build
+      - run:
+          name: Build :wear
+          command: ./gradlew :wear:build

@@ -33,3 +33,28 @@ dependencies {
     implementation "androidx.appcompat:appcompat:$versions.androidx_appcompat"
     implementation "androidx.preference:preference-ktx:$versions.androidx_preference"
 }
+
+spotless {
+    kotlin {
+        target '**/*.kt'
+
+        ktlint()
+        endWithNewline()
+
+        licenseHeaderFile '../License'
+    }
+    format 'misc', {
+        target '**/*.gradle', '**/.gitignore'
+
+        trimTrailingWhitespace()
+        indentWithSpaces()
+        endWithNewline()
+    }
+    format 'xml', {
+        target '**/*.xml'
+
+        trimTrailingWhitespace()
+        indentWithSpaces()
+        endWithNewline()
+    }
+}

@@ -16,14 +16,7 @@
     </string-array>
 
     <string-array name="version_changelog">
-        <item>Clean up resources</item>
-        <item>Improvements to App Manager UI</item>
-        <item>Improvements to Changelog UI</item>
-        <item>Add widget background customisation, find it in \'App Settings\'</item>
         <item>Add support for multiple watches</item>
-        <item>Fix being unable to open Settings on the Wear OS app</item>
-        <item>Significantly reduce the chance of App Manager service getting stuck running on your watch</item>
-        <item>Minor bug fixes for edge cases</item>
     </string-array>
 
     <string-array name="interrupt_filter_sync_to_watch_steps">
