@@ -21,31 +21,5 @@ allprojects {
         jcenter()
         mavenCentral()
     }
-
     apply plugin: "com.diffplug.gradle.spotless"
-}
-
-spotless {
-    kotlin {
-        target '**/*.kt'
-
-        ktlint()
-        endWithNewline()
-
-        licenseHeaderFile 'License'
-    }
-    format 'misc', {
-        target '**/*.gradle', '**/.gitignore'
-
-        trimTrailingWhitespace()
-        indentWithSpaces()
-        endWithNewline()
-    }
-    format 'xml', {
-        target '**/*.xml'
-
-        trimTrailingWhitespace()
-        indentWithSpaces()
-        endWithNewline()
-    }
 }

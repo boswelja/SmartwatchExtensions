@@ -43,3 +43,28 @@ dependencies {
     implementation 'com.google.android.material:material:1.1.0-alpha10'
     implementation "com.google.android.gms:play-services-wearable:$versions.play_services_wearable"
 }
+
+spotless {
+    kotlin {
+        target '**/*.kt'
+
+        ktlint()
+        endWithNewline()
+
+        licenseHeaderFile '../License'
+    }
+    format 'misc', {
+        target '**/*.gradle', '**/.gitignore'
+
+        trimTrailingWhitespace()
+        indentWithSpaces()
+        endWithNewline()
+    }
+    format 'xml', {
+        target '**/*.xml'
+
+        trimTrailingWhitespace()
+        indentWithSpaces()
+        endWithNewline()
+    }
+}
