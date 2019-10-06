@@ -18,12 +18,11 @@ import com.google.android.gms.wearable.Wearable
 
 class DeviceAdminChangeReceiver : DeviceAdminReceiver() {
 
-//    override fun onEnabled(context: Context?, intent: Intent?) {
-//        PreferenceManager.getDefaultSharedPreferences(context).edit()
-//                .putBoolean(DEVICE_ADMIN_ENABLED_KEY, true)
-//                .apply()
-//        PreferenceSyncLayer(context!!).pushNewData(PreferenceKey.PHONE_LOCKING_ENABLED_KEY)
-//    }
+    override fun onEnabled(context: Context?, intent: Intent?) {
+        PreferenceManager.getDefaultSharedPreferences(context).edit()
+                .putBoolean(DEVICE_ADMIN_ENABLED_KEY, true)
+                .apply()
+    }
 
     override fun onDisabled(context: Context?, intent: Intent?) {
         PreferenceManager.getDefaultSharedPreferences(context)
