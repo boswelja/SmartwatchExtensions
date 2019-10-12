@@ -9,9 +9,7 @@
     <string name="interrupt_filter_sync_all_noti_desc">Syncing phone Do not Disturb state with watch Theater Mode and DnD</string>
     <string name="interrupt_filter_sync_none_noti_desc">There was a problem enabling Do not Disturb Sync, try again later</string>
 
-    <string name="companion_device_type">Device</string>
-
-    <string name="device_charged_noti_channel_name">%s Charged</string>
+    <string name="device_charged_noti_channel_name">Device Charged</string>
     <string name="device_charged_noti_title">%s Charged</string>
     <string name="device_charged_noti_desc">Your %s is charged to above %s%%</string>
 

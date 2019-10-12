@@ -18,7 +18,9 @@ import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.common.PreferenceKey
 import com.boswelja.devicemanager.common.R
 import com.boswelja.devicemanager.common.batterysync.References.BATTERY_STATUS_PATH
+import com.google.android.gms.tasks.Tasks
 import com.google.android.gms.wearable.MessageEvent
+import com.google.android.gms.wearable.Wearable
 import com.google.android.gms.wearable.WearableListenerService
 
 abstract class BatteryUpdateReceiver : WearableListenerService() {
@@ -44,7 +46,7 @@ abstract class BatteryUpdateReceiver : WearableListenerService() {
             if (charging && shouldNotifyDeviceCharged) {
                 val chargeThreshold = sharedPreferences.getInt(PreferenceKey.BATTERY_CHARGE_THRESHOLD_KEY, 90)
                 if (percent >= chargeThreshold && !sharedPreferences.getBoolean(PreferenceKey.BATTERY_CHARGED_NOTI_SENT, false)) {
-                    sendChargedNoti(chargeThreshold)
+                    sendChargedNoti(messageEvent.sourceNodeId, chargeThreshold)
                 }
             }
 
@@ -57,14 +59,14 @@ abstract class BatteryUpdateReceiver : WearableListenerService() {
         }
     }
 
-    private fun sendChargedNoti(chargeThreshold: Int) {
+    private fun sendChargedNoti(senderId: String, chargeThreshold: Int) {
         val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        val companionDeviceName = getString(R.string.companion_device_type)
+        val companionDeviceName = Tasks.await(Wearable.getNodeClient(this).connectedNodes).first { it.id == senderId }.displayName
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && notificationManager.getNotificationChannel(BATTERY_CHARGED_NOTI_CHANNEL_ID) == null) {
             val channel = NotificationChannel(
                     BATTERY_CHARGED_NOTI_CHANNEL_ID,
-                    getString(R.string.device_charged_noti_channel_name, getString(R.string.companion_device_type)),
+                    getString(R.string.device_charged_noti_channel_name),
                     NotificationManager.IMPORTANCE_HIGH).apply {
                 enableVibration(true)
                 setShowBadge(true)
