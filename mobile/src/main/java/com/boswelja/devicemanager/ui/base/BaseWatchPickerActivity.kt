@@ -134,7 +134,7 @@ abstract class BaseWatchPickerActivity :
 
         private val layoutInflater = LayoutInflater.from(context)
         private val watchConnectedString = context.getString(R.string.watch_status_connected)
-        private val watchMissingAppString = context.getString(R.string.watch_status_missing_app)
+        private val watchMissingAppString = context.getString(R.string.watch_status_missing_app, context.getString(R.string.app_name))
 
         override fun getCount(): Int {
             return watches.count()

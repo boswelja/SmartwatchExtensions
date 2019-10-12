@@ -127,7 +127,7 @@
     <!-- Multi-watch strings -->
     <string name="connected_watch_null_label">No connected watch</string>
     <string name="watch_status_connected">Connected</string>
-    <string name="watch_status_missing_app">Wearable Extensions not installed</string>
+    <string name="watch_status_missing_app">%s not installed</string>
 
     <!-- Changelog strings -->
     <string name="changelog_sheet_title">What\'s New</string>
