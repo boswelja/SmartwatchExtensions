@@ -130,11 +130,11 @@ abstract class BaseWatchPickerActivity :
 
     class WatchPickerAdapter(context: Context, private val watches: ArrayList<Watch>) : ArrayAdapter<Watch>(context, 0) {
 
-        constructor(context: Context) : this(context, ArrayList<Watch>())
-
         private val layoutInflater = LayoutInflater.from(context)
         private val watchConnectedString = context.getString(R.string.watch_status_connected)
         private val watchMissingAppString = context.getString(R.string.watch_status_missing_app, context.getString(R.string.app_name))
+
+        constructor(context: Context) : this(context, ArrayList<Watch>())
 
         override fun getCount(): Int {
             return watches.count()
@@ -142,11 +142,6 @@ abstract class BaseWatchPickerActivity :
 
         override fun getItemId(position: Int): Long {
             return watches[position].id.toLong(36)
-        }
-
-        fun add(newWatch: Watch): Int {
-            watches.add(newWatch)
-            return watches.indexOf(newWatch)
         }
 
         override fun addAll(collection: MutableCollection<out Watch>) {
@@ -165,13 +160,18 @@ abstract class BaseWatchPickerActivity :
             if (view == null) {
                 view = layoutInflater.inflate(R.layout.common_spinner_item_two_line, parent, false)
             }
-            view!!.findViewById<AppCompatTextView>(R.id.title).text = watches[position].displayName
+            view!!.findViewById<AppCompatTextView>(R.id.title).text = watch.displayName
             view.findViewById<AppCompatTextView>(R.id.subtitle).text = if (watch.hasApp) {
                 watchConnectedString
             } else {
                 watchMissingAppString
             }
             return view
+        }
+
+        fun add(newWatch: Watch): Int {
+            watches.add(newWatch)
+            return watches.indexOf(newWatch)
         }
     }
 }
