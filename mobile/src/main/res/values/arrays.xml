@@ -17,7 +17,7 @@
 
     <string-array name="version_changelog">
         <item>Add support for multiple watches</item>
-        <item>Device charge notifications now show the name of the device that's charged</item>
+        <item>Device charge notifications now show the name of the device that\'s charged</item>
     </string-array>
 
     <string-array name="interrupt_filter_sync_to_watch_steps">
