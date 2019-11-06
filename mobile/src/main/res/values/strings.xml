@@ -31,7 +31,7 @@
     <string name="pref_interrupt_filter_sync_to_watch_title">Phone to Watch Sync</string>
     <string name="pref_interrupt_filter_sync_to_watch_summary">EXPERIMENTAL Sync DnD state to your watch from your phone</string>
     <string name="pref_interrupt_filter_sync_to_phone_title">Watch to Phone Sync</string>
-    <string name="pref_interrupt_filter_sync_to_phone_summary">Sync DnD state from your phone to your watch</string>
+    <string name="pref_interrupt_filter_sync_to_phone_summary">Sync DnD state to your phone from your watch</string>
     <string name="pref_interrupt_filter_sync_with_theater_title">Sync with watch Theater mode</string>
     <string name="pref_interrupt_filter_sync_with_theater_summary">Sync DnD state with Wear OS theater mode</string>
     <string name="interrupt_filter_sync_request_policy_access_message">Please grant Wearable Extensions permission to change Do Not Disturb state</string>
