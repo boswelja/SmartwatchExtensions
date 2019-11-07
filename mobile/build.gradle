@@ -40,7 +40,9 @@ android {
 
 dependencies {
     implementation project(":common")
+
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$versions.kotlin_version"
+
     implementation 'com.android.billingclient:billing:2.0.3'
 
     implementation "androidx.core:core-ktx:$versions.androidx_core_ktx"
@@ -48,9 +50,13 @@ dependencies {
     implementation "androidx.preference:preference-ktx:$versions.androidx_preference"
     implementation "androidx.constraintlayout:constraintlayout:$versions.androidx_constraintlayout"
     implementation 'androidx.browser:browser:1.2.0-alpha09'
+    implementation "androidx.room:room-runtime:$versions.androidx_room"
+    implementation "androidx.room:room-ktx:$versions.androidx_room"
 
     implementation 'com.google.android.material:material:1.2.0-alpha01'
     implementation "com.google.android.gms:play-services-wearable:$versions.play_services_wearable"
+
+    annotationProcessor "androidx.room:room-compiler:$versions.androidx_room"
 }
 
 spotless {
