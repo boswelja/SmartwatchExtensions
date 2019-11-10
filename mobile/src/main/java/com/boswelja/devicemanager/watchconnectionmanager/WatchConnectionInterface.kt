@@ -4,5 +4,7 @@ interface WatchConnectionInterface {
 
     fun onWatchAdded()
     fun onWatchInfoUpdated()
+    fun onConnectedWatchChanging()
+    fun onConnectedWatchChanged()
 
 }
