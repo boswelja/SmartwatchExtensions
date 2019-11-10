@@ -1,4 +1,4 @@
-package com.boswelja.devicemanager.watchconnman
+package com.boswelja.devicemanager.watchconnectionmanager
 
 import android.app.Service
 import android.content.Intent
@@ -17,6 +17,8 @@ class WatchConnectionService :
 
     private val binder = WatchConnectionServiceBinder()
 
+    private val watchConnectionInterfaces: ArrayList<WatchConnectionInterface> = ArrayList()
+
     private lateinit var database: WatchDatabase
     private lateinit var capabilityClient: CapabilityClient
     private lateinit var nodeClient: NodeClient
@@ -28,6 +30,9 @@ class WatchConnectionService :
                         for (node in it) {
                             if (database.watchDao().findById(node.id) == null) {
                                 database.watchDao().add(Watch(node.id, node.displayName))
+                                for (connInterface in watchConnectionInterfaces) {
+                                    connInterface.onWatchAdded()
+                                }
                             }
                         }
                     }

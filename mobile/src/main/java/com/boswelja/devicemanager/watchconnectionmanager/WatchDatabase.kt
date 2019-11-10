@@ -1,4 +1,4 @@
-package com.boswelja.devicemanager.watchconnman
+package com.boswelja.devicemanager.watchconnectionmanager
 
 import androidx.room.Database
 import androidx.room.RoomDatabase

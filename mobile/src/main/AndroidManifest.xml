@@ -134,7 +134,7 @@
 
         <service android:name=".common.prefsynclayer.PreferenceSyncService" />
 
-        <service android:name=".watchconnman.WatchConnectionService" />
+        <service android:name=".watchconnectionmanager.WatchConnectionService" />
     </application>
 
 </manifest>
