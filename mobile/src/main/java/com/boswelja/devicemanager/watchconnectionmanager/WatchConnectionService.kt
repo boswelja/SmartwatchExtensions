@@ -21,27 +21,20 @@ class WatchConnectionService :
 
     private lateinit var database: WatchDatabase
     private lateinit var capabilityClient: CapabilityClient
-    private lateinit var nodeClient: NodeClient
-
-    private fun updateConnectedWatches() {
-        nodeClient.connectedNodes
-                .addOnSuccessListener {
-                    if (it.isNotEmpty() and database.isOpen) {
-                        for (node in it) {
-                            if (database.watchDao().findById(node.id) == null) {
-                                database.watchDao().add(Watch(node.id, node.displayName))
-                                for (connInterface in watchConnectionInterfaces) {
-                                    connInterface.onWatchAdded()
-                                }
-                            }
-                        }
-                    }
-                }
-    }
 
     override fun onCapabilityChanged(capabilityInfo: CapabilityInfo) {
         for (node in capabilityInfo.nodes) {
-            database.watchDao().setHasApp(node.id, true)
+            if (database.watchDao().findById(node.id) == null) {
+                database.watchDao().add(Watch(node.id, node.displayName, hasApp = true))
+                for (connectionInterface in watchConnectionInterfaces) {
+                    connectionInterface.onWatchAdded()
+                }
+            } else {
+                database.watchDao().setHasApp(node.id, true)
+                for (connectionInterface in watchConnectionInterfaces) {
+                    connectionInterface.onWatchInfoUpdated()
+                }
+            }
         }
     }
 
@@ -58,9 +51,6 @@ class WatchConnectionService :
 
         capabilityClient = Wearable.getCapabilityClient(this)
         capabilityClient.addListener(this, References.CAPABILITY_WATCH_APP)
-
-        nodeClient = Wearable.getNodeClient(this)
-        updateConnectedWatches()
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
