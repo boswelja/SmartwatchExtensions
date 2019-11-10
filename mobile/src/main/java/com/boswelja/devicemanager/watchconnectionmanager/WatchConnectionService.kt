@@ -85,16 +85,16 @@ class WatchConnectionService :
         }
     }
 
-    public fun getAllWatches(): List<Watch>? {
+    fun getAllWatches(): List<Watch>? {
         if (database.isOpen) {
             return database.watchDao().getAll()
         }
         return null
     }
 
-    public fun getConnectedWatch(): Watch? = database.watchDao().findById(connectedWatchId)
+    fun getConnectedWatch(): Watch? = database.watchDao().findById(connectedWatchId)
 
-    public fun setConnectedWatchById(id: String): Boolean {
+    fun setConnectedWatchById(id: String): Boolean {
         for (connectionInterface in watchConnectionInterfaces) {
             connectionInterface.onConnectedWatchChanging()
         }
@@ -111,7 +111,7 @@ class WatchConnectionService :
         return true
     }
 
-    public fun forceSyncPreferences(): Task<DataItem>? {
+    fun forceSyncPreferences(): Task<DataItem>? {
         if (connectedWatchId.isNotEmpty()) {
             // Get updated sharedPreferences
             val batterySyncEnabled = sharedPreferences.getBoolean(PreferenceKey.BATTERY_SYNC_ENABLED_KEY, false)
@@ -141,7 +141,7 @@ class WatchConnectionService :
         return null
     }
 
-    public fun updatePreference(key: String): Task<DataItem>? {
+    fun updatePreference(key: String): Task<DataItem>? {
         if (connectedWatchId.isNotEmpty()) {
             val connectedWatch = getConnectedWatch()!!
             val syncedPrefUpdateReq = PutDataMapRequest.create(preferenceChangePath)
@@ -173,13 +173,13 @@ class WatchConnectionService :
         return null
     }
 
-    public fun registerWatchConnectionInterface(connectionInterface: WatchConnectionInterface) {
+    fun registerWatchConnectionInterface(connectionInterface: WatchConnectionInterface) {
         if (!watchConnectionInterfaces.contains(connectionInterface)) {
             watchConnectionInterfaces.add(connectionInterface)
         }
     }
 
-    public fun unregisterWatchConnectionInterface(connectionInterface: WatchConnectionInterface) {
+    fun unregisterWatchConnectionInterface(connectionInterface: WatchConnectionInterface) {
         if (watchConnectionInterfaces.contains(connectionInterface)) {
             watchConnectionInterfaces.remove(connectionInterface)
         }
@@ -200,13 +200,13 @@ class WatchConnectionService :
     companion object {
         private const val LAST_CONNECTED_NODE_ID_KEY = "last_connected_id"
 
-        public fun bind(context: Context, serviceConnection: Connection) {
+        fun bind(context: Context, serviceConnection: Connection) {
             context.bindService(Intent(context, WatchConnectionService::class.java), serviceConnection, Context.BIND_AUTO_CREATE)
         }
     }
 
     inner class WatchConnectionServiceBinder: Binder() {
-        public fun getService(): WatchConnectionService =
+        fun getService(): WatchConnectionService =
                 this@WatchConnectionService
     }
 
