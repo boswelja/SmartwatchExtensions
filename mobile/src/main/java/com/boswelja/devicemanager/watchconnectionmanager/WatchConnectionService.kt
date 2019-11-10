@@ -36,7 +36,7 @@ class WatchConnectionService :
 
     private var preferenceChangePath = ""
 
-    private var connectedWatchId: String = "0"
+    private var connectedWatchId: String = ""
 
     override fun onCapabilityChanged(capabilityInfo: CapabilityInfo) {
         for (node in capabilityInfo.nodes) {
@@ -67,7 +67,7 @@ class WatchConnectionService :
                 "watch-db"
         ).build()
 
-        setConnectedWatchById(sharedPreferences.getString(LAST_CONNECTED_NODE_ID_KEY, "0") ?: "0")
+        setConnectedWatchById(sharedPreferences.getString(LAST_CONNECTED_NODE_ID_KEY, "") ?: "")
 
         capabilityClient = Wearable.getCapabilityClient(this)
         capabilityClient.addListener(this, References.CAPABILITY_WATCH_APP)
@@ -112,7 +112,7 @@ class WatchConnectionService :
     }
 
     public fun forceSyncPreferences(): Task<DataItem>? {
-        if (connectedWatchId != "0") {
+        if (connectedWatchId.isNotEmpty()) {
             // Get updated sharedPreferences
             val batterySyncEnabled = sharedPreferences.getBoolean(PreferenceKey.BATTERY_SYNC_ENABLED_KEY, false)
             val phoneBatteryChargedNoti = sharedPreferences.getBoolean(PreferenceKey.BATTERY_PHONE_CHARGE_NOTI_KEY, false)
@@ -142,7 +142,7 @@ class WatchConnectionService :
     }
 
     public fun updatePreference(key: String): Task<DataItem>? {
-        if (connectedWatchId != "0") {
+        if (connectedWatchId.isNotEmpty()) {
             val syncedPrefUpdateReq = PutDataMapRequest.create(preferenceChangePath)
             when (key) {
                 PreferenceKey.PHONE_LOCKING_ENABLED_KEY,
