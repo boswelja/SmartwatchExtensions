@@ -36,6 +36,11 @@ class UpdateHandler(private val activity: AppCompatActivity) {
                 if (oldVersion < 2019090243) {
                     remove("connected_watch_name")
                 }
+                if (oldVersion in 2019070801..2019110999) {
+                    val lastConnectedId = sharedPreferences.getString("connected_watch_id", "")
+                    remove("connected_watch_id")
+                    putString("last_connected_id", lastConnectedId)
+                }
             }
         }
     }

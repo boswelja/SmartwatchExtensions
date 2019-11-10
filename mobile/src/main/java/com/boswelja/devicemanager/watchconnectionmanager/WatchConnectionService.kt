@@ -67,16 +67,12 @@ class WatchConnectionService :
                 "watch-db"
         ).build()
 
-        connectedWatchId = sharedPreferences.getString(LAST_CONNECTED_NODE_ID_KEY, "0") ?: "0"
+        setConnectedWatchById(sharedPreferences.getString(LAST_CONNECTED_NODE_ID_KEY, "0") ?: "0")
 
         capabilityClient = Wearable.getCapabilityClient(this)
         capabilityClient.addListener(this, References.CAPABILITY_WATCH_APP)
 
         dataClient = Wearable.getDataClient(this)
-    }
-
-    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        return super.onStartCommand(intent, flags, startId)
     }
 
     override fun onDestroy() {
@@ -170,6 +166,18 @@ class WatchConnectionService :
             }
         }
         return null
+    }
+
+    public fun registerWatchConnectionInterface(connectionInterface: WatchConnectionInterface) {
+        if (!watchConnectionInterfaces.contains(connectionInterface)) {
+            watchConnectionInterfaces.add(connectionInterface)
+        }
+    }
+
+    public fun unregisterWatchConnectionInterface(connectionInterface: WatchConnectionInterface) {
+        if (watchConnectionInterfaces.contains(connectionInterface)) {
+            watchConnectionInterfaces.remove(connectionInterface)
+        }
     }
 
     private fun updateLocalPreferences() {

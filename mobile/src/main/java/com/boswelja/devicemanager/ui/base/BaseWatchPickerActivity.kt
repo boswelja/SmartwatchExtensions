@@ -8,7 +8,6 @@
 package com.boswelja.devicemanager.ui.base
 
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -18,61 +17,47 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.appcompat.widget.AppCompatSpinner
 import androidx.appcompat.widget.AppCompatTextView
-import androidx.core.content.edit
 import com.boswelja.devicemanager.R
-import com.boswelja.devicemanager.References.CONNECTED_WATCH_ID_KEY
-import com.boswelja.devicemanager.common.References
-import com.boswelja.devicemanager.common.prefsynclayer.PreferenceSyncService
-import com.google.android.gms.wearable.CapabilityClient
-import com.google.android.gms.wearable.Node
-import com.google.android.gms.wearable.Wearable
+import com.boswelja.devicemanager.watchconnectionmanager.Watch
+import com.boswelja.devicemanager.watchconnectionmanager.WatchConnectionInterface
+import com.boswelja.devicemanager.watchconnectionmanager.WatchConnectionService
 
 abstract class BaseWatchPickerActivity :
         BaseToolbarActivity(),
         AdapterView.OnItemSelectedListener,
-        PreferenceSyncService.PreferenceSyncCallback {
+        WatchConnectionInterface {
 
-    private val preferenceSyncServiceConnection = object : PreferenceSyncService.PreferenceSyncServiceConnection() {
-        override fun onPreferenceSyncServiceBound(preferenceSyncService: PreferenceSyncService) {
-            preferenceSyncService.registerPreferenceSyncListener(this@BaseWatchPickerActivity)
-            this@BaseWatchPickerActivity.preferenceSyncService = preferenceSyncService
-            Log.d("BaseWatchPickerActivity", "Service bound")
+    private val watchConnManServiceConnection = object : WatchConnectionService.Connection() {
+
+        override fun onPreferenceSyncServiceBound(service: WatchConnectionService) {
+            watchConnectionManager = service
         }
 
         override fun onPreferenceSyncServiceUnbound() {
-            preferenceSyncService = null
-            Log.d("BaseWatchPickerActivity", "Service unbound")
+            watchConnectionManager = null
         }
     }
 
-    var preferenceSyncService: PreferenceSyncService? = null
+    var watchConnectionManager: WatchConnectionService? = null
     var connectedWatchId: String? = null
 
     private lateinit var watchPickerSpinner: AppCompatSpinner
 
     override fun onItemSelected(adapterView: AdapterView<*>?, selectedView: View?, position: Int, id: Long) {
         connectedWatchId = id.toString(36)
-        sharedPreferences.edit {
-            putString(CONNECTED_WATCH_ID_KEY, connectedWatchId)
-            apply()
-        }
-        preferenceSyncService?.setConnectedNodeId(connectedWatchId!!)
+        watchConnectionManager?.setConnectedWatchById(connectedWatchId!!)
     }
 
     override fun onNothingSelected(p0: AdapterView<*>?) { }
 
-    override fun onConnectedNodeChanging() {
+    override fun onConnectedWatchChanging() {
         Log.d("BaseWatchPickerActivity", "onConnectedNodeChanging")
         watchPickerSpinner.isEnabled = false
     }
 
-    override fun onConnectedNodeChanged(success: Boolean) {
+    override fun onConnectedWatchChanged() {
         Log.d("BaseWatchPickerActivity", "onConnectedNodeChanged")
         watchPickerSpinner.isEnabled = true
-    }
-
-    override fun onLocalPreferenceUpdated(preferenceKey: String) {
-        Log.d("BaseWatchPickerActivity", "onLocalPreferenceUpdate")
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -83,49 +68,34 @@ abstract class BaseWatchPickerActivity :
             adapter = WatchPickerAdapter(this@BaseWatchPickerActivity)
         }
 
-        connectedWatchId = sharedPreferences.getString(CONNECTED_WATCH_ID_KEY, "")
+        WatchConnectionService.bind(this, watchConnManServiceConnection)
 
         loadConnectedWatches()
-
-        bindService(Intent(this, PreferenceSyncService::class.java), preferenceSyncServiceConnection, Context.BIND_AUTO_CREATE)
     }
 
     override fun onResume() {
         super.onResume()
-        preferenceSyncService?.registerPreferenceSyncListener(this)
+        watchConnectionManager?.registerWatchConnectionInterface(this)
     }
 
     override fun onPause() {
         super.onPause()
-        preferenceSyncService?.unregisterPreferenceSyncListener(this)
+        watchConnectionManager?.unregisterWatchConnectionInterface(this)
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        unbindService(preferenceSyncServiceConnection)
+        unbindService(watchConnManServiceConnection)
     }
 
     private fun loadConnectedWatches() {
-        Wearable.getNodeClient(this)
-                .connectedNodes
-                .addOnSuccessListener { allConnectedNodes ->
-                    Wearable.getCapabilityClient(this)
-                            .getCapability(References.CAPABILITY_WATCH_APP, CapabilityClient.FILTER_ALL)
-                            .addOnSuccessListener {
-                                val allCapableNodes = it.nodes
-                                for (watch in allConnectedNodes) {
-                                    val index = (watchPickerSpinner.adapter as WatchPickerAdapter).add(Watch(watch, hasApp = allCapableNodes.contains(watch)))
-                                    if (watch.id == connectedWatchId) {
-                                        watchPickerSpinner.setSelection(index)
-                                    }
-                                }
-                                (watchPickerSpinner.adapter as WatchPickerAdapter).notifyDataSetChanged()
-                            }
-                }
-    }
-
-    class Watch(val displayName: String, val id: String, val hasApp: Boolean) {
-        constructor(node: Node, hasApp: Boolean) : this(node.displayName, node.id, hasApp)
+        if (watchConnectionManager != null) {
+            (watchPickerSpinner.adapter as WatchPickerAdapter).clear()
+            watchConnectionManager!!.getAllWatches()?.forEach {
+                (watchPickerSpinner.adapter as WatchPickerAdapter).add(it)
+            }
+            watchPickerSpinner.setSelection((watchPickerSpinner.adapter as WatchPickerAdapter).getPosition(watchConnectionManager!!.getConnectedWatch()))
+        }
     }
 
     class WatchPickerAdapter(context: Context, private val watches: ArrayList<Watch>) : ArrayAdapter<Watch>(context, 0) {
@@ -160,7 +130,7 @@ abstract class BaseWatchPickerActivity :
             if (view == null) {
                 view = layoutInflater.inflate(R.layout.common_spinner_item_two_line, parent, false)
             }
-            view!!.findViewById<AppCompatTextView>(R.id.title).text = watch.displayName
+            view!!.findViewById<AppCompatTextView>(R.id.title).text = watch.name
             view.findViewById<AppCompatTextView>(R.id.subtitle).text = if (watch.hasApp) {
                 watchConnectedString
             } else {
