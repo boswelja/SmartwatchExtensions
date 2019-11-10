@@ -143,6 +143,7 @@ class WatchConnectionService :
 
     public fun updatePreference(key: String): Task<DataItem>? {
         if (connectedWatchId.isNotEmpty()) {
+            val connectedWatch = getConnectedWatch()!!
             val syncedPrefUpdateReq = PutDataMapRequest.create(preferenceChangePath)
             when (key) {
                 PreferenceKey.PHONE_LOCKING_ENABLED_KEY,
@@ -154,10 +155,14 @@ class WatchConnectionService :
                 PreferenceKey.INTERRUPT_FILTER_ON_WITH_THEATER_KEY -> {
                     val newValue = sharedPreferences.getBoolean(key, false)
                     syncedPrefUpdateReq.dataMap.putBoolean(key, newValue)
+                    connectedWatch.boolPrefs[key] = newValue
+                    database.watchDao().updateBoolPrefs(connectedWatchId, connectedWatch.boolPrefs)
                 }
                 PreferenceKey.BATTERY_CHARGE_THRESHOLD_KEY -> {
                     val newValue = sharedPreferences.getInt(key, 90)
                     syncedPrefUpdateReq.dataMap.putInt(key, newValue)
+                    connectedWatch.intPrefs[key] = newValue
+                    database.watchDao().updateIntPrefs(connectedWatchId, connectedWatch.intPrefs)
                 }
             }
             if (!syncedPrefUpdateReq.dataMap.isEmpty) {
