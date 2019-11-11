@@ -1,6 +1,7 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
+apply plugin: "kotlin-kapt"
 apply from: '../constants.gradle'
 
 android {
@@ -56,7 +57,7 @@ dependencies {
     implementation 'com.google.android.material:material:1.2.0-alpha01'
     implementation "com.google.android.gms:play-services-wearable:$versions.play_services_wearable"
 
-    annotationProcessor "androidx.room:room-compiler:$versions.androidx_room"
+    kapt "androidx.room:room-compiler:$versions.androidx_room"
 }
 
 spotless {
