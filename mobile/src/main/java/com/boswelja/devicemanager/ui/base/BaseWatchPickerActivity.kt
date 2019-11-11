@@ -51,12 +51,12 @@ abstract class BaseWatchPickerActivity :
     override fun onNothingSelected(p0: AdapterView<*>?) { }
 
     override fun onConnectedWatchChanging() {
-        Log.d("BaseWatchPickerActivity", "onConnectedNodeChanging")
+        Log.d("BaseWatchPickerActivity", "onConnectedWatchChanging")
         watchPickerSpinner.isEnabled = false
     }
 
     override fun onConnectedWatchChanged() {
-        Log.d("BaseWatchPickerActivity", "onConnectedNodeChanged")
+        Log.d("BaseWatchPickerActivity", "onConnectedWatchChanged")
         watchPickerSpinner.isEnabled = true
     }
 

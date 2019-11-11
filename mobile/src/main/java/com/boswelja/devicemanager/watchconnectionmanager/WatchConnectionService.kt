@@ -185,6 +185,26 @@ class WatchConnectionService :
         }
     }
 
+    fun updatePrefInDatabase(key: String, newValue: Any): Boolean {
+        return updatePrefInDatabase(connectedWatchId, key, newValue)
+    }
+
+    fun updatePrefInDatabase(id: String, key: String, newValue: Any): Boolean {
+        val watch = database.watchDao().findById(id) ?: return false
+        when (newValue) {
+            is Boolean -> {
+                watch.boolPrefs[key] = newValue
+                database.watchDao().updateBoolPrefs(watch.id, watch.boolPrefs)
+            }
+            is Int -> {
+                watch.intPrefs[key] = newValue
+                database.watchDao().updateIntPrefs(watch.id, watch.intPrefs)
+            }
+            else -> return false
+        }
+        return true
+    }
+
     private fun updateLocalPreferences() {
         val watch = database.watchDao().findById(connectedWatchId) ?: return
         sharedPreferences.edit {
