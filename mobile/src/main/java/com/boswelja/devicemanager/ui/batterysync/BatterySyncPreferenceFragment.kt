@@ -51,7 +51,7 @@ class BatterySyncPreferenceFragment :
                 } else {
                     BatteryUpdateJob.stopJob(context!!)
                 }
-                getPreferenceSyncService()?.pushNewData(key)
+                getWatchConnectionManager()?.updatePreference(key)
                 WatchBatteryWidget.updateWidgets(context!!)
             }
             BATTERY_PHONE_CHARGE_NOTI_KEY -> {
@@ -64,7 +64,7 @@ class BatterySyncPreferenceFragment :
             }
             BATTERY_CHARGE_THRESHOLD_KEY -> {
                 updateChargeNotiPrefSummaries()
-                getPreferenceSyncService()?.pushNewData(key)
+                getWatchConnectionManager()?.updatePreference(key)
             }
         }
     }
@@ -81,7 +81,7 @@ class BatterySyncPreferenceFragment :
             BATTERY_WATCH_CHARGE_NOTI_KEY -> {
                 val value = newValue == true
                 preference.sharedPreferences.edit().putBoolean(preference.key, value).apply()
-                getPreferenceSyncService()?.pushNewData(key)
+                getWatchConnectionManager()?.updatePreference(key)
                 false
             }
             else -> true
@@ -97,7 +97,6 @@ class BatterySyncPreferenceFragment :
                     .putBoolean(BATTERY_WATCH_CHARGE_NOTI_KEY, false)
                     .apply()
             activity.createSnackBar(getString(R.string.battery_sync_watch_charged_noti_channel_disabled))
-            getPreferenceSyncService()?.pushNewData()
         }
     }
 
