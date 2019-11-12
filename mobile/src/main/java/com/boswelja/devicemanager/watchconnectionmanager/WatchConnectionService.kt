@@ -61,11 +61,10 @@ class WatchConnectionService :
 
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
 
-        database = Room.databaseBuilder(
-                applicationContext,
-                WatchDatabase::class.java,
-                "watch-db"
-        ).build()
+        database = Room.databaseBuilder(applicationContext, WatchDatabase::class.java, "watch-db")
+                .fallbackToDestructiveMigration()
+                .allowMainThreadQueries()
+                .build()
 
         setConnectedWatchById(sharedPreferences.getString(LAST_CONNECTED_NODE_ID_KEY, "") ?: "")
 
@@ -92,7 +91,18 @@ class WatchConnectionService :
         return null
     }
 
-    fun getConnectedWatch(): Watch? = database.watchDao().findById(connectedWatchId)
+    fun getConnectedWatch(): Watch? {
+        val watch = database.watchDao().findById(connectedWatchId)
+        if (watch != null) {
+            for (intPreference in database.intPreferenceDao().getAllForWatch(watch.id)) {
+                watch.intPrefs[intPreference.key] = intPreference.value
+            }
+            for (boolPreference in database.boolPreferenceDao().getAllForWatch(watch.id)) {
+                watch.boolPrefs[boolPreference.key] = boolPreference.value
+            }
+        }
+        return watch
+    }
 
     fun setConnectedWatchById(id: String): Boolean {
         for (connectionInterface in watchConnectionInterfaces) {
@@ -156,13 +166,13 @@ class WatchConnectionService :
                     val newValue = sharedPreferences.getBoolean(key, false)
                     syncedPrefUpdateReq.dataMap.putBoolean(key, newValue)
                     connectedWatch.boolPrefs[key] = newValue
-                    database.watchDao().updateBoolPrefs(connectedWatchId, connectedWatch.boolPrefs)
+                    database.boolPreferenceDao().update(BoolPreference(connectedWatchId, key, newValue))
                 }
                 PreferenceKey.BATTERY_CHARGE_THRESHOLD_KEY -> {
                     val newValue = sharedPreferences.getInt(key, 90)
                     syncedPrefUpdateReq.dataMap.putInt(key, newValue)
                     connectedWatch.intPrefs[key] = newValue
-                    database.watchDao().updateIntPrefs(connectedWatchId, connectedWatch.intPrefs)
+                    database.intPreferenceDao().update(IntPreference(connectedWatchId, key, newValue))
                 }
             }
             if (!syncedPrefUpdateReq.dataMap.isEmpty) {
@@ -190,15 +200,12 @@ class WatchConnectionService :
     }
 
     fun updatePrefInDatabase(id: String, key: String, newValue: Any): Boolean {
-        val watch = database.watchDao().findById(id) ?: return false
         when (newValue) {
             is Boolean -> {
-                watch.boolPrefs[key] = newValue
-                database.watchDao().updateBoolPrefs(watch.id, watch.boolPrefs)
+                database.boolPreferenceDao().update(BoolPreference(id, key, newValue))
             }
             is Int -> {
-                watch.intPrefs[key] = newValue
-                database.watchDao().updateIntPrefs(watch.id, watch.intPrefs)
+                database.intPreferenceDao().update(IntPreference(id, key, newValue))
             }
             else -> return false
         }
