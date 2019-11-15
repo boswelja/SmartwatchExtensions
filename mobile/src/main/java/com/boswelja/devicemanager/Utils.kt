@@ -15,10 +15,10 @@ import android.graphics.drawable.Drawable
 import android.media.AudioManager
 import android.os.Build
 import androidx.preference.PreferenceManager
-import com.boswelja.devicemanager.receiver.DeviceAdminChangeReceiver.Companion.DEVICE_ADMIN_ENABLED_KEY
 import com.boswelja.devicemanager.common.Compat
 import com.boswelja.devicemanager.common.PreferenceKey
 import com.boswelja.devicemanager.receiver.DeviceAdminChangeReceiver
+import com.boswelja.devicemanager.receiver.DeviceAdminChangeReceiver.Companion.DEVICE_ADMIN_ENABLED_KEY
 
 object Utils {
 

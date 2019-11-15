@@ -9,9 +9,9 @@ package com.boswelja.devicemanager.receiver
 
 import android.content.ComponentName
 import android.support.wearable.complications.ProviderUpdateRequester
-import com.boswelja.devicemanager.common.batterysync.BatteryUpdateReceiver
 import com.boswelja.devicemanager.common.PreferenceKey
 import com.boswelja.devicemanager.common.References
+import com.boswelja.devicemanager.common.batterysync.BatteryUpdateReceiver
 import com.boswelja.devicemanager.common.batterysync.Utils.updateBatteryStats
 import com.boswelja.devicemanager.complication.PhoneBatteryComplicationProvider
 

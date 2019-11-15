@@ -13,13 +13,13 @@ import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
 import androidx.preference.Preference
 import androidx.preference.SwitchPreference
-import com.boswelja.devicemanager.receiver.DeviceAdminChangeReceiver.Companion.DEVICE_ADMIN_ENABLED_KEY
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.Utils
 import com.boswelja.devicemanager.common.PreferenceKey.PHONE_LOCKING_ENABLED_KEY
 import com.boswelja.devicemanager.common.prefsynclayer.PreferenceSyncLayer
 import com.boswelja.devicemanager.preference.confirmationdialog.ConfirmationDialogPrefFragment
 import com.boswelja.devicemanager.preference.confirmationdialog.ConfirmationDialogPreference
+import com.boswelja.devicemanager.receiver.DeviceAdminChangeReceiver.Companion.DEVICE_ADMIN_ENABLED_KEY
 import com.boswelja.devicemanager.ui.appmanager.AppManagerActivity
 import com.boswelja.devicemanager.ui.base.BasePreferenceFragment
 import com.boswelja.devicemanager.ui.batterysync.BatterySyncPreferenceActivity
