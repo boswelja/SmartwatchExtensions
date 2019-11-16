@@ -7,8 +7,8 @@
  */
 package com.boswelja.devicemanager.receiver
 
-import com.boswelja.devicemanager.common.batterysync.BatteryUpdateReceiver
 import com.boswelja.devicemanager.common.PreferenceKey
+import com.boswelja.devicemanager.common.batterysync.BatteryUpdateReceiver
 import com.boswelja.devicemanager.widget.WatchBatteryWidget
 
 class WatchBatteryUpdateReceiver : BatteryUpdateReceiver() {
