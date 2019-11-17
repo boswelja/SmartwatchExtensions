@@ -15,7 +15,6 @@ import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.RecyclerView
 import com.boswelja.devicemanager.common.Utils
-import com.boswelja.devicemanager.common.prefsynclayer.PreferenceSyncService
 import com.boswelja.devicemanager.watchconnectionmanager.WatchConnectionService
 
 abstract class BasePreferenceFragment : PreferenceFragmentCompat() {

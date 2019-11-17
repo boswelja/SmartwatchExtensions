@@ -12,8 +12,8 @@ import androidx.fragment.app.Fragment
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.UpdateHandler
 import com.boswelja.devicemanager.common.PreferenceKey
-import com.boswelja.devicemanager.ui.base.BaseWatchPickerActivity
 import com.boswelja.devicemanager.ui.base.BasePreferenceActivity.Companion.EXTRA_PREFERENCE_KEY
+import com.boswelja.devicemanager.ui.base.BaseWatchPickerActivity
 import com.boswelja.devicemanager.ui.main.appinfo.AppInfoFragment
 import com.boswelja.devicemanager.ui.main.appsettings.AppSettingsFragment
 import com.boswelja.devicemanager.ui.main.extensions.ExtensionsFragment
