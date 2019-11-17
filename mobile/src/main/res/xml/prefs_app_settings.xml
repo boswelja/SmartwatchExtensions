@@ -15,7 +15,18 @@
         android:entryValues="@array/pref_daynight_mode_entry_values"
         android:defaultValue="-1" />
 
-    <PreferenceCategory
+    <androidx.preference.PreferenceCategory
+        android:title="Watch Connection">
+
+        <androidx.preference.SwitchPreference
+            android:key="auto_add_watches"
+            android:title="Auto-add new watches"
+            android:summary="Automatically add new watches to Wearable Extensions if they already have the app installed"
+            android:defaultValue="false" />
+
+    </androidx.preference.PreferenceCategory>
+
+    <androidx.preference.PreferenceCategory
         android:title="@string/pref_category_widget_customisation">
 
         <androidx.preference.CheckBoxPreference
@@ -31,6 +42,6 @@
             android:dependency="show_widget_background"
             app:min="5"
             app:showSeekBarValue="true" />
-    </PreferenceCategory>
+    </androidx.preference.PreferenceCategory>
 
 </androidx.preference.PreferenceScreen>

@@ -15,15 +15,15 @@ import com.boswelja.devicemanager.common.PreferenceKey
 import com.boswelja.devicemanager.common.References
 import com.google.android.gms.tasks.Task
 import com.google.android.gms.wearable.CapabilityClient
-import com.google.android.gms.wearable.CapabilityInfo
 import com.google.android.gms.wearable.DataClient
 import com.google.android.gms.wearable.DataItem
+import com.google.android.gms.wearable.Node
 import com.google.android.gms.wearable.PutDataMapRequest
 import com.google.android.gms.wearable.Wearable
 
-class WatchConnectionService :
-        Service(),
-        CapabilityClient.OnCapabilityChangedListener {
+class WatchConnectionService : Service() {
+
+    private var watchConnectionListener: CapabilityClient.OnCapabilityChangedListener? = null
 
     private val binder = WatchConnectionServiceBinder()
 
@@ -37,22 +37,6 @@ class WatchConnectionService :
     private var preferenceChangePath = ""
 
     private var connectedWatchId: String = ""
-
-    override fun onCapabilityChanged(capabilityInfo: CapabilityInfo) {
-        for (node in capabilityInfo.nodes) {
-            if (database.watchDao().findById(node.id) == null) {
-                database.watchDao().add(Watch(node.id, node.displayName, hasApp = true))
-                for (connectionInterface in watchConnectionInterfaces) {
-                    connectionInterface.onWatchAdded()
-                }
-            } else {
-                database.watchDao().setHasApp(node.id, true)
-                for (connectionInterface in watchConnectionInterfaces) {
-                    connectionInterface.onWatchInfoUpdated()
-                }
-            }
-        }
-    }
 
     override fun onBind(p0: Intent?): IBinder? = binder
 
@@ -69,15 +53,25 @@ class WatchConnectionService :
         setConnectedWatchById(sharedPreferences.getString(LAST_CONNECTED_NODE_ID_KEY, "") ?: "")
 
         capabilityClient = Wearable.getCapabilityClient(this)
-        capabilityClient.addListener(this, References.CAPABILITY_WATCH_APP)
 
         dataClient = Wearable.getDataClient(this)
+
+        if (sharedPreferences.getBoolean(AUTO_ADD_WATCHES_KEY, false)) {
+            watchConnectionListener = CapabilityClient.OnCapabilityChangedListener { capabilityInfo ->
+                for (node in capabilityInfo.nodes) {
+                    ensureWatchRegistered(node, true)
+                }
+            }
+            capabilityClient.addListener(watchConnectionListener!!, References.CAPABILITY_WATCH_APP)
+        }
     }
 
     override fun onDestroy() {
         super.onDestroy()
 
         if (database.isOpen) database.close()
+
+        if (watchConnectionListener != null) capabilityClient.removeListener(watchConnectionListener!!)
 
         sharedPreferences.edit {
             putString(LAST_CONNECTED_NODE_ID_KEY, connectedWatchId)
@@ -213,7 +207,7 @@ class WatchConnectionService :
     }
 
     private fun updateLocalPreferences() {
-        val watch = database.watchDao().findById(connectedWatchId) ?: return
+        val watch = getConnectedWatch() ?: return
         sharedPreferences.edit {
             watch.boolPrefs.forEach { (key, value) ->
                 putBoolean(key, value)
@@ -224,8 +218,24 @@ class WatchConnectionService :
         }
     }
 
+    private fun ensureWatchRegistered(node: Node, hasApp: Boolean) {
+        if (database.watchDao().findById(node.id) == null) {
+            database.watchDao().add(Watch(node.id, node.displayName, hasApp = hasApp))
+            for (connectionInterface in watchConnectionInterfaces) {
+                connectionInterface.onWatchAdded()
+            }
+        } else {
+            database.watchDao().setHasApp(node.id, true)
+            for (connectionInterface in watchConnectionInterfaces) {
+                connectionInterface.onWatchInfoUpdated()
+            }
+        }
+    }
+
     companion object {
         private const val LAST_CONNECTED_NODE_ID_KEY = "last_connected_id"
+
+        private const val AUTO_ADD_WATCHES_KEY = "auto_add_watches"
 
         fun bind(context: Context, serviceConnection: Connection) {
             context.bindService(Intent(context, WatchConnectionService::class.java), serviceConnection, Context.BIND_AUTO_CREATE)
