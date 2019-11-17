@@ -59,14 +59,14 @@ class WatchConnectionService : Service() {
         if (sharedPreferences.getBoolean(AUTO_ADD_WATCHES_KEY, false)) {
             watchConnectionListener = CapabilityClient.OnCapabilityChangedListener { capabilityInfo ->
                 for (node in capabilityInfo.nodes) {
-                    ensureWatchRegistered(node, true)
+                    ensureWatchRegistered(node)
                 }
             }
             capabilityClient.addListener(watchConnectionListener!!, References.CAPABILITY_WATCH_APP)
             capabilityClient.getCapability(References.CAPABILITY_WATCH_APP, CapabilityClient.FILTER_ALL)
                     .addOnSuccessListener {
                         for (node in it.nodes) {
-                            ensureWatchRegistered(node, true)
+                            ensureWatchRegistered(node)
                         }
                     }
         }
@@ -224,9 +224,9 @@ class WatchConnectionService : Service() {
         }
     }
 
-    private fun ensureWatchRegistered(node: Node, hasApp: Boolean) {
+    private fun ensureWatchRegistered(node: Node) {
         if (database.watchDao().findById(node.id) == null) {
-            database.watchDao().add(Watch(node.id, node.displayName, hasApp = hasApp))
+            database.watchDao().add(Watch(node))
             for (connectionInterface in watchConnectionInterfaces) {
                 connectionInterface.onWatchAdded()
             }

@@ -110,7 +110,6 @@ abstract class BaseWatchPickerActivity :
 
         private val layoutInflater = LayoutInflater.from(context)
         private val watchConnectedString = context.getString(R.string.watch_status_connected)
-        private val watchMissingAppString = context.getString(R.string.watch_status_missing_app, context.getString(R.string.app_name))
 
         constructor(context: Context) : this(context, ArrayList<Watch>())
 
@@ -139,11 +138,7 @@ abstract class BaseWatchPickerActivity :
                 view = layoutInflater.inflate(R.layout.common_spinner_item_two_line, parent, false)
             }
             view!!.findViewById<AppCompatTextView>(R.id.title).text = watch.name
-            view.findViewById<AppCompatTextView>(R.id.subtitle).text = if (watch.hasApp) {
-                watchConnectedString
-            } else {
-                watchMissingAppString
-            }
+            view.findViewById<AppCompatTextView>(R.id.subtitle).text = watchConnectedString
             return view
         }
 
