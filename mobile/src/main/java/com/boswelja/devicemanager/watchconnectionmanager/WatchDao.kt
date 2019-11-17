@@ -17,9 +17,6 @@ interface WatchDao {
     @Insert
     fun add(watch: Watch)
 
-    @Query("UPDATE watches SET has_app = :hasApp WHERE id = :id")
-    fun setHasApp(id: String, hasApp: Boolean)
-
     @Delete
     fun remove(watch: Watch)
 }

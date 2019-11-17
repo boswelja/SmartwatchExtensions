@@ -55,7 +55,7 @@ abstract class BaseWatchPickerActivity :
         watchPickerSpinner.isEnabled = false
     }
 
-    override fun onConnectedWatchChanged() {
+    override fun onConnectedWatchChanged(success: Boolean) {
         Log.d("BaseWatchPickerActivity", "onConnectedWatchChanged")
         watchPickerSpinner.isEnabled = true
     }

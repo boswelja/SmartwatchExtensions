@@ -104,21 +104,25 @@ class WatchConnectionService : Service() {
         return watch
     }
 
-    fun setConnectedWatchById(id: String): Boolean {
+    fun setConnectedWatchById(id: String) {
         for (connectionInterface in watchConnectionInterfaces) {
             connectionInterface.onConnectedWatchChanging()
         }
 
-        database.watchDao().findById(id) ?: return false
+        if (database.watchDao().findById(id) == null) {
+            for (connectionInterface in watchConnectionInterfaces) {
+                connectionInterface.onConnectedWatchChanged(false)
+            }
+            return
+        }
         connectedWatchId = id
         preferenceChangePath = "/preference-change_${connectedWatchId}"
 
         updateLocalPreferences()
 
         for (connectionInterface in watchConnectionInterfaces) {
-            connectionInterface.onConnectedWatchChanged()
+            connectionInterface.onConnectedWatchChanged(true)
         }
-        return true
     }
 
     fun forceSyncPreferences(): Task<DataItem>? {
@@ -229,11 +233,6 @@ class WatchConnectionService : Service() {
             database.watchDao().add(Watch(node))
             for (connectionInterface in watchConnectionInterfaces) {
                 connectionInterface.onWatchAdded()
-            }
-        } else {
-            database.watchDao().setHasApp(node.id, true)
-            for (connectionInterface in watchConnectionInterfaces) {
-                connectionInterface.onWatchInfoUpdated()
             }
         }
     }

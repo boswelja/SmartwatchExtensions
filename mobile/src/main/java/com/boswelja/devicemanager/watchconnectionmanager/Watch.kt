@@ -13,5 +13,7 @@ data class Watch(
         @Ignore val intPrefs: HashMap<String, Int>,
         @Ignore val boolPrefs: HashMap<String, Boolean>) {
 
-    constructor(node: Node) : this(node.id, node.displayName, HashMap(), HashMap())
+    constructor (id: String, name: String) : this(id, name, HashMap(), HashMap())
+
+    constructor(node: Node) : this(node.id, node.displayName)
 }
