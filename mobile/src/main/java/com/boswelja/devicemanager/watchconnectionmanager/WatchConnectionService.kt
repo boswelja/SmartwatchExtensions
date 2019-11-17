@@ -63,6 +63,12 @@ class WatchConnectionService : Service() {
                 }
             }
             capabilityClient.addListener(watchConnectionListener!!, References.CAPABILITY_WATCH_APP)
+            capabilityClient.getCapability(References.CAPABILITY_WATCH_APP, CapabilityClient.FILTER_ALL)
+                    .addOnSuccessListener {
+                        for (node in it.nodes) {
+                            ensureWatchRegistered(node, true)
+                        }
+                    }
         }
     }
 
