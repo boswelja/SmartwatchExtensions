@@ -114,6 +114,8 @@ class WatchConnectionService : Service() {
         return watch
     }
 
+    fun getConnectedWatchId(): String = connectedWatchId
+
     fun setConnectedWatchById(id: String) {
         for (connectionInterface in watchConnectionInterfaces) {
             connectionInterface.onConnectedWatchChanging()
