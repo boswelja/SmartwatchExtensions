@@ -88,10 +88,6 @@ class WatchConnectionService : Service() {
         if (database.isOpen) database.close()
 
         if (watchConnectionListener != null) capabilityClient.removeListener(watchConnectionListener!!)
-
-        sharedPreferences.edit {
-            putString(LAST_CONNECTED_NODE_ID_KEY, connectedWatchId)
-        }
     }
 
     fun getAllWatches(): List<Watch> {
@@ -131,6 +127,10 @@ class WatchConnectionService : Service() {
         preferenceChangePath = "/preference-change_$connectedWatchId"
 
         updateLocalPreferences()
+
+        sharedPreferences.edit {
+            putString(LAST_CONNECTED_NODE_ID_KEY, connectedWatchId)
+        }
 
         for (connectionInterface in watchConnectionInterfaces) {
             connectionInterface.onConnectedWatchChanged(true)
