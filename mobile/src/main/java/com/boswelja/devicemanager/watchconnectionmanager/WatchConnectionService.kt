@@ -15,6 +15,7 @@ import android.content.ServiceConnection
 import android.content.SharedPreferences
 import android.os.Binder
 import android.os.IBinder
+import android.util.Log
 import androidx.core.content.edit
 import androidx.preference.PreferenceManager
 import androidx.room.Room
@@ -63,6 +64,8 @@ class WatchConnectionService : Service() {
 
         dataClient = Wearable.getDataClient(this)
 
+        Log.d("WatchConnectionService", "Starting service")
+
         if (sharedPreferences.getBoolean(AUTO_ADD_WATCHES_KEY, false)) {
             watchConnectionListener = CapabilityClient.OnCapabilityChangedListener { capabilityInfo ->
                 for (node in capabilityInfo.nodes) {
@@ -91,11 +94,11 @@ class WatchConnectionService : Service() {
         }
     }
 
-    fun getAllWatches(): List<Watch>? {
+    fun getAllWatches(): List<Watch> {
         if (database.isOpen) {
             return database.watchDao().getAll()
         }
-        return null
+        return ArrayList()
     }
 
     fun getConnectedWatch(): Watch? {
@@ -261,16 +264,16 @@ class WatchConnectionService : Service() {
     }
 
     abstract class Connection : ServiceConnection {
-        abstract fun onPreferenceSyncServiceBound(service: WatchConnectionService)
-        abstract fun onPreferenceSyncServiceUnbound()
+        abstract fun onWatchManagerBound(service: WatchConnectionService)
+        abstract fun onWatchManagerUnbound()
 
         override fun onServiceConnected(componentName: ComponentName?, binder: IBinder?) {
             val service = (binder as WatchConnectionServiceBinder).getService()
-            onPreferenceSyncServiceBound(service)
+            onWatchManagerBound(service)
         }
 
         override fun onServiceDisconnected(componentName: ComponentName?) {
-            onPreferenceSyncServiceUnbound()
+            onWatchManagerUnbound()
         }
     }
 }

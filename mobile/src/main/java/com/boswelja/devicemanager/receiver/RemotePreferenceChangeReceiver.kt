@@ -27,11 +27,11 @@ class RemotePreferenceChangeReceiver : WearableListenerService() {
     private var sharedPreferences: SharedPreferences? = null
 
     private val watchConnManConnection = object : WatchConnectionService.Connection() {
-        override fun onPreferenceSyncServiceBound(service: WatchConnectionService) {
+        override fun onWatchManagerBound(service: WatchConnectionService) {
             watchConnectionManager = service
         }
 
-        override fun onPreferenceSyncServiceUnbound() {
+        override fun onWatchManagerUnbound() {
             watchConnectionManager = null
         }
     }

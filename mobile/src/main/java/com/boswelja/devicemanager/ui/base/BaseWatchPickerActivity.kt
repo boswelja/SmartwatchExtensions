@@ -29,11 +29,12 @@ abstract class BaseWatchPickerActivity :
 
     private val watchConnManServiceConnection = object : WatchConnectionService.Connection() {
 
-        override fun onPreferenceSyncServiceBound(service: WatchConnectionService) {
+        override fun onWatchManagerBound(service: WatchConnectionService) {
             watchConnectionManager = service
+            loadConnectedWatches()
         }
 
-        override fun onPreferenceSyncServiceUnbound() {
+        override fun onWatchManagerUnbound() {
             watchConnectionManager = null
         }
     }
@@ -51,17 +52,15 @@ abstract class BaseWatchPickerActivity :
     override fun onNothingSelected(p0: AdapterView<*>?) { }
 
     override fun onConnectedWatchChanging() {
-        Log.d("BaseWatchPickerActivity", "onConnectedWatchChanging")
         watchPickerSpinner.isEnabled = false
     }
 
     override fun onConnectedWatchChanged(success: Boolean) {
-        Log.d("BaseWatchPickerActivity", "onConnectedWatchChanged")
         watchPickerSpinner.isEnabled = true
     }
 
     override fun onWatchAdded(watch: Watch) {
-        // TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        (watchPickerSpinner.adapter as WatchPickerAdapter).add(watch)
     }
 
     override fun onWatchInfoUpdated() {
@@ -71,14 +70,12 @@ abstract class BaseWatchPickerActivity :
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        WatchConnectionService.bind(this, watchConnManServiceConnection)
+
         watchPickerSpinner = findViewById<AppCompatSpinner>(R.id.watch_picker_spinner).apply {
             onItemSelectedListener = this@BaseWatchPickerActivity
             adapter = WatchPickerAdapter(this@BaseWatchPickerActivity)
         }
-
-        WatchConnectionService.bind(this, watchConnManServiceConnection)
-
-        loadConnectedWatches()
     }
 
     override fun onResume() {
@@ -99,7 +96,8 @@ abstract class BaseWatchPickerActivity :
     private fun loadConnectedWatches() {
         if (watchConnectionManager != null) {
             (watchPickerSpinner.adapter as WatchPickerAdapter).clear()
-            watchConnectionManager!!.getAllWatches()?.forEach {
+            val watches = watchConnectionManager!!.getAllWatches()
+            watches.forEach {
                 (watchPickerSpinner.adapter as WatchPickerAdapter).add(it)
             }
             watchPickerSpinner.setSelection((watchPickerSpinner.adapter as WatchPickerAdapter).getPosition(watchConnectionManager!!.getConnectedWatch()))
