@@ -9,7 +9,6 @@ package com.boswelja.devicemanager.ui.base
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -61,10 +60,6 @@ abstract class BaseWatchPickerActivity :
 
     override fun onWatchAdded(watch: Watch) {
         (watchPickerSpinner.adapter as WatchPickerAdapter).add(watch)
-    }
-
-    override fun onWatchInfoUpdated() {
-        // TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
