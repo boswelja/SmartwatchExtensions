@@ -92,10 +92,15 @@ abstract class BaseWatchPickerActivity :
         if (watchConnectionManager != null) {
             (watchPickerSpinner.adapter as WatchPickerAdapter).clear()
             val watches = watchConnectionManager!!.getAllWatches()
+            val connectedWatchId = watchConnectionManager!!.getConnectedWatchId()
+            var selectedWatchPosition = 0
             watches.forEach {
                 (watchPickerSpinner.adapter as WatchPickerAdapter).add(it)
+                if (it.id == connectedWatchId) {
+                    selectedWatchPosition = (watchPickerSpinner.adapter as WatchPickerAdapter).getPosition(it)
+                }
             }
-            watchPickerSpinner.setSelection((watchPickerSpinner.adapter as WatchPickerAdapter).getPosition(watchConnectionManager!!.getConnectedWatch()))
+            watchPickerSpinner.setSelection(selectedWatchPosition)
         }
     }
 
