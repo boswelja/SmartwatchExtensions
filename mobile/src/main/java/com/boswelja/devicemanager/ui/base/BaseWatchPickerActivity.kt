@@ -60,7 +60,7 @@ abstract class BaseWatchPickerActivity :
         watchPickerSpinner.isEnabled = true
     }
 
-    override fun onWatchAdded() {
+    override fun onWatchAdded(watch: Watch) {
         // TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 

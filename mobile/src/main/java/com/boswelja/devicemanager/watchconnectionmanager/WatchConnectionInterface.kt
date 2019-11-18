@@ -9,7 +9,7 @@ package com.boswelja.devicemanager.watchconnectionmanager
 
 interface WatchConnectionInterface {
 
-    fun onWatchAdded()
+    fun onWatchAdded(watch: Watch)
     fun onWatchInfoUpdated()
     fun onConnectedWatchChanging()
     fun onConnectedWatchChanged(success: Boolean)

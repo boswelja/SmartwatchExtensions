@@ -237,9 +237,10 @@ class WatchConnectionService : Service() {
 
     private fun ensureWatchRegistered(node: Node) {
         if (database.watchDao().findById(node.id) == null) {
-            database.watchDao().add(Watch(node))
+            val newWatch = Watch(node)
+            database.watchDao().add(newWatch)
             for (connectionInterface in watchConnectionInterfaces) {
-                connectionInterface.onWatchAdded()
+                connectionInterface.onWatchAdded(newWatch)
             }
         }
     }
