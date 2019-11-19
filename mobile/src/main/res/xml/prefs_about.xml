@@ -39,7 +39,7 @@
 
         <androidx.preference.Preference
             android:key="watch_app_version"
-            android:title="@string/pref_about_watch_version_title_placeholder" />
+            android:title="@string/pref_about_watch_version_loading" />
 
     </androidx.preference.PreferenceCategory>
 </androidx.preference.PreferenceScreen>

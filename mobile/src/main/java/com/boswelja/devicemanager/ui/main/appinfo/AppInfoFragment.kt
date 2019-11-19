@@ -18,12 +18,15 @@ import com.boswelja.devicemanager.common.References
 import com.boswelja.devicemanager.ui.base.BasePreferenceFragment
 import com.boswelja.devicemanager.ui.changelog.ChangelogDialogFragment
 import com.boswelja.devicemanager.ui.donate.DonationDialogFragment
+import com.boswelja.devicemanager.watchconnectionmanager.Watch
+import com.boswelja.devicemanager.watchconnectionmanager.WatchConnectionInterface
 import com.google.android.gms.wearable.MessageClient
 import com.google.android.gms.wearable.Wearable
 
 class AppInfoFragment :
         BasePreferenceFragment(),
-        Preference.OnPreferenceClickListener {
+        Preference.OnPreferenceClickListener,
+        WatchConnectionInterface {
 
     private var customTabsIntent: CustomTabsIntent? = null
 
@@ -39,6 +42,16 @@ class AppInfoFragment :
                     summary = data[1]
                 }
             }
+        }
+    }
+
+    override fun onWatchAdded(watch: Watch) {} // Do nothing
+
+    override fun onConnectedWatchChanging() {} // Do nothing
+
+    override fun onConnectedWatchChanged(success: Boolean) {
+        if (success) {
+            updateWatchVersionPreference()
         }
     }
 
@@ -89,17 +102,6 @@ class AppInfoFragment :
         messageClient = Wearable.getMessageClient(context!!)
     }
 
-    override fun onResume() {
-        super.onResume()
-        messageClient.addListener(messageListener)
-        val connectedWatchId = activity.connectedWatchId
-        if (!connectedWatchId.isNullOrEmpty()) {
-            messageClient.sendMessage(connectedWatchId, References.REQUEST_APP_VERSION, null)
-        } else {
-            watchVersionPreference.title = getString(R.string.pref_about_watch_version_failed)
-        }
-    }
-
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         addPreferencesFromResource(R.xml.prefs_about)
         findPreference<Preference>(OPEN_PRIVACY_POLICY_KEY)!!.apply {
@@ -128,14 +130,42 @@ class AppInfoFragment :
         watchVersionPreference = findPreference(WATCH_VERSION_KEY)!!
     }
 
+    override fun onResume() {
+        super.onResume()
+
+        messageClient.addListener(messageListener)
+        updateWatchVersionPreference()
+
+        getWatchConnectionManager()?.registerWatchConnectionInterface(this)
+    }
+
     override fun onPause() {
         super.onPause()
+
         customTabsIntent = null
         messageClient.removeListener(messageListener)
+
+        getWatchConnectionManager()?.unregisterWatchConnectionInterface(this)
     }
 
     private fun getAppStoreLink(): String =
             "https://play.google.com/store/apps/details?id=${context?.packageName}"
+
+    private fun updateWatchVersionPreference() {
+        val connectedWatchId = getWatchConnectionManager()?.getConnectedWatchId()
+        if (!connectedWatchId.isNullOrEmpty()) {
+            messageClient.sendMessage(connectedWatchId, References.REQUEST_APP_VERSION, null)
+                    .addOnFailureListener {
+                        watchVersionPreference.title = getString(R.string.pref_about_watch_version_disconnected)
+                    }
+                    .addOnSuccessListener {
+                        watchVersionPreference.title = getString(R.string.pref_about_watch_version_loading)
+                    }
+        } else {
+            watchVersionPreference.title = getString(R.string.pref_about_watch_version_failed)
+        }
+        watchVersionPreference.summary = ""
+    }
 
     companion object {
         const val OPEN_PRIVACY_POLICY_KEY = "privacy_policy"

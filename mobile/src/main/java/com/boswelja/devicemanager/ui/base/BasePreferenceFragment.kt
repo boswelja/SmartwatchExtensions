@@ -37,7 +37,5 @@ abstract class BasePreferenceFragment : PreferenceFragmentCompat() {
         }
     }
 
-    fun getWatchConnectionManager(): WatchConnectionService? {
-        return activity.watchConnectionManager
-    }
+    fun getWatchConnectionManager(): WatchConnectionService? = activity.watchConnectionManager
 }
