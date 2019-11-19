@@ -21,7 +21,7 @@ import com.google.android.gms.wearable.DataEventBuffer
 import com.google.android.gms.wearable.DataMapItem
 import com.google.android.gms.wearable.WearableListenerService
 
-class RemotePreferenceChangeReceiver : WearableListenerService() {
+class PreferenceChangeReceiver : WearableListenerService() {
 
     private var watchConnectionManager: WatchConnectionService? = null
     private var sharedPreferences: SharedPreferences? = null
