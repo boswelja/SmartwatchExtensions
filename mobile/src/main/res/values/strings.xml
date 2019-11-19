@@ -125,6 +125,9 @@
     <string name="bottom_nav_app_settings_label">App Settings</string>
     <string name="bottom_nav_about_label">About</string>
 
+    <!-- Watch picker toolbar menu strings -->
+    <string name="menu_watch_picker_force_sync_title">Force Sync</string>
+
     <!-- Multi-watch strings -->
     <string name="connected_watch_null_label">No connected watch</string>
     <string name="watch_status_connected">Connected</string>
