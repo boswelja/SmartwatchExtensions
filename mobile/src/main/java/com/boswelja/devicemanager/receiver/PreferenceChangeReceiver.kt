@@ -48,7 +48,7 @@ class PreferenceChangeReceiver : WearableListenerService() {
 
     override fun onDataChanged(dataEvents: DataEventBuffer?) {
         if (dataEvents != null) {
-            val selectedWatchId = watchConnectionManager!!.getConnectedWatch()?.id
+            val selectedWatchId = watchConnectionManager?.getConnectedWatch()?.id
             if (!selectedWatchId.isNullOrEmpty()) {
                 for (event in dataEvents) {
                     val senderId = event.dataItem.uri.host!!
