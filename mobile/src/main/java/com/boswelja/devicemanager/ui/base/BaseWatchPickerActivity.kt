@@ -16,6 +16,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import android.widget.Toast
 import androidx.appcompat.widget.AppCompatSpinner
 import androidx.appcompat.widget.AppCompatTextView
 import com.boswelja.devicemanager.R
@@ -118,7 +119,18 @@ abstract class BaseWatchPickerActivity :
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.menu_item_force_sync -> {
-                watchConnectionManager?.forceSyncPreferences()
+                val forceSyncPreferencesTask = watchConnectionManager?.forceSyncPreferences()
+                if (forceSyncPreferencesTask != null) {
+                    forceSyncPreferencesTask
+                            .addOnSuccessListener {
+                                Toast.makeText(this, "Successfully synced all preferences with the selected watch", Toast.LENGTH_LONG).show()
+                            }
+                            .addOnFailureListener {
+                                Toast.makeText(this, "Failed to sync all preferences with the selected watch", Toast.LENGTH_LONG).show()
+                            }
+                } else {
+                    Toast.makeText(this, "Failed to sync all preferences with the selected watch", Toast.LENGTH_LONG).show()
+                }
             }
         }
         return super.onOptionsItemSelected(item)
