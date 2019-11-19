@@ -17,6 +17,7 @@
 
     <string-array name="version_changelog">
         <item>Add support for multiple watches</item>
+        <item>Code optimisations for both mobile and wearable apps</item>
         <item>Device charge notifications now show the name of the device that\'s charged</item>
     </string-array>
 
