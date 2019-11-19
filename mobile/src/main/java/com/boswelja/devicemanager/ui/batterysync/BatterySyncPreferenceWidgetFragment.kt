@@ -7,11 +7,7 @@
  */
 package com.boswelja.devicemanager.ui.batterysync
 
-import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
 import android.content.SharedPreferences
-import android.os.BatteryManager
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -24,9 +20,9 @@ import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_PERCENT_KEY
 import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_SYNC_ENABLED_KEY
 import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_SYNC_LAST_WHEN_KEY
+import com.boswelja.devicemanager.ui.batterysync.Utils.updateBatteryStats
 import com.boswelja.devicemanager.watchconnectionmanager.Watch
 import com.boswelja.devicemanager.watchconnectionmanager.WatchConnectionInterface
-import com.google.android.gms.wearable.Wearable
 import java.util.concurrent.TimeUnit
 
 class BatterySyncPreferenceWidgetFragment :
@@ -113,22 +109,6 @@ class BatterySyncPreferenceWidgetFragment :
         } else {
             watchBatteryIndicator?.setImageLevel(0)
             watchBatteryPercent?.text = getString(R.string.battery_sync_disabled)
-        }
-    }
-
-    private fun updateBatteryStats(context: Context, target: String?) {
-        if (!target.isNullOrEmpty()) {
-            val iFilter = IntentFilter(Intent.ACTION_BATTERY_CHANGED)
-            val batteryStatus = context.registerReceiver(null, iFilter)
-            val batteryPct = ((batteryStatus?.getIntExtra(BatteryManager.EXTRA_LEVEL, -1)!! / batteryStatus.getIntExtra(BatteryManager.EXTRA_SCALE, -1).toFloat()) * 100).toInt()
-            val charging = batteryStatus.getIntExtra(BatteryManager.EXTRA_STATUS, -1) == BatteryManager.BATTERY_STATUS_CHARGING
-            val message = "$batteryPct|$charging"
-
-            Wearable.getMessageClient(context)
-                    .sendMessage(
-                            target,
-                            com.boswelja.devicemanager.common.batterysync.References.BATTERY_STATUS_PATH,
-                            message.toByteArray(Charsets.UTF_8))
         }
     }
 

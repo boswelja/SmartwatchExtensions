@@ -21,10 +21,9 @@ import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_PHONE_CHARGE_NOTI
 import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_SYNC_ENABLED_KEY
 import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_SYNC_INTERVAL_KEY
 import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_WATCH_CHARGE_NOTI_KEY
-import com.boswelja.devicemanager.common.References
 import com.boswelja.devicemanager.common.batterysync.BatteryUpdateReceiver
-import com.boswelja.devicemanager.common.batterysync.Utils.updateBatteryStats
 import com.boswelja.devicemanager.ui.base.BasePreferenceFragment
+import com.boswelja.devicemanager.ui.batterysync.Utils.updateBatteryStats
 import com.boswelja.devicemanager.widget.WatchBatteryWidget
 import java.util.concurrent.TimeUnit
 
@@ -47,7 +46,7 @@ class BatterySyncPreferenceFragment :
                 setBatteryChargeThresholdEnabled()
                 if (newValue) {
                     BatteryUpdateJob.startJob(context!!)
-                    updateBatteryStats(context!!, References.CAPABILITY_WATCH_APP)
+                    updateBatteryStats(context!!, activity.watchConnectionManager?.getConnectedWatchId())
                 } else {
                     BatteryUpdateJob.stopJob(context!!)
                 }
