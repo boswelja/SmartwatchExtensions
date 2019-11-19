@@ -9,22 +9,29 @@ package com.boswelja.devicemanager.receiver
 
 import android.content.ComponentName
 import android.content.Intent
+import android.content.SharedPreferences
 import android.support.wearable.complications.ProviderUpdateRequester
+import androidx.core.content.edit
+import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.common.Compat
 import com.boswelja.devicemanager.common.PreferenceKey
-import com.boswelja.devicemanager.common.prefsynclayer.BasePreferenceChangeReceiver
 import com.boswelja.devicemanager.complication.PhoneBatteryComplicationProvider
 import com.boswelja.devicemanager.service.InterruptFilterLocalChangeListener
 import com.google.android.gms.tasks.Tasks
+import com.google.android.gms.wearable.DataEvent
 import com.google.android.gms.wearable.DataEventBuffer
+import com.google.android.gms.wearable.DataMapItem
 import com.google.android.gms.wearable.Wearable
+import com.google.android.gms.wearable.WearableListenerService
 
-class PreferenceChangeReceiver : BasePreferenceChangeReceiver() {
+class PreferenceChangeReceiver : WearableListenerService() {
 
-    override fun onPreferenceChangeReceived(preferenceChangeEvents: DataEventBuffer?) {
-        if (preferenceChangeEvents != null) {
+    private var sharedPreferences: SharedPreferences? = null
+
+    override fun onDataChanged(dataEvents: DataEventBuffer?) {
+        if (dataEvents != null) {
             val currentNodeId = Tasks.await(Wearable.getNodeClient(this).localNode).id
-            for (event in preferenceChangeEvents) {
+            for (event in dataEvents) {
                 if (event.dataItem.uri.toString().endsWith(currentNodeId)) {
                     handlePreferenceChange(event)
                 }
@@ -32,11 +39,40 @@ class PreferenceChangeReceiver : BasePreferenceChangeReceiver() {
         }
     }
 
-    override fun onPreferenceChanged(key: String, newValue: Any) {
+    private fun handlePreferenceChange(event: DataEvent) {
+        val dataMap = DataMapItem.fromDataItem(event.dataItem).dataMap
+        if (!dataMap.isEmpty) {
+            if (sharedPreferences == null) sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
+            sharedPreferences!!.edit {
+                for (key in dataMap.keySet()) {
+                    when (key) {
+                        PreferenceKey.PHONE_LOCKING_ENABLED_KEY,
+                        PreferenceKey.BATTERY_SYNC_ENABLED_KEY,
+                        PreferenceKey.BATTERY_PHONE_CHARGE_NOTI_KEY,
+                        PreferenceKey.BATTERY_WATCH_CHARGE_NOTI_KEY,
+                        PreferenceKey.INTERRUPT_FILTER_SYNC_TO_WATCH_KEY,
+                        PreferenceKey.INTERRUPT_FILTER_SYNC_TO_PHONE_KEY,
+                        PreferenceKey.INTERRUPT_FILTER_ON_WITH_THEATER_KEY -> {
+                            val newValue = dataMap.getBoolean(key)
+                            putBoolean(key, newValue)
+                            onPreferenceChanged(key, newValue)
+                        }
+                        PreferenceKey.BATTERY_CHARGE_THRESHOLD_KEY -> {
+                            val newValue = dataMap.getInt(key)
+                            putInt(key, newValue)
+                            onPreferenceChanged(key, newValue)
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private fun onPreferenceChanged(key: String, newValue: Any) {
         when (key) {
             PreferenceKey.BATTERY_SYNC_ENABLED_KEY -> {
                 if (newValue == false) {
-                    prefs.edit().remove(PreferenceKey.BATTERY_PERCENT_KEY).apply()
+                    sharedPreferences!!.edit().remove(PreferenceKey.BATTERY_PERCENT_KEY).apply()
                     ProviderUpdateRequester(this, ComponentName(packageName, PhoneBatteryComplicationProvider::class.java.name)).requestUpdateAll()
                 }
             }
