@@ -56,6 +56,16 @@ abstract class BaseWatchPickerActivity :
 
     override fun onConnectedWatchChanged(success: Boolean) {
         watchPickerSpinner.isEnabled = true
+        if (!success) {
+            val adapter = (watchPickerSpinner.adapter as WatchPickerAdapter)
+            for (i in 0 until adapter.count) {
+                val watch =adapter.getItem(i)
+                if (watch?.id == watchConnectionManager?.getConnectedWatchId()) {
+                    watchPickerSpinner.setSelection(i, true)
+                    return
+                }
+            }
+        }
     }
 
     override fun onWatchAdded(watch: Watch) {
@@ -76,6 +86,16 @@ abstract class BaseWatchPickerActivity :
     override fun onResume() {
         super.onResume()
         watchConnectionManager?.registerWatchConnectionInterface(this)
+        if (watchPickerSpinner.selectedItemId.toString(36) != watchConnectionManager?.getConnectedWatchId()) {
+            val adapter = (watchPickerSpinner.adapter as WatchPickerAdapter)
+            for (i in 0 until adapter.count) {
+                val watch =adapter.getItem(i)
+                if (watch?.id == watchConnectionManager?.getConnectedWatchId()) {
+                    watchPickerSpinner.setSelection(i, false)
+                    return
+                }
+            }
+        }
     }
 
     override fun onPause() {
