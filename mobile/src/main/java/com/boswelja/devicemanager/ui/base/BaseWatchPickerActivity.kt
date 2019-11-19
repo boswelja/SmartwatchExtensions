@@ -59,7 +59,7 @@ abstract class BaseWatchPickerActivity :
         if (!success) {
             val adapter = (watchPickerSpinner.adapter as WatchPickerAdapter)
             for (i in 0 until adapter.count) {
-                val watch =adapter.getItem(i)
+                val watch = adapter.getItem(i)
                 if (watch?.id == watchConnectionManager?.getConnectedWatchId()) {
                     watchPickerSpinner.setSelection(i, true)
                     return
@@ -89,7 +89,7 @@ abstract class BaseWatchPickerActivity :
         if (watchPickerSpinner.selectedItemId.toString(36) != watchConnectionManager?.getConnectedWatchId()) {
             val adapter = (watchPickerSpinner.adapter as WatchPickerAdapter)
             for (i in 0 until adapter.count) {
-                val watch =adapter.getItem(i)
+                val watch = adapter.getItem(i)
                 if (watch?.id == watchConnectionManager?.getConnectedWatchId()) {
                     watchPickerSpinner.setSelection(i, false)
                     return
