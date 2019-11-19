@@ -51,8 +51,7 @@ class PreferenceChangeReceiver : WearableListenerService() {
             val selectedWatchId = watchConnectionManager!!.getConnectedWatch()?.id
             if (!selectedWatchId.isNullOrEmpty()) {
                 for (event in dataEvents) {
-                    val split = event.dataItem.uri.toString().split("_")
-                    val senderId = split[1]
+                    val senderId = event.dataItem.uri.host!!
                     if (senderId == selectedWatchId) {
                         handleSelectedWatchPreferenceChange(event)
                     } else {
