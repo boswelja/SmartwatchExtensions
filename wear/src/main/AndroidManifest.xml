@@ -126,7 +126,7 @@
             </intent-filter>
         </receiver>
 
-        <service android:name=".common.prefsynclayer.PreferenceSyncService" />
+        <service android:name=".service.PreferenceSyncService" />
     </application>
 
 </manifest>

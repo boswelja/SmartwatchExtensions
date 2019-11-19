@@ -30,7 +30,7 @@ import com.boswelja.devicemanager.common.PreferenceKey.INTERRUPT_FILTER_ON_WITH_
 import com.boswelja.devicemanager.common.PreferenceKey.INTERRUPT_FILTER_SYNC_TO_PHONE_KEY
 import com.boswelja.devicemanager.common.PreferenceKey.INTERRUPT_FILTER_SYNC_TO_WATCH_KEY
 import com.boswelja.devicemanager.common.interruptfiltersync.References.REQUEST_INTERRUPT_FILTER_ACCESS_STATUS_PATH
-import com.boswelja.devicemanager.common.prefsynclayer.PreferenceSyncService
+import com.boswelja.devicemanager.service.PreferenceSyncService
 import com.google.android.gms.wearable.MessageClient
 import com.google.android.gms.wearable.Wearable
 
@@ -42,11 +42,6 @@ class SettingsFragment :
     private val preferenceSyncServiceConnection = object : PreferenceSyncService.PreferenceSyncServiceConnection() {
         override fun onPreferenceSyncServiceBound(preferenceSyncService: PreferenceSyncService) {
             this@SettingsFragment.preferenceSyncService = preferenceSyncService
-            Wearable.getNodeClient(context!!)
-                    .localNode
-                    .addOnSuccessListener {
-                        this@SettingsFragment.preferenceSyncService?.setConnectedNodeId(it.id)
-                    }
         }
 
         override fun onPreferenceSyncServiceUnbound() {
@@ -87,7 +82,7 @@ class SettingsFragment :
             BATTERY_WATCH_CHARGE_NOTI_KEY -> {
                 val value = newValue == true
                 sharedPreferences.edit().putBoolean(key, value).apply()
-                preferenceSyncService?.pushNewData()
+                preferenceSyncService?.pushNewData(key)
                 false
             }
             INTERRUPT_FILTER_SYNC_TO_WATCH_KEY -> {
@@ -96,13 +91,13 @@ class SettingsFragment :
                     val canEnableSync = Utils.checkDnDAccess(context!!)
                     if (canEnableSync) {
                         sharedPreferences.edit().putBoolean(key, value).apply()
-                        preferenceSyncService?.pushNewData()
+                        preferenceSyncService?.pushNewData(key)
                     } else {
                         notifyAdditionalSetupRequired(key)
                     }
                 } else {
                     sharedPreferences.edit().putBoolean(key, value).apply()
-                    preferenceSyncService?.pushNewData()
+                    preferenceSyncService?.pushNewData(key)
                 }
                 false
             }
@@ -128,7 +123,7 @@ class SettingsFragment :
                     }
                 } else {
                     sharedPreferences.edit().putBoolean(key, value).apply()
-                    preferenceSyncService?.pushNewData()
+                    preferenceSyncService?.pushNewData(key)
                 }
                 false
             }
@@ -203,7 +198,7 @@ class SettingsFragment :
         if (changingKey.isNotEmpty()) {
             if (hasAccess) {
                 sharedPreferences.edit().putBoolean(changingKey, hasAccess).apply()
-                preferenceSyncService?.pushNewData()
+                preferenceSyncService?.pushNewData(changingKey)
             } else {
                 notifyAdditionalSetupRequired(changingKey)
             }
