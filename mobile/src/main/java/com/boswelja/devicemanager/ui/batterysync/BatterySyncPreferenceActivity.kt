@@ -9,7 +9,7 @@ package com.boswelja.devicemanager.ui.batterysync
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
-import com.boswelja.devicemanager.BatteryUpdateJob
+import com.boswelja.devicemanager.BatterySyncJob
 import com.boswelja.devicemanager.common.PreferenceKey
 import com.boswelja.devicemanager.ui.base.BasePreferenceActivity
 import com.boswelja.devicemanager.ui.base.BasePreferenceFragment
@@ -23,9 +23,9 @@ class BatterySyncPreferenceActivity : BasePreferenceActivity() {
         super.onCreate(savedInstanceState)
 
         if (sharedPreferences.getBoolean(PreferenceKey.BATTERY_SYNC_ENABLED_KEY, false)) {
-            BatteryUpdateJob.startJob(this)
+            BatterySyncJob.startJob(this, watchConnectionManager)
         } else {
-            BatteryUpdateJob.stopJob(this)
+            BatterySyncJob.stopJob(this, watchConnectionManager)
         }
     }
 }

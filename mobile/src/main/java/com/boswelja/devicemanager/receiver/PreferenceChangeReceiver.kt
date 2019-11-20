@@ -11,7 +11,7 @@ import android.content.Intent
 import android.content.SharedPreferences
 import androidx.core.content.edit
 import androidx.preference.PreferenceManager
-import com.boswelja.devicemanager.BatteryUpdateJob
+import com.boswelja.devicemanager.BatterySyncJob
 import com.boswelja.devicemanager.common.Compat
 import com.boswelja.devicemanager.common.PreferenceKey
 import com.boswelja.devicemanager.service.InterruptFilterLocalChangeListener
@@ -66,9 +66,9 @@ class PreferenceChangeReceiver : WearableListenerService() {
         when (key) {
             PreferenceKey.BATTERY_SYNC_ENABLED_KEY -> {
                 if (newValue == true) {
-                    BatteryUpdateJob.startJob(this)
+                    BatterySyncJob.startJob(this, watchConnectionManager)
                 } else {
-                    BatteryUpdateJob.stopJob(this)
+                    BatterySyncJob.stopJob(this, watchConnectionManager)
                 }
             }
             PreferenceKey.INTERRUPT_FILTER_SYNC_TO_WATCH_KEY -> {

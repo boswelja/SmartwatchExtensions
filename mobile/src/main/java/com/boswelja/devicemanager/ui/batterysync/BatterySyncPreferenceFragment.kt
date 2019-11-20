@@ -13,7 +13,7 @@ import androidx.preference.CheckBoxPreference
 import androidx.preference.Preference
 import androidx.preference.SeekBarPreference
 import androidx.preference.SwitchPreference
-import com.boswelja.devicemanager.BatteryUpdateJob
+import com.boswelja.devicemanager.BatterySyncJob
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.Compat
 import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_CHARGE_THRESHOLD_KEY
@@ -25,7 +25,6 @@ import com.boswelja.devicemanager.common.batterysync.BatteryUpdateReceiver
 import com.boswelja.devicemanager.ui.base.BasePreferenceFragment
 import com.boswelja.devicemanager.ui.batterysync.Utils.updateBatteryStats
 import com.boswelja.devicemanager.widget.WatchBatteryWidget
-import java.util.concurrent.TimeUnit
 
 class BatterySyncPreferenceFragment :
         BasePreferenceFragment(),
@@ -45,10 +44,10 @@ class BatterySyncPreferenceFragment :
                 batterySyncEnabledPreference.isChecked = newValue
                 setBatteryChargeThresholdEnabled()
                 if (newValue) {
-                    BatteryUpdateJob.startJob(context!!)
+                    BatterySyncJob.startJob(context!!, activity.watchConnectionManager)
                     updateBatteryStats(context!!, activity.watchConnectionManager?.getConnectedWatchId())
                 } else {
-                    BatteryUpdateJob.stopJob(context!!)
+                    BatterySyncJob.stopJob(context!!, activity.watchConnectionManager)
                 }
                 getWatchConnectionManager()?.updatePreference(key)
                 WatchBatteryWidget.updateWidgets(context!!)
@@ -71,10 +70,10 @@ class BatterySyncPreferenceFragment :
     override fun onPreferenceChange(preference: Preference?, newValue: Any?): Boolean {
         return when (val key = preference?.key) {
             BATTERY_SYNC_INTERVAL_KEY -> {
-                val value = (newValue as Int).toLong()
-                val syncTimeMillis = TimeUnit.MINUTES.toMillis(value)
-                BatteryUpdateJob.startJob(context!!, syncTimeMillis)
-                true
+                val value = (newValue as Int)
+                preference.sharedPreferences.edit().putInt(preference.key, value).apply()
+                BatterySyncJob.startJob(context!!, activity.watchConnectionManager)
+                false
             }
             BATTERY_PHONE_CHARGE_NOTI_KEY,
             BATTERY_WATCH_CHARGE_NOTI_KEY -> {

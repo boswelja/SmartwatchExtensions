@@ -72,7 +72,7 @@
         </receiver>
 
         <service
-            android:name=".BatteryUpdateJob"
+            android:name=".BatterySyncJob"
             android:permission="android.permission.BIND_JOB_SERVICE" />
 
         <service

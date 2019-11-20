@@ -16,21 +16,37 @@ import android.content.Context
 import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.common.Compat
 import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_SYNC_INTERVAL_KEY
-import com.boswelja.devicemanager.common.References
-import com.boswelja.devicemanager.common.batterysync.Utils.updateBatteryStats
+import com.boswelja.devicemanager.ui.batterysync.Utils.updateBatteryStats
 import com.boswelja.devicemanager.watchconnectionmanager.WatchConnectionService
 import java.util.concurrent.TimeUnit
 import kotlin.random.Random
 
-class BatteryUpdateJob : JobService() {
+class BatterySyncJob : JobService() {
+
+    private val watchConnectionManagerConnection = object : WatchConnectionService.Connection() {
+        override fun onWatchManagerBound(service: WatchConnectionService) {
+            if (params?.jobId != null) {
+                val watchId = service.getWatchIdFor(JOB_ID_KEY, params?.jobId!!)
+                updateBatteryStats(this@BatterySyncJob, watchId)
+            }
+
+            unbindService(this)
+        }
+
+        override fun onWatchManagerUnbound() {
+            jobFinished(params, true)
+        }
+    }
+
+    private var params: JobParameters? = null
 
     override fun onStopJob(params: JobParameters?): Boolean {
         return true
     }
 
     override fun onStartJob(params: JobParameters?): Boolean {
-        updateBatteryStats(this, References.CAPABILITY_WATCH_APP)
-        jobFinished(params, true)
+        this.params = params
+        WatchConnectionService.bind(this, watchConnectionManagerConnection)
         return false
     }
 
@@ -63,7 +79,7 @@ class BatteryUpdateJob : JobService() {
                 val jobScheduler = context.getSystemService(Context.JOB_SCHEDULER_SERVICE) as JobScheduler
                 val jobInfo = JobInfo.Builder(
                         jobId,
-                        ComponentName(context.packageName, BatteryUpdateJob::class.java.name)).apply {
+                        ComponentName(context.packageName, BatterySyncJob::class.java.name)).apply {
                     setPeriodic(syncIntervalMillis)
                     setPersisted(true)
                 }
