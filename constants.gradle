@@ -7,7 +7,7 @@ ext.versions = [
         packageName              : "com.boswelja.devicemanager",
         buildTools               : "29.0.2",
 
-        kotlin_version           : "1.3.60-eap-25",
+        kotlin_version           : "1.3.60",
 
         wearable_support_lib     : "2.5.0",
         play_services_wearable   : "17.0.0",
