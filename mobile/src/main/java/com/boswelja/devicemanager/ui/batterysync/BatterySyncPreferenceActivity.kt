@@ -23,9 +23,9 @@ class BatterySyncPreferenceActivity : BasePreferenceActivity() {
         super.onCreate(savedInstanceState)
 
         if (sharedPreferences.getBoolean(PreferenceKey.BATTERY_SYNC_ENABLED_KEY, false)) {
-            BatterySyncJob.startJob(this, watchConnectionManager)
+            BatterySyncJob.startJob(watchConnectionManager)
         } else {
-            BatterySyncJob.stopJob(this, watchConnectionManager)
+            BatterySyncJob.stopJob(watchConnectionManager)
         }
     }
 }

@@ -44,10 +44,10 @@ class BatterySyncPreferenceFragment :
                 batterySyncEnabledPreference.isChecked = newValue
                 setBatteryChargeThresholdEnabled()
                 if (newValue) {
-                    BatterySyncJob.startJob(context!!, activity.watchConnectionManager)
+                    BatterySyncJob.startJob(activity.watchConnectionManager)
                     updateBatteryStats(context!!, activity.watchConnectionManager?.getConnectedWatchId())
                 } else {
-                    BatterySyncJob.stopJob(context!!, activity.watchConnectionManager)
+                    BatterySyncJob.stopJob(activity.watchConnectionManager)
                 }
                 getWatchConnectionManager()?.updatePreferenceOnWatch(key)
                 WatchBatteryWidget.updateWidgets(context!!)
@@ -72,7 +72,7 @@ class BatterySyncPreferenceFragment :
             BATTERY_SYNC_INTERVAL_KEY -> {
                 val value = (newValue as Int)
                 preference.sharedPreferences.edit().putInt(preference.key, value).apply()
-                BatterySyncJob.startJob(context!!, activity.watchConnectionManager)
+                BatterySyncJob.startJob(activity.watchConnectionManager)
                 false
             }
             BATTERY_PHONE_CHARGE_NOTI_KEY,

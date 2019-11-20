@@ -58,7 +58,7 @@ class BatterySyncJob : JobService() {
          * Starts a battery sync job for the currently selected watch.
          * @return @`true` if the job was started successfully, @`false` otherwise.
          */
-        fun startJob(context: Context, watchConnectionManager: WatchConnectionService?): Boolean {
+        fun startJob(watchConnectionManager: WatchConnectionService?): Boolean {
             val connectedWatch = watchConnectionManager?.getConnectedWatch()
             if (connectedWatch != null) {
                 var needsUpdate = false
@@ -72,14 +72,14 @@ class BatterySyncJob : JobService() {
                     watchConnectionManager.updatePrefInDatabase(JOB_ID_KEY, jobId)
                 }
 
-                val prefs = PreferenceManager.getDefaultSharedPreferences(context)
+                val prefs = PreferenceManager.getDefaultSharedPreferences(watchConnectionManager)
                 val syncIntervalMinutes = prefs.getInt(BATTERY_SYNC_INTERVAL_KEY, 15).toLong()
                 val syncIntervalMillis = TimeUnit.MINUTES.toMillis(syncIntervalMinutes)
 
-                val jobScheduler = context.getSystemService(Context.JOB_SCHEDULER_SERVICE) as JobScheduler
+                val jobScheduler = watchConnectionManager.getSystemService(Context.JOB_SCHEDULER_SERVICE) as JobScheduler
                 val jobInfo = JobInfo.Builder(
                         jobId,
-                        ComponentName(context.packageName, BatterySyncJob::class.java.name)).apply {
+                        ComponentName(watchConnectionManager.packageName, BatterySyncJob::class.java.name)).apply {
                     setPeriodic(syncIntervalMillis)
                     setPersisted(true)
                 }
@@ -91,12 +91,12 @@ class BatterySyncJob : JobService() {
         /**
          * Stops the battery sync job for the current watch.
          */
-        fun stopJob(context: Context, watchConnectionManager: WatchConnectionService?) {
+        fun stopJob(watchConnectionManager: WatchConnectionService?) {
             val connectedWatch = watchConnectionManager?.getConnectedWatch()
             if (connectedWatch != null) {
                 if (connectedWatch.intPrefs.contains(JOB_ID_KEY)) {
                     val jobId = connectedWatch.intPrefs[JOB_ID_KEY]!!
-                    val jobScheduler = context.getSystemService(Context.JOB_SCHEDULER_SERVICE) as JobScheduler
+                    val jobScheduler = watchConnectionManager.getSystemService(Context.JOB_SCHEDULER_SERVICE) as JobScheduler
                     if (Compat.getPendingJob(jobScheduler, jobId) != null) {
                         jobScheduler.cancel(jobId)
                     }

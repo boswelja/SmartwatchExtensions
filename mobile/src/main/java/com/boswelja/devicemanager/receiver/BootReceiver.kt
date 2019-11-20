@@ -21,7 +21,7 @@ class BootReceiver : BaseBootReceiver() {
 
     private val watchConnectionmanagerConnection = object : WatchConnectionService.Connection() {
         override fun onWatchManagerBound(service: WatchConnectionService) {
-            BatterySyncJob.startJob(service, service)
+            BatterySyncJob.startJob(service)
             service.unbindService(this)
         }
 

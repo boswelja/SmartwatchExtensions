@@ -66,9 +66,9 @@ class PreferenceChangeReceiver : WearableListenerService() {
         when (key) {
             PreferenceKey.BATTERY_SYNC_ENABLED_KEY -> {
                 if (newValue == true) {
-                    BatterySyncJob.startJob(this, watchConnectionManager)
+                    BatterySyncJob.startJob(watchConnectionManager)
                 } else {
-                    BatterySyncJob.stopJob(this, watchConnectionManager)
+                    BatterySyncJob.stopJob(watchConnectionManager)
                 }
             }
             PreferenceKey.INTERRUPT_FILTER_SYNC_TO_WATCH_KEY -> {
