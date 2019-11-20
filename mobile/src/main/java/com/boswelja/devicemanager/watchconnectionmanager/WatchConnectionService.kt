@@ -167,7 +167,7 @@ class WatchConnectionService : Service() {
         return null
     }
 
-    fun updatePreference(key: String): Task<DataItem>? {
+    fun updatePreferenceOnWatch(key: String): Task<DataItem>? {
         if (connectedWatchId.isNotEmpty()) {
             val connectedWatch = getConnectedWatch()!!
             val syncedPrefUpdateReq = PutDataMapRequest.create(preferenceChangePath)

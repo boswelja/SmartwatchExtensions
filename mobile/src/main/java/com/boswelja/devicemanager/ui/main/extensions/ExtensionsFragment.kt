@@ -92,7 +92,7 @@ class ExtensionsFragment :
                     sharedPreferences.edit()
                             .putBoolean(key, value)
                             .apply()
-                    getWatchConnectionManager()?.updatePreference(key)
+                    getWatchConnectionManager()?.updatePreferenceOnWatch(key)
                 }
                 false
             }
