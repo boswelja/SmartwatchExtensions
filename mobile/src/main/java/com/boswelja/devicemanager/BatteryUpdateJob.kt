@@ -18,7 +18,9 @@ import com.boswelja.devicemanager.common.Compat
 import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_SYNC_INTERVAL_KEY
 import com.boswelja.devicemanager.common.References
 import com.boswelja.devicemanager.common.batterysync.Utils.updateBatteryStats
+import com.boswelja.devicemanager.watchconnectionmanager.WatchConnectionService
 import java.util.concurrent.TimeUnit
+import kotlin.random.Random
 
 class BatteryUpdateJob : JobService() {
 
@@ -34,30 +36,55 @@ class BatteryUpdateJob : JobService() {
 
     companion object {
 
-        private const val BATTERY_UPDATE_JOB_ID = 5656299
+        private const val JOB_ID_KEY = "job_id_key"
 
-        fun startJob(context: Context) {
-            val prefs = PreferenceManager.getDefaultSharedPreferences(context)
-            val syncIntervalMinutes = prefs.getInt(BATTERY_SYNC_INTERVAL_KEY, 15).toLong()
-            val syncIntervalMillis = TimeUnit.MINUTES.toMillis(syncIntervalMinutes)
-            startJob(context, syncIntervalMillis)
-        }
+        /**
+         * Starts a battery sync job for the currently selected watch.
+         * @return @`true` if the job was started successfully, @`false` otherwise.
+         */
+        fun startJob(context: Context, watchConnectionManager: WatchConnectionService?): Boolean {
+            val connectedWatch = watchConnectionManager?.getConnectedWatch()
+            if (connectedWatch != null) {
+                var needsUpdate = false
+                val jobId = if (connectedWatch.intPrefs.contains(JOB_ID_KEY)) {
+                    connectedWatch.intPrefs[JOB_ID_KEY]!!
+                } else {
+                    needsUpdate = true
+                    Random.nextInt(100000, 999999)
+                }
+                if (needsUpdate) {
+                    watchConnectionManager.updatePrefInDatabase(JOB_ID_KEY, jobId)
+                }
 
-        fun startJob(context: Context, intervalMs: Long) {
-            val jobScheduler = context.getSystemService(Context.JOB_SCHEDULER_SERVICE) as JobScheduler
-            val jobInfo = JobInfo.Builder(
-                    BATTERY_UPDATE_JOB_ID,
-                    ComponentName(context.packageName, BatteryUpdateJob::class.java.name)).apply {
-                setPeriodic(intervalMs)
-                setPersisted(true)
+                val prefs = PreferenceManager.getDefaultSharedPreferences(context)
+                val syncIntervalMinutes = prefs.getInt(BATTERY_SYNC_INTERVAL_KEY, 15).toLong()
+                val syncIntervalMillis = TimeUnit.MINUTES.toMillis(syncIntervalMinutes)
+
+                val jobScheduler = context.getSystemService(Context.JOB_SCHEDULER_SERVICE) as JobScheduler
+                val jobInfo = JobInfo.Builder(
+                        jobId,
+                        ComponentName(context.packageName, BatteryUpdateJob::class.java.name)).apply {
+                    setPeriodic(syncIntervalMillis)
+                    setPersisted(true)
+                }
+                return jobScheduler.schedule(jobInfo.build()) == JobScheduler.RESULT_SUCCESS
             }
-            jobScheduler.schedule(jobInfo.build())
+            return false
         }
 
-        fun stopJob(context: Context) {
-            val jobScheduler = context.getSystemService(Context.JOB_SCHEDULER_SERVICE) as JobScheduler
-            if (Compat.getPendingJob(jobScheduler, BATTERY_UPDATE_JOB_ID) != null) {
-                jobScheduler.cancel(BATTERY_UPDATE_JOB_ID)
+        /**
+         * Stops the battery sync job for the current watch.
+         */
+        fun stopJob(context: Context, watchConnectionManager: WatchConnectionService?) {
+            val connectedWatch = watchConnectionManager?.getConnectedWatch()
+            if (connectedWatch != null) {
+                if (connectedWatch.intPrefs.contains(JOB_ID_KEY)) {
+                    val jobId = connectedWatch.intPrefs[JOB_ID_KEY]!!
+                    val jobScheduler = context.getSystemService(Context.JOB_SCHEDULER_SERVICE) as JobScheduler
+                    if (Compat.getPendingJob(jobScheduler, jobId) != null) {
+                        jobScheduler.cancel(jobId)
+                    }
+                }
             }
         }
     }
