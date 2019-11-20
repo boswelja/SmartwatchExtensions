@@ -228,24 +228,6 @@ class WatchConnectionService : Service() {
         return true
     }
 
-    fun getWatchIdFor(key: String, value: Any): String? {
-        return when (value) {
-            is Int -> {
-                database.intPreferenceDao().getMatching(key, value).watchId
-            }
-            is Boolean -> {
-                database.boolPreferenceDao().getMatching(key, value).watchId
-            }
-            else -> null
-        }
-    }
-
-    fun getWatchByBatterySyncJobId(batterySyncJobID: Int): Watch? {
-        if (database.isOpen) {
-            return database.watchDao().findByBatterySyncJobId(batterySyncJobID)
-        }
-        return null
-    }
     private fun updateLocalPreferences() {
         val watch = getConnectedWatch() ?: return
         sharedPreferences.edit {
@@ -256,6 +238,13 @@ class WatchConnectionService : Service() {
                 putInt(key, value)
             }
         }
+    }
+
+    fun getWatchByBatterySyncJobId(batterySyncJobID: Int): Watch? {
+        if (database.isOpen) {
+            return database.watchDao().findByBatterySyncJobId(batterySyncJobID)
+        }
+        return null
     }
 
     private fun ensureWatchRegistered(node: Node) {

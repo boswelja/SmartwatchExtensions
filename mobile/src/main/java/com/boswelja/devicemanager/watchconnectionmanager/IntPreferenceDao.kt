@@ -27,7 +27,4 @@ interface IntPreferenceDao {
 
     @Query("DELETE FROM int_preferences WHERE id = :id")
     fun deleteAllForWatch(id: String)
-
-    @Query("SELECT * FROM int_preferences WHERE pref_key = :key AND value = :value LIMIT 1")
-    fun getMatching(key: String, value: Int): IntPreference
 }
