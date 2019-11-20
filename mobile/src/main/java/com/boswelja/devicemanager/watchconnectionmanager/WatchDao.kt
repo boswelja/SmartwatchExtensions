@@ -21,6 +21,9 @@ interface WatchDao {
     @Query("SELECT * FROM watches WHERE id = :id LIMIT 1")
     fun findById(id: String): Watch?
 
+    @Query("SELECT * FROM watches WHERE battery_sync_job_id = :batterySyncJobId LIMIT 1")
+    fun findByBatterySyncJobId(batterySyncJobId: Int): Watch?
+
     @Insert
     fun add(watch: Watch)
 

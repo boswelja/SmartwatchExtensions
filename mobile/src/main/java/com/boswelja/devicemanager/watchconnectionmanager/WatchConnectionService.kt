@@ -240,6 +240,12 @@ class WatchConnectionService : Service() {
         }
     }
 
+    fun getWatchByBatterySyncJobId(batterySyncJobID: Int): Watch? {
+        if (database.isOpen) {
+            return database.watchDao().findByBatterySyncJobId(batterySyncJobID)
+        }
+        return null
+    }
     private fun updateLocalPreferences() {
         val watch = getConnectedWatch() ?: return
         sharedPreferences.edit {

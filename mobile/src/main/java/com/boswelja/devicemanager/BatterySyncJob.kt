@@ -19,14 +19,13 @@ import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_SYNC_INTERVAL_KEY
 import com.boswelja.devicemanager.ui.batterysync.Utils.updateBatteryStats
 import com.boswelja.devicemanager.watchconnectionmanager.WatchConnectionService
 import java.util.concurrent.TimeUnit
-import kotlin.random.Random
 
 class BatterySyncJob : JobService() {
 
     private val watchConnectionManagerConnection = object : WatchConnectionService.Connection() {
         override fun onWatchManagerBound(service: WatchConnectionService) {
             if (params?.jobId != null) {
-                val watchId = service.getWatchIdFor(JOB_ID_KEY, params?.jobId!!)
+                val watchId = service.getWatchByBatterySyncJobId(params?.jobId!!)?.id
                 updateBatteryStats(this@BatterySyncJob, watchId)
             }
 
@@ -52,8 +51,6 @@ class BatterySyncJob : JobService() {
 
     companion object {
 
-        private const val JOB_ID_KEY = "job_id_key"
-
         /**
          * Starts a battery sync job for the currently selected watch.
          * @return @`true` if the job was started successfully, @`false` otherwise.
@@ -61,16 +58,7 @@ class BatterySyncJob : JobService() {
         fun startJob(watchConnectionManager: WatchConnectionService?): Boolean {
             val connectedWatch = watchConnectionManager?.getConnectedWatch()
             if (connectedWatch != null) {
-                var needsUpdate = false
-                val jobId = if (connectedWatch.intPrefs.contains(JOB_ID_KEY)) {
-                    connectedWatch.intPrefs[JOB_ID_KEY]!!
-                } else {
-                    needsUpdate = true
-                    Random.nextInt(100000, 999999)
-                }
-                if (needsUpdate) {
-                    watchConnectionManager.updatePrefInDatabase(JOB_ID_KEY, jobId)
-                }
+                val jobId = connectedWatch.batterySyncJobId
 
                 val prefs = PreferenceManager.getDefaultSharedPreferences(watchConnectionManager)
                 val syncIntervalMinutes = prefs.getInt(BATTERY_SYNC_INTERVAL_KEY, 15).toLong()
@@ -94,12 +82,10 @@ class BatterySyncJob : JobService() {
         fun stopJob(watchConnectionManager: WatchConnectionService?) {
             val connectedWatch = watchConnectionManager?.getConnectedWatch()
             if (connectedWatch != null) {
-                if (connectedWatch.intPrefs.contains(JOB_ID_KEY)) {
-                    val jobId = connectedWatch.intPrefs[JOB_ID_KEY]!!
-                    val jobScheduler = watchConnectionManager.getSystemService(Context.JOB_SCHEDULER_SERVICE) as JobScheduler
-                    if (Compat.getPendingJob(jobScheduler, jobId) != null) {
-                        jobScheduler.cancel(jobId)
-                    }
+                val jobId = connectedWatch.batterySyncJobId
+                val jobScheduler = watchConnectionManager.getSystemService(Context.JOB_SCHEDULER_SERVICE) as JobScheduler
+                if (Compat.getPendingJob(jobScheduler, jobId) != null) {
+                    jobScheduler.cancel(jobId)
                 }
             }
         }
