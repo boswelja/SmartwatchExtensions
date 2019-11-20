@@ -22,12 +22,12 @@ interface BoolPreferenceDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun update(boolPreference: BoolPreference)
 
-    @Query("UPDATE bool_preferences SET value = :newValue WHERE id = :id AND pref_key = :key")
-    fun updateBoolPreference(id: String, key: String, newValue: Boolean)
-
     @Delete
     fun remove(boolPreference: BoolPreference)
 
     @Query("DELETE FROM bool_preferences WHERE id = :id")
     fun deleteAllForWatch(id: String)
+
+    @Query("SELECT * FROM bool_preferences WHERE pref_key = :key AND value = :value LIMIT 1")
+    fun getMatching(key: String, value: Boolean) : BoolPreference
 }

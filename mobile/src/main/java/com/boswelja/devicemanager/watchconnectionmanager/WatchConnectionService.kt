@@ -228,6 +228,18 @@ class WatchConnectionService : Service() {
         return true
     }
 
+    fun getWatchIdFor(key: String, value: Any): String? {
+        return when (value) {
+            is Int -> {
+                database.intPreferenceDao().getMatching(key, value).watchId
+            }
+            is Boolean -> {
+                database.boolPreferenceDao().getMatching(key, value).watchId
+            }
+            else -> null
+        }
+    }
+
     private fun updateLocalPreferences() {
         val watch = getConnectedWatch() ?: return
         sharedPreferences.edit {

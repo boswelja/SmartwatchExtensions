@@ -20,14 +20,14 @@ interface IntPreferenceDao {
     fun getAllForWatch(id: String): Array<IntPreference>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun update(boolPreference: IntPreference)
-
-    @Query("UPDATE int_preferences SET value = :newValue WHERE id = :id AND pref_key = :key")
-    fun updateBoolPreference(id: String, key: String, newValue: Boolean)
+    fun update(intPreference: IntPreference)
 
     @Delete
-    fun remove(boolPreference: IntPreference)
+    fun remove(intPreference: IntPreference)
 
     @Query("DELETE FROM int_preferences WHERE id = :id")
     fun deleteAllForWatch(id: String)
+
+    @Query("SELECT * FROM int_preferences WHERE pref_key = :key AND value = :value LIMIT 1")
+    fun getMatching(key: String, value: Int) : IntPreference
 }
