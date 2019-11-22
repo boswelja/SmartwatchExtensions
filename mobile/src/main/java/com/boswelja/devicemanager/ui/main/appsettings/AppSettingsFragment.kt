@@ -18,6 +18,7 @@ import androidx.preference.Preference
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.ui.base.BaseDayNightActivity.Companion.DAYNIGHT_MODE_KEY
 import com.boswelja.devicemanager.ui.base.BasePreferenceFragment
+import com.boswelja.devicemanager.ui.watchmanager.WatchManagerActivity
 import com.boswelja.devicemanager.widget.WatchBatteryWidget
 
 class AppSettingsFragment :
@@ -51,6 +52,10 @@ class AppSettingsFragment :
                         putExtra("app_uid", context?.applicationInfo?.uid!!)
                     }
                 }.also { startActivity(it) }
+                true
+            }
+            OPEN_WATCH_MANAGER_KEY -> {
+                startActivity(Intent(context, WatchManagerActivity::class.java))
                 true
             }
             else -> false
@@ -94,5 +99,7 @@ class AppSettingsFragment :
 
         const val SHOW_WIDGET_BACKGROUND_KEY = "show_widget_background"
         const val WIDGET_BACKGROUND_OPACITY_KEY = "widget_background_opacity"
+
+        const val OPEN_WATCH_MANAGER_KEY = "open_watch_manager"
     }
 }

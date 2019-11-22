@@ -49,6 +49,10 @@
             android:name=".ui.appmanager.AppInfoActivity"
             android:exported="false" />
 
+        <activity
+            android:name=".ui.watchmanager.WatchManagerActivity"
+            android:exported="false" />
+
         <receiver
             android:name=".receiver.DeviceAdminChangeReceiver"
             android:description="@string/device_admin_desc"

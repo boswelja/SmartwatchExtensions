@@ -16,12 +16,16 @@
         android:defaultValue="-1" />
 
     <androidx.preference.PreferenceCategory
-        android:title="Watch Connection">
+        android:title="@string/pref_category_watch_connection">
+
+        <androidx.preference.Preference
+            android:key="open_watch_manager"
+            android:title="@string/pref_manage_watches_title" />
 
         <androidx.preference.SwitchPreference
             android:key="auto_add_watches"
-            android:title="Auto-add new watches"
-            android:summary="Automatically add new watches to Wearable Extensions if they already have the app installed"
+            android:title="@string/pref_auto_add_watches_title"
+            android:summary="@string/pref_auto_add_watches_summary"
             android:defaultValue="false" />
 
     </androidx.preference.PreferenceCategory>
