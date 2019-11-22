@@ -54,6 +54,7 @@ class WatchManagerActivity :
 
     override fun onDestroy() {
         super.onDestroy()
+
         unbindService(watchConnectionManagerConnection)
     }
 

@@ -17,4 +17,6 @@
 
     <color name="iconTint">@color/colorPrimary</color>
 
+    <color name="warningRed">#D32F2F</color>
+
 </resources>

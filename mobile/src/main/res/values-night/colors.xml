@@ -13,4 +13,6 @@
     <color name="windowBackground">#000000</color>
     <color name="dialogBackground">#212121</color>
 
+    <color name="warningRed">#F44336</color>
+
 </resources>
