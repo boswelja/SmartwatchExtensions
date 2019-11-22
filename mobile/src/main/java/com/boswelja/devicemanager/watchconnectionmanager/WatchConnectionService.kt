@@ -228,6 +228,21 @@ class WatchConnectionService : Service() {
         return true
     }
 
+    fun updateWatchNickname(watchId: String, nickname: String): Boolean {
+        if (database.isOpen) {
+            database.watchDao().setWatchName(watchId, nickname)
+            return true
+        }
+        return false
+    }
+
+    fun getWatchById(watchId: String?): Watch? {
+        if (database.isOpen or !watchId.isNullOrEmpty()) {
+            return database.watchDao().findById(watchId!!)
+        }
+        return null
+    }
+
     private fun updateLocalPreferences() {
         val watch = getConnectedWatch() ?: return
         sharedPreferences.edit {

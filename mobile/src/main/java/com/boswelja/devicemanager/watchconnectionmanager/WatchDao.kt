@@ -11,6 +11,7 @@ import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
+import androidx.room.Update
 
 @Dao
 interface WatchDao {
@@ -23,6 +24,9 @@ interface WatchDao {
 
     @Query("SELECT * FROM watches WHERE battery_sync_job_id = :batterySyncJobId LIMIT 1")
     fun findByBatterySyncJobId(batterySyncJobId: Int): Watch?
+
+    @Query("UPDATE watches SET name = :name WHERE id = :id")
+    fun setWatchName(id: String, name: String)
 
     @Insert
     fun add(watch: Watch)
