@@ -64,9 +64,13 @@ class AppSettingsFragment :
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         addPreferencesFromResource(R.xml.prefs_app_settings)
+
         openNotiSettingsPreference = findPreference(OPEN_NOTI_SETTINGS_KEY)!!
         openNotiSettingsPreference.onPreferenceClickListener = this
+
         daynightModePreference = findPreference(DAYNIGHT_MODE_KEY)!!
+
+        findPreference<Preference>(OPEN_WATCH_MANAGER_KEY)?.onPreferenceClickListener = this
     }
 
     override fun onResume() {
