@@ -64,6 +64,7 @@ class WatchInfoActivity : BaseToolbarActivity() {
         watchNameField = findViewById(R.id.watch_name_field)
         findViewById<MaterialButton>(R.id.clear_preferences_button)?.setOnClickListener {
             MaterialAlertDialogBuilder(this)
+                    .setBackground(getDrawable(R.drawable.dialog_background))
                     .setTitle(R.string.clear_preferences_dialog_title)
                     .setMessage(getString(R.string.clear_preferences_dialog_message, watchConnectionManager?.getWatchById(watchId)?.name))
                     .setPositiveButton(R.string.dialog_button_yes) { _, _ ->
@@ -74,7 +75,6 @@ class WatchInfoActivity : BaseToolbarActivity() {
                     }
                     .show()
         }
-
     }
 
     override fun onResume() {
