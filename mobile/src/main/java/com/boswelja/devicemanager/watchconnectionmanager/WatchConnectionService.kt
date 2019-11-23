@@ -138,7 +138,11 @@ class WatchConnectionService : Service() {
     }
 
     fun forceSyncPreferences(): Task<DataItem>? {
-        if (connectedWatchId.isNotEmpty()) {
+        return forceSyncPreferences(connectedWatchId)
+    }
+
+    private fun forceSyncPreferences(watchId: String?): Task<DataItem>? {
+        if (!watchId.isNullOrEmpty()) {
             // Get updated sharedPreferences
             val batterySyncEnabled = sharedPreferences.getBoolean(PreferenceKey.BATTERY_SYNC_ENABLED_KEY, false)
             val phoneBatteryChargedNoti = sharedPreferences.getBoolean(PreferenceKey.BATTERY_PHONE_CHARGE_NOTI_KEY, false)
@@ -150,7 +154,7 @@ class WatchConnectionService : Service() {
             val lockPhoneEnabled = sharedPreferences.getBoolean(PreferenceKey.PHONE_LOCKING_ENABLED_KEY, false)
 
             // Create updated sharedPreferences object
-            val syncedPrefUpdateReq = PutDataMapRequest.create(preferenceChangePath)
+            val syncedPrefUpdateReq = PutDataMapRequest.create("/preference-change_$watchId")
             syncedPrefUpdateReq.dataMap.putBoolean(PreferenceKey.BATTERY_SYNC_ENABLED_KEY, batterySyncEnabled)
             syncedPrefUpdateReq.dataMap.putBoolean(PreferenceKey.BATTERY_PHONE_CHARGE_NOTI_KEY, phoneBatteryChargedNoti)
             syncedPrefUpdateReq.dataMap.putBoolean(PreferenceKey.BATTERY_WATCH_CHARGE_NOTI_KEY, watchBatteryChargedNoti)
@@ -243,8 +247,33 @@ class WatchConnectionService : Service() {
         return null
     }
 
+    fun clearPreferencesForWatch(watchId: String?) {
+        if (!watchId.isNullOrEmpty() && database.isOpen) {
+            database.intPreferenceDao().deleteAllForWatch(watchId)
+            database.boolPreferenceDao().deleteAllForWatch(watchId)
+            forceSyncPreferences(watchId)
+            if (watchId == connectedWatchId) {
+                updateLocalPreferences()
+            }
+        }
+    }
+
+    private fun deleteLocalPreferences() {
+        sharedPreferences.edit {
+            remove(PreferenceKey.PHONE_LOCKING_ENABLED_KEY)
+            remove(PreferenceKey.BATTERY_SYNC_ENABLED_KEY)
+            remove(PreferenceKey.BATTERY_PHONE_CHARGE_NOTI_KEY)
+            remove(PreferenceKey.BATTERY_WATCH_CHARGE_NOTI_KEY)
+            remove(PreferenceKey.INTERRUPT_FILTER_SYNC_TO_PHONE_KEY)
+            remove(PreferenceKey.INTERRUPT_FILTER_SYNC_TO_WATCH_KEY)
+            remove(PreferenceKey.INTERRUPT_FILTER_ON_WITH_THEATER_KEY)
+            remove(PreferenceKey.BATTERY_CHARGE_THRESHOLD_KEY)
+        }
+    }
+
     private fun updateLocalPreferences() {
         val watch = getConnectedWatch() ?: return
+        deleteLocalPreferences()
         sharedPreferences.edit {
             watch.boolPrefs.forEach { (key, value) ->
                 putBoolean(key, value)

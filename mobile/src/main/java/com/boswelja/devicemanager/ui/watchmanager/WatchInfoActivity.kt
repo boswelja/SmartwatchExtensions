@@ -7,6 +7,7 @@ import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.ui.base.BaseToolbarActivity
 import com.boswelja.devicemanager.watchconnectionmanager.WatchConnectionService
 import com.google.android.material.button.MaterialButton
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 
@@ -47,7 +48,6 @@ class WatchInfoActivity : BaseToolbarActivity() {
 
     private lateinit var watchNameLayout: TextInputLayout
     private lateinit var watchNameField: TextInputEditText
-    private lateinit var clearPreferencesButton: MaterialButton
 
     override fun getContentViewId(): Int = R.layout.activity_watch_info
 
@@ -62,7 +62,18 @@ class WatchInfoActivity : BaseToolbarActivity() {
 
         watchNameLayout = findViewById(R.id.watch_name_layout)
         watchNameField = findViewById(R.id.watch_name_field)
-        clearPreferencesButton = findViewById(R.id.clear_preferences_button)
+        findViewById<MaterialButton>(R.id.clear_preferences_button)?.setOnClickListener {
+            MaterialAlertDialogBuilder(this)
+                    .setTitle(R.string.clear_preferences_dialog_title)
+                    .setMessage(getString(R.string.clear_preferences_dialog_message, watchConnectionManager?.getWatchById(watchId)?.name))
+                    .setPositiveButton(R.string.dialog_button_yes) { _, _ ->
+                        watchConnectionManager?.clearPreferencesForWatch(watchId)
+                    }
+                    .setNegativeButton(R.string.dialog_button_no) { dialogInterface, _ ->
+                        dialogInterface.dismiss()
+                    }
+                    .show()
+        }
 
     }
 
