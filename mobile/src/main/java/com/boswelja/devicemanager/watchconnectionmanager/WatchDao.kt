@@ -31,6 +31,6 @@ interface WatchDao {
     @Insert
     fun add(watch: Watch)
 
-    @Delete
-    fun remove(watch: Watch)
+    @Query("DELETE FROM watches WHERE id = :id")
+    fun remove(id: String)
 }

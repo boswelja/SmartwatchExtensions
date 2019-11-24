@@ -63,12 +63,37 @@ class WatchInfoActivity : BaseToolbarActivity() {
         watchNameLayout = findViewById(R.id.watch_name_layout)
         watchNameField = findViewById(R.id.watch_name_field)
         findViewById<MaterialButton>(R.id.clear_preferences_button)?.setOnClickListener {
+            val watchName = watchConnectionManager?.getWatchById(watchId)?.name
             MaterialAlertDialogBuilder(this)
                     .setBackground(getDrawable(R.drawable.dialog_background))
                     .setTitle(R.string.clear_preferences_dialog_title)
-                    .setMessage(getString(R.string.clear_preferences_dialog_message, watchConnectionManager?.getWatchById(watchId)?.name))
+                    .setMessage(getString(R.string.clear_preferences_dialog_message, watchName))
                     .setPositiveButton(R.string.dialog_button_yes) { _, _ ->
-                        watchConnectionManager?.clearPreferencesForWatch(watchId)
+                        val success = watchConnectionManager?.clearPreferencesForWatch(watchId) == true
+                        if (success) {
+                            createSnackBar("Successfully cleared settings for your $watchName")
+                        } else {
+                            createSnackBar("Failed to clear settings for your $watchName")
+                        }
+                    }
+                    .setNegativeButton(R.string.dialog_button_no) { dialogInterface, _ ->
+                        dialogInterface.dismiss()
+                    }
+                    .show()
+        }
+        findViewById<MaterialButton>(R.id.forget_watch_button)?.setOnClickListener {
+            val watchName = watchConnectionManager?.getWatchById(watchId)?.name
+            MaterialAlertDialogBuilder(this)
+                    .setBackground(getDrawable(R.drawable.dialog_background))
+                    .setTitle(R.string.forget_watch_dialog_title)
+                    .setMessage(getString(R.string.forget_watch_dialog_message, watchName, watchName))
+                    .setPositiveButton(R.string.dialog_button_yes) { _, _ ->
+                        val success = watchConnectionManager?.forgetWatch(watchId) == true
+                        if (success) {
+                            finish()
+                        } else {
+                            createSnackBar("Failed to forget your $watchName")
+                        }
                     }
                     .setNegativeButton(R.string.dialog_button_no) { dialogInterface, _ ->
                         dialogInterface.dismiss()

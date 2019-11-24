@@ -247,7 +247,16 @@ class WatchConnectionService : Service() {
         return null
     }
 
-    fun clearPreferencesForWatch(watchId: String?) {
+    fun forgetWatch(watchId: String?): Boolean {
+        if (!watchId.isNullOrEmpty() && database.isOpen) {
+            val success = clearPreferencesForWatch(watchId)
+            database.watchDao().remove(watchId)
+            return success
+        }
+        return false
+    }
+
+    fun clearPreferencesForWatch(watchId: String?): Boolean {
         if (!watchId.isNullOrEmpty() && database.isOpen) {
             database.intPreferenceDao().deleteAllForWatch(watchId)
             database.boolPreferenceDao().deleteAllForWatch(watchId)
@@ -255,7 +264,9 @@ class WatchConnectionService : Service() {
             if (watchId == connectedWatchId) {
                 updateLocalPreferences()
             }
+            return true
         }
+        return false
     }
 
     private fun deleteLocalPreferences() {

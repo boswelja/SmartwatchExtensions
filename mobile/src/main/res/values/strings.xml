@@ -149,6 +149,9 @@
     <string name="clear_preferences_button_text">Clear Settings</string>
     <string name="clear_preferences_dialog_title">@string/clear_preferences_button_text</string>
     <string name="clear_preferences_dialog_message">Are you sure you want to clear Wearable Extensions settings for your %s?</string>
+    <string name="forget_watch_button_text">Forget Watch</string>
+    <string name="forget_watch_dialog_title">@string/forget_watch_button_text</string>
+    <string name="forget_watch_dialog_message">Are you sure you want to forget your %s? This will clear all Wearable Extensions settings, and remove your %s from the app.</string>
 
     <string name="snackbar_action_undo">Undo</string>
 
