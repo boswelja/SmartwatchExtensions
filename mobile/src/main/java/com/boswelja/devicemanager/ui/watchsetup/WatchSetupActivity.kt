@@ -3,22 +3,24 @@ package com.boswelja.devicemanager.ui.watchsetup
 import android.os.Bundle
 import androidx.core.content.edit
 import com.boswelja.devicemanager.R
-import com.boswelja.devicemanager.ui.base.BaseDayNightActivity
+import com.boswelja.devicemanager.ui.base.BaseToolbarActivity
 
-class WatchSetupActivity : BaseDayNightActivity() {
+class WatchSetupActivity : BaseToolbarActivity() {
 
     private var useFirstFragmentAnimation = true
+
+    override fun getContentViewId(): Int = R.layout.activity_watch_setup
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         setResult(RESULT_NO_WATCH_ADDED)
 
-        setContentView(R.layout.activity_watch_setup)
-
         if (sharedPreferences.getBoolean(HAS_COMPLETED_FIRST_RUN_KEY, false)) {
+            supportActionBar?.setDisplayHomeAsUpEnabled(true)
             showWatchSetupFragment()
         } else {
+            supportActionBar?.setDisplayHomeAsUpEnabled(false)
             showWelcomeFragment()
         }
     }
