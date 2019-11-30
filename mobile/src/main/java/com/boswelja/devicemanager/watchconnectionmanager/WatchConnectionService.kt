@@ -22,10 +22,17 @@ import androidx.room.Room
 import com.boswelja.devicemanager.common.PreferenceKey
 import com.boswelja.devicemanager.common.References
 import com.google.android.gms.tasks.Task
-import com.google.android.gms.tasks.Tasks
-import com.google.android.gms.wearable.*
+import com.google.android.gms.wearable.CapabilityClient
+import com.google.android.gms.wearable.DataClient
+import com.google.android.gms.wearable.DataItem
+import com.google.android.gms.wearable.Node
+import com.google.android.gms.wearable.NodeClient
+import com.google.android.gms.wearable.PutDataMapRequest
+import com.google.android.gms.wearable.Wearable
 
-class WatchConnectionService : Service() {
+class WatchConnectionService :
+        Service(),
+        SharedPreferences.OnSharedPreferenceChangeListener {
 
     private var watchConnectionListener: CapabilityClient.OnCapabilityChangedListener? = null
 
@@ -43,12 +50,21 @@ class WatchConnectionService : Service() {
 
     private var connectedWatchId: String = ""
 
+    override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
+        when (key) {
+            AUTO_ADD_WATCHES_KEY -> {
+                setAutoAddWatches()
+            }
+        }
+    }
+
     override fun onBind(p0: Intent?): IBinder? = binder
 
     override fun onCreate() {
         super.onCreate()
 
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
+        sharedPreferences.registerOnSharedPreferenceChangeListener(this)
 
         database = Room.databaseBuilder(applicationContext, WatchDatabase::class.java, "watch-db")
                 .fallbackToDestructiveMigration()
@@ -64,10 +80,26 @@ class WatchConnectionService : Service() {
 
         Log.d("WatchConnectionService", "Starting service")
 
+        setAutoAddWatches()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+
+        sharedPreferences.unregisterOnSharedPreferenceChangeListener(this)
+
+        if (database.isOpen) database.close()
+
+        if (watchConnectionListener != null) capabilityClient.removeListener(watchConnectionListener!!)
+    }
+
+    private fun setAutoAddWatches() {
         if (sharedPreferences.getBoolean(AUTO_ADD_WATCHES_KEY, false)) {
-            watchConnectionListener = CapabilityClient.OnCapabilityChangedListener { capabilityInfo ->
-                for (node in capabilityInfo.nodes) {
-                    ensureWatchRegistered(node)
+            if (watchConnectionListener == null) {
+                watchConnectionListener = CapabilityClient.OnCapabilityChangedListener { capabilityInfo ->
+                    for (node in capabilityInfo.nodes) {
+                        ensureWatchRegistered(node)
+                    }
                 }
             }
             capabilityClient.addListener(watchConnectionListener!!, References.CAPABILITY_WATCH_APP)
@@ -77,15 +109,9 @@ class WatchConnectionService : Service() {
                             ensureWatchRegistered(node)
                         }
                     }
+        } else if (watchConnectionListener != null) {
+            capabilityClient.removeListener(watchConnectionListener!!)
         }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-
-        if (database.isOpen) database.close()
-
-        if (watchConnectionListener != null) capabilityClient.removeListener(watchConnectionListener!!)
     }
 
     fun getAllRegisteredWatches(): List<Watch> {
