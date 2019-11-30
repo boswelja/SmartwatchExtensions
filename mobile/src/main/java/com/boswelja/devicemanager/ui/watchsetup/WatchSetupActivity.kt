@@ -26,6 +26,7 @@ class WatchSetupActivity : BaseToolbarActivity() {
     }
 
     private fun showWelcomeFragment() {
+        supportActionBar?.setDisplayShowTitleEnabled(false)
         supportFragmentManager.beginTransaction().apply {
             replace(R.id.fragment_holder, WelcomeFragment())
             setCustomAnimations(R.anim.fade_in, R.anim.slide_out_right)
@@ -36,6 +37,8 @@ class WatchSetupActivity : BaseToolbarActivity() {
     }
 
     private fun showWatchSetupFragment() {
+        supportActionBar?.title = "Add a Watch"
+        supportActionBar?.setDisplayShowTitleEnabled(true)
         supportFragmentManager.beginTransaction().apply {
             replace(R.id.fragment_holder, WatchSetupFragment())
             if (useFirstFragmentAnimation) {
