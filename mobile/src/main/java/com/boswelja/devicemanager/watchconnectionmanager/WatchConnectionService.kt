@@ -22,12 +22,8 @@ import androidx.room.Room
 import com.boswelja.devicemanager.common.PreferenceKey
 import com.boswelja.devicemanager.common.References
 import com.google.android.gms.tasks.Task
-import com.google.android.gms.wearable.CapabilityClient
-import com.google.android.gms.wearable.DataClient
-import com.google.android.gms.wearable.DataItem
-import com.google.android.gms.wearable.Node
-import com.google.android.gms.wearable.PutDataMapRequest
-import com.google.android.gms.wearable.Wearable
+import com.google.android.gms.tasks.Tasks
+import com.google.android.gms.wearable.*
 
 class WatchConnectionService : Service() {
 
@@ -41,6 +37,7 @@ class WatchConnectionService : Service() {
     private lateinit var capabilityClient: CapabilityClient
     private lateinit var sharedPreferences: SharedPreferences
     private lateinit var dataClient: DataClient
+    private lateinit var nodeClient: NodeClient
 
     private var preferenceChangePath = ""
 
@@ -63,6 +60,7 @@ class WatchConnectionService : Service() {
         capabilityClient = Wearable.getCapabilityClient(this)
 
         dataClient = Wearable.getDataClient(this)
+        nodeClient = Wearable.getNodeClient(this)
 
         Log.d("WatchConnectionService", "Starting service")
 
@@ -90,12 +88,14 @@ class WatchConnectionService : Service() {
         if (watchConnectionListener != null) capabilityClient.removeListener(watchConnectionListener!!)
     }
 
-    fun getAllWatches(): List<Watch> {
+    fun getAllRegisteredWatches(): List<Watch> {
         if (database.isOpen) {
             return database.watchDao().getAll()
         }
         return ArrayList()
     }
+
+    fun getAllConnectedWatches(): Task<List<Node>> = nodeClient.connectedNodes
 
     fun getConnectedWatch(): Watch? {
         val watch = database.watchDao().findById(connectedWatchId)
@@ -245,6 +245,14 @@ class WatchConnectionService : Service() {
             return database.watchDao().findById(watchId!!)
         }
         return null
+    }
+
+    fun addWatch(watch: Watch): Boolean {
+        if (database.isOpen) {
+            database.watchDao().add(watch)
+            return true
+        }
+        return false
     }
 
     fun forgetWatch(watchId: String?): Boolean {

@@ -15,7 +15,9 @@ import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.recyclerview.widget.RecyclerView
 import com.boswelja.devicemanager.R
+import com.boswelja.devicemanager.ui.common.WatchViewHolder
 import com.boswelja.devicemanager.ui.watchmanager.WatchInfoActivity.Companion.EXTRA_WATCH_ID
+import com.boswelja.devicemanager.ui.watchsetup.WatchSetupActivity
 import com.boswelja.devicemanager.watchconnectionmanager.Watch
 
 class WatchManagerAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -50,6 +52,9 @@ class WatchManagerAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                 val addWatchHolder = holder as AddWatchViewHolder
                 addWatchHolder.icon.setImageResource(R.drawable.ic_add)
                 addWatchHolder.text.text = "Add Watch"
+                addWatchHolder.itemView.setOnClickListener {
+                    context.startActivity(Intent(context, WatchSetupActivity::class.java))
+                }
             }
             VIEW_TYPE_SECTION_HEADER -> {
                 val sectionHeaderHolder = holder as SectionHeaderViewHolder
@@ -99,9 +104,5 @@ class WatchManagerAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         val label: AppCompatTextView = itemView.findViewById(R.id.section_header_text)
     }
 
-    class WatchViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val icon: AppCompatImageView = itemView.findViewById(R.id.icon)
-        val topLine: AppCompatTextView = itemView.findViewById(R.id.top_line)
-        val bottomLine: AppCompatTextView = itemView.findViewById(R.id.bottom_line)
-    }
+
 }

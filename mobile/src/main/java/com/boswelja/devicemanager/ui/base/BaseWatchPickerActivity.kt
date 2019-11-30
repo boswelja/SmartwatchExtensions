@@ -8,6 +8,7 @@
 package com.boswelja.devicemanager.ui.base
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.Menu
@@ -20,6 +21,7 @@ import android.widget.Toast
 import androidx.appcompat.widget.AppCompatSpinner
 import androidx.appcompat.widget.AppCompatTextView
 import com.boswelja.devicemanager.R
+import com.boswelja.devicemanager.ui.watchsetup.WatchSetupActivity
 import com.boswelja.devicemanager.watchconnectionmanager.Watch
 import com.boswelja.devicemanager.watchconnectionmanager.WatchConnectionInterface
 import com.boswelja.devicemanager.watchconnectionmanager.WatchConnectionService
@@ -136,20 +138,44 @@ abstract class BaseWatchPickerActivity :
         return super.onOptionsItemSelected(item)
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        when (requestCode) {
+            WATCH_SETUP_ACTIVITY_REQUEST_CODE -> {
+                when (resultCode) {
+                    WatchSetupActivity.RESULT_WATCH_ADDED -> {
+                        loadConnectedWatches()
+                    }
+                    WatchSetupActivity.RESULT_NO_WATCH_ADDED -> {
+                        finish()
+                    }
+                }
+            }
+            else -> super.onActivityResult(requestCode, resultCode, data)
+        }
+    }
+
     private fun loadConnectedWatches() {
         if (watchConnectionManager != null) {
             (watchPickerSpinner.adapter as WatchPickerAdapter).clear()
-            val watches = watchConnectionManager!!.getAllWatches()
-            val connectedWatchId = watchConnectionManager!!.getConnectedWatchId()
-            var selectedWatchPosition = 0
-            watches.forEach {
-                (watchPickerSpinner.adapter as WatchPickerAdapter).add(it)
-                if (it.id == connectedWatchId) {
-                    selectedWatchPosition = (watchPickerSpinner.adapter as WatchPickerAdapter).getPosition(it)
+            val watches = watchConnectionManager!!.getAllRegisteredWatches()
+            if (watches.isNotEmpty()) {
+                val connectedWatchId = watchConnectionManager!!.getConnectedWatchId()
+                var selectedWatchPosition = 0
+                watches.forEach {
+                    (watchPickerSpinner.adapter as WatchPickerAdapter).add(it)
+                    if (it.id == connectedWatchId) {
+                        selectedWatchPosition = (watchPickerSpinner.adapter as WatchPickerAdapter).getPosition(it)
+                    }
                 }
+                watchPickerSpinner.setSelection(selectedWatchPosition)
+            } else {
+                startActivityForResult(Intent(this, WatchSetupActivity::class.java), WATCH_SETUP_ACTIVITY_REQUEST_CODE)
             }
-            watchPickerSpinner.setSelection(selectedWatchPosition)
         }
+    }
+
+    companion object {
+        private const val WATCH_SETUP_ACTIVITY_REQUEST_CODE = 54321
     }
 
     class WatchPickerAdapter(context: Context) : ArrayAdapter<Watch>(context, 0) {

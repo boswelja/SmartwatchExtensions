@@ -41,6 +41,9 @@ class UpdateHandler(private val activity: AppCompatActivity) {
                     remove("connected_watch_id")
                     putString("last_connected_id", lastConnectedId)
                 }
+                if (oldVersion < 2019113000) {
+                    putBoolean("has_completed_first_run", true)
+                }
             }
         }
     }
