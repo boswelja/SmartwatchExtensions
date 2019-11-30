@@ -25,7 +25,7 @@
         android:layout_marginEnd="16dp"
         android:textSize="20sp"
         android:textColor="?android:textColorSecondary"
-        android:text="Welcome to"
+        android:text="@string/welcome_to_text"
         app:layout_constraintTop_toBottomOf="@id/app_icon"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
@@ -49,7 +49,7 @@
         android:layout_height="wrap_content"
         android:paddingTop="16dp"
         android:paddingBottom="16dp"
-        android:text="Get Started"
+        android:text="@string/welcome_button_get_started"
         app:icon="@drawable/ic_chevron_right"
         app:layout_constraintTop_toBottomOf="@id/app_name_text"
         app:layout_constraintBottom_toBottomOf="parent"

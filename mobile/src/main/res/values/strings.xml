@@ -135,9 +135,7 @@
     <string name="menu_watch_picker_force_sync_title">Force Sync</string>
 
     <!-- Multi-watch strings -->
-    <string name="connected_watch_null_label">No connected watch</string>
     <string name="watch_status_connected">Connected</string>
-    <string name="watch_status_missing_app">%s not installed</string>
 
     <!-- Changelog strings -->
     <string name="changelog_sheet_title">What\'s New</string>
@@ -152,6 +150,22 @@
     <string name="forget_watch_button_text">Forget Watch</string>
     <string name="forget_watch_dialog_title">@string/forget_watch_button_text</string>
     <string name="forget_watch_dialog_message">Are you sure you want to forget your %s? This will clear all Wearable Extensions settings, and remove your %s from the app.</string>
+
+    <!-- Watch Manager strings -->
+    <string name="watch_manager_add_watch_title">Add Watch</string>
+    <string name="watch_manager_registered_watch_header">Registered Watches</string>
+
+    <!-- Watch Setup strings -->
+    <string name="register_watch_toolbar_title">Add a Watch</string>
+    <string name="register_watch_dialog_title">Add %s?</string>
+    <string name="register_watch_dialog_message">This will add your %s to Wearable Extensions.</string>
+    <string name="register_watch_message_no_watches">No new watches found. Make sure the watch you want to add is turned on and nearby.</string>
+    <string name="register_watch_message_error">Failed to get nearby watches, try again.</string>
+    <string name="register_watch_button_refresh">Refresh</string>
+
+    <!-- Welcome fragment strings -->
+    <string name="welcome_to_text">Welcome to</string>
+    <string name="welcome_button_get_started">Get Started</string>
 
     <string name="snackbar_action_undo">Undo</string>
 

@@ -10,7 +10,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:padding="16dp"
-        android:text="Refresh"
+        android:text="@string/register_watch_button_refresh"
         android:gravity="start|center_vertical"
         app:icon="@drawable/ic_refresh"
         app:iconPadding="8dp"

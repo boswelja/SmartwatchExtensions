@@ -51,14 +51,14 @@ class WatchManagerAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             VIEW_TYPE_ADD_WATCH -> {
                 val addWatchHolder = holder as AddWatchViewHolder
                 addWatchHolder.icon.setImageResource(R.drawable.ic_add)
-                addWatchHolder.text.text = "Add Watch"
+                addWatchHolder.text.text = context.getString(R.string.watch_manager_add_watch_title)
                 addWatchHolder.itemView.setOnClickListener {
                     context.startActivity(Intent(context, WatchSetupActivity::class.java))
                 }
             }
             VIEW_TYPE_SECTION_HEADER -> {
                 val sectionHeaderHolder = holder as SectionHeaderViewHolder
-                sectionHeaderHolder.label.text = "Registered Watches"
+                sectionHeaderHolder.label.text = context.getString(R.string.watch_manager_registered_watch_header)
             }
             VIEW_TYPE_WATCH -> {
                 val watchHolder = holder as WatchViewHolder

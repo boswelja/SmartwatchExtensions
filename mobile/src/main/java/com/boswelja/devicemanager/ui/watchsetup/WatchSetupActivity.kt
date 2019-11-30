@@ -37,7 +37,7 @@ class WatchSetupActivity : BaseToolbarActivity() {
     }
 
     private fun showWatchSetupFragment() {
-        supportActionBar?.title = "Add a Watch"
+        supportActionBar?.title = getString(R.string.register_watch_toolbar_title)
         supportActionBar?.setDisplayShowTitleEnabled(true)
         supportFragmentManager.beginTransaction().apply {
             replace(R.id.fragment_holder, WatchSetupFragment())

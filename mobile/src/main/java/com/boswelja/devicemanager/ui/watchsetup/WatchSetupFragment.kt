@@ -83,13 +83,13 @@ class WatchSetupFragment : Fragment() {
                         if (notRegisteredWatches.isNotEmpty()) {
                             (watchSetupRecyclerView.adapter as WatchSetupAdapter).setWatches(notRegisteredWatches)
                         } else {
-                            setHelpMessage("No new watches found. Make sure the watch you want to add is turned on and nearby.")
+                            setHelpMessage(getString(R.string.register_watch_message_no_watches))
                         }
                         setLoading(false)
                     }
                     .addOnFailureListener {
                         setLoading(false)
-                        setHelpMessage("Failed to get nearby watches, try again.")
+                        setHelpMessage(getString(R.string.register_watch_message_error))
                     }
         }
     }
@@ -118,8 +118,8 @@ class WatchSetupFragment : Fragment() {
     fun requestRegisterWatch(watch: Watch) {
         MaterialAlertDialogBuilder(context!!).apply {
             background = context.getDrawable(R.drawable.dialog_background)
-            setTitle("Add ${watch.name}?")
-            setMessage("This will add your ${watch.name} to Wearable Extensions.")
+            setTitle(getString(R.string.register_watch_dialog_title, watch.name))
+            setMessage(getString(R.string.register_watch_dialog_message, watch.name))
             setPositiveButton(R.string.dialog_button_yes) { _, _ ->
                 watchConnectionManager?.addWatch(watch)
                 activity?.setResult(WatchSetupActivity.RESULT_WATCH_ADDED)
