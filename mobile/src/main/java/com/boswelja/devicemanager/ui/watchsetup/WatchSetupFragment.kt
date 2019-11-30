@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ProgressBar
+import androidx.appcompat.widget.AppCompatTextView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -32,6 +33,7 @@ class WatchSetupFragment : Fragment() {
     private lateinit var refreshButton: MaterialButton
     private lateinit var progressBar: ProgressBar
     private lateinit var watchSetupRecyclerView: RecyclerView
+    private lateinit var helpTextView: AppCompatTextView
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_watch_setup, container, false)
@@ -51,6 +53,8 @@ class WatchSetupFragment : Fragment() {
             adapter = WatchSetupAdapter(this@WatchSetupFragment)
         }
 
+        helpTextView = view.findViewById(R.id.help_text_view)
+
         setLoading(true)
 
         WatchConnectionService.bind(context!!, watchConnectionManagerConnection)
@@ -63,6 +67,7 @@ class WatchSetupFragment : Fragment() {
 
     private fun updateAvailableWatches() {
         if (watchConnectionManager != null) {
+            hideHelpMessage()
             setLoading(true)
             watchConnectionManager!!.getAllConnectedWatches()
                     .addOnSuccessListener {
@@ -78,13 +83,13 @@ class WatchSetupFragment : Fragment() {
                         if (notRegisteredWatches.isNotEmpty()) {
                             (watchSetupRecyclerView.adapter as WatchSetupAdapter).setWatches(notRegisteredWatches)
                         } else {
-                            //TODO Show no watch message
+                            setHelpMessage("No new watches found. Make sure the watch you want to add is turned on and nearby.")
                         }
                         setLoading(false)
                     }
                     .addOnFailureListener {
                         setLoading(false)
-                        //TODO Show error
+                        setHelpMessage("Failed to get nearby watches, try again.")
                     }
         }
     }
@@ -97,6 +102,17 @@ class WatchSetupFragment : Fragment() {
         } else {
             ProgressBar.INVISIBLE
         }
+    }
+
+    private fun setHelpMessage(text: String) {
+        helpTextView.visibility = AppCompatTextView.VISIBLE
+        watchSetupRecyclerView.visibility = RecyclerView.INVISIBLE
+        helpTextView.text = text
+    }
+
+    private fun hideHelpMessage() {
+        helpTextView.visibility = AppCompatTextView.INVISIBLE
+        watchSetupRecyclerView.visibility = RecyclerView.VISIBLE
     }
 
     fun requestRegisterWatch(watch: Watch) {
