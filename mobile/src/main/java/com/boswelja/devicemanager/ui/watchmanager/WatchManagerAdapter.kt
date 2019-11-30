@@ -103,6 +103,4 @@ class WatchManagerAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     class SectionHeaderViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val label: AppCompatTextView = itemView.findViewById(R.id.section_header_text)
     }
-
-
 }
