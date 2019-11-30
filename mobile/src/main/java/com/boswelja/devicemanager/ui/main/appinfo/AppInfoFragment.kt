@@ -64,7 +64,7 @@ class AppInfoFragment :
                         setShowTitle(true)
                     }.build()
                 }
-                customTabsIntent!!.launchUrl(context, getString(R.string.privacy_policy_url).toUri())
+                customTabsIntent!!.launchUrl(context!!, getString(R.string.privacy_policy_url).toUri())
                 true
             }
             SHARE_APP_KEY -> {
