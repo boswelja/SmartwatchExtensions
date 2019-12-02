@@ -87,10 +87,10 @@
             android:permission="android.permission.BIND_JOB_SERVICE" />
 
         <service
-            android:name=".service.InterruptFilterLocalChangeListener"
+            android:name=".dndsync.DnDSyncLocalChangeService"
             android:exported="false" />
 
-        <service android:name=".receiver.InterruptFilterRemoteChangeReceiver">
+        <service android:name=".dndsync.DnDSyncRemoteChangeReceiver">
             <intent-filter>
                 <action android:name="com.google.android.gms.wearable.DATA_CHANGED" />
                 <data android:scheme="wear" android:host="*" android:path="/dnd_status" />

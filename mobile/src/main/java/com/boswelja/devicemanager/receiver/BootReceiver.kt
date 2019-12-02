@@ -14,7 +14,7 @@ import com.boswelja.devicemanager.common.BaseBootReceiver
 import com.boswelja.devicemanager.common.Compat
 import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_SYNC_ENABLED_KEY
 import com.boswelja.devicemanager.common.PreferenceKey.INTERRUPT_FILTER_SYNC_TO_WATCH_KEY
-import com.boswelja.devicemanager.service.InterruptFilterLocalChangeListener
+import com.boswelja.devicemanager.dndsync.DnDSyncLocalChangeService
 import com.boswelja.devicemanager.watchconnectionmanager.WatchConnectionService
 
 class BootReceiver : BaseBootReceiver() {
@@ -38,7 +38,7 @@ class BootReceiver : BaseBootReceiver() {
     }
 
     private fun startInterruptFilterSyncService(context: Context?) {
-        val intent = Intent(context, InterruptFilterLocalChangeListener::class.java)
+        val intent = Intent(context, DnDSyncLocalChangeService::class.java)
         Compat.startForegroundService(context!!, intent)
     }
 }
