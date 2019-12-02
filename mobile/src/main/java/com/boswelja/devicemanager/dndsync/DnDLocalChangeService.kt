@@ -26,12 +26,12 @@ import com.boswelja.devicemanager.common.interruptfiltersync.InterruptFilterChan
 import com.boswelja.devicemanager.common.interruptfiltersync.References
 import com.boswelja.devicemanager.common.interruptfiltersync.Utils
 
-class DnDSyncLocalChangeService : Service() {
+class DnDLocalChangeService : Service() {
 
     private lateinit var preferences: SharedPreferences
     private var interruptFilterChangeReceiver = object : InterruptFilterChangeReceiver() {
         override fun onInterruptFilterChanged(context: Context, interruptFilterEnabled: Boolean) {
-            Utils.updateInterruptionFilter(this@DnDSyncLocalChangeService, interruptFilterEnabled)
+            Utils.updateInterruptionFilter(this@DnDLocalChangeService, interruptFilterEnabled)
         }
     }
     private val preferenceChangeListener = SharedPreferences.OnSharedPreferenceChangeListener { sharedPreferences, key ->

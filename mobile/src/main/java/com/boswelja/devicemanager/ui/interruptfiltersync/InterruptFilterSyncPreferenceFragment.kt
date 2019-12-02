@@ -22,7 +22,7 @@ import com.boswelja.devicemanager.common.Compat
 import com.boswelja.devicemanager.common.PreferenceKey.INTERRUPT_FILTER_ON_WITH_THEATER_KEY
 import com.boswelja.devicemanager.common.PreferenceKey.INTERRUPT_FILTER_SYNC_TO_PHONE_KEY
 import com.boswelja.devicemanager.common.PreferenceKey.INTERRUPT_FILTER_SYNC_TO_WATCH_KEY
-import com.boswelja.devicemanager.dndsync.DnDSyncLocalChangeService
+import com.boswelja.devicemanager.dndsync.DnDLocalChangeService
 import com.boswelja.devicemanager.ui.base.BasePreferenceFragment
 import com.boswelja.devicemanager.ui.interruptfiltersync.helper.InterruptFilterSyncHelperActivity
 
@@ -61,7 +61,7 @@ class InterruptFilterSyncPreferenceFragment :
                     preference.sharedPreferences.edit()
                             .putBoolean(key, value).apply()
                     getWatchConnectionManager()?.updatePreferenceOnWatch(key)
-                    context?.stopService(Intent(context!!, DnDSyncLocalChangeService::class.java))
+                    context?.stopService(Intent(context!!, DnDLocalChangeService::class.java))
                 }
                 false
             }
@@ -131,7 +131,7 @@ class InterruptFilterSyncPreferenceFragment :
                         .putBoolean(INTERRUPT_FILTER_SYNC_TO_WATCH_KEY, enabled).apply()
                 getWatchConnectionManager()?.updatePreferenceOnWatch(INTERRUPT_FILTER_SYNC_TO_WATCH_KEY)
                 if (enabled) {
-                    Compat.startForegroundService(context!!, Intent(context!!, DnDSyncLocalChangeService::class.java))
+                    Compat.startForegroundService(context!!, Intent(context!!, DnDLocalChangeService::class.java))
                 }
             }
         }

@@ -14,7 +14,7 @@ import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.BatterySyncJob
 import com.boswelja.devicemanager.common.Compat
 import com.boswelja.devicemanager.common.PreferenceKey
-import com.boswelja.devicemanager.dndsync.DnDSyncLocalChangeService
+import com.boswelja.devicemanager.dndsync.DnDLocalChangeService
 import com.boswelja.devicemanager.watchconnectionmanager.WatchConnectionService
 import com.google.android.gms.wearable.DataEvent
 import com.google.android.gms.wearable.DataEventBuffer
@@ -73,7 +73,7 @@ class PreferenceChangeReceiver : WearableListenerService() {
             }
             PreferenceKey.INTERRUPT_FILTER_SYNC_TO_WATCH_KEY -> {
                 if (newValue == true) {
-                    Intent(this, DnDSyncLocalChangeService::class.java).also {
+                    Intent(this, DnDLocalChangeService::class.java).also {
                         Compat.startForegroundService(this, it)
                     }
                 }
