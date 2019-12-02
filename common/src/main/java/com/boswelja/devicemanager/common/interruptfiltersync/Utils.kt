@@ -7,15 +7,9 @@
  */
 package com.boswelja.devicemanager.common.interruptfiltersync
 
-import android.app.NotificationChannel
-import android.app.NotificationManager
 import android.content.Context
-import android.os.Build
-import androidx.annotation.RequiresApi
 import com.boswelja.devicemanager.common.Compat
-import com.boswelja.devicemanager.common.R
 import com.boswelja.devicemanager.common.interruptfiltersync.References.DND_STATUS_PATH
-import com.boswelja.devicemanager.common.interruptfiltersync.References.INTERRUPT_FILTER_SYNC_NOTI_CHANNEL_ID
 import com.boswelja.devicemanager.common.interruptfiltersync.References.NEW_DND_STATE_KEY
 import com.google.android.gms.wearable.PutDataMapRequest
 import com.google.android.gms.wearable.Wearable
