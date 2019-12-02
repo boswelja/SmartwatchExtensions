@@ -8,82 +8,123 @@
 package com.boswelja.devicemanager.dndsync
 
 import android.app.Notification
+import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.app.Service
 import android.content.Context
 import android.content.Intent
-import android.content.IntentFilter
 import android.content.SharedPreferences
 import android.os.Build
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
 import androidx.preference.PreferenceManager
-import com.boswelja.devicemanager.common.AtomicCounter
 import com.boswelja.devicemanager.common.PreferenceKey
 import com.boswelja.devicemanager.common.R
-import com.boswelja.devicemanager.common.interruptfiltersync.InterruptFilterChangeReceiver
 import com.boswelja.devicemanager.common.interruptfiltersync.References
-import com.boswelja.devicemanager.common.interruptfiltersync.Utils
+import com.boswelja.devicemanager.watchconnectionmanager.BoolPreference
+import com.boswelja.devicemanager.watchconnectionmanager.IntPreference
+import com.boswelja.devicemanager.watchconnectionmanager.WatchConnectionService
+import com.boswelja.devicemanager.watchconnectionmanager.WatchPreferenceChangeInterface
+import com.google.android.gms.wearable.PutDataMapRequest
+import com.google.android.gms.wearable.Wearable
 
-class DnDLocalChangeService : Service() {
+class DnDLocalChangeService :
+        Service(),
+        WatchPreferenceChangeInterface {
 
-    private lateinit var preferences: SharedPreferences
-    private var interruptFilterChangeReceiver = object : InterruptFilterChangeReceiver() {
-        override fun onInterruptFilterChanged(context: Context, interruptFilterEnabled: Boolean) {
-            Utils.updateInterruptionFilter(this@DnDLocalChangeService, interruptFilterEnabled)
+    private val watchConnectionManagerConnection = object : WatchConnectionService.Connection() {
+        override fun onWatchManagerBound(service: WatchConnectionService) {
+            watchConnectionManager = service
+            service.registerWatchPreferenceChangeInterface(this@DnDLocalChangeService)
+
+            val preferences = service.getBoolPrefsForRegisteredWatches(PreferenceKey.INTERRUPT_FILTER_SYNC_TO_WATCH_KEY)
+            if (preferences != null) {
+                for (preference in preferences) {
+                    sendToWatch[preference.watchId] = preference.value
+                }
+            }
+
+            stopIfUnneeded()
+        }
+
+        override fun onWatchManagerUnbound() {
+            watchConnectionManager = null
         }
     }
-    private val preferenceChangeListener = SharedPreferences.OnSharedPreferenceChangeListener { sharedPreferences, key ->
-        if (key == interruptFilterSendEnabledKey &&
-                !sharedPreferences.getBoolean(key, false)) {
-            stopForeground(true)
-            stopSelf()
+
+    private val dndChangeReceiver = object : DnDLocalChangeReceiver() {
+        override fun onDnDChanged(dndEnabled: Boolean) {
+            pushNewDnDState(this@DnDLocalChangeService, dndEnabled)
         }
     }
 
-    private val interruptFilterSendEnabledKey = PreferenceKey.INTERRUPT_FILTER_SYNC_TO_WATCH_KEY
+    private val sendToWatch = HashMap<String, Boolean>()
+
+    private lateinit var sharedPreferences: SharedPreferences
+
+    private var watchConnectionManager: WatchConnectionService? = null
+
+    override fun boolPreferenceChanged(boolPreference: BoolPreference) {
+        if (boolPreference.key == PreferenceKey.INTERRUPT_FILTER_SYNC_TO_WATCH_KEY) {
+            sendToWatch[boolPreference.watchId] = boolPreference.value
+            stopIfUnneeded()
+        }
+    }
+
+    override fun intPreferenceChanged(intPreference: IntPreference) {}
 
     override fun onBind(p0: Intent?): IBinder? = null
 
     override fun onCreate() {
         super.onCreate()
 
-        preferences = PreferenceManager.getDefaultSharedPreferences(this)
-        if (preferences.getBoolean(interruptFilterSendEnabledKey, false)) {
-            preferences.registerOnSharedPreferenceChangeListener(preferenceChangeListener)
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                Utils.createNotiChannel(this)
+        WatchConnectionService.bind(this, watchConnectionManagerConnection)
+
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+
+            if (notificationManager.getNotificationChannel(References.INTERRUPT_FILTER_SYNC_NOTI_CHANNEL_ID) == null) {
+                NotificationChannel(
+                        References.INTERRUPT_FILTER_SYNC_NOTI_CHANNEL_ID,
+                        getString(R.string.interrupt_filter_sync_noti_channel_name),
+                        NotificationManager.IMPORTANCE_LOW).apply {
+                    enableLights(false)
+                    enableVibration(false)
+                    setShowBadge(false)
+                }.also {
+                    notificationManager.createNotificationChannel(it)
+                }
             }
-        } else {
-            stopSelf()
         }
+
+        DnDLocalChangeReceiver.registerReceiver(this, dndChangeReceiver)
+
+        pushNewDnDState(this, Utils.isDnDEnabledCompat(this))
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        startForeground(AtomicCounter.getInt(), createNotification())
-
-        val intentFilter = IntentFilter().apply {
-            addAction(NotificationManager.ACTION_INTERRUPTION_FILTER_CHANGED)
-        }
-        registerReceiver(interruptFilterChangeReceiver, intentFilter)
-
-        Utils.updateInterruptionFilter(this)
+        startForeground(SERVICE_NOTIFICATION_ID, createNotification())
 
         return START_STICKY
     }
 
     override fun onDestroy() {
-        try {
-            unregisterReceiver(interruptFilterChangeReceiver)
-        } catch (ignored: IllegalArgumentException) {}
-        preferences.unregisterOnSharedPreferenceChangeListener(preferenceChangeListener)
         super.onDestroy()
+
+        try {
+            unregisterReceiver(dndChangeReceiver)
+        } catch (ignored: IllegalArgumentException) {}
+
+        watchConnectionManager?.unregisterWatchPreferenceChangeInterface(this)
+        unbindService(watchConnectionManagerConnection)
     }
 
     private fun createNotification(): Notification {
         val notiTapIntent = PendingIntent.getActivity(this,
-                AtomicCounter.getInt(),
+                SERVICE_NOTIFICATION_TAP_INTENT_ID,
                 packageManager.getLaunchIntentForPackage(packageName),
                 PendingIntent.FLAG_CANCEL_CURRENT)
 
@@ -98,5 +139,29 @@ class DnDLocalChangeService : Service() {
                 .setVisibility(NotificationCompat.VISIBILITY_SECRET)
                 .setContentIntent(notiTapIntent)
                 .build()
+    }
+
+    private fun pushNewDnDState(context: Context, dndEnabled: Boolean) {
+        val dataClient = Wearable.getDataClient(context)
+        val putDataMapReq = PutDataMapRequest.create(References.DND_STATUS_PATH)
+        putDataMapReq.dataMap.putBoolean(References.NEW_DND_STATE_KEY, dndEnabled)
+        putDataMapReq.setUrgent()
+        dataClient.putDataItem(putDataMapReq.asPutDataRequest())
+    }
+
+    private fun shouldKeepRunning(): Boolean {
+        return sendToWatch.filter { it.value }.isNotEmpty()
+    }
+
+    private fun stopIfUnneeded() {
+        if (!shouldKeepRunning()) {
+            stopForeground(true)
+            stopSelf()
+        }
+    }
+
+    companion object {
+        private const val SERVICE_NOTIFICATION_ID = 52447
+        private const val SERVICE_NOTIFICATION_TAP_INTENT_ID = 30177
     }
 }

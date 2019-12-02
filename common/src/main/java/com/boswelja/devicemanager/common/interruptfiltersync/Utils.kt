@@ -41,22 +41,4 @@ object Utils {
         putDataMapReq.setUrgent()
         dataClient.putDataItem(putDataMapReq.asPutDataRequest())
     }
-
-    @RequiresApi(Build.VERSION_CODES.O)
-    fun createNotiChannel(context: Context) {
-        val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-
-        if (notificationManager.getNotificationChannel(INTERRUPT_FILTER_SYNC_NOTI_CHANNEL_ID) == null) {
-            NotificationChannel(
-                    INTERRUPT_FILTER_SYNC_NOTI_CHANNEL_ID,
-                    context.getString(R.string.interrupt_filter_sync_noti_channel_name),
-                    NotificationManager.IMPORTANCE_LOW).apply {
-                enableLights(false)
-                enableVibration(false)
-                setShowBadge(false)
-            }.also {
-                notificationManager.createNotificationChannel(it)
-            }
-        }
-    }
 }
