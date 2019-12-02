@@ -303,6 +303,13 @@ class WatchConnectionService :
         return false
     }
 
+    fun getBoolPrefsForRegisteredWatches(key: String): Array<BoolPreference>? {
+        if (database.isOpen) {
+            return database.boolPreferenceDao().getAllForKey(key)
+        }
+        return null
+    }
+
     private fun deleteLocalPreferences() {
         sharedPreferences.edit {
             remove(PreferenceKey.PHONE_LOCKING_ENABLED_KEY)

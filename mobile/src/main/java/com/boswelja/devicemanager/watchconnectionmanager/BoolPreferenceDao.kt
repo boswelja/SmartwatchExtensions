@@ -19,6 +19,9 @@ interface BoolPreferenceDao {
     @Query("SELECT * FROM bool_preferences WHERE id = :id")
     fun getAllForWatch(id: String): Array<BoolPreference>
 
+    @Query("SELECT * FROM bool_preferences WHERE pref_key = :key")
+    fun getAllForKey(key: String): Array<BoolPreference>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun update(boolPreference: BoolPreference)
 
