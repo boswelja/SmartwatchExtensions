@@ -39,6 +39,7 @@ class WatchConnectionService :
     private val binder = WatchConnectionServiceBinder()
 
     private val watchConnectionInterfaces: ArrayList<WatchConnectionInterface> = ArrayList()
+    private val watchPreferenceChangeInterfaces: ArrayList<WatchPreferenceChangeInterface> = ArrayList()
 
     private lateinit var database: WatchDatabase
     private lateinit var capabilityClient: CapabilityClient
@@ -241,6 +242,18 @@ class WatchConnectionService :
         }
     }
 
+    fun registerWatchPreferenceChangeInterface(watchPreferenceChangeInterface: WatchPreferenceChangeInterface) {
+        if (!watchPreferenceChangeInterfaces.contains(watchPreferenceChangeInterface)) {
+            watchPreferenceChangeInterfaces.add(watchPreferenceChangeInterface)
+        }
+    }
+
+    fun unregisterWatchPreferenceChangeInterface(watchPreferenceChangeInterface: WatchPreferenceChangeInterface) {
+        if (watchPreferenceChangeInterfaces.contains(watchPreferenceChangeInterface)) {
+            watchPreferenceChangeInterfaces.remove(watchPreferenceChangeInterface)
+        }
+    }
+
     fun updatePrefInDatabase(key: String, newValue: Any): Boolean {
         return updatePrefInDatabase(connectedWatchId, key, newValue)
     }
@@ -248,10 +261,18 @@ class WatchConnectionService :
     fun updatePrefInDatabase(id: String, key: String, newValue: Any): Boolean {
         when (newValue) {
             is Boolean -> {
-                database.boolPreferenceDao().update(BoolPreference(id, key, newValue))
+                val boolPreference = BoolPreference(id, key, newValue)
+                database.boolPreferenceDao().update(boolPreference)
+                for (watchPreferenceChangeInterface in watchPreferenceChangeInterfaces) {
+                    watchPreferenceChangeInterface.boolPreferenceChanged(boolPreference)
+                }
             }
             is Int -> {
-                database.intPreferenceDao().update(IntPreference(id, key, newValue))
+                val intPreference = IntPreference(id, key, newValue)
+                database.intPreferenceDao().update(intPreference)
+                for (watchPreferenceChangeInterface in watchPreferenceChangeInterfaces) {
+                    watchPreferenceChangeInterface.intPreferenceChanged(intPreference)
+                }
             }
             else -> return false
         }
