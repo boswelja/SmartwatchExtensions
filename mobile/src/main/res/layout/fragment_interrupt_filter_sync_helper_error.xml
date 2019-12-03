@@ -40,16 +40,6 @@
             style="@style/TextAppearance.MaterialComponents.Body1" />
 
         <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/phone_version_incompatible_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:layout_marginBottom="4dp"
-            android:visibility="gone"
-            android:text="@string/interrupt_filter_sync_helper_error_phone_version"
-            style="@style/TextAppearance.MaterialComponents.Body1" />
-
-        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/watch_unreachable_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

@@ -5,7 +5,7 @@
  * This file, and any part of the Wearable Extensions app/s cannot be copied and/or distributed
  * without permission from Jack Boswell (boswelja) <boswela@outlook.com>
  */
-package com.boswelja.devicemanager.ui.interruptfiltersync.helper
+package com.boswelja.devicemanager.ui.dndsync.helper
 
 import android.graphics.Color
 import android.os.Bundle
@@ -30,7 +30,7 @@ internal class SetupFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         view.findViewById<MaterialButton>(R.id.next_button)!!.apply {
             setOnClickListener {
-                (activity as InterruptFilterSyncHelperActivity).checkWatchNotiAccess()
+                (activity as DnDSyncHelperActivity).checkWatchNotiAccess()
             }
         }
 

@@ -5,7 +5,7 @@
  * This file, and any part of the Wearable Extensions app/s cannot be copied and/or distributed
  * without permission from Jack Boswell (boswelja) <boswela@outlook.com>
  */
-package com.boswelja.devicemanager.ui.interruptfiltersync
+package com.boswelja.devicemanager.ui.dndsync
 
 import android.app.NotificationManager
 import android.content.Context
@@ -24,9 +24,9 @@ import com.boswelja.devicemanager.common.PreferenceKey.INTERRUPT_FILTER_SYNC_TO_
 import com.boswelja.devicemanager.common.PreferenceKey.INTERRUPT_FILTER_SYNC_TO_WATCH_KEY
 import com.boswelja.devicemanager.dndsync.DnDLocalChangeService
 import com.boswelja.devicemanager.ui.base.BasePreferenceFragment
-import com.boswelja.devicemanager.ui.interruptfiltersync.helper.InterruptFilterSyncHelperActivity
+import com.boswelja.devicemanager.ui.dndsync.helper.DnDSyncHelperActivity
 
-class InterruptFilterSyncPreferenceFragment :
+class DnDSyncPreferenceFragment :
         BasePreferenceFragment(),
         SharedPreferences.OnSharedPreferenceChangeListener,
         Preference.OnPreferenceChangeListener {
@@ -56,7 +56,7 @@ class InterruptFilterSyncPreferenceFragment :
             INTERRUPT_FILTER_SYNC_TO_WATCH_KEY -> {
                 val value = newValue == true
                 if (value) {
-                    startActivityForResult(Intent(context, InterruptFilterSyncHelperActivity::class.java), HELPER_REQUEST_CODE)
+                    startActivityForResult(Intent(context, DnDSyncHelperActivity::class.java), HELPER_REQUEST_CODE)
                 } else {
                     preference.sharedPreferences.edit()
                             .putBoolean(key, value).apply()
@@ -125,7 +125,7 @@ class InterruptFilterSyncPreferenceFragment :
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         when (requestCode) {
             HELPER_REQUEST_CODE -> {
-                val enabled = resultCode == InterruptFilterSyncHelperActivity.RESULT_OK
+                val enabled = resultCode == DnDSyncHelperActivity.RESULT_OK
                 interruptFilterSyncToWatchPreference.isChecked = enabled
                 interruptFilterSyncToWatchPreference.sharedPreferences.edit()
                         .putBoolean(INTERRUPT_FILTER_SYNC_TO_WATCH_KEY, enabled).apply()

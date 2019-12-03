@@ -5,9 +5,8 @@
  * This file, and any part of the Wearable Extensions app/s cannot be copied and/or distributed
  * without permission from Jack Boswell (boswelja) <boswela@outlook.com>
  */
-package com.boswelja.devicemanager.ui.interruptfiltersync.helper
+package com.boswelja.devicemanager.ui.dndsync.helper
 
-import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -19,8 +18,6 @@ import com.google.android.material.button.MaterialButton
 
 internal class ErrorFragment : Fragment() {
 
-    private val phoneVersionIncompatible: Boolean = Build.VERSION.SDK_INT < Build.VERSION_CODES.M
-
     var watchVersionIncompatible: Boolean = false
     var watchUnreachable: Boolean = false
 
@@ -30,9 +27,6 @@ internal class ErrorFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         if (watchVersionIncompatible) {
             view.findViewById<AppCompatTextView>(R.id.watch_version_incompatible_text)!!.visibility = View.VISIBLE
-        }
-        if (phoneVersionIncompatible) {
-            view.findViewById<AppCompatTextView>(R.id.phone_version_incompatible_text)!!.visibility = View.VISIBLE
         }
         if (watchUnreachable) {
             view.findViewById<AppCompatTextView>(R.id.watch_unreachable_text)!!.visibility = View.VISIBLE

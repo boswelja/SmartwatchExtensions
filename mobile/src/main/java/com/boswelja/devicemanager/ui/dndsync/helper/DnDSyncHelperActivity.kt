@@ -5,10 +5,12 @@
  * This file, and any part of the Wearable Extensions app/s cannot be copied and/or distributed
  * without permission from Jack Boswell (boswelja) <boswela@outlook.com>
  */
-package com.boswelja.devicemanager.ui.interruptfiltersync.helper
+package com.boswelja.devicemanager.ui.dndsync.helper
 
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
+import android.view.Menu
 import androidx.fragment.app.Fragment
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.Extensions.fromByteArray
@@ -20,7 +22,7 @@ import com.google.android.gms.wearable.MessageClient
 import com.google.android.gms.wearable.Wearable
 import java.math.BigInteger
 
-class InterruptFilterSyncHelperActivity : BaseWatchPickerActivity() {
+class DnDSyncHelperActivity : BaseWatchPickerActivity() {
 
     private var messageClient: MessageClient? = null
 
@@ -49,16 +51,26 @@ class InterruptFilterSyncHelperActivity : BaseWatchPickerActivity() {
         }
     }
 
+    override fun onWatchManagerBound() {
+        checkWatchSystemVersion()
+    }
+
     override fun getContentViewId(): Int = R.layout.activity_interrupt_filter_sync_helper
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        setResult(RESULT_USER_DISMISSED)
         super.onCreate(savedInstanceState)
-        if (!androidVersionCompatible()) {
-            showPhoneVersionIncompatible()
-        } else {
-            init()
+
+        showLoadingFragment(false)
+
+        setResult(RESULT_USER_DISMISSED)
+
+        supportActionBar?.apply {
+            setDisplayHomeAsUpEnabled(true)
+            setDisplayShowTitleEnabled(false)
         }
+
+        messageClient = Wearable.getMessageClient(this)
+        messageClient!!.addListener(messageListener)
     }
 
     override fun onDestroy() {
@@ -66,20 +78,11 @@ class InterruptFilterSyncHelperActivity : BaseWatchPickerActivity() {
         messageClient?.removeListener(messageListener)
     }
 
-    private fun init() {
-        supportActionBar?.apply {
-            setDisplayHomeAsUpEnabled(true)
-            setDisplayShowTitleEnabled(false)
-        }
-        messageClient = Wearable.getMessageClient(this)
-        messageClient!!.addListener(messageListener)
-        checkWatchSystemVersion()
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        return true
     }
 
-    private fun androidVersionCompatible(): Boolean =
-            Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
-
-    private fun showLoading(animate: Boolean, reverse: Boolean = false) {
+    private fun showLoadingFragment(animate: Boolean, reverse: Boolean = false) {
         changeFragment(loadingFragment, animate = animate, reverse = reverse)
     }
 
@@ -89,12 +92,8 @@ class InterruptFilterSyncHelperActivity : BaseWatchPickerActivity() {
         showErrorFragment()
     }
 
-    private fun showPhoneVersionIncompatible() {
-        if (errorFragment == null) errorFragment = ErrorFragment()
-        showErrorFragment()
-    }
-
     private fun showWatchNullError() {
+
         if (errorFragment == null) errorFragment = ErrorFragment()
         errorFragment!!.watchUnreachable = true
         showErrorFragment()
@@ -140,18 +139,20 @@ class InterruptFilterSyncHelperActivity : BaseWatchPickerActivity() {
     }
 
     private fun checkWatchSystemVersion() {
-        showLoading(animate = false)
+        Log.d("DnDSyncHelperActivity", "watchConnectionManager == $watchConnectionManager")
+        val connectedWatchId = watchConnectionManager?.getConnectedWatchId()
         if (!connectedWatchId.isNullOrEmpty()) {
-            messageClient!!.sendMessage(connectedWatchId!!, REQUEST_SDK_INT_PATH, null)
+            messageClient!!.sendMessage(connectedWatchId, REQUEST_SDK_INT_PATH, null)
         } else {
             showWatchNullError()
         }
     }
 
     fun checkWatchNotiAccess(animate: Boolean = true) {
-        showLoading(animate = animate)
+        showLoadingFragment(animate = animate)
+        val connectedWatchId = watchConnectionManager?.getConnectedWatchId()
         if (!connectedWatchId.isNullOrEmpty()) {
-            messageClient!!.sendMessage(connectedWatchId!!, REQUEST_INTERRUPT_FILTER_ACCESS_STATUS_PATH, null)
+            messageClient!!.sendMessage(connectedWatchId, REQUEST_INTERRUPT_FILTER_ACCESS_STATUS_PATH, null)
         } else {
             showWatchNullError()
         }

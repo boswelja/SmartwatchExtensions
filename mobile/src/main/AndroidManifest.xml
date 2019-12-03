@@ -36,10 +36,10 @@
             android:exported="false" />
 
         <activity
-            android:name=".ui.interruptfiltersync.InterruptFilterSyncPreferenceActivity"
+            android:name=".ui.dndsync.DnDSyncPreferenceActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.interruptfiltersync.helper.InterruptFilterSyncHelperActivity"
+            android:name=".ui.dndsync.helper.DnDSyncHelperActivity"
             android:exported="false" />
 
         <activity

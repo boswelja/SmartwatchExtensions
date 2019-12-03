@@ -5,7 +5,7 @@
  * This file, and any part of the Wearable Extensions app/s cannot be copied and/or distributed
  * without permission from Jack Boswell (boswelja) <boswela@outlook.com>
  */
-package com.boswelja.devicemanager.ui.interruptfiltersync
+package com.boswelja.devicemanager.ui.dndsync
 
 import android.content.Intent
 import android.os.Bundle
@@ -16,9 +16,9 @@ import com.boswelja.devicemanager.dndsync.DnDLocalChangeService
 import com.boswelja.devicemanager.ui.base.BasePreferenceActivity
 import com.boswelja.devicemanager.ui.base.BasePreferenceFragment
 
-class InterruptFilterSyncPreferenceActivity : BasePreferenceActivity() {
+class DnDSyncPreferenceActivity : BasePreferenceActivity() {
 
-    override fun createPreferenceFragment(): BasePreferenceFragment = InterruptFilterSyncPreferenceFragment()
+    override fun createPreferenceFragment(): BasePreferenceFragment = DnDSyncPreferenceFragment()
     override fun createWidgetFragment(): Fragment? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {

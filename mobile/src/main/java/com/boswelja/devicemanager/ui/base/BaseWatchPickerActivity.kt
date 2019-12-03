@@ -31,11 +31,14 @@ abstract class BaseWatchPickerActivity :
         AdapterView.OnItemSelectedListener,
         WatchConnectionInterface {
 
+    open fun onWatchManagerBound() {}
+
     private val watchConnManServiceConnection = object : WatchConnectionService.Connection() {
 
         override fun onWatchManagerBound(service: WatchConnectionService) {
             watchConnectionManager = service
             loadConnectedWatches()
+            onWatchManagerBound()
         }
 
         override fun onWatchManagerUnbound() {

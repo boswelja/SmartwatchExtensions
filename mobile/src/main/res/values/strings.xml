@@ -29,7 +29,7 @@
     <string name="main_interrupt_filter_sync_title">Do not Disturb Sync</string>
     <string name="main_interrupt_filter_sync_summary">Sync Do not Disturb state between your devices</string>
     <string name="pref_interrupt_filter_sync_to_watch_title">Phone to Watch Sync</string>
-    <string name="pref_interrupt_filter_sync_to_watch_summary">EXPERIMENTAL Sync DnD state to your watch from your phone</string>
+    <string name="pref_interrupt_filter_sync_to_watch_summary">EXPERIMENTAL Turn on DnD on your watch when your phone is set to silent or vibrate</string>
     <string name="pref_interrupt_filter_sync_to_phone_title">Watch to Phone Sync</string>
     <string name="pref_interrupt_filter_sync_to_phone_summary">Sync DnD state to your phone from your watch</string>
     <string name="pref_interrupt_filter_sync_with_theater_title">Sync with watch Theater mode</string>
@@ -41,7 +41,6 @@
     <string name="interrupt_filter_sync_helper_all_set_message">Tap \'Finish\' below to enable Phone to Watch Sync</string>
     <string name="interrupt_filter_sync_helper_error_title">Error</string>
     <string name="interrupt_filter_sync_helper_error_watch_version">Your watch is running an incompatible Android OS (System version newer than 8.0)\nThe required permission cannot be granted on watches running system versions newer than 8.0</string>
-    <string name="interrupt_filter_sync_helper_error_phone_version">Your phone is running an incompatible Android OS (Android Version older than 6.0)\nDo not Disturb is not available on Android versions below 6.0</string>
     <string name="interrupt_filter_sync_helper_error_watch_null">No connected watches found running Wearable Extensions</string>
     <string name="interrupt_filter_sync_helper_setup_title">Setup</string>
     <string name="interrupt_filter_sync_helper_button_finish">Finish</string>

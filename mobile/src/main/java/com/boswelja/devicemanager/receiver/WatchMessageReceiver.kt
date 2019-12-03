@@ -22,7 +22,7 @@ import com.boswelja.devicemanager.common.batterysync.Utils
 import com.boswelja.devicemanager.common.interruptfiltersync.References.REQUEST_INTERRUPT_FILTER_ACCESS_STATUS_PATH
 import com.boswelja.devicemanager.ui.base.BasePreferenceActivity.Companion.EXTRA_PREFERENCE_KEY
 import com.boswelja.devicemanager.ui.batterysync.BatterySyncPreferenceActivity
-import com.boswelja.devicemanager.ui.interruptfiltersync.InterruptFilterSyncPreferenceActivity
+import com.boswelja.devicemanager.ui.dndsync.DnDSyncPreferenceActivity
 import com.boswelja.devicemanager.ui.main.MainActivity
 import com.google.android.gms.wearable.MessageEvent
 import com.google.android.gms.wearable.Wearable
@@ -61,7 +61,7 @@ class WatchMessageReceiver : WearableListenerService() {
                     PreferenceKey.INTERRUPT_FILTER_SYNC_TO_WATCH_KEY,
                     PreferenceKey.INTERRUPT_FILTER_SYNC_TO_PHONE_KEY,
                     PreferenceKey.INTERRUPT_FILTER_ON_WITH_THEATER_KEY -> {
-                        val intent = Intent(this, InterruptFilterSyncPreferenceActivity::class.java).apply {
+                        val intent = Intent(this, DnDSyncPreferenceActivity::class.java).apply {
                             putExtra(EXTRA_PREFERENCE_KEY, key)
                             flags = Intent.FLAG_ACTIVITY_NEW_TASK
                         }

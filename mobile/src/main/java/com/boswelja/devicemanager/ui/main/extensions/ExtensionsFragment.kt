@@ -22,7 +22,7 @@ import com.boswelja.devicemanager.receiver.DeviceAdminChangeReceiver.Companion.D
 import com.boswelja.devicemanager.ui.appmanager.AppManagerActivity
 import com.boswelja.devicemanager.ui.base.BasePreferenceFragment
 import com.boswelja.devicemanager.ui.batterysync.BatterySyncPreferenceActivity
-import com.boswelja.devicemanager.ui.interruptfiltersync.InterruptFilterSyncPreferenceActivity
+import com.boswelja.devicemanager.ui.dndsync.DnDSyncPreferenceActivity
 
 class ExtensionsFragment :
         BasePreferenceFragment(),
@@ -55,7 +55,7 @@ class ExtensionsFragment :
                 true
             }
             OPEN_INTERRUPT_FILTER_SYNC_PREF_KEY -> {
-                Intent(context!!, InterruptFilterSyncPreferenceActivity::class.java).also {
+                Intent(context!!, DnDSyncPreferenceActivity::class.java).also {
                     startActivity(it)
                 }
                 true
