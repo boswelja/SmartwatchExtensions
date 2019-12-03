@@ -8,14 +8,18 @@
 
     <ProgressBar
         android:id="@+id/progress_bar"
-        android:layout_width="match_parent"
-        android:layout_height="64dp" />
+        android:layout_width="240dp"
+        android:layout_height="wrap_content"
+        android:indeterminate="true"
+        style="@style/Widget.AppCompat.ProgressBar.Horizontal"/>
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/loading_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
         android:gravity="center_horizontal"
         android:textColor="?android:textColorPrimary"
         style="@style/TextAppearance.MaterialComponents.Body1"/>
