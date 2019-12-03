@@ -32,7 +32,7 @@ android {
                 removeUnusedCode true
                 removeUnusedResources true
                 obfuscate true
-                optimizeCode true
+                optimizeCode false
                 proguardFile 'proguard-rules.pro'
             }
         }
