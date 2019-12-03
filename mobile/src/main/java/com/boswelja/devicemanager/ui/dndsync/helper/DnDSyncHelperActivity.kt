@@ -9,26 +9,30 @@ package com.boswelja.devicemanager.ui.dndsync.helper
 
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
-import android.view.Menu
 import androidx.fragment.app.Fragment
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.Extensions.fromByteArray
 import com.boswelja.devicemanager.common.interruptfiltersync.References.REQUEST_INTERRUPT_FILTER_ACCESS_STATUS_PATH
 import com.boswelja.devicemanager.common.interruptfiltersync.References.REQUEST_SDK_INT_PATH
-import com.boswelja.devicemanager.ui.base.BaseWatchPickerActivity
+import com.boswelja.devicemanager.ui.base.BaseToolbarActivity
 import com.boswelja.devicemanager.ui.base.LoadingFragment
+import com.boswelja.devicemanager.watchconnectionmanager.WatchConnectionService
 import com.google.android.gms.wearable.MessageClient
 import com.google.android.gms.wearable.Wearable
 import java.math.BigInteger
 
-class DnDSyncHelperActivity : BaseWatchPickerActivity() {
+class DnDSyncHelperActivity : BaseToolbarActivity() {
 
-    private var messageClient: MessageClient? = null
+    private val watchConnectionManagerConnection = object : WatchConnectionService.Connection() {
+        override fun onWatchManagerBound(service: WatchConnectionService) {
+            watchConnectionManager = service
+            checkWatchSystemVersion()
+        }
 
-    private val loadingFragment: LoadingFragment = LoadingFragment()
-    private var errorFragment: ErrorFragment? = null
-    private var setupFragment: SetupFragment? = null
+        override fun onWatchManagerUnbound() {
+            watchConnectionManager = null
+        }
+    }
 
     private val messageListener = MessageClient.OnMessageReceivedListener {
         when (it.path) {
@@ -51,11 +55,14 @@ class DnDSyncHelperActivity : BaseWatchPickerActivity() {
         }
     }
 
-    override fun onWatchManagerBound() {
-        checkWatchSystemVersion()
-    }
+    private var watchConnectionManager: WatchConnectionService? = null
+    private var messageClient: MessageClient? = null
 
-    override fun getContentViewId(): Int = R.layout.activity_interrupt_filter_sync_helper
+    private val loadingFragment: LoadingFragment = LoadingFragment()
+    private var errorFragment: ErrorFragment? = null
+    private var setupFragment: SetupFragment? = null
+
+    override fun getContentViewId(): Int = R.layout.activity_dnd_sync_helper
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -71,15 +78,16 @@ class DnDSyncHelperActivity : BaseWatchPickerActivity() {
 
         messageClient = Wearable.getMessageClient(this)
         messageClient!!.addListener(messageListener)
+
+        WatchConnectionService.bind(this, watchConnectionManagerConnection)
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        messageClient?.removeListener(messageListener)
-    }
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        return true
+        messageClient?.removeListener(messageListener)
+
+        unbindService(watchConnectionManagerConnection)
     }
 
     private fun showLoadingFragment(animate: Boolean, reverse: Boolean = false) {
@@ -139,7 +147,6 @@ class DnDSyncHelperActivity : BaseWatchPickerActivity() {
     }
 
     private fun checkWatchSystemVersion() {
-        Log.d("DnDSyncHelperActivity", "watchConnectionManager == $watchConnectionManager")
         val connectedWatchId = watchConnectionManager?.getConnectedWatchId()
         if (!connectedWatchId.isNullOrEmpty()) {
             messageClient!!.sendMessage(connectedWatchId, REQUEST_SDK_INT_PATH, null)

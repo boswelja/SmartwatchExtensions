@@ -25,7 +25,7 @@ internal class SetupFragment : Fragment() {
     private var errorMessage: String? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
-            inflater.inflate(R.layout.fragment_interrupt_filter_sync_helper_setup, container, false)
+            inflater.inflate(R.layout.fragment_dnd_sync_helper_setup, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         view.findViewById<MaterialButton>(R.id.next_button)!!.apply {

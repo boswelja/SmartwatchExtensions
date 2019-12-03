@@ -22,7 +22,7 @@ internal class ErrorFragment : Fragment() {
     var watchUnreachable: Boolean = false
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
-            inflater.inflate(R.layout.fragment_interrupt_filter_sync_helper_error, container, false)
+            inflater.inflate(R.layout.fragment_dnd_sync_helper_error, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         if (watchVersionIncompatible) {
