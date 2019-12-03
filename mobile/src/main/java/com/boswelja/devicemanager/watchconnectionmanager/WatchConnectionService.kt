@@ -23,6 +23,7 @@ import com.boswelja.devicemanager.common.PreferenceKey
 import com.boswelja.devicemanager.common.References
 import com.google.android.gms.tasks.Task
 import com.google.android.gms.wearable.CapabilityClient
+import com.google.android.gms.wearable.CapabilityInfo
 import com.google.android.gms.wearable.DataClient
 import com.google.android.gms.wearable.DataItem
 import com.google.android.gms.wearable.Node
@@ -122,7 +123,7 @@ class WatchConnectionService :
         return ArrayList()
     }
 
-    fun getAllConnectedWatches(): Task<List<Node>> = nodeClient.connectedNodes
+    fun getAllConnectedWatches(): Task<CapabilityInfo> = capabilityClient.getCapability(References.CAPABILITY_WATCH_APP, CapabilityClient.FILTER_ALL)
 
     fun getConnectedWatch(): Watch? {
         val watch = database.watchDao().findById(connectedWatchId)

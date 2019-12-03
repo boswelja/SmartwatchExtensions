@@ -79,9 +79,9 @@ class WatchSetupFragment : Fragment() {
             watchConnectionManager!!.getAllConnectedWatches()
                     .addOnSuccessListener {
                         val notRegisteredWatches = ArrayList<Watch>()
-                        if (it.isNotEmpty()) {
+                        if (it.nodes.isNotEmpty()) {
                             val registeredWatches = watchConnectionManager!!.getAllRegisteredWatches()
-                            for (watchNode in it) {
+                            for (watchNode in it.nodes) {
                                 if (!registeredWatches.any { watch -> watch.id == watchNode.id }) {
                                     notRegisteredWatches.add(Watch(watchNode))
                                 }
