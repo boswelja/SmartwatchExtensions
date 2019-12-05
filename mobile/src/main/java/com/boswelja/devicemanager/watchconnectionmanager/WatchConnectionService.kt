@@ -124,20 +124,32 @@ class WatchConnectionService :
             val connectedNodes = Tasks.await(nodeClient.connectedNodes)
             val registeredWatches = getRegisteredWatches()
             val capableWatches = Tasks.await(capabilityClient.getCapability(References.CAPABILITY_WATCH_APP, CapabilityClient.FILTER_REACHABLE)).nodes
-            for (node in connectedNodes) {
-                if (!registeredWatches.any { it.id == node.id }) {
-                    availableWatches.add(Watch(node, capableWatches.any { it.id == node.id }))
+            withContext(Dispatchers.Default) {
+                for (node in connectedNodes) {
+                    if (!registeredWatches.any { it.id == node.id }) {
+                        availableWatches.add(Watch(node, capableWatches.any { it.id == node.id }))
+                    }
                 }
             }
         }
         return availableWatches
     }
 
-    fun getRegisteredWatches(): List<Watch> {
-        if (database.isOpen) {
-            return database.watchDao().getAll()
+    suspend fun getRegisteredWatches(): List<Watch> {
+        val registeredWatches = ArrayList<Watch>()
+        withContext(Dispatchers.IO) {
+            if (database.isOpen) {
+                val databaseWatches = database.watchDao().getAll()
+                val connectedNodes = Tasks.await(nodeClient.connectedNodes)
+                val capableNodes = Tasks.await(capabilityClient.getCapability(References.CAPABILITY_WATCH_APP, CapabilityClient.FILTER_ALL)).nodes
+                withContext(Dispatchers.Default) {
+                    for (watch in databaseWatches) {
+                        registeredWatches.add(Watch(watch.id, watch.name, watch.batterySyncJobId, capableNodes.any { it.id == watch.id }, connectedNodes.any { it.id == watch.id }))
+                    }
+                }
+            }
         }
-        return ArrayList()
+        return registeredWatches
     }
 
     fun getConnectedWatch(): Watch? {

@@ -25,6 +25,10 @@ import com.boswelja.devicemanager.ui.watchsetup.WatchSetupActivity
 import com.boswelja.devicemanager.watchconnectionmanager.Watch
 import com.boswelja.devicemanager.watchconnectionmanager.WatchConnectionInterface
 import com.boswelja.devicemanager.watchconnectionmanager.WatchConnectionService
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 abstract class BaseWatchPickerActivity :
         BaseToolbarActivity(),
@@ -45,6 +49,8 @@ abstract class BaseWatchPickerActivity :
             watchConnectionManager = null
         }
     }
+
+    private val coroutineContext = MainScope()
 
     var watchConnectionManager: WatchConnectionService? = null
     var connectedWatchId: String? = null
@@ -158,21 +164,29 @@ abstract class BaseWatchPickerActivity :
     }
 
     private fun loadConnectedWatches() {
-        if (watchConnectionManager != null) {
-            (watchPickerSpinner.adapter as WatchPickerAdapter).clear()
-            val watches = watchConnectionManager!!.getRegisteredWatches()
-            if (watches.isNotEmpty()) {
-                val connectedWatchId = watchConnectionManager!!.getConnectedWatchId()
-                var selectedWatchPosition = 0
-                watches.forEach {
-                    (watchPickerSpinner.adapter as WatchPickerAdapter).add(it)
-                    if (it.id == connectedWatchId) {
-                        selectedWatchPosition = (watchPickerSpinner.adapter as WatchPickerAdapter).getPosition(it)
+        coroutineContext.launch {
+            withContext(Dispatchers.Default) {
+                if (watchConnectionManager != null) {
+                    (watchPickerSpinner.adapter as WatchPickerAdapter).clear()
+                    val watches = watchConnectionManager!!.getRegisteredWatches()
+                    if (watches.isNotEmpty()) {
+                        val connectedWatchId = watchConnectionManager!!.getConnectedWatchId()
+                        var selectedWatchPosition = 0
+                        watches.forEach {
+                            withContext(Dispatchers.Main) {
+                                (watchPickerSpinner.adapter as WatchPickerAdapter).add(it)
+                            }
+                            if (it.id == connectedWatchId) {
+                                selectedWatchPosition = (watchPickerSpinner.adapter as WatchPickerAdapter).getPosition(it)
+                            }
+                        }
+                        withContext(Dispatchers.Main) {
+                            watchPickerSpinner.setSelection(selectedWatchPosition)
+                        }
+                    } else {
+                        startActivityForResult(Intent(this@BaseWatchPickerActivity, WatchSetupActivity::class.java), WATCH_SETUP_ACTIVITY_REQUEST_CODE)
                     }
                 }
-                watchPickerSpinner.setSelection(selectedWatchPosition)
-            } else {
-                startActivityForResult(Intent(this, WatchSetupActivity::class.java), WATCH_SETUP_ACTIVITY_REQUEST_CODE)
             }
         }
     }
