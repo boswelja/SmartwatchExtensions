@@ -7,11 +7,13 @@
  */
 package com.boswelja.devicemanager.ui.watchmanager
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.ui.base.BaseToolbarActivity
+import com.boswelja.devicemanager.ui.watchsetup.WatchSetupActivity
 import com.boswelja.devicemanager.watchconnectionmanager.Watch
 import com.boswelja.devicemanager.watchconnectionmanager.WatchConnectionInterface
 import com.boswelja.devicemanager.watchconnectionmanager.WatchConnectionService
@@ -27,12 +29,7 @@ class WatchManagerActivity :
     private val watchConnectionManagerConnection = object : WatchConnectionService.Connection() {
         override fun onWatchManagerBound(service: WatchConnectionService) {
             watchConnectionManager = service
-            coroutineScope.launch {
-                val registeredWatches = service.getRegisteredWatches()
-                withContext(Dispatchers.Main) {
-                    (watchManagerRecyclerView.adapter as WatchManagerAdapter).addWatches(registeredWatches)
-                }
-            }
+            updateRegisteredWatches()
         }
 
         override fun onWatchManagerUnbound() {
@@ -76,11 +73,43 @@ class WatchManagerActivity :
         unbindService(watchConnectionManagerConnection)
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        when (requestCode) {
+            WATCH_SETUP_ACTIVITY_REQUEST_CODE -> {
+                when (resultCode) {
+                    WatchSetupActivity.RESULT_WATCH_ADDED -> updateRegisteredWatches()
+                }
+            }
+            else -> super.onActivityResult(requestCode, resultCode, data)
+        }
+    }
+
+    private fun updateRegisteredWatches() {
+        coroutineScope.launch {
+            if (watchConnectionManager != null) {
+                val registeredWatches = watchConnectionManager!!.getRegisteredWatches()
+                withContext(Dispatchers.Main) {
+                    (watchManagerRecyclerView.adapter as WatchManagerAdapter).apply {
+                        setWatches(registeredWatches)
+                    }
+                }
+            }
+        }
+    }
+
     private fun setupRecyclerView() {
         watchManagerRecyclerView = findViewById(R.id.watch_manager_recycler_view)
         watchManagerRecyclerView.apply {
-            adapter = WatchManagerAdapter()
+            adapter = WatchManagerAdapter(this@WatchManagerActivity)
             layoutManager = LinearLayoutManager(this@WatchManagerActivity, LinearLayoutManager.VERTICAL, false)
         }
+    }
+
+    fun startWatchSetupActivity() {
+        startActivityForResult(Intent(this, WatchSetupActivity::class.java), WATCH_SETUP_ACTIVITY_REQUEST_CODE)
+    }
+
+    companion object {
+        private const val WATCH_SETUP_ACTIVITY_REQUEST_CODE = 54321
     }
 }

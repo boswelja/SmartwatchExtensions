@@ -17,10 +17,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.ui.common.WatchViewHolder
 import com.boswelja.devicemanager.ui.watchmanager.WatchInfoActivity.Companion.EXTRA_WATCH_ID
-import com.boswelja.devicemanager.ui.watchsetup.WatchSetupActivity
 import com.boswelja.devicemanager.watchconnectionmanager.Watch
 
-class WatchManagerAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class WatchManagerAdapter(private val activity: WatchManagerActivity) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private val watches = ArrayList<Watch>()
 
@@ -53,7 +52,7 @@ class WatchManagerAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                 addWatchHolder.icon.setImageResource(R.drawable.ic_add)
                 addWatchHolder.text.text = context.getString(R.string.watch_manager_add_watch_title)
                 addWatchHolder.itemView.setOnClickListener {
-                    context.startActivity(Intent(context, WatchSetupActivity::class.java))
+                    activity.startWatchSetupActivity()
                 }
             }
             VIEW_TYPE_SECTION_HEADER -> {
@@ -87,7 +86,8 @@ class WatchManagerAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private fun getWatch(position: Int) = watches[position - 2]
 
-    fun addWatches(newWatches: List<Watch>) {
+    fun setWatches(newWatches: List<Watch>) {
+        watches.clear()
         watches.addAll(newWatches)
         notifyDataSetChanged()
     }
