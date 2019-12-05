@@ -123,9 +123,10 @@ class WatchConnectionService :
         withContext(Dispatchers.IO) {
             val connectedNodes = Tasks.await(nodeClient.connectedNodes)
             val registeredWatches = getRegisteredWatches()
+            val capableWatches = Tasks.await(capabilityClient.getCapability(References.CAPABILITY_WATCH_APP, CapabilityClient.FILTER_REACHABLE)).nodes
             for (node in connectedNodes) {
                 if (!registeredWatches.any { it.id == node.id }) {
-                    availableWatches.add(Watch(node))
+                    availableWatches.add(Watch(node, capableWatches.any { it.id == node.id }))
                 }
             }
         }

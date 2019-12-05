@@ -158,7 +158,7 @@
     <string name="register_watch_toolbar_title">Add a Watch</string>
     <string name="register_watch_dialog_title">Add %s?</string>
     <string name="register_watch_dialog_message">This will add your %s to Wearable Extensions.</string>
-    <string name="register_watch_message_no_watches">No new watches found. Make sure the watch you want to add is turned on, is nearby and has Wearable Extensions installed.</string>
+    <string name="register_watch_message_no_watches">No new watches found. Make sure the watch you want to add is turned on and nearby.</string>
     <string name="register_watch_message_error">Failed to get nearby watches, try again.</string>
     <string name="register_watch_button_refresh">Refresh</string>
 

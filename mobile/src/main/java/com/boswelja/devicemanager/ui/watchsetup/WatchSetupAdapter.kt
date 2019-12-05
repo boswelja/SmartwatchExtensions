@@ -29,7 +29,11 @@ class WatchSetupAdapter(private val watchSetupFragment: WatchSetupFragment) : Re
         val watch = watches[position]
         holder.icon.setImageResource(R.drawable.ic_watch)
         holder.topLine.text = watch.name
-        holder.bottomLine.text = watch.id
+        holder.bottomLine.text = if (watch.hasApp) {
+            "Tap to Add"
+        } else {
+            "Missing Wearable Extensions"
+        }
         holder.itemView.setOnClickListener {
             watchSetupFragment.requestRegisterWatch(watch)
         }
