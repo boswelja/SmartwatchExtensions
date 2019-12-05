@@ -152,6 +152,7 @@
     <string name="forget_watch_dialog_message">Are you sure you want to forget your %s? This will clear all Wearable Extensions settings, and remove your %s from the app.</string>
 
     <!-- Watch Manager strings -->
+    <string name="watch_manager_title">Watch Manager</string>
     <string name="watch_manager_add_watch_title">Add Watch</string>
     <string name="watch_manager_registered_watch_header">Registered Watches</string>
 
@@ -164,6 +165,8 @@
     <string name="register_watch_button_refresh">Refresh</string>
     <string name="missing_app_dialog_title">Missing Wearable Extensions</string>
     <string name="missing_app_dialog_message">Your %s doesn\'t have Wearable Extensions installed, please install it from the Play Store and retry.</string>
+    <string name="watch_description_add">Tap to Add</string>
+    <string name="watch_description_missing_app">Missing Wearable Extensions</string>
 
     <!-- Welcome fragment strings -->
     <string name="welcome_to_text">Welcome to</string>

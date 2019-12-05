@@ -56,7 +56,7 @@ class WatchManagerActivity :
 
         supportActionBar?.apply {
             setDisplayHomeAsUpEnabled(true)
-            title = "Watch Manager"
+            title = getString(R.string.watch_manager_title)
             setDisplayShowTitleEnabled(true)
         }
 

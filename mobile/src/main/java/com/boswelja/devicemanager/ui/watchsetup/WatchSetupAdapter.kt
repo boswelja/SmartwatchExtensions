@@ -27,12 +27,13 @@ class WatchSetupAdapter(private val watchSetupFragment: WatchSetupFragment) : Re
 
     override fun onBindViewHolder(holder: WatchViewHolder, position: Int) {
         val watch = watches[position]
+        val context = holder.itemView.context
         holder.icon.setImageResource(R.drawable.ic_watch)
         holder.topLine.text = watch.name
         holder.bottomLine.text = if (watch.hasApp) {
-            "Tap to Add"
+            context.getString(R.string.watch_description_add)
         } else {
-            "Missing Wearable Extensions"
+            context.getString(R.string.watch_description_missing_app)
         }
         holder.itemView.setOnClickListener {
             watchSetupFragment.requestRegisterWatch(watch)
