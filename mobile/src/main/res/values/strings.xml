@@ -136,6 +136,8 @@
 
     <!-- Multi-watch strings -->
     <string name="watch_status_connected">Connected</string>
+    <string name="watch_status_disconnected">Disconnected</string>
+    <string name="watch_status_missing_app">Missing App</string>
 
     <!-- Changelog strings -->
     <string name="changelog_sheet_title">What\'s New</string>

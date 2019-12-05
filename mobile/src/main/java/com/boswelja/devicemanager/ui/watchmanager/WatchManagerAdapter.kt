@@ -65,7 +65,15 @@ class WatchManagerAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                 val watch = getWatch(position)
                 watchHolder.icon.setImageResource(R.drawable.ic_watch)
                 watchHolder.topLine.text = watch.name
-                watchHolder.bottomLine.text = watch.id
+                watchHolder.bottomLine.text = if (watch.connected) {
+                    if (watch.hasApp) {
+                        context.getString(R.string.watch_status_connected)
+                    } else {
+                        context.getString(R.string.watch_status_missing_app)
+                    }
+                } else {
+                    context.getString(R.string.watch_status_disconnected)
+                }
                 watchHolder.itemView.setOnClickListener {
                     Intent(context, WatchInfoActivity::class.java).apply {
                         putExtra(EXTRA_WATCH_ID, watch.id)

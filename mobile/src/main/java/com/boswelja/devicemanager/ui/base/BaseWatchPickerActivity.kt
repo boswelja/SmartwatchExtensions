@@ -167,7 +167,9 @@ abstract class BaseWatchPickerActivity :
         coroutineContext.launch {
             withContext(Dispatchers.Default) {
                 if (watchConnectionManager != null) {
-                    (watchPickerSpinner.adapter as WatchPickerAdapter).clear()
+                    withContext(Dispatchers.Main) {
+                        (watchPickerSpinner.adapter as WatchPickerAdapter).clear()
+                    }
                     val watches = watchConnectionManager!!.getRegisteredWatches()
                     if (watches.isNotEmpty()) {
                         val connectedWatchId = watchConnectionManager!!.getConnectedWatchId()
@@ -198,7 +200,6 @@ abstract class BaseWatchPickerActivity :
     class WatchPickerAdapter(context: Context) : ArrayAdapter<Watch>(context, 0) {
 
         private val layoutInflater = LayoutInflater.from(context)
-        private val watchConnectedString = context.getString(R.string.watch_status_connected)
 
         override fun getItemId(position: Int): Long {
             return getItem(position)?.id?.toLong(36) ?: -1
@@ -217,7 +218,15 @@ abstract class BaseWatchPickerActivity :
                 view = layoutInflater.inflate(R.layout.common_spinner_item_two_line, parent, false)
             }
             view!!.findViewById<AppCompatTextView>(R.id.title).text = watch.name
-            view.findViewById<AppCompatTextView>(R.id.subtitle).text = watchConnectedString
+            view.findViewById<AppCompatTextView>(R.id.subtitle).text = if (watch.connected) {
+                if (watch.hasApp) {
+                    context.getString(R.string.watch_status_connected)
+                } else {
+                    context.getString(R.string.watch_status_missing_app)
+                }
+            } else {
+                context.getString(R.string.watch_status_disconnected)
+            }
             return view
         }
     }
