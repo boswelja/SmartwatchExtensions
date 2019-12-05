@@ -111,6 +111,7 @@
     <string name="dialog_button_close">Close</string>
     <string name="dialog_button_yes">Yes</string>
     <string name="dialog_button_no">No</string>
+    <string name="dialog_button_ok">OK</string>
 
     <!-- Message strings -->
     <string name="message_battery_opt_warning_label_short">Battery Optimisation</string>
@@ -161,6 +162,8 @@
     <string name="register_watch_message_no_watches">No new watches found. Make sure the watch you want to add is turned on and nearby.</string>
     <string name="register_watch_message_error">Failed to get nearby watches, try again.</string>
     <string name="register_watch_button_refresh">Refresh</string>
+    <string name="missing_app_dialog_title">Missing Wearable Extensions</string>
+    <string name="missing_app_dialog_message">Your %s doesn\'t have Wearable Extensions installed, please install it from the Play Store and retry.</string>
 
     <!-- Welcome fragment strings -->
     <string name="welcome_to_text">Welcome to</string>

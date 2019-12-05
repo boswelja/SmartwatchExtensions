@@ -120,15 +120,23 @@ class WatchSetupFragment : Fragment() {
     fun requestRegisterWatch(watch: Watch) {
         MaterialAlertDialogBuilder(context!!).apply {
             background = context.getDrawable(R.drawable.dialog_background)
-            setTitle(getString(R.string.register_watch_dialog_title, watch.name))
-            setMessage(getString(R.string.register_watch_dialog_message, watch.name))
-            setPositiveButton(R.string.dialog_button_yes) { _, _ ->
-                watchConnectionManager?.addWatch(watch)
-                activity?.setResult(WatchSetupActivity.RESULT_WATCH_ADDED)
-                activity?.finish()
-            }
-            setNegativeButton(R.string.dialog_button_no) { dialogInterface, _ ->
-                dialogInterface.cancel()
+            if (watch.hasApp) {
+                setTitle(getString(R.string.register_watch_dialog_title, watch.name))
+                setMessage(getString(R.string.register_watch_dialog_message, watch.name))
+                setPositiveButton(R.string.dialog_button_yes) { _, _ ->
+                    watchConnectionManager?.addWatch(watch)
+                    activity?.setResult(WatchSetupActivity.RESULT_WATCH_ADDED)
+                    activity?.finish()
+                }
+                setNegativeButton(R.string.dialog_button_no) { dialogInterface, _ ->
+                    dialogInterface.cancel()
+                }
+            } else {
+                setTitle(R.string.missing_app_dialog_title)
+                setMessage(getString(R.string.missing_app_dialog_message, watch.name))
+                setPositiveButton(R.string.dialog_button_ok) { dialogInterface, _ ->
+                    dialogInterface.cancel()
+                }
             }
         }.also {
             it.show()
