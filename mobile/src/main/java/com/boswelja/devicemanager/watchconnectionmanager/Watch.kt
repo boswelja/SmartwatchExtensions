@@ -26,11 +26,11 @@ data class Watch(
 ) {
     constructor (id: String, name: String, batterySyncJobId: Int, hasApp: Boolean, connected: Boolean) : this(id, name, batterySyncJobId, hasApp, connected, HashMap(), HashMap())
 
-    constructor (id: String, name: String, batterySyncJobId: Int, hasApp: Boolean) : this(id, name, batterySyncJobId, hasApp, HashMap(), HashMap())
+    constructor (id: String, name: String, batterySyncJobId: Int, hasApp: Boolean) : this(id, name, batterySyncJobId, hasApp, true, HashMap(), HashMap())
 
-    constructor (id: String, name: String, batterySyncJobId: Int) : this(id, name, batterySyncJobId, false, HashMap(), HashMap())
+    constructor (id: String, name: String, batterySyncJobId: Int) : this(id, name, batterySyncJobId, false, true, HashMap(), HashMap())
 
-    constructor(node: Node, hasApp: Boolean, connected: Boolean) : this(node.id, node.displayName, Random.nextInt(100000, 999999), hasApp)
+    constructor(node: Node, hasApp: Boolean, connected: Boolean) : this(node.id, node.displayName, Random.nextInt(100000, 999999), hasApp, connected)
 
     constructor(node: Node, hasApp: Boolean) : this(node.id, node.displayName, Random.nextInt(100000, 999999), hasApp)
 
