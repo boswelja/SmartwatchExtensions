@@ -23,7 +23,7 @@ class WatchManagerActivity :
     private val watchConnectionManagerConnection = object : WatchConnectionService.Connection() {
         override fun onWatchManagerBound(service: WatchConnectionService) {
             watchConnectionManager = service
-            (watchManagerRecyclerView.adapter as WatchManagerAdapter).addWatches(service.getAllRegisteredWatches())
+            (watchManagerRecyclerView.adapter as WatchManagerAdapter).addWatches(service.getRegisteredWatches())
         }
 
         override fun onWatchManagerUnbound() {

@@ -160,7 +160,7 @@ abstract class BaseWatchPickerActivity :
     private fun loadConnectedWatches() {
         if (watchConnectionManager != null) {
             (watchPickerSpinner.adapter as WatchPickerAdapter).clear()
-            val watches = watchConnectionManager!!.getAllRegisteredWatches()
+            val watches = watchConnectionManager!!.getRegisteredWatches()
             if (watches.isNotEmpty()) {
                 val connectedWatchId = watchConnectionManager!!.getConnectedWatchId()
                 var selectedWatchPosition = 0

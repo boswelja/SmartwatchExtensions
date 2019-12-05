@@ -21,19 +21,25 @@ import com.boswelja.devicemanager.watchconnectionmanager.Watch
 import com.boswelja.devicemanager.watchconnectionmanager.WatchConnectionService
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class WatchSetupFragment : Fragment() {
 
     private val watchConnectionManagerConnection = object : WatchConnectionService.Connection() {
         override fun onWatchManagerBound(service: WatchConnectionService) {
             watchConnectionManager = service
-            updateAvailableWatches()
+            refreshAvailableWatches()
         }
 
         override fun onWatchManagerUnbound() {
             watchConnectionManager = null
         }
     }
+
+    private val coroutineScope = MainScope()
 
     private var watchConnectionManager: WatchConnectionService? = null
 
@@ -49,7 +55,7 @@ class WatchSetupFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         refreshButton = view.findViewById(R.id.refresh_button)
         refreshButton.setOnClickListener {
-            updateAvailableWatches()
+            refreshAvailableWatches()
         }
 
         progressBar = view.findViewById(R.id.progress_bar)
@@ -72,32 +78,21 @@ class WatchSetupFragment : Fragment() {
         context?.unbindService(watchConnectionManagerConnection)
     }
 
-    private fun updateAvailableWatches() {
+    private fun refreshAvailableWatches() {
         if (watchConnectionManager != null) {
             hideHelpMessage()
             setLoading(true)
-            watchConnectionManager!!.getAllConnectedWatches()
-                    .addOnSuccessListener {
-                        val notRegisteredWatches = ArrayList<Watch>()
-                        if (it.nodes.isNotEmpty()) {
-                            val registeredWatches = watchConnectionManager!!.getAllRegisteredWatches()
-                            for (watchNode in it.nodes) {
-                                if (!registeredWatches.any { watch -> watch.id == watchNode.id }) {
-                                    notRegisteredWatches.add(Watch(watchNode))
-                                }
-                            }
-                        }
-                        if (notRegisteredWatches.isNotEmpty()) {
-                            (watchSetupRecyclerView.adapter as WatchSetupAdapter).setWatches(notRegisteredWatches)
-                        } else {
-                            setHelpMessage(getString(R.string.register_watch_message_no_watches))
-                        }
-                        setLoading(false)
+            coroutineScope.launch {
+                val availableWatches = watchConnectionManager?.getAvailableWatches()!!
+                withContext(Dispatchers.Main) {
+                    if (availableWatches.isEmpty()) {
+                        setHelpMessage(getString(R.string.register_watch_message_no_watches))
+                    } else {
+                        (watchSetupRecyclerView.adapter as WatchSetupAdapter).setWatches(availableWatches)
                     }
-                    .addOnFailureListener {
-                        setLoading(false)
-                        setHelpMessage(getString(R.string.register_watch_message_error))
-                    }
+                    setLoading(false)
+                }
+            }
         }
     }
 
