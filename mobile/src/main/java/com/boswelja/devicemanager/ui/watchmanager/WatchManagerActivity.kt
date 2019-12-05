@@ -15,8 +15,10 @@ import com.boswelja.devicemanager.ui.base.BaseToolbarActivity
 import com.boswelja.devicemanager.watchconnectionmanager.Watch
 import com.boswelja.devicemanager.watchconnectionmanager.WatchConnectionInterface
 import com.boswelja.devicemanager.watchconnectionmanager.WatchConnectionService
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class WatchManagerActivity :
         BaseToolbarActivity(),
@@ -26,7 +28,10 @@ class WatchManagerActivity :
         override fun onWatchManagerBound(service: WatchConnectionService) {
             watchConnectionManager = service
             coroutineScope.launch {
-                (watchManagerRecyclerView.adapter as WatchManagerAdapter).addWatches(service.getRegisteredWatches())
+                val registeredWatches = service.getRegisteredWatches()
+                withContext(Dispatchers.Main) {
+                    (watchManagerRecyclerView.adapter as WatchManagerAdapter).addWatches(registeredWatches)
+                }
             }
         }
 
