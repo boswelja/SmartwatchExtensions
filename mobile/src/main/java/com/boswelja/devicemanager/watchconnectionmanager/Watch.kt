@@ -19,11 +19,15 @@ data class Watch(
     @PrimaryKey val id: String,
     @ColumnInfo(name = "name") val name: String,
     @ColumnInfo(name = "battery_sync_job_id") val batterySyncJobId: Int,
+    @Ignore val hasApp: Boolean,
     @Ignore val intPrefs: HashMap<String, Int>,
     @Ignore val boolPrefs: HashMap<String, Boolean>
 ) {
+    constructor (id: String, name: String, batterySyncJobId: Int, hasApp: Boolean) : this(id, name, batterySyncJobId, hasApp, HashMap(), HashMap())
 
-    constructor (id: String, name: String, batterySyncJobId: Int) : this(id, name, batterySyncJobId, HashMap(), HashMap())
+    constructor (id: String, name: String, batterySyncJobId: Int) : this(id, name, batterySyncJobId, false, HashMap(), HashMap())
+
+    constructor(node: Node, hasApp: Boolean) : this(node.id, node.displayName, Random.nextInt(100000, 999999), hasApp)
 
     constructor(node: Node) : this(node.id, node.displayName, Random.nextInt(100000, 999999))
 }
