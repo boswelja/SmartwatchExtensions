@@ -18,6 +18,7 @@ import androidx.preference.Preference
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.ui.base.BaseDayNightActivity.Companion.DAYNIGHT_MODE_KEY
 import com.boswelja.devicemanager.ui.base.BasePreferenceFragment
+import com.boswelja.devicemanager.ui.base.BaseWatchPickerActivity
 import com.boswelja.devicemanager.ui.watchmanager.WatchManagerActivity
 import com.boswelja.devicemanager.widget.WatchBatteryWidget
 
@@ -55,7 +56,7 @@ class AppSettingsFragment :
                 true
             }
             OPEN_WATCH_MANAGER_KEY -> {
-                startActivity(Intent(context, WatchManagerActivity::class.java))
+                activity.startWatchManagerActivity()
                 true
             }
             else -> false

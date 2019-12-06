@@ -21,6 +21,7 @@ import android.widget.Toast
 import androidx.appcompat.widget.AppCompatSpinner
 import androidx.appcompat.widget.AppCompatTextView
 import com.boswelja.devicemanager.R
+import com.boswelja.devicemanager.ui.watchmanager.WatchManagerActivity
 import com.boswelja.devicemanager.ui.watchsetup.WatchSetupActivity
 import com.boswelja.devicemanager.watchconnectionmanager.Watch
 import com.boswelja.devicemanager.watchconnectionmanager.WatchConnectionInterface
@@ -41,7 +42,7 @@ abstract class BaseWatchPickerActivity :
 
         override fun onWatchManagerBound(service: WatchConnectionService) {
             watchConnectionManager = service
-            loadConnectedWatches()
+            updateConnectedWatches()
             onWatchManagerBound()
         }
 
@@ -152,10 +153,17 @@ abstract class BaseWatchPickerActivity :
             WATCH_SETUP_ACTIVITY_REQUEST_CODE -> {
                 when (resultCode) {
                     WatchSetupActivity.RESULT_WATCH_ADDED -> {
-                        loadConnectedWatches()
+                        updateConnectedWatches()
                     }
                     WatchSetupActivity.RESULT_NO_WATCH_ADDED -> {
                         finish()
+                    }
+                }
+            }
+            WATCH_MANAGER_ACTIVITY_REQUEST_CODE -> {
+                when (resultCode) {
+                    WatchManagerActivity.RESULT_WATCH_LIST_CHANGED -> {
+                        updateConnectedWatches()
                     }
                 }
             }
@@ -163,7 +171,7 @@ abstract class BaseWatchPickerActivity :
         }
     }
 
-    private fun loadConnectedWatches() {
+    private fun updateConnectedWatches() {
         coroutineContext.launch {
             withContext(Dispatchers.Default) {
                 if (watchConnectionManager != null) {
@@ -193,8 +201,13 @@ abstract class BaseWatchPickerActivity :
         }
     }
 
+    fun startWatchManagerActivity() {
+        startActivityForResult(Intent(this, WatchManagerActivity::class.java), WATCH_MANAGER_ACTIVITY_REQUEST_CODE)
+    }
+
     companion object {
         private const val WATCH_SETUP_ACTIVITY_REQUEST_CODE = 54321
+        private const val WATCH_MANAGER_ACTIVITY_REQUEST_CODE = 65432
     }
 
     class WatchPickerAdapter(context: Context) : ArrayAdapter<Watch>(context, 0) {
