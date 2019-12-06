@@ -7,7 +7,6 @@
  */
 package com.boswelja.devicemanager.ui.watchmanager
 
-import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,7 +15,6 @@ import androidx.appcompat.widget.AppCompatTextView
 import androidx.recyclerview.widget.RecyclerView
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.ui.common.WatchViewHolder
-import com.boswelja.devicemanager.ui.watchmanager.WatchInfoActivity.Companion.EXTRA_WATCH_ID
 import com.boswelja.devicemanager.watchconnectionmanager.Watch
 
 class WatchManagerAdapter(private val activity: WatchManagerActivity) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
