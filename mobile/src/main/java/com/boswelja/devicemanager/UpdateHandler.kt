@@ -40,7 +40,7 @@ class UpdateHandler(private val activity: AppCompatActivity) {
                     remove("connected_watch_id")
                     putString("last_connected_id", lastConnectedId)
                 }
-                if (oldVersion < 2019120700) {
+                if (oldVersion < 2019120600) {
                     clear()
                 }
                 putInt(APP_VERSION_KEY, currentVersion)
