@@ -33,9 +33,9 @@ class MainActivity : BaseWatchPickerActivity() {
     override fun getContentViewId(): Int = R.layout.activity_main
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
         UpdateHandler(this)
+
+        super.onCreate(savedInstanceState)
 
         bottomNavigationView = findViewById(R.id.bottom_navigation)
         bottomNavigationView.setOnNavigationItemSelectedListener {
