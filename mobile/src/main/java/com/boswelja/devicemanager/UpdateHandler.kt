@@ -31,7 +31,7 @@ class UpdateHandler(private val activity: AppCompatActivity) {
         val oldVersion = sharedPreferences.getInt(APP_VERSION_KEY, currentVersion)
         if (oldVersion < currentVersion) {
             ChangelogDialogFragment().show(activity.supportFragmentManager, "ChangelogDialog")
-            sharedPreferences.edit {
+            sharedPreferences.edit(commit = true) {
                 if (oldVersion < 2019090243) {
                     remove("connected_watch_name")
                 }
