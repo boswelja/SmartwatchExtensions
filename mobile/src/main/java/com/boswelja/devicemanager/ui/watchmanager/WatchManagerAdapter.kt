@@ -74,11 +74,7 @@ class WatchManagerAdapter(private val activity: WatchManagerActivity) : Recycler
                     context.getString(R.string.watch_status_disconnected)
                 }
                 watchHolder.itemView.setOnClickListener {
-                    Intent(context, WatchInfoActivity::class.java).apply {
-                        putExtra(EXTRA_WATCH_ID, watch.id)
-                    }.also {
-                        context.startActivity(it)
-                    }
+                    activity.startWatchInfoActivity(watch)
                 }
             }
         }

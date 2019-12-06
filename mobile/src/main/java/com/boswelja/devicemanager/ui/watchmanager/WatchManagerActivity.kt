@@ -56,6 +56,8 @@ class WatchManagerActivity :
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        setResult(RESULT_WATCH_LIST_UNCHANGED)
+
         supportActionBar?.apply {
             setDisplayHomeAsUpEnabled(true)
             title = getString(R.string.watch_manager_title)
@@ -77,7 +79,22 @@ class WatchManagerActivity :
         when (requestCode) {
             WATCH_SETUP_ACTIVITY_REQUEST_CODE -> {
                 when (resultCode) {
-                    WatchSetupActivity.RESULT_WATCH_ADDED -> updateRegisteredWatches()
+                    WatchSetupActivity.RESULT_WATCH_ADDED -> {
+                        setResult(RESULT_WATCH_LIST_CHANGED)
+                        updateRegisteredWatches()
+                    }
+                }
+            }
+            WATCH_INFO_ACTIVITY_REQUEST_CODE -> {
+                when (resultCode) {
+                    WatchInfoActivity.RESULT_WATCH_NAME_CHANGED -> {
+                        setResult(RESULT_WATCH_LIST_CHANGED)
+                        updateRegisteredWatches()
+                    }
+                    WatchInfoActivity.RESULT_WATCH_REMOVED -> {
+                        setResult(RESULT_WATCH_LIST_CHANGED)
+                        updateRegisteredWatches()
+                    }
                 }
             }
             else -> super.onActivityResult(requestCode, resultCode, data)
@@ -109,7 +126,19 @@ class WatchManagerActivity :
         startActivityForResult(Intent(this, WatchSetupActivity::class.java), WATCH_SETUP_ACTIVITY_REQUEST_CODE)
     }
 
+    fun startWatchInfoActivity(watch: Watch) {
+        Intent(this, WatchInfoActivity::class.java).apply {
+            putExtra(WatchInfoActivity.EXTRA_WATCH_ID, watch.id)
+        }.also {
+            startActivityForResult(it, WATCH_INFO_ACTIVITY_REQUEST_CODE)
+        }
+    }
+
     companion object {
         private const val WATCH_SETUP_ACTIVITY_REQUEST_CODE = 54321
+        private const val WATCH_INFO_ACTIVITY_REQUEST_CODE = 65432
+
+        const val RESULT_WATCH_LIST_CHANGED = 1
+        const val RESULT_WATCH_LIST_UNCHANGED = 0
     }
 }
