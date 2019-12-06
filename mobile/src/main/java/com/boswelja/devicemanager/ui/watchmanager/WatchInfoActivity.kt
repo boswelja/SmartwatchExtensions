@@ -39,6 +39,7 @@ class WatchInfoActivity : BaseToolbarActivity() {
             if (!editable.isNullOrBlank()) {
                 watchNameLayout.isErrorEnabled = false
                 watchConnectionManager?.updateWatchNickname(watchId!!, editable.toString())
+                setResult(RESULT_WATCH_NAME_CHANGED)
             } else {
                 watchNameLayout.isErrorEnabled = true
                 watchNameField.error = "Nickname cannot be blank"
@@ -60,6 +61,8 @@ class WatchInfoActivity : BaseToolbarActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        setResult(RESULT_WATCH_UNCHANGED)
 
         watchId = intent?.getStringExtra(EXTRA_WATCH_ID)
 
@@ -97,6 +100,7 @@ class WatchInfoActivity : BaseToolbarActivity() {
                     .setPositiveButton(R.string.dialog_button_yes) { _, _ ->
                         val success = watchConnectionManager?.forgetWatch(watchId) == true
                         if (success) {
+                            setResult(RESULT_WATCH_REMOVED)
                             finish()
                         } else {
                             createSnackBar("Failed to forget your $watchName")
@@ -121,5 +125,9 @@ class WatchInfoActivity : BaseToolbarActivity() {
 
     companion object {
         const val EXTRA_WATCH_ID = "extra_watch_id"
+
+        const val RESULT_WATCH_UNCHANGED = 0
+        const val RESULT_WATCH_REMOVED = 1
+        const val RESULT_WATCH_NAME_CHANGED = 2
     }
 }
