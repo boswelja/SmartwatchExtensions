@@ -12,17 +12,16 @@ import android.widget.Toast
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.appmanager.AppManagerReferences
 import com.boswelja.devicemanager.common.appmanager.AppPackageInfoList
-import com.boswelja.devicemanager.ui.base.BaseWatchPickerActivity
+import com.boswelja.devicemanager.ui.base.BaseToolbarActivity
 import com.boswelja.devicemanager.ui.base.LoadingFragment
 import com.google.android.gms.wearable.MessageClient
 import com.google.android.gms.wearable.Wearable
 
-class AppManagerActivity : BaseWatchPickerActivity() {
-
-    override fun getContentViewId(): Int = R.layout.activity_app_manager
+class AppManagerActivity : BaseToolbarActivity() {
 
     private lateinit var messageClient: MessageClient
 
+    private var watchId: String? = null
     private var appManagerFragment: AppManagerFragment? = null
 
     private var isServiceRunning: Boolean = false
@@ -38,10 +37,22 @@ class AppManagerActivity : BaseWatchPickerActivity() {
         }
     }
 
+    override fun getContentViewId(): Int = R.layout.activity_app_manager
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        watchId = intent?.getStringExtra(EXTRA_WATCH_ID)
+        if (watchId.isNullOrEmpty()) {
+            notifyWatchNotFound()
+        }
+
+        supportActionBar?.apply {
+            title = "App Manager"
+            subtitle = "Showing apps on ${intent.getStringExtra(EXTRA_WATCH_NAME)}"
+            setDisplayHomeAsUpEnabled(true)
+            setDisplayShowTitleEnabled(true)
+        }
 
         supportFragmentManager.beginTransaction()
                 .replace(R.id.fragment_holder, LoadingFragment())
@@ -83,20 +94,23 @@ class AppManagerActivity : BaseWatchPickerActivity() {
 
     private fun startAppManagerService() {
         if (!isServiceRunning) {
-            if (!connectedWatchId.isNullOrEmpty()) {
-                isServiceRunning = true
-                messageClient.sendMessage(connectedWatchId!!, AppManagerReferences.START_SERVICE, null)
-            } else {
-                Toast.makeText(this, getString(R.string.app_manager_unable_to_connect), Toast.LENGTH_LONG).show()
-                finish()
-            }
+            isServiceRunning = true
+            messageClient.sendMessage(watchId!!, AppManagerReferences.START_SERVICE, null)
         }
     }
 
     private fun stopAppManagerService() {
-        if (!connectedWatchId.isNullOrEmpty() && isServiceRunning) {
-            isServiceRunning = false
-            messageClient.sendMessage(connectedWatchId!!, AppManagerReferences.STOP_SERVICE, null)
-        }
+        isServiceRunning = false
+        messageClient.sendMessage(watchId!!, AppManagerReferences.STOP_SERVICE, null)
+    }
+
+    private fun notifyWatchNotFound() {
+        Toast.makeText(this, getString(R.string.app_manager_unable_to_connect), Toast.LENGTH_LONG).show()
+        finish()
+    }
+
+    companion object {
+        const val EXTRA_WATCH_ID = "extra_watch_id"
+        const val EXTRA_WATCH_NAME = "extra_watch_name"
     }
 }

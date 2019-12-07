@@ -61,7 +61,11 @@ class ExtensionsFragment :
                 true
             }
             OPEN_APP_MANAGER_KEY -> {
-                Intent(context!!, AppManagerActivity::class.java).also {
+                Intent(context!!, AppManagerActivity::class.java).apply {
+                    val connectedWatch = activity.watchConnectionManager?.getConnectedWatch()
+                    putExtra(AppManagerActivity.EXTRA_WATCH_ID, connectedWatch?.id)
+                    putExtra(AppManagerActivity.EXTRA_WATCH_NAME, connectedWatch?.name)
+                }.also {
                     startActivity(it)
                 }
                 true
