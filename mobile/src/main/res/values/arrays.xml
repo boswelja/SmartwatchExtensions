@@ -16,9 +16,14 @@
     </string-array>
 
     <string-array name="version_changelog">
-        <item>Add support for multiple watches</item>
-        <item>Code optimisations for both mobile and wearable apps</item>
+        <item>Due to the complexity of the changes made by introducing multi-watch support, your settings have been cleared.</item>
+        <item>Add support for multiple watches!</item>
+        <item>Find the new Watch Manager in App Settings, where you can add and remove watches, as well as set a nickname for any watch</item>
+        <item>Do not Disturb Sync should now work on phones running Android 5.0 to 5.1, if you have a phone running either version please send feedback about your experience</item>
         <item>Device charge notifications now show the name of the device that\'s charged</item>
+        <item>Significant code and performance optimisations for the mobile app, more on the way</item>
+        <item>Code optimisations for the watch app</item>
+        <item>The usual dependency updates</item>
     </string-array>
 
     <string-array name="interrupt_filter_sync_to_watch_steps">
