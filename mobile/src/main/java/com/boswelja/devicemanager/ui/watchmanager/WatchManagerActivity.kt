@@ -89,11 +89,13 @@ class WatchManagerActivity :
                 when (resultCode) {
                     WatchInfoActivity.RESULT_WATCH_NAME_CHANGED -> {
                         setResult(RESULT_WATCH_LIST_CHANGED)
-                        updateRegisteredWatches()
+                        val watchId = data?.getStringExtra(WatchInfoActivity.EXTRA_WATCH_ID)
+                        updateSingleWatch(watchId)
                     }
                     WatchInfoActivity.RESULT_WATCH_REMOVED -> {
                         setResult(RESULT_WATCH_LIST_CHANGED)
-                        updateRegisteredWatches()
+                        val watchId = data?.getStringExtra(WatchInfoActivity.EXTRA_WATCH_ID)
+                        removeWatch(watchId)
                     }
                 }
             }
@@ -111,6 +113,25 @@ class WatchManagerActivity :
                     }
                 }
             }
+        }
+    }
+
+    private fun updateSingleWatch(watchId: String?) {
+        coroutineScope.launch {
+            withContext(Dispatchers.IO) {
+                val newWatchInfo = watchConnectionManager?.getWatchById(watchId)
+                if (newWatchInfo != null) {
+                    withContext(Dispatchers.Main) {
+                        (watchManagerRecyclerView.adapter as WatchManagerAdapter).updateWatch(newWatchInfo)
+                    }
+                }
+            }
+        }
+    }
+
+    private fun removeWatch(watchId: String?) {
+        if (!watchId.isNullOrEmpty()) {
+            (watchManagerRecyclerView.adapter as WatchManagerAdapter).removeWatch(watchId)
         }
     }
 
