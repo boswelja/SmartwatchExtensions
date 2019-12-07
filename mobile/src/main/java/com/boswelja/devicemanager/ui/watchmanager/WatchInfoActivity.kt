@@ -7,6 +7,7 @@
  */
 package com.boswelja.devicemanager.ui.watchmanager
 
+import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -39,7 +40,7 @@ class WatchInfoActivity : BaseToolbarActivity() {
             if (!editable.isNullOrBlank()) {
                 watchNameLayout.isErrorEnabled = false
                 watchConnectionManager?.updateWatchNickname(watchId!!, editable.toString())
-                setResult(RESULT_WATCH_NAME_CHANGED)
+                resultCode = RESULT_WATCH_NAME_CHANGED
             } else {
                 watchNameLayout.isErrorEnabled = true
                 watchNameField.error = "Nickname cannot be blank"
@@ -54,6 +55,8 @@ class WatchInfoActivity : BaseToolbarActivity() {
     private var watchConnectionManager: WatchConnectionService? = null
     private var watchId: String? = null
 
+    private var resultCode = RESULT_WATCH_UNCHANGED
+
     private lateinit var watchNameLayout: TextInputLayout
     private lateinit var watchNameField: TextInputEditText
 
@@ -61,8 +64,6 @@ class WatchInfoActivity : BaseToolbarActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        setResult(RESULT_WATCH_UNCHANGED)
 
         watchId = intent?.getStringExtra(EXTRA_WATCH_ID)
 
@@ -100,7 +101,7 @@ class WatchInfoActivity : BaseToolbarActivity() {
                     .setPositiveButton(R.string.dialog_button_yes) { _, _ ->
                         val success = watchConnectionManager?.forgetWatch(watchId) == true
                         if (success) {
-                            setResult(RESULT_WATCH_REMOVED)
+                            resultCode = RESULT_WATCH_REMOVED
                             finish()
                         } else {
                             createSnackBar("Failed to forget your $watchName")
@@ -121,6 +122,17 @@ class WatchInfoActivity : BaseToolbarActivity() {
     override fun onPause() {
         super.onPause()
         unbindService(watchConnectionManagerConnection)
+    }
+
+    override fun finish() {
+        if (resultCode != RESULT_WATCH_UNCHANGED) {
+            Intent().putExtra(EXTRA_WATCH_ID, watchId).also {
+                setResult(resultCode, it)
+            }
+        } else {
+            setResult(resultCode)
+        }
+        super.finish()
     }
 
     companion object {
