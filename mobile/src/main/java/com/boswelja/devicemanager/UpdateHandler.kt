@@ -10,7 +10,6 @@ package com.boswelja.devicemanager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.edit
 import androidx.preference.PreferenceManager
-import com.boswelja.devicemanager.ui.changelog.ChangelogDialogFragment
 
 class UpdateHandler(private val activity: AppCompatActivity) {
 
@@ -30,7 +29,6 @@ class UpdateHandler(private val activity: AppCompatActivity) {
         val currentVersion = BuildConfig.VERSION_CODE
         val oldVersion = sharedPreferences.getInt(APP_VERSION_KEY, currentVersion)
         if (oldVersion < currentVersion) {
-            ChangelogDialogFragment().show(activity.supportFragmentManager, "ChangelogDialog")
             sharedPreferences.edit(commit = true) {
                 if (oldVersion < 2019090243) {
                     remove("connected_watch_name")
