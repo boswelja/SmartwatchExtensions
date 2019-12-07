@@ -48,8 +48,8 @@ class AppManagerActivity : BaseToolbarActivity() {
         }
 
         supportActionBar?.apply {
-            title = "App Manager"
-            subtitle = "Showing apps on ${intent.getStringExtra(EXTRA_WATCH_NAME)}"
+            setTitle(R.string.app_manager_activity_title)
+            subtitle = getString(R.string.app_manager_activity_subtitle, intent.getStringExtra(EXTRA_WATCH_NAME))
             setDisplayHomeAsUpEnabled(true)
             setDisplayShowTitleEnabled(true)
         }

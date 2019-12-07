@@ -39,7 +39,7 @@ class AppPermissionDialogFragment(private val requestedPermissions: Array<String
         return AlertDialog.Builder(context!!)
                 .setPositiveButton(R.string.dialog_button_close) { dialog, _ -> dialog.dismiss() }
                 .setItems(permissions, null)
-                .setTitle("Requested Permissions")
+                .setTitle(R.string.app_info_requested_permissions_dialog_title)
                 .create()
     }
 }
