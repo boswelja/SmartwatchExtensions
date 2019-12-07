@@ -18,6 +18,10 @@ import com.google.android.material.button.MaterialButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class WatchInfoActivity : BaseToolbarActivity() {
 
@@ -25,8 +29,10 @@ class WatchInfoActivity : BaseToolbarActivity() {
         override fun onWatchManagerBound(service: WatchConnectionService) {
             watchConnectionManager = service
 
-            watchNameField.setText(service.getWatchById(watchId)?.name)
-            watchNameField.addTextChangedListener(nicknameChangeListener)
+            coroutineScope.launch {
+                watchNameField.setText(service.getWatchById(watchId)?.name)
+                watchNameField.addTextChangedListener(nicknameChangeListener)
+            }
         }
 
         override fun onWatchManagerUnbound() {
@@ -52,6 +58,8 @@ class WatchInfoActivity : BaseToolbarActivity() {
         override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {} // Do nothing
     }
 
+    private val coroutineScope = MainScope()
+
     private var watchConnectionManager: WatchConnectionService? = null
     private var watchId: String? = null
 
@@ -74,43 +82,51 @@ class WatchInfoActivity : BaseToolbarActivity() {
         watchNameLayout = findViewById(R.id.watch_name_layout)
         watchNameField = findViewById(R.id.watch_name_field)
         findViewById<MaterialButton>(R.id.clear_preferences_button)?.setOnClickListener {
-            val watchName = watchConnectionManager?.getWatchById(watchId)?.name
-            MaterialAlertDialogBuilder(this)
-                    .setBackground(getDrawable(R.drawable.dialog_background))
-                    .setTitle(R.string.clear_preferences_dialog_title)
-                    .setMessage(getString(R.string.clear_preferences_dialog_message, watchName))
-                    .setPositiveButton(R.string.dialog_button_yes) { _, _ ->
-                        val success = watchConnectionManager?.clearPreferencesForWatch(watchId) == true
-                        if (success) {
-                            createSnackBar("Successfully cleared settings for your $watchName")
-                        } else {
-                            createSnackBar("Failed to clear settings for your $watchName")
-                        }
-                    }
-                    .setNegativeButton(R.string.dialog_button_no) { dialogInterface, _ ->
-                        dialogInterface.dismiss()
-                    }
-                    .show()
+            coroutineScope.launch {
+                val watchName = watchConnectionManager?.getWatchById(watchId)?.name
+                withContext(Dispatchers.Main) {
+                    MaterialAlertDialogBuilder(this@WatchInfoActivity)
+                            .setBackground(getDrawable(R.drawable.dialog_background))
+                            .setTitle(R.string.clear_preferences_dialog_title)
+                            .setMessage(getString(R.string.clear_preferences_dialog_message, watchName))
+                            .setPositiveButton(R.string.dialog_button_yes) { _, _ ->
+                                val success = watchConnectionManager?.clearPreferencesForWatch(watchId) == true
+                                if (success) {
+                                    createSnackBar("Successfully cleared settings for your $watchName")
+                                } else {
+                                    createSnackBar("Failed to clear settings for your $watchName")
+                                }
+                            }
+                            .setNegativeButton(R.string.dialog_button_no) { dialogInterface, _ ->
+                                dialogInterface.dismiss()
+                            }
+                            .show()
+                }
+            }
         }
         findViewById<MaterialButton>(R.id.forget_watch_button)?.setOnClickListener {
-            val watchName = watchConnectionManager?.getWatchById(watchId)?.name
-            MaterialAlertDialogBuilder(this)
-                    .setBackground(getDrawable(R.drawable.dialog_background))
-                    .setTitle(R.string.forget_watch_dialog_title)
-                    .setMessage(getString(R.string.forget_watch_dialog_message, watchName, watchName))
-                    .setPositiveButton(R.string.dialog_button_yes) { _, _ ->
-                        val success = watchConnectionManager?.forgetWatch(watchId) == true
-                        if (success) {
-                            resultCode = RESULT_WATCH_REMOVED
-                            finish()
-                        } else {
-                            createSnackBar("Failed to forget your $watchName")
-                        }
-                    }
-                    .setNegativeButton(R.string.dialog_button_no) { dialogInterface, _ ->
-                        dialogInterface.dismiss()
-                    }
-                    .show()
+            coroutineScope.launch {
+                val watchName = watchConnectionManager?.getWatchById(watchId)?.name
+                withContext(Dispatchers.Main) {
+                    MaterialAlertDialogBuilder(this@WatchInfoActivity)
+                            .setBackground(getDrawable(R.drawable.dialog_background))
+                            .setTitle(R.string.forget_watch_dialog_title)
+                            .setMessage(getString(R.string.forget_watch_dialog_message, watchName, watchName))
+                            .setPositiveButton(R.string.dialog_button_yes) { _, _ ->
+                                val success = watchConnectionManager?.forgetWatch(watchId) == true
+                                if (success) {
+                                    resultCode = RESULT_WATCH_REMOVED
+                                    finish()
+                                } else {
+                                    createSnackBar("Failed to forget your $watchName")
+                                }
+                            }
+                            .setNegativeButton(R.string.dialog_button_no) { dialogInterface, _ ->
+                                dialogInterface.dismiss()
+                            }
+                            .show()
+                }
+            }
         }
     }
 

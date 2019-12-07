@@ -152,6 +152,23 @@ class WatchConnectionService :
         return registeredWatches
     }
 
+    suspend fun getWatchById(watchId: String?): Watch? {
+        var watch: Watch? = null
+        withContext(Dispatchers.IO) {
+            if (database.isOpen and !watchId.isNullOrEmpty()) {
+                val databaseWatch = database.watchDao().findById(watchId!!)
+                val connectedNodes = Tasks.await(nodeClient.connectedNodes)
+                val capableNodes = Tasks.await(capabilityClient.getCapability(References.CAPABILITY_WATCH_APP, CapabilityClient.FILTER_ALL)).nodes
+                withContext(Dispatchers.Default) {
+                    if (databaseWatch != null) {
+                        watch = Watch(databaseWatch.id, databaseWatch.name, databaseWatch.batterySyncJobId, capableNodes.any { it.id == databaseWatch.id }, connectedNodes.any { it.id == databaseWatch.id })
+                    }
+                }
+            }
+        }
+        return watch
+    }
+
     fun getConnectedWatch(): Watch? {
         val watch = database.watchDao().findById(connectedWatchId)
         if (watch != null) {
@@ -313,13 +330,6 @@ class WatchConnectionService :
             return true
         }
         return false
-    }
-
-    fun getWatchById(watchId: String?): Watch? {
-        if (database.isOpen or !watchId.isNullOrEmpty()) {
-            return database.watchDao().findById(watchId!!)
-        }
-        return null
     }
 
     fun addWatch(watch: Watch): Boolean {
