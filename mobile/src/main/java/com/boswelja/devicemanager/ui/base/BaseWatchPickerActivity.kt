@@ -11,13 +11,10 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
-import android.widget.Toast
 import androidx.appcompat.widget.AppCompatSpinner
 import androidx.appcompat.widget.AppCompatTextView
 import com.boswelja.devicemanager.R
@@ -121,31 +118,6 @@ abstract class BaseWatchPickerActivity :
     override fun onDestroy() {
         super.onDestroy()
         unbindService(watchConnManServiceConnection)
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.watch_picker_toolbar_menu, menu)
-        return true
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.menu_item_force_sync -> {
-                val forceSyncPreferencesTask = watchConnectionManager?.forceSyncPreferences()
-                if (forceSyncPreferencesTask != null) {
-                    forceSyncPreferencesTask
-                            .addOnSuccessListener {
-                                Toast.makeText(this, "Successfully synced all preferences with the selected watch", Toast.LENGTH_LONG).show()
-                            }
-                            .addOnFailureListener {
-                                Toast.makeText(this, "Failed to sync all preferences with the selected watch", Toast.LENGTH_LONG).show()
-                            }
-                } else {
-                    Toast.makeText(this, "Failed to sync all preferences with the selected watch", Toast.LENGTH_LONG).show()
-                }
-            }
-        }
-        return super.onOptionsItemSelected(item)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
