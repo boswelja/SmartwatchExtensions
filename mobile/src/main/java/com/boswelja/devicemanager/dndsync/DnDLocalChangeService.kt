@@ -35,7 +35,7 @@ class DnDLocalChangeService :
             watchConnectionManager = service
             service.registerWatchPreferenceChangeInterface(this@DnDLocalChangeService)
 
-            val preferences = service.getBoolPrefsForRegisteredWatches(PreferenceKey.INTERRUPT_FILTER_SYNC_TO_WATCH_KEY)
+            val preferences = service.getBoolPrefsForRegisteredWatches(PreferenceKey.DND_SYNC_TO_WATCH_KEY)
             if (preferences != null) {
                 for (preference in preferences) {
                     sendToWatch[preference.watchId] = preference.value
@@ -63,7 +63,7 @@ class DnDLocalChangeService :
     private var watchConnectionManager: WatchConnectionService? = null
 
     override fun boolPreferenceChanged(boolPreference: BoolPreference) {
-        if (boolPreference.key == PreferenceKey.INTERRUPT_FILTER_SYNC_TO_WATCH_KEY) {
+        if (boolPreference.key == PreferenceKey.DND_SYNC_TO_WATCH_KEY) {
             sendToWatch[boolPreference.watchId] = boolPreference.value
             stopIfUnneeded()
         }

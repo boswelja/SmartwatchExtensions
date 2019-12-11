@@ -52,7 +52,7 @@ object Utils {
                 } catch (e: SecurityException) {
                     e.printStackTrace()
                     val prefs = PreferenceManager.getDefaultSharedPreferences(context)
-                    prefs.edit().putBoolean(PreferenceKey.INTERRUPT_FILTER_SYNC_TO_PHONE_KEY, false).apply()
+                    prefs.edit().putBoolean(PreferenceKey.DND_SYNC_TO_PHONE_KEY, false).apply()
                 }
             } else {
                 val audioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager

@@ -19,9 +19,9 @@ import androidx.preference.Preference
 import androidx.preference.SwitchPreference
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.Compat
-import com.boswelja.devicemanager.common.PreferenceKey.INTERRUPT_FILTER_ON_WITH_THEATER_KEY
-import com.boswelja.devicemanager.common.PreferenceKey.INTERRUPT_FILTER_SYNC_TO_PHONE_KEY
-import com.boswelja.devicemanager.common.PreferenceKey.INTERRUPT_FILTER_SYNC_TO_WATCH_KEY
+import com.boswelja.devicemanager.common.PreferenceKey.DND_SYNC_WITH_THEATER_KEY
+import com.boswelja.devicemanager.common.PreferenceKey.DND_SYNC_TO_PHONE_KEY
+import com.boswelja.devicemanager.common.PreferenceKey.DND_SYNC_TO_WATCH_KEY
 import com.boswelja.devicemanager.dndsync.DnDLocalChangeService
 import com.boswelja.devicemanager.ui.base.BasePreferenceFragment
 import com.boswelja.devicemanager.ui.dndsync.helper.DnDSyncHelperActivity
@@ -39,13 +39,13 @@ class DnDSyncPreferenceFragment :
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
         when (key) {
-            INTERRUPT_FILTER_SYNC_TO_WATCH_KEY -> {
+            DND_SYNC_TO_WATCH_KEY -> {
                 interruptFilterSyncToWatchPreference.isChecked = sharedPreferences?.getBoolean(key, false)!!
             }
-            INTERRUPT_FILTER_SYNC_TO_PHONE_KEY -> {
+            DND_SYNC_TO_PHONE_KEY -> {
                 interruptFilterSyncToPhonePreference.isChecked = sharedPreferences?.getBoolean(key, false)!!
             }
-            INTERRUPT_FILTER_ON_WITH_THEATER_KEY -> {
+            DND_SYNC_WITH_THEATER_KEY -> {
                 interruptFilterOnWithTheaterPreference.isChecked = sharedPreferences?.getBoolean(key, false)!!
             }
         }
@@ -53,7 +53,7 @@ class DnDSyncPreferenceFragment :
 
     override fun onPreferenceChange(preference: Preference?, newValue: Any?): Boolean {
         return when (val key = preference?.key) {
-            INTERRUPT_FILTER_SYNC_TO_WATCH_KEY -> {
+            DND_SYNC_TO_WATCH_KEY -> {
                 val value = newValue == true
                 if (value) {
                     startActivityForResult(Intent(context, DnDSyncHelperActivity::class.java), HELPER_REQUEST_CODE)
@@ -65,8 +65,8 @@ class DnDSyncPreferenceFragment :
                 }
                 false
             }
-            INTERRUPT_FILTER_SYNC_TO_PHONE_KEY,
-            INTERRUPT_FILTER_ON_WITH_THEATER_KEY -> {
+            DND_SYNC_TO_PHONE_KEY,
+            DND_SYNC_WITH_THEATER_KEY -> {
                 val value = newValue == true
                 preference.sharedPreferences.edit().putBoolean(key, value).apply()
                 if (value) {
@@ -98,8 +98,8 @@ class DnDSyncPreferenceFragment :
             val notificationPolicyAccessGranted = notificationManager.isNotificationPolicyAccessGranted
             if (!notificationPolicyAccessGranted) {
                 preferenceManager.sharedPreferences.edit()
-                        .putBoolean(INTERRUPT_FILTER_SYNC_TO_PHONE_KEY, false)
-                        .putBoolean(INTERRUPT_FILTER_ON_WITH_THEATER_KEY, false)
+                        .putBoolean(DND_SYNC_TO_PHONE_KEY, false)
+                        .putBoolean(DND_SYNC_WITH_THEATER_KEY, false)
                         .apply()
             }
         }
@@ -113,9 +113,9 @@ class DnDSyncPreferenceFragment :
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         addPreferencesFromResource(R.xml.prefs_interrupt_filter_sync)
 
-        interruptFilterSyncToWatchPreference = findPreference(INTERRUPT_FILTER_SYNC_TO_WATCH_KEY)!!
-        interruptFilterSyncToPhonePreference = findPreference(INTERRUPT_FILTER_SYNC_TO_PHONE_KEY)!!
-        interruptFilterOnWithTheaterPreference = findPreference(INTERRUPT_FILTER_ON_WITH_THEATER_KEY)!!
+        interruptFilterSyncToWatchPreference = findPreference(DND_SYNC_TO_WATCH_KEY)!!
+        interruptFilterSyncToPhonePreference = findPreference(DND_SYNC_TO_PHONE_KEY)!!
+        interruptFilterOnWithTheaterPreference = findPreference(DND_SYNC_WITH_THEATER_KEY)!!
 
         interruptFilterSyncToWatchPreference.onPreferenceChangeListener = this
         interruptFilterSyncToPhonePreference.onPreferenceChangeListener = this
@@ -128,8 +128,8 @@ class DnDSyncPreferenceFragment :
                 val enabled = resultCode == DnDSyncHelperActivity.RESULT_OK
                 interruptFilterSyncToWatchPreference.isChecked = enabled
                 interruptFilterSyncToWatchPreference.sharedPreferences.edit()
-                        .putBoolean(INTERRUPT_FILTER_SYNC_TO_WATCH_KEY, enabled).apply()
-                getWatchConnectionManager()?.updatePreferenceOnWatch(INTERRUPT_FILTER_SYNC_TO_WATCH_KEY)
+                        .putBoolean(DND_SYNC_TO_WATCH_KEY, enabled).apply()
+                getWatchConnectionManager()?.updatePreferenceOnWatch(DND_SYNC_TO_WATCH_KEY)
                 if (enabled) {
                     Compat.startForegroundService(context!!, Intent(context!!, DnDLocalChangeService::class.java))
                 }

@@ -26,8 +26,8 @@ import androidx.core.app.NotificationCompat
 import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.Compat
-import com.boswelja.devicemanager.common.PreferenceKey.INTERRUPT_FILTER_ON_WITH_THEATER_KEY
-import com.boswelja.devicemanager.common.PreferenceKey.INTERRUPT_FILTER_SYNC_TO_PHONE_KEY
+import com.boswelja.devicemanager.common.PreferenceKey.DND_SYNC_WITH_THEATER_KEY
+import com.boswelja.devicemanager.common.PreferenceKey.DND_SYNC_TO_PHONE_KEY
 import com.boswelja.devicemanager.common.dndsync.References.DND_SYNC_LOCAL_NOTI_ID
 import com.boswelja.devicemanager.common.dndsync.References.DND_SYNC_NOTI_CHANNEL_ID
 import com.boswelja.devicemanager.common.dndsync.References.START_ACTIVITY_FROM_NOTI_ID
@@ -54,10 +54,10 @@ class DnDLocalChangeListener : Service() {
     private val theaterModeObserver = TheaterModeObserver(this, Handler())
     private val preferenceChangeListener = SharedPreferences.OnSharedPreferenceChangeListener { sharedPreferences, key ->
         when (key) {
-            INTERRUPT_FILTER_SYNC_TO_PHONE_KEY -> {
+            DND_SYNC_TO_PHONE_KEY -> {
                 setDnDSyncToPhone(sharedPreferences.getBoolean(key, false))
             }
-            INTERRUPT_FILTER_ON_WITH_THEATER_KEY -> {
+            DND_SYNC_WITH_THEATER_KEY -> {
                 setDnDSyncWithTheaterMode(sharedPreferences.getBoolean(key, false))
             }
         }
@@ -73,8 +73,8 @@ class DnDLocalChangeListener : Service() {
 
         sharedPreferences.registerOnSharedPreferenceChangeListener(preferenceChangeListener)
 
-        setDnDSyncToPhone(sharedPreferences.getBoolean(INTERRUPT_FILTER_SYNC_TO_PHONE_KEY, false))
-        setDnDSyncWithTheaterMode(sharedPreferences.getBoolean(INTERRUPT_FILTER_ON_WITH_THEATER_KEY, false))
+        setDnDSyncToPhone(sharedPreferences.getBoolean(DND_SYNC_TO_PHONE_KEY, false))
+        setDnDSyncWithTheaterMode(sharedPreferences.getBoolean(DND_SYNC_WITH_THEATER_KEY, false))
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             createNotificationChannel()

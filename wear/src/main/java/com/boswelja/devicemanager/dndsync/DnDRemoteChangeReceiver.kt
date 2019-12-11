@@ -23,7 +23,7 @@ class DnDRemoteChangeReceiver : WearableListenerService() {
 
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
 
-        if (sharedPreferences.getBoolean(PreferenceKey.INTERRUPT_FILTER_SYNC_TO_WATCH_KEY, false)) {
+        if (sharedPreferences.getBoolean(PreferenceKey.DND_SYNC_TO_WATCH_KEY, false)) {
             val dataEvent = dataEventBuffer.last()
             if (dataEvent.type == DataEvent.TYPE_CHANGED) {
                 val dataMap = DataMapItem.fromDataItem(dataEvent.dataItem).dataMap

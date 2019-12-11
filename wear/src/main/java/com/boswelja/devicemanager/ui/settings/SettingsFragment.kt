@@ -26,9 +26,9 @@ import com.boswelja.devicemanager.common.Extensions.fromByteArray
 import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_PHONE_CHARGE_NOTI_KEY
 import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_SYNC_ENABLED_KEY
 import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_WATCH_CHARGE_NOTI_KEY
-import com.boswelja.devicemanager.common.PreferenceKey.INTERRUPT_FILTER_ON_WITH_THEATER_KEY
-import com.boswelja.devicemanager.common.PreferenceKey.INTERRUPT_FILTER_SYNC_TO_PHONE_KEY
-import com.boswelja.devicemanager.common.PreferenceKey.INTERRUPT_FILTER_SYNC_TO_WATCH_KEY
+import com.boswelja.devicemanager.common.PreferenceKey.DND_SYNC_WITH_THEATER_KEY
+import com.boswelja.devicemanager.common.PreferenceKey.DND_SYNC_TO_PHONE_KEY
+import com.boswelja.devicemanager.common.PreferenceKey.DND_SYNC_TO_WATCH_KEY
 import com.boswelja.devicemanager.common.dndsync.References.REQUEST_INTERRUPT_FILTER_ACCESS_STATUS_PATH
 import com.boswelja.devicemanager.service.PreferenceSyncService
 import com.google.android.gms.wearable.MessageClient
@@ -66,9 +66,9 @@ class SettingsFragment :
             BATTERY_SYNC_ENABLED_KEY,
             BATTERY_PHONE_CHARGE_NOTI_KEY,
             BATTERY_WATCH_CHARGE_NOTI_KEY,
-            INTERRUPT_FILTER_SYNC_TO_WATCH_KEY,
-            INTERRUPT_FILTER_SYNC_TO_PHONE_KEY,
-            INTERRUPT_FILTER_ON_WITH_THEATER_KEY -> {
+            DND_SYNC_TO_WATCH_KEY,
+            DND_SYNC_TO_PHONE_KEY,
+            DND_SYNC_WITH_THEATER_KEY -> {
                 val newValue = sharedPreferences?.getBoolean(key, false) == true
                 findPreference<TwoStatePreference>(key)?.isChecked = newValue
             }
@@ -85,7 +85,7 @@ class SettingsFragment :
                 preferenceSyncService?.pushNewData(key)
                 false
             }
-            INTERRUPT_FILTER_SYNC_TO_WATCH_KEY -> {
+            DND_SYNC_TO_WATCH_KEY -> {
                 val value = newValue == true
                 if (value) {
                     val canEnableSync = Utils.checkDnDAccess(context!!)
@@ -101,8 +101,8 @@ class SettingsFragment :
                 }
                 false
             }
-            INTERRUPT_FILTER_SYNC_TO_PHONE_KEY,
-            INTERRUPT_FILTER_ON_WITH_THEATER_KEY -> {
+            DND_SYNC_TO_PHONE_KEY,
+            DND_SYNC_WITH_THEATER_KEY -> {
                 val value = newValue == true
                 if (value) {
                     messageClient = Wearable.getMessageClient(preference.context)
@@ -174,13 +174,13 @@ class SettingsFragment :
     }
 
     private fun setupDnDSyncPrefs() {
-        findPreference<TwoStatePreference>(INTERRUPT_FILTER_SYNC_TO_WATCH_KEY)!!
+        findPreference<TwoStatePreference>(DND_SYNC_TO_WATCH_KEY)!!
                 .onPreferenceChangeListener = this
 
-        findPreference<TwoStatePreference>(INTERRUPT_FILTER_SYNC_TO_PHONE_KEY)!!
+        findPreference<TwoStatePreference>(DND_SYNC_TO_PHONE_KEY)!!
                 .onPreferenceChangeListener = this
 
-        findPreference<TwoStatePreference>(INTERRUPT_FILTER_ON_WITH_THEATER_KEY)!!
+        findPreference<TwoStatePreference>(DND_SYNC_WITH_THEATER_KEY)!!
                 .onPreferenceChangeListener = this
     }
 

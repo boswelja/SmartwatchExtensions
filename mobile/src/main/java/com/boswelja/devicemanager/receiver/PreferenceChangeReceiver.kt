@@ -71,7 +71,7 @@ class PreferenceChangeReceiver : WearableListenerService() {
                     BatterySyncJob.stopJob(watchConnectionManager)
                 }
             }
-            PreferenceKey.INTERRUPT_FILTER_SYNC_TO_WATCH_KEY -> {
+            PreferenceKey.DND_SYNC_TO_WATCH_KEY -> {
                 if (newValue == true) {
                     Intent(this, DnDLocalChangeService::class.java).also {
                         Compat.startForegroundService(this, it)
@@ -93,9 +93,9 @@ class PreferenceChangeReceiver : WearableListenerService() {
                         PreferenceKey.BATTERY_SYNC_ENABLED_KEY,
                         PreferenceKey.BATTERY_PHONE_CHARGE_NOTI_KEY,
                         PreferenceKey.BATTERY_WATCH_CHARGE_NOTI_KEY,
-                        PreferenceKey.INTERRUPT_FILTER_SYNC_TO_WATCH_KEY,
-                        PreferenceKey.INTERRUPT_FILTER_SYNC_TO_PHONE_KEY,
-                        PreferenceKey.INTERRUPT_FILTER_ON_WITH_THEATER_KEY -> {
+                        PreferenceKey.DND_SYNC_TO_WATCH_KEY,
+                        PreferenceKey.DND_SYNC_TO_PHONE_KEY,
+                        PreferenceKey.DND_SYNC_WITH_THEATER_KEY -> {
                             val newValue = dataMap.getBoolean(key)
                             putBoolean(key, newValue)
                             onPreferenceChanged(key, newValue)
@@ -120,9 +120,9 @@ class PreferenceChangeReceiver : WearableListenerService() {
                     PreferenceKey.BATTERY_SYNC_ENABLED_KEY,
                     PreferenceKey.BATTERY_PHONE_CHARGE_NOTI_KEY,
                     PreferenceKey.BATTERY_WATCH_CHARGE_NOTI_KEY,
-                    PreferenceKey.INTERRUPT_FILTER_SYNC_TO_WATCH_KEY,
-                    PreferenceKey.INTERRUPT_FILTER_SYNC_TO_PHONE_KEY,
-                    PreferenceKey.INTERRUPT_FILTER_ON_WITH_THEATER_KEY -> {
+                    PreferenceKey.DND_SYNC_TO_WATCH_KEY,
+                    PreferenceKey.DND_SYNC_TO_PHONE_KEY,
+                    PreferenceKey.DND_SYNC_WITH_THEATER_KEY -> {
                         val newValue = dataMap.getBoolean(key)
                         watchConnectionManager?.updatePrefInDatabase(senderId, key, newValue)
                     }

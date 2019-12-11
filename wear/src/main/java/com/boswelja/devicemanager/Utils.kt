@@ -56,7 +56,7 @@ object Utils {
             } catch (e: SecurityException) {
                 e.printStackTrace()
                 val prefs = PreferenceManager.getDefaultSharedPreferences(context)
-                prefs.edit().putBoolean(PreferenceKey.INTERRUPT_FILTER_SYNC_TO_WATCH_KEY, false).apply()
+                prefs.edit().putBoolean(PreferenceKey.DND_SYNC_TO_WATCH_KEY, false).apply()
             }
         }
     }

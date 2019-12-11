@@ -228,9 +228,9 @@ class WatchConnectionService :
             val phoneBatteryChargedNoti = sharedPreferences.getBoolean(PreferenceKey.BATTERY_PHONE_CHARGE_NOTI_KEY, false)
             val watchBatteryChargedNoti = sharedPreferences.getBoolean(PreferenceKey.BATTERY_WATCH_CHARGE_NOTI_KEY, false)
             val batteryChargeThreshold = sharedPreferences.getInt(PreferenceKey.BATTERY_CHARGE_THRESHOLD_KEY, 90)
-            val interruptFilterSyncToWatch = sharedPreferences.getBoolean(PreferenceKey.INTERRUPT_FILTER_SYNC_TO_WATCH_KEY, false)
-            val interruptFilterSyncToPhone = sharedPreferences.getBoolean(PreferenceKey.INTERRUPT_FILTER_SYNC_TO_PHONE_KEY, false)
-            val interruptFilterSyncWithTheater = sharedPreferences.getBoolean(PreferenceKey.INTERRUPT_FILTER_ON_WITH_THEATER_KEY, false)
+            val interruptFilterSyncToWatch = sharedPreferences.getBoolean(PreferenceKey.DND_SYNC_TO_WATCH_KEY, false)
+            val interruptFilterSyncToPhone = sharedPreferences.getBoolean(PreferenceKey.DND_SYNC_TO_PHONE_KEY, false)
+            val interruptFilterSyncWithTheater = sharedPreferences.getBoolean(PreferenceKey.DND_SYNC_WITH_THEATER_KEY, false)
             val lockPhoneEnabled = sharedPreferences.getBoolean(PreferenceKey.PHONE_LOCKING_ENABLED_KEY, false)
 
             // Create updated sharedPreferences object
@@ -239,9 +239,9 @@ class WatchConnectionService :
             syncedPrefUpdateReq.dataMap.putBoolean(PreferenceKey.BATTERY_PHONE_CHARGE_NOTI_KEY, phoneBatteryChargedNoti)
             syncedPrefUpdateReq.dataMap.putBoolean(PreferenceKey.BATTERY_WATCH_CHARGE_NOTI_KEY, watchBatteryChargedNoti)
             syncedPrefUpdateReq.dataMap.putInt(PreferenceKey.BATTERY_CHARGE_THRESHOLD_KEY, batteryChargeThreshold)
-            syncedPrefUpdateReq.dataMap.putBoolean(PreferenceKey.INTERRUPT_FILTER_SYNC_TO_WATCH_KEY, interruptFilterSyncToWatch)
-            syncedPrefUpdateReq.dataMap.putBoolean(PreferenceKey.INTERRUPT_FILTER_SYNC_TO_PHONE_KEY, interruptFilterSyncToPhone)
-            syncedPrefUpdateReq.dataMap.putBoolean(PreferenceKey.INTERRUPT_FILTER_ON_WITH_THEATER_KEY, interruptFilterSyncWithTheater)
+            syncedPrefUpdateReq.dataMap.putBoolean(PreferenceKey.DND_SYNC_TO_WATCH_KEY, interruptFilterSyncToWatch)
+            syncedPrefUpdateReq.dataMap.putBoolean(PreferenceKey.DND_SYNC_TO_PHONE_KEY, interruptFilterSyncToPhone)
+            syncedPrefUpdateReq.dataMap.putBoolean(PreferenceKey.DND_SYNC_WITH_THEATER_KEY, interruptFilterSyncWithTheater)
             syncedPrefUpdateReq.dataMap.putBoolean(PreferenceKey.PHONE_LOCKING_ENABLED_KEY, lockPhoneEnabled)
 
             // Send updated sharedPreferences
@@ -260,9 +260,9 @@ class WatchConnectionService :
                 PreferenceKey.BATTERY_SYNC_ENABLED_KEY,
                 PreferenceKey.BATTERY_PHONE_CHARGE_NOTI_KEY,
                 PreferenceKey.BATTERY_WATCH_CHARGE_NOTI_KEY,
-                PreferenceKey.INTERRUPT_FILTER_SYNC_TO_PHONE_KEY,
-                PreferenceKey.INTERRUPT_FILTER_SYNC_TO_WATCH_KEY,
-                PreferenceKey.INTERRUPT_FILTER_ON_WITH_THEATER_KEY -> {
+                PreferenceKey.DND_SYNC_TO_PHONE_KEY,
+                PreferenceKey.DND_SYNC_TO_WATCH_KEY,
+                PreferenceKey.DND_SYNC_WITH_THEATER_KEY -> {
                     val newValue = sharedPreferences.getBoolean(key, false)
                     syncedPrefUpdateReq.dataMap.putBoolean(key, newValue)
                     connectedWatch.boolPrefs[key] = newValue
@@ -383,9 +383,9 @@ class WatchConnectionService :
             remove(PreferenceKey.BATTERY_SYNC_ENABLED_KEY)
             remove(PreferenceKey.BATTERY_PHONE_CHARGE_NOTI_KEY)
             remove(PreferenceKey.BATTERY_WATCH_CHARGE_NOTI_KEY)
-            remove(PreferenceKey.INTERRUPT_FILTER_SYNC_TO_PHONE_KEY)
-            remove(PreferenceKey.INTERRUPT_FILTER_SYNC_TO_WATCH_KEY)
-            remove(PreferenceKey.INTERRUPT_FILTER_ON_WITH_THEATER_KEY)
+            remove(PreferenceKey.DND_SYNC_TO_PHONE_KEY)
+            remove(PreferenceKey.DND_SYNC_TO_WATCH_KEY)
+            remove(PreferenceKey.DND_SYNC_WITH_THEATER_KEY)
             remove(PreferenceKey.BATTERY_CHARGE_THRESHOLD_KEY)
         }
     }

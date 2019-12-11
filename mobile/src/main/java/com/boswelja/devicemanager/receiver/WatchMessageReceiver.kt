@@ -58,9 +58,9 @@ class WatchMessageReceiver : WearableListenerService() {
                         }
                         startActivity(intent)
                     }
-                    PreferenceKey.INTERRUPT_FILTER_SYNC_TO_WATCH_KEY,
-                    PreferenceKey.INTERRUPT_FILTER_SYNC_TO_PHONE_KEY,
-                    PreferenceKey.INTERRUPT_FILTER_ON_WITH_THEATER_KEY -> {
+                    PreferenceKey.DND_SYNC_TO_WATCH_KEY,
+                    PreferenceKey.DND_SYNC_TO_PHONE_KEY,
+                    PreferenceKey.DND_SYNC_WITH_THEATER_KEY -> {
                         val intent = Intent(this, DnDSyncPreferenceActivity::class.java).apply {
                             putExtra(EXTRA_PREFERENCE_KEY, key)
                             flags = Intent.FLAG_ACTIVITY_NEW_TASK

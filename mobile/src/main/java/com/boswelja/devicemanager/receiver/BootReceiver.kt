@@ -13,7 +13,7 @@ import com.boswelja.devicemanager.batterysync.BatterySyncJob
 import com.boswelja.devicemanager.common.BaseBootReceiver
 import com.boswelja.devicemanager.common.Compat
 import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_SYNC_ENABLED_KEY
-import com.boswelja.devicemanager.common.PreferenceKey.INTERRUPT_FILTER_SYNC_TO_WATCH_KEY
+import com.boswelja.devicemanager.common.PreferenceKey.DND_SYNC_TO_WATCH_KEY
 import com.boswelja.devicemanager.dndsync.DnDLocalChangeService
 import com.boswelja.devicemanager.watchconnectionmanager.WatchConnectionService
 
@@ -29,7 +29,7 @@ class BootReceiver : BaseBootReceiver() {
     }
 
     override fun onBootCompleted(context: Context?) {
-        if (sharedPreferences.getBoolean(INTERRUPT_FILTER_SYNC_TO_WATCH_KEY, false)) {
+        if (sharedPreferences.getBoolean(DND_SYNC_TO_WATCH_KEY, false)) {
             startInterruptFilterSyncService(context)
         }
         if (sharedPreferences.getBoolean(BATTERY_SYNC_ENABLED_KEY, false)) {

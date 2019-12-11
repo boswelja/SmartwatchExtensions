@@ -24,7 +24,7 @@ class DnDSyncPreferenceActivity : BasePreferenceActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        if (sharedPreferences.getBoolean(PreferenceKey.INTERRUPT_FILTER_SYNC_TO_WATCH_KEY, false)) {
+        if (sharedPreferences.getBoolean(PreferenceKey.DND_SYNC_TO_WATCH_KEY, false)) {
             Intent(this, DnDLocalChangeService::class.java).also {
                 Compat.startForegroundService(this, it)
             }

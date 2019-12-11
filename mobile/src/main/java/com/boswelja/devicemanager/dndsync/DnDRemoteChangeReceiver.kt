@@ -43,7 +43,7 @@ class DnDRemoteChangeReceiver : WearableListenerService() {
     override fun onDataChanged(dataEventBuffer: DataEventBuffer) {
         super.onDataChanged(dataEventBuffer)
         if (watchConnectionManager != null) {
-            val dndSyncReceiveEnabledPrefs = watchConnectionManager!!.getBoolPrefsForRegisteredWatches(PreferenceKey.INTERRUPT_FILTER_SYNC_TO_PHONE_KEY)
+            val dndSyncReceiveEnabledPrefs = watchConnectionManager!!.getBoolPrefsForRegisteredWatches(PreferenceKey.DND_SYNC_TO_PHONE_KEY)
 
             if (!dndSyncReceiveEnabledPrefs.isNullOrEmpty()) {
                 val dndStatePerWatch = HashMap<String, Boolean>()
