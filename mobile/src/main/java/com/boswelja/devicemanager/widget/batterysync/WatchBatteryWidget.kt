@@ -5,7 +5,7 @@
  * This file, and any part of the Wearable Extensions app/s cannot be copied and/or distributed
  * without permission from Jack Boswell (boswelja) <boswela@outlook.com>
  */
-package com.boswelja.devicemanager.widget
+package com.boswelja.devicemanager.widget.batterysync
 
 import android.app.PendingIntent
 import android.appwidget.AppWidgetManager

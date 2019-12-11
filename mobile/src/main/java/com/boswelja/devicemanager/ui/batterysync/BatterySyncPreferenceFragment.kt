@@ -24,7 +24,7 @@ import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_SYNC_INTERVAL_KEY
 import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_WATCH_CHARGE_NOTI_KEY
 import com.boswelja.devicemanager.ui.base.BasePreferenceFragment
 import com.boswelja.devicemanager.ui.batterysync.Utils.updateBatteryStats
-import com.boswelja.devicemanager.widget.WatchBatteryWidget
+import com.boswelja.devicemanager.widget.batterysync.WatchBatteryWidget
 
 class BatterySyncPreferenceFragment :
         BasePreferenceFragment(),

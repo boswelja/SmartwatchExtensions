@@ -127,7 +127,8 @@
             </intent-filter>
         </service>
 
-        <receiver android:name=".widget.WatchBatteryWidget">
+        <receiver android:name=".widget.batterysync.WatchBatteryWidget"
+            android:enabled="false">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>

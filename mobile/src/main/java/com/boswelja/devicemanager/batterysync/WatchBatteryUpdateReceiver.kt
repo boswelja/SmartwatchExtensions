@@ -24,7 +24,7 @@ import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_SYNC_LAST_WHEN_KE
 import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_WATCH_CHARGE_NOTI_KEY
 import com.boswelja.devicemanager.common.batterysync.References.BATTERY_STATUS_PATH
 import com.boswelja.devicemanager.watchconnectionmanager.WatchConnectionService
-import com.boswelja.devicemanager.widget.WatchBatteryWidget
+import com.boswelja.devicemanager.widget.batterysync.WatchBatteryWidget
 import com.google.android.gms.wearable.MessageEvent
 import com.google.android.gms.wearable.WearableListenerService
 import kotlinx.coroutines.Dispatchers
@@ -58,7 +58,8 @@ class WatchBatteryUpdateReceiver : WearableListenerService() {
                                 sendChargedNoti(watch.name, watch.intPrefs[BATTERY_CHARGE_THRESHOLD_KEY] ?: 90)
                                 service.updatePrefInDatabase(watch.id, BATTERY_CHARGED_NOTI_SENT, true)
                             } else {
-                                cancelChargedNoti()
+                                val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+                                notificationManager.cancel(BATTERY_CHARGED_NOTI_ID)
                                 service.updatePrefInDatabase(watch.id, BATTERY_CHARGED_NOTI_SENT, false)
                             }
                         } else {
@@ -119,11 +120,6 @@ class WatchBatteryUpdateReceiver : WearableListenerService() {
                 .build()
 
         notificationManager.notify(BATTERY_CHARGED_NOTI_ID, noti)
-    }
-
-    private fun cancelChargedNoti() {
-        val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        notificationManager.cancel(BATTERY_CHARGED_NOTI_ID)
     }
 
     companion object {
