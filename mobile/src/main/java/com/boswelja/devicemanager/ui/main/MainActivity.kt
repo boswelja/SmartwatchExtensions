@@ -9,8 +9,8 @@ package com.boswelja.devicemanager.ui.main
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
-import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.EnvironmentUpdater
+import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.PreferenceKey
 import com.boswelja.devicemanager.ui.base.BasePreferenceActivity.Companion.EXTRA_PREFERENCE_KEY
 import com.boswelja.devicemanager.ui.base.BaseWatchPickerActivity

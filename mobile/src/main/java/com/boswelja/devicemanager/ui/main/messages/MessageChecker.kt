@@ -11,9 +11,9 @@ import android.content.Context
 import android.os.Build
 import android.os.PowerManager
 import androidx.preference.PreferenceManager
+import com.boswelja.devicemanager.batterysync.WatchBatteryUpdateReceiver
 import com.boswelja.devicemanager.common.Compat
 import com.boswelja.devicemanager.common.PreferenceKey
-import com.boswelja.devicemanager.batterysync.WatchBatteryUpdateReceiver
 
 object MessageChecker {
 

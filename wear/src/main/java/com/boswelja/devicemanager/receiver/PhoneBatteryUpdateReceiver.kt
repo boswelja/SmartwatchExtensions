@@ -54,7 +54,6 @@ class PhoneBatteryUpdateReceiver : WearableListenerService() {
                 notificationManager.cancel(BATTERY_CHARGED_NOTI_ID)
             }
 
-
             ProviderUpdateRequester(this, ComponentName(packageName, PhoneBatteryComplicationProvider::class.java.name)).requestUpdateAll()
         }
     }
