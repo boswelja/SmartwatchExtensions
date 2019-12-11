@@ -8,6 +8,7 @@
 package com.boswelja.devicemanager.service
 
 import android.app.Notification
+import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.app.Service
@@ -20,16 +21,16 @@ import android.os.Build
 import android.os.Handler
 import android.os.IBinder
 import android.provider.Settings
+import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import androidx.preference.PreferenceManager
+import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.AtomicCounter
 import com.boswelja.devicemanager.common.PreferenceKey.INTERRUPT_FILTER_ON_WITH_THEATER_KEY
 import com.boswelja.devicemanager.common.PreferenceKey.INTERRUPT_FILTER_SYNC_TO_PHONE_KEY
-import com.boswelja.devicemanager.common.R
 import com.boswelja.devicemanager.common.interruptfiltersync.InterruptFilterChangeReceiver
 import com.boswelja.devicemanager.common.interruptfiltersync.References.INTERRUPT_FILTER_SYNC_NOTI_CHANNEL_ID
 import com.boswelja.devicemanager.common.interruptfiltersync.Utils
-import com.boswelja.devicemanager.common.interruptfiltersync.Utils.createNotiChannel
 import com.boswelja.devicemanager.ui.main.MainActivity
 
 class InterruptFilterLocalChangeListener : Service() {
@@ -146,6 +147,24 @@ class InterruptFilterLocalChangeListener : Service() {
                     unregisterReceiver(interruptFilterChangeReceiver)
                 } catch (ignored: IllegalArgumentException) {}
                 stopIfNeeded()
+            }
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun createNotiChannel(context: Context) {
+        val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+
+        if (notificationManager.getNotificationChannel(INTERRUPT_FILTER_SYNC_NOTI_CHANNEL_ID) == null) {
+            NotificationChannel(
+                    INTERRUPT_FILTER_SYNC_NOTI_CHANNEL_ID,
+                    context.getString(R.string.noti_channel_dnd_sync_title),
+                    NotificationManager.IMPORTANCE_LOW).apply {
+                enableLights(false)
+                enableVibration(false)
+                setShowBadge(false)
+            }.also {
+                notificationManager.createNotificationChannel(it)
             }
         }
     }

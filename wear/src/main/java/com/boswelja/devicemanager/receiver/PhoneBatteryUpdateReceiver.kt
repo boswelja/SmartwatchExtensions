@@ -17,8 +17,8 @@ import android.support.wearable.complications.ProviderUpdateRequester
 import androidx.core.app.NotificationCompat
 import androidx.core.content.edit
 import androidx.preference.PreferenceManager
+import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.PreferenceKey
-import com.boswelja.devicemanager.common.R
 import com.boswelja.devicemanager.complication.PhoneBatteryComplicationProvider
 import com.google.android.gms.tasks.Tasks
 import com.google.android.gms.wearable.MessageEvent
@@ -65,7 +65,7 @@ class PhoneBatteryUpdateReceiver : WearableListenerService() {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && notificationManager.getNotificationChannel(BATTERY_CHARGED_NOTI_CHANNEL_ID) == null) {
                 val channel = NotificationChannel(
                         BATTERY_CHARGED_NOTI_CHANNEL_ID,
-                        getString(R.string.device_charged_noti_channel_name),
+                        getString(R.string.noti_channel_phone_charged_title),
                         NotificationManager.IMPORTANCE_HIGH).apply {
                     enableVibration(true)
                     setShowBadge(true)

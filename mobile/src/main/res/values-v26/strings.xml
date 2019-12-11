@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Notification Channel strings -->
+    <string name="noti_channel_watch_charged_title">Watch Charged</string>
+    <string name="noti_channel_dnd_sync_title">Do not Disturb Sync</string>
+
+</resources>

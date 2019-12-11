@@ -43,7 +43,7 @@ class EnvironmentUpdater(private val context: Context) {
         if (notificationManager.getNotificationChannel(WatchBatteryUpdateReceiver.BATTERY_CHARGED_NOTI_CHANNEL_ID) == null) {
             NotificationChannel(
                     WatchBatteryUpdateReceiver.BATTERY_CHARGED_NOTI_CHANNEL_ID,
-                    context.getString(R.string.device_charged_noti_channel_name),
+                    context.getString(R.string.noti_channel_watch_charged_title),
                     NotificationManager.IMPORTANCE_HIGH).apply {
                 enableLights(false)
                 enableVibration(true)
@@ -56,7 +56,7 @@ class EnvironmentUpdater(private val context: Context) {
         if (notificationManager.getNotificationChannel(References.INTERRUPT_FILTER_SYNC_NOTI_CHANNEL_ID) == null) {
             NotificationChannel(
                     References.INTERRUPT_FILTER_SYNC_NOTI_CHANNEL_ID,
-                    context.getString(com.boswelja.devicemanager.common.R.string.interrupt_filter_sync_noti_channel_name),
+                    context.getString(R.string.noti_channel_dnd_sync_title),
                     NotificationManager.IMPORTANCE_LOW).apply {
                 enableLights(false)
                 enableVibration(false)
