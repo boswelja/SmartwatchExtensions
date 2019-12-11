@@ -44,13 +44,13 @@ dependencies {
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$versions.kotlin_version"
 
-    implementation 'com.android.billingclient:billing:2.0.3'
+    implementation 'com.android.billingclient:billing:2.1.0'
 
     implementation "androidx.core:core-ktx:$versions.androidx_core_ktx"
     implementation "androidx.appcompat:appcompat:$versions.androidx_appcompat"
     implementation "androidx.preference:preference-ktx:$versions.androidx_preference"
     implementation "androidx.constraintlayout:constraintlayout:$versions.androidx_constraintlayout"
-    implementation 'androidx.browser:browser:1.2.0-beta01'
+    implementation 'androidx.browser:browser:1.2.0-rc01'
     implementation "androidx.room:room-runtime:$versions.androidx_room"
     implementation "androidx.room:room-ktx:$versions.androidx_room"
 
