@@ -21,7 +21,7 @@ import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_PHONE_CHARGE_NOTI
 import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_SYNC_ENABLED_KEY
 import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_SYNC_INTERVAL_KEY
 import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_WATCH_CHARGE_NOTI_KEY
-import com.boswelja.devicemanager.common.batterysync.BatteryUpdateReceiver
+import com.boswelja.devicemanager.receiver.WatchBatteryUpdateReceiver
 import com.boswelja.devicemanager.ui.base.BasePreferenceFragment
 import com.boswelja.devicemanager.ui.batterysync.Utils.updateBatteryStats
 import com.boswelja.devicemanager.widget.WatchBatteryWidget
@@ -90,7 +90,7 @@ class BatterySyncPreferenceFragment :
         super.onResume()
         preferenceManager.sharedPreferences.registerOnSharedPreferenceChangeListener(this)
         if (preferenceManager.sharedPreferences.getBoolean(BATTERY_WATCH_CHARGE_NOTI_KEY, false) &&
-                !Compat.areNotificationsEnabled(context!!, BatteryUpdateReceiver.BATTERY_CHARGED_NOTI_CHANNEL_ID)) {
+                !Compat.areNotificationsEnabled(context!!, WatchBatteryUpdateReceiver.BATTERY_CHARGED_NOTI_CHANNEL_ID)) {
             preferenceManager.sharedPreferences.edit()
                     .putBoolean(BATTERY_WATCH_CHARGE_NOTI_KEY, false)
                     .apply()

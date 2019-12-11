@@ -13,7 +13,7 @@ import android.os.PowerManager
 import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.common.Compat
 import com.boswelja.devicemanager.common.PreferenceKey
-import com.boswelja.devicemanager.common.batterysync.BatteryUpdateReceiver
+import com.boswelja.devicemanager.receiver.WatchBatteryUpdateReceiver
 
 object MessageChecker {
 
@@ -39,7 +39,7 @@ object MessageChecker {
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
         return !sharedPreferences.getBoolean(IGNORE_WATCH_CHARGE_NOTI_WARNING_KEY, false) &&
                 sharedPreferences.getBoolean(PreferenceKey.BATTERY_WATCH_CHARGE_NOTI_KEY, false) &&
-                !Compat.areNotificationsEnabled(context, BatteryUpdateReceiver.BATTERY_CHARGED_NOTI_CHANNEL_ID)
+                !Compat.areNotificationsEnabled(context, WatchBatteryUpdateReceiver.BATTERY_CHARGED_NOTI_CHANNEL_ID)
     }
 
     fun setIgnoreBatteryOpt(context: Context, ignoring: Boolean) {
