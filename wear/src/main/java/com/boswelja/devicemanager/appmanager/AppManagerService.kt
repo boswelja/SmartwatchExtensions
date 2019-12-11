@@ -5,7 +5,7 @@
  * This file, and any part of the Wearable Extensions app/s cannot be copied and/or distributed
  * without permission from Jack Boswell (boswelja) <boswela@outlook.com>
  */
-package com.boswelja.devicemanager.service
+package com.boswelja.devicemanager.appmanager
 
 import android.app.NotificationChannel
 import android.app.NotificationManager

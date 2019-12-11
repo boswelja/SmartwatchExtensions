@@ -16,7 +16,7 @@ import androidx.annotation.RequiresApi
 import androidx.core.content.edit
 import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.batterysync.WatchBatteryUpdateReceiver
-import com.boswelja.devicemanager.common.interruptfiltersync.References
+import com.boswelja.devicemanager.common.dndsync.References
 
 class EnvironmentUpdater(private val context: Context) {
 
@@ -53,9 +53,9 @@ class EnvironmentUpdater(private val context: Context) {
             }
         }
 
-        if (notificationManager.getNotificationChannel(References.INTERRUPT_FILTER_SYNC_NOTI_CHANNEL_ID) == null) {
+        if (notificationManager.getNotificationChannel(References.DND_SYNC_NOTI_CHANNEL_ID) == null) {
             NotificationChannel(
-                    References.INTERRUPT_FILTER_SYNC_NOTI_CHANNEL_ID,
+                    References.DND_SYNC_NOTI_CHANNEL_ID,
                     context.getString(R.string.noti_channel_dnd_sync_title),
                     NotificationManager.IMPORTANCE_LOW).apply {
                 enableLights(false)

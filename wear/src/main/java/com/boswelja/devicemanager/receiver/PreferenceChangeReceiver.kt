@@ -16,7 +16,7 @@ import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.common.Compat
 import com.boswelja.devicemanager.common.PreferenceKey
 import com.boswelja.devicemanager.complication.PhoneBatteryComplicationProvider
-import com.boswelja.devicemanager.service.InterruptFilterLocalChangeListener
+import com.boswelja.devicemanager.dndsync.DnDLocalChangeListener
 import com.google.android.gms.tasks.Tasks
 import com.google.android.gms.wearable.DataEvent
 import com.google.android.gms.wearable.DataEventBuffer
@@ -79,7 +79,7 @@ class PreferenceChangeReceiver : WearableListenerService() {
             PreferenceKey.INTERRUPT_FILTER_SYNC_TO_PHONE_KEY,
             PreferenceKey.INTERRUPT_FILTER_ON_WITH_THEATER_KEY -> {
                 if (newValue == true) {
-                    Intent(this, InterruptFilterLocalChangeListener::class.java).also {
+                    Intent(this, DnDLocalChangeListener::class.java).also {
                         Compat.startForegroundService(this, it)
                     }
                 }

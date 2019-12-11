@@ -18,7 +18,7 @@ import androidx.core.app.NotificationCompat
 import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.common.PreferenceKey
 import com.boswelja.devicemanager.common.R
-import com.boswelja.devicemanager.common.interruptfiltersync.References
+import com.boswelja.devicemanager.common.dndsync.References
 import com.boswelja.devicemanager.watchconnectionmanager.BoolPreference
 import com.boswelja.devicemanager.watchconnectionmanager.IntPreference
 import com.boswelja.devicemanager.watchconnectionmanager.WatchConnectionService
@@ -108,7 +108,7 @@ class DnDLocalChangeService :
                 packageManager.getLaunchIntentForPackage(packageName),
                 PendingIntent.FLAG_CANCEL_CURRENT)
 
-        return NotificationCompat.Builder(this, References.INTERRUPT_FILTER_SYNC_NOTI_CHANNEL_ID)
+        return NotificationCompat.Builder(this, References.DND_SYNC_NOTI_CHANNEL_ID)
                 .setContentTitle(getString(R.string.interrupt_filter_sync_active_noti_title))
                 .setContentText(getString(R.string.interrupt_filter_sync_to_phone_noti_desc))
                 .setSmallIcon(R.drawable.ic_sync)

@@ -5,18 +5,18 @@
  * This file, and any part of the Wearable Extensions app/s cannot be copied and/or distributed
  * without permission from Jack Boswell (boswelja) <boswela@outlook.com>
  */
-package com.boswelja.devicemanager.service
+package com.boswelja.devicemanager.dndsync
 
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.app.Service
+import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.SharedPreferences
-import android.database.ContentObserver
 import android.os.Build
 import android.os.Handler
 import android.os.IBinder
@@ -25,36 +25,40 @@ import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.R
-import com.boswelja.devicemanager.common.AtomicCounter
+import com.boswelja.devicemanager.common.Compat
 import com.boswelja.devicemanager.common.PreferenceKey.INTERRUPT_FILTER_ON_WITH_THEATER_KEY
 import com.boswelja.devicemanager.common.PreferenceKey.INTERRUPT_FILTER_SYNC_TO_PHONE_KEY
-import com.boswelja.devicemanager.common.interruptfiltersync.InterruptFilterChangeReceiver
-import com.boswelja.devicemanager.common.interruptfiltersync.References.INTERRUPT_FILTER_SYNC_NOTI_CHANNEL_ID
-import com.boswelja.devicemanager.common.interruptfiltersync.Utils
+import com.boswelja.devicemanager.common.dndsync.References.DND_SYNC_LOCAL_NOTI_ID
+import com.boswelja.devicemanager.common.dndsync.References.DND_SYNC_NOTI_CHANNEL_ID
+import com.boswelja.devicemanager.common.dndsync.References.START_ACTIVITY_FROM_NOTI_ID
+import com.boswelja.devicemanager.common.dndsync.Utils
 import com.boswelja.devicemanager.ui.main.MainActivity
 
-class InterruptFilterLocalChangeListener : Service() {
+class DnDLocalChangeListener : Service() {
 
     private lateinit var sharedPreferences: SharedPreferences
     private lateinit var notificationManager: NotificationManager
 
-    private var interruptFilterSyncToPhone: Boolean = false
-    private var interruptFilterSyncWithTheater: Boolean = false
-    private var interruptFilterChangeReceiver = object : InterruptFilterChangeReceiver() {
-        override fun onInterruptFilterChanged(context: Context, interruptFilterEnabled: Boolean) {
-            Utils.updateInterruptionFilter(this@InterruptFilterLocalChangeListener, interruptFilterEnabled)
+    private var dndSyncToPhone: Boolean = false
+    private var dndSyncWithTheater: Boolean = false
+
+    private var dndChangeReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            if (context != null && intent!!.action == NotificationManager.ACTION_INTERRUPTION_FILTER_CHANGED) {
+                val dndEnabled = Compat.interruptionFilterEnabled(context)
+                Utils.updateInterruptionFilter(this@DnDLocalChangeListener, dndEnabled)
+            }
         }
     }
 
-    private val notificationId: Int = AtomicCounter.getInt()
-    private val theaterModeObserver = TheaterModeObserver(Handler())
+    private val theaterModeObserver = TheaterModeObserver(this, Handler())
     private val preferenceChangeListener = SharedPreferences.OnSharedPreferenceChangeListener { sharedPreferences, key ->
         when (key) {
             INTERRUPT_FILTER_SYNC_TO_PHONE_KEY -> {
-                setInterruptFilterToPhone(sharedPreferences.getBoolean(key, false))
+                setDnDSyncToPhone(sharedPreferences.getBoolean(key, false))
             }
             INTERRUPT_FILTER_ON_WITH_THEATER_KEY -> {
-                setInterruptFilterOnWithTheater(sharedPreferences.getBoolean(key, false))
+                setDnDSyncWithTheaterMode(sharedPreferences.getBoolean(key, false))
             }
         }
     }
@@ -69,13 +73,13 @@ class InterruptFilterLocalChangeListener : Service() {
 
         sharedPreferences.registerOnSharedPreferenceChangeListener(preferenceChangeListener)
 
-        setInterruptFilterToPhone(sharedPreferences.getBoolean(INTERRUPT_FILTER_SYNC_TO_PHONE_KEY, false))
-        setInterruptFilterOnWithTheater(sharedPreferences.getBoolean(INTERRUPT_FILTER_ON_WITH_THEATER_KEY, false))
+        setDnDSyncToPhone(sharedPreferences.getBoolean(INTERRUPT_FILTER_SYNC_TO_PHONE_KEY, false))
+        setDnDSyncWithTheaterMode(sharedPreferences.getBoolean(INTERRUPT_FILTER_ON_WITH_THEATER_KEY, false))
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            createNotiChannel(this)
+            createNotificationChannel()
         }
-        startForeground(notificationId, createNotification())
+        startForeground(DND_SYNC_LOCAL_NOTI_ID, createNotification())
         Utils.updateInterruptionFilter(this)
     }
 
@@ -89,12 +93,12 @@ class InterruptFilterLocalChangeListener : Service() {
     }
 
     private fun createNotification(): Notification {
-        NotificationCompat.Builder(this, INTERRUPT_FILTER_SYNC_NOTI_CHANNEL_ID).apply {
+        NotificationCompat.Builder(this, DND_SYNC_NOTI_CHANNEL_ID).apply {
             setContentTitle(getString(R.string.interrupt_filter_sync_active_noti_title))
             when {
-                interruptFilterSyncToPhone and interruptFilterSyncWithTheater -> setContentText(getString(R.string.interrupt_filter_sync_all_noti_desc))
-                interruptFilterSyncToPhone and !interruptFilterSyncWithTheater -> setContentText(getString(R.string.interrupt_filter_sync_to_phone_noti_desc))
-                interruptFilterSyncWithTheater and !interruptFilterSyncToPhone -> setContentText(getString(R.string.interrupt_filter_sync_with_theater_noti_desc))
+                dndSyncToPhone and dndSyncWithTheater -> setContentText(getString(R.string.interrupt_filter_sync_all_noti_desc))
+                dndSyncToPhone and !dndSyncWithTheater -> setContentText(getString(R.string.interrupt_filter_sync_to_phone_noti_desc))
+                dndSyncWithTheater and !dndSyncToPhone -> setContentText(getString(R.string.interrupt_filter_sync_with_theater_noti_desc))
                 else -> setContentText(getString(R.string.interrupt_filter_sync_none_noti_desc))
             }
             setSmallIcon(R.drawable.ic_sync)
@@ -103,12 +107,12 @@ class InterruptFilterLocalChangeListener : Service() {
             setUsesChronometer(false)
             priority = NotificationCompat.PRIORITY_LOW
 
-            val launchIntent = Intent(this@InterruptFilterLocalChangeListener, MainActivity::class.java).apply {
+            val launchIntent = Intent(this@DnDLocalChangeListener, MainActivity::class.java).apply {
                 flags = Intent.FLAG_ACTIVITY_NEW_TASK
             }
 
-            PendingIntent.getActivity(this@InterruptFilterLocalChangeListener,
-                    AtomicCounter.getInt(),
+            PendingIntent.getActivity(this@DnDLocalChangeListener,
+                    START_ACTIVITY_FROM_NOTI_ID,
                     launchIntent,
                     PendingIntent.FLAG_CANCEL_CURRENT).also {
                 setContentIntent(it)
@@ -118,47 +122,49 @@ class InterruptFilterLocalChangeListener : Service() {
         }
     }
 
-    private fun setInterruptFilterOnWithTheater(enabled: Boolean) {
-        if (interruptFilterSyncWithTheater != enabled) {
-            interruptFilterSyncWithTheater = enabled
-            notificationManager.notify(notificationId, createNotification())
+    private fun setDnDSyncWithTheaterMode(enabled: Boolean) {
+        if (dndSyncWithTheater != enabled) {
+            dndSyncWithTheater = enabled
+            notificationManager.notify(DND_SYNC_LOCAL_NOTI_ID, createNotification())
             if (enabled) {
                 applicationContext.contentResolver.registerContentObserver(
                         Settings.Global.CONTENT_URI, true,
                         theaterModeObserver)
             } else {
                 applicationContext.contentResolver.unregisterContentObserver(theaterModeObserver)
-                stopIfNeeded()
+                tryStop()
             }
         }
     }
 
-    private fun setInterruptFilterToPhone(enabled: Boolean) {
-        if (interruptFilterSyncToPhone != enabled) {
-            interruptFilterSyncToPhone = enabled
-            notificationManager.notify(notificationId, createNotification())
+    private fun setDnDSyncToPhone(enabled: Boolean) {
+        if (dndSyncToPhone != enabled) {
+            dndSyncToPhone = enabled
+            notificationManager.notify(DND_SYNC_LOCAL_NOTI_ID, createNotification())
             if (enabled) {
-                val intentFilter = IntentFilter().apply {
+                IntentFilter().apply {
                     addAction(NotificationManager.ACTION_INTERRUPTION_FILTER_CHANGED)
+                }.also {
+                    registerReceiver(dndChangeReceiver, it)
                 }
-                registerReceiver(interruptFilterChangeReceiver, intentFilter)
+
             } else {
                 try {
-                    unregisterReceiver(interruptFilterChangeReceiver)
+                    unregisterReceiver(dndChangeReceiver)
                 } catch (ignored: IllegalArgumentException) {}
-                stopIfNeeded()
+                tryStop()
             }
         }
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    fun createNotiChannel(context: Context) {
-        val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+    fun createNotificationChannel() {
+        val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
-        if (notificationManager.getNotificationChannel(INTERRUPT_FILTER_SYNC_NOTI_CHANNEL_ID) == null) {
+        if (notificationManager.getNotificationChannel(DND_SYNC_NOTI_CHANNEL_ID) == null) {
             NotificationChannel(
-                    INTERRUPT_FILTER_SYNC_NOTI_CHANNEL_ID,
-                    context.getString(R.string.noti_channel_dnd_sync_title),
+                    DND_SYNC_NOTI_CHANNEL_ID,
+                    getString(R.string.noti_channel_dnd_sync_title),
                     NotificationManager.IMPORTANCE_LOW).apply {
                 enableLights(false)
                 enableVibration(false)
@@ -169,23 +175,10 @@ class InterruptFilterLocalChangeListener : Service() {
         }
     }
 
-    private fun stopIfNeeded() {
-        if (!interruptFilterSyncToPhone and !interruptFilterSyncWithTheater) {
+    private fun tryStop() {
+        if (!dndSyncToPhone and !dndSyncWithTheater) {
             stopForeground(true)
             stopSelf()
         }
-    }
-
-    private inner class TheaterModeObserver(handler: Handler) : ContentObserver(handler) {
-
-        override fun onChange(selfChange: Boolean) {
-            super.onChange(selfChange)
-            val context = this@InterruptFilterLocalChangeListener
-            val isTheaterModeOn = isTheaterModeOn(context)
-            Utils.updateInterruptionFilter(context, isTheaterModeOn)
-        }
-
-        private fun isTheaterModeOn(context: Context): Boolean =
-                Settings.Global.getInt(context.contentResolver, "theater_mode_on", 0) == 1
     }
 }

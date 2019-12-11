@@ -13,14 +13,14 @@ import com.boswelja.devicemanager.common.BaseBootReceiver
 import com.boswelja.devicemanager.common.Compat
 import com.boswelja.devicemanager.common.PreferenceKey.INTERRUPT_FILTER_ON_WITH_THEATER_KEY
 import com.boswelja.devicemanager.common.PreferenceKey.INTERRUPT_FILTER_SYNC_TO_PHONE_KEY
-import com.boswelja.devicemanager.service.InterruptFilterLocalChangeListener
+import com.boswelja.devicemanager.dndsync.DnDLocalChangeListener
 
 class BootReceiver : BaseBootReceiver() {
 
     override fun onBootCompleted(context: Context?) {
         if (sharedPreferences.getBoolean(INTERRUPT_FILTER_SYNC_TO_PHONE_KEY, false) ||
                 sharedPreferences.getBoolean(INTERRUPT_FILTER_ON_WITH_THEATER_KEY, false)) {
-            Intent(context, InterruptFilterLocalChangeListener::class.java).also {
+            Intent(context, DnDLocalChangeListener::class.java).also {
                 Compat.startForegroundService(context!!, it)
             }
         }
