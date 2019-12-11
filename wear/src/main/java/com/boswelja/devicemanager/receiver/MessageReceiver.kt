@@ -11,13 +11,13 @@ import android.content.Intent
 import android.os.Build
 import com.boswelja.devicemanager.BuildConfig
 import com.boswelja.devicemanager.Utils
+import com.boswelja.devicemanager.appmanager.AppManagerService
 import com.boswelja.devicemanager.common.Compat
 import com.boswelja.devicemanager.common.Extensions.toByteArray
 import com.boswelja.devicemanager.common.References.REQUEST_APP_VERSION
 import com.boswelja.devicemanager.common.appmanager.AppManagerReferences
 import com.boswelja.devicemanager.common.dndsync.References.REQUEST_INTERRUPT_FILTER_ACCESS_STATUS_PATH
 import com.boswelja.devicemanager.common.dndsync.References.REQUEST_SDK_INT_PATH
-import com.boswelja.devicemanager.appmanager.AppManagerService
 import com.google.android.gms.wearable.MessageEvent
 import com.google.android.gms.wearable.Wearable
 import com.google.android.gms.wearable.WearableListenerService

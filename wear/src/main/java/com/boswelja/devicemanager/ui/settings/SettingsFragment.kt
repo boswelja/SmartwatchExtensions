@@ -26,9 +26,9 @@ import com.boswelja.devicemanager.common.Extensions.fromByteArray
 import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_PHONE_CHARGE_NOTI_KEY
 import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_SYNC_ENABLED_KEY
 import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_WATCH_CHARGE_NOTI_KEY
-import com.boswelja.devicemanager.common.PreferenceKey.DND_SYNC_WITH_THEATER_KEY
 import com.boswelja.devicemanager.common.PreferenceKey.DND_SYNC_TO_PHONE_KEY
 import com.boswelja.devicemanager.common.PreferenceKey.DND_SYNC_TO_WATCH_KEY
+import com.boswelja.devicemanager.common.PreferenceKey.DND_SYNC_WITH_THEATER_KEY
 import com.boswelja.devicemanager.common.dndsync.References.REQUEST_INTERRUPT_FILTER_ACCESS_STATUS_PATH
 import com.boswelja.devicemanager.service.PreferenceSyncService
 import com.google.android.gms.wearable.MessageClient
