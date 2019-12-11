@@ -8,14 +8,11 @@
 package com.boswelja.devicemanager.dndsync
 
 import android.app.Notification
-import android.app.NotificationChannel
-import android.app.NotificationManager
 import android.app.PendingIntent
 import android.app.Service
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
-import android.os.Build
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
 import androidx.preference.PreferenceManager
@@ -82,23 +79,6 @@ class DnDLocalChangeService :
         WatchConnectionService.bind(this, watchConnectionManagerConnection)
 
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-
-            if (notificationManager.getNotificationChannel(References.INTERRUPT_FILTER_SYNC_NOTI_CHANNEL_ID) == null) {
-                NotificationChannel(
-                        References.INTERRUPT_FILTER_SYNC_NOTI_CHANNEL_ID,
-                        getString(R.string.interrupt_filter_sync_noti_channel_name),
-                        NotificationManager.IMPORTANCE_LOW).apply {
-                    enableLights(false)
-                    enableVibration(false)
-                    setShowBadge(false)
-                }.also {
-                    notificationManager.createNotificationChannel(it)
-                }
-            }
-        }
 
         DnDLocalChangeReceiver.registerReceiver(this, dndChangeReceiver)
 

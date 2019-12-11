@@ -7,11 +7,9 @@
  */
 package com.boswelja.devicemanager.batterysync
 
-import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
 import android.content.SharedPreferences
-import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.core.content.edit
 import androidx.preference.PreferenceManager
@@ -100,17 +98,6 @@ class WatchBatteryUpdateReceiver : WearableListenerService() {
 
     private fun sendChargedNoti(watchName: String, chargeThreshold: Int) {
         val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && notificationManager.getNotificationChannel(BATTERY_CHARGED_NOTI_CHANNEL_ID) == null) {
-            val channel = NotificationChannel(
-                    BATTERY_CHARGED_NOTI_CHANNEL_ID,
-                    getString(R.string.device_charged_noti_channel_name),
-                    NotificationManager.IMPORTANCE_HIGH).apply {
-                enableVibration(true)
-                setShowBadge(true)
-            }
-            notificationManager.createNotificationChannel(channel)
-        }
 
         val noti = NotificationCompat.Builder(this, BATTERY_CHARGED_NOTI_CHANNEL_ID)
                 .setSmallIcon(R.drawable.battery_full)
