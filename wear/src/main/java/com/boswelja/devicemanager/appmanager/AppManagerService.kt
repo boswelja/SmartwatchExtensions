@@ -21,7 +21,6 @@ import androidx.core.net.toUri
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.Utils
 import com.boswelja.devicemanager.Utils.isAppInstalled
-import com.boswelja.devicemanager.common.AtomicCounter
 import com.boswelja.devicemanager.common.appmanager.AppManagerReferences.ERROR
 import com.boswelja.devicemanager.common.appmanager.AppManagerReferences.GET_ALL_PACKAGES
 import com.boswelja.devicemanager.common.appmanager.AppManagerReferences.PACKAGE_ADDED
@@ -133,7 +132,7 @@ class AppManagerService : Service() {
                 .setUsesChronometer(false)
                 .setPriority(NotificationCompat.PRIORITY_LOW)
                 .build()
-        startForeground(AtomicCounter.getInt(), noti)
+        startForeground(APP_MANAGER_NOTI_ID, noti)
     }
 
     private fun sendAppRemovedMessage(packageName: String?) {
@@ -197,5 +196,6 @@ class AppManagerService : Service() {
 
     companion object {
         private const val APP_MANAGER_NOTI_CHANNEL_ID = "app_manager_service"
+        private const val APP_MANAGER_NOTI_ID = 906
     }
 }
