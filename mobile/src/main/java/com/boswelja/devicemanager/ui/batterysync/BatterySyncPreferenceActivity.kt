@@ -9,7 +9,7 @@ package com.boswelja.devicemanager.ui.batterysync
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
-import com.boswelja.devicemanager.BatterySyncJob
+import com.boswelja.devicemanager.batterysync.BatterySyncJob
 import com.boswelja.devicemanager.common.PreferenceKey
 import com.boswelja.devicemanager.ui.base.BasePreferenceActivity
 import com.boswelja.devicemanager.ui.base.BasePreferenceFragment

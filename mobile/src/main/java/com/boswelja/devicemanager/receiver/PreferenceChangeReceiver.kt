@@ -11,7 +11,7 @@ import android.content.Intent
 import android.content.SharedPreferences
 import androidx.core.content.edit
 import androidx.preference.PreferenceManager
-import com.boswelja.devicemanager.BatterySyncJob
+import com.boswelja.devicemanager.batterysync.BatterySyncJob
 import com.boswelja.devicemanager.common.Compat
 import com.boswelja.devicemanager.common.PreferenceKey
 import com.boswelja.devicemanager.dndsync.DnDLocalChangeService

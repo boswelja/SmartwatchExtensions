@@ -9,7 +9,7 @@ package com.boswelja.devicemanager.receiver
 
 import android.content.Context
 import android.content.Intent
-import com.boswelja.devicemanager.BatterySyncJob
+import com.boswelja.devicemanager.batterysync.BatterySyncJob
 import com.boswelja.devicemanager.common.BaseBootReceiver
 import com.boswelja.devicemanager.common.Compat
 import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_SYNC_ENABLED_KEY
