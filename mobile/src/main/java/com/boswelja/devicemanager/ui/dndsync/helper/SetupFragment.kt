@@ -17,7 +17,7 @@ import android.widget.LinearLayout
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.fragment.app.Fragment
 import com.boswelja.devicemanager.R
-import com.boswelja.devicemanager.common.Utils
+import com.boswelja.devicemanager.Utils
 import com.google.android.material.button.MaterialButton
 
 internal class SetupFragment : Fragment() {

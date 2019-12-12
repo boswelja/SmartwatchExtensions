@@ -12,7 +12,7 @@ import android.os.Bundle
 import android.view.MenuItem
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import com.boswelja.devicemanager.R
-import com.boswelja.devicemanager.common.Utils
+import com.boswelja.devicemanager.Utils
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.snackbar.Snackbar
 

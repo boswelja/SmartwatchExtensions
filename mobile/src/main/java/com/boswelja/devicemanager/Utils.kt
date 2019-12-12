@@ -11,9 +11,11 @@ import android.app.NotificationManager
 import android.app.admin.DevicePolicyManager
 import android.content.Context
 import android.content.Intent
+import android.content.res.Resources
 import android.graphics.drawable.Drawable
 import android.media.AudioManager
 import android.os.Build
+import android.util.TypedValue
 import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.common.Compat
 import com.boswelja.devicemanager.common.PreferenceKey
@@ -72,4 +74,7 @@ object Utils {
             fallbackIcon ?: context.getDrawable(R.drawable.ic_app_icon_unknown)
         }
     }
+
+    fun complexTypeDp(resources: Resources, dp: Float) =
+            TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, resources.displayMetrics)
 }
