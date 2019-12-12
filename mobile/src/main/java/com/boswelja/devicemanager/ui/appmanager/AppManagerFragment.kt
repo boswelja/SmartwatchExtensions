@@ -16,8 +16,6 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.boswelja.devicemanager.R
-import com.boswelja.devicemanager.common.References
-import com.boswelja.devicemanager.common.appmanager.AppManagerReferences
 import com.boswelja.devicemanager.common.appmanager.AppPackageInfo
 import com.boswelja.devicemanager.common.appmanager.AppPackageInfoList
 import com.google.android.gms.wearable.CapabilityClient
@@ -36,12 +34,12 @@ class AppManagerFragment : Fragment() {
 
     private val messageListener = MessageClient.OnMessageReceivedListener {
         when (it.path) {
-            AppManagerReferences.PACKAGE_ADDED -> {
+            References.PACKAGE_ADDED -> {
                 val appPackageInfo = AppPackageInfo.fromByteArray(it.data)
                 (appsRecyclerView?.adapter as AppsAdapter).add(appPackageInfo)
                 (activity as AppManagerActivity).createSnackBar("${getString(R.string.app_manager_installed_prefix)} ${appPackageInfo.packageLabel}")
             }
-            AppManagerReferences.PACKAGE_REMOVED -> {
+            References.PACKAGE_REMOVED -> {
                 val appPackageName = String(it.data, Charsets.UTF_8)
                 val adapter = (appsRecyclerView?.adapter as AppsAdapter)
                 val uninstalledMessage = "${getString(R.string.app_manager_uninstalled_prefix)} ${adapter.getFromPackageName(appPackageName)?.packageLabel}"
@@ -119,7 +117,7 @@ class AppManagerFragment : Fragment() {
                     if (it.isSuccessful) {
                         val node = it.result?.nodes?.firstOrNull { node -> node.isNearby }
                         if (node != null) {
-                            messageClient.sendMessage(node.id, AppManagerReferences.REQUEST_UNINSTALL_PACKAGE, appPackageInfo.packageName.toByteArray(Charsets.UTF_8))
+                            messageClient.sendMessage(node.id, References.REQUEST_UNINSTALL_PACKAGE, appPackageInfo.packageName.toByteArray(Charsets.UTF_8))
                         }
                     }
                 }
@@ -132,7 +130,7 @@ class AppManagerFragment : Fragment() {
                     if (it.isSuccessful) {
                         val node = it.result?.nodes?.firstOrNull { node -> node.isNearby }
                         if (node != null) {
-                            messageClient.sendMessage(node.id, AppManagerReferences.REQUEST_OPEN_PACKAGE, appPackageInfo.packageName.toByteArray(Charsets.UTF_8))
+                            messageClient.sendMessage(node.id, References.REQUEST_OPEN_PACKAGE, appPackageInfo.packageName.toByteArray(Charsets.UTF_8))
                         }
                     }
                 }

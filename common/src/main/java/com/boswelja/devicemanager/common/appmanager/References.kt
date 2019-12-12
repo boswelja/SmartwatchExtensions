@@ -7,7 +7,7 @@
  */
 package com.boswelja.devicemanager.common.appmanager
 
-object AppManagerReferences {
+object References {
 
     const val GET_ALL_PACKAGES = "/app_manager_request_all_packages"
 

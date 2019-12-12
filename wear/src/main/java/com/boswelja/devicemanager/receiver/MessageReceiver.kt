@@ -15,7 +15,7 @@ import com.boswelja.devicemanager.appmanager.AppManagerService
 import com.boswelja.devicemanager.common.Compat
 import com.boswelja.devicemanager.common.Extensions.toByteArray
 import com.boswelja.devicemanager.common.References.REQUEST_APP_VERSION
-import com.boswelja.devicemanager.common.appmanager.AppManagerReferences
+import com.boswelja.devicemanager.common.appmanager.References
 import com.boswelja.devicemanager.common.dndsync.References.REQUEST_INTERRUPT_FILTER_ACCESS_STATUS_PATH
 import com.boswelja.devicemanager.common.dndsync.References.REQUEST_SDK_INT_PATH
 import com.google.android.gms.wearable.MessageEvent
@@ -41,7 +41,7 @@ class MessageReceiver : WearableListenerService() {
                                 REQUEST_APP_VERSION,
                                 (BuildConfig.VERSION_NAME + "|" + BuildConfig.VERSION_CODE).toByteArray(Charsets.UTF_8))
             }
-            AppManagerReferences.START_SERVICE -> {
+            References.START_SERVICE -> {
                 val intent = Intent(this, AppManagerService::class.java)
                 Compat.startForegroundService(this, intent)
             }

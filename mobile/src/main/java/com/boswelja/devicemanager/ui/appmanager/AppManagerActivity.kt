@@ -10,7 +10,7 @@ package com.boswelja.devicemanager.ui.appmanager
 import android.os.Bundle
 import android.widget.Toast
 import com.boswelja.devicemanager.R
-import com.boswelja.devicemanager.common.appmanager.AppManagerReferences
+import com.boswelja.devicemanager.common.appmanager.References
 import com.boswelja.devicemanager.common.appmanager.AppPackageInfoList
 import com.boswelja.devicemanager.ui.base.BaseToolbarActivity
 import com.boswelja.devicemanager.ui.base.LoadingFragment
@@ -29,7 +29,7 @@ class AppManagerActivity : BaseToolbarActivity() {
 
     private val messageListener = MessageClient.OnMessageReceivedListener {
         when (it.path) {
-            AppManagerReferences.GET_ALL_PACKAGES -> {
+            References.GET_ALL_PACKAGES -> {
                 val allApps = AppPackageInfoList.fromByteArray(it.data)
                 ensureAppManagerVisible()
                 appManagerFragment!!.setAllApps(allApps)
@@ -95,13 +95,13 @@ class AppManagerActivity : BaseToolbarActivity() {
     private fun startAppManagerService() {
         if (!isServiceRunning) {
             isServiceRunning = true
-            messageClient.sendMessage(watchId!!, AppManagerReferences.START_SERVICE, null)
+            messageClient.sendMessage(watchId!!, References.START_SERVICE, null)
         }
     }
 
     private fun stopAppManagerService() {
         isServiceRunning = false
-        messageClient.sendMessage(watchId!!, AppManagerReferences.STOP_SERVICE, null)
+        messageClient.sendMessage(watchId!!, References.STOP_SERVICE, null)
     }
 
     private fun notifyWatchNotFound() {
