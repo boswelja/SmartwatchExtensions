@@ -21,6 +21,8 @@ import androidx.core.net.toUri
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.Utils
 import com.boswelja.devicemanager.Utils.isAppInstalled
+import com.boswelja.devicemanager.common.appmanager.AppPackageInfo
+import com.boswelja.devicemanager.common.appmanager.AppPackageInfoList
 import com.boswelja.devicemanager.common.appmanager.References.ERROR
 import com.boswelja.devicemanager.common.appmanager.References.GET_ALL_PACKAGES
 import com.boswelja.devicemanager.common.appmanager.References.PACKAGE_ADDED
@@ -28,8 +30,6 @@ import com.boswelja.devicemanager.common.appmanager.References.PACKAGE_REMOVED
 import com.boswelja.devicemanager.common.appmanager.References.REQUEST_OPEN_PACKAGE
 import com.boswelja.devicemanager.common.appmanager.References.REQUEST_UNINSTALL_PACKAGE
 import com.boswelja.devicemanager.common.appmanager.References.STOP_SERVICE
-import com.boswelja.devicemanager.common.appmanager.AppPackageInfo
-import com.boswelja.devicemanager.common.appmanager.AppPackageInfoList
 import com.google.android.gms.wearable.MessageClient
 import com.google.android.gms.wearable.Wearable
 

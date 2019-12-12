@@ -10,8 +10,8 @@ package com.boswelja.devicemanager.ui.appmanager
 import android.os.Bundle
 import android.widget.Toast
 import com.boswelja.devicemanager.R
-import com.boswelja.devicemanager.common.appmanager.References
 import com.boswelja.devicemanager.common.appmanager.AppPackageInfoList
+import com.boswelja.devicemanager.common.appmanager.References
 import com.boswelja.devicemanager.ui.base.BaseToolbarActivity
 import com.boswelja.devicemanager.ui.base.LoadingFragment
 import com.google.android.gms.wearable.MessageClient
