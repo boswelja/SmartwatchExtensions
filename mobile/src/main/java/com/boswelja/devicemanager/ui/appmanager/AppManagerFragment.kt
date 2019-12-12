@@ -16,8 +16,13 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.boswelja.devicemanager.R
+import com.boswelja.devicemanager.common.References.CAPABILITY_WATCH_APP
 import com.boswelja.devicemanager.common.appmanager.AppPackageInfo
 import com.boswelja.devicemanager.common.appmanager.AppPackageInfoList
+import com.boswelja.devicemanager.common.appmanager.References.PACKAGE_ADDED
+import com.boswelja.devicemanager.common.appmanager.References.PACKAGE_REMOVED
+import com.boswelja.devicemanager.common.appmanager.References.REQUEST_OPEN_PACKAGE
+import com.boswelja.devicemanager.common.appmanager.References.REQUEST_UNINSTALL_PACKAGE
 import com.google.android.gms.wearable.CapabilityClient
 import com.google.android.gms.wearable.MessageClient
 import com.google.android.gms.wearable.Wearable
@@ -34,12 +39,12 @@ class AppManagerFragment : Fragment() {
 
     private val messageListener = MessageClient.OnMessageReceivedListener {
         when (it.path) {
-            References.PACKAGE_ADDED -> {
+            PACKAGE_ADDED -> {
                 val appPackageInfo = AppPackageInfo.fromByteArray(it.data)
                 (appsRecyclerView?.adapter as AppsAdapter).add(appPackageInfo)
                 (activity as AppManagerActivity).createSnackBar("${getString(R.string.app_manager_installed_prefix)} ${appPackageInfo.packageLabel}")
             }
-            References.PACKAGE_REMOVED -> {
+            PACKAGE_REMOVED -> {
                 val appPackageName = String(it.data, Charsets.UTF_8)
                 val adapter = (appsRecyclerView?.adapter as AppsAdapter)
                 val uninstalledMessage = "${getString(R.string.app_manager_uninstalled_prefix)} ${adapter.getFromPackageName(appPackageName)?.packageLabel}"
@@ -112,12 +117,12 @@ class AppManagerFragment : Fragment() {
 
     private fun sendUninstallRequestMessage(appPackageInfo: AppPackageInfo) {
         Wearable.getCapabilityClient(context!!)
-                .getCapability(References.CAPABILITY_WATCH_APP, CapabilityClient.FILTER_REACHABLE)
+                .getCapability(CAPABILITY_WATCH_APP, CapabilityClient.FILTER_REACHABLE)
                 .addOnCompleteListener {
                     if (it.isSuccessful) {
                         val node = it.result?.nodes?.firstOrNull { node -> node.isNearby }
                         if (node != null) {
-                            messageClient.sendMessage(node.id, References.REQUEST_UNINSTALL_PACKAGE, appPackageInfo.packageName.toByteArray(Charsets.UTF_8))
+                            messageClient.sendMessage(node.id, REQUEST_UNINSTALL_PACKAGE, appPackageInfo.packageName.toByteArray(Charsets.UTF_8))
                         }
                     }
                 }
@@ -125,12 +130,12 @@ class AppManagerFragment : Fragment() {
 
     private fun sendOpenRequestMessage(appPackageInfo: AppPackageInfo) {
         Wearable.getCapabilityClient(context!!)
-                .getCapability(References.CAPABILITY_WATCH_APP, CapabilityClient.FILTER_REACHABLE)
+                .getCapability(CAPABILITY_WATCH_APP, CapabilityClient.FILTER_REACHABLE)
                 .addOnCompleteListener {
                     if (it.isSuccessful) {
                         val node = it.result?.nodes?.firstOrNull { node -> node.isNearby }
                         if (node != null) {
-                            messageClient.sendMessage(node.id, References.REQUEST_OPEN_PACKAGE, appPackageInfo.packageName.toByteArray(Charsets.UTF_8))
+                            messageClient.sendMessage(node.id, REQUEST_OPEN_PACKAGE, appPackageInfo.packageName.toByteArray(Charsets.UTF_8))
                         }
                     }
                 }
