@@ -16,14 +16,12 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.boswelja.devicemanager.R
-import com.boswelja.devicemanager.common.References.CAPABILITY_WATCH_APP
 import com.boswelja.devicemanager.common.appmanager.AppPackageInfo
 import com.boswelja.devicemanager.common.appmanager.AppPackageInfoList
 import com.boswelja.devicemanager.common.appmanager.References.PACKAGE_ADDED
 import com.boswelja.devicemanager.common.appmanager.References.PACKAGE_REMOVED
 import com.boswelja.devicemanager.common.appmanager.References.REQUEST_OPEN_PACKAGE
 import com.boswelja.devicemanager.common.appmanager.References.REQUEST_UNINSTALL_PACKAGE
-import com.google.android.gms.wearable.CapabilityClient
 import com.google.android.gms.wearable.MessageClient
 import com.google.android.gms.wearable.Wearable
 import com.google.android.material.snackbar.Snackbar
@@ -31,18 +29,18 @@ import com.google.android.material.snackbar.Snackbar
 class AppManagerFragment : Fragment() {
 
     private lateinit var messageClient: MessageClient
-    private lateinit var appManagerActivity: AppManagerActivity
+    private lateinit var activity: AppManagerActivity
 
     private var appsRecyclerView: RecyclerView? = null
-
     private var allAppsCache: AppPackageInfoList? = null
+    private var watchId: String? = null
 
     private val messageListener = MessageClient.OnMessageReceivedListener {
         when (it.path) {
             PACKAGE_ADDED -> {
                 val appPackageInfo = AppPackageInfo.fromByteArray(it.data)
                 (appsRecyclerView?.adapter as AppsAdapter).add(appPackageInfo)
-                (activity as AppManagerActivity).createSnackBar("${getString(R.string.app_manager_installed_prefix)} ${appPackageInfo.packageLabel}")
+                activity.createSnackBar("${getString(R.string.app_manager_installed_prefix)} ${appPackageInfo.packageLabel}")
             }
             PACKAGE_REMOVED -> {
                 val appPackageName = String(it.data, Charsets.UTF_8)
@@ -58,7 +56,9 @@ class AppManagerFragment : Fragment() {
         super.onCreate(savedInstanceState)
 
         messageClient = Wearable.getMessageClient(context!!)
-        appManagerActivity = activity as AppManagerActivity
+        activity = getActivity() as AppManagerActivity
+
+        watchId = activity.watchId
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
@@ -75,7 +75,7 @@ class AppManagerFragment : Fragment() {
             adapter = AppsAdapter(this@AppManagerFragment)
             addOnScrollListener(object : RecyclerView.OnScrollListener() {
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                    appManagerActivity.elevateToolbar(recyclerView.canScrollVertically(-1))
+                    activity.elevateToolbar(recyclerView.canScrollVertically(-1))
                 }
             })
         }
@@ -97,17 +97,17 @@ class AppManagerFragment : Fragment() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         when (requestCode) {
             APP_INFO_ACTIVITY_REQUEST_CODE -> {
-                appManagerActivity.canStopService = true
+                activity.canStopService = true
                 when (resultCode) {
                     AppInfoActivity.RESULT_REQUEST_UNINSTALL -> {
                         val app = data?.extras?.getSerializable(AppInfoActivity.EXTRA_APP_INFO) as AppPackageInfo
                         sendUninstallRequestMessage(app)
-                        appManagerActivity.createSnackBar(getString(R.string.app_manager_continue_on_watch))
+                        activity.createSnackBar(getString(R.string.app_manager_continue_on_watch))
                     }
                     AppInfoActivity.RESULT_REQUEST_OPEN -> {
                         val app = data?.extras?.getSerializable(AppInfoActivity.EXTRA_APP_INFO) as AppPackageInfo
                         sendOpenRequestMessage(app)
-                        appManagerActivity.createSnackBar(getString(R.string.app_manager_continue_on_watch))
+                        activity.createSnackBar(getString(R.string.app_manager_continue_on_watch))
                     }
                 }
             }
@@ -116,29 +116,11 @@ class AppManagerFragment : Fragment() {
     }
 
     private fun sendUninstallRequestMessage(appPackageInfo: AppPackageInfo) {
-        Wearable.getCapabilityClient(context!!)
-                .getCapability(CAPABILITY_WATCH_APP, CapabilityClient.FILTER_REACHABLE)
-                .addOnCompleteListener {
-                    if (it.isSuccessful) {
-                        val node = it.result?.nodes?.firstOrNull { node -> node.isNearby }
-                        if (node != null) {
-                            messageClient.sendMessage(node.id, REQUEST_UNINSTALL_PACKAGE, appPackageInfo.packageName.toByteArray(Charsets.UTF_8))
-                        }
-                    }
-                }
+        messageClient.sendMessage(watchId!!, REQUEST_UNINSTALL_PACKAGE, appPackageInfo.packageName.toByteArray(Charsets.UTF_8))
     }
 
     private fun sendOpenRequestMessage(appPackageInfo: AppPackageInfo) {
-        Wearable.getCapabilityClient(context!!)
-                .getCapability(CAPABILITY_WATCH_APP, CapabilityClient.FILTER_REACHABLE)
-                .addOnCompleteListener {
-                    if (it.isSuccessful) {
-                        val node = it.result?.nodes?.firstOrNull { node -> node.isNearby }
-                        if (node != null) {
-                            messageClient.sendMessage(node.id, REQUEST_OPEN_PACKAGE, appPackageInfo.packageName.toByteArray(Charsets.UTF_8))
-                        }
-                    }
-                }
+        messageClient.sendMessage(watchId!!, REQUEST_OPEN_PACKAGE, appPackageInfo.packageName.toByteArray(Charsets.UTF_8))
     }
 
     fun setAllApps(apps: AppPackageInfoList) {
@@ -151,7 +133,7 @@ class AppManagerFragment : Fragment() {
     }
 
     fun onItemClick(appPackageInfo: AppPackageInfo) {
-        appManagerActivity.canStopService = false
+        activity.canStopService = false
         val intent = Intent(context, AppInfoActivity::class.java)
         intent.putExtra(AppInfoActivity.EXTRA_APP_INFO, appPackageInfo)
         startActivityForResult(intent, APP_INFO_ACTIVITY_REQUEST_CODE)

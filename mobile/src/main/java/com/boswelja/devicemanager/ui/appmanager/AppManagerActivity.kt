@@ -21,11 +21,11 @@ class AppManagerActivity : BaseToolbarActivity() {
 
     private lateinit var messageClient: MessageClient
 
-    private var watchId: String? = null
     private var appManagerFragment: AppManagerFragment? = null
 
     private var isServiceRunning: Boolean = false
     var canStopService: Boolean = true
+    var watchId: String? = null
 
     private val messageListener = MessageClient.OnMessageReceivedListener {
         when (it.path) {
