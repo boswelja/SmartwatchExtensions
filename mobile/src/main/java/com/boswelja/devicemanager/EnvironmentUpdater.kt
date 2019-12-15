@@ -30,14 +30,11 @@ import com.google.android.gms.tasks.Tasks
 import com.google.android.gms.wearable.CapabilityClient
 import com.google.android.gms.wearable.Wearable
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.concurrent.TimeUnit
 
 class EnvironmentUpdater(private val context: Context) {
 
-    private val coroutineScope = MainScope()
     private val sharedPreferences: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
     private val currentAppVersion: Int = BuildConfig.VERSION_CODE
     private val lastAppVersion: Int
@@ -141,26 +138,24 @@ class EnvironmentUpdater(private val context: Context) {
         return UPDATE_NOTHING_CHANGED
     }
 
-    fun doFullUpdate(watchConnectionManager: WatchConnectionService) {
+    suspend fun doFullUpdate(watchConnectionManager: WatchConnectionService) {
         if (lastAppVersion < 2019120600) {
-            coroutineScope.launch {
-                withContext(Dispatchers.IO) {
-                    val capableNodes = Tasks.await(Wearable.getCapabilityClient(context)
-                            .getCapability(CAPABILITY_WATCH_APP, CapabilityClient.FILTER_ALL))
-                            .nodes
-                    val defaultWatch = capableNodes.firstOrNull { it.isNearby } ?: capableNodes.firstOrNull()
-                    if (defaultWatch != null) {
-                        val watch = Watch(defaultWatch)
-                        watchConnectionManager.addWatch(watch)
-                        watchConnectionManager.setConnectedWatchById(watch.id)
-                        sharedPreferences.all.forEach {
-                            if (it.value != null) {
-                                watchConnectionManager.updatePrefInDatabase(it.key, it.value!!)
-                            }
+            withContext(Dispatchers.IO) {
+                val capableNodes = Tasks.await(Wearable.getCapabilityClient(context)
+                        .getCapability(CAPABILITY_WATCH_APP, CapabilityClient.FILTER_ALL))
+                        .nodes
+                val defaultWatch = capableNodes.firstOrNull { it.isNearby } ?: capableNodes.firstOrNull()
+                if (defaultWatch != null) {
+                    val watch = Watch(defaultWatch)
+                    watchConnectionManager.addWatch(watch)
+                    watchConnectionManager.setConnectedWatchById(watch.id)
+                    sharedPreferences.all.forEach {
+                        if (it.value != null) {
+                            watchConnectionManager.updatePrefInDatabase(it.key, it.value!!)
                         }
-                        withContext(Dispatchers.Default) {
-                            doBatterySyncUpdate(watch)
-                        }
+                    }
+                    withContext(Dispatchers.Default) {
+                        doBatterySyncUpdate(watch)
                     }
                 }
             }
