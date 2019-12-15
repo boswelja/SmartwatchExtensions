@@ -11,4 +11,9 @@
         <item quantity="other">Last updated %s minutes ago</item>
     </plurals>
 
+    <plurals name="battery_sync_last_updated_hours">
+        <item quantity="one">Last updated %s hour ago</item>
+        <item quantity="two">Last updated %s hours ago</item>
+    </plurals>
+
 </resources>
