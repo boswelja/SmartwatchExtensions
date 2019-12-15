@@ -9,31 +9,16 @@ package com.boswelja.devicemanager.receiver
 
 import android.content.Context
 import android.content.Intent
-import com.boswelja.devicemanager.batterysync.BatterySyncJob
 import com.boswelja.devicemanager.common.BaseBootReceiver
 import com.boswelja.devicemanager.common.Compat
-import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_SYNC_ENABLED_KEY
 import com.boswelja.devicemanager.common.PreferenceKey.DND_SYNC_TO_WATCH_KEY
 import com.boswelja.devicemanager.dndsync.DnDLocalChangeService
-import com.boswelja.devicemanager.watchconnectionmanager.WatchConnectionService
 
 class BootReceiver : BaseBootReceiver() {
-
-    private val watchConnectionmanagerConnection = object : WatchConnectionService.Connection() {
-        override fun onWatchManagerBound(service: WatchConnectionService) {
-            BatterySyncJob.startJob(service)
-            service.unbindService(this)
-        }
-
-        override fun onWatchManagerUnbound() {} // Do nothing
-    }
 
     override fun onBootCompleted(context: Context?) {
         if (sharedPreferences.getBoolean(DND_SYNC_TO_WATCH_KEY, false)) {
             startInterruptFilterSyncService(context)
-        }
-        if (sharedPreferences.getBoolean(BATTERY_SYNC_ENABLED_KEY, false)) {
-            WatchConnectionService.bind(context!!, watchConnectionmanagerConnection)
         }
     }
 
