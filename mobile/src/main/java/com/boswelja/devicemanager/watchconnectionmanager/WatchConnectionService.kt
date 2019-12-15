@@ -137,8 +137,8 @@ class WatchConnectionService :
 
     suspend fun getRegisteredWatches(): List<Watch> {
         val registeredWatches = ArrayList<Watch>()
-        withContext(Dispatchers.IO) {
-            if (database.isOpen) {
+        try {
+            withContext(Dispatchers.IO) {
                 val databaseWatches = database.watchDao().getAll()
                 val connectedNodes = Tasks.await(nodeClient.connectedNodes)
                 val capableNodes = Tasks.await(capabilityClient.getCapability(References.CAPABILITY_WATCH_APP, CapabilityClient.FILTER_ALL)).nodes
@@ -148,31 +148,37 @@ class WatchConnectionService :
                     }
                 }
             }
+        } catch (e: IllegalStateException) {
+            e.printStackTrace()
         }
         return registeredWatches
     }
 
     suspend fun getWatchById(watchId: String?): Watch? {
         var watch: Watch? = null
-        withContext(Dispatchers.IO) {
-            if (database.isOpen and !watchId.isNullOrEmpty()) {
-                val databaseWatch = database.watchDao().findById(watchId!!)
-                if (databaseWatch != null) {
-                    val boolPrefs = database.boolPreferenceDao().getAllForWatch(databaseWatch.id)
-                    val intPrefs = database.intPreferenceDao().getAllForWatch(databaseWatch.id)
-                    val connectedNodes = Tasks.await(nodeClient.connectedNodes)
-                    val capableNodes = Tasks.await(capabilityClient.getCapability(References.CAPABILITY_WATCH_APP, CapabilityClient.FILTER_ALL)).nodes
-                    withContext(Dispatchers.Default) {
-                        watch = Watch(databaseWatch.id, databaseWatch.name, databaseWatch.batterySyncJobId, capableNodes.any { it.id == databaseWatch.id }, connectedNodes.any { it.id == databaseWatch.id })
-                        for (intPreference in intPrefs) {
-                            watch!!.intPrefs[intPreference.key] = intPreference.value
-                        }
-                        for (boolPreference in boolPrefs) {
-                            watch!!.boolPrefs[boolPreference.key] = boolPreference.value
+        try {
+            withContext(Dispatchers.IO) {
+                if (!watchId.isNullOrEmpty()) {
+                    val databaseWatch = database.watchDao().findById(watchId)
+                    if (databaseWatch != null) {
+                        val boolPrefs = database.boolPreferenceDao().getAllForWatch(databaseWatch.id)
+                        val intPrefs = database.intPreferenceDao().getAllForWatch(databaseWatch.id)
+                        val connectedNodes = Tasks.await(nodeClient.connectedNodes)
+                        val capableNodes = Tasks.await(capabilityClient.getCapability(References.CAPABILITY_WATCH_APP, CapabilityClient.FILTER_ALL)).nodes
+                        withContext(Dispatchers.Default) {
+                            watch = Watch(databaseWatch.id, databaseWatch.name, databaseWatch.batterySyncJobId, capableNodes.any { it.id == databaseWatch.id }, connectedNodes.any { it.id == databaseWatch.id })
+                            for (intPreference in intPrefs) {
+                                watch!!.intPrefs[intPreference.key] = intPreference.value
+                            }
+                            for (boolPreference in boolPrefs) {
+                                watch!!.boolPrefs[boolPreference.key] = boolPreference.value
+                            }
                         }
                     }
                 }
             }
+        } catch (e: IllegalStateException) {
+            e.printStackTrace()
         }
         return watch
     }
