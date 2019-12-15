@@ -9,20 +9,40 @@ package com.boswelja.devicemanager
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.app.job.JobInfo
+import android.app.job.JobScheduler
+import android.content.ComponentName
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.core.content.edit
 import androidx.preference.PreferenceManager
+import com.boswelja.devicemanager.batterysync.BatterySyncJob
 import com.boswelja.devicemanager.batterysync.WatchBatteryUpdateReceiver
+import com.boswelja.devicemanager.common.Compat
+import com.boswelja.devicemanager.common.PreferenceKey
+import com.boswelja.devicemanager.common.References.CAPABILITY_WATCH_APP
 import com.boswelja.devicemanager.common.dndsync.References
+import com.boswelja.devicemanager.watchconnectionmanager.Watch
+import com.boswelja.devicemanager.watchconnectionmanager.WatchConnectionService
+import com.google.android.gms.tasks.Tasks
+import com.google.android.gms.wearable.CapabilityClient
+import com.google.android.gms.wearable.Wearable
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.util.concurrent.TimeUnit
 
 class EnvironmentUpdater(private val context: Context) {
 
+    private val coroutineScope = MainScope()
     private val sharedPreferences: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
     private val currentAppVersion: Int = BuildConfig.VERSION_CODE
     private val lastAppVersion: Int
+
+
     private var notificationChannelsCreated: Boolean = false
 
     init {
@@ -67,7 +87,7 @@ class EnvironmentUpdater(private val context: Context) {
         }
     }
 
-    fun doUpdate(): Boolean {
+    fun doUpdate(): Int {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && (!notificationChannelsCreated or needsUpdate())) {
             createNotificationChannels()
             sharedPreferences.edit().putBoolean(NOTIFICATION_CHANNELS_CREATED, true).apply()
@@ -75,31 +95,89 @@ class EnvironmentUpdater(private val context: Context) {
         }
 
         if (needsUpdate()) {
-            var updateComplete = false
+            var updateStatus = UPDATE_NOTHING_CHANGED
             sharedPreferences.edit(commit = true) {
                 if (lastAppVersion < 2019090243) {
                     remove("connected_watch_name")
-                    updateComplete = true
+                    updateStatus = UPDATE_SUCCESS
                 }
-                if (lastAppVersion in 2019070801..2019110999) {
+                if (lastAppVersion < 2019110999) {
                     val lastConnectedId = sharedPreferences.getString("connected_watch_id", "")
                     remove("connected_watch_id")
                     putString("last_connected_id", lastConnectedId)
-                    updateComplete = true
+                    updateStatus = UPDATE_SUCCESS
                 }
                 if (lastAppVersion < 2019120600) {
-                    clear()
-                    updateComplete = false
+                    updateStatus = UPDATE_NEEDS_SERVICE_UPDATE
                 }
                 putInt(APP_VERSION_KEY, lastAppVersion)
             }
-            return updateComplete
+            return updateStatus
         }
-        return false
+        return UPDATE_NOTHING_CHANGED
+    }
+
+    fun doServiceUpdate() {
+        if (lastAppVersion < 2019120600) {
+            val watchConnectionManagerConnection = object : WatchConnectionService.Connection() {
+                override fun onWatchManagerBound(service: WatchConnectionService) {
+                    coroutineScope.launch {
+                        withContext(Dispatchers.IO) {
+                            val capableNodes = Tasks.await(Wearable.getCapabilityClient(context)
+                                    .getCapability(CAPABILITY_WATCH_APP, CapabilityClient.FILTER_ALL))
+                                    .nodes
+                            val defaultWatch = capableNodes.firstOrNull { it.isNearby } ?: capableNodes.firstOrNull()
+                            if (defaultWatch != null) {
+                                val watch = Watch(defaultWatch)
+                                service.addWatch(watch)
+                                service.setConnectedWatchById(watch.id)
+                                sharedPreferences.all.forEach {
+                                    if (it.value != null) {
+                                        service.updatePrefInDatabase(it.key, it.value!!)
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    context.unbindService(this)
+                }
+
+                override fun onWatchManagerUnbound() {}
+            }
+            WatchConnectionService.bind(context, watchConnectionManagerConnection)
+        }
+    }
+
+    fun doBatterySyncUpdate(watch: Watch) {
+        if (lastAppVersion < 2019120600) {
+            val oldJobId = sharedPreferences.getInt("job_id_key", 0)
+            if (oldJobId != 0) {
+                val jobScheduler = context.getSystemService(Context.JOB_SCHEDULER_SERVICE) as JobScheduler
+                if (Compat.getPendingJob(jobScheduler, oldJobId) != null) {
+                    jobScheduler.cancel(oldJobId)
+                }
+
+                val syncIntervalMinutes = sharedPreferences.getInt(PreferenceKey.BATTERY_SYNC_INTERVAL_KEY, 15).toLong()
+                val syncIntervalMillis = TimeUnit.MINUTES.toMillis(syncIntervalMinutes)
+
+                val jobInfo = JobInfo.Builder(
+                        watch.batterySyncJobId,
+                        ComponentName(context.packageName, BatterySyncJob::class.java.name)).apply {
+                    setPeriodic(syncIntervalMillis)
+                    setPersisted(true)
+                }
+                jobScheduler.schedule(jobInfo.build())
+            }
+            sharedPreferences.edit().remove("job_id_key").apply()
+        }
     }
 
     companion object {
         private const val APP_VERSION_KEY = "app_version"
         private const val NOTIFICATION_CHANNELS_CREATED = "notification_channels_created"
+
+        const val UPDATE_NOTHING_CHANGED = 0
+        const val UPDATE_SUCCESS = 1
+        const val UPDATE_NEEDS_SERVICE_UPDATE = 2
     }
 }
