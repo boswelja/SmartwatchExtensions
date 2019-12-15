@@ -19,6 +19,8 @@ import androidx.core.content.edit
 import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.PreferenceKey
+import com.boswelja.devicemanager.common.References
+import com.boswelja.devicemanager.common.batterysync.Utils.updateBatteryStats
 import com.boswelja.devicemanager.complication.PhoneBatteryComplicationProvider
 import com.google.android.gms.tasks.Tasks
 import com.google.android.gms.wearable.MessageEvent
@@ -54,6 +56,7 @@ class PhoneBatteryUpdateReceiver : WearableListenerService() {
                 notificationManager.cancel(BATTERY_CHARGED_NOTI_ID)
             }
 
+            updateBatteryStats(this, References.CAPABILITY_PHONE_APP)
             ProviderUpdateRequester(this, ComponentName(packageName, PhoneBatteryComplicationProvider::class.java.name)).requestUpdateAll()
         }
     }
