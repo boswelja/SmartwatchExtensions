@@ -60,9 +60,8 @@ class BatterySyncJob : JobService() {
             if (connectedWatch != null) {
                 val jobId = connectedWatch.batterySyncJobId
 
-                val prefs = PreferenceManager.getDefaultSharedPreferences(watchConnectionManager)
-                val syncIntervalMinutes = prefs.getInt(BATTERY_SYNC_INTERVAL_KEY, 15).toLong()
-                val syncIntervalMillis = TimeUnit.MINUTES.toMillis(syncIntervalMinutes)
+                val syncIntervalMinutes = connectedWatch.intPrefs[BATTERY_SYNC_INTERVAL_KEY] ?: 15
+                val syncIntervalMillis = TimeUnit.MINUTES.toMillis(syncIntervalMinutes.toLong())
 
                 val jobScheduler = watchConnectionManager.getSystemService(Context.JOB_SCHEDULER_SERVICE) as JobScheduler
                 val jobInfo = JobInfo.Builder(
