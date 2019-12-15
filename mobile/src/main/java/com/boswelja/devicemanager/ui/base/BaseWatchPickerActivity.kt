@@ -39,8 +39,8 @@ abstract class BaseWatchPickerActivity :
 
         override fun onWatchManagerBound(service: WatchConnectionService) {
             watchConnectionManager = service
-            updateConnectedWatches()
             onWatchManagerBound()
+            updateConnectedWatches()
         }
 
         override fun onWatchManagerUnbound() {
