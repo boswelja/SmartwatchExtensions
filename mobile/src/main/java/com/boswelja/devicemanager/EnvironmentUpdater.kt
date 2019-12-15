@@ -56,6 +56,30 @@ class EnvironmentUpdater(private val context: Context) {
         return lastAppVersion < currentAppVersion
     }
 
+    private fun doBatterySyncUpdate(watch: Watch) {
+        if (lastAppVersion < 2019120600) {
+            val oldJobId = sharedPreferences.getInt("job_id_key", 0)
+            if (oldJobId != 0) {
+                val jobScheduler = context.getSystemService(Context.JOB_SCHEDULER_SERVICE) as JobScheduler
+                if (Compat.getPendingJob(jobScheduler, oldJobId) != null) {
+                    jobScheduler.cancel(oldJobId)
+                }
+
+                val syncIntervalMinutes = sharedPreferences.getInt(PreferenceKey.BATTERY_SYNC_INTERVAL_KEY, 15).toLong()
+                val syncIntervalMillis = TimeUnit.MINUTES.toMillis(syncIntervalMinutes)
+
+                val jobInfo = JobInfo.Builder(
+                        watch.batterySyncJobId,
+                        ComponentName(context.packageName, BatterySyncJob::class.java.name)).apply {
+                    setPeriodic(syncIntervalMillis)
+                    setPersisted(true)
+                }
+                jobScheduler.schedule(jobInfo.build())
+            }
+            sharedPreferences.edit().remove("job_id_key").apply()
+        }
+    }
+
     @RequiresApi(Build.VERSION_CODES.O)
     fun createNotificationChannels() {
         val notificationManager = context.getSystemService(NotificationManager::class.java)!!
@@ -108,7 +132,7 @@ class EnvironmentUpdater(private val context: Context) {
                     updateStatus = UPDATE_SUCCESS
                 }
                 if (lastAppVersion < 2019120600) {
-                    updateStatus = UPDATE_NEEDS_SERVICE_UPDATE
+                    updateStatus = NEEDS_FULL_UPDATE
                 }
                 putInt(APP_VERSION_KEY, lastAppVersion)
             }
@@ -117,58 +141,29 @@ class EnvironmentUpdater(private val context: Context) {
         return UPDATE_NOTHING_CHANGED
     }
 
-    fun doServiceUpdate() {
+    fun doFullUpdate(watchConnectionManager: WatchConnectionService) {
         if (lastAppVersion < 2019120600) {
-            val watchConnectionManagerConnection = object : WatchConnectionService.Connection() {
-                override fun onWatchManagerBound(service: WatchConnectionService) {
-                    coroutineScope.launch {
-                        withContext(Dispatchers.IO) {
-                            val capableNodes = Tasks.await(Wearable.getCapabilityClient(context)
-                                    .getCapability(CAPABILITY_WATCH_APP, CapabilityClient.FILTER_ALL))
-                                    .nodes
-                            val defaultWatch = capableNodes.firstOrNull { it.isNearby } ?: capableNodes.firstOrNull()
-                            if (defaultWatch != null) {
-                                val watch = Watch(defaultWatch)
-                                service.addWatch(watch)
-                                service.setConnectedWatchById(watch.id)
-                                sharedPreferences.all.forEach {
-                                    if (it.value != null) {
-                                        service.updatePrefInDatabase(it.key, it.value!!)
-                                    }
-                                }
+            coroutineScope.launch {
+                withContext(Dispatchers.IO) {
+                    val capableNodes = Tasks.await(Wearable.getCapabilityClient(context)
+                            .getCapability(CAPABILITY_WATCH_APP, CapabilityClient.FILTER_ALL))
+                            .nodes
+                    val defaultWatch = capableNodes.firstOrNull { it.isNearby } ?: capableNodes.firstOrNull()
+                    if (defaultWatch != null) {
+                        val watch = Watch(defaultWatch)
+                        watchConnectionManager.addWatch(watch)
+                        watchConnectionManager.setConnectedWatchById(watch.id)
+                        sharedPreferences.all.forEach {
+                            if (it.value != null) {
+                                watchConnectionManager.updatePrefInDatabase(it.key, it.value!!)
                             }
                         }
+                        withContext(Dispatchers.Default) {
+                            doBatterySyncUpdate(watch)
+                        }
                     }
-                    context.unbindService(this)
                 }
-
-                override fun onWatchManagerUnbound() {}
             }
-            WatchConnectionService.bind(context, watchConnectionManagerConnection)
-        }
-    }
-
-    fun doBatterySyncUpdate(watch: Watch) {
-        if (lastAppVersion < 2019120600) {
-            val oldJobId = sharedPreferences.getInt("job_id_key", 0)
-            if (oldJobId != 0) {
-                val jobScheduler = context.getSystemService(Context.JOB_SCHEDULER_SERVICE) as JobScheduler
-                if (Compat.getPendingJob(jobScheduler, oldJobId) != null) {
-                    jobScheduler.cancel(oldJobId)
-                }
-
-                val syncIntervalMinutes = sharedPreferences.getInt(PreferenceKey.BATTERY_SYNC_INTERVAL_KEY, 15).toLong()
-                val syncIntervalMillis = TimeUnit.MINUTES.toMillis(syncIntervalMinutes)
-
-                val jobInfo = JobInfo.Builder(
-                        watch.batterySyncJobId,
-                        ComponentName(context.packageName, BatterySyncJob::class.java.name)).apply {
-                    setPeriodic(syncIntervalMillis)
-                    setPersisted(true)
-                }
-                jobScheduler.schedule(jobInfo.build())
-            }
-            sharedPreferences.edit().remove("job_id_key").apply()
         }
     }
 
@@ -178,6 +173,6 @@ class EnvironmentUpdater(private val context: Context) {
 
         const val UPDATE_NOTHING_CHANGED = 0
         const val UPDATE_SUCCESS = 1
-        const val UPDATE_NEEDS_SERVICE_UPDATE = 2
+        const val NEEDS_FULL_UPDATE = 2
     }
 }
