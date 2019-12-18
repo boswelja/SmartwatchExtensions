@@ -7,10 +7,7 @@
  */
 package com.boswelja.devicemanager.ui.batterysync
 
-import android.os.Bundle
 import androidx.fragment.app.Fragment
-import com.boswelja.devicemanager.batterysync.BatterySyncJob
-import com.boswelja.devicemanager.common.PreferenceKey
 import com.boswelja.devicemanager.ui.base.BasePreferenceActivity
 import com.boswelja.devicemanager.ui.base.BasePreferenceFragment
 
@@ -19,13 +16,4 @@ class BatterySyncPreferenceActivity : BasePreferenceActivity() {
     override fun createPreferenceFragment(): BasePreferenceFragment = BatterySyncPreferenceFragment()
     override fun createWidgetFragment(): Fragment? = BatterySyncPreferenceWidgetFragment()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        if (sharedPreferences.getBoolean(PreferenceKey.BATTERY_SYNC_ENABLED_KEY, false)) {
-            BatterySyncJob.startJob(watchConnectionManager)
-        } else {
-            BatterySyncJob.stopJob(watchConnectionManager)
-        }
-    }
 }
