@@ -29,16 +29,15 @@ import com.boswelja.devicemanager.watchconnectionmanager.WatchConnectionService
 import com.google.android.gms.tasks.Tasks
 import com.google.android.gms.wearable.CapabilityClient
 import com.google.android.gms.wearable.Wearable
+import java.util.concurrent.TimeUnit
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import java.util.concurrent.TimeUnit
 
 class EnvironmentUpdater(private val context: Context) {
 
     private val sharedPreferences: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
     private val currentAppVersion: Int = BuildConfig.VERSION_CODE
     private val lastAppVersion: Int
-
 
     private var notificationChannelsCreated: Boolean = false
 

@@ -122,7 +122,7 @@ class BatterySyncPreferenceWidgetFragment :
                 getString(R.string.battery_sync_last_updated_under_minute)
             } else if (lastUpdatedMinutes < 60) {
                 resources.getQuantityString(R.plurals.battery_sync_last_updated_minutes, lastUpdatedMinutes, lastUpdatedMinutes)
-            } else  {
+            } else {
                 val lastUpdatedHours = TimeUnit.MINUTES.toHours(lastUpdatedMinutes.toLong()).toInt()
                 resources.getQuantityString(R.plurals.battery_sync_last_updated_hours, lastUpdatedHours, lastUpdatedHours)
             }
