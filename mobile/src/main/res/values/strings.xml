@@ -174,6 +174,9 @@
     <string name="welcome_to_text">Welcome to</string>
     <string name="welcome_button_get_started">Get Started</string>
 
+    <!-- Update dialog strings -->
+    <string name="update_dialog_title">Updating %s</string>
+
     <string name="snackbar_action_undo">Undo</string>
 
     <string name="privacy_policy_url">https://github.com/boswelja/PublicDocs/blob/master/PrivacyPolicies/WearableExtensions.md#privacy-policy</string>
