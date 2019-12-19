@@ -15,5 +15,4 @@ class BatterySyncPreferenceActivity : BasePreferenceActivity() {
 
     override fun createPreferenceFragment(): BasePreferenceFragment = BatterySyncPreferenceFragment()
     override fun createWidgetFragment(): Fragment? = BatterySyncPreferenceWidgetFragment()
-
 }

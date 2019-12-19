@@ -55,8 +55,8 @@ class BatterySyncPreferenceWidgetFragment :
                 startBatterySyncLastTimeTimer()
             }
             BATTERY_PERCENT_KEY -> {
-                 batteryPercent = sharedPreferences?.getInt(BATTERY_PERCENT_KEY, 0) ?: 0
-                 updateWatchBatteryPercent()
+                batteryPercent = sharedPreferences?.getInt(BATTERY_PERCENT_KEY, 0) ?: 0
+                updateWatchBatteryPercent()
             }
             BATTERY_SYNC_LAST_WHEN_KEY -> {
                 lastUpdateTime = sharedPreferences?.getLong(BATTERY_SYNC_LAST_WHEN_KEY, 0) ?: 0
