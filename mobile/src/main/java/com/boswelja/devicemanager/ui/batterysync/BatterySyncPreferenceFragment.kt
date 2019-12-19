@@ -79,14 +79,16 @@ class BatterySyncPreferenceFragment :
             }
             BATTERY_SYNC_INTERVAL_KEY -> {
                 val value = (newValue as Int)
-                preference.sharedPreferences.edit().putInt(preference.key, value).apply()
+                sharedPreferences.edit().putInt(key, value).apply()
+                activity.watchConnectionManager?.updatePrefInDatabase(key, value)
+                batterySyncIntervalPreference.value = value
                 BatterySyncJob.startJob(activity.watchConnectionManager)
                 false
             }
             BATTERY_PHONE_CHARGE_NOTI_KEY,
             BATTERY_WATCH_CHARGE_NOTI_KEY -> {
                 val value = newValue == true
-                preference.sharedPreferences.edit().putBoolean(preference.key, value).apply()
+                sharedPreferences.edit().putBoolean(key, value).apply()
                 getWatchConnectionManager()?.updatePreferenceOnWatch(key)
                 false
             }
