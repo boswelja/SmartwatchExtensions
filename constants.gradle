@@ -15,8 +15,8 @@ ext.versions = [
         androidx_wear            : "1.0.0",
         androidx_appcompat       : "1.1.0",
         androidx_preference      : "1.1.0",
-        androidx_constraintlayout: '2.0.0-beta3',
-        androidx_room            : '2.2.2'
+        androidx_constraintlayout: '2.0.0-beta4',
+        androidx_room            : '2.2.3'
 ]
 
 static def generateVersionCode() {
