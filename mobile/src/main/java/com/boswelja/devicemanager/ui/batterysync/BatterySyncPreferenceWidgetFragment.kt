@@ -42,15 +42,25 @@ class BatterySyncPreferenceWidgetFragment :
 
     private var watchBatteryLastUpdateTimeTimer: Timer? = null
 
+    private var batterySyncEnabled: Boolean = false
+    private var batteryPercent: Int = 0
+    private var lastUpdateTime: Long = 0
+
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
         when (key) {
             BATTERY_SYNC_ENABLED_KEY -> {
+                batterySyncEnabled = sharedPreferences?.getBoolean(BATTERY_SYNC_ENABLED_KEY, false) == true
                 updateWatchBatteryPercent()
+                updateBatterySyncLastTimeNow()
                 startBatterySyncLastTimeTimer()
             }
-            BATTERY_PERCENT_KEY -> updateWatchBatteryPercent()
+            BATTERY_PERCENT_KEY -> {
+                 batteryPercent = sharedPreferences?.getInt(BATTERY_PERCENT_KEY, 0) ?: 0
+                 updateWatchBatteryPercent()
+            }
             BATTERY_SYNC_LAST_WHEN_KEY -> {
-                if (sharedPreferences?.getBoolean(BATTERY_SYNC_ENABLED_KEY, false) == true) {
+                lastUpdateTime = sharedPreferences?.getLong(BATTERY_SYNC_LAST_WHEN_KEY, 0) ?: 0
+                if (batterySyncEnabled) {
                     updateBatterySyncLastTimeNow()
                 }
             }
@@ -62,7 +72,7 @@ class BatterySyncPreferenceWidgetFragment :
     override fun onConnectedWatchChanging() {} // Do nothing
 
     override fun onConnectedWatchChanged(success: Boolean) {
-        if (success and sharedPreferences.getBoolean(BATTERY_SYNC_ENABLED_KEY, false)) {
+        if (success and batterySyncEnabled) {
             updateBatteryStats(context!!, activity.watchConnectionManager?.getConnectedWatchId())
         }
     }
@@ -81,9 +91,17 @@ class BatterySyncPreferenceWidgetFragment :
 
     override fun onResume() {
         super.onResume()
+
         sharedPreferences.registerOnSharedPreferenceChangeListener(this)
 
-        updateWatchBatteryPercent()
+        batterySyncEnabled = sharedPreferences.getBoolean(BATTERY_SYNC_ENABLED_KEY, false) == true
+        batteryPercent = sharedPreferences.getInt(BATTERY_PERCENT_KEY, 0)
+        lastUpdateTime = sharedPreferences.getLong(BATTERY_SYNC_LAST_WHEN_KEY, 0)
+        if (batterySyncEnabled) {
+            updateWatchBatteryPercent()
+            updateBatterySyncLastTimeNow()
+            startBatterySyncLastTimeTimer()
+        }
 
         startBatterySyncLastTimeTimer()
     }
@@ -101,7 +119,7 @@ class BatterySyncPreferenceWidgetFragment :
 
         watchBatteryUpdateNowHolder = view.findViewById<View>(R.id.updated_time_holder).apply {
             setOnClickListener {
-                if (sharedPreferences.getBoolean(BATTERY_SYNC_ENABLED_KEY, false)) {
+                if (batterySyncEnabled) {
                     updateBatteryStats(context!!, activity.watchConnectionManager?.getConnectedWatchId())
                 }
             }
@@ -109,8 +127,6 @@ class BatterySyncPreferenceWidgetFragment :
     }
 
     private fun updateWatchBatteryPercent() {
-        val batterySyncEnabled = sharedPreferences.getBoolean(BATTERY_SYNC_ENABLED_KEY, false)
-        val batteryPercent = sharedPreferences.getInt(BATTERY_PERCENT_KEY, 0)
         if (batterySyncEnabled) {
             if (batteryPercent > 0) {
                 watchBatteryIndicator?.setImageLevel(batteryPercent)
@@ -124,7 +140,7 @@ class BatterySyncPreferenceWidgetFragment :
 
     private fun startBatterySyncLastTimeTimer() {
         watchBatteryLastUpdateTimeTimer?.cancel()
-        if (sharedPreferences.getBoolean(BATTERY_SYNC_ENABLED_KEY, false)) {
+        if (batterySyncEnabled) {
             watchBatteryLastUpdateTimeTimer = fixedRateTimer("batterySyncLastTimeTimer", false, 0L, 60 * 1000) {
                 updateBatterySyncLastTimeNow()
             }
@@ -134,9 +150,8 @@ class BatterySyncPreferenceWidgetFragment :
     }
 
     private fun updateBatterySyncLastTimeNow() {
-        val batteryPercent = sharedPreferences.getInt(BATTERY_PERCENT_KEY, 0)
         if (batteryPercent > 0) {
-            val lastUpdatedMillis = System.currentTimeMillis() - sharedPreferences.getLong(BATTERY_SYNC_LAST_WHEN_KEY, 0)
+            val lastUpdatedMillis = System.currentTimeMillis() - lastUpdateTime
             val lastUpdatedMinutes = TimeUnit.MILLISECONDS.toMinutes(lastUpdatedMillis).toInt()
             val lastUpdatedString = if (lastUpdatedMinutes < 1) {
                 getString(R.string.battery_sync_last_updated_under_minute)
