@@ -40,6 +40,7 @@ class BatterySyncPreferenceFragment :
         when (key) {
             BATTERY_SYNC_ENABLED_KEY -> {
                 batterySyncEnabledPreference.isChecked = sharedPreferences?.getBoolean(key, false)!!
+                setBatteryChargeThresholdEnabled()
             }
             BATTERY_PHONE_CHARGE_NOTI_KEY -> {
                 batterySyncPhoneChargedNotiPreference.isChecked = sharedPreferences?.getBoolean(key, false)!!
