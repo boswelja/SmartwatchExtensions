@@ -24,7 +24,6 @@ import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_SYNC_INTERVAL_KEY
 import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_WATCH_CHARGE_NOTI_KEY
 import com.boswelja.devicemanager.ui.base.BasePreferenceFragment
 import com.boswelja.devicemanager.ui.batterysync.Utils.updateBatteryStats
-import com.boswelja.devicemanager.widget.batterysync.WatchBatteryWidget
 
 class BatterySyncPreferenceFragment :
         BasePreferenceFragment(),
@@ -40,17 +39,7 @@ class BatterySyncPreferenceFragment :
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
         when (key) {
             BATTERY_SYNC_ENABLED_KEY -> {
-                val newValue = sharedPreferences?.getBoolean(key, false)!!
-                batterySyncEnabledPreference.isChecked = newValue
-                setBatteryChargeThresholdEnabled()
-                if (newValue) {
-                    BatterySyncJob.startJob(activity.watchConnectionManager)
-                    updateBatteryStats(context!!, activity.watchConnectionManager?.getConnectedWatchId())
-                } else {
-                    BatterySyncJob.stopJob(activity.watchConnectionManager)
-                }
-                getWatchConnectionManager()?.updatePreferenceOnWatch(key)
-                WatchBatteryWidget.updateWidgets(context!!)
+                batterySyncEnabledPreference.isChecked = sharedPreferences?.getBoolean(key, false)!!
             }
             BATTERY_PHONE_CHARGE_NOTI_KEY -> {
                 batterySyncPhoneChargedNotiPreference.isChecked = sharedPreferences?.getBoolean(key, false)!!
@@ -69,6 +58,20 @@ class BatterySyncPreferenceFragment :
 
     override fun onPreferenceChange(preference: Preference?, newValue: Any?): Boolean {
         return when (val key = preference?.key) {
+            BATTERY_SYNC_ENABLED_KEY -> {
+                val newBool = newValue == true
+                val oldBool = sharedPreferences.getBoolean(key, false)
+                setBatteryChargeThresholdEnabled()
+                if (newBool and !oldBool) {
+                    BatterySyncJob.startJob(activity.watchConnectionManager)
+                    updateBatteryStats(context!!, activity.watchConnectionManager?.getConnectedWatchId())
+                } else if (!newBool and oldBool) {
+                    BatterySyncJob.stopJob(activity.watchConnectionManager)
+                }
+                sharedPreferences.edit().putBoolean(key, newBool).apply()
+                getWatchConnectionManager()?.updatePreferenceOnWatch(key)
+                false
+            }
             BATTERY_SYNC_INTERVAL_KEY -> {
                 val value = (newValue as Int)
                 preference.sharedPreferences.edit().putInt(preference.key, value).apply()
@@ -116,7 +119,6 @@ class BatterySyncPreferenceFragment :
         batterySyncIntervalPreference.onPreferenceChangeListener = this
         batterySyncPhoneChargedNotiPreference.onPreferenceChangeListener = this
         batterySyncWatchChargedNotiPreference.onPreferenceChangeListener = this
-        batteryChargeThresholdPreference.onPreferenceChangeListener = this
 
         updateChargeNotiPrefSummaries()
         setBatteryChargeThresholdEnabled()
