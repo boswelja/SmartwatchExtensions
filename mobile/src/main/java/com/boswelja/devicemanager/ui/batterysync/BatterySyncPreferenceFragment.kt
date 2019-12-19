@@ -61,12 +61,17 @@ class BatterySyncPreferenceFragment :
         return when (val key = preference?.key) {
             BATTERY_SYNC_ENABLED_KEY -> {
                 val newBool = newValue == true
-                sharedPreferences.edit().putBoolean(key, newBool).apply()
                 setBatteryChargeThresholdEnabled()
                 if (newBool) {
-                    BatterySyncJob.startJob(activity.watchConnectionManager)
-                    updateBatteryStats(context!!, activity.watchConnectionManager?.getConnectedWatchId())
+                    val success = BatterySyncJob.startJob(activity.watchConnectionManager)
+                    if (success) {
+                        sharedPreferences.edit().putBoolean(key, newBool).apply()
+                        updateBatteryStats(context!!, activity.watchConnectionManager?.getConnectedWatchId())
+                    } else {
+                        activity.createSnackBar(getString(R.string.battery_sync_enable_failed))
+                    }
                 } else {
+                    sharedPreferences.edit().putBoolean(key, newBool).apply()
                     BatterySyncJob.stopJob(activity.watchConnectionManager)
                 }
                 getWatchConnectionManager()?.updatePreferenceOnWatch(key)
