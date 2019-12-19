@@ -23,7 +23,9 @@ import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_SYNC_LAST_WHEN_KE
 import com.boswelja.devicemanager.ui.batterysync.Utils.updateBatteryStats
 import com.boswelja.devicemanager.watchconnectionmanager.Watch
 import com.boswelja.devicemanager.watchconnectionmanager.WatchConnectionInterface
+import java.util.Timer
 import java.util.concurrent.TimeUnit
+import kotlin.concurrent.fixedRateTimer
 
 class BatterySyncPreferenceWidgetFragment :
         Fragment(),
@@ -37,6 +39,8 @@ class BatterySyncPreferenceWidgetFragment :
     private var watchBatteryPercent: AppCompatTextView? = null
     private var watchBatteryLastUpdated: AppCompatTextView? = null
     private var watchBatteryUpdateNowHolder: View? = null
+
+    private var watchBatteryLastUpdateTimeTimer: Timer? = null
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
         when (key) {
@@ -68,6 +72,7 @@ class BatterySyncPreferenceWidgetFragment :
     override fun onPause() {
         super.onPause()
         sharedPreferences.unregisterOnSharedPreferenceChangeListener(this)
+        watchBatteryLastUpdateTimeTimer?.cancel()
     }
 
     override fun onResume() {
@@ -75,7 +80,12 @@ class BatterySyncPreferenceWidgetFragment :
         sharedPreferences.registerOnSharedPreferenceChangeListener(this)
 
         updateWatchBatteryPercent()
-        updateWatchBatterySyncLastTime()
+
+        watchBatteryLastUpdateTimeTimer = fixedRateTimer("batterySyncLastTimeTimer", false, 0L, 60 * 1000) {
+            this@BatterySyncPreferenceWidgetFragment.activity.runOnUiThread {
+                updateWatchBatterySyncLastTime()
+            }
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
