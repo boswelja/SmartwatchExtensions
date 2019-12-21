@@ -83,7 +83,6 @@ class BatterySyncPreferenceFragment :
                             }
                         }
                     }
-
                 } else {
                     sharedPreferences.edit().putBoolean(key, newBool).apply()
                     coroutineScope.launch {

@@ -130,7 +130,6 @@ class WatchInfoActivity : BaseToolbarActivity() {
                                         }
                                     }
                                 }
-
                             }
                             .setNegativeButton(R.string.dialog_button_no) { dialogInterface, _ ->
                                 dialogInterface.dismiss()
