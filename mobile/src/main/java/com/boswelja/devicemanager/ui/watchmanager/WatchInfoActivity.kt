@@ -45,7 +45,9 @@ class WatchInfoActivity : BaseToolbarActivity() {
         override fun afterTextChanged(editable: Editable?) {
             if (!editable.isNullOrBlank()) {
                 watchNameLayout.isErrorEnabled = false
-                watchConnectionManager?.updateWatchNickname(watchId!!, editable.toString())
+                coroutineScope.launch {
+                    watchConnectionManager?.updateWatchNickname(watchId!!, editable.toString())
+                }
                 resultCode = RESULT_WATCH_NAME_CHANGED
             } else {
                 watchNameLayout.isErrorEnabled = true
@@ -90,11 +92,15 @@ class WatchInfoActivity : BaseToolbarActivity() {
                             .setTitle(R.string.clear_preferences_dialog_title)
                             .setMessage(getString(R.string.clear_preferences_dialog_message, watchName))
                             .setPositiveButton(R.string.dialog_button_yes) { _, _ ->
-                                val success = watchConnectionManager?.clearPreferencesForWatch(watchId) == true
-                                if (success) {
-                                    createSnackBar("Successfully cleared settings for your $watchName")
-                                } else {
-                                    createSnackBar("Failed to clear settings for your $watchName")
+                                coroutineScope.launch {
+                                    val success = watchConnectionManager?.clearPreferencesForWatch(watchId) == true
+                                    withContext(Dispatchers.Main) {
+                                        if (success) {
+                                            createSnackBar("Successfully cleared settings for your $watchName")
+                                        } else {
+                                            createSnackBar("Failed to clear settings for your $watchName")
+                                        }
+                                    }
                                 }
                             }
                             .setNegativeButton(R.string.dialog_button_no) { dialogInterface, _ ->
@@ -113,13 +119,18 @@ class WatchInfoActivity : BaseToolbarActivity() {
                             .setTitle(R.string.forget_watch_dialog_title)
                             .setMessage(getString(R.string.forget_watch_dialog_message, watchName, watchName))
                             .setPositiveButton(R.string.dialog_button_yes) { _, _ ->
-                                val success = watchConnectionManager?.forgetWatch(watchId) == true
-                                if (success) {
-                                    resultCode = RESULT_WATCH_REMOVED
-                                    finish()
-                                } else {
-                                    createSnackBar("Failed to forget your $watchName")
+                                coroutineScope.launch {
+                                    val success = watchConnectionManager?.forgetWatch(watchId) == true
+                                    withContext(Dispatchers.Main) {
+                                        if (success) {
+                                            resultCode = RESULT_WATCH_REMOVED
+                                            finish()
+                                        } else {
+                                            createSnackBar("Failed to forget your $watchName")
+                                        }
+                                    }
                                 }
+
                             }
                             .setNegativeButton(R.string.dialog_button_no) { dialogInterface, _ ->
                                 dialogInterface.dismiss()

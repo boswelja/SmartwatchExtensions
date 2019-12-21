@@ -17,6 +17,8 @@ import com.boswelja.devicemanager.common.Compat
 import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_SYNC_INTERVAL_KEY
 import com.boswelja.devicemanager.ui.batterysync.Utils.updateBatteryStats
 import com.boswelja.devicemanager.watchconnectionmanager.WatchConnectionService
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.launch
 import java.util.concurrent.TimeUnit
 
 class BatterySyncJob : JobService() {
@@ -24,8 +26,10 @@ class BatterySyncJob : JobService() {
     private val watchConnectionManagerConnection = object : WatchConnectionService.Connection() {
         override fun onWatchManagerBound(service: WatchConnectionService) {
             if (params?.jobId != null) {
-                val watchId = service.getWatchByBatterySyncJobId(params?.jobId!!)?.id
-                updateBatteryStats(this@BatterySyncJob, watchId)
+                MainScope().launch {
+                    val watchId = service.getWatchByBatterySyncJobId(params?.jobId!!)?.id
+                    updateBatteryStats(this@BatterySyncJob, watchId)
+                }
             }
 
             unbindService(this)
@@ -54,7 +58,7 @@ class BatterySyncJob : JobService() {
          * Starts a battery sync job for the currently selected watch.
          * @return @`true` if the job was started successfully, @`false` otherwise.
          */
-        fun startJob(watchConnectionManager: WatchConnectionService?): Boolean {
+        suspend fun startJob(watchConnectionManager: WatchConnectionService?): Boolean {
             val connectedWatch = watchConnectionManager?.getConnectedWatch()
             if (connectedWatch != null) {
                 val jobId = connectedWatch.batterySyncJobId
@@ -77,7 +81,7 @@ class BatterySyncJob : JobService() {
         /**
          * Stops the battery sync job for the current watch.
          */
-        fun stopJob(watchConnectionManager: WatchConnectionService?) {
+        suspend fun stopJob(watchConnectionManager: WatchConnectionService?) {
             val connectedWatch = watchConnectionManager?.getConnectedWatch()
             if (connectedWatch != null) {
                 val jobId = connectedWatch.batterySyncJobId

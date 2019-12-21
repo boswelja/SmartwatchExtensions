@@ -51,7 +51,7 @@ abstract class BaseWatchPickerActivity :
         }
     }
 
-    private val coroutineContext = MainScope()
+    private val coroutineScope = MainScope()
 
     var canUpdateConnectedWatches: Boolean = true
     var watchConnectionManager: WatchConnectionService? = null
@@ -59,8 +59,10 @@ abstract class BaseWatchPickerActivity :
     private lateinit var watchPickerSpinner: AppCompatSpinner
 
     override fun onItemSelected(adapterView: AdapterView<*>?, selectedView: View?, position: Int, id: Long) {
-        val connectedWatchId = id.toString(36)
-        watchConnectionManager?.setConnectedWatchById(connectedWatchId)
+        coroutineScope.launch {
+            val connectedWatchId = id.toString(36)
+            watchConnectionManager?.setConnectedWatchById(connectedWatchId)
+        }
     }
 
     override fun onNothingSelected(p0: AdapterView<*>?) { }
@@ -148,7 +150,7 @@ abstract class BaseWatchPickerActivity :
 
     private fun updateConnectedWatches() {
         if (canUpdateConnectedWatches) {
-            coroutineContext.launch {
+            coroutineScope.launch {
                 withContext(Dispatchers.Default) {
                     if (watchConnectionManager != null) {
                         withContext(Dispatchers.Main) {

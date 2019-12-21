@@ -20,8 +20,12 @@ import com.google.android.gms.wearable.DataEvent
 import com.google.android.gms.wearable.DataEventBuffer
 import com.google.android.gms.wearable.DataMapItem
 import com.google.android.gms.wearable.WearableListenerService
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.launch
 
 class PreferenceChangeReceiver : WearableListenerService() {
+
+    private val coroutineScope = MainScope()
 
     private var watchConnectionManager: WatchConnectionService? = null
     private var sharedPreferences: SharedPreferences? = null
@@ -48,14 +52,16 @@ class PreferenceChangeReceiver : WearableListenerService() {
 
     override fun onDataChanged(dataEvents: DataEventBuffer?) {
         if (dataEvents != null) {
-            val selectedWatchId = watchConnectionManager?.getConnectedWatch()?.id
-            if (!selectedWatchId.isNullOrEmpty()) {
-                for (event in dataEvents) {
-                    val senderId = event.dataItem.uri.host!!
-                    if (senderId == selectedWatchId) {
-                        handleSelectedWatchPreferenceChange(event)
-                    } else {
-                        handleOtherWatchPreferenceChange(senderId, event)
+            coroutineScope.launch {
+                val selectedWatchId = watchConnectionManager?.getConnectedWatch()?.id
+                if (!selectedWatchId.isNullOrEmpty()) {
+                    for (event in dataEvents) {
+                        val senderId = event.dataItem.uri.host!!
+                        if (senderId == selectedWatchId) {
+                            handleSelectedWatchPreferenceChange(event)
+                        } else {
+                            handleOtherWatchPreferenceChange(senderId, event)
+                        }
                     }
                 }
             }
@@ -65,10 +71,12 @@ class PreferenceChangeReceiver : WearableListenerService() {
     private fun onPreferenceChanged(key: String, newValue: Any) {
         when (key) {
             PreferenceKey.BATTERY_SYNC_ENABLED_KEY -> {
-                if (newValue == true) {
-                    BatterySyncJob.startJob(watchConnectionManager)
-                } else {
-                    BatterySyncJob.stopJob(watchConnectionManager)
+                coroutineScope.launch {
+                    if (newValue == true) {
+                        BatterySyncJob.startJob(watchConnectionManager)
+                    } else {
+                        BatterySyncJob.stopJob(watchConnectionManager)
+                    }
                 }
             }
             PreferenceKey.DND_SYNC_TO_WATCH_KEY -> {
@@ -79,7 +87,9 @@ class PreferenceChangeReceiver : WearableListenerService() {
                 }
             }
         }
-        watchConnectionManager?.updatePrefInDatabase(key, newValue)
+        coroutineScope.launch {
+            watchConnectionManager?.updatePrefInDatabase(key, newValue)
+        }
     }
 
     private fun handleSelectedWatchPreferenceChange(event: DataEvent) {
@@ -124,11 +134,15 @@ class PreferenceChangeReceiver : WearableListenerService() {
                     PreferenceKey.DND_SYNC_TO_PHONE_KEY,
                     PreferenceKey.DND_SYNC_WITH_THEATER_KEY -> {
                         val newValue = dataMap.getBoolean(key)
-                        watchConnectionManager?.updatePrefInDatabase(senderId, key, newValue)
+                        coroutineScope.launch {
+                            watchConnectionManager?.updatePrefInDatabase(senderId, key, newValue)
+                        }
                     }
                     PreferenceKey.BATTERY_CHARGE_THRESHOLD_KEY -> {
                         val newValue = dataMap.getInt(key)
-                        watchConnectionManager?.updatePrefInDatabase(senderId, key, newValue)
+                        coroutineScope.launch {
+                            watchConnectionManager?.updatePrefInDatabase(senderId, key, newValue)
+                        }
                     }
                 }
             }

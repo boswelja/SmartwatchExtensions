@@ -15,7 +15,6 @@ import android.content.ServiceConnection
 import android.content.SharedPreferences
 import android.os.Binder
 import android.os.IBinder
-import android.util.Log
 import androidx.core.content.edit
 import androidx.preference.PreferenceManager
 import androidx.room.Room
@@ -31,6 +30,8 @@ import com.google.android.gms.wearable.NodeClient
 import com.google.android.gms.wearable.PutDataMapRequest
 import com.google.android.gms.wearable.Wearable
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class WatchConnectionService :
@@ -43,6 +44,7 @@ class WatchConnectionService :
 
     private val watchConnectionInterfaces: ArrayList<WatchConnectionInterface> = ArrayList()
     private val watchPreferenceChangeInterfaces: ArrayList<WatchPreferenceChangeInterface> = ArrayList()
+    private val coroutineScope = MainScope()
 
     private lateinit var database: WatchDatabase
     private lateinit var capabilityClient: CapabilityClient
@@ -72,17 +74,16 @@ class WatchConnectionService :
 
         database = Room.databaseBuilder(applicationContext, WatchDatabase::class.java, "watch-db")
                 .fallbackToDestructiveMigration()
-                .allowMainThreadQueries()
                 .build()
 
-        setConnectedWatchById(sharedPreferences.getString(LAST_CONNECTED_NODE_ID_KEY, "") ?: "")
+        coroutineScope.launch {
+            setConnectedWatchById(sharedPreferences.getString(LAST_CONNECTED_NODE_ID_KEY, "") ?: "")
+        }
 
         capabilityClient = Wearable.getCapabilityClient(this)
 
         dataClient = Wearable.getDataClient(this)
         nodeClient = Wearable.getNodeClient(this)
-
-        Log.d("WatchConnectionService", "Starting service")
 
         setAutoAddWatches()
     }
@@ -183,43 +184,57 @@ class WatchConnectionService :
         return watch
     }
 
-    fun getConnectedWatch(): Watch? {
-        val watch = database.watchDao().findById(connectedWatchId)
-        if (watch != null) {
-            for (intPreference in database.intPreferenceDao().getAllForWatch(watch.id)) {
-                watch.intPrefs[intPreference.key] = intPreference.value
+    suspend fun getConnectedWatch(): Watch? {
+        return withContext(Dispatchers.IO) {
+            val watch = database.watchDao().findById(connectedWatchId)
+            if (watch != null) {
+                val intPrefs = database.intPreferenceDao().getAllForWatch(watch.id)
+                withContext(Dispatchers.Default) {
+                    for (intPreference in intPrefs) {
+                        watch.intPrefs[intPreference.key] = intPreference.value
+                    }
+                }
+                val boolPrefs = database.boolPreferenceDao().getAllForWatch(watch.id)
+                withContext(Dispatchers.Default) {
+                    for (boolPreference in boolPrefs) {
+                        watch.boolPrefs[boolPreference.key] = boolPreference.value
+                    }
+                }
             }
-            for (boolPreference in database.boolPreferenceDao().getAllForWatch(watch.id)) {
-                watch.boolPrefs[boolPreference.key] = boolPreference.value
-            }
+            return@withContext watch
         }
-        return watch
     }
 
     fun getConnectedWatchId(): String = connectedWatchId
 
-    fun setConnectedWatchById(id: String) {
-        for (connectionInterface in watchConnectionInterfaces) {
-            connectionInterface.onConnectedWatchChanging()
-        }
-
-        if (database.watchDao().findById(id) == null) {
+    suspend fun setConnectedWatchById(id: String) {
+        withContext(Dispatchers.IO) {
             for (connectionInterface in watchConnectionInterfaces) {
-                connectionInterface.onConnectedWatchChanged(false)
+                connectionInterface.onConnectedWatchChanging()
             }
-            return
-        }
-        connectedWatchId = id
-        preferenceChangePath = "/preference-change_$connectedWatchId"
 
-        updateLocalPreferences()
+            if (database.watchDao().findById(id) == null) {
+                withContext(Dispatchers.Main) {
+                    for (connectionInterface in watchConnectionInterfaces) {
+                        connectionInterface.onConnectedWatchChanged(false)
+                    }
+                }
+                return@withContext
+            }
+            connectedWatchId = id
+            preferenceChangePath = "/preference-change_$connectedWatchId"
 
-        sharedPreferences.edit {
-            putString(LAST_CONNECTED_NODE_ID_KEY, connectedWatchId)
-        }
+            updateLocalPreferences()
 
-        for (connectionInterface in watchConnectionInterfaces) {
-            connectionInterface.onConnectedWatchChanged(true)
+            sharedPreferences.edit {
+                putString(LAST_CONNECTED_NODE_ID_KEY, connectedWatchId)
+            }
+
+            withContext(Dispatchers.Main) {
+                for (connectionInterface in watchConnectionInterfaces) {
+                    connectionInterface.onConnectedWatchChanged(true)
+                }
+            }
         }
     }
 
@@ -257,36 +272,38 @@ class WatchConnectionService :
         return null
     }
 
-    fun updatePreferenceOnWatch(key: String): Task<DataItem>? {
-        if (connectedWatchId.isNotEmpty()) {
-            val connectedWatch = getConnectedWatch()!!
-            val syncedPrefUpdateReq = PutDataMapRequest.create(preferenceChangePath)
-            when (key) {
-                PreferenceKey.PHONE_LOCKING_ENABLED_KEY,
-                PreferenceKey.BATTERY_SYNC_ENABLED_KEY,
-                PreferenceKey.BATTERY_PHONE_CHARGE_NOTI_KEY,
-                PreferenceKey.BATTERY_WATCH_CHARGE_NOTI_KEY,
-                PreferenceKey.DND_SYNC_TO_PHONE_KEY,
-                PreferenceKey.DND_SYNC_TO_WATCH_KEY,
-                PreferenceKey.DND_SYNC_WITH_THEATER_KEY -> {
-                    val newValue = sharedPreferences.getBoolean(key, false)
-                    syncedPrefUpdateReq.dataMap.putBoolean(key, newValue)
-                    connectedWatch.boolPrefs[key] = newValue
-                    database.boolPreferenceDao().update(BoolPreference(connectedWatchId, key, newValue))
+    suspend fun updatePreferenceOnWatch(key: String): Task<DataItem>? {
+        return withContext(Dispatchers.IO) {
+            if (connectedWatchId.isNotEmpty()) {
+                val connectedWatch = getConnectedWatch()!!
+                val syncedPrefUpdateReq = PutDataMapRequest.create(preferenceChangePath)
+                when (key) {
+                    PreferenceKey.PHONE_LOCKING_ENABLED_KEY,
+                    PreferenceKey.BATTERY_SYNC_ENABLED_KEY,
+                    PreferenceKey.BATTERY_PHONE_CHARGE_NOTI_KEY,
+                    PreferenceKey.BATTERY_WATCH_CHARGE_NOTI_KEY,
+                    PreferenceKey.DND_SYNC_TO_PHONE_KEY,
+                    PreferenceKey.DND_SYNC_TO_WATCH_KEY,
+                    PreferenceKey.DND_SYNC_WITH_THEATER_KEY -> {
+                        val newValue = sharedPreferences.getBoolean(key, false)
+                        syncedPrefUpdateReq.dataMap.putBoolean(key, newValue)
+                        connectedWatch.boolPrefs[key] = newValue
+                        database.boolPreferenceDao().update(BoolPreference(connectedWatchId, key, newValue))
+                    }
+                    PreferenceKey.BATTERY_CHARGE_THRESHOLD_KEY -> {
+                        val newValue = sharedPreferences.getInt(key, 90)
+                        syncedPrefUpdateReq.dataMap.putInt(key, newValue)
+                        connectedWatch.intPrefs[key] = newValue
+                        database.intPreferenceDao().update(IntPreference(connectedWatchId, key, newValue))
+                    }
                 }
-                PreferenceKey.BATTERY_CHARGE_THRESHOLD_KEY -> {
-                    val newValue = sharedPreferences.getInt(key, 90)
-                    syncedPrefUpdateReq.dataMap.putInt(key, newValue)
-                    connectedWatch.intPrefs[key] = newValue
-                    database.intPreferenceDao().update(IntPreference(connectedWatchId, key, newValue))
+                if (!syncedPrefUpdateReq.dataMap.isEmpty) {
+                    syncedPrefUpdateReq.setUrgent()
+                    return@withContext dataClient.putDataItem(syncedPrefUpdateReq.asPutDataRequest())
                 }
             }
-            if (!syncedPrefUpdateReq.dataMap.isEmpty) {
-                syncedPrefUpdateReq.setUrgent()
-                return dataClient.putDataItem(syncedPrefUpdateReq.asPutDataRequest())
-            }
+            return@withContext null
         }
-        return null
     }
 
     fun registerWatchConnectionInterface(connectionInterface: WatchConnectionInterface) {
@@ -313,24 +330,32 @@ class WatchConnectionService :
         }
     }
 
-    fun updatePrefInDatabase(key: String, newValue: Any): Boolean {
+    suspend fun updatePrefInDatabase(key: String, newValue: Any): Boolean {
         return updatePrefInDatabase(connectedWatchId, key, newValue)
     }
 
-    fun updatePrefInDatabase(id: String, key: String, newValue: Any): Boolean {
+    suspend fun updatePrefInDatabase(id: String, key: String, newValue: Any): Boolean {
         when (newValue) {
             is Boolean -> {
-                val boolPreference = BoolPreference(id, key, newValue)
-                database.boolPreferenceDao().update(boolPreference)
-                for (watchPreferenceChangeInterface in watchPreferenceChangeInterfaces) {
-                    watchPreferenceChangeInterface.boolPreferenceChanged(boolPreference)
+                withContext(Dispatchers.IO) {
+                    val boolPreference = BoolPreference(id, key, newValue)
+                    database.boolPreferenceDao().update(boolPreference)
+                    withContext(Dispatchers.Main) {
+                        for (watchPreferenceChangeInterface in watchPreferenceChangeInterfaces) {
+                            watchPreferenceChangeInterface.boolPreferenceChanged(boolPreference)
+                        }
+                    }
                 }
             }
             is Int -> {
-                val intPreference = IntPreference(id, key, newValue)
-                database.intPreferenceDao().update(intPreference)
-                for (watchPreferenceChangeInterface in watchPreferenceChangeInterfaces) {
-                    watchPreferenceChangeInterface.intPreferenceChanged(intPreference)
+                withContext(Dispatchers.IO) {
+                    val intPreference = IntPreference(id, key, newValue)
+                    database.intPreferenceDao().update(intPreference)
+                    withContext(Dispatchers.Main) {
+                        for (watchPreferenceChangeInterface in watchPreferenceChangeInterfaces) {
+                            watchPreferenceChangeInterface.intPreferenceChanged(intPreference)
+                        }
+                    }
                 }
             }
             else -> return false
@@ -338,49 +363,59 @@ class WatchConnectionService :
         return true
     }
 
-    fun updateWatchNickname(watchId: String, nickname: String): Boolean {
+    suspend fun updateWatchNickname(watchId: String, nickname: String): Boolean {
         if (database.isOpen) {
-            database.watchDao().setWatchName(watchId, nickname)
-            return true
-        }
-        return false
-    }
-
-    fun addWatch(watch: Watch): Boolean {
-        if (database.isOpen) {
-            database.watchDao().add(watch)
-            return true
-        }
-        return false
-    }
-
-    fun forgetWatch(watchId: String?): Boolean {
-        if (!watchId.isNullOrEmpty() && database.isOpen) {
-            val success = clearPreferencesForWatch(watchId)
-            database.watchDao().remove(watchId)
-            return success
-        }
-        return false
-    }
-
-    fun clearPreferencesForWatch(watchId: String?): Boolean {
-        if (!watchId.isNullOrEmpty() && database.isOpen) {
-            database.intPreferenceDao().deleteAllForWatch(watchId)
-            database.boolPreferenceDao().deleteAllForWatch(watchId)
-            forceSyncPreferences(watchId)
-            if (watchId == connectedWatchId) {
-                updateLocalPreferences()
+            withContext(Dispatchers.IO) {
+                database.watchDao().setWatchName(watchId, nickname)
             }
             return true
         }
         return false
     }
 
-    fun getBoolPrefsForRegisteredWatches(key: String): Array<BoolPreference>? {
-        if (database.isOpen) {
-            return database.boolPreferenceDao().getAllForKey(key)
+    suspend fun addWatch(watch: Watch): Boolean {
+        return withContext(Dispatchers.IO) {
+            if (database.isOpen) {
+                database.watchDao().add(watch)
+                return@withContext true
+            }
+            return@withContext false
         }
-        return null
+    }
+
+    suspend fun forgetWatch(watchId: String?): Boolean {
+        return withContext(Dispatchers.IO) {
+            if (!watchId.isNullOrEmpty() && database.isOpen) {
+                val success = clearPreferencesForWatch(watchId)
+                database.watchDao().remove(watchId)
+                return@withContext success
+            }
+            return@withContext false
+        }
+    }
+
+    suspend fun clearPreferencesForWatch(watchId: String?): Boolean {
+        return withContext(Dispatchers.IO) {
+            if (!watchId.isNullOrEmpty() && database.isOpen) {
+                database.intPreferenceDao().deleteAllForWatch(watchId)
+                database.boolPreferenceDao().deleteAllForWatch(watchId)
+                forceSyncPreferences(watchId)
+                if (watchId == connectedWatchId) {
+                    updateLocalPreferences()
+                }
+                return@withContext true
+            }
+            return@withContext false
+        }
+    }
+
+    suspend fun getBoolPrefsForRegisteredWatches(key: String): Array<BoolPreference>? {
+        return withContext(Dispatchers.IO) {
+            if (database.isOpen) {
+                return@withContext database.boolPreferenceDao().getAllForKey(key)
+            }
+            return@withContext null
+        }
     }
 
     private fun deleteLocalPreferences() {
@@ -396,32 +431,44 @@ class WatchConnectionService :
         }
     }
 
-    private fun updateLocalPreferences() {
-        val watch = getConnectedWatch() ?: return
-        deleteLocalPreferences()
-        sharedPreferences.edit {
-            watch.boolPrefs.forEach { (key, value) ->
-                putBoolean(key, value)
-            }
-            watch.intPrefs.forEach { (key, value) ->
-                putInt(key, value)
+    private suspend fun updateLocalPreferences() {
+        withContext(Dispatchers.IO) {
+            val watch = getConnectedWatch() ?: return@withContext
+            withContext(Dispatchers.Default) {
+                deleteLocalPreferences()
+                sharedPreferences.edit {
+                    watch.boolPrefs.forEach { (key, value) ->
+                        putBoolean(key, value)
+                    }
+                    watch.intPrefs.forEach { (key, value) ->
+                        putInt(key, value)
+                    }
+                }
             }
         }
     }
 
-    fun getWatchByBatterySyncJobId(batterySyncJobID: Int): Watch? {
-        if (database.isOpen) {
-            return database.watchDao().findByBatterySyncJobId(batterySyncJobID)
+    suspend fun getWatchByBatterySyncJobId(batterySyncJobID: Int): Watch? {
+        return withContext(Dispatchers.IO) {
+            if (database.isOpen) {
+                return@withContext database.watchDao().findByBatterySyncJobId(batterySyncJobID)
+            }
+            return@withContext null
         }
-        return null
     }
 
     private fun ensureWatchRegistered(node: Node) {
-        if (database.watchDao().findById(node.id) == null) {
-            val newWatch = Watch(node)
-            database.watchDao().add(newWatch)
-            for (connectionInterface in watchConnectionInterfaces) {
-                connectionInterface.onWatchAdded(newWatch)
+        coroutineScope.launch {
+            withContext(Dispatchers.IO) {
+                if (database.watchDao().findById(node.id) == null) {
+                    val newWatch = Watch(node)
+                    database.watchDao().add(newWatch)
+                    withContext(Dispatchers.Main) {
+                        for (connectionInterface in watchConnectionInterfaces) {
+                            connectionInterface.onWatchAdded(newWatch)
+                        }
+                    }
+                }
             }
         }
     }

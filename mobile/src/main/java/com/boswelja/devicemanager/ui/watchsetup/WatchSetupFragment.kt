@@ -124,7 +124,9 @@ class WatchSetupFragment : Fragment() {
                 setTitle(getString(R.string.register_watch_dialog_title, watch.name))
                 setMessage(getString(R.string.register_watch_dialog_message, watch.name))
                 setPositiveButton(R.string.dialog_button_yes) { _, _ ->
-                    watchConnectionManager?.addWatch(watch)
+                    coroutineScope.launch {
+                        watchConnectionManager?.addWatch(watch)
+                    }
                     activity?.setResult(WatchSetupActivity.RESULT_WATCH_ADDED)
                     activity?.finish()
                 }

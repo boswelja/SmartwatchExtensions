@@ -15,6 +15,8 @@ import com.boswelja.devicemanager.watchconnectionmanager.WatchConnectionService
 import com.google.android.gms.wearable.DataEventBuffer
 import com.google.android.gms.wearable.DataMapItem
 import com.google.android.gms.wearable.WearableListenerService
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.launch
 
 class DnDRemoteChangeReceiver : WearableListenerService() {
 
@@ -43,31 +45,33 @@ class DnDRemoteChangeReceiver : WearableListenerService() {
     override fun onDataChanged(dataEventBuffer: DataEventBuffer) {
         super.onDataChanged(dataEventBuffer)
         if (watchConnectionManager != null) {
-            val dndSyncReceiveEnabledPrefs = watchConnectionManager!!.getBoolPrefsForRegisteredWatches(PreferenceKey.DND_SYNC_TO_PHONE_KEY)
+            MainScope().launch {
+                val dndSyncReceiveEnabledPrefs = watchConnectionManager!!.getBoolPrefsForRegisteredWatches(PreferenceKey.DND_SYNC_TO_PHONE_KEY)
 
-            if (!dndSyncReceiveEnabledPrefs.isNullOrEmpty()) {
-                val dndStatePerWatch = HashMap<String, Boolean>()
-                for (dataEvent in dataEventBuffer) {
-                    val senderId = dataEvent.dataItem.uri.host!!
-                    val isDnDSyncReceiveEnabledForWatch = dndSyncReceiveEnabledPrefs.firstOrNull { it.watchId == senderId }?.value
-                    if (isDnDSyncReceiveEnabledForWatch == true) {
-                        val dataMap = DataMapItem.fromDataItem(dataEvent.dataItem).dataMap
-                        val dndEnabled = dataMap.getBoolean(NEW_DND_STATE_KEY)
-                        dndStatePerWatch[senderId] = dndEnabled
-                    }
-                }
-                if (dndStatePerWatch.isNotEmpty()) {
-                    var shouldEnableDnD = false
-                    for (watchState in dndStatePerWatch) {
-                        if (watchState.value) {
-                            shouldEnableDnD = true
-                            break
+                if (!dndSyncReceiveEnabledPrefs.isNullOrEmpty()) {
+                    val dndStatePerWatch = HashMap<String, Boolean>()
+                    for (dataEvent in dataEventBuffer) {
+                        val senderId = dataEvent.dataItem.uri.host!!
+                        val isDnDSyncReceiveEnabledForWatch = dndSyncReceiveEnabledPrefs.firstOrNull { it.watchId == senderId }?.value
+                        if (isDnDSyncReceiveEnabledForWatch == true) {
+                            val dataMap = DataMapItem.fromDataItem(dataEvent.dataItem).dataMap
+                            val dndEnabled = dataMap.getBoolean(NEW_DND_STATE_KEY)
+                            dndStatePerWatch[senderId] = dndEnabled
                         }
                     }
-                    Utils.setInterruptionFilter(this, shouldEnableDnD)
+                    if (dndStatePerWatch.isNotEmpty()) {
+                        var shouldEnableDnD = false
+                        for (watchState in dndStatePerWatch) {
+                            if (watchState.value) {
+                                shouldEnableDnD = true
+                                break
+                            }
+                        }
+                        Utils.setInterruptionFilter(this@DnDRemoteChangeReceiver, shouldEnableDnD)
+                    }
+                } else {
+                    Log.e("DnDRemoteChangeReceiver", "dndSyncReceiveEnabledPrefs.isNullOrEmpty()")
                 }
-            } else {
-                Log.e("DnDRemoteChangeReceiver", "dndSyncReceiveEnabledPrefs.isNullOrEmpty()")
             }
         } else {
             Log.e("DnDRemoteChangeReceiver", "watchConnectionManager == null")

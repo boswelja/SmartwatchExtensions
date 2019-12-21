@@ -23,12 +23,16 @@ import com.boswelja.devicemanager.ui.appmanager.AppManagerActivity
 import com.boswelja.devicemanager.ui.base.BasePreferenceFragment
 import com.boswelja.devicemanager.ui.batterysync.BatterySyncPreferenceActivity
 import com.boswelja.devicemanager.ui.dndsync.DnDSyncPreferenceActivity
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.launch
 
 class ExtensionsFragment :
         BasePreferenceFragment(),
         SharedPreferences.OnSharedPreferenceChangeListener,
         Preference.OnPreferenceClickListener,
         Preference.OnPreferenceChangeListener {
+
+    private val coroutineScope = MainScope()
 
     private lateinit var phoneLockPreference: SwitchPreference
 
@@ -62,9 +66,11 @@ class ExtensionsFragment :
             }
             OPEN_APP_MANAGER_KEY -> {
                 Intent(context!!, AppManagerActivity::class.java).apply {
-                    val connectedWatch = activity.watchConnectionManager?.getConnectedWatch()
-                    putExtra(AppManagerActivity.EXTRA_WATCH_ID, connectedWatch?.id)
-                    putExtra(AppManagerActivity.EXTRA_WATCH_NAME, connectedWatch?.name)
+                    coroutineScope.launch {
+                        val connectedWatch = activity.watchConnectionManager?.getConnectedWatch()
+                        putExtra(AppManagerActivity.EXTRA_WATCH_ID, connectedWatch?.id)
+                        putExtra(AppManagerActivity.EXTRA_WATCH_NAME, connectedWatch?.name)
+                    }
                 }.also {
                     startActivity(it)
                 }
@@ -96,7 +102,9 @@ class ExtensionsFragment :
                     sharedPreferences.edit()
                             .putBoolean(key, value)
                             .apply()
-                    getWatchConnectionManager()?.updatePreferenceOnWatch(key)
+                    coroutineScope.launch {
+                        getWatchConnectionManager()?.updatePreferenceOnWatch(key)
+                    }
                 }
                 false
             }

@@ -25,11 +25,15 @@ import com.boswelja.devicemanager.common.PreferenceKey.DND_SYNC_WITH_THEATER_KEY
 import com.boswelja.devicemanager.dndsync.DnDLocalChangeService
 import com.boswelja.devicemanager.ui.base.BasePreferenceFragment
 import com.boswelja.devicemanager.ui.dndsync.helper.DnDSyncHelperActivity
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.launch
 
 class DnDSyncPreferenceFragment :
         BasePreferenceFragment(),
         SharedPreferences.OnSharedPreferenceChangeListener,
         Preference.OnPreferenceChangeListener {
+
+    private val coroutineScope = MainScope()
 
     private lateinit var notificationManager: NotificationManager
 
@@ -60,7 +64,9 @@ class DnDSyncPreferenceFragment :
                 } else {
                     preference.sharedPreferences.edit()
                             .putBoolean(key, value).apply()
-                    getWatchConnectionManager()?.updatePreferenceOnWatch(key)
+                    coroutineScope.launch {
+                        getWatchConnectionManager()?.updatePreferenceOnWatch(key)
+                    }
                     context?.stopService(Intent(context!!, DnDLocalChangeService::class.java))
                 }
                 false
@@ -71,13 +77,17 @@ class DnDSyncPreferenceFragment :
                 preference.sharedPreferences.edit().putBoolean(key, value).apply()
                 if (value) {
                     if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M || notificationManager.isNotificationPolicyAccessGranted) {
-                        getWatchConnectionManager()?.updatePreferenceOnWatch(key)
+                        coroutineScope.launch {
+                            getWatchConnectionManager()?.updatePreferenceOnWatch(key)
+                        }
                     } else {
                         Toast.makeText(context, getString(R.string.interrupt_filter_sync_request_policy_access_message), Toast.LENGTH_SHORT).show()
                         startActivity(Intent(Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS))
                     }
                 } else {
-                    getWatchConnectionManager()?.updatePreferenceOnWatch(key)
+                    coroutineScope.launch {
+                        getWatchConnectionManager()?.updatePreferenceOnWatch(key)
+                    }
                 }
                 false
             }
@@ -129,7 +139,9 @@ class DnDSyncPreferenceFragment :
                 interruptFilterSyncToWatchPreference.isChecked = enabled
                 interruptFilterSyncToWatchPreference.sharedPreferences.edit()
                         .putBoolean(DND_SYNC_TO_WATCH_KEY, enabled).apply()
-                getWatchConnectionManager()?.updatePreferenceOnWatch(DND_SYNC_TO_WATCH_KEY)
+                coroutineScope.launch {
+                    getWatchConnectionManager()?.updatePreferenceOnWatch(DND_SYNC_TO_WATCH_KEY)
+                }
                 if (enabled) {
                     Compat.startForegroundService(context!!, Intent(context!!, DnDLocalChangeService::class.java))
                 }

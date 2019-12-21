@@ -24,11 +24,17 @@ import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_SYNC_INTERVAL_KEY
 import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_WATCH_CHARGE_NOTI_KEY
 import com.boswelja.devicemanager.ui.base.BasePreferenceFragment
 import com.boswelja.devicemanager.ui.batterysync.Utils.updateBatteryStats
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class BatterySyncPreferenceFragment :
         BasePreferenceFragment(),
         SharedPreferences.OnSharedPreferenceChangeListener,
         Preference.OnPreferenceChangeListener {
+
+    private val coroutineScope = MainScope()
 
     private lateinit var batterySyncEnabledPreference: SwitchPreference
     private lateinit var batterySyncIntervalPreference: SeekBarPreference
@@ -52,7 +58,9 @@ class BatterySyncPreferenceFragment :
             }
             BATTERY_CHARGE_THRESHOLD_KEY -> {
                 updateChargeNotiPrefSummaries()
-                getWatchConnectionManager()?.updatePreferenceOnWatch(key)
+                coroutineScope.launch {
+                    getWatchConnectionManager()?.updatePreferenceOnWatch(key)
+                }
             }
         }
     }
@@ -63,33 +71,47 @@ class BatterySyncPreferenceFragment :
                 val newBool = newValue == true
                 setBatteryChargeThresholdEnabled()
                 if (newBool) {
-                    val success = BatterySyncJob.startJob(activity.watchConnectionManager)
-                    if (success) {
-                        sharedPreferences.edit().putBoolean(key, newBool).apply()
-                        updateBatteryStats(context!!, activity.watchConnectionManager?.getConnectedWatchId())
-                    } else {
-                        activity.createSnackBar(getString(R.string.battery_sync_enable_failed))
+                    coroutineScope.launch {
+                        val success = BatterySyncJob.startJob(activity.watchConnectionManager)
+                        if (success) {
+                            sharedPreferences.edit().putBoolean(key, newBool).apply()
+                            getWatchConnectionManager()?.updatePreferenceOnWatch(key)
+                            updateBatteryStats(context!!, activity.watchConnectionManager?.getConnectedWatchId())
+                        } else {
+                            withContext(Dispatchers.Main) {
+                                activity.createSnackBar(getString(R.string.battery_sync_enable_failed))
+                            }
+                        }
                     }
+
                 } else {
                     sharedPreferences.edit().putBoolean(key, newBool).apply()
-                    BatterySyncJob.stopJob(activity.watchConnectionManager)
+                    coroutineScope.launch {
+                        getWatchConnectionManager()?.updatePreferenceOnWatch(key)
+                        BatterySyncJob.stopJob(activity.watchConnectionManager)
+                    }
                 }
-                getWatchConnectionManager()?.updatePreferenceOnWatch(key)
                 false
             }
             BATTERY_SYNC_INTERVAL_KEY -> {
                 val value = (newValue as Int)
                 sharedPreferences.edit().putInt(key, value).apply()
-                activity.watchConnectionManager?.updatePrefInDatabase(key, value)
+                coroutineScope.launch {
+                    activity.watchConnectionManager?.updatePrefInDatabase(key, value)
+                }
                 batterySyncIntervalPreference.value = value
-                BatterySyncJob.startJob(activity.watchConnectionManager)
+                coroutineScope.launch {
+                    BatterySyncJob.startJob(activity.watchConnectionManager)
+                }
                 false
             }
             BATTERY_PHONE_CHARGE_NOTI_KEY,
             BATTERY_WATCH_CHARGE_NOTI_KEY -> {
                 val value = newValue == true
                 sharedPreferences.edit().putBoolean(key, value).apply()
-                getWatchConnectionManager()?.updatePreferenceOnWatch(key)
+                coroutineScope.launch {
+                    getWatchConnectionManager()?.updatePreferenceOnWatch(key)
+                }
                 false
             }
             else -> true
