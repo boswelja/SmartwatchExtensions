@@ -100,8 +100,10 @@ class AppManagerActivity : BaseToolbarActivity() {
     }
 
     private fun stopAppManagerService() {
-        isServiceRunning = false
-        messageClient.sendMessage(watchId!!, References.STOP_SERVICE, null)
+        if (isServiceRunning) {
+            isServiceRunning = false
+            messageClient.sendMessage(watchId!!, References.STOP_SERVICE, null)
+        }
     }
 
     private fun notifyWatchNotFound() {
