@@ -59,10 +59,8 @@ abstract class BaseWatchPickerActivity :
     private lateinit var watchPickerSpinner: AppCompatSpinner
 
     override fun onItemSelected(adapterView: AdapterView<*>?, selectedView: View?, position: Int, id: Long) {
-        coroutineScope.launch {
-            val connectedWatchId = id.toString(36)
-            watchConnectionManager?.setConnectedWatchById(connectedWatchId)
-        }
+        val connectedWatchId = id.toString(36)
+        watchConnectionManager?.setConnectedWatchById(connectedWatchId)
     }
 
     override fun onNothingSelected(p0: AdapterView<*>?) { }

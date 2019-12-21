@@ -76,9 +76,7 @@ class WatchConnectionService :
                 .fallbackToDestructiveMigration()
                 .build()
 
-        coroutineScope.launch {
-            setConnectedWatchById(sharedPreferences.getString(LAST_CONNECTED_NODE_ID_KEY, "") ?: "")
-        }
+        setConnectedWatchById(sharedPreferences.getString(LAST_CONNECTED_NODE_ID_KEY, "") ?: "")
 
         capabilityClient = Wearable.getCapabilityClient(this)
 
@@ -190,34 +188,36 @@ class WatchConnectionService :
 
     fun getConnectedWatchId(): String? = connectedWatch?.id
 
-    suspend fun setConnectedWatchById(id: String) {
-        withContext(Dispatchers.IO) {
-            for (connectionInterface in watchConnectionInterfaces) {
-                connectionInterface.onConnectedWatchChanging()
-            }
+    fun setConnectedWatchById(id: String) {
+        coroutineScope.launch {
+            withContext(Dispatchers.IO) {
+                for (connectionInterface in watchConnectionInterfaces) {
+                    connectionInterface.onConnectedWatchChanging()
+                }
 
-            if (database.watchDao().findById(id) == null) {
+                if (database.watchDao().findById(id) == null) {
+                    withContext(Dispatchers.Main) {
+                        for (connectionInterface in watchConnectionInterfaces) {
+                            connectionInterface.onConnectedWatchChanged(false)
+                        }
+                    }
+                    return@withContext
+                }
+
+                preferenceChangePath = "/preference-change_$id"
+
+                connectedWatch = getWatchById(id)
+
+                updateLocalPreferences()
+
+                sharedPreferences.edit {
+                    putString(LAST_CONNECTED_NODE_ID_KEY, id)
+                }
+
                 withContext(Dispatchers.Main) {
                     for (connectionInterface in watchConnectionInterfaces) {
-                        connectionInterface.onConnectedWatchChanged(false)
+                        connectionInterface.onConnectedWatchChanged(true)
                     }
-                }
-                return@withContext
-            }
-
-            preferenceChangePath = "/preference-change_$id"
-
-            connectedWatch = getWatchById(id)
-
-            updateLocalPreferences()
-
-            sharedPreferences.edit {
-                putString(LAST_CONNECTED_NODE_ID_KEY, id)
-            }
-
-            withContext(Dispatchers.Main) {
-                for (connectionInterface in watchConnectionInterfaces) {
-                    connectionInterface.onConnectedWatchChanged(true)
                 }
             }
         }
