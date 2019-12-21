@@ -58,7 +58,7 @@ class BatterySyncJob : JobService() {
          * Starts a battery sync job for the currently selected watch.
          * @return @`true` if the job was started successfully, @`false` otherwise.
          */
-        suspend fun startJob(watchConnectionManager: WatchConnectionService?): Boolean {
+        fun startJob(watchConnectionManager: WatchConnectionService?): Boolean {
             val connectedWatch = watchConnectionManager?.getConnectedWatch()
             if (connectedWatch != null) {
                 val jobId = connectedWatch.batterySyncJobId
@@ -81,7 +81,7 @@ class BatterySyncJob : JobService() {
         /**
          * Stops the battery sync job for the current watch.
          */
-        suspend fun stopJob(watchConnectionManager: WatchConnectionService?) {
+        fun stopJob(watchConnectionManager: WatchConnectionService?) {
             val connectedWatch = watchConnectionManager?.getConnectedWatch()
             if (connectedWatch != null) {
                 val jobId = connectedWatch.batterySyncJobId

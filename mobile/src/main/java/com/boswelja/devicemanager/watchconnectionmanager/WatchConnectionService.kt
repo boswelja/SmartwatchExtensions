@@ -54,7 +54,7 @@ class WatchConnectionService :
 
     private var preferenceChangePath = ""
 
-    private var connectedWatchId: String = ""
+    private var connectedWatch: Watch? = null
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
         when (key) {
@@ -184,28 +184,11 @@ class WatchConnectionService :
         return watch
     }
 
-    suspend fun getConnectedWatch(): Watch? {
-        return withContext(Dispatchers.IO) {
-            val watch = database.watchDao().findById(connectedWatchId)
-            if (watch != null) {
-                val intPrefs = database.intPreferenceDao().getAllForWatch(watch.id)
-                withContext(Dispatchers.Default) {
-                    for (intPreference in intPrefs) {
-                        watch.intPrefs[intPreference.key] = intPreference.value
-                    }
-                }
-                val boolPrefs = database.boolPreferenceDao().getAllForWatch(watch.id)
-                withContext(Dispatchers.Default) {
-                    for (boolPreference in boolPrefs) {
-                        watch.boolPrefs[boolPreference.key] = boolPreference.value
-                    }
-                }
-            }
-            return@withContext watch
-        }
+    fun getConnectedWatch(): Watch? {
+        return connectedWatch
     }
 
-    fun getConnectedWatchId(): String = connectedWatchId
+    fun getConnectedWatchId(): String? = connectedWatch?.id
 
     suspend fun setConnectedWatchById(id: String) {
         withContext(Dispatchers.IO) {
@@ -221,13 +204,15 @@ class WatchConnectionService :
                 }
                 return@withContext
             }
-            connectedWatchId = id
-            preferenceChangePath = "/preference-change_$connectedWatchId"
+
+            preferenceChangePath = "/preference-change_$id"
+
+            connectedWatch = getWatchById(id)
 
             updateLocalPreferences()
 
             sharedPreferences.edit {
-                putString(LAST_CONNECTED_NODE_ID_KEY, connectedWatchId)
+                putString(LAST_CONNECTED_NODE_ID_KEY, id)
             }
 
             withContext(Dispatchers.Main) {
@@ -239,7 +224,7 @@ class WatchConnectionService :
     }
 
     fun forceSyncPreferences(): Task<DataItem>? {
-        return forceSyncPreferences(connectedWatchId)
+        return forceSyncPreferences(connectedWatch?.id)
     }
 
     private fun forceSyncPreferences(watchId: String?): Task<DataItem>? {
@@ -274,9 +259,10 @@ class WatchConnectionService :
 
     suspend fun updatePreferenceOnWatch(key: String): Task<DataItem>? {
         return withContext(Dispatchers.IO) {
-            if (connectedWatchId.isNotEmpty()) {
+            val watchId = connectedWatch?.id
+            if (!watchId.isNullOrEmpty()) {
                 val connectedWatch = getConnectedWatch()!!
-                val syncedPrefUpdateReq = PutDataMapRequest.create(preferenceChangePath)
+                val syncedPrefUpdateReq = PutDataMapRequest.create("/preference-change_$watchId")
                 when (key) {
                     PreferenceKey.PHONE_LOCKING_ENABLED_KEY,
                     PreferenceKey.BATTERY_SYNC_ENABLED_KEY,
@@ -288,13 +274,13 @@ class WatchConnectionService :
                         val newValue = sharedPreferences.getBoolean(key, false)
                         syncedPrefUpdateReq.dataMap.putBoolean(key, newValue)
                         connectedWatch.boolPrefs[key] = newValue
-                        database.boolPreferenceDao().update(BoolPreference(connectedWatchId, key, newValue))
+                        database.boolPreferenceDao().update(BoolPreference(watchId, key, newValue))
                     }
                     PreferenceKey.BATTERY_CHARGE_THRESHOLD_KEY -> {
                         val newValue = sharedPreferences.getInt(key, 90)
                         syncedPrefUpdateReq.dataMap.putInt(key, newValue)
                         connectedWatch.intPrefs[key] = newValue
-                        database.intPreferenceDao().update(IntPreference(connectedWatchId, key, newValue))
+                        database.intPreferenceDao().update(IntPreference(watchId, key, newValue))
                     }
                 }
                 if (!syncedPrefUpdateReq.dataMap.isEmpty) {
@@ -331,7 +317,7 @@ class WatchConnectionService :
     }
 
     suspend fun updatePrefInDatabase(key: String, newValue: Any): Boolean {
-        return updatePrefInDatabase(connectedWatchId, key, newValue)
+        return updatePrefInDatabase(connectedWatch?.id!!, key, newValue)
     }
 
     suspend fun updatePrefInDatabase(id: String, key: String, newValue: Any): Boolean {
@@ -400,7 +386,7 @@ class WatchConnectionService :
                 database.intPreferenceDao().deleteAllForWatch(watchId)
                 database.boolPreferenceDao().deleteAllForWatch(watchId)
                 forceSyncPreferences(watchId)
-                if (watchId == connectedWatchId) {
+                if (watchId == connectedWatch?.id) {
                     updateLocalPreferences()
                 }
                 return@withContext true
@@ -432,17 +418,15 @@ class WatchConnectionService :
     }
 
     private suspend fun updateLocalPreferences() {
-        withContext(Dispatchers.IO) {
-            val watch = getConnectedWatch() ?: return@withContext
-            withContext(Dispatchers.Default) {
-                deleteLocalPreferences()
-                sharedPreferences.edit {
-                    watch.boolPrefs.forEach { (key, value) ->
-                        putBoolean(key, value)
-                    }
-                    watch.intPrefs.forEach { (key, value) ->
-                        putInt(key, value)
-                    }
+        val watch = getConnectedWatch() ?: return
+        withContext(Dispatchers.Default) {
+            deleteLocalPreferences()
+            sharedPreferences.edit {
+                watch.boolPrefs.forEach { (key, value) ->
+                    putBoolean(key, value)
+                }
+                watch.intPrefs.forEach { (key, value) ->
+                    putInt(key, value)
                 }
             }
         }

@@ -52,16 +52,14 @@ class PreferenceChangeReceiver : WearableListenerService() {
 
     override fun onDataChanged(dataEvents: DataEventBuffer?) {
         if (dataEvents != null) {
-            coroutineScope.launch {
-                val selectedWatchId = watchConnectionManager?.getConnectedWatch()?.id
-                if (!selectedWatchId.isNullOrEmpty()) {
-                    for (event in dataEvents) {
-                        val senderId = event.dataItem.uri.host!!
-                        if (senderId == selectedWatchId) {
-                            handleSelectedWatchPreferenceChange(event)
-                        } else {
-                            handleOtherWatchPreferenceChange(senderId, event)
-                        }
+            val selectedWatchId = watchConnectionManager?.getConnectedWatch()?.id
+            if (!selectedWatchId.isNullOrEmpty()) {
+                for (event in dataEvents) {
+                    val senderId = event.dataItem.uri.host!!
+                    if (senderId == selectedWatchId) {
+                        handleSelectedWatchPreferenceChange(event)
+                    } else {
+                        handleOtherWatchPreferenceChange(senderId, event)
                     }
                 }
             }
