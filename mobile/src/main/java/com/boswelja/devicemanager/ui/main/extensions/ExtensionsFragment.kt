@@ -65,14 +65,12 @@ class ExtensionsFragment :
                 true
             }
             OPEN_APP_MANAGER_KEY -> {
-                Intent(context!!, AppManagerActivity::class.java).apply {
-                    coroutineScope.launch {
-                        val connectedWatch = activity.watchConnectionManager?.getConnectedWatch()
-                        putExtra(AppManagerActivity.EXTRA_WATCH_ID, connectedWatch?.id)
-                        putExtra(AppManagerActivity.EXTRA_WATCH_NAME, connectedWatch?.name)
-                    }
-                }.also {
-                    startActivity(it)
+                val intent = Intent(context!!, AppManagerActivity::class.java)
+                coroutineScope.launch {
+                    val connectedWatch = activity.watchConnectionManager?.getConnectedWatch()
+                    intent.putExtra(AppManagerActivity.EXTRA_WATCH_ID, connectedWatch?.id)
+                    intent.putExtra(AppManagerActivity.EXTRA_WATCH_NAME, connectedWatch?.name)
+                    startActivity(intent)
                 }
                 true
             }
