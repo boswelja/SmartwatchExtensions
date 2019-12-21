@@ -52,8 +52,6 @@ class WatchConnectionService :
     private lateinit var dataClient: DataClient
     private lateinit var nodeClient: NodeClient
 
-    private var preferenceChangePath = ""
-
     private var connectedWatch: Watch? = null
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
@@ -182,9 +180,7 @@ class WatchConnectionService :
         return watch
     }
 
-    fun getConnectedWatch(): Watch? {
-        return connectedWatch
-    }
+    fun getConnectedWatch(): Watch? = connectedWatch
 
     fun getConnectedWatchId(): String? = connectedWatch?.id
 
@@ -203,8 +199,6 @@ class WatchConnectionService :
                     }
                     return@withContext
                 }
-
-                preferenceChangePath = "/preference-change_$id"
 
                 connectedWatch = getWatchById(id)
 
