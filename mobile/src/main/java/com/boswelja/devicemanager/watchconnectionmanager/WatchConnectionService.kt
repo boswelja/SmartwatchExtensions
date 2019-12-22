@@ -315,32 +315,36 @@ class WatchConnectionService :
     }
 
     suspend fun updatePrefInDatabase(id: String, key: String, newValue: Any): Boolean {
-        when (newValue) {
-            is Boolean -> {
-                withContext(Dispatchers.IO) {
-                    val boolPreference = BoolPreference(id, key, newValue)
-                    database.boolPreferenceDao().update(boolPreference)
-                    withContext(Dispatchers.Main) {
-                        for (watchPreferenceChangeInterface in watchPreferenceChangeInterfaces) {
-                            watchPreferenceChangeInterface.boolPreferenceChanged(boolPreference)
+        if (database.isOpen) {
+            return when (newValue) {
+                is Boolean -> {
+                    withContext(Dispatchers.IO) {
+                        val boolPreference = BoolPreference(id, key, newValue)
+                        database.boolPreferenceDao().update(boolPreference)
+                        withContext(Dispatchers.Main) {
+                            for (watchPreferenceChangeInterface in watchPreferenceChangeInterfaces) {
+                                watchPreferenceChangeInterface.boolPreferenceChanged(boolPreference)
+                            }
                         }
                     }
+                    true
                 }
-            }
-            is Int -> {
-                withContext(Dispatchers.IO) {
-                    val intPreference = IntPreference(id, key, newValue)
-                    database.intPreferenceDao().update(intPreference)
-                    withContext(Dispatchers.Main) {
-                        for (watchPreferenceChangeInterface in watchPreferenceChangeInterfaces) {
-                            watchPreferenceChangeInterface.intPreferenceChanged(intPreference)
+                is Int -> {
+                    withContext(Dispatchers.IO) {
+                        val intPreference = IntPreference(id, key, newValue)
+                        database.intPreferenceDao().update(intPreference)
+                        withContext(Dispatchers.Main) {
+                            for (watchPreferenceChangeInterface in watchPreferenceChangeInterfaces) {
+                                watchPreferenceChangeInterface.intPreferenceChanged(intPreference)
+                            }
                         }
                     }
+                    true
                 }
+                else -> false
             }
-            else -> return false
         }
-        return true
+        return false
     }
 
     suspend fun updateWatchNickname(watchId: String, nickname: String): Boolean {
