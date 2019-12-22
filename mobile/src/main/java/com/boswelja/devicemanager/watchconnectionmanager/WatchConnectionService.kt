@@ -430,10 +430,10 @@ class WatchConnectionService :
         }
     }
 
-    suspend fun getWatchByBatterySyncJobId(batterySyncJobID: Int): Watch? {
+    suspend fun getWatchByBatterySyncJobId(batterySyncJobId: Int): Watch? {
         return withContext(Dispatchers.IO) {
-            if (database.isOpen) {
-                return@withContext database.watchDao().findByBatterySyncJobId(batterySyncJobID)
+            if (database.isOpen and batterySyncJobId != 0) {
+                return@withContext database.watchDao().findByBatterySyncJobId(batterySyncJobId)
             }
             return@withContext null
         }
