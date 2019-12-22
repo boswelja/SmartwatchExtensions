@@ -150,7 +150,19 @@ class EnvironmentUpdater(private val context: Context) {
                     watchConnectionManager.setConnectedWatchById(watch.id)
                     sharedPreferences.all.forEach {
                         if (it.value != null) {
-                            watchConnectionManager.updatePrefInDatabase(it.key, it.value!!)
+                            when (it.key) {
+                                PreferenceKey.PHONE_LOCKING_ENABLED_KEY,
+                                PreferenceKey.BATTERY_SYNC_ENABLED_KEY,
+                                PreferenceKey.BATTERY_PHONE_CHARGE_NOTI_KEY,
+                                PreferenceKey.BATTERY_WATCH_CHARGE_NOTI_KEY,
+                                PreferenceKey.DND_SYNC_TO_PHONE_KEY,
+                                PreferenceKey.DND_SYNC_TO_WATCH_KEY,
+                                PreferenceKey.DND_SYNC_WITH_THEATER_KEY,
+                                PreferenceKey.BATTERY_CHARGE_THRESHOLD_KEY -> {
+                                    watchConnectionManager.updatePrefInDatabase(it.key, it.value!!)
+                                }
+                            }
+
                         }
                     }
                     withContext(Dispatchers.Default) {
