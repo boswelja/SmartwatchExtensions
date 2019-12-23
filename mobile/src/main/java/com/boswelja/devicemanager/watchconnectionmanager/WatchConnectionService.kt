@@ -191,26 +191,23 @@ class WatchConnectionService :
                     connectionInterface.onConnectedWatchChanging()
                 }
 
-                if (database.watchDao().findById(id) == null) {
-                    withContext(Dispatchers.Main) {
-                        for (connectionInterface in watchConnectionInterfaces) {
-                            connectionInterface.onConnectedWatchChanged(false)
-                        }
+                val newWatch = getWatchById(id)
+                val success = newWatch != null
+
+                if (success) {
+                    connectedWatch = newWatch
+
+                    updateLocalPreferences()
+
+                    sharedPreferences.edit {
+                        putString(LAST_CONNECTED_NODE_ID_KEY, id)
                     }
-                    return@withContext
-                }
 
-                connectedWatch = getWatchById(id)
-
-                updateLocalPreferences()
-
-                sharedPreferences.edit {
-                    putString(LAST_CONNECTED_NODE_ID_KEY, id)
                 }
 
                 withContext(Dispatchers.Main) {
                     for (connectionInterface in watchConnectionInterfaces) {
-                        connectionInterface.onConnectedWatchChanged(true)
+                        connectionInterface.onConnectedWatchChanged(success)
                     }
                 }
             }
