@@ -152,32 +152,28 @@ class WatchConnectionService :
     }
 
     suspend fun getWatchById(watchId: String?): Watch? {
-        var watch: Watch? = null
-        try {
-            withContext(Dispatchers.IO) {
-                if (!watchId.isNullOrEmpty()) {
-                    val databaseWatch = database.watchDao().findById(watchId)
-                    if (databaseWatch != null) {
-                        val boolPrefs = database.boolPreferenceDao().getAllForWatch(databaseWatch.id)
-                        val intPrefs = database.intPreferenceDao().getAllForWatch(databaseWatch.id)
-                        val connectedNodes = Tasks.await(nodeClient.connectedNodes)
-                        val capableNodes = Tasks.await(capabilityClient.getCapability(References.CAPABILITY_WATCH_APP, CapabilityClient.FILTER_ALL)).nodes
-                        withContext(Dispatchers.Default) {
-                            watch = Watch(databaseWatch.id, databaseWatch.name, databaseWatch.batterySyncJobId, capableNodes.any { it.id == databaseWatch.id }, connectedNodes.any { it.id == databaseWatch.id })
-                            for (intPreference in intPrefs) {
-                                watch!!.intPrefs[intPreference.key] = intPreference.value
-                            }
-                            for (boolPreference in boolPrefs) {
-                                watch!!.boolPrefs[boolPreference.key] = boolPreference.value
-                            }
+        return withContext(Dispatchers.IO) {
+            if (!watchId.isNullOrEmpty() && database.isOpen) {
+                val databaseWatch = database.watchDao().findById(watchId)
+                if (databaseWatch != null) {
+                    val boolPrefs = database.boolPreferenceDao().getAllForWatch(databaseWatch.id)
+                    val intPrefs = database.intPreferenceDao().getAllForWatch(databaseWatch.id)
+                    val connectedNodes = Tasks.await(nodeClient.connectedNodes)
+                    val capableNodes = Tasks.await(capabilityClient.getCapability(References.CAPABILITY_WATCH_APP, CapabilityClient.FILTER_ALL)).nodes
+                    return@withContext withContext(Dispatchers.Default) {
+                        val watch = Watch(databaseWatch.id, databaseWatch.name, databaseWatch.batterySyncJobId, capableNodes.any { it.id == databaseWatch.id }, connectedNodes.any { it.id == databaseWatch.id })
+                        for (intPreference in intPrefs) {
+                            watch.intPrefs[intPreference.key] = intPreference.value
                         }
+                        for (boolPreference in boolPrefs) {
+                            watch.boolPrefs[boolPreference.key] = boolPreference.value
+                        }
+                        watch
                     }
                 }
             }
-        } catch (e: IllegalStateException) {
-            e.printStackTrace()
+            null
         }
-        return watch
     }
 
     fun getConnectedWatch(): Watch? = connectedWatch
