@@ -1,6 +1,7 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
+apply plugin: "kotlin-kapt"
 apply from: '../constants.gradle'
 
 android {
@@ -40,7 +41,10 @@ android {
 
 dependencies {
     implementation project(":common")
+
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$versions.kotlin_version"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$versions.kotlinx_coroutines"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$versions.kotlinx_coroutines"
 
     implementation "androidx.core:core-ktx:$versions.androidx_core_ktx"
     implementation "androidx.wear:wear:$versions.androidx_wear"
