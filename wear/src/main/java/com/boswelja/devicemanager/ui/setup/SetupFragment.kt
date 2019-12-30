@@ -17,15 +17,12 @@ import androidx.core.content.edit
 import androidx.fragment.app.Fragment
 import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.R
-import com.boswelja.devicemanager.common.References
 import com.boswelja.devicemanager.common.setup.References.WATCH_REGISTERED_PATH
 import com.boswelja.devicemanager.phoneconnectionmanager.References.PHONE_ID_KEY
 import com.boswelja.devicemanager.ui.MainActivity
 import com.google.android.gms.tasks.Tasks
-import com.google.android.gms.wearable.CapabilityClient
 import com.google.android.gms.wearable.MessageClient
 import com.google.android.gms.wearable.MessageEvent
-import com.google.android.gms.wearable.Node
 import com.google.android.gms.wearable.NodeClient
 import com.google.android.gms.wearable.Wearable
 import kotlinx.coroutines.Dispatchers
@@ -41,16 +38,13 @@ class SetupFragment :
 
     private lateinit var messageClient: MessageClient
     private lateinit var nodeClient: NodeClient
-    private lateinit var capabilityClient: CapabilityClient
     private lateinit var sharedPreferences: SharedPreferences
 
-    private var phoneNode: Node? = null
-
-    private var phoneHasApp: Boolean = false
+    var phoneHasApp: Boolean = false
 
     override fun onMessageReceived(messageEvent: MessageEvent) {
         val senderId = messageEvent.sourceNodeId
-        if (senderId == phoneNode?.id && !senderId.isNullOrEmpty()) {
+        if (!senderId.isNullOrEmpty()) {
             when (messageEvent.path) {
                 WATCH_REGISTERED_PATH -> {
                     sharedPreferences.edit {
@@ -67,12 +61,7 @@ class SetupFragment :
         super.onCreate(savedInstanceState)
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
         messageClient = Wearable.getMessageClient(context!!)
-        capabilityClient = Wearable.getCapabilityClient(context!!)
-
-        coroutineScope.launch {
-            nodeClient = Wearable.getNodeClient(context!!)
-            updatePhoneNode()
-        }
+        nodeClient = Wearable.getNodeClient(context!!)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -101,20 +90,6 @@ class SetupFragment :
     override fun onPause() {
         super.onPause()
         messageClient.removeListener(this)
-    }
-
-    private suspend fun updatePhoneNode() {
-        withContext(Dispatchers.IO) {
-            phoneNode = Tasks.await(nodeClient.connectedNodes).firstOrNull()
-            if (phoneNode != null) {
-                phoneHasApp = Tasks.await(capabilityClient.getCapability(References.CAPABILITY_PHONE_APP, CapabilityClient.FILTER_ALL)).nodes.any { it.id == phoneNode!!.id }
-                if (view != null) {
-                    withContext(Dispatchers.Main) {
-                        setPhoneSetupHelperVisibility()
-                    }
-                }
-            }
-        }
     }
 
     private fun setPhoneSetupHelperVisibility() {

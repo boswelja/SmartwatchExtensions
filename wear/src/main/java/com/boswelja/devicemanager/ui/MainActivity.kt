@@ -51,7 +51,7 @@ class MainActivity :
             WATCH_REGISTERED_PATH -> showExtensionsFragment()
             WATCH_NOT_REGISTERED_PATH -> {
                 sharedPreferences.edit().clear().apply()
-                showSetupFragment()
+                showSetupFragment(true)
             }
         }
         messageClient.removeListener(this)
@@ -80,7 +80,7 @@ class MainActivity :
                                 showNoConnectionFragment()
                             }
                 } else if (!isCapable) {
-                    showSetupFragment()
+                    showSetupFragment(false)
                 } else {
                     showNoConnectionFragment()
                 }
@@ -106,10 +106,11 @@ class MainActivity :
         showFragment(extensionsFragment!!)
     }
 
-    private fun showSetupFragment() {
+    private fun showSetupFragment(phoneHasApp: Boolean) {
         if (setupFragment == null) {
             setupFragment = SetupFragment()
         }
+        setupFragment!!.phoneHasApp = phoneHasApp
         showFragment(setupFragment!!)
     }
 
