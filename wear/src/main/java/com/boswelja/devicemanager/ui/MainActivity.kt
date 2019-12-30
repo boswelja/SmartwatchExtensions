@@ -9,6 +9,7 @@ package com.boswelja.devicemanager.ui
 
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.preference.PreferenceManager
@@ -115,15 +116,19 @@ class MainActivity :
     }
 
     private fun showFragment(fragment: Fragment) {
-        supportFragmentManager.beginTransaction().apply {
-            if (shouldAnimateFragmentChanges) {
-                setCustomAnimations(R.anim.slide_in_right, R.anim.fade_out)
-            } else {
-                shouldAnimateFragmentChanges = true
+        try {
+            supportFragmentManager.beginTransaction().apply {
+                if (shouldAnimateFragmentChanges) {
+                    setCustomAnimations(R.anim.slide_in_right, R.anim.fade_out)
+                } else {
+                    shouldAnimateFragmentChanges = true
+                }
+                replace(R.id.content, fragment)
+            }.also {
+                it.commit()
             }
-            replace(R.id.content, fragment)
-        }.also {
-            it.commit()
+        } catch (e: IllegalStateException) {
+            Log.e("MainActivity", "Tried to commit a FragmentTransaction after onSaveInstanceState")
         }
     }
 
