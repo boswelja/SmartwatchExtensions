@@ -117,6 +117,10 @@
                     android:host="*"
                     android:pathPrefix="/request_phone_dnd_access_status"
                     android:scheme="wear" />
+                <data
+                    android:host="*"
+                    android:pathPrefix="/check_watch_registered"
+                    android:scheme="wear" />
             </intent-filter>
         </service>
 

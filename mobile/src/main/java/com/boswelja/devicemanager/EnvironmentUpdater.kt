@@ -162,7 +162,6 @@ class EnvironmentUpdater(private val context: Context) {
                                     watchConnectionManager.updatePrefInDatabase(it.key, it.value!!)
                                 }
                             }
-
                         }
                     }
                     withContext(Dispatchers.Default) {

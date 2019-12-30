@@ -34,4 +34,11 @@
 
     <string name="additional_setup_required">Additional setup required</string>
     <string name="error">An error has occurred</string>
+
+    <string name="content_description_scroll_down">Scroll down to read more</string>
+
+    <string name="welcome_to_text">Welcome to</string>
+
+    <string name="setup_instructions_text">Look for this watch in Wearable Extensions</string>
+    <string name="setup_hint_text">Setup will continue automatically</string>
 </resources>

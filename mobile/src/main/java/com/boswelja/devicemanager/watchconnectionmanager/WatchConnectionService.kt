@@ -20,11 +20,13 @@ import androidx.preference.PreferenceManager
 import androidx.room.Room
 import com.boswelja.devicemanager.common.PreferenceKey
 import com.boswelja.devicemanager.common.References
+import com.boswelja.devicemanager.common.setup.References.WATCH_REGISTERED_PATH
 import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.Tasks
 import com.google.android.gms.wearable.CapabilityClient
 import com.google.android.gms.wearable.DataClient
 import com.google.android.gms.wearable.DataItem
+import com.google.android.gms.wearable.MessageClient
 import com.google.android.gms.wearable.Node
 import com.google.android.gms.wearable.NodeClient
 import com.google.android.gms.wearable.PutDataMapRequest
@@ -47,10 +49,12 @@ class WatchConnectionService :
     private val coroutineScope = MainScope()
 
     private lateinit var database: WatchDatabase
-    private lateinit var capabilityClient: CapabilityClient
     private lateinit var sharedPreferences: SharedPreferences
+
+    private lateinit var capabilityClient: CapabilityClient
     private lateinit var dataClient: DataClient
     private lateinit var nodeClient: NodeClient
+    private lateinit var messageClient: MessageClient
 
     private var connectedWatch: Watch? = null
 
@@ -77,9 +81,9 @@ class WatchConnectionService :
         setConnectedWatchById(sharedPreferences.getString(LAST_CONNECTED_NODE_ID_KEY, "") ?: "")
 
         capabilityClient = Wearable.getCapabilityClient(this)
-
         dataClient = Wearable.getDataClient(this)
         nodeClient = Wearable.getNodeClient(this)
+        messageClient = Wearable.getMessageClient(this)
 
         setAutoAddWatches()
     }
@@ -198,7 +202,6 @@ class WatchConnectionService :
                     sharedPreferences.edit {
                         putString(LAST_CONNECTED_NODE_ID_KEY, id)
                     }
-
                 }
 
                 withContext(Dispatchers.Main) {
@@ -354,7 +357,17 @@ class WatchConnectionService :
         return withContext(Dispatchers.IO) {
             if (database.isOpen) {
                 database.watchDao().add(watch)
+                messageClient.sendMessage(watch.id, WATCH_REGISTERED_PATH, null)
                 return@withContext true
+            }
+            return@withContext false
+        }
+    }
+
+    suspend fun isWatchRegistered(watchId: String?): Boolean {
+        return withContext(Dispatchers.IO) {
+            if (database.isOpen && !watchId.isNullOrEmpty()) {
+                return@withContext database.watchDao().findById(watchId) != null
             }
             return@withContext false
         }

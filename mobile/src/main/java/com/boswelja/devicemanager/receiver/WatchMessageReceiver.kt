@@ -20,17 +20,47 @@ import com.boswelja.devicemanager.common.References.REQUEST_LAUNCH_APP_PATH
 import com.boswelja.devicemanager.common.batterysync.References.REQUEST_BATTERY_UPDATE_PATH
 import com.boswelja.devicemanager.common.batterysync.Utils
 import com.boswelja.devicemanager.common.dndsync.References.REQUEST_INTERRUPT_FILTER_ACCESS_STATUS_PATH
+import com.boswelja.devicemanager.common.setup.References.CHECK_WATCH_REGISTERED_PATH
+import com.boswelja.devicemanager.common.setup.References.WATCH_NOT_REGISTERED_PATH
+import com.boswelja.devicemanager.common.setup.References.WATCH_REGISTERED_PATH
 import com.boswelja.devicemanager.ui.base.BasePreferenceActivity.Companion.EXTRA_PREFERENCE_KEY
 import com.boswelja.devicemanager.ui.batterysync.BatterySyncPreferenceActivity
 import com.boswelja.devicemanager.ui.dndsync.DnDSyncPreferenceActivity
 import com.boswelja.devicemanager.ui.main.MainActivity
+import com.boswelja.devicemanager.watchconnectionmanager.WatchConnectionService
 import com.google.android.gms.wearable.MessageEvent
 import com.google.android.gms.wearable.Wearable
 import com.google.android.gms.wearable.WearableListenerService
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class WatchMessageReceiver : WearableListenerService() {
 
+    private var senderId: String? = null
+
+    private val watchConnectionManagerConnection = object : WatchConnectionService.Connection() {
+        override fun onWatchManagerBound(service: WatchConnectionService) {
+            if (!senderId.isNullOrEmpty()) {
+                MainScope().launch {
+                    withContext(Dispatchers.IO) {
+                        val messageCode = if (service.isWatchRegistered(senderId)) {
+                            WATCH_REGISTERED_PATH
+                        } else {
+                            WATCH_NOT_REGISTERED_PATH
+                        }
+                        Wearable.getMessageClient(this@WatchMessageReceiver).sendMessage(senderId!!, messageCode, null)
+                    }
+                }
+            }
+        }
+
+        override fun onWatchManagerUnbound() {}
+    }
+
     override fun onMessageReceived(messageEvent: MessageEvent?) {
+        senderId = messageEvent?.sourceNodeId
         when (messageEvent?.path) {
             LOCK_PHONE_PATH -> {
                 val devicePolicyManager: DevicePolicyManager = getSystemService(Context.DEVICE_POLICY_SERVICE) as DevicePolicyManager
@@ -88,6 +118,14 @@ class WatchMessageReceiver : WearableListenerService() {
                                 REQUEST_INTERRUPT_FILTER_ACCESS_STATUS_PATH,
                                 hasDnDAccess.toByteArray())
             }
+            CHECK_WATCH_REGISTERED_PATH -> {
+                WatchConnectionService.bind(this, watchConnectionManagerConnection)
+            }
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        unbindService(watchConnectionManagerConnection)
     }
 }
