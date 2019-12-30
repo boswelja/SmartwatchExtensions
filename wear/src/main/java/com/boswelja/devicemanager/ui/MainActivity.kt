@@ -18,6 +18,8 @@ import com.boswelja.devicemanager.common.References.CAPABILITY_PHONE_APP
 import com.boswelja.devicemanager.common.setup.References.CHECK_WATCH_REGISTERED_PATH
 import com.boswelja.devicemanager.common.setup.References.WATCH_NOT_REGISTERED_PATH
 import com.boswelja.devicemanager.common.setup.References.WATCH_REGISTERED_PATH
+import com.boswelja.devicemanager.ui.common.LoadingFragment
+import com.boswelja.devicemanager.ui.common.NoConnectionFragment
 import com.boswelja.devicemanager.ui.main.ExtensionsFragment
 import com.boswelja.devicemanager.ui.setup.SetupFragment
 import com.google.android.gms.tasks.Tasks
