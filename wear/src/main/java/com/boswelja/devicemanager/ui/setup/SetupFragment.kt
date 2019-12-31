@@ -14,11 +14,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.boswelja.devicemanager.R
-import com.boswelja.devicemanager.common.setup.References.WATCH_REGISTERED_PATH
-import com.boswelja.devicemanager.ui.MainActivity
 import com.google.android.gms.tasks.Tasks
-import com.google.android.gms.wearable.MessageClient
-import com.google.android.gms.wearable.MessageEvent
 import com.google.android.gms.wearable.NodeClient
 import com.google.android.gms.wearable.Wearable
 import kotlinx.coroutines.Dispatchers
@@ -26,32 +22,17 @@ import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class SetupFragment :
-        Fragment(),
-        MessageClient.OnMessageReceivedListener {
+class SetupFragment : Fragment() {
 
     private val coroutineScope = MainScope()
 
     private var phoneHasApp: Boolean = false
 
-    private lateinit var messageClient: MessageClient
     private lateinit var nodeClient: NodeClient
-
-    override fun onMessageReceived(messageEvent: MessageEvent) {
-        val senderId = messageEvent.sourceNodeId
-        if (!senderId.isNullOrEmpty()) {
-            when (messageEvent.path) {
-                WATCH_REGISTERED_PATH -> {
-                    (activity as MainActivity?)?.setupFinished()
-                }
-            }
-        }
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        messageClient = Wearable.getMessageClient(context!!)
         nodeClient = Wearable.getNodeClient(context!!)
     }
 
@@ -71,16 +52,6 @@ class SetupFragment :
             }
         }
         setPhoneSetupHelperVisibility(phoneHasApp)
-    }
-
-    override fun onResume() {
-        super.onResume()
-        messageClient.addListener(this)
-    }
-
-    override fun onPause() {
-        super.onPause()
-        messageClient.removeListener(this)
     }
 
     fun setPhoneSetupHelperVisibility(phoneHasApp: Boolean) {

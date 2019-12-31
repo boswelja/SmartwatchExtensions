@@ -56,7 +56,6 @@ class MainActivity :
                 showSetupFragment(true)
             }
         }
-        messageClient.removeListener(this)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -143,9 +142,5 @@ class MainActivity :
         } catch (e: IllegalStateException) {
             Log.e("MainActivity", "Tried to commit a FragmentTransaction after onSaveInstanceState")
         }
-    }
-
-    fun setupFinished() {
-        showExtensionsFragment()
     }
 }
