@@ -7,12 +7,10 @@
  */
 package com.boswelja.devicemanager.ui
 
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.References.CAPABILITY_PHONE_APP
 import com.boswelja.devicemanager.common.setup.References.CHECK_WATCH_REGISTERED_PATH
@@ -45,7 +43,6 @@ class MainActivity :
 
     private var shouldAnimateFragmentChanges: Boolean = false
 
-    private lateinit var sharedPreferences: SharedPreferences
     private lateinit var capabilityClient: CapabilityClient
     private lateinit var messageClient: MessageClient
 
@@ -53,7 +50,6 @@ class MainActivity :
         when (messageEvent.path) {
             WATCH_REGISTERED_PATH -> showExtensionsFragment()
             WATCH_NOT_REGISTERED_PATH -> {
-                sharedPreferences.edit().clear().apply()
                 showSetupFragment(true)
             }
         }
@@ -62,8 +58,6 @@ class MainActivity :
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
 
         setContentView(R.layout.activity_main)
 
