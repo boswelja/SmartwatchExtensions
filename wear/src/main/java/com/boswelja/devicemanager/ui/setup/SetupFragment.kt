@@ -40,8 +40,6 @@ class SetupFragment :
     private lateinit var nodeClient: NodeClient
     private lateinit var sharedPreferences: SharedPreferences
 
-    var phoneHasApp: Boolean = false
-
     override fun onMessageReceived(messageEvent: MessageEvent) {
         val senderId = messageEvent.sourceNodeId
         if (!senderId.isNullOrEmpty()) {
@@ -79,7 +77,6 @@ class SetupFragment :
                 }
             }
         }
-        setPhoneSetupHelperVisibility()
     }
 
     override fun onResume() {
@@ -92,7 +89,7 @@ class SetupFragment :
         messageClient.removeListener(this)
     }
 
-    private fun setPhoneSetupHelperVisibility() {
+    fun setPhoneSetupHelperVisibility(phoneHasApp: Boolean) {
         view?.findViewById<View>(R.id.phone_setup_helper_view)!!.apply {
             visibility = if (phoneHasApp) {
                 View.GONE

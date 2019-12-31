@@ -107,7 +107,7 @@ class MainActivity :
         if (setupFragment == null) {
             setupFragment = SetupFragment()
         }
-        setupFragment!!.phoneHasApp = phoneHasApp
+        setupFragment!!.setPhoneSetupHelperVisibility(phoneHasApp)
         showFragment(setupFragment!!)
     }
 
