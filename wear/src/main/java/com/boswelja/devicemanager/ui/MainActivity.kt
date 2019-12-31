@@ -69,7 +69,6 @@ class MainActivity :
 
         capabilityClient = Wearable.getCapabilityClient(this)
         messageClient = Wearable.getMessageClient(this)
-        messageClient.addListener(this)
 
         coroutineScope.launch {
             withContext(Dispatchers.IO) {
@@ -98,6 +97,16 @@ class MainActivity :
                 }
             }
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        messageClient.addListener(this)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        messageClient.removeListener(this)
     }
 
     private fun showLoadingFragment() {
