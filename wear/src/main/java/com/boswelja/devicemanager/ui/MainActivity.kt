@@ -82,7 +82,7 @@ class MainActivity :
                             .addOnFailureListener {
                                 showNoConnectionFragment()
                             }
-                } else if (!isCapable) {
+                } else if (phoneNode != null && !isCapable) {
                     showSetupFragment(false)
                 } else {
                     showNoConnectionFragment()
