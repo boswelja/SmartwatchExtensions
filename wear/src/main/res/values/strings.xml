@@ -42,4 +42,6 @@
     <string name="setup_phone_helper_text">On your phone, download and install Wearable Extensions from the Play Store</string>
     <string name="setup_instructions_text">Look for this watch in Wearable Extensions</string>
     <string name="setup_hint_text">Setup will continue automatically</string>
+
+    <string name="not_connected_text">Cannot connect to your phone. Make sure your phone is nearby and try again</string>
 </resources>
