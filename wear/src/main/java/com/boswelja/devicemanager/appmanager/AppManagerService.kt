@@ -14,12 +14,13 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.SharedPreferences
 import android.os.Build
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
 import androidx.core.net.toUri
+import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.R
-import com.boswelja.devicemanager.Utils
 import com.boswelja.devicemanager.Utils.isAppInstalled
 import com.boswelja.devicemanager.common.appmanager.AppPackageInfo
 import com.boswelja.devicemanager.common.appmanager.AppPackageInfoList
@@ -30,12 +31,16 @@ import com.boswelja.devicemanager.common.appmanager.References.PACKAGE_REMOVED
 import com.boswelja.devicemanager.common.appmanager.References.REQUEST_OPEN_PACKAGE
 import com.boswelja.devicemanager.common.appmanager.References.REQUEST_UNINSTALL_PACKAGE
 import com.boswelja.devicemanager.common.appmanager.References.STOP_SERVICE
+import com.boswelja.devicemanager.phoneconnectionmanager.References.PHONE_ID_KEY
 import com.google.android.gms.wearable.MessageClient
 import com.google.android.gms.wearable.Wearable
 
 class AppManagerService : Service() {
 
     private lateinit var messageClient: MessageClient
+    private lateinit var sharedPreferences: SharedPreferences
+
+    private var phoneId: String? = null
 
     private val messageReceiver = MessageClient.OnMessageReceivedListener {
         when (it.path) {
@@ -91,15 +96,22 @@ class AppManagerService : Service() {
     override fun onCreate() {
         super.onCreate()
 
-        messageClient = Wearable.getMessageClient(this)
-        messageClient.addListener(messageReceiver)
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
+        phoneId = sharedPreferences.getString(PHONE_ID_KEY, "")
 
-        val packageEventIntentFilter = IntentFilter().apply {
-            addAction(Intent.ACTION_PACKAGE_ADDED)
-            addAction(Intent.ACTION_PACKAGE_REMOVED)
-            addDataScheme("package")
+        if (!phoneId.isNullOrEmpty()) {
+            messageClient = Wearable.getMessageClient(this)
+            messageClient.addListener(messageReceiver)
+
+            val packageEventIntentFilter = IntentFilter().apply {
+                addAction(Intent.ACTION_PACKAGE_ADDED)
+                addAction(Intent.ACTION_PACKAGE_REMOVED)
+                addDataScheme("package")
+            }
+            registerReceiver(packageChangeReceiver, packageEventIntentFilter)
+        } else {
+            stopSelf()
         }
-        registerReceiver(packageChangeReceiver, packageEventIntentFilter)
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -136,58 +148,26 @@ class AppManagerService : Service() {
     }
 
     private fun sendAppRemovedMessage(packageName: String?) {
-        Utils.getCompanionNode(this)
-                .addOnCompleteListener {
-                    if (it.isSuccessful) {
-                        val node = it.result?.nodes?.firstOrNull()
-                        if (node != null) {
-                            val data = packageName?.toByteArray(Charsets.UTF_8)
-                            messageClient.sendMessage(node.id!!, PACKAGE_REMOVED, data)
-                        }
-                    }
-                }
+        val data = packageName?.toByteArray(Charsets.UTF_8)
+        messageClient.sendMessage(phoneId!!, PACKAGE_REMOVED, data)
     }
 
     private fun sendAppAddedMessage(packageInfo: AppPackageInfo) {
-        Utils.getCompanionNode(this)
-                .addOnCompleteListener {
-                    if (it.isSuccessful) {
-                        val node = it.result?.nodes?.firstOrNull()
-                        if (node != null) {
-                            val data = packageInfo.toByteArray()
-                            messageClient.sendMessage(node.id!!, PACKAGE_ADDED, data)
-                        }
-                    }
-                }
+        val data = packageInfo.toByteArray()
+        messageClient.sendMessage(phoneId!!, PACKAGE_ADDED, data)
     }
 
     private fun sendErrorMessage() {
-        Utils.getCompanionNode(this)
-                .addOnCompleteListener {
-                    if (it.isSuccessful) {
-                        val node = it.result?.nodes?.firstOrNull()
-                        if (node != null) {
-                            messageClient.sendMessage(node.id!!, ERROR, null)
-                        }
-                    }
-                    stopForeground(true)
-                    stopSelf()
-                }
+        messageClient.sendMessage(phoneId!!, ERROR, null)
+        stopForeground(true)
+        stopSelf()
     }
 
     private fun sendAllAppsMessage() {
         try {
             val packagesToSend = AppPackageInfoList(packageManager)
-            Utils.getCompanionNode(this)
-                    .addOnCompleteListener {
-                        if (it.isSuccessful) {
-                            val node = it.result?.nodes?.firstOrNull()
-                            if (node != null) {
-                                val data = packagesToSend.toByteArray()
-                                messageClient.sendMessage(node.id!!, GET_ALL_PACKAGES, data)
-                            }
-                        }
-                    }
+            val data = packagesToSend.toByteArray()
+            messageClient.sendMessage(phoneId!!, GET_ALL_PACKAGES, data)
         } catch (e: IllegalStateException) {
             e.printStackTrace()
             sendErrorMessage()
