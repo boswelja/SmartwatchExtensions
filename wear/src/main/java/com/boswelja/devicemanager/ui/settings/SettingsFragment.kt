@@ -152,14 +152,19 @@ class SettingsFragment :
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        sharedPreferences.registerOnSharedPreferenceChangeListener(this)
+    }
+
     override fun onPause() {
         super.onPause()
         sharedPreferences.unregisterOnSharedPreferenceChangeListener(this)
     }
 
-    override fun onResume() {
-        super.onResume()
-        sharedPreferences.registerOnSharedPreferenceChangeListener(this)
+    override fun onDestroy() {
+        super.onDestroy()
+        context?.unbindService(preferenceSyncServiceConnection)
     }
 
     private fun setupBatterySyncPrefs() {
