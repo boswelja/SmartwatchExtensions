@@ -32,6 +32,8 @@ class SetupFragment :
 
     private val coroutineScope = MainScope()
 
+    private var phoneHasApp: Boolean = false
+
     private lateinit var messageClient: MessageClient
     private lateinit var nodeClient: NodeClient
 
@@ -68,6 +70,7 @@ class SetupFragment :
                 }
             }
         }
+        setPhoneSetupHelperVisibility(phoneHasApp)
     }
 
     override fun onResume() {
@@ -81,11 +84,14 @@ class SetupFragment :
     }
 
     fun setPhoneSetupHelperVisibility(phoneHasApp: Boolean) {
-        view?.findViewById<View>(R.id.phone_setup_helper_view)!!.apply {
-            visibility = if (phoneHasApp) {
-                View.GONE
-            } else {
-                View.VISIBLE
+        this.phoneHasApp = phoneHasApp
+        if (view != null) {
+            view?.findViewById<View>(R.id.phone_setup_helper_view)!!.apply {
+                visibility = if (phoneHasApp) {
+                    View.GONE
+                } else {
+                    View.VISIBLE
+                }
             }
         }
     }
