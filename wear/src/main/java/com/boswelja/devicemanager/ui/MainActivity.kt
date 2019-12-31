@@ -7,15 +7,19 @@
  */
 package com.boswelja.devicemanager.ui
 
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.edit
 import androidx.fragment.app.Fragment
+import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.References.CAPABILITY_PHONE_APP
 import com.boswelja.devicemanager.common.setup.References.CHECK_WATCH_REGISTERED_PATH
 import com.boswelja.devicemanager.common.setup.References.WATCH_NOT_REGISTERED_PATH
 import com.boswelja.devicemanager.common.setup.References.WATCH_REGISTERED_PATH
+import com.boswelja.devicemanager.phoneconnectionmanager.References.PHONE_ID_KEY
 import com.boswelja.devicemanager.ui.common.LoadingFragment
 import com.boswelja.devicemanager.ui.common.NoConnectionFragment
 import com.boswelja.devicemanager.ui.main.ExtensionsFragment
@@ -41,6 +45,8 @@ class MainActivity :
     private var setupFragment: SetupFragment? = null
     private var noConnectionFragment: NoConnectionFragment? = null
 
+    private lateinit var sharedPreferences: SharedPreferences
+
     private var shouldAnimateFragmentChanges: Boolean = false
 
     private lateinit var capabilityClient: CapabilityClient
@@ -63,13 +69,26 @@ class MainActivity :
 
         showLoadingFragment()
 
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
+
         capabilityClient = Wearable.getCapabilityClient(this)
         messageClient = Wearable.getMessageClient(this)
         messageClient.addListener(this)
 
         coroutineScope.launch {
             withContext(Dispatchers.IO) {
-                val phoneNode = Tasks.await(Wearable.getNodeClient(this@MainActivity).connectedNodes).firstOrNull()
+                val phoneNodeId = sharedPreferences.getString(PHONE_ID_KEY, "")
+                val phoneNode = if (!phoneNodeId.isNullOrEmpty()) {
+                    Tasks.await(Wearable.getNodeClient(this@MainActivity).connectedNodes).firstOrNull { it.id == phoneNodeId }
+                } else {
+                    Tasks.await(Wearable.getNodeClient(this@MainActivity).connectedNodes).firstOrNull().also {
+                        if (it != null) {
+                            sharedPreferences.edit {
+                                putString(PHONE_ID_KEY, it.id)
+                            }
+                        }
+                    }
+                }
                 val isCapable = Tasks.await(capabilityClient.getCapability(CAPABILITY_PHONE_APP, CapabilityClient.FILTER_ALL)).nodes.any { it.id == phoneNode?.id }
                 if (phoneNode != null && isCapable) {
                     messageClient.sendMessage(phoneNode.id, CHECK_WATCH_REGISTERED_PATH, null)

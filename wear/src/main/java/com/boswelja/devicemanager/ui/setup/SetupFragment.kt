@@ -7,18 +7,14 @@
  */
 package com.boswelja.devicemanager.ui.setup
 
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.core.content.edit
 import androidx.fragment.app.Fragment
-import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.setup.References.WATCH_REGISTERED_PATH
-import com.boswelja.devicemanager.phoneconnectionmanager.References.PHONE_ID_KEY
 import com.boswelja.devicemanager.ui.MainActivity
 import com.google.android.gms.tasks.Tasks
 import com.google.android.gms.wearable.MessageClient
@@ -38,17 +34,12 @@ class SetupFragment :
 
     private lateinit var messageClient: MessageClient
     private lateinit var nodeClient: NodeClient
-    private lateinit var sharedPreferences: SharedPreferences
 
     override fun onMessageReceived(messageEvent: MessageEvent) {
         val senderId = messageEvent.sourceNodeId
         if (!senderId.isNullOrEmpty()) {
             when (messageEvent.path) {
                 WATCH_REGISTERED_PATH -> {
-                    sharedPreferences.edit {
-                        putString(PHONE_ID_KEY, messageEvent.sourceNodeId)
-                    }
-
                     (activity as MainActivity?)?.setupFinished()
                 }
             }
@@ -57,7 +48,7 @@ class SetupFragment :
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
+
         messageClient = Wearable.getMessageClient(context!!)
         nodeClient = Wearable.getNodeClient(context!!)
     }
