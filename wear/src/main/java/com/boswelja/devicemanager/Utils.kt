@@ -14,28 +14,20 @@ import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.common.Compat
 import com.boswelja.devicemanager.common.PreferenceKey
 import com.boswelja.devicemanager.common.References
-import com.google.android.gms.tasks.Task
-import com.google.android.gms.wearable.CapabilityClient
-import com.google.android.gms.wearable.CapabilityInfo
+import com.boswelja.devicemanager.phoneconnectionmanager.References.PHONE_ID_KEY
 import com.google.android.gms.wearable.Wearable
 
 object Utils {
-
-    fun getCompanionNode(context: Context): Task<CapabilityInfo> =
-            Wearable.getCapabilityClient(context)
-                    .getCapability(References.CAPABILITY_PHONE_APP, CapabilityClient.FILTER_REACHABLE)
 
     fun checkDnDAccess(context: Context): Boolean =
             (context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager)
                     .isNotificationPolicyAccessGranted
 
     fun launchMobileApp(context: Context, key: String) {
-        getCompanionNode(context).addOnSuccessListener { capabilityInfo ->
-            val nodeId = capabilityInfo.nodes.firstOrNull { it.isNearby }?.id ?: capabilityInfo.nodes.firstOrNull()?.id
-            if (nodeId != null) {
-                Wearable.getMessageClient(context)
-                        .sendMessage(nodeId, References.REQUEST_LAUNCH_APP_PATH, key.toByteArray(Charsets.UTF_8))
-            }
+        val nodeId = PreferenceManager.getDefaultSharedPreferences(context).getString(PHONE_ID_KEY, "")
+        if (nodeId != null) {
+            Wearable.getMessageClient(context)
+                    .sendMessage(nodeId, References.REQUEST_LAUNCH_APP_PATH, key.toByteArray(Charsets.UTF_8))
         }
     }
 
