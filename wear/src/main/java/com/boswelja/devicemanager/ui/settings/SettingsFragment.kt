@@ -30,6 +30,7 @@ import com.boswelja.devicemanager.common.PreferenceKey.DND_SYNC_TO_PHONE_KEY
 import com.boswelja.devicemanager.common.PreferenceKey.DND_SYNC_TO_WATCH_KEY
 import com.boswelja.devicemanager.common.PreferenceKey.DND_SYNC_WITH_THEATER_KEY
 import com.boswelja.devicemanager.common.dndsync.References.REQUEST_INTERRUPT_FILTER_ACCESS_STATUS_PATH
+import com.boswelja.devicemanager.phoneconnectionmanager.References.PHONE_ID_KEY
 import com.boswelja.devicemanager.service.PreferenceSyncService
 import com.google.android.gms.wearable.MessageClient
 import com.google.android.gms.wearable.Wearable
@@ -48,11 +49,15 @@ class SettingsFragment :
             preferenceSyncService = null
         }
     }
-    private var preferenceSyncService: PreferenceSyncService? = null
-    private lateinit var sharedPreferences: SharedPreferences
-    private var messageClient: MessageClient? = null
 
+    private lateinit var sharedPreferences: SharedPreferences
+    private lateinit var messageClient: MessageClient
+
+    private var preferenceSyncService: PreferenceSyncService? = null
+
+    private var phoneId: String = ""
     private var changingKey = ""
+    private var interruptFilterAccessListenerRegistered: Boolean = false
 
     private val interruptFilterAccessListener = MessageClient.OnMessageReceivedListener {
         if (it.path == REQUEST_INTERRUPT_FILTER_ACCESS_STATUS_PATH) {
@@ -105,22 +110,13 @@ class SettingsFragment :
             DND_SYNC_WITH_THEATER_KEY -> {
                 val value = newValue == true
                 if (value) {
-                    messageClient = Wearable.getMessageClient(preference.context)
                     changingKey = key
-                    messageClient!!.addListener(interruptFilterAccessListener)
-                    Utils.getCompanionNode(context!!).addOnCompleteListener {
-                        if (it.isSuccessful && it.result != null) {
-                            val nodes = it.result?.nodes
-                            if (!nodes.isNullOrEmpty()) {
-                                val node = nodes.first { node -> node.isNearby }
-                                messageClient!!.sendMessage(node?.id!!, REQUEST_INTERRUPT_FILTER_ACCESS_STATUS_PATH, null)
-                            } else {
+                    messageClient.addListener(interruptFilterAccessListener)
+                    interruptFilterAccessListenerRegistered = true
+                    messageClient.sendMessage(phoneId, REQUEST_INTERRUPT_FILTER_ACCESS_STATUS_PATH, null)
+                            .addOnFailureListener {
                                 notifyError()
                             }
-                        } else {
-                            notifyError()
-                        }
-                    }
                 } else {
                     sharedPreferences.edit().putBoolean(key, value).apply()
                     preferenceSyncService?.pushNewData(key)
@@ -133,8 +129,11 @@ class SettingsFragment :
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        context?.bindService(Intent(context, PreferenceSyncService::class.java), preferenceSyncServiceConnection, Context.BIND_AUTO_CREATE)
+
+        messageClient = Wearable.getMessageClient(context!!)
+
         sharedPreferences = preferenceManager.sharedPreferences
+        phoneId = sharedPreferences.getString(PHONE_ID_KEY, "") ?: ""
     }
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
@@ -155,16 +154,17 @@ class SettingsFragment :
     override fun onResume() {
         super.onResume()
         sharedPreferences.registerOnSharedPreferenceChangeListener(this)
+
+        context?.bindService(Intent(context, PreferenceSyncService::class.java), preferenceSyncServiceConnection, Context.BIND_AUTO_CREATE)
     }
 
     override fun onPause() {
         super.onPause()
         sharedPreferences.unregisterOnSharedPreferenceChangeListener(this)
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
         context?.unbindService(preferenceSyncServiceConnection)
+        if (interruptFilterAccessListenerRegistered) {
+            messageClient.removeListener(interruptFilterAccessListener)
+        }
     }
 
     private fun setupBatterySyncPrefs() {
@@ -199,7 +199,8 @@ class SettingsFragment :
     }
 
     private fun onInterruptFilterAccessResponse(hasAccess: Boolean) {
-        messageClient?.removeListener(interruptFilterAccessListener)
+        interruptFilterAccessListenerRegistered = false
+        messageClient.removeListener(interruptFilterAccessListener)
         if (changingKey.isNotEmpty()) {
             if (hasAccess) {
                 sharedPreferences.edit().putBoolean(changingKey, hasAccess).apply()
