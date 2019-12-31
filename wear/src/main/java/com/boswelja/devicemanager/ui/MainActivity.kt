@@ -40,10 +40,7 @@ class MainActivity :
 
     private val coroutineScope = MainScope()
 
-    private val loadingFragment: LoadingFragment = LoadingFragment()
-    private var extensionsFragment: ExtensionsFragment? = null
-    private var setupFragment: SetupFragment? = null
-    private var noConnectionFragment: NoConnectionFragment? = null
+    private var currentFragment: Fragment? = null
 
     private lateinit var sharedPreferences: SharedPreferences
 
@@ -105,29 +102,30 @@ class MainActivity :
     }
 
     private fun showLoadingFragment() {
-        showFragment(loadingFragment)
+        if (currentFragment !is LoadingFragment) {
+            showFragment(LoadingFragment())
+        }
     }
 
     private fun showNoConnectionFragment() {
-        if (noConnectionFragment == null) {
-            noConnectionFragment = NoConnectionFragment()
+        if (currentFragment !is NoConnectionFragment) {
+            showFragment(NoConnectionFragment())
         }
-        showFragment(noConnectionFragment!!)
     }
 
     private fun showExtensionsFragment() {
-        if (extensionsFragment == null) {
-            extensionsFragment = ExtensionsFragment()
+        if (currentFragment !is ExtensionsFragment) {
+            showFragment(ExtensionsFragment())
         }
-        showFragment(extensionsFragment!!)
     }
 
     private fun showSetupFragment(phoneHasApp: Boolean) {
-        if (setupFragment == null) {
-            setupFragment = SetupFragment()
+        if (currentFragment !is SetupFragment) {
+            val setupFragment = SetupFragment().apply {
+                setPhoneSetupHelperVisibility(phoneHasApp)
+            }
+            showFragment(setupFragment)
         }
-        setupFragment!!.setPhoneSetupHelperVisibility(phoneHasApp)
-        showFragment(setupFragment!!)
     }
 
     private fun showFragment(fragment: Fragment) {
