@@ -51,7 +51,9 @@ class MainActivity :
 
     override fun onMessageReceived(messageEvent: MessageEvent) {
         when (messageEvent.path) {
-            WATCH_REGISTERED_PATH -> showExtensionsFragment()
+            WATCH_REGISTERED_PATH -> {
+                showExtensionsFragment()
+            }
             WATCH_NOT_REGISTERED_PATH -> {
                 showSetupFragment(true)
             }
@@ -84,14 +86,17 @@ class MainActivity :
                         }
                     }
                 }
-                val isCapable = Tasks.await(capabilityClient.getCapability(CAPABILITY_PHONE_APP, CapabilityClient.FILTER_ALL)).nodes.any { it.id == phoneNode?.id }
-                if (phoneNode != null && isCapable) {
-                    messageClient.sendMessage(phoneNode.id, CHECK_WATCH_REGISTERED_PATH, null)
-                            .addOnFailureListener {
-                                showNoConnectionFragment()
-                            }
-                } else if (phoneNode != null && !isCapable) {
-                    showSetupFragment(false)
+
+                if (phoneNode != null) {
+                    val isCapable = Tasks.await(capabilityClient.getCapability(CAPABILITY_PHONE_APP, CapabilityClient.FILTER_ALL)).nodes.any { it.id == phoneNode.id }
+                    if (isCapable) {
+                        messageClient.sendMessage(phoneNode.id, CHECK_WATCH_REGISTERED_PATH, null)
+                                .addOnFailureListener {
+                                    showNoConnectionFragment()
+                                }
+                    } else {
+                        showSetupFragment(false)
+                    }
                 } else {
                     showNoConnectionFragment()
                 }

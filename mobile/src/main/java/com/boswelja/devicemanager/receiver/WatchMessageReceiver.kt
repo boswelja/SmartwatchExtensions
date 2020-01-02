@@ -42,16 +42,14 @@ class WatchMessageReceiver : WearableListenerService() {
 
     private val watchConnectionManagerConnection = object : WatchConnectionService.Connection() {
         override fun onWatchManagerBound(service: WatchConnectionService) {
-            if (!senderId.isNullOrEmpty()) {
-                MainScope().launch {
-                    withContext(Dispatchers.IO) {
-                        val messageCode = if (service.isWatchRegistered(senderId)) {
-                            WATCH_REGISTERED_PATH
-                        } else {
-                            WATCH_NOT_REGISTERED_PATH
-                        }
-                        Wearable.getMessageClient(this@WatchMessageReceiver).sendMessage(senderId!!, messageCode, null)
+            MainScope().launch {
+                withContext(Dispatchers.IO) {
+                    val messageCode = if (service.isWatchRegistered(senderId)) {
+                        WATCH_REGISTERED_PATH
+                    } else {
+                        WATCH_NOT_REGISTERED_PATH
                     }
+                    Wearable.getMessageClient(this@WatchMessageReceiver).sendMessage(senderId!!, messageCode, null)
                 }
             }
         }
