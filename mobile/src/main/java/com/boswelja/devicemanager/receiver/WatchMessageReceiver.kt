@@ -12,6 +12,7 @@ import android.app.admin.DevicePolicyManager
 import android.content.Context
 import android.content.Intent
 import android.os.Build
+import androidx.room.Room
 import com.boswelja.devicemanager.common.Extensions.toByteArray
 import com.boswelja.devicemanager.common.PreferenceKey
 import com.boswelja.devicemanager.common.References.CAPABILITY_WATCH_APP
@@ -27,7 +28,7 @@ import com.boswelja.devicemanager.ui.base.BasePreferenceActivity.Companion.EXTRA
 import com.boswelja.devicemanager.ui.batterysync.BatterySyncPreferenceActivity
 import com.boswelja.devicemanager.ui.dndsync.DnDSyncPreferenceActivity
 import com.boswelja.devicemanager.ui.main.MainActivity
-import com.boswelja.devicemanager.watchconnectionmanager.WatchConnectionService
+import com.boswelja.devicemanager.watchconnectionmanager.WatchDatabase
 import com.google.android.gms.wearable.MessageEvent
 import com.google.android.gms.wearable.Wearable
 import com.google.android.gms.wearable.WearableListenerService
@@ -39,23 +40,6 @@ import kotlinx.coroutines.withContext
 class WatchMessageReceiver : WearableListenerService() {
 
     private var senderId: String? = null
-
-    private val watchConnectionManagerConnection = object : WatchConnectionService.Connection() {
-        override fun onWatchManagerBound(service: WatchConnectionService) {
-            MainScope().launch {
-                withContext(Dispatchers.IO) {
-                    val messageCode = if (service.isWatchRegistered(senderId)) {
-                        WATCH_REGISTERED_PATH
-                    } else {
-                        WATCH_NOT_REGISTERED_PATH
-                    }
-                    Wearable.getMessageClient(this@WatchMessageReceiver).sendMessage(senderId!!, messageCode, null)
-                }
-            }
-        }
-
-        override fun onWatchManagerUnbound() {}
-    }
 
     override fun onMessageReceived(messageEvent: MessageEvent?) {
         senderId = messageEvent?.sourceNodeId
@@ -117,13 +101,25 @@ class WatchMessageReceiver : WearableListenerService() {
                                 hasDnDAccess.toByteArray())
             }
             CHECK_WATCH_REGISTERED_PATH -> {
-                WatchConnectionService.bind(this, watchConnectionManagerConnection)
+                MainScope().launch {
+                    withContext(Dispatchers.IO) {
+                        //TODO Access the database through WatchConnectionService
+                        val database = Room.databaseBuilder(applicationContext, WatchDatabase::class.java, "watch-db")
+                                .fallbackToDestructiveMigration()
+                                .build()
+                        val messageCode = if (database.watchDao().findById(senderId!!) != null) {
+                            WATCH_REGISTERED_PATH
+                        } else {
+                            WATCH_NOT_REGISTERED_PATH
+                        }
+                        Wearable.getMessageClient(this@WatchMessageReceiver).sendMessage(senderId!!, messageCode, null)
+                    }
+                }
             }
         }
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        unbindService(watchConnectionManagerConnection)
     }
 }

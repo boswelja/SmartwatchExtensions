@@ -364,15 +364,6 @@ class WatchConnectionService :
         }
     }
 
-    suspend fun isWatchRegistered(watchId: String?): Boolean {
-        return withContext(Dispatchers.IO) {
-            if (database.isOpen && !watchId.isNullOrEmpty()) {
-                return@withContext database.watchDao().findById(watchId) != null
-            }
-            return@withContext false
-        }
-    }
-
     suspend fun forgetWatch(watchId: String?): Boolean {
         return withContext(Dispatchers.IO) {
             if (!watchId.isNullOrEmpty() && database.isOpen) {
@@ -433,15 +424,6 @@ class WatchConnectionService :
                     putInt(key, value)
                 }
             }
-        }
-    }
-
-    suspend fun getWatchByBatterySyncJobId(batterySyncJobId: Int): Watch? {
-        return withContext(Dispatchers.IO) {
-            if (database.isOpen && batterySyncJobId != 0) {
-                return@withContext database.watchDao().findByBatterySyncJobId(batterySyncJobId)
-            }
-            return@withContext null
         }
     }
 

@@ -13,42 +13,33 @@ import android.app.job.JobScheduler
 import android.app.job.JobService
 import android.content.ComponentName
 import android.content.Context
+import androidx.room.Room
 import com.boswelja.devicemanager.common.Compat
 import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_SYNC_INTERVAL_KEY
 import com.boswelja.devicemanager.ui.batterysync.Utils.updateBatteryStats
 import com.boswelja.devicemanager.watchconnectionmanager.WatchConnectionService
+import com.boswelja.devicemanager.watchconnectionmanager.WatchDatabase
 import java.util.concurrent.TimeUnit
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 
 class BatterySyncJob : JobService() {
 
-    private val watchConnectionManagerConnection = object : WatchConnectionService.Connection() {
-        override fun onWatchManagerBound(service: WatchConnectionService) {
-            if (params?.jobId != null) {
-                MainScope().launch {
-                    val watchId = service.getWatchByBatterySyncJobId(params?.jobId!!)?.id
-                    updateBatteryStats(this@BatterySyncJob, watchId)
-                }
-            }
-
-            unbindService(this)
-        }
-
-        override fun onWatchManagerUnbound() {
-            jobFinished(params, true)
-        }
-    }
-
-    private var params: JobParameters? = null
-
     override fun onStopJob(params: JobParameters?): Boolean {
         return true
     }
 
     override fun onStartJob(params: JobParameters?): Boolean {
-        this.params = params
-        WatchConnectionService.bind(this, watchConnectionManagerConnection)
+        if (params?.jobId != null) {
+            MainScope().launch {
+
+                val database = Room.databaseBuilder(applicationContext, WatchDatabase::class.java, "watch-db")
+                        .fallbackToDestructiveMigration()
+                        .build()
+                val watchId = database.watchDao().findByBatterySyncJobId(params.jobId)?.id
+                updateBatteryStats(this@BatterySyncJob, watchId)
+            }
+        }
         return false
     }
 
