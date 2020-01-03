@@ -54,9 +54,9 @@ dependencies {
     implementation "androidx.constraintlayout:constraintlayout:$versions.androidx_constraintlayout"
     implementation 'androidx.browser:browser:1.2.0'
     implementation "androidx.room:room-runtime:$versions.androidx_room"
-    implementation "androidx.room:room-ktx:$versions.androidx_room"
+    implementation "androidx.room:room-ktx:${versions.androidx_room}"
 
-    implementation 'com.google.android.material:material:1.2.0-alpha02'
+    implementation 'com.google.android.material:material:1.2.0-alpha03'
     implementation "com.google.android.gms:play-services-wearable:$versions.play_services_wearable"
 
     kapt "androidx.room:room-compiler:$versions.androidx_room"
