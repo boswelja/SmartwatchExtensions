@@ -103,7 +103,7 @@ class WatchMessageReceiver : WearableListenerService() {
             CHECK_WATCH_REGISTERED_PATH -> {
                 MainScope().launch {
                     withContext(Dispatchers.IO) {
-                        //TODO Access the database through WatchConnectionService
+                        // TODO Access the database through WatchConnectionService
                         val database = Room.databaseBuilder(applicationContext, WatchDatabase::class.java, "watch-db")
                                 .fallbackToDestructiveMigration()
                                 .build()
