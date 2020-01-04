@@ -19,9 +19,11 @@ import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_SYNC_INTERVAL_KEY
 import com.boswelja.devicemanager.ui.batterysync.Utils.updateBatteryStats
 import com.boswelja.devicemanager.watchconnectionmanager.WatchConnectionService
 import com.boswelja.devicemanager.watchconnectionmanager.WatchDatabase
+import kotlinx.coroutines.Dispatchers
 import java.util.concurrent.TimeUnit
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class BatterySyncJob : JobService() {
 
@@ -32,11 +34,13 @@ class BatterySyncJob : JobService() {
     override fun onStartJob(params: JobParameters?): Boolean {
         if (params?.jobId != null) {
             MainScope().launch {
-                val database = Room.databaseBuilder(applicationContext, WatchDatabase::class.java, "watch-db")
-                        .fallbackToDestructiveMigration()
-                        .build()
-                val watchId = database.watchDao().findByBatterySyncJobId(params.jobId)?.id
-                updateBatteryStats(this@BatterySyncJob, watchId)
+                withContext(Dispatchers.IO) {
+                    val database = Room.databaseBuilder(applicationContext, WatchDatabase::class.java, "watch-db")
+                            .fallbackToDestructiveMigration()
+                            .build()
+                    val watchId = database.watchDao().findByBatterySyncJobId(params.jobId)?.id
+                    updateBatteryStats(this@BatterySyncJob, watchId)
+                }
                 jobFinished(params, true)
             }
         }
