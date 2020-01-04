@@ -32,15 +32,15 @@ class BatterySyncJob : JobService() {
     override fun onStartJob(params: JobParameters?): Boolean {
         if (params?.jobId != null) {
             MainScope().launch {
-
                 val database = Room.databaseBuilder(applicationContext, WatchDatabase::class.java, "watch-db")
                         .fallbackToDestructiveMigration()
                         .build()
                 val watchId = database.watchDao().findByBatterySyncJobId(params.jobId)?.id
                 updateBatteryStats(this@BatterySyncJob, watchId)
+                jobFinished(params, true)
             }
         }
-        return false
+        return true
     }
 
     companion object {
