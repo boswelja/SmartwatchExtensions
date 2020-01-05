@@ -13,16 +13,14 @@ import android.app.job.JobScheduler
 import android.app.job.JobService
 import android.content.ComponentName
 import android.content.Context
-import androidx.room.Room
+import android.os.PersistableBundle
+import android.util.Log
 import com.boswelja.devicemanager.common.Compat
 import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_SYNC_INTERVAL_KEY
 import com.boswelja.devicemanager.ui.batterysync.Utils.updateBatteryStats
 import com.boswelja.devicemanager.watchconnectionmanager.WatchConnectionService
-import com.boswelja.devicemanager.watchconnectionmanager.WatchDatabase
 import java.util.concurrent.TimeUnit
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class BatterySyncJob : JobService() {
@@ -32,48 +30,47 @@ class BatterySyncJob : JobService() {
     }
 
     override fun onStartJob(params: JobParameters?): Boolean {
-        if (params?.jobId != null) {
-            MainScope().launch {
-                withContext(Dispatchers.IO) {
-                    val database = Room.databaseBuilder(applicationContext, WatchDatabase::class.java, "watch-db")
-                            .fallbackToDestructiveMigration()
-                            .build()
-                    val watchId = database.watchDao().findByBatterySyncJobId(params.jobId)?.id
-                    updateBatteryStats(this@BatterySyncJob, watchId)
-                }
-                jobFinished(params, true)
+        if (params != null) {
+            val watchId = params.extras.getString(EXTRA_WATCH_ID)
+            if (watchId != null) {
+                updateBatteryStats(this, watchId)
             }
         }
-        return true
+        return false
     }
 
     companion object {
+
+        private const val EXTRA_WATCH_ID: String = "extra_watch_id"
 
         /**
          * Starts a battery sync job for the currently selected watch.
          * @return @`true` if the job was started successfully, @`false` otherwise.
          */
         suspend fun startJob(watchConnectionManager: WatchConnectionService?): Boolean {
-            return withContext(Dispatchers.IO) {
+            return withContext(Dispatchers.Default) {
                 val connectedWatch = watchConnectionManager?.getConnectedWatch()
-                return@withContext withContext(Dispatchers.Default) {
-                    if (connectedWatch != null) {
-                        val jobId = connectedWatch.batterySyncJobId
+                if (connectedWatch != null) {
+                    val jobId = connectedWatch.batterySyncJobId
 
-                        val syncIntervalMinutes = connectedWatch.intPrefs[BATTERY_SYNC_INTERVAL_KEY] ?: 15
-                        val syncIntervalMillis = TimeUnit.MINUTES.toMillis(syncIntervalMinutes.toLong())
+                    val syncIntervalMinutes = connectedWatch.intPrefs[BATTERY_SYNC_INTERVAL_KEY] ?: 15
+                    val syncIntervalMillis = TimeUnit.MINUTES.toMillis(syncIntervalMinutes.toLong())
 
-                        val jobScheduler = watchConnectionManager.getSystemService(Context.JOB_SCHEDULER_SERVICE) as JobScheduler
-                        val jobInfo = JobInfo.Builder(
-                                jobId,
-                                ComponentName(watchConnectionManager.packageName, BatterySyncJob::class.java.name)).apply {
-                            setPeriodic(syncIntervalMillis)
-                            setPersisted(true)
-                        }
-                        return@withContext jobScheduler.schedule(jobInfo.build()) == JobScheduler.RESULT_SUCCESS
+                    val extras = PersistableBundle()
+                    extras.putString(EXTRA_WATCH_ID, connectedWatch.id)
+
+                    val jobInfo = JobInfo.Builder(
+                            jobId,
+                            ComponentName(watchConnectionManager.packageName, BatterySyncJob::class.java.name)).apply {
+                        setPeriodic(syncIntervalMillis)
+                        setPersisted(true)
+                        setExtras(extras)
                     }
-                    false
+                    val jobScheduler = watchConnectionManager.getSystemService(Context.JOB_SCHEDULER_SERVICE) as JobScheduler
+                    Log.d("BatterySyncJob", "Scheduling job with ID $jobId")
+                    return@withContext jobScheduler.schedule(jobInfo.build()) == JobScheduler.RESULT_SUCCESS
                 }
+                false
             }
         }
 
@@ -86,12 +83,16 @@ class BatterySyncJob : JobService() {
                 withContext(Dispatchers.Default) {
                     if (connectedWatch != null) {
                         val jobId = connectedWatch.batterySyncJobId
-                        val jobScheduler = watchConnectionManager.getSystemService(Context.JOB_SCHEDULER_SERVICE) as JobScheduler
-                        if (Compat.getPendingJob(jobScheduler, jobId) != null) {
-                            jobScheduler.cancel(jobId)
-                        }
+                        stopJob(watchConnectionManager, jobId)
                     }
                 }
+            }
+        }
+
+        private fun stopJob(context: Context, jobId: Int) {
+            val jobScheduler = context.getSystemService(Context.JOB_SCHEDULER_SERVICE) as JobScheduler
+            if (Compat.getPendingJob(jobScheduler, jobId) != null) {
+                jobScheduler.cancel(jobId)
             }
         }
     }
