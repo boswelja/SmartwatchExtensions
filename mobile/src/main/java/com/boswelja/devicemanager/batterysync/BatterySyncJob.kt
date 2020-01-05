@@ -53,36 +53,44 @@ class BatterySyncJob : JobService() {
          * Starts a battery sync job for the currently selected watch.
          * @return @`true` if the job was started successfully, @`false` otherwise.
          */
-        fun startJob(watchConnectionManager: WatchConnectionService?): Boolean {
-            val connectedWatch = watchConnectionManager?.getConnectedWatch()
-            if (connectedWatch != null) {
-                val jobId = connectedWatch.batterySyncJobId
+        suspend fun startJob(watchConnectionManager: WatchConnectionService?): Boolean {
+            return withContext(Dispatchers.IO) {
+                val connectedWatch = watchConnectionManager?.getConnectedWatch()
+                return@withContext withContext(Dispatchers.Default) {
+                    if (connectedWatch != null) {
+                        val jobId = connectedWatch.batterySyncJobId
 
-                val syncIntervalMinutes = connectedWatch.intPrefs[BATTERY_SYNC_INTERVAL_KEY] ?: 15
-                val syncIntervalMillis = TimeUnit.MINUTES.toMillis(syncIntervalMinutes.toLong())
+                        val syncIntervalMinutes = connectedWatch.intPrefs[BATTERY_SYNC_INTERVAL_KEY] ?: 15
+                        val syncIntervalMillis = TimeUnit.MINUTES.toMillis(syncIntervalMinutes.toLong())
 
-                val jobScheduler = watchConnectionManager.getSystemService(Context.JOB_SCHEDULER_SERVICE) as JobScheduler
-                val jobInfo = JobInfo.Builder(
-                        jobId,
-                        ComponentName(watchConnectionManager.packageName, BatterySyncJob::class.java.name)).apply {
-                    setPeriodic(syncIntervalMillis)
-                    setPersisted(true)
+                        val jobScheduler = watchConnectionManager.getSystemService(Context.JOB_SCHEDULER_SERVICE) as JobScheduler
+                        val jobInfo = JobInfo.Builder(
+                                jobId,
+                                ComponentName(watchConnectionManager.packageName, BatterySyncJob::class.java.name)).apply {
+                            setPeriodic(syncIntervalMillis)
+                            setPersisted(true)
+                        }
+                        return@withContext jobScheduler.schedule(jobInfo.build()) == JobScheduler.RESULT_SUCCESS
+                    }
+                    false
                 }
-                return jobScheduler.schedule(jobInfo.build()) == JobScheduler.RESULT_SUCCESS
             }
-            return false
         }
 
         /**
          * Stops the battery sync job for the current watch.
          */
-        fun stopJob(watchConnectionManager: WatchConnectionService?) {
-            val connectedWatch = watchConnectionManager?.getConnectedWatch()
-            if (connectedWatch != null) {
-                val jobId = connectedWatch.batterySyncJobId
-                val jobScheduler = watchConnectionManager.getSystemService(Context.JOB_SCHEDULER_SERVICE) as JobScheduler
-                if (Compat.getPendingJob(jobScheduler, jobId) != null) {
-                    jobScheduler.cancel(jobId)
+        suspend fun stopJob(watchConnectionManager: WatchConnectionService?) {
+            withContext(Dispatchers.IO) {
+                val connectedWatch = watchConnectionManager?.getConnectedWatch()
+                withContext(Dispatchers.Default) {
+                    if (connectedWatch != null) {
+                        val jobId = connectedWatch.batterySyncJobId
+                        val jobScheduler = watchConnectionManager.getSystemService(Context.JOB_SCHEDULER_SERVICE) as JobScheduler
+                        if (Compat.getPendingJob(jobScheduler, jobId) != null) {
+                            jobScheduler.cancel(jobId)
+                        }
+                    }
                 }
             }
         }
