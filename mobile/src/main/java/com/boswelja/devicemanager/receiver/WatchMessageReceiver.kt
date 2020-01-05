@@ -118,8 +118,4 @@ class WatchMessageReceiver : WearableListenerService() {
             }
         }
     }
-
-    override fun onDestroy() {
-        super.onDestroy()
-    }
 }
