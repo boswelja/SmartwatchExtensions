@@ -9,9 +9,6 @@ package com.boswelja.devicemanager
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
-import android.app.job.JobInfo
-import android.app.job.JobScheduler
-import android.content.ComponentName
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Build
@@ -20,8 +17,9 @@ import androidx.core.content.edit
 import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.batterysync.BatterySyncJob
 import com.boswelja.devicemanager.batterysync.WatchBatteryUpdateReceiver
-import com.boswelja.devicemanager.common.Compat
 import com.boswelja.devicemanager.common.PreferenceKey
+import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_SYNC_ENABLED_KEY
+import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_SYNC_INTERVAL_KEY
 import com.boswelja.devicemanager.common.References.CAPABILITY_WATCH_APP
 import com.boswelja.devicemanager.common.dndsync.References
 import com.boswelja.devicemanager.watchconnectionmanager.Watch
@@ -29,7 +27,6 @@ import com.boswelja.devicemanager.watchconnectionmanager.WatchConnectionService
 import com.google.android.gms.tasks.Tasks
 import com.google.android.gms.wearable.CapabilityClient
 import com.google.android.gms.wearable.Wearable
-import java.util.concurrent.TimeUnit
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -52,27 +49,36 @@ class EnvironmentUpdater(private val context: Context) {
         return lastAppVersion < currentAppVersion
     }
 
-    private fun doBatterySyncUpdate(watch: Watch) {
+    private suspend fun doBatterySyncUpdate(watchConnectionManager: WatchConnectionService) {
+        val watches = watchConnectionManager.getRegisteredWatches()
+        var needsRestart = false
         if (lastAppVersion < 2019120600) {
-            val oldJobId = sharedPreferences.getInt("job_id_key", 0)
-            if (oldJobId != 0) {
-                val jobScheduler = context.getSystemService(Context.JOB_SCHEDULER_SERVICE) as JobScheduler
-                if (Compat.getPendingJob(jobScheduler, oldJobId) != null) {
-                    jobScheduler.cancel(oldJobId)
+            val watch = watches[0]
+            if (watch.boolPrefs[BATTERY_SYNC_ENABLED_KEY] == true) {
+                val oldJobId = sharedPreferences.getInt("job_id_key", 0)
+                if (oldJobId != 0) {
+                    BatterySyncJob.stopJob(context, oldJobId)
+                    needsRestart = true
                 }
-
-                val syncIntervalMinutes = sharedPreferences.getInt(PreferenceKey.BATTERY_SYNC_INTERVAL_KEY, 15).toLong()
-                val syncIntervalMillis = TimeUnit.MINUTES.toMillis(syncIntervalMinutes)
-
-                val jobInfo = JobInfo.Builder(
-                        watch.batterySyncJobId,
-                        ComponentName(context.packageName, BatterySyncJob::class.java.name)).apply {
-                    setPeriodic(syncIntervalMillis)
-                    setPersisted(true)
-                }
-                jobScheduler.schedule(jobInfo.build())
+                sharedPreferences.edit().remove("job_id_key").apply()
             }
-            sharedPreferences.edit().remove("job_id_key").apply()
+        } else if (lastAppVersion < 2020010500) {
+            withContext(Dispatchers.IO) {
+                for (watch in watches) {
+                    if (watch.boolPrefs[BATTERY_SYNC_ENABLED_KEY] == true) {
+                        BatterySyncJob.stopJob(context, watch.batterySyncJobId)
+                        needsRestart = true
+                    }
+                }
+            }
+        }
+
+        if (needsRestart) {
+            for (watch in watches) {
+                if (watch.boolPrefs[BATTERY_SYNC_ENABLED_KEY] == true) {
+                    BatterySyncJob.startJob(context, watch.id, watch.intPrefs[BATTERY_SYNC_INTERVAL_KEY] ?: 15, watch.batterySyncJobId)
+                }
+            }
         }
     }
 
@@ -152,7 +158,7 @@ class EnvironmentUpdater(private val context: Context) {
                         if (it.value != null) {
                             when (it.key) {
                                 PreferenceKey.PHONE_LOCKING_ENABLED_KEY,
-                                PreferenceKey.BATTERY_SYNC_ENABLED_KEY,
+                                BATTERY_SYNC_ENABLED_KEY,
                                 PreferenceKey.BATTERY_PHONE_CHARGE_NOTI_KEY,
                                 PreferenceKey.BATTERY_WATCH_CHARGE_NOTI_KEY,
                                 PreferenceKey.DND_SYNC_TO_PHONE_KEY,
@@ -165,7 +171,7 @@ class EnvironmentUpdater(private val context: Context) {
                         }
                     }
                     withContext(Dispatchers.Default) {
-                        doBatterySyncUpdate(watch)
+                        doBatterySyncUpdate(watchConnectionManager)
                     }
                 }
             }

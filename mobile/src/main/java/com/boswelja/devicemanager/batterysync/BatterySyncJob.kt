@@ -14,7 +14,6 @@ import android.app.job.JobService
 import android.content.ComponentName
 import android.content.Context
 import android.os.PersistableBundle
-import android.util.Log
 import com.boswelja.devicemanager.common.Compat
 import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_SYNC_INTERVAL_KEY
 import com.boswelja.devicemanager.ui.batterysync.Utils.updateBatteryStats
@@ -54,24 +53,28 @@ class BatterySyncJob : JobService() {
                     val jobId = connectedWatch.batterySyncJobId
 
                     val syncIntervalMinutes = connectedWatch.intPrefs[BATTERY_SYNC_INTERVAL_KEY] ?: 15
-                    val syncIntervalMillis = TimeUnit.MINUTES.toMillis(syncIntervalMinutes.toLong())
 
-                    val extras = PersistableBundle()
-                    extras.putString(EXTRA_WATCH_ID, connectedWatch.id)
-
-                    val jobInfo = JobInfo.Builder(
-                            jobId,
-                            ComponentName(watchConnectionManager.packageName, BatterySyncJob::class.java.name)).apply {
-                        setPeriodic(syncIntervalMillis)
-                        setPersisted(true)
-                        setExtras(extras)
-                    }
-                    val jobScheduler = watchConnectionManager.getSystemService(Context.JOB_SCHEDULER_SERVICE) as JobScheduler
-                    Log.d("BatterySyncJob", "Scheduling job with ID $jobId")
-                    return@withContext jobScheduler.schedule(jobInfo.build()) == JobScheduler.RESULT_SUCCESS
+                    return@withContext startJob(watchConnectionManager, connectedWatch.id, syncIntervalMinutes, jobId)
                 }
                 false
             }
+        }
+
+        fun startJob(context: Context, watchId: String, syncIntervalMinutes: Int, jobId: Int): Boolean {
+            val syncIntervalMillis = TimeUnit.MINUTES.toMillis(syncIntervalMinutes.toLong())
+
+            val extras = PersistableBundle()
+            extras.putString(EXTRA_WATCH_ID, watchId)
+
+            val jobInfo = JobInfo.Builder(
+                    jobId,
+                    ComponentName(context.packageName, BatterySyncJob::class.java.name)).apply {
+                setPeriodic(syncIntervalMillis)
+                setPersisted(true)
+                setExtras(extras)
+            }
+            val jobScheduler = context.getSystemService(Context.JOB_SCHEDULER_SERVICE) as JobScheduler
+            return jobScheduler.schedule(jobInfo.build()) == JobScheduler.RESULT_SUCCESS
         }
 
         /**
@@ -89,7 +92,7 @@ class BatterySyncJob : JobService() {
             }
         }
 
-        private fun stopJob(context: Context, jobId: Int) {
+        fun stopJob(context: Context, jobId: Int) {
             val jobScheduler = context.getSystemService(Context.JOB_SCHEDULER_SERVICE) as JobScheduler
             if (Compat.getPendingJob(jobScheduler, jobId) != null) {
                 jobScheduler.cancel(jobId)
