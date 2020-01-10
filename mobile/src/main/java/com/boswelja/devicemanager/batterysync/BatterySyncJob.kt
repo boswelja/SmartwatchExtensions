@@ -29,12 +29,11 @@ class BatterySyncJob : JobService() {
     }
 
     override fun onStartJob(params: JobParameters?): Boolean {
-        if (params != null) {
-            val watchId = params.extras.getString(EXTRA_WATCH_ID)
-            if (watchId != null) {
-                updateBatteryStats(this, watchId)
-            }
+        val watchId = params?.extras?.getString(EXTRA_WATCH_ID)
+        if (!watchId.isNullOrEmpty()) {
+            updateBatteryStats(this, watchId)
         }
+        jobFinished(params, true)
         return false
     }
 
