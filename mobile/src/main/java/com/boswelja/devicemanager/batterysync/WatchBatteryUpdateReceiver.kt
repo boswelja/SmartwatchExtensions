@@ -97,16 +97,17 @@ class WatchBatteryUpdateReceiver : WearableListenerService() {
     }
 
     private fun sendChargedNoti(watchName: String, chargeThreshold: Int) {
-        val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        (getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager).also { notificationManager ->
+            NotificationCompat.Builder(this, BATTERY_CHARGED_NOTI_CHANNEL_ID)
+                    .setSmallIcon(R.drawable.battery_full)
+                    .setContentTitle(getString(R.string.device_charged_noti_title, watchName))
+                    .setContentText(getString(R.string.device_charged_noti_desc).format(watchName, chargeThreshold))
+                    .setLocalOnly(true)
+                    .build().also { notification ->
+                        notificationManager.notify(BATTERY_CHARGED_NOTI_ID, notification)
+                    }
+        }
 
-        val noti = NotificationCompat.Builder(this, BATTERY_CHARGED_NOTI_CHANNEL_ID)
-                .setSmallIcon(R.drawable.battery_full)
-                .setContentTitle(getString(R.string.device_charged_noti_title, watchName))
-                .setContentText(getString(R.string.device_charged_noti_desc).format(watchName, chargeThreshold))
-                .setLocalOnly(true)
-                .build()
-
-        notificationManager.notify(BATTERY_CHARGED_NOTI_ID, noti)
     }
 
     companion object {
