@@ -144,8 +144,19 @@ class WatchConnectionService :
                 val connectedNodes = Tasks.await(nodeClient.connectedNodes)
                 val capableNodes = Tasks.await(capabilityClient.getCapability(References.CAPABILITY_WATCH_APP, CapabilityClient.FILTER_ALL)).nodes
                 withContext(Dispatchers.Default) {
-                    for (watch in databaseWatches) {
-                        registeredWatches.add(Watch(watch.id, watch.name, watch.batterySyncJobId, capableNodes.any { it.id == watch.id }, connectedNodes.any { it.id == watch.id }))
+                    for (databaseWatch in databaseWatches) {
+                        val watch = Watch(databaseWatch.id, databaseWatch.name, databaseWatch.batterySyncJobId, capableNodes.any { it.id == databaseWatch.id }, connectedNodes.any { it.id == databaseWatch.id })
+
+                        val boolPrefs = database.boolPreferenceDao().getAllForWatch(watch.id)
+                        val intPrefs = database.intPreferenceDao().getAllForWatch(watch.id)
+                        for (intPreference in intPrefs) {
+                            watch.intPrefs[intPreference.key] = intPreference.value
+                        }
+                        for (boolPreference in boolPrefs) {
+                            watch.boolPrefs[boolPreference.key] = boolPreference.value
+                        }
+
+                        registeredWatches.add(watch)
                     }
                 }
             }
