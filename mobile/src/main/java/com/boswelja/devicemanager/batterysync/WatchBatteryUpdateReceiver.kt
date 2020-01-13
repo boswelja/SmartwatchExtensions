@@ -11,18 +11,14 @@ import android.app.NotificationManager
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.core.app.NotificationCompat
-import androidx.core.content.edit
 import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.R
+import com.boswelja.devicemanager.batterysync.database.Helper
 import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_CHARGED_NOTI_SENT
 import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_CHARGE_THRESHOLD_KEY
-import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_PERCENT_KEY
-import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_SYNC_ENABLED_KEY
-import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_SYNC_LAST_WHEN_KEY
 import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_WATCH_CHARGE_NOTI_KEY
 import com.boswelja.devicemanager.common.batterysync.References.BATTERY_STATUS_PATH
 import com.boswelja.devicemanager.watchconnectionmanager.WatchConnectionService
-import com.boswelja.devicemanager.widget.batterysync.WatchBatteryWidget
 import com.google.android.gms.wearable.MessageEvent
 import com.google.android.gms.wearable.WearableListenerService
 import kotlinx.coroutines.Dispatchers
@@ -38,36 +34,20 @@ class WatchBatteryUpdateReceiver : WearableListenerService() {
                 val watch = service.getWatchById(watchId)
                 withContext(Dispatchers.Default) {
                     if (watch != null) {
-                        if (watch.boolPrefs[BATTERY_SYNC_ENABLED_KEY] == true) {
-                            if (watch.id == service.getConnectedWatchId()) {
-                                sharedPreferences.edit {
-                                    putLong(BATTERY_SYNC_LAST_WHEN_KEY, System.currentTimeMillis())
-                                    putInt(BATTERY_PERCENT_KEY, charge)
-                                }
-                            } else {
-                                service.updatePrefInDatabase(watch.id, BATTERY_SYNC_LAST_WHEN_KEY, System.currentTimeMillis())
-                                service.updatePrefInDatabase(watch.id, BATTERY_PERCENT_KEY, charge)
-                            }
-
-                            if (isCharging and
-                                    (watch.boolPrefs[BATTERY_WATCH_CHARGE_NOTI_KEY] == true) and
-                                    (charge >= (watch.intPrefs[BATTERY_CHARGE_THRESHOLD_KEY] ?: 90)) and
-                                    (watch.boolPrefs[BATTERY_CHARGED_NOTI_SENT] != true)) {
-                                sendChargedNoti(watch.name, watch.intPrefs[BATTERY_CHARGE_THRESHOLD_KEY] ?: 90)
-                                service.updatePrefInDatabase(watch.id, BATTERY_CHARGED_NOTI_SENT, true)
-                            } else {
-                                val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-                                notificationManager.cancel(BATTERY_CHARGED_NOTI_ID)
-                                service.updatePrefInDatabase(watch.id, BATTERY_CHARGED_NOTI_SENT, false)
-                            }
+                        if (isCharging and
+                                (watch.boolPrefs[BATTERY_WATCH_CHARGE_NOTI_KEY] == true) and
+                                (batteryPercent >= (watch.intPrefs[BATTERY_CHARGE_THRESHOLD_KEY] ?: 90)) and
+                                (watch.boolPrefs[BATTERY_CHARGED_NOTI_SENT] != true)) {
+                            sendChargedNoti(watch.name, watch.intPrefs[BATTERY_CHARGE_THRESHOLD_KEY] ?: 90)
+                            service.updatePrefInDatabase(watch.id, BATTERY_CHARGED_NOTI_SENT, true)
                         } else {
-                            service.updatePreferenceOnWatch(BATTERY_SYNC_ENABLED_KEY)
+                            val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+                            notificationManager.cancel(BATTERY_CHARGED_NOTI_ID)
+                            service.updatePrefInDatabase(watch.id, BATTERY_CHARGED_NOTI_SENT, false)
                         }
                     }
                 }
             }
-
-            unbindService(this)
         }
 
         override fun onWatchManagerUnbound() {}
@@ -78,7 +58,7 @@ class WatchBatteryUpdateReceiver : WearableListenerService() {
     private lateinit var sharedPreferences: SharedPreferences
 
     private lateinit var watchId: String
-    private var charge: Int = -1
+    private var batteryPercent: Int = -1
     private var isCharging: Boolean = false
 
     override fun onMessageReceived(messageEvent: MessageEvent?) {
@@ -87,12 +67,16 @@ class WatchBatteryUpdateReceiver : WearableListenerService() {
             watchId = messageEvent.sourceNodeId
             val message = String(messageEvent.data, Charsets.UTF_8)
             val messageSplit = message.split("|")
-            charge = messageSplit[0].toInt()
+            batteryPercent = messageSplit[0].toInt()
             isCharging = messageSplit[1] == true.toString()
 
             WatchConnectionService.bind(this, watchConnectionManagerConnection)
 
-            WatchBatteryWidget.updateWidgets(this)
+            coroutineScope.launch {
+                val database = Helper.openDatabase(this@WatchBatteryUpdateReceiver)
+                Helper.updateWatchBatteryStats(database, watchId, batteryPercent)
+                database.close()
+            }
         }
     }
 

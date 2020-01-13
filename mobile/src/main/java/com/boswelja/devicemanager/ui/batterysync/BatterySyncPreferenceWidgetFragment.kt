@@ -17,9 +17,8 @@ import androidx.appcompat.widget.AppCompatTextView
 import androidx.fragment.app.Fragment
 import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.R
-import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_PERCENT_KEY
+import com.boswelja.devicemanager.batterysync.database.WatchBatteryStats
 import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_SYNC_ENABLED_KEY
-import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_SYNC_LAST_WHEN_KEY
 import com.boswelja.devicemanager.ui.batterysync.Utils.updateBatteryStats
 import com.boswelja.devicemanager.watchconnectionmanager.Watch
 import com.boswelja.devicemanager.watchconnectionmanager.WatchConnectionInterface
@@ -35,16 +34,15 @@ class BatterySyncPreferenceWidgetFragment :
     private lateinit var sharedPreferences: SharedPreferences
     private lateinit var activity: BatterySyncPreferenceActivity
 
-    private var watchBatteryIndicator: AppCompatImageView? = null
-    private var watchBatteryPercent: AppCompatTextView? = null
-    private var watchBatteryLastUpdated: AppCompatTextView? = null
-    private var watchBatteryUpdateNowHolder: View? = null
+    private lateinit var watchBatteryIndicator: AppCompatImageView
+    private lateinit var watchBatteryPercent: AppCompatTextView
+    private lateinit var watchBatteryLastUpdated: AppCompatTextView
+    private lateinit var watchBatteryUpdateNowHolder: View
 
     private var watchBatteryLastUpdateTimeTimer: Timer? = null
 
     private var batterySyncEnabled: Boolean = false
-    private var batteryPercent: Int = 0
-    private var lastUpdateTime: Long = 0
+    private var batteryStats: WatchBatteryStats? = null
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
         when (key) {
@@ -53,16 +51,6 @@ class BatterySyncPreferenceWidgetFragment :
                 updateWatchBatteryPercent()
                 updateBatterySyncLastTimeNow()
                 startBatterySyncLastTimeTimer()
-            }
-            BATTERY_PERCENT_KEY -> {
-                batteryPercent = sharedPreferences?.getInt(BATTERY_PERCENT_KEY, 0) ?: 0
-                updateWatchBatteryPercent()
-            }
-            BATTERY_SYNC_LAST_WHEN_KEY -> {
-                lastUpdateTime = sharedPreferences?.getLong(BATTERY_SYNC_LAST_WHEN_KEY, 0) ?: 0
-                if (batterySyncEnabled) {
-                    updateBatterySyncLastTimeNow()
-                }
             }
         }
     }
@@ -81,6 +69,7 @@ class BatterySyncPreferenceWidgetFragment :
         super.onCreate(savedInstanceState)
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context!!)
         activity = getActivity() as BatterySyncPreferenceActivity
+
     }
 
     override fun onPause() {
@@ -95,8 +84,8 @@ class BatterySyncPreferenceWidgetFragment :
         sharedPreferences.registerOnSharedPreferenceChangeListener(this)
 
         batterySyncEnabled = sharedPreferences.getBoolean(BATTERY_SYNC_ENABLED_KEY, false) == true
-        batteryPercent = sharedPreferences.getInt(BATTERY_PERCENT_KEY, 0)
-        lastUpdateTime = sharedPreferences.getLong(BATTERY_SYNC_LAST_WHEN_KEY, 0)
+        batteryStats = activity.batteryStatsDatabase?.batteryStatsDao()?.getStatsForWatch(activity.watchConnectionManager?.getConnectedWatchId()!!)
+
         if (batterySyncEnabled) {
             updateWatchBatteryPercent()
             updateBatterySyncLastTimeNow()
@@ -128,30 +117,19 @@ class BatterySyncPreferenceWidgetFragment :
 
     private fun updateWatchBatteryPercent() {
         if (batterySyncEnabled) {
-            if (batteryPercent > 0) {
-                watchBatteryIndicator?.setImageLevel(batteryPercent)
-                watchBatteryPercent?.text = getString(R.string.battery_sync_percent_short, batteryPercent.toString())
+            if (batteryStats != null && batteryStats!!.batteryPercent > 0) {
+                watchBatteryIndicator.setImageLevel(batteryStats!!.batteryPercent)
+                watchBatteryPercent.text = getString(R.string.battery_sync_percent_short, batteryStats!!.batteryPercent.toString())
             }
         } else {
-            watchBatteryIndicator?.setImageLevel(0)
-            watchBatteryPercent?.text = getString(R.string.battery_sync_disabled)
-        }
-    }
-
-    private fun startBatterySyncLastTimeTimer() {
-        watchBatteryLastUpdateTimeTimer?.cancel()
-        if (batterySyncEnabled) {
-            watchBatteryLastUpdateTimeTimer = fixedRateTimer("batterySyncLastTimeTimer", false, 0L, 60 * 1000) {
-                updateBatterySyncLastTimeNow()
-            }
-        } else {
-            watchBatteryUpdateNowHolder?.visibility = View.GONE
+            watchBatteryIndicator.setImageLevel(0)
+            watchBatteryPercent.text = getString(R.string.battery_sync_disabled)
         }
     }
 
     private fun updateBatterySyncLastTimeNow() {
-        if (batteryPercent > 0) {
-            val lastUpdatedMillis = System.currentTimeMillis() - lastUpdateTime
+        if (batteryStats != null && batteryStats!!.batteryPercent > 0) {
+            val lastUpdatedMillis = System.currentTimeMillis() - batteryStats!!.lastUpdatedMillis
             val lastUpdatedMinutes = TimeUnit.MILLISECONDS.toMinutes(lastUpdatedMillis).toInt()
             val lastUpdatedString = when {
                 lastUpdatedMinutes < 1 -> {
@@ -166,9 +144,22 @@ class BatterySyncPreferenceWidgetFragment :
                 }
             }
             this@BatterySyncPreferenceWidgetFragment.activity.runOnUiThread {
-                watchBatteryLastUpdated?.text = lastUpdatedString
-                watchBatteryUpdateNowHolder?.visibility = View.VISIBLE
+                watchBatteryLastUpdated.text = lastUpdatedString
+                watchBatteryUpdateNowHolder.visibility = View.VISIBLE
             }
         }
     }
+
+    private fun startBatterySyncLastTimeTimer() {
+        watchBatteryLastUpdateTimeTimer?.cancel()
+        if (batterySyncEnabled) {
+            watchBatteryLastUpdateTimeTimer = fixedRateTimer("batterySyncLastTimeTimer", false, 0L, 60 * 1000) {
+                batteryStats = activity.batteryStatsDatabase?.batteryStatsDao()?.getStatsForWatch(activity.watchConnectionManager?.getConnectedWatchId()!!)
+                updateBatterySyncLastTimeNow()
+            }
+        } else {
+            watchBatteryUpdateNowHolder.visibility = View.GONE
+        }
+    }
+
 }

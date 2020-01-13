@@ -133,6 +133,11 @@ class EnvironmentUpdater(private val context: Context) {
                     putString("last_connected_id", lastConnectedId)
                     updateStatus = UPDATE_SUCCESS
                 }
+                if (lastAppVersion < 2020011400) {
+                    remove("battery_sync_last_when")
+                    remove("battery_sync_enabled")
+                    updateStatus = UPDATE_SUCCESS
+                }
                 if (lastAppVersion < 2019120600) {
                     updateStatus = NEEDS_FULL_UPDATE
                 }
