@@ -88,7 +88,9 @@ class BatterySyncPreferenceFragment :
                     coroutineScope.launch {
                         getWatchConnectionManager()?.updatePreferenceOnWatch(key)
                         BatterySyncJob.stopJob(activity.watchConnectionManager)
-                        (activity as BatterySyncPreferenceActivity).batteryStatsDatabase?.batteryStatsDao()?.deleteStatsForWatch(activity.watchConnectionManager?.getConnectedWatchId()!!)
+                        withContext(Dispatchers.IO) {
+                            (activity as BatterySyncPreferenceActivity).batteryStatsDatabase?.batteryStatsDao()?.deleteStatsForWatch(activity.watchConnectionManager?.getConnectedWatchId()!!)
+                        }
                     }
                 }
                 false
