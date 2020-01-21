@@ -6,4 +6,5 @@
     android:resizeMode="horizontal|vertical"
     android:widgetCategory="home_screen"
     android:updatePeriodMillis="0"
-    android:initialLayout="@layout/widget_watch_battery" />
+    android:initialLayout="@layout/widget_watch_battery"
+    android:configure="com.boswelja.devicemanager.widget.batterysync.configuration.WatchBatteryWidgetConfigurationActivity" />

@@ -19,6 +19,7 @@ import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_CHARGE_THRESHOLD_
 import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_WATCH_CHARGE_NOTI_KEY
 import com.boswelja.devicemanager.common.batterysync.References.BATTERY_STATUS_PATH
 import com.boswelja.devicemanager.watchconnectionmanager.WatchConnectionService
+import com.boswelja.devicemanager.widget.database.WidgetDatabase
 import com.google.android.gms.wearable.MessageEvent
 import com.google.android.gms.wearable.WearableListenerService
 import kotlinx.coroutines.Dispatchers
@@ -47,6 +48,7 @@ class WatchBatteryUpdateReceiver : WearableListenerService() {
                         }
                     }
                 }
+                unbindService()
             }
         }
 
@@ -76,6 +78,7 @@ class WatchBatteryUpdateReceiver : WearableListenerService() {
                 val database = Helper.openDatabase(this@WatchBatteryUpdateReceiver)
                 Helper.updateWatchBatteryStats(database, watchId, batteryPercent)
                 database.close()
+                WidgetDatabase.updateWatchWidgets(this@WatchBatteryUpdateReceiver, watchId)
             }
         }
     }
@@ -91,7 +94,10 @@ class WatchBatteryUpdateReceiver : WearableListenerService() {
                         notificationManager.notify(BATTERY_CHARGED_NOTI_ID, notification)
                     }
         }
+    }
 
+    private fun unbindService() {
+        unbindService(watchConnectionManagerConnection)
     }
 
     companion object {
