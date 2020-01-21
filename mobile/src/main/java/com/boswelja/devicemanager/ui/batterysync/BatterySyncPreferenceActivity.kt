@@ -21,6 +21,7 @@ class BatterySyncPreferenceActivity : BasePreferenceActivity() {
     private val coroutineScope = MainScope()
 
     var batteryStatsDatabase: WatchBatteryStatsDatabase? = null
+    var batteryStatsDatabaseEventInterface: BatteryStatsDatabaseEventInterface? = null
 
     override fun createPreferenceFragment(): BasePreferenceFragment = BatterySyncPreferenceFragment()
     override fun createWidgetFragment(): Fragment? = BatterySyncPreferenceWidgetFragment()
@@ -29,11 +30,18 @@ class BatterySyncPreferenceActivity : BasePreferenceActivity() {
         super.onCreate(savedInstanceState)
         coroutineScope.launch {
             batteryStatsDatabase = Helper.openDatabase(this@BatterySyncPreferenceActivity)
+            if (batteryStatsDatabaseEventInterface != null) {
+                batteryStatsDatabaseEventInterface!!.onOpened()
+            }
         }
     }
 
     override fun onDestroy() {
         super.onDestroy()
         batteryStatsDatabase?.close()
+    }
+
+    interface BatteryStatsDatabaseEventInterface {
+        fun onOpened()
     }
 }
