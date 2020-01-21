@@ -9,7 +9,6 @@ package com.boswelja.devicemanager.ui.batterysync
 
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -30,7 +29,6 @@ import kotlinx.coroutines.withContext
 import java.util.Timer
 import java.util.concurrent.TimeUnit
 import kotlin.concurrent.fixedRateTimer
-
 class BatterySyncPreferenceWidgetFragment :
         Fragment(),
         SharedPreferences.OnSharedPreferenceChangeListener,
@@ -46,7 +44,8 @@ class BatterySyncPreferenceWidgetFragment :
     private lateinit var watchBatteryLastUpdated: AppCompatTextView
     private lateinit var watchBatteryUpdateNowHolder: View
 
-    private var watchBatteryLastUpdateTimeTimer: Timer? = null
+    private var watchBatteryUpdateTimer: Timer? = null
+    private var watchBatteryUpdateTimerStarted: Boolean = false
 
     private var batterySyncEnabled: Boolean = false
     private var batteryStats: WatchBatteryStats? = null
@@ -57,7 +56,11 @@ class BatterySyncPreferenceWidgetFragment :
                 batterySyncEnabled = sharedPreferences?.getBoolean(BATTERY_SYNC_ENABLED_KEY, false) == true
                 updateWatchBatteryPercent()
                 updateBatterySyncLastTimeNow()
-                startBatterySyncLastTimeTimer()
+                if (batterySyncEnabled) {
+                    startBatteryUpdateTimer()
+                } else {
+                    stopBatteryUpdateTimer()
+                }
             }
         }
     }
@@ -112,15 +115,13 @@ class BatterySyncPreferenceWidgetFragment :
 
         sharedPreferences.registerOnSharedPreferenceChangeListener(this)
 
-        coroutineScope.launch {
-            updateBatteryStatsDisplay()
-        }
+        startBatteryUpdateTimer()
     }
 
     override fun onPause() {
         super.onPause()
         sharedPreferences.unregisterOnSharedPreferenceChangeListener(this)
-        watchBatteryLastUpdateTimeTimer?.cancel()
+        stopBatteryUpdateTimer()
     }
 
     private fun updateWatchBatteryPercent() {
@@ -164,21 +165,22 @@ class BatterySyncPreferenceWidgetFragment :
         }
     }
 
-    private fun startBatterySyncLastTimeTimer() {
-        Log.d("BatterySyncPrefWidget", "Starting timer")
-        watchBatteryLastUpdateTimeTimer?.cancel()
-        if (batterySyncEnabled) {
-            watchBatteryLastUpdateTimeTimer = fixedRateTimer("batterySyncLastTimeTimer", false, 0L, 60 * 1000) {
-                Log.d("BatterySyncPrefWidget", "Updating battery sync last time text")
+    private fun startBatteryUpdateTimer() {
+        if (!watchBatteryUpdateTimerStarted && batterySyncEnabled) {
+            watchBatteryUpdateTimer = fixedRateTimer("batterySyncLastTimeTimer", false, 0L, 60 * 1000) {
                 coroutineScope.launch {
-                    try {
-                        updateBatteryStatsDisplay()
-                    } catch (e: IllegalStateException) {
-                        e.printStackTrace()
-                        cancel()
-                    }
+                    updateBatteryStatsDisplay()
                 }
             }
+            watchBatteryUpdateTimerStarted = true
+        }
+    }
+
+    private fun stopBatteryUpdateTimer() {
+        if (watchBatteryUpdateTimerStarted) {
+            watchBatteryUpdateTimer?.cancel()
+            watchBatteryUpdateTimer?.purge()
+            watchBatteryUpdateTimerStarted = false
         }
     }
 
