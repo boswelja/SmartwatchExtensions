@@ -31,26 +31,18 @@ import kotlinx.coroutines.withContext
 
 class WatchBatteryWidget : AppWidgetProvider() {
 
-    private val mainScope = MainScope()
-
-    private var widgetDatabase: WidgetDatabase? = null
-    private var batteryStatsDatabase: WatchBatteryStatsDatabase? = null
-
-    override fun onDisabled(context: Context?) {
-        super.onDisabled(context)
-        if (widgetDatabase != null) {
-            widgetDatabase!!.close()
-        }
-        if (batteryStatsDatabase != null) {
-            batteryStatsDatabase!!.close()
-        }
-    }
+    private val coroutineScope = MainScope()
 
     override fun onDeleted(context: Context?, appWidgetIds: IntArray?) {
         super.onDeleted(context, appWidgetIds)
         if (appWidgetIds != null && appWidgetIds.isNotEmpty()) {
-            for (widgetId in appWidgetIds) {
-                widgetDatabase?.watchBatteryWidgetDao()?.removeWidget(widgetId)
+            coroutineScope.launch {
+                WidgetDatabase.open(context!!).also {
+                    for (widgetId in appWidgetIds) {
+                        it.watchBatteryWidgetDao().removeWidget(widgetId)
+                    }
+                    it.close()
+                }
             }
         }
     }
@@ -77,21 +69,21 @@ class WatchBatteryWidget : AppWidgetProvider() {
     }
 
     private fun updateView(context: Context?, appWidgetManager: AppWidgetManager?, appWidgetId: Int, width: Int, height: Int) {
-        mainScope.launch {
-            if (widgetDatabase == null) {
-                widgetDatabase = WidgetDatabase.open(context!!)
-            }
-            if (batteryStatsDatabase == null) {
-                batteryStatsDatabase = WatchBatteryStatsDatabase.open(context!!)
-            }
+        coroutineScope.launch {
+            val widgetDatabase = WidgetDatabase.open(context!!)
+            val batteryStatsDatabase = WatchBatteryStatsDatabase.open(context)
+
             withContext(Dispatchers.IO) {
-                val watchId = widgetDatabase?.watchBatteryWidgetDao()?.findByWidgetId(appWidgetId)?.watchId
+                val watchId = widgetDatabase.watchBatteryWidgetDao().findByWidgetId(appWidgetId)?.watchId
                 if (!watchId.isNullOrEmpty()) {
-                    val batteryStats = batteryStatsDatabase?.batteryStatsDao()?.getStatsForWatch(watchId)
+                    val batteryStats = batteryStatsDatabase.batteryStatsDao().getStatsForWatch(watchId)
                     val remoteViews = createWidgetView(context, width, height, batteryStats)
                     appWidgetManager?.updateAppWidget(appWidgetId, remoteViews)
                 }
             }
+
+            widgetDatabase.close()
+            batteryStatsDatabase.close()
         }
     }
 
