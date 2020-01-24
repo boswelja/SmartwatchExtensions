@@ -8,7 +8,6 @@ import android.view.View
 import android.widget.ProgressBar
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.room.Room
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.ui.base.BaseToolbarActivity
 import com.boswelja.devicemanager.watchconnectionmanager.WatchConnectionService
@@ -103,12 +102,10 @@ class WatchBatteryWidgetConfigurationActivity : BaseToolbarActivity() {
 
         coroutineScope.launch {
             withContext(Dispatchers.IO) {
-                Room.databaseBuilder(this@WatchBatteryWidgetConfigurationActivity, WidgetDatabase::class.java, "watch-db")
-                        .fallbackToDestructiveMigration()
-                        .build().also {
-                            it.watchBatteryWidgetDao().addWidget(WatchBatteryWidgetId(watchId, widgetId))
-                            it.close()
-                        }
+                WidgetDatabase.open(this@WatchBatteryWidgetConfigurationActivity).also {
+                    it.watchBatteryWidgetDao().addWidget(WatchBatteryWidgetId(watchId, widgetId))
+                    it.close()
+                }
             }
         }
 
