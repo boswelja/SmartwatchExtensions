@@ -19,7 +19,7 @@ import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_CHARGE_THRESHOLD_
 import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_WATCH_CHARGE_NOTI_KEY
 import com.boswelja.devicemanager.common.batterysync.References.BATTERY_STATUS_PATH
 import com.boswelja.devicemanager.watchconnectionmanager.WatchConnectionService
-import com.boswelja.devicemanager.widget.database.WidgetDatabase
+import com.boswelja.devicemanager.widgetdb.WidgetDatabase
 import com.google.android.gms.wearable.MessageEvent
 import com.google.android.gms.wearable.WearableListenerService
 import kotlinx.coroutines.Dispatchers

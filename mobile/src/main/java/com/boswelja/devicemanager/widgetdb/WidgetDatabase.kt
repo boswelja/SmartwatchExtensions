@@ -5,15 +5,15 @@
  * This file, and any part of the Wearable Extensions app/s cannot be copied and/or distributed
  * without permission from Jack Boswell (boswelja) <boswela@outlook.com>
  */
-package com.boswelja.devicemanager.widget.database
+package com.boswelja.devicemanager.widgetdb
 
 import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.boswelja.devicemanager.batterysync.widget.WatchBatteryWidget
-import com.boswelja.devicemanager.widget.batterysync.WatchBatteryWidgetDao
-import com.boswelja.devicemanager.widget.batterysync.WatchBatteryWidgetId
+import com.boswelja.devicemanager.widgetdb.batterysync.WatchBatteryWidgetDao
+import com.boswelja.devicemanager.widgetdb.batterysync.WatchBatteryWidgetId
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 

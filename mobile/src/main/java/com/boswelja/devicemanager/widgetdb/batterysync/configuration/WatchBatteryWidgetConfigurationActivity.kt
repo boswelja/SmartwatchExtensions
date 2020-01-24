@@ -5,7 +5,7 @@
  * This file, and any part of the Wearable Extensions app/s cannot be copied and/or distributed
  * without permission from Jack Boswell (boswelja) <boswela@outlook.com>
  */
-package com.boswelja.devicemanager.widget.batterysync.configuration
+package com.boswelja.devicemanager.widgetdb.batterysync.configuration
 
 import android.app.Activity
 import android.appwidget.AppWidgetManager
@@ -19,8 +19,8 @@ import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.batterysync.widget.WatchBatteryWidget
 import com.boswelja.devicemanager.ui.base.BaseToolbarActivity
 import com.boswelja.devicemanager.watchconnectionmanager.WatchConnectionService
-import com.boswelja.devicemanager.widget.batterysync.WatchBatteryWidgetId
-import com.boswelja.devicemanager.widget.database.WidgetDatabase
+import com.boswelja.devicemanager.widgetdb.batterysync.WatchBatteryWidgetId
+import com.boswelja.devicemanager.widgetdb.WidgetDatabase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
