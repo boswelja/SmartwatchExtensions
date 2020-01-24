@@ -34,6 +34,7 @@
             android:gravity="center"
             android:layout_weight="1"
             android:text="@string/battery_sync_disabled"
+            android:textSize="20sp"
             android:autoSizeMinTextSize="18sp"
             android:autoSizeMaxTextSize="48sp"
             android:autoSizeTextType="uniform"/>
