@@ -19,8 +19,8 @@ import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.batterysync.widget.WatchBatteryWidget
 import com.boswelja.devicemanager.ui.base.BaseToolbarActivity
 import com.boswelja.devicemanager.watchconnectionmanager.WatchConnectionService
-import com.boswelja.devicemanager.widgetdb.batterysync.WatchBatteryWidgetId
 import com.boswelja.devicemanager.widgetdb.WidgetDatabase
+import com.boswelja.devicemanager.widgetdb.batterysync.WatchBatteryWidgetId
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch

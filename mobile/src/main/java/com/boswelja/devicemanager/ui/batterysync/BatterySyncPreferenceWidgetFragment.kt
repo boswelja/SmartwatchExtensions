@@ -99,7 +99,6 @@ class BatterySyncPreferenceWidgetFragment :
         watchBatteryIndicator = view.findViewById(R.id.watch_battery_indicator)
         watchBatteryPercent = view.findViewById(R.id.watch_battery_percent)
         watchBatteryLastUpdated = view.findViewById(R.id.last_updated_time)
-
     }
 
     override fun onResume() {
