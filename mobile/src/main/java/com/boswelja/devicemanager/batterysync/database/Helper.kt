@@ -10,7 +10,6 @@ object Helper {
     suspend fun openDatabase(context: Context): WatchBatteryStatsDatabase {
         return withContext(Dispatchers.IO) {
             return@withContext Room.databaseBuilder(context, WatchBatteryStatsDatabase::class.java, "battery-stats-db")
-                    .fallbackToDestructiveMigration()
                     .build()
         }
     }

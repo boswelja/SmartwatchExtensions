@@ -75,7 +75,6 @@ class WatchConnectionService :
         sharedPreferences.registerOnSharedPreferenceChangeListener(this)
 
         database = Room.databaseBuilder(applicationContext, WatchDatabase::class.java, "watch-db")
-                .fallbackToDestructiveMigration()
                 .build()
 
         setConnectedWatchById(sharedPreferences.getString(LAST_CONNECTED_NODE_ID_KEY, "") ?: "")
