@@ -19,6 +19,7 @@ import androidx.core.graphics.drawable.toBitmap
 import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.batterysync.database.Helper
+import com.boswelja.devicemanager.batterysync.database.WatchBatteryStats
 import com.boswelja.devicemanager.batterysync.database.WatchBatteryStatsDatabase
 import com.boswelja.devicemanager.ui.main.MainActivity
 import com.boswelja.devicemanager.ui.main.appsettings.AppSettingsFragment.Companion.SHOW_WIDGET_BACKGROUND_KEY
@@ -35,15 +36,6 @@ class WatchBatteryWidget : AppWidgetProvider() {
 
     private var widgetDatabase: WidgetDatabase? = null
     private var batteryStatsDatabase: WatchBatteryStatsDatabase? = null
-
-    override fun onEnabled(context: Context?) {
-        super.onEnabled(context)
-
-        mainScope.launch {
-            widgetDatabase = WidgetDatabase.open(context!!)
-            batteryStatsDatabase = Helper.openDatabase(context)
-        }
-    }
 
     override fun onDisabled(context: Context?) {
         super.onDisabled(context)
@@ -87,17 +79,63 @@ class WatchBatteryWidget : AppWidgetProvider() {
 
     private fun updateView(context: Context?, appWidgetManager: AppWidgetManager?, appWidgetId: Int, width: Int, height: Int) {
         mainScope.launch {
+            if (widgetDatabase == null) {
+                widgetDatabase = WidgetDatabase.open(context!!)
+            }
+            if (batteryStatsDatabase == null) {
+                batteryStatsDatabase = Helper.openDatabase(context!!)
+            }
             withContext(Dispatchers.IO) {
                 val watchId = widgetDatabase?.watchBatteryWidgetDao()?.findByWidgetId(appWidgetId)?.watchId
                 if (!watchId.isNullOrEmpty()) {
                     val batteryStats = batteryStatsDatabase?.batteryStatsDao()?.getStatsForWatch(watchId)
-                    val batterySyncEnabled = batteryStats != null
-                    val percent = batteryStats?.batteryPercent ?: 0
-                    val remoteViews = createView(context, width, height, batterySyncEnabled, percent)
+                    val remoteViews = createWidgetView(context, width, height, batteryStats)
                     appWidgetManager?.updateAppWidget(appWidgetId, remoteViews)
                 }
             }
         }
+    }
+
+    private fun createWidgetView(context: Context?, width: Int, height: Int, batteryStats: WatchBatteryStats?): RemoteViews {
+        val batteryPercent = batteryStats?.batteryPercent ?: 0
+
+        val remoteViews = RemoteViews(context?.packageName, R.layout.widget_watch_battery)
+
+        // Set click intent
+        PendingIntent.getActivity(context, 0, Intent(context, MainActivity::class.java), 0).also {
+            remoteViews.setOnClickPendingIntent(R.id.widget_background, it)
+        }
+
+        // Set widget background
+        PreferenceManager.getDefaultSharedPreferences(context).also { sharedPreferences ->
+            if (sharedPreferences.getBoolean(SHOW_WIDGET_BACKGROUND_KEY, true)) {
+                val opacity = sharedPreferences.getInt(WIDGET_BACKGROUND_OPACITY_KEY, 60)
+                val calculatedAlpha = ((opacity / 100.0f) * 255).toInt()
+                context?.getDrawable(R.drawable.widget_background)!!.apply {
+                    alpha = calculatedAlpha
+                }.also { widgetBackground ->
+                    remoteViews.setImageViewBitmap(R.id.widget_background, widgetBackground.toBitmap(width, height))
+                }
+            } else {
+                remoteViews.setInt(R.id.widget_background, "setBackgroundColor", 0)
+            }
+        }
+
+        // Set battery indicator image
+        context?.getDrawable(R.drawable.ic_watch_battery)!!.apply {
+            level = batteryPercent
+        }.also {
+            remoteViews.setImageViewBitmap(R.id.battery_indicator, it.toBitmap())
+        }
+
+        // Set battery indicator text
+        if (batteryPercent >= 0) {
+            remoteViews.setTextViewText(R.id.battery_indicator_text, context.getString(R.string.battery_sync_percent_short, batteryPercent.toString()))
+        } else {
+            remoteViews.setTextViewText(R.id.battery_indicator_text, context.getString(R.string.battery_sync_disabled))
+        }
+
+        return remoteViews
     }
 
     companion object {
@@ -114,41 +152,6 @@ class WatchBatteryWidget : AppWidgetProvider() {
                 putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, widgetIds)
             }
             context.sendBroadcast(intent)
-        }
-
-        fun createView(context: Context?, width: Int, height: Int, batterySyncEnabled: Boolean, batteryPercent: Int = 0): RemoteViews {
-            val sharedPrefs = PreferenceManager.getDefaultSharedPreferences(context)
-            val remoteViews = RemoteViews(context?.packageName, R.layout.widget_watch_battery)
-
-            PendingIntent.getActivity(context, 0, Intent(context, MainActivity::class.java), 0).also {
-                remoteViews.setOnClickPendingIntent(R.id.widget_background, it)
-            }
-
-            if (sharedPrefs.getBoolean(SHOW_WIDGET_BACKGROUND_KEY, true)) {
-                val opacity = sharedPrefs.getInt(WIDGET_BACKGROUND_OPACITY_KEY, 60)
-                val calculatedAlpha = ((opacity / 100.0f) * 255).toInt()
-                context?.getDrawable(R.drawable.widget_background)!!.apply {
-                    alpha = calculatedAlpha
-                }.also {
-                    remoteViews.setImageViewBitmap(R.id.widget_background, it.toBitmap(width, height))
-                }
-            } else {
-                remoteViews.setInt(R.id.widget_background, "setBackgroundColor", 0)
-            }
-
-            context?.getDrawable(R.drawable.ic_watch_battery)!!.apply {
-                level = batteryPercent
-            }.also {
-                remoteViews.setImageViewBitmap(R.id.battery_indicator, it.toBitmap())
-            }
-
-            if (batterySyncEnabled) {
-                remoteViews.setTextViewText(R.id.battery_indicator_text, context.getString(R.string.battery_sync_percent_short, batteryPercent.toString()))
-            } else {
-                remoteViews.setTextViewText(R.id.battery_indicator_text, context.getString(R.string.battery_sync_disabled))
-            }
-
-            return remoteViews
         }
     }
 }
