@@ -42,7 +42,6 @@ class BatterySyncPreferenceWidgetFragment :
     private lateinit var watchBatteryIndicator: AppCompatImageView
     private lateinit var watchBatteryPercent: AppCompatTextView
     private lateinit var watchBatteryLastUpdated: AppCompatTextView
-    private lateinit var watchBatteryUpdateNowHolder: View
 
     private var watchBatteryUpdateTimer: Timer? = null
     private var watchBatteryUpdateTimerStarted: Boolean = false
@@ -54,11 +53,11 @@ class BatterySyncPreferenceWidgetFragment :
         when (key) {
             BATTERY_SYNC_ENABLED_KEY -> {
                 batterySyncEnabled = sharedPreferences?.getBoolean(BATTERY_SYNC_ENABLED_KEY, false) == true
-                updateWatchBatteryPercent()
-                updateBatterySyncLastTimeNow()
                 if (batterySyncEnabled) {
                     startBatteryUpdateTimer()
                 } else {
+                    updateWatchBatteryPercent()
+                    updateBatterySyncLastTimeNow()
                     stopBatteryUpdateTimer()
                 }
             }
@@ -101,13 +100,6 @@ class BatterySyncPreferenceWidgetFragment :
         watchBatteryPercent = view.findViewById(R.id.watch_battery_percent)
         watchBatteryLastUpdated = view.findViewById(R.id.last_updated_time)
 
-        watchBatteryUpdateNowHolder = view.findViewById<View>(R.id.updated_time_holder).apply {
-            setOnClickListener {
-                if (batterySyncEnabled) {
-                    updateBatteryStats(context!!, activity.watchConnectionManager?.getConnectedWatchId())
-                }
-            }
-        }
     }
 
     override fun onResume() {
@@ -157,11 +149,11 @@ class BatterySyncPreferenceWidgetFragment :
                 }
                 this@BatterySyncPreferenceWidgetFragment.activity.runOnUiThread {
                     watchBatteryLastUpdated.text = lastUpdatedString
-                    watchBatteryUpdateNowHolder.visibility = View.VISIBLE
+                    watchBatteryLastUpdated.visibility = View.VISIBLE
                 }
             }
         } else {
-            watchBatteryUpdateNowHolder.visibility = View.GONE
+            watchBatteryLastUpdated.visibility = View.GONE
         }
     }
 
