@@ -21,7 +21,7 @@
         <item>Do not Disturb Sync should now work on phones running Android 5.0 to 5.1, if you have a phone running either version please send feedback about your experience</item>
         <item>Device charge notifications now show the name of the device that\'s charged</item>
         <item>Battery Stats widget is back! This is a very \'first step\' kind of implementation just to get it working with the new multi-watch system</item>
-        <item>Removed the sync button from the Battery Sync activity, it wasn't working with the current implementation of battery sync</item>
+        <item>Removed the sync button from the Battery Sync activity, it wasn\'t working with the current implementation of battery sync</item>
         <item>App Manager UI tweaks</item>
         <item>Loading screens now use a horizontal loading bar</item>
         <item>Significant code and performance optimisations for the mobile app, more on the way</item>
