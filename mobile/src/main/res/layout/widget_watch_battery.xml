@@ -29,10 +29,12 @@
             android:id="@+id/battery_indicator_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_margin="8dp"
             android:textColor="@color/widgetForeground"
             android:gravity="center"
             android:layout_weight="1"
             android:text="@string/battery_sync_disabled"
-            android:textSize="18sp" />
+            android:autoSizeMinTextSize="18sp"
+            android:autoSizeTextType="uniform"/>
     </LinearLayout>
 </FrameLayout>
