@@ -13,7 +13,7 @@ import android.content.SharedPreferences
 import androidx.core.app.NotificationCompat
 import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.R
-import com.boswelja.devicemanager.batterysync.database.Helper
+import com.boswelja.devicemanager.batterysync.database.WatchBatteryStatsDatabase
 import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_CHARGED_NOTI_SENT
 import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_CHARGE_THRESHOLD_KEY
 import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_WATCH_CHARGE_NOTI_KEY
@@ -75,9 +75,10 @@ class WatchBatteryUpdateReceiver : WearableListenerService() {
             WatchConnectionService.bind(this, watchConnectionManagerConnection)
 
             coroutineScope.launch {
-                val database = Helper.openDatabase(this@WatchBatteryUpdateReceiver)
-                Helper.updateWatchBatteryStats(database, watchId, batteryPercent)
-                database.close()
+                WatchBatteryStatsDatabase.open(this@WatchBatteryUpdateReceiver).also {
+                    it.updateWatchBatteryStats(watchId, batteryPercent)
+                    it.close()
+                }
                 WidgetDatabase.updateWatchWidgets(this@WatchBatteryUpdateReceiver, watchId)
             }
         }

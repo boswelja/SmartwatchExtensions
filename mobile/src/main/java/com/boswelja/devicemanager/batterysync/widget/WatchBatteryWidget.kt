@@ -18,7 +18,6 @@ import android.widget.RemoteViews
 import androidx.core.graphics.drawable.toBitmap
 import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.R
-import com.boswelja.devicemanager.batterysync.database.Helper
 import com.boswelja.devicemanager.batterysync.database.WatchBatteryStats
 import com.boswelja.devicemanager.batterysync.database.WatchBatteryStatsDatabase
 import com.boswelja.devicemanager.ui.main.MainActivity
@@ -83,7 +82,7 @@ class WatchBatteryWidget : AppWidgetProvider() {
                 widgetDatabase = WidgetDatabase.open(context!!)
             }
             if (batteryStatsDatabase == null) {
-                batteryStatsDatabase = Helper.openDatabase(context!!)
+                batteryStatsDatabase = WatchBatteryStatsDatabase.open(context!!)
             }
             withContext(Dispatchers.IO) {
                 val watchId = widgetDatabase?.watchBatteryWidgetDao()?.findByWidgetId(appWidgetId)?.watchId
