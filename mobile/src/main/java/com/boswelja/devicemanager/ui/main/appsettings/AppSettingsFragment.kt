@@ -16,9 +16,9 @@ import androidx.core.app.NotificationManagerCompat
 import androidx.preference.ListPreference
 import androidx.preference.Preference
 import com.boswelja.devicemanager.R
+import com.boswelja.devicemanager.batterysync.widget.WatchBatteryWidget
 import com.boswelja.devicemanager.ui.base.BaseDayNightActivity.Companion.DAYNIGHT_MODE_KEY
 import com.boswelja.devicemanager.ui.base.BasePreferenceFragment
-import com.boswelja.devicemanager.batterysync.widget.WatchBatteryWidget
 
 class AppSettingsFragment :
         BasePreferenceFragment(),

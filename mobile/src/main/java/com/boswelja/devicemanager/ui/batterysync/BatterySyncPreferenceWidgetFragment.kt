@@ -22,13 +22,13 @@ import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_SYNC_ENABLED_KEY
 import com.boswelja.devicemanager.ui.batterysync.Utils.updateBatteryStats
 import com.boswelja.devicemanager.watchconnectionmanager.Watch
 import com.boswelja.devicemanager.watchconnectionmanager.WatchConnectionInterface
+import java.util.Timer
+import java.util.concurrent.TimeUnit
+import kotlin.concurrent.fixedRateTimer
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.util.Timer
-import java.util.concurrent.TimeUnit
-import kotlin.concurrent.fixedRateTimer
 class BatterySyncPreferenceWidgetFragment :
         Fragment(),
         SharedPreferences.OnSharedPreferenceChangeListener,

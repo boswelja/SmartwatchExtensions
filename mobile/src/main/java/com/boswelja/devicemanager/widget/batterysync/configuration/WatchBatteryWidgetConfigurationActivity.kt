@@ -1,3 +1,10 @@
+/* Copyright (C) 2019 Jack Boswell <boswelja@outlook.com>
+ *
+ * This file is part of Wearable Extensions
+ *
+ * This file, and any part of the Wearable Extensions app/s cannot be copied and/or distributed
+ * without permission from Jack Boswell (boswelja) <boswela@outlook.com>
+ */
 package com.boswelja.devicemanager.widget.batterysync.configuration
 
 import android.app.Activity
@@ -9,9 +16,9 @@ import android.widget.ProgressBar
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.boswelja.devicemanager.R
+import com.boswelja.devicemanager.batterysync.widget.WatchBatteryWidget
 import com.boswelja.devicemanager.ui.base.BaseToolbarActivity
 import com.boswelja.devicemanager.watchconnectionmanager.WatchConnectionService
-import com.boswelja.devicemanager.batterysync.widget.WatchBatteryWidget
 import com.boswelja.devicemanager.widget.batterysync.WatchBatteryWidgetId
 import com.boswelja.devicemanager.widget.database.WidgetDatabase
 import kotlinx.coroutines.Dispatchers
