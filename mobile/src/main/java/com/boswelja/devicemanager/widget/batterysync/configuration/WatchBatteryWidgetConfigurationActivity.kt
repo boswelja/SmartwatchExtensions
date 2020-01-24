@@ -98,7 +98,6 @@ class WatchBatteryWidgetConfigurationActivity : BaseToolbarActivity() {
 
     fun finishAndCreateWidget(watchId: String) {
         setResult(Activity.RESULT_OK, resultIntent)
-        WatchBatteryWidget.updateWidgets(this, intArrayOf(widgetId))
 
         coroutineScope.launch {
             withContext(Dispatchers.IO) {
@@ -108,6 +107,8 @@ class WatchBatteryWidgetConfigurationActivity : BaseToolbarActivity() {
                 }
             }
         }
+
+        WatchBatteryWidget.updateWidgets(this, intArrayOf(widgetId))
 
         finish()
     }
