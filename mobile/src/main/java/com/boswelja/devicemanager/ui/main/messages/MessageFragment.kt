@@ -20,8 +20,14 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.boswelja.devicemanager.R
+import com.boswelja.devicemanager.messages.Message
+import com.boswelja.devicemanager.messages.database.MessageDatabase
 import com.boswelja.devicemanager.ui.main.MainActivity
 import com.google.android.material.snackbar.Snackbar
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class MessageFragment : Fragment() {
 
@@ -30,9 +36,16 @@ class MessageFragment : Fragment() {
     private var recyclerView: RecyclerView? = null
     private var noMessagesView: LinearLayout? = null
 
+    private var messageDatabase: MessageDatabase? = null
+
+    private val coroutineScope = MainScope()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
+        coroutineScope.launch {
+            messageDatabase = MessageDatabase.open(context!!)
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -49,12 +62,21 @@ class MessageFragment : Fragment() {
             val itemTouchHelper = ItemTouchHelper(MessagesAdapter.SwipeDismissCallback(it.adapter as MessagesAdapter, context!!))
             itemTouchHelper.attachToRecyclerView(it)
         }
+        coroutineScope.launch {
+            withContext(Dispatchers.IO) {
+                val messages = messageDatabase?.getActiveMessages()
+                if (!messages.isNullOrEmpty()) {
+                    for (message in messages) {
+                        (recyclerView!!.adapter as MessagesAdapter).notifyMessage(message)
+                    }
+                }
+                setHasMessages(!messages.isNullOrEmpty())
+            }
+        }
     }
 
     override fun onResume() {
         super.onResume()
-        checkBatteryOptimisation()
-        checkWatchChargeNoti()
         (activity as MainActivity).updateMessagesBadge()
     }
 
@@ -63,44 +85,29 @@ class MessageFragment : Fragment() {
         (activity as MainActivity).updateMessagesBadge()
     }
 
-    private fun checkBatteryOptimisation() {
-        val shouldShowMessage = MessageChecker.shouldShowBatteryOptMessage(context!!)
-        if (shouldShowMessage) {
-            (recyclerView?.adapter as MessagesAdapter).notifyMessage(Message.BatteryOptWarning)
-        } else {
-            (recyclerView?.adapter as MessagesAdapter).dismissMessage(Message.BatteryOptWarning)
-        }
-    }
-
-    private fun checkWatchChargeNoti() {
-        val shouldShowMessage = MessageChecker.shouldShowWatchChargeNotiMessage(context!!)
-        if (shouldShowMessage) {
-            (recyclerView?.adapter as MessagesAdapter).notifyMessage(Message.WatchChargeNotiWarning)
-        } else {
-            (recyclerView?.adapter as MessagesAdapter).dismissMessage(Message.WatchChargeNotiWarning)
-        }
-    }
-
     internal fun dismissMessage(message: Message) {
-        when (message) {
-            Message.BatteryOptWarning ->
-                MessageChecker.setIgnoreBatteryOpt(context!!, true)
-            Message.WatchChargeNotiWarning -> {
-                MessageChecker.setIgnoreWatchCharge(context!!, true)
+        if (messageDatabase != null) {
+            coroutineScope.launch {
+                withContext(Dispatchers.IO) {
+                    messageDatabase?.messageDao()?.deleteMessage(message.id)
+                    withContext(Dispatchers.Main) {
+                        setHasMessages(messageDatabase!!.countMessages() > 0)
+                    }
+                }
             }
         }
         Snackbar.make(view!!,
                 getString(R.string.message_snackbar_undo_remove).format(getString(message.shortLabelRes)),
                 Snackbar.LENGTH_INDEFINITE).apply {
             setAction(R.string.snackbar_action_undo) {
-                when (message) {
-                    Message.BatteryOptWarning -> {
-                        MessageChecker.setIgnoreBatteryOpt(context, false)
-                        checkBatteryOptimisation()
-                    }
-                    Message.WatchChargeNotiWarning -> {
-                        MessageChecker.setIgnoreWatchCharge(context, false)
-                        checkWatchChargeNoti()
+                if (messageDatabase != null) {
+                    coroutineScope.launch {
+                        withContext(Dispatchers.IO) {
+                            messageDatabase?.messageDao()?.restoreMessage(message.id)
+                            withContext(Dispatchers.Main) {
+                                (recyclerView?.adapter as MessagesAdapter).notifyMessage(message)
+                            }
+                        }
                     }
                 }
             }

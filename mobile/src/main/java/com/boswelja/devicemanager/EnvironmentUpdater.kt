@@ -141,6 +141,10 @@ class EnvironmentUpdater(private val context: Context) {
                 if (lastAppVersion < 2019120600) {
                     updateStatus = NEEDS_FULL_UPDATE
                 }
+                if (lastAppVersion < 2020020200) {
+                    remove("ignore_battery_opt_warning")
+                    remove("ignore_watch_charge_warning")
+                }
                 putInt(APP_VERSION_KEY, lastAppVersion)
             }
             return updateStatus

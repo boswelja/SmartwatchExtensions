@@ -18,7 +18,7 @@ import com.boswelja.devicemanager.ui.changelog.ChangelogDialogFragment
 import com.boswelja.devicemanager.ui.main.appinfo.AppInfoFragment
 import com.boswelja.devicemanager.ui.main.appsettings.AppSettingsFragment
 import com.boswelja.devicemanager.ui.main.extensions.ExtensionsFragment
-import com.boswelja.devicemanager.ui.main.messages.MessageChecker
+import com.boswelja.devicemanager.messages.database.MessageDatabase
 import com.boswelja.devicemanager.ui.main.messages.MessageFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -158,10 +158,19 @@ class MainActivity : BaseWatchPickerActivity() {
     }
 
     fun updateMessagesBadge() {
-        val messageCount = MessageChecker.countMessages(this)
-        bottomNavigationView.getOrCreateBadge(R.id.messages_navigation).apply {
-            number = messageCount
-            isVisible = messageCount > 0
+        coroutineScope.launch {
+            withContext(Dispatchers.IO) {
+                MessageDatabase.open(this@MainActivity).also {
+                    val messageCount = it.countMessages()
+                    withContext(Dispatchers.Main) {
+                        bottomNavigationView.getOrCreateBadge(R.id.messages_navigation).apply {
+                            number = messageCount
+                            isVisible = messageCount > 0
+                        }
+                    }
+                    it.close()
+                }
+            }
         }
     }
 }
