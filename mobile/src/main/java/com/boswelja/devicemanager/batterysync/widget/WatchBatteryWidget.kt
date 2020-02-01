@@ -97,18 +97,20 @@ class WatchBatteryWidget : AppWidgetProvider() {
             remoteViews.setOnClickPendingIntent(R.id.widget_background, it)
         }
 
-        // Set widget background
-        PreferenceManager.getDefaultSharedPreferences(context).also { sharedPreferences ->
-            if (sharedPreferences.getBoolean(SHOW_WIDGET_BACKGROUND_KEY, true)) {
-                val opacity = sharedPreferences.getInt(WIDGET_BACKGROUND_OPACITY_KEY, 60)
-                val calculatedAlpha = ((opacity / 100.0f) * 255).toInt()
-                context?.getDrawable(R.drawable.widget_background)!!.apply {
-                    alpha = calculatedAlpha
-                }.also { widgetBackground ->
-                    remoteViews.setImageViewBitmap(R.id.widget_background, widgetBackground.toBitmap(width, height))
+        if (width > 0 && height > 0) {
+            // Set widget background
+            PreferenceManager.getDefaultSharedPreferences(context).also { sharedPreferences ->
+                if (sharedPreferences.getBoolean(SHOW_WIDGET_BACKGROUND_KEY, true)) {
+                    val opacity = sharedPreferences.getInt(WIDGET_BACKGROUND_OPACITY_KEY, 60)
+                    val calculatedAlpha = ((opacity / 100.0f) * 255).toInt()
+                    context?.getDrawable(R.drawable.widget_background)!!.apply {
+                        alpha = calculatedAlpha
+                    }.also { widgetBackground ->
+                        remoteViews.setImageViewBitmap(R.id.widget_background, widgetBackground.toBitmap(width, height))
+                    }
+                } else {
+                    remoteViews.setInt(R.id.widget_background, "setBackgroundColor", 0)
                 }
-            } else {
-                remoteViews.setInt(R.id.widget_background, "setBackgroundColor", 0)
             }
         }
 
