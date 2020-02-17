@@ -12,12 +12,12 @@ import android.os.Bundle
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.core.net.toUri
 import androidx.preference.Preference
+import com.boswelja.common.donate.ui.DonationDialog
 import com.boswelja.devicemanager.BuildConfig
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.References
 import com.boswelja.devicemanager.ui.base.BasePreferenceFragment
 import com.boswelja.devicemanager.ui.changelog.ChangelogDialogFragment
-import com.boswelja.devicemanager.ui.donate.DonationDialogFragment
 import com.boswelja.devicemanager.watchconnectionmanager.Watch
 import com.boswelja.devicemanager.watchconnectionmanager.WatchConnectionInterface
 import com.google.android.gms.wearable.MessageClient
@@ -86,7 +86,7 @@ class AppInfoFragment :
                 true
             }
             OPEN_DONATE_DIALOG_KEY -> {
-                DonationDialogFragment().show(activity.supportFragmentManager, "DonationDialog")
+                DonationDialog().show(activity.supportFragmentManager, "DonationDialog")
                 true
             }
             OPEN_CHANGELOG_KEY -> {

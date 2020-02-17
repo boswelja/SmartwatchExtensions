@@ -40,13 +40,13 @@ android {
 }
 
 dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.aar'])
+
     implementation project(":common")
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$versions.kotlin_version"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$versions.kotlinx_coroutines"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$versions.kotlinx_coroutines"
-
-    implementation 'com.android.billingclient:billing:2.1.0'
 
     implementation "androidx.core:core-ktx:$versions.androidx_core_ktx"
     implementation "androidx.appcompat:appcompat:$versions.androidx_appcompat"
