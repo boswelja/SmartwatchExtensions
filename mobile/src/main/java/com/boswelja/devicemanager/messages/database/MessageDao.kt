@@ -10,6 +10,9 @@ interface MessageDao {
     @Query("SELECT * FROM messages")
     fun getAllMessages(): Array<Message>
 
+    @Query("SELECT * FROM messages WHERE id = :messageId LIMIT 1")
+    fun getMessage(messageId: Int): Message?
+
     @Query("SELECT * FROM messages WHERE NOT deleted")
     fun getActiveMessages(): Array<Message>
 

@@ -24,6 +24,10 @@ abstract class MessageDatabase : RoomDatabase() {
         return messageDao().getDeletedMessages()
     }
 
+    fun messageExists(messageId: Int): Boolean {
+        return messageDao().getMessage(messageId) != null
+    }
+
     companion object {
         suspend fun open(context: Context): MessageDatabase {
             return withContext(Dispatchers.IO) {

@@ -9,8 +9,12 @@ package com.boswelja.devicemanager.ui.main.messages
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.graphics.Canvas
 import android.graphics.drawable.Drawable
+import android.net.Uri
+import android.os.Build
+import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -21,6 +25,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.Utils
 import com.boswelja.devicemanager.messages.Message
+import com.boswelja.devicemanager.messages.MessageId
 import com.google.android.material.button.MaterialButton
 import kotlin.math.min
 
@@ -62,31 +67,31 @@ internal class MessagesAdapter(private val fragment: MessageFragment) :
 
     @SuppressLint("BatteryLife")
     private fun handleMessageActionClick(holder: MessageItemViewHolder, message: Message) {
-//        val context = holder.itemView.context
-//        when (message) {
-//            Message.BatteryOptWarning -> {
-//                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-//                    Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS).apply {
-//                        data = Uri.parse("package:${context?.packageName}")
-//                    }.also {
-//                        context.startActivity(it)
-//                    }
-//                }
-//            }
-//            Message.WatchChargeNotiWarning -> {
-//                Intent().apply {
-//                    flags = Intent.FLAG_ACTIVITY_NEW_TASK
-//                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-//                        action = Settings.ACTION_APP_NOTIFICATION_SETTINGS
-//                        putExtra(Settings.EXTRA_APP_PACKAGE, context?.packageName!!)
-//                    } else {
-//                        action = "android.settings.APP_NOTIFICATION_SETTINGS"
-//                        putExtra("app_package", context?.packageName!!)
-//                        putExtra("app_uid", context.applicationInfo?.uid!!)
-//                    }
-//                }.also { context.startActivity(it) }
-//            }
-//        }
+        val context = holder.itemView.context
+        when (message.id) {
+            MessageId.BATTERY_OPT_ENABLED -> {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS).apply {
+                        data = Uri.parse("package:${context?.packageName}")
+                    }.also {
+                        context.startActivity(it)
+                    }
+                }
+            }
+            MessageId.BATTERY_NOTIS_DISABLED -> {
+                Intent().apply {
+                    flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                        action = Settings.ACTION_APP_NOTIFICATION_SETTINGS
+                        putExtra(Settings.EXTRA_APP_PACKAGE, context?.packageName!!)
+                    } else {
+                        action = "android.settings.APP_NOTIFICATION_SETTINGS"
+                        putExtra("app_package", context?.packageName!!)
+                        putExtra("app_uid", context.applicationInfo?.uid!!)
+                    }
+                }.also { context.startActivity(it) }
+            }
+        }
     }
 
     fun notifyMessage(message: Message) {
