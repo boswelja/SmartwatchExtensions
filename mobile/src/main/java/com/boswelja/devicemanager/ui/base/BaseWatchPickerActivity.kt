@@ -7,8 +7,10 @@
  */
 package com.boswelja.devicemanager.ui.base
 
+import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -18,6 +20,7 @@ import android.widget.ArrayAdapter
 import androidx.appcompat.widget.AppCompatSpinner
 import androidx.appcompat.widget.AppCompatTextView
 import com.boswelja.devicemanager.R
+import com.boswelja.devicemanager.batterysync.widget.WatchBatteryWidget
 import com.boswelja.devicemanager.ui.watchmanager.WatchManagerActivity
 import com.boswelja.devicemanager.ui.watchsetup.WatchSetupActivity
 import com.boswelja.devicemanager.watchconnectionmanager.Watch
@@ -156,6 +159,7 @@ abstract class BaseWatchPickerActivity :
                         }
                         val watches = watchConnectionManager!!.getRegisteredWatches()
                         if (watches.isNotEmpty()) {
+                            packageManager.setComponentEnabledSetting(ComponentName(this@BaseWatchPickerActivity, WatchBatteryWidget::class.java), PackageManager.COMPONENT_ENABLED_STATE_ENABLED, PackageManager.DONT_KILL_APP)
                             val connectedWatchId = watchConnectionManager!!.getConnectedWatchId()
                             var selectedWatchPosition = 0
                             watches.forEach {
@@ -170,6 +174,7 @@ abstract class BaseWatchPickerActivity :
                                 watchPickerSpinner.setSelection(selectedWatchPosition)
                             }
                         } else {
+                            packageManager.setComponentEnabledSetting(ComponentName(this@BaseWatchPickerActivity, WatchBatteryWidget::class.java), PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP)
                             startActivityForResult(Intent(this@BaseWatchPickerActivity, WatchSetupActivity::class.java), WATCH_SETUP_ACTIVITY_REQUEST_CODE)
                         }
                     }

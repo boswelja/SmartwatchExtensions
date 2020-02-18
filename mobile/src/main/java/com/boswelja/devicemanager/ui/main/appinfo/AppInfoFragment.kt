@@ -86,7 +86,7 @@ class AppInfoFragment :
                 true
             }
             OPEN_DONATE_DIALOG_KEY -> {
-                DonationDialog().show(activity.supportFragmentManager, "DonationDialog")
+                DonationDialog(R.style.AppTheme_AlertDialog).show(activity.supportFragmentManager)
                 true
             }
             OPEN_CHANGELOG_KEY -> {
