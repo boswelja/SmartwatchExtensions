@@ -42,6 +42,7 @@ android {
 }
 
 dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.aar'])
     implementation project(":common")
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$versions.kotlin_version"
