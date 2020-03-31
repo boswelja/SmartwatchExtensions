@@ -56,9 +56,9 @@ dependencies {
     implementation "androidx.room:room-runtime:$versions.androidx_room"
     implementation "androidx.room:room-ktx:${versions.androidx_room}"
 
-    implementation 'com.android.billingclient:billing:2.1.0'
+    implementation 'com.android.billingclient:billing:2.2.0'
 
-    implementation 'com.google.android.material:material:1.2.0-alpha04'
+    implementation 'com.google.android.material:material:1.2.0-alpha05'
     implementation "com.google.android.gms:play-services-wearable:$versions.play_services_wearable"
 
     kapt "androidx.room:room-compiler:$versions.androidx_room"
