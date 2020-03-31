@@ -6,7 +6,7 @@
     <string name="device_admin_label">@string/app_name</string>
     <string name="device_admin_desc">Allows locking your phone from your watch</string>
     <string name="device_admin_perm_grant_dialog_title">Missing Permission</string>
-    <string name="device_admin_perm_grant_dialog_message">This app requires device administrator permissions to be able to lock your phone</string>
+    <string name="device_admin_perm_grant_dialog_message">Wearable Extensions requires device administrator permissions to be able to lock your phone. WARNING: You will not be able to uninstall Wearable Extensions until you revoke Device Administrator permissions from your device settings.</string>
 
     <!-- Battery Sync preference strings -->
     <string name="main_battery_sync_title">Battery Sync</string>
@@ -166,7 +166,7 @@
     <string name="register_watch_message_error">Failed to get nearby watches, try again.</string>
     <string name="register_watch_button_refresh">Refresh</string>
     <string name="missing_app_dialog_title">Missing Wearable Extensions</string>
-    <string name="missing_app_dialog_message">Your %s doesn\'t have Wearable Extensions installed, please install it from the Play Store and retry.</string>
+    <string name="missing_app_dialog_message">Your %s doesn\'t have Wearable Extensions installed, please install it from the Play Store and try again.</string>
     <string name="watch_description_add">Tap to Add</string>
     <string name="watch_description_missing_app">Missing Wearable Extensions</string>
 
