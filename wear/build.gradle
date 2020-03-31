@@ -1,18 +1,20 @@
-apply plugin: 'com.android.application'
-apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-android-extensions'
-apply plugin: "kotlin-kapt"
+plugins {
+    id 'com.android.application'
+    id 'kotlin-android'
+    id 'kotlin-android-extensions'
+    id 'kotlin-kapt'
+}
 apply from: '../constants.gradle'
 
 android {
-    compileSdkVersion versions.compileSdk
-    buildToolsVersion versions.buildTools
+    compileSdkVersion buildConfig.compileSdk
+    buildToolsVersion buildConfig.buildTools
     defaultConfig {
-        applicationId versions.packageName
+        applicationId buildConfig.packageName
         minSdkVersion 25
-        targetSdkVersion versions.compileSdk
-        versionCode versions.versionCode
-        versionName versions.versionName
+        targetSdkVersion buildConfig.compileSdk
+        versionCode buildConfig.versionCode
+        versionName buildConfig.versionName
     }
 
     compileOptions {
@@ -42,20 +44,20 @@ android {
 dependencies {
     implementation project(":common")
 
-    implementation "org.jetbrains.kotlin:kotlin-stdlib:$versions.kotlin_version"
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$versions.kotlinx_coroutines"
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$versions.kotlinx_coroutines"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinx_coroutines"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$kotlinx_coroutines"
 
-    implementation "androidx.core:core-ktx:$versions.androidx_core_ktx"
-    implementation "androidx.wear:wear:$versions.androidx_wear"
-    implementation "androidx.appcompat:appcompat:$versions.androidx_appcompat"
-    implementation "androidx.preference:preference-ktx:$versions.androidx_preference"
-    implementation "androidx.constraintlayout:constraintlayout:$versions.androidx_constraintlayout"
+    implementation "androidx.core:core-ktx:$androidx_core_ktx"
+    implementation "androidx.wear:wear:$androidx_wear"
+    implementation "androidx.appcompat:appcompat:$androidx_appcompat"
+    implementation "androidx.preference:preference-ktx:$androidx_preference"
+    implementation "androidx.constraintlayout:constraintlayout:$androidx_constraintlayout"
 
-    implementation "com.google.android.support:wearable:$versions.wearable_support_lib"
-    implementation "com.google.android.gms:play-services-wearable:$versions.play_services_wearable"
+    implementation "com.google.android.support:wearable:$wearable_support_lib"
+    implementation "com.google.android.gms:play-services-wearable:$play_services_wearable"
 
-    compileOnly "com.google.android.wearable:wearable:$versions.wearable_support_lib"
+    compileOnly "com.google.android.wearable:wearable:$wearable_support_lib"
 }
 
 spotless {
