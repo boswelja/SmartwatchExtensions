@@ -2,6 +2,7 @@
 <ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/scroll_view"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:nestedScrollingEnabled="true"
@@ -15,4 +16,5 @@
         android:paddingTop="72dp"
         android:paddingBottom="72dp" />
 
+    <requestFocus />
 </ScrollView>

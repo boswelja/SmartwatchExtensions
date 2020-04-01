@@ -148,6 +148,8 @@ class SettingsFragment :
         return WearableRecyclerView(context).apply {
             layoutManager = LinearLayoutManager(context)
             isEdgeItemsCenteringEnabled = true
+        }.also {
+            it.requestFocus()
         }
     }
 
