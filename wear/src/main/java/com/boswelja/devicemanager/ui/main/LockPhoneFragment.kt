@@ -38,7 +38,6 @@ class LockPhoneFragment : BaseSharedPreferenceFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-
         binding.phoneLockingView.setOnClickListener {
             val intent = Intent(context, ActionService::class.java)
             intent.putExtra(ActionService.EXTRA_ACTION, LOCK_PHONE_PATH)

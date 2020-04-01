@@ -16,7 +16,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.boswelja.devicemanager.databinding.FragmentAppShortcutsBinding
 
 class AppShortcutsFragment : Fragment() {
-    
+
     private lateinit var binding: FragmentAppShortcutsBinding
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
