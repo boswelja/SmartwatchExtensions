@@ -2,7 +2,8 @@
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/phone_locking_view"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/phone_battery_view"
     android:layout_width="match_parent"
     android:layout_height="56dp"
     android:background="?selectableItemBackground">
@@ -22,6 +23,7 @@
         android:layout_centerVertical="true"
         android:layout_toEndOf="@id/phone_battery_indicator_icon"
         android:textSize="18sp"
-        android:textColor="?android:textColorPrimary" />
+        android:textColor="?android:textColorPrimary"
+        tools:text="100%" />
 
 </RelativeLayout>

@@ -13,12 +13,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.widget.AppCompatImageView
-import androidx.appcompat.widget.AppCompatTextView
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_PERCENT_KEY
 import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_SYNC_ENABLED_KEY
 import com.boswelja.devicemanager.common.batterysync.References
+import com.boswelja.devicemanager.databinding.FragmentBatterySyncBinding
 import com.boswelja.devicemanager.service.ActionService
 import com.boswelja.devicemanager.ui.base.BaseSharedPreferenceFragment
 
@@ -33,17 +32,15 @@ class BatterySyncFragment : BaseSharedPreferenceFragment() {
         }
     }
 
-    private var phoneBatteryIndicatorIconView: AppCompatImageView? = null
-    private var phoneBatteryIndicatorTextView: AppCompatTextView? = null
+    private lateinit var binding: FragmentBatterySyncBinding
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
-            inflater.inflate(R.layout.fragment_battery_sync, container, false)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        binding = FragmentBatterySyncBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        phoneBatteryIndicatorIconView = view.findViewById(R.id.phone_battery_indicator_icon)
-        phoneBatteryIndicatorTextView = view.findViewById(R.id.phone_battery_indicator_text_view)
 
         view.setOnClickListener {
             val intent = Intent(context, ActionService::class.java)
@@ -66,11 +63,13 @@ class BatterySyncFragment : BaseSharedPreferenceFragment() {
     private fun updatePhoneBatteryInfo() {
         val batterySyncEnabled = sharedPreferences.getBoolean(BATTERY_SYNC_ENABLED_KEY, false)
         val batteryPercent = sharedPreferences.getInt(BATTERY_PERCENT_KEY, 0)
-        phoneBatteryIndicatorIconView?.drawable?.level = batteryPercent
-        if (batterySyncEnabled) {
-            phoneBatteryIndicatorTextView?.text = getString(R.string.phone_battery_percent).format(batteryPercent)
-        } else {
-            phoneBatteryIndicatorTextView?.text = getString(R.string.battery_sync_disabled)
+        binding.apply {
+            phoneBatteryIndicatorIcon.drawable.level = batteryPercent
+            if (batterySyncEnabled) {
+                phoneBatteryIndicatorTextView.text = getString(R.string.phone_battery_percent).format(batteryPercent)
+            } else {
+                phoneBatteryIndicatorTextView.text = getString(R.string.battery_sync_disabled)
+            }
         }
     }
 }
