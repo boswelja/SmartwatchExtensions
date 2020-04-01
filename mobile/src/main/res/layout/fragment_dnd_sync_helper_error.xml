@@ -18,7 +18,7 @@
         style="@style/TextAppearance.MaterialComponents.Headline4" />
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingTop="8dp"
         android:paddingStart="32dp"
@@ -33,19 +33,20 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:visibility="gone"
-            android:layout_gravity="center_horizontal"
             android:layout_marginTop="4dp"
             android:layout_marginBottom="4dp"
+            android:textAlignment="center"
             android:text="@string/interrupt_filter_sync_helper_error_watch_version"
             style="@style/TextAppearance.MaterialComponents.Body1" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/watch_unreachable_text"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
             android:layout_marginBottom="4dp"
             android:visibility="gone"
+            android:textAlignment="center"
             android:text="@string/interrupt_filter_sync_helper_error_watch_null"
             style="@style/TextAppearance.MaterialComponents.Body1" />
     </LinearLayout>
