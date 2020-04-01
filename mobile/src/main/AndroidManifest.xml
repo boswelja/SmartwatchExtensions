@@ -133,6 +133,7 @@
 
         <receiver
             android:name=".batterysync.widget.WatchBatteryWidget"
+            android:label="@string/widget_watch_battery_title"
             android:enabled="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
