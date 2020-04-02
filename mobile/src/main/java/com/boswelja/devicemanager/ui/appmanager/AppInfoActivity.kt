@@ -9,49 +9,59 @@ package com.boswelja.devicemanager.ui.appmanager
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.MenuItem
 import android.view.View
-import android.widget.FrameLayout
-import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
+import androidx.databinding.DataBindingUtil
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.Utils
 import com.boswelja.devicemanager.common.appmanager.AppPackageInfo
-import com.boswelja.devicemanager.ui.base.BaseToolbarActivity
-import com.google.android.material.button.MaterialButton
+import com.boswelja.devicemanager.databinding.ActivityAppInfoBinding
+import com.boswelja.devicemanager.ui.base.BaseDayNightActivity
 import java.text.SimpleDateFormat
 import java.util.Locale
 
-class AppInfoActivity : BaseToolbarActivity() {
-
-    override fun getContentViewId(): Int = R.layout.activity_app_info
+class AppInfoActivity : BaseDayNightActivity() {
 
     private lateinit var app: AppPackageInfo
     private lateinit var requestedPermissionsDialog: AppPermissionDialogFragment
 
+    private lateinit var binding: ActivityAppInfoBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_app_info)
+
+        setSupportActionBar(binding.appbarLayout.findViewById(R.id.toolbar))
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setDisplayShowTitleEnabled(false)
 
         app = intent?.extras?.getSerializable(EXTRA_APP_INFO) as AppPackageInfo
+        binding.appInfo = app
 
         if (!app.requestedPermissions.isNullOrEmpty()) {
             requestedPermissionsDialog = AppPermissionDialogFragment(app.requestedPermissions!!)
         }
-        setAppInfo()
+        setAppIcon()
         setupButtons()
         setupRequestedPermissions()
         setInstallInfo()
-        setMiscInfo()
     }
 
-    private fun setAppInfo() {
-        findViewById<AppCompatImageView>(R.id.app_icon).setImageDrawable(Utils.getAppIcon(this, app.packageName))
-        findViewById<AppCompatTextView>(R.id.app_name).text = app.packageLabel
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == android.R.id.home) {
+            onBackPressed()
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+    private fun setAppIcon() {
+        binding.appIcon.setImageDrawable(Utils.getAppIcon(this, app.packageName))
     }
 
     private fun setupButtons() {
-        findViewById<MaterialButton>(R.id.open_button).apply {
+        binding.openButton.apply {
             isEnabled = app.hasLaunchActivity
 
             if (isEnabled) {
@@ -65,7 +75,7 @@ class AppInfoActivity : BaseToolbarActivity() {
                 }
             }
         }
-        findViewById<MaterialButton>(R.id.uninstall_button).apply {
+        binding.uninstallButton.apply {
             isEnabled = (app.packageName != packageName && !app.isSystemApp)
 
             if (isEnabled) {
@@ -82,7 +92,7 @@ class AppInfoActivity : BaseToolbarActivity() {
     }
 
     private fun setupRequestedPermissions() {
-        val permissionItemView = findViewById<FrameLayout>(R.id.permissions_info)
+        val permissionItemView = binding.permissionsInfo
         val requestsNoPermissions = !app.requestedPermissions.isNullOrEmpty()
         permissionItemView.findViewById<AppCompatTextView>(R.id.top_line).apply {
             text = getString(R.string.app_info_requested_permissions_title)
@@ -104,25 +114,19 @@ class AppInfoActivity : BaseToolbarActivity() {
 
     private fun setInstallInfo() {
         val dateFormat = SimpleDateFormat("EE, dd MMM yyyy, h:mm aa", Locale.getDefault())
-        findViewById<AppCompatTextView>(R.id.app_install_time).apply {
+        binding.appInstallTime.apply {
             if (app.isSystemApp) {
                 visibility = View.GONE
             } else {
                 text = getString(R.string.app_info_first_installed_prefix).format(dateFormat.format(app.installTime))
             }
         }
-        findViewById<AppCompatTextView>(R.id.app_last_updated_time).apply {
+        binding.appLastUpdatedTime.apply {
             if (app.installTime == app.lastUpdateTime && !app.isSystemApp) {
                 visibility = View.GONE
             } else {
                 text = getString(R.string.app_info_last_updated_prefix).format(dateFormat.format(app.lastUpdateTime))
             }
-        }
-    }
-
-    private fun setMiscInfo() {
-        findViewById<AppCompatTextView>(R.id.app_version_view).apply {
-            text = getString(R.string.app_info_version_prefix).format(app.versionName)
         }
     }
 

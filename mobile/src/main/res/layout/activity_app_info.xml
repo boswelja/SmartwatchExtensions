@@ -1,119 +1,139 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<layout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/content_view"
-    android:orientation="vertical"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <include layout="@layout/common_toolbar" />
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/app_icon"
-            android:layout_width="72dp"
-            android:layout_height="72dp"
-            android:layout_marginTop="16dp"
-            android:layout_centerHorizontal="true"
-            android:layout_alignParentTop="true" />
-
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/app_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/app_icon"
-            android:layout_centerHorizontal="true"
-            android:textColor="?android:textColorPrimary"
-            android:layout_margin="8dp"
-            style="@style/TextAppearance.MaterialComponents.Headline6" />
-    </RelativeLayout>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="?android:attr/listDivider" />
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp">
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/open_button"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="@string/app_info_open_button"
-            android:layout_margin="8dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/uninstall_button"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/uninstall_button"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="@string/app_info_uninstall_button"
-            android:layout_margin="8dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/open_button"
-            app:layout_constraintTop_toTopOf="parent" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="?android:attr/listDivider" />
-
-    <FrameLayout
-        android:id="@+id/permissions_info"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:clickable="true"
-        android:focusable="true">
-        <include layout="@layout/common_recyclerview_item_icon_two_line" />
-    </FrameLayout>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="?android:attr/listDivider" />
+    <data>
+        <variable
+            name="appInfo"
+            type="com.boswelja.devicemanager.common.appmanager.AppPackageInfo" />
+    </data>
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:id="@+id/content_view"
         android:orientation="vertical"
-        android:layout_marginTop="16dp"
-        android:layout_marginBottom="16dp"
-        android:layout_marginStart="72dp"
-        android:layout_marginEnd="16dp">
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/app_install_time"
+        <include
+            android:id="@+id/appbar_layout"
+            layout="@layout/common_toolbar" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/app_icon"
+                android:layout_width="72dp"
+                android:layout_height="72dp"
+                android:layout_marginTop="16dp"
+                android:layout_centerHorizontal="true"
+                android:layout_alignParentTop="true"
+                tools:src="@mipmap/ic_launcher"/>
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/app_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/app_icon"
+                android:layout_centerHorizontal="true"
+                android:textColor="?android:textColorPrimary"
+                android:text="@{appInfo.packageLabel}"
+                android:layout_margin="8dp"
+                tools:text="@string/app_name"
+                style="@style/TextAppearance.MaterialComponents.Headline6" />
+        </RelativeLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="?android:attr/listDivider" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="?android:textColorSecondary"
-            style="@style/TextAppearance.MaterialComponents.Body2" />
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp">
 
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/app_last_updated_time"
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/open_button"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="@string/app_info_open_button"
+                android:layout_margin="8dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/uninstall_button"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/uninstall_button"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="@string/app_info_uninstall_button"
+                android:layout_margin="8dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/open_button"
+                app:layout_constraintTop_toTopOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="?android:attr/listDivider" />
+
+        <FrameLayout
+            android:id="@+id/permissions_info"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="?android:textColorSecondary"
-            style="@style/TextAppearance.MaterialComponents.Body2" />
+            android:clickable="true"
+            android:focusable="true">
+            <include layout="@layout/common_recyclerview_item_icon_two_line" />
+        </FrameLayout>
 
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/app_version_view"
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="?android:attr/listDivider" />
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:textColor="?android:textColorSecondary"
-            style="@style/TextAppearance.MaterialComponents.Body2" />
+            android:orientation="vertical"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"
+            android:layout_marginStart="72dp"
+            android:layout_marginEnd="16dp">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/app_install_time"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="?android:textColorSecondary"
+                tools:text="@string/app_info_first_installed_prefix"
+                style="@style/TextAppearance.MaterialComponents.Body2" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/app_last_updated_time"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="?android:textColorSecondary"
+                tools:text="@string/app_info_last_updated_prefix"
+                style="@style/TextAppearance.MaterialComponents.Body2" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/app_version_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:textColor="?android:textColorSecondary"
+                android:text="@{@string/app_info_version_prefix(appInfo.versionName)}"
+                tools:text="@string/app_info_version_prefix"
+                style="@style/TextAppearance.MaterialComponents.Body2" />
+
+        </LinearLayout>
     </LinearLayout>
-</LinearLayout>
+</layout>
