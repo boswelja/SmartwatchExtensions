@@ -21,6 +21,7 @@ import androidx.room.Room
 import com.boswelja.devicemanager.common.PreferenceKey
 import com.boswelja.devicemanager.common.References
 import com.boswelja.devicemanager.common.setup.References.WATCH_REGISTERED_PATH
+import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.Tasks
 import com.google.android.gms.wearable.CapabilityClient
@@ -140,8 +141,17 @@ class WatchConnectionService :
         try {
             withContext(Dispatchers.IO) {
                 val databaseWatches = database.watchDao().getAll()
-                val connectedNodes = Tasks.await(nodeClient.connectedNodes)
-                val capableNodes = Tasks.await(capabilityClient.getCapability(References.CAPABILITY_WATCH_APP, CapabilityClient.FILTER_ALL)).nodes
+                var connectedNodes: List<Node>
+                var capableNodes: Set<Node>
+                try {
+                    connectedNodes = Tasks.await(nodeClient.connectedNodes)
+                    capableNodes = Tasks.await(capabilityClient.getCapability(References.CAPABILITY_WATCH_APP, CapabilityClient.FILTER_ALL)).nodes
+                } catch (e: ApiException) {
+                    e.printStackTrace()
+                    connectedNodes = emptyList()
+                    capableNodes = emptySet()
+                }
+
                 withContext(Dispatchers.Default) {
                     for (databaseWatch in databaseWatches) {
                         val watch = Watch(databaseWatch.id, databaseWatch.name, databaseWatch.batterySyncJobId, capableNodes.any { it.id == databaseWatch.id }, connectedNodes.any { it.id == databaseWatch.id })
