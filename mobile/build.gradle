@@ -9,6 +9,7 @@ apply from: '../constants.gradle'
 android {
     compileSdkVersion buildConfig.compileSdk
     buildToolsVersion buildConfig.buildTools
+
     defaultConfig {
         applicationId buildConfig.packageName
         minSdkVersion 21
@@ -17,6 +18,7 @@ android {
         versionName buildConfig.versionName
     }
 
+    buildFeatures.dataBinding = true
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
