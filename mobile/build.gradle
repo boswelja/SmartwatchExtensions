@@ -55,7 +55,7 @@ dependencies {
     implementation "androidx.constraintlayout:constraintlayout:$androidx_constraintlayout"
     implementation 'androidx.browser:browser:1.2.0'
     implementation "androidx.room:room-runtime:$androidx_room"
-    implementation "androidx.room:room-ktx:${androidx_room}"
+    implementation "androidx.room:room-ktx:$androidx_room"
 
     implementation 'com.android.billingclient:billing:2.2.0'
 
