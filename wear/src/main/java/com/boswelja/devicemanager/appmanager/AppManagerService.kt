@@ -41,37 +41,40 @@ class AppManagerService : Service() {
     private lateinit var sharedPreferences: SharedPreferences
 
     private var phoneId: String? = null
+    private var serviceStopping: Boolean = false
 
     private val messageReceiver = MessageClient.OnMessageReceivedListener {
-        when (it.path) {
-            REQUEST_UNINSTALL_PACKAGE -> {
-                if (it.data != null && it.data.isNotEmpty()) {
-                    val packageName = String(it.data, Charsets.UTF_8)
-                    if (isAppInstalled(packageManager, packageName)) {
-                        val intent = Intent(Intent.ACTION_DELETE, "package:$packageName".toUri())
-                        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                        startActivity(intent)
-                    } else {
-                        sendAppRemovedMessage(packageName)
+        if (!serviceStopping) {
+            when (it.path) {
+                REQUEST_UNINSTALL_PACKAGE -> {
+                    if (it.data != null && it.data.isNotEmpty()) {
+                        val packageName = String(it.data, Charsets.UTF_8)
+                        if (isAppInstalled(packageManager, packageName)) {
+                            val intent = Intent(Intent.ACTION_DELETE, "package:$packageName".toUri())
+                            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                            startActivity(intent)
+                        } else {
+                            sendAppRemovedMessage(packageName)
+                        }
                     }
                 }
-            }
-            REQUEST_OPEN_PACKAGE -> {
-                if (it.data != null && it.data.isNotEmpty()) {
-                    val packageName = String(it.data, Charsets.UTF_8)
-                    val intent = packageManager.getLaunchIntentForPackage(packageName)
-                    intent?.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                    if (intent != null) {
-                        startActivity(intent)
+                REQUEST_OPEN_PACKAGE -> {
+                    if (it.data != null && it.data.isNotEmpty()) {
+                        val packageName = String(it.data, Charsets.UTF_8)
+                        val intent = packageManager.getLaunchIntentForPackage(packageName)
+                        intent?.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                        if (intent != null) {
+                            startActivity(intent)
+                        }
                     }
                 }
-            }
-            STOP_SERVICE -> {
-                stopForeground(true)
-                stopSelf()
+                STOP_SERVICE -> {
+                    stopService()
+                }
             }
         }
     }
+
     private val packageChangeReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             val action = intent?.action
@@ -110,13 +113,15 @@ class AppManagerService : Service() {
             }
             registerReceiver(packageChangeReceiver, packageEventIntentFilter)
         } else {
-            stopSelf()
+            stopService()
         }
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        createNotification()
-        sendAllAppsMessage()
+        if (!serviceStopping) {
+            createNotification()
+            sendAllAppsMessage()
+        }
         return START_NOT_STICKY
     }
 
@@ -124,6 +129,12 @@ class AppManagerService : Service() {
         unregisterReceiver(packageChangeReceiver)
         messageClient.removeListener(messageReceiver)
         super.onDestroy()
+    }
+
+    private fun stopService() {
+        serviceStopping = true
+        stopForeground(true)
+        stopSelf()
     }
 
     private fun createNotification() {
@@ -159,8 +170,7 @@ class AppManagerService : Service() {
 
     private fun sendErrorMessage() {
         messageClient.sendMessage(phoneId!!, ERROR, null)
-        stopForeground(true)
-        stopSelf()
+        stopService()
     }
 
     private fun sendAllAppsMessage() {
