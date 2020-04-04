@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.watchconnectionmanager.Watch
 import com.boswelja.devicemanager.watchconnectionmanager.WatchConnectionService
+import com.boswelja.devicemanager.watchconnectionmanager.WatchStatus
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.Dispatchers
@@ -120,7 +121,7 @@ class WatchSetupFragment : Fragment() {
     fun requestRegisterWatch(watch: Watch) {
         MaterialAlertDialogBuilder(context!!).apply {
             background = context.getDrawable(R.drawable.dialog_background)
-            if (watch.hasApp) {
+            if (watch.status != WatchStatus.MISSING_APP) {
                 setTitle(getString(R.string.register_watch_dialog_title, watch.name))
                 setMessage(getString(R.string.register_watch_dialog_message, watch.name))
                 setPositiveButton(R.string.dialog_button_yes) { _, _ ->

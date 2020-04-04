@@ -128,7 +128,12 @@ class WatchConnectionService :
             withContext(Dispatchers.Default) {
                 for (node in connectedNodes) {
                     if (!registeredWatches.any { it.id == node.id }) {
-                        availableWatches.add(Watch(node, capableWatches.any { it.id == node.id }))
+                        val status = if (capableWatches.any { it.id == node.id }) {
+                            WatchStatus.NOT_REGISTERED
+                        } else {
+                            WatchStatus.MISSING_APP
+                        }
+                        availableWatches.add(Watch(node, status))
                     }
                 }
             }
@@ -141,20 +146,34 @@ class WatchConnectionService :
         try {
             withContext(Dispatchers.IO) {
                 val databaseWatches = database.watchDao().getAll()
-                var connectedNodes: List<Node>
-                var capableNodes: Set<Node>
+                var connectedNodes: List<Node>? = null
+                var capableNodes: Set<Node>? = null
+                var gmsErrored = false
                 try {
                     connectedNodes = Tasks.await(nodeClient.connectedNodes)
                     capableNodes = Tasks.await(capabilityClient.getCapability(References.CAPABILITY_WATCH_APP, CapabilityClient.FILTER_ALL)).nodes
                 } catch (e: ApiException) {
                     e.printStackTrace()
-                    connectedNodes = emptyList()
-                    capableNodes = emptySet()
+                    gmsErrored = true
                 }
 
                 withContext(Dispatchers.Default) {
                     for (databaseWatch in databaseWatches) {
-                        val watch = Watch(databaseWatch.id, databaseWatch.name, databaseWatch.batterySyncJobId, capableNodes.any { it.id == databaseWatch.id }, connectedNodes.any { it.id == databaseWatch.id })
+                        val status = if (!gmsErrored) {
+                            val isCapable = capableNodes!!.any { it.id == databaseWatch.id }
+                            val isConnected = connectedNodes!!.any { it.id == databaseWatch.id }
+                            if (isConnected && isCapable) {
+                                WatchStatus.CONNECTED
+                            } else if (isConnected && !isCapable) {
+                                WatchStatus.MISSING_APP
+                            } else {
+                                WatchStatus.DISCONNECTED
+                            }
+                        } else {
+                            WatchStatus.ERROR
+                        }
+
+                        val watch = Watch(databaseWatch.id, databaseWatch.name, databaseWatch.batterySyncJobId, status)
 
                         val boolPrefs = database.boolPreferenceDao().getAllForWatch(watch.id)
                         val intPrefs = database.intPreferenceDao().getAllForWatch(watch.id)
@@ -185,7 +204,16 @@ class WatchConnectionService :
                     val connectedNodes = Tasks.await(nodeClient.connectedNodes)
                     val capableNodes = Tasks.await(capabilityClient.getCapability(References.CAPABILITY_WATCH_APP, CapabilityClient.FILTER_ALL)).nodes
                     return@withContext withContext(Dispatchers.Default) {
-                        val watch = Watch(databaseWatch.id, databaseWatch.name, databaseWatch.batterySyncJobId, capableNodes.any { it.id == databaseWatch.id }, connectedNodes.any { it.id == databaseWatch.id })
+                        val isCapable = capableNodes.any { it.id == databaseWatch.id }
+                        val isConnected = connectedNodes.any { it.id == databaseWatch.id }
+                        val status = if (isConnected && isCapable) {
+                            WatchStatus.CONNECTED
+                        } else if (isConnected && !isCapable) {
+                            WatchStatus.MISSING_APP
+                        } else {
+                            WatchStatus.DISCONNECTED
+                        }
+                        val watch = Watch(databaseWatch.id, databaseWatch.name, databaseWatch.batterySyncJobId, status)
                         for (intPreference in intPrefs) {
                             watch.intPrefs[intPreference.key] = intPreference.value
                         }

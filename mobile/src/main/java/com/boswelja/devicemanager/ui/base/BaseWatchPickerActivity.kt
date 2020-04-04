@@ -26,6 +26,7 @@ import com.boswelja.devicemanager.ui.watchsetup.WatchSetupActivity
 import com.boswelja.devicemanager.watchconnectionmanager.Watch
 import com.boswelja.devicemanager.watchconnectionmanager.WatchConnectionInterface
 import com.boswelja.devicemanager.watchconnectionmanager.WatchConnectionService
+import com.boswelja.devicemanager.watchconnectionmanager.WatchStatus
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
@@ -213,15 +214,12 @@ abstract class BaseWatchPickerActivity :
                 view = layoutInflater.inflate(R.layout.common_spinner_item_two_line, parent, false)
             }
             view!!.findViewById<AppCompatTextView>(R.id.title).text = watch.name
-            view.findViewById<AppCompatTextView>(R.id.subtitle).text = if (watch.connected) {
-                if (watch.hasApp) {
-                    context.getString(R.string.watch_status_connected)
-                } else {
-                    context.getString(R.string.watch_status_missing_app)
-                }
-            } else {
-                context.getString(R.string.watch_status_disconnected)
-            }
+            view.findViewById<AppCompatTextView>(R.id.subtitle).text = context.getString(when (watch.status) {
+                WatchStatus.CONNECTED -> R.string.watch_status_connected
+                WatchStatus.DISCONNECTED -> R.string.watch_status_disconnected
+                WatchStatus.MISSING_APP -> R.string.watch_status_missing_app
+                else -> R.string.watch_status_error
+            })
             return view
         }
     }

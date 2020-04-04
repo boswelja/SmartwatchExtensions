@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.ui.common.WatchViewHolder
 import com.boswelja.devicemanager.watchconnectionmanager.Watch
+import com.boswelja.devicemanager.watchconnectionmanager.WatchStatus
 
 class WatchSetupAdapter(private val watchSetupFragment: WatchSetupFragment) : RecyclerView.Adapter<WatchViewHolder>() {
 
@@ -30,11 +31,11 @@ class WatchSetupAdapter(private val watchSetupFragment: WatchSetupFragment) : Re
         val context = holder.itemView.context
         holder.icon.setImageResource(R.drawable.ic_watch)
         holder.topLine.text = watch.name
-        holder.bottomLine.text = if (watch.hasApp) {
-            context.getString(R.string.watch_description_add)
-        } else {
-            context.getString(R.string.watch_description_missing_app)
-        }
+        holder.bottomLine.text = context.getString(when (watch.status) {
+            WatchStatus.NOT_REGISTERED -> R.string.watch_status_not_registered
+            WatchStatus.MISSING_APP -> R.string.watch_status_missing_app
+            else -> R.string.watch_status_error
+        })
         holder.itemView.setOnClickListener {
             watchSetupFragment.requestRegisterWatch(watch)
         }
