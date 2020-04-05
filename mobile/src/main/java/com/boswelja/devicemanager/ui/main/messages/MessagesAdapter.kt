@@ -16,17 +16,15 @@ import android.net.Uri
 import android.os.Build
 import android.provider.Settings
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.widget.AppCompatImageView
-import androidx.appcompat.widget.AppCompatTextView
+import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.Utils
+import com.boswelja.devicemanager.databinding.FragmentMessagesItemBinding
 import com.boswelja.devicemanager.messages.Message
 import com.boswelja.devicemanager.messages.MessageId
-import com.google.android.material.button.MaterialButton
 import kotlin.math.min
 
 internal class MessagesAdapter(private val fragment: MessageFragment) :
@@ -35,6 +33,8 @@ internal class MessagesAdapter(private val fragment: MessageFragment) :
     private val messages = ArrayList<Message>()
     private lateinit var recyclerView: RecyclerView
 
+    private var inflater: LayoutInflater? = null
+
     override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
         super.onAttachedToRecyclerView(recyclerView)
         this.recyclerView = recyclerView
@@ -42,22 +42,24 @@ internal class MessagesAdapter(private val fragment: MessageFragment) :
 
     override fun getItemCount(): Int = messages.count()
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MessageItemViewHolder =
-            MessageItemViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.fragment_messages_item, parent, false))
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MessageItemViewHolder {
+        if (inflater == null) {
+            inflater = LayoutInflater.from(parent.context)
+        }
+        return MessageItemViewHolder(DataBindingUtil.inflate(
+                inflater!!,
+                R.layout.fragment_messages_item,
+                parent,
+                false))
+    }
 
     override fun onBindViewHolder(holder: MessageItemViewHolder, position: Int) {
         val message = messages[position]
 
-        holder.iconView.setImageResource(message.iconRes)
-        holder.labelView.setText(message.labelRes)
-        if (message.descRes != 0) {
-            holder.descView.setText(message.descRes)
-        }
-        if (message.buttonLabelRes != 0) {
-            holder.dividerView.visibility = View.VISIBLE
-            holder.actionButton.visibility = View.VISIBLE
-            holder.actionButton.apply {
-                setText(message.buttonLabelRes)
+        holder.bind(message)
+
+        if (holder.binding.actionVisible) {
+            holder.binding.messageActionButton.apply {
                 setOnClickListener {
                     handleMessageActionClick(holder, message)
                 }
@@ -109,12 +111,12 @@ internal class MessagesAdapter(private val fragment: MessageFragment) :
         fragment.setHasMessages(itemCount > 0)
     }
 
-    class MessageItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val iconView: AppCompatImageView = itemView.findViewById(R.id.message_icon)
-        val labelView: AppCompatTextView = itemView.findViewById(R.id.message_label)
-        val descView: AppCompatTextView = itemView.findViewById(R.id.message_desc)
-        val actionButton: MaterialButton = itemView.findViewById(R.id.message_action_button)
-        val dividerView: View = itemView.findViewById(R.id.divider)
+    class MessageItemViewHolder(val binding: FragmentMessagesItemBinding) : RecyclerView.ViewHolder(binding.root) {
+
+        fun bind(message: Message) {
+            binding.actionVisible = message.buttonLabelRes > 0
+            binding.message = message
+        }
     }
 
     class SwipeDismissCallback(private val adapter: MessagesAdapter, context: Context) : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
