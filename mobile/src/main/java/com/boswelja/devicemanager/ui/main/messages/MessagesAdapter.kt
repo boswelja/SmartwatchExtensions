@@ -31,14 +31,8 @@ internal class MessagesAdapter(private val fragment: MessageFragment) :
         RecyclerView.Adapter<MessagesAdapter.MessageItemViewHolder>() {
 
     private val messages = ArrayList<Message>()
-    private lateinit var recyclerView: RecyclerView
 
     private var inflater: LayoutInflater? = null
-
-    override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
-        super.onAttachedToRecyclerView(recyclerView)
-        this.recyclerView = recyclerView
-    }
 
     override fun getItemCount(): Int = messages.count()
 
