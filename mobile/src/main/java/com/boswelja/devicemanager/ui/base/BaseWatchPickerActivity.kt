@@ -57,7 +57,6 @@ abstract class BaseWatchPickerActivity :
 
     internal val coroutineScope = MainScope()
 
-    var canUpdateConnectedWatches: Boolean = true
     var watchConnectionManager: WatchConnectionService? = null
 
     private lateinit var watchPickerSpinner: AppCompatSpinner
@@ -151,33 +150,31 @@ abstract class BaseWatchPickerActivity :
     }
 
     private fun updateConnectedWatches() {
-        if (canUpdateConnectedWatches) {
-            coroutineScope.launch {
-                withContext(Dispatchers.Default) {
-                    if (watchConnectionManager != null) {
-                        withContext(Dispatchers.Main) {
-                            (watchPickerSpinner.adapter as WatchPickerAdapter).clear()
-                        }
-                        val watches = watchConnectionManager!!.getRegisteredWatches()
-                        if (watches.isNotEmpty()) {
-                            packageManager.setComponentEnabledSetting(ComponentName(this@BaseWatchPickerActivity, WatchBatteryWidget::class.java), PackageManager.COMPONENT_ENABLED_STATE_ENABLED, PackageManager.DONT_KILL_APP)
-                            val connectedWatchId = watchConnectionManager!!.getConnectedWatchId()
-                            var selectedWatchPosition = 0
-                            watches.forEach {
-                                withContext(Dispatchers.Main) {
-                                    (watchPickerSpinner.adapter as WatchPickerAdapter).add(it)
-                                }
-                                if (it.id == connectedWatchId) {
-                                    selectedWatchPosition = (watchPickerSpinner.adapter as WatchPickerAdapter).getPosition(it)
-                                }
-                            }
+        coroutineScope.launch {
+            withContext(Dispatchers.Default) {
+                if (watchConnectionManager != null) {
+                    withContext(Dispatchers.Main) {
+                        (watchPickerSpinner.adapter as WatchPickerAdapter).clear()
+                    }
+                    val watches = watchConnectionManager!!.getRegisteredWatches()
+                    if (watches.isNotEmpty()) {
+                        packageManager.setComponentEnabledSetting(ComponentName(this@BaseWatchPickerActivity, WatchBatteryWidget::class.java), PackageManager.COMPONENT_ENABLED_STATE_ENABLED, PackageManager.DONT_KILL_APP)
+                        val connectedWatchId = watchConnectionManager!!.getConnectedWatchId()
+                        var selectedWatchPosition = 0
+                        watches.forEach {
                             withContext(Dispatchers.Main) {
-                                watchPickerSpinner.setSelection(selectedWatchPosition)
+                                (watchPickerSpinner.adapter as WatchPickerAdapter).add(it)
                             }
-                        } else {
-                            packageManager.setComponentEnabledSetting(ComponentName(this@BaseWatchPickerActivity, WatchBatteryWidget::class.java), PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP)
-                            startActivityForResult(Intent(this@BaseWatchPickerActivity, WatchSetupActivity::class.java), WATCH_SETUP_ACTIVITY_REQUEST_CODE)
+                            if (it.id == connectedWatchId) {
+                                selectedWatchPosition = (watchPickerSpinner.adapter as WatchPickerAdapter).getPosition(it)
+                            }
                         }
+                        withContext(Dispatchers.Main) {
+                            watchPickerSpinner.setSelection(selectedWatchPosition)
+                        }
+                    } else {
+                        packageManager.setComponentEnabledSetting(ComponentName(this@BaseWatchPickerActivity, WatchBatteryWidget::class.java), PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP)
+                        startActivityForResult(Intent(this@BaseWatchPickerActivity, WatchSetupActivity::class.java), WATCH_SETUP_ACTIVITY_REQUEST_CODE)
                     }
                 }
             }
