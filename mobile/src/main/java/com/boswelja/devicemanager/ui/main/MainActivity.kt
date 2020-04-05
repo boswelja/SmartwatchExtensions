@@ -21,6 +21,9 @@ import com.boswelja.devicemanager.ui.main.extensions.ExtensionsFragment
 import com.boswelja.devicemanager.messages.database.MessageDatabase
 import com.boswelja.devicemanager.ui.main.messages.MessageFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class MainActivity : BaseWatchPickerActivity() {
 

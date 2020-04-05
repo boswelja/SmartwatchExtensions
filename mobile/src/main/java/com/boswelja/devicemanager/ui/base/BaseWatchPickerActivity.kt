@@ -55,7 +55,7 @@ abstract class BaseWatchPickerActivity :
         }
     }
 
-    private val coroutineScope = MainScope()
+    internal val coroutineScope = MainScope()
 
     var canUpdateConnectedWatches: Boolean = true
     var watchConnectionManager: WatchConnectionService? = null
