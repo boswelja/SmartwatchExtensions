@@ -5,7 +5,7 @@
  * This file, and any part of the Wearable Extensions app/s cannot be copied and/or distributed
  * without permission from Jack Boswell (boswelja) <boswela@outlook.com>
  */
-package com.boswelja.devicemanager
+package com.boswelja.devicemanager.updater
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -15,6 +15,8 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.core.content.edit
 import androidx.preference.PreferenceManager
+import com.boswelja.devicemanager.BuildConfig
+import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.batterysync.BatterySyncJob
 import com.boswelja.devicemanager.batterysync.WatchBatteryUpdateReceiver
 import com.boswelja.devicemanager.common.PreferenceKey
@@ -30,17 +32,18 @@ import com.google.android.gms.tasks.Tasks
 import com.google.android.gms.wearable.CapabilityClient
 import com.google.android.gms.wearable.Wearable
 
-class EnvironmentUpdater(private val context: Context) {
+class Updater(private val context: Context) {
 
     private val sharedPreferences: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
+
     private val currentAppVersion: Int = BuildConfig.VERSION_CODE
-    private val lastAppVersion: Int
+    private val lastAppVersion: Int = sharedPreferences.getInt(APP_VERSION_KEY, currentAppVersion)
+
     private val needsUpdate: Boolean get() = lastAppVersion < currentAppVersion
 
     private var notificationChannelsCreated: Boolean = false
 
     init {
-        lastAppVersion = sharedPreferences.getInt(APP_VERSION_KEY, currentAppVersion)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             notificationChannelsCreated = sharedPreferences.getBoolean(NOTIFICATION_CHANNELS_CREATED, false)
         }
@@ -180,10 +183,7 @@ class EnvironmentUpdater(private val context: Context) {
         }
     }
 
-    enum class Result {
-        COMPLETED,
-        NOT_NEEDED
-    }
+
 
     companion object {
         private const val APP_VERSION_KEY = "app_version"

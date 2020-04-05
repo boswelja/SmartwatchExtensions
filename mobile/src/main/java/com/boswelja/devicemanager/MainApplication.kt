@@ -3,6 +3,8 @@ package com.boswelja.devicemanager
 import android.app.Application
 import androidx.core.content.edit
 import androidx.preference.PreferenceManager
+import com.boswelja.devicemanager.updater.Result
+import com.boswelja.devicemanager.updater.Updater
 
 class MainApplication : Application() {
 
@@ -13,7 +15,7 @@ class MainApplication : Application() {
     }
 
     private fun handleUpdates() {
-        if (EnvironmentUpdater(this).doUpdate() == EnvironmentUpdater.Result.COMPLETED) {
+        if (Updater(this).doUpdate() == Result.COMPLETED) {
             PreferenceManager.getDefaultSharedPreferences(this).edit {
                 putBoolean(SHOW_CHANGELOG_KEY, true)
             }
