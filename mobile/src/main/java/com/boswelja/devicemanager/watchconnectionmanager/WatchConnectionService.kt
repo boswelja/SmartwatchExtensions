@@ -17,7 +17,6 @@ import android.os.Binder
 import android.os.IBinder
 import androidx.core.content.edit
 import androidx.preference.PreferenceManager
-import androidx.room.Room
 import com.boswelja.devicemanager.common.PreferenceKey
 import com.boswelja.devicemanager.common.References
 import com.boswelja.devicemanager.common.setup.References.WATCH_REGISTERED_PATH
@@ -75,8 +74,7 @@ class WatchConnectionService :
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
         sharedPreferences.registerOnSharedPreferenceChangeListener(this)
 
-        database = Room.databaseBuilder(applicationContext, WatchDatabase::class.java, "watch-db")
-                .build()
+        database = WatchDatabase.open(applicationContext)
 
         setConnectedWatchById(sharedPreferences.getString(LAST_CONNECTED_NODE_ID_KEY, "") ?: "")
 
@@ -403,8 +401,7 @@ class WatchConnectionService :
 
     suspend fun addWatch(watch: Watch): Boolean {
         return withContext(Dispatchers.IO) {
-            if (database.isOpen) {
-                database.watchDao().add(watch)
+            if (database.addWatch(watch)) {
                 messageClient.sendMessage(watch.id, WATCH_REGISTERED_PATH, null)
                 return@withContext true
             }
