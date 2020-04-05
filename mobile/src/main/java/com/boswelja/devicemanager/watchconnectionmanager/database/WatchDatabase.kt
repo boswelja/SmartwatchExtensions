@@ -28,6 +28,50 @@ abstract class WatchDatabase : RoomDatabase() {
         return false
     }
 
+    fun updatePrefInDatabase(id: String, key: String, newValue: Any, watchPreferenceChangeInterfaces: List<WatchPreferenceChangeInterface>? = null): Boolean {
+        if (isOpen) {
+            return when (newValue) {
+                is Boolean -> {
+                    val boolPreference = BoolPreference(id, key, newValue)
+                    boolPreferenceDao().update(boolPreference)
+                    if (watchPreferenceChangeInterfaces != null) {
+                        for (watchPreferenceChangeInterface in watchPreferenceChangeInterfaces) {
+                            watchPreferenceChangeInterface.boolPreferenceChanged(boolPreference)
+                        }
+                    }
+                    true
+                }
+                is Int -> {
+                    val intPreference = IntPreference(id, key, newValue)
+                    intPreferenceDao().update(intPreference)
+                    if (watchPreferenceChangeInterfaces != null) {
+                        for (watchPreferenceChangeInterface in watchPreferenceChangeInterfaces) {
+                            watchPreferenceChangeInterface.intPreferenceChanged(intPreference)
+                        }
+                    }
+                    true
+                }
+                else -> false
+            }
+        }
+        return false
+    }
+
+    fun getWatchesWithPrefs(): List<Watch> {
+        val watches = watchDao().getAll()
+        for (watch in watches) {
+            val boolPrefs = boolPreferenceDao().getAllForWatch(watch.id)
+            val intPrefs = intPreferenceDao().getAllForWatch(watch.id)
+            for (intPreference in intPrefs) {
+                watch.intPrefs[intPreference.key] = intPreference.value
+            }
+            for (boolPreference in boolPrefs) {
+                watch.boolPrefs[boolPreference.key] = boolPreference.value
+            }
+        }
+        return watches
+    }
+
     companion object {
         fun open(context: Context): WatchDatabase =
                 Room.databaseBuilder(context, WatchDatabase::class.java, "watch-db").build()

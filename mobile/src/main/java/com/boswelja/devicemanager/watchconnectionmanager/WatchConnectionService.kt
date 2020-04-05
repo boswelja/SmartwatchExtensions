@@ -19,7 +19,6 @@ import androidx.core.content.edit
 import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.common.PreferenceKey
 import com.boswelja.devicemanager.common.References
-import com.boswelja.devicemanager.common.setup.References.WATCH_REGISTERED_PATH
 import com.boswelja.devicemanager.watchconnectionmanager.database.WatchDatabase
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
@@ -354,40 +353,15 @@ class WatchConnectionService :
     }
 
     suspend fun updatePrefInDatabase(key: String, newValue: Any): Boolean {
-        return updatePrefInDatabase(connectedWatch?.id!!, key, newValue)
+        return withContext(Dispatchers.IO) {
+            database.updatePrefInDatabase(connectedWatch?.id!!, key, newValue, watchPreferenceChangeInterfaces)
+        }
     }
 
     suspend fun updatePrefInDatabase(id: String, key: String, newValue: Any): Boolean {
-        if (database.isOpen) {
-            return when (newValue) {
-                is Boolean -> {
-                    withContext(Dispatchers.IO) {
-                        val boolPreference = BoolPreference(id, key, newValue)
-                        database.boolPreferenceDao().update(boolPreference)
-                        withContext(Dispatchers.Main) {
-                            for (watchPreferenceChangeInterface in watchPreferenceChangeInterfaces) {
-                                watchPreferenceChangeInterface.boolPreferenceChanged(boolPreference)
-                            }
-                        }
-                    }
-                    true
-                }
-                is Int -> {
-                    withContext(Dispatchers.IO) {
-                        val intPreference = IntPreference(id, key, newValue)
-                        database.intPreferenceDao().update(intPreference)
-                        withContext(Dispatchers.Main) {
-                            for (watchPreferenceChangeInterface in watchPreferenceChangeInterfaces) {
-                                watchPreferenceChangeInterface.intPreferenceChanged(intPreference)
-                            }
-                        }
-                    }
-                    true
-                }
-                else -> false
-            }
+        return withContext(Dispatchers.IO) {
+            database.updatePrefInDatabase(id, key, newValue, watchPreferenceChangeInterfaces)
         }
-        return false
     }
 
     suspend fun updateWatchNickname(watchId: String, nickname: String): Boolean {
@@ -402,11 +376,7 @@ class WatchConnectionService :
 
     suspend fun addWatch(watch: Watch): Boolean {
         return withContext(Dispatchers.IO) {
-            if (database.addWatch(watch)) {
-                messageClient.sendMessage(watch.id, WATCH_REGISTERED_PATH, null)
-                return@withContext true
-            }
-            return@withContext false
+            return@withContext Utils.addWatch(database, messageClient, watch)
         }
     }
 
@@ -490,7 +460,7 @@ class WatchConnectionService :
     }
 
     companion object {
-        private const val LAST_CONNECTED_NODE_ID_KEY = "last_connected_id"
+        const val LAST_CONNECTED_NODE_ID_KEY = "last_connected_id"
 
         private const val AUTO_ADD_WATCHES_KEY = "auto_add_watches"
 
