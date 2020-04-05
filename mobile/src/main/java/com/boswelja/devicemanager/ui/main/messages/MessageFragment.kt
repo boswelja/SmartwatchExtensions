@@ -97,8 +97,8 @@ class MessageFragment : Fragment() {
             }
         }
         Snackbar.make(view!!,
-                getString(R.string.message_snackbar_undo_remove).format(getString(message.shortLabelRes)),
-                Snackbar.LENGTH_INDEFINITE).apply {
+                getString(R.string.message_snackbar_undo_remove),
+                Snackbar.LENGTH_LONG).apply {
             setAction(R.string.snackbar_action_undo) {
                 if (messageDatabase != null) {
                     coroutineScope.launch {

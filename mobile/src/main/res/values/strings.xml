@@ -127,7 +127,7 @@
     <string name="message_watch_charge_noti_warning_label">Watch Charge Notifications Not Working</string>
     <string name="message_watch_charge_noti_warning_desc">Watch Charge Notifications have been disabled in Notification Settings. Please use the option in Battery Sync settings to disable charge notifications</string>
     <string name="message_watch_charge_noti_warning_button_label">Open Notification Settings</string>
-    <string name="message_snackbar_undo_remove">You will no longer see %s warnings</string>
+    <string name="message_snackbar_undo_remove">Message Deleted</string>
     <string name="message_none_label">No new messages</string>
 
     <!-- Bottom Navigation Bar strings -->
