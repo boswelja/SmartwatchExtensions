@@ -46,10 +46,6 @@ class EnvironmentUpdater(private val context: Context) {
         }
     }
 
-    private fun needsUpdate(): Boolean {
-        return lastAppVersion < currentAppVersion
-    }
-
     private fun doBatterySyncUpdate(database: WatchDatabase) {
         val watches = database.getWatchesWithPrefs()
         var needsRestart = false
@@ -113,13 +109,13 @@ class EnvironmentUpdater(private val context: Context) {
     }
 
     fun doUpdate(): Int {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && (!notificationChannelsCreated or needsUpdate())) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && (!notificationChannelsCreated or needsUpdate)) {
             createNotificationChannels()
             sharedPreferences.edit().putBoolean(NOTIFICATION_CHANNELS_CREATED, true).apply()
             notificationChannelsCreated = true
         }
 
-        if (needsUpdate()) {
+        if (needsUpdate) {
             var updateStatus = UPDATE_NOT_NEEDED
             sharedPreferences.edit(commit = true) {
                 if (lastAppVersion < 2019090243) {
