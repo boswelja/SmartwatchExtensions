@@ -28,6 +28,14 @@ abstract class MessageDatabase : RoomDatabase() {
         return messageDao().getMessage(messageId) != null
     }
 
+    fun sendMessage(message: Message): Boolean {
+        if (isOpen) {
+            messageDao().sendMessage(message)
+            return true
+        }
+        return false
+    }
+
     companion object {
         suspend fun open(context: Context): MessageDatabase {
             return withContext(Dispatchers.IO) {

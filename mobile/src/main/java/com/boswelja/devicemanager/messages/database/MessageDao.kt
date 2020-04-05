@@ -1,11 +1,15 @@
 package com.boswelja.devicemanager.messages.database
 
 import androidx.room.Dao
+import androidx.room.Insert
 import androidx.room.Query
 import com.boswelja.devicemanager.messages.Message
 
 @Dao
 interface MessageDao {
+
+    @Insert
+    fun sendMessage(message: Message)
 
     @Query("SELECT * FROM messages")
     fun getAllMessages(): Array<Message>
