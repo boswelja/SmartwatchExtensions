@@ -5,12 +5,13 @@
  * This file, and any part of the Wearable Extensions app/s cannot be copied and/or distributed
  * without permission from Jack Boswell (boswelja) <boswela@outlook.com>
  */
-package com.boswelja.devicemanager.watchconnectionmanager
+package com.boswelja.devicemanager.watchconnectionmanager.database
 
 import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import com.boswelja.devicemanager.watchconnectionmanager.*
 
 @Database(entities = [Watch::class, IntPreference::class, BoolPreference::class], version = 3)
 abstract class WatchDatabase : RoomDatabase() {
