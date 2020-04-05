@@ -8,7 +8,7 @@ import com.boswelja.devicemanager.messages.Message
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-@Database(entities = [Message::class], version = 1)
+@Database(entities = [Message::class], version = 2)
 abstract class MessageDatabase : RoomDatabase() {
     abstract fun messageDao(): MessageDao
 
@@ -16,12 +16,12 @@ abstract class MessageDatabase : RoomDatabase() {
         return messageDao().getActiveMessages().size
     }
 
-    fun getActiveMessages(): Array<Message> {
-        return messageDao().getActiveMessages()
+    fun getActiveMessages(): List<Message> {
+        return messageDao().getActiveMessages().sortedBy { it.timestamp }
     }
 
-    fun getDeletedMessages(): Array<Message> {
-        return messageDao().getDeletedMessages()
+    fun getDeletedMessages(): List<Message> {
+        return messageDao().getDeletedMessages().sortedBy { it.timestamp }
     }
 
     fun messageExists(messageId: Int): Boolean {

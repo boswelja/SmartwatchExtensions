@@ -17,6 +17,6 @@ data class Message(
         val labelRes: Int,
         val shortLabelRes: Int,
         val deleted: Boolean,
+        val timestamp: Long = System.currentTimeMillis(),
         val descRes: Int = 0,
-        val buttonLabelRes: Int = 0) {
-}
+        val buttonLabelRes: Int = 0)
