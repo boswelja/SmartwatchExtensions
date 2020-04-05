@@ -9,7 +9,7 @@ package com.boswelja.devicemanager.ui.main
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
-import com.boswelja.devicemanager.EnvironmentUpdater
+import com.boswelja.devicemanager.MainApplication.Companion.SHOW_CHANGELOG_KEY
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.PreferenceKey
 import com.boswelja.devicemanager.ui.base.BasePreferenceActivity.Companion.EXTRA_PREFERENCE_KEY
@@ -21,32 +21,17 @@ import com.boswelja.devicemanager.ui.main.extensions.ExtensionsFragment
 import com.boswelja.devicemanager.messages.database.MessageDatabase
 import com.boswelja.devicemanager.ui.main.messages.MessageFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class MainActivity : BaseWatchPickerActivity() {
 
-    private val coroutineScope = MainScope()
-
     private lateinit var bottomNavigationView: BottomNavigationView
-    private lateinit var environmentUpdater: EnvironmentUpdater
 
     private val extensionsFragment = ExtensionsFragment()
     private var messagesFragment: MessageFragment? = null
     private var appSettingsFragment: AppSettingsFragment? = null
     private var appInfoFragment: AppInfoFragment? = null
 
-    private var doFullUpdateOnServiceBound = false
-
     override fun onWatchManagerBound(): Boolean {
-        if (doFullUpdateOnServiceBound) {
-            handleFullUpdate()
-            doFullUpdateOnServiceBound = false
-            return false
-        }
         return true
     }
 
@@ -55,11 +40,13 @@ class MainActivity : BaseWatchPickerActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        handleUpdates()
-
         bottomNavigationView = findViewById(R.id.bottom_navigation)
         bottomNavigationView.setOnNavigationItemSelectedListener {
             handleNavigation(it.itemId)
+        }
+
+        if (sharedPreferences.getBoolean(SHOW_CHANGELOG_KEY, false)) {
+            ChangelogDialogFragment().show(supportFragmentManager, "ChangelogDialogFragment")
         }
     }
 
@@ -67,38 +54,6 @@ class MainActivity : BaseWatchPickerActivity() {
         super.onResume()
         handleNavigation(bottomNavigationView.selectedItemId)
         updateMessagesBadge()
-    }
-
-    private fun handleUpdates() {
-        val updater = EnvironmentUpdater(this)
-        when (updater.doUpdate()) {
-            EnvironmentUpdater.UPDATE_SUCCESS -> {
-                ChangelogDialogFragment().show(supportFragmentManager.beginTransaction(), "ChangelogDialogFragment")
-            }
-            EnvironmentUpdater.NEEDS_FULL_UPDATE -> {
-                environmentUpdater = updater
-                doFullUpdateOnServiceBound = watchConnectionManager == null
-                if (!doFullUpdateOnServiceBound) {
-                    handleFullUpdate()
-                }
-            }
-        }
-    }
-
-    private fun handleFullUpdate() {
-        canUpdateConnectedWatches = false
-        val dialog = MaterialAlertDialogBuilder(this).apply {
-            title = getString(R.string.update_dialog_title, getString(R.string.app_name))
-            setView(R.layout.common_dialog_progressbar)
-            setCancelable(false)
-        }.show()
-        coroutineScope.launch {
-            environmentUpdater.doFullUpdate(watchConnectionManager!!)
-            withContext(Dispatchers.Main) {
-                dialog.cancel()
-                this@MainActivity.recreate()
-            }
-        }
     }
 
     private fun handleNavigation(selectedItemId: Int): Boolean {

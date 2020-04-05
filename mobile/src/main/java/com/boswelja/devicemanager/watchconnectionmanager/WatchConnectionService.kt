@@ -17,10 +17,10 @@ import android.os.Binder
 import android.os.IBinder
 import androidx.core.content.edit
 import androidx.preference.PreferenceManager
-import androidx.room.Room
 import com.boswelja.devicemanager.common.PreferenceKey
 import com.boswelja.devicemanager.common.References
-import com.boswelja.devicemanager.common.setup.References.WATCH_REGISTERED_PATH
+import com.boswelja.devicemanager.watchconnectionmanager.database.WatchDatabase
+import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.Tasks
 import com.google.android.gms.wearable.CapabilityClient
@@ -74,8 +74,7 @@ class WatchConnectionService :
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
         sharedPreferences.registerOnSharedPreferenceChangeListener(this)
 
-        database = Room.databaseBuilder(applicationContext, WatchDatabase::class.java, "watch-db")
-                .build()
+        database = WatchDatabase.open(applicationContext)
 
         setConnectedWatchById(sharedPreferences.getString(LAST_CONNECTED_NODE_ID_KEY, "") ?: "")
 
@@ -127,7 +126,12 @@ class WatchConnectionService :
             withContext(Dispatchers.Default) {
                 for (node in connectedNodes) {
                     if (!registeredWatches.any { it.id == node.id }) {
-                        availableWatches.add(Watch(node, capableWatches.any { it.id == node.id }))
+                        val status = if (capableWatches.any { it.id == node.id }) {
+                            WatchStatus.NOT_REGISTERED
+                        } else {
+                            WatchStatus.MISSING_APP
+                        }
+                        availableWatches.add(Watch(node, status))
                     }
                 }
             }
@@ -140,11 +144,34 @@ class WatchConnectionService :
         try {
             withContext(Dispatchers.IO) {
                 val databaseWatches = database.watchDao().getAll()
-                val connectedNodes = Tasks.await(nodeClient.connectedNodes)
-                val capableNodes = Tasks.await(capabilityClient.getCapability(References.CAPABILITY_WATCH_APP, CapabilityClient.FILTER_ALL)).nodes
+                var connectedNodes: List<Node>? = null
+                var capableNodes: Set<Node>? = null
+                var gmsErrored = false
+                try {
+                    connectedNodes = Tasks.await(nodeClient.connectedNodes)
+                    capableNodes = Tasks.await(capabilityClient.getCapability(References.CAPABILITY_WATCH_APP, CapabilityClient.FILTER_ALL)).nodes
+                } catch (e: ApiException) {
+                    e.printStackTrace()
+                    gmsErrored = true
+                }
+
                 withContext(Dispatchers.Default) {
                     for (databaseWatch in databaseWatches) {
-                        val watch = Watch(databaseWatch.id, databaseWatch.name, databaseWatch.batterySyncJobId, capableNodes.any { it.id == databaseWatch.id }, connectedNodes.any { it.id == databaseWatch.id })
+                        val status = if (!gmsErrored) {
+                            val isCapable = capableNodes!!.any { it.id == databaseWatch.id }
+                            val isConnected = connectedNodes!!.any { it.id == databaseWatch.id }
+                            if (isConnected && isCapable) {
+                                WatchStatus.CONNECTED
+                            } else if (isConnected && !isCapable) {
+                                WatchStatus.MISSING_APP
+                            } else {
+                                WatchStatus.DISCONNECTED
+                            }
+                        } else {
+                            WatchStatus.ERROR
+                        }
+
+                        val watch = Watch(databaseWatch.id, databaseWatch.name, databaseWatch.batterySyncJobId, status)
 
                         val boolPrefs = database.boolPreferenceDao().getAllForWatch(watch.id)
                         val intPrefs = database.intPreferenceDao().getAllForWatch(watch.id)
@@ -175,7 +202,16 @@ class WatchConnectionService :
                     val connectedNodes = Tasks.await(nodeClient.connectedNodes)
                     val capableNodes = Tasks.await(capabilityClient.getCapability(References.CAPABILITY_WATCH_APP, CapabilityClient.FILTER_ALL)).nodes
                     return@withContext withContext(Dispatchers.Default) {
-                        val watch = Watch(databaseWatch.id, databaseWatch.name, databaseWatch.batterySyncJobId, capableNodes.any { it.id == databaseWatch.id }, connectedNodes.any { it.id == databaseWatch.id })
+                        val isCapable = capableNodes.any { it.id == databaseWatch.id }
+                        val isConnected = connectedNodes.any { it.id == databaseWatch.id }
+                        val status = if (isConnected && isCapable) {
+                            WatchStatus.CONNECTED
+                        } else if (isConnected && !isCapable) {
+                            WatchStatus.MISSING_APP
+                        } else {
+                            WatchStatus.DISCONNECTED
+                        }
+                        val watch = Watch(databaseWatch.id, databaseWatch.name, databaseWatch.batterySyncJobId, status)
                         for (intPreference in intPrefs) {
                             watch.intPrefs[intPreference.key] = intPreference.value
                         }
@@ -317,40 +353,15 @@ class WatchConnectionService :
     }
 
     suspend fun updatePrefInDatabase(key: String, newValue: Any): Boolean {
-        return updatePrefInDatabase(connectedWatch?.id!!, key, newValue)
+        return withContext(Dispatchers.IO) {
+            database.updatePrefInDatabase(connectedWatch?.id!!, key, newValue, watchPreferenceChangeInterfaces)
+        }
     }
 
     suspend fun updatePrefInDatabase(id: String, key: String, newValue: Any): Boolean {
-        if (database.isOpen) {
-            return when (newValue) {
-                is Boolean -> {
-                    withContext(Dispatchers.IO) {
-                        val boolPreference = BoolPreference(id, key, newValue)
-                        database.boolPreferenceDao().update(boolPreference)
-                        withContext(Dispatchers.Main) {
-                            for (watchPreferenceChangeInterface in watchPreferenceChangeInterfaces) {
-                                watchPreferenceChangeInterface.boolPreferenceChanged(boolPreference)
-                            }
-                        }
-                    }
-                    true
-                }
-                is Int -> {
-                    withContext(Dispatchers.IO) {
-                        val intPreference = IntPreference(id, key, newValue)
-                        database.intPreferenceDao().update(intPreference)
-                        withContext(Dispatchers.Main) {
-                            for (watchPreferenceChangeInterface in watchPreferenceChangeInterfaces) {
-                                watchPreferenceChangeInterface.intPreferenceChanged(intPreference)
-                            }
-                        }
-                    }
-                    true
-                }
-                else -> false
-            }
+        return withContext(Dispatchers.IO) {
+            database.updatePrefInDatabase(id, key, newValue, watchPreferenceChangeInterfaces)
         }
-        return false
     }
 
     suspend fun updateWatchNickname(watchId: String, nickname: String): Boolean {
@@ -365,12 +376,7 @@ class WatchConnectionService :
 
     suspend fun addWatch(watch: Watch): Boolean {
         return withContext(Dispatchers.IO) {
-            if (database.isOpen) {
-                database.watchDao().add(watch)
-                messageClient.sendMessage(watch.id, WATCH_REGISTERED_PATH, null)
-                return@withContext true
-            }
-            return@withContext false
+            return@withContext Utils.addWatch(database, messageClient, watch)
         }
     }
 
@@ -454,7 +460,7 @@ class WatchConnectionService :
     }
 
     companion object {
-        private const val LAST_CONNECTED_NODE_ID_KEY = "last_connected_id"
+        const val LAST_CONNECTED_NODE_ID_KEY = "last_connected_id"
 
         private const val AUTO_ADD_WATCHES_KEY = "auto_add_watches"
 

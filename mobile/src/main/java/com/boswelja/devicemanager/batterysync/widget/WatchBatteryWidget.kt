@@ -37,11 +37,13 @@ class WatchBatteryWidget : AppWidgetProvider() {
         super.onDeleted(context, appWidgetIds)
         if (appWidgetIds != null && appWidgetIds.isNotEmpty()) {
             coroutineScope.launch {
-                WidgetDatabase.open(context!!).also {
-                    for (widgetId in appWidgetIds) {
-                        it.watchBatteryWidgetDao().removeWidget(widgetId)
+                withContext(Dispatchers.IO) {
+                    WidgetDatabase.open(context!!).also {
+                        for (widgetId in appWidgetIds) {
+                            it.watchBatteryWidgetDao().removeWidget(widgetId)
+                        }
+                        it.close()
                     }
-                    it.close()
                 }
             }
         }

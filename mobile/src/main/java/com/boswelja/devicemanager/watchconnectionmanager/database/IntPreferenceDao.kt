@@ -5,13 +5,14 @@
  * This file, and any part of the Wearable Extensions app/s cannot be copied and/or distributed
  * without permission from Jack Boswell (boswelja) <boswela@outlook.com>
  */
-package com.boswelja.devicemanager.watchconnectionmanager
+package com.boswelja.devicemanager.watchconnectionmanager.database
 
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import com.boswelja.devicemanager.watchconnectionmanager.IntPreference
 
 @Dao
 interface IntPreferenceDao {

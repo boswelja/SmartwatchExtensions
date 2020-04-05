@@ -28,7 +28,7 @@ import com.boswelja.devicemanager.ui.base.BasePreferenceActivity.Companion.EXTRA
 import com.boswelja.devicemanager.ui.batterysync.BatterySyncPreferenceActivity
 import com.boswelja.devicemanager.ui.dndsync.DnDSyncPreferenceActivity
 import com.boswelja.devicemanager.ui.main.MainActivity
-import com.boswelja.devicemanager.watchconnectionmanager.WatchDatabase
+import com.boswelja.devicemanager.watchconnectionmanager.database.WatchDatabase
 import com.google.android.gms.wearable.MessageEvent
 import com.google.android.gms.wearable.Wearable
 import com.google.android.gms.wearable.WearableListenerService

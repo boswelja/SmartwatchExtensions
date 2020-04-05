@@ -23,6 +23,7 @@
         android:layout_marginTop="12dp"
         android:layout_marginStart="32dp"
         android:layout_marginEnd="32dp"
+        android:textAlignment="center"
         android:text="@string/interrupt_filter_sync_helper_all_set_message"
         app:layout_constraintTop_toBottomOf="@id/title_text"
         app:layout_constraintStart_toStartOf="parent"

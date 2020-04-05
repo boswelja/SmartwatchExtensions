@@ -13,18 +13,19 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.boswelja.devicemanager.R
+import com.boswelja.devicemanager.databinding.FragmentAppShortcutsBinding
 
 class AppShortcutsFragment : Fragment() {
 
+    private lateinit var binding: FragmentAppShortcutsBinding
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_app_shortcuts, container, false)
+        binding = FragmentAppShortcutsBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        view.findViewById<RecyclerView>(R.id.shortcuts_recyclerview).apply {
+        binding.shortcutsRecyclerview.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = AppShortcutsAdapter()
         }

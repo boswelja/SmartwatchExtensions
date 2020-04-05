@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.ui.common.WatchViewHolder
 import com.boswelja.devicemanager.watchconnectionmanager.Watch
+import com.boswelja.devicemanager.watchconnectionmanager.WatchStatus
 
 class WatchManagerAdapter(private val activity: WatchManagerActivity) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -62,15 +63,12 @@ class WatchManagerAdapter(private val activity: WatchManagerActivity) : Recycler
                 val watch = getWatch(position)
                 watchHolder.icon.setImageResource(R.drawable.ic_watch)
                 watchHolder.topLine.text = watch.name
-                watchHolder.bottomLine.text = if (watch.connected) {
-                    if (watch.hasApp) {
-                        context.getString(R.string.watch_status_connected)
-                    } else {
-                        context.getString(R.string.watch_status_missing_app)
-                    }
-                } else {
-                    context.getString(R.string.watch_status_disconnected)
-                }
+                watchHolder.bottomLine.text = context.getString(when (watch.status) {
+                    WatchStatus.CONNECTED -> R.string.watch_status_connected
+                    WatchStatus.DISCONNECTED -> R.string.watch_status_disconnected
+                    WatchStatus.MISSING_APP -> R.string.watch_status_missing_app
+                    else -> R.string.watch_status_error
+                })
                 watchHolder.itemView.setOnClickListener {
                     activity.startWatchInfoActivity(watch)
                 }

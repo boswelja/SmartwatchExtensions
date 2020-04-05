@@ -5,7 +5,7 @@
  * This file, and any part of the Wearable Extensions app/s cannot be copied and/or distributed
  * without permission from Jack Boswell (boswelja) <boswela@outlook.com>
  */
-package com.boswelja.devicemanager
+package com.boswelja.devicemanager.updater
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -15,6 +15,8 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.core.content.edit
 import androidx.preference.PreferenceManager
+import com.boswelja.devicemanager.BuildConfig
+import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.batterysync.BatterySyncJob
 import com.boswelja.devicemanager.batterysync.WatchBatteryUpdateReceiver
 import com.boswelja.devicemanager.common.PreferenceKey
@@ -22,35 +24,33 @@ import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_SYNC_ENABLED_KEY
 import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_SYNC_INTERVAL_KEY
 import com.boswelja.devicemanager.common.References.CAPABILITY_WATCH_APP
 import com.boswelja.devicemanager.common.dndsync.References
+import com.boswelja.devicemanager.watchconnectionmanager.Utils
 import com.boswelja.devicemanager.watchconnectionmanager.Watch
 import com.boswelja.devicemanager.watchconnectionmanager.WatchConnectionService
+import com.boswelja.devicemanager.watchconnectionmanager.database.WatchDatabase
 import com.google.android.gms.tasks.Tasks
 import com.google.android.gms.wearable.CapabilityClient
 import com.google.android.gms.wearable.Wearable
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 
-class EnvironmentUpdater(private val context: Context) {
+class Updater(private val context: Context) {
 
     private val sharedPreferences: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
+
     private val currentAppVersion: Int = BuildConfig.VERSION_CODE
-    private val lastAppVersion: Int
+    private val lastAppVersion: Int = sharedPreferences.getInt(APP_VERSION_KEY, currentAppVersion)
+
+    private val needsUpdate: Boolean get() = lastAppVersion < currentAppVersion
 
     private var notificationChannelsCreated: Boolean = false
 
     init {
-        lastAppVersion = sharedPreferences.getInt(APP_VERSION_KEY, currentAppVersion)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             notificationChannelsCreated = sharedPreferences.getBoolean(NOTIFICATION_CHANNELS_CREATED, false)
         }
     }
 
-    private fun needsUpdate(): Boolean {
-        return lastAppVersion < currentAppVersion
-    }
-
-    private suspend fun doBatterySyncUpdate(watchConnectionManager: WatchConnectionService) {
-        val watches = watchConnectionManager.getRegisteredWatches()
+    private fun doBatterySyncUpdate(database: WatchDatabase) {
+        val watches = database.getWatchesWithPrefs()
         var needsRestart = false
         if (lastAppVersion < 2019120600) {
             val watch = watches[0]
@@ -63,12 +63,10 @@ class EnvironmentUpdater(private val context: Context) {
                 sharedPreferences.edit().remove("job_id_key").apply()
             }
         } else if (lastAppVersion < 2020010500) {
-            withContext(Dispatchers.IO) {
-                for (watch in watches) {
-                    if (watch.boolPrefs[BATTERY_SYNC_ENABLED_KEY] == true) {
-                        BatterySyncJob.stopJob(context, watch.batterySyncJobId)
-                        needsRestart = true
-                    }
+            for (watch in watches) {
+                if (watch.boolPrefs[BATTERY_SYNC_ENABLED_KEY] == true) {
+                    BatterySyncJob.stopJob(context, watch.batterySyncJobId)
+                    needsRestart = true
                 }
             }
         }
@@ -113,33 +111,34 @@ class EnvironmentUpdater(private val context: Context) {
         }
     }
 
-    fun doUpdate(): Int {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && (!notificationChannelsCreated or needsUpdate())) {
+    fun doUpdate(): Result {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && (!notificationChannelsCreated or needsUpdate)) {
             createNotificationChannels()
             sharedPreferences.edit().putBoolean(NOTIFICATION_CHANNELS_CREATED, true).apply()
             notificationChannelsCreated = true
         }
 
-        if (needsUpdate()) {
-            var updateStatus = UPDATE_NOTHING_CHANGED
+        var updateStatus = Result.NOT_NEEDED
+        if (needsUpdate) {
             sharedPreferences.edit(commit = true) {
                 if (lastAppVersion < 2019090243) {
                     remove("connected_watch_name")
-                    updateStatus = UPDATE_SUCCESS
+                    updateStatus = Result.COMPLETED
                 }
                 if (lastAppVersion < 2019110999) {
                     val lastConnectedId = sharedPreferences.getString("connected_watch_id", "")
                     remove("connected_watch_id")
                     putString("last_connected_id", lastConnectedId)
-                    updateStatus = UPDATE_SUCCESS
+                    updateStatus = Result.COMPLETED
                 }
                 if (lastAppVersion < 2020011400) {
                     remove("battery_sync_last_when")
                     remove("battery_sync_enabled")
-                    updateStatus = UPDATE_SUCCESS
+                    updateStatus = Result.COMPLETED
                 }
                 if (lastAppVersion < 2019120600) {
-                    updateStatus = NEEDS_FULL_UPDATE
+                    doFullUpdate()
+                    updateStatus = Result.COMPLETED
                 }
                 if (lastAppVersion < 2020020200) {
                     remove("ignore_battery_opt_warning")
@@ -147,52 +146,51 @@ class EnvironmentUpdater(private val context: Context) {
                 }
                 putInt(APP_VERSION_KEY, lastAppVersion)
             }
-            return updateStatus
         }
-        return UPDATE_NOTHING_CHANGED
+        return updateStatus
     }
 
-    suspend fun doFullUpdate(watchConnectionManager: WatchConnectionService) {
+    private fun doFullUpdate() {
         if (lastAppVersion < 2019120600) {
-            withContext(Dispatchers.IO) {
-                val capableNodes = Tasks.await(Wearable.getCapabilityClient(context)
-                        .getCapability(CAPABILITY_WATCH_APP, CapabilityClient.FILTER_ALL))
-                        .nodes
-                val defaultWatch = capableNodes.firstOrNull { it.isNearby } ?: capableNodes.firstOrNull()
-                if (defaultWatch != null) {
-                    val watch = Watch(defaultWatch)
-                    watchConnectionManager.addWatch(watch)
-                    watchConnectionManager.setConnectedWatchById(watch.id)
-                    sharedPreferences.all.forEach {
-                        if (it.value != null) {
-                            when (it.key) {
-                                PreferenceKey.PHONE_LOCKING_ENABLED_KEY,
-                                BATTERY_SYNC_ENABLED_KEY,
-                                PreferenceKey.BATTERY_PHONE_CHARGE_NOTI_KEY,
-                                PreferenceKey.BATTERY_WATCH_CHARGE_NOTI_KEY,
-                                PreferenceKey.DND_SYNC_TO_PHONE_KEY,
-                                PreferenceKey.DND_SYNC_TO_WATCH_KEY,
-                                PreferenceKey.DND_SYNC_WITH_THEATER_KEY,
-                                PreferenceKey.BATTERY_CHARGE_THRESHOLD_KEY -> {
-                                    watchConnectionManager.updatePrefInDatabase(it.key, it.value!!)
-                                }
+            val messageClient = Wearable.getMessageClient(context)
+            val database = WatchDatabase.open(context)
+
+            val capableNodes = Tasks.await(Wearable.getCapabilityClient(context)
+                    .getCapability(CAPABILITY_WATCH_APP, CapabilityClient.FILTER_ALL))
+                    .nodes
+            val defaultWatch = capableNodes.firstOrNull { it.isNearby } ?: capableNodes.firstOrNull()
+
+            if (defaultWatch != null) {
+                val watch = Watch(defaultWatch)
+                Utils.addWatch(database, messageClient, watch)
+                sharedPreferences.edit {
+                    putString(WatchConnectionService.LAST_CONNECTED_NODE_ID_KEY, watch.id)
+                }
+                sharedPreferences.all.forEach {
+                    if (it.value != null) {
+                        when (it.key) {
+                            PreferenceKey.PHONE_LOCKING_ENABLED_KEY,
+                            BATTERY_SYNC_ENABLED_KEY,
+                            PreferenceKey.BATTERY_PHONE_CHARGE_NOTI_KEY,
+                            PreferenceKey.BATTERY_WATCH_CHARGE_NOTI_KEY,
+                            PreferenceKey.DND_SYNC_TO_PHONE_KEY,
+                            PreferenceKey.DND_SYNC_TO_WATCH_KEY,
+                            PreferenceKey.DND_SYNC_WITH_THEATER_KEY,
+                            PreferenceKey.BATTERY_CHARGE_THRESHOLD_KEY -> {
+                                database.updatePrefInDatabase(watch.id, it.key, it.value!!)
                             }
                         }
                     }
-                    withContext(Dispatchers.Default) {
-                        doBatterySyncUpdate(watchConnectionManager)
-                    }
                 }
+                doBatterySyncUpdate(database)
             }
         }
     }
 
+
+
     companion object {
         private const val APP_VERSION_KEY = "app_version"
         private const val NOTIFICATION_CHANNELS_CREATED = "notification_channels_created"
-
-        const val UPDATE_NOTHING_CHANGED = 0
-        const val UPDATE_SUCCESS = 1
-        const val NEEDS_FULL_UPDATE = 2
     }
 }
