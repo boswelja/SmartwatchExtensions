@@ -108,40 +108,39 @@ class EnvironmentUpdater(private val context: Context) {
         }
     }
 
-    fun doUpdate(): Int {
+    fun doUpdate(): Result {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && (!notificationChannelsCreated or needsUpdate)) {
             createNotificationChannels()
             sharedPreferences.edit().putBoolean(NOTIFICATION_CHANNELS_CREATED, true).apply()
             notificationChannelsCreated = true
         }
 
+        var updateStatus = Result.NOT_NEEDED
         if (needsUpdate) {
-            var updateStatus = UPDATE_NOT_NEEDED
             sharedPreferences.edit(commit = true) {
                 if (lastAppVersion < 2019090243) {
                     remove("connected_watch_name")
-                    updateStatus = UPDATE_COMPLETED
+                    updateStatus = Result.COMPLETED
                 }
                 if (lastAppVersion < 2019110999) {
                     val lastConnectedId = sharedPreferences.getString("connected_watch_id", "")
                     remove("connected_watch_id")
                     putString("last_connected_id", lastConnectedId)
-                    updateStatus = UPDATE_COMPLETED
+                    updateStatus = Result.COMPLETED
                 }
                 if (lastAppVersion < 2020011400) {
                     remove("battery_sync_last_when")
                     remove("battery_sync_enabled")
-                    updateStatus = UPDATE_COMPLETED
+                    updateStatus = Result.COMPLETED
                 }
                 if (lastAppVersion < 2019120600) {
                     doFullUpdate()
-                    updateStatus = UPDATE_COMPLETED
+                    updateStatus = Result.COMPLETED
                 }
                 putInt(APP_VERSION_KEY, lastAppVersion)
             }
-            return updateStatus
         }
-        return UPDATE_NOT_NEEDED
+        return updateStatus
     }
 
     private fun doFullUpdate() {
@@ -181,11 +180,13 @@ class EnvironmentUpdater(private val context: Context) {
         }
     }
 
+    enum class Result {
+        COMPLETED,
+        NOT_NEEDED
+    }
+
     companion object {
         private const val APP_VERSION_KEY = "app_version"
         private const val NOTIFICATION_CHANNELS_CREATED = "notification_channels_created"
-
-        const val UPDATE_NOT_NEEDED = 0
-        const val UPDATE_COMPLETED = 1
     }
 }

@@ -13,7 +13,7 @@ class MainApplication : Application() {
     }
 
     private fun handleUpdates() {
-        if (EnvironmentUpdater(this).doUpdate() == EnvironmentUpdater.UPDATE_COMPLETED) {
+        if (EnvironmentUpdater(this).doUpdate() == EnvironmentUpdater.Result.COMPLETED) {
             PreferenceManager.getDefaultSharedPreferences(this).edit {
                 putBoolean(SHOW_CHANGELOG_KEY, true)
             }
