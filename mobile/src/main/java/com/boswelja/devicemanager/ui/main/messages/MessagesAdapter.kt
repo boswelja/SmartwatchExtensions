@@ -22,7 +22,7 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.Utils
-import com.boswelja.devicemanager.databinding.FragmentMessagesItemBinding
+import com.boswelja.devicemanager.databinding.MessageItemBinding
 import com.boswelja.devicemanager.messages.Message
 import com.boswelja.devicemanager.messages.MessageId
 import kotlin.math.min
@@ -42,7 +42,7 @@ internal class MessagesAdapter(private val fragment: MessageFragment) :
         }
         return MessageItemViewHolder(DataBindingUtil.inflate(
                 inflater!!,
-                R.layout.fragment_messages_item,
+                R.layout.message_item,
                 parent,
                 false))
     }
@@ -105,7 +105,7 @@ internal class MessagesAdapter(private val fragment: MessageFragment) :
         fragment.setHasMessages(itemCount > 0)
     }
 
-    class MessageItemViewHolder(val binding: FragmentMessagesItemBinding) : RecyclerView.ViewHolder(binding.root) {
+    class MessageItemViewHolder(val binding: MessageItemBinding) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(message: Message) {
             binding.actionVisible = message.buttonLabelRes > 0
