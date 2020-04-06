@@ -17,8 +17,6 @@ import kotlinx.coroutines.launch
 
 class BatterySyncPreferenceActivity : BasePreferenceActivity() {
 
-    private val coroutineScope = MainScope()
-
     var batteryStatsDatabase: WatchBatteryStatsDatabase? = null
     var batteryStatsDatabaseEventInterface: BatteryStatsDatabaseEventInterface? = null
 
