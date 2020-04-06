@@ -1,4 +1,4 @@
-/* Copyright (C) 2019 Jack Boswell <boswelja@outlook.com>
+/* Copyright (C) 2020 Jack Boswell <boswelja@outlook.com>
  *
  * This file is part of Wearable Extensions
  *
@@ -11,7 +11,10 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.boswelja.devicemanager.watchconnectionmanager.*
+import com.boswelja.devicemanager.watchconnectionmanager.BoolPreference
+import com.boswelja.devicemanager.watchconnectionmanager.IntPreference
+import com.boswelja.devicemanager.watchconnectionmanager.Watch
+import com.boswelja.devicemanager.watchconnectionmanager.WatchPreferenceChangeInterface
 
 @Database(entities = [Watch::class, IntPreference::class, BoolPreference::class], version = 3)
 abstract class WatchDatabase : RoomDatabase() {

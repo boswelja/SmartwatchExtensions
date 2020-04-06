@@ -1,4 +1,4 @@
-/* Copyright (C) 2019 Jack Boswell <boswelja@outlook.com>
+/* Copyright (C) 2020 Jack Boswell <boswelja@outlook.com>
  *
  * This file is part of Wearable Extensions
  *
@@ -16,12 +16,12 @@ import kotlin.random.Random
 
 @Entity(tableName = "watches")
 data class Watch(
-        @PrimaryKey val id: String,
-        @ColumnInfo(name = "name") val name: String,
-        @ColumnInfo(name = "battery_sync_job_id") val batterySyncJobId: Int,
-        @Ignore val status: WatchStatus,
-        @Ignore val intPrefs: HashMap<String, Int>,
-        @Ignore val boolPrefs: HashMap<String, Boolean>
+    @PrimaryKey val id: String,
+    @ColumnInfo(name = "name") val name: String,
+    @ColumnInfo(name = "battery_sync_job_id") val batterySyncJobId: Int,
+    @Ignore val status: WatchStatus,
+    @Ignore val intPrefs: HashMap<String, Int>,
+    @Ignore val boolPrefs: HashMap<String, Boolean>
 ) {
     constructor (id: String, name: String, batterySyncJobId: Int, status: WatchStatus) : this(id, name, batterySyncJobId, status, HashMap(), HashMap())
 

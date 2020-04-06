@@ -1,4 +1,4 @@
-/* Copyright (C) 2019 Jack Boswell <boswelja@outlook.com>
+/* Copyright (C) 2020 Jack Boswell <boswelja@outlook.com>
  *
  * This file is part of Wearable Extensions
  *
@@ -182,8 +182,6 @@ class Updater(private val context: Context) {
             }
         }
     }
-
-
 
     companion object {
         private const val APP_VERSION_KEY = "app_version"
