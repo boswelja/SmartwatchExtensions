@@ -23,8 +23,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.Utils
 import com.boswelja.devicemanager.databinding.MessageItemBinding
+import com.boswelja.devicemanager.messages.Action
 import com.boswelja.devicemanager.messages.Message
-import com.boswelja.devicemanager.messages.MessageId
 import kotlin.math.min
 
 internal class MessagesAdapter(private val fragment: MessageFragment) :
@@ -55,35 +55,34 @@ internal class MessagesAdapter(private val fragment: MessageFragment) :
         if (message.hasAction) {
             holder.binding.messageActionButton.apply {
                 setOnClickListener {
-                    handleMessageActionClick(holder, message)
+                    handleMessageActionClick(holder.itemView.context, message)
                 }
             }
         }
     }
 
     @SuppressLint("BatteryLife")
-    private fun handleMessageActionClick(holder: MessageItemViewHolder, message: Message) {
-        val context = holder.itemView.context
-        when (message.id) {
-            MessageId.BATTERY_OPT_ENABLED -> {
+    private fun handleMessageActionClick(context: Context, message: Message) {
+        when (message.action) {
+            Action.DISABLE_BATTERY_OPTIMISATION -> {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                     Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS).apply {
-                        data = Uri.parse("package:${context?.packageName}")
+                        data = Uri.parse("package:${context.packageName}")
                     }.also {
                         context.startActivity(it)
                     }
                 }
             }
-            MessageId.BATTERY_NOTIS_DISABLED -> {
+            Action.LAUNCH_NOTIFICATION_SETTINGS -> {
                 Intent().apply {
                     flags = Intent.FLAG_ACTIVITY_NEW_TASK
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                         action = Settings.ACTION_APP_NOTIFICATION_SETTINGS
-                        putExtra(Settings.EXTRA_APP_PACKAGE, context?.packageName!!)
+                        putExtra(Settings.EXTRA_APP_PACKAGE, context.packageName)
                     } else {
                         action = "android.settings.APP_NOTIFICATION_SETTINGS"
-                        putExtra("app_package", context?.packageName!!)
-                        putExtra("app_uid", context.applicationInfo?.uid!!)
+                        putExtra("app_package", context.packageName)
+                        putExtra("app_uid", context.applicationInfo.uid)
                     }
                 }.also { context.startActivity(it) }
             }
