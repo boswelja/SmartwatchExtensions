@@ -81,7 +81,7 @@ class MessageFragment : Fragment() {
         if (messageDatabase != null) {
             coroutineScope.launch {
                 withContext(Dispatchers.IO) {
-                    messageDatabase?.messageDao()?.deleteMessage(message.id)
+                    messageDatabase?.deleteMessage(sharedPreferences, message)
                     withContext(Dispatchers.Main) {
                         setHasMessages(messageDatabase!!.countMessages() > 0)
                     }
@@ -96,7 +96,7 @@ class MessageFragment : Fragment() {
                 if (messageDatabase != null) {
                     coroutineScope.launch {
                         withContext(Dispatchers.IO) {
-                            messageDatabase?.messageDao()?.restoreMessage(message.id)
+                            messageDatabase?.restoreMessage(sharedPreferences, message)
                             withContext(Dispatchers.Main) {
                                 (recyclerView?.adapter as MessagesAdapter).notifyMessage(message)
                                 (activity as MainActivity).updateMessagesBadge()
