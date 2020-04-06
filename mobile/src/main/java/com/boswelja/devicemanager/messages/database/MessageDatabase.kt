@@ -1,6 +1,8 @@
 package com.boswelja.devicemanager.messages.database
 
 import android.content.Context
+import android.content.SharedPreferences
+import androidx.core.content.edit
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
@@ -16,6 +18,13 @@ abstract class MessageDatabase : RoomDatabase() {
         return messageDao().getActiveMessages().size
     }
 
+    fun updateMessageCount(sharedPreferences: SharedPreferences) {
+        val trueCount = countMessages()
+        sharedPreferences.edit {
+            putInt(MESSAGE_COUNT_KEY, trueCount)
+        }
+    }
+
     fun getActiveMessages(): List<Message> {
         return messageDao().getActiveMessages().sortedBy { it.timestamp }
     }
@@ -28,7 +37,15 @@ abstract class MessageDatabase : RoomDatabase() {
         return messageDao().getMessage(messageId) != null
     }
 
-    fun sendMessage(message: Message): Boolean {
+    fun sendMessage(sharedPreferences: SharedPreferences, message: Message): Boolean {
+        val messageSent = sendMessage(message)
+        sharedPreferences.edit {
+            putInt(MESSAGE_COUNT_KEY, sharedPreferences.getInt(MESSAGE_COUNT_KEY, 0) + 1)
+        }
+        return messageSent
+    }
+
+    private fun sendMessage(message: Message): Boolean {
         if (isOpen) {
             messageDao().sendMessage(message)
             return true
@@ -36,7 +53,26 @@ abstract class MessageDatabase : RoomDatabase() {
         return false
     }
 
+    fun deleteMessage(sharedPreferences: SharedPreferences, message: Message): Boolean {
+        val messageDeleted = deleteMessage(message)
+        sharedPreferences.edit {
+            putInt(MESSAGE_COUNT_KEY, sharedPreferences.getInt(MESSAGE_COUNT_KEY, 1) - 1)
+        }
+        return messageDeleted
+    }
+
+    private fun deleteMessage(message: Message): Boolean {
+        if (isOpen) {
+            messageDao().deleteMessage(message.id)
+            return true
+        }
+        return false
+    }
+
     companion object {
+
+        const val MESSAGE_COUNT_KEY = "message_count"
+
         suspend fun open(context: Context): MessageDatabase {
             return withContext(Dispatchers.IO) {
                 return@withContext Room.databaseBuilder(context, MessageDatabase::class.java, "messages-db")
