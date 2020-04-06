@@ -17,7 +17,7 @@ data class Message(
     @DrawableRes val iconRes: Int,
     val label: String,
     val shortLabel: String,
-    val deleted: Boolean,
+    val deleted: Boolean = false,
     val timestamp: Long = System.currentTimeMillis(),
     val desc: String = "",
     val buttonLabel: String = "",
