@@ -38,10 +38,6 @@ abstract class MessageDatabase : RoomDatabase() {
         return messageDao().getDeletedMessages().sortedBy { it.timestamp }
     }
 
-    fun messageExists(messageId: Int): Boolean {
-        return messageDao().getMessage(messageId) != null
-    }
-
     fun sendMessage(sharedPreferences: SharedPreferences, message: Message): Boolean {
         val messageSent = sendMessage(message)
         sharedPreferences.edit {
