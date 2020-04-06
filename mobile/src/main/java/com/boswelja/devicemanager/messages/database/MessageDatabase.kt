@@ -73,11 +73,9 @@ abstract class MessageDatabase : RoomDatabase() {
 
         const val MESSAGE_COUNT_KEY = "message_count"
 
-        suspend fun open(context: Context): MessageDatabase {
-            return withContext(Dispatchers.IO) {
-                return@withContext Room.databaseBuilder(context, MessageDatabase::class.java, "messages-db")
-                        .build()
-            }
+        fun open(context: Context): MessageDatabase {
+            return Room.databaseBuilder(context, MessageDatabase::class.java, "messages-db")
+                    .build()
         }
     }
 }
