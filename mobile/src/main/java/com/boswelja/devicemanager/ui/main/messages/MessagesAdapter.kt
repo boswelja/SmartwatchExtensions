@@ -52,7 +52,7 @@ internal class MessagesAdapter(private val fragment: MessageFragment) :
 
         holder.bind(message)
 
-        if (holder.binding.actionVisible) {
+        if (message.hasAction) {
             holder.binding.messageActionButton.apply {
                 setOnClickListener {
                     handleMessageActionClick(holder, message)
@@ -108,7 +108,6 @@ internal class MessagesAdapter(private val fragment: MessageFragment) :
     class MessageItemViewHolder(val binding: MessageItemBinding) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(message: Message) {
-            binding.actionVisible = message.buttonLabelRes > 0
             binding.message = message
         }
     }

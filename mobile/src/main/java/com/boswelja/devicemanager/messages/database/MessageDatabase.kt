@@ -15,7 +15,7 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.boswelja.devicemanager.messages.Message
 
-@Database(entities = [Message::class], version = 2)
+@Database(entities = [Message::class], version = 3)
 abstract class MessageDatabase : RoomDatabase() {
     abstract fun messageDao(): MessageDao
 
