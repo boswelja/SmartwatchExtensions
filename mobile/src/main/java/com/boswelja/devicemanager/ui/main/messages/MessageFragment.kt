@@ -9,7 +9,6 @@ package com.boswelja.devicemanager.ui.main.messages
 
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -105,20 +104,16 @@ class MessageFragment : Fragment() {
     }
 
     private fun refreshMessages() {
-        Log.i("MessageFragment", "Refreshing messages")
         coroutineScope.launch {
             withContext(Dispatchers.IO) {
                 val messages = messageDatabase?.getActiveMessages()
                 withContext(Dispatchers.Main) {
                     if (!messages.isNullOrEmpty()) {
-                        Log.i("MessageFragment", "Found ${messages.count()} messages")
-
                         for (message in messages) {
                             (binding.messagesRecyclerview.adapter as MessagesAdapter).notifyMessage(message)
                         }
                         setHasMessages(true)
                     } else {
-                        Log.i("MessageFragment", "No messages")
                         setHasMessages(false)
                     }
                 }
