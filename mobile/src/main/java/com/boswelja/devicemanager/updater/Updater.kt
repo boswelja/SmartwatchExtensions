@@ -192,6 +192,7 @@ class Updater(private val context: Context) {
                 }
                 doBatterySyncUpdate(database)
             }
+            database.close()
         }
     }
 
