@@ -12,11 +12,12 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "messages")
 data class Message(
-        @PrimaryKey val id: Int,
-        val iconRes: Int,
-        val labelRes: Int,
-        val shortLabelRes: Int,
-        val deleted: Boolean,
-        val timestamp: Long = System.currentTimeMillis(),
-        val descRes: Int = 0,
-        val buttonLabelRes: Int = 0)
+    @PrimaryKey val id: Int,
+    val iconRes: Int,
+    val labelRes: Int,
+    val shortLabelRes: Int,
+    val deleted: Boolean,
+    val timestamp: Long = System.currentTimeMillis(),
+    val descRes: Int = 0,
+    val buttonLabelRes: Int = 0
+)

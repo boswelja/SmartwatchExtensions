@@ -195,8 +195,6 @@ class Updater(private val context: Context) {
         }
     }
 
-
-
     companion object {
         private const val APP_VERSION_KEY = "app_version"
         private const val NOTIFICATION_CHANNELS_CREATED = "notification_channels_created"
