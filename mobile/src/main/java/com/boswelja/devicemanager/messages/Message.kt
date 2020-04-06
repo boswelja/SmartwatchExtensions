@@ -14,15 +14,15 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "messages")
 data class Message(
-        @DrawableRes val iconRes: Int,
-        val label: String,
-        val shortLabel: String,
-        val deleted: Boolean,
-        val timestamp: Long = System.currentTimeMillis(),
-        val desc: String = "",
-        val buttonLabel: String = "",
-        val action: Int = Action.NONE,
-        @PrimaryKey(autoGenerate = true) val id: Int = 0
+    @DrawableRes val iconRes: Int,
+    val label: String,
+    val shortLabel: String,
+    val deleted: Boolean,
+    val timestamp: Long = System.currentTimeMillis(),
+    val desc: String = "",
+    val buttonLabel: String = "",
+    val action: Int = Action.NONE,
+    @PrimaryKey(autoGenerate = true) val id: Int = 0
 ) {
     @Ignore val hasAction: Boolean = action != Action.NONE
 }
