@@ -9,6 +9,7 @@ package com.boswelja.devicemanager.ui.main.messages
 
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -41,11 +42,7 @@ class MessageFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
-        coroutineScope.launch {
-            withContext(Dispatchers.IO) {
-                messageDatabase = MessageDatabase.open(context!!)
-            }
-        }
+        messageDatabase = MessageDatabase.open(context!!)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -62,21 +59,8 @@ class MessageFragment : Fragment() {
             val itemTouchHelper = ItemTouchHelper(MessagesAdapter.SwipeDismissCallback(it.adapter as MessagesAdapter, context!!))
             itemTouchHelper.attachToRecyclerView(it)
         }
-        coroutineScope.launch {
-            withContext(Dispatchers.IO) {
-                val messages = messageDatabase?.getActiveMessages()
-                withContext(Dispatchers.Main) {
-                    if (!messages.isNullOrEmpty()) {
-                        for (message in messages) {
-                            (binding.messagesRecyclerview.adapter as MessagesAdapter).notifyMessage(message)
-                        }
-                        setHasMessages(true)
-                    } else {
-                        setHasMessages(false)
-                    }
-                }
-            }
-        }
+
+        refreshMessages()
     }
 
     internal fun dismissMessage(message: Message) {
@@ -116,6 +100,28 @@ class MessageFragment : Fragment() {
                 View.GONE
             } else {
                 View.VISIBLE
+            }
+        }
+    }
+
+    private fun refreshMessages() {
+        Log.i("MessageFragment", "Refreshing messages")
+        coroutineScope.launch {
+            withContext(Dispatchers.IO) {
+                val messages = messageDatabase?.getActiveMessages()
+                withContext(Dispatchers.Main) {
+                    if (!messages.isNullOrEmpty()) {
+                        Log.i("MessageFragment", "Found ${messages.count()} messages")
+
+                        for (message in messages) {
+                            (binding.messagesRecyclerview.adapter as MessagesAdapter).notifyMessage(message)
+                        }
+                        setHasMessages(true)
+                    } else {
+                        Log.i("MessageFragment", "No messages")
+                        setHasMessages(false)
+                    }
+                }
             }
         }
     }

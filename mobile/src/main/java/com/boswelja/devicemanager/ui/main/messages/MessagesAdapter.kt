@@ -92,12 +92,13 @@ internal class MessagesAdapter(private val fragment: MessageFragment) :
     fun notifyMessage(message: Message) {
         if (!messages.contains(message)) {
             messages.add(message)
+            messages.sortBy { it.timestamp }
             notifyItemInserted(messages.indexOf(message))
             fragment.setHasMessages(itemCount > 0)
         }
     }
 
-    internal fun dismissMessage(position: Int) {
+    fun dismissMessage(position: Int) {
         fragment.dismissMessage(messages[position])
         messages.removeAt(position)
         notifyItemRemoved(position)
