@@ -445,16 +445,20 @@ class WatchConnectionService :
 
     private fun ensureWatchRegistered(node: Node) {
         coroutineScope.launch {
-            withContext(Dispatchers.IO) {
-                if (database.watchDao().findById(node.id) == null) {
-                    val newWatch = Watch(node)
-                    database.watchDao().add(newWatch)
-                    withContext(Dispatchers.Main) {
-                        for (connectionInterface in watchConnectionInterfaces) {
-                            connectionInterface.onWatchAdded(newWatch)
+            try {
+                withContext(Dispatchers.IO) {
+                    if (database.watchDao().findById(node.id) == null) {
+                        val newWatch = Watch(node)
+                        database.watchDao().add(newWatch)
+                        withContext(Dispatchers.Main) {
+                            for (connectionInterface in watchConnectionInterfaces) {
+                                connectionInterface.onWatchAdded(newWatch)
+                            }
                         }
                     }
                 }
+            } catch (e: IllegalStateException) {
+                e.printStackTrace()
             }
         }
     }
