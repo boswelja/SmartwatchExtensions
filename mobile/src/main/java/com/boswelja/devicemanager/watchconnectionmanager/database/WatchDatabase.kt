@@ -76,7 +76,9 @@ abstract class WatchDatabase : RoomDatabase() {
     }
 
     companion object {
-        fun open(context: Context): WatchDatabase =
-                Room.databaseBuilder(context, WatchDatabase::class.java, "watch-db").build()
+        fun open(context: Context, allowMainThreadQueries: Boolean = false): WatchDatabase =
+                Room.databaseBuilder(context, WatchDatabase::class.java, "watch-db").apply {
+                    if (allowMainThreadQueries) allowMainThreadQueries()
+                }.build()
     }
 }

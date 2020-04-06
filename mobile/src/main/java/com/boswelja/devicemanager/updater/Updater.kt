@@ -161,7 +161,7 @@ class Updater(private val context: Context) {
     private fun doFullUpdate() {
         if (lastAppVersion < 2019120600) {
             val messageClient = Wearable.getMessageClient(context)
-            val database = WatchDatabase.open(context)
+            val database = WatchDatabase.open(context, allowMainThreadQueries = true)
 
             val capableNodes = Tasks.await(Wearable.getCapabilityClient(context)
                     .getCapability(CAPABILITY_WATCH_APP, CapabilityClient.FILTER_ALL))
