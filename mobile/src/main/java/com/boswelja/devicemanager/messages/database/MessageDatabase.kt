@@ -62,6 +62,17 @@ abstract class MessageDatabase : RoomDatabase() {
         return messageDeleted
     }
 
+    fun restoreMessage(sharedPreferences: SharedPreferences, message: Message): Boolean {
+        if (isOpen) {
+            messageDao().restoreMessage(message.id)
+            sharedPreferences.edit {
+                putInt(MESSAGE_COUNT_KEY, sharedPreferences.getInt(MESSAGE_COUNT_KEY, 0) + 1)
+            }
+            return true
+        }
+        return false
+    }
+
     private fun deleteMessage(message: Message): Boolean {
         if (isOpen) {
             messageDao().deleteMessage(message.id)
