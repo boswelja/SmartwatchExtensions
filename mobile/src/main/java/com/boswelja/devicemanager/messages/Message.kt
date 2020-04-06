@@ -7,19 +7,21 @@
  */
 package com.boswelja.devicemanager.messages
 
+import androidx.annotation.DrawableRes
 import androidx.room.Entity
 import androidx.room.Ignore
 import androidx.room.PrimaryKey
 
 @Entity(tableName = "messages")
 data class Message(
-    @PrimaryKey val id: Int,
-    val iconRes: Int,
-    val label: String,
-    val shortLabel: String,
-    val deleted: Boolean,
-    val timestamp: Long = System.currentTimeMillis(),
-    val desc: String = "",
-    val buttonLabel: String = "",
+        @PrimaryKey val id: Int,
+        @DrawableRes val iconRes: Int,
+        val label: String,
+        val shortLabel: String,
+        val deleted: Boolean,
+        val timestamp: Long = System.currentTimeMillis(),
+        val desc: String = "",
+        val buttonLabel: String = ""
+) {
     @Ignore val hasAction: Boolean = buttonLabel.isNotEmpty()
-)
+}

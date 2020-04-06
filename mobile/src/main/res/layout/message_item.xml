@@ -23,7 +23,7 @@
             android:id="@+id/message_icon"
             android:layout_width="24dp"
             android:layout_height="24dp"
-            app:srcCompat="@{message.iconRes}"
+            android:src="@{message.iconRes}"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -84,5 +84,4 @@
 
         </RelativeLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
-
 </layout>
