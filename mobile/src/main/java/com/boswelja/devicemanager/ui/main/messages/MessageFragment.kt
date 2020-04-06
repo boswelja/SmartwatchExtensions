@@ -69,20 +69,12 @@ class MessageFragment : Fragment() {
                     for (message in messages) {
                         (recyclerView!!.adapter as MessagesAdapter).notifyMessage(message)
                     }
+                    setHasMessages(true)
+                } else {
+                    setHasMessages(false)
                 }
-                setHasMessages(!messages.isNullOrEmpty())
             }
         }
-    }
-
-    override fun onResume() {
-        super.onResume()
-        (activity as MainActivity).updateMessagesBadge()
-    }
-
-    override fun onPause() {
-        super.onPause()
-        (activity as MainActivity).updateMessagesBadge()
     }
 
     internal fun dismissMessage(message: Message) {
@@ -96,6 +88,7 @@ class MessageFragment : Fragment() {
                 }
             }
         }
+        (activity as MainActivity).updateMessagesBadge()
         Snackbar.make(view!!,
                 getString(R.string.message_snackbar_undo_remove),
                 Snackbar.LENGTH_LONG).apply {
@@ -106,6 +99,7 @@ class MessageFragment : Fragment() {
                             messageDatabase?.messageDao()?.restoreMessage(message.id)
                             withContext(Dispatchers.Main) {
                                 (recyclerView?.adapter as MessagesAdapter).notifyMessage(message)
+                                (activity as MainActivity).updateMessagesBadge()
                             }
                         }
                     }
