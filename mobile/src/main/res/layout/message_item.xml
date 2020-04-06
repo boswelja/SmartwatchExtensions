@@ -23,7 +23,7 @@
             android:id="@+id/message_icon"
             android:layout_width="24dp"
             android:layout_height="24dp"
-            android:src="@{message.iconRes}"
+            android:src="@{context.getDrawable(message.iconRes)}"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
