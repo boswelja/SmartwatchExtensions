@@ -12,14 +12,14 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
+import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.boswelja.devicemanager.R
+import com.boswelja.devicemanager.databinding.FragmentMessagesBinding
 import com.boswelja.devicemanager.messages.Message
 import com.boswelja.devicemanager.messages.database.MessageDatabase
 import com.boswelja.devicemanager.ui.main.MainActivity
@@ -32,9 +32,7 @@ import kotlinx.coroutines.withContext
 class MessageFragment : Fragment() {
 
     private lateinit var sharedPreferences: SharedPreferences
-
-    private var recyclerView: RecyclerView? = null
-    private var noMessagesView: LinearLayout? = null
+    private lateinit var binding: FragmentMessagesBinding
 
     private var messageDatabase: MessageDatabase? = null
 
@@ -44,17 +42,19 @@ class MessageFragment : Fragment() {
         super.onCreate(savedInstanceState)
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
         coroutineScope.launch {
-            messageDatabase = MessageDatabase.open(context!!)
+            withContext(Dispatchers.IO) {
+                messageDatabase = MessageDatabase.open(context!!)
+            }
         }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_messages, container, false)
+        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_messages, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        noMessagesView = view.findViewById(R.id.no_messages_view)
-        recyclerView = view.findViewById<RecyclerView>(R.id.messages_recyclerview).apply {
+        binding.messagesRecyclerview.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = MessagesAdapter(this@MessageFragment)
             addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
@@ -65,13 +65,15 @@ class MessageFragment : Fragment() {
         coroutineScope.launch {
             withContext(Dispatchers.IO) {
                 val messages = messageDatabase?.getActiveMessages()
-                if (!messages.isNullOrEmpty()) {
-                    for (message in messages) {
-                        (recyclerView!!.adapter as MessagesAdapter).notifyMessage(message)
+                withContext(Dispatchers.Main) {
+                    if (!messages.isNullOrEmpty()) {
+                        for (message in messages) {
+                            (binding.messagesRecyclerview.adapter as MessagesAdapter).notifyMessage(message)
+                        }
+                        setHasMessages(true)
+                    } else {
+                        setHasMessages(false)
                     }
-                    setHasMessages(true)
-                } else {
-                    setHasMessages(false)
                 }
             }
         }
@@ -98,7 +100,7 @@ class MessageFragment : Fragment() {
                         withContext(Dispatchers.IO) {
                             messageDatabase?.restoreMessage(sharedPreferences, message)
                             withContext(Dispatchers.Main) {
-                                (recyclerView?.adapter as MessagesAdapter).notifyMessage(message)
+                                (binding.messagesRecyclerview.adapter as MessagesAdapter).notifyMessage(message)
                                 (activity as MainActivity).updateMessagesBadge()
                             }
                         }
@@ -109,7 +111,7 @@ class MessageFragment : Fragment() {
     }
 
     internal fun setHasMessages(hasMessages: Boolean) {
-        noMessagesView!!.apply {
+        binding.noMessagesView.apply {
             visibility = if (hasMessages) {
                 View.GONE
             } else {

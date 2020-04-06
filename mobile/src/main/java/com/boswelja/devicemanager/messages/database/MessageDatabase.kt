@@ -39,14 +39,11 @@ abstract class MessageDatabase : RoomDatabase() {
     }
 
     fun sendMessage(sharedPreferences: SharedPreferences, message: Message): Boolean {
-        if (isOpen) {
-            messageDao().sendMessage(message)
-            sharedPreferences.edit {
-                putInt(MESSAGE_COUNT_KEY, sharedPreferences.getInt(MESSAGE_COUNT_KEY, 0) + 1)
-            }
-            return true
+        messageDao().sendMessage(message)
+        sharedPreferences.edit {
+            putInt(MESSAGE_COUNT_KEY, sharedPreferences.getInt(MESSAGE_COUNT_KEY, 0) + 1)
         }
-        return false
+        return true
     }
 
     fun deleteMessage(sharedPreferences: SharedPreferences, message: Message): Boolean {
