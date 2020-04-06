@@ -39,32 +39,8 @@ abstract class MessageDatabase : RoomDatabase() {
     }
 
     fun sendMessage(sharedPreferences: SharedPreferences, message: Message): Boolean {
-        val messageSent = sendMessage(message)
-        sharedPreferences.edit {
-            putInt(MESSAGE_COUNT_KEY, sharedPreferences.getInt(MESSAGE_COUNT_KEY, 0) + 1)
-        }
-        return messageSent
-    }
-
-    private fun sendMessage(message: Message): Boolean {
         if (isOpen) {
             messageDao().sendMessage(message)
-            return true
-        }
-        return false
-    }
-
-    fun deleteMessage(sharedPreferences: SharedPreferences, message: Message): Boolean {
-        val messageDeleted = deleteMessage(message)
-        sharedPreferences.edit {
-            putInt(MESSAGE_COUNT_KEY, sharedPreferences.getInt(MESSAGE_COUNT_KEY, 1) - 1)
-        }
-        return messageDeleted
-    }
-
-    fun restoreMessage(sharedPreferences: SharedPreferences, message: Message): Boolean {
-        if (isOpen) {
-            messageDao().restoreMessage(message.id)
             sharedPreferences.edit {
                 putInt(MESSAGE_COUNT_KEY, sharedPreferences.getInt(MESSAGE_COUNT_KEY, 0) + 1)
             }
@@ -73,9 +49,23 @@ abstract class MessageDatabase : RoomDatabase() {
         return false
     }
 
-    private fun deleteMessage(message: Message): Boolean {
+    fun deleteMessage(sharedPreferences: SharedPreferences, message: Message): Boolean {
         if (isOpen) {
             messageDao().deleteMessage(message.id)
+            sharedPreferences.edit {
+                putInt(MESSAGE_COUNT_KEY, sharedPreferences.getInt(MESSAGE_COUNT_KEY, 1) - 1)
+            }
+            return true
+        }
+        return false
+    }
+
+    fun restoreMessage(sharedPreferences: SharedPreferences, message: Message): Boolean {
+        if (isOpen) {
+            messageDao().restoreMessage(message.id)
+            sharedPreferences.edit {
+                putInt(MESSAGE_COUNT_KEY, sharedPreferences.getInt(MESSAGE_COUNT_KEY, 0) + 1)
+            }
             return true
         }
         return false
