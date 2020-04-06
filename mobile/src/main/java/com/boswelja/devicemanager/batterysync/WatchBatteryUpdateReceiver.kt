@@ -14,10 +14,14 @@ import androidx.core.app.NotificationCompat
 import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.batterysync.database.WatchBatteryStatsDatabase
+import com.boswelja.devicemanager.common.Compat
 import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_CHARGED_NOTI_SENT
 import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_CHARGE_THRESHOLD_KEY
 import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_WATCH_CHARGE_NOTI_KEY
 import com.boswelja.devicemanager.common.batterysync.References.BATTERY_STATUS_PATH
+import com.boswelja.devicemanager.messages.Action
+import com.boswelja.devicemanager.messages.Message
+import com.boswelja.devicemanager.messages.database.MessageDatabase
 import com.boswelja.devicemanager.watchconnectionmanager.WatchConnectionService
 import com.boswelja.devicemanager.widgetdb.WidgetDatabase
 import com.google.android.gms.wearable.MessageEvent
@@ -85,15 +89,31 @@ class WatchBatteryUpdateReceiver : WearableListenerService() {
     }
 
     private fun sendChargedNoti(watchName: String, chargeThreshold: Int) {
-        (getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager).also { notificationManager ->
-            NotificationCompat.Builder(this, BATTERY_CHARGED_NOTI_CHANNEL_ID)
-                    .setSmallIcon(R.drawable.battery_full)
-                    .setContentTitle(getString(R.string.device_charged_noti_title, watchName))
-                    .setContentText(getString(R.string.device_charged_noti_desc).format(watchName, chargeThreshold))
-                    .setLocalOnly(true)
-                    .build().also { notification ->
-                        notificationManager.notify(BATTERY_CHARGED_NOTI_ID, notification)
-                    }
+        if (Compat.areNotificationsEnabled(this, BATTERY_CHARGED_NOTI_CHANNEL_ID)) {
+            (getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager).also { notificationManager ->
+                NotificationCompat.Builder(this, BATTERY_CHARGED_NOTI_CHANNEL_ID)
+                        .setSmallIcon(R.drawable.battery_full)
+                        .setContentTitle(getString(R.string.device_charged_noti_title, watchName))
+                        .setContentText(getString(R.string.device_charged_noti_desc).format(watchName, chargeThreshold))
+                        .setLocalOnly(true)
+                        .build().also { notification ->
+                            notificationManager.notify(BATTERY_CHARGED_NOTI_ID, notification)
+                        }
+            }
+        } else {
+            MessageDatabase.open(this).apply {
+                val message = Message(
+                        iconRes = R.drawable.pref_ic_warning,
+                        label = getString(R.string.message_watch_charge_noti_warning_label),
+                        shortLabel = getString(R.string.message_watch_charge_noti_warning_label_short),
+                        desc = getString(R.string.message_watch_charge_noti_warning_desc),
+                        buttonLabel = getString(R.string.message_watch_charge_noti_warning_button_label),
+                        action = Action.LAUNCH_NOTIFICATION_SETTINGS
+                )
+                sendMessage(sharedPreferences, message)
+            }.also {
+                it.close()
+            }
         }
     }
 

@@ -24,6 +24,7 @@ import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_SYNC_ENABLED_KEY
 import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_SYNC_INTERVAL_KEY
 import com.boswelja.devicemanager.common.References.CAPABILITY_WATCH_APP
 import com.boswelja.devicemanager.common.dndsync.References
+import com.boswelja.devicemanager.messages.database.MessageDatabase
 import com.boswelja.devicemanager.watchconnectionmanager.Utils
 import com.boswelja.devicemanager.watchconnectionmanager.Watch
 import com.boswelja.devicemanager.watchconnectionmanager.WatchConnectionService
@@ -139,6 +140,17 @@ class Updater(private val context: Context) {
                 if (lastAppVersion < 2019120600) {
                     doFullUpdate()
                     updateStatus = Result.COMPLETED
+                }
+                if (lastAppVersion < 2020020200) {
+                    remove("ignore_battery_opt_warning")
+                    remove("ignore_watch_charge_warning")
+                }
+                if (lastAppVersion < 2020040600) {
+                    MessageDatabase.open(context).apply {
+                        updateMessageCount(sharedPreferences)
+                    }.also {
+                        it.close()
+                    }
                 }
                 putInt(APP_VERSION_KEY, lastAppVersion)
             }

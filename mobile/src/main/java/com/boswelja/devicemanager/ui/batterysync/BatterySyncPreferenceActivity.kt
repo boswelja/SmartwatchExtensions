@@ -12,12 +12,9 @@ import androidx.fragment.app.Fragment
 import com.boswelja.devicemanager.batterysync.database.WatchBatteryStatsDatabase
 import com.boswelja.devicemanager.ui.base.BasePreferenceActivity
 import com.boswelja.devicemanager.ui.base.BasePreferenceFragment
-import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 
 class BatterySyncPreferenceActivity : BasePreferenceActivity() {
-
-    private val coroutineScope = MainScope()
 
     var batteryStatsDatabase: WatchBatteryStatsDatabase? = null
     var batteryStatsDatabaseEventInterface: BatteryStatsDatabaseEventInterface? = null

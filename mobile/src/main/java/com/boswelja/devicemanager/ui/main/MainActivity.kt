@@ -12,13 +12,13 @@ import androidx.fragment.app.Fragment
 import com.boswelja.devicemanager.MainApplication.Companion.SHOW_CHANGELOG_KEY
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.PreferenceKey
+import com.boswelja.devicemanager.messages.database.MessageDatabase.Companion.MESSAGE_COUNT_KEY
 import com.boswelja.devicemanager.ui.base.BasePreferenceActivity.Companion.EXTRA_PREFERENCE_KEY
 import com.boswelja.devicemanager.ui.base.BaseWatchPickerActivity
 import com.boswelja.devicemanager.ui.changelog.ChangelogDialogFragment
 import com.boswelja.devicemanager.ui.main.appinfo.AppInfoFragment
 import com.boswelja.devicemanager.ui.main.appsettings.AppSettingsFragment
 import com.boswelja.devicemanager.ui.main.extensions.ExtensionsFragment
-import com.boswelja.devicemanager.ui.main.messages.MessageChecker
 import com.boswelja.devicemanager.ui.main.messages.MessageFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
@@ -113,7 +113,7 @@ class MainActivity : BaseWatchPickerActivity() {
     }
 
     fun updateMessagesBadge() {
-        val messageCount = MessageChecker.countMessages(this)
+        val messageCount = sharedPreferences.getInt(MESSAGE_COUNT_KEY, 0)
         bottomNavigationView.getOrCreateBadge(R.id.messages_navigation).apply {
             number = messageCount
             isVisible = messageCount > 0

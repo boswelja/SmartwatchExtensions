@@ -12,36 +12,45 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
+import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.boswelja.devicemanager.R
+import com.boswelja.devicemanager.databinding.FragmentMessagesBinding
+import com.boswelja.devicemanager.messages.Message
+import com.boswelja.devicemanager.messages.database.MessageDatabase
 import com.boswelja.devicemanager.ui.main.MainActivity
 import com.google.android.material.snackbar.Snackbar
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class MessageFragment : Fragment() {
 
     private lateinit var sharedPreferences: SharedPreferences
+    private lateinit var binding: FragmentMessagesBinding
 
-    private var recyclerView: RecyclerView? = null
-    private var noMessagesView: LinearLayout? = null
+    private var messageDatabase: MessageDatabase? = null
+
+    private val coroutineScope = MainScope()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
+        messageDatabase = MessageDatabase.open(context!!)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_messages, container, false)
+        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_messages, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        noMessagesView = view.findViewById(R.id.no_messages_view)
-        recyclerView = view.findViewById<RecyclerView>(R.id.messages_recyclerview).apply {
+        binding.messagesRecyclerview.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = MessagesAdapter(this@MessageFragment)
             addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
@@ -49,58 +58,35 @@ class MessageFragment : Fragment() {
             val itemTouchHelper = ItemTouchHelper(MessagesAdapter.SwipeDismissCallback(it.adapter as MessagesAdapter, context!!))
             itemTouchHelper.attachToRecyclerView(it)
         }
-    }
 
-    override fun onResume() {
-        super.onResume()
-        checkBatteryOptimisation()
-        checkWatchChargeNoti()
-        (activity as MainActivity).updateMessagesBadge()
-    }
-
-    override fun onPause() {
-        super.onPause()
-        (activity as MainActivity).updateMessagesBadge()
-    }
-
-    private fun checkBatteryOptimisation() {
-        val shouldShowMessage = MessageChecker.shouldShowBatteryOptMessage(context!!)
-        if (shouldShowMessage) {
-            (recyclerView?.adapter as MessagesAdapter).notifyMessage(Message.BatteryOptWarning)
-        } else {
-            (recyclerView?.adapter as MessagesAdapter).dismissMessage(Message.BatteryOptWarning)
-        }
-    }
-
-    private fun checkWatchChargeNoti() {
-        val shouldShowMessage = MessageChecker.shouldShowWatchChargeNotiMessage(context!!)
-        if (shouldShowMessage) {
-            (recyclerView?.adapter as MessagesAdapter).notifyMessage(Message.WatchChargeNotiWarning)
-        } else {
-            (recyclerView?.adapter as MessagesAdapter).dismissMessage(Message.WatchChargeNotiWarning)
-        }
+        refreshMessages()
     }
 
     internal fun dismissMessage(message: Message) {
-        when (message) {
-            Message.BatteryOptWarning ->
-                MessageChecker.setIgnoreBatteryOpt(context!!, true)
-            Message.WatchChargeNotiWarning -> {
-                MessageChecker.setIgnoreWatchCharge(context!!, true)
+        if (messageDatabase != null) {
+            coroutineScope.launch {
+                withContext(Dispatchers.IO) {
+                    messageDatabase?.deleteMessage(sharedPreferences, message)
+                    withContext(Dispatchers.Main) {
+                        setHasMessages(messageDatabase!!.countMessages() > 0)
+                    }
+                }
             }
         }
+        (activity as MainActivity).updateMessagesBadge()
         Snackbar.make(view!!,
-                getString(R.string.message_snackbar_undo_remove).format(getString(message.shortLabelRes)),
-                Snackbar.LENGTH_INDEFINITE).apply {
+                getString(R.string.message_snackbar_undo_remove),
+                Snackbar.LENGTH_LONG).apply {
             setAction(R.string.snackbar_action_undo) {
-                when (message) {
-                    Message.BatteryOptWarning -> {
-                        MessageChecker.setIgnoreBatteryOpt(context, false)
-                        checkBatteryOptimisation()
-                    }
-                    Message.WatchChargeNotiWarning -> {
-                        MessageChecker.setIgnoreWatchCharge(context, false)
-                        checkWatchChargeNoti()
+                if (messageDatabase != null) {
+                    coroutineScope.launch {
+                        withContext(Dispatchers.IO) {
+                            messageDatabase?.restoreMessage(sharedPreferences, message)
+                            withContext(Dispatchers.Main) {
+                                (binding.messagesRecyclerview.adapter as MessagesAdapter).notifyMessage(message)
+                                (activity as MainActivity).updateMessagesBadge()
+                            }
+                        }
                     }
                 }
             }
@@ -108,11 +94,29 @@ class MessageFragment : Fragment() {
     }
 
     internal fun setHasMessages(hasMessages: Boolean) {
-        noMessagesView!!.apply {
+        binding.noMessagesView.apply {
             visibility = if (hasMessages) {
                 View.GONE
             } else {
                 View.VISIBLE
+            }
+        }
+    }
+
+    private fun refreshMessages() {
+        coroutineScope.launch {
+            withContext(Dispatchers.IO) {
+                val messages = messageDatabase?.getActiveMessages()
+                withContext(Dispatchers.Main) {
+                    if (!messages.isNullOrEmpty()) {
+                        for (message in messages) {
+                            (binding.messagesRecyclerview.adapter as MessagesAdapter).notifyMessage(message)
+                        }
+                        setHasMessages(true)
+                    } else {
+                        setHasMessages(false)
+                    }
+                }
             }
         }
     }
