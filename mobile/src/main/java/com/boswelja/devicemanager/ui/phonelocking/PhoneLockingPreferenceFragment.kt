@@ -9,7 +9,7 @@ import androidx.preference.SwitchPreference
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.Utils
 import com.boswelja.devicemanager.common.PreferenceKey
-import com.boswelja.devicemanager.receiver.DeviceAdminChangeReceiver
+import com.boswelja.devicemanager.phonelocking.DeviceAdminChangeReceiver
 import com.boswelja.devicemanager.ui.base.BasePreferenceFragment
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch

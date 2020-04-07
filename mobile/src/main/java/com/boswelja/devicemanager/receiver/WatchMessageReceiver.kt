@@ -24,6 +24,7 @@ import com.boswelja.devicemanager.common.dndsync.References.REQUEST_INTERRUPT_FI
 import com.boswelja.devicemanager.common.setup.References.CHECK_WATCH_REGISTERED_PATH
 import com.boswelja.devicemanager.common.setup.References.WATCH_NOT_REGISTERED_PATH
 import com.boswelja.devicemanager.common.setup.References.WATCH_REGISTERED_PATH
+import com.boswelja.devicemanager.phonelocking.DeviceAdminChangeReceiver
 import com.boswelja.devicemanager.ui.base.BasePreferenceActivity.Companion.EXTRA_PREFERENCE_KEY
 import com.boswelja.devicemanager.ui.batterysync.BatterySyncPreferenceActivity
 import com.boswelja.devicemanager.ui.dndsync.DnDSyncPreferenceActivity

@@ -66,7 +66,7 @@
             android:exported="false" />
 
         <receiver
-            android:name=".receiver.DeviceAdminChangeReceiver"
+            android:name=".phonelocking.DeviceAdminChangeReceiver"
             android:description="@string/device_admin_desc"
             android:label="@string/device_admin_label"
             android:permission="android.permission.BIND_DEVICE_ADMIN">
@@ -78,6 +78,14 @@
                 <action android:name="android.app.action.DEVICE_ADMIN_ENABLED" />
             </intent-filter>
         </receiver>
+        <service android:name=".phonelocking.PhoneLockingAccessibilityService">
+            <meta-data
+                android:name="android.accessibilityservice"
+                android:resource="@xml/phone_locking_accessibility_service" />
+            <intent-filter>
+                <action android:name="android.accessibilityservice.AccessibilityService" />
+            </intent-filter>
+        </service>
 
         <receiver
             android:name=".receiver.BootReceiver"
