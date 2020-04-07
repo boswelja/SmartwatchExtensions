@@ -25,6 +25,7 @@ import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_SYNC_INTERVAL_KEY
 import com.boswelja.devicemanager.common.References.CAPABILITY_WATCH_APP
 import com.boswelja.devicemanager.common.dndsync.References
 import com.boswelja.devicemanager.messages.database.MessageDatabase
+import com.boswelja.devicemanager.ui.phonelocking.PhoneLockingPreferenceFragment.Companion.PHONE_LOCKING_MODE_KEY
 import com.boswelja.devicemanager.watchconnectionmanager.Utils
 import com.boswelja.devicemanager.watchconnectionmanager.Watch
 import com.boswelja.devicemanager.watchconnectionmanager.WatchConnectionService
@@ -150,6 +151,13 @@ class Updater(private val context: Context) {
                         updateMessageCount(sharedPreferences)
                     }.also {
                         it.close()
+                    }
+                }
+                if (lastAppVersion < 2020040700) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                        putString(PHONE_LOCKING_MODE_KEY, "1")
+                    } else {
+                        putString(PHONE_LOCKING_MODE_KEY, "0")
                     }
                 }
                 putInt(APP_VERSION_KEY, lastAppVersion)
