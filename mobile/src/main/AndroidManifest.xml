@@ -44,6 +44,10 @@
             android:exported="false" />
 
         <activity
+            android:name=".ui.phonelocking.PhoneLockingPreferenceActivity"
+            android:exported="false" />
+
+        <activity
             android:name=".ui.appmanager.AppManagerActivity"
             android:exported="false" />
         <activity

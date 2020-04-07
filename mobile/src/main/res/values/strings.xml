@@ -68,6 +68,8 @@
     <string name="app_manager_activity_subtitle">Showing apps on %s</string>
 
     <!-- Phone Lock preference strings -->
+    <string name="main_phone_locking_title">Phone Locking</string>
+    <string name="main_phone_locking_summary">Lock your phone from your watch</string>
     <string name="pref_category_lock_phone">Phone Locking</string>
     <string name="pref_lock_phone_enabled_title">Remote phone locking</string>
     <string name="pref_lock_phone_enabled_desc">Allow locking your phone from your wearable</string>

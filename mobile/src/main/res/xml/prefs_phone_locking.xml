@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.preference.PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <androidx.preference.SwitchPreference
+        android:key="lock_phone_enabled"
+        android:icon="@drawable/pref_ic_phone_lock"
+        android:title="@string/pref_lock_phone_enabled_title"
+        android:summary="@string/pref_lock_phone_enabled_desc" />
+</androidx.preference.PreferenceScreen>

@@ -14,6 +14,12 @@
         android:summary="@string/main_interrupt_filter_sync_summary" />
 
     <androidx.preference.Preference
+        android:key="show_phone_locking_prefs"
+        android:icon="@drawable/pref_ic_phone_lock"
+        android:title="@string/main_phone_locking_title"
+        android:summary="@string/main_phone_locking_summary" />
+
+    <androidx.preference.Preference
         android:key="show_app_manager"
         android:icon="@drawable/pref_ic_app_manager"
         android:title="@string/main_app_manager_title"
