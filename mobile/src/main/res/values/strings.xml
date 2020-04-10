@@ -71,11 +71,15 @@
     <string name="main_phone_locking_title">Phone Locking</string>
     <string name="main_phone_locking_summary">Lock your phone from your watch</string>
     <string name="pref_phone_locking_mode_title">Phone Locking Method</string>
+    <string name="pref_phone_locking_mode_no_option_summary">Android versions below 9.0 can only use Device Administrator mode</string>
     <string name="pref_lock_phone_enabled_title">Remote phone locking</string>
     <string name="pref_lock_phone_enabled_desc">Allow locking your phone from your wearable</string>
+    <string name="phone_locking_accessibility_service_label">Phone Locking</string>
     <string name="phone_locking_mode_admin">Device Administrator</string>
     <string name="phone_locking_mode_accessibility">Accessibility Service</string>
-    <string name="pref_phone_locking_mode_no_option_summary">Android versions below 9.0 can only use Device Administrator mode</string>
+    <string name="phone_locking_disabled_by_mode_change">Phone Locking has been automatically disabled, re-enable it to start using your new Phone Locking method</string>
+    <string name="dialog_phone_locking_accessibility_service_title">Enable Accessibility Service</string>
+    <string name="dialog_phone_locking_accessibility_service_desc">You\'ve chosen to use the Accessibility Service as your phone locking method. To enable this, you need to enable "Phone Locking" as an accessibility service in your phone settings. Tap "enable" below to go there now.</string>
 
     <!-- App Settings strings -->
     <string name="pref_noti_status_title">Notification Settings</string>
@@ -122,6 +126,7 @@
     <string name="dialog_button_yes">Yes</string>
     <string name="dialog_button_no">No</string>
     <string name="dialog_button_ok">OK</string>
+    <string name="dialog_button_enable">Enable</string>
 
     <!-- Message strings -->
     <string name="message_battery_opt_warning_label_short">Battery Optimisation</string>

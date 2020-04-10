@@ -8,9 +8,7 @@
 package com.boswelja.devicemanager
 
 import android.app.NotificationManager
-import android.app.admin.DevicePolicyManager
 import android.content.Context
-import android.content.Intent
 import android.content.res.Resources
 import android.graphics.drawable.Drawable
 import android.media.AudioManager
@@ -19,22 +17,8 @@ import android.util.TypedValue
 import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.common.Compat
 import com.boswelja.devicemanager.common.PreferenceKey
-import com.boswelja.devicemanager.phonelocking.DeviceAdminChangeReceiver
-import com.boswelja.devicemanager.phonelocking.DeviceAdminChangeReceiver.Companion.DEVICE_ADMIN_ENABLED_KEY
 
 object Utils {
-
-    fun requestDeviceAdminPerms(context: Context) {
-        val intent = Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN).apply {
-            putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN, DeviceAdminChangeReceiver().getWho(context))
-            putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION, context.getString(R.string.device_admin_desc))
-        }
-        context.startActivity(intent)
-    }
-
-    fun isDeviceAdminEnabled(context: Context): Boolean =
-            PreferenceManager.getDefaultSharedPreferences(context)
-                    .getBoolean(DEVICE_ADMIN_ENABLED_KEY, false)
 
     /**
      * Set the system's current Interruption Filter state, or set silent mode if

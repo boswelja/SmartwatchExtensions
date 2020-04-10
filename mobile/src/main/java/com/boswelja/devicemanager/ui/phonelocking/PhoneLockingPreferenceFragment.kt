@@ -9,10 +9,10 @@ import androidx.preference.DropDownPreference
 import androidx.preference.Preference
 import androidx.preference.SwitchPreference
 import com.boswelja.devicemanager.R
-import com.boswelja.devicemanager.Utils
 import com.boswelja.devicemanager.common.PreferenceKey.PHONE_LOCKING_ENABLED_KEY
-import com.boswelja.devicemanager.phonelocking.DeviceAdminChangeReceiver
+import com.boswelja.devicemanager.phonelocking.Utils
 import com.boswelja.devicemanager.ui.base.BasePreferenceFragment
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 
@@ -26,19 +26,42 @@ class PhoneLockingPreferenceFragment :
     private lateinit var phoneLockModePreference: DropDownPreference
     private lateinit var phoneLockPreference: SwitchPreference
 
+    private var snackbar: Snackbar? = null
+    private var isEnablingPhoneLocking = false
+
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
         when (key) {
-            DeviceAdminChangeReceiver.DEVICE_ADMIN_ENABLED_KEY -> {
-                val isDeviceAdminEnabled = Utils.isDeviceAdminEnabled(context!!)
-                sharedPreferences!!.edit()
-                        .putBoolean(PHONE_LOCKING_ENABLED_KEY, isDeviceAdminEnabled)
-                        .apply()
-            }
             PHONE_LOCKING_ENABLED_KEY -> {
-                phoneLockPreference.isChecked = sharedPreferences!!.getBoolean(key, false)
+                val phoneLockingEnabled = sharedPreferences!!.getBoolean(key, false)
+                phoneLockPreference.isChecked = phoneLockingEnabled
+                if (phoneLockingEnabled) {
+                    snackbar?.dismiss()
+                }
+                coroutineScope.launch {
+                    (activity as PhoneLockingPreferenceActivity).watchConnectionManager?.apply {
+                        updatePreferenceOnWatch(key)
+                    }
+                }
             }
             PHONE_LOCKING_MODE_KEY -> {
-                updatePhoneLockModePrefSummary()
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                    updatePhoneLockModePrefSummary()
+                    if (sharedPreferences!!.getBoolean(PHONE_LOCKING_ENABLED_KEY, false)) {
+                        sharedPreferences.edit {
+                            putBoolean(PHONE_LOCKING_ENABLED_KEY, false)
+                        }
+                        snackbar = Snackbar.make(view!!, R.string.phone_locking_disabled_by_mode_change, Snackbar.LENGTH_INDEFINITE)
+                        snackbar!!.show()
+                    }
+                    when (sharedPreferences.getString(key, "0")) {
+                        PHONE_LOCKING_MODE_DEVICE_ADMIN -> {
+                            Utils.switchToDeviceAdminMode(context!!)
+                        }
+                        PHONE_LOCKING_MODE_ACCESSIBILITY_SERVICE -> {
+                            Utils.switchToAccessibilityServiceMode(context!!)
+                        }
+                    }
+                }
             }
         }
     }
@@ -48,25 +71,53 @@ class PhoneLockingPreferenceFragment :
             PHONE_LOCKING_ENABLED_KEY -> {
                 val sharedPreferences = preference.sharedPreferences
                 val value = newValue == true
-                if (!Utils.isDeviceAdminEnabled(context!!)) {
-                    AlertDialog.Builder(context!!)
-                            .setTitle(R.string.device_admin_perm_grant_dialog_title)
-                            .setMessage(R.string.device_admin_perm_grant_dialog_message)
-                            .setPositiveButton(R.string.dialog_button_grant) { _, _ ->
-                                Utils.requestDeviceAdminPerms(context!!)
-                            }
-                            .setNegativeButton(R.string.dialog_button_cancel) { _, _ ->
-                                sharedPreferences.edit()
-                                        .putBoolean(key, false)
-                                        .apply()
-                            }
-                            .show()
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P &&
+                        sharedPreferences.getString(PHONE_LOCKING_MODE_KEY, "0")
+                        == PHONE_LOCKING_MODE_ACCESSIBILITY_SERVICE) {
+                    if (!Utils.isAccessibilityServiceEnabled(context!!)) {
+                        isEnablingPhoneLocking = true
+                        AlertDialog.Builder(context!!)
+                                .setTitle(R.string.dialog_phone_locking_accessibility_service_title)
+                                .setMessage(R.string.dialog_phone_locking_accessibility_service_desc)
+                                .setPositiveButton(R.string.dialog_button_enable) { _, _ ->
+                                    Utils.launchAccessibilitySettings(context!!)
+                                }
+                                .setNegativeButton(R.string.dialog_button_cancel) { _, _ ->
+                                    sharedPreferences.edit()
+                                            .putBoolean(key, false)
+                                            .apply()
+                                }
+                                .show()
+                    } else {
+                        sharedPreferences.edit()
+                                .putBoolean(key, value)
+                                .apply()
+                        coroutineScope.launch {
+                            getWatchConnectionManager()?.updatePreferenceOnWatch(key)
+                        }
+                    }
                 } else {
-                    sharedPreferences.edit()
-                            .putBoolean(key, value)
-                            .apply()
-                    coroutineScope.launch {
-                        getWatchConnectionManager()?.updatePreferenceOnWatch(key)
+                    if (!Utils.isDeviceAdminEnabled(context!!)) {
+                        isEnablingPhoneLocking = true
+                        AlertDialog.Builder(context!!)
+                                .setTitle(R.string.device_admin_perm_grant_dialog_title)
+                                .setMessage(R.string.device_admin_perm_grant_dialog_message)
+                                .setPositiveButton(R.string.dialog_button_grant) { _, _ ->
+                                    Utils.requestDeviceAdminPerms(context!!)
+                                }
+                                .setNegativeButton(R.string.dialog_button_cancel) { _, _ ->
+                                    sharedPreferences.edit()
+                                            .putBoolean(key, false)
+                                            .apply()
+                                }
+                                .show()
+                    } else {
+                        sharedPreferences.edit()
+                                .putBoolean(key, value)
+                                .apply()
+                        coroutineScope.launch {
+                            getWatchConnectionManager()?.updatePreferenceOnWatch(key)
+                        }
                     }
                 }
                 false
@@ -93,10 +144,20 @@ class PhoneLockingPreferenceFragment :
     override fun onStart() {
         super.onStart()
         sharedPreferences.registerOnSharedPreferenceChangeListener(this)
-        val isDeviceAdminEnabled = Utils.isDeviceAdminEnabled(context!!)
-        if (!isDeviceAdminEnabled) {
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (isEnablingPhoneLocking) {
+            val enabled = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P &&
+                    sharedPreferences.getString(PHONE_LOCKING_MODE_KEY, "0")
+                    == PHONE_LOCKING_MODE_ACCESSIBILITY_SERVICE) {
+                Utils.isAccessibilityServiceEnabled(context!!)
+            } else {
+                Utils.isDeviceAdminEnabled(context!!)
+            }
             sharedPreferences.edit {
-                putBoolean(PHONE_LOCKING_ENABLED_KEY, false)
+                putBoolean(PHONE_LOCKING_ENABLED_KEY, enabled)
             }
         }
     }
@@ -112,5 +173,7 @@ class PhoneLockingPreferenceFragment :
 
     companion object {
         const val PHONE_LOCKING_MODE_KEY = "phone_locking_mode"
+        const val PHONE_LOCKING_MODE_DEVICE_ADMIN = "0"
+        const val PHONE_LOCKING_MODE_ACCESSIBILITY_SERVICE = "1"
     }
 }
