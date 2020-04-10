@@ -25,7 +25,6 @@ import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 
-
 class PhoneLockingPreferenceFragment :
         BasePreferenceFragment(),
         SharedPreferences.OnSharedPreferenceChangeListener,
