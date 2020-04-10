@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <accessibility-service
     xmlns:android="http://schemas.android.com/apk/res/android"
+    android:packageNames="com.boswelja.devicemanager"
     android:canPerformGestures="true"
-    android:canRetrieveWindowContent="false"
-    android:notificationTimeout="100">
-
-</accessibility-service>
+    android:canRequestEnhancedWebAccessibility="false"
+    android:canRequestFilterKeyEvents="false"
+    android:canRequestTouchExplorationMode="false"
+    android:canRetrieveWindowContent="false" />
