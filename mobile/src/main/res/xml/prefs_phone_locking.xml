@@ -8,6 +8,9 @@
         android:entries="@array/pref_phone_locking_mode_entries"
         android:entryValues="@array/pref_phone_locking_mode_entry_values" />
 
+    <androidx.preference.Preference
+        android:key="open_device_settings" />
+
     <androidx.preference.SwitchPreference
         android:key="lock_phone_enabled"
         android:icon="@drawable/pref_ic_phone_lock"

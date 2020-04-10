@@ -7,6 +7,8 @@
  */
 package com.boswelja.devicemanager.ui.phonelocking
 
+import android.content.ComponentName
+import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Build
 import android.os.Bundle
@@ -23,14 +25,17 @@ import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 
+
 class PhoneLockingPreferenceFragment :
         BasePreferenceFragment(),
         SharedPreferences.OnSharedPreferenceChangeListener,
+        Preference.OnPreferenceClickListener,
         Preference.OnPreferenceChangeListener {
 
     private val coroutineScope = MainScope()
 
     private lateinit var phoneLockModePreference: DropDownPreference
+    private lateinit var openDeviceSettingsPreference: Preference
     private lateinit var phoneLockPreference: SwitchPreference
 
     private var snackbar: Snackbar? = null
@@ -53,6 +58,7 @@ class PhoneLockingPreferenceFragment :
             PHONE_LOCKING_MODE_KEY -> {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
                     updatePhoneLockModePrefSummary()
+                    updateOpenDeviceSettingsTitle()
                     if (sharedPreferences!!.getBoolean(PHONE_LOCKING_ENABLED_KEY, false)) {
                         sharedPreferences.edit {
                             putBoolean(PHONE_LOCKING_ENABLED_KEY, false)
@@ -70,6 +76,22 @@ class PhoneLockingPreferenceFragment :
                     }
                 }
             }
+        }
+    }
+
+    override fun onPreferenceClick(preference: Preference?): Boolean {
+        return when (preference?.key) {
+            OPEN_DEVICE_SETTINGS_KEY -> {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P &&
+                        sharedPreferences.getString(PHONE_LOCKING_MODE_KEY, "0")
+                        == PHONE_LOCKING_MODE_ACCESSIBILITY_SERVICE) {
+                    Utils.launchAccessibilitySettings(context!!)
+                } else {
+                    startActivity(Intent().setComponent(ComponentName("com.android.settings", "com.android.settings.DeviceAdminSettings")))
+                }
+                true
+            }
+            else -> false
         }
     }
 
@@ -146,6 +168,10 @@ class PhoneLockingPreferenceFragment :
             phoneLockModePreference.isEnabled = false
             phoneLockModePreference.summary = getString(R.string.pref_phone_locking_mode_no_option_summary)
         }
+
+        openDeviceSettingsPreference = findPreference(OPEN_DEVICE_SETTINGS_KEY)!!
+        openDeviceSettingsPreference.onPreferenceClickListener = this
+        updateOpenDeviceSettingsTitle()
     }
 
     override fun onStart() {
@@ -178,9 +204,19 @@ class PhoneLockingPreferenceFragment :
         phoneLockModePreference.summary = phoneLockModePreference.entry
     }
 
+    private fun updateOpenDeviceSettingsTitle() {
+        openDeviceSettingsPreference.title = if (phoneLockModePreference.value == PHONE_LOCKING_MODE_ACCESSIBILITY_SERVICE) {
+            getString(R.string.pref_phone_locking_accessibility_settings_title)
+        } else {
+            getString(R.string.pref_phone_locking_admin_settings_title)
+        }
+    }
+
     companion object {
         const val PHONE_LOCKING_MODE_KEY = "phone_locking_mode"
         const val PHONE_LOCKING_MODE_DEVICE_ADMIN = "0"
         const val PHONE_LOCKING_MODE_ACCESSIBILITY_SERVICE = "1"
+
+        private const val OPEN_DEVICE_SETTINGS_KEY = "open_device_settings"
     }
 }

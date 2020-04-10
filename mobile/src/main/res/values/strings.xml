@@ -72,6 +72,8 @@
     <string name="main_phone_locking_summary">Lock your phone from your watch</string>
     <string name="pref_phone_locking_mode_title">Phone Locking Method</string>
     <string name="pref_phone_locking_mode_no_option_summary">Android versions below 9.0 can only use Device Administrator mode</string>
+    <string name="pref_phone_locking_accessibility_settings_title">Open Accessibility Settings</string>
+    <string name="pref_phone_locking_admin_settings_title">Open Device Admin Settings</string>
     <string name="pref_lock_phone_enabled_title">Remote phone locking</string>
     <string name="pref_lock_phone_enabled_desc">Allow locking your phone from your wearable</string>
     <string name="phone_locking_accessibility_service_label">Phone Locking</string>
