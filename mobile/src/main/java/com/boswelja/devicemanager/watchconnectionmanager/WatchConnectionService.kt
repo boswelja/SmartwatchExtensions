@@ -415,6 +415,15 @@ class WatchConnectionService :
         }
     }
 
+    suspend fun getBoolPrefForWatch(watchId: String, key: String): BoolPreference? {
+        return withContext(Dispatchers.IO) {
+            if (database.isOpen) {
+                return@withContext database.boolPreferenceDao().getWhere(watchId, key)
+            }
+            return@withContext null
+        }
+    }
+
     private fun deleteLocalPreferences() {
         sharedPreferences.edit {
             remove(PreferenceKey.PHONE_LOCKING_ENABLED_KEY)
