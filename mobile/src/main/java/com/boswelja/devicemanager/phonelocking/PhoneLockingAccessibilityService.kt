@@ -23,8 +23,10 @@ import com.boswelja.devicemanager.watchconnectionmanager.WatchConnectionService
 import com.google.android.gms.wearable.MessageClient
 import com.google.android.gms.wearable.MessageEvent
 import com.google.android.gms.wearable.Wearable
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 @RequiresApi(Build.VERSION_CODES.P)
 class PhoneLockingAccessibilityService :
@@ -57,7 +59,17 @@ class PhoneLockingAccessibilityService :
     override fun onMessageReceived(messageEvent: MessageEvent) {
         when (messageEvent.path) {
             LOCK_PHONE_PATH -> {
-                performGlobalAction(GLOBAL_ACTION_LOCK_SCREEN)
+                coroutineScope.launch {
+                    val watchId = messageEvent.sourceNodeId
+                    val phoneLockingEnabledForWatch =
+                            watchConnectionManager?.getBoolPrefForWatch(watchId, PHONE_LOCKING_ENABLED_KEY)
+                                    ?.value == true
+                    if (phoneLockingEnabledForWatch) {
+                        withContext(Dispatchers.Main) {
+                            performGlobalAction(GLOBAL_ACTION_LOCK_SCREEN)
+                        }
+                    }
+                }
             }
         }
     }
