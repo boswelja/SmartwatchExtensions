@@ -1,7 +1,11 @@
 package com.boswelja.devicemanager.batterysync
 
 import android.content.Context
-import androidx.work.*
+import androidx.work.Data
+import androidx.work.PeriodicWorkRequestBuilder
+import androidx.work.WorkManager
+import androidx.work.Worker
+import androidx.work.WorkerParameters
 import com.boswelja.devicemanager.common.PreferenceKey
 import com.boswelja.devicemanager.ui.batterysync.Utils
 import com.boswelja.devicemanager.watchconnectionmanager.WatchConnectionService
@@ -35,7 +39,6 @@ class BatterySyncWorker(appContext: Context, workerParams: WorkerParameters) :
                 val connectedWatch = watchConnectionManager?.getConnectedWatch()
                 if (connectedWatch != null) {
                     val syncIntervalMinutes = connectedWatch.intPrefs[PreferenceKey.BATTERY_SYNC_INTERVAL_KEY] ?: 15
-
                     val newWorkerId = startWorker(watchConnectionManager, connectedWatch.id, syncIntervalMinutes.toLong())
 
                     return@withContext newWorkerId
