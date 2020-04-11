@@ -20,7 +20,7 @@ android {
         javaCompileOptions {
             annotationProcessorOptions {
                 arguments = ["room.schemaLocation":
-                                     "$projectDir/schemas".toString()]
+                                     "$rootDir/schemas".toString()]
             }
         }
     }
@@ -62,6 +62,7 @@ dependencies {
     implementation "androidx.appcompat:appcompat:$androidx_appcompat"
     implementation "androidx.preference:preference-ktx:$androidx_preference"
     implementation "androidx.constraintlayout:constraintlayout:$androidx_constraintlayout"
+    implementation "androidx.work:work-runtime-ktx:2.3.4"
     implementation 'androidx.browser:browser:1.2.0'
 
     implementation "androidx.room:room-runtime:$androidx_room"

@@ -12,22 +12,21 @@ import androidx.room.Entity
 import androidx.room.Ignore
 import androidx.room.PrimaryKey
 import com.google.android.gms.wearable.Node
-import kotlin.random.Random
 
 @Entity(tableName = "watches")
 data class Watch(
     @PrimaryKey val id: String,
     @ColumnInfo(name = "name") val name: String,
-    @ColumnInfo(name = "battery_sync_job_id") val batterySyncJobId: Int,
+    @ColumnInfo(name = "battery_sync_worker_id") val batterySyncWorkerId: String?,
     @Ignore val status: WatchStatus,
     @Ignore val intPrefs: HashMap<String, Int>,
     @Ignore val boolPrefs: HashMap<String, Boolean>
 ) {
-    constructor (id: String, name: String, batterySyncJobId: Int, status: WatchStatus) : this(id, name, batterySyncJobId, status, HashMap(), HashMap())
+    constructor (id: String, name: String, batterySyncWorkerId: String?, status: WatchStatus) : this(id, name, batterySyncWorkerId, status, HashMap(), HashMap())
 
-    constructor (id: String, name: String, batterySyncJobId: Int) : this(id, name, batterySyncJobId, WatchStatus.UNKNOWN, HashMap(), HashMap())
+    constructor (id: String, name: String, batterySyncWorkerId: String?) : this(id, name, batterySyncWorkerId, WatchStatus.UNKNOWN, HashMap(), HashMap())
 
-    constructor(node: Node, status: WatchStatus) : this(node.id, node.displayName, Random.nextInt(100000, 999999), status)
+    constructor(node: Node, status: WatchStatus) : this(node.id, node.displayName, null, status)
 
-    constructor(node: Node) : this(node.id, node.displayName, Random.nextInt(100000, 999999), WatchStatus.UNKNOWN)
+    constructor(node: Node) : this(node.id, node.displayName, null, WatchStatus.UNKNOWN)
 }

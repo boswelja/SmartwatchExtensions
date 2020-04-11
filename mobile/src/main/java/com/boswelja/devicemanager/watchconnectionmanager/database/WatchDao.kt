@@ -21,8 +21,11 @@ interface WatchDao {
     @Query("SELECT * FROM watches WHERE id = :id LIMIT 1")
     fun findById(id: String): Watch?
 
-    @Query("SELECT * FROM watches WHERE battery_sync_job_id = :batterySyncJobId LIMIT 1")
-    fun findByBatterySyncJobId(batterySyncJobId: Int): Watch?
+    @Query("SELECT * FROM watches WHERE battery_sync_worker_id = :batterySyncWorkerId LIMIT 1")
+    fun findByBatterySyncWorkerId(batterySyncWorkerId: String): Watch?
+
+    @Query("UPDATE watches SET battery_sync_worker_id = :batterySyncWorkerId WHERE id = :watchId")
+    fun updateBatterySyncWorkerId(watchId: String, batterySyncWorkerId: String)
 
     @Query("UPDATE watches SET name = :name WHERE id = :id")
     fun setWatchName(id: String, name: String)

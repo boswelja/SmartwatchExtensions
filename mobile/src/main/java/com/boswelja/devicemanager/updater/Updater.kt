@@ -9,6 +9,7 @@ package com.boswelja.devicemanager.updater
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.app.job.JobScheduler
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Build
@@ -17,7 +18,7 @@ import androidx.core.content.edit
 import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.BuildConfig
 import com.boswelja.devicemanager.R
-import com.boswelja.devicemanager.batterysync.BatterySyncJob
+import com.boswelja.devicemanager.batterysync.BatterySyncWorker
 import com.boswelja.devicemanager.batterysync.WatchBatteryUpdateReceiver
 import com.boswelja.devicemanager.common.PreferenceKey
 import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_SYNC_ENABLED_KEY
@@ -54,29 +55,20 @@ class Updater(private val context: Context) {
     private fun doBatterySyncUpdate(database: WatchDatabase) {
         val watches = database.getWatchesWithPrefs()
         var needsRestart = false
-        if (lastAppVersion < 2019120600) {
-            val watch = watches[0]
-            if (watch.boolPrefs[BATTERY_SYNC_ENABLED_KEY] == true) {
-                val oldJobId = sharedPreferences.getInt("job_id_key", 0)
-                if (oldJobId != 0) {
-                    BatterySyncJob.stopJob(context, oldJobId)
-                    needsRestart = true
-                }
-                sharedPreferences.edit().remove("job_id_key").apply()
-            }
-        } else if (lastAppVersion < 2020010500) {
-            for (watch in watches) {
-                if (watch.boolPrefs[BATTERY_SYNC_ENABLED_KEY] == true) {
-                    BatterySyncJob.stopJob(context, watch.batterySyncJobId)
-                    needsRestart = true
-                }
-            }
+        if (sharedPreferences.contains("job_id_key")) {
+            sharedPreferences.edit().remove("job_id_key").apply()
+        }
+        if (lastAppVersion < 2020041100) {
+            val jobScheduler = context.getSystemService(Context.JOB_SCHEDULER_SERVICE) as JobScheduler
+            jobScheduler.cancelAll()
+            needsRestart = true
         }
 
         if (needsRestart) {
             for (watch in watches) {
                 if (watch.boolPrefs[BATTERY_SYNC_ENABLED_KEY] == true) {
-                    BatterySyncJob.startJob(context, watch.id, watch.intPrefs[BATTERY_SYNC_INTERVAL_KEY] ?: 15, watch.batterySyncJobId)
+                    val newWorkerId = BatterySyncWorker.startWorker(context, watch.id, (watch.intPrefs[BATTERY_SYNC_INTERVAL_KEY] ?: 15).toLong())
+                    database.watchDao().updateBatterySyncWorkerId(watch.id, newWorkerId)
                 }
             }
         }

@@ -16,7 +16,7 @@ import com.boswelja.devicemanager.watchconnectionmanager.IntPreference
 import com.boswelja.devicemanager.watchconnectionmanager.Watch
 import com.boswelja.devicemanager.watchconnectionmanager.WatchPreferenceChangeInterface
 
-@Database(entities = [Watch::class, IntPreference::class, BoolPreference::class], version = 3)
+@Database(entities = [Watch::class, IntPreference::class, BoolPreference::class], version = 5)
 abstract class WatchDatabase : RoomDatabase() {
     abstract fun watchDao(): WatchDao
 
@@ -79,6 +79,8 @@ abstract class WatchDatabase : RoomDatabase() {
         fun open(context: Context, allowMainThreadQueries: Boolean = false): WatchDatabase =
                 Room.databaseBuilder(context, WatchDatabase::class.java, "watch-db").apply {
                     if (allowMainThreadQueries) allowMainThreadQueries()
+                    addMigrations(Migrations.MIGRATION_3_5, Migrations.MIGRATION_4_5)
+                    fallbackToDestructiveMigration()
                 }.build()
     }
 }

@@ -1,0 +1,46 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 1,
+    "identityHash": "0e9728c2dcddd60cfa9adc50d25aa7cc",
+    "entities": [
+      {
+        "tableName": "watch_battery_stats",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`watchId` TEXT NOT NULL, `watch_battery_percent` INTEGER NOT NULL, `last_update_time` INTEGER NOT NULL, PRIMARY KEY(`watchId`))",
+        "fields": [
+          {
+            "fieldPath": "watchId",
+            "columnName": "watchId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "batteryPercent",
+            "columnName": "watch_battery_percent",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "lastUpdatedMillis",
+            "columnName": "last_update_time",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "watchId"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      }
+    ],
+    "views": [],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '0e9728c2dcddd60cfa9adc50d25aa7cc')"
+    ]
+  }
+}

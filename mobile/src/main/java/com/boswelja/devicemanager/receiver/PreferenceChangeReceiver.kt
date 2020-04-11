@@ -11,7 +11,7 @@ import android.content.Intent
 import android.content.SharedPreferences
 import androidx.core.content.edit
 import androidx.preference.PreferenceManager
-import com.boswelja.devicemanager.batterysync.BatterySyncJob
+import com.boswelja.devicemanager.batterysync.BatterySyncWorker
 import com.boswelja.devicemanager.common.Compat
 import com.boswelja.devicemanager.common.PreferenceKey
 import com.boswelja.devicemanager.dndsync.DnDLocalChangeService
@@ -71,9 +71,9 @@ class PreferenceChangeReceiver : WearableListenerService() {
             PreferenceKey.BATTERY_SYNC_ENABLED_KEY -> {
                 coroutineScope.launch {
                     if (newValue == true) {
-                        BatterySyncJob.startJob(watchConnectionManager)
+                        BatterySyncWorker.startWorker(watchConnectionManager)
                     } else {
-                        BatterySyncJob.stopJob(watchConnectionManager)
+                        BatterySyncWorker.stopWorker(watchConnectionManager)
                     }
                 }
             }

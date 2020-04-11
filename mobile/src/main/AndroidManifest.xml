@@ -99,10 +99,6 @@
         </receiver>
 
         <service
-            android:name=".batterysync.BatterySyncJob"
-            android:permission="android.permission.BIND_JOB_SERVICE" />
-
-        <service
             android:name=".dndsync.DnDLocalChangeService"
             android:exported="false" />
 

@@ -171,7 +171,7 @@ class WatchConnectionService :
                             WatchStatus.ERROR
                         }
 
-                        val watch = Watch(databaseWatch.id, databaseWatch.name, databaseWatch.batterySyncJobId, status)
+                        val watch = Watch(databaseWatch.id, databaseWatch.name, databaseWatch.batterySyncWorkerId, status)
 
                         val boolPrefs = database.boolPreferenceDao().getAllForWatch(watch.id)
                         val intPrefs = database.intPreferenceDao().getAllForWatch(watch.id)
@@ -211,7 +211,7 @@ class WatchConnectionService :
                         } else {
                             WatchStatus.DISCONNECTED
                         }
-                        val watch = Watch(databaseWatch.id, databaseWatch.name, databaseWatch.batterySyncJobId, status)
+                        val watch = Watch(databaseWatch.id, databaseWatch.name, databaseWatch.batterySyncWorkerId, status)
                         for (intPreference in intPrefs) {
                             watch.intPrefs[intPreference.key] = intPreference.value
                         }
@@ -349,6 +349,16 @@ class WatchConnectionService :
     fun unregisterWatchPreferenceChangeInterface(watchPreferenceChangeInterface: WatchPreferenceChangeInterface) {
         if (watchPreferenceChangeInterfaces.contains(watchPreferenceChangeInterface)) {
             watchPreferenceChangeInterfaces.remove(watchPreferenceChangeInterface)
+        }
+    }
+
+    suspend fun updateBatterySyncWorkerId(watchId: String, newWorkerId: String): Boolean {
+        return withContext(Dispatchers.IO) {
+            if (database.isOpen) {
+                database.watchDao().updateBatterySyncWorkerId(watchId, newWorkerId)
+                return@withContext true
+            }
+            return@withContext false
         }
     }
 

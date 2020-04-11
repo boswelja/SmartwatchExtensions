@@ -14,7 +14,7 @@ import androidx.preference.Preference
 import androidx.preference.SeekBarPreference
 import androidx.preference.SwitchPreference
 import com.boswelja.devicemanager.R
-import com.boswelja.devicemanager.batterysync.BatterySyncJob
+import com.boswelja.devicemanager.batterysync.BatterySyncWorker
 import com.boswelja.devicemanager.batterysync.WatchBatteryUpdateReceiver
 import com.boswelja.devicemanager.common.Compat
 import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_CHARGE_THRESHOLD_KEY
@@ -72,7 +72,7 @@ class BatterySyncPreferenceFragment :
                 setBatteryChargeThresholdEnabled()
                 if (newBool) {
                     coroutineScope.launch {
-                        val success = BatterySyncJob.startJob(activity.watchConnectionManager)
+                        val success = BatterySyncWorker.startWorker(activity.watchConnectionManager) != null
                         if (success) {
                             sharedPreferences.edit().putBoolean(key, newBool).apply()
                             getWatchConnectionManager()?.updatePreferenceOnWatch(key)
@@ -87,7 +87,7 @@ class BatterySyncPreferenceFragment :
                     sharedPreferences.edit().putBoolean(key, newBool).apply()
                     coroutineScope.launch {
                         getWatchConnectionManager()?.updatePreferenceOnWatch(key)
-                        BatterySyncJob.stopJob(activity.watchConnectionManager)
+                        BatterySyncWorker.stopWorker(activity.watchConnectionManager)
                         withContext(Dispatchers.IO) {
                             (activity as BatterySyncPreferenceActivity).batteryStatsDatabase?.batteryStatsDao()?.deleteStatsForWatch(activity.watchConnectionManager?.getConnectedWatchId()!!)
                         }
@@ -103,7 +103,7 @@ class BatterySyncPreferenceFragment :
                 }
                 batterySyncIntervalPreference.value = value
                 coroutineScope.launch {
-                    BatterySyncJob.startJob(activity.watchConnectionManager)
+                    BatterySyncWorker.startWorker(activity.watchConnectionManager)
                 }
                 false
             }
