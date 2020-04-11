@@ -54,7 +54,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@id/watch_battery_percent"
             app:layout_constraintVertical_chainStyle="packed"
-            tools:text="Less than a minute ago"
+            tools:text="Last updated less than a minute ago"
             style="@style/TextAppearance.MaterialComponents.Body1" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
