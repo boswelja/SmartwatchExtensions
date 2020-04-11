@@ -11,7 +11,7 @@ import com.boswelja.devicemanager.ui.batterysync.Utils
 import com.boswelja.devicemanager.watchconnectionmanager.WatchConnectionService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import java.util.*
+import java.util.UUID
 import java.util.concurrent.TimeUnit
 
 class BatterySyncWorker(appContext: Context, workerParams: WorkerParameters) :
