@@ -40,7 +40,7 @@ class BatterySyncWorker(appContext: Context, workerParams: WorkerParameters) :
                 if (connectedWatch != null) {
                     val syncIntervalMinutes = connectedWatch.intPrefs[PreferenceKey.BATTERY_SYNC_INTERVAL_KEY] ?: 15
                     val newWorkerId = startWorker(watchConnectionManager, connectedWatch.id, syncIntervalMinutes.toLong())
-
+                    watchConnectionManager.updateBatterySyncWorkerId(connectedWatch.id, newWorkerId)
                     return@withContext newWorkerId
                 }
                 null
