@@ -12,13 +12,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.widget.AppCompatImageView
-import androidx.appcompat.widget.AppCompatTextView
+import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.batterysync.database.WatchBatteryStats
 import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_SYNC_ENABLED_KEY
+import com.boswelja.devicemanager.databinding.SettingsWidgetBatterySyncBinding
 import com.boswelja.devicemanager.ui.batterysync.Utils.updateBatteryStats
 import com.boswelja.devicemanager.watchconnectionmanager.Watch
 import com.boswelja.devicemanager.watchconnectionmanager.WatchConnectionInterface
@@ -29,6 +29,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+
 class BatterySyncPreferenceWidgetFragment :
         Fragment(),
         SharedPreferences.OnSharedPreferenceChangeListener,
@@ -39,9 +40,7 @@ class BatterySyncPreferenceWidgetFragment :
     private lateinit var sharedPreferences: SharedPreferences
     private lateinit var activity: BatterySyncPreferenceActivity
 
-    private lateinit var watchBatteryIndicator: AppCompatImageView
-    private lateinit var watchBatteryPercent: AppCompatTextView
-    private lateinit var watchBatteryLastUpdated: AppCompatTextView
+    private lateinit var binding: SettingsWidgetBatterySyncBinding
 
     private var watchBatteryUpdateTimer: Timer? = null
     private var watchBatteryUpdateTimerStarted: Boolean = false
@@ -90,15 +89,8 @@ class BatterySyncPreferenceWidgetFragment :
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.settings_widget_battery_sync, container, false)
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        watchBatteryIndicator = view.findViewById(R.id.watch_battery_indicator)
-        watchBatteryPercent = view.findViewById(R.id.watch_battery_percent)
-        watchBatteryLastUpdated = view.findViewById(R.id.last_updated_time)
+        binding = DataBindingUtil.inflate(inflater, R.layout.settings_widget_battery_sync, container, false)
+        return binding.root
     }
 
     override fun onResume() {
@@ -116,16 +108,18 @@ class BatterySyncPreferenceWidgetFragment :
     }
 
     private fun updateWatchBatteryPercent() {
-        if (batterySyncEnabled) {
-            if (batteryStats != null && batteryStats!!.batteryPercent > 0) {
-                watchBatteryIndicator.setImageLevel(batteryStats!!.batteryPercent)
-                watchBatteryPercent.text = getString(R.string.battery_sync_percent_short, batteryStats!!.batteryPercent.toString())
+        binding.apply {
+            if (batterySyncEnabled) {
+                if (batteryStats != null && batteryStats!!.batteryPercent > 0) {
+                    watchBatteryIndicator.setImageLevel(batteryStats!!.batteryPercent)
+                    watchBatteryPercent.text = getString(R.string.battery_sync_percent_short, batteryStats!!.batteryPercent.toString())
+                } else {
+                    watchBatteryPercent.text = "Error"
+                }
             } else {
-                watchBatteryPercent.text = "Error"
+                watchBatteryIndicator.setImageLevel(0)
+                watchBatteryPercent.text = getString(R.string.battery_sync_disabled)
             }
-        } else {
-            watchBatteryIndicator.setImageLevel(0)
-            watchBatteryPercent.text = getString(R.string.battery_sync_disabled)
         }
     }
 
@@ -147,12 +141,18 @@ class BatterySyncPreferenceWidgetFragment :
                     }
                 }
                 this@BatterySyncPreferenceWidgetFragment.activity.runOnUiThread {
-                    watchBatteryLastUpdated.text = lastUpdatedString
-                    watchBatteryLastUpdated.visibility = View.VISIBLE
+                    binding.apply {
+                        lastUpdatedTime.text = lastUpdatedString
+                        lastUpdatedTime.visibility = View.VISIBLE
+                    }
                 }
             }
         } else {
-            watchBatteryLastUpdated.visibility = View.GONE
+            this@BatterySyncPreferenceWidgetFragment.activity.runOnUiThread {
+                binding.apply {
+                    lastUpdatedTime.visibility = View.GONE
+                }
+            }
         }
     }
 
