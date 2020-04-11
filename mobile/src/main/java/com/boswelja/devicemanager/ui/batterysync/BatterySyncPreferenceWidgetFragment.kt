@@ -93,16 +93,14 @@ class BatterySyncPreferenceWidgetFragment :
         return binding.root
     }
 
-    override fun onResume() {
-        super.onResume()
-
+    override fun onStart() {
+        super.onStart()
         sharedPreferences.registerOnSharedPreferenceChangeListener(this)
-
         startBatteryUpdateTimer()
     }
 
-    override fun onPause() {
-        super.onPause()
+    override fun onStop() {
+        super.onStop()
         sharedPreferences.unregisterOnSharedPreferenceChangeListener(this)
         stopBatteryUpdateTimer()
     }
