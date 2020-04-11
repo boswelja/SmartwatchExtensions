@@ -1,3 +1,10 @@
+/* Copyright (C) 2020 Jack Boswell <boswelja@outlook.com>
+ *
+ * This file is part of Wearable Extensions
+ *
+ * This file, and any part of the Wearable Extensions app/s cannot be copied and/or distributed
+ * without permission from Jack Boswell (boswelja) <boswela@outlook.com>
+ */
 package com.boswelja.devicemanager.batterysync
 
 import android.content.Context
@@ -9,10 +16,10 @@ import androidx.work.WorkerParameters
 import com.boswelja.devicemanager.common.PreferenceKey
 import com.boswelja.devicemanager.ui.batterysync.Utils
 import com.boswelja.devicemanager.watchconnectionmanager.WatchConnectionService
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import java.util.UUID
 import java.util.concurrent.TimeUnit
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 class BatterySyncWorker(appContext: Context, workerParams: WorkerParameters) :
         Worker(appContext, workerParams) {
@@ -28,7 +35,6 @@ class BatterySyncWorker(appContext: Context, workerParams: WorkerParameters) :
 
     companion object {
         private const val EXTRA_WATCH_ID: String = "extra_watch_id"
-
 
         /**
          * Starts a battery sync job for the currently selected watch.
