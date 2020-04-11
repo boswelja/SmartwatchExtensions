@@ -16,6 +16,13 @@ android {
         targetSdkVersion buildConfig.compileSdk
         versionCode buildConfig.versionCode
         versionName buildConfig.versionName
+
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = ["room.schemaLocation":
+                                     "$projectDir/schemas".toString()]
+            }
+        }
     }
 
     buildFeatures.dataBinding = true
