@@ -56,13 +56,13 @@ class BootReceiver : BaseBootReceiver() {
                 .getBoolPrefsForRegisteredWatches(BATTERY_SYNC_ENABLED_KEY)
                 ?.filter { it.value }
         if (watchBatterySyncInfo != null && watchBatterySyncInfo.isNotEmpty()) {
-            for (watchBatterySync in watchBatterySyncInfo) {
+            for (batterySyncBoolPreference in watchBatterySyncInfo) {
                 val batterySyncInterval = service
-                        .getIntPrefForWatch(watchBatterySync.watchId, BATTERY_CHARGE_THRESHOLD_KEY)
+                        .getIntPrefForWatch(batterySyncBoolPreference.watchId, BATTERY_CHARGE_THRESHOLD_KEY)
                         ?.value?.toLong() ?: 15
                 val batterySyncWorkerId = BatterySyncWorker.startWorker(
-                        service.applicationContext, watchBatterySync.watchId, batterySyncInterval)
-                service.updateBatterySyncWorkerId(watchBatterySync.watchId, batterySyncWorkerId)
+                        service.applicationContext, batterySyncBoolPreference.watchId, batterySyncInterval)
+                service.updateBatterySyncWorkerId(batterySyncBoolPreference.watchId, batterySyncWorkerId)
             }
         }
     }
