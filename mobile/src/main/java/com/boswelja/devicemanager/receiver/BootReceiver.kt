@@ -60,7 +60,9 @@ class BootReceiver : BaseBootReceiver() {
                 val batterySyncInterval = service
                         .getIntPrefForWatch(watchBatterySync.watchId, BATTERY_CHARGE_THRESHOLD_KEY)
                         ?.value?.toLong() ?: 15
-                BatterySyncWorker.startWorker(service.applicationContext, watchBatterySync.watchId, batterySyncInterval)
+                val batterySyncWorkerId = BatterySyncWorker.startWorker(
+                        service.applicationContext, watchBatterySync.watchId, batterySyncInterval)
+                service.updateBatterySyncWorkerId(watchBatterySync.watchId, batterySyncWorkerId)
             }
         }
     }
