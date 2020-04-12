@@ -12,6 +12,7 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import com.boswelja.devicemanager.watchconnectionmanager.BoolPreference
 import com.boswelja.devicemanager.watchconnectionmanager.IntPreference
 
 @Dao
@@ -19,6 +20,9 @@ interface IntPreferenceDao {
 
     @Query("SELECT * FROM int_preferences WHERE id = :id")
     fun getAllForWatch(id: String): Array<IntPreference>
+
+    @Query("SELECT * FROM int_preferences WHERE id = :id AND pref_key = :key LIMIT 1")
+    fun getWhere(id: String, key: String): IntPreference?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun update(intPreference: IntPreference)

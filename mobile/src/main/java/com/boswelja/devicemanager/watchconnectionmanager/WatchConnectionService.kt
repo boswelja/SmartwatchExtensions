@@ -434,6 +434,15 @@ class WatchConnectionService :
         }
     }
 
+    suspend fun getIntPrefForWatch(watchId: String, key: String): IntPreference? {
+        return withContext(Dispatchers.IO) {
+            if (database.isOpen) {
+                return@withContext database.intPreferenceDao().getWhere(watchId, key)
+            }
+            return@withContext null
+        }
+    }
+
     private fun deleteLocalPreferences() {
         sharedPreferences.edit {
             remove(PreferenceKey.PHONE_LOCKING_ENABLED_KEY)
