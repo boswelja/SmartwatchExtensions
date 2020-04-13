@@ -13,19 +13,17 @@ import android.content.Intent
 import com.boswelja.devicemanager.common.Compat
 import com.boswelja.devicemanager.watchconnectionmanager.WatchConnectionService
 
-class BootReceiver : BroadcastReceiver() {
+class BootOrUpdateReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context?, intent: Intent?) {
-        if (intent?.action == Intent.ACTION_BOOT_COMPLETED) {
-            onBootCompleted(context)
-        }
-    }
-
-    private fun onBootCompleted(context: Context?) {
-        Intent(context!!.applicationContext, WatchConnectionService::class.java).apply {
-            action = Intent.ACTION_BOOT_COMPLETED
-        }.also {
-            Compat.startForegroundService(context.applicationContext, it)
+        val broadcastAction = intent?.action
+        if (broadcastAction == Intent.ACTION_BOOT_COMPLETED ||
+                broadcastAction == Intent.ACTION_MY_PACKAGE_REPLACED) {
+            Intent(context!!.applicationContext, WatchConnectionService::class.java).apply {
+                action = broadcastAction
+            }.also {
+                Compat.startForegroundService(context.applicationContext, it)
+            }
         }
     }
 }

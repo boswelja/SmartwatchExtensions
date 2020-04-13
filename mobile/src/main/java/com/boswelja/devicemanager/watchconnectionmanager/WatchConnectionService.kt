@@ -37,6 +37,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlin.collections.ArrayList
 
 class WatchConnectionService :
         Service(),
@@ -90,7 +91,8 @@ class WatchConnectionService :
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         return when (intent?.action) {
-            Intent.ACTION_BOOT_COMPLETED -> {
+            Intent.ACTION_BOOT_COMPLETED,
+            Intent.ACTION_MY_PACKAGE_REPLACED -> {
                 coroutineScope.launch(Dispatchers.IO) {
                     tryStartInterruptFilterSyncService()
                     tryStartBatterySyncWorkers()
