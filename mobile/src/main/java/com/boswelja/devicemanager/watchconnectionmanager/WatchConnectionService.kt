@@ -130,6 +130,11 @@ class WatchConnectionService :
         if (watchBatterySyncInfo != null && watchBatterySyncInfo.isNotEmpty()) {
             for (batterySyncBoolPreference in watchBatterySyncInfo) {
                 if (batterySyncBoolPreference.value) {
+                    database.watchDao()
+                            .findById(batterySyncBoolPreference.watchId)
+                            ?.batterySyncWorkerId?.also {
+                                BatterySyncWorker.stopWorker(this, it)
+                            }
                     val batterySyncInterval =
                             getIntPrefForWatch(batterySyncBoolPreference.watchId, PreferenceKey.BATTERY_CHARGE_THRESHOLD_KEY)
                                     ?.value?.toLong() ?: 15
