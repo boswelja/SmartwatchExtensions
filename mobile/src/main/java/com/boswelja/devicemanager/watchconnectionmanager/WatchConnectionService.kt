@@ -17,8 +17,10 @@ import android.os.Binder
 import android.os.IBinder
 import androidx.core.content.edit
 import androidx.preference.PreferenceManager
+import com.boswelja.devicemanager.batterysync.BatterySyncWorker
 import com.boswelja.devicemanager.common.PreferenceKey
 import com.boswelja.devicemanager.common.References
+import com.boswelja.devicemanager.dndsync.DnDLocalChangeService
 import com.boswelja.devicemanager.watchconnectionmanager.database.WatchDatabase
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
@@ -86,6 +88,21 @@ class WatchConnectionService :
         setAutoAddWatches()
     }
 
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        return when (intent?.action) {
+            Intent.ACTION_BOOT_COMPLETED -> {
+                coroutineScope.launch(Dispatchers.IO) {
+                    tryStartInterruptFilterSyncService()
+                    tryStartBatterySyncWorkers()
+                    stopForeground(true)
+                    stopSelf()
+                }
+                START_NOT_STICKY
+            }
+            else -> super.onStartCommand(intent, flags, startId)
+        }
+    }
+
     override fun onDestroy() {
         super.onDestroy()
 
@@ -94,6 +111,34 @@ class WatchConnectionService :
         if (database.isOpen) database.close()
 
         if (watchConnectionListener != null) capabilityClient.removeListener(watchConnectionListener!!)
+    }
+
+
+    private suspend fun tryStartInterruptFilterSyncService() {
+        val dndSyncToWatchEnabled =
+                getBoolPrefsForRegisteredWatches(PreferenceKey.DND_SYNC_TO_WATCH_KEY)
+                        ?.any { it.value } == true
+        if (dndSyncToWatchEnabled) {
+            applicationContext.startService(
+                    Intent(applicationContext, DnDLocalChangeService::class.java))
+        }
+    }
+
+    private suspend fun tryStartBatterySyncWorkers() {
+        val watchBatterySyncInfo =
+                getBoolPrefsForRegisteredWatches(PreferenceKey.BATTERY_SYNC_ENABLED_KEY)
+        if (watchBatterySyncInfo != null && watchBatterySyncInfo.isNotEmpty()) {
+            for (batterySyncBoolPreference in watchBatterySyncInfo) {
+                if (batterySyncBoolPreference.value) {
+                    val batterySyncInterval =
+                            getIntPrefForWatch(batterySyncBoolPreference.watchId, PreferenceKey.BATTERY_CHARGE_THRESHOLD_KEY)
+                                    ?.value?.toLong() ?: 15
+                    val batterySyncWorkerId = BatterySyncWorker.startWorker(
+                            applicationContext, batterySyncBoolPreference.watchId, batterySyncInterval)
+                    updateBatterySyncWorkerId(batterySyncBoolPreference.watchId, batterySyncWorkerId)
+                }
+            }
+        }
     }
 
     private fun setAutoAddWatches() {
