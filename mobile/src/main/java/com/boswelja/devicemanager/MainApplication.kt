@@ -14,10 +14,10 @@ import android.os.Bundle
 import android.os.Process
 import com.boswelja.devicemanager.crashhandler.CrashHandlerActivity
 import com.boswelja.devicemanager.crashhandler.CrashHandlerActivity.Companion.EXTRA_STACKTRACE
-import timber.log.Timber
 import java.io.PrintWriter
 import java.io.StringWriter
 import kotlin.system.exitProcess
+import timber.log.Timber
 
 class MainApplication : Application() {
 

@@ -1,3 +1,10 @@
+/* Copyright (C) 2020 Jack Boswell <boswelja@outlook.com>
+ *
+ * This file is part of Wearable Extensions
+ *
+ * This file, and any part of the Wearable Extensions app/s cannot be copied and/or distributed
+ * without permission from Jack Boswell (boswelja) <boswela@outlook.com>
+ */
 package com.boswelja.devicemanager.crashhandler
 
 import android.content.Intent
@@ -41,7 +48,7 @@ class CrashHandlerActivity : AppCompatActivity() {
                         "Stacktrace:\n${stacktrace}\n\n" +
                         "Steps to reproduce (if applicable):\n\n"
                 Intent(Intent.ACTION_SENDTO).apply {
-                    type ="text/plain"
+                    type = "text/plain"
                     data = "mailto:".toUri()
                     putExtra(Intent.EXTRA_EMAIL, arrayOf("boswelja78@gmail.com"))
                     putExtra(Intent.EXTRA_SUBJECT, "Wearable Extensions crash")
