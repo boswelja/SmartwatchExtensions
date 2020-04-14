@@ -18,6 +18,7 @@ import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.databinding.ActivityCrashHandlerBinding
 import com.boswelja.devicemanager.ui.main.MainActivity
 import timber.log.Timber
+import kotlin.system.exitProcess
 
 class CrashHandlerActivity : AppCompatActivity() {
 
@@ -68,6 +69,12 @@ class CrashHandlerActivity : AppCompatActivity() {
                 finish()
             }
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        exitProcess(0)
+
     }
 
     companion object {
