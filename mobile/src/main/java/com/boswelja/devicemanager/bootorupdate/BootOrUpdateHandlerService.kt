@@ -1,4 +1,4 @@
-package com.boswelja.devicemanager.service
+package com.boswelja.devicemanager.bootorupdate
 
 import android.app.Notification
 import android.app.Service
@@ -13,8 +13,8 @@ import com.boswelja.devicemanager.batterysync.BatterySyncWorker
 import com.boswelja.devicemanager.common.PreferenceKey
 import com.boswelja.devicemanager.dndsync.DnDLocalChangeService
 import com.boswelja.devicemanager.ui.main.MainActivity.Companion.SHOW_CHANGELOG_KEY
-import com.boswelja.devicemanager.updater.Result
-import com.boswelja.devicemanager.updater.Updater
+import com.boswelja.devicemanager.bootorupdate.updater.Result
+import com.boswelja.devicemanager.bootorupdate.updater.Updater
 import com.boswelja.devicemanager.watchconnectionmanager.WatchConnectionService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope

@@ -5,14 +5,12 @@
  * This file, and any part of the Wearable Extensions app/s cannot be copied and/or distributed
  * without permission from Jack Boswell (boswelja) <boswela@outlook.com>
  */
-package com.boswelja.devicemanager.receiver
+package com.boswelja.devicemanager.bootorupdate
 
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import com.boswelja.devicemanager.common.Compat
-import com.boswelja.devicemanager.service.BootOrUpdateHandlerService
-import com.boswelja.devicemanager.watchconnectionmanager.WatchConnectionService
 
 class BootOrUpdateReceiver : BroadcastReceiver() {
 

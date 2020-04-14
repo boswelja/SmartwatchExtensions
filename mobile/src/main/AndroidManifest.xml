@@ -91,7 +91,7 @@
         </service>
 
         <receiver
-            android:name=".receiver.BootOrUpdateReceiver"
+            android:name=".bootorupdate.BootOrUpdateReceiver"
             android:exported="false">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
@@ -100,7 +100,7 @@
         </receiver>
 
         <service
-            android:name=".service.BootOrUpdateHandlerService"
+            android:name=".bootorupdate.BootOrUpdateHandlerService"
             android:exported="false" />
 
         <service
