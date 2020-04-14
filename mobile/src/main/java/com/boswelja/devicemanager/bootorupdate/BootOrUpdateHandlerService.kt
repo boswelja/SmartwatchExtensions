@@ -122,7 +122,7 @@ class BootOrUpdateHandlerService : Service() {
                 }
             }
         } else {
-            Timber.w("tryStartBatterySyncWorkers watchBatterySyncInfo possible null")
+            Timber.w("tryStartBatterySyncWorkers watchBatterySyncInfo possibly null")
         }
     }
 
