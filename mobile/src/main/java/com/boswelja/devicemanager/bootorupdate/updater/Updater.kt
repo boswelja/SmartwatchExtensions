@@ -35,19 +35,26 @@ import com.boswelja.devicemanager.watchconnectionmanager.database.WatchDatabase
 import com.google.android.gms.tasks.Tasks
 import com.google.android.gms.wearable.CapabilityClient
 import com.google.android.gms.wearable.Wearable
+import timber.log.Timber
 
 class Updater(private val context: Context) {
 
     private val sharedPreferences: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
 
     private val currentAppVersion: Int = BuildConfig.VERSION_CODE
-    private val lastAppVersion: Int = sharedPreferences.getInt(APP_VERSION_KEY, currentAppVersion)
+    private val lastAppVersion: Int
 
     private val needsUpdate: Boolean get() = lastAppVersion < currentAppVersion
 
     private var notificationChannelsCreated: Boolean = false
 
     init {
+        lastAppVersion = try {
+            sharedPreferences.getInt(APP_VERSION_KEY, currentAppVersion)
+        } catch (e: ClassCastException) {
+            Timber.w("Failed to get lat app version, falling back to version 0 to force upgrade")
+            0
+        }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             notificationChannelsCreated = sharedPreferences.getBoolean(NOTIFICATION_CHANNELS_CREATED, false)
         }
