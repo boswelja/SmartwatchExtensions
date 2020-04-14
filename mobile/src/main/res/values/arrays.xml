@@ -29,6 +29,7 @@
         <item>Battery Sync now uses the new WorkManager API, rather than JobScheduler, to improve compatibility and reliability</item>
         <item>Process any update changes as soon as the app gets updated, you\'ll see a notification when this happens.</item>
         <item>Restart services and workers when you restart your phone</item>
+        <item>Bug fixes</item>
     </string-array>
 
     <string-array name="interrupt_filter_sync_to_watch_steps">
