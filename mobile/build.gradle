@@ -73,6 +73,8 @@ dependencies {
 
     implementation 'com.google.android.material:material:1.2.0-alpha05'
     implementation "com.google.android.gms:play-services-wearable:$play_services_wearable"
+
+    implementation 'com.jakewharton.timber:timber:4.7.1'
 }
 
 spotless {
