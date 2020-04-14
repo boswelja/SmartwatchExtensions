@@ -187,9 +187,8 @@
     <string name="watch_description_missing_app">Missing Wearable Extensions</string>
 
     <!-- Boot & Update handler notification strings -->
-    <string name="notification_boot_handler_title">Boot Handler</string>
-    <string name="notification_update_handler_title">Update Handler</string>
-    <string name="notification_boot_update_handler_desc">Starting required services</string>
+    <string name="notification_boot_handler_title">Starting required services</string>
+    <string name="notification_update_handler_title">Finishing Updates</string>
 
     <!-- Welcome fragment strings -->
     <string name="welcome_to_text">Welcome to</string>

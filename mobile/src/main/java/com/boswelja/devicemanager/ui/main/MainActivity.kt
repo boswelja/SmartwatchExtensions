@@ -9,7 +9,6 @@ package com.boswelja.devicemanager.ui.main
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
-import com.boswelja.devicemanager.MainApplication.Companion.SHOW_CHANGELOG_KEY
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.PreferenceKey
 import com.boswelja.devicemanager.messages.database.MessageDatabase.Companion.MESSAGE_COUNT_KEY
@@ -118,5 +117,9 @@ class MainActivity : BaseWatchPickerActivity() {
             number = messageCount
             isVisible = messageCount > 0
         }
+    }
+
+    companion object {
+        const val SHOW_CHANGELOG_KEY = "should_show_changelog"
     }
 }

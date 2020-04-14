@@ -23,6 +23,7 @@ import com.boswelja.devicemanager.batterysync.BatterySyncWorker
 import com.boswelja.devicemanager.common.PreferenceKey
 import com.boswelja.devicemanager.common.References
 import com.boswelja.devicemanager.dndsync.DnDLocalChangeService
+import com.boswelja.devicemanager.updater.UpdateHandlerService.Companion.BOOT_OR_UPDATE_NOTI_CHANNEL_ID
 import com.boswelja.devicemanager.watchconnectionmanager.database.WatchDatabase
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
@@ -93,15 +94,9 @@ class WatchConnectionService :
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         return when (intent?.action) {
-            Intent.ACTION_BOOT_COMPLETED,
-            Intent.ACTION_MY_PACKAGE_REPLACED -> {
+            Intent.ACTION_BOOT_COMPLETED -> {
                 NotificationCompat.Builder(this, BOOT_OR_UPDATE_NOTI_CHANNEL_ID).apply {
-                    if (intent.action == Intent.ACTION_BOOT_COMPLETED) {
-                        setContentTitle(getString(R.string.notification_boot_handler_title))
-                    } else {
-                        setContentTitle(getString(R.string.notification_update_handler_title))
-                    }
-                    setContentText(getString(R.string.notification_boot_update_handler_desc))
+                    setContentTitle(getString(R.string.notification_boot_handler_title))
                     setSmallIcon(R.drawable.ic_watch)
                     setOngoing(true)
                     setShowWhen(false)
@@ -109,7 +104,7 @@ class WatchConnectionService :
                     priority = NotificationCompat.PRIORITY_LOW
                     setVisibility(NotificationCompat.VISIBILITY_PRIVATE)
                 }.also {
-                    startForeground(BOOT_OR_UPDATE_NOTI_ID, it.build())
+                    startForeground(BOOT_NOTIFICATION_ID, it.build())
                 }
                 coroutineScope.launch(Dispatchers.IO) {
                     tryStartInterruptFilterSyncService()
@@ -561,9 +556,7 @@ class WatchConnectionService :
     }
 
     companion object {
-        const val BOOT_OR_UPDATE_NOTI_CHANNEL_ID = "boot_or_update_noti_channel"
-        const val BOOT_OR_UPDATE_NOTI_ID = 69102
-
+        const val BOOT_NOTIFICATION_ID = 24345
         const val LAST_CONNECTED_NODE_ID_KEY = "last_connected_id"
 
         private const val AUTO_ADD_WATCHES_KEY = "auto_add_watches"

@@ -100,6 +100,10 @@
         </receiver>
 
         <service
+            android:name=".updater.UpdateHandlerService"
+            android:exported="false" />
+
+        <service
             android:name=".dndsync.DnDLocalChangeService"
             android:exported="false" />
 

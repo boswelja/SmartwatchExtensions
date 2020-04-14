@@ -11,18 +11,26 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import com.boswelja.devicemanager.common.Compat
+import com.boswelja.devicemanager.updater.UpdateHandlerService
 import com.boswelja.devicemanager.watchconnectionmanager.WatchConnectionService
 
 class BootOrUpdateReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context?, intent: Intent?) {
-        val broadcastAction = intent?.action
-        if (broadcastAction == Intent.ACTION_BOOT_COMPLETED ||
-                broadcastAction == Intent.ACTION_MY_PACKAGE_REPLACED) {
-            Intent(context!!.applicationContext, WatchConnectionService::class.java).apply {
-                action = broadcastAction
-            }.also {
-                Compat.startForegroundService(context.applicationContext, it)
+        when (val broadcastAction = intent?.action) {
+            Intent.ACTION_MY_PACKAGE_REPLACED -> {
+                Intent(context!!.applicationContext, UpdateHandlerService::class.java).apply {
+                    action = broadcastAction
+                }.also {
+                    Compat.startForegroundService(context.applicationContext, it)
+                }
+            }
+            Intent.ACTION_BOOT_COMPLETED -> {
+                Intent(context!!.applicationContext, WatchConnectionService::class.java).apply {
+                    action = broadcastAction
+                }.also {
+                    Compat.startForegroundService(context.applicationContext, it)
+                }
             }
         }
     }
