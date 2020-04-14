@@ -60,8 +60,8 @@
     <style name="CrashHandler.ActionButton" parent="Widget.MaterialComponents.Button.TextButton.Icon">
         <item name="iconGravity">textStart</item>
         <item name="android:layout_marginBottom">8dp</item>
-        <item name="android:paddingTop">16dp</item>
-        <item name="android:paddingBottom">16dp</item>
+        <item name="android:paddingTop">20dp</item>
+        <item name="android:paddingBottom">20dp</item>
     </style>
 
 </resources>
