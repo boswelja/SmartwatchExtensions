@@ -19,6 +19,7 @@ import com.boswelja.devicemanager.watchconnectionmanager.WatchConnectionService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 class BootOrUpdateHandlerService : Service() {
 
@@ -26,6 +27,7 @@ class BootOrUpdateHandlerService : Service() {
 
     private val watchManagerConnection = object : WatchConnectionService.Connection() {
         override fun onWatchManagerBound(service: WatchConnectionService) {
+            Timber.i("onWatchManagerBound called")
             MainScope().launch(Dispatchers.IO) {
                 tryStartBatterySyncWorkers(service)
                 tryStartInterruptFilterSyncService(service)
@@ -39,22 +41,30 @@ class BootOrUpdateHandlerService : Service() {
     override fun onBind(intent: Intent?): IBinder? = null
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        Timber.i("onStartCommand called")
         when (intent?.action) {
             Intent.ACTION_MY_PACKAGE_REPLACED -> {
+                Timber.i("Starting update process")
                 updater = Updater(this)
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) updater.createNotificationChannels()
                 startForeground(NOTI_ID, createUpdaterNotification())
-                if (updater.doUpdate() == Result.COMPLETED) {
-                    PreferenceManager.getDefaultSharedPreferences(this).edit {
-                        putBoolean(SHOW_CHANGELOG_KEY, true)
+                when (updater.doUpdate()) {
+                    Result.COMPLETED -> {
+                        Timber.i("Update completed")
+                        PreferenceManager.getDefaultSharedPreferences(this).edit {
+                            putBoolean(SHOW_CHANGELOG_KEY, true)
+                        }
                     }
+                    Result.NOT_NEEDED -> Timber.i("Update not needed")
                 }
             }
             Intent.ACTION_BOOT_COMPLETED -> {
+                Timber.i("Device restarted")
                 startForeground(NOTI_ID, createBootNotification())
             }
             else -> return super.onStartCommand(intent, flags, startId)
         }
+        Timber.i("Binding to WatchConnectionService")
         WatchConnectionService.bind(this, watchManagerConnection)
         return START_NOT_STICKY
     }
@@ -87,6 +97,7 @@ class BootOrUpdateHandlerService : Service() {
         val dndSyncToWatchEnabled =
                 service.getBoolPrefsForRegisteredWatches(PreferenceKey.DND_SYNC_TO_WATCH_KEY)
                         ?.any { it.value } == true
+        Timber.i("tryStartInterruptFilterSyncService dndSyncToWatchEnabled = $dndSyncToWatchEnabled")
         if (dndSyncToWatchEnabled) {
             applicationContext.startService(
                     Intent(applicationContext, DnDLocalChangeService::class.java))
@@ -99,6 +110,7 @@ class BootOrUpdateHandlerService : Service() {
         if (watchBatterySyncInfo != null && watchBatterySyncInfo.isNotEmpty()) {
             for (batterySyncBoolPreference in watchBatterySyncInfo) {
                 if (batterySyncBoolPreference.value) {
+                    Timber.i("tryStartBatterySyncWorkers Starting a Battery Sync Worker")
                     val batterySyncInterval =
                             service.getIntPrefForWatch(batterySyncBoolPreference.watchId, PreferenceKey.BATTERY_CHARGE_THRESHOLD_KEY)
                                     ?.value?.toLong() ?: 15
@@ -107,10 +119,13 @@ class BootOrUpdateHandlerService : Service() {
                     service.updateBatterySyncWorkerId(batterySyncBoolPreference.watchId, batterySyncWorkerId)
                 }
             }
+        } else {
+            Timber.w("tryStartBatterySyncWorkers watchBatterySyncInfo possible null")
         }
     }
 
     private fun finish() {
+        Timber.i("Finished")
         unbindService(watchManagerConnection)
         stopForeground(true)
         stopSelf()
