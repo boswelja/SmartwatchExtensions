@@ -28,7 +28,7 @@ class BootOrUpdateHandlerService : Service() {
 
     private val watchManagerConnection = object : WatchConnectionService.Connection() {
         override fun onWatchManagerBound(service: WatchConnectionService) {
-            Timber.i("onWatchManagerBound called")
+            Timber.i("Service bound")
             MainScope().launch(Dispatchers.IO) {
                 tryStartBatterySyncWorkers(service)
                 tryStartInterruptFilterSyncService(service)
@@ -36,7 +36,9 @@ class BootOrUpdateHandlerService : Service() {
             }
         }
 
-        override fun onWatchManagerUnbound() {}
+        override fun onWatchManagerUnbound() {
+            Timber.w("Service unbound")
+        }
     }
 
     override fun onBind(intent: Intent?): IBinder? = null
