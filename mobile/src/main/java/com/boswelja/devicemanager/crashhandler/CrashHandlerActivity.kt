@@ -55,6 +55,7 @@ class CrashHandlerActivity : AppCompatActivity() {
                     putExtra(Intent.EXTRA_EMAIL, arrayOf("boswelja78@gmail.com"))
                     putExtra(Intent.EXTRA_SUBJECT, "Wearable Extensions crash")
                     putExtra(Intent.EXTRA_TEXT, emailBody)
+                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                 }.also {
                     if (it.resolveActivity(packageManager) != null) {
                         Timber.i("Launching email program to report error")
