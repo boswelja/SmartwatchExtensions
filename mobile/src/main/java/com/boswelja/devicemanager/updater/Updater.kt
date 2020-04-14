@@ -103,6 +103,19 @@ class Updater(private val context: Context) {
                 notificationManager.createNotificationChannel(it)
             }
         }
+
+        if (notificationManager.getNotificationChannel(WatchConnectionService.BOOT_OR_UPDATE_NOTI_CHANNEL_ID) == null) {
+            NotificationChannel(
+                    WatchConnectionService.BOOT_OR_UPDATE_NOTI_CHANNEL_ID,
+                    context.getString(R.string.noti_channel_boot_or_update_title),
+                    NotificationManager.IMPORTANCE_LOW).apply {
+                enableLights(false)
+                enableVibration(false)
+                setShowBadge(false)
+            }.also {
+                notificationManager.createNotificationChannel(it)
+            }
+        }
     }
 
     fun doUpdate(): Result {

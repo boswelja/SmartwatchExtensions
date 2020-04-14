@@ -15,8 +15,10 @@ import android.content.ServiceConnection
 import android.content.SharedPreferences
 import android.os.Binder
 import android.os.IBinder
+import androidx.core.app.NotificationCompat
 import androidx.core.content.edit
 import androidx.preference.PreferenceManager
+import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.batterysync.BatterySyncWorker
 import com.boswelja.devicemanager.common.PreferenceKey
 import com.boswelja.devicemanager.common.References
@@ -93,6 +95,22 @@ class WatchConnectionService :
         return when (intent?.action) {
             Intent.ACTION_BOOT_COMPLETED,
             Intent.ACTION_MY_PACKAGE_REPLACED -> {
+                NotificationCompat.Builder(this, BOOT_OR_UPDATE_NOTI_CHANNEL_ID).apply {
+                    if (intent.action == Intent.ACTION_BOOT_COMPLETED) {
+                        setContentTitle(getString(R.string.notification_boot_handler_title))
+                    } else {
+                        setContentTitle(getString(R.string.notification_update_handler_title))
+                    }
+                    setContentText(getString(R.string.notification_boot_update_handler_desc))
+                    setSmallIcon(R.drawable.ic_watch)
+                    setOngoing(true)
+                    setShowWhen(false)
+                    setUsesChronometer(false)
+                    priority = NotificationCompat.PRIORITY_LOW
+                    setVisibility(NotificationCompat.VISIBILITY_PRIVATE)
+                }.also {
+                    startForeground(BOOT_OR_UPDATE_NOTI_ID, it.build())
+                }
                 coroutineScope.launch(Dispatchers.IO) {
                     tryStartInterruptFilterSyncService()
                     tryStartBatterySyncWorkers()
@@ -543,6 +561,9 @@ class WatchConnectionService :
     }
 
     companion object {
+        const val BOOT_OR_UPDATE_NOTI_CHANNEL_ID = "boot_or_update_noti_channel"
+        const val BOOT_OR_UPDATE_NOTI_ID = 69102
+
         const val LAST_CONNECTED_NODE_ID_KEY = "last_connected_id"
 
         private const val AUTO_ADD_WATCHES_KEY = "auto_add_watches"
