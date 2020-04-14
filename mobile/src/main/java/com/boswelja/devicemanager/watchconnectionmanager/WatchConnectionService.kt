@@ -33,11 +33,11 @@ import com.google.android.gms.wearable.Node
 import com.google.android.gms.wearable.NodeClient
 import com.google.android.gms.wearable.PutDataMapRequest
 import com.google.android.gms.wearable.Wearable
+import kotlin.collections.ArrayList
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import kotlin.collections.ArrayList
 
 class WatchConnectionService :
         Service(),
@@ -114,7 +114,6 @@ class WatchConnectionService :
 
         if (watchConnectionListener != null) capabilityClient.removeListener(watchConnectionListener!!)
     }
-
 
     private suspend fun tryStartInterruptFilterSyncService() {
         val dndSyncToWatchEnabled =
