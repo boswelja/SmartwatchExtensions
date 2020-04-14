@@ -126,7 +126,9 @@ class AppManagerService : Service() {
     }
 
     override fun onDestroy() {
-        unregisterReceiver(packageChangeReceiver)
+        try {
+            unregisterReceiver(packageChangeReceiver)
+        } catch (_: IllegalArgumentException) { }
         messageClient.removeListener(messageReceiver)
         super.onDestroy()
     }
