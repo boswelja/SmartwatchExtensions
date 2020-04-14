@@ -15,6 +15,7 @@ import com.boswelja.devicemanager.dndsync.DnDLocalChangeService
 import com.boswelja.devicemanager.ui.main.MainActivity.Companion.SHOW_CHANGELOG_KEY
 import com.boswelja.devicemanager.bootorupdate.updater.Result
 import com.boswelja.devicemanager.bootorupdate.updater.Updater
+import com.boswelja.devicemanager.common.Compat
 import com.boswelja.devicemanager.watchconnectionmanager.WatchConnectionService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
@@ -99,7 +100,8 @@ class BootOrUpdateHandlerService : Service() {
                         ?.any { it.value } == true
         Timber.i("tryStartInterruptFilterSyncService dndSyncToWatchEnabled = $dndSyncToWatchEnabled")
         if (dndSyncToWatchEnabled) {
-            applicationContext.startService(
+            Compat.startForegroundService(
+                    applicationContext,
                     Intent(applicationContext, DnDLocalChangeService::class.java))
         }
     }
