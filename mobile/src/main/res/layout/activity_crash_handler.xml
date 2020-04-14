@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -61,6 +62,63 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/title_text_view"
             style="@style/TextAppearance.MaterialComponents.Body1" />
+
+        <LinearLayout
+            android:id="@+id/stacktrace_view"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:orientation="vertical"
+            app:layout_constraintTop_toBottomOf="@id/info_text_view"
+            app:layout_constraintBottom_toTopOf="@id/restart_button">
+
+            <LinearLayout
+                android:id="@+id/stacktrace_action_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:padding="12dp"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:background="?selectableItemBackground">
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/stacktrace_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/crash_handler_show_stacktrace"
+                    android:textColor="?android:textColorSecondary"
+                    style="@style/TextAppearance.MaterialComponents.Body2" />
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/expand_collapse_indicator"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:srcCompat="@drawable/ic_expand" />
+
+            </LinearLayout>
+
+            <ScrollView
+                android:id="@+id/stacktrace_scroll_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="16dp"
+                android:visibility="gone"
+                android:background="@drawable/stacktrace_background"
+                tools:visibility="visible"
+                app:layout_constraintTop_toBottomOf="@id/stacktrace_label"
+                app:layout_constraintBottom_toBottomOf="parent">
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/stacktrace_text_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="16dp"
+                    style="@style/TextAppearance.MaterialComponents.Body2"/>
+
+            </ScrollView>
+        </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

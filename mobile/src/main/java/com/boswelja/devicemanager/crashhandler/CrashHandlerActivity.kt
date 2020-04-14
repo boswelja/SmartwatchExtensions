@@ -10,6 +10,7 @@ package com.boswelja.devicemanager.crashhandler
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.net.toUri
 import androidx.databinding.DataBindingUtil
@@ -23,6 +24,7 @@ import kotlin.system.exitProcess
 class CrashHandlerActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityCrashHandlerBinding
+    private var stacktrace: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,8 +32,18 @@ class CrashHandlerActivity : AppCompatActivity() {
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_crash_handler)
 
-        val stacktrace = intent.getStringExtra(EXTRA_STACKTRACE)
+        stacktrace = intent.getStringExtra(EXTRA_STACKTRACE)
 
+        setupActions()
+        setupStacktraceView()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        exitProcess(0)
+    }
+
+    private fun setupActions() {
         binding.apply {
             restartButton.setOnClickListener {
                 Timber.i("Restarting app")
@@ -74,10 +86,21 @@ class CrashHandlerActivity : AppCompatActivity() {
         }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        exitProcess(0)
-
+    private fun setupStacktraceView() {
+        binding.apply {
+            stacktraceTextView.text = stacktrace
+            stacktraceActionView.setOnClickListener {
+                if (stacktraceScrollView.visibility != View.VISIBLE) {
+                    stacktraceScrollView.visibility = View.VISIBLE
+                    stacktraceLabel.text = getString(R.string.crash_handler_hide_stacktrace)
+                    expandCollapseIndicator.setImageResource(R.drawable.ic_collapse)
+                } else {
+                    stacktraceScrollView.visibility = View.GONE
+                    stacktraceLabel.text = getString(R.string.crash_handler_show_stacktrace)
+                    expandCollapseIndicator.setImageResource(R.drawable.ic_expand)
+                }
+            }
+        }
     }
 
     companion object {

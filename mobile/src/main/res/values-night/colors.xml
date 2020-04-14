@@ -15,4 +15,6 @@
 
     <color name="warningRed">#F44336</color>
 
+    <color name="stacktraceBackground">#10ffffff</color>
+
 </resources>

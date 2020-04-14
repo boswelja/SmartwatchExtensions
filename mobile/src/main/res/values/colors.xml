@@ -19,4 +19,6 @@
 
     <color name="warningRed">#D32F2F</color>
 
+    <color name="stacktraceBackground">#10000000</color>
+
 </resources>
