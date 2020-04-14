@@ -53,6 +53,7 @@ class BatterySyncPreferenceWidgetFragment :
             BATTERY_SYNC_ENABLED_KEY -> {
                 batterySyncEnabled = sharedPreferences?.getBoolean(BATTERY_SYNC_ENABLED_KEY, false) == true
                 if (batterySyncEnabled) {
+                    setWatchBatteryLoading()
                     startBatteryUpdateTimer()
                 } else {
                     updateWatchBatteryPercent()
@@ -77,6 +78,7 @@ class BatterySyncPreferenceWidgetFragment :
         super.onCreate(savedInstanceState)
 
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context!!)
+        batterySyncEnabled = sharedPreferences.getBoolean(BATTERY_SYNC_ENABLED_KEY, false)
 
         activity = getActivity() as BatterySyncPreferenceActivity
         activity.batteryStatsDatabaseEventInterface = object : BatterySyncPreferenceActivity.BatteryStatsDatabaseEventInterface {
@@ -121,6 +123,13 @@ class BatterySyncPreferenceWidgetFragment :
         }
     }
 
+    private fun setWatchBatteryLoading() {
+        binding.apply {
+            watchBatteryIndicator.setImageLevel(0)
+            watchBatteryPercent.text = "Please Wait"
+        }
+    }
+
     private fun updateBatterySyncLastTimeNow() {
         if (batterySyncEnabled) {
             if (batteryStats != null && batteryStats!!.batteryPercent > 0) {
@@ -156,7 +165,7 @@ class BatterySyncPreferenceWidgetFragment :
 
     private fun startBatteryUpdateTimer() {
         if (!watchBatteryUpdateTimerStarted && batterySyncEnabled) {
-            watchBatteryUpdateTimer = fixedRateTimer("batterySyncLastTimeTimer", false, 0L, 60 * 1000) {
+            watchBatteryUpdateTimer = fixedRateTimer("batterySyncLastTimeTimer", false, 3 * 1000, 60 * 1000) {
                 coroutineScope.launch {
                     updateBatteryStatsDisplay()
                 }
