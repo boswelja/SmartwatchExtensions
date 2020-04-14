@@ -23,6 +23,11 @@
         android:theme="@style/AppTheme"
         tools:ignore="UnusedAttribute">
 
+        <activity
+            android:name=".crashhandler.CrashHandlerActivity"
+            android:exported="false"
+            android:excludeFromRecents="true" />
+
         <activity android:name=".ui.main.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/close_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="32dp"
+            android:text="@string/crash_handler_action_close"
+            app:icon="@drawable/ic_close"
+            app:layout_constraintBottom_toBottomOf="parent"
+            style="@style/CrashHandler.ActionButton" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/report_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/crash_handler_action_report"
+            app:icon="@drawable/ic_bug_report"
+            app:layout_constraintBottom_toTopOf="@id/close_button"
+            style="@style/CrashHandler.ActionButton" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/restart_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/crash_handler_action_restart"
+            app:icon="@drawable/ic_refresh"
+            app:layout_constraintBottom_toTopOf="@id/report_button"
+            style="@style/CrashHandler.ActionButton" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/title_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="64dp"
+            android:text="@string/crash_handler_title"
+            android:textColor="?android:textColorPrimary"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            style="@style/TextAppearance.MaterialComponents.Headline4" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/info_text_view"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:text="@string/crash_handler_message"
+            android:textAlignment="center"
+            android:textColor="?android:textColorPrimary"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/title_text_view"
+            style="@style/TextAppearance.MaterialComponents.Body1" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

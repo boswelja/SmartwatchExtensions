@@ -194,6 +194,13 @@
     <string name="welcome_to_text">Welcome to</string>
     <string name="welcome_button_get_started">Get Started</string>
 
+    <!-- Crash handler strings -->
+    <string name="crash_handler_title">Uh oh!</string>
+    <string name="crash_handler_message">Something went wrong.</string>
+    <string name="crash_handler_action_restart">Restart</string>
+    <string name="crash_handler_action_report">Report</string>
+    <string name="crash_handler_action_close">Close</string>
+
     <!-- Update dialog strings -->
     <string name="update_dialog_title">Updating %s</string>
 
