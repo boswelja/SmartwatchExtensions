@@ -1,4 +1,4 @@
-package com.boswelja.devicemanager.updater
+package com.boswelja.devicemanager.service
 
 import android.app.Notification
 import android.app.Service
@@ -13,12 +13,14 @@ import com.boswelja.devicemanager.batterysync.BatterySyncWorker
 import com.boswelja.devicemanager.common.PreferenceKey
 import com.boswelja.devicemanager.dndsync.DnDLocalChangeService
 import com.boswelja.devicemanager.ui.main.MainActivity.Companion.SHOW_CHANGELOG_KEY
+import com.boswelja.devicemanager.updater.Result
+import com.boswelja.devicemanager.updater.Updater
 import com.boswelja.devicemanager.watchconnectionmanager.WatchConnectionService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 
-class UpdateHandlerService : Service() {
+class BootOrUpdateHandlerService : Service() {
 
     private lateinit var updater: Updater
 
@@ -37,31 +39,47 @@ class UpdateHandlerService : Service() {
     override fun onBind(intent: Intent?): IBinder? = null
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        if (intent?.action == Intent.ACTION_MY_PACKAGE_REPLACED) {
-            updater = Updater(this)
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) updater.createNotificationChannels()
-            startForeground(UPDATE_NOTI_ID, createNotification())
-            if (updater.doUpdate() == Result.COMPLETED) {
-                PreferenceManager.getDefaultSharedPreferences(this).edit {
-                    putBoolean(SHOW_CHANGELOG_KEY, true)
+        when (intent?.action) {
+            Intent.ACTION_MY_PACKAGE_REPLACED -> {
+                updater = Updater(this)
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) updater.createNotificationChannels()
+                startForeground(NOTI_ID, createUpdaterNotification())
+                if (updater.doUpdate() == Result.COMPLETED) {
+                    PreferenceManager.getDefaultSharedPreferences(this).edit {
+                        putBoolean(SHOW_CHANGELOG_KEY, true)
+                    }
                 }
             }
-            WatchConnectionService.bind(this, watchManagerConnection)
-            return START_NOT_STICKY
-        } else {
-            return super.onStartCommand(intent, flags, startId)
+            Intent.ACTION_BOOT_COMPLETED -> {
+                startForeground(NOTI_ID, createBootNotification())
+            }
+            else -> return super.onStartCommand(intent, flags, startId)
         }
+        WatchConnectionService.bind(this, watchManagerConnection)
+        return START_NOT_STICKY
     }
 
-    private fun createNotification(): Notification {
+    private fun createBaseNotification(): NotificationCompat.Builder {
         return NotificationCompat.Builder(this, BOOT_OR_UPDATE_NOTI_CHANNEL_ID).apply {
-            setContentTitle(getString(R.string.notification_update_handler_title))
-            setSmallIcon(R.drawable.noti_ic_update)
             setOngoing(true)
             setShowWhen(false)
             setUsesChronometer(false)
             priority = NotificationCompat.PRIORITY_LOW
             setVisibility(NotificationCompat.VISIBILITY_PRIVATE)
+        }
+    }
+
+    private fun createUpdaterNotification(): Notification {
+        return createBaseNotification().apply {
+            setContentTitle(getString(R.string.notification_update_handler_title))
+            setSmallIcon(R.drawable.noti_ic_update)
+        }.build()
+    }
+
+    private fun createBootNotification(): Notification {
+        return createBaseNotification().apply {
+            setContentTitle(getString(R.string.notification_boot_handler_title))
+            setSmallIcon(R.drawable.noti_ic_update)
         }.build()
     }
 
@@ -100,6 +118,6 @@ class UpdateHandlerService : Service() {
 
     companion object {
         const val BOOT_OR_UPDATE_NOTI_CHANNEL_ID = "boot_or_update_noti_channel"
-        const val UPDATE_NOTI_ID = 69102
+        const val NOTI_ID = 69102
     }
 }

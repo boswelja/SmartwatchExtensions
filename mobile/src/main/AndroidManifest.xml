@@ -100,7 +100,7 @@
         </receiver>
 
         <service
-            android:name=".updater.UpdateHandlerService"
+            android:name=".service.BootOrUpdateHandlerService"
             android:exported="false" />
 
         <service
