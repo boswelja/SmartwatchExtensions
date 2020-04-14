@@ -20,13 +20,13 @@ import com.boswelja.devicemanager.BuildConfig
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.batterysync.BatterySyncWorker
 import com.boswelja.devicemanager.batterysync.WatchBatteryUpdateReceiver
+import com.boswelja.devicemanager.bootorupdate.BootOrUpdateHandlerService
 import com.boswelja.devicemanager.common.PreferenceKey
 import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_SYNC_ENABLED_KEY
 import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_SYNC_INTERVAL_KEY
 import com.boswelja.devicemanager.common.References.CAPABILITY_WATCH_APP
 import com.boswelja.devicemanager.common.dndsync.References
 import com.boswelja.devicemanager.messages.database.MessageDatabase
-import com.boswelja.devicemanager.bootorupdate.BootOrUpdateHandlerService
 import com.boswelja.devicemanager.ui.phonelocking.PhoneLockingPreferenceFragment.Companion.PHONE_LOCKING_MODE_KEY
 import com.boswelja.devicemanager.watchconnectionmanager.Utils
 import com.boswelja.devicemanager.watchconnectionmanager.Watch
@@ -122,7 +122,6 @@ class Updater(private val context: Context) {
             sharedPreferences.edit().putBoolean(NOTIFICATION_CHANNELS_CREATED, true).apply()
             notificationChannelsCreated = true
         }
-
     }
 
     fun doUpdate(): Result {

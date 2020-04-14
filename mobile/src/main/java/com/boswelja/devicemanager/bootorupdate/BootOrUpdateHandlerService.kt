@@ -1,3 +1,10 @@
+/* Copyright (C) 2020 Jack Boswell <boswelja@outlook.com>
+ *
+ * This file is part of Wearable Extensions
+ *
+ * This file, and any part of the Wearable Extensions app/s cannot be copied and/or distributed
+ * without permission from Jack Boswell (boswelja) <boswela@outlook.com>
+ */
 package com.boswelja.devicemanager.bootorupdate
 
 import android.app.Notification
@@ -10,12 +17,12 @@ import androidx.core.content.edit
 import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.batterysync.BatterySyncWorker
-import com.boswelja.devicemanager.common.PreferenceKey
-import com.boswelja.devicemanager.dndsync.DnDLocalChangeService
-import com.boswelja.devicemanager.ui.main.MainActivity.Companion.SHOW_CHANGELOG_KEY
 import com.boswelja.devicemanager.bootorupdate.updater.Result
 import com.boswelja.devicemanager.bootorupdate.updater.Updater
 import com.boswelja.devicemanager.common.Compat
+import com.boswelja.devicemanager.common.PreferenceKey
+import com.boswelja.devicemanager.dndsync.DnDLocalChangeService
+import com.boswelja.devicemanager.ui.main.MainActivity.Companion.SHOW_CHANGELOG_KEY
 import com.boswelja.devicemanager.watchconnectionmanager.WatchConnectionService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
