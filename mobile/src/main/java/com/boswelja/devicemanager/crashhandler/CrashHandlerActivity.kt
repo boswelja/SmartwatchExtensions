@@ -39,6 +39,7 @@ class CrashHandlerActivity : AppCompatActivity() {
                     addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                 }.also {
                     startActivity(it)
+                    finish()
                 }
             }
 
@@ -58,6 +59,7 @@ class CrashHandlerActivity : AppCompatActivity() {
                     if (it.resolveActivity(packageManager) != null) {
                         Timber.i("Launching email program to report error")
                         startActivity(it)
+                        finish()
                     } else {
                         Timber.w("No email client found")
                     }
