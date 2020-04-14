@@ -51,14 +51,17 @@ class BatterySyncPreferenceWidgetFragment :
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
         when (key) {
             BATTERY_SYNC_ENABLED_KEY -> {
-                batterySyncEnabled = sharedPreferences?.getBoolean(BATTERY_SYNC_ENABLED_KEY, false) == true
-                if (batterySyncEnabled) {
-                    setWatchBatteryLoading()
-                    startBatteryUpdateTimer()
-                } else {
-                    updateWatchBatteryPercent()
-                    updateBatterySyncLastTimeNow()
-                    stopBatteryUpdateTimer()
+                val newBatterySyncState = sharedPreferences?.getBoolean(BATTERY_SYNC_ENABLED_KEY, false) == true
+                if (newBatterySyncState != batterySyncEnabled) {
+                    batterySyncEnabled = newBatterySyncState
+                    if (batterySyncEnabled) {
+                        setWatchBatteryLoading()
+                        startBatteryUpdateTimer()
+                    } else {
+                        updateWatchBatteryPercent()
+                        updateBatterySyncLastTimeNow()
+                        stopBatteryUpdateTimer()
+                    }
                 }
             }
         }
