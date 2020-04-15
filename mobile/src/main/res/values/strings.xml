@@ -196,7 +196,7 @@
 
     <!-- Crash handler strings -->
     <string name="crash_handler_title">Uh oh!</string>
-    <string name="crash_handler_message">Something went wrong.</string>
+    <string name="crash_handler_message">Something went wrong. If this is not the first time you\'ve seen this, you may need to reinstall Wearable Extensions.</string>
     <string name="crash_handler_action_restart">Restart</string>
     <string name="crash_handler_action_report">Report</string>
     <string name="crash_handler_action_close">Close</string>
