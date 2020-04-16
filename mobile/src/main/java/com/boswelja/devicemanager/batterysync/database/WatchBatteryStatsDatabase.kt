@@ -14,15 +14,13 @@ import androidx.room.RoomDatabase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-@Database(entities = [WatchBatteryStats::class], version = 1)
+@Database(entities = [WatchBatteryStats::class], version = 2)
 abstract class WatchBatteryStatsDatabase : RoomDatabase() {
 
     abstract fun batteryStatsDao(): BatteryStatsDao
 
-    suspend fun updateWatchBatteryStats(watchId: String, batteryPercent: Int) {
+    suspend fun updateWatchBatteryStats(watchBatteryStats: WatchBatteryStats) {
         withContext(Dispatchers.IO) {
-            val updateTime = System.currentTimeMillis()
-            val watchBatteryStats = WatchBatteryStats(watchId, batteryPercent, updateTime)
             batteryStatsDao().updateStats(watchBatteryStats)
         }
     }
@@ -31,6 +29,7 @@ abstract class WatchBatteryStatsDatabase : RoomDatabase() {
         suspend fun open(context: Context): WatchBatteryStatsDatabase {
             return withContext(Dispatchers.IO) {
                 return@withContext Room.databaseBuilder(context, WatchBatteryStatsDatabase::class.java, "battery-stats-db")
+                        .addMigrations(Migrations.MIGRATION_1_2)
                         .build()
             }
         }

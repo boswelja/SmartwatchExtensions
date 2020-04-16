@@ -15,5 +15,6 @@ import androidx.room.PrimaryKey
 class WatchBatteryStats(
     @PrimaryKey val watchId: String,
     @ColumnInfo(name = "watch_battery_percent") val batteryPercent: Int,
-    @ColumnInfo(name = "last_update_time") val lastUpdatedMillis: Long
+    @ColumnInfo(name = "watch_charging") val isWatchCharging: Boolean,
+    @ColumnInfo(name = "last_update_time") val lastUpdatedMillis: Long = System.currentTimeMillis()
 )
