@@ -75,6 +75,7 @@ class AppSettingsFragment :
         daynightModePreference = findPreference(DAYNIGHT_MODE_KEY)!!
 
         findPreference<Preference>(OPEN_WATCH_MANAGER_KEY)?.onPreferenceClickListener = this
+        findPreference<Preference>(OPEN_MANAGE_SPACE_KEY)?.onPreferenceClickListener = this
     }
 
     override fun onResume() {
