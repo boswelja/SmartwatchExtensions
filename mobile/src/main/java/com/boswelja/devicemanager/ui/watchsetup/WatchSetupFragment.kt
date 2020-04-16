@@ -83,7 +83,7 @@ class WatchSetupFragment : Fragment() {
         if (watchConnectionManager != null) {
             hideHelpMessage()
             setLoading(true)
-            coroutineScope.launch {
+            coroutineScope.launch(Dispatchers.IO) {
                 val availableWatches = watchConnectionManager?.getAvailableWatches()!!
                 withContext(Dispatchers.Main) {
                     if (availableWatches.isEmpty()) {
@@ -125,11 +125,13 @@ class WatchSetupFragment : Fragment() {
                 setTitle(getString(R.string.register_watch_dialog_title, watch.name))
                 setMessage(getString(R.string.register_watch_dialog_message, watch.name))
                 setPositiveButton(R.string.dialog_button_yes) { _, _ ->
-                    coroutineScope.launch {
+                    coroutineScope.launch(Dispatchers.IO) {
                         watchConnectionManager?.addWatch(watch)
+                        withContext(Dispatchers.Main) {
+                            activity?.setResult(WatchSetupActivity.RESULT_WATCH_ADDED)
+                            activity?.finish()
+                        }
                     }
-                    activity?.setResult(WatchSetupActivity.RESULT_WATCH_ADDED)
-                    activity?.finish()
                 }
                 setNegativeButton(R.string.dialog_button_no) { dialogInterface, _ ->
                     dialogInterface.cancel()

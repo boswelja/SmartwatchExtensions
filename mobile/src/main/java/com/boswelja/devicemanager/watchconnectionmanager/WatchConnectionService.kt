@@ -233,29 +233,27 @@ class WatchConnectionService :
     fun getConnectedWatchId(): String? = connectedWatch?.id
 
     fun setConnectedWatchById(id: String) {
-        coroutineScope.launch {
-            withContext(Dispatchers.IO) {
+        coroutineScope.launch(Dispatchers.IO) {
+            for (connectionInterface in watchConnectionInterfaces) {
+                connectionInterface.onConnectedWatchChanging()
+            }
+
+            val newWatch = getWatchById(id)
+            val success = newWatch != null
+
+            if (success) {
+                connectedWatch = newWatch
+
+                updateLocalPreferences()
+
+                sharedPreferences.edit {
+                    putString(LAST_CONNECTED_NODE_ID_KEY, id)
+                }
+            }
+
+            withContext(Dispatchers.Main) {
                 for (connectionInterface in watchConnectionInterfaces) {
-                    connectionInterface.onConnectedWatchChanging()
-                }
-
-                val newWatch = getWatchById(id)
-                val success = newWatch != null
-
-                if (success) {
-                    connectedWatch = newWatch
-
-                    updateLocalPreferences()
-
-                    sharedPreferences.edit {
-                        putString(LAST_CONNECTED_NODE_ID_KEY, id)
-                    }
-                }
-
-                withContext(Dispatchers.Main) {
-                    for (connectionInterface in watchConnectionInterfaces) {
-                        connectionInterface.onConnectedWatchChanged(success)
-                    }
+                    connectionInterface.onConnectedWatchChanged(success)
                 }
             }
         }
@@ -478,16 +476,14 @@ class WatchConnectionService :
     }
 
     private fun ensureWatchRegistered(node: Node) {
-        coroutineScope.launch {
+        coroutineScope.launch(Dispatchers.IO) {
             try {
-                withContext(Dispatchers.IO) {
-                    if (database.watchDao().findById(node.id) == null) {
-                        val newWatch = Watch(node)
-                        database.watchDao().add(newWatch)
-                        withContext(Dispatchers.Main) {
-                            for (connectionInterface in watchConnectionInterfaces) {
-                                connectionInterface.onWatchAdded(newWatch)
-                            }
+                if (database.watchDao().findById(node.id) == null) {
+                    val newWatch = Watch(node)
+                    database.watchDao().add(newWatch)
+                    withContext(Dispatchers.Main) {
+                        for (connectionInterface in watchConnectionInterfaces) {
+                            connectionInterface.onWatchAdded(newWatch)
                         }
                     }
                 }

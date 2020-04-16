@@ -29,27 +29,24 @@ import com.google.android.gms.wearable.WearableListenerService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class WatchBatteryUpdateReceiver : WearableListenerService() {
 
     private val watchConnectionManagerConnection = object : WatchConnectionService.Connection() {
         override fun onWatchManagerBound(service: WatchConnectionService) {
-            coroutineScope.launch {
+            coroutineScope.launch(Dispatchers.IO) {
                 val watch = service.getWatchById(watchId)
-                withContext(Dispatchers.Default) {
-                    if (watch != null) {
-                        if (isCharging and
-                                (watch.boolPrefs[BATTERY_WATCH_CHARGE_NOTI_KEY] == true) and
-                                (batteryPercent >= (watch.intPrefs[BATTERY_CHARGE_THRESHOLD_KEY] ?: 90)) and
-                                (watch.boolPrefs[BATTERY_CHARGED_NOTI_SENT] != true)) {
-                            sendChargedNoti(watch.name, watch.intPrefs[BATTERY_CHARGE_THRESHOLD_KEY] ?: 90)
-                            service.updatePrefInDatabase(watch.id, BATTERY_CHARGED_NOTI_SENT, true)
-                        } else {
-                            val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-                            notificationManager.cancel(BATTERY_CHARGED_NOTI_ID)
-                            service.updatePrefInDatabase(watch.id, BATTERY_CHARGED_NOTI_SENT, false)
-                        }
+                if (watch != null) {
+                    if (isCharging and
+                            (watch.boolPrefs[BATTERY_WATCH_CHARGE_NOTI_KEY] == true) and
+                            (batteryPercent >= (watch.intPrefs[BATTERY_CHARGE_THRESHOLD_KEY] ?: 90)) and
+                            (watch.boolPrefs[BATTERY_CHARGED_NOTI_SENT] != true)) {
+                        sendChargedNoti(watch.name, watch.intPrefs[BATTERY_CHARGE_THRESHOLD_KEY] ?: 90)
+                        service.updatePrefInDatabase(watch.id, BATTERY_CHARGED_NOTI_SENT, true)
+                    } else {
+                        val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+                        notificationManager.cancel(BATTERY_CHARGED_NOTI_ID)
+                        service.updatePrefInDatabase(watch.id, BATTERY_CHARGED_NOTI_SENT, false)
                     }
                 }
                 unbindService()

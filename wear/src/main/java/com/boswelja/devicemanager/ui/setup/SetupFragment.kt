@@ -42,12 +42,10 @@ class SetupFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         view.findViewById<TextView>(R.id.setup_device_name_text).apply {
-            coroutineScope.launch {
-                withContext(Dispatchers.IO) {
-                    val localNode = Tasks.await(nodeClient.localNode)
-                    withContext(Dispatchers.Main) {
-                        text = localNode.displayName
-                    }
+            coroutineScope.launch(Dispatchers.IO) {
+                val localNode = Tasks.await(nodeClient.localNode)
+                withContext(Dispatchers.Main) {
+                    text = localNode.displayName
                 }
             }
         }

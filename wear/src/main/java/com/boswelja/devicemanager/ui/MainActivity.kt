@@ -32,7 +32,6 @@ import com.google.android.gms.wearable.Wearable
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class MainActivity :
         AppCompatActivity(),
@@ -72,34 +71,32 @@ class MainActivity :
         capabilityClient = Wearable.getCapabilityClient(this)
         messageClient = Wearable.getMessageClient(this)
 
-        coroutineScope.launch {
-            withContext(Dispatchers.IO) {
-                val phoneNodeId = sharedPreferences.getString(PHONE_ID_KEY, "")
-                val phoneNode = if (!phoneNodeId.isNullOrEmpty()) {
-                    Tasks.await(Wearable.getNodeClient(this@MainActivity).connectedNodes).firstOrNull { it.id == phoneNodeId }
-                } else {
-                    Tasks.await(Wearable.getNodeClient(this@MainActivity).connectedNodes).firstOrNull().also {
-                        if (it != null) {
-                            sharedPreferences.edit {
-                                putString(PHONE_ID_KEY, it.id)
-                            }
+        coroutineScope.launch(Dispatchers.IO) {
+            val phoneNodeId = sharedPreferences.getString(PHONE_ID_KEY, "")
+            val phoneNode = if (!phoneNodeId.isNullOrEmpty()) {
+                Tasks.await(Wearable.getNodeClient(this@MainActivity).connectedNodes).firstOrNull { it.id == phoneNodeId }
+            } else {
+                Tasks.await(Wearable.getNodeClient(this@MainActivity).connectedNodes).firstOrNull().also {
+                    if (it != null) {
+                        sharedPreferences.edit {
+                            putString(PHONE_ID_KEY, it.id)
                         }
                     }
                 }
+            }
 
-                if (phoneNode != null) {
-                    val isCapable = Tasks.await(capabilityClient.getCapability(CAPABILITY_PHONE_APP, CapabilityClient.FILTER_ALL)).nodes.any { it.id == phoneNode.id }
-                    if (isCapable) {
-                        messageClient.sendMessage(phoneNode.id, CHECK_WATCH_REGISTERED_PATH, null)
-                                .addOnFailureListener {
-                                    showNoConnectionFragment()
-                                }
-                    } else {
-                        showSetupFragment(false)
-                    }
+            if (phoneNode != null) {
+                val isCapable = Tasks.await(capabilityClient.getCapability(CAPABILITY_PHONE_APP, CapabilityClient.FILTER_ALL)).nodes.any { it.id == phoneNode.id }
+                if (isCapable) {
+                    messageClient.sendMessage(phoneNode.id, CHECK_WATCH_REGISTERED_PATH, null)
+                            .addOnFailureListener {
+                                showNoConnectionFragment()
+                            }
                 } else {
-                    showNoConnectionFragment()
+                    showSetupFragment(false)
                 }
+            } else {
+                showNoConnectionFragment()
             }
         }
     }

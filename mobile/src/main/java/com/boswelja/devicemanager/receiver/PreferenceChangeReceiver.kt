@@ -20,6 +20,7 @@ import com.google.android.gms.wearable.DataEvent
 import com.google.android.gms.wearable.DataEventBuffer
 import com.google.android.gms.wearable.DataMapItem
 import com.google.android.gms.wearable.WearableListenerService
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 
@@ -69,7 +70,7 @@ class PreferenceChangeReceiver : WearableListenerService() {
     private fun onPreferenceChanged(key: String, newValue: Any) {
         when (key) {
             PreferenceKey.BATTERY_SYNC_ENABLED_KEY -> {
-                coroutineScope.launch {
+                coroutineScope.launch(Dispatchers.IO) {
                     if (newValue == true) {
                         BatterySyncWorker.startWorker(watchConnectionManager)
                     } else {
@@ -85,7 +86,7 @@ class PreferenceChangeReceiver : WearableListenerService() {
                 }
             }
         }
-        coroutineScope.launch {
+        coroutineScope.launch(Dispatchers.IO) {
             watchConnectionManager?.updatePrefInDatabase(key, newValue)
         }
     }
@@ -120,30 +121,29 @@ class PreferenceChangeReceiver : WearableListenerService() {
     }
 
     private fun handleOtherWatchPreferenceChange(senderId: String, event: DataEvent) {
-        val dataMap = DataMapItem.fromDataItem(event.dataItem).dataMap
-        if (!dataMap.isEmpty) {
-            for (key in dataMap.keySet()) {
-                when (key) {
-                    PreferenceKey.PHONE_LOCKING_ENABLED_KEY,
-                    PreferenceKey.BATTERY_SYNC_ENABLED_KEY,
-                    PreferenceKey.BATTERY_PHONE_CHARGE_NOTI_KEY,
-                    PreferenceKey.BATTERY_WATCH_CHARGE_NOTI_KEY,
-                    PreferenceKey.DND_SYNC_TO_WATCH_KEY,
-                    PreferenceKey.DND_SYNC_TO_PHONE_KEY,
-                    PreferenceKey.DND_SYNC_WITH_THEATER_KEY -> {
-                        val newValue = dataMap.getBoolean(key)
-                        coroutineScope.launch {
+        coroutineScope.launch(Dispatchers.IO) {
+            val dataMap = DataMapItem.fromDataItem(event.dataItem).dataMap
+            if (!dataMap.isEmpty) {
+                for (key in dataMap.keySet()) {
+                    when (key) {
+                        PreferenceKey.PHONE_LOCKING_ENABLED_KEY,
+                        PreferenceKey.BATTERY_SYNC_ENABLED_KEY,
+                        PreferenceKey.BATTERY_PHONE_CHARGE_NOTI_KEY,
+                        PreferenceKey.BATTERY_WATCH_CHARGE_NOTI_KEY,
+                        PreferenceKey.DND_SYNC_TO_WATCH_KEY,
+                        PreferenceKey.DND_SYNC_TO_PHONE_KEY,
+                        PreferenceKey.DND_SYNC_WITH_THEATER_KEY -> {
+                            val newValue = dataMap.getBoolean(key)
                             watchConnectionManager?.updatePrefInDatabase(senderId, key, newValue)
                         }
-                    }
-                    PreferenceKey.BATTERY_CHARGE_THRESHOLD_KEY -> {
-                        val newValue = dataMap.getInt(key)
-                        coroutineScope.launch {
+                        PreferenceKey.BATTERY_CHARGE_THRESHOLD_KEY -> {
+                            val newValue = dataMap.getInt(key)
                             watchConnectionManager?.updatePrefInDatabase(senderId, key, newValue)
                         }
                     }
                 }
             }
         }
+
     }
 }

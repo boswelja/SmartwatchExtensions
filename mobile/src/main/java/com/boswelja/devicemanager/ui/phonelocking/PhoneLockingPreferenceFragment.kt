@@ -22,6 +22,7 @@ import com.boswelja.devicemanager.common.PreferenceKey.PHONE_LOCKING_ENABLED_KEY
 import com.boswelja.devicemanager.phonelocking.Utils
 import com.boswelja.devicemanager.ui.base.BasePreferenceFragment
 import com.google.android.material.snackbar.Snackbar
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 
@@ -48,10 +49,9 @@ class PhoneLockingPreferenceFragment :
                 if (phoneLockingEnabled) {
                     snackbar?.dismiss()
                 }
-                coroutineScope.launch {
-                    (activity as PhoneLockingPreferenceActivity).watchConnectionManager?.apply {
-                        updatePreferenceOnWatch(key)
-                    }
+                coroutineScope.launch(Dispatchers.IO) {
+                    (activity as PhoneLockingPreferenceActivity).watchConnectionManager
+                            ?.updatePreferenceOnWatch(key)
                 }
             }
             PHONE_LOCKING_MODE_KEY -> {
@@ -120,7 +120,7 @@ class PhoneLockingPreferenceFragment :
                         sharedPreferences.edit()
                                 .putBoolean(key, value)
                                 .apply()
-                        coroutineScope.launch {
+                        coroutineScope.launch(Dispatchers.IO) {
                             getWatchConnectionManager()?.updatePreferenceOnWatch(key)
                         }
                     }
@@ -143,7 +143,7 @@ class PhoneLockingPreferenceFragment :
                         sharedPreferences.edit()
                                 .putBoolean(key, value)
                                 .apply()
-                        coroutineScope.launch {
+                        coroutineScope.launch(Dispatchers.IO) {
                             getWatchConnectionManager()?.updatePreferenceOnWatch(key)
                         }
                     }

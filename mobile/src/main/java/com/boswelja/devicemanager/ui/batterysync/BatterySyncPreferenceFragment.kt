@@ -58,7 +58,7 @@ class BatterySyncPreferenceFragment :
             }
             BATTERY_CHARGE_THRESHOLD_KEY -> {
                 updateChargeNotiPrefSummaries()
-                coroutineScope.launch {
+                coroutineScope.launch(Dispatchers.IO) {
                     getWatchConnectionManager()?.updatePreferenceOnWatch(key)
                 }
             }
@@ -71,7 +71,7 @@ class BatterySyncPreferenceFragment :
                 val newBool = newValue == true
                 setBatteryChargeThresholdEnabled()
                 if (newBool) {
-                    coroutineScope.launch {
+                    coroutineScope.launch(Dispatchers.IO) {
                         val success = BatterySyncWorker.startWorker(activity.watchConnectionManager) != null
                         if (success) {
                             sharedPreferences.edit().putBoolean(key, newBool).apply()
@@ -85,12 +85,10 @@ class BatterySyncPreferenceFragment :
                     }
                 } else {
                     sharedPreferences.edit().putBoolean(key, newBool).apply()
-                    coroutineScope.launch {
+                    coroutineScope.launch(Dispatchers.IO) {
                         getWatchConnectionManager()?.updatePreferenceOnWatch(key)
                         BatterySyncWorker.stopWorker(activity.watchConnectionManager)
-                        withContext(Dispatchers.IO) {
-                            (activity as BatterySyncPreferenceActivity).batteryStatsDatabase?.batteryStatsDao()?.deleteStatsForWatch(activity.watchConnectionManager?.getConnectedWatchId()!!)
-                        }
+                        (activity as BatterySyncPreferenceActivity).batteryStatsDatabase?.batteryStatsDao()?.deleteStatsForWatch(activity.watchConnectionManager?.getConnectedWatchId()!!)
                     }
                 }
                 false
@@ -98,11 +96,9 @@ class BatterySyncPreferenceFragment :
             BATTERY_SYNC_INTERVAL_KEY -> {
                 val value = (newValue as Int)
                 sharedPreferences.edit().putInt(key, value).apply()
-                coroutineScope.launch {
-                    activity.watchConnectionManager?.updatePrefInDatabase(key, value)
-                }
                 batterySyncIntervalPreference.value = value
-                coroutineScope.launch {
+                coroutineScope.launch(Dispatchers.IO) {
+                    activity.watchConnectionManager?.updatePrefInDatabase(key, value)
                     BatterySyncWorker.startWorker(activity.watchConnectionManager)
                 }
                 false
@@ -111,7 +107,7 @@ class BatterySyncPreferenceFragment :
             BATTERY_WATCH_CHARGE_NOTI_KEY -> {
                 val value = newValue == true
                 sharedPreferences.edit().putBoolean(key, value).apply()
-                coroutineScope.launch {
+                coroutineScope.launch(Dispatchers.IO) {
                     getWatchConnectionManager()?.updatePreferenceOnWatch(key)
                 }
                 false

@@ -25,6 +25,7 @@ import com.boswelja.devicemanager.common.PreferenceKey.DND_SYNC_WITH_THEATER_KEY
 import com.boswelja.devicemanager.dndsync.DnDLocalChangeService
 import com.boswelja.devicemanager.ui.base.BasePreferenceFragment
 import com.boswelja.devicemanager.ui.dndsync.helper.DnDSyncHelperActivity
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 
@@ -64,7 +65,7 @@ class DnDSyncPreferenceFragment :
                 } else {
                     preference.sharedPreferences.edit()
                             .putBoolean(key, value).apply()
-                    coroutineScope.launch {
+                    coroutineScope.launch(Dispatchers.IO) {
                         getWatchConnectionManager()?.updatePreferenceOnWatch(key)
                     }
                     context?.stopService(Intent(context!!, DnDLocalChangeService::class.java))
@@ -77,7 +78,7 @@ class DnDSyncPreferenceFragment :
                 preference.sharedPreferences.edit().putBoolean(key, value).apply()
                 if (value) {
                     if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M || notificationManager.isNotificationPolicyAccessGranted) {
-                        coroutineScope.launch {
+                        coroutineScope.launch(Dispatchers.IO) {
                             getWatchConnectionManager()?.updatePreferenceOnWatch(key)
                         }
                     } else {
@@ -85,7 +86,7 @@ class DnDSyncPreferenceFragment :
                         startActivity(Intent(Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS))
                     }
                 } else {
-                    coroutineScope.launch {
+                    coroutineScope.launch(Dispatchers.IO) {
                         getWatchConnectionManager()?.updatePreferenceOnWatch(key)
                     }
                 }
@@ -139,7 +140,7 @@ class DnDSyncPreferenceFragment :
                 interruptFilterSyncToWatchPreference.isChecked = enabled
                 interruptFilterSyncToWatchPreference.sharedPreferences.edit()
                         .putBoolean(DND_SYNC_TO_WATCH_KEY, enabled).apply()
-                coroutineScope.launch {
+                coroutineScope.launch(Dispatchers.IO) {
                     getWatchConnectionManager()?.updatePreferenceOnWatch(DND_SYNC_TO_WATCH_KEY)
                 }
                 if (enabled) {

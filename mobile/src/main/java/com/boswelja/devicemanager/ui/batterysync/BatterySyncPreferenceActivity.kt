@@ -12,6 +12,7 @@ import androidx.fragment.app.Fragment
 import com.boswelja.devicemanager.batterysync.database.WatchBatteryStatsDatabase
 import com.boswelja.devicemanager.ui.base.BasePreferenceActivity
 import com.boswelja.devicemanager.ui.base.BasePreferenceFragment
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class BatterySyncPreferenceActivity : BasePreferenceActivity() {
@@ -24,7 +25,7 @@ class BatterySyncPreferenceActivity : BasePreferenceActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        coroutineScope.launch {
+        coroutineScope.launch(Dispatchers.IO) {
             batteryStatsDatabase = WatchBatteryStatsDatabase.open(this@BatterySyncPreferenceActivity)
             if (batteryStatsDatabaseEventInterface != null) {
                 batteryStatsDatabaseEventInterface!!.onOpened()

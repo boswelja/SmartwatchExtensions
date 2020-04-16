@@ -59,7 +59,7 @@ class PhoneLockingAccessibilityService :
     override fun onMessageReceived(messageEvent: MessageEvent) {
         when (messageEvent.path) {
             LOCK_PHONE_PATH -> {
-                coroutineScope.launch {
+                coroutineScope.launch(Dispatchers.IO) {
                     val watchId = messageEvent.sourceNodeId
                     val phoneLockingEnabledForWatch =
                             watchConnectionManager?.getBoolPrefForWatch(watchId, PHONE_LOCKING_ENABLED_KEY)
@@ -109,7 +109,7 @@ class PhoneLockingAccessibilityService :
                 putBoolean(ACCESSIBILITY_SERVICE_ENABLED_KEY, false)
                 putBoolean(PHONE_LOCKING_ENABLED_KEY, false)
             }
-            coroutineScope.launch {
+            coroutineScope.launch(Dispatchers.IO) {
                 watchConnectionManager?.updatePreferenceOnWatch(PHONE_LOCKING_ENABLED_KEY)
             }
             messageClient.removeListener(this)

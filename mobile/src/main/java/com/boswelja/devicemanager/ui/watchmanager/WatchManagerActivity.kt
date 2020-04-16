@@ -104,7 +104,7 @@ class WatchManagerActivity :
     }
 
     private fun updateRegisteredWatches() {
-        coroutineScope.launch {
+        coroutineScope.launch(Dispatchers.IO) {
             if (watchConnectionManager != null) {
                 val registeredWatches = watchConnectionManager!!.getRegisteredWatches()
                 withContext(Dispatchers.Main) {
@@ -117,13 +117,11 @@ class WatchManagerActivity :
     }
 
     private fun updateSingleWatch(watchId: String?) {
-        coroutineScope.launch {
-            withContext(Dispatchers.IO) {
-                val newWatchInfo = watchConnectionManager?.getWatchById(watchId)
-                if (newWatchInfo != null) {
-                    withContext(Dispatchers.Main) {
-                        (watchManagerRecyclerView.adapter as WatchManagerAdapter).updateWatch(newWatchInfo)
-                    }
+        coroutineScope.launch(Dispatchers.IO) {
+            val newWatchInfo = watchConnectionManager?.getWatchById(watchId)
+            if (newWatchInfo != null) {
+                withContext(Dispatchers.Main) {
+                    (watchManagerRecyclerView.adapter as WatchManagerAdapter).updateWatch(newWatchInfo)
                 }
             }
         }

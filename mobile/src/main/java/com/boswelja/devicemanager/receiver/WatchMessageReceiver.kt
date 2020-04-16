@@ -36,7 +36,6 @@ import com.google.android.gms.wearable.WearableListenerService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class WatchMessageReceiver : WearableListenerService() {
 
@@ -102,19 +101,17 @@ class WatchMessageReceiver : WearableListenerService() {
                                 hasDnDAccess.toByteArray())
             }
             CHECK_WATCH_REGISTERED_PATH -> {
-                MainScope().launch {
-                    withContext(Dispatchers.IO) {
-                        // TODO Access the database through WatchConnectionService
-                        val database = Room.databaseBuilder(applicationContext, WatchDatabase::class.java, "watch-db")
-                                .fallbackToDestructiveMigration()
-                                .build()
-                        val messageCode = if (database.watchDao().findById(senderId!!) != null) {
-                            WATCH_REGISTERED_PATH
-                        } else {
-                            WATCH_NOT_REGISTERED_PATH
-                        }
-                        Wearable.getMessageClient(this@WatchMessageReceiver).sendMessage(senderId!!, messageCode, null)
+                MainScope().launch(Dispatchers.IO) {
+                    // TODO Access the database through WatchConnectionService
+                    val database = Room.databaseBuilder(applicationContext, WatchDatabase::class.java, "watch-db")
+                            .fallbackToDestructiveMigration()
+                            .build()
+                    val messageCode = if (database.watchDao().findById(senderId!!) != null) {
+                        WATCH_REGISTERED_PATH
+                    } else {
+                        WATCH_NOT_REGISTERED_PATH
                     }
+                    Wearable.getMessageClient(this@WatchMessageReceiver).sendMessage(senderId!!, messageCode, null)
                 }
             }
         }

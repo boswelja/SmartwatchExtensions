@@ -29,9 +29,12 @@ class WatchInfoActivity : BaseToolbarActivity() {
         override fun onWatchManagerBound(service: WatchConnectionService) {
             watchConnectionManager = service
 
-            coroutineScope.launch {
-                watchNameField.setText(service.getWatchById(watchId)?.name)
-                watchNameField.addTextChangedListener(nicknameChangeListener)
+            coroutineScope.launch(Dispatchers.IO) {
+                val watchName = service.getWatchById(watchId)?.name
+                withContext(Dispatchers.Main) {
+                    watchNameField.setText(watchName)
+                    watchNameField.addTextChangedListener(nicknameChangeListener)
+                }
             }
         }
 
@@ -45,7 +48,7 @@ class WatchInfoActivity : BaseToolbarActivity() {
         override fun afterTextChanged(editable: Editable?) {
             if (!editable.isNullOrBlank()) {
                 watchNameLayout.isErrorEnabled = false
-                coroutineScope.launch {
+                coroutineScope.launch(Dispatchers.IO) {
                     watchConnectionManager?.updateWatchNickname(watchId!!, editable.toString())
                 }
                 resultCode = RESULT_WATCH_NAME_CHANGED
@@ -84,7 +87,7 @@ class WatchInfoActivity : BaseToolbarActivity() {
         watchNameLayout = findViewById(R.id.watch_name_layout)
         watchNameField = findViewById(R.id.watch_name_field)
         findViewById<MaterialButton>(R.id.clear_preferences_button)?.setOnClickListener {
-            coroutineScope.launch {
+            coroutineScope.launch(Dispatchers.IO) {
                 val watchName = watchConnectionManager?.getWatchById(watchId)?.name
                 withContext(Dispatchers.Main) {
                     MaterialAlertDialogBuilder(this@WatchInfoActivity)
@@ -92,7 +95,7 @@ class WatchInfoActivity : BaseToolbarActivity() {
                             .setTitle(R.string.clear_preferences_dialog_title)
                             .setMessage(getString(R.string.clear_preferences_dialog_message, watchName))
                             .setPositiveButton(R.string.dialog_button_yes) { _, _ ->
-                                coroutineScope.launch {
+                                coroutineScope.launch(Dispatchers.IO) {
                                     val success = watchConnectionManager?.clearPreferencesForWatch(watchId) == true
                                     withContext(Dispatchers.Main) {
                                         if (success) {
@@ -111,7 +114,7 @@ class WatchInfoActivity : BaseToolbarActivity() {
             }
         }
         findViewById<MaterialButton>(R.id.forget_watch_button)?.setOnClickListener {
-            coroutineScope.launch {
+            coroutineScope.launch(Dispatchers.IO) {
                 val watchName = watchConnectionManager?.getWatchById(watchId)?.name
                 withContext(Dispatchers.Main) {
                     MaterialAlertDialogBuilder(this@WatchInfoActivity)
@@ -119,7 +122,7 @@ class WatchInfoActivity : BaseToolbarActivity() {
                             .setTitle(R.string.forget_watch_dialog_title)
                             .setMessage(getString(R.string.forget_watch_dialog_message, watchName, watchName))
                             .setPositiveButton(R.string.dialog_button_yes) { _, _ ->
-                                coroutineScope.launch {
+                                coroutineScope.launch(Dispatchers.IO) {
                                     val success = watchConnectionManager?.forgetWatch(watchId) == true
                                     withContext(Dispatchers.Main) {
                                         if (success) {

@@ -64,12 +64,10 @@ class MessageFragment : Fragment() {
 
     internal fun dismissMessage(message: Message) {
         if (messageDatabase != null) {
-            coroutineScope.launch {
-                withContext(Dispatchers.IO) {
-                    messageDatabase?.deleteMessage(sharedPreferences, message)
-                    withContext(Dispatchers.Main) {
-                        setHasMessages(messageDatabase!!.countMessages() > 0)
-                    }
+            coroutineScope.launch(Dispatchers.IO) {
+                messageDatabase?.deleteMessage(sharedPreferences, message)
+                withContext(Dispatchers.Main) {
+                    setHasMessages(messageDatabase!!.countMessages() > 0)
                 }
             }
         }
@@ -79,13 +77,11 @@ class MessageFragment : Fragment() {
                 Snackbar.LENGTH_LONG).apply {
             setAction(R.string.snackbar_action_undo) {
                 if (messageDatabase != null) {
-                    coroutineScope.launch {
-                        withContext(Dispatchers.IO) {
-                            messageDatabase?.restoreMessage(sharedPreferences, message)
-                            withContext(Dispatchers.Main) {
-                                (binding.messagesRecyclerview.adapter as MessagesAdapter).notifyMessage(message)
-                                (activity as MainActivity).updateMessagesBadge()
-                            }
+                    coroutineScope.launch(Dispatchers.IO) {
+                        messageDatabase?.restoreMessage(sharedPreferences, message)
+                        withContext(Dispatchers.Main) {
+                            (binding.messagesRecyclerview.adapter as MessagesAdapter).notifyMessage(message)
+                            (activity as MainActivity).updateMessagesBadge()
                         }
                     }
                 }
@@ -104,18 +100,16 @@ class MessageFragment : Fragment() {
     }
 
     private fun refreshMessages() {
-        coroutineScope.launch {
-            withContext(Dispatchers.IO) {
-                val messages = messageDatabase?.getActiveMessages()
-                withContext(Dispatchers.Main) {
-                    if (!messages.isNullOrEmpty()) {
-                        for (message in messages) {
-                            (binding.messagesRecyclerview.adapter as MessagesAdapter).notifyMessage(message)
-                        }
-                        setHasMessages(true)
-                    } else {
-                        setHasMessages(false)
+        coroutineScope.launch(Dispatchers.IO) {
+            val messages = messageDatabase?.getActiveMessages()
+            withContext(Dispatchers.Main) {
+                if (!messages.isNullOrEmpty()) {
+                    for (message in messages) {
+                        (binding.messagesRecyclerview.adapter as MessagesAdapter).notifyMessage(message)
                     }
+                    setHasMessages(true)
+                } else {
+                    setHasMessages(false)
                 }
             }
         }

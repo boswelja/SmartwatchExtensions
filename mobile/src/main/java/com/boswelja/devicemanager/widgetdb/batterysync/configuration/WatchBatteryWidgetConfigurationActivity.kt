@@ -33,7 +33,7 @@ class WatchBatteryWidgetConfigurationActivity : BaseToolbarActivity() {
             watchConnectionManager = service
             findViewById<RecyclerView>(R.id.watch_picker_recycler_view).apply {
                 layoutManager = LinearLayoutManager(this@WatchBatteryWidgetConfigurationActivity, LinearLayoutManager.VERTICAL, false)
-                coroutineScope.launch {
+                coroutineScope.launch(Dispatchers.IO) {
                     val watches = service.getRegisteredWatches()
                     withContext(Dispatchers.Main) {
                         adapter = WatchPickerAdapter(watches, this@WatchBatteryWidgetConfigurationActivity)
@@ -106,12 +106,10 @@ class WatchBatteryWidgetConfigurationActivity : BaseToolbarActivity() {
     fun finishAndCreateWidget(watchId: String) {
         setResult(Activity.RESULT_OK, resultIntent)
 
-        coroutineScope.launch {
-            withContext(Dispatchers.IO) {
-                WidgetDatabase.open(this@WatchBatteryWidgetConfigurationActivity).also {
-                    it.watchBatteryWidgetDao().addWidget(WatchBatteryWidgetId(watchId, widgetId))
-                    it.close()
-                }
+        coroutineScope.launch(Dispatchers.IO) {
+            WidgetDatabase.open(this@WatchBatteryWidgetConfigurationActivity).also {
+                it.watchBatteryWidgetDao().addWidget(WatchBatteryWidgetId(watchId, widgetId))
+                it.close()
             }
         }
 

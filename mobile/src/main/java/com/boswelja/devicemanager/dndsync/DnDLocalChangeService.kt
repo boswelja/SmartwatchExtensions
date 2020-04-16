@@ -25,6 +25,7 @@ import com.boswelja.devicemanager.watchconnectionmanager.WatchConnectionService
 import com.boswelja.devicemanager.watchconnectionmanager.WatchPreferenceChangeInterface
 import com.google.android.gms.wearable.PutDataMapRequest
 import com.google.android.gms.wearable.Wearable
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 
@@ -36,7 +37,7 @@ class DnDLocalChangeService :
         override fun onWatchManagerBound(service: WatchConnectionService) {
             watchConnectionManager = service
             service.registerWatchPreferenceChangeInterface(this@DnDLocalChangeService)
-            coroutineScope.launch {
+            coroutineScope.launch(Dispatchers.IO) {
                 val preferences = service.getBoolPrefsForRegisteredWatches(PreferenceKey.DND_SYNC_TO_WATCH_KEY)
                 if (preferences != null) {
                     for (preference in preferences) {

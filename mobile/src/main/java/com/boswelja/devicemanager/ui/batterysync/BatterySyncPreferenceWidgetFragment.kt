@@ -86,7 +86,7 @@ class BatterySyncPreferenceWidgetFragment :
         activity = getActivity() as BatterySyncPreferenceActivity
         activity.batteryStatsDatabaseEventInterface = object : BatterySyncPreferenceActivity.BatteryStatsDatabaseEventInterface {
             override fun onOpened() {
-                coroutineScope.launch {
+                coroutineScope.launch(Dispatchers.IO) {
                     updateBatteryStatsDisplay()
                 }
             }
@@ -169,7 +169,7 @@ class BatterySyncPreferenceWidgetFragment :
     private fun startBatteryUpdateTimer() {
         if (!watchBatteryUpdateTimerStarted && batterySyncEnabled) {
             watchBatteryUpdateTimer = fixedRateTimer("batterySyncLastTimeTimer", false, 3 * 1000, 60 * 1000) {
-                coroutineScope.launch {
+                coroutineScope.launch(Dispatchers.IO) {
                     updateBatteryStatsDisplay()
                 }
             }
