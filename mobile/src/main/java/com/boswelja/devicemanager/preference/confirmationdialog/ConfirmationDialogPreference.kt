@@ -14,6 +14,7 @@ import android.widget.CompoundButton
 import androidx.preference.DialogPreference
 import androidx.preference.PreferenceViewHolder
 import com.boswelja.devicemanager.R
+import timber.log.Timber
 
 class ConfirmationDialogPreference(context: Context, attrs: AttributeSet?, defStyleAttr: Int, defStyleRes: Int) : DialogPreference(context, attrs, defStyleAttr, defStyleRes) {
 
@@ -64,8 +65,14 @@ class ConfirmationDialogPreference(context: Context, attrs: AttributeSet?, defSt
         }
     }
 
+    /**
+     * Sets the value of the [ConfirmationDialogPreference].
+     * @param newValue The new value of the preference.
+     */
     fun setValue(newValue: Boolean) {
+        Timber.i("setValue($newValue) called")
         if (value != newValue) {
+            Timber.i("Setting new value")
             if ((onPreferenceChangeListener == null) || (onPreferenceChangeListener?.onPreferenceChange(this, newValue) == true)) {
                 value = newValue
                 try {
@@ -80,6 +87,10 @@ class ConfirmationDialogPreference(context: Context, attrs: AttributeSet?, defSt
         compoundButton.isChecked = checked
     }
 
+    /**
+     * Gets the current value of the [ConfirmationDialogPreference].
+     * @return The current value of the preference.
+     */
     fun getValue(): Boolean {
         return value
     }

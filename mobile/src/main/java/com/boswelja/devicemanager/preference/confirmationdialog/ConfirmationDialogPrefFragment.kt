@@ -9,12 +9,14 @@ package com.boswelja.devicemanager.preference.confirmationdialog
 
 import android.os.Bundle
 import androidx.preference.PreferenceDialogFragmentCompat
+import timber.log.Timber
 
 class ConfirmationDialogPrefFragment : PreferenceDialogFragmentCompat() {
 
     private var key: String = ""
 
     override fun onDialogClosed(positiveResult: Boolean) {
+        Timber.i("onDialogClosed() called")
         val pref = preference as ConfirmationDialogPreference
         if (positiveResult) {
             pref.setValue(!pref.getValue())
@@ -22,7 +24,13 @@ class ConfirmationDialogPrefFragment : PreferenceDialogFragmentCompat() {
     }
 
     companion object {
+        /**
+         * Creates a new instance of a [ConfirmationDialogPrefFragment].
+         * @param key The preference key associated with the preference.
+         * @return A new instance of [ConfirmationDialogPrefFragment].
+         */
         fun newInstance(key: String): ConfirmationDialogPrefFragment {
+            Timber.i("newInstance($key) called")
             val frag = ConfirmationDialogPrefFragment()
             val b = Bundle(1)
             b.putString(ARG_KEY, key)
