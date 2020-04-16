@@ -18,8 +18,8 @@ import com.boswelja.devicemanager.BuildConfig
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.databinding.ActivityCrashHandlerBinding
 import com.boswelja.devicemanager.ui.main.MainActivity
-import timber.log.Timber
 import kotlin.system.exitProcess
+import timber.log.Timber
 
 class CrashHandlerActivity : AppCompatActivity() {
 

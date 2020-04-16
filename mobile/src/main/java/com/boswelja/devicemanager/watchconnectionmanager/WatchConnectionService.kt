@@ -401,7 +401,7 @@ class WatchConnectionService :
         }
     }
 
-    suspend fun resetWatch(watchId: String) : Task<Int> {
+    suspend fun resetWatch(watchId: String): Task<Int> {
         return messageClient.sendMessage(watchId, REQUEST_RESET_APP, null)
     }
 
