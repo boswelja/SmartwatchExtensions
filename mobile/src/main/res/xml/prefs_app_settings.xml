@@ -9,7 +9,8 @@
 
     <androidx.preference.Preference
         android:key="show_manage_space"
-        android:title="@string/manage_space_title" />
+        android:title="@string/manage_space_title"
+        android:icon="@drawable/pref_ic_manage_space" />
 
     <androidx.preference.ListPreference
         android:key="daynight_mode"
