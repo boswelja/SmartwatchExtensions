@@ -129,6 +129,7 @@
     <string name="dialog_button_no">No</string>
     <string name="dialog_button_ok">OK</string>
     <string name="dialog_button_enable">Enable</string>
+    <string name="dialog_button_reset">Reset</string>
 
     <!-- Message strings -->
     <string name="message_battery_opt_warning_label_short">Battery Optimisation</string>
@@ -205,6 +206,28 @@
 
     <!-- Manage Space strings -->
     <string name="manage_space_title">Manage Space</string>
+    <string name="dialog_reset_settings_title">Reset Settings</string>
+    <string name="dialog_reset_settings_message">Are you sure? This will clear settings for all your registered watches. This may fix some problems.\nPlease make sure all your registered watches are powered on and nearby.</string>
+    <string name="dialog_reset_app_title">Reset Wearable Extensions</string>
+    <string name="dialog_reset_app_message">Are you sure? This will clear all your registered watches and settings, as well as any granted permissions. Wearable Extensions will also be reset on any registered watches.\nPlease make sure all your registered watches are powered on and nearby.</string>
+    <string name="clear_cache_clearing">Clearing cache</string>
+    <string name="clear_cache_failed">Failed to clear cache</string>
+    <string name="clear_cache_success">Successfully cleared cache</string>
+    <string name="clear_cache_no_cache">No cache files to clear</string>
+    <string name="reset_settings_resetting_for">Resetting settings for %s</string>
+    <string name="reset_settings_failed_for">Failed to reset settings for %s</string>
+    <string name="reset_settings_failed">Failed to reset settings</string>
+    <string name="reset_settings_success">Successfully reset settings for all watches</string>
+    <string name="reset_app_resetting_for">Resetting Wearable Extensions on %s</string>
+    <string name="reset_app_failed_for">Failed to reset %s, make sure it\'s powered on and nearby, and try again</string>
+    <string name="reset_app_resetting_database_for">Clearing %s database</string>
+    <string name="reset_app_resetting_preferences">Resetting Wearable Extensions settings</string>
+    <string name="reset_app_success">Successfully cleared all data!</string>
+
+    <!-- Database names -->
+    <string name="database_name_main">Watch Settings</string>
+    <string name="database_name_widget">Widget</string>
+    <string name="database_name_battery_stats">Battery Sync</string>
 
     <!-- Update dialog strings -->
     <string name="update_dialog_title">Updating %s</string>

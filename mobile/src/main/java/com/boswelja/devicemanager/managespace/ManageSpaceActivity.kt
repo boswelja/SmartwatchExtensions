@@ -119,12 +119,12 @@ class ManageSpaceActivity : AppCompatActivity() {
 
     private fun showSettingsResetConfirmation() {
         MaterialAlertDialogBuilder(this, R.style.AppTheme_AlertDialog).apply {
-            setTitle("Reset Settings?")
-            setMessage("Are you sure? This will clear settings for all your registered watches. This may fix some problems you may be having\nPlease make sure all your registered watches are powered on and nearby.")
-            setPositiveButton("Reset") { _, _ ->
+            setTitle(R.string.dialog_reset_settings_title)
+            setMessage(R.string.dialog_reset_settings_message)
+            setPositiveButton(R.string.dialog_button_reset) { _, _ ->
                 doSettingsReset()
             }
-            setNegativeButton("Cancel") { dialog, _ ->
+            setNegativeButton(R.string.dialog_button_cancel) { dialog, _ ->
                 dialog.cancel()
             }
         }.show()
@@ -132,12 +132,12 @@ class ManageSpaceActivity : AppCompatActivity() {
 
     private fun showFullResetConfirmation() {
         MaterialAlertDialogBuilder(this, R.style.AppTheme_AlertDialog).apply {
-            setTitle("Reset Wearable Extensions?")
-            setMessage("Are you sure? This will clear all your registered watches and settings, as well as any granted permissions. Wearable Extensions will also be reset on any registered watches.\nPlease make sure all your registered watches are powered on and nearby.")
-            setPositiveButton("Reset") { _, _ ->
+            setTitle(R.string.dialog_reset_app_title)
+            setMessage(R.string.dialog_reset_app_message)
+            setPositiveButton(R.string.dialog_button_reset) { _, _ ->
                 doFullReset()
             }
-            setNegativeButton("Cancel") { dialog, _ ->
+            setNegativeButton(R.string.dialog_button_cancel) { dialog, _ ->
                 dialog.cancel()
             }
         }.show()
@@ -152,7 +152,7 @@ class ManageSpaceActivity : AppCompatActivity() {
         if (cacheFiles.isNotEmpty()) {
             setButtonsEnabled(false)
             initProgressBar(cacheFiles.size)
-            binding.progressStatus.text = "Clearing cache"
+            binding.progressStatus.setText(R.string.clear_cache_clearing)
             coroutineScope.launch(Dispatchers.IO) {
                 for (cacheFile in cacheFiles) {
                     val deleted = cacheFile.delete()
@@ -161,20 +161,20 @@ class ManageSpaceActivity : AppCompatActivity() {
                             binding.progressBar.progress += 1
                         } else {
                             Timber.w("Failed to delete cache file ${cacheFile.absolutePath}")
-                            binding.progressStatus.text = "Failed to clear cache"
+                            binding.progressStatus.setText(R.string.clear_cache_failed)
                             setButtonsEnabled(true)
                             return@withContext
                         }
                     }
                 }
                 withContext(Dispatchers.Main) {
-                    binding.progressStatus.text = "Cache cleared successfully!"
+                    binding.progressStatus.setText(R.string.clear_cache_success)
                     setButtonsEnabled(true)
                 }
             }
         } else {
             initProgressBar(0)
-            binding.progressStatus.text = "No cache files to clear"
+            binding.progressStatus.setText(R.string.clear_cache_no_cache)
         }
     }
 
@@ -185,25 +185,25 @@ class ManageSpaceActivity : AppCompatActivity() {
                 initProgressBar(registeredWatches.count())
                 for (watch in registeredWatches) {
                     withContext(Dispatchers.Main) {
-                        binding.progressStatus.text = "Resetting settings for ${watch.name}"
+                        binding.progressStatus.text = getString(R.string.reset_settings_resetting_for, watch.name)
                     }
                     val success = watchConnectionManager!!.clearPreferencesForWatch(watch.id)
                     withContext(Dispatchers.Main) {
                         if (success) {
                             binding.progressBar.progress += 1
                         } else {
-                            binding.progressStatus.text = "Failed to clear preferences for ${watch.name}"
+                            binding.progressStatus.text = getString(R.string.reset_settings_failed_for, watch.name)
                         }
                     }
                     if (!success) return@launch
                 }
                 withContext(Dispatchers.Main) {
-                    binding.progressStatus.text = "Successfully reset all watches settings"
+                    binding.progressStatus.setText(R.string.reset_settings_success)
                 }
             } else {
                 withContext(Dispatchers.Main) {
                     binding.progressBar.progress = 0
-                    binding.progressStatus.text = "Failed to clear settings for registered watches"
+                    binding.progressStatus.setText(R.string.reset_settings_failed)
                 }
             }
         }
@@ -224,7 +224,7 @@ class ManageSpaceActivity : AppCompatActivity() {
                 }
                 for (watch in registeredWatches) {
                     withContext(Dispatchers.Main) {
-                        binding.progressStatus.text = "Resetting Wearable Extensions on ${watch.name}"
+                        binding.progressStatus.text = getString(R.string.reset_app_resetting_for, watch.name)
                     }
                     watchConnectionManager!!.clearPreferencesForWatch(watch.id)
                     withContext(Dispatchers.Main) {
@@ -236,7 +236,7 @@ class ManageSpaceActivity : AppCompatActivity() {
                             binding.progressBar.progress += 1
                         }
                     } catch (e: ApiException) {
-                        binding.progressStatus.text = "Failed to reset ${watch.name}, make sure it's powered on and nearby, and try again"
+                        binding.progressStatus.text = getString(R.string.reset_app_failed_for, watch.name)
                         return@launch
                     }
                     watchConnectionManager!!.forgetWatch(watch.id)
@@ -247,7 +247,7 @@ class ManageSpaceActivity : AppCompatActivity() {
             }
             unbindService(watchManagerConnection)
             withContext(Dispatchers.Main) {
-                binding.progressStatus.text = "Clearing Battery Sync database"
+                binding.progressStatus.text = getString(R.string.reset_app_resetting_database_for, getString(R.string.database_name_battery_stats))
             }
             WatchBatteryStatsDatabase.open(this@ManageSpaceActivity).apply {
                 clearAllTables()
@@ -256,7 +256,7 @@ class ManageSpaceActivity : AppCompatActivity() {
             }
             withContext(Dispatchers.Main) {
                 binding.progressBar.progress += 1
-                binding.progressStatus.text = "Clearing Widget database"
+                binding.progressStatus.text = getString(R.string.reset_app_resetting_database_for, getString(R.string.database_name_widget))
             }
             WidgetDatabase.open(this@ManageSpaceActivity).apply {
                 clearAllTables()
@@ -265,7 +265,7 @@ class ManageSpaceActivity : AppCompatActivity() {
             }
             withContext(Dispatchers.Main) {
                 binding.progressBar.progress += 1
-                binding.progressStatus.text = "Clearing Watch Settings database"
+                binding.progressStatus.text = getString(R.string.reset_app_resetting_database_for, getString(R.string.database_name_main))
             }
             WatchDatabase.open(this@ManageSpaceActivity).apply {
                 clearAllTables()
@@ -274,14 +274,14 @@ class ManageSpaceActivity : AppCompatActivity() {
             }
             withContext(Dispatchers.Main) {
                 binding.progressBar.progress += 1
-                binding.progressStatus.text = "Clearing Wearable Extensions settings"
+                binding.progressStatus.setText(R.string.reset_app_resetting_preferences)
             }
             PreferenceManager.getDefaultSharedPreferences(this@ManageSpaceActivity).edit(commit = true) {
                 clear()
             }
             withContext(Dispatchers.Main) {
                 binding.progressBar.progress += 1
-                binding.progressStatus.text = "Successfully cleared all data!"
+                binding.progressStatus.setText(R.string.reset_app_success)
             }
             hasResetApp = true
         }
