@@ -28,7 +28,7 @@ abstract class DnDLocalChangeReceiver : BroadcastReceiver() {
         Timber.i("Received broadcast")
         when (intent?.action) {
             NotificationManager.ACTION_INTERRUPTION_FILTER_CHANGED,
-            AudioManager.RINGER_MODE_CHANGED_ACTION-> {
+            AudioManager.RINGER_MODE_CHANGED_ACTION -> {
                 Timber.i("DnD mode changed")
                 onDnDChanged(Utils.isDnDEnabledCompat(context!!))
             }

@@ -47,9 +47,10 @@ class WatchBatteryWidget : AppWidgetProvider() {
     }
 
     override fun onUpdate(
-            context: Context?,
-            appWidgetManager: AppWidgetManager?,
-            appWidgetIds: IntArray?) {
+        context: Context?,
+        appWidgetManager: AppWidgetManager?,
+        appWidgetIds: IntArray?
+    ) {
         if (appWidgetIds != null && appWidgetIds.isNotEmpty()) {
             for (widgetId in appWidgetIds) {
                 val options = appWidgetManager?.getAppWidgetOptions(widgetId)!!
@@ -61,10 +62,11 @@ class WatchBatteryWidget : AppWidgetProvider() {
     }
 
     override fun onAppWidgetOptionsChanged(
-            context: Context?,
-            appWidgetManager: AppWidgetManager?,
-            appWidgetId: Int,
-            newOptions: Bundle?) {
+        context: Context?,
+        appWidgetManager: AppWidgetManager?,
+        appWidgetId: Int,
+        newOptions: Bundle?
+    ) {
         if (newOptions != null &&
                 (newOptions.containsKey(AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT) ||
                 newOptions.containsKey(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH))) {
@@ -83,11 +85,12 @@ class WatchBatteryWidget : AppWidgetProvider() {
      * @param height The target height of the updated view.
      */
     private fun updateView(
-            context: Context?,
-            appWidgetManager: AppWidgetManager?,
-            appWidgetId: Int,
-            width: Int,
-            height: Int) {
+        context: Context?,
+        appWidgetManager: AppWidgetManager?,
+        appWidgetId: Int,
+        width: Int,
+        height: Int
+    ) {
         coroutineScope.launch(Dispatchers.IO) {
             val widgetDatabase = WidgetDatabase.open(context!!)
             val batteryStatsDatabase = WatchBatteryStatsDatabase.open(context)
@@ -113,9 +116,11 @@ class WatchBatteryWidget : AppWidgetProvider() {
      * widget to use, if available.
      */
     private fun createWidgetView(
-            context: Context?,
-            width: Int, height: Int,
-            batteryStats: WatchBatteryStats?): RemoteViews {
+        context: Context?,
+        width: Int,
+        height: Int,
+        batteryStats: WatchBatteryStats?
+    ): RemoteViews {
         val batteryPercent = batteryStats?.batteryPercent ?: 0
 
         val remoteViews = RemoteViews(context?.packageName, R.layout.widget_watch_battery)

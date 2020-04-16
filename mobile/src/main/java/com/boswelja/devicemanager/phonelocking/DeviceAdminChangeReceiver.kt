@@ -30,7 +30,7 @@ class DeviceAdminChangeReceiver : DeviceAdminReceiver() {
                 .putBoolean(DEVICE_ADMIN_ENABLED_KEY, false)
                 .putBoolean(PreferenceKey.PHONE_LOCKING_ENABLED_KEY, false)
                 .apply()
-        //TODO Tell registered watches Phone Locking was disabled.
+        // TODO Tell registered watches Phone Locking was disabled.
     }
 
     companion object {

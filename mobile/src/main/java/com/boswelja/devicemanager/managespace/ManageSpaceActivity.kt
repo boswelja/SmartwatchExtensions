@@ -298,7 +298,7 @@ class ManageSpaceActivity : AppCompatActivity() {
                         }
                     } else {
                         withContext(Dispatchers.Main) {
-                           setProgressStatus(getString(R.string.reset_app_failed_for, watch.name))
+                            setProgressStatus(getString(R.string.reset_app_failed_for, watch.name))
                             setButtonsEnabled(true)
                         }
                         return@launch
