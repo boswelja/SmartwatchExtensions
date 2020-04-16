@@ -32,26 +32,28 @@
         <item name="cornerRadius">@dimen/corner_radius</item>
     </style>
 
-    <style name="Widget.AppTheme.Button.OutlinedButton.MultiLine" parent="Widget.MaterialComponents.Button.OutlinedButton">
-        <item name="android:lineSpacingMultiplier">1.2</item>
-        <item name="android:layout_marginEnd">@dimen/content_margin_manage_space_side</item>
+    <style name="AppTheme.Button.OutlinedButton" parent="Widget.MaterialComponents.Button.OutlinedButton">
+        <item name="cornerRadius">@dimen/corner_radius</item>
     </style>
 
-    <style name="AppTheme.Button.Outlined.IconRight" parent="Widget.MaterialComponents.Button.OutlinedButton">
+    <style name="AppTheme.Button.OutlinedButton.MultiLine" parent="AppTheme.Button.OutlinedButton">
+        <item name="android:lineSpacingMultiplier">1.2</item>
+    </style>
+
+    <style name="AppTheme.Button.Outlined.IconEnd" parent="AppTheme.Button.OutlinedButton">
         <item name="android:paddingStart">16dp</item>
         <item name="android:paddingEnd">12dp</item>
         <item name="android:paddingTop">8dp</item>
         <item name="android:paddingBottom">8dp</item>
         <item name="iconPadding">4dp</item>
         <item name="iconGravity">end</item>
-        <item name="cornerRadius">@dimen/corner_radius</item>
     </style>
 
     <style name="AppTheme.BottomSheetDialog" parent="BaseTheme.BottomSheetDialog">
-        <item name="bottomSheetStyle">@style/AppTheme.BottomSheet</item>
+        <item name="bottomSheetStyle">@style/Widget.AppTheme.BottomSheet</item>
     </style>
 
-    <style name="AppTheme.BottomSheet" parent="Widget.MaterialComponents.BottomSheet.Modal">
+    <style name="Widget.AppTheme.BottomSheet" parent="Widget.MaterialComponents.BottomSheet.Modal">
         <item name="shapeAppearance">@style/AppTheme.ShapeAppearance.LargeComponent</item>
         <item name="backgroundTint">@color/dialogBackground</item>
     </style>
@@ -80,6 +82,10 @@
         <item name="android:layout_marginStart">@dimen/content_margin_manage_space_side</item>
         <item name="android:layout_marginEnd">@dimen/manage_space_desc_button_margin</item>
         <item name="android:layout_marginTop">@dimen/manage_space_title_desc_margin</item>
+    </style>
+
+    <style name="ManageSpace.Widget.Button" parent="AppTheme.Button.OutlinedButton.MultiLine">
+        <item name="android:layout_marginEnd">@dimen/content_margin_manage_space_side</item>
     </style>
 
 </resources>

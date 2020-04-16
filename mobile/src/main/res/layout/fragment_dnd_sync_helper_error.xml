@@ -60,5 +60,5 @@
         app:icon="@drawable/ic_check"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        style="@style/AppTheme.Button.Outlined.IconRight" />
+        style="@style/AppTheme.Button.Outlined.IconEnd" />
 </androidx.constraintlayout.widget.ConstraintLayout>
