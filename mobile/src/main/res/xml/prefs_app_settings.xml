@@ -7,6 +7,10 @@
         android:key="show_noti_settings"
         android:title="@string/pref_noti_status_title" />
 
+    <androidx.preference.Preference
+        android:key="show_manage_space"
+        android:title="@string/manage_space_title" />
+
     <androidx.preference.ListPreference
         android:key="daynight_mode"
         android:title="@string/pref_daynight_title"

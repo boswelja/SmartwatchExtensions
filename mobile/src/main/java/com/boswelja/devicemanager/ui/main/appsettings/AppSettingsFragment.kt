@@ -17,6 +17,7 @@ import androidx.preference.ListPreference
 import androidx.preference.Preference
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.batterysync.widget.WatchBatteryWidget
+import com.boswelja.devicemanager.managespace.ManageSpaceActivity
 import com.boswelja.devicemanager.ui.base.BaseDayNightActivity.Companion.DAYNIGHT_MODE_KEY
 import com.boswelja.devicemanager.ui.base.BasePreferenceFragment
 
@@ -55,6 +56,10 @@ class AppSettingsFragment :
             }
             OPEN_WATCH_MANAGER_KEY -> {
                 activity.startWatchManagerActivity()
+                true
+            }
+            OPEN_MANAGE_SPACE_KEY -> {
+                startActivity(Intent(context!!, ManageSpaceActivity::class.java))
                 true
             }
             else -> false
@@ -104,5 +109,7 @@ class AppSettingsFragment :
         const val WIDGET_BACKGROUND_OPACITY_KEY = "widget_background_opacity"
 
         const val OPEN_WATCH_MANAGER_KEY = "open_watch_manager"
+
+        const val OPEN_MANAGE_SPACE_KEY = "show_manage_space"
     }
 }
