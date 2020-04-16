@@ -7,6 +7,9 @@
  */
 package com.boswelja.devicemanager.messages
 
+/**
+ * Possible actions for a given [Message] action button.
+ */
 object Action {
     const val DISABLE_BATTERY_OPTIMISATION = 1
     const val LAUNCH_NOTIFICATION_SETTINGS = 2

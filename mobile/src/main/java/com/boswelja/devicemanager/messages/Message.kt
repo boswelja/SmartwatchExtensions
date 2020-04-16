@@ -24,5 +24,8 @@ data class Message(
     val action: Int = Action.NONE,
     @PrimaryKey(autoGenerate = true) val id: Int = 0
 ) {
+    /**
+     * Indicates whether the message has an action.
+     */
     @Ignore val hasAction: Boolean = action != Action.NONE
 }
