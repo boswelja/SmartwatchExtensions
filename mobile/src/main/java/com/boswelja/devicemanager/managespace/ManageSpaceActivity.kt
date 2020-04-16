@@ -11,6 +11,7 @@ import android.app.ActivityManager
 import android.content.Context
 import android.os.Bundle
 import android.view.MenuItem
+import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.edit
@@ -83,7 +84,7 @@ class ManageSpaceActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         if (hasResetApp) {
-            tryClearData()
+            clearData()
         }
     }
 
@@ -97,6 +98,9 @@ class ManageSpaceActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Initialise all the buttons we need.
+     */
     private fun setupButtons() {
         binding.apply {
             clearCacheButton.setOnClickListener {
@@ -111,6 +115,10 @@ class ManageSpaceActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Sets whether the user can interact with any of the buttons on screen.
+     * @param enabled Whether the user can interact with buttons.
+     */
     private fun setButtonsEnabled(enabled: Boolean) {
         binding.apply {
             clearCacheButton.isEnabled = enabled
@@ -119,6 +127,10 @@ class ManageSpaceActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Prepares the progress bar for use again.
+     * This resets progress to 0 and sets a new step count.
+     */
     private fun initProgressBar(stepCount: Int) {
         binding.apply {
             progressBar.max = stepCount
@@ -126,6 +138,32 @@ class ManageSpaceActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Increments the progress bar by 1.
+     */
+    private fun incrementProgressBar() {
+        binding.progressBar.progress += 1
+    }
+
+    /**
+     * Updates the progress status text.
+     * @param statusTextRes The resource identifier used to get a new [String] to use for progress status.
+     */
+    private fun setProgressStatus(@StringRes statusTextRes: Int) =
+            setProgressStatus(getString(statusTextRes))
+
+    /**
+     * Updates the progress status text.
+     * @param statusText The new [String] to use for progress status.
+     */
+    private fun setProgressStatus(statusText: String) {
+        binding.progressStatus.text = statusText
+    }
+
+    /**
+     * Shows a custom [AlertDialog] to confirm the user would like to reset their watch settings.
+     * If the user chooses to reset their settings, the reset will be started from here.
+     */
     private fun showSettingsResetConfirmation() {
         AlertDialog.Builder(this).apply {
             setTitle(R.string.dialog_reset_settings_title)
@@ -139,6 +177,10 @@ class ManageSpaceActivity : AppCompatActivity() {
         }.show()
     }
 
+    /**
+     * Shows a custom [AlertDialog] to confirm the user would like to fully reset Wearable Extensions.
+     * If the user chooses to reset Wearable Extensions, the reset will be started from here.
+     */
     private fun showFullResetConfirmation() {
         AlertDialog.Builder(this).apply {
             setTitle(R.string.dialog_reset_app_title)
@@ -152,41 +194,50 @@ class ManageSpaceActivity : AppCompatActivity() {
         }.show()
     }
 
-    private fun tryClearData(): Boolean {
-        return activityManager.clearApplicationUserData()
-    }
+    /**
+     * Calls the system's [ActivityManager] clearApplicationUserData()
+     * to make sure we haven't missed anything.
+     * @return true if successful, false otherwise.
+     */
+    private fun clearData(): Boolean = activityManager.clearApplicationUserData()
 
+    /**
+     * Attempts to clear all of Wearable Extension's cache.
+     */
     private fun clearCache() {
         val cacheFiles = getFiles(codeCacheDir) + getFiles(cacheDir)
         if (cacheFiles.isNotEmpty()) {
             setButtonsEnabled(false)
             initProgressBar(cacheFiles.size)
-            binding.progressStatus.setText(R.string.clear_cache_clearing)
+            setProgressStatus(R.string.clear_cache_clearing)
             coroutineScope.launch(Dispatchers.IO) {
                 for (cacheFile in cacheFiles) {
                     val deleted = cacheFile.delete()
                     withContext(Dispatchers.Main) {
                         if (deleted) {
-                            binding.progressBar.progress += 1
+                            incrementProgressBar()
                         } else {
                             Timber.w("Failed to delete cache file ${cacheFile.absolutePath}")
-                            binding.progressStatus.setText(R.string.clear_cache_failed)
+                            setProgressStatus(R.string.clear_cache_failed)
                             setButtonsEnabled(true)
                             return@withContext
                         }
                     }
                 }
                 withContext(Dispatchers.Main) {
-                    binding.progressStatus.setText(R.string.clear_cache_success)
+                    setProgressStatus(R.string.clear_cache_success)
                     setButtonsEnabled(true)
                 }
             }
         } else {
             initProgressBar(0)
-            binding.progressStatus.setText(R.string.clear_cache_no_cache)
+            setProgressStatus(R.string.clear_cache_no_cache)
         }
     }
 
+    /**
+     * Attempts to reset settings for each watch registered with Wearable Extensions.
+     */
     private fun doSettingsReset() {
         setButtonsEnabled(false)
         coroutineScope.launch(Dispatchers.IO) {
@@ -195,12 +246,12 @@ class ManageSpaceActivity : AppCompatActivity() {
                 initProgressBar(registeredWatches.count())
                 for (watch in registeredWatches) {
                     withContext(Dispatchers.Main) {
-                        binding.progressStatus.text = getString(R.string.reset_settings_resetting_for, watch.name)
+                        setProgressStatus(getString(R.string.reset_settings_resetting_for, watch.name))
                     }
                     val success = resetWatchPreferences(watch)
                     if (success) {
                         withContext(Dispatchers.Main) {
-                            binding.progressBar.progress += 1
+                            incrementProgressBar()
                         }
                     } else {
                         binding.progressStatus.text = getString(R.string.reset_settings_failed_for, watch.name)
@@ -209,24 +260,27 @@ class ManageSpaceActivity : AppCompatActivity() {
                     }
                 }
                 withContext(Dispatchers.Main) {
-                    binding.progressStatus.setText(R.string.reset_settings_success)
+                    setProgressStatus(R.string.reset_settings_success)
                     setButtonsEnabled(true)
                 }
             } else {
                 withContext(Dispatchers.Main) {
-                    binding.progressBar.progress = 0
-                    binding.progressStatus.setText(R.string.reset_settings_failed)
+                    initProgressBar(0)
+                    setProgressStatus(R.string.reset_settings_failed)
                     setButtonsEnabled(true)
                 }
             }
         }
     }
 
+    /**
+     * Attempts a full reset of Wearable Extensions.
+     */
     private fun doFullReset() {
         setButtonsEnabled(false)
-        var totalSteps = DATABASE_COUNT + PREFERENCE_STORE_COUNT
-        initProgressBar(totalSteps)
         coroutineScope.launch(Dispatchers.IO) {
+            var totalSteps = DATABASE_COUNT + PREFERENCE_STORE_COUNT
+            initProgressBar(totalSteps)
             val registeredWatches = watchConnectionManager?.getRegisteredWatches()
             if (registeredWatches != null && registeredWatches.isNotEmpty()) {
                 totalSteps += (registeredWatches.count() * 3)
@@ -235,16 +289,16 @@ class ManageSpaceActivity : AppCompatActivity() {
                 }
                 for (watch in registeredWatches) {
                     withContext(Dispatchers.Main) {
-                        binding.progressStatus.text = getString(R.string.reset_app_resetting_for, watch.name)
+                        setProgressStatus(getString(R.string.reset_app_resetting_for, watch.name))
                     }
                     val success = resetWatchPreferences(watch)
                     if (success) {
                         withContext(Dispatchers.Main) {
-                            binding.progressBar.progress += 1
+                            incrementProgressBar()
                         }
                     } else {
                         withContext(Dispatchers.Main) {
-                            binding.progressStatus.text = getString(R.string.reset_app_failed_for, watch.name)
+                           setProgressStatus(getString(R.string.reset_app_failed_for, watch.name))
                             setButtonsEnabled(true)
                         }
                         return@launch
@@ -252,22 +306,23 @@ class ManageSpaceActivity : AppCompatActivity() {
                     try {
                         Tasks.await(watchConnectionManager!!.resetWatch(watch.id))
                         withContext(Dispatchers.Main) {
-                            binding.progressBar.progress += 1
+                            incrementProgressBar()
                         }
                     } catch (e: ApiException) {
-                        binding.progressStatus.text = getString(R.string.reset_app_failed_for, watch.name)
+                        initProgressBar(0)
+                        setProgressStatus(getString(R.string.reset_app_failed_for, watch.name))
                         setButtonsEnabled(true)
                         return@launch
                     }
                     watchConnectionManager!!.forgetWatch(watch.id)
                     withContext(Dispatchers.Main) {
-                        binding.progressBar.progress += 1
+                        incrementProgressBar()
                     }
                 }
             }
             unbindService(watchManagerConnection)
             withContext(Dispatchers.Main) {
-                binding.progressStatus.text = getString(R.string.reset_app_resetting_database_for, getString(R.string.database_name_battery_stats))
+                setProgressStatus(getString(R.string.reset_app_resetting_database_for, getString(R.string.database_name_battery_stats)))
             }
             WatchBatteryStatsDatabase.open(this@ManageSpaceActivity).apply {
                 clearAllTables()
@@ -275,8 +330,8 @@ class ManageSpaceActivity : AppCompatActivity() {
                 it.close()
             }
             withContext(Dispatchers.Main) {
-                binding.progressBar.progress += 1
-                binding.progressStatus.text = getString(R.string.reset_app_resetting_database_for, getString(R.string.database_name_widget))
+                incrementProgressBar()
+                setProgressStatus(getString(R.string.reset_app_resetting_database_for, getString(R.string.database_name_widget)))
             }
             WidgetDatabase.open(this@ManageSpaceActivity).apply {
                 clearAllTables()
@@ -284,8 +339,8 @@ class ManageSpaceActivity : AppCompatActivity() {
                 it.close()
             }
             withContext(Dispatchers.Main) {
-                binding.progressBar.progress += 1
-                binding.progressStatus.text = getString(R.string.reset_app_resetting_database_for, getString(R.string.database_name_main))
+                incrementProgressBar()
+                setProgressStatus(getString(R.string.reset_app_resetting_database_for, getString(R.string.database_name_main)))
             }
             WatchDatabase.open(this@ManageSpaceActivity).apply {
                 clearAllTables()
@@ -293,21 +348,26 @@ class ManageSpaceActivity : AppCompatActivity() {
                 it.close()
             }
             withContext(Dispatchers.Main) {
-                binding.progressBar.progress += 1
-                binding.progressStatus.setText(R.string.reset_app_resetting_preferences)
+                incrementProgressBar()
+                setProgressStatus(R.string.reset_app_resetting_preferences)
             }
             PreferenceManager.getDefaultSharedPreferences(this@ManageSpaceActivity).edit(commit = true) {
                 clear()
             }
             withContext(Dispatchers.Main) {
-                binding.progressBar.progress += 1
-                binding.progressStatus.setText(R.string.reset_app_success)
+                incrementProgressBar()
+                setProgressStatus(R.string.reset_app_success)
                 setButtonsEnabled(true)
             }
             hasResetApp = true
         }
     }
 
+    /**
+     * Resets preferences for a given [Watch], and stops any services or workers that may need stopping.
+     * @param watch The [Watch] to clear preferences for.
+     * @return true if preferences were successfully cleared, false otherwise.
+     */
     private suspend fun resetWatchPreferences(watch: Watch): Boolean {
         val success = watchConnectionManager!!.clearPreferencesForWatch(watch.id)
         if (watch.batterySyncWorkerId != null) {
@@ -316,6 +376,11 @@ class ManageSpaceActivity : AppCompatActivity() {
         return success
     }
 
+    /**
+     * Recursive function to get an [Array] of all the files contained within the given [File].
+     * @param file The [File] to return children of.
+     * @return An [Array] of all the files found inside the given [File].
+     */
     private fun getFiles(file: File): Array<File> {
         val files = ArrayList<File>()
         if (file.isDirectory) {
