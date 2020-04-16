@@ -12,31 +12,25 @@ import android.content.Context
 import android.content.Intent
 import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.common.PreferenceKey
-import com.boswelja.devicemanager.common.References
-import com.google.android.gms.wearable.CapabilityClient
-import com.google.android.gms.wearable.Wearable
+import timber.log.Timber
 
 class DeviceAdminChangeReceiver : DeviceAdminReceiver() {
 
     override fun onEnabled(context: Context?, intent: Intent?) {
+        Timber.i("onEnabled() called")
         PreferenceManager.getDefaultSharedPreferences(context).edit()
                 .putBoolean(DEVICE_ADMIN_ENABLED_KEY, true)
                 .apply()
     }
 
     override fun onDisabled(context: Context?, intent: Intent?) {
+        Timber.i("onDisabled() called")
         PreferenceManager.getDefaultSharedPreferences(context)
                 .edit()
                 .putBoolean(DEVICE_ADMIN_ENABLED_KEY, false)
                 .putBoolean(PreferenceKey.PHONE_LOCKING_ENABLED_KEY, false)
                 .apply()
-        Wearable.getCapabilityClient(context!!)
-                .getCapability(References.CAPABILITY_WATCH_APP, CapabilityClient.FILTER_REACHABLE)
-                .addOnSuccessListener {
-//                    for (node in it.nodes) {
-//                        PreferenceSyncService(context, node.id).pushNewData(PreferenceKey.PHONE_LOCKING_ENABLED_KEY)
-//                    }
-                }
+        //TODO Tell registered watches Phone Locking was disabled.
     }
 
     companion object {

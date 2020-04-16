@@ -8,7 +8,6 @@
 package com.boswelja.devicemanager.phonelocking
 
 import android.accessibilityservice.AccessibilityService
-import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Build
 import android.view.accessibility.AccessibilityEvent
@@ -27,6 +26,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import timber.log.Timber
 
 @RequiresApi(Build.VERSION_CODES.P)
 class PhoneLockingAccessibilityService :
@@ -44,14 +44,18 @@ class PhoneLockingAccessibilityService :
 
     private val watchConnectionManagerConnection = object : WatchConnectionService.Connection() {
         override fun onWatchManagerBound(service: WatchConnectionService) {
+            Timber.i("onWatchManagerBound() called")
             watchConnectionManager = service
         }
 
-        override fun onWatchManagerUnbound() {}
+        override fun onWatchManagerUnbound() {
+            Timber.w("onWatchManagerUnbound() called")
+        }
     }
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
         if (key == PHONE_LOCKING_MODE_KEY && sharedPreferences?.getString(key, "0") != PHONE_LOCKING_MODE_ACCESSIBILITY_SERVICE) {
+            Timber.i("Phone Locking mode changed, attempting to stop self")
             stopSelf()
         }
     }
@@ -59,22 +63,13 @@ class PhoneLockingAccessibilityService :
     override fun onMessageReceived(messageEvent: MessageEvent) {
         when (messageEvent.path) {
             LOCK_PHONE_PATH -> {
-                coroutineScope.launch(Dispatchers.IO) {
-                    val watchId = messageEvent.sourceNodeId
-                    val phoneLockingEnabledForWatch =
-                            watchConnectionManager?.getBoolPrefForWatch(watchId, PHONE_LOCKING_ENABLED_KEY)
-                                    ?.value == true
-                    if (phoneLockingEnabledForWatch) {
-                        withContext(Dispatchers.Main) {
-                            performGlobalAction(GLOBAL_ACTION_LOCK_SCREEN)
-                        }
-                    }
-                }
+                tryLockDevice(messageEvent)
             }
         }
     }
 
     override fun onServiceConnected() {
+        Timber.i("onServiceConnected() called")
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
         messageClient = Wearable.getMessageClient(this)
         sharedPreferences.edit {
@@ -85,16 +80,11 @@ class PhoneLockingAccessibilityService :
     }
 
     override fun onAccessibilityEvent(event: AccessibilityEvent?) {
-        // Do nothing
+        Timber.v("onAccessibilityEvent() called")
     }
 
     override fun onInterrupt() {
-        // Do nothing
-    }
-
-    override fun onUnbind(intent: Intent?): Boolean {
-        stop()
-        return super.onUnbind(intent)
+        Timber.v("onInterrupt() called")
     }
 
     override fun onDestroy() {
@@ -102,8 +92,34 @@ class PhoneLockingAccessibilityService :
         super.onDestroy()
     }
 
+    /**
+     * Tries to lock the device after receiving a [MessageEvent].
+     * @param messageEvent The [MessageEvent] requesting a device lock.
+     */
+    private fun tryLockDevice(messageEvent: MessageEvent) {
+        coroutineScope.launch(Dispatchers.IO) {
+            val watchId = messageEvent.sourceNodeId
+            val phoneLockingEnabledForWatch =
+                    watchConnectionManager?.getBoolPrefForWatch(watchId, PHONE_LOCKING_ENABLED_KEY)
+                            ?.value == true
+            if (phoneLockingEnabledForWatch) {
+                Timber.i("Trying to lock phone")
+                withContext(Dispatchers.Main) {
+                    performGlobalAction(GLOBAL_ACTION_LOCK_SCREEN)
+                }
+            } else {
+                Timber.i("$watchId tried to lock phone, doesn't have permission")
+            }
+        }
+    }
+
+    /**
+     * Cleans up in preparation for stopping the service.
+     */
     private fun stop() {
+        Timber.i("stop() called")
         if (!isStopping) {
+            Timber.i("Stopping")
             isStopping = true
             sharedPreferences.edit {
                 putBoolean(ACCESSIBILITY_SERVICE_ENABLED_KEY, false)
