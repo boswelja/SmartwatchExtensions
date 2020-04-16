@@ -60,6 +60,10 @@ class Updater(private val context: Context) {
         }
     }
 
+    /**
+     * Restarts all [BatterySyncWorker] instances.
+     * @param database The [WatchDatabase] to get worker IDs from.
+     */
     private fun doBatterySyncUpdate(database: WatchDatabase) {
         val watches = database.getWatchesWithPrefs()
         var needsRestart = false
@@ -82,6 +86,9 @@ class Updater(private val context: Context) {
         }
     }
 
+    /**
+     * Creates all notifications channels if they don't already exist.
+     */
     @RequiresApi(Build.VERSION_CODES.O)
     fun createNotificationChannels() {
         if (!notificationChannelsCreated or needsUpdate) {
@@ -131,6 +138,10 @@ class Updater(private val context: Context) {
         }
     }
 
+    /**
+     * Update the app's working environment.
+     * @return The [Result] of the update
+     */
     fun doUpdate(): Result {
         var updateStatus = Result.NOT_NEEDED
         if (needsUpdate) {
@@ -178,6 +189,9 @@ class Updater(private val context: Context) {
         return updateStatus
     }
 
+    /**
+     * Performs an update on databases as necessary.
+     */
     private fun doFullUpdate() {
         if (lastAppVersion < 2019120600) {
             val messageClient = Wearable.getMessageClient(context)

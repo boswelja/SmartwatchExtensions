@@ -54,19 +54,7 @@ class BootOrUpdateHandlerService : Service() {
         Timber.i("onStartCommand called")
         when (intent?.action) {
             Intent.ACTION_MY_PACKAGE_REPLACED -> {
-                Timber.i("Starting update process")
-                updater = Updater(this)
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) updater.createNotificationChannels()
-                startForeground(NOTI_ID, createUpdaterNotification())
-                when (updater.doUpdate()) {
-                    Result.COMPLETED -> {
-                        Timber.i("Update completed")
-                        PreferenceManager.getDefaultSharedPreferences(this).edit {
-                            putBoolean(SHOW_CHANGELOG_KEY, true)
-                        }
-                    }
-                    Result.NOT_NEEDED -> Timber.i("Update not needed")
-                }
+                performUpdates()
             }
             Intent.ACTION_BOOT_COMPLETED -> {
                 Timber.i("Device restarted")
@@ -79,6 +67,29 @@ class BootOrUpdateHandlerService : Service() {
         return START_NOT_STICKY
     }
 
+    /**
+     * Initialise an [Updater] instance and perform updates.
+     */
+    private fun performUpdates() {
+        Timber.i("Starting update process")
+        updater = Updater(this)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) updater.createNotificationChannels()
+        startForeground(NOTI_ID, createUpdaterNotification())
+        when (updater.doUpdate()) {
+            Result.COMPLETED -> {
+                Timber.i("Update completed")
+                PreferenceManager.getDefaultSharedPreferences(this).edit {
+                    putBoolean(SHOW_CHANGELOG_KEY, true)
+                }
+            }
+            Result.NOT_NEEDED -> Timber.i("Update not needed")
+        }
+    }
+
+    /**
+     * Create a Common [NotificationCompat.Builder] with all common settings set.
+     * @return The [NotificationCompat.Builder] to build notifications from.
+     */
     private fun createBaseNotification(): NotificationCompat.Builder {
         return NotificationCompat.Builder(this, BOOT_OR_UPDATE_NOTI_CHANNEL_ID).apply {
             setOngoing(true)
@@ -89,6 +100,10 @@ class BootOrUpdateHandlerService : Service() {
         }
     }
 
+    /**
+     * Create a [Notification] for the Update Handler service.
+     * @return The [Notification] ready to send.
+     */
     private fun createUpdaterNotification(): Notification {
         return createBaseNotification().apply {
             setContentTitle(getString(R.string.notification_update_handler_title))
@@ -96,6 +111,10 @@ class BootOrUpdateHandlerService : Service() {
         }.build()
     }
 
+    /**
+     * Create a [Notification] for the Boot Handler service.
+     * @return The [Notification] ready to send.
+     */
     private fun createBootNotification(): Notification {
         return createBaseNotification().apply {
             setContentTitle(getString(R.string.notification_boot_handler_title))
@@ -103,6 +122,10 @@ class BootOrUpdateHandlerService : Service() {
         }.build()
     }
 
+    /**
+     * Try to start Do not Disturb change listener service if needed.
+     * @param service The [WatchConnectionService] to read preferences from.
+     */
     private suspend fun tryStartInterruptFilterSyncService(service: WatchConnectionService) {
         val dndSyncToWatchEnabled =
                 service.getBoolPrefsForRegisteredWatches(PreferenceKey.DND_SYNC_TO_WATCH_KEY)
@@ -115,6 +138,10 @@ class BootOrUpdateHandlerService : Service() {
         }
     }
 
+    /**
+     * Try to start any needed [BatterySyncWorker] instances.
+     * @param service The [WatchConnectionService] to read preferences from.
+     */
     private suspend fun tryStartBatterySyncWorkers(service: WatchConnectionService) {
         val watchBatterySyncInfo =
                 service.getBoolPrefsForRegisteredWatches(PreferenceKey.BATTERY_SYNC_ENABLED_KEY)
@@ -135,6 +162,9 @@ class BootOrUpdateHandlerService : Service() {
         }
     }
 
+    /**
+     * Clean up and stop the service.
+     */
     private fun finish() {
         Timber.i("Finished")
         unbindService(watchManagerConnection)
