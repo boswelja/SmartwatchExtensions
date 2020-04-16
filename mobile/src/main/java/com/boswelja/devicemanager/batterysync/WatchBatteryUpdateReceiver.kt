@@ -70,6 +70,7 @@ class WatchBatteryUpdateReceiver : WearableListenerService() {
 
     override fun onMessageReceived(messageEvent: MessageEvent?) {
         if (messageEvent?.path == BATTERY_STATUS_PATH) {
+            Timber.i("Got BATTERY_STATUS_PATH")
             notificationManager =
                     getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
@@ -79,6 +80,7 @@ class WatchBatteryUpdateReceiver : WearableListenerService() {
 
             coroutineScope.launch {
                 WatchBatteryStatsDatabase.open(this@WatchBatteryUpdateReceiver).also {
+                    Timber.i("Updating battery stats in database")
                     it.updateWatchBatteryStats(watchBatteryStats)
                     it.close()
                 }
@@ -100,6 +102,7 @@ class WatchBatteryUpdateReceiver : WearableListenerService() {
         val messageSplit = message.split("|")
         val batteryPercent = messageSplit[0].toInt()
         val isWatchCharging = messageSplit[1] == true.toString()
+        Timber.i("Got WatchBatteryStats from MessageEvent")
         return WatchBatteryStats(watchId, batteryPercent, isWatchCharging)
     }
 
@@ -122,6 +125,7 @@ class WatchBatteryUpdateReceiver : WearableListenerService() {
      */
     private fun notifyWatchCharged(watch: Watch) {
         if (Compat.areNotificationsEnabled(this, BATTERY_CHARGED_NOTI_CHANNEL_ID)) {
+            Timber.i("Sending charged notification")
             NotificationCompat.Builder(this, BATTERY_CHARGED_NOTI_CHANNEL_ID).apply {
                 setSmallIcon(R.drawable.battery_full)
                 setContentTitle(getString(R.string.device_charged_noti_title, watch.name))
@@ -132,18 +136,21 @@ class WatchBatteryUpdateReceiver : WearableListenerService() {
                 notificationManager.notify(BATTERY_CHARGED_NOTI_ID, it.build())
             }
         } else {
-            MessageDatabase.open(this).apply {
-                val message = Message(
-                        iconRes = R.drawable.pref_ic_warning,
-                        label = getString(R.string.message_watch_charge_noti_warning_label),
-                        shortLabel = getString(R.string.message_watch_charge_noti_warning_label_short),
-                        desc = getString(R.string.message_watch_charge_noti_warning_desc),
-                        buttonLabel = getString(R.string.message_watch_charge_noti_warning_button_label),
-                        action = Action.LAUNCH_NOTIFICATION_SETTINGS
-                )
-                sendMessage(sharedPreferences, message)
-            }.also {
-                it.close()
+            Timber.w("Failed to send charged notification")
+            coroutineScope.launch(Dispatchers.IO) {
+                MessageDatabase.open(this@WatchBatteryUpdateReceiver).apply {
+                    val message = Message(
+                            iconRes = R.drawable.pref_ic_warning,
+                            label = getString(R.string.message_watch_charge_noti_warning_label),
+                            shortLabel = getString(R.string.message_watch_charge_noti_warning_label_short),
+                            desc = getString(R.string.message_watch_charge_noti_warning_desc),
+                            buttonLabel = getString(R.string.message_watch_charge_noti_warning_button_label),
+                            action = Action.LAUNCH_NOTIFICATION_SETTINGS
+                    )
+                    sendMessage(sharedPreferences, message)
+                }.also {
+                    it.close()
+                }
             }
         }
     }
