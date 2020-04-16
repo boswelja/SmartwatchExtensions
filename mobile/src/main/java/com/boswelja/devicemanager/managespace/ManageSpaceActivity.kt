@@ -11,6 +11,7 @@ import android.app.ActivityManager
 import android.content.Context
 import android.os.Bundle
 import android.view.MenuItem
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.edit
 import androidx.databinding.DataBindingUtil
@@ -25,7 +26,6 @@ import com.boswelja.devicemanager.watchconnectionmanager.database.WatchDatabase
 import com.boswelja.devicemanager.widgetdb.WidgetDatabase
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Tasks
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import java.io.File
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
@@ -127,7 +127,7 @@ class ManageSpaceActivity : AppCompatActivity() {
     }
 
     private fun showSettingsResetConfirmation() {
-        MaterialAlertDialogBuilder(this, R.style.AppTheme_AlertDialog).apply {
+        AlertDialog.Builder(this).apply {
             setTitle(R.string.dialog_reset_settings_title)
             setMessage(R.string.dialog_reset_settings_message)
             setPositiveButton(R.string.dialog_button_reset) { _, _ ->
@@ -140,7 +140,7 @@ class ManageSpaceActivity : AppCompatActivity() {
     }
 
     private fun showFullResetConfirmation() {
-        MaterialAlertDialogBuilder(this, R.style.AppTheme_AlertDialog).apply {
+        AlertDialog.Builder(this).apply {
             setTitle(R.string.dialog_reset_app_title)
             setMessage(R.string.dialog_reset_app_message)
             setPositiveButton(R.string.dialog_button_reset) { _, _ ->
