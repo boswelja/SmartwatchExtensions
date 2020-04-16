@@ -179,6 +179,7 @@ class ManageSpaceActivity : AppCompatActivity() {
     }
 
     private fun doSettingsReset() {
+        setButtonsEnabled(false)
         coroutineScope.launch(Dispatchers.IO) {
             val registeredWatches = watchConnectionManager?.getRegisteredWatches()
             if (registeredWatches != null && registeredWatches.isNotEmpty()) {
@@ -193,29 +194,30 @@ class ManageSpaceActivity : AppCompatActivity() {
                             binding.progressBar.progress += 1
                         } else {
                             binding.progressStatus.text = getString(R.string.reset_settings_failed_for, watch.name)
+                            setButtonsEnabled(true)
                         }
                     }
                     if (!success) return@launch
                 }
                 withContext(Dispatchers.Main) {
                     binding.progressStatus.setText(R.string.reset_settings_success)
+                    setButtonsEnabled(true)
                 }
             } else {
                 withContext(Dispatchers.Main) {
                     binding.progressBar.progress = 0
                     binding.progressStatus.setText(R.string.reset_settings_failed)
+                    setButtonsEnabled(true)
                 }
             }
         }
     }
 
     private fun doFullReset() {
+        setButtonsEnabled(false)
+        var totalSteps = DATABASE_COUNT + PREFERENCE_STORE_COUNT
+        initProgressBar(totalSteps)
         coroutineScope.launch(Dispatchers.IO) {
-            setButtonsEnabled(false)
-            var totalSteps = DATABASE_COUNT + PREFERENCE_STORE_COUNT
-            withContext(Dispatchers.Main) {
-                initProgressBar(totalSteps)
-            }
             val registeredWatches = watchConnectionManager?.getRegisteredWatches()
             if (registeredWatches != null && registeredWatches.isNotEmpty()) {
                 totalSteps += (registeredWatches.count() * 3)
@@ -237,6 +239,7 @@ class ManageSpaceActivity : AppCompatActivity() {
                         }
                     } catch (e: ApiException) {
                         binding.progressStatus.text = getString(R.string.reset_app_failed_for, watch.name)
+                        setButtonsEnabled(true)
                         return@launch
                     }
                     watchConnectionManager!!.forgetWatch(watch.id)
@@ -282,6 +285,7 @@ class ManageSpaceActivity : AppCompatActivity() {
             withContext(Dispatchers.Main) {
                 binding.progressBar.progress += 1
                 binding.progressStatus.setText(R.string.reset_app_success)
+                setButtonsEnabled(true)
             }
             hasResetApp = true
         }
