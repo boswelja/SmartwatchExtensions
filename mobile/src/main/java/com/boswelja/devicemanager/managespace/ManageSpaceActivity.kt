@@ -16,8 +16,10 @@ import androidx.core.content.edit
 import androidx.databinding.DataBindingUtil
 import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.R
+import com.boswelja.devicemanager.batterysync.BatterySyncWorker
 import com.boswelja.devicemanager.batterysync.database.WatchBatteryStatsDatabase
 import com.boswelja.devicemanager.databinding.ActivityManageSpaceBinding
+import com.boswelja.devicemanager.watchconnectionmanager.Watch
 import com.boswelja.devicemanager.watchconnectionmanager.WatchConnectionService
 import com.boswelja.devicemanager.watchconnectionmanager.database.WatchDatabase
 import com.boswelja.devicemanager.widgetdb.WidgetDatabase
@@ -195,16 +197,16 @@ class ManageSpaceActivity : AppCompatActivity() {
                     withContext(Dispatchers.Main) {
                         binding.progressStatus.text = getString(R.string.reset_settings_resetting_for, watch.name)
                     }
-                    val success = watchConnectionManager!!.clearPreferencesForWatch(watch.id)
-                    withContext(Dispatchers.Main) {
-                        if (success) {
+                    val success = resetWatchPreferences(watch)
+                    if (success) {
+                        withContext(Dispatchers.Main) {
                             binding.progressBar.progress += 1
-                        } else {
-                            binding.progressStatus.text = getString(R.string.reset_settings_failed_for, watch.name)
-                            setButtonsEnabled(true)
                         }
+                    } else {
+                        binding.progressStatus.text = getString(R.string.reset_settings_failed_for, watch.name)
+                        setButtonsEnabled(true)
+                        return@launch
                     }
-                    if (!success) return@launch
                 }
                 withContext(Dispatchers.Main) {
                     binding.progressStatus.setText(R.string.reset_settings_success)
@@ -235,9 +237,17 @@ class ManageSpaceActivity : AppCompatActivity() {
                     withContext(Dispatchers.Main) {
                         binding.progressStatus.text = getString(R.string.reset_app_resetting_for, watch.name)
                     }
-                    watchConnectionManager!!.clearPreferencesForWatch(watch.id)
-                    withContext(Dispatchers.Main) {
-                        binding.progressBar.progress += 1
+                    val success = resetWatchPreferences(watch)
+                    if (success) {
+                        withContext(Dispatchers.Main) {
+                            binding.progressBar.progress += 1
+                        }
+                    } else {
+                        withContext(Dispatchers.Main) {
+                            binding.progressStatus.text = getString(R.string.reset_app_failed_for, watch.name)
+                            setButtonsEnabled(true)
+                        }
+                        return@launch
                     }
                     try {
                         Tasks.await(watchConnectionManager!!.resetWatch(watch.id))
@@ -296,6 +306,14 @@ class ManageSpaceActivity : AppCompatActivity() {
             }
             hasResetApp = true
         }
+    }
+
+    private suspend fun resetWatchPreferences(watch: Watch): Boolean {
+        val success = watchConnectionManager!!.clearPreferencesForWatch(watch.id)
+        if (watch.batterySyncWorkerId != null) {
+            BatterySyncWorker.stopWorker(this@ManageSpaceActivity, watch.batterySyncWorkerId)
+        }
+        return success
     }
 
     private fun getFiles(file: File): Array<File> {
