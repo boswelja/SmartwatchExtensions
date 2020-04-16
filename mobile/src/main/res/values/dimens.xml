@@ -5,5 +5,9 @@
 
     <dimen name="settings_widget_battery_sync_start_margin">4dp</dimen>
     <dimen name="settings_widget_battery_sync_end_margin">4dp</dimen>
+    <dimen name="content_margin_manage_space_side">16dp</dimen>
+    <dimen name="manage_space_section_margin">16dp</dimen>
+    <dimen name="manage_space_desc_button_margin">8dp</dimen>
+    <dimen name="manage_space_title_desc_margin">4dp</dimen>
 
 </resources>

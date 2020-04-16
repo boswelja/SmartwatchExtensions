@@ -29,7 +29,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="4dp"
-            android:text="You'll see the progress of any actions down here"
+            android:layout_marginStart="@dimen/content_margin_manage_space_side"
+            android:layout_marginEnd="@dimen/content_margin_manage_space_side"
+            android:text="@string/manage_space_progress_status_placeholder"
             app:layout_constraintBottom_toTopOf="@id/progress_bar"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
@@ -51,109 +53,88 @@
             android:id="@+id/clear_cache_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:layout_marginStart="16dp"
-            android:text="Clear Cache"
+            android:text="@string/manage_space_clear_cache_title"
             app:layout_constraintTop_toBottomOf="@id/appbar_layout"
             app:layout_constraintStart_toStartOf="parent"
-            style="@style/TextAppearance.MaterialComponents.Headline6" />
+            style="@style/ManageSpace.TextAppearance.Title" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/clear_cache_desc"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginTop="4dp"
-            android:text="Clear Wearable Extensions cache."
+            android:text="@string/manage_space_clear_cache_desc"
             app:layout_constraintTop_toBottomOf="@id/clear_cache_title"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toStartOf="@id/clear_cache_button"
-            style="@style/TextAppearance.MaterialComponents.Body1" />
+            style="@style/ManageSpace.TextAppearance.Description" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/clear_cache_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="16dp"
-            android:text="Clear\nCache"
-            android:lineSpacingMultiplier="1.25"
+            android:text="@string/manage_space_clear_cache_button"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="@id/clear_cache_desc"
             app:layout_constraintTop_toTopOf="@id/clear_cache_desc"
-            style="@style/Widget.MaterialComponents.Button.OutlinedButton" />
+            style="@style/Widget.AppTheme.Button.OutlinedButton.MultiLine" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/reset_settings_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:layout_marginStart="16dp"
-            android:text="Reset Settings"
+            android:text="@string/manage_space_reset_settings_title"
             app:layout_constraintTop_toBottomOf="@id/clear_cache_desc"
             app:layout_constraintStart_toStartOf="parent"
-            style="@style/TextAppearance.MaterialComponents.Headline6" />
+            style="@style/ManageSpace.TextAppearance.Title" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/reset_settings_desc"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginTop="4dp"
-            android:text="Reset all your settings in Wearable Extensions. Try this first if you're experiencing crashes."
+            android:text="@string/manage_space_reset_settings_desc"
             app:layout_constraintTop_toBottomOf="@id/reset_settings_title"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toStartOf="@id/reset_settings_button"
-            style="@style/TextAppearance.MaterialComponents.Body1" />
+            style="@style/ManageSpace.TextAppearance.Description" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/reset_settings_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="16dp"
-            android:text="Reset\nSettings"
-            android:lineSpacingMultiplier="1.25"
+            android:text="@string/manage_space_reset_settings_button"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="@id/reset_settings_desc"
             app:layout_constraintTop_toTopOf="@id/reset_settings_desc"
-            style="@style/Widget.MaterialComponents.Button.OutlinedButton" />
+            style="@style/Widget.AppTheme.Button.OutlinedButton.MultiLine" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/reset_app_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:layout_marginStart="16dp"
-            android:text="Reset Wearable Extensions"
+            android:text="@string/manage_space_reset_app_title"
             app:layout_constraintTop_toBottomOf="@id/reset_settings_desc"
             app:layout_constraintStart_toStartOf="parent"
-            style="@style/TextAppearance.MaterialComponents.Headline6" />
+            style="@style/ManageSpace.TextAppearance.Title" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/reset_app_desc"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginTop="4dp"
-            android:text="Reset Wearable Extensions. This will reset Wearable Extensions on all your registered watches, as well as here on your phone. This may take a while."
+            android:text="@string/manage_space_reset_app_desc"
             app:layout_constraintTop_toBottomOf="@id/reset_app_title"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toStartOf="@id/reset_app_button"
-            style="@style/TextAppearance.MaterialComponents.Body1" />
+            style="@style/ManageSpace.TextAppearance.Description" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/reset_app_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="16dp"
-            android:text="Reset\nApp"
-            android:lineSpacingMultiplier="1.25"
+            android:text="@string/manage_space_reset_app_button"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="@id/reset_app_desc"
             app:layout_constraintTop_toTopOf="@id/reset_app_desc"
-            style="@style/Widget.MaterialComponents.Button.OutlinedButton" />
+            style="@style/Widget.AppTheme.Button.OutlinedButton.MultiLine" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
