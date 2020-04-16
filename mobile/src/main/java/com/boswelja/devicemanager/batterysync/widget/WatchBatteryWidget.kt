@@ -74,6 +74,14 @@ class WatchBatteryWidget : AppWidgetProvider() {
         }
     }
 
+    /**
+     * Update a specified widget's view with new data.
+     * @param context [Context].
+     * @param appWidgetManager The [AppWidgetManager] instance to send the updated view to.
+     * @param appWidgetId The ID of the widget to update.
+     * @param width The target width of the updated view.
+     * @param height The target height of the updated view.
+     */
     private fun updateView(
             context: Context?,
             appWidgetManager: AppWidgetManager?,
@@ -96,6 +104,14 @@ class WatchBatteryWidget : AppWidgetProvider() {
         }
     }
 
+    /**
+     * Create a [RemoteViews] object representing a widget.
+     * @param context [Context].
+     * @param width The target width of the updated view.
+     * @param height The target height of the updated view.
+     * @param batteryStats The [WatchBatteryStats] object containing battery information for the
+     * widget to use, if available.
+     */
     private fun createWidgetView(
             context: Context?,
             width: Int, height: Int,
@@ -151,12 +167,21 @@ class WatchBatteryWidget : AppWidgetProvider() {
 
     companion object {
 
+        /**
+         * Update all [WatchBatteryWidget] instances.
+         * @param context [Context].
+         */
         fun updateWidgets(context: Context) {
             val ids = AppWidgetManager.getInstance(context)
                     .getAppWidgetIds(ComponentName(context, WatchBatteryWidget::class.java))
             updateWidgets(context, ids)
         }
 
+        /**
+         * Update a specified set of widgets.
+         * @param context [Context].
+         * @param widgetIds An array of IDs of all the [WatchBatteryWidget] instances to update.
+         */
         fun updateWidgets(context: Context, widgetIds: IntArray) {
             val intent = Intent(context, WatchBatteryWidget::class.java).apply {
                 action = AppWidgetManager.ACTION_APPWIDGET_UPDATE

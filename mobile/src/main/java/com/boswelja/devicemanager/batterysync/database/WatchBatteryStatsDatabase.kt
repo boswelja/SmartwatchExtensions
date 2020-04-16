@@ -19,6 +19,10 @@ abstract class WatchBatteryStatsDatabase : RoomDatabase() {
 
     abstract fun batteryStatsDao(): BatteryStatsDao
 
+    /**
+     * Updates a [WatchBatteryStats] object in the database based on it's primary key.
+     * @param watchBatteryStats The [WatchBatteryStats] object containing new data.
+     */
     suspend fun updateWatchBatteryStats(watchBatteryStats: WatchBatteryStats) {
         withContext(Dispatchers.IO) {
             batteryStatsDao().updateStats(watchBatteryStats)
@@ -26,6 +30,11 @@ abstract class WatchBatteryStatsDatabase : RoomDatabase() {
     }
 
     companion object {
+        /**
+         * Opens an instance of [WatchBatteryStatsDatabase].
+         * @param context [Context].
+         * @return The newly opened [WatchBatteryStatsDatabase] instance.
+         */
         suspend fun open(context: Context): WatchBatteryStatsDatabase {
             return withContext(Dispatchers.IO) {
                 return@withContext Room.databaseBuilder(context, WatchBatteryStatsDatabase::class.java, "battery-stats-db")
