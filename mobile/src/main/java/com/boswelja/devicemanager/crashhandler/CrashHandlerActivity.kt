@@ -43,40 +43,17 @@ class CrashHandlerActivity : AppCompatActivity() {
         exitProcess(0)
     }
 
+    /**
+     * Set up click listeners for actions.
+     */
     private fun setupActions() {
         binding.apply {
             restartButton.setOnClickListener {
-                Timber.i("Restarting app")
-                Intent(this@CrashHandlerActivity, MainActivity::class.java).apply {
-                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                }.also {
-                    startActivity(it)
-                    finish()
-                }
+                restartApp()
             }
 
             reportButton.setOnClickListener {
-                val emailBody = "App Version: ${BuildConfig.VERSION_NAME} (${BuildConfig.VERSION_CODE})\n" +
-                        "System API Level: ${Build.VERSION.SDK_INT}\n" +
-                        "Device: ${Build.MANUFACTURER} ${Build.MODEL} (${Build.HARDWARE})\n\n" +
-                        "Stacktrace:\n${stacktrace}\n\n" +
-                        "Steps to reproduce (if applicable):\n\n"
-                Intent(Intent.ACTION_SENDTO).apply {
-                    type = "text/plain"
-                    data = "mailto:".toUri()
-                    putExtra(Intent.EXTRA_EMAIL, arrayOf("boswelja78@gmail.com"))
-                    putExtra(Intent.EXTRA_SUBJECT, "Wearable Extensions crash")
-                    putExtra(Intent.EXTRA_TEXT, emailBody)
-                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                }.also {
-                    if (it.resolveActivity(packageManager) != null) {
-                        Timber.i("Launching email program to report error")
-                        startActivity(it)
-                        finish()
-                    } else {
-                        Timber.w("No email client found")
-                    }
-                }
+                composeCrashReportEmail()
             }
 
             closeButton.setOnClickListener {
@@ -86,6 +63,9 @@ class CrashHandlerActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Set up Stacktrace view.
+     */
     private fun setupStacktraceView() {
         binding.apply {
             stacktraceTextView.text = stacktrace
@@ -100,6 +80,47 @@ class CrashHandlerActivity : AppCompatActivity() {
                     expandCollapseIndicator.setImageResource(R.drawable.ic_expand)
                 }
             }
+        }
+    }
+
+    /**
+     * Compose an email containing information about the system environment,
+     * as well as the Stacktrace, to me (the developer) ready to send.
+     */
+    private fun composeCrashReportEmail() {
+        val emailBody = "App Version: ${BuildConfig.VERSION_NAME} (${BuildConfig.VERSION_CODE})\n" +
+                "System API Level: ${Build.VERSION.SDK_INT}\n" +
+                "Device: ${Build.MANUFACTURER} ${Build.MODEL} (${Build.HARDWARE})\n\n" +
+                "Stacktrace:\n${stacktrace}\n\n" +
+                "Steps to reproduce (if applicable):\n\n"
+        Intent(Intent.ACTION_SENDTO).apply {
+            type = "text/plain"
+            data = "mailto:".toUri()
+            putExtra(Intent.EXTRA_EMAIL, arrayOf("boswelja78@gmail.com"))
+            putExtra(Intent.EXTRA_SUBJECT, "Wearable Extensions crash")
+            putExtra(Intent.EXTRA_TEXT, emailBody)
+            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        }.also {
+            if (it.resolveActivity(packageManager) != null) {
+                Timber.i("Launching email program to report error")
+                startActivity(it)
+                finish()
+            } else {
+                Timber.w("No email client found")
+            }
+        }
+    }
+
+    /**
+     * Closes this [CrashHandlerActivity] and starts a new [MainActivity] instance.
+     */
+    private fun restartApp() {
+        Timber.i("Restarting app")
+        Intent(this@CrashHandlerActivity, MainActivity::class.java).apply {
+            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        }.also {
+            startActivity(it)
+            finish()
         }
     }
 
