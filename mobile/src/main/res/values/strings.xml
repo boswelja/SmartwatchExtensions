@@ -203,6 +203,9 @@
     <string name="crash_handler_show_stacktrace">Tap to show stacktrace</string>
     <string name="crash_handler_hide_stacktrace">Tap to hide stacktrace</string>
 
+    <!-- Manage Space strings -->
+    <string name="manage_space_title">Manage Space</string>
+
     <!-- Update dialog strings -->
     <string name="update_dialog_title">Updating %s</string>
 

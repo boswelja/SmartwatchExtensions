@@ -7,6 +7,8 @@
  */
 package com.boswelja.devicemanager.receiver
 
+import android.app.ActivityManager
+import android.content.Context
 import android.content.Intent
 import android.os.Build
 import com.boswelja.devicemanager.BuildConfig
@@ -15,6 +17,7 @@ import com.boswelja.devicemanager.appmanager.AppManagerService
 import com.boswelja.devicemanager.common.Compat
 import com.boswelja.devicemanager.common.Extensions.toByteArray
 import com.boswelja.devicemanager.common.References.REQUEST_APP_VERSION
+import com.boswelja.devicemanager.common.References.REQUEST_RESET_APP
 import com.boswelja.devicemanager.common.appmanager.References
 import com.boswelja.devicemanager.common.dndsync.References.REQUEST_INTERRUPT_FILTER_ACCESS_STATUS_PATH
 import com.boswelja.devicemanager.common.dndsync.References.REQUEST_SDK_INT_PATH
@@ -51,6 +54,10 @@ class MessageReceiver : WearableListenerService() {
                                 messageEvent.sourceNodeId,
                                 REQUEST_SDK_INT_PATH,
                                 Build.VERSION.SDK_INT.toBigInteger().toByteArray())
+            }
+            REQUEST_RESET_APP -> {
+                val activityManager = getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+                activityManager.clearApplicationUserData()
             }
         }
     }

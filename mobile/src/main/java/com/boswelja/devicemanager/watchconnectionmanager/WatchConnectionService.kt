@@ -19,6 +19,7 @@ import androidx.core.content.edit
 import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.common.PreferenceKey
 import com.boswelja.devicemanager.common.References
+import com.boswelja.devicemanager.common.References.REQUEST_RESET_APP
 import com.boswelja.devicemanager.watchconnectionmanager.database.WatchDatabase
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
@@ -400,6 +401,10 @@ class WatchConnectionService :
             }
             return@withContext false
         }
+    }
+
+    suspend fun resetWatch(watchId: String) : Task<Int> {
+        return messageClient.sendMessage(watchId, REQUEST_RESET_APP, null)
     }
 
     suspend fun clearPreferencesForWatch(watchId: String?): Boolean {
