@@ -9,21 +9,33 @@ package com.boswelja.devicemanager.dndsync
 
 import com.boswelja.devicemanager.Utils.setInterruptionFilter
 import com.boswelja.devicemanager.common.References
+import com.google.android.gms.wearable.DataEvent
 import com.google.android.gms.wearable.DataEventBuffer
 import com.google.android.gms.wearable.DataMapItem
 import com.google.android.gms.wearable.WearableListenerService
+import timber.log.Timber
 
 class DnDRemoteChangeReceiver : WearableListenerService() {
 
     override fun onDataChanged(dataEventBuffer: DataEventBuffer) {
         val watchDndStates = ArrayList<Boolean>()
         for (dataEvent in dataEventBuffer) {
-            val dataMap = DataMapItem.fromDataItem(dataEvent.dataItem).dataMap
-            val dndEnabled = dataMap.getBoolean(NEW_DND_STATE_KEY)
+            val dndEnabled = getDnDStateFromDataEvent(dataEvent)
             watchDndStates.add(dndEnabled)
         }
         val shouldEnableDnD = watchDndStates.any { dndEnabled -> dndEnabled }
         setInterruptionFilter(this, shouldEnableDnD)
+    }
+
+    /**
+     * Gets the Do not Disturb state from a [DataEvent].
+     * @param dataEvent The [DataEvent] to read from.
+     * @return true if Do not Disturb is enabled, false otherwise.
+     */
+    private fun getDnDStateFromDataEvent(dataEvent: DataEvent): Boolean {
+        Timber.i("getDnDStateFromDataEvent() called")
+        val dataMap = DataMapItem.fromDataItem(dataEvent.dataItem).dataMap
+        return dataMap.getBoolean(NEW_DND_STATE_KEY)
     }
 
     companion object {

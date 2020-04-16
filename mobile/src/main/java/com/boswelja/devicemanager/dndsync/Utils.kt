@@ -15,6 +15,11 @@ import androidx.annotation.RequiresApi
 
 object Utils {
 
+    /**
+     * Checks if Do not Disturb is enabled.
+     * @param context [Context].
+     * @return true if Do not Disturb is enabled, false otherwise.
+     */
     @RequiresApi(Build.VERSION_CODES.M)
     fun isDnDEnabled(context: Context): Boolean {
         val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
@@ -24,11 +29,22 @@ object Utils {
                 (currentInterruptFilter == NotificationManager.INTERRUPTION_FILTER_NONE)
     }
 
+    /**
+     * Checks if the device is in silent (or vibrate) mode.
+     * @param context [Context].
+     * @return true if the device is in silent (or vibrate), false otherwise.
+     */
     private fun isInSilentMode(context: Context): Boolean {
         val audioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
         return (audioManager.ringerMode == AudioManager.RINGER_MODE_SILENT) or (audioManager.ringerMode == AudioManager.RINGER_MODE_VIBRATE)
     }
 
+    /**
+     * Checks whether Do not Disturb is enabled on the device, with compatibility for lower API levels.
+     * If the device does not support Do not Disturb, this will check if the device is in silent mode.
+     * @param context [Context].
+     * @return true if Do not Disturb is enabled, false otherwise.
+     */
     fun isDnDEnabledCompat(context: Context): Boolean {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             isDnDEnabled(context)

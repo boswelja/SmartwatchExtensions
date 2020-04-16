@@ -14,39 +14,45 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.media.AudioManager
 import android.os.Build
+import timber.log.Timber
 
 abstract class DnDLocalChangeReceiver : BroadcastReceiver() {
 
+    /**
+     * Called when the state of Do not Disturb (or ringer mode state on pre-M devices) is changed.
+     * @param dndEnabled The new state of Do not Disturb.
+     */
     abstract fun onDnDChanged(dndEnabled: Boolean)
 
     override fun onReceive(context: Context?, intent: Intent?) {
+        Timber.i("Received broadcast")
         when (intent?.action) {
-            NotificationManager.ACTION_INTERRUPTION_FILTER_CHANGED -> {
-                if (context != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    val dndEnabled = Utils.isDnDEnabled(context)
-                    onDnDChanged(dndEnabled)
-                }
-            }
-            AudioManager.RINGER_MODE_CHANGED_ACTION -> {
-                if (context != null) {
-                    val ringerMode = intent.getIntExtra(AudioManager.EXTRA_RINGER_MODE, AudioManager.RINGER_MODE_NORMAL)
-                    val dndEnabled = (ringerMode == AudioManager.RINGER_MODE_SILENT) or (ringerMode == AudioManager.RINGER_MODE_VIBRATE)
-                    onDnDChanged(dndEnabled)
-                }
+            NotificationManager.ACTION_INTERRUPTION_FILTER_CHANGED,
+            AudioManager.RINGER_MODE_CHANGED_ACTION-> {
+                Timber.i("DnD mode changed")
+                onDnDChanged(Utils.isDnDEnabledCompat(context!!))
             }
         }
     }
 
     companion object {
+        /**
+         * Register a subclass of [DnDLocalChangeReceiver] as a [BroadcastReceiver] with
+         * the correct actions.
+         * @param context The [Context] to register to.
+         * @param receiver The [DnDLocalChangeReceiver] to register.
+         */
         fun registerReceiver(context: Context, receiver: DnDLocalChangeReceiver) {
-            val intentFilter = IntentFilter().apply {
+            IntentFilter().apply {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                     addAction(NotificationManager.ACTION_INTERRUPTION_FILTER_CHANGED)
                 } else {
                     addAction(AudioManager.RINGER_MODE_CHANGED_ACTION)
                 }
+            }.also {
+                Timber.i("Registering a receiver")
+                context.registerReceiver(receiver, it)
             }
-            context.registerReceiver(receiver, intentFilter)
         }
     }
 }
