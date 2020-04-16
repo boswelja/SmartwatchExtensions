@@ -23,6 +23,7 @@ import com.google.android.gms.wearable.WearableListenerService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 class PreferenceChangeReceiver : WearableListenerService() {
 
@@ -33,16 +34,19 @@ class PreferenceChangeReceiver : WearableListenerService() {
 
     private val watchConnManConnection = object : WatchConnectionService.Connection() {
         override fun onWatchManagerBound(service: WatchConnectionService) {
+            Timber.i("onWatchManagerBound() called")
             watchConnectionManager = service
         }
 
         override fun onWatchManagerUnbound() {
+            Timber.w("onWatchManagerUnbound() called")
             watchConnectionManager = null
         }
     }
 
     override fun onCreate() {
         super.onCreate()
+        Timber.i("onCreate() called")
         WatchConnectionService.bind(this, watchConnManConnection)
     }
 
@@ -52,28 +56,36 @@ class PreferenceChangeReceiver : WearableListenerService() {
     }
 
     override fun onDataChanged(dataEvents: DataEventBuffer?) {
+        Timber.i("onDataChanged() called")
         if (dataEvents != null) {
+            Timber.i("Handling preference change")
             val selectedWatchId = watchConnectionManager?.getConnectedWatch()?.id
-            if (!selectedWatchId.isNullOrEmpty()) {
-                for (event in dataEvents) {
-                    val senderId = event.dataItem.uri.host!!
-                    if (senderId == selectedWatchId) {
-                        handleSelectedWatchPreferenceChange(event)
-                    } else {
-                        handleOtherWatchPreferenceChange(senderId, event)
-                    }
+            for (event in dataEvents) {
+                val senderId = event.dataItem.uri.host!!
+                if (!selectedWatchId.isNullOrEmpty() && senderId == selectedWatchId) {
+                    handleSelectedWatchPreferenceChange(event)
+                } else {
+                    handleOtherWatchPreferenceChange(senderId, event)
                 }
             }
         }
     }
 
+    /**
+     * Handle a preference change for the watch that's currently selected in [WatchConnectionService].
+     * @param key The key of the changed preference.
+     * @param newValue The new value of the preference.
+     */
     private fun onPreferenceChanged(key: String, newValue: Any) {
+        Timber.i("onPreferenceChanged($key, $newValue) called")
         when (key) {
             PreferenceKey.BATTERY_SYNC_ENABLED_KEY -> {
                 coroutineScope.launch(Dispatchers.IO) {
                     if (newValue == true) {
+                        Timber.i("Starting BatterySyncWorker")
                         BatterySyncWorker.startWorker(watchConnectionManager)
                     } else {
+                        Timber.i("Stopping BatterySyncWorker")
                         BatterySyncWorker.stopWorker(watchConnectionManager)
                     }
                 }
@@ -81,16 +93,23 @@ class PreferenceChangeReceiver : WearableListenerService() {
             PreferenceKey.DND_SYNC_TO_WATCH_KEY -> {
                 if (newValue == true) {
                     Intent(this, DnDLocalChangeService::class.java).also {
+                        Timber.i("Starting DnDLocalChangeService")
                         Compat.startForegroundService(this, it)
                     }
                 }
             }
         }
         coroutineScope.launch(Dispatchers.IO) {
+            Timber.i("Updating preference in database")
             watchConnectionManager?.updatePrefInDatabase(key, newValue)
         }
     }
 
+    /**
+     * Determine which preferences have changed from a given [DataEvent] and handle them for the
+     * currently selected watch.
+     * @param event The [DataEvent] that holds a change in preferences.
+     */
     private fun handleSelectedWatchPreferenceChange(event: DataEvent) {
         val dataMap = DataMapItem.fromDataItem(event.dataItem).dataMap
         if (!dataMap.isEmpty) {
@@ -120,6 +139,10 @@ class PreferenceChangeReceiver : WearableListenerService() {
         }
     }
 
+    /**
+     * Determine which preferences have changed from a given [DataEvent] and handle them.
+     * @param event The [DataEvent] that holds a change in preferences.
+     */
     private fun handleOtherWatchPreferenceChange(senderId: String, event: DataEvent) {
         coroutineScope.launch(Dispatchers.IO) {
             val dataMap = DataMapItem.fromDataItem(event.dataItem).dataMap
