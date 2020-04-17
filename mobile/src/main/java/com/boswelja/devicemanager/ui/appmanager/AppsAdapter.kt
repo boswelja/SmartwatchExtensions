@@ -77,13 +77,18 @@ class AppsAdapter(private val fragment: AppManagerFragment) : RecyclerView.Adapt
                     holder.appDescView.text = app.versionName
                     holder.appIconView.setImageDrawable(Utils.getAppIcon(context, app.packageName, fallbackIcon))
                     holder.itemView.setOnClickListener {
-                        fragment.onItemClick(app)
+                        fragment.launchAppInfoActivity(app)
                     }
                 }
             }
         }
     }
 
+    /**
+     * Gets the [AppPackageInfo] at a given position.
+     * @param position The position of the target [AppPackageInfo]
+     * @return The [AppPackageInfo] at the given position, null if it doesn't exist
+     */
     private fun getApp(position: Int): AppPackageInfo? {
         var currentSectionStart = 0
         for (section in data) {
@@ -96,6 +101,11 @@ class AppsAdapter(private val fragment: AppManagerFragment) : RecyclerView.Adapt
         return null
     }
 
+    /**
+     * Gets the [AppSection] at a given position.
+     * @param position The position of the target [AppSection]
+     * @return The [AppSection] at the given position, null if it doesn't exist
+     */
     private fun getSection(position: Int): AppSection? {
         var currentSectionEnd = 0
         for (section in data) {
@@ -107,6 +117,10 @@ class AppsAdapter(private val fragment: AppManagerFragment) : RecyclerView.Adapt
         return null
     }
 
+    /**
+     * Add an [AppPackageInfo] to the adapter.
+     * @param app The [AppPackageInfo] to add.
+     */
     fun add(app: AppPackageInfo) {
         for (section in data) {
             val apps = section.appsInSection
@@ -119,6 +133,10 @@ class AppsAdapter(private val fragment: AppManagerFragment) : RecyclerView.Adapt
         }
     }
 
+    /**
+     * Remove an [AppPackageInfo] from the adapter.
+     * @param packageName The package name of the [AppPackageInfo] to remove.
+     */
     fun remove(packageName: String) {
         for (section in data) {
             val apps = section.appsInSection
@@ -130,6 +148,11 @@ class AppsAdapter(private val fragment: AppManagerFragment) : RecyclerView.Adapt
         }
     }
 
+    /**
+     * Gets an [AppPackageInfo] from the adapter that matches a given package name.
+     * @param packageName The package name to match against.
+     * @return The matching [AppPackageInfo], null if none.
+     */
     fun getFromPackageName(packageName: String): AppPackageInfo? {
         for (section in data) {
             val apps = section.appsInSection
@@ -139,14 +162,20 @@ class AppsAdapter(private val fragment: AppManagerFragment) : RecyclerView.Adapt
         return null
     }
 
+    /**
+     * Sorts and applies a new [AppPackageInfoList] to the adapter.
+     * @param appsToSet The [AppPackageInfoList] to sort and set to the adapter.
+     */
     fun setAllApps(appsToSet: AppPackageInfoList) {
-        data.clear()
         val userApps = ArrayList(appsToSet.filterNot { it.isSystemApp }.toTypedArray().sortedBy { it.packageLabel })
         val systemApps = ArrayList(appsToSet.filter { it.isSystemApp }.toTypedArray().sortedBy { it.packageLabel })
         val userAppsSection = AppSection(R.string.app_manager_section_user_apps, userApps)
         val systemAppsSection = AppSection(R.string.app_manager_section_system_apps, systemApps)
-        data.add(userAppsSection)
-        data.add(systemAppsSection)
+        data.apply {
+            clear()
+            add(userAppsSection)
+            add(systemAppsSection)
+        }
         notifyDataSetChanged()
     }
 

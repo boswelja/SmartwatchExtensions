@@ -12,6 +12,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -22,16 +23,16 @@ import com.boswelja.devicemanager.common.appmanager.References.PACKAGE_ADDED
 import com.boswelja.devicemanager.common.appmanager.References.PACKAGE_REMOVED
 import com.boswelja.devicemanager.common.appmanager.References.REQUEST_OPEN_PACKAGE
 import com.boswelja.devicemanager.common.appmanager.References.REQUEST_UNINSTALL_PACKAGE
+import com.boswelja.devicemanager.databinding.FragmentAppManagerBinding
 import com.google.android.gms.wearable.MessageClient
 import com.google.android.gms.wearable.Wearable
-import com.google.android.material.snackbar.Snackbar
 
 class AppManagerFragment : Fragment() {
 
     private lateinit var messageClient: MessageClient
     private lateinit var activity: AppManagerActivity
+    private lateinit var binding: FragmentAppManagerBinding
 
-    private var appsRecyclerView: RecyclerView? = null
     private var allAppsCache: AppPackageInfoList? = null
     private var watchId: String? = null
 
@@ -39,15 +40,11 @@ class AppManagerFragment : Fragment() {
         when (it.path) {
             PACKAGE_ADDED -> {
                 val appPackageInfo = AppPackageInfo.fromByteArray(it.data)
-                (appsRecyclerView?.adapter as AppsAdapter).add(appPackageInfo)
-                activity.createSnackBar("${getString(R.string.app_manager_installed_prefix)} ${appPackageInfo.packageLabel}")
+                handlePackageAdded(appPackageInfo)
             }
             PACKAGE_REMOVED -> {
                 val appPackageName = String(it.data, Charsets.UTF_8)
-                val adapter = (appsRecyclerView?.adapter as AppsAdapter)
-                val uninstalledMessage = "${getString(R.string.app_manager_uninstalled_prefix)} ${adapter.getFromPackageName(appPackageName)?.packageLabel}"
-                Snackbar.make(view!!, uninstalledMessage, Snackbar.LENGTH_LONG).show()
-                adapter.remove(appPackageName)
+                handlePackageRemoved(appPackageName)
             }
         }
     }
@@ -61,13 +58,15 @@ class AppManagerFragment : Fragment() {
         watchId = activity.watchId
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
-            inflater.inflate(R.layout.fragment_app_manager, container, false)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_app_manager, container, false)
+        return binding.root
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        appsRecyclerView = view.findViewById<RecyclerView>(R.id.apps_recyclerview).apply {
+        binding.appsRecyclerview.apply {
             layoutManager = LinearLayoutManager(
                     context!!,
                     LinearLayoutManager.VERTICAL,
@@ -97,7 +96,7 @@ class AppManagerFragment : Fragment() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         when (requestCode) {
             APP_INFO_ACTIVITY_REQUEST_CODE -> {
-                activity.canStopService = true
+                activity.canStopAppManagerService = true
                 when (resultCode) {
                     AppInfoActivity.RESULT_REQUEST_UNINSTALL -> {
                         val app = data?.extras?.getSerializable(AppInfoActivity.EXTRA_APP_INFO) as AppPackageInfo
@@ -115,25 +114,66 @@ class AppManagerFragment : Fragment() {
         }
     }
 
+    /**
+     * Add a new [AppPackageInfo] to the [AppsAdapter] and notifies the user.
+     * @param appInfo The [AppPackageInfo] to add.
+     */
+    private fun handlePackageAdded(appInfo: AppPackageInfo) {
+        (binding.appsRecyclerview.adapter as AppsAdapter).add(appInfo)
+        activity.createSnackBar(getString(R.string.app_manager_installed_prefix, appInfo.packageLabel))
+    }
+
+    /**
+     * Removes an [AppPackageInfo] from the [AppsAdapter] and notifies the user.
+     * @param appPackageName The package name of the [AppPackageInfo] to remove.
+     */
+    private fun handlePackageRemoved(appPackageName: String) {
+        val adapter = (binding.appsRecyclerview.adapter as AppsAdapter)
+        adapter.remove(appPackageName)
+        activity.createSnackBar(getString(
+                R.string.app_manager_uninstalled_prefix,
+                adapter.getFromPackageName(appPackageName)?.packageLabel))
+    }
+
+    /**
+     * Request uninstalling an app from the connected watch.
+     * @param appPackageInfo The [AppPackageInfo] to request an uninstall for.
+     */
     private fun sendUninstallRequestMessage(appPackageInfo: AppPackageInfo) {
-        messageClient.sendMessage(watchId!!, REQUEST_UNINSTALL_PACKAGE, appPackageInfo.packageName.toByteArray(Charsets.UTF_8))
+        messageClient.sendMessage(
+                watchId!!, REQUEST_UNINSTALL_PACKAGE,
+                appPackageInfo.packageName.toByteArray(Charsets.UTF_8))
     }
 
+    /**
+     * Request opening an app's launch activity on the connected watch.
+     * @param appPackageInfo The [AppPackageInfo] to open the launch activity for.
+     */
     private fun sendOpenRequestMessage(appPackageInfo: AppPackageInfo) {
-        messageClient.sendMessage(watchId!!, REQUEST_OPEN_PACKAGE, appPackageInfo.packageName.toByteArray(Charsets.UTF_8))
+        messageClient.sendMessage(
+                watchId!!, REQUEST_OPEN_PACKAGE,
+                appPackageInfo.packageName.toByteArray(Charsets.UTF_8))
     }
 
+    /**
+     * Sets the list of apps to show in the [AppsAdapter].
+     * @param apps The new list of [AppPackageInfo] to display.
+     */
     fun setAllApps(apps: AppPackageInfoList) {
         allAppsCache = try {
-            (appsRecyclerView?.adapter as AppsAdapter).setAllApps(apps)
+            (binding.appsRecyclerview.adapter as AppsAdapter).setAllApps(apps)
             null
         } catch (e: Exception) {
             apps
         }
     }
 
-    fun onItemClick(appPackageInfo: AppPackageInfo) {
-        activity.canStopService = false
+    /**
+     * Launches an [AppInfoActivity] for a given [AppPackageInfo].
+     * @param appPackageInfo The [AppPackageInfo] object to pass on to the [AppInfoActivity].
+     */
+    fun launchAppInfoActivity(appPackageInfo: AppPackageInfo) {
+        activity.canStopAppManagerService = false
         val intent = Intent(context, AppInfoActivity::class.java)
         intent.putExtra(AppInfoActivity.EXTRA_APP_INFO, appPackageInfo)
         startActivityForResult(intent, APP_INFO_ACTIVITY_REQUEST_CODE)

@@ -23,7 +23,6 @@ import java.util.Locale
 
 class AppInfoActivity : BaseDayNightActivity() {
 
-    private lateinit var app: AppPackageInfo
     private lateinit var requestedPermissionsDialog: AppPermissionDialogFragment
 
     private lateinit var binding: ActivityAppInfoBinding
@@ -34,19 +33,21 @@ class AppInfoActivity : BaseDayNightActivity() {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_app_info)
 
         setSupportActionBar(binding.appbarLayout.findViewById(R.id.toolbar))
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.setDisplayShowTitleEnabled(false)
-
-        app = intent?.extras?.getSerializable(EXTRA_APP_INFO) as AppPackageInfo
-        binding.appInfo = app
-
-        if (!app.requestedPermissions.isNullOrEmpty()) {
-            requestedPermissionsDialog = AppPermissionDialogFragment(app.requestedPermissions!!)
+        supportActionBar?.apply {
+            setDisplayHomeAsUpEnabled(true)
+            setDisplayShowTitleEnabled(false)
         }
-        setAppIcon()
-        setupButtons()
-        setupRequestedPermissions()
-        setInstallInfo()
+
+        val appInfo = intent?.extras?.getSerializable(EXTRA_APP_INFO) as AppPackageInfo
+        binding.appInfo = appInfo
+
+        if (!appInfo.requestedPermissions.isNullOrEmpty()) {
+            requestedPermissionsDialog = AppPermissionDialogFragment(appInfo.requestedPermissions!!)
+        }
+        setAppIcon(appInfo)
+        setupButtons(appInfo)
+        setupRequestedPermissions(appInfo)
+        setInstallInfo(appInfo)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -56,18 +57,40 @@ class AppInfoActivity : BaseDayNightActivity() {
         return super.onOptionsItemSelected(item)
     }
 
-    private fun setAppIcon() {
-        binding.appIcon.setImageDrawable(Utils.getAppIcon(this, app.packageName))
+    /**
+     * Gets an icon for a given [AppPackageInfo] object and shows it in the UI.
+     * @param appInfo The [AppPackageInfo] to get an icon for.
+     */
+    private fun setAppIcon(appInfo: AppPackageInfo) {
+        binding.appIcon.setImageDrawable(Utils.getAppIcon(this, appInfo.packageName))
     }
 
-    private fun setupButtons() {
-        binding.openButton.apply {
-            isEnabled = app.hasLaunchActivity
+    /**
+     * Checks whether a given [AppPackageInfo] can be opened.
+     * @param appInfo The [AppPackageInfo] object to check against.
+     * @return true if we can open the app, false otherwise.
+     */
+    private fun canOpenApp(appInfo: AppPackageInfo): Boolean = appInfo.hasLaunchActivity
 
-            if (isEnabled) {
+    /**
+     * Checks whether a given [AppPackageInfo] can be uninstalled.
+     * @param appInfo The [AppPackageInfo] object to check against.
+     * @return true if we can uninstall the app, false otherwise
+     */
+    private fun canUninstallApp(appInfo: AppPackageInfo): Boolean =
+            (appInfo.packageName != packageName) && !appInfo.isSystemApp
+
+    /**
+     * Sets click listeners and enabled states for all buttons.
+     * @param appInfo The [AppPackageInfo] to use for data etc.
+     */
+    private fun setupButtons(appInfo: AppPackageInfo) {
+        binding.openButton.apply {
+            if (canOpenApp(appInfo)) {
+                isEnabled = true
                 setOnClickListener {
                     Intent().apply {
-                        putExtra(EXTRA_APP_INFO, app)
+                        putExtra(EXTRA_APP_INFO, appInfo)
                     }.also {
                         setResult(RESULT_REQUEST_OPEN, it)
                         finish()
@@ -76,12 +99,11 @@ class AppInfoActivity : BaseDayNightActivity() {
             }
         }
         binding.uninstallButton.apply {
-            isEnabled = (app.packageName != packageName && !app.isSystemApp)
-
-            if (isEnabled) {
+            if (canUninstallApp(appInfo)) {
+                isEnabled = true
                 setOnClickListener {
                     Intent().apply {
-                        putExtra(EXTRA_APP_INFO, app)
+                        putExtra(EXTRA_APP_INFO, appInfo)
                     }.also {
                         setResult(RESULT_REQUEST_UNINSTALL, it)
                         finish()
@@ -91,41 +113,59 @@ class AppInfoActivity : BaseDayNightActivity() {
         }
     }
 
-    private fun setupRequestedPermissions() {
-        val permissionItemView = binding.permissionsInfo
-        val requestsNoPermissions = !app.requestedPermissions.isNullOrEmpty()
-        permissionItemView.findViewById<AppCompatTextView>(R.id.top_line).apply {
-            text = getString(R.string.app_info_requested_permissions_title)
-        }
-        permissionItemView.findViewById<AppCompatTextView>(R.id.bottom_line).apply {
-            text = if (requestsNoPermissions) {
-                val requestedPermissionCount = app.requestedPermissions!!.size
-                resources.getQuantityString(R.plurals.app_info_requested_permissions_count, requestedPermissionCount, requestedPermissionCount)
-            } else {
-                getString(R.string.app_info_requested_permissions_none)
+    /**
+     * Sets up the requested permissions view.
+     * @param appInfo The [AppPackageInfo] to use for data etc.
+     */
+    private fun setupRequestedPermissions(appInfo: AppPackageInfo) {
+        val requestsNoPermissions = !appInfo.requestedPermissions.isNullOrEmpty()
+        binding.apply {
+            permissionsInfo.findViewById<AppCompatTextView>(R.id.top_line).text =
+                    getString(R.string.app_info_requested_permissions_title)
+            permissionsInfo.findViewById<AppCompatTextView>(R.id.bottom_line).text =
+                    if (requestsNoPermissions) {
+                        val requestedPermissionCount = appInfo.requestedPermissions!!.size
+                        resources.getQuantityString(
+                                R.plurals.app_info_requested_permissions_count,
+                                requestedPermissionCount, requestedPermissionCount)
+                    } else {
+                        getString(R.string.app_info_requested_permissions_none)
+                    }
+            permissionsInfo.setOnClickListener {
+                if (appInfo.requestedPermissions!!.isNotEmpty()) {
+                    requestedPermissionsDialog.show(supportFragmentManager)
+                }
             }
         }
-        permissionItemView.setOnClickListener {
-            if (app.requestedPermissions!!.isNotEmpty()) {
-                requestedPermissionsDialog.show(supportFragmentManager, "RequestedPermissionsDialog")
-            }
-        }
+
     }
 
-    private fun setInstallInfo() {
+    /**
+     * Checks whether we should show the app's last update time.
+     * @param appInfo The [AppPackageInfo] object to check against.
+     * @return true if we should show last update time, false otherwise.
+     */
+    private fun shouldShowLastUpdateTime(appInfo: AppPackageInfo): Boolean =
+            appInfo.installTime == appInfo.lastUpdateTime && !appInfo.isSystemApp
+
+    /**
+     * Sets the install/update info in the UI.
+     * @param appInfo The [AppPackageInfo] object to get data from.
+     */
+    private fun setInstallInfo(appInfo: AppPackageInfo) {
         val dateFormat = SimpleDateFormat("EE, dd MMM yyyy, h:mm aa", Locale.getDefault())
         binding.appInstallTime.apply {
-            if (app.isSystemApp) {
+            if (appInfo.isSystemApp) {
                 visibility = View.GONE
             } else {
-                text = getString(R.string.app_info_first_installed_prefix).format(dateFormat.format(app.installTime))
+                text = getString(R.string.app_info_first_installed_prefix).format(dateFormat.format(appInfo.installTime))
             }
         }
         binding.appLastUpdatedTime.apply {
-            if (app.installTime == app.lastUpdateTime && !app.isSystemApp) {
+            if (shouldShowLastUpdateTime(appInfo)) {
                 visibility = View.GONE
             } else {
-                text = getString(R.string.app_info_last_updated_prefix).format(dateFormat.format(app.lastUpdateTime))
+                text = getString(R.string.app_info_last_updated_prefix).format(dateFormat.format(appInfo.lastUpdateTime))
             }
         }
     }

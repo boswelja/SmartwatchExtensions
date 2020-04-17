@@ -7,31 +7,23 @@
  */
 package com.boswelja.devicemanager.ui.appmanager
 
-import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.pm.PackageManager
 import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
+import androidx.fragment.app.FragmentManager
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.ui.base.BaseDialogFragment
+import java.util.Locale
+import kotlin.collections.ArrayList
 
+@ExperimentalStdlibApi
 class AppPermissionDialogFragment(private val requestedPermissions: Array<String>) : BaseDialogFragment() {
 
     private lateinit var permissions: Array<String>
 
-    @SuppressLint("DefaultLocale")
     override fun onCreate(savedInstanceState: Bundle?) {
-        val processedPermissions = ArrayList<String>()
-        for (permission in requestedPermissions) {
-            try {
-                val permissionInfo = context?.packageManager?.getPermissionInfo(permission, PackageManager.GET_META_DATA)
-                processedPermissions.add(getString(permissionInfo?.labelRes!!).capitalize())
-            } catch (ignored: Exception) {
-                processedPermissions.add(permission)
-            }
-        }
-        processedPermissions.sort()
-        permissions = processedPermissions.toTypedArray()
+        processPermissions()
         super.onCreate(savedInstanceState)
     }
 
@@ -42,4 +34,25 @@ class AppPermissionDialogFragment(private val requestedPermissions: Array<String
                 .setTitle(R.string.app_info_requested_permissions_dialog_title)
                 .create()
     }
+
+    /**
+     * Attempts to convert system permissions strings into something meaningful to the user.
+     * Fallback is to just use the system strings.
+     */
+    private fun processPermissions() {
+        val processedPermissions = ArrayList<String>()
+        for (permission in requestedPermissions) {
+            try {
+                val permissionInfo = context?.packageManager?.getPermissionInfo(permission, PackageManager.GET_META_DATA)
+                processedPermissions.add(getString(permissionInfo?.labelRes!!).capitalize(Locale.getDefault()))
+            } catch (ignored: Exception) {
+                processedPermissions.add(permission)
+            }
+        }
+        processedPermissions.sort()
+        permissions = processedPermissions.toTypedArray()
+    }
+
+    fun show(fragmentManager: FragmentManager) =
+            show(fragmentManager, "RequestedPermissionsDialog")
 }
