@@ -17,11 +17,11 @@ import com.boswelja.devicemanager.ui.base.BaseDialogFragment
 import java.util.Locale
 import kotlin.collections.ArrayList
 
-@ExperimentalStdlibApi
 class AppPermissionDialogFragment(private val requestedPermissions: Array<String>) : BaseDialogFragment() {
 
     private lateinit var permissions: Array<String>
 
+    @ExperimentalStdlibApi
     override fun onCreate(savedInstanceState: Bundle?) {
         processPermissions()
         super.onCreate(savedInstanceState)
@@ -39,6 +39,7 @@ class AppPermissionDialogFragment(private val requestedPermissions: Array<String
      * Attempts to convert system permissions strings into something meaningful to the user.
      * Fallback is to just use the system strings.
      */
+    @ExperimentalStdlibApi
     private fun processPermissions() {
         val processedPermissions = ArrayList<String>()
         for (permission in requestedPermissions) {
