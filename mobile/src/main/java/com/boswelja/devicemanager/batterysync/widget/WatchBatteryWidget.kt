@@ -13,6 +13,7 @@ import android.appwidget.AppWidgetProvider
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.widget.RemoteViews
 import androidx.core.graphics.drawable.toBitmap
@@ -193,6 +194,28 @@ class WatchBatteryWidget : AppWidgetProvider() {
                 putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, widgetIds)
             }
             context.sendBroadcast(intent)
+        }
+
+        /**
+         * Disable the [WatchBatteryWidget] component.
+         * @param context [Context].
+         */
+        fun disableWidget(context: Context) {
+            context.packageManager.setComponentEnabledSetting(
+                    ComponentName(context, WatchBatteryWidget::class.java),
+                    PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
+                    PackageManager.DONT_KILL_APP)
+        }
+
+        /**
+         * Enable the [WatchBatteryWidget] component.
+         * @param context [Context].
+         */
+        fun enableWidget(context: Context) {
+            context.packageManager.setComponentEnabledSetting(
+                    ComponentName(context, WatchBatteryWidget::class.java),
+                    PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
+                    PackageManager.DONT_KILL_APP)
         }
     }
 }

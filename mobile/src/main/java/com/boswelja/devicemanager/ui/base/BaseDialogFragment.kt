@@ -10,12 +10,16 @@ package com.boswelja.devicemanager.ui.base
 import android.os.Bundle
 import androidx.fragment.app.DialogFragment
 import com.boswelja.devicemanager.R
+import timber.log.Timber
 
+/**
+ * A [DialogFragment] with the app's style applied automatically.
+ */
 abstract class BaseDialogFragment : DialogFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        Timber.i("onCreate() called")
         super.onCreate(savedInstanceState)
-
         setStyle(STYLE_NO_TITLE, R.style.AppTheme_AlertDialog)
     }
 }

@@ -15,15 +15,24 @@ import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.Utils
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.snackbar.Snackbar
+import timber.log.Timber
 
+/**
+ * An activity that extends [BaseDayNightActivity]. This automatically handles setting up a toolbar
+ * with optional elevation.
+ */
 abstract class BaseToolbarActivity : BaseDayNightActivity() {
 
     private var toolbarElevated = false
 
+    /**
+     * Set the content view ID, must contain a toolbar with ID [R.id.toolbar].
+     */
     abstract fun getContentViewId(): Int
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Timber.i("onCreate() called")
 
         setContentView(getContentViewId())
 
@@ -32,14 +41,22 @@ abstract class BaseToolbarActivity : BaseDayNightActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        Timber.i("onOptionsItemSelected() called")
         if (item.itemId == android.R.id.home) {
+            Timber.i("Navigating back")
             onBackPressed()
         }
         return super.onOptionsItemSelected(item)
     }
 
+    /**
+     * Sets whether the toolbar should be elevated.
+     * @param elevate Whether the toolbar should be elevated.
+     */
     fun elevateToolbar(elevate: Boolean) {
+        Timber.i("elevateToolbar($elevate) called")
         if (toolbarElevated != elevate) {
+            Timber.i("Setting toolbar elevation")
             toolbarElevated = elevate
             val appBarLayout = findViewById<AppBarLayout>(R.id.appbar_layout)
             val elevation = if (elevate) {
@@ -55,6 +72,10 @@ abstract class BaseToolbarActivity : BaseDayNightActivity() {
         }
     }
 
+    /**
+     * Create a [Snackbar] on the base content view.
+     * @param message The message to show the [Snackbar] with.
+     */
     fun createSnackBar(message: String) {
         Snackbar.make(findViewById(R.id.content_view), message, Snackbar.LENGTH_LONG).show()
     }

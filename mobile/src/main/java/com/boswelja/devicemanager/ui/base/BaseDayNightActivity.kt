@@ -12,7 +12,11 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.preference.PreferenceManager
+import timber.log.Timber
 
+/**
+ * An [AppCompatActivity] that handles setting up night mode and recreating on might mode changed.
+ */
 abstract class BaseDayNightActivity :
         AppCompatActivity(),
         SharedPreferences.OnSharedPreferenceChangeListener {
@@ -21,27 +25,43 @@ abstract class BaseDayNightActivity :
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
         when (key) {
-            DAYNIGHT_MODE_KEY -> recreate()
+            DAYNIGHT_MODE_KEY -> {
+                Timber.i("daynight_mode changed, recreating")
+                recreate()
+            }
         }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        Timber.i("onCreate() called")
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
-        val nightMode = sharedPreferences.getString(
-                DAYNIGHT_MODE_KEY,
-                AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM.toString())!!.toInt()
-        AppCompatDelegate.setDefaultNightMode(nightMode)
+        setNightMode()
         super.onCreate(savedInstanceState)
     }
 
-    override fun onResume() {
-        super.onResume()
+    override fun onStart() {
+        super.onStart()
+        Timber.i("onStart() called")
         sharedPreferences.registerOnSharedPreferenceChangeListener(this)
     }
 
-    override fun onPause() {
-        super.onPause()
+    override fun onStop() {
+        super.onStop()
+        Timber.i("onStop() called")
         sharedPreferences.unregisterOnSharedPreferenceChangeListener(this)
+    }
+
+    /**
+     * Sets the default night mode state for the app.
+     * Fallback to [AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM] if any problem occurs.
+     */
+    private fun setNightMode() {
+        Timber.i("setNightMode() called")
+        val nightMode = sharedPreferences.getString(
+                DAYNIGHT_MODE_KEY,
+                AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM.toString())?.toInt()
+        AppCompatDelegate
+                .setDefaultNightMode(nightMode ?: AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
     }
 
     companion object {

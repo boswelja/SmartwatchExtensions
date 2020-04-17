@@ -11,41 +11,66 @@ import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
 import com.boswelja.devicemanager.R
+import timber.log.Timber
 
 abstract class BasePreferenceActivity : BaseWatchPickerActivity() {
 
     private lateinit var preferenceFragment: BasePreferenceFragment
 
+    /**
+     * Create an instance of a class that extends [BasePreferenceFragment] here.
+     * Must not be null.
+     */
     abstract fun createPreferenceFragment(): BasePreferenceFragment
+
+    /**
+     * Create an instance of a class that extends [Fragment] here to be used as a settings widget.
+     * Null if you do not need a settings widget.
+     */
     abstract fun createWidgetFragment(): Fragment?
 
     override fun getContentViewId(): Int = R.layout.activity_settings
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Timber.i("onCreate() called")
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
+        showWidgetFragment()
+        showPreferenceFragment()
+    }
+
+    /**
+     * Creates an instance of a [BasePreferenceFragment] and shows it.
+     */
+    private fun showPreferenceFragment() {
+        Timber.i("showPreferenceFragment() called")
         preferenceFragment = createPreferenceFragment()
         supportFragmentManager.beginTransaction()
                 .replace(R.id.fragment_holder, preferenceFragment)
                 .commit()
+        if (intent != null && !intent.getStringExtra(EXTRA_PREFERENCE_KEY).isNullOrEmpty()) {
+            val key = intent.getStringExtra(EXTRA_PREFERENCE_KEY)
+            Timber.i("Scrolling to $key")
+            preferenceFragment.scrollToPreference(key)
+        }
+    }
 
+    /**
+     * Tries to create and instance of [Fragment] and show it as a widget.
+     * If the widget [Fragment] is null, fall back to hiding the space and divider.
+     */
+    private fun showWidgetFragment() {
+        Timber.i("showWidgetFragment() called")
         val widgetFragment = createWidgetFragment()
         if (widgetFragment != null) {
             supportFragmentManager.beginTransaction()
                     .replace(R.id.widget_holder, widgetFragment)
                     .commit()
         } else {
+            Timber.i("No widget fragment to load")
             findViewById<View>(R.id.widget_divider).visibility = View.GONE
-        }
-    }
-
-    override fun onResume() {
-        super.onResume()
-        if (intent != null && !intent.getStringExtra(EXTRA_PREFERENCE_KEY).isNullOrEmpty()) {
-            val key = intent.getStringExtra(EXTRA_PREFERENCE_KEY)
-            preferenceFragment.scrollToPreference(key)
         }
     }
 
