@@ -14,6 +14,7 @@ import android.view.ViewGroup
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.fragment.app.Fragment
 import com.boswelja.devicemanager.R
+import timber.log.Timber
 
 internal class LoadingFragment : Fragment() {
 
@@ -24,5 +25,6 @@ internal class LoadingFragment : Fragment() {
         view.findViewById<AppCompatTextView>(R.id.loading_text)!!.apply {
             text = getString(R.string.interrupt_filter_sync_helper_loading_text)
         }
+        Timber.i("Successfully created")
     }
 }
