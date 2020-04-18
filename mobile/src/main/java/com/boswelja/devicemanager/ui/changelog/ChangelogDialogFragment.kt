@@ -15,20 +15,15 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.boswelja.devicemanager.R
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import timber.log.Timber
 
 class ChangelogDialogFragment : BottomSheetDialogFragment() {
 
     private lateinit var changelog: Array<String>
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        val rawChangelog = context?.resources?.getStringArray(R.array.version_changelog)!!
-        val bullet = context?.getString(R.string.changelog_change_prefix)!!
-        val processedChangelog = ArrayList<String>()
-        for (change in rawChangelog) {
-            processedChangelog.add("$bullet $change")
-        }
-        changelog = processedChangelog.toTypedArray()
-
+        Timber.d("onCreate() called")
+        changelog = processChangelog()
         super.onCreate(savedInstanceState)
     }
 
@@ -37,9 +32,34 @@ class ChangelogDialogFragment : BottomSheetDialogFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        Timber.d("onViewCreated() called")
+        setupRecyclerView(view)
+    }
+
+    /**
+     * Set up the changelog [RecyclerView].
+     * @param view The [View] containing the [RecyclerView].
+     */
+    private fun setupRecyclerView(view: View) {
+        Timber.d("setupRecyclerView() called")
         view.findViewById<RecyclerView>(R.id.changelog_recyclerview).apply {
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
             adapter = ChangelogAdapter(changelog)
         }
+    }
+
+    /**
+     * Process the raw changelog to conform with any styles we set per line.
+     * @return An [Array] of [String] objects representing the processed changelog.
+     */
+    private fun processChangelog(): Array<String> {
+        Timber.d("processChangelog() called")
+        val rawChangelog = context?.resources?.getStringArray(R.array.version_changelog)!!
+        val bullet = context?.getString(R.string.changelog_change_prefix)!!
+        val processedChangelog = ArrayList<String>()
+        for (change in rawChangelog) {
+            processedChangelog.add("$bullet $change")
+        }
+        return processedChangelog.toTypedArray()
     }
 }
