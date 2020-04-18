@@ -30,10 +30,6 @@ class MainActivity : BaseWatchPickerActivity() {
     private var appSettingsFragment: AppSettingsFragment? = null
     private var appInfoFragment: AppInfoFragment? = null
 
-    override fun onWatchManagerBound(): Boolean {
-        return true
-    }
-
     override fun getContentViewId(): Int = R.layout.activity_main
 
     override fun onCreate(savedInstanceState: Bundle?) {
