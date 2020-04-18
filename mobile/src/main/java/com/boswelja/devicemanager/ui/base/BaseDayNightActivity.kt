@@ -26,14 +26,13 @@ abstract class BaseDayNightActivity :
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
         when (key) {
             DAYNIGHT_MODE_KEY -> {
-                Timber.i("daynight_mode changed, recreating")
+                Timber.i("$DAYNIGHT_MODE_KEY changed, recreating")
                 recreate()
             }
         }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        Timber.i("onCreate() called")
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
         setNightMode()
         super.onCreate(savedInstanceState)
@@ -41,13 +40,11 @@ abstract class BaseDayNightActivity :
 
     override fun onStart() {
         super.onStart()
-        Timber.i("onStart() called")
         sharedPreferences.registerOnSharedPreferenceChangeListener(this)
     }
 
     override fun onStop() {
         super.onStop()
-        Timber.i("onStop() called")
         sharedPreferences.unregisterOnSharedPreferenceChangeListener(this)
     }
 
@@ -56,7 +53,7 @@ abstract class BaseDayNightActivity :
      * Fallback to [AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM] if any problem occurs.
      */
     private fun setNightMode() {
-        Timber.i("setNightMode() called")
+        Timber.d("setNightMode() called")
         val nightMode = sharedPreferences.getString(
                 DAYNIGHT_MODE_KEY,
                 AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM.toString())?.toInt()

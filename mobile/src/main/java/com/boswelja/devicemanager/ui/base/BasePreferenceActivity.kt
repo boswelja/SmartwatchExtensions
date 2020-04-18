@@ -33,7 +33,6 @@ abstract class BasePreferenceActivity : BaseWatchPickerActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Timber.i("onCreate() called")
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
@@ -45,7 +44,7 @@ abstract class BasePreferenceActivity : BaseWatchPickerActivity() {
      * Creates an instance of a [BasePreferenceFragment] and shows it.
      */
     private fun showPreferenceFragment() {
-        Timber.i("showPreferenceFragment() called")
+        Timber.d("showPreferenceFragment() called")
         preferenceFragment = createPreferenceFragment()
         supportFragmentManager.beginTransaction()
                 .replace(R.id.fragment_holder, preferenceFragment)
@@ -62,7 +61,7 @@ abstract class BasePreferenceActivity : BaseWatchPickerActivity() {
      * If the widget [Fragment] is null, fall back to hiding the space and divider.
      */
     private fun showWidgetFragment() {
-        Timber.i("showWidgetFragment() called")
+        Timber.d("showWidgetFragment() called")
         val widgetFragment = createWidgetFragment()
         if (widgetFragment != null) {
             supportFragmentManager.beginTransaction()

@@ -15,7 +15,6 @@ import androidx.preference.PreferenceFragmentCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.watchconnectionmanager.WatchConnectionService
-import timber.log.Timber
 
 /**
  * A [PreferenceFragmentCompat] that automatically adjusts it's [RecyclerView] properties
@@ -28,13 +27,11 @@ abstract class BasePreferenceFragment : PreferenceFragmentCompat() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Timber.i("onCreate() called")
         activity = getActivity() as BaseWatchPickerActivity
         sharedPreferences = preferenceManager.sharedPreferences
     }
 
     override fun onCreateRecyclerView(inflater: LayoutInflater?, parent: ViewGroup?, savedInstanceState: Bundle?): RecyclerView {
-        Timber.i("onCreateRecyclerView() called")
         val padding = resources.getDimension(R.dimen.recyclerview_vertical_padding)
         return super.onCreateRecyclerView(inflater, parent, savedInstanceState).apply {
             clipToPadding = false

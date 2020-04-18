@@ -42,7 +42,7 @@ abstract class BaseWatchPickerActivity :
 
     private val watchConnManServiceConnection = object : WatchConnectionService.Connection() {
         override fun onWatchManagerBound(service: WatchConnectionService) {
-            Timber.i("onWatchManagerBound() called")
+            Timber.d("onWatchManagerBound() called")
             watchConnectionManager = service
             updateConnectedWatches()
         }
@@ -68,12 +68,12 @@ abstract class BaseWatchPickerActivity :
     override fun onNothingSelected(p0: AdapterView<*>?) { }
 
     override fun onConnectedWatchChanging() {
-        Timber.i("onConnectedWatchChanging() called")
+        Timber.d("onConnectedWatchChanging() called")
         watchPickerSpinner.isEnabled = false
     }
 
     override fun onConnectedWatchChanged(success: Boolean) {
-        Timber.i("onConnectedWatchChanged() called")
+        Timber.d("onConnectedWatchChanged($success) called")
         watchPickerSpinner.isEnabled = true
         if (!success) {
             Timber.w("Failed to change selected watch")
@@ -82,38 +82,33 @@ abstract class BaseWatchPickerActivity :
     }
 
     override fun onWatchAdded(watch: Watch) {
-        Timber.i("onWatchAdded() called")
+        Timber.d("onWatchAdded() called")
         (watchPickerSpinner.adapter as WatchPickerAdapter).add(watch)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Timber.i("onCreate() called")
         WatchConnectionService.bind(this, watchConnManServiceConnection)
         setupWatchPicker()
     }
 
     override fun onStart() {
         super.onStart()
-        Timber.i("onStart() called")
         watchConnectionManager?.registerWatchConnectionInterface(this)
         ensureCorrectWatchSelected()
     }
 
     override fun onStop() {
         super.onStop()
-        Timber.i("onStop() called")
         watchConnectionManager?.unregisterWatchConnectionInterface(this)
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        Timber.i("onDestroy() called")
         unbindService(watchConnManServiceConnection)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        Timber.i("onActivityResult() called")
         when (requestCode) {
             WATCH_SETUP_ACTIVITY_REQUEST_CODE -> {
                 Timber.i("Got setup activity result")
@@ -143,7 +138,7 @@ abstract class BaseWatchPickerActivity :
      * It should always match what's selected in [WatchConnectionService].
      */
     private fun ensureCorrectWatchSelected() {
-        Timber.i("ensureCorrectWatchSelected() called")
+        Timber.d("ensureCorrectWatchSelected() called")
         if (watchPickerSpinner.selectedItemId.toString(36) != watchConnectionManager?.getConnectedWatchId()) {
             val adapter = (watchPickerSpinner.adapter as WatchPickerAdapter)
             for (i in 0 until adapter.count) {
@@ -160,7 +155,7 @@ abstract class BaseWatchPickerActivity :
      * Set up [watchPickerSpinner].
      */
     private fun setupWatchPicker() {
-        Timber.i("setupWatchPicker() called")
+        Timber.d("setupWatchPicker() called")
         watchPickerSpinner = findViewById<AppCompatSpinner>(R.id.watch_picker_spinner).apply {
             onItemSelectedListener = this@BaseWatchPickerActivity
             adapter = WatchPickerAdapter(this@BaseWatchPickerActivity)
@@ -172,7 +167,7 @@ abstract class BaseWatchPickerActivity :
      * choose from [watchPickerSpinner].
      */
     private fun updateConnectedWatches() {
-        Timber.i("updateConnectedWatches() called")
+        Timber.d("updateConnectedWatches() called")
         coroutineScope.launch(Dispatchers.Default) {
             withContext(Dispatchers.Main) {
                 (watchPickerSpinner.adapter as WatchPickerAdapter).clear()
@@ -211,7 +206,7 @@ abstract class BaseWatchPickerActivity :
      * Start an instance of [WatchManagerActivity].
      */
     fun startWatchManagerActivity() {
-        Timber.i("startWatchManagerActivity() called")
+        Timber.d("startWatchManagerActivity() called")
         Intent(this, WatchManagerActivity::class.java).also {
             startActivityForResult(it, WATCH_MANAGER_ACTIVITY_REQUEST_CODE)
         }
@@ -221,7 +216,7 @@ abstract class BaseWatchPickerActivity :
      * Start an instance of [WatchSetupActivity].
      */
     private fun startSetupActivity() {
-        Timber.i("startSetupActivity() called")
+        Timber.d("startSetupActivity() called")
         Intent(this@BaseWatchPickerActivity, WatchSetupActivity::class.java).also {
             startActivityForResult(it, WATCH_SETUP_ACTIVITY_REQUEST_CODE)
         }

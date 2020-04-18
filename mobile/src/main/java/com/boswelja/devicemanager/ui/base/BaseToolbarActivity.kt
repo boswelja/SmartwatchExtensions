@@ -32,7 +32,6 @@ abstract class BaseToolbarActivity : BaseDayNightActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Timber.i("onCreate() called")
 
         setContentView(getContentViewId())
 
@@ -41,7 +40,6 @@ abstract class BaseToolbarActivity : BaseDayNightActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        Timber.i("onOptionsItemSelected() called")
         if (item.itemId == android.R.id.home) {
             Timber.i("Navigating back")
             onBackPressed()
@@ -54,9 +52,8 @@ abstract class BaseToolbarActivity : BaseDayNightActivity() {
      * @param elevate Whether the toolbar should be elevated.
      */
     fun elevateToolbar(elevate: Boolean) {
-        Timber.i("elevateToolbar($elevate) called")
         if (toolbarElevated != elevate) {
-            Timber.i("Setting toolbar elevation")
+            Timber.i("Setting toolbar elevated = $elevate")
             toolbarElevated = elevate
             val appBarLayout = findViewById<AppBarLayout>(R.id.appbar_layout)
             val elevation = if (elevate) {
