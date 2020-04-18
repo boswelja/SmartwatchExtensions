@@ -137,7 +137,6 @@ class AppInfoActivity : BaseDayNightActivity() {
                 }
             }
         }
-
     }
 
     /**
