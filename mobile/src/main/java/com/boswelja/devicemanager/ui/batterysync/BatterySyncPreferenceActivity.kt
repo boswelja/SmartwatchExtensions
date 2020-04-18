@@ -14,6 +14,7 @@ import com.boswelja.devicemanager.ui.base.BasePreferenceActivity
 import com.boswelja.devicemanager.ui.base.BasePreferenceFragment
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 class BatterySyncPreferenceActivity : BasePreferenceActivity() {
 
@@ -25,17 +26,30 @@ class BatterySyncPreferenceActivity : BasePreferenceActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        coroutineScope.launch(Dispatchers.IO) {
-            batteryStatsDatabase = WatchBatteryStatsDatabase.open(this@BatterySyncPreferenceActivity)
-            if (batteryStatsDatabaseEventInterface != null) {
-                batteryStatsDatabaseEventInterface!!.onOpened()
-            }
-        }
+        Timber.d("onCreate() called")
+        openBatteryStatsDatabase()
     }
 
     override fun onDestroy() {
         super.onDestroy()
+        Timber.d("onDestroy() called")
         batteryStatsDatabase?.close()
+    }
+
+    /**
+     * Opens a [WatchBatteryStatsDatabase] instance and
+     * calls [BatteryStatsDatabaseEventInterface.onOpened] if possible.
+     */
+    private fun openBatteryStatsDatabase() {
+        Timber.d("openBatteryStatsDatabase() called")
+        coroutineScope.launch(Dispatchers.IO) {
+            batteryStatsDatabase = WatchBatteryStatsDatabase.open(this@BatterySyncPreferenceActivity)
+            if (batteryStatsDatabaseEventInterface != null) {
+                batteryStatsDatabaseEventInterface!!.onOpened()
+            } else {
+                Timber.i("batteryStatsDatabaseEventInterface null, ignoring")
+            }
+        }
     }
 
     interface BatteryStatsDatabaseEventInterface {

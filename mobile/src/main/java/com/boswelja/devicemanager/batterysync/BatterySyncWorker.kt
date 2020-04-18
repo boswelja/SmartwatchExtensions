@@ -41,19 +41,19 @@ class BatterySyncWorker(appContext: Context, workerParams: WorkerParameters) :
         private const val EXTRA_WATCH_ID: String = "extra_watch_id"
 
         /**
-         * Starts a battery sync job for the currently selected watch.
+         * Starts a [BatterySyncWorker] for the currently selected watch.
          * @return @`true` if the job was started successfully, @`false` otherwise.
          */
-        suspend fun startWorker(watchConnectionManager: WatchConnectionService?): String? {
+        suspend fun startWorker(watchConnectionManager: WatchConnectionService?): Boolean {
             return withContext(Dispatchers.Default) {
                 val connectedWatch = watchConnectionManager?.getConnectedWatch()
                 if (connectedWatch != null) {
                     val syncIntervalMinutes = connectedWatch.intPrefs[PreferenceKey.BATTERY_SYNC_INTERVAL_KEY] ?: 15
                     val newWorkerId = startWorker(watchConnectionManager, connectedWatch.id, syncIntervalMinutes.toLong())
                     watchConnectionManager.updateBatterySyncWorkerId(connectedWatch.id, newWorkerId)
-                    return@withContext newWorkerId
+                    return@withContext true
                 }
-                null
+                return@withContext false
             }
         }
 

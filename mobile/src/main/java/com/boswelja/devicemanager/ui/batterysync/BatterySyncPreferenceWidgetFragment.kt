@@ -19,7 +19,6 @@ import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.batterysync.database.WatchBatteryStats
 import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_SYNC_ENABLED_KEY
 import com.boswelja.devicemanager.databinding.SettingsWidgetBatterySyncBinding
-import com.boswelja.devicemanager.ui.batterysync.Utils.updateBatteryStats
 import com.boswelja.devicemanager.watchconnectionmanager.Watch
 import com.boswelja.devicemanager.watchconnectionmanager.WatchConnectionInterface
 import java.util.Timer
@@ -29,6 +28,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import timber.log.Timber
 
 class BatterySyncPreferenceWidgetFragment :
         Fragment(),
@@ -39,7 +39,6 @@ class BatterySyncPreferenceWidgetFragment :
 
     private lateinit var sharedPreferences: SharedPreferences
     private lateinit var activity: BatterySyncPreferenceActivity
-
     private lateinit var binding: SettingsWidgetBatterySyncBinding
 
     private var watchBatteryUpdateTimer: Timer? = null
@@ -49,20 +48,11 @@ class BatterySyncPreferenceWidgetFragment :
     private var batteryStats: WatchBatteryStats? = null
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
+        Timber.d("onSharedPreferenceChanged($key) called")
         when (key) {
             BATTERY_SYNC_ENABLED_KEY -> {
                 val newBatterySyncState = sharedPreferences?.getBoolean(BATTERY_SYNC_ENABLED_KEY, false) == true
-                if (newBatterySyncState != batterySyncEnabled) {
-                    batterySyncEnabled = newBatterySyncState
-                    if (batterySyncEnabled) {
-                        setWatchBatteryLoading()
-                        startBatteryUpdateTimer()
-                    } else {
-                        updateWatchBatteryPercent()
-                        updateBatterySyncLastTimeNow()
-                        stopBatteryUpdateTimer()
-                    }
-                }
+                setBatterySyncState(newBatterySyncState)
             }
         }
     }
@@ -72,13 +62,15 @@ class BatterySyncPreferenceWidgetFragment :
     override fun onConnectedWatchChanging() {} // Do nothing
 
     override fun onConnectedWatchChanged(success: Boolean) {
+        Timber.d("onConnectedWatchChanged($success) called")
         if (success and batterySyncEnabled) {
-            updateBatteryStats(context!!, activity.watchConnectionManager?.getConnectedWatchId())
+            updateBatteryStatsDisplay()
         }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Timber.d("onCreate() called")
 
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context!!)
         batterySyncEnabled = sharedPreferences.getBoolean(BATTERY_SYNC_ENABLED_KEY, false)
@@ -86,54 +78,91 @@ class BatterySyncPreferenceWidgetFragment :
         activity = getActivity() as BatterySyncPreferenceActivity
         activity.batteryStatsDatabaseEventInterface = object : BatterySyncPreferenceActivity.BatteryStatsDatabaseEventInterface {
             override fun onOpened() {
-                coroutineScope.launch(Dispatchers.IO) {
-                    updateBatteryStatsDisplay()
-                }
+                Timber.d("onOpened() called")
+                updateBatteryStatsDisplay()
             }
         }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        Timber.d("onCreateView() called")
         binding = DataBindingUtil.inflate(inflater, R.layout.settings_widget_battery_sync, container, false)
         return binding.root
     }
 
     override fun onStart() {
         super.onStart()
+        Timber.d("onStart() called")
         sharedPreferences.registerOnSharedPreferenceChangeListener(this)
         startBatteryUpdateTimer()
     }
 
     override fun onStop() {
         super.onStop()
+        Timber.d("onStop() called")
         sharedPreferences.unregisterOnSharedPreferenceChangeListener(this)
         stopBatteryUpdateTimer()
     }
 
-    private fun updateWatchBatteryPercent() {
-        binding.apply {
+    /**
+     * Sets a new Battery Sync state and updates the view accordingly.
+     * @param newBatterySyncState The new state of battery sync.
+     */
+    private fun setBatterySyncState(newBatterySyncState: Boolean) {
+        Timber.d("setBatterySyncState() called")
+        if (newBatterySyncState != batterySyncEnabled) {
+            batterySyncEnabled = newBatterySyncState
+            Timber.i("Setting new battery sync state to $newBatterySyncState")
             if (batterySyncEnabled) {
-                if (batteryStats != null && batteryStats!!.batteryPercent > 0) {
-                    watchBatteryIndicator.setImageLevel(batteryStats!!.batteryPercent)
-                    watchBatteryPercent.text = getString(R.string.battery_sync_percent_short, batteryStats!!.batteryPercent.toString())
-                } else {
-                    watchBatteryPercent.text = "Error"
-                }
+                setWatchBatteryLoading()
+                startBatteryUpdateTimer()
             } else {
-                watchBatteryIndicator.setImageLevel(0)
-                watchBatteryPercent.text = getString(R.string.battery_sync_disabled)
+                updateWatchBatteryPercent()
+                updateBatterySyncLastTimeNow()
+                stopBatteryUpdateTimer()
             }
         }
     }
 
-    private fun setWatchBatteryLoading() {
+    /**
+     * Update the watch battery percent displayed in the UI.
+     */
+    private fun updateWatchBatteryPercent() {
+        Timber.i("Updating watch battery percent")
         binding.apply {
-            watchBatteryIndicator.setImageLevel(0)
-            watchBatteryPercent.text = "Please Wait"
+            if (batterySyncEnabled) {
+                if (batteryStats != null && batteryStats!!.batteryPercent > 0) {
+                    watchBatteryIndicator.setImageLevel(batteryStats!!.batteryPercent)
+                    watchBatteryPercent.text = getString(
+                            R.string.battery_sync_percent_short,
+                            batteryStats!!.batteryPercent.toString())
+                } else {
+                    watchBatteryPercent.setText(R.string.battery_sync_error)
+                }
+            } else {
+                watchBatteryIndicator.setImageLevel(0)
+                watchBatteryPercent.setText(R.string.battery_sync_disabled)
+            }
         }
     }
 
+    /**
+     * Sets the view to the loading state.
+     */
+    private fun setWatchBatteryLoading() {
+        Timber.i("Setting to loading state")
+        binding.apply {
+            watchBatteryIndicator.setImageLevel(0)
+            watchBatteryPercent.setText(R.string.battery_sync_loading)
+            lastUpdatedTime.visibility = View.GONE
+        }
+    }
+
+    /**
+     * Update the last sync time in the UI.
+     */
     private fun updateBatterySyncLastTimeNow() {
+        Timber.i("Updating last battery sync time.")
         if (batterySyncEnabled) {
             if (batteryStats != null && batteryStats!!.batteryPercent > 0) {
                 val lastUpdatedMillis = System.currentTimeMillis() - batteryStats!!.lastUpdatedMillis
@@ -166,33 +195,69 @@ class BatterySyncPreferenceWidgetFragment :
         }
     }
 
+    /**
+     * Start the UI update timer.
+     */
     private fun startBatteryUpdateTimer() {
+        Timber.d("startBatteryUpdateTimer() called")
         if (!watchBatteryUpdateTimerStarted && batterySyncEnabled) {
-            watchBatteryUpdateTimer = fixedRateTimer("batterySyncLastTimeTimer", false, 3 * 1000, 60 * 1000) {
-                coroutineScope.launch(Dispatchers.IO) {
-                    updateBatteryStatsDisplay()
-                }
+            Timber.i("Starting battery update timer")
+            watchBatteryUpdateTimer = fixedRateTimer(
+                    BATTERY_SYNC_UPDATE_TIMER_NAME, false,
+                    TimeUnit.SECONDS.toMillis(BATTERY_SYNC_UPDATE_TIMER_DELAY),
+                    TimeUnit.SECONDS.toMillis(BATTERY_SYNC_UPDATE_TIMER_INTERVAL)) {
+                updateBatteryStatsDisplay()
             }
             watchBatteryUpdateTimerStarted = true
+        } else {
+            Timber.i("Battery update timer already running")
         }
     }
 
+    /**
+     * Stop the UI update timer.
+     */
     private fun stopBatteryUpdateTimer() {
+        Timber.d("stopBatteryUpdateTimer() called")
         if (watchBatteryUpdateTimerStarted) {
+            Timber.i("Stopping battery update timer")
             watchBatteryUpdateTimer?.cancel()
             watchBatteryUpdateTimer?.purge()
             watchBatteryUpdateTimerStarted = false
+        } else {
+            Timber.i("Battery update timer not running")
         }
     }
 
-    private suspend fun updateBatteryStatsDisplay() {
-        withContext(Dispatchers.IO) {
-            batteryStats = activity.batteryStatsDatabase?.batteryStatsDao()?.getStatsForWatch(activity.watchConnectionManager?.getConnectedWatchId()!!)
+    /**
+     * Get an updated [WatchBatteryStats] object and update the UI.
+     */
+    private fun updateBatteryStatsDisplay() {
+        Timber.i("Updating widget")
+        coroutineScope.launch(Dispatchers.IO) {
+            batteryStats = activity
+                    .batteryStatsDatabase
+                    ?.batteryStatsDao()
+                    ?.getStatsForWatch(activity.watchConnectionManager?.getConnectedWatchId()!!)
 
             withContext(Dispatchers.Main) {
                 updateWatchBatteryPercent()
                 updateBatterySyncLastTimeNow()
             }
         }
+    }
+
+    companion object {
+        private const val BATTERY_SYNC_UPDATE_TIMER_NAME = "batterySyncUpdateTimer"
+
+        /**
+         * The initial delay of the battery sync widget update timer in seconds.
+         */
+        private const val BATTERY_SYNC_UPDATE_TIMER_DELAY: Long = 3
+
+        /**
+         * The interval of the battery sync widget update timer in seconds.
+         */
+        private const val BATTERY_SYNC_UPDATE_TIMER_INTERVAL: Long = 60
     }
 }
