@@ -109,7 +109,7 @@
     <!-- About preference strings -->
     <string name="pref_category_about_versions">Versions</string>
     <string name="pref_about_priv_policy_title">Privacy Policy</string>
-    <string name="pref_about_share_title">Share %s</string>
+    <string name="pref_about_share_title">Share Wearable Extensions</string>
     <string name="pref_about_review_title">Rate &amp; Review</string>
     <string name="pref_about_donate_title">Donate</string>
     <string name="pref_about_changelog_title">Changelog</string>
@@ -122,6 +122,7 @@
     <string name="donation_failed_message">Failed to process donation</string>
     <string name="donation_pending_message">Your donation is now pending, come back here later</string>
     <string name="donation_connection_failed_message">Failed to connect to Google Play</string>
+    <string name="share_menu_title">@string/app_name</string>
 
     <!-- Dialog button strings -->
     <string name="dialog_button_grant">Grant</string>

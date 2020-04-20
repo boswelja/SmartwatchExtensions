@@ -7,7 +7,9 @@
  */
 package com.boswelja.devicemanager.ui.main.appinfo
 
+import android.content.ContentResolver
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.core.net.toUri
@@ -36,11 +38,8 @@ class AppInfoFragment :
     private val messageListener = MessageClient.OnMessageReceivedListener {
         when (it.path) {
             References.REQUEST_APP_VERSION -> {
-                val data = String(it.data, Charsets.UTF_8).split("|")
-                watchVersionPreference.apply {
-                    title = getString(R.string.pref_about_watch_version_title).format(data[0])
-                    summary = data[1]
-                }
+                val versionInfo = parseWatchVersionInfo(it.data)
+                setWatchVersionInfo(versionInfo[0], versionInfo[1])
             }
         }
     }
@@ -51,50 +50,20 @@ class AppInfoFragment :
 
     override fun onConnectedWatchChanged(success: Boolean) {
         if (success) {
-            updateWatchVersionPreference()
+            requestUpdateWatchVersionPreference()
         }
     }
 
     override fun onPreferenceClick(preference: Preference?): Boolean {
-        return when (preference?.key) {
-            OPEN_PRIVACY_POLICY_KEY -> {
-                if (customTabsIntent == null) {
-                    customTabsIntent = CustomTabsIntent.Builder().apply {
-                        addDefaultShareMenuItem()
-                        setShowTitle(true)
-                    }.build()
-                }
-                customTabsIntent!!.launchUrl(context!!, getString(R.string.privacy_policy_url).toUri())
-                true
-            }
-            SHARE_APP_KEY -> {
-                Intent().apply {
-                    action = Intent.ACTION_SEND
-                    putExtra(Intent.EXTRA_TEXT, getAppStoreLink())
-                    putExtra(Intent.EXTRA_TITLE, preference.title)
-                    type = "text/plain"
-                }.also {
-                    startActivity(Intent.createChooser(it, null))
-                }
-                true
-            }
-            LEAVE_REVIEW_KEY -> {
-                Intent(Intent.ACTION_VIEW).apply {
-                    data = getAppStoreLink().toUri()
-                    setPackage("com.android.vending")
-                }.also { startActivity(it) }
-                true
-            }
-            OPEN_DONATE_DIALOG_KEY -> {
-                DonationDialog(R.style.AppTheme_AlertDialog).show(activity.supportFragmentManager)
-                true
-            }
-            OPEN_CHANGELOG_KEY -> {
-                ChangelogDialogFragment().show(activity.supportFragmentManager, "ChangelogDialog")
-                true
-            }
-            else -> false
+        when (preference?.key) {
+            OPEN_PRIVACY_POLICY_KEY -> showPrivacyPolicy()
+            SHARE_APP_KEY -> showShareMenu()
+            LEAVE_REVIEW_KEY -> showPlayStorePage()
+            OPEN_DONATE_DIALOG_KEY -> showDonationDialog()
+            OPEN_CHANGELOG_KEY -> showChangelog()
+            else -> return false
         }
+        return true
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -109,7 +78,7 @@ class AppInfoFragment :
         }
         findPreference<Preference>(SHARE_APP_KEY)!!.apply {
             isEnabled = !BuildConfig.DEBUG
-            title = getString(R.string.pref_about_share_title).format(getString(R.string.app_name))
+            title = getString(R.string.pref_about_share_title)
             onPreferenceClickListener = this@AppInfoFragment
         }
         findPreference<Preference>(LEAVE_REVIEW_KEY)!!.apply {
@@ -130,17 +99,17 @@ class AppInfoFragment :
         watchVersionPreference = findPreference(WATCH_VERSION_KEY)!!
     }
 
-    override fun onResume() {
-        super.onResume()
+    override fun onStart() {
+        super.onStart()
 
         messageClient.addListener(messageListener)
-        updateWatchVersionPreference()
+        requestUpdateWatchVersionPreference()
 
         getWatchConnectionManager()?.registerWatchConnectionInterface(this)
     }
 
-    override fun onPause() {
-        super.onPause()
+    override fun onStop() {
+        super.onStop()
 
         customTabsIntent = null
         messageClient.removeListener(messageListener)
@@ -148,10 +117,18 @@ class AppInfoFragment :
         getWatchConnectionManager()?.unregisterWatchConnectionInterface(this)
     }
 
-    private fun getAppStoreLink(): String =
+    /**
+     * Gets the Play Store URL for Wearable Extensions.
+     * @return The URL as a [String].
+     */
+    private fun getPlayStoreLink(): String =
             "https://play.google.com/store/apps/details?id=${context?.packageName}"
 
-    private fun updateWatchVersionPreference() {
+    /**
+     * Requests the current app version info from the connected watch.
+     * Result received in [messageListener] if sending the message was successful.
+     */
+    private fun requestUpdateWatchVersionPreference() {
         val connectedWatchId = getWatchConnectionManager()?.getConnectedWatchId()
         if (!connectedWatchId.isNullOrEmpty()) {
             messageClient.sendMessage(connectedWatchId, References.REQUEST_APP_VERSION, null)
@@ -165,6 +142,91 @@ class AppInfoFragment :
             watchVersionPreference.title = getString(R.string.pref_about_watch_version_failed)
         }
         watchVersionPreference.summary = ""
+    }
+
+    /**
+     * Parse watch app version info from a given ByteArray.
+     * @param byteArray The [ByteArray] received from the connected watch.
+     * @return A [List] of [String] objects, count should always be 2.
+     */
+    private fun parseWatchVersionInfo(byteArray: ByteArray): List<String> {
+        return String(byteArray, Charsets.UTF_8).split("|")
+    }
+
+    /**
+     * Sets the watch version info shown to the user to the provided values.
+     * @param versionName The version name of Wearable Extensions on
+     * the connected watch (See [BuildConfig.VERSION_NAME].
+     * @param versionCode The version code of Wearable Extensions on
+     * the connected watch (See [BuildConfig.VERSION_CODE].
+     */
+    private fun setWatchVersionInfo(versionName: String, versionCode: String) {
+        watchVersionPreference.apply {
+            title = getString(R.string.pref_about_watch_version_title).format(versionName)
+            summary = versionCode
+        }
+    }
+
+    /**
+     * Launches a custom tab that navigates to the Wearable Extensions privacy policy.
+     */
+    private fun showPrivacyPolicy() {
+        if (customTabsIntent == null) {
+            customTabsIntent = CustomTabsIntent.Builder().apply {
+                addDefaultShareMenuItem()
+                setShowTitle(true)
+            }.build()
+        }
+        customTabsIntent!!.launchUrl(context!!, getString(R.string.privacy_policy_url).toUri())
+    }
+
+    /**
+     * Shows the system Share sheet to share the Play Store link to Wearable Extensions.
+     */
+    private fun showShareMenu() {
+        val shareTitle = getString(R.string.app_name)
+        val shareDataUri = Uri.Builder().apply {
+            scheme(ContentResolver.SCHEME_ANDROID_RESOURCE)
+            authority(resources.getResourcePackageName(R.mipmap.ic_launcher))
+            appendPath(resources.getResourceTypeName(R.mipmap.ic_launcher))
+            appendPath((resources.getResourceEntryName(R.mipmap.ic_launcher)))
+        }.build()
+
+        Intent().apply {
+            action = Intent.ACTION_SEND
+            putExtra(Intent.EXTRA_TEXT, getPlayStoreLink())
+            putExtra(Intent.EXTRA_TITLE, shareTitle)
+            data = shareDataUri
+            type = "text/plain"
+        }.also {
+            Intent.createChooser(it, null).also { shareIntent ->
+                startActivity(shareIntent)
+            }
+        }
+    }
+
+    /**
+     * Opens the Play Store and navigates to the Wearable Extensions listing.
+     */
+    private fun showPlayStorePage() {
+        Intent(Intent.ACTION_VIEW).apply {
+            data = getPlayStoreLink().toUri()
+            setPackage("com.android.vending")
+        }.also { startActivity(it) }
+    }
+
+    /**
+     * Create an instance of [DonationDialog] and shows it.
+     */
+    private fun showDonationDialog() {
+        DonationDialog(R.style.AppTheme_AlertDialog).show(activity.supportFragmentManager)
+    }
+
+    /**
+     * Creates an instance of [ChangelogDialogFragment] and shows it.
+     */
+    private fun showChangelog() {
+        ChangelogDialogFragment().show(activity.supportFragmentManager)
     }
 
     companion object {
