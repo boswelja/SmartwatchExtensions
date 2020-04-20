@@ -15,6 +15,7 @@ import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import android.widget.Toast
+import androidx.core.content.edit
 import androidx.preference.Preference
 import androidx.preference.SwitchPreference
 import com.boswelja.devicemanager.R
@@ -28,6 +29,8 @@ import com.boswelja.devicemanager.ui.dndsync.helper.DnDSyncHelperActivity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import timber.log.Timber
 
 class DnDSyncPreferenceFragment :
         BasePreferenceFragment(),
@@ -38,20 +41,23 @@ class DnDSyncPreferenceFragment :
 
     private lateinit var notificationManager: NotificationManager
 
-    private lateinit var interruptFilterSyncToWatchPreference: SwitchPreference
-    private lateinit var interruptFilterSyncToPhonePreference: SwitchPreference
-    private lateinit var interruptFilterOnWithTheaterPreference: SwitchPreference
+    private lateinit var dndSyncToWatchPreference: SwitchPreference
+    private lateinit var dndSyncToPhonePreference: SwitchPreference
+    private lateinit var dndSyncWithTheaterPreference: SwitchPreference
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
         when (key) {
             DND_SYNC_TO_WATCH_KEY -> {
-                interruptFilterSyncToWatchPreference.isChecked = sharedPreferences?.getBoolean(key, false)!!
+                dndSyncToWatchPreference.isChecked =
+                        sharedPreferences?.getBoolean(key, false)!!
             }
             DND_SYNC_TO_PHONE_KEY -> {
-                interruptFilterSyncToPhonePreference.isChecked = sharedPreferences?.getBoolean(key, false)!!
+                dndSyncToPhonePreference.isChecked =
+                        sharedPreferences?.getBoolean(key, false)!!
             }
             DND_SYNC_WITH_THEATER_KEY -> {
-                interruptFilterOnWithTheaterPreference.isChecked = sharedPreferences?.getBoolean(key, false)!!
+                dndSyncWithTheaterPreference.isChecked =
+                        sharedPreferences?.getBoolean(key, false)!!
             }
         }
     }
@@ -59,37 +65,18 @@ class DnDSyncPreferenceFragment :
     override fun onPreferenceChange(preference: Preference?, newValue: Any?): Boolean {
         return when (val key = preference?.key) {
             DND_SYNC_TO_WATCH_KEY -> {
-                val value = newValue == true
-                if (value) {
-                    startActivityForResult(Intent(context, DnDSyncHelperActivity::class.java), HELPER_REQUEST_CODE)
+                val enabled = newValue == true
+                if (enabled) {
+                    startDnDSyncHelper()
                 } else {
-                    preference.sharedPreferences.edit()
-                            .putBoolean(key, value).apply()
-                    coroutineScope.launch(Dispatchers.IO) {
-                        getWatchConnectionManager()?.updatePreferenceOnWatch(key)
-                    }
-                    context?.stopService(Intent(context!!, DnDLocalChangeService::class.java))
+                    setDnDSyncToWatch(enabled)
                 }
                 false
             }
             DND_SYNC_TO_PHONE_KEY,
             DND_SYNC_WITH_THEATER_KEY -> {
-                val value = newValue == true
-                preference.sharedPreferences.edit().putBoolean(key, value).apply()
-                if (value) {
-                    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M || notificationManager.isNotificationPolicyAccessGranted) {
-                        coroutineScope.launch(Dispatchers.IO) {
-                            getWatchConnectionManager()?.updatePreferenceOnWatch(key)
-                        }
-                    } else {
-                        Toast.makeText(context, getString(R.string.interrupt_filter_sync_request_policy_access_message), Toast.LENGTH_SHORT).show()
-                        startActivity(Intent(Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS))
-                    }
-                } else {
-                    coroutineScope.launch(Dispatchers.IO) {
-                        getWatchConnectionManager()?.updatePreferenceOnWatch(key)
-                    }
-                }
+                val enabled = newValue == true
+                setDnDSyncFromWatchPreference(key, enabled)
                 false
             }
             else -> true
@@ -98,55 +85,94 @@ class DnDSyncPreferenceFragment :
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Timber.d("onCreate() called")
         notificationManager = context?.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-    }
-
-    override fun onResume() {
-        super.onResume()
-        preferenceManager.sharedPreferences.registerOnSharedPreferenceChangeListener(this)
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            val notificationPolicyAccessGranted = notificationManager.isNotificationPolicyAccessGranted
-            if (!notificationPolicyAccessGranted) {
-                preferenceManager.sharedPreferences.edit()
-                        .putBoolean(DND_SYNC_TO_PHONE_KEY, false)
-                        .putBoolean(DND_SYNC_WITH_THEATER_KEY, false)
-                        .apply()
-            }
-        }
-    }
-
-    override fun onPause() {
-        super.onPause()
-        preferenceManager.sharedPreferences.unregisterOnSharedPreferenceChangeListener(this)
     }
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         addPreferencesFromResource(R.xml.prefs_interrupt_filter_sync)
 
-        interruptFilterSyncToWatchPreference = findPreference(DND_SYNC_TO_WATCH_KEY)!!
-        interruptFilterSyncToPhonePreference = findPreference(DND_SYNC_TO_PHONE_KEY)!!
-        interruptFilterOnWithTheaterPreference = findPreference(DND_SYNC_WITH_THEATER_KEY)!!
+        dndSyncToWatchPreference = findPreference(DND_SYNC_TO_WATCH_KEY)!!
+        dndSyncToPhonePreference = findPreference(DND_SYNC_TO_PHONE_KEY)!!
+        dndSyncWithTheaterPreference = findPreference(DND_SYNC_WITH_THEATER_KEY)!!
 
-        interruptFilterSyncToWatchPreference.onPreferenceChangeListener = this
-        interruptFilterSyncToPhonePreference.onPreferenceChangeListener = this
-        interruptFilterOnWithTheaterPreference.onPreferenceChangeListener = this
+        dndSyncToWatchPreference.onPreferenceChangeListener = this
+        dndSyncToPhonePreference.onPreferenceChangeListener = this
+        dndSyncWithTheaterPreference.onPreferenceChangeListener = this
+    }
+
+    override fun onStart() {
+        super.onStart()
+        Timber.d("onStart() called")
+        sharedPreferences.registerOnSharedPreferenceChangeListener(this)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        Timber.d("onStop() called")
+        sharedPreferences.unregisterOnSharedPreferenceChangeListener(this)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         when (requestCode) {
             HELPER_REQUEST_CODE -> {
-                val enabled = resultCode == DnDSyncHelperActivity.RESULT_OK
-                interruptFilterSyncToWatchPreference.isChecked = enabled
-                interruptFilterSyncToWatchPreference.sharedPreferences.edit()
-                        .putBoolean(DND_SYNC_TO_WATCH_KEY, enabled).apply()
-                coroutineScope.launch(Dispatchers.IO) {
-                    getWatchConnectionManager()?.updatePreferenceOnWatch(DND_SYNC_TO_WATCH_KEY)
-                }
-                if (enabled) {
-                    Compat.startForegroundService(context!!, Intent(context!!, DnDLocalChangeService::class.java))
-                }
+                val shouldEnable = resultCode == DnDSyncHelperActivity.RESULT_OK
+                setDnDSyncToWatch(shouldEnable)
             }
+        }
+    }
+
+    /**
+     * Sets whether DnD Sync to watch is enabled.
+     * @param enabled true if DnD Sync to Watch should be enabled, false otherwise.
+     */
+    private fun setDnDSyncToWatch(enabled: Boolean) {
+        dndSyncToWatchPreference.isChecked = enabled
+        coroutineScope.launch(Dispatchers.IO) {
+            sharedPreferences.edit(commit = true) {
+                putBoolean(DND_SYNC_TO_WATCH_KEY, enabled)
+            }
+            getWatchConnectionManager()?.updatePreferenceOnWatch(DND_SYNC_TO_WATCH_KEY)
+        }
+        if (enabled) {
+            Intent(context!!, DnDLocalChangeService::class.java).also {
+                Compat.startForegroundService(context!!, it)
+            }
+        }
+    }
+
+    /**
+     * Sets whether a DnD Sync from watch preference is enabled.
+     * @param key The key of the preference to set.
+     * @param enabled true if the preference should be enabled, false otherwise.
+     */
+    private fun setDnDSyncFromWatchPreference(key: String, enabled: Boolean) {
+        coroutineScope.launch(Dispatchers.IO) {
+            sharedPreferences.edit(commit = true) {
+                putBoolean(key, enabled)
+            }
+            if (enabled && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
+                    !notificationManager.isNotificationPolicyAccessGranted) {
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(context,
+                            getString(R.string.interrupt_filter_sync_request_policy_access_message),
+                            Toast.LENGTH_SHORT).show()
+                    Intent(Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS).also {
+                        startActivity(it)
+                    }
+                }
+            } else {
+                getWatchConnectionManager()?.updatePreferenceOnWatch(key)
+            }
+        }
+    }
+
+    /**
+     * Starts a new [DnDSyncHelperActivity] instance and shows it.
+     */
+    private fun startDnDSyncHelper() {
+        Intent(context, DnDSyncHelperActivity::class.java).also {
+            startActivityForResult(it, HELPER_REQUEST_CODE)
         }
     }
 

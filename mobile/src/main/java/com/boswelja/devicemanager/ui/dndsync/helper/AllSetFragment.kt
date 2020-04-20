@@ -14,10 +14,15 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.boswelja.devicemanager.R
 import com.google.android.material.button.MaterialButton
+import timber.log.Timber
 
 internal class AllSetFragment : Fragment() {
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? =
             inflater.inflate(R.layout.fragment_dnd_sync_helper_all_set, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -26,5 +31,6 @@ internal class AllSetFragment : Fragment() {
                 activity?.finish()
             }
         }
+        Timber.i("Successfully created")
     }
 }

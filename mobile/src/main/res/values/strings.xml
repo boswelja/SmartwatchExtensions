@@ -39,7 +39,6 @@
     <string name="pref_interrupt_filter_sync_with_theater_summary">Sync DnD state with Wear OS theater mode</string>
     <string name="interrupt_filter_sync_request_policy_access_message">Please grant Wearable Extensions permission to change Do Not Disturb state</string>
     <string name="interrupt_filter_sync_helper_loading_text">Please wait…</string>
-
     <string name="interrupt_filter_sync_helper_all_set_title">All Set!</string>
     <string name="interrupt_filter_sync_helper_all_set_message">Tap \'Finish\' below to enable Phone to Watch Sync</string>
     <string name="interrupt_filter_sync_helper_error_title">Error</string>
@@ -48,6 +47,7 @@
     <string name="interrupt_filter_sync_helper_setup_title">Setup</string>
     <string name="interrupt_filter_sync_helper_button_finish">Finish</string>
     <string name="interrupt_filter_sync_helper_button_next">Next</string>
+    <string name="interrupt_filter_sync_helper_permission_not_granted">Permission not granted, please try again.</string>
 
     <!-- App Manager strings -->
     <string name="main_app_manager_title">App Manager</string>

@@ -15,26 +15,49 @@ import androidx.appcompat.widget.AppCompatTextView
 import androidx.fragment.app.Fragment
 import com.boswelja.devicemanager.R
 import com.google.android.material.button.MaterialButton
+import timber.log.Timber
 
 internal class ErrorFragment : Fragment() {
 
-    var watchVersionIncompatible: Boolean = false
-    var watchUnreachable: Boolean = false
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? =
             inflater.inflate(R.layout.fragment_dnd_sync_helper_error, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        if (watchVersionIncompatible) {
-            view.findViewById<AppCompatTextView>(R.id.watch_version_incompatible_text)!!.visibility = View.VISIBLE
-        }
-        if (watchUnreachable) {
-            view.findViewById<AppCompatTextView>(R.id.watch_unreachable_text)!!.visibility = View.VISIBLE
-        }
-        view.findViewById<MaterialButton>(R.id.finish_button)!!.apply {
+        Timber.d("onViewCreated() called")
+        setupFinishButton()
+    }
+
+    /**
+     * Set up the finish button.
+     */
+    private fun setupFinishButton() {
+        Timber.d("setupFinishButton() called")
+        view!!.findViewById<MaterialButton>(R.id.finish_button)!!.apply {
             setOnClickListener {
                 activity?.finish()
             }
         }
+    }
+
+    /**
+     * Show watch version incompatible error message.
+     */
+    fun showWatchVersionIncompatible() {
+        Timber.d("showWatchVersionIncompatible() called")
+        view!!.findViewById<AppCompatTextView>(R.id.watch_version_incompatible_text)!!
+                .visibility = View.VISIBLE
+    }
+
+    /**
+     * Show watch unreachable error.
+     */
+    fun showWatchUnreachable() {
+        Timber.d("showWatchUnreachable() called")
+        view!!.findViewById<AppCompatTextView>(R.id.watch_unreachable_text)!!
+                .visibility = View.VISIBLE
     }
 }
