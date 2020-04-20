@@ -11,6 +11,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.boswelja.devicemanager.R
@@ -62,4 +63,10 @@ class ChangelogDialogFragment : BottomSheetDialogFragment() {
         }
         return processedChangelog.toTypedArray()
     }
+
+    /**
+     * Show the [ChangelogDialogFragment].
+     * @param fragmentManager The [FragmentManager] that will be used to handle the transition.
+     */
+    fun show(fragmentManager: FragmentManager) = show(fragmentManager, "ChangelogDialog")
 }
