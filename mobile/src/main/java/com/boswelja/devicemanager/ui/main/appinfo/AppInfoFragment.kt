@@ -24,6 +24,7 @@ import com.boswelja.devicemanager.watchconnectionmanager.Watch
 import com.boswelja.devicemanager.watchconnectionmanager.WatchConnectionInterface
 import com.google.android.gms.wearable.MessageClient
 import com.google.android.gms.wearable.Wearable
+import timber.log.Timber
 
 class AppInfoFragment :
         BasePreferenceFragment(),
@@ -50,11 +51,12 @@ class AppInfoFragment :
 
     override fun onConnectedWatchChanged(success: Boolean) {
         if (success) {
-            requestUpdateWatchVersionPreference()
+            requestUpdateWatchVersion()
         }
     }
 
     override fun onPreferenceClick(preference: Preference?): Boolean {
+        Timber.d("onPreferenceClick() called")
         when (preference?.key) {
             OPEN_PRIVACY_POLICY_KEY -> showPrivacyPolicy()
             SHARE_APP_KEY -> showShareMenu()
@@ -103,7 +105,7 @@ class AppInfoFragment :
         super.onStart()
 
         messageClient.addListener(messageListener)
-        requestUpdateWatchVersionPreference()
+        requestUpdateWatchVersion()
 
         getWatchConnectionManager()?.registerWatchConnectionInterface(this)
     }
@@ -128,17 +130,21 @@ class AppInfoFragment :
      * Requests the current app version info from the connected watch.
      * Result received in [messageListener] if sending the message was successful.
      */
-    private fun requestUpdateWatchVersionPreference() {
+    private fun requestUpdateWatchVersion() {
+        Timber.d("requestUpdateWatchVersionPreference")
         val connectedWatchId = getWatchConnectionManager()?.getConnectedWatchId()
         if (!connectedWatchId.isNullOrEmpty()) {
             messageClient.sendMessage(connectedWatchId, References.REQUEST_APP_VERSION, null)
                     .addOnFailureListener {
+                        Timber.w(it)
                         watchVersionPreference.title = getString(R.string.pref_about_watch_version_disconnected)
                     }
                     .addOnSuccessListener {
+                        Timber.i("Message sent successfully")
                         watchVersionPreference.title = getString(R.string.pref_about_watch_version_loading)
                     }
         } else {
+            Timber.w("connectedWatchId null or empty")
             watchVersionPreference.title = getString(R.string.pref_about_watch_version_failed)
         }
         watchVersionPreference.summary = ""
@@ -161,6 +167,7 @@ class AppInfoFragment :
      * the connected watch (See [BuildConfig.VERSION_CODE].
      */
     private fun setWatchVersionInfo(versionName: String, versionCode: String) {
+        Timber.d("setWatchVersionInfo($versionName, $versionCode) called")
         watchVersionPreference.apply {
             title = getString(R.string.pref_about_watch_version_title).format(versionName)
             summary = versionCode
@@ -171,7 +178,9 @@ class AppInfoFragment :
      * Launches a custom tab that navigates to the Wearable Extensions privacy policy.
      */
     private fun showPrivacyPolicy() {
+        Timber.d("showPrivacyPolicy() called")
         if (customTabsIntent == null) {
+            Timber.i("customTabsIntent null, creating new CustomTabsIntent")
             customTabsIntent = CustomTabsIntent.Builder().apply {
                 addDefaultShareMenuItem()
                 setShowTitle(true)
@@ -200,6 +209,7 @@ class AppInfoFragment :
             type = "text/plain"
         }.also {
             Intent.createChooser(it, null).also { shareIntent ->
+                Timber.i("Showing share sheet")
                 startActivity(shareIntent)
             }
         }
@@ -212,13 +222,17 @@ class AppInfoFragment :
         Intent(Intent.ACTION_VIEW).apply {
             data = getPlayStoreLink().toUri()
             setPackage("com.android.vending")
-        }.also { startActivity(it) }
+        }.also {
+            Timber.i("Opening Play Store")
+            startActivity(it)
+        }
     }
 
     /**
      * Create an instance of [DonationDialog] and shows it.
      */
     private fun showDonationDialog() {
+        Timber.d("showDonationDialog() called")
         DonationDialog(R.style.AppTheme_AlertDialog).show(activity.supportFragmentManager)
     }
 
@@ -226,6 +240,7 @@ class AppInfoFragment :
      * Creates an instance of [ChangelogDialogFragment] and shows it.
      */
     private fun showChangelog() {
+        Timber.d("showChangelog() called")
         ChangelogDialogFragment().show(activity.supportFragmentManager)
     }
 
