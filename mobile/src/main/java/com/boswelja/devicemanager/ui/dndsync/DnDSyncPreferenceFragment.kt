@@ -90,6 +90,7 @@ class DnDSyncPreferenceFragment :
     }
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
+        Timber.d("onCreatePreferences() called")
         addPreferencesFromResource(R.xml.prefs_interrupt_filter_sync)
 
         dndSyncToWatchPreference = findPreference(DND_SYNC_TO_WATCH_KEY)!!
@@ -114,6 +115,7 @@ class DnDSyncPreferenceFragment :
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        Timber.d("onActivityResult() called")
         when (requestCode) {
             HELPER_REQUEST_CODE -> {
                 val shouldEnable = resultCode == DnDSyncHelperActivity.RESULT_OK
@@ -127,6 +129,7 @@ class DnDSyncPreferenceFragment :
      * @param enabled true if DnD Sync to Watch should be enabled, false otherwise.
      */
     private fun setDnDSyncToWatch(enabled: Boolean) {
+        Timber.i("Setting DnD Sync to watch to $enabled")
         dndSyncToWatchPreference.isChecked = enabled
         coroutineScope.launch(Dispatchers.IO) {
             sharedPreferences.edit(commit = true) {
@@ -135,6 +138,7 @@ class DnDSyncPreferenceFragment :
             getWatchConnectionManager()?.updatePreferenceOnWatch(DND_SYNC_TO_WATCH_KEY)
         }
         if (enabled) {
+            Timber.i("Starting DnDLocalChangeService")
             Intent(context!!, DnDLocalChangeService::class.java).also {
                 Compat.startForegroundService(context!!, it)
             }
@@ -147,12 +151,14 @@ class DnDSyncPreferenceFragment :
      * @param enabled true if the preference should be enabled, false otherwise.
      */
     private fun setDnDSyncFromWatchPreference(key: String, enabled: Boolean) {
+        Timber.i("Setting $key to $enabled")
         coroutineScope.launch(Dispatchers.IO) {
             sharedPreferences.edit(commit = true) {
                 putBoolean(key, enabled)
             }
             if (enabled && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
                     !notificationManager.isNotificationPolicyAccessGranted) {
+                Timber.i("Missing notification policy access, requesting")
                 withContext(Dispatchers.Main) {
                     Toast.makeText(context,
                             getString(R.string.interrupt_filter_sync_request_policy_access_message),
