@@ -12,14 +12,15 @@ import android.content.SharedPreferences
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
-import androidx.core.app.NotificationManagerCompat
 import androidx.preference.ListPreference
 import androidx.preference.Preference
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.batterysync.widget.WatchBatteryWidget
+import com.boswelja.devicemanager.common.Compat
 import com.boswelja.devicemanager.managespace.ManageSpaceActivity
 import com.boswelja.devicemanager.ui.base.BaseDayNightActivity.Companion.DAYNIGHT_MODE_KEY
 import com.boswelja.devicemanager.ui.base.BasePreferenceFragment
+import timber.log.Timber
 
 class AppSettingsFragment :
         BasePreferenceFragment(),
@@ -41,17 +42,7 @@ class AppSettingsFragment :
     override fun onPreferenceClick(preference: Preference?): Boolean {
         return when (preference?.key) {
             OPEN_NOTI_SETTINGS_KEY -> {
-                Intent().apply {
-                    flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                        action = Settings.ACTION_APP_NOTIFICATION_SETTINGS
-                        putExtra(Settings.EXTRA_APP_PACKAGE, context?.packageName!!)
-                    } else {
-                        action = "android.settings.APP_NOTIFICATION_SETTINGS"
-                        putExtra("app_package", context?.packageName!!)
-                        putExtra("app_uid", context?.applicationInfo?.uid!!)
-                    }
-                }.also { startActivity(it) }
+                openNotificationSettings()
                 true
             }
             OPEN_WATCH_MANAGER_KEY -> {
@@ -59,7 +50,7 @@ class AppSettingsFragment :
                 true
             }
             OPEN_MANAGE_SPACE_KEY -> {
-                startActivity(Intent(context!!, ManageSpaceActivity::class.java))
+                openManageSpaceActivity()
                 true
             }
             else -> false
@@ -67,6 +58,7 @@ class AppSettingsFragment :
     }
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
+        Timber.d("onCreatePreferences() called")
         addPreferencesFromResource(R.xml.prefs_app_settings)
 
         openNotiSettingsPreference = findPreference(OPEN_NOTI_SETTINGS_KEY)!!
@@ -78,29 +70,77 @@ class AppSettingsFragment :
         findPreference<Preference>(OPEN_MANAGE_SPACE_KEY)?.onPreferenceClickListener = this
     }
 
-    override fun onResume() {
-        super.onResume()
-        val notificationsAllowed = NotificationManagerCompat.from(context!!).areNotificationsEnabled()
+    override fun onStart() {
+        super.onStart()
+        Timber.d("onStart() called")
+        updateNotiSettingsPreferenceSummary()
+        updateDayNightModePreferenceSummary()
+        sharedPreferences.registerOnSharedPreferenceChangeListener(this)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        Timber.d("onStop() called")
+        sharedPreferences.unregisterOnSharedPreferenceChangeListener(this)
+    }
+
+    /**
+     * Checks whether app notifications are allowed,
+     * and updates [openNotiSettingsPreference] summary.
+     */
+    private fun updateNotiSettingsPreferenceSummary() {
+        Timber.d("updateNotiSettingsPreferenceSummary() called")
+        val notificationsAllowed = Compat.areNotificationsEnabled(context!!)
         if (notificationsAllowed) {
+            Timber.i("Notifications allowed")
             openNotiSettingsPreference.apply {
                 summary = getString(R.string.pref_noti_status_summary_enabled)
                 setIcon(R.drawable.pref_ic_notifications_enabled)
             }
         } else {
+            Timber.i("Notifications disabled")
             openNotiSettingsPreference.apply {
                 summary = getString(R.string.pref_noti_status_summary_disabled)
                 setIcon(R.drawable.pref_ic_notifications_disabled)
             }
         }
-
-        daynightModePreference.summary = daynightModePreference.entry
-
-        sharedPreferences.registerOnSharedPreferenceChangeListener(this)
     }
 
-    override fun onPause() {
-        super.onPause()
-        sharedPreferences.unregisterOnSharedPreferenceChangeListener(this)
+    /**
+     * Updates [daynightModePreference] summary to reflect the current state of day/night mode.
+     */
+    private fun updateDayNightModePreferenceSummary() {
+        daynightModePreference.summary = daynightModePreference.entry
+    }
+
+    /**
+     * Opens the system's notification settings for Wearable Extensions.
+     */
+    private fun openNotificationSettings() {
+        Intent().apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                action = Settings.ACTION_APP_NOTIFICATION_SETTINGS
+                putExtra(Settings.EXTRA_APP_PACKAGE, context?.packageName!!)
+            } else {
+                action = "android.settings.APP_NOTIFICATION_SETTINGS"
+                putExtra("app_package", context?.packageName!!)
+                putExtra("app_uid", context?.applicationInfo?.uid!!)
+            }
+        }.also {
+            Timber.i("Starting notification settings activity")
+            startActivity(it)
+        }
+    }
+
+    /**
+     * Opens the [ManageSpaceActivity].
+     */
+    private fun openManageSpaceActivity() {
+        Intent(context!!, ManageSpaceActivity::class.java).also {
+            Timber.i("Starting ManageSpaceActivity")
+            startActivity(it)
+        }
     }
 
     companion object {
