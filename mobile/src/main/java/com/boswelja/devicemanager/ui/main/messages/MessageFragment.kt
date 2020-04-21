@@ -28,6 +28,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import timber.log.Timber
 
 class MessageFragment : Fragment() {
 
@@ -50,67 +51,91 @@ class MessageFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        Timber.d("onViewCreated() called")
         binding.messagesRecyclerview.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = MessagesAdapter(this@MessageFragment)
-            addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
+            DividerItemDecoration(context, DividerItemDecoration.VERTICAL).also {
+                addItemDecoration(it)
+            }
         }.also {
-            val itemTouchHelper = ItemTouchHelper(MessagesAdapter.SwipeDismissCallback(it.adapter as MessagesAdapter, context!!))
-            itemTouchHelper.attachToRecyclerView(it)
+            ItemTouchHelper(MessagesAdapter.SwipeDismissCallback(
+                    it.adapter as MessagesAdapter,
+                    context!!)).apply {
+                attachToRecyclerView(it)
+            }
         }
 
         refreshMessages()
     }
 
-    internal fun dismissMessage(message: Message) {
-        if (messageDatabase != null) {
-            coroutineScope.launch(Dispatchers.IO) {
-                messageDatabase?.deleteMessage(sharedPreferences, message)
-                withContext(Dispatchers.Main) {
-                    setHasMessages(messageDatabase!!.countMessages() > 0)
-                }
-            }
-        }
-        (activity as MainActivity).updateMessagesBadge()
-        Snackbar.make(view!!,
-                getString(R.string.message_snackbar_undo_remove),
-                Snackbar.LENGTH_LONG).apply {
-            setAction(R.string.snackbar_action_undo) {
-                if (messageDatabase != null) {
-                    coroutineScope.launch(Dispatchers.IO) {
-                        messageDatabase?.restoreMessage(sharedPreferences, message)
-                        withContext(Dispatchers.Main) {
-                            (binding.messagesRecyclerview.adapter as MessagesAdapter).notifyMessage(message)
-                            (activity as MainActivity).updateMessagesBadge()
-                        }
-                    }
-                }
-            }
-        }.show()
-    }
-
-    internal fun setHasMessages(hasMessages: Boolean) {
-        binding.noMessagesView.apply {
-            visibility = if (hasMessages) {
-                View.GONE
-            } else {
-                View.VISIBLE
+    /**
+     * Undo dismissing a [Message]. Handles database operations as well as updating the UI.
+     * @param message The [Message] to un-dismiss.
+     */
+    private fun undoDismissMessage(message: Message) {
+        Timber.i("Restoring message ${message.id}")
+        coroutineScope.launch(Dispatchers.IO) {
+            messageDatabase?.restoreMessage(sharedPreferences, message)
+            withContext(Dispatchers.Main) {
+                (binding.messagesRecyclerview.adapter as MessagesAdapter).notifyMessage(message)
+                setHasMessages(messageDatabase!!.countMessages() > 0)
+                (activity as MainActivity).updateMessagesBadge()
             }
         }
     }
 
+    /**
+     * Refresh the message list entirely.
+     */
     private fun refreshMessages() {
         coroutineScope.launch(Dispatchers.IO) {
             val messages = messageDatabase?.getActiveMessages()
             withContext(Dispatchers.Main) {
                 if (!messages.isNullOrEmpty()) {
                     for (message in messages) {
-                        (binding.messagesRecyclerview.adapter as MessagesAdapter).notifyMessage(message)
+                        (binding.messagesRecyclerview.adapter as MessagesAdapter)
+                                .notifyMessage(message)
                     }
                     setHasMessages(true)
                 } else {
                     setHasMessages(false)
                 }
+            }
+        }
+    }
+
+    /**
+     * Dismiss a [Message].
+     * @param message The [Message] to dismiss.
+     */
+    internal fun dismissMessage(message: Message) {
+        coroutineScope.launch(Dispatchers.IO) {
+            messageDatabase?.deleteMessage(sharedPreferences, message)
+            withContext(Dispatchers.Main) {
+                setHasMessages(messageDatabase!!.countMessages() > 0)
+                (activity as MainActivity).updateMessagesBadge()
+            }
+        }
+        Snackbar.make(view!!,
+                getString(R.string.message_snackbar_undo_remove),
+                Snackbar.LENGTH_LONG).apply {
+            setAction(R.string.snackbar_action_undo) {
+                undoDismissMessage(message)
+            }
+        }.show()
+    }
+
+    /**
+     * Sets whether the UI should show the message list, or a no message view.
+     * @param hasMessages Whether there are messages to show.
+     */
+    internal fun setHasMessages(hasMessages: Boolean) {
+        binding.noMessagesView.apply {
+            visibility = if (hasMessages) {
+                View.GONE
+            } else {
+                View.VISIBLE
             }
         }
     }

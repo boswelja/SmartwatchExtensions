@@ -26,6 +26,7 @@ import com.boswelja.devicemanager.databinding.MessageItemBinding
 import com.boswelja.devicemanager.messages.Action
 import com.boswelja.devicemanager.messages.Message
 import kotlin.math.min
+import timber.log.Timber
 
 internal class MessagesAdapter(private val fragment: MessageFragment) :
         RecyclerView.Adapter<MessagesAdapter.MessageItemViewHolder>() {
@@ -50,9 +51,11 @@ internal class MessagesAdapter(private val fragment: MessageFragment) :
     override fun onBindViewHolder(holder: MessageItemViewHolder, position: Int) {
         val message = messages[position]
 
+        Timber.i("Binding message")
         holder.bind(message)
 
         if (message.hasAction) {
+            Timber.i("Setting up message action")
             holder.binding.messageActionButton.apply {
                 setOnClickListener {
                     handleMessageActionClick(holder.itemView.context, message)
@@ -61,14 +64,21 @@ internal class MessagesAdapter(private val fragment: MessageFragment) :
         }
     }
 
+    /**
+     * Perform the corresponding [Action] on [Message] action clicked.
+     * @param context [Context].
+     * @param message The [Message] whose action was clicked.
+     */
     @SuppressLint("BatteryLife")
     private fun handleMessageActionClick(context: Context, message: Message) {
+        Timber.d("handleMessageActionClick() called")
         when (message.action) {
             Action.DISABLE_BATTERY_OPTIMISATION -> {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                     Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS).apply {
                         data = Uri.parse("package:${context.packageName}")
                     }.also {
+                        Timber.i("Requesting ignore battery optimisation")
                         context.startActivity(it)
                     }
                 }
@@ -84,36 +94,58 @@ internal class MessagesAdapter(private val fragment: MessageFragment) :
                         putExtra("app_package", context.packageName)
                         putExtra("app_uid", context.applicationInfo.uid)
                     }
-                }.also { context.startActivity(it) }
+                }.also {
+                    Timber.i("Launching notification settings")
+                    context.startActivity(it)
+                }
             }
         }
     }
 
+    /**
+     * Adds a new [Message] to the message list and updates the UI.
+     * Does nothing if the [Message] is already notified.
+     * @param message The [Message] to notify.
+     */
     fun notifyMessage(message: Message) {
+        Timber.d("notifyMessage() called")
         if (!messages.contains(message)) {
+            Timber.i("Notifying message ${message.id}")
             messages.add(message)
             messages.sortBy { it.timestamp }
             notifyItemInserted(messages.indexOf(message))
             fragment.setHasMessages(itemCount > 0)
+        } else {
+            Timber.w("Message ${message.id} already notified")
         }
     }
 
+    /**
+     * Removes a [Message] from the list and updates the UI.
+     * @param position The position of the [Message] to dismiss.
+     */
     fun dismissMessage(position: Int) {
         fragment.dismissMessage(messages[position])
+        Timber.i("Dismissing message at $position")
         messages.removeAt(position)
         notifyItemRemoved(position)
         fragment.setHasMessages(itemCount > 0)
     }
 
-    class MessageItemViewHolder(val binding: MessageItemBinding) : RecyclerView.ViewHolder(binding.root) {
-
+    class MessageItemViewHolder(val binding: MessageItemBinding) :
+            RecyclerView.ViewHolder(binding.root) {
         fun bind(message: Message) {
             binding.message = message
         }
     }
 
+    /**
+     * A custom [ItemTouchHelper] that provides swipe to dismiss logic for a [Message].
+     */
     class SwipeDismissCallback(private val adapter: MessagesAdapter, context: Context) :
-            ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
+            ItemTouchHelper.SimpleCallback(
+                    0,
+                    ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
 
         private val alphaMultiplier: Int = 3
 
