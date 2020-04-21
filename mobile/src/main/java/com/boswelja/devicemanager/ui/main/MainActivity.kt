@@ -10,9 +10,7 @@ package com.boswelja.devicemanager.ui.main
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.boswelja.devicemanager.R
-import com.boswelja.devicemanager.common.PreferenceKey
 import com.boswelja.devicemanager.messages.database.MessageDatabase.Companion.MESSAGE_COUNT_KEY
-import com.boswelja.devicemanager.ui.base.BasePreferenceActivity.Companion.EXTRA_PREFERENCE_KEY
 import com.boswelja.devicemanager.ui.base.BaseWatchPickerActivity
 import com.boswelja.devicemanager.ui.changelog.ChangelogDialogFragment
 import com.boswelja.devicemanager.ui.main.appinfo.AppInfoFragment
@@ -20,6 +18,7 @@ import com.boswelja.devicemanager.ui.main.appsettings.AppSettingsFragment
 import com.boswelja.devicemanager.ui.main.extensions.ExtensionsFragment
 import com.boswelja.devicemanager.ui.main.messages.MessageFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import timber.log.Timber
 
 class MainActivity : BaseWatchPickerActivity() {
 
@@ -34,24 +33,36 @@ class MainActivity : BaseWatchPickerActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         bottomNavigationView = findViewById(R.id.bottom_navigation)
         bottomNavigationView.setOnNavigationItemSelectedListener {
             handleNavigation(it.itemId)
         }
+    }
 
+    override fun onStart() {
+        super.onStart()
+        Timber.d("onStart() called")
+        handleNavigation(bottomNavigationView.selectedItemId)
+        updateMessagesBadge()
+        showChangelogIfNeeded()
+    }
+
+    /**
+     * Shows the changelog if [SHOW_CHANGELOG_KEY] is true.
+     */
+    private fun showChangelogIfNeeded() {
         if (sharedPreferences.getBoolean(SHOW_CHANGELOG_KEY, false)) {
-            ChangelogDialogFragment().show(supportFragmentManager, "ChangelogDialogFragment")
+            Timber.i("Showing changelog")
+            ChangelogDialogFragment().show(supportFragmentManager)
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        handleNavigation(bottomNavigationView.selectedItemId)
-        updateMessagesBadge()
-    }
-
+    /**
+     * Handle navigation when a new item is selected in the [BottomNavigationView].
+     * @param selectedItemId The ID of the selected item.
+     */
     private fun handleNavigation(selectedItemId: Int): Boolean {
+        Timber.d("handleNavigation() called")
         return when (selectedItemId) {
             R.id.extensions_navigation -> {
                 showExtensionsFragment()
@@ -73,42 +84,62 @@ class MainActivity : BaseWatchPickerActivity() {
         }
     }
 
+    /**
+     * Shows the [ExtensionsFragment].
+     */
     private fun showExtensionsFragment() {
+        Timber.i("Showing ExtensionsFragment")
         navigate(extensionsFragment)
-        if (intent != null) {
-            val key = intent.getStringExtra(EXTRA_PREFERENCE_KEY)
-            if (key == PreferenceKey.PHONE_LOCKING_ENABLED_KEY) {
-                extensionsFragment.scrollToPreference(key)
-            }
-        }
     }
 
+    /**
+     * Shows the [MessageFragment].
+     */
     private fun showMessagesFragment() {
         if (messagesFragment == null) messagesFragment = MessageFragment()
+        Timber.i("Showing MessageFragment")
         navigate(messagesFragment!!)
     }
 
+    /**
+     * Shows the [AppSettingsFragment].
+     */
     private fun showAppSettingsFragment() {
         if (appSettingsFragment == null) appSettingsFragment = AppSettingsFragment()
+        Timber.i("Showing AppSettingsFragment")
         navigate(appSettingsFragment!!)
     }
 
+    /**
+     * Shows the [AppInfoFragment].
+     */
     private fun showAppInfoFragment() {
         if (appInfoFragment == null) appInfoFragment = AppInfoFragment()
+        Timber.i("Showing AppInfoFragment")
         navigate(appInfoFragment!!)
     }
 
+    /**
+     * Navigates to a given [Fragment].
+     * @param fragment The [Fragment] instance to navigate to.
+     */
     private fun navigate(fragment: Fragment) {
         try {
             supportFragmentManager.beginTransaction()
                     .setCustomAnimations(R.anim.fade_in, R.anim.fade_out)
                     .replace(R.id.fragment_holder, fragment)
                     .commit()
-        } catch (_: IllegalStateException) {}
+        } catch (e: IllegalStateException) {
+            Timber.w(e)
+        }
     }
 
+    /**
+     * Updates the message count badge on the [BottomNavigationView].
+     */
     fun updateMessagesBadge() {
         val messageCount = sharedPreferences.getInt(MESSAGE_COUNT_KEY, 0)
+        Timber.i("New message badge count = $messageCount")
         bottomNavigationView.getOrCreateBadge(R.id.messages_navigation).apply {
             number = messageCount
             isVisible = messageCount > 0
