@@ -8,6 +8,7 @@
 package com.boswelja.devicemanager.preference.confirmationdialog
 
 import android.os.Bundle
+import androidx.fragment.app.FragmentManager
 import androidx.preference.PreferenceDialogFragmentCompat
 import timber.log.Timber
 
@@ -22,6 +23,12 @@ class ConfirmationDialogPrefFragment : PreferenceDialogFragmentCompat() {
             pref.setValue(!pref.getValue())
         }
     }
+
+    /**
+     * Shows the dialog fragment.
+     */
+    fun show(fragmentManager: FragmentManager) =
+            show(fragmentManager, "ConfirmationDialogPrefFragment")
 
     companion object {
         /**

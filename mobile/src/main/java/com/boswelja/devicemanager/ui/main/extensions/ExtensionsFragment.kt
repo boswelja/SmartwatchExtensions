@@ -18,6 +18,7 @@ import com.boswelja.devicemanager.ui.base.BasePreferenceFragment
 import com.boswelja.devicemanager.ui.batterysync.BatterySyncPreferenceActivity
 import com.boswelja.devicemanager.ui.dndsync.DnDSyncPreferenceActivity
 import com.boswelja.devicemanager.ui.phonelocking.PhoneLockingPreferenceActivity
+import timber.log.Timber
 
 class ExtensionsFragment :
         BasePreferenceFragment(),
@@ -26,31 +27,19 @@ class ExtensionsFragment :
     override fun onPreferenceClick(preference: Preference?): Boolean {
         return when (preference?.key) {
             OPEN_BATTERY_SYNC_PREF_KEY -> {
-                Intent(context!!, BatterySyncPreferenceActivity::class.java).also {
-                    startActivity(it)
-                }
+                openBatterySyncActivity()
                 true
             }
-            OPEN_INTERRUPT_FILTER_SYNC_PREF_KEY -> {
-                Intent(context!!, DnDSyncPreferenceActivity::class.java).also {
-                    startActivity(it)
-                }
+            OPEN_DND_SYNC_PREF_KEY -> {
+                openDnDSyncActivity()
                 true
             }
             OPEN_PHONE_LOCKING_PREF_KEY -> {
-                Intent(context!!, PhoneLockingPreferenceActivity::class.java).also {
-                    startActivity(it)
-                }
+                openPhoneLockingActivity()
                 true
             }
             OPEN_APP_MANAGER_KEY -> {
-                Intent(context!!, AppManagerActivity::class.java).apply {
-                    val connectedWatch = activity.watchConnectionManager?.getConnectedWatch()
-                    putExtra(AppManagerActivity.EXTRA_WATCH_ID, connectedWatch?.id)
-                    putExtra(AppManagerActivity.EXTRA_WATCH_NAME, connectedWatch?.name)
-                }.also {
-                    startActivity(it)
-                }
+                openAppManagerActivity()
                 true
             }
             else -> false
@@ -60,7 +49,7 @@ class ExtensionsFragment :
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         addPreferencesFromResource(R.xml.prefs_main)
         findPreference<Preference>(OPEN_BATTERY_SYNC_PREF_KEY)!!.onPreferenceClickListener = this
-        findPreference<Preference>(OPEN_INTERRUPT_FILTER_SYNC_PREF_KEY)!!.onPreferenceClickListener = this
+        findPreference<Preference>(OPEN_DND_SYNC_PREF_KEY)!!.onPreferenceClickListener = this
         findPreference<Preference>(OPEN_PHONE_LOCKING_PREF_KEY)!!.onPreferenceClickListener = this
         findPreference<Preference>(OPEN_APP_MANAGER_KEY)!!.onPreferenceClickListener = this
     }
@@ -68,18 +57,71 @@ class ExtensionsFragment :
     override fun onDisplayPreferenceDialog(preference: Preference?) {
         when (preference) {
             is ConfirmationDialogPreference -> {
-                ConfirmationDialogPrefFragment.newInstance(preference.key).apply {
-                    setTargetFragment(this@ExtensionsFragment, 0)
-                    show(this@ExtensionsFragment.fragmentManager!!, "ConfirmationDialogPrefFragment")
-                }
+                showConfirmationDialogPrefFragment(preference)
             }
             else -> super.onDisplayPreferenceDialog(preference)
         }
     }
 
+    /**
+     * Opens a [BatterySyncPreferenceActivity].
+     */
+    private fun openBatterySyncActivity() {
+        Intent(context!!, BatterySyncPreferenceActivity::class.java).also {
+            Timber.i("Starting BatterySyncPreferenceActivity")
+            startActivity(it)
+        }
+    }
+
+    /**
+     * Opens a [DnDSyncPreferenceActivity].
+     */
+    private fun openDnDSyncActivity() {
+        Intent(context!!, DnDSyncPreferenceActivity::class.java).also {
+            Timber.i("Starting DnDSyncPreferenceActivity")
+            startActivity(it)
+        }
+    }
+
+    /**
+     * Opens a [PhoneLockingPreferenceActivity].
+     */
+    private fun openPhoneLockingActivity() {
+        Intent(context!!, PhoneLockingPreferenceActivity::class.java).also {
+            Timber.i("Starting PhoneLockingPreferenceActivity")
+            startActivity(it)
+        }
+    }
+
+    /**
+     * Opens an [AppManagerActivity].
+     */
+    private fun openAppManagerActivity() {
+        Intent(context!!, AppManagerActivity::class.java).apply {
+            val connectedWatch = activity.watchConnectionManager?.getConnectedWatch()
+            putExtra(AppManagerActivity.EXTRA_WATCH_ID, connectedWatch?.id)
+            putExtra(AppManagerActivity.EXTRA_WATCH_NAME, connectedWatch?.name)
+        }.also {
+            Timber.i("Starting AppManagerActivity")
+            startActivity(it)
+        }
+    }
+
+    /**
+     * Shows a [ConfirmationDialogPrefFragment] for the corresponding [ConfirmationDialogPreference].
+     * @param preference The [ConfirmationDialogPreference] requesting the [ConfirmationDialogPrefFragment].
+     */
+    private fun showConfirmationDialogPrefFragment(preference: ConfirmationDialogPreference) {
+        ConfirmationDialogPrefFragment.newInstance(preference.key).apply {
+            setTargetFragment(this@ExtensionsFragment, 0)
+            Timber.i("Showing ConfirmationDialogPrefFragment")
+            show(this@ExtensionsFragment.fragmentManager!!)
+        }
+    }
+
     companion object {
         const val OPEN_BATTERY_SYNC_PREF_KEY = "show_battery_sync_prefs"
-        const val OPEN_INTERRUPT_FILTER_SYNC_PREF_KEY = "show_interrupt_filter_sync_prefs"
+        const val OPEN_DND_SYNC_PREF_KEY = "show_interrupt_filter_sync_prefs"
         const val OPEN_PHONE_LOCKING_PREF_KEY = "show_phone_locking_prefs"
         const val OPEN_APP_MANAGER_KEY = "show_app_manager"
     }
