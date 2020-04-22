@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.ui.base.BaseToolbarActivity
 import com.boswelja.devicemanager.ui.watchsetup.WatchSetupActivity
+import com.boswelja.devicemanager.ui.watchsetup.WatchSetupActivity.Companion.EXTRA_SKIP_WELCOME
 import com.boswelja.devicemanager.watchconnectionmanager.Watch
 import com.boswelja.devicemanager.watchconnectionmanager.WatchConnectionInterface
 import com.boswelja.devicemanager.watchconnectionmanager.WatchConnectionService
@@ -172,7 +173,9 @@ class WatchManagerActivity :
      * Opens a [WatchSetupActivity].
      */
     fun openWatchSetupActivity() {
-        Intent(this, WatchSetupActivity::class.java).also {
+        Intent(this, WatchSetupActivity::class.java).apply {
+            putExtra(EXTRA_SKIP_WELCOME, true)
+        }.also {
             startActivityForResult(it, WATCH_SETUP_ACTIVITY_REQUEST_CODE)
         }
     }

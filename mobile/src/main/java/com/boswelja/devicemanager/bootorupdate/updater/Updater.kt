@@ -183,6 +183,9 @@ class Updater(private val context: Context) {
                         putString(PHONE_LOCKING_MODE_KEY, "0")
                     }
                 }
+                if (lastAppVersion < 2020042200) {
+                    remove("has_completed_first_run")
+                }
                 putInt(APP_VERSION_KEY, lastAppVersion)
             }
         }

@@ -12,6 +12,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ProgressBar
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -21,7 +22,6 @@ import com.boswelja.devicemanager.watchconnectionmanager.Watch
 import com.boswelja.devicemanager.watchconnectionmanager.WatchConnectionService
 import com.boswelja.devicemanager.watchconnectionmanager.WatchStatus
 import com.google.android.material.button.MaterialButton
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
@@ -58,17 +58,11 @@ class WatchSetupFragment : Fragment() {
         refreshButton.setOnClickListener {
             refreshAvailableWatches()
         }
-
         progressBar = view.findViewById(R.id.progress_bar)
-
         watchSetupRecyclerView = view.findViewById(R.id.watch_setup_recyclerview)
-        watchSetupRecyclerView.apply {
-            layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-            adapter = WatchSetupAdapter(this@WatchSetupFragment)
-        }
-
         helpTextView = view.findViewById(R.id.help_text_view)
 
+        setupRecyclerView()
         setLoading(true)
 
         WatchConnectionService.bind(context!!, watchConnectionManagerConnection)
@@ -79,14 +73,27 @@ class WatchSetupFragment : Fragment() {
         context?.unbindService(watchConnectionManagerConnection)
     }
 
+    /**
+     * Set up [watchSetupRecyclerView].
+     */
+    private fun setupRecyclerView() {
+        watchSetupRecyclerView.apply {
+            layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+            adapter = WatchSetupAdapter(this@WatchSetupFragment)
+        }
+    }
+
+    /**
+     * Refresh the list of watches shown in the [WatchSetupAdapter].
+     */
     private fun refreshAvailableWatches() {
         if (watchConnectionManager != null) {
             hideHelpMessage()
             setLoading(true)
             coroutineScope.launch(Dispatchers.IO) {
-                val availableWatches = watchConnectionManager?.getAvailableWatches()!!
+                val availableWatches = watchConnectionManager?.getAvailableWatches()
                 withContext(Dispatchers.Main) {
-                    if (availableWatches.isEmpty()) {
+                    if (availableWatches.isNullOrEmpty()) {
                         setHelpMessage(getString(R.string.register_watch_message_no_watches))
                     } else {
                         (watchSetupRecyclerView.adapter as WatchSetupAdapter).setWatches(availableWatches)
@@ -97,6 +104,10 @@ class WatchSetupFragment : Fragment() {
         }
     }
 
+    /**
+     * Sets whether the loading view should be shown.
+     * @param loading true if the loading view should be shown, false otherwise
+     */
     private fun setLoading(loading: Boolean) {
         refreshButton.isEnabled = !loading
         watchSetupRecyclerView.isEnabled = !loading
@@ -107,31 +118,49 @@ class WatchSetupFragment : Fragment() {
         }
     }
 
+    /**
+     * Sets help text to aid the user if anything goes wrong.
+     * @param text The help text to show.
+     */
     private fun setHelpMessage(text: String) {
         helpTextView.visibility = AppCompatTextView.VISIBLE
         watchSetupRecyclerView.visibility = RecyclerView.INVISIBLE
         helpTextView.text = text
     }
 
+    /**
+     * Removes the help text.
+     */
     private fun hideHelpMessage() {
         helpTextView.visibility = AppCompatTextView.INVISIBLE
         watchSetupRecyclerView.visibility = RecyclerView.VISIBLE
     }
 
-    fun requestRegisterWatch(watch: Watch) {
-        MaterialAlertDialogBuilder(context!!).apply {
-            background = context.getDrawable(R.drawable.dialog_background)
+    /**
+     * Register a [Watch] with Wearable Extensions.
+     * @param watch The [Watch] to register.
+     */
+    private fun registerWatch(watch: Watch) {
+        coroutineScope.launch(Dispatchers.IO) {
+            watchConnectionManager?.addWatch(watch)
+            withContext(Dispatchers.Main) {
+                activity?.setResult(WatchSetupActivity.RESULT_WATCH_ADDED)
+                activity?.finish()
+            }
+        }
+    }
+
+    /**
+     * Asks the user whether they want to register a given [Watch].
+     * @param watch The [Watch] in question.
+     */
+    fun confirmRegisterWatch(watch: Watch) {
+        AlertDialog.Builder(context!!).apply {
             if (watch.status != WatchStatus.MISSING_APP) {
                 setTitle(getString(R.string.register_watch_dialog_title, watch.name))
                 setMessage(getString(R.string.register_watch_dialog_message, watch.name))
                 setPositiveButton(R.string.dialog_button_yes) { _, _ ->
-                    coroutineScope.launch(Dispatchers.IO) {
-                        watchConnectionManager?.addWatch(watch)
-                        withContext(Dispatchers.Main) {
-                            activity?.setResult(WatchSetupActivity.RESULT_WATCH_ADDED)
-                            activity?.finish()
-                        }
-                    }
+                    registerWatch(watch)
                 }
                 setNegativeButton(R.string.dialog_button_no) { dialogInterface, _ ->
                     dialogInterface.cancel()
