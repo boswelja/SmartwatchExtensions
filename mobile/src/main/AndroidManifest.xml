@@ -68,6 +68,7 @@
 
         <activity
             android:name=".ui.watchmanager.WatchManagerActivity"
+            android:label="@string/watch_manager_title"
             android:exported="false" />
         <activity
             android:name=".ui.watchmanager.WatchInfoActivity"

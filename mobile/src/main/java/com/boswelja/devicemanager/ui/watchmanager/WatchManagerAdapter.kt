@@ -22,9 +22,7 @@ class WatchManagerAdapter(private val activity: WatchManagerActivity) : Recycler
 
     private val watches = ArrayList<Watch>()
 
-    override fun getItemCount(): Int {
-        return watches.count() + 2
-    }
+    override fun getItemCount(): Int = watches.count() + 2
 
     override fun getItemViewType(position: Int): Int {
         return when (position) {
@@ -37,40 +35,47 @@ class WatchManagerAdapter(private val activity: WatchManagerActivity) : Recycler
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         return when (viewType) {
-            VIEW_TYPE_ADD_WATCH -> AddWatchViewHolder(inflater.inflate(R.layout.common_recyclerview_item_icon_one_line, parent, false))
-            VIEW_TYPE_SECTION_HEADER -> SectionHeaderViewHolder(inflater.inflate(R.layout.common_recyclerview_section_header, parent, false))
-            else -> WatchViewHolder(inflater.inflate(R.layout.common_recyclerview_item_icon_two_line, parent, false))
+            VIEW_TYPE_ADD_WATCH -> AddWatchViewHolder(inflater.inflate(
+                    R.layout.common_recyclerview_item_icon_one_line,
+                    parent, false))
+            VIEW_TYPE_SECTION_HEADER -> SectionHeaderViewHolder(inflater.inflate(
+                    R.layout.common_recyclerview_section_header,
+                    parent, false))
+            else -> WatchViewHolder(inflater.inflate(
+                    R.layout.common_recyclerview_item_icon_two_line,
+                    parent, false))
         }
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val context = holder.itemView.context
-        when (getItemViewType(position)) {
-            VIEW_TYPE_ADD_WATCH -> {
-                val addWatchHolder = holder as AddWatchViewHolder
-                addWatchHolder.icon.setImageResource(R.drawable.ic_add)
-                addWatchHolder.text.text = context.getString(R.string.watch_manager_add_watch_title)
-                addWatchHolder.itemView.setOnClickListener {
-                    activity.startWatchSetupActivity()
+        when (holder) {
+            is AddWatchViewHolder -> {
+                holder.apply {
+                    icon.setImageResource(R.drawable.ic_add)
+                    text.text = context.getString(R.string.watch_manager_add_watch_title)
+                    itemView.setOnClickListener {
+                        activity.openWatchSetupActivity()
+                    }
                 }
             }
-            VIEW_TYPE_SECTION_HEADER -> {
-                val sectionHeaderHolder = holder as SectionHeaderViewHolder
-                sectionHeaderHolder.label.text = context.getString(R.string.watch_manager_registered_watch_header)
+            is SectionHeaderViewHolder -> {
+                holder.label.text = context.getString(R.string.watch_manager_registered_watch_header)
             }
-            VIEW_TYPE_WATCH -> {
-                val watchHolder = holder as WatchViewHolder
+            is WatchViewHolder -> {
                 val watch = getWatch(position)
-                watchHolder.icon.setImageResource(R.drawable.ic_watch)
-                watchHolder.topLine.text = watch.name
-                watchHolder.bottomLine.text = context.getString(when (watch.status) {
-                    WatchStatus.CONNECTED -> R.string.watch_status_connected
-                    WatchStatus.DISCONNECTED -> R.string.watch_status_disconnected
-                    WatchStatus.MISSING_APP -> R.string.watch_status_missing_app
-                    else -> R.string.watch_status_error
-                })
-                watchHolder.itemView.setOnClickListener {
-                    activity.startWatchInfoActivity(watch)
+                holder.apply {
+                    icon.setImageResource(R.drawable.ic_watch)
+                    topLine.text = watch.name
+                    bottomLine.text = context.getString(when (watch.status) {
+                        WatchStatus.CONNECTED -> R.string.watch_status_connected
+                        WatchStatus.DISCONNECTED -> R.string.watch_status_disconnected
+                        WatchStatus.MISSING_APP -> R.string.watch_status_missing_app
+                        else -> R.string.watch_status_error
+                    })
+                    itemView.setOnClickListener {
+                        activity.openWatchInfoActivity(watch)
+                    }
                 }
             }
         }
@@ -78,17 +83,32 @@ class WatchManagerAdapter(private val activity: WatchManagerActivity) : Recycler
 
     private fun getWatch(position: Int) = watches[position - 2]
 
+    /**
+     * Sets the [List] of [Watch] objects to show.
+     * @param newWatches The new [List] of [Watch] objects to show.
+     */
     fun setWatches(newWatches: List<Watch>) {
-        watches.clear()
-        watches.addAll(newWatches)
+        watches.apply {
+            clear()
+            addAll(newWatches)
+        }
         notifyDataSetChanged()
     }
 
+    /**
+     * Add a [Watch] to the adapter.
+     * @param newWatch The new [Watch] to add.
+     */
     fun addWatch(newWatch: Watch) {
         watches.add(newWatch)
         notifyDataSetChanged()
     }
 
+    /**
+     * Updates the given [Watch] in the list.
+     * Matches [Watch.id] from the given watch.
+     * @param watch The [Watch] to update.
+     */
     fun updateWatch(watch: Watch) {
         val index = watches.indexOfFirst { it.id == watch.id }
         watches.removeAt(index)
@@ -96,6 +116,10 @@ class WatchManagerAdapter(private val activity: WatchManagerActivity) : Recycler
         notifyItemChanged(index + 2)
     }
 
+    /**
+     * Removes a [Watch] by it's ID.
+     * @param watchId The ID of the [Watch] to remove.
+     */
     fun removeWatch(watchId: String) {
         val index = watches.indexOfFirst { it.id == watchId }
         watches.removeAt(index)

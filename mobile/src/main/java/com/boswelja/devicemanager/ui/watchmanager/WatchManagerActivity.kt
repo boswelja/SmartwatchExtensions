@@ -21,6 +21,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import timber.log.Timber
 
 class WatchManagerActivity :
         BaseToolbarActivity(),
@@ -28,11 +29,13 @@ class WatchManagerActivity :
 
     private val watchConnectionManagerConnection = object : WatchConnectionService.Connection() {
         override fun onWatchManagerBound(service: WatchConnectionService) {
+            Timber.i("Watch manager bound")
             watchConnectionManager = service
-            updateRegisteredWatches()
+            setWatches()
         }
 
         override fun onWatchManagerUnbound() {
+            Timber.w("Watch manager unbound")
             watchConnectionManager = null
         }
     }
@@ -60,7 +63,6 @@ class WatchManagerActivity :
 
         supportActionBar?.apply {
             setDisplayHomeAsUpEnabled(true)
-            title = getString(R.string.watch_manager_title)
             setDisplayShowTitleEnabled(true)
         }
 
@@ -71,26 +73,27 @@ class WatchManagerActivity :
 
     override fun onDestroy() {
         super.onDestroy()
-
         unbindService(watchConnectionManagerConnection)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         when (requestCode) {
             WATCH_SETUP_ACTIVITY_REQUEST_CODE -> {
+                Timber.i("Got WatchSetupActivity result")
                 when (resultCode) {
                     WatchSetupActivity.RESULT_WATCH_ADDED -> {
                         setResult(RESULT_WATCH_LIST_CHANGED)
-                        updateRegisteredWatches()
+                        setWatches()
                     }
                 }
             }
             WATCH_INFO_ACTIVITY_REQUEST_CODE -> {
+                Timber.i("Got WatchInfoActivity result")
                 when (resultCode) {
                     WatchInfoActivity.RESULT_WATCH_NAME_CHANGED -> {
                         setResult(RESULT_WATCH_LIST_CHANGED)
                         val watchId = data?.getStringExtra(WatchInfoActivity.EXTRA_WATCH_ID)
-                        updateSingleWatch(watchId)
+                        updateWatch(watchId)
                     }
                     WatchInfoActivity.RESULT_WATCH_REMOVED -> {
                         setResult(RESULT_WATCH_LIST_CHANGED)
@@ -103,49 +106,81 @@ class WatchManagerActivity :
         }
     }
 
-    private fun updateRegisteredWatches() {
+    /**
+     * Set up [watchManagerRecyclerView].
+     */
+    private fun setupRecyclerView() {
+        watchManagerRecyclerView = findViewById(R.id.watch_manager_recycler_view)
+        watchManagerRecyclerView.apply {
+            adapter = WatchManagerAdapter(this@WatchManagerActivity)
+            layoutManager = LinearLayoutManager(
+                    this@WatchManagerActivity,
+                    LinearLayoutManager.VERTICAL,
+                    false)
+        }
+    }
+
+    /**
+     * Sets the watches in the [WatchManagerAdapter] to the
+     * list of registered watches from [WatchConnectionService].
+     */
+    private fun setWatches() {
+        Timber.d("updateRegisteredWatches() called")
         coroutineScope.launch(Dispatchers.IO) {
             if (watchConnectionManager != null) {
                 val registeredWatches = watchConnectionManager!!.getRegisteredWatches()
                 withContext(Dispatchers.Main) {
-                    (watchManagerRecyclerView.adapter as WatchManagerAdapter).apply {
-                        setWatches(registeredWatches)
-                    }
+                    (watchManagerRecyclerView.adapter as WatchManagerAdapter)
+                            .setWatches(registeredWatches)
                 }
             }
         }
     }
 
-    private fun updateSingleWatch(watchId: String?) {
+    /**
+     * Update a watch in [WatchManagerAdapter] by it's ID.
+     * @param watchId The ID of the watch to update.
+     */
+    private fun updateWatch(watchId: String?) {
+        Timber.d("updateWatch($watchId) called")
         coroutineScope.launch(Dispatchers.IO) {
             val newWatchInfo = watchConnectionManager?.getWatchById(watchId)
             if (newWatchInfo != null) {
+                Timber.i("Updating watch info for $watchId")
                 withContext(Dispatchers.Main) {
-                    (watchManagerRecyclerView.adapter as WatchManagerAdapter).updateWatch(newWatchInfo)
+                    (watchManagerRecyclerView.adapter as WatchManagerAdapter)
+                            .updateWatch(newWatchInfo)
                 }
+            } else {
+                Timber.w("newWatchInfo null")
             }
         }
     }
 
+    /**
+     * Removes a watch from the [WatchManagerAdapter].
+     * @param watchId The ID of the watch to remove.
+     */
     private fun removeWatch(watchId: String?) {
+        Timber.d("removeWatch($watchId) called")
         if (!watchId.isNullOrEmpty()) {
             (watchManagerRecyclerView.adapter as WatchManagerAdapter).removeWatch(watchId)
         }
     }
 
-    private fun setupRecyclerView() {
-        watchManagerRecyclerView = findViewById(R.id.watch_manager_recycler_view)
-        watchManagerRecyclerView.apply {
-            adapter = WatchManagerAdapter(this@WatchManagerActivity)
-            layoutManager = LinearLayoutManager(this@WatchManagerActivity, LinearLayoutManager.VERTICAL, false)
+    /**
+     * Opens a [WatchSetupActivity].
+     */
+    fun openWatchSetupActivity() {
+        Intent(this, WatchSetupActivity::class.java).also {
+            startActivityForResult(it, WATCH_SETUP_ACTIVITY_REQUEST_CODE)
         }
     }
 
-    fun startWatchSetupActivity() {
-        startActivityForResult(Intent(this, WatchSetupActivity::class.java), WATCH_SETUP_ACTIVITY_REQUEST_CODE)
-    }
-
-    fun startWatchInfoActivity(watch: Watch) {
+    /**
+     * Opens a [WatchInfoActivity].
+     */
+    fun openWatchInfoActivity(watch: Watch) {
         Intent(this, WatchInfoActivity::class.java).apply {
             putExtra(WatchInfoActivity.EXTRA_WATCH_ID, watch.id)
         }.also {
