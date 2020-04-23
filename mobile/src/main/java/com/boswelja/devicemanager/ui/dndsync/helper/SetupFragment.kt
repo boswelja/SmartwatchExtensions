@@ -43,7 +43,7 @@ internal class SetupFragment : Fragment() {
      */
     private fun setupNextButton() {
         Timber.d("setupNextButton() called")
-        view!!.findViewById<MaterialButton>(R.id.next_button)!!.apply {
+        requireView().findViewById<MaterialButton>(R.id.next_button)!!.apply {
             setOnClickListener {
                 (activity as DnDSyncHelperActivity).checkWatchNotiAccess()
             }
@@ -55,7 +55,7 @@ internal class SetupFragment : Fragment() {
      */
     private fun setupStepsHolder() {
         Timber.d("setupStepsHolder() called")
-        view!!.findViewById<LinearLayout>(R.id.steps_holder)!!.also { stepsHolder ->
+        requireView().findViewById<LinearLayout>(R.id.steps_holder)!!.also { stepsHolder ->
             val textViewPadding = Utils.complexTypeDp(resources, 4.0f).toInt()
             if (!errorMessage.isNullOrEmpty()) {
                 Timber.i("Showing error message")

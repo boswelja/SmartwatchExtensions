@@ -42,7 +42,7 @@ class MessageFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
-        messageDatabase = MessageDatabase.open(context!!)
+        messageDatabase = MessageDatabase.open(requireContext())
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -61,7 +61,7 @@ class MessageFragment : Fragment() {
         }.also {
             ItemTouchHelper(MessagesAdapter.SwipeDismissCallback(
                     it.adapter as MessagesAdapter,
-                    context!!)).apply {
+                    requireContext())).apply {
                 attachToRecyclerView(it)
             }
         }
@@ -117,7 +117,7 @@ class MessageFragment : Fragment() {
                 (activity as MainActivity).updateMessagesBadge()
             }
         }
-        Snackbar.make(view!!,
+        Snackbar.make(requireView(),
                 getString(R.string.message_snackbar_undo_remove),
                 Snackbar.LENGTH_LONG).apply {
             setAction(R.string.snackbar_action_undo) {

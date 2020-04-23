@@ -139,8 +139,8 @@ class DnDSyncPreferenceFragment :
         }
         if (enabled) {
             Timber.i("Starting DnDLocalChangeService")
-            Intent(context!!, DnDLocalChangeService::class.java).also {
-                Compat.startForegroundService(context!!, it)
+            Intent(requireContext(), DnDLocalChangeService::class.java).also {
+                Compat.startForegroundService(requireContext(), it)
             }
         }
     }

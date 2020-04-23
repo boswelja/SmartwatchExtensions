@@ -115,9 +115,9 @@ class PhoneLockingPreferenceFragment :
      */
     private fun canEnablePhoneLocking(): Boolean {
         return if (isInAccessibilityMode()) {
-            Utils.isAccessibilityServiceEnabled(context!!)
+            Utils.isAccessibilityServiceEnabled(requireContext())
         } else {
-            Utils.isDeviceAdminEnabled(context!!)
+            Utils.isDeviceAdminEnabled(requireContext())
         }
     }
 
@@ -173,7 +173,7 @@ class PhoneLockingPreferenceFragment :
         Timber.d("openDeviceSettings() called")
         if (isInAccessibilityMode()) {
             Timber.i("Opening accessibility settings")
-            Utils.launchAccessibilitySettings(context!!)
+            Utils.launchAccessibilitySettings(requireContext())
         } else {
             Timber.i("Opening device admin settings")
             Intent().apply {
@@ -196,7 +196,7 @@ class PhoneLockingPreferenceFragment :
         Timber.d("tryTogglePhoneLocking() called")
         if (!canEnablePhoneLocking()) {
             isEnablingPhoneLocking = true
-            AlertDialog.Builder(context!!).apply {
+            AlertDialog.Builder(requireContext()).apply {
                 setNegativeButton(R.string.dialog_button_cancel) { _, _ ->
                     Timber.i("User declined, aborting")
                     setPhoneLockingEnabled(false)
@@ -242,7 +242,7 @@ class PhoneLockingPreferenceFragment :
                 putBoolean(PHONE_LOCKING_ENABLED_KEY, false)
             }
             snackbar = Snackbar.make(
-                    view!!,
+                    requireView(),
                     R.string.phone_locking_disabled_by_mode_change,
                     Snackbar.LENGTH_INDEFINITE)
             snackbar!!.show()
@@ -250,11 +250,11 @@ class PhoneLockingPreferenceFragment :
         when (newMode) {
             PHONE_LOCKING_MODE_DEVICE_ADMIN -> {
                 Timber.i("Switching to device admin mode")
-                Utils.switchToDeviceAdminMode(context!!)
+                Utils.switchToDeviceAdminMode(requireContext())
             }
             PHONE_LOCKING_MODE_ACCESSIBILITY_SERVICE -> {
                 Timber.i("Switching to accessibility service mode")
-                Utils.switchToAccessibilityServiceMode(context!!)
+                Utils.switchToAccessibilityServiceMode(requireContext())
             }
             else -> Timber.w("Unknown or invalid phone locking mode")
         }

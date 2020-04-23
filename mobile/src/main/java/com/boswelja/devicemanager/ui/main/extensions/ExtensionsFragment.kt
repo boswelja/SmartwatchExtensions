@@ -67,7 +67,7 @@ class ExtensionsFragment :
      * Opens a [BatterySyncPreferenceActivity].
      */
     private fun openBatterySyncActivity() {
-        Intent(context!!, BatterySyncPreferenceActivity::class.java).also {
+        Intent(requireContext(), BatterySyncPreferenceActivity::class.java).also {
             Timber.i("Starting BatterySyncPreferenceActivity")
             startActivity(it)
         }
@@ -77,7 +77,7 @@ class ExtensionsFragment :
      * Opens a [DnDSyncPreferenceActivity].
      */
     private fun openDnDSyncActivity() {
-        Intent(context!!, DnDSyncPreferenceActivity::class.java).also {
+        Intent(requireContext(), DnDSyncPreferenceActivity::class.java).also {
             Timber.i("Starting DnDSyncPreferenceActivity")
             startActivity(it)
         }
@@ -87,7 +87,7 @@ class ExtensionsFragment :
      * Opens a [PhoneLockingPreferenceActivity].
      */
     private fun openPhoneLockingActivity() {
-        Intent(context!!, PhoneLockingPreferenceActivity::class.java).also {
+        Intent(requireContext(), PhoneLockingPreferenceActivity::class.java).also {
             Timber.i("Starting PhoneLockingPreferenceActivity")
             startActivity(it)
         }
@@ -97,7 +97,7 @@ class ExtensionsFragment :
      * Opens an [AppManagerActivity].
      */
     private fun openAppManagerActivity() {
-        Intent(context!!, AppManagerActivity::class.java).apply {
+        Intent(requireContext(), AppManagerActivity::class.java).apply {
             val connectedWatch = activity.watchConnectionManager?.getConnectedWatch()
             putExtra(AppManagerActivity.EXTRA_WATCH_ID, connectedWatch?.id)
             putExtra(AppManagerActivity.EXTRA_WATCH_NAME, connectedWatch?.name)
@@ -115,7 +115,7 @@ class ExtensionsFragment :
         ConfirmationDialogPrefFragment.newInstance(preference.key).apply {
             setTargetFragment(this@ExtensionsFragment, 0)
             Timber.i("Showing ConfirmationDialogPrefFragment")
-            show(this@ExtensionsFragment.fragmentManager!!)
+            show(parentFragmentManager)
         }
     }
 

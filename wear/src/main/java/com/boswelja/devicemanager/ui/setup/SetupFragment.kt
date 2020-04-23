@@ -33,7 +33,7 @@ class SetupFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        nodeClient = Wearable.getNodeClient(context!!)
+        nodeClient = Wearable.getNodeClient(requireContext())
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {

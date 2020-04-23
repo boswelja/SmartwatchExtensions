@@ -93,7 +93,7 @@ class SettingsFragment :
             DND_SYNC_TO_WATCH_KEY -> {
                 val value = newValue == true
                 if (value) {
-                    val canEnableSync = Utils.checkDnDAccess(context!!)
+                    val canEnableSync = Utils.checkDnDAccess(requireContext())
                     if (canEnableSync) {
                         sharedPreferences.edit().putBoolean(key, value).apply()
                         preferenceSyncService?.pushNewData(key)
@@ -130,7 +130,7 @@ class SettingsFragment :
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        messageClient = Wearable.getMessageClient(context!!)
+        messageClient = Wearable.getMessageClient(requireContext())
 
         sharedPreferences = preferenceManager.sharedPreferences
         phoneId = sharedPreferences.getString(PHONE_ID_KEY, "") ?: ""
@@ -192,12 +192,12 @@ class SettingsFragment :
     }
 
     private fun notifyAdditionalSetupRequired(key: String) {
-        Utils.launchMobileApp(context!!, key)
-        ConfirmationActivityHandler.openOnPhoneAnimation(context!!, getString(R.string.additional_setup_required))
+        Utils.launchMobileApp(requireContext(), key)
+        ConfirmationActivityHandler.openOnPhoneAnimation(requireContext(), getString(R.string.additional_setup_required))
     }
 
     private fun notifyError() {
-        ConfirmationActivityHandler.failAnimation(context!!, getString(R.string.error))
+        ConfirmationActivityHandler.failAnimation(requireContext(), getString(R.string.error))
     }
 
     private fun onInterruptFilterAccessResponse(hasAccess: Boolean) {

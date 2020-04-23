@@ -36,7 +36,7 @@ internal class ErrorFragment : Fragment() {
      */
     private fun setupFinishButton() {
         Timber.d("setupFinishButton() called")
-        view!!.findViewById<MaterialButton>(R.id.finish_button)!!.apply {
+        requireView().findViewById<MaterialButton>(R.id.finish_button)!!.apply {
             setOnClickListener {
                 activity?.finish()
             }
@@ -48,7 +48,7 @@ internal class ErrorFragment : Fragment() {
      */
     fun showWatchVersionIncompatible() {
         Timber.d("showWatchVersionIncompatible() called")
-        view!!.findViewById<AppCompatTextView>(R.id.watch_version_incompatible_text)!!
+        requireView().findViewById<AppCompatTextView>(R.id.watch_version_incompatible_text)!!
                 .visibility = View.VISIBLE
     }
 
@@ -57,7 +57,7 @@ internal class ErrorFragment : Fragment() {
      */
     fun showWatchUnreachable() {
         Timber.d("showWatchUnreachable() called")
-        view!!.findViewById<AppCompatTextView>(R.id.watch_unreachable_text)!!
+        requireView().findViewById<AppCompatTextView>(R.id.watch_unreachable_text)!!
                 .visibility = View.VISIBLE
     }
 }

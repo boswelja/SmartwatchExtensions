@@ -72,7 +72,7 @@ class BatterySyncPreferenceWidgetFragment :
         super.onCreate(savedInstanceState)
         Timber.d("onCreate() called")
 
-        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context!!)
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(requireContext())
         batterySyncEnabled = sharedPreferences.getBoolean(BATTERY_SYNC_ENABLED_KEY, false)
 
         activity = getActivity() as BatterySyncPreferenceActivity

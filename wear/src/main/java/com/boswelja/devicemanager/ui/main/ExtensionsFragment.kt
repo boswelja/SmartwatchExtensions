@@ -23,7 +23,7 @@ class ExtensionsFragment : BaseSharedPreferenceFragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        fragmentManager!!.beginTransaction().apply {
+        parentFragmentManager.beginTransaction().apply {
             if (!sharedPreferences.getBoolean(PreferenceKey.BATTERY_SYNC_ENABLED_KEY, false) or
                     sharedPreferences.getBoolean(PreferenceKey.PHONE_LOCKING_ENABLED_KEY, false)) {
                 add(R.id.extensions_holder, LockPhoneFragment())

@@ -34,7 +34,7 @@ class AppSettingsFragment :
         when (preferenceKey) {
             SHOW_WIDGET_BACKGROUND_KEY,
             WIDGET_BACKGROUND_OPACITY_KEY -> {
-                WatchBatteryWidget.updateWidgets(context!!)
+                WatchBatteryWidget.updateWidgets(requireContext())
             }
         }
     }
@@ -90,7 +90,7 @@ class AppSettingsFragment :
      */
     private fun updateNotiSettingsPreferenceSummary() {
         Timber.d("updateNotiSettingsPreferenceSummary() called")
-        val notificationsAllowed = Compat.areNotificationsEnabled(context!!)
+        val notificationsAllowed = Compat.areNotificationsEnabled(requireContext())
         if (notificationsAllowed) {
             Timber.i("Notifications allowed")
             openNotiSettingsPreference.apply {
@@ -137,7 +137,7 @@ class AppSettingsFragment :
      * Opens the [ManageSpaceActivity].
      */
     private fun openManageSpaceActivity() {
-        Intent(context!!, ManageSpaceActivity::class.java).also {
+        Intent(requireContext(), ManageSpaceActivity::class.java).also {
             Timber.i("Starting ManageSpaceActivity")
             startActivity(it)
         }

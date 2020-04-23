@@ -28,7 +28,7 @@ class AppPermissionDialogFragment(private val requestedPermissions: Array<String
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        return AlertDialog.Builder(context!!)
+        return AlertDialog.Builder(requireContext())
                 .setPositiveButton(R.string.dialog_button_close) { dialog, _ -> dialog.dismiss() }
                 .setItems(permissions, null)
                 .setTitle(R.string.app_info_requested_permissions_dialog_title)

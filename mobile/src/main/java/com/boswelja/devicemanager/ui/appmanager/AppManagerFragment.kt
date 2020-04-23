@@ -52,7 +52,7 @@ class AppManagerFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        messageClient = Wearable.getMessageClient(context!!)
+        messageClient = Wearable.getMessageClient(requireContext())
         activity = getActivity() as AppManagerActivity
 
         watchId = activity.watchId
@@ -68,7 +68,7 @@ class AppManagerFragment : Fragment() {
 
         binding.appsRecyclerview.apply {
             layoutManager = LinearLayoutManager(
-                    context!!,
+                    requireContext(),
                     LinearLayoutManager.VERTICAL,
                     false)
             adapter = AppsAdapter(this@AppManagerFragment)

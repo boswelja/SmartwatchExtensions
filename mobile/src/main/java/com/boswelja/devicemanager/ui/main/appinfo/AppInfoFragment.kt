@@ -70,7 +70,7 @@ class AppInfoFragment :
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        messageClient = Wearable.getMessageClient(context!!)
+        messageClient = Wearable.getMessageClient(requireContext())
     }
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
@@ -186,7 +186,7 @@ class AppInfoFragment :
                 setShowTitle(true)
             }.build()
         }
-        customTabsIntent!!.launchUrl(context!!, getString(R.string.privacy_policy_url).toUri())
+        customTabsIntent!!.launchUrl(requireContext(), getString(R.string.privacy_policy_url).toUri())
     }
 
     /**

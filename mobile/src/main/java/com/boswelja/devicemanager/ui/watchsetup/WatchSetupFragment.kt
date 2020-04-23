@@ -65,7 +65,7 @@ class WatchSetupFragment : Fragment() {
         setupRecyclerView()
         setLoading(true)
 
-        WatchConnectionService.bind(context!!, watchConnectionManagerConnection)
+        WatchConnectionService.bind(requireContext(), watchConnectionManagerConnection)
     }
 
     override fun onDestroy() {
@@ -155,7 +155,7 @@ class WatchSetupFragment : Fragment() {
      * @param watch The [Watch] in question.
      */
     fun confirmRegisterWatch(watch: Watch) {
-        AlertDialog.Builder(context!!).apply {
+        AlertDialog.Builder(requireContext()).apply {
             if (watch.status != WatchStatus.MISSING_APP) {
                 setTitle(getString(R.string.register_watch_dialog_title, watch.name))
                 setMessage(getString(R.string.register_watch_dialog_message, watch.name))

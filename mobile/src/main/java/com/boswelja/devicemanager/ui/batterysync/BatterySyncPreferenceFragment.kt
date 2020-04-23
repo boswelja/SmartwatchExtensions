@@ -100,7 +100,7 @@ class BatterySyncPreferenceFragment :
         Timber.d("onStart() called")
         preferenceManager.sharedPreferences.registerOnSharedPreferenceChangeListener(this)
         if (preferenceManager.sharedPreferences.getBoolean(BATTERY_WATCH_CHARGE_NOTI_KEY, false) &&
-                !Compat.areNotificationsEnabled(context!!, WatchBatteryUpdateReceiver.BATTERY_CHARGED_NOTI_CHANNEL_ID)) {
+                !Compat.areNotificationsEnabled(requireContext(), WatchBatteryUpdateReceiver.BATTERY_CHARGED_NOTI_CHANNEL_ID)) {
             preferenceManager.sharedPreferences.edit()
                     .putBoolean(BATTERY_WATCH_CHARGE_NOTI_KEY, false)
                     .apply()
@@ -170,7 +170,7 @@ class BatterySyncPreferenceFragment :
                         putBoolean(BATTERY_SYNC_ENABLED_KEY, enabled).apply()
                     }
                     getWatchConnectionManager()?.updatePreferenceOnWatch(BATTERY_SYNC_ENABLED_KEY)
-                    updateBatteryStats(context!!, activity.watchConnectionManager?.getConnectedWatchId())
+                    updateBatteryStats(requireContext(), activity.watchConnectionManager?.getConnectedWatchId())
                 } else {
                     withContext(Dispatchers.Main) {
                         activity.createSnackBar(getString(R.string.battery_sync_enable_failed))
