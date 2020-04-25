@@ -14,6 +14,7 @@ import android.os.Bundle
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.core.net.toUri
 import androidx.preference.Preference
+import com.boswelja.common.donate.DonationResultInterface
 import com.boswelja.common.donate.ui.DonationDialog
 import com.boswelja.devicemanager.BuildConfig
 import com.boswelja.devicemanager.R
@@ -29,7 +30,8 @@ import timber.log.Timber
 class AppInfoFragment :
         BasePreferenceFragment(),
         Preference.OnPreferenceClickListener,
-        WatchConnectionListener {
+        WatchConnectionListener,
+        DonationResultInterface {
 
     private var customTabsIntent: CustomTabsIntent? = null
 
@@ -66,6 +68,22 @@ class AppInfoFragment :
             else -> return false
         }
         return true
+    }
+
+    override fun billingSetupFailed() {
+        activity.createSnackBar(getString(R.string.donation_connection_failed_message))
+    }
+
+    override fun skuQueryFailed() {
+        activity.createSnackBar(getString(R.string.donation_connection_failed_message))
+    }
+
+    override fun donationFailed() {
+        activity.createSnackBar(getString(R.string.donation_failed_message))
+    }
+
+    override fun onDonate() {
+        activity.createSnackBar(getString(R.string.donation_processed_message))
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -233,7 +251,11 @@ class AppInfoFragment :
      */
     private fun showDonationDialog() {
         Timber.d("showDonationDialog() called")
-        DonationDialog(R.style.AppTheme_AlertDialog).show(activity.supportFragmentManager)
+        DonationDialog(R.style.AppTheme_AlertDialog).apply {
+            setDonationResultInterface(this@AppInfoFragment)
+        }.also {
+            it.show(activity.supportFragmentManager)
+        }
     }
 
     /**

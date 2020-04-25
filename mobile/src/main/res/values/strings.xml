@@ -121,7 +121,6 @@
     <string name="pref_about_watch_version_disconnected">Watch not connected</string>
     <string name="donation_processed_message">Thanks for donating!</string>
     <string name="donation_failed_message">Failed to process donation</string>
-    <string name="donation_pending_message">Your donation is now pending, come back here later</string>
     <string name="donation_connection_failed_message">Failed to connect to Google Play</string>
 
     <!-- Dialog button strings -->
