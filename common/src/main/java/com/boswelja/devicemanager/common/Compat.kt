@@ -7,10 +7,7 @@
  */
 package com.boswelja.devicemanager.common
 
-import android.annotation.SuppressLint
 import android.app.NotificationManager
-import android.app.job.JobInfo
-import android.app.job.JobScheduler
 import android.content.Context
 import android.content.Intent
 import android.media.AudioManager
@@ -20,23 +17,7 @@ import androidx.core.app.NotificationManagerCompat
 /*
  * Compatibility layer to aid support for different Android versions
  */
-@SuppressLint("ObsoleteSdkInt")
 object Compat {
-
-    /**
-     * Finds pending jobs from {@link JobScheduler} matching the given ID.
-     * @param id ID of the job to find.
-     * @return JobInfo object, null if not found.
-     * @see JobInfo
-     */
-    fun getPendingJob(jobScheduler: JobScheduler, id: Int): JobInfo? {
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            jobScheduler.getPendingJob(id)
-        } else {
-            val jobs = jobScheduler.allPendingJobs
-            jobs.firstOrNull { j -> j.id == id }
-        }
-    }
 
     /**
      * Starts a service in the foreground.
@@ -71,10 +52,10 @@ object Compat {
     }
 
     /**
-     * Checks whether or not notifications are enabled for this app.
+     * Checks whether notifications are enabled for this app.
      * @param channelId ID of the notification channel to check. Ignored on platforms below API26
      * and can be left null to check whether notifications are enabled overall for this app.
-     * @return True if notifications are enabled, False otherwise.
+     * @return true if notifications are enabled, false otherwise.
      */
     fun areNotificationsEnabled(context: Context, channelId: String? = null): Boolean {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && !channelId.isNullOrBlank()) {
