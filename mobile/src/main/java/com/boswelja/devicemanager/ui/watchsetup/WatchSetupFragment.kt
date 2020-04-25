@@ -93,10 +93,15 @@ class WatchSetupFragment : Fragment() {
             coroutineScope.launch(Dispatchers.IO) {
                 val availableWatches = watchConnectionManager?.getAvailableWatches()
                 withContext(Dispatchers.Main) {
-                    if (availableWatches.isNullOrEmpty()) {
-                        setHelpMessage(getString(R.string.register_watch_message_no_watches))
+                    if (availableWatches != null) {
+                        if (availableWatches.isNotEmpty()) {
+                            (watchSetupRecyclerView.adapter as WatchSetupAdapter)
+                                    .setWatches(availableWatches)
+                        } else {
+                            setHelpMessage(getString(R.string.register_watch_message_no_watches))
+                        }
                     } else {
-                        (watchSetupRecyclerView.adapter as WatchSetupAdapter).setWatches(availableWatches)
+                        setHelpMessage(getString(R.string.register_watch_message_error))
                     }
                     setLoading(false)
                 }
