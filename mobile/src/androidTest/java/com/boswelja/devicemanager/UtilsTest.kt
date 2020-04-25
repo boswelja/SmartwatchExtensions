@@ -21,7 +21,7 @@ class UtilsTest {
         if (notificationManager.isNotificationPolicyAccessGranted) {
             assertWithMessage("Checking interrupt filter toggle on works")
                     .that(Utils.setInterruptionFilter(context, true))
-                    .isEqualTo(true)
+                    .isTrue()
             var retryCounter = 0
             // Wait up to 75ms for interrupt filter to change
             while (!Compat.isDndEnabled(context)) {
@@ -29,11 +29,11 @@ class UtilsTest {
                 if (retryCounter >= 3) break
                 Thread.sleep(25)
             }
-            assertThat(Compat.isDndEnabled(context)).isEqualTo(true)
+            assertThat(Compat.isDndEnabled(context)).isTrue()
 
             assertWithMessage("Checking interrupt filter toggle off works")
                     .that(Utils.setInterruptionFilter(context, false))
-                    .isEqualTo(true)
+                    .isTrue()
 
             retryCounter = 0
             // Wait up to 75ms for interrupt filter to change
@@ -42,11 +42,11 @@ class UtilsTest {
                 if (retryCounter >= 3) break
                 Thread.sleep(25)
             }
-            assertThat(Compat.isDndEnabled(context)).isEqualTo(false)
+            assertThat(Compat.isDndEnabled(context)).isFalse()
         } else {
             assertWithMessage("No notification policy access, setInterruptFilter should return false")
-                    .that(Utils.setInterruptionFilter(context, true))
-                    .isEqualTo(false)
+                    .that(Utils.setInterruptionFilter(context, !Compat.isDndEnabled(context)))
+                    .isFalse()
         }
     }
 
@@ -58,19 +58,19 @@ class UtilsTest {
                 .sameAs(context.packageManager.getApplicationIcon(context.packageName).toBitmap())
         assertWithMessage("Checking package icon is correct")
                 .that(sameIcons)
-                .isEqualTo(true)
+                .isTrue()
 
         sameIcons = Utils.getAppIcon(context, "").toBitmap()
                 .sameAs(context.getDrawable(R.drawable.ic_app_icon_unknown)?.toBitmap())
         assertWithMessage("Checking fallback icon is correct")
                 .that(sameIcons)
-                .isEqualTo(true)
+                .isTrue()
 
         sameIcons = Utils.getAppIcon(context, "", context.getDrawable(R.drawable.ic_app_icon_unknown)).toBitmap()
                 .sameAs(context.getDrawable(R.drawable.ic_app_icon_unknown)?.toBitmap())
         assertWithMessage("Checking custom fallback drawable is correct")
                 .that(sameIcons)
-                .isEqualTo(true)
+                .isTrue()
     }
 
     @Test
