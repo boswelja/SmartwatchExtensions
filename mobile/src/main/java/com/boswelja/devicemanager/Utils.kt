@@ -14,9 +14,8 @@ import android.graphics.drawable.Drawable
 import android.media.AudioManager
 import android.os.Build
 import android.util.TypedValue
-import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.common.Compat
-import com.boswelja.devicemanager.common.PreferenceKey
+import timber.log.Timber
 
 object Utils {
 
@@ -24,8 +23,9 @@ object Utils {
      * Set the system's current Interruption Filter state, or set silent mode if
      * Interruption Filter doesn't exist.
      * @param interruptionFilterOn Specify the new Interruption Filter state.
+     * @return true if interrupt filter was set successfully, false otherwise.
      */
-    fun setInterruptionFilter(context: Context, interruptionFilterOn: Boolean) {
+    fun setInterruptionFilter(context: Context, interruptionFilterOn: Boolean): Boolean {
         if (interruptionFilterOn != Compat.interruptionFilterEnabled(context)) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 try {
@@ -35,10 +35,9 @@ object Utils {
                     } else {
                         notificationManager.setInterruptionFilter(NotificationManager.INTERRUPTION_FILTER_ALL)
                     }
+                    return true
                 } catch (e: SecurityException) {
-                    e.printStackTrace()
-                    val prefs = PreferenceManager.getDefaultSharedPreferences(context)
-                    prefs.edit().putBoolean(PreferenceKey.DND_SYNC_TO_PHONE_KEY, false).apply()
+                    Timber.e(e)
                 }
             } else {
                 val audioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
@@ -47,8 +46,12 @@ object Utils {
                 } else {
                     audioManager.ringerMode = AudioManager.RINGER_MODE_NORMAL
                 }
+                return true
             }
+        } else {
+            return true
         }
+        return false
     }
 
     /**
@@ -71,6 +74,6 @@ object Utils {
      * @param resources [Resources].
      * @param dp The DiP count to convert to pixels.
      */
-    fun complexTypeDp(resources: Resources, dp: Float) =
+    fun complexTypeDp(resources: Resources, dp: Float): Float =
             TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, resources.displayMetrics)
 }

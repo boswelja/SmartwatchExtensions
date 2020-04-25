@@ -17,6 +17,9 @@ android {
         versionCode buildConfig.versionCode
         versionName buildConfig.versionName
 
+        testApplicationId buildConfig.packageName + ".test"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
         javaCompileOptions {
             annotationProcessorOptions {
                 arguments = ["room.schemaLocation":
@@ -75,6 +78,11 @@ dependencies {
     implementation "com.google.android.gms:play-services-wearable:$play_services_wearable"
 
     implementation 'com.jakewharton.timber:timber:4.7.1'
+
+    testImplementation 'junit:junit:4.13'
+    testImplementation "com.google.truth:truth:1.0.1"
+    androidTestImplementation "com.google.truth:truth:1.0.1"
+    androidTestImplementation 'androidx.test:runner:1.2.0'
 }
 
 spotless {
