@@ -26,7 +26,7 @@ object Utils {
      * @return true if interrupt filter was set successfully, false otherwise.
      */
     fun setInterruptionFilter(context: Context, interruptionFilterOn: Boolean): Boolean {
-        if (interruptionFilterOn != Compat.interruptionFilterEnabled(context)) {
+        if (interruptionFilterOn != Compat.isDndEnabled(context)) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 try {
                     val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager

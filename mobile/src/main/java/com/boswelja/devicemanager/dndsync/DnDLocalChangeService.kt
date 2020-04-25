@@ -15,6 +15,7 @@ import android.content.SharedPreferences
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
 import androidx.preference.PreferenceManager
+import com.boswelja.devicemanager.common.Compat
 import com.boswelja.devicemanager.common.PreferenceKey
 import com.boswelja.devicemanager.common.R
 import com.boswelja.devicemanager.common.dndsync.References
@@ -89,7 +90,7 @@ class DnDLocalChangeService : Service(), WatchPreferenceChangeListener {
         WatchManager.bind(this, watchConnectionManagerConnection)
         DnDLocalChangeReceiver.registerReceiver(this, dndChangeReceiver)
 
-        pushNewDnDState(Utils.isDnDEnabledCompat(this))
+        pushNewDnDState(Compat.isDndEnabled(this))
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {

@@ -24,12 +24,12 @@ class UtilsTest {
                     .isEqualTo(true)
             var retryCounter = 0
             // Wait up to 75ms for interrupt filter to change
-            while (!Compat.interruptionFilterEnabled(context)) {
+            while (!Compat.isDndEnabled(context)) {
                 retryCounter += 1
                 if (retryCounter >= 3) break
                 Thread.sleep(25)
             }
-            assertThat(Compat.interruptionFilterEnabled(context)).isEqualTo(true)
+            assertThat(Compat.isDndEnabled(context)).isEqualTo(true)
 
             assertWithMessage("Checking interrupt filter toggle off works")
                     .that(Utils.setInterruptionFilter(context, false))
@@ -37,12 +37,12 @@ class UtilsTest {
 
             retryCounter = 0
             // Wait up to 75ms for interrupt filter to change
-            while (Compat.interruptionFilterEnabled(context)) {
+            while (Compat.isDndEnabled(context)) {
                 retryCounter += 1
                 if (retryCounter >= 3) break
                 Thread.sleep(25)
             }
-            assertThat(Compat.interruptionFilterEnabled(context)).isEqualTo(false)
+            assertThat(Compat.isDndEnabled(context)).isEqualTo(false)
         } else {
             assertWithMessage("No notification policy access, setInterruptFilter should return false")
                     .that(Utils.setInterruptionFilter(context, true))

@@ -20,7 +20,7 @@ object Utils {
      * Ensure Interruption Filter state is properly synced between devices.
      */
     fun updateInterruptionFilter(context: Context) {
-        val interruptionFilterEnabled = Compat.interruptionFilterEnabled(context)
+        val interruptionFilterEnabled = Compat.isDndEnabled(context)
         updateInterruptionFilter(context, interruptionFilterEnabled)
     }
 

@@ -45,7 +45,7 @@ class DnDLocalChangeListener : Service() {
     private var dndChangeReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             if (context != null && intent!!.action == NotificationManager.ACTION_INTERRUPTION_FILTER_CHANGED) {
-                val dndEnabled = Compat.interruptionFilterEnabled(context)
+                val dndEnabled = Compat.isDndEnabled(context)
                 Utils.updateInterruptionFilter(this@DnDLocalChangeListener, dndEnabled)
             }
         }

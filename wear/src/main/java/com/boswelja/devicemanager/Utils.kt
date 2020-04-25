@@ -37,7 +37,7 @@ object Utils {
      * @param interruptionFilterOn Specify the new Interruption Filter state.
      */
     fun setInterruptionFilter(context: Context, interruptionFilterOn: Boolean) {
-        if (interruptionFilterOn != Compat.interruptionFilterEnabled(context)) {
+        if (interruptionFilterOn != Compat.isDndEnabled(context)) {
             try {
                 val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
                 if (interruptionFilterOn) {

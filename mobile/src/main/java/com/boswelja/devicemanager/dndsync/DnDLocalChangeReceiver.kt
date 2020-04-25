@@ -14,6 +14,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.media.AudioManager
 import android.os.Build
+import com.boswelja.devicemanager.common.Compat
 import timber.log.Timber
 
 abstract class DnDLocalChangeReceiver : BroadcastReceiver() {
@@ -30,7 +31,7 @@ abstract class DnDLocalChangeReceiver : BroadcastReceiver() {
             NotificationManager.ACTION_INTERRUPTION_FILTER_CHANGED,
             AudioManager.RINGER_MODE_CHANGED_ACTION -> {
                 Timber.i("DnD mode changed")
-                onDnDChanged(Utils.isDnDEnabledCompat(context!!))
+                onDnDChanged(Compat.isDndEnabled(context!!))
             }
         }
     }

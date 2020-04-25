@@ -7,7 +7,9 @@
  */
 package com.boswelja.devicemanager.dndsync
 
+import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.Utils.setInterruptionFilter
+import com.boswelja.devicemanager.common.PreferenceKey
 import com.boswelja.devicemanager.common.References
 import com.google.android.gms.wearable.DataEvent
 import com.google.android.gms.wearable.DataEventBuffer
@@ -24,7 +26,11 @@ class DnDRemoteChangeReceiver : WearableListenerService() {
             watchDndStates.add(dndEnabled)
         }
         val shouldEnableDnD = watchDndStates.any { dndEnabled -> dndEnabled }
-        setInterruptionFilter(this, shouldEnableDnD)
+        val success = setInterruptionFilter(this, shouldEnableDnD)
+        if (!success) {
+            val prefs = PreferenceManager.getDefaultSharedPreferences(this)
+            prefs.edit().putBoolean(PreferenceKey.DND_SYNC_TO_PHONE_KEY, false).apply()
+        }
     }
 
     /**

@@ -51,20 +51,22 @@ object Compat {
     }
 
     /**
-     * Checks whether or not Interruption Filter is currently active, or check silent
-     * mode state if Interruption Filter is unavailable.
-     * @return Whether or not Interruption Filter is enabled.
+     * Checks whether Do not Disturb is currently active.
+     * Will fall back to silent / vibrate on older Android versions
+     * @return true if DnD is enabled, false otherwise.
      */
-    fun interruptionFilterEnabled(context: Context): Boolean {
+    fun isDndEnabled(context: Context): Boolean {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            val notificationManager =
+                    context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             val currentInterruptFilter = notificationManager.currentInterruptionFilter
             (currentInterruptFilter == NotificationManager.INTERRUPTION_FILTER_ALARMS) ||
                     (currentInterruptFilter == NotificationManager.INTERRUPTION_FILTER_PRIORITY) ||
                     (currentInterruptFilter == NotificationManager.INTERRUPTION_FILTER_NONE)
         } else {
             val audioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
-            audioManager.ringerMode == AudioManager.RINGER_MODE_SILENT
+            (audioManager.ringerMode == AudioManager.RINGER_MODE_SILENT) ||
+                    (audioManager.ringerMode == AudioManager.RINGER_MODE_VIBRATE)
         }
     }
 
