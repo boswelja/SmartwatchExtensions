@@ -123,7 +123,6 @@
     <string name="donation_failed_message">Failed to process donation</string>
     <string name="donation_pending_message">Your donation is now pending, come back here later</string>
     <string name="donation_connection_failed_message">Failed to connect to Google Play</string>
-    <string name="share_menu_title">@string/app_name</string>
 
     <!-- Dialog button strings -->
     <string name="dialog_button_grant">Grant</string>
@@ -136,10 +135,6 @@
     <string name="dialog_button_reset">Reset</string>
 
     <!-- Message strings -->
-    <string name="message_battery_opt_warning_label_short">Battery Optimisation</string>
-    <string name="message_battery_opt_warning_label">Disable Battery Optimisation</string>
-    <string name="message_battery_opt_warning_desc">Battery Optimisation can cause problems with Battery Sync among other things, it\'s recommended to turn it off for Wearable Extensions</string>
-    <string name="message_battery_opt_warning_button_label">Turn off</string>
     <string name="message_watch_charge_noti_warning_label_short">Watch Charge Notification</string>
     <string name="message_watch_charge_noti_warning_label">Watch Charge Notifications Not Working</string>
     <string name="message_watch_charge_noti_warning_desc">Watch Charge Notifications have been disabled in Notification Settings. Please use the option in Battery Sync settings to disable charge notifications</string>
@@ -188,8 +183,6 @@
     <string name="register_watch_button_refresh">Refresh</string>
     <string name="missing_app_dialog_title">Missing Wearable Extensions</string>
     <string name="missing_app_dialog_message">Your %s doesn\'t have Wearable Extensions installed, please install it from the Play Store and try again.</string>
-    <string name="watch_description_add">Tap to Add</string>
-    <string name="watch_description_missing_app">Missing Wearable Extensions</string>
 
     <!-- Boot & Update handler notification strings -->
     <string name="notification_boot_handler_title">Starting required services</string>
@@ -242,9 +235,6 @@
     <string name="database_name_main">Watch Settings</string>
     <string name="database_name_widget">Widget</string>
     <string name="database_name_battery_stats">Battery Sync</string>
-
-    <!-- Update dialog strings -->
-    <string name="update_dialog_title">Updating %s</string>
 
     <string name="snackbar_action_undo">Undo</string>
 

@@ -43,9 +43,10 @@ abstract class WatchDatabase : RoomDatabase() {
      * @return true if the preference was successfully updated, false otherwise.
      */
     fun updatePrefInDatabase(
-            watchId: String,
-            preferenceKey: String,
-            newValue: Any): Boolean {
+        watchId: String,
+        preferenceKey: String,
+        newValue: Any
+    ): Boolean {
         if (isOpen) {
             return when (newValue) {
                 is Boolean -> {

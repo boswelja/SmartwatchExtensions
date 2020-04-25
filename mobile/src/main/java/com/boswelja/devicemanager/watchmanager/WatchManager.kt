@@ -94,7 +94,7 @@ class WatchManager :
         Timber.d("onDestroy() called")
         sharedPreferences.unregisterOnSharedPreferenceChangeListener(this)
         if (database.isOpen) database.close()
-        if (watchConnectionListener != null){
+        if (watchConnectionListener != null) {
             capabilityClient.removeListener(watchConnectionListener!!)
         }
     }
@@ -144,9 +144,10 @@ class WatchManager :
      * @return A [WatchStatus] for the [Watch].
      */
     private fun getWatchStatus(
-            watchId: String,
-            capableNodes: Set<Node>? = null,
-            connectedNodes: List<Node>? = null): WatchStatus {
+        watchId: String,
+        capableNodes: Set<Node>? = null,
+        connectedNodes: List<Node>? = null
+    ): WatchStatus {
         return if (connectedNodes != null && capableNodes != null) {
             val isCapable = capableNodes.any { it.id == watchId }
             val isConnected = connectedNodes.any { it.id == watchId }
@@ -496,7 +497,9 @@ class WatchManager :
      * @return true if the update was successful, false otherwise.
      */
     suspend fun updatePreferenceInDatabase(
-            preferenceKey: String, newValue: Any): Boolean {
+        preferenceKey: String,
+        newValue: Any
+    ): Boolean {
         return updatePreferenceInDatabase(connectedWatch?.id, preferenceKey, newValue)
     }
 
@@ -508,7 +511,10 @@ class WatchManager :
      * @return true if the update was successful, false otherwise.
      */
     suspend fun updatePreferenceInDatabase(
-            watchId: String?, preferenceKey: String, newValue: Any): Boolean {
+        watchId: String?,
+        preferenceKey: String,
+        newValue: Any
+    ): Boolean {
         Timber.d("updatePreferenceInDatabase($watchId, $preferenceKey, $newValue) called")
         return withContext(Dispatchers.IO) {
             if (!watchId.isNullOrEmpty()) {

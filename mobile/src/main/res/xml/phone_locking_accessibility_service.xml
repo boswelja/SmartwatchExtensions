@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <accessibility-service
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:packageNames="com.boswelja.devicemanager"
     android:canPerformGestures="true"
     android:canRequestEnhancedWebAccessibility="false"
     android:canRequestFilterKeyEvents="false"
     android:canRequestTouchExplorationMode="false"
-    android:canRetrieveWindowContent="false" />
+    android:canRetrieveWindowContent="false"
+    tools:targetApi="28" />
