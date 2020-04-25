@@ -1,3 +1,10 @@
+/* Copyright (C) 2020 Jack Boswell <boswelja@outlook.com>
+ *
+ * This file is part of Wearable Extensions
+ *
+ * This file, and any part of the Wearable Extensions app/s cannot be copied and/or distributed
+ * without permission from Jack Boswell (boswelja) <boswela@outlook.com>
+ */
 package com.boswelja.devicemanager
 
 import android.app.NotificationManager
@@ -6,9 +13,9 @@ import android.content.res.Resources
 import androidx.core.graphics.drawable.toBitmap
 import androidx.test.platform.app.InstrumentationRegistry
 import com.boswelja.devicemanager.common.Compat
-import org.junit.Test
 import com.google.common.truth.Truth.assertThat
 import com.google.common.truth.Truth.assertWithMessage
+import org.junit.Test
 
 class UtilsTest {
 
@@ -87,6 +94,5 @@ class UtilsTest {
 
         assertThat(Utils.complexTypeDp(resources, 32f))
                 .isEqualTo((32f * resources.displayMetrics.density))
-
     }
 }

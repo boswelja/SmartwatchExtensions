@@ -1,3 +1,10 @@
+/* Copyright (C) 2020 Jack Boswell <boswelja@outlook.com>
+ *
+ * This file is part of Wearable Extensions
+ *
+ * This file, and any part of the Wearable Extensions app/s cannot be copied and/or distributed
+ * without permission from Jack Boswell (boswelja) <boswela@outlook.com>
+ */
 package com.boswelja.devicemanager.common
 
 import android.app.NotificationChannel
@@ -6,10 +13,10 @@ import android.content.Context
 import androidx.core.app.NotificationManagerCompat
 import androidx.test.platform.app.InstrumentationRegistry
 import com.boswelja.devicemanager.Utils
-import org.junit.Test
 import com.google.common.truth.Truth.assertWithMessage
 import org.junit.After
 import org.junit.Before
+import org.junit.Test
 
 class CompatTest {
 
