@@ -15,12 +15,16 @@ import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_SYNC_ENABLED_KEY
 import com.boswelja.devicemanager.ui.common.WatchViewHolder
 import com.boswelja.devicemanager.watchmanager.Watch
 
-class WatchPickerAdapter(private val watches: List<Watch>, private val activity: WatchBatteryWidgetConfigurationActivity) : RecyclerView.Adapter<WatchViewHolder>() {
+class WatchPickerAdapter(private val activity: WatchBatteryWidgetConfigurationActivity) :
+        RecyclerView.Adapter<WatchViewHolder>() {
+
+    private val watches: ArrayList<Watch> = ArrayList()
 
     override fun getItemCount(): Int = watches.count()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): WatchViewHolder {
-        return WatchViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.common_recyclerview_item_icon_two_line, parent, false))
+        return WatchViewHolder(LayoutInflater.from(parent.context)
+                .inflate(R.layout.common_recyclerview_item_icon_two_line, parent, false))
     }
 
     override fun onBindViewHolder(holder: WatchViewHolder, position: Int) {
@@ -37,5 +41,17 @@ class WatchPickerAdapter(private val watches: List<Watch>, private val activity:
                 activity.finishAndCreateWidget(watch.id)
             }
         }
+    }
+
+    /**
+     * Sets the list of [Watch] objects to show in the adapter.
+     * @param newWatches The new list of watches to show.
+     */
+    fun setWatches(newWatches: List<Watch>) {
+        watches.apply {
+            clear()
+            addAll(newWatches)
+        }
+        notifyDataSetChanged()
     }
 }

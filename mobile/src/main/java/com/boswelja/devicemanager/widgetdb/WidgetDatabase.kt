@@ -24,6 +24,10 @@ abstract class WidgetDatabase : RoomDatabase() {
 
     companion object {
 
+        /**
+         * Opens a new [WidgetDatabase] instance.
+         * @param context [Context].
+         */
         suspend fun open(context: Context): WidgetDatabase {
             return withContext(Dispatchers.IO) {
                 return@withContext Room.databaseBuilder(context, WidgetDatabase::class.java, "widget-db")
@@ -31,6 +35,11 @@ abstract class WidgetDatabase : RoomDatabase() {
             }
         }
 
+        /**
+         * Update all the widgets for a specified [com.boswelja.devicemanager.watchmanager.Watch].
+         * @param context [Context].
+         * @param watchId The ID of the watch whose widgets we're updating.
+         */
         suspend fun updateWatchWidgets(context: Context, watchId: String) {
             withContext(Dispatchers.IO) {
                 val database = open(context)

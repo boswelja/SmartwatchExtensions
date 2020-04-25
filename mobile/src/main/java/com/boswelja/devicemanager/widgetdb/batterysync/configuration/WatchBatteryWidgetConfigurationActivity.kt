@@ -25,35 +25,34 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import timber.log.Timber
 
 class WatchBatteryWidgetConfigurationActivity : BaseToolbarActivity() {
 
-    private val watchConnectionManagerConnection = object : WatchManager.Connection() {
+    private val watchManagerConnection = object : WatchManager.Connection() {
         override fun onWatchManagerBound(watchManager: WatchManager) {
-            watchConnectionManager = watchManager
-            findViewById<RecyclerView>(R.id.watch_picker_recycler_view).apply {
-                layoutManager = LinearLayoutManager(this@WatchBatteryWidgetConfigurationActivity, LinearLayoutManager.VERTICAL, false)
-                coroutineScope.launch(Dispatchers.IO) {
-                    val watches = watchManager.getRegisteredWatches()
-                    withContext(Dispatchers.Main) {
-                        adapter = WatchPickerAdapter(watches, this@WatchBatteryWidgetConfigurationActivity)
-                        setLoading(false)
-                    }
+            Timber.i("Watch manager bound")
+            coroutineScope.launch(Dispatchers.IO) {
+                val watches = watchManager.getRegisteredWatches()
+                withContext(Dispatchers.Main) {
+                    (watchPickerRecyclerView.adapter as WatchPickerAdapter).setWatches(watches)
+                    setLoading(false)
                 }
             }
         }
 
-        override fun onWatchManagerUnbound() {}
+        override fun onWatchManagerUnbound() {
+            Timber.w("Watch manager unbound")
+        }
     }
+
+    private val resultIntent = Intent()
+    private val coroutineScope = MainScope()
 
     private lateinit var loadingSpinner: ProgressBar
     private lateinit var watchPickerRecyclerView: RecyclerView
 
-    private var watchConnectionManager: WatchManager? = null
     private var widgetId: Int = AppWidgetManager.INVALID_APPWIDGET_ID
-
-    private val resultIntent = Intent()
-    private val coroutineScope = MainScope()
 
     override fun getContentViewId(): Int = R.layout.activity_watch_battery_widget_configuration
 
@@ -61,40 +60,66 @@ class WatchBatteryWidgetConfigurationActivity : BaseToolbarActivity() {
         super.onCreate(savedInstanceState)
 
         loadingSpinner = findViewById(R.id.loading_spinner)
-        watchPickerRecyclerView = findViewById(R.id.watch_picker_recycler_view)
+        setupWatchPickerRecyclerView()
+        setupToolbar()
+        setLoading(true)
 
-        supportActionBar?.apply {
-            setDisplayShowTitleEnabled(true)
-            title = "Watch Battery Widget Setup"
-            setHomeAsUpIndicator(R.drawable.ic_close)
-            setDisplayHomeAsUpEnabled(true)
-        }
-
-        widgetId = intent?.extras?.getInt(
-                AppWidgetManager.EXTRA_APPWIDGET_ID,
-                AppWidgetManager.INVALID_APPWIDGET_ID)
-                ?: AppWidgetManager.INVALID_APPWIDGET_ID
-
+        widgetId = getWidgetId()
         resultIntent.apply {
             putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId)
         }
         setResult(Activity.RESULT_CANCELED, resultIntent)
+
+        WatchManager.bind(this, watchManagerConnection)
     }
 
-    override fun onResume() {
-        super.onResume()
-        setLoading(true)
-
-        WatchManager.bind(this, watchConnectionManagerConnection)
+    override fun onDestroy() {
+        super.onDestroy()
+        unbindService(watchManagerConnection)
     }
 
-    override fun onPause() {
-        super.onPause()
-        unbindService(watchConnectionManagerConnection)
+    /**
+     * Gets the widget ID from the activity [getIntent].
+     * @return The widget ID.
+     */
+    private fun getWidgetId(): Int {
+        return intent?.extras?.getInt(
+                AppWidgetManager.EXTRA_APPWIDGET_ID,
+                AppWidgetManager.INVALID_APPWIDGET_ID)
+                ?: AppWidgetManager.INVALID_APPWIDGET_ID
     }
 
-    private fun setLoading(loading: Boolean) {
-        if (loading) {
+    /**
+     * Set up the [getSupportActionBar].
+     */
+    private fun setupToolbar() {
+        supportActionBar?.apply {
+            setDisplayShowTitleEnabled(true)
+            setHomeAsUpIndicator(R.drawable.ic_close)
+            setDisplayHomeAsUpEnabled(true)
+        }
+    }
+
+    /**
+     * Set up [watchPickerRecyclerView].
+     */
+    private fun setupWatchPickerRecyclerView() {
+        watchPickerRecyclerView = findViewById<RecyclerView>(R.id.watch_picker_recycler_view).apply {
+            layoutManager = LinearLayoutManager(
+                    this@WatchBatteryWidgetConfigurationActivity,
+                    LinearLayoutManager.VERTICAL,
+                    false)
+            adapter = WatchPickerAdapter(this@WatchBatteryWidgetConfigurationActivity)
+        }
+    }
+
+    /**
+     * Sets whether the UI should display a loading spinner.
+     * @param isLoading true if the UI should reflect loading, false otherwise.
+     */
+    private fun setLoading(isLoading: Boolean) {
+        Timber.d("setLoading($isLoading) called")
+        if (isLoading) {
             loadingSpinner.visibility = View.VISIBLE
             watchPickerRecyclerView.visibility = View.GONE
         } else {
@@ -103,7 +128,11 @@ class WatchBatteryWidgetConfigurationActivity : BaseToolbarActivity() {
         }
     }
 
+    /**
+     * Stores the new widget's information, creates it then finishes this activity.
+     */
     fun finishAndCreateWidget(watchId: String) {
+        Timber.d("finishAndCreateWidget($watchId) called")
         setResult(Activity.RESULT_OK, resultIntent)
 
         coroutineScope.launch(Dispatchers.IO) {
@@ -111,10 +140,8 @@ class WatchBatteryWidgetConfigurationActivity : BaseToolbarActivity() {
                 it.watchBatteryWidgetDao().addWidget(WatchBatteryWidgetId(watchId, widgetId))
                 it.close()
             }
+            WatchBatteryWidget.updateWidgets(this@WatchBatteryWidgetConfigurationActivity, intArrayOf(widgetId))
+            finish()
         }
-
-        WatchBatteryWidget.updateWidgets(this, intArrayOf(widgetId))
-
-        finish()
     }
 }
