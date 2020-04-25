@@ -23,7 +23,7 @@ import com.boswelja.devicemanager.common.Compat
 import com.boswelja.devicemanager.common.PreferenceKey
 import com.boswelja.devicemanager.dndsync.DnDLocalChangeService
 import com.boswelja.devicemanager.ui.main.MainActivity.Companion.SHOW_CHANGELOG_KEY
-import com.boswelja.devicemanager.watchconnectionmanager.WatchConnectionService
+import com.boswelja.devicemanager.watchmanager.WatchManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
@@ -33,12 +33,12 @@ class BootOrUpdateHandlerService : Service() {
 
     private lateinit var updater: Updater
 
-    private val watchManagerConnection = object : WatchConnectionService.Connection() {
-        override fun onWatchManagerBound(service: WatchConnectionService) {
+    private val watchManagerConnection = object : WatchManager.Connection() {
+        override fun onWatchManagerBound(watchManager: WatchManager) {
             Timber.i("Service bound")
             MainScope().launch(Dispatchers.IO) {
-                tryStartBatterySyncWorkers(service)
-                tryStartInterruptFilterSyncService(service)
+                tryStartBatterySyncWorkers(watchManager)
+                tryStartInterruptFilterSyncService(watchManager)
                 finish()
             }
         }
@@ -63,7 +63,7 @@ class BootOrUpdateHandlerService : Service() {
             else -> return super.onStartCommand(intent, flags, startId)
         }
         Timber.i("Binding to WatchConnectionService")
-        WatchConnectionService.bind(this, watchManagerConnection)
+        WatchManager.bind(this, watchManagerConnection)
         return START_NOT_STICKY
     }
 
@@ -124,11 +124,11 @@ class BootOrUpdateHandlerService : Service() {
 
     /**
      * Try to start Do not Disturb change listener service if needed.
-     * @param service The [WatchConnectionService] to read preferences from.
+     * @param service The [WatchManager] to read preferences from.
      */
-    private suspend fun tryStartInterruptFilterSyncService(service: WatchConnectionService) {
+    private suspend fun tryStartInterruptFilterSyncService(service: WatchManager) {
         val dndSyncToWatchEnabled =
-                service.getBoolPrefsForRegisteredWatches(PreferenceKey.DND_SYNC_TO_WATCH_KEY)
+                service.getBoolPrefsForWatches(PreferenceKey.DND_SYNC_TO_WATCH_KEY)
                         ?.any { it.value } == true
         Timber.i("tryStartInterruptFilterSyncService dndSyncToWatchEnabled = $dndSyncToWatchEnabled")
         if (dndSyncToWatchEnabled) {
@@ -140,11 +140,11 @@ class BootOrUpdateHandlerService : Service() {
 
     /**
      * Try to start any needed [BatterySyncWorker] instances.
-     * @param service The [WatchConnectionService] to read preferences from.
+     * @param service The [WatchManager] to read preferences from.
      */
-    private suspend fun tryStartBatterySyncWorkers(service: WatchConnectionService) {
+    private suspend fun tryStartBatterySyncWorkers(service: WatchManager) {
         val watchBatterySyncInfo =
-                service.getBoolPrefsForRegisteredWatches(PreferenceKey.BATTERY_SYNC_ENABLED_KEY)
+                service.getBoolPrefsForWatches(PreferenceKey.BATTERY_SYNC_ENABLED_KEY)
         if (watchBatterySyncInfo != null && watchBatterySyncInfo.isNotEmpty()) {
             for (batterySyncBoolPreference in watchBatterySyncInfo) {
                 if (batterySyncBoolPreference.value) {

@@ -14,8 +14,8 @@ import android.text.TextWatcher
 import androidx.appcompat.app.AlertDialog
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.ui.base.BaseToolbarActivity
-import com.boswelja.devicemanager.watchconnectionmanager.Watch
-import com.boswelja.devicemanager.watchconnectionmanager.WatchConnectionService
+import com.boswelja.devicemanager.watchmanager.Watch
+import com.boswelja.devicemanager.watchmanager.WatchManager
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
@@ -27,10 +27,10 @@ import timber.log.Timber
 
 class WatchInfoActivity : BaseToolbarActivity() {
 
-    private val watchConnectionManagerConnection = object : WatchConnectionService.Connection() {
-        override fun onWatchManagerBound(service: WatchConnectionService) {
+    private val watchConnectionManagerConnection = object : WatchManager.Connection() {
+        override fun onWatchManagerBound(watchManager: WatchManager) {
             Timber.i("Watch manager bound")
-            watchConnectionManager = service
+            watchConnectionManager = watchManager
             resetNicknameTextField()
         }
 
@@ -46,7 +46,7 @@ class WatchInfoActivity : BaseToolbarActivity() {
                 Timber.i("Updating watch nickname")
                 watchNameLayout.isErrorEnabled = false
                 coroutineScope.launch(Dispatchers.IO) {
-                    watchConnectionManager?.updateWatchNickname(watchId!!, editable.toString())
+                    watchConnectionManager?.updateWatchName(watchId!!, editable.toString())
                 }
                 resultCode = RESULT_WATCH_NAME_CHANGED
             } else {
@@ -66,7 +66,7 @@ class WatchInfoActivity : BaseToolbarActivity() {
     private lateinit var watchNameLayout: TextInputLayout
     private lateinit var watchNameField: TextInputEditText
 
-    private var watchConnectionManager: WatchConnectionService? = null
+    private var watchConnectionManager: WatchManager? = null
     private var watchId: String? = null
 
     private var resultCode = RESULT_WATCH_UNCHANGED
@@ -91,7 +91,7 @@ class WatchInfoActivity : BaseToolbarActivity() {
             confirmForgetWatch()
         }
 
-        WatchConnectionService.bind(this, watchConnectionManagerConnection)
+        WatchManager.bind(this, watchConnectionManagerConnection)
     }
 
     override fun finish() {
@@ -106,7 +106,7 @@ class WatchInfoActivity : BaseToolbarActivity() {
     }
 
     /**
-     * Resets the text in [watchNameField] to the nickname stored in [WatchConnectionService].
+     * Resets the text in [watchNameField] to the nickname stored in [WatchManager].
      */
     private fun resetNicknameTextField() {
         coroutineScope.launch(Dispatchers.IO) {

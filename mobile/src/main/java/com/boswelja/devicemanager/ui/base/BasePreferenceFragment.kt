@@ -14,7 +14,7 @@ import android.view.ViewGroup
 import androidx.preference.PreferenceFragmentCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.boswelja.devicemanager.R
-import com.boswelja.devicemanager.watchconnectionmanager.WatchConnectionService
+import com.boswelja.devicemanager.watchmanager.WatchManager
 
 /**
  * A [PreferenceFragmentCompat] that automatically adjusts it's [RecyclerView] properties
@@ -40,7 +40,7 @@ abstract class BasePreferenceFragment : PreferenceFragmentCompat() {
     }
 
     /**
-     * Get an instance of [WatchConnectionService] from the parent activity.
+     * Get an instance of [WatchManager] from the parent activity.
      */
-    fun getWatchConnectionManager(): WatchConnectionService? = activity.watchConnectionManager
+    fun getWatchConnectionManager(): WatchManager? = activity.watchConnectionManager
 }

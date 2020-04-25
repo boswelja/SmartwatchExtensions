@@ -15,7 +15,7 @@ import com.boswelja.devicemanager.batterysync.BatterySyncWorker
 import com.boswelja.devicemanager.common.Compat
 import com.boswelja.devicemanager.common.PreferenceKey
 import com.boswelja.devicemanager.dndsync.DnDLocalChangeService
-import com.boswelja.devicemanager.watchconnectionmanager.WatchConnectionService
+import com.boswelja.devicemanager.watchmanager.WatchManager
 import com.google.android.gms.wearable.DataEvent
 import com.google.android.gms.wearable.DataEventBuffer
 import com.google.android.gms.wearable.DataMapItem
@@ -29,13 +29,13 @@ class PreferenceChangeReceiver : WearableListenerService() {
 
     private val coroutineScope = MainScope()
 
-    private var watchConnectionManager: WatchConnectionService? = null
+    private var watchConnectionManager: WatchManager? = null
     private var sharedPreferences: SharedPreferences? = null
 
-    private val watchConnManConnection = object : WatchConnectionService.Connection() {
-        override fun onWatchManagerBound(service: WatchConnectionService) {
+    private val watchConnManConnection = object : WatchManager.Connection() {
+        override fun onWatchManagerBound(watchManager: WatchManager) {
             Timber.i("onWatchManagerBound() called")
-            watchConnectionManager = service
+            watchConnectionManager = watchManager
         }
 
         override fun onWatchManagerUnbound() {
@@ -47,7 +47,7 @@ class PreferenceChangeReceiver : WearableListenerService() {
     override fun onCreate() {
         super.onCreate()
         Timber.i("onCreate() called")
-        WatchConnectionService.bind(this, watchConnManConnection)
+        WatchManager.bind(this, watchConnManConnection)
     }
 
     override fun onDestroy() {
@@ -59,7 +59,7 @@ class PreferenceChangeReceiver : WearableListenerService() {
         Timber.i("onDataChanged() called")
         if (dataEvents != null) {
             Timber.i("Handling preference change")
-            val selectedWatchId = watchConnectionManager?.getConnectedWatch()?.id
+            val selectedWatchId = watchConnectionManager?.connectedWatch?.id
             for (event in dataEvents) {
                 val senderId = event.dataItem.uri.host!!
                 if (!selectedWatchId.isNullOrEmpty() && senderId == selectedWatchId) {
@@ -72,7 +72,7 @@ class PreferenceChangeReceiver : WearableListenerService() {
     }
 
     /**
-     * Handle a preference change for the watch that's currently selected in [WatchConnectionService].
+     * Handle a preference change for the watch that's currently selected in [WatchManager].
      * @param key The key of the changed preference.
      * @param newValue The new value of the preference.
      */
@@ -101,7 +101,7 @@ class PreferenceChangeReceiver : WearableListenerService() {
         }
         coroutineScope.launch(Dispatchers.IO) {
             Timber.i("Updating preference in database")
-            watchConnectionManager?.updatePrefInDatabase(key, newValue)
+            watchConnectionManager?.updatePreferenceInDatabase(key, newValue)
         }
     }
 
@@ -157,11 +157,11 @@ class PreferenceChangeReceiver : WearableListenerService() {
                         PreferenceKey.DND_SYNC_TO_PHONE_KEY,
                         PreferenceKey.DND_SYNC_WITH_THEATER_KEY -> {
                             val newValue = dataMap.getBoolean(key)
-                            watchConnectionManager?.updatePrefInDatabase(senderId, key, newValue)
+                            watchConnectionManager?.updatePreferenceInDatabase(senderId, key, newValue)
                         }
                         PreferenceKey.BATTERY_CHARGE_THRESHOLD_KEY -> {
                             val newValue = dataMap.getInt(key)
-                            watchConnectionManager?.updatePrefInDatabase(senderId, key, newValue)
+                            watchConnectionManager?.updatePreferenceInDatabase(senderId, key, newValue)
                         }
                     }
                 }

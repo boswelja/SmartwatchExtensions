@@ -28,10 +28,10 @@ import com.boswelja.devicemanager.common.References.CAPABILITY_WATCH_APP
 import com.boswelja.devicemanager.common.dndsync.References
 import com.boswelja.devicemanager.messages.database.MessageDatabase
 import com.boswelja.devicemanager.ui.phonelocking.PhoneLockingPreferenceFragment.Companion.PHONE_LOCKING_MODE_KEY
-import com.boswelja.devicemanager.watchconnectionmanager.Utils
-import com.boswelja.devicemanager.watchconnectionmanager.Watch
-import com.boswelja.devicemanager.watchconnectionmanager.WatchConnectionService
-import com.boswelja.devicemanager.watchconnectionmanager.database.WatchDatabase
+import com.boswelja.devicemanager.watchmanager.Utils
+import com.boswelja.devicemanager.watchmanager.Watch
+import com.boswelja.devicemanager.watchmanager.WatchManager
+import com.boswelja.devicemanager.watchmanager.database.WatchDatabase
 import com.google.android.gms.tasks.Tasks
 import com.google.android.gms.wearable.CapabilityClient
 import com.google.android.gms.wearable.Wearable
@@ -65,7 +65,6 @@ class Updater(private val context: Context) {
      * @param database The [WatchDatabase] to get worker IDs from.
      */
     private fun doBatterySyncUpdate(database: WatchDatabase) {
-        val watches = database.getWatchesWithPrefs()
         var needsRestart = false
         if (sharedPreferences.contains("job_id_key")) {
             sharedPreferences.edit().remove("job_id_key").apply()
@@ -77,10 +76,13 @@ class Updater(private val context: Context) {
         }
 
         if (needsRestart) {
-            for (watch in watches) {
-                if (watch.boolPrefs[BATTERY_SYNC_ENABLED_KEY] == true) {
-                    val newWorkerId = BatterySyncWorker.startWorker(context, watch.id, (watch.intPrefs[BATTERY_SYNC_INTERVAL_KEY] ?: 15).toLong())
-                    database.watchDao().updateBatterySyncWorkerId(watch.id, newWorkerId)
+            val watches = database.getRegisteredWatchesWithPrefs()
+            if (watches != null) {
+                for (watch in watches) {
+                    if (watch.boolPrefs[BATTERY_SYNC_ENABLED_KEY] == true) {
+                        val newWorkerId = BatterySyncWorker.startWorker(context, watch.id, (watch.intPrefs[BATTERY_SYNC_INTERVAL_KEY] ?: 15).toLong())
+                        database.watchDao().updateBatterySyncWorkerId(watch.id, newWorkerId)
+                    }
                 }
             }
         }
@@ -209,7 +211,7 @@ class Updater(private val context: Context) {
                 val watch = Watch(defaultWatch)
                 Utils.addWatch(database, messageClient, watch)
                 sharedPreferences.edit {
-                    putString(WatchConnectionService.LAST_CONNECTED_NODE_ID_KEY, watch.id)
+                    putString(WatchManager.LAST_CONNECTED_NODE_ID_KEY, watch.id)
                 }
                 sharedPreferences.all.forEach {
                     if (it.value != null) {

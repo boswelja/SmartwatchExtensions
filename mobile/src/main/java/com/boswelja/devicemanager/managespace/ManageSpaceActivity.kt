@@ -21,9 +21,9 @@ import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.batterysync.BatterySyncWorker
 import com.boswelja.devicemanager.batterysync.database.WatchBatteryStatsDatabase
 import com.boswelja.devicemanager.databinding.ActivityManageSpaceBinding
-import com.boswelja.devicemanager.watchconnectionmanager.Watch
-import com.boswelja.devicemanager.watchconnectionmanager.WatchConnectionService
-import com.boswelja.devicemanager.watchconnectionmanager.database.WatchDatabase
+import com.boswelja.devicemanager.watchmanager.Watch
+import com.boswelja.devicemanager.watchmanager.WatchManager
+import com.boswelja.devicemanager.watchmanager.database.WatchDatabase
 import com.boswelja.devicemanager.widgetdb.WidgetDatabase
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Tasks
@@ -36,9 +36,9 @@ import timber.log.Timber
 
 class ManageSpaceActivity : AppCompatActivity() {
 
-    private val watchManagerConnection = object : WatchConnectionService.Connection() {
-        override fun onWatchManagerBound(service: WatchConnectionService) {
-            watchConnectionManager = service
+    private val watchManagerConnection = object : WatchManager.Connection() {
+        override fun onWatchManagerBound(watchManager: WatchManager) {
+            watchConnectionManager = watchManager
         }
 
         override fun onWatchManagerUnbound() {
@@ -51,7 +51,7 @@ class ManageSpaceActivity : AppCompatActivity() {
     private lateinit var binding: ActivityManageSpaceBinding
     private lateinit var activityManager: ActivityManager
 
-    private var watchConnectionManager: WatchConnectionService? = null
+    private var watchConnectionManager: WatchManager? = null
     private var hasResetApp = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -71,7 +71,7 @@ class ManageSpaceActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
-        WatchConnectionService.bind(this, watchManagerConnection)
+        WatchManager.bind(this, watchManagerConnection)
     }
 
     override fun onStop() {
@@ -304,7 +304,7 @@ class ManageSpaceActivity : AppCompatActivity() {
                         return@launch
                     }
                     try {
-                        Tasks.await(watchConnectionManager!!.resetWatch(watch.id))
+                        Tasks.await(watchConnectionManager!!.requestResetWatch(watch.id))
                         withContext(Dispatchers.Main) {
                             incrementProgressBar()
                         }

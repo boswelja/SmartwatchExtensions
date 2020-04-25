@@ -185,7 +185,7 @@
             </intent-filter>
         </service>
 
-        <service android:name=".watchconnectionmanager.WatchConnectionService" />
+        <service android:name=".watchmanager.WatchManager" />
     </application>
 
 </manifest>

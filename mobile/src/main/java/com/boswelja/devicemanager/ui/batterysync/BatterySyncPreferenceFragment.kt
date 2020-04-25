@@ -170,7 +170,7 @@ class BatterySyncPreferenceFragment :
                         putBoolean(BATTERY_SYNC_ENABLED_KEY, enabled).apply()
                     }
                     getWatchConnectionManager()?.updatePreferenceOnWatch(BATTERY_SYNC_ENABLED_KEY)
-                    updateBatteryStats(requireContext(), activity.watchConnectionManager?.getConnectedWatchId())
+                    updateBatteryStats(requireContext(), activity.watchConnectionManager?.connectedWatch?.id)
                 } else {
                     withContext(Dispatchers.Main) {
                         activity.createSnackBar(getString(R.string.battery_sync_enable_failed))
@@ -186,7 +186,7 @@ class BatterySyncPreferenceFragment :
                         .batteryStatsDatabase
                         ?.batteryStatsDao()
                         ?.deleteStatsForWatch(
-                                activity.watchConnectionManager?.getConnectedWatchId()!!)
+                                activity.watchConnectionManager?.connectedWatch?.id!!)
             }
         }
     }
@@ -202,7 +202,7 @@ class BatterySyncPreferenceFragment :
             sharedPreferences.edit(commit = true) {
                 putInt(BATTERY_SYNC_INTERVAL_KEY, newInterval)
             }
-            activity.watchConnectionManager?.updatePrefInDatabase(BATTERY_SYNC_INTERVAL_KEY, newInterval)
+            activity.watchConnectionManager?.updatePreferenceInDatabase(BATTERY_SYNC_INTERVAL_KEY, newInterval)
             BatterySyncWorker.stopWorker(activity.watchConnectionManager)
             BatterySyncWorker.startWorker(activity.watchConnectionManager)
         }

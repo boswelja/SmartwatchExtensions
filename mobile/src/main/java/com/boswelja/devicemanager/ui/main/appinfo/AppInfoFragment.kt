@@ -20,8 +20,8 @@ import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.References
 import com.boswelja.devicemanager.ui.base.BasePreferenceFragment
 import com.boswelja.devicemanager.ui.changelog.ChangelogDialogFragment
-import com.boswelja.devicemanager.watchconnectionmanager.Watch
-import com.boswelja.devicemanager.watchconnectionmanager.WatchConnectionInterface
+import com.boswelja.devicemanager.watchmanager.Watch
+import com.boswelja.devicemanager.watchmanager.WatchConnectionListener
 import com.google.android.gms.wearable.MessageClient
 import com.google.android.gms.wearable.Wearable
 import timber.log.Timber
@@ -29,7 +29,7 @@ import timber.log.Timber
 class AppInfoFragment :
         BasePreferenceFragment(),
         Preference.OnPreferenceClickListener,
-        WatchConnectionInterface {
+        WatchConnectionListener {
 
     private var customTabsIntent: CustomTabsIntent? = null
 
@@ -49,8 +49,8 @@ class AppInfoFragment :
 
     override fun onConnectedWatchChanging() {} // Do nothing
 
-    override fun onConnectedWatchChanged(success: Boolean) {
-        if (success) {
+    override fun onConnectedWatchChanged(isSuccess: Boolean) {
+        if (isSuccess) {
             requestUpdateWatchVersion()
         }
     }
@@ -107,7 +107,7 @@ class AppInfoFragment :
         messageClient.addListener(messageListener)
         requestUpdateWatchVersion()
 
-        getWatchConnectionManager()?.registerWatchConnectionInterface(this)
+        getWatchConnectionManager()?.addWatchConnectionListener(this)
     }
 
     override fun onStop() {
@@ -116,7 +116,7 @@ class AppInfoFragment :
         customTabsIntent = null
         messageClient.removeListener(messageListener)
 
-        getWatchConnectionManager()?.unregisterWatchConnectionInterface(this)
+        getWatchConnectionManager()?.removeWatchConnectionListener(this)
     }
 
     /**
@@ -132,7 +132,7 @@ class AppInfoFragment :
      */
     private fun requestUpdateWatchVersion() {
         Timber.d("requestUpdateWatchVersionPreference")
-        val connectedWatchId = getWatchConnectionManager()?.getConnectedWatchId()
+        val connectedWatchId = getWatchConnectionManager()?.connectedWatch?.id
         if (!connectedWatchId.isNullOrEmpty()) {
             messageClient.sendMessage(connectedWatchId, References.REQUEST_APP_VERSION, null)
                     .addOnFailureListener {

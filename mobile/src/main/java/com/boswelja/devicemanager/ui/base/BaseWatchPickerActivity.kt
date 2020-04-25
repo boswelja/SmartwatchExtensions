@@ -21,10 +21,10 @@ import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.batterysync.widget.WatchBatteryWidget
 import com.boswelja.devicemanager.ui.watchmanager.WatchManagerActivity
 import com.boswelja.devicemanager.ui.watchsetup.WatchSetupActivity
-import com.boswelja.devicemanager.watchconnectionmanager.Watch
-import com.boswelja.devicemanager.watchconnectionmanager.WatchConnectionInterface
-import com.boswelja.devicemanager.watchconnectionmanager.WatchConnectionService
-import com.boswelja.devicemanager.watchconnectionmanager.WatchStatus
+import com.boswelja.devicemanager.watchmanager.Watch
+import com.boswelja.devicemanager.watchmanager.WatchConnectionListener
+import com.boswelja.devicemanager.watchmanager.WatchManager
+import com.boswelja.devicemanager.watchmanager.WatchStatus
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
@@ -38,12 +38,12 @@ import timber.log.Timber
 abstract class BaseWatchPickerActivity :
         BaseToolbarActivity(),
         AdapterView.OnItemSelectedListener,
-        WatchConnectionInterface {
+        WatchConnectionListener {
 
-    private val watchConnManServiceConnection = object : WatchConnectionService.Connection() {
-        override fun onWatchManagerBound(service: WatchConnectionService) {
+    private val watchConnManServiceConnection = object : WatchManager.Connection() {
+        override fun onWatchManagerBound(watchManager: WatchManager) {
             Timber.d("onWatchManagerBound() called")
-            watchConnectionManager = service
+            watchConnectionManager = watchManager
             updateConnectedWatches()
         }
 
@@ -55,7 +55,7 @@ abstract class BaseWatchPickerActivity :
 
     internal val coroutineScope = MainScope()
 
-    var watchConnectionManager: WatchConnectionService? = null
+    var watchConnectionManager: WatchManager? = null
 
     private lateinit var watchPickerSpinner: AppCompatSpinner
 
@@ -72,10 +72,10 @@ abstract class BaseWatchPickerActivity :
         watchPickerSpinner.isEnabled = false
     }
 
-    override fun onConnectedWatchChanged(success: Boolean) {
-        Timber.d("onConnectedWatchChanged($success) called")
+    override fun onConnectedWatchChanged(isSuccess: Boolean) {
+        Timber.d("onConnectedWatchChanged($isSuccess) called")
         watchPickerSpinner.isEnabled = true
-        if (!success) {
+        if (!isSuccess) {
             Timber.w("Failed to change selected watch")
             ensureCorrectWatchSelected()
         }
@@ -88,19 +88,19 @@ abstract class BaseWatchPickerActivity :
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        WatchConnectionService.bind(this, watchConnManServiceConnection)
+        WatchManager.bind(this, watchConnManServiceConnection)
         setupWatchPicker()
     }
 
     override fun onStart() {
         super.onStart()
-        watchConnectionManager?.registerWatchConnectionInterface(this)
+        watchConnectionManager?.addWatchConnectionListener(this)
         ensureCorrectWatchSelected()
     }
 
     override fun onStop() {
         super.onStop()
-        watchConnectionManager?.unregisterWatchConnectionInterface(this)
+        watchConnectionManager?.removeWatchConnectionListener(this)
     }
 
     override fun onDestroy() {
@@ -135,15 +135,15 @@ abstract class BaseWatchPickerActivity :
 
     /**
      * Checks the [watchPickerSpinner] has the correct watch selected.
-     * It should always match what's selected in [WatchConnectionService].
+     * It should always match what's selected in [WatchManager].
      */
     private fun ensureCorrectWatchSelected() {
         Timber.d("ensureCorrectWatchSelected() called")
-        if (watchPickerSpinner.selectedItemId.toString(36) != watchConnectionManager?.getConnectedWatchId()) {
+        if (watchPickerSpinner.selectedItemId.toString(36) != watchConnectionManager?.connectedWatch?.id) {
             val adapter = (watchPickerSpinner.adapter as WatchPickerAdapter)
             for (i in 0 until adapter.count) {
                 val watch = adapter.getItem(i)
-                if (watch?.id == watchConnectionManager?.getConnectedWatchId()) {
+                if (watch?.id == watchConnectionManager?.connectedWatch?.id) {
                     watchPickerSpinner.setSelection(i, false)
                     return
                 }
@@ -177,7 +177,7 @@ abstract class BaseWatchPickerActivity :
                 if (watches.isNotEmpty()) {
                     Timber.i("Setting watches")
                     WatchBatteryWidget.enableWidget(this@BaseWatchPickerActivity)
-                    val connectedWatchId = watchConnectionManager!!.getConnectedWatchId()
+                    val connectedWatchId = watchConnectionManager!!.connectedWatch?.id
                     var selectedWatchPosition = 0
                     watches.forEach {
                         withContext(Dispatchers.Main) {

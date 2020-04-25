@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_SYNC_ENABLED_KEY
 import com.boswelja.devicemanager.ui.common.WatchViewHolder
-import com.boswelja.devicemanager.watchconnectionmanager.Watch
+import com.boswelja.devicemanager.watchmanager.Watch
 
 class WatchPickerAdapter(private val watches: List<Watch>, private val activity: WatchBatteryWidgetConfigurationActivity) : RecyclerView.Adapter<WatchViewHolder>() {
 

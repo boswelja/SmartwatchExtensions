@@ -18,9 +18,9 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.boswelja.devicemanager.R
-import com.boswelja.devicemanager.watchconnectionmanager.Watch
-import com.boswelja.devicemanager.watchconnectionmanager.WatchConnectionService
-import com.boswelja.devicemanager.watchconnectionmanager.WatchStatus
+import com.boswelja.devicemanager.watchmanager.Watch
+import com.boswelja.devicemanager.watchmanager.WatchManager
+import com.boswelja.devicemanager.watchmanager.WatchStatus
 import com.google.android.material.button.MaterialButton
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
@@ -29,9 +29,9 @@ import kotlinx.coroutines.withContext
 
 class WatchSetupFragment : Fragment() {
 
-    private val watchConnectionManagerConnection = object : WatchConnectionService.Connection() {
-        override fun onWatchManagerBound(service: WatchConnectionService) {
-            watchConnectionManager = service
+    private val watchConnectionManagerConnection = object : WatchManager.Connection() {
+        override fun onWatchManagerBound(watchManager: WatchManager) {
+            watchConnectionManager = watchManager
             refreshAvailableWatches()
         }
 
@@ -42,7 +42,7 @@ class WatchSetupFragment : Fragment() {
 
     private val coroutineScope = MainScope()
 
-    private var watchConnectionManager: WatchConnectionService? = null
+    private var watchConnectionManager: WatchManager? = null
 
     private lateinit var refreshButton: MaterialButton
     private lateinit var progressBar: ProgressBar
@@ -65,7 +65,7 @@ class WatchSetupFragment : Fragment() {
         setupRecyclerView()
         setLoading(true)
 
-        WatchConnectionService.bind(requireContext(), watchConnectionManagerConnection)
+        WatchManager.bind(requireContext(), watchConnectionManagerConnection)
     }
 
     override fun onDestroy() {
@@ -142,7 +142,7 @@ class WatchSetupFragment : Fragment() {
      */
     private fun registerWatch(watch: Watch) {
         coroutineScope.launch(Dispatchers.IO) {
-            watchConnectionManager?.addWatch(watch)
+            watchConnectionManager?.registerWatch(watch)
             withContext(Dispatchers.Main) {
                 activity?.setResult(WatchSetupActivity.RESULT_WATCH_ADDED)
                 activity?.finish()

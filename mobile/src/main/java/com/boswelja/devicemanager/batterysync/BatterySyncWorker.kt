@@ -15,7 +15,7 @@ import androidx.work.Worker
 import androidx.work.WorkerParameters
 import com.boswelja.devicemanager.common.PreferenceKey
 import com.boswelja.devicemanager.ui.batterysync.Utils
-import com.boswelja.devicemanager.watchconnectionmanager.WatchConnectionService
+import com.boswelja.devicemanager.watchmanager.WatchManager
 import java.util.UUID
 import java.util.concurrent.TimeUnit
 import kotlinx.coroutines.Dispatchers
@@ -44,9 +44,9 @@ class BatterySyncWorker(appContext: Context, workerParams: WorkerParameters) :
          * Starts a [BatterySyncWorker] for the currently selected watch.
          * @return @`true` if the job was started successfully, @`false` otherwise.
          */
-        suspend fun startWorker(watchConnectionManager: WatchConnectionService?): Boolean {
+        suspend fun startWorker(watchConnectionManager: WatchManager?): Boolean {
             return withContext(Dispatchers.Default) {
-                val connectedWatch = watchConnectionManager?.getConnectedWatch()
+                val connectedWatch = watchConnectionManager?.connectedWatch
                 if (connectedWatch != null) {
                     val syncIntervalMinutes = connectedWatch.intPrefs[PreferenceKey.BATTERY_SYNC_INTERVAL_KEY] ?: 15
                     val newWorkerId = startWorker(watchConnectionManager, connectedWatch.id, syncIntervalMinutes.toLong())
@@ -72,9 +72,9 @@ class BatterySyncWorker(appContext: Context, workerParams: WorkerParameters) :
         /**
          * Stops the battery sync job for the current watch.
          */
-        suspend fun stopWorker(watchConnectionManager: WatchConnectionService?) {
+        suspend fun stopWorker(watchConnectionManager: WatchManager?) {
             withContext(Dispatchers.IO) {
-                val connectedWatch = watchConnectionManager?.getConnectedWatch()
+                val connectedWatch = watchConnectionManager?.connectedWatch
                 withContext(Dispatchers.Default) {
                     if (connectedWatch != null) {
                         val workerId = connectedWatch.batterySyncWorkerId

@@ -12,8 +12,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.ui.common.WatchViewHolder
-import com.boswelja.devicemanager.watchconnectionmanager.Watch
-import com.boswelja.devicemanager.watchconnectionmanager.WatchStatus
+import com.boswelja.devicemanager.watchmanager.Watch
+import com.boswelja.devicemanager.watchmanager.WatchStatus
 
 class WatchSetupAdapter(private val watchSetupFragment: WatchSetupFragment) :
         RecyclerView.Adapter<WatchViewHolder>() {

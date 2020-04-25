@@ -18,10 +18,8 @@ import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.common.PreferenceKey
 import com.boswelja.devicemanager.common.R
 import com.boswelja.devicemanager.common.dndsync.References
-import com.boswelja.devicemanager.watchconnectionmanager.BoolPreference
-import com.boswelja.devicemanager.watchconnectionmanager.IntPreference
-import com.boswelja.devicemanager.watchconnectionmanager.WatchConnectionService
-import com.boswelja.devicemanager.watchconnectionmanager.WatchPreferenceChangeInterface
+import com.boswelja.devicemanager.watchmanager.WatchManager
+import com.boswelja.devicemanager.watchmanager.WatchPreferenceChangeListener
 import com.google.android.gms.wearable.DataClient
 import com.google.android.gms.wearable.PutDataMapRequest
 import com.google.android.gms.wearable.Wearable
@@ -30,16 +28,16 @@ import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
-class DnDLocalChangeService : Service(), WatchPreferenceChangeInterface {
+class DnDLocalChangeService : Service(), WatchPreferenceChangeListener {
 
-    private val watchConnectionManagerConnection = object : WatchConnectionService.Connection() {
-        override fun onWatchManagerBound(service: WatchConnectionService) {
+    private val watchConnectionManagerConnection = object : WatchManager.Connection() {
+        override fun onWatchManagerBound(watchManager: WatchManager) {
             Timber.i("Service bound")
-            watchConnectionManager = service
-            service.registerWatchPreferenceChangeInterface(this@DnDLocalChangeService)
+            watchConnectionManager = watchManager
+            watchManager.addWatchPreferenceChangeListener(this@DnDLocalChangeService)
             coroutineScope.launch(Dispatchers.IO) {
                 val dndSyncToWatchPreferences =
-                        service.getBoolPrefsForRegisteredWatches(PreferenceKey.DND_SYNC_TO_WATCH_KEY)
+                        watchManager.getBoolPrefsForWatches(PreferenceKey.DND_SYNC_TO_WATCH_KEY)
                 if (dndSyncToWatchPreferences != null) {
                     for (boolPreference in dndSyncToWatchPreferences) {
                         sendToWatch[boolPreference.watchId] = boolPreference.value
@@ -68,17 +66,16 @@ class DnDLocalChangeService : Service(), WatchPreferenceChangeInterface {
     private lateinit var sharedPreferences: SharedPreferences
     private lateinit var dataClient: DataClient
 
-    private var watchConnectionManager: WatchConnectionService? = null
+    private var watchConnectionManager: WatchManager? = null
 
-    override fun boolPreferenceChanged(boolPreference: BoolPreference) {
-        if (boolPreference.key == PreferenceKey.DND_SYNC_TO_WATCH_KEY) {
-            Timber.i("DND_SYNC_TO_WATCH_KEY changed for ${boolPreference.watchId}")
-            sendToWatch[boolPreference.watchId] = boolPreference.value
-            if (!boolPreference.value) stopIfUnneeded()
+    override fun onWatchPreferenceChanged(watchId: String, preferenceKey: String, newValue: Any?) {
+        if (preferenceKey == PreferenceKey.DND_SYNC_TO_WATCH_KEY) {
+            val isEnabled = newValue == true
+            Timber.i("$preferenceKey changed for $watchId")
+            sendToWatch[watchId] = isEnabled
+            if (!isEnabled) stopIfUnneeded()
         }
     }
-
-    override fun intPreferenceChanged(intPreference: IntPreference) {}
 
     override fun onBind(p0: Intent?): IBinder? = null
 
@@ -89,7 +86,7 @@ class DnDLocalChangeService : Service(), WatchPreferenceChangeInterface {
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
         dataClient = Wearable.getDataClient(this)
 
-        WatchConnectionService.bind(this, watchConnectionManagerConnection)
+        WatchManager.bind(this, watchConnectionManagerConnection)
         DnDLocalChangeReceiver.registerReceiver(this, dndChangeReceiver)
 
         pushNewDnDState(Utils.isDnDEnabledCompat(this))
@@ -109,7 +106,7 @@ class DnDLocalChangeService : Service(), WatchPreferenceChangeInterface {
             unregisterReceiver(dndChangeReceiver)
         } catch (ignored: IllegalArgumentException) {}
 
-        watchConnectionManager?.unregisterWatchPreferenceChangeInterface(this)
+        watchConnectionManager?.removeWatchPreferenceChangeListener(this)
         unbindService(watchConnectionManagerConnection)
     }
 

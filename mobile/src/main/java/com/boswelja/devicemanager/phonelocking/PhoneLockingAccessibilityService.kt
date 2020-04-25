@@ -18,7 +18,7 @@ import com.boswelja.devicemanager.common.PreferenceKey.PHONE_LOCKING_ENABLED_KEY
 import com.boswelja.devicemanager.common.References.LOCK_PHONE_PATH
 import com.boswelja.devicemanager.ui.phonelocking.PhoneLockingPreferenceFragment.Companion.PHONE_LOCKING_MODE_ACCESSIBILITY_SERVICE
 import com.boswelja.devicemanager.ui.phonelocking.PhoneLockingPreferenceFragment.Companion.PHONE_LOCKING_MODE_KEY
-import com.boswelja.devicemanager.watchconnectionmanager.WatchConnectionService
+import com.boswelja.devicemanager.watchmanager.WatchManager
 import com.google.android.gms.wearable.MessageClient
 import com.google.android.gms.wearable.MessageEvent
 import com.google.android.gms.wearable.Wearable
@@ -39,13 +39,13 @@ class PhoneLockingAccessibilityService :
     private lateinit var sharedPreferences: SharedPreferences
     private lateinit var messageClient: MessageClient
 
-    private var watchConnectionManager: WatchConnectionService? = null
+    private var watchConnectionManager: WatchManager? = null
     private var isStopping = false
 
-    private val watchConnectionManagerConnection = object : WatchConnectionService.Connection() {
-        override fun onWatchManagerBound(service: WatchConnectionService) {
+    private val watchConnectionManagerConnection = object : WatchManager.Connection() {
+        override fun onWatchManagerBound(watchManager: WatchManager) {
             Timber.i("onWatchManagerBound() called")
-            watchConnectionManager = service
+            watchConnectionManager = watchManager
         }
 
         override fun onWatchManagerUnbound() {
@@ -76,7 +76,7 @@ class PhoneLockingAccessibilityService :
             putBoolean(ACCESSIBILITY_SERVICE_ENABLED_KEY, true)
         }
         messageClient.addListener(this)
-        WatchConnectionService.bind(this, watchConnectionManagerConnection)
+        WatchManager.bind(this, watchConnectionManagerConnection)
     }
 
     override fun onAccessibilityEvent(event: AccessibilityEvent?) {

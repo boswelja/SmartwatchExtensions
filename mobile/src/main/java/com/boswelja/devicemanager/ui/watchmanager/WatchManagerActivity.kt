@@ -15,9 +15,9 @@ import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.ui.base.BaseToolbarActivity
 import com.boswelja.devicemanager.ui.watchsetup.WatchSetupActivity
 import com.boswelja.devicemanager.ui.watchsetup.WatchSetupActivity.Companion.EXTRA_SKIP_WELCOME
-import com.boswelja.devicemanager.watchconnectionmanager.Watch
-import com.boswelja.devicemanager.watchconnectionmanager.WatchConnectionInterface
-import com.boswelja.devicemanager.watchconnectionmanager.WatchConnectionService
+import com.boswelja.devicemanager.watchmanager.Watch
+import com.boswelja.devicemanager.watchmanager.WatchConnectionListener
+import com.boswelja.devicemanager.watchmanager.WatchManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
@@ -26,12 +26,12 @@ import timber.log.Timber
 
 class WatchManagerActivity :
         BaseToolbarActivity(),
-        WatchConnectionInterface {
+        WatchConnectionListener {
 
-    private val watchConnectionManagerConnection = object : WatchConnectionService.Connection() {
-        override fun onWatchManagerBound(service: WatchConnectionService) {
+    private val watchConnectionManagerConnection = object : WatchManager.Connection() {
+        override fun onWatchManagerBound(watchManager: WatchManager) {
             Timber.i("Watch manager bound")
-            watchConnectionManager = service
+            watchConnectionManager = watchManager
             setWatches()
         }
 
@@ -43,11 +43,11 @@ class WatchManagerActivity :
 
     private val coroutineScope = MainScope()
 
-    private var watchConnectionManager: WatchConnectionService? = null
+    private var watchConnectionManager: WatchManager? = null
 
     private lateinit var watchManagerRecyclerView: RecyclerView
 
-    override fun onConnectedWatchChanged(success: Boolean) {} // Do nothing
+    override fun onConnectedWatchChanged(isSuccess: Boolean) {} // Do nothing
 
     override fun onConnectedWatchChanging() {} // Do nothing
 
@@ -69,7 +69,7 @@ class WatchManagerActivity :
 
         setupRecyclerView()
 
-        WatchConnectionService.bind(this, watchConnectionManagerConnection)
+        WatchManager.bind(this, watchConnectionManagerConnection)
     }
 
     override fun onDestroy() {
@@ -123,7 +123,7 @@ class WatchManagerActivity :
 
     /**
      * Sets the watches in the [WatchManagerAdapter] to the
-     * list of registered watches from [WatchConnectionService].
+     * list of registered watches from [WatchManager].
      */
     private fun setWatches() {
         Timber.d("updateRegisteredWatches() called")

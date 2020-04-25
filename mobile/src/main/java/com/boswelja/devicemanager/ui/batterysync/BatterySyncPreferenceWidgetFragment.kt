@@ -19,8 +19,8 @@ import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.batterysync.database.WatchBatteryStats
 import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_SYNC_ENABLED_KEY
 import com.boswelja.devicemanager.databinding.SettingsWidgetBatterySyncBinding
-import com.boswelja.devicemanager.watchconnectionmanager.Watch
-import com.boswelja.devicemanager.watchconnectionmanager.WatchConnectionInterface
+import com.boswelja.devicemanager.watchmanager.Watch
+import com.boswelja.devicemanager.watchmanager.WatchConnectionListener
 import java.util.Timer
 import java.util.concurrent.TimeUnit
 import kotlin.concurrent.fixedRateTimer
@@ -33,7 +33,7 @@ import timber.log.Timber
 class BatterySyncPreferenceWidgetFragment :
         Fragment(),
         SharedPreferences.OnSharedPreferenceChangeListener,
-        WatchConnectionInterface {
+        WatchConnectionListener {
 
     private val coroutineScope = MainScope()
 
@@ -61,9 +61,9 @@ class BatterySyncPreferenceWidgetFragment :
 
     override fun onConnectedWatchChanging() {} // Do nothing
 
-    override fun onConnectedWatchChanged(success: Boolean) {
-        Timber.d("onConnectedWatchChanged($success) called")
-        if (success and batterySyncEnabled) {
+    override fun onConnectedWatchChanged(isSuccess: Boolean) {
+        Timber.d("onConnectedWatchChanged($isSuccess) called")
+        if (isSuccess and batterySyncEnabled) {
             updateBatteryStatsDisplay()
         }
     }
@@ -238,7 +238,7 @@ class BatterySyncPreferenceWidgetFragment :
             batteryStats = activity
                     .batteryStatsDatabase
                     ?.batteryStatsDao()
-                    ?.getStatsForWatch(activity.watchConnectionManager?.getConnectedWatchId()!!)
+                    ?.getStatsForWatch(activity.watchConnectionManager?.connectedWatch?.id!!)
 
             withContext(Dispatchers.Main) {
                 updateWatchBatteryPercent()

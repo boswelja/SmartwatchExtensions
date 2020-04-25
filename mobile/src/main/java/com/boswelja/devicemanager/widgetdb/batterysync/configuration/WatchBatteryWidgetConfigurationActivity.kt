@@ -18,7 +18,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.batterysync.widget.WatchBatteryWidget
 import com.boswelja.devicemanager.ui.base.BaseToolbarActivity
-import com.boswelja.devicemanager.watchconnectionmanager.WatchConnectionService
+import com.boswelja.devicemanager.watchmanager.WatchManager
 import com.boswelja.devicemanager.widgetdb.WidgetDatabase
 import com.boswelja.devicemanager.widgetdb.batterysync.WatchBatteryWidgetId
 import kotlinx.coroutines.Dispatchers
@@ -28,13 +28,13 @@ import kotlinx.coroutines.withContext
 
 class WatchBatteryWidgetConfigurationActivity : BaseToolbarActivity() {
 
-    private val watchConnectionManagerConnection = object : WatchConnectionService.Connection() {
-        override fun onWatchManagerBound(service: WatchConnectionService) {
-            watchConnectionManager = service
+    private val watchConnectionManagerConnection = object : WatchManager.Connection() {
+        override fun onWatchManagerBound(watchManager: WatchManager) {
+            watchConnectionManager = watchManager
             findViewById<RecyclerView>(R.id.watch_picker_recycler_view).apply {
                 layoutManager = LinearLayoutManager(this@WatchBatteryWidgetConfigurationActivity, LinearLayoutManager.VERTICAL, false)
                 coroutineScope.launch(Dispatchers.IO) {
-                    val watches = service.getRegisteredWatches()
+                    val watches = watchManager.getRegisteredWatches()
                     withContext(Dispatchers.Main) {
                         adapter = WatchPickerAdapter(watches, this@WatchBatteryWidgetConfigurationActivity)
                         setLoading(false)
@@ -49,7 +49,7 @@ class WatchBatteryWidgetConfigurationActivity : BaseToolbarActivity() {
     private lateinit var loadingSpinner: ProgressBar
     private lateinit var watchPickerRecyclerView: RecyclerView
 
-    private var watchConnectionManager: WatchConnectionService? = null
+    private var watchConnectionManager: WatchManager? = null
     private var widgetId: Int = AppWidgetManager.INVALID_APPWIDGET_ID
 
     private val resultIntent = Intent()
@@ -85,7 +85,7 @@ class WatchBatteryWidgetConfigurationActivity : BaseToolbarActivity() {
         super.onResume()
         setLoading(true)
 
-        WatchConnectionService.bind(this, watchConnectionManagerConnection)
+        WatchManager.bind(this, watchConnectionManagerConnection)
     }
 
     override fun onPause() {

@@ -23,8 +23,8 @@ import com.boswelja.devicemanager.common.batterysync.References.BATTERY_STATUS_P
 import com.boswelja.devicemanager.messages.Action
 import com.boswelja.devicemanager.messages.Message
 import com.boswelja.devicemanager.messages.database.MessageDatabase
-import com.boswelja.devicemanager.watchconnectionmanager.Watch
-import com.boswelja.devicemanager.watchconnectionmanager.WatchConnectionService
+import com.boswelja.devicemanager.watchmanager.Watch
+import com.boswelja.devicemanager.watchmanager.WatchManager
 import com.boswelja.devicemanager.widgetdb.WidgetDatabase
 import com.google.android.gms.wearable.MessageEvent
 import com.google.android.gms.wearable.WearableListenerService
@@ -36,20 +36,20 @@ import timber.log.Timber
 class WatchBatteryUpdateReceiver : WearableListenerService() {
 
     private val coroutineScope = MainScope()
-    private val watchConnectionManagerConnection = object : WatchConnectionService.Connection() {
-        override fun onWatchManagerBound(service: WatchConnectionService) {
+    private val watchConnectionManagerConnection = object : WatchManager.Connection() {
+        override fun onWatchManagerBound(watchManager: WatchManager) {
             coroutineScope.launch(Dispatchers.IO) {
-                val watch = service.getWatchById(watchBatteryStats.watchId)
+                val watch = watchManager.getWatchById(watchBatteryStats.watchId)
                 if (watch != null) {
                     if (canSendChargedNotification(watch)) {
                         notifyWatchCharged(watch)
-                        service.updatePrefInDatabase(
+                        watchManager.updatePreferenceInDatabase(
                                 watch.id,
                                 BATTERY_CHARGED_NOTI_SENT,
                                 true)
                     } else {
                         notificationManager.cancel(BATTERY_CHARGED_NOTI_ID)
-                        service.updatePrefInDatabase(
+                        watchManager.updatePreferenceInDatabase(
                                 watch.id,
                                 BATTERY_CHARGED_NOTI_SENT,
                                 false)
@@ -76,7 +76,7 @@ class WatchBatteryUpdateReceiver : WearableListenerService() {
             sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
             watchBatteryStats = getBatteryStatsFromMessage(messageEvent)
 
-            WatchConnectionService.bind(this, watchConnectionManagerConnection)
+            WatchManager.bind(this, watchConnectionManagerConnection)
 
             coroutineScope.launch {
                 WatchBatteryStatsDatabase.open(this@WatchBatteryUpdateReceiver).also {

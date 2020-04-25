@@ -5,10 +5,8 @@
  * This file, and any part of the Wearable Extensions app/s cannot be copied and/or distributed
  * without permission from Jack Boswell (boswelja) <boswela@outlook.com>
  */
-package com.boswelja.devicemanager.watchconnectionmanager
+package com.boswelja.devicemanager.watchmanager
 
-interface WatchPreferenceChangeInterface {
-
-    fun boolPreferenceChanged(boolPreference: BoolPreference)
-    fun intPreferenceChanged(intPreference: IntPreference)
+interface WatchPreferenceChangeListener {
+    fun onWatchPreferenceChanged(watchId: String, preferenceKey: String, newValue: Any?)
 }

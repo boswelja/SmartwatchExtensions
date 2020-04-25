@@ -16,7 +16,7 @@ import com.boswelja.devicemanager.common.dndsync.References.REQUEST_INTERRUPT_FI
 import com.boswelja.devicemanager.common.dndsync.References.REQUEST_SDK_INT_PATH
 import com.boswelja.devicemanager.ui.base.BaseToolbarActivity
 import com.boswelja.devicemanager.ui.common.LoadingFragment
-import com.boswelja.devicemanager.watchconnectionmanager.WatchConnectionService
+import com.boswelja.devicemanager.watchmanager.WatchManager
 import com.google.android.gms.wearable.MessageClient
 import com.google.android.gms.wearable.Wearable
 import java.math.BigInteger
@@ -24,10 +24,10 @@ import timber.log.Timber
 
 class DnDSyncHelperActivity : BaseToolbarActivity() {
 
-    private val watchConnectionManagerConnection = object : WatchConnectionService.Connection() {
-        override fun onWatchManagerBound(service: WatchConnectionService) {
+    private val watchConnectionManagerConnection = object : WatchManager.Connection() {
+        override fun onWatchManagerBound(watchManager: WatchManager) {
             Timber.d("onWatchManagerBound() called")
-            watchConnectionManager = service
+            watchConnectionManager = watchManager
             checkWatchSystemVersion()
         }
 
@@ -61,7 +61,7 @@ class DnDSyncHelperActivity : BaseToolbarActivity() {
         }
     }
 
-    private var watchConnectionManager: WatchConnectionService? = null
+    private var watchConnectionManager: WatchManager? = null
     private var messageClient: MessageClient? = null
 
     private val loadingFragment: LoadingFragment = LoadingFragment()
@@ -86,7 +86,7 @@ class DnDSyncHelperActivity : BaseToolbarActivity() {
         messageClient = Wearable.getMessageClient(this)
         messageClient!!.addListener(messageListener)
 
-        WatchConnectionService.bind(this, watchConnectionManagerConnection)
+        WatchManager.bind(this, watchConnectionManagerConnection)
     }
 
     override fun onDestroy() {
@@ -191,7 +191,7 @@ class DnDSyncHelperActivity : BaseToolbarActivity() {
      */
     private fun checkWatchSystemVersion() {
         Timber.d("checkWatchSystemVersion() called")
-        val connectedWatchId = watchConnectionManager?.getConnectedWatchId()
+        val connectedWatchId = watchConnectionManager?.connectedWatch?.id
         if (!connectedWatchId.isNullOrEmpty()) {
             messageClient!!.sendMessage(connectedWatchId, REQUEST_SDK_INT_PATH, null)
         } else {
@@ -206,7 +206,7 @@ class DnDSyncHelperActivity : BaseToolbarActivity() {
     fun checkWatchNotiAccess(animate: Boolean = true) {
         Timber.d("checkWatchNotiAccess() called")
         showLoadingFragment(animate = animate)
-        val connectedWatchId = watchConnectionManager?.getConnectedWatchId()
+        val connectedWatchId = watchConnectionManager?.connectedWatch?.id
         if (!connectedWatchId.isNullOrEmpty()) {
             messageClient!!.sendMessage(connectedWatchId, REQUEST_INTERRUPT_FILTER_ACCESS_STATUS_PATH, null)
         } else {

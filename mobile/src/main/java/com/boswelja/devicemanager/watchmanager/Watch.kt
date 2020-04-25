@@ -5,7 +5,7 @@
  * This file, and any part of the Wearable Extensions app/s cannot be copied and/or distributed
  * without permission from Jack Boswell (boswelja) <boswela@outlook.com>
  */
-package com.boswelja.devicemanager.watchconnectionmanager
+package com.boswelja.devicemanager.watchmanager
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
@@ -18,15 +18,19 @@ data class Watch(
     @PrimaryKey val id: String,
     @ColumnInfo(name = "name") val name: String,
     @ColumnInfo(name = "battery_sync_worker_id") val batterySyncWorkerId: String?,
-    @Ignore val status: WatchStatus,
+    @Ignore var status: WatchStatus,
     @Ignore val intPrefs: HashMap<String, Int>,
     @Ignore val boolPrefs: HashMap<String, Boolean>
 ) {
-    constructor (id: String, name: String, batterySyncWorkerId: String?, status: WatchStatus) : this(id, name, batterySyncWorkerId, status, HashMap(), HashMap())
+    constructor (id: String, name: String, batterySyncWorkerId: String?, status: WatchStatus) :
+            this(id, name, batterySyncWorkerId, status, HashMap(), HashMap())
 
-    constructor (id: String, name: String, batterySyncWorkerId: String?) : this(id, name, batterySyncWorkerId, WatchStatus.UNKNOWN, HashMap(), HashMap())
+    constructor (id: String, name: String, batterySyncWorkerId: String?) :
+            this(id, name, batterySyncWorkerId, WatchStatus.UNKNOWN, HashMap(), HashMap())
 
-    constructor(node: Node, status: WatchStatus) : this(node.id, node.displayName, null, status)
+    constructor(node: Node, status: WatchStatus) :
+            this(node.id, node.displayName, null, status)
 
-    constructor(node: Node) : this(node.id, node.displayName, null, WatchStatus.UNKNOWN)
+    constructor(node: Node) :
+            this(node.id, node.displayName, null, WatchStatus.UNKNOWN)
 }
