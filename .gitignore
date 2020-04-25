@@ -2,7 +2,12 @@
 .gradle
 /local.properties
 /version.properties
-/.idea
+/.idea/caches
+/.idea/libraries
+/.idea/discord.xml
+/.idea/assetWizardSettings.xml
+/.idea/jarRepositories.xml
+.idea/workspace.xml
 **/build
 **/release
 captures/
