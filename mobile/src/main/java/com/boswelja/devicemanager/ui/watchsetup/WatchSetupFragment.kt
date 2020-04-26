@@ -129,7 +129,7 @@ class WatchSetupFragment : Fragment() {
      */
     private fun setHelpMessage(text: String) {
         helpTextView.visibility = AppCompatTextView.VISIBLE
-        watchSetupRecyclerView.visibility = RecyclerView.INVISIBLE
+        watchSetupRecyclerView.isEnabled = false
         helpTextView.text = text
     }
 
@@ -138,7 +138,7 @@ class WatchSetupFragment : Fragment() {
      */
     private fun hideHelpMessage() {
         helpTextView.visibility = AppCompatTextView.INVISIBLE
-        watchSetupRecyclerView.visibility = RecyclerView.VISIBLE
+        watchSetupRecyclerView.isEnabled = true
     }
 
     /**
