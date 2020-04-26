@@ -35,8 +35,9 @@ object Utils {
      * Set the system's current Interruption Filter state, or set silent mode if
      * Interruption Filter doesn't exist.
      * @param interruptionFilterOn Specify the new Interruption Filter state.
+     * @return true if successfully set DnD mode, false otherwise
      */
-    fun setInterruptionFilter(context: Context, interruptionFilterOn: Boolean) {
+    fun setInterruptionFilter(context: Context, interruptionFilterOn: Boolean): Boolean {
         if (interruptionFilterOn != Compat.isDndEnabled(context)) {
             try {
                 val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
@@ -45,12 +46,16 @@ object Utils {
                 } else {
                     notificationManager.setInterruptionFilter(NotificationManager.INTERRUPTION_FILTER_ALL)
                 }
+                return true
             } catch (e: SecurityException) {
                 e.printStackTrace()
                 val prefs = PreferenceManager.getDefaultSharedPreferences(context)
                 prefs.edit().putBoolean(PreferenceKey.DND_SYNC_TO_WATCH_KEY, false).apply()
             }
+        } else {
+            return true
         }
+        return false
     }
 
     fun isAppInstalled(packageManager: PackageManager, packageName: String): Boolean {
