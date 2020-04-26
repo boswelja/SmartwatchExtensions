@@ -30,6 +30,9 @@ jobs:
           name: Run tests :mobile
           command: ./gradlew :mobile:test
       - run:
+          name: Run tests :wear
+          command: ./gradlew :wear:test
+      - run:
           name: Save test results
           command: |
             mkdir -p ~/test-results/junit/
