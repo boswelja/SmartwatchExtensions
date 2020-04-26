@@ -113,7 +113,7 @@ class WatchSetupFragment : Fragment() {
      * Sets whether the loading view should be shown.
      * @param loading true if the loading view should be shown, false otherwise
      */
-    private fun setLoading(loading: Boolean) {
+    fun setLoading(loading: Boolean) {
         refreshButton.isEnabled = !loading
         watchSetupRecyclerView.isEnabled = !loading
         progressBar.visibility = if (loading) {
@@ -127,7 +127,7 @@ class WatchSetupFragment : Fragment() {
      * Sets help text to aid the user if anything goes wrong.
      * @param text The help text to show.
      */
-    private fun setHelpMessage(text: String) {
+    fun setHelpMessage(text: String) {
         helpTextView.visibility = AppCompatTextView.VISIBLE
         watchSetupRecyclerView.isEnabled = false
         helpTextView.text = text
@@ -136,7 +136,7 @@ class WatchSetupFragment : Fragment() {
     /**
      * Removes the help text.
      */
-    private fun hideHelpMessage() {
+    fun hideHelpMessage() {
         helpTextView.visibility = AppCompatTextView.INVISIBLE
         watchSetupRecyclerView.isEnabled = true
     }

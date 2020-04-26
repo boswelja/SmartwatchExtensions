@@ -79,10 +79,15 @@ dependencies {
 
     implementation 'com.jakewharton.timber:timber:4.7.1'
 
+    debugImplementation 'androidx.fragment:fragment-testing:1.2.4'
+
     testImplementation 'junit:junit:4.13'
     testImplementation "com.google.truth:truth:1.0.1"
+
     androidTestImplementation "com.google.truth:truth:1.0.1"
     androidTestImplementation 'androidx.test:runner:1.2.0'
+    androidTestImplementation 'androidx.test:rules:1.2.0'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
 }
 
 spotless {
