@@ -22,8 +22,7 @@ import org.junit.Test
 
 class WatchSetupActivityTest {
 
-    @Rule
-    @JvmField
+    @get:Rule
     val activityTestRule = ActivityTestRule(WatchSetupActivity::class.java, true, false)
 
     @Test

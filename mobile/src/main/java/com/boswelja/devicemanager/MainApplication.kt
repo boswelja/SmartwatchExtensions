@@ -16,9 +16,9 @@ import com.boswelja.devicemanager.crashhandler.CrashHandlerActivity
 import com.boswelja.devicemanager.crashhandler.CrashHandlerActivity.Companion.EXTRA_STACKTRACE
 import java.io.PrintWriter
 import java.io.StringWriter
-import timber.log.Timber
 import java.lang.ref.WeakReference
 import kotlin.system.exitProcess
+import timber.log.Timber
 
 class MainApplication : Application() {
 
