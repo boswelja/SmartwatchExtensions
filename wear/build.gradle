@@ -62,7 +62,7 @@ dependencies {
     implementation "com.google.android.gms:play-services-wearable:$play_services_wearable"
 
     compileOnly "com.google.android.wearable:wearable:$wearable_support_lib"
-    
+
     testImplementation 'junit:junit:4.13'
     testImplementation "com.google.truth:truth:1.0.1"
     androidTestImplementation "com.google.truth:truth:1.0.1"
