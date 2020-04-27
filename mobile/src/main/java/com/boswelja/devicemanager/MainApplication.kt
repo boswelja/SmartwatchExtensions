@@ -16,14 +16,15 @@ import com.boswelja.devicemanager.crashhandler.CrashHandlerActivity
 import com.boswelja.devicemanager.crashhandler.CrashHandlerActivity.Companion.EXTRA_STACKTRACE
 import java.io.PrintWriter
 import java.io.StringWriter
-import kotlin.system.exitProcess
 import timber.log.Timber
+import java.lang.ref.WeakReference
+import kotlin.system.exitProcess
 
 class MainApplication : Application() {
 
     private var defaultUncaughtExceptionHandler: Thread.UncaughtExceptionHandler? = null
-
     private var isInForeground = true
+    private var lastActivityCreated: WeakReference<Activity>? = null
 
     override fun onCreate() {
         super.onCreate()
@@ -36,7 +37,9 @@ class MainApplication : Application() {
             private var startedActivities = 0
 
             override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
-                // Do nothing
+                if (activity !is CrashHandlerActivity) {
+                    lastActivityCreated = WeakReference(activity)
+                }
             }
 
             override fun onActivityStarted(activity: Activity) {
@@ -93,16 +96,21 @@ class MainApplication : Application() {
                     Timber.i("Starting CrashHandlerActivity")
                     startActivity(it)
                 }
+            } else {
+                defaultUncaughtExceptionHandler!!.uncaughtException(thread, exception)
             }
 
+            lastActivityCreated?.get()?.finish()
+            lastActivityCreated?.clear()
+
+            killCurrentProcess()
+        }
+    }
+
+    companion object {
+        fun killCurrentProcess() {
             Process.killProcess(Process.myPid())
             exitProcess(10)
-
-//            if (defaultUncaughtExceptionHandler != null) {
-//                defaultUncaughtExceptionHandler!!.uncaughtException(thread, exception)
-//            } else {
-//                exitProcess(2)
-//            }
         }
     }
 }

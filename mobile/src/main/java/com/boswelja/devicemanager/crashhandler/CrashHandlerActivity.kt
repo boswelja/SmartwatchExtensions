@@ -15,10 +15,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.net.toUri
 import androidx.databinding.DataBindingUtil
 import com.boswelja.devicemanager.BuildConfig
+import com.boswelja.devicemanager.MainApplication
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.databinding.ActivityCrashHandlerBinding
 import com.boswelja.devicemanager.ui.main.MainActivity
-import kotlin.system.exitProcess
 import timber.log.Timber
 
 class CrashHandlerActivity : AppCompatActivity() {
@@ -40,7 +40,7 @@ class CrashHandlerActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        exitProcess(0)
+        MainApplication.killCurrentProcess()
     }
 
     /**
@@ -120,8 +120,8 @@ class CrashHandlerActivity : AppCompatActivity() {
             addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         }.also {
             startActivity(it)
-            finish()
         }
+        finish()
     }
 
     companion object {
