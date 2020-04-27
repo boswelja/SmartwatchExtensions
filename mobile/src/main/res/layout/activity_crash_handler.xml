@@ -12,7 +12,7 @@
             android:id="@+id/close_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="32dp"
+            android:layout_marginBottom="24dp"
             android:text="@string/crash_handler_action_close"
             app:icon="@drawable/ic_close"
             app:layout_constraintBottom_toBottomOf="parent"
