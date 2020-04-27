@@ -27,10 +27,19 @@ jobs:
           name: Code Quality Check :wear
           command: ./gradlew :wear:lint :wear:spotlessCheck
       - run:
-          name: Run tests :mobile
+          name: Build :common
+          command: ./gradlew :common:build
+      - run:
+          name: Build :mobile
+          command: ./gradlew :mobile:build
+      - run:
+          name: Build :wear
+          command: ./gradlew :wear:build
+      - run:
+          name: Run unit tests :mobile
           command: ./gradlew :mobile:test
       - run:
-          name: Run tests :wear
+          name: Run unit tests :wear
           command: ./gradlew :wear:test
       - run:
           name: Save test results
@@ -42,12 +51,3 @@ jobs:
           path: ~/test-results
       - store_artifacts:
           path: ~/test-results/junit
-      - run:
-          name: Build :common
-          command: ./gradlew :common:build
-      - run:
-          name: Build :mobile
-          command: ./gradlew :mobile:build
-      - run:
-          name: Build :wear
-          command: ./gradlew :wear:build
