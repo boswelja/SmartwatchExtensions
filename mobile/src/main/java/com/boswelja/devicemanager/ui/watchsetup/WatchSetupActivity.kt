@@ -43,6 +43,7 @@ class WatchSetupActivity : BaseToolbarActivity() {
         supportActionBar?.setDisplayShowTitleEnabled(false)
         supportFragmentManager.beginTransaction().apply {
             replace(R.id.fragment_holder, WelcomeFragment())
+            addToBackStack("WelcomeFragment")
             setCustomAnimations(R.anim.fade_in, R.anim.slide_out_right)
         }.also {
             it.commit()
@@ -55,7 +56,10 @@ class WatchSetupActivity : BaseToolbarActivity() {
      */
     private fun showWatchSetupFragment() {
         supportActionBar?.title = getString(R.string.register_watch_toolbar_title)
-        supportActionBar?.setDisplayShowTitleEnabled(true)
+        supportActionBar?.apply {
+            setDisplayShowTitleEnabled(true)
+            setDisplayHomeAsUpEnabled(true)
+        }
         supportFragmentManager.beginTransaction().apply {
             replace(R.id.fragment_holder, WatchSetupFragment())
             if (useFirstFragmentAnimation) {

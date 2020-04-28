@@ -77,7 +77,7 @@ class WatchInfoActivity : BaseToolbarActivity() {
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_watch_info)
         binding.apply {
-            setupToolbar(toolbarLayout.toolbar)
+            setupToolbar(toolbarLayout.toolbar, showUpButton = true)
             clearPreferencesButton.setOnClickListener {
                 confirmClearPreferences()
             }

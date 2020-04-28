@@ -57,8 +57,9 @@ class WatchBatteryWidgetConfigurationActivity : BaseToolbarActivity() {
         super.onCreate(savedInstanceState)
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_watch_battery_widget_configuration)
+        setupToolbar(binding.toolbarLayout.toolbar, showTitle = true, showUpButton = true)
+        supportActionBar!!.setHomeAsUpIndicator(R.drawable.ic_close)
         setupWatchPickerRecyclerView()
-        setupToolbar()
         setLoading(true)
 
         widgetId = getWidgetId()
@@ -84,17 +85,6 @@ class WatchBatteryWidgetConfigurationActivity : BaseToolbarActivity() {
                 AppWidgetManager.EXTRA_APPWIDGET_ID,
                 AppWidgetManager.INVALID_APPWIDGET_ID)
                 ?: AppWidgetManager.INVALID_APPWIDGET_ID
-    }
-
-    /**
-     * Set up the [getSupportActionBar].
-     */
-    private fun setupToolbar() {
-        supportActionBar?.apply {
-            setDisplayShowTitleEnabled(true)
-            setHomeAsUpIndicator(R.drawable.ic_close)
-            setDisplayHomeAsUpEnabled(true)
-        }
     }
 
     /**

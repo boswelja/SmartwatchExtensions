@@ -56,7 +56,13 @@ class AppManagerActivity : BaseToolbarActivity() {
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_app_manager)
 
-        setupToolbar(binding.toolbarLayout.toolbar)
+        setupToolbar(
+                binding.toolbarLayout.toolbar,
+                showTitle = true,
+                showUpButton = true,
+                toolbarSubtitle = getString(
+                        R.string.app_manager_activity_subtitle,
+                        intent.getStringExtra(EXTRA_WATCH_NAME)))
 
         showLoadingFragment()
 

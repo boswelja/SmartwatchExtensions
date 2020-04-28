@@ -77,7 +77,7 @@ class DnDSyncHelperActivity : BaseToolbarActivity() {
         Timber.d("onCreate() called")
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_dnd_sync_helper)
-        setupToolbar(binding.toolbarLayout.toolbar)
+        setupToolbar(binding.toolbarLayout.toolbar, showUpButton = true)
         showLoadingFragment(false)
 
         setResult(RESULT_USER_DISMISSED)

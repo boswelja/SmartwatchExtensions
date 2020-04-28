@@ -62,7 +62,7 @@ class WatchManagerActivity :
         setResult(RESULT_WATCH_LIST_UNCHANGED)
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_watch_manager)
-        setupToolbar(binding.toolbarLayout.toolbar)
+        setupToolbar(binding.toolbarLayout.toolbar, showTitle = true, showUpButton = true)
         setupRecyclerView()
 
         WatchManager.bind(this, watchConnectionManagerConnection)
