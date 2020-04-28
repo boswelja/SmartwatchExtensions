@@ -9,20 +9,10 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <com.google.android.material.appbar.AppBarLayout
-            android:id="@+id/appbar_layout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <androidx.appcompat.widget.Toolbar
-                android:id="@+id/toolbar"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:minHeight="?attr/actionBarSize"
-                tools:title="Manage Space" />
-
-        </com.google.android.material.appbar.AppBarLayout>
+        <include
+            android:id="@+id/toolbar_layout"
+            app:layout_constraintTop_toTopOf="parent"
+            layout="@layout/common_toolbar" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/progress_status"
@@ -54,7 +44,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/manage_space_clear_cache_title"
-            app:layout_constraintTop_toBottomOf="@id/appbar_layout"
+            app:layout_constraintTop_toBottomOf="@id/toolbar_layout"
             app:layout_constraintStart_toStartOf="parent"
             style="@style/ManageSpace.TextAppearance.Title" />
 

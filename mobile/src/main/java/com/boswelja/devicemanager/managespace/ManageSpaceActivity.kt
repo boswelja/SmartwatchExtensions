@@ -13,7 +13,6 @@ import android.os.Bundle
 import android.view.MenuItem
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.edit
 import androidx.databinding.DataBindingUtil
 import androidx.preference.PreferenceManager
@@ -21,6 +20,7 @@ import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.batterysync.BatterySyncWorker
 import com.boswelja.devicemanager.batterysync.database.WatchBatteryStatsDatabase
 import com.boswelja.devicemanager.databinding.ActivityManageSpaceBinding
+import com.boswelja.devicemanager.ui.base.BaseToolbarActivity
 import com.boswelja.devicemanager.watchmanager.Watch
 import com.boswelja.devicemanager.watchmanager.WatchManager
 import com.boswelja.devicemanager.watchmanager.database.WatchDatabase
@@ -34,7 +34,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 
-class ManageSpaceActivity : AppCompatActivity() {
+class ManageSpaceActivity : BaseToolbarActivity() {
 
     private val watchManagerConnection = object : WatchManager.Connection() {
         override fun onWatchManagerBound(watchManager: WatchManager) {
@@ -60,12 +60,7 @@ class ManageSpaceActivity : AppCompatActivity() {
         activityManager = getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
         binding = DataBindingUtil.setContentView(this, R.layout.activity_manage_space)
 
-        setSupportActionBar(binding.toolbar)
-        supportActionBar?.apply {
-            setDisplayShowTitleEnabled(true)
-            setDisplayHomeAsUpEnabled(true)
-        }
-
+        setupToolbar(binding.toolbarLayout.toolbar, showTitle = true, showUpButton = true)
         setupButtons()
     }
 
