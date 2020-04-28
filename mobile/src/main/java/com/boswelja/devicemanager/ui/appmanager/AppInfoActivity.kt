@@ -17,11 +17,11 @@ import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.Utils
 import com.boswelja.devicemanager.common.appmanager.AppPackageInfo
 import com.boswelja.devicemanager.databinding.ActivityAppInfoBinding
-import com.boswelja.devicemanager.ui.base.BaseDayNightActivity
+import com.boswelja.devicemanager.ui.base.BaseToolbarActivity
 import java.text.SimpleDateFormat
 import java.util.Locale
 
-class AppInfoActivity : BaseDayNightActivity() {
+class AppInfoActivity : BaseToolbarActivity() {
 
     private lateinit var requestedPermissionsDialog: AppPermissionDialogFragment
 
@@ -32,11 +32,7 @@ class AppInfoActivity : BaseDayNightActivity() {
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_app_info)
 
-        setSupportActionBar(binding.appbarLayout.toolbar)
-        supportActionBar?.apply {
-            setDisplayHomeAsUpEnabled(true)
-            setDisplayShowTitleEnabled(false)
-        }
+        setupToolbar(binding.toolbarLayout.toolbar, showTitle = true, showUpButton = true)
 
         val appInfo = intent?.extras?.getSerializable(EXTRA_APP_INFO) as AppPackageInfo
         binding.appInfo = appInfo

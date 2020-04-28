@@ -26,7 +26,7 @@
             app:errorEnabled="false"
             app:helperTextEnabled="true"
             app:helperText="@string/watch_name_field_helper_text"
-            app:layout_constraintTop_toBottomOf="@+id/appbar_layout"
+            app:layout_constraintTop_toBottomOf="@+id/toolbar_layout"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent">
 
