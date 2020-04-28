@@ -140,9 +140,13 @@ class MainActivity : BaseWatchPickerActivity() {
     fun updateMessagesBadge() {
         val messageCount = sharedPreferences.getInt(MESSAGE_COUNT_KEY, 0)
         Timber.i("New message badge count = $messageCount")
-        bottomNavigationView.getOrCreateBadge(R.id.messages_navigation).apply {
-            number = messageCount
-            isVisible = messageCount > 0
+        val shouldShowMessageBadge = messageCount > 0
+        if (shouldShowMessageBadge) {
+            bottomNavigationView.getOrCreateBadge(R.id.messages_navigation).apply {
+                number = messageCount
+            }
+        } else {
+            bottomNavigationView.removeBadge(R.id.messages_navigation)
         }
     }
 
