@@ -27,6 +27,7 @@ import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_SYNC_INTERVAL_KEY
 import com.boswelja.devicemanager.common.References.CAPABILITY_WATCH_APP
 import com.boswelja.devicemanager.common.dndsync.References
 import com.boswelja.devicemanager.messages.database.MessageDatabase
+import com.boswelja.devicemanager.messages.database.MessageDatabase.Companion.MESSAGE_COUNT_KEY
 import com.boswelja.devicemanager.ui.phonelocking.PhoneLockingPreferenceFragment.Companion.PHONE_LOCKING_MODE_KEY
 import com.boswelja.devicemanager.watchmanager.Utils
 import com.boswelja.devicemanager.watchmanager.Watch
@@ -148,45 +149,48 @@ class Updater(private val context: Context) {
         var updateStatus = Result.NOT_NEEDED
         if (needsUpdate) {
             sharedPreferences.edit(commit = true) {
-                if (lastAppVersion < 2019090243) {
+                if (sharedPreferences.contains("connected_watch_name")) {
                     remove("connected_watch_name")
                     updateStatus = Result.COMPLETED
                 }
-                if (lastAppVersion < 2019110999) {
+                if (sharedPreferences.contains("connected_watch_id")) {
                     val lastConnectedId = sharedPreferences.getString("connected_watch_id", "")
                     remove("connected_watch_id")
                     putString("last_connected_id", lastConnectedId)
                     updateStatus = Result.COMPLETED
                 }
-                if (lastAppVersion < 2020011400) {
+                if (sharedPreferences.contains("battery_sync_last_when")) {
                     remove("battery_sync_last_when")
-                    remove("battery_sync_enabled")
                     updateStatus = Result.COMPLETED
                 }
-                if (lastAppVersion < 2019120600) {
-                    doFullUpdate()
-                    updateStatus = Result.COMPLETED
-                }
-                if (lastAppVersion < 2020020200) {
+                if (sharedPreferences.contains("ignore_battery_opt_warning")) {
                     remove("ignore_battery_opt_warning")
-                    remove("ignore_watch_charge_warning")
+                    updateStatus = Result.COMPLETED
                 }
-                if (lastAppVersion < 2020040600) {
-                    MessageDatabase.open(context).apply {
+                if (sharedPreferences.contains("ignore_watch_charge_warning")) {
+                    remove("ignore_watch_charge_warning")
+                    updateStatus = Result.COMPLETED
+                }
+                if (!sharedPreferences.contains(MESSAGE_COUNT_KEY)) {
+                    MessageDatabase.open(context, allowMainThreadQueries = true).apply {
                         updateMessageCount(sharedPreferences)
                     }.also {
                         it.close()
                     }
                 }
-                if (lastAppVersion < 2020040700) {
+                if (!sharedPreferences.contains(PHONE_LOCKING_MODE_KEY)) {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
                         putString(PHONE_LOCKING_MODE_KEY, "1")
                     } else {
                         putString(PHONE_LOCKING_MODE_KEY, "0")
                     }
                 }
-                if (lastAppVersion < 2020042200) {
+                if (sharedPreferences.contains("has_completed_first_run")) {
                     remove("has_completed_first_run")
+                }
+                if (lastAppVersion < 2019120600) {
+                    doFullUpdate()
+                    updateStatus = Result.COMPLETED
                 }
                 putInt(APP_VERSION_KEY, lastAppVersion)
             }
