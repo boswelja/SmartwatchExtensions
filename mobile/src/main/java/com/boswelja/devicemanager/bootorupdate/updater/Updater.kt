@@ -93,7 +93,7 @@ class Updater(private val context: Context) {
      */
     @RequiresApi(Build.VERSION_CODES.O)
     fun createNotificationChannels() {
-        if (!notificationChannelsCreated or needsUpdate) {
+        if (!notificationChannelsCreated || needsUpdate) {
             val notificationManager = context.getSystemService(NotificationManager::class.java)!!
 
             if (notificationManager.getNotificationChannel(WatchBatteryUpdateReceiver.BATTERY_CHARGED_NOTI_CHANNEL_ID) == null) {
