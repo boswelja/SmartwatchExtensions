@@ -91,12 +91,12 @@ class PhoneLockingPreferenceFragment :
 
         openDeviceSettingsPreference = findPreference(OPEN_DEVICE_SETTINGS_KEY)!!
         openDeviceSettingsPreference.onPreferenceClickListener = this
-        updateOpenDeviceSettingsTitle()
     }
 
     override fun onStart() {
         super.onStart()
         Timber.d("onStart() called")
+        updateOpenDeviceSettingsTitle()
         sharedPreferences.registerOnSharedPreferenceChangeListener(this)
         if (isEnablingPhoneLocking && canEnablePhoneLocking()) {
             setPhoneLockingEnabled(true)
