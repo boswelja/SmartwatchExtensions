@@ -72,11 +72,6 @@ class AppManagerFragment : Fragment() {
                     LinearLayoutManager.VERTICAL,
                     false)
             adapter = AppsAdapter(this@AppManagerFragment)
-            addOnScrollListener(object : RecyclerView.OnScrollListener() {
-                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                    activity.elevateToolbar(recyclerView.canScrollVertically(-1))
-                }
-            })
         }
         if (allAppsCache != null) {
             setAllApps(allAppsCache!!)

@@ -7,13 +7,9 @@
  */
 package com.boswelja.devicemanager.ui.base
 
-import android.animation.ObjectAnimator
 import android.os.Bundle
 import android.view.MenuItem
-import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import com.boswelja.devicemanager.R
-import com.boswelja.devicemanager.Utils
-import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.snackbar.Snackbar
 import timber.log.Timber
 
@@ -45,28 +41,6 @@ abstract class BaseToolbarActivity : BaseDayNightActivity() {
             onBackPressed()
         }
         return super.onOptionsItemSelected(item)
-    }
-
-    /**
-     * Sets whether the toolbar should be elevated.
-     * @param elevate Whether the toolbar should be elevated.
-     */
-    fun elevateToolbar(elevate: Boolean) {
-        if (toolbarElevated != elevate) {
-            Timber.i("Setting toolbar elevated = $elevate")
-            toolbarElevated = elevate
-            val appBarLayout = findViewById<AppBarLayout>(R.id.appbar_layout)
-            val elevation = if (elevate) {
-                Utils.complexTypeDp(resources, 6f)
-            } else {
-                0f
-            }
-            ObjectAnimator.ofFloat(appBarLayout, "elevation", elevation).apply {
-                duration = 250
-                interpolator = FastOutSlowInInterpolator()
-                start()
-            }
-        }
     }
 
     /**

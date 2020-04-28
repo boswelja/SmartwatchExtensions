@@ -5,13 +5,14 @@
     android:id="@+id/appbar_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:elevation="0dp">
+    app:liftOnScroll="true">
 
-    <androidx.appcompat.widget.Toolbar
+    <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:minHeight="?attr/actionBarSize"
         android:clipToPadding="false"
-        android:animateLayoutChanges="true" />
+        android:animateLayoutChanges="true"
+        style="@style/Widget.MaterialComponents.Toolbar" />
 </com.google.android.material.appbar.AppBarLayout>
