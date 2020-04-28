@@ -49,7 +49,7 @@ class AppManagerActivity : BaseToolbarActivity() {
 
         watchId = intent?.getStringExtra(EXTRA_WATCH_ID)
         if (watchId.isNullOrEmpty()) {
-            //TODO Load in an error fragment instead of just terminating
+            // TODO Load in an error fragment instead of just terminating
             notifyWatchNotFound()
             return
         }

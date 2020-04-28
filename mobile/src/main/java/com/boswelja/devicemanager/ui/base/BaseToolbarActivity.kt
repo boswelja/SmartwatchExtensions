@@ -45,10 +45,11 @@ abstract class BaseToolbarActivity : BaseDayNightActivity() {
      * The default is null.
      */
     fun setupToolbar(
-            toolbar: MaterialToolbar,
-            showTitle: Boolean = false,
-            showUpButton: Boolean = false,
-            toolbarSubtitle: String? = null) {
+        toolbar: MaterialToolbar,
+        showTitle: Boolean = false,
+        showUpButton: Boolean = false,
+        toolbarSubtitle: String? = null
+    ) {
         setSupportActionBar(toolbar)
         supportActionBar!!.apply {
             setDisplayShowTitleEnabled(showTitle)
