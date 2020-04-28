@@ -115,9 +115,10 @@ abstract class MessageDatabase : RoomDatabase() {
          * @param context [Context].
          * @return The new instance of [MessageDatabase].
          */
-        fun open(context: Context): MessageDatabase {
-            return Room.databaseBuilder(context, MessageDatabase::class.java, "messages-db")
-                    .build()
+        fun open(context: Context, allowMainThreadQueries: Boolean = false): MessageDatabase {
+            return Room.databaseBuilder(context, MessageDatabase::class.java, "messages-db").apply {
+                if (allowMainThreadQueries) allowMainThreadQueries()
+            }.build()
         }
     }
 }
