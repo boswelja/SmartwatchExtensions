@@ -48,7 +48,7 @@ abstract class BasePreferenceActivity : BaseWatchPickerActivity() {
         preferenceFragment = createPreferenceFragment()
         supportFragmentManager.beginTransaction()
                 .replace(R.id.fragment_holder, preferenceFragment)
-                .commit()
+                .commitNow()
         if (intent != null && !intent.getStringExtra(EXTRA_PREFERENCE_KEY).isNullOrEmpty()) {
             val key = intent.getStringExtra(EXTRA_PREFERENCE_KEY)
             Timber.i("Scrolling to $key")
@@ -66,7 +66,7 @@ abstract class BasePreferenceActivity : BaseWatchPickerActivity() {
         if (widgetFragment != null) {
             supportFragmentManager.beginTransaction()
                     .replace(R.id.widget_holder, widgetFragment)
-                    .commit()
+                    .commitNow()
         } else {
             Timber.i("No widget fragment to load")
             findViewById<View>(R.id.widget_divider).visibility = View.GONE
