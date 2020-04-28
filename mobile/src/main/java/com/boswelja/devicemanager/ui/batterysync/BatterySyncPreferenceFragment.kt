@@ -182,11 +182,6 @@ class BatterySyncPreferenceFragment :
                 }
                 getWatchConnectionManager()?.updatePreferenceOnWatch(BATTERY_SYNC_ENABLED_KEY)
                 BatterySyncWorker.stopWorker(activity.watchConnectionManager)
-                (activity as BatterySyncPreferenceActivity)
-                        .batteryStatsDatabase
-                        ?.batteryStatsDao()
-                        ?.deleteStatsForWatch(
-                                activity.watchConnectionManager?.connectedWatch?.id!!)
             }
         }
     }

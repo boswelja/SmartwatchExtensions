@@ -17,6 +17,7 @@ import androidx.fragment.app.Fragment
 import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.batterysync.database.WatchBatteryStats
+import com.boswelja.devicemanager.batterysync.database.WatchBatteryStatsDatabase
 import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_SYNC_ENABLED_KEY
 import com.boswelja.devicemanager.databinding.SettingsWidgetBatterySyncBinding
 import com.boswelja.devicemanager.watchmanager.Watch
@@ -43,9 +44,9 @@ class BatterySyncPreferenceWidgetFragment :
 
     private var watchBatteryUpdateTimer: Timer? = null
     private var watchBatteryUpdateTimerStarted: Boolean = false
-
     private var batterySyncEnabled: Boolean = false
     private var batteryStats: WatchBatteryStats? = null
+    private var batteryStatsDatabase: WatchBatteryStatsDatabase? = null
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
         Timber.d("onSharedPreferenceChanged($key) called")
@@ -73,15 +74,8 @@ class BatterySyncPreferenceWidgetFragment :
         Timber.d("onCreate() called")
 
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(requireContext())
-        batterySyncEnabled = sharedPreferences.getBoolean(BATTERY_SYNC_ENABLED_KEY, false)
 
         activity = getActivity() as BatterySyncPreferenceActivity
-        activity.batteryStatsDatabaseEventInterface = object : BatterySyncPreferenceActivity.BatteryStatsDatabaseEventInterface {
-            override fun onOpened() {
-                Timber.d("onOpened() called")
-                updateBatteryStatsDisplay()
-            }
-        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -93,8 +87,15 @@ class BatterySyncPreferenceWidgetFragment :
     override fun onStart() {
         super.onStart()
         Timber.d("onStart() called")
+        batterySyncEnabled = sharedPreferences.getBoolean(BATTERY_SYNC_ENABLED_KEY, false)
         sharedPreferences.registerOnSharedPreferenceChangeListener(this)
-        startBatteryUpdateTimer()
+        coroutineScope.launch(Dispatchers.IO) {
+            batteryStatsDatabase = WatchBatteryStatsDatabase.open(requireContext())
+            withContext(Dispatchers.Main) {
+                setBatterySyncState(batterySyncEnabled)
+            }
+        }
+
     }
 
     override fun onStop() {
@@ -102,6 +103,7 @@ class BatterySyncPreferenceWidgetFragment :
         Timber.d("onStop() called")
         sharedPreferences.unregisterOnSharedPreferenceChangeListener(this)
         stopBatteryUpdateTimer()
+        batteryStatsDatabase?.close()
     }
 
     /**
@@ -110,16 +112,19 @@ class BatterySyncPreferenceWidgetFragment :
      */
     private fun setBatterySyncState(newBatterySyncState: Boolean) {
         Timber.d("setBatterySyncState() called")
-        if (newBatterySyncState != batterySyncEnabled) {
-            batterySyncEnabled = newBatterySyncState
-            Timber.i("Setting new battery sync state to $newBatterySyncState")
-            if (batterySyncEnabled) {
-                setWatchBatteryLoading()
-                startBatteryUpdateTimer()
-            } else {
-                updateWatchBatteryPercent()
-                updateBatterySyncLastTimeNow()
-                stopBatteryUpdateTimer()
+        batterySyncEnabled = newBatterySyncState
+        Timber.i("Setting new battery sync state to $newBatterySyncState")
+        if (batterySyncEnabled) {
+            setWatchBatteryLoading()
+            startBatteryUpdateTimer()
+        } else {
+            updateBatteryStatsDisplay()
+            stopBatteryUpdateTimer()
+            coroutineScope.launch(Dispatchers.IO) {
+                if (activity.watchConnectionManager?.connectedWatch != null) {
+                    batteryStatsDatabase?.batteryStatsDao()
+                            ?.deleteStatsForWatch(activity.watchConnectionManager?.connectedWatch!!.id)
+                }
             }
         }
     }
@@ -210,7 +215,7 @@ class BatterySyncPreferenceWidgetFragment :
             }
             watchBatteryUpdateTimerStarted = true
         } else {
-            Timber.i("Battery update timer already running")
+            Timber.i("Timer start not needed")
         }
     }
 
@@ -236,8 +241,7 @@ class BatterySyncPreferenceWidgetFragment :
         Timber.i("Updating widget")
         coroutineScope.launch(Dispatchers.IO) {
             if (activity.watchConnectionManager?.connectedWatch != null) {
-                batteryStats = activity
-                        .batteryStatsDatabase
+                batteryStats = batteryStatsDatabase
                         ?.batteryStatsDao()
                         ?.getStatsForWatch(activity.watchConnectionManager?.connectedWatch!!.id)
             }
