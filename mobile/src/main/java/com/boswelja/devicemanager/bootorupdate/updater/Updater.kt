@@ -45,9 +45,9 @@ class Updater(private val context: Context) {
     private val currentAppVersion: Int = BuildConfig.VERSION_CODE
     private val lastAppVersion: Int
 
-    private val needsUpdate: Boolean get() = lastAppVersion < currentAppVersion
-
     private var notificationChannelsCreated: Boolean = false
+
+    val needsUpdate: Boolean get() = lastAppVersion < currentAppVersion
 
     init {
         lastAppVersion = try {

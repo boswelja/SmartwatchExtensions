@@ -12,6 +12,9 @@ import android.app.Application
 import android.content.Intent
 import android.os.Bundle
 import android.os.Process
+import com.boswelja.devicemanager.bootorupdate.BootOrUpdateHandlerService
+import com.boswelja.devicemanager.bootorupdate.updater.Updater
+import com.boswelja.devicemanager.common.Compat
 import com.boswelja.devicemanager.crashhandler.CrashHandlerActivity
 import com.boswelja.devicemanager.crashhandler.CrashHandlerActivity.Companion.EXTRA_STACKTRACE
 import java.io.PrintWriter
@@ -33,6 +36,29 @@ class MainApplication : Application() {
             Timber.plant(Timber.DebugTree())
         }
 
+        setupCrashhandler()
+        ensureUpdated()
+    }
+
+    /**
+     * Checks the environment is up to date, otherwise starts a [BootOrUpdateHandlerService].
+     */
+    private fun ensureUpdated() {
+        val updater = Updater(this)
+        if (updater.needsUpdate) {
+            Timber.i("Starting updater service")
+            Intent(this, BootOrUpdateHandlerService::class.java).apply {
+                action = Intent.ACTION_MY_PACKAGE_REPLACED
+            }.also {
+                Compat.startForegroundService(this, it)
+            }
+        }
+    }
+
+    /**
+     * Set up our [CrashHandlerActivity].
+     */
+    private fun setupCrashhandler() {
         registerActivityLifecycleCallbacks(object : ActivityLifecycleCallbacks {
             private var startedActivities = 0
 

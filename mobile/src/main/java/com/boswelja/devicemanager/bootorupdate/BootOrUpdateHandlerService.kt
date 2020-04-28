@@ -33,6 +33,8 @@ class BootOrUpdateHandlerService : Service() {
 
     private lateinit var updater: Updater
 
+    private var isUpdating = false
+
     private val watchManagerConnection = object : WatchManager.Connection() {
         override fun onWatchManagerBound(watchManager: WatchManager) {
             Timber.i("Service bound")
@@ -59,11 +61,11 @@ class BootOrUpdateHandlerService : Service() {
             Intent.ACTION_BOOT_COMPLETED -> {
                 Timber.i("Device restarted")
                 startForeground(NOTI_ID, createBootNotification())
+                Timber.i("Binding to WatchConnectionService")
+                WatchManager.bind(this, watchManagerConnection)
             }
             else -> return super.onStartCommand(intent, flags, startId)
         }
-        Timber.i("Binding to WatchConnectionService")
-        WatchManager.bind(this, watchManagerConnection)
         return START_NOT_STICKY
     }
 
@@ -72,17 +74,22 @@ class BootOrUpdateHandlerService : Service() {
      */
     private fun performUpdates() {
         Timber.i("Starting update process")
-        updater = Updater(this)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) updater.createNotificationChannels()
-        startForeground(NOTI_ID, createUpdaterNotification())
-        when (updater.doUpdate()) {
-            Result.COMPLETED -> {
-                Timber.i("Update completed")
-                PreferenceManager.getDefaultSharedPreferences(this).edit {
-                    putBoolean(SHOW_CHANGELOG_KEY, true)
+        if (!isUpdating) {
+            isUpdating = true
+            updater = Updater(this)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) updater.createNotificationChannels()
+            startForeground(NOTI_ID, createUpdaterNotification())
+            when (updater.doUpdate()) {
+                Result.COMPLETED -> {
+                    Timber.i("Update completed")
+                    PreferenceManager.getDefaultSharedPreferences(this).edit {
+                        putBoolean(SHOW_CHANGELOG_KEY, true)
+                    }
                 }
+                Result.NOT_NEEDED -> Timber.i("Update not needed")
             }
-            Result.NOT_NEEDED -> Timber.i("Update not needed")
+            Timber.i("Binding to WatchConnectionService")
+            WatchManager.bind(this, watchManagerConnection)
         }
     }
 
