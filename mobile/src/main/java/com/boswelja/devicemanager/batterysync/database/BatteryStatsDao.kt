@@ -7,6 +7,7 @@
  */
 package com.boswelja.devicemanager.batterysync.database
 
+import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
@@ -17,6 +18,9 @@ interface BatteryStatsDao {
 
     @Query("SELECT * FROM watch_battery_stats WHERE watchId = :watchId LIMIT 1")
     fun getStatsForWatch(watchId: String): WatchBatteryStats?
+
+    @Query("SELECT * FROM watch_battery_stats WHERE watchId = :watchId LIMIT 1")
+    fun getObservableStatsForWatch(watchId: String): LiveData<WatchBatteryStats?>
 
     @Query("DELETE FROM watch_battery_stats WHERE watchId = :watchId")
     fun deleteStatsForWatch(watchId: String)
