@@ -72,9 +72,7 @@ class BatterySyncPreferenceWidgetFragment :
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Timber.d("onCreate() called")
-
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(requireContext())
-
         activity = getActivity() as BatterySyncPreferenceActivity
     }
 
@@ -95,7 +93,6 @@ class BatterySyncPreferenceWidgetFragment :
                 setBatterySyncState(batterySyncEnabled)
             }
         }
-
     }
 
     override fun onStop() {
