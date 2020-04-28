@@ -13,6 +13,6 @@ import com.boswelja.devicemanager.ui.base.BasePreferenceFragment
 
 class DnDSyncPreferenceActivity : BasePreferenceActivity() {
 
-    override fun createPreferenceFragment(): BasePreferenceFragment = DnDSyncPreferenceFragment()
-    override fun createWidgetFragment(): Fragment? = null
+    override fun getPreferenceFragment(): BasePreferenceFragment = DnDSyncPreferenceFragment()
+    override fun getWidgetFragment(): Fragment? = null
 }

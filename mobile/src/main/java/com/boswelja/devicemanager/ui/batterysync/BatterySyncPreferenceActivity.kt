@@ -16,8 +16,8 @@ class BatterySyncPreferenceActivity : BasePreferenceActivity() {
 
     private val widgetFragment = BatterySyncPreferenceWidgetFragment()
 
-    override fun createPreferenceFragment(): BasePreferenceFragment = BatterySyncPreferenceFragment()
-    override fun createWidgetFragment(): Fragment? = widgetFragment
+    override fun getPreferenceFragment(): BasePreferenceFragment = BatterySyncPreferenceFragment()
+    override fun getWidgetFragment(): Fragment? = widgetFragment
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
