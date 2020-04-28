@@ -80,7 +80,6 @@ class BatterySyncPreferenceWidgetFragment :
         super.onCreate(savedInstanceState)
         Timber.d("onCreate() called")
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(requireContext())
-        activity = getActivity() as BatterySyncPreferenceActivity
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -94,12 +93,6 @@ class BatterySyncPreferenceWidgetFragment :
         Timber.d("onStart() called")
         batterySyncEnabled = sharedPreferences.getBoolean(BATTERY_SYNC_ENABLED_KEY, false)
         sharedPreferences.registerOnSharedPreferenceChangeListener(this)
-        coroutineScope.launch(Dispatchers.IO) {
-            batteryStatsDatabase = WatchBatteryStatsDatabase.open(requireContext())
-            withContext(Dispatchers.Main) {
-                setBatterySyncState(batterySyncEnabled)
-            }
-        }
     }
 
     override fun onStop() {
@@ -158,7 +151,7 @@ class BatterySyncPreferenceWidgetFragment :
                             R.string.battery_sync_percent_short,
                             batteryStats.batteryPercent.toString())
                 } else {
-                    watchBatteryPercent.setText(R.string.battery_sync_error)
+                    showError()
                 }
             } else {
                 watchBatteryIndicator.setImageLevel(0)
@@ -175,6 +168,18 @@ class BatterySyncPreferenceWidgetFragment :
         binding.apply {
             watchBatteryIndicator.setImageLevel(0)
             watchBatteryPercent.setText(R.string.battery_sync_loading)
+            lastUpdatedTime.visibility = View.GONE
+        }
+    }
+
+    /**
+     * Sets the view to the error state.
+     */
+    private fun showError() {
+        Timber.d("showError() called")
+        binding.apply {
+            watchBatteryIndicator.setImageLevel(0)
+            watchBatteryPercent.setText(R.string.battery_sync_error)
             lastUpdatedTime.visibility = View.GONE
         }
     }
@@ -204,14 +209,14 @@ class BatterySyncPreferenceWidgetFragment :
                             lastUpdatedHours, lastUpdatedHours)
                 }
             }
-            activity.runOnUiThread {
+            getActivity()?.runOnUiThread {
                 binding.apply {
                     lastUpdatedTime.text = lastUpdatedString
                     lastUpdatedTime.visibility = View.VISIBLE
                 }
             }
         } else {
-            activity.runOnUiThread {
+            getActivity()?.runOnUiThread {
                 binding.apply {
                     lastUpdatedTime.visibility = View.GONE
                 }
@@ -261,6 +266,19 @@ class BatterySyncPreferenceWidgetFragment :
             startLastUpdatedRefreshTimer()
         } else {
             updateLastSyncTimeView(batteryStats)
+        }
+    }
+
+    /**
+     * Performs the widget's initial setup. Handles anything that can't be executed in a test.
+     */
+    fun setupWidget() {
+        activity = getActivity() as BatterySyncPreferenceActivity
+        coroutineScope.launch(Dispatchers.IO) {
+            batteryStatsDatabase = WatchBatteryStatsDatabase.open(requireContext())
+            withContext(Dispatchers.Main) {
+                setBatterySyncState(batterySyncEnabled)
+            }
         }
     }
 
