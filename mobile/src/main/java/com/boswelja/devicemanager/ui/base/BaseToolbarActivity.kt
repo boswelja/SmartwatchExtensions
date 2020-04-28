@@ -7,9 +7,9 @@
  */
 package com.boswelja.devicemanager.ui.base
 
-import android.os.Bundle
 import android.view.MenuItem
 import com.boswelja.devicemanager.R
+import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.snackbar.Snackbar
 import timber.log.Timber
 
@@ -18,22 +18,6 @@ import timber.log.Timber
  * with optional elevation.
  */
 abstract class BaseToolbarActivity : BaseDayNightActivity() {
-
-    private var toolbarElevated = false
-
-    /**
-     * Set the content view ID, must contain a toolbar with ID [R.id.toolbar].
-     */
-    abstract fun getContentViewId(): Int
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        setContentView(getContentViewId())
-
-        setSupportActionBar(findViewById(R.id.toolbar))
-        supportActionBar?.setDisplayShowTitleEnabled(false)
-    }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == android.R.id.home) {
@@ -49,5 +33,27 @@ abstract class BaseToolbarActivity : BaseDayNightActivity() {
      */
     fun createSnackBar(message: String) {
         Snackbar.make(findViewById(R.id.content_view), message, Snackbar.LENGTH_LONG).show()
+    }
+
+    /**
+     * Set up the [MaterialToolbar].
+     * @param toolbar The [MaterialToolbar] to use.
+     * @param showTitle Whether the title is shown on the toolbar. The default is false.
+     * @param showUpButton Whether the up button, or back button, is shown on the toolbar.
+     * The default is false
+     * @param toolbarSubtitle The subtitle to show on the toolbar, or null if none.
+     * The default is null.
+     */
+    fun setupToolbar(
+            toolbar: MaterialToolbar,
+            showTitle: Boolean = false,
+            showUpButton: Boolean = false,
+            toolbarSubtitle: String? = null) {
+        setSupportActionBar(toolbar)
+        supportActionBar!!.apply {
+            setDisplayShowTitleEnabled(showTitle)
+            setDisplayHomeAsUpEnabled(showUpButton)
+            subtitle = toolbarSubtitle
+        }
     }
 }

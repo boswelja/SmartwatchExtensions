@@ -12,13 +12,12 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import androidx.appcompat.app.AlertDialog
+import androidx.databinding.DataBindingUtil
 import com.boswelja.devicemanager.R
+import com.boswelja.devicemanager.databinding.ActivityWatchInfoBinding
 import com.boswelja.devicemanager.ui.base.BaseToolbarActivity
 import com.boswelja.devicemanager.watchmanager.Watch
 import com.boswelja.devicemanager.watchmanager.WatchManager
-import com.google.android.material.button.MaterialButton
-import com.google.android.material.textfield.TextInputEditText
-import com.google.android.material.textfield.TextInputLayout
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
@@ -42,17 +41,19 @@ class WatchInfoActivity : BaseToolbarActivity() {
 
     private val nicknameChangeListener = object : TextWatcher {
         override fun afterTextChanged(editable: Editable?) {
-            if (!editable.isNullOrBlank()) {
-                Timber.i("Updating watch nickname")
-                watchNameLayout.isErrorEnabled = false
-                coroutineScope.launch(Dispatchers.IO) {
-                    watchConnectionManager?.updateWatchName(watchId!!, editable.toString())
+            binding.apply {
+                if (!editable.isNullOrBlank()) {
+                    Timber.i("Updating watch nickname")
+                    watchNameLayout.isErrorEnabled = false
+                    coroutineScope.launch(Dispatchers.IO) {
+                        watchConnectionManager?.updateWatchName(watchId!!, editable.toString())
+                    }
+                    resultCode = RESULT_WATCH_NAME_CHANGED
+                } else {
+                    Timber.w("Invalid watch nickname")
+                    watchNameLayout.isErrorEnabled = true
+                    watchNameField.error = "Nickname cannot be blank"
                 }
-                resultCode = RESULT_WATCH_NAME_CHANGED
-            } else {
-                Timber.w("Invalid watch nickname")
-                watchNameLayout.isErrorEnabled = true
-                watchNameField.error = "Nickname cannot be blank"
             }
         }
 
@@ -63,32 +64,26 @@ class WatchInfoActivity : BaseToolbarActivity() {
 
     private val coroutineScope = MainScope()
 
-    private lateinit var watchNameLayout: TextInputLayout
-    private lateinit var watchNameField: TextInputEditText
+    private lateinit var binding: ActivityWatchInfoBinding
 
     private var watchConnectionManager: WatchManager? = null
     private var watchId: String? = null
 
     private var resultCode = RESULT_WATCH_UNCHANGED
 
-    override fun getContentViewId(): Int = R.layout.activity_watch_info
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         watchId = intent?.getStringExtra(EXTRA_WATCH_ID)
 
-        supportActionBar?.apply {
-            setDisplayHomeAsUpEnabled(true)
-        }
-
-        watchNameLayout = findViewById(R.id.watch_name_layout)
-        watchNameField = findViewById(R.id.watch_name_field)
-        findViewById<MaterialButton>(R.id.clear_preferences_button)?.setOnClickListener {
-            confirmClearPreferences()
-        }
-        findViewById<MaterialButton>(R.id.forget_watch_button)?.setOnClickListener {
-            confirmForgetWatch()
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_watch_info)
+        binding.apply {
+            setupToolbar(toolbarLayout.toolbar)
+            clearPreferencesButton.setOnClickListener {
+                confirmClearPreferences()
+            }
+            forgetWatchButton.setOnClickListener {
+                confirmForgetWatch()
+            }
         }
 
         WatchManager.bind(this, watchConnectionManagerConnection)
@@ -102,18 +97,20 @@ class WatchInfoActivity : BaseToolbarActivity() {
     override fun onDestroy() {
         super.onDestroy()
         unbindService(watchConnectionManagerConnection)
-        watchNameField.removeTextChangedListener(nicknameChangeListener)
+        binding.watchNameField.removeTextChangedListener(nicknameChangeListener)
     }
 
     /**
-     * Resets the text in [watchNameField] to the nickname stored in [WatchManager].
+     * Resets the text in the watch name field to the nickname stored in [WatchManager].
      */
     private fun resetNicknameTextField() {
         coroutineScope.launch(Dispatchers.IO) {
             val watchName = watchConnectionManager?.getWatchById(watchId)?.name
             withContext(Dispatchers.Main) {
-                watchNameField.setText(watchName)
-                watchNameField.addTextChangedListener(nicknameChangeListener)
+                binding.apply {
+                    watchNameField.setText(watchName)
+                    watchNameField.addTextChangedListener(nicknameChangeListener)
+                }
             }
         }
     }

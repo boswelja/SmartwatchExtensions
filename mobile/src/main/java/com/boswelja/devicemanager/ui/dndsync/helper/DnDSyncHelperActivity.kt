@@ -9,11 +9,13 @@ package com.boswelja.devicemanager.ui.dndsync.helper
 
 import android.os.Build
 import android.os.Bundle
+import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.Extensions.fromByteArray
 import com.boswelja.devicemanager.common.dndsync.References.REQUEST_INTERRUPT_FILTER_ACCESS_STATUS_PATH
 import com.boswelja.devicemanager.common.dndsync.References.REQUEST_SDK_INT_PATH
+import com.boswelja.devicemanager.databinding.ActivityDndSyncHelperBinding
 import com.boswelja.devicemanager.ui.base.BaseToolbarActivity
 import com.boswelja.devicemanager.ui.common.LoadingFragment
 import com.boswelja.devicemanager.watchmanager.WatchManager
@@ -61,6 +63,8 @@ class DnDSyncHelperActivity : BaseToolbarActivity() {
         }
     }
 
+    private lateinit var binding: ActivityDndSyncHelperBinding
+
     private var watchConnectionManager: WatchManager? = null
     private var messageClient: MessageClient? = null
 
@@ -68,20 +72,15 @@ class DnDSyncHelperActivity : BaseToolbarActivity() {
     private var errorFragment: ErrorFragment? = null
     private var setupFragment: SetupFragment? = null
 
-    override fun getContentViewId(): Int = R.layout.activity_dnd_sync_helper
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Timber.d("onCreate() called")
 
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_dnd_sync_helper)
+        setupToolbar(binding.toolbarLayout.toolbar)
         showLoadingFragment(false)
 
         setResult(RESULT_USER_DISMISSED)
-
-        supportActionBar?.apply {
-            setDisplayHomeAsUpEnabled(true)
-            setDisplayShowTitleEnabled(false)
-        }
 
         messageClient = Wearable.getMessageClient(this)
         messageClient!!.addListener(messageListener)

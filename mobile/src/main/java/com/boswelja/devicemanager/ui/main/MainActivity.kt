@@ -8,8 +8,10 @@
 package com.boswelja.devicemanager.ui.main
 
 import android.os.Bundle
+import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import com.boswelja.devicemanager.R
+import com.boswelja.devicemanager.databinding.ActivityMainBinding
 import com.boswelja.devicemanager.messages.database.MessageDatabase.Companion.MESSAGE_COUNT_KEY
 import com.boswelja.devicemanager.ui.base.BaseWatchPickerActivity
 import com.boswelja.devicemanager.ui.changelog.ChangelogDialogFragment
@@ -22,27 +24,30 @@ import timber.log.Timber
 
 class MainActivity : BaseWatchPickerActivity() {
 
-    private lateinit var bottomNavigationView: BottomNavigationView
+    private lateinit var binding: ActivityMainBinding
 
     private val extensionsFragment = ExtensionsFragment()
     private var messagesFragment: MessageFragment? = null
     private var appSettingsFragment: AppSettingsFragment? = null
     private var appInfoFragment: AppInfoFragment? = null
 
-    override fun getContentViewId(): Int = R.layout.activity_main
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        bottomNavigationView = findViewById(R.id.bottom_navigation)
-        bottomNavigationView.setOnNavigationItemSelectedListener {
-            handleNavigation(it.itemId)
+
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
+        binding.apply {
+            setupToolbar(toolbarLayout.toolbar)
+            setupWatchPickerSpinner(toolbarLayout.watchPickerSpinner)
+            bottomNavigation.setOnNavigationItemSelectedListener {
+                handleNavigation(it.itemId)
+            }
         }
     }
 
     override fun onStart() {
         super.onStart()
         Timber.d("onStart() called")
-        handleNavigation(bottomNavigationView.selectedItemId)
+        handleNavigation(binding.bottomNavigation.selectedItemId)
         updateMessagesBadge()
         showChangelogIfNeeded()
     }
@@ -141,12 +146,14 @@ class MainActivity : BaseWatchPickerActivity() {
         val messageCount = sharedPreferences.getInt(MESSAGE_COUNT_KEY, 0)
         Timber.i("New message badge count = $messageCount")
         val shouldShowMessageBadge = messageCount > 0
-        if (shouldShowMessageBadge) {
-            bottomNavigationView.getOrCreateBadge(R.id.messages_navigation).apply {
-                number = messageCount
+        binding.apply {
+            if (shouldShowMessageBadge) {
+                bottomNavigation.getOrCreateBadge(R.id.messages_navigation).apply {
+                    number = messageCount
+                }
+            } else {
+                bottomNavigation.removeBadge(R.id.messages_navigation)
             }
-        } else {
-            bottomNavigationView.removeBadge(R.id.messages_navigation)
         }
     }
 

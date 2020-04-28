@@ -12,11 +12,11 @@ import android.appwidget.AppWidgetManager
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import android.widget.ProgressBar
+import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.batterysync.widget.WatchBatteryWidget
+import com.boswelja.devicemanager.databinding.ActivityWatchBatteryWidgetConfigurationBinding
 import com.boswelja.devicemanager.ui.base.BaseToolbarActivity
 import com.boswelja.devicemanager.watchmanager.WatchManager
 import com.boswelja.devicemanager.widgetdb.WidgetDatabase
@@ -35,7 +35,7 @@ class WatchBatteryWidgetConfigurationActivity : BaseToolbarActivity() {
             coroutineScope.launch(Dispatchers.IO) {
                 val watches = watchManager.getRegisteredWatches()
                 withContext(Dispatchers.Main) {
-                    (watchPickerRecyclerView.adapter as WatchPickerAdapter).setWatches(watches)
+                    (binding.watchPickerRecyclerView.adapter as WatchPickerAdapter).setWatches(watches)
                     setLoading(false)
                 }
             }
@@ -49,17 +49,14 @@ class WatchBatteryWidgetConfigurationActivity : BaseToolbarActivity() {
     private val resultIntent = Intent()
     private val coroutineScope = MainScope()
 
-    private lateinit var loadingSpinner: ProgressBar
-    private lateinit var watchPickerRecyclerView: RecyclerView
+    private lateinit var binding: ActivityWatchBatteryWidgetConfigurationBinding
 
     private var widgetId: Int = AppWidgetManager.INVALID_APPWIDGET_ID
-
-    override fun getContentViewId(): Int = R.layout.activity_watch_battery_widget_configuration
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        loadingSpinner = findViewById(R.id.loading_spinner)
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_watch_battery_widget_configuration)
         setupWatchPickerRecyclerView()
         setupToolbar()
         setLoading(true)
@@ -101,10 +98,10 @@ class WatchBatteryWidgetConfigurationActivity : BaseToolbarActivity() {
     }
 
     /**
-     * Set up [watchPickerRecyclerView].
+     * Set up the watch picker RecyclerView.
      */
     private fun setupWatchPickerRecyclerView() {
-        watchPickerRecyclerView = findViewById<RecyclerView>(R.id.watch_picker_recycler_view).apply {
+        binding.watchPickerRecyclerView.apply {
             layoutManager = LinearLayoutManager(
                     this@WatchBatteryWidgetConfigurationActivity,
                     LinearLayoutManager.VERTICAL,
@@ -119,12 +116,14 @@ class WatchBatteryWidgetConfigurationActivity : BaseToolbarActivity() {
      */
     private fun setLoading(isLoading: Boolean) {
         Timber.d("setLoading($isLoading) called")
-        if (isLoading) {
-            loadingSpinner.visibility = View.VISIBLE
-            watchPickerRecyclerView.visibility = View.GONE
-        } else {
-            loadingSpinner.visibility = View.GONE
-            watchPickerRecyclerView.visibility = View.VISIBLE
+        binding.apply {
+            if (isLoading) {
+                loadingSpinner.visibility = View.VISIBLE
+                watchPickerRecyclerView.visibility = View.GONE
+            } else {
+                loadingSpinner.visibility = View.GONE
+                watchPickerRecyclerView.visibility = View.VISIBLE
+            }
         }
     }
 

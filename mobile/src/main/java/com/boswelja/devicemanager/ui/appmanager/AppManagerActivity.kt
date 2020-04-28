@@ -9,9 +9,11 @@ package com.boswelja.devicemanager.ui.appmanager
 
 import android.os.Bundle
 import android.widget.Toast
+import androidx.databinding.DataBindingUtil
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.appmanager.AppPackageInfoList
 import com.boswelja.devicemanager.common.appmanager.References
+import com.boswelja.devicemanager.databinding.ActivityAppManagerBinding
 import com.boswelja.devicemanager.ui.base.BaseToolbarActivity
 import com.boswelja.devicemanager.ui.common.LoadingFragment
 import com.google.android.gms.wearable.MessageClient
@@ -21,6 +23,7 @@ import timber.log.Timber
 class AppManagerActivity : BaseToolbarActivity() {
 
     private lateinit var messageClient: MessageClient
+    private lateinit var binding: ActivityAppManagerBinding
 
     private var appManagerFragment: AppManagerFragment? = null
     private var isServiceRunning: Boolean = false
@@ -40,25 +43,20 @@ class AppManagerActivity : BaseToolbarActivity() {
         }
     }
 
-    override fun getContentViewId(): Int = R.layout.activity_app_manager
-
     override fun onCreate(savedInstanceState: Bundle?) {
-        Timber.i("onCreate() called")
         super.onCreate(savedInstanceState)
+        Timber.i("onCreate() called")
 
         watchId = intent?.getStringExtra(EXTRA_WATCH_ID)
         if (watchId.isNullOrEmpty()) {
+            //TODO Load in an error fragment instead of just terminating
             notifyWatchNotFound()
             return
         }
 
-        supportActionBar?.apply {
-            subtitle = getString(
-                    R.string.app_manager_activity_subtitle,
-                    intent.getStringExtra(EXTRA_WATCH_NAME))
-            setDisplayHomeAsUpEnabled(true)
-            setDisplayShowTitleEnabled(true)
-        }
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_app_manager)
+
+        setupToolbar(binding.toolbarLayout.toolbar)
 
         showLoadingFragment()
 

@@ -9,9 +9,10 @@ package com.boswelja.devicemanager.ui.watchmanager
 
 import android.content.Intent
 import android.os.Bundle
+import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.boswelja.devicemanager.R
+import com.boswelja.devicemanager.databinding.ActivityWatchManagerBinding
 import com.boswelja.devicemanager.ui.base.BaseToolbarActivity
 import com.boswelja.devicemanager.ui.watchsetup.WatchSetupActivity
 import com.boswelja.devicemanager.ui.watchsetup.WatchSetupActivity.Companion.EXTRA_SKIP_WELCOME
@@ -45,28 +46,23 @@ class WatchManagerActivity :
 
     private var watchConnectionManager: WatchManager? = null
 
-    private lateinit var watchManagerRecyclerView: RecyclerView
+    private lateinit var binding: ActivityWatchManagerBinding
 
     override fun onConnectedWatchChanged(isSuccess: Boolean) {} // Do nothing
 
     override fun onConnectedWatchChanging() {} // Do nothing
 
     override fun onWatchAdded(watch: Watch) {
-        (watchManagerRecyclerView.adapter as WatchManagerAdapter).addWatch(watch)
+        (binding.watchManagerRecyclerView.adapter as WatchManagerAdapter).addWatch(watch)
     }
-
-    override fun getContentViewId(): Int = R.layout.activity_watch_manager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         setResult(RESULT_WATCH_LIST_UNCHANGED)
 
-        supportActionBar?.apply {
-            setDisplayHomeAsUpEnabled(true)
-            setDisplayShowTitleEnabled(true)
-        }
-
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_watch_manager)
+        setupToolbar(binding.toolbarLayout.toolbar)
         setupRecyclerView()
 
         WatchManager.bind(this, watchConnectionManagerConnection)
@@ -108,11 +104,10 @@ class WatchManagerActivity :
     }
 
     /**
-     * Set up [watchManagerRecyclerView].
+     * Set up the watch manager RecyclerView.
      */
     private fun setupRecyclerView() {
-        watchManagerRecyclerView = findViewById(R.id.watch_manager_recycler_view)
-        watchManagerRecyclerView.apply {
+        binding.watchManagerRecyclerView.apply {
             adapter = WatchManagerAdapter(this@WatchManagerActivity)
             layoutManager = LinearLayoutManager(
                     this@WatchManagerActivity,
@@ -131,7 +126,7 @@ class WatchManagerActivity :
             if (watchConnectionManager != null) {
                 val registeredWatches = watchConnectionManager!!.getRegisteredWatches()
                 withContext(Dispatchers.Main) {
-                    (watchManagerRecyclerView.adapter as WatchManagerAdapter)
+                    (binding.watchManagerRecyclerView.adapter as WatchManagerAdapter)
                             .setWatches(registeredWatches)
                 }
             }
@@ -149,7 +144,7 @@ class WatchManagerActivity :
             if (newWatchInfo != null) {
                 Timber.i("Updating watch info for $watchId")
                 withContext(Dispatchers.Main) {
-                    (watchManagerRecyclerView.adapter as WatchManagerAdapter)
+                    (binding.watchManagerRecyclerView.adapter as WatchManagerAdapter)
                             .updateWatch(newWatchInfo)
                 }
             } else {
@@ -165,7 +160,7 @@ class WatchManagerActivity :
     private fun removeWatch(watchId: String?) {
         Timber.d("removeWatch($watchId) called")
         if (!watchId.isNullOrEmpty()) {
-            (watchManagerRecyclerView.adapter as WatchManagerAdapter).removeWatch(watchId)
+            (binding.watchManagerRecyclerView.adapter as WatchManagerAdapter).removeWatch(watchId)
         }
     }
 

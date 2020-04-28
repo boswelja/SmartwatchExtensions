@@ -90,7 +90,6 @@ abstract class BaseWatchPickerActivity :
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         WatchManager.bind(this, watchConnManServiceConnection)
-        setupWatchPicker()
     }
 
     override fun onStart() {
@@ -153,17 +152,6 @@ abstract class BaseWatchPickerActivity :
     }
 
     /**
-     * Set up [watchPickerSpinner].
-     */
-    private fun setupWatchPicker() {
-        Timber.d("setupWatchPicker() called")
-        watchPickerSpinner = findViewById<AppCompatSpinner>(R.id.watch_picker_spinner).apply {
-            onItemSelectedListener = this@BaseWatchPickerActivity
-            adapter = WatchPickerAdapter(this@BaseWatchPickerActivity)
-        }
-    }
-
-    /**
      * Update the list of registered watches that the user can
      * choose from [watchPickerSpinner].
      */
@@ -200,6 +188,17 @@ abstract class BaseWatchPickerActivity :
             } else {
                 Timber.e("Failed to get list of watches")
             }
+        }
+    }
+
+    /**
+     * Set up [watchPickerSpinner].
+     */
+    fun setupWatchPickerSpinner(watchPickerSpinner: AppCompatSpinner) {
+        Timber.d("setupWatchPickerSpinner() called")
+        this.watchPickerSpinner = watchPickerSpinner.apply {
+            onItemSelectedListener = this@BaseWatchPickerActivity
+            adapter = WatchPickerAdapter(this@BaseWatchPickerActivity)
         }
     }
 

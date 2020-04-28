@@ -8,17 +8,22 @@
 package com.boswelja.devicemanager.ui.watchsetup
 
 import android.os.Bundle
+import androidx.databinding.DataBindingUtil
 import com.boswelja.devicemanager.R
+import com.boswelja.devicemanager.databinding.ActivityWatchSetupBinding
 import com.boswelja.devicemanager.ui.base.BaseToolbarActivity
 
 class WatchSetupActivity : BaseToolbarActivity() {
 
-    private var useFirstFragmentAnimation = true
+    private lateinit var binding: ActivityWatchSetupBinding
 
-    override fun getContentViewId(): Int = R.layout.activity_watch_setup
+    private var useFirstFragmentAnimation = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_watch_setup)
+        setupToolbar(binding.toolbarLayout.toolbar)
 
         setResult(RESULT_NO_WATCH_ADDED)
 

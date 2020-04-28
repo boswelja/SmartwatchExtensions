@@ -32,7 +32,7 @@ class AppInfoActivity : BaseDayNightActivity() {
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_app_info)
 
-        setSupportActionBar(binding.appbarLayout.findViewById(R.id.toolbar))
+        setSupportActionBar(binding.appbarLayout.toolbar)
         supportActionBar?.apply {
             setDisplayHomeAsUpEnabled(true)
             setDisplayShowTitleEnabled(false)
