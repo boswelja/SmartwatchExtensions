@@ -61,8 +61,7 @@ class BootOrUpdateHandlerService : Service() {
             Intent.ACTION_BOOT_COMPLETED -> {
                 Timber.i("Device restarted")
                 startForeground(NOTI_ID, createBootNotification())
-                Timber.i("Binding to WatchConnectionService")
-                WatchManager.bind(this, watchManagerConnection)
+                bindWatchmanager()
             }
             else -> return super.onStartCommand(intent, flags, startId)
         }
@@ -88,8 +87,7 @@ class BootOrUpdateHandlerService : Service() {
                 }
                 Result.NOT_NEEDED -> Timber.i("Update not needed")
             }
-            Timber.i("Binding to WatchConnectionService")
-            WatchManager.bind(this, watchManagerConnection)
+            bindWatchmanager()
         }
     }
 
@@ -178,6 +176,14 @@ class BootOrUpdateHandlerService : Service() {
         unbindService(watchManagerConnection)
         stopForeground(true)
         stopSelf()
+    }
+
+    /**
+     * Binds to the [WatchManager].
+     */
+    private fun bindWatchmanager() {
+        Timber.d("bindWatchManager() called")
+        WatchManager.bind(this, watchManagerConnection)
     }
 
     companion object {
