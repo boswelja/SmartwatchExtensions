@@ -102,6 +102,7 @@ class BootOrUpdateHandlerService : Service() {
             setOngoing(true)
             setShowWhen(false)
             setUsesChronometer(false)
+            setProgress(0, 0, true)
             priority = NotificationCompat.PRIORITY_LOW
             setVisibility(NotificationCompat.VISIBILITY_PRIVATE)
         }
