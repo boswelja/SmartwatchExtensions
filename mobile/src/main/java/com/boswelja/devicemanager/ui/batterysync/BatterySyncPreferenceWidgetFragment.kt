@@ -235,10 +235,12 @@ class BatterySyncPreferenceWidgetFragment :
     private fun updateBatteryStatsDisplay() {
         Timber.i("Updating widget")
         coroutineScope.launch(Dispatchers.IO) {
-            batteryStats = activity
-                    .batteryStatsDatabase
-                    ?.batteryStatsDao()
-                    ?.getStatsForWatch(activity.watchConnectionManager?.connectedWatch?.id!!)
+            if (activity.watchConnectionManager?.connectedWatch != null) {
+                batteryStats = activity
+                        .batteryStatsDatabase
+                        ?.batteryStatsDao()
+                        ?.getStatsForWatch(activity.watchConnectionManager?.connectedWatch!!.id)
+            }
 
             withContext(Dispatchers.Main) {
                 updateWatchBatteryPercent()
