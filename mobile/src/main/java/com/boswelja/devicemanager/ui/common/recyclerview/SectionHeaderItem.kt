@@ -10,12 +10,10 @@ package com.boswelja.devicemanager.ui.common.recyclerview
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.boswelja.devicemanager.R
-import com.boswelja.devicemanager.databinding.CommonRecyclerviewItemIconOneLineBinding
 import com.boswelja.devicemanager.databinding.CommonRecyclerviewSectionHeaderBinding
 
 class SectionHeaderItem(binding: CommonRecyclerviewSectionHeaderBinding) :
