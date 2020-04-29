@@ -47,9 +47,13 @@ class MainActivity : BaseWatchPickerActivity() {
     override fun onStart() {
         super.onStart()
         Timber.d("onStart() called")
-        handleNavigation(binding.bottomNavigation.selectedItemId)
         updateMessagesBadge()
         showChangelogIfNeeded()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        handleNavigation(binding.bottomNavigation.selectedItemId)
     }
 
     /**
