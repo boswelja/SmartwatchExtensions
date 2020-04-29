@@ -191,15 +191,6 @@
     <string name="welcome_to_text">Welcome to</string>
     <string name="welcome_button_get_started">Get Started</string>
 
-    <!-- Crash handler strings -->
-    <string name="crash_handler_title">Uh oh!</string>
-    <string name="crash_handler_message">Something went wrong. If this is not the first time you\'ve seen this, you may need to reinstall Wearable Extensions.</string>
-    <string name="crash_handler_action_restart">Restart</string>
-    <string name="crash_handler_action_report">Report</string>
-    <string name="crash_handler_action_close">Close</string>
-    <string name="crash_handler_show_stacktrace">Tap to show stacktrace</string>
-    <string name="crash_handler_hide_stacktrace">Tap to hide stacktrace</string>
-
     <!-- Manage Space strings -->
     <string name="manage_space_title">Manage Space</string>
     <string name="manage_space_clear_cache_title">Clear Cache</string>

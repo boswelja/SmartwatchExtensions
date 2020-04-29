@@ -25,12 +25,6 @@
         tools:ignore="UnusedAttribute">
 
         <activity
-            android:name=".crashhandler.CrashHandlerActivity"
-            android:exported="false"
-            android:excludeFromRecents="true"
-            android:process=":crash_handler" />
-
-        <activity
             android:name=".managespace.ManageSpaceActivity"
             android:label="@string/manage_space_title" />
 
