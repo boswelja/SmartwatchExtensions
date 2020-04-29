@@ -8,19 +8,20 @@
 package com.boswelja.devicemanager.ui.watchmanager
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.widget.AppCompatImageView
-import androidx.appcompat.widget.AppCompatTextView
 import androidx.recyclerview.widget.RecyclerView
 import com.boswelja.devicemanager.R
-import com.boswelja.devicemanager.ui.common.WatchViewHolder
+import com.boswelja.devicemanager.ui.common.recyclerview.IconOneLineItem
+import com.boswelja.devicemanager.ui.common.recyclerview.IconTwoLineItem
+import com.boswelja.devicemanager.ui.common.recyclerview.SectionHeaderItem
 import com.boswelja.devicemanager.watchmanager.Watch
 import com.boswelja.devicemanager.watchmanager.WatchStatus
 
 class WatchManagerAdapter(private val activity: WatchManagerActivity) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private val watches = ArrayList<Watch>()
+
+    private var layoutInflater: LayoutInflater? = null
 
     override fun getItemCount(): Int = watches.count() + 2
 
@@ -33,41 +34,35 @@ class WatchManagerAdapter(private val activity: WatchManagerActivity) : Recycler
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        val inflater = LayoutInflater.from(parent.context)
+        if (layoutInflater == null) layoutInflater = LayoutInflater.from(parent.context)
         return when (viewType) {
-            VIEW_TYPE_ADD_WATCH -> AddWatchViewHolder(inflater.inflate(
-                    R.layout.common_recyclerview_item_icon_one_line,
-                    parent, false))
-            VIEW_TYPE_SECTION_HEADER -> SectionHeaderViewHolder(inflater.inflate(
-                    R.layout.common_recyclerview_section_header,
-                    parent, false))
-            else -> WatchViewHolder(inflater.inflate(
-                    R.layout.common_recyclerview_item_icon_two_line,
-                    parent, false))
+            VIEW_TYPE_ADD_WATCH -> IconOneLineItem.create(layoutInflater!!, parent)
+            VIEW_TYPE_SECTION_HEADER -> SectionHeaderItem.create(layoutInflater!!, parent)
+            else -> IconTwoLineItem.create(layoutInflater!!, parent)
         }
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val context = holder.itemView.context
         when (holder) {
-            is AddWatchViewHolder -> {
+            is IconOneLineItem -> {
                 holder.apply {
-                    icon.setImageResource(R.drawable.ic_add)
-                    text.text = context.getString(R.string.watch_manager_add_watch_title)
+                    iconView.setImageResource(R.drawable.ic_add)
+                    textView.text = context.getString(R.string.watch_manager_add_watch_title)
                     itemView.setOnClickListener {
                         activity.openWatchSetupActivity()
                     }
                 }
             }
-            is SectionHeaderViewHolder -> {
-                holder.label.text = context.getString(R.string.watch_manager_registered_watch_header)
+            is SectionHeaderItem -> {
+                holder.textView.text = context.getString(R.string.watch_manager_registered_watch_header)
             }
-            is WatchViewHolder -> {
+            is IconTwoLineItem -> {
                 val watch = getWatch(position)
                 holder.apply {
-                    icon.setImageResource(R.drawable.ic_watch)
-                    topLine.text = watch.name
-                    bottomLine.text = context.getString(when (watch.status) {
+                    iconView.setImageResource(R.drawable.ic_watch)
+                    topTextView.text = watch.name
+                    bottomTextView.text = context.getString(when (watch.status) {
                         WatchStatus.CONNECTED -> R.string.watch_status_connected
                         WatchStatus.DISCONNECTED -> R.string.watch_status_disconnected
                         WatchStatus.MISSING_APP -> R.string.watch_status_missing_app
@@ -130,14 +125,5 @@ class WatchManagerAdapter(private val activity: WatchManagerActivity) : Recycler
         private const val VIEW_TYPE_ADD_WATCH = -1
         private const val VIEW_TYPE_SECTION_HEADER = 0
         private const val VIEW_TYPE_WATCH = 1
-    }
-
-    class AddWatchViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val icon: AppCompatImageView = itemView.findViewById(R.id.icon)
-        val text: AppCompatTextView = itemView.findViewById(R.id.text)
-    }
-
-    class SectionHeaderViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val label: AppCompatTextView = itemView.findViewById(R.id.section_header_text)
     }
 }

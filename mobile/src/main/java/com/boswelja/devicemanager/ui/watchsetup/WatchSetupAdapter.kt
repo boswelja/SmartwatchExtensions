@@ -11,30 +11,31 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.boswelja.devicemanager.R
-import com.boswelja.devicemanager.ui.common.WatchViewHolder
+import com.boswelja.devicemanager.ui.common.recyclerview.IconTwoLineItem
 import com.boswelja.devicemanager.watchmanager.Watch
 import com.boswelja.devicemanager.watchmanager.WatchStatus
 
 class WatchSetupAdapter(private val watchSetupFragment: WatchSetupFragment) :
-        RecyclerView.Adapter<WatchViewHolder>() {
+        RecyclerView.Adapter<IconTwoLineItem>() {
 
     private val watches = ArrayList<Watch>()
 
+    private var layoutInflater: LayoutInflater? = null
+
     override fun getItemCount(): Int = watches.count()
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): WatchViewHolder {
-        val view = LayoutInflater.from(parent.context)
-                .inflate(R.layout.common_recyclerview_item_icon_two_line, parent, false)
-        return WatchViewHolder(view)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): IconTwoLineItem {
+        if (layoutInflater == null) layoutInflater = LayoutInflater.from(parent.context)
+        return IconTwoLineItem.create(layoutInflater!!, parent)
     }
 
-    override fun onBindViewHolder(holder: WatchViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: IconTwoLineItem, position: Int) {
         val watch = watches[position]
         val context = holder.itemView.context
         holder.apply {
-            icon.setImageResource(R.drawable.ic_watch)
-            topLine.text = watch.name
-            bottomLine.text = context.getString(when (watch.status) {
+            iconView.setImageResource(R.drawable.ic_watch)
+            topTextView.text = watch.name
+            bottomTextView.text = context.getString(when (watch.status) {
                 WatchStatus.NOT_REGISTERED -> R.string.watch_status_not_registered
                 WatchStatus.MISSING_APP -> R.string.watch_status_missing_app
                 else -> R.string.watch_status_error

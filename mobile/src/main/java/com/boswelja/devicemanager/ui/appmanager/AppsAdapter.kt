@@ -10,19 +10,21 @@ package com.boswelja.devicemanager.ui.appmanager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.recyclerview.widget.RecyclerView
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.Utils
 import com.boswelja.devicemanager.common.appmanager.AppPackageInfo
 import com.boswelja.devicemanager.common.appmanager.AppPackageInfoList
+import com.boswelja.devicemanager.ui.common.recyclerview.IconTwoLineItem
+import com.boswelja.devicemanager.ui.common.recyclerview.SectionHeaderItem
 
 class AppsAdapter(private val fragment: AppManagerFragment) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private val data = ArrayList<AppSection>()
-
     private val fallbackIcon = fragment.context?.getDrawable(R.drawable.ic_app_icon_unknown)
+
+    private var layoutInflater: LayoutInflater? = null
 
     override fun getItemCount(): Int {
         var count = 0
@@ -50,12 +52,13 @@ class AppsAdapter(private val fragment: AppManagerFragment) : RecyclerView.Adapt
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        if (layoutInflater == null) layoutInflater = LayoutInflater.from(parent.context)
         return when (viewType) {
             VIEW_TYPE_SECTION -> {
-                SectionHeader(LayoutInflater.from(parent.context).inflate(R.layout.common_recyclerview_section_header, parent, false))
+                SectionHeaderItem.create(layoutInflater!!, parent)
             }
             else -> {
-                AppItemViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.common_recyclerview_item_icon_two_line, parent, false))
+                IconTwoLineItem.create(layoutInflater!!, parent)
             }
         }
     }
@@ -63,19 +66,19 @@ class AppsAdapter(private val fragment: AppManagerFragment) : RecyclerView.Adapt
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val context = holder.itemView.context
         when (holder) {
-            is SectionHeader -> {
+            is SectionHeaderItem -> {
                 val section = getSection(position)
-                holder.sectionHeaderTextView.text = context.getString(section?.sectionTitleRes!!)
+                holder.textView.text = context.getString(section?.sectionTitleRes!!)
                 if (position == 0) {
-                    holder.sectionHeaderDivider.visibility = View.INVISIBLE
+                    holder.dividerView.visibility = View.INVISIBLE
                 }
             }
-            is AppItemViewHolder -> {
+            is IconTwoLineItem -> {
                 val app = getApp(position)
                 if (app != null) {
-                    holder.appNameView.text = app.packageLabel
-                    holder.appDescView.text = app.versionName
-                    holder.appIconView.setImageDrawable(Utils.getAppIcon(context, app.packageName, fallbackIcon))
+                    holder.topTextView.text = app.packageLabel
+                    holder.bottomTextView.text = app.versionName
+                    holder.iconView.setImageDrawable(Utils.getAppIcon(context, app.packageName, fallbackIcon))
                     holder.itemView.setOnClickListener {
                         fragment.launchAppInfoActivity(app)
                     }
@@ -177,17 +180,6 @@ class AppsAdapter(private val fragment: AppManagerFragment) : RecyclerView.Adapt
             add(systemAppsSection)
         }
         notifyDataSetChanged()
-    }
-
-    inner class AppItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val appIconView: AppCompatImageView = itemView.findViewById(R.id.icon)
-        val appNameView: AppCompatTextView = itemView.findViewById(R.id.top_line)
-        val appDescView: AppCompatTextView = itemView.findViewById(R.id.bottom_line)
-    }
-
-    inner class SectionHeader(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val sectionHeaderDivider: View = itemView.findViewById(R.id.divider)
-        val sectionHeaderTextView: AppCompatTextView = itemView.findViewById(R.id.section_header_text)
     }
 
     companion object {
