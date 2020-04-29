@@ -31,8 +31,6 @@ import timber.log.Timber
 
 class BootOrUpdateHandlerService : Service() {
 
-    private lateinit var updater: Updater
-
     private var isUpdating = false
 
     private val watchManagerConnection = object : WatchManager.Connection() {
@@ -72,10 +70,10 @@ class BootOrUpdateHandlerService : Service() {
      * Initialise an [Updater] instance and perform updates.
      */
     private fun performUpdates() {
-        Timber.i("Starting update process")
         if (!isUpdating) {
+            Timber.i("Starting update process")
             isUpdating = true
-            updater = Updater(this)
+            val updater = Updater(this)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) updater.createNotificationChannels()
             startForeground(NOTI_ID, createUpdaterNotification())
             when (updater.doUpdate()) {
