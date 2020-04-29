@@ -51,7 +51,7 @@ class CompatTest {
         if (notificationManager.isNotificationPolicyAccessGranted) {
             Utils.setInterruptionFilter(context, true)
             var retryCounter = 0
-            while (Compat.isDndEnabled(context)) {
+            while (!Compat.isDndEnabled(context)) {
                 retryCounter += 1
                 if (retryCounter >= 3) break
                 Thread.sleep(25)
