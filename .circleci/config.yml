@@ -20,12 +20,18 @@ jobs:
       - run:
           name: Code Quality Check :common
           command: ./gradlew :common:lint :common:spotlessCheck
+      - store_artifacts:
+          path: ./common/build/reports/
       - run:
           name: Code Quality Check :mobile
           command: ./gradlew :mobile:lint :mobile:spotlessCheck
+      - store_artifacts:
+          path: ./mobile/build/reports/
       - run:
           name: Code Quality Check :wear
           command: ./gradlew :wear:lint :wear:spotlessCheck
+      - store_artifacts:
+          path: ./wear/build/reports/
       - run:
           name: Build :common
           command: ./gradlew :common:build
