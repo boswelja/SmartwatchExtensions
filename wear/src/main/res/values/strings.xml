@@ -30,9 +30,6 @@
     <string name="app_manager_service_noti_title">App Manager Running</string>
     <string name="app_manager_service_noti_desc">App Manager is currently running on your phone</string>
 
-    <string name="request_success_message">Request succeeded</string>
-    <string name="request_failed_message">Request failed</string>
-
     <string name="navigation_settings_title">Settings</string>
 
     <string name="additional_setup_required">Additional setup required</string>

@@ -10,6 +10,5 @@
 
     <color name="windowBackgroundBlack">#000000</color>
     <color name="windowBackgroundDark">#212121</color>
-    <color name="navDrawerBackground">#44104d</color>
 
 </resources>
