@@ -14,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.edit
 import androidx.fragment.app.Fragment
 import androidx.preference.PreferenceManager
+import com.boswelja.devicemanager.BuildConfig
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.References.CAPABILITY_PHONE_APP
 import com.boswelja.devicemanager.common.setup.References.CHECK_WATCH_REGISTERED_PATH
@@ -22,7 +23,7 @@ import com.boswelja.devicemanager.common.setup.References.WATCH_REGISTERED_PATH
 import com.boswelja.devicemanager.phoneconnectionmanager.References.PHONE_ID_KEY
 import com.boswelja.devicemanager.ui.common.LoadingFragment
 import com.boswelja.devicemanager.ui.common.NoConnectionFragment
-import com.boswelja.devicemanager.ui.main.ExtensionsFragment
+import com.boswelja.devicemanager.ui.main.MainFragment
 import com.boswelja.devicemanager.ui.setup.SetupFragment
 import com.google.android.gms.tasks.Tasks
 import com.google.android.gms.wearable.CapabilityClient
@@ -85,18 +86,22 @@ class MainActivity :
                 }
             }
 
-            if (phoneNode != null) {
-                val isCapable = Tasks.await(capabilityClient.getCapability(CAPABILITY_PHONE_APP, CapabilityClient.FILTER_ALL)).nodes.any { it.id == phoneNode.id }
-                if (isCapable) {
-                    messageClient.sendMessage(phoneNode.id, CHECK_WATCH_REGISTERED_PATH, null)
-                            .addOnFailureListener {
-                                showNoConnectionFragment()
-                            }
+            if (!BuildConfig.DEBUG) {
+                if (phoneNode != null) {
+                    val isCapable = Tasks.await(capabilityClient.getCapability(CAPABILITY_PHONE_APP, CapabilityClient.FILTER_ALL)).nodes.any { it.id == phoneNode.id }
+                    if (isCapable) {
+                        messageClient.sendMessage(phoneNode.id, CHECK_WATCH_REGISTERED_PATH, null)
+                                .addOnFailureListener {
+                                    showNoConnectionFragment()
+                                }
+                    } else {
+                        showSetupFragment(false)
+                    }
                 } else {
-                    showSetupFragment(false)
+                    showNoConnectionFragment()
                 }
             } else {
-                showNoConnectionFragment()
+                showExtensionsFragment()
             }
         }
     }
@@ -124,8 +129,8 @@ class MainActivity :
     }
 
     private fun showExtensionsFragment() {
-        if (currentFragment !is ExtensionsFragment) {
-            showFragment(ExtensionsFragment())
+        if (currentFragment !is MainFragment) {
+            showFragment(MainFragment())
         }
     }
 
