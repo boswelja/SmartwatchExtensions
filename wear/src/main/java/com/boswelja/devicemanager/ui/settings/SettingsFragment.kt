@@ -35,6 +35,7 @@ import com.boswelja.devicemanager.service.PreferenceSyncService
 import com.google.android.gms.wearable.MessageClient
 import com.google.android.gms.wearable.Wearable
 
+@Suppress("unused")
 class SettingsFragment :
         PreferenceFragmentCompat(),
         Preference.OnPreferenceChangeListener,
@@ -73,7 +74,8 @@ class SettingsFragment :
             BATTERY_WATCH_CHARGE_NOTI_KEY,
             DND_SYNC_TO_WATCH_KEY,
             DND_SYNC_TO_PHONE_KEY,
-            DND_SYNC_WITH_THEATER_KEY -> {
+            DND_SYNC_WITH_THEATER_KEY
+            -> {
                 val newValue = sharedPreferences?.getBoolean(key, false) == true
                 findPreference<TwoStatePreference>(key)?.isChecked = newValue
             }
@@ -84,7 +86,8 @@ class SettingsFragment :
         return when (val key = preference?.key) {
             BATTERY_SYNC_ENABLED_KEY,
             BATTERY_PHONE_CHARGE_NOTI_KEY,
-            BATTERY_WATCH_CHARGE_NOTI_KEY -> {
+            BATTERY_WATCH_CHARGE_NOTI_KEY
+            -> {
                 val value = newValue == true
                 sharedPreferences.edit().putBoolean(key, value).apply()
                 preferenceSyncService?.pushNewData(key)
@@ -107,7 +110,8 @@ class SettingsFragment :
                 false
             }
             DND_SYNC_TO_PHONE_KEY,
-            DND_SYNC_WITH_THEATER_KEY -> {
+            DND_SYNC_WITH_THEATER_KEY
+            -> {
                 val value = newValue == true
                 if (value) {
                     changingKey = key
