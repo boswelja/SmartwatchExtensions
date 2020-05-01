@@ -1,0 +1,10 @@
+# Default ignored files
+/shelf/
+
+# Custom ignored files
+/caches/
+/libraries/
+/discord.xml
+/assetWizardSettings.xml
+/jarRepositories.xml
+/workspace.xml
