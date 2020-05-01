@@ -13,6 +13,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.VisibleForTesting
 import androidx.wear.widget.WearableLinearLayoutManager
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_PERCENT_KEY
@@ -84,8 +85,8 @@ class MainFragment :
     }
 
     private fun showSettings() {
-        Intent(context, SettingsActivity::class.java).also { intent ->
-            context?.startActivity(intent)
+        Intent(context, SettingsActivity::class.java).also {
+            startActivity(it)
         }
     }
 
@@ -107,22 +108,32 @@ class MainFragment :
 
     private fun updatePhoneLockingEnabled() {
         phoneLockingEnabled = sharedPreferences.getBoolean(PHONE_LOCKING_ENABLED_KEY, false)
+        updatePhoneLockingView(phoneLockingEnabled)
+    }
+
+    private fun updateBatterySyncEnabled() {
+        batterySyncEnabled = sharedPreferences.getBoolean(BATTERY_SYNC_ENABLED_KEY, false)
+        val batteryPercent = sharedPreferences.getInt(BATTERY_PERCENT_KEY, 0)
+        updateBatterySyncView(batterySyncEnabled, batteryPercent)
+    }
+
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    fun updateBatterySyncView(batterySyncEnabled: Boolean, batteryPercent: Int = 0) {
+        val batterySyncMainItem = if (batterySyncEnabled) {
+            MainItem(BATTERY_SYNC_ITEM_ID, R.string.phone_battery_percent, R.drawable.ic_phone_battery, extra = batteryPercent)
+        } else {
+            MainItem(BATTERY_SYNC_ITEM_ID, R.string.battery_sync_disabled, R.drawable.ic_phone_battery)
+        }
+        mainAdapter.updateItem(batterySyncMainItem)
+    }
+
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    fun updatePhoneLockingView(phoneLockingEnabled: Boolean) {
         val phoneLockingMainItem = if (phoneLockingEnabled) {
             MainItem(PHONE_LOCKING_ITEM_ID, R.string.lock_phone_label, R.drawable.ic_phone_lock)
         } else {
             MainItem(PHONE_LOCKING_ITEM_ID, R.string.lock_phone_disabled_message, R.drawable.ic_phone_lock)
         }
         mainAdapter.updateItem(phoneLockingMainItem)
-    }
-
-    private fun updateBatterySyncEnabled() {
-        batterySyncEnabled = sharedPreferences.getBoolean(BATTERY_SYNC_ENABLED_KEY, false)
-        val batterySyncMainItem = if (batterySyncEnabled) {
-            val batteryPercent = sharedPreferences.getInt(BATTERY_PERCENT_KEY, 0)
-            MainItem(BATTERY_SYNC_ITEM_ID, R.string.phone_battery_percent, R.drawable.ic_phone_battery, extra = batteryPercent)
-        } else {
-            MainItem(BATTERY_SYNC_ITEM_ID, R.string.battery_sync_disabled, R.drawable.ic_phone_battery)
-        }
-        mainAdapter.updateItem(batterySyncMainItem)
     }
 }
