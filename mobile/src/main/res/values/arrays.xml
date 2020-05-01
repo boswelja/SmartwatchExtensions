@@ -27,8 +27,9 @@
     <string-array name="version_changelog">
         <item>Added the option to lock your phone via an Accessibility Service as well as via Device Admin (Android 9.0+ only)</item>
         <item>Battery Sync now uses the new WorkManager API, rather than JobScheduler, to improve compatibility and reliability</item>
-        <item>Process any update changes as soon as the app gets updated, you\'ll see a notification when this happens.</item>
+        <item>Process any update changes as soon as the app gets updated, you\'ll see a notification when this happens going forward</item>
         <item>Restart services and workers when you restart your phone</item>
+        <item>Small Wear OS app performance optimisations</item>
         <item>Bug fixes</item>
     </string-array>
 
