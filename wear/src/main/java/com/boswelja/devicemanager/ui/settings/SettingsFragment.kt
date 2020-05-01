@@ -146,7 +146,7 @@ class SettingsFragment :
     }
 
     override fun onStart() {
-        super.onStop()
+        super.onStart()
         sharedPreferences.registerOnSharedPreferenceChangeListener(this)
     }
 
