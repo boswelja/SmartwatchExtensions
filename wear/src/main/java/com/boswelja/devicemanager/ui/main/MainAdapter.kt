@@ -112,13 +112,13 @@ class MainAdapter(private val itemCallback: ItemCallback, private vararg val sec
         var positionInAdapter = 0
         sections.forEach { section ->
             section.forEachIndexed { index, mainItem ->
-                positionInAdapter += 1
                 if (mainItem.itemId == newItem.itemId) {
                     section.remove(mainItem)
                     section.add(index, newItem)
                     notifyItemChanged(positionInAdapter)
                     return
                 }
+                positionInAdapter += 1
             }
             positionInAdapter += 1
         }
