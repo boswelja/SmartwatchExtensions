@@ -12,11 +12,18 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import com.boswelja.devicemanager.R
+import com.boswelja.devicemanager.databinding.FragmentNotConnectedBinding
 
 class NoConnectionFragment : Fragment() {
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_not_connected, container, false)
+    private lateinit var binding: FragmentNotConnectedBinding
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        binding = FragmentNotConnectedBinding.inflate(inflater, container, false)
+        return binding.root
     }
 }

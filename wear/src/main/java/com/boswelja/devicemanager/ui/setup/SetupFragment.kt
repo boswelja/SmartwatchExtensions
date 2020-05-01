@@ -11,24 +11,16 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.boswelja.devicemanager.R
-import com.google.android.gms.tasks.Tasks
+import com.boswelja.devicemanager.databinding.FragmentSetupBinding
 import com.google.android.gms.wearable.NodeClient
 import com.google.android.gms.wearable.Wearable
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class SetupFragment : Fragment() {
 
-    private val coroutineScope = MainScope()
-
-    private var phoneHasApp: Boolean = false
-
     private lateinit var nodeClient: NodeClient
+    private lateinit var binding: FragmentSetupBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,24 +28,25 @@ class SetupFragment : Fragment() {
         nodeClient = Wearable.getNodeClient(requireContext())
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_setup, container, false)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        binding = FragmentSetupBinding.inflate(layoutInflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        view.findViewById<TextView>(R.id.setup_device_name_text).apply {
-            coroutineScope.launch(Dispatchers.IO) {
-                val localNode = Tasks.await(nodeClient.localNode)
-                withContext(Dispatchers.Main) {
-                    text = localNode.displayName
-                }
-            }
+        binding.setupDeviceNameText.apply {
+            nodeClient.localNode
+                    .addOnCompleteListener {
+                        text = it.result?.displayName ?: getString(R.string.error)
+                    }
         }
-        setPhoneSetupHelperVisibility(phoneHasApp)
     }
 
     fun setPhoneSetupHelperVisibility(phoneHasApp: Boolean) {
-        this.phoneHasApp = phoneHasApp
         if (view != null) {
             view?.findViewById<View>(R.id.phone_setup_helper_view)!!.apply {
                 visibility = if (phoneHasApp) {

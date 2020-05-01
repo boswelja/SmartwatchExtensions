@@ -17,7 +17,7 @@ abstract class BaseSharedPreferenceFragment : Fragment() {
     lateinit var sharedPreferences: SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
         super.onCreate(savedInstanceState)
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
     }
 }

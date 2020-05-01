@@ -12,10 +12,18 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import com.boswelja.devicemanager.R
+import com.boswelja.devicemanager.databinding.FragmentLoadingBinding
 
 class LoadingFragment : Fragment() {
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_loading, container, false)
+
+    private lateinit var binding: FragmentLoadingBinding
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        binding = FragmentLoadingBinding.inflate(inflater, container, false)
+        return binding.root
     }
 }
