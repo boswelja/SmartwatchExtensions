@@ -33,7 +33,6 @@ import com.boswelja.devicemanager.watchmanager.Utils
 import com.boswelja.devicemanager.watchmanager.Watch
 import com.boswelja.devicemanager.watchmanager.WatchManager
 import com.boswelja.devicemanager.watchmanager.database.WatchDatabase
-import com.google.android.gms.tasks.Tasks
 import com.google.android.gms.wearable.CapabilityClient
 import com.google.android.gms.wearable.Wearable
 import timber.log.Timber
@@ -203,39 +202,42 @@ class Updater(private val context: Context) {
      */
     private fun doFullUpdate() {
         if (lastAppVersion < 2019120600) {
-            val messageClient = Wearable.getMessageClient(context)
-            val database = WatchDatabase.open(context, allowMainThreadQueries = true)
+            Wearable.getCapabilityClient(context)
+                    .getCapability(CAPABILITY_WATCH_APP, CapabilityClient.FILTER_ALL)
+                    .addOnSuccessListener { capabilityInfo ->
+                        val messageClient = Wearable.getMessageClient(context)
+                        val database = WatchDatabase.open(context, allowMainThreadQueries = true)
 
-            val capableNodes = Tasks.await(Wearable.getCapabilityClient(context)
-                    .getCapability(CAPABILITY_WATCH_APP, CapabilityClient.FILTER_ALL))
-                    .nodes
-            val defaultWatch = capableNodes.firstOrNull { it.isNearby } ?: capableNodes.firstOrNull()
+                        val capableNodes = capabilityInfo.nodes
+                        val defaultWatch = capableNodes.firstOrNull { it.isNearby } ?: capableNodes.firstOrNull()
 
-            if (defaultWatch != null) {
-                val watch = Watch(defaultWatch)
-                Utils.addWatch(database, messageClient, watch)
-                sharedPreferences.edit {
-                    putString(WatchManager.LAST_CONNECTED_NODE_ID_KEY, watch.id)
-                }
-                sharedPreferences.all.forEach {
-                    if (it.value != null) {
-                        when (it.key) {
-                            PreferenceKey.PHONE_LOCKING_ENABLED_KEY,
-                            BATTERY_SYNC_ENABLED_KEY,
-                            PreferenceKey.BATTERY_PHONE_CHARGE_NOTI_KEY,
-                            PreferenceKey.BATTERY_WATCH_CHARGE_NOTI_KEY,
-                            PreferenceKey.DND_SYNC_TO_PHONE_KEY,
-                            PreferenceKey.DND_SYNC_TO_WATCH_KEY,
-                            PreferenceKey.DND_SYNC_WITH_THEATER_KEY,
-                            PreferenceKey.BATTERY_CHARGE_THRESHOLD_KEY -> {
-                                database.updatePrefInDatabase(watch.id, it.key, it.value!!)
+                        if (defaultWatch != null) {
+                            val watch = Watch(defaultWatch)
+                            Utils.addWatch(database, messageClient, watch)
+                            sharedPreferences.edit {
+                                putString(WatchManager.LAST_CONNECTED_NODE_ID_KEY, watch.id)
                             }
+                            sharedPreferences.all.forEach {
+                                if (it.value != null) {
+                                    when (it.key) {
+                                        PreferenceKey.PHONE_LOCKING_ENABLED_KEY,
+                                        BATTERY_SYNC_ENABLED_KEY,
+                                        PreferenceKey.BATTERY_PHONE_CHARGE_NOTI_KEY,
+                                        PreferenceKey.BATTERY_WATCH_CHARGE_NOTI_KEY,
+                                        PreferenceKey.DND_SYNC_TO_PHONE_KEY,
+                                        PreferenceKey.DND_SYNC_TO_WATCH_KEY,
+                                        PreferenceKey.DND_SYNC_WITH_THEATER_KEY,
+                                        PreferenceKey.BATTERY_CHARGE_THRESHOLD_KEY
+                                        -> {
+                                            database.updatePrefInDatabase(watch.id, it.key, it.value!!)
+                                        }
+                                    }
+                                }
+                            }
+                            doBatterySyncUpdate(database)
                         }
+                        database.close()
                     }
-                }
-                doBatterySyncUpdate(database)
-            }
-            database.close()
         }
     }
 
