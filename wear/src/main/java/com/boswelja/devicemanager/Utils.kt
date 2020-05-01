@@ -10,11 +10,8 @@ package com.boswelja.devicemanager
 import android.app.NotificationManager
 import android.content.Context
 import android.content.pm.PackageManager
-import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.common.Compat
-import com.boswelja.devicemanager.common.PreferenceKey
 import com.boswelja.devicemanager.common.References
-import com.boswelja.devicemanager.phoneconnectionmanager.References.PHONE_ID_KEY
 import com.google.android.gms.wearable.Wearable
 
 object Utils {
@@ -23,11 +20,10 @@ object Utils {
             (context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager)
                     .isNotificationPolicyAccessGranted
 
-    fun launchMobileApp(context: Context, key: String) {
-        val nodeId = PreferenceManager.getDefaultSharedPreferences(context).getString(PHONE_ID_KEY, "")
-        if (nodeId != null) {
+    fun launchMobileApp(context: Context, phoneId: String, key: String) {
+        if (phoneId.isNotEmpty()) {
             Wearable.getMessageClient(context)
-                    .sendMessage(nodeId, References.REQUEST_LAUNCH_APP_PATH, key.toByteArray(Charsets.UTF_8))
+                    .sendMessage(phoneId, References.REQUEST_LAUNCH_APP_PATH, key.toByteArray(Charsets.UTF_8))
         }
     }
 
@@ -49,8 +45,6 @@ object Utils {
                 return true
             } catch (e: SecurityException) {
                 e.printStackTrace()
-                val prefs = PreferenceManager.getDefaultSharedPreferences(context)
-                prefs.edit().putBoolean(PreferenceKey.DND_SYNC_TO_WATCH_KEY, false).apply()
             }
         } else {
             return true

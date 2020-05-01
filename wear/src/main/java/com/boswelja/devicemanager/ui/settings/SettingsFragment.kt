@@ -181,7 +181,7 @@ class SettingsFragment :
     }
 
     private fun notifyAdditionalSetupRequired(key: String) {
-        Utils.launchMobileApp(requireContext(), key)
+        Utils.launchMobileApp(requireContext(), phoneId, key)
         ConfirmationActivityHandler.openOnPhoneAnimation(requireContext(), getString(R.string.additional_setup_required))
     }
 
