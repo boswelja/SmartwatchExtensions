@@ -17,6 +17,7 @@ import androidx.annotation.RequiresApi
 import androidx.core.content.edit
 import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.BuildConfig
+import com.boswelja.devicemanager.NotificationChannelHelper
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.batterysync.BatterySyncWorker
 import com.boswelja.devicemanager.batterysync.WatchBatteryUpdateReceiver
@@ -90,44 +91,9 @@ class Updater(private val context: Context) {
     fun ensureNotificationChannelsCreated() {
         val notificationManager = context.getSystemService(NotificationManager::class.java)!!
 
-        if (notificationManager.getNotificationChannel(WatchBatteryUpdateReceiver.BATTERY_CHARGED_NOTI_CHANNEL_ID) == null) {
-            NotificationChannel(
-                    WatchBatteryUpdateReceiver.BATTERY_CHARGED_NOTI_CHANNEL_ID,
-                    context.getString(R.string.noti_channel_watch_charged_title),
-                    NotificationManager.IMPORTANCE_HIGH).apply {
-                enableLights(false)
-                enableVibration(true)
-                setShowBadge(true)
-            }.also {
-                notificationManager.createNotificationChannel(it)
-            }
-        }
-
-        if (notificationManager.getNotificationChannel(References.DND_SYNC_NOTI_CHANNEL_ID) == null) {
-            NotificationChannel(
-                    References.DND_SYNC_NOTI_CHANNEL_ID,
-                    context.getString(R.string.noti_channel_dnd_sync_title),
-                    NotificationManager.IMPORTANCE_LOW).apply {
-                enableLights(false)
-                enableVibration(false)
-                setShowBadge(false)
-            }.also {
-                notificationManager.createNotificationChannel(it)
-            }
-        }
-
-        if (notificationManager.getNotificationChannel(BootOrUpdateHandlerService.BOOT_OR_UPDATE_NOTI_CHANNEL_ID) == null) {
-            NotificationChannel(
-                    BootOrUpdateHandlerService.BOOT_OR_UPDATE_NOTI_CHANNEL_ID,
-                    context.getString(R.string.noti_channel_boot_or_update_title),
-                    NotificationManager.IMPORTANCE_LOW).apply {
-                enableLights(false)
-                enableVibration(false)
-                setShowBadge(false)
-            }.also {
-                notificationManager.createNotificationChannel(it)
-            }
-        }
+        NotificationChannelHelper.createForBatteryCharged(context, notificationManager)
+        NotificationChannelHelper.createForDnDSync(context, notificationManager)
+        NotificationChannelHelper.createForBootOrUpdate(context, notificationManager)
     }
 
     /**
