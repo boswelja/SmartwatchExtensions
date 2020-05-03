@@ -57,6 +57,19 @@ class BatterySyncWorker(appContext: Context, workerParams: WorkerParameters) :
             }
         }
 
+        suspend fun startWorker(watchConnectionManager: WatchManager?, watchId: String): Boolean {
+            return withContext(Dispatchers.Default) {
+                val watch = watchConnectionManager?.getWatchById(watchId)
+                if (watch != null) {
+                    val syncIntervalMinutes = watch.intPrefs[PreferenceKey.BATTERY_SYNC_INTERVAL_KEY] ?: 15
+                    val newWorkerId = startWorker(watchConnectionManager, watch.id, syncIntervalMinutes.toLong())
+                    watchConnectionManager.updateBatterySyncWorkerId(watch.id, newWorkerId)
+                    return@withContext true
+                }
+                return@withContext false
+            }
+        }
+
         fun startWorker(context: Context, watchId: String, syncIntervalMinutes: Long): String {
             val data = Data.Builder().apply {
                 putString(EXTRA_WATCH_ID, watchId)
@@ -79,14 +92,31 @@ class BatterySyncWorker(appContext: Context, workerParams: WorkerParameters) :
                     if (connectedWatch != null) {
                         val workerId = connectedWatch.batterySyncWorkerId
                         if (workerId != null) {
-                            stopWorker(watchConnectionManager, workerId)
+                            stopWorkerById(watchConnectionManager, workerId)
                         }
                     }
                 }
             }
         }
 
-        fun stopWorker(context: Context, workerIdString: String) {
+        /**
+         * Stops the battery sync job for a watch with the given ID.
+         */
+        suspend fun stopWorker(watchConnectionManager: WatchManager?, watchId: String) {
+            withContext(Dispatchers.IO) {
+                val watch = watchConnectionManager?.getWatchById(watchId)
+                withContext(Dispatchers.Default) {
+                    if (watch != null) {
+                        val workerId = watch.batterySyncWorkerId
+                        if (workerId != null) {
+                            stopWorkerById(watchConnectionManager, workerId)
+                        }
+                    }
+                }
+            }
+        }
+
+        private fun stopWorkerById(context: Context, workerIdString: String) {
             WorkManager.getInstance(context).cancelWorkById(UUID.fromString(workerIdString))
         }
     }

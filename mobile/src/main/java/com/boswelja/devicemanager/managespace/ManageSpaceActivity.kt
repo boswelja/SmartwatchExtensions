@@ -366,7 +366,7 @@ class ManageSpaceActivity : BaseToolbarActivity() {
     private suspend fun resetWatchPreferences(watch: Watch): Boolean {
         val success = watchConnectionManager!!.clearPreferencesForWatch(watch.id)
         if (watch.batterySyncWorkerId != null) {
-            BatterySyncWorker.stopWorker(this@ManageSpaceActivity, watch.batterySyncWorkerId)
+            BatterySyncWorker.stopWorker(watchConnectionManager, watch.id)
         }
         return success
     }
