@@ -74,13 +74,14 @@ class WatchManager :
         super.onCreate()
         Timber.d("onCreate() called")
 
+        database = WatchDatabase.open(applicationContext)
+
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
         sharedPreferences.registerOnSharedPreferenceChangeListener(this)
         sharedPreferences.getString(LAST_CONNECTED_NODE_ID_KEY, "").also {
             setConnectedWatchById(it ?: "")
         }
 
-        database = WatchDatabase.open(applicationContext)
         capabilityClient = Wearable.getCapabilityClient(this)
         dataClient = Wearable.getDataClient(this)
         nodeClient = Wearable.getNodeClient(this)
@@ -439,7 +440,8 @@ class WatchManager :
                     PreferenceKey.BATTERY_WATCH_CHARGE_NOTI_KEY,
                     PreferenceKey.DND_SYNC_TO_PHONE_KEY,
                     PreferenceKey.DND_SYNC_TO_WATCH_KEY,
-                    PreferenceKey.DND_SYNC_WITH_THEATER_KEY -> {
+                    PreferenceKey.DND_SYNC_WITH_THEATER_KEY
+                    -> {
                         sharedPreferences.getBoolean(preferenceKey, false).also {
                             Timber.i("Updating $preferenceKey to $it")
                             syncedPrefUpdateReq.dataMap.putBoolean(preferenceKey, it)
