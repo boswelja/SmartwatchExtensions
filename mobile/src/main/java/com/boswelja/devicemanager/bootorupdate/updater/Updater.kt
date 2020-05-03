@@ -7,7 +7,6 @@
  */
 package com.boswelja.devicemanager.bootorupdate.updater
 
-import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.job.JobScheduler
 import android.content.Context
@@ -18,15 +17,11 @@ import androidx.core.content.edit
 import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.BuildConfig
 import com.boswelja.devicemanager.NotificationChannelHelper
-import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.batterysync.BatterySyncWorker
-import com.boswelja.devicemanager.batterysync.WatchBatteryUpdateReceiver
-import com.boswelja.devicemanager.bootorupdate.BootOrUpdateHandlerService
 import com.boswelja.devicemanager.common.PreferenceKey
 import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_SYNC_ENABLED_KEY
 import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_SYNC_INTERVAL_KEY
 import com.boswelja.devicemanager.common.References.CAPABILITY_WATCH_APP
-import com.boswelja.devicemanager.common.dndsync.References
 import com.boswelja.devicemanager.messages.database.MessageDatabase
 import com.boswelja.devicemanager.messages.database.MessageDatabase.Companion.MESSAGE_COUNT_KEY
 import com.boswelja.devicemanager.ui.phonelocking.PhoneLockingPreferenceFragment.Companion.PHONE_LOCKING_MODE_KEY
