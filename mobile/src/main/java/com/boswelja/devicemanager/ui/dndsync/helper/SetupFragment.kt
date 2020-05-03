@@ -15,13 +15,16 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.LinearLayout
 import androidx.appcompat.widget.AppCompatTextView
+import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.Utils
-import com.google.android.material.button.MaterialButton
+import com.boswelja.devicemanager.databinding.FragmentDndSyncHelperSetupBinding
 import timber.log.Timber
 
 internal class SetupFragment : Fragment() {
+
+    private lateinit var binding: FragmentDndSyncHelperSetupBinding
 
     private var errorMessage: String? = null
 
@@ -29,8 +32,11 @@ internal class SetupFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? =
-            inflater.inflate(R.layout.fragment_dnd_sync_helper_setup, container, false)
+    ): View? {
+        binding = DataBindingUtil.inflate(
+                inflater, R.layout.fragment_dnd_sync_helper_setup, container, false)
+        return binding.root
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         Timber.d("onViewCrated() called")
@@ -43,10 +49,8 @@ internal class SetupFragment : Fragment() {
      */
     private fun setupNextButton() {
         Timber.d("setupNextButton() called")
-        requireView().findViewById<MaterialButton>(R.id.next_button)!!.apply {
-            setOnClickListener {
-                (activity as DnDSyncHelperActivity).checkWatchNotiAccess()
-            }
+        binding.nextButton.setOnClickListener {
+            (activity as DnDSyncHelperActivity).checkWatchNotiAccess()
         }
     }
 
@@ -55,7 +59,7 @@ internal class SetupFragment : Fragment() {
      */
     private fun setupStepsHolder() {
         Timber.d("setupStepsHolder() called")
-        requireView().findViewById<LinearLayout>(R.id.steps_holder)!!.also { stepsHolder ->
+        binding.stepsHolder.also { stepsHolder ->
             val textViewPadding = Utils.complexTypeDp(resources, 4.0f).toInt()
             if (!errorMessage.isNullOrEmpty()) {
                 Timber.i("Showing error message")
@@ -94,7 +98,8 @@ internal class SetupFragment : Fragment() {
     private fun createTextView(verticalPadding: Int, textString: String): AppCompatTextView {
         Timber.d("createTextView() called")
         return AppCompatTextView(context).apply {
-            layoutParams = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT)
+            layoutParams = FrameLayout.LayoutParams(
+                    FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT)
             text = textString
             textSize = 16.0f
             setTextIsSelectable(true)

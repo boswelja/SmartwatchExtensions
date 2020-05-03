@@ -11,20 +11,25 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.widget.AppCompatTextView
+import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import com.boswelja.devicemanager.R
-import com.google.android.material.button.MaterialButton
+import com.boswelja.devicemanager.databinding.FragmentDndSyncHelperErrorBinding
 import timber.log.Timber
 
 internal class ErrorFragment : Fragment() {
+
+    private lateinit var binding: FragmentDndSyncHelperErrorBinding
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? =
-            inflater.inflate(R.layout.fragment_dnd_sync_helper_error, container, false)
+    ): View? {
+        binding = DataBindingUtil.inflate(
+                inflater, R.layout.fragment_dnd_sync_helper_error, container, false)
+        return binding.root
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         Timber.d("onViewCreated() called")
@@ -36,10 +41,8 @@ internal class ErrorFragment : Fragment() {
      */
     private fun setupFinishButton() {
         Timber.d("setupFinishButton() called")
-        requireView().findViewById<MaterialButton>(R.id.finish_button)!!.apply {
-            setOnClickListener {
-                activity?.finish()
-            }
+        binding.finishButton.setOnClickListener {
+            activity?.finish()
         }
     }
 
@@ -48,8 +51,7 @@ internal class ErrorFragment : Fragment() {
      */
     fun showWatchVersionIncompatible() {
         Timber.d("showWatchVersionIncompatible() called")
-        requireView().findViewById<AppCompatTextView>(R.id.watch_version_incompatible_text)!!
-                .visibility = View.VISIBLE
+        binding.watchVersionIncompatibleText.visibility = View.VISIBLE
     }
 
     /**
@@ -57,7 +59,6 @@ internal class ErrorFragment : Fragment() {
      */
     fun showWatchUnreachable() {
         Timber.d("showWatchUnreachable() called")
-        requireView().findViewById<AppCompatTextView>(R.id.watch_unreachable_text)!!
-                .visibility = View.VISIBLE
+        binding.watchUnreachableText.visibility = View.VISIBLE
     }
 }
