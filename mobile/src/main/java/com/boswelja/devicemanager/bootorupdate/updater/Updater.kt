@@ -44,8 +44,6 @@ class Updater(private val context: Context) {
     private val currentAppVersion: Int = BuildConfig.VERSION_CODE
     private val lastAppVersion: Int
 
-    private var notificationChannelsCreated: Boolean = false
-
     val needsUpdate: Boolean get() = lastAppVersion < currentAppVersion
 
     init {
@@ -54,9 +52,6 @@ class Updater(private val context: Context) {
         } catch (e: ClassCastException) {
             Timber.w("Failed to get lat app version, falling back to version 0 to force upgrade")
             0
-        }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            notificationChannelsCreated = sharedPreferences.getBoolean(NOTIFICATION_CHANNELS_CREATED, false)
         }
     }
 
@@ -92,51 +87,46 @@ class Updater(private val context: Context) {
      * Creates all notifications channels if they don't already exist.
      */
     @RequiresApi(Build.VERSION_CODES.O)
-    fun createNotificationChannels() {
-        if (!notificationChannelsCreated || needsUpdate) {
-            val notificationManager = context.getSystemService(NotificationManager::class.java)!!
+    fun ensureNotificationChannelsCreated() {
+        val notificationManager = context.getSystemService(NotificationManager::class.java)!!
 
-            if (notificationManager.getNotificationChannel(WatchBatteryUpdateReceiver.BATTERY_CHARGED_NOTI_CHANNEL_ID) == null) {
-                NotificationChannel(
-                        WatchBatteryUpdateReceiver.BATTERY_CHARGED_NOTI_CHANNEL_ID,
-                        context.getString(R.string.noti_channel_watch_charged_title),
-                        NotificationManager.IMPORTANCE_HIGH).apply {
-                    enableLights(false)
-                    enableVibration(true)
-                    setShowBadge(true)
-                }.also {
-                    notificationManager.createNotificationChannel(it)
-                }
+        if (notificationManager.getNotificationChannel(WatchBatteryUpdateReceiver.BATTERY_CHARGED_NOTI_CHANNEL_ID) == null) {
+            NotificationChannel(
+                    WatchBatteryUpdateReceiver.BATTERY_CHARGED_NOTI_CHANNEL_ID,
+                    context.getString(R.string.noti_channel_watch_charged_title),
+                    NotificationManager.IMPORTANCE_HIGH).apply {
+                enableLights(false)
+                enableVibration(true)
+                setShowBadge(true)
+            }.also {
+                notificationManager.createNotificationChannel(it)
             }
+        }
 
-            if (notificationManager.getNotificationChannel(References.DND_SYNC_NOTI_CHANNEL_ID) == null) {
-                NotificationChannel(
-                        References.DND_SYNC_NOTI_CHANNEL_ID,
-                        context.getString(R.string.noti_channel_dnd_sync_title),
-                        NotificationManager.IMPORTANCE_LOW).apply {
-                    enableLights(false)
-                    enableVibration(false)
-                    setShowBadge(false)
-                }.also {
-                    notificationManager.createNotificationChannel(it)
-                }
+        if (notificationManager.getNotificationChannel(References.DND_SYNC_NOTI_CHANNEL_ID) == null) {
+            NotificationChannel(
+                    References.DND_SYNC_NOTI_CHANNEL_ID,
+                    context.getString(R.string.noti_channel_dnd_sync_title),
+                    NotificationManager.IMPORTANCE_LOW).apply {
+                enableLights(false)
+                enableVibration(false)
+                setShowBadge(false)
+            }.also {
+                notificationManager.createNotificationChannel(it)
             }
+        }
 
-            if (notificationManager.getNotificationChannel(BootOrUpdateHandlerService.BOOT_OR_UPDATE_NOTI_CHANNEL_ID) == null) {
-                NotificationChannel(
-                        BootOrUpdateHandlerService.BOOT_OR_UPDATE_NOTI_CHANNEL_ID,
-                        context.getString(R.string.noti_channel_boot_or_update_title),
-                        NotificationManager.IMPORTANCE_LOW).apply {
-                    enableLights(false)
-                    enableVibration(false)
-                    setShowBadge(false)
-                }.also {
-                    notificationManager.createNotificationChannel(it)
-                }
+        if (notificationManager.getNotificationChannel(BootOrUpdateHandlerService.BOOT_OR_UPDATE_NOTI_CHANNEL_ID) == null) {
+            NotificationChannel(
+                    BootOrUpdateHandlerService.BOOT_OR_UPDATE_NOTI_CHANNEL_ID,
+                    context.getString(R.string.noti_channel_boot_or_update_title),
+                    NotificationManager.IMPORTANCE_LOW).apply {
+                enableLights(false)
+                enableVibration(false)
+                setShowBadge(false)
+            }.also {
+                notificationManager.createNotificationChannel(it)
             }
-
-            sharedPreferences.edit().putBoolean(NOTIFICATION_CHANNELS_CREATED, true).apply()
-            notificationChannelsCreated = true
         }
     }
 
@@ -186,6 +176,9 @@ class Updater(private val context: Context) {
                 }
                 if (sharedPreferences.contains("has_completed_first_run")) {
                     remove("has_completed_first_run")
+                }
+                if (sharedPreferences.contains("notification_channels_created")) {
+                    remove("notification_channels_created")
                 }
                 if (lastAppVersion < 2019120600) {
                     doFullUpdate()
@@ -243,6 +236,5 @@ class Updater(private val context: Context) {
 
     companion object {
         private const val APP_VERSION_KEY = "app_version"
-        private const val NOTIFICATION_CHANNELS_CREATED = "notification_channels_created"
     }
 }
