@@ -8,6 +8,7 @@
 package com.boswelja.devicemanager.bootorupdate
 
 import android.app.Notification
+import android.app.NotificationManager
 import android.app.Service
 import android.content.Intent
 import android.os.Build
@@ -15,6 +16,7 @@ import android.os.IBinder
 import androidx.core.app.NotificationCompat
 import androidx.core.content.edit
 import androidx.preference.PreferenceManager
+import com.boswelja.devicemanager.NotificationChannelHelper
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.batterysync.BatterySyncWorker
 import com.boswelja.devicemanager.bootorupdate.updater.Result
@@ -52,6 +54,9 @@ class BootOrUpdateHandlerService : Service() {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         Timber.i("onStartCommand called")
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+            NotificationChannelHelper.createForBootOrUpdate(
+                    this, getSystemService(NotificationManager::class.java))
         when (intent?.action) {
             Intent.ACTION_MY_PACKAGE_REPLACED -> {
                 performUpdates()
@@ -74,8 +79,9 @@ class BootOrUpdateHandlerService : Service() {
             Timber.i("Starting update process")
             isUpdating = true
             val updater = Updater(this)
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) updater.ensureNotificationChannelsCreated()
             startForeground(NOTI_ID, createUpdaterNotification())
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+                updater.ensureNotificationChannelsCreated()
             when (updater.doUpdate()) {
                 Result.COMPLETED -> {
                     Timber.i("Update completed")
@@ -154,8 +160,8 @@ class BootOrUpdateHandlerService : Service() {
                 if (batterySyncBoolPreference.value) {
                     Timber.i("tryStartBatterySyncWorkers Starting a Battery Sync Worker")
                     val batterySyncInterval =
-                            service.getIntPrefForWatch(batterySyncBoolPreference.watchId, PreferenceKey.BATTERY_CHARGE_THRESHOLD_KEY)
-                                    ?.value?.toLong() ?: 15
+                            service.getIntPrefForWatch(batterySyncBoolPreference.watchId,
+                                    PreferenceKey.BATTERY_CHARGE_THRESHOLD_KEY)?.value?.toLong() ?: 15
                     val batterySyncWorkerId = BatterySyncWorker.startWorker(
                             applicationContext, batterySyncBoolPreference.watchId, batterySyncInterval)
                     service.updateBatterySyncWorkerId(batterySyncBoolPreference.watchId, batterySyncWorkerId)
