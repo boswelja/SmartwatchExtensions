@@ -15,6 +15,7 @@ import android.content.pm.PackageManager
 import android.os.Build
 import android.provider.Settings
 import androidx.annotation.RequiresApi
+import androidx.core.content.edit
 import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.phonelocking.DeviceAdminChangeReceiver.Companion.DEVICE_ADMIN_ENABLED_KEY
@@ -90,6 +91,9 @@ object Utils {
     fun switchToAccessibilityServiceMode(context: Context) {
         Timber.i("Switching to Accessibility Service mode")
         if (isDeviceAdminEnabled(context)) {
+            PreferenceManager.getDefaultSharedPreferences(context).edit {
+                putBoolean(DEVICE_ADMIN_ENABLED_KEY, false)
+            }
             val dpm = context.getSystemService(Context.DEVICE_POLICY_SERVICE) as DevicePolicyManager
             dpm.removeActiveAdmin(ComponentName(context, DeviceAdminChangeReceiver::class.java))
         }
