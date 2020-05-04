@@ -80,8 +80,6 @@ class BootOrUpdateHandlerService : Service() {
             isUpdating = true
             val updater = Updater(this)
             startForeground(NOTI_ID, createUpdaterNotification())
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-                updater.ensureNotificationChannelsCreated()
             when (updater.doUpdate()) {
                 Result.COMPLETED -> {
                     Timber.i("Update completed")

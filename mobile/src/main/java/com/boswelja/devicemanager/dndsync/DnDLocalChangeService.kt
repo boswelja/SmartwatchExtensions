@@ -8,13 +8,16 @@
 package com.boswelja.devicemanager.dndsync
 
 import android.app.Notification
+import android.app.NotificationManager
 import android.app.PendingIntent
 import android.app.Service
 import android.content.Intent
 import android.content.SharedPreferences
+import android.os.Build
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
 import androidx.preference.PreferenceManager
+import com.boswelja.devicemanager.NotificationChannelHelper
 import com.boswelja.devicemanager.common.Compat
 import com.boswelja.devicemanager.common.PreferenceKey
 import com.boswelja.devicemanager.common.R
@@ -116,6 +119,10 @@ class DnDLocalChangeService : Service(), WatchPreferenceChangeListener {
      * @return The created [Notification].
      */
     private fun createNotification(): Notification {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+            NotificationChannelHelper.createForDnDSync(
+                    this, getSystemService(NotificationManager::class.java))
+
         val notiTapIntent = PendingIntent.getActivity(this,
                 SERVICE_NOTIFICATION_TAP_INTENT_ID,
                 packageManager.getLaunchIntentForPackage(packageName),
