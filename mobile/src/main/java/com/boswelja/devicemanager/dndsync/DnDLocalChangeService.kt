@@ -22,6 +22,7 @@ import com.boswelja.devicemanager.common.Compat
 import com.boswelja.devicemanager.common.PreferenceKey
 import com.boswelja.devicemanager.common.R
 import com.boswelja.devicemanager.common.dndsync.References
+import com.boswelja.devicemanager.ui.main.MainActivity
 import com.boswelja.devicemanager.watchmanager.WatchManager
 import com.boswelja.devicemanager.watchmanager.WatchPreferenceChangeListener
 import com.google.android.gms.wearable.DataClient
@@ -123,10 +124,9 @@ class DnDLocalChangeService : Service(), WatchPreferenceChangeListener {
             NotificationChannelHelper.createForDnDSync(
                     this, getSystemService(NotificationManager::class.java))
 
+        val launchActivityIntent = Intent(this, MainActivity::class.java)
         val notiTapIntent = PendingIntent.getActivity(this,
-                SERVICE_NOTIFICATION_TAP_INTENT_ID,
-                packageManager.getLaunchIntentForPackage(packageName),
-                PendingIntent.FLAG_CANCEL_CURRENT)
+                0, launchActivityIntent, 0)
 
         return NotificationCompat.Builder(this, References.DND_SYNC_NOTI_CHANNEL_ID)
                 .setContentTitle(getString(R.string.interrupt_filter_sync_active_noti_title))
@@ -166,6 +166,5 @@ class DnDLocalChangeService : Service(), WatchPreferenceChangeListener {
 
     companion object {
         private const val SERVICE_NOTIFICATION_ID = 52447
-        private const val SERVICE_NOTIFICATION_TAP_INTENT_ID = 30177
     }
 }
