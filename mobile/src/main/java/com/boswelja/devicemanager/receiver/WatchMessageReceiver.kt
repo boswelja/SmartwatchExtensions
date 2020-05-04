@@ -65,7 +65,7 @@ class WatchMessageReceiver : WearableListenerService() {
         Timber.i("tryLockDevice() called")
         val isInDeviceAdminMode = PreferenceManager
                 .getDefaultSharedPreferences(this)
-                .getString(PHONE_LOCKING_MODE_KEY, "0")!= PHONE_LOCKING_MODE_ACCESSIBILITY_SERVICE
+                .getString(PHONE_LOCKING_MODE_KEY, "0") != PHONE_LOCKING_MODE_ACCESSIBILITY_SERVICE
         val isDeviceAdminEnabled = isDeviceAdminEnabled(this)
         if (isInDeviceAdminMode && isDeviceAdminEnabled) {
             Timber.i("Trying to lock device")
