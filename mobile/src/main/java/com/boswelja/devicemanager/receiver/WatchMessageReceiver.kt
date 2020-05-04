@@ -12,6 +12,7 @@ import android.app.admin.DevicePolicyManager
 import android.content.Context
 import android.content.Intent
 import android.os.Build
+import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.common.Extensions.toByteArray
 import com.boswelja.devicemanager.common.PreferenceKey
 import com.boswelja.devicemanager.common.References.CAPABILITY_WATCH_APP
@@ -28,6 +29,8 @@ import com.boswelja.devicemanager.ui.base.BasePreferenceActivity.Companion.EXTRA
 import com.boswelja.devicemanager.ui.batterysync.BatterySyncPreferenceActivity
 import com.boswelja.devicemanager.ui.dndsync.DnDSyncPreferenceActivity
 import com.boswelja.devicemanager.ui.main.MainActivity
+import com.boswelja.devicemanager.ui.phonelocking.PhoneLockingPreferenceFragment.Companion.PHONE_LOCKING_MODE_ACCESSIBILITY_SERVICE
+import com.boswelja.devicemanager.ui.phonelocking.PhoneLockingPreferenceFragment.Companion.PHONE_LOCKING_MODE_KEY
 import com.boswelja.devicemanager.watchmanager.database.WatchDatabase
 import com.google.android.gms.wearable.MessageEvent
 import com.google.android.gms.wearable.Wearable
@@ -60,8 +63,11 @@ class WatchMessageReceiver : WearableListenerService() {
      */
     private fun tryLockDevice() {
         Timber.i("tryLockDevice() called")
+        val isInDeviceAdminMode = PreferenceManager
+                .getDefaultSharedPreferences(this)
+                .getString(PHONE_LOCKING_MODE_KEY, "0")!= PHONE_LOCKING_MODE_ACCESSIBILITY_SERVICE
         val isDeviceAdminEnabled = isDeviceAdminEnabled(this)
-        if (isDeviceAdminEnabled) {
+        if (isInDeviceAdminMode && isDeviceAdminEnabled) {
             Timber.i("Trying to lock device")
             val devicePolicyManager: DevicePolicyManager = getSystemService(Context.DEVICE_POLICY_SERVICE) as DevicePolicyManager
             devicePolicyManager.lockNow()
@@ -86,7 +92,8 @@ class WatchMessageReceiver : WearableListenerService() {
             PreferenceKey.BATTERY_SYNC_ENABLED_KEY,
             PreferenceKey.BATTERY_SYNC_INTERVAL_KEY,
             PreferenceKey.BATTERY_PHONE_CHARGE_NOTI_KEY,
-            PreferenceKey.BATTERY_WATCH_CHARGE_NOTI_KEY -> {
+            PreferenceKey.BATTERY_WATCH_CHARGE_NOTI_KEY
+            -> {
                 Intent(this, BatterySyncPreferenceActivity::class.java).apply {
                     putExtra(EXTRA_PREFERENCE_KEY, key)
                     addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
@@ -96,7 +103,8 @@ class WatchMessageReceiver : WearableListenerService() {
             }
             PreferenceKey.DND_SYNC_TO_WATCH_KEY,
             PreferenceKey.DND_SYNC_TO_PHONE_KEY,
-            PreferenceKey.DND_SYNC_WITH_THEATER_KEY -> {
+            PreferenceKey.DND_SYNC_WITH_THEATER_KEY
+            -> {
                 Intent(this, DnDSyncPreferenceActivity::class.java).apply {
                     putExtra(EXTRA_PREFERENCE_KEY, key)
                     addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
