@@ -128,17 +128,17 @@ class DnDLocalChangeService : Service(), WatchPreferenceChangeListener {
                 packageManager.getLaunchIntentForPackage(packageName),
                 PendingIntent.FLAG_CANCEL_CURRENT)
 
-        return NotificationCompat.Builder(this, References.DND_SYNC_NOTI_CHANNEL_ID).apply {
-            setContentTitle(getString(R.string.interrupt_filter_sync_active_noti_title))
-            setContentText(getString(R.string.interrupt_filter_sync_to_phone_noti_desc))
-            setSmallIcon(R.drawable.ic_sync)
-            setOngoing(true)
-            setShowWhen(false)
-            setUsesChronometer(false)
-            setVisibility(NotificationCompat.VISIBILITY_SECRET)
-            setContentIntent(notiTapIntent)
-            priority = NotificationCompat.PRIORITY_LOW
-        }.build()
+        return NotificationCompat.Builder(this, References.DND_SYNC_NOTI_CHANNEL_ID)
+                .setContentTitle(getString(R.string.interrupt_filter_sync_active_noti_title))
+                .setContentText(getString(R.string.interrupt_filter_sync_to_phone_noti_desc))
+                .setSmallIcon(R.drawable.ic_sync)
+                .setOngoing(true)
+                .setShowWhen(false)
+                .setUsesChronometer(false)
+                .setVisibility(NotificationCompat.VISIBILITY_SECRET)
+                .setContentIntent(notiTapIntent)
+                .setPriority(NotificationCompat.PRIORITY_LOW)
+                .build()
     }
 
     /**

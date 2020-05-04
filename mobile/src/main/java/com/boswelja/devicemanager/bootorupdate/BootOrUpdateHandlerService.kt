@@ -98,14 +98,13 @@ class BootOrUpdateHandlerService : Service() {
      * @return The [NotificationCompat.Builder] to build notifications from.
      */
     private fun createBaseNotification(): NotificationCompat.Builder {
-        return NotificationCompat.Builder(this, BOOT_OR_UPDATE_NOTI_CHANNEL_ID).apply {
-            setOngoing(true)
-            setShowWhen(false)
-            setUsesChronometer(false)
-            setProgress(0, 0, true)
-            priority = NotificationCompat.PRIORITY_LOW
-            setVisibility(NotificationCompat.VISIBILITY_PRIVATE)
-        }
+        return NotificationCompat.Builder(this, BOOT_OR_UPDATE_NOTI_CHANNEL_ID)
+                .setOngoing(true)
+                .setShowWhen(false)
+                .setUsesChronometer(false)
+                .setProgress(0, 0, true)
+                .setPriority(NotificationCompat.PRIORITY_LOW)
+                .setVisibility(NotificationCompat.VISIBILITY_PRIVATE)
     }
 
     /**
@@ -113,10 +112,10 @@ class BootOrUpdateHandlerService : Service() {
      * @return The [Notification] ready to send.
      */
     private fun createUpdaterNotification(): Notification {
-        return createBaseNotification().apply {
-            setContentTitle(getString(R.string.notification_update_handler_title))
-            setSmallIcon(R.drawable.noti_ic_update)
-        }.build()
+        return createBaseNotification()
+                .setContentTitle(getString(R.string.notification_update_handler_title))
+                .setSmallIcon(R.drawable.noti_ic_update)
+                .build()
     }
 
     /**
@@ -124,10 +123,10 @@ class BootOrUpdateHandlerService : Service() {
      * @return The [Notification] ready to send.
      */
     private fun createBootNotification(): Notification {
-        return createBaseNotification().apply {
-            setContentTitle(getString(R.string.notification_boot_handler_title))
-            setSmallIcon(R.drawable.noti_ic_update)
-        }.build()
+        return createBaseNotification()
+                .setContentTitle(getString(R.string.notification_boot_handler_title))
+                .setSmallIcon(R.drawable.noti_ic_update)
+                .build()
     }
 
     /**

@@ -128,17 +128,18 @@ class WatchBatteryUpdateReceiver : WearableListenerService() {
     private fun notifyWatchCharged(watch: Watch) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
             NotificationChannelHelper.createForBatteryCharged(this, notificationManager)
+
         if (Compat.areNotificationsEnabled(this, BATTERY_CHARGED_NOTI_CHANNEL_ID)) {
             Timber.i("Sending charged notification")
-            NotificationCompat.Builder(this, BATTERY_CHARGED_NOTI_CHANNEL_ID).apply {
-                setSmallIcon(R.drawable.battery_full)
-                setContentTitle(getString(R.string.device_charged_noti_title, watch.name))
-                setContentText(getString(R.string.device_charged_noti_desc)
-                        .format(watch.name, watch.intPrefs[BATTERY_CHARGE_THRESHOLD_KEY] ?: 90))
-                setLocalOnly(true)
-            }.also {
-                notificationManager.notify(BATTERY_CHARGED_NOTI_ID, it.build())
-            }
+            NotificationCompat.Builder(this, BATTERY_CHARGED_NOTI_CHANNEL_ID)
+                    .setSmallIcon(R.drawable.battery_full)
+                    .setContentTitle(getString(R.string.device_charged_noti_title, watch.name))
+                    .setContentText(getString(R.string.device_charged_noti_desc)
+                            .format(watch.name, watch.intPrefs[BATTERY_CHARGE_THRESHOLD_KEY] ?: 90))
+                    .setLocalOnly(true)
+                    .also {
+                        notificationManager.notify(BATTERY_CHARGED_NOTI_ID, it.build())
+                    }
         } else {
             Timber.w("Failed to send charged notification")
             coroutineScope.launch(Dispatchers.IO) {
