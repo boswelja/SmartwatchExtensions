@@ -338,15 +338,15 @@ class WatchManager :
                 val availableWatches = ArrayList<Watch>()
                 val capableNodes = getCapableNodes()
                 val registeredWatches = getRegisteredWatches()
-                withContext(Dispatchers.Default) {
+                return@withContext withContext(Dispatchers.Default) {
                     for (node in connectedNodes) {
                         if (registeredWatches.none { it.id == node.id }) {
                             val status = getWatchStatus(node.id, capableNodes)
                             availableWatches.add(Watch(node, status))
                         }
                     }
+                    availableWatches
                 }
-                availableWatches
             } else {
                 Timber.e("Failed to get available watches")
                 null
