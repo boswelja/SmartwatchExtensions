@@ -332,7 +332,7 @@ class WatchManager :
      */
     suspend fun getAvailableWatches(): List<Watch>? {
         Timber.d("getAvailableWatches() called")
-        withContext(Dispatchers.IO) {
+        return withContext(Dispatchers.IO) {
             val connectedNodes = getConnectedNodes()
             if (connectedNodes != null) {
                 val availableWatches = ArrayList<Watch>()
@@ -346,12 +346,12 @@ class WatchManager :
                         }
                     }
                 }
-                return@withContext availableWatches
+                availableWatches
             } else {
                 Timber.e("Failed to get available watches")
+                null
             }
         }
-        return null
     }
 
     /**
