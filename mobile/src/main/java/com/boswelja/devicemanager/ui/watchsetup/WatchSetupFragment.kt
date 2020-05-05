@@ -87,24 +87,22 @@ class WatchSetupFragment : Fragment() {
      * Refresh the list of watches shown in the [WatchSetupAdapter].
      */
     private fun refreshAvailableWatches() {
-        if (watchConnectionManager != null) {
-            hideHelpMessage()
-            setLoading(true)
-            coroutineScope.launch(Dispatchers.IO) {
-                val availableWatches = watchConnectionManager?.getAvailableWatches()
-                withContext(Dispatchers.Main) {
-                    if (availableWatches != null) {
-                        if (availableWatches.isNotEmpty()) {
-                            (watchSetupRecyclerView.adapter as WatchSetupAdapter)
-                                    .setWatches(availableWatches)
-                        } else {
-                            setHelpMessage(getString(R.string.register_watch_message_no_watches))
-                        }
+        hideHelpMessage()
+        setLoading(true)
+        coroutineScope.launch(Dispatchers.IO) {
+            val availableWatches = watchConnectionManager?.getAvailableWatches()
+            withContext(Dispatchers.Main) {
+                if (availableWatches != null) {
+                    if (availableWatches.isNotEmpty()) {
+                        (watchSetupRecyclerView.adapter as WatchSetupAdapter)
+                                .setWatches(availableWatches)
                     } else {
-                        setHelpMessage(getString(R.string.register_watch_message_error))
+                        setHelpMessage(getString(R.string.register_watch_message_no_watches))
                     }
-                    setLoading(false)
+                } else {
+                    setHelpMessage(getString(R.string.register_watch_message_error))
                 }
+                setLoading(false)
             }
         }
     }
