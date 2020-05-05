@@ -177,15 +177,14 @@ class WatchManager :
      */
     private suspend fun getConnectedNodes(): List<Node>? {
         Timber.d("getConnectedNodes() called")
-        var connectedNodes: List<Node>? = null
-        try {
+        return try {
             withContext(Dispatchers.IO) {
-                connectedNodes = Tasks.await(nodeClient.connectedNodes)
+                Tasks.await(nodeClient.connectedNodes)
             }
         } catch (e: Exception) {
             Timber.e(e)
+            null
         }
-        return connectedNodes
     }
 
     /**
