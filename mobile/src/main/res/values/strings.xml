@@ -94,6 +94,7 @@
     <string name="pref_daynight_option_dark">Dark</string>
     <string name="pref_daynight_option_battery">Set by Battery Saver</string>
     <string name="pref_daynight_option_system">Follow System</string>
+    <string name="pref_widget_settings_title">Widget Settings</string>
     <string name="pref_category_watch_connection">Watch Connection</string>
     <string name="pref_manage_watches_title">Manage Watches</string>
     <string name="pref_auto_add_watches_title">Auto-add new watches</string>
@@ -103,6 +104,7 @@
     <string name="widget_watch_battery_config_title">Watch Battery Widget Setup</string>
 
     <!-- Widget Customisation strings -->
+    <string name="widget_preview_info">This is just a preview, data shown is not accurate</string>
     <string name="pref_category_widget_customisation">Widget Customisation</string>
     <string name="pref_show_widget_background_title">Show Background</string>
     <string name="pref_widget_background_opacity_title">Background Opacity</string>

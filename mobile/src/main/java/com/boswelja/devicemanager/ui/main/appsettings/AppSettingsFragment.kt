@@ -8,36 +8,25 @@
 package com.boswelja.devicemanager.ui.main.appsettings
 
 import android.content.Intent
-import android.content.SharedPreferences
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import androidx.preference.ListPreference
 import androidx.preference.Preference
 import com.boswelja.devicemanager.R
-import com.boswelja.devicemanager.batterysync.widget.WatchBatteryWidget
 import com.boswelja.devicemanager.common.Compat
 import com.boswelja.devicemanager.managespace.ManageSpaceActivity
 import com.boswelja.devicemanager.ui.base.BaseDayNightActivity.Companion.DAYNIGHT_MODE_KEY
 import com.boswelja.devicemanager.ui.base.BasePreferenceFragment
+import com.boswelja.devicemanager.ui.widget.WidgetSettingsActivity
 import timber.log.Timber
 
 class AppSettingsFragment :
         BasePreferenceFragment(),
-        Preference.OnPreferenceClickListener,
-        SharedPreferences.OnSharedPreferenceChangeListener {
+        Preference.OnPreferenceClickListener {
 
     private lateinit var openNotiSettingsPreference: Preference
     private lateinit var daynightModePreference: ListPreference
-
-    override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, preferenceKey: String?) {
-        when (preferenceKey) {
-            SHOW_WIDGET_BACKGROUND_KEY,
-            WIDGET_BACKGROUND_OPACITY_KEY -> {
-                WatchBatteryWidget.updateWidgets(requireContext())
-            }
-        }
-    }
 
     override fun onPreferenceClick(preference: Preference?): Boolean {
         return when (preference?.key) {
@@ -51,6 +40,10 @@ class AppSettingsFragment :
             }
             OPEN_MANAGE_SPACE_KEY -> {
                 openManageSpaceActivity()
+                true
+            }
+            OPEN_WIDGET_SETTINGS_KEY -> {
+                openWidgetSettingsActivity()
                 true
             }
             else -> false
@@ -68,6 +61,7 @@ class AppSettingsFragment :
 
         findPreference<Preference>(OPEN_WATCH_MANAGER_KEY)?.onPreferenceClickListener = this
         findPreference<Preference>(OPEN_MANAGE_SPACE_KEY)?.onPreferenceClickListener = this
+        findPreference<Preference>(OPEN_WIDGET_SETTINGS_KEY)?.onPreferenceClickListener = this
     }
 
     override fun onStart() {
@@ -75,13 +69,11 @@ class AppSettingsFragment :
         Timber.d("onStart() called")
         updateNotiSettingsPreferenceSummary()
         updateDayNightModePreferenceSummary()
-        sharedPreferences.registerOnSharedPreferenceChangeListener(this)
     }
 
     override fun onStop() {
         super.onStop()
         Timber.d("onStop() called")
-        sharedPreferences.unregisterOnSharedPreferenceChangeListener(this)
     }
 
     /**
@@ -143,14 +135,23 @@ class AppSettingsFragment :
         }
     }
 
-    companion object {
-        const val OPEN_NOTI_SETTINGS_KEY = "show_noti_settings"
+    /**
+     * Opens the [WidgetSettingsActivity].
+     */
+    private fun openWidgetSettingsActivity() {
+        Intent(requireContext(), WidgetSettingsActivity::class.java).also {
+            Timber.i("Starting WidgetSettingsActivity")
+            startActivity(it)
+        }
+    }
 
+    companion object {
         const val SHOW_WIDGET_BACKGROUND_KEY = "show_widget_background"
         const val WIDGET_BACKGROUND_OPACITY_KEY = "widget_background_opacity"
 
+        const val OPEN_NOTI_SETTINGS_KEY = "show_noti_settings"
         const val OPEN_WATCH_MANAGER_KEY = "open_watch_manager"
-
         const val OPEN_MANAGE_SPACE_KEY = "show_manage_space"
+        const val OPEN_WIDGET_SETTINGS_KEY = "show_widget_settings"
     }
 }

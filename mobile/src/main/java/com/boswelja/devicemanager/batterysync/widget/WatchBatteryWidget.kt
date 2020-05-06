@@ -99,7 +99,7 @@ class WatchBatteryWidget : AppWidgetProvider() {
             val watchId = widgetDatabase.watchBatteryWidgetDao().findByWidgetId(appWidgetId)?.watchId
             if (!watchId.isNullOrEmpty()) {
                 val batteryStats = batteryStatsDatabase.batteryStatsDao().getStatsForWatch(watchId)
-                val remoteViews = createWidgetView(context, width, height, batteryStats)
+                val remoteViews = createWidgetRemoteView(context, width, height, batteryStats)
                 appWidgetManager?.updateAppWidget(appWidgetId, remoteViews)
             }
 
@@ -116,7 +116,7 @@ class WatchBatteryWidget : AppWidgetProvider() {
      * @param batteryStats The [WatchBatteryStats] object containing battery information for the
      * widget to use, if available.
      */
-    private fun createWidgetView(
+    private fun createWidgetRemoteView(
         context: Context?,
         width: Int,
         height: Int,

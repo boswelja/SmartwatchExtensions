@@ -72,6 +72,10 @@
             android:name=".ui.watchsetup.WatchSetupActivity"
             android:exported="false" />
 
+        <activity
+            android:name=".ui.widget.WidgetSettingsActivity"
+            android:exported="false" />
+
         <receiver
             android:name=".phonelocking.DeviceAdminChangeReceiver"
             android:description="@string/device_admin_desc"

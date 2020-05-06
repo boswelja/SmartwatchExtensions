@@ -12,6 +12,11 @@
         android:title="@string/manage_space_title"
         android:icon="@drawable/pref_ic_manage_space" />
 
+    <androidx.preference.Preference
+        android:key="show_widget_settings"
+        android:icon="@drawable/pref_ic_widget_settings"
+        android:title="@string/pref_widget_settings_title" />
+
     <androidx.preference.ListPreference
         android:key="daynight_mode"
         android:title="@string/pref_daynight_title"
@@ -34,23 +39,4 @@
             android:defaultValue="false" />
 
     </androidx.preference.PreferenceCategory>
-
-    <androidx.preference.PreferenceCategory
-        android:title="@string/pref_category_widget_customisation">
-
-        <androidx.preference.CheckBoxPreference
-            android:key="show_widget_background"
-            android:title="@string/pref_show_widget_background_title"
-            android:defaultValue="true" />
-
-        <androidx.preference.SeekBarPreference
-            android:key="widget_background_opacity"
-            android:title="@string/pref_widget_background_opacity_title"
-            android:defaultValue="60"
-            android:max="100"
-            android:dependency="show_widget_background"
-            app:min="5"
-            app:showSeekBarValue="true" />
-    </androidx.preference.PreferenceCategory>
-
 </androidx.preference.PreferenceScreen>
