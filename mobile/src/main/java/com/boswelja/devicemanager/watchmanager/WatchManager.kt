@@ -387,11 +387,10 @@ class WatchManager :
         return withContext(Dispatchers.IO) {
             if (!watchId.isNullOrEmpty() && database.isOpen) {
                 Timber.i("Trying to get watch")
-                val watch = if (watchId == connectedWatch?.id) {
-                    database.watchDao().findById(watchId)
-                } else {
-                    connectedWatch
+                if (watchId == connectedWatch?.id) {
+                    return@withContext connectedWatch
                 }
+                val watch = database.watchDao().findById(watchId)
                 if (watch != null) {
                     Timber.i("Getting watch prefs and status")
                     val boolPrefs =
