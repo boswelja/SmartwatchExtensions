@@ -15,7 +15,7 @@ import androidx.preference.PreferenceManager
 import timber.log.Timber
 
 /**
- * An [AppCompatActivity] that handles setting up night mode and recreating on might mode changed.
+ * An [AppCompatActivity] that handles setting up night mode and recreating on night mode changed.
  */
 abstract class BaseDayNightActivity :
         AppCompatActivity(),
