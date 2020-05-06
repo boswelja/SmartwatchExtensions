@@ -36,8 +36,7 @@ class MainActivity : BaseWatchPickerActivity() {
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
         binding.apply {
-            setupToolbar(toolbarLayout.toolbar)
-            setupWatchPickerSpinner(toolbarLayout.watchPickerSpinner)
+            setupWatchPickerSpinner(toolbarLayout.toolbar)
             bottomNavigation.setOnNavigationItemSelectedListener {
                 handleNavigation(it.itemId)
             }

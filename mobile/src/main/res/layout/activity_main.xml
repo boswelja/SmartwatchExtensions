@@ -10,7 +10,7 @@
 
         <include
             android:id="@+id/toolbar_layout"
-            layout="@layout/common_spinner_toolbar" />
+            layout="@layout/common_toolbar" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"

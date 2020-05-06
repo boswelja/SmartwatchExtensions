@@ -26,6 +26,7 @@ import com.boswelja.devicemanager.watchmanager.Watch
 import com.boswelja.devicemanager.watchmanager.WatchConnectionListener
 import com.boswelja.devicemanager.watchmanager.WatchManager
 import com.boswelja.devicemanager.watchmanager.WatchStatus
+import com.google.android.material.appbar.MaterialToolbar
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
@@ -194,11 +195,17 @@ abstract class BaseWatchPickerActivity :
     /**
      * Set up [watchPickerSpinner].
      */
-    fun setupWatchPickerSpinner(watchPickerSpinner: AppCompatSpinner) {
+    fun setupWatchPickerSpinner(toolbar: MaterialToolbar, showUpButton: Boolean = false) {
         Timber.d("setupWatchPickerSpinner() called")
-        this.watchPickerSpinner = watchPickerSpinner.apply {
+        watchPickerSpinner = AppCompatSpinner(this).apply {
+            layoutParams = ViewGroup.LayoutParams(
+                    ViewGroup.LayoutParams.WRAP_CONTENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT)
             onItemSelectedListener = this@BaseWatchPickerActivity
             adapter = WatchPickerAdapter(this@BaseWatchPickerActivity)
+        }.also {
+            toolbar.addView(it)
+            setupToolbar(toolbar, showUpButton = showUpButton)
         }
     }
 
