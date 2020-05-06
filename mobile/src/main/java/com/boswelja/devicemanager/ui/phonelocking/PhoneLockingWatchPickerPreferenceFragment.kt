@@ -21,15 +21,15 @@ import androidx.preference.SwitchPreference
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.PreferenceKey.PHONE_LOCKING_ENABLED_KEY
 import com.boswelja.devicemanager.phonelocking.Utils
-import com.boswelja.devicemanager.ui.base.BasePreferenceFragment
+import com.boswelja.devicemanager.ui.base.BaseWatchPickerPreferenceFragment
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
-class PhoneLockingPreferenceFragment :
-        BasePreferenceFragment(),
+class PhoneLockingWatchPickerPreferenceFragment :
+        BaseWatchPickerPreferenceFragment(),
         SharedPreferences.OnSharedPreferenceChangeListener,
         Preference.OnPreferenceClickListener,
         Preference.OnPreferenceChangeListener {

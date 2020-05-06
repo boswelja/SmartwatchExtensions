@@ -24,7 +24,7 @@ import com.boswelja.devicemanager.common.PreferenceKey.DND_SYNC_TO_PHONE_KEY
 import com.boswelja.devicemanager.common.PreferenceKey.DND_SYNC_TO_WATCH_KEY
 import com.boswelja.devicemanager.common.PreferenceKey.DND_SYNC_WITH_THEATER_KEY
 import com.boswelja.devicemanager.dndsync.DnDLocalChangeService
-import com.boswelja.devicemanager.ui.base.BasePreferenceFragment
+import com.boswelja.devicemanager.ui.base.BaseWatchPickerPreferenceFragment
 import com.boswelja.devicemanager.ui.dndsync.helper.DnDSyncHelperActivity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
@@ -32,8 +32,8 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 
-class DnDSyncPreferenceFragment :
-        BasePreferenceFragment(),
+class DnDSyncWatchPickerPreferenceFragment :
+        BaseWatchPickerPreferenceFragment(),
         SharedPreferences.OnSharedPreferenceChangeListener,
         Preference.OnPreferenceChangeListener {
 

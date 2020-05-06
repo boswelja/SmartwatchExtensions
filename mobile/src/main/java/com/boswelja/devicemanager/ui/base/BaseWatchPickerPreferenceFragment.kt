@@ -9,30 +9,25 @@ package com.boswelja.devicemanager.ui.base
 
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.ViewGroup
 import androidx.preference.PreferenceFragmentCompat
 import androidx.recyclerview.widget.RecyclerView
-import com.boswelja.devicemanager.R
+import com.boswelja.devicemanager.watchmanager.WatchManager
 
 /**
  * A [PreferenceFragmentCompat] that automatically adjusts it's [RecyclerView] properties
  * to fit the app theme better, and also automatically initializes a [SharedPreferences] instance.
  */
-abstract class BasePreferenceFragment : PreferenceFragmentCompat() {
+abstract class BaseWatchPickerPreferenceFragment : BasePreferenceFragment() {
 
-    lateinit var sharedPreferences: SharedPreferences
+    lateinit var activity: BaseWatchPickerActivity
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        sharedPreferences = preferenceManager.sharedPreferences
+        activity = getActivity() as BaseWatchPickerActivity
     }
 
-    override fun onCreateRecyclerView(inflater: LayoutInflater?, parent: ViewGroup?, savedInstanceState: Bundle?): RecyclerView {
-        val padding = resources.getDimension(R.dimen.recyclerview_vertical_padding)
-        return super.onCreateRecyclerView(inflater, parent, savedInstanceState).apply {
-            clipToPadding = false
-            setPadding(0, padding.toInt(), 0, padding.toInt())
-        }
-    }
+    /**
+     * Get an instance of [WatchManager] from the parent activity.
+     */
+    fun getWatchConnectionManager(): WatchManager? = activity.watchConnectionManager
 }

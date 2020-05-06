@@ -23,7 +23,7 @@ import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_PHONE_CHARGE_NOTI
 import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_SYNC_ENABLED_KEY
 import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_SYNC_INTERVAL_KEY
 import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_WATCH_CHARGE_NOTI_KEY
-import com.boswelja.devicemanager.ui.base.BasePreferenceFragment
+import com.boswelja.devicemanager.ui.base.BaseWatchPickerPreferenceFragment
 import com.boswelja.devicemanager.ui.batterysync.Utils.updateBatteryStats
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
@@ -31,8 +31,8 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 
-class BatterySyncPreferenceFragment :
-        BasePreferenceFragment(),
+class BatterySyncWatchPickerPreferenceFragment :
+        BaseWatchPickerPreferenceFragment(),
         SharedPreferences.OnSharedPreferenceChangeListener,
         Preference.OnPreferenceChangeListener {
 

@@ -16,8 +16,8 @@ import androidx.core.content.edit
 import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.common.PreferenceKey.PHONE_LOCKING_ENABLED_KEY
 import com.boswelja.devicemanager.common.References.LOCK_PHONE_PATH
-import com.boswelja.devicemanager.ui.phonelocking.PhoneLockingPreferenceFragment.Companion.PHONE_LOCKING_MODE_ACCESSIBILITY_SERVICE
-import com.boswelja.devicemanager.ui.phonelocking.PhoneLockingPreferenceFragment.Companion.PHONE_LOCKING_MODE_KEY
+import com.boswelja.devicemanager.ui.phonelocking.PhoneLockingWatchPickerPreferenceFragment.Companion.PHONE_LOCKING_MODE_ACCESSIBILITY_SERVICE
+import com.boswelja.devicemanager.ui.phonelocking.PhoneLockingWatchPickerPreferenceFragment.Companion.PHONE_LOCKING_MODE_KEY
 import com.boswelja.devicemanager.watchmanager.WatchManager
 import com.google.android.gms.wearable.MessageClient
 import com.google.android.gms.wearable.MessageEvent

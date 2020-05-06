@@ -15,9 +15,9 @@ import com.boswelja.devicemanager.databinding.ActivityMainBinding
 import com.boswelja.devicemanager.messages.database.MessageDatabase.Companion.MESSAGE_COUNT_KEY
 import com.boswelja.devicemanager.ui.base.BaseWatchPickerActivity
 import com.boswelja.devicemanager.ui.changelog.ChangelogDialogFragment
-import com.boswelja.devicemanager.ui.main.appinfo.AppInfoFragment
-import com.boswelja.devicemanager.ui.main.appsettings.AppSettingsFragment
-import com.boswelja.devicemanager.ui.main.extensions.ExtensionsFragment
+import com.boswelja.devicemanager.ui.main.appinfo.AppInfoFragmentWatchPicker
+import com.boswelja.devicemanager.ui.main.appsettings.AppSettingsFragmentWatchPicker
+import com.boswelja.devicemanager.ui.main.extensions.ExtensionsFragmentWatchPicker
 import com.boswelja.devicemanager.ui.main.messages.MessageFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import timber.log.Timber
@@ -26,10 +26,10 @@ class MainActivity : BaseWatchPickerActivity() {
 
     private lateinit var binding: ActivityMainBinding
 
-    private val extensionsFragment = ExtensionsFragment()
+    private val extensionsFragment = ExtensionsFragmentWatchPicker()
     private var messagesFragment: MessageFragment? = null
-    private var appSettingsFragment: AppSettingsFragment? = null
-    private var appInfoFragment: AppInfoFragment? = null
+    private var appSettingsFragment: AppSettingsFragmentWatchPicker? = null
+    private var appInfoFragment: AppInfoFragmentWatchPicker? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -94,7 +94,7 @@ class MainActivity : BaseWatchPickerActivity() {
     }
 
     /**
-     * Shows the [ExtensionsFragment].
+     * Shows the [ExtensionsFragmentWatchPicker].
      */
     private fun showExtensionsFragment() {
         Timber.i("Showing ExtensionsFragment")
@@ -111,19 +111,19 @@ class MainActivity : BaseWatchPickerActivity() {
     }
 
     /**
-     * Shows the [AppSettingsFragment].
+     * Shows the [AppSettingsFragmentWatchPicker].
      */
     private fun showAppSettingsFragment() {
-        if (appSettingsFragment == null) appSettingsFragment = AppSettingsFragment()
+        if (appSettingsFragment == null) appSettingsFragment = AppSettingsFragmentWatchPicker()
         Timber.i("Showing AppSettingsFragment")
         navigate(appSettingsFragment!!)
     }
 
     /**
-     * Shows the [AppInfoFragment].
+     * Shows the [AppInfoFragmentWatchPicker].
      */
     private fun showAppInfoFragment() {
-        if (appInfoFragment == null) appInfoFragment = AppInfoFragment()
+        if (appInfoFragment == null) appInfoFragment = AppInfoFragmentWatchPicker()
         Timber.i("Showing AppInfoFragment")
         navigate(appInfoFragment!!)
     }

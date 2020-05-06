@@ -14,14 +14,14 @@ import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.preference.confirmationdialog.ConfirmationDialogPrefFragment
 import com.boswelja.devicemanager.preference.confirmationdialog.ConfirmationDialogPreference
 import com.boswelja.devicemanager.ui.appmanager.AppManagerActivity
-import com.boswelja.devicemanager.ui.base.BasePreferenceFragment
-import com.boswelja.devicemanager.ui.batterysync.BatterySyncPreferenceActivity
-import com.boswelja.devicemanager.ui.dndsync.DnDSyncPreferenceActivity
-import com.boswelja.devicemanager.ui.phonelocking.PhoneLockingPreferenceActivity
+import com.boswelja.devicemanager.ui.base.BaseWatchPickerPreferenceFragment
+import com.boswelja.devicemanager.ui.batterysync.BatterySyncWatchPickerPreferenceActivity
+import com.boswelja.devicemanager.ui.dndsync.DnDSyncWatchPickerPreferenceActivity
+import com.boswelja.devicemanager.ui.phonelocking.PhoneLockingWatchPickerPreferenceActivity
 import timber.log.Timber
 
-class ExtensionsFragment :
-        BasePreferenceFragment(),
+class ExtensionsFragmentWatchPicker :
+        BaseWatchPickerPreferenceFragment(),
         Preference.OnPreferenceClickListener {
 
     override fun onPreferenceClick(preference: Preference?): Boolean {
@@ -64,30 +64,30 @@ class ExtensionsFragment :
     }
 
     /**
-     * Opens a [BatterySyncPreferenceActivity].
+     * Opens a [BatterySyncWatchPickerPreferenceActivity].
      */
     private fun openBatterySyncActivity() {
-        Intent(requireContext(), BatterySyncPreferenceActivity::class.java).also {
+        Intent(requireContext(), BatterySyncWatchPickerPreferenceActivity::class.java).also {
             Timber.i("Starting BatterySyncPreferenceActivity")
             startActivity(it)
         }
     }
 
     /**
-     * Opens a [DnDSyncPreferenceActivity].
+     * Opens a [DnDSyncWatchPickerPreferenceActivity].
      */
     private fun openDnDSyncActivity() {
-        Intent(requireContext(), DnDSyncPreferenceActivity::class.java).also {
+        Intent(requireContext(), DnDSyncWatchPickerPreferenceActivity::class.java).also {
             Timber.i("Starting DnDSyncPreferenceActivity")
             startActivity(it)
         }
     }
 
     /**
-     * Opens a [PhoneLockingPreferenceActivity].
+     * Opens a [PhoneLockingWatchPickerPreferenceActivity].
      */
     private fun openPhoneLockingActivity() {
-        Intent(requireContext(), PhoneLockingPreferenceActivity::class.java).also {
+        Intent(requireContext(), PhoneLockingWatchPickerPreferenceActivity::class.java).also {
             Timber.i("Starting PhoneLockingPreferenceActivity")
             startActivity(it)
         }
@@ -113,7 +113,7 @@ class ExtensionsFragment :
      */
     private fun showConfirmationDialogPrefFragment(preference: ConfirmationDialogPreference) {
         ConfirmationDialogPrefFragment.newInstance(preference.key).apply {
-            setTargetFragment(this@ExtensionsFragment, 0)
+            setTargetFragment(this@ExtensionsFragmentWatchPicker, 0)
             Timber.i("Showing ConfirmationDialogPrefFragment")
             show(parentFragmentManager)
         }

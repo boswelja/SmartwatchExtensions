@@ -9,14 +9,14 @@ package com.boswelja.devicemanager.ui.batterysync
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
-import com.boswelja.devicemanager.ui.base.BasePreferenceActivity
-import com.boswelja.devicemanager.ui.base.BasePreferenceFragment
+import com.boswelja.devicemanager.ui.base.BaseWatchPickerPreferenceActivity
+import com.boswelja.devicemanager.ui.base.BaseWatchPickerPreferenceFragment
 
-class BatterySyncPreferenceActivity : BasePreferenceActivity() {
+class BatterySyncWatchPickerPreferenceActivity : BaseWatchPickerPreferenceActivity() {
 
     private val widgetFragment = BatterySyncPreferenceWidgetFragment()
 
-    override fun getPreferenceFragment(): BasePreferenceFragment = BatterySyncPreferenceFragment()
+    override fun getPreferenceFragment(): BaseWatchPickerPreferenceFragment = BatterySyncWatchPickerPreferenceFragment()
     override fun getWidgetFragment(): Fragment? = widgetFragment
 
     override fun onCreate(savedInstanceState: Bundle?) {

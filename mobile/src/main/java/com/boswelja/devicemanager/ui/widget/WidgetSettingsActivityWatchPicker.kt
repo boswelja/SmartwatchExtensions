@@ -5,10 +5,10 @@ import androidx.fragment.app.Fragment
 import com.boswelja.devicemanager.batterysync.widget.WatchBatteryWidget
 import com.boswelja.devicemanager.ui.base.BasePreferenceActivity
 import com.boswelja.devicemanager.ui.base.BasePreferenceFragment
-import com.boswelja.devicemanager.ui.main.appsettings.AppSettingsFragment.Companion.SHOW_WIDGET_BACKGROUND_KEY
-import com.boswelja.devicemanager.ui.main.appsettings.AppSettingsFragment.Companion.WIDGET_BACKGROUND_OPACITY_KEY
+import com.boswelja.devicemanager.ui.main.appsettings.AppSettingsFragmentWatchPicker.Companion.SHOW_WIDGET_BACKGROUND_KEY
+import com.boswelja.devicemanager.ui.main.appsettings.AppSettingsFragmentWatchPicker.Companion.WIDGET_BACKGROUND_OPACITY_KEY
 
-class WidgetSettingsActivity : BasePreferenceActivity() {
+class WidgetSettingsActivityWatchPicker : BasePreferenceActivity() {
 
     private val widget = WidgetSettingsWidget()
 
@@ -27,7 +27,7 @@ class WidgetSettingsActivity : BasePreferenceActivity() {
     }
 
     override fun getWidgetFragment(): Fragment? = widget
-    override fun getPreferenceFragment(): BasePreferenceFragment = WidgetSettingsFragment()
+    override fun getPreferenceFragment(): BasePreferenceFragment = WidgetSettingsFragmentWatchPicker()
 
     override fun onStart() {
         super.onStart()

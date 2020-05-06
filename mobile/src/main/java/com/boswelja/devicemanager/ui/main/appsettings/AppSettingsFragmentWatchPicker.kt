@@ -17,12 +17,12 @@ import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.Compat
 import com.boswelja.devicemanager.managespace.ManageSpaceActivity
 import com.boswelja.devicemanager.ui.base.BaseDayNightActivity.Companion.DAYNIGHT_MODE_KEY
-import com.boswelja.devicemanager.ui.base.BasePreferenceFragment
-import com.boswelja.devicemanager.ui.widget.WidgetSettingsActivity
+import com.boswelja.devicemanager.ui.base.BaseWatchPickerPreferenceFragment
+import com.boswelja.devicemanager.ui.widget.WidgetSettingsActivityWatchPicker
 import timber.log.Timber
 
-class AppSettingsFragment :
-        BasePreferenceFragment(),
+class AppSettingsFragmentWatchPicker :
+        BaseWatchPickerPreferenceFragment(),
         Preference.OnPreferenceClickListener {
 
     private lateinit var openNotiSettingsPreference: Preference
@@ -136,10 +136,10 @@ class AppSettingsFragment :
     }
 
     /**
-     * Opens the [WidgetSettingsActivity].
+     * Opens the [WidgetSettingsActivityWatchPicker].
      */
     private fun openWidgetSettingsActivity() {
-        Intent(requireContext(), WidgetSettingsActivity::class.java).also {
+        Intent(requireContext(), WidgetSettingsActivityWatchPicker::class.java).also {
             Timber.i("Starting WidgetSettingsActivity")
             startActivity(it)
         }

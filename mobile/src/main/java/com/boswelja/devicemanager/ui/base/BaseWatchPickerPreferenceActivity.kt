@@ -1,3 +1,10 @@
+/* Copyright (C) 2020 Jack Boswell <boswelja@outlook.com>
+ *
+ * This file is part of Wearable Extensions
+ *
+ * This file, and any part of the Wearable Extensions app/s cannot be copied and/or distributed
+ * without permission from Jack Boswell (boswelja) <boswela@outlook.com>
+ */
 package com.boswelja.devicemanager.ui.base
 
 import android.os.Bundle
@@ -7,14 +14,15 @@ import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.databinding.ActivitySettingsBinding
 import timber.log.Timber
 
-abstract class BasePreferenceActivity :
-        BaseToolbarActivity(),
+abstract class BaseWatchPickerPreferenceActivity :
+        BaseWatchPickerActivity(),
         PreferenceActivityInterface {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val binding = DataBindingUtil.setContentView<ActivitySettingsBinding>(this, R.layout.activity_settings)
         setupToolbar(binding.toolbarLayout.toolbar, showUpButton = true)
+        setupWatchPickerSpinner(binding.toolbarLayout.watchPickerSpinner)
         showFragments()
     }
 
@@ -37,5 +45,9 @@ abstract class BasePreferenceActivity :
         }.also {
             it.commitNow()
         }
+    }
+
+    companion object {
+        const val EXTRA_PREFERENCE_KEY = "extra_preference_key"
     }
 }
