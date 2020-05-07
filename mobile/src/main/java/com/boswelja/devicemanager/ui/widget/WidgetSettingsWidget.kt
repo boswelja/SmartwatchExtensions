@@ -52,11 +52,7 @@ class WidgetSettingsWidget : Fragment() {
      */
     private fun getDeviceWallpaper(): Drawable {
         val wallpaperManager = context?.getSystemService(Context.WALLPAPER_SERVICE) as WallpaperManager
-        return try {
-            wallpaperManager.fastDrawable
-        } catch (ignored: SecurityException) {
-            wallpaperManager.builtInDrawable
-        }
+        return wallpaperManager.builtInDrawable
     }
 
     /**
