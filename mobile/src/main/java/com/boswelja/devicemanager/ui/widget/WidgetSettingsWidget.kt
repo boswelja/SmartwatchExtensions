@@ -41,7 +41,7 @@ class WidgetSettingsWidget : Fragment() {
                 setImageLevel(BATTERY_WIDGET_PREVIEW_PERCENT)
             }
             findViewById<TextView>(R.id.battery_indicator_text).text =
-                    getString(R.string.battery_sync_percent_short, BATTERY_WIDGET_PREVIEW_PERCENT)
+                    getString(R.string.battery_sync_percent_short, BATTERY_WIDGET_PREVIEW_PERCENT.toString())
         }
         updateWidgetBackground()
     }
