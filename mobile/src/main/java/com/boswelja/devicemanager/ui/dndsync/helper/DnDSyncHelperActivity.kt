@@ -108,8 +108,7 @@ class DnDSyncHelperActivity : BaseToolbarActivity() {
      */
     private fun showWatchVersionError() {
         Timber.d("showWatchVersionError() called")
-        showErrorFragment()
-        errorFragment!!.showWatchVersionIncompatible()
+        showErrorFragment(ErrorFragment.Error.WATCH_VERSION_INCOMPATIBLE)
     }
 
     /**
@@ -117,17 +116,16 @@ class DnDSyncHelperActivity : BaseToolbarActivity() {
      */
     private fun showWatchNullError() {
         Timber.d("showWatchNullError() called")
-        showErrorFragment()
-        errorFragment!!.showWatchUnreachable()
+        showErrorFragment(ErrorFragment.Error.WATCH_UNREACHABLE)
     }
 
     /**
      * Calls [changeFragment] with an instance of [ErrorFragment].
      */
-    private fun showErrorFragment() {
+    private fun showErrorFragment(error: ErrorFragment.Error) {
         Timber.i("Showing error fragment")
         setResult(RESULT_FAILED)
-        if (errorFragment == null) errorFragment = ErrorFragment()
+        if (errorFragment == null) errorFragment = ErrorFragment(error)
         changeFragment(errorFragment!!)
     }
 

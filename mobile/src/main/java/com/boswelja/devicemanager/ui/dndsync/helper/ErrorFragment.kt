@@ -17,7 +17,7 @@ import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.databinding.FragmentDndSyncHelperErrorBinding
 import timber.log.Timber
 
-internal class ErrorFragment : Fragment() {
+internal class ErrorFragment(private val error: Error) : Fragment() {
 
     private lateinit var binding: FragmentDndSyncHelperErrorBinding
 
@@ -34,6 +34,10 @@ internal class ErrorFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         Timber.d("onViewCreated() called")
         setupFinishButton()
+        when (error) {
+            Error.WATCH_VERSION_INCOMPATIBLE -> showWatchVersionIncompatible()
+            Error.WATCH_UNREACHABLE -> showWatchUnreachable()
+        }
     }
 
     /**
@@ -49,7 +53,7 @@ internal class ErrorFragment : Fragment() {
     /**
      * Show watch version incompatible error message.
      */
-    fun showWatchVersionIncompatible() {
+    private fun showWatchVersionIncompatible() {
         Timber.d("showWatchVersionIncompatible() called")
         binding.watchVersionIncompatibleText.visibility = View.VISIBLE
     }
@@ -57,8 +61,13 @@ internal class ErrorFragment : Fragment() {
     /**
      * Show watch unreachable error.
      */
-    fun showWatchUnreachable() {
+    private fun showWatchUnreachable() {
         Timber.d("showWatchUnreachable() called")
         binding.watchUnreachableText.visibility = View.VISIBLE
+    }
+
+    enum class Error {
+        WATCH_VERSION_INCOMPATIBLE,
+        WATCH_UNREACHABLE
     }
 }
