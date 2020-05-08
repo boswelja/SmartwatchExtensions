@@ -130,7 +130,7 @@ class BatterySyncPreferenceWidgetFragment :
             stopBatteryUpdateTimer()
             coroutineScope.launch(Dispatchers.IO) {
                 if (activity.watchConnectionManager?.connectedWatch != null) {
-                    liveBatteryStats?.removeObserver(batteryStatsObserver)
+                    setObservingWatchStats(null)
                     batteryStatsDatabase?.batteryStatsDao()
                             ?.deleteStatsForWatch(activity.watchConnectionManager?.connectedWatch!!.id)
                 }
