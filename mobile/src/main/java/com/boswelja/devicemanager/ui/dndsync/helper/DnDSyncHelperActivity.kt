@@ -178,7 +178,7 @@ class DnDSyncHelperActivity : BaseToolbarActivity() {
             replace(R.id.fragment_holder, fragment)
         }.also {
             try {
-                it.commit()
+                it.commitNow()
             } catch (e: IllegalStateException) {
                 Timber.e(e)
             }
