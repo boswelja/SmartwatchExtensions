@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
     <dimen name="phone_battery_inset_top">8dp</dimen>
     <dimen name="phone_battery_inset_left">8dp</dimen>
     <dimen name="phone_battery_inset_right">8dp</dimen>
@@ -11,4 +10,9 @@
     <dimen name="watch_battery_inset_right">16dp</dimen>
     <dimen name="watch_battery_inset_bottom">16dp</dimen>
 
+    <dimen name="recyclerview_item_icon_margin">16dp</dimen>
+    <dimen name="recyclerview_item_horizontal_padding">16dp</dimen>
+    <dimen name="recyclerview_item_icon_one_line_height">56dp</dimen>
+    <dimen name="recyclerview_item_icon_two_line_height">72dp</dimen>
+    <dimen name="recyclerview_item_section_height">48dp</dimen>
 </resources>

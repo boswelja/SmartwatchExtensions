@@ -5,26 +5,31 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:minHeight="56dp"
-        android:background="?selectableItemBackground">
+        android:layout_height="@dimen/recyclerview_item_icon_one_line_height"
+        android:background="?selectableItemBackground"
+        android:paddingStart="@dimen/recyclerview_item_horizontal_padding"
+        android:paddingEnd="@dimen/recyclerview_item_horizontal_padding">
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/icon"
-            android:layout_width="34dp"
-            android:layout_height="34dp"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="12dp"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginTop="@dimen/recyclerview_item_icon_margin"
+            android:layout_marginBottom="@dimen/recyclerview_item_icon_margin"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintDimensionRatio="1:1"/>
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/text"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:layout_marginEnd="16dp"
+            android:layout_marginStart="@dimen/recyclerview_item_icon_margin"
             android:textColor="?android:textColorPrimary"
+            android:singleLine="true"
+            android:ellipsize="marquee"
+            android:scrollHorizontally="true"
+            android:fadingEdge="horizontal"
             app:layout_constraintStart_toEndOf="@id/icon"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"

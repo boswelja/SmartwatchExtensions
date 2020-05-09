@@ -5,46 +5,45 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:minHeight="64dp"
-        android:background="?selectableItemBackground">
+        android:layout_height="@dimen/recyclerview_item_icon_two_line_height"
+        android:background="?selectableItemBackground"
+        android:paddingStart="@dimen/recyclerview_item_horizontal_padding"
+        android:paddingEnd="@dimen/recyclerview_item_horizontal_padding">
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/icon"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="12dp"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginTop="@dimen/recyclerview_item_icon_margin"
+            android:layout_marginBottom="@dimen/recyclerview_item_icon_margin"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintDimensionRatio="1:1" />
 
-        <LinearLayout
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/top_line"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_marginEnd="16dp"
-            android:layout_marginStart="16dp"
-            android:paddingTop="8dp"
-            android:paddingBottom="8dp"
+            android:layout_marginStart="@dimen/recyclerview_item_icon_margin"
+            android:textColor="?android:textColorPrimary"
             app:layout_constraintStart_toEndOf="@id/icon"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/bottom_line"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent">
+            app:layout_constraintVertical_chainStyle="packed"
+            style="@style/TextAppearance.MaterialComponents.Body1" />
 
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/top_line"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textColor="?android:textColorPrimary"
-                style="@style/TextAppearance.MaterialComponents.Body1" />
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/bottom_line"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/recyclerview_item_icon_margin"
+            android:textColor="?android:textColorSecondary"
+            app:layout_constraintStart_toEndOf="@id/icon"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/top_line"
+            app:layout_constraintBottom_toBottomOf="parent"
+            style="@style/TextAppearance.MaterialComponents.Body2" />
 
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/bottom_line"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textColor="?android:textColorSecondary"
-                style="@style/TextAppearance.MaterialComponents.Body2" />
-
-        </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
