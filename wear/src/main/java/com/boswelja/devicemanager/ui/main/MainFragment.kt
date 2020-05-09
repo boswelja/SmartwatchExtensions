@@ -14,6 +14,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.VisibleForTesting
+import androidx.recyclerview.widget.LinearSnapHelper
+import androidx.wear.widget.CurvingLayoutCallback
 import androidx.wear.widget.WearableLinearLayoutManager
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_PERCENT_KEY
@@ -23,7 +25,6 @@ import com.boswelja.devicemanager.common.batterysync.References
 import com.boswelja.devicemanager.databinding.FragmentMainBinding
 import com.boswelja.devicemanager.service.ActionService
 import com.boswelja.devicemanager.ui.base.BaseSharedPreferenceFragment
-import com.boswelja.devicemanager.ui.common.recyclerview.CustomCurvingLayoutCallback
 import com.boswelja.devicemanager.ui.common.recyclerview.CustomLinearSnapHelper
 import com.boswelja.devicemanager.ui.main.MainItems.BATTERY_SYNC_ITEM_ID
 import com.boswelja.devicemanager.ui.main.MainItems.PHONE_LOCKING_ITEM_ID
@@ -64,7 +65,7 @@ class MainFragment :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         mainAdapter = MainAdapter(this, MainItems.EXTENSIONS, MainItems.APP)
         binding.recyclerView.apply {
-            layoutManager = WearableLinearLayoutManager(context, CustomCurvingLayoutCallback(context))
+            layoutManager = WearableLinearLayoutManager(context, CurvingLayoutCallback(context))
             isEdgeItemsCenteringEnabled = true
             adapter = mainAdapter
         }.also {
