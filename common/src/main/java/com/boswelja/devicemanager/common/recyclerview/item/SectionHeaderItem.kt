@@ -5,30 +5,32 @@
  * This file, and any part of the Wearable Extensions app/s cannot be copied and/or distributed
  * without permission from Jack Boswell (boswelja) <boswela@outlook.com>
  */
-package com.boswelja.devicemanager.ui.common.recyclerview
+package com.boswelja.devicemanager.common.recyclerview.item
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.boswelja.devicemanager.R
-import com.boswelja.devicemanager.databinding.CommonRecyclerviewItemTextBinding
+import com.boswelja.devicemanager.common.R
+import com.boswelja.devicemanager.common.databinding.CommonRecyclerviewSectionHeaderBinding
 
-class OneLineItem(binding: CommonRecyclerviewItemTextBinding) :
+class SectionHeaderItem(binding: CommonRecyclerviewSectionHeaderBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-    val textView: AppCompatTextView = binding.text
+    val textView: AppCompatTextView = binding.sectionHeaderText
+    val dividerView: View = binding.divider
 
     companion object {
-        fun create(layoutInflater: LayoutInflater, parent: ViewGroup): OneLineItem {
+        fun create(layoutInflater: LayoutInflater, parent: ViewGroup): SectionHeaderItem {
             val binding =
-                    DataBindingUtil.inflate<CommonRecyclerviewItemTextBinding>(
+                    DataBindingUtil.inflate<CommonRecyclerviewSectionHeaderBinding>(
                             layoutInflater,
-                            R.layout.common_recyclerview_item_text,
+                            R.layout.common_recyclerview_section_header,
                             parent,
                             false)
-            return OneLineItem(binding)
+            return SectionHeaderItem(binding)
         }
     }
 }

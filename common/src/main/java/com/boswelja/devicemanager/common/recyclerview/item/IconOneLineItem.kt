@@ -5,7 +5,7 @@
  * This file, and any part of the Wearable Extensions app/s cannot be copied and/or distributed
  * without permission from Jack Boswell (boswelja) <boswela@outlook.com>
  */
-package com.boswelja.devicemanager.ui.common.recyclerview
+package com.boswelja.devicemanager.common.recyclerview.item
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -13,24 +13,23 @@ import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.boswelja.devicemanager.R
-import com.boswelja.devicemanager.databinding.CommonRecyclerviewItemIconTwoLineBinding
+import com.boswelja.devicemanager.common.R
+import com.boswelja.devicemanager.common.databinding.CommonRecyclerviewItemIconOneLineBinding
 
-class IconTwoLineItem(binding: CommonRecyclerviewItemIconTwoLineBinding) :
+class IconOneLineItem(binding: CommonRecyclerviewItemIconOneLineBinding) :
         RecyclerView.ViewHolder(binding.root) {
     val iconView: AppCompatImageView = binding.icon
-    val topTextView: AppCompatTextView = binding.topLine
-    val bottomTextView: AppCompatTextView = binding.bottomLine
+    val textView: AppCompatTextView = binding.text
 
     companion object {
-        fun create(layoutInflater: LayoutInflater, parent: ViewGroup): IconTwoLineItem {
+        fun create(layoutInflater: LayoutInflater, parent: ViewGroup): IconOneLineItem {
             val binding =
-                    DataBindingUtil.inflate<CommonRecyclerviewItemIconTwoLineBinding>(
+                    DataBindingUtil.inflate<CommonRecyclerviewItemIconOneLineBinding>(
                             layoutInflater,
-                            R.layout.common_recyclerview_item_icon_two_line,
+                            R.layout.common_recyclerview_item_icon_one_line,
                             parent,
                             false)
-            return IconTwoLineItem(binding)
+            return IconOneLineItem(binding)
         }
     }
 }

@@ -15,8 +15,8 @@ import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.Utils
 import com.boswelja.devicemanager.common.appmanager.AppPackageInfo
 import com.boswelja.devicemanager.common.appmanager.AppPackageInfoList
-import com.boswelja.devicemanager.ui.common.recyclerview.IconTwoLineItem
-import com.boswelja.devicemanager.ui.common.recyclerview.SectionHeaderItem
+import com.boswelja.devicemanager.common.recyclerview.item.IconTwoLineItem
+import com.boswelja.devicemanager.common.recyclerview.item.SectionHeaderItem
 
 class AppsAdapter(private val fragment: AppManagerFragment) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 

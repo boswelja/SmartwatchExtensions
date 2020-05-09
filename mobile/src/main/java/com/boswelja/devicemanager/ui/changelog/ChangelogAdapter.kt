@@ -10,7 +10,7 @@ package com.boswelja.devicemanager.ui.changelog
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.boswelja.devicemanager.ui.common.recyclerview.OneLineItem
+import com.boswelja.devicemanager.common.recyclerview.item.OneLineItem
 
 class ChangelogAdapter(private val changelog: Array<String>) : RecyclerView.Adapter<OneLineItem>() {
 

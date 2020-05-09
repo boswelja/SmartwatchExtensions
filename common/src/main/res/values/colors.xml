@@ -2,5 +2,6 @@
 <resources>
 
     <color name="iconTint">#FFFFFF</color>
+    <color name="colorPrimary">#FFFFFF</color>
 
 </resources>

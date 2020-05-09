@@ -11,9 +11,9 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.boswelja.devicemanager.R
-import com.boswelja.devicemanager.ui.common.recyclerview.IconOneLineItem
-import com.boswelja.devicemanager.ui.common.recyclerview.IconTwoLineItem
-import com.boswelja.devicemanager.ui.common.recyclerview.SectionHeaderItem
+import com.boswelja.devicemanager.common.recyclerview.item.IconOneLineItem
+import com.boswelja.devicemanager.common.recyclerview.item.IconTwoLineItem
+import com.boswelja.devicemanager.common.recyclerview.item.SectionHeaderItem
 import com.boswelja.devicemanager.watchmanager.Watch
 import com.boswelja.devicemanager.watchmanager.WatchStatus
 

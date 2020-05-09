@@ -22,6 +22,7 @@ android {
         jvmTarget = "1.8"
     }
 
+    buildFeatures.dataBinding = true
     buildTypes {
         release {
             postprocessing {
@@ -41,7 +42,10 @@ dependencies {
     implementation "androidx.core:core-ktx:$androidx_core_ktx"
     implementation "com.google.android.gms:play-services-wearable:$play_services_wearable"
     implementation "androidx.appcompat:appcompat:$androidx_appcompat"
+    implementation "androidx.constraintlayout:constraintlayout:$androidx_constraintlayout"
     implementation "androidx.preference:preference-ktx:$androidx_preference"
+
+    implementation 'com.google.android.material:material:1.2.0-alpha06'
 }
 
 spotless {
