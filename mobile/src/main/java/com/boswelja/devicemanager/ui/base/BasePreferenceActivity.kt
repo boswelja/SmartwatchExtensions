@@ -17,9 +17,13 @@ abstract class BasePreferenceActivity :
         BaseToolbarActivity(),
         PreferenceActivityInterface {
 
+    private lateinit var binding: ActivitySettingsBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val binding = ActivitySettingsBinding.inflate(layoutInflater)
+        binding = ActivitySettingsBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
         setupToolbar(binding.toolbarLayout.toolbar, showUpButton = true)
         showFragments()
     }
@@ -38,7 +42,7 @@ abstract class BasePreferenceActivity :
                 replace(R.id.widget_holder, widgetFragment)
             } else {
                 Timber.i("No widget fragment to load")
-                findViewById<View>(R.id.widget_divider).visibility = View.GONE
+                binding.widgetDivider.visibility = View.GONE
             }
         }.also {
             it.commitNow()

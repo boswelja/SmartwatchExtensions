@@ -17,9 +17,13 @@ abstract class BaseWatchPickerPreferenceActivity :
         BaseWatchPickerActivity(),
         PreferenceActivityInterface {
 
+    private lateinit var binding: ActivitySettingsBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val binding = ActivitySettingsBinding.inflate(layoutInflater)
+        binding = ActivitySettingsBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
         setupWatchPickerSpinner(binding.toolbarLayout.toolbar, showUpButton = true)
         showFragments()
     }
@@ -38,7 +42,7 @@ abstract class BaseWatchPickerPreferenceActivity :
                 replace(R.id.widget_holder, widgetFragment)
             } else {
                 Timber.i("No widget fragment to load")
-                findViewById<View>(R.id.widget_divider).visibility = View.GONE
+                binding.widgetDivider.visibility = View.GONE
             }
         }.also {
             it.commitNow()
