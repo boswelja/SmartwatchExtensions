@@ -9,9 +9,7 @@ package com.boswelja.devicemanager.ui.watchmanager
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.databinding.ActivityWatchManagerBinding
 import com.boswelja.devicemanager.ui.base.BaseToolbarActivity
 import com.boswelja.devicemanager.ui.watchsetup.WatchSetupActivity
@@ -61,7 +59,9 @@ class WatchManagerActivity :
 
         setResult(RESULT_WATCH_LIST_UNCHANGED)
 
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_watch_manager)
+        binding = ActivityWatchManagerBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
         setupToolbar(binding.toolbarLayout.toolbar, showTitle = true, showUpButton = true)
         setupRecyclerView()
 

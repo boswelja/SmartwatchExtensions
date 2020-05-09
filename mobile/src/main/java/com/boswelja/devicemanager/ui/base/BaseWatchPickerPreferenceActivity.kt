@@ -9,7 +9,6 @@ package com.boswelja.devicemanager.ui.base
 
 import android.os.Bundle
 import android.view.View
-import androidx.databinding.DataBindingUtil
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.databinding.ActivitySettingsBinding
 import timber.log.Timber
@@ -20,8 +19,7 @@ abstract class BaseWatchPickerPreferenceActivity :
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val binding =
-                DataBindingUtil.setContentView<ActivitySettingsBinding>(this, R.layout.activity_settings)
+        val binding = ActivitySettingsBinding.inflate(layoutInflater)
         setupWatchPickerSpinner(binding.toolbarLayout.toolbar, showUpButton = true)
         showFragments()
     }

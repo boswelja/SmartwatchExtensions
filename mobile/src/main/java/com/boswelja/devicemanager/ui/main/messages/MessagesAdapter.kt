@@ -16,8 +16,8 @@ import android.net.Uri
 import android.os.Build
 import android.provider.Settings
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
-import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.boswelja.devicemanager.R
@@ -41,11 +41,8 @@ internal class MessagesAdapter(private val fragment: MessageFragment) :
         if (inflater == null) {
             inflater = LayoutInflater.from(parent.context)
         }
-        return MessageItemViewHolder(DataBindingUtil.inflate(
-                inflater!!,
-                R.layout.message_item,
-                parent,
-                false))
+        return MessageItemViewHolder(
+                MessageItemBinding.inflate(inflater!!, parent, false))
     }
 
     override fun onBindViewHolder(holder: MessageItemViewHolder, position: Int) {
@@ -135,7 +132,16 @@ internal class MessagesAdapter(private val fragment: MessageFragment) :
     class MessageItemViewHolder(val binding: MessageItemBinding) :
             RecyclerView.ViewHolder(binding.root) {
         fun bind(message: Message) {
-            binding.message = message
+            binding.apply {
+                messageIcon.setImageResource(message.iconRes)
+                messageLabel.text = message.label
+                messageDesc.text = message.desc
+                if (message.hasAction) {
+                    messageActionButton.text = message.buttonLabel
+                    messageActionButton.visibility = View.VISIBLE
+                    divider.visibility = View.VISIBLE
+                }
+            }
         }
     }
 

@@ -1,130 +1,127 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout
+<androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     tools:context=".managespace.ManageSpaceActivity">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+    <include
+        android:id="@+id/toolbar_layout"
+        app:layout_constraintTop_toTopOf="parent"
+        layout="@layout/common_toolbar" />
 
-        <include
-            android:id="@+id/toolbar_layout"
-            app:layout_constraintTop_toTopOf="parent"
-            layout="@layout/common_toolbar" />
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/progress_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="4dp"
+        android:layout_marginStart="@dimen/content_margin_manage_space_side"
+        android:layout_marginEnd="@dimen/content_margin_manage_space_side"
+        android:text="@string/manage_space_progress_status_placeholder"
+        app:layout_constraintBottom_toTopOf="@id/progress_bar"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/progress_status"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="4dp"
-            android:layout_marginStart="@dimen/content_margin_manage_space_side"
-            android:layout_marginEnd="@dimen/content_margin_manage_space_side"
-            android:text="@string/manage_space_progress_status_placeholder"
-            app:layout_constraintBottom_toTopOf="@id/progress_bar"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        android:layout_width="240dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="32dp"
+        android:indeterminate="false"
+        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+        app:layout_constraintTop_toBottomOf="@id/reset_app_desc"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintVertical_bias="1.0"/>
 
-        <ProgressBar
-            android:id="@+id/progress_bar"
-            android:layout_width="240dp"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="32dp"
-            android:indeterminate="false"
-            style="@style/Widget.AppCompat.ProgressBar.Horizontal"
-            app:layout_constraintTop_toBottomOf="@id/reset_app_desc"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintVertical_bias="1.0"/>
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/clear_cache_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/manage_space_clear_cache_title"
+        app:layout_constraintTop_toBottomOf="@id/toolbar_layout"
+        app:layout_constraintStart_toStartOf="parent"
+        style="@style/ManageSpace.TextAppearance.Title" />
 
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/clear_cache_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/manage_space_clear_cache_title"
-            app:layout_constraintTop_toBottomOf="@id/toolbar_layout"
-            app:layout_constraintStart_toStartOf="parent"
-            style="@style/ManageSpace.TextAppearance.Title" />
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/clear_cache_desc"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/manage_space_clear_cache_desc"
+        app:layout_constraintTop_toBottomOf="@id/clear_cache_title"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/clear_cache_button"
+        style="@style/ManageSpace.TextAppearance.Description" />
 
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/clear_cache_desc"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="@string/manage_space_clear_cache_desc"
-            app:layout_constraintTop_toBottomOf="@id/clear_cache_title"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/clear_cache_button"
-            style="@style/ManageSpace.TextAppearance.Description" />
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/clear_cache_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/manage_space_clear_cache_button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/clear_cache_desc"
+        app:layout_constraintTop_toTopOf="@id/clear_cache_desc"
+        style="@style/ManageSpace.Widget.Button" />
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/clear_cache_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/manage_space_clear_cache_button"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toBottomOf="@id/clear_cache_desc"
-            app:layout_constraintTop_toTopOf="@id/clear_cache_desc"
-            style="@style/ManageSpace.Widget.Button" />
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/reset_settings_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/manage_space_reset_settings_title"
+        app:layout_constraintTop_toBottomOf="@id/clear_cache_desc"
+        app:layout_constraintStart_toStartOf="parent"
+        style="@style/ManageSpace.TextAppearance.Title" />
 
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/reset_settings_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/manage_space_reset_settings_title"
-            app:layout_constraintTop_toBottomOf="@id/clear_cache_desc"
-            app:layout_constraintStart_toStartOf="parent"
-            style="@style/ManageSpace.TextAppearance.Title" />
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/reset_settings_desc"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/manage_space_reset_settings_desc"
+        app:layout_constraintTop_toBottomOf="@id/reset_settings_title"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/reset_settings_button"
+        style="@style/ManageSpace.TextAppearance.Description" />
 
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/reset_settings_desc"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="@string/manage_space_reset_settings_desc"
-            app:layout_constraintTop_toBottomOf="@id/reset_settings_title"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/reset_settings_button"
-            style="@style/ManageSpace.TextAppearance.Description" />
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/reset_settings_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/manage_space_reset_settings_button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/reset_settings_desc"
+        app:layout_constraintTop_toTopOf="@id/reset_settings_desc"
+        style="@style/ManageSpace.Widget.Button" />
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/reset_settings_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/manage_space_reset_settings_button"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toBottomOf="@id/reset_settings_desc"
-            app:layout_constraintTop_toTopOf="@id/reset_settings_desc"
-            style="@style/ManageSpace.Widget.Button" />
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/reset_app_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/manage_space_reset_app_title"
+        app:layout_constraintTop_toBottomOf="@id/reset_settings_desc"
+        app:layout_constraintStart_toStartOf="parent"
+        style="@style/ManageSpace.TextAppearance.Title" />
 
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/reset_app_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/manage_space_reset_app_title"
-            app:layout_constraintTop_toBottomOf="@id/reset_settings_desc"
-            app:layout_constraintStart_toStartOf="parent"
-            style="@style/ManageSpace.TextAppearance.Title" />
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/reset_app_desc"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/manage_space_reset_app_desc"
+        app:layout_constraintTop_toBottomOf="@id/reset_app_title"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/reset_app_button"
+        style="@style/ManageSpace.TextAppearance.Description" />
 
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/reset_app_desc"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="@string/manage_space_reset_app_desc"
-            app:layout_constraintTop_toBottomOf="@id/reset_app_title"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/reset_app_button"
-            style="@style/ManageSpace.TextAppearance.Description" />
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/reset_app_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/manage_space_reset_app_button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/reset_app_desc"
+        app:layout_constraintTop_toTopOf="@id/reset_app_desc"
+        style="@style/ManageSpace.Widget.Button" />
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/reset_app_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/manage_space_reset_app_button"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toBottomOf="@id/reset_app_desc"
-            app:layout_constraintTop_toTopOf="@id/reset_app_desc"
-            style="@style/ManageSpace.Widget.Button" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-</layout>
+</androidx.constraintlayout.widget.ConstraintLayout>

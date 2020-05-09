@@ -1,19 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout
-    xmlns:android="http://schemas.android.com/apk/res/android">
-    <RelativeLayout
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/apps_recyclerview"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
+        android:clipToPadding="false"
+        android:scrollbars="vertical" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/apps_recyclerview"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:paddingTop="8dp"
-            android:paddingBottom="8dp"
-            android:clipToPadding="false"
-            android:scrollbars="vertical" />
-
-    </RelativeLayout>
-
-</layout>
+</RelativeLayout>

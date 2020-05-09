@@ -11,9 +11,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
-import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.boswelja.devicemanager.common.R
 import com.boswelja.devicemanager.common.databinding.CommonRecyclerviewItemIconTwoLineBinding
 
 class IconTwoLineItem(binding: CommonRecyclerviewItemIconTwoLineBinding) :
@@ -24,12 +22,8 @@ class IconTwoLineItem(binding: CommonRecyclerviewItemIconTwoLineBinding) :
 
     companion object {
         fun create(layoutInflater: LayoutInflater, parent: ViewGroup): IconTwoLineItem {
-            val binding =
-                    DataBindingUtil.inflate<CommonRecyclerviewItemIconTwoLineBinding>(
-                            layoutInflater,
-                            R.layout.common_recyclerview_item_icon_two_line,
-                            parent,
-                            false)
+            val binding = CommonRecyclerviewItemIconTwoLineBinding
+                    .inflate(layoutInflater, parent, false)
             return IconTwoLineItem(binding)
         }
     }

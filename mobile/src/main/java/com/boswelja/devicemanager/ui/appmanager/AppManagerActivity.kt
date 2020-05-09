@@ -9,7 +9,6 @@ package com.boswelja.devicemanager.ui.appmanager
 
 import android.os.Bundle
 import android.widget.Toast
-import androidx.databinding.DataBindingUtil
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.appmanager.AppPackageInfoList
 import com.boswelja.devicemanager.common.appmanager.References
@@ -54,7 +53,8 @@ class AppManagerActivity : BaseToolbarActivity() {
             return
         }
 
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_app_manager)
+        binding = ActivityAppManagerBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         setupToolbar(
                 binding.toolbarLayout.toolbar,

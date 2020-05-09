@@ -8,7 +8,6 @@
 package com.boswelja.devicemanager.ui.main
 
 import android.os.Bundle
-import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.databinding.ActivityMainBinding
@@ -34,7 +33,8 @@ class MainActivity : BaseWatchPickerActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         binding.apply {
             setupWatchPickerSpinner(toolbarLayout.toolbar)
             bottomNavigation.setOnNavigationItemSelectedListener {

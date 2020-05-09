@@ -14,7 +14,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.appcompat.widget.AppCompatTextView
-import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.Utils
@@ -32,8 +31,7 @@ internal class SetupFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = DataBindingUtil.inflate(
-                inflater, R.layout.fragment_dnd_sync_helper_setup, container, false)
+        binding = FragmentDndSyncHelperSetupBinding.inflate(inflater, container, false)
         return binding.root
     }
 

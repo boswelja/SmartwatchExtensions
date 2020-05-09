@@ -9,7 +9,6 @@ package com.boswelja.devicemanager.ui.dndsync.helper
 
 import android.os.Build
 import android.os.Bundle
-import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.Extensions.fromByteArray
@@ -76,7 +75,8 @@ class DnDSyncHelperActivity : BaseToolbarActivity() {
         super.onCreate(savedInstanceState)
         Timber.d("onCreate() called")
 
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_dnd_sync_helper)
+        binding = ActivityDndSyncHelperBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         setupToolbar(binding.toolbarLayout.toolbar, showUpButton = true)
         showLoadingFragment(false)
 

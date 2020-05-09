@@ -11,9 +11,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.AppCompatTextView
-import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.boswelja.devicemanager.common.R
 import com.boswelja.devicemanager.common.databinding.CommonRecyclerviewSectionHeaderBinding
 
 class SectionHeaderItem(binding: CommonRecyclerviewSectionHeaderBinding) :
@@ -23,13 +21,10 @@ class SectionHeaderItem(binding: CommonRecyclerviewSectionHeaderBinding) :
     val dividerView: View = binding.divider
 
     companion object {
-        fun create(layoutInflater: LayoutInflater, parent: ViewGroup): SectionHeaderItem {
-            val binding =
-                    DataBindingUtil.inflate<CommonRecyclerviewSectionHeaderBinding>(
-                            layoutInflater,
-                            R.layout.common_recyclerview_section_header,
-                            parent,
-                            false)
+        fun create(layoutInflater: LayoutInflater, parent: ViewGroup, showDivider: Boolean = true): SectionHeaderItem {
+            val binding = CommonRecyclerviewSectionHeaderBinding
+                    .inflate(layoutInflater, parent, false)
+            binding.divider.visibility = if (showDivider) View.VISIBLE else View.GONE
             return SectionHeaderItem(binding)
         }
     }

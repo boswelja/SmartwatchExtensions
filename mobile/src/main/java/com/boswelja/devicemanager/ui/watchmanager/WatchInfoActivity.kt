@@ -12,7 +12,6 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import androidx.appcompat.app.AlertDialog
-import androidx.databinding.DataBindingUtil
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.databinding.ActivityWatchInfoBinding
 import com.boswelja.devicemanager.ui.base.BaseToolbarActivity
@@ -75,7 +74,9 @@ class WatchInfoActivity : BaseToolbarActivity() {
         super.onCreate(savedInstanceState)
         watchId = intent?.getStringExtra(EXTRA_WATCH_ID)
 
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_watch_info)
+        binding = ActivityWatchInfoBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
         binding.apply {
             setupToolbar(toolbarLayout.toolbar, showUpButton = true)
             clearPreferencesButton.setOnClickListener {

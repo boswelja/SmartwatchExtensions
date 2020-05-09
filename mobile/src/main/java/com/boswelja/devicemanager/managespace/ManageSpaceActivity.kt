@@ -14,7 +14,6 @@ import android.view.MenuItem
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.edit
-import androidx.databinding.DataBindingUtil
 import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.batterysync.BatterySyncWorker
@@ -58,7 +57,8 @@ class ManageSpaceActivity : BaseToolbarActivity() {
         super.onCreate(savedInstanceState)
 
         activityManager = getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_manage_space)
+        binding = ActivityManageSpaceBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         setupToolbar(binding.toolbarLayout.toolbar, showTitle = true, showUpButton = true)
         setupButtons()

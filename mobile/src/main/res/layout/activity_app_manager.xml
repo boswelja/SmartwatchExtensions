@@ -1,22 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout
+<androidx.coordinatorlayout.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/content_view"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
-    <androidx.coordinatorlayout.widget.CoordinatorLayout
-        android:id="@+id/content_view"
+    <include
+        android:id="@+id/toolbar_layout"
+        layout="@layout/common_toolbar" />
+
+    <FrameLayout
+        android:id="@+id/fragment_holder"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
-        <include
-            android:id="@+id/toolbar_layout"
-            layout="@layout/common_toolbar" />
-
-        <FrameLayout
-            android:id="@+id/fragment_holder"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
-
-    </androidx.coordinatorlayout.widget.CoordinatorLayout>
-</layout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

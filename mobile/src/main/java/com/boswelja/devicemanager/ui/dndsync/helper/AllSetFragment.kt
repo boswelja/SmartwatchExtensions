@@ -11,9 +11,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
-import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.databinding.FragmentDndSyncHelperAllSetBinding
 import timber.log.Timber
 
@@ -26,8 +24,7 @@ internal class AllSetFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = DataBindingUtil.inflate(
-                inflater, R.layout.fragment_dnd_sync_helper_all_set, container, false)
+        binding = FragmentDndSyncHelperAllSetBinding.inflate(inflater, container, false)
         return binding.root
     }
 

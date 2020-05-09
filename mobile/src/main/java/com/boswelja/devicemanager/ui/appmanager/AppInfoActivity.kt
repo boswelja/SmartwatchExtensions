@@ -12,7 +12,6 @@ import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.widget.AppCompatTextView
-import androidx.databinding.DataBindingUtil
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.Utils
 import com.boswelja.devicemanager.common.appmanager.AppPackageInfo
@@ -30,16 +29,17 @@ class AppInfoActivity : BaseToolbarActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_app_info)
+        binding = ActivityAppInfoBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         setupToolbar(binding.toolbarLayout.toolbar, showTitle = true, showUpButton = true)
 
         val appInfo = intent?.extras?.getSerializable(EXTRA_APP_INFO) as AppPackageInfo
-        binding.appInfo = appInfo
 
         if (!appInfo.requestedPermissions.isNullOrEmpty()) {
             requestedPermissionsDialog = AppPermissionDialogFragment(appInfo.requestedPermissions!!)
         }
+        setAppLabel(appInfo)
         setAppIcon(appInfo)
         setupButtons(appInfo)
         setupRequestedPermissions(appInfo)
@@ -51,6 +51,14 @@ class AppInfoActivity : BaseToolbarActivity() {
             onBackPressed()
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    /**
+     * Gets the label for a given [AppPackageInfo] object and shows it in the UI.
+     * @param appInfo The [AppPackageInfo] to get the label for.
+     */
+    private fun setAppLabel(appInfo: AppPackageInfo) {
+        binding.appName.text = appInfo.packageLabel
     }
 
     /**

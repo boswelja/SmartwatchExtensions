@@ -11,9 +11,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
-import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.boswelja.devicemanager.common.R
 import com.boswelja.devicemanager.common.databinding.CommonRecyclerviewItemIconOneLineBinding
 
 class IconOneLineItem(binding: CommonRecyclerviewItemIconOneLineBinding) :
@@ -23,12 +21,8 @@ class IconOneLineItem(binding: CommonRecyclerviewItemIconOneLineBinding) :
 
     companion object {
         fun create(layoutInflater: LayoutInflater, parent: ViewGroup): IconOneLineItem {
-            val binding =
-                    DataBindingUtil.inflate<CommonRecyclerviewItemIconOneLineBinding>(
-                            layoutInflater,
-                            R.layout.common_recyclerview_item_icon_one_line,
-                            parent,
-                            false)
+            val binding = CommonRecyclerviewItemIconOneLineBinding
+                    .inflate(layoutInflater, parent, false)
             return IconOneLineItem(binding)
         }
     }

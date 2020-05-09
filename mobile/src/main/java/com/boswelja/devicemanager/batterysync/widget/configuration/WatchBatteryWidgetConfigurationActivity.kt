@@ -12,7 +12,6 @@ import android.appwidget.AppWidgetManager
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.batterysync.widget.WatchBatteryWidget
@@ -56,7 +55,9 @@ class WatchBatteryWidgetConfigurationActivity : BaseToolbarActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_watch_battery_widget_configuration)
+        binding = ActivityWatchBatteryWidgetConfigurationBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
         setupToolbar(binding.toolbarLayout.toolbar, showTitle = true, showUpButton = true)
         supportActionBar!!.setHomeAsUpIndicator(R.drawable.ic_close)
         setupWatchPickerRecyclerView()

@@ -10,9 +10,7 @@ package com.boswelja.devicemanager.common.recyclerview.item
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.appcompat.widget.AppCompatTextView
-import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.boswelja.devicemanager.common.R
 import com.boswelja.devicemanager.common.databinding.CommonRecyclerviewItemTextBinding
 
 class OneLineItem(binding: CommonRecyclerviewItemTextBinding) :
@@ -22,12 +20,8 @@ class OneLineItem(binding: CommonRecyclerviewItemTextBinding) :
 
     companion object {
         fun create(layoutInflater: LayoutInflater, parent: ViewGroup): OneLineItem {
-            val binding =
-                    DataBindingUtil.inflate<CommonRecyclerviewItemTextBinding>(
-                            layoutInflater,
-                            R.layout.common_recyclerview_item_text,
-                            parent,
-                            false)
+            val binding = CommonRecyclerviewItemTextBinding
+                    .inflate(layoutInflater, parent, false)
             return OneLineItem(binding)
         }
     }

@@ -8,7 +8,6 @@
 package com.boswelja.devicemanager.ui.watchsetup
 
 import android.os.Bundle
-import androidx.databinding.DataBindingUtil
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.databinding.ActivityWatchSetupBinding
 import com.boswelja.devicemanager.ui.base.BaseToolbarActivity
@@ -22,7 +21,9 @@ class WatchSetupActivity : BaseToolbarActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_watch_setup)
+        binding = ActivityWatchSetupBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
         setupToolbar(binding.toolbarLayout.toolbar)
 
         setResult(RESULT_NO_WATCH_ADDED)

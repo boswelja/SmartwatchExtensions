@@ -16,7 +16,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.appcompat.widget.AppCompatImageView
-import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.databinding.SettingsWidgetWidgetSettingsBinding
@@ -29,7 +28,7 @@ class WidgetSettingsWidget : Fragment() {
     private var backgroundOpacity: Int = 60
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        binding = DataBindingUtil.inflate(inflater, R.layout.settings_widget_widget_settings, container, false)
+        binding = SettingsWidgetWidgetSettingsBinding.inflate(inflater, container, false)
         return binding.root
     }
 
