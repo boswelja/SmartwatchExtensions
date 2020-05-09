@@ -155,11 +155,21 @@ class AppInfoFragmentWatchPicker :
             messageClient.sendMessage(connectedWatchId, References.REQUEST_APP_VERSION, null)
                     .addOnFailureListener {
                         Timber.w(it)
-                        watchVersionPreference.title = getString(R.string.pref_about_watch_version_disconnected)
+                        try {
+                            watchVersionPreference.title =
+                                    getString(R.string.pref_about_watch_version_disconnected)
+                        } catch (e: IllegalStateException) {
+                            Timber.w(e)
+                        }
                     }
                     .addOnSuccessListener {
                         Timber.i("Message sent successfully")
-                        watchVersionPreference.title = getString(R.string.pref_about_watch_version_loading)
+                        try {
+                            watchVersionPreference.title =
+                                    getString(R.string.pref_about_watch_version_loading)
+                        } catch (e: IllegalStateException) {
+                            Timber.w(e)
+                        }
                     }
         } else {
             Timber.w("connectedWatchId null or empty")
