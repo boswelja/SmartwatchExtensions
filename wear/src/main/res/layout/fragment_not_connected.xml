@@ -23,6 +23,7 @@
         android:layout_height="36dp"
         android:layout_marginBottom="2dp"
         android:src="@drawable/ic_not_connected"
+        android:contentDescription="@string/no_connection"
         app:layout_constraintBottom_toTopOf="@id/not_connected_text"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />

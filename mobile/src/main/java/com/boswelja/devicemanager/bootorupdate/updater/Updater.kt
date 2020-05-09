@@ -7,16 +7,13 @@
  */
 package com.boswelja.devicemanager.bootorupdate.updater
 
-import android.app.NotificationManager
 import android.app.job.JobScheduler
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.core.content.edit
 import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.BuildConfig
-import com.boswelja.devicemanager.NotificationChannelHelper
 import com.boswelja.devicemanager.batterysync.BatterySyncWorker
 import com.boswelja.devicemanager.common.PreferenceKey
 import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_SYNC_ENABLED_KEY
@@ -77,18 +74,6 @@ class Updater(private val context: Context) {
                 }
             }
         }
-    }
-
-    /**
-     * Creates all notifications channels if they don't already exist.
-     */
-    @RequiresApi(Build.VERSION_CODES.O)
-    fun ensureNotificationChannelsCreated() {
-        val notificationManager = context.getSystemService(NotificationManager::class.java)!!
-
-        NotificationChannelHelper.createForBatteryCharged(context, notificationManager)
-        NotificationChannelHelper.createForDnDSync(context, notificationManager)
-        NotificationChannelHelper.createForBootOrUpdate(context, notificationManager)
     }
 
     /**
