@@ -22,8 +22,8 @@ import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.batterysync.database.WatchBatteryStats
 import com.boswelja.devicemanager.batterysync.database.WatchBatteryStatsDatabase
 import com.boswelja.devicemanager.ui.main.MainActivity
-import com.boswelja.devicemanager.ui.main.appsettings.AppSettingsFragmentWatchPicker.Companion.SHOW_WIDGET_BACKGROUND_KEY
-import com.boswelja.devicemanager.ui.main.appsettings.AppSettingsFragmentWatchPicker.Companion.WIDGET_BACKGROUND_OPACITY_KEY
+import com.boswelja.devicemanager.ui.main.appsettings.AppSettingsFragment.Companion.SHOW_WIDGET_BACKGROUND_KEY
+import com.boswelja.devicemanager.ui.main.appsettings.AppSettingsFragment.Companion.WIDGET_BACKGROUND_OPACITY_KEY
 import com.boswelja.devicemanager.widgetdb.WidgetDatabase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope

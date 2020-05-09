@@ -26,11 +26,11 @@ import com.boswelja.devicemanager.common.setup.References.WATCH_NOT_REGISTERED_P
 import com.boswelja.devicemanager.common.setup.References.WATCH_REGISTERED_PATH
 import com.boswelja.devicemanager.phonelocking.Utils.isDeviceAdminEnabled
 import com.boswelja.devicemanager.ui.base.BaseWatchPickerPreferenceActivity.Companion.EXTRA_PREFERENCE_KEY
-import com.boswelja.devicemanager.ui.batterysync.BatterySyncWatchPickerPreferenceActivity
-import com.boswelja.devicemanager.ui.dndsync.DnDSyncWatchPickerPreferenceActivity
+import com.boswelja.devicemanager.ui.batterysync.BatterySyncPreferenceActivity
+import com.boswelja.devicemanager.ui.dndsync.DnDSyncPreferenceActivity
 import com.boswelja.devicemanager.ui.main.MainActivity
-import com.boswelja.devicemanager.ui.phonelocking.PhoneLockingWatchPickerPreferenceFragment.Companion.PHONE_LOCKING_MODE_ACCESSIBILITY_SERVICE
-import com.boswelja.devicemanager.ui.phonelocking.PhoneLockingWatchPickerPreferenceFragment.Companion.PHONE_LOCKING_MODE_KEY
+import com.boswelja.devicemanager.ui.phonelocking.PhoneLockingPreferenceFragment.Companion.PHONE_LOCKING_MODE_ACCESSIBILITY_SERVICE
+import com.boswelja.devicemanager.ui.phonelocking.PhoneLockingPreferenceFragment.Companion.PHONE_LOCKING_MODE_KEY
 import com.boswelja.devicemanager.watchmanager.database.WatchDatabase
 import com.google.android.gms.wearable.MessageEvent
 import com.google.android.gms.wearable.Wearable
@@ -94,7 +94,7 @@ class WatchMessageReceiver : WearableListenerService() {
             PreferenceKey.BATTERY_PHONE_CHARGE_NOTI_KEY,
             PreferenceKey.BATTERY_WATCH_CHARGE_NOTI_KEY
             -> {
-                Intent(this, BatterySyncWatchPickerPreferenceActivity::class.java).apply {
+                Intent(this, BatterySyncPreferenceActivity::class.java).apply {
                     putExtra(EXTRA_PREFERENCE_KEY, key)
                     addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                 }.also {
@@ -105,7 +105,7 @@ class WatchMessageReceiver : WearableListenerService() {
             PreferenceKey.DND_SYNC_TO_PHONE_KEY,
             PreferenceKey.DND_SYNC_WITH_THEATER_KEY
             -> {
-                Intent(this, DnDSyncWatchPickerPreferenceActivity::class.java).apply {
+                Intent(this, DnDSyncPreferenceActivity::class.java).apply {
                     putExtra(EXTRA_PREFERENCE_KEY, key)
                     addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                 }.also {

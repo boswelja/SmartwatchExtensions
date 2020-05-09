@@ -24,7 +24,7 @@ import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_SYNC_INTERVAL_KEY
 import com.boswelja.devicemanager.common.References.CAPABILITY_WATCH_APP
 import com.boswelja.devicemanager.messages.database.MessageDatabase
 import com.boswelja.devicemanager.messages.database.MessageDatabase.Companion.MESSAGE_COUNT_KEY
-import com.boswelja.devicemanager.ui.phonelocking.PhoneLockingWatchPickerPreferenceFragment.Companion.PHONE_LOCKING_MODE_KEY
+import com.boswelja.devicemanager.ui.phonelocking.PhoneLockingPreferenceFragment.Companion.PHONE_LOCKING_MODE_KEY
 import com.boswelja.devicemanager.watchmanager.Utils
 import com.boswelja.devicemanager.watchmanager.Watch
 import com.boswelja.devicemanager.watchmanager.WatchManager

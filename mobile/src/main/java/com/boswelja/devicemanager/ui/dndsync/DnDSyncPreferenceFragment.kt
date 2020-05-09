@@ -32,7 +32,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 
-class DnDSyncWatchPickerPreferenceFragment :
+class DnDSyncPreferenceFragment :
         BaseWatchPickerPreferenceFragment(),
         SharedPreferences.OnSharedPreferenceChangeListener,
         Preference.OnPreferenceChangeListener {

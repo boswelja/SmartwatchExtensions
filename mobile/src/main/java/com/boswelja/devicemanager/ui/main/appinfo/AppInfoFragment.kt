@@ -27,7 +27,7 @@ import com.google.android.gms.wearable.MessageClient
 import com.google.android.gms.wearable.Wearable
 import timber.log.Timber
 
-class AppInfoFragmentWatchPicker :
+class AppInfoFragment :
         BaseWatchPickerPreferenceFragment(),
         Preference.OnPreferenceClickListener,
         WatchConnectionListener,
@@ -94,23 +94,23 @@ class AppInfoFragmentWatchPicker :
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         addPreferencesFromResource(R.xml.prefs_about)
         findPreference<Preference>(OPEN_PRIVACY_POLICY_KEY)!!.apply {
-            onPreferenceClickListener = this@AppInfoFragmentWatchPicker
+            onPreferenceClickListener = this@AppInfoFragment
         }
         findPreference<Preference>(SHARE_APP_KEY)!!.apply {
             isEnabled = !BuildConfig.DEBUG
             title = getString(R.string.pref_about_share_title)
-            onPreferenceClickListener = this@AppInfoFragmentWatchPicker
+            onPreferenceClickListener = this@AppInfoFragment
         }
         findPreference<Preference>(LEAVE_REVIEW_KEY)!!.apply {
             isEnabled = !BuildConfig.DEBUG
-            onPreferenceClickListener = this@AppInfoFragmentWatchPicker
+            onPreferenceClickListener = this@AppInfoFragment
         }
         findPreference<Preference>(OPEN_DONATE_DIALOG_KEY)!!.apply {
             isEnabled = !BuildConfig.DEBUG
-            onPreferenceClickListener = this@AppInfoFragmentWatchPicker
+            onPreferenceClickListener = this@AppInfoFragment
         }
         findPreference<Preference>(OPEN_CHANGELOG_KEY)!!.apply {
-            onPreferenceClickListener = this@AppInfoFragmentWatchPicker
+            onPreferenceClickListener = this@AppInfoFragment
         }
         findPreference<Preference>(PHONE_VERSION_KEY)!!.apply {
             title = getString(R.string.pref_about_phone_version_title).format(BuildConfig.VERSION_NAME)
@@ -262,7 +262,7 @@ class AppInfoFragmentWatchPicker :
     private fun showDonationDialog() {
         Timber.d("showDonationDialog() called")
         DonationDialog(R.style.AppTheme_AlertDialog).apply {
-            setDonationResultInterface(this@AppInfoFragmentWatchPicker)
+            setDonationResultInterface(this@AppInfoFragment)
         }.also {
             it.show(activity.supportFragmentManager)
         }

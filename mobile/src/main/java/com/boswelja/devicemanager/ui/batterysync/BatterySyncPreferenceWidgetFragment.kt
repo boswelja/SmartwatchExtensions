@@ -45,7 +45,7 @@ class BatterySyncPreferenceWidgetFragment :
     private val coroutineScope = MainScope()
 
     private lateinit var sharedPreferences: SharedPreferences
-    private lateinit var activity: BatterySyncWatchPickerPreferenceActivity
+    private lateinit var activity: BatterySyncPreferenceActivity
     private lateinit var binding: SettingsWidgetBatterySyncBinding
 
     private var watchBatteryUpdateTimer: Timer? = null
@@ -273,7 +273,7 @@ class BatterySyncPreferenceWidgetFragment :
      * Performs the widget's initial setup. Handles anything that can't be executed in a test.
      */
     fun setupWidget() {
-        activity = getActivity() as BatterySyncWatchPickerPreferenceActivity
+        activity = getActivity() as BatterySyncPreferenceActivity
         coroutineScope.launch(Dispatchers.IO) {
             batteryStatsDatabase = WatchBatteryStatsDatabase.open(requireContext())
             withContext(Dispatchers.Main) {

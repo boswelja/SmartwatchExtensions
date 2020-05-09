@@ -31,7 +31,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 
-class BatterySyncWatchPickerPreferenceFragment :
+class BatterySyncPreferenceFragment :
         BaseWatchPickerPreferenceFragment(),
         SharedPreferences.OnSharedPreferenceChangeListener,
         Preference.OnPreferenceChangeListener {

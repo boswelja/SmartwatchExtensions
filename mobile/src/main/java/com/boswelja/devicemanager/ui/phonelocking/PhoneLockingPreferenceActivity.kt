@@ -11,8 +11,8 @@ import androidx.fragment.app.Fragment
 import com.boswelja.devicemanager.ui.base.BaseWatchPickerPreferenceActivity
 import com.boswelja.devicemanager.ui.base.BaseWatchPickerPreferenceFragment
 
-class PhoneLockingWatchPickerPreferenceActivity : BaseWatchPickerPreferenceActivity() {
+class PhoneLockingPreferenceActivity : BaseWatchPickerPreferenceActivity() {
     override fun getWidgetFragment(): Fragment? = null
     override fun getPreferenceFragment(): BaseWatchPickerPreferenceFragment =
-            PhoneLockingWatchPickerPreferenceFragment()
+            PhoneLockingPreferenceFragment()
 }

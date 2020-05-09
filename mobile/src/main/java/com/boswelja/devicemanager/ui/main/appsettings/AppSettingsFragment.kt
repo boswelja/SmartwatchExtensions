@@ -18,10 +18,10 @@ import com.boswelja.devicemanager.common.Compat
 import com.boswelja.devicemanager.managespace.ManageSpaceActivity
 import com.boswelja.devicemanager.ui.base.BaseDayNightActivity.Companion.DAYNIGHT_MODE_KEY
 import com.boswelja.devicemanager.ui.base.BaseWatchPickerPreferenceFragment
-import com.boswelja.devicemanager.ui.widget.WidgetSettingsActivityWatchPicker
+import com.boswelja.devicemanager.ui.widget.WidgetSettingsActivity
 import timber.log.Timber
 
-class AppSettingsFragmentWatchPicker :
+class AppSettingsFragment :
         BaseWatchPickerPreferenceFragment(),
         Preference.OnPreferenceClickListener {
 
@@ -136,10 +136,10 @@ class AppSettingsFragmentWatchPicker :
     }
 
     /**
-     * Opens the [WidgetSettingsActivityWatchPicker].
+     * Opens the [WidgetSettingsActivity].
      */
     private fun openWidgetSettingsActivity() {
-        Intent(requireContext(), WidgetSettingsActivityWatchPicker::class.java).also {
+        Intent(requireContext(), WidgetSettingsActivity::class.java).also {
             Timber.i("Starting WidgetSettingsActivity")
             startActivity(it)
         }

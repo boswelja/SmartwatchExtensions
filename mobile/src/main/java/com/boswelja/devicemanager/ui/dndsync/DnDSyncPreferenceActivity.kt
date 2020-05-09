@@ -11,8 +11,8 @@ import androidx.fragment.app.Fragment
 import com.boswelja.devicemanager.ui.base.BaseWatchPickerPreferenceActivity
 import com.boswelja.devicemanager.ui.base.BaseWatchPickerPreferenceFragment
 
-class DnDSyncWatchPickerPreferenceActivity : BaseWatchPickerPreferenceActivity() {
+class DnDSyncPreferenceActivity : BaseWatchPickerPreferenceActivity() {
 
-    override fun getPreferenceFragment(): BaseWatchPickerPreferenceFragment = DnDSyncWatchPickerPreferenceFragment()
+    override fun getPreferenceFragment(): BaseWatchPickerPreferenceFragment = DnDSyncPreferenceFragment()
     override fun getWidgetFragment(): Fragment? = null
 }

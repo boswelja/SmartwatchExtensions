@@ -28,7 +28,7 @@ import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
-class PhoneLockingWatchPickerPreferenceFragment :
+class PhoneLockingPreferenceFragment :
         BaseWatchPickerPreferenceFragment(),
         SharedPreferences.OnSharedPreferenceChangeListener,
         Preference.OnPreferenceClickListener,

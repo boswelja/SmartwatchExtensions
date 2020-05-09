@@ -38,18 +38,18 @@
         </activity>
 
         <activity
-            android:name=".ui.batterysync.BatterySyncWatchPickerPreferenceActivity"
+            android:name=".ui.batterysync.BatterySyncPreferenceActivity"
             android:exported="false" />
 
         <activity
-            android:name=".ui.dndsync.DnDSyncWatchPickerPreferenceActivity"
+            android:name=".ui.dndsync.DnDSyncPreferenceActivity"
             android:exported="false" />
         <activity
             android:name=".ui.dndsync.helper.DnDSyncHelperActivity"
             android:exported="false" />
 
         <activity
-            android:name=".ui.phonelocking.PhoneLockingWatchPickerPreferenceActivity"
+            android:name=".ui.phonelocking.PhoneLockingPreferenceActivity"
             android:exported="false" />
 
         <activity
@@ -73,7 +73,7 @@
             android:exported="false" />
 
         <activity
-            android:name=".ui.widget.WidgetSettingsActivityWatchPicker"
+            android:name=".ui.widget.WidgetSettingsActivity"
             android:exported="false" />
 
         <receiver
