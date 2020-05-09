@@ -4,10 +4,4 @@
         <item name="android:windowBackground">@color/windowBackgroundBlack</item>
         <item name="colorAccent">@color/colorAccent</item>
     </style>
-
-    <style name="AppTheme.SelctableRecyclerViewItem">
-        <item name="android:background">?selectableItemBackground</item>
-        <item name="android:paddingStart">@dimen/extension_view_padding</item>
-        <item name="android:paddingEnd">@dimen/extension_view_padding</item>
-    </style>
 </resources>

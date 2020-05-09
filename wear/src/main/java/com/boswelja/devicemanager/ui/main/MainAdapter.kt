@@ -10,9 +10,9 @@ package com.boswelja.devicemanager.ui.main
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.boswelja.devicemanager.ui.common.recyclerview.BigItemIconOneLine
-import com.boswelja.devicemanager.ui.common.recyclerview.ItemSeparator
-import com.boswelja.devicemanager.ui.common.recyclerview.SmallItemIconOneLine
+import com.boswelja.devicemanager.R
+import com.boswelja.devicemanager.common.recyclerview.item.IconOneLineItem
+import com.boswelja.devicemanager.common.recyclerview.item.SectionHeaderItem
 
 class MainAdapter(private val itemCallback: ItemCallback, private vararg val sections: ArrayList<MainItem>) :
         RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -29,13 +29,9 @@ class MainAdapter(private val itemCallback: ItemCallback, private vararg val sec
     }
 
     override fun getItemViewType(position: Int): Int {
-        val item = getItem(position)
-        return when {
-            item == null -> {
-                ITEM_TYPE_SEPARATOR
-            }
-            item.isSmallItem -> {
-                ITEM_TYPE_SMALL_ITEM
+        return when (getItem(position)) {
+            null -> {
+                ITEM_TYPE_SECTION_SEPARATOR
             }
             else -> {
                 ITEM_TYPE_DEFAULT
@@ -46,27 +42,15 @@ class MainAdapter(private val itemCallback: ItemCallback, private vararg val sec
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         if (layoutInflater == null) layoutInflater = LayoutInflater.from(parent.context)
         return when (viewType) {
-            ITEM_TYPE_SEPARATOR -> ItemSeparator.create(layoutInflater!!, parent)
-            ITEM_TYPE_SMALL_ITEM -> SmallItemIconOneLine.create(layoutInflater!!, parent)
-            else -> BigItemIconOneLine.create(layoutInflater!!, parent)
+            ITEM_TYPE_SECTION_SEPARATOR ->
+                SectionHeaderItem.create(layoutInflater!!, parent, showDivider = false)
+            else -> IconOneLineItem.create(layoutInflater!!, parent)
         }
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (holder) {
-            is SmallItemIconOneLine -> {
-                val item = getItem(position)
-                if (item != null) {
-                    holder.apply {
-                        iconView.setImageResource(item.iconRes)
-                        textView.setText(item.textRes)
-                        itemView.setOnClickListener {
-                            itemCallback.onClick(item)
-                        }
-                    }
-                }
-            }
-            is BigItemIconOneLine -> {
+            is IconOneLineItem -> {
                 val item = getItem(position)
                 if (item != null) {
                     holder.apply {
@@ -83,6 +67,11 @@ class MainAdapter(private val itemCallback: ItemCallback, private vararg val sec
                             itemCallback.onClick(item)
                         }
                     }
+                }
+            }
+            is SectionHeaderItem -> {
+                holder.apply {
+                    textView.text = textView.context.getString(R.string.section_text_app_info)
                 }
             }
         }
@@ -129,8 +118,7 @@ class MainAdapter(private val itemCallback: ItemCallback, private vararg val sec
     }
 
     companion object {
-        private const val ITEM_TYPE_SEPARATOR = 0
+        private const val ITEM_TYPE_SECTION_SEPARATOR = 0
         private const val ITEM_TYPE_DEFAULT = 1
-        private const val ITEM_TYPE_SMALL_ITEM = 2
     }
 }

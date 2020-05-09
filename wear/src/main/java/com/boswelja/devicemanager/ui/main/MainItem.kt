@@ -16,6 +16,5 @@ class MainItem(
     val textRes: Int,
     @DrawableRes
     val iconRes: Int,
-    val isSmallItem: Boolean = false,
     val extra: Int = -1
 )
