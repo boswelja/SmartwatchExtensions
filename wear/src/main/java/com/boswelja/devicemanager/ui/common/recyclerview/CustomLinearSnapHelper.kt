@@ -16,7 +16,7 @@ import kotlin.math.abs
 
 /**
  * A slightly custom implementation of [LinearSnapHelper] that ignores
- * [R.layout.common_recyclerview_item_separator] views.
+ * [R.layout.common_recyclerview_section_header] views.
  */
 class CustomLinearSnapHelper : LinearSnapHelper() {
 
@@ -43,7 +43,7 @@ class CustomLinearSnapHelper : LinearSnapHelper() {
                     helper.getDecoratedMeasurement(child) / 2)
             val absDistance = abs(childCenter - center)
             /** if child center is closer than previous closest, set it as closest   */
-            if (child?.id != R.id.divider && absDistance < absClosest) {
+            if (child?.id != R.id.recyclerview_section_header && absDistance < absClosest) {
                 absClosest = absDistance
                 closestChild = child
             }
