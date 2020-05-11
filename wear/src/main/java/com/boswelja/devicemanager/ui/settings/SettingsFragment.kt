@@ -17,7 +17,6 @@ import androidx.preference.TwoStatePreference
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.wear.widget.WearableRecyclerView
-import com.boswelja.devicemanager.ui.ConfirmationActivityHandler
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.Utils
 import com.boswelja.devicemanager.common.Compat
@@ -31,6 +30,7 @@ import com.boswelja.devicemanager.common.PreferenceKey.DND_SYNC_WITH_THEATER_KEY
 import com.boswelja.devicemanager.common.dndsync.References.REQUEST_INTERRUPT_FILTER_ACCESS_STATUS_PATH
 import com.boswelja.devicemanager.phoneconnectionmanager.References.PHONE_ID_KEY
 import com.boswelja.devicemanager.preferencesync.PreferenceSyncHelper
+import com.boswelja.devicemanager.ui.ConfirmationActivityHandler
 import com.google.android.gms.wearable.MessageClient
 import com.google.android.gms.wearable.Wearable
 

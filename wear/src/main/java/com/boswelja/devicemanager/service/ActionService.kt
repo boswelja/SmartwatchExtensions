@@ -12,7 +12,6 @@ import android.content.ComponentName
 import android.content.Intent
 import android.support.wearable.complications.ProviderUpdateRequester
 import androidx.preference.PreferenceManager
-import com.boswelja.devicemanager.ui.ConfirmationActivityHandler
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.PreferenceKey
 import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_SYNC_ENABLED_KEY
@@ -20,6 +19,7 @@ import com.boswelja.devicemanager.common.References.LOCK_PHONE_PATH
 import com.boswelja.devicemanager.common.batterysync.References.REQUEST_BATTERY_UPDATE_PATH
 import com.boswelja.devicemanager.complication.PhoneBatteryComplicationProvider
 import com.boswelja.devicemanager.phoneconnectionmanager.References.PHONE_ID_KEY
+import com.boswelja.devicemanager.ui.ConfirmationActivityHandler
 import com.google.android.gms.wearable.MessageClient
 import com.google.android.gms.wearable.Wearable
 
