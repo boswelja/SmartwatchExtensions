@@ -7,15 +7,10 @@
  */
 package com.boswelja.devicemanager
 
-import android.app.NotificationManager
 import android.content.Context
 import android.content.res.Resources
 import android.graphics.drawable.Drawable
-import android.media.AudioManager
-import android.os.Build
 import android.util.TypedValue
-import com.boswelja.devicemanager.common.Compat
-import timber.log.Timber
 
 object Utils {
 
