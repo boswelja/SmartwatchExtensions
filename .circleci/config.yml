@@ -5,7 +5,7 @@ jobs:
     docker:
       - image: circleci/android:api-29
     environment:
-      _JAVA_OPTIONS: -Xmx4g
+      _JAVA_OPTIONS: -Xmx2g
     steps:
       - checkout
       - restore_cache:
@@ -22,7 +22,7 @@ jobs:
           command: ./gradlew :common:build
       - run:
           name: Build :mobile
-          command: ./gradlew :mobile:build --stacktrace
+          command: ./gradlew :mobile:build --stacktrace --info --scan
       - run:
           name: Build :wear
           command: ./gradlew :wear:build
