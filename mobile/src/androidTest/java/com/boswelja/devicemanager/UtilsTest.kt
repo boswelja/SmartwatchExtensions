@@ -34,14 +34,14 @@ class UtilsTest {
 
         if (notificationManager.isNotificationPolicyAccessGranted) {
             assertWithMessage("Checking interrupt filter toggle on works")
-                    .that(Utils.setInterruptionFilter(context, true))
+                    .that(Compat.setInterruptionFilter(context, true))
                     .isTrue()
             assertWithMessage("Checking interrupt filter toggle off works")
-                    .that(Utils.setInterruptionFilter(context, false))
+                    .that(Compat.setInterruptionFilter(context, false))
                     .isTrue()
         } else {
             assertWithMessage("No notification policy access, setInterruptFilter should return false")
-                    .that(Utils.setInterruptionFilter(context, !Compat.isDndEnabled(context)))
+                    .that(Compat.setInterruptionFilter(context, !Compat.isDndEnabled(context)))
                     .isFalse()
         }
     }

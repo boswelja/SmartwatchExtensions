@@ -20,41 +20,6 @@ import timber.log.Timber
 object Utils {
 
     /**
-     * Set the system's current Interruption Filter state, or set silent mode if
-     * Interruption Filter doesn't exist.
-     * @param interruptionFilterOn Specify the new Interruption Filter state.
-     * @return true if interrupt filter was set successfully, false otherwise.
-     */
-    fun setInterruptionFilter(context: Context, interruptionFilterOn: Boolean): Boolean {
-        if (interruptionFilterOn != Compat.isDndEnabled(context)) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                try {
-                    val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-                    if (interruptionFilterOn) {
-                        notificationManager.setInterruptionFilter(NotificationManager.INTERRUPTION_FILTER_PRIORITY)
-                    } else {
-                        notificationManager.setInterruptionFilter(NotificationManager.INTERRUPTION_FILTER_ALL)
-                    }
-                    return true
-                } catch (e: SecurityException) {
-                    Timber.e(e)
-                }
-            } else {
-                val audioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
-                if (interruptionFilterOn) {
-                    audioManager.ringerMode = AudioManager.RINGER_MODE_SILENT
-                } else {
-                    audioManager.ringerMode = AudioManager.RINGER_MODE_NORMAL
-                }
-                return true
-            }
-        } else {
-            return true
-        }
-        return false
-    }
-
-    /**
      * Gets the app icon for a given package name.
      * @param context [Context].
      * @param packageName The name of the package to get an app icon for.

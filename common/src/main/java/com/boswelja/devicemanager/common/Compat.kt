@@ -13,11 +13,47 @@ import android.content.Intent
 import android.media.AudioManager
 import android.os.Build
 import androidx.core.app.NotificationManagerCompat
+import timber.log.Timber
 
 /*
  * Compatibility layer to aid support for different Android versions
  */
 object Compat {
+
+    /**
+     * Set the system's current Interruption Filter state, or set silent mode if
+     * Interruption Filter doesn't exist.
+     * @param interruptionFilterOn Specify the new Interruption Filter state.
+     * @return true if interrupt filter was set successfully, false otherwise.
+     */
+    fun setInterruptionFilter(context: Context, interruptionFilterOn: Boolean): Boolean {
+        if (interruptionFilterOn != isDndEnabled(context)) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                try {
+                    val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+                    if (interruptionFilterOn) {
+                        notificationManager.setInterruptionFilter(NotificationManager.INTERRUPTION_FILTER_PRIORITY)
+                    } else {
+                        notificationManager.setInterruptionFilter(NotificationManager.INTERRUPTION_FILTER_ALL)
+                    }
+                    return true
+                } catch (e: SecurityException) {
+                    Timber.e(e)
+                }
+            } else {
+                val audioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
+                if (interruptionFilterOn) {
+                    audioManager.ringerMode = AudioManager.RINGER_MODE_SILENT
+                } else {
+                    audioManager.ringerMode = AudioManager.RINGER_MODE_NORMAL
+                }
+                return true
+            }
+        } else {
+            return true
+        }
+        return false
+    }
 
     /**
      * Starts a service in the foreground.

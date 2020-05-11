@@ -12,7 +12,6 @@ import android.app.NotificationManager
 import android.content.Context
 import androidx.core.app.NotificationManagerCompat
 import androidx.test.platform.app.InstrumentationRegistry
-import com.boswelja.devicemanager.Utils
 import com.google.common.truth.Truth.assertWithMessage
 import org.junit.After
 import org.junit.Before
@@ -47,7 +46,7 @@ class CompatTest {
         val context = InstrumentationRegistry.getInstrumentation().targetContext
 
         assertWithMessage("We can't normally have notification policy access on Wear OS")
-                .that(Utils.setInterruptionFilter(context, true))
+                .that(Compat.setInterruptionFilter(context, true))
                 .isFalse()
     }
 

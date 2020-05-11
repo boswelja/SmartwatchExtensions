@@ -12,7 +12,6 @@ import android.app.NotificationManager
 import android.content.Context
 import androidx.core.app.NotificationManagerCompat
 import androidx.test.platform.app.InstrumentationRegistry
-import com.boswelja.devicemanager.Utils
 import com.google.common.truth.Truth.assertWithMessage
 import org.junit.After
 import org.junit.Before
@@ -49,7 +48,7 @@ class CompatTest {
                 context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
         if (notificationManager.isNotificationPolicyAccessGranted) {
-            Utils.setInterruptionFilter(context, true)
+            Compat.setInterruptionFilter(context, true)
             var retryCounter = 0
             while (!Compat.isDndEnabled(context)) {
                 retryCounter += 1
@@ -60,7 +59,7 @@ class CompatTest {
                     .that(Compat.isDndEnabled(context))
                     .isTrue()
 
-            Utils.setInterruptionFilter(context, false)
+            Compat.setInterruptionFilter(context, false)
             retryCounter = 0
             while (Compat.isDndEnabled(context)) {
                 retryCounter += 1

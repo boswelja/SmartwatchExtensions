@@ -9,7 +9,7 @@ package com.boswelja.devicemanager.dndsync
 
 import androidx.core.content.edit
 import androidx.preference.PreferenceManager
-import com.boswelja.devicemanager.Utils
+import com.boswelja.devicemanager.common.Compat
 import com.boswelja.devicemanager.common.PreferenceKey.DND_SYNC_TO_WATCH_KEY
 import com.boswelja.devicemanager.common.dndsync.References
 import com.boswelja.devicemanager.phoneconnectionmanager.References.PHONE_ID_KEY
@@ -31,7 +31,7 @@ class DnDRemoteChangeReceiver : WearableListenerService() {
             if (dataEvent.type == DataEvent.TYPE_CHANGED) {
                 val dataMap = DataMapItem.fromDataItem(dataEvent.dataItem).dataMap
                 val interruptFilterEnabled = dataMap.getBoolean(References.NEW_DND_STATE_KEY)
-                val success = Utils.setInterruptionFilter(this, interruptFilterEnabled)
+                val success = Compat.setInterruptionFilter(this, interruptFilterEnabled)
                 if (!success) {
                     sharedPreferences.edit(commit = true) {
                         putBoolean(DND_SYNC_TO_WATCH_KEY, false)

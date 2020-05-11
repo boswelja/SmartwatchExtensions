@@ -8,7 +8,7 @@
 package com.boswelja.devicemanager.dndsync
 
 import androidx.preference.PreferenceManager
-import com.boswelja.devicemanager.Utils.setInterruptionFilter
+import com.boswelja.devicemanager.common.Compat.setInterruptionFilter
 import com.boswelja.devicemanager.common.PreferenceKey
 import com.boswelja.devicemanager.common.References
 import com.google.android.gms.wearable.DataEvent
