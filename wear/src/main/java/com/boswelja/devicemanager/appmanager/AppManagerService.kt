@@ -48,7 +48,7 @@ class AppManagerService : Service() {
             when (it.path) {
                 REQUEST_UNINSTALL_PACKAGE -> {
                     if (it.data != null && it.data.isNotEmpty()) {
-                        val packageName = String(it.data, Charsets.UTF_8)
+                        val packageName = getPackageNameFromBytes(it.data)
                         if (isPackageInstalled(packageManager, packageName)) {
                             val intent = Intent(Intent.ACTION_DELETE, "package:$packageName".toUri())
                             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
@@ -60,7 +60,7 @@ class AppManagerService : Service() {
                 }
                 REQUEST_OPEN_PACKAGE -> {
                     if (it.data != null && it.data.isNotEmpty()) {
-                        val packageName = String(it.data, Charsets.UTF_8)
+                        val packageName = getPackageNameFromBytes(it.data)
                         val intent = packageManager.getLaunchIntentForPackage(packageName)
                         intent?.flags = Intent.FLAG_ACTIVITY_NEW_TASK
                         if (intent != null) {
@@ -185,6 +185,8 @@ class AppManagerService : Service() {
             sendErrorMessage()
         }
     }
+
+    private fun getPackageNameFromBytes(data: ByteArray): String = String(data, Charsets.UTF_8)
 
     private fun isPackageInstalled(packageManager: PackageManager, packageName: String): Boolean {
         try {
