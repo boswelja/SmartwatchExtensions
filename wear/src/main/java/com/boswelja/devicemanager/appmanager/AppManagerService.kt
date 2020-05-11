@@ -37,11 +37,11 @@ import com.google.android.gms.wearable.Wearable
 
 class AppManagerService : Service() {
 
-    private lateinit var messageClient: MessageClient
     private lateinit var sharedPreferences: SharedPreferences
 
     private var phoneId: String? = null
     private var serviceStopping: Boolean = false
+    private var messageClient: MessageClient? = null
 
     private val messageReceiver = MessageClient.OnMessageReceivedListener {
         if (!serviceStopping) {
@@ -104,7 +104,7 @@ class AppManagerService : Service() {
 
         if (!phoneId.isNullOrEmpty()) {
             messageClient = Wearable.getMessageClient(this)
-            messageClient.addListener(messageReceiver)
+            messageClient!!.addListener(messageReceiver)
 
             val packageEventIntentFilter = IntentFilter().apply {
                 addAction(Intent.ACTION_PACKAGE_ADDED)
@@ -129,7 +129,7 @@ class AppManagerService : Service() {
         try {
             unregisterReceiver(packageChangeReceiver)
         } catch (_: IllegalArgumentException) { }
-        messageClient.removeListener(messageReceiver)
+        messageClient?.removeListener(messageReceiver)
         super.onDestroy()
     }
 
@@ -162,16 +162,16 @@ class AppManagerService : Service() {
 
     private fun sendAppRemovedMessage(packageName: String?) {
         val data = packageName?.toByteArray(Charsets.UTF_8)
-        messageClient.sendMessage(phoneId!!, PACKAGE_REMOVED, data)
+        messageClient?.sendMessage(phoneId!!, PACKAGE_REMOVED, data)
     }
 
     private fun sendAppAddedMessage(packageInfo: AppPackageInfo) {
         val data = packageInfo.toByteArray()
-        messageClient.sendMessage(phoneId!!, PACKAGE_ADDED, data)
+        messageClient?.sendMessage(phoneId!!, PACKAGE_ADDED, data)
     }
 
     private fun sendErrorMessage() {
-        messageClient.sendMessage(phoneId!!, ERROR, null)
+        messageClient?.sendMessage(phoneId!!, ERROR, null)
         stopService()
     }
 
@@ -179,7 +179,7 @@ class AppManagerService : Service() {
         try {
             val packagesToSend = AppPackageInfoList(packageManager)
             val data = packagesToSend.toByteArray()
-            messageClient.sendMessage(phoneId!!, GET_ALL_PACKAGES, data)
+            messageClient?.sendMessage(phoneId!!, GET_ALL_PACKAGES, data)
         } catch (e: IllegalStateException) {
             e.printStackTrace()
             sendErrorMessage()
