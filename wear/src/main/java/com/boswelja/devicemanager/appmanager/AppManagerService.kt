@@ -15,13 +15,13 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.SharedPreferences
+import android.content.pm.PackageManager
 import android.os.Build
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
 import androidx.core.net.toUri
 import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.R
-import com.boswelja.devicemanager.Utils.isAppInstalled
 import com.boswelja.devicemanager.common.appmanager.AppPackageInfo
 import com.boswelja.devicemanager.common.appmanager.AppPackageInfoList
 import com.boswelja.devicemanager.common.appmanager.References.ERROR
@@ -49,7 +49,7 @@ class AppManagerService : Service() {
                 REQUEST_UNINSTALL_PACKAGE -> {
                     if (it.data != null && it.data.isNotEmpty()) {
                         val packageName = String(it.data, Charsets.UTF_8)
-                        if (isAppInstalled(packageManager, packageName)) {
+                        if (isPackageInstalled(packageManager, packageName)) {
                             val intent = Intent(Intent.ACTION_DELETE, "package:$packageName".toUri())
                             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
                             startActivity(intent)
@@ -184,6 +184,15 @@ class AppManagerService : Service() {
             e.printStackTrace()
             sendErrorMessage()
         }
+    }
+
+    private fun isPackageInstalled(packageManager: PackageManager, packageName: String): Boolean {
+        try {
+            packageManager.getApplicationInfo(packageName, 0)
+        } catch (_: Exception) {
+            return false
+        }
+        return true
     }
 
     companion object {

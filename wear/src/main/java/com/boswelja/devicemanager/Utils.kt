@@ -9,7 +9,6 @@ package com.boswelja.devicemanager
 
 import android.app.NotificationManager
 import android.content.Context
-import android.content.pm.PackageManager
 import com.boswelja.devicemanager.common.Compat
 import com.boswelja.devicemanager.common.References
 import com.google.android.gms.wearable.Wearable
@@ -46,14 +45,5 @@ object Utils {
             return true
         }
         return false
-    }
-
-    fun isAppInstalled(packageManager: PackageManager, packageName: String): Boolean {
-        try {
-            packageManager.getApplicationInfo(packageName, 0)
-        } catch (_: Exception) {
-            return false
-        }
-        return true
     }
 }
