@@ -22,7 +22,7 @@ jobs:
           command: ./gradlew :common:build
       - run:
           name: Build :mobile
-          command: ./gradlew :mobile:build
+          command: ./gradlew :mobile:build --stacktrace
       - run:
           name: Build :wear
           command: ./gradlew :wear:build
