@@ -13,8 +13,11 @@
       <w>managespace</w>
       <w>noti</w>
       <w>phonelocking</w>
+      <w>priv</w>
       <w>snackbar</w>
+      <w>systemui</w>
       <w>watchmanager</w>
+      <w>watchsetup</w>
     </words>
   </dictionary>
 </component>
