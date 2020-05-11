@@ -10,17 +10,8 @@ package com.boswelja.devicemanager
 import android.app.NotificationManager
 import android.content.Context
 import com.boswelja.devicemanager.common.Compat
-import com.boswelja.devicemanager.common.References
-import com.google.android.gms.wearable.Wearable
 
 object Utils {
-
-    fun launchMobileApp(context: Context, phoneId: String, key: String) {
-        if (phoneId.isNotEmpty()) {
-            Wearable.getMessageClient(context)
-                    .sendMessage(phoneId, References.REQUEST_LAUNCH_APP_PATH, key.toByteArray(Charsets.UTF_8))
-        }
-    }
 
     /**
      * Set the system's current Interruption Filter state, or set silent mode if

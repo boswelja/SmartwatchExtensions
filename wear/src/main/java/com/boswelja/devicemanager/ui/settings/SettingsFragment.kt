@@ -7,6 +7,7 @@
  */
 package com.boswelja.devicemanager.ui.settings
 
+import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -18,7 +19,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.wear.widget.WearableRecyclerView
 import com.boswelja.devicemanager.R
-import com.boswelja.devicemanager.Utils
 import com.boswelja.devicemanager.common.Compat
 import com.boswelja.devicemanager.common.Extensions.fromByteArray
 import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_PHONE_CHARGE_NOTI_KEY
@@ -27,6 +27,7 @@ import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_WATCH_CHARGE_NOTI
 import com.boswelja.devicemanager.common.PreferenceKey.DND_SYNC_TO_PHONE_KEY
 import com.boswelja.devicemanager.common.PreferenceKey.DND_SYNC_TO_WATCH_KEY
 import com.boswelja.devicemanager.common.PreferenceKey.DND_SYNC_WITH_THEATER_KEY
+import com.boswelja.devicemanager.common.References
 import com.boswelja.devicemanager.common.dndsync.References.REQUEST_INTERRUPT_FILTER_ACCESS_STATUS_PATH
 import com.boswelja.devicemanager.phoneconnectionmanager.References.PHONE_ID_KEY
 import com.boswelja.devicemanager.preferencesync.PreferenceSyncHelper
@@ -182,7 +183,7 @@ class SettingsFragment :
     }
 
     private fun notifyAdditionalSetupRequired(key: String) {
-        Utils.launchMobileApp(requireContext(), phoneId, key)
+        launchMobileApp(requireContext(), phoneId, key)
         ConfirmationActivityHandler.openOnPhoneAnimation(requireContext(), getString(R.string.additional_setup_required))
     }
 
@@ -200,6 +201,13 @@ class SettingsFragment :
             } else {
                 notifyAdditionalSetupRequired(changingKey)
             }
+        }
+    }
+
+    private fun launchMobileApp(context: Context, phoneId: String, key: String) {
+        if (phoneId.isNotEmpty()) {
+            Wearable.getMessageClient(context)
+                    .sendMessage(phoneId, References.REQUEST_LAUNCH_APP_PATH, key.toByteArray(Charsets.UTF_8))
         }
     }
 }
