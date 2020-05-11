@@ -127,7 +127,7 @@ class PhoneLockingPreferenceFragment :
      */
     private fun setPhoneLockingEnabled(enabled: Boolean) {
         Timber.d("setPhoneLockingEnabled($enabled) called")
-        phoneLockPreference.isEnabled = enabled
+        phoneLockPreference.isChecked = enabled
         if (enabled) snackbar?.dismiss()
         coroutineScope.launch(Dispatchers.IO) {
             sharedPreferences.edit(commit = true) {
