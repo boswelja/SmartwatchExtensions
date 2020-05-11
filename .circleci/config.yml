@@ -19,13 +19,13 @@ jobs:
           key: jars-{{ checksum "build.gradle" }}-{{ checksum "common/build.gradle" }}-{{ checksum "mobile/build.gradle" }}-{{ checksum "wear/build.gradle" }}
       - run:
           name: Build :common
-          command: ./gradlew :common:build
+          command: ./gradlew :common:build --stacktrace --info --scan
       - run:
           name: Build :mobile
           command: ./gradlew :mobile:build --stacktrace --info --scan
       - run:
           name: Build :wear
-          command: ./gradlew :wear:build
+          command: ./gradlew :wear:build --stacktrace --info --scan
       - run:
           name: Code Quality Check :common
           command: ./gradlew :common:lint :common:spotlessCheck
