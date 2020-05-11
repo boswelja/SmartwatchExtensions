@@ -52,6 +52,20 @@ object Compat {
     }
 
     /**
+     * Checks whether Wearable Extensions has permission to set the device's Do not Disturb state.
+     * @param context [Context].
+     * @return true if we can set the Do not Disturb state, false otherwise
+     */
+    fun canSetDnD(context: Context): Boolean {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            val notiManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            notiManager.isNotificationPolicyAccessGranted
+        } else {
+            true
+        }
+    }
+
+    /**
      * Checks whether notifications are enabled for this app.
      * @param channelId ID of the notification channel to check. Ignored on platforms below API26
      * and can be left null to check whether notifications are enabled overall for this app.

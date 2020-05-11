@@ -7,12 +7,11 @@
  */
 package com.boswelja.devicemanager.receiver
 
-import android.app.NotificationManager
 import android.app.admin.DevicePolicyManager
 import android.content.Context
 import android.content.Intent
-import android.os.Build
 import androidx.preference.PreferenceManager
+import com.boswelja.devicemanager.common.Compat
 import com.boswelja.devicemanager.common.Extensions.toByteArray
 import com.boswelja.devicemanager.common.PreferenceKey
 import com.boswelja.devicemanager.common.References.CAPABILITY_WATCH_APP
@@ -128,12 +127,7 @@ class WatchMessageReceiver : WearableListenerService() {
      */
     private fun sendInterruptFilterAccess(sourceNodeId: String) {
         Timber.i("sendInterruptFilterAccess() called")
-        val hasDnDAccess = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            val notiManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-            notiManager.isNotificationPolicyAccessGranted
-        } else {
-            true
-        }
+        val hasDnDAccess = Compat.canSetDnD(this)
         Wearable.getMessageClient(this).sendMessage(
                 sourceNodeId,
                 REQUEST_INTERRUPT_FILTER_ACCESS_STATUS_PATH,

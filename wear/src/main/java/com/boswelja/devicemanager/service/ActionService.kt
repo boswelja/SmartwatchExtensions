@@ -12,7 +12,7 @@ import android.content.ComponentName
 import android.content.Intent
 import android.support.wearable.complications.ProviderUpdateRequester
 import androidx.preference.PreferenceManager
-import com.boswelja.devicemanager.ConfirmationActivityHandler
+import com.boswelja.devicemanager.ui.ConfirmationActivityHandler
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.PreferenceKey
 import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_SYNC_ENABLED_KEY

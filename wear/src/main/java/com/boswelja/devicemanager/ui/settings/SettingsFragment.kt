@@ -17,9 +17,10 @@ import androidx.preference.TwoStatePreference
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.wear.widget.WearableRecyclerView
-import com.boswelja.devicemanager.ConfirmationActivityHandler
+import com.boswelja.devicemanager.ui.ConfirmationActivityHandler
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.Utils
+import com.boswelja.devicemanager.common.Compat
 import com.boswelja.devicemanager.common.Extensions.fromByteArray
 import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_PHONE_CHARGE_NOTI_KEY
 import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_SYNC_ENABLED_KEY
@@ -83,7 +84,7 @@ class SettingsFragment :
             DND_SYNC_TO_WATCH_KEY -> {
                 val value = newValue == true
                 if (value) {
-                    val canEnableSync = Utils.checkDnDAccess(requireContext())
+                    val canEnableSync = Compat.canSetDnD(requireContext())
                     if (canEnableSync) {
                         sharedPreferences.edit().putBoolean(key, value).apply()
                         preferenceSyncHelper.pushNewData(key)

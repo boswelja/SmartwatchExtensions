@@ -12,7 +12,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import com.boswelja.devicemanager.BuildConfig
-import com.boswelja.devicemanager.Utils
 import com.boswelja.devicemanager.appmanager.AppManagerService
 import com.boswelja.devicemanager.common.Compat
 import com.boswelja.devicemanager.common.Extensions.toByteArray
@@ -30,7 +29,7 @@ class MessageReceiver : WearableListenerService() {
     override fun onMessageReceived(messageEvent: MessageEvent?) {
         when (messageEvent?.path) {
             REQUEST_INTERRUPT_FILTER_ACCESS_STATUS_PATH -> {
-                val hasDnDAccess: Boolean = Utils.checkDnDAccess(this)
+                val hasDnDAccess: Boolean = Compat.canSetDnD(this)
                 Wearable.getMessageClient(this)
                         .sendMessage(
                                 messageEvent.sourceNodeId,

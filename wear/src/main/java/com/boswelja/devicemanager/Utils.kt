@@ -16,10 +16,6 @@ import com.google.android.gms.wearable.Wearable
 
 object Utils {
 
-    fun checkDnDAccess(context: Context): Boolean =
-            (context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager)
-                    .isNotificationPolicyAccessGranted
-
     fun launchMobileApp(context: Context, phoneId: String, key: String) {
         if (phoneId.isNotEmpty()) {
             Wearable.getMessageClient(context)
