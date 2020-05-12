@@ -18,7 +18,9 @@ import com.boswelja.common.donate.DonationResultInterface
 import com.boswelja.common.donate.ui.DonationDialog
 import com.boswelja.devicemanager.BuildConfig
 import com.boswelja.devicemanager.R
+import com.boswelja.devicemanager.common.GooglePlayUtils
 import com.boswelja.devicemanager.common.References
+import com.boswelja.devicemanager.common.GooglePlayUtils.getPlayStoreLink
 import com.boswelja.devicemanager.ui.base.BaseWatchPickerPreferenceFragment
 import com.boswelja.devicemanager.ui.changelog.ChangelogDialogFragment
 import com.boswelja.devicemanager.watchmanager.Watch
@@ -138,13 +140,6 @@ class AppInfoFragment :
     }
 
     /**
-     * Gets the Play Store URL for Wearable Extensions.
-     * @return The URL as a [String].
-     */
-    private fun getPlayStoreLink(): String =
-            "https://play.google.com/store/apps/details?id=${context?.packageName}"
-
-    /**
      * Requests the current app version info from the connected watch.
      * Result received in [messageListener] if sending the message was successful.
      */
@@ -231,7 +226,7 @@ class AppInfoFragment :
 
         Intent().apply {
             action = Intent.ACTION_SEND
-            putExtra(Intent.EXTRA_TEXT, getPlayStoreLink())
+            putExtra(Intent.EXTRA_TEXT, getPlayStoreLink(context))
             putExtra(Intent.EXTRA_TITLE, shareTitle)
             data = shareDataUri
             type = "text/plain"
@@ -247,10 +242,7 @@ class AppInfoFragment :
      * Opens the Play Store and navigates to the Wearable Extensions listing.
      */
     private fun showPlayStorePage() {
-        Intent(Intent.ACTION_VIEW).apply {
-            data = getPlayStoreLink().toUri()
-            setPackage("com.android.vending")
-        }.also {
+        GooglePlayUtils.getPlayStoreIntent(context).also {
             Timber.i("Opening Play Store")
             startActivity(it)
         }
