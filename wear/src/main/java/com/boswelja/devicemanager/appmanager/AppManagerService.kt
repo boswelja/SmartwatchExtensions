@@ -7,6 +7,7 @@
  */
 package com.boswelja.devicemanager.appmanager
 
+import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.Service
@@ -15,11 +16,10 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.SharedPreferences
-import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Build
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
-import androidx.core.net.toUri
 import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.appmanager.AppPackageInfo
@@ -38,39 +38,24 @@ import com.google.android.gms.wearable.Wearable
 class AppManagerService : Service() {
 
     private lateinit var sharedPreferences: SharedPreferences
+    private lateinit var messageClient: MessageClient
 
     private var phoneId: String? = null
-    private var serviceStopping: Boolean = false
-    private var messageClient: MessageClient? = null
 
     private val messageReceiver = MessageClient.OnMessageReceivedListener {
-        if (!serviceStopping) {
-            when (it.path) {
-                REQUEST_UNINSTALL_PACKAGE -> {
-                    if (it.data != null && it.data.isNotEmpty()) {
-                        val packageName = getPackageNameFromBytes(it.data)
-                        if (isPackageInstalled(packageManager, packageName)) {
-                            val intent = Intent(Intent.ACTION_DELETE, "package:$packageName".toUri())
-                            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                            startActivity(intent)
-                        } else {
-                            sendAppRemovedMessage(packageName)
-                        }
-                    }
+        when (it.path) {
+            REQUEST_UNINSTALL_PACKAGE -> {
+                getPackageNameFromBytes(it.data)?.also { packageName ->
+                    requestUninstallPackage(packageName)
                 }
-                REQUEST_OPEN_PACKAGE -> {
-                    if (it.data != null && it.data.isNotEmpty()) {
-                        val packageName = getPackageNameFromBytes(it.data)
-                        val intent = packageManager.getLaunchIntentForPackage(packageName)
-                        intent?.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                        if (intent != null) {
-                            startActivity(intent)
-                        }
-                    }
+            }
+            REQUEST_OPEN_PACKAGE -> {
+                getPackageNameFromBytes(it.data)?.also { packageName ->
+                    openPackage(packageName)
                 }
-                STOP_SERVICE -> {
-                    stopService()
-                }
+            }
+            STOP_SERVICE -> {
+                stopService()
             }
         }
     }
@@ -82,8 +67,12 @@ class AppManagerService : Service() {
                 if (!intent.getBooleanExtra(Intent.EXTRA_REPLACING, false)) {
                     when (action) {
                         Intent.ACTION_PACKAGE_ADDED -> {
-                            val packageInfo = AppPackageInfo(packageManager, packageManager.getPackageInfo(intent.data?.encodedSchemeSpecificPart!!, 0))
-                            sendAppAddedMessage(packageInfo)
+                            AppPackageInfo(
+                                    packageManager,
+                                    packageManager.getPackageInfo(intent.data!!.encodedSchemeSpecificPart, 0))
+                                    .also {
+                                        sendAppAddedMessage(it)
+                                    }
                         }
                         Intent.ACTION_PACKAGE_REMOVED -> {
                             sendAppRemovedMessage(intent.data?.encodedSchemeSpecificPart)
@@ -102,53 +91,58 @@ class AppManagerService : Service() {
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
         phoneId = sharedPreferences.getString(PHONE_ID_KEY, "")
 
-        if (!phoneId.isNullOrEmpty()) {
-            messageClient = Wearable.getMessageClient(this)
-            messageClient!!.addListener(messageReceiver)
+        messageClient = Wearable.getMessageClient(this).also {
+            it.addListener(messageReceiver)
+        }
 
-            val packageEventIntentFilter = IntentFilter().apply {
-                addAction(Intent.ACTION_PACKAGE_ADDED)
-                addAction(Intent.ACTION_PACKAGE_REMOVED)
-                addDataScheme("package")
-            }
-            registerReceiver(packageChangeReceiver, packageEventIntentFilter)
-        } else {
-            stopService()
+        IntentFilter().apply {
+            addAction(Intent.ACTION_PACKAGE_ADDED)
+            addAction(Intent.ACTION_PACKAGE_REMOVED)
+            addDataScheme("package")
+        }.also {
+            registerReceiver(packageChangeReceiver, it)
         }
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        if (!serviceStopping) {
-            createNotification()
-            sendAllAppsMessage()
+        createNotification().also {
+            startForeground(APP_MANAGER_NOTI_ID, it)
         }
+        sendAllAppsMessage()
         return START_NOT_STICKY
     }
 
     override fun onDestroy() {
-        try {
-            unregisterReceiver(packageChangeReceiver)
-        } catch (_: IllegalArgumentException) { }
-        messageClient?.removeListener(messageReceiver)
+        unregisterReceiver(packageChangeReceiver)
+        messageClient.removeListener(messageReceiver)
         super.onDestroy()
     }
 
+    /**
+     * Stops the service.
+     */
     private fun stopService() {
-        serviceStopping = true
         stopForeground(true)
         stopSelf()
     }
 
-    private fun createNotification() {
+    /**
+     * Create the App Manager notification. Will also create the notification channel if needed.
+     * @return The [Notification] for the App Manager.
+     */
+    private fun createNotification(): Notification {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-            val channel = NotificationChannel(
-                    APP_MANAGER_NOTI_CHANNEL_ID,
-                    getString(R.string.app_manager_service_noti_channel_title),
-                    NotificationManager.IMPORTANCE_LOW)
-            notificationManager.createNotificationChannel(channel)
+            if (notificationManager.getNotificationChannel(APP_MANAGER_NOTI_CHANNEL_ID) == null) {
+                NotificationChannel(
+                        APP_MANAGER_NOTI_CHANNEL_ID,
+                        getString(R.string.app_manager_service_noti_channel_title),
+                        NotificationManager.IMPORTANCE_LOW).also {
+                    notificationManager.createNotificationChannel(it)
+                }
+            }
         }
-        val noti = NotificationCompat.Builder(this, APP_MANAGER_NOTI_CHANNEL_ID)
+        return NotificationCompat.Builder(this, APP_MANAGER_NOTI_CHANNEL_ID)
                 .setContentTitle(getString(R.string.app_manager_service_noti_title))
                 .setContentText(getString(R.string.app_manager_service_noti_desc))
                 .setSmallIcon(R.drawable.ic_app_manager)
@@ -157,44 +151,103 @@ class AppManagerService : Service() {
                 .setUsesChronometer(false)
                 .setPriority(NotificationCompat.PRIORITY_LOW)
                 .build()
-        startForeground(APP_MANAGER_NOTI_ID, noti)
     }
 
+    /**
+     * Sends a message to the phone informing of a package removal.
+     * @param packageName The name of the package that was removed.
+     */
     private fun sendAppRemovedMessage(packageName: String?) {
         val data = packageName?.toByteArray(Charsets.UTF_8)
-        messageClient?.sendMessage(phoneId!!, PACKAGE_REMOVED, data)
+        messageClient.sendMessage(phoneId!!, PACKAGE_REMOVED, data)
     }
 
+    /**
+     * Sends a message to the phone informing of a package install.
+     * @param packageInfo The [AppPackageInfo] for the package that was installed.
+     */
     private fun sendAppAddedMessage(packageInfo: AppPackageInfo) {
         val data = packageInfo.toByteArray()
-        messageClient?.sendMessage(phoneId!!, PACKAGE_ADDED, data)
+        messageClient.sendMessage(phoneId!!, PACKAGE_ADDED, data)
     }
 
+    /**
+     * Sends a message to the phone informing an error
+     */
     private fun sendErrorMessage() {
-        messageClient?.sendMessage(phoneId!!, ERROR, null)
+        messageClient.sendMessage(phoneId!!, ERROR, null)
         stopService()
     }
 
+    /**
+     * Sends a message to the phone containing an [AppPackageInfoList] of all packages installed.
+     */
     private fun sendAllAppsMessage() {
         try {
             val packagesToSend = AppPackageInfoList(packageManager)
             val data = packagesToSend.toByteArray()
-            messageClient?.sendMessage(phoneId!!, GET_ALL_PACKAGES, data)
+            messageClient.sendMessage(phoneId!!, GET_ALL_PACKAGES, data)
         } catch (e: IllegalStateException) {
             e.printStackTrace()
             sendErrorMessage()
         }
     }
 
-    private fun getPackageNameFromBytes(data: ByteArray): String = String(data, Charsets.UTF_8)
-
-    private fun isPackageInstalled(packageManager: PackageManager, packageName: String): Boolean {
-        try {
-            packageManager.getApplicationInfo(packageName, 0)
-        } catch (_: Exception) {
-            return false
+    /**
+     * Converts a given [ByteArray] to a package name string.
+     * @param data The [ByteArray] to convert.
+     * @return THe package name, or null if data was invalid.
+     */
+    private fun getPackageNameFromBytes(data: ByteArray?): String? {
+        return if (data != null && data.isNotEmpty()) {
+            String(data, Charsets.UTF_8)
+        } else {
+            null
         }
-        return true
+    }
+
+    /**
+     * Checks whether a package is installed.
+     * @param packageName The name of the package to check.
+     * @return true if the package is installed, false otherwise.
+     */
+    private fun isPackageInstalled(packageName: String): Boolean {
+        return try {
+            packageManager.getApplicationInfo(packageName, 0)
+            true
+        } catch (ignored: Exception) {
+            false
+        }
+    }
+
+    /**
+     * If a package is installed, shows a prompt to allow the user to uninstall it.
+     * @param packageName The name of the package to try uninstall.
+     */
+    private fun requestUninstallPackage(packageName: String) {
+        if (isPackageInstalled(packageName)) {
+            Intent().apply {
+                action = Intent.ACTION_DELETE
+                data = Uri.fromParts("package", packageName, null)
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK
+            }.also {
+                startActivity(it)
+            }
+        } else {
+            sendAppRemovedMessage(packageName)
+        }
+    }
+
+    /**
+     * Gets a launch intent for a given package and try start a new activity for it.
+     * @param packageName The name of the package to try open.
+     */
+    private fun openPackage(packageName: String) {
+        packageManager.getLaunchIntentForPackage(packageName)?.apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK
+        }?.also {
+            startActivity(it)
+        }
     }
 
     companion object {
