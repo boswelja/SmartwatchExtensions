@@ -33,6 +33,7 @@ import com.google.android.gms.wearable.Wearable
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class MainActivity :
         AppCompatActivity(),
@@ -40,23 +41,15 @@ class MainActivity :
 
     private val coroutineScope = MainScope()
 
-    private var currentFragment: Fragment? = null
-
     private lateinit var sharedPreferences: SharedPreferences
-
-    private var shouldAnimateFragmentChanges: Boolean = false
-
     private lateinit var capabilityClient: CapabilityClient
     private lateinit var messageClient: MessageClient
 
     override fun onMessageReceived(messageEvent: MessageEvent) {
+        messageClient.removeListener(this)
         when (messageEvent.path) {
-            WATCH_REGISTERED_PATH -> {
-                showExtensionsFragment()
-            }
-            WATCH_NOT_REGISTERED_PATH -> {
-                showSetupFragment(true)
-            }
+            WATCH_REGISTERED_PATH -> showExtensionsFragment()
+            WATCH_NOT_REGISTERED_PATH -> showSetupFragment(true)
         }
     }
 
@@ -68,95 +61,120 @@ class MainActivity :
         showLoadingFragment()
 
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
-
         capabilityClient = Wearable.getCapabilityClient(this)
         messageClient = Wearable.getMessageClient(this)
 
         coroutineScope.launch(Dispatchers.IO) {
-            val phoneNodeId = sharedPreferences.getString(PHONE_ID_KEY, "")
-            val phoneNode = if (!phoneNodeId.isNullOrEmpty()) {
-                Tasks.await(Wearable.getNodeClient(this@MainActivity).connectedNodes).firstOrNull { it.id == phoneNodeId }
-            } else {
-                Tasks.await(Wearable.getNodeClient(this@MainActivity).connectedNodes).firstOrNull().also {
-                    if (it != null) {
-                        sharedPreferences.edit {
-                            putString(PHONE_ID_KEY, it.id)
-                        }
-                    }
-                }
-            }
+            val phoneId = getPhoneId()
 
             if (!BuildConfig.DEBUG) {
-                if (phoneNode != null) {
-                    val isCapable = Tasks.await(capabilityClient.getCapability(CAPABILITY_PHONE_APP, CapabilityClient.FILTER_ALL)).nodes.any { it.id == phoneNode.id }
-                    if (isCapable) {
-                        messageClient.sendMessage(phoneNode.id, CHECK_WATCH_REGISTERED_PATH, null)
-                                .addOnFailureListener {
-                                    showNoConnectionFragment()
-                                }
-                    } else {
-                        showSetupFragment(false)
-                    }
-                } else {
-                    showNoConnectionFragment()
-                }
+                tryCheckWatchRegistered(phoneId)
             } else {
                 showExtensionsFragment()
             }
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        messageClient.addListener(this)
-    }
-
-    override fun onPause() {
-        super.onPause()
-        messageClient.removeListener(this)
-    }
-
+    /**
+     * Shows the [LoadingFragment].
+     */
     private fun showLoadingFragment() {
-        if (currentFragment !is LoadingFragment) {
-            showFragment(LoadingFragment())
-        }
+        showFragment(LoadingFragment(), animateChange = false)
     }
 
+    /**
+     * Shows the [NoConnectionFragment].
+     */
     private fun showNoConnectionFragment() {
-        if (currentFragment !is NoConnectionFragment) {
-            showFragment(NoConnectionFragment())
-        }
+        showFragment(NoConnectionFragment())
     }
 
+    /**
+     * Shows the [MainFragment].
+     */
     private fun showExtensionsFragment() {
-        if (currentFragment !is MainFragment) {
-            showFragment(MainFragment())
-        }
+        showFragment(MainFragment())
     }
 
+    /**
+     * Shows the [SetupFragment].
+     * @param phoneHasApp Sets whether the phone already has Wearable Extensions installed.
+     */
     private fun showSetupFragment(phoneHasApp: Boolean) {
-        if (currentFragment !is SetupFragment) {
-            val setupFragment = SetupFragment().apply {
-                setPhoneSetupHelperVisibility(phoneHasApp)
-            }
-            showFragment(setupFragment)
+        SetupFragment().apply {
+            setPhoneSetupHelperVisibility(phoneHasApp)
+        }.also {
+            showFragment(it)
         }
     }
 
-    private fun showFragment(fragment: Fragment) {
+    /**
+     * Shows a new fragment.
+     * @param fragment The [Fragment] to show.
+     * @param animateChange Whether the fragment transaction should be animated.
+     */
+    private fun showFragment(fragment: Fragment, animateChange: Boolean = true) {
         try {
             supportFragmentManager.beginTransaction().apply {
-                if (shouldAnimateFragmentChanges) {
+                if (animateChange) {
                     setCustomAnimations(R.anim.slide_in_right, R.anim.fade_out)
-                } else {
-                    shouldAnimateFragmentChanges = true
                 }
                 replace(R.id.content, fragment)
             }.also {
                 it.commit()
             }
         } catch (e: IllegalStateException) {
-            Log.e("MainActivity", "Tried to commit a FragmentTransaction after onSaveInstanceState")
+            Log.e("MainActivity",
+                    "Tried to commit a FragmentTransaction after onSaveInstanceState")
+        }
+    }
+
+    /**
+     * Get the connected phone ID.
+     * @return The connected phone ID, or null if no phone is found.
+     */
+    private suspend fun getPhoneId(): String? {
+        return withContext(Dispatchers.IO) {
+            val storedId = sharedPreferences.getString(PHONE_ID_KEY, "")
+            if (storedId.isNullOrEmpty()) {
+                // No known connected phone, attempting to get a new ID
+                val node = Tasks.await(Wearable.getNodeClient(this@MainActivity).connectedNodes)
+                        .firstOrNull()
+                sharedPreferences.edit {
+                    putString(PHONE_ID_KEY, node?.id)
+                }
+                return@withContext node?.id
+            } else {
+                return@withContext storedId
+            }
+        }
+    }
+
+    /**
+     * Check whether this watch is registered with a phone with a given ID.
+     * If there's a problem connecting to the phone, a [NoConnectionFragment] is shown.
+     * If the phone isn't capable (i.e. doesn't have Wearable Extensions installed),
+     * a [SetupFragment] is shown.
+     * @param phoneId The ID of the phone to check with.
+     */
+    private suspend fun tryCheckWatchRegistered(phoneId: String?) {
+        withContext(Dispatchers.IO) {
+            if (!phoneId.isNullOrEmpty()) {
+                val isCapable = Tasks.await(capabilityClient
+                        .getCapability(CAPABILITY_PHONE_APP, CapabilityClient.FILTER_ALL))
+                        .nodes.any { it.id == phoneId }
+                if (isCapable) {
+                    messageClient.addListener(this@MainActivity)
+                    messageClient.sendMessage(phoneId, CHECK_WATCH_REGISTERED_PATH, null)
+                            .addOnFailureListener {
+                                showNoConnectionFragment()
+                            }
+                } else {
+                    showSetupFragment(false)
+                }
+            } else {
+                showNoConnectionFragment()
+            }
         }
     }
 }
