@@ -9,6 +9,7 @@ package com.boswelja.devicemanager.service
 
 import android.app.IntentService
 import android.content.Intent
+import android.content.SharedPreferences
 import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.PreferenceKey
@@ -23,23 +24,23 @@ import com.google.android.gms.wearable.Wearable
 class ActionService : IntentService("ActionService") {
 
     private lateinit var messageClient: MessageClient
+    private lateinit var sharedPreferences: SharedPreferences
+    private lateinit var phoneId: String
 
     override fun onCreate() {
         super.onCreate()
         messageClient = Wearable.getMessageClient(this)
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
+        phoneId = sharedPreferences.getString(PHONE_ID_KEY, "") ?: ""
     }
 
     override fun onHandleIntent(intent: Intent?) {
-        val phoneId = PreferenceManager.getDefaultSharedPreferences(this)
-                .getString(PHONE_ID_KEY, "")
-        val action = intent?.getStringExtra(EXTRA_ACTION)!!
+        val action = intent?.getStringExtra(EXTRA_ACTION)
 
-        if (!phoneId.isNullOrEmpty()) {
-            val prefs = PreferenceManager.getDefaultSharedPreferences(this)
-
+        if (phoneId.isNotEmpty()) {
             when (action) {
                 LOCK_PHONE_PATH -> {
-                    if (prefs.getBoolean(PreferenceKey.PHONE_LOCKING_ENABLED_KEY, false)) {
+                    if (sharedPreferences.getBoolean(PreferenceKey.PHONE_LOCKING_ENABLED_KEY, false)) {
                         sendMessage(
                                 phoneId,
                                 action,
@@ -48,7 +49,7 @@ class ActionService : IntentService("ActionService") {
                     }
                 }
                 REQUEST_BATTERY_UPDATE_PATH -> {
-                    if (prefs.getBoolean(BATTERY_SYNC_ENABLED_KEY, false)) {
+                    if (sharedPreferences.getBoolean(BATTERY_SYNC_ENABLED_KEY, false)) {
                         sendMessage(
                                 phoneId,
                                 action,
