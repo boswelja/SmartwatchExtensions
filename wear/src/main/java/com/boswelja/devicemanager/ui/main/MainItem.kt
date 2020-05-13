@@ -16,5 +16,6 @@ class MainItem(
     val textRes: Int,
     @DrawableRes
     val iconRes: Int,
+    val enabled: Boolean = true,
     val extra: Int = -1
 )

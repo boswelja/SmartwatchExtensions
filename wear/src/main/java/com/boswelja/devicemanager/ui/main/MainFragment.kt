@@ -27,6 +27,7 @@ import com.boswelja.devicemanager.ui.about.AboutActivity
 import com.boswelja.devicemanager.ui.base.BaseSharedPreferenceFragment
 import com.boswelja.devicemanager.ui.main.MainItems.ABOUT_APP_ITEM_ID
 import com.boswelja.devicemanager.ui.main.MainItems.BATTERY_SYNC_ITEM_ID
+import com.boswelja.devicemanager.ui.main.MainItems.EXTENSIONS
 import com.boswelja.devicemanager.ui.main.MainItems.PHONE_LOCKING_ITEM_ID
 import com.boswelja.devicemanager.ui.main.MainItems.SETTINGS_ITEM_ID
 import com.boswelja.devicemanager.ui.settings.SettingsActivity
@@ -64,7 +65,7 @@ class MainFragment :
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        mainAdapter = MainAdapter(this, MainItems.EXTENSIONS, MainItems.APP)
+        mainAdapter = MainAdapter(this, EXTENSIONS, MainItems.APP)
         binding.recyclerView.apply {
             layoutManager = WearableLinearLayoutManager(context, CurvingLayoutCallback(context))
             isEdgeItemsCenteringEnabled = true
@@ -128,7 +129,7 @@ class MainFragment :
         val batterySyncMainItem = if (batterySyncEnabled) {
             MainItem(BATTERY_SYNC_ITEM_ID, R.string.phone_battery_percent, R.drawable.ic_phone_battery, extra = batteryPercent)
         } else {
-            MainItem(BATTERY_SYNC_ITEM_ID, R.string.battery_sync_disabled, R.drawable.ic_phone_battery)
+            EXTENSIONS.first { it.itemId == BATTERY_SYNC_ITEM_ID }
         }
         mainAdapter.updateItem(batterySyncMainItem)
     }
@@ -138,7 +139,7 @@ class MainFragment :
         val phoneLockingMainItem = if (phoneLockingEnabled) {
             MainItem(PHONE_LOCKING_ITEM_ID, R.string.lock_phone_label, R.drawable.ic_phone_lock)
         } else {
-            MainItem(PHONE_LOCKING_ITEM_ID, R.string.lock_phone_disabled_message, R.drawable.ic_phone_lock)
+            EXTENSIONS.first { it.itemId == PHONE_LOCKING_ITEM_ID }
         }
         mainAdapter.updateItem(phoneLockingMainItem)
     }

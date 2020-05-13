@@ -54,6 +54,11 @@ class MainAdapter(private val itemCallback: ItemCallback, private vararg val sec
                 val item = getItem(position)
                 if (item != null) {
                     holder.apply {
+                        item.enabled.also {
+                            itemView.isEnabled = it
+                            iconView.isEnabled = it
+                            textView.isEnabled = it
+                        }
                         iconView.setImageResource(item.iconRes)
                         if (item.extra > -1) {
                             textView.text =
@@ -63,8 +68,10 @@ class MainAdapter(private val itemCallback: ItemCallback, private vararg val sec
                             textView.setText(item.textRes)
                             iconView.setImageLevel(0)
                         }
-                        itemView.setOnClickListener {
-                            itemCallback.onClick(item)
+                        if (item.enabled) {
+                            itemView.setOnClickListener {
+                                itemCallback.onClick(item)
+                            }
                         }
                     }
                 }

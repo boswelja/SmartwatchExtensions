@@ -19,10 +19,12 @@ object MainItems {
     val EXTENSIONS = arrayListOf(
             MainItem(BATTERY_SYNC_ITEM_ID,
                     R.string.battery_sync_disabled,
-                    R.drawable.ic_phone_battery),
+                    R.drawable.ic_phone_battery,
+                    enabled = false),
             MainItem(PHONE_LOCKING_ITEM_ID,
                     R.string.lock_phone_disabled_message,
-                    R.drawable.ic_phone_lock)
+                    R.drawable.ic_phone_lock,
+                    enabled = false)
     )
 
     val APP = arrayListOf(
