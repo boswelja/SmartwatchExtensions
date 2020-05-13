@@ -35,9 +35,15 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".ui.settings.SettingsActivity" />
+        <activity
+            android:name=".ui.settings.SettingsActivity"
+            android:exported="false" />
 
-        <activity android:name="androidx.wear.activity.ConfirmationActivity"/>
+        <activity
+            android:name=".ui.about.AboutActivity"
+            android:exported="false" />
+
+        <activity android:name="androidx.wear.activity.ConfirmationActivity" />
 
         <service
             android:name=".service.ActionService"

@@ -9,4 +9,8 @@
     <dimen name="recyclerview_item_horizontal_padding">@dimen/main_recyclerview_horizontal_padding</dimen>
     <dimen name="recyclerview_section_header_text_inset">0dp</dimen>
     <dimen name="recyclerview_item_icon_margin">8dp</dimen>
+
+    <dimen name="content_spacing">6dp</dimen>
+    <dimen name="content_horizontal_margin">8dp</dimen>
+    <dimen name="content_vertical_margin_inset">8dp</dimen>
 </resources>

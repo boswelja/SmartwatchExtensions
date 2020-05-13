@@ -13,8 +13,8 @@ object MainItems {
 
     const val BATTERY_SYNC_ITEM_ID = 0
     const val PHONE_LOCKING_ITEM_ID = 1
-
     const val SETTINGS_ITEM_ID = 2
+    const val ABOUT_APP_ITEM_ID = 3
 
     val EXTENSIONS = arrayListOf(
             MainItem(BATTERY_SYNC_ITEM_ID,
@@ -28,6 +28,9 @@ object MainItems {
     val APP = arrayListOf(
             MainItem(SETTINGS_ITEM_ID,
                     R.string.navigation_settings_title,
-                    R.drawable.ic_settings)
+                    R.drawable.ic_settings),
+            MainItem(ABOUT_APP_ITEM_ID,
+                    R.string.about_app_title,
+                    R.drawable.ic_about)
     )
 }

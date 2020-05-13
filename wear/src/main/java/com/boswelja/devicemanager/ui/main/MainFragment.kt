@@ -23,8 +23,10 @@ import com.boswelja.devicemanager.common.PreferenceKey.PHONE_LOCKING_ENABLED_KEY
 import com.boswelja.devicemanager.common.batterysync.References
 import com.boswelja.devicemanager.databinding.FragmentMainBinding
 import com.boswelja.devicemanager.service.ActionService
+import com.boswelja.devicemanager.ui.about.AboutActivity
 import com.boswelja.devicemanager.ui.base.BaseSharedPreferenceFragment
 import com.boswelja.devicemanager.ui.common.recyclerview.CustomLinearSnapHelper
+import com.boswelja.devicemanager.ui.main.MainItems.ABOUT_APP_ITEM_ID
 import com.boswelja.devicemanager.ui.main.MainItems.BATTERY_SYNC_ITEM_ID
 import com.boswelja.devicemanager.ui.main.MainItems.PHONE_LOCKING_ITEM_ID
 import com.boswelja.devicemanager.ui.main.MainItems.SETTINGS_ITEM_ID
@@ -53,6 +55,7 @@ class MainFragment :
             BATTERY_SYNC_ITEM_ID -> tryUpdateBatteryStats()
             PHONE_LOCKING_ITEM_ID -> tryLockPhone()
             SETTINGS_ITEM_ID -> showSettings()
+            ABOUT_APP_ITEM_ID -> showAbout()
         }
     }
 
@@ -86,6 +89,12 @@ class MainFragment :
 
     private fun showSettings() {
         Intent(context, SettingsActivity::class.java).also {
+            startActivity(it)
+        }
+    }
+
+    private fun showAbout() {
+        Intent(context, AboutActivity::class.java).also {
             startActivity(it)
         }
     }

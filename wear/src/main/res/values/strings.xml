@@ -46,4 +46,9 @@
     <string name="not_connected_text">Cannot connect to your phone. Make sure your phone is nearby and try again</string>
     <string name="no_connection">No connection</string>
     <string name="section_text_app_info">App Info</string>
+
+    <string name="about_app_title">About</string>
+    <string name="version_string">Version %s</string>
+    <string name="open_play_store_title">Show in Google Play</string>
+    <string name="open_app_info_title">Open App Info</string>
 </resources>
