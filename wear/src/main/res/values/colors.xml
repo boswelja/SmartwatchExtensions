@@ -1,14 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
-    <color name="colorPrimary">#9c27b0</color>
-    <color name="colorAccent">#ec80ff</color>
-
-    <color name="darkUIElement">#5b1566</color>
-    <color name="lightUIElement">#7c1f8c</color>
-    <color name="activeUIElement">#9423a6</color>
-
-    <color name="windowBackgroundBlack">#000000</color>
-    <color name="windowBackgroundDark">#212121</color>
-
+    <color name="colorPrimary">#ec80ff</color>
+    <color name="windowBackground">#000000</color>
 </resources>
