@@ -25,7 +25,6 @@ import com.boswelja.devicemanager.databinding.FragmentMainBinding
 import com.boswelja.devicemanager.service.ActionService
 import com.boswelja.devicemanager.ui.about.AboutActivity
 import com.boswelja.devicemanager.ui.base.BaseSharedPreferenceFragment
-import com.boswelja.devicemanager.ui.common.recyclerview.CustomLinearSnapHelper
 import com.boswelja.devicemanager.ui.main.MainItems.ABOUT_APP_ITEM_ID
 import com.boswelja.devicemanager.ui.main.MainItems.BATTERY_SYNC_ITEM_ID
 import com.boswelja.devicemanager.ui.main.MainItems.PHONE_LOCKING_ITEM_ID
@@ -70,8 +69,6 @@ class MainFragment :
             layoutManager = WearableLinearLayoutManager(context, CurvingLayoutCallback(context))
             isEdgeItemsCenteringEnabled = true
             adapter = mainAdapter
-        }.also {
-            CustomLinearSnapHelper().attachToRecyclerView(it)
         }
     }
 
