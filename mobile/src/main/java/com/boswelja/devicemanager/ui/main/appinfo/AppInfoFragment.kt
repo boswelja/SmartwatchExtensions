@@ -19,8 +19,8 @@ import com.boswelja.common.donate.ui.DonationDialog
 import com.boswelja.devicemanager.BuildConfig
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.GooglePlayUtils
-import com.boswelja.devicemanager.common.References
 import com.boswelja.devicemanager.common.GooglePlayUtils.getPlayStoreLink
+import com.boswelja.devicemanager.common.References
 import com.boswelja.devicemanager.ui.base.BaseWatchPickerPreferenceFragment
 import com.boswelja.devicemanager.ui.changelog.ChangelogDialogFragment
 import com.boswelja.devicemanager.watchmanager.Watch
