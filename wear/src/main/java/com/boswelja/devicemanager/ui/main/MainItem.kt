@@ -10,7 +10,7 @@ package com.boswelja.devicemanager.ui.main
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 
-class MainItem(
+data class MainItem(
     val itemId: Int,
     @StringRes
     val textRes: Int,
@@ -18,4 +18,21 @@ class MainItem(
     val iconRes: Int,
     val enabled: Boolean = true,
     val extra: Int = -1
-)
+) {
+    override fun equals(other: Any?): Boolean {
+        return if (other is MainItem) {
+            other.itemId == this.itemId
+        } else {
+            super.equals(other)
+        }
+    }
+
+    override fun hashCode(): Int {
+        var result = itemId
+        result = 31 * result + textRes
+        result = 31 * result + iconRes
+        result = 31 * result + enabled.hashCode()
+        result = 31 * result + extra
+        return result
+    }
+}
