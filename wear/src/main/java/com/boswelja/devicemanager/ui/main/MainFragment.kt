@@ -21,11 +21,13 @@ import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_PERCENT_KEY
 import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_SYNC_ENABLED_KEY
 import com.boswelja.devicemanager.common.PreferenceKey.PHONE_LOCKING_ENABLED_KEY
 import com.boswelja.devicemanager.common.batterysync.References
+import com.boswelja.devicemanager.common.recyclerview.adapter.SectionedAdapter.Companion.SECTION_HEADER_HIDDEN
 import com.boswelja.devicemanager.databinding.FragmentMainBinding
 import com.boswelja.devicemanager.service.ActionService
 import com.boswelja.devicemanager.ui.about.AboutActivity
 import com.boswelja.devicemanager.ui.base.BaseSharedPreferenceFragment
 import com.boswelja.devicemanager.ui.main.MainItems.ABOUT_APP_ITEM_ID
+import com.boswelja.devicemanager.ui.main.MainItems.APP
 import com.boswelja.devicemanager.ui.main.MainItems.BATTERY_SYNC_ITEM_ID
 import com.boswelja.devicemanager.ui.main.MainItems.EXTENSIONS
 import com.boswelja.devicemanager.ui.main.MainItems.PHONE_LOCKING_ITEM_ID
@@ -65,7 +67,9 @@ class MainFragment :
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        mainAdapter = MainAdapter(this, EXTENSIONS, MainItems.APP)
+        val extensionsSection = Pair(SECTION_HEADER_HIDDEN, EXTENSIONS)
+        val appSection = Pair(getString(R.string.section_text_app_info), APP)
+        mainAdapter = MainAdapter(this, arrayListOf(extensionsSection, appSection))
         binding.recyclerView.apply {
             layoutManager = WearableLinearLayoutManager(context, CurvingLayoutCallback(context))
             isEdgeItemsCenteringEnabled = true
