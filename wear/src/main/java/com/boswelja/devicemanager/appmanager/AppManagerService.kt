@@ -62,10 +62,10 @@ class AppManagerService : Service() {
 
     private val packageChangeReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
-            val action = intent?.action
             if (intent != null) {
-                if (!intent.getBooleanExtra(Intent.EXTRA_REPLACING, false)) {
-                    when (action) {
+                if (intent.data != null &&
+                        !intent.getBooleanExtra(Intent.EXTRA_REPLACING, false)) {
+                    when (intent.action) {
                         Intent.ACTION_PACKAGE_ADDED -> {
                             AppPackageInfo(
                                     packageManager,
@@ -75,7 +75,7 @@ class AppManagerService : Service() {
                                     }
                         }
                         Intent.ACTION_PACKAGE_REMOVED -> {
-                            sendAppRemovedMessage(intent.data?.encodedSchemeSpecificPart)
+                            sendAppRemovedMessage(intent.data!!.encodedSchemeSpecificPart)
                         }
                     }
                 }
