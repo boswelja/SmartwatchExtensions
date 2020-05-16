@@ -28,6 +28,7 @@ import com.boswelja.devicemanager.common.appmanager.References.ERROR
 import com.boswelja.devicemanager.common.appmanager.References.GET_ALL_PACKAGES
 import com.boswelja.devicemanager.common.appmanager.References.PACKAGE_ADDED
 import com.boswelja.devicemanager.common.appmanager.References.PACKAGE_REMOVED
+import com.boswelja.devicemanager.common.appmanager.References.PACKAGE_UPDATED
 import com.boswelja.devicemanager.common.appmanager.References.REQUEST_OPEN_PACKAGE
 import com.boswelja.devicemanager.common.appmanager.References.REQUEST_UNINSTALL_PACKAGE
 import com.boswelja.devicemanager.common.appmanager.References.STOP_SERVICE
@@ -62,19 +63,23 @@ class AppManagerService : Service() {
 
     private val packageChangeReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
-            if (intent != null) {
-                if (intent.data != null &&
-                        !intent.getBooleanExtra(Intent.EXTRA_REPLACING, false)) {
-                    when (intent.action) {
-                        Intent.ACTION_PACKAGE_ADDED -> {
-                            AppPackageInfo(
-                                    packageManager,
-                                    packageManager.getPackageInfo(intent.data!!.encodedSchemeSpecificPart, 0))
-                                    .also {
+            if (intent != null && intent.data != null) {
+                val isReplacingPackage = intent.getBooleanExtra(Intent.EXTRA_REPLACING, false)
+                when (intent.action) {
+                    Intent.ACTION_PACKAGE_ADDED -> {
+                        AppPackageInfo(
+                                packageManager,
+                                packageManager.getPackageInfo(intent.data!!.encodedSchemeSpecificPart, 0))
+                                .also {
+                                    if (isReplacingPackage) {
+                                        sendAppUpdatedMessage(it)
+                                    } else {
                                         sendAppAddedMessage(it)
                                     }
-                        }
-                        Intent.ACTION_PACKAGE_REMOVED -> {
+                                }
+                    }
+                    Intent.ACTION_PACKAGE_REMOVED -> {
+                        if (!isReplacingPackage) {
                             sendAppRemovedMessage(intent.data!!.encodedSchemeSpecificPart)
                         }
                     }
@@ -169,6 +174,15 @@ class AppManagerService : Service() {
     private fun sendAppAddedMessage(packageInfo: AppPackageInfo) {
         val data = packageInfo.toByteArray()
         messageClient.sendMessage(phoneId!!, PACKAGE_ADDED, data)
+    }
+
+    /**
+     * Sends a message to the phone informing of a package update.
+     * @param packageInfo The [AppPackageInfo] for the package that was installed.
+     */
+    private fun sendAppUpdatedMessage(packageInfo: AppPackageInfo) {
+        val data = packageInfo.toByteArray()
+        messageClient.sendMessage(phoneId!!, PACKAGE_UPDATED, data)
     }
 
     /**
