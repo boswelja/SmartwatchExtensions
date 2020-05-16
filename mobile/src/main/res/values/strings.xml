@@ -62,6 +62,7 @@
     <string name="app_info_requested_permissions_dialog_title">@string/app_info_requested_permissions_title</string>
     <string name="app_manager_uninstalled_prefix">Uninstalled %s</string>
     <string name="app_manager_installed_prefix">Installed %s</string>
+    <string name="app_manager_updated_prefix">Updated %s</string>
     <string name="app_manager_continue_on_watch">Continue on your watch</string>
     <string name="app_manager_unable_to_connect">Unable to connect to watch</string>
     <string name="app_manager_section_user_apps">User Apps</string>

@@ -120,6 +120,22 @@ class AppsAdapter(private val fragment: AppManagerFragment) : RecyclerView.Adapt
     }
 
     /**
+     * Update an [AppPackageInfo] in the adapter.
+     * @param app The [AppPackageInfo] to update.
+     */
+    fun update(app: AppPackageInfo) {
+        for (section in data) {
+            val appsInSection = section.appsInSection
+            if (appsInSection[0].isSystemApp == app.isSystemApp) {
+                val index = appsInSection.indexOfFirst { it.packageName == app.packageName }
+                appsInSection.removeAt(index)
+                appsInSection.add(index, app)
+                notifyItemChanged(index)
+            }
+        }
+    }
+
+    /**
      * Add an [AppPackageInfo] to the adapter.
      * @param app The [AppPackageInfo] to add.
      */

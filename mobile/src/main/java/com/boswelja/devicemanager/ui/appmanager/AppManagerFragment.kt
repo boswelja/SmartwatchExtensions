@@ -19,6 +19,7 @@ import com.boswelja.devicemanager.common.appmanager.AppPackageInfo
 import com.boswelja.devicemanager.common.appmanager.AppPackageInfoList
 import com.boswelja.devicemanager.common.appmanager.References.PACKAGE_ADDED
 import com.boswelja.devicemanager.common.appmanager.References.PACKAGE_REMOVED
+import com.boswelja.devicemanager.common.appmanager.References.PACKAGE_UPDATED
 import com.boswelja.devicemanager.common.appmanager.References.REQUEST_OPEN_PACKAGE
 import com.boswelja.devicemanager.common.appmanager.References.REQUEST_UNINSTALL_PACKAGE
 import com.boswelja.devicemanager.databinding.FragmentAppManagerBinding
@@ -39,6 +40,10 @@ class AppManagerFragment : Fragment() {
             PACKAGE_ADDED -> {
                 val appPackageInfo = AppPackageInfo.fromByteArray(it.data)
                 handlePackageAdded(appPackageInfo)
+            }
+            PACKAGE_UPDATED -> {
+                val appPackageInfo = AppPackageInfo.fromByteArray(it.data)
+                handlePackageUpdated(appPackageInfo)
             }
             PACKAGE_REMOVED -> {
                 val appPackageName = String(it.data, Charsets.UTF_8)
@@ -114,6 +119,15 @@ class AppManagerFragment : Fragment() {
     private fun handlePackageAdded(appInfo: AppPackageInfo) {
         (binding.appsRecyclerview.adapter as AppsAdapter).add(appInfo)
         activity.createSnackBar(getString(R.string.app_manager_installed_prefix, appInfo.packageLabel))
+    }
+
+    /**
+     * Updates an [AppPackageInfo] in the [AppsAdapter] and notifies the user.
+     * @param appInfo The [AppPackageInfo] to update.
+     */
+    private fun handlePackageUpdated(appInfo: AppPackageInfo) {
+        (binding.appsRecyclerview.adapter as AppsAdapter).update(appInfo)
+        activity.createSnackBar(getString(R.string.app_manager_updated_prefix, appInfo.packageLabel))
     }
 
     /**
