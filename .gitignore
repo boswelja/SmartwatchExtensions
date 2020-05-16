@@ -5,3 +5,4 @@
 **/build
 **/release
 captures/
+.idea/
