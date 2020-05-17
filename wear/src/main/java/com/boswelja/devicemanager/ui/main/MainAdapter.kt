@@ -15,8 +15,9 @@ import com.boswelja.devicemanager.common.recyclerview.adapter.SectionedAdapter
 import com.boswelja.devicemanager.common.recyclerview.item.IconOneLineItem
 
 class MainAdapter(
-        private val itemCallback: ItemClickCallback<MainItem>,
-        items: ArrayList<Pair<String, ArrayList<MainItem>>>) :
+    private val itemCallback: ItemClickCallback<MainItem>,
+    items: ArrayList<Pair<String, ArrayList<MainItem>>>
+) :
         SectionedAdapter<MainItem>(items, showSectionDividers = false) {
 
     override fun onCreateItemViewHolder(layoutInflater: LayoutInflater, parent: ViewGroup):
