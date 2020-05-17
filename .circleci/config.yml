@@ -3,8 +3,8 @@ version: 2.1
 executors:
   main:
     working_directory: ~/WearableExtensions
-    docker:
-      - image: circleci/android:api-29
+    machine:
+      image: ubuntu-1604:202004-01
     environment:
       _JAVA_OPTIONS: -Xmx3g
 
