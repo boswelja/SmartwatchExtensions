@@ -1,22 +1,29 @@
 version: 2.1
-jobs:
-  update_deps:
-    - checkout
-    - restore_cache:
-        key: jars-{{ checksum "build.gradle" }}-{{ checksum "common/build.gradle" }}-{{ checksum "mobile/build.gradle" }}-{{ checksum "wear/build.gradle" }}
-    - run:
-        name: Download Dependencies
-        command: ./gradlew androidDependencies
-    - save_cache:
-        paths:
-          - ~/.gradle
-        key: jars-{{ checksum "build.gradle" }}-{{ checksum "common/build.gradle" }}-{{ checksum "mobile/build.gradle" }}-{{ checksum "wear/build.gradle" }}
-  build:
+
+executors:
+  main:
     working_directory: ~/WearableExtensions
     docker:
       - image: circleci/android:api-29
     environment:
       _JAVA_OPTIONS: -Xmx3g
+
+jobs:
+  update_deps:
+    executor: main
+    steps:
+      - checkout
+      - restore_cache:
+          key: jars-{{ checksum "build.gradle" }}-{{ checksum "common/build.gradle" }}-{{ checksum "mobile/build.gradle" }}-{{ checksum "wear/build.gradle" }}
+      - run:
+          name: Download Dependencies
+          command: ./gradlew androidDependencies
+      - save_cache:
+          paths:
+            - ~/.gradle
+          key: jars-{{ checksum "build.gradle" }}-{{ checksum "common/build.gradle" }}-{{ checksum "mobile/build.gradle" }}-{{ checksum "wear/build.gradle" }}
+  build:
+    executor: main
     steps:
       - checkout
       - run:
@@ -29,11 +36,7 @@ jobs:
           name: Build :wear
           command: ./gradlew :wear:build
   code_quality_test:
-    working_directory: ~/WearableExtensions
-    docker:
-      - image: circleci/android:api-29
-    environment:
-      _JAVA_OPTIONS: -Xmx3g
+    executor: main
     steps:
       - checkout
       - run:
@@ -52,11 +55,7 @@ jobs:
       - store_artifacts:
           path: ./wear/build/reports/
   unit_test:
-    working_directory: ~/WearableExtensions
-    docker:
-      - image: circleci/android:api-29
-    environment:
-      _JAVA_OPTIONS: -Xmx3g
+    executor: main
     steps:
       - run:
           name: Run unit tests :mobile
