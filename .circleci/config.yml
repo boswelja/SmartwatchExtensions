@@ -15,7 +15,7 @@ commands:
           key: jars-{{ checksum "build.gradle" }}-{{ checksum "common/build.gradle" }}-{{ checksum "mobile/build.gradle" }}-{{ checksum "wear/build.gradle" }}
       - run:
           name: Download Dependencies
-          command: ./gradlew androidDependencies
+          command: ./gradlew androidDependencies --max-workers=2 --no-daemon
       - save_cache:
           paths:
             - ~/.gradle
@@ -29,13 +29,13 @@ jobs:
       - update_deps
       - run:
           name: Build :common
-          command: ./gradlew :common:build --no-daemon
+          command: ./gradlew :common:build --no-daemon --max-workers=2
       - run:
           name: Build :mobile
-          command: ./gradlew :mobile:build --no-daemon
+          command: ./gradlew :mobile:build --no-daemon --max-workers=2
       - run:
           name: Build :wear
-          command: ./gradlew :wear:build --no-daemon
+          command: ./gradlew :wear:build --no-daemon --max-workers=2
   code_quality_test:
     executor: main
     steps:
@@ -43,17 +43,17 @@ jobs:
       - update_deps
       - run:
           name: Code Quality Check :common
-          command: ./gradlew :common:lint :common:spotlessCheck --no-daemon
+          command: ./gradlew :common:lint :common:spotlessCheck --no-daemon --max-workers=2
       - store_artifacts:
           path: ./common/build/reports/
       - run:
           name: Code Quality Check :mobile
-          command: ./gradlew :mobile:lint :mobile:spotlessCheck --no-daemon
+          command: ./gradlew :mobile:lint :mobile:spotlessCheck --no-daemon --max-workers=2
       - store_artifacts:
           path: ./mobile/build/reports/
       - run:
           name: Code Quality Check :wear
-          command: ./gradlew :wear:lint :wear:spotlessCheck --no-daemon
+          command: ./gradlew :wear:lint :wear:spotlessCheck --no-daemon --max-workers=2
       - store_artifacts:
           path: ./wear/build/reports/
   unit_test:
@@ -63,10 +63,10 @@ jobs:
       - update_deps
       - run:
           name: Run unit tests :mobile
-          command: ./gradlew :mobile:test --no-daemon
+          command: ./gradlew :mobile:test --no-daemon --max-workers=2
       - run:
           name: Run unit tests :wear
-          command: ./gradlew :wear:test --no-daemon
+          command: ./gradlew :wear:test --no-daemon --max-workers=2
       - run:
           name: Save test results
           command: |
