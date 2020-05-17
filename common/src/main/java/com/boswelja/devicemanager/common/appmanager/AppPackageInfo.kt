@@ -34,6 +34,10 @@ class AppPackageInfo(packageManager: PackageManager, packageInfo: PackageInfo) :
 
     val requestedPermissions: Array<String>? = packageInfo.requestedPermissions
 
+    override fun toString(): String {
+        return packageLabel
+    }
+
     private fun getApplicationLabel(packageManager: PackageManager, packageInfo: PackageInfo): String {
         var applicationName = packageManager.getApplicationLabel(packageInfo.applicationInfo)
         if (applicationName.isNullOrBlank()) {
