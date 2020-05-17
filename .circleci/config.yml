@@ -6,7 +6,7 @@ executors:
     machine:
       image: ubuntu-1604:202004-01
     environment:
-      _JAVA_OPTIONS: -Xmx3g
+      _JAVA_OPTIONS: -Xmx1g
 
 commands:
   update_deps:
