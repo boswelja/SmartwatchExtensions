@@ -8,6 +8,7 @@
 package com.boswelja.devicemanager.common.recyclerview.adapter
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.boswelja.devicemanager.common.recyclerview.item.SectionHeaderItem
@@ -69,6 +70,9 @@ abstract class SectionedAdapter<T>(
                 val section = getSection(position)
                 holder.apply {
                     textView.text = section
+                    if (position == 0) {
+                        dividerView.visibility = View.INVISIBLE
+                    }
                 }
             }
             else -> onBindItemViewHolder(holder, getItem(position)!!)
