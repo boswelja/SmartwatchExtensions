@@ -11,7 +11,6 @@ executors:
 commands:
   update_deps:
     steps:
-      - checkout
       - restore_cache:
           key: jars-{{ checksum "build.gradle" }}-{{ checksum "common/build.gradle" }}-{{ checksum "mobile/build.gradle" }}-{{ checksum "wear/build.gradle" }}
       - run:
