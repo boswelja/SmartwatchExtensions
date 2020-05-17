@@ -10,6 +10,7 @@ package com.boswelja.devicemanager.ui.appmanager
 import android.os.Bundle
 import android.widget.Toast
 import com.boswelja.devicemanager.R
+import com.boswelja.devicemanager.common.appmanager.AppPackageInfo
 import com.boswelja.devicemanager.common.appmanager.AppPackageInfoList
 import com.boswelja.devicemanager.common.appmanager.References
 import com.boswelja.devicemanager.databinding.ActivityAppManagerBinding
@@ -35,7 +36,8 @@ class AppManagerActivity : BaseToolbarActivity() {
         when (it.path) {
             References.GET_ALL_PACKAGES -> {
                 Timber.i("Updating app list")
-                val allApps = AppPackageInfoList.fromByteArray(it.data)
+                val appPackageInfoList = AppPackageInfoList.fromByteArray(it.data)
+                val allApps = separateAppListToSections(appPackageInfoList)
                 ensureAppManagerVisible()
                 appManagerFragment!!.setAllApps(allApps)
             }
@@ -97,6 +99,28 @@ class AppManagerActivity : BaseToolbarActivity() {
         supportFragmentManager.beginTransaction()
                 .replace(R.id.fragment_holder, LoadingFragment())
                 .commit()
+    }
+
+    /**
+     * Converts an [AppPackageInfoList] into an [ArrayList] that can be used by [AppsAdapter].
+     * @param appPackageInfoList The [AppPackageInfoList] to convert.
+     * @return The newly created [ArrayList].
+     */
+    private fun separateAppListToSections(appPackageInfoList: AppPackageInfoList):
+            ArrayList<Pair<String, ArrayList<AppPackageInfo>>> {
+        val data = ArrayList<Pair<String, ArrayList<AppPackageInfo>>>()
+        val userApps = ArrayList<AppPackageInfo>()
+        userApps.addAll(appPackageInfoList.filterNot { it.isSystemApp })
+        Pair(getString(R.string.app_manager_section_user_apps), userApps).also {
+            data.add(it)
+        }
+
+        val systemApps = ArrayList<AppPackageInfo>()
+        systemApps.addAll(appPackageInfoList.filter { it.isSystemApp })
+        Pair(getString(R.string.app_manager_section_system_apps), systemApps).also {
+            data.add(it)
+        }
+        return data
     }
 
     /**

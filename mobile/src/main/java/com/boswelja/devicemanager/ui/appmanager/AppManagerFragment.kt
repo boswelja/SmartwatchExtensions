@@ -16,23 +16,24 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.appmanager.AppPackageInfo
-import com.boswelja.devicemanager.common.appmanager.AppPackageInfoList
 import com.boswelja.devicemanager.common.appmanager.References.PACKAGE_ADDED
 import com.boswelja.devicemanager.common.appmanager.References.PACKAGE_REMOVED
 import com.boswelja.devicemanager.common.appmanager.References.PACKAGE_UPDATED
 import com.boswelja.devicemanager.common.appmanager.References.REQUEST_OPEN_PACKAGE
 import com.boswelja.devicemanager.common.appmanager.References.REQUEST_UNINSTALL_PACKAGE
+import com.boswelja.devicemanager.common.recyclerview.adapter.ItemClickCallback
 import com.boswelja.devicemanager.databinding.FragmentAppManagerBinding
 import com.google.android.gms.wearable.MessageClient
 import com.google.android.gms.wearable.Wearable
 
-class AppManagerFragment : Fragment() {
+class AppManagerFragment : Fragment(), ItemClickCallback<AppPackageInfo> {
 
     private lateinit var messageClient: MessageClient
     private lateinit var activity: AppManagerActivity
     private lateinit var binding: FragmentAppManagerBinding
+    private lateinit var appsAdapter: AppsAdapter
 
-    private var allAppsCache: AppPackageInfoList? = null
+    private var allAppsCache: ArrayList<Pair<String, ArrayList<AppPackageInfo>>>? = null
     private var watchId: String? = null
 
     private val messageListener = MessageClient.OnMessageReceivedListener {
@@ -52,6 +53,10 @@ class AppManagerFragment : Fragment() {
         }
     }
 
+    override fun onClick(item: AppPackageInfo) {
+        launchAppInfoActivity(item)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -69,12 +74,13 @@ class AppManagerFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        appsAdapter = AppsAdapter(this)
         binding.appsRecyclerview.apply {
             layoutManager = LinearLayoutManager(
                     requireContext(),
                     LinearLayoutManager.VERTICAL,
                     false)
-            adapter = AppsAdapter(this@AppManagerFragment)
+            adapter = appsAdapter
         }
         if (allAppsCache != null) {
             setAllApps(allAppsCache!!)
@@ -117,7 +123,11 @@ class AppManagerFragment : Fragment() {
      * @param appInfo The [AppPackageInfo] to add.
      */
     private fun handlePackageAdded(appInfo: AppPackageInfo) {
-        (binding.appsRecyclerview.adapter as AppsAdapter).add(appInfo)
+        if (appInfo.isSystemApp) {
+            appsAdapter.addItem(1, appInfo)
+        } else {
+            appsAdapter.addItem(0, appInfo)
+        }
         activity.createSnackBar(getString(R.string.app_manager_installed_prefix, appInfo.packageLabel))
     }
 
@@ -126,7 +136,7 @@ class AppManagerFragment : Fragment() {
      * @param appInfo The [AppPackageInfo] to update.
      */
     private fun handlePackageUpdated(appInfo: AppPackageInfo) {
-        (binding.appsRecyclerview.adapter as AppsAdapter).update(appInfo)
+        appsAdapter.updateItem(appInfo)
         activity.createSnackBar(getString(R.string.app_manager_updated_prefix, appInfo.packageLabel))
     }
 
@@ -135,11 +145,11 @@ class AppManagerFragment : Fragment() {
      * @param appPackageName The package name of the [AppPackageInfo] to remove.
      */
     private fun handlePackageRemoved(appPackageName: String) {
-        val adapter = (binding.appsRecyclerview.adapter as AppsAdapter)
-        adapter.remove(appPackageName)
-        activity.createSnackBar(getString(
-                R.string.app_manager_uninstalled_prefix,
-                adapter.getFromPackageName(appPackageName)?.packageLabel))
+        val removedApp = appsAdapter.removeByPackageName(appPackageName)
+        if (removedApp != null) {
+            activity.createSnackBar(getString(
+                    R.string.app_manager_uninstalled_prefix, removedApp.packageLabel))
+        }
     }
 
     /**
@@ -166,9 +176,9 @@ class AppManagerFragment : Fragment() {
      * Sets the list of apps to show in the [AppsAdapter].
      * @param apps The new list of [AppPackageInfo] to display.
      */
-    fun setAllApps(apps: AppPackageInfoList) {
+    fun setAllApps(apps: ArrayList<Pair<String, ArrayList<AppPackageInfo>>>) {
         allAppsCache = try {
-            (binding.appsRecyclerview.adapter as AppsAdapter).setAllApps(apps)
+            appsAdapter.setItems(apps)
             null
         } catch (e: Exception) {
             apps
@@ -179,7 +189,7 @@ class AppManagerFragment : Fragment() {
      * Launches an [AppInfoActivity] for a given [AppPackageInfo].
      * @param appPackageInfo The [AppPackageInfo] object to pass on to the [AppInfoActivity].
      */
-    fun launchAppInfoActivity(appPackageInfo: AppPackageInfo) {
+    private fun launchAppInfoActivity(appPackageInfo: AppPackageInfo) {
         activity.canStopAppManagerService = false
         val intent = Intent(context, AppInfoActivity::class.java)
         intent.putExtra(AppInfoActivity.EXTRA_APP_INFO, appPackageInfo)
