@@ -8,9 +8,8 @@ executors:
     environment:
       _JAVA_OPTIONS: -Xmx3g
 
-jobs:
+commands:
   update_deps:
-    executor: main
     steps:
       - checkout
       - restore_cache:
@@ -22,10 +21,13 @@ jobs:
           paths:
             - ~/.gradle
           key: jars-{{ checksum "build.gradle" }}-{{ checksum "common/build.gradle" }}-{{ checksum "mobile/build.gradle" }}-{{ checksum "wear/build.gradle" }}
+
+jobs:
   build:
     executor: main
     steps:
       - checkout
+      - update_deps
       - run:
           name: Build :common
           command: ./gradlew :common:build
@@ -39,6 +41,7 @@ jobs:
     executor: main
     steps:
       - checkout
+      - update_deps
       - run:
           name: Code Quality Check :common
           command: ./gradlew :common:lint :common:spotlessCheck
@@ -57,6 +60,8 @@ jobs:
   unit_test:
     executor: main
     steps:
+      - checkout
+      - update_deps
       - run:
           name: Run unit tests :mobile
           command: ./gradlew :mobile:test
