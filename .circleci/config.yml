@@ -6,7 +6,7 @@ executors:
     docker:
       - image: circleci/android:api-29
     environment:
-      _JAVA_OPTIONS: -Xmx1g
+      _JAVA_OPTIONS: -Xmx2g
       GRADLE_OPTS: -Dkotlin.compiler.execution.strategy=in-process
 
 commands:
