@@ -1,5 +1,16 @@
 version: 2.1
 jobs:
+  update_deps:
+    - checkout
+    - restore_cache:
+        key: jars-{{ checksum "build.gradle" }}-{{ checksum "common/build.gradle" }}-{{ checksum "mobile/build.gradle" }}-{{ checksum "wear/build.gradle" }}
+    - run:
+        name: Download Dependencies
+        command: ./gradlew androidDependencies
+    - save_cache:
+        paths:
+          - ~/.gradle
+        key: jars-{{ checksum "build.gradle" }}-{{ checksum "common/build.gradle" }}-{{ checksum "mobile/build.gradle" }}-{{ checksum "wear/build.gradle" }}
   build:
     working_directory: ~/WearableExtensions
     docker:
@@ -8,15 +19,6 @@ jobs:
       _JAVA_OPTIONS: -Xmx3g
     steps:
       - checkout
-      - restore_cache:
-          key: jars-{{ checksum "build.gradle" }}-{{ checksum "common/build.gradle" }}-{{ checksum "mobile/build.gradle" }}-{{ checksum "wear/build.gradle" }}
-      - run:
-          name: Download Dependencies
-          command: ./gradlew androidDependencies
-      - save_cache:
-          paths:
-            - ~/.gradle
-          key: jars-{{ checksum "build.gradle" }}-{{ checksum "common/build.gradle" }}-{{ checksum "mobile/build.gradle" }}-{{ checksum "wear/build.gradle" }}
       - run:
           name: Build :common
           command: ./gradlew :common:build
@@ -26,6 +28,14 @@ jobs:
       - run:
           name: Build :wear
           command: ./gradlew :wear:build
+  code_quality_test:
+    working_directory: ~/WearableExtensions
+    docker:
+      - image: circleci/android:api-29
+    environment:
+      _JAVA_OPTIONS: -Xmx3g
+    steps:
+      - checkout
       - run:
           name: Code Quality Check :common
           command: ./gradlew :common:lint :common:spotlessCheck
@@ -41,6 +51,13 @@ jobs:
           command: ./gradlew :wear:lint :wear:spotlessCheck
       - store_artifacts:
           path: ./wear/build/reports/
+  unit_test:
+    working_directory: ~/WearableExtensions
+    docker:
+      - image: circleci/android:api-29
+    environment:
+      _JAVA_OPTIONS: -Xmx3g
+    steps:
       - run:
           name: Run unit tests :mobile
           command: ./gradlew :mobile:test
@@ -58,3 +75,11 @@ jobs:
           path: ~/test-results
       - store_artifacts:
           path: ~/test-results/junit
+
+workflows:
+  build-and-test:
+    jobs:
+      - update_deps
+      - build
+      - code_quality_test
+      - unit_test
