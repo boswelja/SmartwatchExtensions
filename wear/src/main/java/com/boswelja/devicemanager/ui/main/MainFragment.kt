@@ -21,6 +21,7 @@ import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_PERCENT_KEY
 import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_SYNC_ENABLED_KEY
 import com.boswelja.devicemanager.common.PreferenceKey.PHONE_LOCKING_ENABLED_KEY
 import com.boswelja.devicemanager.common.batterysync.References
+import com.boswelja.devicemanager.common.recyclerview.adapter.ItemClickCallback
 import com.boswelja.devicemanager.common.recyclerview.adapter.SectionedAdapter.Companion.SECTION_HEADER_HIDDEN
 import com.boswelja.devicemanager.databinding.FragmentMainBinding
 import com.boswelja.devicemanager.service.ActionService
@@ -37,7 +38,7 @@ import com.boswelja.devicemanager.ui.settings.SettingsActivity
 class MainFragment :
         BaseSharedPreferenceFragment(),
         SharedPreferences.OnSharedPreferenceChangeListener,
-        MainAdapter.ItemCallback {
+        ItemClickCallback<MainItem> {
 
     private lateinit var binding: FragmentMainBinding
     private lateinit var mainAdapter: MainAdapter

@@ -10,14 +10,17 @@ package com.boswelja.devicemanager.ui.main
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.boswelja.devicemanager.common.recyclerview.adapter.ItemClickCallback
 import com.boswelja.devicemanager.common.recyclerview.adapter.SectionedAdapter
 import com.boswelja.devicemanager.common.recyclerview.item.IconOneLineItem
 
-class MainAdapter(private val itemCallback: ItemCallback, items: ArrayList<Pair<String, ArrayList<MainItem>>>) :
+class MainAdapter(
+        private val itemCallback: ItemClickCallback<MainItem>,
+        items: ArrayList<Pair<String, ArrayList<MainItem>>>) :
         SectionedAdapter<MainItem>(items, showSectionDividers = false) {
 
-    override fun onCreateItemViewHolder(layoutInflater: LayoutInflater, parent: ViewGroup): RecyclerView.ViewHolder =
-            IconOneLineItem.create(layoutInflater, parent)
+    override fun onCreateItemViewHolder(layoutInflater: LayoutInflater, parent: ViewGroup):
+            RecyclerView.ViewHolder = IconOneLineItem.create(layoutInflater, parent)
 
     override fun onBindItemViewHolder(holder: RecyclerView.ViewHolder, item: MainItem) {
         if (holder is IconOneLineItem) {
@@ -43,9 +46,5 @@ class MainAdapter(private val itemCallback: ItemCallback, items: ArrayList<Pair<
                 }
             }
         }
-    }
-
-    interface ItemCallback {
-        fun onClick(item: MainItem)
     }
 }
