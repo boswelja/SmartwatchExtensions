@@ -6,7 +6,8 @@ executors:
     docker:
       - image: circleci/android:api-29
     environment:
-      _JAVA_OPTIONS: -Xmx1g
+      _JAVA_OPTIONS: -Xmx2g
+    resource_class: large
 
 commands:
   update_deps:
