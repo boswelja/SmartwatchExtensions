@@ -83,7 +83,6 @@ jobs:
 workflows:
   build-and-test:
     jobs:
-      - update_deps
       - build
       - code_quality_test:
           requires:
