@@ -23,7 +23,7 @@ import kotlin.collections.ArrayList
  * @param showSectionDividers Whether section headers should show a divider as well.
  */
 abstract class SectionedAdapter<T>(
-    private val items: ArrayList<Pair<String, ArrayList<T>>> = ArrayList(),
+    protected val items: ArrayList<Pair<String, ArrayList<T>>> = ArrayList(),
     private val showSectionDividers: Boolean = true,
     private val sectionSortMode: SortMode = SortMode.DEFAULT,
     private val itemSortMode: SortMode = SortMode.DEFAULT
