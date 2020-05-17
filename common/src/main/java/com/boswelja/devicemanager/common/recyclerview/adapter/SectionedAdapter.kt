@@ -11,6 +11,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.boswelja.devicemanager.common.recyclerview.item.SectionHeaderItem
+import kotlin.collections.ArrayList
 
 /**
  * A custom [RecyclerView.Adapter] set up for sections.
@@ -22,7 +23,9 @@ import com.boswelja.devicemanager.common.recyclerview.item.SectionHeaderItem
  */
 abstract class SectionedAdapter<T>(
     private val items: ArrayList<Pair<String, ArrayList<T>>> = ArrayList(),
-    private val showSectionDividers: Boolean = true
+    private val showSectionDividers: Boolean = true,
+    private val sectionSortMode: SortMode = SortMode.DEFAULT,
+    private val itemSortMode: SortMode = SortMode.DEFAULT
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private var layoutInflater: LayoutInflater? = null
@@ -33,6 +36,9 @@ abstract class SectionedAdapter<T>(
     init {
         updateSectionCount()
         updateItemCount()
+
+        sortSections()
+        sortItems()
     }
 
     abstract fun onCreateItemViewHolder(layoutInflater: LayoutInflater, parent: ViewGroup): RecyclerView.ViewHolder
@@ -153,6 +159,73 @@ abstract class SectionedAdapter<T>(
     }
 
     /**
+     * Gets the adapter position of an item in a given section at a given position in said section.
+     * @param section The index of the section the item is in.
+     * @param positionInSection The index of the item in the section.
+     * @return The position of the item in the adapter.
+     */
+    private fun getAdapterPosition(section: Int, positionInSection: Int): Int {
+        var adapterPosition = 0
+        items.forEachIndexed { index, pair ->
+            if (pair.first != SECTION_HEADER_HIDDEN) adapterPosition += 1
+            if (index == section) {
+                adapterPosition += positionInSection
+                return@forEachIndexed
+            } else {
+                adapterPosition += pair.second.count()
+            }
+        }
+        return adapterPosition
+    }
+
+    /**
+     * Sorts all the sections based on [sectionSortMode]
+     */
+    private fun sortSections() {
+        when (sectionSortMode) {
+            SortMode.ASCENDING -> {
+                items.sortBy { it.first }
+            }
+            SortMode.DESCENDING -> {
+                items.sortByDescending { it.first }
+            }
+            SortMode.DEFAULT -> return
+        }
+    }
+
+    /**
+     * Sorts all items in each section based on [itemSortMode].
+     */
+    private fun sortItems() {
+        when (itemSortMode) {
+            SortMode.ASCENDING,
+            SortMode.DESCENDING
+            -> {
+                items.indices.forEach {
+                    sortSectionItems(it)
+                }
+            }
+            SortMode.DEFAULT -> return
+        }
+    }
+
+    /**
+     * Sorts all items in a given section based on [itemSortMode].
+     * @param sectionIndex The index of the section to sort.
+     */
+    private fun sortSectionItems(sectionIndex: Int) {
+        when (itemSortMode) {
+            SortMode.ASCENDING -> {
+                items[sectionIndex].second.sortBy { item -> item.toString() }
+            }
+            SortMode.DESCENDING -> {
+                items[sectionIndex].second.sortByDescending { item -> item.toString() }
+            }
+            SortMode.DEFAULT -> return
+        }
+    }
+
+    /**
      * Replaces all items in the adapter with a given set of new items.
      * @param newItems The new items to populate the adapter with.
      */
@@ -163,6 +236,10 @@ abstract class SectionedAdapter<T>(
         }
         updateSectionCount()
         updateItemCount()
+
+        sortSections()
+        sortItems()
+
         notifyDataSetChanged()
     }
 
@@ -172,9 +249,21 @@ abstract class SectionedAdapter<T>(
      */
     fun addSection(section: Pair<String, ArrayList<T>>) {
         items.add(section)
+        val sectionItemsCount = section.second.count()
         if (section.first != SECTION_HEADER_HIDDEN) sectionCount += 1
-        itemCount += section.second.count()
-        notifyDataSetChanged()
+        itemCount += sectionItemsCount
+
+        var adapterPosition = getAdapterPosition(items.indexOf(section), 0)
+        var itemCount = sectionItemsCount
+        if (section.first != SECTION_HEADER_HIDDEN) {
+            adapterPosition -= 1
+            itemCount += 1
+        }
+
+        sortSections()
+        sortSectionItems(items.indexOf(section))
+
+        notifyItemRangeInserted(adapterPosition, itemCount)
     }
 
     /**
@@ -183,13 +272,14 @@ abstract class SectionedAdapter<T>(
      */
     fun updateItem(newItem: T) {
         var positionInAdapter = 0
-        items.forEach { section ->
+        items.forEachIndexed { sectionIndex, section ->
             section.second.forEachIndexed { index, item ->
                 if (item == newItem) {
                     section.second.apply {
                         removeAt(index)
                         add(index, newItem)
                     }
+                    sortSectionItems(sectionIndex)
                     notifyItemChanged(positionInAdapter)
                     return
                 }
@@ -197,6 +287,46 @@ abstract class SectionedAdapter<T>(
             }
             if (section.first != SECTION_HEADER_HIDDEN) positionInAdapter += 1
         }
+    }
+
+    /**
+     * Add an item to a given section.
+     * @param sectionIndex The index of the section to add the item to.
+     * @param item The new item of type [T] to add to the section.
+     */
+    fun addItem(sectionIndex: Int, item: T) {
+        items[sectionIndex].second.apply {
+            add(item)
+        }.also {
+            sortSectionItems(sectionIndex)
+            notifyItemInserted(getAdapterPosition(sectionIndex, it.indexOf(item)))
+        }
+    }
+
+    /**
+     * Remove an item from the adapter.
+     * @param item The item of type [T] to remove from the adapter.
+     * @param sectionIndex The index of the section to remove the item from, or -1 if it's not known.
+     */
+    fun removeItem(item: T, sectionIndex: Int = -1) {
+        val realSectionIndex = if (sectionIndex == -1) {
+            items.indexOfFirst { it.second.contains(item) }
+        } else {
+            sectionIndex
+        }
+        val itemIndexInSection = items[realSectionIndex].second.indexOf(item)
+        items[realSectionIndex].second.removeAt(itemIndexInSection)
+        notifyItemRemoved(getAdapterPosition(realSectionIndex, itemIndexInSection))
+    }
+
+    /**
+     * Defines available sorting modes the adapter can use.
+     * [DEFAULT] disables sorting and sticks with the default order of the items list.
+     */
+    enum class SortMode {
+        DEFAULT,
+        ASCENDING,
+        DESCENDING
     }
 
     companion object {
