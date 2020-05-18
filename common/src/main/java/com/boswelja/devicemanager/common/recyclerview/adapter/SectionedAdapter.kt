@@ -12,6 +12,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.boswelja.devicemanager.common.recyclerview.item.SectionHeaderItem
+import java.util.Locale
 import kotlin.collections.ArrayList
 
 /**
@@ -188,10 +189,10 @@ abstract class SectionedAdapter<T>(
     private fun sortSections() {
         when (sectionSortMode) {
             SortMode.ASCENDING -> {
-                items.sortBy { it.first }
+                items.sortBy { it.first.toLowerCase(Locale.getDefault()) }
             }
             SortMode.DESCENDING -> {
-                items.sortByDescending { it.first }
+                items.sortByDescending { it.first.toLowerCase(Locale.getDefault()) }
             }
             SortMode.DEFAULT -> return
         }
@@ -220,10 +221,10 @@ abstract class SectionedAdapter<T>(
     private fun sortSectionItems(sectionIndex: Int) {
         when (itemSortMode) {
             SortMode.ASCENDING -> {
-                items[sectionIndex].second.sortBy { item -> item.toString() }
+                items[sectionIndex].second.sortBy { item -> item.toString().toLowerCase(Locale.getDefault()) }
             }
             SortMode.DESCENDING -> {
-                items[sectionIndex].second.sortByDescending { item -> item.toString() }
+                items[sectionIndex].second.sortByDescending { item -> item.toString().toLowerCase(Locale.getDefault()) }
             }
             SortMode.DEFAULT -> return
         }
