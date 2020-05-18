@@ -12,14 +12,10 @@ executors:
 commands:
   execute_gradle:
     parameters:
-      name:
-        type: string
       commands:
         type: string
     steps:
-      - run:
-          name: <<parameters.name>>
-          command: ./gradlew <<parameters.commands>> --max-workers=2
+      - run: ./gradlew <<parameters.commands>> --max-workers=2
   update_deps:
     steps:
       - restore_cache:
