@@ -32,7 +32,11 @@ class AppsAdapter(private val itemClickCallback: ItemClickCallback<AppPackageInf
         if (holder is IconTwoLineItem) {
             holder.apply {
                 topTextView.text = item.packageLabel
-                bottomTextView.text = item.versionName
+                bottomTextView.text = if (!item.versionName.isNullOrEmpty()) {
+                    context.getString(R.string.app_info_version_prefix, item.versionName)
+                } else {
+                    context.getString(R.string.app_info_version_prefix, item.versionCode.toString())
+                }
                 iconView.setImageDrawable(Utils.getAppIcon(context, item.packageName, fallbackIcon))
                 itemView.setOnClickListener {
                     itemClickCallback.onClick(item)
