@@ -10,13 +10,21 @@ executors:
       GRADLE_OPTS: -Dkotlin.compiler.execution.strategy=in-process
 
 commands:
+  execute_gradle:
+    parameters:
+      name: string
+      commands: string
+    steps:
+      - run:
+          name: <<parameters.name>>
+          command: ./gradlew <<parameters.commands>> --max-workers=2
   update_deps:
     steps:
       - restore_cache:
           key: jars-{{ checksum "build.gradle" }}-{{ checksum "common/build.gradle" }}-{{ checksum "mobile/build.gradle" }}-{{ checksum "wear/build.gradle" }}
-      - run:
-          name: Download Dependencies
-          command: ./gradlew androidDependencies --max-workers=2
+      - execute_gradle:
+          name: Update Dependencies
+          commands: androidDependencies
       - save_cache:
           paths:
             - ~/.gradle
@@ -28,33 +36,33 @@ jobs:
     steps:
       - checkout
       - update_deps
-      - run:
+      - execute_gradle:
           name: Build :common
-          command: ./gradlew :common:build --max-workers=2
-      - run:
+          commands: :common:build
+      - execute_gradle:
           name: Build :mobile
-          command: ./gradlew :mobile:build --max-workers=2
-      - run:
+          commands: :mobile:build
+      - execute_gradle:
           name: Build :wear
-          command: ./gradlew :wear:build --max-workers=2
+          commands: :wear:build
   code_quality_test:
     executor: main
     steps:
       - checkout
       - update_deps
-      - run:
+      - execute_gradle:
           name: Code Quality Check :common
-          command: ./gradlew :common:lint :common:spotlessCheck --max-workers=2
+          commands: :common:lint :common:spotlessCheck
       - store_artifacts:
           path: ./common/build/reports/
-      - run:
+      - execute_gradle:
           name: Code Quality Check :mobile
-          command: ./gradlew :mobile:lint :mobile:spotlessCheck --max-workers=2
+          commands: :mobile:lint :mobile:spotlessCheck
       - store_artifacts:
           path: ./mobile/build/reports/
-      - run:
+      - execute_gradle:
           name: Code Quality Check :wear
-          command: ./gradlew :wear:lint :wear:spotlessCheck --max-workers=2
+          commands: :wear:lint :wear:spotlessCheck
       - store_artifacts:
           path: ./wear/build/reports/
   unit_test:
@@ -62,12 +70,12 @@ jobs:
     steps:
       - checkout
       - update_deps
-      - run:
+      - execute_gradle:
           name: Run unit tests :mobile
-          command: ./gradlew :mobile:test --max-workers=2
-      - run:
+          commands: :mobile:test
+      - execute_gradle:
           name: Run unit tests :wear
-          command: ./gradlew :wear:test --max-workers=2
+          commands: :wear:test
       - run:
           name: Save test results
           command: |
