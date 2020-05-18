@@ -21,7 +21,7 @@ import java.io.Serializable
 class AppPackageInfo(packageManager: PackageManager, packageInfo: PackageInfo) : Serializable {
 
     val versionCode: Long = PackageInfoCompat.getLongVersionCode(packageInfo)
-    val versionName: String = packageInfo.versionName
+    val versionName: String? = packageInfo.versionName
 
     val packageName: String = packageInfo.packageName
     val packageLabel: String = getApplicationLabel(packageManager, packageInfo)
@@ -61,7 +61,7 @@ class AppPackageInfo(packageManager: PackageManager, packageInfo: PackageInfo) :
     }
 
     companion object {
-        const val serialVersionUID: Long = 4
+        const val serialVersionUID: Long = 5
 
         @Throws(IOException::class, ClassNotFoundException::class)
         fun fromByteArray(byteArray: ByteArray): AppPackageInfo {
