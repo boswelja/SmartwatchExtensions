@@ -19,7 +19,7 @@ import com.boswelja.devicemanager.common.recyclerview.adapter.SectionedAdapter
 import com.boswelja.devicemanager.common.recyclerview.item.IconTwoLineItem
 
 class AppsAdapter(private val itemClickCallback: ItemClickCallback<AppPackageInfo>) :
-        SectionedAdapter<AppPackageInfo>() {
+        SectionedAdapter<AppPackageInfo>(itemSortMode = SortMode.ASCENDING) {
 
     private var fallbackIcon: Drawable? = null
 
