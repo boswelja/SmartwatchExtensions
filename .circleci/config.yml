@@ -12,8 +12,10 @@ executors:
 commands:
   execute_gradle:
     parameters:
-      name: string
-      commands: string
+      name:
+        type: string
+      commands:
+        type: string
     steps:
       - run:
           name: <<parameters.name>>
