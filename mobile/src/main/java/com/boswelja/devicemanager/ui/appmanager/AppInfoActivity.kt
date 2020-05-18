@@ -44,6 +44,7 @@ class AppInfoActivity : BaseToolbarActivity() {
         setupButtons(appInfo)
         setupRequestedPermissions(appInfo)
         setInstallInfo(appInfo)
+        setVersionInfo(appInfo)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -171,6 +172,15 @@ class AppInfoActivity : BaseToolbarActivity() {
                 text = getString(R.string.app_info_last_updated_prefix).format(dateFormat.format(appInfo.lastUpdateTime))
             }
         }
+    }
+
+    private fun setVersionInfo(appInfo: AppPackageInfo) {
+        val versionString = if (!appInfo.versionName.isNullOrEmpty()) {
+            getString(R.string.app_info_version_prefix, appInfo.versionName)
+        } else {
+            getString(R.string.app_info_version_prefix, appInfo.versionCode.toString())
+        }
+        binding.appVersionView.text = versionString
     }
 
     companion object {
