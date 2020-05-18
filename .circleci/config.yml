@@ -38,13 +38,13 @@ jobs:
       - update_deps
       - execute_gradle:
           name: Build :common
-          commands: :common:build
+          commands: ":common:build"
       - execute_gradle:
           name: Build :mobile
-          commands: :mobile:build
+          commands: ":mobile:build"
       - execute_gradle:
           name: Build :wear
-          commands: :wear:build
+          commands: ":wear:build"
   code_quality_test:
     executor: main
     steps:
@@ -52,17 +52,17 @@ jobs:
       - update_deps
       - execute_gradle:
           name: Code Quality Check :common
-          commands: :common:lint :common:spotlessCheck
+          commands: ":common:lint :common:spotlessCheck"
       - store_artifacts:
           path: ./common/build/reports/
       - execute_gradle:
           name: Code Quality Check :mobile
-          commands: :mobile:lint :mobile:spotlessCheck
+          commands: ":mobile:lint :mobile:spotlessCheck"
       - store_artifacts:
           path: ./mobile/build/reports/
       - execute_gradle:
           name: Code Quality Check :wear
-          commands: :wear:lint :wear:spotlessCheck
+          commands: ":wear:lint :wear:spotlessCheck"
       - store_artifacts:
           path: ./wear/build/reports/
   unit_test:
@@ -72,10 +72,10 @@ jobs:
       - update_deps
       - execute_gradle:
           name: Run unit tests :mobile
-          commands: :mobile:test
+          commands: ":mobile:test"
       - execute_gradle:
           name: Run unit tests :wear
-          commands: :wear:test
+          commands: ":wear:test"
       - run:
           name: Save test results
           command: |
