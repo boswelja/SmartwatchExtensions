@@ -29,7 +29,6 @@ import com.boswelja.devicemanager.ui.dndsync.helper.DnDSyncHelperActivity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import timber.log.Timber
 
 class DnDSyncPreferenceFragment :
@@ -44,6 +43,8 @@ class DnDSyncPreferenceFragment :
     private lateinit var dndSyncToWatchPreference: SwitchPreference
     private lateinit var dndSyncToPhonePreference: SwitchPreference
     private lateinit var dndSyncWithTheaterPreference: SwitchPreference
+
+    private var changingKey: String? = null
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
         when (key) {
@@ -121,6 +122,17 @@ class DnDSyncPreferenceFragment :
                 val shouldEnable = resultCode == DnDSyncHelperActivity.RESULT_OK
                 setDnDSyncToWatch(shouldEnable)
             }
+            NOTI_POLICY_SETTINGS_REQUEST_CODE -> {
+                if (changingKey != null && Compat.canSetDnD(requireContext())) {
+                    coroutineScope.launch(Dispatchers.IO) {
+                        sharedPreferences.edit(commit = true) {
+                            putBoolean(changingKey, true)
+                        }
+                        getWatchConnectionManager()?.updatePreferenceOnWatch(changingKey!!)
+                        changingKey = null
+                    }
+                }
+            }
         }
     }
 
@@ -152,22 +164,27 @@ class DnDSyncPreferenceFragment :
      */
     private fun setDnDSyncFromWatchPreference(key: String, enabled: Boolean) {
         Timber.i("Setting $key to $enabled")
-        coroutineScope.launch(Dispatchers.IO) {
-            sharedPreferences.edit(commit = true) {
-                putBoolean(key, enabled)
-            }
-            if (enabled && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
-                    !notificationManager.isNotificationPolicyAccessGranted) {
-                Timber.i("Missing notification policy access, requesting")
-                withContext(Dispatchers.Main) {
-                    Toast.makeText(context,
-                            getString(R.string.interrupt_filter_sync_request_policy_access_message),
-                            Toast.LENGTH_SHORT).show()
-                    Intent(Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS).also {
-                        startActivity(it)
-                    }
+        var updateState = false
+        if (enabled) {
+            if (Compat.canSetDnD(requireContext())) {
+                updateState = true
+            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                changingKey = key
+                Toast.makeText(context,
+                        getString(R.string.interrupt_filter_sync_request_policy_access_message),
+                        Toast.LENGTH_SHORT).show()
+                Intent(Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS).also {
+                    startActivityForResult(it, NOTI_POLICY_SETTINGS_REQUEST_CODE)
                 }
-            } else {
+            }
+        } else {
+            updateState = true
+        }
+        if (updateState) {
+            coroutineScope.launch(Dispatchers.IO) {
+                sharedPreferences.edit(commit = true) {
+                    putBoolean(key, enabled)
+                }
                 getWatchConnectionManager()?.updatePreferenceOnWatch(key)
             }
         }
@@ -184,5 +201,6 @@ class DnDSyncPreferenceFragment :
 
     companion object {
         private const val HELPER_REQUEST_CODE = 12345
+        private const val NOTI_POLICY_SETTINGS_REQUEST_CODE = 54312
     }
 }
