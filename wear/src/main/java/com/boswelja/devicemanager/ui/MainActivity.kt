@@ -14,7 +14,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.edit
 import androidx.fragment.app.Fragment
 import androidx.preference.PreferenceManager
-import com.boswelja.devicemanager.BuildConfig
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.References.CAPABILITY_PHONE_APP
 import com.boswelja.devicemanager.common.setup.References.CHECK_WATCH_REGISTERED_PATH
@@ -66,12 +65,7 @@ class MainActivity :
 
         coroutineScope.launch(Dispatchers.IO) {
             val phoneId = getPhoneId()
-
-            if (!BuildConfig.DEBUG) {
-                tryCheckWatchRegistered(phoneId)
-            } else {
-                showExtensionsFragment()
-            }
+            tryCheckWatchRegistered(phoneId)
         }
     }
 

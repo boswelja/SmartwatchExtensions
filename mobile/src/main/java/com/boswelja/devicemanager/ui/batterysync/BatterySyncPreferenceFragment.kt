@@ -16,8 +16,6 @@ import androidx.preference.SeekBarPreference
 import androidx.preference.SwitchPreference
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.batterysync.BatterySyncWorker
-import com.boswelja.devicemanager.batterysync.WatchBatteryUpdateReceiver
-import com.boswelja.devicemanager.common.Compat
 import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_CHARGE_THRESHOLD_KEY
 import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_PHONE_CHARGE_NOTI_KEY
 import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_SYNC_ENABLED_KEY
@@ -99,13 +97,6 @@ class BatterySyncPreferenceFragment :
         super.onStart()
         Timber.d("onStart() called")
         preferenceManager.sharedPreferences.registerOnSharedPreferenceChangeListener(this)
-        if (preferenceManager.sharedPreferences.getBoolean(BATTERY_WATCH_CHARGE_NOTI_KEY, false) &&
-                !Compat.areNotificationsEnabled(requireContext(), WatchBatteryUpdateReceiver.BATTERY_CHARGED_NOTI_CHANNEL_ID)) {
-            preferenceManager.sharedPreferences.edit()
-                    .putBoolean(BATTERY_WATCH_CHARGE_NOTI_KEY, false)
-                    .apply()
-            activity.createSnackBar(getString(R.string.battery_sync_watch_charged_noti_channel_disabled))
-        }
     }
 
     override fun onStop() {

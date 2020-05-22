@@ -17,7 +17,6 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.appcompat.widget.AppCompatSpinner
 import androidx.appcompat.widget.AppCompatTextView
-import com.boswelja.devicemanager.BuildConfig
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.batterysync.widget.WatchBatteryWidget
 import com.boswelja.devicemanager.ui.watchmanager.WatchManagerActivity
@@ -224,10 +223,8 @@ abstract class BaseWatchPickerActivity :
      */
     private fun startSetupActivity() {
         Timber.d("startSetupActivity() called")
-        if (!BuildConfig.DEBUG) {
-            Intent(this@BaseWatchPickerActivity, WatchSetupActivity::class.java).also {
-                startActivityForResult(it, WATCH_SETUP_ACTIVITY_REQUEST_CODE)
-            }
+        Intent(this@BaseWatchPickerActivity, WatchSetupActivity::class.java).also {
+            startActivityForResult(it, WATCH_SETUP_ACTIVITY_REQUEST_CODE)
         }
     }
 
