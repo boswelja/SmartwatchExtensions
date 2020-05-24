@@ -51,4 +51,10 @@
     <string name="version_string">Version %s</string>
     <string name="open_play_store_title">Show in Google Play</string>
     <string name="open_app_info_title">Open App Info</string>
+
+    <string name="interrupt_filter_sync_active_noti_title">DnD Sync</string>
+    <string name="interrupt_filter_sync_with_theater_noti_desc">Syncing phone DnD with Theater Mode</string>
+    <string name="interrupt_filter_sync_all_noti_desc">Syncing phone DnD with Theater Mode and DnD</string>
+    <string name="interrupt_filter_sync_to_phone_noti_desc">Syncing phone DnD with DnD</string>
+    <string name="interrupt_filter_sync_none_noti_desc">There was a problem enabling DnD Sync</string>
 </resources>
