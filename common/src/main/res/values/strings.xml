@@ -4,9 +4,6 @@
 
     <string name="interrupt_filter_sync_active_noti_title">Do not Disturb Sync</string>
     <string name="interrupt_filter_sync_to_phone_noti_desc">Syncing phone Do not Disturb state with watch DnD</string>
-    <string name="interrupt_filter_sync_with_theater_noti_desc">Syncing phone Do not Disturb state with Theater Mode</string>
-    <string name="interrupt_filter_sync_all_noti_desc">Syncing phone Do not Disturb state with watch Theater Mode and DnD</string>
-    <string name="interrupt_filter_sync_none_noti_desc">There was a problem enabling Do not Disturb Sync, try again later</string>
 
     <string name="device_charged_noti_title">%s Charged</string>
     <string name="device_charged_noti_desc">Your %s is charged to above %s%%</string>
