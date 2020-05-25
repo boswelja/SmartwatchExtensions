@@ -18,8 +18,8 @@ import com.boswelja.devicemanager.ui.base.BaseToolbarActivity
 import com.boswelja.devicemanager.ui.common.LoadingFragment
 import com.google.android.gms.wearable.MessageClient
 import com.google.android.gms.wearable.Wearable
-import timber.log.Timber
 import java.io.InvalidClassException
+import timber.log.Timber
 
 class AppManagerActivity : BaseToolbarActivity() {
 
