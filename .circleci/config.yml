@@ -40,13 +40,13 @@ jobs:
       - update_deps
       - execute_gradle:
           task_name: Build :common
-          commands: :common:build
+          commands: :common:assemble
       - execute_gradle:
           task_name: Build :mobile
-          commands: :mobile:build
+          commands: :mobile:assemble
       - execute_gradle:
           task_name: Build :wear
-          commands: :wear:build
+          commands: :wear:assemble
   code_quality_test:
     executor: main
     steps:
