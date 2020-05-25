@@ -68,6 +68,7 @@
     <string name="app_manager_section_system_apps">System Apps</string>
     <string name="app_manager_activity_title">@string/main_app_manager_title</string>
     <string name="app_manager_activity_subtitle">Showing apps on %s</string>
+    <string name="app_manager_version_mismatch">App out of date. Please check for updates on both phone and watch.</string>
 
     <!-- Phone Lock preference strings -->
     <string name="main_phone_locking_title">Phone Locking</string>

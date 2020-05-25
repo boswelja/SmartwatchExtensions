@@ -19,6 +19,7 @@ import com.boswelja.devicemanager.ui.common.LoadingFragment
 import com.google.android.gms.wearable.MessageClient
 import com.google.android.gms.wearable.Wearable
 import timber.log.Timber
+import java.io.InvalidClassException
 
 class AppManagerActivity : BaseToolbarActivity() {
 
@@ -36,10 +37,14 @@ class AppManagerActivity : BaseToolbarActivity() {
         when (it.path) {
             References.GET_ALL_PACKAGES -> {
                 Timber.i("Updating app list")
-                val appPackageInfoList = AppPackageInfoList.fromByteArray(it.data)
-                val allApps = separateAppListToSections(appPackageInfoList)
-                ensureAppManagerVisible()
-                appManagerFragment!!.setAllApps(allApps)
+                try {
+                    val appPackageInfoList = AppPackageInfoList.fromByteArray(it.data)
+                    val allApps = separateAppListToSections(appPackageInfoList)
+                    ensureAppManagerVisible()
+                    appManagerFragment!!.setAllApps(allApps)
+                } catch (e: InvalidClassException) {
+                    createSnackBar(getString(R.string.app_manager_version_mismatch))
+                }
             }
         }
     }
