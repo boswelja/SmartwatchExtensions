@@ -77,7 +77,7 @@ dependencies {
 
     implementation 'com.android.billingclient:billing:2.2.1'
 
-    implementation 'com.google.android.material:material:1.2.0-alpha06'
+    implementation "com.google.android.material:material:$material_components"
     implementation "com.google.android.gms:play-services-wearable:$play_services_wearable"
 
     implementation 'com.jakewharton.timber:timber:4.7.1'

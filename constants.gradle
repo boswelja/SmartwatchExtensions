@@ -21,6 +21,8 @@ ext {
     androidx_preference = "1.1.1"
     androidx_constraintlayout = '2.0.0-beta6'
     androidx_room = '2.2.5'
+
+    material_components = "1.2.0-beta01"
 }
 
 static def generateVersionCode() {

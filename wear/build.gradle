@@ -60,7 +60,7 @@ dependencies {
 
     implementation "com.google.android.support:wearable:$wearable_support_lib"
     implementation "com.google.android.gms:play-services-wearable:$play_services_wearable"
-    implementation 'com.google.android.material:material:1.2.0-alpha06'
+    implementation "com.google.android.material:material:$material_components"
 
     compileOnly "com.google.android.wearable:wearable:$wearable_support_lib"
 
