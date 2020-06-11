@@ -64,7 +64,7 @@ dependencies {
 
     compileOnly "com.google.android.wearable:wearable:$wearable_support_lib"
 
-    debugImplementation 'androidx.fragment:fragment-testing:1.2.4'
+    debugImplementation 'androidx.fragment:fragment-testing:1.2.5'
 
     testImplementation 'junit:junit:4.13'
     testImplementation "com.google.truth:truth:1.0.1"

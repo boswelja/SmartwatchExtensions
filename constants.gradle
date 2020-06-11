@@ -15,14 +15,14 @@ ext {
 
     wearable_support_lib = "2.7.0"
     play_services_wearable = "17.0.0"
-    androidx_core_ktx = "1.4.0-alpha01"
+    androidx_core_ktx = '1.5.0-alpha01'
     androidx_wear = "1.0.0"
     androidx_appcompat = "1.1.0"
     androidx_preference = "1.1.1"
     androidx_constraintlayout = '2.0.0-beta6'
     androidx_room = '2.2.5'
 
-    material_components = "1.2.0-beta01"
+    material_components = '1.3.0-alpha01'
 }
 
 static def generateVersionCode() {

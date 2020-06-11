@@ -45,7 +45,7 @@ dependencies {
     implementation "androidx.constraintlayout:constraintlayout:$androidx_constraintlayout"
     implementation "androidx.preference:preference-ktx:$androidx_preference"
 
-    implementation 'com.google.android.material:material:1.2.0-beta01'
+    implementation "com.google.android.material:material:$material_components"
 
     implementation 'com.jakewharton.timber:timber:4.7.1'
 }
