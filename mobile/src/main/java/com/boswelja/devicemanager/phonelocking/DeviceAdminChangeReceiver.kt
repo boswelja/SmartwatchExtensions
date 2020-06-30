@@ -16,14 +16,14 @@ import timber.log.Timber
 
 class DeviceAdminChangeReceiver : DeviceAdminReceiver() {
 
-    override fun onEnabled(context: Context?, intent: Intent?) {
+    override fun onEnabled(context: Context, intent: Intent) {
         Timber.i("onEnabled() called")
         PreferenceManager.getDefaultSharedPreferences(context).edit()
                 .putBoolean(DEVICE_ADMIN_ENABLED_KEY, true)
                 .apply()
     }
 
-    override fun onDisabled(context: Context?, intent: Intent?) {
+    override fun onDisabled(context: Context, intent: Intent) {
         Timber.i("onDisabled() called")
         PreferenceManager.getDefaultSharedPreferences(context)
                 .edit()
