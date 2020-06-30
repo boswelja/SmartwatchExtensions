@@ -21,7 +21,8 @@ ext {
     androidx_preference = "1.1.1"
     androidx_constraintlayout = '2.0.0-beta7'
     androidx_room = '2.2.5'
-
+    androidx_lifecycle = "2.2.0"
+    androidx_arch = "2.1.0"
     material_components = '1.3.0-alpha01'
 }
 

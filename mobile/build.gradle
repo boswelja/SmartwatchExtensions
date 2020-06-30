@@ -67,6 +67,8 @@ dependencies {
     implementation "androidx.constraintlayout:constraintlayout:$androidx_constraintlayout"
     implementation "androidx.work:work-runtime-ktx:2.3.4"
     implementation 'androidx.browser:browser:1.2.0'
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$androidx_lifecycle"
+    implementation "androidx.lifecycle:lifecycle-common-java8:$androidx_lifecycle"
 
     implementation "androidx.room:room-runtime:$androidx_room"
     implementation "androidx.room:room-ktx:$androidx_room"
@@ -84,6 +86,7 @@ dependencies {
 
     debugImplementation 'androidx.fragment:fragment-testing:1.2.5'
 
+    testImplementation "androidx.arch.core:core-testing:$androidx_arch"
     testImplementation 'junit:junit:4.13'
     testImplementation "com.google.truth:truth:1.0.1"
 
