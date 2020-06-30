@@ -4,7 +4,7 @@ executors:
   main:
     working_directory: ~/WearableExtensions
     docker:
-      - image: circleci/android:api-30
+      - image: circleci/android:api-29
     environment:
       _JAVA_OPTIONS: -Xmx2g
       GRADLE_OPTS: -Dkotlin.compiler.execution.strategy=in-process
