@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/main_navigation"
+    app:startDestination="@id/extensionsFragment">
+
+    <action
+        android:id="@+id/action_global_extensionsFragment"
+        app:destination="@id/extensionsFragment" />
+
+    <action
+        android:id="@+id/action_global_messageFragment"
+        app:destination="@id/messageFragment" />
+
+    <action
+        android:id="@+id/action_global_appSettingsFragment"
+        app:destination="@id/appSettingsFragment" />
+
+    <action
+        android:id="@+id/action_global_appInfoFragment"
+        app:destination="@id/appInfoFragment" />
+
+    <fragment
+        android:id="@+id/extensionsFragment"
+        android:name="com.boswelja.devicemanager.ui.main.extensions.ExtensionsFragment"  />
+    <fragment
+        android:id="@+id/messageFragment"
+        android:name="com.boswelja.devicemanager.ui.main.messages.MessageFragment" />
+    <fragment
+        android:id="@+id/appSettingsFragment"
+        android:name="com.boswelja.devicemanager.ui.main.appsettings.AppSettingsFragment" />
+    <fragment
+        android:id="@+id/appInfoFragment"
+        android:name="com.boswelja.devicemanager.ui.main.appinfo.AppInfoFragment" />
+</navigation>
