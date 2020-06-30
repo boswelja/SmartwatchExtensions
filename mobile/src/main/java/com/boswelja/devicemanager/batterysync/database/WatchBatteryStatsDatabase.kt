@@ -35,12 +35,10 @@ abstract class WatchBatteryStatsDatabase : RoomDatabase() {
          * @param context [Context].
          * @return The newly opened [WatchBatteryStatsDatabase] instance.
          */
-        suspend fun open(context: Context): WatchBatteryStatsDatabase {
-            return withContext(Dispatchers.IO) {
-                return@withContext Room.databaseBuilder(context, WatchBatteryStatsDatabase::class.java, "battery-stats-db")
-                        .addMigrations(Migrations.MIGRATION_1_2)
-                        .build()
-            }
+        fun open(context: Context): WatchBatteryStatsDatabase {
+            return Room.databaseBuilder(context, WatchBatteryStatsDatabase::class.java, "battery-stats-db")
+                    .addMigrations(Migrations.MIGRATION_1_2)
+                    .build()
         }
     }
 }

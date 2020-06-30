@@ -13,12 +13,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.LiveData
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.batterysync.database.WatchBatteryStats
-import com.boswelja.devicemanager.batterysync.database.WatchBatteryStatsDatabase
 import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_SYNC_ENABLED_KEY
 import com.boswelja.devicemanager.databinding.SettingsWidgetBatterySyncBinding
 import com.boswelja.devicemanager.watchmanager.Watch
@@ -37,7 +36,9 @@ class BatterySyncPreferenceWidgetFragment :
         SharedPreferences.OnSharedPreferenceChangeListener,
         WatchConnectionListener {
 
+    private val statsModel: BatteryStatsModel by activityViewModels()
     private val batteryStatsObserver = Observer<WatchBatteryStats?> {
+        batteryStats = it
         updateBatteryStatsDisplay(it)
     }
 
@@ -50,8 +51,7 @@ class BatterySyncPreferenceWidgetFragment :
     private var watchBatteryUpdateTimer: Timer? = null
     private var lastUpdatedRefreshTimerStarted: Boolean = false
     private var batterySyncEnabled: Boolean = false
-    private var liveBatteryStats: LiveData<WatchBatteryStats?>? = null
-    private var batteryStatsDatabase: WatchBatteryStatsDatabase? = null
+    private var batteryStats: WatchBatteryStats? = null
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
         Timber.d("onSharedPreferenceChanged($key) called")
@@ -99,19 +99,10 @@ class BatterySyncPreferenceWidgetFragment :
         Timber.d("onStop() called")
         sharedPreferences.unregisterOnSharedPreferenceChangeListener(this)
         stopBatteryUpdateTimer()
-        batteryStatsDatabase?.close()
     }
 
     private fun setObservingWatchStats(watchId: String?) {
-        if (liveBatteryStats != null) {
-            liveBatteryStats!!.removeObserver(batteryStatsObserver)
-        }
-        if (watchId != null) {
-            liveBatteryStats = batteryStatsDatabase!!.batteryStatsDao()
-                    .getObservableStatsForWatch(watchId).also {
-                        it.observe(this, batteryStatsObserver)
-                    }
-        }
+        if (!watchId.isNullOrBlank()) statsModel.getBatteryStatsObservable(watchId).observe(this, batteryStatsObserver)
     }
 
     /**
@@ -128,12 +119,6 @@ class BatterySyncPreferenceWidgetFragment :
             updateBatteryStatsDisplay(null)
             stopBatteryUpdateTimer()
             setObservingWatchStats(null)
-            coroutineScope.launch(Dispatchers.IO) {
-                if (activity.watchConnectionManager?.connectedWatch != null) {
-                    batteryStatsDatabase?.batteryStatsDao()
-                            ?.deleteStatsForWatch(activity.watchConnectionManager?.connectedWatch!!.id)
-                }
-            }
         }
     }
 
@@ -232,7 +217,7 @@ class BatterySyncPreferenceWidgetFragment :
             watchBatteryUpdateTimer = fixedRateTimer(
                     BATTERY_SYNC_UPDATE_TIMER_NAME, false, 0,
                     TimeUnit.SECONDS.toMillis(LAST_UPDATED_REFRESH_TIMER_INTERVAL_SECONDS)) {
-                updateLastSyncTimeView(liveBatteryStats?.value)
+                updateLastSyncTimeView(batteryStats)
             }
             lastUpdatedRefreshTimerStarted = true
         } else {
@@ -274,7 +259,6 @@ class BatterySyncPreferenceWidgetFragment :
     fun setupWidget() {
         activity = getActivity() as BatterySyncPreferenceActivity
         coroutineScope.launch(Dispatchers.IO) {
-            batteryStatsDatabase = WatchBatteryStatsDatabase.open(requireContext())
             withContext(Dispatchers.Main) {
                 setBatterySyncState(batterySyncEnabled)
             }
