@@ -6,14 +6,10 @@ buildscript {
         maven { url "https://dl.bintray.com/kotlin/kotlin-eap" }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:4.2.0-alpha02'
+        classpath 'com.android.tools.build:gradle:4.2.0-alpha05'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath 'com.google.gms:google-services:4.3.3'
     }
-}
-
-plugins {
-    id "com.diffplug.gradle.spotless" version "4.4.0"
 }
 
 allprojects {
@@ -23,5 +19,4 @@ allprojects {
         mavenCentral()
         maven { url "https://dl.bintray.com/kotlin/kotlin-eap" }
     }
-    apply plugin: "com.diffplug.gradle.spotless"
 }
