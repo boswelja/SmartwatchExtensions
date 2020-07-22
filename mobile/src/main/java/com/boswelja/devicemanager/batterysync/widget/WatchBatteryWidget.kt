@@ -16,6 +16,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.widget.RemoteViews
+import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toBitmap
 import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.R
@@ -141,12 +142,14 @@ class WatchBatteryWidget : AppWidgetProvider() {
                 if (sharedPreferences.getBoolean(SHOW_WIDGET_BACKGROUND_KEY, true)) {
                     val opacity = sharedPreferences.getInt(WIDGET_BACKGROUND_OPACITY_KEY, 60)
                     val calculatedAlpha = ((opacity / 100.0f) * 255).toInt()
-                    context?.getDrawable(R.drawable.widget_background)!!.apply {
-                        alpha = calculatedAlpha
-                    }.also { widgetBackground ->
-                        remoteViews.setImageViewBitmap(
-                                R.id.widget_background,
-                                widgetBackground.toBitmap(width, height))
+                    context?.let {
+                        ContextCompat.getDrawable(context, R.drawable.widget_background)!!.apply {
+                            alpha = calculatedAlpha
+                        }.also { widgetBackground ->
+                            remoteViews.setImageViewBitmap(
+                                    R.id.widget_background,
+                                    widgetBackground.toBitmap(width, height))
+                        }
                     }
                 } else {
                     remoteViews.setInt(R.id.widget_background, "setBackgroundColor", 0)
@@ -154,18 +157,20 @@ class WatchBatteryWidget : AppWidgetProvider() {
             }
         }
 
-        // Set battery indicator image
-        context?.getDrawable(R.drawable.ic_watch_battery)!!.apply {
-            level = batteryPercent
-        }.also {
-            remoteViews.setImageViewBitmap(R.id.battery_indicator, it.toBitmap())
-        }
+        context?.let {
+            // Set battery indicator image
+            ContextCompat.getDrawable(context, R.drawable.ic_watch_battery)!!.apply {
+                level = batteryPercent
+            }.also {
+                remoteViews.setImageViewBitmap(R.id.battery_indicator, it.toBitmap())
+            }
 
-        // Set battery indicator text
-        if (batteryPercent >= 0) {
-            remoteViews.setTextViewText(R.id.battery_indicator_text, context.getString(R.string.battery_sync_percent_short, batteryPercent.toString()))
-        } else {
-            remoteViews.setTextViewText(R.id.battery_indicator_text, context.getString(R.string.battery_sync_disabled))
+            // Set battery indicator text
+            if (batteryPercent >= 0) {
+                remoteViews.setTextViewText(R.id.battery_indicator_text, context.getString(R.string.battery_sync_percent_short, batteryPercent.toString()))
+            } else {
+                remoteViews.setTextViewText(R.id.battery_indicator_text, context.getString(R.string.battery_sync_disabled))
+            }
         }
 
         return remoteViews

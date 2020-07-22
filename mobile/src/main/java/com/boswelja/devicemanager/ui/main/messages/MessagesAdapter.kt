@@ -18,6 +18,7 @@ import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.boswelja.devicemanager.R
@@ -155,8 +156,9 @@ internal class MessagesAdapter(private val fragment: MessageFragment) :
 
         private val alphaMultiplier: Int = 3
 
-        private val icon: Drawable = context.getDrawable(R.drawable.ic_delete)!!
-        private val swipeBackground: Drawable = context.getDrawable(R.drawable.recyclerview_swipe_background)!!
+        private val icon: Drawable = ContextCompat.getDrawable(context, R.drawable.ic_delete)!!
+        private val swipeBackground: Drawable =
+                ContextCompat.getDrawable(context, R.drawable.recyclerview_swipe_background)!!
         private val iconMargin = Utils.complexTypeDp(context.resources, 16f).toInt()
         private val iconMaxAlpha = icon.alpha
 

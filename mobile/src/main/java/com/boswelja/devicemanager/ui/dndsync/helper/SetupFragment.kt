@@ -94,7 +94,7 @@ internal class SetupFragment : Fragment() {
      */
     private fun createTextView(verticalPadding: Int, textString: String): AppCompatTextView {
         Timber.d("createTextView() called")
-        return AppCompatTextView(context).apply {
+        return AppCompatTextView(requireContext()).apply {
             layoutParams = FrameLayout.LayoutParams(
                     FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT)
             text = textString
