@@ -5,10 +5,12 @@ const val kotlinVersion = "1.4-M3"
 object BuildPlugins {
     object Versions {
         const val buildToolsVersion = "4.2.0-alpha05"
+        const val googleServicesVersion = "4.3.3"
     }
 
     const val androidGradlePlugin = "com.android.tools.build:gradle:${Versions.buildToolsVersion}"
     const val kotlinGradlePlugin = "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
+    const val googleServicesPlugin = "com.google.gms:google-services:${Versions.googleServicesVersion}"
 
     const val androidLibrary = "com.android.library"
     const val androidApplication = "com.android.application"
@@ -32,6 +34,7 @@ object Libraries {
         const val androidxCoreKtx = "1.4.0-alpha01"
         const val androidxFragment = "1.3.0-alpha06"
         const val androidxLifecycle = "2.3.0-alpha05"
+        const val androidxNavigation = "2.3.0"
         const val androidxPreference = "1.1.1"
         const val androidxRoom = "2.3.0-alpha01"
         const val androidxWear = "1.1.0-rc02"
@@ -57,6 +60,8 @@ object Libraries {
     const val androidxLifecycleViewModel = "androidx.lifecycle:lifecycle-viewmodel-ktx:${Versions.androidxLifecycle}"
     const val androidxLifecycleLiveData = "androidx.lifecycle:lifecycle-livedata-ktx:${Versions.androidxLifecycle}"
     const val androidxLifecycleCommon = "androidx.lifecycle:lifecycle-common-java8:${Versions.androidxLifecycle}"
+    const val androidxNavigationFragment = "androidx.navigation:navigation-fragment-ktx:${Versions.androidxNavigation}"
+    const val androidxNavigationUI = "androidx.navigation:navigation-ui-ktx:${Versions.androidxNavigation}"
     const val androidxPreference = "androidx.preference:preference:${Versions.androidxPreference}"
     const val androidxRoomRuntime = "androidx.room:room-runtime:${Versions.androidxRoom}"
     const val androidxRoomKtx = "androidx.room:room-ktx:${Versions.androidxRoom}"
@@ -101,6 +106,7 @@ object AndroidTestLibraries {
         const val androidxArch = TestLibraries.Versions.androidxArch
         const val androidxEspresso = "3.1.0"
         const val androidxRoom = Libraries.Versions.androidxRoom
+        const val androidxNavigation = Libraries.Versions.androidxNavigation
         const val androidxTest = "1.3.0-rc01"
         const val androidxWork = Libraries.Versions.androidxWork
 
@@ -110,6 +116,7 @@ object AndroidTestLibraries {
     const val androidxArch = "androidx.arch.core:core-testing:${Versions.androidxArch}"
     const val androidxEspresso = "androidx.test.espresso:espresso-core:${Versions.androidxEspresso}"
     const val androidxRoom = "androidx.room:room-testing:${Versions.androidxRoom}"
+    const val androidxNavigation = "androidx.navigation:navigation-testing:${Versions.androidxNavigation}"
     const val androidxTestRunner = "androidx.test:runner:${Versions.androidxTest}"
     const val androidxTestRules = "androidx.test:rules:${Versions.androidxTest}"
     const val androidxWork = "androidx.work:work-testing:${Versions.androidxWork}"
