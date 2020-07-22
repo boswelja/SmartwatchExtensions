@@ -68,15 +68,16 @@ class AppManagerService : Service() {
                 when (intent.action) {
                     Intent.ACTION_PACKAGE_ADDED -> {
                         AppPackageInfo(
-                                packageManager,
-                                packageManager.getPackageInfo(intent.data!!.encodedSchemeSpecificPart, 0))
-                                .also {
-                                    if (isReplacingPackage) {
-                                        sendAppUpdatedMessage(it)
-                                    } else {
-                                        sendAppAddedMessage(it)
-                                    }
+                            packageManager,
+                            packageManager.getPackageInfo(intent.data!!.encodedSchemeSpecificPart, 0)
+                        )
+                            .also {
+                                if (isReplacingPackage) {
+                                    sendAppUpdatedMessage(it)
+                                } else {
+                                    sendAppAddedMessage(it)
                                 }
+                            }
                     }
                     Intent.ACTION_PACKAGE_REMOVED -> {
                         if (!isReplacingPackage) {
@@ -140,22 +141,23 @@ class AppManagerService : Service() {
             val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             if (notificationManager.getNotificationChannel(APP_MANAGER_NOTI_CHANNEL_ID) == null) {
                 NotificationChannel(
-                        APP_MANAGER_NOTI_CHANNEL_ID,
-                        getString(R.string.app_manager_service_noti_channel_title),
-                        NotificationManager.IMPORTANCE_LOW).also {
+                    APP_MANAGER_NOTI_CHANNEL_ID,
+                    getString(R.string.app_manager_service_noti_channel_title),
+                    NotificationManager.IMPORTANCE_LOW
+                ).also {
                     notificationManager.createNotificationChannel(it)
                 }
             }
         }
         return NotificationCompat.Builder(this, APP_MANAGER_NOTI_CHANNEL_ID)
-                .setContentTitle(getString(R.string.app_manager_service_noti_title))
-                .setContentText(getString(R.string.app_manager_service_noti_desc))
-                .setSmallIcon(R.drawable.ic_app_manager)
-                .setOngoing(true)
-                .setShowWhen(false)
-                .setUsesChronometer(false)
-                .setPriority(NotificationCompat.PRIORITY_LOW)
-                .build()
+            .setContentTitle(getString(R.string.app_manager_service_noti_title))
+            .setContentText(getString(R.string.app_manager_service_noti_desc))
+            .setSmallIcon(R.drawable.ic_app_manager)
+            .setOngoing(true)
+            .setShowWhen(false)
+            .setUsesChronometer(false)
+            .setPriority(NotificationCompat.PRIORITY_LOW)
+            .build()
     }
 
     /**

@@ -20,7 +20,7 @@ import org.junit.Test
 class WelcomeFragmentTest {
 
     private fun createScenario(): FragmentScenario<WelcomeFragment> =
-            launchFragmentInContainer<WelcomeFragment>(themeResId = R.style.AppTheme)
+        launchFragmentInContainer<WelcomeFragment>(themeResId = R.style.AppTheme)
 
     @Test
     fun testViewVisibility() {

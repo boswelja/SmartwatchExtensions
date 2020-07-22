@@ -30,9 +30,9 @@ import kotlinx.coroutines.withContext
 import timber.log.Timber
 
 class BatterySyncPreferenceFragment :
-        BaseWatchPickerPreferenceFragment(),
-        SharedPreferences.OnSharedPreferenceChangeListener,
-        Preference.OnPreferenceChangeListener {
+    BaseWatchPickerPreferenceFragment(),
+    SharedPreferences.OnSharedPreferenceChangeListener,
+    Preference.OnPreferenceChangeListener {
 
     private val coroutineScope = MainScope()
 
@@ -139,9 +139,11 @@ class BatterySyncPreferenceFragment :
     private fun setBatteryChargeThresholdEnabled() {
         val sharedPreferences = batteryChargeThresholdPreference.sharedPreferences
         batteryChargeThresholdPreference.isEnabled =
-                sharedPreferences.getBoolean(BATTERY_SYNC_ENABLED_KEY, false) &&
-                        (sharedPreferences.getBoolean(BATTERY_PHONE_CHARGE_NOTI_KEY, false) ||
-                                sharedPreferences.getBoolean(BATTERY_WATCH_CHARGE_NOTI_KEY, false))
+            sharedPreferences.getBoolean(BATTERY_SYNC_ENABLED_KEY, false) &&
+            (
+                sharedPreferences.getBoolean(BATTERY_PHONE_CHARGE_NOTI_KEY, false) ||
+                    sharedPreferences.getBoolean(BATTERY_WATCH_CHARGE_NOTI_KEY, false)
+                )
         Timber.i("Battery charge threshold enabled = ${batteryChargeThresholdPreference.isEnabled}")
     }
 
@@ -155,7 +157,7 @@ class BatterySyncPreferenceFragment :
         coroutineScope.launch(Dispatchers.IO) {
             if (enabled) {
                 val workerStartSuccessful =
-                        BatterySyncWorker.startWorker(activity.watchConnectionManager)
+                    BatterySyncWorker.startWorker(activity.watchConnectionManager)
                 if (workerStartSuccessful) {
                     sharedPreferences.edit(commit = true) {
                         putBoolean(BATTERY_SYNC_ENABLED_KEY, enabled).apply()

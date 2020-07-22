@@ -203,7 +203,7 @@ class WatchInfoActivity : BaseToolbarActivity() {
         Timber.d("forgetWatch() called")
         coroutineScope.launch(Dispatchers.IO) {
             val success =
-                    watchConnectionManager?.forgetWatch(watch?.id) == true
+                watchConnectionManager?.forgetWatch(watch?.id) == true
             withContext(Dispatchers.Main) {
                 if (success) {
                     Timber.i("Successfully forgot watch")

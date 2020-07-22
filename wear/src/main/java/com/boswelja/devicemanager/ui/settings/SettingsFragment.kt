@@ -37,9 +37,9 @@ import com.google.android.gms.wearable.Wearable
 
 @Suppress("unused")
 class SettingsFragment :
-        PreferenceFragmentCompat(),
-        Preference.OnPreferenceChangeListener,
-        SharedPreferences.OnSharedPreferenceChangeListener {
+    PreferenceFragmentCompat(),
+    Preference.OnPreferenceChangeListener,
+    SharedPreferences.OnSharedPreferenceChangeListener {
 
     private lateinit var preferenceSyncHelper: PreferenceSyncHelper
     private lateinit var sharedPreferences: SharedPreferences
@@ -107,9 +107,9 @@ class SettingsFragment :
                     messageClient.addListener(interruptFilterAccessListener)
                     interruptFilterAccessListenerRegistered = true
                     messageClient.sendMessage(phoneId, REQUEST_INTERRUPT_FILTER_ACCESS_STATUS_PATH, null)
-                            .addOnFailureListener {
-                                notifyError()
-                            }
+                        .addOnFailureListener {
+                            notifyError()
+                        }
                 } else {
                     sharedPreferences.edit().putBoolean(key, value).apply()
                     preferenceSyncHelper.pushNewData(key)
@@ -162,24 +162,24 @@ class SettingsFragment :
 
     private fun setupBatterySyncPrefs() {
         findPreference<TwoStatePreference>(BATTERY_SYNC_ENABLED_KEY)!!
-                .onPreferenceChangeListener = this
+            .onPreferenceChangeListener = this
 
         findPreference<TwoStatePreference>(BATTERY_PHONE_CHARGE_NOTI_KEY)!!
-                .onPreferenceChangeListener = this
+            .onPreferenceChangeListener = this
 
         findPreference<TwoStatePreference>(BATTERY_WATCH_CHARGE_NOTI_KEY)!!
-                .onPreferenceChangeListener = this
+            .onPreferenceChangeListener = this
     }
 
     private fun setupDnDSyncPrefs() {
         findPreference<TwoStatePreference>(DND_SYNC_TO_WATCH_KEY)!!
-                .onPreferenceChangeListener = this
+            .onPreferenceChangeListener = this
 
         findPreference<TwoStatePreference>(DND_SYNC_TO_PHONE_KEY)!!
-                .onPreferenceChangeListener = this
+            .onPreferenceChangeListener = this
 
         findPreference<TwoStatePreference>(DND_SYNC_WITH_THEATER_KEY)!!
-                .onPreferenceChangeListener = this
+            .onPreferenceChangeListener = this
     }
 
     private fun notifyAdditionalSetupRequired(key: String) {
@@ -207,7 +207,7 @@ class SettingsFragment :
     private fun launchMobileApp(context: Context, phoneId: String, key: String) {
         if (phoneId.isNotEmpty()) {
             Wearable.getMessageClient(context)
-                    .sendMessage(phoneId, References.REQUEST_LAUNCH_APP_PATH, key.toByteArray(Charsets.UTF_8))
+                .sendMessage(phoneId, References.REQUEST_LAUNCH_APP_PATH, key.toByteArray(Charsets.UTF_8))
         }
     }
 }

@@ -52,8 +52,8 @@ object Utils {
      * @return true if Wearable Extensions is a Device Administrator, false otherwise.
      */
     fun isDeviceAdminEnabled(context: Context): Boolean =
-            PreferenceManager.getDefaultSharedPreferences(context)
-                    .getBoolean(DEVICE_ADMIN_ENABLED_KEY, false)
+        PreferenceManager.getDefaultSharedPreferences(context)
+            .getBoolean(DEVICE_ADMIN_ENABLED_KEY, false)
 
     /**
      * Checks whether Phone Locking accessibility service is enabled.
@@ -62,8 +62,8 @@ object Utils {
      */
     @RequiresApi(Build.VERSION_CODES.P)
     fun isAccessibilityServiceEnabled(context: Context): Boolean =
-            PreferenceManager.getDefaultSharedPreferences(context)
-                    .getBoolean(ACCESSIBILITY_SERVICE_ENABLED_KEY, false)
+        PreferenceManager.getDefaultSharedPreferences(context)
+            .getBoolean(ACCESSIBILITY_SERVICE_ENABLED_KEY, false)
 
     /**
      * Switch Phone Locking mode to Device Administrator.
@@ -74,11 +74,13 @@ object Utils {
         Timber.i("Switching to Device Administrator mode")
         context.packageManager.apply {
             setComponentEnabledSetting(
-                    ComponentName(context, PhoneLockingAccessibilityService::class.java),
-                    PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP)
+                ComponentName(context, PhoneLockingAccessibilityService::class.java),
+                PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP
+            )
             setComponentEnabledSetting(
-                    ComponentName(context, DeviceAdminChangeReceiver::class.java),
-                    PackageManager.COMPONENT_ENABLED_STATE_ENABLED, PackageManager.DONT_KILL_APP)
+                ComponentName(context, DeviceAdminChangeReceiver::class.java),
+                PackageManager.COMPONENT_ENABLED_STATE_ENABLED, PackageManager.DONT_KILL_APP
+            )
         }
     }
 
@@ -100,11 +102,13 @@ object Utils {
 
         context.packageManager.apply {
             setComponentEnabledSetting(
-                    ComponentName(context, PhoneLockingAccessibilityService::class.java),
-                    PackageManager.COMPONENT_ENABLED_STATE_ENABLED, PackageManager.DONT_KILL_APP)
+                ComponentName(context, PhoneLockingAccessibilityService::class.java),
+                PackageManager.COMPONENT_ENABLED_STATE_ENABLED, PackageManager.DONT_KILL_APP
+            )
             setComponentEnabledSetting(
-                    ComponentName(context, DeviceAdminChangeReceiver::class.java),
-                    PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP)
+                ComponentName(context, DeviceAdminChangeReceiver::class.java),
+                PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP
+            )
         }
     }
 }

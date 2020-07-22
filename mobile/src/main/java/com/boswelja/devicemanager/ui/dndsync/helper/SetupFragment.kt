@@ -96,7 +96,8 @@ internal class SetupFragment : Fragment() {
         Timber.d("createTextView() called")
         return AppCompatTextView(requireContext()).apply {
             layoutParams = FrameLayout.LayoutParams(
-                    FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT)
+                FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT
+            )
             text = textString
             textSize = 16.0f
             setTextIsSelectable(true)

@@ -100,10 +100,10 @@ abstract class WatchDatabase : RoomDatabase() {
          * Set to true if the main thread is not the UI thread to allow synchronous calls.
          */
         fun open(context: Context, allowMainThreadQueries: Boolean = false): WatchDatabase =
-                Room.databaseBuilder(context, WatchDatabase::class.java, "watch-db").apply {
-                    if (allowMainThreadQueries) allowMainThreadQueries()
-                    addMigrations(Migrations.MIGRATION_3_5, Migrations.MIGRATION_4_5)
-                    fallbackToDestructiveMigration()
-                }.build()
+            Room.databaseBuilder(context, WatchDatabase::class.java, "watch-db").apply {
+                if (allowMainThreadQueries) allowMainThreadQueries()
+                addMigrations(Migrations.MIGRATION_3_5, Migrations.MIGRATION_4_5)
+                fallbackToDestructiveMigration()
+            }.build()
     }
 }

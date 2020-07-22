@@ -36,9 +36,9 @@ import com.boswelja.devicemanager.ui.main.MainItems.SETTINGS_ITEM_ID
 import com.boswelja.devicemanager.ui.settings.SettingsActivity
 
 class MainFragment :
-        BaseSharedPreferenceFragment(),
-        SharedPreferences.OnSharedPreferenceChangeListener,
-        ItemClickCallback<MainItem> {
+    BaseSharedPreferenceFragment(),
+    SharedPreferences.OnSharedPreferenceChangeListener,
+    ItemClickCallback<MainItem> {
 
     private lateinit var binding: FragmentMainBinding
     private lateinit var mainAdapter: MainAdapter

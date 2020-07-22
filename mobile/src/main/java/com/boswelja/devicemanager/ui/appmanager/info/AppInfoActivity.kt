@@ -84,16 +84,17 @@ class AppInfoActivity : BaseToolbarActivity() {
         val requestsNoPermissions = !appInfo.requestedPermissions.isNullOrEmpty()
         binding.apply {
             permissionsInfo.findViewById<AppCompatTextView>(R.id.top_line).text =
-                    getString(R.string.app_info_requested_permissions_title)
+                getString(R.string.app_info_requested_permissions_title)
             permissionsInfo.findViewById<AppCompatTextView>(R.id.bottom_line).text =
-                    if (requestsNoPermissions) {
-                        val requestedPermissionCount = appInfo.requestedPermissions!!.size
-                        resources.getQuantityString(
-                                R.plurals.app_info_requested_permissions_count,
-                                requestedPermissionCount, requestedPermissionCount)
-                    } else {
-                        getString(R.string.app_info_requested_permissions_none)
-                    }
+                if (requestsNoPermissions) {
+                    val requestedPermissionCount = appInfo.requestedPermissions!!.size
+                    resources.getQuantityString(
+                        R.plurals.app_info_requested_permissions_count,
+                        requestedPermissionCount, requestedPermissionCount
+                    )
+                } else {
+                    getString(R.string.app_info_requested_permissions_none)
+                }
             permissionsInfo.setOnClickListener {
                 if (appInfo.requestedPermissions!!.isNotEmpty()) {
                     requestedPermissionsDialog.show(supportFragmentManager)

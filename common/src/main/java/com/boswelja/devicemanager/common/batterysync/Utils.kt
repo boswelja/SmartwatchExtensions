@@ -28,15 +28,16 @@ object Utils {
         val message = "$batteryPct|$charging"
 
         Wearable.getCapabilityClient(context)
-                .getCapability(target, CapabilityClient.FILTER_REACHABLE)
-                .addOnSuccessListener { capabilityInfo ->
-                    for (node in capabilityInfo.nodes) {
-                        val messageClient = Wearable.getMessageClient(context)
-                        messageClient.sendMessage(
-                                node.id,
-                                BATTERY_STATUS_PATH,
-                                message.toByteArray(Charsets.UTF_8))
-                    }
+            .getCapability(target, CapabilityClient.FILTER_REACHABLE)
+            .addOnSuccessListener { capabilityInfo ->
+                for (node in capabilityInfo.nodes) {
+                    val messageClient = Wearable.getMessageClient(context)
+                    messageClient.sendMessage(
+                        node.id,
+                        BATTERY_STATUS_PATH,
+                        message.toByteArray(Charsets.UTF_8)
+                    )
                 }
+            }
     }
 }

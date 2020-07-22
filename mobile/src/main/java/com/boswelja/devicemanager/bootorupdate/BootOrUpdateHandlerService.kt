@@ -56,7 +56,8 @@ class BootOrUpdateHandlerService : Service() {
         Timber.i("onStartCommand called")
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
             NotificationChannelHelper.createForBootOrUpdate(
-                    this, getSystemService(NotificationManager::class.java))
+                this, getSystemService(NotificationManager::class.java)
+            )
         when (intent?.action) {
             Intent.ACTION_MY_PACKAGE_REPLACED -> {
                 performUpdates()
@@ -99,12 +100,12 @@ class BootOrUpdateHandlerService : Service() {
      */
     private fun createBaseNotification(): NotificationCompat.Builder {
         return NotificationCompat.Builder(this, BOOT_OR_UPDATE_NOTI_CHANNEL_ID)
-                .setOngoing(true)
-                .setShowWhen(false)
-                .setUsesChronometer(false)
-                .setProgress(0, 0, true)
-                .setPriority(NotificationCompat.PRIORITY_LOW)
-                .setVisibility(NotificationCompat.VISIBILITY_PRIVATE)
+            .setOngoing(true)
+            .setShowWhen(false)
+            .setUsesChronometer(false)
+            .setProgress(0, 0, true)
+            .setPriority(NotificationCompat.PRIORITY_LOW)
+            .setVisibility(NotificationCompat.VISIBILITY_PRIVATE)
     }
 
     /**
@@ -113,9 +114,9 @@ class BootOrUpdateHandlerService : Service() {
      */
     private fun createUpdaterNotification(): Notification {
         return createBaseNotification()
-                .setContentTitle(getString(R.string.notification_update_handler_title))
-                .setSmallIcon(R.drawable.noti_ic_update)
-                .build()
+            .setContentTitle(getString(R.string.notification_update_handler_title))
+            .setSmallIcon(R.drawable.noti_ic_update)
+            .build()
     }
 
     /**
@@ -124,9 +125,9 @@ class BootOrUpdateHandlerService : Service() {
      */
     private fun createBootNotification(): Notification {
         return createBaseNotification()
-                .setContentTitle(getString(R.string.notification_boot_handler_title))
-                .setSmallIcon(R.drawable.noti_ic_update)
-                .build()
+            .setContentTitle(getString(R.string.notification_boot_handler_title))
+            .setSmallIcon(R.drawable.noti_ic_update)
+            .build()
     }
 
     /**
@@ -135,13 +136,14 @@ class BootOrUpdateHandlerService : Service() {
      */
     private suspend fun tryStartInterruptFilterSyncService(service: WatchManager) {
         val dndSyncToWatchEnabled =
-                service.getBoolPrefsForWatches(PreferenceKey.DND_SYNC_TO_WATCH_KEY)
-                        ?.any { it.value } == true
+            service.getBoolPrefsForWatches(PreferenceKey.DND_SYNC_TO_WATCH_KEY)
+                ?.any { it.value } == true
         Timber.i("tryStartInterruptFilterSyncService dndSyncToWatchEnabled = $dndSyncToWatchEnabled")
         if (dndSyncToWatchEnabled) {
             Compat.startForegroundService(
-                    applicationContext,
-                    Intent(applicationContext, DnDLocalChangeService::class.java))
+                applicationContext,
+                Intent(applicationContext, DnDLocalChangeService::class.java)
+            )
         }
     }
 
@@ -151,16 +153,19 @@ class BootOrUpdateHandlerService : Service() {
      */
     private suspend fun tryStartBatterySyncWorkers(service: WatchManager) {
         val watchBatterySyncInfo =
-                service.getBoolPrefsForWatches(PreferenceKey.BATTERY_SYNC_ENABLED_KEY)
+            service.getBoolPrefsForWatches(PreferenceKey.BATTERY_SYNC_ENABLED_KEY)
         if (watchBatterySyncInfo != null && watchBatterySyncInfo.isNotEmpty()) {
             for (batterySyncBoolPreference in watchBatterySyncInfo) {
                 if (batterySyncBoolPreference.value) {
                     Timber.i("tryStartBatterySyncWorkers Starting a Battery Sync Worker")
                     val batterySyncInterval =
-                            service.getIntPrefForWatch(batterySyncBoolPreference.watchId,
-                                    PreferenceKey.BATTERY_CHARGE_THRESHOLD_KEY)?.value?.toLong() ?: 15
+                        service.getIntPrefForWatch(
+                            batterySyncBoolPreference.watchId,
+                            PreferenceKey.BATTERY_CHARGE_THRESHOLD_KEY
+                        )?.value?.toLong() ?: 15
                     val batterySyncWorkerId = BatterySyncWorker.startWorker(
-                            applicationContext, batterySyncBoolPreference.watchId, batterySyncInterval)
+                        applicationContext, batterySyncBoolPreference.watchId, batterySyncInterval
+                    )
                     service.updateBatterySyncWorkerId(batterySyncBoolPreference.watchId, batterySyncWorkerId)
                 }
             }

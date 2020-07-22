@@ -10,8 +10,8 @@ package com.boswelja.devicemanager.common.appmanager
 import androidx.test.platform.app.InstrumentationRegistry
 import com.google.common.truth.Truth.assertThat
 import com.google.common.truth.Truth.assertWithMessage
-import java.io.IOException
 import org.junit.Test
+import java.io.IOException
 
 class AppPackageInfoTest {
 
@@ -24,9 +24,9 @@ class AppPackageInfoTest {
         val wearableExtensionsInfo = AppPackageInfo(context.packageManager, userAppInfo)
 
         assertThat(systemUiInfo.isSystemApp)
-                .isTrue()
+            .isTrue()
         assertThat(wearableExtensionsInfo.isSystemApp)
-                .isFalse()
+            .isFalse()
     }
 
     @Test
@@ -38,9 +38,9 @@ class AppPackageInfoTest {
         val wearableExtensionsInfo = AppPackageInfo(context.packageManager, userAppInfo)
 
         assertThat(systemUiInfo.hasLaunchActivity)
-                .isFalse()
+            .isFalse()
         assertThat(wearableExtensionsInfo.hasLaunchActivity)
-                .isTrue()
+            .isTrue()
     }
 
     @Test
@@ -53,34 +53,34 @@ class AppPackageInfoTest {
             val infoFromByteArray = AppPackageInfo.fromByteArray(byteArray)
 
             assertThat(infoFromByteArray.isSystemApp)
-                    .isEqualTo(wearableExtensionsInfo.isSystemApp)
+                .isEqualTo(wearableExtensionsInfo.isSystemApp)
             assertThat(infoFromByteArray.hasLaunchActivity)
-                    .isEqualTo(wearableExtensionsInfo.hasLaunchActivity)
+                .isEqualTo(wearableExtensionsInfo.hasLaunchActivity)
             assertThat(infoFromByteArray.installTime)
-                    .isEqualTo(wearableExtensionsInfo.installTime)
+                .isEqualTo(wearableExtensionsInfo.installTime)
             assertThat(infoFromByteArray.lastUpdateTime)
-                    .isEqualTo(wearableExtensionsInfo.lastUpdateTime)
+                .isEqualTo(wearableExtensionsInfo.lastUpdateTime)
             assertThat(infoFromByteArray.packageLabel)
-                    .isEqualTo(wearableExtensionsInfo.packageLabel)
+                .isEqualTo(wearableExtensionsInfo.packageLabel)
             assertThat(infoFromByteArray.packageName)
-                    .isEqualTo(wearableExtensionsInfo.packageName)
+                .isEqualTo(wearableExtensionsInfo.packageName)
             assertThat(infoFromByteArray.versionCode)
-                    .isEqualTo(wearableExtensionsInfo.versionCode)
+                .isEqualTo(wearableExtensionsInfo.versionCode)
             assertThat(infoFromByteArray.versionName)
-                    .isEqualTo(wearableExtensionsInfo.versionName)
+                .isEqualTo(wearableExtensionsInfo.versionName)
             if (wearableExtensionsInfo.requestedPermissions == null) {
                 assertThat(infoFromByteArray.requestedPermissions)
-                        .isNull()
+                    .isNull()
             } else {
                 assertThat(wearableExtensionsInfo.requestedPermissions)
-                        .asList()
-                        .containsExactly(infoFromByteArray.requestedPermissions)
-                        .inOrder()
+                    .asList()
+                    .containsExactly(infoFromByteArray.requestedPermissions)
+                    .inOrder()
             }
         } catch (e: IOException) {
             e.printStackTrace()
             assertWithMessage("Failed to convert between ByteArray and AppPackageInfo")
-                    .fail()
+                .fail()
         }
     }
 }

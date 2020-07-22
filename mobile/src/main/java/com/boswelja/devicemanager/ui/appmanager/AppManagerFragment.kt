@@ -78,9 +78,10 @@ class AppManagerFragment : Fragment(), ItemClickCallback<AppPackageInfo> {
         appsAdapter = AppsAdapter(this)
         binding.appsRecyclerview.apply {
             layoutManager = LinearLayoutManager(
-                    requireContext(),
-                    LinearLayoutManager.VERTICAL,
-                    false)
+                requireContext(),
+                LinearLayoutManager.VERTICAL,
+                false
+            )
             adapter = appsAdapter
         }
         if (allAppsCache != null) {
@@ -148,8 +149,11 @@ class AppManagerFragment : Fragment(), ItemClickCallback<AppPackageInfo> {
     private fun handlePackageRemoved(appPackageName: String) {
         val removedApp = appsAdapter.removeByPackageName(appPackageName)
         if (removedApp != null) {
-            activity.createSnackBar(getString(
-                    R.string.app_manager_uninstalled_prefix, removedApp.packageLabel))
+            activity.createSnackBar(
+                getString(
+                    R.string.app_manager_uninstalled_prefix, removedApp.packageLabel
+                )
+            )
         }
     }
 
@@ -159,8 +163,9 @@ class AppManagerFragment : Fragment(), ItemClickCallback<AppPackageInfo> {
      */
     private fun sendUninstallRequestMessage(appPackageInfo: AppPackageInfo) {
         messageClient.sendMessage(
-                watchId!!, REQUEST_UNINSTALL_PACKAGE,
-                appPackageInfo.packageName.toByteArray(Charsets.UTF_8))
+            watchId!!, REQUEST_UNINSTALL_PACKAGE,
+            appPackageInfo.packageName.toByteArray(Charsets.UTF_8)
+        )
     }
 
     /**
@@ -169,8 +174,9 @@ class AppManagerFragment : Fragment(), ItemClickCallback<AppPackageInfo> {
      */
     private fun sendOpenRequestMessage(appPackageInfo: AppPackageInfo) {
         messageClient.sendMessage(
-                watchId!!, REQUEST_OPEN_PACKAGE,
-                appPackageInfo.packageName.toByteArray(Charsets.UTF_8))
+            watchId!!, REQUEST_OPEN_PACKAGE,
+            appPackageInfo.packageName.toByteArray(Charsets.UTF_8)
+        )
     }
 
     /**

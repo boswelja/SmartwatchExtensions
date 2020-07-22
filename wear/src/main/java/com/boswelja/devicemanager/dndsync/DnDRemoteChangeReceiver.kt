@@ -37,9 +37,10 @@ class DnDRemoteChangeReceiver : WearableListenerService() {
                         putBoolean(DND_SYNC_TO_WATCH_KEY, false)
                     }
                     PreferenceSyncHelper(
-                            this,
-                            sharedPreferences,
-                            sharedPreferences.getString(PHONE_ID_KEY, "") ?: "").also {
+                        this,
+                        sharedPreferences,
+                        sharedPreferences.getString(PHONE_ID_KEY, "") ?: ""
+                    ).also {
                         it.pushNewData(DND_SYNC_TO_WATCH_KEY)
                     }
                 }

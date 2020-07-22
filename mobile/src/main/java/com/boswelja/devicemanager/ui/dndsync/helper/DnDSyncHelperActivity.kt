@@ -20,8 +20,8 @@ import com.boswelja.devicemanager.ui.common.LoadingFragment
 import com.boswelja.devicemanager.watchmanager.WatchManager
 import com.google.android.gms.wearable.MessageClient
 import com.google.android.gms.wearable.Wearable
-import java.math.BigInteger
 import timber.log.Timber
+import java.math.BigInteger
 
 class DnDSyncHelperActivity : BaseToolbarActivity() {
 

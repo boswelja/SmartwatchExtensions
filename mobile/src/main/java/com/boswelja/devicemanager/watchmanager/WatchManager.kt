@@ -30,16 +30,16 @@ import com.google.android.gms.wearable.Node
 import com.google.android.gms.wearable.NodeClient
 import com.google.android.gms.wearable.PutDataMapRequest
 import com.google.android.gms.wearable.Wearable
-import kotlin.collections.ArrayList
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
+import kotlin.collections.ArrayList
 
 class WatchManager :
-        Service(),
-        SharedPreferences.OnSharedPreferenceChangeListener {
+    Service(),
+    SharedPreferences.OnSharedPreferenceChangeListener {
 
     private val binder = Binder()
 
@@ -111,27 +111,27 @@ class WatchManager :
             Timber.i("Enabling auto-add watches")
             if (watchConnectionListener == null) {
                 watchConnectionListener =
-                        CapabilityClient.OnCapabilityChangedListener { capabilityInfo ->
-                            for (node in capabilityInfo.nodes) {
-                                Timber.i("Auto-registering a new watch")
-                                ensureWatchRegistered(node)
-                            }
-                }
+                    CapabilityClient.OnCapabilityChangedListener { capabilityInfo ->
+                        for (node in capabilityInfo.nodes) {
+                            Timber.i("Auto-registering a new watch")
+                            ensureWatchRegistered(node)
+                        }
+                    }
             }
             capabilityClient.addListener(watchConnectionListener!!, References.CAPABILITY_WATCH_APP)
 
             Timber.i("Checking for any new watches to register")
             capabilityClient
-                    .getCapability(References.CAPABILITY_WATCH_APP, CapabilityClient.FILTER_REACHABLE)
-                    .addOnSuccessListener {
-                        for (node in it.nodes) {
-                            Timber.i("Auto-registering a new watch")
-                            ensureWatchRegistered(node)
-                        }
+                .getCapability(References.CAPABILITY_WATCH_APP, CapabilityClient.FILTER_REACHABLE)
+                .addOnSuccessListener {
+                    for (node in it.nodes) {
+                        Timber.i("Auto-registering a new watch")
+                        ensureWatchRegistered(node)
                     }
-                    .addOnFailureListener {
-                        Timber.w("Failed to get capable watches")
-                    }
+                }
+                .addOnFailureListener {
+                    Timber.w("Failed to get capable watches")
+                }
         } else if (watchConnectionListener != null) {
             capabilityClient.removeListener(watchConnectionListener!!)
         }
@@ -196,9 +196,12 @@ class WatchManager :
         var capableNodes: Set<Node>? = null
         try {
             withContext(Dispatchers.IO) {
-                capableNodes = Tasks.await(capabilityClient.getCapability(
+                capableNodes = Tasks.await(
+                    capabilityClient.getCapability(
                         References.CAPABILITY_WATCH_APP,
-                        CapabilityClient.FILTER_REACHABLE)).nodes
+                        CapabilityClient.FILTER_REACHABLE
+                    )
+                ).nodes
             }
         } catch (e: Exception) {
             Timber.e(e)
@@ -287,21 +290,21 @@ class WatchManager :
             val watch = getWatchById(watchId)
             // Get updated preferences
             val batterySyncEnabled =
-                    watch?.boolPrefs?.get(PreferenceKey.BATTERY_SYNC_ENABLED_KEY) ?: false
+                watch?.boolPrefs?.get(PreferenceKey.BATTERY_SYNC_ENABLED_KEY) ?: false
             val phoneBatteryChargedNoti =
-                    watch?.boolPrefs?.get(PreferenceKey.BATTERY_PHONE_CHARGE_NOTI_KEY) ?: false
+                watch?.boolPrefs?.get(PreferenceKey.BATTERY_PHONE_CHARGE_NOTI_KEY) ?: false
             val watchBatteryChargedNoti =
-                    watch?.boolPrefs?.get(PreferenceKey.BATTERY_WATCH_CHARGE_NOTI_KEY) ?: false
+                watch?.boolPrefs?.get(PreferenceKey.BATTERY_WATCH_CHARGE_NOTI_KEY) ?: false
             val batteryChargeThreshold =
-                    watch?.intPrefs?.get(PreferenceKey.BATTERY_SYNC_INTERVAL_KEY) ?: 90
+                watch?.intPrefs?.get(PreferenceKey.BATTERY_SYNC_INTERVAL_KEY) ?: 90
             val dndSyncToWatch =
-                    watch?.boolPrefs?.get(PreferenceKey.DND_SYNC_TO_WATCH_KEY) ?: false
+                watch?.boolPrefs?.get(PreferenceKey.DND_SYNC_TO_WATCH_KEY) ?: false
             val dndSyncToPhone =
-                    watch?.boolPrefs?.get(PreferenceKey.DND_SYNC_TO_PHONE_KEY) ?: false
+                watch?.boolPrefs?.get(PreferenceKey.DND_SYNC_TO_PHONE_KEY) ?: false
             val dndSyncWithTheater =
-                    watch?.boolPrefs?.get(PreferenceKey.DND_SYNC_WITH_THEATER_KEY) ?: false
+                watch?.boolPrefs?.get(PreferenceKey.DND_SYNC_WITH_THEATER_KEY) ?: false
             val lockPhoneEnabled =
-                    watch?.boolPrefs?.get(PreferenceKey.PHONE_LOCKING_ENABLED_KEY) ?: false
+                watch?.boolPrefs?.get(PreferenceKey.PHONE_LOCKING_ENABLED_KEY) ?: false
 
             // Create PutDataMapRequest to send the new preferences
             PutDataMapRequest.create("/preference-change_$watchId").also {
@@ -394,9 +397,9 @@ class WatchManager :
                 if (watch != null) {
                     Timber.i("Getting watch prefs and status")
                     val boolPrefs =
-                            database.boolPreferenceDao().getAllForWatch(watch.id)
+                        database.boolPreferenceDao().getAllForWatch(watch.id)
                     val intPrefs =
-                            database.intPreferenceDao().getAllForWatch(watch.id)
+                        database.intPreferenceDao().getAllForWatch(watch.id)
                     val capableNodes = getCapableNodes()
                     val connectedNodes = getConnectedNodes()
                     return@withContext withContext(Dispatchers.Default) {
@@ -430,7 +433,7 @@ class WatchManager :
             val watch = connectedWatch
             if (watch != null) {
                 val syncedPrefUpdateReq =
-                        PutDataMapRequest.create("/preference-change_${watch.id}")
+                    PutDataMapRequest.create("/preference-change_${watch.id}")
                 when (preferenceKey) {
                     PreferenceKey.PHONE_LOCKING_ENABLED_KEY,
                     PreferenceKey.BATTERY_SYNC_ENABLED_KEY,
@@ -520,11 +523,11 @@ class WatchManager :
             if (!watchId.isNullOrEmpty()) {
                 Timber.i("Updating preference")
                 val isSuccessful =
-                        database.updatePrefInDatabase(watchId, preferenceKey, newValue)
+                    database.updatePrefInDatabase(watchId, preferenceKey, newValue)
                 if (isSuccessful && watchPreferenceChangeListeners.isNotEmpty()) {
                     for (watchPreferenceChangeListener in watchPreferenceChangeListeners) {
                         watchPreferenceChangeListener
-                                .onWatchPreferenceChanged(watchId, preferenceKey, newValue)
+                            .onWatchPreferenceChanged(watchId, preferenceKey, newValue)
                     }
                 }
                 return@withContext isSuccessful

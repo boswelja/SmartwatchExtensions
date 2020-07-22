@@ -18,8 +18,8 @@ import com.boswelja.devicemanager.ui.base.BaseToolbarActivity
 import com.boswelja.devicemanager.ui.common.LoadingFragment
 import com.google.android.gms.wearable.MessageClient
 import com.google.android.gms.wearable.Wearable
-import java.io.InvalidClassException
 import timber.log.Timber
+import java.io.InvalidClassException
 
 class AppManagerActivity : BaseToolbarActivity() {
 
@@ -64,12 +64,14 @@ class AppManagerActivity : BaseToolbarActivity() {
         setContentView(binding.root)
 
         setupToolbar(
-                binding.toolbarLayout.toolbar,
-                showTitle = true,
-                showUpButton = true,
-                toolbarSubtitle = getString(
-                        R.string.app_manager_activity_subtitle,
-                        intent.getStringExtra(EXTRA_WATCH_NAME)))
+            binding.toolbarLayout.toolbar,
+            showTitle = true,
+            showUpButton = true,
+            toolbarSubtitle = getString(
+                R.string.app_manager_activity_subtitle,
+                intent.getStringExtra(EXTRA_WATCH_NAME)
+            )
+        )
 
         showLoadingFragment()
 
@@ -102,8 +104,8 @@ class AppManagerActivity : BaseToolbarActivity() {
     private fun showLoadingFragment() {
         Timber.i("showLoadingFragment() called")
         supportFragmentManager.beginTransaction()
-                .replace(R.id.fragment_holder, LoadingFragment())
-                .commit()
+            .replace(R.id.fragment_holder, LoadingFragment())
+            .commit()
     }
 
     /**
@@ -112,21 +114,21 @@ class AppManagerActivity : BaseToolbarActivity() {
      * @return The newly created [ArrayList].
      */
     private fun separateAppListToSections(appPackageInfoList: AppPackageInfoList):
-            ArrayList<Pair<String, ArrayList<AppPackageInfo>>> {
-        val data = ArrayList<Pair<String, ArrayList<AppPackageInfo>>>()
-        val userApps = ArrayList<AppPackageInfo>()
-        userApps.addAll(appPackageInfoList.filterNot { it.isSystemApp })
-        Pair(getString(R.string.app_manager_section_user_apps), userApps).also {
-            data.add(it)
-        }
+        ArrayList<Pair<String, ArrayList<AppPackageInfo>>> {
+            val data = ArrayList<Pair<String, ArrayList<AppPackageInfo>>>()
+            val userApps = ArrayList<AppPackageInfo>()
+            userApps.addAll(appPackageInfoList.filterNot { it.isSystemApp })
+            Pair(getString(R.string.app_manager_section_user_apps), userApps).also {
+                data.add(it)
+            }
 
-        val systemApps = ArrayList<AppPackageInfo>()
-        systemApps.addAll(appPackageInfoList.filter { it.isSystemApp })
-        Pair(getString(R.string.app_manager_section_system_apps), systemApps).also {
-            data.add(it)
+            val systemApps = ArrayList<AppPackageInfo>()
+            systemApps.addAll(appPackageInfoList.filter { it.isSystemApp })
+            Pair(getString(R.string.app_manager_section_system_apps), systemApps).also {
+                data.add(it)
+            }
+            return data
         }
-        return data
-    }
 
     /**
      * Check whether the [AppManagerFragment] is currently visible, and show it if it's not.
@@ -138,9 +140,9 @@ class AppManagerActivity : BaseToolbarActivity() {
             try {
                 Timber.i("Trying to show AppManagerFragment")
                 supportFragmentManager.beginTransaction()
-                        .setCustomAnimations(R.anim.fade_in, R.anim.fade_out)
-                        .replace(R.id.fragment_holder, appManagerFragment!!)
-                        .commit()
+                    .setCustomAnimations(R.anim.fade_in, R.anim.fade_out)
+                    .replace(R.id.fragment_holder, appManagerFragment!!)
+                    .commit()
             } catch (e: IllegalStateException) {
                 Timber.e(e)
             }

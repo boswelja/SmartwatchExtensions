@@ -37,9 +37,9 @@ import timber.log.Timber
  * toolbar and reporting watch selection changes.
  */
 abstract class BaseWatchPickerActivity :
-        BaseToolbarActivity(),
-        AdapterView.OnItemSelectedListener,
-        WatchConnectionListener {
+    BaseToolbarActivity(),
+    AdapterView.OnItemSelectedListener,
+    WatchConnectionListener {
 
     private val watchConnManServiceConnection = object : WatchManager.Connection() {
         override fun onWatchManagerBound(watchManager: WatchManager) {
@@ -174,7 +174,7 @@ abstract class BaseWatchPickerActivity :
                         }
                         if (it.id == connectedWatchId) {
                             selectedWatchPosition =
-                                    (watchPickerSpinner.adapter as WatchPickerAdapter).getPosition(it)
+                                (watchPickerSpinner.adapter as WatchPickerAdapter).getPosition(it)
                         }
                     }
                     withContext(Dispatchers.Main) {
@@ -198,8 +198,9 @@ abstract class BaseWatchPickerActivity :
         Timber.d("setupWatchPickerSpinner() called")
         watchPickerSpinner = AppCompatSpinner(this).apply {
             layoutParams = ViewGroup.LayoutParams(
-                    ViewGroup.LayoutParams.WRAP_CONTENT,
-                    ViewGroup.LayoutParams.WRAP_CONTENT)
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+            )
             onItemSelectedListener = this@BaseWatchPickerActivity
             adapter = WatchPickerAdapter(this@BaseWatchPickerActivity)
         }.also {
@@ -240,10 +241,10 @@ abstract class BaseWatchPickerActivity :
         override fun getItemId(position: Int): Long = getItem(position)?.id?.toLong(36) ?: -1
 
         override fun getDropDownView(position: Int, convertView: View?, parent: ViewGroup): View =
-                getItemView(position, convertView, parent)
+            getItemView(position, convertView, parent)
 
         override fun getView(position: Int, convertView: View?, parent: ViewGroup): View =
-                getItemView(position, convertView, parent)
+            getItemView(position, convertView, parent)
 
         /**
          * Creates the [View] for an item in the spinner.
@@ -260,12 +261,14 @@ abstract class BaseWatchPickerActivity :
             }
             view!!.apply {
                 findViewById<AppCompatTextView>(R.id.title).text = watch.name
-                findViewById<AppCompatTextView>(R.id.subtitle).text = context.getString(when (watch.status) {
-                    WatchStatus.CONNECTED -> R.string.watch_status_connected
-                    WatchStatus.DISCONNECTED -> R.string.watch_status_disconnected
-                    WatchStatus.MISSING_APP -> R.string.watch_status_missing_app
-                    else -> R.string.watch_status_error
-                })
+                findViewById<AppCompatTextView>(R.id.subtitle).text = context.getString(
+                    when (watch.status) {
+                        WatchStatus.CONNECTED -> R.string.watch_status_connected
+                        WatchStatus.DISCONNECTED -> R.string.watch_status_disconnected
+                        WatchStatus.MISSING_APP -> R.string.watch_status_missing_app
+                        else -> R.string.watch_status_error
+                    }
+                )
             }
             return view
         }

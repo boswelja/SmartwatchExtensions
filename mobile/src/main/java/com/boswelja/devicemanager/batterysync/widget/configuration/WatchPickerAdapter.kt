@@ -16,7 +16,7 @@ import com.boswelja.devicemanager.common.recyclerview.item.IconTwoLineItem
 import com.boswelja.devicemanager.watchmanager.Watch
 
 class WatchPickerAdapter(private val activity: WatchBatteryWidgetConfigurationActivity) :
-        RecyclerView.Adapter<IconTwoLineItem>() {
+    RecyclerView.Adapter<IconTwoLineItem>() {
 
     private val watches: ArrayList<Watch> = ArrayList()
 

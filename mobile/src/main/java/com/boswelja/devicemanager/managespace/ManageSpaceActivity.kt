@@ -26,12 +26,12 @@ import com.boswelja.devicemanager.watchmanager.database.WatchDatabase
 import com.boswelja.devicemanager.widgetdb.WidgetDatabase
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Tasks
-import java.io.File
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
+import java.io.File
 
 class ManageSpaceActivity : BaseToolbarActivity() {
 
@@ -145,7 +145,7 @@ class ManageSpaceActivity : BaseToolbarActivity() {
      * @param statusTextRes The resource identifier used to get a new [String] to use for progress status.
      */
     private fun setProgressStatus(@StringRes statusTextRes: Int) =
-            setProgressStatus(getString(statusTextRes))
+        setProgressStatus(getString(statusTextRes))
 
     /**
      * Updates the progress status text.

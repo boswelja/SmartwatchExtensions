@@ -40,9 +40,9 @@ class SetupFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         binding.setupDeviceNameText.apply {
             nodeClient.localNode
-                    .addOnCompleteListener {
-                        text = it.result?.displayName ?: getString(R.string.error)
-                    }
+                .addOnCompleteListener {
+                    text = it.result?.displayName ?: getString(R.string.error)
+                }
         }
     }
 

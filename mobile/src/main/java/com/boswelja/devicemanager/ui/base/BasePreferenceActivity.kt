@@ -14,8 +14,8 @@ import com.boswelja.devicemanager.databinding.ActivitySettingsBinding
 import timber.log.Timber
 
 abstract class BasePreferenceActivity :
-        BaseToolbarActivity(),
-        PreferenceActivityInterface {
+    BaseToolbarActivity(),
+    PreferenceActivityInterface {
 
     private lateinit var binding: ActivitySettingsBinding
 

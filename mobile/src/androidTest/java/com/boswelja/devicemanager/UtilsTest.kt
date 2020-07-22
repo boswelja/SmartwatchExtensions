@@ -25,61 +25,61 @@ class UtilsTest {
 
     @get:Rule
     val notiPolicyPermissionRule: GrantPermissionRule =
-            GrantPermissionRule.grant(Manifest.permission.ACCESS_NOTIFICATION_POLICY)
+        GrantPermissionRule.grant(Manifest.permission.ACCESS_NOTIFICATION_POLICY)
 
     @Test
     fun setInterruptionFilter() {
         val notificationManager =
-                context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
         if (notificationManager.isNotificationPolicyAccessGranted) {
             assertWithMessage("Checking interrupt filter toggle on works")
-                    .that(Compat.setInterruptionFilter(context, true))
-                    .isTrue()
+                .that(Compat.setInterruptionFilter(context, true))
+                .isTrue()
             assertWithMessage("Checking interrupt filter toggle off works")
-                    .that(Compat.setInterruptionFilter(context, false))
-                    .isTrue()
+                .that(Compat.setInterruptionFilter(context, false))
+                .isTrue()
         } else {
             assertWithMessage("No notification policy access, setInterruptFilter should return false")
-                    .that(Compat.setInterruptionFilter(context, !Compat.isDndEnabled(context)))
-                    .isFalse()
+                .that(Compat.setInterruptionFilter(context, !Compat.isDndEnabled(context)))
+                .isFalse()
         }
     }
 
     @Test
     fun getAppIcon() {
         var sameIcons = Utils.getAppIcon(context, context.packageName).toBitmap()
-                .sameAs(context.packageManager.getApplicationIcon(context.packageName).toBitmap())
+            .sameAs(context.packageManager.getApplicationIcon(context.packageName).toBitmap())
         assertWithMessage("Checking package icon is correct")
-                .that(sameIcons)
-                .isTrue()
+            .that(sameIcons)
+            .isTrue()
 
         sameIcons = Utils.getAppIcon(context, "").toBitmap()
-                .sameAs(context.getDrawable(R.drawable.ic_app_icon_unknown)?.toBitmap())
+            .sameAs(context.getDrawable(R.drawable.ic_app_icon_unknown)?.toBitmap())
         assertWithMessage("Checking fallback icon is correct")
-                .that(sameIcons)
-                .isTrue()
+            .that(sameIcons)
+            .isTrue()
 
         sameIcons = Utils.getAppIcon(context, "", context.getDrawable(R.drawable.ic_app_icon_unknown)).toBitmap()
-                .sameAs(context.getDrawable(R.drawable.ic_app_icon_unknown)?.toBitmap())
+            .sameAs(context.getDrawable(R.drawable.ic_app_icon_unknown)?.toBitmap())
         assertWithMessage("Checking custom fallback drawable is correct")
-                .that(sameIcons)
-                .isTrue()
+            .that(sameIcons)
+            .isTrue()
     }
 
     @Test
     fun complexTypeDp() {
         val resources = context.resources
         assertThat(Utils.complexTypeDp(resources, 4f))
-                .isEqualTo((4f * resources.displayMetrics.density))
+            .isEqualTo((4f * resources.displayMetrics.density))
 
         assertThat(Utils.complexTypeDp(resources, 2f))
-                .isEqualTo((2f * resources.displayMetrics.density))
+            .isEqualTo((2f * resources.displayMetrics.density))
 
         assertThat(Utils.complexTypeDp(resources, 16f))
-                .isEqualTo((16f * resources.displayMetrics.density))
+            .isEqualTo((16f * resources.displayMetrics.density))
 
         assertThat(Utils.complexTypeDp(resources, 32f))
-                .isEqualTo((32f * resources.displayMetrics.density))
+            .isEqualTo((32f * resources.displayMetrics.density))
     }
 }

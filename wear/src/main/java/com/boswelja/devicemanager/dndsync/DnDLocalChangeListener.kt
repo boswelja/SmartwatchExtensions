@@ -111,10 +111,12 @@ class DnDLocalChangeListener : Service() {
                 flags = Intent.FLAG_ACTIVITY_NEW_TASK
             }
 
-            PendingIntent.getActivity(this@DnDLocalChangeListener,
-                    START_ACTIVITY_FROM_NOTI_ID,
-                    launchIntent,
-                    PendingIntent.FLAG_CANCEL_CURRENT).also {
+            PendingIntent.getActivity(
+                this@DnDLocalChangeListener,
+                START_ACTIVITY_FROM_NOTI_ID,
+                launchIntent,
+                PendingIntent.FLAG_CANCEL_CURRENT
+            ).also {
                 setContentIntent(it)
             }
         }.also {
@@ -128,8 +130,9 @@ class DnDLocalChangeListener : Service() {
             notificationManager.notify(DND_SYNC_LOCAL_NOTI_ID, createNotification())
             if (enabled) {
                 applicationContext.contentResolver.registerContentObserver(
-                        Settings.Global.CONTENT_URI, true,
-                        theaterModeObserver)
+                    Settings.Global.CONTENT_URI, true,
+                    theaterModeObserver
+                )
             } else {
                 applicationContext.contentResolver.unregisterContentObserver(theaterModeObserver)
                 tryStop()
@@ -162,9 +165,10 @@ class DnDLocalChangeListener : Service() {
 
         if (notificationManager.getNotificationChannel(DND_SYNC_NOTI_CHANNEL_ID) == null) {
             NotificationChannel(
-                    DND_SYNC_NOTI_CHANNEL_ID,
-                    getString(R.string.noti_channel_dnd_sync_title),
-                    NotificationManager.IMPORTANCE_LOW).apply {
+                DND_SYNC_NOTI_CHANNEL_ID,
+                getString(R.string.noti_channel_dnd_sync_title),
+                NotificationManager.IMPORTANCE_LOW
+            ).apply {
                 enableLights(false)
                 enableVibration(false)
                 setShowBadge(false)

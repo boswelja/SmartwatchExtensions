@@ -36,21 +36,35 @@ class MainFragmentTest {
         }
         Thread.sleep(100)
         onView(withId(R.id.recycler_view))
-                .check(matches(hasDescendant(withText(
-                        context.getString(R.string.phone_battery_percent, batteryPercent.toString())))))
+            .check(
+                matches(
+                    hasDescendant(
+                        withText(
+                            context.getString(R.string.phone_battery_percent, batteryPercent.toString())
+                        )
+                    )
+                )
+            )
         batteryPercent = 75
         scenario.onFragment {
             it.updateBatterySyncView(true, batteryPercent)
         }
         Thread.sleep(100)
         onView(withId(R.id.recycler_view))
-                .check(matches(hasDescendant(withText(
-                        context.getString(R.string.phone_battery_percent, batteryPercent.toString())))))
+            .check(
+                matches(
+                    hasDescendant(
+                        withText(
+                            context.getString(R.string.phone_battery_percent, batteryPercent.toString())
+                        )
+                    )
+                )
+            )
         scenario.onFragment {
             it.updatePhoneLockingView(true)
         }
         Thread.sleep(100)
         onView(withId(R.id.recycler_view))
-                .check(matches(hasDescendant(withText(context.getString(R.string.lock_phone_label)))))
+            .check(matches(hasDescendant(withText(context.getString(R.string.lock_phone_label)))))
     }
 }

@@ -30,15 +30,15 @@ class BatterySyncPreferenceWidgetFragmentTest {
         createScenario()
         // Set all views to their largest size and make them visible.
         onView(withId(R.id.watch_battery_percent))
-                .perform(setVisibility(View.VISIBLE))
-                .perform(setText("Battery Sync Disabled"))
-                .check(matches(isCompletelyDisplayed()))
+            .perform(setVisibility(View.VISIBLE))
+            .perform(setText("Battery Sync Disabled"))
+            .check(matches(isCompletelyDisplayed()))
         onView(withId(R.id.watch_battery_indicator))
-                .perform(setVisibility(View.VISIBLE))
-                .check(matches(isCompletelyDisplayed()))
+            .perform(setVisibility(View.VISIBLE))
+            .check(matches(isCompletelyDisplayed()))
         onView(withId(R.id.last_updated_time))
-                .perform(setVisibility(View.VISIBLE))
-                .perform(setText("Last updated less than a minute ago"))
-                .check(matches(isCompletelyDisplayed()))
+            .perform(setVisibility(View.VISIBLE))
+            .perform(setText("Last updated less than a minute ago"))
+            .check(matches(isCompletelyDisplayed()))
     }
 }

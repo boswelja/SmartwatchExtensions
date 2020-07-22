@@ -35,7 +35,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class MainActivity :
-        AppCompatActivity(),
+    AppCompatActivity(),
     MessageClient.OnMessageReceivedListener {
 
     private val coroutineScope = MainScope()
@@ -118,8 +118,10 @@ class MainActivity :
                 it.commit()
             }
         } catch (e: IllegalStateException) {
-            Log.e("MainActivity",
-                    "Tried to commit a FragmentTransaction after onSaveInstanceState")
+            Log.e(
+                "MainActivity",
+                "Tried to commit a FragmentTransaction after onSaveInstanceState"
+            )
         }
     }
 
@@ -133,7 +135,7 @@ class MainActivity :
             if (storedId.isNullOrEmpty()) {
                 // No known connected phone, attempting to get a new ID
                 val node = Tasks.await(Wearable.getNodeClient(this@MainActivity).connectedNodes)
-                        .firstOrNull()
+                    .firstOrNull()
                 sharedPreferences.edit {
                     putString(PHONE_ID_KEY, node?.id)
                 }
@@ -154,15 +156,17 @@ class MainActivity :
     private suspend fun tryCheckWatchRegistered(phoneId: String?) {
         withContext(Dispatchers.IO) {
             if (!phoneId.isNullOrEmpty()) {
-                val isCapable = Tasks.await(capabilityClient
-                        .getCapability(CAPABILITY_PHONE_APP, CapabilityClient.FILTER_ALL))
-                        .nodes.any { it.id == phoneId }
+                val isCapable = Tasks.await(
+                    capabilityClient
+                        .getCapability(CAPABILITY_PHONE_APP, CapabilityClient.FILTER_ALL)
+                )
+                    .nodes.any { it.id == phoneId }
                 if (isCapable) {
                     messageClient.addListener(this@MainActivity)
                     messageClient.sendMessage(phoneId, CHECK_WATCH_REGISTERED_PATH, null)
-                            .addOnFailureListener {
-                                showNoConnectionFragment()
-                            }
+                        .addOnFailureListener {
+                            showNoConnectionFragment()
+                        }
                 } else {
                     showSetupFragment(false)
                 }

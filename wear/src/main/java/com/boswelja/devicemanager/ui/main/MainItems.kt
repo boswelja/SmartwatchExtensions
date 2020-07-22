@@ -17,22 +17,30 @@ object MainItems {
     const val ABOUT_APP_ITEM_ID = 3
 
     val EXTENSIONS = arrayListOf(
-            MainItem(BATTERY_SYNC_ITEM_ID,
-                    R.string.battery_sync_disabled,
-                    R.drawable.ic_phone_battery,
-                    enabled = false),
-            MainItem(PHONE_LOCKING_ITEM_ID,
-                    R.string.lock_phone_disabled_message,
-                    R.drawable.ic_phone_lock,
-                    enabled = false)
+        MainItem(
+            BATTERY_SYNC_ITEM_ID,
+            R.string.battery_sync_disabled,
+            R.drawable.ic_phone_battery,
+            enabled = false
+        ),
+        MainItem(
+            PHONE_LOCKING_ITEM_ID,
+            R.string.lock_phone_disabled_message,
+            R.drawable.ic_phone_lock,
+            enabled = false
+        )
     )
 
     val APP = arrayListOf(
-            MainItem(SETTINGS_ITEM_ID,
-                    R.string.navigation_settings_title,
-                    R.drawable.ic_settings),
-            MainItem(ABOUT_APP_ITEM_ID,
-                    R.string.about_app_title,
-                    R.drawable.ic_about)
+        MainItem(
+            SETTINGS_ITEM_ID,
+            R.string.navigation_settings_title,
+            R.drawable.ic_settings
+        ),
+        MainItem(
+            ABOUT_APP_ITEM_ID,
+            R.string.about_app_title,
+            R.drawable.ic_about
+        )
     )
 }

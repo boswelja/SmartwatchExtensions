@@ -37,8 +37,8 @@ abstract class WatchBatteryStatsDatabase : RoomDatabase() {
          */
         fun open(context: Context): WatchBatteryStatsDatabase {
             return Room.databaseBuilder(context, WatchBatteryStatsDatabase::class.java, "battery-stats-db")
-                    .addMigrations(Migrations.MIGRATION_1_2)
-                    .build()
+                .addMigrations(Migrations.MIGRATION_1_2)
+                .build()
         }
     }
 }

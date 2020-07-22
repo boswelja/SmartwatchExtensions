@@ -18,10 +18,10 @@ class MainAdapter(
     private val itemCallback: ItemClickCallback<MainItem>,
     items: ArrayList<Pair<String, ArrayList<MainItem>>>
 ) :
-        SectionedAdapter<MainItem>(items, showSectionDividers = false) {
+    SectionedAdapter<MainItem>(items, showSectionDividers = false) {
 
     override fun onCreateItemViewHolder(layoutInflater: LayoutInflater, parent: ViewGroup):
-            RecyclerView.ViewHolder = IconOneLineItem.create(layoutInflater, parent)
+        RecyclerView.ViewHolder = IconOneLineItem.create(layoutInflater, parent)
 
     override fun onBindItemViewHolder(holder: RecyclerView.ViewHolder, item: MainItem) {
         if (holder is IconOneLineItem) {
@@ -34,7 +34,7 @@ class MainAdapter(
                 iconView.setImageResource(item.iconRes)
                 if (item.extra > -1) {
                     textView.text =
-                            textView.context.getString(item.textRes, item.extra.toString())
+                        textView.context.getString(item.textRes, item.extra.toString())
                     iconView.setImageLevel(item.extra)
                 } else {
                     textView.setText(item.textRes)

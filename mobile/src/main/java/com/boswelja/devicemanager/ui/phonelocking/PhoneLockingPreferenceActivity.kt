@@ -14,5 +14,5 @@ import com.boswelja.devicemanager.ui.base.BaseWatchPickerPreferenceFragment
 class PhoneLockingPreferenceActivity : BaseWatchPickerPreferenceActivity() {
     override fun getWidgetFragment(): Fragment? = null
     override fun getPreferenceFragment(): BaseWatchPickerPreferenceFragment =
-            PhoneLockingPreferenceFragment()
+        PhoneLockingPreferenceFragment()
 }

@@ -29,10 +29,10 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 
 class PhoneLockingPreferenceFragment :
-        BaseWatchPickerPreferenceFragment(),
-        SharedPreferences.OnSharedPreferenceChangeListener,
-        Preference.OnPreferenceClickListener,
-        Preference.OnPreferenceChangeListener {
+    BaseWatchPickerPreferenceFragment(),
+    SharedPreferences.OnSharedPreferenceChangeListener,
+    Preference.OnPreferenceClickListener,
+    Preference.OnPreferenceChangeListener {
 
     private val coroutineScope = MainScope()
 
@@ -47,13 +47,13 @@ class PhoneLockingPreferenceFragment :
         when (key) {
             PHONE_LOCKING_ENABLED_KEY -> {
                 val phoneLockingEnabled =
-                        sharedPreferences!!.getBoolean(key, false)
+                    sharedPreferences!!.getBoolean(key, false)
                 setPhoneLockingEnabled(phoneLockingEnabled)
             }
             PHONE_LOCKING_MODE_KEY -> {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
                     val phoneLockingMode =
-                            sharedPreferences?.getString(PHONE_LOCKING_MODE_KEY, "0")
+                        sharedPreferences?.getString(PHONE_LOCKING_MODE_KEY, "0")
                     setPhoneLockingMode(phoneLockingMode)
                 }
             }
@@ -151,7 +151,7 @@ class PhoneLockingPreferenceFragment :
             Timber.i("Phone locking mode not available, disabling")
             phoneLockModePreference.isEnabled = false
             phoneLockModePreference.summary =
-                    getString(R.string.pref_phone_locking_mode_no_option_summary)
+                getString(R.string.pref_phone_locking_mode_no_option_summary)
         }
     }
 
@@ -160,9 +160,11 @@ class PhoneLockingPreferenceFragment :
      * @return true if phone locking is in accessibility mode, false otherwise.
      */
     private fun isInAccessibilityMode(): Boolean =
-            Build.VERSION.SDK_INT >= Build.VERSION_CODES.P &&
-                    (sharedPreferences.getString(PHONE_LOCKING_MODE_KEY, "0") ==
-                            PHONE_LOCKING_MODE_ACCESSIBILITY_SERVICE)
+        Build.VERSION.SDK_INT >= Build.VERSION_CODES.P &&
+            (
+                sharedPreferences.getString(PHONE_LOCKING_MODE_KEY, "0") ==
+                    PHONE_LOCKING_MODE_ACCESSIBILITY_SERVICE
+                )
 
     /**
      * Opens the device settings that correspond to phone locking mode.
@@ -178,8 +180,9 @@ class PhoneLockingPreferenceFragment :
             Timber.i("Opening device admin settings")
             Intent().apply {
                 ComponentName(
-                        "com.android.settings",
-                        "com.android.settings.DeviceAdminSettings").also {
+                    "com.android.settings",
+                    "com.android.settings.DeviceAdminSettings"
+                ).also {
                     component = it
                 }
             }.also {
@@ -242,9 +245,10 @@ class PhoneLockingPreferenceFragment :
                 putBoolean(PHONE_LOCKING_ENABLED_KEY, false)
             }
             snackbar = Snackbar.make(
-                    requireView(),
-                    R.string.phone_locking_disabled_by_mode_change,
-                    Snackbar.LENGTH_INDEFINITE)
+                requireView(),
+                R.string.phone_locking_disabled_by_mode_change,
+                Snackbar.LENGTH_INDEFINITE
+            )
             snackbar!!.show()
         }
         when (newMode) {
@@ -266,11 +270,11 @@ class PhoneLockingPreferenceFragment :
     private fun updateOpenDeviceSettingsTitle() {
         Timber.d("updateOpenDeviceSettingsTitle() called")
         openDeviceSettingsPreference.title =
-                if (isInAccessibilityMode()) {
-                    getString(R.string.pref_phone_locking_accessibility_settings_title)
-                } else {
-                    getString(R.string.pref_phone_locking_admin_settings_title)
-                }
+            if (isInAccessibilityMode()) {
+                getString(R.string.pref_phone_locking_accessibility_settings_title)
+            } else {
+                getString(R.string.pref_phone_locking_admin_settings_title)
+            }
     }
 
     companion object {
