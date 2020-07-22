@@ -22,8 +22,8 @@ import com.boswelja.devicemanager.ui.widget.WidgetSettingsActivity
 import timber.log.Timber
 
 class AppSettingsFragment :
-        BaseWatchPickerPreferenceFragment(),
-        Preference.OnPreferenceClickListener {
+    BaseWatchPickerPreferenceFragment(),
+    Preference.OnPreferenceClickListener {
 
     private lateinit var openNotiSettingsPreference: Preference
     private lateinit var daynightModePreference: ListPreference

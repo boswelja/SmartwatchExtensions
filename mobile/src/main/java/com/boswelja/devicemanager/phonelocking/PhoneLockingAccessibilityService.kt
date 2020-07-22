@@ -30,9 +30,9 @@ import timber.log.Timber
 
 @RequiresApi(Build.VERSION_CODES.P)
 class PhoneLockingAccessibilityService :
-        AccessibilityService(),
-        MessageClient.OnMessageReceivedListener,
-        SharedPreferences.OnSharedPreferenceChangeListener {
+    AccessibilityService(),
+    MessageClient.OnMessageReceivedListener,
+    SharedPreferences.OnSharedPreferenceChangeListener {
 
     private val coroutineScope = MainScope()
 
@@ -100,8 +100,8 @@ class PhoneLockingAccessibilityService :
         coroutineScope.launch(Dispatchers.IO) {
             val watchId = messageEvent.sourceNodeId
             val phoneLockingEnabledForWatch =
-                    watchConnectionManager?.getBoolPrefForWatch(watchId, PHONE_LOCKING_ENABLED_KEY)
-                            ?.value == true
+                watchConnectionManager?.getBoolPrefForWatch(watchId, PHONE_LOCKING_ENABLED_KEY)
+                    ?.value == true
             if (phoneLockingEnabledForWatch) {
                 Timber.i("Trying to lock phone")
                 withContext(Dispatchers.Main) {

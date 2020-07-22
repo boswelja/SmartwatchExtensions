@@ -49,10 +49,10 @@ class AppPackageInfoList(packageManager: PackageManager) : List<AppPackageInfo>,
     override fun subList(fromIndex: Int, toIndex: Int): List<AppPackageInfo> = appsList.subList(fromIndex, toIndex)
 
     private fun filterAppsList(apps: List<AppPackageInfo>): List<AppPackageInfo> =
-            apps.filter {
-                (!blacklistedApps.contains(it.packageName)) &&
-                        ((it.isSystemApp && it.hasLaunchActivity) || (!it.isSystemApp))
-            }
+        apps.filter {
+            (!blacklistedApps.contains(it.packageName)) &&
+                ((it.isSystemApp && it.hasLaunchActivity) || (!it.isSystemApp))
+        }
 
     @Throws(IOException::class)
     fun toByteArray(): ByteArray {
@@ -64,7 +64,7 @@ class AppPackageInfoList(packageManager: PackageManager) : List<AppPackageInfo>,
 
     companion object {
         private val blacklistedApps = arrayOf(
-                "com.google.android.gms"
+            "com.google.android.gms"
         )
         const val serialVersionUID: Long = 2
 

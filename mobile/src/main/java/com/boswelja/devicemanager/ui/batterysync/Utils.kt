@@ -27,10 +27,11 @@ object Utils {
             val message = "$batteryPct|$charging"
 
             Wearable.getMessageClient(context)
-                    .sendMessage(
-                            target,
-                            BATTERY_STATUS_PATH,
-                            message.toByteArray(Charsets.UTF_8))
+                .sendMessage(
+                    target,
+                    BATTERY_STATUS_PATH,
+                    message.toByteArray(Charsets.UTF_8)
+                )
         } else {
             Timber.w("target null or empty, can't update battery stats")
         }

@@ -63,8 +63,8 @@ class WatchMessageReceiver : WearableListenerService() {
     private fun tryLockDevice() {
         Timber.i("tryLockDevice() called")
         val isInDeviceAdminMode = PreferenceManager
-                .getDefaultSharedPreferences(this)
-                .getString(PHONE_LOCKING_MODE_KEY, "0") != PHONE_LOCKING_MODE_ACCESSIBILITY_SERVICE
+            .getDefaultSharedPreferences(this)
+            .getString(PHONE_LOCKING_MODE_KEY, "0") != PHONE_LOCKING_MODE_ACCESSIBILITY_SERVICE
         val isDeviceAdminEnabled = isDeviceAdminEnabled(this)
         if (isInDeviceAdminMode && isDeviceAdminEnabled) {
             Timber.i("Trying to lock device")
@@ -129,9 +129,10 @@ class WatchMessageReceiver : WearableListenerService() {
         Timber.i("sendInterruptFilterAccess() called")
         val hasDnDAccess = Compat.canSetDnD(this)
         Wearable.getMessageClient(this).sendMessage(
-                sourceNodeId,
-                REQUEST_INTERRUPT_FILTER_ACCESS_STATUS_PATH,
-                hasDnDAccess.toByteArray())
+            sourceNodeId,
+            REQUEST_INTERRUPT_FILTER_ACCESS_STATUS_PATH,
+            hasDnDAccess.toByteArray()
+        )
     }
 
     /**

@@ -69,8 +69,11 @@ class WatchBatteryWidget : AppWidgetProvider() {
         newOptions: Bundle?
     ) {
         if (newOptions != null &&
-                (newOptions.containsKey(AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT) ||
-                newOptions.containsKey(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH))) {
+            (
+                newOptions.containsKey(AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT) ||
+                    newOptions.containsKey(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH)
+                )
+        ) {
             val height = newOptions.getInt(AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT)
             val width = newOptions.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH)
             updateView(context, appWidgetManager, appWidgetId, width, height)
@@ -128,10 +131,11 @@ class WatchBatteryWidget : AppWidgetProvider() {
 
         // Set click intent
         PendingIntent.getActivity(
-                context,
-                0,
-                Intent(context, MainActivity::class.java),
-                0).also {
+            context,
+            0,
+            Intent(context, MainActivity::class.java),
+            0
+        ).also {
             remoteViews.setOnClickPendingIntent(R.id.widget_background, it)
         }
 
@@ -145,8 +149,9 @@ class WatchBatteryWidget : AppWidgetProvider() {
                         alpha = calculatedAlpha
                     }.also { widgetBackground ->
                         remoteViews.setImageViewBitmap(
-                                R.id.widget_background,
-                                widgetBackground.toBitmap(width, height))
+                            R.id.widget_background,
+                            widgetBackground.toBitmap(width, height)
+                        )
                     }
                 } else {
                     remoteViews.setInt(R.id.widget_background, "setBackgroundColor", 0)
@@ -179,7 +184,7 @@ class WatchBatteryWidget : AppWidgetProvider() {
          */
         fun updateWidgets(context: Context) {
             val ids = AppWidgetManager.getInstance(context)
-                    .getAppWidgetIds(ComponentName(context, WatchBatteryWidget::class.java))
+                .getAppWidgetIds(ComponentName(context, WatchBatteryWidget::class.java))
             updateWidgets(context, ids)
         }
 
@@ -202,9 +207,10 @@ class WatchBatteryWidget : AppWidgetProvider() {
          */
         fun disableWidget(context: Context) {
             context.packageManager.setComponentEnabledSetting(
-                    ComponentName(context, WatchBatteryWidget::class.java),
-                    PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
-                    PackageManager.DONT_KILL_APP)
+                ComponentName(context, WatchBatteryWidget::class.java),
+                PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
+                PackageManager.DONT_KILL_APP
+            )
         }
 
         /**
@@ -213,9 +219,10 @@ class WatchBatteryWidget : AppWidgetProvider() {
          */
         fun enableWidget(context: Context) {
             context.packageManager.setComponentEnabledSetting(
-                    ComponentName(context, WatchBatteryWidget::class.java),
-                    PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
-                    PackageManager.DONT_KILL_APP)
+                ComponentName(context, WatchBatteryWidget::class.java),
+                PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
+                PackageManager.DONT_KILL_APP
+            )
         }
     }
 }

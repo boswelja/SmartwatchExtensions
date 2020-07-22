@@ -23,19 +23,19 @@ import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_SYNC_ENABLED_KEY
 import com.boswelja.devicemanager.databinding.SettingsWidgetBatterySyncBinding
 import com.boswelja.devicemanager.watchmanager.Watch
 import com.boswelja.devicemanager.watchmanager.WatchConnectionListener
-import java.util.Timer
-import java.util.concurrent.TimeUnit
-import kotlin.concurrent.fixedRateTimer
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
+import java.util.Timer
+import java.util.concurrent.TimeUnit
+import kotlin.concurrent.fixedRateTimer
 
 class BatterySyncPreferenceWidgetFragment :
-        Fragment(),
-        SharedPreferences.OnSharedPreferenceChangeListener,
-        WatchConnectionListener {
+    Fragment(),
+    SharedPreferences.OnSharedPreferenceChangeListener,
+    WatchConnectionListener {
 
     private val batteryStatsObserver = Observer<WatchBatteryStats?> {
         updateBatteryStatsDisplay(it)
@@ -58,7 +58,7 @@ class BatterySyncPreferenceWidgetFragment :
         when (key) {
             BATTERY_SYNC_ENABLED_KEY -> {
                 val newBatterySyncState =
-                        sharedPreferences?.getBoolean(BATTERY_SYNC_ENABLED_KEY, false) == true
+                    sharedPreferences?.getBoolean(BATTERY_SYNC_ENABLED_KEY, false) == true
                 setBatterySyncState(newBatterySyncState)
             }
         }
@@ -108,9 +108,9 @@ class BatterySyncPreferenceWidgetFragment :
         }
         if (watchId != null) {
             liveBatteryStats = batteryStatsDatabase!!.batteryStatsDao()
-                    .getObservableStatsForWatch(watchId).also {
-                        it.observe(this, batteryStatsObserver)
-                    }
+                .getObservableStatsForWatch(watchId).also {
+                    it.observe(this, batteryStatsObserver)
+                }
         }
     }
 
@@ -131,7 +131,7 @@ class BatterySyncPreferenceWidgetFragment :
             coroutineScope.launch(Dispatchers.IO) {
                 if (activity.watchConnectionManager?.connectedWatch != null) {
                     batteryStatsDatabase?.batteryStatsDao()
-                            ?.deleteStatsForWatch(activity.watchConnectionManager?.connectedWatch!!.id)
+                        ?.deleteStatsForWatch(activity.watchConnectionManager?.connectedWatch!!.id)
                 }
             }
         }
@@ -147,8 +147,9 @@ class BatterySyncPreferenceWidgetFragment :
                 if (batteryStats != null && batteryStats.batteryPercent > 0) {
                     watchBatteryIndicator.setImageLevel(batteryStats.batteryPercent)
                     watchBatteryPercent.text = getString(
-                            R.string.battery_sync_percent_short,
-                            batteryStats.batteryPercent.toString())
+                        R.string.battery_sync_percent_short,
+                        batteryStats.batteryPercent.toString()
+                    )
                 } else {
                     showError()
                 }
@@ -197,15 +198,17 @@ class BatterySyncPreferenceWidgetFragment :
                 }
                 lastUpdatedMinutes < 60 -> {
                     resources.getQuantityString(
-                            R.plurals.battery_sync_last_updated_minutes,
-                            lastUpdatedMinutes, lastUpdatedMinutes)
+                        R.plurals.battery_sync_last_updated_minutes,
+                        lastUpdatedMinutes, lastUpdatedMinutes
+                    )
                 }
                 else -> {
                     val lastUpdatedHours =
-                            TimeUnit.MINUTES.toHours(lastUpdatedMinutes.toLong()).toInt()
+                        TimeUnit.MINUTES.toHours(lastUpdatedMinutes.toLong()).toInt()
                     resources.getQuantityString(
-                            R.plurals.battery_sync_last_updated_hours,
-                            lastUpdatedHours, lastUpdatedHours)
+                        R.plurals.battery_sync_last_updated_hours,
+                        lastUpdatedHours, lastUpdatedHours
+                    )
                 }
             }
             getActivity()?.runOnUiThread {
@@ -230,8 +233,9 @@ class BatterySyncPreferenceWidgetFragment :
         Timber.d("startLastUpdatedRefreshTimer() called")
         if (!lastUpdatedRefreshTimerStarted) {
             watchBatteryUpdateTimer = fixedRateTimer(
-                    BATTERY_SYNC_UPDATE_TIMER_NAME, false, 0,
-                    TimeUnit.SECONDS.toMillis(LAST_UPDATED_REFRESH_TIMER_INTERVAL_SECONDS)) {
+                BATTERY_SYNC_UPDATE_TIMER_NAME, false, 0,
+                TimeUnit.SECONDS.toMillis(LAST_UPDATED_REFRESH_TIMER_INTERVAL_SECONDS)
+            ) {
                 updateLastSyncTimeView(liveBatteryStats?.value)
             }
             lastUpdatedRefreshTimerStarted = true

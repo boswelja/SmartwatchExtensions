@@ -26,7 +26,7 @@ class WatchSetupFragmentTest {
 
     private fun createScenario(): FragmentScenario<WatchSetupFragment> {
         val scenario =
-                launchFragmentInContainer<WatchSetupFragment>(themeResId = R.style.AppTheme)
+            launchFragmentInContainer<WatchSetupFragment>(themeResId = R.style.AppTheme)
         Thread.sleep(500)
         return scenario
     }
@@ -44,16 +44,24 @@ class WatchSetupFragmentTest {
         scenario.onFragment {
             it.setHelpMessage(helpMessage)
         }
-        onView(withId(R.id.help_text_view)).check(matches(allOf(
-                withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE),
-                withText(helpMessage))))
+        onView(withId(R.id.help_text_view)).check(
+            matches(
+                allOf(
+                    withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE),
+                    withText(helpMessage)
+                )
+            )
+        )
         onView(withId(R.id.watch_setup_recyclerview)).check(matches(not(isEnabled())))
 
         scenario.onFragment {
             it.hideHelpMessage()
         }
-        onView(withId(R.id.help_text_view)).check(matches(
-                withEffectiveVisibility(ViewMatchers.Visibility.INVISIBLE)))
+        onView(withId(R.id.help_text_view)).check(
+            matches(
+                withEffectiveVisibility(ViewMatchers.Visibility.INVISIBLE)
+            )
+        )
         onView(withId(R.id.watch_setup_recyclerview)).check(matches(isEnabled()))
     }
 

@@ -16,14 +16,14 @@ import androidx.work.WorkerParameters
 import com.boswelja.devicemanager.common.PreferenceKey
 import com.boswelja.devicemanager.ui.batterysync.Utils
 import com.boswelja.devicemanager.watchmanager.WatchManager
-import java.util.UUID
-import java.util.concurrent.TimeUnit
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import timber.log.Timber
+import java.util.UUID
+import java.util.concurrent.TimeUnit
 
 class BatterySyncWorker(appContext: Context, workerParams: WorkerParameters) :
-        Worker(appContext, workerParams) {
+    Worker(appContext, workerParams) {
 
     override fun doWork(): Result {
         Timber.i("doWork() called")
@@ -75,7 +75,8 @@ class BatterySyncWorker(appContext: Context, workerParams: WorkerParameters) :
                 putString(EXTRA_WATCH_ID, watchId)
             }.build()
             val request = PeriodicWorkRequestBuilder<BatterySyncWorker>(
-                    syncIntervalMinutes, TimeUnit.SECONDS).apply {
+                syncIntervalMinutes, TimeUnit.SECONDS
+            ).apply {
                 setInputData(data)
             }.build()
             WorkManager.getInstance(context).enqueue(request)

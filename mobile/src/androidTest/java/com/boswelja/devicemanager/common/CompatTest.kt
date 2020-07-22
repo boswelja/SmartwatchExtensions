@@ -23,7 +23,7 @@ class CompatTest {
     fun setUp() {
         val context = InstrumentationRegistry.getInstrumentation().targetContext
         val notificationManager =
-                context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         NotificationChannel(ENABLED_CHANNEL_ID, "Enabled Test Channel", NotificationManager.IMPORTANCE_DEFAULT).also {
             notificationManager.createNotificationChannel(it)
         }
@@ -36,7 +36,7 @@ class CompatTest {
     fun tearDown() {
         val context = InstrumentationRegistry.getInstrumentation().targetContext
         val notificationManager =
-                context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         notificationManager.deleteNotificationChannel(ENABLED_CHANNEL_ID)
         notificationManager.deleteNotificationChannel(DISABLED_CHANNEL_ID)
     }
@@ -45,7 +45,7 @@ class CompatTest {
     fun isDndEnabled() {
         val context = InstrumentationRegistry.getInstrumentation().targetContext
         val notificationManager =
-                context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
         if (notificationManager.isNotificationPolicyAccessGranted) {
             Compat.setInterruptionFilter(context, true)
@@ -56,8 +56,8 @@ class CompatTest {
                 Thread.sleep(25)
             }
             assertWithMessage("Checking DnD state detection logic works")
-                    .that(Compat.isDndEnabled(context))
-                    .isTrue()
+                .that(Compat.isDndEnabled(context))
+                .isTrue()
 
             Compat.setInterruptionFilter(context, false)
             retryCounter = 0
@@ -67,11 +67,11 @@ class CompatTest {
                 Thread.sleep(25)
             }
             assertWithMessage("Checking DnD state detection logic works")
-                    .that(Compat.isDndEnabled(context))
-                    .isFalse()
+                .that(Compat.isDndEnabled(context))
+                .isFalse()
         } else {
             assertWithMessage("Missing notification policy access, grant and try again")
-                    .fail()
+                .fail()
         }
     }
 
@@ -80,15 +80,15 @@ class CompatTest {
         val context = InstrumentationRegistry.getInstrumentation().targetContext
 
         assertWithMessage("Checking overall notification status is correct")
-                .that(Compat.areNotificationsEnabled(context))
-                .isEqualTo(NotificationManagerCompat.from(context).areNotificationsEnabled())
+            .that(Compat.areNotificationsEnabled(context))
+            .isEqualTo(NotificationManagerCompat.from(context).areNotificationsEnabled())
 
         assertWithMessage("Checking notification channel enabled status is correct")
-                .that(Compat.areNotificationsEnabled(context, ENABLED_CHANNEL_ID))
-                .isEqualTo(true)
+            .that(Compat.areNotificationsEnabled(context, ENABLED_CHANNEL_ID))
+            .isEqualTo(true)
         assertWithMessage("Checking notification channel disabled status is correct")
-                .that(Compat.areNotificationsEnabled(context, DISABLED_CHANNEL_ID))
-                .isEqualTo(false)
+            .that(Compat.areNotificationsEnabled(context, DISABLED_CHANNEL_ID))
+            .isEqualTo(false)
     }
 
     companion object {

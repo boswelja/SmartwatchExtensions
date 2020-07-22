@@ -14,14 +14,14 @@ import androidx.recyclerview.widget.RecyclerView
 import com.boswelja.devicemanager.common.databinding.CommonRecyclerviewItemTextBinding
 
 class OneLineItem(binding: CommonRecyclerviewItemTextBinding) :
-        RecyclerView.ViewHolder(binding.root) {
+    RecyclerView.ViewHolder(binding.root) {
 
     val textView: AppCompatTextView = binding.text
 
     companion object {
         fun create(layoutInflater: LayoutInflater, parent: ViewGroup): OneLineItem {
             val binding = CommonRecyclerviewItemTextBinding
-                    .inflate(layoutInflater, parent, false)
+                .inflate(layoutInflater, parent, false)
             return OneLineItem(binding)
         }
     }

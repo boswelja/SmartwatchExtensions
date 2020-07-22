@@ -24,7 +24,8 @@ class PhoneBatteryComplicationProvider : BaseComplicationProviderService() {
 
     override fun onCreateComplication(complicationId: Int, type: Int, manager: ComplicationManager?) {
         if (type != ComplicationData.TYPE_SHORT_TEXT &&
-                type != ComplicationData.TYPE_RANGED_VALUE) {
+            type != ComplicationData.TYPE_RANGED_VALUE
+        ) {
             manager?.noUpdateRequired(complicationId)
         }
 
@@ -37,13 +38,13 @@ class PhoneBatteryComplicationProvider : BaseComplicationProviderService() {
         val text = if (percent > 0) String.format(getString(R.string.phone_battery_percent), percent) else getString(R.string.phone_battery_unknown_short)
 
         val complicationData = ComplicationData.Builder(type)
-                .setShortText(ComplicationText.plainText(text))
-                .setIcon(createIcon(percent))
-                .setTapAction(pendingIntent)
+            .setShortText(ComplicationText.plainText(text))
+            .setIcon(createIcon(percent))
+            .setTapAction(pendingIntent)
         if (type == ComplicationData.TYPE_RANGED_VALUE) {
             complicationData.setMaxValue(1.0f)
-                    .setMinValue(0.0f)
-                    .setValue((percent.toFloat()) / 100)
+                .setMinValue(0.0f)
+                .setValue((percent.toFloat()) / 100)
         }
 
         manager?.updateComplicationData(complicationId, complicationData.build())

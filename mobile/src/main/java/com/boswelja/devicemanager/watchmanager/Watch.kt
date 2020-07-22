@@ -23,14 +23,14 @@ data class Watch(
     @Ignore val boolPrefs: HashMap<String, Boolean>
 ) {
     constructor (id: String, name: String, batterySyncWorkerId: String?, status: WatchStatus) :
-            this(id, name, batterySyncWorkerId, status, HashMap(), HashMap())
+        this(id, name, batterySyncWorkerId, status, HashMap(), HashMap())
 
     constructor (id: String, name: String, batterySyncWorkerId: String?) :
-            this(id, name, batterySyncWorkerId, WatchStatus.UNKNOWN, HashMap(), HashMap())
+        this(id, name, batterySyncWorkerId, WatchStatus.UNKNOWN, HashMap(), HashMap())
 
     constructor(node: Node, status: WatchStatus) :
-            this(node.id, node.displayName, null, status)
+        this(node.id, node.displayName, null, status)
 
     constructor(node: Node) :
-            this(node.id, node.displayName, null, WatchStatus.UNKNOWN)
+        this(node.id, node.displayName, null, WatchStatus.UNKNOWN)
 }

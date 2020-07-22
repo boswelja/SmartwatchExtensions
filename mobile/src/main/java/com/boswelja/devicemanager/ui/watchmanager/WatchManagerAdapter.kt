@@ -62,12 +62,14 @@ class WatchManagerAdapter(private val activity: WatchManagerActivity) : Recycler
                 holder.apply {
                     iconView.setImageResource(R.drawable.ic_watch)
                     topTextView.text = watch.name
-                    bottomTextView.text = context.getString(when (watch.status) {
-                        WatchStatus.CONNECTED -> R.string.watch_status_connected
-                        WatchStatus.DISCONNECTED -> R.string.watch_status_disconnected
-                        WatchStatus.MISSING_APP -> R.string.watch_status_missing_app
-                        else -> R.string.watch_status_error
-                    })
+                    bottomTextView.text = context.getString(
+                        when (watch.status) {
+                            WatchStatus.CONNECTED -> R.string.watch_status_connected
+                            WatchStatus.DISCONNECTED -> R.string.watch_status_disconnected
+                            WatchStatus.MISSING_APP -> R.string.watch_status_missing_app
+                            else -> R.string.watch_status_error
+                        }
+                    )
                     itemView.setOnClickListener {
                         activity.openWatchInfoActivity(watch)
                     }

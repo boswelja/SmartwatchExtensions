@@ -19,12 +19,12 @@ import com.boswelja.devicemanager.common.recyclerview.adapter.SectionedAdapter
 import com.boswelja.devicemanager.common.recyclerview.item.IconTwoLineItem
 
 class AppsAdapter(private val itemClickCallback: ItemClickCallback<AppPackageInfo>) :
-        SectionedAdapter<AppPackageInfo>(itemSortMode = SortMode.ASCENDING) {
+    SectionedAdapter<AppPackageInfo>(itemSortMode = SortMode.ASCENDING) {
 
     private var fallbackIcon: Drawable? = null
 
     override fun onCreateItemViewHolder(layoutInflater: LayoutInflater, parent: ViewGroup):
-            RecyclerView.ViewHolder = IconTwoLineItem.create(layoutInflater, parent)
+        RecyclerView.ViewHolder = IconTwoLineItem.create(layoutInflater, parent)
 
     override fun onBindItemViewHolder(holder: RecyclerView.ViewHolder, item: AppPackageInfo) {
         val context = holder.itemView.context

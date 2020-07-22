@@ -22,5 +22,5 @@ class TheaterModeObserver(private val context: Context, handler: Handler) : Cont
     }
 
     private fun isTheaterModeOn(context: Context): Boolean =
-            Settings.Global.getInt(context.contentResolver, "theater_mode_on", 0) == 1
+        Settings.Global.getInt(context.contentResolver, "theater_mode_on", 0) == 1
 }

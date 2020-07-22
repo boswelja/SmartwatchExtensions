@@ -58,9 +58,12 @@ class MessageFragment : Fragment() {
                 addItemDecoration(it)
             }
         }.also {
-            ItemTouchHelper(MessagesAdapter.SwipeDismissCallback(
+            ItemTouchHelper(
+                MessagesAdapter.SwipeDismissCallback(
                     it.adapter as MessagesAdapter,
-                    requireContext())).apply {
+                    requireContext()
+                )
+            ).apply {
                 attachToRecyclerView(it)
             }
         }
@@ -94,7 +97,7 @@ class MessageFragment : Fragment() {
                 if (!messages.isNullOrEmpty()) {
                     for (message in messages) {
                         (binding.messagesRecyclerview.adapter as MessagesAdapter)
-                                .notifyMessage(message)
+                            .notifyMessage(message)
                     }
                     setHasMessages(true)
                 } else {
@@ -116,9 +119,11 @@ class MessageFragment : Fragment() {
                 (activity as MainActivity).updateMessagesBadge()
             }
         }
-        Snackbar.make(requireView(),
-                getString(R.string.message_snackbar_undo_remove),
-                Snackbar.LENGTH_LONG).apply {
+        Snackbar.make(
+            requireView(),
+            getString(R.string.message_snackbar_undo_remove),
+            Snackbar.LENGTH_LONG
+        ).apply {
             setAction(R.string.snackbar_action_undo) {
                 undoDismissMessage(message)
             }

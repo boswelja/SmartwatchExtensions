@@ -29,10 +29,10 @@ class AppPermissionDialogFragment(private val requestedPermissions: Array<String
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return AlertDialog.Builder(requireContext())
-                .setPositiveButton(R.string.dialog_button_close) { dialog, _ -> dialog.dismiss() }
-                .setItems(permissions, null)
-                .setTitle(R.string.app_info_requested_permissions_dialog_title)
-                .create()
+            .setPositiveButton(R.string.dialog_button_close) { dialog, _ -> dialog.dismiss() }
+            .setItems(permissions, null)
+            .setTitle(R.string.app_info_requested_permissions_dialog_title)
+            .create()
     }
 
     /**
@@ -55,5 +55,5 @@ class AppPermissionDialogFragment(private val requestedPermissions: Array<String
     }
 
     fun show(fragmentManager: FragmentManager) =
-            show(fragmentManager, "RequestedPermissionsDialog")
+        show(fragmentManager, "RequestedPermissionsDialog")
 }

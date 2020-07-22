@@ -19,7 +19,8 @@ class BootReceiver : BaseBootReceiver() {
 
     override fun onBootCompleted(context: Context?) {
         if (sharedPreferences.getBoolean(DND_SYNC_TO_PHONE_KEY, false) ||
-                sharedPreferences.getBoolean(DND_SYNC_WITH_THEATER_KEY, false)) {
+            sharedPreferences.getBoolean(DND_SYNC_WITH_THEATER_KEY, false)
+        ) {
             Intent(context, DnDLocalChangeListener::class.java).also {
                 Compat.startForegroundService(context!!, it)
             }

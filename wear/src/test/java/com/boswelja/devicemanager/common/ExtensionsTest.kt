@@ -20,11 +20,11 @@ class ExtensionsTest {
         val falseByteArray = byteArrayOf(0)
 
         assertWithMessage("Checking true bool toByteArray() works")
-                .that(true.toByteArray())
-                .isEqualTo(trueByteArray)
+            .that(true.toByteArray())
+            .isEqualTo(trueByteArray)
         assertWithMessage("Checking false bool toByteArray() works")
-                .that(false.toByteArray())
-                .isEqualTo(falseByteArray)
+            .that(false.toByteArray())
+            .isEqualTo(falseByteArray)
     }
 
     @Test
@@ -33,10 +33,10 @@ class ExtensionsTest {
         val falseByteArray = byteArrayOf(0)
 
         assertWithMessage("Checking true bool fromByteArray() works")
-                .that(Boolean.fromByteArray(trueByteArray))
-                .isTrue()
+            .that(Boolean.fromByteArray(trueByteArray))
+            .isTrue()
         assertWithMessage("Checking false bool fromByteArray() works")
-                .that(Boolean.fromByteArray(falseByteArray))
-                .isFalse()
+            .that(Boolean.fromByteArray(falseByteArray))
+            .isFalse()
     }
 }

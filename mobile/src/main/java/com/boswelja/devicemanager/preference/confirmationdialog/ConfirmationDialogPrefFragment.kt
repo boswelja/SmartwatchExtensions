@@ -28,7 +28,7 @@ class ConfirmationDialogPrefFragment : PreferenceDialogFragmentCompat() {
      * Shows the dialog fragment.
      */
     fun show(fragmentManager: FragmentManager) =
-            show(fragmentManager, "ConfirmationDialogPrefFragment")
+        show(fragmentManager, "ConfirmationDialogPrefFragment")
 
     companion object {
         /**

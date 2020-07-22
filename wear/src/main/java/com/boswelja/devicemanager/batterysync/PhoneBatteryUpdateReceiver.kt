@@ -67,9 +67,10 @@ class PhoneBatteryUpdateReceiver : WearableListenerService() {
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && notificationManager.getNotificationChannel(BATTERY_CHARGED_NOTI_CHANNEL_ID) == null) {
                 val channel = NotificationChannel(
-                        BATTERY_CHARGED_NOTI_CHANNEL_ID,
-                        getString(R.string.noti_channel_phone_charged_title),
-                        NotificationManager.IMPORTANCE_HIGH).apply {
+                    BATTERY_CHARGED_NOTI_CHANNEL_ID,
+                    getString(R.string.noti_channel_phone_charged_title),
+                    NotificationManager.IMPORTANCE_HIGH
+                ).apply {
                     enableVibration(true)
                     setShowBadge(true)
                 }
@@ -77,11 +78,11 @@ class PhoneBatteryUpdateReceiver : WearableListenerService() {
             }
 
             val noti = NotificationCompat.Builder(this, BATTERY_CHARGED_NOTI_CHANNEL_ID)
-                    .setSmallIcon(R.drawable.battery_full)
-                    .setContentTitle(getString(R.string.device_charged_noti_title, deviceName))
-                    .setContentText(getString(R.string.device_charged_noti_desc).format(deviceName, chargeThreshold))
-                    .setLocalOnly(true)
-                    .build()
+                .setSmallIcon(R.drawable.battery_full)
+                .setContentTitle(getString(R.string.device_charged_noti_title, deviceName))
+                .setContentText(getString(R.string.device_charged_noti_desc).format(deviceName, chargeThreshold))
+                .setLocalOnly(true)
+                .build()
 
             notificationManager.notify(BATTERY_CHARGED_NOTI_ID, noti)
             sharedPreferences.edit().putBoolean(PreferenceKey.BATTERY_CHARGED_NOTI_SENT, true).apply()

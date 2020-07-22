@@ -35,5 +35,5 @@ object Utils {
      * @param dp The DiP count to convert to pixels.
      */
     fun complexTypeDp(resources: Resources, dp: Float): Float =
-            TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, resources.displayMetrics)
+        TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, resources.displayMetrics)
 }

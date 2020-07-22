@@ -40,7 +40,7 @@ class WidgetSettingsWidget : Fragment() {
                 setImageLevel(BATTERY_WIDGET_PREVIEW_PERCENT)
             }
             findViewById<TextView>(R.id.battery_indicator_text).text =
-                    getString(R.string.battery_sync_percent_short, BATTERY_WIDGET_PREVIEW_PERCENT.toString())
+                getString(R.string.battery_sync_percent_short, BATTERY_WIDGET_PREVIEW_PERCENT.toString())
         }
         updateWidgetBackground()
     }
@@ -59,7 +59,7 @@ class WidgetSettingsWidget : Fragment() {
      */
     private fun updateWidgetBackground() {
         val widgetBackgroundView =
-                binding.widgetContainer.findViewById<AppCompatImageView>(R.id.widget_background)
+            binding.widgetContainer.findViewById<AppCompatImageView>(R.id.widget_background)
         if (backgroundVisible) {
             val drawable = context?.getDrawable(R.drawable.widget_background)
             if (drawable != null) {

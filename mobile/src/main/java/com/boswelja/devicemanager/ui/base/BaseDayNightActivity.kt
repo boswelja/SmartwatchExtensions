@@ -18,8 +18,8 @@ import timber.log.Timber
  * An [AppCompatActivity] that handles setting up night mode and recreating on night mode changed.
  */
 abstract class BaseDayNightActivity :
-        AppCompatActivity(),
-        SharedPreferences.OnSharedPreferenceChangeListener {
+    AppCompatActivity(),
+    SharedPreferences.OnSharedPreferenceChangeListener {
 
     lateinit var sharedPreferences: SharedPreferences
 
@@ -55,10 +55,11 @@ abstract class BaseDayNightActivity :
     private fun setNightMode() {
         Timber.d("setNightMode() called")
         val nightMode = sharedPreferences.getString(
-                DAYNIGHT_MODE_KEY,
-                AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM.toString())?.toInt()
+            DAYNIGHT_MODE_KEY,
+            AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM.toString()
+        )?.toInt()
         AppCompatDelegate
-                .setDefaultNightMode(nightMode ?: AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+            .setDefaultNightMode(nightMode ?: AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
     }
 
     companion object {

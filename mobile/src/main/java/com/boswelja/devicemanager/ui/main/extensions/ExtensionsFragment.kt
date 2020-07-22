@@ -21,8 +21,8 @@ import com.boswelja.devicemanager.ui.phonelocking.PhoneLockingPreferenceActivity
 import timber.log.Timber
 
 class ExtensionsFragment :
-        BaseWatchPickerPreferenceFragment(),
-        Preference.OnPreferenceClickListener {
+    BaseWatchPickerPreferenceFragment(),
+    Preference.OnPreferenceClickListener {
 
     override fun onPreferenceClick(preference: Preference?): Boolean {
         return when (preference?.key) {

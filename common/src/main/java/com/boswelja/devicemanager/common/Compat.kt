@@ -75,15 +75,15 @@ object Compat {
     fun isDndEnabled(context: Context): Boolean {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             val notificationManager =
-                    context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+                context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             val currentInterruptFilter = notificationManager.currentInterruptionFilter
             (currentInterruptFilter == NotificationManager.INTERRUPTION_FILTER_ALARMS) ||
-                    (currentInterruptFilter == NotificationManager.INTERRUPTION_FILTER_PRIORITY) ||
-                    (currentInterruptFilter == NotificationManager.INTERRUPTION_FILTER_NONE)
+                (currentInterruptFilter == NotificationManager.INTERRUPTION_FILTER_PRIORITY) ||
+                (currentInterruptFilter == NotificationManager.INTERRUPTION_FILTER_NONE)
         } else {
             val audioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
             (audioManager.ringerMode == AudioManager.RINGER_MODE_SILENT) ||
-                    (audioManager.ringerMode == AudioManager.RINGER_MODE_VIBRATE)
+                (audioManager.ringerMode == AudioManager.RINGER_MODE_VIBRATE)
         }
     }
 

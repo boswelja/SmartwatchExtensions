@@ -24,8 +24,8 @@ import kotlinx.coroutines.withContext
 import timber.log.Timber
 
 class WatchManagerActivity :
-        BaseToolbarActivity(),
-        WatchConnectionListener {
+    BaseToolbarActivity(),
+    WatchConnectionListener {
 
     private val watchConnectionManagerConnection = object : WatchManager.Connection() {
         override fun onWatchManagerBound(watchManager: WatchManager) {
@@ -110,9 +110,10 @@ class WatchManagerActivity :
         binding.watchManagerRecyclerView.apply {
             adapter = WatchManagerAdapter(this@WatchManagerActivity)
             layoutManager = LinearLayoutManager(
-                    this@WatchManagerActivity,
-                    LinearLayoutManager.VERTICAL,
-                    false)
+                this@WatchManagerActivity,
+                LinearLayoutManager.VERTICAL,
+                false
+            )
         }
     }
 
@@ -127,7 +128,7 @@ class WatchManagerActivity :
                 val registeredWatches = watchConnectionManager!!.getRegisteredWatches()
                 withContext(Dispatchers.Main) {
                     (binding.watchManagerRecyclerView.adapter as WatchManagerAdapter)
-                            .setWatches(registeredWatches)
+                        .setWatches(registeredWatches)
                 }
             }
         }
@@ -145,7 +146,7 @@ class WatchManagerActivity :
                 Timber.i("Updating watch info for $watchId")
                 withContext(Dispatchers.Main) {
                     (binding.watchManagerRecyclerView.adapter as WatchManagerAdapter)
-                            .updateWatch(newWatchInfo)
+                        .updateWatch(newWatchInfo)
                 }
             } else {
                 Timber.w("newWatchInfo null")

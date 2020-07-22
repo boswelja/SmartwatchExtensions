@@ -47,10 +47,10 @@ class AppPackageInfo(packageManager: PackageManager, packageInfo: PackageInfo) :
     }
 
     private fun isSystemApp(packageInfo: PackageInfo): Boolean =
-            (packageInfo.applicationInfo?.flags?.and((ApplicationInfo.FLAG_SYSTEM or ApplicationInfo.FLAG_UPDATED_SYSTEM_APP))) != 0
+        (packageInfo.applicationInfo?.flags?.and((ApplicationInfo.FLAG_SYSTEM or ApplicationInfo.FLAG_UPDATED_SYSTEM_APP))) != 0
 
     private fun hasLaunchActivity(packageManager: PackageManager): Boolean =
-            packageManager.getLaunchIntentForPackage(packageName) != null
+        packageManager.getLaunchIntentForPackage(packageName) != null
 
     @Throws(IOException::class)
     fun toByteArray(): ByteArray {

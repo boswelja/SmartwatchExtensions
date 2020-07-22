@@ -15,14 +15,14 @@ import androidx.recyclerview.widget.RecyclerView
 import com.boswelja.devicemanager.common.databinding.CommonRecyclerviewItemIconOneLineBinding
 
 class IconOneLineItem(binding: CommonRecyclerviewItemIconOneLineBinding) :
-        RecyclerView.ViewHolder(binding.root) {
+    RecyclerView.ViewHolder(binding.root) {
     val iconView: AppCompatImageView = binding.icon
     val textView: AppCompatTextView = binding.text
 
     companion object {
         fun create(layoutInflater: LayoutInflater, parent: ViewGroup): IconOneLineItem {
             val binding = CommonRecyclerviewItemIconOneLineBinding
-                    .inflate(layoutInflater, parent, false)
+                .inflate(layoutInflater, parent, false)
             return IconOneLineItem(binding)
         }
     }

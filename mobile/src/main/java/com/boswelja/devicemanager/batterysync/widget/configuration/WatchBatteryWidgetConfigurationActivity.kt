@@ -83,9 +83,10 @@ class WatchBatteryWidgetConfigurationActivity : BaseToolbarActivity() {
      */
     private fun getWidgetId(): Int {
         return intent?.extras?.getInt(
-                AppWidgetManager.EXTRA_APPWIDGET_ID,
-                AppWidgetManager.INVALID_APPWIDGET_ID)
-                ?: AppWidgetManager.INVALID_APPWIDGET_ID
+            AppWidgetManager.EXTRA_APPWIDGET_ID,
+            AppWidgetManager.INVALID_APPWIDGET_ID
+        )
+            ?: AppWidgetManager.INVALID_APPWIDGET_ID
     }
 
     /**
@@ -94,9 +95,10 @@ class WatchBatteryWidgetConfigurationActivity : BaseToolbarActivity() {
     private fun setupWatchPickerRecyclerView() {
         binding.watchPickerRecyclerView.apply {
             layoutManager = LinearLayoutManager(
-                    this@WatchBatteryWidgetConfigurationActivity,
-                    LinearLayoutManager.VERTICAL,
-                    false)
+                this@WatchBatteryWidgetConfigurationActivity,
+                LinearLayoutManager.VERTICAL,
+                false
+            )
             adapter = WatchPickerAdapter(this@WatchBatteryWidgetConfigurationActivity)
         }
     }

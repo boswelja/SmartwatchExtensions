@@ -15,7 +15,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.boswelja.devicemanager.common.databinding.CommonRecyclerviewSectionHeaderBinding
 
 class SectionHeaderItem(binding: CommonRecyclerviewSectionHeaderBinding) :
-        RecyclerView.ViewHolder(binding.root) {
+    RecyclerView.ViewHolder(binding.root) {
 
     val textView: AppCompatTextView = binding.sectionHeaderText
     val dividerView: View = binding.divider
@@ -23,7 +23,7 @@ class SectionHeaderItem(binding: CommonRecyclerviewSectionHeaderBinding) :
     companion object {
         fun create(layoutInflater: LayoutInflater, parent: ViewGroup, showDivider: Boolean = true): SectionHeaderItem {
             val binding = CommonRecyclerviewSectionHeaderBinding
-                    .inflate(layoutInflater, parent, false)
+                .inflate(layoutInflater, parent, false)
             binding.divider.visibility = if (showDivider) View.VISIBLE else View.GONE
             return SectionHeaderItem(binding)
         }

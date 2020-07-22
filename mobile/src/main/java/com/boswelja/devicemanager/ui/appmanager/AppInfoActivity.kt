@@ -83,7 +83,7 @@ class AppInfoActivity : BaseToolbarActivity() {
      * @return true if we can uninstall the app, false otherwise
      */
     private fun canUninstallApp(appInfo: AppPackageInfo): Boolean =
-            (appInfo.packageName != packageName) && !appInfo.isSystemApp
+        (appInfo.packageName != packageName) && !appInfo.isSystemApp
 
     /**
      * Sets click listeners and enabled states for all buttons.
@@ -126,16 +126,17 @@ class AppInfoActivity : BaseToolbarActivity() {
         val requestsNoPermissions = !appInfo.requestedPermissions.isNullOrEmpty()
         binding.apply {
             permissionsInfo.findViewById<AppCompatTextView>(R.id.top_line).text =
-                    getString(R.string.app_info_requested_permissions_title)
+                getString(R.string.app_info_requested_permissions_title)
             permissionsInfo.findViewById<AppCompatTextView>(R.id.bottom_line).text =
-                    if (requestsNoPermissions) {
-                        val requestedPermissionCount = appInfo.requestedPermissions!!.size
-                        resources.getQuantityString(
-                                R.plurals.app_info_requested_permissions_count,
-                                requestedPermissionCount, requestedPermissionCount)
-                    } else {
-                        getString(R.string.app_info_requested_permissions_none)
-                    }
+                if (requestsNoPermissions) {
+                    val requestedPermissionCount = appInfo.requestedPermissions!!.size
+                    resources.getQuantityString(
+                        R.plurals.app_info_requested_permissions_count,
+                        requestedPermissionCount, requestedPermissionCount
+                    )
+                } else {
+                    getString(R.string.app_info_requested_permissions_none)
+                }
             permissionsInfo.setOnClickListener {
                 if (appInfo.requestedPermissions!!.isNotEmpty()) {
                     requestedPermissionsDialog.show(supportFragmentManager)
@@ -150,7 +151,7 @@ class AppInfoActivity : BaseToolbarActivity() {
      * @return true if we should show last update time, false otherwise.
      */
     private fun shouldShowLastUpdateTime(appInfo: AppPackageInfo): Boolean =
-            appInfo.installTime == appInfo.lastUpdateTime && !appInfo.isSystemApp
+        appInfo.installTime == appInfo.lastUpdateTime && !appInfo.isSystemApp
 
     /**
      * Sets the install/update info in the UI.

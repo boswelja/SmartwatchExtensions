@@ -25,11 +25,11 @@ import com.boswelja.devicemanager.Utils
 import com.boswelja.devicemanager.databinding.MessageItemBinding
 import com.boswelja.devicemanager.messages.Action
 import com.boswelja.devicemanager.messages.Message
-import kotlin.math.min
 import timber.log.Timber
+import kotlin.math.min
 
 internal class MessagesAdapter(private val fragment: MessageFragment) :
-        RecyclerView.Adapter<MessagesAdapter.MessageItemViewHolder>() {
+    RecyclerView.Adapter<MessagesAdapter.MessageItemViewHolder>() {
 
     private val messages = ArrayList<Message>()
 
@@ -42,7 +42,8 @@ internal class MessagesAdapter(private val fragment: MessageFragment) :
             inflater = LayoutInflater.from(parent.context)
         }
         return MessageItemViewHolder(
-                MessageItemBinding.inflate(inflater!!, parent, false))
+            MessageItemBinding.inflate(inflater!!, parent, false)
+        )
     }
 
     override fun onBindViewHolder(holder: MessageItemViewHolder, position: Int) {
@@ -130,7 +131,7 @@ internal class MessagesAdapter(private val fragment: MessageFragment) :
     }
 
     class MessageItemViewHolder(val binding: MessageItemBinding) :
-            RecyclerView.ViewHolder(binding.root) {
+        RecyclerView.ViewHolder(binding.root) {
         fun bind(message: Message) {
             binding.apply {
                 messageIcon.setImageResource(message.iconRes)
@@ -149,9 +150,10 @@ internal class MessagesAdapter(private val fragment: MessageFragment) :
      * A custom [ItemTouchHelper] that provides swipe to dismiss logic for a [Message].
      */
     class SwipeDismissCallback(private val adapter: MessagesAdapter, context: Context) :
-            ItemTouchHelper.SimpleCallback(
-                    0,
-                    ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
+        ItemTouchHelper.SimpleCallback(
+            0,
+            ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT
+        ) {
 
         private val alphaMultiplier: Int = 3
 
@@ -186,20 +188,23 @@ internal class MessagesAdapter(private val fragment: MessageFragment) :
                     val itemView = viewHolder.itemView
                     if (dX > icon.intrinsicWidth + iconMargin) {
                         val iconTop =
-                                itemView.top + (itemView.height - icon.intrinsicHeight) / 2
+                            itemView.top + (itemView.height - icon.intrinsicHeight) / 2
                         val iconBottom = iconTop + icon.intrinsicHeight
                         val iconLeft = itemView.left + iconMargin
                         val iconRight = itemView.left + iconMargin + icon.intrinsicWidth
                         icon.setBounds(iconLeft, iconTop, iconRight, iconBottom)
                         icon.alpha = min(
-                                ((dX - icon.intrinsicWidth - iconMargin) * alphaMultiplier).toInt(),
-                                iconMaxAlpha)
+                            ((dX - icon.intrinsicWidth - iconMargin) * alphaMultiplier).toInt(),
+                            iconMaxAlpha
+                        )
                         icon.draw(c)
                     }
 
-                    swipeBackground.setBounds(itemView.left, itemView.top,
-                            itemView.left + dX.toInt(),
-                            itemView.bottom)
+                    swipeBackground.setBounds(
+                        itemView.left, itemView.top,
+                        itemView.left + dX.toInt(),
+                        itemView.bottom
+                    )
                     swipeBackground.draw(c)
                 }
                 dX < 0 -> {
@@ -211,13 +216,16 @@ internal class MessagesAdapter(private val fragment: MessageFragment) :
                         val iconRight = itemView.right - iconMargin
                         icon.setBounds(iconLeft, iconTop, iconRight, iconBottom)
                         icon.alpha = min(
-                                ((dX + icon.intrinsicWidth + iconMargin) * alphaMultiplier * -1).toInt(),
-                                iconMaxAlpha)
+                            ((dX + icon.intrinsicWidth + iconMargin) * alphaMultiplier * -1).toInt(),
+                            iconMaxAlpha
+                        )
                         icon.draw(c)
                     }
 
-                    swipeBackground.setBounds(itemView.right + dX.toInt(),
-                            itemView.top, itemView.right, itemView.bottom)
+                    swipeBackground.setBounds(
+                        itemView.right + dX.toInt(),
+                        itemView.top, itemView.right, itemView.bottom
+                    )
                     swipeBackground.draw(c)
                 }
             }

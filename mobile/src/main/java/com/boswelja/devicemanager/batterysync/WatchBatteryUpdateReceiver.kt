@@ -46,15 +46,17 @@ class WatchBatteryUpdateReceiver : WearableListenerService() {
                     if (canSendChargedNotification(watch)) {
                         notifyWatchCharged(watch)
                         watchManager.updatePreferenceInDatabase(
-                                watch.id,
-                                BATTERY_CHARGED_NOTI_SENT,
-                                true)
+                            watch.id,
+                            BATTERY_CHARGED_NOTI_SENT,
+                            true
+                        )
                     } else {
                         notificationManager.cancel(BATTERY_CHARGED_NOTI_ID)
                         watchManager.updatePreferenceInDatabase(
-                                watch.id,
-                                BATTERY_CHARGED_NOTI_SENT,
-                                false)
+                            watch.id,
+                            BATTERY_CHARGED_NOTI_SENT,
+                            false
+                        )
                     }
                 } else {
                     Timber.w("Got watch battery stats from ${watchBatteryStats.watchId}, but watch is not registered")
@@ -74,7 +76,7 @@ class WatchBatteryUpdateReceiver : WearableListenerService() {
         if (messageEvent?.path == BATTERY_STATUS_PATH) {
             Timber.i("Got BATTERY_STATUS_PATH")
             notificationManager =
-                    getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+                getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
             watchBatteryStats = getBatteryStatsFromMessage(messageEvent)
 
@@ -87,8 +89,9 @@ class WatchBatteryUpdateReceiver : WearableListenerService() {
                     it.close()
                 }
                 WidgetDatabase.updateWatchWidgets(
-                        this@WatchBatteryUpdateReceiver,
-                        watchBatteryStats.watchId)
+                    this@WatchBatteryUpdateReceiver,
+                    watchBatteryStats.watchId
+                )
             }
         }
     }
@@ -115,10 +118,12 @@ class WatchBatteryUpdateReceiver : WearableListenerService() {
      */
     private fun canSendChargedNotification(watch: Watch): Boolean {
         return watchBatteryStats.isWatchCharging &&
-                (watch.boolPrefs[BATTERY_WATCH_CHARGE_NOTI_KEY] == true) &&
-                (watchBatteryStats.batteryPercent >=
-                        (watch.intPrefs[BATTERY_CHARGE_THRESHOLD_KEY] ?: 90)) &&
-                (watch.boolPrefs[BATTERY_CHARGED_NOTI_SENT] != true)
+            (watch.boolPrefs[BATTERY_WATCH_CHARGE_NOTI_KEY] == true) &&
+            (
+                watchBatteryStats.batteryPercent >=
+                    (watch.intPrefs[BATTERY_CHARGE_THRESHOLD_KEY] ?: 90)
+                ) &&
+            (watch.boolPrefs[BATTERY_CHARGED_NOTI_SENT] != true)
     }
 
     /**
@@ -132,25 +137,27 @@ class WatchBatteryUpdateReceiver : WearableListenerService() {
         if (Compat.areNotificationsEnabled(this, BATTERY_CHARGED_NOTI_CHANNEL_ID)) {
             Timber.i("Sending charged notification")
             NotificationCompat.Builder(this, BATTERY_CHARGED_NOTI_CHANNEL_ID)
-                    .setSmallIcon(R.drawable.battery_full)
-                    .setContentTitle(getString(R.string.device_charged_noti_title, watch.name))
-                    .setContentText(getString(R.string.device_charged_noti_desc)
-                            .format(watch.name, watch.intPrefs[BATTERY_CHARGE_THRESHOLD_KEY] ?: 90))
-                    .setLocalOnly(true)
-                    .also {
-                        notificationManager.notify(BATTERY_CHARGED_NOTI_ID, it.build())
-                    }
+                .setSmallIcon(R.drawable.battery_full)
+                .setContentTitle(getString(R.string.device_charged_noti_title, watch.name))
+                .setContentText(
+                    getString(R.string.device_charged_noti_desc)
+                        .format(watch.name, watch.intPrefs[BATTERY_CHARGE_THRESHOLD_KEY] ?: 90)
+                )
+                .setLocalOnly(true)
+                .also {
+                    notificationManager.notify(BATTERY_CHARGED_NOTI_ID, it.build())
+                }
         } else {
             Timber.w("Failed to send charged notification")
             coroutineScope.launch(Dispatchers.IO) {
                 MessageDatabase.open(this@WatchBatteryUpdateReceiver).apply {
                     val message = Message(
-                            iconRes = R.drawable.pref_ic_warning,
-                            label = getString(R.string.message_watch_charge_noti_warning_label),
-                            shortLabel = getString(R.string.message_watch_charge_noti_warning_label_short),
-                            desc = getString(R.string.message_watch_charge_noti_warning_desc),
-                            buttonLabel = getString(R.string.message_watch_charge_noti_warning_button_label),
-                            action = Action.LAUNCH_NOTIFICATION_SETTINGS
+                        iconRes = R.drawable.pref_ic_warning,
+                        label = getString(R.string.message_watch_charge_noti_warning_label),
+                        shortLabel = getString(R.string.message_watch_charge_noti_warning_label_short),
+                        desc = getString(R.string.message_watch_charge_noti_warning_desc),
+                        buttonLabel = getString(R.string.message_watch_charge_noti_warning_button_label),
+                        action = Action.LAUNCH_NOTIFICATION_SETTINGS
                     )
                     sendMessage(sharedPreferences, message)
                 }.also {

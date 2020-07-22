@@ -47,7 +47,7 @@ abstract class SectionedAdapter<T>(
     abstract fun onBindItemViewHolder(holder: RecyclerView.ViewHolder, item: T)
 
     override fun getItemCount(): Int =
-            sectionCount + itemCount
+        sectionCount + itemCount
 
     override fun getItemViewType(position: Int): Int {
         return when (getItem(position)) {

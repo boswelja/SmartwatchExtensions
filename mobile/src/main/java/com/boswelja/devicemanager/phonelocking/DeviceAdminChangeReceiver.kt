@@ -19,17 +19,17 @@ class DeviceAdminChangeReceiver : DeviceAdminReceiver() {
     override fun onEnabled(context: Context, intent: Intent) {
         Timber.i("onEnabled() called")
         PreferenceManager.getDefaultSharedPreferences(context).edit()
-                .putBoolean(DEVICE_ADMIN_ENABLED_KEY, true)
-                .apply()
+            .putBoolean(DEVICE_ADMIN_ENABLED_KEY, true)
+            .apply()
     }
 
     override fun onDisabled(context: Context, intent: Intent) {
         Timber.i("onDisabled() called")
         PreferenceManager.getDefaultSharedPreferences(context)
-                .edit()
-                .putBoolean(DEVICE_ADMIN_ENABLED_KEY, false)
-                .putBoolean(PreferenceKey.PHONE_LOCKING_ENABLED_KEY, false)
-                .apply()
+            .edit()
+            .putBoolean(DEVICE_ADMIN_ENABLED_KEY, false)
+            .putBoolean(PreferenceKey.PHONE_LOCKING_ENABLED_KEY, false)
+            .apply()
         // TODO Tell registered watches Phone Locking was disabled.
     }
 

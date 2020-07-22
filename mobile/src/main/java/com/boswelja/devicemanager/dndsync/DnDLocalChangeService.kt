@@ -42,7 +42,7 @@ class DnDLocalChangeService : Service(), WatchPreferenceChangeListener {
             watchManager.addWatchPreferenceChangeListener(this@DnDLocalChangeService)
             coroutineScope.launch(Dispatchers.IO) {
                 val dndSyncToWatchPreferences =
-                        watchManager.getBoolPrefsForWatches(PreferenceKey.DND_SYNC_TO_WATCH_KEY)
+                    watchManager.getBoolPrefsForWatches(PreferenceKey.DND_SYNC_TO_WATCH_KEY)
                 if (dndSyncToWatchPreferences != null) {
                     for (boolPreference in dndSyncToWatchPreferences) {
                         sendToWatch[boolPreference.watchId] = boolPreference.value
@@ -122,23 +122,26 @@ class DnDLocalChangeService : Service(), WatchPreferenceChangeListener {
     private fun createNotification(): Notification {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
             NotificationChannelHelper.createForDnDSync(
-                    this, getSystemService(NotificationManager::class.java))
+                this, getSystemService(NotificationManager::class.java)
+            )
 
         val launchActivityIntent = Intent(this, MainActivity::class.java)
-        val notiTapIntent = PendingIntent.getActivity(this,
-                0, launchActivityIntent, 0)
+        val notiTapIntent = PendingIntent.getActivity(
+            this,
+            0, launchActivityIntent, 0
+        )
 
         return NotificationCompat.Builder(this, References.DND_SYNC_NOTI_CHANNEL_ID)
-                .setContentTitle(getString(R.string.interrupt_filter_sync_active_noti_title))
-                .setContentText(getString(R.string.interrupt_filter_sync_to_phone_noti_desc))
-                .setSmallIcon(R.drawable.ic_sync)
-                .setOngoing(true)
-                .setShowWhen(false)
-                .setUsesChronometer(false)
-                .setVisibility(NotificationCompat.VISIBILITY_SECRET)
-                .setContentIntent(notiTapIntent)
-                .setPriority(NotificationCompat.PRIORITY_LOW)
-                .build()
+            .setContentTitle(getString(R.string.interrupt_filter_sync_active_noti_title))
+            .setContentText(getString(R.string.interrupt_filter_sync_to_phone_noti_desc))
+            .setSmallIcon(R.drawable.ic_sync)
+            .setOngoing(true)
+            .setShowWhen(false)
+            .setUsesChronometer(false)
+            .setVisibility(NotificationCompat.VISIBILITY_SECRET)
+            .setContentIntent(notiTapIntent)
+            .setPriority(NotificationCompat.PRIORITY_LOW)
+            .build()
     }
 
     /**

@@ -30,10 +30,10 @@ class LockPhoneComplicationProvider : BaseComplicationProviderService() {
         val pendingIntent = PendingIntent.getService(this, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT)
 
         val complicationData = ComplicationData.Builder(type)
-                .setIcon(Icon.createWithResource(this, R.drawable.ic_phone_lock))
-                .setShortText(ComplicationText.plainText(getString(R.string.lock_phone_label)))
-                .setTapAction(pendingIntent)
-                .build()
+            .setIcon(Icon.createWithResource(this, R.drawable.ic_phone_lock))
+            .setShortText(ComplicationText.plainText(getString(R.string.lock_phone_label)))
+            .setTapAction(pendingIntent)
+            .build()
 
         manager?.updateComplicationData(complicationId, complicationData)
     }

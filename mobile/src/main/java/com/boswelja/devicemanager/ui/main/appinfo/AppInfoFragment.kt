@@ -30,10 +30,10 @@ import com.google.android.gms.wearable.Wearable
 import timber.log.Timber
 
 class AppInfoFragment :
-        BaseWatchPickerPreferenceFragment(),
-        Preference.OnPreferenceClickListener,
-        WatchConnectionListener,
-        DonationResultInterface {
+    BaseWatchPickerPreferenceFragment(),
+    Preference.OnPreferenceClickListener,
+    WatchConnectionListener,
+    DonationResultInterface {
 
     private var customTabsIntent: CustomTabsIntent? = null
 
@@ -148,24 +148,24 @@ class AppInfoFragment :
         val connectedWatchId = getWatchConnectionManager()?.connectedWatch?.id
         if (!connectedWatchId.isNullOrEmpty()) {
             messageClient.sendMessage(connectedWatchId, References.REQUEST_APP_VERSION, null)
-                    .addOnFailureListener {
-                        Timber.w(it)
-                        try {
-                            watchVersionPreference.title =
-                                    getString(R.string.pref_about_watch_version_disconnected)
-                        } catch (e: IllegalStateException) {
-                            Timber.w(e)
-                        }
+                .addOnFailureListener {
+                    Timber.w(it)
+                    try {
+                        watchVersionPreference.title =
+                            getString(R.string.pref_about_watch_version_disconnected)
+                    } catch (e: IllegalStateException) {
+                        Timber.w(e)
                     }
-                    .addOnSuccessListener {
-                        Timber.i("Message sent successfully")
-                        try {
-                            watchVersionPreference.title =
-                                    getString(R.string.pref_about_watch_version_loading)
-                        } catch (e: IllegalStateException) {
-                            Timber.w(e)
-                        }
+                }
+                .addOnSuccessListener {
+                    Timber.i("Message sent successfully")
+                    try {
+                        watchVersionPreference.title =
+                            getString(R.string.pref_about_watch_version_loading)
+                    } catch (e: IllegalStateException) {
+                        Timber.w(e)
                     }
+                }
         } else {
             Timber.w("connectedWatchId null or empty")
             watchVersionPreference.title = getString(R.string.pref_about_watch_version_failed)

@@ -134,9 +134,9 @@ class MainActivity : BaseWatchPickerActivity() {
     private fun navigate(fragment: Fragment) {
         try {
             supportFragmentManager.beginTransaction()
-                    .setCustomAnimations(R.anim.fade_in, R.anim.fade_out)
-                    .replace(R.id.fragment_holder, fragment)
-                    .commit()
+                .setCustomAnimations(R.anim.fade_in, R.anim.fade_out)
+                .replace(R.id.fragment_holder, fragment)
+                .commit()
         } catch (e: IllegalStateException) {
             Timber.w(e)
         }
