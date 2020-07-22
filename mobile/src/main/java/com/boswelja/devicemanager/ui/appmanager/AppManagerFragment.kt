@@ -23,6 +23,7 @@ import com.boswelja.devicemanager.common.appmanager.References.REQUEST_OPEN_PACK
 import com.boswelja.devicemanager.common.appmanager.References.REQUEST_UNINSTALL_PACKAGE
 import com.boswelja.devicemanager.common.recyclerview.adapter.ItemClickCallback
 import com.boswelja.devicemanager.databinding.FragmentAppManagerBinding
+import com.boswelja.devicemanager.ui.appmanager.info.AppInfoActivity
 import com.google.android.gms.wearable.MessageClient
 import com.google.android.gms.wearable.Wearable
 
