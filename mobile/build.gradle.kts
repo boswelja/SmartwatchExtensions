@@ -18,7 +18,7 @@ android {
         versionName = PackageInfo.versionName
 
         testApplicationId = PackageInfo.packageName + ".test"
-        testInstrumentationRunner ="androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
         javaCompileOptions {
             annotationProcessorOptions {

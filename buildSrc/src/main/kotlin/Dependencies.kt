@@ -5,10 +5,12 @@ const val kotlinVersion = "1.4-M3"
 object BuildPlugins {
     object Versions {
         const val buildToolsVersion = "4.2.0-alpha05"
+        const val googleServicesVersion = "4.3.3"
     }
 
     const val androidGradlePlugin = "com.android.tools.build:gradle:${Versions.buildToolsVersion}"
     const val kotlinGradlePlugin = "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
+    const val googleServicesPlugin = "com.google.gms:google-services:${Versions.googleServicesVersion}"
 
     const val androidLibrary = "com.android.library"
     const val androidApplication = "com.android.application"
