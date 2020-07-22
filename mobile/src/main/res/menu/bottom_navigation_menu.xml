@@ -2,22 +2,22 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/extensions_navigation"
+        android:id="@id/extensionsFragment"
         android:title="@string/bottom_nav_extensions_label"
         android:icon="@drawable/watch" />
 
     <item
-        android:id="@+id/messages_navigation"
+        android:id="@id/messageFragment"
         android:title="@string/bottom_nav_messages_label"
         android:icon="@drawable/nav_ic_messages" />
 
     <item
-        android:id="@+id/settings_navigation"
+        android:id="@id/appSettingsFragment"
         android:title="@string/bottom_nav_app_settings_label"
         android:icon="@drawable/nav_ic_app_settings" />
 
     <item
-        android:id="@+id/app_info_navigation"
+        android:id="@id/appInfoFragment"
         android:title="@string/bottom_nav_about_label"
         android:icon="@drawable/nav_ic_about" />
 
