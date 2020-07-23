@@ -16,7 +16,6 @@ import androidx.databinding.DataBindingUtil
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.appmanager.AppPackageInfo
 import com.boswelja.devicemanager.databinding.ActivityAppInfoBinding
-import com.boswelja.devicemanager.ui.appmanager.AppPermissionDialogFragment
 import com.boswelja.devicemanager.ui.base.BaseToolbarActivity
 
 class AppInfoActivity : BaseToolbarActivity() {

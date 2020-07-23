@@ -11,10 +11,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.widget.AppCompatTextView
 import androidx.fragment.app.FragmentManager
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.boswelja.devicemanager.R
+import com.boswelja.devicemanager.common.recyclerview.adapter.StringAdapter
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import timber.log.Timber
 
@@ -29,12 +30,13 @@ class ChangelogDialogFragment : BottomSheetDialogFragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
-        inflater.inflate(R.layout.bottom_sheet_changelog, container, false)
+        inflater.inflate(R.layout.bottom_sheet_list, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         Timber.d("onViewCreated() called")
         setupRecyclerView(view)
+        view.findViewById<AppCompatTextView>(R.id.title).setText(R.string.changelog_sheet_title)
     }
 
     /**
@@ -43,10 +45,7 @@ class ChangelogDialogFragment : BottomSheetDialogFragment() {
      */
     private fun setupRecyclerView(view: View) {
         Timber.d("setupRecyclerView() called")
-        view.findViewById<RecyclerView>(R.id.changelog_recyclerview).apply {
-            layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-            adapter = ChangelogAdapter(changelog)
-        }
+        view.findViewById<RecyclerView>(R.id.recyclerview).adapter = StringAdapter(changelog)
     }
 
     /**

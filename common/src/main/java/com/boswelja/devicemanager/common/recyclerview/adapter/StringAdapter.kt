@@ -5,14 +5,14 @@
  * This file, and any part of the Wearable Extensions app/s cannot be copied and/or distributed
  * without permission from Jack Boswell (boswelja) <boswela@outlook.com>
  */
-package com.boswelja.devicemanager.ui.changelog
+package com.boswelja.devicemanager.common.recyclerview.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.boswelja.devicemanager.common.recyclerview.item.OneLineItem
 
-class ChangelogAdapter(private val changelog: Array<String>) : RecyclerView.Adapter<OneLineItem>() {
+class StringAdapter(private val strings: Array<String>) : RecyclerView.Adapter<OneLineItem>() {
 
     private var layoutInflater: LayoutInflater? = null
 
@@ -21,9 +21,9 @@ class ChangelogAdapter(private val changelog: Array<String>) : RecyclerView.Adap
         return OneLineItem.create(layoutInflater!!, parent)
     }
 
-    override fun getItemCount(): Int = changelog.count()
+    override fun getItemCount(): Int = strings.count()
 
     override fun onBindViewHolder(holder: OneLineItem, position: Int) {
-        holder.textView.text = changelog[position]
+        holder.textView.text = strings[position]
     }
 }
