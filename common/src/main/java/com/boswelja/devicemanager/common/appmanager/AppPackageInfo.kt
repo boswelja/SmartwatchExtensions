@@ -23,7 +23,7 @@ import java.io.Serializable
 class AppPackageInfo(packageManager: PackageManager, packageInfo: PackageInfo) : Serializable {
 
     val packageIcon: SerializableBitmap =
-            SerializableBitmap(packageManager.getApplicationIcon(packageInfo.packageName).toBitmap())
+        SerializableBitmap(packageManager.getApplicationIcon(packageInfo.packageName).toBitmap())
     val versionCode: Long = PackageInfoCompat.getLongVersionCode(packageInfo)
     val versionName: String? = packageInfo.versionName
 
@@ -45,13 +45,13 @@ class AppPackageInfo(packageManager: PackageManager, packageInfo: PackageInfo) :
     override fun equals(other: Any?): Boolean {
         return if (other is AppPackageInfo) {
             packageName == other.packageName &&
-                    packageLabel == other.packageLabel &&
-                    versionCode == other.versionCode &&
-                    versionName == other.versionName &&
-                    isSystemApp == other.isSystemApp &&
-                    hasLaunchActivity == other.hasLaunchActivity &&
-                    installTime == other.installTime &&
-                    lastUpdateTime == other.lastUpdateTime
+                packageLabel == other.packageLabel &&
+                versionCode == other.versionCode &&
+                versionName == other.versionName &&
+                isSystemApp == other.isSystemApp &&
+                hasLaunchActivity == other.hasLaunchActivity &&
+                installTime == other.installTime &&
+                lastUpdateTime == other.lastUpdateTime
         } else {
             super.equals(other)
         }

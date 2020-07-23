@@ -7,11 +7,8 @@
  */
 package com.boswelja.devicemanager
 
-import android.content.Context
 import android.content.res.Resources
-import android.graphics.drawable.Drawable
 import android.util.TypedValue
-import androidx.core.content.ContextCompat
 
 object Utils {
 

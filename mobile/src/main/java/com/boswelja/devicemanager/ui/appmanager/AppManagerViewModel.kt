@@ -153,15 +153,19 @@ class AppManagerViewModel(application: Application) : AndroidViewModel(applicati
         val result = ArrayList<Item>()
         val userApps = appPackageInfoList.filterNot { it.isSystemApp }.sortedBy { it.packageLabel }
         result.add(Item.Header(context.getString(R.string.app_manager_section_user_apps), 0.toString()))
-        result.addAll(userApps.map {
-            Item.App(it.packageIcon.currentImage, it.packageName, it.packageLabel, it.versionName ?: it.versionCode.toString())
-        })
+        result.addAll(
+            userApps.map {
+                Item.App(it.packageIcon.currentImage, it.packageName, it.packageLabel, it.versionName ?: it.versionCode.toString())
+            }
+        )
 
         val systemApps = appPackageInfoList.filter { it.isSystemApp }.sortedBy { it.packageLabel }
         result.add(Item.Header(context.getString(R.string.app_manager_section_system_apps), 1.toString()))
-        result.addAll(systemApps.map {
-            Item.App(it.packageIcon.currentImage, it.packageName, it.packageLabel, it.versionName ?: it.versionCode.toString())
-        })
+        result.addAll(
+            systemApps.map {
+                Item.App(it.packageIcon.currentImage, it.packageName, it.packageLabel, it.versionName ?: it.versionCode.toString())
+            }
+        )
 
         return result
     }

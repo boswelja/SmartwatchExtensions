@@ -13,9 +13,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
-import androidx.core.content.ContextCompat
 import androidx.databinding.BindingAdapter
-import com.boswelja.devicemanager.Utils
 
 @BindingAdapter("srcRes")
 fun ImageView.setImageRes(@DrawableRes drawableRes: Int) {

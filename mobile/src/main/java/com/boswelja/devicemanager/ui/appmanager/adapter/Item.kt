@@ -1,3 +1,10 @@
+/* Copyright (C) 2020 Jack Boswell <boswelja@outlook.com>
+ *
+ * This file is part of Wearable Extensions
+ *
+ * This file, and any part of the Wearable Extensions app/s cannot be copied and/or distributed
+ * without permission from Jack Boswell (boswelja) <boswela@outlook.com>
+ */
 package com.boswelja.devicemanager.ui.appmanager.adapter
 
 import android.graphics.Bitmap
@@ -6,10 +13,11 @@ sealed class Item {
     abstract val id: String
 
     data class App(
-            val icon: Bitmap,
-            val packageName: String,
-            val label: String,
-            val versionText: String): Item() {
+        val icon: Bitmap,
+        val packageName: String,
+        val label: String,
+        val versionText: String
+    ) : Item() {
         override val id: String = packageName
 
         override fun equals(other: Any?): Boolean {
@@ -35,7 +43,7 @@ sealed class Item {
         }
     }
 
-    data class Header(val label: String, override val id: String): Item() {
+    data class Header(val label: String, override val id: String) : Item() {
         override fun equals(other: Any?): Boolean {
             if (other is Header) {
                 if (label != other.label) return false
