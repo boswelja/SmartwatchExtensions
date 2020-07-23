@@ -1,3 +1,10 @@
+/* Copyright (C) 2020 Jack Boswell <boswelja@outlook.com>
+ *
+ * This file is part of Wearable Extensions
+ *
+ * This file, and any part of the Wearable Extensions app/s cannot be copied and/or distributed
+ * without permission from Jack Boswell (boswelja) <boswela@outlook.com>
+ */
 package com.boswelja.devicemanager.ui.appmanager
 
 import android.app.Application
@@ -27,7 +34,7 @@ class AppManagerViewModel(application: Application) : AndroidViewModel(applicati
                     val allApps = separateAppListToSections(appPackageInfoList)
                     _allAppsList.postValue(allApps)
                 } catch (e: InvalidClassException) {
-                    //createSnackBar(getString(R.string.app_manager_version_mismatch))
+                    // createSnackBar(getString(R.string.app_manager_version_mismatch))
                 }
             }
             References.PACKAGE_ADDED -> {
@@ -112,8 +119,8 @@ class AppManagerViewModel(application: Application) : AndroidViewModel(applicati
      */
     fun sendUninstallRequestMessage(appPackageInfo: AppPackageInfo) {
         messageClient.sendMessage(
-                watchId!!, References.REQUEST_UNINSTALL_PACKAGE,
-                appPackageInfo.packageName.toByteArray(Charsets.UTF_8)
+            watchId!!, References.REQUEST_UNINSTALL_PACKAGE,
+            appPackageInfo.packageName.toByteArray(Charsets.UTF_8)
         )
     }
 
@@ -123,8 +130,8 @@ class AppManagerViewModel(application: Application) : AndroidViewModel(applicati
      */
     fun sendOpenRequestMessage(appPackageInfo: AppPackageInfo) {
         messageClient.sendMessage(
-                watchId!!, References.REQUEST_OPEN_PACKAGE,
-                appPackageInfo.packageName.toByteArray(Charsets.UTF_8)
+            watchId!!, References.REQUEST_OPEN_PACKAGE,
+            appPackageInfo.packageName.toByteArray(Charsets.UTF_8)
         )
     }
 
@@ -138,18 +145,18 @@ class AppManagerViewModel(application: Application) : AndroidViewModel(applicati
      * @return The newly created [ArrayList].
      */
     private fun separateAppListToSections(appPackageInfoList: AppPackageInfoList):
-            ArrayList<Pair<String, ArrayList<AppPackageInfo>>> {
-        val data = ArrayList<Pair<String, ArrayList<AppPackageInfo>>>()
-        val userApps = ArrayList<AppPackageInfo>()
-        userApps.addAll(appPackageInfoList.filterNot { it.isSystemApp })
-        Pair(getApplication<Application>().getString(R.string.app_manager_section_user_apps), userApps).also {
-            data.add(it)
+        ArrayList<Pair<String, ArrayList<AppPackageInfo>>> {
+            val data = ArrayList<Pair<String, ArrayList<AppPackageInfo>>>()
+            val userApps = ArrayList<AppPackageInfo>()
+            userApps.addAll(appPackageInfoList.filterNot { it.isSystemApp })
+            Pair(getApplication<Application>().getString(R.string.app_manager_section_user_apps), userApps).also {
+                data.add(it)
+            }
+            val systemApps = ArrayList<AppPackageInfo>()
+            systemApps.addAll(appPackageInfoList.filter { it.isSystemApp })
+            Pair(getApplication<Application>().getString(R.string.app_manager_section_system_apps), systemApps).also {
+                data.add(it)
+            }
+            return data
         }
-        val systemApps = ArrayList<AppPackageInfo>()
-        systemApps.addAll(appPackageInfoList.filter { it.isSystemApp })
-        Pair(getApplication<Application>().getString(R.string.app_manager_section_system_apps), systemApps).also {
-            data.add(it)
-        }
-        return data
-    }
 }

@@ -72,9 +72,9 @@ class AppManagerActivity : BaseToolbarActivity() {
     private fun showAppManagerFragment() {
         Timber.i("showAppManagerFragment() called")
         supportFragmentManager.beginTransaction()
-                .setCustomAnimations(R.anim.fade_in, R.anim.fade_out)
-                .replace(R.id.fragment_holder, AppManagerFragment())
-                .commit()
+            .setCustomAnimations(R.anim.fade_in, R.anim.fade_out)
+            .replace(R.id.fragment_holder, AppManagerFragment())
+            .commit()
     }
 
     /**
