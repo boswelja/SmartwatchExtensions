@@ -15,38 +15,14 @@ import java.io.ObjectInputStream
 import java.io.ObjectOutputStream
 import java.io.Serializable
 
-class AppPackageInfoList(packageManager: PackageManager) : List<AppPackageInfo>, Serializable {
-
-    private val appsList: List<AppPackageInfo>
+class AppPackageInfoList(packageManager: PackageManager) : ArrayList<AppPackageInfo>(), Serializable {
 
     init {
         val allPackages = packageManager.getInstalledPackages(PackageManager.GET_PERMISSIONS).map {
             AppPackageInfo(packageManager, it)
         }
-        appsList = filterAppsList(allPackages)
+        addAll(filterAppsList(allPackages))
     }
-
-    override val size: Int = appsList.size
-
-    override fun contains(element: AppPackageInfo): Boolean = appsList.contains(element)
-
-    override fun containsAll(elements: Collection<AppPackageInfo>): Boolean = appsList.containsAll(elements)
-
-    override fun get(index: Int): AppPackageInfo = appsList[index]
-
-    override fun indexOf(element: AppPackageInfo): Int = appsList.indexOf(element)
-
-    override fun isEmpty(): Boolean = appsList.isEmpty()
-
-    override fun iterator(): Iterator<AppPackageInfo> = appsList.iterator()
-
-    override fun lastIndexOf(element: AppPackageInfo): Int = appsList.lastIndexOf(element)
-
-    override fun listIterator(): ListIterator<AppPackageInfo> = appsList.listIterator()
-
-    override fun listIterator(index: Int): ListIterator<AppPackageInfo> = appsList.listIterator(index)
-
-    override fun subList(fromIndex: Int, toIndex: Int): List<AppPackageInfo> = appsList.subList(fromIndex, toIndex)
 
     private fun filterAppsList(apps: List<AppPackageInfo>): List<AppPackageInfo> =
         apps.filter {
@@ -66,7 +42,7 @@ class AppPackageInfoList(packageManager: PackageManager) : List<AppPackageInfo>,
         private val blacklistedApps = arrayOf(
             "com.google.android.gms"
         )
-        const val serialVersionUID: Long = 2
+        const val serialVersionUID: Long = 3
 
         fun fromByteArray(byteArray: ByteArray): AppPackageInfoList {
             ObjectInputStream(ByteArrayInputStream(byteArray)).use {

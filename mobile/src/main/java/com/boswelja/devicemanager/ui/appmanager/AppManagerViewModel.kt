@@ -11,10 +11,12 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Transformations
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.appmanager.AppPackageInfo
 import com.boswelja.devicemanager.common.appmanager.AppPackageInfoList
 import com.boswelja.devicemanager.common.appmanager.References
+import com.boswelja.devicemanager.ui.appmanager.adapter.Item
 import com.google.android.gms.wearable.MessageClient
 import com.google.android.gms.wearable.Wearable
 import timber.log.Timber
@@ -31,41 +33,51 @@ class AppManagerViewModel(application: Application) : AndroidViewModel(applicati
                 Timber.i("Updating app list")
                 try {
                     val appPackageInfoList = AppPackageInfoList.fromByteArray(it.data)
-                    val allApps = separateAppListToSections(appPackageInfoList)
-                    _allAppsList.postValue(allApps)
+                    _allAppsList.postValue(appPackageInfoList)
                 } catch (e: InvalidClassException) {
+                    Timber.w("App list version mismatch")
                     // createSnackBar(getString(R.string.app_manager_version_mismatch))
                 }
             }
             References.PACKAGE_ADDED -> {
+                Timber.i("Adding app to list")
                 val appPackageInfo = AppPackageInfo.fromByteArray(it.data)
-                _appAdded.postValue(appPackageInfo)
+                _allAppsList.value?.let { appList ->
+                    appList.add(appPackageInfo)
+                    _allAppsList.postValue(appList)
+                }
             }
             References.PACKAGE_UPDATED -> {
+                Timber.i("Updating app in list")
                 val appPackageInfo = AppPackageInfo.fromByteArray(it.data)
-                _appUpdated.postValue(appPackageInfo)
+                _allAppsList.value?.let { allApps ->
+                    allApps.removeAll { app -> app.packageName == appPackageInfo.packageName }
+                    allApps.add(appPackageInfo)
+                    _allAppsList.postValue(allApps)
+                }
             }
             References.PACKAGE_REMOVED -> {
+                Timber.i("Removing app from list")
                 val appPackageName = String(it.data, Charsets.UTF_8)
+                val appList = _allAppsList.value
+                appList?.let { list ->
+                    list.removeAll { app -> app.packageName == appPackageName }
+                    _allAppsList.postValue(list)
+                }
             }
         }
     }
 
-    private val _allAppsList = MutableLiveData<ArrayList<Pair<String, ArrayList<AppPackageInfo>>>?>(null)
-    val allAppsList: LiveData<ArrayList<Pair<String, ArrayList<AppPackageInfo>>>?>
+    private val _allAppsList = MutableLiveData<AppPackageInfoList?>(null)
+    val allAppsList: LiveData<AppPackageInfoList?>
         get() = _allAppsList
 
-    private val _appAdded = MutableLiveData<AppPackageInfo?>(null)
-    val appAdded: LiveData<AppPackageInfo?>
-        get() = _appAdded
-
-    private val _appUpdated = MutableLiveData<AppPackageInfo?>(null)
-    val appUpdated: LiveData<AppPackageInfo?>
-        get() = _appUpdated
-
-    private val _appRemoved = MutableLiveData<String?>(null)
-    val appRemoved: LiveData<String?>
-        get() = _appRemoved
+    val adapterList: LiveData<List<Item>?> = Transformations.map(allAppsList) {
+        if (it != null)
+            separateAppListToSections(it)
+        else
+            null
+    }
 
     private var isServiceRunning: Boolean = false
 
@@ -105,12 +117,8 @@ class AppManagerViewModel(application: Application) : AndroidViewModel(applicati
         }
     }
 
-    fun addMessageListener(messageListener: MessageClient.OnMessageReceivedListener) {
-        messageClient.addListener(messageListener)
-    }
-
-    fun removeMessageListener(messageListener: MessageClient.OnMessageReceivedListener) {
-        messageClient.removeListener(messageListener)
+    fun getAppDetails(appInfo: Item.App): AppPackageInfo? {
+        return _allAppsList.value?.first { it.packageName == appInfo.packageName }
     }
 
     /**
@@ -135,28 +143,26 @@ class AppManagerViewModel(application: Application) : AndroidViewModel(applicati
         )
     }
 
-    fun onAppAddHandled() = _appAdded.postValue(null)
-    fun onAppUpdateHandled() = _appUpdated.postValue(null)
-    fun onAppRemoveHandled() = _appRemoved.postValue(null)
-
     /**
      * Converts an [AppPackageInfoList] into an [ArrayList] that can be used by [AppsAdapter].
      * @param appPackageInfoList The [AppPackageInfoList] to convert.
      * @return The newly created [ArrayList].
      */
-    private fun separateAppListToSections(appPackageInfoList: AppPackageInfoList):
-        ArrayList<Pair<String, ArrayList<AppPackageInfo>>> {
-            val data = ArrayList<Pair<String, ArrayList<AppPackageInfo>>>()
-            val userApps = ArrayList<AppPackageInfo>()
-            userApps.addAll(appPackageInfoList.filterNot { it.isSystemApp })
-            Pair(getApplication<Application>().getString(R.string.app_manager_section_user_apps), userApps).also {
-                data.add(it)
-            }
-            val systemApps = ArrayList<AppPackageInfo>()
-            systemApps.addAll(appPackageInfoList.filter { it.isSystemApp })
-            Pair(getApplication<Application>().getString(R.string.app_manager_section_system_apps), systemApps).also {
-                data.add(it)
-            }
-            return data
-        }
+    private fun separateAppListToSections(appPackageInfoList: AppPackageInfoList): List<Item> {
+        val context = getApplication<Application>()
+        val result = ArrayList<Item>()
+        val userApps = appPackageInfoList.filterNot { it.isSystemApp }.sortedBy { it.packageLabel }
+        result.add(Item.Header(context.getString(R.string.app_manager_section_user_apps), 0.toString()))
+        result.addAll(userApps.map {
+            Item.App(it.packageIcon.currentImage, it.packageName, it.packageLabel, it.versionName ?: it.versionCode.toString())
+        })
+
+        val systemApps = appPackageInfoList.filter { it.isSystemApp }.sortedBy { it.packageLabel }
+        result.add(Item.Header(context.getString(R.string.app_manager_section_system_apps), 1.toString()))
+        result.addAll(systemApps.map {
+            Item.App(it.packageIcon.currentImage, it.packageName, it.packageLabel, it.versionName ?: it.versionCode.toString())
+        })
+
+        return result
+    }
 }

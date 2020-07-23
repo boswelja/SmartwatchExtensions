@@ -18,18 +18,24 @@ import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.appmanager.AppPackageInfo
 import com.boswelja.devicemanager.common.recyclerview.adapter.ItemClickCallback
 import com.boswelja.devicemanager.databinding.FragmentAppManagerBinding
+import com.boswelja.devicemanager.ui.appmanager.adapter.AppsAdapter
+import com.boswelja.devicemanager.ui.appmanager.adapter.Item
 import com.boswelja.devicemanager.ui.appmanager.info.AppInfoActivity
 import com.google.android.material.snackbar.Snackbar
 
-class AppManagerFragment : Fragment(), ItemClickCallback<AppPackageInfo> {
+class AppManagerFragment : Fragment(), ItemClickCallback<Item> {
 
     private val viewModel: AppManagerViewModel by activityViewModels()
     private val appsAdapter = AppsAdapter(this)
 
     private lateinit var binding: FragmentAppManagerBinding
 
-    override fun onClick(item: AppPackageInfo) {
-        launchAppInfoActivity(item)
+    override fun onClick(item: Item) {
+        if (item is Item.App) {
+            viewModel.getAppDetails(item)?.let {
+                launchAppInfoActivity(it)
+            }
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -39,21 +45,8 @@ class AppManagerFragment : Fragment(), ItemClickCallback<AppPackageInfo> {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         binding.appsRecyclerview.adapter = appsAdapter
-        viewModel.allAppsList.observe(viewLifecycleOwner) {
-            it?.let { allApps -> appsAdapter.setItems(allApps) }
-        }
-
-        viewModel.appAdded.observe(viewLifecycleOwner) {
-            it?.let { appPackageInfo -> handlePackageAdded(appPackageInfo) }
-            viewModel.onAppAddHandled()
-        }
-        viewModel.appUpdated.observe(viewLifecycleOwner) {
-            it?.let { appPackageInfo -> handlePackageUpdated(appPackageInfo) }
-            viewModel.onAppUpdateHandled()
-        }
-        viewModel.appRemoved.observe(viewLifecycleOwner) {
-            it?.let { packageName -> handlePackageRemoved(packageName) }
-            viewModel.onAppRemoveHandled()
+        viewModel.adapterList.observe(viewLifecycleOwner) {
+            it?.let { allApps -> appsAdapter.submitList(allApps) }
         }
     }
 
@@ -75,43 +68,6 @@ class AppManagerFragment : Fragment(), ItemClickCallback<AppPackageInfo> {
                 }
             }
             else -> super.onActivityResult(requestCode, resultCode, data)
-        }
-    }
-
-    /**
-     * Add a new [AppPackageInfo] to the [AppsAdapter] and notifies the user.
-     * @param appInfo The [AppPackageInfo] to add.
-     */
-    private fun handlePackageAdded(appInfo: AppPackageInfo) {
-        if (appInfo.isSystemApp) {
-            appsAdapter.addItem(1, appInfo)
-        } else {
-            appsAdapter.addItem(0, appInfo)
-        }
-        createSnackbar(getString(R.string.app_manager_installed_prefix, appInfo.packageLabel))
-    }
-
-    /**
-     * Updates an [AppPackageInfo] in the [AppsAdapter] and notifies the user.
-     * @param appInfo The [AppPackageInfo] to update.
-     */
-    private fun handlePackageUpdated(appInfo: AppPackageInfo) {
-        appsAdapter.updateItem(appInfo)
-        createSnackbar(getString(R.string.app_manager_updated_prefix, appInfo.packageLabel))
-    }
-
-    /**
-     * Removes an [AppPackageInfo] from the [AppsAdapter] and notifies the user.
-     * @param appPackageName The package name of the [AppPackageInfo] to remove.
-     */
-    private fun handlePackageRemoved(appPackageName: String) {
-        val removedApp = appsAdapter.removeByPackageName(appPackageName)
-        if (removedApp != null) {
-            createSnackbar(
-                getString(
-                    R.string.app_manager_uninstalled_prefix, removedApp.packageLabel
-                )
-            )
         }
     }
 

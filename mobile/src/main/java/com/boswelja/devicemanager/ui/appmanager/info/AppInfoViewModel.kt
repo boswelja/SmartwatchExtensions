@@ -50,6 +50,6 @@ class AppInfoViewModel(application: Application) : AndroidViewModel(application)
     }
 
     val appIcon = Transformations.map(appInfo) {
-        Utils.getAppIcon(application, it.packageName)
+        it.packageIcon.currentImage
     }
 }

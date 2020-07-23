@@ -11,6 +11,8 @@ import android.content.pm.ApplicationInfo
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import androidx.core.content.pm.PackageInfoCompat
+import androidx.core.graphics.drawable.toBitmap
+import com.boswelja.devicemanager.common.BitmapDataObject
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.IOException
@@ -20,6 +22,8 @@ import java.io.Serializable
 
 class AppPackageInfo(packageManager: PackageManager, packageInfo: PackageInfo) : Serializable {
 
+    val packageIcon: BitmapDataObject =
+            BitmapDataObject(packageManager.getApplicationIcon(packageInfo.packageName).toBitmap())
     val versionCode: Long = PackageInfoCompat.getLongVersionCode(packageInfo)
     val versionName: String? = packageInfo.versionName
 
@@ -38,9 +42,37 @@ class AppPackageInfo(packageManager: PackageManager, packageInfo: PackageInfo) :
         return packageLabel
     }
 
+    override fun equals(other: Any?): Boolean {
+        return if (other is AppPackageInfo) {
+            packageName == other.packageName &&
+                    packageLabel == other.packageLabel &&
+                    versionCode == other.versionCode &&
+                    versionName == other.versionName &&
+                    isSystemApp == other.isSystemApp &&
+                    hasLaunchActivity == other.hasLaunchActivity &&
+                    installTime == other.installTime &&
+                    lastUpdateTime == other.lastUpdateTime
+        } else {
+            super.equals(other)
+        }
+    }
+
+    override fun hashCode(): Int {
+        var result = versionCode.hashCode()
+        result = 31 * result + packageIcon.hashCode()
+        result = 31 * result + (versionName?.hashCode() ?: 0)
+        result = 31 * result + packageName.hashCode()
+        result = 31 * result + packageLabel.hashCode()
+        result = 31 * result + isSystemApp.hashCode()
+        result = 31 * result + hasLaunchActivity.hashCode()
+        result = 31 * result + installTime.hashCode()
+        result = 31 * result + lastUpdateTime.hashCode()
+        return result
+    }
+
     private fun getApplicationLabel(packageManager: PackageManager, packageInfo: PackageInfo): String {
         var applicationName = packageManager.getApplicationLabel(packageInfo.applicationInfo)
-        if (applicationName.isNullOrBlank()) {
+        if (applicationName.isBlank()) {
             applicationName = packageName
         }
         return applicationName.toString()
@@ -61,7 +93,7 @@ class AppPackageInfo(packageManager: PackageManager, packageInfo: PackageInfo) :
     }
 
     companion object {
-        const val serialVersionUID: Long = 5
+        const val serialVersionUID: Long = 6
 
         @Throws(IOException::class, ClassNotFoundException::class)
         fun fromByteArray(byteArray: ByteArray): AppPackageInfo {

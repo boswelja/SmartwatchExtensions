@@ -10,7 +10,6 @@ package com.boswelja.devicemanager
 import android.Manifest
 import android.app.NotificationManager
 import android.content.Context
-import androidx.core.graphics.drawable.toBitmap
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.rule.GrantPermissionRule
 import com.boswelja.devicemanager.common.Compat
@@ -44,27 +43,6 @@ class UtilsTest {
                 .that(Compat.setInterruptionFilter(context, !Compat.isDndEnabled(context)))
                 .isFalse()
         }
-    }
-
-    @Test
-    fun getAppIcon() {
-        var sameIcons = Utils.getAppIcon(context, context.packageName).toBitmap()
-            .sameAs(context.packageManager.getApplicationIcon(context.packageName).toBitmap())
-        assertWithMessage("Checking package icon is correct")
-            .that(sameIcons)
-            .isTrue()
-
-        sameIcons = Utils.getAppIcon(context, "").toBitmap()
-            .sameAs(context.getDrawable(R.drawable.ic_app_icon_unknown)?.toBitmap())
-        assertWithMessage("Checking fallback icon is correct")
-            .that(sameIcons)
-            .isTrue()
-
-        sameIcons = Utils.getAppIcon(context, "", context.getDrawable(R.drawable.ic_app_icon_unknown)).toBitmap()
-            .sameAs(context.getDrawable(R.drawable.ic_app_icon_unknown)?.toBitmap())
-        assertWithMessage("Checking custom fallback drawable is correct")
-            .that(sameIcons)
-            .isTrue()
     }
 
     @Test

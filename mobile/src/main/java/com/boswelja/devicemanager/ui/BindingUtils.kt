@@ -7,20 +7,27 @@
  */
 package com.boswelja.devicemanager.ui
 
+import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
+import androidx.core.content.ContextCompat
 import androidx.databinding.BindingAdapter
+import com.boswelja.devicemanager.Utils
 
 @BindingAdapter("srcRes")
 fun ImageView.setImageRes(@DrawableRes drawableRes: Int) {
     if (drawableRes != 0) setImageResource(drawableRes)
 }
 @BindingAdapter("srcDrawable")
-fun ImageView.setImageRes(drawable: Drawable?) {
+fun ImageView.setDrawable(drawable: Drawable?) {
     setImageDrawable(drawable)
+}
+@BindingAdapter("srcBitmap")
+fun ImageView.setBitmap(bitmap: Bitmap?) {
+    setImageBitmap(bitmap)
 }
 
 @BindingAdapter("textRes")

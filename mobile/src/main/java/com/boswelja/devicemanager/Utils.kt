@@ -16,21 +16,6 @@ import androidx.core.content.ContextCompat
 object Utils {
 
     /**
-     * Gets the app icon for a given package name.
-     * @param context [Context].
-     * @param packageName The name of the package to get an app icon for.
-     * @param fallbackIcon The fallback icon to use in case an app icon can't be found.
-     * @return The [Drawable] for the app icon.
-     */
-    fun getAppIcon(context: Context, packageName: String, fallbackIcon: Drawable? = null): Drawable {
-        return try {
-            context.packageManager.getApplicationIcon(packageName)
-        } catch (ignored: Exception) {
-            fallbackIcon ?: ContextCompat.getDrawable(context, R.drawable.ic_app_icon_unknown)!!
-        }
-    }
-
-    /**
      * Gets a DiP value in pixels.
      * @param resources [Resources].
      * @param dp The DiP count to convert to pixels.
