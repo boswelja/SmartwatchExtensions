@@ -22,9 +22,6 @@ import com.boswelja.devicemanager.ui.base.BaseToolbarActivity
 class AppInfoActivity : BaseToolbarActivity() {
 
     private val viewModel: AppInfoViewModel by viewModels()
-    private val requestedPermissionsDialog by lazy {
-        AppPermissionDialogFragment(viewModel.appInfo.value?.requestedPermissions!!)
-    }
 
     private lateinit var binding: ActivityAppInfoBinding
 
@@ -81,12 +78,12 @@ class AppInfoActivity : BaseToolbarActivity() {
      * @param appInfo The [AppPackageInfo] to use for data etc.
      */
     private fun setupRequestedPermissions(appInfo: AppPackageInfo) {
-        val requestsNoPermissions = !appInfo.requestedPermissions.isNullOrEmpty()
+        val requestsPermissions = !appInfo.requestedPermissions.isNullOrEmpty()
         binding.apply {
             permissionsInfo.findViewById<AppCompatTextView>(R.id.top_line).text =
                 getString(R.string.app_info_requested_permissions_title)
             permissionsInfo.findViewById<AppCompatTextView>(R.id.bottom_line).text =
-                if (requestsNoPermissions) {
+                if (requestsPermissions) {
                     val requestedPermissionCount = appInfo.requestedPermissions!!.size
                     resources.getQuantityString(
                         R.plurals.app_info_requested_permissions_count,
@@ -96,8 +93,9 @@ class AppInfoActivity : BaseToolbarActivity() {
                     getString(R.string.app_info_requested_permissions_none)
                 }
             permissionsInfo.setOnClickListener {
-                if (appInfo.requestedPermissions!!.isNotEmpty()) {
-                    requestedPermissionsDialog.show(supportFragmentManager)
+                if (requestsPermissions) {
+                    AppPermissionDialogFragment(appInfo.requestedPermissions!!)
+                            .show(supportFragmentManager)
                 }
             }
         }
