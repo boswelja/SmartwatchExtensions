@@ -12,7 +12,7 @@ import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import androidx.core.content.pm.PackageInfoCompat
 import androidx.core.graphics.drawable.toBitmap
-import com.boswelja.devicemanager.common.BitmapDataObject
+import com.boswelja.devicemanager.common.SerializableBitmap
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.IOException
@@ -22,8 +22,8 @@ import java.io.Serializable
 
 class AppPackageInfo(packageManager: PackageManager, packageInfo: PackageInfo) : Serializable {
 
-    val packageIcon: BitmapDataObject =
-            BitmapDataObject(packageManager.getApplicationIcon(packageInfo.packageName).toBitmap())
+    val packageIcon: SerializableBitmap =
+            SerializableBitmap(packageManager.getApplicationIcon(packageInfo.packageName).toBitmap())
     val versionCode: Long = PackageInfoCompat.getLongVersionCode(packageInfo)
     val versionName: String? = packageInfo.versionName
 
