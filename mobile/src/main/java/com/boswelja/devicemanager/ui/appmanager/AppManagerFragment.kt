@@ -45,12 +45,15 @@ class AppManagerFragment : Fragment(), ItemClickCallback<AppPackageInfo> {
 
         viewModel.appAdded.observe(viewLifecycleOwner) {
             it?.let { appPackageInfo -> handlePackageAdded(appPackageInfo) }
+            viewModel.onAppAddHandled()
         }
         viewModel.appUpdated.observe(viewLifecycleOwner) {
             it?.let { appPackageInfo -> handlePackageUpdated(appPackageInfo) }
+            viewModel.onAppUpdateHandled()
         }
         viewModel.appRemoved.observe(viewLifecycleOwner) {
             it?.let { packageName -> handlePackageRemoved(packageName) }
+            viewModel.onAppRemoveHandled()
         }
     }
 

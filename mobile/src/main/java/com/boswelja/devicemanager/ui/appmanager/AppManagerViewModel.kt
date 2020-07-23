@@ -2,8 +2,6 @@ package com.boswelja.devicemanager.ui.appmanager
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.DefaultLifecycleObserver
-import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.boswelja.devicemanager.R
@@ -129,6 +127,10 @@ class AppManagerViewModel(application: Application) : AndroidViewModel(applicati
                 appPackageInfo.packageName.toByteArray(Charsets.UTF_8)
         )
     }
+
+    fun onAppAddHandled() = _appAdded.postValue(null)
+    fun onAppUpdateHandled() = _appUpdated.postValue(null)
+    fun onAppRemoveHandled() = _appRemoved.postValue(null)
 
     /**
      * Converts an [AppPackageInfoList] into an [ArrayList] that can be used by [AppsAdapter].
