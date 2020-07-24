@@ -11,6 +11,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.boswelja.devicemanager.common.recyclerview.adapter.ItemClickCallback
+import com.boswelja.devicemanager.common.recyclerview.item.IconTwoLineViewHolder
+import com.boswelja.devicemanager.common.recyclerview.item.SectionHeaderViewHolder
 
 class AppsAdapter(private val itemClickCallback: ItemClickCallback<Item>) :
     ListAdapter<Item, RecyclerView.ViewHolder>(AppDiffCallback()) {
@@ -24,16 +26,24 @@ class AppsAdapter(private val itemClickCallback: ItemClickCallback<Item>) :
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
-            TYPE_HEADER -> HeaderViewHolder.from(parent)
-            else -> AppViewHolder.from(parent)
+            TYPE_HEADER -> SectionHeaderViewHolder.from(parent)
+            else -> IconTwoLineViewHolder.from(parent)
         }
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val item = getItem(position)
         when (holder) {
-            is HeaderViewHolder -> holder.bind(item)
-            is AppViewHolder -> holder.bind(item)
+            is SectionHeaderViewHolder -> {
+                if (item is Item.Header) {
+                    holder.bind(item.label, position != 0)
+                }
+            }
+            is IconTwoLineViewHolder -> {
+                if (item is Item.App) {
+                    holder.bind(item.icon, item.label, item.versionText)
+                }
+            }
         }
         holder.itemView.setOnClickListener { itemClickCallback.onClick(item) }
     }
