@@ -2,6 +2,7 @@ plugins {
     id(BuildPlugins.androidLibrary)
     id(BuildPlugins.kotlinAndroid)
     id(BuildPlugins.kotlinAndroidExtensions)
+    id(BuildPlugins.kotlinKapt)
     id("com.diffplug.spotless") version "5.1.0"
 }
 
@@ -21,6 +22,7 @@ android {
         jvmTarget = "1.8"
     }
 
+    buildFeatures.dataBinding = true
     buildFeatures.viewBinding = true
     buildTypes {
         getByName("release") {

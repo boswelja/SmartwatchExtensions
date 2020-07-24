@@ -11,7 +11,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.boswelja.devicemanager.common.recyclerview.item.SectionHeaderItem
+import com.boswelja.devicemanager.common.recyclerview.item.SectionHeaderViewHolder
 import java.util.Locale
 import kotlin.collections.ArrayList
 
@@ -60,14 +60,14 @@ abstract class SectionedAdapter<T>(
         if (layoutInflater == null) layoutInflater = LayoutInflater.from(parent.context)
         return when (viewType) {
             ITEM_TYPE_SECTION_HEADER ->
-                SectionHeaderItem.create(layoutInflater!!, parent, showDivider = showSectionDividers)
+                SectionHeaderViewHolder.from(parent, showDivider = showSectionDividers)
             else -> onCreateItemViewHolder(layoutInflater!!, parent)
         }
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (holder) {
-            is SectionHeaderItem -> {
+            is SectionHeaderViewHolder -> {
                 val section = getSection(position)
                 holder.apply {
                     textView.text = section

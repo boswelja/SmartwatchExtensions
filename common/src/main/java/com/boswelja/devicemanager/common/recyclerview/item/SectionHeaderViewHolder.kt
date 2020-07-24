@@ -12,20 +12,21 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.recyclerview.widget.RecyclerView
-import com.boswelja.devicemanager.common.databinding.CommonRecyclerviewSectionHeaderBinding
+import com.boswelja.devicemanager.common.databinding.RecyclerviewSectionHeaderBinding
 
-class SectionHeaderItem(binding: CommonRecyclerviewSectionHeaderBinding) :
+class SectionHeaderViewHolder(binding: RecyclerviewSectionHeaderBinding) :
     RecyclerView.ViewHolder(binding.root) {
 
     val textView: AppCompatTextView = binding.sectionHeaderText
     val dividerView: View = binding.divider
 
     companion object {
-        fun create(layoutInflater: LayoutInflater, parent: ViewGroup, showDivider: Boolean = true): SectionHeaderItem {
-            val binding = CommonRecyclerviewSectionHeaderBinding
-                .inflate(layoutInflater, parent, false)
+        fun from(parent: ViewGroup, showDivider: Boolean = true): SectionHeaderViewHolder {
+            val layoutInflater = LayoutInflater.from(parent.context)
+            val binding = RecyclerviewSectionHeaderBinding
+                    .inflate(layoutInflater, parent, false)
             binding.divider.visibility = if (showDivider) View.VISIBLE else View.GONE
-            return SectionHeaderItem(binding)
+            return SectionHeaderViewHolder(binding)
         }
     }
 }

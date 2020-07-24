@@ -7,29 +7,25 @@
  */
 package com.boswelja.devicemanager.ui.watchsetup
 
-import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.boswelja.devicemanager.R
-import com.boswelja.devicemanager.common.recyclerview.item.IconTwoLineItem
+import com.boswelja.devicemanager.common.recyclerview.item.IconTwoLineViewHolder
 import com.boswelja.devicemanager.watchmanager.Watch
 import com.boswelja.devicemanager.watchmanager.WatchStatus
 
 class WatchSetupAdapter(private val watchSetupFragment: WatchSetupFragment) :
-    RecyclerView.Adapter<IconTwoLineItem>() {
+    RecyclerView.Adapter<IconTwoLineViewHolder>() {
 
     private val watches = ArrayList<Watch>()
 
-    private var layoutInflater: LayoutInflater? = null
-
     override fun getItemCount(): Int = watches.count()
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): IconTwoLineItem {
-        if (layoutInflater == null) layoutInflater = LayoutInflater.from(parent.context)
-        return IconTwoLineItem.create(layoutInflater!!, parent)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): IconTwoLineViewHolder {
+        return IconTwoLineViewHolder.from(parent)
     }
 
-    override fun onBindViewHolder(holder: IconTwoLineItem, position: Int) {
+    override fun onBindViewHolder(holder: IconTwoLineViewHolder, position: Int) {
         val watch = watches[position]
         val context = holder.itemView.context
         holder.apply {

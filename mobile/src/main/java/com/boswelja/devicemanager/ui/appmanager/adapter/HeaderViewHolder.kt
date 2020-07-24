@@ -10,9 +10,9 @@ package com.boswelja.devicemanager.ui.appmanager.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.boswelja.devicemanager.common.databinding.CommonRecyclerviewSectionHeaderBinding
+import com.boswelja.devicemanager.common.databinding.RecyclerviewSectionHeaderBinding
 
-class HeaderViewHolder private constructor(private val binding: CommonRecyclerviewSectionHeaderBinding) :
+class HeaderViewHolder private constructor(private val binding: RecyclerviewSectionHeaderBinding) :
     RecyclerView.ViewHolder(binding.root) {
 
     fun bind(item: Item) {
@@ -24,7 +24,7 @@ class HeaderViewHolder private constructor(private val binding: CommonRecyclervi
     companion object {
         fun from(parent: ViewGroup): HeaderViewHolder {
             val layoutInflater = LayoutInflater.from(parent.context)
-            val binding = CommonRecyclerviewSectionHeaderBinding.inflate(layoutInflater, parent, false)
+            val binding = RecyclerviewSectionHeaderBinding.inflate(layoutInflater, parent, false)
             return HeaderViewHolder(binding)
         }
     }

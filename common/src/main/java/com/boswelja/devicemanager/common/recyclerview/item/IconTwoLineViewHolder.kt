@@ -12,18 +12,20 @@ import android.view.ViewGroup
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.recyclerview.widget.RecyclerView
-import com.boswelja.devicemanager.common.databinding.CommonRecyclerviewItemIconOneLineBinding
+import com.boswelja.devicemanager.common.databinding.RecyclerviewItemIconTwoLineBinding
 
-class IconOneLineItem(binding: CommonRecyclerviewItemIconOneLineBinding) :
+class IconTwoLineViewHolder(binding: RecyclerviewItemIconTwoLineBinding) :
     RecyclerView.ViewHolder(binding.root) {
     val iconView: AppCompatImageView = binding.icon
-    val textView: AppCompatTextView = binding.text
+    val topTextView: AppCompatTextView = binding.topLine
+    val bottomTextView: AppCompatTextView = binding.bottomLine
 
     companion object {
-        fun create(layoutInflater: LayoutInflater, parent: ViewGroup): IconOneLineItem {
-            val binding = CommonRecyclerviewItemIconOneLineBinding
+        fun from(parent: ViewGroup): IconTwoLineViewHolder {
+            val layoutInflater = LayoutInflater.from(parent.context)
+            val binding = RecyclerviewItemIconTwoLineBinding
                 .inflate(layoutInflater, parent, false)
-            return IconOneLineItem(binding)
+            return IconTwoLineViewHolder(binding)
         }
     }
 }

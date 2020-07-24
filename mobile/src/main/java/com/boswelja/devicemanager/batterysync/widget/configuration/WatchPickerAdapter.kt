@@ -7,29 +7,25 @@
  */
 package com.boswelja.devicemanager.batterysync.widget.configuration
 
-import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_SYNC_ENABLED_KEY
-import com.boswelja.devicemanager.common.recyclerview.item.IconTwoLineItem
+import com.boswelja.devicemanager.common.recyclerview.item.IconTwoLineViewHolder
 import com.boswelja.devicemanager.watchmanager.Watch
 
 class WatchPickerAdapter(private val activity: WatchBatteryWidgetConfigurationActivity) :
-    RecyclerView.Adapter<IconTwoLineItem>() {
+    RecyclerView.Adapter<IconTwoLineViewHolder>() {
 
     private val watches: ArrayList<Watch> = ArrayList()
 
-    private var layoutInflater: LayoutInflater? = null
-
     override fun getItemCount(): Int = watches.count()
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): IconTwoLineItem {
-        if (layoutInflater == null) layoutInflater = LayoutInflater.from(parent.context)
-        return IconTwoLineItem.create(layoutInflater!!, parent)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): IconTwoLineViewHolder {
+        return IconTwoLineViewHolder.from(parent)
     }
 
-    override fun onBindViewHolder(holder: IconTwoLineItem, position: Int) {
+    override fun onBindViewHolder(holder: IconTwoLineViewHolder, position: Int) {
         val watch = watches[position]
         holder.iconView.setImageResource(R.drawable.ic_watch)
         holder.topTextView.text = watch.name

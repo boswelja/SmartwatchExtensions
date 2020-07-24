@@ -12,7 +12,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.boswelja.devicemanager.common.recyclerview.adapter.ItemClickCallback
 import com.boswelja.devicemanager.common.recyclerview.adapter.SectionedAdapter
-import com.boswelja.devicemanager.common.recyclerview.item.IconOneLineItem
+import com.boswelja.devicemanager.common.recyclerview.item.IconOneLineViewHolder
 
 class MainAdapter(
     private val itemCallback: ItemClickCallback<MainItem>,
@@ -21,10 +21,10 @@ class MainAdapter(
     SectionedAdapter<MainItem>(items, showSectionDividers = false) {
 
     override fun onCreateItemViewHolder(layoutInflater: LayoutInflater, parent: ViewGroup):
-        RecyclerView.ViewHolder = IconOneLineItem.create(layoutInflater, parent)
+        RecyclerView.ViewHolder = IconOneLineViewHolder.from(parent)
 
     override fun onBindItemViewHolder(holder: RecyclerView.ViewHolder, item: MainItem) {
-        if (holder is IconOneLineItem) {
+        if (holder is IconOneLineViewHolder) {
             holder.apply {
                 item.enabled.also {
                     itemView.isEnabled = it

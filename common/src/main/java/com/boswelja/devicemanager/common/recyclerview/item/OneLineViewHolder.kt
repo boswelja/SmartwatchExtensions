@@ -11,18 +11,19 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.recyclerview.widget.RecyclerView
-import com.boswelja.devicemanager.common.databinding.CommonRecyclerviewItemTextBinding
+import com.boswelja.devicemanager.common.databinding.RecyclerviewItemOneLineBinding
 
-class OneLineItem(binding: CommonRecyclerviewItemTextBinding) :
+class OneLineViewHolder private constructor(private val binding: RecyclerviewItemOneLineBinding) :
     RecyclerView.ViewHolder(binding.root) {
 
     val textView: AppCompatTextView = binding.text
 
     companion object {
-        fun create(layoutInflater: LayoutInflater, parent: ViewGroup): OneLineItem {
-            val binding = CommonRecyclerviewItemTextBinding
-                .inflate(layoutInflater, parent, false)
-            return OneLineItem(binding)
+        fun from(parent: ViewGroup): OneLineViewHolder {
+            val layoutInflater = LayoutInflater.from(parent.context)
+            val binding = RecyclerviewItemOneLineBinding
+                    .inflate(layoutInflater, parent, false)
+            return OneLineViewHolder(binding)
         }
     }
 }

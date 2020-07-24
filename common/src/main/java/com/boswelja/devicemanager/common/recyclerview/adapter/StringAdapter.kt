@@ -7,23 +7,19 @@
  */
 package com.boswelja.devicemanager.common.recyclerview.adapter
 
-import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.boswelja.devicemanager.common.recyclerview.item.OneLineItem
+import com.boswelja.devicemanager.common.recyclerview.item.OneLineViewHolder
 
-class StringAdapter(private val strings: Array<String>) : RecyclerView.Adapter<OneLineItem>() {
+class StringAdapter(private val strings: Array<String>) : RecyclerView.Adapter<OneLineViewHolder>() {
 
-    private var layoutInflater: LayoutInflater? = null
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): OneLineItem {
-        if (layoutInflater == null) layoutInflater = LayoutInflater.from(parent.context)
-        return OneLineItem.create(layoutInflater!!, parent)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): OneLineViewHolder {
+        return OneLineViewHolder.from(parent)
     }
 
     override fun getItemCount(): Int = strings.count()
 
-    override fun onBindViewHolder(holder: OneLineItem, position: Int) {
+    override fun onBindViewHolder(holder: OneLineViewHolder, position: Int) {
         holder.textView.text = strings[position]
     }
 }

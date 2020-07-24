@@ -95,7 +95,7 @@
             android:clickable="true"
             android:focusable="true">
 
-            <include layout="@layout/common_recyclerview_item_icon_two_line" />
+            <include layout="@layout/recyclerview_item_icon_two_line" />
         </FrameLayout>
 
         <View

@@ -7,21 +7,18 @@
  */
 package com.boswelja.devicemanager.ui.watchmanager
 
-import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.boswelja.devicemanager.R
-import com.boswelja.devicemanager.common.recyclerview.item.IconOneLineItem
-import com.boswelja.devicemanager.common.recyclerview.item.IconTwoLineItem
-import com.boswelja.devicemanager.common.recyclerview.item.SectionHeaderItem
+import com.boswelja.devicemanager.common.recyclerview.item.IconOneLineViewHolder
+import com.boswelja.devicemanager.common.recyclerview.item.IconTwoLineViewHolder
+import com.boswelja.devicemanager.common.recyclerview.item.SectionHeaderViewHolder
 import com.boswelja.devicemanager.watchmanager.Watch
 import com.boswelja.devicemanager.watchmanager.WatchStatus
 
 class WatchManagerAdapter(private val activity: WatchManagerActivity) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private val watches = ArrayList<Watch>()
-
-    private var layoutInflater: LayoutInflater? = null
 
     override fun getItemCount(): Int = watches.count() + 2
 
@@ -34,18 +31,17 @@ class WatchManagerAdapter(private val activity: WatchManagerActivity) : Recycler
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        if (layoutInflater == null) layoutInflater = LayoutInflater.from(parent.context)
         return when (viewType) {
-            VIEW_TYPE_ADD_WATCH -> IconOneLineItem.create(layoutInflater!!, parent)
-            VIEW_TYPE_SECTION_HEADER -> SectionHeaderItem.create(layoutInflater!!, parent)
-            else -> IconTwoLineItem.create(layoutInflater!!, parent)
+            VIEW_TYPE_ADD_WATCH -> IconOneLineViewHolder.from(parent)
+            VIEW_TYPE_SECTION_HEADER -> SectionHeaderViewHolder.from(parent)
+            else -> IconTwoLineViewHolder.from(parent)
         }
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val context = holder.itemView.context
         when (holder) {
-            is IconOneLineItem -> {
+            is IconOneLineViewHolder -> {
                 holder.apply {
                     iconView.setImageResource(R.drawable.ic_add)
                     textView.text = context.getString(R.string.watch_manager_add_watch_title)
@@ -54,10 +50,10 @@ class WatchManagerAdapter(private val activity: WatchManagerActivity) : Recycler
                     }
                 }
             }
-            is SectionHeaderItem -> {
+            is SectionHeaderViewHolder -> {
                 holder.textView.text = context.getString(R.string.watch_manager_registered_watch_header)
             }
-            is IconTwoLineItem -> {
+            is IconTwoLineViewHolder -> {
                 val watch = getWatch(position)
                 holder.apply {
                     iconView.setImageResource(R.drawable.ic_watch)
