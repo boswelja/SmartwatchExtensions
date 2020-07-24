@@ -20,6 +20,6 @@ class StringAdapter(private val strings: Array<String>) : RecyclerView.Adapter<O
     override fun getItemCount(): Int = strings.count()
 
     override fun onBindViewHolder(holder: OneLineViewHolder, position: Int) {
-        holder.textView.text = strings[position]
+        holder.bind(strings[position])
     }
 }

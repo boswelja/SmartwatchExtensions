@@ -9,14 +9,15 @@ package com.boswelja.devicemanager.common.recyclerview.item
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.appcompat.widget.AppCompatTextView
 import androidx.recyclerview.widget.RecyclerView
 import com.boswelja.devicemanager.common.databinding.RecyclerviewItemOneLineBinding
 
 class OneLineViewHolder private constructor(private val binding: RecyclerviewItemOneLineBinding) :
     RecyclerView.ViewHolder(binding.root) {
 
-    val textView: AppCompatTextView = binding.text
+    fun bind(text: String) {
+        binding.text.text = text
+    }
 
     companion object {
         fun from(parent: ViewGroup): OneLineViewHolder {

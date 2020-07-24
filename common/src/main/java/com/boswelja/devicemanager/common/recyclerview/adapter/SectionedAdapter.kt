@@ -8,7 +8,6 @@
 package com.boswelja.devicemanager.common.recyclerview.adapter
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.boswelja.devicemanager.common.recyclerview.item.SectionHeaderViewHolder
@@ -60,7 +59,7 @@ abstract class SectionedAdapter<T>(
         if (layoutInflater == null) layoutInflater = LayoutInflater.from(parent.context)
         return when (viewType) {
             ITEM_TYPE_SECTION_HEADER ->
-                SectionHeaderViewHolder.from(parent, showDivider = showSectionDividers)
+                SectionHeaderViewHolder.from(parent)
             else -> onCreateItemViewHolder(layoutInflater!!, parent)
         }
     }
@@ -69,12 +68,8 @@ abstract class SectionedAdapter<T>(
         when (holder) {
             is SectionHeaderViewHolder -> {
                 val section = getSection(position)
-                holder.apply {
-                    textView.text = section
-                    if (position == 0) {
-                        dividerView.visibility = View.INVISIBLE
-                    }
-                }
+                val showDivider = showSectionDividers && position != 0
+                holder.bind(section, showDivider)
             }
             else -> onBindItemViewHolder(holder, getItem(position)!!)
         }

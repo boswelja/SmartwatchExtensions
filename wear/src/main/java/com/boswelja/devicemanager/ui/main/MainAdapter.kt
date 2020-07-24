@@ -24,26 +24,19 @@ class MainAdapter(
         RecyclerView.ViewHolder = IconOneLineViewHolder.from(parent)
 
     override fun onBindItemViewHolder(holder: RecyclerView.ViewHolder, item: MainItem) {
+        val context = holder.itemView.context
         if (holder is IconOneLineViewHolder) {
+            val text = if (item.extra > -1) {
+                context.getString(item.textRes, item.extra.toString())
+            } else {
+                context.getString(item.textRes)
+            }
+            val iconLevel = if (item.extra > -1) item.extra else 0
+
             holder.apply {
-                item.enabled.also {
-                    itemView.isEnabled = it
-                    iconView.isEnabled = it
-                    textView.isEnabled = it
-                }
-                iconView.setImageResource(item.iconRes)
-                if (item.extra > -1) {
-                    textView.text =
-                        textView.context.getString(item.textRes, item.extra.toString())
-                    iconView.setImageLevel(item.extra)
-                } else {
-                    textView.setText(item.textRes)
-                    iconView.setImageLevel(0)
-                }
-                if (item.enabled) {
-                    itemView.setOnClickListener {
-                        itemCallback.onClick(item)
-                    }
+                bind(item.iconRes, text, iconLevel)
+                itemView.setOnClickListener {
+                    itemCallback.onClick(item)
                 }
             }
         }

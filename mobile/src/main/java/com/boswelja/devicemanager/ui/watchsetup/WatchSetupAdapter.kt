@@ -28,16 +28,15 @@ class WatchSetupAdapter(private val watchSetupFragment: WatchSetupFragment) :
     override fun onBindViewHolder(holder: IconTwoLineViewHolder, position: Int) {
         val watch = watches[position]
         val context = holder.itemView.context
-        holder.apply {
-            iconView.setImageResource(R.drawable.ic_watch)
-            topTextView.text = watch.name
-            bottomTextView.text = context.getString(
+        val summary = context.getString(
                 when (watch.status) {
                     WatchStatus.NOT_REGISTERED -> R.string.watch_status_not_registered
                     WatchStatus.MISSING_APP -> R.string.watch_status_missing_app
                     else -> R.string.watch_status_error
                 }
-            )
+        )
+        holder.apply {
+            bind(R.drawable.ic_watch, watch.name, summary)
             itemView.setOnClickListener {
                 watchSetupFragment.confirmRegisterWatch(watch)
             }

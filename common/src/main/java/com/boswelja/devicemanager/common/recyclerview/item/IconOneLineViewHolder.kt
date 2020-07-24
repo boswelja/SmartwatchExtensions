@@ -9,16 +9,18 @@ package com.boswelja.devicemanager.common.recyclerview.item
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.appcompat.widget.AppCompatImageView
-import androidx.appcompat.widget.AppCompatTextView
+import androidx.annotation.DrawableRes
 import androidx.recyclerview.widget.RecyclerView
 import com.boswelja.devicemanager.common.databinding.RecyclerviewItemIconOneLineBinding
 
-class IconOneLineViewHolder(binding: RecyclerviewItemIconOneLineBinding) :
+class IconOneLineViewHolder(private val binding: RecyclerviewItemIconOneLineBinding) :
     RecyclerView.ViewHolder(binding.root) {
 
-    val iconView: AppCompatImageView = binding.icon
-    val textView: AppCompatTextView = binding.text
+    fun bind(@DrawableRes icon: Int, text: String, iconLevel: Int = 0) {
+        binding.icon.setImageResource(icon)
+        binding.icon.setImageLevel(iconLevel)
+        binding.text.text = text
+    }
 
     companion object {
         fun from(parent: ViewGroup): IconOneLineViewHolder {

@@ -7,18 +7,30 @@
  */
 package com.boswelja.devicemanager.common.recyclerview.item
 
+import android.graphics.Bitmap
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.appcompat.widget.AppCompatImageView
-import androidx.appcompat.widget.AppCompatTextView
+import androidx.annotation.DrawableRes
 import androidx.recyclerview.widget.RecyclerView
 import com.boswelja.devicemanager.common.databinding.RecyclerviewItemIconTwoLineBinding
 
-class IconTwoLineViewHolder(binding: RecyclerviewItemIconTwoLineBinding) :
+class IconTwoLineViewHolder(private val binding: RecyclerviewItemIconTwoLineBinding) :
     RecyclerView.ViewHolder(binding.root) {
-    val iconView: AppCompatImageView = binding.icon
-    val topTextView: AppCompatTextView = binding.topLine
-    val bottomTextView: AppCompatTextView = binding.bottomLine
+
+    private fun bindText(title: String, summary: String) {
+        binding.topLine.text = title
+        binding.bottomLine.text = summary
+    }
+
+    fun bind(@DrawableRes icon: Int, title: String, summary: String) {
+        binding.icon.setImageResource(icon)
+        bindText(title, summary)
+    }
+
+    fun bind(icon: Bitmap, title: String, summary: String) {
+        binding.icon.setImageBitmap(icon)
+        bindText(title, summary)
+    }
 
     companion object {
         fun from(parent: ViewGroup): IconTwoLineViewHolder {

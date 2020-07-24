@@ -10,22 +10,22 @@ package com.boswelja.devicemanager.common.recyclerview.item
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.widget.AppCompatTextView
 import androidx.recyclerview.widget.RecyclerView
 import com.boswelja.devicemanager.common.databinding.RecyclerviewSectionHeaderBinding
 
-class SectionHeaderViewHolder(binding: RecyclerviewSectionHeaderBinding) :
+class SectionHeaderViewHolder(private val binding: RecyclerviewSectionHeaderBinding) :
     RecyclerView.ViewHolder(binding.root) {
 
-    val textView: AppCompatTextView = binding.sectionHeaderText
-    val dividerView: View = binding.divider
+    fun bind(text: String, showDivider: Boolean = true) {
+        binding.sectionHeaderText.text = text
+        binding.divider.visibility = if (showDivider) View.VISIBLE else View.GONE
+    }
 
     companion object {
-        fun from(parent: ViewGroup, showDivider: Boolean = true): SectionHeaderViewHolder {
+        fun from(parent: ViewGroup): SectionHeaderViewHolder {
             val layoutInflater = LayoutInflater.from(parent.context)
             val binding = RecyclerviewSectionHeaderBinding
                     .inflate(layoutInflater, parent, false)
-            binding.divider.visibility = if (showDivider) View.VISIBLE else View.GONE
             return SectionHeaderViewHolder(binding)
         }
     }
