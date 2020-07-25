@@ -13,8 +13,8 @@ import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.recyclerview.item.IconOneLineViewHolder
 import com.boswelja.devicemanager.common.recyclerview.item.IconTwoLineViewHolder
 import com.boswelja.devicemanager.common.recyclerview.item.SectionHeaderViewHolder
-import com.boswelja.devicemanager.watchmanager.item.Watch
 import com.boswelja.devicemanager.watchmanager.WatchStatus
+import com.boswelja.devicemanager.watchmanager.item.Watch
 
 class WatchManagerAdapter(private val activity: WatchManagerActivity) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {

@@ -67,6 +67,7 @@ class WatchManager private constructor(context: Context) {
     }
 
     fun destroy() {
+        INSTANCE = null
         if (watchConnectionListener != null) {
             capabilityClient.removeListener(watchConnectionListener!!)
         }

@@ -25,9 +25,9 @@ import com.boswelja.devicemanager.common.batterysync.References.BATTERY_STATUS_P
 import com.boswelja.devicemanager.messages.Action
 import com.boswelja.devicemanager.messages.Message
 import com.boswelja.devicemanager.messages.database.MessageDatabase
+import com.boswelja.devicemanager.watchmanager.database.WatchDatabase
 import com.boswelja.devicemanager.watchmanager.item.BoolPreference
 import com.boswelja.devicemanager.watchmanager.item.Watch
-import com.boswelja.devicemanager.watchmanager.database.WatchDatabase
 import com.boswelja.devicemanager.widgetdb.WidgetDatabase
 import com.google.android.gms.wearable.MessageEvent
 import com.google.android.gms.wearable.WearableListenerService
