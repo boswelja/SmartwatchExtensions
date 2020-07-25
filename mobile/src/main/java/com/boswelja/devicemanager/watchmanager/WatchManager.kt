@@ -38,7 +38,6 @@ class WatchManager private constructor(context: Context) :
     private val coroutineJob = Job()
     private val coroutineScope = CoroutineScope(Dispatchers.IO + coroutineJob)
 
-    private val database = WatchDatabase.get(context)
     private val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
 
     private val capabilityClient = Wearable.getCapabilityClient(context)
@@ -47,6 +46,8 @@ class WatchManager private constructor(context: Context) :
     private val messageClient = Wearable.getMessageClient(context)
 
     private var watchConnectionListener: CapabilityClient.OnCapabilityChangedListener? = null
+
+    val database = WatchDatabase.get(context)
 
     private val _connectedWatch = MutableLiveData<Watch?>()
     val connectedWatch: LiveData<Watch?>
