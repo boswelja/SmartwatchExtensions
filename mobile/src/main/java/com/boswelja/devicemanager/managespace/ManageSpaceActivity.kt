@@ -337,7 +337,7 @@ class ManageSpaceActivity : BaseToolbarActivity() {
                 incrementProgressBar()
                 setProgressStatus(getString(R.string.reset_app_resetting_database_for, getString(R.string.database_name_main)))
             }
-            WatchDatabase.open(this@ManageSpaceActivity).apply {
+            WatchDatabase.get(this@ManageSpaceActivity).apply {
                 clearAllTables()
             }.also {
                 it.close()

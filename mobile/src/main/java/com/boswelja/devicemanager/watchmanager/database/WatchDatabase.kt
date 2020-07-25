@@ -92,18 +92,22 @@ abstract class WatchDatabase : RoomDatabase() {
     }
 
     companion object {
+        private var INSTANCE: WatchDatabase? = null
 
         /**
-         * Opens a new instance of a [WatchDatabase].
+         * Gets an instance of [WatchDatabase].
          * @param context [Context].
-         * @param allowMainThreadQueries Whether main thread queries should be allowed.
-         * Set to true if the main thread is not the UI thread to allow synchronous calls.
          */
-        fun open(context: Context, allowMainThreadQueries: Boolean = false): WatchDatabase =
-            Room.databaseBuilder(context, WatchDatabase::class.java, "watch-db").apply {
-                if (allowMainThreadQueries) allowMainThreadQueries()
-                addMigrations(Migrations.MIGRATION_3_5, Migrations.MIGRATION_4_5)
-                fallbackToDestructiveMigration()
-            }.build()
+        fun get(context: Context): WatchDatabase {
+            synchronized(this) {
+                if (INSTANCE == null) {
+                    INSTANCE = Room.databaseBuilder(context, WatchDatabase::class.java, "watch-db").apply {
+                        addMigrations(Migrations.MIGRATION_3_5, Migrations.MIGRATION_4_5)
+                        fallbackToDestructiveMigration()
+                    }.build()
+                }
+                return INSTANCE!!
+            }
+        }
     }
 }
