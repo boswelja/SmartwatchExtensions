@@ -17,6 +17,7 @@ import com.boswelja.devicemanager.databinding.ActivityWatchInfoBinding
 import com.boswelja.devicemanager.ui.base.BaseToolbarActivity
 import com.boswelja.devicemanager.watchmanager.Watch
 import com.boswelja.devicemanager.watchmanager.WatchManager
+import com.boswelja.devicemanager.watchmanager.database.WatchDatabase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
@@ -25,19 +26,6 @@ import timber.log.Timber
 
 class WatchInfoActivity : BaseToolbarActivity() {
 
-    private val watchConnectionManagerConnection = object : WatchManager.Connection() {
-        override fun onWatchManagerBound(watchManager: WatchManager) {
-            Timber.i("Watch manager bound")
-            watchConnectionManager = watchManager
-            resetNicknameTextField()
-        }
-
-        override fun onWatchManagerUnbound() {
-            Timber.w("Watch manager unbound")
-            watchConnectionManager = null
-        }
-    }
-
     private val nicknameChangeListener = object : TextWatcher {
         override fun afterTextChanged(editable: Editable?) {
             binding.apply {
@@ -45,7 +33,7 @@ class WatchInfoActivity : BaseToolbarActivity() {
                     Timber.i("Updating watch nickname")
                     watchNameLayout.isErrorEnabled = false
                     coroutineScope.launch(Dispatchers.IO) {
-                        watchConnectionManager?.updateWatchName(watchId!!, editable.toString())
+                        watchManager.updateWatchName(watchId!!, editable.toString())
                     }
                     resultCode = RESULT_WATCH_NAME_CHANGED
                 } else {
@@ -62,10 +50,11 @@ class WatchInfoActivity : BaseToolbarActivity() {
     }
 
     private val coroutineScope = MainScope()
+    private val watchDatabase: WatchDatabase by lazy { WatchDatabase.get(this) }
 
     private lateinit var binding: ActivityWatchInfoBinding
 
-    private var watchConnectionManager: WatchManager? = null
+    private lateinit var watchManager: WatchManager
     private var watchId: String? = null
 
     private var resultCode = RESULT_WATCH_UNCHANGED
@@ -87,7 +76,8 @@ class WatchInfoActivity : BaseToolbarActivity() {
             }
         }
 
-        WatchManager.bind(this, watchConnectionManagerConnection)
+        watchManager = WatchManager.get(this)
+        resetNicknameTextField()
     }
 
     override fun finish() {
@@ -97,7 +87,6 @@ class WatchInfoActivity : BaseToolbarActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        unbindService(watchConnectionManagerConnection)
         binding.watchNameField.removeTextChangedListener(nicknameChangeListener)
     }
 
@@ -106,7 +95,7 @@ class WatchInfoActivity : BaseToolbarActivity() {
      */
     private fun resetNicknameTextField() {
         coroutineScope.launch(Dispatchers.IO) {
-            val watchName = watchConnectionManager?.getWatchById(watchId)?.name
+            val watchName = watchDatabase.watchDao().findById(watchId!!)?.name
             withContext(Dispatchers.Main) {
                 binding.apply {
                     watchNameField.setText(watchName)
@@ -135,13 +124,12 @@ class WatchInfoActivity : BaseToolbarActivity() {
     private fun confirmClearPreferences() {
         Timber.d("confirmClearPreferences() called")
         coroutineScope.launch(Dispatchers.IO) {
-            val watch = watchConnectionManager?.getWatchById(watchId)
             withContext(Dispatchers.Main) {
                 AlertDialog.Builder(this@WatchInfoActivity).apply {
                     setTitle(R.string.clear_preferences_dialog_title)
-                    setMessage(getString(R.string.clear_preferences_dialog_message, watch?.name))
+                    setMessage(getString(R.string.clear_preferences_dialog_message, binding.watchNameField.text))
                     setPositiveButton(R.string.dialog_button_yes) { _, _ ->
-                        clearPreferences(watch)
+                        clearPreferences()
                     }
                     setNegativeButton(R.string.dialog_button_no) { dialogInterface, _ ->
                         Timber.i("User aborted")
@@ -154,19 +142,18 @@ class WatchInfoActivity : BaseToolbarActivity() {
 
     /**
      * Clears the preferences for a given [Watch], and notifies the user of the result.
-     * @param watch the [Watch] to clear preferences for.
      */
-    private fun clearPreferences(watch: Watch?) {
+    private fun clearPreferences() {
         Timber.d("clearPreferences() called")
         coroutineScope.launch(Dispatchers.IO) {
-            val success = watchConnectionManager?.clearPreferencesForWatch(watch?.id) == true
+            val success = watchManager.clearPreferencesForWatch(watchId)
             withContext(Dispatchers.Main) {
                 if (success) {
                     Timber.i("Successfully cleared preferences")
-                    createSnackBar("Successfully cleared settings for your ${watch?.name}")
+                    createSnackBar("Successfully cleared settings for your ${binding.watchNameField.text}")
                 } else {
                     Timber.w("Failed to clear preferences")
-                    createSnackBar("Failed to clear settings for your ${watch?.name}")
+                    createSnackBar("Failed to clear settings for your ${binding.watchNameField.text}")
                 }
             }
         }
@@ -178,7 +165,7 @@ class WatchInfoActivity : BaseToolbarActivity() {
     private fun confirmForgetWatch() {
         Timber.d("confirmForgetWatch() called")
         coroutineScope.launch(Dispatchers.IO) {
-            val watch = watchConnectionManager?.getWatchById(watchId)
+            val watch = watchDatabase.watchDao().findById(watchId!!)
             withContext(Dispatchers.Main) {
                 AlertDialog.Builder(this@WatchInfoActivity).apply {
                     setTitle(R.string.forget_watch_dialog_title)
@@ -202,8 +189,7 @@ class WatchInfoActivity : BaseToolbarActivity() {
     private fun forgetWatch(watch: Watch?) {
         Timber.d("forgetWatch() called")
         coroutineScope.launch(Dispatchers.IO) {
-            val success =
-                watchConnectionManager?.forgetWatch(watch?.id) == true
+            val success = watchManager.forgetWatch(watch?.id)
             withContext(Dispatchers.Main) {
                 if (success) {
                     Timber.i("Successfully forgot watch")

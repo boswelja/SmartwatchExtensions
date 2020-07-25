@@ -17,7 +17,7 @@ import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.batterysync.widget.WatchBatteryWidget
 import com.boswelja.devicemanager.databinding.ActivityWatchBatteryWidgetConfigurationBinding
 import com.boswelja.devicemanager.ui.base.BaseToolbarActivity
-import com.boswelja.devicemanager.watchmanager.WatchManager
+import com.boswelja.devicemanager.watchmanager.database.WatchDatabase
 import com.boswelja.devicemanager.widgetdb.WidgetDatabase
 import com.boswelja.devicemanager.widgetdb.batterysync.WatchBatteryWidgetId
 import kotlinx.coroutines.Dispatchers
@@ -27,23 +27,6 @@ import kotlinx.coroutines.withContext
 import timber.log.Timber
 
 class WatchBatteryWidgetConfigurationActivity : BaseToolbarActivity() {
-
-    private val watchManagerConnection = object : WatchManager.Connection() {
-        override fun onWatchManagerBound(watchManager: WatchManager) {
-            Timber.i("Watch manager bound")
-            coroutineScope.launch(Dispatchers.IO) {
-                val watches = watchManager.getRegisteredWatches()
-                withContext(Dispatchers.Main) {
-                    (binding.watchPickerRecyclerView.adapter as WatchPickerAdapter).setWatches(watches)
-                    setLoading(false)
-                }
-            }
-        }
-
-        override fun onWatchManagerUnbound() {
-            Timber.w("Watch manager unbound")
-        }
-    }
 
     private val resultIntent = Intent()
     private val coroutineScope = MainScope()
@@ -69,12 +52,15 @@ class WatchBatteryWidgetConfigurationActivity : BaseToolbarActivity() {
         }
         setResult(Activity.RESULT_CANCELED, resultIntent)
 
-        WatchManager.bind(this, watchManagerConnection)
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        unbindService(watchManagerConnection)
+        coroutineScope.launch {
+            WatchDatabase.get(this@WatchBatteryWidgetConfigurationActivity).also {
+                val watches = it.watchDao().getAll()
+                withContext(Dispatchers.Main) {
+                    (binding.watchPickerRecyclerView.adapter as WatchPickerAdapter).setWatches(watches)
+                    setLoading(false)
+                }
+            }
+        }
     }
 
     /**

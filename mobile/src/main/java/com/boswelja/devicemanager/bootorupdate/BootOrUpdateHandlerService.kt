@@ -35,21 +35,6 @@ class BootOrUpdateHandlerService : Service() {
 
     private var isUpdating = false
 
-    private val watchManagerConnection = object : WatchManager.Connection() {
-        override fun onWatchManagerBound(watchManager: WatchManager) {
-            Timber.i("Service bound")
-            MainScope().launch(Dispatchers.IO) {
-                tryStartBatterySyncWorkers(watchManager)
-                tryStartInterruptFilterSyncService(watchManager)
-                finish()
-            }
-        }
-
-        override fun onWatchManagerUnbound() {
-            Timber.w("Service unbound")
-        }
-    }
-
     override fun onBind(intent: Intent?): IBinder? = null
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -65,7 +50,7 @@ class BootOrUpdateHandlerService : Service() {
             Intent.ACTION_BOOT_COMPLETED -> {
                 Timber.i("Device restarted")
                 startForeground(NOTI_ID, createBootNotification())
-                bindWatchmanager()
+                getWatchManager()
             }
             else -> return super.onStartCommand(intent, flags, startId)
         }
@@ -90,7 +75,7 @@ class BootOrUpdateHandlerService : Service() {
                 }
                 Result.NOT_NEEDED -> Timber.i("Update not needed")
             }
-            bindWatchmanager()
+            getWatchManager()
         }
     }
 
@@ -158,15 +143,7 @@ class BootOrUpdateHandlerService : Service() {
             for (batterySyncBoolPreference in watchBatterySyncInfo) {
                 if (batterySyncBoolPreference.value) {
                     Timber.i("tryStartBatterySyncWorkers Starting a Battery Sync Worker")
-                    val batterySyncInterval =
-                        service.getIntPrefForWatch(
-                            batterySyncBoolPreference.watchId,
-                            PreferenceKey.BATTERY_CHARGE_THRESHOLD_KEY
-                        )?.value?.toLong() ?: 15
-                    val batterySyncWorkerId = BatterySyncWorker.startWorker(
-                        applicationContext, batterySyncBoolPreference.watchId, batterySyncInterval
-                    )
-                    service.updateBatterySyncWorkerId(batterySyncBoolPreference.watchId, batterySyncWorkerId)
+                    BatterySyncWorker.startWorker(applicationContext, batterySyncBoolPreference.watchId)
                 }
             }
         } else {
@@ -179,7 +156,6 @@ class BootOrUpdateHandlerService : Service() {
      */
     private fun finish() {
         Timber.i("Finished")
-        unbindService(watchManagerConnection)
         stopForeground(true)
         stopSelf()
     }
@@ -187,9 +163,15 @@ class BootOrUpdateHandlerService : Service() {
     /**
      * Binds to the [WatchManager].
      */
-    private fun bindWatchmanager() {
+    private fun getWatchManager() {
         Timber.d("bindWatchManager() called")
-        WatchManager.bind(this, watchManagerConnection)
+        MainScope().launch(Dispatchers.IO) {
+            WatchManager.get(this@BootOrUpdateHandlerService).also {
+                tryStartBatterySyncWorkers(it)
+                tryStartInterruptFilterSyncService(it)
+                finish()
+            }
+        }
     }
 
     companion object {

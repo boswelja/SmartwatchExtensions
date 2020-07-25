@@ -7,14 +7,11 @@
  */
 package com.boswelja.devicemanager.watchmanager
 
-import android.app.Service
-import android.content.ComponentName
 import android.content.Context
-import android.content.Intent
-import android.content.ServiceConnection
 import android.content.SharedPreferences
-import android.os.IBinder
 import androidx.core.content.edit
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.common.PreferenceKey
 import com.boswelja.devicemanager.common.References
@@ -23,42 +20,50 @@ import com.boswelja.devicemanager.watchmanager.database.WatchDatabase
 import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.Tasks
 import com.google.android.gms.wearable.CapabilityClient
-import com.google.android.gms.wearable.DataClient
 import com.google.android.gms.wearable.DataItem
-import com.google.android.gms.wearable.MessageClient
 import com.google.android.gms.wearable.Node
-import com.google.android.gms.wearable.NodeClient
 import com.google.android.gms.wearable.PutDataMapRequest
 import com.google.android.gms.wearable.Wearable
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 import kotlin.collections.ArrayList
 
-class WatchManager :
-    Service(),
-    SharedPreferences.OnSharedPreferenceChangeListener {
+class WatchManager private constructor(context: Context) :
+        SharedPreferences.OnSharedPreferenceChangeListener {
 
-    private val binder = Binder()
+    private val coroutineJob = Job()
+    private val coroutineScope = CoroutineScope(Dispatchers.IO + coroutineJob)
 
-    private val watchConnectionListeners: ArrayList<WatchConnectionListener> = ArrayList()
-    private val watchPreferenceChangeListeners: ArrayList<WatchPreferenceChangeListener> = ArrayList()
-    private val coroutineScope = MainScope()
+    private val database = WatchDatabase.get(context)
+    private val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
 
-    private lateinit var database: WatchDatabase
-    private lateinit var sharedPreferences: SharedPreferences
-
-    private lateinit var capabilityClient: CapabilityClient
-    private lateinit var dataClient: DataClient
-    private lateinit var nodeClient: NodeClient
-    private lateinit var messageClient: MessageClient
+    private val capabilityClient = Wearable.getCapabilityClient(context)
+    private val dataClient = Wearable.getDataClient(context)
+    private val nodeClient = Wearable.getNodeClient(context)
+    private val messageClient = Wearable.getMessageClient(context)
 
     private var watchConnectionListener: CapabilityClient.OnCapabilityChangedListener? = null
 
-    var connectedWatch: Watch? = null
-        private set
+    private val _connectedWatch = MutableLiveData<Watch?>()
+    val connectedWatch: LiveData<Watch?>
+        get() = _connectedWatch
+
+    init {
+        sharedPreferences.registerOnSharedPreferenceChangeListener(this)
+        sharedPreferences.getString(LAST_CONNECTED_NODE_ID_KEY, "").also {
+            setConnectedWatchById(it ?: "")
+        }
+        setAutoAddWatches()
+        connectedWatch.observeForever {
+            it?.let { watch ->
+                updateLocalPreferences(watch)
+            }
+        }
+    }
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
         when (key) {
@@ -68,33 +73,8 @@ class WatchManager :
         }
     }
 
-    override fun onBind(intent: Intent?): IBinder? = binder
-
-    override fun onCreate() {
-        super.onCreate()
-        Timber.d("onCreate() called")
-
-        database = WatchDatabase.get(applicationContext)
-
-        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
-        sharedPreferences.registerOnSharedPreferenceChangeListener(this)
-        sharedPreferences.getString(LAST_CONNECTED_NODE_ID_KEY, "").also {
-            setConnectedWatchById(it ?: "")
-        }
-
-        capabilityClient = Wearable.getCapabilityClient(this)
-        dataClient = Wearable.getDataClient(this)
-        nodeClient = Wearable.getNodeClient(this)
-        messageClient = Wearable.getMessageClient(this)
-
-        setAutoAddWatches()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        Timber.d("onDestroy() called")
+    fun destroy() {
         sharedPreferences.unregisterOnSharedPreferenceChangeListener(this)
-        if (database.isOpen) database.close()
         if (watchConnectionListener != null) {
             capabilityClient.removeListener(watchConnectionListener!!)
         }
@@ -213,10 +193,9 @@ class WatchManager :
      * Sets all local [SharedPreferences] to their values stored with the connected [Watch],
      * or their default preference value.
      */
-    private suspend fun updateLocalPreferences() {
+    private fun updateLocalPreferences(watch: Watch) {
         Timber.d("updateLocalPreferences() called")
-        val watch = connectedWatch
-        if (watch != null) {
+        coroutineScope.launch {
             withContext(Dispatchers.IO) {
                 clearLocalPreferences(commitNow = true)
                 sharedPreferences.edit {
@@ -230,8 +209,6 @@ class WatchManager :
                     }
                 }
             }
-        } else {
-            Timber.w("Connected watch null, cannot continue.")
         }
     }
 
@@ -264,11 +241,6 @@ class WatchManager :
                     Timber.i("Watch not registered, registering")
                     val newWatch = Watch(node)
                     database.watchDao().add(newWatch)
-                    withContext(Dispatchers.Main) {
-                        for (connectionInterface in watchConnectionListeners) {
-                            connectionInterface.onWatchAdded(newWatch)
-                        }
-                    }
                 } else {
                     Timber.i("Watch already registered, skipping")
                 }
@@ -286,41 +258,25 @@ class WatchManager :
     private suspend fun updateAllPreferencesOnWatch(watchId: String?): Task<DataItem>? {
         Timber.d("updateAllPreferencesOnWatch")
         if (!watchId.isNullOrEmpty()) {
-            Timber.i("Creating update request")
-            val watch = getWatchById(watchId)
-            // Get updated preferences
-            val batterySyncEnabled =
-                watch?.boolPrefs?.get(PreferenceKey.BATTERY_SYNC_ENABLED_KEY) ?: false
-            val phoneBatteryChargedNoti =
-                watch?.boolPrefs?.get(PreferenceKey.BATTERY_PHONE_CHARGE_NOTI_KEY) ?: false
-            val watchBatteryChargedNoti =
-                watch?.boolPrefs?.get(PreferenceKey.BATTERY_WATCH_CHARGE_NOTI_KEY) ?: false
-            val batteryChargeThreshold =
-                watch?.intPrefs?.get(PreferenceKey.BATTERY_SYNC_INTERVAL_KEY) ?: 90
-            val dndSyncToWatch =
-                watch?.boolPrefs?.get(PreferenceKey.DND_SYNC_TO_WATCH_KEY) ?: false
-            val dndSyncToPhone =
-                watch?.boolPrefs?.get(PreferenceKey.DND_SYNC_TO_PHONE_KEY) ?: false
-            val dndSyncWithTheater =
-                watch?.boolPrefs?.get(PreferenceKey.DND_SYNC_WITH_THEATER_KEY) ?: false
-            val lockPhoneEnabled =
-                watch?.boolPrefs?.get(PreferenceKey.PHONE_LOCKING_ENABLED_KEY) ?: false
-
-            // Create PutDataMapRequest to send the new preferences
-            PutDataMapRequest.create("/preference-change_$watchId").also {
-                it.dataMap.apply {
-                    putBoolean(PreferenceKey.BATTERY_SYNC_ENABLED_KEY, batterySyncEnabled)
-                    putBoolean(PreferenceKey.BATTERY_PHONE_CHARGE_NOTI_KEY, phoneBatteryChargedNoti)
-                    putBoolean(PreferenceKey.BATTERY_WATCH_CHARGE_NOTI_KEY, watchBatteryChargedNoti)
-                    putInt(PreferenceKey.BATTERY_CHARGE_THRESHOLD_KEY, batteryChargeThreshold)
-                    putBoolean(PreferenceKey.DND_SYNC_TO_WATCH_KEY, dndSyncToWatch)
-                    putBoolean(PreferenceKey.DND_SYNC_TO_PHONE_KEY, dndSyncToPhone)
-                    putBoolean(PreferenceKey.DND_SYNC_WITH_THEATER_KEY, dndSyncWithTheater)
-                    putBoolean(PreferenceKey.PHONE_LOCKING_ENABLED_KEY, lockPhoneEnabled)
+            return withContext(Dispatchers.IO) {
+                Timber.i("Creating update request")
+                // Get updated preferences
+                val intPrefs = database.intPreferenceDao().getAllForWatch(watchId)
+                val boolPrefs = database.boolPreferenceDao().getAllForWatch(watchId)
+                // Create PutDataMapRequest to send the new preferences
+                val request = PutDataMapRequest.create("/preference-change_$watchId").also { request ->
+                    request.dataMap.apply {
+                        intPrefs.forEach {
+                            putInt(it.key, it.value)
+                        }
+                        boolPrefs.forEach {
+                            putBoolean(it.key, it.value)
+                        }
+                    }
+                    // Send updated preferences
+                    request.setUrgent()
                 }
-                // Send updated preferences
-                it.setUrgent()
-                return dataClient.putDataItem(it.asPutDataRequest())
+                return@withContext dataClient.putDataItem(request.asPutDataRequest())
             }
         } else {
             Timber.w("watchId null or empty")
@@ -381,48 +337,6 @@ class WatchManager :
     }
 
     /**
-     * Gets a [Watch] by a given ID. Includes the watches preferences and current status.
-     * @param watchId The ID of the [Watch] to get.
-     * @return The [Watch] that was retrieved, or null if it doesn't exist.
-     */
-    suspend fun getWatchById(watchId: String?): Watch? {
-        Timber.d("getWatchById($watchId) called")
-        return withContext(Dispatchers.IO) {
-            if (!watchId.isNullOrEmpty() && database.isOpen) {
-                Timber.i("Trying to get watch")
-                if (watchId == connectedWatch?.id) {
-                    return@withContext connectedWatch
-                }
-                val watch = database.watchDao().findById(watchId)
-                if (watch != null) {
-                    Timber.i("Getting watch prefs and status")
-                    val boolPrefs =
-                        database.boolPreferenceDao().getAllForWatch(watch.id)
-                    val intPrefs =
-                        database.intPreferenceDao().getAllForWatch(watch.id)
-                    val capableNodes = getCapableNodes()
-                    val connectedNodes = getConnectedNodes()
-                    return@withContext withContext(Dispatchers.Default) {
-                        watch.status = getWatchStatus(watch.id, capableNodes, connectedNodes)
-                        for (intPreference in intPrefs) {
-                            watch.intPrefs[intPreference.key] = intPreference.value
-                        }
-                        for (boolPreference in boolPrefs) {
-                            watch.boolPrefs[boolPreference.key] = boolPreference.value
-                        }
-                        watch
-                    }
-                } else {
-                    Timber.w("Watch null")
-                }
-            } else {
-                Timber.w("watchId null or empty, or database not open")
-            }
-            null
-        }
-    }
-
-    /**
      * Sends an updated preference to the connected [Watch].
      * @param preferenceKey The key of the preference to update on the watch.
      * @return The [Task] for the preference send job, or null if the task failed.
@@ -430,7 +344,7 @@ class WatchManager :
     suspend fun updatePreferenceOnWatch(preferenceKey: String): Task<DataItem>? {
         Timber.d("updatePreferenceOnWatch($preferenceKey) called")
         return withContext(Dispatchers.IO) {
-            val watch = connectedWatch
+            val watch = connectedWatch.value
             if (watch != null) {
                 val syncedPrefUpdateReq =
                     PutDataMapRequest.create("/preference-change_${watch.id}")
@@ -503,7 +417,7 @@ class WatchManager :
         preferenceKey: String,
         newValue: Any
     ): Boolean {
-        return updatePreferenceInDatabase(connectedWatch?.id, preferenceKey, newValue)
+        return updatePreferenceInDatabase(connectedWatch.value?.id, preferenceKey, newValue)
     }
 
     /**
@@ -522,15 +436,7 @@ class WatchManager :
         return withContext(Dispatchers.IO) {
             if (!watchId.isNullOrEmpty()) {
                 Timber.i("Updating preference")
-                val isSuccessful =
-                    database.updatePrefInDatabase(watchId, preferenceKey, newValue)
-                if (isSuccessful && watchPreferenceChangeListeners.isNotEmpty()) {
-                    for (watchPreferenceChangeListener in watchPreferenceChangeListeners) {
-                        watchPreferenceChangeListener
-                            .onWatchPreferenceChanged(watchId, preferenceKey, newValue)
-                    }
-                }
-                return@withContext isSuccessful
+                return@withContext database.updatePrefInDatabase(watchId, preferenceKey, newValue)
             } else {
                 Timber.w("watchId null or empty")
             }
@@ -597,7 +503,7 @@ class WatchManager :
                 database.intPreferenceDao().deleteAllForWatch(watchId)
                 database.boolPreferenceDao().deleteAllForWatch(watchId)
                 updateAllPreferencesOnWatch(watchId)
-                if (watchId == connectedWatch?.id) {
+                if (watchId == connectedWatch.value?.id) {
                     clearLocalPreferences()
                 }
                 return@withContext true
@@ -662,100 +568,30 @@ class WatchManager :
     }
 
     /**
-     * Add a new [WatchConnectionListener].
-     */
-    fun addWatchConnectionListener(connectionListener: WatchConnectionListener) {
-        if (!watchConnectionListeners.contains(connectionListener)) {
-            watchConnectionListeners.add(connectionListener)
-        }
-    }
-
-    /**
-     * Remove a [WatchConnectionListener].
-     */
-    fun removeWatchConnectionListener(connectionListener: WatchConnectionListener) {
-        if (watchConnectionListeners.contains(connectionListener)) {
-            watchConnectionListeners.remove(connectionListener)
-        }
-    }
-
-    /**
-     * Add a new [WatchPreferenceChangeListener].
-     */
-    fun addWatchPreferenceChangeListener(watchPreferenceChangeListener: WatchPreferenceChangeListener) {
-        if (!watchPreferenceChangeListeners.contains(watchPreferenceChangeListener)) {
-            watchPreferenceChangeListeners.add(watchPreferenceChangeListener)
-        }
-    }
-
-    /**
-     * Remove a [WatchPreferenceChangeListener].
-     */
-    fun removeWatchPreferenceChangeListener(watchPreferenceChangeListener: WatchPreferenceChangeListener) {
-        if (watchPreferenceChangeListeners.contains(watchPreferenceChangeListener)) {
-            watchPreferenceChangeListeners.remove(watchPreferenceChangeListener)
-        }
-    }
-
-    /**
      * Sets the currently connected watch by a given [Watch.id].
      * @param watchId The ID of the [Watch] to set as connected.
      */
     fun setConnectedWatchById(watchId: String) {
-        for (connectionInterface in watchConnectionListeners) {
-            connectionInterface.onConnectedWatchChanging()
-        }
-        coroutineScope.launch(Dispatchers.IO) {
-            val newWatch = getWatchById(watchId)
-            val success = newWatch != null
-
-            if (success) {
-                connectedWatch = newWatch
-                updateLocalPreferences()
-                sharedPreferences.edit {
-                    putString(LAST_CONNECTED_NODE_ID_KEY, watchId)
-                }
-            }
-
-            withContext(Dispatchers.Main) {
-                for (connectionInterface in watchConnectionListeners) {
-                    connectionInterface.onConnectedWatchChanged(success)
-                }
-            }
+        coroutineScope.launch {
+            val newWatch = database.watchDao().findById(watchId)
+            _connectedWatch.postValue(newWatch)
         }
     }
 
     companion object {
+        private var INSTANCE: WatchManager? = null
         private const val AUTO_ADD_WATCHES_KEY = "auto_add_watches"
 
         const val LAST_CONNECTED_NODE_ID_KEY = "last_connected_id"
 
         /**
-         * Binds the [WatchManager] to a [Connection].
-         * This will auto-create the [WatchManager] if necessary.
+         * Gets an instance of [WatchManager].
          */
-        fun bind(context: Context, watchManagerConnection: Connection) {
-            Intent(context, WatchManager::class.java).also {
-                context.bindService(it, watchManagerConnection, Context.BIND_AUTO_CREATE)
+        fun get(context: Context): WatchManager {
+            synchronized(this) {
+                if (INSTANCE == null) INSTANCE = WatchManager(context)
+                return INSTANCE!!
             }
-        }
-    }
-
-    inner class Binder : android.os.Binder() {
-        val watchManager: WatchManager get() { return this@WatchManager }
-    }
-
-    abstract class Connection : ServiceConnection {
-        abstract fun onWatchManagerBound(watchManager: WatchManager)
-        abstract fun onWatchManagerUnbound()
-
-        final override fun onServiceConnected(componentName: ComponentName?, binder: IBinder?) {
-            val watchManager = (binder as Binder).watchManager
-            onWatchManagerBound(watchManager)
-        }
-
-        final override fun onServiceDisconnected(componentName: ComponentName?) {
-            onWatchManagerUnbound()
         }
     }
 }

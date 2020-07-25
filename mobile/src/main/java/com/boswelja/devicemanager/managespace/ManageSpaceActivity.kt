@@ -35,22 +35,12 @@ import java.io.File
 
 class ManageSpaceActivity : BaseToolbarActivity() {
 
-    private val watchManagerConnection = object : WatchManager.Connection() {
-        override fun onWatchManagerBound(watchManager: WatchManager) {
-            watchConnectionManager = watchManager
-        }
-
-        override fun onWatchManagerUnbound() {
-            watchConnectionManager = null
-        }
-    }
-
     private val coroutineScope = MainScope()
 
     private lateinit var binding: ActivityManageSpaceBinding
     private lateinit var activityManager: ActivityManager
 
-    private var watchConnectionManager: WatchManager? = null
+    private val watchManager: WatchManager by lazy { WatchManager.get(this) }
     private var hasResetApp = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -62,18 +52,6 @@ class ManageSpaceActivity : BaseToolbarActivity() {
 
         setupToolbar(binding.toolbarLayout.toolbar, showTitle = true, showUpButton = true)
         setupButtons()
-    }
-
-    override fun onStart() {
-        super.onStart()
-        WatchManager.bind(this, watchManagerConnection)
-    }
-
-    override fun onStop() {
-        super.onStop()
-        if (!hasResetApp) {
-            unbindService(watchManagerConnection)
-        }
     }
 
     override fun onDestroy() {
@@ -236,8 +214,8 @@ class ManageSpaceActivity : BaseToolbarActivity() {
     private fun doSettingsReset() {
         setButtonsEnabled(false)
         coroutineScope.launch(Dispatchers.IO) {
-            val registeredWatches = watchConnectionManager?.getRegisteredWatches()
-            if (registeredWatches != null && registeredWatches.isNotEmpty()) {
+            val registeredWatches = watchManager.getRegisteredWatches()
+            if (registeredWatches.isNotEmpty()) {
                 initProgressBar(registeredWatches.count())
                 for (watch in registeredWatches) {
                     withContext(Dispatchers.Main) {
@@ -276,8 +254,8 @@ class ManageSpaceActivity : BaseToolbarActivity() {
         coroutineScope.launch(Dispatchers.IO) {
             var totalSteps = DATABASE_COUNT + PREFERENCE_STORE_COUNT
             initProgressBar(totalSteps)
-            val registeredWatches = watchConnectionManager?.getRegisteredWatches()
-            if (registeredWatches != null && registeredWatches.isNotEmpty()) {
+            val registeredWatches = watchManager.getRegisteredWatches()
+            if (registeredWatches.isNotEmpty()) {
                 totalSteps += (registeredWatches.count() * 3)
                 withContext(Dispatchers.Main) {
                     initProgressBar(totalSteps)
@@ -299,7 +277,7 @@ class ManageSpaceActivity : BaseToolbarActivity() {
                         return@launch
                     }
                     try {
-                        Tasks.await(watchConnectionManager!!.requestResetWatch(watch.id))
+                        Tasks.await(watchManager.requestResetWatch(watch.id))
                         withContext(Dispatchers.Main) {
                             incrementProgressBar()
                         }
@@ -309,13 +287,12 @@ class ManageSpaceActivity : BaseToolbarActivity() {
                         setButtonsEnabled(true)
                         return@launch
                     }
-                    watchConnectionManager!!.forgetWatch(watch.id)
+                    watchManager.forgetWatch(watch.id)
                     withContext(Dispatchers.Main) {
                         incrementProgressBar()
                     }
                 }
             }
-            unbindService(watchManagerConnection)
             withContext(Dispatchers.Main) {
                 setProgressStatus(getString(R.string.reset_app_resetting_database_for, getString(R.string.database_name_battery_stats)))
             }
@@ -364,9 +341,9 @@ class ManageSpaceActivity : BaseToolbarActivity() {
      * @return true if preferences were successfully cleared, false otherwise.
      */
     private suspend fun resetWatchPreferences(watch: Watch): Boolean {
-        val success = watchConnectionManager!!.clearPreferencesForWatch(watch.id)
+        val success = watchManager.clearPreferencesForWatch(watch.id)
         if (watch.batterySyncWorkerId != null) {
-            BatterySyncWorker.stopWorker(watchConnectionManager, watch.id)
+            BatterySyncWorker.stopWorker(this, watch.id)
         }
         return success
     }

@@ -29,17 +29,6 @@ import kotlinx.coroutines.withContext
 
 class WatchSetupFragment : Fragment() {
 
-    private val watchConnectionManagerConnection = object : WatchManager.Connection() {
-        override fun onWatchManagerBound(watchManager: WatchManager) {
-            watchConnectionManager = watchManager
-            refreshAvailableWatches()
-        }
-
-        override fun onWatchManagerUnbound() {
-            watchConnectionManager = null
-        }
-    }
-
     private val coroutineScope = MainScope()
 
     private var watchConnectionManager: WatchManager? = null
@@ -65,12 +54,8 @@ class WatchSetupFragment : Fragment() {
         setupRecyclerView()
         setLoading(true)
 
-        WatchManager.bind(requireContext(), watchConnectionManagerConnection)
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        context?.unbindService(watchConnectionManagerConnection)
+        watchConnectionManager = WatchManager.get(requireContext())
+        refreshAvailableWatches()
     }
 
     /**

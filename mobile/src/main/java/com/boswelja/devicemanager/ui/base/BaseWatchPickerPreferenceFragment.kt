@@ -29,5 +29,5 @@ abstract class BaseWatchPickerPreferenceFragment : BasePreferenceFragment() {
     /**
      * Get an instance of [WatchManager] from the parent activity.
      */
-    fun getWatchConnectionManager(): WatchManager? = activity.watchConnectionManager
+    fun getWatchConnectionManager(): WatchManager? = activity.watchManager
 }

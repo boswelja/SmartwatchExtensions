@@ -39,19 +39,8 @@ class PhoneLockingAccessibilityService :
     private lateinit var sharedPreferences: SharedPreferences
     private lateinit var messageClient: MessageClient
 
-    private var watchConnectionManager: WatchManager? = null
+    private val watchManager: WatchManager by lazy { WatchManager.get(this) }
     private var isStopping = false
-
-    private val watchConnectionManagerConnection = object : WatchManager.Connection() {
-        override fun onWatchManagerBound(watchManager: WatchManager) {
-            Timber.i("onWatchManagerBound() called")
-            watchConnectionManager = watchManager
-        }
-
-        override fun onWatchManagerUnbound() {
-            Timber.w("onWatchManagerUnbound() called")
-        }
-    }
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
         if (key == PHONE_LOCKING_MODE_KEY && sharedPreferences?.getString(key, "0") != PHONE_LOCKING_MODE_ACCESSIBILITY_SERVICE) {
@@ -76,7 +65,6 @@ class PhoneLockingAccessibilityService :
             putBoolean(ACCESSIBILITY_SERVICE_ENABLED_KEY, true)
         }
         messageClient.addListener(this)
-        WatchManager.bind(this, watchConnectionManagerConnection)
     }
 
     override fun onAccessibilityEvent(event: AccessibilityEvent?) {
@@ -100,7 +88,7 @@ class PhoneLockingAccessibilityService :
         coroutineScope.launch(Dispatchers.IO) {
             val watchId = messageEvent.sourceNodeId
             val phoneLockingEnabledForWatch =
-                watchConnectionManager?.getBoolPrefForWatch(watchId, PHONE_LOCKING_ENABLED_KEY)
+                watchManager.getBoolPrefForWatch(watchId, PHONE_LOCKING_ENABLED_KEY)
                     ?.value == true
             if (phoneLockingEnabledForWatch) {
                 Timber.i("Trying to lock phone")
@@ -126,10 +114,9 @@ class PhoneLockingAccessibilityService :
                 putBoolean(PHONE_LOCKING_ENABLED_KEY, false)
             }
             coroutineScope.launch(Dispatchers.IO) {
-                watchConnectionManager?.updatePreferenceOnWatch(PHONE_LOCKING_ENABLED_KEY)
+                watchManager.updatePreferenceOnWatch(PHONE_LOCKING_ENABLED_KEY)
             }
             messageClient.removeListener(this)
-            unbindService(watchConnectionManagerConnection)
         }
     }
 

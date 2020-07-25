@@ -41,29 +41,16 @@ abstract class BaseWatchPickerActivity :
     AdapterView.OnItemSelectedListener,
     WatchConnectionListener {
 
-    private val watchConnManServiceConnection = object : WatchManager.Connection() {
-        override fun onWatchManagerBound(watchManager: WatchManager) {
-            Timber.d("onWatchManagerBound() called")
-            watchConnectionManager = watchManager
-            updateConnectedWatches()
-        }
-
-        override fun onWatchManagerUnbound() {
-            Timber.w("onWatchManagerUnbound() called")
-            watchConnectionManager = null
-        }
-    }
-
     internal val coroutineScope = MainScope()
 
-    var watchConnectionManager: WatchManager? = null
+    lateinit var watchManager: WatchManager
 
     private lateinit var watchPickerSpinner: AppCompatSpinner
 
     override fun onItemSelected(adapterView: AdapterView<*>?, selectedView: View?, position: Int, id: Long) {
         val connectedWatchId = id.toString(36)
         Timber.i("$connectedWatchId selected")
-        watchConnectionManager?.setConnectedWatchById(connectedWatchId)
+        watchManager.setConnectedWatchById(connectedWatchId)
     }
 
     override fun onNothingSelected(p0: AdapterView<*>?) { }
@@ -78,7 +65,7 @@ abstract class BaseWatchPickerActivity :
         watchPickerSpinner.isEnabled = true
         if (!isSuccess) {
             Timber.w("Failed to change selected watch")
-            ensureCorrectWatchSelected()
+            watchManager.connectedWatch.value?.id?.let { selectWatch(it) }
         }
     }
 
@@ -89,23 +76,17 @@ abstract class BaseWatchPickerActivity :
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        WatchManager.bind(this, watchConnManServiceConnection)
+        watchManager = WatchManager.get(this)
+        updateConnectedWatches()
     }
 
     override fun onStart() {
         super.onStart()
-        watchConnectionManager?.addWatchConnectionListener(this)
-        ensureCorrectWatchSelected()
-    }
-
-    override fun onStop() {
-        super.onStop()
-        watchConnectionManager?.removeWatchConnectionListener(this)
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        unbindService(watchConnManServiceConnection)
+        watchManager.connectedWatch.observe(this) {
+            it?.let {
+                selectWatch(it.id)
+            }
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -137,13 +118,13 @@ abstract class BaseWatchPickerActivity :
      * Checks the [watchPickerSpinner] has the correct watch selected.
      * It should always match what's selected in [WatchManager].
      */
-    private fun ensureCorrectWatchSelected() {
+    private fun selectWatch(watchId: String) {
         Timber.d("ensureCorrectWatchSelected() called")
-        if (watchPickerSpinner.selectedItemId.toString(36) != watchConnectionManager?.connectedWatch?.id) {
+        if (watchPickerSpinner.selectedItemId.toString(36) != watchId) {
             val adapter = (watchPickerSpinner.adapter as WatchPickerAdapter)
             for (i in 0 until adapter.count) {
                 val watch = adapter.getItem(i)
-                if (watch?.id == watchConnectionManager?.connectedWatch?.id) {
+                if (watch?.id == watchId) {
                     watchPickerSpinner.setSelection(i, false)
                     return
                 }
@@ -161,32 +142,28 @@ abstract class BaseWatchPickerActivity :
             withContext(Dispatchers.Main) {
                 (watchPickerSpinner.adapter as WatchPickerAdapter).clear()
             }
-            val watches = watchConnectionManager?.getRegisteredWatches()
-            if (watches != null) {
-                if (watches.isNotEmpty()) {
-                    Timber.i("Setting watches")
-                    WatchBatteryWidget.enableWidget(this@BaseWatchPickerActivity)
-                    val connectedWatchId = watchConnectionManager!!.connectedWatch?.id
-                    var selectedWatchPosition = 0
-                    watches.forEach {
-                        withContext(Dispatchers.Main) {
-                            (watchPickerSpinner.adapter as WatchPickerAdapter).add(it)
-                        }
-                        if (it.id == connectedWatchId) {
-                            selectedWatchPosition =
-                                (watchPickerSpinner.adapter as WatchPickerAdapter).getPosition(it)
-                        }
-                    }
+            val watches = watchManager.getRegisteredWatches()
+            if (watches.isNotEmpty()) {
+                Timber.i("Setting watches")
+                WatchBatteryWidget.enableWidget(this@BaseWatchPickerActivity)
+                val connectedWatchId = watchManager.connectedWatch.value?.id
+                var selectedWatchPosition = 0
+                watches.forEach {
                     withContext(Dispatchers.Main) {
-                        watchPickerSpinner.setSelection(selectedWatchPosition)
+                        (watchPickerSpinner.adapter as WatchPickerAdapter).add(it)
                     }
-                } else {
-                    Timber.i("No registered watches found")
-                    WatchBatteryWidget.disableWidget(this@BaseWatchPickerActivity)
-                    startSetupActivity()
+                    if (it.id == connectedWatchId) {
+                        selectedWatchPosition =
+                            (watchPickerSpinner.adapter as WatchPickerAdapter).getPosition(it)
+                    }
+                }
+                withContext(Dispatchers.Main) {
+                    watchPickerSpinner.setSelection(selectedWatchPosition)
                 }
             } else {
-                Timber.e("Failed to get list of watches")
+                Timber.i("No registered watches found")
+                WatchBatteryWidget.disableWidget(this@BaseWatchPickerActivity)
+                startSetupActivity()
             }
         }
     }

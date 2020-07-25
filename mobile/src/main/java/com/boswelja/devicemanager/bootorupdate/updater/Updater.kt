@@ -17,7 +17,6 @@ import com.boswelja.devicemanager.BuildConfig
 import com.boswelja.devicemanager.batterysync.BatterySyncWorker
 import com.boswelja.devicemanager.common.PreferenceKey
 import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_SYNC_ENABLED_KEY
-import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_SYNC_INTERVAL_KEY
 import com.boswelja.devicemanager.common.References.CAPABILITY_WATCH_APP
 import com.boswelja.devicemanager.messages.database.MessageDatabase
 import com.boswelja.devicemanager.messages.database.MessageDatabase.Companion.MESSAGE_COUNT_KEY
@@ -28,6 +27,7 @@ import com.boswelja.devicemanager.watchmanager.WatchManager
 import com.boswelja.devicemanager.watchmanager.database.WatchDatabase
 import com.google.android.gms.wearable.CapabilityClient
 import com.google.android.gms.wearable.Wearable
+import kotlinx.coroutines.runBlocking
 import timber.log.Timber
 
 class Updater(private val context: Context) {
@@ -68,8 +68,9 @@ class Updater(private val context: Context) {
             if (watches != null) {
                 for (watch in watches) {
                     if (watch.boolPrefs[BATTERY_SYNC_ENABLED_KEY] == true) {
-                        val newWorkerId = BatterySyncWorker.startWorker(context, watch.id, (watch.intPrefs[BATTERY_SYNC_INTERVAL_KEY] ?: 15).toLong())
-                        database.watchDao().updateBatterySyncWorkerId(watch.id, newWorkerId)
+                        runBlocking {
+                            BatterySyncWorker.startWorker(context, watch.id)
+                        }
                     }
                 }
             }

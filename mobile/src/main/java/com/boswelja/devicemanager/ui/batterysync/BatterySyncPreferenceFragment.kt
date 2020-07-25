@@ -157,13 +157,13 @@ class BatterySyncPreferenceFragment :
         coroutineScope.launch(Dispatchers.IO) {
             if (enabled) {
                 val workerStartSuccessful =
-                    BatterySyncWorker.startWorker(activity.watchConnectionManager)
+                    BatterySyncWorker.startWorker(requireContext(), activity.watchManager.connectedWatch.value?.id!!)
                 if (workerStartSuccessful) {
                     sharedPreferences.edit(commit = true) {
                         putBoolean(BATTERY_SYNC_ENABLED_KEY, enabled).apply()
                     }
                     getWatchConnectionManager()?.updatePreferenceOnWatch(BATTERY_SYNC_ENABLED_KEY)
-                    updateBatteryStats(requireContext(), activity.watchConnectionManager?.connectedWatch?.id)
+                    updateBatteryStats(requireContext(), activity.watchManager.connectedWatch.value?.id)
                 } else {
                     withContext(Dispatchers.Main) {
                         activity.createSnackBar(getString(R.string.battery_sync_enable_failed))
@@ -174,7 +174,7 @@ class BatterySyncPreferenceFragment :
                     putBoolean(BATTERY_SYNC_ENABLED_KEY, enabled)
                 }
                 getWatchConnectionManager()?.updatePreferenceOnWatch(BATTERY_SYNC_ENABLED_KEY)
-                BatterySyncWorker.stopWorker(activity.watchConnectionManager)
+                BatterySyncWorker.stopWorker(requireContext(), activity.watchManager.connectedWatch.value?.id!!)
             }
         }
     }
@@ -190,9 +190,9 @@ class BatterySyncPreferenceFragment :
             sharedPreferences.edit(commit = true) {
                 putInt(BATTERY_SYNC_INTERVAL_KEY, newInterval)
             }
-            activity.watchConnectionManager?.updatePreferenceInDatabase(BATTERY_SYNC_INTERVAL_KEY, newInterval)
-            BatterySyncWorker.stopWorker(activity.watchConnectionManager)
-            BatterySyncWorker.startWorker(activity.watchConnectionManager)
+            activity.watchManager.updatePreferenceInDatabase(BATTERY_SYNC_INTERVAL_KEY, newInterval)
+            BatterySyncWorker.stopWorker(requireContext(), activity.watchManager.connectedWatch.value?.id!!)
+            BatterySyncWorker.startWorker(requireContext(), activity.watchManager.connectedWatch.value?.id!!)
         }
     }
 }

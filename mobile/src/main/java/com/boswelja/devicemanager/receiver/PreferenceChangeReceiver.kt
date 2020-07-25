@@ -27,30 +27,7 @@ class PreferenceChangeReceiver : WearableListenerService() {
 
     private val coroutineScope = MainScope()
 
-    private var watchConnectionManager: WatchManager? = null
-
-    private val watchConnManConnection = object : WatchManager.Connection() {
-        override fun onWatchManagerBound(watchManager: WatchManager) {
-            Timber.i("onWatchManagerBound() called")
-            watchConnectionManager = watchManager
-        }
-
-        override fun onWatchManagerUnbound() {
-            Timber.w("onWatchManagerUnbound() called")
-            watchConnectionManager = null
-        }
-    }
-
-    override fun onCreate() {
-        super.onCreate()
-        Timber.i("onCreate() called")
-        WatchManager.bind(this, watchConnManConnection)
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        unbindService(watchConnManConnection)
-    }
+    private val watchManager: WatchManager by lazy { WatchManager.get(this) }
 
     override fun onDataChanged(dataEvents: DataEventBuffer?) {
         Timber.i("onDataChanged() called")
@@ -72,10 +49,10 @@ class PreferenceChangeReceiver : WearableListenerService() {
         withContext(Dispatchers.IO) {
             if (batterySyncEnabled) {
                 Timber.i("Starting BatterySyncWorker")
-                BatterySyncWorker.startWorker(watchConnectionManager, watchId)
+                BatterySyncWorker.startWorker(this@PreferenceChangeReceiver, watchId)
             } else {
                 Timber.i("Stopping BatterySyncWorker")
-                BatterySyncWorker.stopWorker(watchConnectionManager, watchId)
+                BatterySyncWorker.stopWorker(this@PreferenceChangeReceiver, watchId)
             }
         }
     }
@@ -110,21 +87,21 @@ class PreferenceChangeReceiver : WearableListenerService() {
                             PreferenceKey.DND_SYNC_WITH_THEATER_KEY
                             -> {
                                 val newValue = dataMap.getBoolean(key)
-                                watchConnectionManager?.updatePreferenceInDatabase(senderId, key, newValue)
+                                watchManager.updatePreferenceInDatabase(senderId, key, newValue)
                             }
                             PreferenceKey.DND_SYNC_TO_WATCH_KEY -> {
                                 val newValue = dataMap.getBoolean(key)
-                                watchConnectionManager?.updatePreferenceInDatabase(senderId, key, newValue)
+                                watchManager.updatePreferenceInDatabase(senderId, key, newValue)
                                 updateDnDSyncToWatch(newValue)
                             }
                             PreferenceKey.BATTERY_SYNC_ENABLED_KEY -> {
                                 val newValue = dataMap.getBoolean(key)
-                                watchConnectionManager?.updatePreferenceInDatabase(senderId, key, newValue)
+                                watchManager.updatePreferenceInDatabase(senderId, key, newValue)
                                 updateBatterySyncWorker(newValue, senderId)
                             }
                             PreferenceKey.BATTERY_CHARGE_THRESHOLD_KEY -> {
                                 val newValue = dataMap.getInt(key)
-                                watchConnectionManager?.updatePreferenceInDatabase(senderId, key, newValue)
+                                watchManager.updatePreferenceInDatabase(senderId, key, newValue)
                             }
                         }
                     }

@@ -126,8 +126,6 @@ class AppInfoFragment :
 
         messageClient.addListener(messageListener)
         requestUpdateWatchVersion()
-
-        getWatchConnectionManager()?.addWatchConnectionListener(this)
     }
 
     override fun onStop() {
@@ -135,8 +133,6 @@ class AppInfoFragment :
 
         customTabsIntent = null
         messageClient.removeListener(messageListener)
-
-        getWatchConnectionManager()?.removeWatchConnectionListener(this)
     }
 
     /**
@@ -145,7 +141,7 @@ class AppInfoFragment :
      */
     private fun requestUpdateWatchVersion() {
         Timber.d("requestUpdateWatchVersionPreference")
-        val connectedWatchId = getWatchConnectionManager()?.connectedWatch?.id
+        val connectedWatchId = getWatchConnectionManager()?.connectedWatch?.value?.id
         if (!connectedWatchId.isNullOrEmpty()) {
             messageClient.sendMessage(connectedWatchId, References.REQUEST_APP_VERSION, null)
                 .addOnFailureListener {

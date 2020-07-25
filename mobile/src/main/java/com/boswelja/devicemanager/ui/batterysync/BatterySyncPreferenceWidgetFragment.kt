@@ -71,7 +71,7 @@ class BatterySyncPreferenceWidgetFragment :
     override fun onConnectedWatchChanged(isSuccess: Boolean) {
         Timber.d("onConnectedWatchChanged($isSuccess) called")
         if (isSuccess and batterySyncEnabled) {
-            setObservingWatchStats(activity.watchConnectionManager?.connectedWatch?.id)
+            setObservingWatchStats(activity.watchManager.connectedWatch.value?.id)
         }
     }
 
@@ -114,7 +114,7 @@ class BatterySyncPreferenceWidgetFragment :
         batterySyncEnabled = newBatterySyncState
         if (batterySyncEnabled) {
             showLoading()
-            setObservingWatchStats(activity.watchConnectionManager?.connectedWatch?.id)
+            setObservingWatchStats(activity.watchManager.connectedWatch.value?.id)
         } else {
             updateBatteryStatsDisplay(null)
             stopBatteryUpdateTimer()

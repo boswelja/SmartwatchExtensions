@@ -23,41 +23,13 @@ import com.boswelja.devicemanager.common.PreferenceKey
 import com.boswelja.devicemanager.common.R
 import com.boswelja.devicemanager.common.dndsync.References
 import com.boswelja.devicemanager.ui.main.MainActivity
-import com.boswelja.devicemanager.watchmanager.WatchManager
 import com.boswelja.devicemanager.watchmanager.WatchPreferenceChangeListener
 import com.google.android.gms.wearable.DataClient
 import com.google.android.gms.wearable.PutDataMapRequest
 import com.google.android.gms.wearable.Wearable
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.launch
 import timber.log.Timber
 
 class DnDLocalChangeService : Service(), WatchPreferenceChangeListener {
-
-    private val watchConnectionManagerConnection = object : WatchManager.Connection() {
-        override fun onWatchManagerBound(watchManager: WatchManager) {
-            Timber.i("Service bound")
-            watchConnectionManager = watchManager
-            watchManager.addWatchPreferenceChangeListener(this@DnDLocalChangeService)
-            coroutineScope.launch(Dispatchers.IO) {
-                val dndSyncToWatchPreferences =
-                    watchManager.getBoolPrefsForWatches(PreferenceKey.DND_SYNC_TO_WATCH_KEY)
-                if (dndSyncToWatchPreferences != null) {
-                    for (boolPreference in dndSyncToWatchPreferences) {
-                        sendToWatch[boolPreference.watchId] = boolPreference.value
-                    }
-                }
-
-                stopIfUnneeded()
-            }
-        }
-
-        override fun onWatchManagerUnbound() {
-            Timber.w("Service unbound")
-            watchConnectionManager = null
-        }
-    }
 
     private val dndChangeReceiver = object : DnDLocalChangeReceiver() {
         override fun onDnDChanged(dndEnabled: Boolean) {
@@ -65,13 +37,10 @@ class DnDLocalChangeService : Service(), WatchPreferenceChangeListener {
         }
     }
 
-    private val coroutineScope = MainScope()
     private val sendToWatch = HashMap<String, Boolean>()
 
     private lateinit var sharedPreferences: SharedPreferences
     private lateinit var dataClient: DataClient
-
-    private var watchConnectionManager: WatchManager? = null
 
     override fun onWatchPreferenceChanged(watchId: String, preferenceKey: String, newValue: Any?) {
         if (preferenceKey == PreferenceKey.DND_SYNC_TO_WATCH_KEY) {
@@ -91,7 +60,7 @@ class DnDLocalChangeService : Service(), WatchPreferenceChangeListener {
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
         dataClient = Wearable.getDataClient(this)
 
-        WatchManager.bind(this, watchConnectionManagerConnection)
+        // TOOD Regression here, service no longer stops itself
         DnDLocalChangeReceiver.registerReceiver(this, dndChangeReceiver)
 
         pushNewDnDState(Compat.isDndEnabled(this))
@@ -110,9 +79,6 @@ class DnDLocalChangeService : Service(), WatchPreferenceChangeListener {
         try {
             unregisterReceiver(dndChangeReceiver)
         } catch (ignored: IllegalArgumentException) {}
-
-        watchConnectionManager?.removeWatchPreferenceChangeListener(this)
-        unbindService(watchConnectionManagerConnection)
     }
 
     /**

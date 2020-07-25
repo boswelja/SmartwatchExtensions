@@ -17,6 +17,7 @@ import com.boswelja.devicemanager.ui.watchsetup.WatchSetupActivity.Companion.EXT
 import com.boswelja.devicemanager.watchmanager.Watch
 import com.boswelja.devicemanager.watchmanager.WatchConnectionListener
 import com.boswelja.devicemanager.watchmanager.WatchManager
+import com.boswelja.devicemanager.watchmanager.database.WatchDatabase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
@@ -27,22 +28,9 @@ class WatchManagerActivity :
     BaseToolbarActivity(),
     WatchConnectionListener {
 
-    private val watchConnectionManagerConnection = object : WatchManager.Connection() {
-        override fun onWatchManagerBound(watchManager: WatchManager) {
-            Timber.i("Watch manager bound")
-            watchConnectionManager = watchManager
-            setWatches()
-        }
-
-        override fun onWatchManagerUnbound() {
-            Timber.w("Watch manager unbound")
-            watchConnectionManager = null
-        }
-    }
-
     private val coroutineScope = MainScope()
 
-    private var watchConnectionManager: WatchManager? = null
+    private lateinit var watchConnectionManager: WatchManager
 
     private lateinit var binding: ActivityWatchManagerBinding
 
@@ -65,12 +53,8 @@ class WatchManagerActivity :
         setupToolbar(binding.toolbarLayout.toolbar, showTitle = true, showUpButton = true)
         setupRecyclerView()
 
-        WatchManager.bind(this, watchConnectionManagerConnection)
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        unbindService(watchConnectionManagerConnection)
+        watchConnectionManager = WatchManager.get(this)
+        setWatches()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -124,12 +108,10 @@ class WatchManagerActivity :
     private fun setWatches() {
         Timber.d("updateRegisteredWatches() called")
         coroutineScope.launch(Dispatchers.IO) {
-            if (watchConnectionManager != null) {
-                val registeredWatches = watchConnectionManager!!.getRegisteredWatches()
-                withContext(Dispatchers.Main) {
-                    (binding.watchManagerRecyclerView.adapter as WatchManagerAdapter)
-                        .setWatches(registeredWatches)
-                }
+            val registeredWatches = watchConnectionManager.getRegisteredWatches()
+            withContext(Dispatchers.Main) {
+                (binding.watchManagerRecyclerView.adapter as WatchManagerAdapter)
+                    .setWatches(registeredWatches)
             }
         }
     }
@@ -141,7 +123,7 @@ class WatchManagerActivity :
     private fun updateWatch(watchId: String?) {
         Timber.d("updateWatch($watchId) called")
         coroutineScope.launch(Dispatchers.IO) {
-            val newWatchInfo = watchConnectionManager?.getWatchById(watchId)
+            val newWatchInfo = WatchDatabase.get(this@WatchManagerActivity).watchDao().findById(watchId!!)
             if (newWatchInfo != null) {
                 Timber.i("Updating watch info for $watchId")
                 withContext(Dispatchers.Main) {

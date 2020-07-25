@@ -98,7 +98,7 @@ class ExtensionsFragment :
      */
     private fun openAppManagerActivity() {
         Intent(requireContext(), AppManagerActivity::class.java).apply {
-            val connectedWatch = activity.watchConnectionManager?.connectedWatch
+            val connectedWatch = activity.watchManager.connectedWatch.value
             putExtra(AppManagerActivity.EXTRA_WATCH_ID, connectedWatch?.id)
             putExtra(AppManagerActivity.EXTRA_WATCH_NAME, connectedWatch?.name)
         }.also {
