@@ -123,7 +123,7 @@ class WatchManagerActivity :
     private fun updateWatch(watchId: String?) {
         Timber.d("updateWatch($watchId) called")
         coroutineScope.launch(Dispatchers.IO) {
-            val newWatchInfo = WatchDatabase.get(this@WatchManagerActivity).watchDao().findById(watchId!!)
+            val newWatchInfo = WatchDatabase.get(this@WatchManagerActivity).watchDao().get(watchId!!)
             if (newWatchInfo != null) {
                 Timber.i("Updating watch info for $watchId")
                 withContext(Dispatchers.Main) {

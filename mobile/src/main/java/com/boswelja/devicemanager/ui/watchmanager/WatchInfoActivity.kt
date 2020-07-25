@@ -33,7 +33,7 @@ class WatchInfoActivity : BaseToolbarActivity() {
                     Timber.i("Updating watch nickname")
                     watchNameLayout.isErrorEnabled = false
                     coroutineScope.launch(Dispatchers.IO) {
-                        watchManager.updateWatchName(watchId!!, editable.toString())
+                        watchManager.database.watchDao().setWatchName(watchId!!, editable.toString())
                     }
                     resultCode = RESULT_WATCH_NAME_CHANGED
                 } else {
@@ -95,7 +95,7 @@ class WatchInfoActivity : BaseToolbarActivity() {
      */
     private fun resetNicknameTextField() {
         coroutineScope.launch(Dispatchers.IO) {
-            val watchName = watchDatabase.watchDao().findById(watchId!!)?.name
+            val watchName = watchDatabase.watchDao().get(watchId!!)?.name
             withContext(Dispatchers.Main) {
                 binding.apply {
                     watchNameField.setText(watchName)
@@ -165,7 +165,7 @@ class WatchInfoActivity : BaseToolbarActivity() {
     private fun confirmForgetWatch() {
         Timber.d("confirmForgetWatch() called")
         coroutineScope.launch(Dispatchers.IO) {
-            val watch = watchDatabase.watchDao().findById(watchId!!)
+            val watch = watchDatabase.watchDao().get(watchId!!)
             withContext(Dispatchers.Main) {
                 AlertDialog.Builder(this@WatchInfoActivity).apply {
                     setTitle(R.string.forget_watch_dialog_title)

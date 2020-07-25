@@ -44,7 +44,7 @@ class BatterySyncWorker(appContext: Context, workerParams: WorkerParameters) :
             return withContext(Dispatchers.IO) {
                 val database = WatchDatabase.get(context)
                 val syncIntervalMinutes =
-                        (database.intPreferenceDao().getWhere(watchId, BATTERY_SYNC_INTERVAL_KEY)?.value ?: 15).toLong()
+                        (database.intPrefDao().getWhere(watchId, BATTERY_SYNC_INTERVAL_KEY)?.value ?: 15).toLong()
                 val data = Data.Builder().apply {
                     putString(EXTRA_WATCH_ID, watchId)
                 }.build()
@@ -66,7 +66,7 @@ class BatterySyncWorker(appContext: Context, workerParams: WorkerParameters) :
         suspend fun stopWorker(context: Context, watchId: String) {
             withContext(Dispatchers.IO) {
                 val database = WatchDatabase.get(context)
-                val watch = database.watchDao().findById(watchId)
+                val watch = database.watchDao().get(watchId)
                 watch?.batterySyncWorkerId?.let {
                     WorkManager.getInstance(context).cancelWorkById(UUID.fromString(it))
                 }

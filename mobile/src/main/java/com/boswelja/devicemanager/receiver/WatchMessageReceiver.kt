@@ -144,7 +144,7 @@ class WatchMessageReceiver : WearableListenerService() {
         MainScope().launch(Dispatchers.IO) {
             // TODO Access the database through WatchConnectionService
             val database = WatchDatabase.get(this@WatchMessageReceiver)
-            val messageCode = if (database.watchDao().findById(sourceNodeId) != null) {
+            val messageCode = if (database.watchDao().get(sourceNodeId) != null) {
                 WATCH_REGISTERED_PATH
             } else {
                 WATCH_NOT_REGISTERED_PATH

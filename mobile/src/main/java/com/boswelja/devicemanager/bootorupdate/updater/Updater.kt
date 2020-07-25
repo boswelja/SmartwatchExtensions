@@ -18,10 +18,10 @@ import com.boswelja.devicemanager.batterysync.BatterySyncWorker
 import com.boswelja.devicemanager.common.PreferenceKey
 import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_SYNC_ENABLED_KEY
 import com.boswelja.devicemanager.common.References.CAPABILITY_WATCH_APP
+import com.boswelja.devicemanager.common.setup.References
 import com.boswelja.devicemanager.messages.database.MessageDatabase
 import com.boswelja.devicemanager.messages.database.MessageDatabase.Companion.MESSAGE_COUNT_KEY
 import com.boswelja.devicemanager.ui.phonelocking.PhoneLockingPreferenceFragment.Companion.PHONE_LOCKING_MODE_KEY
-import com.boswelja.devicemanager.watchmanager.Utils
 import com.boswelja.devicemanager.watchmanager.Watch
 import com.boswelja.devicemanager.watchmanager.WatchManager
 import com.boswelja.devicemanager.watchmanager.database.WatchDatabase
@@ -157,7 +157,8 @@ class Updater(private val context: Context) {
 
                     if (defaultWatch != null) {
                         val watch = Watch(defaultWatch)
-                        Utils.addWatch(database, messageClient, watch)
+                        database.watchDao().add(watch)
+                        messageClient.sendMessage(watch.id, References.WATCH_REGISTERED_PATH, null)
                         sharedPreferences.edit {
                             putString(WatchManager.LAST_CONNECTED_NODE_ID_KEY, watch.id)
                         }

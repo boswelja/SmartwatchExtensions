@@ -54,7 +54,7 @@ class WatchBatteryUpdateReceiver : WearableListenerService() {
 
             coroutineScope.launch {
                 WatchDatabase.get(this@WatchBatteryUpdateReceiver).also {
-                    val watch = it.watchDao().findByBatterySyncWorkerId(watchBatteryStats.watchId)
+                    val watch = it.watchDao().getFromBatterySyncWorkerId(watchBatteryStats.watchId)
                     if (watch != null) {
                         handleNotification(it, watch)
                     } else {
@@ -93,11 +93,11 @@ class WatchBatteryUpdateReceiver : WearableListenerService() {
     private fun handleNotification(database: WatchDatabase, watch: Watch) {
         if (canSendChargedNotification(database, watch.id)) {
             notifyWatchCharged(watch)
-            database.boolPreferenceDao().update(
+            database.boolPrefDao().update(
                     BoolPreference(watch.id, BATTERY_CHARGED_NOTI_SENT, true))
         } else {
             notificationManager.cancel(BATTERY_CHARGED_NOTI_ID)
-            database.boolPreferenceDao().update(
+            database.boolPrefDao().update(
                     BoolPreference(watch.id, BATTERY_CHARGED_NOTI_SENT, false))
         }
     }
@@ -108,11 +108,11 @@ class WatchBatteryUpdateReceiver : WearableListenerService() {
      */
     private fun canSendChargedNotification(database: WatchDatabase, watchId: String): Boolean {
         val sendChargeNotis =
-                database.boolPreferenceDao().getWhere(watchId, BATTERY_WATCH_CHARGE_NOTI_KEY)?.value == true
+                database.boolPrefDao().getWhere(watchId, BATTERY_WATCH_CHARGE_NOTI_KEY)?.value == true
         val chargedThreshold =
-                database.intPreferenceDao().getWhere(watchId, BATTERY_CHARGE_THRESHOLD_KEY)?.value ?: 90
+                database.intPrefDao().getWhere(watchId, BATTERY_CHARGE_THRESHOLD_KEY)?.value ?: 90
         val chargedNotiSent =
-                database.boolPreferenceDao().getWhere(watchId, BATTERY_CHARGED_NOTI_SENT)?.value == true
+                database.boolPrefDao().getWhere(watchId, BATTERY_CHARGED_NOTI_SENT)?.value == true
         return watchBatteryStats.isWatchCharging && sendChargeNotis &&
                 (watchBatteryStats.batteryPercent >= chargedThreshold) &&
                 !chargedNotiSent

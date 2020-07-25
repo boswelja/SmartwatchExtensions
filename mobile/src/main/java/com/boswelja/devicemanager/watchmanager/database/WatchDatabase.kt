@@ -19,21 +19,8 @@ import com.boswelja.devicemanager.watchmanager.Watch
 abstract class WatchDatabase : RoomDatabase() {
 
     abstract fun watchDao(): WatchDao
-    abstract fun intPreferenceDao(): IntPreferenceDao
-    abstract fun boolPreferenceDao(): BoolPreferenceDao
-
-    /**
-     * Add a new [Watch] to the database.
-     * @param watch The [Watch] to add.
-     * @return true if the [Watch] was successfully added, false otherwise.
-     */
-    fun addWatch(watch: Watch): Boolean {
-        if (isOpen) {
-            watchDao().add(watch)
-            return true
-        }
-        return false
-    }
+    abstract fun intPrefDao(): IntPreferenceDao
+    abstract fun boolPrefDao(): BoolPreferenceDao
 
     /**
      * Updates a stored preference value for a given preference and watch.
@@ -51,13 +38,13 @@ abstract class WatchDatabase : RoomDatabase() {
             return when (newValue) {
                 is Boolean -> {
                     BoolPreference(watchId, preferenceKey, newValue).also {
-                        boolPreferenceDao().update(it)
+                        boolPrefDao().update(it)
                     }
                     true
                 }
                 is Int -> {
                     IntPreference(watchId, preferenceKey, newValue).also {
-                        intPreferenceDao().update(it)
+                        intPrefDao().update(it)
                     }
                     true
                 }
@@ -76,8 +63,8 @@ abstract class WatchDatabase : RoomDatabase() {
         if (isOpen) {
             val watches = watchDao().getAll()
             for (watch in watches) {
-                val boolPrefs = boolPreferenceDao().getAllForWatch(watch.id)
-                val intPrefs = intPreferenceDao().getAllForWatch(watch.id)
+                val boolPrefs = boolPrefDao().getAllForWatch(watch.id)
+                val intPrefs = intPrefDao().getAllForWatch(watch.id)
                 for (intPreference in intPrefs) {
                     watch.intPrefs[intPreference.key] = intPreference.value
                 }

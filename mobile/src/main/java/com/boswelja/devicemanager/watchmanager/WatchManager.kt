@@ -193,8 +193,8 @@ class WatchManager private constructor(context: Context) {
             return withContext(Dispatchers.IO) {
                 Timber.i("Creating update request")
                 // Get updated preferences
-                val intPrefs = database.intPreferenceDao().getAllForWatch(watchId)
-                val boolPrefs = database.boolPreferenceDao().getAllForWatch(watchId)
+                val intPrefs = database.intPrefDao().getAllForWatch(watchId)
+                val boolPrefs = database.boolPrefDao().getAllForWatch(watchId)
                 // Create PutDataMapRequest to send the new preferences
                 val request = PutDataMapRequest.create("/preference-change_$watchId").also { request ->
                     request.dataMap.apply {
@@ -257,10 +257,10 @@ class WatchManager private constructor(context: Context) {
             for (watch in databaseWatches) {
                 watch.status = getWatchStatus(watch.id, capableNodes, connectedNodes)
 
-                database.boolPreferenceDao().getAllForWatch(watch.id).forEach {
+                database.boolPrefDao().getAllForWatch(watch.id).forEach {
                     watch.boolPrefs[it.key] = it.value
                 }
-                database.intPreferenceDao().getAllForWatch(watch.id).forEach {
+                database.intPrefDao().getAllForWatch(watch.id).forEach {
                     watch.intPrefs[it.key] = it.value
                 }
             }
@@ -294,7 +294,7 @@ class WatchManager private constructor(context: Context) {
                             syncedPrefUpdateReq.dataMap.putBoolean(preferenceKey, it)
                             watch.boolPrefs[preferenceKey] = it
                             BoolPreference(watch.id, preferenceKey, it).also { boolPreference ->
-                                database.boolPreferenceDao().update(boolPreference)
+                                database.boolPrefDao().update(boolPreference)
                             }
                         }
                     }
@@ -304,7 +304,7 @@ class WatchManager private constructor(context: Context) {
                             syncedPrefUpdateReq.dataMap.putInt(preferenceKey, it)
                             watch.intPrefs[preferenceKey] = it
                             IntPreference(watch.id, preferenceKey, it).also { intPreference ->
-                                database.intPreferenceDao().update(intPreference)
+                                database.intPrefDao().update(intPreference)
                             }
                         }
                     }
@@ -333,47 +333,12 @@ class WatchManager private constructor(context: Context) {
         preferenceKey: String,
         newValue: Any
     ): Boolean {
-        return updatePreferenceInDatabase(connectedWatch.value?.id, preferenceKey, newValue)
-    }
-
-    /**
-     * Update a given preference in the database for a given [Watch].
-     * @param watchId The ID of the [Watch] to update the preference for.
-     * @param preferenceKey The preference key to update.
-     * @param newValue The new value of the preference.
-     * @return true if the update was successful, false otherwise.
-     */
-    suspend fun updatePreferenceInDatabase(
-        watchId: String?,
-        preferenceKey: String,
-        newValue: Any
-    ): Boolean {
-        Timber.d("updatePreferenceInDatabase($watchId, $preferenceKey, $newValue) called")
         return withContext(Dispatchers.IO) {
-            if (!watchId.isNullOrEmpty()) {
-                Timber.i("Updating preference")
-                return@withContext database.updatePrefInDatabase(watchId, preferenceKey, newValue)
-            } else {
-                Timber.w("watchId null or empty")
+            connectedWatch.value?.let {
+                return@withContext database.updatePrefInDatabase(it.id, preferenceKey, newValue)
             }
             return@withContext false
         }
-    }
-
-    /**
-     * Updates a watches name in the database.
-     * @param watchId The ID of the [Watch] whose name we're updating.
-     * @param newName The new name to set.
-     * @return true if the update was successful, false otherwise.
-     */
-    suspend fun updateWatchName(watchId: String, newName: String): Boolean {
-        if (database.isOpen) {
-            withContext(Dispatchers.IO) {
-                database.watchDao().setWatchName(watchId, newName)
-            }
-            return true
-        }
-        return false
     }
 
     /**
@@ -381,9 +346,10 @@ class WatchManager private constructor(context: Context) {
      * @param watch The [Watch] to register.
      * @return true if the [Watch] was successfully registered, false otherwise.
      */
-    suspend fun registerWatch(watch: Watch): Boolean {
+    suspend fun registerWatch(watch: Watch) {
         return withContext(Dispatchers.IO) {
-            return@withContext Utils.addWatch(database, messageClient, watch)
+            database.watchDao().add(watch)
+            messageClient.sendMessage(watch.id, com.boswelja.devicemanager.common.setup.References.WATCH_REGISTERED_PATH, null)
         }
     }
 
@@ -416,8 +382,8 @@ class WatchManager private constructor(context: Context) {
         return withContext(Dispatchers.IO) {
             if (!watchId.isNullOrEmpty() && database.isOpen) {
                 Timber.i("Clearing watch preferences")
-                database.intPreferenceDao().deleteAllForWatch(watchId)
-                database.boolPreferenceDao().deleteAllForWatch(watchId)
+                database.intPrefDao().deleteAllForWatch(watchId)
+                database.boolPrefDao().deleteAllForWatch(watchId)
                 updateAllPreferencesOnWatch(watchId)
                 if (watchId == connectedWatch.value?.id) {
                     clearLocalPreferences()
@@ -427,35 +393,6 @@ class WatchManager private constructor(context: Context) {
                 Timber.w("watchId null or empty, or database closed")
             }
             return@withContext false
-        }
-    }
-
-    /**
-     * Get a list of all [BoolPreference] objects stored in the database with a specified key.
-     * @param preferenceKey The key of the preference you're looking for.
-     * @return An [Array] of [BoolPreference] objects, or null if the request failed.
-     */
-    suspend fun getBoolPrefsForWatches(preferenceKey: String): Array<BoolPreference>? {
-        return withContext(Dispatchers.IO) {
-            if (database.isOpen) {
-                return@withContext database.boolPreferenceDao().getAllForKey(preferenceKey)
-            }
-            return@withContext null
-        }
-    }
-
-    /**
-     * Get a [BoolPreference] for a specified preference and watch.
-     * @param watchId The ID of the [Watch] to get the preference for.
-     * @param preferenceKey The key of the preference you're looking for.
-     * @return The [BoolPreference], or null if the request failed.
-     */
-    suspend fun getBoolPrefForWatch(watchId: String, preferenceKey: String): BoolPreference? {
-        return withContext(Dispatchers.IO) {
-            if (database.isOpen) {
-                return@withContext database.boolPreferenceDao().getWhere(watchId, preferenceKey)
-            }
-            return@withContext null
         }
     }
 
@@ -474,7 +411,7 @@ class WatchManager private constructor(context: Context) {
      */
     fun setConnectedWatchById(watchId: String) {
         coroutineScope.launch {
-            val newWatch = database.watchDao().findById(watchId)
+            val newWatch = database.watchDao().get(watchId)
             _connectedWatch.postValue(newWatch)
         }
     }

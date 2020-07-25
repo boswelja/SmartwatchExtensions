@@ -26,9 +26,11 @@ import com.boswelja.devicemanager.common.PreferenceKey
 import com.boswelja.devicemanager.dndsync.DnDLocalChangeService
 import com.boswelja.devicemanager.ui.main.MainActivity.Companion.SHOW_CHANGELOG_KEY
 import com.boswelja.devicemanager.watchmanager.WatchManager
+import com.boswelja.devicemanager.watchmanager.database.WatchDatabase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import timber.log.Timber
 
 class BootOrUpdateHandlerService : Service() {
@@ -50,7 +52,7 @@ class BootOrUpdateHandlerService : Service() {
             Intent.ACTION_BOOT_COMPLETED -> {
                 Timber.i("Device restarted")
                 startForeground(NOTI_ID, createBootNotification())
-                getWatchManager()
+                restartServices()
             }
             else -> return super.onStartCommand(intent, flags, startId)
         }
@@ -75,7 +77,7 @@ class BootOrUpdateHandlerService : Service() {
                 }
                 Result.NOT_NEEDED -> Timber.i("Update not needed")
             }
-            getWatchManager()
+            restartServices()
         }
     }
 
@@ -117,29 +119,28 @@ class BootOrUpdateHandlerService : Service() {
 
     /**
      * Try to start Do not Disturb change listener service if needed.
-     * @param service The [WatchManager] to read preferences from.
      */
-    private suspend fun tryStartInterruptFilterSyncService(service: WatchManager) {
-        val dndSyncToWatchEnabled =
-            service.getBoolPrefsForWatches(PreferenceKey.DND_SYNC_TO_WATCH_KEY)
-                ?.any { it.value } == true
-        Timber.i("tryStartInterruptFilterSyncService dndSyncToWatchEnabled = $dndSyncToWatchEnabled")
-        if (dndSyncToWatchEnabled) {
-            Compat.startForegroundService(
-                applicationContext,
-                Intent(applicationContext, DnDLocalChangeService::class.java)
-            )
+    private suspend fun tryStartInterruptFilterSyncService(database: WatchDatabase) {
+        withContext(Dispatchers.IO) {
+            val dndSyncToWatchEnabled =
+                    database.boolPrefDao().getAllForKey(PreferenceKey.DND_SYNC_TO_WATCH_KEY).any { it.value }
+            Timber.i("tryStartInterruptFilterSyncService dndSyncToWatchEnabled = $dndSyncToWatchEnabled")
+            if (dndSyncToWatchEnabled) {
+                Compat.startForegroundService(
+                        applicationContext,
+                        Intent(applicationContext, DnDLocalChangeService::class.java)
+                )
+            }
         }
     }
 
     /**
      * Try to start any needed [BatterySyncWorker] instances.
-     * @param service The [WatchManager] to read preferences from.
      */
-    private suspend fun tryStartBatterySyncWorkers(service: WatchManager) {
+    private suspend fun tryStartBatterySyncWorkers(database: WatchDatabase) {
         val watchBatterySyncInfo =
-            service.getBoolPrefsForWatches(PreferenceKey.BATTERY_SYNC_ENABLED_KEY)
-        if (watchBatterySyncInfo != null && watchBatterySyncInfo.isNotEmpty()) {
+            database.boolPrefDao().getAllForKey(PreferenceKey.BATTERY_SYNC_ENABLED_KEY)
+        if (watchBatterySyncInfo.isNotEmpty()) {
             for (batterySyncBoolPreference in watchBatterySyncInfo) {
                 if (batterySyncBoolPreference.value) {
                     Timber.i("tryStartBatterySyncWorkers Starting a Battery Sync Worker")
@@ -163,10 +164,10 @@ class BootOrUpdateHandlerService : Service() {
     /**
      * Binds to the [WatchManager].
      */
-    private fun getWatchManager() {
+    private fun restartServices() {
         Timber.d("bindWatchManager() called")
         MainScope().launch(Dispatchers.IO) {
-            WatchManager.get(this@BootOrUpdateHandlerService).also {
+            WatchDatabase.get(this@BootOrUpdateHandlerService).also {
                 tryStartBatterySyncWorkers(it)
                 tryStartInterruptFilterSyncService(it)
                 finish()

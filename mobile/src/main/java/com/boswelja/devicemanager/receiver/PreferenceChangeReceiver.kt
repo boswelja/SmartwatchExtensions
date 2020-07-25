@@ -12,7 +12,7 @@ import com.boswelja.devicemanager.batterysync.BatterySyncWorker
 import com.boswelja.devicemanager.common.Compat
 import com.boswelja.devicemanager.common.PreferenceKey
 import com.boswelja.devicemanager.dndsync.DnDLocalChangeService
-import com.boswelja.devicemanager.watchmanager.WatchManager
+import com.boswelja.devicemanager.watchmanager.database.WatchDatabase
 import com.google.android.gms.wearable.DataEvent
 import com.google.android.gms.wearable.DataEventBuffer
 import com.google.android.gms.wearable.DataMapItem
@@ -27,7 +27,7 @@ class PreferenceChangeReceiver : WearableListenerService() {
 
     private val coroutineScope = MainScope()
 
-    private val watchManager: WatchManager by lazy { WatchManager.get(this) }
+    private val database: WatchDatabase by lazy { WatchDatabase.get(this) }
 
     override fun onDataChanged(dataEvents: DataEventBuffer?) {
         Timber.i("onDataChanged() called")
@@ -87,21 +87,21 @@ class PreferenceChangeReceiver : WearableListenerService() {
                             PreferenceKey.DND_SYNC_WITH_THEATER_KEY
                             -> {
                                 val newValue = dataMap.getBoolean(key)
-                                watchManager.updatePreferenceInDatabase(senderId, key, newValue)
+                                database.updatePrefInDatabase(senderId, key, newValue)
                             }
                             PreferenceKey.DND_SYNC_TO_WATCH_KEY -> {
                                 val newValue = dataMap.getBoolean(key)
-                                watchManager.updatePreferenceInDatabase(senderId, key, newValue)
+                                database.updatePrefInDatabase(senderId, key, newValue)
                                 updateDnDSyncToWatch(newValue)
                             }
                             PreferenceKey.BATTERY_SYNC_ENABLED_KEY -> {
                                 val newValue = dataMap.getBoolean(key)
-                                watchManager.updatePreferenceInDatabase(senderId, key, newValue)
+                                database.updatePrefInDatabase(senderId, key, newValue)
                                 updateBatterySyncWorker(newValue, senderId)
                             }
                             PreferenceKey.BATTERY_CHARGE_THRESHOLD_KEY -> {
                                 val newValue = dataMap.getInt(key)
-                                watchManager.updatePreferenceInDatabase(senderId, key, newValue)
+                                database.updatePrefInDatabase(senderId, key, newValue)
                             }
                         }
                     }
