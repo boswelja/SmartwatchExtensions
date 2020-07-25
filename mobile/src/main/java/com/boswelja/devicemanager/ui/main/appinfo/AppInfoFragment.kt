@@ -23,8 +23,6 @@ import com.boswelja.devicemanager.common.GooglePlayUtils.getPlayStoreLink
 import com.boswelja.devicemanager.common.References
 import com.boswelja.devicemanager.ui.base.BaseWatchPickerPreferenceFragment
 import com.boswelja.devicemanager.ui.changelog.ChangelogDialogFragment
-import com.boswelja.devicemanager.watchmanager.item.Watch
-import com.boswelja.devicemanager.watchmanager.WatchConnectionListener
 import com.google.android.gms.wearable.MessageClient
 import com.google.android.gms.wearable.Wearable
 import timber.log.Timber
@@ -32,7 +30,6 @@ import timber.log.Timber
 class AppInfoFragment :
     BaseWatchPickerPreferenceFragment(),
     Preference.OnPreferenceClickListener,
-    WatchConnectionListener,
     DonationResultInterface {
 
     private var customTabsIntent: CustomTabsIntent? = null
@@ -46,16 +43,6 @@ class AppInfoFragment :
                 val versionInfo = parseWatchVersionInfo(it.data)
                 setWatchVersionInfo(versionInfo[0], versionInfo[1])
             }
-        }
-    }
-
-    override fun onWatchAdded(watch: Watch) {} // Do nothing
-
-    override fun onConnectedWatchChanging() {} // Do nothing
-
-    override fun onConnectedWatchChanged(isSuccess: Boolean) {
-        if (isSuccess) {
-            requestUpdateWatchVersion()
         }
     }
 
@@ -119,13 +106,14 @@ class AppInfoFragment :
             summary = BuildConfig.VERSION_CODE.toString()
         }
         watchVersionPreference = findPreference(WATCH_VERSION_KEY)!!
+        getWatchConnectionManager()?.connectedWatch?.observe(viewLifecycleOwner) {
+            requestUpdateWatchVersion()
+        }
     }
 
     override fun onStart() {
         super.onStart()
-
         messageClient.addListener(messageListener)
-        requestUpdateWatchVersion()
     }
 
     override fun onStop() {
