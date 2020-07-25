@@ -7,6 +7,7 @@
  */
 package com.boswelja.devicemanager.watchmanager.database
 
+import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
@@ -31,4 +32,13 @@ interface IntPreferenceDao {
 
     @Query("DELETE FROM int_preferences WHERE id = :watchId")
     fun deleteAllForWatch(watchId: String)
+
+    @Query("SELECT * FROM int_preferences WHERE id = :watchId")
+    fun getAllObservableForWatch(watchId: String): LiveData<Array<IntPreference>>
+
+    @Query("SELECT * FROM int_preferences WHERE pref_key = :key")
+    fun getAllObservableForKey(key: String): LiveData<Array<IntPreference>>
+
+    @Query("SELECT * FROM int_preferences WHERE id = :watchId AND pref_key = :key LIMIT 1")
+    fun getObservable(watchId: String, key: String): LiveData<IntPreference?>
 }

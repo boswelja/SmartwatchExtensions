@@ -7,6 +7,7 @@
  */
 package com.boswelja.devicemanager.watchmanager.database
 
+import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
@@ -35,4 +36,7 @@ interface WatchDao {
 
     @Query("DELETE FROM watches WHERE id = :watchId")
     fun remove(watchId: String)
+
+    @Query("SELECT * FROM watches")
+    fun getAllObservable(): LiveData<List<Watch>>
 }
