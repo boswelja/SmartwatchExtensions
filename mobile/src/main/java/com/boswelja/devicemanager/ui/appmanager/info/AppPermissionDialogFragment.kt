@@ -23,12 +23,12 @@ import java.util.Locale
 import kotlin.collections.ArrayList
 
 class AppPermissionDialogFragment(private val requestedPermissions: Array<String>) :
-        BottomSheetDialogFragment() {
+    BottomSheetDialogFragment() {
 
     private val permissions: Array<String> by lazy { processPermissions() }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
-            inflater.inflate(R.layout.bottom_sheet_list, container, false)
+        inflater.inflate(R.layout.bottom_sheet_list, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

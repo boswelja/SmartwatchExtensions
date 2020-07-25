@@ -23,7 +23,7 @@ class OneLineViewHolder private constructor(private val binding: RecyclerviewIte
         fun from(parent: ViewGroup): OneLineViewHolder {
             val layoutInflater = LayoutInflater.from(parent.context)
             val binding = RecyclerviewItemOneLineBinding
-                    .inflate(layoutInflater, parent, false)
+                .inflate(layoutInflater, parent, false)
             return OneLineViewHolder(binding)
         }
     }

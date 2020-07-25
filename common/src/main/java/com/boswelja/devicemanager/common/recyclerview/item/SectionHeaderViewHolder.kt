@@ -25,7 +25,7 @@ class SectionHeaderViewHolder(private val binding: RecyclerviewSectionHeaderBind
         fun from(parent: ViewGroup): SectionHeaderViewHolder {
             val layoutInflater = LayoutInflater.from(parent.context)
             val binding = RecyclerviewSectionHeaderBinding
-                    .inflate(layoutInflater, parent, false)
+                .inflate(layoutInflater, parent, false)
             return SectionHeaderViewHolder(binding)
         }
     }

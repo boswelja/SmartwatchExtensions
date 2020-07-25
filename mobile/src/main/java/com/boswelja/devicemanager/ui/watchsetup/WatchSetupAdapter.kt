@@ -29,11 +29,11 @@ class WatchSetupAdapter(private val watchSetupFragment: WatchSetupFragment) :
         val watch = watches[position]
         val context = holder.itemView.context
         val summary = context.getString(
-                when (watch.status) {
-                    WatchStatus.NOT_REGISTERED -> R.string.watch_status_not_registered
-                    WatchStatus.MISSING_APP -> R.string.watch_status_missing_app
-                    else -> R.string.watch_status_error
-                }
+            when (watch.status) {
+                WatchStatus.NOT_REGISTERED -> R.string.watch_status_not_registered
+                WatchStatus.MISSING_APP -> R.string.watch_status_missing_app
+                else -> R.string.watch_status_error
+            }
         )
         holder.apply {
             bind(R.drawable.ic_watch, watch.name, summary)

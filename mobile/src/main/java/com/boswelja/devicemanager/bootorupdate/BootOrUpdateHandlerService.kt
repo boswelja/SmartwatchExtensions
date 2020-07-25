@@ -123,12 +123,12 @@ class BootOrUpdateHandlerService : Service() {
     private suspend fun tryStartInterruptFilterSyncService(database: WatchDatabase) {
         withContext(Dispatchers.IO) {
             val dndSyncToWatchEnabled =
-                    database.boolPrefDao().getAllForKey(PreferenceKey.DND_SYNC_TO_WATCH_KEY).any { it.value }
+                database.boolPrefDao().getAllForKey(PreferenceKey.DND_SYNC_TO_WATCH_KEY).any { it.value }
             Timber.i("tryStartInterruptFilterSyncService dndSyncToWatchEnabled = $dndSyncToWatchEnabled")
             if (dndSyncToWatchEnabled) {
                 Compat.startForegroundService(
-                        applicationContext,
-                        Intent(applicationContext, DnDLocalChangeService::class.java)
+                    applicationContext,
+                    Intent(applicationContext, DnDLocalChangeService::class.java)
                 )
             }
         }

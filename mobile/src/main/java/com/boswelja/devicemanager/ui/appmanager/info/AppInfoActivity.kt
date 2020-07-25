@@ -94,7 +94,7 @@ class AppInfoActivity : BaseToolbarActivity() {
             permissionsInfo.setOnClickListener {
                 if (requestsPermissions) {
                     AppPermissionDialogFragment(appInfo.requestedPermissions!!)
-                            .show(supportFragmentManager)
+                        .show(supportFragmentManager)
                 }
             }
         }
