@@ -54,30 +54,6 @@ abstract class WatchDatabase : RoomDatabase() {
         return false
     }
 
-    /**
-     * Gets a list of all registered watches with their preferences loaded.
-     * @return The [List] of [Watch] objects that have all their preferences.
-     * Will be null if the database is not open.
-     */
-    fun getRegisteredWatchesWithPrefs(): List<Watch>? {
-        if (isOpen) {
-            val watches = watchDao().getAll()
-            for (watch in watches) {
-                val boolPrefs = boolPrefDao().getAllForWatch(watch.id)
-                val intPrefs = intPrefDao().getAllForWatch(watch.id)
-                for (intPreference in intPrefs) {
-                    watch.intPrefs[intPreference.key] = intPreference.value
-                }
-                for (boolPreference in boolPrefs) {
-                    watch.boolPrefs[boolPreference.key] = boolPreference.value
-                }
-            }
-            return watches
-        } else {
-            return null
-        }
-    }
-
     companion object {
         private var INSTANCE: WatchDatabase? = null
 

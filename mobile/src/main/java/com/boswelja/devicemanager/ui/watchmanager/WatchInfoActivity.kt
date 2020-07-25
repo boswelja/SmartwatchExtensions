@@ -33,7 +33,7 @@ class WatchInfoActivity : BaseToolbarActivity() {
                     Timber.i("Updating watch nickname")
                     watchNameLayout.isErrorEnabled = false
                     coroutineScope.launch(Dispatchers.IO) {
-                        watchManager.database.watchDao().setWatchName(watchId!!, editable.toString())
+                        watchManager.database.watchDao().setName(watchId!!, editable.toString())
                     }
                     resultCode = RESULT_WATCH_NAME_CHANGED
                 } else {

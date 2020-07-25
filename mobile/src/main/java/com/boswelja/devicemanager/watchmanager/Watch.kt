@@ -18,15 +18,10 @@ data class Watch(
     @PrimaryKey val id: String,
     @ColumnInfo(name = "name") val name: String,
     @ColumnInfo(name = "battery_sync_worker_id") val batterySyncWorkerId: String?,
-    @Ignore var status: WatchStatus,
-    @Ignore val intPrefs: HashMap<String, Int>,
-    @Ignore val boolPrefs: HashMap<String, Boolean>
+    @Ignore var status: WatchStatus
 ) {
-    constructor (id: String, name: String, batterySyncWorkerId: String?, status: WatchStatus) :
-        this(id, name, batterySyncWorkerId, status, HashMap(), HashMap())
-
     constructor (id: String, name: String, batterySyncWorkerId: String?) :
-        this(id, name, batterySyncWorkerId, WatchStatus.UNKNOWN, HashMap(), HashMap())
+        this(id, name, batterySyncWorkerId, WatchStatus.UNKNOWN)
 
     constructor(node: Node, status: WatchStatus) :
         this(node.id, node.displayName, null, status)

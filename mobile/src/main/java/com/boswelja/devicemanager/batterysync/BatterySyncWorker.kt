@@ -44,7 +44,7 @@ class BatterySyncWorker(appContext: Context, workerParams: WorkerParameters) :
             return withContext(Dispatchers.IO) {
                 val database = WatchDatabase.get(context)
                 val syncIntervalMinutes =
-                    (database.intPrefDao().getWhere(watchId, BATTERY_SYNC_INTERVAL_KEY)?.value ?: 15).toLong()
+                    (database.intPrefDao().get(watchId, BATTERY_SYNC_INTERVAL_KEY)?.value ?: 15).toLong()
                 val data = Data.Builder().apply {
                     putString(EXTRA_WATCH_ID, watchId)
                 }.build()

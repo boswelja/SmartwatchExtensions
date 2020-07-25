@@ -150,15 +150,17 @@ class WatchManager private constructor(context: Context) {
         Timber.d("updateLocalPreferences() called")
         coroutineScope.launch {
             withContext(Dispatchers.IO) {
+                val boolPrefs = database.boolPrefDao().getAllForWatch(watch.id)
+                val intPrefs = database.intPrefDao().getAllForWatch(watch.id)
                 clearLocalPreferences(commitNow = true)
                 sharedPreferences.edit {
-                    watch.boolPrefs.forEach { (key, value) ->
-                        Timber.i("Setting $key to $value")
-                        putBoolean(key, value)
+                    boolPrefs.forEach {
+                        Timber.i("Setting ${it.key} to ${it.value}")
+                        putBoolean(it.key, it.value)
                     }
-                    watch.intPrefs.forEach { (key, value) ->
-                        Timber.i("Setting $key to $value")
-                        putInt(key, value)
+                    intPrefs.forEach {
+                        Timber.i("Setting ${it.key} to ${it.value}")
+                        putInt(it.key, it.value)
                     }
                 }
             }
@@ -256,13 +258,6 @@ class WatchManager private constructor(context: Context) {
             val databaseWatches = database.watchDao().getAll()
             for (watch in databaseWatches) {
                 watch.status = getWatchStatus(watch.id, capableNodes, connectedNodes)
-
-                database.boolPrefDao().getAllForWatch(watch.id).forEach {
-                    watch.boolPrefs[it.key] = it.value
-                }
-                database.intPrefDao().getAllForWatch(watch.id).forEach {
-                    watch.intPrefs[it.key] = it.value
-                }
             }
             return@withContext databaseWatches
         }
@@ -292,7 +287,6 @@ class WatchManager private constructor(context: Context) {
                         sharedPreferences.getBoolean(preferenceKey, false).also {
                             Timber.i("Updating $preferenceKey to $it")
                             syncedPrefUpdateReq.dataMap.putBoolean(preferenceKey, it)
-                            watch.boolPrefs[preferenceKey] = it
                             BoolPreference(watch.id, preferenceKey, it).also { boolPreference ->
                                 database.boolPrefDao().update(boolPreference)
                             }
@@ -302,7 +296,6 @@ class WatchManager private constructor(context: Context) {
                         sharedPreferences.getInt(preferenceKey, 90).also {
                             Timber.i("Updating $preferenceKey to $it")
                             syncedPrefUpdateReq.dataMap.putInt(preferenceKey, it)
-                            watch.intPrefs[preferenceKey] = it
                             IntPreference(watch.id, preferenceKey, it).also { intPreference ->
                                 database.intPrefDao().update(intPreference)
                             }

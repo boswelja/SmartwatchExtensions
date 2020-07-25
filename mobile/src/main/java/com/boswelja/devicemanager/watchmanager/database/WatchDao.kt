@@ -28,7 +28,7 @@ interface WatchDao {
     fun updateBatterySyncWorkerId(watchId: String, batterySyncWorkerId: String)
 
     @Query("UPDATE watches SET name = :name WHERE id = :watchId")
-    fun setWatchName(watchId: String, name: String)
+    fun setName(watchId: String, name: String)
 
     @Insert
     fun add(watch: Watch)

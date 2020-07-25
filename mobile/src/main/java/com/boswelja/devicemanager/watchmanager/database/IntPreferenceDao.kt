@@ -21,7 +21,7 @@ interface IntPreferenceDao {
     fun getAllForWatch(watchId: String): Array<IntPreference>
 
     @Query("SELECT * FROM int_preferences WHERE id = :id AND pref_key = :key LIMIT 1")
-    fun getWhere(id: String, key: String): IntPreference?
+    fun get(id: String, key: String): IntPreference?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun update(intPreference: IntPreference)

@@ -27,16 +27,10 @@ class WatchPickerAdapter(private val activity: WatchBatteryWidgetConfigurationAc
 
     override fun onBindViewHolder(holder: IconTwoLineViewHolder, position: Int) {
         val watch = watches[position]
-        val summary = if (watch.boolPrefs[BATTERY_SYNC_ENABLED_KEY] == true) {
-            "Tap to create widget"
-        } else {
-            "Battery Sync disabled for this watch"
-        }
+        val summary = "Tap to create widget"
         holder.bind(R.drawable.ic_watch, watch.name, summary)
         holder.itemView.setOnClickListener {
-            if (watch.boolPrefs[BATTERY_SYNC_ENABLED_KEY] == true) {
-                activity.finishAndCreateWidget(watch.id)
-            }
+            activity.finishAndCreateWidget(watch.id)
         }
     }
 

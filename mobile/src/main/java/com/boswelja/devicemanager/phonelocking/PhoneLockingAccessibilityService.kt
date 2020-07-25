@@ -88,7 +88,7 @@ class PhoneLockingAccessibilityService :
         coroutineScope.launch(Dispatchers.IO) {
             val watchId = messageEvent.sourceNodeId
             val phoneLockingEnabledForWatch =
-                watchManager.database.boolPrefDao().getWhere(watchId, PHONE_LOCKING_ENABLED_KEY)
+                watchManager.database.boolPrefDao().get(watchId, PHONE_LOCKING_ENABLED_KEY)
                     ?.value == true
             if (phoneLockingEnabledForWatch) {
                 Timber.i("Trying to lock phone")
