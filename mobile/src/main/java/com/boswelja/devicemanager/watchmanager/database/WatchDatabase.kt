@@ -11,9 +11,9 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.boswelja.devicemanager.watchmanager.BoolPreference
-import com.boswelja.devicemanager.watchmanager.IntPreference
-import com.boswelja.devicemanager.watchmanager.Watch
+import com.boswelja.devicemanager.watchmanager.item.BoolPreference
+import com.boswelja.devicemanager.watchmanager.item.IntPreference
+import com.boswelja.devicemanager.watchmanager.item.Watch
 
 @Database(entities = [Watch::class, IntPreference::class, BoolPreference::class], version = 5)
 abstract class WatchDatabase : RoomDatabase() {

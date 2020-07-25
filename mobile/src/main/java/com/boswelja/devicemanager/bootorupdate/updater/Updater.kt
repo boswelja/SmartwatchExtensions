@@ -22,7 +22,7 @@ import com.boswelja.devicemanager.common.setup.References
 import com.boswelja.devicemanager.messages.database.MessageDatabase
 import com.boswelja.devicemanager.messages.database.MessageDatabase.Companion.MESSAGE_COUNT_KEY
 import com.boswelja.devicemanager.ui.phonelocking.PhoneLockingPreferenceFragment.Companion.PHONE_LOCKING_MODE_KEY
-import com.boswelja.devicemanager.watchmanager.Watch
+import com.boswelja.devicemanager.watchmanager.item.Watch
 import com.boswelja.devicemanager.watchmanager.WatchManager
 import com.boswelja.devicemanager.watchmanager.database.WatchDatabase
 import com.google.android.gms.wearable.CapabilityClient

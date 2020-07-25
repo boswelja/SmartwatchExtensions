@@ -21,7 +21,7 @@ import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.batterysync.widget.WatchBatteryWidget
 import com.boswelja.devicemanager.ui.watchmanager.WatchManagerActivity
 import com.boswelja.devicemanager.ui.watchsetup.WatchSetupActivity
-import com.boswelja.devicemanager.watchmanager.Watch
+import com.boswelja.devicemanager.watchmanager.item.Watch
 import com.boswelja.devicemanager.watchmanager.WatchConnectionListener
 import com.boswelja.devicemanager.watchmanager.WatchManager
 import com.boswelja.devicemanager.watchmanager.WatchStatus

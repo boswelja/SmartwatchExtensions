@@ -23,7 +23,7 @@ import com.boswelja.devicemanager.common.GooglePlayUtils.getPlayStoreLink
 import com.boswelja.devicemanager.common.References
 import com.boswelja.devicemanager.ui.base.BaseWatchPickerPreferenceFragment
 import com.boswelja.devicemanager.ui.changelog.ChangelogDialogFragment
-import com.boswelja.devicemanager.watchmanager.Watch
+import com.boswelja.devicemanager.watchmanager.item.Watch
 import com.boswelja.devicemanager.watchmanager.WatchConnectionListener
 import com.google.android.gms.wearable.MessageClient
 import com.google.android.gms.wearable.Wearable

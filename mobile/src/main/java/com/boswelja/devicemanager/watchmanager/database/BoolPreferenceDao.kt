@@ -13,7 +13,7 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.boswelja.devicemanager.watchmanager.BoolPreference
+import com.boswelja.devicemanager.watchmanager.item.BoolPreference
 
 @Dao
 interface BoolPreferenceDao {

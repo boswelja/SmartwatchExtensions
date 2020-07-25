@@ -20,7 +20,7 @@ import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.batterysync.database.WatchBatteryStats
 import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_SYNC_ENABLED_KEY
 import com.boswelja.devicemanager.databinding.SettingsWidgetBatterySyncBinding
-import com.boswelja.devicemanager.watchmanager.Watch
+import com.boswelja.devicemanager.watchmanager.item.Watch
 import com.boswelja.devicemanager.watchmanager.WatchConnectionListener
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope

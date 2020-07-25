@@ -15,7 +15,7 @@ import androidx.appcompat.app.AlertDialog
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.databinding.ActivityWatchInfoBinding
 import com.boswelja.devicemanager.ui.base.BaseToolbarActivity
-import com.boswelja.devicemanager.watchmanager.Watch
+import com.boswelja.devicemanager.watchmanager.item.Watch
 import com.boswelja.devicemanager.watchmanager.WatchManager
 import com.boswelja.devicemanager.watchmanager.database.WatchDatabase
 import kotlinx.coroutines.Dispatchers

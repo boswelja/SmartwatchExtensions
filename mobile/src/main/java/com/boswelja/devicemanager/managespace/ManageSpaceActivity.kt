@@ -20,7 +20,7 @@ import com.boswelja.devicemanager.batterysync.BatterySyncWorker
 import com.boswelja.devicemanager.batterysync.database.WatchBatteryStatsDatabase
 import com.boswelja.devicemanager.databinding.ActivityManageSpaceBinding
 import com.boswelja.devicemanager.ui.base.BaseToolbarActivity
-import com.boswelja.devicemanager.watchmanager.Watch
+import com.boswelja.devicemanager.watchmanager.item.Watch
 import com.boswelja.devicemanager.watchmanager.WatchManager
 import com.boswelja.devicemanager.watchmanager.database.WatchDatabase
 import com.boswelja.devicemanager.widgetdb.WidgetDatabase

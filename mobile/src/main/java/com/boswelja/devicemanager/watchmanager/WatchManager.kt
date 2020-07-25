@@ -17,6 +17,9 @@ import com.boswelja.devicemanager.common.PreferenceKey
 import com.boswelja.devicemanager.common.References
 import com.boswelja.devicemanager.common.References.REQUEST_RESET_APP
 import com.boswelja.devicemanager.watchmanager.database.WatchDatabase
+import com.boswelja.devicemanager.watchmanager.item.BoolPreference
+import com.boswelja.devicemanager.watchmanager.item.IntPreference
+import com.boswelja.devicemanager.watchmanager.item.Watch
 import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.Tasks
 import com.google.android.gms.wearable.CapabilityClient

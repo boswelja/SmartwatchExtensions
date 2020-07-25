@@ -7,6 +7,8 @@
  */
 package com.boswelja.devicemanager.watchmanager
 
+import com.boswelja.devicemanager.watchmanager.item.Watch
+
 interface WatchConnectionListener {
 
     fun onWatchAdded(watch: Watch)
