@@ -78,6 +78,7 @@ class WatchManager private constructor(context: Context) :
         if (watchConnectionListener != null) {
             capabilityClient.removeListener(watchConnectionListener!!)
         }
+        coroutineJob.cancel()
     }
 
     /**
