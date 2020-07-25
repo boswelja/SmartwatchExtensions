@@ -65,8 +65,8 @@ class Updater(private val context: Context) {
 
         if (needsRestart) {
             val watchesWithWorkers = database.boolPrefDao().getAllForKey(BATTERY_SYNC_ENABLED_KEY)
-                    .filter { it.value }
-                    .map { it.watchId }
+                .filter { it.value }
+                .map { it.watchId }
             for (watchId in watchesWithWorkers) {
                 runBlocking {
                     BatterySyncWorker.startWorker(context, watchId)

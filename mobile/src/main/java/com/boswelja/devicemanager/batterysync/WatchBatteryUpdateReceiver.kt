@@ -93,7 +93,7 @@ class WatchBatteryUpdateReceiver : WearableListenerService() {
 
     private fun handleNotification(database: WatchDatabase, watch: Watch) {
         val chargedThreshold =
-                database.intPrefDao().get(watch.id, BATTERY_CHARGE_THRESHOLD_KEY)?.value ?: 90
+            database.intPrefDao().get(watch.id, BATTERY_CHARGE_THRESHOLD_KEY)?.value ?: 90
         if (canSendChargedNotification(database, watch.id, chargedThreshold)) {
             notifyWatchCharged(watch, chargedThreshold)
             database.boolPrefDao().update(
@@ -134,7 +134,8 @@ class WatchBatteryUpdateReceiver : WearableListenerService() {
             NotificationCompat.Builder(this, BATTERY_CHARGED_NOTI_CHANNEL_ID)
                 .setSmallIcon(R.drawable.battery_full)
                 .setContentTitle(getString(R.string.device_charged_noti_title, watch.name))
-                .setContentText(getString(R.string.device_charged_noti_desc)
+                .setContentText(
+                    getString(R.string.device_charged_noti_desc)
                         .format(Locale.getDefault(), watch.name, chargeThreshold)
                 )
                 .setLocalOnly(true)
