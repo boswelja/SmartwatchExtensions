@@ -145,7 +145,7 @@ class Updater(private val context: Context) {
                 .getCapability(CAPABILITY_WATCH_APP, CapabilityClient.FILTER_ALL)
                 .addOnSuccessListener { capabilityInfo ->
                     val messageClient = Wearable.getMessageClient(context)
-                    val database = WatchDatabase.open(context, allowMainThreadQueries = true)
+                    val database = WatchDatabase.get(context)
 
                     val capableNodes = capabilityInfo.nodes
                     val defaultWatch = capableNodes.firstOrNull { it.isNearby } ?: capableNodes.firstOrNull()

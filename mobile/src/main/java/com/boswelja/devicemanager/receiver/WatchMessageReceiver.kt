@@ -143,7 +143,7 @@ class WatchMessageReceiver : WearableListenerService() {
         Timber.i("sendIsWatchRegistered() called")
         MainScope().launch(Dispatchers.IO) {
             // TODO Access the database through WatchConnectionService
-            val database = WatchDatabase.open(this@WatchMessageReceiver)
+            val database = WatchDatabase.get(this@WatchMessageReceiver)
             val messageCode = if (database.watchDao().findById(sourceNodeId) != null) {
                 WATCH_REGISTERED_PATH
             } else {

@@ -74,7 +74,7 @@ class WatchManager :
         super.onCreate()
         Timber.d("onCreate() called")
 
-        database = WatchDatabase.open(applicationContext)
+        database = WatchDatabase.get(applicationContext)
 
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
         sharedPreferences.registerOnSharedPreferenceChangeListener(this)
