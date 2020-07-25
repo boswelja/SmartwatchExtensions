@@ -11,6 +11,7 @@ import android.content.Context
 import android.content.res.Resources
 import android.graphics.drawable.Drawable
 import android.util.TypedValue
+import androidx.core.content.ContextCompat
 
 object Utils {
 
@@ -25,7 +26,7 @@ object Utils {
         return try {
             context.packageManager.getApplicationIcon(packageName)
         } catch (ignored: Exception) {
-            fallbackIcon ?: context.getDrawable(R.drawable.ic_app_icon_unknown)!!
+            fallbackIcon ?: ContextCompat.getDrawable(context, R.drawable.ic_app_icon_unknown)!!
         }
     }
 

@@ -16,6 +16,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.widget.RemoteViews
+import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toBitmap
 import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.R
@@ -145,7 +146,7 @@ class WatchBatteryWidget : AppWidgetProvider() {
                 if (sharedPreferences.getBoolean(SHOW_WIDGET_BACKGROUND_KEY, true)) {
                     val opacity = sharedPreferences.getInt(WIDGET_BACKGROUND_OPACITY_KEY, 60)
                     val calculatedAlpha = ((opacity / 100.0f) * 255).toInt()
-                    context?.getDrawable(R.drawable.widget_background)!!.apply {
+                    ContextCompat.getDrawable(context!!, R.drawable.widget_background)!!.apply {
                         alpha = calculatedAlpha
                     }.also { widgetBackground ->
                         remoteViews.setImageViewBitmap(
@@ -160,7 +161,7 @@ class WatchBatteryWidget : AppWidgetProvider() {
         }
 
         // Set battery indicator image
-        context?.getDrawable(R.drawable.ic_watch_battery)!!.apply {
+        ContextCompat.getDrawable(context!!, R.drawable.ic_watch_battery)!!.apply {
             level = batteryPercent
         }.also {
             remoteViews.setImageViewBitmap(R.id.battery_indicator, it.toBitmap())

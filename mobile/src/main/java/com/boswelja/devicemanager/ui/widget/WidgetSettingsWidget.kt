@@ -16,6 +16,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.appcompat.widget.AppCompatImageView
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.databinding.SettingsWidgetWidgetSettingsBinding
@@ -61,7 +62,7 @@ class WidgetSettingsWidget : Fragment() {
         val widgetBackgroundView =
             binding.widgetContainer.findViewById<AppCompatImageView>(R.id.widget_background)
         if (backgroundVisible) {
-            val drawable = context?.getDrawable(R.drawable.widget_background)
+            val drawable = ContextCompat.getDrawable(context!!, R.drawable.widget_background)
             if (drawable != null) {
                 val calculatedAlpha = ((backgroundOpacity / 100.0f) * 255).toInt()
                 drawable.alpha = calculatedAlpha

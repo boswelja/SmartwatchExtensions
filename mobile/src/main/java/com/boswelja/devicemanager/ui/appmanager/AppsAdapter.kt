@@ -10,6 +10,7 @@ package com.boswelja.devicemanager.ui.appmanager
 import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.Utils
@@ -28,7 +29,7 @@ class AppsAdapter(private val itemClickCallback: ItemClickCallback<AppPackageInf
 
     override fun onBindItemViewHolder(holder: RecyclerView.ViewHolder, item: AppPackageInfo) {
         val context = holder.itemView.context
-        if (fallbackIcon == null) fallbackIcon = context.getDrawable(R.drawable.ic_app_icon_unknown)
+        if (fallbackIcon == null) fallbackIcon = ContextCompat.getDrawable(context, R.drawable.ic_app_icon_unknown)
         if (holder is IconTwoLineItem) {
             holder.apply {
                 topTextView.text = item.packageLabel
