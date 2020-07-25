@@ -62,6 +62,7 @@ dependencies {
     implementation(Libraries.androidxFragment)
     implementation(Libraries.androidxLifecycleViewModel)
     implementation(Libraries.androidxLifecycleLiveData)
+    implementation(Libraries.androidxLifecycleService)
     implementation(Libraries.androidxLifecycleCommon)
     implementation(Libraries.androidxNavigationFragment)
     implementation(Libraries.androidxNavigationUI)

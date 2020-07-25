@@ -10,27 +10,27 @@ package com.boswelja.devicemanager.dndsync
 import android.app.Notification
 import android.app.NotificationManager
 import android.app.PendingIntent
-import android.app.Service
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Build
-import android.os.IBinder
 import androidx.core.app.NotificationCompat
+import androidx.lifecycle.LifecycleService
 import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.NotificationChannelHelper
 import com.boswelja.devicemanager.common.Compat
-import com.boswelja.devicemanager.common.PreferenceKey
+import com.boswelja.devicemanager.common.PreferenceKey.DND_SYNC_TO_WATCH_KEY
 import com.boswelja.devicemanager.common.R
 import com.boswelja.devicemanager.common.dndsync.References
 import com.boswelja.devicemanager.ui.main.MainActivity
-import com.boswelja.devicemanager.watchmanager.WatchPreferenceChangeListener
+import com.boswelja.devicemanager.watchmanager.database.WatchDatabase
 import com.google.android.gms.wearable.DataClient
 import com.google.android.gms.wearable.PutDataMapRequest
 import com.google.android.gms.wearable.Wearable
 import timber.log.Timber
 
-class DnDLocalChangeService : Service(), WatchPreferenceChangeListener {
+class DnDLocalChangeService : LifecycleService() {
 
+    private val database by lazy { WatchDatabase.get(this) }
     private val dndChangeReceiver = object : DnDLocalChangeReceiver() {
         override fun onDnDChanged(dndEnabled: Boolean) {
             pushNewDnDState(dndEnabled)
@@ -41,17 +41,6 @@ class DnDLocalChangeService : Service(), WatchPreferenceChangeListener {
 
     private lateinit var sharedPreferences: SharedPreferences
     private lateinit var dataClient: DataClient
-
-    override fun onWatchPreferenceChanged(watchId: String, preferenceKey: String, newValue: Any?) {
-        if (preferenceKey == PreferenceKey.DND_SYNC_TO_WATCH_KEY) {
-            val isEnabled = newValue == true
-            Timber.i("$preferenceKey changed for $watchId")
-            sendToWatch[watchId] = isEnabled
-            if (!isEnabled) stopIfUnneeded()
-        }
-    }
-
-    override fun onBind(p0: Intent?): IBinder? = null
 
     override fun onCreate() {
         super.onCreate()
@@ -64,12 +53,19 @@ class DnDLocalChangeService : Service(), WatchPreferenceChangeListener {
         DnDLocalChangeReceiver.registerReceiver(this, dndChangeReceiver)
 
         pushNewDnDState(Compat.isDndEnabled(this))
+        database.boolPrefDao().getAllObservableForKey(DND_SYNC_TO_WATCH_KEY).observe(this) {
+            Timber.i("Watch preferences changed, updating in service")
+            it.forEach { preference ->
+                sendToWatch[preference.watchId] = preference.value
+            }
+            stopIfUnneeded()
+        }
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         Timber.i("onStartCommand() called")
         startForeground(SERVICE_NOTIFICATION_ID, createNotification())
-        return START_STICKY
+        return super.onStartCommand(intent, flags, startId)
     }
 
     override fun onDestroy() {

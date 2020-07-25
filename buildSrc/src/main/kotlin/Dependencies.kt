@@ -59,6 +59,7 @@ object Libraries {
     const val androidxFragment = "androidx.fragment:fragment-ktx:${Versions.androidxFragment}"
     const val androidxLifecycleViewModel = "androidx.lifecycle:lifecycle-viewmodel-ktx:${Versions.androidxLifecycle}"
     const val androidxLifecycleLiveData = "androidx.lifecycle:lifecycle-livedata-ktx:${Versions.androidxLifecycle}"
+    const val androidxLifecycleService = "androidx.lifecycle:lifecycle-service:${Versions.androidxLifecycle}"
     const val androidxLifecycleCommon = "androidx.lifecycle:lifecycle-common-java8:${Versions.androidxLifecycle}"
     const val androidxNavigationFragment = "androidx.navigation:navigation-fragment-ktx:${Versions.androidxNavigation}"
     const val androidxNavigationUI = "androidx.navigation:navigation-ui-ktx:${Versions.androidxNavigation}"
