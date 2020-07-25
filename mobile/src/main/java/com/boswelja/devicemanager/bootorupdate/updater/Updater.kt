@@ -107,6 +107,10 @@ class Updater(private val context: Context) {
                     remove("ignore_watch_charge_warning")
                     updateStatus = Result.COMPLETED
                 }
+                if (sharedPreferences.contains("auto_add_watches")) {
+                    remove("auto_add_watches")
+                    updateStatus = Result.COMPLETED
+                }
                 if (!sharedPreferences.contains(MESSAGE_COUNT_KEY)) {
                     MessageDatabase.open(context, allowMainThreadQueries = true).apply {
                         updateMessageCount(sharedPreferences)

@@ -98,8 +98,6 @@
     <string name="pref_widget_settings_title">Widget Settings</string>
     <string name="pref_category_watch_connection">Watch Connection</string>
     <string name="pref_manage_watches_title">Manage Watches</string>
-    <string name="pref_auto_add_watches_title">Auto-add new watches</string>
-    <string name="pref_auto_add_watches_summary">Automatically add new watches to Wearable Extensions if they already have the app installed</string>
 
     <string name="widget_watch_battery_title">Watch Battery</string>
     <string name="widget_watch_battery_config_title">Watch Battery Widget Setup</string>

@@ -30,11 +30,5 @@
             android:key="open_watch_manager"
             android:title="@string/pref_manage_watches_title" />
 
-        <androidx.preference.SwitchPreference
-            android:key="auto_add_watches"
-            android:title="@string/pref_auto_add_watches_title"
-            android:summary="@string/pref_auto_add_watches_summary"
-            android:defaultValue="false" />
-
     </androidx.preference.PreferenceCategory>
 </androidx.preference.PreferenceScreen>

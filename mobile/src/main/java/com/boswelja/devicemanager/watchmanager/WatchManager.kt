@@ -32,8 +32,7 @@ import kotlinx.coroutines.withContext
 import timber.log.Timber
 import kotlin.collections.ArrayList
 
-class WatchManager private constructor(context: Context) :
-        SharedPreferences.OnSharedPreferenceChangeListener {
+class WatchManager private constructor(context: Context) {
 
     private val coroutineJob = Job()
     private val coroutineScope = CoroutineScope(Dispatchers.IO + coroutineJob)
@@ -54,11 +53,9 @@ class WatchManager private constructor(context: Context) :
         get() = _connectedWatch
 
     init {
-        sharedPreferences.registerOnSharedPreferenceChangeListener(this)
         sharedPreferences.getString(LAST_CONNECTED_NODE_ID_KEY, "").also {
             setConnectedWatchById(it ?: "")
         }
-        setAutoAddWatches()
         connectedWatch.observeForever {
             it?.let { watch ->
                 updateLocalPreferences(watch)
@@ -66,57 +63,11 @@ class WatchManager private constructor(context: Context) :
         }
     }
 
-    override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
-        when (key) {
-            AUTO_ADD_WATCHES_KEY -> {
-                setAutoAddWatches()
-            }
-        }
-    }
-
     fun destroy() {
-        sharedPreferences.unregisterOnSharedPreferenceChangeListener(this)
         if (watchConnectionListener != null) {
             capabilityClient.removeListener(watchConnectionListener!!)
         }
         coroutineJob.cancel()
-    }
-
-    /**
-     * Sets whether new watches should be automatically registered or not.
-     * On enable, this will also check whether there are any capable & unregistered watches
-     * already available and register them.
-     */
-    private fun setAutoAddWatches() {
-        Timber.d("setAutoAddWatches() called")
-        if (sharedPreferences.getBoolean(AUTO_ADD_WATCHES_KEY, false)) {
-            Timber.i("Enabling auto-add watches")
-            if (watchConnectionListener == null) {
-                watchConnectionListener =
-                    CapabilityClient.OnCapabilityChangedListener { capabilityInfo ->
-                        for (node in capabilityInfo.nodes) {
-                            Timber.i("Auto-registering a new watch")
-                            ensureWatchRegistered(node)
-                        }
-                    }
-            }
-            capabilityClient.addListener(watchConnectionListener!!, References.CAPABILITY_WATCH_APP)
-
-            Timber.i("Checking for any new watches to register")
-            capabilityClient
-                .getCapability(References.CAPABILITY_WATCH_APP, CapabilityClient.FILTER_REACHABLE)
-                .addOnSuccessListener {
-                    for (node in it.nodes) {
-                        Timber.i("Auto-registering a new watch")
-                        ensureWatchRegistered(node)
-                    }
-                }
-                .addOnFailureListener {
-                    Timber.w("Failed to get capable watches")
-                }
-        } else if (watchConnectionListener != null) {
-            capabilityClient.removeListener(watchConnectionListener!!)
-        }
     }
 
     /**
@@ -228,27 +179,6 @@ class WatchManager private constructor(context: Context) :
             remove(PreferenceKey.DND_SYNC_TO_WATCH_KEY)
             remove(PreferenceKey.DND_SYNC_WITH_THEATER_KEY)
             remove(PreferenceKey.BATTERY_CHARGE_THRESHOLD_KEY)
-        }
-    }
-
-    /**
-     * Make sure a given [Node] is registered as a watch. If not, register it.
-     * @param node The [Node] to check.
-     */
-    private fun ensureWatchRegistered(node: Node) {
-        Timber.d("ensureWatchRegistered() called")
-        coroutineScope.launch(Dispatchers.IO) {
-            try {
-                if (database.watchDao().findById(node.id) == null) {
-                    Timber.i("Watch not registered, registering")
-                    val newWatch = Watch(node)
-                    database.watchDao().add(newWatch)
-                } else {
-                    Timber.i("Watch already registered, skipping")
-                }
-            } catch (e: Exception) {
-                Timber.e(e)
-            }
         }
     }
 
@@ -394,22 +324,6 @@ class WatchManager private constructor(context: Context) :
     }
 
     /**
-     * Updates the stored [com.boswelja.devicemanager.batterysync.BatterySyncWorker] ID in the database.
-     * @param watchId The [Watch.id] associated with the [com.boswelja.devicemanager.batterysync.BatterySyncWorker].
-     * @param newWorkerId The new ID of the [com.boswelja.devicemanager.batterysync.BatterySyncWorker].
-     * @return true if the value was successfully updated, false otherwise.
-     */
-    suspend fun updateBatterySyncWorkerId(watchId: String, newWorkerId: String): Boolean {
-        return withContext(Dispatchers.IO) {
-            if (database.isOpen) {
-                database.watchDao().updateBatterySyncWorkerId(watchId, newWorkerId)
-                return@withContext true
-            }
-            return@withContext false
-        }
-    }
-
-    /**
      * Update a given preference in the database for the connected watch.
      * @param preferenceKey The preference key to update.
      * @param newValue The new value of the preference.
@@ -546,21 +460,6 @@ class WatchManager private constructor(context: Context) :
     }
 
     /**
-     * Get a [IntPreference] for a specified preference and watch.
-     * @param watchId The ID of the [Watch] to get the preference for.
-     * @param preferenceKey The key of the preference you're looking for.
-     * @return The [IntPreference], or null if the request failed.
-     */
-    suspend fun getIntPrefForWatch(watchId: String, preferenceKey: String): IntPreference? {
-        return withContext(Dispatchers.IO) {
-            if (database.isOpen) {
-                return@withContext database.intPreferenceDao().getWhere(watchId, preferenceKey)
-            }
-            return@withContext null
-        }
-    }
-
-    /**
      * Sends the watch app reset message to a given watch.
      * @param watchId The ID of the watch to send the message to.
      * @return The [Task] for the message send job.
@@ -582,7 +481,6 @@ class WatchManager private constructor(context: Context) :
 
     companion object {
         private var INSTANCE: WatchManager? = null
-        private const val AUTO_ADD_WATCHES_KEY = "auto_add_watches"
 
         const val LAST_CONNECTED_NODE_ID_KEY = "last_connected_id"
 
