@@ -9,6 +9,7 @@ package com.boswelja.devicemanager.watchmanager
 
 import com.boswelja.devicemanager.watchmanager.item.Watch
 
+@Deprecated("Use LiveData alternatives")
 interface WatchConnectionListener {
 
     fun onWatchAdded(watch: Watch)

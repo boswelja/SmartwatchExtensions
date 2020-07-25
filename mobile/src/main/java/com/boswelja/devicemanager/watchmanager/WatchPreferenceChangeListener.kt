@@ -7,6 +7,7 @@
  */
 package com.boswelja.devicemanager.watchmanager
 
+@Deprecated("Use LiveData alternatives")
 interface WatchPreferenceChangeListener {
     fun onWatchPreferenceChanged(watchId: String, preferenceKey: String, newValue: Any?)
 }
