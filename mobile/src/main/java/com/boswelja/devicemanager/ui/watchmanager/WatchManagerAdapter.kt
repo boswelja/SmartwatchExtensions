@@ -85,37 +85,6 @@ class WatchManagerAdapter(private val activity: WatchManagerActivity) :
         notifyDataSetChanged()
     }
 
-    /**
-     * Add a [Watch] to the adapter.
-     * @param newWatch The new [Watch] to add.
-     */
-    fun addWatch(newWatch: Watch) {
-        watches.add(newWatch)
-        notifyDataSetChanged()
-    }
-
-    /**
-     * Updates the given [Watch] in the list.
-     * Matches [Watch.id] from the given watch.
-     * @param watch The [Watch] to update.
-     */
-    fun updateWatch(watch: Watch) {
-        val index = watches.indexOfFirst { it.id == watch.id }
-        watches.removeAt(index)
-        watches.add(index, watch)
-        notifyItemChanged(index + 2)
-    }
-
-    /**
-     * Removes a [Watch] by it's ID.
-     * @param watchId The ID of the [Watch] to remove.
-     */
-    fun removeWatch(watchId: String) {
-        val index = watches.indexOfFirst { it.id == watchId }
-        watches.removeAt(index)
-        notifyItemRemoved(index + 2)
-    }
-
     companion object {
         private const val VIEW_TYPE_ADD_WATCH = -1
         private const val VIEW_TYPE_SECTION_HEADER = 0
