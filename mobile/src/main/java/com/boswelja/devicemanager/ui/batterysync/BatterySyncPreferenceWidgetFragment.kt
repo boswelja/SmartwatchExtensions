@@ -20,8 +20,7 @@ import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.batterysync.database.WatchBatteryStats
 import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_SYNC_ENABLED_KEY
 import com.boswelja.devicemanager.databinding.SettingsWidgetBatterySyncBinding
-import com.boswelja.devicemanager.watchmanager.item.Watch
-import com.boswelja.devicemanager.watchmanager.WatchConnectionListener
+import com.boswelja.devicemanager.watchmanager.WatchManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
@@ -33,8 +32,7 @@ import kotlin.concurrent.fixedRateTimer
 
 class BatterySyncPreferenceWidgetFragment :
     Fragment(),
-    SharedPreferences.OnSharedPreferenceChangeListener,
-    WatchConnectionListener {
+    SharedPreferences.OnSharedPreferenceChangeListener {
 
     private val statsModel: BatteryStatsModel by activityViewModels()
     private val batteryStatsObserver = Observer<WatchBatteryStats?> {
@@ -43,6 +41,7 @@ class BatterySyncPreferenceWidgetFragment :
     }
 
     private val coroutineScope = MainScope()
+    private val watchManager by lazy { WatchManager.get(requireContext()) }
 
     private lateinit var sharedPreferences: SharedPreferences
     private lateinit var activity: BatterySyncPreferenceActivity
@@ -64,21 +63,13 @@ class BatterySyncPreferenceWidgetFragment :
         }
     }
 
-    override fun onWatchAdded(watch: Watch) {} // Do nothing
-
-    override fun onConnectedWatchChanging() {} // Do nothing
-
-    override fun onConnectedWatchChanged(isSuccess: Boolean) {
-        Timber.d("onConnectedWatchChanged($isSuccess) called")
-        if (isSuccess and batterySyncEnabled) {
-            setObservingWatchStats(activity.watchManager.connectedWatch.value?.id)
-        }
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Timber.d("onCreate() called")
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(requireContext())
+        watchManager.connectedWatch.observe(viewLifecycleOwner) { watch ->
+            watch?.id?.let { setObservingWatchStats(it) }
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
