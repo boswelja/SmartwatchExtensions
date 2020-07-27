@@ -8,10 +8,10 @@
 package com.boswelja.devicemanager.batterysync
 
 import android.content.Context
+import androidx.work.CoroutineWorker
 import androidx.work.Data
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
-import androidx.work.Worker
 import androidx.work.WorkerParameters
 import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_SYNC_INTERVAL_KEY
 import com.boswelja.devicemanager.ui.batterysync.Utils
@@ -23,9 +23,9 @@ import java.util.UUID
 import java.util.concurrent.TimeUnit
 
 class BatterySyncWorker(appContext: Context, workerParams: WorkerParameters) :
-    Worker(appContext, workerParams) {
+    CoroutineWorker(appContext, workerParams) {
 
-    override fun doWork(): Result {
+    override suspend fun doWork(): Result {
         Timber.i("doWork() called")
         val watchId = inputData.getString(EXTRA_WATCH_ID)
         if (!watchId.isNullOrEmpty()) {
@@ -34,7 +34,7 @@ class BatterySyncWorker(appContext: Context, workerParams: WorkerParameters) :
         } else {
             Timber.w("watchId null or empty")
         }
-        return Result.failure()
+        return Result.retry()
     }
 
     companion object {
