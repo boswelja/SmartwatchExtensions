@@ -28,9 +28,11 @@ class WatchBatteryWidgetConfigurationActivity : BaseToolbarActivity() {
     private val resultIntent = Intent()
     private val coroutineScope = MainScope()
     private val database by lazy { WatchDatabase.get(this) }
-    private val adapter by lazy { WatchPickerAdapter {
-        finishAndCreateWidget(it.id)
-    } }
+    private val adapter by lazy {
+        WatchPickerAdapter {
+            finishAndCreateWidget(it.id)
+        }
+    }
 
     private lateinit var binding: ActivityWatchBatteryWidgetConfigurationBinding
 
