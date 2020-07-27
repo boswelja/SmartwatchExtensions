@@ -207,18 +207,6 @@ class WatchBatteryWidget : AppWidgetProvider() {
         }
 
         /**
-         * Disable the [WatchBatteryWidget] component.
-         * @param context [Context].
-         */
-        fun disableWidget(context: Context) {
-            context.packageManager.setComponentEnabledSetting(
-                ComponentName(context, WatchBatteryWidget::class.java),
-                PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
-                PackageManager.DONT_KILL_APP
-            )
-        }
-
-        /**
          * Enable the [WatchBatteryWidget] component.
          * @param context [Context].
          */
