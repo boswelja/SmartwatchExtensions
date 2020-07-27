@@ -8,14 +8,12 @@
 package com.boswelja.devicemanager.dndsync
 
 import android.app.Notification
-import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Intent
-import android.content.SharedPreferences
 import android.os.Build
 import androidx.core.app.NotificationCompat
+import androidx.core.content.getSystemService
 import androidx.lifecycle.LifecycleService
-import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.NotificationChannelHelper
 import com.boswelja.devicemanager.common.Compat
 import com.boswelja.devicemanager.common.PreferenceKey.DND_SYNC_TO_WATCH_KEY
@@ -31,6 +29,8 @@ import timber.log.Timber
 class DnDLocalChangeService : LifecycleService() {
 
     private val database by lazy { WatchDatabase.get(this) }
+    private val dataClient by lazy { Wearable.getDataClient(this) }
+
     private val dndChangeReceiver = object : DnDLocalChangeReceiver() {
         override fun onDnDChanged(dndEnabled: Boolean) {
             pushNewDnDState(dndEnabled)
@@ -39,18 +39,11 @@ class DnDLocalChangeService : LifecycleService() {
 
     private val sendToWatch = HashMap<String, Boolean>()
 
-    private lateinit var sharedPreferences: SharedPreferences
-    private lateinit var dataClient: DataClient
-
     override fun onCreate() {
         super.onCreate()
         Timber.i("onCreate() called")
 
-        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
-        dataClient = Wearable.getDataClient(this)
-
-        // TOOD Regression here, service no longer stops itself
-        DnDLocalChangeReceiver.registerReceiver(this, dndChangeReceiver)
+        dndChangeReceiver.register(this)
 
         pushNewDnDState(Compat.isDndEnabled(this))
         database.boolPrefDao().getAllObservableForKey(DND_SYNC_TO_WATCH_KEY).observe(this) {
@@ -73,7 +66,7 @@ class DnDLocalChangeService : LifecycleService() {
         Timber.i("onDestroy() called")
 
         try {
-            unregisterReceiver(dndChangeReceiver)
+            dndChangeReceiver.unregister(this)
         } catch (ignored: IllegalArgumentException) {}
     }
 
@@ -84,7 +77,7 @@ class DnDLocalChangeService : LifecycleService() {
     private fun createNotification(): Notification {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
             NotificationChannelHelper.createForDnDSync(
-                this, getSystemService(NotificationManager::class.java)
+                this, getSystemService()!!
             )
 
         val launchActivityIntent = Intent(this, MainActivity::class.java)
@@ -111,10 +104,12 @@ class DnDLocalChangeService : LifecycleService() {
      * @param dndEnabled The new state of Do not Disturb.
      */
     private fun pushNewDnDState(dndEnabled: Boolean) {
-        val putDataMapReq = PutDataMapRequest.create(References.DND_STATUS_PATH)
-        putDataMapReq.dataMap.putBoolean(References.NEW_DND_STATE_KEY, dndEnabled)
-        putDataMapReq.setUrgent()
-        dataClient.putDataItem(putDataMapReq.asPutDataRequest())
+        PutDataMapRequest.create(References.DND_STATUS_PATH).apply {
+            dataMap.putBoolean(References.NEW_DND_STATE_KEY, dndEnabled)
+            setUrgent()
+        }.also {
+            dataClient.putDataItem(it.asPutDataRequest())
+        }
         Timber.i("Pushed new DnD state: $dndEnabled")
     }
 
@@ -122,8 +117,8 @@ class DnDLocalChangeService : LifecycleService() {
      * Stops the service if it doesn't need to be running any more.
      */
     private fun stopIfUnneeded() {
-        Timber.i("Trying to stop service")
-        if (sendToWatch.filter { it.value }.isEmpty()) {
+        if (sendToWatch.none { it.value }) {
+            Timber.i("Service unneeded, stopping")
             stopForeground(true)
             stopSelf()
         }

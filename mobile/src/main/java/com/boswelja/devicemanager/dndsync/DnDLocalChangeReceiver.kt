@@ -36,24 +36,20 @@ abstract class DnDLocalChangeReceiver : BroadcastReceiver() {
         }
     }
 
-    companion object {
-        /**
-         * Register a subclass of [DnDLocalChangeReceiver] as a [BroadcastReceiver] with
-         * the correct actions.
-         * @param context The [Context] to register to.
-         * @param receiver The [DnDLocalChangeReceiver] to register.
-         */
-        fun registerReceiver(context: Context, receiver: DnDLocalChangeReceiver) {
-            IntentFilter().apply {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    addAction(NotificationManager.ACTION_INTERRUPTION_FILTER_CHANGED)
-                } else {
-                    addAction(AudioManager.RINGER_MODE_CHANGED_ACTION)
-                }
-            }.also {
-                Timber.i("Registering a receiver")
-                context.registerReceiver(receiver, it)
+    fun register(context: Context) {
+        IntentFilter().apply {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                addAction(NotificationManager.ACTION_INTERRUPTION_FILTER_CHANGED)
+            } else {
+                addAction(AudioManager.RINGER_MODE_CHANGED_ACTION)
             }
+        }.also {
+            Timber.i("Registering a receiver")
+            context.registerReceiver(this, it)
         }
+    }
+
+    fun unregister(context: Context) {
+        context.unregisterReceiver(this)
     }
 }
