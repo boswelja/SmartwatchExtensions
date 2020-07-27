@@ -8,13 +8,14 @@
 package com.boswelja.devicemanager.batterysync.widget.configuration
 
 import android.view.ViewGroup
-import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.ListAdapter
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.recyclerview.item.IconTwoLineViewHolder
+import com.boswelja.devicemanager.ui.common.WatchDiffCallback
 import com.boswelja.devicemanager.watchmanager.item.Watch
 
-class WatchPickerAdapter(private val activity: WatchBatteryWidgetConfigurationActivity) :
-    RecyclerView.Adapter<IconTwoLineViewHolder>() {
+class WatchPickerAdapter(private val clickCallback: (watch: Watch) -> Unit) :
+    ListAdapter<Watch, IconTwoLineViewHolder>(WatchDiffCallback()) {
 
     private val watches: ArrayList<Watch> = ArrayList()
 
@@ -29,19 +30,7 @@ class WatchPickerAdapter(private val activity: WatchBatteryWidgetConfigurationAc
         val summary = "Tap to create widget"
         holder.bind(R.drawable.ic_watch, watch.name, summary)
         holder.itemView.setOnClickListener {
-            activity.finishAndCreateWidget(watch.id)
+            clickCallback(watch)
         }
-    }
-
-    /**
-     * Sets the list of [Watch] objects to show in the adapter.
-     * @param newWatches The new list of watches to show.
-     */
-    fun setWatches(newWatches: List<Watch>) {
-        watches.apply {
-            clear()
-            addAll(newWatches)
-        }
-        notifyDataSetChanged()
     }
 }

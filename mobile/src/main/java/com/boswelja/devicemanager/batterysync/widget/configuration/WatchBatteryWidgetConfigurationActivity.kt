@@ -11,8 +11,6 @@ import android.app.Activity
 import android.appwidget.AppWidgetManager
 import android.content.Intent
 import android.os.Bundle
-import android.view.View
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.batterysync.widget.WatchBatteryWidget
 import com.boswelja.devicemanager.databinding.ActivityWatchBatteryWidgetConfigurationBinding
@@ -23,13 +21,16 @@ import com.boswelja.devicemanager.widgetdb.batterysync.WatchBatteryWidgetId
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import timber.log.Timber
 
 class WatchBatteryWidgetConfigurationActivity : BaseToolbarActivity() {
 
     private val resultIntent = Intent()
     private val coroutineScope = MainScope()
+    private val database by lazy { WatchDatabase.get(this) }
+    private val adapter by lazy { WatchPickerAdapter {
+        finishAndCreateWidget(it.id)
+    } }
 
     private lateinit var binding: ActivityWatchBatteryWidgetConfigurationBinding
 
@@ -44,23 +45,12 @@ class WatchBatteryWidgetConfigurationActivity : BaseToolbarActivity() {
         setupToolbar(binding.toolbarLayout.toolbar, showTitle = true, showUpButton = true)
         supportActionBar!!.setHomeAsUpIndicator(R.drawable.ic_close)
         setupWatchPickerRecyclerView()
-        setLoading(true)
 
         widgetId = getWidgetId()
         resultIntent.apply {
             putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId)
         }
         setResult(Activity.RESULT_CANCELED, resultIntent)
-
-        coroutineScope.launch {
-            WatchDatabase.get(this@WatchBatteryWidgetConfigurationActivity).also {
-                val watches = it.watchDao().getAll()
-                withContext(Dispatchers.Main) {
-                    (binding.watchPickerRecyclerView.adapter as WatchPickerAdapter).setWatches(watches)
-                    setLoading(false)
-                }
-            }
-        }
     }
 
     /**
@@ -79,37 +69,16 @@ class WatchBatteryWidgetConfigurationActivity : BaseToolbarActivity() {
      * Set up the watch picker RecyclerView.
      */
     private fun setupWatchPickerRecyclerView() {
-        binding.watchPickerRecyclerView.apply {
-            layoutManager = LinearLayoutManager(
-                this@WatchBatteryWidgetConfigurationActivity,
-                LinearLayoutManager.VERTICAL,
-                false
-            )
-            adapter = WatchPickerAdapter(this@WatchBatteryWidgetConfigurationActivity)
-        }
-    }
-
-    /**
-     * Sets whether the UI should display a loading spinner.
-     * @param isLoading true if the UI should reflect loading, false otherwise.
-     */
-    private fun setLoading(isLoading: Boolean) {
-        Timber.d("setLoading($isLoading) called")
-        binding.apply {
-            if (isLoading) {
-                loadingSpinner.visibility = View.VISIBLE
-                watchPickerRecyclerView.visibility = View.GONE
-            } else {
-                loadingSpinner.visibility = View.GONE
-                watchPickerRecyclerView.visibility = View.VISIBLE
-            }
+        binding.watchPickerRecyclerView.adapter = adapter
+        database.watchDao().getAllObservable().observe(this) {
+            adapter.submitList(it)
         }
     }
 
     /**
      * Stores the new widget's information, creates it then finishes this activity.
      */
-    fun finishAndCreateWidget(watchId: String) {
+    private fun finishAndCreateWidget(watchId: String) {
         Timber.d("finishAndCreateWidget($watchId) called")
         setResult(Activity.RESULT_OK, resultIntent)
 

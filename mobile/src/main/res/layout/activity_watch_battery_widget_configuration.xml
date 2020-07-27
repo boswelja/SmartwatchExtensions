@@ -14,18 +14,8 @@
         android:id="@+id/watch_picker_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintTop_toBottomOf="@+id/toolbar_layout"
         app:layout_constraintBottom_toBottomOf="parent" />
-
-    <ProgressBar
-        android:id="@+id/loading_spinner"
-        android:layout_width="240dp"
-        android:layout_height="wrap_content"
-        android:indeterminate="true"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar_layout"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        style="@style/Widget.AppCompat.ProgressBar.Horizontal" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
