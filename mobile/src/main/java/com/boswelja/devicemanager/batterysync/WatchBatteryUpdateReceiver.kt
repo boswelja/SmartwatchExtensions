@@ -8,10 +8,9 @@
 package com.boswelja.devicemanager.batterysync
 
 import android.app.NotificationManager
-import android.content.Context
-import android.content.SharedPreferences
 import android.os.Build
 import androidx.core.app.NotificationCompat
+import androidx.core.content.getSystemService
 import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.NotificationChannelHelper
 import com.boswelja.devicemanager.R
@@ -40,61 +39,43 @@ import java.util.Locale
 class WatchBatteryUpdateReceiver : WearableListenerService() {
 
     private val coroutineScope = CoroutineScope(Dispatchers.IO)
+    private val notificationManager: NotificationManager by lazy { getSystemService()!! }
+    private val sharedPreferences by lazy { PreferenceManager.getDefaultSharedPreferences(this) }
 
-    private lateinit var notificationManager: NotificationManager
-    private lateinit var sharedPreferences: SharedPreferences
     private lateinit var watchBatteryStats: WatchBatteryStats
 
     override fun onMessageReceived(messageEvent: MessageEvent?) {
         if (messageEvent?.path == BATTERY_STATUS_PATH) {
             Timber.i("Got BATTERY_STATUS_PATH")
-            notificationManager =
-                getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-            sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
-            watchBatteryStats = getBatteryStatsFromMessage(messageEvent)
+            watchBatteryStats = WatchBatteryStats.fromMessage(messageEvent)
 
             coroutineScope.launch {
-                WatchDatabase.get(this@WatchBatteryUpdateReceiver).also {
-                    val watch = it.watchDao().getFromBatterySyncWorkerId(watchBatteryStats.watchId)
-                    if (watch != null) {
-                        handleNotification(it, watch)
-                    } else {
-                        Timber.w("Got watch battery stats from ${watchBatteryStats.watchId}, but watch is not registered")
-                    }
+                val database = WatchDatabase.get(this@WatchBatteryUpdateReceiver)
+                database.watchDao().getFromBatterySyncWorkerId(watchBatteryStats.watchId)?.let {
+                    handleNoti(database, it)
                 }
-
-                WatchBatteryStatsDatabase.get(this@WatchBatteryUpdateReceiver).also {
-                    Timber.i("Updating battery stats in database")
-                    it.updateWatchBatteryStats(watchBatteryStats)
-                    it.close()
-                }
+                updateStatsInDatabase()
                 WidgetDatabase.updateWatchWidgets(
                     this@WatchBatteryUpdateReceiver,
                     watchBatteryStats.watchId
                 )
+                database.close()
             }
         }
     }
 
-    /**
-     * Gets battery information from a [MessageEvent].
-     * @param messageEvent The [MessageEvent] containing battery information.
-     * @return A new [WatchBatteryStats] with data.
-     */
-    private fun getBatteryStatsFromMessage(messageEvent: MessageEvent): WatchBatteryStats {
-        val watchId = messageEvent.sourceNodeId
-        val message = String(messageEvent.data, Charsets.UTF_8)
-        val messageSplit = message.split("|")
-        val batteryPercent = messageSplit[0].toInt()
-        val isWatchCharging = messageSplit[1] == true.toString()
-        Timber.i("Got WatchBatteryStats from MessageEvent")
-        return WatchBatteryStats(watchId, batteryPercent, isWatchCharging)
+    private suspend fun updateStatsInDatabase() {
+        WatchBatteryStatsDatabase.get(this@WatchBatteryUpdateReceiver).also {
+            Timber.i("Updating battery stats in database")
+            it.updateWatchBatteryStats(watchBatteryStats)
+            it.close()
+        }
     }
 
-    private fun handleNotification(database: WatchDatabase, watch: Watch) {
+    private fun handleNoti(database: WatchDatabase, watch: Watch) {
         val chargedThreshold =
             database.intPrefDao().get(watch.id, BATTERY_CHARGE_THRESHOLD_KEY)?.value ?: 90
-        if (canSendChargedNotification(database, watch.id, chargedThreshold)) {
+        if (canSendChargedNoti(database, watch.id, chargedThreshold)) {
             notifyWatchCharged(watch, chargedThreshold)
             database.boolPrefDao().update(
                 BoolPreference(watch.id, BATTERY_CHARGED_NOTI_SENT, true)
@@ -111,7 +92,7 @@ class WatchBatteryUpdateReceiver : WearableListenerService() {
      * Checks whether we can notify the user their watch is charged.
      * @return true if we can send a charged notification, false otherwise.
      */
-    private fun canSendChargedNotification(database: WatchDatabase, watchId: String, chargedThreshold: Int): Boolean {
+    private fun canSendChargedNoti(database: WatchDatabase, watchId: String, chargedThreshold: Int): Boolean {
         val sendChargeNotis =
             database.boolPrefDao().get(watchId, BATTERY_WATCH_CHARGE_NOTI_KEY)?.value == true
         val chargedNotiSent =

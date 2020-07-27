@@ -36,7 +36,7 @@ abstract class WidgetDatabase : RoomDatabase() {
         }
 
         /**
-         * Update all the widgets for a specified [com.boswelja.devicemanager.watchmanager.Watch].
+         * Update all the widgets for a specified [com.boswelja.devicemanager.watchmanager.item.Watch].
          * @param context [Context].
          * @param watchId The ID of the watch whose widgets we're updating.
          */
