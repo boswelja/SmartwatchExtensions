@@ -14,7 +14,7 @@ import com.boswelja.devicemanager.batterysync.database.WatchBatteryStats
 import com.boswelja.devicemanager.batterysync.database.WatchBatteryStatsDatabase
 
 class BatteryStatsModel(application: Application) : AndroidViewModel(application) {
-    private val database: WatchBatteryStatsDatabase = WatchBatteryStatsDatabase.open(application)
+    private val database: WatchBatteryStatsDatabase = WatchBatteryStatsDatabase.get(application)
 
     fun getBatteryStatsObservable(watchId: String): LiveData<WatchBatteryStats?> {
         return database.batteryStatsDao().getObservableStatsForWatch(watchId)

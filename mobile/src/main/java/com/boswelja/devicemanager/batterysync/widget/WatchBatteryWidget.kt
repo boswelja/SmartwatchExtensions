@@ -98,7 +98,7 @@ class WatchBatteryWidget : AppWidgetProvider() {
     ) {
         coroutineScope.launch(Dispatchers.IO) {
             val widgetDatabase = WidgetDatabase.open(context!!)
-            val batteryStatsDatabase = WatchBatteryStatsDatabase.open(context)
+            val batteryStatsDatabase = WatchBatteryStatsDatabase.get(context)
 
             val watchId = widgetDatabase.watchBatteryWidgetDao().findByWidgetId(appWidgetId)?.watchId
             if (!watchId.isNullOrEmpty()) {

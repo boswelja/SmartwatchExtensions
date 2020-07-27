@@ -30,15 +30,22 @@ abstract class WatchBatteryStatsDatabase : RoomDatabase() {
     }
 
     companion object {
+        private var INSTANCE: WatchBatteryStatsDatabase? = null
+
         /**
-         * Opens an instance of [WatchBatteryStatsDatabase].
+         * Gets an instance of [WatchBatteryStatsDatabase].
          * @param context [Context].
-         * @return The newly opened [WatchBatteryStatsDatabase] instance.
+         * @return The [WatchBatteryStatsDatabase] instance.
          */
-        fun open(context: Context): WatchBatteryStatsDatabase {
-            return Room.databaseBuilder(context, WatchBatteryStatsDatabase::class.java, "battery-stats-db")
-                .addMigrations(Migrations.MIGRATION_1_2)
-                .build()
+        fun get(context: Context): WatchBatteryStatsDatabase {
+            synchronized(this) {
+                if (INSTANCE == null) {
+                    INSTANCE = Room.databaseBuilder(context, WatchBatteryStatsDatabase::class.java, "battery-stats-db")
+                            .addMigrations(Migrations.MIGRATION_1_2)
+                            .build()
+                }
+                return INSTANCE!!
+            }
         }
     }
 }

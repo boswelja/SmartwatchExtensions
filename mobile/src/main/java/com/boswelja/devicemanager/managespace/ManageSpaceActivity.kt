@@ -296,7 +296,7 @@ class ManageSpaceActivity : BaseToolbarActivity() {
             withContext(Dispatchers.Main) {
                 setProgressStatus(getString(R.string.reset_app_resetting_database_for, getString(R.string.database_name_battery_stats)))
             }
-            WatchBatteryStatsDatabase.open(this@ManageSpaceActivity).apply {
+            WatchBatteryStatsDatabase.get(this@ManageSpaceActivity).apply {
                 clearAllTables()
             }.also {
                 it.close()

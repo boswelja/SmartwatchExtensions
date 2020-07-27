@@ -63,7 +63,7 @@ class WatchBatteryUpdateReceiver : WearableListenerService() {
                     }
                 }
 
-                WatchBatteryStatsDatabase.open(this@WatchBatteryUpdateReceiver).also {
+                WatchBatteryStatsDatabase.get(this@WatchBatteryUpdateReceiver).also {
                     Timber.i("Updating battery stats in database")
                     it.updateWatchBatteryStats(watchBatteryStats)
                     it.close()
