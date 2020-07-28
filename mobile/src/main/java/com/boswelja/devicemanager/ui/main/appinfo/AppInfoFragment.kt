@@ -23,8 +23,6 @@ import com.boswelja.devicemanager.common.GooglePlayUtils
 import com.boswelja.devicemanager.common.GooglePlayUtils.getPlayStoreLink
 import com.boswelja.devicemanager.ui.base.BaseWatchPickerPreferenceFragment
 import com.boswelja.devicemanager.ui.changelog.ChangelogDialogFragment
-import com.google.android.gms.wearable.MessageClient
-import com.google.android.gms.wearable.Wearable
 import timber.log.Timber
 
 class AppInfoFragment :
@@ -34,9 +32,13 @@ class AppInfoFragment :
 
     private val viewModel: AppInfoViewModel by viewModels()
 
-    private var customTabsIntent: CustomTabsIntent? = null
+    private val customTabsIntent: CustomTabsIntent by lazy {
+        CustomTabsIntent.Builder()
+                .setShowTitle(true)
+                .setDefaultShareMenuItemEnabled(true)
+                .build()
+    }
 
-    private lateinit var messageClient: MessageClient
     private lateinit var watchVersionPreference: Preference
 
     override fun onPreferenceClick(preference: Preference?): Boolean {
@@ -66,11 +68,6 @@ class AppInfoFragment :
 
     override fun onDonate() {
         activity.createSnackBar(getString(R.string.donation_processed_message))
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        messageClient = Wearable.getMessageClient(requireContext())
     }
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
@@ -125,14 +122,7 @@ class AppInfoFragment :
      */
     private fun showPrivacyPolicy() {
         Timber.d("showPrivacyPolicy() called")
-        if (customTabsIntent == null) {
-            Timber.i("customTabsIntent null, creating new CustomTabsIntent")
-            customTabsIntent = CustomTabsIntent.Builder().apply {
-                addDefaultShareMenuItem()
-                setShowTitle(true)
-            }.build()
-        }
-        customTabsIntent!!.launchUrl(requireContext(), getString(R.string.privacy_policy_url).toUri())
+        customTabsIntent.launchUrl(requireContext(), getString(R.string.privacy_policy_url).toUri())
     }
 
     /**
