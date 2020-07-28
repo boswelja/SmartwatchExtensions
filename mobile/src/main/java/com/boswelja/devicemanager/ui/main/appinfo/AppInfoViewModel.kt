@@ -69,7 +69,7 @@ class AppInfoViewModel(application: Application) : AndroidViewModel(application)
     private fun parseWatchVersionInfo(byteArray: ByteArray): Pair<String, String> {
         val data = String(byteArray, Charsets.UTF_8).split("|")
         val versionString = getApplication<Application>()
-                .getString(R.string.pref_about_watch_version_title, data[0])
+            .getString(R.string.pref_about_watch_version_title, data[0])
         return Pair(versionString, data[1])
     }
 }

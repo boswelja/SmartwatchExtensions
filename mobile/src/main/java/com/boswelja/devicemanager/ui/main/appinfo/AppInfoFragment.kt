@@ -34,9 +34,9 @@ class AppInfoFragment :
 
     private val customTabsIntent: CustomTabsIntent by lazy {
         CustomTabsIntent.Builder()
-                .setShowTitle(true)
-                .setDefaultShareMenuItemEnabled(true)
-                .build()
+            .setShowTitle(true)
+            .setDefaultShareMenuItemEnabled(true)
+            .build()
     }
 
     private lateinit var watchVersionPreference: Preference
