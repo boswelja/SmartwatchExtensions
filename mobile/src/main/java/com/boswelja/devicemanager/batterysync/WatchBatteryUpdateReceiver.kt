@@ -126,7 +126,7 @@ class WatchBatteryUpdateReceiver : WearableListenerService() {
         } else {
             Timber.w("Failed to send charged notification")
             coroutineScope.launch(Dispatchers.IO) {
-                MessageDatabase.open(this@WatchBatteryUpdateReceiver).apply {
+                MessageDatabase.get(this@WatchBatteryUpdateReceiver).apply {
                     val message = Message(
                         iconRes = R.drawable.pref_ic_warning,
                         label = getString(R.string.message_watch_charge_noti_warning_label),

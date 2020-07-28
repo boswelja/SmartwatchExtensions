@@ -7,6 +7,7 @@
  */
 package com.boswelja.devicemanager.messages.database
 
+import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
@@ -19,17 +20,28 @@ interface MessageDao {
     fun sendMessage(message: Message)
 
     @Query("SELECT * FROM messages")
-    fun getAllMessages(): Array<Message>
+    fun getAllMessages(): List<Message>
 
     @Query("SELECT * FROM messages WHERE NOT deleted")
-    fun getActiveMessages(): Array<Message>
+    fun getActiveMessages(): List<Message>
 
     @Query("SELECT * FROM messages WHERE deleted")
-    fun getDeletedMessages(): Array<Message>
+    fun getDeletedMessages(): List<Message>
 
     @Query("UPDATE messages SET deleted = 1 WHERE id = :id")
     fun deleteMessage(id: Int)
 
     @Query("UPDATE messages SET deleted = 0 WHERE id = :id")
     fun restoreMessage(id: Int)
+
+
+    @Query("SELECT * FROM messages")
+    fun getAllMessagesObservable(): LiveData<List<Message>>
+
+    @Query("SELECT * FROM messages WHERE NOT deleted")
+    fun getActiveMessagesObservable(): LiveData<List<Message>>
+
+    @Query("SELECT * FROM messages WHERE deleted")
+    fun getDeletedMessagesObservable(): LiveData<List<Message>>
+
 }

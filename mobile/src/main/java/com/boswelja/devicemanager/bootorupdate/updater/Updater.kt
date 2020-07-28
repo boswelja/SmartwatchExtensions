@@ -111,7 +111,7 @@ class Updater(private val context: Context) {
                     updateStatus = Result.COMPLETED
                 }
                 if (!sharedPreferences.contains(MESSAGE_COUNT_KEY)) {
-                    MessageDatabase.open(context, allowMainThreadQueries = true).apply {
+                    MessageDatabase.get(context).apply {
                         updateMessageCount(sharedPreferences)
                     }.also {
                         it.close()

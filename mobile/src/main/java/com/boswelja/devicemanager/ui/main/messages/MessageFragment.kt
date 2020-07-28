@@ -7,42 +7,59 @@
  */
 package com.boswelja.devicemanager.ui.main.messages
 
-import android.content.SharedPreferences
+import android.annotation.SuppressLint
+import android.content.Intent
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.ItemTouchHelper
-import androidx.recyclerview.widget.LinearLayoutManager
-import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.databinding.FragmentMessagesBinding
-import com.boswelja.devicemanager.messages.Message
+import com.boswelja.devicemanager.messages.Action
 import com.boswelja.devicemanager.messages.database.MessageDatabase
-import com.boswelja.devicemanager.ui.main.MainActivity
-import com.google.android.material.snackbar.Snackbar
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import timber.log.Timber
 
+@SuppressLint("BatteryLife")
 class MessageFragment : Fragment() {
 
-    private lateinit var sharedPreferences: SharedPreferences
     private lateinit var binding: FragmentMessagesBinding
 
-    private var messageDatabase: MessageDatabase? = null
-
-    private val coroutineScope = MainScope()
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
-        messageDatabase = MessageDatabase.open(requireContext())
-    }
+    private val messageDatabase by lazy { MessageDatabase.get(requireContext()) }
+    private val adapter by lazy { MessagesAdapter {
+        when (it.action) {
+            Action.DISABLE_BATTERY_OPTIMISATION -> {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS).apply {
+                        data = Uri.parse("package:${context?.packageName}")
+                    }.also { intent ->
+                        Timber.i("Requesting ignore battery optimisation")
+                        context?.startActivity(intent)
+                    }
+                }
+            }
+            Action.LAUNCH_NOTIFICATION_SETTINGS -> {
+                Intent().apply {
+                    flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                        action = Settings.ACTION_APP_NOTIFICATION_SETTINGS
+                        putExtra(Settings.EXTRA_APP_PACKAGE, context?.packageName)
+                    } else {
+                        action = "android.settings.APP_NOTIFICATION_SETTINGS"
+                        putExtra("app_package", context?.packageName)
+                        putExtra("app_uid", context?.applicationInfo?.uid)
+                    }
+                }.also { intent ->
+                    Timber.i("Launching notification settings")
+                    context?.startActivity(intent)
+                }
+            }
+        }
+    } }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = FragmentMessagesBinding.inflate(inflater, container, false)
@@ -52,15 +69,14 @@ class MessageFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         Timber.d("onViewCreated() called")
         binding.messagesRecyclerview.apply {
-            layoutManager = LinearLayoutManager(context)
-            adapter = MessagesAdapter(this@MessageFragment)
+            adapter = this@MessageFragment.adapter
             DividerItemDecoration(context, DividerItemDecoration.VERTICAL).also {
                 addItemDecoration(it)
             }
         }.also {
             ItemTouchHelper(
-                MessagesAdapter.SwipeDismissCallback(
-                    it.adapter as MessagesAdapter,
+                MessageTouchCallback(
+                    adapter,
                     requireContext()
                 )
             ).apply {
@@ -68,73 +84,17 @@ class MessageFragment : Fragment() {
             }
         }
 
-        refreshMessages()
-    }
-
-    /**
-     * Undo dismissing a [Message]. Handles database operations as well as updating the UI.
-     * @param message The [Message] to un-dismiss.
-     */
-    private fun undoDismissMessage(message: Message) {
-        Timber.i("Restoring message ${message.id}")
-        coroutineScope.launch(Dispatchers.IO) {
-            messageDatabase?.restoreMessage(sharedPreferences, message)
-            withContext(Dispatchers.Main) {
-                (binding.messagesRecyclerview.adapter as MessagesAdapter).notifyMessage(message)
-                setHasMessages(messageDatabase!!.countMessages() > 0)
-                (activity as MainActivity).updateMessagesBadge()
-            }
+        messageDatabase.messageDao().getActiveMessagesObservable().observe(viewLifecycleOwner) {
+            adapter.submitList(it)
+            setHasMessages(it.isNotEmpty())
         }
-    }
-
-    /**
-     * Refresh the message list entirely.
-     */
-    private fun refreshMessages() {
-        coroutineScope.launch(Dispatchers.IO) {
-            val messages = messageDatabase?.getActiveMessages()
-            withContext(Dispatchers.Main) {
-                if (!messages.isNullOrEmpty()) {
-                    for (message in messages) {
-                        (binding.messagesRecyclerview.adapter as MessagesAdapter)
-                            .notifyMessage(message)
-                    }
-                    setHasMessages(true)
-                } else {
-                    setHasMessages(false)
-                }
-            }
-        }
-    }
-
-    /**
-     * Dismiss a [Message].
-     * @param message The [Message] to dismiss.
-     */
-    internal fun dismissMessage(message: Message) {
-        coroutineScope.launch(Dispatchers.IO) {
-            messageDatabase?.deleteMessage(sharedPreferences, message)
-            withContext(Dispatchers.Main) {
-                setHasMessages(messageDatabase!!.countMessages() > 0)
-                (activity as MainActivity).updateMessagesBadge()
-            }
-        }
-        Snackbar.make(
-            requireView(),
-            getString(R.string.message_snackbar_undo_remove),
-            Snackbar.LENGTH_LONG
-        ).apply {
-            setAction(R.string.snackbar_action_undo) {
-                undoDismissMessage(message)
-            }
-        }.show()
     }
 
     /**
      * Sets whether the UI should show the message list, or a no message view.
      * @param hasMessages Whether there are messages to show.
      */
-    internal fun setHasMessages(hasMessages: Boolean) {
+    private fun setHasMessages(hasMessages: Boolean) {
         binding.noMessagesView.apply {
             visibility = if (hasMessages) {
                 View.GONE

@@ -40,24 +40,6 @@ abstract class MessageDatabase : RoomDatabase() {
     }
 
     /**
-     * Get all active messages.
-     * @return A [List] of [Message] objects that are currently active,
-     * sorted by the time they were sent.
-     */
-    fun getActiveMessages(): List<Message> {
-        return messageDao().getActiveMessages().sortedBy { it.timestamp }
-    }
-
-    /**
-     * Get all deleted messages.
-     * @return A [List] of [Message] objects that the user has deleted,
-     * sorted by the time they were sent.
-     */
-    fun getDeletedMessages(): List<Message> {
-        return messageDao().getDeletedMessages().sortedBy { it.timestamp }
-    }
-
-    /**
      * Store a new message in the [MessageDatabase],
      * and update the tracked message counter in [SharedPreferences].
      * @param sharedPreferences The [SharedPreferences] instance to update the tracked counter.
@@ -107,18 +89,23 @@ abstract class MessageDatabase : RoomDatabase() {
     }
 
     companion object {
+        private var INSTANCE: MessageDatabase? = null
 
         const val MESSAGE_COUNT_KEY = "message_count"
 
         /**
-         * Opens a new instance of [MessageDatabase].
+         * Gets an instance of [MessageDatabase].
          * @param context [Context].
-         * @return The new instance of [MessageDatabase].
+         * @return The [MessageDatabase] instance.
          */
-        fun open(context: Context, allowMainThreadQueries: Boolean = false): MessageDatabase {
-            return Room.databaseBuilder(context, MessageDatabase::class.java, "messages-db").apply {
-                if (allowMainThreadQueries) allowMainThreadQueries()
-            }.build()
+        fun get(context: Context): MessageDatabase {
+            synchronized(this) {
+                if (INSTANCE == null) {
+                    INSTANCE = Room.databaseBuilder(context, MessageDatabase::class.java, "messages-db")
+                            .build()
+                }
+                return INSTANCE!!
+            }
         }
     }
 }
