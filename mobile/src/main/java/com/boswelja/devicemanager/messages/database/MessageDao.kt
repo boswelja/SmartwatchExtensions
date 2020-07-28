@@ -34,7 +34,6 @@ interface MessageDao {
     @Query("UPDATE messages SET deleted = 0 WHERE id = :id")
     fun restoreMessage(id: Int)
 
-
     @Query("SELECT * FROM messages")
     fun getAllMessagesObservable(): LiveData<List<Message>>
 
@@ -43,5 +42,4 @@ interface MessageDao {
 
     @Query("SELECT * FROM messages WHERE deleted")
     fun getDeletedMessagesObservable(): LiveData<List<Message>>
-
 }

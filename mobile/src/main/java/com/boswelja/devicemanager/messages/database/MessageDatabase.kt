@@ -102,7 +102,7 @@ abstract class MessageDatabase : RoomDatabase() {
             synchronized(this) {
                 if (INSTANCE == null) {
                     INSTANCE = Room.databaseBuilder(context, MessageDatabase::class.java, "messages-db")
-                            .build()
+                        .build()
                 }
                 return INSTANCE!!
             }

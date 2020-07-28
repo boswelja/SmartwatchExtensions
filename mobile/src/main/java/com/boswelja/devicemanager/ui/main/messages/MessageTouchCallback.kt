@@ -1,3 +1,10 @@
+/* Copyright (C) 2020 Jack Boswell <boswelja@outlook.com>
+ *
+ * This file is part of Wearable Extensions
+ *
+ * This file, and any part of the Wearable Extensions app/s cannot be copied and/or distributed
+ * without permission from Jack Boswell (boswelja) <boswela@outlook.com>
+ */
 package com.boswelja.devicemanager.ui.main.messages
 
 import android.content.Context
@@ -15,23 +22,23 @@ import kotlin.math.min
  * A custom [ItemTouchHelper] that provides swipe to dismiss logic for a [Message].
  */
 class MessageTouchCallback(private val adapter: MessagesAdapter, context: Context) :
-        ItemTouchHelper.SimpleCallback(
-                0,
-                ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT
-        ) {
+    ItemTouchHelper.SimpleCallback(
+        0,
+        ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT
+    ) {
 
     private val alphaMultiplier: Int = 3
 
     private val icon: Drawable = ContextCompat.getDrawable(context, R.drawable.ic_delete)!!
     private val swipeBackground: Drawable =
-            ContextCompat.getDrawable(context, R.drawable.recyclerview_swipe_background)!!
+        ContextCompat.getDrawable(context, R.drawable.recyclerview_swipe_background)!!
     private val iconMargin = Utils.complexTypeDp(context.resources, 16f).toInt()
     private val iconMaxAlpha = icon.alpha
 
     override fun onMove(
-            recyclerView: RecyclerView,
-            viewHolder: RecyclerView.ViewHolder,
-            target: RecyclerView.ViewHolder
+        recyclerView: RecyclerView,
+        viewHolder: RecyclerView.ViewHolder,
+        target: RecyclerView.ViewHolder
     ): Boolean = false
 
     override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
@@ -40,13 +47,13 @@ class MessageTouchCallback(private val adapter: MessagesAdapter, context: Contex
     }
 
     override fun onChildDraw(
-            c: Canvas,
-            recyclerView: RecyclerView,
-            viewHolder: RecyclerView.ViewHolder,
-            dX: Float,
-            dY: Float,
-            actionState: Int,
-            isCurrentlyActive: Boolean
+        c: Canvas,
+        recyclerView: RecyclerView,
+        viewHolder: RecyclerView.ViewHolder,
+        dX: Float,
+        dY: Float,
+        actionState: Int,
+        isCurrentlyActive: Boolean
     ) {
         super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
         when {
@@ -54,22 +61,22 @@ class MessageTouchCallback(private val adapter: MessagesAdapter, context: Contex
                 val itemView = viewHolder.itemView
                 if (dX > icon.intrinsicWidth + iconMargin) {
                     val iconTop =
-                            itemView.top + (itemView.height - icon.intrinsicHeight) / 2
+                        itemView.top + (itemView.height - icon.intrinsicHeight) / 2
                     val iconBottom = iconTop + icon.intrinsicHeight
                     val iconLeft = itemView.left + iconMargin
                     val iconRight = itemView.left + iconMargin + icon.intrinsicWidth
                     icon.setBounds(iconLeft, iconTop, iconRight, iconBottom)
                     icon.alpha = min(
-                            ((dX - icon.intrinsicWidth - iconMargin) * alphaMultiplier).toInt(),
-                            iconMaxAlpha
+                        ((dX - icon.intrinsicWidth - iconMargin) * alphaMultiplier).toInt(),
+                        iconMaxAlpha
                     )
                     icon.draw(c)
                 }
 
                 swipeBackground.setBounds(
-                        itemView.left, itemView.top,
-                        itemView.left + dX.toInt(),
-                        itemView.bottom
+                    itemView.left, itemView.top,
+                    itemView.left + dX.toInt(),
+                    itemView.bottom
                 )
                 swipeBackground.draw(c)
             }
@@ -82,15 +89,15 @@ class MessageTouchCallback(private val adapter: MessagesAdapter, context: Contex
                     val iconRight = itemView.right - iconMargin
                     icon.setBounds(iconLeft, iconTop, iconRight, iconBottom)
                     icon.alpha = min(
-                            ((dX + icon.intrinsicWidth + iconMargin) * alphaMultiplier * -1).toInt(),
-                            iconMaxAlpha
+                        ((dX + icon.intrinsicWidth + iconMargin) * alphaMultiplier * -1).toInt(),
+                        iconMaxAlpha
                     )
                     icon.draw(c)
                 }
 
                 swipeBackground.setBounds(
-                        itemView.right + dX.toInt(),
-                        itemView.top, itemView.right, itemView.bottom
+                    itemView.right + dX.toInt(),
+                    itemView.top, itemView.right, itemView.bottom
                 )
                 swipeBackground.draw(c)
             }

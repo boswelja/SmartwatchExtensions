@@ -30,36 +30,38 @@ class MessageFragment : Fragment() {
     private lateinit var binding: FragmentMessagesBinding
 
     private val messageDatabase by lazy { MessageDatabase.get(requireContext()) }
-    private val adapter by lazy { MessagesAdapter {
-        when (it.action) {
-            Action.DISABLE_BATTERY_OPTIMISATION -> {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS).apply {
-                        data = Uri.parse("package:${context?.packageName}")
+    private val adapter by lazy {
+        MessagesAdapter {
+            when (it.action) {
+                Action.DISABLE_BATTERY_OPTIMISATION -> {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                        Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS).apply {
+                            data = Uri.parse("package:${context?.packageName}")
+                        }.also { intent ->
+                            Timber.i("Requesting ignore battery optimisation")
+                            context?.startActivity(intent)
+                        }
+                    }
+                }
+                Action.LAUNCH_NOTIFICATION_SETTINGS -> {
+                    Intent().apply {
+                        flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                            action = Settings.ACTION_APP_NOTIFICATION_SETTINGS
+                            putExtra(Settings.EXTRA_APP_PACKAGE, context?.packageName)
+                        } else {
+                            action = "android.settings.APP_NOTIFICATION_SETTINGS"
+                            putExtra("app_package", context?.packageName)
+                            putExtra("app_uid", context?.applicationInfo?.uid)
+                        }
                     }.also { intent ->
-                        Timber.i("Requesting ignore battery optimisation")
+                        Timber.i("Launching notification settings")
                         context?.startActivity(intent)
                     }
                 }
             }
-            Action.LAUNCH_NOTIFICATION_SETTINGS -> {
-                Intent().apply {
-                    flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                        action = Settings.ACTION_APP_NOTIFICATION_SETTINGS
-                        putExtra(Settings.EXTRA_APP_PACKAGE, context?.packageName)
-                    } else {
-                        action = "android.settings.APP_NOTIFICATION_SETTINGS"
-                        putExtra("app_package", context?.packageName)
-                        putExtra("app_uid", context?.applicationInfo?.uid)
-                    }
-                }.also { intent ->
-                    Timber.i("Launching notification settings")
-                    context?.startActivity(intent)
-                }
-            }
         }
-    } }
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = FragmentMessagesBinding.inflate(inflater, container, false)

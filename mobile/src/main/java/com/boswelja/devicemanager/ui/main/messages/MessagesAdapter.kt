@@ -13,7 +13,7 @@ import com.boswelja.devicemanager.messages.Message
 import timber.log.Timber
 
 class MessagesAdapter(private val clickCallback: (message: Message) -> Unit) :
-        ListAdapter<Message, MessageViewHolder>(MessageDiffCallback()) {
+    ListAdapter<Message, MessageViewHolder>(MessageDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MessageViewHolder {
         return MessageViewHolder.from(parent)
