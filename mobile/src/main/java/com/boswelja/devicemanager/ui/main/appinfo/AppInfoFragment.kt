@@ -13,6 +13,7 @@ import android.net.Uri
 import android.os.Bundle
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.core.net.toUri
+import androidx.fragment.app.viewModels
 import androidx.preference.Preference
 import com.boswelja.common.donate.DonationResultInterface
 import com.boswelja.common.donate.ui.DonationDialog
@@ -20,7 +21,6 @@ import com.boswelja.devicemanager.BuildConfig
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.GooglePlayUtils
 import com.boswelja.devicemanager.common.GooglePlayUtils.getPlayStoreLink
-import com.boswelja.devicemanager.common.References
 import com.boswelja.devicemanager.ui.base.BaseWatchPickerPreferenceFragment
 import com.boswelja.devicemanager.ui.changelog.ChangelogDialogFragment
 import com.google.android.gms.wearable.MessageClient
@@ -32,19 +32,12 @@ class AppInfoFragment :
     Preference.OnPreferenceClickListener,
     DonationResultInterface {
 
+    private val viewModel: AppInfoViewModel by viewModels()
+
     private var customTabsIntent: CustomTabsIntent? = null
 
     private lateinit var messageClient: MessageClient
     private lateinit var watchVersionPreference: Preference
-
-    private val messageListener = MessageClient.OnMessageReceivedListener {
-        when (it.path) {
-            References.REQUEST_APP_VERSION -> {
-                val versionInfo = parseWatchVersionInfo(it.data)
-                setWatchVersionInfo(versionInfo[0], versionInfo[1])
-            }
-        }
-    }
 
     override fun onPreferenceClick(preference: Preference?): Boolean {
         Timber.d("onPreferenceClick() called")
@@ -107,77 +100,23 @@ class AppInfoFragment :
         }
         watchVersionPreference = findPreference(WATCH_VERSION_KEY)!!
         getWatchConnectionManager()?.connectedWatch?.observe(viewLifecycleOwner) {
-            requestUpdateWatchVersion()
+            it?.id?.let { id -> viewModel.requestUpdateWatchVersion(id) }
         }
-    }
-
-    override fun onStart() {
-        super.onStart()
-        messageClient.addListener(messageListener)
-    }
-
-    override fun onStop() {
-        super.onStop()
-
-        customTabsIntent = null
-        messageClient.removeListener(messageListener)
-    }
-
-    /**
-     * Requests the current app version info from the connected watch.
-     * Result received in [messageListener] if sending the message was successful.
-     */
-    private fun requestUpdateWatchVersion() {
-        Timber.d("requestUpdateWatchVersionPreference")
-        val connectedWatchId = getWatchConnectionManager()?.connectedWatch?.value?.id
-        if (!connectedWatchId.isNullOrEmpty()) {
-            messageClient.sendMessage(connectedWatchId, References.REQUEST_APP_VERSION, null)
-                .addOnFailureListener {
-                    Timber.w(it)
-                    try {
-                        watchVersionPreference.title =
-                            getString(R.string.pref_about_watch_version_disconnected)
-                    } catch (e: IllegalStateException) {
-                        Timber.w(e)
-                    }
-                }
-                .addOnSuccessListener {
-                    Timber.i("Message sent successfully")
-                    try {
-                        watchVersionPreference.title =
-                            getString(R.string.pref_about_watch_version_loading)
-                    } catch (e: IllegalStateException) {
-                        Timber.w(e)
-                    }
-                }
-        } else {
-            Timber.w("connectedWatchId null or empty")
-            watchVersionPreference.title = getString(R.string.pref_about_watch_version_failed)
+        viewModel.watchAppVersion.observe(viewLifecycleOwner) {
+            setWatchVersionInfo(it)
         }
-        watchVersionPreference.summary = ""
-    }
-
-    /**
-     * Parse watch app version info from a given ByteArray.
-     * @param byteArray The [ByteArray] received from the connected watch.
-     * @return A [List] of [String] objects, count should always be 2.
-     */
-    private fun parseWatchVersionInfo(byteArray: ByteArray): List<String> {
-        return String(byteArray, Charsets.UTF_8).split("|")
     }
 
     /**
      * Sets the watch version info shown to the user to the provided values.
-     * @param versionName The version name of Wearable Extensions on
-     * the connected watch (See [BuildConfig.VERSION_NAME].
-     * @param versionCode The version code of Wearable Extensions on
-     * the connected watch (See [BuildConfig.VERSION_CODE].
      */
-    private fun setWatchVersionInfo(versionName: String, versionCode: String) {
-        Timber.d("setWatchVersionInfo($versionName, $versionCode) called")
-        watchVersionPreference.apply {
-            title = getString(R.string.pref_about_watch_version_title).format(versionName)
-            summary = versionCode
+    private fun setWatchVersionInfo(versionInfo: Pair<String, String?>?) {
+        if (versionInfo != null) {
+            watchVersionPreference.title = versionInfo.first
+            watchVersionPreference.summary = versionInfo.second
+        } else {
+            watchVersionPreference.setTitle(R.string.pref_about_watch_version_failed)
+            watchVersionPreference.summary = null
         }
     }
 
