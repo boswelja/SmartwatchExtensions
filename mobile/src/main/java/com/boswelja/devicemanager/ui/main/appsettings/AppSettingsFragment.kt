@@ -71,11 +71,6 @@ class AppSettingsFragment :
         updateDayNightModePreferenceSummary()
     }
 
-    override fun onStop() {
-        super.onStop()
-        Timber.d("onStop() called")
-    }
-
     /**
      * Checks whether app notifications are allowed,
      * and updates [openNotiSettingsPreference] summary.
