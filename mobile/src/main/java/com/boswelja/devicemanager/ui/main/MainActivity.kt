@@ -8,17 +8,19 @@
 package com.boswelja.devicemanager.ui.main
 
 import android.os.Bundle
+import androidx.activity.viewModels
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.databinding.ActivityMainBinding
-import com.boswelja.devicemanager.messages.database.MessageDatabase.Companion.MESSAGE_COUNT_KEY
 import com.boswelja.devicemanager.ui.base.BaseWatchPickerActivity
 import com.boswelja.devicemanager.ui.changelog.ChangelogDialogFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import timber.log.Timber
 
 class MainActivity : BaseWatchPickerActivity() {
+
+    private val viewModel: MainViewModel by viewModels()
 
     private lateinit var binding: ActivityMainBinding
 
@@ -27,17 +29,18 @@ class MainActivity : BaseWatchPickerActivity() {
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        binding.apply {
-            setupWatchPickerSpinner(toolbarLayout.toolbar)
-            bottomNavigation.setupWithNavController(findNavController(R.id.nav_host_fragment))
-        }
+        setupWatchPickerSpinner(binding.toolbarLayout.toolbar)
+        binding.bottomNavigation.setupWithNavController(findNavController(R.id.nav_host_fragment))
     }
 
     override fun onStart() {
         super.onStart()
         Timber.d("onStart() called")
-        updateMessagesBadge()
         showChangelogIfNeeded()
+
+        viewModel.messageCount.observe(this) {
+            updateMessagesBadge(it)
+        }
     }
 
     /**
@@ -53,18 +56,13 @@ class MainActivity : BaseWatchPickerActivity() {
     /**
      * Updates the message count badge on the [BottomNavigationView].
      */
-    fun updateMessagesBadge() {
-        val messageCount = sharedPreferences.getInt(MESSAGE_COUNT_KEY, 0)
-        Timber.i("New message badge count = $messageCount")
-        val shouldShowMessageBadge = messageCount > 0
-        binding.apply {
-            if (shouldShowMessageBadge) {
-                bottomNavigation.getOrCreateBadge(R.id.messageFragment).apply {
-                    number = messageCount
-                }
-            } else {
-                bottomNavigation.removeBadge(R.id.messageFragment)
+    private fun updateMessagesBadge(messageCount: Int) {
+        if (messageCount > 0) {
+            binding.bottomNavigation.getOrCreateBadge(R.id.messageFragment).apply {
+                number = messageCount
             }
+        } else {
+            binding.bottomNavigation.removeBadge(R.id.messageFragment)
         }
     }
 
