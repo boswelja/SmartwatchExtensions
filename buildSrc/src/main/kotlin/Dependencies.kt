@@ -1,6 +1,6 @@
 @file:Suppress("SpellCheckingInspection")
 
-const val kotlinVersion = "1.4-M3"
+const val kotlinVersion = "1.4.0-rc"
 
 object BuildPlugins {
     object Versions {
@@ -49,8 +49,6 @@ object Libraries {
 
         const val timber = "4.7.1"
     }
-
-    const val kotlinStdlib = "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
 
     const val androidxAppCompat = "androidx.appcompat:appcompat:${Versions.androidxAppCompat}"
     const val androidxBrowser = "androidx.browser:browser:${Versions.androidxBrowser}"

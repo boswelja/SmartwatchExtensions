@@ -53,8 +53,6 @@ dependencies {
     implementation(fileTree("libs") { include("*.aar") })
     implementation(project(":common"))
 
-    implementation(Libraries.kotlinStdlib)
-
     implementation(Libraries.androidxAppCompat)
     implementation(Libraries.androidxBrowser)
     implementation(Libraries.androidxConstraintLayout)

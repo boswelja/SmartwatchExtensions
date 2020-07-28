@@ -45,8 +45,6 @@ android {
 dependencies {
     implementation(project(":common"))
 
-    implementation(Libraries.kotlinStdlib)
-
     implementation(Libraries.androidxAppCompat)
     implementation(Libraries.androidxConstraintLayout)
     implementation(Libraries.androidxCoreKtx)
