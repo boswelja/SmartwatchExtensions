@@ -122,28 +122,6 @@ class AppManagerViewModel(application: Application) : AndroidViewModel(applicati
     }
 
     /**
-     * Request uninstalling an app from the connected watch.
-     * @param appPackageInfo The [AppPackageInfo] to request an uninstall for.
-     */
-    fun sendUninstallRequestMessage(appPackageInfo: AppPackageInfo) {
-        messageClient.sendMessage(
-            watchId!!, References.REQUEST_UNINSTALL_PACKAGE,
-            appPackageInfo.packageName.toByteArray(Charsets.UTF_8)
-        )
-    }
-
-    /**
-     * Request opening an app's launch activity on the connected watch.
-     * @param appPackageInfo The [AppPackageInfo] to open the launch activity for.
-     */
-    fun sendOpenRequestMessage(appPackageInfo: AppPackageInfo) {
-        messageClient.sendMessage(
-            watchId!!, References.REQUEST_OPEN_PACKAGE,
-            appPackageInfo.packageName.toByteArray(Charsets.UTF_8)
-        )
-    }
-
-    /**
      * Converts an [AppPackageInfoList] into an [ArrayList] that can be used by [AppsAdapter].
      * @param appPackageInfoList The [AppPackageInfoList] to convert.
      * @return The newly created [ArrayList].

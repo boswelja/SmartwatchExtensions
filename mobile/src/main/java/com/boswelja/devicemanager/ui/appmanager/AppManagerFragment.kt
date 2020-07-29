@@ -14,14 +14,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.appmanager.AppPackageInfo
 import com.boswelja.devicemanager.common.recyclerview.adapter.ItemClickCallback
 import com.boswelja.devicemanager.databinding.FragmentAppManagerBinding
+import com.boswelja.devicemanager.ui.appmanager.AppManagerActivity.Companion.EXTRA_WATCH_ID
 import com.boswelja.devicemanager.ui.appmanager.adapter.AppsAdapter
 import com.boswelja.devicemanager.ui.appmanager.adapter.Item
 import com.boswelja.devicemanager.ui.appmanager.info.AppInfoActivity
-import com.google.android.material.snackbar.Snackbar
 
 class AppManagerFragment : Fragment(), ItemClickCallback<Item> {
 
@@ -50,43 +49,17 @@ class AppManagerFragment : Fragment(), ItemClickCallback<Item> {
         }
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        when (requestCode) {
-            APP_INFO_ACTIVITY_REQUEST_CODE -> {
-                viewModel.canStopAppManagerService = true
-                when (resultCode) {
-                    AppInfoActivity.RESULT_REQUEST_UNINSTALL -> {
-                        val app = data?.extras?.getSerializable(AppInfoActivity.EXTRA_APP_INFO) as AppPackageInfo
-                        viewModel.sendUninstallRequestMessage(app)
-                        createSnackbar(getString(R.string.app_manager_continue_on_watch))
-                    }
-                    AppInfoActivity.RESULT_REQUEST_OPEN -> {
-                        val app = data?.extras?.getSerializable(AppInfoActivity.EXTRA_APP_INFO) as AppPackageInfo
-                        viewModel.sendOpenRequestMessage(app)
-                        createSnackbar(getString(R.string.app_manager_continue_on_watch))
-                    }
-                }
-            }
-            else -> super.onActivityResult(requestCode, resultCode, data)
-        }
-    }
-
-    private fun createSnackbar(text: String) {
-        view?.let { Snackbar.make(it, text, Snackbar.LENGTH_LONG).show() }
-    }
-
     /**
      * Launches an [AppInfoActivity] for a given [AppPackageInfo].
      * @param appPackageInfo The [AppPackageInfo] object to pass on to the [AppInfoActivity].
      */
     private fun launchAppInfoActivity(appPackageInfo: AppPackageInfo) {
         viewModel.canStopAppManagerService = false
-        val intent = Intent(context, AppInfoActivity::class.java)
-        intent.putExtra(AppInfoActivity.EXTRA_APP_INFO, appPackageInfo)
-        startActivityForResult(intent, APP_INFO_ACTIVITY_REQUEST_CODE)
-    }
-
-    companion object {
-        private const val APP_INFO_ACTIVITY_REQUEST_CODE = 22668
+        Intent(context, AppInfoActivity::class.java).apply {
+            putExtra(AppInfoActivity.EXTRA_APP_INFO, appPackageInfo)
+            putExtra(EXTRA_WATCH_ID, viewModel.watchId)
+        }.also {
+            startActivity(it)
+        }
     }
 }

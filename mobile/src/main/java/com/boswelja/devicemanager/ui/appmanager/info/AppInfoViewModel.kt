@@ -9,16 +9,26 @@ package com.boswelja.devicemanager.ui.appmanager.info
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import com.boswelja.devicemanager.BuildConfig
 import com.boswelja.devicemanager.common.appmanager.AppPackageInfo
+import com.boswelja.devicemanager.common.appmanager.References
+import com.google.android.gms.wearable.Wearable
 import java.text.SimpleDateFormat
 import java.util.Locale
 
 class AppInfoViewModel(application: Application) : AndroidViewModel(application) {
 
+    private val messageClient = Wearable.getMessageClient(application)
     private val dateFormatter = SimpleDateFormat("EE, dd MMM yyyy, h:mm aa", Locale.getDefault())
+
+    private val _finishActivity = MutableLiveData(false)
+    val finishActivity: LiveData<Boolean>
+        get() = _finishActivity
+
+    var watchId: String? = null
 
     val appInfo = MutableLiveData<AppPackageInfo>()
 
@@ -51,4 +61,26 @@ class AppInfoViewModel(application: Application) : AndroidViewModel(application)
     val appIcon = Transformations.map(appInfo) {
         it.packageIcon.bitmap
     }
+
+    /**
+     * Request uninstalling an app from the connected watch.
+     */
+    fun sendUninstallRequestMessage() {
+        messageClient.sendMessage(
+                watchId!!, References.REQUEST_UNINSTALL_PACKAGE,
+                appInfo.value!!.packageName.toByteArray(Charsets.UTF_8)
+        )
+        _finishActivity.postValue(true)
+    }
+
+    /**
+     * Request opening an app's launch activity on the connected watch.
+     */
+    fun sendOpenRequestMessage() {
+        messageClient.sendMessage(
+                watchId!!, References.REQUEST_OPEN_PACKAGE,
+                appInfo.value!!.packageName.toByteArray(Charsets.UTF_8)
+        )
+    }
+
 }

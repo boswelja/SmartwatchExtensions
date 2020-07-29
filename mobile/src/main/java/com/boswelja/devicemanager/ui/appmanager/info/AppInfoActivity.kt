@@ -7,7 +7,6 @@
  */
 package com.boswelja.devicemanager.ui.appmanager.info
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
 import androidx.activity.viewModels
@@ -16,6 +15,7 @@ import androidx.databinding.DataBindingUtil
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.appmanager.AppPackageInfo
 import com.boswelja.devicemanager.databinding.ActivityAppInfoBinding
+import com.boswelja.devicemanager.ui.appmanager.AppManagerActivity.Companion.EXTRA_WATCH_ID
 import com.boswelja.devicemanager.ui.base.BaseToolbarActivity
 
 class AppInfoActivity : BaseToolbarActivity() {
@@ -33,12 +33,16 @@ class AppInfoActivity : BaseToolbarActivity() {
 
         setupToolbar(binding.toolbarLayout.toolbar, showTitle = true, showUpButton = true)
 
-        val appInfo = intent?.extras?.getSerializable(EXTRA_APP_INFO) as AppPackageInfo?
+        val watchId = intent?.getStringExtra(EXTRA_WATCH_ID)
+        viewModel.watchId = watchId
+        val appInfo = intent?.getSerializableExtra(EXTRA_APP_INFO) as AppPackageInfo?
         viewModel.appInfo.postValue(appInfo)
 
         viewModel.appInfo.observe(this) {
-            setupButtons(it)
             setupRequestedPermissions(it)
+        }
+        viewModel.finishActivity.observe(this) {
+            if (it) finish()
         }
     }
 
@@ -47,29 +51,6 @@ class AppInfoActivity : BaseToolbarActivity() {
             onBackPressed()
         }
         return super.onOptionsItemSelected(item)
-    }
-
-    /**
-     * Sets click listeners and enabled states for all buttons.
-     * @param appInfo The [AppPackageInfo] to use for data etc.
-     */
-    private fun setupButtons(appInfo: AppPackageInfo) {
-        binding.openButton.setOnClickListener {
-            Intent().apply {
-                putExtra(EXTRA_APP_INFO, appInfo)
-            }.also {
-                setResult(RESULT_REQUEST_OPEN, it)
-                finish()
-            }
-        }
-        binding.uninstallButton.setOnClickListener {
-            Intent().apply {
-                putExtra(EXTRA_APP_INFO, appInfo)
-            }.also {
-                setResult(RESULT_REQUEST_UNINSTALL, it)
-                finish()
-            }
-        }
     }
 
     /**
@@ -102,8 +83,5 @@ class AppInfoActivity : BaseToolbarActivity() {
 
     companion object {
         const val EXTRA_APP_INFO = "extra_app_info"
-
-        const val RESULT_REQUEST_UNINSTALL = 718181
-        const val RESULT_REQUEST_OPEN = 181817
     }
 }
