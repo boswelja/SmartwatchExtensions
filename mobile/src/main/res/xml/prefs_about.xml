@@ -14,6 +14,7 @@
 
         <androidx.preference.Preference
             android:key="share"
+            android:title="@string/pref_about_share_title"
             android:icon="@drawable/pref_ic_share" />
 
         <androidx.preference.Preference

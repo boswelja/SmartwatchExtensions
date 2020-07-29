@@ -31,7 +31,7 @@ class AppInfoFragment :
     DonationResultInterface {
 
     private val viewModel: AppInfoViewModel by viewModels()
-
+    private val watchVersionPreference: Preference by lazy { findPreference(WATCH_VERSION_KEY)!! }
     private val customTabsIntent: CustomTabsIntent by lazy {
         CustomTabsIntent.Builder()
             .setShowTitle(true)
@@ -39,7 +39,6 @@ class AppInfoFragment :
             .build()
     }
 
-    private lateinit var watchVersionPreference: Preference
 
     override fun onPreferenceClick(preference: Preference?): Boolean {
         Timber.d("onPreferenceClick() called")
@@ -72,12 +71,22 @@ class AppInfoFragment :
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         addPreferencesFromResource(R.xml.prefs_about)
+        setupPreferences()
+
+        getWatchConnectionManager()?.connectedWatch?.observe(viewLifecycleOwner) {
+            it?.id?.let { id -> viewModel.requestUpdateWatchVersion(id) }
+        }
+        viewModel.watchAppVersion.observe(viewLifecycleOwner) {
+            setWatchVersionInfo(it)
+        }
+    }
+
+    private fun setupPreferences() {
         findPreference<Preference>(OPEN_PRIVACY_POLICY_KEY)!!.apply {
             onPreferenceClickListener = this@AppInfoFragment
         }
         findPreference<Preference>(SHARE_APP_KEY)!!.apply {
             isEnabled = !BuildConfig.DEBUG
-            title = getString(R.string.pref_about_share_title)
             onPreferenceClickListener = this@AppInfoFragment
         }
         findPreference<Preference>(LEAVE_REVIEW_KEY)!!.apply {
@@ -94,13 +103,6 @@ class AppInfoFragment :
         findPreference<Preference>(PHONE_VERSION_KEY)!!.apply {
             title = getString(R.string.pref_about_phone_version_title).format(BuildConfig.VERSION_NAME)
             summary = BuildConfig.VERSION_CODE.toString()
-        }
-        watchVersionPreference = findPreference(WATCH_VERSION_KEY)!!
-        getWatchConnectionManager()?.connectedWatch?.observe(viewLifecycleOwner) {
-            it?.id?.let { id -> viewModel.requestUpdateWatchVersion(id) }
-        }
-        viewModel.watchAppVersion.observe(viewLifecycleOwner) {
-            setWatchVersionInfo(it)
         }
     }
 
