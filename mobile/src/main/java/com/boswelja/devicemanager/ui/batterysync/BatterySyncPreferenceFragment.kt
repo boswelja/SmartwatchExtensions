@@ -99,13 +99,13 @@ class BatterySyncPreferenceFragment :
     override fun onStart() {
         super.onStart()
         Timber.d("onStart() called")
-        preferenceManager.sharedPreferences.registerOnSharedPreferenceChangeListener(this)
+        sharedPreferences.registerOnSharedPreferenceChangeListener(this)
     }
 
     override fun onStop() {
         super.onStop()
         Timber.d("onStop() called")
-        preferenceManager.sharedPreferences.unregisterOnSharedPreferenceChangeListener(this)
+        sharedPreferences.unregisterOnSharedPreferenceChangeListener(this)
     }
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
