@@ -163,7 +163,7 @@ class PhoneLockingPreferenceFragment :
      */
     private fun isInAccessibilityMode(): Boolean =
         Build.VERSION.SDK_INT >= Build.VERSION_CODES.P &&
-                (sharedPreferences.getString(PHONE_LOCKING_MODE_KEY, "0") == PHONE_LOCKING_MODE_ACCESSIBILITY_SERVICE)
+            (sharedPreferences.getString(PHONE_LOCKING_MODE_KEY, "0") == PHONE_LOCKING_MODE_ACCESSIBILITY_SERVICE)
 
     /**
      * Opens the device settings that correspond to phone locking mode.
