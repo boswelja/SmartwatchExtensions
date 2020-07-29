@@ -17,12 +17,13 @@ import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.Compat
 import com.boswelja.devicemanager.managespace.ManageSpaceActivity
 import com.boswelja.devicemanager.ui.base.BaseDayNightActivity.Companion.DAYNIGHT_MODE_KEY
-import com.boswelja.devicemanager.ui.base.BaseWatchPickerPreferenceFragment
+import com.boswelja.devicemanager.ui.base.BasePreferenceFragment
+import com.boswelja.devicemanager.ui.watchmanager.WatchManagerActivity
 import com.boswelja.devicemanager.ui.widget.WidgetSettingsActivity
 import timber.log.Timber
 
 class AppSettingsFragment :
-    BaseWatchPickerPreferenceFragment(),
+    BasePreferenceFragment(),
     Preference.OnPreferenceClickListener {
 
     private lateinit var openNotiSettingsPreference: Preference
@@ -35,7 +36,7 @@ class AppSettingsFragment :
                 true
             }
             OPEN_WATCH_MANAGER_KEY -> {
-                activity.startWatchManagerActivity()
+                startWatchManagerActivity()
                 true
             }
             OPEN_MANAGE_SPACE_KEY -> {
@@ -98,6 +99,16 @@ class AppSettingsFragment :
      */
     private fun updateDayNightModePreferenceSummary() {
         daynightModePreference.summary = daynightModePreference.entry
+    }
+
+    /**
+     * Start an instance of [WatchManagerActivity].
+     */
+    private fun startWatchManagerActivity() {
+        Timber.d("startWatchManagerActivity() called")
+        Intent(context, WatchManagerActivity::class.java).also {
+            startActivity(it)
+        }
     }
 
     /**

@@ -24,19 +24,21 @@ import com.boswelja.devicemanager.common.PreferenceKey.DND_SYNC_TO_PHONE_KEY
 import com.boswelja.devicemanager.common.PreferenceKey.DND_SYNC_TO_WATCH_KEY
 import com.boswelja.devicemanager.common.PreferenceKey.DND_SYNC_WITH_THEATER_KEY
 import com.boswelja.devicemanager.dndsync.DnDLocalChangeService
-import com.boswelja.devicemanager.ui.base.BaseWatchPickerPreferenceFragment
+import com.boswelja.devicemanager.ui.base.BasePreferenceFragment
 import com.boswelja.devicemanager.ui.dndsync.helper.DnDSyncHelperActivity
+import com.boswelja.devicemanager.watchmanager.WatchManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
 class DnDSyncPreferenceFragment :
-    BaseWatchPickerPreferenceFragment(),
+    BasePreferenceFragment(),
     SharedPreferences.OnSharedPreferenceChangeListener,
     Preference.OnPreferenceChangeListener {
 
     private val coroutineScope = MainScope()
+    private val watchManager by lazy { WatchManager.get(requireContext()) }
 
     private lateinit var notificationManager: NotificationManager
 
@@ -128,7 +130,7 @@ class DnDSyncPreferenceFragment :
                         sharedPreferences.edit(commit = true) {
                             putBoolean(changingKey, true)
                         }
-                        getWatchConnectionManager()?.updatePreferenceOnWatch(changingKey!!)
+                        watchManager.updatePreferenceOnWatch(changingKey!!)
                         changingKey = null
                     }
                 }
@@ -147,7 +149,7 @@ class DnDSyncPreferenceFragment :
             sharedPreferences.edit(commit = true) {
                 putBoolean(DND_SYNC_TO_WATCH_KEY, enabled)
             }
-            getWatchConnectionManager()?.updatePreferenceOnWatch(DND_SYNC_TO_WATCH_KEY)
+            watchManager.updatePreferenceOnWatch(DND_SYNC_TO_WATCH_KEY)
         }
         if (enabled) {
             Timber.i("Starting DnDLocalChangeService")
@@ -187,7 +189,7 @@ class DnDSyncPreferenceFragment :
                 sharedPreferences.edit(commit = true) {
                     putBoolean(key, enabled)
                 }
-                getWatchConnectionManager()?.updatePreferenceOnWatch(key)
+                watchManager.updatePreferenceOnWatch(key)
             }
         }
     }

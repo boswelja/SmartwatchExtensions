@@ -21,12 +21,8 @@ import com.boswelja.devicemanager.R
  */
 abstract class BasePreferenceFragment : PreferenceFragmentCompat() {
 
-    lateinit var sharedPreferences: SharedPreferences
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        sharedPreferences = preferenceManager.sharedPreferences
-    }
+    protected val sharedPreferences: SharedPreferences
+        get() = preferenceManager.sharedPreferences
 
     override fun onCreateRecyclerView(inflater: LayoutInflater?, parent: ViewGroup?, savedInstanceState: Bundle?): RecyclerView {
         val padding = resources.getDimension(R.dimen.recyclerview_vertical_padding)

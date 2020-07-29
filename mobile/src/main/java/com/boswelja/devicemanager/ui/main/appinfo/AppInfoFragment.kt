@@ -21,15 +21,18 @@ import com.boswelja.devicemanager.BuildConfig
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.GooglePlayUtils
 import com.boswelja.devicemanager.common.GooglePlayUtils.getPlayStoreLink
-import com.boswelja.devicemanager.ui.base.BaseWatchPickerPreferenceFragment
+import com.boswelja.devicemanager.ui.base.BasePreferenceFragment
 import com.boswelja.devicemanager.ui.changelog.ChangelogDialogFragment
+import com.boswelja.devicemanager.watchmanager.WatchManager
+import com.google.android.material.snackbar.Snackbar
 import timber.log.Timber
 
 class AppInfoFragment :
-    BaseWatchPickerPreferenceFragment(),
+    BasePreferenceFragment(),
     Preference.OnPreferenceClickListener,
     DonationResultInterface {
 
+    private val watchManager by lazy { WatchManager.get(requireContext()) }
     private val viewModel: AppInfoViewModel by viewModels()
     private val watchVersionPreference: Preference by lazy { findPreference(WATCH_VERSION_KEY)!! }
     private val customTabsIntent: CustomTabsIntent by lazy {
@@ -38,7 +41,6 @@ class AppInfoFragment :
             .setDefaultShareMenuItemEnabled(true)
             .build()
     }
-
 
     override fun onPreferenceClick(preference: Preference?): Boolean {
         Timber.d("onPreferenceClick() called")
@@ -54,26 +56,26 @@ class AppInfoFragment :
     }
 
     override fun billingSetupFailed() {
-        activity.createSnackBar(getString(R.string.donation_connection_failed_message))
+        Snackbar.make(requireView(), R.string.donation_connection_failed_message, Snackbar.LENGTH_LONG).show()
     }
 
     override fun skuQueryFailed() {
-        activity.createSnackBar(getString(R.string.donation_connection_failed_message))
+        Snackbar.make(requireView(), R.string.donation_connection_failed_message, Snackbar.LENGTH_LONG).show()
     }
 
     override fun donationFailed() {
-        activity.createSnackBar(getString(R.string.donation_failed_message))
+        Snackbar.make(requireView(), R.string.donation_failed_message, Snackbar.LENGTH_LONG).show()
     }
 
     override fun onDonate() {
-        activity.createSnackBar(getString(R.string.donation_processed_message))
+        Snackbar.make(requireView(), R.string.donation_processed_message, Snackbar.LENGTH_LONG).show()
     }
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         addPreferencesFromResource(R.xml.prefs_about)
         setupPreferences()
 
-        getWatchConnectionManager()?.connectedWatch?.observe(viewLifecycleOwner) {
+        watchManager.connectedWatch.observe(viewLifecycleOwner) {
             it?.id?.let { id -> viewModel.requestUpdateWatchVersion(id) }
         }
         viewModel.watchAppVersion.observe(viewLifecycleOwner) {
@@ -171,7 +173,7 @@ class AppInfoFragment :
         DonationDialog(R.style.AppTheme_AlertDialog).apply {
             setDonationResultInterface(this@AppInfoFragment)
         }.also {
-            it.show(activity.supportFragmentManager)
+            it.show(parentFragmentManager)
         }
     }
 
@@ -180,7 +182,7 @@ class AppInfoFragment :
      */
     private fun showChangelog() {
         Timber.d("showChangelog() called")
-        ChangelogDialogFragment().show(activity.supportFragmentManager)
+        ChangelogDialogFragment().show(parentFragmentManager)
     }
 
     companion object {

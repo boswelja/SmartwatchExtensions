@@ -21,7 +21,8 @@ import androidx.preference.SwitchPreference
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.PreferenceKey.PHONE_LOCKING_ENABLED_KEY
 import com.boswelja.devicemanager.phonelocking.Utils
-import com.boswelja.devicemanager.ui.base.BaseWatchPickerPreferenceFragment
+import com.boswelja.devicemanager.ui.base.BasePreferenceFragment
+import com.boswelja.devicemanager.watchmanager.WatchManager
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
@@ -29,12 +30,13 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 
 class PhoneLockingPreferenceFragment :
-    BaseWatchPickerPreferenceFragment(),
+    BasePreferenceFragment(),
     SharedPreferences.OnSharedPreferenceChangeListener,
     Preference.OnPreferenceClickListener,
     Preference.OnPreferenceChangeListener {
 
     private val coroutineScope = MainScope()
+    private val watchManager by lazy { WatchManager.get(requireContext()) }
 
     private lateinit var phoneLockModePreference: DropDownPreference
     private lateinit var openDeviceSettingsPreference: Preference
@@ -133,7 +135,7 @@ class PhoneLockingPreferenceFragment :
             sharedPreferences.edit(commit = true) {
                 putBoolean(PHONE_LOCKING_ENABLED_KEY, enabled)
             }
-            getWatchConnectionManager()?.updatePreferenceOnWatch(PHONE_LOCKING_ENABLED_KEY)
+            watchManager.updatePreferenceOnWatch(PHONE_LOCKING_ENABLED_KEY)
         }
     }
 

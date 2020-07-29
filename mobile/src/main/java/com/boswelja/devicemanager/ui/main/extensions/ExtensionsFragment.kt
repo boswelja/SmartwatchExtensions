@@ -14,15 +14,18 @@ import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.preference.confirmationdialog.ConfirmationDialogPrefFragment
 import com.boswelja.devicemanager.preference.confirmationdialog.ConfirmationDialogPreference
 import com.boswelja.devicemanager.ui.appmanager.AppManagerActivity
-import com.boswelja.devicemanager.ui.base.BaseWatchPickerPreferenceFragment
+import com.boswelja.devicemanager.ui.base.BasePreferenceFragment
 import com.boswelja.devicemanager.ui.batterysync.BatterySyncPreferenceActivity
 import com.boswelja.devicemanager.ui.dndsync.DnDSyncPreferenceActivity
 import com.boswelja.devicemanager.ui.phonelocking.PhoneLockingPreferenceActivity
+import com.boswelja.devicemanager.watchmanager.WatchManager
 import timber.log.Timber
 
 class ExtensionsFragment :
-    BaseWatchPickerPreferenceFragment(),
+    BasePreferenceFragment(),
     Preference.OnPreferenceClickListener {
+
+    private val watchManager by lazy { WatchManager.get(requireContext()) }
 
     override fun onPreferenceClick(preference: Preference?): Boolean {
         return when (preference?.key) {
@@ -98,7 +101,7 @@ class ExtensionsFragment :
      */
     private fun openAppManagerActivity() {
         Intent(requireContext(), AppManagerActivity::class.java).apply {
-            val connectedWatch = activity.watchManager.connectedWatch.value
+            val connectedWatch = watchManager.connectedWatch.value
             putExtra(AppManagerActivity.EXTRA_WATCH_ID, connectedWatch?.id)
             putExtra(AppManagerActivity.EXTRA_WATCH_NAME, connectedWatch?.name)
         }.also {

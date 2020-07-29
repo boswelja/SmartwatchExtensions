@@ -18,7 +18,6 @@ import android.widget.ArrayAdapter
 import androidx.appcompat.widget.AppCompatSpinner
 import androidx.appcompat.widget.AppCompatTextView
 import com.boswelja.devicemanager.R
-import com.boswelja.devicemanager.ui.watchmanager.WatchManagerActivity
 import com.boswelja.devicemanager.ui.watchsetup.WatchSetupActivity
 import com.boswelja.devicemanager.watchmanager.WatchManager
 import com.boswelja.devicemanager.watchmanager.WatchStatus
@@ -146,16 +145,6 @@ abstract class BaseWatchPickerActivity :
     }
 
     /**
-     * Start an instance of [WatchManagerActivity].
-     */
-    fun startWatchManagerActivity() {
-        Timber.d("startWatchManagerActivity() called")
-        Intent(this, WatchManagerActivity::class.java).also {
-            startActivityForResult(it, WATCH_MANAGER_ACTIVITY_REQUEST_CODE)
-        }
-    }
-
-    /**
      * Start an instance of [WatchSetupActivity].
      */
     private fun startSetupActivity() {
@@ -167,7 +156,6 @@ abstract class BaseWatchPickerActivity :
 
     companion object {
         private const val WATCH_SETUP_ACTIVITY_REQUEST_CODE = 54321
-        private const val WATCH_MANAGER_ACTIVITY_REQUEST_CODE = 65432
     }
 
     class WatchPickerAdapter(context: Context) : ArrayAdapter<Watch>(context, 0) {
