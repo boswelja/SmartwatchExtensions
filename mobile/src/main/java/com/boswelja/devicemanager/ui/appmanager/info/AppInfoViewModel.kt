@@ -67,8 +67,8 @@ class AppInfoViewModel(application: Application) : AndroidViewModel(application)
      */
     fun sendUninstallRequestMessage() {
         messageClient.sendMessage(
-                watchId!!, References.REQUEST_UNINSTALL_PACKAGE,
-                appInfo.value!!.packageName.toByteArray(Charsets.UTF_8)
+            watchId!!, References.REQUEST_UNINSTALL_PACKAGE,
+            appInfo.value!!.packageName.toByteArray(Charsets.UTF_8)
         )
         _finishActivity.postValue(true)
     }
@@ -78,9 +78,8 @@ class AppInfoViewModel(application: Application) : AndroidViewModel(application)
      */
     fun sendOpenRequestMessage() {
         messageClient.sendMessage(
-                watchId!!, References.REQUEST_OPEN_PACKAGE,
-                appInfo.value!!.packageName.toByteArray(Charsets.UTF_8)
+            watchId!!, References.REQUEST_OPEN_PACKAGE,
+            appInfo.value!!.packageName.toByteArray(Charsets.UTF_8)
         )
     }
-
 }

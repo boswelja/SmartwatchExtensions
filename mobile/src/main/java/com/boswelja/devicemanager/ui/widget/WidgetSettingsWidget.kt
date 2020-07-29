@@ -61,7 +61,7 @@ class WidgetSettingsWidget : Fragment() {
 
     private fun setWidgetBackgroundEnabled(backgroundVisible: Boolean) {
         val widgetBackgroundView =
-                binding.widgetContainer.findViewById<AppCompatImageView>(R.id.widget_background)
+            binding.widgetContainer.findViewById<AppCompatImageView>(R.id.widget_background)
         if (backgroundVisible) {
             widgetBackgroundView.setImageResource(R.drawable.widget_background)
         } else {
@@ -71,7 +71,7 @@ class WidgetSettingsWidget : Fragment() {
 
     private fun setWidgetBackgroundOpacity(backgroundOpacity: Int) {
         val widgetBackgroundView =
-                binding.widgetContainer.findViewById<AppCompatImageView>(R.id.widget_background)
+            binding.widgetContainer.findViewById<AppCompatImageView>(R.id.widget_background)
         widgetBackgroundView.alpha = backgroundOpacity / 100.0f
     }
 
