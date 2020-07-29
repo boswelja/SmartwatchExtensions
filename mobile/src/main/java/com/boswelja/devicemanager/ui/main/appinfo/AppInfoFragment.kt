@@ -11,6 +11,7 @@ import android.content.ContentResolver
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.view.View
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.core.net.toUri
 import androidx.fragment.app.viewModels
@@ -74,12 +75,15 @@ class AppInfoFragment :
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         addPreferencesFromResource(R.xml.prefs_about)
         setupPreferences()
+    }
 
-        watchManager.connectedWatch.observe(viewLifecycleOwner) {
-            it?.id?.let { id -> viewModel.requestUpdateWatchVersion(id) }
-        }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         viewModel.watchAppVersion.observe(viewLifecycleOwner) {
             setWatchVersionInfo(it)
+        }
+        watchManager.connectedWatch.observe(viewLifecycleOwner) {
+            it?.id?.let { id -> viewModel.requestUpdateWatchVersion(id) }
         }
     }
 

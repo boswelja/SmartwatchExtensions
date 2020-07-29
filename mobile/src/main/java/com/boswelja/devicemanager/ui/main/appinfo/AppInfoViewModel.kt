@@ -23,6 +23,7 @@ class AppInfoViewModel(application: Application) : AndroidViewModel(application)
     private val messageListener = MessageClient.OnMessageReceivedListener {
         when (it.path) {
             References.REQUEST_APP_VERSION -> {
+                Timber.i("Got watch app version")
                 val versionInfo = parseWatchVersionInfo(it.data)
                 _watchAppVersion.postValue(versionInfo)
             }
