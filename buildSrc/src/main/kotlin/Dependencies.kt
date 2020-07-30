@@ -32,13 +32,13 @@ object Libraries {
         const val androidxBrowser = "1.3.0-alpha04"
         const val androidxConstraintLayout = "2.0.0-beta8"
         const val androidxCoreKtx = "1.4.0-alpha01"
-        const val androidxFragment = "1.3.0-alpha06"
-        const val androidxLifecycle = "2.3.0-alpha05"
+        const val androidxFragment = "1.3.0-alpha07"
+        const val androidxLifecycle = "2.3.0-alpha06"
         const val androidxNavigation = "2.3.0"
         const val androidxPreference = "1.1.1"
-        const val androidxRoom = "2.3.0-alpha01"
+        const val androidxRoom = "2.3.0-alpha02"
         const val androidxWear = "1.1.0-rc02"
-        const val androidxWork = "2.4.0-rc01"
+        const val androidxWork = "2.4.0"
 
         const val billingClient = "3.0.0"
 
