@@ -11,22 +11,15 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 
 @Database(entities = [WatchBatteryStats::class], version = 2)
 abstract class WatchBatteryStatsDatabase : RoomDatabase() {
 
     abstract fun batteryStatsDao(): BatteryStatsDao
 
-    /**
-     * Updates a [WatchBatteryStats] object in the database based on it's primary key.
-     * @param watchBatteryStats The [WatchBatteryStats] object containing new data.
-     */
-    suspend fun updateWatchBatteryStats(watchBatteryStats: WatchBatteryStats) {
-        withContext(Dispatchers.IO) {
-            batteryStatsDao().updateStats(watchBatteryStats)
-        }
+    override fun close() {
+        INSTANCE = null
+        super.close()
     }
 
     companion object {

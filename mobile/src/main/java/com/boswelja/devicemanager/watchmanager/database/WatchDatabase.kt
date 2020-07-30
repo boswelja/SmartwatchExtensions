@@ -54,6 +54,11 @@ abstract class WatchDatabase : RoomDatabase() {
         return false
     }
 
+    override fun close() {
+        INSTANCE = null
+        super.close()
+    }
+
     companion object {
         private var INSTANCE: WatchDatabase? = null
 

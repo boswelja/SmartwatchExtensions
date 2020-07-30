@@ -88,6 +88,11 @@ abstract class MessageDatabase : RoomDatabase() {
         return false
     }
 
+    override fun close() {
+        INSTANCE = null
+        super.close()
+    }
+
     companion object {
         private var INSTANCE: MessageDatabase? = null
 
