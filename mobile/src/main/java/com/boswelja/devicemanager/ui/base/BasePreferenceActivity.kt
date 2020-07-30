@@ -9,13 +9,24 @@ package com.boswelja.devicemanager.ui.base
 
 import android.os.Bundle
 import android.view.View
+import androidx.fragment.app.Fragment
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.databinding.ActivitySettingsBinding
 import timber.log.Timber
 
-abstract class BasePreferenceActivity :
-    BaseToolbarActivity(),
-    PreferenceActivityInterface {
+abstract class BasePreferenceActivity : BaseToolbarActivity() {
+
+    /**
+     * Get an instance of a class that extends [BasePreferenceFragment] here.
+     * Must not be null.
+     */
+    abstract fun getPreferenceFragment(): BasePreferenceFragment
+
+    /**
+     * Get an instance of a class that extends [Fragment] here to be used as a settings widget.
+     * Null if you do not need a settings widget.
+     */
+    abstract fun getWidgetFragment(): Fragment?
 
     private lateinit var binding: ActivitySettingsBinding
 
