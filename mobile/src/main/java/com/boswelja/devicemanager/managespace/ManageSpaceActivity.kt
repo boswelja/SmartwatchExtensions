@@ -24,7 +24,6 @@ import com.boswelja.devicemanager.watchmanager.WatchManager
 import com.boswelja.devicemanager.watchmanager.database.WatchDatabase
 import com.boswelja.devicemanager.watchmanager.item.Watch
 import com.boswelja.devicemanager.widgetdb.WidgetDatabase
-import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Tasks
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
@@ -32,6 +31,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 import java.io.File
+import java.lang.Exception
 
 class ManageSpaceActivity : BaseToolbarActivity() {
 
@@ -281,10 +281,12 @@ class ManageSpaceActivity : BaseToolbarActivity() {
                         withContext(Dispatchers.Main) {
                             incrementProgressBar()
                         }
-                    } catch (e: ApiException) {
-                        initProgressBar(0)
-                        setProgressStatus(getString(R.string.reset_app_failed_for, watch.name))
-                        setButtonsEnabled(true)
+                    } catch (e: Exception) {
+                        withContext(Dispatchers.Main) {
+                            initProgressBar(0)
+                            setProgressStatus(getString(R.string.reset_app_failed_for, watch.name))
+                            setButtonsEnabled(true)
+                        }
                         return@launch
                     }
                     watchManager.forgetWatch(watch.id)
@@ -296,11 +298,7 @@ class ManageSpaceActivity : BaseToolbarActivity() {
             withContext(Dispatchers.Main) {
                 setProgressStatus(getString(R.string.reset_app_resetting_database_for, getString(R.string.database_name_battery_stats)))
             }
-            WatchBatteryStatsDatabase.get(this@ManageSpaceActivity).apply {
-                clearAllTables()
-            }.also {
-                it.close()
-            }
+            WatchBatteryStatsDatabase.get(this@ManageSpaceActivity).clearAllTables()
             withContext(Dispatchers.Main) {
                 incrementProgressBar()
                 setProgressStatus(getString(R.string.reset_app_resetting_database_for, getString(R.string.database_name_widget)))
