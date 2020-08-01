@@ -9,7 +9,6 @@ package com.boswelja.devicemanager.ui.watchmanager
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.boswelja.devicemanager.databinding.ActivityWatchManagerBinding
 import com.boswelja.devicemanager.ui.base.BaseToolbarActivity
 import com.boswelja.devicemanager.ui.watchsetup.WatchSetupActivity
@@ -40,25 +39,11 @@ class WatchManagerActivity :
         setContentView(binding.root)
 
         setupToolbar(binding.toolbarLayout.toolbar, showTitle = true, showUpButton = true)
-        setupRecyclerView()
+        binding.watchManagerRecyclerView.adapter = adapter
 
         watchManager = WatchManager.get(this)
         watchManager.database.watchDao().getAllObservable().observe(this) {
             adapter.submitList(it)
-        }
-    }
-
-    /**
-     * Set up the watch manager RecyclerView.
-     */
-    private fun setupRecyclerView() {
-        binding.watchManagerRecyclerView.apply {
-            adapter = this@WatchManagerActivity.adapter
-            layoutManager = LinearLayoutManager(
-                this@WatchManagerActivity,
-                LinearLayoutManager.VERTICAL,
-                false
-            )
         }
     }
 
