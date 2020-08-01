@@ -80,7 +80,7 @@ class WatchSetupFragment : Fragment() {
                 if (availableWatches != null) {
                     if (availableWatches.isNotEmpty()) {
                         (watchSetupRecyclerView.adapter as WatchSetupAdapter)
-                            .setWatches(availableWatches)
+                            .submitList(availableWatches)
                     } else {
                         setHelpMessage(getString(R.string.register_watch_message_no_watches))
                     }

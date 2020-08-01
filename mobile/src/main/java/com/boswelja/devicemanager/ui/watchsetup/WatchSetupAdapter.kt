@@ -8,25 +8,22 @@
 package com.boswelja.devicemanager.ui.watchsetup
 
 import android.view.ViewGroup
-import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.ListAdapter
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.recyclerview.item.IconTwoLineViewHolder
+import com.boswelja.devicemanager.ui.common.WatchDiffCallback
 import com.boswelja.devicemanager.watchmanager.WatchStatus
 import com.boswelja.devicemanager.watchmanager.item.Watch
 
 class WatchSetupAdapter(private val watchSetupFragment: WatchSetupFragment) :
-    RecyclerView.Adapter<IconTwoLineViewHolder>() {
-
-    private val watches = ArrayList<Watch>()
-
-    override fun getItemCount(): Int = watches.count()
+    ListAdapter<Watch, IconTwoLineViewHolder>(WatchDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): IconTwoLineViewHolder {
         return IconTwoLineViewHolder.from(parent)
     }
 
     override fun onBindViewHolder(holder: IconTwoLineViewHolder, position: Int) {
-        val watch = watches[position]
+        val watch = getItem(position)
         val context = holder.itemView.context
         val summary = context.getString(
             when (watch.status) {
@@ -41,17 +38,5 @@ class WatchSetupAdapter(private val watchSetupFragment: WatchSetupFragment) :
                 watchSetupFragment.confirmRegisterWatch(watch)
             }
         }
-    }
-
-    /**
-     * Set the [List] of [Watch] objects to show.
-     * @param newWatches The new [Watch] objects to show.
-     */
-    fun setWatches(newWatches: List<Watch>) {
-        watches.apply {
-            clear()
-            addAll(newWatches)
-        }
-        notifyDataSetChanged()
     }
 }
