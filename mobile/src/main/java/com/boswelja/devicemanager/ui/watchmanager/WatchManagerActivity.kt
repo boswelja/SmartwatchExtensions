@@ -16,12 +16,10 @@ import com.boswelja.devicemanager.ui.watchsetup.WatchSetupActivity
 import com.boswelja.devicemanager.ui.watchsetup.WatchSetupActivity.Companion.EXTRA_SKIP_WELCOME
 import com.boswelja.devicemanager.watchmanager.WatchManager
 import com.boswelja.devicemanager.watchmanager.item.Watch
-import kotlinx.coroutines.MainScope
 
 class WatchManagerActivity :
     BaseToolbarActivity() {
 
-    private val coroutineScope = MainScope()
     private val adapter by lazy { WatchManagerAdapter(this) }
 
     private lateinit var watchManager: WatchManager
@@ -41,7 +39,7 @@ class WatchManagerActivity :
 
         watchManager = WatchManager.get(this)
         watchManager.database.watchDao().getAllObservable().observe(this) {
-            adapter.setWatches(it)
+            adapter.submitList(it)
         }
     }
 

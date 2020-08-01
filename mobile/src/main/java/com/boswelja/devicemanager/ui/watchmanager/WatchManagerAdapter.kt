@@ -8,20 +8,20 @@
 package com.boswelja.devicemanager.ui.watchmanager
 
 import android.view.ViewGroup
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.recyclerview.item.IconOneLineViewHolder
 import com.boswelja.devicemanager.common.recyclerview.item.IconTwoLineViewHolder
 import com.boswelja.devicemanager.common.recyclerview.item.SectionHeaderViewHolder
+import com.boswelja.devicemanager.ui.common.WatchDiffCallback
 import com.boswelja.devicemanager.watchmanager.WatchStatus
 import com.boswelja.devicemanager.watchmanager.item.Watch
 
 class WatchManagerAdapter(private val activity: WatchManagerActivity) :
-    RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+    ListAdapter<Watch, RecyclerView.ViewHolder>(WatchDiffCallback()) {
 
-    private val watches = ArrayList<Watch>()
-
-    override fun getItemCount(): Int = watches.count() + 2
+    override fun getItemCount(): Int = super.getItemCount() + 2
 
     override fun getItemViewType(position: Int): Int {
         return when (position) {
@@ -52,7 +52,7 @@ class WatchManagerAdapter(private val activity: WatchManagerActivity) :
                 holder.bind(context.getString(R.string.watch_manager_registered_watch_header))
             }
             is IconTwoLineViewHolder -> {
-                val watch = getWatch(position)
+                val watch = getItem(position)
                 val summary = context.getString(
                     when (watch.status) {
                         WatchStatus.CONNECTED -> R.string.watch_status_connected
@@ -69,20 +69,6 @@ class WatchManagerAdapter(private val activity: WatchManagerActivity) :
                 }
             }
         }
-    }
-
-    private fun getWatch(position: Int) = watches[position - 2]
-
-    /**
-     * Sets the [List] of [Watch] objects to show.
-     * @param newWatches The new [List] of [Watch] objects to show.
-     */
-    fun setWatches(newWatches: List<Watch>) {
-        watches.apply {
-            clear()
-            addAll(newWatches)
-        }
-        notifyDataSetChanged()
     }
 
     companion object {
