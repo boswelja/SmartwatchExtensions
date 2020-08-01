@@ -64,7 +64,7 @@ class WatchSetupFragment : Fragment() {
     private fun setupRecyclerView() {
         watchSetupRecyclerView.apply {
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-            adapter = WatchSetupAdapter(this@WatchSetupFragment)
+            adapter = WatchSetupAdapter { confirmRegisterWatch(it) }
         }
     }
 

@@ -15,7 +15,7 @@ import com.boswelja.devicemanager.ui.common.WatchDiffCallback
 import com.boswelja.devicemanager.watchmanager.WatchStatus
 import com.boswelja.devicemanager.watchmanager.item.Watch
 
-class WatchSetupAdapter(private val watchSetupFragment: WatchSetupFragment) :
+class WatchSetupAdapter(private val clickCallback: (watch: Watch) -> Unit) :
     ListAdapter<Watch, IconTwoLineViewHolder>(WatchDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): IconTwoLineViewHolder {
@@ -35,7 +35,7 @@ class WatchSetupAdapter(private val watchSetupFragment: WatchSetupFragment) :
         holder.apply {
             bind(R.drawable.ic_watch, watch.name, summary)
             itemView.setOnClickListener {
-                watchSetupFragment.confirmRegisterWatch(watch)
+                clickCallback(watch)
             }
         }
     }
