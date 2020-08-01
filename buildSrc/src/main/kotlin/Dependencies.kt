@@ -4,7 +4,7 @@ const val kotlinVersion = "1.4.0-rc"
 
 object BuildPlugins {
     object Versions {
-        const val buildToolsVersion = "4.2.0-alpha06"
+        const val buildToolsVersion = "4.2.0-alpha07"
         const val googleServicesVersion = "4.3.3"
     }
 
