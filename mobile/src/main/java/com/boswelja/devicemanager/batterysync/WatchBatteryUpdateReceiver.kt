@@ -64,12 +64,9 @@ class WatchBatteryUpdateReceiver : WearableListenerService() {
         }
     }
 
-    private suspend fun updateStatsInDatabase() {
-        WatchBatteryStatsDatabase.get(this@WatchBatteryUpdateReceiver).also {
-            Timber.i("Updating battery stats in database")
-            it.updateWatchBatteryStats(watchBatteryStats)
-            it.close()
-        }
+    private fun updateStatsInDatabase() {
+        WatchBatteryStatsDatabase.get(this)
+            .batteryStatsDao().updateStats(watchBatteryStats)
     }
 
     private fun handleNoti(database: WatchDatabase, watch: Watch) {

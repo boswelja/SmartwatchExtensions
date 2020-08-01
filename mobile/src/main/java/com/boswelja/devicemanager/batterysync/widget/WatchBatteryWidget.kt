@@ -108,7 +108,6 @@ class WatchBatteryWidget : AppWidgetProvider() {
             }
 
             widgetDatabase.close()
-            batteryStatsDatabase.close()
         }
     }
 
