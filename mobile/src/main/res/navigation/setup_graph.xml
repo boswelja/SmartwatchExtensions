@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/setup_graph"
+    app:startDestination="@id/welcomeFragment">
+
+    <fragment
+        android:id="@+id/welcomeFragment"
+        android:name="com.boswelja.devicemanager.ui.watchsetup.WelcomeFragment"
+        tools:layout="@layout/fragment_welcome">
+        <action
+            android:id="@+id/to_setupFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_right"
+            app:destination="@id/watchSetupFragment" />
+
+        <action
+            android:id="@+id/start_setupFragment"
+            app:popUpTo="@id/welcomeFragment"
+            app:popUpToInclusive="true"
+            app:destination="@id/watchSetupFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/watchSetupFragment"
+        android:name="com.boswelja.devicemanager.ui.watchsetup.WatchSetupFragment"
+        android:label="@string/register_watch_toolbar_title"
+        tools:layout="@layout/fragment_watch_setup" />
+
+</navigation>

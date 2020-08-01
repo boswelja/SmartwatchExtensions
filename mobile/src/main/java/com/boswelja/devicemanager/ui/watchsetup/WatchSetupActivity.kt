@@ -8,15 +8,18 @@
 package com.boswelja.devicemanager.ui.watchsetup
 
 import android.os.Bundle
+import androidx.navigation.findNavController
+import androidx.navigation.ui.NavigationUI
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.databinding.ActivityWatchSetupBinding
 import com.boswelja.devicemanager.ui.base.BaseToolbarActivity
 
 class WatchSetupActivity : BaseToolbarActivity() {
 
-    private lateinit var binding: ActivityWatchSetupBinding
+    private val skippedWelcome by lazy { intent.getBooleanExtra(EXTRA_SKIP_WELCOME, false) }
+    private val navController by lazy { findNavController(R.id.nav_host_fragment) }
 
-    private var useFirstFragmentAnimation = true
+    private lateinit var binding: ActivityWatchSetupBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -25,60 +28,24 @@ class WatchSetupActivity : BaseToolbarActivity() {
         setContentView(binding.root)
 
         setupToolbar(binding.toolbarLayout.toolbar)
+        NavigationUI.setupActionBarWithNavController(this, navController)
+
+        navController.addOnDestinationChangedListener { _, destination, _ ->
+            supportActionBar?.setDisplayShowTitleEnabled(destination.id == R.id.watchSetupFragment)
+        }
 
         setResult(RESULT_NO_WATCH_ADDED)
 
-        val shouldSkipWelcome = intent.getBooleanExtra(EXTRA_SKIP_WELCOME, false)
-        if (shouldSkipWelcome) {
-            startSetupFlow()
-        } else {
-            supportActionBar?.setDisplayHomeAsUpEnabled(false)
-            showWelcomeFragment()
+        if (skippedWelcome) {
+            navController.navigate(R.id.start_setupFragment)
         }
     }
 
-    /**
-     * Shows the [WelcomeFragment].
-     */
-    private fun showWelcomeFragment() {
-        supportActionBar?.setDisplayShowTitleEnabled(false)
-        supportFragmentManager.beginTransaction().apply {
-            replace(R.id.fragment_holder, WelcomeFragment())
-            addToBackStack("WelcomeFragment")
-            setCustomAnimations(R.anim.fade_in, R.anim.slide_out_right)
-        }.also {
-            it.commit()
-        }
-        useFirstFragmentAnimation = false
-    }
-
-    /**
-     * Shows the [WatchSetupFragment].
-     */
-    private fun showWatchSetupFragment() {
-        supportActionBar?.title = getString(R.string.register_watch_toolbar_title)
-        supportActionBar?.apply {
-            setDisplayShowTitleEnabled(true)
-            setDisplayHomeAsUpEnabled(true)
-        }
-        supportFragmentManager.beginTransaction().apply {
-            replace(R.id.fragment_holder, WatchSetupFragment())
-            if (useFirstFragmentAnimation) {
-                setCustomAnimations(R.anim.fade_in, R.anim.slide_out_left)
-                useFirstFragmentAnimation = false
-            } else {
-                setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)
-            }
-        }.also {
-            it.commit()
-        }
-    }
-
-    /**
-     * Starts the app setup flow.
-     */
-    fun startSetupFlow() {
-        showWatchSetupFragment()
+    override fun onSupportNavigateUp(): Boolean {
+        return if (skippedWelcome) {
+            finish()
+            true
+        } else super.onSupportNavigateUp()
     }
 
     companion object {
