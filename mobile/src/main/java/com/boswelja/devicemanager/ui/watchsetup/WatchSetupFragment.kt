@@ -15,13 +15,11 @@ import android.widget.ProgressBar
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.boswelja.devicemanager.R
+import com.boswelja.devicemanager.databinding.FragmentWatchSetupBinding
 import com.boswelja.devicemanager.watchmanager.WatchManager
 import com.boswelja.devicemanager.watchmanager.WatchStatus
 import com.boswelja.devicemanager.watchmanager.item.Watch
-import com.google.android.material.button.MaterialButton
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
@@ -33,39 +31,20 @@ class WatchSetupFragment : Fragment() {
 
     private var watchConnectionManager: WatchManager? = null
 
-    private lateinit var refreshButton: MaterialButton
-    private lateinit var progressBar: ProgressBar
-    private lateinit var watchSetupRecyclerView: RecyclerView
-    private lateinit var helpTextView: AppCompatTextView
+    private lateinit var binding: FragmentWatchSetupBinding
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_watch_setup, container, false)
+        binding = FragmentWatchSetupBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        refreshButton = view.findViewById(R.id.refresh_button)
-        refreshButton.setOnClickListener {
-            refreshAvailableWatches()
-        }
-        progressBar = view.findViewById(R.id.progress_bar)
-        watchSetupRecyclerView = view.findViewById(R.id.watch_setup_recyclerview)
-        helpTextView = view.findViewById(R.id.help_text_view)
-
-        setupRecyclerView()
+        binding.refreshButton.setOnClickListener { refreshAvailableWatches() }
+        binding.watchSetupRecyclerview.adapter = WatchSetupAdapter { confirmRegisterWatch(it) }
         setLoading(true)
 
         watchConnectionManager = WatchManager.get(requireContext())
         refreshAvailableWatches()
-    }
-
-    /**
-     * Set up [watchSetupRecyclerView].
-     */
-    private fun setupRecyclerView() {
-        watchSetupRecyclerView.apply {
-            layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-            adapter = WatchSetupAdapter { confirmRegisterWatch(it) }
-        }
     }
 
     /**
@@ -79,7 +58,7 @@ class WatchSetupFragment : Fragment() {
             withContext(Dispatchers.Main) {
                 if (availableWatches != null) {
                     if (availableWatches.isNotEmpty()) {
-                        (watchSetupRecyclerView.adapter as WatchSetupAdapter)
+                        (binding.watchSetupRecyclerview.adapter as WatchSetupAdapter)
                             .submitList(availableWatches)
                     } else {
                         setHelpMessage(getString(R.string.register_watch_message_no_watches))
@@ -97,12 +76,14 @@ class WatchSetupFragment : Fragment() {
      * @param loading true if the loading view should be shown, false otherwise
      */
     fun setLoading(loading: Boolean) {
-        refreshButton.isEnabled = !loading
-        watchSetupRecyclerView.isEnabled = !loading
-        progressBar.visibility = if (loading) {
-            ProgressBar.VISIBLE
-        } else {
-            ProgressBar.INVISIBLE
+        binding.apply {
+            refreshButton.isEnabled = !loading
+            watchSetupRecyclerview.isEnabled = !loading
+            progressBar.visibility = if (loading) {
+                ProgressBar.VISIBLE
+            } else {
+                ProgressBar.INVISIBLE
+            }
         }
     }
 
@@ -111,17 +92,21 @@ class WatchSetupFragment : Fragment() {
      * @param text The help text to show.
      */
     fun setHelpMessage(text: String) {
-        helpTextView.visibility = AppCompatTextView.VISIBLE
-        watchSetupRecyclerView.isEnabled = false
-        helpTextView.text = text
+        binding.apply {
+            helpTextView.visibility = AppCompatTextView.VISIBLE
+            watchSetupRecyclerview.isEnabled = false
+            helpTextView.text = text
+        }
     }
 
     /**
      * Removes the help text.
      */
     fun hideHelpMessage() {
-        helpTextView.visibility = AppCompatTextView.INVISIBLE
-        watchSetupRecyclerView.isEnabled = true
+        binding.apply {
+            helpTextView.visibility = AppCompatTextView.INVISIBLE
+            watchSetupRecyclerview.isEnabled = true
+        }
     }
 
     /**
@@ -142,7 +127,7 @@ class WatchSetupFragment : Fragment() {
      * Asks the user whether they want to register a given [Watch].
      * @param watch The [Watch] in question.
      */
-    fun confirmRegisterWatch(watch: Watch) {
+    private fun confirmRegisterWatch(watch: Watch) {
         AlertDialog.Builder(requireContext()).apply {
             if (watch.status != WatchStatus.MISSING_APP) {
                 setTitle(getString(R.string.register_watch_dialog_title, watch.name))
