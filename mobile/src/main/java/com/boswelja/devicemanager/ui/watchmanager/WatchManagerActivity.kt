@@ -20,7 +20,10 @@ import com.boswelja.devicemanager.watchmanager.item.Watch
 class WatchManagerActivity :
     BaseToolbarActivity() {
 
-    private val adapter by lazy { WatchManagerAdapter(this) }
+    private val adapter by lazy { WatchManagerAdapter {
+        if (it != null) openWatchInfoActivity(it)
+        else openWatchSetupActivity()
+    } }
 
     private lateinit var watchManager: WatchManager
 
@@ -60,7 +63,7 @@ class WatchManagerActivity :
     /**
      * Opens a [WatchSetupActivity].
      */
-    fun openWatchSetupActivity() {
+    private fun openWatchSetupActivity() {
         Intent(this, WatchSetupActivity::class.java).apply {
             putExtra(EXTRA_SKIP_WELCOME, true)
         }.also {
@@ -71,7 +74,7 @@ class WatchManagerActivity :
     /**
      * Opens a [WatchInfoActivity].
      */
-    fun openWatchInfoActivity(watch: Watch) {
+    private fun openWatchInfoActivity(watch: Watch) {
         Intent(this, WatchInfoActivity::class.java).apply {
             putExtra(WatchInfoActivity.EXTRA_WATCH_ID, watch.id)
         }.also {

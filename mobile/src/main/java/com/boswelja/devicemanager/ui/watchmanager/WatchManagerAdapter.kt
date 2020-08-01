@@ -18,7 +18,7 @@ import com.boswelja.devicemanager.ui.common.WatchDiffCallback
 import com.boswelja.devicemanager.watchmanager.WatchStatus
 import com.boswelja.devicemanager.watchmanager.item.Watch
 
-class WatchManagerAdapter(private val activity: WatchManagerActivity) :
+class WatchManagerAdapter(private val clickListener: (watch: Watch?) -> Unit) :
     ListAdapter<Watch, RecyclerView.ViewHolder>(WatchDiffCallback()) {
 
     override fun getItemCount(): Int = super.getItemCount() + 2
@@ -45,7 +45,7 @@ class WatchManagerAdapter(private val activity: WatchManagerActivity) :
             is IconOneLineViewHolder -> {
                 holder.bind(R.drawable.ic_add, context.getString(R.string.watch_manager_add_watch_title))
                 holder.itemView.setOnClickListener {
-                    activity.openWatchSetupActivity()
+                    clickListener(null)
                 }
             }
             is SectionHeaderViewHolder -> {
@@ -64,7 +64,7 @@ class WatchManagerAdapter(private val activity: WatchManagerActivity) :
                 holder.apply {
                     bind(R.drawable.ic_watch, watch.name, summary)
                     itemView.setOnClickListener {
-                        activity.openWatchInfoActivity(watch)
+                        clickListener(watch)
                     }
                 }
             }
