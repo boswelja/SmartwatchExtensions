@@ -54,8 +54,8 @@ class ChangelogDialogFragment : BottomSheetDialogFragment() {
      */
     private fun processChangelog(): Array<String> {
         Timber.d("processChangelog() called")
-        val rawChangelog = context?.resources?.getStringArray(R.array.version_changelog)!!
-        val bullet = context?.getString(R.string.changelog_change_prefix)!!
+        val rawChangelog = requireContext().resources.getStringArray(R.array.version_changelog)
+        val bullet = requireContext().getString(R.string.changelog_change_prefix)
         val processedChangelog = ArrayList<String>()
         for (change in rawChangelog) {
             processedChangelog.add("$bullet $change")
