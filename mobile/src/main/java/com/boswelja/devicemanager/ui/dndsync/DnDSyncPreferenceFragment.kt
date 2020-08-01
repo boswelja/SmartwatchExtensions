@@ -7,8 +7,6 @@
  */
 package com.boswelja.devicemanager.ui.dndsync
 
-import android.app.NotificationManager
-import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Build
@@ -27,8 +25,8 @@ import com.boswelja.devicemanager.dndsync.DnDLocalChangeService
 import com.boswelja.devicemanager.ui.base.BasePreferenceFragment
 import com.boswelja.devicemanager.ui.dndsync.helper.DnDSyncHelperActivity
 import com.boswelja.devicemanager.watchmanager.WatchManager
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -37,14 +35,12 @@ class DnDSyncPreferenceFragment :
     SharedPreferences.OnSharedPreferenceChangeListener,
     Preference.OnPreferenceChangeListener {
 
-    private val coroutineScope = MainScope()
+    private val coroutineScope = CoroutineScope(Dispatchers.IO)
     private val watchManager by lazy { WatchManager.get(requireContext()) }
 
-    private lateinit var notificationManager: NotificationManager
-
-    private lateinit var dndSyncToWatchPreference: SwitchPreference
-    private lateinit var dndSyncToPhonePreference: SwitchPreference
-    private lateinit var dndSyncWithTheaterPreference: SwitchPreference
+    private val dndSyncToWatchPreference: SwitchPreference by lazy { findPreference(DND_SYNC_TO_WATCH_KEY)!! }
+    private val dndSyncToPhonePreference: SwitchPreference by lazy { findPreference(DND_SYNC_TO_PHONE_KEY)!! }
+    private val dndSyncWithTheaterPreference: SwitchPreference by lazy { findPreference(DND_SYNC_WITH_THEATER_KEY)!! }
 
     private var changingKey: String? = null
 
@@ -86,19 +82,9 @@ class DnDSyncPreferenceFragment :
         }
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        Timber.d("onCreate() called")
-        notificationManager = context?.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-    }
-
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         Timber.d("onCreatePreferences() called")
         addPreferencesFromResource(R.xml.prefs_interrupt_filter_sync)
-
-        dndSyncToWatchPreference = findPreference(DND_SYNC_TO_WATCH_KEY)!!
-        dndSyncToPhonePreference = findPreference(DND_SYNC_TO_PHONE_KEY)!!
-        dndSyncWithTheaterPreference = findPreference(DND_SYNC_WITH_THEATER_KEY)!!
 
         dndSyncToWatchPreference.onPreferenceChangeListener = this
         dndSyncToPhonePreference.onPreferenceChangeListener = this
@@ -126,7 +112,7 @@ class DnDSyncPreferenceFragment :
             }
             NOTI_POLICY_SETTINGS_REQUEST_CODE -> {
                 if (changingKey != null && Compat.canSetDnD(requireContext())) {
-                    coroutineScope.launch(Dispatchers.IO) {
+                    coroutineScope.launch {
                         sharedPreferences.edit(commit = true) {
                             putBoolean(changingKey, true)
                         }
@@ -145,7 +131,7 @@ class DnDSyncPreferenceFragment :
     private fun setDnDSyncToWatch(enabled: Boolean) {
         Timber.i("Setting DnD Sync to watch to $enabled")
         dndSyncToWatchPreference.isChecked = enabled
-        coroutineScope.launch(Dispatchers.IO) {
+        coroutineScope.launch {
             sharedPreferences.edit(commit = true) {
                 putBoolean(DND_SYNC_TO_WATCH_KEY, enabled)
             }
@@ -185,7 +171,7 @@ class DnDSyncPreferenceFragment :
             updateState = true
         }
         if (updateState) {
-            coroutineScope.launch(Dispatchers.IO) {
+            coroutineScope.launch {
                 sharedPreferences.edit(commit = true) {
                     putBoolean(key, enabled)
                 }
