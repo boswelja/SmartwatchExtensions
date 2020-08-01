@@ -13,12 +13,13 @@ import com.boswelja.devicemanager.databinding.ActivityWatchManagerBinding
 import com.boswelja.devicemanager.ui.base.BaseToolbarActivity
 import com.boswelja.devicemanager.ui.watchsetup.WatchSetupActivity
 import com.boswelja.devicemanager.ui.watchsetup.WatchSetupActivity.Companion.EXTRA_SKIP_WELCOME
-import com.boswelja.devicemanager.watchmanager.WatchManager
+import com.boswelja.devicemanager.watchmanager.database.WatchDatabase
 import com.boswelja.devicemanager.watchmanager.item.Watch
 
 class WatchManagerActivity :
     BaseToolbarActivity() {
 
+    private val database by lazy { WatchDatabase.get(this) }
     private val adapter by lazy {
         WatchManagerAdapter {
             if (it != null) openWatchInfoActivity(it)
@@ -26,14 +27,10 @@ class WatchManagerActivity :
         }
     }
 
-    private lateinit var watchManager: WatchManager
-
     private lateinit var binding: ActivityWatchManagerBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        setResult(RESULT_WATCH_LIST_UNCHANGED)
 
         binding = ActivityWatchManagerBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -41,8 +38,7 @@ class WatchManagerActivity :
         setupToolbar(binding.toolbarLayout.toolbar, showTitle = true, showUpButton = true)
         binding.watchManagerRecyclerView.adapter = adapter
 
-        watchManager = WatchManager.get(this)
-        watchManager.database.watchDao().getAllObservable().observe(this) {
+        database.watchDao().getAllObservable().observe(this) {
             adapter.submitList(it)
         }
     }
@@ -54,7 +50,7 @@ class WatchManagerActivity :
         Intent(this, WatchSetupActivity::class.java).apply {
             putExtra(EXTRA_SKIP_WELCOME, true)
         }.also {
-            startActivityForResult(it, WATCH_SETUP_ACTIVITY_REQUEST_CODE)
+            startActivity(it)
         }
     }
 
@@ -65,14 +61,7 @@ class WatchManagerActivity :
         Intent(this, WatchInfoActivity::class.java).apply {
             putExtra(WatchInfoActivity.EXTRA_WATCH_ID, watch.id)
         }.also {
-            startActivityForResult(it, WATCH_INFO_ACTIVITY_REQUEST_CODE)
+            startActivity(it)
         }
-    }
-
-    companion object {
-        private const val WATCH_SETUP_ACTIVITY_REQUEST_CODE = 54321
-        private const val WATCH_INFO_ACTIVITY_REQUEST_CODE = 65432
-
-        const val RESULT_WATCH_LIST_UNCHANGED = 0
     }
 }
