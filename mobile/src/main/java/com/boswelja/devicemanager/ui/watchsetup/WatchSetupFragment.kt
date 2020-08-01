@@ -20,16 +20,15 @@ import com.boswelja.devicemanager.databinding.FragmentWatchSetupBinding
 import com.boswelja.devicemanager.watchmanager.WatchManager
 import com.boswelja.devicemanager.watchmanager.WatchStatus
 import com.boswelja.devicemanager.watchmanager.item.Watch
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class WatchSetupFragment : Fragment() {
 
-    private val coroutineScope = MainScope()
-
-    private var watchConnectionManager: WatchManager? = null
+    private val coroutineScope = CoroutineScope(Dispatchers.IO)
+    private val watchManager by lazy { WatchManager.get(requireContext()) }
 
     private lateinit var binding: FragmentWatchSetupBinding
 
@@ -43,7 +42,6 @@ class WatchSetupFragment : Fragment() {
         binding.watchSetupRecyclerview.adapter = WatchSetupAdapter { confirmRegisterWatch(it) }
         setLoading(true)
 
-        watchConnectionManager = WatchManager.get(requireContext())
         refreshAvailableWatches()
     }
 
@@ -53,8 +51,8 @@ class WatchSetupFragment : Fragment() {
     private fun refreshAvailableWatches() {
         hideHelpMessage()
         setLoading(true)
-        coroutineScope.launch(Dispatchers.IO) {
-            val availableWatches = watchConnectionManager?.getAvailableWatches()
+        coroutineScope.launch {
+            val availableWatches = watchManager.getAvailableWatches()
             withContext(Dispatchers.Main) {
                 if (availableWatches != null) {
                     if (availableWatches.isNotEmpty()) {
@@ -75,7 +73,7 @@ class WatchSetupFragment : Fragment() {
      * Sets whether the loading view should be shown.
      * @param loading true if the loading view should be shown, false otherwise
      */
-    fun setLoading(loading: Boolean) {
+    private fun setLoading(loading: Boolean) {
         binding.apply {
             refreshButton.isEnabled = !loading
             watchSetupRecyclerview.isEnabled = !loading
@@ -91,7 +89,7 @@ class WatchSetupFragment : Fragment() {
      * Sets help text to aid the user if anything goes wrong.
      * @param text The help text to show.
      */
-    fun setHelpMessage(text: String) {
+    private fun setHelpMessage(text: String) {
         binding.apply {
             helpTextView.visibility = AppCompatTextView.VISIBLE
             watchSetupRecyclerview.isEnabled = false
@@ -102,7 +100,7 @@ class WatchSetupFragment : Fragment() {
     /**
      * Removes the help text.
      */
-    fun hideHelpMessage() {
+    private fun hideHelpMessage() {
         binding.apply {
             helpTextView.visibility = AppCompatTextView.INVISIBLE
             watchSetupRecyclerview.isEnabled = true
@@ -114,8 +112,8 @@ class WatchSetupFragment : Fragment() {
      * @param watch The [Watch] to register.
      */
     private fun registerWatch(watch: Watch) {
-        coroutineScope.launch(Dispatchers.IO) {
-            watchConnectionManager?.registerWatch(watch)
+        coroutineScope.launch {
+            watchManager.registerWatch(watch)
             withContext(Dispatchers.Main) {
                 activity?.setResult(WatchSetupActivity.RESULT_WATCH_ADDED)
                 activity?.finish()
