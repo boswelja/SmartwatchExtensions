@@ -20,10 +20,12 @@ import com.boswelja.devicemanager.watchmanager.item.Watch
 class WatchManagerActivity :
     BaseToolbarActivity() {
 
-    private val adapter by lazy { WatchManagerAdapter {
-        if (it != null) openWatchInfoActivity(it)
-        else openWatchSetupActivity()
-    } }
+    private val adapter by lazy {
+        WatchManagerAdapter {
+            if (it != null) openWatchInfoActivity(it)
+            else openWatchSetupActivity()
+        }
+    }
 
     private lateinit var watchManager: WatchManager
 

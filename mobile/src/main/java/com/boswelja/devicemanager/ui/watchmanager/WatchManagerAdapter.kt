@@ -52,7 +52,7 @@ class WatchManagerAdapter(private val clickListener: (watch: Watch?) -> Unit) :
                 holder.bind(context.getString(R.string.watch_manager_registered_watch_header))
             }
             is IconTwoLineViewHolder -> {
-                val watch = getItem(position)
+                val watch = getWatch(position)
                 val summary = context.getString(
                     when (watch.status) {
                         WatchStatus.CONNECTED -> R.string.watch_status_connected
@@ -70,6 +70,8 @@ class WatchManagerAdapter(private val clickListener: (watch: Watch?) -> Unit) :
             }
         }
     }
+
+    private fun getWatch(position: Int) = currentList[position - 2]
 
     companion object {
         private const val VIEW_TYPE_ADD_WATCH = -1
