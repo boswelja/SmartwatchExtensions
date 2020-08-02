@@ -39,7 +39,6 @@ class InitialCheckViewModel(application: Application) : AndroidViewModel(applica
                 val sdkInt = BigInteger(it.data).toInt()
                 Timber.i("Watch SDK = $sdkInt")
                 _hasCorrectSdkInt.postValue(sdkInt <= Build.VERSION_CODES.O)
-                _checksFinished.postValue(true)
             }
         }
     }
@@ -48,13 +47,9 @@ class InitialCheckViewModel(application: Application) : AndroidViewModel(applica
     val hasNotiPolicyAccess: LiveData<Boolean>
         get() = _hasNotiPolicyAccess
 
-    private val _hasCorrectSdkInt = MutableLiveData(false)
-    val hasCorrectSdkInt: LiveData<Boolean>
+    private val _hasCorrectSdkInt = MutableLiveData<Boolean?>(null)
+    val hasCorrectSdkInt: LiveData<Boolean?>
         get() = _hasCorrectSdkInt
-
-    private val _checksFinished = MutableLiveData(false)
-    val checksFinished: LiveData<Boolean>
-        get() = _checksFinished
 
     init {
         messageClient.addListener(messageListener)

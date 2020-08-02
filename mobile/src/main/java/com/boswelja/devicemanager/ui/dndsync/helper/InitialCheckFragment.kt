@@ -42,14 +42,15 @@ internal class InitialCheckFragment : Fragment() {
         }
         viewModel.hasCorrectSdkInt.observe(viewLifecycleOwner) {
             Timber.i("hasCorrectSdkInt = $it")
-            if (!it) {
-                binding.warningText.setText(R.string.dnd_sync_helper_warning_watch_version)
-                setHasWarnings()
+            if (it != null) {
+                if (!it) {
+                    binding.warningText.setText(R.string.dnd_sync_helper_warning_watch_version)
+                    setHasWarnings()
+                } else {
+                    findNavController().navigate(R.id.to_setupFragment)
+                }
+                binding.progressBar.hide()
             }
-        }
-        viewModel.checksFinished.observe(viewLifecycleOwner) {
-            if (it) binding.progressBar.hide()
-            else binding.progressBar.show()
         }
         binding.warningAcknowledged.setOnCheckedChangeListener { _, b -> binding.nextButton.isEnabled = b }
         binding.nextButton.setOnClickListener { findNavController().navigate(R.id.to_setupFragment) }
