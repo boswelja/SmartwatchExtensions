@@ -6,17 +6,20 @@ object BuildPlugins {
     object Versions {
         const val buildToolsVersion = "4.2.0-alpha07"
         const val googleServicesVersion = "4.3.3"
+        const val androidxNavigation = Libraries.Versions.androidxNavigation
     }
 
     const val androidGradlePlugin = "com.android.tools.build:gradle:${Versions.buildToolsVersion}"
     const val kotlinGradlePlugin = "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
     const val googleServicesPlugin = "com.google.gms:google-services:${Versions.googleServicesVersion}"
+    const val navSafeArgsPlugin = "androidx.navigation:navigation-safe-args-gradle-plugin:${Versions.androidxNavigation}"
 
     const val androidLibrary = "com.android.library"
     const val androidApplication = "com.android.application"
     const val kotlinAndroid = "kotlin-android"
     const val kotlinAndroidExtensions = "kotlin-android-extensions"
     const val kotlinKapt = "kotlin-kapt"
+    const val safeArgs = "androidx.navigation.safeargs.kotlin"
 }
 
 object AndroidSdk {

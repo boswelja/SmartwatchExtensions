@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="pref_interrupt_filter_sync_to_watch_summary">BETA Sync DnD state to your watch from your phone</string>
+    <string name="pref_dnd_sync_to_watch_summary">BETA Sync DnD state to your watch from your phone</string>
 </resources>

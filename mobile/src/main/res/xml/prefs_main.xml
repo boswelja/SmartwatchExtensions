@@ -10,8 +10,8 @@
     <androidx.preference.Preference
         android:key="show_interrupt_filter_sync_prefs"
         android:icon="@drawable/pref_ic_interrupt_filter"
-        android:title="@string/main_interrupt_filter_sync_title"
-        android:summary="@string/main_interrupt_filter_sync_summary" />
+        android:title="@string/main_dnd_sync_title"
+        android:summary="@string/main_dnd_sync_summary" />
 
     <androidx.preference.Preference
         android:key="show_phone_locking_prefs"

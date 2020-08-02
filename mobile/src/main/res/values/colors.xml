@@ -4,6 +4,7 @@
     <color name="appIconBackground">#9c27b0</color>
 
     <color name="colorPrimary">#9c27b0</color>
+    <color name="primaryTextColor">#ffffff</color>
 
     <color name="statusBarColor">#666666</color>
     <color name="navBarColor">#FFFFFF</color>

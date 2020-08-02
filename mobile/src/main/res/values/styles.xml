@@ -8,6 +8,8 @@
     <style name="BaseTheme" parent="BaseTheme.DayNight">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/statusBarColor</item>
+        <item name="colorSecondary">@color/colorPrimary</item>
+        <item name="colorOnSecondary">@color/primaryTextColor</item>
         <item name="colorAccent">@color/colorPrimary</item>
         <item name="android:windowBackground">@color/windowBackground</item>
         <item name="alertDialogTheme">@style/AppTheme.AlertDialog</item>

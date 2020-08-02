@@ -3,6 +3,7 @@ plugins {
     id(BuildPlugins.kotlinAndroid)
     id(BuildPlugins.kotlinAndroidExtensions)
     id(BuildPlugins.kotlinKapt)
+    id(BuildPlugins.safeArgs)
     id("com.diffplug.spotless") version "5.1.0"
 }
 

@@ -84,7 +84,7 @@ class DnDSyncPreferenceFragment :
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         Timber.d("onCreatePreferences() called")
-        addPreferencesFromResource(R.xml.prefs_interrupt_filter_sync)
+        addPreferencesFromResource(R.xml.prefs_dnd_sync)
 
         dndSyncToWatchPreference.onPreferenceChangeListener = this
         dndSyncToPhonePreference.onPreferenceChangeListener = this
@@ -106,10 +106,6 @@ class DnDSyncPreferenceFragment :
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         Timber.d("onActivityResult() called")
         when (requestCode) {
-            HELPER_REQUEST_CODE -> {
-                val shouldEnable = resultCode == DnDSyncHelperActivity.RESULT_OK
-                setDnDSyncToWatch(shouldEnable)
-            }
             NOTI_POLICY_SETTINGS_REQUEST_CODE -> {
                 if (changingKey != null && Compat.canSetDnD(requireContext())) {
                     coroutineScope.launch {
@@ -160,7 +156,7 @@ class DnDSyncPreferenceFragment :
                 changingKey = key
                 Toast.makeText(
                     context,
-                    getString(R.string.interrupt_filter_sync_request_policy_access_message),
+                    getString(R.string.dnd_sync_request_policy_access_message),
                     Toast.LENGTH_SHORT
                 ).show()
                 Intent(Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS).also {
@@ -185,12 +181,11 @@ class DnDSyncPreferenceFragment :
      */
     private fun startDnDSyncHelper() {
         Intent(context, DnDSyncHelperActivity::class.java).also {
-            startActivityForResult(it, HELPER_REQUEST_CODE)
+            startActivity(it)
         }
     }
 
     companion object {
-        private const val HELPER_REQUEST_CODE = 12345
         private const val NOTI_POLICY_SETTINGS_REQUEST_CODE = 54312
     }
 }

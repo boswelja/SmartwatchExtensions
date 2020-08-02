@@ -23,7 +23,7 @@ internal class LoadingFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         view.findViewById<AppCompatTextView>(R.id.loading_text)!!.apply {
-            text = getString(R.string.interrupt_filter_sync_helper_loading_text)
+            text = getString(R.string.dnd_sync_helper_loading_text)
         }
         Timber.i("Successfully created")
     }
