@@ -8,14 +8,17 @@
 package com.boswelja.devicemanager.ui.dndsync.helper
 
 import android.app.Application
+import android.content.Intent
 import androidx.core.content.edit
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.preference.PreferenceManager
+import com.boswelja.devicemanager.common.Compat
 import com.boswelja.devicemanager.common.Extensions.fromByteArray
 import com.boswelja.devicemanager.common.PreferenceKey.DND_SYNC_TO_WATCH_KEY
 import com.boswelja.devicemanager.common.dndsync.References.REQUEST_INTERRUPT_FILTER_ACCESS_STATUS_PATH
+import com.boswelja.devicemanager.dndsync.DnDLocalChangeService
 import com.boswelja.devicemanager.watchmanager.WatchManager
 import com.google.android.gms.wearable.MessageClient
 import com.google.android.gms.wearable.Wearable
@@ -62,6 +65,8 @@ class SetupViewModel(application: Application) : AndroidViewModel(application) {
         coroutineScope.launch {
             sharedPreferences.edit(commit = true) { putBoolean(DND_SYNC_TO_WATCH_KEY, true) }
             watchManager.updatePreferenceOnWatch(DND_SYNC_TO_WATCH_KEY)
+            val context = getApplication<Application>()
+            Compat.startForegroundService(context, Intent(context, DnDLocalChangeService::class.java))
         }
     }
 
