@@ -56,11 +56,12 @@ class WatchManager private constructor(context: Context) {
         get() = _connectedWatch
 
     init {
-        sharedPreferences.getString(LAST_CONNECTED_NODE_ID_KEY, "").also {
-            setConnectedWatchById(it ?: "")
+        sharedPreferences.getString(LAST_CONNECTED_NODE_ID_KEY, "")?.let {
+            setConnectedWatchById(it)
         }
         connectedWatch.observeForever {
             it?.let { watch ->
+                sharedPreferences.edit { putString(LAST_CONNECTED_NODE_ID_KEY, watch.id) }
                 updateLocalPreferences(watch)
             }
         }
