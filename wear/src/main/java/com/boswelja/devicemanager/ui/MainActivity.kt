@@ -48,7 +48,7 @@ class MainActivity :
         messageClient.removeListener(this)
         when (messageEvent.path) {
             WATCH_REGISTERED_PATH -> showExtensionsFragment()
-            WATCH_NOT_REGISTERED_PATH -> showSetupFragment(true)
+            WATCH_NOT_REGISTERED_PATH -> showSetupFragment()
         }
     }
 
@@ -92,14 +92,9 @@ class MainActivity :
 
     /**
      * Shows the [SetupFragment].
-     * @param phoneHasApp Sets whether the phone already has Wearable Extensions installed.
      */
-    private fun showSetupFragment(phoneHasApp: Boolean) {
-        SetupFragment().apply {
-            setPhoneSetupHelperVisibility(phoneHasApp)
-        }.also {
-            showFragment(it)
-        }
+    private fun showSetupFragment() {
+        showFragment(SetupFragment())
     }
 
     /**
@@ -168,7 +163,7 @@ class MainActivity :
                             showNoConnectionFragment()
                         }
                 } else {
-                    showSetupFragment(false)
+                    showSetupFragment()
                 }
             } else {
                 showNoConnectionFragment()

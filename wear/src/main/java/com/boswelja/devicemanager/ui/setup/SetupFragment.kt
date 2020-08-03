@@ -12,21 +12,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.databinding.FragmentSetupBinding
-import com.google.android.gms.wearable.NodeClient
-import com.google.android.gms.wearable.Wearable
 
 class SetupFragment : Fragment() {
 
-    private lateinit var nodeClient: NodeClient
+    private val viewModel: SetupViewModel by viewModels()
+
     private lateinit var binding: FragmentSetupBinding
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        nodeClient = Wearable.getNodeClient(requireContext())
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -38,23 +32,8 @@ class SetupFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        binding.setupDeviceNameText.apply {
-            nodeClient.localNode
-                .addOnCompleteListener {
-                    text = it.result?.displayName ?: getString(R.string.error)
-                }
-        }
-    }
-
-    fun setPhoneSetupHelperVisibility(phoneHasApp: Boolean) {
-        if (view != null) {
-            view?.findViewById<View>(R.id.phone_setup_helper_view)!!.apply {
-                visibility = if (phoneHasApp) {
-                    View.GONE
-                } else {
-                    View.VISIBLE
-                }
-            }
+        viewModel.localName.observe(viewLifecycleOwner) {
+            binding.setupDeviceNameText.text = it ?: getString(R.string.error)
         }
     }
 }

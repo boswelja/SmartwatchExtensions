@@ -17,8 +17,7 @@ import com.boswelja.devicemanager.common.recyclerview.item.IconOneLineViewHolder
 class MainAdapter(
     private val itemCallback: ItemClickCallback<MainItem>,
     items: ArrayList<Pair<String, ArrayList<MainItem>>>
-) :
-    SectionedAdapter<MainItem>(items, showSectionDividers = false) {
+) : SectionedAdapter<MainItem>(items, showSectionDividers = false) {
 
     override fun onCreateItemViewHolder(layoutInflater: LayoutInflater, parent: ViewGroup):
         RecyclerView.ViewHolder = IconOneLineViewHolder.from(parent)
