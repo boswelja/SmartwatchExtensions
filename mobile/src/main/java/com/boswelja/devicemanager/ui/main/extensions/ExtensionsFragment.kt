@@ -40,9 +40,11 @@ class ExtensionsFragment :
             OPEN_APP_MANAGER_KEY -> {
                 watchManager.connectedWatch.value?.let {
                     findNavController().navigate(
-                            ExtensionsFragmentDirections.toAppManagerActivity(
-                                    watchId = it.id,
-                                    watchName = it.name))
+                        ExtensionsFragmentDirections.toAppManagerActivity(
+                            watchId = it.id,
+                            watchName = it.name
+                        )
+                    )
                 }
                 true
             }
