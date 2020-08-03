@@ -5,7 +5,7 @@
  * This file, and any part of the Wearable Extensions app/s cannot be copied and/or distributed
  * without permission from Jack Boswell (boswelja) <boswela@outlook.com>
  */
-package com.boswelja.devicemanager.ui.main
+package com.boswelja.devicemanager.ui.extensions
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -14,15 +14,15 @@ import com.boswelja.devicemanager.common.recyclerview.adapter.ItemClickCallback
 import com.boswelja.devicemanager.common.recyclerview.adapter.SectionedAdapter
 import com.boswelja.devicemanager.common.recyclerview.item.IconOneLineViewHolder
 
-class MainAdapter(
-    private val itemCallback: ItemClickCallback<MainItem>,
-    items: ArrayList<Pair<String, ArrayList<MainItem>>>
-) : SectionedAdapter<MainItem>(items, showSectionDividers = false) {
+class ExtensionsAdapter(
+        private val itemCallback: ItemClickCallback<ExtensionItem>,
+        items: ArrayList<Pair<String, ArrayList<ExtensionItem>>>
+) : SectionedAdapter<ExtensionItem>(items, showSectionDividers = false) {
 
     override fun onCreateItemViewHolder(layoutInflater: LayoutInflater, parent: ViewGroup):
         RecyclerView.ViewHolder = IconOneLineViewHolder.from(parent)
 
-    override fun onBindItemViewHolder(holder: RecyclerView.ViewHolder, item: MainItem) {
+    override fun onBindItemViewHolder(holder: RecyclerView.ViewHolder, item: ExtensionItem) {
         val context = holder.itemView.context
         if (holder is IconOneLineViewHolder) {
             val text = if (item.extra > -1) {

@@ -13,6 +13,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.databinding.FragmentSetupBinding
 
@@ -34,6 +35,9 @@ class SetupFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         viewModel.localName.observe(viewLifecycleOwner) {
             binding.setupDeviceNameText.text = it ?: getString(R.string.error)
+        }
+        viewModel.watchRegistered.observe(viewLifecycleOwner) {
+            if (it) findNavController().navigate(SetupFragmentDirections.toExtensionsFragment())
         }
     }
 }

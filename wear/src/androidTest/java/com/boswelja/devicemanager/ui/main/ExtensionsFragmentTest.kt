@@ -17,13 +17,14 @@ import androidx.test.espresso.matcher.ViewMatchers.hasDescendant
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import com.boswelja.devicemanager.R
+import com.boswelja.devicemanager.ui.extensions.ExtensionsFragment
 import org.junit.Test
 
-class MainFragmentTest {
+class ExtensionsFragmentTest {
 
     private val context = ApplicationProvider.getApplicationContext<Context>()
 
-    private fun createScenario(): FragmentScenario<MainFragment> {
+    private fun createScenario(): FragmentScenario<ExtensionsFragment> {
         return launchFragmentInContainer(themeResId = R.style.AppTheme)
     }
 

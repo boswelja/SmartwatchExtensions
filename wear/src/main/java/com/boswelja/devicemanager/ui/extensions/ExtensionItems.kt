@@ -5,11 +5,11 @@
  * This file, and any part of the Wearable Extensions app/s cannot be copied and/or distributed
  * without permission from Jack Boswell (boswelja) <boswela@outlook.com>
  */
-package com.boswelja.devicemanager.ui.main
+package com.boswelja.devicemanager.ui.extensions
 
 import com.boswelja.devicemanager.R
 
-object MainItems {
+object ExtensionItems {
 
     const val BATTERY_SYNC_ITEM_ID = 0
     const val PHONE_LOCKING_ITEM_ID = 1
@@ -17,13 +17,13 @@ object MainItems {
     const val ABOUT_APP_ITEM_ID = 3
 
     val EXTENSIONS = arrayListOf(
-        MainItem(
+        ExtensionItem(
             BATTERY_SYNC_ITEM_ID,
             R.string.battery_sync_disabled,
             R.drawable.ic_phone_battery,
             enabled = false
         ),
-        MainItem(
+        ExtensionItem(
             PHONE_LOCKING_ITEM_ID,
             R.string.lock_phone_disabled_message,
             R.drawable.ic_phone_lock,
@@ -32,12 +32,12 @@ object MainItems {
     )
 
     val APP = arrayListOf(
-        MainItem(
+        ExtensionItem(
             SETTINGS_ITEM_ID,
             R.string.navigation_settings_title,
             R.drawable.ic_settings
         ),
-        MainItem(
+        ExtensionItem(
             ABOUT_APP_ITEM_ID,
             R.string.about_app_title,
             R.drawable.ic_about

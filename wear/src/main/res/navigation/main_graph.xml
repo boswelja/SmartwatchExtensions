@@ -3,63 +3,51 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/main_graph"
-    app:startDestination="@id/loadingFragment">
+    app:startDestination="@id/startPoint">
 
     <fragment
-        android:id="@+id/loadingFragment"
-        android:name="com.boswelja.devicemanager.ui.common.LoadingFragment"
-        android:label="LoadingFragment">
+        android:id="@+id/startPoint"
+        android:name="com.boswelja.devicemanager.ui.main.MainFragment">
 
         <action
-            android:id="@+id/to_mainFragment"
-            app:destination="@id/mainFragment"
-            app:enterAnim="@anim/slide_in_right"
-            app:exitAnim="@anim/fade_out" />
+            android:id="@+id/to_extensionsFragment"
+            app:destination="@id/extensionsFragment" />
 
         <action
             android:id="@+id/to_setupFragment"
-            app:destination="@id/setupFragment"
-            app:enterAnim="@anim/slide_in_right"
-            app:exitAnim="@anim/fade_out" />
+            app:destination="@id/setupFragment" />
     </fragment>
 
     <fragment
-        android:id="@+id/mainFragment"
-        android:name="com.boswelja.devicemanager.ui.main.MainFragment"
+        android:id="@+id/extensionsFragment"
+        android:name="com.boswelja.devicemanager.ui.extensions.ExtensionsFragment"
         android:label="MainFragment">
 
         <action
             android:id="@+id/to_settingsActivity"
-            app:destination="@id/settingsActivity"
-            app:enterAnim="@anim/slide_in_right"
-            app:exitAnim="@anim/fade_out" />
+            app:destination="@id/settingsActivity" />
 
         <action
             android:id="@+id/to_aboutActivity"
-            app:destination="@id/aboutActivity"
-            app:enterAnim="@anim/slide_in_right"
-            app:exitAnim="@anim/fade_out" />
+            app:destination="@id/aboutActivity" />
     </fragment>
 
     <fragment
         android:id="@+id/setupFragment"
-        android:name="com.boswelja.devicemanager.ui.setup.SetupFragment"
-        android:label="SetupFragment">
+        android:name="com.boswelja.devicemanager.ui.setup.SetupFragment">
 
         <action
-            android:id="@+id/to_mainFragment"
-            app:destination="@id/mainFragment"
+            android:id="@+id/to_extensionsFragment"
+            app:destination="@id/extensionsFragment"
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/fade_out" />
     </fragment>
 
     <activity
         android:id="@+id/aboutActivity"
-        android:name="com.boswelja.devicemanager.ui.about.AboutActivity"
-        android:label="AboutActivity" />
+        android:name="com.boswelja.devicemanager.ui.about.AboutActivity" />
 
     <activity
         android:id="@+id/settingsActivity"
-        android:name="com.boswelja.devicemanager.ui.settings.SettingsActivity"
-        android:label="SettingsActivity" />
+        android:name="com.boswelja.devicemanager.ui.settings.SettingsActivity" />
 </navigation>
