@@ -53,6 +53,8 @@ dependencies {
     implementation(Libraries.androidxLifecycleCommon)
     implementation(Libraries.androidxLifecycleLiveData)
     implementation(Libraries.androidxLifecycleViewModel)
+    implementation(Libraries.androidxNavigationUI)
+    implementation(Libraries.androidxNavigationFragment)
     implementation(Libraries.androidxPreference)
     implementation(Libraries.androidxWear)
 
