@@ -8,25 +8,21 @@
 package com.boswelja.devicemanager.ui.extensions
 
 import android.content.Intent
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.annotation.VisibleForTesting
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.wear.widget.CurvingLayoutCallback
 import androidx.wear.widget.WearableLinearLayoutManager
 import com.boswelja.devicemanager.R
-import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_PERCENT_KEY
-import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_SYNC_ENABLED_KEY
-import com.boswelja.devicemanager.common.PreferenceKey.PHONE_LOCKING_ENABLED_KEY
 import com.boswelja.devicemanager.common.batterysync.References
 import com.boswelja.devicemanager.common.recyclerview.adapter.ItemClickCallback
 import com.boswelja.devicemanager.common.recyclerview.adapter.SectionedAdapter.Companion.SECTION_HEADER_HIDDEN
 import com.boswelja.devicemanager.databinding.FragmentMainBinding
 import com.boswelja.devicemanager.service.ActionService
-import com.boswelja.devicemanager.ui.base.BaseSharedPreferenceFragment
 import com.boswelja.devicemanager.ui.extensions.ExtensionItems.ABOUT_APP_ITEM_ID
 import com.boswelja.devicemanager.ui.extensions.ExtensionItems.APP
 import com.boswelja.devicemanager.ui.extensions.ExtensionItems.BATTERY_SYNC_ITEM_ID
@@ -34,23 +30,12 @@ import com.boswelja.devicemanager.ui.extensions.ExtensionItems.EXTENSIONS
 import com.boswelja.devicemanager.ui.extensions.ExtensionItems.PHONE_LOCKING_ITEM_ID
 import com.boswelja.devicemanager.ui.extensions.ExtensionItems.SETTINGS_ITEM_ID
 
-class ExtensionsFragment :
-    BaseSharedPreferenceFragment(),
-    SharedPreferences.OnSharedPreferenceChangeListener,
-    ItemClickCallback<ExtensionItem> {
+class ExtensionsFragment : Fragment(), ItemClickCallback<ExtensionItem> {
+
+    private val viewModel: ExtensionsViewModel by viewModels()
 
     private lateinit var binding: FragmentMainBinding
     private lateinit var extensionsAdapter: ExtensionsAdapter
-
-    private var phoneLockingEnabled: Boolean = false
-    private var batterySyncEnabled: Boolean = false
-
-    override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
-        when (key) {
-            PHONE_LOCKING_ENABLED_KEY -> updatePhoneLockingEnabled()
-            BATTERY_SYNC_ENABLED_KEY -> updateBatterySyncEnabled()
-        }
-    }
 
     override fun onClick(item: ExtensionItem) {
         when (item.itemId) {
@@ -75,18 +60,15 @@ class ExtensionsFragment :
             isEdgeItemsCenteringEnabled = true
             adapter = extensionsAdapter
         }
-    }
-
-    override fun onStart() {
-        super.onStart()
-        updatePhoneLockingEnabled()
-        updateBatterySyncEnabled()
-        sharedPreferences.registerOnSharedPreferenceChangeListener(this)
-    }
-
-    override fun onStop() {
-        super.onStop()
-        sharedPreferences.unregisterOnSharedPreferenceChangeListener(this)
+        viewModel.phoneLockingEnabled.observe(viewLifecycleOwner) {
+            setPhoneLockingEnabled(it)
+        }
+        viewModel.batterySyncEnabled.observe(viewLifecycleOwner) {
+            updateBatterySyncView(it)
+        }
+        viewModel.phoneBatteryPercent.observe(viewLifecycleOwner) {
+            updateBatterySyncView(true, it)
+        }
     }
 
     private fun tryUpdateBatteryStats() {
@@ -105,19 +87,7 @@ class ExtensionsFragment :
         }
     }
 
-    private fun updatePhoneLockingEnabled() {
-        phoneLockingEnabled = sharedPreferences.getBoolean(PHONE_LOCKING_ENABLED_KEY, false)
-        updatePhoneLockingView(phoneLockingEnabled)
-    }
-
-    private fun updateBatterySyncEnabled() {
-        batterySyncEnabled = sharedPreferences.getBoolean(BATTERY_SYNC_ENABLED_KEY, false)
-        val batteryPercent = sharedPreferences.getInt(BATTERY_PERCENT_KEY, 0)
-        updateBatterySyncView(batterySyncEnabled, batteryPercent)
-    }
-
-    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
-    fun updateBatterySyncView(batterySyncEnabled: Boolean, batteryPercent: Int = 0) {
+    private fun updateBatterySyncView(batterySyncEnabled: Boolean, batteryPercent: Int = 0) {
         val batterySyncMainItem = if (batterySyncEnabled) {
             ExtensionItem(BATTERY_SYNC_ITEM_ID, R.string.phone_battery_percent, R.drawable.ic_phone_battery, extra = batteryPercent)
         } else {
@@ -126,8 +96,7 @@ class ExtensionsFragment :
         extensionsAdapter.updateItem(batterySyncMainItem)
     }
 
-    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
-    fun updatePhoneLockingView(phoneLockingEnabled: Boolean) {
+    private fun setPhoneLockingEnabled(phoneLockingEnabled: Boolean) {
         val phoneLockingMainItem = if (phoneLockingEnabled) {
             ExtensionItem(PHONE_LOCKING_ITEM_ID, R.string.lock_phone_label, R.drawable.ic_phone_lock)
         } else {
