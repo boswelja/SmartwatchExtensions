@@ -14,7 +14,7 @@ import androidx.annotation.DrawableRes
 import androidx.recyclerview.widget.RecyclerView
 import com.boswelja.devicemanager.common.databinding.RecyclerviewItemIconTwoLineBinding
 
-class IconTwoLineViewHolder(private val binding: RecyclerviewItemIconTwoLineBinding) :
+open class IconTwoLineViewHolder(private val binding: RecyclerviewItemIconTwoLineBinding) :
     RecyclerView.ViewHolder(binding.root) {
 
     private fun bindText(title: String, summary: String) {

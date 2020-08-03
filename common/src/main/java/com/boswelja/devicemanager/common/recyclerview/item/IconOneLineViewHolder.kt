@@ -13,7 +13,7 @@ import androidx.annotation.DrawableRes
 import androidx.recyclerview.widget.RecyclerView
 import com.boswelja.devicemanager.common.databinding.RecyclerviewItemIconOneLineBinding
 
-class IconOneLineViewHolder(private val binding: RecyclerviewItemIconOneLineBinding) :
+open class IconOneLineViewHolder(private val binding: RecyclerviewItemIconOneLineBinding) :
     RecyclerView.ViewHolder(binding.root) {
 
     fun bind(@DrawableRes icon: Int, text: String, iconLevel: Int = 0) {

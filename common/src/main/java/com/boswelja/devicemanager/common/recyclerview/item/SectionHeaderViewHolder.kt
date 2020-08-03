@@ -13,7 +13,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.boswelja.devicemanager.common.databinding.RecyclerviewSectionHeaderBinding
 
-class SectionHeaderViewHolder(private val binding: RecyclerviewSectionHeaderBinding) :
+open class SectionHeaderViewHolder(private val binding: RecyclerviewSectionHeaderBinding) :
     RecyclerView.ViewHolder(binding.root) {
 
     fun bind(text: String, showDivider: Boolean = true) {
