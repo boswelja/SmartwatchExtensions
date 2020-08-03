@@ -34,8 +34,6 @@ class WatchSetupActivity : BaseToolbarActivity() {
             supportActionBar?.setDisplayShowTitleEnabled(destination.id == R.id.watchSetupFragment)
         }
 
-        setResult(RESULT_NO_WATCH_ADDED)
-
         if (skippedWelcome) {
             navController.navigate(R.id.start_setupFragment)
         }
@@ -49,9 +47,6 @@ class WatchSetupActivity : BaseToolbarActivity() {
     }
 
     companion object {
-        const val RESULT_WATCH_ADDED = 1
-        const val RESULT_NO_WATCH_ADDED = 0
-
         const val EXTRA_SKIP_WELCOME = "extra_skip_welcome"
     }
 }

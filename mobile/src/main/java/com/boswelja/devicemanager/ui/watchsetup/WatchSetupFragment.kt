@@ -15,20 +15,16 @@ import android.widget.ProgressBar
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.databinding.FragmentWatchSetupBinding
-import com.boswelja.devicemanager.watchmanager.WatchManager
 import com.boswelja.devicemanager.watchmanager.WatchStatus
 import com.boswelja.devicemanager.watchmanager.item.Watch
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class WatchSetupFragment : Fragment() {
 
-    private val coroutineScope = CoroutineScope(Dispatchers.IO)
-    private val watchManager by lazy { WatchManager.get(requireContext()) }
+    private val adapter by lazy { WatchSetupAdapter { confirmRegisterWatch(it) } }
+    private val viewModel: WatchSetupViewModel by viewModels()
 
     private lateinit var binding: FragmentWatchSetupBinding
 
@@ -38,34 +34,21 @@ class WatchSetupFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        binding.refreshButton.setOnClickListener { refreshAvailableWatches() }
-        binding.watchSetupRecyclerview.adapter = WatchSetupAdapter { confirmRegisterWatch(it) }
-        setLoading(true)
+        binding.refreshButton.setOnClickListener { viewModel.refreshAvailableWatches() }
+        binding.watchSetupRecyclerview.adapter = adapter
 
-        refreshAvailableWatches()
-    }
-
-    /**
-     * Refresh the list of watches shown in the [WatchSetupAdapter].
-     */
-    private fun refreshAvailableWatches() {
-        hideHelpMessage()
-        setLoading(true)
-        coroutineScope.launch {
-            val availableWatches = watchManager.getAvailableWatches()
-            withContext(Dispatchers.Main) {
-                if (availableWatches != null) {
-                    if (availableWatches.isNotEmpty()) {
-                        (binding.watchSetupRecyclerview.adapter as WatchSetupAdapter)
-                            .submitList(availableWatches)
-                    } else {
-                        setHelpMessage(getString(R.string.register_watch_message_no_watches))
-                    }
-                } else {
-                    setHelpMessage(getString(R.string.register_watch_message_error))
-                }
-                setLoading(false)
+        viewModel.availableWatches.observe(viewLifecycleOwner) {
+            if (it.isNullOrEmpty()) {
+                setHelpMessage(getString(R.string.register_watch_message_no_watches))
             }
+            adapter.submitList(it)
+        }
+        viewModel.isLoading.observe(viewLifecycleOwner) {
+            if (it) hideHelpMessage()
+            setLoading(it)
+        }
+        viewModel.finishActivity.observe(viewLifecycleOwner) {
+            if (it) activity?.finish()
         }
     }
 
@@ -108,20 +91,6 @@ class WatchSetupFragment : Fragment() {
     }
 
     /**
-     * Register a [Watch] with Wearable Extensions.
-     * @param watch The [Watch] to register.
-     */
-    private fun registerWatch(watch: Watch) {
-        coroutineScope.launch {
-            watchManager.registerWatch(watch)
-            withContext(Dispatchers.Main) {
-                activity?.setResult(WatchSetupActivity.RESULT_WATCH_ADDED)
-                activity?.finish()
-            }
-        }
-    }
-
-    /**
      * Asks the user whether they want to register a given [Watch].
      * @param watch The [Watch] in question.
      */
@@ -131,7 +100,7 @@ class WatchSetupFragment : Fragment() {
                 setTitle(getString(R.string.register_watch_dialog_title, watch.name))
                 setMessage(getString(R.string.register_watch_dialog_message, watch.name))
                 setPositiveButton(R.string.dialog_button_yes) { _, _ ->
-                    registerWatch(watch)
+                    viewModel.registerWatch(watch)
                 }
                 setNegativeButton(R.string.dialog_button_no) { dialogInterface, _ ->
                     dialogInterface.cancel()

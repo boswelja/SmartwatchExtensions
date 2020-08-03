@@ -42,6 +42,8 @@ abstract class BaseWatchPickerActivity :
 
     val watchManager: WatchManager by lazy { WatchManager.get(this) }
 
+    private var hasStartedWatchSetup = false
+
     private lateinit var watchPickerSpinner: AppCompatSpinner
 
     override fun onItemSelected(adapterView: AdapterView<*>?, selectedView: View?, position: Int, id: Long) {
@@ -56,26 +58,13 @@ abstract class BaseWatchPickerActivity :
         super.onCreate(savedInstanceState)
 
         watchManager.database.watchDao().getAllObservable().observe(this) {
+            if (it.isEmpty() && hasStartedWatchSetup) finish()
             setWatchList(it)
         }
         watchManager.connectedWatch.observe(this) {
             it?.let {
                 selectWatch(it.id)
             }
-        }
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        when (requestCode) {
-            WATCH_SETUP_ACTIVITY_REQUEST_CODE -> {
-                Timber.i("Got setup activity result")
-                when (resultCode) {
-                    WatchSetupActivity.RESULT_NO_WATCH_ADDED -> {
-                        finish()
-                    }
-                }
-            }
-            else -> super.onActivityResult(requestCode, resultCode, data)
         }
     }
 
@@ -150,12 +139,9 @@ abstract class BaseWatchPickerActivity :
     private fun startSetupActivity() {
         Timber.d("startSetupActivity() called")
         Intent(this@BaseWatchPickerActivity, WatchSetupActivity::class.java).also {
-            startActivityForResult(it, WATCH_SETUP_ACTIVITY_REQUEST_CODE)
+            startActivity(it)
         }
-    }
-
-    companion object {
-        private const val WATCH_SETUP_ACTIVITY_REQUEST_CODE = 54321
+        hasStartedWatchSetup = true
     }
 
     class WatchPickerAdapter(context: Context) : ArrayAdapter<Watch>(context, 0) {
