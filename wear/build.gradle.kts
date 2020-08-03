@@ -22,6 +22,7 @@ android {
     }
 
     buildFeatures.viewBinding = true
+    buildFeatures.dataBinding = true
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
@@ -49,6 +50,9 @@ dependencies {
     implementation(Libraries.androidxConstraintLayout)
     implementation(Libraries.androidxCoreKtx)
     implementation(Libraries.androidxFragment)
+    implementation(Libraries.androidxLifecycleCommon)
+    implementation(Libraries.androidxLifecycleLiveData)
+    implementation(Libraries.androidxLifecycleViewModel)
     implementation(Libraries.androidxPreference)
     implementation(Libraries.androidxWear)
 
