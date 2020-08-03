@@ -63,6 +63,8 @@ dependencies {
     implementation(Libraries.playServicesWearable)
     implementation(Libraries.materialComponents)
 
+    implementation(Libraries.timber)
+
     compileOnly(Libraries.wearableCompile)
 
     debugImplementation(DebugLibraries.androidxFragment)
