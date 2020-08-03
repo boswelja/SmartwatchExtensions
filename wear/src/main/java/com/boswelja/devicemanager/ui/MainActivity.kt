@@ -9,10 +9,9 @@ package com.boswelja.devicemanager.ui
 
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.edit
-import androidx.fragment.app.Fragment
+import androidx.navigation.findNavController
 import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.References.CAPABILITY_PHONE_APP
@@ -20,9 +19,7 @@ import com.boswelja.devicemanager.common.setup.References.CHECK_WATCH_REGISTERED
 import com.boswelja.devicemanager.common.setup.References.WATCH_NOT_REGISTERED_PATH
 import com.boswelja.devicemanager.common.setup.References.WATCH_REGISTERED_PATH
 import com.boswelja.devicemanager.phoneconnectionmanager.References.PHONE_ID_KEY
-import com.boswelja.devicemanager.ui.common.LoadingFragment
 import com.boswelja.devicemanager.ui.common.NoConnectionFragment
-import com.boswelja.devicemanager.ui.main.MainFragment
 import com.boswelja.devicemanager.ui.setup.SetupFragment
 import com.google.android.gms.tasks.Tasks
 import com.google.android.gms.wearable.CapabilityClient
@@ -38,6 +35,7 @@ class MainActivity :
     AppCompatActivity(),
     MessageClient.OnMessageReceivedListener {
 
+    private val navController by lazy { findNavController(R.id.nav_host_fragment) }
     private val coroutineScope = MainScope()
 
     private lateinit var sharedPreferences: SharedPreferences
@@ -47,8 +45,8 @@ class MainActivity :
     override fun onMessageReceived(messageEvent: MessageEvent) {
         messageClient.removeListener(this)
         when (messageEvent.path) {
-            WATCH_REGISTERED_PATH -> showExtensionsFragment()
-            WATCH_NOT_REGISTERED_PATH -> showSetupFragment()
+            WATCH_REGISTERED_PATH -> navController.navigate(R.id.to_mainFragment)
+            WATCH_NOT_REGISTERED_PATH -> navController.navigate(R.id.to_setupFragment)
         }
     }
 
@@ -57,8 +55,6 @@ class MainActivity :
 
         setContentView(R.layout.activity_main)
 
-        showLoadingFragment()
-
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
         capabilityClient = Wearable.getCapabilityClient(this)
         messageClient = Wearable.getMessageClient(this)
@@ -66,57 +62,6 @@ class MainActivity :
         coroutineScope.launch(Dispatchers.IO) {
             val phoneId = getPhoneId()
             tryCheckWatchRegistered(phoneId)
-        }
-    }
-
-    /**
-     * Shows the [LoadingFragment].
-     */
-    private fun showLoadingFragment() {
-        showFragment(LoadingFragment(), animateChange = false)
-    }
-
-    /**
-     * Shows the [NoConnectionFragment].
-     */
-    private fun showNoConnectionFragment() {
-        showFragment(NoConnectionFragment())
-    }
-
-    /**
-     * Shows the [MainFragment].
-     */
-    private fun showExtensionsFragment() {
-        showFragment(MainFragment())
-    }
-
-    /**
-     * Shows the [SetupFragment].
-     */
-    private fun showSetupFragment() {
-        showFragment(SetupFragment())
-    }
-
-    /**
-     * Shows a new fragment.
-     * @param fragment The [Fragment] to show.
-     * @param animateChange Whether the fragment transaction should be animated.
-     */
-    private fun showFragment(fragment: Fragment, animateChange: Boolean = true) {
-        try {
-            supportFragmentManager.beginTransaction().apply {
-                if (animateChange) {
-                    setCustomAnimations(R.anim.slide_in_right, R.anim.fade_out)
-                }
-                replace(R.id.content, fragment)
-            }.also {
-                it.commit()
-            }
-        } catch (e: IllegalStateException) {
-            Log.e(
-                "MainActivity",
-                "Tried to commit a FragmentTransaction after onSaveInstanceState"
-            )
         }
     }
 
@@ -160,13 +105,13 @@ class MainActivity :
                     messageClient.addListener(this@MainActivity)
                     messageClient.sendMessage(phoneId, CHECK_WATCH_REGISTERED_PATH, null)
                         .addOnFailureListener {
-                            showNoConnectionFragment()
+                            // TODO Fix regression here
                         }
                 } else {
-                    showSetupFragment()
+                    navController.navigate(R.id.to_setupFragment)
                 }
             } else {
-                showNoConnectionFragment()
+                // TODO Fix regression here
             }
         }
     }

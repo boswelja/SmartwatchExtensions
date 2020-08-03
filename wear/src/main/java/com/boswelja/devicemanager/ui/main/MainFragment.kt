@@ -14,6 +14,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.VisibleForTesting
+import androidx.navigation.fragment.findNavController
 import androidx.wear.widget.CurvingLayoutCallback
 import androidx.wear.widget.WearableLinearLayoutManager
 import com.boswelja.devicemanager.R
@@ -25,7 +26,6 @@ import com.boswelja.devicemanager.common.recyclerview.adapter.ItemClickCallback
 import com.boswelja.devicemanager.common.recyclerview.adapter.SectionedAdapter.Companion.SECTION_HEADER_HIDDEN
 import com.boswelja.devicemanager.databinding.FragmentMainBinding
 import com.boswelja.devicemanager.service.ActionService
-import com.boswelja.devicemanager.ui.about.AboutActivity
 import com.boswelja.devicemanager.ui.base.BaseSharedPreferenceFragment
 import com.boswelja.devicemanager.ui.main.MainItems.ABOUT_APP_ITEM_ID
 import com.boswelja.devicemanager.ui.main.MainItems.APP
@@ -33,7 +33,6 @@ import com.boswelja.devicemanager.ui.main.MainItems.BATTERY_SYNC_ITEM_ID
 import com.boswelja.devicemanager.ui.main.MainItems.EXTENSIONS
 import com.boswelja.devicemanager.ui.main.MainItems.PHONE_LOCKING_ITEM_ID
 import com.boswelja.devicemanager.ui.main.MainItems.SETTINGS_ITEM_ID
-import com.boswelja.devicemanager.ui.settings.SettingsActivity
 
 class MainFragment :
     BaseSharedPreferenceFragment(),
@@ -57,8 +56,8 @@ class MainFragment :
         when (item.itemId) {
             BATTERY_SYNC_ITEM_ID -> tryUpdateBatteryStats()
             PHONE_LOCKING_ITEM_ID -> tryLockPhone()
-            SETTINGS_ITEM_ID -> showSettings()
-            ABOUT_APP_ITEM_ID -> showAbout()
+            SETTINGS_ITEM_ID -> findNavController().navigate(R.id.to_settingsActivity)
+            ABOUT_APP_ITEM_ID -> findNavController().navigate(R.id.to_aboutActivity)
         }
     }
 
@@ -88,18 +87,6 @@ class MainFragment :
     override fun onStop() {
         super.onStop()
         sharedPreferences.unregisterOnSharedPreferenceChangeListener(this)
-    }
-
-    private fun showSettings() {
-        Intent(context, SettingsActivity::class.java).also {
-            startActivity(it)
-        }
-    }
-
-    private fun showAbout() {
-        Intent(context, AboutActivity::class.java).also {
-            startActivity(it)
-        }
     }
 
     private fun tryUpdateBatteryStats() {
