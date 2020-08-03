@@ -15,7 +15,6 @@ import androidx.databinding.DataBindingUtil
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.appmanager.AppPackageInfo
 import com.boswelja.devicemanager.databinding.ActivityAppInfoBinding
-import com.boswelja.devicemanager.ui.appmanager.AppManagerActivity.Companion.EXTRA_WATCH_ID
 import com.boswelja.devicemanager.ui.base.BaseToolbarActivity
 
 class AppInfoActivity : BaseToolbarActivity() {
@@ -83,5 +82,6 @@ class AppInfoActivity : BaseToolbarActivity() {
 
     companion object {
         const val EXTRA_APP_INFO = "extra_app_info"
+        const val EXTRA_WATCH_ID = "extra_watch_id"
     }
 }

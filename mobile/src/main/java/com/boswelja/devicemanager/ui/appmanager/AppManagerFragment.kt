@@ -17,7 +17,6 @@ import androidx.fragment.app.activityViewModels
 import com.boswelja.devicemanager.common.appmanager.AppPackageInfo
 import com.boswelja.devicemanager.common.recyclerview.adapter.ItemClickCallback
 import com.boswelja.devicemanager.databinding.FragmentAppManagerBinding
-import com.boswelja.devicemanager.ui.appmanager.AppManagerActivity.Companion.EXTRA_WATCH_ID
 import com.boswelja.devicemanager.ui.appmanager.adapter.AppsAdapter
 import com.boswelja.devicemanager.ui.appmanager.adapter.Item
 import com.boswelja.devicemanager.ui.appmanager.info.AppInfoActivity
@@ -57,7 +56,7 @@ class AppManagerFragment : Fragment(), ItemClickCallback<Item> {
         viewModel.canStopAppManagerService = false
         Intent(context, AppInfoActivity::class.java).apply {
             putExtra(AppInfoActivity.EXTRA_APP_INFO, appPackageInfo)
-            putExtra(EXTRA_WATCH_ID, viewModel.watchId)
+            putExtra(AppInfoActivity.EXTRA_WATCH_ID, viewModel.watchId)
         }.also {
             startActivity(it)
         }

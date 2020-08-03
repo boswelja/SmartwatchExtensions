@@ -8,8 +8,8 @@
 package com.boswelja.devicemanager.ui.appmanager
 
 import android.os.Bundle
-import android.widget.Toast
 import androidx.activity.viewModels
+import androidx.navigation.navArgs
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.databinding.ActivityAppManagerBinding
 import com.boswelja.devicemanager.ui.base.BaseToolbarActivity
@@ -18,6 +18,7 @@ import timber.log.Timber
 
 class AppManagerActivity : BaseToolbarActivity() {
 
+    private val args: AppManagerActivityArgs by navArgs()
     private val viewModel: AppManagerViewModel by viewModels()
     private val watchServiceLifecycleObserver by lazy { WatchServiceLifecycleObserver(viewModel) }
 
@@ -36,15 +37,11 @@ class AppManagerActivity : BaseToolbarActivity() {
             showUpButton = true,
             toolbarSubtitle = getString(
                 R.string.app_manager_activity_subtitle,
-                intent.getStringExtra(EXTRA_WATCH_NAME)
+                args.watchName
             )
         )
 
-        viewModel.watchId = intent?.getStringExtra(EXTRA_WATCH_ID)
-        if (viewModel.watchId.isNullOrBlank()) {
-            notifyWatchNotFound()
-            return
-        }
+        viewModel.watchId = args.watchId
 
         viewModel.allAppsList.observe(this) {
             if (it.isNullOrEmpty()) {
@@ -75,19 +72,5 @@ class AppManagerActivity : BaseToolbarActivity() {
             .setCustomAnimations(R.anim.fade_in, R.anim.fade_out)
             .replace(R.id.fragment_holder, AppManagerFragment())
             .commit()
-    }
-
-    /**
-     * Tell the user we couldn't connect to the watch, and close the activity.
-     */
-    private fun notifyWatchNotFound() {
-        Timber.i("notifyWatchNotFound() called")
-        Toast.makeText(this, getString(R.string.app_manager_unable_to_connect), Toast.LENGTH_LONG).show()
-        finish()
-    }
-
-    companion object {
-        const val EXTRA_WATCH_ID = "extra_watch_id"
-        const val EXTRA_WATCH_NAME = "extra_watch_name"
     }
 }

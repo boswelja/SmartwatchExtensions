@@ -15,6 +15,7 @@ import android.view.View
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.core.net.toUri
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import androidx.preference.Preference
 import com.boswelja.common.donate.DonationResultInterface
 import com.boswelja.common.donate.ui.DonationDialog
@@ -23,7 +24,6 @@ import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.GooglePlayUtils
 import com.boswelja.devicemanager.common.GooglePlayUtils.getPlayStoreLink
 import com.boswelja.devicemanager.ui.base.BasePreferenceFragment
-import com.boswelja.devicemanager.ui.changelog.ChangelogDialogFragment
 import com.boswelja.devicemanager.watchmanager.WatchManager
 import com.google.android.material.snackbar.Snackbar
 import timber.log.Timber
@@ -50,7 +50,7 @@ class AppInfoFragment :
             SHARE_APP_KEY -> showShareMenu()
             LEAVE_REVIEW_KEY -> showPlayStorePage()
             OPEN_DONATE_DIALOG_KEY -> showDonationDialog()
-            OPEN_CHANGELOG_KEY -> showChangelog()
+            OPEN_CHANGELOG_KEY -> findNavController().navigate(AppInfoFragmentDirections.toChangelogFragment())
             else -> return false
         }
         return true
@@ -179,14 +179,6 @@ class AppInfoFragment :
         }.also {
             it.show(parentFragmentManager)
         }
-    }
-
-    /**
-     * Creates an instance of [ChangelogDialogFragment] and shows it.
-     */
-    private fun showChangelog() {
-        Timber.d("showChangelog() called")
-        ChangelogDialogFragment().show(parentFragmentManager)
     }
 
     companion object {

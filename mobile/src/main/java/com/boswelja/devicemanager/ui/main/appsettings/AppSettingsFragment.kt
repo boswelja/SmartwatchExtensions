@@ -11,15 +11,13 @@ import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
+import androidx.navigation.fragment.findNavController
 import androidx.preference.ListPreference
 import androidx.preference.Preference
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.Compat
-import com.boswelja.devicemanager.managespace.ManageSpaceActivity
 import com.boswelja.devicemanager.ui.base.BaseDayNightActivity.Companion.DAYNIGHT_MODE_KEY
 import com.boswelja.devicemanager.ui.base.BasePreferenceFragment
-import com.boswelja.devicemanager.ui.watchmanager.WatchManagerActivity
-import com.boswelja.devicemanager.ui.widget.WidgetSettingsActivity
 import timber.log.Timber
 
 class AppSettingsFragment :
@@ -36,15 +34,15 @@ class AppSettingsFragment :
                 true
             }
             OPEN_WATCH_MANAGER_KEY -> {
-                startWatchManagerActivity()
+                findNavController().navigate(AppSettingsFragmentDirections.toWatchManagerActivity())
                 true
             }
             OPEN_MANAGE_SPACE_KEY -> {
-                openManageSpaceActivity()
+                findNavController().navigate(AppSettingsFragmentDirections.toManageSpaceActivity())
                 true
             }
             OPEN_WIDGET_SETTINGS_KEY -> {
-                openWidgetSettingsActivity()
+                findNavController().navigate(AppSettingsFragmentDirections.toWidgetSettingsActivity())
                 true
             }
             else -> false
@@ -102,16 +100,6 @@ class AppSettingsFragment :
     }
 
     /**
-     * Start an instance of [WatchManagerActivity].
-     */
-    private fun startWatchManagerActivity() {
-        Timber.d("startWatchManagerActivity() called")
-        Intent(context, WatchManagerActivity::class.java).also {
-            startActivity(it)
-        }
-    }
-
-    /**
      * Opens the system's notification settings for Wearable Extensions.
      */
     private fun openNotificationSettings() {
@@ -127,26 +115,6 @@ class AppSettingsFragment :
             }
         }.also {
             Timber.i("Starting notification settings activity")
-            startActivity(it)
-        }
-    }
-
-    /**
-     * Opens the [ManageSpaceActivity].
-     */
-    private fun openManageSpaceActivity() {
-        Intent(requireContext(), ManageSpaceActivity::class.java).also {
-            Timber.i("Starting ManageSpaceActivity")
-            startActivity(it)
-        }
-    }
-
-    /**
-     * Opens the [WidgetSettingsActivity].
-     */
-    private fun openWidgetSettingsActivity() {
-        Intent(requireContext(), WidgetSettingsActivity::class.java).also {
-            Timber.i("Starting WidgetSettingsActivity")
             startActivity(it)
         }
     }

@@ -7,17 +7,13 @@
  */
 package com.boswelja.devicemanager.ui.main.extensions
 
-import android.content.Intent
 import android.os.Bundle
+import androidx.navigation.fragment.findNavController
 import androidx.preference.Preference
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.preference.confirmationdialog.ConfirmationDialogPrefFragment
 import com.boswelja.devicemanager.preference.confirmationdialog.ConfirmationDialogPreference
-import com.boswelja.devicemanager.ui.appmanager.AppManagerActivity
 import com.boswelja.devicemanager.ui.base.BasePreferenceFragment
-import com.boswelja.devicemanager.ui.batterysync.BatterySyncPreferenceActivity
-import com.boswelja.devicemanager.ui.dndsync.DnDSyncPreferenceActivity
-import com.boswelja.devicemanager.ui.phonelocking.PhoneLockingPreferenceActivity
 import com.boswelja.devicemanager.watchmanager.WatchManager
 import timber.log.Timber
 
@@ -30,19 +26,24 @@ class ExtensionsFragment :
     override fun onPreferenceClick(preference: Preference?): Boolean {
         return when (preference?.key) {
             OPEN_BATTERY_SYNC_PREF_KEY -> {
-                openBatterySyncActivity()
+                findNavController().navigate(ExtensionsFragmentDirections.toBatterySyncActivity())
                 true
             }
             OPEN_DND_SYNC_PREF_KEY -> {
-                openDnDSyncActivity()
+                findNavController().navigate(ExtensionsFragmentDirections.toDndSyncActivity())
                 true
             }
             OPEN_PHONE_LOCKING_PREF_KEY -> {
-                openPhoneLockingActivity()
+                findNavController().navigate(ExtensionsFragmentDirections.toPhoneLockingActivity())
                 true
             }
             OPEN_APP_MANAGER_KEY -> {
-                openAppManagerActivity()
+                watchManager.connectedWatch.value?.let {
+                    findNavController().navigate(
+                            ExtensionsFragmentDirections.toAppManagerActivity(
+                                    watchId = it.id,
+                                    watchName = it.name))
+                }
                 true
             }
             else -> false
@@ -63,50 +64,6 @@ class ExtensionsFragment :
                 showConfirmationDialogPrefFragment(preference)
             }
             else -> super.onDisplayPreferenceDialog(preference)
-        }
-    }
-
-    /**
-     * Opens a [BatterySyncPreferenceActivity].
-     */
-    private fun openBatterySyncActivity() {
-        Intent(requireContext(), BatterySyncPreferenceActivity::class.java).also {
-            Timber.i("Starting BatterySyncPreferenceActivity")
-            startActivity(it)
-        }
-    }
-
-    /**
-     * Opens a [DnDSyncPreferenceActivity].
-     */
-    private fun openDnDSyncActivity() {
-        Intent(requireContext(), DnDSyncPreferenceActivity::class.java).also {
-            Timber.i("Starting DnDSyncPreferenceActivity")
-            startActivity(it)
-        }
-    }
-
-    /**
-     * Opens a [PhoneLockingPreferenceActivity].
-     */
-    private fun openPhoneLockingActivity() {
-        Intent(requireContext(), PhoneLockingPreferenceActivity::class.java).also {
-            Timber.i("Starting PhoneLockingPreferenceActivity")
-            startActivity(it)
-        }
-    }
-
-    /**
-     * Opens an [AppManagerActivity].
-     */
-    private fun openAppManagerActivity() {
-        Intent(requireContext(), AppManagerActivity::class.java).apply {
-            val connectedWatch = watchManager.connectedWatch.value
-            putExtra(AppManagerActivity.EXTRA_WATCH_ID, connectedWatch?.id)
-            putExtra(AppManagerActivity.EXTRA_WATCH_NAME, connectedWatch?.name)
-        }.also {
-            Timber.i("Starting AppManagerActivity")
-            startActivity(it)
         }
     }
 
