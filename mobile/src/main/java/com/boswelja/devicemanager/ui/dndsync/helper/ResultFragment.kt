@@ -12,6 +12,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.databinding.FragmentDndsyncHelperResultBinding
@@ -19,6 +20,7 @@ import com.boswelja.devicemanager.databinding.FragmentDndsyncHelperResultBinding
 internal class ResultFragment : Fragment() {
 
     private val args: ResultFragmentArgs by navArgs()
+    private val viewModel: ResultViewModel by viewModels()
 
     private lateinit var binding: FragmentDndsyncHelperResultBinding
 
@@ -32,6 +34,7 @@ internal class ResultFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        viewModel.setSyncToWatch(args.success)
         binding.apply {
             if (args.success) {
                 resultIndicator.setImageResource(R.drawable.wizard_ic_success)

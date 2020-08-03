@@ -35,18 +35,13 @@
             app:popExitAnim="@anim/slide_out_right" />
 
         <action
-            android:id="@+id/to_allSetFragment"
-            app:destination="@id/allSetFragment"
+            android:id="@+id/to_resultFragment"
+            app:destination="@id/resultFragment"
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right" />
     </fragment>
-
-    <fragment
-        android:id="@+id/allSetFragment"
-        android:name="com.boswelja.devicemanager.ui.dndsync.helper.ResultFragment"
-        tools:layout="@layout/fragment_dndsync_helper_result" />
 
     <fragment
         android:id="@+id/resultFragment"

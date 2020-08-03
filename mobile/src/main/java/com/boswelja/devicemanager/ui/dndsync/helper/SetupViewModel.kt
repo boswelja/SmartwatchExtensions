@@ -8,31 +8,18 @@
 package com.boswelja.devicemanager.ui.dndsync.helper
 
 import android.app.Application
-import android.content.Intent
-import androidx.core.content.edit
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.preference.PreferenceManager
-import com.boswelja.devicemanager.common.Compat
 import com.boswelja.devicemanager.common.Extensions.fromByteArray
-import com.boswelja.devicemanager.common.PreferenceKey.DND_SYNC_TO_WATCH_KEY
 import com.boswelja.devicemanager.common.dndsync.References.REQUEST_INTERRUPT_FILTER_ACCESS_STATUS_PATH
-import com.boswelja.devicemanager.dndsync.DnDLocalChangeService
 import com.boswelja.devicemanager.watchmanager.WatchManager
 import com.google.android.gms.wearable.MessageClient
 import com.google.android.gms.wearable.Wearable
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
+import timber.log.Timber
 
 class SetupViewModel(application: Application) : AndroidViewModel(application) {
 
-    private val coroutineJob = Job()
-    private val coroutineScope = CoroutineScope(Dispatchers.IO + coroutineJob)
-
-    private val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(application)
     private val watchManager = WatchManager.get(application)
     private val watchId = watchManager.connectedWatch.value!!.id
 
@@ -42,7 +29,6 @@ class SetupViewModel(application: Application) : AndroidViewModel(application) {
             REQUEST_INTERRUPT_FILTER_ACCESS_STATUS_PATH -> {
                 val hasNotiPolicyAccess = Boolean.fromByteArray(it.data)
                 _hasNotiPolicyAccess.postValue(hasNotiPolicyAccess)
-                if (hasNotiPolicyAccess) enableSyncToWatch()
             }
         }
     }
@@ -56,18 +42,9 @@ class SetupViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     override fun onCleared() {
+        Timber.i("onCleared() called")
         super.onCleared()
         messageClient.removeListener(messageListener)
-        coroutineJob.cancel()
-    }
-
-    private fun enableSyncToWatch() {
-        coroutineScope.launch {
-            sharedPreferences.edit(commit = true) { putBoolean(DND_SYNC_TO_WATCH_KEY, true) }
-            watchManager.updatePreferenceOnWatch(DND_SYNC_TO_WATCH_KEY)
-            val context = getApplication<Application>()
-            Compat.startForegroundService(context, Intent(context, DnDLocalChangeService::class.java))
-        }
     }
 
     fun requestCheckPermission() {

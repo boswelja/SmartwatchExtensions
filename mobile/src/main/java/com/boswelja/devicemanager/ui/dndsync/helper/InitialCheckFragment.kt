@@ -37,7 +37,7 @@ internal class InitialCheckFragment : Fragment() {
         viewModel.hasNotiPolicyAccess.observe(viewLifecycleOwner) {
             Timber.i("hasNotiPolicyAccess = $it")
             if (it) {
-                findNavController().navigate(R.id.to_allSetFragment)
+                findNavController().navigate(InitialCheckFragmentDirections.toResultFragment(true))
             }
         }
         viewModel.hasCorrectSdkInt.observe(viewLifecycleOwner) {
@@ -47,7 +47,7 @@ internal class InitialCheckFragment : Fragment() {
                     binding.warningText.setText(R.string.dnd_sync_helper_warning_watch_version)
                     setHasWarnings()
                 } else {
-                    findNavController().navigate(R.id.to_setupFragment)
+                    findNavController().navigate(InitialCheckFragmentDirections.toSetupFragment())
                 }
                 binding.progressBar.hide()
             }
