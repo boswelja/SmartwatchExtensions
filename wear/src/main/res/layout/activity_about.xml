@@ -1,85 +1,93 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
+<layout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:clipToPadding="false">
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <data>
+        <import type="com.boswelja.devicemanager.BuildConfig" />
+    </data>
+
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingTop="8dp"
-        android:paddingBottom="@dimen/content_vertical_margin_inset">
+        android:layout_height="match_parent"
+        android:clipToPadding="false">
 
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/app_icon_view"
-            android:layout_width="56dp"
-            android:layout_height="56dp"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            tools:src="@mipmap/ic_launcher" />
-
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/app_name_view"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/app_name"
-            app:layout_constraintTop_toBottomOf="@id/app_icon_view"
-            style="@style/AboutApp.Title" />
-
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/app_version_view"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/app_name_view"
-            tools:text="Version 1.0.0"
-            style="@style/AboutApp.Version" />
-
-        <androidx.appcompat.widget.LinearLayoutCompat
-            android:id="@+id/open_play_store_container"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/content_spacing"
-            app:layout_constraintTop_toBottomOf="@id/app_version_view"
-            style="@style/AboutLinkItem">
+            android:paddingTop="8dp"
+            android:paddingBottom="@dimen/content_vertical_margin_inset">
 
             <androidx.appcompat.widget.AppCompatImageView
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                app:srcCompat="@drawable/ic_open" />
+                android:id="@+id/app_icon_view"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                app:srcCompat="@mipmap/ic_launcher"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
 
             <androidx.appcompat.widget.AppCompatTextView
-                android:layout_width="wrap_content"
+                android:id="@+id/app_name_view"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/open_play_store_title"
-                style="@style/AboutLinkItem.Text" />
-
-        </androidx.appcompat.widget.LinearLayoutCompat>
-
-        <androidx.appcompat.widget.LinearLayoutCompat
-            android:id="@+id/open_app_info_container"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/open_play_store_container"
-            style="@style/AboutLinkItem">
-
-            <androidx.appcompat.widget.AppCompatImageView
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                app:srcCompat="@drawable/ic_open" />
+                android:text="@string/app_name"
+                app:layout_constraintTop_toBottomOf="@id/app_icon_view"
+                style="@style/AboutApp.Title" />
 
             <androidx.appcompat.widget.AppCompatTextView
-                android:layout_width="wrap_content"
+                android:id="@+id/app_version_view"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/open_app_info_title"
-                style="@style/AboutLinkItem.Text" />
+                android:text="@{@string/version_string(BuildConfig.VERSION_NAME)}"
+                app:layout_constraintTop_toBottomOf="@id/app_name_view"
+                tools:text="Version 1.0.0"
+                style="@style/AboutApp.Version" />
 
-        </androidx.appcompat.widget.LinearLayoutCompat>
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:id="@+id/open_play_store_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/content_spacing"
+                app:layout_constraintTop_toBottomOf="@id/app_version_view"
+                style="@style/AboutLinkItem">
 
-    <requestFocus />
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    app:srcCompat="@drawable/ic_open" />
 
-</ScrollView>
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/open_play_store_title"
+                    style="@style/AboutLinkItem.Text" />
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:id="@+id/open_app_info_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@id/open_play_store_container"
+                style="@style/AboutLinkItem">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    app:srcCompat="@drawable/ic_open" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/open_app_info_title"
+                    style="@style/AboutLinkItem.Text" />
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <requestFocus />
+
+    </ScrollView>
+</layout>
