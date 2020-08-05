@@ -11,35 +11,38 @@ import com.boswelja.devicemanager.R
 
 object ExtensionItems {
 
+    const val HEADER = -1
     const val BATTERY_SYNC_ITEM_ID = 0
     const val PHONE_LOCKING_ITEM_ID = 1
     const val SETTINGS_ITEM_ID = 2
     const val ABOUT_APP_ITEM_ID = 3
 
-    val EXTENSIONS = arrayListOf(
-        ExtensionItem(
+    val EXTENSIONS = listOf(
+        Item.Extension(
             BATTERY_SYNC_ITEM_ID,
+            R.string.phone_battery_percent,
             R.string.battery_sync_disabled,
             R.drawable.ic_phone_battery,
             enabled = false
         ),
-        ExtensionItem(
+        Item.Extension(
             PHONE_LOCKING_ITEM_ID,
+            R.string.lock_phone_label,
             R.string.lock_phone_disabled_message,
             R.drawable.ic_phone_lock,
             enabled = false
-        )
-    )
-
-    val APP = arrayListOf(
-        ExtensionItem(
+        ),
+        Item.Header(HEADER, R.string.section_text_app_info),
+        Item.Extension(
             SETTINGS_ITEM_ID,
             R.string.navigation_settings_title,
+            0,
             R.drawable.ic_settings
         ),
-        ExtensionItem(
+        Item.Extension(
             ABOUT_APP_ITEM_ID,
             R.string.about_app_title,
+            0,
             R.drawable.ic_about
         )
     )
