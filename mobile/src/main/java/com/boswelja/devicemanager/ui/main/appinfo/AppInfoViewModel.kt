@@ -34,6 +34,15 @@ class AppInfoViewModel(application: Application) : AndroidViewModel(application)
     val watchAppVersion: LiveData<Pair<String, String?>?>
         get() = _watchAppVersion
 
+    init {
+        messageClient.addListener(messageListener)
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        messageClient.removeListener(messageListener)
+    }
+
     /**
      * Requests the current app version info from the connected watch.
      * Result received in [messageListener] if sending the message was successful.
