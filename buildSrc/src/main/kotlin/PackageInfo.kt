@@ -17,7 +17,7 @@ object DebugInfo {
 
 object PackageInfo {
     const val packageName = "com.boswelja.devicemanager"
-    const val versionName = "2.4.5"
+    const val versionName = "2.5.0"
 
     fun getVersionCode(): Int {
         val versionBuildKey = "version.build_number"

@@ -23,13 +23,13 @@ class MainApplication : Application() {
             Timber.plant(Timber.DebugTree())
         }
 
-        ensureUpdated()
+        ensureEnvironmentUpdated()
     }
 
     /**
      * Checks the environment is up to date, otherwise starts a [BootOrUpdateHandlerService].
      */
-    private fun ensureUpdated() {
+    private fun ensureEnvironmentUpdated() {
         val updater = Updater(this)
         if (updater.needsUpdate) {
             Timber.i("Starting updater service")

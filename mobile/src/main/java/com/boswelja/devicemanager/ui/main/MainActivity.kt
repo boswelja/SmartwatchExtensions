@@ -16,6 +16,10 @@ import com.boswelja.devicemanager.databinding.ActivityMainBinding
 import com.boswelja.devicemanager.ui.base.BaseWatchPickerActivity
 import com.boswelja.devicemanager.ui.changelog.ChangelogDialogFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.play.core.appupdate.AppUpdateManagerFactory
+import com.google.android.play.core.install.model.AppUpdateType
+import com.google.android.play.core.install.model.UpdateAvailability
+import com.google.android.play.core.ktx.updatePriority
 import timber.log.Timber
 
 class MainActivity : BaseWatchPickerActivity() {
@@ -31,6 +35,7 @@ class MainActivity : BaseWatchPickerActivity() {
         setContentView(binding.root)
         setupWatchPickerSpinner(binding.toolbarLayout.toolbar)
         binding.bottomNavigation.setupWithNavController(findNavController(R.id.nav_host_fragment))
+        ensureAppUpdated()
     }
 
     override fun onStart() {
@@ -66,7 +71,37 @@ class MainActivity : BaseWatchPickerActivity() {
         }
     }
 
+    private fun ensureAppUpdated() {
+        val appUpdateManager = AppUpdateManagerFactory.create(this)
+        appUpdateManager.appUpdateInfo.addOnCompleteListener {
+            if (it.isSuccessful) {
+                val appUpdateInfo = it.result
+                if (appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE
+                        && appUpdateInfo.updatePriority <= LOW_PRIORITY_UPDATE) {
+                    if (appUpdateInfo.updatePriority < HIGH_PRIORITY_UPDATE
+                            && appUpdateInfo.isUpdateTypeAllowed(AppUpdateType.FLEXIBLE)) {
+                        appUpdateManager.startUpdateFlowForResult(
+                                appUpdateInfo,
+                                AppUpdateType.FLEXIBLE,
+                                this,
+                                0)
+                    } else if (appUpdateInfo.isUpdateTypeAllowed(AppUpdateType.IMMEDIATE)) {
+                        appUpdateManager.startUpdateFlowForResult(
+                                appUpdateInfo,
+                                AppUpdateType.IMMEDIATE,
+                                this,
+                        0)
+                    }
+                }
+            } else {
+                Timber.w("Failed to check for app updates")
+            }
+        }
+    }
+
     companion object {
+        private const val LOW_PRIORITY_UPDATE = 2
+        private const val HIGH_PRIORITY_UPDATE = 5
         const val SHOW_CHANGELOG_KEY = "should_show_changelog"
     }
 }
