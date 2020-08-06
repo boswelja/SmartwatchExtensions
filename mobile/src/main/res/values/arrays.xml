@@ -25,13 +25,10 @@
     </string-array>
 
     <string-array name="version_changelog">
-        <item>Added a new widget settings screen. This shows a preview of what your widgets will look like</item>
-        <item>Added the option to lock your phone via an Accessibility Service as well as via Device Admin (Android 9.0+ only)</item>
-        <item>Battery Sync now uses the new WorkManager API, rather than JobScheduler, to improve compatibility and reliability</item>
-        <item>Process any update changes as soon as the app gets updated, you\'ll see a notification when this happens going forward</item>
-        <item>Restart services and workers when you restart your phone</item>
-        <item>Small Wear OS app performance optimisations</item>
-        <item>Bug fixes</item>
+        <item>Reworked the app\'s UI to use the new recommended architecture</item>
+        <item>Performance improvements</item>
+        <item>Reduced system resource usage</item>
+        <item>Improved stability (There\'s still a few kinks to iron out)</item>
     </string-array>
 
     <string-array name="interrupt_filter_sync_to_watch_steps">
