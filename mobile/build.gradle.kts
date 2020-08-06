@@ -72,6 +72,8 @@ dependencies {
 
     implementation(Libraries.billingClient)
     implementation(Libraries.materialComponents)
+    implementation(Libraries.playCore)
+    implementation(Libraries.playCoreKtx)
     implementation(Libraries.playServicesWearable)
     implementation(Libraries.timber)
 

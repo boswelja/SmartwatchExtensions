@@ -46,6 +46,7 @@ object Libraries {
         const val billingClient = "3.0.0"
 
         const val googleMaterial = "1.3.0-alpha01"
+        const val googlePlayCore = "1.8.0"
 
         const val playServicesWearable = "17.0.0"
         const val wearableSupport = "2.7.0"
@@ -74,6 +75,8 @@ object Libraries {
     const val billingClient = "com.android.billingclient:billing:${Versions.billingClient}"
 
     const val materialComponents = "com.google.android.material:material:${Versions.googleMaterial}"
+    const val playCore = "com.google.android.play:core:${Versions.googlePlayCore}"
+    const val playCoreKtx = "com.google.android.play:core-ktx:${Versions.googlePlayCore}"
 
     const val playServicesWearable = "com.google.android.gms:play-services-wearable:${Versions.playServicesWearable}"
     const val wearableSupport = "com.google.android.support:wearable:${Versions.wearableSupport}"
