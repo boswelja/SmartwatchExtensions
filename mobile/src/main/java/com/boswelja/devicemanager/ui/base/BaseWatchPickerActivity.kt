@@ -59,7 +59,7 @@ abstract class BaseWatchPickerActivity :
 
         watchManager.database.watchDao().getAllObservable().observe(this) {
             if (it.isEmpty() && hasStartedWatchSetup) finish()
-            setWatchList(it)
+            else setWatchList(it)
         }
         watchManager.connectedWatch.observe(this) {
             it?.let {
