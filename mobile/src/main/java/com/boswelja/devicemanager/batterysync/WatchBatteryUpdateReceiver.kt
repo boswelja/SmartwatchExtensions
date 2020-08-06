@@ -59,7 +59,6 @@ class WatchBatteryUpdateReceiver : WearableListenerService() {
                     this@WatchBatteryUpdateReceiver,
                     watchBatteryStats.watchId
                 )
-                database.close()
             }
         }
     }
