@@ -4,7 +4,7 @@ plugins {
     id(BuildPlugins.kotlinAndroidExtensions)
     id(BuildPlugins.kotlinKapt)
     id(BuildPlugins.safeArgs)
-    id("com.diffplug.spotless") version "5.1.0"
+    id("com.diffplug.spotless") version BuildPlugins.Versions.spotlessVersion
 }
 
 android {
