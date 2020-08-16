@@ -14,7 +14,6 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.boswelja.devicemanager.R
-import com.boswelja.devicemanager.Utils
 import com.boswelja.devicemanager.messages.Message
 import kotlin.math.min
 
@@ -32,7 +31,7 @@ class MessageTouchCallback(private val adapter: MessagesAdapter, context: Contex
     private val icon: Drawable = ContextCompat.getDrawable(context, R.drawable.ic_delete)!!
     private val swipeBackground: Drawable =
         ContextCompat.getDrawable(context, R.drawable.recyclerview_swipe_background)!!
-    private val iconMargin = Utils.complexTypeDp(context.resources, 16f).toInt()
+    private val iconMargin = context.resources.getDimension(R.dimen.message_icon_margin).toInt()
     private val iconMaxAlpha = icon.alpha
 
     override fun onMove(
