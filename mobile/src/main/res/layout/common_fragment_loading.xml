@@ -6,12 +6,12 @@
     android:orientation="vertical"
     android:gravity="center">
 
-    <ProgressBar
+    <com.google.android.material.progressindicator.ProgressIndicator
         android:id="@+id/progress_bar"
         android:layout_width="240dp"
         android:layout_height="wrap_content"
         android:indeterminate="true"
-        style="@style/Widget.AppCompat.ProgressBar.Horizontal"/>
+        style="@style/Widget.MaterialComponents.ProgressIndicator.Linear.Indeterminate" />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/loading_text"
