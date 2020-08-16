@@ -22,6 +22,7 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import com.boswelja.devicemanager.databinding.FragmentMessagesBinding
 import com.boswelja.devicemanager.messages.Action
 import com.boswelja.devicemanager.messages.database.MessageDatabase
+import com.boswelja.devicemanager.ui.changelog.ChangelogDialogFragment
 import timber.log.Timber
 
 @SuppressLint("BatteryLife")
@@ -58,6 +59,9 @@ class MessageFragment : Fragment() {
                         Timber.i("Launching notification settings")
                         context?.startActivity(intent)
                     }
+                }
+                Action.SHOW_CHANGELOG -> {
+                    ChangelogDialogFragment().show(parentFragmentManager)
                 }
             }
         }

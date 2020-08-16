@@ -14,8 +14,8 @@ import android.content.Intent
 import android.os.Build
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
-import androidx.core.content.edit
 import androidx.preference.PreferenceManager
+import com.boswelja.devicemanager.BuildConfig
 import com.boswelja.devicemanager.NotificationChannelHelper
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.batterysync.BatterySyncWorker
@@ -24,7 +24,9 @@ import com.boswelja.devicemanager.bootorupdate.updater.Updater
 import com.boswelja.devicemanager.common.Compat
 import com.boswelja.devicemanager.common.PreferenceKey
 import com.boswelja.devicemanager.dndsync.DnDLocalChangeService
-import com.boswelja.devicemanager.ui.main.MainActivity.Companion.SHOW_CHANGELOG_KEY
+import com.boswelja.devicemanager.messages.Action
+import com.boswelja.devicemanager.messages.Message
+import com.boswelja.devicemanager.messages.database.MessageDatabase
 import com.boswelja.devicemanager.watchmanager.WatchManager
 import com.boswelja.devicemanager.watchmanager.database.WatchDatabase
 import kotlinx.coroutines.Dispatchers
@@ -71,9 +73,16 @@ class BootOrUpdateHandlerService : Service() {
             when (updater.doUpdate()) {
                 Result.COMPLETED -> {
                     Timber.i("Update completed")
-                    PreferenceManager.getDefaultSharedPreferences(this).edit {
-                        putBoolean(SHOW_CHANGELOG_KEY, true)
-                    }
+                    val updateMessage = Message(
+                            R.drawable.ic_update,
+                            "Updated to version ${BuildConfig.VERSION_NAME}",
+                            "Version ${BuildConfig.VERSION_NAME}",
+                            action = Action.SHOW_CHANGELOG,
+                            buttonLabel = "See What's New"
+                    )
+                    MessageDatabase.get(this).sendMessage(
+                            PreferenceManager.getDefaultSharedPreferences(this),
+                            updateMessage)
                 }
                 Result.NOT_NEEDED -> Timber.i("Update not needed")
             }

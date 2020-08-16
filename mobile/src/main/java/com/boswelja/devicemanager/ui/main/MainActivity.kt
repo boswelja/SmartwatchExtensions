@@ -14,7 +14,6 @@ import androidx.navigation.ui.setupWithNavController
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.databinding.ActivityMainBinding
 import com.boswelja.devicemanager.ui.base.BaseWatchPickerActivity
-import com.boswelja.devicemanager.ui.changelog.ChangelogDialogFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.play.core.appupdate.AppUpdateManagerFactory
 import com.google.android.play.core.install.model.AppUpdateType
@@ -40,21 +39,8 @@ class MainActivity : BaseWatchPickerActivity() {
 
     override fun onStart() {
         super.onStart()
-        Timber.d("onStart() called")
-        showChangelogIfNeeded()
-
         viewModel.messageCount.observe(this) {
             updateMessagesBadge(it)
-        }
-    }
-
-    /**
-     * Shows the changelog if [SHOW_CHANGELOG_KEY] is true.
-     */
-    private fun showChangelogIfNeeded() {
-        if (sharedPreferences.getBoolean(SHOW_CHANGELOG_KEY, false)) {
-            Timber.i("Showing changelog")
-            ChangelogDialogFragment().show(supportFragmentManager)
         }
     }
 
@@ -102,6 +88,5 @@ class MainActivity : BaseWatchPickerActivity() {
     companion object {
         private const val LOW_PRIORITY_UPDATE = 2
         private const val HIGH_PRIORITY_UPDATE = 5
-        const val SHOW_CHANGELOG_KEY = "should_show_changelog"
     }
 }

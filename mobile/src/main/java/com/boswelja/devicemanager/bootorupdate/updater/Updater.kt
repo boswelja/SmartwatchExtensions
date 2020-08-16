@@ -110,6 +110,10 @@ class Updater(private val context: Context) {
                     remove("auto_add_watches")
                     updateStatus = Result.COMPLETED
                 }
+                if (sharedPreferences.contains("should_show_changelog")) {
+                    remove("should_show_changelog")
+                    updateStatus = Result.COMPLETED
+                }
                 if (!sharedPreferences.contains(MESSAGE_COUNT_KEY)) {
                     MessageDatabase.get(context).apply {
                         updateMessageCount(sharedPreferences)

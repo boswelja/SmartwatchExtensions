@@ -20,14 +20,11 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     private val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(application)
     private val preferenceChangeListener = SharedPreferences.OnSharedPreferenceChangeListener { preferences, key ->
         when (key) {
-            MESSAGE_COUNT_KEY -> {
-                val count = preferences.getInt(key, 0)
-                _messageCount.postValue(count)
-            }
+            MESSAGE_COUNT_KEY -> _messageCount.postValue(preferences.getInt(key, 0))
         }
     }
 
-    private val _messageCount = MutableLiveData<Int>()
+    private val _messageCount = MutableLiveData(sharedPreferences.getInt(MESSAGE_COUNT_KEY, 0))
     val messageCount: LiveData<Int>
         get() = _messageCount
 
