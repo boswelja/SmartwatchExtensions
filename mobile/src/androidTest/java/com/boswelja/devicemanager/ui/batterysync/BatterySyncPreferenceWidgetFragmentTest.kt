@@ -17,6 +17,7 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.TestExtensions.setText
 import com.boswelja.devicemanager.TestExtensions.setVisibility
+import com.boswelja.devicemanager.batterysync.ui.BatterySyncPreferenceWidgetFragment
 import org.junit.Test
 
 class BatterySyncPreferenceWidgetFragmentTest {

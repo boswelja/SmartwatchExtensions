@@ -19,11 +19,11 @@ import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.batterysync.BatterySyncWorker
 import com.boswelja.devicemanager.batterysync.database.WatchBatteryStatsDatabase
 import com.boswelja.devicemanager.databinding.ActivityManageSpaceBinding
-import com.boswelja.devicemanager.ui.base.BaseToolbarActivity
+import com.boswelja.devicemanager.common.ui.BaseToolbarActivity
 import com.boswelja.devicemanager.watchmanager.WatchManager
 import com.boswelja.devicemanager.watchmanager.database.WatchDatabase
 import com.boswelja.devicemanager.watchmanager.item.Watch
-import com.boswelja.devicemanager.widgetdb.WidgetDatabase
+import com.boswelja.devicemanager.widget.database.WidgetDatabase
 import com.google.android.gms.tasks.Tasks
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope

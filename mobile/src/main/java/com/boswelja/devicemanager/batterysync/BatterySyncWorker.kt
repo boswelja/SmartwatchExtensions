@@ -14,7 +14,7 @@ import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
 import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_SYNC_INTERVAL_KEY
-import com.boswelja.devicemanager.ui.batterysync.Utils
+import com.boswelja.devicemanager.batterysync.ui.Utils
 import com.boswelja.devicemanager.watchmanager.database.WatchDatabase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext

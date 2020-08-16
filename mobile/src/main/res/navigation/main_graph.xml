@@ -23,7 +23,7 @@
 
     <fragment
         android:id="@+id/extensionsFragment"
-        android:name="com.boswelja.devicemanager.ui.main.extensions.ExtensionsFragment">
+        android:name="com.boswelja.devicemanager.main.extensions.ExtensionsFragment">
 
         <action
             android:id="@+id/to_batterySyncActivity"
@@ -44,11 +44,11 @@
 
     <fragment
         android:id="@+id/messageFragment"
-        android:name="com.boswelja.devicemanager.ui.main.messages.MessageFragment" />
+        android:name="com.boswelja.devicemanager.messages.ui.MessageFragment" />
 
     <fragment
         android:id="@+id/appSettingsFragment"
-        android:name="com.boswelja.devicemanager.ui.main.appsettings.AppSettingsFragment">
+        android:name="com.boswelja.devicemanager.appsettings.ui.AppSettingsFragment">
 
         <action
             android:id="@+id/to_widgetSettingsActivity"
@@ -65,7 +65,7 @@
 
     <fragment
         android:id="@+id/appInfoFragment"
-        android:name="com.boswelja.devicemanager.ui.main.appinfo.AppInfoFragment">
+        android:name="com.boswelja.devicemanager.appinfo.ui.AppInfoFragment">
 
         <action
             android:id="@+id/to_changelogFragment"
@@ -74,15 +74,15 @@
 
     <dialog
         android:id="@+id/changelogSheetFragment"
-        android:name="com.boswelja.devicemanager.ui.changelog.ChangelogDialogFragment" />
+        android:name="com.boswelja.devicemanager.changelog.ui.ChangelogDialogFragment" />
 
     <activity
         android:id="@+id/batterySyncPreferenceActivity"
-        android:name="com.boswelja.devicemanager.ui.batterysync.BatterySyncPreferenceActivity" />
+        android:name="com.boswelja.devicemanager.batterysync.ui.BatterySyncPreferenceActivity" />
 
     <activity
         android:id="@+id/appManagerActivity"
-        android:name="com.boswelja.devicemanager.ui.appmanager.AppManagerActivity"
+        android:name="com.boswelja.devicemanager.appmanager.ui.AppManagerActivity"
         android:label="AppManagerActivity">
 
         <argument
@@ -96,19 +96,19 @@
 
     <activity
         android:id="@+id/dnDSyncPreferenceActivity"
-        android:name="com.boswelja.devicemanager.ui.dndsync.DnDSyncPreferenceActivity" />
+        android:name="com.boswelja.devicemanager.dndsync.ui.DnDSyncPreferenceActivity" />
 
     <activity
         android:id="@+id/phoneLockingPreferenceActivity"
-        android:name="com.boswelja.devicemanager.ui.phonelocking.PhoneLockingPreferenceActivity" />
+        android:name="com.boswelja.devicemanager.phonelocking.ui.PhoneLockingPreferenceActivity" />
 
     <activity
         android:id="@+id/widgetSettingsActivity"
-        android:name="com.boswelja.devicemanager.ui.widget.WidgetSettingsActivity" />
+        android:name="com.boswelja.devicemanager.widget.ui.WidgetSettingsActivity" />
 
     <activity
         android:id="@+id/watchManagerActivity"
-        android:name="com.boswelja.devicemanager.ui.watchmanager.WatchManagerActivity" />
+        android:name="com.boswelja.devicemanager.watchmanager.ui.WatchManagerActivity" />
 
     <activity
         android:id="@+id/manageSpaceActivity"

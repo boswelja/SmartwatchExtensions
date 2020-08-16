@@ -15,6 +15,7 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import com.boswelja.devicemanager.R
+import com.boswelja.devicemanager.watchsetup.ui.WelcomeFragment
 import org.junit.Test
 
 class WelcomeFragmentTest {

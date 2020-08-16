@@ -19,7 +19,7 @@ import com.boswelja.devicemanager.common.Compat
 import com.boswelja.devicemanager.common.PreferenceKey.DND_SYNC_TO_WATCH_KEY
 import com.boswelja.devicemanager.common.R
 import com.boswelja.devicemanager.common.dndsync.References
-import com.boswelja.devicemanager.ui.main.MainActivity
+import com.boswelja.devicemanager.main.MainActivity
 import com.boswelja.devicemanager.watchmanager.database.WatchDatabase
 import com.google.android.gms.wearable.DataClient
 import com.google.android.gms.wearable.PutDataMapRequest

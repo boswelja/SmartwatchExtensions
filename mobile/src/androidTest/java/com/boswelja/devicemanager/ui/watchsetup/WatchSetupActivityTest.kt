@@ -16,7 +16,8 @@ import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.rule.ActivityTestRule
 import com.boswelja.devicemanager.R
-import com.boswelja.devicemanager.ui.watchsetup.WatchSetupActivity.Companion.EXTRA_SKIP_WELCOME
+import com.boswelja.devicemanager.watchsetup.ui.WatchSetupActivity
+import com.boswelja.devicemanager.watchsetup.ui.WatchSetupActivity.Companion.EXTRA_SKIP_WELCOME
 import org.junit.Rule
 import org.junit.Test
 

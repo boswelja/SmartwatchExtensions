@@ -18,6 +18,7 @@ import androidx.test.espresso.matcher.ViewMatchers.withEffectiveVisibility
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import com.boswelja.devicemanager.R
+import com.boswelja.devicemanager.watchsetup.ui.WatchSetupFragment
 import org.hamcrest.Matchers.allOf
 import org.hamcrest.Matchers.not
 import org.junit.Test

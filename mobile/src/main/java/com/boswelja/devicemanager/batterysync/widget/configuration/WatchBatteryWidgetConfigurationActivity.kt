@@ -14,10 +14,10 @@ import android.os.Bundle
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.batterysync.widget.WatchBatteryWidget
 import com.boswelja.devicemanager.databinding.ActivityWatchBatteryWidgetConfigurationBinding
-import com.boswelja.devicemanager.ui.base.BaseToolbarActivity
+import com.boswelja.devicemanager.common.ui.BaseToolbarActivity
 import com.boswelja.devicemanager.watchmanager.database.WatchDatabase
-import com.boswelja.devicemanager.widgetdb.WidgetDatabase
-import com.boswelja.devicemanager.widgetdb.batterysync.WatchBatteryWidgetId
+import com.boswelja.devicemanager.widget.database.WidgetDatabase
+import com.boswelja.devicemanager.widget.database.WatchBatteryWidgetId
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch

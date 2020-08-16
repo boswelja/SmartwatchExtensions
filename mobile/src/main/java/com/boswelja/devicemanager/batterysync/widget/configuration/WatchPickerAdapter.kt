@@ -11,7 +11,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.recyclerview.item.IconTwoLineViewHolder
-import com.boswelja.devicemanager.ui.common.WatchDiffCallback
+import com.boswelja.devicemanager.common.WatchDiffCallback
 import com.boswelja.devicemanager.watchmanager.item.Watch
 
 class WatchPickerAdapter(private val clickCallback: (watch: Watch) -> Unit) :
