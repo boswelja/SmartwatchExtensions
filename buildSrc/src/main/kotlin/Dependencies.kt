@@ -33,8 +33,8 @@ object AndroidSdk {
 object Libraries {
     object Versions {
         const val androidxAppCompat = "1.3.0-alpha01"
-        const val androidxBrowser = "1.3.0-alpha04"
-        const val androidxConstraintLayout = "2.0.0-beta8"
+        const val androidxBrowser = "1.3.0-alpha05"
+        const val androidxConstraintLayout = "2.0.0-rc1"
         const val androidxCoreKtx = "1.4.0-alpha01"
         const val androidxFragment = "1.3.0-alpha07"
         const val androidxLifecycle = "2.3.0-alpha06"
@@ -46,7 +46,7 @@ object Libraries {
 
         const val billingClient = "3.0.0"
 
-        const val googleMaterial = "1.3.0-alpha01"
+        const val googleMaterial = "1.3.0-alpha02"
         const val googlePlayCore = "1.8.0"
 
         const val playServicesWearable = "17.0.0"
