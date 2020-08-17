@@ -7,24 +7,20 @@
  */
 package com.boswelja.devicemanager.appmanager.ui
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
-import com.boswelja.devicemanager.R
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import com.boswelja.devicemanager.appmanager.ui.adapter.Item
 import com.boswelja.devicemanager.common.appmanager.AppPackageInfo
 import com.boswelja.devicemanager.common.appmanager.AppPackageInfoList
 import com.boswelja.devicemanager.common.appmanager.References
 import com.google.android.gms.wearable.MessageClient
-import com.google.android.gms.wearable.Wearable
 import timber.log.Timber
 import java.io.InvalidClassException
 
-class AppManagerViewModel(application: Application) : AndroidViewModel(application) {
-
-    private val messageClient = Wearable.getMessageClient(application)
+class AppManagerViewModel(private val messageClient: MessageClient) : ViewModel() {
 
     private val messageListener = MessageClient.OnMessageReceivedListener {
         Timber.i("Received a message")
@@ -36,7 +32,6 @@ class AppManagerViewModel(application: Application) : AndroidViewModel(applicati
                     _allAppsList.postValue(appPackageInfoList)
                 } catch (e: InvalidClassException) {
                     Timber.w("App list version mismatch")
-                    // createSnackBar(getString(R.string.app_manager_version_mismatch))
                 }
             }
             References.PACKAGE_ADDED -> {
@@ -127,24 +122,42 @@ class AppManagerViewModel(application: Application) : AndroidViewModel(applicati
      * @return The newly created [ArrayList].
      */
     private fun separateAppListToSections(appPackageInfoList: AppPackageInfoList): List<Item> {
-        val context = getApplication<Application>()
+        //val context = getApplication<Application>()
+        // TODO Regression in translated strings here, doesn't affect us yet but will need to be addressed.
         val result = ArrayList<Item>()
         val userApps = appPackageInfoList.filterNot { it.isSystemApp }.sortedBy { it.packageLabel }
-        result.add(Item.Header(context.getString(R.string.app_manager_section_user_apps), 0.toString()))
+        result.add(Item.Header(
+                "User Apps", //context.getString(R.string.app_manager_section_user_apps),
+                0.toString()))
         result.addAll(
             userApps.map {
-                Item.App(it.packageIcon.bitmap, it.packageName, it.packageLabel, it.versionName ?: it.versionCode.toString())
+                Item.App(it.packageIcon?.bitmap, it.packageName, it.packageLabel, it.versionName ?: it.versionCode.toString())
             }
         )
 
         val systemApps = appPackageInfoList.filter { it.isSystemApp }.sortedBy { it.packageLabel }
-        result.add(Item.Header(context.getString(R.string.app_manager_section_system_apps), 1.toString()))
+        result.add(Item.Header(
+                "System Apps",//context.getString(R.string.app_manager_section_system_apps),
+                1.toString()))
         result.addAll(
             systemApps.map {
-                Item.App(it.packageIcon.bitmap, it.packageName, it.packageLabel, it.versionName ?: it.versionCode.toString())
+                Item.App(it.packageIcon?.bitmap, it.packageName, it.packageLabel, it.versionName ?: it.versionCode.toString())
             }
         )
 
         return result
+    }
+}
+
+@Suppress("UNCHECKED_CAST")
+class AppManagerViewModelFactory(private val messageClient: MessageClient) :
+        ViewModelProvider.NewInstanceFactory() {
+    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+        return when (modelClass) {
+            AppManagerViewModel::class -> {
+                AppManagerViewModel(messageClient) as T
+            }
+            else -> super.create(modelClass)
+        }
     }
 }

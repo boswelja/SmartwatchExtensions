@@ -14,12 +14,13 @@ import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.databinding.ActivityAppManagerBinding
 import com.boswelja.devicemanager.common.ui.BaseToolbarActivity
 import com.boswelja.devicemanager.common.ui.LoadingFragment
+import com.google.android.gms.wearable.Wearable
 import timber.log.Timber
 
 class AppManagerActivity : BaseToolbarActivity() {
 
     private val args: AppManagerActivityArgs by navArgs()
-    private val viewModel: AppManagerViewModel by viewModels()
+    private val viewModel: AppManagerViewModel by viewModels { AppManagerViewModelFactory(Wearable.getMessageClient(this)) }
     private val watchServiceLifecycleObserver by lazy { WatchServiceLifecycleObserver(viewModel) }
 
     private lateinit var binding: ActivityAppManagerBinding
