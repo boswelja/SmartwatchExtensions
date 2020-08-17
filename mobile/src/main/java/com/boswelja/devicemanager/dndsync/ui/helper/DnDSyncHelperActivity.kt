@@ -11,8 +11,8 @@ import android.os.Bundle
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.boswelja.devicemanager.R
-import com.boswelja.devicemanager.databinding.ActivityDndSyncHelperBinding
 import com.boswelja.devicemanager.common.ui.BaseToolbarActivity
+import com.boswelja.devicemanager.databinding.ActivityDndSyncHelperBinding
 import timber.log.Timber
 
 class DnDSyncHelperActivity : BaseToolbarActivity() {

@@ -19,10 +19,10 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.ItemTouchHelper
+import com.boswelja.devicemanager.changelog.ui.ChangelogDialogFragment
 import com.boswelja.devicemanager.databinding.FragmentMessagesBinding
 import com.boswelja.devicemanager.messages.Action
 import com.boswelja.devicemanager.messages.database.MessageDatabase
-import com.boswelja.devicemanager.changelog.ui.ChangelogDialogFragment
 import timber.log.Timber
 
 @SuppressLint("BatteryLife")

@@ -122,13 +122,16 @@ class AppManagerViewModel(private val messageClient: MessageClient) : ViewModel(
      * @return The newly created [ArrayList].
      */
     private fun separateAppListToSections(appPackageInfoList: AppPackageInfoList): List<Item> {
-        //val context = getApplication<Application>()
+        // val context = getApplication<Application>()
         // TODO Regression in translated strings here, doesn't affect us yet but will need to be addressed.
         val result = ArrayList<Item>()
         val userApps = appPackageInfoList.filterNot { it.isSystemApp }.sortedBy { it.packageLabel }
-        result.add(Item.Header(
-                "User Apps", //context.getString(R.string.app_manager_section_user_apps),
-                0.toString()))
+        result.add(
+            Item.Header(
+                "User Apps", // context.getString(R.string.app_manager_section_user_apps),
+                0.toString()
+            )
+        )
         result.addAll(
             userApps.map {
                 Item.App(it.packageIcon?.bitmap, it.packageName, it.packageLabel, it.versionName ?: it.versionCode.toString())
@@ -136,9 +139,12 @@ class AppManagerViewModel(private val messageClient: MessageClient) : ViewModel(
         )
 
         val systemApps = appPackageInfoList.filter { it.isSystemApp }.sortedBy { it.packageLabel }
-        result.add(Item.Header(
-                "System Apps",//context.getString(R.string.app_manager_section_system_apps),
-                1.toString()))
+        result.add(
+            Item.Header(
+                "System Apps", // context.getString(R.string.app_manager_section_system_apps),
+                1.toString()
+            )
+        )
         result.addAll(
             systemApps.map {
                 Item.App(it.packageIcon?.bitmap, it.packageName, it.packageLabel, it.versionName ?: it.versionCode.toString())
@@ -151,7 +157,7 @@ class AppManagerViewModel(private val messageClient: MessageClient) : ViewModel(
 
 @Suppress("UNCHECKED_CAST")
 class AppManagerViewModelFactory(private val messageClient: MessageClient) :
-        ViewModelProvider.NewInstanceFactory() {
+    ViewModelProvider.NewInstanceFactory() {
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
         return when (modelClass) {
             AppManagerViewModel::class -> {

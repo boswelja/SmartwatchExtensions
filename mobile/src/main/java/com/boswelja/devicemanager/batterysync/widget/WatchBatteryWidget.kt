@@ -20,11 +20,11 @@ import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toBitmap
 import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.R
+import com.boswelja.devicemanager.appsettings.ui.AppSettingsFragment.Companion.SHOW_WIDGET_BACKGROUND_KEY
+import com.boswelja.devicemanager.appsettings.ui.AppSettingsFragment.Companion.WIDGET_BACKGROUND_OPACITY_KEY
 import com.boswelja.devicemanager.batterysync.database.WatchBatteryStats
 import com.boswelja.devicemanager.batterysync.database.WatchBatteryStatsDatabase
 import com.boswelja.devicemanager.main.MainActivity
-import com.boswelja.devicemanager.appsettings.ui.AppSettingsFragment.Companion.SHOW_WIDGET_BACKGROUND_KEY
-import com.boswelja.devicemanager.appsettings.ui.AppSettingsFragment.Companion.WIDGET_BACKGROUND_OPACITY_KEY
 import com.boswelja.devicemanager.widget.database.WidgetDatabase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope

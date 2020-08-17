@@ -1,3 +1,10 @@
+/* Copyright (C) 2020 Jack Boswell <boswelja@outlook.com>
+ *
+ * This file is part of Wearable Extensions
+ *
+ * This file, and any part of the Wearable Extensions app/s cannot be copied and/or distributed
+ * without permission from Jack Boswell (boswelja) <boswela@outlook.com>
+ */
 package com.boswelja.devicemanager.appmanager.ui.info
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
@@ -11,7 +18,6 @@ import io.mockk.MockKAnnotations
 import io.mockk.impl.annotations.MockK
 import io.mockk.verify
 import org.junit.Before
-
 import org.junit.Rule
 import org.junit.Test
 import java.text.SimpleDateFormat
@@ -128,9 +134,10 @@ class AppPackageInfoViewModelTest {
         viewModel.sendUninstallRequestMessage()
         verify(exactly = 1) {
             messageClient.sendMessage(
-                    watchId,
-                    REQUEST_UNINSTALL_PACKAGE,
-                    testAppInfo.packageName.toByteArray(Charsets.UTF_8))
+                watchId,
+                REQUEST_UNINSTALL_PACKAGE,
+                testAppInfo.packageName.toByteArray(Charsets.UTF_8)
+            )
         }
         viewModel.finishActivity.getOrAwaitValue {
             assertThat(it).isTrue()
@@ -144,23 +151,24 @@ class AppPackageInfoViewModelTest {
         viewModel.sendOpenRequestMessage()
         verify(exactly = 1) {
             messageClient.sendMessage(
-                    watchId,
-                    REQUEST_OPEN_PACKAGE,
-                    testAppInfo.packageName.toByteArray(Charsets.UTF_8))
+                watchId,
+                REQUEST_OPEN_PACKAGE,
+                testAppInfo.packageName.toByteArray(Charsets.UTF_8)
+            )
         }
     }
 
     private fun getTestApp(isSystemApp: Boolean, isLaunchable: Boolean) =
-            AppPackageInfo(
-                    null,
-                    1,
-                    "1.0.0",
-                    "com.package.name",
-                    "Label",
-                    isSystemApp,
-                    isLaunchable,
-                    installTime = System.currentTimeMillis(),
-                    lastUpdateTime = System.currentTimeMillis(),
-                    arrayOf("permission1", "permission2")
-            )
+        AppPackageInfo(
+            null,
+            1,
+            "1.0.0",
+            "com.package.name",
+            "Label",
+            isSystemApp,
+            isLaunchable,
+            installTime = System.currentTimeMillis(),
+            lastUpdateTime = System.currentTimeMillis(),
+            arrayOf("permission1", "permission2")
+        )
 }

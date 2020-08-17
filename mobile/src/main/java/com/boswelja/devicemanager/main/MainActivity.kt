@@ -12,8 +12,8 @@ import androidx.activity.viewModels
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.boswelja.devicemanager.R
-import com.boswelja.devicemanager.databinding.ActivityMainBinding
 import com.boswelja.devicemanager.common.ui.BaseWatchPickerActivity
+import com.boswelja.devicemanager.databinding.ActivityMainBinding
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.play.core.appupdate.AppUpdateManagerFactory
 import com.google.android.play.core.install.model.AppUpdateType
@@ -62,21 +62,25 @@ class MainActivity : BaseWatchPickerActivity() {
         appUpdateManager.appUpdateInfo.addOnCompleteListener {
             if (it.isSuccessful) {
                 val appUpdateInfo = it.result
-                if (appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE
-                        && appUpdateInfo.updatePriority <= LOW_PRIORITY_UPDATE) {
-                    if (appUpdateInfo.updatePriority < HIGH_PRIORITY_UPDATE
-                            && appUpdateInfo.isUpdateTypeAllowed(AppUpdateType.FLEXIBLE)) {
+                if (appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE &&
+                    appUpdateInfo.updatePriority <= LOW_PRIORITY_UPDATE
+                ) {
+                    if (appUpdateInfo.updatePriority < HIGH_PRIORITY_UPDATE &&
+                        appUpdateInfo.isUpdateTypeAllowed(AppUpdateType.FLEXIBLE)
+                    ) {
                         appUpdateManager.startUpdateFlowForResult(
-                                appUpdateInfo,
-                                AppUpdateType.FLEXIBLE,
-                                this,
-                                0)
+                            appUpdateInfo,
+                            AppUpdateType.FLEXIBLE,
+                            this,
+                            0
+                        )
                     } else if (appUpdateInfo.isUpdateTypeAllowed(AppUpdateType.IMMEDIATE)) {
                         appUpdateManager.startUpdateFlowForResult(
-                                appUpdateInfo,
-                                AppUpdateType.IMMEDIATE,
-                                this,
-                        0)
+                            appUpdateInfo,
+                            AppUpdateType.IMMEDIATE,
+                            this,
+                            0
+                        )
                     }
                 }
             } else {

@@ -9,12 +9,12 @@ package com.boswelja.devicemanager.watchmanager.ui
 
 import android.content.Intent
 import android.os.Bundle
-import com.boswelja.devicemanager.databinding.ActivityWatchManagerBinding
 import com.boswelja.devicemanager.common.ui.BaseToolbarActivity
-import com.boswelja.devicemanager.watchsetup.ui.WatchSetupActivity
-import com.boswelja.devicemanager.watchsetup.ui.WatchSetupActivity.Companion.EXTRA_SKIP_WELCOME
+import com.boswelja.devicemanager.databinding.ActivityWatchManagerBinding
 import com.boswelja.devicemanager.watchmanager.database.WatchDatabase
 import com.boswelja.devicemanager.watchmanager.item.Watch
+import com.boswelja.devicemanager.watchsetup.ui.WatchSetupActivity
+import com.boswelja.devicemanager.watchsetup.ui.WatchSetupActivity.Companion.EXTRA_SKIP_WELCOME
 
 class WatchManagerActivity :
     BaseToolbarActivity() {

@@ -18,10 +18,10 @@ import android.widget.ArrayAdapter
 import androidx.appcompat.widget.AppCompatSpinner
 import androidx.appcompat.widget.AppCompatTextView
 import com.boswelja.devicemanager.R
-import com.boswelja.devicemanager.watchsetup.ui.WatchSetupActivity
 import com.boswelja.devicemanager.watchmanager.WatchManager
 import com.boswelja.devicemanager.watchmanager.WatchStatus
 import com.boswelja.devicemanager.watchmanager.item.Watch
+import com.boswelja.devicemanager.watchsetup.ui.WatchSetupActivity
 import com.google.android.material.appbar.MaterialToolbar
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope

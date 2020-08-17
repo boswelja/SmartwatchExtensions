@@ -10,8 +10,8 @@ package com.boswelja.devicemanager.watchsetup.ui
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import com.boswelja.devicemanager.R
-import com.boswelja.devicemanager.common.recyclerview.item.IconTwoLineViewHolder
 import com.boswelja.devicemanager.common.WatchDiffCallback
+import com.boswelja.devicemanager.common.recyclerview.item.IconTwoLineViewHolder
 import com.boswelja.devicemanager.watchmanager.WatchStatus
 import com.boswelja.devicemanager.watchmanager.item.Watch
 

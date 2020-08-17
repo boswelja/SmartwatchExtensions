@@ -1,3 +1,10 @@
+/* Copyright (C) 2020 Jack Boswell <boswelja@outlook.com>
+ *
+ * This file is part of Wearable Extensions
+ *
+ * This file, and any part of the Wearable Extensions app/s cannot be copied and/or distributed
+ * without permission from Jack Boswell (boswelja) <boswela@outlook.com>
+ */
 package com.boswelja.devicemanager.appmanager.ui
 
 import androidx.lifecycle.LiveData
@@ -7,13 +14,13 @@ import java.util.concurrent.TimeUnit
 import java.util.concurrent.TimeoutException
 
 fun <T> LiveData<T>.getOrAwaitValue(
-        time: Long = 2,
-        timeUnit: TimeUnit = TimeUnit.SECONDS,
-        afterObserve: (value: T?) -> Unit = {}
+    time: Long = 2,
+    timeUnit: TimeUnit = TimeUnit.SECONDS,
+    afterObserve: (value: T?) -> Unit = {}
 ): T {
     var data: T? = null
     val latch = CountDownLatch(1)
-    val observer =  object : Observer<T?> {
+    val observer = object : Observer<T?> {
         override fun onChanged(t: T?) {
             data = t
             latch.countDown()

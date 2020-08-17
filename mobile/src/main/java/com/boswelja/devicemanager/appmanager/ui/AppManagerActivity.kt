@@ -11,9 +11,9 @@ import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.navigation.navArgs
 import com.boswelja.devicemanager.R
-import com.boswelja.devicemanager.databinding.ActivityAppManagerBinding
 import com.boswelja.devicemanager.common.ui.BaseToolbarActivity
 import com.boswelja.devicemanager.common.ui.LoadingFragment
+import com.boswelja.devicemanager.databinding.ActivityAppManagerBinding
 import com.google.android.gms.wearable.Wearable
 import timber.log.Timber
 

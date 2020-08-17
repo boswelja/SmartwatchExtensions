@@ -16,13 +16,13 @@ import androidx.preference.SeekBarPreference
 import androidx.preference.SwitchPreference
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.batterysync.BatterySyncWorker
+import com.boswelja.devicemanager.batterysync.ui.Utils.updateBatteryStats
 import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_CHARGE_THRESHOLD_KEY
 import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_PHONE_CHARGE_NOTI_KEY
 import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_SYNC_ENABLED_KEY
 import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_SYNC_INTERVAL_KEY
 import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_WATCH_CHARGE_NOTI_KEY
 import com.boswelja.devicemanager.common.ui.BasePreferenceFragment
-import com.boswelja.devicemanager.batterysync.ui.Utils.updateBatteryStats
 import com.boswelja.devicemanager.watchmanager.WatchManager
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.Dispatchers

@@ -14,8 +14,8 @@ import androidx.appcompat.widget.AppCompatTextView
 import androidx.databinding.DataBindingUtil
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.appmanager.AppPackageInfo
-import com.boswelja.devicemanager.databinding.ActivityAppInfoBinding
 import com.boswelja.devicemanager.common.ui.BaseToolbarActivity
+import com.boswelja.devicemanager.databinding.ActivityAppInfoBinding
 import com.google.android.gms.wearable.Wearable
 
 class AppPackageInfoActivity : BaseToolbarActivity() {

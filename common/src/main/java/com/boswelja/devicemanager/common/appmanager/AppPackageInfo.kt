@@ -21,29 +21,29 @@ import java.io.ObjectOutputStream
 import java.io.Serializable
 
 data class AppPackageInfo(
-        val packageIcon: SerializableBitmap?,
-        val versionCode: Long,
-        val versionName: String?,
-        val packageName: String,
-        val packageLabel: String,
-        val isSystemApp: Boolean,
-        val hasLaunchActivity: Boolean,
-        val installTime: Long,
-        val lastUpdateTime: Long,
-        val requestedPermissions: Array<String>?
+    val packageIcon: SerializableBitmap?,
+    val versionCode: Long,
+    val versionName: String?,
+    val packageName: String,
+    val packageLabel: String,
+    val isSystemApp: Boolean,
+    val hasLaunchActivity: Boolean,
+    val installTime: Long,
+    val lastUpdateTime: Long,
+    val requestedPermissions: Array<String>?
 ) : Serializable {
 
     constructor(packageManager: PackageManager, packageInfo: PackageInfo) : this(
-            SerializableBitmap(packageManager.getApplicationIcon(packageInfo.packageName).toBitmap()),
-            PackageInfoCompat.getLongVersionCode(packageInfo),
-            packageInfo.versionName,
-            packageInfo.packageName,
-            packageManager.getApplicationLabel(packageInfo.applicationInfo).toString(),
-            (packageInfo.applicationInfo?.flags?.and((ApplicationInfo.FLAG_SYSTEM or ApplicationInfo.FLAG_UPDATED_SYSTEM_APP))) != 0,
-            packageManager.getLaunchIntentForPackage(packageInfo.packageName) != null,
-            packageInfo.firstInstallTime,
-            packageInfo.lastUpdateTime,
-            packageInfo.requestedPermissions
+        SerializableBitmap(packageManager.getApplicationIcon(packageInfo.packageName).toBitmap()),
+        PackageInfoCompat.getLongVersionCode(packageInfo),
+        packageInfo.versionName,
+        packageInfo.packageName,
+        packageManager.getApplicationLabel(packageInfo.applicationInfo).toString(),
+        (packageInfo.applicationInfo?.flags?.and((ApplicationInfo.FLAG_SYSTEM or ApplicationInfo.FLAG_UPDATED_SYSTEM_APP))) != 0,
+        packageManager.getLaunchIntentForPackage(packageInfo.packageName) != null,
+        packageInfo.firstInstallTime,
+        packageInfo.lastUpdateTime,
+        packageInfo.requestedPermissions
     )
 
     override fun toString(): String {

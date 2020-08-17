@@ -78,7 +78,7 @@ class AppInfoViewModel(private val messageClient: MessageClient) : ViewModel() {
 
 @Suppress("UNCHECKED_CAST")
 class AppInfoViewModelFactory(private val messageClient: MessageClient) :
-        ViewModelProvider.NewInstanceFactory() {
+    ViewModelProvider.NewInstanceFactory() {
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
         return when (modelClass) {
             AppInfoViewModel::class -> {

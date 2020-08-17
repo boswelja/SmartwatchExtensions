@@ -11,6 +11,7 @@ import android.app.admin.DevicePolicyManager
 import android.content.Context
 import android.content.Intent
 import androidx.preference.PreferenceManager
+import com.boswelja.devicemanager.batterysync.ui.BatterySyncPreferenceActivity
 import com.boswelja.devicemanager.common.Compat
 import com.boswelja.devicemanager.common.Extensions.toByteArray
 import com.boswelja.devicemanager.common.PreferenceKey
@@ -23,11 +24,10 @@ import com.boswelja.devicemanager.common.dndsync.References.REQUEST_INTERRUPT_FI
 import com.boswelja.devicemanager.common.setup.References.CHECK_WATCH_REGISTERED_PATH
 import com.boswelja.devicemanager.common.setup.References.WATCH_NOT_REGISTERED_PATH
 import com.boswelja.devicemanager.common.setup.References.WATCH_REGISTERED_PATH
-import com.boswelja.devicemanager.phonelocking.Utils.isDeviceAdminEnabled
 import com.boswelja.devicemanager.common.ui.BaseWatchPickerPreferenceActivity.Companion.EXTRA_PREFERENCE_KEY
-import com.boswelja.devicemanager.batterysync.ui.BatterySyncPreferenceActivity
 import com.boswelja.devicemanager.dndsync.ui.DnDSyncPreferenceActivity
 import com.boswelja.devicemanager.main.MainActivity
+import com.boswelja.devicemanager.phonelocking.Utils.isDeviceAdminEnabled
 import com.boswelja.devicemanager.phonelocking.ui.PhoneLockingPreferenceFragment.Companion.PHONE_LOCKING_MODE_ACCESSIBILITY_SERVICE
 import com.boswelja.devicemanager.phonelocking.ui.PhoneLockingPreferenceFragment.Companion.PHONE_LOCKING_MODE_KEY
 import com.boswelja.devicemanager.watchmanager.database.WatchDatabase

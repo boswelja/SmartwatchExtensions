@@ -11,8 +11,8 @@ import android.os.Bundle
 import androidx.navigation.findNavController
 import androidx.navigation.ui.NavigationUI
 import com.boswelja.devicemanager.R
-import com.boswelja.devicemanager.databinding.ActivityWatchSetupBinding
 import com.boswelja.devicemanager.common.ui.BaseToolbarActivity
+import com.boswelja.devicemanager.databinding.ActivityWatchSetupBinding
 
 class WatchSetupActivity : BaseToolbarActivity() {
 

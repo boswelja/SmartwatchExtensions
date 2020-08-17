@@ -74,15 +74,16 @@ class BootOrUpdateHandlerService : Service() {
                 Result.COMPLETED -> {
                     Timber.i("Update completed")
                     val updateMessage = Message(
-                            R.drawable.ic_update,
-                            "Updated to version ${BuildConfig.VERSION_NAME}",
-                            "Version ${BuildConfig.VERSION_NAME}",
-                            action = Action.SHOW_CHANGELOG,
-                            buttonLabel = "See What's New"
+                        R.drawable.ic_update,
+                        "Updated to version ${BuildConfig.VERSION_NAME}",
+                        "Version ${BuildConfig.VERSION_NAME}",
+                        action = Action.SHOW_CHANGELOG,
+                        buttonLabel = "See What's New"
                     )
                     MessageDatabase.get(this).sendMessage(
-                            PreferenceManager.getDefaultSharedPreferences(this),
-                            updateMessage)
+                        PreferenceManager.getDefaultSharedPreferences(this),
+                        updateMessage
+                    )
                 }
                 Result.NOT_NEEDED -> Timber.i("Update not needed")
             }

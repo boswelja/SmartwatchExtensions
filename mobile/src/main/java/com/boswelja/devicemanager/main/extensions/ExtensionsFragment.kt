@@ -11,9 +11,9 @@ import android.os.Bundle
 import androidx.navigation.fragment.findNavController
 import androidx.preference.Preference
 import com.boswelja.devicemanager.R
+import com.boswelja.devicemanager.common.ui.BasePreferenceFragment
 import com.boswelja.devicemanager.preference.confirmationdialog.ConfirmationDialogPrefFragment
 import com.boswelja.devicemanager.preference.confirmationdialog.ConfirmationDialogPreference
-import com.boswelja.devicemanager.common.ui.BasePreferenceFragment
 import com.boswelja.devicemanager.watchmanager.WatchManager
 import timber.log.Timber
 
