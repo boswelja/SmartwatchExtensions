@@ -10,6 +10,7 @@ package com.boswelja.devicemanager.appmanager.ui.adapter
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.recyclerview.adapter.ItemClickCallback
 import com.boswelja.devicemanager.common.recyclerview.item.IconTwoLineViewHolder
 import com.boswelja.devicemanager.common.recyclerview.item.SectionHeaderViewHolder
@@ -41,7 +42,11 @@ class AppsAdapter(private val itemClickCallback: ItemClickCallback<Item>) :
             }
             is IconTwoLineViewHolder -> {
                 if (item is Item.App) {
-                    holder.bind(item.icon, item.label, item.versionText)
+                    if (item.icon != null) {
+                        holder.bind(item.icon, item.label, item.versionText)
+                    } else {
+                        holder.bind(R.drawable.android_head, item.label, item.versionText)
+                    }
                 }
             }
         }

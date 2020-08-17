@@ -13,7 +13,7 @@ sealed class Item {
     abstract val id: String
 
     data class App(
-        val icon: Bitmap,
+        val icon: Bitmap?,
         val packageName: String,
         val label: String,
         val versionText: String
