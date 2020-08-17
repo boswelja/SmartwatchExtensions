@@ -20,23 +20,31 @@ import java.io.ObjectInputStream
 import java.io.ObjectOutputStream
 import java.io.Serializable
 
-class AppPackageInfo(packageManager: PackageManager, packageInfo: PackageInfo) : Serializable {
+data class AppPackageInfo(
+        val packageIcon: SerializableBitmap?,
+        val versionCode: Long,
+        val versionName: String?,
+        val packageName: String,
+        val packageLabel: String,
+        val isSystemApp: Boolean,
+        val hasLaunchActivity: Boolean,
+        val installTime: Long,
+        val lastUpdateTime: Long,
+        val requestedPermissions: Array<String>?
+) : Serializable {
 
-    val packageIcon: SerializableBitmap =
-        SerializableBitmap(packageManager.getApplicationIcon(packageInfo.packageName).toBitmap())
-    val versionCode: Long = PackageInfoCompat.getLongVersionCode(packageInfo)
-    val versionName: String? = packageInfo.versionName
-
-    val packageName: String = packageInfo.packageName
-    val packageLabel: String = getApplicationLabel(packageManager, packageInfo)
-
-    val isSystemApp: Boolean = isSystemApp(packageInfo)
-    val hasLaunchActivity: Boolean = hasLaunchActivity(packageManager)
-
-    val installTime: Long = packageInfo.firstInstallTime
-    val lastUpdateTime: Long = packageInfo.lastUpdateTime
-
-    val requestedPermissions: Array<String>? = packageInfo.requestedPermissions
+    constructor(packageManager: PackageManager, packageInfo: PackageInfo) : this(
+            SerializableBitmap(packageManager.getApplicationIcon(packageInfo.packageName).toBitmap()),
+            PackageInfoCompat.getLongVersionCode(packageInfo),
+            packageInfo.versionName,
+            packageInfo.packageName,
+            packageManager.getApplicationLabel(packageInfo.applicationInfo).toString(),
+            (packageInfo.applicationInfo?.flags?.and((ApplicationInfo.FLAG_SYSTEM or ApplicationInfo.FLAG_UPDATED_SYSTEM_APP))) != 0,
+            packageManager.getLaunchIntentForPackage(packageInfo.packageName) != null,
+            packageInfo.firstInstallTime,
+            packageInfo.lastUpdateTime,
+            packageInfo.requestedPermissions
+    )
 
     override fun toString(): String {
         return packageLabel
@@ -70,20 +78,6 @@ class AppPackageInfo(packageManager: PackageManager, packageInfo: PackageInfo) :
         return result
     }
 
-    private fun getApplicationLabel(packageManager: PackageManager, packageInfo: PackageInfo): String {
-        var applicationName = packageManager.getApplicationLabel(packageInfo.applicationInfo)
-        if (applicationName.isBlank()) {
-            applicationName = packageName
-        }
-        return applicationName.toString()
-    }
-
-    private fun isSystemApp(packageInfo: PackageInfo): Boolean =
-        (packageInfo.applicationInfo?.flags?.and((ApplicationInfo.FLAG_SYSTEM or ApplicationInfo.FLAG_UPDATED_SYSTEM_APP))) != 0
-
-    private fun hasLaunchActivity(packageManager: PackageManager): Boolean =
-        packageManager.getLaunchIntentForPackage(packageName) != null
-
     @Throws(IOException::class)
     fun toByteArray(): ByteArray {
         ByteArrayOutputStream().use {
@@ -93,7 +87,7 @@ class AppPackageInfo(packageManager: PackageManager, packageInfo: PackageInfo) :
     }
 
     companion object {
-        const val serialVersionUID: Long = 6
+        const val serialVersionUID: Long = 7
 
         @Throws(IOException::class, ClassNotFoundException::class)
         fun fromByteArray(byteArray: ByteArray): AppPackageInfo {
