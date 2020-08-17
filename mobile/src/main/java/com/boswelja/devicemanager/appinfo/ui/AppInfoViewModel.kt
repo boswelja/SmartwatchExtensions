@@ -7,19 +7,16 @@
  */
 package com.boswelja.devicemanager.appinfo.ui
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.boswelja.devicemanager.R
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import com.boswelja.devicemanager.common.References
 import com.google.android.gms.wearable.MessageClient
-import com.google.android.gms.wearable.Wearable
 import timber.log.Timber
 
-class AppInfoViewModel(application: Application) : AndroidViewModel(application) {
+class AppInfoViewModel(private val messageClient: MessageClient) : ViewModel() {
 
-    private val messageClient = Wearable.getMessageClient(application)
     private val messageListener = MessageClient.OnMessageReceivedListener {
         when (it.path) {
             References.REQUEST_APP_VERSION -> {
@@ -30,8 +27,8 @@ class AppInfoViewModel(application: Application) : AndroidViewModel(application)
         }
     }
 
-    private val _watchAppVersion = MutableLiveData<Pair<String, String?>?>()
-    val watchAppVersion: LiveData<Pair<String, String?>?>
+    private val _watchAppVersion = MutableLiveData<Pair<String?, String?>?>()
+    val watchAppVersion: LiveData<Pair<String?, String?>?>
         get() = _watchAppVersion
 
     init {
@@ -57,12 +54,7 @@ class AppInfoViewModel(application: Application) : AndroidViewModel(application)
                 }
                 .addOnSuccessListener {
                     Timber.i("Message sent successfully")
-                    _watchAppVersion.postValue(
-                        Pair(
-                            getApplication<Application>().getString(R.string.pref_about_watch_version_loading),
-                            null
-                        )
-                    )
+                    _watchAppVersion.postValue(Pair(null, null))
                 }
         } else {
             Timber.w("connectedWatchId null or empty")
@@ -78,8 +70,21 @@ class AppInfoViewModel(application: Application) : AndroidViewModel(application)
      */
     private fun parseWatchVersionInfo(byteArray: ByteArray): Pair<String, String> {
         val data = String(byteArray, Charsets.UTF_8).split("|")
-        val versionString = getApplication<Application>()
-            .getString(R.string.pref_about_watch_version_title, data[0])
-        return Pair(versionString, data[1])
+        val versionName = data[0]
+        val versionCode = data[1]
+        return Pair(versionName, versionCode)
+    }
+}
+
+@Suppress("UNCHECKED_CAST")
+class AppInfoViewModelFactory(private val messageClient: MessageClient) :
+        ViewModelProvider.NewInstanceFactory() {
+    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+        return when (modelClass) {
+            AppInfoViewModel::class -> {
+                AppInfoViewModel(messageClient) as T
+            }
+            else -> super.create(modelClass)
+        }
     }
 }

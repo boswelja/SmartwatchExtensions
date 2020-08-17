@@ -80,7 +80,16 @@ class AppInfoFragment :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModel.watchAppVersion.observe(viewLifecycleOwner) {
-            setWatchVersionInfo(it)
+            if (it?.first != null) {
+                watchVersionPreference.title = getString(R.string.pref_about_watch_version_title, it.first)
+                watchVersionPreference.summary = it.second
+            } else if (it == null) {
+                watchVersionPreference.setTitle(R.string.pref_about_watch_version_failed)
+                watchVersionPreference.summary = null
+            } else {
+                watchVersionPreference.setTitle(R.string.pref_about_watch_version_loading)
+                watchVersionPreference.summary = null
+            }
         }
         watchManager.connectedWatch.observe(viewLifecycleOwner) {
             it?.id?.let { id -> viewModel.requestUpdateWatchVersion(id) }
@@ -109,19 +118,6 @@ class AppInfoFragment :
         findPreference<Preference>(PHONE_VERSION_KEY)!!.apply {
             title = getString(R.string.pref_about_phone_version_title).format(BuildConfig.VERSION_NAME)
             summary = BuildConfig.VERSION_CODE.toString()
-        }
-    }
-
-    /**
-     * Sets the watch version info shown to the user to the provided values.
-     */
-    private fun setWatchVersionInfo(versionInfo: Pair<String, String?>?) {
-        if (versionInfo != null) {
-            watchVersionPreference.title = versionInfo.first
-            watchVersionPreference.summary = versionInfo.second
-        } else {
-            watchVersionPreference.setTitle(R.string.pref_about_watch_version_failed)
-            watchVersionPreference.summary = null
         }
     }
 
