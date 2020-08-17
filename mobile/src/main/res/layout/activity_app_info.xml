@@ -7,7 +7,7 @@
         <import type="android.view.View" />
         <variable
             name="viewModel"
-            type="com.boswelja.devicemanager.appmanager.ui.info.AppInfoViewModel" />
+            type="com.boswelja.devicemanager.appmanager.ui.info.AppPackageInfoViewModel" />
     </data>
 
     <LinearLayout
