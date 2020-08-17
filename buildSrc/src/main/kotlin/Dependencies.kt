@@ -97,14 +97,23 @@ object DebugLibraries {
 object TestLibraries {
     object Versions {
         const val androidxArch = "2.1.0"
+        const val androidxTest = "1.3.0-rc03"
 
         const val junit = "4.13"
         const val truth = "1.0.1"
+
+        const val mockk = "1.10.0"
+
+        const val robolectric = "4.3"
     }
 
     const val androidxArch = "androidx.arch.core:core-testing:${Versions.androidxArch}"
     const val junit = "junit:junit:${Versions.junit}"
     const val googleTruth = "com.google.truth:truth:${Versions.truth}"
+    const val mockk = "io.mockk:mockk:${Versions.mockk}"
+    const val androidxTestCore = "androidx.test:core-ktx:${Versions.androidxTest}"
+    const val androidxTestExt = "androidx.test.ext:junit-ktx:1.1.2-rc03"
+    const val robolectric = "org.robolectric:robolectric:${Versions.robolectric}"
 }
 
 object AndroidTestLibraries {

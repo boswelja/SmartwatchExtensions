@@ -2,6 +2,7 @@ plugins {
     id(BuildPlugins.androidLibrary)
     id(BuildPlugins.kotlinAndroid)
     id(BuildPlugins.kotlinAndroidExtensions)
+    id(BuildPlugins.kotlinKapt)
     id("com.diffplug.spotless") version BuildPlugins.Versions.spotlessVersion
 }
 
@@ -22,6 +23,7 @@ android {
     }
 
     buildFeatures.viewBinding = true
+    buildFeatures.dataBinding = true
     buildTypes {
         getByName("release") {
             isMinifyEnabled = true
@@ -40,6 +42,7 @@ dependencies {
     implementation(Libraries.materialComponents)
     implementation(Libraries.playServicesWearable)
     implementation(Libraries.timber)
+    testImplementation("junit:junit:4.12")
 }
 
 spotless {
