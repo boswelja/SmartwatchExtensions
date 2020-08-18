@@ -83,9 +83,9 @@ class BatterySyncPreferenceWidgetFragment : Fragment() {
             .toInt()
     lastUpdateTimer.resetTimer(dataAgeMinutes)
     binding.apply {
-      watchBatteryIndicator.setImageLevel(batteryStats.batteryPercent)
+      watchBatteryIndicator.setImageLevel(batteryStats.percent)
       watchBatteryPercent.text =
-          getString(R.string.battery_sync_percent_short, batteryStats.batteryPercent.toString())
+          getString(R.string.battery_sync_percent_short, batteryStats.percent.toString())
     }
   }
 
