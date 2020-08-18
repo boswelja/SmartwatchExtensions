@@ -19,80 +19,79 @@ import org.junit.Test
 
 class CompatTest {
 
-    @Before
-    fun setUp() {
-        val context = InstrumentationRegistry.getInstrumentation().targetContext
-        val notificationManager =
-            context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        NotificationChannel(ENABLED_CHANNEL_ID, "Enabled Test Channel", NotificationManager.IMPORTANCE_DEFAULT).also {
-            notificationManager.createNotificationChannel(it)
-        }
-        NotificationChannel(DISABLED_CHANNEL_ID, "Disabled Test Channel", NotificationManager.IMPORTANCE_NONE).also {
-            notificationManager.createNotificationChannel(it)
-        }
+  @Before
+  fun setUp() {
+    val context = InstrumentationRegistry.getInstrumentation().targetContext
+    val notificationManager =
+        context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+    NotificationChannel(
+            ENABLED_CHANNEL_ID, "Enabled Test Channel", NotificationManager.IMPORTANCE_DEFAULT)
+        .also { notificationManager.createNotificationChannel(it) }
+    NotificationChannel(
+            DISABLED_CHANNEL_ID, "Disabled Test Channel", NotificationManager.IMPORTANCE_NONE)
+        .also { notificationManager.createNotificationChannel(it) }
+  }
+
+  @After
+  fun tearDown() {
+    val context = InstrumentationRegistry.getInstrumentation().targetContext
+    val notificationManager =
+        context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+    notificationManager.deleteNotificationChannel(ENABLED_CHANNEL_ID)
+    notificationManager.deleteNotificationChannel(DISABLED_CHANNEL_ID)
+  }
+
+  @Test
+  fun isDndEnabled() {
+    val context = InstrumentationRegistry.getInstrumentation().targetContext
+    val notificationManager =
+        context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+
+    if (notificationManager.isNotificationPolicyAccessGranted) {
+      Compat.setInterruptionFilter(context, true)
+      var retryCounter = 0
+      while (!Compat.isDndEnabled(context)) {
+        retryCounter += 1
+        if (retryCounter >= 3) break
+        Thread.sleep(25)
+      }
+      assertWithMessage("Checking DnD state detection logic works")
+          .that(Compat.isDndEnabled(context))
+          .isTrue()
+
+      Compat.setInterruptionFilter(context, false)
+      retryCounter = 0
+      while (Compat.isDndEnabled(context)) {
+        retryCounter += 1
+        if (retryCounter >= 3) break
+        Thread.sleep(25)
+      }
+      assertWithMessage("Checking DnD state detection logic works")
+          .that(Compat.isDndEnabled(context))
+          .isFalse()
+    } else {
+      assertWithMessage("Missing notification policy access, grant and try again").fail()
     }
+  }
 
-    @After
-    fun tearDown() {
-        val context = InstrumentationRegistry.getInstrumentation().targetContext
-        val notificationManager =
-            context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        notificationManager.deleteNotificationChannel(ENABLED_CHANNEL_ID)
-        notificationManager.deleteNotificationChannel(DISABLED_CHANNEL_ID)
-    }
+  @Test
+  fun areNotificationsEnabled() {
+    val context = InstrumentationRegistry.getInstrumentation().targetContext
 
-    @Test
-    fun isDndEnabled() {
-        val context = InstrumentationRegistry.getInstrumentation().targetContext
-        val notificationManager =
-            context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+    assertWithMessage("Checking overall notification status is correct")
+        .that(Compat.areNotificationsEnabled(context))
+        .isEqualTo(NotificationManagerCompat.from(context).areNotificationsEnabled())
 
-        if (notificationManager.isNotificationPolicyAccessGranted) {
-            Compat.setInterruptionFilter(context, true)
-            var retryCounter = 0
-            while (!Compat.isDndEnabled(context)) {
-                retryCounter += 1
-                if (retryCounter >= 3) break
-                Thread.sleep(25)
-            }
-            assertWithMessage("Checking DnD state detection logic works")
-                .that(Compat.isDndEnabled(context))
-                .isTrue()
+    assertWithMessage("Checking notification channel enabled status is correct")
+        .that(Compat.areNotificationsEnabled(context, ENABLED_CHANNEL_ID))
+        .isEqualTo(true)
+    assertWithMessage("Checking notification channel disabled status is correct")
+        .that(Compat.areNotificationsEnabled(context, DISABLED_CHANNEL_ID))
+        .isEqualTo(false)
+  }
 
-            Compat.setInterruptionFilter(context, false)
-            retryCounter = 0
-            while (Compat.isDndEnabled(context)) {
-                retryCounter += 1
-                if (retryCounter >= 3) break
-                Thread.sleep(25)
-            }
-            assertWithMessage("Checking DnD state detection logic works")
-                .that(Compat.isDndEnabled(context))
-                .isFalse()
-        } else {
-            assertWithMessage("Missing notification policy access, grant and try again")
-                .fail()
-        }
-    }
-
-    @Test
-    fun areNotificationsEnabled() {
-        val context = InstrumentationRegistry.getInstrumentation().targetContext
-
-        assertWithMessage("Checking overall notification status is correct")
-            .that(Compat.areNotificationsEnabled(context))
-            .isEqualTo(NotificationManagerCompat.from(context).areNotificationsEnabled())
-
-        assertWithMessage("Checking notification channel enabled status is correct")
-            .that(Compat.areNotificationsEnabled(context, ENABLED_CHANNEL_ID))
-            .isEqualTo(true)
-        assertWithMessage("Checking notification channel disabled status is correct")
-            .that(Compat.areNotificationsEnabled(context, DISABLED_CHANNEL_ID))
-            .isEqualTo(false)
-    }
-
-    companion object {
-        private const val ENABLED_CHANNEL_ID = "enabled_test_noti_channel"
-        private const val DISABLED_CHANNEL_ID = "disabled_test_noti_channel"
-    }
+  companion object {
+    private const val ENABLED_CHANNEL_ID = "enabled_test_noti_channel"
+    private const val DISABLED_CHANNEL_ID = "disabled_test_noti_channel"
+  }
 }

@@ -35,157 +35,150 @@ class DnDSyncPreferenceFragment :
     SharedPreferences.OnSharedPreferenceChangeListener,
     Preference.OnPreferenceChangeListener {
 
-    private val coroutineScope = CoroutineScope(Dispatchers.IO)
-    private val watchManager by lazy { WatchManager.get(requireContext()) }
+  private val coroutineScope = CoroutineScope(Dispatchers.IO)
+  private val watchManager by lazy { WatchManager.get(requireContext()) }
 
-    private val dndSyncToWatchPreference: SwitchPreference by lazy { findPreference(DND_SYNC_TO_WATCH_KEY)!! }
-    private val dndSyncToPhonePreference: SwitchPreference by lazy { findPreference(DND_SYNC_TO_PHONE_KEY)!! }
-    private val dndSyncWithTheaterPreference: SwitchPreference by lazy { findPreference(DND_SYNC_WITH_THEATER_KEY)!! }
+  private val dndSyncToWatchPreference: SwitchPreference by lazy {
+    findPreference(DND_SYNC_TO_WATCH_KEY)!!
+  }
+  private val dndSyncToPhonePreference: SwitchPreference by lazy {
+    findPreference(DND_SYNC_TO_PHONE_KEY)!!
+  }
+  private val dndSyncWithTheaterPreference: SwitchPreference by lazy {
+    findPreference(DND_SYNC_WITH_THEATER_KEY)!!
+  }
 
-    private var changingKey: String? = null
+  private var changingKey: String? = null
 
-    override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
-        when (key) {
-            DND_SYNC_TO_WATCH_KEY -> {
-                dndSyncToWatchPreference.isChecked =
-                    sharedPreferences?.getBoolean(key, false)!!
-            }
-            DND_SYNC_TO_PHONE_KEY -> {
-                dndSyncToPhonePreference.isChecked =
-                    sharedPreferences?.getBoolean(key, false)!!
-            }
-            DND_SYNC_WITH_THEATER_KEY -> {
-                dndSyncWithTheaterPreference.isChecked =
-                    sharedPreferences?.getBoolean(key, false)!!
-            }
-        }
+  override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
+    when (key) {
+      DND_SYNC_TO_WATCH_KEY -> {
+        dndSyncToWatchPreference.isChecked = sharedPreferences?.getBoolean(key, false)!!
+      }
+      DND_SYNC_TO_PHONE_KEY -> {
+        dndSyncToPhonePreference.isChecked = sharedPreferences?.getBoolean(key, false)!!
+      }
+      DND_SYNC_WITH_THEATER_KEY -> {
+        dndSyncWithTheaterPreference.isChecked = sharedPreferences?.getBoolean(key, false)!!
+      }
     }
+  }
 
-    override fun onPreferenceChange(preference: Preference?, newValue: Any?): Boolean {
-        return when (val key = preference?.key) {
-            DND_SYNC_TO_WATCH_KEY -> {
-                val enabled = newValue == true
-                if (enabled) {
-                    startDnDSyncHelper()
-                } else {
-                    setDnDSyncToWatch(enabled)
-                }
-                false
-            }
-            DND_SYNC_TO_PHONE_KEY,
-            DND_SYNC_WITH_THEATER_KEY -> {
-                val enabled = newValue == true
-                setDnDSyncFromWatchPreference(key, enabled)
-                false
-            }
-            else -> true
-        }
-    }
-
-    override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
-        Timber.d("onCreatePreferences() called")
-        addPreferencesFromResource(R.xml.prefs_dnd_sync)
-
-        dndSyncToWatchPreference.onPreferenceChangeListener = this
-        dndSyncToPhonePreference.onPreferenceChangeListener = this
-        dndSyncWithTheaterPreference.onPreferenceChangeListener = this
-    }
-
-    override fun onStart() {
-        super.onStart()
-        Timber.d("onStart() called")
-        sharedPreferences.registerOnSharedPreferenceChangeListener(this)
-    }
-
-    override fun onStop() {
-        super.onStop()
-        Timber.d("onStop() called")
-        sharedPreferences.unregisterOnSharedPreferenceChangeListener(this)
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        Timber.d("onActivityResult() called")
-        when (requestCode) {
-            NOTI_POLICY_SETTINGS_REQUEST_CODE -> {
-                if (changingKey != null && Compat.canSetDnD(requireContext())) {
-                    coroutineScope.launch {
-                        sharedPreferences.edit(commit = true) {
-                            putBoolean(changingKey, true)
-                        }
-                        watchManager.updatePreferenceOnWatch(changingKey!!)
-                        changingKey = null
-                    }
-                }
-            }
-        }
-    }
-
-    /**
-     * Sets whether DnD Sync to watch is enabled.
-     * @param enabled true if DnD Sync to Watch should be enabled, false otherwise.
-     */
-    private fun setDnDSyncToWatch(enabled: Boolean) {
-        Timber.i("Setting DnD Sync to watch to $enabled")
-        dndSyncToWatchPreference.isChecked = enabled
-        coroutineScope.launch {
-            sharedPreferences.edit(commit = true) {
-                putBoolean(DND_SYNC_TO_WATCH_KEY, enabled)
-            }
-            watchManager.updatePreferenceOnWatch(DND_SYNC_TO_WATCH_KEY)
-        }
+  override fun onPreferenceChange(preference: Preference?, newValue: Any?): Boolean {
+    return when (val key = preference?.key
+    ) {
+      DND_SYNC_TO_WATCH_KEY -> {
+        val enabled = newValue == true
         if (enabled) {
-            Timber.i("Starting DnDLocalChangeService")
-            Intent(requireContext(), DnDLocalChangeService::class.java).also {
-                Compat.startForegroundService(requireContext(), it)
-            }
-        }
-    }
-
-    /**
-     * Sets whether a DnD Sync from watch preference is enabled.
-     * @param key The key of the preference to set.
-     * @param enabled true if the preference should be enabled, false otherwise.
-     */
-    private fun setDnDSyncFromWatchPreference(key: String, enabled: Boolean) {
-        Timber.i("Setting $key to $enabled")
-        var updateState = false
-        if (enabled) {
-            if (Compat.canSetDnD(requireContext())) {
-                updateState = true
-            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                changingKey = key
-                Toast.makeText(
-                    context,
-                    getString(R.string.dnd_sync_request_policy_access_message),
-                    Toast.LENGTH_SHORT
-                ).show()
-                Intent(Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS).also {
-                    startActivityForResult(it, NOTI_POLICY_SETTINGS_REQUEST_CODE)
-                }
-            }
+          startDnDSyncHelper()
         } else {
-            updateState = true
+          setDnDSyncToWatch(enabled)
         }
-        if (updateState) {
-            coroutineScope.launch {
-                sharedPreferences.edit(commit = true) {
-                    putBoolean(key, enabled)
-                }
-                watchManager.updatePreferenceOnWatch(key)
-            }
-        }
+        false
+      }
+      DND_SYNC_TO_PHONE_KEY, DND_SYNC_WITH_THEATER_KEY -> {
+        val enabled = newValue == true
+        setDnDSyncFromWatchPreference(key, enabled)
+        false
+      }
+      else -> true
     }
+  }
 
-    /**
-     * Starts a new [DnDSyncHelperActivity] instance and shows it.
-     */
-    private fun startDnDSyncHelper() {
-        Intent(context, DnDSyncHelperActivity::class.java).also {
-            startActivity(it)
-        }
-    }
+  override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
+    Timber.d("onCreatePreferences() called")
+    addPreferencesFromResource(R.xml.prefs_dnd_sync)
 
-    companion object {
-        private const val NOTI_POLICY_SETTINGS_REQUEST_CODE = 54312
+    dndSyncToWatchPreference.onPreferenceChangeListener = this
+    dndSyncToPhonePreference.onPreferenceChangeListener = this
+    dndSyncWithTheaterPreference.onPreferenceChangeListener = this
+  }
+
+  override fun onStart() {
+    super.onStart()
+    Timber.d("onStart() called")
+    sharedPreferences.registerOnSharedPreferenceChangeListener(this)
+  }
+
+  override fun onStop() {
+    super.onStop()
+    Timber.d("onStop() called")
+    sharedPreferences.unregisterOnSharedPreferenceChangeListener(this)
+  }
+
+  override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+    Timber.d("onActivityResult() called")
+    when (requestCode) {
+      NOTI_POLICY_SETTINGS_REQUEST_CODE -> {
+        if (changingKey != null && Compat.canSetDnD(requireContext())) {
+          coroutineScope.launch {
+            sharedPreferences.edit(commit = true) { putBoolean(changingKey, true) }
+            watchManager.updatePreferenceOnWatch(changingKey!!)
+            changingKey = null
+          }
+        }
+      }
     }
+  }
+
+  /**
+   * Sets whether DnD Sync to watch is enabled.
+   * @param enabled true if DnD Sync to Watch should be enabled, false otherwise.
+   */
+  private fun setDnDSyncToWatch(enabled: Boolean) {
+    Timber.i("Setting DnD Sync to watch to $enabled")
+    dndSyncToWatchPreference.isChecked = enabled
+    coroutineScope.launch {
+      sharedPreferences.edit(commit = true) { putBoolean(DND_SYNC_TO_WATCH_KEY, enabled) }
+      watchManager.updatePreferenceOnWatch(DND_SYNC_TO_WATCH_KEY)
+    }
+    if (enabled) {
+      Timber.i("Starting DnDLocalChangeService")
+      Intent(requireContext(), DnDLocalChangeService::class.java).also {
+        Compat.startForegroundService(requireContext(), it)
+      }
+    }
+  }
+
+  /**
+   * Sets whether a DnD Sync from watch preference is enabled.
+   * @param key The key of the preference to set.
+   * @param enabled true if the preference should be enabled, false otherwise.
+   */
+  private fun setDnDSyncFromWatchPreference(key: String, enabled: Boolean) {
+    Timber.i("Setting $key to $enabled")
+    var updateState = false
+    if (enabled) {
+      if (Compat.canSetDnD(requireContext())) {
+        updateState = true
+      } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        changingKey = key
+        Toast.makeText(
+                context,
+                getString(R.string.dnd_sync_request_policy_access_message),
+                Toast.LENGTH_SHORT)
+            .show()
+        Intent(Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS).also {
+          startActivityForResult(it, NOTI_POLICY_SETTINGS_REQUEST_CODE)
+        }
+      }
+    } else {
+      updateState = true
+    }
+    if (updateState) {
+      coroutineScope.launch {
+        sharedPreferences.edit(commit = true) { putBoolean(key, enabled) }
+        watchManager.updatePreferenceOnWatch(key)
+      }
+    }
+  }
+
+  /** Starts a new [DnDSyncHelperActivity] instance and shows it. */
+  private fun startDnDSyncHelper() {
+    Intent(context, DnDSyncHelperActivity::class.java).also { startActivity(it) }
+  }
+
+  companion object {
+    private const val NOTI_POLICY_SETTINGS_REQUEST_CODE = 54312
+  }
 }

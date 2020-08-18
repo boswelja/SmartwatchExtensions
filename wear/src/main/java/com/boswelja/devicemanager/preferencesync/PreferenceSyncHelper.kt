@@ -16,42 +16,39 @@ import com.google.android.gms.wearable.PutDataMapRequest
 import com.google.android.gms.wearable.Wearable
 
 class PreferenceSyncHelper(
-    context: Context,
-    private val sharedPreferences: SharedPreferences,
-    private val phoneId: String
+    context: Context, private val sharedPreferences: SharedPreferences, private val phoneId: String
 ) {
 
-    private val dataClient = Wearable.getDataClient(context)
+  private val dataClient = Wearable.getDataClient(context)
 
-    fun pushNewData(key: String): Task<DataItem>? {
-        if (phoneId.isNotEmpty()) {
-            val syncedPrefUpdateReq = PutDataMapRequest.create(PREFERENCE_CHANGE_PATH)
-            when (key) {
-                PreferenceKey.PHONE_LOCKING_ENABLED_KEY,
-                PreferenceKey.BATTERY_SYNC_ENABLED_KEY,
-                PreferenceKey.BATTERY_PHONE_CHARGE_NOTI_KEY,
-                PreferenceKey.BATTERY_WATCH_CHARGE_NOTI_KEY,
-                PreferenceKey.DND_SYNC_TO_PHONE_KEY,
-                PreferenceKey.DND_SYNC_TO_WATCH_KEY,
-                PreferenceKey.DND_SYNC_WITH_THEATER_KEY
-                -> {
-                    val newValue = sharedPreferences.getBoolean(key, false)
-                    syncedPrefUpdateReq.dataMap.putBoolean(key, newValue)
-                }
-                PreferenceKey.BATTERY_CHARGE_THRESHOLD_KEY -> {
-                    val newValue = sharedPreferences.getInt(key, 90)
-                    syncedPrefUpdateReq.dataMap.putInt(key, newValue)
-                }
-            }
-            if (!syncedPrefUpdateReq.dataMap.isEmpty) {
-                syncedPrefUpdateReq.setUrgent()
-                return dataClient.putDataItem(syncedPrefUpdateReq.asPutDataRequest())
-            }
+  fun pushNewData(key: String): Task<DataItem>? {
+    if (phoneId.isNotEmpty()) {
+      val syncedPrefUpdateReq = PutDataMapRequest.create(PREFERENCE_CHANGE_PATH)
+      when (key) {
+        PreferenceKey.PHONE_LOCKING_ENABLED_KEY,
+        PreferenceKey.BATTERY_SYNC_ENABLED_KEY,
+        PreferenceKey.BATTERY_PHONE_CHARGE_NOTI_KEY,
+        PreferenceKey.BATTERY_WATCH_CHARGE_NOTI_KEY,
+        PreferenceKey.DND_SYNC_TO_PHONE_KEY,
+        PreferenceKey.DND_SYNC_TO_WATCH_KEY,
+        PreferenceKey.DND_SYNC_WITH_THEATER_KEY -> {
+          val newValue = sharedPreferences.getBoolean(key, false)
+          syncedPrefUpdateReq.dataMap.putBoolean(key, newValue)
         }
-        return null
+        PreferenceKey.BATTERY_CHARGE_THRESHOLD_KEY -> {
+          val newValue = sharedPreferences.getInt(key, 90)
+          syncedPrefUpdateReq.dataMap.putInt(key, newValue)
+        }
+      }
+      if (!syncedPrefUpdateReq.dataMap.isEmpty) {
+        syncedPrefUpdateReq.setUrgent()
+        return dataClient.putDataItem(syncedPrefUpdateReq.asPutDataRequest())
+      }
     }
+    return null
+  }
 
-    companion object {
-        private const val PREFERENCE_CHANGE_PATH = "/preference_change"
-    }
+  companion object {
+    private const val PREFERENCE_CHANGE_PATH = "/preference_change"
+  }
 }

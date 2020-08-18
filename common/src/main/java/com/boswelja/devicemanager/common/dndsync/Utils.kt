@@ -16,23 +16,21 @@ import com.google.android.gms.wearable.Wearable
 
 object Utils {
 
-    /**
-     * Ensure Interruption Filter state is properly synced between devices.
-     */
-    fun updateInterruptionFilter(context: Context) {
-        val interruptionFilterEnabled = Compat.isDndEnabled(context)
-        updateInterruptionFilter(context, interruptionFilterEnabled)
-    }
+  /** Ensure Interruption Filter state is properly synced between devices. */
+  fun updateInterruptionFilter(context: Context) {
+    val interruptionFilterEnabled = Compat.isDndEnabled(context)
+    updateInterruptionFilter(context, interruptionFilterEnabled)
+  }
 
-    /**
-     * Sets a new Interruption Filter state across devices.
-     * @param interruptionFilterEnabled Whether Interruption Filter should be enabled.
-     */
-    fun updateInterruptionFilter(context: Context, interruptionFilterEnabled: Boolean) {
-        val dataClient = Wearable.getDataClient(context)
-        val putDataMapReq = PutDataMapRequest.create(DND_STATUS_PATH)
-        putDataMapReq.dataMap.putBoolean(NEW_DND_STATE_KEY, interruptionFilterEnabled)
-        putDataMapReq.setUrgent()
-        dataClient.putDataItem(putDataMapReq.asPutDataRequest())
-    }
+  /**
+   * Sets a new Interruption Filter state across devices.
+   * @param interruptionFilterEnabled Whether Interruption Filter should be enabled.
+   */
+  fun updateInterruptionFilter(context: Context, interruptionFilterEnabled: Boolean) {
+    val dataClient = Wearable.getDataClient(context)
+    val putDataMapReq = PutDataMapRequest.create(DND_STATUS_PATH)
+    putDataMapReq.dataMap.putBoolean(NEW_DND_STATE_KEY, interruptionFilterEnabled)
+    putDataMapReq.setUrgent()
+    dataClient.putDataItem(putDataMapReq.asPutDataRequest())
+  }
 }

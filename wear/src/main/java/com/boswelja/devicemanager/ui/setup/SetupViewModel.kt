@@ -20,39 +20,38 @@ import com.google.android.gms.wearable.Wearable
 
 class SetupViewModel(application: Application) : AndroidViewModel(application) {
 
-    private val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(application)
-    private val nodeClient = Wearable.getNodeClient(application)
-    private val messageClient = Wearable.getMessageClient(application)
-    private val messageListener = MessageClient.OnMessageReceivedListener {
+  private val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(application)
+  private val nodeClient = Wearable.getNodeClient(application)
+  private val messageClient = Wearable.getMessageClient(application)
+  private val messageListener =
+      MessageClient.OnMessageReceivedListener {
         when (it.path) {
-            References.WATCH_REGISTERED_PATH -> {
-                sharedPreferences.edit { putString(PHONE_ID_KEY, it.sourceNodeId) }
-                _watchRegistered.postValue(true)
-            }
+          References.WATCH_REGISTERED_PATH -> {
+            sharedPreferences.edit { putString(PHONE_ID_KEY, it.sourceNodeId) }
+            _watchRegistered.postValue(true)
+          }
         }
-    }
+      }
 
-    private val _watchRegistered = MutableLiveData(false)
-    val watchRegistered: LiveData<Boolean>
-        get() = _watchRegistered
+  private val _watchRegistered = MutableLiveData(false)
+  val watchRegistered: LiveData<Boolean>
+    get() = _watchRegistered
 
-    private val _localName = MutableLiveData<String?>(null)
-    val localName: LiveData<String?>
-        get() = _localName
+  private val _localName = MutableLiveData<String?>(null)
+  val localName: LiveData<String?>
+    get() = _localName
 
-    init {
-        messageClient.addListener(messageListener)
-        refreshLocalName()
-    }
+  init {
+    messageClient.addListener(messageListener)
+    refreshLocalName()
+  }
 
-    override fun onCleared() {
-        super.onCleared()
-        messageClient.removeListener(messageListener)
-    }
+  override fun onCleared() {
+    super.onCleared()
+    messageClient.removeListener(messageListener)
+  }
 
-    private fun refreshLocalName() {
-        nodeClient.localNode.addOnCompleteListener {
-            _localName.postValue(it.result?.displayName)
-        }
-    }
+  private fun refreshLocalName() {
+    nodeClient.localNode.addOnCompleteListener { _localName.postValue(it.result?.displayName) }
+  }
 }

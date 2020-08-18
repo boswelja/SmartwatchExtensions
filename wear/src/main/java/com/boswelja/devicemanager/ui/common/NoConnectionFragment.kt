@@ -16,14 +16,12 @@ import com.boswelja.devicemanager.databinding.FragmentNotConnectedBinding
 
 class NoConnectionFragment : Fragment() {
 
-    private lateinit var binding: FragmentNotConnectedBinding
+  private lateinit var binding: FragmentNotConnectedBinding
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        binding = FragmentNotConnectedBinding.inflate(inflater, container, false)
-        return binding.root
-    }
+  override fun onCreateView(
+      inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+  ): View? {
+    binding = FragmentNotConnectedBinding.inflate(inflater, container, false)
+    return binding.root
+  }
 }

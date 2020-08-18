@@ -14,10 +14,10 @@ import androidx.preference.PreferenceManager
 
 abstract class BaseSharedPreferenceFragment : Fragment() {
 
-    lateinit var sharedPreferences: SharedPreferences
+  lateinit var sharedPreferences: SharedPreferences
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
-    }
+  override fun onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(savedInstanceState)
+    sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
+  }
 }

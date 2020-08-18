@@ -21,49 +21,49 @@ import timber.log.Timber
 
 internal class InitialCheckFragment : Fragment() {
 
-    private val viewModel: InitialCheckViewModel by viewModels()
+  private val viewModel: InitialCheckViewModel by viewModels()
 
-    private lateinit var binding: FragmentDndsyncHelperWarningBinding
+  private lateinit var binding: FragmentDndsyncHelperWarningBinding
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        binding = FragmentDndsyncHelperWarningBinding.inflate(inflater, container, false)
-        return binding.root
+  override fun onCreateView(
+      inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+  ): View? {
+    binding = FragmentDndsyncHelperWarningBinding.inflate(inflater, container, false)
+    return binding.root
+  }
+
+  override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    viewModel.hasNotiPolicyAccess.observe(viewLifecycleOwner) {
+      Timber.i("hasNotiPolicyAccess = $it")
+      if (it) {
+        findNavController().navigate(InitialCheckFragmentDirections.toResultFragment(true))
+      }
     }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        viewModel.hasNotiPolicyAccess.observe(viewLifecycleOwner) {
-            Timber.i("hasNotiPolicyAccess = $it")
-            if (it) {
-                findNavController().navigate(InitialCheckFragmentDirections.toResultFragment(true))
-            }
+    viewModel.hasCorrectSdkInt.observe(viewLifecycleOwner) {
+      Timber.i("hasCorrectSdkInt = $it")
+      if (it != null) {
+        if (!it) {
+          binding.warningText.setText(R.string.dnd_sync_helper_warning_watch_version)
+          setHasWarnings()
+        } else {
+          findNavController().navigate(InitialCheckFragmentDirections.toSetupFragment())
         }
-        viewModel.hasCorrectSdkInt.observe(viewLifecycleOwner) {
-            Timber.i("hasCorrectSdkInt = $it")
-            if (it != null) {
-                if (!it) {
-                    binding.warningText.setText(R.string.dnd_sync_helper_warning_watch_version)
-                    setHasWarnings()
-                } else {
-                    findNavController().navigate(InitialCheckFragmentDirections.toSetupFragment())
-                }
-                binding.progressBar.hide()
-            }
-        }
-        binding.warningAcknowledged.setOnCheckedChangeListener { _, b -> binding.nextButton.isEnabled = b }
-        binding.nextButton.setOnClickListener { findNavController().navigate(R.id.to_setupFragment) }
+        binding.progressBar.hide()
+      }
     }
-
-    private fun setHasWarnings() {
-        Timber.i("setHasWarnings() called")
-        binding.apply {
-            nextButton.visibility = View.VISIBLE
-            warningAcknowledged.visibility = View.VISIBLE
-            warningIndicator.visibility = View.VISIBLE
-            title.text = getString(R.string.dnd_sync_helper_warning_title)
-        }
+    binding.warningAcknowledged.setOnCheckedChangeListener { _, b ->
+      binding.nextButton.isEnabled = b
     }
+    binding.nextButton.setOnClickListener { findNavController().navigate(R.id.to_setupFragment) }
+  }
+
+  private fun setHasWarnings() {
+    Timber.i("setHasWarnings() called")
+    binding.apply {
+      nextButton.visibility = View.VISIBLE
+      warningAcknowledged.visibility = View.VISIBLE
+      warningIndicator.visibility = View.VISIBLE
+      title.text = getString(R.string.dnd_sync_helper_warning_title)
+    }
+  }
 }

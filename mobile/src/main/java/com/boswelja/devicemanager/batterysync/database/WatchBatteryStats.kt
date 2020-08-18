@@ -15,18 +15,21 @@ import com.google.android.gms.wearable.MessageEvent
 @Entity(tableName = "watch_battery_stats")
 class WatchBatteryStats(
     @PrimaryKey val watchId: String,
-    @ColumnInfo(name = "watch_battery_percent") val batteryPercent: Int,
-    @ColumnInfo(name = "watch_charging") val isWatchCharging: Boolean,
-    @ColumnInfo(name = "last_update_time") val lastUpdatedMillis: Long = System.currentTimeMillis()
+    @ColumnInfo(name = "watch_battery_percent")
+    val batteryPercent: Int,
+    @ColumnInfo(name = "watch_charging")
+    val isWatchCharging: Boolean,
+    @ColumnInfo(name = "last_update_time")
+    val lastUpdatedMillis: Long = System.currentTimeMillis()
 ) {
-    companion object {
-        fun fromMessage(messageEvent: MessageEvent): WatchBatteryStats {
-            val watchId = messageEvent.sourceNodeId
-            val message = String(messageEvent.data, Charsets.UTF_8)
-            val messageSplit = message.split("|")
-            val batteryPercent = messageSplit[0].toInt()
-            val isWatchCharging = messageSplit[1] == true.toString()
-            return WatchBatteryStats(watchId, batteryPercent, isWatchCharging)
-        }
+  companion object {
+    fun fromMessage(messageEvent: MessageEvent): WatchBatteryStats {
+      val watchId = messageEvent.sourceNodeId
+      val message = String(messageEvent.data, Charsets.UTF_8)
+      val messageSplit = message.split("|")
+      val batteryPercent = messageSplit[0].toInt()
+      val isWatchCharging = messageSplit[1] == true.toString()
+      return WatchBatteryStats(watchId, batteryPercent, isWatchCharging)
     }
+  }
 }

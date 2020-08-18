@@ -18,13 +18,14 @@ import timber.log.Timber
 
 internal class LoadingFragment : Fragment() {
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
-        inflater.inflate(R.layout.common_fragment_loading, container, false)
+  override fun onCreateView(
+      inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+  ): View? = inflater.inflate(R.layout.common_fragment_loading, container, false)
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        view.findViewById<AppCompatTextView>(R.id.loading_text)!!.apply {
-            text = getString(R.string.dnd_sync_helper_loading_text)
-        }
-        Timber.i("Successfully created")
+  override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    view.findViewById<AppCompatTextView>(R.id.loading_text)!!.apply {
+      text = getString(R.string.dnd_sync_helper_loading_text)
     }
+    Timber.i("Successfully created")
+  }
 }

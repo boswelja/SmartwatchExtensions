@@ -18,160 +18,122 @@ import io.mockk.MockKAnnotations
 import io.mockk.confirmVerified
 import io.mockk.impl.annotations.MockK
 import io.mockk.verify
+import java.text.SimpleDateFormat
+import java.util.Locale
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import java.text.SimpleDateFormat
-import java.util.Locale
 
 class AppPackageInfoViewModelTest {
 
-    private val watchId = "123456"
+  private val watchId = "123456"
 
-    @get:Rule
-    val instantExecutorRule = InstantTaskExecutorRule()
+  @get:Rule val instantExecutorRule = InstantTaskExecutorRule()
 
-    @MockK(relaxed = true)
-    private lateinit var messageClient: MessageClient
+  @MockK(relaxed = true)
+  private lateinit var messageClient: MessageClient
 
-    private lateinit var viewModel: AppPackageInfoViewModel
+  private lateinit var viewModel: AppPackageInfoViewModel
 
-    @Before
-    fun setUp() {
-        MockKAnnotations.init(this)
-        viewModel = AppPackageInfoViewModel(messageClient)
-        viewModel.watchId = watchId
+  @Before
+  fun setUp() {
+    MockKAnnotations.init(this)
+    viewModel = AppPackageInfoViewModel(messageClient)
+    viewModel.watchId = watchId
+  }
+
+  @Test
+  fun `Setting App Info correctly updates view transforms`() {
+    val dateFormatter = SimpleDateFormat("EE, dd MMM yyyy, h:mm aa", Locale.getDefault())
+    val testAppInfo = getTestApp(isSystemApp = false, isLaunchable = true)
+    viewModel.appInfo.postValue(testAppInfo)
+    viewModel.appName.getOrAwaitValue { assertThat(it).isEqualTo(testAppInfo.packageLabel) }
+    viewModel.appIcon.getOrAwaitValue { assertThat(it).isEqualTo(testAppInfo.packageIcon) }
+    viewModel.installTime.getOrAwaitValue {
+      assertThat(it).isEqualTo(dateFormatter.format(testAppInfo.installTime))
     }
-
-    @Test
-    fun `Setting App Info correctly updates view transforms`() {
-        val dateFormatter = SimpleDateFormat("EE, dd MMM yyyy, h:mm aa", Locale.getDefault())
-        val testAppInfo = getTestApp(isSystemApp = false, isLaunchable = true)
-        viewModel.appInfo.postValue(testAppInfo)
-        viewModel.appName.getOrAwaitValue {
-            assertThat(it).isEqualTo(testAppInfo.packageLabel)
-        }
-        viewModel.appIcon.getOrAwaitValue {
-            assertThat(it).isEqualTo(testAppInfo.packageIcon)
-        }
-        viewModel.installTime.getOrAwaitValue {
-            assertThat(it).isEqualTo(dateFormatter.format(testAppInfo.installTime))
-        }
-        viewModel.lastUpdateTime.getOrAwaitValue {
-            assertThat(it).isEqualTo(dateFormatter.format(testAppInfo.lastUpdateTime))
-        }
-        viewModel.versionText.getOrAwaitValue {
-            assertThat(it).isEqualTo(testAppInfo.versionName ?: testAppInfo.versionCode.toString())
-        }
-        viewModel.shouldShowLastUpdateTime.getOrAwaitValue {
-            assertThat(it).isEqualTo(testAppInfo.installTime != testAppInfo.lastUpdateTime)
-        }
+    viewModel.lastUpdateTime.getOrAwaitValue {
+      assertThat(it).isEqualTo(dateFormatter.format(testAppInfo.lastUpdateTime))
     }
-
-    @Test
-    fun `Setting launchable system App Info correctly updates transforms`() {
-        val testAppInfo = getTestApp(isSystemApp = true, isLaunchable = true)
-        viewModel.appInfo.postValue(testAppInfo)
-        viewModel.canOpen.getOrAwaitValue {
-            assertThat(it).isTrue()
-        }
-        viewModel.canUninstall.getOrAwaitValue {
-            assertThat(it).isFalse()
-        }
-        viewModel.shouldShowInstallTime.getOrAwaitValue {
-            assertThat(it).isFalse()
-        }
+    viewModel.versionText.getOrAwaitValue {
+      assertThat(it).isEqualTo(testAppInfo.versionName ?: testAppInfo.versionCode.toString())
     }
-
-    @Test
-    fun `Setting non-launchable system App Info correctly updates transforms`() {
-        val testAppInfo = getTestApp(isSystemApp = true, isLaunchable = false)
-        viewModel.appInfo.postValue(testAppInfo)
-        viewModel.canOpen.getOrAwaitValue {
-            assertThat(it).isFalse()
-        }
-        viewModel.canUninstall.getOrAwaitValue {
-            assertThat(it).isFalse()
-        }
-        viewModel.shouldShowInstallTime.getOrAwaitValue {
-            assertThat(it).isFalse()
-        }
+    viewModel.shouldShowLastUpdateTime.getOrAwaitValue {
+      assertThat(it).isEqualTo(testAppInfo.installTime != testAppInfo.lastUpdateTime)
     }
+  }
 
-    @Test
-    fun `Setting launchable user App Info correctly updates transforms`() {
-        val testAppInfo = getTestApp(isSystemApp = false, isLaunchable = true)
-        viewModel.appInfo.postValue(testAppInfo)
-        viewModel.canOpen.getOrAwaitValue {
-            assertThat(it).isTrue()
-        }
-        viewModel.canUninstall.getOrAwaitValue {
-            assertThat(it).isTrue()
-        }
-        viewModel.shouldShowInstallTime.getOrAwaitValue {
-            assertThat(it).isTrue()
-        }
+  @Test
+  fun `Setting launchable system App Info correctly updates transforms`() {
+    val testAppInfo = getTestApp(isSystemApp = true, isLaunchable = true)
+    viewModel.appInfo.postValue(testAppInfo)
+    viewModel.canOpen.getOrAwaitValue { assertThat(it).isTrue() }
+    viewModel.canUninstall.getOrAwaitValue { assertThat(it).isFalse() }
+    viewModel.shouldShowInstallTime.getOrAwaitValue { assertThat(it).isFalse() }
+  }
+
+  @Test
+  fun `Setting non-launchable system App Info correctly updates transforms`() {
+    val testAppInfo = getTestApp(isSystemApp = true, isLaunchable = false)
+    viewModel.appInfo.postValue(testAppInfo)
+    viewModel.canOpen.getOrAwaitValue { assertThat(it).isFalse() }
+    viewModel.canUninstall.getOrAwaitValue { assertThat(it).isFalse() }
+    viewModel.shouldShowInstallTime.getOrAwaitValue { assertThat(it).isFalse() }
+  }
+
+  @Test
+  fun `Setting launchable user App Info correctly updates transforms`() {
+    val testAppInfo = getTestApp(isSystemApp = false, isLaunchable = true)
+    viewModel.appInfo.postValue(testAppInfo)
+    viewModel.canOpen.getOrAwaitValue { assertThat(it).isTrue() }
+    viewModel.canUninstall.getOrAwaitValue { assertThat(it).isTrue() }
+    viewModel.shouldShowInstallTime.getOrAwaitValue { assertThat(it).isTrue() }
+  }
+
+  @Test
+  fun `Setting non-launchable user App Info correctly updates transforms`() {
+    val testAppInfo = getTestApp(isSystemApp = false, isLaunchable = false)
+    viewModel.appInfo.postValue(testAppInfo)
+    viewModel.canOpen.getOrAwaitValue { assertThat(it).isFalse() }
+    viewModel.canUninstall.getOrAwaitValue { assertThat(it).isTrue() }
+    viewModel.shouldShowInstallTime.getOrAwaitValue { assertThat(it).isTrue() }
+  }
+
+  @Test
+  fun `Uninstall app makes a request and finished activity`() {
+    val testAppInfo = getTestApp(isSystemApp = false, isLaunchable = true)
+    viewModel.appInfo.postValue(testAppInfo)
+    viewModel.sendUninstallRequestMessage()
+    verify(exactly = 1) {
+      messageClient.sendMessage(
+          watchId, REQUEST_UNINSTALL_PACKAGE, testAppInfo.packageName.toByteArray(Charsets.UTF_8))
     }
+    viewModel.finishActivity.getOrAwaitValue { assertThat(it).isTrue() }
 
-    @Test
-    fun `Setting non-launchable user App Info correctly updates transforms`() {
-        val testAppInfo = getTestApp(isSystemApp = false, isLaunchable = false)
-        viewModel.appInfo.postValue(testAppInfo)
-        viewModel.canOpen.getOrAwaitValue {
-            assertThat(it).isFalse()
-        }
-        viewModel.canUninstall.getOrAwaitValue {
-            assertThat(it).isTrue()
-        }
-        viewModel.shouldShowInstallTime.getOrAwaitValue {
-            assertThat(it).isTrue()
-        }
+    confirmVerified(messageClient)
+  }
+
+  @Test
+  fun `Open app request sends`() {
+    val testAppInfo = getTestApp(isSystemApp = true, isLaunchable = true)
+    viewModel.appInfo.postValue(testAppInfo)
+    viewModel.sendOpenRequestMessage()
+    verify(exactly = 1) {
+      messageClient.sendMessage(
+          watchId, REQUEST_OPEN_PACKAGE, testAppInfo.packageName.toByteArray(Charsets.UTF_8))
     }
+  }
 
-    @Test
-    fun `Uninstall app makes a request and finished activity`() {
-        val testAppInfo = getTestApp(isSystemApp = false, isLaunchable = true)
-        viewModel.appInfo.postValue(testAppInfo)
-        viewModel.sendUninstallRequestMessage()
-        verify(exactly = 1) {
-            messageClient.sendMessage(
-                watchId,
-                REQUEST_UNINSTALL_PACKAGE,
-                testAppInfo.packageName.toByteArray(Charsets.UTF_8)
-            )
-        }
-        viewModel.finishActivity.getOrAwaitValue {
-            assertThat(it).isTrue()
-        }
-
-        confirmVerified(messageClient)
-    }
-
-    @Test
-    fun `Open app request sends`() {
-        val testAppInfo = getTestApp(isSystemApp = true, isLaunchable = true)
-        viewModel.appInfo.postValue(testAppInfo)
-        viewModel.sendOpenRequestMessage()
-        verify(exactly = 1) {
-            messageClient.sendMessage(
-                watchId,
-                REQUEST_OPEN_PACKAGE,
-                testAppInfo.packageName.toByteArray(Charsets.UTF_8)
-            )
-        }
-    }
-
-    private fun getTestApp(isSystemApp: Boolean, isLaunchable: Boolean) =
-        AppPackageInfo(
-            null,
-            1,
-            "1.0.0",
-            "com.package.name",
-            "Label",
-            isSystemApp,
-            isLaunchable,
-            installTime = System.currentTimeMillis(),
-            lastUpdateTime = System.currentTimeMillis(),
-            arrayOf("permission1", "permission2")
-        )
+  private fun getTestApp(isSystemApp: Boolean, isLaunchable: Boolean) =
+      AppPackageInfo(
+          null,
+          1,
+          "1.0.0",
+          "com.package.name",
+          "Label",
+          isSystemApp,
+          isLaunchable,
+          installTime = System.currentTimeMillis(),
+          lastUpdateTime = System.currentTimeMillis(),
+          arrayOf("permission1", "permission2"))
 }

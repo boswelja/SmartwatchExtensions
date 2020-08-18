@@ -18,26 +18,24 @@ import androidx.wear.activity.ConfirmationActivity.SUCCESS_ANIMATION
 
 object ConfirmationActivityHandler {
 
-    private fun createIntent(context: Context, message: String?) =
-        Intent(context, ConfirmationActivity::class.java)
-            .putExtra(EXTRA_MESSAGE, message)
-            .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+  private fun createIntent(context: Context, message: String?) =
+      Intent(context, ConfirmationActivity::class.java)
+          .putExtra(EXTRA_MESSAGE, message)
+          .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
 
-    fun openOnPhoneAnimation(context: Context, message: String? = null) {
-        val intent = createIntent(context, message)
-            .putExtra(EXTRA_ANIMATION_TYPE, OPEN_ON_PHONE_ANIMATION)
-        context.startActivity(intent)
-    }
+  fun openOnPhoneAnimation(context: Context, message: String? = null) {
+    val intent =
+        createIntent(context, message).putExtra(EXTRA_ANIMATION_TYPE, OPEN_ON_PHONE_ANIMATION)
+    context.startActivity(intent)
+  }
 
-    fun failAnimation(context: Context, message: String? = null) {
-        val intent = createIntent(context, message)
-            .putExtra(EXTRA_ANIMATION_TYPE, FAILURE_ANIMATION)
-        context.startActivity(intent)
-    }
+  fun failAnimation(context: Context, message: String? = null) {
+    val intent = createIntent(context, message).putExtra(EXTRA_ANIMATION_TYPE, FAILURE_ANIMATION)
+    context.startActivity(intent)
+  }
 
-    fun successAnimation(context: Context, message: String? = null) {
-        val intent = createIntent(context, message)
-            .putExtra(EXTRA_ANIMATION_TYPE, SUCCESS_ANIMATION)
-        context.startActivity(intent)
-    }
+  fun successAnimation(context: Context, message: String? = null) {
+    val intent = createIntent(context, message).putExtra(EXTRA_ANIMATION_TYPE, SUCCESS_ANIMATION)
+    context.startActivity(intent)
+  }
 }

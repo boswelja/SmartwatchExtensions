@@ -13,6 +13,6 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "watch_battery_widget_ids")
 class WatchBatteryWidgetId(
-    @ColumnInfo(name = "watch_id") val watchId: String,
-    @PrimaryKey val widgetId: Int
-)
+    @ColumnInfo(name = "watch_id")
+    val watchId: String,
+    @PrimaryKey val widgetId: Int)

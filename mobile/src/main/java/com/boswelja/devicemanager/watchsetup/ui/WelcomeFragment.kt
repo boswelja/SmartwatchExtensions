@@ -18,16 +18,18 @@ import com.boswelja.devicemanager.databinding.FragmentWelcomeBinding
 
 class WelcomeFragment : Fragment() {
 
-    private lateinit var binding: FragmentWelcomeBinding
+  private lateinit var binding: FragmentWelcomeBinding
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        binding = FragmentWelcomeBinding.inflate(inflater, container, false)
-        return binding.root
-    }
+  override fun onCreateView(
+      inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+  ): View? {
+    binding = FragmentWelcomeBinding.inflate(inflater, container, false)
+    return binding.root
+  }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        binding.getStartedButton.setOnClickListener {
-            findNavController().navigate(R.id.to_setupFragment)
-        }
+  override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    binding.getStartedButton.setOnClickListener {
+      findNavController().navigate(R.id.to_setupFragment)
     }
+  }
 }

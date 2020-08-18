@@ -20,44 +20,44 @@ import kotlinx.coroutines.launch
 
 class WatchSetupViewModel(application: Application) : AndroidViewModel(application) {
 
-    private val coroutineJob = Job()
-    private val coroutineScope = CoroutineScope(Dispatchers.IO + coroutineJob)
-    private val watchManager = WatchManager.get(application)
+  private val coroutineJob = Job()
+  private val coroutineScope = CoroutineScope(Dispatchers.IO + coroutineJob)
+  private val watchManager = WatchManager.get(application)
 
-    private val _availableWatches = MutableLiveData<List<Watch>?>(null)
-    val availableWatches: LiveData<List<Watch>?>
-        get() = _availableWatches
+  private val _availableWatches = MutableLiveData<List<Watch>?>(null)
+  val availableWatches: LiveData<List<Watch>?>
+    get() = _availableWatches
 
-    private val _isLoading = MutableLiveData(true)
-    val isLoading: LiveData<Boolean>
-        get() = _isLoading
+  private val _isLoading = MutableLiveData(true)
+  val isLoading: LiveData<Boolean>
+    get() = _isLoading
 
-    private val _finishActivity = MutableLiveData(false)
-    val finishActivity: LiveData<Boolean>
-        get() = _finishActivity
+  private val _finishActivity = MutableLiveData(false)
+  val finishActivity: LiveData<Boolean>
+    get() = _finishActivity
 
-    init {
-        refreshAvailableWatches()
+  init {
+    refreshAvailableWatches()
+  }
+
+  fun refreshAvailableWatches() {
+    _isLoading.postValue(true)
+    coroutineScope.launch {
+      val availableWatches = watchManager.getAvailableWatches()
+      _availableWatches.postValue(availableWatches)
+      _isLoading.postValue(false)
     }
+  }
 
-    fun refreshAvailableWatches() {
-        _isLoading.postValue(true)
-        coroutineScope.launch {
-            val availableWatches = watchManager.getAvailableWatches()
-            _availableWatches.postValue(availableWatches)
-            _isLoading.postValue(false)
-        }
+  fun registerWatch(watch: Watch) {
+    coroutineScope.launch {
+      watchManager.registerWatch(watch)
+      _finishActivity.postValue(true)
     }
+  }
 
-    fun registerWatch(watch: Watch) {
-        coroutineScope.launch {
-            watchManager.registerWatch(watch)
-            _finishActivity.postValue(true)
-        }
-    }
-
-    override fun onCleared() {
-        super.onCleared()
-        coroutineJob.cancel()
-    }
+  override fun onCleared() {
+    super.onCleared()
+    coroutineJob.cancel()
+  }
 }

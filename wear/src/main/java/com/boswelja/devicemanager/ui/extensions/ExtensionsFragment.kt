@@ -31,71 +31,74 @@ import timber.log.Timber
 
 class ExtensionsFragment : Fragment() {
 
-    private val viewModel: ExtensionsViewModel by viewModels()
+  private val viewModel: ExtensionsViewModel by viewModels()
 
-    private lateinit var binding: FragmentMainBinding
-    private val adapter by lazy {
-        ExtensionsAdapter {
-            when (it.id) {
-                BATTERY_SYNC_ITEM_ID -> tryUpdateBatteryStats()
-                PHONE_LOCKING_ITEM_ID -> tryLockPhone()
-                SETTINGS_ITEM_ID -> findNavController().navigate(ExtensionsFragmentDirections.toSettingsActivity())
-                ABOUT_APP_ITEM_ID -> findNavController().navigate(ExtensionsFragmentDirections.toAboutActivity())
-            }
-        }
+  private lateinit var binding: FragmentMainBinding
+  private val adapter by lazy {
+    ExtensionsAdapter {
+      when (it.id) {
+        BATTERY_SYNC_ITEM_ID -> tryUpdateBatteryStats()
+        PHONE_LOCKING_ITEM_ID -> tryLockPhone()
+        SETTINGS_ITEM_ID ->
+            findNavController().navigate(ExtensionsFragmentDirections.toSettingsActivity())
+        ABOUT_APP_ITEM_ID ->
+            findNavController().navigate(ExtensionsFragmentDirections.toAboutActivity())
+      }
     }
+  }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        binding = FragmentMainBinding.inflate(inflater, container, false)
-        return binding.root
-    }
+  override fun onCreateView(
+      inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+  ): View? {
+    binding = FragmentMainBinding.inflate(inflater, container, false)
+    return binding.root
+  }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        adapter.submitList(EXTENSIONS)
-        binding.recyclerView.apply {
-            layoutManager = WearableLinearLayoutManager(context, CurvingLayoutCallback(context))
-            isEdgeItemsCenteringEnabled = true
-            adapter = this@ExtensionsFragment.adapter
-        }
-        viewModel.phoneLockingEnabled.observe(viewLifecycleOwner) {
-            Timber.i("phoneLockingEnabled: $it")
-            setPhoneLockingEnabled(it)
-        }
-        viewModel.batterySyncEnabled.observe(viewLifecycleOwner) {
-            Timber.i("batterySyncEnabled: $it")
-            setBatterySyncEnabled(it)
-        }
-        viewModel.phoneBatteryPercent.observe(viewLifecycleOwner) {
-            Timber.i("phoneBatteryPercent: $it")
-            setBatteryPercent(it)
-        }
+  override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    adapter.submitList(EXTENSIONS)
+    binding.recyclerView.apply {
+      layoutManager = WearableLinearLayoutManager(context, CurvingLayoutCallback(context))
+      isEdgeItemsCenteringEnabled = true
+      adapter = this@ExtensionsFragment.adapter
     }
+    viewModel.phoneLockingEnabled.observe(viewLifecycleOwner) {
+      Timber.i("phoneLockingEnabled: $it")
+      setPhoneLockingEnabled(it)
+    }
+    viewModel.batterySyncEnabled.observe(viewLifecycleOwner) {
+      Timber.i("batterySyncEnabled: $it")
+      setBatterySyncEnabled(it)
+    }
+    viewModel.phoneBatteryPercent.observe(viewLifecycleOwner) {
+      Timber.i("phoneBatteryPercent: $it")
+      setBatteryPercent(it)
+    }
+  }
 
-    private fun tryUpdateBatteryStats() {
-        Intent(context, ActionService::class.java).apply {
-            putExtra(ActionService.EXTRA_ACTION, REQUEST_BATTERY_UPDATE_PATH)
-        }.also {
-            context?.startService(it)
-        }
-    }
+  private fun tryUpdateBatteryStats() {
+    Intent(context, ActionService::class.java)
+        .apply { putExtra(ActionService.EXTRA_ACTION, REQUEST_BATTERY_UPDATE_PATH) }
+        .also { context?.startService(it) }
+  }
 
-    private fun tryLockPhone() {
-        Intent(context, ActionService::class.java).apply {
-            putExtra(ActionService.EXTRA_ACTION, LOCK_PHONE_PATH)
-        }.also {
-            context?.startService(it)
-        }
-    }
+  private fun tryLockPhone() {
+    Intent(context, ActionService::class.java)
+        .apply { putExtra(ActionService.EXTRA_ACTION, LOCK_PHONE_PATH) }
+        .also { context?.startService(it) }
+  }
 
-    private fun setBatterySyncEnabled(batterySyncEnabled: Boolean) {
-        (adapter.currentList.first { it.id == BATTERY_SYNC_ITEM_ID } as Item.Extension).isEnabled.postValue(batterySyncEnabled)
-    }
+  private fun setBatterySyncEnabled(batterySyncEnabled: Boolean) {
+    (adapter.currentList.first { it.id == BATTERY_SYNC_ITEM_ID } as Item.Extension).isEnabled
+        .postValue(batterySyncEnabled)
+  }
 
-    private fun setBatteryPercent(batteryPercent: Int) {
-        (adapter.currentList.first { it.id == BATTERY_SYNC_ITEM_ID } as Item.Extension).extra.postValue(batteryPercent)
-    }
+  private fun setBatteryPercent(batteryPercent: Int) {
+    (adapter.currentList.first { it.id == BATTERY_SYNC_ITEM_ID } as Item.Extension).extra
+        .postValue(batteryPercent)
+  }
 
-    private fun setPhoneLockingEnabled(phoneLockingEnabled: Boolean) {
-        (adapter.currentList.first { it.id == PHONE_LOCKING_ITEM_ID } as Item.Extension).isEnabled.postValue(phoneLockingEnabled)
-    }
+  private fun setPhoneLockingEnabled(phoneLockingEnabled: Boolean) {
+    (adapter.currentList.first { it.id == PHONE_LOCKING_ITEM_ID } as Item.Extension).isEnabled
+        .postValue(phoneLockingEnabled)
+  }
 }

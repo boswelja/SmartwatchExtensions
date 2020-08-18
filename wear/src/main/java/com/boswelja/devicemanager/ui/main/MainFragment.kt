@@ -14,14 +14,14 @@ import androidx.navigation.fragment.findNavController
 
 class MainFragment : Fragment() {
 
-    private val viewModel: MainViewModel by viewModels()
+  private val viewModel: MainViewModel by viewModels()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        if (viewModel.isRegistered) {
-            findNavController().navigate(MainFragmentDirections.toExtensionsFragment())
-        } else {
-            findNavController().navigate(MainFragmentDirections.toSetupFragment())
-        }
+  override fun onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(savedInstanceState)
+    if (viewModel.isRegistered) {
+      findNavController().navigate(MainFragmentDirections.toExtensionsFragment())
+    } else {
+      findNavController().navigate(MainFragmentDirections.toSetupFragment())
     }
+  }
 }

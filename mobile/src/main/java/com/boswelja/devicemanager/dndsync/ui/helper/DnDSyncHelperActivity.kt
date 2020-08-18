@@ -17,15 +17,15 @@ import timber.log.Timber
 
 class DnDSyncHelperActivity : BaseToolbarActivity() {
 
-    private lateinit var binding: ActivityDndSyncHelperBinding
+  private lateinit var binding: ActivityDndSyncHelperBinding
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        Timber.d("onCreate() called")
+  override fun onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(savedInstanceState)
+    Timber.d("onCreate() called")
 
-        binding = ActivityDndSyncHelperBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-        setupToolbar(binding.toolbarLayout.toolbar, showUpButton = true)
-        binding.toolbarLayout.toolbar.setupWithNavController(findNavController(R.id.nav_host_fragment))
-    }
+    binding = ActivityDndSyncHelperBinding.inflate(layoutInflater)
+    setContentView(binding.root)
+    setupToolbar(binding.toolbarLayout.toolbar, showUpButton = true)
+    binding.toolbarLayout.toolbar.setupWithNavController(findNavController(R.id.nav_host_fragment))
+  }
 }

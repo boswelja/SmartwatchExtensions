@@ -24,27 +24,29 @@ import timber.log.Timber
 
 class ResultViewModel(application: Application) : AndroidViewModel(application) {
 
-    private val coroutineJob = Job()
-    private val coroutineScope = CoroutineScope(Dispatchers.IO + coroutineJob)
+  private val coroutineJob = Job()
+  private val coroutineScope = CoroutineScope(Dispatchers.IO + coroutineJob)
 
-    private val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(application)
-    private val watchManager = WatchManager.get(application)
+  private val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(application)
+  private val watchManager = WatchManager.get(application)
 
-    override fun onCleared() {
-        Timber.i("onCleared() called")
-        super.onCleared()
-        coroutineJob.cancel()
+  override fun onCleared() {
+    Timber.i("onCleared() called")
+    super.onCleared()
+    coroutineJob.cancel()
+  }
+
+  fun setSyncToWatch(isEnabled: Boolean) {
+    Timber.i("enableSyncToWatch() called")
+    coroutineScope.launch {
+      sharedPreferences.edit(commit = true) {
+        putBoolean(PreferenceKey.DND_SYNC_TO_WATCH_KEY, isEnabled)
+      }
+      watchManager.updatePreferenceOnWatch(PreferenceKey.DND_SYNC_TO_WATCH_KEY)
+      if (isEnabled) {
+        val context = getApplication<Application>()
+        Compat.startForegroundService(context, Intent(context, DnDLocalChangeService::class.java))
+      }
     }
-
-    fun setSyncToWatch(isEnabled: Boolean) {
-        Timber.i("enableSyncToWatch() called")
-        coroutineScope.launch {
-            sharedPreferences.edit(commit = true) { putBoolean(PreferenceKey.DND_SYNC_TO_WATCH_KEY, isEnabled) }
-            watchManager.updatePreferenceOnWatch(PreferenceKey.DND_SYNC_TO_WATCH_KEY)
-            if (isEnabled) {
-                val context = getApplication<Application>()
-                Compat.startForegroundService(context, Intent(context, DnDLocalChangeService::class.java))
-            }
-        }
-    }
+  }
 }

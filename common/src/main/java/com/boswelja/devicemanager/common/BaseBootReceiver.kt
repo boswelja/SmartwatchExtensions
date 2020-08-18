@@ -15,14 +15,14 @@ import androidx.preference.PreferenceManager
 
 abstract class BaseBootReceiver : BroadcastReceiver() {
 
-    lateinit var sharedPreferences: SharedPreferences
+  lateinit var sharedPreferences: SharedPreferences
 
-    abstract fun onBootCompleted(context: Context?)
+  abstract fun onBootCompleted(context: Context?)
 
-    override fun onReceive(context: Context?, intent: Intent?) {
-        if (intent?.action == Intent.ACTION_BOOT_COMPLETED) {
-            sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
-            onBootCompleted(context)
-        }
+  override fun onReceive(context: Context?, intent: Intent?) {
+    if (intent?.action == Intent.ACTION_BOOT_COMPLETED) {
+      sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
+      onBootCompleted(context)
     }
+  }
 }

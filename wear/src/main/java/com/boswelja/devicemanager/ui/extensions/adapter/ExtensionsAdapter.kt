@@ -17,35 +17,34 @@ import com.boswelja.devicemanager.ui.extensions.Item
 class ExtensionsAdapter(private val clickCallback: (item: Item) -> Unit) :
     ListAdapter<Item, RecyclerView.ViewHolder>(ItemDiffCallback()) {
 
-    override fun getItemViewType(position: Int): Int {
-        return when (val item = getItem(position)) {
-            is Item.Header -> item.id
-            else -> super.getItemViewType(position)
-        }
+  override fun getItemViewType(position: Int): Int {
+    return when (val item = getItem(position)
+    ) {
+      is Item.Header -> item.id
+      else -> super.getItemViewType(position)
     }
+  }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        return when (viewType) {
-            ExtensionItems.HEADER -> SectionHeaderViewHolder.from(parent)
-            else -> ExtensionViewHolder.from(parent)
-        }
+  override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+    return when (viewType) {
+      ExtensionItems.HEADER -> SectionHeaderViewHolder.from(parent)
+      else -> ExtensionViewHolder.from(parent)
     }
+  }
 
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        val context = holder.itemView.context
-        val item = getItem(position)
-        when (holder) {
-            is ExtensionViewHolder -> {
-                item as Item.Extension
-                holder.bind(item)
-                holder.itemView.setOnClickListener {
-                    clickCallback(item)
-                }
-            }
-            is SectionHeaderViewHolder -> {
-                val label = context.getString(item.textRes)
-                holder.bind(label, false)
-            }
-        }
+  override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+    val context = holder.itemView.context
+    val item = getItem(position)
+    when (holder) {
+      is ExtensionViewHolder -> {
+        item as Item.Extension
+        holder.bind(item)
+        holder.itemView.setOnClickListener { clickCallback(item) }
+      }
+      is SectionHeaderViewHolder -> {
+        val label = context.getString(item.textRes)
+        holder.bind(label, false)
+      }
     }
+  }
 }

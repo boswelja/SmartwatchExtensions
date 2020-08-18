@@ -17,40 +17,32 @@ import com.boswelja.devicemanager.databinding.ActivityAboutBinding
 
 class AboutActivity : AppCompatActivity() {
 
-    private lateinit var binding: ActivityAboutBinding
+  private lateinit var binding: ActivityAboutBinding
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        binding = ActivityAboutBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+  override fun onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(savedInstanceState)
+    binding = ActivityAboutBinding.inflate(layoutInflater)
+    setContentView(binding.root)
 
-        setupPlayStoreLink()
-        setupAppInfoLink()
-    }
+    setupPlayStoreLink()
+    setupAppInfoLink()
+  }
 
-    private fun setupPlayStoreLink() {
-        binding.openPlayStoreContainer.setOnClickListener {
-            openPlayStore()
-        }
-    }
+  private fun setupPlayStoreLink() {
+    binding.openPlayStoreContainer.setOnClickListener { openPlayStore() }
+  }
 
-    private fun setupAppInfoLink() {
-        binding.openAppInfoContainer.setOnClickListener {
-            openAppInfo()
-        }
-    }
+  private fun setupAppInfoLink() {
+    binding.openAppInfoContainer.setOnClickListener { openAppInfo() }
+  }
 
-    private fun openPlayStore() {
-        GooglePlayUtils.getPlayStoreIntent(this).also {
-            startActivity(it)
-        }
-    }
+  private fun openPlayStore() {
+    GooglePlayUtils.getPlayStoreIntent(this).also { startActivity(it) }
+  }
 
-    private fun openAppInfo() {
-        Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
-            data = Uri.fromParts("package", packageName, null)
-        }.also {
-            startActivity(it)
-        }
-    }
+  private fun openAppInfo() {
+    Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+        .apply { data = Uri.fromParts("package", packageName, null) }
+        .also { startActivity(it) }
+  }
 }

@@ -19,22 +19,23 @@ import com.boswelja.devicemanager.service.ActionService
 
 class LockPhoneComplicationProvider : BaseComplicationProviderService() {
 
-    override fun onCreateComplication(complicationId: Int, type: Int, manager: ComplicationManager?) {
-        if (type != ComplicationData.TYPE_SHORT_TEXT) {
-            manager?.noUpdateRequired(complicationId)
-            return
-        }
+  override fun onCreateComplication(complicationId: Int, type: Int, manager: ComplicationManager?) {
+    if (type != ComplicationData.TYPE_SHORT_TEXT) {
+      manager?.noUpdateRequired(complicationId)
+      return
+    }
 
-        val intent = Intent(this, ActionService::class.java)
-        intent.putExtra(ActionService.EXTRA_ACTION, References.LOCK_PHONE_PATH)
-        val pendingIntent = PendingIntent.getService(this, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT)
+    val intent = Intent(this, ActionService::class.java)
+    intent.putExtra(ActionService.EXTRA_ACTION, References.LOCK_PHONE_PATH)
+    val pendingIntent = PendingIntent.getService(this, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT)
 
-        val complicationData = ComplicationData.Builder(type)
+    val complicationData =
+        ComplicationData.Builder(type)
             .setIcon(Icon.createWithResource(this, R.drawable.ic_phone_lock))
             .setShortText(ComplicationText.plainText(getString(R.string.lock_phone_label)))
             .setTapAction(pendingIntent)
             .build()
 
-        manager?.updateComplicationData(complicationId, complicationData)
-    }
+    manager?.updateComplicationData(complicationId, complicationData)
+  }
 }

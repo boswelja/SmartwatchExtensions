@@ -19,40 +19,43 @@ import com.boswelja.devicemanager.common.PreferenceKey.PHONE_LOCKING_ENABLED_KEY
 
 class ExtensionsViewModel(application: Application) : AndroidViewModel(application) {
 
-    private val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(application)
-    private val preferenceChangeListener = SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
+  private val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(application)
+  private val preferenceChangeListener =
+      SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
         when (key) {
-            PHONE_LOCKING_ENABLED_KEY ->
-                _phoneLockingEnabled.postValue(sharedPreferences.getBoolean(key, false))
-            BATTERY_SYNC_ENABLED_KEY ->
-                _batterySyncEnabled.postValue(sharedPreferences.getBoolean(key, false))
-            BATTERY_PERCENT_KEY ->
-                _phoneBatteryPercent.postValue(sharedPreferences.getInt(key, 0))
+          PHONE_LOCKING_ENABLED_KEY ->
+              _phoneLockingEnabled.postValue(sharedPreferences.getBoolean(key, false))
+          BATTERY_SYNC_ENABLED_KEY ->
+              _batterySyncEnabled.postValue(sharedPreferences.getBoolean(key, false))
+          BATTERY_PERCENT_KEY -> _phoneBatteryPercent.postValue(sharedPreferences.getInt(key, 0))
         }
-    }
+      }
 
-    private val _phoneConnected = MutableLiveData(false)
-    val phoneConnected: LiveData<Boolean>
-        get() = _phoneConnected
+  private val _phoneConnected = MutableLiveData(false)
+  val phoneConnected: LiveData<Boolean>
+    get() = _phoneConnected
 
-    private val _phoneLockingEnabled = MutableLiveData(sharedPreferences.getBoolean(PHONE_LOCKING_ENABLED_KEY, false))
-    val phoneLockingEnabled: LiveData<Boolean>
-        get() = _phoneLockingEnabled
+  private val _phoneLockingEnabled =
+      MutableLiveData(sharedPreferences.getBoolean(PHONE_LOCKING_ENABLED_KEY, false))
+  val phoneLockingEnabled: LiveData<Boolean>
+    get() = _phoneLockingEnabled
 
-    private val _batterySyncEnabled = MutableLiveData(sharedPreferences.getBoolean(BATTERY_SYNC_ENABLED_KEY, false))
-    val batterySyncEnabled: LiveData<Boolean>
-        get() = _batterySyncEnabled
+  private val _batterySyncEnabled =
+      MutableLiveData(sharedPreferences.getBoolean(BATTERY_SYNC_ENABLED_KEY, false))
+  val batterySyncEnabled: LiveData<Boolean>
+    get() = _batterySyncEnabled
 
-    private val _phoneBatteryPercent = MutableLiveData(sharedPreferences.getInt(BATTERY_PERCENT_KEY, 0))
-    val phoneBatteryPercent: LiveData<Int>
-        get() = _phoneBatteryPercent
+  private val _phoneBatteryPercent =
+      MutableLiveData(sharedPreferences.getInt(BATTERY_PERCENT_KEY, 0))
+  val phoneBatteryPercent: LiveData<Int>
+    get() = _phoneBatteryPercent
 
-    init {
-        sharedPreferences.registerOnSharedPreferenceChangeListener(preferenceChangeListener)
-    }
+  init {
+    sharedPreferences.registerOnSharedPreferenceChangeListener(preferenceChangeListener)
+  }
 
-    override fun onCleared() {
-        super.onCleared()
-        sharedPreferences.unregisterOnSharedPreferenceChangeListener(preferenceChangeListener)
-    }
+  override fun onCleared() {
+    super.onCleared()
+    sharedPreferences.unregisterOnSharedPreferenceChangeListener(preferenceChangeListener)
+  }
 }

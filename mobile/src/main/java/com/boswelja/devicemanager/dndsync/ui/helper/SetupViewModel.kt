@@ -20,38 +20,39 @@ import timber.log.Timber
 
 class SetupViewModel(application: Application) : AndroidViewModel(application) {
 
-    private val watchManager = WatchManager.get(application)
-    private val watchId = watchManager.connectedWatch.value!!.id
+  private val watchManager = WatchManager.get(application)
+  private val watchId = watchManager.connectedWatch.value!!.id
 
-    private val messageClient = Wearable.getMessageClient(application)
-    private val messageListener = MessageClient.OnMessageReceivedListener {
+  private val messageClient = Wearable.getMessageClient(application)
+  private val messageListener =
+      MessageClient.OnMessageReceivedListener {
         when (it.path) {
-            REQUEST_INTERRUPT_FILTER_ACCESS_STATUS_PATH -> {
-                val hasNotiPolicyAccess = Boolean.fromByteArray(it.data)
-                _hasNotiPolicyAccess.postValue(hasNotiPolicyAccess)
-            }
+          REQUEST_INTERRUPT_FILTER_ACCESS_STATUS_PATH -> {
+            val hasNotiPolicyAccess = Boolean.fromByteArray(it.data)
+            _hasNotiPolicyAccess.postValue(hasNotiPolicyAccess)
+          }
         }
-    }
+      }
 
-    private val _hasNotiPolicyAccess = MutableLiveData<Boolean?>(null)
-    val hasNotiPolicyAccess: LiveData<Boolean?>
-        get() = _hasNotiPolicyAccess
+  private val _hasNotiPolicyAccess = MutableLiveData<Boolean?>(null)
+  val hasNotiPolicyAccess: LiveData<Boolean?>
+    get() = _hasNotiPolicyAccess
 
-    init {
-        messageClient.addListener(messageListener)
-    }
+  init {
+    messageClient.addListener(messageListener)
+  }
 
-    override fun onCleared() {
-        Timber.i("onCleared() called")
-        super.onCleared()
-        messageClient.removeListener(messageListener)
-    }
+  override fun onCleared() {
+    Timber.i("onCleared() called")
+    super.onCleared()
+    messageClient.removeListener(messageListener)
+  }
 
-    fun requestCheckPermission() {
-        messageClient.sendMessage(watchId, REQUEST_INTERRUPT_FILTER_ACCESS_STATUS_PATH, null)
-    }
+  fun requestCheckPermission() {
+    messageClient.sendMessage(watchId, REQUEST_INTERRUPT_FILTER_ACCESS_STATUS_PATH, null)
+  }
 
-    fun permissionRequestHandled() {
-        _hasNotiPolicyAccess.postValue(null)
-    }
+  fun permissionRequestHandled() {
+    _hasNotiPolicyAccess.postValue(null)
+  }
 }

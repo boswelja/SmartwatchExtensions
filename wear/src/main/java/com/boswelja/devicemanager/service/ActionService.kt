@@ -23,58 +23,53 @@ import com.google.android.gms.wearable.Wearable
 
 class ActionService : IntentService("ActionService") {
 
-    private lateinit var messageClient: MessageClient
-    private lateinit var sharedPreferences: SharedPreferences
-    private lateinit var phoneId: String
+  private lateinit var messageClient: MessageClient
+  private lateinit var sharedPreferences: SharedPreferences
+  private lateinit var phoneId: String
 
-    override fun onCreate() {
-        super.onCreate()
-        messageClient = Wearable.getMessageClient(this)
-        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
-        phoneId = sharedPreferences.getString(PHONE_ID_KEY, "") ?: ""
-    }
+  override fun onCreate() {
+    super.onCreate()
+    messageClient = Wearable.getMessageClient(this)
+    sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
+    phoneId = sharedPreferences.getString(PHONE_ID_KEY, "") ?: ""
+  }
 
-    override fun onHandleIntent(intent: Intent?) {
-        val action = intent?.getStringExtra(EXTRA_ACTION)
+  override fun onHandleIntent(intent: Intent?) {
+    val action = intent?.getStringExtra(EXTRA_ACTION)
 
-        if (phoneId.isNotEmpty()) {
-            when (action) {
-                LOCK_PHONE_PATH -> {
-                    if (sharedPreferences.getBoolean(PreferenceKey.PHONE_LOCKING_ENABLED_KEY, false)) {
-                        sendMessage(
-                            phoneId,
-                            action,
-                            getString(R.string.lock_phone_success_message),
-                            getString(R.string.lock_phone_failed_message)
-                        )
-                    }
-                }
-                REQUEST_BATTERY_UPDATE_PATH -> {
-                    if (sharedPreferences.getBoolean(BATTERY_SYNC_ENABLED_KEY, false)) {
-                        sendMessage(
-                            phoneId,
-                            action,
-                            getString(R.string.battery_sync_force_sync_success),
-                            getString(R.string.battery_sync_force_sync_fail)
-                        )
-                    }
-                }
-            }
+    if (phoneId.isNotEmpty()) {
+      when (action) {
+        LOCK_PHONE_PATH -> {
+          if (sharedPreferences.getBoolean(PreferenceKey.PHONE_LOCKING_ENABLED_KEY, false)) {
+            sendMessage(
+                phoneId,
+                action,
+                getString(R.string.lock_phone_success_message),
+                getString(R.string.lock_phone_failed_message))
+          }
         }
+        REQUEST_BATTERY_UPDATE_PATH -> {
+          if (sharedPreferences.getBoolean(BATTERY_SYNC_ENABLED_KEY, false)) {
+            sendMessage(
+                phoneId,
+                action,
+                getString(R.string.battery_sync_force_sync_success),
+                getString(R.string.battery_sync_force_sync_fail))
+          }
+        }
+      }
     }
+  }
 
-    private fun sendMessage(nodeId: String, action: String, successMessage: String, failMessage: String) {
-        messageClient
-            .sendMessage(nodeId, action, null)
-            .addOnSuccessListener {
-                ConfirmationActivityHandler.successAnimation(this, successMessage)
-            }
-            .addOnFailureListener {
-                ConfirmationActivityHandler.failAnimation(this, failMessage)
-            }
-    }
+  private fun sendMessage(
+      nodeId: String, action: String, successMessage: String, failMessage: String
+  ) {
+    messageClient.sendMessage(nodeId, action, null)
+        .addOnSuccessListener { ConfirmationActivityHandler.successAnimation(this, successMessage) }
+        .addOnFailureListener { ConfirmationActivityHandler.failAnimation(this, failMessage) }
+  }
 
-    companion object {
-        const val EXTRA_ACTION = "action"
-    }
+  companion object {
+    const val EXTRA_ACTION = "action"
+  }
 }

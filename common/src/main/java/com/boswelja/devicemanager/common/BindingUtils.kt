@@ -17,18 +17,20 @@ import androidx.databinding.BindingAdapter
 
 @BindingAdapter("srcRes")
 fun ImageView.setImageRes(@DrawableRes drawableRes: Int) {
-    if (drawableRes != 0) setImageResource(drawableRes)
+  if (drawableRes != 0) setImageResource(drawableRes)
 }
+
 @BindingAdapter("srcDrawable")
 fun ImageView.setDrawable(drawable: Drawable?) {
-    setImageDrawable(drawable)
+  setImageDrawable(drawable)
 }
+
 @BindingAdapter("srcBitmap")
 fun ImageView.setBitmap(bitmap: Bitmap?) {
-    setImageBitmap(bitmap)
+  setImageBitmap(bitmap)
 }
 
 @BindingAdapter("textRes")
 fun TextView.setTextRes(@StringRes stringRes: Int) {
-    if (stringRes != 0) setText(stringRes)
+  if (stringRes != 0) setText(stringRes)
 }

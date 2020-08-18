@@ -21,77 +21,68 @@ import java.util.Locale
 
 class AppPackageInfoViewModel(private val messageClient: MessageClient) : ViewModel() {
 
-    private val dateFormatter = SimpleDateFormat("EE, dd MMM yyyy, h:mm aa", Locale.getDefault())
+  private val dateFormatter = SimpleDateFormat("EE, dd MMM yyyy, h:mm aa", Locale.getDefault())
 
-    private val _finishActivity = MutableLiveData(false)
-    val finishActivity: LiveData<Boolean>
-        get() = _finishActivity
+  private val _finishActivity = MutableLiveData(false)
+  val finishActivity: LiveData<Boolean>
+    get() = _finishActivity
 
-    var watchId: String? = null
+  var watchId: String? = null
 
-    val appInfo = MutableLiveData<AppPackageInfo>()
+  val appInfo = MutableLiveData<AppPackageInfo>()
 
-    val appName = Transformations.map(appInfo) { it.packageLabel }
+  val appName = Transformations.map(appInfo) { it.packageLabel }
 
-    val canOpen = Transformations.map(appInfo) { it.hasLaunchActivity }
-    val canUninstall = Transformations.map(appInfo) {
+  val canOpen = Transformations.map(appInfo) { it.hasLaunchActivity }
+  val canUninstall =
+      Transformations.map(appInfo) {
         (it.packageName != BuildConfig.APPLICATION_ID) && !it.isSystemApp
-    }
+      }
 
-    val shouldShowInstallTime = Transformations.map(appInfo) { !it.isSystemApp }
-    val shouldShowLastUpdateTime = Transformations.map(appInfo) {
-        it.installTime != it.lastUpdateTime
-    }
-    val installTime = Transformations.map(appInfo) {
-        dateFormatter.format(it.installTime)
-    }
-    val lastUpdateTime = Transformations.map(appInfo) {
-        dateFormatter.format(it.lastUpdateTime)
-    }
+  val shouldShowInstallTime = Transformations.map(appInfo) { !it.isSystemApp }
+  val shouldShowLastUpdateTime =
+      Transformations.map(appInfo) { it.installTime != it.lastUpdateTime }
+  val installTime = Transformations.map(appInfo) { dateFormatter.format(it.installTime) }
+  val lastUpdateTime = Transformations.map(appInfo) { dateFormatter.format(it.lastUpdateTime) }
 
-    val versionText = Transformations.map(appInfo) {
+  val versionText =
+      Transformations.map(appInfo) {
         if (it.versionName.isNullOrBlank()) {
-            it.versionCode.toString()
+          it.versionCode.toString()
         } else {
-            it.versionName
+          it.versionName
         }
-    }
+      }
 
-    val appIcon = Transformations.map(appInfo) {
-        it.packageIcon?.bitmap
-    }
+  val appIcon = Transformations.map(appInfo) { it.packageIcon?.bitmap }
 
-    /**
-     * Request uninstalling an app from the connected watch.
-     */
-    fun sendUninstallRequestMessage() {
-        messageClient.sendMessage(
-            watchId!!, References.REQUEST_UNINSTALL_PACKAGE,
-            appInfo.value!!.packageName.toByteArray(Charsets.UTF_8)
-        )
-        _finishActivity.postValue(true)
-    }
+  /** Request uninstalling an app from the connected watch. */
+  fun sendUninstallRequestMessage() {
+    messageClient.sendMessage(
+        watchId!!,
+        References.REQUEST_UNINSTALL_PACKAGE,
+        appInfo.value!!.packageName.toByteArray(Charsets.UTF_8))
+    _finishActivity.postValue(true)
+  }
 
-    /**
-     * Request opening an app's launch activity on the connected watch.
-     */
-    fun sendOpenRequestMessage() {
-        messageClient.sendMessage(
-            watchId!!, References.REQUEST_OPEN_PACKAGE,
-            appInfo.value!!.packageName.toByteArray(Charsets.UTF_8)
-        )
-    }
+  /** Request opening an app's launch activity on the connected watch. */
+  fun sendOpenRequestMessage() {
+    messageClient.sendMessage(
+        watchId!!,
+        References.REQUEST_OPEN_PACKAGE,
+        appInfo.value!!.packageName.toByteArray(Charsets.UTF_8))
+  }
 }
 
 @Suppress("UNCHECKED_CAST")
 class AppPackageInfoViewModelFactory(private val messageClient: MessageClient) :
     ViewModelProvider.NewInstanceFactory() {
-    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-        return when (modelClass) {
-            AppPackageInfoViewModel::class -> {
-                AppPackageInfoViewModel(messageClient) as T
-            }
-            else -> super.create(modelClass)
-        }
+  override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+    return when (modelClass) {
+      AppPackageInfoViewModel::class -> {
+        AppPackageInfoViewModel(messageClient) as T
+      }
+      else -> super.create(modelClass)
     }
+  }
 }

@@ -21,41 +21,38 @@ import com.boswelja.devicemanager.ui.dndsync.helper.SetupFragmentDirections
 
 internal class SetupFragment : Fragment() {
 
-    private val viewModel: SetupViewModel by viewModels()
+  private val viewModel: SetupViewModel by viewModels()
 
-    private lateinit var binding: FragmentDndsyncHelperSetupBinding
+  private lateinit var binding: FragmentDndsyncHelperSetupBinding
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        binding = FragmentDndsyncHelperSetupBinding.inflate(inflater, container, false)
-        return binding.root
+  override fun onCreateView(
+      inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+  ): View? {
+    binding = FragmentDndsyncHelperSetupBinding.inflate(inflater, container, false)
+    return binding.root
+  }
+
+  override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    viewModel.hasNotiPolicyAccess.observe(viewLifecycleOwner) {
+      if (it != null) {
+        val action = SetupFragmentDirections.toResultFragment(it)
+        findNavController().navigate(action)
+        viewModel.permissionRequestHandled()
+      }
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        viewModel.hasNotiPolicyAccess.observe(viewLifecycleOwner) {
-            if (it != null) {
-                val action = SetupFragmentDirections.toResultFragment(it)
-                findNavController().navigate(action)
-                viewModel.permissionRequestHandled()
-            }
-        }
-
-        binding.stepRecyclerview.adapter =
-            StringAdapter(resources.getStringArray(R.array.interrupt_filter_sync_to_watch_steps))
-        binding.nextButton.setOnClickListener {
-            setLoading(true)
-            viewModel.requestCheckPermission()
-        }
+    binding.stepRecyclerview.adapter =
+        StringAdapter(resources.getStringArray(R.array.interrupt_filter_sync_to_watch_steps))
+    binding.nextButton.setOnClickListener {
+      setLoading(true)
+      viewModel.requestCheckPermission()
     }
+  }
 
-    private fun setLoading(isLoading: Boolean) {
-        binding.apply {
-            if (isLoading) progressBar.show()
-            else progressBar.hide()
-            nextButton.isEnabled = !isLoading
-        }
+  private fun setLoading(isLoading: Boolean) {
+    binding.apply {
+      if (isLoading) progressBar.show() else progressBar.hide()
+      nextButton.isEnabled = !isLoading
     }
+  }
 }

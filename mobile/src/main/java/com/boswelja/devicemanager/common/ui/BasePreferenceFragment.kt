@@ -16,19 +16,21 @@ import androidx.recyclerview.widget.RecyclerView
 import com.boswelja.devicemanager.R
 
 /**
- * A [PreferenceFragmentCompat] that automatically adjusts it's [RecyclerView] properties
- * to fit the app theme better, and also automatically initializes a [SharedPreferences] instance.
+ * A [PreferenceFragmentCompat] that automatically adjusts it's [RecyclerView] properties to fit the
+ * app theme better, and also automatically initializes a [SharedPreferences] instance.
  */
 abstract class BasePreferenceFragment : PreferenceFragmentCompat() {
 
-    protected val sharedPreferences: SharedPreferences
-        get() = preferenceManager.sharedPreferences
+  protected val sharedPreferences: SharedPreferences
+    get() = preferenceManager.sharedPreferences
 
-    override fun onCreateRecyclerView(inflater: LayoutInflater?, parent: ViewGroup?, savedInstanceState: Bundle?): RecyclerView {
-        val padding = resources.getDimension(R.dimen.recyclerview_vertical_padding)
-        return super.onCreateRecyclerView(inflater, parent, savedInstanceState).apply {
-            clipToPadding = false
-            setPadding(0, padding.toInt(), 0, padding.toInt())
-        }
+  override fun onCreateRecyclerView(
+      inflater: LayoutInflater?, parent: ViewGroup?, savedInstanceState: Bundle?
+  ): RecyclerView {
+    val padding = resources.getDimension(R.dimen.recyclerview_vertical_padding)
+    return super.onCreateRecyclerView(inflater, parent, savedInstanceState).apply {
+      clipToPadding = false
+      setPadding(0, padding.toInt(), 0, padding.toInt())
     }
+  }
 }

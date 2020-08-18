@@ -16,14 +16,12 @@ import com.boswelja.devicemanager.databinding.FragmentLoadingBinding
 
 class LoadingFragment : Fragment() {
 
-    private lateinit var binding: FragmentLoadingBinding
+  private lateinit var binding: FragmentLoadingBinding
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        binding = FragmentLoadingBinding.inflate(inflater, container, false)
-        return binding.root
-    }
+  override fun onCreateView(
+      inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+  ): View? {
+    binding = FragmentLoadingBinding.inflate(inflater, container, false)
+    return binding.root
+  }
 }

@@ -8,10 +8,10 @@
 package com.boswelja.devicemanager.watchmanager
 
 enum class WatchStatus {
-    UNKNOWN,
-    ERROR,
-    MISSING_APP,
-    NOT_REGISTERED,
-    DISCONNECTED,
-    CONNECTED
+  UNKNOWN,
+  ERROR,
+  MISSING_APP,
+  NOT_REGISTERED,
+  DISCONNECTED,
+  CONNECTED
 }

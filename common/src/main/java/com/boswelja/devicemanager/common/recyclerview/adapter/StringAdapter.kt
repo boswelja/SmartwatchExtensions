@@ -11,15 +11,16 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.boswelja.devicemanager.common.recyclerview.item.OneLineViewHolder
 
-class StringAdapter(private val strings: Array<String>) : RecyclerView.Adapter<OneLineViewHolder>() {
+class StringAdapter(private val strings: Array<String>) :
+    RecyclerView.Adapter<OneLineViewHolder>() {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): OneLineViewHolder {
-        return OneLineViewHolder.from(parent)
-    }
+  override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): OneLineViewHolder {
+    return OneLineViewHolder.from(parent)
+  }
 
-    override fun getItemCount(): Int = strings.count()
+  override fun getItemCount(): Int = strings.count()
 
-    override fun onBindViewHolder(holder: OneLineViewHolder, position: Int) {
-        holder.bind(strings[position])
-    }
+  override fun onBindViewHolder(holder: OneLineViewHolder, position: Int) {
+    holder.bind(strings[position])
+  }
 }

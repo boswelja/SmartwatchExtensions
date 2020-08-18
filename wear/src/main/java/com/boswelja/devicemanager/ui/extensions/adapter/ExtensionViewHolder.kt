@@ -18,32 +18,32 @@ import timber.log.Timber
 class ExtensionViewHolder(private val binding: RecyclerviewItemIconOneLineBinding) :
     IconOneLineViewHolder(binding) {
 
-    fun bind(item: Item.Extension) {
-        val context = itemView.context
-        val lifecycleOwner = context as LifecycleOwner
-        item.isEnabled.observe(lifecycleOwner) {
-            Timber.i("Setting ${item.id} enabled to $it")
-            itemView.isEnabled = it
-            if (!it) binding.text.text = context.getString(item.disabledTextRes)
-            else if (item.extra.value!! >= 0) binding.text.text = context.getString(item.textRes, item.extra.value)
-            else binding.text.text = context.getString(item.textRes)
-        }
-        item.extra.observe(lifecycleOwner) {
-            if (item.isEnabled.value == true && it >= 0) {
-                Timber.i("Setting ${item.id} extra to $it")
-                binding.text.text = context.getString(item.textRes, it)
-                binding.icon.setImageLevel(it)
-            }
-        }
-        binding.icon.setImageResource(item.iconRes)
+  fun bind(item: Item.Extension) {
+    val context = itemView.context
+    val lifecycleOwner = context as LifecycleOwner
+    item.isEnabled.observe(lifecycleOwner) {
+      Timber.i("Setting ${item.id} enabled to $it")
+      itemView.isEnabled = it
+      if (!it) binding.text.text = context.getString(item.disabledTextRes)
+      else if (item.extra.value!! >= 0)
+          binding.text.text = context.getString(item.textRes, item.extra.value)
+      else binding.text.text = context.getString(item.textRes)
     }
+    item.extra.observe(lifecycleOwner) {
+      if (item.isEnabled.value == true && it >= 0) {
+        Timber.i("Setting ${item.id} extra to $it")
+        binding.text.text = context.getString(item.textRes, it)
+        binding.icon.setImageLevel(it)
+      }
+    }
+    binding.icon.setImageResource(item.iconRes)
+  }
 
-    companion object {
-        fun from(parent: ViewGroup): ExtensionViewHolder {
-            val layoutInflater = LayoutInflater.from(parent.context)
-            val binding = RecyclerviewItemIconOneLineBinding
-                .inflate(layoutInflater, parent, false)
-            return ExtensionViewHolder(binding)
-        }
+  companion object {
+    fun from(parent: ViewGroup): ExtensionViewHolder {
+      val layoutInflater = LayoutInflater.from(parent.context)
+      val binding = RecyclerviewItemIconOneLineBinding.inflate(layoutInflater, parent, false)
+      return ExtensionViewHolder(binding)
     }
+  }
 }

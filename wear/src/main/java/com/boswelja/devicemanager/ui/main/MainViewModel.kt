@@ -14,8 +14,8 @@ import com.boswelja.devicemanager.phoneconnectionmanager.References.PHONE_ID_KEY
 
 class MainViewModel(application: Application) : AndroidViewModel(application) {
 
-    private val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(application)
+  private val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(application)
 
-    val isRegistered: Boolean
-        get() = !sharedPreferences.getString(PHONE_ID_KEY, "").isNullOrBlank()
+  val isRegistered: Boolean
+    get() = !sharedPreferences.getString(PHONE_ID_KEY, "").isNullOrBlank()
 }

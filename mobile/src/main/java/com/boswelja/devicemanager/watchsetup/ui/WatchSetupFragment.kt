@@ -23,97 +23,94 @@ import com.boswelja.devicemanager.watchmanager.item.Watch
 
 class WatchSetupFragment : Fragment() {
 
-    private val adapter by lazy { WatchSetupAdapter { confirmRegisterWatch(it) } }
-    private val viewModel: WatchSetupViewModel by viewModels()
+  private val adapter by lazy { WatchSetupAdapter { confirmRegisterWatch(it) } }
+  private val viewModel: WatchSetupViewModel by viewModels()
 
-    private lateinit var binding: FragmentWatchSetupBinding
+  private lateinit var binding: FragmentWatchSetupBinding
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        binding = FragmentWatchSetupBinding.inflate(inflater, container, false)
-        return binding.root
+  override fun onCreateView(
+      inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+  ): View? {
+    binding = FragmentWatchSetupBinding.inflate(inflater, container, false)
+    return binding.root
+  }
+
+  override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    binding.refreshButton.setOnClickListener { viewModel.refreshAvailableWatches() }
+    binding.watchSetupRecyclerview.adapter = adapter
+
+    viewModel.availableWatches.observe(viewLifecycleOwner) {
+      if (it.isNullOrEmpty()) {
+        setHelpMessage(getString(R.string.register_watch_message_no_watches))
+      }
+      adapter.submitList(it)
     }
+    viewModel.isLoading.observe(viewLifecycleOwner) {
+      if (it) hideHelpMessage()
+      setLoading(it)
+    }
+    viewModel.finishActivity.observe(viewLifecycleOwner) { if (it) activity?.finish() }
+  }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        binding.refreshButton.setOnClickListener { viewModel.refreshAvailableWatches() }
-        binding.watchSetupRecyclerview.adapter = adapter
+  /**
+   * Sets whether the loading view should be shown.
+   * @param loading true if the loading view should be shown, false otherwise
+   */
+  private fun setLoading(loading: Boolean) {
+    binding.apply {
+      refreshButton.isEnabled = !loading
+      watchSetupRecyclerview.isEnabled = !loading
+      progressBar.visibility =
+          if (loading) {
+            ProgressBar.VISIBLE
+          } else {
+            ProgressBar.INVISIBLE
+          }
+    }
+  }
 
-        viewModel.availableWatches.observe(viewLifecycleOwner) {
-            if (it.isNullOrEmpty()) {
-                setHelpMessage(getString(R.string.register_watch_message_no_watches))
+  /**
+   * Sets help text to aid the user if anything goes wrong.
+   * @param text The help text to show.
+   */
+  private fun setHelpMessage(text: String) {
+    binding.apply {
+      helpTextView.visibility = AppCompatTextView.VISIBLE
+      watchSetupRecyclerview.isEnabled = false
+      helpTextView.text = text
+    }
+  }
+
+  /** Removes the help text. */
+  private fun hideHelpMessage() {
+    binding.apply {
+      helpTextView.visibility = AppCompatTextView.INVISIBLE
+      watchSetupRecyclerview.isEnabled = true
+    }
+  }
+
+  /**
+   * Asks the user whether they want to register a given [Watch].
+   * @param watch The [Watch] in question.
+   */
+  private fun confirmRegisterWatch(watch: Watch) {
+    AlertDialog.Builder(requireContext())
+        .apply {
+          if (watch.status != WatchStatus.MISSING_APP) {
+            setTitle(getString(R.string.register_watch_dialog_title, watch.name))
+            setMessage(getString(R.string.register_watch_dialog_message, watch.name))
+            setPositiveButton(R.string.dialog_button_yes) { _, _ -> viewModel.registerWatch(watch) }
+            setNegativeButton(R.string.dialog_button_no) { dialogInterface, _ ->
+              dialogInterface.cancel()
             }
-            adapter.submitList(it)
-        }
-        viewModel.isLoading.observe(viewLifecycleOwner) {
-            if (it) hideHelpMessage()
-            setLoading(it)
-        }
-        viewModel.finishActivity.observe(viewLifecycleOwner) {
-            if (it) activity?.finish()
-        }
-    }
-
-    /**
-     * Sets whether the loading view should be shown.
-     * @param loading true if the loading view should be shown, false otherwise
-     */
-    private fun setLoading(loading: Boolean) {
-        binding.apply {
-            refreshButton.isEnabled = !loading
-            watchSetupRecyclerview.isEnabled = !loading
-            progressBar.visibility = if (loading) {
-                ProgressBar.VISIBLE
-            } else {
-                ProgressBar.INVISIBLE
+          } else {
+            setTitle(R.string.missing_app_dialog_title)
+            setMessage(getString(R.string.missing_app_dialog_message, watch.name))
+            setPositiveButton(R.string.dialog_button_ok) { dialogInterface, _ ->
+              dialogInterface.cancel()
             }
+          }
         }
-    }
-
-    /**
-     * Sets help text to aid the user if anything goes wrong.
-     * @param text The help text to show.
-     */
-    private fun setHelpMessage(text: String) {
-        binding.apply {
-            helpTextView.visibility = AppCompatTextView.VISIBLE
-            watchSetupRecyclerview.isEnabled = false
-            helpTextView.text = text
-        }
-    }
-
-    /**
-     * Removes the help text.
-     */
-    private fun hideHelpMessage() {
-        binding.apply {
-            helpTextView.visibility = AppCompatTextView.INVISIBLE
-            watchSetupRecyclerview.isEnabled = true
-        }
-    }
-
-    /**
-     * Asks the user whether they want to register a given [Watch].
-     * @param watch The [Watch] in question.
-     */
-    private fun confirmRegisterWatch(watch: Watch) {
-        AlertDialog.Builder(requireContext()).apply {
-            if (watch.status != WatchStatus.MISSING_APP) {
-                setTitle(getString(R.string.register_watch_dialog_title, watch.name))
-                setMessage(getString(R.string.register_watch_dialog_message, watch.name))
-                setPositiveButton(R.string.dialog_button_yes) { _, _ ->
-                    viewModel.registerWatch(watch)
-                }
-                setNegativeButton(R.string.dialog_button_no) { dialogInterface, _ ->
-                    dialogInterface.cancel()
-                }
-            } else {
-                setTitle(R.string.missing_app_dialog_title)
-                setMessage(getString(R.string.missing_app_dialog_message, watch.name))
-                setPositiveButton(R.string.dialog_button_ok) { dialogInterface, _ ->
-                    dialogInterface.cancel()
-                }
-            }
-        }.also {
-            it.show()
-        }
-    }
+        .also { it.show() }
+  }
 }

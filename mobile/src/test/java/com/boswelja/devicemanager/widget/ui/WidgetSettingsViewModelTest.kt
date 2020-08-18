@@ -26,46 +26,47 @@ import org.robolectric.annotation.Config
 @Config(sdk = [Build.VERSION_CODES.Q])
 class WidgetSettingsViewModelTest {
 
-    @get:Rule
-    val instantExecutorRule = InstantTaskExecutorRule()
+  @get:Rule val instantExecutorRule = InstantTaskExecutorRule()
 
-    private lateinit var viewModel: WidgetSettingsViewModel
+  private lateinit var viewModel: WidgetSettingsViewModel
 
-    @Before
-    fun setUp() {
-        viewModel = WidgetSettingsViewModel(ApplicationProvider.getApplicationContext())
+  @Before
+  fun setUp() {
+    viewModel = WidgetSettingsViewModel(ApplicationProvider.getApplicationContext())
+  }
+
+  @Test
+  fun `Toggling widget background preference updates LiveData correctly`() {
+    val sharedPreferences =
+        PreferenceManager.getDefaultSharedPreferences(ApplicationProvider.getApplicationContext())
+    sharedPreferences.edit(commit = true) {
+      putBoolean(AppSettingsFragment.SHOW_WIDGET_BACKGROUND_KEY, false)
     }
+    viewModel.widgetBackgroundVisible.getOrAwaitValue { assertThat(it).isFalse() }
 
-    @Test
-    fun `Toggling widget background preference updates LiveData correctly`() {
-        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(ApplicationProvider.getApplicationContext())
-        sharedPreferences.edit(commit = true) { putBoolean(AppSettingsFragment.SHOW_WIDGET_BACKGROUND_KEY, false) }
-        viewModel.widgetBackgroundVisible.getOrAwaitValue {
-            assertThat(it).isFalse()
-        }
-
-        sharedPreferences.edit(commit = true) { putBoolean(AppSettingsFragment.SHOW_WIDGET_BACKGROUND_KEY, true) }
-        viewModel.widgetBackgroundVisible.getOrAwaitValue {
-            assertThat(it).isTrue()
-        }
+    sharedPreferences.edit(commit = true) {
+      putBoolean(AppSettingsFragment.SHOW_WIDGET_BACKGROUND_KEY, true)
     }
+    viewModel.widgetBackgroundVisible.getOrAwaitValue { assertThat(it).isTrue() }
+  }
 
-    @Test
-    fun `Changing widget background opacity preference updates LiveData correctly`() {
-        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(ApplicationProvider.getApplicationContext())
-        sharedPreferences.edit(commit = true) { putInt(AppSettingsFragment.WIDGET_BACKGROUND_OPACITY_KEY, 0) }
-        viewModel.widgetBackgroundOpacity.getOrAwaitValue {
-            assertThat(it).isEqualTo(0)
-        }
-
-        sharedPreferences.edit(commit = true) { putInt(AppSettingsFragment.WIDGET_BACKGROUND_OPACITY_KEY, 100) }
-        viewModel.widgetBackgroundOpacity.getOrAwaitValue {
-            assertThat(it).isEqualTo(100)
-        }
-
-        sharedPreferences.edit(commit = true) { putInt(AppSettingsFragment.WIDGET_BACKGROUND_OPACITY_KEY, 50) }
-        viewModel.widgetBackgroundOpacity.getOrAwaitValue {
-            assertThat(it).isEqualTo(50)
-        }
+  @Test
+  fun `Changing widget background opacity preference updates LiveData correctly`() {
+    val sharedPreferences =
+        PreferenceManager.getDefaultSharedPreferences(ApplicationProvider.getApplicationContext())
+    sharedPreferences.edit(commit = true) {
+      putInt(AppSettingsFragment.WIDGET_BACKGROUND_OPACITY_KEY, 0)
     }
+    viewModel.widgetBackgroundOpacity.getOrAwaitValue { assertThat(it).isEqualTo(0) }
+
+    sharedPreferences.edit(commit = true) {
+      putInt(AppSettingsFragment.WIDGET_BACKGROUND_OPACITY_KEY, 100)
+    }
+    viewModel.widgetBackgroundOpacity.getOrAwaitValue { assertThat(it).isEqualTo(100) }
+
+    sharedPreferences.edit(commit = true) {
+      putInt(AppSettingsFragment.WIDGET_BACKGROUND_OPACITY_KEY, 50)
+    }
+    viewModel.widgetBackgroundOpacity.getOrAwaitValue { assertThat(it).isEqualTo(50) }
+  }
 }

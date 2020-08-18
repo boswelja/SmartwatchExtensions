@@ -26,30 +26,24 @@ import org.robolectric.annotation.Config
 @Config(sdk = [Build.VERSION_CODES.Q])
 class MainViewModelTest {
 
-    @get:Rule
-    val instantExecutorRule = InstantTaskExecutorRule()
+  @get:Rule val instantExecutorRule = InstantTaskExecutorRule()
 
-    private lateinit var viewModel: MainViewModel
+  private lateinit var viewModel: MainViewModel
 
-    @Before
-    fun setUp() {
-        viewModel = MainViewModel(ApplicationProvider.getApplicationContext())
-    }
+  @Before
+  fun setUp() {
+    viewModel = MainViewModel(ApplicationProvider.getApplicationContext())
+  }
 
-    @Test
-    fun `Changing message count updates LiveData correctly`() {
-        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(ApplicationProvider.getApplicationContext())
-        sharedPreferences.edit(commit = true) { putInt(MessageDatabase.MESSAGE_COUNT_KEY, 0) }
-        viewModel.messageCount.getOrAwaitValue {
-            assertThat(it).isEqualTo(0)
-        }
-        sharedPreferences.edit(commit = true) { putInt(MessageDatabase.MESSAGE_COUNT_KEY, 5) }
-        viewModel.messageCount.getOrAwaitValue {
-            assertThat(it).isEqualTo(5)
-        }
-        sharedPreferences.edit(commit = true) { putInt(MessageDatabase.MESSAGE_COUNT_KEY, 1) }
-        viewModel.messageCount.getOrAwaitValue {
-            assertThat(it).isEqualTo(1)
-        }
-    }
+  @Test
+  fun `Changing message count updates LiveData correctly`() {
+    val sharedPreferences =
+        PreferenceManager.getDefaultSharedPreferences(ApplicationProvider.getApplicationContext())
+    sharedPreferences.edit(commit = true) { putInt(MessageDatabase.MESSAGE_COUNT_KEY, 0) }
+    viewModel.messageCount.getOrAwaitValue { assertThat(it).isEqualTo(0) }
+    sharedPreferences.edit(commit = true) { putInt(MessageDatabase.MESSAGE_COUNT_KEY, 5) }
+    viewModel.messageCount.getOrAwaitValue { assertThat(it).isEqualTo(5) }
+    sharedPreferences.edit(commit = true) { putInt(MessageDatabase.MESSAGE_COUNT_KEY, 1) }
+    viewModel.messageCount.getOrAwaitValue { assertThat(it).isEqualTo(1) }
+  }
 }

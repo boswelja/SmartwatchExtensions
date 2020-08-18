@@ -18,51 +18,49 @@ import timber.log.Timber
  * An [AppCompatActivity] that handles setting up night mode and recreating on night mode changed.
  */
 abstract class BaseDayNightActivity :
-    AppCompatActivity(),
-    SharedPreferences.OnSharedPreferenceChangeListener {
+    AppCompatActivity(), SharedPreferences.OnSharedPreferenceChangeListener {
 
-    lateinit var sharedPreferences: SharedPreferences
+  lateinit var sharedPreferences: SharedPreferences
 
-    override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
-        when (key) {
-            DAYNIGHT_MODE_KEY -> {
-                Timber.i("$DAYNIGHT_MODE_KEY changed, recreating")
-                recreate()
-            }
-        }
+  override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
+    when (key) {
+      DAYNIGHT_MODE_KEY -> {
+        Timber.i("$DAYNIGHT_MODE_KEY changed, recreating")
+        recreate()
+      }
     }
+  }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
-        setNightMode()
-        super.onCreate(savedInstanceState)
-    }
+  override fun onCreate(savedInstanceState: Bundle?) {
+    sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
+    setNightMode()
+    super.onCreate(savedInstanceState)
+  }
 
-    override fun onStart() {
-        super.onStart()
-        sharedPreferences.registerOnSharedPreferenceChangeListener(this)
-    }
+  override fun onStart() {
+    super.onStart()
+    sharedPreferences.registerOnSharedPreferenceChangeListener(this)
+  }
 
-    override fun onStop() {
-        super.onStop()
-        sharedPreferences.unregisterOnSharedPreferenceChangeListener(this)
-    }
+  override fun onStop() {
+    super.onStop()
+    sharedPreferences.unregisterOnSharedPreferenceChangeListener(this)
+  }
 
-    /**
-     * Sets the default night mode state for the app.
-     * Fallback to [AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM] if any problem occurs.
-     */
-    private fun setNightMode() {
-        Timber.d("setNightMode() called")
-        val nightMode = sharedPreferences.getString(
-            DAYNIGHT_MODE_KEY,
-            AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM.toString()
-        )?.toInt()
-        AppCompatDelegate
-            .setDefaultNightMode(nightMode ?: AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
-    }
+  /**
+   * Sets the default night mode state for the app. Fallback to
+   * [AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM] if any problem occurs.
+   */
+  private fun setNightMode() {
+    Timber.d("setNightMode() called")
+    val nightMode =
+        sharedPreferences.getString(
+                DAYNIGHT_MODE_KEY, AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM.toString())
+            ?.toInt()
+    AppCompatDelegate.setDefaultNightMode(nightMode ?: AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+  }
 
-    companion object {
-        const val DAYNIGHT_MODE_KEY = "daynight_mode"
-    }
+  companion object {
+    const val DAYNIGHT_MODE_KEY = "daynight_mode"
+  }
 }

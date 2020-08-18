@@ -15,30 +15,32 @@ import androidx.room.RoomDatabase
 @Database(entities = [WatchBatteryStats::class], version = 2)
 abstract class WatchBatteryStatsDatabase : RoomDatabase() {
 
-    abstract fun batteryStatsDao(): BatteryStatsDao
+  abstract fun batteryStatsDao(): BatteryStatsDao
 
-    override fun close() {
-        INSTANCE = null
-        super.close()
-    }
+  override fun close() {
+    INSTANCE = null
+    super.close()
+  }
 
-    companion object {
-        private var INSTANCE: WatchBatteryStatsDatabase? = null
+  companion object {
+    private var INSTANCE: WatchBatteryStatsDatabase? = null
 
-        /**
-         * Gets an instance of [WatchBatteryStatsDatabase].
-         * @param context [Context].
-         * @return The [WatchBatteryStatsDatabase] instance.
-         */
-        fun get(context: Context): WatchBatteryStatsDatabase {
-            synchronized(this) {
-                if (INSTANCE == null) {
-                    INSTANCE = Room.databaseBuilder(context, WatchBatteryStatsDatabase::class.java, "battery-stats-db")
-                        .addMigrations(Migrations.MIGRATION_1_2)
-                        .build()
-                }
-                return INSTANCE!!
-            }
+    /**
+     * Gets an instance of [WatchBatteryStatsDatabase].
+     * @param context [Context].
+     * @return The [WatchBatteryStatsDatabase] instance.
+     */
+    fun get(context: Context): WatchBatteryStatsDatabase {
+      synchronized(this) {
+        if (INSTANCE == null) {
+          INSTANCE =
+              Room.databaseBuilder(
+                      context, WatchBatteryStatsDatabase::class.java, "battery-stats-db")
+                  .addMigrations(Migrations.MIGRATION_1_2)
+                  .build()
         }
+        return INSTANCE!!
+      }
     }
+  }
 }

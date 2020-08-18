@@ -20,35 +20,31 @@ import com.boswelja.devicemanager.ui.dndsync.helper.ResultFragmentArgs
 
 internal class ResultFragment : Fragment() {
 
-    private val args: ResultFragmentArgs by navArgs()
-    private val viewModel: ResultViewModel by viewModels()
+  private val args: ResultFragmentArgs by navArgs()
+  private val viewModel: ResultViewModel by viewModels()
 
-    private lateinit var binding: FragmentDndsyncHelperResultBinding
+  private lateinit var binding: FragmentDndsyncHelperResultBinding
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        binding = FragmentDndsyncHelperResultBinding.inflate(inflater, container, false)
-        return binding.root
+  override fun onCreateView(
+      inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+  ): View? {
+    binding = FragmentDndsyncHelperResultBinding.inflate(inflater, container, false)
+    return binding.root
+  }
+
+  override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    viewModel.setSyncToWatch(args.success)
+    binding.apply {
+      if (args.success) {
+        resultIndicator.setImageResource(R.drawable.wizard_ic_success)
+        resultTitle.setText(R.string.dnd_sync_helper_success_title)
+        resultStatus.setText(R.string.dnd_sync_helper_success_message)
+      } else {
+        resultIndicator.setImageResource(R.drawable.wizard_ic_fail)
+        resultTitle.setText(R.string.dnd_sync_helper_failed_title)
+        resultStatus.setText(R.string.dnd_sync_helper_failed_message)
+      }
+      finishButton.setOnClickListener { activity?.finish() }
     }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        viewModel.setSyncToWatch(args.success)
-        binding.apply {
-            if (args.success) {
-                resultIndicator.setImageResource(R.drawable.wizard_ic_success)
-                resultTitle.setText(R.string.dnd_sync_helper_success_title)
-                resultStatus.setText(R.string.dnd_sync_helper_success_message)
-            } else {
-                resultIndicator.setImageResource(R.drawable.wizard_ic_fail)
-                resultTitle.setText(R.string.dnd_sync_helper_failed_title)
-                resultStatus.setText(R.string.dnd_sync_helper_failed_message)
-            }
-            finishButton.setOnClickListener {
-                activity?.finish()
-            }
-        }
-    }
+  }
 }

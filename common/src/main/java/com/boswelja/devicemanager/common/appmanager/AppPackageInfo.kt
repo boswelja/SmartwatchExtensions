@@ -33,67 +33,68 @@ data class AppPackageInfo(
     val requestedPermissions: Array<String>?
 ) : Serializable {
 
-    constructor(packageManager: PackageManager, packageInfo: PackageInfo) : this(
-        SerializableBitmap(packageManager.getApplicationIcon(packageInfo.packageName).toBitmap()),
-        PackageInfoCompat.getLongVersionCode(packageInfo),
-        packageInfo.versionName,
-        packageInfo.packageName,
-        packageManager.getApplicationLabel(packageInfo.applicationInfo).toString(),
-        (packageInfo.applicationInfo?.flags?.and((ApplicationInfo.FLAG_SYSTEM or ApplicationInfo.FLAG_UPDATED_SYSTEM_APP))) != 0,
-        packageManager.getLaunchIntentForPackage(packageInfo.packageName) != null,
-        packageInfo.firstInstallTime,
-        packageInfo.lastUpdateTime,
-        packageInfo.requestedPermissions
-    )
+  constructor(packageManager: PackageManager, packageInfo: PackageInfo) : this(
+      SerializableBitmap(packageManager.getApplicationIcon(packageInfo.packageName).toBitmap()),
+      PackageInfoCompat.getLongVersionCode(packageInfo),
+      packageInfo.versionName,
+      packageInfo.packageName,
+      packageManager.getApplicationLabel(packageInfo.applicationInfo).toString(),
+      (packageInfo.applicationInfo
+          ?.flags
+          ?.and((ApplicationInfo.FLAG_SYSTEM or ApplicationInfo.FLAG_UPDATED_SYSTEM_APP))) != 0,
+      packageManager.getLaunchIntentForPackage(packageInfo.packageName) != null,
+      packageInfo.firstInstallTime,
+      packageInfo.lastUpdateTime,
+      packageInfo.requestedPermissions)
 
-    override fun toString(): String {
-        return packageLabel
+  override fun toString(): String {
+    return packageLabel
+  }
+
+  override fun equals(other: Any?): Boolean {
+    return if (other is AppPackageInfo) {
+      packageName == other.packageName &&
+          packageLabel == other.packageLabel &&
+          versionCode == other.versionCode &&
+          versionName == other.versionName &&
+          isSystemApp == other.isSystemApp &&
+          hasLaunchActivity == other.hasLaunchActivity &&
+          installTime == other.installTime &&
+          lastUpdateTime == other.lastUpdateTime
+    } else {
+      super.equals(other)
     }
+  }
 
-    override fun equals(other: Any?): Boolean {
-        return if (other is AppPackageInfo) {
-            packageName == other.packageName &&
-                packageLabel == other.packageLabel &&
-                versionCode == other.versionCode &&
-                versionName == other.versionName &&
-                isSystemApp == other.isSystemApp &&
-                hasLaunchActivity == other.hasLaunchActivity &&
-                installTime == other.installTime &&
-                lastUpdateTime == other.lastUpdateTime
-        } else {
-            super.equals(other)
-        }
+  override fun hashCode(): Int {
+    var result = versionCode.hashCode()
+    result = 31 * result + packageIcon.hashCode()
+    result = 31 * result + (versionName?.hashCode() ?: 0)
+    result = 31 * result + packageName.hashCode()
+    result = 31 * result + packageLabel.hashCode()
+    result = 31 * result + isSystemApp.hashCode()
+    result = 31 * result + hasLaunchActivity.hashCode()
+    result = 31 * result + installTime.hashCode()
+    result = 31 * result + lastUpdateTime.hashCode()
+    return result
+  }
+
+  @Throws(IOException::class)
+  fun toByteArray(): ByteArray {
+    ByteArrayOutputStream().use {
+      ObjectOutputStream(it).use { objectOutputStream -> objectOutputStream.writeObject(this) }
+      return it.toByteArray()
     }
+  }
 
-    override fun hashCode(): Int {
-        var result = versionCode.hashCode()
-        result = 31 * result + packageIcon.hashCode()
-        result = 31 * result + (versionName?.hashCode() ?: 0)
-        result = 31 * result + packageName.hashCode()
-        result = 31 * result + packageLabel.hashCode()
-        result = 31 * result + isSystemApp.hashCode()
-        result = 31 * result + hasLaunchActivity.hashCode()
-        result = 31 * result + installTime.hashCode()
-        result = 31 * result + lastUpdateTime.hashCode()
-        return result
+  companion object {
+    const val serialVersionUID: Long = 7
+
+    @Throws(IOException::class, ClassNotFoundException::class)
+    fun fromByteArray(byteArray: ByteArray): AppPackageInfo {
+      ObjectInputStream(ByteArrayInputStream(byteArray)).use {
+        return it.readObject() as AppPackageInfo
+      }
     }
-
-    @Throws(IOException::class)
-    fun toByteArray(): ByteArray {
-        ByteArrayOutputStream().use {
-            ObjectOutputStream(it).use { objectOutputStream -> objectOutputStream.writeObject(this) }
-            return it.toByteArray()
-        }
-    }
-
-    companion object {
-        const val serialVersionUID: Long = 7
-
-        @Throws(IOException::class, ClassNotFoundException::class)
-        fun fromByteArray(byteArray: ByteArray): AppPackageInfo {
-            ObjectInputStream(ByteArrayInputStream(byteArray)).use {
-                return it.readObject() as AppPackageInfo
-            }
-        }
-    }
+  }
 }

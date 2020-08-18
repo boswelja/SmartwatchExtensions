@@ -103,13 +103,13 @@ spotless {
     kotlin {
         target("**/*.kt")
 
-        ktlint("0.37.2")
+        ktfmt()
         endWithNewline()
 
         licenseHeaderFile("../License")
     }
     kotlinGradle {
-        ktlint("0.37.2")
+        ktlint()
         endWithNewline()
     }
     format("xml") {

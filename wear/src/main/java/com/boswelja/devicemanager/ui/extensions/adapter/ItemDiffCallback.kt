@@ -12,11 +12,11 @@ import com.boswelja.devicemanager.ui.extensions.Item
 
 class ItemDiffCallback : DiffUtil.ItemCallback<Item>() {
 
-    override fun areContentsTheSame(oldItem: Item, newItem: Item): Boolean {
-        return oldItem.hashCode() == newItem.hashCode()
-    }
+  override fun areContentsTheSame(oldItem: Item, newItem: Item): Boolean {
+    return oldItem.hashCode() == newItem.hashCode()
+  }
 
-    override fun areItemsTheSame(oldItem: Item, newItem: Item): Boolean {
-        return oldItem.id == newItem.id
-    }
+  override fun areItemsTheSame(oldItem: Item, newItem: Item): Boolean {
+    return oldItem.id == newItem.id
+  }
 }

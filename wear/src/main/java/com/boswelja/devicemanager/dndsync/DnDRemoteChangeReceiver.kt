@@ -21,31 +21,25 @@ import com.google.android.gms.wearable.WearableListenerService
 
 class DnDRemoteChangeReceiver : WearableListenerService() {
 
-    override fun onDataChanged(dataEventBuffer: DataEventBuffer) {
-        super.onDataChanged(dataEventBuffer)
+  override fun onDataChanged(dataEventBuffer: DataEventBuffer) {
+    super.onDataChanged(dataEventBuffer)
 
-        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
+    val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
 
-        if (sharedPreferences.getBoolean(DND_SYNC_TO_WATCH_KEY, false)) {
-            val dataEvent = dataEventBuffer.last()
-            if (dataEvent.type == DataEvent.TYPE_CHANGED) {
-                val dataMap = DataMapItem.fromDataItem(dataEvent.dataItem).dataMap
-                val interruptFilterEnabled = dataMap.getBoolean(References.NEW_DND_STATE_KEY)
-                val success = Compat.setInterruptionFilter(this, interruptFilterEnabled)
-                if (!success) {
-                    sharedPreferences.edit(commit = true) {
-                        putBoolean(DND_SYNC_TO_WATCH_KEY, false)
-                    }
-                    PreferenceSyncHelper(
-                        this,
-                        sharedPreferences,
-                        sharedPreferences.getString(PHONE_ID_KEY, "") ?: ""
-                    ).also {
-                        it.pushNewData(DND_SYNC_TO_WATCH_KEY)
-                    }
-                }
-            }
-            dataEventBuffer.release()
+    if (sharedPreferences.getBoolean(DND_SYNC_TO_WATCH_KEY, false)) {
+      val dataEvent = dataEventBuffer.last()
+      if (dataEvent.type == DataEvent.TYPE_CHANGED) {
+        val dataMap = DataMapItem.fromDataItem(dataEvent.dataItem).dataMap
+        val interruptFilterEnabled = dataMap.getBoolean(References.NEW_DND_STATE_KEY)
+        val success = Compat.setInterruptionFilter(this, interruptFilterEnabled)
+        if (!success) {
+          sharedPreferences.edit(commit = true) { putBoolean(DND_SYNC_TO_WATCH_KEY, false) }
+          PreferenceSyncHelper(
+                  this, sharedPreferences, sharedPreferences.getString(PHONE_ID_KEY, "") ?: "")
+              .also { it.pushNewData(DND_SYNC_TO_WATCH_KEY) }
         }
+      }
+      dataEventBuffer.release()
     }
+  }
 }

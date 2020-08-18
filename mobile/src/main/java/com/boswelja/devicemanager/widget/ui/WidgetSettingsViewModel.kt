@@ -18,30 +18,33 @@ import com.boswelja.devicemanager.appsettings.ui.AppSettingsFragment.Companion.W
 
 class WidgetSettingsViewModel(application: Application) : AndroidViewModel(application) {
 
-    private val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(application)
-    private val preferenceChangeListener = SharedPreferences.OnSharedPreferenceChangeListener { sharedPreferences, key ->
+  private val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(application)
+  private val preferenceChangeListener =
+      SharedPreferences.OnSharedPreferenceChangeListener { sharedPreferences, key ->
         when (key) {
-            WIDGET_BACKGROUND_OPACITY_KEY ->
-                _widgetBackgroundOpacity.postValue(sharedPreferences.getInt(key, 60))
-            SHOW_WIDGET_BACKGROUND_KEY ->
-                _widgetBackgroundVisible.postValue(sharedPreferences.getBoolean(key, true))
+          WIDGET_BACKGROUND_OPACITY_KEY ->
+              _widgetBackgroundOpacity.postValue(sharedPreferences.getInt(key, 60))
+          SHOW_WIDGET_BACKGROUND_KEY ->
+              _widgetBackgroundVisible.postValue(sharedPreferences.getBoolean(key, true))
         }
-    }
+      }
 
-    init {
-        sharedPreferences.registerOnSharedPreferenceChangeListener(preferenceChangeListener)
-    }
+  init {
+    sharedPreferences.registerOnSharedPreferenceChangeListener(preferenceChangeListener)
+  }
 
-    override fun onCleared() {
-        super.onCleared()
-        sharedPreferences.unregisterOnSharedPreferenceChangeListener(preferenceChangeListener)
-    }
+  override fun onCleared() {
+    super.onCleared()
+    sharedPreferences.unregisterOnSharedPreferenceChangeListener(preferenceChangeListener)
+  }
 
-    private val _widgetBackgroundVisible = MutableLiveData(sharedPreferences.getBoolean(SHOW_WIDGET_BACKGROUND_KEY, true))
-    val widgetBackgroundVisible: LiveData<Boolean>
-        get() = _widgetBackgroundVisible
+  private val _widgetBackgroundVisible =
+      MutableLiveData(sharedPreferences.getBoolean(SHOW_WIDGET_BACKGROUND_KEY, true))
+  val widgetBackgroundVisible: LiveData<Boolean>
+    get() = _widgetBackgroundVisible
 
-    private val _widgetBackgroundOpacity = MutableLiveData(sharedPreferences.getInt(WIDGET_BACKGROUND_OPACITY_KEY, 60))
-    val widgetBackgroundOpacity: LiveData<Int>
-        get() = _widgetBackgroundOpacity
+  private val _widgetBackgroundOpacity =
+      MutableLiveData(sharedPreferences.getInt(WIDGET_BACKGROUND_OPACITY_KEY, 60))
+  val widgetBackgroundOpacity: LiveData<Int>
+    get() = _widgetBackgroundOpacity
 }
