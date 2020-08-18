@@ -36,7 +36,8 @@ class PhoneBatteryComplicationProvider : BaseComplicationProviderService() {
         Intent(this, ActionServiceStarter::class.java).apply {
           action = REQUEST_BATTERY_UPDATE_PATH
         }
-    val pendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+    val pendingIntent =
+        PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
 
     val prefs = PreferenceManager.getDefaultSharedPreferences(this)
     val percent = prefs.getInt(PreferenceKey.BATTERY_PERCENT_KEY, 0)
