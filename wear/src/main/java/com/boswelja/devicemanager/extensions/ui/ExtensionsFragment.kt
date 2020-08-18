@@ -20,13 +20,13 @@ import androidx.wear.widget.WearableLinearLayoutManager
 import com.boswelja.devicemanager.common.References.LOCK_PHONE_PATH
 import com.boswelja.devicemanager.common.batterysync.References.REQUEST_BATTERY_UPDATE_PATH
 import com.boswelja.devicemanager.databinding.FragmentMainBinding
-import com.boswelja.devicemanager.service.ActionService
 import com.boswelja.devicemanager.extensions.ui.ExtensionItems.ABOUT_APP_ITEM_ID
 import com.boswelja.devicemanager.extensions.ui.ExtensionItems.BATTERY_SYNC_ITEM_ID
 import com.boswelja.devicemanager.extensions.ui.ExtensionItems.EXTENSIONS
 import com.boswelja.devicemanager.extensions.ui.ExtensionItems.PHONE_LOCKING_ITEM_ID
 import com.boswelja.devicemanager.extensions.ui.ExtensionItems.SETTINGS_ITEM_ID
 import com.boswelja.devicemanager.extensions.ui.adapter.ExtensionsAdapter
+import com.boswelja.devicemanager.service.ActionService
 import com.boswelja.devicemanager.ui.extensions.ExtensionsFragmentDirections
 import timber.log.Timber
 

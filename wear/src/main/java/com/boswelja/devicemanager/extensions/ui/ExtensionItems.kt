@@ -19,20 +19,20 @@ object ExtensionItems {
 
   val EXTENSIONS =
       listOf(
-              Item.Extension(
-                      BATTERY_SYNC_ITEM_ID,
-                      R.string.phone_battery_percent,
-                      R.string.battery_sync_disabled,
-                      R.drawable.ic_phone_battery,
-                      enabled = false),
-              Item.Extension(
-                      PHONE_LOCKING_ITEM_ID,
-                      R.string.lock_phone_label,
-                      R.string.lock_phone_disabled_message,
-                      R.drawable.ic_phone_lock,
-                      enabled = false),
-              Item.Header(HEADER, R.string.section_text_app_info),
-              Item.Extension(
-                      SETTINGS_ITEM_ID, R.string.navigation_settings_title, 0, R.drawable.ic_settings),
-              Item.Extension(ABOUT_APP_ITEM_ID, R.string.about_app_title, 0, R.drawable.ic_about))
+          Item.Extension(
+              BATTERY_SYNC_ITEM_ID,
+              R.string.phone_battery_percent,
+              R.string.battery_sync_disabled,
+              R.drawable.ic_phone_battery,
+              enabled = false),
+          Item.Extension(
+              PHONE_LOCKING_ITEM_ID,
+              R.string.lock_phone_label,
+              R.string.lock_phone_disabled_message,
+              R.drawable.ic_phone_lock,
+              enabled = false),
+          Item.Header(HEADER, R.string.section_text_app_info),
+          Item.Extension(
+              SETTINGS_ITEM_ID, R.string.navigation_settings_title, 0, R.drawable.ic_settings),
+          Item.Extension(ABOUT_APP_ITEM_ID, R.string.about_app_title, 0, R.drawable.ic_about))
 }
