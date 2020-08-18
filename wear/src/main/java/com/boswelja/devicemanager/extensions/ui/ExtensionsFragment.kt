@@ -17,7 +17,7 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.wear.widget.CurvingLayoutCallback
 import androidx.wear.widget.WearableLinearLayoutManager
-import com.boswelja.devicemanager.ActionService
+import com.boswelja.devicemanager.ActionServiceStarter
 import com.boswelja.devicemanager.common.References.LOCK_PHONE_PATH
 import com.boswelja.devicemanager.common.batterysync.References.REQUEST_BATTERY_UPDATE_PATH
 import com.boswelja.devicemanager.databinding.FragmentMainBinding
@@ -76,15 +76,15 @@ class ExtensionsFragment : Fragment() {
   }
 
   private fun tryUpdateBatteryStats() {
-    Intent(context, ActionService::class.java)
-        .apply { putExtra(ActionService.EXTRA_ACTION, REQUEST_BATTERY_UPDATE_PATH) }
-        .also { context?.startService(it) }
+    Intent(context, ActionServiceStarter::class.java)
+        .apply { action = REQUEST_BATTERY_UPDATE_PATH }
+        .also { context?.sendBroadcast(it) }
   }
 
   private fun tryLockPhone() {
-    Intent(context, ActionService::class.java)
-        .apply { putExtra(ActionService.EXTRA_ACTION, LOCK_PHONE_PATH) }
-        .also { context?.startService(it) }
+    Intent(context, ActionServiceStarter::class.java)
+        .apply { action = LOCK_PHONE_PATH }
+        .also { context?.sendBroadcast(it) }
   }
 
   private fun setBatterySyncEnabled(batterySyncEnabled: Boolean) {

@@ -7,36 +7,30 @@
  */
 package com.boswelja.devicemanager
 
-import android.app.IntentService
+import android.content.BroadcastReceiver
+import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
+import androidx.core.app.JobIntentService
 import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.common.PreferenceKey
 import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_SYNC_ENABLED_KEY
 import com.boswelja.devicemanager.common.References.LOCK_PHONE_PATH
 import com.boswelja.devicemanager.common.batterysync.References.REQUEST_BATTERY_UPDATE_PATH
 import com.boswelja.devicemanager.phoneconnectionmanager.References.PHONE_ID_KEY
-import com.google.android.gms.wearable.MessageClient
 import com.google.android.gms.wearable.Wearable
+import timber.log.Timber
 
-class ActionService : IntentService("ActionService") {
+class ActionService : JobIntentService() {
 
-  private lateinit var messageClient: MessageClient
-  private lateinit var sharedPreferences: SharedPreferences
-  private lateinit var phoneId: String
+  private val messageClient by lazy { Wearable.getMessageClient(this) }
+  private val sharedPreferences by lazy { PreferenceManager.getDefaultSharedPreferences(this) }
+  private val phoneId by lazy { sharedPreferences.getString(PHONE_ID_KEY, "") ?: "" }
 
-  override fun onCreate() {
-    super.onCreate()
-    messageClient = Wearable.getMessageClient(this)
-    sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
-    phoneId = sharedPreferences.getString(PHONE_ID_KEY, "") ?: ""
-  }
-
-  override fun onHandleIntent(intent: Intent?) {
-    val action = intent?.getStringExtra(EXTRA_ACTION)
-
+  override fun onHandleWork(intent: Intent) {
+    Timber.d("onHandleWork($intent) called")
     if (phoneId.isNotEmpty()) {
-      when (action) {
+      when (val action = intent.action
+      ) {
         LOCK_PHONE_PATH -> {
           if (sharedPreferences.getBoolean(PreferenceKey.PHONE_LOCKING_ENABLED_KEY, false)) {
             sendMessage(
@@ -68,6 +62,18 @@ class ActionService : IntentService("ActionService") {
   }
 
   companion object {
-    const val EXTRA_ACTION = "action"
+    private const val workId = 271738
+
+    fun enqueueWork(context: Context, intent: Intent) {
+      enqueueWork(context, ActionService::class.java, workId, intent)
+    }
+  }
+}
+
+class ActionServiceStarter : BroadcastReceiver() {
+  override fun onReceive(context: Context?, intent: Intent?) {
+    Timber.i("Got broadcast, enqueueing work")
+    intent?.setClass(context!!, ActionService::class.java)
+    ActionService.enqueueWork(context!!, intent!!)
   }
 }

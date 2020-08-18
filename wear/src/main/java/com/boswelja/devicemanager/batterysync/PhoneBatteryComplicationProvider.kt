@@ -19,7 +19,7 @@ import android.support.wearable.complications.ProviderUpdateRequester
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toBitmap
 import androidx.preference.PreferenceManager
-import com.boswelja.devicemanager.ActionService
+import com.boswelja.devicemanager.ActionServiceStarter
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.PreferenceKey
 import com.boswelja.devicemanager.common.batterysync.References.REQUEST_BATTERY_UPDATE_PATH
@@ -33,10 +33,10 @@ class PhoneBatteryComplicationProvider : BaseComplicationProviderService() {
     }
 
     val intent =
-        Intent(this, ActionService::class.java).apply {
-          putExtra(ActionService.EXTRA_ACTION, REQUEST_BATTERY_UPDATE_PATH)
+        Intent(this, ActionServiceStarter::class.java).apply {
+          action = REQUEST_BATTERY_UPDATE_PATH
         }
-    val pendingIntent = PendingIntent.getService(this, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT)
+    val pendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
 
     val prefs = PreferenceManager.getDefaultSharedPreferences(this)
     val percent = prefs.getInt(PreferenceKey.BATTERY_PERCENT_KEY, 0)
