@@ -104,7 +104,7 @@ object TestLibraries {
 
         const val mockk = "1.10.0"
 
-        const val robolectric = "4.3"
+        const val robolectric = "4.4-beta-1"
     }
 
     const val androidxArch = "androidx.arch.core:core-testing:${Versions.androidxArch}"
