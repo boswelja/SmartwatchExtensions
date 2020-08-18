@@ -1,4 +1,4 @@
-name: Android Feature Branch CI
+name: Main Branch CI
 
 on:
   pull_request:
