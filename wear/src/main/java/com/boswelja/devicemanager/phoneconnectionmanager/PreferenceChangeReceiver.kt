@@ -13,9 +13,9 @@ import android.content.SharedPreferences
 import android.support.wearable.complications.ProviderUpdateRequester
 import androidx.core.content.edit
 import androidx.preference.PreferenceManager
+import com.boswelja.devicemanager.batterysync.PhoneBatteryComplicationProvider
 import com.boswelja.devicemanager.common.Compat
 import com.boswelja.devicemanager.common.PreferenceKey
-import com.boswelja.devicemanager.batterysync.PhoneBatteryComplicationProvider
 import com.boswelja.devicemanager.dndsync.DnDLocalChangeListener
 import com.google.android.gms.tasks.Tasks
 import com.google.android.gms.wearable.DataEvent
