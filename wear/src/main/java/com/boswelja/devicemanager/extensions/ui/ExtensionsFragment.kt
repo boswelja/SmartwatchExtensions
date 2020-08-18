@@ -27,7 +27,6 @@ import com.boswelja.devicemanager.extensions.ui.ExtensionItems.PHONE_LOCKING_ITE
 import com.boswelja.devicemanager.extensions.ui.ExtensionItems.SETTINGS_ITEM_ID
 import com.boswelja.devicemanager.extensions.ui.adapter.ExtensionsAdapter
 import com.boswelja.devicemanager.service.ActionService
-import com.boswelja.devicemanager.ui.extensions.ExtensionsFragmentDirections
 import timber.log.Timber
 
 class ExtensionsFragment : Fragment() {
