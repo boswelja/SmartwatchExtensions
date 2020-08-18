@@ -13,8 +13,8 @@ import androidx.core.content.edit
 import androidx.preference.PreferenceManager
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.boswelja.devicemanager.appmanager.ui.getOrAwaitValue
 import com.boswelja.devicemanager.appsettings.ui.AppSettingsFragment
+import com.boswelja.devicemanager.getOrAwaitValue
 import com.google.common.truth.Truth.assertThat
 import org.junit.Before
 import org.junit.Rule

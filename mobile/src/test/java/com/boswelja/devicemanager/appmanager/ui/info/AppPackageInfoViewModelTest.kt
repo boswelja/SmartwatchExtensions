@@ -8,13 +8,14 @@
 package com.boswelja.devicemanager.appmanager.ui.info
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.boswelja.devicemanager.appmanager.ui.getOrAwaitValue
 import com.boswelja.devicemanager.common.appmanager.AppPackageInfo
 import com.boswelja.devicemanager.common.appmanager.References.REQUEST_OPEN_PACKAGE
 import com.boswelja.devicemanager.common.appmanager.References.REQUEST_UNINSTALL_PACKAGE
+import com.boswelja.devicemanager.getOrAwaitValue
 import com.google.android.gms.wearable.MessageClient
 import com.google.common.truth.Truth.assertThat
 import io.mockk.MockKAnnotations
+import io.mockk.confirmVerified
 import io.mockk.impl.annotations.MockK
 import io.mockk.verify
 import org.junit.Before
@@ -142,6 +143,8 @@ class AppPackageInfoViewModelTest {
         viewModel.finishActivity.getOrAwaitValue {
             assertThat(it).isTrue()
         }
+
+        confirmVerified(messageClient)
     }
 
     @Test

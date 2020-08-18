@@ -12,6 +12,7 @@ import com.boswelja.devicemanager.common.appmanager.References.START_SERVICE
 import com.boswelja.devicemanager.common.appmanager.References.STOP_SERVICE
 import com.google.android.gms.wearable.MessageClient
 import io.mockk.MockKAnnotations
+import io.mockk.confirmVerified
 import io.mockk.impl.annotations.MockK
 import io.mockk.verify
 import org.junit.Before
@@ -35,6 +36,7 @@ class AppManagerViewModelTest {
         MockKAnnotations.init(this)
         viewModel = AppManagerViewModel(messageClient)
         viewModel.watchId = watchId
+        verify { messageClient.addListener(any()) }
     }
 
     @Test
@@ -45,6 +47,8 @@ class AppManagerViewModelTest {
         viewModel.canStopAppManagerService = false
         viewModel.tryStopAppManagerService()
         verify(exactly = 0) { messageClient.sendMessage(any(), STOP_SERVICE, null) }
+
+        confirmVerified(messageClient)
     }
 
     @Test
@@ -55,6 +59,8 @@ class AppManagerViewModelTest {
         viewModel.canStopAppManagerService = true
         viewModel.tryStopAppManagerService()
         verify(exactly = 1) { messageClient.sendMessage(any(), STOP_SERVICE, null) }
+
+        confirmVerified(messageClient)
     }
 
     @Test
@@ -69,5 +75,7 @@ class AppManagerViewModelTest {
         viewModel.canStopAppManagerService = true
         viewModel.tryStopAppManagerService()
         verify(exactly = 1) { messageClient.sendMessage(any(), STOP_SERVICE, null) }
+
+        confirmVerified(messageClient)
     }
 }

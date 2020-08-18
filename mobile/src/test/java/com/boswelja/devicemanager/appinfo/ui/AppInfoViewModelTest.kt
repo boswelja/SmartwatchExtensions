@@ -8,11 +8,12 @@
 package com.boswelja.devicemanager.appinfo.ui
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.boswelja.devicemanager.appmanager.ui.getOrAwaitValue
 import com.boswelja.devicemanager.common.References.REQUEST_APP_VERSION
+import com.boswelja.devicemanager.getOrAwaitValue
 import com.google.android.gms.wearable.MessageClient
 import com.google.common.truth.Truth.assertThat
 import io.mockk.MockKAnnotations
+import io.mockk.confirmVerified
 import io.mockk.impl.annotations.MockK
 import io.mockk.verify
 import org.junit.Before
@@ -35,6 +36,7 @@ class AppInfoViewModelTest {
     fun setUp() {
         MockKAnnotations.init(this)
         viewModel = AppInfoViewModel(messageClient)
+        verify { messageClient.addListener(any()) }
     }
 
     @Test
@@ -49,5 +51,6 @@ class AppInfoViewModelTest {
     fun `Requesting watch version sends a request`() {
         viewModel.requestUpdateWatchVersion(watchId)
         verify(exactly = 1) { messageClient.sendMessage(watchId, REQUEST_APP_VERSION, null) }
+        confirmVerified(messageClient)
     }
 }
