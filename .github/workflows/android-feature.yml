@@ -19,3 +19,6 @@ jobs:
           java-version: 1.8
       - name: Unit tests
         run: bash ./gradlew test --stacktrace
+      - uses: actions/upload-artifact@v2
+        with:
+          ./**/build/reports/tests/*.html
