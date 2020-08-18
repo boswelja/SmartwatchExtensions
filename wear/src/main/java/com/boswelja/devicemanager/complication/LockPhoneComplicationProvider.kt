@@ -25,8 +25,9 @@ class LockPhoneComplicationProvider : BaseComplicationProviderService() {
       return
     }
 
-    val intent = Intent(this, ActionService::class.java)
-    intent.putExtra(ActionService.EXTRA_ACTION, References.LOCK_PHONE_PATH)
+    val intent = Intent(this, ActionService::class.java).apply {
+      putExtra(ActionService.EXTRA_ACTION, References.LOCK_PHONE_PATH)
+    }
     val pendingIntent = PendingIntent.getService(this, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT)
 
     val complicationData =

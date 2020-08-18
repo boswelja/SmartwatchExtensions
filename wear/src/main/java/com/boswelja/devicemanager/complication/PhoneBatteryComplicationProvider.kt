@@ -16,6 +16,7 @@ import android.support.wearable.complications.ComplicationData
 import android.support.wearable.complications.ComplicationManager
 import android.support.wearable.complications.ComplicationText
 import android.support.wearable.complications.ProviderUpdateRequester
+import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toBitmap
 import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.R
@@ -30,8 +31,9 @@ class PhoneBatteryComplicationProvider : BaseComplicationProviderService() {
       manager?.noUpdateRequired(complicationId)
     }
 
-    val intent = Intent(this, ActionService::class.java)
-    intent.putExtra(ActionService.EXTRA_ACTION, REQUEST_BATTERY_UPDATE_PATH)
+    val intent = Intent(this, ActionService::class.java).apply {
+      putExtra(ActionService.EXTRA_ACTION, REQUEST_BATTERY_UPDATE_PATH)
+    }
     val pendingIntent = PendingIntent.getService(this, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT)
 
     val prefs = PreferenceManager.getDefaultSharedPreferences(this)
@@ -53,7 +55,7 @@ class PhoneBatteryComplicationProvider : BaseComplicationProviderService() {
   }
 
   private fun createIcon(batteryPercent: Int): Icon {
-    val drawable = getDrawable(R.drawable.ic_phone_battery)!!
+    val drawable = ContextCompat.getDrawable(this, R.drawable.ic_phone_battery)!!
     drawable.level = batteryPercent
     return Icon.createWithBitmap(drawable.toBitmap())
   }
