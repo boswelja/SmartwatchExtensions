@@ -20,8 +20,10 @@ jobs:
       - name: Unit tests
         run: bash ./gradlew test --stacktrace
       - uses: actions/upload-artifact@v2
-        with:
-          path: ./**/build/reports/tests/*.html
+          with:
+            name: Unit test results
+            path: ./**/build/reports/tests/
+            if-no-files-found: ignore
 
   code-quality:
     name: Check Code Quality

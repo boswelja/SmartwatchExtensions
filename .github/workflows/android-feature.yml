@@ -21,4 +21,6 @@ jobs:
         run: bash ./gradlew test --stacktrace
       - uses: actions/upload-artifact@v2
         with:
-          path: ./**/build/reports/tests/*.html
+          name: Unit test results
+          path: ./**/build/reports/tests/
+          if-no-files-found: ignore
