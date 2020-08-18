@@ -20,6 +20,7 @@ jobs:
       - name: Unit tests
         run: bash ./gradlew test --stacktrace
       - uses: actions/upload-artifact@v2
+        if: failure()
         with:
           name: Unit test results
           path: ./**/build/reports/tests/
