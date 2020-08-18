@@ -21,7 +21,7 @@ jobs:
         run: bash ./gradlew test --stacktrace
       - uses: actions/upload-artifact@v2
         with:
-          ./**/build/reports/tests/*.html
+          path: ./**/build/reports/tests/*.html
 
   code-quality:
     name: Check Code Quality
