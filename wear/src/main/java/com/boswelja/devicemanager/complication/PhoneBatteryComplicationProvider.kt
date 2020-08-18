@@ -8,11 +8,14 @@
 package com.boswelja.devicemanager.complication
 
 import android.app.PendingIntent
+import android.content.ComponentName
+import android.content.Context
 import android.content.Intent
 import android.graphics.drawable.Icon
 import android.support.wearable.complications.ComplicationData
 import android.support.wearable.complications.ComplicationManager
 import android.support.wearable.complications.ComplicationText
+import android.support.wearable.complications.ProviderUpdateRequester
 import androidx.core.graphics.drawable.toBitmap
 import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.R
@@ -53,5 +56,14 @@ class PhoneBatteryComplicationProvider : BaseComplicationProviderService() {
     val drawable = getDrawable(R.drawable.ic_phone_battery)!!
     drawable.level = batteryPercent
     return Icon.createWithBitmap(drawable.toBitmap())
+  }
+
+  companion object {
+    fun updateAll(context: Context) {
+      ProviderUpdateRequester(
+              context,
+              ComponentName(context.packageName, PhoneBatteryComplicationProvider::class.java.name))
+          .requestUpdateAll()
+    }
   }
 }
