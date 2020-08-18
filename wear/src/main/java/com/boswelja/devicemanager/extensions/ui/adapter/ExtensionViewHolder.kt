@@ -5,14 +5,14 @@
  * This file, and any part of the Wearable Extensions app/s cannot be copied and/or distributed
  * without permission from Jack Boswell (boswelja) <boswela@outlook.com>
  */
-package com.boswelja.devicemanager.ui.extensions.adapter
+package com.boswelja.devicemanager.extensions.ui.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.lifecycle.LifecycleOwner
 import com.boswelja.devicemanager.common.databinding.RecyclerviewItemIconOneLineBinding
 import com.boswelja.devicemanager.common.recyclerview.item.IconOneLineViewHolder
-import com.boswelja.devicemanager.ui.extensions.Item
+import com.boswelja.devicemanager.extensions.ui.Item
 import timber.log.Timber
 
 class ExtensionViewHolder(private val binding: RecyclerviewItemIconOneLineBinding) :

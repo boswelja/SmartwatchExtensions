@@ -17,7 +17,7 @@ import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_SYNC_ENABLED_KEY
 import com.boswelja.devicemanager.common.References.LOCK_PHONE_PATH
 import com.boswelja.devicemanager.common.batterysync.References.REQUEST_BATTERY_UPDATE_PATH
 import com.boswelja.devicemanager.phoneconnectionmanager.References.PHONE_ID_KEY
-import com.boswelja.devicemanager.ui.ConfirmationActivityHandler
+import com.boswelja.devicemanager.ConfirmationActivityHandler
 import com.google.android.gms.wearable.MessageClient
 import com.google.android.gms.wearable.Wearable
 

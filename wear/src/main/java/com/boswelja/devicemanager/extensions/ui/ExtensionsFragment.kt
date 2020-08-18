@@ -5,7 +5,7 @@
  * This file, and any part of the Wearable Extensions app/s cannot be copied and/or distributed
  * without permission from Jack Boswell (boswelja) <boswela@outlook.com>
  */
-package com.boswelja.devicemanager.ui.extensions
+package com.boswelja.devicemanager.extensions.ui
 
 import android.content.Intent
 import android.os.Bundle
@@ -21,12 +21,13 @@ import com.boswelja.devicemanager.common.References.LOCK_PHONE_PATH
 import com.boswelja.devicemanager.common.batterysync.References.REQUEST_BATTERY_UPDATE_PATH
 import com.boswelja.devicemanager.databinding.FragmentMainBinding
 import com.boswelja.devicemanager.service.ActionService
-import com.boswelja.devicemanager.ui.extensions.ExtensionItems.ABOUT_APP_ITEM_ID
-import com.boswelja.devicemanager.ui.extensions.ExtensionItems.BATTERY_SYNC_ITEM_ID
-import com.boswelja.devicemanager.ui.extensions.ExtensionItems.EXTENSIONS
-import com.boswelja.devicemanager.ui.extensions.ExtensionItems.PHONE_LOCKING_ITEM_ID
-import com.boswelja.devicemanager.ui.extensions.ExtensionItems.SETTINGS_ITEM_ID
-import com.boswelja.devicemanager.ui.extensions.adapter.ExtensionsAdapter
+import com.boswelja.devicemanager.extensions.ui.ExtensionItems.ABOUT_APP_ITEM_ID
+import com.boswelja.devicemanager.extensions.ui.ExtensionItems.BATTERY_SYNC_ITEM_ID
+import com.boswelja.devicemanager.extensions.ui.ExtensionItems.EXTENSIONS
+import com.boswelja.devicemanager.extensions.ui.ExtensionItems.PHONE_LOCKING_ITEM_ID
+import com.boswelja.devicemanager.extensions.ui.ExtensionItems.SETTINGS_ITEM_ID
+import com.boswelja.devicemanager.extensions.ui.adapter.ExtensionsAdapter
+import com.boswelja.devicemanager.ui.extensions.ExtensionsFragmentDirections
 import timber.log.Timber
 
 class ExtensionsFragment : Fragment() {

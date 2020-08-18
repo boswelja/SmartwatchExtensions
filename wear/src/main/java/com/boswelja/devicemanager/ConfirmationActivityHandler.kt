@@ -5,7 +5,7 @@
  * This file, and any part of the Wearable Extensions app/s cannot be copied and/or distributed
  * without permission from Jack Boswell (boswelja) <boswela@outlook.com>
  */
-package com.boswelja.devicemanager.ui
+package com.boswelja.devicemanager
 
 import android.content.Context
 import android.content.Intent

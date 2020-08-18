@@ -32,7 +32,7 @@ import com.boswelja.devicemanager.common.dndsync.References.DND_SYNC_LOCAL_NOTI_
 import com.boswelja.devicemanager.common.dndsync.References.DND_SYNC_NOTI_CHANNEL_ID
 import com.boswelja.devicemanager.common.dndsync.References.START_ACTIVITY_FROM_NOTI_ID
 import com.boswelja.devicemanager.common.dndsync.Utils
-import com.boswelja.devicemanager.ui.main.MainActivity
+import com.boswelja.devicemanager.main.ui.MainActivity
 
 class DnDLocalChangeListener : Service() {
 

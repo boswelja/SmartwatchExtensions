@@ -5,16 +5,19 @@
  * This file, and any part of the Wearable Extensions app/s cannot be copied and/or distributed
  * without permission from Jack Boswell (boswelja) <boswela@outlook.com>
  */
-package com.boswelja.devicemanager.ui.settings
+package com.boswelja.devicemanager.common.ui
 
+import android.content.SharedPreferences
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
-import com.boswelja.devicemanager.R
+import androidx.fragment.app.Fragment
+import androidx.preference.PreferenceManager
 
-class SettingsActivity : AppCompatActivity() {
+abstract class BaseSharedPreferenceFragment : Fragment() {
+
+  lateinit var sharedPreferences: SharedPreferences
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    setContentView(R.layout.activity_settings)
+    sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
   }
 }

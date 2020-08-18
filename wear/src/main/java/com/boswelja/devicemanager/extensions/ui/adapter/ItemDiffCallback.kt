@@ -5,10 +5,10 @@
  * This file, and any part of the Wearable Extensions app/s cannot be copied and/or distributed
  * without permission from Jack Boswell (boswelja) <boswela@outlook.com>
  */
-package com.boswelja.devicemanager.ui.extensions.adapter
+package com.boswelja.devicemanager.extensions.ui.adapter
 
 import androidx.recyclerview.widget.DiffUtil
-import com.boswelja.devicemanager.ui.extensions.Item
+import com.boswelja.devicemanager.extensions.ui.Item
 
 class ItemDiffCallback : DiffUtil.ItemCallback<Item>() {
 

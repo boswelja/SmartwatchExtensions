@@ -5,14 +5,14 @@
  * This file, and any part of the Wearable Extensions app/s cannot be copied and/or distributed
  * without permission from Jack Boswell (boswelja) <boswela@outlook.com>
  */
-package com.boswelja.devicemanager.ui.extensions.adapter
+package com.boswelja.devicemanager.extensions.ui.adapter
 
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.boswelja.devicemanager.common.recyclerview.item.SectionHeaderViewHolder
-import com.boswelja.devicemanager.ui.extensions.ExtensionItems
-import com.boswelja.devicemanager.ui.extensions.Item
+import com.boswelja.devicemanager.extensions.ui.ExtensionItems
+import com.boswelja.devicemanager.extensions.ui.Item
 
 class ExtensionsAdapter(private val clickCallback: (item: Item) -> Unit) :
     ListAdapter<Item, RecyclerView.ViewHolder>(ItemDiffCallback()) {

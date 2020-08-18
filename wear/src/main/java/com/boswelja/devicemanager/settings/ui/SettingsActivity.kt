@@ -5,16 +5,16 @@
  * This file, and any part of the Wearable Extensions app/s cannot be copied and/or distributed
  * without permission from Jack Boswell (boswelja) <boswela@outlook.com>
  */
-package com.boswelja.devicemanager.ui.main
+package com.boswelja.devicemanager.settings.ui
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.boswelja.devicemanager.R
 
-class MainActivity : AppCompatActivity() {
+class SettingsActivity : AppCompatActivity() {
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    setContentView(R.layout.activity_main)
+    setContentView(R.layout.activity_settings)
   }
 }
