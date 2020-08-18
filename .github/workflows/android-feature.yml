@@ -1,0 +1,22 @@
+name: Android Feature Branch CI
+
+on:
+  push:
+    branches:
+      - '*'
+      - '!main'
+      - '!release'
+
+jobs:
+  test:
+    name: Run Unit Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: set up JDK
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.9
+      - name: Unit tests
+        run: bash ./gradlew test --stacktrace
