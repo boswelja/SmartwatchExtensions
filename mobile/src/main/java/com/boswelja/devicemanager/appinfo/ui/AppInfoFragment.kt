@@ -25,6 +25,7 @@ import com.boswelja.devicemanager.common.GooglePlayUtils
 import com.boswelja.devicemanager.common.GooglePlayUtils.getPlayStoreLink
 import com.boswelja.devicemanager.common.ui.BasePreferenceFragment
 import com.boswelja.devicemanager.watchmanager.WatchManager
+import com.google.android.gms.wearable.Wearable
 import com.google.android.material.snackbar.Snackbar
 import timber.log.Timber
 
@@ -34,7 +35,7 @@ class AppInfoFragment :
     DonationResultInterface {
 
     private val watchManager by lazy { WatchManager.get(requireContext()) }
-    private val viewModel: AppInfoViewModel by viewModels()
+    private val viewModel: AppInfoViewModel by viewModels { AppInfoViewModelFactory(Wearable.getMessageClient(requireContext())) }
     private val watchVersionPreference: Preference by lazy { findPreference(WATCH_VERSION_KEY)!! }
     private val customTabsIntent: CustomTabsIntent by lazy {
         CustomTabsIntent.Builder()
@@ -80,15 +81,19 @@ class AppInfoFragment :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModel.watchAppVersion.observe(viewLifecycleOwner) {
-            if (it?.first != null) {
-                watchVersionPreference.title = getString(R.string.pref_about_watch_version_title, it.first)
-                watchVersionPreference.summary = it.second
-            } else if (it == null) {
-                watchVersionPreference.setTitle(R.string.pref_about_watch_version_failed)
-                watchVersionPreference.summary = null
-            } else {
-                watchVersionPreference.setTitle(R.string.pref_about_watch_version_loading)
-                watchVersionPreference.summary = null
+            when {
+                it?.first != null -> {
+                    watchVersionPreference.title = getString(R.string.pref_about_watch_version_title, it.first)
+                    watchVersionPreference.summary = it.second
+                }
+                it == null -> {
+                    watchVersionPreference.setTitle(R.string.pref_about_watch_version_failed)
+                    watchVersionPreference.summary = null
+                }
+                else -> {
+                    watchVersionPreference.setTitle(R.string.pref_about_watch_version_loading)
+                    watchVersionPreference.summary = null
+                }
             }
         }
         watchManager.connectedWatch.observe(viewLifecycleOwner) {
