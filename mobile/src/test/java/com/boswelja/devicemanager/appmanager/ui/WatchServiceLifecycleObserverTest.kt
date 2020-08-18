@@ -7,6 +7,7 @@
  */
 package com.boswelja.devicemanager.appmanager.ui
 
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LifecycleRegistry
@@ -16,9 +17,13 @@ import io.mockk.impl.annotations.MockK
 import io.mockk.verify
 import org.junit.After
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 
 class WatchServiceLifecycleObserverTest {
+
+    @get:Rule
+    val instantExecutorRule = InstantTaskExecutorRule()
 
     @MockK(relaxed = true)
     lateinit var lifecycleOwner: LifecycleOwner
