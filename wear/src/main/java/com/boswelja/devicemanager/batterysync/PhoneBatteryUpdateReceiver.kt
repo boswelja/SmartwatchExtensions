@@ -20,7 +20,6 @@ import com.boswelja.devicemanager.common.References.CAPABILITY_PHONE_APP
 import com.boswelja.devicemanager.common.batterysync.BatteryStats
 import com.boswelja.devicemanager.common.batterysync.References.BATTERY_STATUS_PATH
 import com.boswelja.devicemanager.common.batterysync.Utils.updateBatteryStats
-import com.boswelja.devicemanager.complication.PhoneBatteryComplicationProvider
 import com.boswelja.devicemanager.phoneconnectionmanager.References.PHONE_NAME_KEY
 import com.google.android.gms.wearable.MessageEvent
 import com.google.android.gms.wearable.WearableListenerService

@@ -5,7 +5,7 @@
  * This file, and any part of the Wearable Extensions app/s cannot be copied and/or distributed
  * without permission from Jack Boswell (boswelja) <boswela@outlook.com>
  */
-package com.boswelja.devicemanager.complication
+package com.boswelja.devicemanager.phonelocking
 
 import android.app.PendingIntent
 import android.content.Intent
@@ -15,7 +15,8 @@ import android.support.wearable.complications.ComplicationManager
 import android.support.wearable.complications.ComplicationText
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.References
-import com.boswelja.devicemanager.service.ActionService
+import com.boswelja.devicemanager.complication.BaseComplicationProviderService
+import com.boswelja.devicemanager.ActionService
 
 class LockPhoneComplicationProvider : BaseComplicationProviderService() {
 

@@ -31,7 +31,7 @@ import com.boswelja.devicemanager.common.PreferenceKey.DND_SYNC_WITH_THEATER_KEY
 import com.boswelja.devicemanager.common.References
 import com.boswelja.devicemanager.common.dndsync.References.REQUEST_INTERRUPT_FILTER_ACCESS_STATUS_PATH
 import com.boswelja.devicemanager.phoneconnectionmanager.References.PHONE_ID_KEY
-import com.boswelja.devicemanager.preferencesync.PreferenceSyncHelper
+import com.boswelja.devicemanager.phoneconnectionmanager.PreferenceSyncHelper
 import com.google.android.gms.wearable.MessageClient
 import com.google.android.gms.wearable.Wearable
 

@@ -5,14 +5,12 @@
  * This file, and any part of the Wearable Extensions app/s cannot be copied and/or distributed
  * without permission from Jack Boswell (boswelja) <boswela@outlook.com>
  */
-package com.boswelja.devicemanager.service
+package com.boswelja.devicemanager
 
 import android.app.IntentService
 import android.content.Intent
 import android.content.SharedPreferences
 import androidx.preference.PreferenceManager
-import com.boswelja.devicemanager.ConfirmationActivityHandler
-import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.PreferenceKey
 import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_SYNC_ENABLED_KEY
 import com.boswelja.devicemanager.common.References.LOCK_PHONE_PATH

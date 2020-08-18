@@ -13,7 +13,7 @@ import com.boswelja.devicemanager.common.Compat
 import com.boswelja.devicemanager.common.PreferenceKey.DND_SYNC_TO_WATCH_KEY
 import com.boswelja.devicemanager.common.dndsync.References
 import com.boswelja.devicemanager.phoneconnectionmanager.References.PHONE_ID_KEY
-import com.boswelja.devicemanager.preferencesync.PreferenceSyncHelper
+import com.boswelja.devicemanager.phoneconnectionmanager.PreferenceSyncHelper
 import com.google.android.gms.wearable.DataEvent
 import com.google.android.gms.wearable.DataEventBuffer
 import com.google.android.gms.wearable.DataMapItem
