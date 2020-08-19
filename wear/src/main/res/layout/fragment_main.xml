@@ -5,6 +5,8 @@
     android:id="@+id/recycler_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:paddingTop="@dimen/extensions_recyclerview_top_offset"
+    android:paddingBottom="@dimen/extensions_recyclerview_bottom_offset"
     tools:deviceIds="wear">
     <requestFocus />
 </androidx.wear.widget.WearableRecyclerView>

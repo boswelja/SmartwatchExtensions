@@ -23,14 +23,16 @@ object ExtensionItems {
               R.string.phone_battery_percent,
               R.string.battery_sync_disabled,
               R.drawable.ic_phone_battery,
+              Size.NORMAL,
               enabled = false),
           Extension(
               PHONE_LOCKING_ITEM_ID,
               R.string.lock_phone_label,
               R.string.lock_phone_disabled_message,
               R.drawable.ic_phone_lock,
+              Size.NORMAL,
               enabled = false),
           Extension(
-              SETTINGS_ITEM_ID, R.string.navigation_settings_title, 0, R.drawable.ic_settings),
-          Extension(ABOUT_APP_ITEM_ID, R.string.about_app_title, 0, R.drawable.ic_about))
+              SETTINGS_ITEM_ID, R.string.navigation_settings_title, 0, R.drawable.ic_settings, Size.SMALL),
+          Extension(ABOUT_APP_ITEM_ID, R.string.about_app_title, 0, R.drawable.ic_about, Size.SMALL))
 }

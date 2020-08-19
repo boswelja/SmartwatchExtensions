@@ -11,11 +11,17 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.lifecycle.MutableLiveData
 
+enum class Size {
+  SMALL,
+  NORMAL
+}
+
 class Extension(
     val id: Int,
     @StringRes val textRes: Int,
     @StringRes val disabledTextRes: Int,
     @DrawableRes val iconRes: Int,
+    val size: Size,
     enabled: Boolean = true,
     extra: Int = -1
 ) {

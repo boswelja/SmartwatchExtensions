@@ -15,8 +15,8 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
-import androidx.wear.widget.CurvingLayoutCallback
-import androidx.wear.widget.WearableLinearLayoutManager
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.boswelja.devicemanager.ActionServiceStarter
 import com.boswelja.devicemanager.common.References.LOCK_PHONE_PATH
 import com.boswelja.devicemanager.common.batterysync.References.REQUEST_BATTERY_UPDATE_PATH
@@ -57,8 +57,8 @@ class ExtensionsFragment : Fragment() {
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     adapter.submitList(EXTENSIONS)
     binding.recyclerView.apply {
-      layoutManager = WearableLinearLayoutManager(context, CurvingLayoutCallback(context))
-      isEdgeItemsCenteringEnabled = true
+      layoutManager = LinearLayoutManager(context)
+      addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
       adapter = this@ExtensionsFragment.adapter
     }
     viewModel.phoneLockingEnabled.observe(viewLifecycleOwner) {

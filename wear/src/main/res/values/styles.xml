@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="AppTheme" parent="@style/Theme.AppCompat.NoActionBar">
+    <style name="AppTheme" parent="@style/Theme.MaterialComponents.NoActionBar">
         <item name="android:windowBackground">@color/windowBackground</item>
         <item name="colorAccent">@color/colorPrimary</item>
         <item name="colorPrimary">@color/colorPrimary</item>
@@ -37,5 +37,16 @@
         <item name="android:textAlignment">center</item>
         <item name="android:textColor">?android:textColorSecondary</item>
         <item name="android:textSize">18sp</item>
+    </style>
+
+    <style name="ExtensionSmallButton" parent="Widget.MaterialComponents.Button.OutlinedButton.Icon">
+        <item name="shapeAppearance">@style/ButtonShapeAppearance</item>
+        <item name="android:textColor">?android:attr/textColorPrimary</item>
+        <item name="iconTint">?android:attr/textColorPrimary</item>
+    </style>
+
+    <style name="ButtonShapeAppearance">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">50%</item>
     </style>
 </resources>
