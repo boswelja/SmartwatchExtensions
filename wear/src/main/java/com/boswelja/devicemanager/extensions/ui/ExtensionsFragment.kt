@@ -88,17 +88,17 @@ class ExtensionsFragment : Fragment() {
   }
 
   private fun setBatterySyncEnabled(batterySyncEnabled: Boolean) {
-    (adapter.currentList.first { it.id == BATTERY_SYNC_ITEM_ID } as Item.Extension).isEnabled
+    adapter.currentList.first { it.id == BATTERY_SYNC_ITEM_ID }.isEnabled
         .postValue(batterySyncEnabled)
   }
 
   private fun setBatteryPercent(batteryPercent: Int) {
-    (adapter.currentList.first { it.id == BATTERY_SYNC_ITEM_ID } as Item.Extension).extra
+    adapter.currentList.first { it.id == BATTERY_SYNC_ITEM_ID }.extra
         .postValue(batteryPercent)
   }
 
   private fun setPhoneLockingEnabled(phoneLockingEnabled: Boolean) {
-    (adapter.currentList.first { it.id == PHONE_LOCKING_ITEM_ID } as Item.Extension).isEnabled
+    adapter.currentList.first { it.id == PHONE_LOCKING_ITEM_ID }.isEnabled
         .postValue(phoneLockingEnabled)
   }
 }

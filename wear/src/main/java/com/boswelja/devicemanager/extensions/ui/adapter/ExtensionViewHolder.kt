@@ -12,13 +12,13 @@ import android.view.ViewGroup
 import androidx.lifecycle.LifecycleOwner
 import com.boswelja.devicemanager.common.databinding.RecyclerviewItemIconOneLineBinding
 import com.boswelja.devicemanager.common.recyclerview.item.IconOneLineViewHolder
-import com.boswelja.devicemanager.extensions.ui.Item
+import com.boswelja.devicemanager.extensions.ui.Extension
 import timber.log.Timber
 
 class ExtensionViewHolder(private val binding: RecyclerviewItemIconOneLineBinding) :
     IconOneLineViewHolder(binding) {
 
-  fun bind(item: Item.Extension) {
+  fun bind(item: Extension) {
     val context = itemView.context
     val lifecycleOwner = context as LifecycleOwner
     item.isEnabled.observe(lifecycleOwner) {

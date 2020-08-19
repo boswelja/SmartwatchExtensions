@@ -9,42 +9,18 @@ package com.boswelja.devicemanager.extensions.ui.adapter
 
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
-import androidx.recyclerview.widget.RecyclerView
-import com.boswelja.devicemanager.common.recyclerview.item.SectionHeaderViewHolder
-import com.boswelja.devicemanager.extensions.ui.ExtensionItems
-import com.boswelja.devicemanager.extensions.ui.Item
+import com.boswelja.devicemanager.extensions.ui.Extension
 
-class ExtensionsAdapter(private val clickCallback: (item: Item) -> Unit) :
-    ListAdapter<Item, RecyclerView.ViewHolder>(ItemDiffCallback()) {
+class ExtensionsAdapter(private val clickCallback: (item: Extension) -> Unit) :
+    ListAdapter<Extension, ExtensionViewHolder>(ExtensionDiffCallback()) {
 
-  override fun getItemViewType(position: Int): Int {
-    return when (val item = getItem(position)
-    ) {
-      is Item.Header -> item.id
-      else -> super.getItemViewType(position)
-    }
+  override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ExtensionViewHolder {
+    return  ExtensionViewHolder.from(parent)
   }
 
-  override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-    return when (viewType) {
-      ExtensionItems.HEADER -> SectionHeaderViewHolder.from(parent)
-      else -> ExtensionViewHolder.from(parent)
-    }
-  }
-
-  override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-    val context = holder.itemView.context
+  override fun onBindViewHolder(holder: ExtensionViewHolder, position: Int) {
     val item = getItem(position)
-    when (holder) {
-      is ExtensionViewHolder -> {
-        item as Item.Extension
-        holder.bind(item)
-        holder.itemView.setOnClickListener { clickCallback(item) }
-      }
-      is SectionHeaderViewHolder -> {
-        val label = context.getString(item.textRes)
-        holder.bind(label, false)
-      }
-    }
+    holder.bind(item)
+    holder.itemView.setOnClickListener { clickCallback(item) }
   }
 }

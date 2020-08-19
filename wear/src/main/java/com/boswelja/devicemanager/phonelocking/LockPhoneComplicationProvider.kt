@@ -16,7 +16,7 @@ import android.support.wearable.complications.ComplicationText
 import com.boswelja.devicemanager.ActionServiceStarter
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.References.LOCK_PHONE_PATH
-import com.boswelja.devicemanager.complication.BaseComplicationProviderService
+import com.boswelja.devicemanager.common.BaseComplicationProviderService
 
 class LockPhoneComplicationProvider : BaseComplicationProviderService() {
 
