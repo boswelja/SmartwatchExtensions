@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="viewModel"
+            type="com.boswelja.devicemanager.phonelocking.ui.LockPhoneViewModel" />
+    </data>
+
+    <androidx.constraintlayout.motion.widget.MotionLayout
+        android:id="@+id/motion_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?selectableItemBackground"
+        android:onClick="@{() -> viewModel.requestLockPhone()}"
+        app:layoutDescription="@xml/lock_phone_motion_scene"
+        tools:path="true">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/icon"
+            android:layout_width="@dimen/extension_big_icon_size"
+            android:layout_height="@dimen/extension_big_icon_size"
+            app:srcCompat="@drawable/ic_phone_lock" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/text_view"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
+            android:text="@{viewModel.displayText}"
+            tools:text="Tap to Lock Your Phone" />
+
+    </androidx.constraintlayout.motion.widget.MotionLayout>
+</layout>

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="viewModel"
+            type="com.boswelja.devicemanager.batterysync.ui.BatterySyncViewModel" />
+    </data>
+
+    <androidx.constraintlayout.motion.widget.MotionLayout
+        android:id="@+id/motion_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?selectableItemBackground"
+        android:onClick="@{() -> viewModel.updateBatteryStats()}"
+        app:layoutDescription="@xml/battery_stats_motion_scene"
+        tools:path="true">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/icon"
+            android:layout_width="@dimen/extension_big_icon_size"
+            android:layout_height="@dimen/extension_big_icon_size"
+            app:srcCompat="@drawable/ic_phone_battery"
+            app:imageLevel="@{viewModel.batteryPercent}" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/hint_text_1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@{@string/battery_sync_hint_text(viewModel.phoneName)}"
+            android:textAlignment="center"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
+            tools:text="Your Phone is at"/>
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/text_view"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
+            android:text="@{viewModel.displayText}"
+            tools:text="100%" />
+
+    </androidx.constraintlayout.motion.widget.MotionLayout>
+</layout>

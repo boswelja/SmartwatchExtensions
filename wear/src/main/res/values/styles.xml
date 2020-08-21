@@ -39,7 +39,7 @@
         <item name="android:textSize">18sp</item>
     </style>
 
-    <style name="ExtensionSmallButton" parent="Widget.MaterialComponents.Button.OutlinedButton.Icon">
+    <style name="ExtensionButton" parent="Widget.MaterialComponents.Button.OutlinedButton.Icon">
         <item name="shapeAppearance">@style/ButtonShapeAppearance</item>
         <item name="android:textColor">?android:attr/textColorPrimary</item>
         <item name="iconTint">?android:attr/textColorPrimary</item>

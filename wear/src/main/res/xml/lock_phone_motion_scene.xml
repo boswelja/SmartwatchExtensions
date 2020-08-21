@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<MotionScene
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:motion="http://schemas.android.com/apk/res-auto">
+
+    <Transition
+        motion:constraintSetEnd="@+id/end"
+        motion:constraintSetStart="@id/start"
+        motion:duration="300"
+        motion:pathMotionArc="startHorizontal" />
+
+    <ConstraintSet android:id="@+id/start">
+        <Constraint
+            android:id="@+id/icon"
+            android:layout_width="@dimen/extension_big_icon_size"
+            android:layout_height="@dimen/extension_big_icon_size"
+            android:layout_marginTop="@dimen/extension_big_vertical_padding"
+            motion:layout_constraintEnd_toEndOf="parent"
+            motion:layout_constraintStart_toStartOf="parent"
+            motion:layout_constraintTop_toTopOf="parent" />
+
+        <Constraint
+            android:id="@+id/text_view"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/extension_icon_margin"
+            android:layout_marginStart="@dimen/extension_big_horizontal_padding"
+            android:layout_marginEnd="@dimen/extension_big_horizontal_padding"
+            android:layout_marginBottom="@dimen/extension_big_vertical_padding"
+            motion:layout_constraintEnd_toEndOf="parent"
+            motion:layout_constraintStart_toStartOf="parent"
+            motion:layout_constraintTop_toBottomOf="@id/icon"
+            motion:layout_constraintBottom_toBottomOf="parent">
+            <CustomAttribute
+                motion:attributeName="textSize"
+                motion:customFloatValue="@dimen/extension_big_text_size" />
+            <CustomAttribute
+                motion:attributeName="textColor"
+                motion:customColorValue="?android:attr/textColorPrimary" />
+        </Constraint>
+    </ConstraintSet>
+
+    <ConstraintSet android:id="@+id/end">
+        <Constraint
+            android:id="@+id/icon"
+            android:layout_width="@dimen/extension_small_icon_size"
+            android:layout_height="@dimen/extension_small_icon_size"
+            android:layout_marginStart="@dimen/extension_small_horizontal_padding"
+            android:layout_marginTop="@dimen/extension_small_vertical_padding"
+            android:layout_marginBottom="@dimen/extension_small_vertical_padding"
+            motion:layout_constraintBottom_toBottomOf="parent"
+            motion:layout_constraintStart_toStartOf="parent"
+            motion:layout_constraintTop_toTopOf="parent" />
+
+        <Constraint
+            android:id="@+id/text_view"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/extension_icon_margin"
+            android:layout_marginTop="@dimen/extension_small_vertical_padding"
+            android:layout_marginBottom="@dimen/extension_small_vertical_padding"
+            android:layout_marginEnd="@dimen/extension_small_horizontal_padding"
+            motion:layout_constraintEnd_toEndOf="parent"
+            motion:layout_constraintTop_toTopOf="parent"
+            motion:layout_constraintBottom_toBottomOf="parent"
+            motion:layout_constraintStart_toEndOf="@id/icon">
+            <CustomAttribute
+                motion:attributeName="textSize"
+                motion:customFloatValue="@dimen/extension_small_text_size" />
+            <CustomAttribute
+                motion:attributeName="textColor"
+                motion:customColorValue="?android:attr/textColorSecondary" />
+        </Constraint>
+
+    </ConstraintSet>
+</MotionScene>

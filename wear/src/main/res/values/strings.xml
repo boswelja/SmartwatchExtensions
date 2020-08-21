@@ -6,6 +6,7 @@
     <string name="lock_phone_failed_message">Failed to lock your phone</string>
     <string name="lock_phone_disabled_message">Phone locking disabled</string>
     <string name="lock_phone_success_message">Successfully locked your phone</string>
+    <string name="lock_phone_long">Tap to lock your %s</string>
 
     <!-- Battery Sync strings -->
     <string name="pref_category_battery_sync_title">Battery Sync</string>
@@ -18,6 +19,7 @@
     <string name="battery_sync_disabled">Battery Sync disabled</string>
     <string name="battery_sync_force_sync_success">Updated battery stats</string>
     <string name="battery_sync_force_sync_fail">Failed to update battery stats</string>
+    <string name="battery_sync_hint_text">Your %s is at</string>
 
     <!-- Interrupt Filter Sync strings -->
     <string name="pref_category_interrupt_filter_sync_title">DnD Sync</string>
