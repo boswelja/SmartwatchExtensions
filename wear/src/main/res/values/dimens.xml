@@ -5,8 +5,14 @@
     <dimen name="setup_text_size_big">18sp</dimen>
     <dimen name="setup_text_size_small">14sp</dimen>
 
-    <dimen name="recyclerview_item_horizontal_padding">8dp</dimen>
-    <dimen name="recyclerview_item_vertical_padding">24dp</dimen>
+    <dimen name="extension_big_horizontal_padding">8dp</dimen>
+    <dimen name="extension_big_vertical_padding">24dp</dimen>
+    <dimen name="extension_small_horizontal_padding">8dp</dimen>
+    <dimen name="extension_small_vertical_padding">16dp</dimen>
+    <dimen name="extension_big_icon_size">48dp</dimen>
+    <dimen name="extension_small_icon_size">36dp</dimen>
+    <dimen name="extension_big_text_size">20</dimen> <!-- Converted to sp automatically -->
+    <dimen name="extension_small_text_size">16</dimen> <!-- Converted to sp automatically -->
 
     <dimen name="recyclerview_item_icon_margin">8dp</dimen>
     <dimen name="extensions_recyclerview_top_offset">8dp</dimen>

@@ -8,7 +8,7 @@
 package com.boswelja.devicemanager.extensions.ui
 
 import android.app.Application
-import android.content.SharedPreferences
+import androidx.core.content.edit
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -19,6 +19,9 @@ import com.boswelja.devicemanager.common.PreferenceKey.PHONE_LOCKING_ENABLED_KEY
 
 class ExtensionsViewModel(application: Application) : AndroidViewModel(application) {
 
+  private val phoneId by lazy { sharedPreferences.getString(References.PHONE_ID_KEY, "") ?: "" }
+
+  private val nodeClient = Wearable.getNodeClient(application)
   private val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(application)
   private val preferenceChangeListener =
       SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
@@ -35,27 +38,19 @@ class ExtensionsViewModel(application: Application) : AndroidViewModel(applicati
   val phoneConnected: LiveData<Boolean>
     get() = _phoneConnected
 
-  private val _phoneLockingEnabled =
-      MutableLiveData(sharedPreferences.getBoolean(PHONE_LOCKING_ENABLED_KEY, false))
-  val phoneLockingEnabled: LiveData<Boolean>
-    get() = _phoneLockingEnabled
-
-  private val _batterySyncEnabled =
-      MutableLiveData(sharedPreferences.getBoolean(BATTERY_SYNC_ENABLED_KEY, false))
-  val batterySyncEnabled: LiveData<Boolean>
-    get() = _batterySyncEnabled
-
-  private val _phoneBatteryPercent =
-      MutableLiveData(sharedPreferences.getInt(BATTERY_PERCENT_KEY, 0))
-  val phoneBatteryPercent: LiveData<Int>
-    get() = _phoneBatteryPercent
-
-  init {
-    sharedPreferences.registerOnSharedPreferenceChangeListener(preferenceChangeListener)
+  private fun setPhoneConnected(isConnected: Boolean) {
+    sharedPreferences.edit { putBoolean(PHONE_CONNECTED_KEY, isConnected) }
+    _phoneConnected.postValue(isConnected)
   }
 
-  override fun onCleared() {
-    super.onCleared()
-    sharedPreferences.unregisterOnSharedPreferenceChangeListener(preferenceChangeListener)
+  fun updatePhoneConnectedStatus() {
+    nodeClient.connectedNodes.addOnCompleteListener {
+      if (it.isSuccessful && !it.result.isNullOrEmpty()) {
+        val isPhoneConnected = it.result!!.any { node -> node.id == phoneId && node.isNearby }
+        setPhoneConnected(isPhoneConnected)
+      } else {
+        setPhoneConnected(false)
+      }
+    }
   }
 }

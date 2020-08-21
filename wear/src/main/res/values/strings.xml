@@ -6,6 +6,7 @@
     <string name="lock_phone_failed_message">Failed to lock your phone</string>
     <string name="lock_phone_disabled_message">Phone locking disabled</string>
     <string name="lock_phone_success_message">Successfully locked your phone</string>
+    <string name="lock_phone_long">Tap to lock your %s</string>
 
     <!-- Battery Sync strings -->
     <string name="pref_category_battery_sync_title">Battery Sync</string>
