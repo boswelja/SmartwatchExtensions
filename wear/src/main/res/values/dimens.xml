@@ -14,8 +14,9 @@
     <dimen name="extension_big_text_size">20</dimen> <!-- Converted to sp automatically -->
     <dimen name="extension_small_text_size">16</dimen> <!-- Converted to sp automatically -->
     <dimen name="extension_icon_margin">4dp</dimen>
-    <dimen name="extensions_recyclerview_top_offset">8dp</dimen>
-    <dimen name="extensions_recyclerview_bottom_offset">8dp</dimen>
+    <dimen name="extensions_list_top_offset">8dp</dimen>
+    <dimen name="extensions_list_bottom_offset">8dp</dimen>
+    <dimen name="extension_button_padding">16dp</dimen>
 
     <dimen name="content_spacing">6dp</dimen>
     <dimen name="content_horizontal_margin">8dp</dimen>

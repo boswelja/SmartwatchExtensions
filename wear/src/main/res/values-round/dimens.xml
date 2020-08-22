@@ -7,6 +7,6 @@
 
     <dimen name="extension_small_horizontal_padding">24dp</dimen>
     <dimen name="extension_big_horizontal_padding">24dp</dimen>
-    <dimen name="extensions_recyclerview_top_offset">16dp</dimen>
-    <dimen name="extensions_recyclerview_bottom_offset">72dp</dimen>
+    <dimen name="extensions_list_top_offset">16dp</dimen>
+    <dimen name="extensions_list_bottom_offset">72dp</dimen>
 </resources>

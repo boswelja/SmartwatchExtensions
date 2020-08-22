@@ -13,8 +13,8 @@
         android:layout_width="match_parent"
         android:orientation="vertical"
         android:layout_height="wrap_content"
-        android:paddingTop="@dimen/extensions_recyclerview_top_offset"
-        android:paddingBottom="@dimen/extensions_recyclerview_bottom_offset">
+        android:paddingTop="@dimen/extensions_list_top_offset"
+        android:paddingBottom="@dimen/extensions_list_bottom_offset">
 
         <androidx.fragment.app.FragmentContainerView
             android:id="@+id/battery_sync_fragment"

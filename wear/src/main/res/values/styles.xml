@@ -43,6 +43,7 @@
         <item name="shapeAppearance">@style/ButtonShapeAppearance</item>
         <item name="android:textColor">?android:attr/textColorPrimary</item>
         <item name="iconTint">?android:attr/textColorPrimary</item>
+        <item name="android:padding">@dimen/extension_button_padding</item>
     </style>
 
     <style name="ButtonShapeAppearance">
