@@ -13,6 +13,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import com.boswelja.devicemanager.databinding.FragmentMainBinding
 
 class ExtensionsFragment : Fragment() {
@@ -26,6 +27,16 @@ class ExtensionsFragment : Fragment() {
   ): View? {
     binding = FragmentMainBinding.inflate(inflater, container, false)
     return binding.root
+  }
+
+  override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    super.onViewCreated(view, savedInstanceState)
+    binding.settingsButton.setOnClickListener {
+      findNavController().navigate(ExtensionsFragmentDirections.toSettingsActivity())
+    }
+    binding.aboutButton.setOnClickListener {
+      findNavController().navigate(ExtensionsFragmentDirections.toAboutActivity())
+    }
   }
 
   override fun onStart() {

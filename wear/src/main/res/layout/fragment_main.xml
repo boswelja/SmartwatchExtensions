@@ -27,5 +27,24 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:name="com.boswelja.devicemanager.phonelocking.ui.LockPhoneFragment" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/settings_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="@string/navigation_settings_title"
+            app:icon="@drawable/ic_settings"
+            style="@style/ExtensionButton" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/about_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="@string/about_app_title"
+            app:icon="@drawable/ic_about"
+            style="@style/ExtensionButton" />
+
     </androidx.appcompat.widget.LinearLayoutCompat>
 </ScrollView>
