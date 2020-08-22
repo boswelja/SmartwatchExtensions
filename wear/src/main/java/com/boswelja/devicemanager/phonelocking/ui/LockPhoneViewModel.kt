@@ -26,7 +26,7 @@ import com.google.android.gms.wearable.Wearable
 class LockPhoneViewModel(application: Application) : AndroidViewModel(application) {
 
   private val phoneLockingDisabledString by lazy {
-    application.getString(R.string.lock_phone_disabled_message)
+    application.getString(R.string.lock_phone_disabled)
   }
 
   private val messageClient = Wearable.getMessageClient(application)
@@ -70,12 +70,12 @@ class LockPhoneViewModel(application: Application) : AndroidViewModel(applicatio
     sharedPreferences.registerOnSharedPreferenceChangeListener(preferenceChangeListener)
     _displayText.addSource(phoneLockingEnabled) {
       if (it)
-          _displayText.postValue(application.getString(R.string.lock_phone_long, phoneName.value))
+          _displayText.postValue(application.getString(R.string.lock_phone, phoneName.value))
       else _displayText.postValue(phoneLockingDisabledString)
     }
     _displayText.addSource(phoneName) {
       if (phoneLockingEnabled.value == true)
-          _displayText.postValue(application.getString(R.string.lock_phone_long, it))
+          _displayText.postValue(application.getString(R.string.lock_phone, it))
       else _displayText.postValue(phoneLockingDisabledString)
     }
   }

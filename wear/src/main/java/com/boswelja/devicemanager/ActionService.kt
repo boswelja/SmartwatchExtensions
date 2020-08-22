@@ -36,8 +36,8 @@ class ActionService : JobIntentService() {
             sendMessage(
                 phoneId,
                 action,
-                getString(R.string.lock_phone_success_message),
-                getString(R.string.lock_phone_failed_message))
+                getString(R.string.lock_phone_success),
+                getString(R.string.lock_phone_failed))
           }
         }
         REQUEST_BATTERY_UPDATE_PATH -> {
@@ -45,8 +45,8 @@ class ActionService : JobIntentService() {
             sendMessage(
                 phoneId,
                 action,
-                getString(R.string.battery_sync_force_sync_success),
-                getString(R.string.battery_sync_force_sync_fail))
+                getString(R.string.battery_sync_refresh_success),
+                getString(R.string.battery_sync_refresh_failed))
           }
         }
       }

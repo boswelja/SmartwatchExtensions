@@ -42,8 +42,8 @@ class PhoneBatteryComplicationProvider : BaseComplicationProviderService() {
     val prefs = PreferenceManager.getDefaultSharedPreferences(this)
     val percent = prefs.getInt(PreferenceKey.BATTERY_PERCENT_KEY, 0)
     val text =
-        if (percent > 0) String.format(getString(R.string.phone_battery_percent), percent)
-        else getString(R.string.phone_battery_unknown_short)
+        if (percent > 0) String.format(getString(R.string.battery_percent), percent)
+        else getString(R.string.battery_percent_unknown)
 
     val complicationData =
         ComplicationData.Builder(type)

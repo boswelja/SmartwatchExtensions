@@ -78,13 +78,13 @@ class BatterySyncViewModel(application: Application) : AndroidViewModel(applicat
       if (it)
           _displayText.postValue(
               application.getString(
-                  R.string.phone_battery_percent, batteryPercent.value.toString()))
+                  R.string.battery_percent, batteryPercent.value.toString()))
       else _displayText.postValue(batterySyncDisabledString)
     }
     _displayText.addSource(batteryPercent) {
       if (batterySyncEnabled.value == true)
           _displayText.postValue(
-              application.getString(R.string.phone_battery_percent, it.toString()))
+              application.getString(R.string.battery_percent, it.toString()))
       else _displayText.postValue(batterySyncDisabledString)
     }
   }
