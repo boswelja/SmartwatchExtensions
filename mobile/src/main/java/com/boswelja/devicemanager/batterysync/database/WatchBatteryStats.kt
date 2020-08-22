@@ -17,11 +17,11 @@ import com.google.android.gms.wearable.MessageEvent
 class WatchBatteryStats(
     @PrimaryKey val watchId: String,
     @ColumnInfo(name = "watch_battery_percent")
-    override val percent: Int,
+    override var percent: Int,
     @ColumnInfo(name = "watch_charging")
-    override val isCharging: Boolean,
+    override var isCharging: Boolean,
     @ColumnInfo(name = "last_update_time")
-    override val lastUpdatedMillis: Long = System.currentTimeMillis()
+    override var lastUpdatedMillis: Long = System.currentTimeMillis()
 ) : BatteryStats(percent, isCharging, lastUpdatedMillis) {
   companion object {
     fun fromMessage(messageEvent: MessageEvent): WatchBatteryStats {
