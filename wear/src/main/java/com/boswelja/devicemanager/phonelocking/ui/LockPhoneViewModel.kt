@@ -69,8 +69,7 @@ class LockPhoneViewModel(application: Application) : AndroidViewModel(applicatio
   init {
     sharedPreferences.registerOnSharedPreferenceChangeListener(preferenceChangeListener)
     _displayText.addSource(phoneLockingEnabled) {
-      if (it)
-          _displayText.postValue(application.getString(R.string.lock_phone, phoneName.value))
+      if (it) _displayText.postValue(application.getString(R.string.lock_phone, phoneName.value))
       else _displayText.postValue(phoneLockingDisabledString)
     }
     _displayText.addSource(phoneName) {
