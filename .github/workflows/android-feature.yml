@@ -17,6 +17,8 @@ jobs:
       - uses: actions/setup-java@v1
         with:
           java-version: 11
+      - name: Build
+        run: bash ./gradlew build --stacktrace
       - name: Unit tests
         run: bash ./gradlew test --stacktrace
       - uses: actions/upload-artifact@v2
