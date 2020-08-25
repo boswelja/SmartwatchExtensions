@@ -16,13 +16,18 @@ import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.common.setup.References
 import com.boswelja.devicemanager.phoneconnectionmanager.References.PHONE_ID_KEY
 import com.google.android.gms.wearable.MessageClient
+import com.google.android.gms.wearable.NodeClient
 import com.google.android.gms.wearable.Wearable
 
-class SetupViewModel(application: Application) : AndroidViewModel(application) {
+class SetupViewModel
+    @JvmOverloads
+    constructor(
+        application: Application,
+        private val nodeClient: NodeClient = Wearable.getNodeClient(application),
+        private val messageClient: MessageClient = Wearable.getMessageClient(application)
+    ) : AndroidViewModel(application) {
 
   private val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(application)
-  private val nodeClient = Wearable.getNodeClient(application)
-  private val messageClient = Wearable.getMessageClient(application)
   private val messageListener =
       MessageClient.OnMessageReceivedListener {
         when (it.path) {
