@@ -8,23 +8,26 @@
 package com.boswelja.devicemanager.extensions.ui
 
 import android.app.Application
+import androidx.annotation.VisibleForTesting
 import androidx.core.content.edit
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.preference.PreferenceManager
-import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_PERCENT_KEY
-import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_SYNC_ENABLED_KEY
-import com.boswelja.devicemanager.common.PreferenceKey.PHONE_LOCKING_ENABLED_KEY
 import com.boswelja.devicemanager.phoneconnectionmanager.References.PHONE_CONNECTED_KEY
 import com.boswelja.devicemanager.phoneconnectionmanager.References.PHONE_ID_KEY
+import com.google.android.gms.wearable.NodeClient
 import com.google.android.gms.wearable.Wearable
 
-class ExtensionsViewModel(application: Application) : AndroidViewModel(application) {
+class ExtensionsViewModel
+    @JvmOverloads
+    constructor(
+        application: Application,
+        private val nodeClient: NodeClient = Wearable.getNodeClient(application)
+    ) : AndroidViewModel(application) {
 
   private val phoneId by lazy { sharedPreferences.getString(PHONE_ID_KEY, "") ?: "" }
 
-  private val nodeClient = Wearable.getNodeClient(application)
   private val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(application)
 
   private val _phoneConnected = MutableLiveData(false)
