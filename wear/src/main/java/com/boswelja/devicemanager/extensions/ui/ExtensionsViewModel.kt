@@ -8,7 +8,6 @@
 package com.boswelja.devicemanager.extensions.ui
 
 import android.app.Application
-import androidx.annotation.VisibleForTesting
 import androidx.core.content.edit
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
