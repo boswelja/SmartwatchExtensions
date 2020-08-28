@@ -1,19 +1,23 @@
+/* Copyright (C) 2020 Jack Boswell <boswelja@outlook.com>
+ *
+ * This file is part of Wearable Extensions
+ *
+ * This file, and any part of the Wearable Extensions app/s cannot be copied and/or distributed
+ * without permission from Jack Boswell (boswelja) <boswela@outlook.com>
+ */
 package com.boswelja.devicemanager.setup.ui
 
 import android.os.Build
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.boswelja.devicemanager.getOrAwaitValue
 import com.google.android.gms.wearable.MessageClient
 import com.google.android.gms.wearable.NodeClient
-import com.google.common.truth.Truth.assertThat
 import io.mockk.MockKAnnotations
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
 import io.mockk.verify
 import org.junit.Before
-
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -23,8 +27,7 @@ import org.robolectric.annotation.Config
 @Config(sdk = [Build.VERSION_CODES.Q])
 class SetupViewModelTest {
 
-  @get:Rule
-  val instantExecutorRule = InstantTaskExecutorRule()
+  @get:Rule val instantExecutorRule = InstantTaskExecutorRule()
 
   @MockK(relaxed = true)
   private lateinit var nodeClient: NodeClient
@@ -37,7 +40,8 @@ class SetupViewModelTest {
   fun setUp() {
     MockKAnnotations.init(this)
     every { nodeClient.localNode.addOnCompleteListener(any()) }
-    viewModel = SetupViewModel(ApplicationProvider.getApplicationContext(), nodeClient, messageClient)
+    viewModel =
+        SetupViewModel(ApplicationProvider.getApplicationContext(), nodeClient, messageClient)
   }
 
   @Test
