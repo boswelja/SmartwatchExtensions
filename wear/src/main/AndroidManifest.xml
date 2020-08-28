@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.boswelja.devicemanager">
 
     <uses-feature android:name="android.hardware.type.watch" />
@@ -9,6 +10,9 @@
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.REQUEST_DELETE_PACKAGES" />
+    <uses-permission
+        android:name="android.permission.QUERY_ALL_PACKAGES"
+        tools:ignore="QueryAllPackagesPermission" />
 
     <application
         android:name=".MainApplication"
@@ -27,7 +31,7 @@
             android:value="@integer/google_play_services_version" />
 
         <activity
-            android:name=".ui.main.MainActivity"
+            android:name=".main.ui.MainActivity"
             android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -37,21 +41,22 @@
         </activity>
 
         <activity
-            android:name=".ui.settings.SettingsActivity"
+            android:name=".settings.ui.SettingsActivity"
             android:exported="false" />
 
         <activity
-            android:name=".ui.about.AboutActivity"
+            android:name=".about.ui.AboutActivity"
             android:exported="false" />
 
         <activity android:name="androidx.wear.activity.ConfirmationActivity" />
 
         <service
-            android:name=".service.ActionService"
-            android:exported="false" />
+            android:name=".ActionService"
+            android:permission="android.permission.BIND_JOB_SERVICE"
+            android:exported="true" />
 
         <service
-            android:name=".complication.PhoneBatteryComplicationProvider"
+            android:name=".batterysync.PhoneBatteryComplicationProvider"
             android:icon="@drawable/phone_battery_full"
             android:label="Phone Battery Status"
             android:permission="com.google.android.wearable.permission.BIND_COMPLICATION_PROVIDER">
@@ -69,7 +74,7 @@
         </service>
 
         <service
-            android:name=".complication.LockPhoneComplicationProvider"
+            android:name=".phonelocking.LockPhoneComplicationProvider"
             android:icon="@drawable/ic_phone_lock"
             android:label="@string/lock_phone_label"
             android:permission="com.google.android.wearable.permission.BIND_COMPLICATION_PROVIDER">
@@ -93,7 +98,7 @@
             </intent-filter>
         </service>
 
-        <service android:name=".receiver.MessageReceiver">
+        <service android:name=".phoneconnectionmanager.MessageReceiver">
             <intent-filter>
                 <action android:name="com.google.android.gms.wearable.MESSAGE_RECEIVED" />
                 <data android:scheme="wear" android:host="*" android:path="/request_noti_policy_access_status" />
@@ -110,7 +115,7 @@
             </intent-filter>
         </service>
 
-        <service android:name=".receiver.PreferenceChangeReceiver">
+        <service android:name=".phoneconnectionmanager.PreferenceChangeReceiver">
             <intent-filter>
                 <action android:name="com.google.android.gms.wearable.DATA_CHANGED" />
                 <data android:scheme="wear" android:host="*" android:pathPrefix="/preference-change_" />
@@ -126,12 +131,16 @@
             android:exported="false" />
 
         <receiver
-            android:name=".receiver.BootReceiver"
+            android:name=".BootReceiver"
             android:exported="false">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
+
+        <receiver
+            android:name=".ActionServiceStarter"
+            android:exported="false" />
     </application>
 
 </manifest>

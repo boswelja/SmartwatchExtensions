@@ -114,7 +114,7 @@ class WatchBatteryWidget : AppWidgetProvider() {
   private fun createWidgetRemoteView(
       context: Context?, width: Int, height: Int, batteryStats: WatchBatteryStats?
   ): RemoteViews {
-    val batteryPercent = batteryStats?.batteryPercent ?: 0
+    val batteryPercent = batteryStats?.percent ?: 0
 
     val remoteViews = RemoteViews(context?.packageName, R.layout.widget_watch_battery)
 

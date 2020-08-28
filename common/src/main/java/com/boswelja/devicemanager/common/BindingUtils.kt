@@ -30,6 +30,11 @@ fun ImageView.setBitmap(bitmap: Bitmap?) {
   setImageBitmap(bitmap)
 }
 
+@BindingAdapter("imageLevel")
+fun ImageView.setLevel(level: Int) {
+  setImageLevel(level)
+}
+
 @BindingAdapter("textRes")
 fun TextView.setTextRes(@StringRes stringRes: Int) {
   if (stringRes != 0) setText(stringRes)

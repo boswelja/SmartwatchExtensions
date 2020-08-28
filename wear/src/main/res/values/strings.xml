@@ -3,58 +3,56 @@
 
     <!-- Lock Phone strings -->
     <string name="lock_phone_label">Lock phone</string>
-    <string name="lock_phone_failed_message">Failed to lock your phone</string>
-    <string name="lock_phone_disabled_message">Phone locking disabled</string>
-    <string name="lock_phone_success_message">Successfully locked your phone</string>
+    <string name="lock_phone_failed">Failed to lock your phone</string>
+    <string name="lock_phone_disabled">Phone locking disabled</string>
+    <string name="lock_phone_success">Successfully locked your phone</string>
+    <string name="lock_phone">Tap to lock your %s</string>
 
     <!-- Battery Sync strings -->
+    <string name="battery_percent_unknown">N/A</string>
+    <string name="battery_percent">%s%%</string>
+    <string name="battery_sync_disabled">Battery Sync disabled</string>
+    <string name="battery_sync_refresh_failed">Failed to update phone battery stats</string>
+    <string name="battery_sync_refresh_success">Updated battery stats</string>
+    <string name="battery_sync_hint_text">Your %s is at</string>
+
+    <!-- DnD Sync strings -->
+    <string name="dnd_sync_active_noti_title">DnD Sync</string>
+    <string name="dnd_sync_with_theater_noti_desc">Syncing phone DnD with Theater Mode</string>
+    <string name="dnd_sync_all_noti_desc">Syncing phone DnD with Theater Mode and DnD</string>
+    <string name="dnd_sync_to_phone_noti_desc">Syncing phone DnD with DnD</string>
+    <string name="dnd_sync_none_noti_desc">There was a problem enabling DnD Sync</string>
+
+    <!-- App Manager strings -->
+    <string name="app_manager_noti_channel_title">App Manager Service</string>
+    <string name="app_manager_noti_title">App Manager Running</string>
+    <string name="app_manager_noti_desc">App Manager is currently running on your phone</string>
+
+    <!-- Settings strings -->
     <string name="pref_category_battery_sync_title">Battery Sync</string>
     <string name="pref_battery_sync_enable_title">Enable Battery Sync</string>
     <string name="pref_battery_sync_phone_charged_noti_title">Phone Charged Notification</string>
     <string name="pref_battery_sync_watch_charged_noti_title">Watch Charged Notification</string>
-    <string name="phone_battery_unknown_short">N/A</string>
-    <string name="phone_battery_percent">%s%%</string>
-    <string name="phone_battery_update_failed">Failed to update phone battery stats</string>
-    <string name="battery_sync_disabled">Battery Sync disabled</string>
-    <string name="battery_sync_force_sync_success">Updated battery stats</string>
-    <string name="battery_sync_force_sync_fail">Failed to update battery stats</string>
-
-    <!-- Interrupt Filter Sync strings -->
     <string name="pref_category_interrupt_filter_sync_title">DnD Sync</string>
-    <string name="pref_interrupt_filter_sync_to_watch_title">Phone to Watch Sync</string>
-    <string name="pref_interrupt_filter_sync_to_phone_title">Watch to Phone Sync</string>
-    <string name="pref_interrupt_filter_sync_with_theater_title">Sync with Theater Mode</string>
-
-    <!-- App Manager strings -->
-    <string name="app_manager_service_noti_channel_title">App Manager Service</string>
-    <string name="app_manager_service_noti_title">App Manager Running</string>
-    <string name="app_manager_service_noti_desc">App Manager is currently running on your phone</string>
-
-    <string name="navigation_settings_title">Settings</string>
-
+    <string name="pref_dnd_sync_to_watch_title">Phone to Watch Sync</string>
+    <string name="pref_dnd_sync_to_phone_title">Watch to Phone Sync</string>
+    <string name="pref_dnd_sync_with_theater_title">Sync with Theater Mode</string>
     <string name="additional_setup_required">Additional setup required</string>
-    <string name="error">An error has occurred</string>
+    <string name="settings_title">Settings</string>
 
-    <string name="content_description_scroll_down">Scroll down to read more</string>
-
+    <!-- Setup strings -->
     <string name="welcome_to_text">Welcome to</string>
-
+    <string name="content_description_scroll_down">Scroll down to read more</string>
     <string name="setup_phone_helper_text">On your phone, download and install Wearable Extensions from the Play Store</string>
     <string name="setup_instructions_text">Look for this watch in Wearable Extensions</string>
     <string name="setup_hint_text">Setup will continue automatically</string>
 
-    <string name="not_connected_text">Cannot connect to your phone. Make sure your phone is nearby and try again</string>
-    <string name="no_connection">No connection</string>
-    <string name="section_text_app_info">App Info</string>
-
+    <!-- About App strings -->
     <string name="about_app_title">About</string>
     <string name="version_string">Version %s</string>
     <string name="open_play_store_title">Show in Google Play</string>
     <string name="open_app_info_title">Open App Info</string>
 
-    <string name="interrupt_filter_sync_active_noti_title">DnD Sync</string>
-    <string name="interrupt_filter_sync_with_theater_noti_desc">Syncing phone DnD with Theater Mode</string>
-    <string name="interrupt_filter_sync_all_noti_desc">Syncing phone DnD with Theater Mode and DnD</string>
-    <string name="interrupt_filter_sync_to_phone_noti_desc">Syncing phone DnD with DnD</string>
-    <string name="interrupt_filter_sync_none_noti_desc">There was a problem enabling DnD Sync</string>
+    <string name="error">An error has occurred</string>
+    <string name="default_phone_name">Phone</string>
 </resources>

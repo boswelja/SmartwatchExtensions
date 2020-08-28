@@ -32,7 +32,7 @@ import com.boswelja.devicemanager.common.dndsync.References.DND_SYNC_LOCAL_NOTI_
 import com.boswelja.devicemanager.common.dndsync.References.DND_SYNC_NOTI_CHANNEL_ID
 import com.boswelja.devicemanager.common.dndsync.References.START_ACTIVITY_FROM_NOTI_ID
 import com.boswelja.devicemanager.common.dndsync.Utils
-import com.boswelja.devicemanager.ui.main.MainActivity
+import com.boswelja.devicemanager.main.ui.MainActivity
 
 class DnDLocalChangeListener : Service() {
 
@@ -98,15 +98,15 @@ class DnDLocalChangeListener : Service() {
   private fun createNotification(): Notification {
     NotificationCompat.Builder(this, DND_SYNC_NOTI_CHANNEL_ID)
         .apply {
-          setContentTitle(getString(R.string.interrupt_filter_sync_active_noti_title))
+          setContentTitle(getString(R.string.dnd_sync_active_noti_title))
           when {
             dndSyncToPhone and dndSyncWithTheater ->
-                setContentText(getString(R.string.interrupt_filter_sync_all_noti_desc))
+                setContentText(getString(R.string.dnd_sync_all_noti_desc))
             dndSyncToPhone and !dndSyncWithTheater ->
-                setContentText(getString(R.string.interrupt_filter_sync_to_phone_noti_desc))
+                setContentText(getString(R.string.dnd_sync_to_phone_noti_desc))
             dndSyncWithTheater and !dndSyncToPhone ->
-                setContentText(getString(R.string.interrupt_filter_sync_with_theater_noti_desc))
-            else -> setContentText(getString(R.string.interrupt_filter_sync_none_noti_desc))
+                setContentText(getString(R.string.dnd_sync_with_theater_noti_desc))
+            else -> setContentText(getString(R.string.dnd_sync_none_noti_desc))
           }
           setSmallIcon(R.drawable.ic_sync)
           setOngoing(true)

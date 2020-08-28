@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/startPoint"
-        android:name="com.boswelja.devicemanager.ui.main.MainFragment">
+        android:name="com.boswelja.devicemanager.main.ui.MainFragment">
 
         <action
             android:id="@+id/to_extensionsFragment"
@@ -20,7 +20,7 @@
 
     <fragment
         android:id="@+id/extensionsFragment"
-        android:name="com.boswelja.devicemanager.ui.extensions.ExtensionsFragment"
+        android:name="com.boswelja.devicemanager.extensions.ui.ExtensionsFragment"
         android:label="MainFragment">
 
         <action
@@ -34,7 +34,7 @@
 
     <fragment
         android:id="@+id/setupFragment"
-        android:name="com.boswelja.devicemanager.ui.setup.SetupFragment">
+        android:name="com.boswelja.devicemanager.setup.ui.SetupFragment">
 
         <action
             android:id="@+id/to_extensionsFragment"
@@ -45,9 +45,9 @@
 
     <activity
         android:id="@+id/aboutActivity"
-        android:name="com.boswelja.devicemanager.ui.about.AboutActivity" />
+        android:name="com.boswelja.devicemanager.about.ui.AboutActivity" />
 
     <activity
         android:id="@+id/settingsActivity"
-        android:name="com.boswelja.devicemanager.ui.settings.SettingsActivity" />
+        android:name="com.boswelja.devicemanager.settings.ui.SettingsActivity" />
 </navigation>

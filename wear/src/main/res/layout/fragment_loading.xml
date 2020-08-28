@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.progressindicator.ProgressIndicator
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_gravity="center"
-    android:layout_width="72dp"
-    android:layout_height="72dp"
-    style="@style/Widget.MaterialComponents.ProgressIndicator.Circular.Indeterminate"/>

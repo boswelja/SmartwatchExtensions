@@ -88,9 +88,9 @@ class WatchBatteryUpdateReceiver : WearableListenerService() {
         database.boolPrefDao().get(watchId, BATTERY_WATCH_CHARGE_NOTI_KEY)?.value == true
     val chargedNotiSent =
         database.boolPrefDao().get(watchId, BATTERY_CHARGED_NOTI_SENT)?.value == true
-    return watchBatteryStats.isWatchCharging &&
+    return watchBatteryStats.isCharging &&
         sendChargeNotis &&
-        (watchBatteryStats.batteryPercent >= chargedThreshold) &&
+        (watchBatteryStats.percent >= chargedThreshold) &&
         !chargedNotiSent
   }
 

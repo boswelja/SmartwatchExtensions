@@ -1,14 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="AppTheme" parent="@style/Theme.AppCompat.NoActionBar">
+    <style name="AppTheme" parent="@style/Theme.MaterialComponents.NoActionBar">
         <item name="android:windowBackground">@color/windowBackground</item>
         <item name="colorAccent">@color/colorPrimary</item>
         <item name="colorPrimary">@color/colorPrimary</item>
     </style>
 
-    <style name="AboutLinkItem">
-        <item name="android:paddingStart">@dimen/content_horizontal_margin</item>
-        <item name="android:paddingEnd">@dimen/content_horizontal_margin</item>
+    <style name="About" />
+
+    <style name="About.LinkItem">
+        <item name="android:paddingStart">@dimen/content_horizontal_padding</item>
+        <item name="android:paddingEnd">@dimen/content_horizontal_padding</item>
         <item name="android:paddingTop">8dp</item>
         <item name="android:paddingBottom">8dp</item>
         <item name="android:orientation">horizontal</item>
@@ -16,26 +18,69 @@
         <item name="android:background">?selectableItemBackground</item>
     </style>
 
-    <style name="AboutLinkItem.Text" parent="TextAppearance.MaterialComponents.Subtitle1">
-        <item name="android:layout_marginStart">2dp</item>
-        <item name="android:textSize">16sp</item>
+    <style name="About.LinkItem.Text">
+        <item name="android:textAppearance">?attr/textAppearanceSubtitle1</item>
         <item name="android:textColor">?android:textColorSecondary</item>
     </style>
 
-    <style name="AboutApp.Title" parent="TextAppearance.MaterialComponents.Headline6">
+    <style name="About.Title">
+        <item name="android:textAppearance">?attr/textAppearanceHeadline6</item>
         <item name="android:layout_marginTop">@dimen/content_spacing</item>
-        <item name="android:layout_marginStart">@dimen/content_horizontal_margin</item>
-        <item name="android:layout_marginEnd">@dimen/content_horizontal_margin</item>
+        <item name="android:layout_marginStart">@dimen/content_horizontal_padding</item>
+        <item name="android:layout_marginEnd">@dimen/content_horizontal_padding</item>
         <item name="android:textAlignment">center</item>
-        <item name="android:lineSpacingMultiplier">0.95</item>
     </style>
 
-    <style name="AboutApp.Version" parent="TextAppearance.MaterialComponents.Subtitle1">
-        <item name="android:layout_marginTop">2dp</item>
-        <item name="android:layout_marginStart">@dimen/content_horizontal_margin</item>
-        <item name="android:layout_marginEnd">@dimen/content_horizontal_margin</item>
+    <style name="About.Version">
+        <item name="android:textAppearance">?attr/textAppearanceSubtitle1</item>
+        <item name="android:layout_marginStart">@dimen/content_horizontal_padding</item>
+        <item name="android:layout_marginEnd">@dimen/content_horizontal_padding</item>
         <item name="android:textAlignment">center</item>
         <item name="android:textColor">?android:textColorSecondary</item>
-        <item name="android:textSize">18sp</item>
+    </style>
+
+    <style name="Extension">
+        <item name="android:background">?selectableItemBackground</item>
+    </style>
+
+    <style name="Extension.Button" parent="Widget.MaterialComponents.Button.OutlinedButton.Icon">
+        <item name="shapeAppearance">@style/ButtonShapeAppearance</item>
+        <item name="android:textColor">?android:attr/textColorPrimary</item>
+        <item name="iconTint">?android:attr/textColorPrimary</item>
+        <item name="android:padding">@dimen/extension_button_padding</item>
+    </style>
+
+    <style name="Extension.PrimaryText">
+        <item name="android:textAppearance">?textAppearanceHeadline6</item>
+        <item name="android:textAlignment">center</item>
+    </style>
+
+    <style name="Extension.SecondaryText">
+        <item name="android:textAppearance">?textAppearanceBody1</item>
+        <item name="android:textAlignment">center</item>
+    </style>
+
+    <style name="Setup" />
+
+    <style name="Setup.Section">
+        <item name="android:paddingStart">@dimen/content_horizontal_padding</item>
+        <item name="android:paddingEnd">@dimen/content_horizontal_padding</item>
+        <item name="layout_constraintDimensionRatio">1:1</item>
+    </style>
+
+    <style name="Setup.Section.PrimaryText">
+        <item name="android:textAppearance">?textAppearanceHeadline6</item>
+        <item name="android:textAlignment">center</item>
+    </style>
+
+    <style name="Setup.Section.SecondaryText">
+        <item name="android:textAppearance">?textAppearanceBody2</item>
+        <item name="android:textAlignment">center</item>
+        <item name="android:textColor">?android:textColorSecondary</item>
+    </style>
+
+    <style name="ButtonShapeAppearance">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">50%</item>
     </style>
 </resources>

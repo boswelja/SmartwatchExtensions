@@ -42,6 +42,10 @@ android {
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
     }
+
+    testOptions.unitTests {
+        isIncludeAndroidResources = true
+    }
 }
 
 dependencies {
@@ -69,8 +73,13 @@ dependencies {
 
     debugImplementation(DebugLibraries.androidxFragment)
 
+    testImplementation(TestLibraries.androidxArch)
+    testImplementation(TestLibraries.androidxTestCore)
+    testImplementation(TestLibraries.androidxTestExt)
     testImplementation(TestLibraries.junit)
     testImplementation(TestLibraries.googleTruth)
+    testImplementation(TestLibraries.mockk)
+    testImplementation(TestLibraries.robolectric)
 
     androidTestImplementation(AndroidTestLibraries.googleTruth)
     androidTestImplementation(AndroidTestLibraries.androidxEspresso)

@@ -15,7 +15,6 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Build
 import android.os.IBinder
@@ -35,11 +34,12 @@ import com.boswelja.devicemanager.common.appmanager.References.STOP_SERVICE
 import com.boswelja.devicemanager.phoneconnectionmanager.References.PHONE_ID_KEY
 import com.google.android.gms.wearable.MessageClient
 import com.google.android.gms.wearable.Wearable
+import timber.log.Timber
 
 class AppManagerService : Service() {
 
-  private lateinit var sharedPreferences: SharedPreferences
-  private lateinit var messageClient: MessageClient
+  private val sharedPreferences by lazy { PreferenceManager.getDefaultSharedPreferences(this) }
+  private val messageClient by lazy { Wearable.getMessageClient(this) }
 
   private var phoneId: String? = null
 
@@ -63,14 +63,13 @@ class AppManagerService : Service() {
   private val packageChangeReceiver =
       object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
-          if (intent != null && intent.data != null) {
+          Timber.d("onReceive($context, $intent) called")
+          intent?.data?.let { data ->
             val isReplacingPackage = intent.getBooleanExtra(Intent.EXTRA_REPLACING, false)
             when (intent.action) {
               Intent.ACTION_PACKAGE_ADDED -> {
-                AppPackageInfo(
-                        packageManager,
-                        packageManager.getPackageInfo(intent.data!!.encodedSchemeSpecificPart, 0))
-                    .also {
+                val packageName = data.encodedSchemeSpecificPart
+                AppPackageInfo(packageManager, packageManager.getPackageInfo(packageName, 0)).also {
                   if (isReplacingPackage) {
                     sendAppUpdatedMessage(it)
                   } else {
@@ -79,10 +78,14 @@ class AppManagerService : Service() {
                 }
               }
               Intent.ACTION_PACKAGE_REMOVED -> {
+                val packageName = data.encodedSchemeSpecificPart
                 if (!isReplacingPackage) {
-                  sendAppRemovedMessage(intent.data!!.encodedSchemeSpecificPart)
+                  sendAppRemovedMessage(packageName)
+                } else {
+                  Timber.i("Package removed, but system indicated it's being replaced.")
                 }
               }
+              else -> Timber.w("Unknown intent received")
             }
           }
         }
@@ -93,10 +96,9 @@ class AppManagerService : Service() {
   override fun onCreate() {
     super.onCreate()
 
-    sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
     phoneId = sharedPreferences.getString(PHONE_ID_KEY, "")
 
-    messageClient = Wearable.getMessageClient(this).also { it.addListener(messageReceiver) }
+    messageClient.addListener(messageReceiver)
 
     IntentFilter()
         .apply {
@@ -136,14 +138,14 @@ class AppManagerService : Service() {
       if (notificationManager.getNotificationChannel(APP_MANAGER_NOTI_CHANNEL_ID) == null) {
         NotificationChannel(
                 APP_MANAGER_NOTI_CHANNEL_ID,
-                getString(R.string.app_manager_service_noti_channel_title),
+                getString(R.string.app_manager_noti_channel_title),
                 NotificationManager.IMPORTANCE_LOW)
             .also { notificationManager.createNotificationChannel(it) }
       }
     }
     return NotificationCompat.Builder(this, APP_MANAGER_NOTI_CHANNEL_ID)
-        .setContentTitle(getString(R.string.app_manager_service_noti_title))
-        .setContentText(getString(R.string.app_manager_service_noti_desc))
+        .setContentTitle(getString(R.string.app_manager_noti_title))
+        .setContentText(getString(R.string.app_manager_noti_desc))
         .setSmallIcon(R.drawable.ic_app_manager)
         .setOngoing(true)
         .setShowWhen(false)
