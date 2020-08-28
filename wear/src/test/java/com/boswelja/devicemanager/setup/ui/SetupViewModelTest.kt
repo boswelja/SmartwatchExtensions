@@ -14,7 +14,6 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.android.gms.wearable.MessageClient
 import com.google.android.gms.wearable.NodeClient
 import io.mockk.MockKAnnotations
-import io.mockk.every
 import io.mockk.impl.annotations.MockK
 import io.mockk.verify
 import org.junit.Before
@@ -39,7 +38,6 @@ class SetupViewModelTest {
   @Before
   fun setUp() {
     MockKAnnotations.init(this)
-    every { nodeClient.localNode.addOnCompleteListener(any()) }
     viewModel =
         SetupViewModel(ApplicationProvider.getApplicationContext(), nodeClient, messageClient)
   }
