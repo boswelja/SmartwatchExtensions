@@ -5,7 +5,9 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-        <import type="com.boswelja.devicemanager.BuildConfig" />
+        <variable
+            name="viewModel"
+            type="com.boswelja.devicemanager.appinfo.ui.AppInfoViewModel" />
     </data>
 
     <ScrollView
@@ -40,7 +42,7 @@
                 android:id="@+id/app_version_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@{@string/version_string(BuildConfig.VERSION_NAME)}"
+                android:text="@{@string/version_string(viewModel.version)}"
                 app:layout_constraintTop_toBottomOf="@id/app_name_view"
                 tools:text="Version 1.0.0"
                 style="@style/AboutApp.Version" />
@@ -50,6 +52,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/content_spacing"
+                android:onClick="@{() -> viewModel.fireOpenPlayStoreEvent()}"
                 app:layout_constraintTop_toBottomOf="@id/app_version_view"
                 style="@style/AboutLinkItem">
 
@@ -70,6 +73,7 @@
                 android:id="@+id/open_app_info_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:onClick="@{() -> viewModel.fireOpenAppInfoEvent()}"
                 app:layout_constraintTop_toBottomOf="@id/open_play_store_container"
                 style="@style/AboutLinkItem">
 

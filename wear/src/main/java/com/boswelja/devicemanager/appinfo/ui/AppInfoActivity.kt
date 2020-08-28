@@ -11,38 +11,31 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.boswelja.devicemanager.common.GooglePlayUtils
 import com.boswelja.devicemanager.databinding.ActivityAboutBinding
 
 class AppInfoActivity : AppCompatActivity() {
 
+  private val viewModel: AppInfoViewModel by viewModels()
+
   private lateinit var binding: ActivityAboutBinding
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     binding = ActivityAboutBinding.inflate(layoutInflater)
+    binding.viewModel = viewModel
+    binding.lifecycleOwner = this
     setContentView(binding.root)
 
-    setupPlayStoreLink()
-    setupAppInfoLink()
-  }
-
-  private fun setupPlayStoreLink() {
-    binding.openPlayStoreContainer.setOnClickListener { openPlayStore() }
-  }
-
-  private fun setupAppInfoLink() {
-    binding.openAppInfoContainer.setOnClickListener { openAppInfo() }
-  }
-
-  private fun openPlayStore() {
-    GooglePlayUtils.getPlayStoreIntent(this).also { startActivity(it) }
-  }
-
-  private fun openAppInfo() {
-    Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
-        .apply { data = Uri.fromParts("package", packageName, null) }
-        .also { startActivity(it) }
+    viewModel.openPlayStoreEvent.observe(this) {
+      GooglePlayUtils.getPlayStoreIntent(this).also { startActivity(it) }
+    }
+    viewModel.openAppInfoEvent.observe(this) {
+      Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+          .apply { data = Uri.fromParts("package", packageName, null) }
+          .also { startActivity(it) }
+    }
   }
 }
