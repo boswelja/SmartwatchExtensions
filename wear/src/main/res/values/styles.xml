@@ -6,6 +6,8 @@
         <item name="colorPrimary">@color/colorPrimary</item>
     </style>
 
+    <style name="About" />
+
     <style name="About.LinkItem">
         <item name="android:paddingStart">@dimen/content_horizontal_padding</item>
         <item name="android:paddingEnd">@dimen/content_horizontal_padding</item>
@@ -56,6 +58,25 @@
     <style name="Extension.SecondaryText">
         <item name="android:textAppearance">?textAppearanceBody1</item>
         <item name="android:textAlignment">center</item>
+    </style>
+
+    <style name="Setup" />
+
+    <style name="Setup.Section">
+        <item name="android:paddingStart">@dimen/content_horizontal_padding</item>
+        <item name="android:paddingEnd">@dimen/content_horizontal_padding</item>
+        <item name="layout_constraintDimensionRatio">1:1</item>
+    </style>
+
+    <style name="Setup.Section.PrimaryText">
+        <item name="android:textAppearance">?textAppearanceSubtitle1</item>
+        <item name="android:textAlignment">center</item>
+    </style>
+
+    <style name="Setup.Section.SecondaryText">
+        <item name="android:textAppearance">?textAppearanceBody2</item>
+        <item name="android:textAlignment">center</item>
+        <item name="android:textColor">?android:textColorSecondary</item>
     </style>
 
     <style name="ButtonShapeAppearance">

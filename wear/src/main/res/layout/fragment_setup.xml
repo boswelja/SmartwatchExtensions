@@ -15,15 +15,13 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:paddingTop="@dimen/content_vertical_padding"
-            android:paddingStart="@dimen/content_horizontal_padding"
-            android:paddingEnd="@dimen/content_horizontal_padding"
-            app:layout_constraintDimensionRatio="1:1"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toTopOf="parent"
+            style="@style/Setup.Section">
 
             <ImageView
                 android:id="@+id/app_icon_view"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
+                android:layout_width="@dimen/setup_app_icon_size"
+                android:layout_height="@dimen/setup_app_icon_size"
                 android:src="@mipmap/ic_launcher"
                 android:contentDescription="@string/app_name"
                 app:layout_constraintTop_toTopOf="parent"
@@ -36,25 +34,22 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 android:text="@string/welcome_to_text"
-                android:textSize="@dimen/setup_text_size_small"
-                android:textColor="?android:textColorSecondary"
                 app:layout_constraintTop_toBottomOf="@id/app_icon_view"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"/>
+                app:layout_constraintEnd_toEndOf="parent"
+                style="@style/Setup.Section.SecondaryText" />
 
             <TextView
                 android:id="@+id/app_name_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center_horizontal"
                 android:text="@string/app_name"
-                android:textSize="@dimen/setup_text_size_big"
-                android:textColor="?android:textColorPrimary"
-                app:layout_constraintTop_toBottomOf="@id/welcome_text_view" />
+                app:layout_constraintTop_toBottomOf="@id/welcome_text_view"
+                style="@style/Setup.Section.PrimaryText" />
 
             <ImageView
-                android:layout_width="24dp"
-                android:layout_height="24dp"
+                android:layout_width="@dimen/setup_chevron_size"
+                android:layout_height="@dimen/setup_chevron_size"
                 android:src="@drawable/ic_arrow_down"
                 android:contentDescription="@string/content_description_scroll_down"
                 app:layout_constraintTop_toBottomOf="@id/app_name_view"
@@ -69,27 +64,23 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:visibility="visible"
-            android:paddingStart="@dimen/content_horizontal_padding"
-            android:paddingEnd="@dimen/content_horizontal_padding"
-            app:layout_constraintDimensionRatio="1:1"
-            app:layout_constraintTop_toBottomOf="@id/welcome_view_holder">
+            app:layout_constraintTop_toBottomOf="@id/welcome_view_holder"
+            style="@style/Setup.Section">
 
             <TextView
                 android:id="@+id/phone_setup_instructions_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center_horizontal"
                 android:text="@string/setup_phone_helper_text"
-                android:textSize="@dimen/setup_text_size_big"
-                android:textColor="?android:textColorPrimary"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"/>
+                app:layout_constraintEnd_toEndOf="parent"
+                style="@style/Setup.Section.PrimaryText" />
 
             <ImageView
-                android:layout_width="24dp"
-                android:layout_height="24dp"
+                android:layout_width="@dimen/setup_chevron_size"
+                android:layout_height="@dimen/setup_chevron_size"
                 android:src="@drawable/ic_arrow_down"
                 android:contentDescription="@string/content_description_scroll_down"
                 app:layout_constraintTop_toBottomOf="@id/phone_setup_instructions_text"
@@ -103,43 +94,34 @@
             android:id="@+id/setup_view_holder"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:paddingStart="@dimen/content_horizontal_padding"
-            android:paddingEnd="@dimen/content_horizontal_padding"
-            android:paddingBottom="@dimen/content_vertical_padding"
-            app:layout_constraintDimensionRatio="1:1"
-            app:layout_constraintTop_toBottomOf="@id/phone_setup_helper_view">
+            app:layout_constraintTop_toBottomOf="@id/phone_setup_helper_view"
+            style="@style/Setup.Section">
 
             <TextView
                 android:id="@+id/setup_device_name_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center_horizontal"
-                android:textSize="@dimen/setup_text_size_big"
-                android:textColor="?android:textColorPrimary"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                tools:text="Watch Name 1234"/>
+                tools:text="Watch Name 1234"
+                style="@style/Setup.Section.PrimaryText"/>
 
             <TextView
                 android:id="@+id/setup_instructions_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center_horizontal"
                 android:text="@string/setup_instructions_text"
-                android:textSize="@dimen/setup_text_size_small"
-                android:textColor="?android:textColorSecondary"
-                app:layout_constraintBottom_toTopOf="@id/setup_device_name_text" />
+                app:layout_constraintBottom_toTopOf="@id/setup_device_name_text"
+                style="@style/Setup.Section.SecondaryText" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center_horizontal"
                 android:text="@string/setup_hint_text"
-                android:textSize="@dimen/setup_text_size_small"
-                android:textColor="?android:textColorSecondary"
-                app:layout_constraintTop_toBottomOf="@id/setup_device_name_text" />
+                app:layout_constraintTop_toBottomOf="@id/setup_device_name_text"
+                style="@style/Setup.Section.SecondaryText" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>

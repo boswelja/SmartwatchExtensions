@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="setup_text_size_big">18sp</dimen>
-    <dimen name="setup_text_size_small">14sp</dimen>
+    <dimen name="setup_chevron_size">24dp</dimen>
+    <dimen name="setup_app_icon_size">48dp</dimen>
 
     <dimen name="extension_big_vertical_padding">20dp</dimen>
     <dimen name="extension_big_icon_size">48dp</dimen>
