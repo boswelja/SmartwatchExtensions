@@ -45,7 +45,7 @@
             android:exported="false" />
 
         <activity
-            android:name=".appinfo.ui.AppInfoActivity"
+            android:name=".about.ui.AboutActivity"
             android:exported="false" />
 
         <activity android:name="androidx.wear.activity.ConfirmationActivity" />

@@ -5,7 +5,7 @@
  * This file, and any part of the Wearable Extensions app/s cannot be copied and/or distributed
  * without permission from Jack Boswell (boswelja) <boswela@outlook.com>
  */
-package com.boswelja.devicemanager.appinfo.ui
+package com.boswelja.devicemanager.about.ui
 
 import android.content.Intent
 import android.net.Uri
@@ -16,9 +16,9 @@ import androidx.appcompat.app.AppCompatActivity
 import com.boswelja.devicemanager.common.GooglePlayUtils
 import com.boswelja.devicemanager.databinding.ActivityAboutBinding
 
-class AppInfoActivity : AppCompatActivity() {
+class AboutActivity : AppCompatActivity() {
 
-  private val viewModel: AppInfoViewModel by viewModels()
+  private val viewModel: AboutViewModel by viewModels()
 
   private lateinit var binding: ActivityAboutBinding
 

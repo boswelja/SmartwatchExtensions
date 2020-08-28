@@ -45,7 +45,7 @@
 
     <activity
         android:id="@+id/aboutActivity"
-        android:name="com.boswelja.devicemanager.appinfo.ui.AppInfoActivity" />
+        android:name="com.boswelja.devicemanager.about.ui.AboutActivity" />
 
     <activity
         android:id="@+id/settingsActivity"

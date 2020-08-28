@@ -5,13 +5,13 @@
  * This file, and any part of the Wearable Extensions app/s cannot be copied and/or distributed
  * without permission from Jack Boswell (boswelja) <boswela@outlook.com>
  */
-package com.boswelja.devicemanager.appinfo.ui
+package com.boswelja.devicemanager.about.ui
 
 import androidx.lifecycle.ViewModel
 import com.boswelja.devicemanager.BuildConfig
 import com.boswelja.devicemanager.common.Event
 
-class AppInfoViewModel : ViewModel() {
+class AboutViewModel : ViewModel() {
 
   val version = BuildConfig.VERSION_NAME
 
