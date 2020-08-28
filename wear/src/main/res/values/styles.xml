@@ -69,7 +69,7 @@
     </style>
 
     <style name="Setup.Section.PrimaryText">
-        <item name="android:textAppearance">?textAppearanceSubtitle1</item>
+        <item name="android:textAppearance">?textAppearanceHeadline6</item>
         <item name="android:textAlignment">center</item>
     </style>
 
