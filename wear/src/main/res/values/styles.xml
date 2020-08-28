@@ -7,8 +7,8 @@
     </style>
 
     <style name="AboutLinkItem">
-        <item name="android:paddingStart">@dimen/content_horizontal_margin</item>
-        <item name="android:paddingEnd">@dimen/content_horizontal_margin</item>
+        <item name="android:paddingStart">@dimen/content_horizontal_padding</item>
+        <item name="android:paddingEnd">@dimen/content_horizontal_padding</item>
         <item name="android:paddingTop">8dp</item>
         <item name="android:paddingBottom">8dp</item>
         <item name="android:orientation">horizontal</item>
@@ -24,16 +24,16 @@
 
     <style name="AboutApp.Title" parent="TextAppearance.MaterialComponents.Headline6">
         <item name="android:layout_marginTop">@dimen/content_spacing</item>
-        <item name="android:layout_marginStart">@dimen/content_horizontal_margin</item>
-        <item name="android:layout_marginEnd">@dimen/content_horizontal_margin</item>
+        <item name="android:layout_marginStart">@dimen/content_horizontal_padding</item>
+        <item name="android:layout_marginEnd">@dimen/content_horizontal_padding</item>
         <item name="android:textAlignment">center</item>
         <item name="android:lineSpacingMultiplier">0.95</item>
     </style>
 
     <style name="AboutApp.Version" parent="TextAppearance.MaterialComponents.Subtitle1">
         <item name="android:layout_marginTop">2dp</item>
-        <item name="android:layout_marginStart">@dimen/content_horizontal_margin</item>
-        <item name="android:layout_marginEnd">@dimen/content_horizontal_margin</item>
+        <item name="android:layout_marginStart">@dimen/content_horizontal_padding</item>
+        <item name="android:layout_marginEnd">@dimen/content_horizontal_padding</item>
         <item name="android:textAlignment">center</item>
         <item name="android:textColor">?android:textColorSecondary</item>
         <item name="android:textSize">18sp</item>

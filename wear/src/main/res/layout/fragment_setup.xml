@@ -14,9 +14,9 @@
             android:id="@+id/welcome_view_holder"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:paddingTop="@dimen/setup_vertical_padding"
-            android:paddingStart="@dimen/setup_horizontal_padding"
-            android:paddingEnd="@dimen/setup_horizontal_padding"
+            android:paddingTop="@dimen/content_vertical_padding"
+            android:paddingStart="@dimen/content_horizontal_padding"
+            android:paddingEnd="@dimen/content_horizontal_padding"
             app:layout_constraintDimensionRatio="1:1"
             app:layout_constraintTop_toTopOf="parent">
 
@@ -69,8 +69,8 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:visibility="visible"
-            android:paddingStart="@dimen/setup_horizontal_padding"
-            android:paddingEnd="@dimen/setup_horizontal_padding"
+            android:paddingStart="@dimen/content_horizontal_padding"
+            android:paddingEnd="@dimen/content_horizontal_padding"
             app:layout_constraintDimensionRatio="1:1"
             app:layout_constraintTop_toBottomOf="@id/welcome_view_holder">
 
@@ -103,8 +103,9 @@
             android:id="@+id/setup_view_holder"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:paddingStart="@dimen/setup_horizontal_padding"
-            android:paddingEnd="@dimen/setup_horizontal_padding"
+            android:paddingStart="@dimen/content_horizontal_padding"
+            android:paddingEnd="@dimen/content_horizontal_padding"
+            android:paddingBottom="@dimen/content_vertical_padding"
             app:layout_constraintDimensionRatio="1:1"
             app:layout_constraintTop_toBottomOf="@id/phone_setup_helper_view">
 

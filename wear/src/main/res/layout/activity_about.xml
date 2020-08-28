@@ -19,7 +19,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingTop="8dp"
-            android:paddingBottom="@dimen/content_vertical_margin_inset">
+            android:paddingBottom="@dimen/content_vertical_padding">
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/app_icon_view"
