@@ -35,7 +35,7 @@
             android:layout_gravity="center_horizontal"
             android:text="@string/settings_title"
             app:icon="@drawable/ic_settings"
-            style="@style/ExtensionButton" />
+            style="@style/Extension.Button" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/about_button"
@@ -44,7 +44,7 @@
             android:layout_gravity="center_horizontal"
             android:text="@string/about_app_title"
             app:icon="@drawable/ic_about"
-            style="@style/ExtensionButton" />
+            style="@style/Extension.Button" />
 
     </androidx.appcompat.widget.LinearLayoutCompat>
 </ScrollView>

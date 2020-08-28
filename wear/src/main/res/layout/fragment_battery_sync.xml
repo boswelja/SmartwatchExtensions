@@ -13,10 +13,10 @@
         android:id="@+id/motion_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="?selectableItemBackground"
         android:onClick="@{() -> viewModel.updateBatteryStats()}"
         app:layoutDescription="@xml/battery_stats_motion_scene"
-        tools:path="true">
+        tools:path="true"
+        style="@style/Extension">
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/icon"
@@ -30,18 +30,16 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@{@string/battery_sync_hint_text(viewModel.phoneName)}"
-            android:textAlignment="center"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
-            tools:text="Your Phone is at"/>
+            tools:text="Your Phone is at"
+            style="@style/Extension.SecondaryText" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/text_view"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:textAlignment="center"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
             android:text="@{viewModel.displayText}"
-            tools:text="100%" />
+            tools:text="100%"
+            style="@style/Extension.PrimaryText" />
 
     </androidx.constraintlayout.motion.widget.MotionLayout>
 </layout>
