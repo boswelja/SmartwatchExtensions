@@ -27,13 +27,12 @@ class SetupFragment : Fragment() {
       inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
   ): View? {
     binding = FragmentSetupBinding.inflate(layoutInflater, container, false)
+    binding.viewModel = viewModel
+    binding.lifecycleOwner = viewLifecycleOwner
     return binding.root
   }
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-    viewModel.localName.observe(viewLifecycleOwner) {
-      binding.setupDeviceNameText.text = it ?: getString(R.string.error)
-    }
     viewModel.watchRegistered.observe(viewLifecycleOwner) {
       if (it) findNavController().navigate(SetupFragmentDirections.toExtensionsFragment())
     }

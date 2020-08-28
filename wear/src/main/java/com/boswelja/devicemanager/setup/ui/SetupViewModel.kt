@@ -12,7 +12,9 @@ import androidx.core.content.edit
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Transformations
 import androidx.preference.PreferenceManager
+import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.setup.References
 import com.boswelja.devicemanager.phoneconnectionmanager.References.PHONE_ID_KEY
 import com.google.android.gms.wearable.MessageClient
@@ -43,9 +45,9 @@ class SetupViewModel
     get() = _watchRegistered
 
   private val _localName = MutableLiveData<String?>(null)
-  val localName: LiveData<String?>
-    get() = _localName
-
+  val setupNameText = Transformations.map(_localName) {
+    it ?: application.getString(R.string.error)
+  }
   init {
     messageClient.addListener(messageListener)
     refreshLocalName()
