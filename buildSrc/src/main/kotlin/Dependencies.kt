@@ -7,7 +7,7 @@ object BuildPlugins {
         const val buildToolsVersion = "4.2.0-alpha08"
         const val googleServicesVersion = "4.3.3"
         const val androidxNavigation = Libraries.Versions.androidxNavigation
-        const val spotlessVersion = "5.1.1"
+        const val spotlessVersion = "5.2.0"
     }
 
     const val androidGradlePlugin = "com.android.tools.build:gradle:${Versions.buildToolsVersion}"
@@ -34,7 +34,7 @@ object Libraries {
     object Versions {
         const val androidxAppCompat = "1.3.0-alpha02"
         const val androidxBrowser = "1.3.0-alpha05"
-        const val androidxConstraintLayout = "2.0.0-rc1"
+        const val androidxConstraintLayout = "2.0.0"
         const val androidxCoreKtx = "1.5.0-alpha02"
         const val androidxFragment = "1.3.0-alpha08"
         const val androidxLifecycle = "2.3.0-alpha07"
@@ -97,14 +97,14 @@ object DebugLibraries {
 object TestLibraries {
     object Versions {
         const val androidxArch = "2.1.0"
-        const val androidxTest = "1.3.0-rc03"
+        const val androidxTest = "1.3.0"
 
         const val junit = "4.13"
         const val truth = "1.0.1"
 
         const val mockk = "1.10.0"
 
-        const val robolectric = "4.4-beta-1"
+        const val robolectric = "4.4"
     }
 
     const val androidxArch = "androidx.arch.core:core-testing:${Versions.androidxArch}"
@@ -122,7 +122,7 @@ object AndroidTestLibraries {
         const val androidxEspresso = "3.1.0"
         const val androidxRoom = Libraries.Versions.androidxRoom
         const val androidxNavigation = Libraries.Versions.androidxNavigation
-        const val androidxTest = "1.3.0-rc01"
+        const val androidxTest = TestLibraries.Versions.androidxTest
         const val androidxWork = Libraries.Versions.androidxWork
 
         const val truth = TestLibraries.Versions.truth
