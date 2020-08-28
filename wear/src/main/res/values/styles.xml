@@ -6,7 +6,7 @@
         <item name="colorPrimary">@color/colorPrimary</item>
     </style>
 
-    <style name="AboutLinkItem">
+    <style name="About.LinkItem">
         <item name="android:paddingStart">@dimen/content_horizontal_padding</item>
         <item name="android:paddingEnd">@dimen/content_horizontal_padding</item>
         <item name="android:paddingTop">8dp</item>
@@ -16,27 +16,25 @@
         <item name="android:background">?selectableItemBackground</item>
     </style>
 
-    <style name="AboutLinkItem.Text" parent="TextAppearance.MaterialComponents.Subtitle1">
-        <item name="android:layout_marginStart">2dp</item>
-        <item name="android:textSize">16sp</item>
+    <style name="About.LinkItem.Text">
+        <item name="android:textAppearance">?attr/textAppearanceSubtitle1</item>
         <item name="android:textColor">?android:textColorSecondary</item>
     </style>
 
-    <style name="AboutApp.Title" parent="TextAppearance.MaterialComponents.Headline6">
+    <style name="About.Title">
+        <item name="android:textAppearance">?attr/textAppearanceHeadline6</item>
         <item name="android:layout_marginTop">@dimen/content_spacing</item>
         <item name="android:layout_marginStart">@dimen/content_horizontal_padding</item>
         <item name="android:layout_marginEnd">@dimen/content_horizontal_padding</item>
         <item name="android:textAlignment">center</item>
-        <item name="android:lineSpacingMultiplier">0.95</item>
     </style>
 
-    <style name="AboutApp.Version" parent="TextAppearance.MaterialComponents.Subtitle1">
-        <item name="android:layout_marginTop">2dp</item>
+    <style name="About.Version">
+        <item name="android:textAppearance">?attr/textAppearanceSubtitle1</item>
         <item name="android:layout_marginStart">@dimen/content_horizontal_padding</item>
         <item name="android:layout_marginEnd">@dimen/content_horizontal_padding</item>
         <item name="android:textAlignment">center</item>
         <item name="android:textColor">?android:textColorSecondary</item>
-        <item name="android:textSize">18sp</item>
     </style>
 
     <style name="ExtensionButton" parent="Widget.MaterialComponents.Button.OutlinedButton.Icon">
