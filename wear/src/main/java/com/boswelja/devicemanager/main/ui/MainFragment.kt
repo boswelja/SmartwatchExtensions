@@ -18,10 +18,10 @@ class MainFragment : Fragment() {
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    //    if (viewModel.isRegistered) {
+        if (viewModel.isRegistered) {
     findNavController().navigate(MainFragmentDirections.toExtensionsFragment())
-    //    } else {
-    //      findNavController().navigate(MainFragmentDirections.toSetupFragment())
-    //    }
+        } else {
+          findNavController().navigate(MainFragmentDirections.toSetupFragment())
+        }
   }
 }
