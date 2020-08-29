@@ -73,7 +73,7 @@ object Libraries {
     const val androidxWear = "androidx.wear:wear:${Versions.androidxWear}"
     const val androidxWork = "androidx.work:work-runtime-ktx:${Versions.androidxWork}"
 
-    const val billingClient = "com.android.billingclient:billing:${Versions.billingClient}"
+    const val billingClient = "com.android.billingclient:billing-ktx:${Versions.billingClient}"
 
     const val materialComponents = "com.google.android.material:material:${Versions.googleMaterial}"
     const val playCore = "com.google.android.play:core:${Versions.googlePlayCore}"
