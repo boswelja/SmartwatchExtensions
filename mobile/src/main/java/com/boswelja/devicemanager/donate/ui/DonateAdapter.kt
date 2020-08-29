@@ -24,8 +24,6 @@ class DonateAdapter(private val clickCallback: (sku: SkuDetails) -> Unit) :
   override fun onBindViewHolder(holder: IconTwoLineViewHolder, position: Int) {
     val sku = getItem(position)
     holder.bind(R.drawable.ic_donate, sku.title, sku.price)
-    holder.itemView.setOnClickListener {
-      clickCallback(sku)
-    }
+    holder.itemView.setOnClickListener { clickCallback(sku) }
   }
 }
