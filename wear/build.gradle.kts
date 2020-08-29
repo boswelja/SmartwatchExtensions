@@ -85,6 +85,9 @@ dependencies {
     androidTestImplementation(AndroidTestLibraries.androidxEspresso)
     androidTestImplementation(AndroidTestLibraries.androidxTestRunner)
     androidTestImplementation(AndroidTestLibraries.androidxTestRules)
+    androidTestImplementation(AndroidTestLibraries.androidxTestExt)
+    androidTestImplementation(AndroidTestLibraries.androidxTestCore)
+    androidTestImplementation(AndroidTestLibraries.androidxNavigation)
 }
 
 spotless {

@@ -134,6 +134,8 @@ object AndroidTestLibraries {
     const val androidxNavigation = "androidx.navigation:navigation-testing:${Versions.androidxNavigation}"
     const val androidxTestRunner = "androidx.test:runner:${Versions.androidxTest}"
     const val androidxTestRules = "androidx.test:rules:${Versions.androidxTest}"
+    const val androidxTestExt = "androidx.test.ext:junit-ktx:1.1.2-rc03"
+    const val androidxTestCore = "androidx.test:core-ktx:${Versions.androidxTest}"
     const val androidxWork = "androidx.work:work-testing:${Versions.androidxWork}"
 
     const val googleTruth = "com.google.truth:truth:${Versions.truth}"
