@@ -33,9 +33,8 @@ class AppInfoFragment :
     BasePreferenceFragment(), Preference.OnPreferenceClickListener, DonationResultInterface {
 
   private val watchManager by lazy { WatchManager.get(requireContext()) }
-  private val viewModel: AppInfoViewModel by viewModels {
-    AppInfoViewModelFactory(Wearable.getMessageClient(requireContext()))
-  }
+  private val viewModel: AppInfoViewModel by viewModels()
+
   private val watchVersionPreference: Preference by lazy { findPreference(WATCH_VERSION_KEY)!! }
   private val customTabsIntent: CustomTabsIntent by lazy {
     CustomTabsIntent.Builder().setShowTitle(true).setDefaultShareMenuItemEnabled(true).build()

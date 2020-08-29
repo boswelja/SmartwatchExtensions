@@ -7,7 +7,10 @@
  */
 package com.boswelja.devicemanager.appinfo.ui
 
+import android.os.Build
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.test.core.app.ApplicationProvider
+import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.boswelja.devicemanager.common.References.REQUEST_APP_VERSION
 import com.boswelja.devicemanager.getOrAwaitValue
 import com.google.android.gms.wearable.MessageClient
@@ -19,7 +22,11 @@ import io.mockk.verify
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import org.junit.runner.RunWith
+import org.robolectric.annotation.Config
 
+@RunWith(AndroidJUnit4::class)
+@Config(sdk = [Build.VERSION_CODES.Q])
 class AppInfoViewModelTest {
 
   private val watchId = "123456"
@@ -34,7 +41,7 @@ class AppInfoViewModelTest {
   @Before
   fun setUp() {
     MockKAnnotations.init(this)
-    viewModel = AppInfoViewModel(messageClient)
+    viewModel = AppInfoViewModel(ApplicationProvider.getApplicationContext(), messageClient)
     verify { messageClient.addListener(any()) }
   }
 
