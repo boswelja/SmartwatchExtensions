@@ -1,27 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<navigation
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/main_graph"
-    app:startDestination="@id/startPoint">
+    app:startDestination="@id/extensionsFragment">
 
-    <fragment
-        android:id="@+id/startPoint"
-        android:name="com.boswelja.devicemanager.main.ui.MainFragment">
-
-        <action
-            android:id="@+id/to_extensionsFragment"
-            app:destination="@id/extensionsFragment" />
-
-        <action
-            android:id="@+id/to_setupFragment"
-            app:destination="@id/setupFragment" />
-    </fragment>
+    <action
+        android:id="@+id/to_setup"
+        app:destination="@id/setupFragment" />
 
     <fragment
         android:id="@+id/extensionsFragment"
-        android:name="com.boswelja.devicemanager.extensions.ui.ExtensionsFragment"
-        android:label="MainFragment">
+        android:name="com.boswelja.devicemanager.extensions.ui.ExtensionsFragment">
 
         <action
             android:id="@+id/to_settingsActivity"
