@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 2,
-    "identityHash": "4e9158c9ccd38098e0c0e761fb41a58c",
+    "identityHash": "1eb318215cf796a1c049a345546c3173",
     "entities": [
       {
         "tableName": "watch_battery_stats",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`watchId` TEXT NOT NULL, `watch_battery_percent` INTEGER NOT NULL, `watch_charging` INTEGER NOT NULL, `last_update_time` INTEGER NOT NULL, `percent` INTEGER NOT NULL, `isCharging` INTEGER NOT NULL, `lastUpdatedMillis` INTEGER NOT NULL, PRIMARY KEY(`watchId`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`watchId` TEXT NOT NULL, `watch_battery_percent` INTEGER NOT NULL, `watch_charging` INTEGER NOT NULL, `last_update_time` INTEGER NOT NULL, PRIMARY KEY(`watchId`))",
         "fields": [
           {
             "fieldPath": "watchId",
@@ -31,24 +31,6 @@
             "columnName": "last_update_time",
             "affinity": "INTEGER",
             "notNull": true
-          },
-          {
-            "fieldPath": "percent",
-            "columnName": "percent",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "isCharging",
-            "columnName": "isCharging",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "lastUpdatedMillis",
-            "columnName": "lastUpdatedMillis",
-            "affinity": "INTEGER",
-            "notNull": true
           }
         ],
         "primaryKey": {
@@ -64,7 +46,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '4e9158c9ccd38098e0c0e761fb41a58c')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '1eb318215cf796a1c049a345546c3173')"
     ]
   }
 }
