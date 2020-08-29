@@ -42,34 +42,14 @@ class AppInfoFragment : BasePreferenceFragment(), Preference.OnPreferenceClickLi
       OPEN_PRIVACY_POLICY_KEY -> showPrivacyPolicy()
       SHARE_APP_KEY -> showShareMenu()
       LEAVE_REVIEW_KEY -> showPlayStorePage()
-      OPEN_DONATE_DIALOG_KEY -> showDonationDialog()
+      OPEN_DONATE_DIALOG_KEY ->
+          findNavController().navigate(AppInfoFragmentDirections.toDonateFragment())
       OPEN_CHANGELOG_KEY ->
           findNavController().navigate(AppInfoFragmentDirections.toChangelogFragment())
       else -> return false
     }
     return true
   }
-  //
-  //  override fun billingSetupFailed() {
-  //    Snackbar.make(requireView(), R.string.donation_connection_failed_message,
-  // Snackbar.LENGTH_LONG)
-  //        .show()
-  //  }
-  //
-  //  override fun skuQueryFailed() {
-  //    Snackbar.make(requireView(), R.string.donation_connection_failed_message,
-  // Snackbar.LENGTH_LONG)
-  //        .show()
-  //  }
-  //
-  //  override fun donationFailed() {
-  //    Snackbar.make(requireView(), R.string.donation_failed_message, Snackbar.LENGTH_LONG).show()
-  //  }
-  //
-  //  override fun onDonate() {
-  //    Snackbar.make(requireView(), R.string.donation_processed_message,
-  // Snackbar.LENGTH_LONG).show()
-  //  }
 
   override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
     addPreferencesFromResource(R.xml.prefs_about)
