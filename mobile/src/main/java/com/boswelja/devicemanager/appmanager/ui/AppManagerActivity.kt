@@ -20,9 +20,8 @@ import timber.log.Timber
 class AppManagerActivity : BaseToolbarActivity() {
 
   private val args: AppManagerActivityArgs by navArgs()
-  private val viewModel: AppManagerViewModel by viewModels {
-    AppManagerViewModelFactory(Wearable.getMessageClient(this))
-  }
+  private val viewModel: AppManagerViewModel by viewModels()
+
   private val watchServiceLifecycleObserver by lazy { WatchServiceLifecycleObserver(viewModel) }
 
   private lateinit var binding: ActivityAppManagerBinding

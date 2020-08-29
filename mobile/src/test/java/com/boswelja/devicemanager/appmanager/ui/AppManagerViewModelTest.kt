@@ -8,6 +8,7 @@
 package com.boswelja.devicemanager.appmanager.ui
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.test.core.app.ApplicationProvider
 import com.boswelja.devicemanager.common.appmanager.References.START_SERVICE
 import com.boswelja.devicemanager.common.appmanager.References.STOP_SERVICE
 import com.google.android.gms.wearable.MessageClient
@@ -33,7 +34,7 @@ class AppManagerViewModelTest {
   @Before
   fun setUp() {
     MockKAnnotations.init(this)
-    viewModel = AppManagerViewModel(messageClient)
+    viewModel = AppManagerViewModel(ApplicationProvider.getApplicationContext(), messageClient)
     viewModel.watchId = watchId
     verify { messageClient.addListener(any()) }
   }
