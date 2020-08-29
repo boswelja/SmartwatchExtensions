@@ -14,7 +14,7 @@ import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.recyclerview.item.IconTwoLineViewHolder
 import com.boswelja.devicemanager.donate.SkuDetailDiffer
 
-class DonateAdapter(clickCallback: (sku: SkuDetails) -> Unit) :
+class DonateAdapter(private val clickCallback: (sku: SkuDetails) -> Unit) :
     ListAdapter<SkuDetails, IconTwoLineViewHolder>(SkuDetailDiffer()) {
 
   override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): IconTwoLineViewHolder {
@@ -24,5 +24,8 @@ class DonateAdapter(clickCallback: (sku: SkuDetails) -> Unit) :
   override fun onBindViewHolder(holder: IconTwoLineViewHolder, position: Int) {
     val sku = getItem(position)
     holder.bind(R.drawable.pref_ic_donate, sku.title, sku.price)
+    holder.itemView.setOnClickListener {
+      clickCallback(sku)
+    }
   }
 }
