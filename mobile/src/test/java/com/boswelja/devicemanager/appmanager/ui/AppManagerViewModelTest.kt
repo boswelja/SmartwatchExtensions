@@ -7,8 +7,10 @@
  */
 package com.boswelja.devicemanager.appmanager.ui
 
+import android.os.Build
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.test.core.app.ApplicationProvider
+import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.boswelja.devicemanager.common.appmanager.References.START_SERVICE
 import com.boswelja.devicemanager.common.appmanager.References.STOP_SERVICE
 import com.google.android.gms.wearable.MessageClient
@@ -19,7 +21,11 @@ import io.mockk.verify
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import org.junit.runner.RunWith
+import org.robolectric.annotation.Config
 
+@RunWith(AndroidJUnit4::class)
+@Config(sdk = [Build.VERSION_CODES.Q])
 class AppManagerViewModelTest {
 
   private val watchId = "123456"
