@@ -55,7 +55,6 @@ android {
 }
 
 dependencies {
-    implementation(fileTree("libs") { include("*.aar") })
     implementation(project(":common"))
 
     implementation(Libraries.androidxAppCompat)
