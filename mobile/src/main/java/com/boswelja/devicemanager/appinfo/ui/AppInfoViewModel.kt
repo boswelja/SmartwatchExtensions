@@ -7,15 +7,16 @@
  */
 package com.boswelja.devicemanager.appinfo.ui
 
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import com.boswelja.devicemanager.common.References
 import com.google.android.gms.wearable.MessageClient
+import com.google.android.gms.wearable.Wearable
 import timber.log.Timber
 
-class AppInfoViewModel(private val messageClient: MessageClient) : ViewModel() {
+class AppInfoViewModel @JvmOverloads constructor(application: Application, private val messageClient: MessageClient = Wearable.getMessageClient(application)) : AndroidViewModel(application) {
 
   private val messageListener =
       MessageClient.OnMessageReceivedListener {
@@ -74,18 +75,5 @@ class AppInfoViewModel(private val messageClient: MessageClient) : ViewModel() {
     val versionName = data[0]
     val versionCode = data[1]
     return Pair(versionName, versionCode)
-  }
-}
-
-@Suppress("UNCHECKED_CAST")
-class AppInfoViewModelFactory(private val messageClient: MessageClient) :
-    ViewModelProvider.NewInstanceFactory() {
-  override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-    return when (modelClass) {
-      AppInfoViewModel::class -> {
-        AppInfoViewModel(messageClient) as T
-      }
-      else -> super.create(modelClass)
-    }
   }
 }
