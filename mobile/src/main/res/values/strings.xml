@@ -229,6 +229,9 @@
     <string name="database_name_widget">Widget</string>
     <string name="database_name_battery_stats">Battery Sync</string>
 
+    <!-- Donate strings -->
+    <string name="donate_title">Donate</string>
+
     <string name="snackbar_action_undo">Undo</string>
 
     <string name="privacy_policy_url">https://github.com/boswelja/PublicDocs/blob/master/PrivacyPolicies/WearableExtensions.md#privacy-policy</string>

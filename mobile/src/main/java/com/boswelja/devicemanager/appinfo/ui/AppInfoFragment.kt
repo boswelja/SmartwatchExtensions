@@ -17,20 +17,16 @@ import androidx.core.net.toUri
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.preference.Preference
-import com.boswelja.common.donate.DonationResultInterface
-import com.boswelja.common.donate.ui.DonationDialog
 import com.boswelja.devicemanager.BuildConfig
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.GooglePlayUtils
 import com.boswelja.devicemanager.common.GooglePlayUtils.getPlayStoreLink
 import com.boswelja.devicemanager.common.ui.BasePreferenceFragment
+import com.boswelja.devicemanager.donate.ui.DonateSheet
 import com.boswelja.devicemanager.watchmanager.WatchManager
-import com.google.android.gms.wearable.Wearable
-import com.google.android.material.snackbar.Snackbar
 import timber.log.Timber
 
-class AppInfoFragment :
-    BasePreferenceFragment(), Preference.OnPreferenceClickListener, DonationResultInterface {
+class AppInfoFragment : BasePreferenceFragment(), Preference.OnPreferenceClickListener {
 
   private val watchManager by lazy { WatchManager.get(requireContext()) }
   private val viewModel: AppInfoViewModel by viewModels()
@@ -46,30 +42,13 @@ class AppInfoFragment :
       OPEN_PRIVACY_POLICY_KEY -> showPrivacyPolicy()
       SHARE_APP_KEY -> showShareMenu()
       LEAVE_REVIEW_KEY -> showPlayStorePage()
-      OPEN_DONATE_DIALOG_KEY -> showDonationDialog()
+      OPEN_DONATE_DIALOG_KEY ->
+          findNavController().navigate(AppInfoFragmentDirections.toDonateFragment())
       OPEN_CHANGELOG_KEY ->
           findNavController().navigate(AppInfoFragmentDirections.toChangelogFragment())
       else -> return false
     }
     return true
-  }
-
-  override fun billingSetupFailed() {
-    Snackbar.make(requireView(), R.string.donation_connection_failed_message, Snackbar.LENGTH_LONG)
-        .show()
-  }
-
-  override fun skuQueryFailed() {
-    Snackbar.make(requireView(), R.string.donation_connection_failed_message, Snackbar.LENGTH_LONG)
-        .show()
-  }
-
-  override fun donationFailed() {
-    Snackbar.make(requireView(), R.string.donation_failed_message, Snackbar.LENGTH_LONG).show()
-  }
-
-  override fun onDonate() {
-    Snackbar.make(requireView(), R.string.donation_processed_message, Snackbar.LENGTH_LONG).show()
   }
 
   override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
@@ -169,12 +148,10 @@ class AppInfoFragment :
     }
   }
 
-  /** Create an instance of [DonationDialog] and shows it. */
+  /** Create an instance of [DonateSheet] and shows it. */
   private fun showDonationDialog() {
     Timber.d("showDonationDialog() called")
-    DonationDialog(R.style.AppTheme_AlertDialog)
-        .apply { setDonationResultInterface(this@AppInfoFragment) }
-        .also { it.show(parentFragmentManager) }
+    DonateSheet().show(parentFragmentManager, "DonateSheet")
   }
 
   companion object {

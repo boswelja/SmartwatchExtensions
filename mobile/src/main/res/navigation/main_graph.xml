@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<navigation
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/main_navigation"
     app:startDestination="@id/extensionsFragment">
@@ -70,7 +69,15 @@
         <action
             android:id="@+id/to_changelogFragment"
             app:destination="@id/changelogSheetFragment" />
+
+        <action
+            android:id="@+id/to_donateFragment"
+            app:destination="@id/donateSheetFragment" />
     </fragment>
+
+    <dialog
+        android:id="@+id/donateSheetFragment"
+        android:name="com.boswelja.devicemanager.donate.ui.DonateSheet" />
 
     <dialog
         android:id="@+id/changelogSheetFragment"
