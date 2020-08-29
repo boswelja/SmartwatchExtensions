@@ -1,3 +1,10 @@
+/* Copyright (C) 2020 Jack Boswell <boswelja@outlook.com>
+ *
+ * This file is part of Wearable Extensions
+ *
+ * This file, and any part of the Wearable Extensions app/s cannot be copied and/or distributed
+ * without permission from Jack Boswell (boswelja) <boswela@outlook.com>
+ */
 package com.boswelja.devicemanager.main.ui
 
 import android.content.SharedPreferences
@@ -18,7 +25,8 @@ class MainActivityTest {
 
   @Before
   fun setUp() {
-    sharedPreferences = PreferenceManager.getDefaultSharedPreferences(ApplicationProvider.getApplicationContext())
+    sharedPreferences =
+        PreferenceManager.getDefaultSharedPreferences(ApplicationProvider.getApplicationContext())
   }
 
   @Test
@@ -26,7 +34,8 @@ class MainActivityTest {
     sharedPreferences.edit(commit = true) { remove(References.PHONE_ID_KEY) }
     val scenario = getScenario()
     scenario.onActivity {
-      assertThat(it.findNavController(R.id.nav_host_fragment).currentDestination?.id).isEqualTo(R.id.setupFragment)
+      assertThat(it.findNavController(R.id.nav_host_fragment).currentDestination?.id).isEqualTo(
+          R.id.setupFragment)
     }
     scenario.close()
   }
@@ -36,7 +45,8 @@ class MainActivityTest {
     sharedPreferences.edit(commit = true) { putString(References.PHONE_ID_KEY, "id123") }
     val scenario = getScenario()
     scenario.onActivity {
-      assertThat(it.findNavController(R.id.nav_host_fragment).currentDestination?.id).isEqualTo(R.id.extensionsFragment)
+      assertThat(it.findNavController(R.id.nav_host_fragment).currentDestination?.id).isEqualTo(
+          R.id.extensionsFragment)
     }
     scenario.close()
   }

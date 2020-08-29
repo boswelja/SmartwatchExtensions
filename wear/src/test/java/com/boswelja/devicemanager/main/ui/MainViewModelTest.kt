@@ -1,3 +1,10 @@
+/* Copyright (C) 2020 Jack Boswell <boswelja@outlook.com>
+ *
+ * This file is part of Wearable Extensions
+ *
+ * This file, and any part of the Wearable Extensions app/s cannot be copied and/or distributed
+ * without permission from Jack Boswell (boswelja) <boswela@outlook.com>
+ */
 package com.boswelja.devicemanager.main.ui
 
 import android.content.SharedPreferences
@@ -10,7 +17,6 @@ import com.boswelja.devicemanager.phoneconnectionmanager.References.PHONE_ID_KEY
 import com.google.common.truth.Truth.assertThat
 import org.junit.Before
 import org.junit.Test
-
 import org.junit.runner.RunWith
 import org.robolectric.annotation.Config
 
@@ -22,7 +28,8 @@ class MainViewModelTest {
 
   @Before
   fun setUp() {
-    sharedPreferences = PreferenceManager.getDefaultSharedPreferences(ApplicationProvider.getApplicationContext())
+    sharedPreferences =
+        PreferenceManager.getDefaultSharedPreferences(ApplicationProvider.getApplicationContext())
   }
 
   @Test
