@@ -26,8 +26,7 @@ import com.boswelja.devicemanager.watchmanager.WatchManager
 import com.google.android.gms.wearable.Wearable
 import timber.log.Timber
 
-class AppInfoFragment :
-    BasePreferenceFragment(), Preference.OnPreferenceClickListener {
+class AppInfoFragment : BasePreferenceFragment(), Preference.OnPreferenceClickListener {
 
   private val watchManager by lazy { WatchManager.get(requireContext()) }
   private val viewModel: AppInfoViewModel by viewModels()
@@ -50,24 +49,27 @@ class AppInfoFragment :
     }
     return true
   }
-//
-//  override fun billingSetupFailed() {
-//    Snackbar.make(requireView(), R.string.donation_connection_failed_message, Snackbar.LENGTH_LONG)
-//        .show()
-//  }
-//
-//  override fun skuQueryFailed() {
-//    Snackbar.make(requireView(), R.string.donation_connection_failed_message, Snackbar.LENGTH_LONG)
-//        .show()
-//  }
-//
-//  override fun donationFailed() {
-//    Snackbar.make(requireView(), R.string.donation_failed_message, Snackbar.LENGTH_LONG).show()
-//  }
-//
-//  override fun onDonate() {
-//    Snackbar.make(requireView(), R.string.donation_processed_message, Snackbar.LENGTH_LONG).show()
-//  }
+  //
+  //  override fun billingSetupFailed() {
+  //    Snackbar.make(requireView(), R.string.donation_connection_failed_message,
+  // Snackbar.LENGTH_LONG)
+  //        .show()
+  //  }
+  //
+  //  override fun skuQueryFailed() {
+  //    Snackbar.make(requireView(), R.string.donation_connection_failed_message,
+  // Snackbar.LENGTH_LONG)
+  //        .show()
+  //  }
+  //
+  //  override fun donationFailed() {
+  //    Snackbar.make(requireView(), R.string.donation_failed_message, Snackbar.LENGTH_LONG).show()
+  //  }
+  //
+  //  override fun onDonate() {
+  //    Snackbar.make(requireView(), R.string.donation_processed_message,
+  // Snackbar.LENGTH_LONG).show()
+  //  }
 
   override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
     addPreferencesFromResource(R.xml.prefs_about)
@@ -169,7 +171,6 @@ class AppInfoFragment :
   /** Create an instance of [DonationDialog] and shows it. */
   private fun showDonationDialog() {
     Timber.d("showDonationDialog() called")
-
   }
 
   companion object {

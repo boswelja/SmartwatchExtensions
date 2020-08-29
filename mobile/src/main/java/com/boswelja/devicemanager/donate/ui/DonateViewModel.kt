@@ -1,3 +1,10 @@
+/* Copyright (C) 2020 Jack Boswell <boswelja@outlook.com>
+ *
+ * This file is part of Wearable Extensions
+ *
+ * This file, and any part of the Wearable Extensions app/s cannot be copied and/or distributed
+ * without permission from Jack Boswell (boswelja) <boswela@outlook.com>
+ */
 package com.boswelja.devicemanager.donate.ui
 
 import android.app.Activity
@@ -27,29 +34,28 @@ class DonateViewModel(application: Application) : AndroidViewModel(application) 
   private val coroutineJob = Job()
   private val coroutineScope = CoroutineScope(Dispatchers.IO + coroutineJob)
 
-  private val purchasesUpdatedListener = PurchasesUpdatedListener { _, purchases ->
-    purchases?.forEach {
-      consumePurchase(it)
-    }
-  }
+  private val purchasesUpdatedListener =
+      PurchasesUpdatedListener { _, purchases -> purchases?.forEach { consumePurchase(it) } }
 
-  private val clientStateListener = object : BillingClientStateListener {
-    override fun onBillingSetupFinished(result: BillingResult) {
-      if (result.responseCode == BillingClient.BillingResponseCode.OK) {
-        _clientConnected.postValue(true)
-        querySkuDetails()
+  private val clientStateListener =
+      object : BillingClientStateListener {
+        override fun onBillingSetupFinished(result: BillingResult) {
+          if (result.responseCode == BillingClient.BillingResponseCode.OK) {
+            _clientConnected.postValue(true)
+            querySkuDetails()
+          }
+        }
+
+        override fun onBillingServiceDisconnected() {
+          _clientConnected.postValue(false)
+        }
       }
-    }
 
-    override fun onBillingServiceDisconnected() {
-      _clientConnected.postValue(false)
-    }
-  }
-
-  private val billingClient = BillingClient.newBuilder(application)
-      .setListener(purchasesUpdatedListener)
-      .enablePendingPurchases()
-      .build()
+  private val billingClient =
+      BillingClient.newBuilder(application)
+          .setListener(purchasesUpdatedListener)
+          .enablePendingPurchases()
+          .build()
 
   private val _clientConnected = MutableLiveData(false)
   val clientConnected: LiveData<Boolean>
@@ -74,10 +80,11 @@ class DonateViewModel(application: Application) : AndroidViewModel(application) 
 
   private fun querySkuDetails() {
     coroutineScope.launch {
-      val params = SkuDetailsParams.newBuilder()
-          .setSkusList(Skus.all)
-          .setType(BillingClient.SkuType.INAPP)
-          .build()
+      val params =
+          SkuDetailsParams.newBuilder()
+              .setSkusList(Skus.all)
+              .setType(BillingClient.SkuType.INAPP)
+              .build()
       val skuDetails = billingClient.querySkuDetails(params)
       if (skuDetails.billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
         _skus.postValue(skuDetails.skuDetailsList ?: emptyList())
@@ -90,18 +97,14 @@ class DonateViewModel(application: Application) : AndroidViewModel(application) 
   private fun consumePurchase(purchase: Purchase) {
     coroutineScope.launch {
       if (purchase.purchaseState == Purchase.PurchaseState.PURCHASED) {
-        val params = ConsumeParams.newBuilder()
-            .setPurchaseToken(purchase.purchaseToken)
-            .build()
+        val params = ConsumeParams.newBuilder().setPurchaseToken(purchase.purchaseToken).build()
         billingClient.consumePurchase(params)
       }
     }
   }
 
   fun launchBillingFlow(activity: Activity, sku: SkuDetails) {
-    val params = BillingFlowParams.newBuilder()
-        .setSkuDetails(sku)
-        .build()
+    val params = BillingFlowParams.newBuilder().setSkuDetails(sku).build()
     billingClient.launchBillingFlow(activity, params)
   }
 }
