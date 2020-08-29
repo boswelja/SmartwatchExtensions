@@ -20,6 +20,10 @@ class MainActivity : AppCompatActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     setContentView(R.layout.activity_main)
+  }
+
+  override fun onStart() {
+    super.onStart()
     if (!viewModel.isRegistered) {
       findNavController(R.id.nav_host_fragment).navigate(R.id.to_setup)
     }
