@@ -22,8 +22,8 @@ import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.GooglePlayUtils
 import com.boswelja.devicemanager.common.GooglePlayUtils.getPlayStoreLink
 import com.boswelja.devicemanager.common.ui.BasePreferenceFragment
+import com.boswelja.devicemanager.donate.ui.DonateSheet
 import com.boswelja.devicemanager.watchmanager.WatchManager
-import com.google.android.gms.wearable.Wearable
 import timber.log.Timber
 
 class AppInfoFragment : BasePreferenceFragment(), Preference.OnPreferenceClickListener {
@@ -168,9 +168,10 @@ class AppInfoFragment : BasePreferenceFragment(), Preference.OnPreferenceClickLi
     }
   }
 
-  /** Create an instance of [DonationDialog] and shows it. */
+  /** Create an instance of [DonateSheet] and shows it. */
   private fun showDonationDialog() {
     Timber.d("showDonationDialog() called")
+    DonateSheet().show(parentFragmentManager, "DonateSheet")
   }
 
   companion object {

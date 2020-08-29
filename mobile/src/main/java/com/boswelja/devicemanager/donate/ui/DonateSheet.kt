@@ -36,6 +36,7 @@ class DonateSheet : BottomSheetDialogFragment() {
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
+    binding.recyclerview.adapter = adapter
     viewModel.skus.observe(viewLifecycleOwner) {
       if (it != null) adapter.submitList(it) else Timber.w("SKU list null")
     }
