@@ -97,7 +97,7 @@ spotless {
         ktfmt()
         endWithNewline()
 
-        licenseHeaderFile("../License")
+        licenseHeaderFile("../LicenseHeader")
     }
     kotlinGradle {
         ktlint()
