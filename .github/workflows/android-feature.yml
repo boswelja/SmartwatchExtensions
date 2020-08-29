@@ -18,7 +18,7 @@ jobs:
         with:
           java-version: 11
       - name: Build
-        run: bash ./gradlew build --stacktrace
+        run: bash ./gradlew assemble --stacktrace
       - name: Unit tests
         run: bash ./gradlew test --stacktrace
       - uses: actions/upload-artifact@v2
