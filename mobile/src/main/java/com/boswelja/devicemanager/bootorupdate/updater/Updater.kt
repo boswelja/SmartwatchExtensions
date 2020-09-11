@@ -23,6 +23,7 @@ import com.boswelja.devicemanager.common.setup.References
 import com.boswelja.devicemanager.messages.database.MessageDatabase
 import com.boswelja.devicemanager.messages.database.MessageDatabase.Companion.MESSAGE_COUNT_KEY
 import com.boswelja.devicemanager.phonelocking.ui.PhoneLockingPreferenceFragment.Companion.PHONE_LOCKING_MODE_KEY
+import com.boswelja.devicemanager.watchmanager.ConnectedWatchHandler.Companion.LAST_CONNECTED_NODE_ID_KEY
 import com.boswelja.devicemanager.watchmanager.WatchManager
 import com.boswelja.devicemanager.watchmanager.database.WatchDatabase
 import com.boswelja.devicemanager.watchmanager.item.Watch
@@ -165,7 +166,7 @@ class Updater(private val context: Context) {
           val watch = Watch(defaultWatch)
           database.watchDao().add(watch)
           messageClient.sendMessage(watch.id, References.WATCH_REGISTERED_PATH, null)
-          sharedPreferences.edit { putString(WatchManager.LAST_CONNECTED_NODE_ID_KEY, watch.id) }
+          sharedPreferences.edit { putString(LAST_CONNECTED_NODE_ID_KEY, watch.id) }
           sharedPreferences.all.forEach {
             if (it.value != null) {
               when (it.key) {

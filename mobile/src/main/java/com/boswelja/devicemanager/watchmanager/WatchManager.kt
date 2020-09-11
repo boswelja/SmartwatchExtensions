@@ -8,10 +8,7 @@
 package com.boswelja.devicemanager.watchmanager
 
 import android.content.Context
-import androidx.core.content.edit
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.common.References
 import com.boswelja.devicemanager.common.References.REQUEST_RESET_APP
 import com.boswelja.devicemanager.watchmanager.database.WatchDatabase
@@ -23,20 +20,14 @@ import com.google.android.gms.wearable.DataItem
 import com.google.android.gms.wearable.Node
 import com.google.android.gms.wearable.Wearable
 import kotlin.collections.ArrayList
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 
 class WatchManager private constructor(context: Context) {
 
-  private val coroutineJob = Job()
-  private val coroutineScope = CoroutineScope(Dispatchers.IO + coroutineJob)
-
-  private val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
   private val watchPreferenceManager = WatchPreferenceManager(context)
+  private val connectedWatchHandler = ConnectedWatchHandler(context)
 
   private val capabilityClient = Wearable.getCapabilityClient(context)
   private val nodeClient = Wearable.getNodeClient(context)
@@ -46,15 +37,12 @@ class WatchManager private constructor(context: Context) {
 
   val database = WatchDatabase.get(context)
 
-  private val _connectedWatch = MutableLiveData<Watch?>()
   val connectedWatch: LiveData<Watch?>
-    get() = _connectedWatch
+    get() = connectedWatchHandler.connectedWatch
 
   init {
-    sharedPreferences.getString(LAST_CONNECTED_NODE_ID_KEY, "")?.let { setConnectedWatchById(it) }
     connectedWatch.observeForever {
       it?.let { watch ->
-        sharedPreferences.edit { putString(LAST_CONNECTED_NODE_ID_KEY, watch.id) }
         watchPreferenceManager.updateLocalPreferences(watch.id)
       }
     }
@@ -65,7 +53,6 @@ class WatchManager private constructor(context: Context) {
     if (watchConnectionListener != null) {
       capabilityClient.removeListener(watchConnectionListener!!)
     }
-    coroutineJob.cancel()
   }
 
   /**
@@ -266,17 +253,10 @@ class WatchManager private constructor(context: Context) {
    * Sets the currently connected watch by a given [Watch.id].
    * @param watchId The ID of the [Watch] to set as connected.
    */
-  fun setConnectedWatchById(watchId: String) {
-    coroutineScope.launch {
-      val newWatch = database.watchDao().get(watchId)
-      _connectedWatch.postValue(newWatch)
-    }
-  }
+  fun setConnectedWatchById(watchId: String) = connectedWatchHandler.setConnectedWatchById(watchId)
 
   companion object {
     private var INSTANCE: WatchManager? = null
-
-    const val LAST_CONNECTED_NODE_ID_KEY = "last_connected_id"
 
     /** Gets an instance of [WatchManager]. */
     fun get(context: Context): WatchManager {
