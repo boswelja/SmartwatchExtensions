@@ -16,6 +16,7 @@ import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.batterysync.PhoneBatteryComplicationProvider
 import com.boswelja.devicemanager.common.Compat
 import com.boswelja.devicemanager.common.preference.PreferenceKey
+import com.boswelja.devicemanager.common.preference.SyncPreferences
 import com.boswelja.devicemanager.dndsync.DnDLocalChangeListener
 import com.google.android.gms.tasks.Tasks
 import com.google.android.gms.wearable.DataEvent
@@ -47,18 +48,12 @@ class PreferenceChangeReceiver : WearableListenerService() {
       sharedPreferences!!.edit {
         for (key in dataMap.keySet()) {
           when (key) {
-            PreferenceKey.PHONE_LOCKING_ENABLED_KEY,
-            PreferenceKey.BATTERY_SYNC_ENABLED_KEY,
-            PreferenceKey.BATTERY_PHONE_CHARGE_NOTI_KEY,
-            PreferenceKey.BATTERY_WATCH_CHARGE_NOTI_KEY,
-            PreferenceKey.DND_SYNC_TO_WATCH_KEY,
-            PreferenceKey.DND_SYNC_TO_PHONE_KEY,
-            PreferenceKey.DND_SYNC_WITH_THEATER_KEY -> {
+            in SyncPreferences.BOOL_PREFS -> {
               val newValue = dataMap.getBoolean(key)
               putBoolean(key, newValue)
               onPreferenceChanged(key, newValue)
             }
-            PreferenceKey.BATTERY_CHARGE_THRESHOLD_KEY -> {
+            in SyncPreferences.INT_PREFS -> {
               val newValue = dataMap.getInt(key)
               putInt(key, newValue)
               onPreferenceChanged(key, newValue)
