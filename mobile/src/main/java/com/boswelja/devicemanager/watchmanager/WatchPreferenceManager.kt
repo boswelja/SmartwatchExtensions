@@ -4,7 +4,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import androidx.core.content.edit
 import androidx.preference.PreferenceManager
-import com.boswelja.devicemanager.common.preference.PreferenceKey
+import com.boswelja.devicemanager.common.preference.SyncPreferences
 import com.boswelja.devicemanager.watchmanager.database.WatchDatabase
 import com.boswelja.devicemanager.watchmanager.item.BoolPreference
 import com.boswelja.devicemanager.watchmanager.item.IntPreference
@@ -55,14 +55,9 @@ internal class WatchPreferenceManager(context: Context) {
   fun clearLocalPreferences(commitNow: Boolean = false) {
     Timber.d("deleteLocalPreferences($commitNow) called")
     sharedPreferences.edit(commit = commitNow) {
-      remove(PreferenceKey.PHONE_LOCKING_ENABLED_KEY)
-      remove(PreferenceKey.BATTERY_SYNC_ENABLED_KEY)
-      remove(PreferenceKey.BATTERY_PHONE_CHARGE_NOTI_KEY)
-      remove(PreferenceKey.BATTERY_WATCH_CHARGE_NOTI_KEY)
-      remove(PreferenceKey.DND_SYNC_TO_PHONE_KEY)
-      remove(PreferenceKey.DND_SYNC_TO_WATCH_KEY)
-      remove(PreferenceKey.DND_SYNC_WITH_THEATER_KEY)
-      remove(PreferenceKey.BATTERY_CHARGE_THRESHOLD_KEY)
+      SyncPreferences.ALL_PREFS.forEach {
+        remove(it)
+      }
     }
   }
 
@@ -97,13 +92,7 @@ internal class WatchPreferenceManager(context: Context) {
     return withContext(Dispatchers.IO) {
       val syncedPrefUpdateReq = PutDataMapRequest.create("/preference-change_${watchId}")
       when (preferenceKey) {
-        PreferenceKey.PHONE_LOCKING_ENABLED_KEY,
-        PreferenceKey.BATTERY_SYNC_ENABLED_KEY,
-        PreferenceKey.BATTERY_PHONE_CHARGE_NOTI_KEY,
-        PreferenceKey.BATTERY_WATCH_CHARGE_NOTI_KEY,
-        PreferenceKey.DND_SYNC_TO_PHONE_KEY,
-        PreferenceKey.DND_SYNC_TO_WATCH_KEY,
-        PreferenceKey.DND_SYNC_WITH_THEATER_KEY -> {
+        in SyncPreferences.BOOL_PREFS -> {
           sharedPreferences.getBoolean(preferenceKey, false).also {
             Timber.i("Updating $preferenceKey to $it")
             syncedPrefUpdateReq.dataMap.putBoolean(preferenceKey, it)
@@ -112,7 +101,7 @@ internal class WatchPreferenceManager(context: Context) {
             }
           }
         }
-        PreferenceKey.BATTERY_CHARGE_THRESHOLD_KEY -> {
+        in SyncPreferences.INT_PREFS -> {
           sharedPreferences.getInt(preferenceKey, 90).also {
             Timber.i("Updating $preferenceKey to $it")
             syncedPrefUpdateReq.dataMap.putInt(preferenceKey, it)
