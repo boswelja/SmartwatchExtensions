@@ -9,6 +9,7 @@ import com.boswelja.devicemanager.watchmanager.item.Watch
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 class ConnectedWatchHandler private constructor(context: Context) {
 
@@ -27,10 +28,13 @@ class ConnectedWatchHandler private constructor(context: Context) {
    * @param watchId The ID of the [Watch] to set as connected.
    */
   fun setConnectedWatchById(watchId: String) {
-    coroutineScope.launch {
-      val newWatch = database.watchDao().get(watchId)
-      connectedWatch.postValue(newWatch)
-      sharedPreferences.edit { putString(LAST_CONNECTED_NODE_ID_KEY, newWatch?.id) }
+    if (watchId != connectedWatch.value?.id) {
+      Timber.d("Setting connected watch to $watchId")
+      coroutineScope.launch {
+        val newWatch = database.watchDao().get(watchId)
+        connectedWatch.postValue(newWatch)
+        sharedPreferences.edit { putString(LAST_CONNECTED_NODE_ID_KEY, newWatch?.id) }
+      }
     }
   }
 
