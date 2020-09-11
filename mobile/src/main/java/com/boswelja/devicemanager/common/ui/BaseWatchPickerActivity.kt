@@ -18,8 +18,10 @@ import android.widget.ArrayAdapter
 import androidx.appcompat.widget.AppCompatSpinner
 import androidx.appcompat.widget.AppCompatTextView
 import com.boswelja.devicemanager.R
+import com.boswelja.devicemanager.watchmanager.ConnectedWatchHandler
 import com.boswelja.devicemanager.watchmanager.WatchManager
 import com.boswelja.devicemanager.watchmanager.WatchStatus
+import com.boswelja.devicemanager.watchmanager.database.WatchDatabase
 import com.boswelja.devicemanager.watchmanager.item.Watch
 import com.boswelja.devicemanager.watchsetup.ui.WatchSetupActivity
 import com.google.android.material.appbar.MaterialToolbar
@@ -36,9 +38,9 @@ import timber.log.Timber
 abstract class BaseWatchPickerActivity : BaseToolbarActivity(), AdapterView.OnItemSelectedListener {
 
   private val adapter: WatchPickerAdapter by lazy { WatchPickerAdapter(this) }
+  internal val connectedWatchHandler by lazy { ConnectedWatchHandler.get(this) }
   internal val coroutineScope = MainScope()
-
-  val watchManager: WatchManager by lazy { WatchManager.get(this) }
+  internal val database by lazy { WatchDatabase.get(this) }
 
   private var hasStartedWatchSetup = false
 
@@ -49,7 +51,7 @@ abstract class BaseWatchPickerActivity : BaseToolbarActivity(), AdapterView.OnIt
   ) {
     val connectedWatchId = id.toString(36)
     Timber.i("$connectedWatchId selected")
-    watchManager.setConnectedWatchById(connectedWatchId)
+    connectedWatchHandler.setConnectedWatchById(connectedWatchId)
   }
 
   override fun onNothingSelected(p0: AdapterView<*>?) {}
@@ -57,10 +59,10 @@ abstract class BaseWatchPickerActivity : BaseToolbarActivity(), AdapterView.OnIt
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
 
-    watchManager.database.watchDao().getAllObservable().observe(this) {
+    database.watchDao().getAllObservable().observe(this) {
       if (it.isEmpty() && hasStartedWatchSetup) finish() else setWatchList(it)
     }
-    watchManager.connectedWatch.observe(this) { it?.let { selectWatch(it.id) } }
+    connectedWatchHandler.connectedWatch.observe(this) { it?.let { selectWatch(it.id) } }
   }
 
   /**
@@ -87,7 +89,7 @@ abstract class BaseWatchPickerActivity : BaseToolbarActivity(), AdapterView.OnIt
     coroutineScope.launch(Dispatchers.Default) {
       if (watches.isNotEmpty()) {
         Timber.i("Setting watches")
-        val connectedWatchId = watchManager.connectedWatch.value?.id
+        val connectedWatchId = connectedWatchHandler.connectedWatch.value?.id
         var selectedWatchPosition = 0
         watches.forEach {
           withContext(Dispatchers.Main) { adapter.add(it) }

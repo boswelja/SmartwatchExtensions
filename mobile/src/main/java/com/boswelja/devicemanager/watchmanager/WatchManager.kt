@@ -251,13 +251,6 @@ class WatchManager private constructor(context: Context) {
     return messageClient.sendMessage(watchId, REQUEST_RESET_APP, null)
   }
 
-  /**
-   * Sets the currently connected watch by a given [Watch.id].
-   * @param watchId The ID of the [Watch] to set as connected.
-   */
-  @Deprecated("Use ConnectedWatchHandler")
-  fun setConnectedWatchById(watchId: String) = connectedWatchHandler.setConnectedWatchById(watchId)
-
   companion object {
     private var INSTANCE: WatchManager? = null
 
