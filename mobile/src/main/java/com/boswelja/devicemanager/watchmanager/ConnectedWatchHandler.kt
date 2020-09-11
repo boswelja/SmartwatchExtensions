@@ -10,7 +10,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class ConnectedWatchHandler(context: Context) {
+class ConnectedWatchHandler private constructor(context: Context) {
 
   private val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
   private val coroutineScope = CoroutineScope(Dispatchers.IO)
@@ -36,5 +36,16 @@ class ConnectedWatchHandler(context: Context) {
 
   companion object {
     const val LAST_CONNECTED_NODE_ID_KEY = "last_connected_id"
+
+    private var INSTANCE: ConnectedWatchHandler? = null
+    fun get(context: Context): ConnectedWatchHandler {
+      if (INSTANCE != null) return INSTANCE!!
+      synchronized(this) {
+        if (INSTANCE == null) {
+          INSTANCE = ConnectedWatchHandler(context)
+        }
+        return INSTANCE!!
+      }
+    }
   }
 }

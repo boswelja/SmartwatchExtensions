@@ -27,7 +27,7 @@ import timber.log.Timber
 class WatchManager private constructor(context: Context) {
 
   private val watchPreferenceManager = WatchPreferenceManager(context)
-  private val connectedWatchHandler = ConnectedWatchHandler(context)
+  private val connectedWatchHandler = ConnectedWatchHandler.get(context)
 
   private val capabilityClient = Wearable.getCapabilityClient(context)
   private val nodeClient = Wearable.getNodeClient(context)
