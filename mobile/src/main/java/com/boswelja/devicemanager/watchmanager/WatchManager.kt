@@ -172,6 +172,7 @@ class WatchManager private constructor(context: Context) {
    * @param preferenceKey The key of the preference to update on the watch.
    * @return The [Task] for the preference send job, or null if the task failed.
    */
+  @Deprecated("Use WatchPreferenceManager")
   suspend fun updatePreferenceOnWatch(preferenceKey: String): Task<DataItem>? {
     Timber.d("updatePreferenceOnWatch($preferenceKey) called")
     return watchPreferenceManager.updatePreferenceOnWatch(connectedWatch.value!!.id, preferenceKey)
@@ -229,6 +230,7 @@ class WatchManager private constructor(context: Context) {
    * @param watchId The ID of the [Watch] to clear preferences for.
    * @return true if the preferences were successfully cleared, false otherwise.
    */
+  @Deprecated("Use WatchPreferenceManager")
   suspend fun clearPreferencesForWatch(watchId: String?): Boolean {
     Timber.d("clearPreferencesForWatch($watchId) called")
     return withContext(Dispatchers.IO) {
@@ -253,6 +255,7 @@ class WatchManager private constructor(context: Context) {
    * Sets the currently connected watch by a given [Watch.id].
    * @param watchId The ID of the [Watch] to set as connected.
    */
+  @Deprecated("Use ConnectedWatchHandler")
   fun setConnectedWatchById(watchId: String) = connectedWatchHandler.setConnectedWatchById(watchId)
 
   companion object {
