@@ -22,7 +22,7 @@ import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.ActionServiceStarter
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.BaseComplicationProviderService
-import com.boswelja.devicemanager.common.PreferenceKey
+import com.boswelja.devicemanager.common.preference.PreferenceKey
 import com.boswelja.devicemanager.common.batterysync.References.REQUEST_BATTERY_UPDATE_PATH
 
 class PhoneBatteryComplicationProvider : BaseComplicationProviderService() {

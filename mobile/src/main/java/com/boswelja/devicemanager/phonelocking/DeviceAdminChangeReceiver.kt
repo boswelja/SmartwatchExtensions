@@ -11,7 +11,7 @@ import android.app.admin.DeviceAdminReceiver
 import android.content.Context
 import android.content.Intent
 import androidx.preference.PreferenceManager
-import com.boswelja.devicemanager.common.PreferenceKey
+import com.boswelja.devicemanager.common.preference.PreferenceKey
 import timber.log.Timber
 
 class DeviceAdminChangeReceiver : DeviceAdminReceiver() {

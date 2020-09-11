@@ -13,7 +13,7 @@ import androidx.core.content.edit
 import androidx.lifecycle.AndroidViewModel
 import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.common.Compat
-import com.boswelja.devicemanager.common.PreferenceKey
+import com.boswelja.devicemanager.common.preference.PreferenceKey
 import com.boswelja.devicemanager.dndsync.DnDLocalChangeService
 import com.boswelja.devicemanager.watchmanager.WatchManager
 import kotlinx.coroutines.CoroutineScope

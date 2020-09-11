@@ -14,7 +14,7 @@ import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.batterysync.ui.BatterySyncPreferenceActivity
 import com.boswelja.devicemanager.common.Compat
 import com.boswelja.devicemanager.common.Extensions.toByteArray
-import com.boswelja.devicemanager.common.PreferenceKey
+import com.boswelja.devicemanager.common.preference.PreferenceKey
 import com.boswelja.devicemanager.common.References.CAPABILITY_WATCH_APP
 import com.boswelja.devicemanager.common.References.LOCK_PHONE_PATH
 import com.boswelja.devicemanager.common.References.REQUEST_LAUNCH_APP_PATH

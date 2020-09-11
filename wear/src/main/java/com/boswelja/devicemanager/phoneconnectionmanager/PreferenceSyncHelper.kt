@@ -9,7 +9,7 @@ package com.boswelja.devicemanager.phoneconnectionmanager
 
 import android.content.Context
 import android.content.SharedPreferences
-import com.boswelja.devicemanager.common.PreferenceKey
+import com.boswelja.devicemanager.common.preference.PreferenceKey
 import com.google.android.gms.tasks.Task
 import com.google.android.gms.wearable.DataItem
 import com.google.android.gms.wearable.PutDataMapRequest

@@ -14,8 +14,8 @@ import androidx.core.content.edit
 import androidx.preference.PreferenceManager
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_PERCENT_KEY
-import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_SYNC_ENABLED_KEY
+import com.boswelja.devicemanager.common.preference.PreferenceKey.BATTERY_PERCENT_KEY
+import com.boswelja.devicemanager.common.preference.PreferenceKey.BATTERY_SYNC_ENABLED_KEY
 import com.boswelja.devicemanager.getOrAwaitValue
 import com.boswelja.devicemanager.phoneconnectionmanager.References.PHONE_CONNECTED_KEY
 import com.boswelja.devicemanager.phoneconnectionmanager.References.PHONE_NAME_KEY

@@ -16,8 +16,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.ConfirmationActivityHandler
 import com.boswelja.devicemanager.R
-import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_PERCENT_KEY
-import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_SYNC_ENABLED_KEY
+import com.boswelja.devicemanager.common.preference.PreferenceKey.BATTERY_PERCENT_KEY
+import com.boswelja.devicemanager.common.preference.PreferenceKey.BATTERY_SYNC_ENABLED_KEY
 import com.boswelja.devicemanager.common.batterysync.References.REQUEST_BATTERY_UPDATE_PATH
 import com.boswelja.devicemanager.phoneconnectionmanager.References
 import com.boswelja.devicemanager.phoneconnectionmanager.References.PHONE_CONNECTED_KEY

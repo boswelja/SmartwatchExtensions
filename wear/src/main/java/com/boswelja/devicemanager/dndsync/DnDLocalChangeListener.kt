@@ -26,8 +26,8 @@ import androidx.core.app.NotificationCompat
 import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.Compat
-import com.boswelja.devicemanager.common.PreferenceKey.DND_SYNC_TO_PHONE_KEY
-import com.boswelja.devicemanager.common.PreferenceKey.DND_SYNC_WITH_THEATER_KEY
+import com.boswelja.devicemanager.common.preference.PreferenceKey.DND_SYNC_TO_PHONE_KEY
+import com.boswelja.devicemanager.common.preference.PreferenceKey.DND_SYNC_WITH_THEATER_KEY
 import com.boswelja.devicemanager.common.dndsync.References.DND_SYNC_LOCAL_NOTI_ID
 import com.boswelja.devicemanager.common.dndsync.References.DND_SYNC_NOTI_CHANNEL_ID
 import com.boswelja.devicemanager.common.dndsync.References.START_ACTIVITY_FROM_NOTI_ID

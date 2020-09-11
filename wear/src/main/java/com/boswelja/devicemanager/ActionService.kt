@@ -12,8 +12,8 @@ import android.content.Context
 import android.content.Intent
 import androidx.core.app.JobIntentService
 import androidx.preference.PreferenceManager
-import com.boswelja.devicemanager.common.PreferenceKey
-import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_SYNC_ENABLED_KEY
+import com.boswelja.devicemanager.common.preference.PreferenceKey
+import com.boswelja.devicemanager.common.preference.PreferenceKey.BATTERY_SYNC_ENABLED_KEY
 import com.boswelja.devicemanager.common.References.LOCK_PHONE_PATH
 import com.boswelja.devicemanager.common.batterysync.References.REQUEST_BATTERY_UPDATE_PATH
 import com.boswelja.devicemanager.phoneconnectionmanager.References.PHONE_ID_KEY

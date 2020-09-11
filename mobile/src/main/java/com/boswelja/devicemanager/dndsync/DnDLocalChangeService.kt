@@ -16,7 +16,7 @@ import androidx.core.content.getSystemService
 import androidx.lifecycle.LifecycleService
 import com.boswelja.devicemanager.NotificationChannelHelper
 import com.boswelja.devicemanager.common.Compat
-import com.boswelja.devicemanager.common.PreferenceKey.DND_SYNC_TO_WATCH_KEY
+import com.boswelja.devicemanager.common.preference.PreferenceKey.DND_SYNC_TO_WATCH_KEY
 import com.boswelja.devicemanager.common.R
 import com.boswelja.devicemanager.common.dndsync.References
 import com.boswelja.devicemanager.main.MainActivity
