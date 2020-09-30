@@ -4,7 +4,7 @@ const val kotlinVersion = "1.4.0"
 
 object BuildPlugins {
     object Versions {
-        const val buildToolsVersion = "4.2.0-alpha10"
+        const val buildToolsVersion = "4.2.0-alpha12"
         const val googleServicesVersion = "4.3.3"
         const val androidxNavigation = Libraries.Versions.androidxNavigation
         const val spotlessVersion = "5.2.0"
@@ -35,14 +35,14 @@ object Libraries {
         const val androidxAppCompat = "1.3.0-alpha02"
         const val androidxBrowser = "1.3.0-alpha05"
         const val androidxConstraintLayout = "2.0.0"
-        const val androidxCoreKtx = "1.5.0-alpha02"
+        const val androidxCoreKtx = "1.5.0-alpha03"
         const val androidxFragment = "1.3.0-alpha08"
         const val androidxLifecycle = "2.3.0-alpha07"
         const val androidxNavigation = "2.3.0"
         const val androidxPreference = "1.1.1"
         const val androidxRoom = "2.3.0-alpha02"
         const val androidxWear = "1.1.0-rc03"
-        const val androidxWork = "2.5.0-alpha01"
+        const val androidxWork = "2.5.0-alpha02"
 
         const val billingClient = "3.0.0"
 
