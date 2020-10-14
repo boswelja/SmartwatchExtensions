@@ -26,7 +26,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 
-internal class WatchPreferenceManager private constructor(context: Context) {
+class WatchPreferenceManager private constructor(context: Context) {
 
   private val dataClient = Wearable.getDataClient(context)
   private val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
