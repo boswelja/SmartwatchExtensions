@@ -65,6 +65,22 @@ internal class WatchPreferenceManager private constructor(context: Context) {
   }
 
   /**
+   * Get a bool preference for a specified watch from the database.
+   * @param watchId The ID of the watch to get the preference for.
+   * @param key The requested preference key.
+   * @return The corresponding bool, or false if it doesn't exist.
+   */
+  fun getBool(watchId: String, key: String) = database.boolPrefDao().get(watchId, key)?.value == true
+
+  /**
+   * Get an int preference for a specified watch from the database.
+   * @param watchId The ID of the watch to get the preference for.
+   * @param key The requested preference key.
+   * @return The corresponding int, or null if it doesn't exist.
+   */
+  fun getInt(watchId: String, key: String) = database.intPrefDao().get(watchId, key)?.value
+
+  /**
    * Clear all preferences for a given [Watch].
    * @param watchId The ID of the [Watch] to clear preferences for.
    * @return true if the preferences were successfully cleared, false otherwise.
