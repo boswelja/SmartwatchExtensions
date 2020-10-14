@@ -157,29 +157,6 @@ class WatchManager private constructor(context: Context) {
   }
 
   /**
-   * Sends an updated preference to the connected [Watch].
-   * @param preferenceKey The key of the preference to update on the watch.
-   * @return The [Task] for the preference send job, or null if the task failed.
-   */
-  @Deprecated("Use WatchPreferenceManager")
-  suspend fun updatePreferenceOnWatch(preferenceKey: String): Task<DataItem>? {
-    Timber.d("updatePreferenceOnWatch($preferenceKey) called")
-    return watchPreferenceManager.updatePreferenceOnWatch(connectedWatch.value!!.id, preferenceKey)
-  }
-
-  /**
-   * Update a given preference in the database for the connected watch.
-   * @param preferenceKey The preference key to update.
-   * @param newValue The new value of the preference.
-   * @return true if the update was successful, false otherwise.
-   */
-  @Deprecated("Use WatchPreferenceManager")
-  fun updatePreferenceInDatabase(preferenceKey: String, newValue: Any): Boolean {
-    return watchPreferenceManager.updatePreferenceInDatabase(
-        connectedWatch.value!!.id, preferenceKey, newValue)
-  }
-
-  /**
    * Register a new [Watch].
    * @param watch The [Watch] to register.
    * @return true if the [Watch] was successfully registered, false otherwise.
