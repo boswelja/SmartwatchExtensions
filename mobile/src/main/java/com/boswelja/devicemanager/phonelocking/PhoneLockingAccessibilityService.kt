@@ -39,7 +39,9 @@ class PhoneLockingAccessibilityService :
   private lateinit var sharedPreferences: SharedPreferences
   private lateinit var messageClient: MessageClient
 
-  private val watchPreferenceManager: WatchPreferenceManager by lazy { WatchPreferenceManager.get(this) }
+  private val watchPreferenceManager: WatchPreferenceManager by lazy {
+    WatchPreferenceManager.get(this)
+  }
   private var isStopping = false
   private var lastNodeId: String? = null
 

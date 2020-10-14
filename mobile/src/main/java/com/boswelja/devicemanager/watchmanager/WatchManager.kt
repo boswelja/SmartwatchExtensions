@@ -175,7 +175,8 @@ class WatchManager private constructor(context: Context) {
    */
   @Deprecated("Use WatchPreferenceManager")
   fun updatePreferenceInDatabase(preferenceKey: String, newValue: Any): Boolean {
-    return watchPreferenceManager.updatePreferenceInDatabase(connectedWatch.value!!.id, preferenceKey, newValue)
+    return watchPreferenceManager.updatePreferenceInDatabase(
+        connectedWatch.value!!.id, preferenceKey, newValue)
   }
 
   /**

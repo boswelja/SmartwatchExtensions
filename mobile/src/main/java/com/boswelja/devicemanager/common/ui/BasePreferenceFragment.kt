@@ -26,8 +26,12 @@ abstract class BasePreferenceFragment : PreferenceFragmentCompat() {
   protected val sharedPreferences: SharedPreferences
     get() = preferenceManager.sharedPreferences
 
-  protected val watchPreferenceManager: WatchPreferenceManager by lazy { WatchPreferenceManager.get(requireContext()) }
-  protected val connectedWatchHandler: ConnectedWatchHandler by lazy { ConnectedWatchHandler.get(requireContext()) }
+  protected val watchPreferenceManager: WatchPreferenceManager by lazy {
+    WatchPreferenceManager.get(requireContext())
+  }
+  protected val connectedWatchHandler: ConnectedWatchHandler by lazy {
+    ConnectedWatchHandler.get(requireContext())
+  }
 
   override fun onCreateRecyclerView(
       inflater: LayoutInflater?, parent: ViewGroup?, savedInstanceState: Bundle?

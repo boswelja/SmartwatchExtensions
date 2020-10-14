@@ -70,7 +70,8 @@ class WatchPreferenceManager private constructor(context: Context) {
    * @param key The requested preference key.
    * @return The corresponding bool, or false if it doesn't exist.
    */
-  fun getBool(watchId: String, key: String) = database.boolPrefDao().get(watchId, key)?.value == true
+  fun getBool(watchId: String, key: String) =
+      database.boolPrefDao().get(watchId, key)?.value == true
 
   /**
    * Get an int preference for a specified watch from the database.
