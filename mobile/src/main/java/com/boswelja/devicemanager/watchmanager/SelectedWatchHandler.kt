@@ -42,10 +42,11 @@ class SelectedWatchHandler private constructor(context: Context) {
 
   /**
    * Selects a watch by a given [Watch.id].
+   * This will update [selectedWatch].
    * @param watchId The ID of the [Watch] to select.
    */
   fun selectWatchById(watchId: String) {
-    if (watchId != _selectedWatch.value?.id && watchId.isNotEmpty()) {
+    if (watchId != _selectedWatch.value?.id) {
       Timber.d("Setting connected watch to $watchId")
       coroutineScope.launch {
         val newWatch = database.watchDao().get(watchId)
