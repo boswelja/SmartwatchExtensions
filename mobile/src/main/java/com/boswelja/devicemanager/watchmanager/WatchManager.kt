@@ -214,7 +214,7 @@ class WatchManager private constructor(context: Context) {
   suspend fun forgetWatch(watchId: String?): Boolean {
     return withContext(Dispatchers.IO) {
       if (!watchId.isNullOrEmpty() && database.isOpen) {
-        val success = clearPreferencesForWatch(watchId)
+        val success = watchPreferenceManager.clearPreferencesForWatch(watchId)
         if (success) {
           database.watchDao().remove(watchId)
           requestResetWatch(watchId)
