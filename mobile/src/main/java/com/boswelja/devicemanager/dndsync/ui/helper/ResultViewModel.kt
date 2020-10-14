@@ -15,7 +15,8 @@ import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.common.Compat
 import com.boswelja.devicemanager.common.preference.PreferenceKey
 import com.boswelja.devicemanager.dndsync.DnDLocalChangeService
-import com.boswelja.devicemanager.watchmanager.WatchManager
+import com.boswelja.devicemanager.watchmanager.ConnectedWatchHandler
+import com.boswelja.devicemanager.watchmanager.WatchPreferenceManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -28,7 +29,8 @@ class ResultViewModel(application: Application) : AndroidViewModel(application) 
   private val coroutineScope = CoroutineScope(Dispatchers.IO + coroutineJob)
 
   private val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(application)
-  private val watchManager = WatchManager.get(application)
+  private val watchPreferenceManager = WatchPreferenceManager.get(application)
+  private val connectedWatchHandler = ConnectedWatchHandler.get(application)
 
   override fun onCleared() {
     Timber.i("onCleared() called")
@@ -42,7 +44,8 @@ class ResultViewModel(application: Application) : AndroidViewModel(application) 
       sharedPreferences.edit(commit = true) {
         putBoolean(PreferenceKey.DND_SYNC_TO_WATCH_KEY, isEnabled)
       }
-      watchManager.updatePreferenceOnWatch(PreferenceKey.DND_SYNC_TO_WATCH_KEY)
+      watchPreferenceManager.updatePreferenceOnWatch(
+          connectedWatchHandler.connectedWatch.value!!.id, PreferenceKey.DND_SYNC_TO_WATCH_KEY)
       if (isEnabled) {
         val context = getApplication<Application>()
         Compat.startForegroundService(context, Intent(context, DnDLocalChangeService::class.java))
