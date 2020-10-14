@@ -43,8 +43,6 @@ class BatterySyncPreferenceFragment :
   private lateinit var batterySyncWatchChargedNotiPreference: CheckBoxPreference
   private lateinit var batteryChargeThresholdPreference: SeekBarPreference
 
-  private var connectedWatchId: String? = null
-
   override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
     Timber.d("onSharedPreferenceChanged() called")
     when (key) {
@@ -100,9 +98,7 @@ class BatterySyncPreferenceFragment :
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    connectedWatchHandler.connectedWatch.observe(viewLifecycleOwner) { newWatch ->
-      newWatch?.let { connectedWatchId = it.id }
-    }
+    observeConnectedWatchId()
   }
 
   override fun onStart() {
