@@ -218,13 +218,7 @@ class WatchManager private constructor(context: Context) {
   @Deprecated("Use WatchPreferenceManager")
   suspend fun clearPreferencesForWatch(watchId: String?): Boolean {
     Timber.d("clearPreferencesForWatch($watchId) called")
-    return withContext(Dispatchers.IO) {
-      val isSuccessful = watchPreferenceManager.clearPreferencesForWatch(watchId)
-      if (isSuccessful && watchId == connectedWatch.value?.id) {
-        watchPreferenceManager.clearLocalPreferences()
-      }
-      return@withContext isSuccessful
-    }
+    return watchPreferenceManager.clearPreferencesForWatch(watchId)
   }
 
   /**
