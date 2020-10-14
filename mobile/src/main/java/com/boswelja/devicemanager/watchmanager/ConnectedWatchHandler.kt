@@ -19,6 +19,11 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
+/**
+ * A singleton that keeps track of and updates the currently selected watch.
+ * Changes can be observed via [connectedWatch].
+ * Use [ConnectedWatchHandler.get] to get an instance.
+ */
 class ConnectedWatchHandler private constructor(context: Context) {
 
   private val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
@@ -31,12 +36,13 @@ class ConnectedWatchHandler private constructor(context: Context) {
   val database = WatchDatabase.get(context)
 
   init {
+    // Set the initial connectedWatch value if possible.
     sharedPreferences.getString(LAST_CONNECTED_NODE_ID_KEY, "")?.let { setConnectedWatchById(it) }
   }
 
   /**
-   * Sets the currently connected watch by a given [Watch.id].
-   * @param watchId The ID of the [Watch] to set as connected.
+   * Selects a watch by a given [Watch.id].
+   * @param watchId The ID of the [Watch] to select.
    */
   fun setConnectedWatchById(watchId: String) {
     if (watchId != _connectedWatch.value?.id) {
@@ -53,6 +59,8 @@ class ConnectedWatchHandler private constructor(context: Context) {
     const val LAST_CONNECTED_NODE_ID_KEY = "last_connected_id"
 
     private var INSTANCE: ConnectedWatchHandler? = null
+
+    /** Get an instance of [ConnectedWatchHandler] */
     fun get(context: Context): ConnectedWatchHandler {
       if (INSTANCE != null) return INSTANCE!!
       synchronized(this) {
