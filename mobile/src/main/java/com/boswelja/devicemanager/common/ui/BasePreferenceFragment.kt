@@ -33,6 +33,8 @@ abstract class BasePreferenceFragment : PreferenceFragmentCompat() {
     ConnectedWatchHandler.get(requireContext())
   }
 
+  protected var connectedWatchId: String? = null
+
   override fun onCreateRecyclerView(
       inflater: LayoutInflater?, parent: ViewGroup?, savedInstanceState: Bundle?
   ): RecyclerView {
@@ -40,6 +42,12 @@ abstract class BasePreferenceFragment : PreferenceFragmentCompat() {
     return super.onCreateRecyclerView(inflater, parent, savedInstanceState).apply {
       clipToPadding = false
       setPadding(0, padding.toInt(), 0, padding.toInt())
+    }
+  }
+
+  fun observeConnectedWatchId() {
+    connectedWatchHandler.connectedWatch.observe(viewLifecycleOwner) { newWatch ->
+      newWatch?.let { connectedWatchId = it.id }
     }
   }
 }
