@@ -33,8 +33,6 @@ class WatchManager private constructor(context: Context) {
   private val nodeClient = Wearable.getNodeClient(context)
   private val messageClient = Wearable.getMessageClient(context)
 
-  private var watchConnectionListener: CapabilityClient.OnCapabilityChangedListener? = null
-
   val database = WatchDatabase.get(context)
 
   val connectedWatch: LiveData<Watch?>
@@ -45,13 +43,6 @@ class WatchManager private constructor(context: Context) {
       it?.let { watch ->
         watchPreferenceManager.updateLocalPreferences(watch.id)
       }
-    }
-  }
-
-  fun destroy() {
-    INSTANCE = null
-    if (watchConnectionListener != null) {
-      capabilityClient.removeListener(watchConnectionListener!!)
     }
   }
 
