@@ -14,7 +14,7 @@ import android.view.ViewGroup
 import androidx.preference.PreferenceFragmentCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.boswelja.devicemanager.R
-import com.boswelja.devicemanager.watchmanager.ConnectedWatchHandler
+import com.boswelja.devicemanager.watchmanager.SelectedWatchHandler
 import com.boswelja.devicemanager.watchmanager.WatchPreferenceManager
 
 /**
@@ -29,8 +29,8 @@ abstract class BasePreferenceFragment : PreferenceFragmentCompat() {
   protected val watchPreferenceManager: WatchPreferenceManager by lazy {
     WatchPreferenceManager.get(requireContext())
   }
-  protected val connectedWatchHandler: ConnectedWatchHandler by lazy {
-    ConnectedWatchHandler.get(requireContext())
+  protected val selectedWatchHandler: SelectedWatchHandler by lazy {
+    SelectedWatchHandler.get(requireContext())
   }
 
   protected var connectedWatchId: String? = null
@@ -46,7 +46,7 @@ abstract class BasePreferenceFragment : PreferenceFragmentCompat() {
   }
 
   fun observeConnectedWatchId() {
-    connectedWatchHandler.connectedWatch.observe(viewLifecycleOwner) { newWatch ->
+    selectedWatchHandler.selectedWatch.observe(viewLifecycleOwner) { newWatch ->
       newWatch?.let { connectedWatchId = it.id }
     }
   }

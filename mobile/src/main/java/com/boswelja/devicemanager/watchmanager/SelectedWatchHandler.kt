@@ -21,51 +21,51 @@ import timber.log.Timber
 
 /**
  * A singleton that keeps track of and updates the currently selected watch.
- * Changes can be observed via [connectedWatch].
- * Use [ConnectedWatchHandler.get] to get an instance.
+ * Changes can be observed via [selectedWatch].
+ * Use [SelectedWatchHandler.get] to get an instance.
  */
-class ConnectedWatchHandler private constructor(context: Context) {
+class SelectedWatchHandler private constructor(context: Context) {
 
   private val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
   private val coroutineScope = CoroutineScope(Dispatchers.IO)
 
-  private val _connectedWatch = MutableLiveData<Watch?>()
+  private val _selectedWatch = MutableLiveData<Watch?>()
 
-  val connectedWatch: LiveData<Watch?>
-    get() = _connectedWatch
+  val selectedWatch: LiveData<Watch?>
+    get() = _selectedWatch
   val database = WatchDatabase.get(context)
 
   init {
     // Set the initial connectedWatch value if possible.
-    sharedPreferences.getString(LAST_CONNECTED_NODE_ID_KEY, "")?.let { setConnectedWatchById(it) }
+    sharedPreferences.getString(LAST_SELECTED_NODE_ID_KEY, "")?.let { selectWatchById(it) }
   }
 
   /**
    * Selects a watch by a given [Watch.id].
    * @param watchId The ID of the [Watch] to select.
    */
-  fun setConnectedWatchById(watchId: String) {
-    if (watchId != _connectedWatch.value?.id) {
+  fun selectWatchById(watchId: String) {
+    if (watchId != _selectedWatch.value?.id) {
       Timber.d("Setting connected watch to $watchId")
       coroutineScope.launch {
         val newWatch = database.watchDao().get(watchId)
-        _connectedWatch.postValue(newWatch)
-        sharedPreferences.edit { putString(LAST_CONNECTED_NODE_ID_KEY, newWatch?.id) }
+        _selectedWatch.postValue(newWatch)
+        sharedPreferences.edit { putString(LAST_SELECTED_NODE_ID_KEY, newWatch?.id) }
       }
     }
   }
 
   companion object {
-    const val LAST_CONNECTED_NODE_ID_KEY = "last_connected_id"
+    const val LAST_SELECTED_NODE_ID_KEY = "last_connected_id"
 
-    private var INSTANCE: ConnectedWatchHandler? = null
+    private var INSTANCE: SelectedWatchHandler? = null
 
-    /** Get an instance of [ConnectedWatchHandler] */
-    fun get(context: Context): ConnectedWatchHandler {
+    /** Get an instance of [SelectedWatchHandler] */
+    fun get(context: Context): SelectedWatchHandler {
       if (INSTANCE != null) return INSTANCE!!
       synchronized(this) {
         if (INSTANCE == null) {
-          INSTANCE = ConnectedWatchHandler(context)
+          INSTANCE = SelectedWatchHandler(context)
         }
         return INSTANCE!!
       }

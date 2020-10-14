@@ -26,7 +26,7 @@ import timber.log.Timber
 class WatchManager private constructor(context: Context) {
 
   private val watchPreferenceManager by lazy { WatchPreferenceManager.get(context) }
-  private val connectedWatchHandler = ConnectedWatchHandler.get(context)
+  private val connectedWatchHandler = SelectedWatchHandler.get(context)
 
   private val capabilityClient = Wearable.getCapabilityClient(context)
   private val nodeClient = Wearable.getNodeClient(context)
@@ -35,7 +35,7 @@ class WatchManager private constructor(context: Context) {
   val database = WatchDatabase.get(context)
 
   val connectedWatch: LiveData<Watch?>
-    get() = connectedWatchHandler.connectedWatch
+    get() = connectedWatchHandler.selectedWatch
 
   init {
     connectedWatch.observeForever {

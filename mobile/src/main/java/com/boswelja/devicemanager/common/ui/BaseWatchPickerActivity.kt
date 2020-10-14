@@ -18,7 +18,7 @@ import android.widget.ArrayAdapter
 import androidx.appcompat.widget.AppCompatSpinner
 import androidx.appcompat.widget.AppCompatTextView
 import com.boswelja.devicemanager.R
-import com.boswelja.devicemanager.watchmanager.ConnectedWatchHandler
+import com.boswelja.devicemanager.watchmanager.SelectedWatchHandler
 import com.boswelja.devicemanager.watchmanager.WatchManager
 import com.boswelja.devicemanager.watchmanager.WatchStatus
 import com.boswelja.devicemanager.watchmanager.database.WatchDatabase
@@ -38,7 +38,7 @@ import timber.log.Timber
 abstract class BaseWatchPickerActivity : BaseToolbarActivity(), AdapterView.OnItemSelectedListener {
 
   private val adapter: WatchPickerAdapter by lazy { WatchPickerAdapter(this) }
-  internal val connectedWatchHandler by lazy { ConnectedWatchHandler.get(this) }
+  internal val connectedWatchHandler by lazy { SelectedWatchHandler.get(this) }
   internal val coroutineScope = MainScope()
   internal val database by lazy { WatchDatabase.get(this) }
 
@@ -51,7 +51,7 @@ abstract class BaseWatchPickerActivity : BaseToolbarActivity(), AdapterView.OnIt
   ) {
     val connectedWatchId = id.toString(36)
     Timber.i("$connectedWatchId selected")
-    connectedWatchHandler.setConnectedWatchById(connectedWatchId)
+    connectedWatchHandler.selectWatchById(connectedWatchId)
   }
 
   override fun onNothingSelected(p0: AdapterView<*>?) {}
@@ -62,7 +62,7 @@ abstract class BaseWatchPickerActivity : BaseToolbarActivity(), AdapterView.OnIt
     database.watchDao().getAllObservable().observe(this) {
       if (it.isEmpty() && hasStartedWatchSetup) finish() else setWatchList(it)
     }
-    connectedWatchHandler.connectedWatch.observe(this) { it?.let { selectWatch(it.id) } }
+    connectedWatchHandler.selectedWatch.observe(this) { it?.let { selectWatch(it.id) } }
   }
 
   /**
@@ -89,7 +89,7 @@ abstract class BaseWatchPickerActivity : BaseToolbarActivity(), AdapterView.OnIt
     coroutineScope.launch(Dispatchers.Default) {
       if (watches.isNotEmpty()) {
         Timber.i("Setting watches")
-        val connectedWatchId = connectedWatchHandler.connectedWatch.value?.id
+        val connectedWatchId = connectedWatchHandler.selectedWatch.value?.id
         var selectedWatchPosition = 0
         watches.forEach {
           withContext(Dispatchers.Main) { adapter.add(it) }
