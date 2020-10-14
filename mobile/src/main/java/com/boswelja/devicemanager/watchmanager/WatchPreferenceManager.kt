@@ -1,3 +1,10 @@
+/* Copyright (C) 2020 Jack Boswell <boswelja@outlook.com>
+ *
+ * This file is part of Wearable Extensions
+ *
+ * This file, and any part of the Wearable Extensions app/s cannot be copied and/or distributed
+ * without permission from Jack Boswell (boswelja) <boswela@outlook.com>
+ */
 package com.boswelja.devicemanager.watchmanager
 
 import android.content.Context
@@ -54,11 +61,7 @@ internal class WatchPreferenceManager(context: Context) {
   /** Removes all watch-specific preferences from the local [SharedPreferences]. */
   fun clearLocalPreferences(commitNow: Boolean = false) {
     Timber.d("deleteLocalPreferences($commitNow) called")
-    sharedPreferences.edit(commit = commitNow) {
-      SyncPreferences.ALL_PREFS.forEach {
-        remove(it)
-      }
-    }
+    sharedPreferences.edit(commit = commitNow) { SyncPreferences.ALL_PREFS.forEach { remove(it) } }
   }
 
   /**
@@ -152,5 +155,4 @@ internal class WatchPreferenceManager(context: Context) {
     }
     return null
   }
-
 }

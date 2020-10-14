@@ -16,8 +16,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.ConfirmationActivityHandler
 import com.boswelja.devicemanager.R
-import com.boswelja.devicemanager.common.preference.PreferenceKey.PHONE_LOCKING_ENABLED_KEY
 import com.boswelja.devicemanager.common.References.LOCK_PHONE_PATH
+import com.boswelja.devicemanager.common.preference.PreferenceKey.PHONE_LOCKING_ENABLED_KEY
 import com.boswelja.devicemanager.phoneconnectionmanager.References
 import com.boswelja.devicemanager.phoneconnectionmanager.References.PHONE_CONNECTED_KEY
 import com.boswelja.devicemanager.phoneconnectionmanager.References.PHONE_NAME_KEY

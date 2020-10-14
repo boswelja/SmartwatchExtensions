@@ -40,9 +40,7 @@ class WatchManager private constructor(context: Context) {
 
   init {
     connectedWatch.observeForever {
-      it?.let { watch ->
-        watchPreferenceManager.updateLocalPreferences(watch.id)
-      }
+      it?.let { watch -> watchPreferenceManager.updateLocalPreferences(watch.id) }
     }
   }
 
@@ -227,7 +225,7 @@ class WatchManager private constructor(context: Context) {
     return withContext(Dispatchers.IO) {
       val isSuccessful = watchPreferenceManager.clearPreferencesForWatch(watchId)
       if (isSuccessful && watchId == connectedWatch.value?.id) {
-         watchPreferenceManager.clearLocalPreferences()
+        watchPreferenceManager.clearLocalPreferences()
       }
       return@withContext isSuccessful
     }
