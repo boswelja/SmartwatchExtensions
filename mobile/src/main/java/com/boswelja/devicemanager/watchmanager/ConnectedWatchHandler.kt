@@ -9,6 +9,7 @@ package com.boswelja.devicemanager.watchmanager
 
 import android.content.Context
 import androidx.core.content.edit
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.watchmanager.database.WatchDatabase
@@ -23,7 +24,10 @@ class ConnectedWatchHandler private constructor(context: Context) {
   private val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
   private val coroutineScope = CoroutineScope(Dispatchers.IO)
 
-  val connectedWatch = MutableLiveData<Watch?>()
+  private val _connectedWatch = MutableLiveData<Watch?>()
+
+  val connectedWatch: LiveData<Watch?>
+    get() = _connectedWatch
   val database = WatchDatabase.get(context)
 
   init {
@@ -35,11 +39,11 @@ class ConnectedWatchHandler private constructor(context: Context) {
    * @param watchId The ID of the [Watch] to set as connected.
    */
   fun setConnectedWatchById(watchId: String) {
-    if (watchId != connectedWatch.value?.id) {
+    if (watchId != _connectedWatch.value?.id) {
       Timber.d("Setting connected watch to $watchId")
       coroutineScope.launch {
         val newWatch = database.watchDao().get(watchId)
-        connectedWatch.postValue(newWatch)
+        _connectedWatch.postValue(newWatch)
         sharedPreferences.edit { putString(LAST_CONNECTED_NODE_ID_KEY, newWatch?.id) }
       }
     }
