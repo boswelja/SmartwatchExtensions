@@ -14,6 +14,8 @@ import android.view.ViewGroup
 import androidx.preference.PreferenceFragmentCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.boswelja.devicemanager.R
+import com.boswelja.devicemanager.watchmanager.ConnectedWatchHandler
+import com.boswelja.devicemanager.watchmanager.WatchPreferenceManager
 
 /**
  * A [PreferenceFragmentCompat] that automatically adjusts it's [RecyclerView] properties to fit the
@@ -23,6 +25,9 @@ abstract class BasePreferenceFragment : PreferenceFragmentCompat() {
 
   protected val sharedPreferences: SharedPreferences
     get() = preferenceManager.sharedPreferences
+
+  protected val watchPreferenceManager: WatchPreferenceManager by lazy { WatchPreferenceManager.get(requireContext()) }
+  protected val connectedWatchHandler: ConnectedWatchHandler by lazy { ConnectedWatchHandler.get(requireContext()) }
 
   override fun onCreateRecyclerView(
       inflater: LayoutInflater?, parent: ViewGroup?, savedInstanceState: Bundle?
