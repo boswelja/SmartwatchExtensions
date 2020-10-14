@@ -20,9 +20,8 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 
 /**
- * A singleton that keeps track of and updates the currently selected watch.
- * Changes can be observed via [selectedWatch].
- * Use [SelectedWatchHandler.get] to get an instance.
+ * A singleton that keeps track of and updates the currently selected watch. Changes can be observed
+ * via [selectedWatch]. Use [SelectedWatchHandler.get] to get an instance.
  */
 class SelectedWatchHandler private constructor(context: Context) {
 
@@ -41,8 +40,7 @@ class SelectedWatchHandler private constructor(context: Context) {
   }
 
   /**
-   * Selects a watch by a given [Watch.id].
-   * This will update [selectedWatch].
+   * Selects a watch by a given [Watch.id]. This will update [selectedWatch].
    * @param watchId The ID of the [Watch] to select.
    */
   fun selectWatchById(watchId: String) {

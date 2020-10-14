@@ -31,10 +31,10 @@ class CompatTest {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
       NotificationChannel(
               ENABLED_CHANNEL_ID, "Enabled Test Channel", NotificationManager.IMPORTANCE_DEFAULT)
-              .also { notificationManager.createNotificationChannel(it) }
+          .also { notificationManager.createNotificationChannel(it) }
       NotificationChannel(
               DISABLED_CHANNEL_ID, "Disabled Test Channel", NotificationManager.IMPORTANCE_NONE)
-              .also { notificationManager.createNotificationChannel(it) }
+          .also { notificationManager.createNotificationChannel(it) }
     }
   }
 
@@ -84,11 +84,11 @@ class CompatTest {
 
     val supportsNotificationChannels = (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
     assertWithMessage("Checking notification channel enabled status is correct")
-            .that(Compat.areNotificationsEnabled(context, ENABLED_CHANNEL_ID))
-            .isEqualTo(true)
+        .that(Compat.areNotificationsEnabled(context, ENABLED_CHANNEL_ID))
+        .isEqualTo(true)
     assertWithMessage("Checking notification channel disabled status is correct")
-            .that(Compat.areNotificationsEnabled(context, DISABLED_CHANNEL_ID))
-            .isEqualTo(!supportsNotificationChannels)
+        .that(Compat.areNotificationsEnabled(context, DISABLED_CHANNEL_ID))
+        .isEqualTo(!supportsNotificationChannels)
   }
 
   companion object {
