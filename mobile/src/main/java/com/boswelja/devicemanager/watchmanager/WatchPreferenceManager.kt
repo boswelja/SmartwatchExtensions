@@ -81,6 +81,16 @@ internal class WatchPreferenceManager private constructor(context: Context) {
   fun getInt(watchId: String, key: String) = database.intPrefDao().get(watchId, key)?.value
 
   /**
+   * Update a given preference in the database for the connected watch.
+   * @param preferenceKey The preference key to update.
+   * @param newValue The new value of the preference.
+   * @return true if the update was successful, false otherwise.
+   */
+  fun updatePreferenceInDatabase(watchId: String, preferenceKey: String, newValue: Any): Boolean {
+    return database.updatePrefInDatabase(watchId, preferenceKey, newValue)
+  }
+
+  /**
    * Clear all preferences for a given [Watch].
    * @param watchId The ID of the [Watch] to clear preferences for.
    * @return true if the preferences were successfully cleared, false otherwise.

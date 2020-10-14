@@ -173,13 +173,9 @@ class WatchManager private constructor(context: Context) {
    * @param newValue The new value of the preference.
    * @return true if the update was successful, false otherwise.
    */
-  suspend fun updatePreferenceInDatabase(preferenceKey: String, newValue: Any): Boolean {
-    return withContext(Dispatchers.IO) {
-      connectedWatch.value?.let {
-        return@withContext database.updatePrefInDatabase(it.id, preferenceKey, newValue)
-      }
-      return@withContext false
-    }
+  @Deprecated("Use WatchPreferenceManager")
+  fun updatePreferenceInDatabase(preferenceKey: String, newValue: Any): Boolean {
+    return watchPreferenceManager.updatePreferenceInDatabase(connectedWatch.value!!.id, preferenceKey, newValue)
   }
 
   /**
