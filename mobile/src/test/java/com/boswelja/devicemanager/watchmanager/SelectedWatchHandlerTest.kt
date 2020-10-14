@@ -44,10 +44,10 @@ class SelectedWatchHandlerTest {
   fun `Selecting a watch correctly updates corresponding LiveData`() {
     selectedWatchHandler.selectWatchById(dummyWatch.id)
     shadowOf(Looper.getMainLooper()).idle()
-    selectedWatchHandler.selectedWatch.getOrAwaitValue { assertThat(it).isEqualTo(dummyWatch) }
+    selectedWatchHandler.selectedWatch.getOrAwaitValue(time = 5) { assertThat(it).isEqualTo(dummyWatch) }
 
     selectedWatchHandler.selectWatchById("")
     shadowOf(Looper.getMainLooper()).idle()
-    selectedWatchHandler.selectedWatch.getOrAwaitValue { assertThat(it).isNull() }
+    selectedWatchHandler.selectedWatch.getOrAwaitValue(time = 5) { assertThat(it).isNull() }
   }
 }
