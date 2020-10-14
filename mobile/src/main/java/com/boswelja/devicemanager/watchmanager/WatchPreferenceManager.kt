@@ -26,7 +26,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 
-internal class WatchPreferenceManager(context: Context) {
+internal class WatchPreferenceManager private constructor(context: Context) {
 
   private val dataClient = Wearable.getDataClient(context)
   private val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
@@ -154,5 +154,17 @@ internal class WatchPreferenceManager(context: Context) {
       Timber.w("watchId null or empty")
     }
     return null
+  }
+
+  companion object {
+    private var INSTANCE: WatchPreferenceManager? = null
+
+    fun get(context: Context): WatchPreferenceManager {
+      if (INSTANCE != null) return INSTANCE!!
+      synchronized(this) {
+        if (INSTANCE == null) INSTANCE = WatchPreferenceManager(context)
+        return INSTANCE!!
+      }
+    }
   }
 }
