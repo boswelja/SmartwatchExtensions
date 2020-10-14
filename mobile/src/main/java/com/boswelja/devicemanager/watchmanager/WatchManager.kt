@@ -16,7 +16,6 @@ import com.boswelja.devicemanager.watchmanager.item.Watch
 import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.Tasks
 import com.google.android.gms.wearable.CapabilityClient
-import com.google.android.gms.wearable.DataItem
 import com.google.android.gms.wearable.Node
 import com.google.android.gms.wearable.Wearable
 import kotlin.collections.ArrayList
