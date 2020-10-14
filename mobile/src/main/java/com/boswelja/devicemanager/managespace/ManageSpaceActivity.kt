@@ -21,6 +21,7 @@ import com.boswelja.devicemanager.batterysync.database.WatchBatteryStatsDatabase
 import com.boswelja.devicemanager.common.ui.BaseToolbarActivity
 import com.boswelja.devicemanager.databinding.ActivityManageSpaceBinding
 import com.boswelja.devicemanager.watchmanager.WatchManager
+import com.boswelja.devicemanager.watchmanager.WatchPreferenceManager
 import com.boswelja.devicemanager.watchmanager.database.WatchDatabase
 import com.boswelja.devicemanager.watchmanager.item.Watch
 import com.boswelja.devicemanager.widget.database.WidgetDatabase
@@ -41,6 +42,7 @@ class ManageSpaceActivity : BaseToolbarActivity() {
   private lateinit var activityManager: ActivityManager
 
   private val watchManager: WatchManager by lazy { WatchManager.get(this) }
+  private val watchPreferenceManager by lazy { WatchPreferenceManager.get(this) }
   private var hasResetApp = false
 
   override fun onCreate(savedInstanceState: Bundle?) {
@@ -310,7 +312,7 @@ class ManageSpaceActivity : BaseToolbarActivity() {
    * @return true if preferences were successfully cleared, false otherwise.
    */
   private suspend fun resetWatchPreferences(watch: Watch): Boolean {
-    val success = watchManager.clearPreferencesForWatch(watch.id)
+    val success = watchPreferenceManager.clearPreferencesForWatch(watch.id)
     if (watch.batterySyncWorkerId != null) {
       BatterySyncWorker.stopWorker(this, watch.id)
     }

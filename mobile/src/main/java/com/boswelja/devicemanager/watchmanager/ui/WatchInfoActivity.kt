@@ -14,6 +14,7 @@ import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.ui.BaseToolbarActivity
 import com.boswelja.devicemanager.databinding.ActivityWatchInfoBinding
 import com.boswelja.devicemanager.watchmanager.WatchManager
+import com.boswelja.devicemanager.watchmanager.WatchPreferenceManager
 import com.boswelja.devicemanager.watchmanager.item.Watch
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
@@ -25,6 +26,7 @@ class WatchInfoActivity : BaseToolbarActivity() {
 
   private val coroutineScope = MainScope()
   private val watchManager by lazy { WatchManager.get(this) }
+  private val watchPreferenceManager by lazy { WatchPreferenceManager.get(this) }
 
   private lateinit var binding: ActivityWatchInfoBinding
 
@@ -95,7 +97,7 @@ class WatchInfoActivity : BaseToolbarActivity() {
   private fun clearPreferences() {
     Timber.d("clearPreferences() called")
     coroutineScope.launch(Dispatchers.IO) {
-      val success = watchManager.clearPreferencesForWatch(watchId)
+      val success = watchPreferenceManager.clearPreferencesForWatch(watchId)
       withContext(Dispatchers.Main) {
         if (success) {
           Timber.i("Successfully cleared preferences")

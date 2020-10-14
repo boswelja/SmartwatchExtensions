@@ -25,7 +25,7 @@ import timber.log.Timber
 
 class WatchManager private constructor(context: Context) {
 
-  private val watchPreferenceManager = WatchPreferenceManager.get(context)
+  private val watchPreferenceManager by lazy { WatchPreferenceManager.get(context) }
   private val connectedWatchHandler = ConnectedWatchHandler.get(context)
 
   private val capabilityClient = Wearable.getCapabilityClient(context)
@@ -185,17 +185,6 @@ class WatchManager private constructor(context: Context) {
       }
       return@withContext false
     }
-  }
-
-  /**
-   * Clear all preferences for a given [Watch].
-   * @param watchId The ID of the [Watch] to clear preferences for.
-   * @return true if the preferences were successfully cleared, false otherwise.
-   */
-  @Deprecated("Use WatchPreferenceManager")
-  suspend fun clearPreferencesForWatch(watchId: String?): Boolean {
-    Timber.d("clearPreferencesForWatch($watchId) called")
-    return watchPreferenceManager.clearPreferencesForWatch(watchId)
   }
 
   /**
