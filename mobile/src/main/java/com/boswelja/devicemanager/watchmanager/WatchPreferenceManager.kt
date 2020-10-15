@@ -27,6 +27,11 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 
+/**
+ * Provides a simplified interface for updating watch preferences both in the database and on the
+ * target watch. The current preference structure loads preferences from the database into the
+ * default [SharedPreferences] store, and updates them in the database as they're changed.
+ */
 class WatchPreferenceManager
     internal constructor(
         context: Context,
@@ -38,11 +43,12 @@ class WatchPreferenceManager
     ) {
 
   /**
-   * Sets all local [SharedPreferences] to their values stored with the connected [Watch], or their
-   * default preference value.
+   * Clears all local [SharedPreferences], then reads the values stored in the [database] for a
+   * specified [Watch.id] into the local [SharedPreferences].
+   * @param watchId The [Watch.id] to query the database for corresponding preferences.
    */
   fun updateLocalPreferences(watchId: String) {
-    Timber.d("updateLocalPreferences() called")
+    Timber.d("updateLocalPreferences($watchId) called")
     coroutineScope.launch {
       withContext(Dispatchers.IO) {
         val boolPrefs = database.boolPrefDao().getAllForWatch(watchId)
@@ -96,8 +102,8 @@ class WatchPreferenceManager
   }
 
   /**
-   * Clear all preferences for a given [Watch].
-   * @param watchId The ID of the [Watch] to clear preferences for.
+   * Clear all preferences for a given [Watch] from the database.
+   * @param watchId The [Watch.id] to clear preferences for.
    * @return true if the preferences were successfully cleared, false otherwise.
    */
   suspend fun clearPreferencesForWatch(watchId: String?): Boolean {
@@ -117,7 +123,8 @@ class WatchPreferenceManager
   }
 
   /**
-   * Sends an updated preference to the connected [Watch].
+   * Sends an updated preference to the specified [Watch].
+   * @param watchId The [Watch.id] to send the preference to.
    * @param preferenceKey The key of the preference to update on the watch.
    * @return The [Task] for the preference send job, or null if the task failed.
    */
@@ -157,8 +164,8 @@ class WatchPreferenceManager
   }
 
   /**
-   * Send all watch-specific preferences to the watch with the given ID.
-   * @param watchId The ID of the [Watch] to get preferences from and send preferences to.
+   * Send all watch-specific preferences to a specified [Watch].
+   * @param watchId The [Watch.id] to get preferences for and send preferences to.
    * @return The [Task] created by the preference send job, or null if the task failed.
    */
   private suspend fun updateAllPreferencesOnWatch(watchId: String?): Task<DataItem>? {
@@ -190,6 +197,7 @@ class WatchPreferenceManager
   companion object {
     private var INSTANCE: WatchPreferenceManager? = null
 
+    /** Get an instance of [WatchPreferenceManager] */
     fun get(context: Context): WatchPreferenceManager {
       if (INSTANCE != null) return INSTANCE!!
       synchronized(this) {
