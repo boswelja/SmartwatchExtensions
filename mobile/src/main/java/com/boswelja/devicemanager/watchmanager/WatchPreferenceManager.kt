@@ -168,7 +168,7 @@ class WatchPreferenceManager
    * @param watchId The [Watch.id] to get preferences for and send preferences to.
    * @return The [Task] created by the preference send job, or null if the task failed.
    */
-  private suspend fun updateAllPreferencesOnWatch(watchId: String?): Task<DataItem>? {
+  internal suspend fun updateAllPreferencesOnWatch(watchId: String?): Task<DataItem>? {
     Timber.d("updateAllPreferencesOnWatch")
     if (!watchId.isNullOrEmpty()) {
       return withContext(Dispatchers.IO) {
