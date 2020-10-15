@@ -21,6 +21,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 
+/**
+ * Provides a simplified interface for managing registered watches, finding new watches and updating
+ * local SharedPreferences when the connected watch changes.
+ */
 class WatchManager
     internal constructor(
         context: Context,
@@ -44,7 +48,7 @@ class WatchManager
 
   /**
    * Gets the status of a registered [Watch].
-   * @param watchId The ID of the [Watch] to find a [WatchStatus] for.
+   * @param watchId The [Watch.id] to find a [WatchStatus] for.
    * @param capableNodes The [Set] of capable [Node] objects to check against. Default is null.
    * @param connectedNodes The [List] of connected [Node] objects to check against. Default is null.
    * @return A [WatchStatus] for the [Watch].
@@ -75,8 +79,8 @@ class WatchManager
   }
 
   /**
-   * Get a [List] of connected [Node] objects.
-   * @return The [List] of connected [Node] objects, or null if the task failed.
+   * Get a [List] of connected [Node], whether they're capable or not.
+   * @return The [List] of connected [Node], or null if the task failed.
    */
   private suspend fun getConnectedNodes(): List<Node>? {
     Timber.d("getConnectedNodes() called")
@@ -89,8 +93,9 @@ class WatchManager
   }
 
   /**
-   * Get a [Set] of capable [Node] objects.
-   * @return The [Set] of capable [Node] objects, or null if the task failed.
+   * Gets the [Set] of capable [Node]. Each [Node] declares [References.CAPABILITY_WATCH_APP], and
+   * is reachable at the time of checking.
+   * @return The [Set] of capable [Node], or null if the task failed.
    */
   private suspend fun getCapableNodes(): Set<Node>? {
     Timber.d("getCapableNodes() called")
@@ -138,8 +143,8 @@ class WatchManager
   }
 
   /**
-   * Gets all registered watches, and finds their [WatchStatus].
-   * @return The [List] of [Watch] objects that are registered, or null if the task failed.
+   * Gets all registered watches, and finds their [WatchStatus]. Can be empty if no watches are registered.
+   * @return The [List] of [Watch] objects that are registered.
    */
   suspend fun getRegisteredWatches(): List<Watch> {
     Timber.d("getRegisteredWatches() called")
@@ -155,7 +160,7 @@ class WatchManager
   }
 
   /**
-   * Register a new [Watch].
+   * Register a new [Watch], and let it know it's been registered.
    * @param watch The [Watch] to register.
    * @return true if the [Watch] was successfully registered, false otherwise.
    */
@@ -169,7 +174,7 @@ class WatchManager
 
   /**
    * Removes a watch from the database.
-   * @param watchId The ID of the [Watch] to remove.
+   * @param watchId The [Watch.id] to remove from the database.
    * @return true if the [Watch] was successfully removed, false otherwise.
    */
   suspend fun forgetWatch(watchId: String?): Boolean {
@@ -187,8 +192,8 @@ class WatchManager
   }
 
   /**
-   * Sends the watch app reset message to a given watch.
-   * @param watchId The ID of the watch to send the message to.
+   * Sends [REQUEST_RESET_APP] to the given [Watch].
+   * @param watchId The [Watch.id] to send the message to.
    * @return The [Task] for the message send job.
    */
   fun requestResetWatch(watchId: String): Task<Int> {
