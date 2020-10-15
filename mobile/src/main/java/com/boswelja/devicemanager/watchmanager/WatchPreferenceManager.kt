@@ -70,7 +70,7 @@ class WatchPreferenceManager
 
   /** Removes all watch-specific preferences from the local [SharedPreferences]. */
   fun clearLocalPreferences(commitNow: Boolean = false) {
-    Timber.d("deleteLocalPreferences($commitNow) called")
+    Timber.d("clearLocalPreferences($commitNow) called")
     sharedPreferences.edit(commit = commitNow) { SyncPreferences.ALL_PREFS.forEach { remove(it) } }
   }
 
