@@ -8,7 +8,6 @@
 package com.boswelja.devicemanager.watchmanager
 
 import android.os.Build
-import android.os.Looper.getMainLooper
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.preference.PreferenceManager
 import androidx.test.core.app.ApplicationProvider
@@ -21,13 +20,17 @@ import io.mockk.MockKAnnotations
 import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.impl.annotations.SpyK
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.TestCoroutineScope
+import kotlinx.coroutines.test.runBlockingTest
+import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.robolectric.Shadows.shadowOf
 import org.robolectric.annotation.Config
 
+@ExperimentalCoroutinesApi
 @RunWith(AndroidJUnit4::class)
 @Config(sdk = [Build.VERSION_CODES.Q])
 class SelectedWatchHandlerTest {
@@ -42,39 +45,47 @@ class SelectedWatchHandlerTest {
   private var sharedPreferences =
       PreferenceManager.getDefaultSharedPreferences(ApplicationProvider.getApplicationContext())
   private lateinit var selectedWatchHandler: SelectedWatchHandler
+  private val coroutineScope = TestCoroutineScope()
 
   @Before
   fun setUp() {
     MockKAnnotations.init(this)
-    selectedWatchHandler =
-        SelectedWatchHandler(
-            ApplicationProvider.getApplicationContext(),
-            sharedPreferences = sharedPreferences,
-            database = dummyDatabase)
 
     // Emulate normal database behaviour, assuming dummyWatch exists.
     every { dummyDatabase.watchDao().get(dummyWatch.id) } returns dummyWatch
     every { dummyDatabase.watchDao().get("") } returns null
+
+    selectedWatchHandler =
+        SelectedWatchHandler(
+            ApplicationProvider.getApplicationContext(),
+            sharedPreferences = sharedPreferences,
+            coroutineScope = coroutineScope,
+            database = dummyDatabase)
+  }
+
+  @After
+  fun tearDown() {
+    sharedPreferences.edit().clear().commit()
+    coroutineScope.cleanupTestCoroutines()
   }
 
   @Test
-  fun `Selecting a watch correctly updates corresponding LiveData`() {
-    selectedWatchHandler.selectWatchById(dummyWatch.id)
-    shadowOf(getMainLooper()).idle()
-    selectedWatchHandler.selectedWatch.getOrAwaitValue { assertThat(it).isEqualTo(dummyWatch) }
+  fun `Selecting a watch correctly updates corresponding LiveData`(): Unit =
+      coroutineScope.runBlockingTest {
+        selectedWatchHandler.selectWatchById(dummyWatch.id)
+        selectedWatchHandler.selectedWatch.getOrAwaitValue { assertThat(it).isEqualTo(dummyWatch) }
 
-    selectedWatchHandler.selectWatchById("")
-    shadowOf(getMainLooper()).idle()
-    selectedWatchHandler.selectedWatch.getOrAwaitValue { assertThat(it).isNull() }
-  }
+        selectedWatchHandler.selectWatchById("")
+        selectedWatchHandler.selectedWatch.getOrAwaitValue { assertThat(it).isNull() }
+      }
 
   @Test
-  fun `Selecting a watch correctly updates SharedPreferences values`() {
-    selectedWatchHandler.selectWatchById(dummyWatch.id)
-    shadowOf(getMainLooper()).idle()
-    assertThat(sharedPreferences.getString("last_connected_id", "")).isEqualTo(dummyWatch.id)
-    selectedWatchHandler.selectWatchById("")
-    shadowOf(getMainLooper()).idle()
-    assertThat(sharedPreferences.getString("last_connected_id", "")).isEmpty()
-  }
+  fun `Selecting a watch correctly updates SharedPreferences values`(): Unit =
+      coroutineScope.runBlockingTest {
+        selectedWatchHandler.selectWatchById(dummyWatch.id)
+        assertThat(sharedPreferences.getString("last_connected_id", "")).isEqualTo(dummyWatch.id)
+
+        selectedWatchHandler.selectWatchById("")
+        assertThat(sharedPreferences.getString("last_connected_id", "")).isEmpty()
+      }
 }
