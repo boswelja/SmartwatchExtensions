@@ -67,4 +67,14 @@ class SelectedWatchHandlerTest {
     shadowOf(getMainLooper()).idle()
     selectedWatchHandler.selectedWatch.getOrAwaitValue { assertThat(it).isNull() }
   }
+
+  @Test
+  fun `Selecting a watch correctly updates SharedPreferences values`() {
+    selectedWatchHandler.selectWatchById(dummyWatch.id)
+    shadowOf(getMainLooper()).idle()
+    assertThat(sharedPreferences.getString("last_connected_id", "")).isEqualTo(dummyWatch.id)
+    selectedWatchHandler.selectWatchById("")
+    shadowOf(getMainLooper()).idle()
+    assertThat(sharedPreferences.getString("last_connected_id", "")).isEmpty()
+  }
 }
