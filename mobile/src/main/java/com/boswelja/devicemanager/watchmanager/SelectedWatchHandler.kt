@@ -8,6 +8,7 @@
 package com.boswelja.devicemanager.watchmanager
 
 import android.content.Context
+import android.content.SharedPreferences
 import androidx.core.content.edit
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -23,16 +24,19 @@ import timber.log.Timber
  * A singleton that keeps track of and updates the currently selected watch. Changes can be observed
  * via [selectedWatch]. Use [SelectedWatchHandler.get] to get an instance.
  */
-class SelectedWatchHandler private constructor(context: Context) {
-
-  private val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
-  private val coroutineScope = CoroutineScope(Dispatchers.IO)
+class SelectedWatchHandler
+    internal constructor(
+        context: Context,
+        private val sharedPreferences: SharedPreferences =
+            PreferenceManager.getDefaultSharedPreferences(context),
+        private val coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.IO),
+        val database: WatchDatabase = WatchDatabase.get(context)
+    ) {
 
   private val _selectedWatch = MutableLiveData<Watch?>()
 
   val selectedWatch: LiveData<Watch?>
     get() = _selectedWatch
-  val database = WatchDatabase.get(context)
 
   init {
     // Set the initial connectedWatch value if possible.
