@@ -17,6 +17,7 @@ import com.boswelja.devicemanager.watchmanager.item.BoolPreference
 import com.boswelja.devicemanager.watchmanager.item.IntPreference
 import com.boswelja.devicemanager.watchmanager.item.Watch
 import com.google.android.gms.tasks.Task
+import com.google.android.gms.wearable.DataClient
 import com.google.android.gms.wearable.DataItem
 import com.google.android.gms.wearable.PutDataMapRequest
 import com.google.android.gms.wearable.Wearable
@@ -26,12 +27,15 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 
-class WatchPreferenceManager private constructor(context: Context) {
-
-  private val dataClient = Wearable.getDataClient(context)
-  private val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
-  private val coroutineScope = CoroutineScope(Dispatchers.IO)
-  private val database = WatchDatabase.get(context)
+class WatchPreferenceManager
+    internal constructor(
+        context: Context,
+        private val coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.IO),
+        private val dataClient: DataClient = Wearable.getDataClient(context),
+        private val sharedPreferences: SharedPreferences =
+            PreferenceManager.getDefaultSharedPreferences(context),
+        private val database: WatchDatabase = WatchDatabase.get(context)
+    ) {
 
   /**
    * Sets all local [SharedPreferences] to their values stored with the connected [Watch], or their

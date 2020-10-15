@@ -15,27 +15,26 @@ import com.boswelja.devicemanager.watchmanager.database.WatchDatabase
 import com.boswelja.devicemanager.watchmanager.item.Watch
 import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.Tasks
-import com.google.android.gms.wearable.CapabilityClient
-import com.google.android.gms.wearable.Node
-import com.google.android.gms.wearable.Wearable
+import com.google.android.gms.wearable.*
 import kotlin.collections.ArrayList
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 
-class WatchManager private constructor(context: Context) {
-
-  private val watchPreferenceManager by lazy { WatchPreferenceManager.get(context) }
-  private val connectedWatchHandler = SelectedWatchHandler.get(context)
-
-  private val capabilityClient = Wearable.getCapabilityClient(context)
-  private val nodeClient = Wearable.getNodeClient(context)
-  private val messageClient = Wearable.getMessageClient(context)
-
-  val database = WatchDatabase.get(context)
+class WatchManager
+    internal constructor(
+        context: Context,
+        private val watchPreferenceManager: WatchPreferenceManager =
+            WatchPreferenceManager.get(context),
+        private val selectedWatchHandler: SelectedWatchHandler = SelectedWatchHandler.get(context),
+        private val capabilityClient: CapabilityClient = Wearable.getCapabilityClient(context),
+        private val nodeClient: NodeClient = Wearable.getNodeClient(context),
+        private val messageClient: MessageClient = Wearable.getMessageClient(context),
+        val database: WatchDatabase = WatchDatabase.get(context)
+    ) {
 
   val connectedWatch: LiveData<Watch?>
-    get() = connectedWatchHandler.selectedWatch
+    get() = selectedWatchHandler.selectedWatch
 
   init {
     connectedWatch.observeForever {
