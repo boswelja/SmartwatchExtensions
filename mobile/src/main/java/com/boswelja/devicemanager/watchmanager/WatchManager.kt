@@ -143,7 +143,8 @@ class WatchManager
   }
 
   /**
-   * Gets all registered watches, and finds their [WatchStatus]. Can be empty if no watches are registered.
+   * Gets all registered watches, and finds their [WatchStatus]. Can be empty if no watches are
+   * registered.
    * @return The [List] of [Watch] objects that are registered.
    */
   suspend fun getRegisteredWatches(): List<Watch> {
