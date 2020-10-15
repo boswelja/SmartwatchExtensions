@@ -87,6 +87,7 @@ dependencies {
     testImplementation(TestLibraries.androidxArch)
     testImplementation(TestLibraries.androidxTestCore)
     testImplementation(TestLibraries.androidxTestExt)
+    testImplementation(TestLibraries.coroutines)
     testImplementation(TestLibraries.junit)
     testImplementation(TestLibraries.googleTruth)
     testImplementation(TestLibraries.mockk)

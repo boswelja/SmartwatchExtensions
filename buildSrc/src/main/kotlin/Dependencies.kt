@@ -114,6 +114,7 @@ object TestLibraries {
     const val androidxTestCore = "androidx.test:core-ktx:${Versions.androidxTest}"
     const val androidxTestExt = "androidx.test.ext:junit-ktx:1.1.2-rc03"
     const val robolectric = "org.robolectric:robolectric:${Versions.robolectric}"
+    const val coroutines = "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.4.0-M1"
 }
 
 object AndroidTestLibraries {
