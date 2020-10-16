@@ -68,14 +68,15 @@ class WatchManagerTest {
     every { database.isOpen } returns true
 
     watchManager =
-        spyk(WatchManager(
-            ApplicationProvider.getApplicationContext(),
-            watchPreferenceManager,
-            selectedWatchHandler,
-            capabilityClient,
-            nodeClient,
-            messageClient,
-            database))
+        spyk(
+            WatchManager(
+                ApplicationProvider.getApplicationContext(),
+                watchPreferenceManager,
+                selectedWatchHandler,
+                capabilityClient,
+                nodeClient,
+                messageClient,
+                database))
   }
 
   @After
