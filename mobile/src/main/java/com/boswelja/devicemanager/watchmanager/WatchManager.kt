@@ -47,34 +47,24 @@ class WatchManager
   }
 
   /**
-   * Gets the status of a registered [Watch].
+   * Gets the status of a specified [Watch].
    * @param watchId The [Watch.id] to find a [WatchStatus] for.
    * @param capableNodes The [Set] of capable [Node] objects to check against. Default is null.
    * @param connectedNodes The [List] of connected [Node] objects to check against. Default is null.
    * @return A [WatchStatus] for the [Watch].
    */
-  private fun getWatchStatus(
+  internal fun getWatchStatus(
       watchId: String, capableNodes: Set<Node>? = null, connectedNodes: List<Node>? = null
   ): WatchStatus {
-    return if (connectedNodes != null && capableNodes != null) {
-      val isCapable = capableNodes.any { it.id == watchId }
-      val isConnected = connectedNodes.any { it.id == watchId }
-      if (isConnected && isCapable) {
-        WatchStatus.CONNECTED
-      } else if (isConnected && !isCapable) {
-        WatchStatus.MISSING_APP
-      } else {
-        WatchStatus.DISCONNECTED
-      }
-    } else if (connectedNodes == null && capableNodes != null) {
-      val isCapable = capableNodes.any { it.id == watchId }
-      if (isCapable) {
-        WatchStatus.NOT_REGISTERED
-      } else {
-        WatchStatus.MISSING_APP
-      }
-    } else {
-      WatchStatus.ERROR
+    val isCapable = capableNodes?.any { it.id == watchId } ?: false
+    val isConnected = connectedNodes?.any { it.id == watchId } ?: false
+    val isRegistered = database.watchDao().get(watchId) != null
+    return when {
+      isCapable && isConnected && isRegistered -> WatchStatus.CONNECTED
+      isCapable && !isConnected && isRegistered -> WatchStatus.DISCONNECTED
+      isCapable && !isRegistered -> WatchStatus.NOT_REGISTERED
+      !isCapable && !isRegistered -> WatchStatus.MISSING_APP
+      else -> WatchStatus.ERROR
     }
   }
 
