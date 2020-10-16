@@ -69,15 +69,15 @@ class WatchManager
   }
 
   /**
-   * Get a [List] of connected [Node], whether they're capable or not.
+   * Get a [List] of connected [Node], regardless of capability.
    * @return The [List] of connected [Node], or null if the task failed.
    */
-  private suspend fun getConnectedNodes(): List<Node>? {
+  internal suspend fun getConnectedNodes(): List<Node>? {
     Timber.d("getConnectedNodes() called")
     return try {
       withContext(Dispatchers.IO) { Tasks.await(nodeClient.connectedNodes) }
     } catch (e: Exception) {
-      Timber.e(e)
+      Timber.w(e)
       null
     }
   }
@@ -87,7 +87,7 @@ class WatchManager
    * is reachable at the time of checking.
    * @return The [Set] of capable [Node], or null if the task failed.
    */
-  private suspend fun getCapableNodes(): Set<Node>? {
+  internal suspend fun getCapableNodes(): Set<Node>? {
     Timber.d("getCapableNodes() called")
     var capableNodes: Set<Node>? = null
     try {
@@ -99,7 +99,7 @@ class WatchManager
                 .nodes
       }
     } catch (e: Exception) {
-      Timber.e(e)
+      Timber.w(e)
     }
     return capableNodes
   }
@@ -126,7 +126,7 @@ class WatchManager
           availableWatches
         }
       } else {
-        Timber.e("Failed to get available watches")
+        Timber.w("Failed to get available watches")
         null
       }
     }
