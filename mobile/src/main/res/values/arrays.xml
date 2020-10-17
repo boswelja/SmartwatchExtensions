@@ -25,10 +25,10 @@
     </string-array>
 
     <string-array name="version_changelog">
-        <item>Reworked the app\'s UI to use the new recommended architecture</item>
-        <item>Performance improvements</item>
+        <item>Significant under-the-hood refactors</item>
+        <item>Minor performance improvements</item>
         <item>Reduced system resource usage</item>
-        <item>Improved stability (There\'s still a few kinks to iron out)</item>
+        <item>Improved stability</item>
     </string-array>
 
     <string-array name="interrupt_filter_sync_to_watch_steps">
