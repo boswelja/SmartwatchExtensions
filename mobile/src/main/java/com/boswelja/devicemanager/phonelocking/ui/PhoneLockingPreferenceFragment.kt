@@ -19,10 +19,9 @@ import androidx.preference.DropDownPreference
 import androidx.preference.Preference
 import androidx.preference.SwitchPreference
 import com.boswelja.devicemanager.R
-import com.boswelja.devicemanager.common.PreferenceKey.PHONE_LOCKING_ENABLED_KEY
+import com.boswelja.devicemanager.common.preference.PreferenceKey.PHONE_LOCKING_ENABLED_KEY
 import com.boswelja.devicemanager.common.ui.BasePreferenceFragment
 import com.boswelja.devicemanager.phonelocking.Utils
-import com.boswelja.devicemanager.watchmanager.WatchManager
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
@@ -36,7 +35,6 @@ class PhoneLockingPreferenceFragment :
     Preference.OnPreferenceChangeListener {
 
   private val coroutineScope = MainScope()
-  private val watchManager by lazy { WatchManager.get(requireContext()) }
 
   private lateinit var phoneLockModePreference: DropDownPreference
   private lateinit var openDeviceSettingsPreference: Preference
@@ -78,6 +76,11 @@ class PhoneLockingPreferenceFragment :
       }
       else -> false
     }
+  }
+
+  override fun onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(savedInstanceState)
+    observeConnectedWatchId()
   }
 
   override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
@@ -131,7 +134,7 @@ class PhoneLockingPreferenceFragment :
     if (enabled) snackbar?.dismiss()
     coroutineScope.launch(Dispatchers.IO) {
       sharedPreferences.edit(commit = true) { putBoolean(PHONE_LOCKING_ENABLED_KEY, enabled) }
-      watchManager.updatePreferenceOnWatch(PHONE_LOCKING_ENABLED_KEY)
+      watchPreferenceManager.updatePreferenceOnWatch(connectedWatchId!!, PHONE_LOCKING_ENABLED_KEY)
     }
   }
 

@@ -11,8 +11,8 @@ import android.content.Context
 import android.content.Intent
 import com.boswelja.devicemanager.common.BaseBootReceiver
 import com.boswelja.devicemanager.common.Compat
-import com.boswelja.devicemanager.common.PreferenceKey.DND_SYNC_TO_PHONE_KEY
-import com.boswelja.devicemanager.common.PreferenceKey.DND_SYNC_WITH_THEATER_KEY
+import com.boswelja.devicemanager.common.preference.PreferenceKey.DND_SYNC_TO_PHONE_KEY
+import com.boswelja.devicemanager.common.preference.PreferenceKey.DND_SYNC_WITH_THEATER_KEY
 import com.boswelja.devicemanager.dndsync.DnDLocalChangeListener
 
 class BootReceiver : BaseBootReceiver() {

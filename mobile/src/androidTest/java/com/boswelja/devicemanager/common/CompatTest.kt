@@ -10,6 +10,7 @@ package com.boswelja.devicemanager.common
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
+import android.os.Build
 import androidx.core.app.NotificationManagerCompat
 import androidx.test.platform.app.InstrumentationRegistry
 import com.google.common.truth.Truth.assertWithMessage
@@ -19,34 +20,35 @@ import org.junit.Test
 
 class CompatTest {
 
+  val context = InstrumentationRegistry.getInstrumentation().targetContext
+  lateinit var notificationManager: NotificationManager
+
   @Before
   fun setUp() {
-    val context = InstrumentationRegistry.getInstrumentation().targetContext
-    val notificationManager =
+    notificationManager =
         context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-    NotificationChannel(
-            ENABLED_CHANNEL_ID, "Enabled Test Channel", NotificationManager.IMPORTANCE_DEFAULT)
-        .also { notificationManager.createNotificationChannel(it) }
-    NotificationChannel(
-            DISABLED_CHANNEL_ID, "Disabled Test Channel", NotificationManager.IMPORTANCE_NONE)
-        .also { notificationManager.createNotificationChannel(it) }
+    // Create notification channels if supported
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+      NotificationChannel(
+              ENABLED_CHANNEL_ID, "Enabled Test Channel", NotificationManager.IMPORTANCE_DEFAULT)
+          .also { notificationManager.createNotificationChannel(it) }
+      NotificationChannel(
+              DISABLED_CHANNEL_ID, "Disabled Test Channel", NotificationManager.IMPORTANCE_NONE)
+          .also { notificationManager.createNotificationChannel(it) }
+    }
   }
 
   @After
   fun tearDown() {
-    val context = InstrumentationRegistry.getInstrumentation().targetContext
-    val notificationManager =
-        context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-    notificationManager.deleteNotificationChannel(ENABLED_CHANNEL_ID)
-    notificationManager.deleteNotificationChannel(DISABLED_CHANNEL_ID)
+    // Delete notification channels if supported
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+      notificationManager.deleteNotificationChannel(ENABLED_CHANNEL_ID)
+      notificationManager.deleteNotificationChannel(DISABLED_CHANNEL_ID)
+    }
   }
 
   @Test
   fun isDndEnabled() {
-    val context = InstrumentationRegistry.getInstrumentation().targetContext
-    val notificationManager =
-        context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-
     if (notificationManager.isNotificationPolicyAccessGranted) {
       Compat.setInterruptionFilter(context, true)
       var retryCounter = 0
@@ -76,18 +78,17 @@ class CompatTest {
 
   @Test
   fun areNotificationsEnabled() {
-    val context = InstrumentationRegistry.getInstrumentation().targetContext
-
     assertWithMessage("Checking overall notification status is correct")
         .that(Compat.areNotificationsEnabled(context))
         .isEqualTo(NotificationManagerCompat.from(context).areNotificationsEnabled())
 
+    val supportsNotificationChannels = (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
     assertWithMessage("Checking notification channel enabled status is correct")
         .that(Compat.areNotificationsEnabled(context, ENABLED_CHANNEL_ID))
         .isEqualTo(true)
     assertWithMessage("Checking notification channel disabled status is correct")
         .that(Compat.areNotificationsEnabled(context, DISABLED_CHANNEL_ID))
-        .isEqualTo(false)
+        .isEqualTo(!supportsNotificationChannels)
   }
 
   companion object {

@@ -9,7 +9,8 @@ package com.boswelja.devicemanager.phoneconnectionmanager
 
 import android.content.Context
 import android.content.SharedPreferences
-import com.boswelja.devicemanager.common.PreferenceKey
+import com.boswelja.devicemanager.common.preference.PreferenceKey
+import com.boswelja.devicemanager.common.preference.SyncPreferences
 import com.google.android.gms.tasks.Task
 import com.google.android.gms.wearable.DataItem
 import com.google.android.gms.wearable.PutDataMapRequest
@@ -25,17 +26,11 @@ class PreferenceSyncHelper(
     if (phoneId.isNotEmpty()) {
       val syncedPrefUpdateReq = PutDataMapRequest.create(PREFERENCE_CHANGE_PATH)
       when (key) {
-        PreferenceKey.PHONE_LOCKING_ENABLED_KEY,
-        PreferenceKey.BATTERY_SYNC_ENABLED_KEY,
-        PreferenceKey.BATTERY_PHONE_CHARGE_NOTI_KEY,
-        PreferenceKey.BATTERY_WATCH_CHARGE_NOTI_KEY,
-        PreferenceKey.DND_SYNC_TO_PHONE_KEY,
-        PreferenceKey.DND_SYNC_TO_WATCH_KEY,
-        PreferenceKey.DND_SYNC_WITH_THEATER_KEY -> {
+        in SyncPreferences.BOOL_PREFS -> {
           val newValue = sharedPreferences.getBoolean(key, false)
           syncedPrefUpdateReq.dataMap.putBoolean(key, newValue)
         }
-        PreferenceKey.BATTERY_CHARGE_THRESHOLD_KEY -> {
+        in SyncPreferences.INT_PREFS -> {
           val newValue = sharedPreferences.getInt(key, 90)
           syncedPrefUpdateReq.dataMap.putInt(key, newValue)
         }

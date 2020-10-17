@@ -22,7 +22,7 @@ import com.boswelja.devicemanager.batterysync.BatterySyncWorker
 import com.boswelja.devicemanager.bootorupdate.updater.Result
 import com.boswelja.devicemanager.bootorupdate.updater.Updater
 import com.boswelja.devicemanager.common.Compat
-import com.boswelja.devicemanager.common.PreferenceKey
+import com.boswelja.devicemanager.common.preference.PreferenceKey
 import com.boswelja.devicemanager.dndsync.DnDLocalChangeService
 import com.boswelja.devicemanager.messages.Action
 import com.boswelja.devicemanager.messages.Message

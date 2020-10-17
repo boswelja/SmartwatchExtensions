@@ -17,13 +17,12 @@ import androidx.preference.SwitchPreference
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.batterysync.BatterySyncWorker
 import com.boswelja.devicemanager.batterysync.ui.Utils.updateBatteryStats
-import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_CHARGE_THRESHOLD_KEY
-import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_PHONE_CHARGE_NOTI_KEY
-import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_SYNC_ENABLED_KEY
-import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_SYNC_INTERVAL_KEY
-import com.boswelja.devicemanager.common.PreferenceKey.BATTERY_WATCH_CHARGE_NOTI_KEY
+import com.boswelja.devicemanager.common.preference.PreferenceKey.BATTERY_CHARGE_THRESHOLD_KEY
+import com.boswelja.devicemanager.common.preference.PreferenceKey.BATTERY_PHONE_CHARGE_NOTI_KEY
+import com.boswelja.devicemanager.common.preference.PreferenceKey.BATTERY_SYNC_ENABLED_KEY
+import com.boswelja.devicemanager.common.preference.PreferenceKey.BATTERY_SYNC_INTERVAL_KEY
+import com.boswelja.devicemanager.common.preference.PreferenceKey.BATTERY_WATCH_CHARGE_NOTI_KEY
 import com.boswelja.devicemanager.common.ui.BasePreferenceFragment
-import com.boswelja.devicemanager.watchmanager.WatchManager
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
@@ -37,7 +36,6 @@ class BatterySyncPreferenceFragment :
     Preference.OnPreferenceChangeListener {
 
   private val coroutineScope = MainScope()
-  private val watchManager by lazy { WatchManager.get(requireContext()) }
 
   private lateinit var batterySyncEnabledPreference: SwitchPreference
   private lateinit var batterySyncIntervalPreference: SeekBarPreference
@@ -64,7 +62,9 @@ class BatterySyncPreferenceFragment :
       }
       BATTERY_CHARGE_THRESHOLD_KEY -> {
         updateChargeNotiPrefSummaries()
-        coroutineScope.launch(Dispatchers.IO) { watchManager.updatePreferenceOnWatch(key) }
+        coroutineScope.launch(Dispatchers.IO) {
+          watchPreferenceManager.updatePreferenceOnWatch(connectedWatchId!!, key)
+        }
       }
     }
   }
@@ -87,11 +87,18 @@ class BatterySyncPreferenceFragment :
       BATTERY_PHONE_CHARGE_NOTI_KEY, BATTERY_WATCH_CHARGE_NOTI_KEY -> {
         val value = newValue == true
         sharedPreferences.edit().putBoolean(key, value).apply()
-        coroutineScope.launch(Dispatchers.IO) { watchManager.updatePreferenceOnWatch(key) }
+        coroutineScope.launch(Dispatchers.IO) {
+          watchPreferenceManager.updatePreferenceOnWatch(connectedWatchId!!, key)
+        }
         false
       }
       else -> true
     }
+  }
+
+  override fun onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(savedInstanceState)
+    observeConnectedWatchId()
   }
 
   override fun onStart() {
@@ -154,13 +161,14 @@ class BatterySyncPreferenceFragment :
     coroutineScope.launch(Dispatchers.IO) {
       if (enabled) {
         val workerStartSuccessful =
-            BatterySyncWorker.startWorker(requireContext(), watchManager.connectedWatch.value?.id!!)
+            BatterySyncWorker.startWorker(requireContext(), connectedWatchId!!)
         if (workerStartSuccessful) {
           sharedPreferences.edit(commit = true) {
             putBoolean(BATTERY_SYNC_ENABLED_KEY, enabled).apply()
           }
-          watchManager.updatePreferenceOnWatch(BATTERY_SYNC_ENABLED_KEY)
-          updateBatteryStats(requireContext(), watchManager.connectedWatch.value?.id)
+          watchPreferenceManager.updatePreferenceOnWatch(
+              connectedWatchId!!, BATTERY_SYNC_ENABLED_KEY)
+          updateBatteryStats(requireContext(), connectedWatchId!!)
         } else {
           withContext(Dispatchers.Main) {
             Snackbar.make(requireView(), R.string.battery_sync_enable_failed, Snackbar.LENGTH_LONG)
@@ -169,8 +177,8 @@ class BatterySyncPreferenceFragment :
         }
       } else {
         sharedPreferences.edit(commit = true) { putBoolean(BATTERY_SYNC_ENABLED_KEY, enabled) }
-        watchManager.updatePreferenceOnWatch(BATTERY_SYNC_ENABLED_KEY)
-        BatterySyncWorker.stopWorker(requireContext(), watchManager.connectedWatch.value?.id!!)
+        watchPreferenceManager.updatePreferenceOnWatch(connectedWatchId!!, BATTERY_SYNC_ENABLED_KEY)
+        BatterySyncWorker.stopWorker(requireContext(), connectedWatchId!!)
       }
     }
   }
@@ -184,9 +192,10 @@ class BatterySyncPreferenceFragment :
     batterySyncIntervalPreference.value = newInterval
     coroutineScope.launch(Dispatchers.IO) {
       sharedPreferences.edit(commit = true) { putInt(BATTERY_SYNC_INTERVAL_KEY, newInterval) }
-      watchManager.updatePreferenceInDatabase(BATTERY_SYNC_INTERVAL_KEY, newInterval)
-      BatterySyncWorker.stopWorker(requireContext(), watchManager.connectedWatch.value?.id!!)
-      BatterySyncWorker.startWorker(requireContext(), watchManager.connectedWatch.value?.id!!)
+      watchPreferenceManager.updatePreferenceInDatabase(
+          connectedWatchId!!, BATTERY_SYNC_INTERVAL_KEY, newInterval)
+      BatterySyncWorker.stopWorker(requireContext(), connectedWatchId!!)
+      BatterySyncWorker.startWorker(requireContext(), connectedWatchId!!)
     }
   }
 }

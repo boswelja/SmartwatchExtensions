@@ -18,13 +18,12 @@ import androidx.preference.Preference
 import androidx.preference.SwitchPreference
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.Compat
-import com.boswelja.devicemanager.common.PreferenceKey.DND_SYNC_TO_PHONE_KEY
-import com.boswelja.devicemanager.common.PreferenceKey.DND_SYNC_TO_WATCH_KEY
-import com.boswelja.devicemanager.common.PreferenceKey.DND_SYNC_WITH_THEATER_KEY
+import com.boswelja.devicemanager.common.preference.PreferenceKey.DND_SYNC_TO_PHONE_KEY
+import com.boswelja.devicemanager.common.preference.PreferenceKey.DND_SYNC_TO_WATCH_KEY
+import com.boswelja.devicemanager.common.preference.PreferenceKey.DND_SYNC_WITH_THEATER_KEY
 import com.boswelja.devicemanager.common.ui.BasePreferenceFragment
 import com.boswelja.devicemanager.dndsync.DnDLocalChangeService
 import com.boswelja.devicemanager.dndsync.ui.helper.DnDSyncHelperActivity
-import com.boswelja.devicemanager.watchmanager.WatchManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -36,7 +35,6 @@ class DnDSyncPreferenceFragment :
     Preference.OnPreferenceChangeListener {
 
   private val coroutineScope = CoroutineScope(Dispatchers.IO)
-  private val watchManager by lazy { WatchManager.get(requireContext()) }
 
   private val dndSyncToWatchPreference: SwitchPreference by lazy {
     findPreference(DND_SYNC_TO_WATCH_KEY)!!
@@ -85,6 +83,11 @@ class DnDSyncPreferenceFragment :
     }
   }
 
+  override fun onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(savedInstanceState)
+    observeConnectedWatchId()
+  }
+
   override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
     Timber.d("onCreatePreferences() called")
     addPreferencesFromResource(R.xml.prefs_dnd_sync)
@@ -113,7 +116,7 @@ class DnDSyncPreferenceFragment :
         if (changingKey != null && Compat.canSetDnD(requireContext())) {
           coroutineScope.launch {
             sharedPreferences.edit(commit = true) { putBoolean(changingKey, true) }
-            watchManager.updatePreferenceOnWatch(changingKey!!)
+            watchPreferenceManager.updatePreferenceOnWatch(connectedWatchId!!, changingKey!!)
             changingKey = null
           }
         }
@@ -130,7 +133,7 @@ class DnDSyncPreferenceFragment :
     dndSyncToWatchPreference.isChecked = enabled
     coroutineScope.launch {
       sharedPreferences.edit(commit = true) { putBoolean(DND_SYNC_TO_WATCH_KEY, enabled) }
-      watchManager.updatePreferenceOnWatch(DND_SYNC_TO_WATCH_KEY)
+      watchPreferenceManager.updatePreferenceOnWatch(connectedWatchId!!, DND_SYNC_TO_WATCH_KEY)
     }
     if (enabled) {
       Timber.i("Starting DnDLocalChangeService")
@@ -168,7 +171,7 @@ class DnDSyncPreferenceFragment :
     if (updateState) {
       coroutineScope.launch {
         sharedPreferences.edit(commit = true) { putBoolean(key, enabled) }
-        watchManager.updatePreferenceOnWatch(key)
+        watchPreferenceManager.updatePreferenceOnWatch(connectedWatchId!!, key)
       }
     }
   }
