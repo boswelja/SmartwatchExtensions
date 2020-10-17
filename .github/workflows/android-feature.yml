@@ -16,6 +16,10 @@ jobs:
       - uses: actions/setup-java@v1
         with:
           java-version: 11
+      - uses: actions/cache@2.1.2
+        with:
+          path: ~/.gradle/cache
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/build.gradle') }}
       - name: Build
         run: bash ./gradlew assemble --stacktrace
 
@@ -28,6 +32,10 @@ jobs:
       - uses: actions/setup-java@v1
         with:
           java-version: 11
+      - uses: actions/cache@2.1.2
+        with:
+          path: ~/.gradle/cache
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/build.gradle') }}    
       - name: Unit tests
         run: bash ./gradlew test --stacktrace
       - uses: actions/upload-artifact@v2
