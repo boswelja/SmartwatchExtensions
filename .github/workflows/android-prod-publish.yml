@@ -125,3 +125,26 @@ jobs:
         with:
           name: wear-release.aab
           path: ${{ steps.sign-wear-release.outputs.signedReleaseFile }}
+
+  upload:
+    name: Upload to Google Play
+    runs-on: ubuntu-latest
+    needs: sign
+    steps:
+      - name: Download mobile-release.aab
+        uses: actions/download-artifact@v2.0.5
+        with:
+          name: mobile-release.aab
+          path: release/
+      - name: Download wear-release.aab
+        uses: actions/download-artifact@v2.0.5
+        with:
+          name: wear-release.aab
+          path: release/
+      - name: Upload to Google Play
+        uses: boswelja/upload-google-play@master
+        with:
+          serviceAccountJsonPlainText: ${{ secrets.SERVICE_ACCOUNT_JSON }}
+          packageName: com.boswelja.devicemanager
+          releaseFile: "release/mobile-release.aab|release/wea-release.aab"
+          track: production
