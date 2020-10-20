@@ -9,6 +9,7 @@ package com.boswelja.devicemanager.batterysync.ui
 
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.view.View
 import androidx.core.content.edit
 import androidx.preference.CheckBoxPreference
 import androidx.preference.Preference
@@ -96,8 +97,8 @@ class BatterySyncPreferenceFragment :
     }
   }
 
-  override fun onCreate(savedInstanceState: Bundle?) {
-    super.onCreate(savedInstanceState)
+  override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    super.onViewCreated(view, savedInstanceState)
     observeConnectedWatchId()
   }
 

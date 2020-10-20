@@ -12,6 +12,7 @@ import android.content.SharedPreferences
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
+import android.view.View
 import android.widget.Toast
 import androidx.core.content.edit
 import androidx.preference.Preference
@@ -83,8 +84,8 @@ class DnDSyncPreferenceFragment :
     }
   }
 
-  override fun onCreate(savedInstanceState: Bundle?) {
-    super.onCreate(savedInstanceState)
+  override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    super.onViewCreated(view, savedInstanceState)
     observeConnectedWatchId()
   }
 
