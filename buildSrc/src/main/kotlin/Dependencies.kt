@@ -1,6 +1,6 @@
 @file:Suppress("SpellCheckingInspection")
 
-const val kotlinVersion = "1.4.0"
+const val kotlinVersion = "1.4.10"
 
 object BuildPlugins {
     object Versions {
@@ -83,7 +83,7 @@ object Libraries {
     const val wearableSupport = "com.google.android.support:wearable:${Versions.wearableSupport}"
     const val wearableCompile = "com.google.android.wearable:wearable:${Versions.wearableSupport}"
 
-    const val timber = "com.jakewharton.timber:timber:4.7.1"
+    const val timber = "com.jakewharton.timber:timber:${Versions.timber}"
 }
 
 object DebugLibraries {
