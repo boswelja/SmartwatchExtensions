@@ -24,8 +24,6 @@
     <string name="battery_sync_last_updated_under_minute">Last updated less than a minute ago</string>
     <string name="battery_sync_percent_short">%s%%</string>
     <string name="battery_sync_enable_failed">Failed to enable battery Sync</string>
-    <string name="battery_sync_error">Error</string>
-    <string name="battery_sync_loading">Please Wait</string>
 
     <!-- Do not Disturb Sync preference strings -->
     <string name="main_dnd_sync_title">Do not Disturb Sync</string>
@@ -48,7 +46,6 @@
     <string name="dnd_sync_helper_setup_title">Setup</string>
     <string name="dnd_sync_helper_button_finish">Finish</string>
     <string name="dnd_sync_helper_button_next">Next</string>
-    <string name="dnd_sync_helper_permission_not_granted">Permission not granted, please try again.</string>
 
     <!-- App Manager strings -->
     <string name="main_app_manager_title">App Manager</string>
@@ -61,16 +58,10 @@
     <string name="app_info_requested_permissions_title">Requested Permissions</string>
     <string name="app_info_requested_permissions_none">No permissions requested</string>
     <string name="app_info_requested_permissions_dialog_title">@string/app_info_requested_permissions_title</string>
-    <string name="app_manager_uninstalled_prefix">Uninstalled %s</string>
-    <string name="app_manager_installed_prefix">Installed %s</string>
-    <string name="app_manager_updated_prefix">Updated %s</string>
-    <string name="app_manager_continue_on_watch">Continue on your watch</string>
-    <string name="app_manager_unable_to_connect">Unable to connect to watch</string>
     <string name="app_manager_section_user_apps">User Apps</string>
     <string name="app_manager_section_system_apps">System Apps</string>
     <string name="app_manager_activity_title">@string/main_app_manager_title</string>
     <string name="app_manager_activity_subtitle">Showing apps on %s</string>
-    <string name="app_manager_version_mismatch">App out of date. Please check for updates on both phone and watch.</string>
 
     <!-- Phone Lock preference strings -->
     <string name="main_phone_locking_title">Phone Locking</string>
@@ -121,15 +112,10 @@
     <string name="pref_about_watch_version_title">Watch Version: %s</string>
     <string name="pref_about_watch_version_loading">Watch Version Loading</string>
     <string name="pref_about_watch_version_failed">Failed to get Watch Version</string>
-    <string name="pref_about_watch_version_disconnected">Watch not connected</string>
-    <string name="donation_processed_message">Thanks for donating!</string>
-    <string name="donation_failed_message">Failed to process donation</string>
-    <string name="donation_connection_failed_message">Failed to connect to Google Play</string>
 
     <!-- Dialog button strings -->
     <string name="dialog_button_grant">Grant</string>
     <string name="dialog_button_cancel">Cancel</string>
-    <string name="dialog_button_close">Close</string>
     <string name="dialog_button_yes">Yes</string>
     <string name="dialog_button_no">No</string>
     <string name="dialog_button_ok">OK</string>
@@ -141,7 +127,6 @@
     <string name="message_watch_charge_noti_warning_label">Watch Charge Notifications Not Working</string>
     <string name="message_watch_charge_noti_warning_desc">Watch Charge Notifications have been disabled in Notification Settings. Please use the option in Battery Sync settings to disable charge notifications</string>
     <string name="message_watch_charge_noti_warning_button_label">Open Notification Settings</string>
-    <string name="message_snackbar_undo_remove">Message Deleted</string>
     <string name="message_none_label">No new messages</string>
 
     <!-- Bottom Navigation Bar strings -->
@@ -181,7 +166,6 @@
     <string name="register_watch_dialog_title">Add %s?</string>
     <string name="register_watch_dialog_message">This will add your %s to Wearable Extensions.</string>
     <string name="register_watch_message_no_watches">No new watches found. Make sure the watch you want to add is turned on and nearby.</string>
-    <string name="register_watch_message_error">Failed to get nearby watches, try again.</string>
     <string name="register_watch_button_refresh">Refresh</string>
     <string name="missing_app_dialog_title">Missing Wearable Extensions</string>
     <string name="missing_app_dialog_message">Your %s doesn\'t have Wearable Extensions installed, please install it from the Play Store and try again.</string>
@@ -231,8 +215,6 @@
 
     <!-- Donate strings -->
     <string name="donate_title">Donate</string>
-
-    <string name="snackbar_action_undo">Undo</string>
 
     <string name="privacy_policy_url">https://github.com/boswelja/PublicDocs/blob/master/PrivacyPolicies/WearableExtensions.md#privacy-policy</string>
 
