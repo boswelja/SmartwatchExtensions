@@ -13,12 +13,7 @@ import android.content.pm.PackageManager
 import androidx.core.content.pm.PackageInfoCompat
 import androidx.core.graphics.drawable.toBitmap
 import com.boswelja.devicemanager.common.SerializableBitmap
-import java.io.ByteArrayInputStream
-import java.io.ByteArrayOutputStream
-import java.io.IOException
-import java.io.ObjectInputStream
-import java.io.ObjectOutputStream
-import java.io.Serializable
+import java.io.*
 
 data class AppPackageInfo(
     val packageIcon: SerializableBitmap?,
@@ -39,9 +34,8 @@ data class AppPackageInfo(
       packageInfo.versionName,
       packageInfo.packageName,
       packageManager.getApplicationLabel(packageInfo.applicationInfo).toString(),
-      (packageInfo.applicationInfo
-          ?.flags
-          ?.and((ApplicationInfo.FLAG_SYSTEM or ApplicationInfo.FLAG_UPDATED_SYSTEM_APP))) != 0,
+      (packageInfo.applicationInfo?.flags?.and(
+          (ApplicationInfo.FLAG_SYSTEM or ApplicationInfo.FLAG_UPDATED_SYSTEM_APP))) != 0,
       packageManager.getLaunchIntentForPackage(packageInfo.packageName) != null,
       packageInfo.firstInstallTime,
       packageInfo.lastUpdateTime,

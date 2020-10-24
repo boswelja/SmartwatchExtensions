@@ -19,11 +19,7 @@ import com.boswelja.devicemanager.common.preference.PreferenceKey
 import com.boswelja.devicemanager.common.preference.SyncPreferences
 import com.boswelja.devicemanager.dndsync.DnDLocalChangeListener
 import com.google.android.gms.tasks.Tasks
-import com.google.android.gms.wearable.DataEvent
-import com.google.android.gms.wearable.DataEventBuffer
-import com.google.android.gms.wearable.DataMapItem
-import com.google.android.gms.wearable.Wearable
-import com.google.android.gms.wearable.WearableListenerService
+import com.google.android.gms.wearable.*
 
 class PreferenceChangeReceiver : WearableListenerService() {
 

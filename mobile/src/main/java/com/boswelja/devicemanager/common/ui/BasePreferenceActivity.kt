@@ -44,7 +44,8 @@ abstract class BasePreferenceActivity : BaseToolbarActivity() {
     Timber.d("showFragments() called")
     val preferenceFragment = getPreferenceFragment()
     val widgetFragment = getWidgetFragment()
-    supportFragmentManager.beginTransaction()
+    supportFragmentManager
+        .beginTransaction()
         .apply {
           replace(R.id.fragment_holder, preferenceFragment)
           if (widgetFragment != null) {

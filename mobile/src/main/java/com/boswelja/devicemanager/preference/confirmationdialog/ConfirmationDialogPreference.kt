@@ -7,6 +7,7 @@
  */
 package com.boswelja.devicemanager.preference.confirmationdialog
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.TypedArray
 import android.util.AttributeSet
@@ -16,15 +17,15 @@ import androidx.preference.PreferenceViewHolder
 import com.boswelja.devicemanager.R
 import timber.log.Timber
 
-class ConfirmationDialogPreference(
-    context: Context, attrs: AttributeSet?, defStyleAttr: Int, defStyleRes: Int
-) : DialogPreference(context, attrs, defStyleAttr, defStyleRes) {
-
-  constructor(context: Context) : this(context, null)
-  constructor(context: Context, attrs: AttributeSet?) : this(
-      context, attrs, R.attr.dialogPreferenceStyle)
-  constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : this(
-      context, attrs, defStyleAttr, defStyleAttr)
+@SuppressLint("ResourceType")
+class ConfirmationDialogPreference
+    @JvmOverloads
+    constructor(
+        context: Context,
+        attrs: AttributeSet? = null,
+        defStyleAttr: Int = R.attr.dialogPreferenceStyle,
+        defStyleRes: Int = R.attr.dialogPreferenceStyle
+    ) : DialogPreference(context, attrs, defStyleAttr, defStyleRes) {
 
   private var value = false
 

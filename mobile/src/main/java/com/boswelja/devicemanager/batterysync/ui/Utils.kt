@@ -24,8 +24,8 @@ object Utils {
       val batteryStatus = context.registerReceiver(null, iFilter)
       val batteryPct =
           ((batteryStatus?.getIntExtra(BatteryManager.EXTRA_LEVEL, -1)!! /
-                  batteryStatus.getIntExtra(BatteryManager.EXTRA_SCALE, -1).toFloat()) *
-                  100).toInt()
+                  batteryStatus.getIntExtra(BatteryManager.EXTRA_SCALE, -1).toFloat()) * 100)
+              .toInt()
       val charging =
           batteryStatus.getIntExtra(BatteryManager.EXTRA_STATUS, -1) ==
               BatteryManager.BATTERY_STATUS_CHARGING

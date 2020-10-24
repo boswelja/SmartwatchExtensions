@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/content_view"
     android:layout_width="match_parent"
@@ -33,7 +32,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="textCapWords"
-            android:maxLines="1"/>
+            android:maxLines="1" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -55,7 +54,7 @@
         app:layout_constraintTop_toBottomOf="@id/watch_name_layout"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        style="@style/Widget.MaterialComponents.Button.OutlinedButton.Icon"/>
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton.Icon" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/forget_watch_button"
@@ -75,5 +74,5 @@
         app:layout_constraintTop_toBottomOf="@id/clear_preferences_button"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        style="@style/Widget.MaterialComponents.Button.OutlinedButton.Icon"/>
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton.Icon" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -56,7 +56,8 @@ class ActionService : JobIntentService() {
   private fun sendMessage(
       nodeId: String, action: String, successMessage: String, failMessage: String
   ) {
-    messageClient.sendMessage(nodeId, action, null)
+    messageClient
+        .sendMessage(nodeId, action, null)
         .addOnSuccessListener { ConfirmationActivityHandler.successAnimation(this, successMessage) }
         .addOnFailureListener { ConfirmationActivityHandler.failAnimation(this, failMessage) }
   }

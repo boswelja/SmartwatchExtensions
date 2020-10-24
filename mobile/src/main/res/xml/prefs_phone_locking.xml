@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.preference.PreferenceScreen
-    xmlns:android="http://schemas.android.com/apk/res/android">
+<androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
     <androidx.preference.DropDownPreference
         android:key="phone_locking_mode"
@@ -8,8 +7,7 @@
         android:entries="@array/pref_phone_locking_mode_entries"
         android:entryValues="@array/pref_phone_locking_mode_entry_values" />
 
-    <androidx.preference.Preference
-        android:key="open_device_settings" />
+    <androidx.preference.Preference android:key="open_device_settings" />
 
     <androidx.preference.SwitchPreference
         android:key="lock_phone_enabled"

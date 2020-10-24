@@ -14,7 +14,6 @@ import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.ui.BaseToolbarActivity
 import com.boswelja.devicemanager.common.ui.LoadingFragment
 import com.boswelja.devicemanager.databinding.ActivityAppManagerBinding
-import com.google.android.gms.wearable.Wearable
 import timber.log.Timber
 
 class AppManagerActivity : BaseToolbarActivity() {
@@ -54,7 +53,8 @@ class AppManagerActivity : BaseToolbarActivity() {
   /** Shows a [LoadingFragment]. */
   private fun showLoadingFragment() {
     Timber.i("showLoadingFragment() called")
-    supportFragmentManager.beginTransaction()
+    supportFragmentManager
+        .beginTransaction()
         .replace(R.id.fragment_holder, LoadingFragment())
         .commit()
   }
@@ -62,7 +62,8 @@ class AppManagerActivity : BaseToolbarActivity() {
   /** Shows the [AppManagerFragment]. */
   private fun showAppManagerFragment() {
     Timber.i("showAppManagerFragment() called")
-    supportFragmentManager.beginTransaction()
+    supportFragmentManager
+        .beginTransaction()
         .setCustomAnimations(R.anim.fade_in, R.anim.fade_out)
         .replace(R.id.fragment_holder, AppManagerFragment())
         .commit()

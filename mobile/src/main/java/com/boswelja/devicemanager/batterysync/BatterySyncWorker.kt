@@ -8,19 +8,15 @@
 package com.boswelja.devicemanager.batterysync
 
 import android.content.Context
-import androidx.work.CoroutineWorker
-import androidx.work.Data
-import androidx.work.PeriodicWorkRequestBuilder
-import androidx.work.WorkManager
-import androidx.work.WorkerParameters
+import androidx.work.*
 import com.boswelja.devicemanager.batterysync.ui.Utils
 import com.boswelja.devicemanager.common.preference.PreferenceKey.BATTERY_SYNC_INTERVAL_KEY
 import com.boswelja.devicemanager.watchmanager.database.WatchDatabase
-import java.util.UUID
-import java.util.concurrent.TimeUnit
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import timber.log.Timber
+import java.util.*
+import java.util.concurrent.TimeUnit
 
 class BatterySyncWorker(appContext: Context, workerParams: WorkerParameters) :
     CoroutineWorker(appContext, workerParams) {

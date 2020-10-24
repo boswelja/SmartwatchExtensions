@@ -30,11 +30,11 @@ import com.boswelja.devicemanager.watchmanager.item.Watch
 import com.boswelja.devicemanager.widget.database.WidgetDatabase
 import com.google.android.gms.wearable.MessageEvent
 import com.google.android.gms.wearable.WearableListenerService
-import java.util.Locale
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import java.util.*
 
 class WatchBatteryUpdateReceiver : WearableListenerService() {
 
@@ -108,8 +108,8 @@ class WatchBatteryUpdateReceiver : WearableListenerService() {
           .setSmallIcon(R.drawable.battery_full)
           .setContentTitle(getString(R.string.device_charged_noti_title, watch.name))
           .setContentText(
-              getString(R.string.device_charged_noti_desc).format(
-                  Locale.getDefault(), watch.name, chargeThreshold))
+              getString(R.string.device_charged_noti_desc)
+                  .format(Locale.getDefault(), watch.name, chargeThreshold))
           .setLocalOnly(true)
           .also { notificationManager.notify(BATTERY_CHARGED_NOTI_ID, it.build()) }
     } else {

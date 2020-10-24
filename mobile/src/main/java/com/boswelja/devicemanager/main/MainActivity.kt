@@ -9,7 +9,7 @@ package com.boswelja.devicemanager.main
 
 import android.os.Bundle
 import androidx.activity.viewModels
-import androidx.navigation.findNavController
+import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.ui.BaseWatchPickerActivity
@@ -33,7 +33,9 @@ class MainActivity : BaseWatchPickerActivity() {
     binding = ActivityMainBinding.inflate(layoutInflater)
     setContentView(binding.root)
     setupWatchPickerSpinner(binding.toolbarLayout.toolbar)
-    binding.bottomNavigation.setupWithNavController(findNavController(R.id.nav_host_fragment))
+    binding.bottomNavigation.setupWithNavController(
+        (supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment)
+            .navController)
     ensureAppUpdated()
   }
 

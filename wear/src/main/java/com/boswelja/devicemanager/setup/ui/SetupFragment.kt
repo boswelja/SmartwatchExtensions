@@ -14,7 +14,6 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
-import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.databinding.FragmentSetupBinding
 
 class SetupFragment : Fragment() {

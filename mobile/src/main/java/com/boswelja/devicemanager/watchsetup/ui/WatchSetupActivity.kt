@@ -8,7 +8,7 @@
 package com.boswelja.devicemanager.watchsetup.ui
 
 import android.os.Bundle
-import androidx.navigation.findNavController
+import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.ui.BaseToolbarActivity
@@ -17,7 +17,10 @@ import com.boswelja.devicemanager.databinding.ActivityWatchSetupBinding
 class WatchSetupActivity : BaseToolbarActivity() {
 
   private val skippedWelcome by lazy { intent.getBooleanExtra(EXTRA_SKIP_WELCOME, false) }
-  private val navController by lazy { findNavController(R.id.nav_host_fragment) }
+  private val navController by lazy {
+    (supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment)
+        .navController
+  }
 
   private lateinit var binding: ActivityWatchSetupBinding
 

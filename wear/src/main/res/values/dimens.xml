@@ -22,5 +22,6 @@
     <dimen name="about_link_icon_size">24dp</dimen>
     <dimen name="about_app_icon_size">56dp</dimen>
 
-    <integer name="extension_motion_duration">250</integer> <!-- Duration of Extension MotionLayout transition in millis -->
+    <integer name="extension_motion_duration">250
+    </integer> <!-- Duration of Extension MotionLayout transition in millis -->
 </resources>

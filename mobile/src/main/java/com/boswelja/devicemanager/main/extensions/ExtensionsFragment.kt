@@ -37,9 +37,10 @@ class ExtensionsFragment : BasePreferenceFragment(), Preference.OnPreferenceClic
       }
       OPEN_APP_MANAGER_KEY -> {
         watchManager.connectedWatch.value?.let {
-          findNavController().navigate(
-              ExtensionsFragmentDirections.toAppManagerActivity(
-                  watchId = it.id, watchName = it.name))
+          findNavController()
+              .navigate(
+                  ExtensionsFragmentDirections.toAppManagerActivity(
+                      watchId = it.id, watchName = it.name))
         }
         true
       }

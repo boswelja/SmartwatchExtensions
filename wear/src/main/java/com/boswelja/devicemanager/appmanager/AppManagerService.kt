@@ -249,7 +249,8 @@ class AppManagerService : Service() {
    * @param packageName The name of the package to try open.
    */
   private fun openPackage(packageName: String) {
-    packageManager.getLaunchIntentForPackage(packageName)
+    packageManager
+        .getLaunchIntentForPackage(packageName)
         ?.apply { flags = Intent.FLAG_ACTIVITY_NEW_TASK }
         ?.also { startActivity(it) }
   }

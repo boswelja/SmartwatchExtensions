@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<navigation
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/dnd_helper_graph"
@@ -8,7 +7,7 @@
 
     <fragment
         android:id="@+id/setupFragment"
-        android:name="com.boswelja.devicemanager.ui.dndsync.helper.SetupFragment"
+        android:name="com.boswelja.devicemanager.dndsync.ui.helper.SetupFragment"
         tools:layout="@layout/fragment_dndsync_helper_setup">
 
         <action
@@ -23,7 +22,7 @@
 
     <fragment
         android:id="@+id/initialCheckFragment"
-        android:name="com.boswelja.devicemanager.ui.dndsync.helper.InitialCheckFragment"
+        android:name="com.boswelja.devicemanager.dndsync.ui.helper.InitialCheckFragment"
         tools:layout="@layout/fragment_dndsync_helper_warning">
 
         <action
@@ -45,7 +44,7 @@
 
     <fragment
         android:id="@+id/resultFragment"
-        android:name="com.boswelja.devicemanager.ui.dndsync.helper.ResultFragment"
+        android:name="com.boswelja.devicemanager.dndsync.ui.helper.ResultFragment"
         tools:layout="@layout/fragment_dndsync_helper_result">
         <argument
             android:name="success"

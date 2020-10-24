@@ -16,7 +16,6 @@ import com.boswelja.devicemanager.watchmanager.item.Watch
 import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.Tasks
 import com.google.android.gms.wearable.*
-import kotlin.collections.ArrayList
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import timber.log.Timber

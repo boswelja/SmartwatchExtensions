@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.boswelja.devicemanager">
 
@@ -121,7 +120,10 @@
         <service android:name=".dndsync.DnDRemoteChangeReceiver">
             <intent-filter>
                 <action android:name="com.google.android.gms.wearable.DATA_CHANGED" />
-                <data android:scheme="wear" android:host="*" android:path="/dnd_status" />
+                <data
+                    android:scheme="wear"
+                    android:host="*"
+                    android:path="/dnd_status" />
             </intent-filter>
         </service>
 
@@ -155,7 +157,10 @@
         <service android:name=".batterysync.WatchBatteryUpdateReceiver">
             <intent-filter>
                 <action android:name="com.google.android.gms.wearable.MESSAGE_RECEIVED" />
-                <data android:scheme="wear" android:host="*" android:path="/battery_status" />
+                <data
+                    android:scheme="wear"
+                    android:host="*"
+                    android:path="/battery_status" />
             </intent-filter>
         </service>
 
@@ -181,7 +186,10 @@
         <service android:name=".receiver.PreferenceChangeReceiver">
             <intent-filter>
                 <action android:name="com.google.android.gms.wearable.DATA_CHANGED" />
-                <data android:scheme="wear" android:host="*" android:path="/preference_change" />
+                <data
+                    android:scheme="wear"
+                    android:host="*"
+                    android:path="/preference_change" />
             </intent-filter>
         </service>
 

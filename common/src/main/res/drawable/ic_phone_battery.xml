@@ -1,17 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
-<level-list
-    xmlns:tools="http://schemas.android.com/tools"
+<level-list xmlns:tools="http://schemas.android.com/tools"
     xmlns:android="http://schemas.android.com/apk/res/android"
     tools:keep="@drawable/ic_phone_battery">
-    <item android:maxLevel="0" android:drawable="@drawable/phone_battery_unknown" />
-    <item android:maxLevel="15" android:drawable="@drawable/phone_battery_low" />
-    <item android:maxLevel="20" android:drawable="@drawable/phone_battery_20" />
-    <item android:maxLevel="30" android:drawable="@drawable/phone_battery_30" />
-    <item android:maxLevel="40" android:drawable="@drawable/phone_battery_40" />
-    <item android:maxLevel="50" android:drawable="@drawable/phone_battery_50" />
-    <item android:maxLevel="60" android:drawable="@drawable/phone_battery_60" />
-    <item android:maxLevel="70" android:drawable="@drawable/phone_battery_70" />
-    <item android:maxLevel="80" android:drawable="@drawable/phone_battery_80" />
-    <item android:maxLevel="90" android:drawable="@drawable/phone_battery_90" />
-    <item android:maxLevel="100" android:drawable="@drawable/phone_battery_full" />
+    <item
+        android:maxLevel="0"
+        android:drawable="@drawable/phone_battery_unknown" />
+    <item
+        android:maxLevel="15"
+        android:drawable="@drawable/phone_battery_low" />
+    <item
+        android:maxLevel="20"
+        android:drawable="@drawable/phone_battery_20" />
+    <item
+        android:maxLevel="30"
+        android:drawable="@drawable/phone_battery_30" />
+    <item
+        android:maxLevel="40"
+        android:drawable="@drawable/phone_battery_40" />
+    <item
+        android:maxLevel="50"
+        android:drawable="@drawable/phone_battery_50" />
+    <item
+        android:maxLevel="60"
+        android:drawable="@drawable/phone_battery_60" />
+    <item
+        android:maxLevel="70"
+        android:drawable="@drawable/phone_battery_70" />
+    <item
+        android:maxLevel="80"
+        android:drawable="@drawable/phone_battery_80" />
+    <item
+        android:maxLevel="90"
+        android:drawable="@drawable/phone_battery_90" />
+    <item
+        android:maxLevel="100"
+        android:drawable="@drawable/phone_battery_full" />
 </level-list>

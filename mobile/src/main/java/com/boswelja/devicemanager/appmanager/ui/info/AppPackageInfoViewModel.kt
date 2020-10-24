@@ -7,17 +7,13 @@
  */
 package com.boswelja.devicemanager.appmanager.ui.info
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.*
 import com.boswelja.devicemanager.BuildConfig
 import com.boswelja.devicemanager.common.appmanager.AppPackageInfo
 import com.boswelja.devicemanager.common.appmanager.References
 import com.google.android.gms.wearable.MessageClient
 import java.text.SimpleDateFormat
-import java.util.Locale
+import java.util.*
 
 class AppPackageInfoViewModel(private val messageClient: MessageClient) : ViewModel() {
 

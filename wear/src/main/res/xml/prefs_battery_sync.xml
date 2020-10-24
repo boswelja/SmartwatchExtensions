@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <androidx.preference.PreferenceCategory
-        android:title="@string/pref_category_battery_sync_title">
+    <androidx.preference.PreferenceCategory android:title="@string/pref_category_battery_sync_title">
 
         <androidx.preference.SwitchPreference
             android:key="battery_sync_enabled"
             android:title="@string/pref_battery_sync_enable_title"
-            android:defaultValue="false"/>
+            android:defaultValue="false" />
 
         <androidx.preference.CheckBoxPreference
             android:key="battery_phone_charge_noti"

@@ -18,8 +18,8 @@ import com.boswelja.devicemanager.common.dndsync.References.REQUEST_SDK_INT_PATH
 import com.boswelja.devicemanager.watchmanager.WatchManager
 import com.google.android.gms.wearable.MessageClient
 import com.google.android.gms.wearable.Wearable
-import java.math.BigInteger
 import timber.log.Timber
+import java.math.BigInteger
 
 class InitialCheckViewModel(application: Application) : AndroidViewModel(application) {
 

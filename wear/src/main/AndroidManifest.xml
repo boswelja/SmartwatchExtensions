@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.boswelja.devicemanager">
 
     <uses-feature android:name="android.hardware.type.watch" />
+
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
@@ -24,10 +24,12 @@
         <uses-library
             android:name="com.google.android.wearable"
             android:required="true" />
+
         <meta-data
             android:name="com.google.android.wearable.standalone"
             android:value="false" />
-        <meta-data android:name="com.google.android.gms.version"
+        <meta-data
+            android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
 
         <activity
@@ -36,6 +38,7 @@
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -61,16 +64,16 @@
             android:label="Phone Battery Status"
             android:permission="com.google.android.wearable.permission.BIND_COMPLICATION_PROVIDER">
             <intent-filter>
-                <action android:name="android.support.wearable.complications.ACTION_COMPLICATION_UPDATE_REQUEST"/>
+                <action android:name="android.support.wearable.complications.ACTION_COMPLICATION_UPDATE_REQUEST" />
             </intent-filter>
 
             <meta-data
                 android:name="android.support.wearable.complications.UPDATE_PERIOD_SECONDS"
-                android:value="0"/>
+                android:value="0" />
 
             <meta-data
                 android:name="android.support.wearable.complications.SUPPORTED_TYPES"
-                android:value="RANGED_VALUE,SHORT_TEXT"/>
+                android:value="RANGED_VALUE,SHORT_TEXT" />
         </service>
 
         <service
@@ -79,46 +82,68 @@
             android:label="@string/lock_phone_label"
             android:permission="com.google.android.wearable.permission.BIND_COMPLICATION_PROVIDER">
             <intent-filter>
-                <action android:name="android.support.wearable.complications.ACTION_COMPLICATION_UPDATE_REQUEST"/>
+                <action android:name="android.support.wearable.complications.ACTION_COMPLICATION_UPDATE_REQUEST" />
             </intent-filter>
 
             <meta-data
                 android:name="android.support.wearable.complications.UPDATE_PERIOD_SECONDS"
-                android:value="0"/>
+                android:value="0" />
 
             <meta-data
                 android:name="android.support.wearable.complications.SUPPORTED_TYPES"
-                android:value="SHORT_TEXT"/>
+                android:value="SHORT_TEXT" />
         </service>
 
         <service android:name=".batterysync.PhoneBatteryUpdateReceiver">
             <intent-filter>
                 <action android:name="com.google.android.gms.wearable.MESSAGE_RECEIVED" />
-                <data android:scheme="wear" android:host="*" android:path="/battery_status" />
+                <data
+                    android:scheme="wear"
+                    android:host="*"
+                    android:path="/battery_status" />
             </intent-filter>
         </service>
 
         <service android:name=".phoneconnectionmanager.MessageReceiver">
             <intent-filter>
                 <action android:name="com.google.android.gms.wearable.MESSAGE_RECEIVED" />
-                <data android:scheme="wear" android:host="*" android:path="/request_noti_policy_access_status" />
-                <data android:scheme="wear" android:host="*" android:path="/start_app_manager_service" />
-                <data android:scheme="wear" android:host="*" android:path="/request_app_version" />
-                <data android:scheme="wear" android:host="*" android:path="/request_sdk_int" />
+
+                <data
+                    android:scheme="wear"
+                    android:host="*"
+                    android:path="/request_noti_policy_access_status" />
+                <data
+                    android:scheme="wear"
+                    android:host="*"
+                    android:path="/start_app_manager_service" />
+                <data
+                    android:scheme="wear"
+                    android:host="*"
+                    android:path="/request_app_version" />
+                <data
+                    android:scheme="wear"
+                    android:host="*"
+                    android:path="/request_sdk_int" />
             </intent-filter>
         </service>
 
         <service android:name=".dndsync.DnDRemoteChangeReceiver">
             <intent-filter>
                 <action android:name="com.google.android.gms.wearable.DATA_CHANGED" />
-                <data android:scheme="wear" android:host="*" android:path="/dnd_status" />
+                <data
+                    android:scheme="wear"
+                    android:host="*"
+                    android:path="/dnd_status" />
             </intent-filter>
         </service>
 
         <service android:name=".phoneconnectionmanager.PreferenceChangeReceiver">
             <intent-filter>
                 <action android:name="com.google.android.gms.wearable.DATA_CHANGED" />
-                <data android:scheme="wear" android:host="*" android:pathPrefix="/preference-change_" />
+                <data
+                    android:scheme="wear"
+                    android:host="*"
+                    android:pathPrefix="/preference-change_" />
             </intent-filter>
         </service>
 

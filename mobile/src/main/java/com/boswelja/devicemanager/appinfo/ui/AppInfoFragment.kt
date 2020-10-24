@@ -22,7 +22,6 @@ import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.GooglePlayUtils
 import com.boswelja.devicemanager.common.GooglePlayUtils.getPlayStoreLink
 import com.boswelja.devicemanager.common.ui.BasePreferenceFragment
-import com.boswelja.devicemanager.donate.ui.DonateSheet
 import com.boswelja.devicemanager.watchmanager.WatchManager
 import timber.log.Timber
 
@@ -146,12 +145,6 @@ class AppInfoFragment : BasePreferenceFragment(), Preference.OnPreferenceClickLi
       Timber.i("Opening Play Store")
       startActivity(it)
     }
-  }
-
-  /** Create an instance of [DonateSheet] and shows it. */
-  private fun showDonationDialog() {
-    Timber.d("showDonationDialog() called")
-    DonateSheet().show(parentFragmentManager, "DonateSheet")
   }
 
   companion object {

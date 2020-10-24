@@ -10,8 +10,10 @@ package com.boswelja.devicemanager.common.recyclerview.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.boswelja.devicemanager.common.recyclerview.adapter.SectionedAdapter.Companion.SECTION_HEADER_HIDDEN
+import com.boswelja.devicemanager.common.recyclerview.adapter.SectionedAdapter.SortMode.DEFAULT
 import com.boswelja.devicemanager.common.recyclerview.item.SectionHeaderViewHolder
-import java.util.Locale
+import java.util.*
 import kotlin.collections.ArrayList
 
 /**
@@ -287,12 +289,10 @@ abstract class SectionedAdapter<T>(
    * @param item The new item of type [T] to add to the section.
    */
   fun addItem(sectionIndex: Int, item: T) {
-    items[sectionIndex].second
-        .apply { add(item) }
-        .also {
-          sortSectionItems(sectionIndex)
-          notifyItemInserted(getAdapterPosition(sectionIndex, it.indexOf(item)))
-        }
+    items[sectionIndex].second.apply { add(item) }.also {
+      sortSectionItems(sectionIndex)
+      notifyItemInserted(getAdapterPosition(sectionIndex, it.indexOf(item)))
+    }
   }
 
   /**

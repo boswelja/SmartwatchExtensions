@@ -8,7 +8,7 @@
 package com.boswelja.devicemanager.dndsync.ui.helper
 
 import android.os.Bundle
-import androidx.navigation.findNavController
+import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.ui.BaseToolbarActivity
@@ -26,6 +26,8 @@ class DnDSyncHelperActivity : BaseToolbarActivity() {
     binding = ActivityDndSyncHelperBinding.inflate(layoutInflater)
     setContentView(binding.root)
     setupToolbar(binding.toolbarLayout.toolbar, showUpButton = true)
-    binding.toolbarLayout.toolbar.setupWithNavController(findNavController(R.id.nav_host_fragment))
+    binding.toolbarLayout.toolbar.setupWithNavController(
+        (supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment)
+            .navController)
   }
 }

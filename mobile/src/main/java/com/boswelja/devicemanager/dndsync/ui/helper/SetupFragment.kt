@@ -17,7 +17,6 @@ import androidx.navigation.fragment.findNavController
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.recyclerview.adapter.StringAdapter
 import com.boswelja.devicemanager.databinding.FragmentDndsyncHelperSetupBinding
-import com.boswelja.devicemanager.ui.dndsync.helper.SetupFragmentDirections
 
 internal class SetupFragment : Fragment() {
 

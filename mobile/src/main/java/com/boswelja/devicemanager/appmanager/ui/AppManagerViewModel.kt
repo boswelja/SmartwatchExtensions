@@ -19,8 +19,8 @@ import com.boswelja.devicemanager.common.appmanager.AppPackageInfoList
 import com.boswelja.devicemanager.common.appmanager.References
 import com.google.android.gms.wearable.MessageClient
 import com.google.android.gms.wearable.Wearable
-import java.io.InvalidClassException
 import timber.log.Timber
+import java.io.InvalidClassException
 
 class AppManagerViewModel
     @JvmOverloads

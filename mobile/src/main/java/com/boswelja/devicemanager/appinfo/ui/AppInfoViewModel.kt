@@ -54,7 +54,8 @@ class AppInfoViewModel
   fun requestUpdateWatchVersion(connectedWatchId: String) {
     Timber.d("requestUpdateWatchVersionPreference")
     if (connectedWatchId.isNotEmpty()) {
-      messageClient.sendMessage(connectedWatchId, References.REQUEST_APP_VERSION, null)
+      messageClient
+          .sendMessage(connectedWatchId, References.REQUEST_APP_VERSION, null)
           .addOnFailureListener {
             Timber.w(it)
             _watchAppVersion.postValue(null)

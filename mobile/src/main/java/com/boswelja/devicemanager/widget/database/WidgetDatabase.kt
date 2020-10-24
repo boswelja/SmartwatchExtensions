@@ -42,7 +42,8 @@ abstract class WidgetDatabase : RoomDatabase() {
       withContext(Dispatchers.IO) {
         val database = open(context)
         val widgetIds =
-            database.watchBatteryWidgetDao()
+            database
+                .watchBatteryWidgetDao()
                 .getAllForWatch(watchId)
                 .map { it.widgetId }
                 .toIntArray()

@@ -20,7 +20,7 @@ import org.junit.Test
 
 class CompatTest {
 
-  val context = InstrumentationRegistry.getInstrumentation().targetContext
+  private val context: Context = InstrumentationRegistry.getInstrumentation().targetContext
   lateinit var notificationManager: NotificationManager
 
   @Before

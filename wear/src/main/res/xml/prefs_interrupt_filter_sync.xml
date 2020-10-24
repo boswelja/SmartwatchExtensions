@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.preference.PreferenceScreen
-    xmlns:android="http://schemas.android.com/apk/res/android">
+<androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <androidx.preference.PreferenceCategory
-        android:title="@string/pref_category_interrupt_filter_sync_title">
+    <androidx.preference.PreferenceCategory android:title="@string/pref_category_interrupt_filter_sync_title">
 
         <androidx.preference.SwitchPreference
             android:key="interrupt_filter_sync_to_watch"

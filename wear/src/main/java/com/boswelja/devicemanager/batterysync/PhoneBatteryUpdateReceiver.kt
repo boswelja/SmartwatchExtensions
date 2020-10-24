@@ -89,9 +89,9 @@ class PhoneBatteryUpdateReceiver : WearableListenerService() {
                     getString(R.string.noti_channel_phone_charged_title),
                     NotificationManager.IMPORTANCE_HIGH)
                 .apply {
-              enableVibration(true)
-              setShowBadge(true)
-            }
+                  enableVibration(true)
+                  setShowBadge(true)
+                }
         notificationManager.createNotificationChannel(channel)
       }
 

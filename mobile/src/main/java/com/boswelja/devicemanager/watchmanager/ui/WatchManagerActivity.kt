@@ -39,9 +39,9 @@ class WatchManagerActivity : BaseToolbarActivity() {
 
   /** Opens a [WatchSetupActivity]. */
   private fun openWatchSetupActivity() {
-    Intent(this, WatchSetupActivity::class.java)
-        .apply { putExtra(EXTRA_SKIP_WELCOME, true) }
-        .also { startActivity(it) }
+    Intent(this, WatchSetupActivity::class.java).apply { putExtra(EXTRA_SKIP_WELCOME, true) }.also {
+      startActivity(it)
+    }
   }
 
   /** Opens a [WatchInfoActivity]. */

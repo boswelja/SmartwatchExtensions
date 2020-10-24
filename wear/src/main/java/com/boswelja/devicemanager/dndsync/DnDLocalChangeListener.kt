@@ -7,16 +7,8 @@
  */
 package com.boswelja.devicemanager.dndsync
 
-import android.app.Notification
-import android.app.NotificationChannel
-import android.app.NotificationManager
-import android.app.PendingIntent
-import android.app.Service
-import android.content.BroadcastReceiver
-import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
-import android.content.SharedPreferences
+import android.app.*
+import android.content.*
 import android.os.Build
 import android.os.Handler
 import android.os.IBinder
@@ -136,8 +128,8 @@ class DnDLocalChangeListener : Service() {
       dndSyncWithTheater = enabled
       notificationManager.notify(DND_SYNC_LOCAL_NOTI_ID, createNotification())
       if (enabled) {
-        applicationContext.contentResolver
-            .registerContentObserver(Settings.Global.CONTENT_URI, true, theaterModeObserver)
+        applicationContext.contentResolver.registerContentObserver(
+            Settings.Global.CONTENT_URI, true, theaterModeObserver)
       } else {
         applicationContext.contentResolver.unregisterContentObserver(theaterModeObserver)
         tryStop()

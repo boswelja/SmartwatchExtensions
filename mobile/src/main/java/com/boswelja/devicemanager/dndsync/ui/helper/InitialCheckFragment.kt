@@ -16,7 +16,6 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.databinding.FragmentDndsyncHelperWarningBinding
-import com.boswelja.devicemanager.ui.dndsync.helper.InitialCheckFragmentDirections
 import timber.log.Timber
 
 internal class InitialCheckFragment : Fragment() {

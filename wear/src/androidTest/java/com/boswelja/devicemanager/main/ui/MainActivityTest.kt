@@ -34,8 +34,8 @@ class MainActivityTest {
     sharedPreferences.edit(commit = true) { remove(References.PHONE_ID_KEY) }
     val scenario = getScenario()
     scenario.onActivity {
-      assertThat(it.findNavController(R.id.nav_host_fragment).currentDestination?.id).isEqualTo(
-          R.id.setupFragment)
+      assertThat(it.findNavController(R.id.nav_host_fragment).currentDestination?.id)
+          .isEqualTo(R.id.setupFragment)
     }
     scenario.close()
   }
@@ -45,8 +45,8 @@ class MainActivityTest {
     sharedPreferences.edit(commit = true) { putString(References.PHONE_ID_KEY, "id123") }
     val scenario = getScenario()
     scenario.onActivity {
-      assertThat(it.findNavController(R.id.nav_host_fragment).currentDestination?.id).isEqualTo(
-          R.id.extensionsFragment)
+      assertThat(it.findNavController(R.id.nav_host_fragment).currentDestination?.id)
+          .isEqualTo(R.id.extensionsFragment)
     }
     scenario.close()
   }

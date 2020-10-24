@@ -23,8 +23,7 @@
         android:entryValues="@array/pref_daynight_mode_entry_values"
         android:defaultValue="-1" />
 
-    <androidx.preference.PreferenceCategory
-        android:title="@string/pref_category_watch_connection">
+    <androidx.preference.PreferenceCategory android:title="@string/pref_category_watch_connection">
 
         <androidx.preference.Preference
             android:key="open_watch_manager"

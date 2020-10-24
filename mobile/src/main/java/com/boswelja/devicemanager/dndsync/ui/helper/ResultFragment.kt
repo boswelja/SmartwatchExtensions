@@ -16,7 +16,6 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.databinding.FragmentDndsyncHelperResultBinding
-import com.boswelja.devicemanager.ui.dndsync.helper.ResultFragmentArgs
 
 internal class ResultFragment : Fragment() {
 
