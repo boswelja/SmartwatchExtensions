@@ -2,6 +2,8 @@ name: Feature Branch CI
 
 on:
   push:
+    paths-ignore:
+      - '*.md'
     branches:
       - '*'
       - '!main'
