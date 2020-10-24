@@ -71,6 +71,7 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           android: true
+          fail_on_error: true
   
   sign:
     name: Sign and Save Bundles
