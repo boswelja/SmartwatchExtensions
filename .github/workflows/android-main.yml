@@ -68,8 +68,9 @@ jobs:
     needs: assemble
     steps:
       - uses: actions/checkout@v2
-      - name: Run ktlint with reviewdog
+      - name: Run ktlint
         uses: ScaCap/action-ktlint@1.3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           android: true
+          fail_on_error: true
