@@ -12,6 +12,7 @@ import android.content.*
 import android.os.Build
 import android.os.Handler
 import android.os.IBinder
+import android.os.Looper
 import android.provider.Settings
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
@@ -45,7 +46,7 @@ class DnDLocalChangeListener : Service() {
         }
       }
 
-  private val theaterModeObserver = TheaterModeObserver(this, Handler())
+  private val theaterModeObserver = TheaterModeObserver(this, Handler(Looper.getMainLooper()))
   private val preferenceChangeListener =
       SharedPreferences.OnSharedPreferenceChangeListener { sharedPreferences, key ->
         when (key) {

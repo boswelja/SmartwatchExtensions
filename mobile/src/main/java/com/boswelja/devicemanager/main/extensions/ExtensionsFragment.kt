@@ -72,9 +72,8 @@ class ExtensionsFragment : BasePreferenceFragment(), Preference.OnPreferenceClic
    */
   private fun showConfirmationDialogPrefFragment(preference: ConfirmationDialogPreference) {
     ConfirmationDialogPrefFragment.newInstance(preference.key).apply {
-      setTargetFragment(this@ExtensionsFragment, 0)
       Timber.i("Showing ConfirmationDialogPrefFragment")
-      show(parentFragmentManager)
+      show(childFragmentManager)
     }
   }
 
