@@ -33,24 +33,24 @@ object AndroidSdk {
 object Libraries {
     object Versions {
         const val androidxAppCompat = "1.3.0-alpha02"
-        const val androidxBrowser = "1.3.0-alpha05"
-        const val androidxConstraintLayout = "2.0.0"
-        const val androidxCoreKtx = "1.5.0-alpha03"
-        const val androidxFragment = "1.3.0-alpha08"
-        const val androidxLifecycle = "2.3.0-alpha07"
-        const val androidxNavigation = "2.3.0"
+        const val androidxBrowser = "1.3.0-alpha06"
+        const val androidxConstraintLayout = "2.0.2"
+        const val androidxCoreKtx = "1.5.0-alpha04"
+        const val androidxFragment = "1.3.0-beta01"
+        const val androidxLifecycle = "2.3.0-beta01"
+        const val androidxNavigation = "2.3.1"
         const val androidxPreference = "1.1.1"
-        const val androidxRoom = "2.3.0-alpha02"
-        const val androidxWear = "1.1.0-rc03"
-        const val androidxWork = "2.5.0-alpha02"
+        const val androidxRoom = "2.3.0-alpha03"
+        const val androidxWear = "1.1.0"
+        const val androidxWork = "2.5.0-alpha03"
 
         const val billingClient = "3.0.0"
 
-        const val googleMaterial = "1.3.0-alpha02"
-        const val googlePlayCore = "1.8.0"
+        const val googleMaterial = "1.3.0-alpha03"
+        const val googlePlayCore = "1.8.2"
 
         const val playServicesWearable = "17.0.0"
-        const val wearableSupport = "2.7.0"
+        const val wearableSupport = "2.8.1"
 
         const val timber = "4.7.1"
     }
@@ -77,7 +77,7 @@ object Libraries {
 
     const val materialComponents = "com.google.android.material:material:${Versions.googleMaterial}"
     const val playCore = "com.google.android.play:core:${Versions.googlePlayCore}"
-    const val playCoreKtx = "com.google.android.play:core-ktx:${Versions.googlePlayCore}"
+    const val playCoreKtx = "com.google.android.play:core-ktx:1.8.1"
 
     const val playServicesWearable = "com.google.android.gms:play-services-wearable:${Versions.playServicesWearable}"
     const val wearableSupport = "com.google.android.support:wearable:${Versions.wearableSupport}"
@@ -100,9 +100,9 @@ object TestLibraries {
         const val androidxTest = "1.3.0"
 
         const val junit = "4.13"
-        const val truth = "1.0.1"
+        const val truth = "1.1"
 
-        const val mockk = "1.10.0"
+        const val mockk = "1.10.2"
 
         const val robolectric = "4.4"
     }
