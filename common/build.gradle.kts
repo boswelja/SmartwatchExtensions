@@ -3,7 +3,6 @@ plugins {
     id(BuildPlugins.kotlinAndroid)
     id(BuildPlugins.kotlinAndroidExtensions)
     id(BuildPlugins.kotlinKapt)
-    id("com.diffplug.spotless") version BuildPlugins.Versions.spotlessVersion
 }
 
 android {
@@ -42,26 +41,4 @@ dependencies {
     implementation(Libraries.materialComponents)
     implementation(Libraries.playServicesWearable)
     implementation(Libraries.timber)
-}
-
-spotless {
-    kotlin {
-        target("**/*.kt")
-
-        ktfmt()
-        endWithNewline()
-
-        licenseHeaderFile("../LicenseHeader")
-    }
-    kotlinGradle {
-        ktlint()
-        endWithNewline()
-    }
-    format("xml") {
-        target("**/*.xml")
-
-        trimTrailingWhitespace()
-        indentWithSpaces()
-        endWithNewline()
-    }
 }

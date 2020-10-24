@@ -4,7 +4,6 @@ plugins {
     id(BuildPlugins.kotlinAndroidExtensions)
     id(BuildPlugins.kotlinKapt)
     id(BuildPlugins.safeArgs)
-    id("com.diffplug.spotless") version BuildPlugins.Versions.spotlessVersion
 }
 
 android {
@@ -97,26 +96,4 @@ dependencies {
     androidTestImplementation(AndroidTestLibraries.androidxTestRunner)
     androidTestImplementation(AndroidTestLibraries.androidxTestRules)
     androidTestImplementation(AndroidTestLibraries.googleTruth)
-}
-
-spotless {
-    kotlin {
-        target("**/*.kt")
-
-        ktfmt()
-        endWithNewline()
-
-        licenseHeaderFile("../LicenseHeader")
-    }
-    kotlinGradle {
-        ktlint()
-        endWithNewline()
-    }
-    format("xml") {
-        target("**/*.xml")
-
-        trimTrailingWhitespace()
-        indentWithSpaces()
-        endWithNewline()
-    }
 }
