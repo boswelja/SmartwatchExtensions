@@ -13,11 +13,11 @@ import com.boswelja.devicemanager.common.Event
 
 class AboutViewModel : ViewModel() {
 
-  val version = BuildConfig.VERSION_NAME
+    val version = BuildConfig.VERSION_NAME
 
-  val openPlayStoreEvent = Event()
-  val openAppInfoEvent = Event()
+    val openPlayStoreEvent = Event()
+    val openAppInfoEvent = Event()
 
-  fun fireOpenPlayStoreEvent() = openPlayStoreEvent.fire()
-  fun fireOpenAppInfoEvent() = openAppInfoEvent.fire()
+    fun fireOpenPlayStoreEvent() = openPlayStoreEvent.fire()
+    fun fireOpenAppInfoEvent() = openAppInfoEvent.fire()
 }

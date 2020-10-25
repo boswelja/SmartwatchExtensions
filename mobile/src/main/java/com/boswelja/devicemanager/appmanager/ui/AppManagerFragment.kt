@@ -23,42 +23,42 @@ import com.boswelja.devicemanager.databinding.FragmentAppManagerBinding
 
 class AppManagerFragment : Fragment(), ItemClickCallback<Item> {
 
-  private val viewModel: AppManagerViewModel by activityViewModels()
-  private val appsAdapter = AppsAdapter(this)
+    private val viewModel: AppManagerViewModel by activityViewModels()
+    private val appsAdapter = AppsAdapter(this)
 
-  private lateinit var binding: FragmentAppManagerBinding
+    private lateinit var binding: FragmentAppManagerBinding
 
-  override fun onClick(item: Item) {
-    if (item is Item.App) {
-      viewModel.getAppDetails(item)?.let { launchAppInfoActivity(it) }
-    }
-  }
-
-  override fun onCreateView(
-      inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
-  ): View? {
-    binding = FragmentAppManagerBinding.inflate(inflater, container, false)
-    return binding.root
-  }
-
-  override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-    binding.appsRecyclerview.adapter = appsAdapter
-    viewModel.adapterList.observe(viewLifecycleOwner) {
-      it?.let { allApps -> appsAdapter.submitList(allApps) }
-    }
-  }
-
-  /**
-   * Launches an [AppPackageInfoActivity] for a given [AppPackageInfo].
-   * @param appPackageInfo The [AppPackageInfo] object to pass on to the [AppPackageInfoActivity].
-   */
-  private fun launchAppInfoActivity(appPackageInfo: AppPackageInfo) {
-    viewModel.canStopAppManagerService = false
-    Intent(context, AppPackageInfoActivity::class.java)
-        .apply {
-          putExtra(AppPackageInfoActivity.EXTRA_APP_INFO, appPackageInfo)
-          putExtra(AppPackageInfoActivity.EXTRA_WATCH_ID, viewModel.watchId)
+    override fun onClick(item: Item) {
+        if (item is Item.App) {
+            viewModel.getAppDetails(item)?.let { launchAppInfoActivity(it) }
         }
-        .also { startActivity(it) }
-  }
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+    ): View? {
+        binding = FragmentAppManagerBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        binding.appsRecyclerview.adapter = appsAdapter
+        viewModel.adapterList.observe(viewLifecycleOwner) {
+            it?.let { allApps -> appsAdapter.submitList(allApps) }
+        }
+    }
+
+    /**
+     * Launches an [AppPackageInfoActivity] for a given [AppPackageInfo].
+     * @param appPackageInfo The [AppPackageInfo] object to pass on to the [AppPackageInfoActivity].
+     */
+    private fun launchAppInfoActivity(appPackageInfo: AppPackageInfo) {
+        viewModel.canStopAppManagerService = false
+        Intent(context, AppPackageInfoActivity::class.java)
+            .apply {
+                putExtra(AppPackageInfoActivity.EXTRA_APP_INFO, appPackageInfo)
+                putExtra(AppPackageInfoActivity.EXTRA_WATCH_ID, viewModel.watchId)
+            }
+            .also { startActivity(it) }
+    }
 }

@@ -20,38 +20,38 @@ import com.boswelja.devicemanager.databinding.FragmentDndsyncHelperSetupBinding
 
 internal class SetupFragment : Fragment() {
 
-  private val viewModel: SetupViewModel by viewModels()
+    private val viewModel: SetupViewModel by viewModels()
 
-  private lateinit var binding: FragmentDndsyncHelperSetupBinding
+    private lateinit var binding: FragmentDndsyncHelperSetupBinding
 
-  override fun onCreateView(
-      inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
-  ): View? {
-    binding = FragmentDndsyncHelperSetupBinding.inflate(inflater, container, false)
-    return binding.root
-  }
-
-  override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-    viewModel.hasNotiPolicyAccess.observe(viewLifecycleOwner) {
-      if (it != null) {
-        val action = SetupFragmentDirections.toResultFragment(it)
-        findNavController().navigate(action)
-        viewModel.permissionRequestHandled()
-      }
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+    ): View? {
+        binding = FragmentDndsyncHelperSetupBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
-    binding.stepRecyclerview.adapter =
-        StringAdapter(resources.getStringArray(R.array.interrupt_filter_sync_to_watch_steps))
-    binding.nextButton.setOnClickListener {
-      setLoading(true)
-      viewModel.requestCheckPermission()
-    }
-  }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        viewModel.hasNotiPolicyAccess.observe(viewLifecycleOwner) {
+            if (it != null) {
+                val action = SetupFragmentDirections.toResultFragment(it)
+                findNavController().navigate(action)
+                viewModel.permissionRequestHandled()
+            }
+        }
 
-  private fun setLoading(isLoading: Boolean) {
-    binding.apply {
-      if (isLoading) progressBar.show() else progressBar.hide()
-      nextButton.isEnabled = !isLoading
+        binding.stepRecyclerview.adapter =
+            StringAdapter(resources.getStringArray(R.array.interrupt_filter_sync_to_watch_steps))
+        binding.nextButton.setOnClickListener {
+            setLoading(true)
+            viewModel.requestCheckPermission()
+        }
     }
-  }
+
+    private fun setLoading(isLoading: Boolean) {
+        binding.apply {
+            if (isLoading) progressBar.show() else progressBar.hide()
+            nextButton.isEnabled = !isLoading
+        }
+    }
 }

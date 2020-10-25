@@ -16,17 +16,17 @@ import com.boswelja.devicemanager.common.databinding.RecyclerviewItemIconOneLine
 open class IconOneLineViewHolder(private val binding: RecyclerviewItemIconOneLineBinding) :
     RecyclerView.ViewHolder(binding.root) {
 
-  fun bind(@DrawableRes icon: Int, text: String, iconLevel: Int = 0) {
-    binding.icon.setImageResource(icon)
-    binding.icon.setImageLevel(iconLevel)
-    binding.text.text = text
-  }
-
-  companion object {
-    fun from(parent: ViewGroup): IconOneLineViewHolder {
-      val layoutInflater = LayoutInflater.from(parent.context)
-      val binding = RecyclerviewItemIconOneLineBinding.inflate(layoutInflater, parent, false)
-      return IconOneLineViewHolder(binding)
+    fun bind(@DrawableRes icon: Int, text: String, iconLevel: Int = 0) {
+        binding.icon.setImageResource(icon)
+        binding.icon.setImageLevel(iconLevel)
+        binding.text.text = text
     }
-  }
+
+    companion object {
+        fun from(parent: ViewGroup): IconOneLineViewHolder {
+            val layoutInflater = LayoutInflater.from(parent.context)
+            val binding = RecyclerviewItemIconOneLineBinding.inflate(layoutInflater, parent, false)
+            return IconOneLineViewHolder(binding)
+        }
+    }
 }

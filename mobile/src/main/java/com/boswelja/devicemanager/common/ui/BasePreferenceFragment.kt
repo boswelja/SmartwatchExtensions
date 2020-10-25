@@ -23,31 +23,31 @@ import com.boswelja.devicemanager.watchmanager.WatchPreferenceManager
  */
 abstract class BasePreferenceFragment : PreferenceFragmentCompat() {
 
-  protected val sharedPreferences: SharedPreferences
-    get() = preferenceManager.sharedPreferences
+    protected val sharedPreferences: SharedPreferences
+        get() = preferenceManager.sharedPreferences
 
-  protected val watchPreferenceManager: WatchPreferenceManager by lazy {
-    WatchPreferenceManager.get(requireContext())
-  }
-  protected val selectedWatchHandler: SelectedWatchHandler by lazy {
-    SelectedWatchHandler.get(requireContext())
-  }
-
-  protected var connectedWatchId: String? = null
-
-  override fun onCreateRecyclerView(
-      inflater: LayoutInflater?, parent: ViewGroup?, savedInstanceState: Bundle?
-  ): RecyclerView {
-    val padding = resources.getDimension(R.dimen.recyclerview_vertical_padding)
-    return super.onCreateRecyclerView(inflater, parent, savedInstanceState).apply {
-      clipToPadding = false
-      setPadding(0, padding.toInt(), 0, padding.toInt())
+    protected val watchPreferenceManager: WatchPreferenceManager by lazy {
+        WatchPreferenceManager.get(requireContext())
     }
-  }
-
-  fun observeConnectedWatchId() {
-    selectedWatchHandler.selectedWatch.observe(viewLifecycleOwner) { newWatch ->
-      newWatch?.let { connectedWatchId = it.id }
+    protected val selectedWatchHandler: SelectedWatchHandler by lazy {
+        SelectedWatchHandler.get(requireContext())
     }
-  }
+
+    protected var connectedWatchId: String? = null
+
+    override fun onCreateRecyclerView(
+        inflater: LayoutInflater?, parent: ViewGroup?, savedInstanceState: Bundle?
+    ): RecyclerView {
+        val padding = resources.getDimension(R.dimen.recyclerview_vertical_padding)
+        return super.onCreateRecyclerView(inflater, parent, savedInstanceState).apply {
+            clipToPadding = false
+            setPadding(0, padding.toInt(), 0, padding.toInt())
+        }
+    }
+
+    fun observeConnectedWatchId() {
+        selectedWatchHandler.selectedWatch.observe(viewLifecycleOwner) { newWatch ->
+            newWatch?.let { connectedWatchId = it.id }
+        }
+    }
 }

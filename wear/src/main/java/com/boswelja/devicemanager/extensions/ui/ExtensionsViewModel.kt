@@ -25,27 +25,28 @@ class ExtensionsViewModel
         private val nodeClient: NodeClient = Wearable.getNodeClient(application)
     ) : AndroidViewModel(application) {
 
-  private val phoneId by lazy { sharedPreferences.getString(PHONE_ID_KEY, "") ?: "" }
+    private val phoneId by lazy { sharedPreferences.getString(PHONE_ID_KEY, "") ?: "" }
 
-  private val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(application)
+    private val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(application)
 
-  private val _phoneConnected = MutableLiveData(false)
-  val phoneConnected: LiveData<Boolean>
-    get() = _phoneConnected
+    private val _phoneConnected = MutableLiveData(false)
+    val phoneConnected: LiveData<Boolean>
+        get() = _phoneConnected
 
-  private fun setPhoneConnected(isConnected: Boolean) {
-    sharedPreferences.edit { putBoolean(PHONE_CONNECTED_KEY, isConnected) }
-    _phoneConnected.postValue(isConnected)
-  }
-
-  fun updatePhoneConnectedStatus() {
-    nodeClient.connectedNodes.addOnCompleteListener {
-      if (it.isSuccessful && !it.result.isNullOrEmpty()) {
-        val isPhoneConnected = it.result!!.any { node -> node.id == phoneId && node.isNearby }
-        setPhoneConnected(isPhoneConnected)
-      } else {
-        setPhoneConnected(false)
-      }
+    private fun setPhoneConnected(isConnected: Boolean) {
+        sharedPreferences.edit { putBoolean(PHONE_CONNECTED_KEY, isConnected) }
+        _phoneConnected.postValue(isConnected)
     }
-  }
+
+    fun updatePhoneConnectedStatus() {
+        nodeClient.connectedNodes.addOnCompleteListener {
+            if (it.isSuccessful && !it.result.isNullOrEmpty()) {
+                val isPhoneConnected =
+                    it.result!!.any { node -> node.id == phoneId && node.isNearby }
+                setPhoneConnected(isPhoneConnected)
+            } else {
+                setPhoneConnected(false)
+            }
+        }
+    }
 }

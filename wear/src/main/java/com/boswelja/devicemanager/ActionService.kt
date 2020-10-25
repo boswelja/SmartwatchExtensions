@@ -22,59 +22,62 @@ import timber.log.Timber
 
 class ActionService : JobIntentService() {
 
-  private val messageClient by lazy { Wearable.getMessageClient(this) }
-  private val sharedPreferences by lazy { PreferenceManager.getDefaultSharedPreferences(this) }
-  private val phoneId by lazy { sharedPreferences.getString(PHONE_ID_KEY, "") ?: "" }
+    private val messageClient by lazy { Wearable.getMessageClient(this) }
+    private val sharedPreferences by lazy { PreferenceManager.getDefaultSharedPreferences(this) }
+    private val phoneId by lazy { sharedPreferences.getString(PHONE_ID_KEY, "") ?: "" }
 
-  override fun onHandleWork(intent: Intent) {
-    Timber.d("onHandleWork($intent) called")
-    if (phoneId.isNotEmpty()) {
-      when (val action = intent.action
-      ) {
-        LOCK_PHONE_PATH -> {
-          if (sharedPreferences.getBoolean(PreferenceKey.PHONE_LOCKING_ENABLED_KEY, false)) {
-            sendMessage(
-                phoneId,
-                action,
-                getString(R.string.lock_phone_success),
-                getString(R.string.lock_phone_failed))
-          }
+    override fun onHandleWork(intent: Intent) {
+        Timber.d("onHandleWork($intent) called")
+        if (phoneId.isNotEmpty()) {
+            when (val action = intent.action
+            ) {
+                LOCK_PHONE_PATH -> {
+                    if (sharedPreferences.getBoolean(
+                        PreferenceKey.PHONE_LOCKING_ENABLED_KEY, false)) {
+                        sendMessage(
+                            phoneId,
+                            action,
+                            getString(R.string.lock_phone_success),
+                            getString(R.string.lock_phone_failed))
+                    }
+                }
+                REQUEST_BATTERY_UPDATE_PATH -> {
+                    if (sharedPreferences.getBoolean(BATTERY_SYNC_ENABLED_KEY, false)) {
+                        sendMessage(
+                            phoneId,
+                            action,
+                            getString(R.string.battery_sync_refresh_success),
+                            getString(R.string.battery_sync_refresh_failed))
+                    }
+                }
+            }
         }
-        REQUEST_BATTERY_UPDATE_PATH -> {
-          if (sharedPreferences.getBoolean(BATTERY_SYNC_ENABLED_KEY, false)) {
-            sendMessage(
-                phoneId,
-                action,
-                getString(R.string.battery_sync_refresh_success),
-                getString(R.string.battery_sync_refresh_failed))
-          }
+    }
+
+    private fun sendMessage(
+        nodeId: String, action: String, successMessage: String, failMessage: String
+    ) {
+        messageClient
+            .sendMessage(nodeId, action, null)
+            .addOnSuccessListener {
+                ConfirmationActivityHandler.successAnimation(this, successMessage)
+            }
+            .addOnFailureListener { ConfirmationActivityHandler.failAnimation(this, failMessage) }
+    }
+
+    companion object {
+        private const val workId = 271738
+
+        fun enqueueWork(context: Context, intent: Intent) {
+            enqueueWork(context, ActionService::class.java, workId, intent)
         }
-      }
     }
-  }
-
-  private fun sendMessage(
-      nodeId: String, action: String, successMessage: String, failMessage: String
-  ) {
-    messageClient
-        .sendMessage(nodeId, action, null)
-        .addOnSuccessListener { ConfirmationActivityHandler.successAnimation(this, successMessage) }
-        .addOnFailureListener { ConfirmationActivityHandler.failAnimation(this, failMessage) }
-  }
-
-  companion object {
-    private const val workId = 271738
-
-    fun enqueueWork(context: Context, intent: Intent) {
-      enqueueWork(context, ActionService::class.java, workId, intent)
-    }
-  }
 }
 
 class ActionServiceStarter : BroadcastReceiver() {
-  override fun onReceive(context: Context?, intent: Intent?) {
-    Timber.i("Got broadcast, enqueueing work")
-    intent?.setClass(context!!, ActionService::class.java)
-    ActionService.enqueueWork(context!!, intent!!)
-  }
+    override fun onReceive(context: Context?, intent: Intent?) {
+        Timber.i("Got broadcast, enqueueing work")
+        intent?.setClass(context!!, ActionService::class.java)
+        ActionService.enqueueWork(context!!, intent!!)
+    }
 }

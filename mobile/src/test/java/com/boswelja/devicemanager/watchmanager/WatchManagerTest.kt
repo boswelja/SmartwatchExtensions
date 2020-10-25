@@ -39,128 +39,130 @@ import org.robolectric.annotation.Config
 @Config(sdk = [Build.VERSION_CODES.Q])
 class WatchManagerTest {
 
-  private val coroutineScope = TestCoroutineScope()
-  private val dummyWatch = Watch("an-id-1234", "Watch 1", null)
-  private val dummyWatchNode =
-      object : Node {
-        override fun getDisplayName(): String = dummyWatch.name
-        override fun getId(): String = dummyWatch.id
-        override fun isNearby(): Boolean = true
-      }
+    private val coroutineScope = TestCoroutineScope()
+    private val dummyWatch = Watch("an-id-1234", "Watch 1", null)
+    private val dummyWatchNode =
+        object : Node {
+            override fun getDisplayName(): String = dummyWatch.name
+            override fun getId(): String = dummyWatch.id
+            override fun isNearby(): Boolean = true
+        }
 
-  @RelaxedMockK lateinit var watchPreferenceManager: WatchPreferenceManager
-  @RelaxedMockK lateinit var selectedWatchHandler: SelectedWatchHandler
-  @RelaxedMockK lateinit var capabilityClient: CapabilityClient
-  @RelaxedMockK lateinit var nodeClient: NodeClient
-  @RelaxedMockK lateinit var messageClient: MessageClient
-  @RelaxedMockK lateinit var database: WatchDatabase
+    @RelaxedMockK lateinit var watchPreferenceManager: WatchPreferenceManager
+    @RelaxedMockK lateinit var selectedWatchHandler: SelectedWatchHandler
+    @RelaxedMockK lateinit var capabilityClient: CapabilityClient
+    @RelaxedMockK lateinit var nodeClient: NodeClient
+    @RelaxedMockK lateinit var messageClient: MessageClient
+    @RelaxedMockK lateinit var database: WatchDatabase
 
-  private lateinit var watchManager: WatchManager
+    private lateinit var watchManager: WatchManager
 
-  @SpyK
-  var sharedPreferences: SharedPreferences =
-      PreferenceManager.getDefaultSharedPreferences(ApplicationProvider.getApplicationContext())
+    @SpyK
+    var sharedPreferences: SharedPreferences =
+        PreferenceManager.getDefaultSharedPreferences(ApplicationProvider.getApplicationContext())
 
-  @Before
-  fun setUp() {
-    MockKAnnotations.init(this)
+    @Before
+    fun setUp() {
+        MockKAnnotations.init(this)
 
-    every { database.isOpen } returns true
+        every { database.isOpen } returns true
 
-    watchManager =
-        spyk(
-            WatchManager(
-                ApplicationProvider.getApplicationContext(),
-                watchPreferenceManager,
-                selectedWatchHandler,
-                capabilityClient,
-                nodeClient,
-                messageClient,
-                database))
-  }
+        watchManager =
+            spyk(
+                WatchManager(
+                    ApplicationProvider.getApplicationContext(),
+                    watchPreferenceManager,
+                    selectedWatchHandler,
+                    capabilityClient,
+                    nodeClient,
+                    messageClient,
+                    database))
+    }
 
-  @After
-  fun tearDown() {
-    coroutineScope.cleanupTestCoroutines()
-    sharedPreferences.edit().clear().commit()
-  }
+    @After
+    fun tearDown() {
+        coroutineScope.cleanupTestCoroutines()
+        sharedPreferences.edit().clear().commit()
+    }
 
-  @Test
-  fun `getWatchStatus returns the correct status when the watch is registered`() {
-    // Make sure isRegistered will evaluate to true
-    every { database.watchDao().get(dummyWatch.id) } returns dummyWatch
+    @Test
+    fun `getWatchStatus returns the correct status when the watch is registered`() {
+        // Make sure isRegistered will evaluate to true
+        every { database.watchDao().get(dummyWatch.id) } returns dummyWatch
 
-    var result = watchManager.getWatchStatus(dummyWatch.id)
-    assertThat(result).isEqualTo(WatchStatus.ERROR)
+        var result = watchManager.getWatchStatus(dummyWatch.id)
+        assertThat(result).isEqualTo(WatchStatus.ERROR)
 
-    result = watchManager.getWatchStatus(dummyWatch.id, setOf(dummyWatchNode))
-    assertThat(result).isEqualTo(WatchStatus.DISCONNECTED)
+        result = watchManager.getWatchStatus(dummyWatch.id, setOf(dummyWatchNode))
+        assertThat(result).isEqualTo(WatchStatus.DISCONNECTED)
 
-    result = watchManager.getWatchStatus(dummyWatch.id, connectedNodes = listOf(dummyWatchNode))
-    assertThat(result).isEqualTo(WatchStatus.ERROR)
+        result = watchManager.getWatchStatus(dummyWatch.id, connectedNodes = listOf(dummyWatchNode))
+        assertThat(result).isEqualTo(WatchStatus.ERROR)
 
-    result = watchManager.getWatchStatus(dummyWatch.id, setOf(), listOf())
-    assertThat(result).isEqualTo(WatchStatus.ERROR)
+        result = watchManager.getWatchStatus(dummyWatch.id, setOf(), listOf())
+        assertThat(result).isEqualTo(WatchStatus.ERROR)
 
-    result =
-        watchManager.getWatchStatus(dummyWatch.id, setOf(dummyWatchNode), listOf(dummyWatchNode))
-    assertThat(result).isEqualTo(WatchStatus.CONNECTED)
-  }
+        result =
+            watchManager.getWatchStatus(
+                dummyWatch.id, setOf(dummyWatchNode), listOf(dummyWatchNode))
+        assertThat(result).isEqualTo(WatchStatus.CONNECTED)
+    }
 
-  @Test
-  fun `getWatchStatus returns the correct status when the watch is unregistered`() {
-    // Make sure isRegistered will evaluate to false
-    every { database.watchDao().get(dummyWatch.id) } returns null
+    @Test
+    fun `getWatchStatus returns the correct status when the watch is unregistered`() {
+        // Make sure isRegistered will evaluate to false
+        every { database.watchDao().get(dummyWatch.id) } returns null
 
-    var result =
-        watchManager.getWatchStatus(dummyWatch.id, setOf(dummyWatchNode), listOf(dummyWatchNode))
-    assertThat(result).isEqualTo(WatchStatus.NOT_REGISTERED)
+        var result =
+            watchManager.getWatchStatus(
+                dummyWatch.id, setOf(dummyWatchNode), listOf(dummyWatchNode))
+        assertThat(result).isEqualTo(WatchStatus.NOT_REGISTERED)
 
-    result = watchManager.getWatchStatus(dummyWatch.id, setOf(dummyWatchNode), listOf())
-    assertThat(result).isEqualTo(WatchStatus.NOT_REGISTERED)
+        result = watchManager.getWatchStatus(dummyWatch.id, setOf(dummyWatchNode), listOf())
+        assertThat(result).isEqualTo(WatchStatus.NOT_REGISTERED)
 
-    result = watchManager.getWatchStatus(dummyWatch.id, setOf(dummyWatchNode))
-    assertThat(result).isEqualTo(WatchStatus.NOT_REGISTERED)
+        result = watchManager.getWatchStatus(dummyWatch.id, setOf(dummyWatchNode))
+        assertThat(result).isEqualTo(WatchStatus.NOT_REGISTERED)
 
-    result = watchManager.getWatchStatus(dummyWatch.id, setOf(), listOf(dummyWatchNode))
-    assertThat(result).isEqualTo(WatchStatus.MISSING_APP)
+        result = watchManager.getWatchStatus(dummyWatch.id, setOf(), listOf(dummyWatchNode))
+        assertThat(result).isEqualTo(WatchStatus.MISSING_APP)
 
-    result = watchManager.getWatchStatus(dummyWatch.id, connectedNodes = listOf(dummyWatchNode))
-    assertThat(result).isEqualTo(WatchStatus.MISSING_APP)
+        result = watchManager.getWatchStatus(dummyWatch.id, connectedNodes = listOf(dummyWatchNode))
+        assertThat(result).isEqualTo(WatchStatus.MISSING_APP)
 
-    result = watchManager.getWatchStatus(dummyWatch.id, setOf(), listOf())
-    assertThat(result).isEqualTo(WatchStatus.MISSING_APP)
+        result = watchManager.getWatchStatus(dummyWatch.id, setOf(), listOf())
+        assertThat(result).isEqualTo(WatchStatus.MISSING_APP)
 
-    result = watchManager.getWatchStatus(dummyWatch.id)
-    assertThat(result).isEqualTo(WatchStatus.MISSING_APP)
-  }
+        result = watchManager.getWatchStatus(dummyWatch.id)
+        assertThat(result).isEqualTo(WatchStatus.MISSING_APP)
+    }
 
-  @Test
-  fun `getAvailableWatches returns an empty list when all watches are registered`() {
-    coEvery { watchManager.getRegisteredWatches() } returns listOf(dummyWatch)
-    coEvery { watchManager.getConnectedNodes() } returns listOf(dummyWatchNode)
-    coEvery { watchManager.getCapableNodes() } returns setOf(dummyWatchNode)
+    @Test
+    fun `getAvailableWatches returns an empty list when all watches are registered`() {
+        coEvery { watchManager.getRegisteredWatches() } returns listOf(dummyWatch)
+        coEvery { watchManager.getConnectedNodes() } returns listOf(dummyWatchNode)
+        coEvery { watchManager.getCapableNodes() } returns setOf(dummyWatchNode)
 
-    val result = runBlocking { watchManager.getAvailableWatches() }
-    assertThat(result).isEmpty()
-  }
+        val result = runBlocking { watchManager.getAvailableWatches() }
+        assertThat(result).isEmpty()
+    }
 
-  @Test
-  fun `getAvailableWatches returns null when getConnectedWatches fails`() {
-    coEvery { watchManager.getConnectedNodes() } returns null
+    @Test
+    fun `getAvailableWatches returns null when getConnectedWatches fails`() {
+        coEvery { watchManager.getConnectedNodes() } returns null
 
-    val result = runBlocking { watchManager.getAvailableWatches() }
-    assertThat(result).isNull()
-  }
+        val result = runBlocking { watchManager.getAvailableWatches() }
+        assertThat(result).isNull()
+    }
 
-  @Test
-  fun `getAvailableWatches returns all unregistered watches`() {
-    coEvery { watchManager.getRegisteredWatches() } returns listOf()
-    coEvery { watchManager.getConnectedNodes() } returns listOf(dummyWatchNode)
-    coEvery { watchManager.getCapableNodes() } returns setOf(dummyWatchNode)
+    @Test
+    fun `getAvailableWatches returns all unregistered watches`() {
+        coEvery { watchManager.getRegisteredWatches() } returns listOf()
+        coEvery { watchManager.getConnectedNodes() } returns listOf(dummyWatchNode)
+        coEvery { watchManager.getCapableNodes() } returns setOf(dummyWatchNode)
 
-    val result = runBlocking { watchManager.getAvailableWatches() }
-    assertThat(result).isNotNull()
-    assertThat(result!!.any { it.id == dummyWatch.id }).isTrue()
-  }
+        val result = runBlocking { watchManager.getAvailableWatches() }
+        assertThat(result).isNotNull()
+        assertThat(result!!.any { it.id == dummyWatch.id }).isTrue()
+    }
 }

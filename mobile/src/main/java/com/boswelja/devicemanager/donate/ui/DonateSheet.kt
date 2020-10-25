@@ -19,29 +19,29 @@ import timber.log.Timber
 
 class DonateSheet : BottomSheetDialogFragment() {
 
-  private val viewModel: DonateViewModel by viewModels()
-  private val adapter by lazy {
-    DonateAdapter { viewModel.launchBillingFlow(requireActivity(), it) }
-  }
-
-  private lateinit var binding: BottomSheetListBinding
-
-  override fun onCreateView(
-      inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
-  ): View? {
-    binding = BottomSheetListBinding.inflate(inflater, container, false)
-    binding.title.setText(R.string.donate_title)
-    return binding.root
-  }
-
-  override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-    super.onViewCreated(view, savedInstanceState)
-    binding.recyclerview.adapter = adapter
-    viewModel.skus.observe(viewLifecycleOwner) {
-      if (it != null) adapter.submitList(it) else Timber.w("SKU list null")
+    private val viewModel: DonateViewModel by viewModels()
+    private val adapter by lazy {
+        DonateAdapter { viewModel.launchBillingFlow(requireActivity(), it) }
     }
-    viewModel.clientConnected.observe(viewLifecycleOwner) {
-      Timber.i("Billing client connected: $it")
+
+    private lateinit var binding: BottomSheetListBinding
+
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+    ): View? {
+        binding = BottomSheetListBinding.inflate(inflater, container, false)
+        binding.title.setText(R.string.donate_title)
+        return binding.root
     }
-  }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        binding.recyclerview.adapter = adapter
+        viewModel.skus.observe(viewLifecycleOwner) {
+            if (it != null) adapter.submitList(it) else Timber.w("SKU list null")
+        }
+        viewModel.clientConnected.observe(viewLifecycleOwner) {
+            Timber.i("Billing client connected: $it")
+        }
+    }
 }

@@ -18,54 +18,54 @@ import timber.log.Timber
 
 class AppManagerActivity : BaseToolbarActivity() {
 
-  private val args: AppManagerActivityArgs by navArgs()
-  private val viewModel: AppManagerViewModel by viewModels()
+    private val args: AppManagerActivityArgs by navArgs()
+    private val viewModel: AppManagerViewModel by viewModels()
 
-  private val watchServiceLifecycleObserver by lazy { WatchServiceLifecycleObserver(viewModel) }
+    private val watchServiceLifecycleObserver by lazy { WatchServiceLifecycleObserver(viewModel) }
 
-  private lateinit var binding: ActivityAppManagerBinding
+    private lateinit var binding: ActivityAppManagerBinding
 
-  override fun onCreate(savedInstanceState: Bundle?) {
-    super.onCreate(savedInstanceState)
-    Timber.i("onCreate() called")
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        Timber.i("onCreate() called")
 
-    binding = ActivityAppManagerBinding.inflate(layoutInflater)
-    setContentView(binding.root)
+        binding = ActivityAppManagerBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-    setupToolbar(
-        binding.toolbarLayout.toolbar,
-        showTitle = true,
-        showUpButton = true,
-        toolbarSubtitle = getString(R.string.app_manager_activity_subtitle, args.watchName))
+        setupToolbar(
+            binding.toolbarLayout.toolbar,
+            showTitle = true,
+            showUpButton = true,
+            toolbarSubtitle = getString(R.string.app_manager_activity_subtitle, args.watchName))
 
-    viewModel.watchId = args.watchId
+        viewModel.watchId = args.watchId
 
-    viewModel.allAppsList.observe(this) {
-      if (it.isNullOrEmpty()) {
-        showLoadingFragment()
-      } else {
-        showAppManagerFragment()
-      }
+        viewModel.allAppsList.observe(this) {
+            if (it.isNullOrEmpty()) {
+                showLoadingFragment()
+            } else {
+                showAppManagerFragment()
+            }
+        }
+        lifecycle.addObserver(watchServiceLifecycleObserver)
     }
-    lifecycle.addObserver(watchServiceLifecycleObserver)
-  }
 
-  /** Shows a [LoadingFragment]. */
-  private fun showLoadingFragment() {
-    Timber.i("showLoadingFragment() called")
-    supportFragmentManager
-        .beginTransaction()
-        .replace(R.id.fragment_holder, LoadingFragment())
-        .commit()
-  }
+    /** Shows a [LoadingFragment]. */
+    private fun showLoadingFragment() {
+        Timber.i("showLoadingFragment() called")
+        supportFragmentManager
+            .beginTransaction()
+            .replace(R.id.fragment_holder, LoadingFragment())
+            .commit()
+    }
 
-  /** Shows the [AppManagerFragment]. */
-  private fun showAppManagerFragment() {
-    Timber.i("showAppManagerFragment() called")
-    supportFragmentManager
-        .beginTransaction()
-        .setCustomAnimations(R.anim.fade_in, R.anim.fade_out)
-        .replace(R.id.fragment_holder, AppManagerFragment())
-        .commit()
-  }
+    /** Shows the [AppManagerFragment]. */
+    private fun showAppManagerFragment() {
+        Timber.i("showAppManagerFragment() called")
+        supportFragmentManager
+            .beginTransaction()
+            .setCustomAnimations(R.anim.fade_in, R.anim.fade_out)
+            .replace(R.id.fragment_holder, AppManagerFragment())
+            .commit()
+    }
 }

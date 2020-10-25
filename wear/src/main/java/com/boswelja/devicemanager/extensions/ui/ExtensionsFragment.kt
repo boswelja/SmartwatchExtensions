@@ -18,29 +18,29 @@ import com.boswelja.devicemanager.databinding.FragmentMainBinding
 
 class ExtensionsFragment : Fragment() {
 
-  private val viewModel: ExtensionsViewModel by viewModels()
+    private val viewModel: ExtensionsViewModel by viewModels()
 
-  private lateinit var binding: FragmentMainBinding
+    private lateinit var binding: FragmentMainBinding
 
-  override fun onCreateView(
-      inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
-  ): View? {
-    binding = FragmentMainBinding.inflate(inflater, container, false)
-    return binding.root
-  }
-
-  override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-    super.onViewCreated(view, savedInstanceState)
-    binding.settingsButton.setOnClickListener {
-      findNavController().navigate(ExtensionsFragmentDirections.toSettingsActivity())
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+    ): View? {
+        binding = FragmentMainBinding.inflate(inflater, container, false)
+        return binding.root
     }
-    binding.aboutButton.setOnClickListener {
-      findNavController().navigate(ExtensionsFragmentDirections.toAboutActivity())
-    }
-  }
 
-  override fun onStart() {
-    super.onStart()
-    viewModel.updatePhoneConnectedStatus()
-  }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        binding.settingsButton.setOnClickListener {
+            findNavController().navigate(ExtensionsFragmentDirections.toSettingsActivity())
+        }
+        binding.aboutButton.setOnClickListener {
+            findNavController().navigate(ExtensionsFragmentDirections.toAboutActivity())
+        }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        viewModel.updatePhoneConnectedStatus()
+    }
 }

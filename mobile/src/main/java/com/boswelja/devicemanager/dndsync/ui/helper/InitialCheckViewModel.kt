@@ -23,50 +23,50 @@ import java.math.BigInteger
 
 class InitialCheckViewModel(application: Application) : AndroidViewModel(application) {
 
-  private val watchManager = WatchManager.get(application)
-  private val watchId = watchManager.connectedWatch.value!!.id
+    private val watchManager = WatchManager.get(application)
+    private val watchId = watchManager.connectedWatch.value!!.id
 
-  private val messageClient = Wearable.getMessageClient(application)
-  private val messageListener =
-      MessageClient.OnMessageReceivedListener {
-        Timber.d("Message received")
-        when (it.path) {
-          REQUEST_INTERRUPT_FILTER_ACCESS_STATUS_PATH -> {
-            val hasNotiPolicyAccess = Boolean.fromByteArray(it.data)
-            _hasNotiPolicyAccess.postValue(hasNotiPolicyAccess)
-            if (!hasNotiPolicyAccess) checkWatchSdk()
-          }
-          REQUEST_SDK_INT_PATH -> {
-            val sdkInt = BigInteger(it.data).toInt()
-            Timber.i("Watch SDK = $sdkInt")
-            _hasCorrectSdkInt.postValue(sdkInt <= Build.VERSION_CODES.O)
-          }
+    private val messageClient = Wearable.getMessageClient(application)
+    private val messageListener =
+        MessageClient.OnMessageReceivedListener {
+            Timber.d("Message received")
+            when (it.path) {
+                REQUEST_INTERRUPT_FILTER_ACCESS_STATUS_PATH -> {
+                    val hasNotiPolicyAccess = Boolean.fromByteArray(it.data)
+                    _hasNotiPolicyAccess.postValue(hasNotiPolicyAccess)
+                    if (!hasNotiPolicyAccess) checkWatchSdk()
+                }
+                REQUEST_SDK_INT_PATH -> {
+                    val sdkInt = BigInteger(it.data).toInt()
+                    Timber.i("Watch SDK = $sdkInt")
+                    _hasCorrectSdkInt.postValue(sdkInt <= Build.VERSION_CODES.O)
+                }
+            }
         }
-      }
 
-  private val _hasNotiPolicyAccess = MutableLiveData(false)
-  val hasNotiPolicyAccess: LiveData<Boolean>
-    get() = _hasNotiPolicyAccess
+    private val _hasNotiPolicyAccess = MutableLiveData(false)
+    val hasNotiPolicyAccess: LiveData<Boolean>
+        get() = _hasNotiPolicyAccess
 
-  private val _hasCorrectSdkInt = MutableLiveData<Boolean?>(null)
-  val hasCorrectSdkInt: LiveData<Boolean?>
-    get() = _hasCorrectSdkInt
+    private val _hasCorrectSdkInt = MutableLiveData<Boolean?>(null)
+    val hasCorrectSdkInt: LiveData<Boolean?>
+        get() = _hasCorrectSdkInt
 
-  init {
-    messageClient.addListener(messageListener)
-    checkWatchPermissions()
-  }
+    init {
+        messageClient.addListener(messageListener)
+        checkWatchPermissions()
+    }
 
-  override fun onCleared() {
-    super.onCleared()
-    messageClient.removeListener(messageListener)
-  }
+    override fun onCleared() {
+        super.onCleared()
+        messageClient.removeListener(messageListener)
+    }
 
-  private fun checkWatchPermissions() {
-    messageClient.sendMessage(watchId, REQUEST_INTERRUPT_FILTER_ACCESS_STATUS_PATH, null)
-  }
+    private fun checkWatchPermissions() {
+        messageClient.sendMessage(watchId, REQUEST_INTERRUPT_FILTER_ACCESS_STATUS_PATH, null)
+    }
 
-  private fun checkWatchSdk() {
-    messageClient.sendMessage(watchId, REQUEST_SDK_INT_PATH, null)
-  }
+    private fun checkWatchSdk() {
+        messageClient.sendMessage(watchId, REQUEST_SDK_INT_PATH, null)
+    }
 }

@@ -19,33 +19,33 @@ import com.boswelja.devicemanager.common.preference.PreferenceKey.BATTERY_SYNC_E
 
 class BatterySyncViewModel(application: Application) : AndroidViewModel(application) {
 
-  private val database: WatchBatteryStatsDatabase = WatchBatteryStatsDatabase.get(application)
+    private val database: WatchBatteryStatsDatabase = WatchBatteryStatsDatabase.get(application)
 
-  private val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(application)
-  private val preferenceChangeListener =
-      SharedPreferences.OnSharedPreferenceChangeListener { sharedPreferences, key ->
-        when (key) {
-          BATTERY_SYNC_ENABLED_KEY -> {
-            _batterySyncEnabled.postValue(sharedPreferences.getBoolean(key, false))
-          }
+    private val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(application)
+    private val preferenceChangeListener =
+        SharedPreferences.OnSharedPreferenceChangeListener { sharedPreferences, key ->
+            when (key) {
+                BATTERY_SYNC_ENABLED_KEY -> {
+                    _batterySyncEnabled.postValue(sharedPreferences.getBoolean(key, false))
+                }
+            }
         }
-      }
 
-  private val _batterySyncEnabled =
-      MutableLiveData(sharedPreferences.getBoolean(BATTERY_SYNC_ENABLED_KEY, false))
-  val batterySyncEnabled: LiveData<Boolean>
-    get() = _batterySyncEnabled
+    private val _batterySyncEnabled =
+        MutableLiveData(sharedPreferences.getBoolean(BATTERY_SYNC_ENABLED_KEY, false))
+    val batterySyncEnabled: LiveData<Boolean>
+        get() = _batterySyncEnabled
 
-  init {
-    sharedPreferences.registerOnSharedPreferenceChangeListener(preferenceChangeListener)
-  }
+    init {
+        sharedPreferences.registerOnSharedPreferenceChangeListener(preferenceChangeListener)
+    }
 
-  override fun onCleared() {
-    super.onCleared()
-    sharedPreferences.unregisterOnSharedPreferenceChangeListener(preferenceChangeListener)
-  }
+    override fun onCleared() {
+        super.onCleared()
+        sharedPreferences.unregisterOnSharedPreferenceChangeListener(preferenceChangeListener)
+    }
 
-  fun getBatteryStatsObservable(watchId: String): LiveData<WatchBatteryStats?> {
-    return database.batteryStatsDao().getObservableStatsForWatch(watchId)
-  }
+    fun getBatteryStatsObservable(watchId: String): LiveData<WatchBatteryStats?> {
+        return database.batteryStatsDao().getObservableStatsForWatch(watchId)
+    }
 }

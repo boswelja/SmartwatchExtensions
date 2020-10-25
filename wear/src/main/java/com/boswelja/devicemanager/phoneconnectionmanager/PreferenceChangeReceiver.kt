@@ -23,61 +23,62 @@ import com.google.android.gms.wearable.*
 
 class PreferenceChangeReceiver : WearableListenerService() {
 
-  private var sharedPreferences: SharedPreferences? = null
+    private var sharedPreferences: SharedPreferences? = null
 
-  override fun onDataChanged(dataEvents: DataEventBuffer?) {
-    if (dataEvents != null) {
-      val currentNodeId = Tasks.await(Wearable.getNodeClient(this).localNode).id
-      for (event in dataEvents) {
-        if (event.dataItem.uri.toString().endsWith(currentNodeId)) {
-          handlePreferenceChange(event)
-        }
-      }
-    }
-  }
-
-  private fun handlePreferenceChange(event: DataEvent) {
-    val dataMap = DataMapItem.fromDataItem(event.dataItem).dataMap
-    if (!dataMap.isEmpty) {
-      if (sharedPreferences == null)
-          sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
-      sharedPreferences!!.edit {
-        for (key in dataMap.keySet()) {
-          when (key) {
-            in SyncPreferences.BOOL_PREFS -> {
-              val newValue = dataMap.getBoolean(key)
-              putBoolean(key, newValue)
-              onPreferenceChanged(key, newValue)
+    override fun onDataChanged(dataEvents: DataEventBuffer?) {
+        if (dataEvents != null) {
+            val currentNodeId = Tasks.await(Wearable.getNodeClient(this).localNode).id
+            for (event in dataEvents) {
+                if (event.dataItem.uri.toString().endsWith(currentNodeId)) {
+                    handlePreferenceChange(event)
+                }
             }
-            in SyncPreferences.INT_PREFS -> {
-              val newValue = dataMap.getInt(key)
-              putInt(key, newValue)
-              onPreferenceChanged(key, newValue)
-            }
-          }
         }
-      }
     }
-  }
 
-  private fun onPreferenceChanged(key: String, newValue: Any) {
-    when (key) {
-      PreferenceKey.BATTERY_SYNC_ENABLED_KEY -> {
-        if (newValue == false) {
-          sharedPreferences!!.edit().remove(PreferenceKey.BATTERY_PERCENT_KEY).apply()
-          ProviderUpdateRequester(
-                  this,
-                  ComponentName(packageName, PhoneBatteryComplicationProvider::class.java.name))
-              .requestUpdateAll()
+    private fun handlePreferenceChange(event: DataEvent) {
+        val dataMap = DataMapItem.fromDataItem(event.dataItem).dataMap
+        if (!dataMap.isEmpty) {
+            if (sharedPreferences == null)
+                sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
+            sharedPreferences!!.edit {
+                for (key in dataMap.keySet()) {
+                    when (key) {
+                        in SyncPreferences.BOOL_PREFS -> {
+                            val newValue = dataMap.getBoolean(key)
+                            putBoolean(key, newValue)
+                            onPreferenceChanged(key, newValue)
+                        }
+                        in SyncPreferences.INT_PREFS -> {
+                            val newValue = dataMap.getInt(key)
+                            putInt(key, newValue)
+                            onPreferenceChanged(key, newValue)
+                        }
+                    }
+                }
+            }
         }
-      }
-      PreferenceKey.DND_SYNC_TO_PHONE_KEY, PreferenceKey.DND_SYNC_WITH_THEATER_KEY -> {
-        if (newValue == true) {
-          Intent(this, DnDLocalChangeListener::class.java).also {
-            Compat.startForegroundService(this, it)
-          }
-        }
-      }
     }
-  }
+
+    private fun onPreferenceChanged(key: String, newValue: Any) {
+        when (key) {
+            PreferenceKey.BATTERY_SYNC_ENABLED_KEY -> {
+                if (newValue == false) {
+                    sharedPreferences!!.edit().remove(PreferenceKey.BATTERY_PERCENT_KEY).apply()
+                    ProviderUpdateRequester(
+                            this,
+                            ComponentName(
+                                packageName, PhoneBatteryComplicationProvider::class.java.name))
+                        .requestUpdateAll()
+                }
+            }
+            PreferenceKey.DND_SYNC_TO_PHONE_KEY, PreferenceKey.DND_SYNC_WITH_THEATER_KEY -> {
+                if (newValue == true) {
+                    Intent(this, DnDLocalChangeListener::class.java).also {
+                        Compat.startForegroundService(this, it)
+                    }
+                }
+            }
+        }
+    }
 }

@@ -17,23 +17,24 @@ import com.boswelja.devicemanager.databinding.FragmentLockPhoneBinding
 
 class LockPhoneFragment : Fragment() {
 
-  private val viewModel: LockPhoneViewModel by viewModels()
+    private val viewModel: LockPhoneViewModel by viewModels()
 
-  private lateinit var binding: FragmentLockPhoneBinding
+    private lateinit var binding: FragmentLockPhoneBinding
 
-  override fun onCreateView(
-      inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
-  ): View? {
-    binding = FragmentLockPhoneBinding.inflate(inflater, container, false)
-    binding.viewModel = viewModel
-    binding.lifecycleOwner = viewLifecycleOwner
-    return binding.root
-  }
-
-  override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-    super.onViewCreated(view, savedInstanceState)
-    viewModel.phoneLockingEnabled.observe(viewLifecycleOwner) {
-      if (it) binding.motionLayout.transitionToStart() else binding.motionLayout.transitionToEnd()
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+    ): View? {
+        binding = FragmentLockPhoneBinding.inflate(inflater, container, false)
+        binding.viewModel = viewModel
+        binding.lifecycleOwner = viewLifecycleOwner
+        return binding.root
     }
-  }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        viewModel.phoneLockingEnabled.observe(viewLifecycleOwner) {
+            if (it) binding.motionLayout.transitionToStart()
+            else binding.motionLayout.transitionToEnd()
+        }
+    }
 }

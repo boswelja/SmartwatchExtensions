@@ -22,43 +22,43 @@ import org.junit.Test
 
 class WatchServiceLifecycleObserverTest {
 
-  @get:Rule val instantExecutorRule = InstantTaskExecutorRule()
+    @get:Rule val instantExecutorRule = InstantTaskExecutorRule()
 
-  @MockK(relaxed = true)
-  lateinit var lifecycleOwner: LifecycleOwner
+    @MockK(relaxed = true)
+    lateinit var lifecycleOwner: LifecycleOwner
 
-  @MockK(relaxed = true)
-  lateinit var viewModel: AppManagerViewModel
+    @MockK(relaxed = true)
+    lateinit var viewModel: AppManagerViewModel
 
-  private lateinit var lifecycle: LifecycleRegistry
-  private lateinit var watchServiceLifecycleObserver: WatchServiceLifecycleObserver
+    private lateinit var lifecycle: LifecycleRegistry
+    private lateinit var watchServiceLifecycleObserver: WatchServiceLifecycleObserver
 
-  @Before
-  fun setUp() {
-    MockKAnnotations.init(this)
-    lifecycle = LifecycleRegistry(lifecycleOwner)
-    watchServiceLifecycleObserver = WatchServiceLifecycleObserver(viewModel)
-    lifecycle.addObserver(watchServiceLifecycleObserver)
-  }
+    @Before
+    fun setUp() {
+        MockKAnnotations.init(this)
+        lifecycle = LifecycleRegistry(lifecycleOwner)
+        watchServiceLifecycleObserver = WatchServiceLifecycleObserver(viewModel)
+        lifecycle.addObserver(watchServiceLifecycleObserver)
+    }
 
-  @After
-  fun tearDown() {
-    lifecycle.removeObserver(watchServiceLifecycleObserver)
-    lifecycle.currentState = Lifecycle.State.DESTROYED
-  }
+    @After
+    fun tearDown() {
+        lifecycle.removeObserver(watchServiceLifecycleObserver)
+        lifecycle.currentState = Lifecycle.State.DESTROYED
+    }
 
-  @Test
-  fun `App Manager started & stopped with Lifecycle`() {
-    lifecycle.handleLifecycleEvent(Lifecycle.Event.ON_START)
-    verify(exactly = 1) { viewModel.startAppManagerService() }
+    @Test
+    fun `App Manager started & stopped with Lifecycle`() {
+        lifecycle.handleLifecycleEvent(Lifecycle.Event.ON_START)
+        verify(exactly = 1) { viewModel.startAppManagerService() }
 
-    lifecycle.handleLifecycleEvent(Lifecycle.Event.ON_STOP)
-    verify(exactly = 1) { viewModel.tryStopAppManagerService() }
+        lifecycle.handleLifecycleEvent(Lifecycle.Event.ON_STOP)
+        verify(exactly = 1) { viewModel.tryStopAppManagerService() }
 
-    lifecycle.handleLifecycleEvent(Lifecycle.Event.ON_DESTROY)
-    verify(exactly = 1) { viewModel.canStopAppManagerService = true }
-    verify { viewModel.tryStopAppManagerService() }
+        lifecycle.handleLifecycleEvent(Lifecycle.Event.ON_DESTROY)
+        verify(exactly = 1) { viewModel.canStopAppManagerService = true }
+        verify { viewModel.tryStopAppManagerService() }
 
-    confirmVerified(viewModel)
-  }
+        confirmVerified(viewModel)
+    }
 }

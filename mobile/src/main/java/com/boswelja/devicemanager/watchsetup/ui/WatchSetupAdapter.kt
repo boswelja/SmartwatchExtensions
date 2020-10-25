@@ -18,23 +18,23 @@ import com.boswelja.devicemanager.watchmanager.item.Watch
 class WatchSetupAdapter(private val clickCallback: (watch: Watch) -> Unit) :
     ListAdapter<Watch, IconTwoLineViewHolder>(WatchDiffCallback()) {
 
-  override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): IconTwoLineViewHolder {
-    return IconTwoLineViewHolder.from(parent)
-  }
-
-  override fun onBindViewHolder(holder: IconTwoLineViewHolder, position: Int) {
-    val watch = getItem(position)
-    val context = holder.itemView.context
-    val summary =
-        context.getString(
-            when (watch.status) {
-              WatchStatus.NOT_REGISTERED -> R.string.watch_status_not_registered
-              WatchStatus.MISSING_APP -> R.string.watch_status_missing_app
-              else -> R.string.watch_status_error
-            })
-    holder.apply {
-      bind(R.drawable.ic_watch, watch.name, summary)
-      itemView.setOnClickListener { clickCallback(watch) }
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): IconTwoLineViewHolder {
+        return IconTwoLineViewHolder.from(parent)
     }
-  }
+
+    override fun onBindViewHolder(holder: IconTwoLineViewHolder, position: Int) {
+        val watch = getItem(position)
+        val context = holder.itemView.context
+        val summary =
+            context.getString(
+                when (watch.status) {
+                    WatchStatus.NOT_REGISTERED -> R.string.watch_status_not_registered
+                    WatchStatus.MISSING_APP -> R.string.watch_status_missing_app
+                    else -> R.string.watch_status_error
+                })
+        holder.apply {
+            bind(R.drawable.ic_watch, watch.name, summary)
+            itemView.setOnClickListener { clickCallback(watch) }
+        }
+    }
 }

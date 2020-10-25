@@ -18,36 +18,38 @@ import com.boswelja.devicemanager.watchsetup.ui.WatchSetupActivity.Companion.EXT
 
 class WatchManagerActivity : BaseToolbarActivity() {
 
-  private val database by lazy { WatchDatabase.get(this) }
-  private val adapter by lazy {
-    WatchManagerAdapter { if (it != null) openWatchInfoActivity(it) else openWatchSetupActivity() }
-  }
-
-  private lateinit var binding: ActivityWatchManagerBinding
-
-  override fun onCreate(savedInstanceState: Bundle?) {
-    super.onCreate(savedInstanceState)
-
-    binding = ActivityWatchManagerBinding.inflate(layoutInflater)
-    setContentView(binding.root)
-
-    setupToolbar(binding.toolbarLayout.toolbar, showTitle = true, showUpButton = true)
-    binding.watchManagerRecyclerView.adapter = adapter
-
-    database.watchDao().getAllObservable().observe(this) { adapter.submitList(it) }
-  }
-
-  /** Opens a [WatchSetupActivity]. */
-  private fun openWatchSetupActivity() {
-    Intent(this, WatchSetupActivity::class.java).apply { putExtra(EXTRA_SKIP_WELCOME, true) }.also {
-      startActivity(it)
+    private val database by lazy { WatchDatabase.get(this) }
+    private val adapter by lazy {
+        WatchManagerAdapter {
+            if (it != null) openWatchInfoActivity(it) else openWatchSetupActivity()
+        }
     }
-  }
 
-  /** Opens a [WatchInfoActivity]. */
-  private fun openWatchInfoActivity(watch: Watch) {
-    Intent(this, WatchInfoActivity::class.java)
-        .apply { putExtra(WatchInfoActivity.EXTRA_WATCH_ID, watch.id) }
-        .also { startActivity(it) }
-  }
+    private lateinit var binding: ActivityWatchManagerBinding
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        binding = ActivityWatchManagerBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+        setupToolbar(binding.toolbarLayout.toolbar, showTitle = true, showUpButton = true)
+        binding.watchManagerRecyclerView.adapter = adapter
+
+        database.watchDao().getAllObservable().observe(this) { adapter.submitList(it) }
+    }
+
+    /** Opens a [WatchSetupActivity]. */
+    private fun openWatchSetupActivity() {
+        Intent(this, WatchSetupActivity::class.java)
+            .apply { putExtra(EXTRA_SKIP_WELCOME, true) }
+            .also { startActivity(it) }
+    }
+
+    /** Opens a [WatchInfoActivity]. */
+    private fun openWatchInfoActivity(watch: Watch) {
+        Intent(this, WatchInfoActivity::class.java)
+            .apply { putExtra(WatchInfoActivity.EXTRA_WATCH_ID, watch.id) }
+            .also { startActivity(it) }
+    }
 }

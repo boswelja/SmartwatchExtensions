@@ -24,32 +24,33 @@ import org.robolectric.annotation.Config
 @Config(sdk = [Build.VERSION_CODES.Q])
 class MainViewModelTest {
 
-  private lateinit var sharedPreferences: SharedPreferences
+    private lateinit var sharedPreferences: SharedPreferences
 
-  @Before
-  fun setUp() {
-    sharedPreferences =
-        PreferenceManager.getDefaultSharedPreferences(ApplicationProvider.getApplicationContext())
-  }
+    @Before
+    fun setUp() {
+        sharedPreferences =
+            PreferenceManager.getDefaultSharedPreferences(
+                ApplicationProvider.getApplicationContext())
+    }
 
-  @Test
-  fun `isRegistered is false when no phone ID is stored`() {
-    sharedPreferences.edit(commit = true) { remove(PHONE_ID_KEY) }
-    val viewModel = MainViewModel(ApplicationProvider.getApplicationContext())
-    assertThat(viewModel.isRegistered).isFalse()
-  }
+    @Test
+    fun `isRegistered is false when no phone ID is stored`() {
+        sharedPreferences.edit(commit = true) { remove(PHONE_ID_KEY) }
+        val viewModel = MainViewModel(ApplicationProvider.getApplicationContext())
+        assertThat(viewModel.isRegistered).isFalse()
+    }
 
-  @Test
-  fun `isRegistered is false when stored phone ID is blank`() {
-    sharedPreferences.edit(commit = true) { putString(PHONE_ID_KEY, "   ") }
-    val viewModel = MainViewModel(ApplicationProvider.getApplicationContext())
-    assertThat(viewModel.isRegistered).isFalse()
-  }
+    @Test
+    fun `isRegistered is false when stored phone ID is blank`() {
+        sharedPreferences.edit(commit = true) { putString(PHONE_ID_KEY, "   ") }
+        val viewModel = MainViewModel(ApplicationProvider.getApplicationContext())
+        assertThat(viewModel.isRegistered).isFalse()
+    }
 
-  @Test
-  fun `isRegistered is true when a phone ID is stored`() {
-    sharedPreferences.edit(commit = true) { putString(PHONE_ID_KEY, "id123") }
-    val viewModel = MainViewModel(ApplicationProvider.getApplicationContext())
-    assertThat(viewModel.isRegistered).isTrue()
-  }
+    @Test
+    fun `isRegistered is true when a phone ID is stored`() {
+        sharedPreferences.edit(commit = true) { putString(PHONE_ID_KEY, "id123") }
+        val viewModel = MainViewModel(ApplicationProvider.getApplicationContext())
+        assertThat(viewModel.isRegistered).isTrue()
+    }
 }

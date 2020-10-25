@@ -14,11 +14,11 @@ import com.boswelja.devicemanager.common.ui.BasePreferenceFragment
 
 class WidgetSettingsActivity : BasePreferenceActivity() {
 
-  override fun getWidgetFragment(): Fragment? = WidgetSettingsWidget()
-  override fun getPreferenceFragment(): BasePreferenceFragment = WidgetSettingsFragment()
+    override fun getWidgetFragment(): Fragment? = WidgetSettingsWidget()
+    override fun getPreferenceFragment(): BasePreferenceFragment = WidgetSettingsFragment()
 
-  override fun onStop() {
-    super.onStop()
-    WatchBatteryWidget.updateWidgets(this)
-  }
+    override fun onStop() {
+        super.onStop()
+        WatchBatteryWidget.updateWidgets(this)
+    }
 }

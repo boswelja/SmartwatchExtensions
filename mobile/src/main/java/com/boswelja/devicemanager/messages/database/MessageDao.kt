@@ -16,29 +16,29 @@ import com.boswelja.devicemanager.messages.Message
 @Dao
 interface MessageDao {
 
-  @Insert fun sendMessage(message: Message)
+    @Insert fun sendMessage(message: Message)
 
-  @Query("SELECT * FROM messages")
-  fun getAllMessages(): List<Message>
+    @Query("SELECT * FROM messages")
+    fun getAllMessages(): List<Message>
 
-  @Query("SELECT * FROM messages WHERE NOT deleted")
-  fun getActiveMessages(): List<Message>
+    @Query("SELECT * FROM messages WHERE NOT deleted")
+    fun getActiveMessages(): List<Message>
 
-  @Query("SELECT * FROM messages WHERE deleted")
-  fun getDeletedMessages(): List<Message>
+    @Query("SELECT * FROM messages WHERE deleted")
+    fun getDeletedMessages(): List<Message>
 
-  @Query("UPDATE messages SET deleted = 1 WHERE id = :id")
-  fun deleteMessage(id: Int)
+    @Query("UPDATE messages SET deleted = 1 WHERE id = :id")
+    fun deleteMessage(id: Int)
 
-  @Query("UPDATE messages SET deleted = 0 WHERE id = :id")
-  fun restoreMessage(id: Int)
+    @Query("UPDATE messages SET deleted = 0 WHERE id = :id")
+    fun restoreMessage(id: Int)
 
-  @Query("SELECT * FROM messages")
-  fun getAllMessagesObservable(): LiveData<List<Message>>
+    @Query("SELECT * FROM messages")
+    fun getAllMessagesObservable(): LiveData<List<Message>>
 
-  @Query("SELECT * FROM messages WHERE NOT deleted")
-  fun getActiveMessagesObservable(): LiveData<List<Message>>
+    @Query("SELECT * FROM messages WHERE NOT deleted")
+    fun getActiveMessagesObservable(): LiveData<List<Message>>
 
-  @Query("SELECT * FROM messages WHERE deleted")
-  fun getDeletedMessagesObservable(): LiveData<List<Message>>
+    @Query("SELECT * FROM messages WHERE deleted")
+    fun getDeletedMessagesObservable(): LiveData<List<Message>>
 }

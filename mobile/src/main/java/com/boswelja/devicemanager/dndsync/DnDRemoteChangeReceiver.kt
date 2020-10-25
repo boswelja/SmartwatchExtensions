@@ -19,32 +19,32 @@ import timber.log.Timber
 
 class DnDRemoteChangeReceiver : WearableListenerService() {
 
-  override fun onDataChanged(dataEventBuffer: DataEventBuffer) {
-    val watchDndStates = ArrayList<Boolean>()
-    for (dataEvent in dataEventBuffer) {
-      val dndEnabled = getDnDStateFromDataEvent(dataEvent)
-      watchDndStates.add(dndEnabled)
+    override fun onDataChanged(dataEventBuffer: DataEventBuffer) {
+        val watchDndStates = ArrayList<Boolean>()
+        for (dataEvent in dataEventBuffer) {
+            val dndEnabled = getDnDStateFromDataEvent(dataEvent)
+            watchDndStates.add(dndEnabled)
+        }
+        val shouldEnableDnD = watchDndStates.any { dndEnabled -> dndEnabled }
+        val success = setInterruptionFilter(this, shouldEnableDnD)
+        if (!success) {
+            val prefs = PreferenceManager.getDefaultSharedPreferences(this)
+            prefs.edit().putBoolean(PreferenceKey.DND_SYNC_TO_PHONE_KEY, false).apply()
+        }
     }
-    val shouldEnableDnD = watchDndStates.any { dndEnabled -> dndEnabled }
-    val success = setInterruptionFilter(this, shouldEnableDnD)
-    if (!success) {
-      val prefs = PreferenceManager.getDefaultSharedPreferences(this)
-      prefs.edit().putBoolean(PreferenceKey.DND_SYNC_TO_PHONE_KEY, false).apply()
+
+    /**
+     * Gets the Do not Disturb state from a [DataEvent].
+     * @param dataEvent The [DataEvent] to read from.
+     * @return true if Do not Disturb is enabled, false otherwise.
+     */
+    private fun getDnDStateFromDataEvent(dataEvent: DataEvent): Boolean {
+        Timber.i("getDnDStateFromDataEvent() called")
+        val dataMap = DataMapItem.fromDataItem(dataEvent.dataItem).dataMap
+        return dataMap.getBoolean(NEW_DND_STATE_KEY)
     }
-  }
 
-  /**
-   * Gets the Do not Disturb state from a [DataEvent].
-   * @param dataEvent The [DataEvent] to read from.
-   * @return true if Do not Disturb is enabled, false otherwise.
-   */
-  private fun getDnDStateFromDataEvent(dataEvent: DataEvent): Boolean {
-    Timber.i("getDnDStateFromDataEvent() called")
-    val dataMap = DataMapItem.fromDataItem(dataEvent.dataItem).dataMap
-    return dataMap.getBoolean(NEW_DND_STATE_KEY)
-  }
-
-  companion object {
-    const val NEW_DND_STATE_KEY = "${References.packageName}.dnd-enabled"
-  }
+    companion object {
+        const val NEW_DND_STATE_KEY = "${References.packageName}.dnd-enabled"
+    }
 }

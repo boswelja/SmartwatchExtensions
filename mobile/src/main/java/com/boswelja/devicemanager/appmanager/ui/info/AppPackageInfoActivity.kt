@@ -20,66 +20,67 @@ import com.google.android.gms.wearable.Wearable
 
 class AppPackageInfoActivity : BaseToolbarActivity() {
 
-  private val viewModel: AppPackageInfoViewModel by viewModels {
-    AppPackageInfoViewModelFactory(Wearable.getMessageClient(this))
-  }
-
-  private lateinit var binding: ActivityAppInfoBinding
-
-  override fun onCreate(savedInstanceState: Bundle?) {
-    super.onCreate(savedInstanceState)
-
-    binding = DataBindingUtil.setContentView(this, R.layout.activity_app_info)
-    binding.viewModel = viewModel
-    binding.lifecycleOwner = this
-
-    setupToolbar(binding.toolbarLayout.toolbar, showTitle = true, showUpButton = true)
-
-    val watchId = intent?.getStringExtra(EXTRA_WATCH_ID)
-    viewModel.watchId = watchId
-    val appInfo = intent?.getSerializableExtra(EXTRA_APP_INFO) as AppPackageInfo?
-    viewModel.appInfo.postValue(appInfo)
-
-    viewModel.appInfo.observe(this) { setupRequestedPermissions(it) }
-    viewModel.finishActivity.observe(this) { if (it) finish() }
-  }
-
-  override fun onOptionsItemSelected(item: MenuItem): Boolean {
-    if (item.itemId == android.R.id.home) {
-      onBackPressed()
+    private val viewModel: AppPackageInfoViewModel by viewModels {
+        AppPackageInfoViewModelFactory(Wearable.getMessageClient(this))
     }
-    return super.onOptionsItemSelected(item)
-  }
 
-  /**
-   * Sets up the requested permissions view.
-   * @param appInfo The [AppPackageInfo] to use for data etc.
-   */
-  private fun setupRequestedPermissions(appInfo: AppPackageInfo) {
-    val requestsPermissions = !appInfo.requestedPermissions.isNullOrEmpty()
-    binding.apply {
-      permissionsInfo.findViewById<AppCompatTextView>(R.id.top_line).text =
-          getString(R.string.app_info_requested_permissions_title)
-      permissionsInfo.findViewById<AppCompatTextView>(R.id.bottom_line).text =
-          if (requestsPermissions) {
-            val requestedPermissionCount = appInfo.requestedPermissions!!.size
-            resources.getQuantityString(
-                R.plurals.app_info_requested_permissions_count,
-                requestedPermissionCount,
-                requestedPermissionCount)
-          } else {
-            getString(R.string.app_info_requested_permissions_none)
-          }
-      permissionsInfo.setOnClickListener {
-        if (requestsPermissions) {
-          AppPermissionDialogFragment(appInfo.requestedPermissions!!).show(supportFragmentManager)
+    private lateinit var binding: ActivityAppInfoBinding
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_app_info)
+        binding.viewModel = viewModel
+        binding.lifecycleOwner = this
+
+        setupToolbar(binding.toolbarLayout.toolbar, showTitle = true, showUpButton = true)
+
+        val watchId = intent?.getStringExtra(EXTRA_WATCH_ID)
+        viewModel.watchId = watchId
+        val appInfo = intent?.getSerializableExtra(EXTRA_APP_INFO) as AppPackageInfo?
+        viewModel.appInfo.postValue(appInfo)
+
+        viewModel.appInfo.observe(this) { setupRequestedPermissions(it) }
+        viewModel.finishActivity.observe(this) { if (it) finish() }
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == android.R.id.home) {
+            onBackPressed()
         }
-      }
+        return super.onOptionsItemSelected(item)
     }
-  }
 
-  companion object {
-    const val EXTRA_APP_INFO = "extra_app_info"
-    const val EXTRA_WATCH_ID = "extra_watch_id"
-  }
+    /**
+     * Sets up the requested permissions view.
+     * @param appInfo The [AppPackageInfo] to use for data etc.
+     */
+    private fun setupRequestedPermissions(appInfo: AppPackageInfo) {
+        val requestsPermissions = !appInfo.requestedPermissions.isNullOrEmpty()
+        binding.apply {
+            permissionsInfo.findViewById<AppCompatTextView>(R.id.top_line).text =
+                getString(R.string.app_info_requested_permissions_title)
+            permissionsInfo.findViewById<AppCompatTextView>(R.id.bottom_line).text =
+                if (requestsPermissions) {
+                    val requestedPermissionCount = appInfo.requestedPermissions!!.size
+                    resources.getQuantityString(
+                        R.plurals.app_info_requested_permissions_count,
+                        requestedPermissionCount,
+                        requestedPermissionCount)
+                } else {
+                    getString(R.string.app_info_requested_permissions_none)
+                }
+            permissionsInfo.setOnClickListener {
+                if (requestsPermissions) {
+                    AppPermissionDialogFragment(appInfo.requestedPermissions!!)
+                        .show(supportFragmentManager)
+                }
+            }
+        }
+    }
+
+    companion object {
+        const val EXTRA_APP_INFO = "extra_app_info"
+        const val EXTRA_WATCH_ID = "extra_watch_id"
+    }
 }

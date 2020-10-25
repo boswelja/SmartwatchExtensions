@@ -23,57 +23,62 @@ import com.boswelja.devicemanager.databinding.SettingsWidgetWidgetSettingsBindin
 
 class WidgetSettingsWidget : Fragment() {
 
-  private val viewModel: WidgetSettingsViewModel by activityViewModels()
+    private val viewModel: WidgetSettingsViewModel by activityViewModels()
 
-  private lateinit var binding: SettingsWidgetWidgetSettingsBinding
+    private lateinit var binding: SettingsWidgetWidgetSettingsBinding
 
-  override fun onCreateView(
-      inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
-  ): View? {
-    binding = SettingsWidgetWidgetSettingsBinding.inflate(inflater, container, false)
-    return binding.root
-  }
-
-  override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-    binding.widgetContainer.apply {
-      background = getDeviceWallpaper()
-      findViewById<AppCompatImageView>(R.id.battery_indicator).apply {
-        setImageResource(R.drawable.ic_watch_battery)
-        setImageLevel(BATTERY_WIDGET_PREVIEW_PERCENT)
-      }
-      findViewById<TextView>(R.id.battery_indicator_text).text =
-          getString(R.string.battery_sync_percent_short, BATTERY_WIDGET_PREVIEW_PERCENT.toString())
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+    ): View? {
+        binding = SettingsWidgetWidgetSettingsBinding.inflate(inflater, container, false)
+        return binding.root
     }
-    viewModel.widgetBackgroundVisible.observe(viewLifecycleOwner) { setWidgetBackgroundEnabled(it) }
-    viewModel.widgetBackgroundOpacity.observe(viewLifecycleOwner) { setWidgetBackgroundOpacity(it) }
-  }
 
-  /**
-   * Gets a [Drawable] that draws the device's current wallpaper. This will fall back to the system
-   * default wallpaper if an error occurs.
-   */
-  private fun getDeviceWallpaper(): Drawable {
-    val wallpaperManager = requireContext().getSystemService<WallpaperManager>()!!
-    return wallpaperManager.builtInDrawable
-  }
-
-  private fun setWidgetBackgroundEnabled(backgroundVisible: Boolean) {
-    val widgetBackgroundView =
-        binding.widgetContainer.findViewById<AppCompatImageView>(R.id.widget_background)
-    if (backgroundVisible) {
-      widgetBackgroundView.setImageResource(R.drawable.widget_background)
-    } else {
-      widgetBackgroundView.setImageDrawable(null)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        binding.widgetContainer.apply {
+            background = getDeviceWallpaper()
+            findViewById<AppCompatImageView>(R.id.battery_indicator).apply {
+                setImageResource(R.drawable.ic_watch_battery)
+                setImageLevel(BATTERY_WIDGET_PREVIEW_PERCENT)
+            }
+            findViewById<TextView>(R.id.battery_indicator_text).text =
+                getString(
+                    R.string.battery_sync_percent_short, BATTERY_WIDGET_PREVIEW_PERCENT.toString())
+        }
+        viewModel.widgetBackgroundVisible.observe(viewLifecycleOwner) {
+            setWidgetBackgroundEnabled(it)
+        }
+        viewModel.widgetBackgroundOpacity.observe(viewLifecycleOwner) {
+            setWidgetBackgroundOpacity(it)
+        }
     }
-  }
 
-  private fun setWidgetBackgroundOpacity(backgroundOpacity: Int) {
-    val widgetBackgroundView =
-        binding.widgetContainer.findViewById<AppCompatImageView>(R.id.widget_background)
-    widgetBackgroundView.alpha = backgroundOpacity / 100.0f
-  }
+    /**
+     * Gets a [Drawable] that draws the device's current wallpaper. This will fall back to the
+     * system default wallpaper if an error occurs.
+     */
+    private fun getDeviceWallpaper(): Drawable {
+        val wallpaperManager = requireContext().getSystemService<WallpaperManager>()!!
+        return wallpaperManager.builtInDrawable
+    }
 
-  companion object {
-    private const val BATTERY_WIDGET_PREVIEW_PERCENT = 50
-  }
+    private fun setWidgetBackgroundEnabled(backgroundVisible: Boolean) {
+        val widgetBackgroundView =
+            binding.widgetContainer.findViewById<AppCompatImageView>(R.id.widget_background)
+        if (backgroundVisible) {
+            widgetBackgroundView.setImageResource(R.drawable.widget_background)
+        } else {
+            widgetBackgroundView.setImageDrawable(null)
+        }
+    }
+
+    private fun setWidgetBackgroundOpacity(backgroundOpacity: Int) {
+        val widgetBackgroundView =
+            binding.widgetContainer.findViewById<AppCompatImageView>(R.id.widget_background)
+        widgetBackgroundView.alpha = backgroundOpacity / 100.0f
+    }
+
+    companion object {
+        private const val BATTERY_WIDGET_PREVIEW_PERCENT = 50
+    }
 }

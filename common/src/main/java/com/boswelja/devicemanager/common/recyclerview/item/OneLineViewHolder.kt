@@ -16,15 +16,15 @@ open class OneLineViewHolder
     private constructor(private val binding: RecyclerviewItemOneLineBinding) :
     RecyclerView.ViewHolder(binding.root) {
 
-  fun bind(text: String) {
-    binding.text.text = text
-  }
-
-  companion object {
-    fun from(parent: ViewGroup): OneLineViewHolder {
-      val layoutInflater = LayoutInflater.from(parent.context)
-      val binding = RecyclerviewItemOneLineBinding.inflate(layoutInflater, parent, false)
-      return OneLineViewHolder(binding)
+    fun bind(text: String) {
+        binding.text.text = text
     }
-  }
+
+    companion object {
+        fun from(parent: ViewGroup): OneLineViewHolder {
+            val layoutInflater = LayoutInflater.from(parent.context)
+            val binding = RecyclerviewItemOneLineBinding.inflate(layoutInflater, parent, false)
+            return OneLineViewHolder(binding)
+        }
+    }
 }

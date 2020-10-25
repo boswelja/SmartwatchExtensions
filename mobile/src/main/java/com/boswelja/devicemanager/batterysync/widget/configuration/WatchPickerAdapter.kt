@@ -17,18 +17,18 @@ import com.boswelja.devicemanager.watchmanager.item.Watch
 class WatchPickerAdapter(private val clickCallback: (watch: Watch) -> Unit) :
     ListAdapter<Watch, IconTwoLineViewHolder>(WatchDiffCallback()) {
 
-  private val watches: ArrayList<Watch> = ArrayList()
+    private val watches: ArrayList<Watch> = ArrayList()
 
-  override fun getItemCount(): Int = watches.count()
+    override fun getItemCount(): Int = watches.count()
 
-  override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): IconTwoLineViewHolder {
-    return IconTwoLineViewHolder.from(parent)
-  }
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): IconTwoLineViewHolder {
+        return IconTwoLineViewHolder.from(parent)
+    }
 
-  override fun onBindViewHolder(holder: IconTwoLineViewHolder, position: Int) {
-    val watch = watches[position]
-    val summary = "Tap to create widget"
-    holder.bind(R.drawable.ic_watch, watch.name, summary)
-    holder.itemView.setOnClickListener { clickCallback(watch) }
-  }
+    override fun onBindViewHolder(holder: IconTwoLineViewHolder, position: Int) {
+        val watch = watches[position]
+        val summary = "Tap to create widget"
+        holder.bind(R.drawable.ic_watch, watch.name, summary)
+        holder.itemView.setOnClickListener { clickCallback(watch) }
+    }
 }

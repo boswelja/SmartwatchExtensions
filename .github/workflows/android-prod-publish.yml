@@ -73,7 +73,7 @@ jobs:
         if: failure()
         with:
           xml_path: ktlint_result.xml
-  
+
   sign:
     name: Sign and Save Bundles
     runs-on: ubuntu-latest

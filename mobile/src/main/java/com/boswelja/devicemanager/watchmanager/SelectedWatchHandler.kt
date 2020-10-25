@@ -33,45 +33,45 @@ class SelectedWatchHandler
         val database: WatchDatabase = WatchDatabase.get(context)
     ) {
 
-  private val _selectedWatch = MutableLiveData<Watch?>()
+    private val _selectedWatch = MutableLiveData<Watch?>()
 
-  val selectedWatch: LiveData<Watch?>
-    get() = _selectedWatch
+    val selectedWatch: LiveData<Watch?>
+        get() = _selectedWatch
 
-  init {
-    // Set the initial connectedWatch value if possible.
-    sharedPreferences.getString(LAST_SELECTED_NODE_ID_KEY, "")?.let { selectWatchById(it) }
-  }
-
-  /**
-   * Selects a watch by a given [Watch.id]. This will update [selectedWatch].
-   * @param watchId The ID of the [Watch] to select.
-   */
-  fun selectWatchById(watchId: String) {
-    if (watchId != _selectedWatch.value?.id) {
-      Timber.d("Setting connected watch to $watchId")
-      coroutineScope.launch {
-        val newWatch = database.watchDao().get(watchId)
-        _selectedWatch.postValue(newWatch)
-        sharedPreferences.edit { putString(LAST_SELECTED_NODE_ID_KEY, newWatch?.id) }
-      }
+    init {
+        // Set the initial connectedWatch value if possible.
+        sharedPreferences.getString(LAST_SELECTED_NODE_ID_KEY, "")?.let { selectWatchById(it) }
     }
-  }
 
-  companion object {
-    const val LAST_SELECTED_NODE_ID_KEY = "last_connected_id"
-
-    private var INSTANCE: SelectedWatchHandler? = null
-
-    /** Get an instance of [SelectedWatchHandler] */
-    fun get(context: Context): SelectedWatchHandler {
-      if (INSTANCE != null) return INSTANCE!!
-      synchronized(this) {
-        if (INSTANCE == null) {
-          INSTANCE = SelectedWatchHandler(context)
+    /**
+     * Selects a watch by a given [Watch.id]. This will update [selectedWatch].
+     * @param watchId The ID of the [Watch] to select.
+     */
+    fun selectWatchById(watchId: String) {
+        if (watchId != _selectedWatch.value?.id) {
+            Timber.d("Setting connected watch to $watchId")
+            coroutineScope.launch {
+                val newWatch = database.watchDao().get(watchId)
+                _selectedWatch.postValue(newWatch)
+                sharedPreferences.edit { putString(LAST_SELECTED_NODE_ID_KEY, newWatch?.id) }
+            }
         }
-        return INSTANCE!!
-      }
     }
-  }
+
+    companion object {
+        const val LAST_SELECTED_NODE_ID_KEY = "last_connected_id"
+
+        private var INSTANCE: SelectedWatchHandler? = null
+
+        /** Get an instance of [SelectedWatchHandler] */
+        fun get(context: Context): SelectedWatchHandler {
+            if (INSTANCE != null) return INSTANCE!!
+            synchronized(this) {
+                if (INSTANCE == null) {
+                    INSTANCE = SelectedWatchHandler(context)
+                }
+                return INSTANCE!!
+            }
+        }
+    }
 }

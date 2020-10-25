@@ -24,78 +24,81 @@ import java.util.concurrent.TimeUnit
 
 class BatterySyncPreferenceWidgetFragment : Fragment() {
 
-  private val viewModel: BatterySyncViewModel by activityViewModels()
-  private val batteryStatsObserver =
-      Observer<WatchBatteryStats?> {
-        if (it != null) {
-          updateBatteryStats(it)
-        } else {
-          Timber.w("Battery stats null")
+    private val viewModel: BatterySyncViewModel by activityViewModels()
+    private val batteryStatsObserver =
+        Observer<WatchBatteryStats?> {
+            if (it != null) {
+                updateBatteryStats(it)
+            } else {
+                Timber.w("Battery stats null")
+            }
         }
-      }
 
-  private val watchManager by lazy { WatchManager.get(requireContext()) }
-  private lateinit var lastUpdateTimer: LastUpdateTimer
+    private val watchManager by lazy { WatchManager.get(requireContext()) }
+    private lateinit var lastUpdateTimer: LastUpdateTimer
 
-  private lateinit var binding: SettingsWidgetBatterySyncBinding
+    private lateinit var binding: SettingsWidgetBatterySyncBinding
 
-  private var batteryStatsObservable: LiveData<WatchBatteryStats?>? = null
+    private var batteryStatsObservable: LiveData<WatchBatteryStats?>? = null
 
-  override fun onCreateView(
-      inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
-  ): View? {
-    Timber.d("onCreateView() called")
-    binding = SettingsWidgetBatterySyncBinding.inflate(inflater, container, false)
-    return binding.root
-  }
-
-  override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-    super.onViewCreated(view, savedInstanceState)
-
-    lastUpdateTimer = LastUpdateTimer(lifecycle)
-    lastUpdateTimer.totalMinutes.observe(viewLifecycleOwner) { setLastUpdateTime(it) }
-
-    watchManager.connectedWatch.observe(viewLifecycleOwner) { watch ->
-      watch?.id?.let { setObservingWatchStats(it) }
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+    ): View? {
+        Timber.d("onCreateView() called")
+        binding = SettingsWidgetBatterySyncBinding.inflate(inflater, container, false)
+        return binding.root
     }
-    viewModel.batterySyncEnabled.observe(viewLifecycleOwner) { if (!it) showBatterySyncDisabled() }
-  }
 
-  private fun setObservingWatchStats(watchId: String) {
-    batteryStatsObservable?.removeObserver(batteryStatsObserver)
-    batteryStatsObservable = viewModel.getBatteryStatsObservable(watchId)
-    batteryStatsObservable!!.observe(viewLifecycleOwner, batteryStatsObserver)
-  }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
-  private fun showBatterySyncDisabled() {
-    lastUpdateTimer.stopTimer()
-    binding.apply {
-      watchBatteryIndicator.setImageLevel(0)
-      watchBatteryPercent.setText(R.string.battery_sync_disabled)
-      lastUpdatedTime.text = null
-    }
-  }
+        lastUpdateTimer = LastUpdateTimer(lifecycle)
+        lastUpdateTimer.totalMinutes.observe(viewLifecycleOwner) { setLastUpdateTime(it) }
 
-  private fun updateBatteryStats(batteryStats: WatchBatteryStats) {
-    val dataAgeMinutes =
-        TimeUnit.MILLISECONDS
-            .toMinutes(System.currentTimeMillis() - batteryStats.lastUpdatedMillis)
-            .toInt()
-    lastUpdateTimer.resetTimer(dataAgeMinutes)
-    binding.apply {
-      watchBatteryIndicator.setImageLevel(batteryStats.percent)
-      watchBatteryPercent.text =
-          getString(R.string.battery_sync_percent_short, batteryStats.percent.toString())
-    }
-  }
-
-  private fun setLastUpdateTime(minutes: Int) {
-    val lastUpdateText =
-        if (minutes < 1) {
-          getString(R.string.battery_sync_last_updated_under_minute)
-        } else {
-          resources.getQuantityString(R.plurals.battery_sync_last_updated_minutes, minutes, minutes)
+        watchManager.connectedWatch.observe(viewLifecycleOwner) { watch ->
+            watch?.id?.let { setObservingWatchStats(it) }
         }
-    binding.lastUpdatedTime.text = lastUpdateText
-  }
+        viewModel.batterySyncEnabled.observe(viewLifecycleOwner) {
+            if (!it) showBatterySyncDisabled()
+        }
+    }
+
+    private fun setObservingWatchStats(watchId: String) {
+        batteryStatsObservable?.removeObserver(batteryStatsObserver)
+        batteryStatsObservable = viewModel.getBatteryStatsObservable(watchId)
+        batteryStatsObservable!!.observe(viewLifecycleOwner, batteryStatsObserver)
+    }
+
+    private fun showBatterySyncDisabled() {
+        lastUpdateTimer.stopTimer()
+        binding.apply {
+            watchBatteryIndicator.setImageLevel(0)
+            watchBatteryPercent.setText(R.string.battery_sync_disabled)
+            lastUpdatedTime.text = null
+        }
+    }
+
+    private fun updateBatteryStats(batteryStats: WatchBatteryStats) {
+        val dataAgeMinutes =
+            TimeUnit.MILLISECONDS
+                .toMinutes(System.currentTimeMillis() - batteryStats.lastUpdatedMillis)
+                .toInt()
+        lastUpdateTimer.resetTimer(dataAgeMinutes)
+        binding.apply {
+            watchBatteryIndicator.setImageLevel(batteryStats.percent)
+            watchBatteryPercent.text =
+                getString(R.string.battery_sync_percent_short, batteryStats.percent.toString())
+        }
+    }
+
+    private fun setLastUpdateTime(minutes: Int) {
+        val lastUpdateText =
+            if (minutes < 1) {
+                getString(R.string.battery_sync_last_updated_under_minute)
+            } else {
+                resources.getQuantityString(
+                    R.plurals.battery_sync_last_updated_minutes, minutes, minutes)
+            }
+        binding.lastUpdatedTime.text = lastUpdateText
+    }
 }

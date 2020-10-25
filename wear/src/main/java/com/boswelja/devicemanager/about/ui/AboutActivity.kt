@@ -18,24 +18,24 @@ import com.boswelja.devicemanager.databinding.ActivityAboutBinding
 
 class AboutActivity : AppCompatActivity() {
 
-  private val viewModel: AboutViewModel by viewModels()
+    private val viewModel: AboutViewModel by viewModels()
 
-  private lateinit var binding: ActivityAboutBinding
+    private lateinit var binding: ActivityAboutBinding
 
-  override fun onCreate(savedInstanceState: Bundle?) {
-    super.onCreate(savedInstanceState)
-    binding = ActivityAboutBinding.inflate(layoutInflater)
-    binding.viewModel = viewModel
-    binding.lifecycleOwner = this
-    setContentView(binding.root)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        binding = ActivityAboutBinding.inflate(layoutInflater)
+        binding.viewModel = viewModel
+        binding.lifecycleOwner = this
+        setContentView(binding.root)
 
-    viewModel.openPlayStoreEvent.observe(this) {
-      GooglePlayUtils.getPlayStoreIntent(this).also { startActivity(it) }
+        viewModel.openPlayStoreEvent.observe(this) {
+            GooglePlayUtils.getPlayStoreIntent(this).also { startActivity(it) }
+        }
+        viewModel.openAppInfoEvent.observe(this) {
+            Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+                .apply { data = Uri.fromParts("package", packageName, null) }
+                .also { startActivity(it) }
+        }
     }
-    viewModel.openAppInfoEvent.observe(this) {
-      Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
-          .apply { data = Uri.fromParts("package", packageName, null) }
-          .also { startActivity(it) }
-    }
-  }
 }

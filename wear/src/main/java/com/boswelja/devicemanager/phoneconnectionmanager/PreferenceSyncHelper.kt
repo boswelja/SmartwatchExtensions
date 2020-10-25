@@ -19,30 +19,30 @@ class PreferenceSyncHelper(
     context: Context, private val sharedPreferences: SharedPreferences, private val phoneId: String
 ) {
 
-  private val dataClient = Wearable.getDataClient(context)
+    private val dataClient = Wearable.getDataClient(context)
 
-  fun pushNewData(key: String): Task<DataItem>? {
-    if (phoneId.isNotEmpty()) {
-      val syncedPrefUpdateReq = PutDataMapRequest.create(PREFERENCE_CHANGE_PATH)
-      when (key) {
-        in SyncPreferences.BOOL_PREFS -> {
-          val newValue = sharedPreferences.getBoolean(key, false)
-          syncedPrefUpdateReq.dataMap.putBoolean(key, newValue)
+    fun pushNewData(key: String): Task<DataItem>? {
+        if (phoneId.isNotEmpty()) {
+            val syncedPrefUpdateReq = PutDataMapRequest.create(PREFERENCE_CHANGE_PATH)
+            when (key) {
+                in SyncPreferences.BOOL_PREFS -> {
+                    val newValue = sharedPreferences.getBoolean(key, false)
+                    syncedPrefUpdateReq.dataMap.putBoolean(key, newValue)
+                }
+                in SyncPreferences.INT_PREFS -> {
+                    val newValue = sharedPreferences.getInt(key, 90)
+                    syncedPrefUpdateReq.dataMap.putInt(key, newValue)
+                }
+            }
+            if (!syncedPrefUpdateReq.dataMap.isEmpty) {
+                syncedPrefUpdateReq.setUrgent()
+                return dataClient.putDataItem(syncedPrefUpdateReq.asPutDataRequest())
+            }
         }
-        in SyncPreferences.INT_PREFS -> {
-          val newValue = sharedPreferences.getInt(key, 90)
-          syncedPrefUpdateReq.dataMap.putInt(key, newValue)
-        }
-      }
-      if (!syncedPrefUpdateReq.dataMap.isEmpty) {
-        syncedPrefUpdateReq.setUrgent()
-        return dataClient.putDataItem(syncedPrefUpdateReq.asPutDataRequest())
-      }
+        return null
     }
-    return null
-  }
 
-  companion object {
-    private const val PREFERENCE_CHANGE_PATH = "/preference_change"
-  }
+    companion object {
+        private const val PREFERENCE_CHANGE_PATH = "/preference_change"
+    }
 }

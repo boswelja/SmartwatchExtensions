@@ -38,225 +38,232 @@ import timber.log.Timber
 
 class AppManagerService : Service() {
 
-  private val sharedPreferences by lazy { PreferenceManager.getDefaultSharedPreferences(this) }
-  private val messageClient by lazy { Wearable.getMessageClient(this) }
+    private val sharedPreferences by lazy { PreferenceManager.getDefaultSharedPreferences(this) }
+    private val messageClient by lazy { Wearable.getMessageClient(this) }
 
-  private var phoneId: String? = null
+    private var phoneId: String? = null
 
-  private val messageReceiver =
-      MessageClient.OnMessageReceivedListener {
-        when (it.path) {
-          REQUEST_UNINSTALL_PACKAGE -> {
-            getPackageNameFromBytes(it.data)?.also { packageName ->
-              requestUninstallPackage(packageName)
-            }
-          }
-          REQUEST_OPEN_PACKAGE -> {
-            getPackageNameFromBytes(it.data)?.also { packageName -> openPackage(packageName) }
-          }
-          STOP_SERVICE -> {
-            stopService()
-          }
-        }
-      }
-
-  private val packageChangeReceiver =
-      object : BroadcastReceiver() {
-        override fun onReceive(context: Context?, intent: Intent?) {
-          Timber.d("onReceive($context, $intent) called")
-          intent?.data?.let { data ->
-            val isReplacingPackage = intent.getBooleanExtra(Intent.EXTRA_REPLACING, false)
-            when (intent.action) {
-              Intent.ACTION_PACKAGE_ADDED -> {
-                val packageName = data.encodedSchemeSpecificPart
-                AppPackageInfo(packageManager, packageManager.getPackageInfo(packageName, 0)).also {
-                  if (isReplacingPackage) {
-                    sendAppUpdatedMessage(it)
-                  } else {
-                    sendAppAddedMessage(it)
-                  }
+    private val messageReceiver =
+        MessageClient.OnMessageReceivedListener {
+            when (it.path) {
+                REQUEST_UNINSTALL_PACKAGE -> {
+                    getPackageNameFromBytes(it.data)?.also { packageName ->
+                        requestUninstallPackage(packageName)
+                    }
                 }
-              }
-              Intent.ACTION_PACKAGE_REMOVED -> {
-                val packageName = data.encodedSchemeSpecificPart
-                if (!isReplacingPackage) {
-                  sendAppRemovedMessage(packageName)
-                } else {
-                  Timber.i("Package removed, but system indicated it's being replaced.")
+                REQUEST_OPEN_PACKAGE -> {
+                    getPackageNameFromBytes(it.data)?.also { packageName ->
+                        openPackage(packageName)
+                    }
                 }
-              }
-              else -> Timber.w("Unknown intent received")
+                STOP_SERVICE -> {
+                    stopService()
+                }
             }
-          }
         }
-      }
 
-  override fun onBind(intent: Intent?): IBinder? = null
-
-  override fun onCreate() {
-    super.onCreate()
-
-    phoneId = sharedPreferences.getString(PHONE_ID_KEY, "")
-
-    messageClient.addListener(messageReceiver)
-
-    IntentFilter()
-        .apply {
-          addAction(Intent.ACTION_PACKAGE_ADDED)
-          addAction(Intent.ACTION_PACKAGE_REMOVED)
-          addDataScheme("package")
+    private val packageChangeReceiver =
+        object : BroadcastReceiver() {
+            override fun onReceive(context: Context?, intent: Intent?) {
+                Timber.d("onReceive($context, $intent) called")
+                intent?.data?.let { data ->
+                    val isReplacingPackage = intent.getBooleanExtra(Intent.EXTRA_REPLACING, false)
+                    when (intent.action) {
+                        Intent.ACTION_PACKAGE_ADDED -> {
+                            val packageName = data.encodedSchemeSpecificPart
+                            AppPackageInfo(
+                                    packageManager, packageManager.getPackageInfo(packageName, 0))
+                                .also {
+                                    if (isReplacingPackage) {
+                                        sendAppUpdatedMessage(it)
+                                    } else {
+                                        sendAppAddedMessage(it)
+                                    }
+                                }
+                        }
+                        Intent.ACTION_PACKAGE_REMOVED -> {
+                            val packageName = data.encodedSchemeSpecificPart
+                            if (!isReplacingPackage) {
+                                sendAppRemovedMessage(packageName)
+                            } else {
+                                Timber.i(
+                                    "Package removed, but system indicated it's being replaced.")
+                            }
+                        }
+                        else -> Timber.w("Unknown intent received")
+                    }
+                }
+            }
         }
-        .also { registerReceiver(packageChangeReceiver, it) }
-  }
 
-  override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-    createNotification().also { startForeground(APP_MANAGER_NOTI_ID, it) }
-    sendAllAppsMessage()
-    return START_NOT_STICKY
-  }
+    override fun onBind(intent: Intent?): IBinder? = null
 
-  override fun onDestroy() {
-    unregisterReceiver(packageChangeReceiver)
-    messageClient.removeListener(messageReceiver)
-    super.onDestroy()
-  }
+    override fun onCreate() {
+        super.onCreate()
 
-  /** Stops the service. */
-  private fun stopService() {
-    stopForeground(true)
-    stopSelf()
-  }
+        phoneId = sharedPreferences.getString(PHONE_ID_KEY, "")
 
-  /**
-   * Create the App Manager notification. Will also create the notification channel if needed.
-   * @return The [Notification] for the App Manager.
-   */
-  private fun createNotification(): Notification {
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-      val notificationManager =
-          getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-      if (notificationManager.getNotificationChannel(APP_MANAGER_NOTI_CHANNEL_ID) == null) {
-        NotificationChannel(
-                APP_MANAGER_NOTI_CHANNEL_ID,
-                getString(R.string.app_manager_noti_channel_title),
-                NotificationManager.IMPORTANCE_LOW)
-            .also { notificationManager.createNotificationChannel(it) }
-      }
+        messageClient.addListener(messageReceiver)
+
+        IntentFilter()
+            .apply {
+                addAction(Intent.ACTION_PACKAGE_ADDED)
+                addAction(Intent.ACTION_PACKAGE_REMOVED)
+                addDataScheme("package")
+            }
+            .also { registerReceiver(packageChangeReceiver, it) }
     }
-    return NotificationCompat.Builder(this, APP_MANAGER_NOTI_CHANNEL_ID)
-        .setContentTitle(getString(R.string.app_manager_noti_title))
-        .setContentText(getString(R.string.app_manager_noti_desc))
-        .setSmallIcon(R.drawable.ic_app_manager)
-        .setOngoing(true)
-        .setShowWhen(false)
-        .setUsesChronometer(false)
-        .setPriority(NotificationCompat.PRIORITY_LOW)
-        .build()
-  }
 
-  /**
-   * Sends a message to the phone informing of a package removal.
-   * @param packageName The name of the package that was removed.
-   */
-  private fun sendAppRemovedMessage(packageName: String?) {
-    val data = packageName?.toByteArray(Charsets.UTF_8)
-    messageClient.sendMessage(phoneId!!, PACKAGE_REMOVED, data)
-  }
-
-  /**
-   * Sends a message to the phone informing of a package install.
-   * @param packageInfo The [AppPackageInfo] for the package that was installed.
-   */
-  private fun sendAppAddedMessage(packageInfo: AppPackageInfo) {
-    val data = packageInfo.toByteArray()
-    messageClient.sendMessage(phoneId!!, PACKAGE_ADDED, data)
-  }
-
-  /**
-   * Sends a message to the phone informing of a package update.
-   * @param packageInfo The [AppPackageInfo] for the package that was installed.
-   */
-  private fun sendAppUpdatedMessage(packageInfo: AppPackageInfo) {
-    val data = packageInfo.toByteArray()
-    messageClient.sendMessage(phoneId!!, PACKAGE_UPDATED, data)
-  }
-
-  /** Sends a message to the phone informing an error */
-  private fun sendErrorMessage() {
-    messageClient.sendMessage(phoneId!!, ERROR, null)
-    stopService()
-  }
-
-  /** Sends a message to the phone containing an [AppPackageInfoList] of all packages installed. */
-  private fun sendAllAppsMessage() {
-    try {
-      val packagesToSend = AppPackageInfoList(packageManager)
-      val data = packagesToSend.toByteArray()
-      messageClient.sendMessage(phoneId!!, GET_ALL_PACKAGES, data)
-    } catch (e: IllegalStateException) {
-      e.printStackTrace()
-      sendErrorMessage()
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        createNotification().also { startForeground(APP_MANAGER_NOTI_ID, it) }
+        sendAllAppsMessage()
+        return START_NOT_STICKY
     }
-  }
 
-  /**
-   * Converts a given [ByteArray] to a package name string.
-   * @param data The [ByteArray] to convert.
-   * @return THe package name, or null if data was invalid.
-   */
-  private fun getPackageNameFromBytes(data: ByteArray?): String? {
-    return if (data != null && data.isNotEmpty()) {
-      String(data, Charsets.UTF_8)
-    } else {
-      null
+    override fun onDestroy() {
+        unregisterReceiver(packageChangeReceiver)
+        messageClient.removeListener(messageReceiver)
+        super.onDestroy()
     }
-  }
 
-  /**
-   * Checks whether a package is installed.
-   * @param packageName The name of the package to check.
-   * @return true if the package is installed, false otherwise.
-   */
-  private fun isPackageInstalled(packageName: String): Boolean {
-    return try {
-      packageManager.getApplicationInfo(packageName, 0)
-      true
-    } catch (ignored: Exception) {
-      false
+    /** Stops the service. */
+    private fun stopService() {
+        stopForeground(true)
+        stopSelf()
     }
-  }
 
-  /**
-   * If a package is installed, shows a prompt to allow the user to uninstall it.
-   * @param packageName The name of the package to try uninstall.
-   */
-  private fun requestUninstallPackage(packageName: String) {
-    if (isPackageInstalled(packageName)) {
-      Intent()
-          .apply {
-            action = Intent.ACTION_DELETE
-            data = Uri.fromParts("package", packageName, null)
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK
-          }
-          .also { startActivity(it) }
-    } else {
-      sendAppRemovedMessage(packageName)
+    /**
+     * Create the App Manager notification. Will also create the notification channel if needed.
+     * @return The [Notification] for the App Manager.
+     */
+    private fun createNotification(): Notification {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val notificationManager =
+                getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            if (notificationManager.getNotificationChannel(APP_MANAGER_NOTI_CHANNEL_ID) == null) {
+                NotificationChannel(
+                        APP_MANAGER_NOTI_CHANNEL_ID,
+                        getString(R.string.app_manager_noti_channel_title),
+                        NotificationManager.IMPORTANCE_LOW)
+                    .also { notificationManager.createNotificationChannel(it) }
+            }
+        }
+        return NotificationCompat.Builder(this, APP_MANAGER_NOTI_CHANNEL_ID)
+            .setContentTitle(getString(R.string.app_manager_noti_title))
+            .setContentText(getString(R.string.app_manager_noti_desc))
+            .setSmallIcon(R.drawable.ic_app_manager)
+            .setOngoing(true)
+            .setShowWhen(false)
+            .setUsesChronometer(false)
+            .setPriority(NotificationCompat.PRIORITY_LOW)
+            .build()
     }
-  }
 
-  /**
-   * Gets a launch intent for a given package and try start a new activity for it.
-   * @param packageName The name of the package to try open.
-   */
-  private fun openPackage(packageName: String) {
-    packageManager
-        .getLaunchIntentForPackage(packageName)
-        ?.apply { flags = Intent.FLAG_ACTIVITY_NEW_TASK }
-        ?.also { startActivity(it) }
-  }
+    /**
+     * Sends a message to the phone informing of a package removal.
+     * @param packageName The name of the package that was removed.
+     */
+    private fun sendAppRemovedMessage(packageName: String?) {
+        val data = packageName?.toByteArray(Charsets.UTF_8)
+        messageClient.sendMessage(phoneId!!, PACKAGE_REMOVED, data)
+    }
 
-  companion object {
-    private const val APP_MANAGER_NOTI_CHANNEL_ID = "app_manager_service"
-    private const val APP_MANAGER_NOTI_ID = 906
-  }
+    /**
+     * Sends a message to the phone informing of a package install.
+     * @param packageInfo The [AppPackageInfo] for the package that was installed.
+     */
+    private fun sendAppAddedMessage(packageInfo: AppPackageInfo) {
+        val data = packageInfo.toByteArray()
+        messageClient.sendMessage(phoneId!!, PACKAGE_ADDED, data)
+    }
+
+    /**
+     * Sends a message to the phone informing of a package update.
+     * @param packageInfo The [AppPackageInfo] for the package that was installed.
+     */
+    private fun sendAppUpdatedMessage(packageInfo: AppPackageInfo) {
+        val data = packageInfo.toByteArray()
+        messageClient.sendMessage(phoneId!!, PACKAGE_UPDATED, data)
+    }
+
+    /** Sends a message to the phone informing an error */
+    private fun sendErrorMessage() {
+        messageClient.sendMessage(phoneId!!, ERROR, null)
+        stopService()
+    }
+
+    /**
+     * Sends a message to the phone containing an [AppPackageInfoList] of all packages installed.
+     */
+    private fun sendAllAppsMessage() {
+        try {
+            val packagesToSend = AppPackageInfoList(packageManager)
+            val data = packagesToSend.toByteArray()
+            messageClient.sendMessage(phoneId!!, GET_ALL_PACKAGES, data)
+        } catch (e: IllegalStateException) {
+            e.printStackTrace()
+            sendErrorMessage()
+        }
+    }
+
+    /**
+     * Converts a given [ByteArray] to a package name string.
+     * @param data The [ByteArray] to convert.
+     * @return THe package name, or null if data was invalid.
+     */
+    private fun getPackageNameFromBytes(data: ByteArray?): String? {
+        return if (data != null && data.isNotEmpty()) {
+            String(data, Charsets.UTF_8)
+        } else {
+            null
+        }
+    }
+
+    /**
+     * Checks whether a package is installed.
+     * @param packageName The name of the package to check.
+     * @return true if the package is installed, false otherwise.
+     */
+    private fun isPackageInstalled(packageName: String): Boolean {
+        return try {
+            packageManager.getApplicationInfo(packageName, 0)
+            true
+        } catch (ignored: Exception) {
+            false
+        }
+    }
+
+    /**
+     * If a package is installed, shows a prompt to allow the user to uninstall it.
+     * @param packageName The name of the package to try uninstall.
+     */
+    private fun requestUninstallPackage(packageName: String) {
+        if (isPackageInstalled(packageName)) {
+            Intent()
+                .apply {
+                    action = Intent.ACTION_DELETE
+                    data = Uri.fromParts("package", packageName, null)
+                    flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                }
+                .also { startActivity(it) }
+        } else {
+            sendAppRemovedMessage(packageName)
+        }
+    }
+
+    /**
+     * Gets a launch intent for a given package and try start a new activity for it.
+     * @param packageName The name of the package to try open.
+     */
+    private fun openPackage(packageName: String) {
+        packageManager
+            .getLaunchIntentForPackage(packageName)
+            ?.apply { flags = Intent.FLAG_ACTIVITY_NEW_TASK }
+            ?.also { startActivity(it) }
+    }
+
+    companion object {
+        private const val APP_MANAGER_NOTI_CHANNEL_ID = "app_manager_service"
+        private const val APP_MANAGER_NOTI_ID = 906
+    }
 }

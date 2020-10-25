@@ -18,43 +18,43 @@ import com.boswelja.devicemanager.common.recyclerview.item.SectionHeaderViewHold
 class AppsAdapter(private val itemClickCallback: ItemClickCallback<Item>) :
     ListAdapter<Item, RecyclerView.ViewHolder>(AppDiffCallback()) {
 
-  override fun getItemViewType(position: Int): Int {
-    return when (getItem(position)) {
-      is Item.Header -> TYPE_HEADER
-      else -> TYPE_APP
-    }
-  }
-
-  override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-    return when (viewType) {
-      TYPE_HEADER -> SectionHeaderViewHolder.from(parent)
-      else -> IconTwoLineViewHolder.from(parent)
-    }
-  }
-
-  override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-    val item = getItem(position)
-    when (holder) {
-      is SectionHeaderViewHolder -> {
-        if (item is Item.Header) {
-          holder.bind(item.label, position != 0)
+    override fun getItemViewType(position: Int): Int {
+        return when (getItem(position)) {
+            is Item.Header -> TYPE_HEADER
+            else -> TYPE_APP
         }
-      }
-      is IconTwoLineViewHolder -> {
-        if (item is Item.App) {
-          if (item.icon != null) {
-            holder.bind(item.icon, item.label, item.versionText)
-          } else {
-            holder.bind(R.drawable.android_head, item.label, item.versionText)
-          }
-        }
-      }
     }
-    holder.itemView.setOnClickListener { itemClickCallback.onClick(item) }
-  }
 
-  companion object {
-    private const val TYPE_APP = 0
-    private const val TYPE_HEADER = 1
-  }
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        return when (viewType) {
+            TYPE_HEADER -> SectionHeaderViewHolder.from(parent)
+            else -> IconTwoLineViewHolder.from(parent)
+        }
+    }
+
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        val item = getItem(position)
+        when (holder) {
+            is SectionHeaderViewHolder -> {
+                if (item is Item.Header) {
+                    holder.bind(item.label, position != 0)
+                }
+            }
+            is IconTwoLineViewHolder -> {
+                if (item is Item.App) {
+                    if (item.icon != null) {
+                        holder.bind(item.icon, item.label, item.versionText)
+                    } else {
+                        holder.bind(R.drawable.android_head, item.label, item.versionText)
+                    }
+                }
+            }
+        }
+        holder.itemView.setOnClickListener { itemClickCallback.onClick(item) }
+    }
+
+    companion object {
+        private const val TYPE_APP = 0
+        private const val TYPE_HEADER = 1
+    }
 }

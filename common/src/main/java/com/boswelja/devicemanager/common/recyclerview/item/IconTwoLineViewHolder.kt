@@ -17,26 +17,26 @@ import com.boswelja.devicemanager.common.databinding.RecyclerviewItemIconTwoLine
 open class IconTwoLineViewHolder(private val binding: RecyclerviewItemIconTwoLineBinding) :
     RecyclerView.ViewHolder(binding.root) {
 
-  private fun bindText(title: String, summary: String) {
-    binding.topLine.text = title
-    binding.bottomLine.text = summary
-  }
-
-  fun bind(@DrawableRes icon: Int, title: String, summary: String) {
-    binding.icon.setImageResource(icon)
-    bindText(title, summary)
-  }
-
-  fun bind(icon: Bitmap, title: String, summary: String) {
-    binding.icon.setImageBitmap(icon)
-    bindText(title, summary)
-  }
-
-  companion object {
-    fun from(parent: ViewGroup): IconTwoLineViewHolder {
-      val layoutInflater = LayoutInflater.from(parent.context)
-      val binding = RecyclerviewItemIconTwoLineBinding.inflate(layoutInflater, parent, false)
-      return IconTwoLineViewHolder(binding)
+    private fun bindText(title: String, summary: String) {
+        binding.topLine.text = title
+        binding.bottomLine.text = summary
     }
-  }
+
+    fun bind(@DrawableRes icon: Int, title: String, summary: String) {
+        binding.icon.setImageResource(icon)
+        bindText(title, summary)
+    }
+
+    fun bind(icon: Bitmap, title: String, summary: String) {
+        binding.icon.setImageBitmap(icon)
+        bindText(title, summary)
+    }
+
+    companion object {
+        fun from(parent: ViewGroup): IconTwoLineViewHolder {
+            val layoutInflater = LayoutInflater.from(parent.context)
+            val binding = RecyclerviewItemIconTwoLineBinding.inflate(layoutInflater, parent, false)
+            return IconTwoLineViewHolder(binding)
+        }
+    }
 }

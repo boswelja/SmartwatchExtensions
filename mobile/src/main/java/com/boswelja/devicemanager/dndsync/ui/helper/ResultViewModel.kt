@@ -25,31 +25,32 @@ import timber.log.Timber
 
 class ResultViewModel(application: Application) : AndroidViewModel(application) {
 
-  private val coroutineJob = Job()
-  private val coroutineScope = CoroutineScope(Dispatchers.IO + coroutineJob)
+    private val coroutineJob = Job()
+    private val coroutineScope = CoroutineScope(Dispatchers.IO + coroutineJob)
 
-  private val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(application)
-  private val watchPreferenceManager = WatchPreferenceManager.get(application)
-  private val connectedWatchHandler = SelectedWatchHandler.get(application)
+    private val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(application)
+    private val watchPreferenceManager = WatchPreferenceManager.get(application)
+    private val connectedWatchHandler = SelectedWatchHandler.get(application)
 
-  override fun onCleared() {
-    Timber.i("onCleared() called")
-    super.onCleared()
-    coroutineJob.cancel()
-  }
-
-  fun setSyncToWatch(isEnabled: Boolean) {
-    Timber.i("enableSyncToWatch() called")
-    coroutineScope.launch {
-      sharedPreferences.edit(commit = true) {
-        putBoolean(PreferenceKey.DND_SYNC_TO_WATCH_KEY, isEnabled)
-      }
-      watchPreferenceManager.updatePreferenceOnWatch(
-          connectedWatchHandler.selectedWatch.value!!.id, PreferenceKey.DND_SYNC_TO_WATCH_KEY)
-      if (isEnabled) {
-        val context = getApplication<Application>()
-        Compat.startForegroundService(context, Intent(context, DnDLocalChangeService::class.java))
-      }
+    override fun onCleared() {
+        Timber.i("onCleared() called")
+        super.onCleared()
+        coroutineJob.cancel()
     }
-  }
+
+    fun setSyncToWatch(isEnabled: Boolean) {
+        Timber.i("enableSyncToWatch() called")
+        coroutineScope.launch {
+            sharedPreferences.edit(commit = true) {
+                putBoolean(PreferenceKey.DND_SYNC_TO_WATCH_KEY, isEnabled)
+            }
+            watchPreferenceManager.updatePreferenceOnWatch(
+                connectedWatchHandler.selectedWatch.value!!.id, PreferenceKey.DND_SYNC_TO_WATCH_KEY)
+            if (isEnabled) {
+                val context = getApplication<Application>()
+                Compat.startForegroundService(
+                    context, Intent(context, DnDLocalChangeService::class.java))
+            }
+        }
+    }
 }

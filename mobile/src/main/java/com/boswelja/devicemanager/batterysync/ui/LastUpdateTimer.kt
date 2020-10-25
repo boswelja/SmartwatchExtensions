@@ -15,36 +15,36 @@ import java.util.concurrent.TimeUnit
 
 class LastUpdateTimer(lifecycle: Lifecycle) : DefaultLifecycleObserver {
 
-  private val _totalMinutes = MutableLiveData(0)
-  val totalMinutes: LiveData<Int>
-    get() = _totalMinutes
+    private val _totalMinutes = MutableLiveData(0)
+    val totalMinutes: LiveData<Int>
+        get() = _totalMinutes
 
-  private val executor = ScheduledThreadPoolExecutor(1).apply { removeOnCancelPolicy = true }
-  private var scheduledTask: ScheduledFuture<*>? = null
-  private val runnable =
-      Runnable {
-        Timber.i("Incrementing timer")
-        _totalMinutes.postValue(_totalMinutes.value!! + 1)
-      }
+    private val executor = ScheduledThreadPoolExecutor(1).apply { removeOnCancelPolicy = true }
+    private var scheduledTask: ScheduledFuture<*>? = null
+    private val runnable =
+        Runnable {
+            Timber.i("Incrementing timer")
+            _totalMinutes.postValue(_totalMinutes.value!! + 1)
+        }
 
-  init {
-    lifecycle.addObserver(this)
-  }
+    init {
+        lifecycle.addObserver(this)
+    }
 
-  override fun onDestroy(owner: LifecycleOwner) {
-    super.onDestroy(owner)
-    stopTimer()
-  }
+    override fun onDestroy(owner: LifecycleOwner) {
+        super.onDestroy(owner)
+        stopTimer()
+    }
 
-  fun resetTimer(timerStart: Int = 0) {
-    stopTimer()
-    _totalMinutes.postValue(timerStart)
-    scheduledTask = executor.scheduleAtFixedRate(runnable, 1, 1, TimeUnit.MINUTES)
-    Timber.i("Timer reset, start point = $timerStart")
-  }
+    fun resetTimer(timerStart: Int = 0) {
+        stopTimer()
+        _totalMinutes.postValue(timerStart)
+        scheduledTask = executor.scheduleAtFixedRate(runnable, 1, 1, TimeUnit.MINUTES)
+        Timber.i("Timer reset, start point = $timerStart")
+    }
 
-  fun stopTimer() {
-    Timber.i("Stopping timer")
-    scheduledTask?.cancel(false)
-  }
+    fun stopTimer() {
+        Timber.i("Stopping timer")
+        scheduledTask?.cancel(false)
+    }
 }

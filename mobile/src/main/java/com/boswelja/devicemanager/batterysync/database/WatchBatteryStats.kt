@@ -23,11 +23,11 @@ data class WatchBatteryStats(
     @ColumnInfo(name = "last_update_time")
     var lastUpdatedMillis: Long = System.currentTimeMillis()
 ) {
-  companion object {
-    fun fromMessage(messageEvent: MessageEvent): WatchBatteryStats {
-      val watchId = messageEvent.sourceNodeId
-      val batteryStats = BatteryStats.fromMessage(messageEvent)
-      return WatchBatteryStats(watchId, batteryStats.percent, batteryStats.isCharging)
+    companion object {
+        fun fromMessage(messageEvent: MessageEvent): WatchBatteryStats {
+            val watchId = messageEvent.sourceNodeId
+            val batteryStats = BatteryStats.fromMessage(messageEvent)
+            return WatchBatteryStats(watchId, batteryStats.percent, batteryStats.isCharging)
+        }
     }
-  }
 }

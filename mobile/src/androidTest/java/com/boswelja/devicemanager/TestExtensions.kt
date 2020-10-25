@@ -17,35 +17,35 @@ import org.hamcrest.Matcher
 import org.hamcrest.Matchers.allOf
 
 object TestExtensions {
-  fun setText(value: String?): ViewAction? {
-    return object : ViewAction {
-      override fun getConstraints(): Matcher<View> {
-        return allOf(isDisplayed(), isAssignableFrom(TextView::class.java))
-      }
+    fun setText(value: String?): ViewAction? {
+        return object : ViewAction {
+            override fun getConstraints(): Matcher<View> {
+                return allOf(isDisplayed(), isAssignableFrom(TextView::class.java))
+            }
 
-      override fun perform(uiController: UiController?, view: View) {
-        (view as TextView).text = value
-      }
+            override fun perform(uiController: UiController?, view: View) {
+                (view as TextView).text = value
+            }
 
-      override fun getDescription(): String {
-        return "Replace text in TextView"
-      }
+            override fun getDescription(): String {
+                return "Replace text in TextView"
+            }
+        }
     }
-  }
 
-  fun setVisibility(visibility: Int): ViewAction? {
-    return object : ViewAction {
-      override fun getConstraints(): Matcher<View> {
-        return isAssignableFrom(View::class.java)
-      }
+    fun setVisibility(visibility: Int): ViewAction? {
+        return object : ViewAction {
+            override fun getConstraints(): Matcher<View> {
+                return isAssignableFrom(View::class.java)
+            }
 
-      override fun perform(uiController: UiController?, view: View) {
-        view.visibility = visibility
-      }
+            override fun perform(uiController: UiController?, view: View) {
+                view.visibility = visibility
+            }
 
-      override fun getDescription(): String {
-        return "Set view visibility"
-      }
+            override fun getDescription(): String {
+                return "Set view visibility"
+            }
+        }
     }
-  }
 }

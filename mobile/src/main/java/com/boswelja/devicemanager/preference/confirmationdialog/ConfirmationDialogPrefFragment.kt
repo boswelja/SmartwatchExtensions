@@ -14,34 +14,34 @@ import timber.log.Timber
 
 class ConfirmationDialogPrefFragment : PreferenceDialogFragmentCompat() {
 
-  private var key: String = ""
+    private var key: String = ""
 
-  override fun onDialogClosed(positiveResult: Boolean) {
-    Timber.i("onDialogClosed() called")
-    val pref = preference as ConfirmationDialogPreference
-    if (positiveResult) {
-      pref.setValue(!pref.getValue())
+    override fun onDialogClosed(positiveResult: Boolean) {
+        Timber.i("onDialogClosed() called")
+        val pref = preference as ConfirmationDialogPreference
+        if (positiveResult) {
+            pref.setValue(!pref.getValue())
+        }
     }
-  }
 
-  /** Shows the dialog fragment. */
-  fun show(fragmentManager: FragmentManager) =
-      show(fragmentManager, "ConfirmationDialogPrefFragment")
+    /** Shows the dialog fragment. */
+    fun show(fragmentManager: FragmentManager) =
+        show(fragmentManager, "ConfirmationDialogPrefFragment")
 
-  companion object {
-    /**
-     * Creates a new instance of a [ConfirmationDialogPrefFragment].
-     * @param key The preference key associated with the preference.
-     * @return A new instance of [ConfirmationDialogPrefFragment].
-     */
-    fun newInstance(key: String): ConfirmationDialogPrefFragment {
-      Timber.i("newInstance($key) called")
-      val frag = ConfirmationDialogPrefFragment()
-      val b = Bundle(1)
-      b.putString(ARG_KEY, key)
-      frag.arguments = b
-      frag.key = key
-      return frag
+    companion object {
+        /**
+         * Creates a new instance of a [ConfirmationDialogPrefFragment].
+         * @param key The preference key associated with the preference.
+         * @return A new instance of [ConfirmationDialogPrefFragment].
+         */
+        fun newInstance(key: String): ConfirmationDialogPrefFragment {
+            Timber.i("newInstance($key) called")
+            val frag = ConfirmationDialogPrefFragment()
+            val b = Bundle(1)
+            b.putString(ARG_KEY, key)
+            frag.arguments = b
+            frag.key = key
+            return frag
+        }
     }
-  }
 }

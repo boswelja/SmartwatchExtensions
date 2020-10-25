@@ -29,32 +29,32 @@ import org.robolectric.annotation.Config
 @Config(sdk = [Build.VERSION_CODES.Q])
 class AppInfoViewModelTest {
 
-  private val watchId = "123456"
+    private val watchId = "123456"
 
-  @get:Rule val instantExecutorRule = InstantTaskExecutorRule()
+    @get:Rule val instantExecutorRule = InstantTaskExecutorRule()
 
-  @MockK(relaxed = true)
-  private lateinit var messageClient: MessageClient
+    @MockK(relaxed = true)
+    private lateinit var messageClient: MessageClient
 
-  private lateinit var viewModel: AppInfoViewModel
+    private lateinit var viewModel: AppInfoViewModel
 
-  @Before
-  fun setUp() {
-    MockKAnnotations.init(this)
-    viewModel = AppInfoViewModel(ApplicationProvider.getApplicationContext(), messageClient)
-    verify { messageClient.addListener(any()) }
-  }
+    @Before
+    fun setUp() {
+        MockKAnnotations.init(this)
+        viewModel = AppInfoViewModel(ApplicationProvider.getApplicationContext(), messageClient)
+        verify { messageClient.addListener(any()) }
+    }
 
-  @Test
-  fun `Requesting watch version with empty watch ID fails`() {
-    viewModel.requestUpdateWatchVersion("")
-    viewModel.watchAppVersion.getOrAwaitValue { assertThat(it).isNull() }
-  }
+    @Test
+    fun `Requesting watch version with empty watch ID fails`() {
+        viewModel.requestUpdateWatchVersion("")
+        viewModel.watchAppVersion.getOrAwaitValue { assertThat(it).isNull() }
+    }
 
-  @Test
-  fun `Requesting watch version sends a request`() {
-    viewModel.requestUpdateWatchVersion(watchId)
-    verify(exactly = 1) { messageClient.sendMessage(watchId, REQUEST_APP_VERSION, null) }
-    confirmVerified(messageClient)
-  }
+    @Test
+    fun `Requesting watch version sends a request`() {
+        viewModel.requestUpdateWatchVersion(watchId)
+        verify(exactly = 1) { messageClient.sendMessage(watchId, REQUEST_APP_VERSION, null) }
+        confirmVerified(messageClient)
+    }
 }

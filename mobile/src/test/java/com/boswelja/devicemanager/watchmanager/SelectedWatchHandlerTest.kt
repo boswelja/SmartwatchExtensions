@@ -35,57 +35,60 @@ import org.robolectric.annotation.Config
 @Config(sdk = [Build.VERSION_CODES.Q])
 class SelectedWatchHandlerTest {
 
-  @get:Rule val instantExecutorRule = InstantTaskExecutorRule()
+    @get:Rule val instantExecutorRule = InstantTaskExecutorRule()
 
-  private val dummyWatch = Watch("an-id-1234", "Watch 1", null)
+    private val dummyWatch = Watch("an-id-1234", "Watch 1", null)
 
-  @RelaxedMockK private lateinit var dummyDatabase: WatchDatabase
+    @RelaxedMockK private lateinit var dummyDatabase: WatchDatabase
 
-  @SpyK
-  private var sharedPreferences =
-      PreferenceManager.getDefaultSharedPreferences(ApplicationProvider.getApplicationContext())
-  private lateinit var selectedWatchHandler: SelectedWatchHandler
-  private val coroutineScope = TestCoroutineScope()
+    @SpyK
+    private var sharedPreferences =
+        PreferenceManager.getDefaultSharedPreferences(ApplicationProvider.getApplicationContext())
+    private lateinit var selectedWatchHandler: SelectedWatchHandler
+    private val coroutineScope = TestCoroutineScope()
 
-  @Before
-  fun setUp() {
-    MockKAnnotations.init(this)
+    @Before
+    fun setUp() {
+        MockKAnnotations.init(this)
 
-    // Emulate normal database behaviour, assuming dummyWatch exists.
-    every { dummyDatabase.watchDao().get(dummyWatch.id) } returns dummyWatch
-    every { dummyDatabase.watchDao().get("") } returns null
+        // Emulate normal database behaviour, assuming dummyWatch exists.
+        every { dummyDatabase.watchDao().get(dummyWatch.id) } returns dummyWatch
+        every { dummyDatabase.watchDao().get("") } returns null
 
-    selectedWatchHandler =
-        SelectedWatchHandler(
-            ApplicationProvider.getApplicationContext(),
-            sharedPreferences = sharedPreferences,
-            coroutineScope = coroutineScope,
-            database = dummyDatabase)
-  }
+        selectedWatchHandler =
+            SelectedWatchHandler(
+                ApplicationProvider.getApplicationContext(),
+                sharedPreferences = sharedPreferences,
+                coroutineScope = coroutineScope,
+                database = dummyDatabase)
+    }
 
-  @After
-  fun tearDown() {
-    sharedPreferences.edit().clear().commit()
-    coroutineScope.cleanupTestCoroutines()
-  }
+    @After
+    fun tearDown() {
+        sharedPreferences.edit().clear().commit()
+        coroutineScope.cleanupTestCoroutines()
+    }
 
-  @Test
-  fun `Selecting a watch correctly updates corresponding LiveData`(): Unit =
-      coroutineScope.runBlockingTest {
-        selectedWatchHandler.selectWatchById(dummyWatch.id)
-        selectedWatchHandler.selectedWatch.getOrAwaitValue { assertThat(it).isEqualTo(dummyWatch) }
+    @Test
+    fun `Selecting a watch correctly updates corresponding LiveData`(): Unit =
+        coroutineScope.runBlockingTest {
+            selectedWatchHandler.selectWatchById(dummyWatch.id)
+            selectedWatchHandler.selectedWatch.getOrAwaitValue {
+                assertThat(it).isEqualTo(dummyWatch)
+            }
 
-        selectedWatchHandler.selectWatchById("")
-        selectedWatchHandler.selectedWatch.getOrAwaitValue { assertThat(it).isNull() }
-      }
+            selectedWatchHandler.selectWatchById("")
+            selectedWatchHandler.selectedWatch.getOrAwaitValue { assertThat(it).isNull() }
+        }
 
-  @Test
-  fun `Selecting a watch correctly updates SharedPreferences values`(): Unit =
-      coroutineScope.runBlockingTest {
-        selectedWatchHandler.selectWatchById(dummyWatch.id)
-        assertThat(sharedPreferences.getString("last_connected_id", "")).isEqualTo(dummyWatch.id)
+    @Test
+    fun `Selecting a watch correctly updates SharedPreferences values`(): Unit =
+        coroutineScope.runBlockingTest {
+            selectedWatchHandler.selectWatchById(dummyWatch.id)
+            assertThat(sharedPreferences.getString("last_connected_id", ""))
+                .isEqualTo(dummyWatch.id)
 
-        selectedWatchHandler.selectWatchById("")
-        assertThat(sharedPreferences.getString("last_connected_id", "")).isEmpty()
-      }
+            selectedWatchHandler.selectWatchById("")
+            assertThat(sharedPreferences.getString("last_connected_id", "")).isEmpty()
+        }
 }

@@ -15,25 +15,27 @@ import timber.log.Timber
 class MessagesAdapter(private val clickCallback: (message: Message) -> Unit) :
     ListAdapter<Message, MessageViewHolder>(MessageDiffCallback()) {
 
-  override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MessageViewHolder {
-    return MessageViewHolder.from(parent)
-  }
-
-  override fun onBindViewHolder(holder: MessageViewHolder, position: Int) {
-    val message = getItem(position)
-    holder.bind(message)
-    if (message.hasAction) {
-      Timber.i("Setting up message action")
-      holder.binding.messageActionButton.apply { setOnClickListener { clickCallback(message) } }
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MessageViewHolder {
+        return MessageViewHolder.from(parent)
     }
-  }
 
-  /**
-   * Removes a [Message] from the list and updates the UI.
-   * @param position The position of the [Message] to dismiss.
-   */
-  fun dismissMessage(position: Int) {
-    currentList.removeAt(position)
-    notifyItemRemoved(position)
-  }
+    override fun onBindViewHolder(holder: MessageViewHolder, position: Int) {
+        val message = getItem(position)
+        holder.bind(message)
+        if (message.hasAction) {
+            Timber.i("Setting up message action")
+            holder.binding.messageActionButton.apply {
+                setOnClickListener { clickCallback(message) }
+            }
+        }
+    }
+
+    /**
+     * Removes a [Message] from the list and updates the UI.
+     * @param position The position of the [Message] to dismiss.
+     */
+    fun dismissMessage(position: Int) {
+        currentList.removeAt(position)
+        notifyItemRemoved(position)
+    }
 }

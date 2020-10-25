@@ -13,16 +13,16 @@ import androidx.lifecycle.Observer
 
 class Event : MutableLiveData<Boolean>(false) {
 
-  override fun observe(owner: LifecycleOwner, observer: Observer<in Boolean>) {
-    super.observe(owner) {
-      if (it) {
-        observer.onChanged(it)
-        postValue(false)
-      }
+    override fun observe(owner: LifecycleOwner, observer: Observer<in Boolean>) {
+        super.observe(owner) {
+            if (it) {
+                observer.onChanged(it)
+                postValue(false)
+            }
+        }
     }
-  }
 
-  fun fire() {
-    postValue(true)
-  }
+    fun fire() {
+        postValue(true)
+    }
 }

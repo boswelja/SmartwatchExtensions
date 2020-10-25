@@ -17,24 +17,24 @@ import com.boswelja.devicemanager.messages.database.MessageDatabase.Companion.ME
 
 class MainViewModel(application: Application) : AndroidViewModel(application) {
 
-  private val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(application)
-  private val preferenceChangeListener =
-      SharedPreferences.OnSharedPreferenceChangeListener { preferences, key ->
-        when (key) {
-          MESSAGE_COUNT_KEY -> _messageCount.postValue(preferences.getInt(key, 0))
+    private val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(application)
+    private val preferenceChangeListener =
+        SharedPreferences.OnSharedPreferenceChangeListener { preferences, key ->
+            when (key) {
+                MESSAGE_COUNT_KEY -> _messageCount.postValue(preferences.getInt(key, 0))
+            }
         }
-      }
 
-  private val _messageCount = MutableLiveData(sharedPreferences.getInt(MESSAGE_COUNT_KEY, 0))
-  val messageCount: LiveData<Int>
-    get() = _messageCount
+    private val _messageCount = MutableLiveData(sharedPreferences.getInt(MESSAGE_COUNT_KEY, 0))
+    val messageCount: LiveData<Int>
+        get() = _messageCount
 
-  init {
-    sharedPreferences.registerOnSharedPreferenceChangeListener(preferenceChangeListener)
-  }
+    init {
+        sharedPreferences.registerOnSharedPreferenceChangeListener(preferenceChangeListener)
+    }
 
-  override fun onCleared() {
-    super.onCleared()
-    sharedPreferences.unregisterOnSharedPreferenceChangeListener(preferenceChangeListener)
-  }
+    override fun onCleared() {
+        super.onCleared()
+        sharedPreferences.unregisterOnSharedPreferenceChangeListener(preferenceChangeListener)
+    }
 }

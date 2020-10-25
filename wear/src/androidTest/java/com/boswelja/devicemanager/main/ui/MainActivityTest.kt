@@ -21,35 +21,36 @@ import org.junit.Test
 
 class MainActivityTest {
 
-  private lateinit var sharedPreferences: SharedPreferences
+    private lateinit var sharedPreferences: SharedPreferences
 
-  @Before
-  fun setUp() {
-    sharedPreferences =
-        PreferenceManager.getDefaultSharedPreferences(ApplicationProvider.getApplicationContext())
-  }
-
-  @Test
-  fun testSetupOpensIfNoPhoneID() {
-    sharedPreferences.edit(commit = true) { remove(References.PHONE_ID_KEY) }
-    val scenario = getScenario()
-    scenario.onActivity {
-      assertThat(it.findNavController(R.id.nav_host_fragment).currentDestination?.id)
-          .isEqualTo(R.id.setupFragment)
+    @Before
+    fun setUp() {
+        sharedPreferences =
+            PreferenceManager.getDefaultSharedPreferences(
+                ApplicationProvider.getApplicationContext())
     }
-    scenario.close()
-  }
 
-  @Test
-  fun testExtensionsOpenIfHasPhoneID() {
-    sharedPreferences.edit(commit = true) { putString(References.PHONE_ID_KEY, "id123") }
-    val scenario = getScenario()
-    scenario.onActivity {
-      assertThat(it.findNavController(R.id.nav_host_fragment).currentDestination?.id)
-          .isEqualTo(R.id.extensionsFragment)
+    @Test
+    fun testSetupOpensIfNoPhoneID() {
+        sharedPreferences.edit(commit = true) { remove(References.PHONE_ID_KEY) }
+        val scenario = getScenario()
+        scenario.onActivity {
+            assertThat(it.findNavController(R.id.nav_host_fragment).currentDestination?.id)
+                .isEqualTo(R.id.setupFragment)
+        }
+        scenario.close()
     }
-    scenario.close()
-  }
 
-  private fun getScenario() = launchActivity<MainActivity>()
+    @Test
+    fun testExtensionsOpenIfHasPhoneID() {
+        sharedPreferences.edit(commit = true) { putString(References.PHONE_ID_KEY, "id123") }
+        val scenario = getScenario()
+        scenario.onActivity {
+            assertThat(it.findNavController(R.id.nav_host_fragment).currentDestination?.id)
+                .isEqualTo(R.id.extensionsFragment)
+        }
+        scenario.close()
+    }
+
+    private fun getScenario() = launchActivity<MainActivity>()
 }

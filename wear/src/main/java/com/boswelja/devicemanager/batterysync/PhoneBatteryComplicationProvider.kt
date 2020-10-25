@@ -27,48 +27,52 @@ import com.boswelja.devicemanager.common.preference.PreferenceKey
 
 class PhoneBatteryComplicationProvider : BaseComplicationProviderService() {
 
-  override fun onCreateComplication(complicationId: Int, type: Int, manager: ComplicationManager?) {
-    if (type != ComplicationData.TYPE_SHORT_TEXT && type != ComplicationData.TYPE_RANGED_VALUE) {
-      manager?.noUpdateRequired(complicationId)
-    }
-
-    val intent =
-        Intent(this, ActionServiceStarter::class.java).apply {
-          action = REQUEST_BATTERY_UPDATE_PATH
+    override fun onCreateComplication(
+        complicationId: Int, type: Int, manager: ComplicationManager?
+    ) {
+        if (type != ComplicationData.TYPE_SHORT_TEXT &&
+            type != ComplicationData.TYPE_RANGED_VALUE) {
+            manager?.noUpdateRequired(complicationId)
         }
-    val pendingIntent =
-        PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
 
-    val prefs = PreferenceManager.getDefaultSharedPreferences(this)
-    val percent = prefs.getInt(PreferenceKey.BATTERY_PERCENT_KEY, 0)
-    val text =
-        if (percent > 0) String.format(getString(R.string.battery_percent), percent)
-        else getString(R.string.battery_percent_unknown)
+        val intent =
+            Intent(this, ActionServiceStarter::class.java).apply {
+                action = REQUEST_BATTERY_UPDATE_PATH
+            }
+        val pendingIntent =
+            PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
 
-    val complicationData =
-        ComplicationData.Builder(type)
-            .setShortText(ComplicationText.plainText(text))
-            .setIcon(createIcon(percent))
-            .setTapAction(pendingIntent)
-    if (type == ComplicationData.TYPE_RANGED_VALUE) {
-      complicationData.setMaxValue(1.0f).setMinValue(0.0f).setValue((percent.toFloat()) / 100)
+        val prefs = PreferenceManager.getDefaultSharedPreferences(this)
+        val percent = prefs.getInt(PreferenceKey.BATTERY_PERCENT_KEY, 0)
+        val text =
+            if (percent > 0) String.format(getString(R.string.battery_percent), percent)
+            else getString(R.string.battery_percent_unknown)
+
+        val complicationData =
+            ComplicationData.Builder(type)
+                .setShortText(ComplicationText.plainText(text))
+                .setIcon(createIcon(percent))
+                .setTapAction(pendingIntent)
+        if (type == ComplicationData.TYPE_RANGED_VALUE) {
+            complicationData.setMaxValue(1.0f).setMinValue(0.0f).setValue((percent.toFloat()) / 100)
+        }
+
+        manager?.updateComplicationData(complicationId, complicationData.build())
     }
 
-    manager?.updateComplicationData(complicationId, complicationData.build())
-  }
-
-  private fun createIcon(batteryPercent: Int): Icon {
-    val drawable = ContextCompat.getDrawable(this, R.drawable.ic_phone_battery)!!
-    drawable.level = batteryPercent
-    return Icon.createWithBitmap(drawable.toBitmap())
-  }
-
-  companion object {
-    fun updateAll(context: Context) {
-      ProviderUpdateRequester(
-              context,
-              ComponentName(context.packageName, PhoneBatteryComplicationProvider::class.java.name))
-          .requestUpdateAll()
+    private fun createIcon(batteryPercent: Int): Icon {
+        val drawable = ContextCompat.getDrawable(this, R.drawable.ic_phone_battery)!!
+        drawable.level = batteryPercent
+        return Icon.createWithBitmap(drawable.toBitmap())
     }
-  }
+
+    companion object {
+        fun updateAll(context: Context) {
+            ProviderUpdateRequester(
+                    context,
+                    ComponentName(
+                        context.packageName, PhoneBatteryComplicationProvider::class.java.name))
+                .requestUpdateAll()
+        }
+    }
 }

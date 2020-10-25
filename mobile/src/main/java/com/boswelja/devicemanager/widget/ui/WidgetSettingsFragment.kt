@@ -13,7 +13,7 @@ import com.boswelja.devicemanager.common.ui.BasePreferenceFragment
 
 class WidgetSettingsFragment : BasePreferenceFragment() {
 
-  override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
-    addPreferencesFromResource(R.xml.prefs_widget_settings)
-  }
+    override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
+        addPreferencesFromResource(R.xml.prefs_widget_settings)
+    }
 }

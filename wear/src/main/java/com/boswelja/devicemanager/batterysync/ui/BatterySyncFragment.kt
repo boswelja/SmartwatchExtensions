@@ -17,23 +17,24 @@ import com.boswelja.devicemanager.databinding.FragmentBatterySyncBinding
 
 class BatterySyncFragment : Fragment() {
 
-  private val viewModel: BatterySyncViewModel by viewModels()
+    private val viewModel: BatterySyncViewModel by viewModels()
 
-  private lateinit var binding: FragmentBatterySyncBinding
+    private lateinit var binding: FragmentBatterySyncBinding
 
-  override fun onCreateView(
-      inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
-  ): View? {
-    binding = FragmentBatterySyncBinding.inflate(inflater, container, false)
-    binding.viewModel = viewModel
-    binding.lifecycleOwner = viewLifecycleOwner
-    return binding.root
-  }
-
-  override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-    super.onViewCreated(view, savedInstanceState)
-    viewModel.batterySyncEnabled.observe(viewLifecycleOwner) {
-      if (it) binding.motionLayout.transitionToStart() else binding.motionLayout.transitionToEnd()
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+    ): View? {
+        binding = FragmentBatterySyncBinding.inflate(inflater, container, false)
+        binding.viewModel = viewModel
+        binding.lifecycleOwner = viewLifecycleOwner
+        return binding.root
     }
-  }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        viewModel.batterySyncEnabled.observe(viewLifecycleOwner) {
+            if (it) binding.motionLayout.transitionToStart()
+            else binding.motionLayout.transitionToEnd()
+        }
+    }
 }

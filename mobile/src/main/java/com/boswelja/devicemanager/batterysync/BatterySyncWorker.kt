@@ -21,47 +21,49 @@ import java.util.concurrent.TimeUnit
 class BatterySyncWorker(appContext: Context, workerParams: WorkerParameters) :
     CoroutineWorker(appContext, workerParams) {
 
-  override suspend fun doWork(): Result {
-    Timber.i("doWork() called")
-    val watchId = inputData.getString(EXTRA_WATCH_ID)
-    if (!watchId.isNullOrEmpty()) {
-      Utils.updateBatteryStats(applicationContext, watchId)
-      return Result.success()
-    } else {
-      Timber.w("watchId null or empty")
-    }
-    return Result.retry()
-  }
-
-  companion object {
-    private const val EXTRA_WATCH_ID: String = "extra_watch_id"
-
-    suspend fun startWorker(context: Context, watchId: String): Boolean {
-      return withContext(Dispatchers.IO) {
-        val database = WatchDatabase.get(context)
-        val syncIntervalMinutes =
-            (database.intPrefDao().get(watchId, BATTERY_SYNC_INTERVAL_KEY)?.value ?: 15).toLong()
-        val data = Data.Builder().apply { putString(EXTRA_WATCH_ID, watchId) }.build()
-        val request =
-            PeriodicWorkRequestBuilder<BatterySyncWorker>(syncIntervalMinutes, TimeUnit.SECONDS)
-                .apply { setInputData(data) }
-                .build()
-        WorkManager.getInstance(context).enqueue(request)
-        val newWorkerId = request.id.toString()
-        database.watchDao().updateBatterySyncWorkerId(watchId, newWorkerId)
-        return@withContext true
-      }
-    }
-
-    /** Stops the battery sync job for a watch with the given ID. */
-    suspend fun stopWorker(context: Context, watchId: String) {
-      withContext(Dispatchers.IO) {
-        val database = WatchDatabase.get(context)
-        val watch = database.watchDao().get(watchId)
-        watch?.batterySyncWorkerId?.let {
-          WorkManager.getInstance(context).cancelWorkById(UUID.fromString(it))
+    override suspend fun doWork(): Result {
+        Timber.i("doWork() called")
+        val watchId = inputData.getString(EXTRA_WATCH_ID)
+        if (!watchId.isNullOrEmpty()) {
+            Utils.updateBatteryStats(applicationContext, watchId)
+            return Result.success()
+        } else {
+            Timber.w("watchId null or empty")
         }
-      }
+        return Result.retry()
     }
-  }
+
+    companion object {
+        private const val EXTRA_WATCH_ID: String = "extra_watch_id"
+
+        suspend fun startWorker(context: Context, watchId: String): Boolean {
+            return withContext(Dispatchers.IO) {
+                val database = WatchDatabase.get(context)
+                val syncIntervalMinutes =
+                    (database.intPrefDao().get(watchId, BATTERY_SYNC_INTERVAL_KEY)?.value ?: 15)
+                        .toLong()
+                val data = Data.Builder().apply { putString(EXTRA_WATCH_ID, watchId) }.build()
+                val request =
+                    PeriodicWorkRequestBuilder<BatterySyncWorker>(
+                            syncIntervalMinutes, TimeUnit.SECONDS)
+                        .apply { setInputData(data) }
+                        .build()
+                WorkManager.getInstance(context).enqueue(request)
+                val newWorkerId = request.id.toString()
+                database.watchDao().updateBatterySyncWorkerId(watchId, newWorkerId)
+                return@withContext true
+            }
+        }
+
+        /** Stops the battery sync job for a watch with the given ID. */
+        suspend fun stopWorker(context: Context, watchId: String) {
+            withContext(Dispatchers.IO) {
+                val database = WatchDatabase.get(context)
+                val watch = database.watchDao().get(watchId)
+                watch?.batterySyncWorkerId?.let {
+                    WorkManager.getInstance(context).cancelWorkById(UUID.fromString(it))
+                }
+            }
+        }
+    }
 }

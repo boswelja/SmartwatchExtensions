@@ -16,16 +16,16 @@ import com.boswelja.devicemanager.common.databinding.RecyclerviewSectionHeaderBi
 open class SectionHeaderViewHolder(private val binding: RecyclerviewSectionHeaderBinding) :
     RecyclerView.ViewHolder(binding.root) {
 
-  fun bind(text: String, showDivider: Boolean = true) {
-    binding.sectionHeaderText.text = text
-    binding.divider.visibility = if (showDivider) View.VISIBLE else View.GONE
-  }
-
-  companion object {
-    fun from(parent: ViewGroup): SectionHeaderViewHolder {
-      val layoutInflater = LayoutInflater.from(parent.context)
-      val binding = RecyclerviewSectionHeaderBinding.inflate(layoutInflater, parent, false)
-      return SectionHeaderViewHolder(binding)
+    fun bind(text: String, showDivider: Boolean = true) {
+        binding.sectionHeaderText.text = text
+        binding.divider.visibility = if (showDivider) View.VISIBLE else View.GONE
     }
-  }
+
+    companion object {
+        fun from(parent: ViewGroup): SectionHeaderViewHolder {
+            val layoutInflater = LayoutInflater.from(parent.context)
+            val binding = RecyclerviewSectionHeaderBinding.inflate(layoutInflater, parent, false)
+            return SectionHeaderViewHolder(binding)
+        }
+    }
 }

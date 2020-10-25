@@ -18,22 +18,22 @@ import com.boswelja.devicemanager.databinding.FragmentSetupBinding
 
 class SetupFragment : Fragment() {
 
-  private val viewModel: SetupViewModel by viewModels()
+    private val viewModel: SetupViewModel by viewModels()
 
-  private lateinit var binding: FragmentSetupBinding
+    private lateinit var binding: FragmentSetupBinding
 
-  override fun onCreateView(
-      inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
-  ): View? {
-    binding = FragmentSetupBinding.inflate(layoutInflater, container, false)
-    binding.viewModel = viewModel
-    binding.lifecycleOwner = viewLifecycleOwner
-    return binding.root
-  }
-
-  override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-    viewModel.watchRegistered.observe(viewLifecycleOwner) {
-      if (it) findNavController().navigate(SetupFragmentDirections.toExtensionsFragment())
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+    ): View? {
+        binding = FragmentSetupBinding.inflate(layoutInflater, container, false)
+        binding.viewModel = viewModel
+        binding.lifecycleOwner = viewLifecycleOwner
+        return binding.root
     }
-  }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        viewModel.watchRegistered.observe(viewLifecycleOwner) {
+            if (it) findNavController().navigate(SetupFragmentDirections.toExtensionsFragment())
+        }
+    }
 }

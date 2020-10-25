@@ -37,141 +37,147 @@ import timber.log.Timber
 
 class BootOrUpdateHandlerService : Service() {
 
-  private var isUpdating = false
+    private var isUpdating = false
 
-  override fun onBind(intent: Intent?): IBinder? = null
+    override fun onBind(intent: Intent?): IBinder? = null
 
-  override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-    Timber.i("onStartCommand called")
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-        NotificationChannelHelper.createForBootOrUpdate(
-            this, getSystemService(NotificationManager::class.java))
-    when (intent?.action) {
-      Intent.ACTION_MY_PACKAGE_REPLACED -> {
-        performUpdates()
-      }
-      Intent.ACTION_BOOT_COMPLETED -> {
-        Timber.i("Device restarted")
-        startForeground(NOTI_ID, createBootNotification())
-        restartServices()
-      }
-      else -> return super.onStartCommand(intent, flags, startId)
-    }
-    return START_NOT_STICKY
-  }
-
-  /** Initialise an [Updater] instance and perform updates. */
-  private fun performUpdates() {
-    if (!isUpdating) {
-      Timber.i("Starting update process")
-      isUpdating = true
-      val updater = Updater(this)
-      startForeground(NOTI_ID, createUpdaterNotification())
-      when (updater.doUpdate()) {
-        Result.COMPLETED -> {
-          Timber.i("Update completed")
-          val updateMessage =
-              Message(
-                  R.drawable.ic_update,
-                  "Updated to version ${BuildConfig.VERSION_NAME}",
-                  "Version ${BuildConfig.VERSION_NAME}",
-                  action = Action.SHOW_CHANGELOG,
-                  buttonLabel = "See What's New")
-          MessageDatabase.get(this)
-              .sendMessage(PreferenceManager.getDefaultSharedPreferences(this), updateMessage)
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        Timber.i("onStartCommand called")
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+            NotificationChannelHelper.createForBootOrUpdate(
+                this, getSystemService(NotificationManager::class.java))
+        when (intent?.action) {
+            Intent.ACTION_MY_PACKAGE_REPLACED -> {
+                performUpdates()
+            }
+            Intent.ACTION_BOOT_COMPLETED -> {
+                Timber.i("Device restarted")
+                startForeground(NOTI_ID, createBootNotification())
+                restartServices()
+            }
+            else -> return super.onStartCommand(intent, flags, startId)
         }
-        Result.NOT_NEEDED -> Timber.i("Update not needed")
-      }
-      restartServices()
+        return START_NOT_STICKY
     }
-  }
 
-  /**
-   * Create a Common [NotificationCompat.Builder] with all common settings set.
-   * @return The [NotificationCompat.Builder] to build notifications from.
-   */
-  private fun createBaseNotification(): NotificationCompat.Builder {
-    return NotificationCompat.Builder(this, BOOT_OR_UPDATE_NOTI_CHANNEL_ID)
-        .setOngoing(true)
-        .setShowWhen(false)
-        .setUsesChronometer(false)
-        .setProgress(0, 0, true)
-        .setPriority(NotificationCompat.PRIORITY_LOW)
-        .setVisibility(NotificationCompat.VISIBILITY_PRIVATE)
-  }
-
-  /**
-   * Create a [Notification] for the Update Handler service.
-   * @return The [Notification] ready to send.
-   */
-  private fun createUpdaterNotification(): Notification {
-    return createBaseNotification()
-        .setContentTitle(getString(R.string.notification_update_handler_title))
-        .setSmallIcon(R.drawable.noti_ic_update)
-        .build()
-  }
-
-  /**
-   * Create a [Notification] for the Boot Handler service.
-   * @return The [Notification] ready to send.
-   */
-  private fun createBootNotification(): Notification {
-    return createBaseNotification()
-        .setContentTitle(getString(R.string.notification_boot_handler_title))
-        .setSmallIcon(R.drawable.noti_ic_update)
-        .build()
-  }
-
-  /** Try to start Do not Disturb change listener service if needed. */
-  private suspend fun tryStartInterruptFilterSyncService(database: WatchDatabase) {
-    withContext(Dispatchers.IO) {
-      val dndSyncToWatchEnabled =
-          database.boolPrefDao().getAllForKey(PreferenceKey.DND_SYNC_TO_WATCH_KEY).any { it.value }
-      Timber.i("tryStartInterruptFilterSyncService dndSyncToWatchEnabled = $dndSyncToWatchEnabled")
-      if (dndSyncToWatchEnabled) {
-        Compat.startForegroundService(
-            applicationContext, Intent(applicationContext, DnDLocalChangeService::class.java))
-      }
-    }
-  }
-
-  /** Try to start any needed [BatterySyncWorker] instances. */
-  private suspend fun tryStartBatterySyncWorkers(database: WatchDatabase) {
-    val watchBatterySyncInfo =
-        database.boolPrefDao().getAllForKey(PreferenceKey.BATTERY_SYNC_ENABLED_KEY)
-    if (watchBatterySyncInfo.isNotEmpty()) {
-      for (batterySyncBoolPreference in watchBatterySyncInfo) {
-        if (batterySyncBoolPreference.value) {
-          Timber.i("tryStartBatterySyncWorkers Starting a Battery Sync Worker")
-          BatterySyncWorker.startWorker(applicationContext, batterySyncBoolPreference.watchId)
+    /** Initialise an [Updater] instance and perform updates. */
+    private fun performUpdates() {
+        if (!isUpdating) {
+            Timber.i("Starting update process")
+            isUpdating = true
+            val updater = Updater(this)
+            startForeground(NOTI_ID, createUpdaterNotification())
+            when (updater.doUpdate()) {
+                Result.COMPLETED -> {
+                    Timber.i("Update completed")
+                    val updateMessage =
+                        Message(
+                            R.drawable.ic_update,
+                            "Updated to version ${BuildConfig.VERSION_NAME}",
+                            "Version ${BuildConfig.VERSION_NAME}",
+                            action = Action.SHOW_CHANGELOG,
+                            buttonLabel = "See What's New")
+                    MessageDatabase.get(this)
+                        .sendMessage(
+                            PreferenceManager.getDefaultSharedPreferences(this), updateMessage)
+                }
+                Result.NOT_NEEDED -> Timber.i("Update not needed")
+            }
+            restartServices()
         }
-      }
-    } else {
-      Timber.w("tryStartBatterySyncWorkers watchBatterySyncInfo possibly null")
     }
-  }
 
-  /** Clean up and stop the service. */
-  private fun finish() {
-    Timber.i("Finished")
-    stopForeground(true)
-    stopSelf()
-  }
-
-  /** Binds to the [WatchManager]. */
-  private fun restartServices() {
-    Timber.d("bindWatchManager() called")
-    MainScope().launch(Dispatchers.IO) {
-      WatchDatabase.get(this@BootOrUpdateHandlerService).also {
-        tryStartBatterySyncWorkers(it)
-        tryStartInterruptFilterSyncService(it)
-        finish()
-      }
+    /**
+     * Create a Common [NotificationCompat.Builder] with all common settings set.
+     * @return The [NotificationCompat.Builder] to build notifications from.
+     */
+    private fun createBaseNotification(): NotificationCompat.Builder {
+        return NotificationCompat.Builder(this, BOOT_OR_UPDATE_NOTI_CHANNEL_ID)
+            .setOngoing(true)
+            .setShowWhen(false)
+            .setUsesChronometer(false)
+            .setProgress(0, 0, true)
+            .setPriority(NotificationCompat.PRIORITY_LOW)
+            .setVisibility(NotificationCompat.VISIBILITY_PRIVATE)
     }
-  }
 
-  companion object {
-    const val BOOT_OR_UPDATE_NOTI_CHANNEL_ID = "boot_or_update_noti_channel"
-    const val NOTI_ID = 69102
-  }
+    /**
+     * Create a [Notification] for the Update Handler service.
+     * @return The [Notification] ready to send.
+     */
+    private fun createUpdaterNotification(): Notification {
+        return createBaseNotification()
+            .setContentTitle(getString(R.string.notification_update_handler_title))
+            .setSmallIcon(R.drawable.noti_ic_update)
+            .build()
+    }
+
+    /**
+     * Create a [Notification] for the Boot Handler service.
+     * @return The [Notification] ready to send.
+     */
+    private fun createBootNotification(): Notification {
+        return createBaseNotification()
+            .setContentTitle(getString(R.string.notification_boot_handler_title))
+            .setSmallIcon(R.drawable.noti_ic_update)
+            .build()
+    }
+
+    /** Try to start Do not Disturb change listener service if needed. */
+    private suspend fun tryStartInterruptFilterSyncService(database: WatchDatabase) {
+        withContext(Dispatchers.IO) {
+            val dndSyncToWatchEnabled =
+                database.boolPrefDao().getAllForKey(PreferenceKey.DND_SYNC_TO_WATCH_KEY).any {
+                    it.value
+                }
+            Timber.i(
+                "tryStartInterruptFilterSyncService dndSyncToWatchEnabled = $dndSyncToWatchEnabled")
+            if (dndSyncToWatchEnabled) {
+                Compat.startForegroundService(
+                    applicationContext,
+                    Intent(applicationContext, DnDLocalChangeService::class.java))
+            }
+        }
+    }
+
+    /** Try to start any needed [BatterySyncWorker] instances. */
+    private suspend fun tryStartBatterySyncWorkers(database: WatchDatabase) {
+        val watchBatterySyncInfo =
+            database.boolPrefDao().getAllForKey(PreferenceKey.BATTERY_SYNC_ENABLED_KEY)
+        if (watchBatterySyncInfo.isNotEmpty()) {
+            for (batterySyncBoolPreference in watchBatterySyncInfo) {
+                if (batterySyncBoolPreference.value) {
+                    Timber.i("tryStartBatterySyncWorkers Starting a Battery Sync Worker")
+                    BatterySyncWorker.startWorker(
+                        applicationContext, batterySyncBoolPreference.watchId)
+                }
+            }
+        } else {
+            Timber.w("tryStartBatterySyncWorkers watchBatterySyncInfo possibly null")
+        }
+    }
+
+    /** Clean up and stop the service. */
+    private fun finish() {
+        Timber.i("Finished")
+        stopForeground(true)
+        stopSelf()
+    }
+
+    /** Binds to the [WatchManager]. */
+    private fun restartServices() {
+        Timber.d("bindWatchManager() called")
+        MainScope().launch(Dispatchers.IO) {
+            WatchDatabase.get(this@BootOrUpdateHandlerService).also {
+                tryStartBatterySyncWorkers(it)
+                tryStartInterruptFilterSyncService(it)
+                finish()
+            }
+        }
+    }
+
+    companion object {
+        const val BOOT_OR_UPDATE_NOTI_CHANNEL_ID = "boot_or_update_noti_channel"
+        const val NOTI_ID = 69102
+    }
 }

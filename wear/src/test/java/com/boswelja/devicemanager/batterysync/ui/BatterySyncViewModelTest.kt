@@ -30,49 +30,50 @@ import org.robolectric.annotation.Config
 @Config(sdk = [Build.VERSION_CODES.Q])
 class BatterySyncViewModelTest {
 
-  @get:Rule val instantExecutorRule = InstantTaskExecutorRule()
+    @get:Rule val instantExecutorRule = InstantTaskExecutorRule()
 
-  private lateinit var viewModel: BatterySyncViewModel
-  private lateinit var sharedPreferences: SharedPreferences
+    private lateinit var viewModel: BatterySyncViewModel
+    private lateinit var sharedPreferences: SharedPreferences
 
-  @Before
-  fun setUp() {
-    viewModel = BatterySyncViewModel(ApplicationProvider.getApplicationContext())
-    sharedPreferences =
-        PreferenceManager.getDefaultSharedPreferences(ApplicationProvider.getApplicationContext())
-  }
+    @Before
+    fun setUp() {
+        viewModel = BatterySyncViewModel(ApplicationProvider.getApplicationContext())
+        sharedPreferences =
+            PreferenceManager.getDefaultSharedPreferences(
+                ApplicationProvider.getApplicationContext())
+    }
 
-  @Test
-  fun `Changing Battery Sync preference updates corresponding LiveData`() {
-    sharedPreferences.edit(commit = true) { putBoolean(BATTERY_SYNC_ENABLED_KEY, true) }
-    viewModel.batterySyncEnabled.getOrAwaitValue { assertThat(it).isTrue() }
-    sharedPreferences.edit(commit = true) { putBoolean(BATTERY_SYNC_ENABLED_KEY, false) }
-    viewModel.batterySyncEnabled.getOrAwaitValue { assertThat(it).isFalse() }
-  }
+    @Test
+    fun `Changing Battery Sync preference updates corresponding LiveData`() {
+        sharedPreferences.edit(commit = true) { putBoolean(BATTERY_SYNC_ENABLED_KEY, true) }
+        viewModel.batterySyncEnabled.getOrAwaitValue { assertThat(it).isTrue() }
+        sharedPreferences.edit(commit = true) { putBoolean(BATTERY_SYNC_ENABLED_KEY, false) }
+        viewModel.batterySyncEnabled.getOrAwaitValue { assertThat(it).isFalse() }
+    }
 
-  @Test
-  fun `Changing Battery Percent preference updates corresponding LiveData`() {
-    sharedPreferences.edit(commit = true) { putInt(BATTERY_PERCENT_KEY, 0) }
-    viewModel.batteryPercent.getOrAwaitValue { assertThat(it).isEqualTo(0) }
-    sharedPreferences.edit(commit = true) { putInt(BATTERY_PERCENT_KEY, 100) }
-    viewModel.batteryPercent.getOrAwaitValue { assertThat(it).isEqualTo(100) }
-    sharedPreferences.edit(commit = true) { putInt(BATTERY_PERCENT_KEY, 50) }
-    viewModel.batteryPercent.getOrAwaitValue { assertThat(it).isEqualTo(50) }
-  }
+    @Test
+    fun `Changing Battery Percent preference updates corresponding LiveData`() {
+        sharedPreferences.edit(commit = true) { putInt(BATTERY_PERCENT_KEY, 0) }
+        viewModel.batteryPercent.getOrAwaitValue { assertThat(it).isEqualTo(0) }
+        sharedPreferences.edit(commit = true) { putInt(BATTERY_PERCENT_KEY, 100) }
+        viewModel.batteryPercent.getOrAwaitValue { assertThat(it).isEqualTo(100) }
+        sharedPreferences.edit(commit = true) { putInt(BATTERY_PERCENT_KEY, 50) }
+        viewModel.batteryPercent.getOrAwaitValue { assertThat(it).isEqualTo(50) }
+    }
 
-  @Test
-  fun `Phone Name preference changes update corresponding LiveData`() {
-    sharedPreferences.edit(commit = true) { putString(PHONE_NAME_KEY, "Phone") }
-    viewModel.phoneName.getOrAwaitValue { assertThat(it).isEqualTo("Phone") }
-    sharedPreferences.edit(commit = true) { putString(PHONE_NAME_KEY, "Pixel 3") }
-    viewModel.phoneName.getOrAwaitValue { assertThat(it).isEqualTo("Pixel 3") }
-  }
+    @Test
+    fun `Phone Name preference changes update corresponding LiveData`() {
+        sharedPreferences.edit(commit = true) { putString(PHONE_NAME_KEY, "Phone") }
+        viewModel.phoneName.getOrAwaitValue { assertThat(it).isEqualTo("Phone") }
+        sharedPreferences.edit(commit = true) { putString(PHONE_NAME_KEY, "Pixel 3") }
+        viewModel.phoneName.getOrAwaitValue { assertThat(it).isEqualTo("Pixel 3") }
+    }
 
-  @Test
-  fun `Phone Connected preference changes update corresponding LiveData`() {
-    sharedPreferences.edit(commit = true) { putBoolean(PHONE_CONNECTED_KEY, false) }
-    viewModel.phoneConnected.getOrAwaitValue { assertThat(it).isFalse() }
-    sharedPreferences.edit(commit = true) { putBoolean(PHONE_CONNECTED_KEY, true) }
-    viewModel.phoneConnected.getOrAwaitValue { assertThat(it).isTrue() }
-  }
+    @Test
+    fun `Phone Connected preference changes update corresponding LiveData`() {
+        sharedPreferences.edit(commit = true) { putBoolean(PHONE_CONNECTED_KEY, false) }
+        viewModel.phoneConnected.getOrAwaitValue { assertThat(it).isFalse() }
+        sharedPreferences.edit(commit = true) { putBoolean(PHONE_CONNECTED_KEY, true) }
+        viewModel.phoneConnected.getOrAwaitValue { assertThat(it).isTrue() }
+    }
 }

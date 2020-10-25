@@ -26,24 +26,24 @@ import org.robolectric.annotation.Config
 @Config(sdk = [Build.VERSION_CODES.Q])
 class SetupViewModelTest {
 
-  @get:Rule val instantExecutorRule = InstantTaskExecutorRule()
+    @get:Rule val instantExecutorRule = InstantTaskExecutorRule()
 
-  @MockK(relaxed = true)
-  private lateinit var nodeClient: NodeClient
-  @MockK(relaxed = true)
-  private lateinit var messageClient: MessageClient
+    @MockK(relaxed = true)
+    private lateinit var nodeClient: NodeClient
+    @MockK(relaxed = true)
+    private lateinit var messageClient: MessageClient
 
-  private lateinit var viewModel: SetupViewModel
+    private lateinit var viewModel: SetupViewModel
 
-  @Before
-  fun setUp() {
-    MockKAnnotations.init(this)
-    viewModel =
-        SetupViewModel(ApplicationProvider.getApplicationContext(), nodeClient, messageClient)
-  }
+    @Before
+    fun setUp() {
+        MockKAnnotations.init(this)
+        viewModel =
+            SetupViewModel(ApplicationProvider.getApplicationContext(), nodeClient, messageClient)
+    }
 
-  @Test
-  fun `Creating ViewModel gets local node information`() {
-    verify { nodeClient.localNode }
-  }
+    @Test
+    fun `Creating ViewModel gets local node information`() {
+        verify { nodeClient.localNode }
+    }
 }

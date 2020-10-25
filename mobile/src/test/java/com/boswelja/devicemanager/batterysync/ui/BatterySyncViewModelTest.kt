@@ -26,27 +26,28 @@ import org.robolectric.annotation.Config
 @Config(sdk = [Build.VERSION_CODES.Q])
 class BatterySyncViewModelTest {
 
-  @get:Rule val instantExecutorRule = InstantTaskExecutorRule()
+    @get:Rule val instantExecutorRule = InstantTaskExecutorRule()
 
-  private lateinit var viewModel: BatterySyncViewModel
+    private lateinit var viewModel: BatterySyncViewModel
 
-  @Before
-  fun setUp() {
-    viewModel = BatterySyncViewModel(ApplicationProvider.getApplicationContext())
-  }
-
-  @Test
-  fun `Toggling Battery Sync preference updates the corresponding LiveData`() {
-    val sharedPreferences =
-        PreferenceManager.getDefaultSharedPreferences(ApplicationProvider.getApplicationContext())
-    sharedPreferences.edit(commit = true) {
-      putBoolean(PreferenceKey.BATTERY_SYNC_ENABLED_KEY, true)
+    @Before
+    fun setUp() {
+        viewModel = BatterySyncViewModel(ApplicationProvider.getApplicationContext())
     }
-    viewModel.batterySyncEnabled.getOrAwaitValue { assertThat(it).isTrue() }
 
-    sharedPreferences.edit(commit = true) {
-      putBoolean(PreferenceKey.BATTERY_SYNC_ENABLED_KEY, false)
+    @Test
+    fun `Toggling Battery Sync preference updates the corresponding LiveData`() {
+        val sharedPreferences =
+            PreferenceManager.getDefaultSharedPreferences(
+                ApplicationProvider.getApplicationContext())
+        sharedPreferences.edit(commit = true) {
+            putBoolean(PreferenceKey.BATTERY_SYNC_ENABLED_KEY, true)
+        }
+        viewModel.batterySyncEnabled.getOrAwaitValue { assertThat(it).isTrue() }
+
+        sharedPreferences.edit(commit = true) {
+            putBoolean(PreferenceKey.BATTERY_SYNC_ENABLED_KEY, false)
+        }
+        viewModel.batterySyncEnabled.getOrAwaitValue { assertThat(it).isFalse() }
     }
-    viewModel.batterySyncEnabled.getOrAwaitValue { assertThat(it).isFalse() }
-  }
 }

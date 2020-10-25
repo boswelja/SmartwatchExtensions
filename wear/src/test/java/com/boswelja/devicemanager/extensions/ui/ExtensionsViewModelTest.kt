@@ -25,22 +25,22 @@ import org.robolectric.annotation.Config
 @Config(sdk = [Build.VERSION_CODES.Q])
 class ExtensionsViewModelTest {
 
-  @get:Rule val instantExecutorRule = InstantTaskExecutorRule()
+    @get:Rule val instantExecutorRule = InstantTaskExecutorRule()
 
-  private lateinit var viewModel: ExtensionsViewModel
+    private lateinit var viewModel: ExtensionsViewModel
 
-  @MockK(relaxed = true)
-  private lateinit var nodeClient: NodeClient
+    @MockK(relaxed = true)
+    private lateinit var nodeClient: NodeClient
 
-  @Before
-  fun setUp() {
-    MockKAnnotations.init(this)
-    viewModel = ExtensionsViewModel(ApplicationProvider.getApplicationContext(), nodeClient)
-  }
+    @Before
+    fun setUp() {
+        MockKAnnotations.init(this)
+        viewModel = ExtensionsViewModel(ApplicationProvider.getApplicationContext(), nodeClient)
+    }
 
-  @Test
-  fun `Requesting phone connected status calls NodeClient`() {
-    viewModel.updatePhoneConnectedStatus()
-    verify(exactly = 1) { nodeClient.connectedNodes }
-  }
+    @Test
+    fun `Requesting phone connected status calls NodeClient`() {
+        viewModel.updatePhoneConnectedStatus()
+        verify(exactly = 1) { nodeClient.connectedNodes }
+    }
 }
