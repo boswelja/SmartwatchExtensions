@@ -68,8 +68,8 @@ jobs:
       - uses: actions/checkout@v2
       - run: brew install ktlint
       - name: run ktlint
-        run: |
-          ktlint --reporter=checkstyle,output=ktlint_result.xml
+        continue-on-error: true
+        run: ktlint --android --reporter=checkstyle,output=ktlint_result.xml
       - uses: yutailang0119/action-ktlint@v1.0.0
         with:
           xml_path: ktlint_result.xml
