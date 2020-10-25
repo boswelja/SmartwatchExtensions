@@ -68,7 +68,10 @@ jobs:
     needs: assemble
     steps:
       - uses: actions/checkout@v2
-      - name: Run ktlint
-        uses: yutailang0119/action-ktlint@v1.0.0
+      - run: brew install ktlint
+      - name: run ktlint
+        run: |
+          ktlint --reporter=checkstyle,output=ktlint_result.xml
+      - uses: yutailang0119/action-ktlint@v1.0.0
         with:
           xml_path: ktlint_result.xml
