@@ -67,10 +67,10 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - run: brew install ktlint
-      - name: run ktlint
-        continue-on-error: true
+      - name: Run ktlint
         run: ktlint --android --reporter=checkstyle,output=ktlint_result.xml
       - uses: yutailang0119/action-ktlint@v1.0.0
+        if: failure()
         with:
           xml_path: ktlint_result.xml
   
