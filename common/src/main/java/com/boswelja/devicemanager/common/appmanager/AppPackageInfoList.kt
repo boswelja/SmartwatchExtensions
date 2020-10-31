@@ -8,7 +8,12 @@
 package com.boswelja.devicemanager.common.appmanager
 
 import android.content.pm.PackageManager
-import java.io.*
+import java.io.ByteArrayInputStream
+import java.io.ByteArrayOutputStream
+import java.io.IOException
+import java.io.ObjectInputStream
+import java.io.ObjectOutputStream
+import java.io.Serializable
 
 class AppPackageInfoList(packageManager: PackageManager) :
     ArrayList<AppPackageInfo>(), Serializable {

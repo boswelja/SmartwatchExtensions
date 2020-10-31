@@ -19,8 +19,7 @@ import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.recyclerview.adapter.StringAdapter
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import timber.log.Timber
-import java.util.*
-import kotlin.collections.ArrayList
+import java.util.Locale
 
 class AppPermissionDialogFragment(private val requestedPermissions: Array<String>) :
     BottomSheetDialogFragment() {
@@ -28,7 +27,9 @@ class AppPermissionDialogFragment(private val requestedPermissions: Array<String
     private val permissions: Array<String> by lazy { processPermissions() }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View? = inflater.inflate(R.layout.bottom_sheet_list, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -49,9 +50,11 @@ class AppPermissionDialogFragment(private val requestedPermissions: Array<String
             try {
                 val permissionInfo =
                     context?.packageManager?.getPermissionInfo(
-                        permission, PackageManager.GET_META_DATA)
+                        permission, PackageManager.GET_META_DATA
+                    )
                 processedPermissions.add(
-                    getString(permissionInfo?.labelRes!!).capitalize(Locale.getDefault()))
+                    getString(permissionInfo?.labelRes!!).capitalize(Locale.getDefault())
+                )
             } catch (ignored: Exception) {
                 processedPermissions.add(permission)
             }

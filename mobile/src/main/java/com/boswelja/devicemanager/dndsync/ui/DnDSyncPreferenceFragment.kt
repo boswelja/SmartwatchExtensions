@@ -64,7 +64,8 @@ class DnDSyncPreferenceFragment :
     }
 
     override fun onPreferenceChange(preference: Preference?, newValue: Any?): Boolean {
-        return when (val key = preference?.key
+        return when (
+            val key = preference?.key
         ) {
             DND_SYNC_TO_WATCH_KEY -> {
                 val enabled = newValue == true
@@ -118,7 +119,8 @@ class DnDSyncPreferenceFragment :
                     coroutineScope.launch {
                         sharedPreferences.edit(commit = true) { putBoolean(changingKey, true) }
                         watchPreferenceManager.updatePreferenceOnWatch(
-                            connectedWatchId!!, changingKey!!)
+                            connectedWatchId!!, changingKey!!
+                        )
                         changingKey = null
                     }
                 }
@@ -136,7 +138,8 @@ class DnDSyncPreferenceFragment :
         coroutineScope.launch {
             sharedPreferences.edit(commit = true) { putBoolean(DND_SYNC_TO_WATCH_KEY, enabled) }
             watchPreferenceManager.updatePreferenceOnWatch(
-                connectedWatchId!!, DND_SYNC_TO_WATCH_KEY)
+                connectedWatchId!!, DND_SYNC_TO_WATCH_KEY
+            )
         }
         if (enabled) {
             Timber.i("Starting DnDLocalChangeService")
@@ -160,10 +163,10 @@ class DnDSyncPreferenceFragment :
             } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 changingKey = key
                 Toast.makeText(
-                        context,
-                        getString(R.string.dnd_sync_request_policy_access_message),
-                        Toast.LENGTH_SHORT)
-                    .show()
+                    context,
+                    getString(R.string.dnd_sync_request_policy_access_message),
+                    Toast.LENGTH_SHORT
+                ).show()
                 Intent(Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS).also {
                     startActivityForResult(it, NOTI_POLICY_SETTINGS_REQUEST_CODE)
                 }

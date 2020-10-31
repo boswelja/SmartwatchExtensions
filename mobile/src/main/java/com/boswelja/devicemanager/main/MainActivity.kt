@@ -35,7 +35,8 @@ class MainActivity : BaseWatchPickerActivity() {
         setupWatchPickerSpinner(binding.toolbarLayout.toolbar)
         binding.bottomNavigation.setupWithNavController(
             (supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment)
-                .navController)
+                .navController
+        )
         ensureAppUpdated()
     }
 
@@ -61,14 +62,18 @@ class MainActivity : BaseWatchPickerActivity() {
             if (it.isSuccessful) {
                 val appUpdateInfo = it.result
                 if (appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE &&
-                    appUpdateInfo.updatePriority <= LOW_PRIORITY_UPDATE) {
+                    appUpdateInfo.updatePriority <= LOW_PRIORITY_UPDATE
+                ) {
                     if (appUpdateInfo.updatePriority < HIGH_PRIORITY_UPDATE &&
-                        appUpdateInfo.isUpdateTypeAllowed(AppUpdateType.FLEXIBLE)) {
+                        appUpdateInfo.isUpdateTypeAllowed(AppUpdateType.FLEXIBLE)
+                    ) {
                         appUpdateManager.startUpdateFlowForResult(
-                            appUpdateInfo, AppUpdateType.FLEXIBLE, this, 0)
+                            appUpdateInfo, AppUpdateType.FLEXIBLE, this, 0
+                        )
                     } else if (appUpdateInfo.isUpdateTypeAllowed(AppUpdateType.IMMEDIATE)) {
                         appUpdateManager.startUpdateFlowForResult(
-                            appUpdateInfo, AppUpdateType.IMMEDIATE, this, 0)
+                            appUpdateInfo, AppUpdateType.IMMEDIATE, this, 0
+                        )
                     }
                 }
             } else {

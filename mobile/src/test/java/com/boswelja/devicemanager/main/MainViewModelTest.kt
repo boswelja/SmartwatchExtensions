@@ -39,7 +39,8 @@ class MainViewModelTest {
     fun `Changing message count updates LiveData correctly`() {
         val sharedPreferences =
             PreferenceManager.getDefaultSharedPreferences(
-                ApplicationProvider.getApplicationContext())
+                ApplicationProvider.getApplicationContext()
+            )
         sharedPreferences.edit(commit = true) { putInt(MessageDatabase.MESSAGE_COUNT_KEY, 0) }
         viewModel.messageCount.getOrAwaitValue { assertThat(it).isEqualTo(0) }
         sharedPreferences.edit(commit = true) { putInt(MessageDatabase.MESSAGE_COUNT_KEY, 5) }

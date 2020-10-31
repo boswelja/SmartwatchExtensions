@@ -49,7 +49,9 @@ class WatchBatteryWidget : AppWidgetProvider() {
     }
 
     override fun onUpdate(
-        context: Context?, appWidgetManager: AppWidgetManager?, appWidgetIds: IntArray?
+        context: Context?,
+        appWidgetManager: AppWidgetManager?,
+        appWidgetIds: IntArray?
     ) {
         if (appWidgetIds != null && appWidgetIds.isNotEmpty()) {
             for (widgetId in appWidgetIds) {
@@ -67,9 +69,11 @@ class WatchBatteryWidget : AppWidgetProvider() {
         appWidgetId: Int,
         newOptions: Bundle?
     ) {
-        if (newOptions != null &&
-            (newOptions.containsKey(AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT) ||
-                newOptions.containsKey(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH))) {
+        if (newOptions != null && (
+            newOptions.containsKey(AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT) ||
+                newOptions.containsKey(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH)
+            )
+        ) {
             val height = newOptions.getInt(AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT)
             val width = newOptions.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH)
             updateView(context, appWidgetManager, appWidgetId, width, height)
@@ -116,7 +120,10 @@ class WatchBatteryWidget : AppWidgetProvider() {
      * widget to use, if available.
      */
     private fun createWidgetRemoteView(
-        context: Context?, width: Int, height: Int, batteryStats: WatchBatteryStats?
+        context: Context?,
+        width: Int,
+        height: Int,
+        batteryStats: WatchBatteryStats?
     ): RemoteViews {
         val batteryPercent = batteryStats?.percent ?: 0
 
@@ -139,7 +146,8 @@ class WatchBatteryWidget : AppWidgetProvider() {
                             .also { widgetBackground ->
                                 remoteViews.setImageViewBitmap(
                                     R.id.widget_background,
-                                    widgetBackground.toBitmap(width, height))
+                                    widgetBackground.toBitmap(width, height)
+                                )
                             }
                     }
                 } else {
@@ -159,10 +167,13 @@ class WatchBatteryWidget : AppWidgetProvider() {
                 remoteViews.setTextViewText(
                     R.id.battery_indicator_text,
                     context.getString(
-                        R.string.battery_sync_percent_short, batteryPercent.toString()))
+                        R.string.battery_sync_percent_short, batteryPercent.toString()
+                    )
+                )
             } else {
                 remoteViews.setTextViewText(
-                    R.id.battery_indicator_text, context.getString(R.string.battery_sync_disabled))
+                    R.id.battery_indicator_text, context.getString(R.string.battery_sync_disabled)
+                )
             }
         }
 
@@ -204,7 +215,8 @@ class WatchBatteryWidget : AppWidgetProvider() {
             context.packageManager.setComponentEnabledSetting(
                 ComponentName(context, WatchBatteryWidget::class.java),
                 PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
-                PackageManager.DONT_KILL_APP)
+                PackageManager.DONT_KILL_APP
+            )
         }
     }
 }

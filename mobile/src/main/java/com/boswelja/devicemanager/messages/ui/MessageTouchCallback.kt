@@ -62,12 +62,14 @@ class MessageTouchCallback(private val adapter: MessagesAdapter, context: Contex
                     icon.alpha =
                         min(
                             ((dX - icon.intrinsicWidth - iconMargin) * alphaMultiplier).toInt(),
-                            iconMaxAlpha)
+                            iconMaxAlpha
+                        )
                     icon.draw(c)
                 }
 
                 swipeBackground.setBounds(
-                    itemView.left, itemView.top, itemView.left + dX.toInt(), itemView.bottom)
+                    itemView.left, itemView.top, itemView.left + dX.toInt(), itemView.bottom
+                )
                 swipeBackground.draw(c)
             }
             dX < 0 -> {
@@ -82,12 +84,14 @@ class MessageTouchCallback(private val adapter: MessagesAdapter, context: Contex
                         min(
                             ((dX + icon.intrinsicWidth + iconMargin) * alphaMultiplier * -1)
                                 .toInt(),
-                            iconMaxAlpha)
+                            iconMaxAlpha
+                        )
                     icon.draw(c)
                 }
 
                 swipeBackground.setBounds(
-                    itemView.right + dX.toInt(), itemView.top, itemView.right, itemView.bottom)
+                    itemView.right + dX.toInt(), itemView.top, itemView.right, itemView.bottom
+                )
                 swipeBackground.draw(c)
             }
         }

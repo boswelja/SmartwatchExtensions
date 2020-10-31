@@ -35,7 +35,9 @@ class AppManagerFragment : Fragment(), ItemClickCallback<Item> {
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View? {
         binding = FragmentAppManagerBinding.inflate(inflater, container, false)
         return binding.root

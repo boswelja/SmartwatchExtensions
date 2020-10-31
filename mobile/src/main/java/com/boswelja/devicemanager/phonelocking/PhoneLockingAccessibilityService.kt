@@ -47,7 +47,8 @@ class PhoneLockingAccessibilityService :
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
         if (key == PHONE_LOCKING_MODE_KEY &&
-            sharedPreferences?.getString(key, "0") != PHONE_LOCKING_MODE_ACCESSIBILITY_SERVICE) {
+            sharedPreferences?.getString(key, "0") != PHONE_LOCKING_MODE_ACCESSIBILITY_SERVICE
+        ) {
             Timber.i("Phone Locking mode changed, attempting to stop self")
             stopSelf()
         }

@@ -25,7 +25,9 @@ internal class InitialCheckFragment : Fragment() {
     private lateinit var binding: FragmentDndsyncHelperWarningBinding
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View? {
         binding = FragmentDndsyncHelperWarningBinding.inflate(inflater, container, false)
         return binding.root

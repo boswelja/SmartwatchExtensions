@@ -23,8 +23,12 @@ object Utils {
             val iFilter = IntentFilter(Intent.ACTION_BATTERY_CHANGED)
             val batteryStatus = context.registerReceiver(null, iFilter)
             val batteryPct =
-                ((batteryStatus?.getIntExtra(BatteryManager.EXTRA_LEVEL, -1)!! /
-                        batteryStatus.getIntExtra(BatteryManager.EXTRA_SCALE, -1).toFloat()) * 100)
+                (
+                    (
+                        batteryStatus?.getIntExtra(BatteryManager.EXTRA_LEVEL, -1)!! /
+                            batteryStatus.getIntExtra(BatteryManager.EXTRA_SCALE, -1).toFloat()
+                        ) * 100
+                    )
                     .toInt()
             val charging =
                 batteryStatus.getIntExtra(BatteryManager.EXTRA_STATUS, -1) ==

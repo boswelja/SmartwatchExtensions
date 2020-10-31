@@ -204,7 +204,8 @@ class ManageSpaceActivity : BaseToolbarActivity() {
                 for (watch in registeredWatches) {
                     withContext(Dispatchers.Main) {
                         setProgressStatus(
-                            getString(R.string.reset_settings_resetting_for, watch.name))
+                            getString(R.string.reset_settings_resetting_for, watch.name)
+                        )
                     }
                     val success = resetWatchPreferences(watch)
                     if (success) {
@@ -273,7 +274,9 @@ class ManageSpaceActivity : BaseToolbarActivity() {
                 setProgressStatus(
                     getString(
                         R.string.reset_app_resetting_database_for,
-                        getString(R.string.database_name_battery_stats)))
+                        getString(R.string.database_name_battery_stats)
+                    )
+                )
             }
             WatchBatteryStatsDatabase.get(this@ManageSpaceActivity).clearAllTables()
             withContext(Dispatchers.Main) {
@@ -281,7 +284,9 @@ class ManageSpaceActivity : BaseToolbarActivity() {
                 setProgressStatus(
                     getString(
                         R.string.reset_app_resetting_database_for,
-                        getString(R.string.database_name_widget)))
+                        getString(R.string.database_name_widget)
+                    )
+                )
             }
             WidgetDatabase.open(this@ManageSpaceActivity).apply { clearAllTables() }.also {
                 it.close()
@@ -291,7 +296,9 @@ class ManageSpaceActivity : BaseToolbarActivity() {
                 setProgressStatus(
                     getString(
                         R.string.reset_app_resetting_database_for,
-                        getString(R.string.database_name_main)))
+                        getString(R.string.database_name_main)
+                    )
+                )
             }
             WatchDatabase.get(this@ManageSpaceActivity).apply { clearAllTables() }.also {
                 it.close()
@@ -301,7 +308,8 @@ class ManageSpaceActivity : BaseToolbarActivity() {
                 setProgressStatus(R.string.reset_app_resetting_preferences)
             }
             PreferenceManager.getDefaultSharedPreferences(this@ManageSpaceActivity).edit(
-                    commit = true) { clear() }
+                commit = true
+            ) { clear() }
             withContext(Dispatchers.Main) {
                 incrementProgressBar()
                 setProgressStatus(R.string.reset_app_success)

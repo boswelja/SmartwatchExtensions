@@ -21,7 +21,9 @@ import com.boswelja.devicemanager.common.References.LOCK_PHONE_PATH
 class LockPhoneComplicationProvider : BaseComplicationProviderService() {
 
     override fun onCreateComplication(
-        complicationId: Int, type: Int, manager: ComplicationManager?
+        complicationId: Int,
+        type: Int,
+        manager: ComplicationManager?
     ) {
         if (type != ComplicationData.TYPE_SHORT_TEXT) {
             manager?.noUpdateRequired(complicationId)

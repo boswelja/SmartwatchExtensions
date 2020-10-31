@@ -40,7 +40,8 @@ class BatterySyncViewModelTest {
         viewModel = BatterySyncViewModel(ApplicationProvider.getApplicationContext())
         sharedPreferences =
             PreferenceManager.getDefaultSharedPreferences(
-                ApplicationProvider.getApplicationContext())
+                ApplicationProvider.getApplicationContext()
+            )
     }
 
     @Test

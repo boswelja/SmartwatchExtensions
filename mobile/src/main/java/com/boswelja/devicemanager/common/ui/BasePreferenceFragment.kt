@@ -36,7 +36,9 @@ abstract class BasePreferenceFragment : PreferenceFragmentCompat() {
     protected var connectedWatchId: String? = null
 
     override fun onCreateRecyclerView(
-        inflater: LayoutInflater?, parent: ViewGroup?, savedInstanceState: Bundle?
+        inflater: LayoutInflater?,
+        parent: ViewGroup?,
+        savedInstanceState: Bundle?
     ): RecyclerView {
         val padding = resources.getDimension(R.dimen.recyclerview_vertical_padding)
         return super.onCreateRecyclerView(inflater, parent, savedInstanceState).apply {

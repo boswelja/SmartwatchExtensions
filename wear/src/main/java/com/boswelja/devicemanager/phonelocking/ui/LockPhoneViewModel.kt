@@ -40,7 +40,9 @@ class LockPhoneViewModel(application: Application) : AndroidViewModel(applicatio
                 PHONE_NAME_KEY ->
                     _phoneName.postValue(
                         sharedPreferences.getString(
-                            key, application.getString(R.string.default_phone_name)))
+                            key, application.getString(R.string.default_phone_name)
+                        )
+                    )
                 PHONE_CONNECTED_KEY ->
                     _phoneConnected.postValue(sharedPreferences.getBoolean(key, false))
             }
@@ -49,8 +51,10 @@ class LockPhoneViewModel(application: Application) : AndroidViewModel(applicatio
     private val _phoneName =
         MutableLiveData(
             sharedPreferences.getString(
-                PHONE_NAME_KEY, application.getString(R.string.default_phone_name))
-                ?: application.getString(R.string.default_phone_name))
+                PHONE_NAME_KEY, application.getString(R.string.default_phone_name)
+            )
+                ?: application.getString(R.string.default_phone_name)
+        )
     val phoneName: LiveData<String>
         get() = _phoneName
 

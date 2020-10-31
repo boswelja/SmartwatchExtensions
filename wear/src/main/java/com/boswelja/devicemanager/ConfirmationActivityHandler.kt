@@ -10,7 +10,11 @@ package com.boswelja.devicemanager
 import android.content.Context
 import android.content.Intent
 import androidx.wear.activity.ConfirmationActivity
-import androidx.wear.activity.ConfirmationActivity.*
+import androidx.wear.activity.ConfirmationActivity.EXTRA_ANIMATION_TYPE
+import androidx.wear.activity.ConfirmationActivity.EXTRA_MESSAGE
+import androidx.wear.activity.ConfirmationActivity.FAILURE_ANIMATION
+import androidx.wear.activity.ConfirmationActivity.OPEN_ON_PHONE_ANIMATION
+import androidx.wear.activity.ConfirmationActivity.SUCCESS_ANIMATION
 
 object ConfirmationActivityHandler {
 

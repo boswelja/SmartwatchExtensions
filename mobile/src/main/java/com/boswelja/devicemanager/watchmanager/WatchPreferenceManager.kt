@@ -33,14 +33,14 @@ import timber.log.Timber
  * default [SharedPreferences] store, and updates them in the database as they're changed.
  */
 class WatchPreferenceManager
-    internal constructor(
-        context: Context,
-        private val coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.IO),
-        private val dataClient: DataClient = Wearable.getDataClient(context),
-        private val sharedPreferences: SharedPreferences =
-            PreferenceManager.getDefaultSharedPreferences(context),
-        private val database: WatchDatabase = WatchDatabase.get(context)
-    ) {
+internal constructor(
+    context: Context,
+    private val coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.IO),
+    private val dataClient: DataClient = Wearable.getDataClient(context),
+    private val sharedPreferences: SharedPreferences =
+        PreferenceManager.getDefaultSharedPreferences(context),
+    private val database: WatchDatabase = WatchDatabase.get(context)
+) {
 
     /**
      * Clears all local [SharedPreferences], then reads the values stored in the [database] for a
@@ -133,7 +133,7 @@ class WatchPreferenceManager
     suspend fun updatePreferenceOnWatch(watchId: String, preferenceKey: String): Task<DataItem>? {
         Timber.d("updatePreferenceOnWatch($preferenceKey) called")
         return withContext(Dispatchers.IO) {
-            val syncedPrefUpdateReq = PutDataMapRequest.create("/preference-change_${watchId}")
+            val syncedPrefUpdateReq = PutDataMapRequest.create("/preference-change_$watchId")
             when (preferenceKey) {
                 in SyncPreferences.BOOL_PREFS -> {
                     sharedPreferences.getBoolean(preferenceKey, false).also {

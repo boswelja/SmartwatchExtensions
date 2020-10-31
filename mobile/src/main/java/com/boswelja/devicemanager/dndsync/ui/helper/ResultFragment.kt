@@ -25,7 +25,9 @@ internal class ResultFragment : Fragment() {
     private lateinit var binding: FragmentDndsyncHelperResultBinding
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View? {
         binding = FragmentDndsyncHelperResultBinding.inflate(inflater, container, false)
         return binding.root

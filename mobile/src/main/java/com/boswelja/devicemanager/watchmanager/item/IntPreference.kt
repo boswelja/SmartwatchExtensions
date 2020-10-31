@@ -17,4 +17,5 @@ data class IntPreference(
     @ColumnInfo(name = "pref_key")
     val key: String,
     @ColumnInfo(name = "value")
-    val value: Int)
+    val value: Int
+)

@@ -72,7 +72,8 @@ class AppManagerService : Service() {
                         Intent.ACTION_PACKAGE_ADDED -> {
                             val packageName = data.encodedSchemeSpecificPart
                             AppPackageInfo(
-                                    packageManager, packageManager.getPackageInfo(packageName, 0))
+                                packageManager, packageManager.getPackageInfo(packageName, 0)
+                            )
                                 .also {
                                     if (isReplacingPackage) {
                                         sendAppUpdatedMessage(it)
@@ -87,7 +88,8 @@ class AppManagerService : Service() {
                                 sendAppRemovedMessage(packageName)
                             } else {
                                 Timber.i(
-                                    "Package removed, but system indicated it's being replaced.")
+                                    "Package removed, but system indicated it's being replaced."
+                                )
                             }
                         }
                         else -> Timber.w("Unknown intent received")
@@ -142,9 +144,10 @@ class AppManagerService : Service() {
                 getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             if (notificationManager.getNotificationChannel(APP_MANAGER_NOTI_CHANNEL_ID) == null) {
                 NotificationChannel(
-                        APP_MANAGER_NOTI_CHANNEL_ID,
-                        getString(R.string.app_manager_noti_channel_title),
-                        NotificationManager.IMPORTANCE_LOW)
+                    APP_MANAGER_NOTI_CHANNEL_ID,
+                    getString(R.string.app_manager_noti_channel_title),
+                    NotificationManager.IMPORTANCE_LOW
+                )
                     .also { notificationManager.createNotificationChannel(it) }
             }
         }

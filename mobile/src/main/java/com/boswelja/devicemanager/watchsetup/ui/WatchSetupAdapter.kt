@@ -31,7 +31,8 @@ class WatchSetupAdapter(private val clickCallback: (watch: Watch) -> Unit) :
                     WatchStatus.NOT_REGISTERED -> R.string.watch_status_not_registered
                     WatchStatus.MISSING_APP -> R.string.watch_status_missing_app
                     else -> R.string.watch_status_error
-                })
+                }
+            )
         holder.apply {
             bind(R.drawable.ic_watch, watch.name, summary)
             itemView.setOnClickListener { clickCallback(watch) }

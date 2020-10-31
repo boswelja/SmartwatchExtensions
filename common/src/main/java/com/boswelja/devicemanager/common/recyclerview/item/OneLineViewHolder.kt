@@ -12,9 +12,9 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.boswelja.devicemanager.common.databinding.RecyclerviewItemOneLineBinding
 
-open class OneLineViewHolder
-    private constructor(private val binding: RecyclerviewItemOneLineBinding) :
-    RecyclerView.ViewHolder(binding.root) {
+open class OneLineViewHolder private constructor(
+    private val binding: RecyclerviewItemOneLineBinding
+) : RecyclerView.ViewHolder(binding.root) {
 
     fun bind(text: String) {
         binding.text.text = text

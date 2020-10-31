@@ -22,7 +22,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Locale
 
 class AppPackageInfoViewModelTest {
 
@@ -108,7 +108,8 @@ class AppPackageInfoViewModelTest {
             messageClient.sendMessage(
                 watchId,
                 REQUEST_UNINSTALL_PACKAGE,
-                testAppInfo.packageName.toByteArray(Charsets.UTF_8))
+                testAppInfo.packageName.toByteArray(Charsets.UTF_8)
+            )
         }
         viewModel.finishActivity.getOrAwaitValue { assertThat(it).isTrue() }
 
@@ -122,7 +123,8 @@ class AppPackageInfoViewModelTest {
         viewModel.sendOpenRequestMessage()
         verify(exactly = 1) {
             messageClient.sendMessage(
-                watchId, REQUEST_OPEN_PACKAGE, testAppInfo.packageName.toByteArray(Charsets.UTF_8))
+                watchId, REQUEST_OPEN_PACKAGE, testAppInfo.packageName.toByteArray(Charsets.UTF_8)
+            )
         }
     }
 
@@ -137,5 +139,6 @@ class AppPackageInfoViewModelTest {
             isLaunchable,
             installTime = System.currentTimeMillis(),
             lastUpdateTime = System.currentTimeMillis(),
-            arrayOf("permission1", "permission2"))
+            arrayOf("permission1", "permission2")
+        )
 }

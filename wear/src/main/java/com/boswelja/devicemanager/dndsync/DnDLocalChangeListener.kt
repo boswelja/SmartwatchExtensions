@@ -7,8 +7,16 @@
  */
 package com.boswelja.devicemanager.dndsync
 
-import android.app.*
-import android.content.*
+import android.app.Notification
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
+import android.app.Service
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
+import android.content.SharedPreferences
 import android.os.Build
 import android.os.Handler
 import android.os.IBinder
@@ -39,7 +47,8 @@ class DnDLocalChangeListener : Service() {
         object : BroadcastReceiver() {
             override fun onReceive(context: Context?, intent: Intent?) {
                 if (context != null &&
-                    intent!!.action == NotificationManager.ACTION_INTERRUPTION_FILTER_CHANGED) {
+                    intent!!.action == NotificationManager.ACTION_INTERRUPTION_FILTER_CHANGED
+                ) {
                     val dndEnabled = Compat.isDndEnabled(context)
                     Utils.updateInterruptionFilter(this@DnDLocalChangeListener, dndEnabled)
                 }
@@ -113,10 +122,11 @@ class DnDLocalChangeListener : Service() {
                     }
 
                 PendingIntent.getActivity(
-                        this@DnDLocalChangeListener,
-                        START_ACTIVITY_FROM_NOTI_ID,
-                        launchIntent,
-                        PendingIntent.FLAG_CANCEL_CURRENT)
+                    this@DnDLocalChangeListener,
+                    START_ACTIVITY_FROM_NOTI_ID,
+                    launchIntent,
+                    PendingIntent.FLAG_CANCEL_CURRENT
+                )
                     .also { setContentIntent(it) }
             }
             .also {
@@ -130,7 +140,8 @@ class DnDLocalChangeListener : Service() {
             notificationManager.notify(DND_SYNC_LOCAL_NOTI_ID, createNotification())
             if (enabled) {
                 applicationContext.contentResolver.registerContentObserver(
-                    Settings.Global.CONTENT_URI, true, theaterModeObserver)
+                    Settings.Global.CONTENT_URI, true, theaterModeObserver
+                )
             } else {
                 applicationContext.contentResolver.unregisterContentObserver(theaterModeObserver)
                 tryStop()
@@ -162,9 +173,10 @@ class DnDLocalChangeListener : Service() {
 
         if (notificationManager.getNotificationChannel(DND_SYNC_NOTI_CHANNEL_ID) == null) {
             NotificationChannel(
-                    DND_SYNC_NOTI_CHANNEL_ID,
-                    getString(R.string.noti_channel_dnd_sync_title),
-                    NotificationManager.IMPORTANCE_LOW)
+                DND_SYNC_NOTI_CHANNEL_ID,
+                getString(R.string.noti_channel_dnd_sync_title),
+                NotificationManager.IMPORTANCE_LOW
+            )
                 .apply {
                     enableLights(false)
                     enableVibration(false)

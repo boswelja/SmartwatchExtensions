@@ -45,7 +45,8 @@ class BootOrUpdateHandlerService : Service() {
         Timber.i("onStartCommand called")
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
             NotificationChannelHelper.createForBootOrUpdate(
-                this, getSystemService(NotificationManager::class.java))
+                this, getSystemService(NotificationManager::class.java)
+            )
         when (intent?.action) {
             Intent.ACTION_MY_PACKAGE_REPLACED -> {
                 performUpdates()
@@ -76,10 +77,12 @@ class BootOrUpdateHandlerService : Service() {
                             "Updated to version ${BuildConfig.VERSION_NAME}",
                             "Version ${BuildConfig.VERSION_NAME}",
                             action = Action.SHOW_CHANGELOG,
-                            buttonLabel = "See What's New")
+                            buttonLabel = "See What's New"
+                        )
                     MessageDatabase.get(this)
                         .sendMessage(
-                            PreferenceManager.getDefaultSharedPreferences(this), updateMessage)
+                            PreferenceManager.getDefaultSharedPreferences(this), updateMessage
+                        )
                 }
                 Result.NOT_NEEDED -> Timber.i("Update not needed")
             }
@@ -131,11 +134,13 @@ class BootOrUpdateHandlerService : Service() {
                     it.value
                 }
             Timber.i(
-                "tryStartInterruptFilterSyncService dndSyncToWatchEnabled = $dndSyncToWatchEnabled")
+                "tryStartInterruptFilterSyncService dndSyncToWatchEnabled = $dndSyncToWatchEnabled"
+            )
             if (dndSyncToWatchEnabled) {
                 Compat.startForegroundService(
                     applicationContext,
-                    Intent(applicationContext, DnDLocalChangeService::class.java))
+                    Intent(applicationContext, DnDLocalChangeService::class.java)
+                )
             }
         }
     }
@@ -149,7 +154,8 @@ class BootOrUpdateHandlerService : Service() {
                 if (batterySyncBoolPreference.value) {
                     Timber.i("tryStartBatterySyncWorkers Starting a Battery Sync Worker")
                     BatterySyncWorker.startWorker(
-                        applicationContext, batterySyncBoolPreference.watchId)
+                        applicationContext, batterySyncBoolPreference.watchId
+                    )
                 }
             }
         } else {

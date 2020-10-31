@@ -42,7 +42,9 @@ class BatterySyncViewModel(application: Application) : AndroidViewModel(applicat
                 PHONE_NAME_KEY ->
                     _phoneName.postValue(
                         sharedPreferences.getString(
-                            key, application.getString(R.string.default_phone_name)))
+                            key, application.getString(R.string.default_phone_name)
+                        )
+                    )
                 PHONE_CONNECTED_KEY ->
                     _phoneConnected.postValue(sharedPreferences.getBoolean(key, false))
             }
@@ -51,8 +53,10 @@ class BatterySyncViewModel(application: Application) : AndroidViewModel(applicat
     private val _phoneName =
         MutableLiveData(
             sharedPreferences.getString(
-                PHONE_NAME_KEY, application.getString(R.string.default_phone_name))
-                ?: application.getString(R.string.default_phone_name))
+                PHONE_NAME_KEY, application.getString(R.string.default_phone_name)
+            )
+                ?: application.getString(R.string.default_phone_name)
+        )
     val phoneName: LiveData<String>
         get() = _phoneName
 
@@ -79,13 +83,16 @@ class BatterySyncViewModel(application: Application) : AndroidViewModel(applicat
             if (it)
                 _displayText.postValue(
                     application.getString(
-                        R.string.battery_percent, batteryPercent.value.toString()))
+                        R.string.battery_percent, batteryPercent.value.toString()
+                    )
+                )
             else _displayText.postValue(batterySyncDisabledString)
         }
         _displayText.addSource(batteryPercent) {
             if (batterySyncEnabled.value == true)
                 _displayText.postValue(
-                    application.getString(R.string.battery_percent, it.toString()))
+                    application.getString(R.string.battery_percent, it.toString())
+                )
             else _displayText.postValue(batterySyncDisabledString)
         }
     }

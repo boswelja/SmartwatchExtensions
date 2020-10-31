@@ -22,7 +22,9 @@ class LockPhoneFragment : Fragment() {
     private lateinit var binding: FragmentLockPhoneBinding
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View? {
         binding = FragmentLockPhoneBinding.inflate(inflater, container, false)
         binding.viewModel = viewModel

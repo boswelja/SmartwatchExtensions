@@ -34,7 +34,8 @@ class MessageReceiver : WearableListenerService() {
                     .sendMessage(
                         messageEvent.sourceNodeId,
                         REQUEST_INTERRUPT_FILTER_ACCESS_STATUS_PATH,
-                        hasDnDAccess.toByteArray())
+                        hasDnDAccess.toByteArray()
+                    )
             }
             REQUEST_APP_VERSION -> {
                 Wearable.getMessageClient(this)
@@ -42,7 +43,9 @@ class MessageReceiver : WearableListenerService() {
                         messageEvent.sourceNodeId,
                         REQUEST_APP_VERSION,
                         (BuildConfig.VERSION_NAME + "|" + BuildConfig.VERSION_CODE).toByteArray(
-                            Charsets.UTF_8))
+                            Charsets.UTF_8
+                        )
+                    )
             }
             References.START_SERVICE -> {
                 val intent = Intent(this, AppManagerService::class.java)
@@ -53,7 +56,8 @@ class MessageReceiver : WearableListenerService() {
                     .sendMessage(
                         messageEvent.sourceNodeId,
                         REQUEST_SDK_INT_PATH,
-                        Build.VERSION.SDK_INT.toBigInteger().toByteArray())
+                        Build.VERSION.SDK_INT.toBigInteger().toByteArray()
+                    )
             }
             REQUEST_RESET_APP -> {
                 val activityManager = getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager

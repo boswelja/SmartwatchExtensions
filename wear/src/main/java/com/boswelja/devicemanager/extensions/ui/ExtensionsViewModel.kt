@@ -19,11 +19,11 @@ import com.google.android.gms.wearable.NodeClient
 import com.google.android.gms.wearable.Wearable
 
 class ExtensionsViewModel
-    @JvmOverloads
-    constructor(
-        application: Application,
-        private val nodeClient: NodeClient = Wearable.getNodeClient(application)
-    ) : AndroidViewModel(application) {
+@JvmOverloads
+constructor(
+    application: Application,
+    private val nodeClient: NodeClient = Wearable.getNodeClient(application)
+) : AndroidViewModel(application) {
 
     private val phoneId by lazy { sharedPreferences.getString(PHONE_ID_KEY, "") ?: "" }
 

@@ -30,14 +30,16 @@ class CompatTest {
         // Create notification channels if supported
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel(
-                    ENABLED_CHANNEL_ID,
-                    "Enabled Test Channel",
-                    NotificationManager.IMPORTANCE_DEFAULT)
+                ENABLED_CHANNEL_ID,
+                "Enabled Test Channel",
+                NotificationManager.IMPORTANCE_DEFAULT
+            )
                 .also { notificationManager.createNotificationChannel(it) }
             NotificationChannel(
-                    DISABLED_CHANNEL_ID,
-                    "Disabled Test Channel",
-                    NotificationManager.IMPORTANCE_NONE)
+                DISABLED_CHANNEL_ID,
+                "Disabled Test Channel",
+                NotificationManager.IMPORTANCE_NONE
+            )
                 .also { notificationManager.createNotificationChannel(it) }
         }
     }

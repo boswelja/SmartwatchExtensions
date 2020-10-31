@@ -28,6 +28,7 @@ class DnDSyncHelperActivity : BaseToolbarActivity() {
         setupToolbar(binding.toolbarLayout.toolbar, showUpButton = true)
         binding.toolbarLayout.toolbar.setupWithNavController(
             (supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment)
-                .navController)
+                .navController
+        )
     }
 }

@@ -58,7 +58,8 @@ abstract class BaseDayNightActivity :
                 .getString(DAYNIGHT_MODE_KEY, AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM.toString())
                 ?.toInt()
         AppCompatDelegate.setDefaultNightMode(
-            nightMode ?: AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+            nightMode ?: AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+        )
     }
 
     companion object {

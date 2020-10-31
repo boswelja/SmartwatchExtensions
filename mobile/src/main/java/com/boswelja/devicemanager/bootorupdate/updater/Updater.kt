@@ -48,7 +48,8 @@ class Updater(private val context: Context) {
                 sharedPreferences.getInt(APP_VERSION_KEY, currentAppVersion)
             } catch (e: ClassCastException) {
                 Timber.w(
-                    "Failed to get lat app version, falling back to version 0 to force upgrade")
+                    "Failed to get lat app version, falling back to version 0 to force upgrade"
+                )
                 0
             }
     }

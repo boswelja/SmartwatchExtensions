@@ -32,13 +32,16 @@ object Compat {
                 try {
                     val notificationManager =
                         context.getSystemService(
-                            Context.NOTIFICATION_SERVICE) as NotificationManager
+                            Context.NOTIFICATION_SERVICE
+                        ) as NotificationManager
                     if (interruptionFilterOn) {
                         notificationManager.setInterruptionFilter(
-                            NotificationManager.INTERRUPTION_FILTER_PRIORITY)
+                            NotificationManager.INTERRUPTION_FILTER_PRIORITY
+                        )
                     } else {
                         notificationManager.setInterruptionFilter(
-                            NotificationManager.INTERRUPTION_FILTER_ALL)
+                            NotificationManager.INTERRUPTION_FILTER_ALL
+                        )
                     }
                     return true
                 } catch (e: SecurityException) {

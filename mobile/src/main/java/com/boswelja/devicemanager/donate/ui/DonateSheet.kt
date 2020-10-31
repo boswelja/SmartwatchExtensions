@@ -27,7 +27,9 @@ class DonateSheet : BottomSheetDialogFragment() {
     private lateinit var binding: BottomSheetListBinding
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View? {
         binding = BottomSheetListBinding.inflate(inflater, container, false)
         binding.title.setText(R.string.donate_title)

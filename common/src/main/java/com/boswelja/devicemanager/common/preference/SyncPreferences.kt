@@ -18,6 +18,7 @@ object SyncPreferences {
             PreferenceKey.BATTERY_WATCH_CHARGE_NOTI_KEY,
             PreferenceKey.DND_SYNC_TO_PHONE_KEY,
             PreferenceKey.DND_SYNC_TO_WATCH_KEY,
-            PreferenceKey.DND_SYNC_WITH_THEATER_KEY)
+            PreferenceKey.DND_SYNC_WITH_THEATER_KEY
+        )
     val ALL_PREFS = INT_PREFS + BOOL_PREFS
 }

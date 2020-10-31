@@ -41,10 +41,12 @@ object Utils {
             Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN).apply {
                 putExtra(
                     DevicePolicyManager.EXTRA_DEVICE_ADMIN,
-                    DeviceAdminChangeReceiver().getWho(context))
+                    DeviceAdminChangeReceiver().getWho(context)
+                )
                 putExtra(
                     DevicePolicyManager.EXTRA_ADD_EXPLANATION,
-                    context.getString(R.string.device_admin_desc))
+                    context.getString(R.string.device_admin_desc)
+                )
             }
         context.startActivity(intent)
     }
@@ -79,11 +81,13 @@ object Utils {
             setComponentEnabledSetting(
                 ComponentName(context, PhoneLockingAccessibilityService::class.java),
                 PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
-                PackageManager.DONT_KILL_APP)
+                PackageManager.DONT_KILL_APP
+            )
             setComponentEnabledSetting(
                 ComponentName(context, DeviceAdminChangeReceiver::class.java),
                 PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
-                PackageManager.DONT_KILL_APP)
+                PackageManager.DONT_KILL_APP
+            )
         }
     }
 
@@ -107,11 +111,13 @@ object Utils {
             setComponentEnabledSetting(
                 ComponentName(context, PhoneLockingAccessibilityService::class.java),
                 PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
-                PackageManager.DONT_KILL_APP)
+                PackageManager.DONT_KILL_APP
+            )
             setComponentEnabledSetting(
                 ComponentName(context, DeviceAdminChangeReceiver::class.java),
                 PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
-                PackageManager.DONT_KILL_APP)
+                PackageManager.DONT_KILL_APP
+            )
         }
     }
 }

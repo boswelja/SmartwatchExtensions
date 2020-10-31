@@ -16,7 +16,9 @@ import com.google.android.gms.wearable.PutDataMapRequest
 import com.google.android.gms.wearable.Wearable
 
 class PreferenceSyncHelper(
-    context: Context, private val sharedPreferences: SharedPreferences, private val phoneId: String
+    context: Context,
+    private val sharedPreferences: SharedPreferences,
+    private val phoneId: String
 ) {
 
     private val dataClient = Wearable.getDataClient(context)

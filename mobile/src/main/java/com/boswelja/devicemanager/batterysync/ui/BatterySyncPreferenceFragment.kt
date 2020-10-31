@@ -72,8 +72,7 @@ class BatterySyncPreferenceFragment :
 
     override fun onPreferenceChange(preference: Preference?, newValue: Any?): Boolean {
         Timber.d("onPreferenceChange() called")
-        return when (val key = preference?.key
-        ) {
+        return when (val key = preference?.key) {
             BATTERY_SYNC_ENABLED_KEY -> {
                 val newBool = newValue == true
                 setBatteryChargeThresholdEnabled()
@@ -146,9 +145,10 @@ class BatterySyncPreferenceFragment :
     private fun setBatteryChargeThresholdEnabled() {
         val sharedPreferences = batteryChargeThresholdPreference.sharedPreferences
         batteryChargeThresholdPreference.isEnabled =
-            sharedPreferences.getBoolean(BATTERY_SYNC_ENABLED_KEY, false) &&
-                (sharedPreferences.getBoolean(BATTERY_PHONE_CHARGE_NOTI_KEY, false) ||
-                    sharedPreferences.getBoolean(BATTERY_WATCH_CHARGE_NOTI_KEY, false))
+            sharedPreferences.getBoolean(BATTERY_SYNC_ENABLED_KEY, false) && (
+            sharedPreferences.getBoolean(BATTERY_PHONE_CHARGE_NOTI_KEY, false) ||
+                sharedPreferences.getBoolean(BATTERY_WATCH_CHARGE_NOTI_KEY, false)
+            )
         Timber.i("Battery charge threshold enabled = ${batteryChargeThresholdPreference.isEnabled}")
     }
 
@@ -168,14 +168,16 @@ class BatterySyncPreferenceFragment :
                         putBoolean(BATTERY_SYNC_ENABLED_KEY, enabled).apply()
                     }
                     watchPreferenceManager.updatePreferenceOnWatch(
-                        connectedWatchId!!, BATTERY_SYNC_ENABLED_KEY)
+                        connectedWatchId!!, BATTERY_SYNC_ENABLED_KEY
+                    )
                     updateBatteryStats(requireContext(), connectedWatchId!!)
                 } else {
                     withContext(Dispatchers.Main) {
                         Snackbar.make(
-                                requireView(),
-                                R.string.battery_sync_enable_failed,
-                                Snackbar.LENGTH_LONG)
+                            requireView(),
+                            R.string.battery_sync_enable_failed,
+                            Snackbar.LENGTH_LONG
+                        )
                             .show()
                     }
                 }
@@ -184,7 +186,8 @@ class BatterySyncPreferenceFragment :
                     putBoolean(BATTERY_SYNC_ENABLED_KEY, enabled)
                 }
                 watchPreferenceManager.updatePreferenceOnWatch(
-                    connectedWatchId!!, BATTERY_SYNC_ENABLED_KEY)
+                    connectedWatchId!!, BATTERY_SYNC_ENABLED_KEY
+                )
                 BatterySyncWorker.stopWorker(requireContext(), connectedWatchId!!)
             }
         }
@@ -200,7 +203,8 @@ class BatterySyncPreferenceFragment :
         coroutineScope.launch(Dispatchers.IO) {
             sharedPreferences.edit(commit = true) { putInt(BATTERY_SYNC_INTERVAL_KEY, newInterval) }
             watchPreferenceManager.updatePreferenceInDatabase(
-                connectedWatchId!!, BATTERY_SYNC_INTERVAL_KEY, newInterval)
+                connectedWatchId!!, BATTERY_SYNC_INTERVAL_KEY, newInterval
+            )
             BatterySyncWorker.stopWorker(requireContext(), connectedWatchId!!)
             BatterySyncWorker.startWorker(requireContext(), connectedWatchId!!)
         }

@@ -35,9 +35,8 @@ abstract class WatchBatteryStatsDatabase : RoomDatabase() {
                 if (INSTANCE == null) {
                     INSTANCE =
                         Room.databaseBuilder(
-                                context, WatchBatteryStatsDatabase::class.java, "battery-stats-db")
-                            .addMigrations(Migrations.MIGRATION_1_2)
-                            .build()
+                            context, WatchBatteryStatsDatabase::class.java, "battery-stats-db"
+                        ).addMigrations(Migrations.MIGRATION_1_2).build()
                 }
                 return INSTANCE!!
             }
