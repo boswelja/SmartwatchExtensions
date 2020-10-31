@@ -216,6 +216,6 @@
     <!-- Donate strings -->
     <string name="donate_title">Donate</string>
 
-    <string name="privacy_policy_url">https://github.com/boswelja/PublicDocs/blob/master/PrivacyPolicies/WearableExtensions.md#privacy-policy</string>
+    <string name="privacy_policy_url" translatable="false">https://github.com/boswelja/WearableExtensions/blob/main/PRIVACY.md</string>
 
 </resources>
