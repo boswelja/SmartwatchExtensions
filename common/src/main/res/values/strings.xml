@@ -8,4 +8,6 @@
     <string name="device_charged_noti_title">%s Charged</string>
     <string name="device_charged_noti_desc">Your %s is charged to above %s%%</string>
 
+    <string name="play_store_link" translatable="false">https://play.google.com/store/apps/details?id=com.boswelja.devicemanager</string>
+
 </resources>

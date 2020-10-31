@@ -19,7 +19,6 @@ import androidx.navigation.fragment.findNavController
 import androidx.preference.Preference
 import com.boswelja.devicemanager.BuildConfig
 import com.boswelja.devicemanager.R
-import com.boswelja.devicemanager.common.GooglePlayUtils.getPlayStoreLink
 import com.boswelja.devicemanager.common.ui.BasePreferenceFragment
 import com.boswelja.devicemanager.watchmanager.WatchManager
 import timber.log.Timber
@@ -122,7 +121,7 @@ class AppInfoFragment : BasePreferenceFragment(), Preference.OnPreferenceClickLi
         Intent()
             .apply {
                 action = Intent.ACTION_SEND
-                putExtra(Intent.EXTRA_TEXT, getPlayStoreLink(context))
+                putExtra(Intent.EXTRA_TEXT, getString(R.string.play_store_link))
                 putExtra(Intent.EXTRA_TITLE, shareTitle)
                 data = shareDataUri
                 type = "text/plain"
