@@ -18,11 +18,11 @@ import io.mockk.MockKAnnotations
 import io.mockk.confirmVerified
 import io.mockk.impl.annotations.MockK
 import io.mockk.verify
+import java.text.SimpleDateFormat
+import java.util.Locale
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import java.text.SimpleDateFormat
-import java.util.Locale
 
 class AppPackageInfoViewModelTest {
 

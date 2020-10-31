@@ -10,9 +10,9 @@ package com.boswelja.devicemanager.common.appmanager
 import androidx.test.platform.app.InstrumentationRegistry
 import com.google.common.truth.Truth.assertThat
 import com.google.common.truth.Truth.assertWithMessage
+import java.io.IOException
 import org.junit.Test
 import timber.log.Timber
-import java.io.IOException
 
 class AppPackageInfoTest {
 
