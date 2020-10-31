@@ -18,6 +18,6 @@ Open, uninstall, and view information about apps installed on your watch!
 
 ## Legal Stuff
 
-Find the Privacy Policy here: [PRIVACY.md](https://github.com/boswelja/WearableExtensions/blob/main/README.md).
+Find the Privacy Policy here: [PRIVACY.md](https://github.com/boswelja/WearableExtensions/blob/main/PRIVACY.md).
 
 The license can be found here: [LICENSE](https://github.com/boswelja/WearableExtensions/blob/main/LICENSE)
