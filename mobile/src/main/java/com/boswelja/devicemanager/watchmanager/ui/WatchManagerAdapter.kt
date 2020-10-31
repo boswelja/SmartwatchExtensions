@@ -44,7 +44,8 @@ class WatchManagerAdapter(private val clickListener: (watch: Watch?) -> Unit) :
         when (holder) {
             is IconOneLineViewHolder -> {
                 holder.bind(
-                    R.drawable.ic_add, context.getString(R.string.watch_manager_add_watch_title))
+                    R.drawable.ic_add, context.getString(R.string.watch_manager_add_watch_title)
+                )
                 holder.itemView.setOnClickListener { clickListener(null) }
             }
             is SectionHeaderViewHolder -> {
@@ -59,7 +60,8 @@ class WatchManagerAdapter(private val clickListener: (watch: Watch?) -> Unit) :
                             WatchStatus.DISCONNECTED -> R.string.watch_status_disconnected
                             WatchStatus.MISSING_APP -> R.string.watch_status_missing_app
                             else -> R.string.watch_status_error
-                        })
+                        }
+                    )
                 holder.apply {
                     bind(R.drawable.ic_watch, watch.name, summary)
                     itemView.setOnClickListener { clickListener(watch) }

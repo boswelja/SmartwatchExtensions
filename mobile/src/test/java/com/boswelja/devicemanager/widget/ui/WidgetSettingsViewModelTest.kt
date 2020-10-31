@@ -39,7 +39,8 @@ class WidgetSettingsViewModelTest {
     fun `Toggling widget background preference updates LiveData correctly`() {
         val sharedPreferences =
             PreferenceManager.getDefaultSharedPreferences(
-                ApplicationProvider.getApplicationContext())
+                ApplicationProvider.getApplicationContext()
+            )
         sharedPreferences.edit(commit = true) {
             putBoolean(AppSettingsFragment.SHOW_WIDGET_BACKGROUND_KEY, false)
         }
@@ -55,7 +56,8 @@ class WidgetSettingsViewModelTest {
     fun `Changing widget background opacity preference updates LiveData correctly`() {
         val sharedPreferences =
             PreferenceManager.getDefaultSharedPreferences(
-                ApplicationProvider.getApplicationContext())
+                ApplicationProvider.getApplicationContext()
+            )
         sharedPreferences.edit(commit = true) {
             putInt(AppSettingsFragment.WIDGET_BACKGROUND_OPACITY_KEY, 0)
         }

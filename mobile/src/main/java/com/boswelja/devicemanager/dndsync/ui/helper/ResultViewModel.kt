@@ -45,11 +45,13 @@ class ResultViewModel(application: Application) : AndroidViewModel(application) 
                 putBoolean(PreferenceKey.DND_SYNC_TO_WATCH_KEY, isEnabled)
             }
             watchPreferenceManager.updatePreferenceOnWatch(
-                connectedWatchHandler.selectedWatch.value!!.id, PreferenceKey.DND_SYNC_TO_WATCH_KEY)
+                connectedWatchHandler.selectedWatch.value!!.id, PreferenceKey.DND_SYNC_TO_WATCH_KEY
+            )
             if (isEnabled) {
                 val context = getApplication<Application>()
                 Compat.startForegroundService(
-                    context, Intent(context, DnDLocalChangeService::class.java))
+                    context, Intent(context, DnDLocalChangeService::class.java)
+                )
             }
         }
     }

@@ -72,7 +72,8 @@ class SettingsFragment :
     }
 
     override fun onPreferenceChange(preference: Preference?, newValue: Any?): Boolean {
-        return when (val key = preference?.key
+        return when (
+            val key = preference?.key
         ) {
             BATTERY_SYNC_ENABLED_KEY,
             BATTERY_PHONE_CHARGE_NOTI_KEY,
@@ -105,7 +106,8 @@ class SettingsFragment :
                     messageClient.addListener(interruptFilterAccessListener)
                     interruptFilterAccessListenerRegistered = true
                     messageClient.sendMessage(
-                            phoneId, REQUEST_INTERRUPT_FILTER_ACCESS_STATUS_PATH, null)
+                        phoneId, REQUEST_INTERRUPT_FILTER_ACCESS_STATUS_PATH, null
+                    )
                         .addOnFailureListener { notifyError() }
                 } else {
                     sharedPreferences.edit().putBoolean(key, value).apply()
@@ -136,7 +138,9 @@ class SettingsFragment :
     }
 
     override fun onCreateRecyclerView(
-        inflater: LayoutInflater?, parent: ViewGroup?, savedInstanceState: Bundle?
+        inflater: LayoutInflater?,
+        parent: ViewGroup?,
+        savedInstanceState: Bundle?
     ): RecyclerView {
         return WearableRecyclerView(context)
             .apply {
@@ -184,7 +188,8 @@ class SettingsFragment :
     private fun notifyAdditionalSetupRequired(key: String) {
         launchMobileApp(requireContext(), phoneId, key)
         ConfirmationActivityHandler.openOnPhoneAnimation(
-            requireContext(), getString(R.string.additional_setup_required))
+            requireContext(), getString(R.string.additional_setup_required)
+        )
     }
 
     private fun notifyError() {
@@ -208,7 +213,8 @@ class SettingsFragment :
         if (phoneId.isNotEmpty()) {
             Wearable.getMessageClient(context)
                 .sendMessage(
-                    phoneId, References.REQUEST_LAUNCH_APP_PATH, key.toByteArray(Charsets.UTF_8))
+                    phoneId, References.REQUEST_LAUNCH_APP_PATH, key.toByteArray(Charsets.UTF_8)
+                )
         }
     }
 }

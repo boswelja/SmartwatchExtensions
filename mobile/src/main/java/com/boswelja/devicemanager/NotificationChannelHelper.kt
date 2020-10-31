@@ -21,11 +21,14 @@ object NotificationChannelHelper {
 
     fun createForBatteryCharged(context: Context, notificationManager: NotificationManager) {
         if (notificationManager.getNotificationChannel(
-            WatchBatteryUpdateReceiver.BATTERY_CHARGED_NOTI_CHANNEL_ID) == null) {
+                WatchBatteryUpdateReceiver.BATTERY_CHARGED_NOTI_CHANNEL_ID
+            ) == null
+        ) {
             NotificationChannel(
-                    WatchBatteryUpdateReceiver.BATTERY_CHARGED_NOTI_CHANNEL_ID,
-                    context.getString(R.string.noti_channel_watch_charged_title),
-                    NotificationManager.IMPORTANCE_HIGH)
+                WatchBatteryUpdateReceiver.BATTERY_CHARGED_NOTI_CHANNEL_ID,
+                context.getString(R.string.noti_channel_watch_charged_title),
+                NotificationManager.IMPORTANCE_HIGH
+            )
                 .apply {
                     enableLights(false)
                     enableVibration(true)
@@ -37,11 +40,13 @@ object NotificationChannelHelper {
 
     fun createForDnDSync(context: Context, notificationManager: NotificationManager) {
         if (notificationManager.getNotificationChannel(References.DND_SYNC_NOTI_CHANNEL_ID) ==
-            null) {
+            null
+        ) {
             NotificationChannel(
-                    References.DND_SYNC_NOTI_CHANNEL_ID,
-                    context.getString(R.string.noti_channel_dnd_sync_title),
-                    NotificationManager.IMPORTANCE_LOW)
+                References.DND_SYNC_NOTI_CHANNEL_ID,
+                context.getString(R.string.noti_channel_dnd_sync_title),
+                NotificationManager.IMPORTANCE_LOW
+            )
                 .apply {
                     enableLights(false)
                     enableVibration(false)
@@ -53,11 +58,14 @@ object NotificationChannelHelper {
 
     fun createForBootOrUpdate(context: Context, notificationManager: NotificationManager) {
         if (notificationManager.getNotificationChannel(
-            BootOrUpdateHandlerService.BOOT_OR_UPDATE_NOTI_CHANNEL_ID) == null) {
+                BootOrUpdateHandlerService.BOOT_OR_UPDATE_NOTI_CHANNEL_ID
+            ) == null
+        ) {
             NotificationChannel(
-                    BootOrUpdateHandlerService.BOOT_OR_UPDATE_NOTI_CHANNEL_ID,
-                    context.getString(R.string.noti_channel_boot_or_update_title),
-                    NotificationManager.IMPORTANCE_LOW)
+                BootOrUpdateHandlerService.BOOT_OR_UPDATE_NOTI_CHANNEL_ID,
+                context.getString(R.string.noti_channel_boot_or_update_title),
+                NotificationManager.IMPORTANCE_LOW
+            )
                 .apply {
                     enableLights(false)
                     enableVibration(false)

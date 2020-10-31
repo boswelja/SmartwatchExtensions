@@ -126,7 +126,8 @@ class WatchMessageReceiver : WearableListenerService() {
             .sendMessage(
                 sourceNodeId,
                 REQUEST_INTERRUPT_FILTER_ACCESS_STATUS_PATH,
-                hasDnDAccess.toByteArray())
+                hasDnDAccess.toByteArray()
+            )
     }
 
     /**

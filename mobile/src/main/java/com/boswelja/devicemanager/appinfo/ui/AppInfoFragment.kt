@@ -19,8 +19,6 @@ import androidx.navigation.fragment.findNavController
 import androidx.preference.Preference
 import com.boswelja.devicemanager.BuildConfig
 import com.boswelja.devicemanager.R
-import com.boswelja.devicemanager.common.GooglePlayUtils
-import com.boswelja.devicemanager.common.GooglePlayUtils.getPlayStoreLink
 import com.boswelja.devicemanager.common.ui.BasePreferenceFragment
 import com.boswelja.devicemanager.watchmanager.WatchManager
 import timber.log.Timber
@@ -32,7 +30,7 @@ class AppInfoFragment : BasePreferenceFragment(), Preference.OnPreferenceClickLi
 
     private val watchVersionPreference: Preference by lazy { findPreference(WATCH_VERSION_KEY)!! }
     private val customTabsIntent: CustomTabsIntent by lazy {
-        CustomTabsIntent.Builder().setShowTitle(true).setDefaultShareMenuItemEnabled(true).build()
+        CustomTabsIntent.Builder().setShowTitle(true).build()
     }
 
     override fun onPreferenceClick(preference: Preference?): Boolean {
@@ -40,7 +38,7 @@ class AppInfoFragment : BasePreferenceFragment(), Preference.OnPreferenceClickLi
         when (preference?.key) {
             OPEN_PRIVACY_POLICY_KEY -> showPrivacyPolicy()
             SHARE_APP_KEY -> showShareMenu()
-            LEAVE_REVIEW_KEY -> showPlayStorePage()
+            OPEN_GITHUB_KEY -> showGitHubPage()
             OPEN_DONATE_DIALOG_KEY ->
                 findNavController().navigate(AppInfoFragmentDirections.toDonateFragment())
             OPEN_CHANGELOG_KEY ->
@@ -80,24 +78,20 @@ class AppInfoFragment : BasePreferenceFragment(), Preference.OnPreferenceClickLi
     }
 
     private fun setupPreferences() {
-        findPreference<Preference>(OPEN_PRIVACY_POLICY_KEY)!!.apply {
-            onPreferenceClickListener = this@AppInfoFragment
-        }
+        findPreference<Preference>(OPEN_PRIVACY_POLICY_KEY)!!
+            .onPreferenceClickListener = this@AppInfoFragment
         findPreference<Preference>(SHARE_APP_KEY)!!.apply {
             isEnabled = !BuildConfig.DEBUG
             onPreferenceClickListener = this@AppInfoFragment
         }
-        findPreference<Preference>(LEAVE_REVIEW_KEY)!!.apply {
-            isEnabled = !BuildConfig.DEBUG
-            onPreferenceClickListener = this@AppInfoFragment
-        }
+        findPreference<Preference>(OPEN_GITHUB_KEY)!!
+            .onPreferenceClickListener = this@AppInfoFragment
         findPreference<Preference>(OPEN_DONATE_DIALOG_KEY)!!.apply {
             isEnabled = !BuildConfig.DEBUG
             onPreferenceClickListener = this@AppInfoFragment
         }
-        findPreference<Preference>(OPEN_CHANGELOG_KEY)!!.apply {
-            onPreferenceClickListener = this@AppInfoFragment
-        }
+        findPreference<Preference>(OPEN_CHANGELOG_KEY)!!
+            .onPreferenceClickListener = this@AppInfoFragment
         findPreference<Preference>(PHONE_VERSION_KEY)!!.apply {
             title =
                 getString(R.string.pref_about_phone_version_title).format(BuildConfig.VERSION_NAME)
@@ -127,7 +121,7 @@ class AppInfoFragment : BasePreferenceFragment(), Preference.OnPreferenceClickLi
         Intent()
             .apply {
                 action = Intent.ACTION_SEND
-                putExtra(Intent.EXTRA_TEXT, getPlayStoreLink(context))
+                putExtra(Intent.EXTRA_TEXT, getString(R.string.play_store_link))
                 putExtra(Intent.EXTRA_TITLE, shareTitle)
                 data = shareDataUri
                 type = "text/plain"
@@ -140,18 +134,15 @@ class AppInfoFragment : BasePreferenceFragment(), Preference.OnPreferenceClickLi
             }
     }
 
-    /** Opens the Play Store and navigates to the Wearable Extensions listing. */
-    private fun showPlayStorePage() {
-        GooglePlayUtils.getPlayStoreIntent(context).also {
-            Timber.i("Opening Play Store")
-            startActivity(it)
-        }
+    /** Launches a custom tab that navigates to the Wearable Extensions GitHub page. */
+    private fun showGitHubPage() {
+        customTabsIntent.launchUrl(requireContext(), getString(R.string.github_url).toUri())
     }
 
     companion object {
         const val OPEN_PRIVACY_POLICY_KEY = "privacy_policy"
         const val SHARE_APP_KEY = "share"
-        const val LEAVE_REVIEW_KEY = "review"
+        const val OPEN_GITHUB_KEY = "github"
         const val OPEN_DONATE_DIALOG_KEY = "show_donate_dialog"
         const val OPEN_CHANGELOG_KEY = "show_changelog"
         const val PHONE_VERSION_KEY = "phone_app_version"

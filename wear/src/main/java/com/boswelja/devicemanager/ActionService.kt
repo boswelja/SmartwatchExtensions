@@ -29,16 +29,20 @@ class ActionService : JobIntentService() {
     override fun onHandleWork(intent: Intent) {
         Timber.d("onHandleWork($intent) called")
         if (phoneId.isNotEmpty()) {
-            when (val action = intent.action
+            when (
+                val action = intent.action
             ) {
                 LOCK_PHONE_PATH -> {
                     if (sharedPreferences.getBoolean(
-                        PreferenceKey.PHONE_LOCKING_ENABLED_KEY, false)) {
+                            PreferenceKey.PHONE_LOCKING_ENABLED_KEY, false
+                        )
+                    ) {
                         sendMessage(
                             phoneId,
                             action,
                             getString(R.string.lock_phone_success),
-                            getString(R.string.lock_phone_failed))
+                            getString(R.string.lock_phone_failed)
+                        )
                     }
                 }
                 REQUEST_BATTERY_UPDATE_PATH -> {
@@ -47,7 +51,8 @@ class ActionService : JobIntentService() {
                             phoneId,
                             action,
                             getString(R.string.battery_sync_refresh_success),
-                            getString(R.string.battery_sync_refresh_failed))
+                            getString(R.string.battery_sync_refresh_failed)
+                        )
                     }
                 }
             }
@@ -55,7 +60,10 @@ class ActionService : JobIntentService() {
     }
 
     private fun sendMessage(
-        nodeId: String, action: String, successMessage: String, failMessage: String
+        nodeId: String,
+        action: String,
+        successMessage: String,
+        failMessage: String
     ) {
         messageClient
             .sendMessage(nodeId, action, null)

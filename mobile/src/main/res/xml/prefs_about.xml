@@ -17,9 +17,9 @@
             android:icon="@drawable/pref_ic_share" />
 
         <androidx.preference.Preference
-            android:key="review"
-            android:title="@string/pref_about_review_title"
-            android:icon="@drawable/pref_ic_review" />
+            android:key="github"
+            android:title="@string/pref_about_github"
+            android:icon="@drawable/pref_ic_github" />
 
         <androidx.preference.Preference
             android:key="show_donate_dialog"

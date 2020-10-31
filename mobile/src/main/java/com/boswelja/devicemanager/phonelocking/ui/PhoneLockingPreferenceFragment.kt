@@ -136,7 +136,8 @@ class PhoneLockingPreferenceFragment :
         coroutineScope.launch(Dispatchers.IO) {
             sharedPreferences.edit(commit = true) { putBoolean(PHONE_LOCKING_ENABLED_KEY, enabled) }
             watchPreferenceManager.updatePreferenceOnWatch(
-                connectedWatchId!!, PHONE_LOCKING_ENABLED_KEY)
+                connectedWatchId!!, PHONE_LOCKING_ENABLED_KEY
+            )
         }
     }
 
@@ -163,8 +164,10 @@ class PhoneLockingPreferenceFragment :
      */
     private fun isInAccessibilityMode(): Boolean =
         Build.VERSION.SDK_INT >= Build.VERSION_CODES.P &&
-            (sharedPreferences.getString(PHONE_LOCKING_MODE_KEY, "0") ==
-                PHONE_LOCKING_MODE_ACCESSIBILITY_SERVICE)
+            (
+                sharedPreferences.getString(PHONE_LOCKING_MODE_KEY, "0") ==
+                    PHONE_LOCKING_MODE_ACCESSIBILITY_SERVICE
+                )
 
     /**
      * Opens the device settings that correspond to phone locking mode. If phone locking mode is
@@ -181,7 +184,8 @@ class PhoneLockingPreferenceFragment :
             Intent()
                 .apply {
                     ComponentName(
-                            "com.android.settings", "com.android.settings.DeviceAdminSettings")
+                        "com.android.settings", "com.android.settings.DeviceAdminSettings"
+                    )
                         .also { component = it }
                 }
                 .also { startActivity(it) }
@@ -242,7 +246,8 @@ class PhoneLockingPreferenceFragment :
                 Snackbar.make(
                     requireView(),
                     R.string.phone_locking_disabled_by_mode_change,
-                    Snackbar.LENGTH_INDEFINITE)
+                    Snackbar.LENGTH_INDEFINITE
+                )
             snackbar!!.show()
         }
         when (newMode) {

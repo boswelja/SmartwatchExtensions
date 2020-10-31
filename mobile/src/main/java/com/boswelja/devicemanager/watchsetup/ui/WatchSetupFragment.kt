@@ -29,7 +29,9 @@ class WatchSetupFragment : Fragment() {
     private lateinit var binding: FragmentWatchSetupBinding
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View? {
         binding = FragmentWatchSetupBinding.inflate(inflater, container, false)
         return binding.root

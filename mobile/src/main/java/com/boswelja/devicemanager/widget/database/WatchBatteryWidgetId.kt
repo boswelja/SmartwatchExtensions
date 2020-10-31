@@ -15,4 +15,5 @@ import androidx.room.PrimaryKey
 class WatchBatteryWidgetId(
     @ColumnInfo(name = "watch_id")
     val watchId: String,
-    @PrimaryKey val widgetId: Int)
+    @PrimaryKey val widgetId: Int
+)

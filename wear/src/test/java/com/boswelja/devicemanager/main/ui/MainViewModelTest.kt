@@ -30,7 +30,8 @@ class MainViewModelTest {
     fun setUp() {
         sharedPreferences =
             PreferenceManager.getDefaultSharedPreferences(
-                ApplicationProvider.getApplicationContext())
+                ApplicationProvider.getApplicationContext()
+            )
     }
 
     @Test

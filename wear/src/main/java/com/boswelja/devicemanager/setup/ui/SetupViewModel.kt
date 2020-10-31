@@ -22,12 +22,12 @@ import com.google.android.gms.wearable.NodeClient
 import com.google.android.gms.wearable.Wearable
 
 class SetupViewModel
-    @JvmOverloads
-    constructor(
-        application: Application,
-        private val nodeClient: NodeClient = Wearable.getNodeClient(application),
-        private val messageClient: MessageClient = Wearable.getMessageClient(application)
-    ) : AndroidViewModel(application) {
+@JvmOverloads
+constructor(
+    application: Application,
+    private val nodeClient: NodeClient = Wearable.getNodeClient(application),
+    private val messageClient: MessageClient = Wearable.getMessageClient(application)
+) : AndroidViewModel(application) {
 
     private val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(application)
     private val messageListener =

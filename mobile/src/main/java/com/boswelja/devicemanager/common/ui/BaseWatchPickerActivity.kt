@@ -47,7 +47,10 @@ abstract class BaseWatchPickerActivity : BaseToolbarActivity(), AdapterView.OnIt
     private lateinit var watchPickerSpinner: AppCompatSpinner
 
     override fun onItemSelected(
-        adapterView: AdapterView<*>?, selectedView: View?, position: Int, id: Long
+        adapterView: AdapterView<*>?,
+        selectedView: View?,
+        position: Int,
+        id: Long
     ) {
         val connectedWatchId = id.toString(36)
         Timber.i("$connectedWatchId selected")
@@ -116,7 +119,8 @@ abstract class BaseWatchPickerActivity : BaseToolbarActivity(), AdapterView.OnIt
                     layoutParams =
                         ViewGroup.LayoutParams(
                             ViewGroup.LayoutParams.WRAP_CONTENT,
-                            ViewGroup.LayoutParams.WRAP_CONTENT)
+                            ViewGroup.LayoutParams.WRAP_CONTENT
+                        )
                     onItemSelectedListener = this@BaseWatchPickerActivity
                     adapter = this@BaseWatchPickerActivity.adapter
                 }
@@ -168,7 +172,8 @@ abstract class BaseWatchPickerActivity : BaseToolbarActivity(), AdapterView.OnIt
                             WatchStatus.DISCONNECTED -> R.string.watch_status_disconnected
                             WatchStatus.MISSING_APP -> R.string.watch_status_missing_app
                             else -> R.string.watch_status_error
-                        })
+                        }
+                    )
             }
             return view
         }

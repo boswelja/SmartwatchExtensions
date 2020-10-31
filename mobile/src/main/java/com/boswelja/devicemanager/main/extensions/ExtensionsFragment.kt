@@ -40,7 +40,9 @@ class ExtensionsFragment : BasePreferenceFragment(), Preference.OnPreferenceClic
                     findNavController()
                         .navigate(
                             ExtensionsFragmentDirections.toAppManagerActivity(
-                                watchId = it.id, watchName = it.name))
+                                watchId = it.id, watchName = it.name
+                            )
+                        )
                 }
                 true
             }

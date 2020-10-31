@@ -76,7 +76,9 @@ class WatchManagerTest {
                     capabilityClient,
                     nodeClient,
                     messageClient,
-                    database))
+                    database
+                )
+            )
     }
 
     @After
@@ -104,7 +106,8 @@ class WatchManagerTest {
 
         result =
             watchManager.getWatchStatus(
-                dummyWatch.id, setOf(dummyWatchNode), listOf(dummyWatchNode))
+                dummyWatch.id, setOf(dummyWatchNode), listOf(dummyWatchNode)
+            )
         assertThat(result).isEqualTo(WatchStatus.CONNECTED)
     }
 
@@ -115,7 +118,8 @@ class WatchManagerTest {
 
         var result =
             watchManager.getWatchStatus(
-                dummyWatch.id, setOf(dummyWatchNode), listOf(dummyWatchNode))
+                dummyWatch.id, setOf(dummyWatchNode), listOf(dummyWatchNode)
+            )
         assertThat(result).isEqualTo(WatchStatus.NOT_REGISTERED)
 
         result = watchManager.getWatchStatus(dummyWatch.id, setOf(dummyWatchNode), listOf())

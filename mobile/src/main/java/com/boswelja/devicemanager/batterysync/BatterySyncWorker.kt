@@ -8,15 +8,19 @@
 package com.boswelja.devicemanager.batterysync
 
 import android.content.Context
-import androidx.work.*
+import androidx.work.CoroutineWorker
+import androidx.work.Data
+import androidx.work.PeriodicWorkRequestBuilder
+import androidx.work.WorkManager
+import androidx.work.WorkerParameters
 import com.boswelja.devicemanager.batterysync.ui.Utils
 import com.boswelja.devicemanager.common.preference.PreferenceKey.BATTERY_SYNC_INTERVAL_KEY
 import com.boswelja.devicemanager.watchmanager.database.WatchDatabase
+import java.util.UUID
+import java.util.concurrent.TimeUnit
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import timber.log.Timber
-import java.util.*
-import java.util.concurrent.TimeUnit
 
 class BatterySyncWorker(appContext: Context, workerParams: WorkerParameters) :
     CoroutineWorker(appContext, workerParams) {
@@ -45,9 +49,8 @@ class BatterySyncWorker(appContext: Context, workerParams: WorkerParameters) :
                 val data = Data.Builder().apply { putString(EXTRA_WATCH_ID, watchId) }.build()
                 val request =
                     PeriodicWorkRequestBuilder<BatterySyncWorker>(
-                            syncIntervalMinutes, TimeUnit.SECONDS)
-                        .apply { setInputData(data) }
-                        .build()
+                        syncIntervalMinutes, TimeUnit.SECONDS
+                    ).apply { setInputData(data) }.build()
                 WorkManager.getInstance(context).enqueue(request)
                 val newWorkerId = request.id.toString()
                 database.watchDao().updateBatterySyncWorkerId(watchId, newWorkerId)

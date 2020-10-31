@@ -39,7 +39,8 @@ class BatterySyncViewModelTest {
     fun `Toggling Battery Sync preference updates the corresponding LiveData`() {
         val sharedPreferences =
             PreferenceManager.getDefaultSharedPreferences(
-                ApplicationProvider.getApplicationContext())
+                ApplicationProvider.getApplicationContext()
+            )
         sharedPreferences.edit(commit = true) {
             putBoolean(PreferenceKey.BATTERY_SYNC_ENABLED_KEY, true)
         }

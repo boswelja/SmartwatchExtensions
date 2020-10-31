@@ -19,13 +19,13 @@ import timber.log.Timber
 
 @SuppressLint("ResourceType")
 class ConfirmationDialogPreference
-    @JvmOverloads
-    constructor(
-        context: Context,
-        attrs: AttributeSet? = null,
-        defStyleAttr: Int = R.attr.dialogPreferenceStyle,
-        defStyleRes: Int = R.attr.dialogPreferenceStyle
-    ) : DialogPreference(context, attrs, defStyleAttr, defStyleRes) {
+@JvmOverloads
+constructor(
+    context: Context,
+    attrs: AttributeSet? = null,
+    defStyleAttr: Int = R.attr.dialogPreferenceStyle,
+    defStyleRes: Int = R.attr.dialogPreferenceStyle
+) : DialogPreference(context, attrs, defStyleAttr, defStyleRes) {
 
     private var value = false
 
@@ -38,7 +38,8 @@ class ConfirmationDialogPreference
     init {
         val styledAttrs =
             context.obtainStyledAttributes(
-                attrs, R.styleable.ConfirmationDialogPreference, defStyleAttr, defStyleRes)
+                attrs, R.styleable.ConfirmationDialogPreference, defStyleAttr, defStyleRes
+            )
         showOnEnable =
             styledAttrs.getBoolean(R.styleable.ConfirmationDialogPreference_showOnEnable, true)
         showOnDisable =
@@ -85,7 +86,8 @@ class ConfirmationDialogPreference
         if (value != newValue) {
             Timber.i("Setting new value")
             if ((onPreferenceChangeListener == null) ||
-                (onPreferenceChangeListener?.onPreferenceChange(this, newValue) == true)) {
+                (onPreferenceChangeListener?.onPreferenceChange(this, newValue) == true)
+            ) {
                 value = newValue
                 try {
                     setButtonChecked(value)

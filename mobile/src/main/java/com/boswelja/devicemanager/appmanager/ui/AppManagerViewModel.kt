@@ -19,15 +19,13 @@ import com.boswelja.devicemanager.common.appmanager.AppPackageInfoList
 import com.boswelja.devicemanager.common.appmanager.References
 import com.google.android.gms.wearable.MessageClient
 import com.google.android.gms.wearable.Wearable
-import timber.log.Timber
 import java.io.InvalidClassException
+import timber.log.Timber
 
-class AppManagerViewModel
-    @JvmOverloads
-    constructor(
-        application: Application,
-        private val messageClient: MessageClient = Wearable.getMessageClient(application)
-    ) : AndroidViewModel(application) {
+class AppManagerViewModel @JvmOverloads constructor(
+    application: Application,
+    private val messageClient: MessageClient = Wearable.getMessageClient(application)
+) : AndroidViewModel(application) {
 
     private val messageListener =
         MessageClient.OnMessageReceivedListener {
@@ -126,27 +124,33 @@ class AppManagerViewModel
         val result = ArrayList<Item>()
         val userApps = appPackageInfoList.filterNot { it.isSystemApp }.sortedBy { it.packageLabel }
         result.add(
-            Item.Header(context.getString(R.string.app_manager_section_user_apps), 0.toString()))
+            Item.Header(context.getString(R.string.app_manager_section_user_apps), 0.toString())
+        )
         result.addAll(
             userApps.map {
                 Item.App(
                     it.packageIcon?.bitmap,
                     it.packageName,
                     it.packageLabel,
-                    it.versionName ?: it.versionCode.toString())
-            })
+                    it.versionName ?: it.versionCode.toString()
+                )
+            }
+        )
 
         val systemApps = appPackageInfoList.filter { it.isSystemApp }.sortedBy { it.packageLabel }
         result.add(
-            Item.Header(context.getString(R.string.app_manager_section_system_apps), 1.toString()))
+            Item.Header(context.getString(R.string.app_manager_section_system_apps), 1.toString())
+        )
         result.addAll(
             systemApps.map {
                 Item.App(
                     it.packageIcon?.bitmap,
                     it.packageName,
                     it.packageLabel,
-                    it.versionName ?: it.versionCode.toString())
-            })
+                    it.versionName ?: it.versionCode.toString()
+                )
+            }
+        )
 
         return result
     }

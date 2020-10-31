@@ -83,7 +83,9 @@ class WatchInfoActivity : BaseToolbarActivity() {
                         setMessage(
                             getString(
                                 R.string.clear_preferences_dialog_message,
-                                binding.watchNameField.text))
+                                binding.watchNameField.text
+                            )
+                        )
                         setPositiveButton(R.string.dialog_button_yes) { _, _ -> clearPreferences() }
                         setNegativeButton(R.string.dialog_button_no) { dialogInterface, _ ->
                             Timber.i("User aborted")
@@ -104,11 +106,13 @@ class WatchInfoActivity : BaseToolbarActivity() {
                 if (success) {
                     Timber.i("Successfully cleared preferences")
                     createSnackBar(
-                        "Successfully cleared settings for your ${binding.watchNameField.text}")
+                        "Successfully cleared settings for your ${binding.watchNameField.text}"
+                    )
                 } else {
                     Timber.w("Failed to clear preferences")
                     createSnackBar(
-                        "Failed to clear settings for your ${binding.watchNameField.text}")
+                        "Failed to clear settings for your ${binding.watchNameField.text}"
+                    )
                 }
             }
         }
@@ -125,7 +129,9 @@ class WatchInfoActivity : BaseToolbarActivity() {
                         setTitle(R.string.forget_watch_dialog_title)
                         setMessage(
                             getString(
-                                R.string.forget_watch_dialog_message, watch?.name, watch?.name))
+                                R.string.forget_watch_dialog_message, watch?.name, watch?.name
+                            )
+                        )
                         setPositiveButton(R.string.dialog_button_yes) { _, _ -> forgetWatch(watch) }
                         setNegativeButton(R.string.dialog_button_no) { dialogInterface, _ ->
                             Timber.i("User aborted")

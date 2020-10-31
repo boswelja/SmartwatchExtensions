@@ -19,7 +19,9 @@ import timber.log.Timber
 internal class LoadingFragment : Fragment() {
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View? = inflater.inflate(R.layout.common_fragment_loading, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

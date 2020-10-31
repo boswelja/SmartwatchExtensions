@@ -29,7 +29,8 @@ abstract class WidgetDatabase : RoomDatabase() {
         suspend fun open(context: Context): WidgetDatabase {
             return withContext(Dispatchers.IO) {
                 return@withContext Room.databaseBuilder(
-                        context, WidgetDatabase::class.java, "widget-db")
+                    context, WidgetDatabase::class.java, "widget-db"
+                )
                     .build()
             }
         }

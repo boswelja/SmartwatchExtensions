@@ -7,13 +7,17 @@
  */
 package com.boswelja.devicemanager.appmanager.ui.info
 
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Transformations
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import com.boswelja.devicemanager.BuildConfig
 import com.boswelja.devicemanager.common.appmanager.AppPackageInfo
 import com.boswelja.devicemanager.common.appmanager.References
 import com.google.android.gms.wearable.MessageClient
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Locale
 
 class AppPackageInfoViewModel(private val messageClient: MessageClient) : ViewModel() {
 
@@ -57,7 +61,8 @@ class AppPackageInfoViewModel(private val messageClient: MessageClient) : ViewMo
         messageClient.sendMessage(
             watchId!!,
             References.REQUEST_UNINSTALL_PACKAGE,
-            appInfo.value!!.packageName.toByteArray(Charsets.UTF_8))
+            appInfo.value!!.packageName.toByteArray(Charsets.UTF_8)
+        )
         _finishActivity.postValue(true)
     }
 
@@ -66,7 +71,8 @@ class AppPackageInfoViewModel(private val messageClient: MessageClient) : ViewMo
         messageClient.sendMessage(
             watchId!!,
             References.REQUEST_OPEN_PACKAGE,
-            appInfo.value!!.packageName.toByteArray(Charsets.UTF_8))
+            appInfo.value!!.packageName.toByteArray(Charsets.UTF_8)
+        )
     }
 }
 

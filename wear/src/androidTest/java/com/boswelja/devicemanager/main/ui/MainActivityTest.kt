@@ -27,7 +27,8 @@ class MainActivityTest {
     fun setUp() {
         sharedPreferences =
             PreferenceManager.getDefaultSharedPreferences(
-                ApplicationProvider.getApplicationContext())
+                ApplicationProvider.getApplicationContext()
+            )
     }
 
     @Test

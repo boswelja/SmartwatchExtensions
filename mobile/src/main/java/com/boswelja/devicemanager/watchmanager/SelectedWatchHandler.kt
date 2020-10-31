@@ -25,13 +25,13 @@ import timber.log.Timber
  * via [selectedWatch]. Use [SelectedWatchHandler.get] to get an instance.
  */
 class SelectedWatchHandler
-    internal constructor(
-        context: Context,
-        private val sharedPreferences: SharedPreferences =
-            PreferenceManager.getDefaultSharedPreferences(context),
-        private val coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.IO),
-        val database: WatchDatabase = WatchDatabase.get(context)
-    ) {
+internal constructor(
+    context: Context,
+    private val sharedPreferences: SharedPreferences =
+        PreferenceManager.getDefaultSharedPreferences(context),
+    private val coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.IO),
+    val database: WatchDatabase = WatchDatabase.get(context)
+) {
 
     private val _selectedWatch = MutableLiveData<Watch?>()
 

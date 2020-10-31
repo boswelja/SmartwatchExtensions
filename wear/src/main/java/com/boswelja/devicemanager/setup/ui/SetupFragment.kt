@@ -23,7 +23,9 @@ class SetupFragment : Fragment() {
     private lateinit var binding: FragmentSetupBinding
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View? {
         binding = FragmentSetupBinding.inflate(layoutInflater, container, false)
         binding.viewModel = viewModel

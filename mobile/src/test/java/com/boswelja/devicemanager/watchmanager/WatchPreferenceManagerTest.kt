@@ -64,7 +64,8 @@ class WatchPreferenceManagerTest {
                 coroutineScope = coroutineScope,
                 dataClient = dataClient,
                 sharedPreferences = sharedPreferences,
-                database = database)
+                database = database
+            )
     }
 
     @After
@@ -91,10 +92,12 @@ class WatchPreferenceManagerTest {
     @Test
     fun `Updating a preference in the database forwards the request correctly`() {
         watchPreferenceManager.updatePreferenceInDatabase(
-            dummyPreference.watchId, dummyPreference.key, dummyPreference.value)
+            dummyPreference.watchId, dummyPreference.key, dummyPreference.value
+        )
         verify(exactly = 1) {
             database.updatePrefInDatabase(
-                dummyPreference.watchId, dummyPreference.key, dummyPreference.value)
+                dummyPreference.watchId, dummyPreference.key, dummyPreference.value
+            )
         }
     }
 

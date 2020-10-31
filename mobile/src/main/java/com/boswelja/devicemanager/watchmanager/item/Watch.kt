@@ -24,7 +24,8 @@ data class Watch(
     @Ignore var status: WatchStatus
 ) {
     constructor(id: String, name: String, batterySyncWorkerId: String?) : this(
-        id, name, batterySyncWorkerId, WatchStatus.UNKNOWN)
+        id, name, batterySyncWorkerId, WatchStatus.UNKNOWN
+    )
 
     constructor(node: Node, status: WatchStatus) : this(node.id, node.displayName, null, status)
 

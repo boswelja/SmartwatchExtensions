@@ -36,7 +36,8 @@ class AppManagerActivity : BaseToolbarActivity() {
             binding.toolbarLayout.toolbar,
             showTitle = true,
             showUpButton = true,
-            toolbarSubtitle = getString(R.string.app_manager_activity_subtitle, args.watchName))
+            toolbarSubtitle = getString(R.string.app_manager_activity_subtitle, args.watchName)
+        )
 
         viewModel.watchId = args.watchId
 

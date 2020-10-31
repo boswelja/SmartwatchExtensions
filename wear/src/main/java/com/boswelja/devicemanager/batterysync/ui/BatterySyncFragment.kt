@@ -22,7 +22,9 @@ class BatterySyncFragment : Fragment() {
     private lateinit var binding: FragmentBatterySyncBinding
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View? {
         binding = FragmentBatterySyncBinding.inflate(inflater, container, false)
         binding.viewModel = viewModel

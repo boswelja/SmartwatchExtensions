@@ -63,7 +63,8 @@ class PhoneBatteryUpdateReceiver : WearableListenerService() {
             if (batteryStats.percent >= chargeThreshold && !hasNotiBeenSent) {
                 val phoneName =
                     sharedPreferences.getString(
-                        PHONE_NAME_KEY, getString(R.string.default_phone_name))
+                        PHONE_NAME_KEY, getString(R.string.default_phone_name)
+                    )
                         ?: getString(R.string.default_phone_name)
                 notifyCharged(phoneName, chargeThreshold)
             }
@@ -86,13 +87,15 @@ class PhoneBatteryUpdateReceiver : WearableListenerService() {
         getSystemService<NotificationManager>()?.let { notificationManager ->
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O &&
                 notificationManager.getNotificationChannel(BATTERY_CHARGED_NOTI_CHANNEL_ID) ==
-                    null) {
+                null
+            ) {
                 Timber.i("Creating notification channel")
                 val channel =
                     NotificationChannel(
-                            BATTERY_CHARGED_NOTI_CHANNEL_ID,
-                            getString(R.string.noti_channel_phone_charged_title),
-                            NotificationManager.IMPORTANCE_HIGH)
+                        BATTERY_CHARGED_NOTI_CHANNEL_ID,
+                        getString(R.string.noti_channel_phone_charged_title),
+                        NotificationManager.IMPORTANCE_HIGH
+                    )
                         .apply {
                             enableVibration(true)
                             setShowBadge(true)
@@ -108,7 +111,9 @@ class PhoneBatteryUpdateReceiver : WearableListenerService() {
                         getString(
                             R.string.device_charged_noti_desc,
                             deviceName,
-                            chargeThreshold.toString()))
+                            chargeThreshold.toString()
+                        )
+                    )
                     .setLocalOnly(true)
                     .build()
 

@@ -30,11 +30,11 @@ import com.boswelja.devicemanager.watchmanager.item.Watch
 import com.boswelja.devicemanager.widget.database.WidgetDatabase
 import com.google.android.gms.wearable.MessageEvent
 import com.google.android.gms.wearable.WearableListenerService
+import java.util.Locale
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import java.util.*
 
 class WatchBatteryUpdateReceiver : WearableListenerService() {
 
@@ -56,7 +56,8 @@ class WatchBatteryUpdateReceiver : WearableListenerService() {
                 }
                 updateStatsInDatabase()
                 WidgetDatabase.updateWatchWidgets(
-                    this@WatchBatteryUpdateReceiver, watchBatteryStats.watchId)
+                    this@WatchBatteryUpdateReceiver, watchBatteryStats.watchId
+                )
             }
         }
     }
@@ -84,7 +85,9 @@ class WatchBatteryUpdateReceiver : WearableListenerService() {
      * @return true if we can send a charged notification, false otherwise.
      */
     private fun canSendChargedNoti(
-        database: WatchDatabase, watchId: String, chargedThreshold: Int
+        database: WatchDatabase,
+        watchId: String,
+        chargedThreshold: Int
     ): Boolean {
         val sendChargeNotis =
             database.boolPrefDao().get(watchId, BATTERY_WATCH_CHARGE_NOTI_KEY)?.value == true
@@ -111,7 +114,8 @@ class WatchBatteryUpdateReceiver : WearableListenerService() {
                 .setContentTitle(getString(R.string.device_charged_noti_title, watch.name))
                 .setContentText(
                     getString(R.string.device_charged_noti_desc)
-                        .format(Locale.getDefault(), watch.name, chargeThreshold))
+                        .format(Locale.getDefault(), watch.name, chargeThreshold)
+                )
                 .setLocalOnly(true)
                 .also { notificationManager.notify(BATTERY_CHARGED_NOTI_ID, it.build()) }
         } else {
@@ -125,12 +129,15 @@ class WatchBatteryUpdateReceiver : WearableListenerService() {
                                 label = getString(R.string.message_watch_charge_noti_warning_label),
                                 shortLabel =
                                     getString(
-                                        R.string.message_watch_charge_noti_warning_label_short),
+                                        R.string.message_watch_charge_noti_warning_label_short
+                                    ),
                                 desc = getString(R.string.message_watch_charge_noti_warning_desc),
                                 buttonLabel =
                                     getString(
-                                        R.string.message_watch_charge_noti_warning_button_label),
-                                action = Action.LAUNCH_NOTIFICATION_SETTINGS)
+                                        R.string.message_watch_charge_noti_warning_button_label
+                                    ),
+                                action = Action.LAUNCH_NOTIFICATION_SETTINGS
+                            )
                         sendMessage(sharedPreferences, message)
                     }
                     .also { it.close() }

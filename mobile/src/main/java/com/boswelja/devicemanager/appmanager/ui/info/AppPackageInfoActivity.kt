@@ -66,7 +66,8 @@ class AppPackageInfoActivity : BaseToolbarActivity() {
                     resources.getQuantityString(
                         R.plurals.app_info_requested_permissions_count,
                         requestedPermissionCount,
-                        requestedPermissionCount)
+                        requestedPermissionCount
+                    )
                 } else {
                     getString(R.string.app_info_requested_permissions_none)
                 }

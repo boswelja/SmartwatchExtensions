@@ -15,7 +15,11 @@ import com.boswelja.devicemanager.watchmanager.database.WatchDatabase
 import com.boswelja.devicemanager.watchmanager.item.Watch
 import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.Tasks
-import com.google.android.gms.wearable.*
+import com.google.android.gms.wearable.CapabilityClient
+import com.google.android.gms.wearable.MessageClient
+import com.google.android.gms.wearable.Node
+import com.google.android.gms.wearable.NodeClient
+import com.google.android.gms.wearable.Wearable
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import timber.log.Timber
@@ -24,17 +28,16 @@ import timber.log.Timber
  * Provides a simplified interface for managing registered watches, finding new watches and updating
  * local SharedPreferences when the connected watch changes.
  */
-class WatchManager
-    internal constructor(
-        context: Context,
-        private val watchPreferenceManager: WatchPreferenceManager =
-            WatchPreferenceManager.get(context),
-        private val selectedWatchHandler: SelectedWatchHandler = SelectedWatchHandler.get(context),
-        private val capabilityClient: CapabilityClient = Wearable.getCapabilityClient(context),
-        private val nodeClient: NodeClient = Wearable.getNodeClient(context),
-        private val messageClient: MessageClient = Wearable.getMessageClient(context),
-        val database: WatchDatabase = WatchDatabase.get(context)
-    ) {
+class WatchManager internal constructor(
+    context: Context,
+    private val watchPreferenceManager: WatchPreferenceManager =
+        WatchPreferenceManager.get(context),
+    private val selectedWatchHandler: SelectedWatchHandler = SelectedWatchHandler.get(context),
+    private val capabilityClient: CapabilityClient = Wearable.getCapabilityClient(context),
+    private val nodeClient: NodeClient = Wearable.getNodeClient(context),
+    private val messageClient: MessageClient = Wearable.getMessageClient(context),
+    val database: WatchDatabase = WatchDatabase.get(context)
+) {
 
     val connectedWatch: LiveData<Watch?>
         get() = selectedWatchHandler.selectedWatch
@@ -54,7 +57,9 @@ class WatchManager
      * @return A [WatchStatus] for the [Watch].
      */
     internal fun getWatchStatus(
-        watchId: String, capableNodes: Set<Node>? = null, connectedNodes: List<Node>? = null
+        watchId: String,
+        capableNodes: Set<Node>? = null,
+        connectedNodes: List<Node>? = null
     ): WatchStatus {
         val isCapable = capableNodes?.any { it.id == watchId } ?: false
         val isConnected = connectedNodes?.any { it.id == watchId } ?: false
@@ -94,9 +99,10 @@ class WatchManager
             withContext(Dispatchers.IO) {
                 capableNodes =
                     Tasks.await(
-                            capabilityClient.getCapability(
-                                References.CAPABILITY_WATCH_APP, CapabilityClient.FILTER_REACHABLE))
-                        .nodes
+                        capabilityClient.getCapability(
+                            References.CAPABILITY_WATCH_APP, CapabilityClient.FILTER_REACHABLE
+                        )
+                    ).nodes
             }
         } catch (e: Exception) {
             Timber.w(e)
@@ -161,7 +167,8 @@ class WatchManager
             messageClient.sendMessage(
                 watch.id,
                 com.boswelja.devicemanager.common.setup.References.WATCH_REGISTERED_PATH,
-                null)
+                null
+            )
         }
     }
 

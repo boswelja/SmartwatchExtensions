@@ -17,4 +17,5 @@ data class BoolPreference(
     @ColumnInfo(name = "pref_key")
     val key: String,
     @ColumnInfo(name = "value")
-    val value: Boolean)
+    val value: Boolean
+)

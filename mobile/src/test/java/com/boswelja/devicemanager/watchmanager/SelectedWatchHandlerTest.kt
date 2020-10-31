@@ -60,7 +60,8 @@ class SelectedWatchHandlerTest {
                 ApplicationProvider.getApplicationContext(),
                 sharedPreferences = sharedPreferences,
                 coroutineScope = coroutineScope,
-                database = dummyDatabase)
+                database = dummyDatabase
+            )
     }
 
     @After

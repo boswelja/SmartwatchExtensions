@@ -17,8 +17,7 @@ class BootOrUpdateReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context?, intent: Intent?) {
         Timber.i("Received a broadcast")
-        when (val broadcastAction = intent?.action
-        ) {
+        when (val broadcastAction = intent?.action) {
             Intent.ACTION_MY_PACKAGE_REPLACED, Intent.ACTION_BOOT_COMPLETED -> {
                 Timber.i("Starting BootOrUpdateHandlerService")
                 Intent(context!!.applicationContext, BootOrUpdateHandlerService::class.java)

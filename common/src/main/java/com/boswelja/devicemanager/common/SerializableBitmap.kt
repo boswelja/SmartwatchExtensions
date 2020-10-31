@@ -9,7 +9,11 @@ package com.boswelja.devicemanager.common
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import java.io.*
+import java.io.ByteArrayOutputStream
+import java.io.IOException
+import java.io.ObjectInputStream
+import java.io.ObjectOutputStream
+import java.io.Serializable
 
 class SerializableBitmap(var bitmap: Bitmap) : Serializable {
 

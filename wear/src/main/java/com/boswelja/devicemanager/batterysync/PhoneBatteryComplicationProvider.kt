@@ -28,10 +28,13 @@ import com.boswelja.devicemanager.common.preference.PreferenceKey
 class PhoneBatteryComplicationProvider : BaseComplicationProviderService() {
 
     override fun onCreateComplication(
-        complicationId: Int, type: Int, manager: ComplicationManager?
+        complicationId: Int,
+        type: Int,
+        manager: ComplicationManager?
     ) {
         if (type != ComplicationData.TYPE_SHORT_TEXT &&
-            type != ComplicationData.TYPE_RANGED_VALUE) {
+            type != ComplicationData.TYPE_RANGED_VALUE
+        ) {
             manager?.noUpdateRequired(complicationId)
         }
 
@@ -69,9 +72,11 @@ class PhoneBatteryComplicationProvider : BaseComplicationProviderService() {
     companion object {
         fun updateAll(context: Context) {
             ProviderUpdateRequester(
-                    context,
-                    ComponentName(
-                        context.packageName, PhoneBatteryComplicationProvider::class.java.name))
+                context,
+                ComponentName(
+                    context.packageName, PhoneBatteryComplicationProvider::class.java.name
+                )
+            )
                 .requestUpdateAll()
         }
     }

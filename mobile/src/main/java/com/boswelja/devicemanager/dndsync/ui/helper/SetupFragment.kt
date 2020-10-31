@@ -25,7 +25,9 @@ internal class SetupFragment : Fragment() {
     private lateinit var binding: FragmentDndsyncHelperSetupBinding
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View? {
         binding = FragmentDndsyncHelperSetupBinding.inflate(inflater, container, false)
         return binding.root

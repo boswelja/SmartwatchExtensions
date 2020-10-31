@@ -19,8 +19,8 @@ import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.batterysync.database.WatchBatteryStats
 import com.boswelja.devicemanager.databinding.SettingsWidgetBatterySyncBinding
 import com.boswelja.devicemanager.watchmanager.WatchManager
-import timber.log.Timber
 import java.util.concurrent.TimeUnit
+import timber.log.Timber
 
 class BatterySyncPreferenceWidgetFragment : Fragment() {
 
@@ -42,7 +42,9 @@ class BatterySyncPreferenceWidgetFragment : Fragment() {
     private var batteryStatsObservable: LiveData<WatchBatteryStats?>? = null
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View? {
         Timber.d("onCreateView() called")
         binding = SettingsWidgetBatterySyncBinding.inflate(inflater, container, false)
@@ -97,7 +99,8 @@ class BatterySyncPreferenceWidgetFragment : Fragment() {
                 getString(R.string.battery_sync_last_updated_under_minute)
             } else {
                 resources.getQuantityString(
-                    R.plurals.battery_sync_last_updated_minutes, minutes, minutes)
+                    R.plurals.battery_sync_last_updated_minutes, minutes, minutes
+                )
             }
         binding.lastUpdatedTime.text = lastUpdateText
     }

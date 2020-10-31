@@ -28,7 +28,9 @@ class WidgetSettingsWidget : Fragment() {
     private lateinit var binding: SettingsWidgetWidgetSettingsBinding
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View? {
         binding = SettingsWidgetWidgetSettingsBinding.inflate(inflater, container, false)
         return binding.root
@@ -43,7 +45,8 @@ class WidgetSettingsWidget : Fragment() {
             }
             findViewById<TextView>(R.id.battery_indicator_text).text =
                 getString(
-                    R.string.battery_sync_percent_short, BATTERY_WIDGET_PREVIEW_PERCENT.toString())
+                    R.string.battery_sync_percent_short, BATTERY_WIDGET_PREVIEW_PERCENT.toString()
+                )
         }
         viewModel.widgetBackgroundVisible.observe(viewLifecycleOwner) {
             setWidgetBackgroundEnabled(it)

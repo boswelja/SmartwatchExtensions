@@ -13,8 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.boswelja.devicemanager.common.recyclerview.adapter.SectionedAdapter.Companion.SECTION_HEADER_HIDDEN
 import com.boswelja.devicemanager.common.recyclerview.adapter.SectionedAdapter.SortMode.DEFAULT
 import com.boswelja.devicemanager.common.recyclerview.item.SectionHeaderViewHolder
-import java.util.*
-import kotlin.collections.ArrayList
+import java.util.Locale
 
 /**
  * A custom [RecyclerView.Adapter] set up for sections.
@@ -45,8 +44,10 @@ abstract class SectionedAdapter<T>(
     }
 
     abstract fun onCreateItemViewHolder(
-        layoutInflater: LayoutInflater, parent: ViewGroup
+        layoutInflater: LayoutInflater,
+        parent: ViewGroup
     ): RecyclerView.ViewHolder
+
     abstract fun onBindItemViewHolder(holder: RecyclerView.ViewHolder, item: T)
 
     override fun getItemCount(): Int = sectionCount + itemCount
