@@ -42,8 +42,6 @@ abstract class BaseWatchPickerActivity : BaseToolbarActivity(), AdapterView.OnIt
     internal val coroutineScope = MainScope()
     internal val database by lazy { WatchDatabase.get(this) }
 
-    private var hasStartedWatchSetup = false
-
     private lateinit var watchPickerSpinner: AppCompatSpinner
 
     override fun onItemSelected(
@@ -63,7 +61,7 @@ abstract class BaseWatchPickerActivity : BaseToolbarActivity(), AdapterView.OnIt
         super.onCreate(savedInstanceState)
 
         database.watchDao().getAllObservable().observe(this) {
-            if (it.isEmpty() && hasStartedWatchSetup) finish() else setWatchList(it)
+            if (it.isEmpty()) startSetupActivity() else setWatchList(it)
         }
         connectedWatchHandler.selectedWatch.observe(this) { it?.let { selectWatch(it.id) } }
     }
@@ -90,22 +88,17 @@ abstract class BaseWatchPickerActivity : BaseToolbarActivity(), AdapterView.OnIt
         Timber.d("updateConnectedWatches() called")
         adapter.clear()
         coroutineScope.launch(Dispatchers.Default) {
-            if (watches.isNotEmpty()) {
-                Timber.i("Setting watches")
-                val connectedWatchId = connectedWatchHandler.selectedWatch.value?.id
-                var selectedWatchPosition = 0
-                watches.forEach {
-                    withContext(Dispatchers.Main) { adapter.add(it) }
-                    if (it.id == connectedWatchId) {
-                        selectedWatchPosition = adapter.getPosition(it)
-                    }
+            Timber.i("Setting watches")
+            val connectedWatchId = connectedWatchHandler.selectedWatch.value?.id
+            var selectedWatchPosition = 0
+            watches.forEach {
+                withContext(Dispatchers.Main) { adapter.add(it) }
+                if (it.id == connectedWatchId) {
+                    selectedWatchPosition = adapter.getPosition(it)
                 }
-                withContext(Dispatchers.Main) {
-                    watchPickerSpinner.setSelection(selectedWatchPosition)
-                }
-            } else {
-                Timber.i("No registered watches found")
-                startSetupActivity()
+            }
+            withContext(Dispatchers.Main) {
+                watchPickerSpinner.setSelection(selectedWatchPosition)
             }
         }
     }
@@ -130,13 +123,13 @@ abstract class BaseWatchPickerActivity : BaseToolbarActivity(), AdapterView.OnIt
                 }
     }
 
-    /** Start an instance of [WatchSetupActivity]. */
+    /** Start an instance of [WatchSetupActivity] and finishes this activity. */
     private fun startSetupActivity() {
         Timber.d("startSetupActivity() called")
         Intent(this@BaseWatchPickerActivity, WatchSetupActivity::class.java).also {
             startActivity(it)
         }
-        hasStartedWatchSetup = true
+        finish()
     }
 
     class WatchPickerAdapter(context: Context) : ArrayAdapter<Watch>(context, 0) {
