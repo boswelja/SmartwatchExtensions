@@ -29,6 +29,7 @@ import com.boswelja.devicemanager.messages.Message
 import com.boswelja.devicemanager.messages.database.MessageDatabase
 import com.boswelja.devicemanager.watchmanager.WatchManager
 import com.boswelja.devicemanager.watchmanager.database.WatchDatabase
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
@@ -36,6 +37,8 @@ import kotlinx.coroutines.withContext
 import timber.log.Timber
 
 class BootOrUpdateHandlerService : Service() {
+
+    private val coroutineScope = CoroutineScope(Dispatchers.IO)
 
     private var isUpdating = false
 
@@ -71,18 +74,23 @@ class BootOrUpdateHandlerService : Service() {
             when (updater.doUpdate()) {
                 Result.COMPLETED -> {
                     Timber.i("Update completed")
-                    val updateMessage =
-                        Message(
-                            R.drawable.ic_update,
-                            "Updated to version ${BuildConfig.VERSION_NAME}",
-                            "Version ${BuildConfig.VERSION_NAME}",
-                            action = Action.SHOW_CHANGELOG,
-                            buttonLabel = "See What's New"
-                        )
-                    MessageDatabase.get(this)
-                        .sendMessage(
-                            PreferenceManager.getDefaultSharedPreferences(this), updateMessage
-                        )
+                    coroutineScope.launch {
+                        val updateMessage =
+                            Message(
+                                R.drawable.ic_update,
+                                "Updated to version ${BuildConfig.VERSION_NAME}",
+                                "Version ${BuildConfig.VERSION_NAME}",
+                                action = Action.SHOW_CHANGELOG,
+                                buttonLabel = "See What's New"
+                            )
+                        MessageDatabase.get(this@BootOrUpdateHandlerService)
+                            .sendMessage(
+                                PreferenceManager.getDefaultSharedPreferences(
+                                    this@BootOrUpdateHandlerService
+                                ),
+                                updateMessage
+                            )
+                    }
                 }
                 Result.NOT_NEEDED -> Timber.i("Update not needed")
             }
