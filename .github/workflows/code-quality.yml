@@ -1,0 +1,29 @@
+name: Code Quality CI
+
+on:
+  push:
+    paths-ignore:
+      - '*.md'
+    branches:
+      - 'main'
+      - 'production'
+  pull_request:
+    paths-ignore:
+      - '*.md'
+    branches:
+      - 'main'
+
+jobs:
+  code-quality:
+    name: Code Quality
+    runs-on: ubuntu-latest
+    needs: assemble
+    steps:
+      - uses: actions/checkout@v2
+      - run: brew install ktlint
+      - name: Run ktlint
+        run: ktlint --android --reporter=checkstyle,output=ktlint_result.xml
+      - uses: yutailang0119/action-ktlint@v1.0.0
+        if: failure()
+        with:
+          xml_path: ktlint_result.xml
