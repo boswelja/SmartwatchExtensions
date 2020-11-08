@@ -16,4 +16,6 @@
     <dimen name="watch_selector_horizontal_margin">16dp</dimen>
     <dimen name="watch_selector_vertical_margin">8dp</dimen>
 
+    <dimen name="watch_status_margin">16dp</dimen>
+
 </resources>
