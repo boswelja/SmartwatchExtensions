@@ -22,7 +22,7 @@
 
     <fragment
         android:id="@+id/extensionsFragment"
-        android:name="com.boswelja.devicemanager.main.extensions.ExtensionsFragment">
+        android:name="com.boswelja.devicemanager.dashboard.ui.DashboardFragment">
 
         <action
             android:id="@+id/to_batterySyncActivity"

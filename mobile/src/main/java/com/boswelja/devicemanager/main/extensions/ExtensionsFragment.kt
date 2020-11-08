@@ -23,29 +23,29 @@ class ExtensionsFragment : BasePreferenceFragment(), Preference.OnPreferenceClic
 
     override fun onPreferenceClick(preference: Preference?): Boolean {
         return when (preference?.key) {
-            OPEN_BATTERY_SYNC_PREF_KEY -> {
-                findNavController().navigate(ExtensionsFragmentDirections.toBatterySyncActivity())
-                true
-            }
-            OPEN_DND_SYNC_PREF_KEY -> {
-                findNavController().navigate(ExtensionsFragmentDirections.toDndSyncActivity())
-                true
-            }
-            OPEN_PHONE_LOCKING_PREF_KEY -> {
-                findNavController().navigate(ExtensionsFragmentDirections.toPhoneLockingActivity())
-                true
-            }
-            OPEN_APP_MANAGER_KEY -> {
-                watchManager.connectedWatch.value?.let {
-                    findNavController()
-                        .navigate(
-                            ExtensionsFragmentDirections.toAppManagerActivity(
-                                watchId = it.id, watchName = it.name
-                            )
-                        )
-                }
-                true
-            }
+//            OPEN_BATTERY_SYNC_PREF_KEY -> {
+//                findNavController().navigate(ExtensionsFragmentDirections.toBatterySyncActivity())
+//                true
+//            }
+//            OPEN_DND_SYNC_PREF_KEY -> {
+//                findNavController().navigate(ExtensionsFragmentDirections.toDndSyncActivity())
+//                true
+//            }
+//            OPEN_PHONE_LOCKING_PREF_KEY -> {
+//                findNavController().navigate(ExtensionsFragmentDirections.toPhoneLockingActivity())
+//                true
+//            }
+//            OPEN_APP_MANAGER_KEY -> {
+//                watchManager.connectedWatch.value?.let {
+//                    findNavController()
+//                        .navigate(
+//                            ExtensionsFragmentDirections.toAppManagerActivity(
+//                                watchId = it.id, watchName = it.name
+//                            )
+//                        )
+//                }
+//                true
+//            }
             else -> false
         }
     }

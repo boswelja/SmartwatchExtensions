@@ -37,7 +37,7 @@ import timber.log.Timber
 abstract class BaseWatchPickerActivity : BaseToolbarActivity(), AdapterView.OnItemSelectedListener {
 
     private val adapter: WatchPickerAdapter by lazy { WatchPickerAdapter(this) }
-    internal val connectedWatchHandler by lazy { SelectedWatchHandler.get(this) }
+    internal val selectedWatchHandler by lazy { SelectedWatchHandler.get(this) }
     internal val coroutineScope = MainScope()
     internal val database by lazy { WatchDatabase.get(this) }
 
@@ -51,7 +51,7 @@ abstract class BaseWatchPickerActivity : BaseToolbarActivity(), AdapterView.OnIt
     ) {
         val connectedWatchId = id.toString(36)
         Timber.i("$connectedWatchId selected")
-        connectedWatchHandler.selectWatchById(connectedWatchId)
+        selectedWatchHandler.selectWatchById(connectedWatchId)
     }
 
     override fun onNothingSelected(p0: AdapterView<*>?) {}
@@ -62,7 +62,7 @@ abstract class BaseWatchPickerActivity : BaseToolbarActivity(), AdapterView.OnIt
         database.watchDao().getAllObservable().observe(this) {
             if (it.isEmpty()) startSetupActivity() else setWatchList(it)
         }
-        connectedWatchHandler.selectedWatch.observe(this) { it?.let { selectWatch(it.id) } }
+        selectedWatchHandler.selectedWatch.observe(this) { it?.let { selectWatch(it.id) } }
     }
 
     /**
@@ -88,7 +88,7 @@ abstract class BaseWatchPickerActivity : BaseToolbarActivity(), AdapterView.OnIt
         adapter.clear()
         coroutineScope.launch(Dispatchers.Default) {
             Timber.i("Setting watches")
-            val connectedWatchId = connectedWatchHandler.selectedWatch.value?.id
+            val connectedWatchId = selectedWatchHandler.selectedWatch.value?.id
             var selectedWatchPosition = 0
             watches.forEach {
                 withContext(Dispatchers.Main) { adapter.add(it) }
