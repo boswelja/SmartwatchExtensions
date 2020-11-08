@@ -90,8 +90,8 @@ class WatchManagerTest {
     @Test
     fun `getAvailableWatches returns an empty list when all watches are registered`() {
         coEvery { watchManager.getRegisteredWatches() } returns listOf(dummyWatch)
-        coEvery { watchManager.getConnectedNodes() } returns listOf(dummyWatchNode)
-        coEvery { watchManager.getCapableNodes() } returns setOf(dummyWatchNode)
+        coEvery { Utils.getConnectedNodes(nodeClient) } returns listOf(dummyWatchNode)
+        coEvery { Utils.getCapableNodes(capabilityClient) } returns setOf(dummyWatchNode)
 
         val result = runBlocking { watchManager.getAvailableWatches() }
         assertThat(result).isEmpty()
@@ -99,7 +99,7 @@ class WatchManagerTest {
 
     @Test
     fun `getAvailableWatches returns null when getConnectedWatches fails`() {
-        coEvery { watchManager.getConnectedNodes() } returns null
+        coEvery { Utils.getConnectedNodes(nodeClient) } returns null
 
         val result = runBlocking { watchManager.getAvailableWatches() }
         assertThat(result).isNull()
@@ -108,8 +108,8 @@ class WatchManagerTest {
     @Test
     fun `getAvailableWatches returns all unregistered watches`() {
         coEvery { watchManager.getRegisteredWatches() } returns listOf()
-        coEvery { watchManager.getConnectedNodes() } returns listOf(dummyWatchNode)
-        coEvery { watchManager.getCapableNodes() } returns setOf(dummyWatchNode)
+        coEvery { Utils.getConnectedNodes(nodeClient) } returns listOf(dummyWatchNode)
+        coEvery { Utils.getCapableNodes(capabilityClient) } returns setOf(dummyWatchNode)
 
         val result = runBlocking { watchManager.getAvailableWatches() }
         assertThat(result).isNotNull()

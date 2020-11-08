@@ -1,10 +1,15 @@
 package com.boswelja.devicemanager.watchmanager
 
+import com.boswelja.devicemanager.common.References
 import com.boswelja.devicemanager.watchmanager.database.WatchDatabase
 import com.boswelja.devicemanager.watchmanager.item.Watch
+import com.google.android.gms.tasks.Tasks
+import com.google.android.gms.wearable.CapabilityClient
 import com.google.android.gms.wearable.Node
+import com.google.android.gms.wearable.NodeClient
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import timber.log.Timber
 
 internal object Utils {
 
@@ -34,5 +39,42 @@ internal object Utils {
                 else -> WatchStatus.ERROR
             }
         }
+    }
+
+    /**
+     * Get a [List] of connected [Node], regardless of capability.
+     * @return The [List] of connected [Node], or null if the task failed.
+     */
+    internal suspend fun getConnectedNodes(nodeClient: NodeClient): List<Node>? {
+        Timber.d("getConnectedNodes() called")
+        return try {
+            withContext(Dispatchers.IO) { Tasks.await(nodeClient.connectedNodes) }
+        } catch (e: Exception) {
+            Timber.w(e)
+            null
+        }
+    }
+
+    /**
+     * Gets the [Set] of capable [Node]. Each [Node] declares [References.CAPABILITY_WATCH_APP], and
+     * is reachable at the time of checking.
+     * @return The [Set] of capable [Node], or null if the task failed.
+     */
+    internal suspend fun getCapableNodes(capabilityClient: CapabilityClient): Set<Node>? {
+        Timber.d("getCapableNodes() called")
+        var capableNodes: Set<Node>? = null
+        try {
+            withContext(Dispatchers.IO) {
+                capableNodes =
+                    Tasks.await(
+                        capabilityClient.getCapability(
+                            References.CAPABILITY_WATCH_APP, CapabilityClient.FILTER_REACHABLE
+                        )
+                    ).nodes
+            }
+        } catch (e: Exception) {
+            Timber.w(e)
+        }
+        return capableNodes
     }
 }

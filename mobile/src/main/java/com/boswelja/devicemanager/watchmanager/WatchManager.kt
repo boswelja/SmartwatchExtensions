@@ -9,16 +9,15 @@ package com.boswelja.devicemanager.watchmanager
 
 import android.content.Context
 import androidx.lifecycle.LiveData
-import com.boswelja.devicemanager.common.References
 import com.boswelja.devicemanager.common.References.REQUEST_RESET_APP
+import com.boswelja.devicemanager.watchmanager.Utils.getCapableNodes
+import com.boswelja.devicemanager.watchmanager.Utils.getConnectedNodes
 import com.boswelja.devicemanager.watchmanager.Utils.getWatchStatus
 import com.boswelja.devicemanager.watchmanager.database.WatchDatabase
 import com.boswelja.devicemanager.watchmanager.item.Watch
 import com.google.android.gms.tasks.Task
-import com.google.android.gms.tasks.Tasks
 import com.google.android.gms.wearable.CapabilityClient
 import com.google.android.gms.wearable.MessageClient
-import com.google.android.gms.wearable.Node
 import com.google.android.gms.wearable.NodeClient
 import com.google.android.gms.wearable.Wearable
 import kotlinx.coroutines.Dispatchers
@@ -50,53 +49,16 @@ class WatchManager internal constructor(
     }
 
     /**
-     * Get a [List] of connected [Node], regardless of capability.
-     * @return The [List] of connected [Node], or null if the task failed.
-     */
-    internal suspend fun getConnectedNodes(): List<Node>? {
-        Timber.d("getConnectedNodes() called")
-        return try {
-            withContext(Dispatchers.IO) { Tasks.await(nodeClient.connectedNodes) }
-        } catch (e: Exception) {
-            Timber.w(e)
-            null
-        }
-    }
-
-    /**
-     * Gets the [Set] of capable [Node]. Each [Node] declares [References.CAPABILITY_WATCH_APP], and
-     * is reachable at the time of checking.
-     * @return The [Set] of capable [Node], or null if the task failed.
-     */
-    internal suspend fun getCapableNodes(): Set<Node>? {
-        Timber.d("getCapableNodes() called")
-        var capableNodes: Set<Node>? = null
-        try {
-            withContext(Dispatchers.IO) {
-                capableNodes =
-                    Tasks.await(
-                        capabilityClient.getCapability(
-                            References.CAPABILITY_WATCH_APP, CapabilityClient.FILTER_REACHABLE
-                        )
-                    ).nodes
-            }
-        } catch (e: Exception) {
-            Timber.w(e)
-        }
-        return capableNodes
-    }
-
-    /**
      * Gets a list of watches that are reachable, capable and not already registered.
      * @return A [List] of [Watch] objects that are ready to register.
      */
     suspend fun getAvailableWatches(): List<Watch>? {
         Timber.d("getAvailableWatches() called")
         return withContext(Dispatchers.IO) {
-            val connectedNodes = getConnectedNodes()
+            val connectedNodes = getConnectedNodes(nodeClient)
             if (connectedNodes != null) {
                 val availableWatches = ArrayList<Watch>()
-                val capableNodes = getCapableNodes()
+                val capableNodes = getCapableNodes(capabilityClient)
                 val registeredWatches = getRegisteredWatches()
                 return@withContext withContext(Dispatchers.Default) {
                     for (node in connectedNodes) {
@@ -122,8 +84,8 @@ class WatchManager internal constructor(
     suspend fun getRegisteredWatches(): List<Watch> {
         Timber.d("getRegisteredWatches() called")
         return withContext(Dispatchers.IO) {
-            val capableNodes = getCapableNodes()
-            val connectedNodes = getConnectedNodes()
+            val capableNodes = getCapableNodes(capabilityClient)
+            val connectedNodes = getConnectedNodes(nodeClient)
             val databaseWatches = database.watchDao().getAll()
             for (watch in databaseWatches) {
                 watch.status = getWatchStatus(watch.id, database, capableNodes, connectedNodes)
