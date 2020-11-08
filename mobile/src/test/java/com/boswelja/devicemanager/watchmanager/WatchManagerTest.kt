@@ -9,6 +9,7 @@ package com.boswelja.devicemanager.watchmanager
 
 import android.content.SharedPreferences
 import android.os.Build
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.preference.PreferenceManager
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -24,12 +25,14 @@ import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.impl.annotations.SpyK
+import io.mockk.mockkObject
 import io.mockk.spyk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.TestCoroutineScope
 import org.junit.After
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.annotation.Config
@@ -38,6 +41,8 @@ import org.robolectric.annotation.Config
 @RunWith(AndroidJUnit4::class)
 @Config(sdk = [Build.VERSION_CODES.Q])
 class WatchManagerTest {
+
+    @get:Rule val instantExecutorRule = InstantTaskExecutorRule()
 
     private val coroutineScope = TestCoroutineScope()
     private val dummyWatch = Watch("an-id-1234", "Watch 1", null)
@@ -63,6 +68,7 @@ class WatchManagerTest {
 
     @Before
     fun setUp() {
+        mockkObject(Utils)
         MockKAnnotations.init(this)
 
         every { database.isOpen } returns true
@@ -88,30 +94,31 @@ class WatchManagerTest {
     }
 
     @Test
-    fun `getAvailableWatches returns an empty list when all watches are registered`() {
-        coEvery { watchManager.getRegisteredWatches() } returns listOf(dummyWatch)
-        coEvery { Utils.getConnectedNodes(nodeClient) } returns listOf(dummyWatchNode)
-        coEvery { Utils.getCapableNodes(capabilityClient) } returns setOf(dummyWatchNode)
+    fun `getAvailableWatches returns an empty list when all watches are registered`() =
+        runBlocking {
+            coEvery { watchManager.getRegisteredWatches() } returns listOf(dummyWatch)
+            coEvery { Utils.getConnectedNodes(nodeClient) } returns listOf(dummyWatchNode)
+            coEvery { Utils.getCapableNodes(capabilityClient) } returns setOf(dummyWatchNode)
 
-        val result = runBlocking { watchManager.getAvailableWatches() }
-        assertThat(result).isEmpty()
-    }
+            val result = watchManager.getAvailableWatches()
+            assertThat(result).isEmpty()
+        }
 
     @Test
-    fun `getAvailableWatches returns null when getConnectedWatches fails`() {
+    fun `getAvailableWatches returns null when getConnectedWatches fails`() = runBlocking {
         coEvery { Utils.getConnectedNodes(nodeClient) } returns null
 
-        val result = runBlocking { watchManager.getAvailableWatches() }
+        val result = watchManager.getAvailableWatches()
         assertThat(result).isNull()
     }
 
     @Test
-    fun `getAvailableWatches returns all unregistered watches`() {
-        coEvery { watchManager.getRegisteredWatches() } returns listOf()
+    fun `getAvailableWatches returns all unregistered watches`() = runBlocking {
+        coEvery { watchManager.getRegisteredWatches() } returns emptyList()
         coEvery { Utils.getConnectedNodes(nodeClient) } returns listOf(dummyWatchNode)
         coEvery { Utils.getCapableNodes(capabilityClient) } returns setOf(dummyWatchNode)
 
-        val result = runBlocking { watchManager.getAvailableWatches() }
+        val result = watchManager.getAvailableWatches()
         assertThat(result).isNotNull()
         assertThat(result!!.any { it.id == dummyWatch.id }).isTrue()
     }
