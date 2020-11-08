@@ -13,6 +13,7 @@ import androidx.core.content.edit
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.preference.PreferenceManager
+import com.boswelja.devicemanager.watchmanager.Utils.getWatchStatus
 import com.boswelja.devicemanager.watchmanager.database.WatchDatabase
 import com.boswelja.devicemanager.watchmanager.item.Watch
 import kotlinx.coroutines.CoroutineScope
@@ -60,16 +61,17 @@ internal constructor(
                 _selectedWatch.postValue(newWatch)
                 sharedPreferences.edit { putString(LAST_SELECTED_NODE_ID_KEY, newWatch?.id) }
             }
-            refreshStatus()
+            refreshStatus(watchId)
         }
     }
 
     /**
      * Update [status] for the currently selected watch.
      */
-    fun refreshStatus() {
+    private fun refreshStatus(watchId: String) {
         coroutineScope.launch {
-            // TODO
+            val newStatus = getWatchStatus(watchId, database)
+            _status.postValue(newStatus)
         }
     }
 
