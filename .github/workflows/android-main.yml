@@ -75,3 +75,10 @@ jobs:
         if: failure()
         with:
           xml_path: ktlint_result.xml
+      - run: bash ./gradlew lint
+      - uses: yutailang0119/action-android-lint@v1.0.2
+        with:
+          xml_path: mobile/build/reports/lint-results.xml
+      - uses: yutailang0119/action-android-lint@v1.0.2
+        with:
+          xml_path: wear/build/reports/lint-results.xml
