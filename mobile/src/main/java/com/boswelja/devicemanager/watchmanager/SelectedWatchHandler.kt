@@ -34,13 +34,18 @@ internal constructor(
 ) {
 
     private val _selectedWatch = MutableLiveData<Watch?>()
+    private val _status = MutableLiveData(WatchStatus.UNKNOWN)
 
     val selectedWatch: LiveData<Watch?>
         get() = _selectedWatch
+    val status: LiveData<WatchStatus>
+        get() = _status
 
     init {
         // Set the initial connectedWatch value if possible.
-        sharedPreferences.getString(LAST_SELECTED_NODE_ID_KEY, "")?.let { selectWatchById(it) }
+        sharedPreferences.getString(LAST_SELECTED_NODE_ID_KEY, "")?.let {
+            selectWatchById(it)
+        }
     }
 
     /**
@@ -55,6 +60,16 @@ internal constructor(
                 _selectedWatch.postValue(newWatch)
                 sharedPreferences.edit { putString(LAST_SELECTED_NODE_ID_KEY, newWatch?.id) }
             }
+            refreshStatus()
+        }
+    }
+
+    /**
+     * Update [status] for the currently selected watch.
+     */
+    fun refreshStatus() {
+        coroutineScope.launch {
+            // TODO
         }
     }
 
