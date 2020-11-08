@@ -12,6 +12,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.preference.Preference
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.ui.BasePreferenceFragment
+import com.boswelja.devicemanager.dashboard.ui.DashboardFragmentDirections
 import com.boswelja.devicemanager.preference.confirmationdialog.ConfirmationDialogPrefFragment
 import com.boswelja.devicemanager.preference.confirmationdialog.ConfirmationDialogPreference
 import com.boswelja.devicemanager.watchmanager.WatchManager
@@ -23,29 +24,29 @@ class ExtensionsFragment : BasePreferenceFragment(), Preference.OnPreferenceClic
 
     override fun onPreferenceClick(preference: Preference?): Boolean {
         return when (preference?.key) {
-//            OPEN_BATTERY_SYNC_PREF_KEY -> {
-//                findNavController().navigate(ExtensionsFragmentDirections.toBatterySyncActivity())
-//                true
-//            }
-//            OPEN_DND_SYNC_PREF_KEY -> {
-//                findNavController().navigate(ExtensionsFragmentDirections.toDndSyncActivity())
-//                true
-//            }
-//            OPEN_PHONE_LOCKING_PREF_KEY -> {
-//                findNavController().navigate(ExtensionsFragmentDirections.toPhoneLockingActivity())
-//                true
-//            }
-//            OPEN_APP_MANAGER_KEY -> {
-//                watchManager.connectedWatch.value?.let {
-//                    findNavController()
-//                        .navigate(
-//                            ExtensionsFragmentDirections.toAppManagerActivity(
-//                                watchId = it.id, watchName = it.name
-//                            )
-//                        )
-//                }
-//                true
-//            }
+            OPEN_BATTERY_SYNC_PREF_KEY -> {
+                findNavController().navigate(DashboardFragmentDirections.toBatterySyncActivity())
+                true
+            }
+            OPEN_DND_SYNC_PREF_KEY -> {
+                findNavController().navigate(DashboardFragmentDirections.toDndSyncActivity())
+                true
+            }
+            OPEN_PHONE_LOCKING_PREF_KEY -> {
+                findNavController().navigate(DashboardFragmentDirections.toPhoneLockingActivity())
+                true
+            }
+            OPEN_APP_MANAGER_KEY -> {
+                watchManager.connectedWatch.value?.let {
+                    findNavController()
+                        .navigate(
+                            DashboardFragmentDirections.toAppManagerActivity(
+                                watchId = it.id, watchName = it.name
+                            )
+                        )
+                }
+                true
+            }
             else -> false
         }
     }
