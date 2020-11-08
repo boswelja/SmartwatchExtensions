@@ -20,7 +20,6 @@ import androidx.appcompat.widget.AppCompatTextView
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.watchmanager.SelectedWatchHandler
 import com.boswelja.devicemanager.watchmanager.WatchManager
-import com.boswelja.devicemanager.watchmanager.WatchStatus
 import com.boswelja.devicemanager.watchmanager.database.WatchDatabase
 import com.boswelja.devicemanager.watchmanager.item.Watch
 import com.boswelja.devicemanager.watchsetup.ui.WatchSetupActivity
@@ -154,20 +153,9 @@ abstract class BaseWatchPickerActivity : BaseToolbarActivity(), AdapterView.OnIt
             var view = convertView
             if (view == null) {
                 val layoutInflater = LayoutInflater.from(parent.context)
-                view = layoutInflater.inflate(R.layout.common_spinner_item_two_line, parent, false)
+                view = layoutInflater.inflate(R.layout.watch_selector_item, parent, false)
             }
-            view!!.apply {
-                findViewById<AppCompatTextView>(R.id.title).text = watch.name
-                findViewById<AppCompatTextView>(R.id.subtitle).text =
-                    context.getString(
-                        when (watch.status) {
-                            WatchStatus.CONNECTED -> R.string.watch_status_connected
-                            WatchStatus.DISCONNECTED -> R.string.watch_status_disconnected
-                            WatchStatus.MISSING_APP -> R.string.watch_status_missing_app
-                            else -> R.string.watch_status_error
-                        }
-                    )
-            }
+            view!!.findViewById<AppCompatTextView>(R.id.title).text = watch.name
             return view
         }
     }
