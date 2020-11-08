@@ -33,7 +33,7 @@ internal object Utils {
             val isRegistered = database.watchDao().get(watchId) != null
             return@withContext when {
                 isCapable && isConnected && isRegistered -> WatchStatus.CONNECTED
-                isCapable && !isConnected && isRegistered -> WatchStatus.DISCONNECTED
+                !isConnected && isRegistered -> WatchStatus.DISCONNECTED
                 isCapable && !isRegistered -> WatchStatus.NOT_REGISTERED
                 !isCapable && !isRegistered -> WatchStatus.MISSING_APP
                 else -> WatchStatus.ERROR

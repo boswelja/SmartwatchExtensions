@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.boswelja.devicemanager.databinding.FragmentDashboardBinding
 import com.boswelja.devicemanager.watchmanager.SelectedWatchHandler
+import timber.log.Timber
 
 class DashboardFragment : Fragment() {
 
@@ -26,6 +27,7 @@ class DashboardFragment : Fragment() {
     override fun onStart() {
         super.onStart()
         selectedWatchHandler.status.observe(this) { status ->
+            Timber.d("Got watch status: $status")
             binding.watchStatusText.setText(status.stringRes)
             binding.watchStatusIcon.setImageResource(status.iconRes)
         }

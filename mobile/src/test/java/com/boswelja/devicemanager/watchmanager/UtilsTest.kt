@@ -36,7 +36,7 @@ class UtilsTest {
         every { database.watchDao().get(dummyWatch.id) } returns dummyWatch
 
         var result = getWatchStatus(dummyWatch.id, database)
-        assertThat(result).isEqualTo(WatchStatus.ERROR)
+        assertThat(result).isEqualTo(WatchStatus.DISCONNECTED)
 
         result = getWatchStatus(dummyWatch.id, database, setOf(dummyWatchNode))
         assertThat(result).isEqualTo(WatchStatus.DISCONNECTED)
@@ -45,7 +45,7 @@ class UtilsTest {
         assertThat(result).isEqualTo(WatchStatus.ERROR)
 
         result = getWatchStatus(dummyWatch.id, database, setOf(), listOf())
-        assertThat(result).isEqualTo(WatchStatus.ERROR)
+        assertThat(result).isEqualTo(WatchStatus.DISCONNECTED)
 
         result =
             getWatchStatus(
