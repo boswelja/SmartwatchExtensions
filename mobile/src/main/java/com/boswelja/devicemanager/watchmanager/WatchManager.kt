@@ -11,6 +11,7 @@ import android.content.Context
 import androidx.lifecycle.LiveData
 import com.boswelja.devicemanager.common.References
 import com.boswelja.devicemanager.common.References.REQUEST_RESET_APP
+import com.boswelja.devicemanager.watchmanager.Utils.getWatchStatus
 import com.boswelja.devicemanager.watchmanager.database.WatchDatabase
 import com.boswelja.devicemanager.watchmanager.item.Watch
 import com.google.android.gms.tasks.Task
@@ -45,31 +46,6 @@ class WatchManager internal constructor(
     init {
         connectedWatch.observeForever {
             it?.let { watch -> watchPreferenceManager.updateLocalPreferences(watch.id) }
-        }
-    }
-
-    /**
-     * Gets the status of a specified [Watch].
-     * @param watchId The [Watch.id] to find a [WatchStatus] for.
-     * @param capableNodes The [Set] of capable [Node] objects to check against. Default is null.
-     * @param connectedNodes The [List] of connected [Node] objects to check against. Default is
-     * null.
-     * @return A [WatchStatus] for the [Watch].
-     */
-    internal fun getWatchStatus(
-        watchId: String,
-        capableNodes: Set<Node>? = null,
-        connectedNodes: List<Node>? = null
-    ): WatchStatus {
-        val isCapable = capableNodes?.any { it.id == watchId } ?: false
-        val isConnected = connectedNodes?.any { it.id == watchId } ?: false
-        val isRegistered = database.watchDao().get(watchId) != null
-        return when {
-            isCapable && isConnected && isRegistered -> WatchStatus.CONNECTED
-            isCapable && !isConnected && isRegistered -> WatchStatus.DISCONNECTED
-            isCapable && !isRegistered -> WatchStatus.NOT_REGISTERED
-            !isCapable && !isRegistered -> WatchStatus.MISSING_APP
-            else -> WatchStatus.ERROR
         }
     }
 
@@ -125,7 +101,7 @@ class WatchManager internal constructor(
                 return@withContext withContext(Dispatchers.Default) {
                     for (node in connectedNodes) {
                         if (registeredWatches.none { it.id == node.id }) {
-                            val status = getWatchStatus(node.id, capableNodes)
+                            val status = getWatchStatus(node.id, database, capableNodes)
                             availableWatches.add(Watch(node, status))
                         }
                     }
@@ -150,7 +126,7 @@ class WatchManager internal constructor(
             val connectedNodes = getConnectedNodes()
             val databaseWatches = database.watchDao().getAll()
             for (watch in databaseWatches) {
-                watch.status = getWatchStatus(watch.id, capableNodes, connectedNodes)
+                watch.status = getWatchStatus(watch.id, database, capableNodes, connectedNodes)
             }
             return@withContext databaseWatches
         }

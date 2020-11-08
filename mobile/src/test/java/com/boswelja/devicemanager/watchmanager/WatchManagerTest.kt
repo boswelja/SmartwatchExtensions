@@ -88,60 +88,6 @@ class WatchManagerTest {
     }
 
     @Test
-    fun `getWatchStatus returns the correct status when the watch is registered`() {
-        // Make sure isRegistered will evaluate to true
-        every { database.watchDao().get(dummyWatch.id) } returns dummyWatch
-
-        var result = watchManager.getWatchStatus(dummyWatch.id)
-        assertThat(result).isEqualTo(WatchStatus.ERROR)
-
-        result = watchManager.getWatchStatus(dummyWatch.id, setOf(dummyWatchNode))
-        assertThat(result).isEqualTo(WatchStatus.DISCONNECTED)
-
-        result = watchManager.getWatchStatus(dummyWatch.id, connectedNodes = listOf(dummyWatchNode))
-        assertThat(result).isEqualTo(WatchStatus.ERROR)
-
-        result = watchManager.getWatchStatus(dummyWatch.id, setOf(), listOf())
-        assertThat(result).isEqualTo(WatchStatus.ERROR)
-
-        result =
-            watchManager.getWatchStatus(
-                dummyWatch.id, setOf(dummyWatchNode), listOf(dummyWatchNode)
-            )
-        assertThat(result).isEqualTo(WatchStatus.CONNECTED)
-    }
-
-    @Test
-    fun `getWatchStatus returns the correct status when the watch is unregistered`() {
-        // Make sure isRegistered will evaluate to false
-        every { database.watchDao().get(dummyWatch.id) } returns null
-
-        var result =
-            watchManager.getWatchStatus(
-                dummyWatch.id, setOf(dummyWatchNode), listOf(dummyWatchNode)
-            )
-        assertThat(result).isEqualTo(WatchStatus.NOT_REGISTERED)
-
-        result = watchManager.getWatchStatus(dummyWatch.id, setOf(dummyWatchNode), listOf())
-        assertThat(result).isEqualTo(WatchStatus.NOT_REGISTERED)
-
-        result = watchManager.getWatchStatus(dummyWatch.id, setOf(dummyWatchNode))
-        assertThat(result).isEqualTo(WatchStatus.NOT_REGISTERED)
-
-        result = watchManager.getWatchStatus(dummyWatch.id, setOf(), listOf(dummyWatchNode))
-        assertThat(result).isEqualTo(WatchStatus.MISSING_APP)
-
-        result = watchManager.getWatchStatus(dummyWatch.id, connectedNodes = listOf(dummyWatchNode))
-        assertThat(result).isEqualTo(WatchStatus.MISSING_APP)
-
-        result = watchManager.getWatchStatus(dummyWatch.id, setOf(), listOf())
-        assertThat(result).isEqualTo(WatchStatus.MISSING_APP)
-
-        result = watchManager.getWatchStatus(dummyWatch.id)
-        assertThat(result).isEqualTo(WatchStatus.MISSING_APP)
-    }
-
-    @Test
     fun `getAvailableWatches returns an empty list when all watches are registered`() {
         coEvery { watchManager.getRegisteredWatches() } returns listOf(dummyWatch)
         coEvery { watchManager.getConnectedNodes() } returns listOf(dummyWatchNode)
