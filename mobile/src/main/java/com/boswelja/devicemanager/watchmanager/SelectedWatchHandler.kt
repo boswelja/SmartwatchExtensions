@@ -13,9 +13,14 @@ import androidx.core.content.edit
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.preference.PreferenceManager
+import com.boswelja.devicemanager.watchmanager.Utils.getCapableNodes
+import com.boswelja.devicemanager.watchmanager.Utils.getConnectedNodes
 import com.boswelja.devicemanager.watchmanager.Utils.getWatchStatus
 import com.boswelja.devicemanager.watchmanager.database.WatchDatabase
 import com.boswelja.devicemanager.watchmanager.item.Watch
+import com.google.android.gms.wearable.CapabilityClient
+import com.google.android.gms.wearable.NodeClient
+import com.google.android.gms.wearable.Wearable
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -31,6 +36,8 @@ internal constructor(
     private val sharedPreferences: SharedPreferences =
         PreferenceManager.getDefaultSharedPreferences(context),
     private val coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.IO),
+    private val capabilityClient: CapabilityClient = Wearable.getCapabilityClient(context),
+    private val nodeClient: NodeClient = Wearable.getNodeClient(context),
     val database: WatchDatabase = WatchDatabase.get(context)
 ) {
 
@@ -70,7 +77,9 @@ internal constructor(
      */
     private fun refreshStatus(watchId: String) {
         coroutineScope.launch {
-            val newStatus = getWatchStatus(watchId, database)
+            val capableNodes = getCapableNodes(capabilityClient)
+            val connectedNodes = getConnectedNodes(nodeClient)
+            val newStatus = getWatchStatus(watchId, database, capableNodes, connectedNodes)
             _status.postValue(newStatus)
         }
     }
