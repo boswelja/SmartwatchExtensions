@@ -75,6 +75,13 @@ internal constructor(
     /**
      * Update [status] for the currently selected watch.
      */
+    fun refreshStatus() {
+        refreshStatus(_selectedWatch.value!!.id)
+    }
+
+    /**
+     * Update [status] for the specified watch.
+     */
     private fun refreshStatus(watchId: String) {
         coroutineScope.launch {
             val capableNodes = getCapableNodes(capabilityClient)

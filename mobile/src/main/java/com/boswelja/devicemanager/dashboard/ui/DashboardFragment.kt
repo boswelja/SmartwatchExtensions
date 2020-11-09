@@ -32,4 +32,9 @@ class DashboardFragment : Fragment() {
             binding.watchStatusIcon.setImageResource(status.iconRes)
         }
     }
+
+    override fun onResume() {
+        super.onResume()
+        selectedWatchHandler.refreshStatus()
+    }
 }
