@@ -141,6 +141,7 @@
     <string name="watch_status_missing_app">Missing App</string>
     <string name="watch_status_error">Error</string>
     <string name="watch_status_not_registered">Ready to add</string>
+    <string name="watch_status_unknown">Connecting</string>
 
     <!-- Changelog strings -->
     <string name="changelog_sheet_title">What\'s New</string>

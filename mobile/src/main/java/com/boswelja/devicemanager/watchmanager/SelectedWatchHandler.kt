@@ -13,8 +13,14 @@ import androidx.core.content.edit
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.preference.PreferenceManager
+import com.boswelja.devicemanager.watchmanager.Utils.getCapableNodes
+import com.boswelja.devicemanager.watchmanager.Utils.getConnectedNodes
+import com.boswelja.devicemanager.watchmanager.Utils.getWatchStatus
 import com.boswelja.devicemanager.watchmanager.database.WatchDatabase
 import com.boswelja.devicemanager.watchmanager.item.Watch
+import com.google.android.gms.wearable.CapabilityClient
+import com.google.android.gms.wearable.NodeClient
+import com.google.android.gms.wearable.Wearable
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -30,17 +36,24 @@ internal constructor(
     private val sharedPreferences: SharedPreferences =
         PreferenceManager.getDefaultSharedPreferences(context),
     private val coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.IO),
+    private val capabilityClient: CapabilityClient = Wearable.getCapabilityClient(context),
+    private val nodeClient: NodeClient = Wearable.getNodeClient(context),
     val database: WatchDatabase = WatchDatabase.get(context)
 ) {
 
     private val _selectedWatch = MutableLiveData<Watch?>()
+    private val _status = MutableLiveData(WatchStatus.UNKNOWN)
 
     val selectedWatch: LiveData<Watch?>
         get() = _selectedWatch
+    val status: LiveData<WatchStatus>
+        get() = _status
 
     init {
         // Set the initial connectedWatch value if possible.
-        sharedPreferences.getString(LAST_SELECTED_NODE_ID_KEY, "")?.let { selectWatchById(it) }
+        sharedPreferences.getString(LAST_SELECTED_NODE_ID_KEY, "")?.let {
+            selectWatchById(it)
+        }
     }
 
     /**
@@ -55,6 +68,26 @@ internal constructor(
                 _selectedWatch.postValue(newWatch)
                 sharedPreferences.edit { putString(LAST_SELECTED_NODE_ID_KEY, newWatch?.id) }
             }
+            refreshStatus(watchId)
+        }
+    }
+
+    /**
+     * Update [status] for the currently selected watch.
+     */
+    fun refreshStatus() {
+        refreshStatus(_selectedWatch.value!!.id)
+    }
+
+    /**
+     * Update [status] for the specified watch.
+     */
+    private fun refreshStatus(watchId: String) {
+        coroutineScope.launch {
+            val capableNodes = getCapableNodes(capabilityClient)
+            val connectedNodes = getConnectedNodes(nodeClient)
+            val newStatus = getWatchStatus(watchId, database, capableNodes, connectedNodes)
+            _status.postValue(newStatus)
         }
     }
 

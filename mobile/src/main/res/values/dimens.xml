@@ -13,4 +13,9 @@
     <dimen name="manage_space_title_desc_margin">4dp</dimen>
     <dimen name="recyclerview_vertical_padding">8dp</dimen>
 
+    <dimen name="watch_selector_horizontal_margin">16dp</dimen>
+    <dimen name="watch_selector_vertical_margin">8dp</dimen>
+
+    <dimen name="watch_status_margin">16dp</dimen>
+
 </resources>

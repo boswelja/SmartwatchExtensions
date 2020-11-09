@@ -9,6 +9,7 @@ package com.boswelja.devicemanager.watchmanager
 
 import android.content.SharedPreferences
 import android.os.Build
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.preference.PreferenceManager
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -24,12 +25,14 @@ import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.impl.annotations.SpyK
+import io.mockk.mockkObject
 import io.mockk.spyk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.TestCoroutineScope
 import org.junit.After
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.annotation.Config
@@ -38,6 +41,8 @@ import org.robolectric.annotation.Config
 @RunWith(AndroidJUnit4::class)
 @Config(sdk = [Build.VERSION_CODES.Q])
 class WatchManagerTest {
+
+    @get:Rule val instantExecutorRule = InstantTaskExecutorRule()
 
     private val coroutineScope = TestCoroutineScope()
     private val dummyWatch = Watch("an-id-1234", "Watch 1", null)
@@ -63,6 +68,7 @@ class WatchManagerTest {
 
     @Before
     fun setUp() {
+        mockkObject(Utils)
         MockKAnnotations.init(this)
 
         every { database.isOpen } returns true
@@ -88,84 +94,31 @@ class WatchManagerTest {
     }
 
     @Test
-    fun `getWatchStatus returns the correct status when the watch is registered`() {
-        // Make sure isRegistered will evaluate to true
-        every { database.watchDao().get(dummyWatch.id) } returns dummyWatch
+    fun `getAvailableWatches returns an empty list when all watches are registered`() =
+        runBlocking {
+            coEvery { watchManager.getRegisteredWatches() } returns listOf(dummyWatch)
+            coEvery { Utils.getConnectedNodes(nodeClient) } returns listOf(dummyWatchNode)
+            coEvery { Utils.getCapableNodes(capabilityClient) } returns setOf(dummyWatchNode)
 
-        var result = watchManager.getWatchStatus(dummyWatch.id)
-        assertThat(result).isEqualTo(WatchStatus.ERROR)
-
-        result = watchManager.getWatchStatus(dummyWatch.id, setOf(dummyWatchNode))
-        assertThat(result).isEqualTo(WatchStatus.DISCONNECTED)
-
-        result = watchManager.getWatchStatus(dummyWatch.id, connectedNodes = listOf(dummyWatchNode))
-        assertThat(result).isEqualTo(WatchStatus.ERROR)
-
-        result = watchManager.getWatchStatus(dummyWatch.id, setOf(), listOf())
-        assertThat(result).isEqualTo(WatchStatus.ERROR)
-
-        result =
-            watchManager.getWatchStatus(
-                dummyWatch.id, setOf(dummyWatchNode), listOf(dummyWatchNode)
-            )
-        assertThat(result).isEqualTo(WatchStatus.CONNECTED)
-    }
+            val result = watchManager.getAvailableWatches()
+            assertThat(result).isEmpty()
+        }
 
     @Test
-    fun `getWatchStatus returns the correct status when the watch is unregistered`() {
-        // Make sure isRegistered will evaluate to false
-        every { database.watchDao().get(dummyWatch.id) } returns null
+    fun `getAvailableWatches returns null when getConnectedWatches fails`() = runBlocking {
+        coEvery { Utils.getConnectedNodes(nodeClient) } returns null
 
-        var result =
-            watchManager.getWatchStatus(
-                dummyWatch.id, setOf(dummyWatchNode), listOf(dummyWatchNode)
-            )
-        assertThat(result).isEqualTo(WatchStatus.NOT_REGISTERED)
-
-        result = watchManager.getWatchStatus(dummyWatch.id, setOf(dummyWatchNode), listOf())
-        assertThat(result).isEqualTo(WatchStatus.NOT_REGISTERED)
-
-        result = watchManager.getWatchStatus(dummyWatch.id, setOf(dummyWatchNode))
-        assertThat(result).isEqualTo(WatchStatus.NOT_REGISTERED)
-
-        result = watchManager.getWatchStatus(dummyWatch.id, setOf(), listOf(dummyWatchNode))
-        assertThat(result).isEqualTo(WatchStatus.MISSING_APP)
-
-        result = watchManager.getWatchStatus(dummyWatch.id, connectedNodes = listOf(dummyWatchNode))
-        assertThat(result).isEqualTo(WatchStatus.MISSING_APP)
-
-        result = watchManager.getWatchStatus(dummyWatch.id, setOf(), listOf())
-        assertThat(result).isEqualTo(WatchStatus.MISSING_APP)
-
-        result = watchManager.getWatchStatus(dummyWatch.id)
-        assertThat(result).isEqualTo(WatchStatus.MISSING_APP)
-    }
-
-    @Test
-    fun `getAvailableWatches returns an empty list when all watches are registered`() {
-        coEvery { watchManager.getRegisteredWatches() } returns listOf(dummyWatch)
-        coEvery { watchManager.getConnectedNodes() } returns listOf(dummyWatchNode)
-        coEvery { watchManager.getCapableNodes() } returns setOf(dummyWatchNode)
-
-        val result = runBlocking { watchManager.getAvailableWatches() }
-        assertThat(result).isEmpty()
-    }
-
-    @Test
-    fun `getAvailableWatches returns null when getConnectedWatches fails`() {
-        coEvery { watchManager.getConnectedNodes() } returns null
-
-        val result = runBlocking { watchManager.getAvailableWatches() }
+        val result = watchManager.getAvailableWatches()
         assertThat(result).isNull()
     }
 
     @Test
-    fun `getAvailableWatches returns all unregistered watches`() {
-        coEvery { watchManager.getRegisteredWatches() } returns listOf()
-        coEvery { watchManager.getConnectedNodes() } returns listOf(dummyWatchNode)
-        coEvery { watchManager.getCapableNodes() } returns setOf(dummyWatchNode)
+    fun `getAvailableWatches returns all unregistered watches`() = runBlocking {
+        coEvery { watchManager.getRegisteredWatches() } returns emptyList()
+        coEvery { Utils.getConnectedNodes(nodeClient) } returns listOf(dummyWatchNode)
+        coEvery { Utils.getCapableNodes(capabilityClient) } returns setOf(dummyWatchNode)
 
-        val result = runBlocking { watchManager.getAvailableWatches() }
+        val result = watchManager.getAvailableWatches()
         assertThat(result).isNotNull()
         assertThat(result!!.any { it.id == dummyWatch.id }).isTrue()
     }
