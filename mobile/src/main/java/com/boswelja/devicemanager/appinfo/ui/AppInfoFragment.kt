@@ -41,8 +41,6 @@ class AppInfoFragment : BasePreferenceFragment(), Preference.OnPreferenceClickLi
             OPEN_GITHUB_KEY -> showGitHubPage()
             OPEN_DONATE_DIALOG_KEY ->
                 findNavController().navigate(AppInfoFragmentDirections.toDonateFragment())
-            OPEN_CHANGELOG_KEY ->
-                findNavController().navigate(AppInfoFragmentDirections.toChangelogFragment())
             else -> return false
         }
         return true
@@ -90,8 +88,6 @@ class AppInfoFragment : BasePreferenceFragment(), Preference.OnPreferenceClickLi
             isEnabled = !BuildConfig.DEBUG
             onPreferenceClickListener = this@AppInfoFragment
         }
-        findPreference<Preference>(OPEN_CHANGELOG_KEY)!!
-            .onPreferenceClickListener = this@AppInfoFragment
         findPreference<Preference>(PHONE_VERSION_KEY)!!.apply {
             title =
                 getString(R.string.pref_about_phone_version_title).format(BuildConfig.VERSION_NAME)
@@ -144,7 +140,6 @@ class AppInfoFragment : BasePreferenceFragment(), Preference.OnPreferenceClickLi
         const val SHARE_APP_KEY = "share"
         const val OPEN_GITHUB_KEY = "github"
         const val OPEN_DONATE_DIALOG_KEY = "show_donate_dialog"
-        const val OPEN_CHANGELOG_KEY = "show_changelog"
         const val PHONE_VERSION_KEY = "phone_app_version"
         const val WATCH_VERSION_KEY = "watch_app_version"
     }
