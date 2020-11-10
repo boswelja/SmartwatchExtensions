@@ -5,7 +5,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="16dp">
+    android:layout_marginTop="@dimen/dashboard_card_spacing"
+    android:layout_marginBottom="@dimen/dashboard_card_spacing">
 
     <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="match_parent"
