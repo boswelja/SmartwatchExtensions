@@ -2,9 +2,9 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@id/extensionsFragment"
-        android:title="@string/bottom_nav_extensions_label"
-        android:icon="@drawable/watch" />
+        android:id="@id/dashboardFragment"
+        android:title="@string/bottom_nav_dashboard_label"
+        android:icon="@drawable/nav_ic_dashboard" />
 
     <item
         android:id="@id/messageFragment"
