@@ -156,4 +156,5 @@ jobs:
           serviceAccountJsonPlainText: ${{ secrets.SERVICE_ACCOUNT_JSON }}
           packageName: "com.boswelja.devicemanager"
           releaseFiles: "release/mobile-release.aab,release/wear-release.aab"
+          whatsNewDirectory: changelogs/
           track: production
