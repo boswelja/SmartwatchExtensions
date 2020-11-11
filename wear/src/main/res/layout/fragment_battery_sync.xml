@@ -15,6 +15,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:onClick="@{() -> viewModel.updateBatteryStats()}"
+        android:focusable="true"
+        android:clickable="true"
         app:layoutDescription="@xml/battery_stats_motion_scene"
         tools:path="true"
         style="@style/Extension">
@@ -23,6 +25,8 @@
             android:id="@+id/icon"
             android:layout_width="@dimen/extension_big_icon_size"
             android:layout_height="@dimen/extension_big_icon_size"
+            android:focusable="false"
+            android:clickable="false"
             app:srcCompat="@drawable/ic_phone_battery"
             app:imageLevel="@{viewModel.batteryPercent}" />
 
@@ -31,6 +35,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@{@string/battery_sync_hint_text(viewModel.phoneName)}"
+            android:focusable="false"
+            android:clickable="false"
             tools:text="Your Phone is at"
             style="@style/Extension.SecondaryText" />
 
@@ -39,6 +45,8 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="@{viewModel.displayText}"
+            android:focusable="false"
+            android:clickable="false"
             tools:text="100%"
             style="@style/Extension.PrimaryText" />
 
