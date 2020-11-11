@@ -24,7 +24,6 @@ import com.boswelja.devicemanager.bootorupdate.updater.Updater
 import com.boswelja.devicemanager.common.Compat
 import com.boswelja.devicemanager.common.preference.PreferenceKey
 import com.boswelja.devicemanager.dndsync.DnDLocalChangeService
-import com.boswelja.devicemanager.messages.Action
 import com.boswelja.devicemanager.messages.Message
 import com.boswelja.devicemanager.messages.database.MessageDatabase
 import com.boswelja.devicemanager.watchmanager.WatchManager
@@ -80,8 +79,6 @@ class BootOrUpdateHandlerService : Service() {
                                 R.drawable.ic_update,
                                 "Updated to version ${BuildConfig.VERSION_NAME}",
                                 "Version ${BuildConfig.VERSION_NAME}",
-                                action = Action.SHOW_CHANGELOG,
-                                buttonLabel = "See What's New"
                             )
                         MessageDatabase.get(this@BootOrUpdateHandlerService)
                             .sendMessage(
