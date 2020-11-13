@@ -139,6 +139,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: sign
     steps:
+      - uses: actions/checkout@v2
       - name: Download mobile-release.aab
         uses: actions/download-artifact@v2.0.5
         with:
@@ -155,5 +156,5 @@ jobs:
           serviceAccountJsonPlainText: ${{ secrets.SERVICE_ACCOUNT_JSON }}
           packageName: "com.boswelja.devicemanager"
           releaseFiles: "release/mobile-release.aab,release/wear-release.aab"
-          whatsNewDirectory: changelogs
+          whatsNewDirectory: changelogs/
           track: beta
