@@ -121,7 +121,7 @@ jobs:
         run: ./gradlew :wear:bundleRelease
       - name: Sign Wear Release
         id: sign-wear-release
-        uses: r0adkll/sign-android-release@v1
+        uses: r0adkll/sign-android-release@master
         with:
           releaseDirectory: wear/build/outputs/bundle/release/
           signingKeyBase64: ${{ secrets.KEYSTORE_FILE }}
