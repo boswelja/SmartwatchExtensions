@@ -15,6 +15,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:onClick="@{() -> viewModel.requestLockPhone()}"
+        android:focusable="true"
+        android:clickable="true"
         app:layoutDescription="@xml/lock_phone_motion_scene"
         tools:path="true"
         style="@style/Extension">
@@ -23,6 +25,8 @@
             android:id="@+id/icon"
             android:layout_width="@dimen/extension_big_icon_size"
             android:layout_height="@dimen/extension_big_icon_size"
+            android:focusable="false"
+            android:clickable="false"
             app:srcCompat="@drawable/ic_phone_lock" />
 
         <androidx.appcompat.widget.AppCompatTextView
@@ -30,6 +34,8 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="@{viewModel.displayText}"
+            android:focusable="false"
+            android:clickable="false"
             tools:text="Tap to Lock Your Phone"
             style="@style/Extension.PrimaryText" />
 
