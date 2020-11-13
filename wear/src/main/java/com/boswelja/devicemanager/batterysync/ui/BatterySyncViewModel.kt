@@ -64,7 +64,9 @@ class BatterySyncViewModel(application: Application) : AndroidViewModel(applicat
     val displayText: LiveData<String>
         get() = _displayText
 
-    private val _phoneConnected = MutableLiveData(false)
+    private val _phoneConnected = MutableLiveData(
+        sharedPreferences.getBoolean(PHONE_CONNECTED_KEY, false)
+    )
     val phoneConnected: LiveData<Boolean>
         get() = _phoneConnected
 
