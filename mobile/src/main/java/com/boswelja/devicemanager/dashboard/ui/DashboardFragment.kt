@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.batterysync.ui.BatterySyncPreferenceWidgetFragment
+import com.boswelja.devicemanager.databinding.DashboardItemBinding
 import com.boswelja.devicemanager.databinding.FragmentDashboardBinding
 import com.boswelja.devicemanager.watchmanager.SelectedWatchHandler
 import timber.log.Timber
@@ -31,56 +32,49 @@ class DashboardFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         // Setup Battery Sync widget
-        childFragmentManager.beginTransaction()
-            .replace(
-                binding.batterySyncWidget.itemContent.id,
-                BatterySyncPreferenceWidgetFragment()
-            ).commit()
-        binding.batterySyncWidget.settingsAction.apply {
-            setOnClickListener {
-                findNavController().navigate(DashboardFragmentDirections.toBatterySyncActivity())
-            }
-            text = getString(
+        setupWidget(
+            binding.batterySyncWidget,
+            getString(
                 R.string.dashboard_settings_label,
                 getString(R.string.main_battery_sync_title)
-            )
+            ),
+            BatterySyncPreferenceWidgetFragment()
+        ) {
+            findNavController().navigate(DashboardFragmentDirections.toBatterySyncActivity())
         }
 
         // Set up Do not Disturb Sync widget
-        binding.dndSyncWidget.settingsAction.apply {
-            setOnClickListener {
-                findNavController().navigate(DashboardFragmentDirections.toDndSyncActivity())
-            }
-            text = getString(
-                R.string.dashboard_settings_label,
-                getString(R.string.main_dnd_sync_title)
-            )
+        setupWidget(
+            binding.dndSyncWidget,
+            getString(R.string.dashboard_settings_label, getString(R.string.main_dnd_sync_title))
+        ) {
+            findNavController().navigate(DashboardFragmentDirections.toDndSyncActivity())
         }
 
         // Set up Phone Locking widget
-        binding.phoneLockingWidget.settingsAction.apply {
-            setOnClickListener {
-                findNavController().navigate(DashboardFragmentDirections.toPhoneLockingActivity())
-            }
-            text = getString(
+        setupWidget(
+            binding.phoneLockingWidget,
+            getString(
                 R.string.dashboard_settings_label,
                 getString(R.string.main_phone_locking_title)
             )
+        ) {
+            findNavController().navigate(DashboardFragmentDirections.toPhoneLockingActivity())
         }
 
         // Set up App Manager widget
-        binding.appManagerWidget.settingsAction.apply {
-            setOnClickListener {
-                selectedWatchHandler.selectedWatch.value?.let {
-                    findNavController().navigate(
-                        DashboardFragmentDirections.toAppManagerActivity(
-                            it.id,
-                            it.name
-                        )
+        setupWidget(
+            binding.appManagerWidget,
+            getString(R.string.main_app_manager_title)
+        ) {
+            selectedWatchHandler.selectedWatch.value?.let {
+                findNavController().navigate(
+                    DashboardFragmentDirections.toAppManagerActivity(
+                        it.id,
+                        it.name
                     )
-                }
+                )
             }
-            text = getString(R.string.main_app_manager_title)
         }
     }
 
@@ -96,5 +90,22 @@ class DashboardFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         selectedWatchHandler.refreshStatus()
+    }
+
+    private fun setupWidget(
+        binding: DashboardItemBinding,
+        actionLabel: String,
+        widgetContent: Fragment? = null,
+        actionClickListener: () -> Unit
+    ) {
+        widgetContent?.let {
+            childFragmentManager.beginTransaction()
+                .replace(binding.itemContent.id, it)
+                .commit()
+        }
+        binding.settingsAction.apply {
+            setOnClickListener { actionClickListener() }
+            text = actionLabel
+        }
     }
 }
