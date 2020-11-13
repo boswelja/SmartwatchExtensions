@@ -32,12 +32,10 @@ class BatterySyncViewModelTest {
 
     @get:Rule val instantExecutorRule = InstantTaskExecutorRule()
 
-    private lateinit var viewModel: BatterySyncViewModel
     private lateinit var sharedPreferences: SharedPreferences
 
     @Before
     fun setUp() {
-        viewModel = BatterySyncViewModel(ApplicationProvider.getApplicationContext())
         sharedPreferences =
             PreferenceManager.getDefaultSharedPreferences(
                 ApplicationProvider.getApplicationContext()
@@ -46,6 +44,7 @@ class BatterySyncViewModelTest {
 
     @Test
     fun `Changing Battery Sync preference updates corresponding LiveData`() {
+        val viewModel = BatterySyncViewModel(ApplicationProvider.getApplicationContext())
         sharedPreferences.edit(commit = true) { putBoolean(BATTERY_SYNC_ENABLED_KEY, true) }
         viewModel.batterySyncEnabled.getOrAwaitValue { assertThat(it).isTrue() }
         sharedPreferences.edit(commit = true) { putBoolean(BATTERY_SYNC_ENABLED_KEY, false) }
@@ -54,6 +53,7 @@ class BatterySyncViewModelTest {
 
     @Test
     fun `Changing Battery Percent preference updates corresponding LiveData`() {
+        val viewModel = BatterySyncViewModel(ApplicationProvider.getApplicationContext())
         sharedPreferences.edit(commit = true) { putInt(BATTERY_PERCENT_KEY, 0) }
         viewModel.batteryPercent.getOrAwaitValue { assertThat(it).isEqualTo(0) }
         sharedPreferences.edit(commit = true) { putInt(BATTERY_PERCENT_KEY, 100) }
@@ -64,6 +64,7 @@ class BatterySyncViewModelTest {
 
     @Test
     fun `Phone Name preference changes update corresponding LiveData`() {
+        val viewModel = BatterySyncViewModel(ApplicationProvider.getApplicationContext())
         sharedPreferences.edit(commit = true) { putString(PHONE_NAME_KEY, "Phone") }
         viewModel.phoneName.getOrAwaitValue { assertThat(it).isEqualTo("Phone") }
         sharedPreferences.edit(commit = true) { putString(PHONE_NAME_KEY, "Pixel 3") }
@@ -72,9 +73,21 @@ class BatterySyncViewModelTest {
 
     @Test
     fun `Phone Connected preference changes update corresponding LiveData`() {
+        val viewModel = BatterySyncViewModel(ApplicationProvider.getApplicationContext())
         sharedPreferences.edit(commit = true) { putBoolean(PHONE_CONNECTED_KEY, false) }
         viewModel.phoneConnected.getOrAwaitValue { assertThat(it).isFalse() }
         sharedPreferences.edit(commit = true) { putBoolean(PHONE_CONNECTED_KEY, true) }
         viewModel.phoneConnected.getOrAwaitValue { assertThat(it).isTrue() }
+    }
+
+    @Test
+    fun `Phone connected LiveData starts with the correct value`() {
+        sharedPreferences.edit(commit = true) { putBoolean(PHONE_CONNECTED_KEY, false) }
+        var viewModel = BatterySyncViewModel(ApplicationProvider.getApplicationContext())
+        assertThat(viewModel.phoneConnected.value).isFalse()
+
+        sharedPreferences.edit(commit = true) { putBoolean(PHONE_CONNECTED_KEY, true) }
+        viewModel = BatterySyncViewModel(ApplicationProvider.getApplicationContext())
+        assertThat(viewModel.phoneConnected.value).isTrue()
     }
 }

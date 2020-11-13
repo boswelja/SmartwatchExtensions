@@ -225,7 +225,7 @@ class PhoneLockingPreferenceFragment :
                 .also { it.show() }
         } else {
             Timber.i("Disabling phone locking")
-            setPhoneLockingEnabled(false)
+            setPhoneLockingEnabled(!sharedPreferences.getBoolean(PHONE_LOCKING_ENABLED_KEY, false))
         }
     }
 
