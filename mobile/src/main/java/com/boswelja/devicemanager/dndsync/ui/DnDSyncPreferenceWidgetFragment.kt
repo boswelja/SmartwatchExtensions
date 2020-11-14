@@ -4,10 +4,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.databinding.SettingsWidgetDndSyncBinding
 
 class DnDSyncPreferenceWidgetFragment : Fragment() {
@@ -21,12 +19,7 @@ class DnDSyncPreferenceWidgetFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = DataBindingUtil.inflate(
-            inflater,
-            R.layout.settings_widget_dnd_sync,
-            container,
-            false
-        )
+        binding = SettingsWidgetDndSyncBinding.inflate(inflater, container, false)
         return binding.root
     }
 
