@@ -5,13 +5,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.navigation.fragment.findNavController
-import com.boswelja.devicemanager.R
-import com.boswelja.devicemanager.batterysync.ui.BatterySyncPreferenceWidgetFragment
-import com.boswelja.devicemanager.databinding.DashboardItemBinding
+import com.boswelja.devicemanager.dashboard.ui.items.AppManagerDashboardFragment
+import com.boswelja.devicemanager.dashboard.ui.items.BatterySyncDashboardFragment
+import com.boswelja.devicemanager.dashboard.ui.items.DnDSyncDashboardFragment
+import com.boswelja.devicemanager.dashboard.ui.items.PhoneLockingDashboardFragment
 import com.boswelja.devicemanager.databinding.FragmentDashboardBinding
-import com.boswelja.devicemanager.dndsync.ui.DnDSyncPreferenceWidgetFragment
 import com.boswelja.devicemanager.watchmanager.SelectedWatchHandler
+import kotlin.reflect.full.primaryConstructor
 import timber.log.Timber
 
 class DashboardFragment : Fragment() {
@@ -31,52 +31,13 @@ class DashboardFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        // Setup Battery Sync widget
-        setupWidget(
-            binding.batterySyncWidget,
-            getString(
-                R.string.dashboard_settings_label,
-                getString(R.string.main_battery_sync_title)
-            ),
-            BatterySyncPreferenceWidgetFragment()
-        ) {
-            findNavController().navigate(DashboardFragmentDirections.toBatterySyncActivity())
-        }
-
-        // Set up Do not Disturb Sync widget
-        setupWidget(
-            binding.dndSyncWidget,
-            getString(R.string.dashboard_settings_label, getString(R.string.main_dnd_sync_title)),
-            DnDSyncPreferenceWidgetFragment()
-        ) {
-            findNavController().navigate(DashboardFragmentDirections.toDndSyncActivity())
-        }
-
-        // Set up Phone Locking widget
-        setupWidget(
-            binding.phoneLockingWidget,
-            getString(
-                R.string.dashboard_settings_label,
-                getString(R.string.main_phone_locking_title)
-            )
-        ) {
-            findNavController().navigate(DashboardFragmentDirections.toPhoneLockingActivity())
-        }
-
-        // Set up App Manager widget
-        setupWidget(
-            binding.appManagerWidget,
-            getString(R.string.main_app_manager_title)
-        ) {
-            selectedWatchHandler.selectedWatch.value?.let {
-                findNavController().navigate(
-                    DashboardFragmentDirections.toAppManagerActivity(
-                        it.id,
-                        it.name
-                    )
-                )
+        if (savedInstanceState == null) {
+            val transaction = childFragmentManager.beginTransaction()
+            ALL_FRAGMENTS.forEach {
+                Timber.d("Adding $it")
+                transaction.add(binding.dashboardItems.id, it.primaryConstructor!!.call())
             }
+            transaction.commit()
         }
     }
 
@@ -94,20 +55,12 @@ class DashboardFragment : Fragment() {
         selectedWatchHandler.refreshStatus()
     }
 
-    private fun setupWidget(
-        binding: DashboardItemBinding,
-        actionLabel: String,
-        widgetContent: Fragment? = null,
-        actionClickListener: () -> Unit
-    ) {
-        widgetContent?.let {
-            childFragmentManager.beginTransaction()
-                .replace(binding.itemContent.id, it)
-                .commit()
-        }
-        binding.settingsAction.apply {
-            setOnClickListener { actionClickListener() }
-            text = actionLabel
-        }
+    companion object {
+        private val ALL_FRAGMENTS = listOf(
+            BatterySyncDashboardFragment::class,
+            DnDSyncDashboardFragment::class,
+            PhoneLockingDashboardFragment::class,
+            AppManagerDashboardFragment::class
+        )
     }
 }

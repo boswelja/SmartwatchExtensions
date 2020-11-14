@@ -58,6 +58,7 @@ android {
 
 dependencies {
     implementation(project(":common"))
+    implementation(kotlin("reflect"))
 
     implementation(Libraries.androidxAppCompat)
     implementation(Libraries.androidxBrowser)

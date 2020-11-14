@@ -6,6 +6,7 @@
     android:layout_height="match_parent">
 
     <androidx.appcompat.widget.LinearLayoutCompat
+        android:id="@+id/dashboard_items"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
@@ -41,21 +42,5 @@
 
             </androidx.appcompat.widget.LinearLayoutCompat>
         </com.google.android.material.card.MaterialCardView>
-
-        <include
-            android:id="@+id/battery_sync_widget"
-            layout="@layout/dashboard_item" />
-
-        <include
-            android:id="@+id/dnd_sync_widget"
-            layout="@layout/dashboard_item" />
-
-        <include
-            android:id="@+id/phone_locking_widget"
-            layout="@layout/dashboard_item" />
-
-        <include
-            android:id="@+id/app_manager_widget"
-            layout="@layout/dashboard_item" />
     </androidx.appcompat.widget.LinearLayoutCompat>
 </ScrollView>
