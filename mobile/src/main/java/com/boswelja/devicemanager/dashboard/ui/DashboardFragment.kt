@@ -10,6 +10,7 @@ import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.batterysync.ui.BatterySyncPreferenceWidgetFragment
 import com.boswelja.devicemanager.databinding.DashboardItemBinding
 import com.boswelja.devicemanager.databinding.FragmentDashboardBinding
+import com.boswelja.devicemanager.dndsync.ui.DnDSyncPreferenceWidgetFragment
 import com.boswelja.devicemanager.watchmanager.SelectedWatchHandler
 import timber.log.Timber
 
@@ -46,7 +47,8 @@ class DashboardFragment : Fragment() {
         // Set up Do not Disturb Sync widget
         setupWidget(
             binding.dndSyncWidget,
-            getString(R.string.dashboard_settings_label, getString(R.string.main_dnd_sync_title))
+            getString(R.string.dashboard_settings_label, getString(R.string.main_dnd_sync_title)),
+            DnDSyncPreferenceWidgetFragment()
         ) {
             findNavController().navigate(DashboardFragmentDirections.toDndSyncActivity())
         }
