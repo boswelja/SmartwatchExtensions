@@ -8,15 +8,33 @@
 package com.boswelja.devicemanager
 
 import android.view.View
+import android.widget.ImageView
 import android.widget.TextView
+import androidx.annotation.DrawableRes
+import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.toBitmap
 import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
 import androidx.test.espresso.matcher.ViewMatchers.isAssignableFrom
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.Matchers.allOf
+import org.hamcrest.TypeSafeMatcher
 
 object TestExtensions {
+
+    fun withDrawable(@DrawableRes id: Int) = object : TypeSafeMatcher<View>() {
+        override fun describeTo(description: Description) {
+            description.appendText("ImageView with drawable same as drawable with id $id")
+        }
+
+        override fun matchesSafely(view: View): Boolean {
+            val expectedBitmap = ContextCompat.getDrawable(view.context, id)!!.toBitmap()
+            return view is ImageView && view.drawable.toBitmap().sameAs(expectedBitmap)
+        }
+    }
+
     fun setText(value: String?): ViewAction? {
         return object : ViewAction {
             override fun getConstraints(): Matcher<View> {
