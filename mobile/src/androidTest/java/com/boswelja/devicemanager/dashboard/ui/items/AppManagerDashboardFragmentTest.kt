@@ -15,18 +15,19 @@ import org.junit.Test
 
 class AppManagerDashboardFragmentTest {
 
-    private fun createScenario(landscape: Boolean = false):
-        FragmentScenario<AppManagerDashboardFragment> {
-            val scenario = launchFragmentInContainer<AppManagerDashboardFragment>(
-                themeResId = R.style.AppTheme
-            )
-            if (landscape) {
-                scenario.onFragment {
-                    it.activity!!.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
-                }
+    private fun createScenario(
+        landscape: Boolean = false
+    ): FragmentScenario<AppManagerDashboardFragment> {
+        val scenario = launchFragmentInContainer<AppManagerDashboardFragment>(
+            themeResId = R.style.AppTheme
+        )
+        if (landscape) {
+            scenario.onFragment {
+                it.activity!!.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
             }
-            return scenario
         }
+        return scenario
+    }
 
     @Test
     fun portraitViewsVisible() {
