@@ -17,9 +17,11 @@ class AppManagerDashboardFragment : BaseDashboardItemFragment() {
             getString(R.string.main_app_manager_title)
         ) {
             selectedWatchHandler.selectedWatch.value?.let {
-                findNavController().navigate(DashboardFragmentDirections.toAppManagerActivity(
-                    it.id, it.name
-                ))
+                findNavController().navigate(
+                    DashboardFragmentDirections.toAppManagerActivity(
+                        it.id, it.name
+                    )
+                )
             }
         }
     }
