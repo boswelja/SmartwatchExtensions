@@ -5,30 +5,27 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="match_parent"
-    android:layout_marginTop="@dimen/dashboard_card_spacing"
-    android:layout_marginBottom="@dimen/dashboard_card_spacing"
-    android:minWidth="@dimen/settings_widget_height">
+    android:layout_marginStart="@dimen/dashboard_card_spacing"
+    android:layout_marginEnd="@dimen/dashboard_card_spacing">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
 
         <FrameLayout
             android:id="@+id/item_content"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/settings_action"/>
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"/>
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/settings_action"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_width="120dp"
+            android:layout_height="match_parent"
             app:icon="@drawable/ic_chevron_right"
             app:iconGravity="textEnd"
-            app:layout_constraintBottom_toBottomOf="parent"
             tools:text="Go to Settings"
             style="@style/Widget.MaterialComponents.Button.TextButton.Icon" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.appcompat.widget.LinearLayoutCompat>
 </com.google.android.material.card.MaterialCardView>
