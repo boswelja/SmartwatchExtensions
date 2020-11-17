@@ -2,11 +2,11 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/main_navigation"
-    app:startDestination="@id/extensionsFragment">
+    app:startDestination="@id/dashboardFragment">
 
     <action
-        android:id="@+id/action_global_extensionsFragment"
-        app:destination="@id/extensionsFragment" />
+        android:id="@+id/action_global_dashboardFragment"
+        app:destination="@id/dashboardFragment" />
 
     <action
         android:id="@+id/action_global_messageFragment"
@@ -21,7 +21,7 @@
         app:destination="@id/appInfoFragment" />
 
     <fragment
-        android:id="@+id/extensionsFragment"
+        android:id="@+id/dashboardFragment"
         android:name="com.boswelja.devicemanager.dashboard.ui.DashboardFragment">
 
         <action

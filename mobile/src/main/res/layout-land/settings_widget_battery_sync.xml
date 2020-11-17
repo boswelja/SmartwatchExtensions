@@ -1,30 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="150dp"
+    android:layout_width="wrap_content"
     android:layout_height="match_parent"
-    android:layout_marginStart="@dimen/settings_widget_battery_sync_start_margin"
-    android:layout_marginEnd="@dimen/settings_widget_battery_sync_end_margin">
+    android:layout_marginStart="@dimen/settings_widget_horizontal_margin"
+    android:layout_marginEnd="@dimen/settings_widget_horizontal_margin">
+
+    <FrameLayout
+        android:id="@+id/widget_sizer"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:visibility="invisible"
+        app:layout_constraintDimensionRatio="1:2"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/watch_battery_indicator"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="0dp"
-        android:padding="8dp"
-        android:src="@drawable/ic_watch_battery"
-        android:scaleType="centerCrop"
-        app:layout_constraintDimensionRatio="3:4"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:padding="16dp"
+        app:srcCompat="@drawable/ic_watch_battery"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/watch_battery_percent"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginTop="4dp"
-        android:layout_marginBottom="2dp"
         android:textColor="?android:textColorPrimary"
         android:textAlignment="center"
         app:layout_constraintStart_toStartOf="parent"
@@ -38,17 +44,11 @@
         android:id="@+id/last_updated_time"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginTop="2dp"
-        android:layout_marginBottom="4dp"
         android:textAlignment="center"
         android:textColor="?android:textColorSecondary"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/watch_battery_percent"
-        app:layout_constraintVertical_bias="0.0"
         tools:text="Last updated less than a minute ago"
         style="@style/TextAppearance.MaterialComponents.Body1" />
 

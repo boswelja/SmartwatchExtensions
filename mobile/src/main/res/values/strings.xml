@@ -2,6 +2,9 @@
 
     <string name="app_name">@string/global_app_name</string>
 
+    <!-- Dashboard generic strings -->
+    <string name="dashboard_settings_label">%s settings</string>
+
     <!-- Device Admin strings -->
     <string name="device_admin_label">@string/app_name</string>
     <string name="device_admin_desc">Allows locking your phone from your watch</string>
@@ -129,7 +132,7 @@
     <string name="message_none_label">No new messages</string>
 
     <!-- Bottom Navigation Bar strings -->
-    <string name="bottom_nav_extensions_label">Extensions</string>
+    <string name="bottom_nav_dashboard_label">Dashboard</string>
     <string name="bottom_nav_messages_label">Messages</string>
     <string name="bottom_nav_app_settings_label">App Settings</string>
     <string name="bottom_nav_about_label">About</string>

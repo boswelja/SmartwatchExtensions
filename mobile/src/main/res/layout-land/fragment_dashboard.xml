@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/watch_status_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dashboard_content_padding"
+        android:layout_marginEnd="@dimen/dashboard_content_padding"
+        android:layout_marginTop="@dimen/dashboard_content_padding">
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/watch_status_icon"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                tools:src="@drawable/ic_connected" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/watch_status_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:textAlignment="center"
+                android:textAppearance="?textAppearanceBody1"
+                tools:text="Connected" />
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+    </com.google.android.material.card.MaterialCardView>
+
+    <HorizontalScrollView
+        android:id="@+id/dashboard_scrollview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:id="@+id/dashboard_items"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:paddingStart="@dimen/dashboard_content_padding"
+            android:paddingEnd="@dimen/dashboard_content_padding"
+            android:paddingBottom="@dimen/dashboard_content_padding"
+            android:paddingTop="@dimen/dashboard_card_spacing"
+            android:clipToPadding="false">
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+    </HorizontalScrollView>
+</androidx.appcompat.widget.LinearLayoutCompat>

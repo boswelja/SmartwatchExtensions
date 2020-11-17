@@ -7,6 +7,7 @@
  */
 package com.boswelja.devicemanager.ui.batterysync
 
+import android.content.pm.ActivityInfo
 import android.view.View
 import androidx.fragment.app.testing.FragmentScenario
 import androidx.fragment.app.testing.launchFragmentInContainer
@@ -22,13 +23,40 @@ import org.junit.Test
 
 class BatterySyncPreferenceWidgetFragmentTest {
 
-    private fun createScenario(): FragmentScenario<BatterySyncPreferenceWidgetFragment> {
-        return launchFragmentInContainer(themeResId = R.style.AppTheme)
+    private fun createScenario(
+        landscape: Boolean = false
+    ): FragmentScenario<BatterySyncPreferenceWidgetFragment> {
+        val scenario = launchFragmentInContainer<BatterySyncPreferenceWidgetFragment>(
+            themeResId = R.style.AppTheme
+        )
+        if (landscape) {
+            scenario.onFragment {
+                it.activity!!.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+            }
+        }
+        return scenario
     }
 
     @Test
-    fun testViewVisibility() {
+    fun portraitViewVisibility() {
         createScenario()
+        // Set all views to their largest size and make them visible.
+        onView(withId(R.id.watch_battery_percent))
+            .perform(setVisibility(View.VISIBLE))
+            .perform(setText("Battery Sync Disabled"))
+            .check(matches(isCompletelyDisplayed()))
+        onView(withId(R.id.watch_battery_indicator))
+            .perform(setVisibility(View.VISIBLE))
+            .check(matches(isCompletelyDisplayed()))
+        onView(withId(R.id.last_updated_time))
+            .perform(setVisibility(View.VISIBLE))
+            .perform(setText("Last updated less than a minute ago"))
+            .check(matches(isCompletelyDisplayed()))
+    }
+
+    @Test
+    fun landscapeViewVisibility() {
+        createScenario(landscape = true)
         // Set all views to their largest size and make them visible.
         onView(withId(R.id.watch_battery_percent))
             .perform(setVisibility(View.VISIBLE))

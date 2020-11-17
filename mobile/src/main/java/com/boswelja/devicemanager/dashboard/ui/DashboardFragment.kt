@@ -5,8 +5,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import com.boswelja.devicemanager.dashboard.ui.items.AppManagerDashboardFragment
+import com.boswelja.devicemanager.dashboard.ui.items.BatterySyncDashboardFragment
+import com.boswelja.devicemanager.dashboard.ui.items.DnDSyncDashboardFragment
+import com.boswelja.devicemanager.dashboard.ui.items.PhoneLockingDashboardFragment
 import com.boswelja.devicemanager.databinding.FragmentDashboardBinding
 import com.boswelja.devicemanager.watchmanager.SelectedWatchHandler
+import kotlin.reflect.full.primaryConstructor
 import timber.log.Timber
 
 class DashboardFragment : Fragment() {
@@ -24,6 +29,18 @@ class DashboardFragment : Fragment() {
         return binding.root
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        if (savedInstanceState == null) {
+            val transaction = childFragmentManager.beginTransaction()
+            ALL_FRAGMENTS.forEach {
+                Timber.d("Adding $it")
+                transaction.add(binding.dashboardItems.id, it.primaryConstructor!!.call())
+            }
+            transaction.commit()
+        }
+    }
+
     override fun onStart() {
         super.onStart()
         selectedWatchHandler.status.observe(this) { status ->
@@ -36,5 +53,14 @@ class DashboardFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         selectedWatchHandler.refreshStatus()
+    }
+
+    companion object {
+        private val ALL_FRAGMENTS = listOf(
+            BatterySyncDashboardFragment::class,
+            DnDSyncDashboardFragment::class,
+            PhoneLockingDashboardFragment::class,
+            AppManagerDashboardFragment::class
+        )
     }
 }

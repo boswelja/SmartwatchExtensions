@@ -76,7 +76,9 @@ internal constructor(
      * Update [status] for the currently selected watch.
      */
     fun refreshStatus() {
-        refreshStatus(_selectedWatch.value!!.id)
+        _selectedWatch.value?.let {
+            refreshStatus(it.id)
+        }
     }
 
     /**

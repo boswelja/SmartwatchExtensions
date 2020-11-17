@@ -19,6 +19,7 @@
         <item name="toolbarStyle">@style/AppTheme.Toolbar</item>
         <item name="materialButtonStyle">@style/AppTheme.Button</item>
         <item name="bottomSheetDialogTheme">@style/AppTheme.BottomSheetDialog</item>
+        <item name="materialCardViewStyle">@style/AppTheme.Widget.CardView</item>
     </style>
 
     <style name="AppTheme" parent="BaseTheme" />
@@ -75,6 +76,14 @@
 
     <style name="ManageSpace.Widget.Button" parent="AppTheme.Button.OutlinedButton.MultiLine">
         <item name="android:layout_marginEnd">@dimen/content_margin_manage_space_side</item>
+    </style>
+
+    <style name="AppTheme.ShapeAppearance.MediumComponent" parent="ShapeAppearance.MaterialComponents.MediumComponent">
+        <item name="cornerRadius">@dimen/corner_radius</item>
+    </style>
+
+    <style name="AppTheme.Widget.CardView" parent="Widget.MaterialComponents.CardView">
+        <item name="shapeAppearance">@style/AppTheme.ShapeAppearance.MediumComponent</item>
     </style>
 
 </resources>

@@ -14,5 +14,5 @@ import com.boswelja.devicemanager.common.ui.BaseWatchPickerPreferenceActivity
 class DnDSyncPreferenceActivity : BaseWatchPickerPreferenceActivity() {
 
     override fun getPreferenceFragment(): BasePreferenceFragment = DnDSyncPreferenceFragment()
-    override fun getWidgetFragment(): Fragment? = null
+    override fun getWidgetFragment(): Fragment? = DnDSyncPreferenceWidgetFragment()
 }
