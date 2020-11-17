@@ -21,4 +21,5 @@
 
     <dimen name="settings_widget_horizontal_margin">4dp</dimen>
 
+    <dimen name="rotation_offset">0</dimen>
 </resources>

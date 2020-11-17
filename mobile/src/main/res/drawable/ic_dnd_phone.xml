@@ -6,6 +6,10 @@
         android:bottom="@dimen/watch_battery_inset_bottom"
         android:left="@dimen/watch_battery_inset_left"
         android:right="@dimen/watch_battery_inset_right"/>
-    <item
-        android:drawable="@drawable/phone" />
+    <item>
+        <rotate
+            android:drawable="@drawable/phone"
+            android:fromDegrees="@dimen/rotation_offset"
+            android:toDegrees="@dimen/rotation_offset" />
+    </item>
 </layer-list>
