@@ -84,6 +84,7 @@
 
     <style name="AppTheme.Widget.CardView" parent="Widget.MaterialComponents.CardView">
         <item name="shapeAppearance">@style/AppTheme.ShapeAppearance.MediumComponent</item>
+        <item name="cardElevation">2dp</item>
     </style>
 
 </resources>
