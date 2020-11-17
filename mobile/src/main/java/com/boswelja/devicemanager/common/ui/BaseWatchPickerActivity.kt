@@ -17,6 +17,7 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.appcompat.widget.AppCompatSpinner
 import androidx.appcompat.widget.AppCompatTextView
+import com.boswelja.devicemanager.BuildConfig
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.watchmanager.SelectedWatchHandler
 import com.boswelja.devicemanager.watchmanager.WatchManager
@@ -60,7 +61,7 @@ abstract class BaseWatchPickerActivity : BaseToolbarActivity(), AdapterView.OnIt
         super.onCreate(savedInstanceState)
 
         database.watchDao().getAllObservable().observe(this) {
-            if (it.isEmpty()) startSetupActivity() else setWatchList(it)
+            if (it.isEmpty() && !BuildConfig.DEBUG) startSetupActivity() else setWatchList(it)
         }
         selectedWatchHandler.selectedWatch.observe(this) { it?.let { selectWatch(it.id) } }
     }
@@ -97,7 +98,7 @@ abstract class BaseWatchPickerActivity : BaseToolbarActivity(), AdapterView.OnIt
                 }
             }
             withContext(Dispatchers.Main) {
-                watchPickerSpinner.setSelection(selectedWatchPosition)
+                // watchPickerSpinner.setSelection(selectedWatchPosition)
             }
         }
     }

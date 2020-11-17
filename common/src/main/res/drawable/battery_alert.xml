@@ -1,9 +1,10 @@
-<vector xmlns:android="http://schemas.android.com/apk/res/android"
-    android:height="24dp"
-    android:width="24dp"
-    android:viewportWidth="24"
-    android:viewportHeight="24">
-    <path
-        android:fillColor="@color/iconTint"
-        android:pathData="M13 14h-2V9h2m0 9h-2v-2h2m3.67-12H15V2H9v2H7.33A1.33 1.33 0 0 0 6 5.33v15.34C6 21.4 6.6 22 7.33 22h9.34A1.33 1.33 0 0 0 18 20.67V5.33C18 4.6 17.4 4 16.67 4z" />
-</vector>
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@drawable/battery_outline" />
+    <item
+        android:drawable="@drawable/alert"
+        android:top="3dp"
+        android:left="2dp"
+        android:right="2dp"
+        android:bottom="1dp" />
+</layer-list>
