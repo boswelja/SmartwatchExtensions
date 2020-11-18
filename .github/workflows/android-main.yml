@@ -19,13 +19,11 @@ jobs:
         with:
           path: ~/.gradle/caches
           key: ${{ runner.os }}-gradle-cache-${{ hashFiles('**/*.gradle.kts') }}
-          restore-keys: ${{ runner.os }}-gradle-cache
       - name: Cache Gradle Wrapper
         uses: actions/cache@v2.1.2
         with:
           path: ~/.gradle/wrapper
           key: ${{ runner.os }}-gradle-wrapper-${{ hashFiles('gradle/wrapper/gradle-wrapper.properties') }}
-          restore-keys: ${{ runner.os }}-gradle-wrapper
       - name: Build
         run: bash ./gradlew assemble --stacktrace
 
@@ -43,13 +41,11 @@ jobs:
         with:
           path: ~/.gradle/caches
           key: ${{ runner.os }}-gradle-cache-${{ hashFiles('**/*.gradle.kts') }}
-          restore-keys: ${{ runner.os }}-gradle-cache
       - name: Cache Gradle Wrapper
         uses: actions/cache@v2.1.2
         with:
           path: ~/.gradle/wrapper
           key: ${{ runner.os }}-gradle-wrapper-${{ hashFiles('gradle/wrapper/gradle-wrapper.properties') }}
-          restore-keys: ${{ runner.os }}-gradle-wrapper
       - name: Unit tests
         run: bash ./gradlew test --stacktrace
       - uses: actions/upload-artifact@v2
@@ -94,13 +90,11 @@ jobs:
         with:
           path: ~/.gradle/caches
           key: ${{ runner.os }}-gradle-cache-${{ hashFiles('**/*.gradle.kts') }}
-          restore-keys: ${{ runner.os }}-gradle-cache
       - name: Cache Gradle Wrapper
         uses: actions/cache@v2.1.2
         with:
           path: ~/.gradle/wrapper
           key: ${{ runner.os }}-gradle-wrapper-${{ hashFiles('gradle/wrapper/gradle-wrapper.properties') }}
-          restore-keys: ${{ runner.os }}-gradle-wrapper
       - name: Build Mobile Release Artifacts
         run: ./gradlew :mobile:bundleRelease
       - name: Sign Mobile Release
