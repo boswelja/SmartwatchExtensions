@@ -19,13 +19,16 @@ jobs:
         with:
           path: ~/.gradle/caches
           key: ${{ runner.os }}-gradle-cache-${{ hashFiles('**/*.gradle.kts') }}
-          restore-keys: ${{ runner.os }}-gradle-cache
       - name: Cache Gradle Wrapper
         uses: actions/cache@v2.1.2
         with:
           path: ~/.gradle/wrapper
           key: ${{ runner.os }}-gradle-wrapper-${{ hashFiles('gradle/wrapper/gradle-wrapper.properties') }}
-          restore-keys: ${{ runner.os }}-gradle-wrapper
+      - name: Cache Build
+        uses: actions/cache@v2.1.2
+        with:
+          path: ./**/build/
+          key: ${{ runner.os }}-build-${{ github.sha }}
       - name: Build
         run: bash ./gradlew assemble --stacktrace
 
@@ -43,13 +46,16 @@ jobs:
         with:
           path: ~/.gradle/caches
           key: ${{ runner.os }}-gradle-cache-${{ hashFiles('**/*.gradle.kts') }}
-          restore-keys: ${{ runner.os }}-gradle-cache
       - name: Cache Gradle Wrapper
         uses: actions/cache@v2.1.2
         with:
           path: ~/.gradle/wrapper
           key: ${{ runner.os }}-gradle-wrapper-${{ hashFiles('gradle/wrapper/gradle-wrapper.properties') }}
-          restore-keys: ${{ runner.os }}-gradle-wrapper
+      - name: Cache Build
+        uses: actions/cache@v2.1.2
+        with:
+          path: ./**/build/
+          key: ${{ runner.os }}-build-${{ github.sha }}
       - name: Unit tests
         run: bash ./gradlew test --stacktrace
       - uses: actions/upload-artifact@v2
@@ -62,6 +68,7 @@ jobs:
   code-quality:
     name: Code Quality
     runs-on: ubuntu-latest
+    needs: assemble
     steps:
       - uses: actions/checkout@v2
       - run: brew install ktlint
@@ -71,6 +78,21 @@ jobs:
         if: failure()
         with:
           xml_path: ktlint_result.xml
+      - name: Cache Gradle Packages
+        uses: actions/cache@v2.1.2
+        with:
+          path: ~/.gradle/caches
+          key: ${{ runner.os }}-gradle-cache-${{ hashFiles('**/*.gradle.kts') }}
+      - name: Cache Gradle Wrapper
+        uses: actions/cache@v2.1.2
+        with:
+          path: ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-wrapper-${{ hashFiles('gradle/wrapper/gradle-wrapper.properties') }}
+      - name: Cache Build
+        uses: actions/cache@v2.1.2
+        with:
+          path: ./**/build/
+          key: ${{ runner.os }}-build-${{ github.sha }}
       - run: bash ./gradlew lint
       - uses: yutailang0119/action-android-lint@v1.0.2
         with:
