@@ -68,6 +68,7 @@ jobs:
   code-quality:
     name: Code Quality
     runs-on: ubuntu-latest
+    needs: assemble
     steps:
       - uses: actions/checkout@v2
       - run: brew install ktlint
