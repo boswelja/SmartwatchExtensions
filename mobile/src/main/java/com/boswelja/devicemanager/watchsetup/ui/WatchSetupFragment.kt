@@ -7,6 +7,7 @@
  */
 package com.boswelja.devicemanager.watchsetup.ui
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -18,6 +19,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.databinding.FragmentWatchSetupBinding
+import com.boswelja.devicemanager.main.MainActivity
 import com.boswelja.devicemanager.watchmanager.WatchStatus
 import com.boswelja.devicemanager.watchmanager.item.Watch
 
@@ -51,7 +53,14 @@ class WatchSetupFragment : Fragment() {
             if (it) hideHelpMessage()
             setLoading(it)
         }
-        viewModel.finishActivity.observe(viewLifecycleOwner) { if (it) activity?.finish() }
+        viewModel.finishActivity.observe(viewLifecycleOwner) {
+            if (it) {
+                Intent(requireContext(), MainActivity::class.java).also { intent ->
+                    startActivity(intent)
+                }
+                activity?.finish()
+            }
+        }
     }
 
     /**
