@@ -7,78 +7,70 @@
         <item name="colorOnSecondary">@color/primaryTextColor</item>
         <item name="colorAccent">@color/colorPrimary</item>
         <item name="android:windowBackground">@color/windowBackground</item>
-        <item name="alertDialogTheme">@style/AppTheme.AlertDialog</item>
-        <item name="toolbarStyle">@style/AppTheme.Toolbar</item>
-        <item name="materialButtonStyle">@style/AppTheme.Button</item>
-        <item name="bottomSheetDialogTheme">@style/AppTheme.BottomSheetDialog</item>
-        <item name="materialCardViewStyle">@style/AppTheme.Widget.CardView</item>
+        <item name="alertDialogTheme">@style/Theme.App.Dialog</item>
+        <item name="toolbarStyle">@style/Theme.App.Toolbar</item>
+        <item name="materialButtonStyle">@style/Widget.App.Button</item>
+        <item name="bottomSheetDialogTheme">@style/Theme.App.BottomSheetDialog</item>
+        <item name="materialCardViewStyle">@style/Widget.App.CardView</item>
     </style>
 
     <style name="Theme.App" parent="Theme.Base" />
 
-    <style name="AppTheme.Toolbar" parent="Widget.MaterialComponents.Toolbar">
+    <style name="Theme.App.Toolbar" parent="Widget.MaterialComponents.Toolbar">
         <item name="android:background">@color/windowBackground</item>
     </style>
 
-    <style name="AppTheme.AlertDialog" parent="Theme.MaterialComponents.DayNight.Dialog">
+    <style name="Theme.App.Dialog" parent="Theme.MaterialComponents.DayNight.Dialog">
         <item name="android:windowBackground">@drawable/dialog_background</item>
         <item name="colorAccent">@color/colorPrimary</item>
         <item name="colorPrimary">@color/colorPrimary</item>
     </style>
 
-    <style name="AppTheme.Button" parent="Widget.MaterialComponents.Button">
+    <style name="Theme.App.BottomSheetDialog" parent="Theme.MaterialComponents.DayNight.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/Widget.App.BottomSheet</item>
+    </style>
+
+    <style name="ShapeAppearance.App.MediumComponent" parent="ShapeAppearance.MaterialComponents.MediumComponent">
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">@dimen/corner_radius</item>
     </style>
 
-    <style name="AppTheme.Button.OutlinedButton" parent="Widget.MaterialComponents.Button.OutlinedButton">
-        <item name="cornerFamily">rounded</item>
-        <item name="cornerSize">@dimen/corner_radius</item>
-    </style>
-
-    <style name="AppTheme.Button.OutlinedButton.MultiLine" parent="AppTheme.Button.OutlinedButton">
-        <item name="android:lineSpacingMultiplier">1.2</item>
-    </style>
-
-    <style name="AppTheme.BottomSheetDialog" parent="Theme.MaterialComponents.DayNight.BottomSheetDialog">
-        <item name="bottomSheetStyle">@style/Widget.AppTheme.BottomSheet</item>
-    </style>
-
-    <style name="Widget.AppTheme.BottomSheet" parent="Widget.MaterialComponents.BottomSheet.Modal">
-        <item name="shapeAppearance">@style/AppTheme.ShapeAppearance.LargeComponent</item>
-        <item name="backgroundTint">@color/dialogBackground</item>
-    </style>
-
-    <style name="AppTheme.ShapeAppearance.LargeComponent" parent="ShapeAppearance.MaterialComponents.LargeComponent">
+    <style name="ShapeAppearance.App.LargeComponent" parent="ShapeAppearance.MaterialComponents.LargeComponent">
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">@dimen/corner_radius</item>
         <item name="android:backgroundTint">@color/dialogBackground</item>
     </style>
 
-    <style name="ManageSpace.TextAppearance.Title" parent="TextAppearance.MaterialComponents.Headline6">
+    <style name="TextAppearance.ManageSpace.Title" parent="TextAppearance.MaterialComponents.Headline6">
         <item name="android:textColor">?android:textColorPrimary</item>
         <item name="android:layout_marginTop">@dimen/manage_space_section_margin</item>
         <item name="android:layout_marginStart">@dimen/content_margin_manage_space_side</item>
     </style>
 
-    <style name="ManageSpace.TextAppearance.Description" parent="TextAppearance.MaterialComponents.Body1">
+    <style name="TextAppearance.ManageSpace.Description" parent="TextAppearance.MaterialComponents.Body1">
         <item name="android:textColor">?android:textColorSecondary</item>
         <item name="android:layout_marginStart">@dimen/content_margin_manage_space_side</item>
         <item name="android:layout_marginEnd">@dimen/manage_space_desc_button_margin</item>
         <item name="android:layout_marginTop">@dimen/manage_space_title_desc_margin</item>
     </style>
 
-    <style name="ManageSpace.Widget.Button" parent="AppTheme.Button.OutlinedButton.MultiLine">
-        <item name="android:layout_marginEnd">@dimen/content_margin_manage_space_side</item>
+    <style name="Widget.App.BottomSheet" parent="Widget.MaterialComponents.BottomSheet.Modal">
+        <item name="shapeAppearance">@style/ShapeAppearance.App.LargeComponent</item>
+        <item name="backgroundTint">@color/dialogBackground</item>
     </style>
 
-    <style name="AppTheme.ShapeAppearance.MediumComponent" parent="ShapeAppearance.MaterialComponents.MediumComponent">
+    <style name="Widget.App.Button" parent="Widget.MaterialComponents.Button">
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">@dimen/corner_radius</item>
     </style>
 
-    <style name="AppTheme.Widget.CardView" parent="Widget.MaterialComponents.CardView">
-        <item name="shapeAppearance">@style/AppTheme.ShapeAppearance.MediumComponent</item>
+    <style name="Widget.App.Button.OutlinedButton" parent="Widget.MaterialComponents.Button.OutlinedButton">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">@dimen/corner_radius</item>
+    </style>
+
+    <style name="Widget.App.CardView" parent="Widget.MaterialComponents.CardView">
+        <item name="shapeAppearance">@style/ShapeAppearance.App.MediumComponent</item>
         <item name="cardElevation">2dp</item>
     </style>
 
