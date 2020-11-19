@@ -35,11 +35,13 @@
     </style>
 
     <style name="AppTheme.Button" parent="Widget.MaterialComponents.Button">
-        <item name="cornerRadius">@dimen/corner_radius</item>
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">@dimen/corner_radius</item>
     </style>
 
     <style name="AppTheme.Button.OutlinedButton" parent="Widget.MaterialComponents.Button.OutlinedButton">
-        <item name="cornerRadius">@dimen/corner_radius</item>
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">@dimen/corner_radius</item>
     </style>
 
     <style name="AppTheme.Button.OutlinedButton.MultiLine" parent="AppTheme.Button.OutlinedButton">
@@ -79,7 +81,8 @@
     </style>
 
     <style name="AppTheme.ShapeAppearance.MediumComponent" parent="ShapeAppearance.MaterialComponents.MediumComponent">
-        <item name="cornerRadius">@dimen/corner_radius</item>
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">@dimen/corner_radius</item>
     </style>
 
     <style name="AppTheme.Widget.CardView" parent="Widget.MaterialComponents.CardView">
