@@ -9,10 +9,11 @@
         <item name="android:windowBackground">@color/windowBackground</item>
         <item name="alertDialogTheme">@style/Theme.App.Dialog</item>
         <item name="toolbarStyle">@style/Theme.App.Toolbar</item>
-        <item name="materialButtonStyle">@style/Widget.App.Button</item>
-        <item name="materialButtonOutlinedStyle">@style/Widget.App.Button.OutlinedButton</item>
         <item name="bottomSheetDialogTheme">@style/Theme.App.BottomSheetDialog</item>
         <item name="materialCardViewStyle">@style/Widget.App.CardView</item>
+        <item name="shapeAppearanceSmallComponent">@style/ShapeAppearance.App.SmallComponent</item>
+        <item name="shapeAppearanceMediumComponent">@style/ShapeAppearance.App.MediumComponent</item>
+        <item name="shapeAppearanceLargeComponent">@style/ShapeAppearance.App.LargeComponent</item>
     </style>
 
     <style name="Theme.App" parent="Theme.Base" />
@@ -29,6 +30,11 @@
 
     <style name="Theme.App.BottomSheetDialog" parent="Theme.MaterialComponents.DayNight.BottomSheetDialog">
         <item name="bottomSheetStyle">@style/Widget.App.BottomSheet</item>
+    </style>
+
+    <style name="ShapeAppearance.App.SmallComponent" parent="ShapeAppearance.MaterialComponents.SmallComponent">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">@dimen/corner_radius</item>
     </style>
 
     <style name="ShapeAppearance.App.MediumComponent" parent="ShapeAppearance.MaterialComponents.MediumComponent">
@@ -56,22 +62,10 @@
     </style>
 
     <style name="Widget.App.BottomSheet" parent="Widget.MaterialComponents.BottomSheet.Modal">
-        <item name="shapeAppearance">@style/ShapeAppearance.App.LargeComponent</item>
         <item name="backgroundTint">@color/dialogBackground</item>
     </style>
 
-    <style name="Widget.App.Button" parent="Widget.MaterialComponents.Button">
-        <item name="cornerFamily">rounded</item>
-        <item name="cornerSize">@dimen/corner_radius</item>
-    </style>
-
-    <style name="Widget.App.Button.OutlinedButton" parent="Widget.MaterialComponents.Button.OutlinedButton">
-        <item name="cornerFamily">rounded</item>
-        <item name="cornerSize">@dimen/corner_radius</item>
-    </style>
-
     <style name="Widget.App.CardView" parent="Widget.MaterialComponents.CardView">
-        <item name="shapeAppearance">@style/ShapeAppearance.App.MediumComponent</item>
         <item name="cardElevation">0dp</item>
         <item name="strokeColor">@color/dividerColor</item>
         <item name="strokeWidth">1dp</item>
