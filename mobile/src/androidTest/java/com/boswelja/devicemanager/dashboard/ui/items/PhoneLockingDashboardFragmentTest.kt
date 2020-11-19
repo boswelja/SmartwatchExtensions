@@ -19,7 +19,7 @@ class PhoneLockingDashboardFragmentTest {
         landscape: Boolean = false
     ): FragmentScenario<PhoneLockingDashboardFragment> {
         val scenario = launchFragmentInContainer<PhoneLockingDashboardFragment>(
-            themeResId = R.style.AppTheme
+            themeResId = R.style.`Theme.App`
         )
         if (landscape) {
             scenario.onFragment {

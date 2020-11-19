@@ -1,9 +1,0 @@
-<resources>
-
-    <style name="BaseTheme.DayNight" parent="Theme.MaterialComponents.NoActionBar" />
-
-    <style name="BaseTheme.AlertDialog" parent="Theme.MaterialComponents.Dialog" />
-
-    <style name="BaseTheme.BottomSheetDialog" parent="Theme.MaterialComponents.BottomSheetDialog" />
-
-</resources>
