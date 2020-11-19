@@ -10,6 +10,7 @@
         <item name="alertDialogTheme">@style/Theme.App.Dialog</item>
         <item name="toolbarStyle">@style/Theme.App.Toolbar</item>
         <item name="materialButtonStyle">@style/Widget.App.Button</item>
+        <item name="materialButtonOutlinedStyle">@style/Widget.App.Button.OutlinedButton</item>
         <item name="bottomSheetDialogTheme">@style/Theme.App.BottomSheetDialog</item>
         <item name="materialCardViewStyle">@style/Widget.App.CardView</item>
     </style>

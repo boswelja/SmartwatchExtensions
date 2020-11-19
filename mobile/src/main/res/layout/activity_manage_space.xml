@@ -66,7 +66,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="@id/clear_cache_desc"
         app:layout_constraintTop_toTopOf="@id/clear_cache_desc"
-        style="@style/Widget.App.Button.OutlinedButton" />
+        style="?materialButtonOutlinedStyle" />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/reset_settings_title"
@@ -95,7 +95,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="@id/reset_settings_desc"
         app:layout_constraintTop_toTopOf="@id/reset_settings_desc"
-        style="@style/Widget.App.Button.OutlinedButton" />
+        style="?materialButtonOutlinedStyle" />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/reset_app_title"
@@ -124,6 +124,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="@id/reset_app_desc"
         app:layout_constraintTop_toTopOf="@id/reset_app_desc"
-        style="@style/Widget.App.Button.OutlinedButton" />
+        style="?materialButtonOutlinedStyle" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
