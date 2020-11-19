@@ -1,14 +1,6 @@
 <resources>
 
-    <style name="BaseTheme.DayNight" parent="Theme.MaterialComponents.Light.NoActionBar" />
-
-    <style name="BaseTheme.AlertDialog" parent="Theme.MaterialComponents.Light.Dialog" />
-
-    <style name="BaseTheme.AppBarLayout" parent="Widget.MaterialComponents.Toolbar" />
-
-    <style name="BaseTheme.BottomSheetDialog" parent="Theme.MaterialComponents.Light.BottomSheetDialog" />
-
-    <style name="BaseTheme" parent="BaseTheme.DayNight">
+    <style name="Theme.Base" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/statusBarColor</item>
         <item name="colorSecondary">@color/colorPrimary</item>
@@ -22,13 +14,13 @@
         <item name="materialCardViewStyle">@style/AppTheme.Widget.CardView</item>
     </style>
 
-    <style name="AppTheme" parent="BaseTheme" />
+    <style name="Theme.App" parent="Theme.Base" />
 
-    <style name="AppTheme.Toolbar" parent="BaseTheme.AppBarLayout">
+    <style name="AppTheme.Toolbar" parent="Widget.MaterialComponents.Toolbar">
         <item name="android:background">@color/windowBackground</item>
     </style>
 
-    <style name="AppTheme.AlertDialog" parent="BaseTheme.AlertDialog">
+    <style name="AppTheme.AlertDialog" parent="Theme.MaterialComponents.DayNight.Dialog">
         <item name="android:windowBackground">@drawable/dialog_background</item>
         <item name="colorAccent">@color/colorPrimary</item>
         <item name="colorPrimary">@color/colorPrimary</item>
@@ -48,7 +40,7 @@
         <item name="android:lineSpacingMultiplier">1.2</item>
     </style>
 
-    <style name="AppTheme.BottomSheetDialog" parent="BaseTheme.BottomSheetDialog">
+    <style name="AppTheme.BottomSheetDialog" parent="Theme.MaterialComponents.DayNight.BottomSheetDialog">
         <item name="bottomSheetStyle">@style/Widget.AppTheme.BottomSheet</item>
     </style>
 
