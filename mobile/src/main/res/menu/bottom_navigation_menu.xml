@@ -7,11 +7,6 @@
         android:icon="@drawable/nav_ic_dashboard" />
 
     <item
-        android:id="@id/messageFragment"
-        android:title="@string/bottom_nav_messages_label"
-        android:icon="@drawable/nav_ic_messages" />
-
-    <item
         android:id="@id/appSettingsFragment"
         android:title="@string/bottom_nav_app_settings_label"
         android:icon="@drawable/nav_ic_app_settings" />

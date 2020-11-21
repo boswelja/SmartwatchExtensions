@@ -11,7 +11,6 @@ import android.app.NotificationManager
 import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.core.content.getSystemService
-import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.NotificationChannelHelper
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.batterysync.database.WatchBatteryStats
@@ -21,9 +20,6 @@ import com.boswelja.devicemanager.common.batterysync.References.BATTERY_STATUS_P
 import com.boswelja.devicemanager.common.preference.PreferenceKey.BATTERY_CHARGED_NOTI_SENT
 import com.boswelja.devicemanager.common.preference.PreferenceKey.BATTERY_CHARGE_THRESHOLD_KEY
 import com.boswelja.devicemanager.common.preference.PreferenceKey.BATTERY_WATCH_CHARGE_NOTI_KEY
-import com.boswelja.devicemanager.messages.Action
-import com.boswelja.devicemanager.messages.Message
-import com.boswelja.devicemanager.messages.database.MessageDatabase
 import com.boswelja.devicemanager.watchmanager.database.WatchDatabase
 import com.boswelja.devicemanager.watchmanager.item.BoolPreference
 import com.boswelja.devicemanager.watchmanager.item.Watch
@@ -40,7 +36,6 @@ class WatchBatteryUpdateReceiver : WearableListenerService() {
 
     private val coroutineScope = CoroutineScope(Dispatchers.IO)
     private val notificationManager: NotificationManager by lazy { getSystemService()!! }
-    private val sharedPreferences by lazy { PreferenceManager.getDefaultSharedPreferences(this) }
 
     private lateinit var watchBatteryStats: WatchBatteryStats
 
@@ -120,28 +115,6 @@ class WatchBatteryUpdateReceiver : WearableListenerService() {
                 .also { notificationManager.notify(BATTERY_CHARGED_NOTI_ID, it.build()) }
         } else {
             Timber.w("Failed to send charged notification")
-            coroutineScope.launch(Dispatchers.IO) {
-                MessageDatabase.get(this@WatchBatteryUpdateReceiver)
-                    .apply {
-                        val message =
-                            Message(
-                                iconRes = R.drawable.pref_ic_warning,
-                                label = getString(R.string.message_watch_charge_noti_warning_label),
-                                shortLabel =
-                                    getString(
-                                        R.string.message_watch_charge_noti_warning_label_short
-                                    ),
-                                desc = getString(R.string.message_watch_charge_noti_warning_desc),
-                                buttonLabel =
-                                    getString(
-                                        R.string.message_watch_charge_noti_warning_button_label
-                                    ),
-                                action = Action.LAUNCH_NOTIFICATION_SETTINGS
-                            )
-                        sendMessage(sharedPreferences, message)
-                    }
-                    .also { it.close() }
-            }
         }
     }
 

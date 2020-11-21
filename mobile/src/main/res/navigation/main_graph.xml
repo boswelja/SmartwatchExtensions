@@ -9,10 +9,6 @@
         app:destination="@id/dashboardFragment" />
 
     <action
-        android:id="@+id/action_global_messageFragment"
-        app:destination="@id/messageFragment" />
-
-    <action
         android:id="@+id/action_global_appSettingsFragment"
         app:destination="@id/appSettingsFragment" />
 
@@ -40,10 +36,6 @@
             android:id="@+id/to_appManagerActivity"
             app:destination="@id/appManagerActivity" />
     </fragment>
-
-    <fragment
-        android:id="@+id/messageFragment"
-        android:name="com.boswelja.devicemanager.messages.ui.MessageFragment" />
 
     <fragment
         android:id="@+id/appSettingsFragment"
