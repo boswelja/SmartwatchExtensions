@@ -26,10 +26,15 @@ import com.boswelja.devicemanager.watchmanager.database.WatchDatabase
 import com.boswelja.devicemanager.watchmanager.item.Watch
 import com.google.android.gms.wearable.CapabilityClient
 import com.google.android.gms.wearable.Wearable
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import timber.log.Timber
 
 class Updater(private val context: Context) {
+
+    private val coroutineScope = CoroutineScope(Dispatchers.IO)
 
     private val sharedPreferences: SharedPreferences =
         PreferenceManager.getDefaultSharedPreferences(context)
@@ -165,7 +170,7 @@ class Updater(private val context: Context) {
 
                     if (defaultWatch != null) {
                         val watch = Watch(defaultWatch)
-                        database.watchDao().add(watch)
+                        coroutineScope.launch { database.watchDao().add(watch) }
                         messageClient.sendMessage(watch.id, References.WATCH_REGISTERED_PATH, null)
                         sharedPreferences.edit { putString(LAST_SELECTED_NODE_ID_KEY, watch.id) }
                         sharedPreferences.all.forEach {
