@@ -9,14 +9,12 @@ import androidx.room.PrimaryKey
 data class Message(
     @DrawableRes val iconRes: Int,
     val label: String,
-    val shortLabel: String,
     val deleted: Boolean = false,
     val timestamp: Long = System.currentTimeMillis(),
     val desc: String = "",
     val buttonLabel: String = "",
     val action: Action? = null,
-    @PrimaryKey(autoGenerate = true)
-    val id: Long = 0
+    @PrimaryKey(autoGenerate = true) val id: Long = 0
 ) {
     /** Indicates whether the message has an action. */
     @Ignore
@@ -24,7 +22,6 @@ data class Message(
 
     /** Possible actions for a given [Message] action button. */
     enum class Action {
-        DISABLE_BATTERY_OPTIMISATION,
         LAUNCH_NOTIFICATION_SETTINGS,
         LAUNCH_PLAY_STORE,
         LAUNCH_CHANGELOG
