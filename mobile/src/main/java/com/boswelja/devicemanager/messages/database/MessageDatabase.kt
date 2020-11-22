@@ -4,9 +4,12 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
+import com.boswelja.devicemanager.common.RoomTypeConverters
 import com.boswelja.devicemanager.messages.Message
 
 @Database(entities = [Message::class], version = 5)
+@TypeConverters(RoomTypeConverters::class)
 abstract class MessageDatabase : RoomDatabase() {
 
     abstract fun dao(): MessageDao
