@@ -1,6 +1,6 @@
 package com.boswelja.devicemanager.messages.database
 
-import androidx.lifecycle.LiveData
+import androidx.paging.PagingSource
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
@@ -16,8 +16,8 @@ interface MessageDao {
     fun dismissMessage(messageId: Int)
 
     @Query("SELECT * FROM messages WHERE NOT deleted")
-    fun getActiveMessages(): LiveData<List<Message>>
+    fun getActiveMessages(): PagingSource<Int, Message>
 
     @Query("SELECT * FROM messages WHERE deleted")
-    fun getDismissedMessages(): LiveData<List<Message>>
+    fun getDismissedMessages(): PagingSource<Int, Message>
 }
