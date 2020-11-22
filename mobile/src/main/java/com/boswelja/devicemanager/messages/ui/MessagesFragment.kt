@@ -4,9 +4,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.paging.LoadState
 import com.boswelja.devicemanager.databinding.FragmentMessagesBinding
 import com.boswelja.devicemanager.messages.Message
 import kotlinx.coroutines.flow.collectLatest
@@ -38,22 +40,17 @@ class MessagesFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.messagesView.adapter = adapter
+        binding.messagesRecyclerView.adapter = adapter
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.activeMessagesPager.collectLatest {
                 adapter.submitData(it)
             }
         }
-    }
-
-    private fun setHasMessages(hasMessages: Boolean) {
-        binding.apply {
-            if (hasMessages) {
-                messagesView.visibility = View.VISIBLE
-                noMessagesView.visibility = View.GONE
-            } else {
-                messagesView.visibility = View.GONE
-                noMessagesView.visibility = View.VISIBLE
+        viewLifecycleOwner.lifecycleScope.launch {
+            adapter.loadStateFlow.collectLatest { loadStates ->
+                val isLoading = loadStates.refresh is LoadState.Loading
+                binding.progressCircular.isVisible = isLoading
+                binding.noMessagesView.isVisible = !isLoading && adapter.itemCount > 0
             }
         }
     }
