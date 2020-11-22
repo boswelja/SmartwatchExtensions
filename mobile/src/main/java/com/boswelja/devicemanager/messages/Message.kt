@@ -9,12 +9,12 @@ import androidx.room.PrimaryKey
 data class Message(
     @DrawableRes val iconRes: Int,
     val title: String,
-    val deleted: Boolean = false,
-    val timestamp: Long = System.currentTimeMillis(),
-    val text: String = "",
+    val text: String,
     val buttonLabel: String = "",
     val action: Action? = null,
-    @PrimaryKey(autoGenerate = true) val id: Long = 0
+    @PrimaryKey(autoGenerate = true) val id: Long = 0,
+    val deleted: Boolean = false,
+    val timestamp: Long = System.currentTimeMillis()
 ) {
     /** Indicates whether the message has an action. */
     @Ignore
