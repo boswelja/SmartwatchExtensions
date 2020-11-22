@@ -126,6 +126,7 @@
 
     <!-- Bottom Navigation Bar strings -->
     <string name="bottom_nav_dashboard_label">Dashboard</string>
+    <string name="nav_messages_label">Messages</string>
     <string name="bottom_nav_app_settings_label">App Settings</string>
     <string name="bottom_nav_about_label">About</string>
 
