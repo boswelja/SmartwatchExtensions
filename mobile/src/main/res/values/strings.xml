@@ -2,6 +2,10 @@
 
     <string name="app_name">@string/global_app_name</string>
 
+    <!-- Messages strings -->
+    <string name="message_history_label">Message History</string>
+    <string name="messages_empty">No new messages</string>
+
     <!-- Dashboard generic strings -->
     <string name="dashboard_settings_label">%s settings</string>
 
@@ -210,4 +214,5 @@
 
     <string name="privacy_policy_url" translatable="false">https://github.com/boswelja/WearableExtensions/blob/main/PRIVACY.md</string>
     <string name="github_url" translatable="false">https://github.com/boswelja/WearableExtensions</string>
+
 </resources>
