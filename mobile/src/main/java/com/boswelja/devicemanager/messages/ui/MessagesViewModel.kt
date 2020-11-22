@@ -13,11 +13,11 @@ class MessagesViewModel(application: Application) : AndroidViewModel(application
     private val messageDatabase = MessageDatabase.get(application)
 
     val activeMessagesPager = Pager(PagingConfig(MESSAGE_PAGE_SIZE)) {
-        messageDatabase.dao().getActiveMessages()
+        messageDatabase.messageDao().getActiveMessages()
     }.flow.cachedIn(viewModelScope)
     val dismissedMessagesPager by lazy {
         Pager(PagingConfig(MESSAGE_PAGE_SIZE)) {
-            messageDatabase.dao().getDismissedMessages()
+            messageDatabase.messageDao().getDismissedMessages()
         }.flow.cachedIn(viewModelScope)
     }
 

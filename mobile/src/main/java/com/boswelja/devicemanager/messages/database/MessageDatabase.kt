@@ -12,7 +12,7 @@ import com.boswelja.devicemanager.messages.Message
 @TypeConverters(RoomTypeConverters::class)
 abstract class MessageDatabase : RoomDatabase() {
 
-    abstract fun dao(): MessageDao
+    abstract fun messageDao(): MessageDao
 
     companion object {
         private var INSTANCE: MessageDatabase? = null
