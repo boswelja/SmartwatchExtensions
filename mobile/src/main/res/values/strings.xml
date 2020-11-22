@@ -171,6 +171,8 @@
     <!-- Boot & Update handler notification strings -->
     <string name="notification_boot_handler_title">Starting required services</string>
     <string name="notification_update_handler_title">Finishing Updates</string>
+    <string name="update_completed_title">Update Complete</string>
+    <string name="update_complete_text">Successfully updated to version %s.</string>
 
     <!-- Welcome fragment strings -->
     <string name="welcome_to_text">Welcome to</string>

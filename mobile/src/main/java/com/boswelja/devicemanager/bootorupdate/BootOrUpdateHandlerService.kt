@@ -14,6 +14,7 @@ import android.content.Intent
 import android.os.Build
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
+import com.boswelja.devicemanager.BuildConfig
 import com.boswelja.devicemanager.NotificationChannelHelper
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.batterysync.BatterySyncWorker
@@ -22,6 +23,8 @@ import com.boswelja.devicemanager.bootorupdate.updater.Updater
 import com.boswelja.devicemanager.common.Compat
 import com.boswelja.devicemanager.common.preference.PreferenceKey
 import com.boswelja.devicemanager.dndsync.DnDLocalChangeService
+import com.boswelja.devicemanager.messages.Message
+import com.boswelja.devicemanager.messages.MessageHandler
 import com.boswelja.devicemanager.watchmanager.WatchManager
 import com.boswelja.devicemanager.watchmanager.database.WatchDatabase
 import kotlinx.coroutines.Dispatchers
@@ -64,7 +67,14 @@ class BootOrUpdateHandlerService : Service() {
             val updater = Updater(this)
             startForeground(NOTI_ID, createUpdaterNotification())
             when (updater.doUpdate()) {
-                Result.COMPLETED -> Timber.i("Update completed")
+                Result.COMPLETED -> {
+                    val message = Message(
+                        R.drawable.noti_ic_update,
+                        getString(R.string.update_completed_title),
+                        getString(R.string.update_complete_text, BuildConfig.VERSION_NAME)
+                    )
+                    MessageHandler(this).postMessage(message)
+                }
                 Result.NOT_NEEDED -> Timber.i("Update not needed")
             }
             restartServices()
