@@ -71,6 +71,7 @@ dependencies {
     implementation(Libraries.androidxLifecycleCommon)
     implementation(Libraries.androidxNavigationFragment)
     implementation(Libraries.androidxNavigationUI)
+    implementation(Libraries.androidxPagingRuntime)
     implementation(Libraries.androidxPreference)
     implementation(Libraries.androidxRoomRuntime)
     implementation(Libraries.androidxRoomKtx)
