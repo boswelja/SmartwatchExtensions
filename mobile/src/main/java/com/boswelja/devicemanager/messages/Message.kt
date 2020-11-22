@@ -8,10 +8,10 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "messages")
 data class Message(
     @DrawableRes val iconRes: Int,
-    val label: String,
+    val title: String,
     val deleted: Boolean = false,
     val timestamp: Long = System.currentTimeMillis(),
-    val desc: String = "",
+    val text: String = "",
     val buttonLabel: String = "",
     val action: Action? = null,
     @PrimaryKey(autoGenerate = true) val id: Long = 0

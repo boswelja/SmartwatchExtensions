@@ -21,8 +21,8 @@ class MessagesAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         getItem(position)?.let { message ->
             holder.binding.messageIcon.setImageResource(message.iconRes)
-            holder.binding.messageTitle.text = message.label
-            holder.binding.messageText.text = message.desc
+            holder.binding.messageTitle.text = message.title
+            holder.binding.messageText.text = message.text
             if (message.hasAction) {
                 holder.binding.messageActionButton.apply {
                     text = message.buttonLabel

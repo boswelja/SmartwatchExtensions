@@ -42,8 +42,8 @@ class MessageHandler(private val context: Context) {
                 val notification =
                     NotificationCompat.Builder(context, MESSAGE_NOTIFICATION_CHANNEL_ID)
                         .setSmallIcon(message.iconRes)
-                        .setContentTitle(message.label)
-                        .setContentText(message.desc)
+                        .setContentTitle(message.title)
+                        .setContentText(message.text)
                         .build()
                 notificationManager.notify(notificationId.incrementAndGet(), notification)
             }
