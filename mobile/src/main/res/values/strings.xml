@@ -6,6 +6,7 @@
     <string name="message_history_label">Message History</string>
     <string name="messages_empty">No new messages</string>
     <string name="messages_noti_channel_label">System Messages</string>
+    <string name="message_history_empty">Messages you\'ve dismissed will appear here.</string>
 
     <!-- Dashboard generic strings -->
     <string name="dashboard_settings_label">%s settings</string>

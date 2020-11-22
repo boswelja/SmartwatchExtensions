@@ -10,6 +10,7 @@ import com.boswelja.devicemanager.messages.Message
 import com.boswelja.devicemanager.messages.MessageDiffCallback
 
 class MessagesAdapter(
+    private val showAction: Boolean = true,
     private val actionButtonCallback: (action: Message.Action) -> Unit
 ) : PagingDataAdapter<Message, MessagesAdapter.ViewHolder>(
     MessageDiffCallback()
@@ -23,7 +24,7 @@ class MessagesAdapter(
             holder.binding.messageIcon.setImageResource(message.iconRes)
             holder.binding.messageTitle.text = message.title
             holder.binding.messageText.text = message.text
-            if (message.hasAction) {
+            if (showAction && message.hasAction) {
                 holder.binding.messageActionButton.apply {
                     text = message.buttonLabel
                     setOnClickListener { actionButtonCallback(message.action!!) }

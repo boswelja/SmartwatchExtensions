@@ -8,11 +8,13 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
 import com.boswelja.devicemanager.databinding.FragmentMessagesBinding
 import com.boswelja.devicemanager.messages.Message
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 class MessagesFragment : Fragment() {
 
@@ -49,9 +51,13 @@ class MessagesFragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             adapter.loadStateFlow.collectLatest { loadStates ->
                 val isLoading = loadStates.refresh is LoadState.Loading
-                binding.progressCircular.isVisible = isLoading
-                binding.noMessagesView.isVisible = !isLoading && adapter.itemCount > 0
+                Timber.d("isLoading = $isLoading")
+                binding.progressHorizontal.isVisible = isLoading
+                binding.noMessagesView.isVisible = !isLoading && adapter.itemCount <= 0
             }
+        }
+        binding.messageHistoryButton.setOnClickListener {
+            findNavController().navigate(MessagesFragmentDirections.toMessageHistoryActivity())
         }
     }
 }
