@@ -69,7 +69,7 @@ class BootOrUpdateHandlerService : Service() {
             when (updater.doUpdate()) {
                 Result.COMPLETED -> {
                     val message = Message(
-                        R.drawable.noti_ic_update,
+                        Message.Icon.UPDATE,
                         getString(R.string.update_completed_title),
                         getString(R.string.update_complete_text, BuildConfig.VERSION_NAME)
                     )
