@@ -34,6 +34,8 @@ class MessagesAdapter(
         }
     }
 
+    fun getMessageAt(position: Int) = super.getItem(position)
+
     class ViewHolder(val binding: MessageItemBinding) : RecyclerView.ViewHolder(binding.root) {
         companion object {
             fun from(parent: ViewGroup): ViewHolder {
