@@ -10,6 +10,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.ItemTouchHelper
 import com.boswelja.devicemanager.common.SwipeDismissCallback
 import com.boswelja.devicemanager.databinding.FragmentMessagesBinding
@@ -53,6 +54,9 @@ class MessagesFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.messagesRecyclerView.adapter = adapter
+        binding.messagesRecyclerView.addItemDecoration(
+            DividerItemDecoration(requireContext(), DividerItemDecoration.VERTICAL)
+        )
         swipeDismissCallback.attachToRecyclerView(binding.messagesRecyclerView)
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.activeMessagesPager.collectLatest {

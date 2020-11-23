@@ -5,6 +5,7 @@ import androidx.activity.viewModels
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.LoadState
+import androidx.recyclerview.widget.DividerItemDecoration
 import com.boswelja.devicemanager.common.ui.BaseToolbarActivity
 import com.boswelja.devicemanager.databinding.ActivityMessageHistoryBinding
 import kotlinx.coroutines.flow.collectLatest
@@ -31,6 +32,9 @@ class MessageHistoryActivity : BaseToolbarActivity() {
         )
 
         binding.messagesRecyclerView.adapter = adapter
+        binding.messagesRecyclerView.addItemDecoration(
+            DividerItemDecoration(this, DividerItemDecoration.VERTICAL)
+        )
 
         lifecycleScope.launch {
             viewModel.dismissedMessagesPager.collectLatest {
