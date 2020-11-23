@@ -7,7 +7,7 @@ class SwipeDismissCallback(
     private val itemDismissCallback: (position: Int) -> Unit
 ) : ItemTouchHelper.SimpleCallback(
     0,
-    ItemTouchHelper.LEFT and ItemTouchHelper.RIGHT
+    ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT
 ) {
 
     override fun onMove(
