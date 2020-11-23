@@ -10,6 +10,8 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
+import androidx.recyclerview.widget.ItemTouchHelper
+import com.boswelja.devicemanager.common.SwipeDismissCallback
 import com.boswelja.devicemanager.databinding.FragmentMessagesBinding
 import com.boswelja.devicemanager.messages.Message
 import kotlinx.coroutines.flow.collectLatest
@@ -28,6 +30,14 @@ class MessagesFragment : Fragment() {
             }
         }
     }
+    private val swipeDismissCallback = ItemTouchHelper(
+        SwipeDismissCallback { position ->
+            adapter.getMessageAt(position)?.let { message ->
+                viewModel.dismissMessage(message.id)
+                adapter.notifyItemRemoved(position)
+            }
+        }
+    )
 
     private lateinit var binding: FragmentMessagesBinding
 
@@ -43,6 +53,7 @@ class MessagesFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.messagesRecyclerView.adapter = adapter
+        swipeDismissCallback.attachToRecyclerView(binding.messagesRecyclerView)
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.activeMessagesPager.collectLatest {
                 adapter.submitData(it)

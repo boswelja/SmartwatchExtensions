@@ -8,6 +8,7 @@ import androidx.paging.PagingConfig
 import androidx.paging.cachedIn
 import com.boswelja.devicemanager.messages.database.MessageDatabase
 import com.boswelja.devicemanager.messages.ui.Utils.MESSAGE_PAGE_SIZE
+import kotlinx.coroutines.launch
 
 class MessagesViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -16,4 +17,10 @@ class MessagesViewModel(application: Application) : AndroidViewModel(application
     val activeMessagesPager = Pager(PagingConfig(MESSAGE_PAGE_SIZE)) {
         messageDatabase.messageDao().getActiveMessages()
     }.flow.cachedIn(viewModelScope)
+
+    fun dismissMessage(messageId: Long) {
+        viewModelScope.launch {
+            messageDatabase.messageDao().dismissMessage(messageId)
+        }
+    }
 }
