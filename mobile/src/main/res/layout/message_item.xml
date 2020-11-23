@@ -16,6 +16,16 @@
         tools:src="@drawable/noti_ic_update" />
 
     <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/received_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?textAppearanceBody2"
+        android:textColor="?android:textColorSecondary"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:text="23/11" />
+
+    <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/message_title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -23,9 +33,9 @@
         android:layout_marginStart="16dp"
         android:textColor="?android:textColorPrimary"
         app:layout_constraintStart_toEndOf="@id/message_icon"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/received_text"
         app:layout_constraintTop_toTopOf="parent"
-        tools:text="Update Installed"/>
+        tools:text="@string/update_completed_title"/>
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/message_text"
@@ -35,7 +45,7 @@
         app:layout_constraintTop_toBottomOf="@id/message_title"
         app:layout_constraintStart_toStartOf="@id/message_title"
         app:layout_constraintEnd_toEndOf="parent"
-        tools:text="Successfully updated to version 3.0.0!"/>
+        tools:text="@string/update_complete_text"/>
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/message_action_button"
@@ -44,7 +54,7 @@
         android:layout_marginTop="8dp"
         android:visibility="gone"
         app:layout_constraintTop_toBottomOf="@id/message_text"
-        tools:text="See what's new"
+        tools:text="@string/message_action_changelog"
         tools:visibility="visible"
         style="?materialButtonOutlinedStyle" />
 
