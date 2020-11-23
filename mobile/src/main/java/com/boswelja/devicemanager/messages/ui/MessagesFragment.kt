@@ -32,7 +32,7 @@ class MessagesFragment : Fragment() {
     }
     private val swipeDismissCallback = ItemTouchHelper(
         SwipeDismissCallback { position ->
-            adapter.getMessageAt(position)?.let { message ->
+            adapter.peek(position)?.let { message ->
                 viewModel.dismissMessage(message.id)
                 adapter.notifyItemRemoved(position)
             }
