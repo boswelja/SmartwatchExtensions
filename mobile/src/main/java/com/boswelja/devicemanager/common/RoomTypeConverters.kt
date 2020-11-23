@@ -17,4 +17,18 @@ class RoomTypeConverters {
     fun actionToString(action: Message.Action?): String? {
         return action?.toString()
     }
+
+    @TypeConverter
+    fun iconFromString(str: String?): Message.Icon? {
+        return if (str != null) {
+            Message.Icon.valueOf(str)
+        } else {
+            null
+        }
+    }
+
+    @TypeConverter
+    fun iconToString(icon: Message.Icon?): String? {
+        return icon?.toString()
+    }
 }
