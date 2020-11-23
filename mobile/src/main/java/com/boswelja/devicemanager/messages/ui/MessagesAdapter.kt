@@ -24,9 +24,9 @@ class MessagesAdapter(
             holder.binding.messageIcon.setImageResource(message.icon.iconRes)
             holder.binding.messageTitle.text = message.title
             holder.binding.messageText.text = message.text
-            if (showAction && message.hasAction) {
+            if (showAction && message.action != null) {
                 holder.binding.messageActionButton.apply {
-                    setText(message.action!!.labelRes)
+                    setText(message.action.labelRes)
                     setOnClickListener { actionButtonCallback(message.action) }
                     visibility = View.VISIBLE
                 }

@@ -3,7 +3,6 @@ package com.boswelja.devicemanager.messages
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.room.Entity
-import androidx.room.Ignore
 import androidx.room.PrimaryKey
 import com.boswelja.devicemanager.R
 
@@ -17,9 +16,6 @@ data class Message(
     val deleted: Boolean = false,
     val timestamp: Long = System.currentTimeMillis()
 ) {
-    /** Indicates whether the message has an action. */
-    @Ignore
-    val hasAction: Boolean = action != null
 
     /** Possible actions for a given [Message] action button. */
     enum class Action(@StringRes val labelRes: Int) {
