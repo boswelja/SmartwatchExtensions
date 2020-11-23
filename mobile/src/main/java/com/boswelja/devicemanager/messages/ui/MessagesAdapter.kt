@@ -37,19 +37,22 @@ class MessagesAdapter(
 
     class ViewHolder(val binding: MessageItemBinding) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(message: Message) {
-            binding.messageIcon.setImageResource(message.icon.iconRes)
-            binding.messageTitle.text = message.title
-            binding.messageText.text = message.text
+        private fun getReceivedString(timeInMillis: Long): String {
             val todayMillis = System.currentTimeMillis()
-            val received = Date(message.timestamp)
-            val isToday = (todayMillis - message.timestamp) < TimeUnit.DAYS.toMillis(1)
-            val timeString = if (isToday) {
+            val received = Date(timeInMillis)
+            val isToday = (todayMillis - timeInMillis) < TimeUnit.DAYS.toMillis(1)
+            return if (isToday) {
                 DateFormat.getTimeFormat(itemView.context).format(received)
             } else {
                 DateFormat.getDateFormat(itemView.context).format(received)
             }
-            binding.receivedText.text = timeString
+        }
+
+        fun bind(message: Message) {
+            binding.messageIcon.setImageResource(message.icon.iconRes)
+            binding.messageTitle.text = message.title
+            binding.messageText.text = message.text
+            binding.receivedText.text = getReceivedString(message.timestamp)
         }
 
         companion object {
