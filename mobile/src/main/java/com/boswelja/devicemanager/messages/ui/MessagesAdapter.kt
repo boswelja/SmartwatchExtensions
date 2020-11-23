@@ -21,13 +21,13 @@ class MessagesAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         getItem(position)?.let { message ->
-            holder.binding.messageIcon.setImageResource(message.iconRes)
+            holder.binding.messageIcon.setImageResource(message.icon.iconRes)
             holder.binding.messageTitle.text = message.title
             holder.binding.messageText.text = message.text
             if (showAction && message.hasAction) {
                 holder.binding.messageActionButton.apply {
-                    text = message.buttonLabel
-                    setOnClickListener { actionButtonCallback(message.action!!) }
+                    setText(message.action!!.labelRes)
+                    setOnClickListener { actionButtonCallback(message.action) }
                     visibility = View.VISIBLE
                 }
             }
