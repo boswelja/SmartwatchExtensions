@@ -28,6 +28,7 @@ class MessagesFragment : Fragment() {
                 Message.Action.LAUNCH_NOTIFICATION_SETTINGS -> TODO()
                 Message.Action.LAUNCH_PLAY_STORE -> TODO()
                 Message.Action.LAUNCH_CHANGELOG -> TODO()
+                Message.Action.INSTALL_UPDATE -> TODO()
             }
         }
     }
