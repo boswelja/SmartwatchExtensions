@@ -15,9 +15,9 @@ interface MessageDao {
     @Query("UPDATE messages SET deleted = 1 WHERE id = :messageId")
     fun dismissMessage(messageId: Long)
 
-    @Query("SELECT * FROM messages WHERE NOT deleted")
+    @Query("SELECT * FROM messages WHERE NOT deleted ORDER BY timestamp DESC")
     fun getActiveMessages(): PagingSource<Int, Message>
 
-    @Query("SELECT * FROM messages WHERE deleted")
+    @Query("SELECT * FROM messages WHERE deleted ORDER BY timestamp DESC")
     fun getDismissedMessages(): PagingSource<Int, Message>
 }
