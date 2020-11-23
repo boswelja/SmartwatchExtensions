@@ -35,10 +35,10 @@ class MessageHandler(private val context: Context) {
         }
     }
 
-    fun postMessage(message: Message) {
+    fun postMessage(message: Message, priority: Priority = Priority.LOW) {
         coroutineScope.launch {
             database.messageDao().createMessage(message)
-            if (notificationManager != null) {
+            if (notificationManager != null && priority == Priority.HIGH) {
                 val notification =
                     NotificationCompat.Builder(context, MESSAGE_NOTIFICATION_CHANNEL_ID)
                         .setSmallIcon(message.icon.iconRes)
