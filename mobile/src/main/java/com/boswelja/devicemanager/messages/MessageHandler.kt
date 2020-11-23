@@ -14,13 +14,21 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
-class MessageHandler(private val context: Context) {
+class MessageHandler internal constructor(
+    private val context: Context,
+    private val database: MessageDatabase,
+    private val notificationManager: NotificationManager?,
+    private val coroutineScope: CoroutineScope
+) {
+
+    constructor(context: Context) : this(
+        context,
+        MessageDatabase.get(context),
+        context.getSystemService(),
+        CoroutineScope(Dispatchers.IO)
+    )
 
     private val notificationId = AtomicInteger(0)
-    private val coroutineScope = CoroutineScope(Dispatchers.IO)
-
-    private val database = MessageDatabase.get(context)
-    private val notificationManager: NotificationManager? = context.getSystemService()
 
     init {
         if (notificationManager == null) {
