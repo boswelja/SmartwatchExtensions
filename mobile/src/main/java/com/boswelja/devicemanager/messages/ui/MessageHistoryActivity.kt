@@ -31,16 +31,27 @@ class MessageHistoryActivity : BaseToolbarActivity() {
             showUpButton = true
         )
 
+        setupRecyclerView()
+        observeMessages()
+        observeLoadState()
+    }
+
+    private fun setupRecyclerView() {
         binding.messagesRecyclerView.adapter = adapter
         binding.messagesRecyclerView.addItemDecoration(
             DividerItemDecoration(this, DividerItemDecoration.VERTICAL)
         )
+    }
 
+    private fun observeMessages() {
         lifecycleScope.launch {
             viewModel.dismissedMessagesPager.collectLatest {
                 adapter.submitData(it)
             }
         }
+    }
+
+    private fun observeLoadState() {
         lifecycleScope.launch {
             adapter.loadStateFlow.collectLatest { loadStates ->
                 val isLoading = loadStates.refresh is LoadState.Loading

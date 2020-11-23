@@ -53,16 +53,33 @@ class MessagesFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        setupRecyclerView()
+        observeMessages()
+        observeLoadState()
+
+        binding.messageHistoryButton.setOnClickListener {
+            findNavController().navigate(MessagesFragmentDirections.toMessageHistoryActivity())
+        }
+    }
+
+    private fun setupRecyclerView() {
         binding.messagesRecyclerView.adapter = adapter
         binding.messagesRecyclerView.addItemDecoration(
             DividerItemDecoration(requireContext(), DividerItemDecoration.VERTICAL)
         )
         swipeDismissCallback.attachToRecyclerView(binding.messagesRecyclerView)
+    }
+
+    private fun observeMessages() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.activeMessagesPager.collectLatest {
                 adapter.submitData(it)
             }
         }
+    }
+
+    private fun observeLoadState() {
         viewLifecycleOwner.lifecycleScope.launch {
             adapter.loadStateFlow.collectLatest { loadStates ->
                 val isLoading = loadStates.refresh is LoadState.Loading
@@ -70,9 +87,6 @@ class MessagesFragment : Fragment() {
                 binding.progressHorizontal.isVisible = isLoading
                 binding.noMessagesView.isVisible = !isLoading && adapter.itemCount <= 0
             }
-        }
-        binding.messageHistoryButton.setOnClickListener {
-            findNavController().navigate(MessagesFragmentDirections.toMessageHistoryActivity())
         }
     }
 }
