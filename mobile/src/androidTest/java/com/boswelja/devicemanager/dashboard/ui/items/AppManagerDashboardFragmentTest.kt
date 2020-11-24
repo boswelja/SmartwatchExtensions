@@ -19,7 +19,7 @@ class AppManagerDashboardFragmentTest {
         landscape: Boolean = false
     ): FragmentScenario<AppManagerDashboardFragment> {
         val scenario = launchFragmentInContainer<AppManagerDashboardFragment>(
-            themeResId = R.style.`Theme.App`
+            themeResId = R.style.Theme_App
         )
         if (landscape) {
             scenario.onFragment {

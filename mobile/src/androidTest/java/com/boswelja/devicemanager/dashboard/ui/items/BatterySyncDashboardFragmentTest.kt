@@ -19,7 +19,7 @@ class BatterySyncDashboardFragmentTest {
         landscape: Boolean = false
     ): FragmentScenario<BatterySyncDashboardFragment> {
         val scenario = launchFragmentInContainer<BatterySyncDashboardFragment>(
-            themeResId = R.style.`Theme.App`
+            themeResId = R.style.Theme_App
         )
         if (landscape) {
             scenario.onFragment {
