@@ -34,7 +34,7 @@ class MessageHandlerTest {
         Message.Icon.HELP,
         "Test Message",
         "This is a test message",
-        Message.Action.LAUNCH_PLAY_STORE
+        Message.Action.LAUNCH_CHANGELOG
     )
     private lateinit var messageHandler: MessageHandler
     private lateinit var messageDatabase: MessageDatabase

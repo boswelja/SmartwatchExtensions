@@ -32,7 +32,7 @@ class MessagesViewModelTest {
         Message.Icon.HELP,
         "Test Message",
         "This is a test message",
-        Message.Action.LAUNCH_PLAY_STORE
+        Message.Action.LAUNCH_CHANGELOG
     )
 
     private lateinit var messagesViewModel: MessagesViewModel
