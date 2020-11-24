@@ -17,6 +17,7 @@ import com.boswelja.devicemanager.messages.Message
 import com.boswelja.devicemanager.messages.MessageHandler
 import com.boswelja.devicemanager.messages.Priority
 import com.google.android.play.core.appupdate.AppUpdateManagerFactory
+import com.google.android.play.core.appupdate.AppUpdateOptions
 import com.google.android.play.core.install.model.AppUpdateType
 import com.google.android.play.core.install.model.UpdateAvailability
 import com.google.android.play.core.ktx.updatePriority
@@ -57,8 +58,10 @@ class MainActivity : BaseWatchPickerActivity() {
                         )
                         MessageHandler(this).postMessage(message, Priority.LOW)
                     } else if (appUpdateInfo.isUpdateTypeAllowed(AppUpdateType.IMMEDIATE)) {
-                        appUpdateManager.startUpdateFlowForResult(
-                            appUpdateInfo, AppUpdateType.IMMEDIATE, this, 0
+                        appUpdateManager.startUpdateFlow(
+                            appUpdateInfo,
+                            this,
+                            AppUpdateOptions.defaultOptions(AppUpdateType.IMMEDIATE)
                         )
                     }
                 }
