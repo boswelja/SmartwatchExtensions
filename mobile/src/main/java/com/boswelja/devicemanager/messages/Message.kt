@@ -20,7 +20,6 @@ data class Message(
     /** Possible actions for a given [Message] action button. */
     enum class Action(@StringRes val labelRes: Int) {
         LAUNCH_NOTIFICATION_SETTINGS(R.string.message_action_noti_settings),
-        LAUNCH_PLAY_STORE(R.string.message_action_play_store),
         LAUNCH_CHANGELOG(R.string.message_action_changelog),
         INSTALL_UPDATE(R.string.message_action_install_update)
     }

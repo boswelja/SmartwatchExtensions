@@ -9,7 +9,6 @@
     <string name="message_history_empty">Messages you\'ve dismissed will appear here.</string>
     <string name="message_action_changelog">See Changes</string>
     <string name="message_action_noti_settings">Notification Settings</string>
-    <string name="message_action_play_store">Open Google Play</string>
     <string name="message_action_install_update">Install Update</string>
 
     <!-- Dashboard generic strings -->
