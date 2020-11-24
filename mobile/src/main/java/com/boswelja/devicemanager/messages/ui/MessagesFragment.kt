@@ -15,10 +15,6 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import com.boswelja.devicemanager.common.SwipeDismissCallback
 import com.boswelja.devicemanager.databinding.FragmentMessagesBinding
 import com.boswelja.devicemanager.messages.Message
-import com.google.android.play.core.appupdate.AppUpdateManagerFactory
-import com.google.android.play.core.appupdate.AppUpdateOptions
-import com.google.android.play.core.install.model.AppUpdateType
-import com.google.android.play.core.install.model.UpdateAvailability
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -32,7 +28,7 @@ class MessagesFragment : Fragment() {
                 Message.Action.LAUNCH_NOTIFICATION_SETTINGS -> TODO()
                 Message.Action.LAUNCH_PLAY_STORE -> TODO()
                 Message.Action.LAUNCH_CHANGELOG -> TODO()
-                Message.Action.INSTALL_UPDATE -> startUpdateFlow()
+                Message.Action.INSTALL_UPDATE -> viewModel.startUpdateFlow(requireActivity())
             }
         }
     }
@@ -80,35 +76,6 @@ class MessagesFragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.activeMessagesPager.collectLatest {
                 adapter.submitData(it)
-            }
-        }
-    }
-
-    private fun startUpdateFlow() {
-        val appUpdateManager = AppUpdateManagerFactory.create(requireContext())
-        appUpdateManager.appUpdateInfo.addOnCompleteListener {
-            val appUpdateInfo = it.result
-            if (it.isSuccessful &&
-                appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE
-            ) {
-                val options = when {
-                    appUpdateInfo.isUpdateTypeAllowed(AppUpdateType.FLEXIBLE) -> {
-                        AppUpdateOptions.defaultOptions(AppUpdateType.FLEXIBLE)
-                    }
-                    appUpdateInfo.isUpdateTypeAllowed(AppUpdateType.IMMEDIATE) -> {
-                        AppUpdateOptions.defaultOptions(AppUpdateType.IMMEDIATE)
-                    }
-                    else -> null
-                }
-                options?.let { appUpdateOptions ->
-                    appUpdateManager.startUpdateFlow(
-                        appUpdateInfo,
-                        requireActivity(),
-                        appUpdateOptions
-                    )
-                }
-            } else {
-                Timber.w("Update failed")
             }
         }
     }
