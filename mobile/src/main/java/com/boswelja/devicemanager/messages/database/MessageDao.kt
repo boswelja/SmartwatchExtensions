@@ -11,7 +11,7 @@ import com.boswelja.devicemanager.messages.Message
 interface MessageDao {
 
     @Insert
-    fun createMessage(message: Message)
+    fun createMessage(message: Message): Long
 
     @Query("UPDATE messages SET deleted = 1 WHERE id = :messageId")
     fun dismissMessage(messageId: Long)
