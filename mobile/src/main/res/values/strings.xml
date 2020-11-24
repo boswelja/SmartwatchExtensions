@@ -217,6 +217,10 @@
     <string name="database_name_widget">Widget</string>
     <string name="database_name_battery_stats">Battery Sync</string>
 
+    <!-- Update checker strings -->
+    <string name="update_available_title">Update available</string>
+    <string name="update_available_text">A new version of Wearable Extensions is available</string>
+
     <!-- Donate strings -->
     <string name="donate_title">Donate</string>
 

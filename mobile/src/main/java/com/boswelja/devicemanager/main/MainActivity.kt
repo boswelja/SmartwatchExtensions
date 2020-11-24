@@ -13,6 +13,9 @@ import androidx.navigation.ui.setupWithNavController
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.ui.BaseWatchPickerActivity
 import com.boswelja.devicemanager.databinding.ActivityMainBinding
+import com.boswelja.devicemanager.messages.Message
+import com.boswelja.devicemanager.messages.MessageHandler
+import com.boswelja.devicemanager.messages.Priority
 import com.google.android.play.core.appupdate.AppUpdateManagerFactory
 import com.google.android.play.core.install.model.AppUpdateType
 import com.google.android.play.core.install.model.UpdateAvailability
@@ -47,9 +50,12 @@ class MainActivity : BaseWatchPickerActivity() {
                     if (appUpdateInfo.updatePriority < HIGH_PRIORITY_UPDATE &&
                         appUpdateInfo.isUpdateTypeAllowed(AppUpdateType.FLEXIBLE)
                     ) {
-                        appUpdateManager.startUpdateFlowForResult(
-                            appUpdateInfo, AppUpdateType.FLEXIBLE, this, 0
+                        val message = Message(
+                            Message.Icon.UPDATE,
+                            getString(R.string.update_available_title),
+                            getString(R.string.update_available_text)
                         )
+                        MessageHandler(this).postMessage(message, Priority.LOW)
                     } else if (appUpdateInfo.isUpdateTypeAllowed(AppUpdateType.IMMEDIATE)) {
                         appUpdateManager.startUpdateFlowForResult(
                             appUpdateInfo, AppUpdateType.IMMEDIATE, this, 0
