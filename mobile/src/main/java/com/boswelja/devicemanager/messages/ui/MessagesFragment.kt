@@ -1,6 +1,9 @@
 package com.boswelja.devicemanager.messages.ui
 
+import android.content.Intent
+import android.os.Build
 import android.os.Bundle
+import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -25,7 +28,7 @@ class MessagesFragment : Fragment() {
     private val adapter by lazy {
         MessagesAdapter { messageAction ->
             when (messageAction) {
-                Message.Action.LAUNCH_NOTIFICATION_SETTINGS -> TODO()
+                Message.Action.LAUNCH_NOTIFICATION_SETTINGS -> openNotiSettings()
                 Message.Action.LAUNCH_PLAY_STORE -> TODO()
                 Message.Action.LAUNCH_CHANGELOG -> TODO()
                 Message.Action.INSTALL_UPDATE -> viewModel.startUpdateFlow(requireActivity())
@@ -89,5 +92,20 @@ class MessagesFragment : Fragment() {
                 binding.noMessagesView.isVisible = !isLoading && adapter.itemCount <= 0
             }
         }
+    }
+
+    private fun openNotiSettings() {
+        val intent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS).apply {
+                putExtra(Settings.EXTRA_APP_PACKAGE, requireContext().packageName)
+            }
+        } else {
+            Intent("android.settings.APP_NOTIFICATION_SETTINGS").apply {
+                putExtra("app_package", requireContext().packageName)
+                putExtra("app_uid", requireContext().applicationInfo.uid)
+            }
+        }
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        startActivity(intent)
     }
 }
