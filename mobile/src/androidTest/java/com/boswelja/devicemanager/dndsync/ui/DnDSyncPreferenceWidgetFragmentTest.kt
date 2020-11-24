@@ -24,7 +24,7 @@ class DnDSyncPreferenceWidgetFragmentTest {
         landscape: Boolean = false
     ): FragmentScenario<DnDSyncPreferenceWidgetFragment> {
         val scenario = launchFragmentInContainer<DnDSyncPreferenceWidgetFragment>(
-            themeResId = R.style.`Theme.App`
+            themeResId = R.style.Theme_App
         )
         if (landscape) {
             scenario.onFragment {

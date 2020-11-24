@@ -19,7 +19,7 @@ class DnDSyncDashboardFragmentTest {
         landscape: Boolean = false
     ): FragmentScenario<DnDSyncDashboardFragment> {
         val scenario = launchFragmentInContainer<DnDSyncDashboardFragment>(
-            themeResId = R.style.`Theme.App`
+            themeResId = R.style.Theme_App
         )
         if (landscape) {
             scenario.onFragment {

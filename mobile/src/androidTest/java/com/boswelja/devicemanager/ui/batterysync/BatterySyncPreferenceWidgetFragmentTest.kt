@@ -27,7 +27,7 @@ class BatterySyncPreferenceWidgetFragmentTest {
         landscape: Boolean = false
     ): FragmentScenario<BatterySyncPreferenceWidgetFragment> {
         val scenario = launchFragmentInContainer<BatterySyncPreferenceWidgetFragment>(
-            themeResId = R.style.`Theme.App`
+            themeResId = R.style.Theme_App
         )
         if (landscape) {
             scenario.onFragment {
