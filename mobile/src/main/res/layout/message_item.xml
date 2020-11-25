@@ -5,13 +5,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="16dp"
+    android:padding="@dimen/message_item_padding"
     android:background="@color/windowBackground">
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/message_icon"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
+        android:layout_width="@dimen/message_icon_size"
+        android:layout_height="@dimen/message_icon_size"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:src="@drawable/noti_ic_update" />
@@ -31,7 +31,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:textAppearance="?textAppearanceBody1"
-        android:layout_marginStart="16dp"
+        android:layout_marginStart="@dimen/message_item_padding"
         android:textColor="?android:textColorPrimary"
         app:layout_constraintStart_toEndOf="@id/message_icon"
         app:layout_constraintEnd_toStartOf="@id/received_text"

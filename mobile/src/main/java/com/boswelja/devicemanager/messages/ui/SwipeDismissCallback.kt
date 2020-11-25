@@ -1,4 +1,4 @@
-package com.boswelja.devicemanager.common
+package com.boswelja.devicemanager.messages.ui
 
 import android.content.Context
 import android.graphics.Canvas
@@ -17,7 +17,7 @@ class SwipeDismissCallback(
 ) {
 
     private val background = ContextCompat.getColor(context, R.color.dividerColor).toDrawable()
-    private val iconMargin = context.resources.getDimension(R.dimen.message_icon_margin).toInt()
+    private val iconMargin = context.resources.getDimension(R.dimen.message_item_padding).toInt()
     private val iconSize = context.resources.getDimension(R.dimen.swipe_icon_size).toInt()
     private val icon = ContextCompat.getDrawable(context, R.drawable.ic_delete)!!
 

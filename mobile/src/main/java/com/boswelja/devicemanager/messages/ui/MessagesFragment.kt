@@ -15,7 +15,6 @@ import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.ItemTouchHelper
-import com.boswelja.devicemanager.common.SwipeDismissCallback
 import com.boswelja.devicemanager.databinding.FragmentMessagesBinding
 import com.boswelja.devicemanager.messages.Message
 import kotlinx.coroutines.flow.collectLatest

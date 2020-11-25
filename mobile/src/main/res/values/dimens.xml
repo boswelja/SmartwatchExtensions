@@ -3,7 +3,8 @@
 
     <dimen name="corner_radius">8dp</dimen>
 
-    <dimen name="message_icon_margin">16dp</dimen>
+    <dimen name="message_item_padding">16dp</dimen>
+    <dimen name="message_icon_size">24dp</dimen>
     <dimen name="swipe_icon_size">36dp</dimen>
 
     <dimen name="content_margin_manage_space_side">16dp</dimen>
