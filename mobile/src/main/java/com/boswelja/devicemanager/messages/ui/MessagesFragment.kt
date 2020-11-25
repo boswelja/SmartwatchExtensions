@@ -38,6 +38,7 @@ class MessagesFragment : Fragment() {
         ItemTouchHelper(
             SwipeDismissCallback(requireContext()) { position ->
                 adapter.peek(position)?.let { message ->
+                    canShowLoading = false
                     viewModel.dismissMessage(message.id)
                     adapter.notifyItemRemoved(position)
                 }
@@ -46,12 +47,13 @@ class MessagesFragment : Fragment() {
     }
 
     private lateinit var binding: FragmentMessagesBinding
+    private var canShowLoading: Boolean = true
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = FragmentMessagesBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -89,8 +91,9 @@ class MessagesFragment : Fragment() {
             adapter.loadStateFlow.collectLatest { loadStates ->
                 val isLoading = loadStates.refresh is LoadState.Loading
                 Timber.d("isLoading = $isLoading")
-                binding.progressHorizontal.isVisible = isLoading
+                binding.progressHorizontal.isVisible = isLoading && canShowLoading
                 binding.noMessagesView.isVisible = !isLoading && adapter.itemCount <= 0
+                if (!isLoading) canShowLoading = true
             }
         }
     }
