@@ -67,17 +67,11 @@ class BootOrUpdateHandlerService : Service() {
             val updater = Updater(this)
             startForeground(NOTI_ID, createUpdaterNotification())
             when (updater.doUpdate()) {
-                Result.COMPLETED -> {
-                    val message = Message(
-                        Message.Icon.UPDATE,
-                        getString(R.string.update_completed_title),
-                        getString(R.string.update_complete_text, BuildConfig.VERSION_NAME)
-                    )
-                    MessageHandler(this).postMessage(message)
-                }
+                Result.COMPLETED -> Timber.i("Updated app and changes were made")
                 Result.NOT_NEEDED -> Timber.i("Update not needed")
             }
             restartServices()
+            notifyUpdateComplete()
         }
     }
 
@@ -171,6 +165,18 @@ class BootOrUpdateHandlerService : Service() {
                 finish()
             }
         }
+    }
+
+    /**
+     * Sends a message to the user notifying them the update has been completed.
+     */
+    private fun notifyUpdateComplete() {
+        val message = Message(
+            Message.Icon.UPDATE,
+            getString(R.string.update_completed_title),
+            getString(R.string.update_complete_text, BuildConfig.VERSION_NAME)
+        )
+        MessageHandler(this).postMessage(message)
     }
 
     companion object {
