@@ -34,14 +34,16 @@ class MessagesFragment : Fragment() {
             }
         }
     }
-    private val swipeDismissCallback = ItemTouchHelper(
-        SwipeDismissCallback { position ->
-            adapter.peek(position)?.let { message ->
-                viewModel.dismissMessage(message.id)
-                adapter.notifyItemRemoved(position)
+    private val swipeDismissCallback by lazy {
+        ItemTouchHelper(
+            SwipeDismissCallback(requireContext()) { position ->
+                adapter.peek(position)?.let { message ->
+                    viewModel.dismissMessage(message.id)
+                    adapter.notifyItemRemoved(position)
+                }
             }
-        }
-    )
+        )
+    }
 
     private lateinit var binding: FragmentMessagesBinding
 
