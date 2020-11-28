@@ -7,6 +7,7 @@ import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.core.content.getSystemService
 import com.boswelja.devicemanager.R
+import com.boswelja.devicemanager.common.DataEvent
 import com.boswelja.devicemanager.messages.database.MessageDatabase
 import java.util.concurrent.atomic.AtomicInteger
 import kotlinx.coroutines.CoroutineScope
@@ -29,6 +30,8 @@ class MessageHandler internal constructor(
     )
 
     private val notificationId = AtomicInteger(0)
+
+    val messageDismissedEvent = DataEvent<Long>()
 
     init {
         if (notificationManager == null) {
@@ -55,6 +58,13 @@ class MessageHandler internal constructor(
                         .build()
                 notificationManager.notify(notificationId.incrementAndGet(), notification)
             }
+        }
+    }
+
+    fun dismissMessage(messageId: Long) {
+        coroutineScope.launch {
+            database.messageDao().dismissMessage(messageId)
+            messageDismissedEvent.postValue(messageId)
         }
     }
 
