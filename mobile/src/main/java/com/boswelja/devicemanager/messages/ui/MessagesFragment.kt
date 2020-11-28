@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.ItemTouchHelper
 import com.boswelja.devicemanager.databinding.FragmentMessagesBinding
 import com.boswelja.devicemanager.messages.Message
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -67,6 +68,10 @@ class MessagesFragment : Fragment() {
         binding.messageHistoryButton.setOnClickListener {
             findNavController().navigate(MessagesFragmentDirections.toMessageHistoryActivity())
         }
+
+        viewModel.showUndoSnackbar.observe(viewLifecycleOwner) {
+            showMessageDismissedSnackbar(it!!)
+        }
     }
 
     private fun setupRecyclerView() {
@@ -95,6 +100,14 @@ class MessagesFragment : Fragment() {
                 if (!isLoading) canShowLoading = true
             }
         }
+    }
+
+    private fun showMessageDismissedSnackbar(messageId: Long) {
+        Snackbar.make(requireView(), "Message Dismissed", Snackbar.LENGTH_INDEFINITE)
+            .setAction("Undo") {
+                viewModel.restoreMessage(messageId)
+            }
+            .show()
     }
 
     private fun openNotiSettings() {

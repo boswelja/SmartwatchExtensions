@@ -17,7 +17,6 @@ import com.google.android.play.core.install.model.AppUpdateType
 import com.google.android.play.core.install.model.UpdateAvailability
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import timber.log.Timber
 
 class MessagesViewModel @JvmOverloads constructor(
@@ -28,12 +27,18 @@ class MessagesViewModel @JvmOverloads constructor(
     private val messageHandler: MessageHandler = MessageHandler(application)
 ) : AndroidViewModel(application) {
 
+    val showUndoSnackbar = messageHandler.messageDismissedEvent
+
     val activeMessagesPager = Pager(PagingConfig(MESSAGE_PAGE_SIZE)) {
         messageDatabase.messageDao().getActiveMessages()
     }.flow.cachedIn(viewModelScope)
 
     fun dismissMessage(messageId: Long) {
         messageHandler.dismissMessage(messageId)
+    }
+
+    fun restoreMessage(messageId: Long) {
+        messageHandler.restoreMessage(messageId)
     }
 
     fun startUpdateFlow(activity: Activity) {

@@ -68,6 +68,12 @@ class MessageHandler internal constructor(
         }
     }
 
+    fun restoreMessage(messageId: Long) {
+        coroutineScope.launch {
+            database.messageDao().restoreMessage(messageId)
+        }
+    }
+
     companion object {
         const val MESSAGE_NOTIFICATION_CHANNEL_ID = "system_messages"
     }
