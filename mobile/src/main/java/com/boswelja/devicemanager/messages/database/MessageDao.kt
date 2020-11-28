@@ -24,4 +24,7 @@ interface MessageDao {
 
     @Query("SELECT COUNT(*) FROM messages WHERE NOT deleted")
     fun getActiveMessagesCount(): LiveData<Int>
+
+    @Query("UPDATE messages SET deleted = 0 WHERE id = :messageId")
+    fun restoreMessage(messageId: Long)
 }
