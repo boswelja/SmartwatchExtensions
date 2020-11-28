@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.cachedIn
+import com.boswelja.devicemanager.messages.MessageHandler
 import com.boswelja.devicemanager.messages.database.MessageDatabase
 import com.boswelja.devicemanager.messages.ui.Utils.MESSAGE_PAGE_SIZE
 import com.google.android.play.core.appupdate.AppUpdateManager
@@ -23,7 +24,8 @@ class MessagesViewModel @JvmOverloads constructor(
     application: Application,
     private val messageDatabase: MessageDatabase = MessageDatabase.get(application),
     private val coroutineDispatcher: CoroutineDispatcher = Dispatchers.IO,
-    private val appUpdateManager: AppUpdateManager = AppUpdateManagerFactory.create(application)
+    private val appUpdateManager: AppUpdateManager = AppUpdateManagerFactory.create(application),
+    private val messageHandler: MessageHandler = MessageHandler(application)
 ) : AndroidViewModel(application) {
 
     val activeMessagesPager = Pager(PagingConfig(MESSAGE_PAGE_SIZE)) {
@@ -31,9 +33,7 @@ class MessagesViewModel @JvmOverloads constructor(
     }.flow.cachedIn(viewModelScope)
 
     fun dismissMessage(messageId: Long) {
-        viewModelScope.launch(coroutineDispatcher) {
-            messageDatabase.messageDao().dismissMessage(messageId)
-        }
+        messageHandler.dismissMessage(messageId)
     }
 
     fun startUpdateFlow(activity: Activity) {
