@@ -10,6 +10,7 @@
     <string name="message_action_changelog">See Changes</string>
     <string name="message_action_noti_settings">Notification Settings</string>
     <string name="message_action_install_update">Install Update</string>
+    <string name="message_dismissed">Message Dismissed</string>
 
     <!-- Dashboard generic strings -->
     <string name="dashboard_settings_label">%s settings</string>
@@ -222,6 +223,8 @@
 
     <!-- Donate strings -->
     <string name="donate_title">Donate</string>
+
+    <string name="button_undo">Undo</string>
 
     <string name="privacy_policy_url" translatable="false">https://github.com/boswelja/WearableExtensions/blob/main/PRIVACY.md</string>
     <string name="github_url" translatable="false">https://github.com/boswelja/WearableExtensions</string>

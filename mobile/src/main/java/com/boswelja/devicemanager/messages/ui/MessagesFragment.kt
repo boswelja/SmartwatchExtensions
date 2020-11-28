@@ -15,6 +15,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.ItemTouchHelper
+import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.databinding.FragmentMessagesBinding
 import com.boswelja.devicemanager.messages.Message
 import com.google.android.material.snackbar.Snackbar
@@ -103,8 +104,8 @@ class MessagesFragment : Fragment() {
     }
 
     private fun showMessageDismissedSnackbar(messageId: Long) {
-        Snackbar.make(requireView(), "Message Dismissed", Snackbar.LENGTH_INDEFINITE)
-            .setAction("Undo") {
+        Snackbar.make(requireView(), R.string.message_dismissed, Snackbar.LENGTH_INDEFINITE)
+            .setAction(R.string.button_undo) {
                 viewModel.restoreMessage(messageId)
             }
             .show()
