@@ -9,7 +9,6 @@ import androidx.core.content.getSystemService
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.DataEvent
 import com.boswelja.devicemanager.messages.database.MessageDatabase
-import java.util.concurrent.atomic.AtomicInteger
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -21,8 +20,6 @@ class MessageHandler internal constructor(
     private val notificationManager: NotificationManager? = context.getSystemService(),
     private val coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.IO)
 ) {
-
-    private val notificationId = AtomicInteger(0)
 
     val messageDismissedEvent = DataEvent<Long>()
 
@@ -41,7 +38,7 @@ class MessageHandler internal constructor(
 
     fun postMessage(message: Message, priority: Priority = Priority.LOW) {
         coroutineScope.launch {
-            database.messageDao().createMessage(message)
+            val id = database.messageDao().createMessage(message)
             if (notificationManager != null && priority == Priority.HIGH) {
                 val notification =
                     NotificationCompat.Builder(context, MESSAGE_NOTIFICATION_CHANNEL_ID)
@@ -49,7 +46,7 @@ class MessageHandler internal constructor(
                         .setContentTitle(message.title)
                         .setContentText(message.text)
                         .build()
-                notificationManager.notify(notificationId.incrementAndGet(), notification)
+                notificationManager.notify(id.toInt(), notification)
             }
         }
     }
