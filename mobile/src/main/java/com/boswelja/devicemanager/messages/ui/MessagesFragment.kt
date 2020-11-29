@@ -70,7 +70,7 @@ class MessagesFragment : Fragment() {
             findNavController().navigate(MessagesFragmentDirections.toMessageHistoryActivity())
         }
 
-        viewModel.showUndoSnackbar.observe(viewLifecycleOwner) {
+        viewModel.messageHandler.messageDismissedEvent.observe(viewLifecycleOwner) {
             showMessageDismissedSnackbar(it!!)
         }
     }

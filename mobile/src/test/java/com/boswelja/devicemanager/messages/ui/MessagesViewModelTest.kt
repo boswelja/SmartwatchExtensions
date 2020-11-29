@@ -18,7 +18,6 @@ import io.mockk.mockk
 import io.mockk.spyk
 import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.TestCoroutineScope
 import org.junit.After
 import org.junit.Before
@@ -67,7 +66,6 @@ class MessagesViewModelTest {
         messagesViewModel = MessagesViewModel(
             ApplicationProvider.getApplicationContext(),
             messageDatabase,
-            TestCoroutineDispatcher(),
             appUpdateManager,
             messageHandler
         )

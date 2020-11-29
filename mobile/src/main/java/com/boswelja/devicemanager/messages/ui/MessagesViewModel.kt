@@ -15,19 +15,14 @@ import com.google.android.play.core.appupdate.AppUpdateManagerFactory
 import com.google.android.play.core.appupdate.AppUpdateOptions
 import com.google.android.play.core.install.model.AppUpdateType
 import com.google.android.play.core.install.model.UpdateAvailability
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 import timber.log.Timber
 
 class MessagesViewModel @JvmOverloads constructor(
     application: Application,
     private val messageDatabase: MessageDatabase = MessageDatabase.get(application),
-    private val coroutineDispatcher: CoroutineDispatcher = Dispatchers.IO,
     private val appUpdateManager: AppUpdateManager = AppUpdateManagerFactory.create(application),
-    private val messageHandler: MessageHandler = MessageHandler(application)
+    val messageHandler: MessageHandler = MessageHandler.get(application)
 ) : AndroidViewModel(application) {
-
-    val showUndoSnackbar = messageHandler.messageDismissedEvent
 
     val activeMessagesPager = Pager(PagingConfig(MESSAGE_PAGE_SIZE)) {
         messageDatabase.messageDao().getActiveMessages()

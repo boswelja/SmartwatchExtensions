@@ -17,17 +17,10 @@ import timber.log.Timber
 
 class MessageHandler internal constructor(
     private val context: Context,
-    private val database: MessageDatabase,
-    private val notificationManager: NotificationManager?,
-    private val coroutineScope: CoroutineScope
+    private val database: MessageDatabase = MessageDatabase.get(context),
+    private val notificationManager: NotificationManager? = context.getSystemService(),
+    private val coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.IO)
 ) {
-
-    constructor(context: Context) : this(
-        context,
-        MessageDatabase.get(context),
-        context.getSystemService(),
-        CoroutineScope(Dispatchers.IO)
-    )
 
     private val notificationId = AtomicInteger(0)
 
@@ -76,5 +69,16 @@ class MessageHandler internal constructor(
 
     companion object {
         const val MESSAGE_NOTIFICATION_CHANNEL_ID = "system_messages"
+
+        private var INSTANCE: MessageHandler? = null
+
+        fun get(context: Context): MessageHandler {
+            synchronized(this) {
+                if (INSTANCE == null) {
+                    INSTANCE = MessageHandler(context)
+                }
+                return INSTANCE!!
+            }
+        }
     }
 }
