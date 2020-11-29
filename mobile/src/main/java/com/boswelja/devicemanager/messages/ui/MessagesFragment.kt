@@ -75,6 +75,9 @@ class MessagesFragment : Fragment() {
         }
     }
 
+    /**
+     * Set up the messages [androidx.recyclerview.widget.RecyclerView].
+     */
     private fun setupRecyclerView() {
         binding.messagesRecyclerView.adapter = adapter
         binding.messagesRecyclerView.addItemDecoration(
@@ -83,6 +86,9 @@ class MessagesFragment : Fragment() {
         swipeDismissCallback.attachToRecyclerView(binding.messagesRecyclerView)
     }
 
+    /**
+     * Observe active messages in the database and pass them to [adapter].
+     */
     private fun observeMessages() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.activeMessagesPager.collectLatest {
@@ -91,6 +97,9 @@ class MessagesFragment : Fragment() {
         }
     }
 
+    /**
+     * Observe [adapter] loading state and update UI accordingly.
+     */
     private fun observeLoadState() {
         viewLifecycleOwner.lifecycleScope.launch {
             adapter.loadStateFlow.collectLatest { loadStates ->
@@ -103,6 +112,9 @@ class MessagesFragment : Fragment() {
         }
     }
 
+    /**
+     * Show a snackbar with an undo action when a message is dismissed.
+     */
     private fun showMessageDismissedSnackbar(messageId: Long) {
         Snackbar.make(requireView(), R.string.message_dismissed, Snackbar.LENGTH_INDEFINITE)
             .setAction(R.string.button_undo) {
@@ -111,6 +123,9 @@ class MessagesFragment : Fragment() {
             .show()
     }
 
+    /**
+     * Open Android's notification settings for Wearable Extensions.
+     */
     private fun openNotiSettings() {
         val intent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS).apply {

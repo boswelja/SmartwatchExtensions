@@ -28,6 +28,9 @@ class MessagesViewModel @JvmOverloads constructor(
         messageDatabase.messageDao().getActiveMessages()
     }.flow.cachedIn(viewModelScope)
 
+    /**
+     * Checks for updates and starts the appropriate update flow.
+     */
     fun startUpdateFlow(activity: Activity) {
         appUpdateManager.appUpdateInfo.addOnCompleteListener {
             val appUpdateInfo = it.result

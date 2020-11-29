@@ -37,6 +37,11 @@ class MessagesAdapter(
 
     class ViewHolder(val binding: MessageItemBinding) : RecyclerView.ViewHolder(binding.root) {
 
+        /**
+         * Convert millisecond time into a readable date string.
+         * Shows time received if it's within the last 24 hours, otherwise shows the date.
+         * @param timeInMillis The time milliseconds to convert to a readable string.
+         */
         private fun getReceivedString(timeInMillis: Long): String {
             val todayMillis = System.currentTimeMillis()
             val received = Date(timeInMillis)

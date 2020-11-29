@@ -36,6 +36,9 @@ class MessageHistoryActivity : BaseToolbarActivity() {
         observeLoadState()
     }
 
+    /**
+     * Set up the message [androidx.recyclerview.widget.RecyclerView].
+     */
     private fun setupRecyclerView() {
         binding.messagesRecyclerView.adapter = adapter
         binding.messagesRecyclerView.addItemDecoration(
@@ -43,6 +46,9 @@ class MessageHistoryActivity : BaseToolbarActivity() {
         )
     }
 
+    /**
+     * Observe dismissed messages in the database and pass them to [adapter].
+     */
     private fun observeMessages() {
         lifecycleScope.launch {
             viewModel.dismissedMessagesPager.collectLatest {
@@ -51,6 +57,9 @@ class MessageHistoryActivity : BaseToolbarActivity() {
         }
     }
 
+    /**
+     * Observe the [adapter] loading state and update the UI accordingly.
+     */
     private fun observeLoadState() {
         lifecycleScope.launch {
             adapter.loadStateFlow.collectLatest { loadStates ->

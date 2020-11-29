@@ -8,6 +8,10 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.boswelja.devicemanager.R
 
+/**
+ * Callback for handling swipe to dismiss logic. This also handles showing the dismiss icon under
+ * swiped items.
+ */
 class SwipeDismissCallback(
     context: Context,
     private val itemDismissCallback: (position: Int) -> Unit
