@@ -28,14 +28,6 @@ class MessagesViewModel @JvmOverloads constructor(
         messageDatabase.messageDao().getActiveMessages()
     }.flow.cachedIn(viewModelScope)
 
-    fun dismissMessage(messageId: Long) {
-        messageHandler.dismissMessage(messageId)
-    }
-
-    fun restoreMessage(messageId: Long) {
-        messageHandler.restoreMessage(messageId)
-    }
-
     fun startUpdateFlow(activity: Activity) {
         appUpdateManager.appUpdateInfo.addOnCompleteListener {
             val appUpdateInfo = it.result

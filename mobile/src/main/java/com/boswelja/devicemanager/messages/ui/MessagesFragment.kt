@@ -40,7 +40,7 @@ class MessagesFragment : Fragment() {
             SwipeDismissCallback(requireContext()) { position ->
                 adapter.peek(position)?.let { message ->
                     canShowLoading = false
-                    viewModel.dismissMessage(message.id)
+                    viewModel.messageHandler.dismissMessage(message.id)
                     adapter.notifyItemRemoved(position)
                 }
             }
@@ -106,7 +106,7 @@ class MessagesFragment : Fragment() {
     private fun showMessageDismissedSnackbar(messageId: Long) {
         Snackbar.make(requireView(), R.string.message_dismissed, Snackbar.LENGTH_INDEFINITE)
             .setAction(R.string.button_undo) {
-                viewModel.restoreMessage(messageId)
+                viewModel.messageHandler.restoreMessage(messageId)
             }
             .show()
     }
