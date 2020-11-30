@@ -1,52 +1,42 @@
 package com.boswelja.devicemanager.messages
 
-import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
 import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.core.content.getSystemService
 import com.boswelja.devicemanager.NotificationChannelHelper
-import com.boswelja.devicemanager.R
-import com.boswelja.devicemanager.common.DataEvent
 import com.boswelja.devicemanager.messages.database.MessageDatabase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
 /**
  * Class to handle message-related events. Posting, dismissing etc.
  * This should be favored over directly accessing [MessageDatabase], as it handles priority and
  * other events.
  */
-class MessageHandler internal constructor(
-    private val context: Context,
-    private val database: MessageDatabase = MessageDatabase.get(context),
-    private val notificationManager: NotificationManager? = context.getSystemService(),
-    private val coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.IO)
-) {
-
-    /* Event that's triggered by dismissing a message. Observe to get the dismissed message ID*/
-    val messageDismissedEvent = DataEvent<Long>()
-
-    init {
-        if (notificationManager == null) {
-            Timber.w("Failed to get NotificationManager instance")
-        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannelHelper.createForSystemMessages(context, notificationManager)
-        }
-    }
+object MessageHandler {
 
     /**
      * Post a message to the system.
      * @param message The [Message] instance to post.
      * @param priority The [Priority] of the message.
      */
-    fun postMessage(message: Message, priority: Priority = Priority.LOW) {
+    fun postMessage(
+        context: Context,
+        message: Message,
+        priority: Priority = Priority.LOW,
+        database: MessageDatabase = MessageDatabase.get(context),
+        coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.IO)
+    ) {
         coroutineScope.launch {
             val id = database.messageDao().createMessage(message)
-            if (notificationManager != null && priority == Priority.HIGH) {
+            if (priority == Priority.HIGH) {
+                val notificationManager: NotificationManager = context.getSystemService()!!
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    NotificationChannelHelper.createForSystemMessages(context, notificationManager)
+                }
                 val notification =
                     NotificationCompat.Builder(context, MESSAGE_NOTIFICATION_CHANNEL_ID)
                         .setSmallIcon(message.icon.iconRes)
@@ -59,13 +49,17 @@ class MessageHandler internal constructor(
     }
 
     /**
-     * Dismiss a message and notify event listeners.
+     * Dismiss a message.
      * @param messageId The [Message.id] of the message to dismiss.
      */
-    fun dismissMessage(messageId: Long) {
+    fun dismissMessage(
+        context: Context,
+        messageId: Long,
+        database: MessageDatabase = MessageDatabase.get(context),
+        coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.IO)
+    ) {
         coroutineScope.launch {
             database.messageDao().dismissMessage(messageId)
-            messageDismissedEvent.postValue(messageId)
         }
     }
 
@@ -73,27 +67,16 @@ class MessageHandler internal constructor(
      * Restore a dismissed message.
      * @param messageId The [Message.id] of the message to restore.
      */
-    fun restoreMessage(messageId: Long) {
+    fun restoreMessage(
+        context: Context,
+        messageId: Long,
+        database: MessageDatabase = MessageDatabase.get(context),
+        coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.IO)
+    ) {
         coroutineScope.launch {
             database.messageDao().restoreMessage(messageId)
         }
     }
 
-    companion object {
-        const val MESSAGE_NOTIFICATION_CHANNEL_ID = "system_messages"
-
-        private var INSTANCE: MessageHandler? = null
-
-        /**
-         * Get an instance of [MessageHandler].
-         */
-        fun get(context: Context): MessageHandler {
-            synchronized(this) {
-                if (INSTANCE == null) {
-                    INSTANCE = MessageHandler(context)
-                }
-                return INSTANCE!!
-            }
-        }
-    }
+    const val MESSAGE_NOTIFICATION_CHANNEL_ID = "system_messages"
 }

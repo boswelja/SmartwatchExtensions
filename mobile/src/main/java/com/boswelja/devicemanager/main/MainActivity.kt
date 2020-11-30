@@ -56,7 +56,7 @@ class MainActivity : BaseWatchPickerActivity() {
                             getString(R.string.update_available_title),
                             getString(R.string.update_available_text)
                         )
-                        MessageHandler.get(this).postMessage(message, Priority.LOW)
+                        MessageHandler.postMessage(this, message, Priority.LOW)
                     } else if (appUpdateInfo.isUpdateTypeAllowed(AppUpdateType.IMMEDIATE)) {
                         appUpdateManager.startUpdateFlow(
                             appUpdateInfo,

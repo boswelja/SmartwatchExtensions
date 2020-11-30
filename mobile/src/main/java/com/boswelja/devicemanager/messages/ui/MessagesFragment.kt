@@ -40,7 +40,7 @@ class MessagesFragment : Fragment() {
             SwipeDismissCallback(requireContext()) { position ->
                 adapter.peek(position)?.let { message ->
                     canShowLoading = false
-                    viewModel.messageHandler.dismissMessage(message.id)
+                    viewModel.dismissMessage(message.id)
                     adapter.notifyItemRemoved(position)
                 }
             }
@@ -70,9 +70,9 @@ class MessagesFragment : Fragment() {
             findNavController().navigate(MessagesFragmentDirections.toMessageHistoryActivity())
         }
 
-        viewModel.messageHandler.messageDismissedEvent.observe(viewLifecycleOwner) {
-            showMessageDismissedSnackbar(it!!)
-        }
+//        viewModel.messageHandler.messageDismissedEvent.observe(viewLifecycleOwner) {
+//            showMessageDismissedSnackbar(it!!)
+//        }
     }
 
     /**
@@ -118,7 +118,7 @@ class MessagesFragment : Fragment() {
     private fun showMessageDismissedSnackbar(messageId: Long) {
         Snackbar.make(requireView(), R.string.message_dismissed, Snackbar.LENGTH_INDEFINITE)
             .setAction(R.string.button_undo) {
-                viewModel.messageHandler.restoreMessage(messageId)
+                viewModel.restoreMessage(messageId)
             }
             .show()
     }

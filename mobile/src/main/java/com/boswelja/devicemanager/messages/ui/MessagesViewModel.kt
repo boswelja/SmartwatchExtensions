@@ -20,8 +20,7 @@ import timber.log.Timber
 class MessagesViewModel @JvmOverloads constructor(
     application: Application,
     private val messageDatabase: MessageDatabase = MessageDatabase.get(application),
-    private val appUpdateManager: AppUpdateManager = AppUpdateManagerFactory.create(application),
-    val messageHandler: MessageHandler = MessageHandler.get(application)
+    private val appUpdateManager: AppUpdateManager = AppUpdateManagerFactory.create(application)
 ) : AndroidViewModel(application) {
 
     val activeMessagesPager = Pager(PagingConfig(MESSAGE_PAGE_SIZE)) {
@@ -57,5 +56,21 @@ class MessagesViewModel @JvmOverloads constructor(
                 Timber.w("Update failed")
             }
         }
+    }
+
+    fun dismissMessage(messageId: Long) {
+        MessageHandler.dismissMessage(
+            getApplication(),
+            messageId,
+            messageDatabase
+        )
+    }
+
+    fun restoreMessage(messageId: Long) {
+        MessageHandler.restoreMessage(
+            getApplication(),
+            messageId,
+            messageDatabase
+        )
     }
 }

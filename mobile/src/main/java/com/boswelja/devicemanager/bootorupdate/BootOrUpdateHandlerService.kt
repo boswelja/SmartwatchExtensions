@@ -176,7 +176,7 @@ class BootOrUpdateHandlerService : Service() {
             getString(R.string.update_completed_title),
             getString(R.string.update_complete_text, BuildConfig.VERSION_NAME)
         )
-        MessageHandler.get(this).postMessage(message)
+        MessageHandler.postMessage(this, message)
     }
 
     companion object {
