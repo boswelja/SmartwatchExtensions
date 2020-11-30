@@ -30,4 +30,32 @@ data class Message(
         HELP(R.drawable.noti_ic_help),
         ERROR(R.drawable.noti_ic_error)
     }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is Message) return false
+
+        if (icon != other.icon) return false
+        if (title != other.title) return false
+        if (text != other.text) return false
+        if (action != other.action) return false
+        if (id != other.id) return false
+        if (deleted != other.deleted) return false
+        if (timestamp != other.timestamp) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = icon.hashCode()
+        result = 31 * result + title.hashCode()
+        result = 31 * result + text.hashCode()
+        result = 31 * result + (action?.hashCode() ?: 0)
+        result = 31 * result + id.hashCode()
+        result = 31 * result + deleted.hashCode()
+        result = 31 * result + timestamp.hashCode()
+        return result
+    }
+
+
 }
