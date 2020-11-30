@@ -56,6 +56,4 @@ data class Message(
         result = 31 * result + timestamp.hashCode()
         return result
     }
-
-
 }
