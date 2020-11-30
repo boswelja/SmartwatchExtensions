@@ -77,17 +77,12 @@ object NotificationChannelHelper {
     }
 
     fun createForSystemMessages(context: Context, notificationManager: NotificationManager) {
-        if (notificationManager.getNotificationChannel(
-                MessageHandler.MESSAGE_NOTIFICATION_CHANNEL_ID
-            ) == null
-        ) {
-            NotificationChannel(
-                MessageHandler.MESSAGE_NOTIFICATION_CHANNEL_ID,
-                context.getString(R.string.messages_noti_channel_label),
-                NotificationManager.IMPORTANCE_DEFAULT
-            ).also {
-                notificationManager.createNotificationChannel(it)
-            }
+        NotificationChannel(
+            MessageHandler.MESSAGE_NOTIFICATION_CHANNEL_ID,
+            context.getString(R.string.messages_noti_channel_label),
+            NotificationManager.IMPORTANCE_DEFAULT
+        ).also {
+            notificationManager.createNotificationChannel(it)
         }
     }
 }

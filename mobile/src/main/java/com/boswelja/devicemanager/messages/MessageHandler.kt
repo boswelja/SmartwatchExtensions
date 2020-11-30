@@ -4,7 +4,6 @@ import android.app.NotificationManager
 import android.content.Context
 import android.os.Build
 import androidx.core.app.NotificationCompat
-import androidx.core.content.getSystemService
 import com.boswelja.devicemanager.NotificationChannelHelper
 import com.boswelja.devicemanager.messages.database.MessageDatabase
 import kotlinx.coroutines.CoroutineScope
@@ -31,7 +30,8 @@ object MessageHandler {
         coroutineScope.launch {
             val id = database.messageDao().createMessage(message)
             if (priority == Priority.HIGH) {
-                val notificationManager: NotificationManager = context.getSystemService()!!
+                val notificationManager =
+                    context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                     NotificationChannelHelper.createForSystemMessages(context, notificationManager)
                 }
