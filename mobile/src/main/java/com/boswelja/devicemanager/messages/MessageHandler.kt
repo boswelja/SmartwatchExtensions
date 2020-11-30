@@ -12,9 +12,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 /**
- * Class to handle message-related events. Posting, dismissing etc.
- * This should be favored over directly accessing [MessageDatabase], as it handles priority and
- * other events.
+ * Object to help with posting messages to the system.
  */
 object MessageHandler {
 
@@ -45,36 +43,6 @@ object MessageHandler {
                         .build()
                 notificationManager.notify(id.toInt(), notification)
             }
-        }
-    }
-
-    /**
-     * Dismiss a message.
-     * @param messageId The [Message.id] of the message to dismiss.
-     */
-    fun dismissMessage(
-        context: Context,
-        messageId: Long,
-        database: MessageDatabase = MessageDatabase.get(context),
-        coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.IO)
-    ) {
-        coroutineScope.launch {
-            database.messageDao().dismissMessage(messageId)
-        }
-    }
-
-    /**
-     * Restore a dismissed message.
-     * @param messageId The [Message.id] of the message to restore.
-     */
-    fun restoreMessage(
-        context: Context,
-        messageId: Long,
-        database: MessageDatabase = MessageDatabase.get(context),
-        coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.IO)
-    ) {
-        coroutineScope.launch {
-            database.messageDao().restoreMessage(messageId)
         }
     }
 

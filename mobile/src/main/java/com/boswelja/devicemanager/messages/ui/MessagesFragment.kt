@@ -70,9 +70,9 @@ class MessagesFragment : Fragment() {
             findNavController().navigate(MessagesFragmentDirections.toMessageHistoryActivity())
         }
 
-//        viewModel.messageHandler.messageDismissedEvent.observe(viewLifecycleOwner) {
-//            showMessageDismissedSnackbar(it!!)
-//        }
+        viewModel.messageDismissedEvent.observe(viewLifecycleOwner) {
+            showMessageDismissedSnackbar(it!!)
+        }
     }
 
     /**
