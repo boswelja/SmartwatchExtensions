@@ -6,6 +6,7 @@ import android.content.Context
 import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.core.content.getSystemService
+import com.boswelja.devicemanager.NotificationChannelHelper
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.DataEvent
 import com.boswelja.devicemanager.messages.database.MessageDatabase
@@ -33,13 +34,7 @@ class MessageHandler internal constructor(
         if (notificationManager == null) {
             Timber.w("Failed to get NotificationManager instance")
         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            // Create notification channel if needed
-            val notificationChannel = NotificationChannel(
-                MESSAGE_NOTIFICATION_CHANNEL_ID,
-                context.getString(R.string.messages_noti_channel_label),
-                NotificationManager.IMPORTANCE_DEFAULT
-            )
-            notificationManager.createNotificationChannel(notificationChannel)
+            NotificationChannelHelper.createForSystemMessages(context, notificationManager)
         }
     }
 
