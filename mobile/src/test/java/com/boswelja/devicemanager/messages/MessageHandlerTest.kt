@@ -91,6 +91,13 @@ class MessageHandlerTest {
 
     @Test
     fun `Notification channel is created if needed`() {
+        MessageHandler.postMessage(
+            context,
+            message,
+            Priority.HIGH,
+            messageDatabase,
+            coroutineScope
+        )
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             verify(exactly = 1) { notificationManager.createNotificationChannel(any()) }
         }
