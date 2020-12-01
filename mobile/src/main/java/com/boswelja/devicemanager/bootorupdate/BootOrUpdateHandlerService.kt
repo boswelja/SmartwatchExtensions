@@ -14,7 +14,6 @@ import android.content.Intent
 import android.os.Build
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
-import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.BuildConfig
 import com.boswelja.devicemanager.NotificationChannelHelper
 import com.boswelja.devicemanager.R
@@ -25,10 +24,9 @@ import com.boswelja.devicemanager.common.Compat
 import com.boswelja.devicemanager.common.preference.PreferenceKey
 import com.boswelja.devicemanager.dndsync.DnDLocalChangeService
 import com.boswelja.devicemanager.messages.Message
-import com.boswelja.devicemanager.messages.database.MessageDatabase
+import com.boswelja.devicemanager.messages.MessageHandler
 import com.boswelja.devicemanager.watchmanager.WatchManager
 import com.boswelja.devicemanager.watchmanager.database.WatchDatabase
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
@@ -36,8 +34,6 @@ import kotlinx.coroutines.withContext
 import timber.log.Timber
 
 class BootOrUpdateHandlerService : Service() {
-
-    private val coroutineScope = CoroutineScope(Dispatchers.IO)
 
     private var isUpdating = false
 
@@ -71,27 +67,11 @@ class BootOrUpdateHandlerService : Service() {
             val updater = Updater(this)
             startForeground(NOTI_ID, createUpdaterNotification())
             when (updater.doUpdate()) {
-                Result.COMPLETED -> {
-                    Timber.i("Update completed")
-                    coroutineScope.launch {
-                        val updateMessage =
-                            Message(
-                                R.drawable.ic_update,
-                                "Updated to version ${BuildConfig.VERSION_NAME}",
-                                "Version ${BuildConfig.VERSION_NAME}",
-                            )
-                        MessageDatabase.get(this@BootOrUpdateHandlerService)
-                            .sendMessage(
-                                PreferenceManager.getDefaultSharedPreferences(
-                                    this@BootOrUpdateHandlerService
-                                ),
-                                updateMessage
-                            )
-                    }
-                }
+                Result.COMPLETED -> Timber.i("Updated app and changes were made")
                 Result.NOT_NEEDED -> Timber.i("Update not needed")
             }
             restartServices()
+            notifyUpdateComplete()
         }
     }
 
@@ -185,6 +165,18 @@ class BootOrUpdateHandlerService : Service() {
                 finish()
             }
         }
+    }
+
+    /**
+     * Sends a message to the user notifying them the update has been completed.
+     */
+    private fun notifyUpdateComplete() {
+        val message = Message(
+            Message.Icon.UPDATE,
+            getString(R.string.update_completed_title),
+            getString(R.string.update_complete_text, BuildConfig.VERSION_NAME)
+        )
+        MessageHandler.postMessage(this, message)
     }
 
     companion object {

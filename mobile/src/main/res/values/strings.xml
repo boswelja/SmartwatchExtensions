@@ -2,6 +2,16 @@
 
     <string name="app_name">@string/global_app_name</string>
 
+    <!-- Messages strings -->
+    <string name="message_history_label">Message History</string>
+    <string name="messages_empty">No new messages</string>
+    <string name="messages_noti_channel_label">System Messages</string>
+    <string name="message_history_empty">Messages you\'ve dismissed will appear here.</string>
+    <string name="message_action_changelog">See Changes</string>
+    <string name="message_action_noti_settings">Notification Settings</string>
+    <string name="message_action_install_update">Install Update</string>
+    <string name="message_dismissed">Message Dismissed</string>
+
     <!-- Dashboard generic strings -->
     <string name="dashboard_settings_label">%s settings</string>
 
@@ -124,16 +134,9 @@
     <string name="dialog_button_enable">Enable</string>
     <string name="dialog_button_reset">Reset</string>
 
-    <!-- Message strings -->
-    <string name="message_watch_charge_noti_warning_label_short">Watch Charge Notification</string>
-    <string name="message_watch_charge_noti_warning_label">Watch Charge Notifications Not Working</string>
-    <string name="message_watch_charge_noti_warning_desc">Watch Charge Notifications have been disabled in Notification Settings. Please use the option in Battery Sync settings to disable charge notifications</string>
-    <string name="message_watch_charge_noti_warning_button_label">Open Notification Settings</string>
-    <string name="message_none_label">No new messages</string>
-
     <!-- Bottom Navigation Bar strings -->
     <string name="bottom_nav_dashboard_label">Dashboard</string>
-    <string name="bottom_nav_messages_label">Messages</string>
+    <string name="nav_messages_label">Messages</string>
     <string name="bottom_nav_app_settings_label">App Settings</string>
     <string name="bottom_nav_about_label">About</string>
 
@@ -172,6 +175,8 @@
     <!-- Boot & Update handler notification strings -->
     <string name="notification_boot_handler_title">Starting required services</string>
     <string name="notification_update_handler_title">Finishing Updates</string>
+    <string name="update_completed_title">Update Complete</string>
+    <string name="update_complete_text">Successfully updated to version %s.</string>
 
     <!-- Welcome fragment strings -->
     <string name="welcome_to_text">Welcome to</string>
@@ -212,9 +217,16 @@
     <string name="database_name_widget">Widget</string>
     <string name="database_name_battery_stats">Battery Sync</string>
 
+    <!-- Update checker strings -->
+    <string name="update_available_title">Update available</string>
+    <string name="update_available_text">A new version of Wearable Extensions is available</string>
+
     <!-- Donate strings -->
     <string name="donate_title">Donate</string>
 
+    <string name="button_undo">Undo</string>
+
     <string name="privacy_policy_url" translatable="false">https://github.com/boswelja/WearableExtensions/blob/main/PRIVACY.md</string>
     <string name="github_url" translatable="false">https://github.com/boswelja/WearableExtensions</string>
+
 </resources>

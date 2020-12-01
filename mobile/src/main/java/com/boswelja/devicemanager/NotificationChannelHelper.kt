@@ -15,6 +15,7 @@ import androidx.annotation.RequiresApi
 import com.boswelja.devicemanager.batterysync.WatchBatteryUpdateReceiver
 import com.boswelja.devicemanager.bootorupdate.BootOrUpdateHandlerService
 import com.boswelja.devicemanager.common.dndsync.References
+import com.boswelja.devicemanager.messages.MessageHandler
 
 @RequiresApi(Build.VERSION_CODES.O)
 object NotificationChannelHelper {
@@ -72,6 +73,16 @@ object NotificationChannelHelper {
                     setShowBadge(false)
                 }
                 .also { notificationManager.createNotificationChannel(it) }
+        }
+    }
+
+    fun createForSystemMessages(context: Context, notificationManager: NotificationManager) {
+        NotificationChannel(
+            MessageHandler.MESSAGE_NOTIFICATION_CHANNEL_ID,
+            context.getString(R.string.messages_noti_channel_label),
+            NotificationManager.IMPORTANCE_DEFAULT
+        ).also {
+            notificationManager.createNotificationChannel(it)
         }
     }
 }

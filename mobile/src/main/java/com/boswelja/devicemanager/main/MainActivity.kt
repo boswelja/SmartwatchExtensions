@@ -8,22 +8,22 @@
 package com.boswelja.devicemanager.main
 
 import android.os.Bundle
-import androidx.activity.viewModels
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.ui.BaseWatchPickerActivity
 import com.boswelja.devicemanager.databinding.ActivityMainBinding
-import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.boswelja.devicemanager.messages.Message
+import com.boswelja.devicemanager.messages.MessageHandler
+import com.boswelja.devicemanager.messages.Priority
 import com.google.android.play.core.appupdate.AppUpdateManagerFactory
+import com.google.android.play.core.appupdate.AppUpdateOptions
 import com.google.android.play.core.install.model.AppUpdateType
 import com.google.android.play.core.install.model.UpdateAvailability
 import com.google.android.play.core.ktx.updatePriority
 import timber.log.Timber
 
 class MainActivity : BaseWatchPickerActivity() {
-
-    private val viewModel: MainViewModel by viewModels()
 
     private lateinit var binding: ActivityMainBinding
 
@@ -40,22 +40,6 @@ class MainActivity : BaseWatchPickerActivity() {
         ensureAppUpdated()
     }
 
-    override fun onStart() {
-        super.onStart()
-        viewModel.messageCount.observe(this) { updateMessagesBadge(it) }
-    }
-
-    /** Updates the message count badge on the [BottomNavigationView]. */
-    private fun updateMessagesBadge(messageCount: Int) {
-        if (messageCount > 0) {
-            binding.bottomNavigation.getOrCreateBadge(R.id.messageFragment).apply {
-                number = messageCount
-            }
-        } else {
-            binding.bottomNavigation.removeBadge(R.id.messageFragment)
-        }
-    }
-
     private fun ensureAppUpdated() {
         val appUpdateManager = AppUpdateManagerFactory.create(this)
         appUpdateManager.appUpdateInfo.addOnCompleteListener {
@@ -67,12 +51,17 @@ class MainActivity : BaseWatchPickerActivity() {
                     if (appUpdateInfo.updatePriority < HIGH_PRIORITY_UPDATE &&
                         appUpdateInfo.isUpdateTypeAllowed(AppUpdateType.FLEXIBLE)
                     ) {
-                        appUpdateManager.startUpdateFlowForResult(
-                            appUpdateInfo, AppUpdateType.FLEXIBLE, this, 0
+                        val message = Message(
+                            Message.Icon.UPDATE,
+                            getString(R.string.update_available_title),
+                            getString(R.string.update_available_text)
                         )
+                        MessageHandler.postMessage(this, message, Priority.LOW)
                     } else if (appUpdateInfo.isUpdateTypeAllowed(AppUpdateType.IMMEDIATE)) {
-                        appUpdateManager.startUpdateFlowForResult(
-                            appUpdateInfo, AppUpdateType.IMMEDIATE, this, 0
+                        appUpdateManager.startUpdateFlow(
+                            appUpdateInfo,
+                            this,
+                            AppUpdateOptions.defaultOptions(AppUpdateType.IMMEDIATE)
                         )
                     }
                 }

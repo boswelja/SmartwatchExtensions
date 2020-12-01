@@ -20,18 +20,21 @@ import com.boswelja.devicemanager.common.References.CAPABILITY_WATCH_APP
 import com.boswelja.devicemanager.common.preference.PreferenceKey
 import com.boswelja.devicemanager.common.preference.PreferenceKey.BATTERY_SYNC_ENABLED_KEY
 import com.boswelja.devicemanager.common.setup.References
-import com.boswelja.devicemanager.messages.database.MessageDatabase
-import com.boswelja.devicemanager.messages.database.MessageDatabase.Companion.MESSAGE_COUNT_KEY
 import com.boswelja.devicemanager.phonelocking.ui.PhoneLockingPreferenceFragment.Companion.PHONE_LOCKING_MODE_KEY
 import com.boswelja.devicemanager.watchmanager.SelectedWatchHandler.Companion.LAST_SELECTED_NODE_ID_KEY
 import com.boswelja.devicemanager.watchmanager.database.WatchDatabase
 import com.boswelja.devicemanager.watchmanager.item.Watch
 import com.google.android.gms.wearable.CapabilityClient
 import com.google.android.gms.wearable.Wearable
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import timber.log.Timber
 
 class Updater(private val context: Context) {
+
+    private val coroutineScope = CoroutineScope(Dispatchers.IO)
 
     private val sharedPreferences: SharedPreferences =
         PreferenceManager.getDefaultSharedPreferences(context)
@@ -121,10 +124,9 @@ class Updater(private val context: Context) {
                     remove("should_show_changelog")
                     updateStatus = Result.COMPLETED
                 }
-                if (!sharedPreferences.contains(MESSAGE_COUNT_KEY)) {
-                    MessageDatabase.get(context)
-                        .apply { updateMessageCount(sharedPreferences) }
-                        .also { it.close() }
+                if (sharedPreferences.contains("message_count")) {
+                    remove("message_count")
+                    updateStatus = Result.COMPLETED
                 }
                 if (!sharedPreferences.contains(PHONE_LOCKING_MODE_KEY)) {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
@@ -168,7 +170,7 @@ class Updater(private val context: Context) {
 
                     if (defaultWatch != null) {
                         val watch = Watch(defaultWatch)
-                        database.watchDao().add(watch)
+                        coroutineScope.launch { database.watchDao().add(watch) }
                         messageClient.sendMessage(watch.id, References.WATCH_REGISTERED_PATH, null)
                         sharedPreferences.edit { putString(LAST_SELECTED_NODE_ID_KEY, watch.id) }
                         sharedPreferences.all.forEach {

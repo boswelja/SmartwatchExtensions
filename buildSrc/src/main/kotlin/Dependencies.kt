@@ -4,7 +4,7 @@ const val kotlinVersion = "1.4.10"
 
 object BuildPlugins {
     object Versions {
-        const val buildToolsVersion = "4.2.0-alpha15"
+        const val buildToolsVersion = "4.2.0-alpha16"
         const val googleServicesVersion = "4.3.3"
         const val androidxNavigation = Libraries.Versions.androidxNavigation
     }
@@ -40,6 +40,7 @@ object Libraries {
         const val androidxFragment = "1.3.0-beta01"
         const val androidxLifecycle = "2.3.0-beta01"
         const val androidxNavigation = "2.3.1"
+        const val androidxPaging = "3.0.0-alpha09"
         const val androidxPreference = "1.1.1"
         const val androidxRoom = "2.3.0-alpha03"
         const val androidxWear = "1.2.0-alpha01"
@@ -74,6 +75,7 @@ object Libraries {
         "androidx.navigation:navigation-fragment-ktx:${Versions.androidxNavigation}"
     const val androidxNavigationUI =
         "androidx.navigation:navigation-ui-ktx:${Versions.androidxNavigation}"
+    const val androidxPagingRuntime = "androidx.paging:paging-runtime:${Versions.androidxPaging}"
     const val androidxPreference = "androidx.preference:preference:${Versions.androidxPreference}"
     const val androidxRoomRuntime = "androidx.room:room-runtime:${Versions.androidxRoom}"
     const val androidxRoomKtx = "androidx.room:room-ktx:${Versions.androidxRoom}"

@@ -1,71 +1,62 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingTop="8dp"
-    android:paddingStart="16dp"
-    android:paddingEnd="16dp"
-    android:scrollbars="none">
+    android:padding="@dimen/message_item_padding"
+    android:background="@color/windowBackground">
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/message_icon"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
+        android:layout_width="@dimen/message_icon_size"
+        android:layout_height="@dimen/message_icon_size"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:src="@drawable/noti_ic_update" />
 
     <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/message_label"
-        android:layout_width="0dp"
+        android:id="@+id/received_text"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:minHeight="24dp"
-        android:ellipsize="end"
-        android:layout_marginStart="32dp"
-        android:layout_marginEnd="8dp"
-        android:maxLines="2"
-        android:textColor="?android:textColorPrimary"
-        android:gravity="center_vertical"
-        app:layout_constraintStart_toEndOf="@id/message_icon"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:textAppearance="?textAppearanceBody2"
+        android:textColor="?android:textColorSecondary"
         app:layout_constraintTop_toTopOf="parent"
-        style="@style/TextAppearance.MaterialComponents.Body1" />
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:text="23/11" />
 
-    <RelativeLayout
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/message_title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:visibility="visible"
-        app:layout_constraintTop_toBottomOf="@id/message_label"
-        app:layout_constraintStart_toStartOf="@id/message_label"
-        app:layout_constraintEnd_toEndOf="parent">
+        android:textAppearance="?textAppearanceBody1"
+        android:layout_marginStart="@dimen/message_item_padding"
+        android:textColor="?android:textColorPrimary"
+        app:layout_constraintStart_toEndOf="@id/message_icon"
+        app:layout_constraintEnd_toStartOf="@id/received_text"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="@string/update_completed_title"/>
 
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/message_desc"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColor="?android:textColorSecondary"
-            android:layout_alignParentTop="true"
-            style="@style/TextAppearance.MaterialComponents.Subtitle1" />
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/message_text"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textAppearance="?textAppearanceBody2"
+        app:layout_constraintTop_toBottomOf="@id/message_title"
+        app:layout_constraintStart_toStartOf="@id/message_title"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:text="@string/update_complete_text"/>
 
-        <View
-            android:id="@+id/divider"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="?android:attr/listDivider"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_below="@id/message_desc"
-            android:visibility="gone" />
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/message_action_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/message_text"
+        tools:text="@string/message_action_changelog"
+        tools:visibility="visible"
+        style="?materialButtonOutlinedStyle" />
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/message_action_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/divider"
-            android:layout_alignParentStart="true"
-            android:visibility="gone"
-            style="@style/Widget.MaterialComponents.Button.TextButton" />
-
-    </RelativeLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

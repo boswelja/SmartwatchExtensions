@@ -9,8 +9,8 @@
         app:destination="@id/dashboardFragment" />
 
     <action
-        android:id="@+id/action_global_messageFragment"
-        app:destination="@id/messageFragment" />
+        android:id="@+id/action_global_messagesFragment"
+        app:destination="@id/messagesFragment" />
 
     <action
         android:id="@+id/action_global_appSettingsFragment"
@@ -42,8 +42,14 @@
     </fragment>
 
     <fragment
-        android:id="@+id/messageFragment"
-        android:name="com.boswelja.devicemanager.messages.ui.MessageFragment" />
+        android:id="@+id/messagesFragment"
+        android:name="com.boswelja.devicemanager.messages.ui.MessagesFragment">
+
+        <action
+            android:id="@+id/to_messageHistoryActivity"
+            app:destination="@id/messageHistoryActivity" />
+
+    </fragment>
 
     <fragment
         android:id="@+id/appSettingsFragment"
@@ -92,6 +98,10 @@
             android:name="watchName"
             app:argType="string" />
     </activity>
+
+    <activity
+        android:id="@+id/messageHistoryActivity"
+        android:name="com.boswelja.devicemanager.messages.ui.MessageHistoryActivity" />
 
     <activity
         android:id="@+id/dnDSyncPreferenceActivity"
