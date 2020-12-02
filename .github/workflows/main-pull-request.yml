@@ -1,4 +1,4 @@
-name: Main Branch Pull Request CI
+name: PR Quality Checks
 
 on:
   pull_request:
