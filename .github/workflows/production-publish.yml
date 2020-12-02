@@ -157,7 +157,7 @@ jobs:
           path: ${{ steps.sign-wear-release.outputs.signedReleaseFile }}
 
   upload:
-    name: Upload to Google Play
+    name: Upload to Google Play & Create Release
     runs-on: ubuntu-latest
     needs: sign
     steps:
@@ -173,10 +173,41 @@ jobs:
           name: wear-release.aab
           path: release/
       - name: Upload to Google Play
-        uses: r0adkll/upload-google-play@master
+        uses: r0adkll/upload-google-play@v1.0.7
+        id: upload
         with:
           serviceAccountJsonPlainText: ${{ secrets.SERVICE_ACCOUNT_JSON }}
           packageName: "com.boswelja.devicemanager"
           releaseFiles: "release/mobile-release.aab,release/wear-release.aab"
           whatsNewDirectory: changelogs/
           track: production
+      - name: Read Changelog
+        id: changelog
+        uses: juliangruber/read-file-action@v1
+        with:
+          path: changelogs/whatsnew-en-GB
+      - name: Create Release Tag
+        uses: actions/create-release@v1
+        id: create_release
+        with:
+          tag_name: ${{ steps.upload.outputs.releaseName }}
+          release_name: ${{ steps.upload.outputs.releaseName }}
+          body: |
+            Changes:
+            ${{ steps.changelog.outputs.content }}
+          draft: false
+          prerelease: false
+      - name: Upload Mobile Release Asset
+        uses: actions/upload-release-asset@v1
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: release/mobile-release.aab
+          asset_name: mobile-release.aab
+          asset_content_type: application/zip
+      - name: Upload Wear Release Asset
+        uses: actions/upload-release-asset@v1
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: release/wear-release.aab
+          asset_name: wear-release.aab
+          asset_content_type: application/zip
