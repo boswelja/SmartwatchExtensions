@@ -7,17 +7,28 @@
  */
 package com.boswelja.devicemanager
 
+import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import com.boswelja.devicemanager.common.BaseBootReceiver
+import android.content.SharedPreferences
+import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.common.Compat
 import com.boswelja.devicemanager.common.preference.PreferenceKey.DND_SYNC_TO_PHONE_KEY
 import com.boswelja.devicemanager.common.preference.PreferenceKey.DND_SYNC_WITH_THEATER_KEY
 import com.boswelja.devicemanager.dndsync.DnDLocalChangeListener
 
-class BootReceiver : BaseBootReceiver() {
+class BootReceiver : BroadcastReceiver() {
 
-    override fun onBootCompleted(context: Context?) {
+    private lateinit var sharedPreferences: SharedPreferences
+
+    override fun onReceive(context: Context?, intent: Intent?) {
+        if (intent?.action == Intent.ACTION_BOOT_COMPLETED) {
+            sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
+            onBootCompleted(context)
+        }
+    }
+
+    private fun onBootCompleted(context: Context?) {
         if (sharedPreferences.getBoolean(DND_SYNC_TO_PHONE_KEY, false) ||
             sharedPreferences.getBoolean(DND_SYNC_WITH_THEATER_KEY, false)
         ) {
