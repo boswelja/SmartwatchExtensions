@@ -195,6 +195,8 @@ jobs:
       - name: Create Release Tag
         uses: actions/create-release@v1
         id: create_release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: ${{ steps.upload.outputs.releaseName }}
           release_name: ${{ steps.upload.outputs.releaseName }}
