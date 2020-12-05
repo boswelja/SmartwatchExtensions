@@ -187,11 +187,6 @@ jobs:
           releaseFiles: "release/mobile-release.aab,release/wear-release.aab"
           whatsNewDirectory: changelogs/
           track: production
-      - name: Read Changelog
-        id: changelog
-        uses: juliangruber/read-file-action@v1
-        with:
-          path: changelogs/whatsnew-en-GB
       - name: Create Release Tag
         uses: actions/create-release@v1
         id: create_release
@@ -200,9 +195,7 @@ jobs:
         with:
           tag_name: ${{ steps.upload.outputs.releaseName }}
           release_name: ${{ steps.upload.outputs.releaseName }}
-          body: |
-            Changes:
-            ${{ steps.changelog.outputs.content }}
+          body_path: changelogs/whatsnew-en-GB
           draft: false
           prerelease: false
       - name: Upload Mobile Release Asset
