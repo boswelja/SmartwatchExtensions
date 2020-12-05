@@ -12,21 +12,7 @@ jobs:
       - uses: actions/setup-java@v1.4.3
         with:
           java-version: 11
-      - name: Cache Gradle packages
-        uses: actions/cache@v2.1.3
-        with:
-          path: ~/.gradle/caches
-          key: ${{ runner.os }}-gradle-cache-${{ hashFiles('**/*.gradle.kts') }}
-      - name: Cache Gradle Wrapper
-        uses: actions/cache@v2.1.3
-        with:
-          path: ~/.gradle/wrapper
-          key: ${{ runner.os }}-gradle-wrapper-${{ hashFiles('gradle/wrapper/gradle-wrapper.properties') }}
-      - name: Cache Build
-        uses: actions/cache@v2.1.3
-        with:
-          path: ./**/build/
-          key: ${{ runner.os }}-build-${{ github.sha }}
+      - uses: ./.github/actions/cache-android
       - name: Build
         run: bash ./gradlew assemble --stacktrace
 
@@ -39,21 +25,7 @@ jobs:
       - uses: actions/setup-java@v1.4.3
         with:
           java-version: 11
-      - name: Cache Gradle packages
-        uses: actions/cache@v2.1.3
-        with:
-          path: ~/.gradle/caches
-          key: ${{ runner.os }}-gradle-cache-${{ hashFiles('**/*.gradle.kts') }}
-      - name: Cache Gradle Wrapper
-        uses: actions/cache@v2.1.3
-        with:
-          path: ~/.gradle/wrapper
-          key: ${{ runner.os }}-gradle-wrapper-${{ hashFiles('gradle/wrapper/gradle-wrapper.properties') }}
-      - name: Cache Build
-        uses: actions/cache@v2.1.3
-        with:
-          path: ./**/build/
-          key: ${{ runner.os }}-build-${{ github.sha }}
+      - uses: ./.github/actions/cache-android
       - name: Unit tests
         run: bash ./gradlew test --stacktrace
       - uses: actions/upload-artifact@v2
@@ -79,21 +51,7 @@ jobs:
         if: failure()
         with:
           xml_path: ktlint_result.xml
-      - name: Cache Gradle Packages
-        uses: actions/cache@v2.1.3
-        with:
-          path: ~/.gradle/caches
-          key: ${{ runner.os }}-gradle-cache-${{ hashFiles('**/*.gradle.kts') }}
-      - name: Cache Gradle Wrapper
-        uses: actions/cache@v2.1.3
-        with:
-          path: ~/.gradle/wrapper
-          key: ${{ runner.os }}-gradle-wrapper-${{ hashFiles('gradle/wrapper/gradle-wrapper.properties') }}
-      - name: Cache Build
-        uses: actions/cache@v2.1.3
-        with:
-          path: ./**/build/
-          key: ${{ runner.os }}-build-${{ github.sha }}
+      - uses: ./.github/actions/cache-android
       - run: bash ./gradlew lint
       - uses: yutailang0119/action-android-lint@v1.0.2
         with:
@@ -111,21 +69,7 @@ jobs:
       - uses: actions/setup-java@v1.4.3
         with:
           java-version: 11
-      - name: Cache Gradle Packages
-        uses: actions/cache@v2.1.3
-        with:
-          path: ~/.gradle/caches
-          key: ${{ runner.os }}-gradle-cache-${{ hashFiles('**/*.gradle.kts') }}
-      - name: Cache Gradle Wrapper
-        uses: actions/cache@v2.1.3
-        with:
-          path: ~/.gradle/wrapper
-          key: ${{ runner.os }}-gradle-wrapper-${{ hashFiles('gradle/wrapper/gradle-wrapper.properties') }}
-      - name: Cache Build
-        uses: actions/cache@v2.1.3
-        with:
-          path: ./**/build/
-          key: ${{ runner.os }}-build-${{ github.sha }}
+      - uses: ./.github/actions/cache-android
       - name: Build Mobile Release Artifacts
         run: ./gradlew :mobile:bundleRelease
       - name: Sign Mobile Release
