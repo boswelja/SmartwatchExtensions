@@ -202,6 +202,8 @@ jobs:
           prerelease: true
       - name: Upload Mobile Release Asset
         uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: release/mobile-release.aab
@@ -209,6 +211,8 @@ jobs:
           asset_content_type: application/zip
       - name: Upload Wear Release Asset
         uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: release/wear-release.aab
