@@ -75,7 +75,7 @@ jobs:
         with:
           java-version: 11
       - name: Download Ktlint
-        run: curl -o ktlint -L https://github.com/pinterest/ktlint/releases/download/0.40.0/ktlint
+        run: curl -o ktlint -L https://github.com/pinterest/ktlint/releases/download/0.40.0/ktlint && chmod +x ktlint
       - name: Run ktlint
         run: ./ktlint --android --reporter=checkstyle,output=ktlint_result.xml
       - uses: yutailang0119/action-ktlint@v1.0.0
