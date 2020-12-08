@@ -11,40 +11,40 @@
 
     <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="match_parent"
-        android:orientation="vertical"
         android:layout_height="wrap_content"
+        android:orientation="vertical"
         android:paddingTop="@dimen/content_vertical_padding"
         android:paddingBottom="@dimen/content_vertical_padding">
 
         <androidx.fragment.app.FragmentContainerView
             android:id="@+id/battery_sync_fragment"
+            android:name="com.boswelja.devicemanager.batterysync.ui.BatterySyncFragment"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:name="com.boswelja.devicemanager.batterysync.ui.BatterySyncFragment" />
+            android:layout_height="wrap_content" />
 
         <androidx.fragment.app.FragmentContainerView
             android:id="@+id/lock_phone_fragment"
+            android:name="com.boswelja.devicemanager.phonelocking.ui.LockPhoneFragment"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:name="com.boswelja.devicemanager.phonelocking.ui.LockPhoneFragment" />
+            android:layout_height="wrap_content" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/settings_button"
+            style="@style/Extension.Button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:text="@string/settings_title"
-            app:icon="@drawable/ic_settings"
-            style="@style/Extension.Button" />
+            app:icon="@drawable/ic_settings" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/about_button"
+            style="@style/Extension.Button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:text="@string/about_app_title"
-            app:icon="@drawable/ic_about"
-            style="@style/Extension.Button" />
+            app:icon="@drawable/ic_about" />
 
     </androidx.appcompat.widget.LinearLayoutCompat>
 </ScrollView>

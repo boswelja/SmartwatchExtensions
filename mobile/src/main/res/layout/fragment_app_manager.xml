@@ -8,9 +8,9 @@
         android:id="@+id/apps_recyclerview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:clipToPadding="false"
         android:paddingTop="8dp"
         android:paddingBottom="8dp"
-        android:clipToPadding="false"
         android:scrollbars="vertical"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 

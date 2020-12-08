@@ -2,9 +2,9 @@
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:drawable="@drawable/battery_outline" />
     <item
+        android:bottom="1dp"
         android:drawable="@drawable/alert"
-        android:top="3dp"
         android:left="2dp"
         android:right="2dp"
-        android:bottom="1dp" />
+        android:top="3dp" />
 </layer-list>

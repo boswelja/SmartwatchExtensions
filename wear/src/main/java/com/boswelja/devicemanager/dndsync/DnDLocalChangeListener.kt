@@ -160,7 +160,8 @@ class DnDLocalChangeListener : Service() {
             } else {
                 try {
                     unregisterReceiver(dndChangeReceiver)
-                } catch (ignored: IllegalArgumentException) {}
+                } catch (ignored: IllegalArgumentException) {
+                }
                 tryStop()
             }
         }

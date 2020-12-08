@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -22,14 +21,14 @@
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.2"/>
+        app:layout_constraintGuide_percent="0.2" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/end_guide"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.8"/>
+        app:layout_constraintGuide_percent="0.8" />
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/dnd_sync_status_indicator"
@@ -37,31 +36,31 @@
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/dnd_sync_watch"
+        app:layout_constraintHeight_percent="0.5"
         app:layout_constraintStart_toEndOf="@id/dnd_sync_phone"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintHeight_percent="0.5"
         tools:src="@drawable/ic_dnd_sync_none" />
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/dnd_sync_phone"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:srcCompat="@drawable/ic_dnd_phone"
-        app:layout_constraintDimensionRatio="W,3:4"
-        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintDimensionRatio="W,3:4"
+        app:layout_constraintEnd_toEndOf="@id/start_guide"
         app:layout_constraintStart_toStartOf="@id/start_guide"
-        app:layout_constraintEnd_toEndOf="@id/start_guide" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_dnd_phone" />
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/dnd_sync_watch"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:srcCompat="@drawable/ic_dnd_watch"
-        app:layout_constraintDimensionRatio="W,3:4"
-        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintDimensionRatio="W,3:4"
         app:layout_constraintEnd_toEndOf="@id/end_guide"
-        app:layout_constraintStart_toStartOf="@id/end_guide" />
+        app:layout_constraintStart_toStartOf="@id/end_guide"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_dnd_watch" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

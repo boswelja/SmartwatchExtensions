@@ -6,22 +6,22 @@
         android:title="@string/pref_noti_status_title" />
 
     <androidx.preference.Preference
+        android:icon="@drawable/pref_ic_manage_space"
         android:key="show_manage_space"
-        android:title="@string/manage_space_title"
-        android:icon="@drawable/pref_ic_manage_space" />
+        android:title="@string/manage_space_title" />
 
     <androidx.preference.Preference
-        android:key="show_widget_settings"
         android:icon="@drawable/pref_ic_widget_settings"
+        android:key="show_widget_settings"
         android:title="@string/pref_widget_settings_title" />
 
     <androidx.preference.ListPreference
-        android:key="daynight_mode"
-        android:title="@string/pref_daynight_title"
-        android:icon="@drawable/pref_ic_daynight"
+        android:defaultValue="-1"
         android:entries="@array/pref_daynight_mode_entries"
         android:entryValues="@array/pref_daynight_mode_entry_values"
-        android:defaultValue="-1" />
+        android:icon="@drawable/pref_ic_daynight"
+        android:key="daynight_mode"
+        android:title="@string/pref_daynight_title" />
 
     <androidx.preference.PreferenceCategory android:title="@string/pref_category_watch_connection">
 

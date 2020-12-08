@@ -13,24 +13,24 @@
         android:layout_height="match_parent"
         android:layout_marginTop="@dimen/recyclerview_item_icon_margin"
         android:layout_marginBottom="@dimen/recyclerview_item_icon_margin"
+        app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintDimensionRatio="1:1" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/text"
+        style="@style/TextAppearance.MaterialComponents.Body1"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/recyclerview_item_icon_margin"
-        android:textColor="?android:textColorPrimary"
-        android:singleLine="true"
         android:ellipsize="marquee"
-        android:scrollHorizontally="true"
         android:fadingEdge="horizontal"
-        app:layout_constraintStart_toEndOf="@id/icon"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        android:scrollHorizontally="true"
+        android:singleLine="true"
+        android:textColor="?android:textColorPrimary"
         app:layout_constraintBottom_toBottomOf="parent"
-        style="@style/TextAppearance.MaterialComponents.Body1" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/icon"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

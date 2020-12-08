@@ -22,7 +22,8 @@ class UtilsTest {
             override fun isNearby(): Boolean = true
         }
 
-    @RelaxedMockK lateinit var database: WatchDatabase
+    @RelaxedMockK
+    lateinit var database: WatchDatabase
 
     @Before
     fun setUp() {

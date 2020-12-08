@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:drawable="@drawable/ic_dnd"
-        android:top="@dimen/watch_battery_inset_top"
         android:bottom="@dimen/watch_battery_inset_bottom"
+        android:drawable="@drawable/ic_dnd"
         android:left="@dimen/watch_battery_inset_left"
-        android:right="@dimen/watch_battery_inset_right"/>
+        android:right="@dimen/watch_battery_inset_right"
+        android:top="@dimen/watch_battery_inset_top" />
     <item>
         <rotate
             android:drawable="@drawable/watch"

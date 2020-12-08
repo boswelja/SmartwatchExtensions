@@ -22,7 +22,8 @@ import org.junit.Test
 
 class WatchServiceLifecycleObserverTest {
 
-    @get:Rule val instantExecutorRule = InstantTaskExecutorRule()
+    @get:Rule
+    val instantExecutorRule = InstantTaskExecutorRule()
 
     @MockK(relaxed = true)
     lateinit var lifecycleOwner: LifecycleOwner

@@ -5,16 +5,16 @@
     <androidx.preference.PreferenceCategory android:title="@string/pref_category_widget_customisation">
 
         <androidx.preference.CheckBoxPreference
+            android:defaultValue="true"
             android:key="show_widget_background"
-            android:title="@string/pref_show_widget_background_title"
-            android:defaultValue="true" />
+            android:title="@string/pref_show_widget_background_title" />
 
         <androidx.preference.SeekBarPreference
-            android:key="widget_background_opacity"
-            android:title="@string/pref_widget_background_opacity_title"
             android:defaultValue="60"
-            android:max="100"
             android:dependency="show_widget_background"
+            android:key="widget_background_opacity"
+            android:max="100"
+            android:title="@string/pref_widget_background_opacity_title"
             app:min="5"
             app:showSeekBarValue="true" />
 

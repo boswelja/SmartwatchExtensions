@@ -14,27 +14,27 @@
         android:id="@+id/widget_holder"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/toolbar_layout"
-        app:layout_constraintBottom_toBottomOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/toolbar_layout" />
 
     <View
         android:id="@+id/widget_divider"
         android:layout_width="1dp"
         android:layout_height="0dp"
-        android:background="?android:attr/listDivider"
         android:layout_marginTop="8dp"
+        android:background="?android:attr/listDivider"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@id/widget_holder"
-        app:layout_constraintTop_toBottomOf="@id/toolbar_layout"
-        app:layout_constraintBottom_toBottomOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/toolbar_layout" />
 
     <FrameLayout
         android:id="@+id/fragment_holder"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintStart_toEndOf="@id/widget_divider"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/toolbar_layout"
-        app:layout_constraintBottom_toBottomOf="parent" />
+        app:layout_constraintStart_toEndOf="@id/widget_divider"
+        app:layout_constraintTop_toBottomOf="@id/toolbar_layout" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

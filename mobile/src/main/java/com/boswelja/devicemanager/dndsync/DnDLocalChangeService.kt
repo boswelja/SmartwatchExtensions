@@ -66,7 +66,8 @@ class DnDLocalChangeService : LifecycleService() {
 
         try {
             dndChangeReceiver.unregister(this)
-        } catch (ignored: IllegalArgumentException) {}
+        } catch (ignored: IllegalArgumentException) {
+        }
     }
 
     /**

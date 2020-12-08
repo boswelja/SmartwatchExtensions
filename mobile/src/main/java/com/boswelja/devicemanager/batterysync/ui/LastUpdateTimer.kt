@@ -12,10 +12,10 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import timber.log.Timber
 import java.util.concurrent.ScheduledFuture
 import java.util.concurrent.ScheduledThreadPoolExecutor
 import java.util.concurrent.TimeUnit
-import timber.log.Timber
 
 class LastUpdateTimer(lifecycle: Lifecycle) : DefaultLifecycleObserver {
 

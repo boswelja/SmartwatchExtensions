@@ -26,7 +26,8 @@ import org.robolectric.annotation.Config
 @Config(sdk = [Build.VERSION_CODES.Q])
 class BatterySyncViewModelTest {
 
-    @get:Rule val instantExecutorRule = InstantTaskExecutorRule()
+    @get:Rule
+    val instantExecutorRule = InstantTaskExecutorRule()
 
     private lateinit var viewModel: BatterySyncViewModel
 

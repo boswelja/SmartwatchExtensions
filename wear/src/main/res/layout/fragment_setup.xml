@@ -20,117 +20,117 @@
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/welcome_view_holder"
+                style="@style/Setup.Section"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:paddingTop="@dimen/content_vertical_padding"
-                app:layout_constraintTop_toTopOf="parent"
-                style="@style/Setup.Section">
+                app:layout_constraintTop_toTopOf="parent">
 
                 <ImageView
                     android:id="@+id/app_icon_view"
                     android:layout_width="@dimen/setup_app_icon_size"
                     android:layout_height="@dimen/setup_app_icon_size"
-                    android:src="@mipmap/ic_launcher"
                     android:contentDescription="@string/app_name"
-                    app:layout_constraintTop_toTopOf="parent"
+                    android:src="@mipmap/ic_launcher"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent" />
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
                     android:id="@+id/welcome_text_view"
+                    style="@style/Setup.Section.SecondaryText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
                     android:text="@string/welcome_to_text"
-                    app:layout_constraintTop_toBottomOf="@id/app_icon_view"
-                    app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    style="@style/Setup.Section.SecondaryText" />
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/app_icon_view" />
 
                 <TextView
                     android:id="@+id/app_name_view"
+                    style="@style/Setup.Section.PrimaryText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/app_name"
-                    app:layout_constraintTop_toBottomOf="@id/welcome_text_view"
-                    style="@style/Setup.Section.PrimaryText" />
+                    app:layout_constraintTop_toBottomOf="@id/welcome_text_view" />
 
                 <ImageView
                     android:layout_width="@dimen/setup_chevron_size"
                     android:layout_height="@dimen/setup_chevron_size"
-                    android:src="@drawable/ic_arrow_down"
                     android:contentDescription="@string/content_description_scroll_down"
-                    app:layout_constraintTop_toBottomOf="@id/app_name_view"
+                    android:src="@drawable/ic_arrow_down"
                     app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent" />
+                    app:layout_constraintTop_toBottomOf="@id/app_name_view" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/phone_setup_helper_view"
+                style="@style/Setup.Section"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:visibility="visible"
-                app:layout_constraintTop_toBottomOf="@id/welcome_view_holder"
-                style="@style/Setup.Section">
+                app:layout_constraintTop_toBottomOf="@id/welcome_view_holder">
 
                 <TextView
                     android:id="@+id/phone_setup_instructions_text"
+                    style="@style/Setup.Section.PrimaryText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/setup_phone_helper_text"
-                    app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    style="@style/Setup.Section.PrimaryText" />
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <ImageView
                     android:layout_width="@dimen/setup_chevron_size"
                     android:layout_height="@dimen/setup_chevron_size"
-                    android:src="@drawable/ic_arrow_down"
                     android:contentDescription="@string/content_description_scroll_down"
-                    app:layout_constraintTop_toBottomOf="@id/phone_setup_instructions_text"
+                    android:src="@drawable/ic_arrow_down"
                     app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent" />
+                    app:layout_constraintTop_toBottomOf="@id/phone_setup_instructions_text" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/setup_view_holder"
+                style="@style/Setup.Section"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                app:layout_constraintTop_toBottomOf="@id/phone_setup_helper_view"
-                style="@style/Setup.Section">
+                app:layout_constraintTop_toBottomOf="@id/phone_setup_helper_view">
 
                 <TextView
                     android:id="@+id/setup_device_name_text"
+                    style="@style/Setup.Section.PrimaryText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@{viewModel.setupNameText}"
-                    app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    tools:text="Watch Name 1234"
-                    style="@style/Setup.Section.PrimaryText" />
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:text="Watch Name 1234" />
 
                 <TextView
                     android:id="@+id/setup_instructions_text"
+                    style="@style/Setup.Section.SecondaryText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/setup_instructions_text"
-                    app:layout_constraintBottom_toTopOf="@id/setup_device_name_text"
-                    style="@style/Setup.Section.SecondaryText" />
+                    app:layout_constraintBottom_toTopOf="@id/setup_device_name_text" />
 
                 <TextView
+                    style="@style/Setup.Section.SecondaryText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/setup_hint_text"
-                    app:layout_constraintTop_toBottomOf="@id/setup_device_name_text"
-                    style="@style/Setup.Section.SecondaryText" />
+                    app:layout_constraintTop_toBottomOf="@id/setup_device_name_text" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>

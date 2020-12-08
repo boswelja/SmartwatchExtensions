@@ -31,7 +31,8 @@ interface WatchDao {
     @Query("UPDATE watches SET name = :name WHERE id = :watchId")
     fun setName(watchId: String, name: String)
 
-    @Insert fun add(watch: Watch)
+    @Insert
+    fun add(watch: Watch)
 
     @Query("DELETE FROM watches WHERE id = :watchId")
     fun remove(watchId: String)

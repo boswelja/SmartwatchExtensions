@@ -3,40 +3,40 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <androidx.preference.SwitchPreference
+        android:defaultValue="false"
         android:key="battery_sync_enabled"
-        android:title="@string/pref_battery_sync_enable_title"
-        android:defaultValue="false" />
+        android:title="@string/pref_battery_sync_enable_title" />
 
     <androidx.preference.SeekBarPreference
-        android:key="battery_sync_interval"
-        android:title="@string/pref_battery_sync_interval_title"
-        android:summary="@string/pref_battery_sync_interval_summary"
-        android:dependency="battery_sync_enabled"
         android:defaultValue="15"
+        android:dependency="battery_sync_enabled"
+        android:key="battery_sync_interval"
         android:max="60"
-        app:showSeekBarValue="true"
-        app:min="15" />
+        android:summary="@string/pref_battery_sync_interval_summary"
+        android:title="@string/pref_battery_sync_interval_title"
+        app:min="15"
+        app:showSeekBarValue="true" />
 
     <PreferenceCategory android:title="Charge Notifications">
 
         <androidx.preference.CheckBoxPreference
+            android:dependency="battery_sync_enabled"
             android:key="battery_phone_charge_noti"
-            android:title="@string/pref_battery_sync_phone_charged_noti_title"
-            android:dependency="battery_sync_enabled" />
+            android:title="@string/pref_battery_sync_phone_charged_noti_title" />
 
         <androidx.preference.CheckBoxPreference
+            android:dependency="battery_sync_enabled"
             android:key="battery_watch_charge_noti"
-            android:title="@string/pref_battery_sync_watch_charged_noti_title"
-            android:dependency="battery_sync_enabled" />
+            android:title="@string/pref_battery_sync_watch_charged_noti_title" />
 
         <androidx.preference.SeekBarPreference
-            android:key="battery_charge_threshold"
-            android:title="@string/pref_battery_sync_charge_threshold_title"
-            android:summary="@string/pref_battery_sync_charge_threshold_summary"
             android:defaultValue="90"
+            android:key="battery_charge_threshold"
             android:max="100"
-            app:showSeekBarValue="true"
-            app:min="60" />
+            android:summary="@string/pref_battery_sync_charge_threshold_summary"
+            android:title="@string/pref_battery_sync_charge_threshold_title"
+            app:min="60"
+            app:showSeekBarValue="true" />
 
     </PreferenceCategory>
 

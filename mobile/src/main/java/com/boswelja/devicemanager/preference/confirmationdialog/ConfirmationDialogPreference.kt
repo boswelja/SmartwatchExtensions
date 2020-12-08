@@ -91,7 +91,8 @@ constructor(
                 value = newValue
                 try {
                     setButtonChecked(value)
-                } catch (ignored: UninitializedPropertyAccessException) {}
+                } catch (ignored: UninitializedPropertyAccessException) {
+                }
                 sharedPreferences.edit().putBoolean(key, value).apply()
             }
         }

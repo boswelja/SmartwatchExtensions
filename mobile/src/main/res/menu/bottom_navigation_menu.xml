@@ -3,22 +3,22 @@
 
     <item
         android:id="@id/dashboardFragment"
-        android:title="@string/bottom_nav_dashboard_label"
-        android:icon="@drawable/nav_ic_dashboard" />
+        android:icon="@drawable/nav_ic_dashboard"
+        android:title="@string/bottom_nav_dashboard_label" />
 
     <item
         android:id="@id/messagesFragment"
-        android:title="@string/nav_messages_label"
-        android:icon="@drawable/nav_ic_message" />
+        android:icon="@drawable/nav_ic_message"
+        android:title="@string/nav_messages_label" />
 
     <item
         android:id="@id/appSettingsFragment"
-        android:title="@string/bottom_nav_app_settings_label"
-        android:icon="@drawable/nav_ic_app_settings" />
+        android:icon="@drawable/nav_ic_app_settings"
+        android:title="@string/bottom_nav_app_settings_label" />
 
     <item
         android:id="@id/appInfoFragment"
-        android:title="@string/bottom_nav_about_label"
-        android:icon="@drawable/nav_ic_about" />
+        android:icon="@drawable/nav_ic_about"
+        android:title="@string/bottom_nav_about_label" />
 
 </menu>

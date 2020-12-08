@@ -14,9 +14,9 @@
 
     <LinearLayout
         android:id="@+id/content_view"
-        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
         <include
             android:id="@+id/toolbar_layout"
@@ -30,23 +30,23 @@
                 android:id="@+id/app_icon"
                 android:layout_width="72dp"
                 android:layout_height="72dp"
-                android:layout_marginTop="16dp"
-                android:layout_centerHorizontal="true"
                 android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="16dp"
                 app:srcBitmap="@{viewModel.appIcon}"
                 tools:src="@mipmap/ic_launcher" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/app_name"
+                style="@style/TextAppearance.MaterialComponents.Headline6"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/app_icon"
                 android:layout_centerHorizontal="true"
-                android:textColor="?android:textColorPrimary"
                 android:layout_margin="8dp"
                 android:text="@{viewModel.appName}"
-                tools:text="@string/app_name"
-                style="@style/TextAppearance.MaterialComponents.Headline6" />
+                android:textColor="?android:textColorPrimary"
+                tools:text="@string/app_name" />
         </RelativeLayout>
 
         <View
@@ -64,10 +64,10 @@
                 android:id="@+id/open_button"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="@string/app_info_open_button"
                 android:layout_margin="8dp"
                 android:enabled="@{viewModel.canOpen}"
                 android:onClick="@{() -> viewModel.sendOpenRequestMessage()}"
+                android:text="@string/app_info_open_button"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/uninstall_button"
                 app:layout_constraintStart_toStartOf="parent"
@@ -77,10 +77,10 @@
                 android:id="@+id/uninstall_button"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="@string/app_info_uninstall_button"
                 android:layout_margin="8dp"
                 android:enabled="@{viewModel.canUninstall}"
                 android:onClick="@{() -> viewModel.sendUninstallRequestMessage()}"
+                android:text="@string/app_info_uninstall_button"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/open_button"
@@ -110,41 +110,41 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="16dp"
             android:layout_marginStart="72dp"
-            android:layout_marginEnd="16dp">
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp"
+            android:orientation="vertical">
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/app_install_time"
+                style="@style/TextAppearance.MaterialComponents.Body2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:text="@{@string/app_info_first_installed_prefix(viewModel.installTime)}"
                 android:textColor="?android:textColorSecondary"
                 android:visibility="@{viewModel.shouldShowInstallTime ? View.VISIBLE : View.GONE}"
-                android:text="@{@string/app_info_first_installed_prefix(viewModel.installTime)}"
-                tools:text="@string/app_info_first_installed_prefix"
-                style="@style/TextAppearance.MaterialComponents.Body2" />
+                tools:text="@string/app_info_first_installed_prefix" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/app_last_updated_time"
+                style="@style/TextAppearance.MaterialComponents.Body2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:text="@{@string/app_info_last_updated_prefix(viewModel.lastUpdateTime)}"
                 android:textColor="?android:textColorSecondary"
                 android:visibility="@{viewModel.shouldShowLastUpdateTime ? View.VISIBLE : View.GONE}"
-                android:text="@{@string/app_info_last_updated_prefix(viewModel.lastUpdateTime)}"
-                tools:text="@string/app_info_last_updated_prefix"
-                style="@style/TextAppearance.MaterialComponents.Body2" />
+                tools:text="@string/app_info_last_updated_prefix" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/app_version_view"
+                style="@style/TextAppearance.MaterialComponents.Body2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:textColor="?android:textColorSecondary"
                 android:text="@{@string/app_info_version_prefix(viewModel.versionText)}"
-                tools:text="@string/app_info_version_prefix"
-                style="@style/TextAppearance.MaterialComponents.Body2" />
+                android:textColor="?android:textColorSecondary"
+                tools:text="@string/app_info_version_prefix" />
 
         </LinearLayout>
     </LinearLayout>

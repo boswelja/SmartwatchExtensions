@@ -4,19 +4,19 @@
     <androidx.preference.PreferenceCategory android:title="@string/pref_category_battery_sync_title">
 
         <androidx.preference.SwitchPreference
+            android:defaultValue="false"
             android:key="battery_sync_enabled"
-            android:title="@string/pref_battery_sync_enable_title"
-            android:defaultValue="false" />
+            android:title="@string/pref_battery_sync_enable_title" />
 
         <androidx.preference.CheckBoxPreference
+            android:dependency="battery_sync_enabled"
             android:key="battery_phone_charge_noti"
-            android:title="@string/pref_battery_sync_phone_charged_noti_title"
-            android:dependency="battery_sync_enabled" />
+            android:title="@string/pref_battery_sync_phone_charged_noti_title" />
 
         <androidx.preference.CheckBoxPreference
+            android:dependency="battery_sync_enabled"
             android:key="battery_watch_charge_noti"
-            android:title="@string/pref_battery_sync_watch_charged_noti_title"
-            android:dependency="battery_sync_enabled" />
+            android:title="@string/pref_battery_sync_watch_charged_noti_title" />
 
     </androidx.preference.PreferenceCategory>
 </PreferenceScreen>

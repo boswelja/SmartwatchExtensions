@@ -26,12 +26,12 @@ import com.boswelja.devicemanager.watchmanager.database.WatchDatabase
 import com.boswelja.devicemanager.watchmanager.item.Watch
 import com.boswelja.devicemanager.widget.database.WidgetDatabase
 import com.google.android.gms.tasks.Tasks
-import java.io.File
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
+import java.io.File
 
 class ManageSpaceActivity : BaseToolbarActivity() {
 

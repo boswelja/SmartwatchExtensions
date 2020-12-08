@@ -18,8 +18,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.recyclerview.adapter.StringAdapter
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import java.util.Locale
 import timber.log.Timber
+import java.util.Locale
 
 class AppPermissionDialogFragment(private val requestedPermissions: Array<String>) :
     BottomSheetDialogFragment() {

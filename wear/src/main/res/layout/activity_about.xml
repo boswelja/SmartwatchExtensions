@@ -25,36 +25,36 @@
                 android:id="@+id/app_icon_view"
                 android:layout_width="@dimen/about_app_icon_size"
                 android:layout_height="@dimen/about_app_icon_size"
-                app:srcCompat="@mipmap/ic_launcher"
-                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@mipmap/ic_launcher" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/app_name_view"
+                style="@style/About.Title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/app_name"
-                app:layout_constraintTop_toBottomOf="@id/app_icon_view"
-                style="@style/About.Title" />
+                app:layout_constraintTop_toBottomOf="@id/app_icon_view" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/app_version_view"
+                style="@style/About.Version"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@{@string/version_string(viewModel.version)}"
                 app:layout_constraintTop_toBottomOf="@id/app_name_view"
-                tools:text="Version 1.0.0"
-                style="@style/About.Version" />
+                tools:text="Version 1.0.0" />
 
             <androidx.appcompat.widget.LinearLayoutCompat
                 android:id="@+id/open_play_store_container"
+                style="@style/About.LinkItem"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/content_spacing"
                 android:onClick="@{() -> viewModel.fireOpenPlayStoreEvent()}"
-                app:layout_constraintTop_toBottomOf="@id/app_version_view"
-                style="@style/About.LinkItem">
+                app:layout_constraintTop_toBottomOf="@id/app_version_view">
 
                 <androidx.appcompat.widget.AppCompatImageView
                     android:layout_width="@dimen/about_link_icon_size"
@@ -62,20 +62,20 @@
                     app:srcCompat="@drawable/ic_open" />
 
                 <androidx.appcompat.widget.AppCompatTextView
+                    style="@style/About.LinkItem.Text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/open_play_store_title"
-                    style="@style/About.LinkItem.Text" />
+                    android:text="@string/open_play_store_title" />
 
             </androidx.appcompat.widget.LinearLayoutCompat>
 
             <androidx.appcompat.widget.LinearLayoutCompat
                 android:id="@+id/open_app_info_container"
+                style="@style/About.LinkItem"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:onClick="@{() -> viewModel.fireOpenAppInfoEvent()}"
-                app:layout_constraintTop_toBottomOf="@id/open_play_store_container"
-                style="@style/About.LinkItem">
+                app:layout_constraintTop_toBottomOf="@id/open_play_store_container">
 
                 <androidx.appcompat.widget.AppCompatImageView
                     android:layout_width="@dimen/about_link_icon_size"
@@ -83,10 +83,10 @@
                     app:srcCompat="@drawable/ic_open" />
 
                 <androidx.appcompat.widget.AppCompatTextView
+                    style="@style/About.LinkItem.Text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/open_app_info_title"
-                    style="@style/About.LinkItem.Text" />
+                    android:text="@string/open_app_info_title" />
 
             </androidx.appcompat.widget.LinearLayoutCompat>
         </androidx.constraintlayout.widget.ConstraintLayout>

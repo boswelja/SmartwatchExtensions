@@ -47,6 +47,7 @@ constructor(
     private val _localName = MutableLiveData<String?>(null)
     val setupNameText =
         Transformations.map(_localName) { it ?: application.getString(R.string.error) }
+
     init {
         messageClient.addListener(messageListener)
         refreshLocalName()

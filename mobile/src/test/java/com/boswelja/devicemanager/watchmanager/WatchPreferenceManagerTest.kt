@@ -43,8 +43,10 @@ class WatchPreferenceManagerTest {
     private val dummyWatch = Watch("an-id-1234", "Watch 1", null)
     private val dummyPreference = IntPreference(dummyWatch.id, "preference", 123)
 
-    @RelaxedMockK lateinit var dataClient: DataClient
-    @RelaxedMockK lateinit var database: WatchDatabase
+    @RelaxedMockK
+    lateinit var dataClient: DataClient
+    @RelaxedMockK
+    lateinit var database: WatchDatabase
 
     @SpyK
     var sharedPreferences: SharedPreferences =
