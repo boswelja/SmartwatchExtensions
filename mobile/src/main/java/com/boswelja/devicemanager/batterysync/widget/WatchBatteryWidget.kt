@@ -134,7 +134,7 @@ class WatchBatteryWidget : AppWidgetProvider() {
             context,
             0,
             Intent(context, MainActivity::class.java),
-            PendingIntent.FLAG_CANCEL_CURRENT
+            PendingIntent.FLAG_IMMUTABLE
         ).also {
             remoteViews.setOnClickPendingIntent(R.id.widget_background, it)
         }

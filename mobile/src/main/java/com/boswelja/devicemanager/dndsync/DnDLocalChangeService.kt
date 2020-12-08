@@ -82,7 +82,7 @@ class DnDLocalChangeService : LifecycleService() {
             this,
             0,
             launchActivityIntent,
-            PendingIntent.FLAG_CANCEL_CURRENT
+            PendingIntent.FLAG_IMMUTABLE
         )
 
         return NotificationCompat.Builder(this, References.DND_SYNC_NOTI_CHANNEL_ID)
