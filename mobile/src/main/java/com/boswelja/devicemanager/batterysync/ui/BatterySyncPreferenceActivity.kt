@@ -14,5 +14,5 @@ import com.boswelja.devicemanager.common.ui.BaseWatchPickerPreferenceActivity
 class BatterySyncPreferenceActivity : BaseWatchPickerPreferenceActivity() {
 
     override fun getPreferenceFragment(): BasePreferenceFragment = BatterySyncPreferenceFragment()
-    override fun getWidgetFragment(): Fragment? = BatterySyncPreferenceWidgetFragment()
+    override fun getWidgetFragment(): Fragment = BatterySyncPreferenceWidgetFragment()
 }

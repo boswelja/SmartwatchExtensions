@@ -35,7 +35,7 @@ object TestExtensions {
         }
     }
 
-    fun setText(value: String?): ViewAction? {
+    fun setText(value: String?): ViewAction {
         return object : ViewAction {
             override fun getConstraints(): Matcher<View> {
                 return allOf(isDisplayed(), isAssignableFrom(TextView::class.java))
@@ -51,7 +51,7 @@ object TestExtensions {
         }
     }
 
-    fun setVisibility(visibility: Int): ViewAction? {
+    fun setVisibility(visibility: Int): ViewAction {
         return object : ViewAction {
             override fun getConstraints(): Matcher<View> {
                 return isAssignableFrom(View::class.java)

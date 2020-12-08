@@ -45,7 +45,7 @@ class BatterySyncPreferenceWidgetFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         Timber.d("onCreateView() called")
         binding = SettingsWidgetBatterySyncBinding.inflate(inflater, container, false)
         return binding.root

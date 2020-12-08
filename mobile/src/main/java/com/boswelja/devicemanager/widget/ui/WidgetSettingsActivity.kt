@@ -14,7 +14,7 @@ import com.boswelja.devicemanager.common.ui.BasePreferenceFragment
 
 class WidgetSettingsActivity : BasePreferenceActivity() {
 
-    override fun getWidgetFragment(): Fragment? = WidgetSettingsWidget()
+    override fun getWidgetFragment(): Fragment = WidgetSettingsWidget()
     override fun getPreferenceFragment(): BasePreferenceFragment = WidgetSettingsFragment()
 
     override fun onStop() {
