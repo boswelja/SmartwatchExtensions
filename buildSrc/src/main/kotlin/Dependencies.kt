@@ -25,7 +25,7 @@ object BuildPlugins {
 }
 
 object AndroidSdk {
-    const val mobileMin = 21
+    const val mobileMin = 23
     const val wearMin = 25
     const val compile = 30
     const val target = compile
