@@ -70,7 +70,7 @@ object Compat {
      */
     fun isDndEnabled(context: Context): Boolean {
         val notificationManager =
-        context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         val currentInterruptFilter = notificationManager.currentInterruptionFilter
         return (currentInterruptFilter == NotificationManager.INTERRUPTION_FILTER_ALARMS) ||
             (currentInterruptFilter == NotificationManager.INTERRUPTION_FILTER_PRIORITY) ||
