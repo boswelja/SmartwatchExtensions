@@ -10,7 +10,6 @@ package com.boswelja.devicemanager.common
 import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
-import android.media.AudioManager
 import android.os.Build
 import androidx.core.app.NotificationManagerCompat
 import timber.log.Timber
@@ -28,33 +27,23 @@ object Compat {
      */
     fun setInterruptionFilter(context: Context, interruptionFilterOn: Boolean): Boolean {
         if (interruptionFilterOn != isDndEnabled(context)) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                try {
-                    val notificationManager =
-                        context.getSystemService(
-                            Context.NOTIFICATION_SERVICE
-                        ) as NotificationManager
-                    if (interruptionFilterOn) {
-                        notificationManager.setInterruptionFilter(
-                            NotificationManager.INTERRUPTION_FILTER_PRIORITY
-                        )
-                    } else {
-                        notificationManager.setInterruptionFilter(
-                            NotificationManager.INTERRUPTION_FILTER_ALL
-                        )
-                    }
-                    return true
-                } catch (e: SecurityException) {
-                    Timber.e(e)
-                }
-            } else {
-                val audioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
+            try {
+                val notificationManager =
+                    context.getSystemService(
+                        Context.NOTIFICATION_SERVICE
+                    ) as NotificationManager
                 if (interruptionFilterOn) {
-                    audioManager.ringerMode = AudioManager.RINGER_MODE_SILENT
+                    notificationManager.setInterruptionFilter(
+                        NotificationManager.INTERRUPTION_FILTER_PRIORITY
+                    )
                 } else {
-                    audioManager.ringerMode = AudioManager.RINGER_MODE_NORMAL
+                    notificationManager.setInterruptionFilter(
+                        NotificationManager.INTERRUPTION_FILTER_ALL
+                    )
                 }
                 return true
+            } catch (e: SecurityException) {
+                Timber.e(e)
             }
         } else {
             return true
@@ -80,18 +69,12 @@ object Compat {
      * @return true if DnD is enabled, false otherwise.
      */
     fun isDndEnabled(context: Context): Boolean {
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            val notificationManager =
-                context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-            val currentInterruptFilter = notificationManager.currentInterruptionFilter
-            (currentInterruptFilter == NotificationManager.INTERRUPTION_FILTER_ALARMS) ||
-                (currentInterruptFilter == NotificationManager.INTERRUPTION_FILTER_PRIORITY) ||
-                (currentInterruptFilter == NotificationManager.INTERRUPTION_FILTER_NONE)
-        } else {
-            val audioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
-            (audioManager.ringerMode == AudioManager.RINGER_MODE_SILENT) ||
-                (audioManager.ringerMode == AudioManager.RINGER_MODE_VIBRATE)
-        }
+        val notificationManager =
+            context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        val currentInterruptFilter = notificationManager.currentInterruptionFilter
+        return (currentInterruptFilter == NotificationManager.INTERRUPTION_FILTER_ALARMS) ||
+            (currentInterruptFilter == NotificationManager.INTERRUPTION_FILTER_PRIORITY) ||
+            (currentInterruptFilter == NotificationManager.INTERRUPTION_FILTER_NONE)
     }
 
     /**
@@ -100,13 +83,9 @@ object Compat {
      * @return true if we can set the Do not Disturb state, false otherwise
      */
     fun canSetDnD(context: Context): Boolean {
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            val notiManager =
-                context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-            notiManager.isNotificationPolicyAccessGranted
-        } else {
-            true
-        }
+        val notiManager =
+            context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        return notiManager.isNotificationPolicyAccessGranted
     }
 
     /**
