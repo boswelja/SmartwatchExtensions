@@ -6,7 +6,7 @@
     <color name="colorPrimary">#9c27b0</color>
     <color name="primaryTextColor">#ffffff</color>
 
-    <color name="statusBarColor">#666666</color>
+    <color name="statusBarColor">#ffffff</color>
     <color name="navBarColor">#FFFFFF</color>
 
     <color name="widgetBackground">#FFFFFF</color>
