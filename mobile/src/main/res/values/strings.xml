@@ -23,7 +23,6 @@
 
     <!-- Battery Sync preference strings -->
     <string name="main_battery_sync_title">Battery Sync</string>
-    <string name="main_battery_sync_summary">Sync device battery percentages between each other</string>
     <string name="pref_battery_sync_enable_title">Enable Battery Sync</string>
     <string name="pref_battery_sync_interval_title">Sync Interval</string>
     <string name="pref_battery_sync_interval_summary">Sync interval in minutes</string>
@@ -40,7 +39,6 @@
 
     <!-- Do not Disturb Sync preference strings -->
     <string name="main_dnd_sync_title">Do not Disturb Sync</string>
-    <string name="main_dnd_sync_summary">Sync Do not Disturb state between your devices</string>
     <string name="pref_dnd_sync_to_watch_title">Phone to Watch Sync</string>
     <string name="pref_dnd_sync_to_watch_summary">EXPERIMENTAL Turn on DnD on your watch when your phone is set to silent or vibrate</string>
     <string name="pref_dnd_sync_to_phone_title">Watch to Phone Sync</string>
