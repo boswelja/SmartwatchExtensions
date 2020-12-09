@@ -180,7 +180,7 @@ jobs:
           name: wear-release.aab
           path: release/
       - name: Upload to Google Play
-        uses: boswelja/upload-google-play@master
+        uses: r0adkll/upload-google-play@v1.0.9
         id: upload
         with:
           serviceAccountJsonPlainText: ${{ secrets.SERVICE_ACCOUNT_JSON }}
