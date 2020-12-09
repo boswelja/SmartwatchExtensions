@@ -54,6 +54,10 @@ android {
     testOptions.unitTests {
         isIncludeAndroidResources = true
     }
+
+    lintOptions {
+        disable("UnsafeExperimentalUsageError", "UnsafeExperimentalUsageWarning")
+    }
 }
 
 dependencies {
