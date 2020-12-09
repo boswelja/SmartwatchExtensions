@@ -10,13 +10,13 @@ package com.boswelja.devicemanager.batterysync
 import android.content.Context
 import androidx.work.CoroutineWorker
 import androidx.work.Data
+import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
 import com.boswelja.devicemanager.batterysync.ui.Utils
 import com.boswelja.devicemanager.common.preference.PreferenceKey.BATTERY_SYNC_INTERVAL_KEY
 import com.boswelja.devicemanager.watchmanager.database.WatchDatabase
-import java.util.UUID
 import java.util.concurrent.TimeUnit
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -51,7 +51,11 @@ class BatterySyncWorker(appContext: Context, workerParams: WorkerParameters) :
                     PeriodicWorkRequestBuilder<BatterySyncWorker>(
                         syncIntervalMinutes, TimeUnit.SECONDS
                     ).apply { setInputData(data) }.build()
-                WorkManager.getInstance(context).enqueue(request)
+                WorkManager.getInstance(context).enqueueUniquePeriodicWork(
+                    "$watchId-batterysync",
+                    ExistingPeriodicWorkPolicy.REPLACE,
+                    request
+                )
                 val newWorkerId = request.id.toString()
                 database.watchDao().updateBatterySyncWorkerId(watchId, newWorkerId)
                 return@withContext true
@@ -59,14 +63,8 @@ class BatterySyncWorker(appContext: Context, workerParams: WorkerParameters) :
         }
 
         /** Stops the battery sync job for a watch with the given ID. */
-        suspend fun stopWorker(context: Context, watchId: String) {
-            withContext(Dispatchers.IO) {
-                val database = WatchDatabase.get(context)
-                val watch = database.watchDao().get(watchId)
-                watch?.batterySyncWorkerId?.let {
-                    WorkManager.getInstance(context).cancelWorkById(UUID.fromString(it))
-                }
-            }
+        fun stopWorker(context: Context, watchId: String) {
+            WorkManager.getInstance(context).cancelUniqueWork("$watchId-batterysync")
         }
     }
 }
