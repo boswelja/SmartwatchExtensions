@@ -14,7 +14,8 @@ class DnDSyncPreferenceWidgetViewModel(application: Application) : AndroidViewMo
 
     private val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(application)
     private val preferenceChangeListener = SharedPreferences.OnSharedPreferenceChangeListener {
-        sharedPreferences, key ->
+        sharedPreferences,
+        key ->
         when (key) {
             DND_SYNC_TO_PHONE_KEY -> {
                 syncToPhone = sharedPreferences.getBoolean(key, false)

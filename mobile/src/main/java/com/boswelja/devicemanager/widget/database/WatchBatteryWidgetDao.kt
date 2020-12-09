@@ -23,7 +23,8 @@ interface WatchBatteryWidgetDao {
     @Query("SELECT * FROM watch_battery_widget_ids WHERE widgetId = :widgetId LIMIT 1")
     fun findByWidgetId(widgetId: Int): WatchBatteryWidgetId?
 
-    @Insert fun addWidget(watchBatteryWidgetId: WatchBatteryWidgetId)
+    @Insert
+    fun addWidget(watchBatteryWidgetId: WatchBatteryWidgetId)
 
     @Query("DELETE FROM watch_battery_widget_ids WHERE widgetId = :widgetId")
     fun removeWidget(widgetId: Int)

@@ -10,15 +10,7 @@ package com.boswelja.devicemanager.common
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.widget.ImageView
-import android.widget.TextView
-import androidx.annotation.DrawableRes
-import androidx.annotation.StringRes
 import androidx.databinding.BindingAdapter
-
-@BindingAdapter("srcRes")
-fun ImageView.setImageRes(@DrawableRes drawableRes: Int) {
-    if (drawableRes != 0) setImageResource(drawableRes)
-}
 
 @BindingAdapter("srcDrawable")
 fun ImageView.setDrawable(drawable: Drawable?) {
@@ -33,9 +25,4 @@ fun ImageView.setBitmap(bitmap: Bitmap?) {
 @BindingAdapter("imageLevel")
 fun ImageView.setLevel(level: Int) {
     setImageLevel(level)
-}
-
-@BindingAdapter("textRes")
-fun TextView.setTextRes(@StringRes stringRes: Int) {
-    if (stringRes != 0) setText(stringRes)
 }

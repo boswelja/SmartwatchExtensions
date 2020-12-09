@@ -27,7 +27,8 @@ interface IntPreferenceDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun update(intPreference: IntPreference)
 
-    @Delete fun remove(intPreference: IntPreference)
+    @Delete
+    fun remove(intPreference: IntPreference)
 
     @Query("DELETE FROM int_preferences WHERE id = :watchId")
     fun deleteAllForWatch(watchId: String)

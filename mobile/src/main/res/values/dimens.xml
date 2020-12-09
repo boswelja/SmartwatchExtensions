@@ -16,8 +16,6 @@
     <dimen name="watch_selector_horizontal_margin">16dp</dimen>
     <dimen name="watch_selector_vertical_margin">8dp</dimen>
 
-    <dimen name="watch_status_margin">16dp</dimen>
-
     <dimen name="dashboard_card_spacing">4dp</dimen>
     <dimen name="dashboard_content_padding">16dp</dimen>
 

@@ -39,4 +39,17 @@ object Migrations {
             database.execSQL("ALTER TABLE new_watches RENAME TO watches")
         }
     }
+
+    val MIGRATION_5_6 = object : Migration(5, 6) {
+        override fun migrate(database: SupportSQLiteDatabase) {
+            database.execSQL(
+                "CREATE TABLE new_watches (" +
+                    "id TEXT PRIMARY KEY NOT NULL, " +
+                    "name TEXT NOT NULL)"
+            )
+            database.execSQL("INSERT INTO new_watches (id, name) SELECT id, name FROM watches")
+            database.execSQL("DROP TABLE watches")
+            database.execSQL("ALTER TABLE new_watches RENAME TO watches")
+        }
+    }
 }

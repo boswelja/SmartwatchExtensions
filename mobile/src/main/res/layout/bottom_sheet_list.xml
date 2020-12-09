@@ -8,8 +8,8 @@
     <View
         android:layout_width="56dp"
         android:layout_height="4dp"
-        android:layout_margin="16dp"
         android:layout_gravity="center_horizontal"
+        android:layout_margin="16dp"
         android:background="@drawable/bottom_sheet_drag_handle" />
 
     <androidx.core.widget.NestedScrollView
@@ -23,22 +23,22 @@
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/title"
+                style="@style/TextAppearance.MaterialComponents.Headline5"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
                 android:layout_marginStart="24dp"
+                android:layout_marginTop="8dp"
                 android:layout_marginEnd="24dp"
-                android:textColor="?android:textColorPrimary"
-                style="@style/TextAppearance.MaterialComponents.Headline5" />
+                android:textColor="?android:textColorPrimary" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerview"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingTop="8dp"
-                android:paddingBottom="16dp"
                 android:clipToPadding="false"
                 android:nestedScrollingEnabled="false"
+                android:paddingTop="8dp"
+                android:paddingBottom="16dp"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
         </androidx.appcompat.widget.LinearLayoutCompat>

@@ -42,10 +42,11 @@ import org.robolectric.annotation.Config
 @Config(sdk = [Build.VERSION_CODES.Q])
 class WatchManagerTest {
 
-    @get:Rule val instantExecutorRule = InstantTaskExecutorRule()
+    @get:Rule
+    val instantExecutorRule = InstantTaskExecutorRule()
 
     private val coroutineScope = TestCoroutineScope()
-    private val dummyWatch = Watch("an-id-1234", "Watch 1", null)
+    private val dummyWatch = Watch("an-id-1234", "Watch 1")
     private val dummyWatchNode =
         object : Node {
             override fun getDisplayName(): String = dummyWatch.name
@@ -53,12 +54,23 @@ class WatchManagerTest {
             override fun isNearby(): Boolean = true
         }
 
-    @RelaxedMockK lateinit var watchPreferenceManager: WatchPreferenceManager
-    @RelaxedMockK lateinit var selectedWatchHandler: SelectedWatchHandler
-    @RelaxedMockK lateinit var capabilityClient: CapabilityClient
-    @RelaxedMockK lateinit var nodeClient: NodeClient
-    @RelaxedMockK lateinit var messageClient: MessageClient
-    @RelaxedMockK lateinit var database: WatchDatabase
+    @RelaxedMockK
+    lateinit var watchPreferenceManager: WatchPreferenceManager
+
+    @RelaxedMockK
+    lateinit var selectedWatchHandler: SelectedWatchHandler
+
+    @RelaxedMockK
+    lateinit var capabilityClient: CapabilityClient
+
+    @RelaxedMockK
+    lateinit var nodeClient: NodeClient
+
+    @RelaxedMockK
+    lateinit var messageClient: MessageClient
+
+    @RelaxedMockK
+    lateinit var database: WatchDatabase
 
     private lateinit var watchManager: WatchManager
 

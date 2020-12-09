@@ -16,11 +16,11 @@
         android:allowBackup="false"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
+        android:manageSpaceActivity="com.boswelja.devicemanager.managespace.ManageSpaceActivity"
+        android:resizeableActivity="true"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:resizeableActivity="true"
         android:theme="@style/Theme.App"
-        android:manageSpaceActivity="com.boswelja.devicemanager.managespace.ManageSpaceActivity"
         tools:ignore="UnusedAttribute">
 
         <activity
@@ -58,16 +58,16 @@
 
         <activity
             android:name=".appmanager.ui.AppManagerActivity"
-            android:label="@string/app_manager_activity_title"
-            android:exported="false" />
+            android:exported="false"
+            android:label="@string/app_manager_activity_title" />
         <activity
             android:name=".appmanager.ui.info.AppPackageInfoActivity"
             android:exported="false" />
 
         <activity
             android:name=".watchmanager.ui.WatchManagerActivity"
-            android:label="@string/watch_manager_title"
-            android:exported="false" />
+            android:exported="false"
+            android:label="@string/watch_manager_title" />
         <activity
             android:name=".watchmanager.ui.WatchInfoActivity"
             android:exported="false" />
@@ -83,6 +83,7 @@
         <receiver
             android:name=".phonelocking.DeviceAdminChangeReceiver"
             android:description="@string/device_admin_desc"
+            android:exported="true"
             android:label="@string/device_admin_label"
             android:permission="android.permission.BIND_DEVICE_ADMIN">
             <meta-data
@@ -95,8 +96,8 @@
         </receiver>
         <service
             android:name=".phonelocking.PhoneLockingAccessibilityService"
-            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE"
-            android:label="@string/phone_locking_accessibility_service_label">
+            android:label="@string/phone_locking_accessibility_service_label"
+            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
             <intent-filter>
                 <action android:name="android.accessibilityservice.AccessibilityService" />
             </intent-filter>
@@ -126,9 +127,9 @@
             <intent-filter>
                 <action android:name="com.google.android.gms.wearable.DATA_CHANGED" />
                 <data
-                    android:scheme="wear"
                     android:host="*"
-                    android:path="/dnd_status" />
+                    android:path="/dnd_status"
+                    android:scheme="wear" />
             </intent-filter>
         </service>
 
@@ -163,16 +164,17 @@
             <intent-filter>
                 <action android:name="com.google.android.gms.wearable.MESSAGE_RECEIVED" />
                 <data
-                    android:scheme="wear"
                     android:host="*"
-                    android:path="/battery_status" />
+                    android:path="/battery_status"
+                    android:scheme="wear" />
             </intent-filter>
         </service>
 
         <receiver
             android:name=".batterysync.widget.WatchBatteryWidget"
-            android:label="@string/widget_watch_battery_title"
-            android:enabled="true">
+            android:enabled="true"
+            android:exported="true"
+            android:label="@string/widget_watch_battery_title">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
@@ -192,9 +194,9 @@
             <intent-filter>
                 <action android:name="com.google.android.gms.wearable.DATA_CHANGED" />
                 <data
-                    android:scheme="wear"
                     android:host="*"
-                    android:path="/preference_change" />
+                    android:path="/preference_change"
+                    android:scheme="wear" />
             </intent-filter>
         </service>
 

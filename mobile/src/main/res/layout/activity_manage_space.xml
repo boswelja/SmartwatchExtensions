@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -11,119 +10,119 @@
 
     <include
         android:id="@+id/toolbar_layout"
-        app:layout_constraintTop_toTopOf="parent"
-        layout="@layout/common_toolbar" />
+        layout="@layout/common_toolbar"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/progress_status"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="4dp"
         android:layout_marginStart="@dimen/content_margin_manage_space_side"
         android:layout_marginEnd="@dimen/content_margin_manage_space_side"
+        android:layout_marginBottom="4dp"
         android:text="@string/manage_space_progress_status_placeholder"
         app:layout_constraintBottom_toTopOf="@id/progress_bar"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <com.google.android.material.progressindicator.ProgressIndicator
         android:id="@+id/progress_bar"
+        style="@style/Widget.MaterialComponents.ProgressIndicator.Linear.Determinate"
         android:layout_width="240dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="32dp"
         android:indeterminate="false"
-        style="@style/Widget.MaterialComponents.ProgressIndicator.Linear.Determinate"
-        app:layout_constraintTop_toBottomOf="@id/reset_app_desc"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/reset_app_desc"
         app:layout_constraintVertical_bias="1.0" />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/clear_cache_title"
+        style="@style/TextAppearance.ManageSpace.Title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/manage_space_clear_cache_title"
-        app:layout_constraintTop_toBottomOf="@id/toolbar_layout"
         app:layout_constraintStart_toStartOf="parent"
-        style="@style/TextAppearance.ManageSpace.Title" />
+        app:layout_constraintTop_toBottomOf="@id/toolbar_layout" />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/clear_cache_desc"
+        style="@style/TextAppearance.ManageSpace.Description"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="@string/manage_space_clear_cache_desc"
-        app:layout_constraintTop_toBottomOf="@id/clear_cache_title"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@id/clear_cache_button"
-        style="@style/TextAppearance.ManageSpace.Description" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/clear_cache_title" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/clear_cache_button"
+        style="?materialButtonOutlinedStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/manage_space_clear_cache_button"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="@id/clear_cache_desc"
-        app:layout_constraintTop_toTopOf="@id/clear_cache_desc"
-        style="?materialButtonOutlinedStyle" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/clear_cache_desc" />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/reset_settings_title"
+        style="@style/TextAppearance.ManageSpace.Title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/manage_space_reset_settings_title"
-        app:layout_constraintTop_toBottomOf="@id/clear_cache_desc"
         app:layout_constraintStart_toStartOf="parent"
-        style="@style/TextAppearance.ManageSpace.Title" />
+        app:layout_constraintTop_toBottomOf="@id/clear_cache_desc" />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/reset_settings_desc"
+        style="@style/TextAppearance.ManageSpace.Description"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="@string/manage_space_reset_settings_desc"
-        app:layout_constraintTop_toBottomOf="@id/reset_settings_title"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@id/reset_settings_button"
-        style="@style/TextAppearance.ManageSpace.Description" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/reset_settings_title" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/reset_settings_button"
+        style="?materialButtonOutlinedStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/manage_space_reset_settings_button"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="@id/reset_settings_desc"
-        app:layout_constraintTop_toTopOf="@id/reset_settings_desc"
-        style="?materialButtonOutlinedStyle" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/reset_settings_desc" />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/reset_app_title"
+        style="@style/TextAppearance.ManageSpace.Title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/manage_space_reset_app_title"
-        app:layout_constraintTop_toBottomOf="@id/reset_settings_desc"
         app:layout_constraintStart_toStartOf="parent"
-        style="@style/TextAppearance.ManageSpace.Title" />
+        app:layout_constraintTop_toBottomOf="@id/reset_settings_desc" />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/reset_app_desc"
+        style="@style/TextAppearance.ManageSpace.Description"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="@string/manage_space_reset_app_desc"
-        app:layout_constraintTop_toBottomOf="@id/reset_app_title"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@id/reset_app_button"
-        style="@style/TextAppearance.ManageSpace.Description" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/reset_app_title" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/reset_app_button"
+        style="?materialButtonOutlinedStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/manage_space_reset_app_button"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="@id/reset_app_desc"
-        app:layout_constraintTop_toTopOf="@id/reset_app_desc"
-        style="?materialButtonOutlinedStyle" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/reset_app_desc" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

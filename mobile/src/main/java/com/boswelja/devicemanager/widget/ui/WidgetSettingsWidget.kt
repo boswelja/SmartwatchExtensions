@@ -31,7 +31,7 @@ class WidgetSettingsWidget : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = SettingsWidgetWidgetSettingsBinding.inflate(inflater, container, false)
         return binding.root
     }

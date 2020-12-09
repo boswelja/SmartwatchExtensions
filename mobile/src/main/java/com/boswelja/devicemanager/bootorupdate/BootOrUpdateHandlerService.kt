@@ -96,7 +96,7 @@ class BootOrUpdateHandlerService : Service() {
     private fun createUpdaterNotification(): Notification {
         return createBaseNotification()
             .setContentTitle(getString(R.string.notification_update_handler_title))
-            .setSmallIcon(R.drawable.noti_ic_update)
+            .setSmallIcon(R.drawable.message_ic_update)
             .build()
     }
 
@@ -107,7 +107,7 @@ class BootOrUpdateHandlerService : Service() {
     private fun createBootNotification(): Notification {
         return createBaseNotification()
             .setContentTitle(getString(R.string.notification_boot_handler_title))
-            .setSmallIcon(R.drawable.noti_ic_update)
+            .setSmallIcon(R.drawable.message_ic_update)
             .build()
     }
 

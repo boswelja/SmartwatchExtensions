@@ -19,15 +19,13 @@ data class Watch(
     @PrimaryKey val id: String,
     @ColumnInfo(name = "name")
     val name: String,
-    @ColumnInfo(name = "battery_sync_worker_id")
-    val batterySyncWorkerId: String?,
     @Ignore var status: WatchStatus
 ) {
-    constructor(id: String, name: String, batterySyncWorkerId: String?) : this(
-        id, name, batterySyncWorkerId, WatchStatus.UNKNOWN
+    constructor(id: String, name: String) : this(
+        id, name, WatchStatus.UNKNOWN
     )
 
-    constructor(node: Node, status: WatchStatus) : this(node.id, node.displayName, null, status)
+    constructor(node: Node, status: WatchStatus) : this(node.id, node.displayName, status)
 
-    constructor(node: Node) : this(node.id, node.displayName, null, WatchStatus.UNKNOWN)
+    constructor(node: Node) : this(node.id, node.displayName, WatchStatus.UNKNOWN)
 }

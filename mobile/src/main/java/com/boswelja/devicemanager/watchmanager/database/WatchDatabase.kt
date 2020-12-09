@@ -15,7 +15,7 @@ import com.boswelja.devicemanager.watchmanager.item.BoolPreference
 import com.boswelja.devicemanager.watchmanager.item.IntPreference
 import com.boswelja.devicemanager.watchmanager.item.Watch
 
-@Database(entities = [Watch::class, IntPreference::class, BoolPreference::class], version = 5)
+@Database(entities = [Watch::class, IntPreference::class, BoolPreference::class], version = 6)
 abstract class WatchDatabase : RoomDatabase() {
 
     abstract fun watchDao(): WatchDao
@@ -66,7 +66,11 @@ abstract class WatchDatabase : RoomDatabase() {
                     INSTANCE =
                         Room.databaseBuilder(context, WatchDatabase::class.java, "watch-db")
                             .apply {
-                                addMigrations(Migrations.MIGRATION_3_5, Migrations.MIGRATION_4_5)
+                                addMigrations(
+                                    Migrations.MIGRATION_3_5,
+                                    Migrations.MIGRATION_4_5,
+                                    Migrations.MIGRATION_5_6
+                                )
                                 fallbackToDestructiveMigration()
                             }
                             .build()

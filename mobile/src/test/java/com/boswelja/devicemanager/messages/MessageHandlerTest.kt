@@ -29,7 +29,8 @@ import org.robolectric.annotation.Config
 @Config(sdk = [Build.VERSION_CODES.N, Build.VERSION_CODES.O])
 class MessageHandlerTest {
 
-    @get:Rule val instantExecutorRule = InstantTaskExecutorRule()
+    @get:Rule
+    val instantExecutorRule = InstantTaskExecutorRule()
 
     private val context = spyk(InstrumentationRegistry.getInstrumentation().context)
     private val coroutineScope = TestCoroutineScope()
@@ -40,7 +41,9 @@ class MessageHandlerTest {
         Message.Action.LAUNCH_CHANGELOG
     )
     private lateinit var messageDatabase: MessageDatabase
-    @RelaxedMockK private lateinit var notificationManager: NotificationManager
+
+    @RelaxedMockK
+    private lateinit var notificationManager: NotificationManager
 
     @Before
     fun setUp() {

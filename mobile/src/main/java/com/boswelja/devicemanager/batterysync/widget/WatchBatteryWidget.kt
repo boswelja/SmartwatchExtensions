@@ -130,7 +130,12 @@ class WatchBatteryWidget : AppWidgetProvider() {
         val remoteViews = RemoteViews(context?.packageName, R.layout.widget_watch_battery)
 
         // Set click intent
-        PendingIntent.getActivity(context, 0, Intent(context, MainActivity::class.java), 0).also {
+        PendingIntent.getActivity(
+            context,
+            0,
+            Intent(context, MainActivity::class.java),
+            PendingIntent.FLAG_IMMUTABLE
+        ).also {
             remoteViews.setOnClickPendingIntent(R.id.widget_background, it)
         }
 

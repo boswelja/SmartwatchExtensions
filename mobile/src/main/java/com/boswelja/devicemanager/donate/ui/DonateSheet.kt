@@ -30,7 +30,7 @@ class DonateSheet : BottomSheetDialogFragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = BottomSheetListBinding.inflate(inflater, container, false)
         binding.title.setText(R.string.donate_title)
         return binding.root

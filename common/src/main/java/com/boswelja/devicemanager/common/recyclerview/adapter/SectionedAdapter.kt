@@ -26,8 +26,8 @@ import java.util.Locale
 abstract class SectionedAdapter<T>(
     protected val items: ArrayList<Pair<String, ArrayList<T>>> = ArrayList(),
     private val showSectionDividers: Boolean = true,
-    private val sectionSortMode: SortMode = SortMode.DEFAULT,
-    private val itemSortMode: SortMode = SortMode.DEFAULT
+    private val sectionSortMode: SortMode = DEFAULT,
+    private val itemSortMode: SortMode = DEFAULT
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private var layoutInflater: LayoutInflater? = null
@@ -186,7 +186,7 @@ abstract class SectionedAdapter<T>(
             SortMode.DESCENDING -> {
                 items.sortByDescending { it.first.toLowerCase(Locale.getDefault()) }
             }
-            SortMode.DEFAULT -> return
+            DEFAULT -> return
         }
     }
 
@@ -196,7 +196,7 @@ abstract class SectionedAdapter<T>(
             SortMode.ASCENDING, SortMode.DESCENDING -> {
                 items.indices.forEach { sortSectionItems(it) }
             }
-            SortMode.DEFAULT -> return
+            DEFAULT -> return
         }
     }
 
@@ -216,7 +216,7 @@ abstract class SectionedAdapter<T>(
                     item.toString().toLowerCase(Locale.getDefault())
                 }
             }
-            SortMode.DEFAULT -> return
+            DEFAULT -> return
         }
     }
 

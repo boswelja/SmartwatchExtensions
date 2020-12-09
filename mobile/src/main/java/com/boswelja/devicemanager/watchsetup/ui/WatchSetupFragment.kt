@@ -34,7 +34,7 @@ class WatchSetupFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = FragmentWatchSetupBinding.inflate(inflater, container, false)
         return binding.root
     }

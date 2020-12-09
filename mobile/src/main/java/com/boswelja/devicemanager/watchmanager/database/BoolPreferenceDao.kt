@@ -30,7 +30,8 @@ interface BoolPreferenceDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun update(boolPreference: BoolPreference)
 
-    @Delete fun remove(boolPreference: BoolPreference)
+    @Delete
+    fun remove(boolPreference: BoolPreference)
 
     @Query("DELETE FROM bool_preferences WHERE id = :watchId")
     fun deleteAllForWatch(watchId: String)

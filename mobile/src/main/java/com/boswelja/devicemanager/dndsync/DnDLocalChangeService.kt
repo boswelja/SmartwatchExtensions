@@ -66,7 +66,8 @@ class DnDLocalChangeService : LifecycleService() {
 
         try {
             dndChangeReceiver.unregister(this)
-        } catch (ignored: IllegalArgumentException) {}
+        } catch (ignored: IllegalArgumentException) {
+        }
     }
 
     /**
@@ -78,7 +79,12 @@ class DnDLocalChangeService : LifecycleService() {
             NotificationChannelHelper.createForDnDSync(this, getSystemService()!!)
 
         val launchActivityIntent = Intent(this, MainActivity::class.java)
-        val notiTapIntent = PendingIntent.getActivity(this, 0, launchActivityIntent, 0)
+        val notiTapIntent = PendingIntent.getActivity(
+            this,
+            0,
+            launchActivityIntent,
+            PendingIntent.FLAG_IMMUTABLE
+        )
 
         return NotificationCompat.Builder(this, References.DND_SYNC_NOTI_CHANNEL_ID)
             .setContentTitle(getString(R.string.interrupt_filter_sync_active_noti_title))

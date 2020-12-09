@@ -30,7 +30,8 @@ class AppManagerViewModelTest {
 
     private val watchId = "123456"
 
-    @get:Rule val instantExecutorRule = InstantTaskExecutorRule()
+    @get:Rule
+    val instantExecutorRule = InstantTaskExecutorRule()
 
     @MockK(relaxed = true)
     private lateinit var messageClient: MessageClient

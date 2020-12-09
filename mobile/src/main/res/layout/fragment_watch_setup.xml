@@ -6,40 +6,40 @@
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/refresh_button"
+        style="@style/Widget.MaterialComponents.Button.TextButton.Icon"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:gravity="start|center_vertical"
         android:padding="16dp"
         android:text="@string/register_watch_button_refresh"
-        android:gravity="start|center_vertical"
         app:icon="@drawable/ic_refresh"
         app:iconPadding="8dp"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        style="@style/Widget.MaterialComponents.Button.TextButton.Icon" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <com.google.android.material.progressindicator.ProgressIndicator
         android:id="@+id/progress_bar"
+        style="@style/Widget.MaterialComponents.ProgressIndicator.Linear.Indeterminate"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:indeterminate="true"
-        app:layout_constraintTop_toBottomOf="@id/refresh_button"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        style="@style/Widget.MaterialComponents.ProgressIndicator.Linear.Indeterminate" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/refresh_button" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/watch_setup_recyclerview"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:clipToPadding="false"
         android:paddingTop="8dp"
         android:paddingBottom="8dp"
-        android:clipToPadding="false"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/progress_bar"
-        app:layout_constraintBottom_toBottomOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/progress_bar" />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/help_text_view"
@@ -47,8 +47,8 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
-        android:textSize="18sp"
         android:textColor="?android:textColorPrimary"
+        android:textSize="18sp"
         app:layout_constraintTop_toTopOf="@id/watch_setup_recyclerview" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

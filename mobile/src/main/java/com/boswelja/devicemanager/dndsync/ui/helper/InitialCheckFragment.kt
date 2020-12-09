@@ -28,7 +28,7 @@ internal class InitialCheckFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = FragmentDndsyncHelperWarningBinding.inflate(inflater, container, false)
         return binding.root
     }

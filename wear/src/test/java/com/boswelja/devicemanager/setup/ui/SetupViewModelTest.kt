@@ -26,10 +26,12 @@ import org.robolectric.annotation.Config
 @Config(sdk = [Build.VERSION_CODES.Q])
 class SetupViewModelTest {
 
-    @get:Rule val instantExecutorRule = InstantTaskExecutorRule()
+    @get:Rule
+    val instantExecutorRule = InstantTaskExecutorRule()
 
     @MockK(relaxed = true)
     private lateinit var nodeClient: NodeClient
+
     @MockK(relaxed = true)
     private lateinit var messageClient: MessageClient
 

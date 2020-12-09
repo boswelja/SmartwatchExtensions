@@ -8,24 +8,24 @@
     <include
         android:id="@+id/toolbar_layout"
         layout="@layout/common_toolbar"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/watch_name_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
         android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
         android:hint="@string/watch_name_field_hint"
         app:errorEnabled="false"
-        app:helperTextEnabled="true"
         app:helperText="@string/watch_name_field_helper_text"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar_layout"
+        app:helperTextEnabled="true"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintTop_toBottomOf="@+id/toolbar_layout">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/watch_name_field"
@@ -38,6 +38,7 @@
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/clear_preferences_button"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton.Icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -46,18 +47,18 @@
         android:layout_marginBottom="8dp"
         android:text="@string/clear_preferences_button_text"
         android:textColor="@color/warningRed"
-        app:strokeColor="@color/warningRed"
         app:icon="@drawable/ic_clear_all"
         app:iconGravity="start"
         app:iconTint="@color/warningRed"
-        app:rippleColor="@color/warningRed"
-        app:layout_constraintTop_toBottomOf="@id/watch_name_layout"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        style="@style/Widget.MaterialComponents.Button.OutlinedButton.Icon" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/watch_name_layout"
+        app:rippleColor="@color/warningRed"
+        app:strokeColor="@color/warningRed" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/forget_watch_button"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton.Icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -66,13 +67,12 @@
         android:layout_marginBottom="8dp"
         android:text="@string/forget_watch_button_text"
         android:textColor="@color/warningRed"
-        app:strokeColor="@color/warningRed"
         app:icon="@drawable/ic_delete"
         app:iconGravity="start"
         app:iconTint="@color/warningRed"
-        app:rippleColor="@color/warningRed"
-        app:layout_constraintTop_toBottomOf="@id/clear_preferences_button"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        style="@style/Widget.MaterialComponents.Button.OutlinedButton.Icon" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/clear_preferences_button"
+        app:rippleColor="@color/warningRed"
+        app:strokeColor="@color/warningRed" />
 </androidx.constraintlayout.widget.ConstraintLayout>
