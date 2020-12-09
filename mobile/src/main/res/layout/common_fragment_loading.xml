@@ -5,9 +5,8 @@
     android:gravity="center"
     android:orientation="vertical">
 
-    <com.google.android.material.progressindicator.ProgressIndicator
+    <com.google.android.material.progressindicator.LinearProgressIndicator
         android:id="@+id/progress_bar"
-        style="@style/Widget.MaterialComponents.ProgressIndicator.Linear.Indeterminate"
         android:layout_width="240dp"
         android:layout_height="wrap_content"
         android:indeterminate="true" />
