@@ -38,7 +38,7 @@ class SelectedWatchHandlerTest {
     @get:Rule
     val instantExecutorRule = InstantTaskExecutorRule()
 
-    private val dummyWatch = Watch("an-id-1234", "Watch 1", null)
+    private val dummyWatch = Watch("an-id-1234", "Watch 1")
 
     @RelaxedMockK
     private lateinit var dummyDatabase: WatchDatabase

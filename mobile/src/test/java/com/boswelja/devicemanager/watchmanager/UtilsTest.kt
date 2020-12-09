@@ -14,7 +14,7 @@ import org.junit.Test
 
 class UtilsTest {
 
-    private val dummyWatch = Watch("an-id-1234", "Watch 1", null)
+    private val dummyWatch = Watch("an-id-1234", "Watch 1")
     private val dummyWatchNode =
         object : Node {
             override fun getDisplayName(): String = dummyWatch.name
