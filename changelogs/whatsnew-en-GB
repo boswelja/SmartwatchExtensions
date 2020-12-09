@@ -1,4 +1,4 @@
-Reworked how the selected watch status is shown and updated.
-Automated updating, you'll start to see optional in-app updates as well as the existing required ones soon.
-Removed the built-in changelog. It'll be back later.
-Updated the app's styles to be more consistent.
+Reworked how the selected watch status is shown and updated
+Automated updating, you'll start to see optional in-app updates as well as the existing required ones soon
+Updated the app's styles to be more consistent
+Removed built-in changelog, you can see what's new via the in-app link to GitHub

@@ -12,14 +12,19 @@
     <androidx.preference.PreferenceCategory>
 
         <androidx.preference.Preference
-            android:icon="@drawable/pref_ic_share"
-            android:key="share"
-            android:title="@string/pref_about_share_title" />
-
-        <androidx.preference.Preference
             android:icon="@drawable/pref_ic_github"
             android:key="github"
             android:title="@string/pref_about_github" />
+
+        <androidx.preference.Preference
+            android:icon="@drawable/pref_ic_changelog"
+            android:key="changelog"
+            android:title="@string/pref_about_changelog" />
+
+        <androidx.preference.Preference
+            android:icon="@drawable/pref_ic_share"
+            android:key="share"
+            android:title="@string/pref_about_share_title" />
 
         <androidx.preference.Preference
             android:icon="@drawable/pref_ic_donate"
