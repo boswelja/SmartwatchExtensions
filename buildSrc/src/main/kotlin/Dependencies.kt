@@ -87,7 +87,7 @@ object Libraries {
 
     const val materialComponents = "com.google.android.material:material:${Versions.googleMaterial}"
     const val playCore = "com.google.android.play:core:${Versions.googlePlayCore}"
-    const val playCoreKtx = "com.google.android.play:core-ktx:${Versions.googlePlayCore}"
+    const val playCoreKtx = "com.google.android.play:core-ktx:1.8.1"
 
     const val playServicesWearable =
         "com.google.android.gms:play-services-wearable:${Versions.playServicesWearable}"
