@@ -26,9 +26,9 @@ data class Message(
 
     /** Possible icons for a given [Message] **/
     enum class Icon(@DrawableRes val iconRes: Int) {
-        UPDATE(R.drawable.noti_ic_update),
-        HELP(R.drawable.noti_ic_help),
-        ERROR(R.drawable.noti_ic_error)
+        UPDATE(R.drawable.message_ic_update),
+        HELP(R.drawable.message_ic_help),
+        ERROR(R.drawable.message_ic_error)
     }
 
     override fun equals(other: Any?): Boolean {

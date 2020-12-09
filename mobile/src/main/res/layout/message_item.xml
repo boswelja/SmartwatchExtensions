@@ -13,7 +13,7 @@
         android:layout_height="@dimen/message_icon_size"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:src="@drawable/noti_ic_update" />
+        tools:src="@drawable/message_ic_update" />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/received_text"
