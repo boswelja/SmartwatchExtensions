@@ -35,6 +35,10 @@ android {
             )
         }
     }
+
+    lintOptions {
+        disable("UnsafeExperimentalUsageError", "UnsafeExperimentalUsageWarning")
+    }
 }
 
 dependencies {
