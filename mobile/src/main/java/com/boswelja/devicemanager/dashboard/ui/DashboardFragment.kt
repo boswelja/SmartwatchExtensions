@@ -11,8 +11,8 @@ import com.boswelja.devicemanager.dashboard.ui.items.DnDSyncDashboardFragment
 import com.boswelja.devicemanager.dashboard.ui.items.PhoneLockingDashboardFragment
 import com.boswelja.devicemanager.databinding.FragmentDashboardBinding
 import com.boswelja.devicemanager.watchmanager.SelectedWatchHandler
-import timber.log.Timber
 import kotlin.reflect.full.primaryConstructor
+import timber.log.Timber
 
 class DashboardFragment : Fragment() {
 

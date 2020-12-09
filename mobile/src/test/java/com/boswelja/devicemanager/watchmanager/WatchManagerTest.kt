@@ -56,14 +56,19 @@ class WatchManagerTest {
 
     @RelaxedMockK
     lateinit var watchPreferenceManager: WatchPreferenceManager
+
     @RelaxedMockK
     lateinit var selectedWatchHandler: SelectedWatchHandler
+
     @RelaxedMockK
     lateinit var capabilityClient: CapabilityClient
+
     @RelaxedMockK
     lateinit var nodeClient: NodeClient
+
     @RelaxedMockK
     lateinit var messageClient: MessageClient
+
     @RelaxedMockK
     lateinit var database: WatchDatabase
 

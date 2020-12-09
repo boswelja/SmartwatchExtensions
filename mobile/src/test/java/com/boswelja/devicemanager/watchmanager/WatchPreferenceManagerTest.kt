@@ -45,6 +45,7 @@ class WatchPreferenceManagerTest {
 
     @RelaxedMockK
     lateinit var dataClient: DataClient
+
     @RelaxedMockK
     lateinit var database: WatchDatabase
 

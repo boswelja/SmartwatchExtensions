@@ -13,7 +13,9 @@ import com.boswelja.devicemanager.common.preference.PreferenceKey.DND_SYNC_TO_WA
 class DnDSyncPreferenceWidgetViewModel(application: Application) : AndroidViewModel(application) {
 
     private val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(application)
-    private val preferenceChangeListener = SharedPreferences.OnSharedPreferenceChangeListener { sharedPreferences, key ->
+    private val preferenceChangeListener = SharedPreferences.OnSharedPreferenceChangeListener {
+        sharedPreferences,
+        key ->
         when (key) {
             DND_SYNC_TO_PHONE_KEY -> {
                 syncToPhone = sharedPreferences.getBoolean(key, false)

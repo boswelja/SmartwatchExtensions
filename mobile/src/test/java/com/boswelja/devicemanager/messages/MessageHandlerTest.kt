@@ -41,6 +41,7 @@ class MessageHandlerTest {
         Message.Action.LAUNCH_CHANGELOG
     )
     private lateinit var messageDatabase: MessageDatabase
+
     @RelaxedMockK
     private lateinit var notificationManager: NotificationManager
 
