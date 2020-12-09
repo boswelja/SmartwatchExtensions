@@ -60,7 +60,6 @@
 
     <!-- App Manager strings -->
     <string name="main_app_manager_title">App Manager</string>
-    <string name="main_app_manager_summary">Manage apps installed on your watch</string>
     <string name="app_info_version_prefix">Version %s</string>
     <string name="app_info_first_installed_prefix">First installed: %s</string>
     <string name="app_info_last_updated_prefix">Last updated: %s</string>
@@ -76,7 +75,6 @@
 
     <!-- Phone Lock preference strings -->
     <string name="main_phone_locking_title">Phone Locking</string>
-    <string name="main_phone_locking_summary">Lock your phone from your watch</string>
     <string name="pref_phone_locking_mode_title">Phone Locking Method</string>
     <string name="pref_phone_locking_mode_no_option_summary">Android versions below 9.0 can only use Device Administrator mode</string>
     <string name="pref_phone_locking_accessibility_settings_title">Open Accessibility Settings</string>
