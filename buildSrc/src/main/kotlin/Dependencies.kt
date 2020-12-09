@@ -34,22 +34,22 @@ object AndroidSdk {
 object Libraries {
     object Versions {
         const val androidxAppCompat = "1.3.0-alpha02"
-        const val androidxBrowser = "1.3.0-beta01"
-        const val androidxConstraintLayout = "2.0.4"
-        const val androidxCoreKtx = "1.5.0-alpha04"
-        const val androidxFragment = "1.3.0-beta01"
+        const val androidxBrowser = "1.3.0"
+        const val androidxConstraintLayout = "2.1.0-alpha1"
+        const val androidxCoreKtx = "1.5.0-alpha05"
+        const val androidxFragment = "1.3.0-beta02"
         const val androidxLifecycle = "2.3.0-beta01"
-        const val androidxNavigation = "2.3.1"
-        const val androidxPaging = "3.0.0-alpha09"
+        const val androidxNavigation = "2.3.2"
+        const val androidxPaging = "3.0.0-alpha10"
         const val androidxPreference = "1.1.1"
         const val androidxRoom = "2.3.0-alpha03"
-        const val androidxWear = "1.2.0-alpha01"
-        const val androidxWork = "2.5.0-beta01"
+        const val androidxWear = "1.2.0-alpha03"
+        const val androidxWork = "2.5.0-beta02"
 
-        const val billingClient = "3.0.0"
+        const val billingClient = "3.0.2"
 
-        const val googleMaterial = "1.3.0-alpha03"
-        const val googlePlayCore = "1.8.3"
+        const val googleMaterial = "1.3.0-alpha04"
+        const val googlePlayCore = "1.9.0"
 
         const val playServicesWearable = "17.0.0"
         const val wearableSupport = "2.8.1"
@@ -87,7 +87,7 @@ object Libraries {
 
     const val materialComponents = "com.google.android.material:material:${Versions.googleMaterial}"
     const val playCore = "com.google.android.play:core:${Versions.googlePlayCore}"
-    const val playCoreKtx = "com.google.android.play:core-ktx:1.8.1"
+    const val playCoreKtx = "com.google.android.play:core-ktx:${Versions.googlePlayCore}"
 
     const val playServicesWearable =
         "com.google.android.gms:play-services-wearable:${Versions.playServicesWearable}"
@@ -108,12 +108,12 @@ object DebugLibraries {
 object TestLibraries {
     object Versions {
         const val androidxArch = "2.1.0"
-        const val androidxTest = "1.3.0"
+        const val androidxTest = "1.3.1-alpha02"
 
         const val junit = "4.13"
         const val truth = "1.1"
 
-        const val mockk = "1.10.2"
+        const val mockk = "1.10.3"
 
         const val robolectric = "4.4"
     }
