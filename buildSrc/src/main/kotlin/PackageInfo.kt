@@ -20,8 +20,36 @@ object PackageInfo {
     const val versionName = "2.5.4"
 
     fun getVersionCode(): Int {
-        val dateSection = SimpleDateFormat("yyyyMMddHH", Locale.ROOT).format(Date())
-        return dateSection.toInt()
+        val versionBuildKey = "version.build_number"
+        val versionPropFile = File("version.properties")
+        val lastModified = versionPropFile.lastModified()
+        val versionProps = Properties()
+        if (!versionPropFile.canRead()) {
+            if (versionPropFile.createNewFile()) {
+                versionProps.load(FileInputStream(versionPropFile))
+            } else throw IOException("Unable to open ${versionPropFile.absolutePath}")
+        } else {
+            versionProps.load(FileInputStream(versionPropFile))
+        }
+
+        val versionBuild: Int =
+            if (versionProps.containsKey(versionBuildKey) && !isOldData(lastModified)) {
+                versionProps[versionBuildKey].toString().toInt()
+            } else {
+                0
+            }
+        if (versionBuild < 99) {
+            if (shouldIncrementVersion(lastModified)) {
+                versionProps[versionBuildKey] = (versionBuild + 1).toString()
+                versionProps.store(FileWriter(versionPropFile), null)
+            }
+        } else {
+            throw Exception("Build limit reached")
+        }
+        val buildNumber = String.format("%02d", versionBuild)
+
+        val dateSection = SimpleDateFormat("yyyyMMdd", Locale.ROOT).format(Date())
+        return dateSection.plus(buildNumber).toInt()
     }
 
     private fun shouldIncrementVersion(lastEditedTimestamp: Long): Boolean {
