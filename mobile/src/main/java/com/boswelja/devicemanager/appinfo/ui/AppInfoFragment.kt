@@ -39,6 +39,7 @@ class AppInfoFragment : BasePreferenceFragment(), Preference.OnPreferenceClickLi
             OPEN_PRIVACY_POLICY_KEY -> showPrivacyPolicy()
             SHARE_APP_KEY -> showShareMenu()
             OPEN_GITHUB_KEY -> showGitHubPage()
+            OPEN_CHANGELOG_KEY -> showChangelog()
             OPEN_DONATE_DIALOG_KEY ->
                 findNavController().navigate(AppInfoFragmentDirections.toDonateFragment())
             else -> return false
@@ -77,13 +78,15 @@ class AppInfoFragment : BasePreferenceFragment(), Preference.OnPreferenceClickLi
 
     private fun setupPreferences() {
         findPreference<Preference>(OPEN_PRIVACY_POLICY_KEY)!!
-            .onPreferenceClickListener = this@AppInfoFragment
+            .onPreferenceClickListener = this
         findPreference<Preference>(SHARE_APP_KEY)!!.apply {
             isEnabled = !BuildConfig.DEBUG
             onPreferenceClickListener = this@AppInfoFragment
         }
         findPreference<Preference>(OPEN_GITHUB_KEY)!!
-            .onPreferenceClickListener = this@AppInfoFragment
+            .onPreferenceClickListener = this
+        findPreference<Preference>(OPEN_CHANGELOG_KEY)!!
+            .onPreferenceClickListener = this
         findPreference<Preference>(OPEN_DONATE_DIALOG_KEY)!!.apply {
             isEnabled = !BuildConfig.DEBUG
             onPreferenceClickListener = this@AppInfoFragment
@@ -135,11 +138,16 @@ class AppInfoFragment : BasePreferenceFragment(), Preference.OnPreferenceClickLi
         customTabsIntent.launchUrl(requireContext(), getString(R.string.github_url).toUri())
     }
 
+    private fun showChangelog() {
+        customTabsIntent.launchUrl(requireContext(), getString(R.string.changelog_url).toUri())
+    }
+
     companion object {
         const val OPEN_PRIVACY_POLICY_KEY = "privacy_policy"
         const val SHARE_APP_KEY = "share"
         const val OPEN_GITHUB_KEY = "github"
         const val OPEN_DONATE_DIALOG_KEY = "show_donate_dialog"
+        const val OPEN_CHANGELOG_KEY = "changelog"
         const val PHONE_VERSION_KEY = "phone_app_version"
         const val WATCH_VERSION_KEY = "watch_app_version"
     }

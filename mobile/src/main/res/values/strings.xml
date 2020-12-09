@@ -115,6 +115,7 @@
     <string name="pref_about_priv_policy_title">Privacy Policy</string>
     <string name="pref_about_share_title">Share Wearable Extensions</string>
     <string name="pref_about_github">View Source on GitHub</string>
+    <string name="pref_about_changelog">View Changelog</string>
     <string name="pref_about_donate_title">Donate</string>
     <string name="pref_about_phone_version_title">Phone Version: %s</string>
     <string name="pref_about_watch_version_title">Watch Version: %s</string>
@@ -224,5 +225,6 @@
 
     <string name="privacy_policy_url" translatable="false">https://github.com/boswelja/WearableExtensions/blob/main/PRIVACY.md</string>
     <string name="github_url" translatable="false">https://github.com/boswelja/WearableExtensions</string>
+    <string name="changelog_url" translatable="false">https://github.com/boswelja/WearableExtensions/releases</string>
 
 </resources>
