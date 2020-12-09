@@ -56,8 +56,6 @@ class BatterySyncWorker(appContext: Context, workerParams: WorkerParameters) :
                     ExistingPeriodicWorkPolicy.REPLACE,
                     request
                 )
-                val newWorkerId = request.id.toString()
-                database.watchDao().updateBatterySyncWorkerId(watchId, newWorkerId)
                 return@withContext true
             }
         }
