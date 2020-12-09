@@ -33,7 +33,7 @@ class LockPhoneComplicationProvider : BaseComplicationProviderService() {
         val intent =
             Intent(this, ActionServiceStarter::class.java).apply { action = LOCK_PHONE_PATH }
         val pendingIntent =
-            PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+            PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_IMMUTABLE)
 
         val complicationData =
             ComplicationData.Builder(type)

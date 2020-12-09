@@ -125,7 +125,7 @@ class DnDLocalChangeListener : Service() {
                     this@DnDLocalChangeListener,
                     START_ACTIVITY_FROM_NOTI_ID,
                     launchIntent,
-                    PendingIntent.FLAG_CANCEL_CURRENT
+                    PendingIntent.FLAG_IMMUTABLE
                 )
                     .also { setContentIntent(it) }
             }
