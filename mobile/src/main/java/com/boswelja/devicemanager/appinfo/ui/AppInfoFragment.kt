@@ -78,13 +78,15 @@ class AppInfoFragment : BasePreferenceFragment(), Preference.OnPreferenceClickLi
 
     private fun setupPreferences() {
         findPreference<Preference>(OPEN_PRIVACY_POLICY_KEY)!!
-            .onPreferenceClickListener = this@AppInfoFragment
+            .onPreferenceClickListener = this
         findPreference<Preference>(SHARE_APP_KEY)!!.apply {
             isEnabled = !BuildConfig.DEBUG
             onPreferenceClickListener = this@AppInfoFragment
         }
         findPreference<Preference>(OPEN_GITHUB_KEY)!!
-            .onPreferenceClickListener = this@AppInfoFragment
+            .onPreferenceClickListener = this
+        findPreference<Preference>(OPEN_CHANGELOG_KEY)!!
+            .onPreferenceClickListener = this
         findPreference<Preference>(OPEN_DONATE_DIALOG_KEY)!!.apply {
             isEnabled = !BuildConfig.DEBUG
             onPreferenceClickListener = this@AppInfoFragment
