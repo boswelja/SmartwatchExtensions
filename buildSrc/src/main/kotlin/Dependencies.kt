@@ -1,6 +1,6 @@
 @file:Suppress("SpellCheckingInspection")
 
-const val kotlinVersion = "1.4.10"
+const val kotlinVersion = "1.4.21"
 
 object BuildPlugins {
     object Versions {
