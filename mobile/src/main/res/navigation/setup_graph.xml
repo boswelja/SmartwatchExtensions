@@ -13,7 +13,7 @@
             android:id="@+id/to_setupFragment"
             app:destination="@id/watchSetupFragment"
             app:enterAnim="@anim/slide_in_right"
-            app:exitAnim="@anim/slide_out_right" />
+            app:exitAnim="@anim/slide_out_left" />
 
         <action
             android:id="@+id/start_setupFragment"
