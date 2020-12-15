@@ -8,6 +8,8 @@
 package com.boswelja.devicemanager.setup.ui
 
 import android.app.Application
+import android.content.SharedPreferences
+import androidx.annotation.VisibleForTesting
 import androidx.core.content.edit
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
@@ -27,11 +29,13 @@ class SetupViewModel
 constructor(
     application: Application,
     private val nodeClient: NodeClient = Wearable.getNodeClient(application),
-    private val messageClient: MessageClient = Wearable.getMessageClient(application)
+    private val messageClient: MessageClient = Wearable.getMessageClient(application),
+    private val sharedPreferences: SharedPreferences =
+        PreferenceManager.getDefaultSharedPreferences(application)
 ) : AndroidViewModel(application) {
 
-    private val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(application)
-    private val messageListener =
+    @VisibleForTesting
+    val messageListener =
         MessageClient.OnMessageReceivedListener {
             when (it.path) {
                 References.WATCH_REGISTERED_PATH -> {
