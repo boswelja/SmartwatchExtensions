@@ -16,6 +16,7 @@ import androidx.lifecycle.Transformations
 import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.setup.References
+import com.boswelja.devicemanager.common.setup.References.CHECK_WATCH_REGISTERED_PATH
 import com.boswelja.devicemanager.phoneconnectionmanager.References.PHONE_ID_KEY
 import com.google.android.gms.wearable.MessageClient
 import com.google.android.gms.wearable.NodeClient
@@ -60,5 +61,17 @@ constructor(
 
     private fun refreshLocalName() {
         nodeClient.localNode.addOnCompleteListener { _localName.postValue(it.result?.displayName) }
+    }
+
+    fun refreshRegisteredStatus() {
+        nodeClient.connectedNodes.addOnSuccessListener {
+            it.firstOrNull()?.id?.let { id ->
+                messageClient.sendMessage(
+                    id,
+                    CHECK_WATCH_REGISTERED_PATH,
+                    null
+                )
+            }
+        }
     }
 }
