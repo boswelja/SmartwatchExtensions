@@ -27,6 +27,7 @@
         android:paddingTop="4dp"
         android:paddingBottom="4dp"
         android:text="@string/dnd_sync_helper_loading_text"
+        android:autoLink="web"
         android:textAppearance="@style/TextAppearance.MaterialComponents.Headline4"
         app:layout_constraintBottom_toTopOf="@id/warning_text"
         app:layout_constraintEnd_toEndOf="parent"
