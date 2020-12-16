@@ -30,7 +30,7 @@ class MessagesFragment : Fragment() {
         MessagesAdapter { messageAction ->
             when (messageAction) {
                 Message.Action.LAUNCH_NOTIFICATION_SETTINGS -> openNotiSettings()
-                Message.Action.LAUNCH_CHANGELOG -> TODO()
+                Message.Action.LAUNCH_CHANGELOG -> viewModel.showChangelog()
                 Message.Action.INSTALL_UPDATE -> viewModel.startUpdateFlow(requireActivity())
             }
         }
