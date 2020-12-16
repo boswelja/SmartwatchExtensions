@@ -2,11 +2,14 @@ package com.boswelja.devicemanager.messages.ui
 
 import android.app.Activity
 import android.app.Application
+import androidx.browser.customtabs.CustomTabsIntent
+import androidx.core.net.toUri
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.cachedIn
+import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.DataEvent
 import com.boswelja.devicemanager.messages.database.MessageDatabase
 import com.boswelja.devicemanager.messages.ui.Utils.MESSAGE_PAGE_SIZE
@@ -26,6 +29,10 @@ class MessagesViewModel @JvmOverloads constructor(
     private val appUpdateManager: AppUpdateManager = AppUpdateManagerFactory.create(application),
     private val coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.IO)
 ) : AndroidViewModel(application) {
+
+    private val customTabsIntent: CustomTabsIntent by lazy {
+        CustomTabsIntent.Builder().setShowTitle(true).build()
+    }
 
     val messageDismissedEvent = DataEvent<Long>()
 
@@ -73,5 +80,12 @@ class MessagesViewModel @JvmOverloads constructor(
 
     fun restoreMessage(messageId: Long) {
         coroutineScope.launch { messageDatabase.messageDao().restoreMessage(messageId) }
+    }
+
+    fun showChangelog() {
+        customTabsIntent.launchUrl(
+            getApplication(),
+            getApplication<Application>().getString(R.string.changelog_url).toUri()
+        )
     }
 }
