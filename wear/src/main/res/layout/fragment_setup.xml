@@ -126,11 +126,45 @@
                     app:layout_constraintBottom_toTopOf="@id/setup_device_name_text" />
 
                 <TextView
+                    android:id="@+id/auto_setup_text"
                     style="@style/Setup.Section.SecondaryText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/setup_hint_text"
                     app:layout_constraintTop_toBottomOf="@id/setup_device_name_text" />
+
+                <ImageView
+                    android:layout_width="@dimen/setup_chevron_size"
+                    android:layout_height="@dimen/setup_chevron_size"
+                    android:contentDescription="@string/content_description_scroll_down"
+                    android:src="@drawable/ic_arrow_down"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/auto_setup_text" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/manual_check_view_holder"
+                style="@style/Setup.Section"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:onClick="@{() -> viewModel.refreshRegisteredStatus()}"
+                app:layout_constraintTop_toBottomOf="@id/setup_view_holder">
+
+                <TextView
+                    android:id="@+id/manual_check_text"
+                    style="@style/Setup.Section.PrimaryText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/setup_manual_check_text"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
