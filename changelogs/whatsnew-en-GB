@@ -1,4 +1,6 @@
 Reworked how the selected watch status is shown and updated
-Automated updating, you'll start to see optional in-app updates as well as the existing required ones soon
+Added support for in-app updates
 Updated the app's styles to be more consistent
 Removed built-in changelog, you can see what's new via the in-app link to GitHub
+Added a button to manually check whether the watch has been registered during setup, should automatically checking fail
+The usual bug fixes
