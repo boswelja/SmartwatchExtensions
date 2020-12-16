@@ -174,7 +174,8 @@ class BootOrUpdateHandlerService : Service() {
         val message = Message(
             Message.Icon.UPDATE,
             getString(R.string.update_completed_title),
-            getString(R.string.update_complete_text, BuildConfig.VERSION_NAME)
+            getString(R.string.update_complete_text, BuildConfig.VERSION_NAME),
+            Message.Action.LAUNCH_CHANGELOG
         )
         MessageHandler.postMessage(this, message)
     }
