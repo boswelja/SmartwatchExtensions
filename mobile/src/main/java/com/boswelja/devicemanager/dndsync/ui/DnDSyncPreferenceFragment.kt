@@ -116,6 +116,7 @@ class DnDSyncPreferenceFragment :
         when (requestCode) {
             NOTI_POLICY_SETTINGS_REQUEST_CODE -> {
                 if (changingKey != null && Compat.canSetDnD(requireContext())) {
+                    findPreference<SwitchPreference>(changingKey!!)!!.isChecked = true
                     coroutineScope.launch {
                         sharedPreferences.edit(commit = true) { putBoolean(changingKey, true) }
                         watchPreferenceManager.updatePreferenceOnWatch(
