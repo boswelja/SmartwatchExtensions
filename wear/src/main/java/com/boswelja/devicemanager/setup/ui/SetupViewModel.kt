@@ -8,6 +8,8 @@
 package com.boswelja.devicemanager.setup.ui
 
 import android.app.Application
+import android.content.SharedPreferences
+import androidx.annotation.VisibleForTesting
 import androidx.core.content.edit
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
@@ -16,6 +18,7 @@ import androidx.lifecycle.Transformations
 import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.setup.References
+import com.boswelja.devicemanager.common.setup.References.CHECK_WATCH_REGISTERED_PATH
 import com.boswelja.devicemanager.phoneconnectionmanager.References.PHONE_ID_KEY
 import com.google.android.gms.wearable.MessageClient
 import com.google.android.gms.wearable.NodeClient
@@ -26,11 +29,13 @@ class SetupViewModel
 constructor(
     application: Application,
     private val nodeClient: NodeClient = Wearable.getNodeClient(application),
-    private val messageClient: MessageClient = Wearable.getMessageClient(application)
+    private val messageClient: MessageClient = Wearable.getMessageClient(application),
+    private val sharedPreferences: SharedPreferences =
+        PreferenceManager.getDefaultSharedPreferences(application)
 ) : AndroidViewModel(application) {
 
-    private val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(application)
-    private val messageListener =
+    @VisibleForTesting
+    val messageListener =
         MessageClient.OnMessageReceivedListener {
             when (it.path) {
                 References.WATCH_REGISTERED_PATH -> {
@@ -60,5 +65,17 @@ constructor(
 
     private fun refreshLocalName() {
         nodeClient.localNode.addOnCompleteListener { _localName.postValue(it.result?.displayName) }
+    }
+
+    fun refreshRegisteredStatus() {
+        nodeClient.connectedNodes.addOnSuccessListener {
+            it.firstOrNull()?.id?.let { id ->
+                messageClient.sendMessage(
+                    id,
+                    CHECK_WATCH_REGISTERED_PATH,
+                    null
+                )
+            }
+        }
     }
 }
