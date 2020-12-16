@@ -38,9 +38,4 @@ class SetupFragment : Fragment() {
             if (it) findNavController().navigate(SetupFragmentDirections.toExtensionsFragment())
         }
     }
-
-    override fun onStart() {
-        super.onStart()
-        viewModel.refreshRegisteredStatus()
-    }
 }
