@@ -22,7 +22,7 @@ import com.boswelja.devicemanager.watchmanager.SelectedWatchHandler
 import com.boswelja.devicemanager.watchmanager.WatchManager
 import com.boswelja.devicemanager.watchmanager.database.WatchDatabase
 import com.boswelja.devicemanager.watchmanager.item.Watch
-import com.boswelja.devicemanager.watchsetup.ui.WatchSetupActivity
+import com.boswelja.devicemanager.setup.ui.SetupActivity
 import com.google.android.material.appbar.MaterialToolbar
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
@@ -122,10 +122,10 @@ abstract class BaseWatchPickerActivity : BaseToolbarActivity(), AdapterView.OnIt
                 }
     }
 
-    /** Start an instance of [WatchSetupActivity] and finishes this activity. */
+    /** Start an instance of [SetupActivity] and finishes this activity. */
     private fun startSetupActivity() {
         Timber.d("startSetupActivity() called")
-        Intent(this@BaseWatchPickerActivity, WatchSetupActivity::class.java).also {
+        Intent(this@BaseWatchPickerActivity, SetupActivity::class.java).also {
             startActivity(it)
         }
         finish()

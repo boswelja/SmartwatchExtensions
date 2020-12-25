@@ -73,7 +73,7 @@
             android:exported="false" />
 
         <activity
-            android:name=".watchsetup.ui.WatchSetupActivity"
+            android:name=".setup.ui.SetupActivity"
             android:exported="false" />
 
         <activity

@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/welcomeFragment"
-        android:name="com.boswelja.devicemanager.watchsetup.ui.WelcomeFragment"
+        android:name="com.boswelja.devicemanager.setup.ui.WelcomeFragment"
         tools:layout="@layout/fragment_welcome">
         <action
             android:id="@+id/to_setupFragment"
@@ -24,7 +24,7 @@
 
     <fragment
         android:id="@+id/watchSetupFragment"
-        android:name="com.boswelja.devicemanager.watchsetup.ui.WatchSetupFragment"
+        android:name="com.boswelja.devicemanager.setup.ui.WatchSetupFragment"
         android:label="@string/register_watch_toolbar_title"
         tools:layout="@layout/fragment_watch_setup" />
 

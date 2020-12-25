@@ -5,7 +5,7 @@
  * This file, and any part of the Wearable Extensions app/s cannot be copied and/or distributed
  * without permission from Jack Boswell (boswelja) <boswela@outlook.com>
  */
-package com.boswelja.devicemanager.watchsetup.ui
+package com.boswelja.devicemanager.setup.ui
 
 import android.os.Bundle
 import androidx.navigation.fragment.NavHostFragment
@@ -14,7 +14,7 @@ import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.ui.BaseToolbarActivity
 import com.boswelja.devicemanager.databinding.ActivityWatchSetupBinding
 
-class WatchSetupActivity : BaseToolbarActivity() {
+class SetupActivity : BaseToolbarActivity() {
 
     private val skippedWelcome by lazy { intent.getBooleanExtra(EXTRA_SKIP_WELCOME, false) }
     private val navController by lazy {
