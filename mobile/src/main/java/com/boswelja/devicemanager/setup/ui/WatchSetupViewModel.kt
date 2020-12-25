@@ -18,9 +18,10 @@ import com.boswelja.devicemanager.watchmanager.item.Watch
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class WatchSetupViewModel(application: Application) : AndroidViewModel(application) {
-
-    private val watchManager = WatchManager.get(application)
+class WatchSetupViewModel @JvmOverloads constructor(
+    application: Application,
+    private val watchManager: WatchManager = WatchManager.get(application)
+) : AndroidViewModel(application) {
 
     private val _availableWatches = MutableLiveData<List<Watch>?>(null)
     val availableWatches: LiveData<List<Watch>?>
