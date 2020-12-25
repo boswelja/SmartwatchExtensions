@@ -11,17 +11,14 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import com.boswelja.devicemanager.watchmanager.WatchManager
 import com.boswelja.devicemanager.watchmanager.item.Watch
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
 class WatchSetupViewModel(application: Application) : AndroidViewModel(application) {
 
-    private val coroutineJob = Job()
-    private val coroutineScope = CoroutineScope(Dispatchers.IO + coroutineJob)
     private val watchManager = WatchManager.get(application)
 
     private val _availableWatches = MutableLiveData<List<Watch>?>(null)
@@ -42,7 +39,7 @@ class WatchSetupViewModel(application: Application) : AndroidViewModel(applicati
 
     fun refreshAvailableWatches() {
         _isLoading.postValue(true)
-        coroutineScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             val availableWatches = watchManager.getAvailableWatches()
             _availableWatches.postValue(availableWatches)
             _isLoading.postValue(false)
@@ -50,14 +47,9 @@ class WatchSetupViewModel(application: Application) : AndroidViewModel(applicati
     }
 
     fun registerWatch(watch: Watch) {
-        coroutineScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             watchManager.registerWatch(watch)
             _finishActivity.postValue(true)
         }
-    }
-
-    override fun onCleared() {
-        super.onCleared()
-        coroutineJob.cancel()
     }
 }
