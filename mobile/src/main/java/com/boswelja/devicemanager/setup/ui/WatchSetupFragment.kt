@@ -53,7 +53,7 @@ class WatchSetupFragment : Fragment() {
             if (it) hideHelpMessage()
             setLoading(it)
         }
-        viewModel.finishActivity.observe(viewLifecycleOwner) {
+        viewModel.newWatchRegistered.observe(viewLifecycleOwner) {
             if (it) {
                 Intent(requireContext(), MainActivity::class.java).also { intent ->
                     startActivity(intent)

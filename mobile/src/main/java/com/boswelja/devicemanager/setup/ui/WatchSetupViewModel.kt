@@ -31,7 +31,7 @@ class WatchSetupViewModel @JvmOverloads constructor(
     val isLoading: LiveData<Boolean>
         get() = _isLoading
 
-    val finishActivity = Event()
+    val newWatchRegistered = Event()
 
     init {
         refreshAvailableWatches()
@@ -49,7 +49,7 @@ class WatchSetupViewModel @JvmOverloads constructor(
     fun registerWatch(watch: Watch) {
         viewModelScope.launch(Dispatchers.IO) {
             watchManager.registerWatch(watch)
-            finishActivity.fire()
+            newWatchRegistered.fire()
         }
     }
 }
