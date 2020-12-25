@@ -12,6 +12,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import com.boswelja.devicemanager.common.Event
 import com.boswelja.devicemanager.watchmanager.WatchManager
 import com.boswelja.devicemanager.watchmanager.item.Watch
 import kotlinx.coroutines.Dispatchers
@@ -29,9 +30,7 @@ class WatchSetupViewModel(application: Application) : AndroidViewModel(applicati
     val isLoading: LiveData<Boolean>
         get() = _isLoading
 
-    private val _finishActivity = MutableLiveData(false)
-    val finishActivity: LiveData<Boolean>
-        get() = _finishActivity
+    val finishActivity = Event()
 
     init {
         refreshAvailableWatches()
@@ -49,7 +48,7 @@ class WatchSetupViewModel(application: Application) : AndroidViewModel(applicati
     fun registerWatch(watch: Watch) {
         viewModelScope.launch(Dispatchers.IO) {
             watchManager.registerWatch(watch)
-            _finishActivity.postValue(true)
+            finishActivity.fire()
         }
     }
 }
