@@ -12,7 +12,7 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.ui.BaseToolbarActivity
-import com.boswelja.devicemanager.databinding.ActivityWatchSetupBinding
+import com.boswelja.devicemanager.databinding.ActivitySetupBinding
 
 class SetupActivity : BaseToolbarActivity() {
 
@@ -22,12 +22,12 @@ class SetupActivity : BaseToolbarActivity() {
             .navController
     }
 
-    private lateinit var binding: ActivityWatchSetupBinding
+    private lateinit var binding: ActivitySetupBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        binding = ActivityWatchSetupBinding.inflate(layoutInflater)
+        binding = ActivitySetupBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         setupToolbar(binding.toolbarLayout.toolbar)
