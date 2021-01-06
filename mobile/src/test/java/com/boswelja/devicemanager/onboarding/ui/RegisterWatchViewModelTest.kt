@@ -1,4 +1,4 @@
-package com.boswelja.devicemanager.setup.ui
+package com.boswelja.devicemanager.onboarding.ui
 
 import android.os.Build
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule

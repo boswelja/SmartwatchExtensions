@@ -73,7 +73,7 @@
             android:exported="false" />
 
         <activity
-            android:name=".setup.ui.SetupActivity"
+            android:name=".onboarding.ui.OnboardingActivity"
             android:exported="false" />
 
         <activity

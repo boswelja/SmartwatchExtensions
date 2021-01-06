@@ -5,16 +5,16 @@
  * This file, and any part of the Wearable Extensions app/s cannot be copied and/or distributed
  * without permission from Jack Boswell (boswelja) <boswela@outlook.com>
  */
-package com.boswelja.devicemanager.setup.ui
+package com.boswelja.devicemanager.onboarding.ui
 
 import android.os.Bundle
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.ui.BaseToolbarActivity
-import com.boswelja.devicemanager.databinding.ActivitySetupBinding
+import com.boswelja.devicemanager.databinding.ActivityOnboardingBinding
 
-class SetupActivity : BaseToolbarActivity() {
+class OnboardingActivity : BaseToolbarActivity() {
 
     private val skippedWelcome by lazy { intent.getBooleanExtra(EXTRA_SKIP_WELCOME, false) }
     private val navController by lazy {
@@ -22,12 +22,12 @@ class SetupActivity : BaseToolbarActivity() {
             .navController
     }
 
-    private lateinit var binding: ActivitySetupBinding
+    private lateinit var binding: ActivityOnboardingBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        binding = ActivitySetupBinding.inflate(layoutInflater)
+        binding = ActivityOnboardingBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         setupToolbar(binding.toolbarLayout.toolbar)

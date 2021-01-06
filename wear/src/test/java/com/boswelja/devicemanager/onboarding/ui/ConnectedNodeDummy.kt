@@ -1,4 +1,4 @@
-package com.boswelja.devicemanager.setup.ui
+package com.boswelja.devicemanager.onboarding.ui
 
 import android.app.Activity
 import com.google.android.gms.tasks.OnFailureListener

@@ -1,4 +1,4 @@
-package com.boswelja.devicemanager.setup.ui
+package com.boswelja.devicemanager.onboarding.ui
 
 import androidx.fragment.app.testing.FragmentScenario
 import androidx.fragment.app.testing.launchFragmentInContainer
@@ -24,7 +24,7 @@ class WelcomeFragmentTest {
         navController = TestNavHostController(ApplicationProvider.getApplicationContext())
         fragmentScenario = launchFragmentInContainer(themeResId = R.style.Theme_App)
         fragmentScenario.onFragment {
-            navController.setGraph(R.navigation.setup_graph)
+            navController.setGraph(R.navigation.onboarding_graph)
             Navigation.setViewNavController(it.requireView(), navController)
         }
     }

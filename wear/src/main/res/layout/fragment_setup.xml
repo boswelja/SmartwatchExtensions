@@ -7,7 +7,7 @@
 
         <variable
             name="viewModel"
-            type="com.boswelja.devicemanager.setup.ui.SetupViewModel" />
+            type="com.boswelja.devicemanager.onboarding.ui.SetupViewModel" />
     </data>
 
     <ScrollView
