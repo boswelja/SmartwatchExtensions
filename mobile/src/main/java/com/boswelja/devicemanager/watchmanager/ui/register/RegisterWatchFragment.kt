@@ -5,7 +5,7 @@
  * This file, and any part of the Wearable Extensions app/s cannot be copied and/or distributed
  * without permission from Jack Boswell (boswelja) <boswela@outlook.com>
  */
-package com.boswelja.devicemanager.setup.ui
+package com.boswelja.devicemanager.watchmanager.ui.register
 
 import android.content.Intent
 import android.os.Bundle
@@ -20,13 +20,14 @@ import androidx.fragment.app.viewModels
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.databinding.FragmentWatchSetupBinding
 import com.boswelja.devicemanager.main.MainActivity
+import com.boswelja.devicemanager.common.ui.adapter.WatchAdapter
 import com.boswelja.devicemanager.watchmanager.WatchStatus
 import com.boswelja.devicemanager.watchmanager.item.Watch
 
-class WatchSetupFragment : Fragment() {
+class RegisterWatchFragment : Fragment() {
 
-    private val adapter by lazy { WatchSetupAdapter { confirmRegisterWatch(it) } }
-    private val viewModel: WatchSetupViewModel by viewModels()
+    private val adapter by lazy { WatchAdapter { confirmRegisterWatch(it) } }
+    private val viewModel: RegisterWatchViewModel by viewModels()
 
     private lateinit var binding: FragmentWatchSetupBinding
 

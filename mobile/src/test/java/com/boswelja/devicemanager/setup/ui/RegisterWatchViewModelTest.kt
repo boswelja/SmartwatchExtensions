@@ -7,6 +7,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.boswelja.devicemanager.getOrAwaitValue
 import com.boswelja.devicemanager.watchmanager.WatchManager
 import com.boswelja.devicemanager.watchmanager.item.Watch
+import com.boswelja.devicemanager.watchmanager.ui.register.RegisterWatchViewModel
 import com.google.common.truth.Truth.assertThat
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
@@ -21,7 +22,7 @@ import org.robolectric.annotation.Config
 
 @RunWith(AndroidJUnit4::class)
 @Config(sdk = [Build.VERSION_CODES.Q])
-class WatchSetupViewModelTest {
+class RegisterWatchViewModelTest {
 
     @get:Rule
     val instantExecutorRule = InstantTaskExecutorRule()
@@ -72,6 +73,6 @@ class WatchSetupViewModelTest {
         }
     }
 
-    private fun getViewModel(): WatchSetupViewModel =
-        WatchSetupViewModel(ApplicationProvider.getApplicationContext(), watchManager)
+    private fun getViewModel(): RegisterWatchViewModel =
+        RegisterWatchViewModel(ApplicationProvider.getApplicationContext(), watchManager)
 }

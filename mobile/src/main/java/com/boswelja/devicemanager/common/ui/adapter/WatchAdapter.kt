@@ -5,7 +5,7 @@
  * This file, and any part of the Wearable Extensions app/s cannot be copied and/or distributed
  * without permission from Jack Boswell (boswelja) <boswela@outlook.com>
  */
-package com.boswelja.devicemanager.setup.ui
+package com.boswelja.devicemanager.common.ui.adapter
 
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
@@ -15,7 +15,7 @@ import com.boswelja.devicemanager.common.recyclerview.item.IconTwoLineViewHolder
 import com.boswelja.devicemanager.watchmanager.WatchStatus
 import com.boswelja.devicemanager.watchmanager.item.Watch
 
-class WatchSetupAdapter(private val clickCallback: (watch: Watch) -> Unit) :
+class WatchAdapter(private val clickCallback: ((watch: Watch) -> Unit)?) :
     ListAdapter<Watch, IconTwoLineViewHolder>(WatchDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): IconTwoLineViewHolder {
@@ -30,12 +30,17 @@ class WatchSetupAdapter(private val clickCallback: (watch: Watch) -> Unit) :
                 when (watch.status) {
                     WatchStatus.NOT_REGISTERED -> R.string.watch_status_not_registered
                     WatchStatus.MISSING_APP -> R.string.watch_status_missing_app
-                    else -> R.string.watch_status_error
+                    WatchStatus.UNKNOWN -> R.string.watch_status_unknown
+                    WatchStatus.ERROR -> R.string.watch_status_error
+                    WatchStatus.DISCONNECTED -> R.string.watch_status_disconnected
+                    WatchStatus.CONNECTED -> R.string.watch_status_connected
                 }
             )
         holder.apply {
             bind(R.drawable.ic_watch, watch.name, summary)
-            itemView.setOnClickListener { clickCallback(watch) }
+            if (clickCallback != null) {
+                itemView.setOnClickListener { clickCallback.invoke(watch) }
+            }
         }
     }
 }
