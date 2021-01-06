@@ -21,7 +21,6 @@
     <fragment
         android:id="@+id/watchSetupFragment"
         android:name="com.boswelja.devicemanager.watchmanager.ui.register.RegisterWatchFragment"
-        android:label="@string/register_watch_toolbar_title"
         tools:layout="@layout/fragment_watch_setup" />
 
 </navigation>

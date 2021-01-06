@@ -31,9 +31,5 @@ class OnboardingActivity : BaseToolbarActivity() {
 
         setupToolbar(binding.toolbarLayout.toolbar)
         NavigationUI.setupActionBarWithNavController(this, navController)
-
-        navController.addOnDestinationChangedListener { _, destination, _ ->
-            supportActionBar?.setDisplayShowTitleEnabled(destination.id == R.id.watchSetupFragment)
-        }
     }
 }
