@@ -16,7 +16,6 @@ import com.boswelja.devicemanager.databinding.ActivityOnboardingBinding
 
 class OnboardingActivity : BaseToolbarActivity() {
 
-    private val skippedWelcome by lazy { intent.getBooleanExtra(EXTRA_SKIP_WELCOME, false) }
     private val navController by lazy {
         (supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment)
             .navController
@@ -36,20 +35,5 @@ class OnboardingActivity : BaseToolbarActivity() {
         navController.addOnDestinationChangedListener { _, destination, _ ->
             supportActionBar?.setDisplayShowTitleEnabled(destination.id == R.id.watchSetupFragment)
         }
-
-        if (skippedWelcome) {
-            navController.navigate(R.id.start_setupFragment)
-        }
-    }
-
-    override fun onSupportNavigateUp(): Boolean {
-        return if (skippedWelcome) {
-            finish()
-            true
-        } else super.onSupportNavigateUp()
-    }
-
-    companion object {
-        const val EXTRA_SKIP_WELCOME = "extra_skip_welcome"
     }
 }

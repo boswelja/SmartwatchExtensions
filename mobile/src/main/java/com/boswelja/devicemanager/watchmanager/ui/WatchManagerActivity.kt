@@ -14,7 +14,6 @@ import com.boswelja.devicemanager.databinding.ActivityWatchManagerBinding
 import com.boswelja.devicemanager.watchmanager.database.WatchDatabase
 import com.boswelja.devicemanager.watchmanager.item.Watch
 import com.boswelja.devicemanager.onboarding.ui.OnboardingActivity
-import com.boswelja.devicemanager.onboarding.ui.OnboardingActivity.Companion.EXTRA_SKIP_WELCOME
 
 class WatchManagerActivity : BaseToolbarActivity() {
 
@@ -42,7 +41,6 @@ class WatchManagerActivity : BaseToolbarActivity() {
     /** Opens a [OnboardingActivity]. */
     private fun openWatchSetupActivity() {
         Intent(this, OnboardingActivity::class.java)
-            .apply { putExtra(EXTRA_SKIP_WELCOME, true) }
             .also { startActivity(it) }
     }
 
