@@ -12,44 +12,59 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.boswelja.devicemanager.common.Event
 import com.boswelja.devicemanager.watchmanager.WatchManager
 import com.boswelja.devicemanager.watchmanager.item.Watch
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import timber.log.Timber
 
-class RegisterWatchViewModel @JvmOverloads constructor(
+/**
+ * A ViewModel for handling the discovery and registration of watches.
+ */
+class RegisterWatchViewModel internal constructor(
     application: Application,
+    autoRegisterOnCreate: Boolean,
     private val watchManager: WatchManager = WatchManager.get(application)
 ) : AndroidViewModel(application) {
 
-    private val _availableWatches = MutableLiveData<List<Watch>?>(null)
-    val availableWatches: LiveData<List<Watch>?>
-        get() = _availableWatches
+    constructor(application: Application
+    ): this(application, true)
 
-    private val _isLoading = MutableLiveData(true)
-    val isLoading: LiveData<Boolean>
-        get() = _isLoading
+    var registeredWatches: List<Watch> = emptyList()
 
-    val newWatchRegistered = Event()
+    private val _isWorking = MutableLiveData(false)
+
+    /**
+     * Notifies observers when the ViewModel is or isn't working (i.e. registering watches)
+     */
+    val isWorking: LiveData<Boolean>
+        get() = _isWorking
 
     init {
-        refreshAvailableWatches()
+        if (autoRegisterOnCreate) registerAvailableWatches()
     }
 
-    fun refreshAvailableWatches() {
-        _isLoading.postValue(true)
+    /**
+     * Gets a list of all watches that are connected, not registered and have Wearable Extensions
+     * installed, and registers each one.
+     */
+    fun registerAvailableWatches() {
+        Timber.d("registerAvailableWatches() called")
         viewModelScope.launch(Dispatchers.IO) {
-            val availableWatches = watchManager.getAvailableWatches()
-            _availableWatches.postValue(availableWatches)
-            _isLoading.postValue(false)
+            suspendRegisterAvailableWatches()
         }
     }
 
-    fun registerWatch(watch: Watch) {
-        viewModelScope.launch(Dispatchers.IO) {
-            watchManager.registerWatch(watch)
-            newWatchRegistered.fire()
+    internal suspend fun suspendRegisterAvailableWatches() {
+        _isWorking.postValue(true)
+        val availableWatches = watchManager.getAvailableWatches()
+        if (availableWatches != null) {
+            availableWatches.forEach { watch ->
+                watchManager.registerWatch(watch)
+            }
+            registeredWatches = availableWatches
         }
+        _isWorking.postValue(false)
     }
 }

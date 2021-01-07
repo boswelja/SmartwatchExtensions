@@ -27,52 +27,79 @@ class RegisterWatchViewModelTest {
     @get:Rule
     val instantExecutorRule = InstantTaskExecutorRule()
 
-    private val dummyWatch = Watch("an-id-1234", "Watch 1")
+    private val dummyWatch1 = Watch("an-id-1234", "Watch 1")
+    private val dummyWatch2 = Watch("an-id-2345", "Watch 2")
+    private val dummyWatch3 = Watch("an-id-3456", "Watch 3")
+    private val dummyWatches = listOf(dummyWatch1, dummyWatch2, dummyWatch3)
 
     @RelaxedMockK private lateinit var watchManager: WatchManager
+    private lateinit var viewModel: RegisterWatchViewModel
 
     @Before
     fun setUp() {
         MockKAnnotations.init(this)
+        viewModel = RegisterWatchViewModel(ApplicationProvider.getApplicationContext(), false, watchManager)
     }
 
     @Test
-    fun `refreshAvailableWatches is called on ViewModel init`(): Unit = runBlocking {
+    fun `isWorking updates correctly when availableWatches is null`(): Unit = runBlocking {
+        // By the time watchManager.getAvailableWatches() is called, isWorking should be true.
+        coEvery { watchManager.getAvailableWatches() } answers {
+            viewModel.isWorking.getOrAwaitValue { assertThat(it).isTrue() }
+            null
+        }
+        viewModel.isWorking.getOrAwaitValue { assertThat(it).isFalse() }
+        viewModel.suspendRegisterAvailableWatches()
+        viewModel.isWorking.getOrAwaitValue { assertThat(it).isFalse() }
+    }
+
+    @Test
+    fun `isWorking updates correctly when availableWatches is empty`(): Unit = runBlocking {
+        // By the time watchManager.getAvailableWatches() is called, isWorking should be true.
+        coEvery { watchManager.getAvailableWatches() } answers {
+            viewModel.isWorking.getOrAwaitValue { assertThat(it).isTrue() }
+            emptyList()
+        }
+        viewModel.isWorking.getOrAwaitValue { assertThat(it).isFalse() }
+        viewModel.suspendRegisterAvailableWatches()
+        viewModel.isWorking.getOrAwaitValue { assertThat(it).isFalse() }
+    }
+
+    @Test
+    fun `isWorking updates correctly when availableWatches is not empty`(): Unit = runBlocking {
+        // By the time watchManager.getAvailableWatches() is called, isWorking should be true.
+        coEvery { watchManager.getAvailableWatches() } answers {
+            viewModel.isWorking.getOrAwaitValue { assertThat(it).isTrue() }
+            dummyWatches
+        }
+        viewModel.isWorking.getOrAwaitValue { assertThat(it).isFalse() }
+        viewModel.suspendRegisterAvailableWatches()
+        viewModel.isWorking.getOrAwaitValue { assertThat(it).isFalse() }
+    }
+
+    @Test
+    fun `registerAvailableWatches registers every watch in availableWatches`(): Unit = runBlocking {
+        coEvery { watchManager.getAvailableWatches() } returns dummyWatches
+        viewModel.suspendRegisterAvailableWatches()
+        dummyWatches.forEach {
+            coVerify(exactly = 1) { watchManager.registerWatch(it) }
+        }
+        coVerify(exactly = 1) { watchManager.getAvailableWatches() }
+    }
+
+    @Test
+    fun `registerAvailableWatches does nothing when availableWatches is null`(): Unit = runBlocking {
         coEvery { watchManager.getAvailableWatches() } returns null
-        val viewModel = getViewModel()
+        viewModel.suspendRegisterAvailableWatches()
+        coVerify(exactly = 0) { watchManager.registerWatch(any()) }
         coVerify(exactly = 1) { watchManager.getAvailableWatches() }
-        viewModel.availableWatches.getOrAwaitValue {
-            assertThat(it).isNull()
-        }
-        viewModel.isLoading.getOrAwaitValue {
-            assertThat(it).isFalse()
-        }
     }
 
     @Test
-    fun `refreshAvailableWatches updates the corresponding LiveData`(): Unit = runBlocking {
-        coEvery { watchManager.getAvailableWatches() } returns listOf(dummyWatch)
-        val viewModel = getViewModel()
+    fun `registerAvailableWatches does nothing when availableWatches is empty`(): Unit = runBlocking {
+        coEvery { watchManager.getAvailableWatches() } returns emptyList()
+        viewModel.suspendRegisterAvailableWatches()
+        coVerify(exactly = 0) { watchManager.registerWatch(any()) }
         coVerify(exactly = 1) { watchManager.getAvailableWatches() }
-        viewModel.availableWatches.getOrAwaitValue {
-            assertThat(it).containsExactly(dummyWatch)
-        }
-        viewModel.isLoading.getOrAwaitValue {
-            assertThat(it).isFalse()
-        }
     }
-
-    @Test
-    fun `registerWatch fires the corresponding event`() {
-        coEvery { watchManager.getAvailableWatches() } returns listOf(dummyWatch)
-        val viewModel = getViewModel()
-        viewModel.registerWatch(dummyWatch)
-        coVerify(exactly = 1) { watchManager.registerWatch(dummyWatch) }
-        viewModel.newWatchRegistered.getOrAwaitValue {
-            assertThat(it).isTrue()
-        }
-    }
-
-    private fun getViewModel(): RegisterWatchViewModel =
-        RegisterWatchViewModel(ApplicationProvider.getApplicationContext(), watchManager)
 }
