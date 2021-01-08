@@ -25,7 +25,7 @@ import com.google.android.gms.wearable.NodeClient
 import com.google.common.truth.Truth.assertThat
 import io.mockk.MockKAnnotations
 import io.mockk.every
-import io.mockk.impl.annotations.MockK
+import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.verify
 import org.junit.After
 import org.junit.Before
@@ -38,34 +38,33 @@ import org.robolectric.annotation.Config
 @Config(sdk = [Build.VERSION_CODES.Q])
 class OnboardingViewModelTest {
 
+    @get:Rule val instantExecutorRule = InstantTaskExecutorRule()
+
     private val dummyPhone = object : Node {
         override fun isNearby(): Boolean = true
-
         override fun getDisplayName(): String = "Phone"
-
         override fun getId(): String = "dummy-phone-id"
     }
 
+    private val dummyLocalNode = object : Node {
+        override fun isNearby(): Boolean = true
+        override fun getDisplayName(): String = "Watch"
+        override fun getId(): String = "dummy-watch-id"
+    }
+
+
     private val watchRegisteredEvent = object : MessageEvent {
         override fun getSourceNodeId(): String = dummyPhone.id
-
         override fun getRequestId(): Int = 0
-
         override fun getPath(): String = WATCH_REGISTERED_PATH
-
         override fun getData(): ByteArray? = null
     }
 
-    private val connectedNodeTask = ConnectedNodeDummy(listOf(dummyPhone))
+    private val localNodeTask = SingleNodeTaskDummy(dummyLocalNode)
+    private val connectedNodeTask = NodeListTaskDummy(listOf(dummyPhone))
 
-    @get:Rule
-    val instantExecutorRule = InstantTaskExecutorRule()
-
-    @MockK(relaxed = true)
-    private lateinit var nodeClient: NodeClient
-
-    @MockK(relaxed = true)
-    private lateinit var messageClient: MessageClient
+    @RelaxedMockK private lateinit var nodeClient: NodeClient
+    @RelaxedMockK private lateinit var messageClient: MessageClient
 
     private lateinit var viewModel: OnboardingViewModel
     private lateinit var sharedPreferences: SharedPreferences
@@ -77,6 +76,7 @@ class OnboardingViewModelTest {
             ApplicationProvider.getApplicationContext()
         )
 
+        every { nodeClient.localNode } returns localNodeTask
         every { nodeClient.connectedNodes } returns connectedNodeTask
 
         viewModel = OnboardingViewModel(
@@ -95,6 +95,7 @@ class OnboardingViewModelTest {
     @Test
     fun `Creating ViewModel gets local node information`() {
         verify { nodeClient.localNode }
+        viewModel.setupNameText.getOrAwaitValue { assertThat(it).isEqualTo(dummyLocalNode.displayName) }
     }
 
     @Test
