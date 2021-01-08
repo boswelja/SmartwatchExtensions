@@ -8,6 +8,8 @@ import androidx.navigation.testing.TestNavHostController
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import com.boswelja.devicemanager.R
 import com.google.common.truth.Truth.assertThat
@@ -27,6 +29,14 @@ class WelcomeFragmentTest {
             navController.setGraph(R.navigation.onboarding_graph)
             Navigation.setViewNavController(it.requireView(), navController)
         }
+    }
+
+    @Test
+    fun uiElementsVisible() {
+        onView(withId(R.id.app_icon)).check(matches(isCompletelyDisplayed()))
+        onView(withId(R.id.welcome_to_text)).check(matches(isCompletelyDisplayed()))
+        onView(withId(R.id.app_name_text)).check(matches(isCompletelyDisplayed()))
+        onView(withId(R.id.get_started_button)).check(matches(isCompletelyDisplayed()))
     }
 
     @Test
