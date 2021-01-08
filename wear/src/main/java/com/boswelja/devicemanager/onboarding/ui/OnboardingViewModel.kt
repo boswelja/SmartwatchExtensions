@@ -12,11 +12,11 @@ import android.content.SharedPreferences
 import androidx.annotation.VisibleForTesting
 import androidx.core.content.edit
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.R
+import com.boswelja.devicemanager.common.Event
 import com.boswelja.devicemanager.common.setup.References
 import com.boswelja.devicemanager.common.setup.References.CHECK_WATCH_REGISTERED_PATH
 import com.boswelja.devicemanager.phoneconnectionmanager.References.PHONE_ID_KEY
@@ -40,14 +40,12 @@ constructor(
             when (it.path) {
                 References.WATCH_REGISTERED_PATH -> {
                     sharedPreferences.edit { putString(PHONE_ID_KEY, it.sourceNodeId) }
-                    _watchRegistered.postValue(true)
+                    onWatchRegistered.fire()
                 }
             }
         }
 
-    private val _watchRegistered = MutableLiveData(false)
-    val watchRegistered: LiveData<Boolean>
-        get() = _watchRegistered
+    val onWatchRegistered = Event()
 
     private val _localName = MutableLiveData<String?>(null)
     val setupNameText =

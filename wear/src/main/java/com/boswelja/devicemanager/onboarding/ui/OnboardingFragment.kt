@@ -34,8 +34,8 @@ class OnboardingFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        viewModel.watchRegistered.observe(viewLifecycleOwner) {
-            if (it) findNavController().navigate(OnboardingFragmentDirections.toExtensionsFragment())
+        viewModel.onWatchRegistered.observe(viewLifecycleOwner) {
+            findNavController().navigate(OnboardingFragmentDirections.toExtensionsFragment())
         }
     }
 }

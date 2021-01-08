@@ -102,7 +102,7 @@ class OnboardingViewModelTest {
         // 'Send' event
         viewModel.messageListener.onMessageReceived(watchRegisteredEvent)
         assertThat(sharedPreferences.getString(PHONE_ID_KEY, "")).isEqualTo(dummyPhone.id)
-        viewModel.watchRegistered.getOrAwaitValue {
+        viewModel.onWatchRegistered.getOrAwaitValue {
             assertThat(it).isTrue()
         }
     }
