@@ -14,20 +14,20 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
-import com.boswelja.devicemanager.databinding.FragmentSetupBinding
+import com.boswelja.devicemanager.databinding.FragmentOnboardingBinding
 
-class SetupFragment : Fragment() {
+class OnboardingFragment : Fragment() {
 
-    private val viewModel: SetupViewModel by viewModels()
+    private val viewModel: OnboardingViewModel by viewModels()
 
-    private lateinit var binding: FragmentSetupBinding
+    private lateinit var binding: FragmentOnboardingBinding
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentSetupBinding.inflate(layoutInflater, container, false)
+        binding = FragmentOnboardingBinding.inflate(layoutInflater, container, false)
         binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
         return binding.root
@@ -35,7 +35,7 @@ class SetupFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         viewModel.watchRegistered.observe(viewLifecycleOwner) {
-            if (it) findNavController().navigate(SetupFragmentDirections.toExtensionsFragment())
+            if (it) findNavController().navigate(OnboardingFragmentDirections.toExtensionsFragment())
         }
     }
 }

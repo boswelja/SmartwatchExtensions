@@ -24,7 +24,7 @@ import com.google.android.gms.wearable.MessageClient
 import com.google.android.gms.wearable.NodeClient
 import com.google.android.gms.wearable.Wearable
 
-class SetupViewModel
+class OnboardingViewModel
 @JvmOverloads
 constructor(
     application: Application,

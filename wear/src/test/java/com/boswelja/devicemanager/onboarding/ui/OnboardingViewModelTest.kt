@@ -36,7 +36,7 @@ import org.robolectric.annotation.Config
 
 @RunWith(AndroidJUnit4::class)
 @Config(sdk = [Build.VERSION_CODES.Q])
-class SetupViewModelTest {
+class OnboardingViewModelTest {
 
     private val dummyPhone = object : Node {
         override fun isNearby(): Boolean = true
@@ -67,7 +67,7 @@ class SetupViewModelTest {
     @MockK(relaxed = true)
     private lateinit var messageClient: MessageClient
 
-    private lateinit var viewModel: SetupViewModel
+    private lateinit var viewModel: OnboardingViewModel
     private lateinit var sharedPreferences: SharedPreferences
 
     @Before
@@ -79,7 +79,7 @@ class SetupViewModelTest {
 
         every { nodeClient.connectedNodes } returns connectedNodeTask
 
-        viewModel = SetupViewModel(
+        viewModel = OnboardingViewModel(
             ApplicationProvider.getApplicationContext(),
             nodeClient,
             messageClient,
