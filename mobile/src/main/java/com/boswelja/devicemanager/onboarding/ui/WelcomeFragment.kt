@@ -13,7 +13,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
-import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.databinding.FragmentWelcomeBinding
 
 class WelcomeFragment : Fragment() {
@@ -31,7 +30,7 @@ class WelcomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         binding.getStartedButton.setOnClickListener {
-            findNavController().navigate(R.id.to_setupFragment)
+            findNavController().navigate(WelcomeFragmentDirections.toSetupFragment())
         }
     }
 }
