@@ -137,6 +137,8 @@ object AndroidTestLibraries {
         const val androidxWork = Libraries.Versions.androidxWork
 
         const val truth = TestLibraries.Versions.truth
+
+        const val mockk = TestLibraries.Versions.mockk
     }
 
     const val androidxArch = "androidx.arch.core:core-testing:${Versions.androidxArch}"
@@ -151,4 +153,7 @@ object AndroidTestLibraries {
     const val androidxWork = "androidx.work:work-testing:${Versions.androidxWork}"
 
     const val googleTruth = "com.google.truth:truth:${Versions.truth}"
+
+    const val mockk = "io.mockk:mockk-android:${Versions.mockk}"
+
 }
