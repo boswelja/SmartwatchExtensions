@@ -17,7 +17,7 @@ class NodeListTaskDummy(private val dummyResult: List<Node>) : Task<List<Node>>(
 
     override fun getResult(): List<Node> = dummyResult
 
-    override fun <X : Throwable?> getResult(p0: Class<X>): List<Node>? = result
+    override fun <X : Throwable?> getResult(p0: Class<X>): List<Node> = result
 
     override fun getException(): Exception? = null
 

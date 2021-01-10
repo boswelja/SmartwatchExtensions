@@ -52,7 +52,6 @@ class OnboardingViewModelTest {
         override fun getId(): String = "dummy-watch-id"
     }
 
-
     private val watchRegisteredEvent = object : MessageEvent {
         override fun getSourceNodeId(): String = dummyPhone.id
         override fun getRequestId(): Int = 0
@@ -95,7 +94,9 @@ class OnboardingViewModelTest {
     @Test
     fun `Creating ViewModel gets local node information`() {
         verify { nodeClient.localNode }
-        viewModel.setupNameText.getOrAwaitValue { assertThat(it).isEqualTo(dummyLocalNode.displayName) }
+        viewModel.setupNameText.getOrAwaitValue {
+            assertThat(it).isEqualTo(dummyLocalNode.displayName)
+        }
     }
 
     @Test

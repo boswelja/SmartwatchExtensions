@@ -11,9 +11,9 @@ import android.content.Intent
 import android.os.Bundle
 import com.boswelja.devicemanager.common.ui.BaseToolbarActivity
 import com.boswelja.devicemanager.databinding.ActivityWatchManagerBinding
+import com.boswelja.devicemanager.onboarding.ui.OnboardingActivity
 import com.boswelja.devicemanager.watchmanager.database.WatchDatabase
 import com.boswelja.devicemanager.watchmanager.item.Watch
-import com.boswelja.devicemanager.onboarding.ui.OnboardingActivity
 
 class WatchManagerActivity : BaseToolbarActivity() {
 
