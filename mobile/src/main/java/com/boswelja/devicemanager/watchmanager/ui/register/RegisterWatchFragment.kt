@@ -49,7 +49,7 @@ class RegisterWatchFragment : Fragment() {
      * Sets whether the loading view should be shown.
      * @param loading true if the loading view should be shown, false otherwise
      */
-    private fun setLoading(loading: Boolean) {
+    internal fun setLoading(loading: Boolean) {
         Timber.d("setLoading($loading)")
         childFragmentManager.beginTransaction().apply {
             if (loading) {
