@@ -11,10 +11,9 @@ import android.content.Intent
 import android.os.Bundle
 import com.boswelja.devicemanager.common.ui.BaseToolbarActivity
 import com.boswelja.devicemanager.databinding.ActivityWatchManagerBinding
+import com.boswelja.devicemanager.onboarding.ui.OnboardingActivity
 import com.boswelja.devicemanager.watchmanager.database.WatchDatabase
 import com.boswelja.devicemanager.watchmanager.item.Watch
-import com.boswelja.devicemanager.watchsetup.ui.WatchSetupActivity
-import com.boswelja.devicemanager.watchsetup.ui.WatchSetupActivity.Companion.EXTRA_SKIP_WELCOME
 
 class WatchManagerActivity : BaseToolbarActivity() {
 
@@ -39,10 +38,9 @@ class WatchManagerActivity : BaseToolbarActivity() {
         database.watchDao().getAllObservable().observe(this) { adapter.submitList(it) }
     }
 
-    /** Opens a [WatchSetupActivity]. */
+    /** Opens a [OnboardingActivity]. */
     private fun openWatchSetupActivity() {
-        Intent(this, WatchSetupActivity::class.java)
-            .apply { putExtra(EXTRA_SKIP_WELCOME, true) }
+        Intent(this, OnboardingActivity::class.java)
             .also { startActivity(it) }
     }
 

@@ -160,14 +160,10 @@
     <string name="watch_manager_add_watch_title">Add Watch</string>
     <string name="watch_manager_registered_watch_header">Registered Watches</string>
 
-    <!-- Watch Setup strings -->
-    <string name="register_watch_toolbar_title">Add a Watch</string>
-    <string name="register_watch_dialog_title">Add %s?</string>
-    <string name="register_watch_dialog_message">This will add your %s to Wearable Extensions.</string>
-    <string name="register_watch_message_no_watches">No new watches found. Make sure the watch you want to add is turned on and nearby.</string>
-    <string name="register_watch_button_refresh">Refresh</string>
-    <string name="missing_app_dialog_title">Missing Wearable Extensions</string>
-    <string name="missing_app_dialog_message">Your %s doesn\'t have Wearable Extensions installed, please install it from the Play Store and try again.</string>
+    <!-- Register Watch strings -->
+    <string name="register_watch_no_watches_title">No new watches found</string>
+    <string name="register_watch_no_watches_info">Make sure your watch is turned on, is nearby, and has Wearable Extensions installed.</string>
+    <string name="register_watch_success_info">We found the following watches, and got them all set up for you.</string>
 
     <!-- Boot & Update handler notification strings -->
     <string name="notification_boot_handler_title">Starting required services</string>
@@ -222,6 +218,8 @@
     <string name="donate_title">Donate</string>
 
     <string name="button_undo">Undo</string>
+    <string name="button_done">Done</string>
+    <string name="button_retry">Try Again</string>
 
     <string name="privacy_policy_url" translatable="false">https://github.com/boswelja/WearableExtensions/blob/main/PRIVACY.md</string>
     <string name="github_url" translatable="false">https://github.com/boswelja/WearableExtensions</string>

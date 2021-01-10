@@ -97,7 +97,9 @@ dependencies {
     testImplementation(TestLibraries.robolectric)
 
     androidTestImplementation(AndroidTestLibraries.androidxEspresso)
+    androidTestImplementation(AndroidTestLibraries.androidxNavigation)
     androidTestImplementation(AndroidTestLibraries.androidxTestRunner)
     androidTestImplementation(AndroidTestLibraries.androidxTestRules)
     androidTestImplementation(AndroidTestLibraries.googleTruth)
+    androidTestImplementation(AndroidTestLibraries.mockk)
 }

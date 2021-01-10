@@ -4,7 +4,7 @@ const val kotlinVersion = "1.4.21"
 
 object BuildPlugins {
     object Versions {
-        const val buildToolsVersion = "7.0.0-alpha03"
+        const val buildToolsVersion = "7.0.0-alpha04"
         const val googleServicesVersion = "4.3.3"
         const val androidxNavigation = Libraries.Versions.androidxNavigation
     }
@@ -137,6 +137,8 @@ object AndroidTestLibraries {
         const val androidxWork = Libraries.Versions.androidxWork
 
         const val truth = TestLibraries.Versions.truth
+
+        const val mockk = TestLibraries.Versions.mockk
     }
 
     const val androidxArch = "androidx.arch.core:core-testing:${Versions.androidxArch}"
@@ -151,4 +153,6 @@ object AndroidTestLibraries {
     const val androidxWork = "androidx.work:work-testing:${Versions.androidxWork}"
 
     const val googleTruth = "com.google.truth:truth:${Versions.truth}"
+
+    const val mockk = "io.mockk:mockk-android:${Versions.mockk}"
 }

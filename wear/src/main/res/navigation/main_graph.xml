@@ -23,7 +23,7 @@
 
     <fragment
         android:id="@+id/setupFragment"
-        android:name="com.boswelja.devicemanager.setup.ui.SetupFragment">
+        android:name="com.boswelja.devicemanager.onboarding.ui.OnboardingFragment">
 
         <action
             android:id="@+id/to_extensionsFragment"
