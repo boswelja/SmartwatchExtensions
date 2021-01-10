@@ -13,6 +13,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.commit
 import androidx.fragment.app.viewModels
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.ui.LoadingFragment
@@ -51,15 +52,13 @@ class RegisterWatchFragment : Fragment() {
      */
     internal fun setLoading(loading: Boolean) {
         Timber.d("setLoading($loading)")
-        childFragmentManager.beginTransaction().apply {
+        childFragmentManager.commit {
             if (loading) {
                 replace(requireView().id, loadingFragment)
             } else {
                 replace(requireView().id, registerResultsFragment)
             }
             setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)
-        }.also {
-            it.commit()
         }
     }
 }
