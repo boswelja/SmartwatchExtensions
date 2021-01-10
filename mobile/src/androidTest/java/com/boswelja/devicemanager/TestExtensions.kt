@@ -20,13 +20,13 @@ import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
 import androidx.test.espresso.matcher.ViewMatchers.isAssignableFrom
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import java.util.concurrent.CountDownLatch
+import java.util.concurrent.TimeUnit
+import java.util.concurrent.TimeoutException
 import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.Matchers.allOf
 import org.hamcrest.TypeSafeMatcher
-import java.util.concurrent.CountDownLatch
-import java.util.concurrent.TimeUnit
-import java.util.concurrent.TimeoutException
 
 object TestExtensions {
 
@@ -54,7 +54,9 @@ object TestExtensions {
 
     fun hasPlural(@StringRes id: Int, quantity: Int) = object : TypeSafeMatcher<View>() {
         override fun describeTo(description: Description) {
-            description.appendText("TextView with text same as plural with id $id and quantity $quantity")
+            description.appendText(
+                "TextView with text same as plural with id $id and quantity $quantity"
+            )
         }
 
         override fun matchesSafely(view: View): Boolean {
@@ -96,20 +98,20 @@ object TestExtensions {
     }
 
     fun <T> LiveData<T>.getOrAwaitValue(
-            time: Long = 2,
-            timeUnit: TimeUnit = TimeUnit.SECONDS,
-            afterObserve: (value: T?) -> Unit = {}
+        time: Long = 2,
+        timeUnit: TimeUnit = TimeUnit.SECONDS,
+        afterObserve: (value: T?) -> Unit = {}
     ): T {
         var data: T? = null
         val latch = CountDownLatch(1)
         val observer =
-                object : Observer<T?> {
-                    override fun onChanged(t: T?) {
-                        data = t
-                        latch.countDown()
-                        this@getOrAwaitValue.removeObserver(this)
-                    }
+            object : Observer<T?> {
+                override fun onChanged(t: T?) {
+                    data = t
+                    latch.countDown()
+                    this@getOrAwaitValue.removeObserver(this)
                 }
+            }
         this.observeForever(observer)
 
         afterObserve.invoke(data)
@@ -123,5 +125,4 @@ object TestExtensions {
         @Suppress("UNCHECKED_CAST")
         return data as T
     }
-
 }
