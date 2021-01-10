@@ -38,7 +38,11 @@ class RegisterWatchViewModelTest {
     @Before
     fun setUp() {
         MockKAnnotations.init(this)
-        viewModel = RegisterWatchViewModel(ApplicationProvider.getApplicationContext(), false, watchManager)
+        viewModel = RegisterWatchViewModel(
+            ApplicationProvider.getApplicationContext(),
+            false,
+            watchManager
+        )
     }
 
     @Test
@@ -88,18 +92,20 @@ class RegisterWatchViewModelTest {
     }
 
     @Test
-    fun `registerAvailableWatches does nothing when availableWatches is null`(): Unit = runBlocking {
-        coEvery { watchManager.getAvailableWatches() } returns null
-        viewModel.suspendRegisterAvailableWatches()
-        coVerify(exactly = 0) { watchManager.registerWatch(any()) }
-        coVerify(exactly = 1) { watchManager.getAvailableWatches() }
-    }
+    fun `registerAvailableWatches does nothing when availableWatches is null`(): Unit =
+        runBlocking {
+            coEvery { watchManager.getAvailableWatches() } returns null
+            viewModel.suspendRegisterAvailableWatches()
+            coVerify(exactly = 0) { watchManager.registerWatch(any()) }
+            coVerify(exactly = 1) { watchManager.getAvailableWatches() }
+        }
 
     @Test
-    fun `registerAvailableWatches does nothing when availableWatches is empty`(): Unit = runBlocking {
-        coEvery { watchManager.getAvailableWatches() } returns emptyList()
-        viewModel.suspendRegisterAvailableWatches()
-        coVerify(exactly = 0) { watchManager.registerWatch(any()) }
-        coVerify(exactly = 1) { watchManager.getAvailableWatches() }
-    }
+    fun `registerAvailableWatches does nothing when availableWatches is empty`(): Unit =
+        runBlocking {
+            coEvery { watchManager.getAvailableWatches() } returns emptyList()
+            viewModel.suspendRegisterAvailableWatches()
+            coVerify(exactly = 0) { watchManager.registerWatch(any()) }
+            coVerify(exactly = 1) { watchManager.getAvailableWatches() }
+        }
 }

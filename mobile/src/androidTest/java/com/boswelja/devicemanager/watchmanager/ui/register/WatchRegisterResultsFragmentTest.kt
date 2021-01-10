@@ -5,7 +5,10 @@ import androidx.fragment.app.testing.launchFragmentInContainer
 import androidx.fragment.app.viewModels
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.matcher.ViewMatchers.*
+import androidx.test.espresso.matcher.ViewMatchers
+import androidx.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.withEffectiveVisibility
+import androidx.test.espresso.matcher.ViewMatchers.withId
 import com.boswelja.devicemanager.EmptyParentFragment
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.TestExtensions.getOrAwaitValue
@@ -36,8 +39,8 @@ class WatchRegisterResultsFragmentTest {
         fragmentScenario.onFragment {
             viewModel = it.viewModels<RegisterWatchViewModel>().value
             it.childFragmentManager.beginTransaction()
-                    .replace(R.id.fragment_holder, fragment)
-                    .commitNow()
+                .replace(R.id.fragment_holder, fragment)
+                .commitNow()
         }
     }
 
@@ -49,16 +52,17 @@ class WatchRegisterResultsFragmentTest {
             fragment.showWatchesRegistered(dummyWatches)
         }
         onView(withId(R.id.status_indicator))
-                .check(matches(withDrawable(R.drawable.wizard_ic_success)))
-                .check(matches(isCompletelyDisplayed()))
+            .check(matches(withDrawable(R.drawable.wizard_ic_success)))
+            .check(matches(isCompletelyDisplayed()))
         onView(withId(R.id.status_title))
-                .check(matches(hasPlural(R.plurals.register_watch_success_title, dummyWatches.count())))
-                .check(matches(isCompletelyDisplayed()))
+            .check(matches(hasPlural(R.plurals.register_watch_success_title, dummyWatches.count())))
+            .check(matches(isCompletelyDisplayed()))
         onView(withId(R.id.status_text))
-                .check(matches(hasText(R.string.register_watch_success_info)))
-                .check(matches(isCompletelyDisplayed()))
+            .check(matches(hasText(R.string.register_watch_success_info)))
+            .check(matches(isCompletelyDisplayed()))
         onView(withId(R.id.finish_button)).check(matches(isCompletelyDisplayed()))
-        onView(withId(R.id.try_again_button)).check(matches(withEffectiveVisibility(Visibility.GONE)))
+        onView(withId(R.id.try_again_button))
+            .check(matches(withEffectiveVisibility(ViewMatchers.Visibility.GONE)))
     }
 
     @Test
@@ -69,16 +73,17 @@ class WatchRegisterResultsFragmentTest {
             fragment.showWatchesRegistered(listOf(dummyWatch1))
         }
         onView(withId(R.id.status_indicator))
-                .check(matches(withDrawable(R.drawable.wizard_ic_success)))
-                .check(matches(isCompletelyDisplayed()))
+            .check(matches(withDrawable(R.drawable.wizard_ic_success)))
+            .check(matches(isCompletelyDisplayed()))
         onView(withId(R.id.status_title))
-                .check(matches(hasPlural(R.plurals.register_watch_success_title, 1)))
-                .check(matches(isCompletelyDisplayed()))
+            .check(matches(hasPlural(R.plurals.register_watch_success_title, 1)))
+            .check(matches(isCompletelyDisplayed()))
         onView(withId(R.id.status_text))
-                .check(matches(hasText(R.string.register_watch_success_info)))
-                .check(matches(isCompletelyDisplayed()))
+            .check(matches(hasText(R.string.register_watch_success_info)))
+            .check(matches(isCompletelyDisplayed()))
         onView(withId(R.id.finish_button)).check(matches(isCompletelyDisplayed()))
-        onView(withId(R.id.try_again_button)).check(matches(withEffectiveVisibility(Visibility.GONE)))
+        onView(withId(R.id.try_again_button))
+            .check(matches(withEffectiveVisibility(ViewMatchers.Visibility.GONE)))
     }
 
     @Test
@@ -89,17 +94,17 @@ class WatchRegisterResultsFragmentTest {
             fragment.showNoChanges()
         }
         onView(withId(R.id.status_indicator))
-                .check(matches(withDrawable(R.drawable.wizard_ic_warning)))
-                .check(matches(isCompletelyDisplayed()))
+            .check(matches(withDrawable(R.drawable.wizard_ic_warning)))
+            .check(matches(isCompletelyDisplayed()))
         onView(withId(R.id.status_title))
-                .check(matches(hasText(R.string.register_watch_no_watches_title)))
-                .check(matches(isCompletelyDisplayed()))
+            .check(matches(hasText(R.string.register_watch_no_watches_title)))
+            .check(matches(isCompletelyDisplayed()))
         onView(withId(R.id.status_text))
-                .check(matches(hasText(R.string.register_watch_no_watches_info)))
-                .check(matches(isCompletelyDisplayed()))
+            .check(matches(hasText(R.string.register_watch_no_watches_info)))
+            .check(matches(isCompletelyDisplayed()))
         onView(withId(R.id.finish_button)).check(matches(isCompletelyDisplayed()))
         onView(withId(R.id.try_again_button))
-                .check(matches(withEffectiveVisibility(Visibility.VISIBLE)))
-                .check(matches(isCompletelyDisplayed()))
+            .check(matches(withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE)))
+            .check(matches(isCompletelyDisplayed()))
     }
 }

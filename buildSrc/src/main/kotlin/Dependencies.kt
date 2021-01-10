@@ -155,5 +155,4 @@ object AndroidTestLibraries {
     const val googleTruth = "com.google.truth:truth:${Versions.truth}"
 
     const val mockk = "io.mockk:mockk-android:${Versions.mockk}"
-
 }

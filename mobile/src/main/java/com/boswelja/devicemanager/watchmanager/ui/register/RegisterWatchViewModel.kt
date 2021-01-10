@@ -16,7 +16,6 @@ import com.boswelja.devicemanager.watchmanager.WatchManager
 import com.boswelja.devicemanager.watchmanager.item.Watch
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import timber.log.Timber
 
 /**
@@ -28,8 +27,10 @@ class RegisterWatchViewModel internal constructor(
     private val watchManager: WatchManager = WatchManager.get(application)
 ) : AndroidViewModel(application) {
 
-    constructor(application: Application
-    ): this(application, true)
+    @Suppress("unused")
+    constructor(
+        application: Application
+    ) : this(application, true)
 
     var registeredWatches: List<Watch> = emptyList()
 

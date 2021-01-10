@@ -22,9 +22,9 @@ class WatchRegisterResultsFragment : Fragment() {
     private lateinit var binding: FragmentWatchRegisterResultsBinding
 
     override fun onCreateView(
-            inflater: LayoutInflater,
-            container: ViewGroup?,
-            savedInstanceState: Bundle?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View {
         binding = FragmentWatchRegisterResultsBinding.inflate(inflater, container, false)
         return binding.root
@@ -56,7 +56,7 @@ class WatchRegisterResultsFragment : Fragment() {
         adapter.submitList(watches)
         binding.tryAgainButton.visibility = View.GONE
         binding.statusTitle.text =
-                resources.getQuantityText(R.plurals.register_watch_success_title, watches.count())
+            resources.getQuantityText(R.plurals.register_watch_success_title, watches.count())
         binding.statusText.text = getString(R.string.register_watch_success_info)
         binding.statusIndicator.setImageResource(R.drawable.wizard_ic_success)
     }
@@ -69,6 +69,5 @@ class WatchRegisterResultsFragment : Fragment() {
         binding.statusTitle.text = getString(R.string.register_watch_no_watches_title)
         binding.statusText.text = getString(R.string.register_watch_no_watches_info)
         binding.statusIndicator.setImageResource(R.drawable.wizard_ic_warning)
-
     }
 }

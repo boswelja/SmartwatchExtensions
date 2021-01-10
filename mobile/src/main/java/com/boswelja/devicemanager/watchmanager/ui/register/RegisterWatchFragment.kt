@@ -24,7 +24,9 @@ class RegisterWatchFragment : Fragment() {
     private val viewModel: RegisterWatchViewModel by viewModels()
 
     private val loadingFragment: LoadingFragment by lazy { LoadingFragment() }
-    private val registerResultsFragment: WatchRegisterResultsFragment by lazy { WatchRegisterResultsFragment() }
+    private val registerResultsFragment: WatchRegisterResultsFragment by lazy {
+        WatchRegisterResultsFragment()
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -34,8 +36,8 @@ class RegisterWatchFragment : Fragment() {
         val view = FrameLayout(requireContext())
         view.id = R.id.fragment_holder
         view.layoutParams = ViewGroup.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.MATCH_PARENT
+            ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.MATCH_PARENT
         )
         return view
     }

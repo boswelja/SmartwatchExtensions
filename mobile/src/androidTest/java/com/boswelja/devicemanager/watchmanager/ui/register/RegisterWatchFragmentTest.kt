@@ -27,13 +27,16 @@ class RegisterWatchFragmentTest {
     fun loadingShowsLoadingFragment() {
         fragmentScenario.onFragment {
             // Wait for ViewModel to finish working, then force transactions to execute
-            viewModel.isWorking.getOrAwaitValue(time = 5) { isWorking -> assertThat(isWorking).isFalse() }
+            viewModel.isWorking.getOrAwaitValue(time = 5) { isWorking ->
+                assertThat(isWorking).isFalse()
+            }
             it.childFragmentManager.executePendingTransactions()
             // Set new state, then force transactions to execute
             it.setLoading(true)
             it.childFragmentManager.executePendingTransactions()
             // Check the correct fragment is shown
-            assertThat(it.childFragmentManager.findFragmentById(R.id.fragment_holder)).isInstanceOf(LoadingFragment::class.java)
+            assertThat(it.childFragmentManager.findFragmentById(R.id.fragment_holder))
+                .isInstanceOf(LoadingFragment::class.java)
         }
     }
 
@@ -41,13 +44,16 @@ class RegisterWatchFragmentTest {
     fun noLoadingShowsResultFragment() {
         fragmentScenario.onFragment {
             // Wait for ViewModel to finish working, then force transactions to execute
-            viewModel.isWorking.getOrAwaitValue(time = 5) { isWorking -> assertThat(isWorking).isFalse() }
+            viewModel.isWorking.getOrAwaitValue(time = 5) { isWorking ->
+                assertThat(isWorking).isFalse()
+            }
             it.childFragmentManager.executePendingTransactions()
             // Set new state, then force transactions to execute
             it.setLoading(false)
             it.childFragmentManager.executePendingTransactions()
             // Check the correct fragment is shown
-            assertThat(it.childFragmentManager.findFragmentById(R.id.fragment_holder)).isInstanceOf(WatchRegisterResultsFragment::class.java)
+            assertThat(it.childFragmentManager.findFragmentById(R.id.fragment_holder))
+                .isInstanceOf(WatchRegisterResultsFragment::class.java)
         }
     }
 }
