@@ -52,7 +52,7 @@ class WatchRegisterResultsFragment : Fragment() {
     /**
      * Set up views to show the watches that were registered.
      */
-    private fun showWatchesRegistered(watches: List<Watch>) {
+    internal fun showWatchesRegistered(watches: List<Watch>) {
         adapter.submitList(watches)
         binding.tryAgainButton.visibility = View.GONE
         binding.statusTitle.text =
@@ -64,7 +64,7 @@ class WatchRegisterResultsFragment : Fragment() {
     /**
      * Set up views to notify the user that no watches were found.
      */
-    private fun showNoChanges() {
+    internal fun showNoChanges() {
         binding.tryAgainButton.visibility = View.VISIBLE
         binding.statusTitle.text = getString(R.string.register_watch_no_watches_title)
         binding.statusText.text = getString(R.string.register_watch_no_watches_info)
