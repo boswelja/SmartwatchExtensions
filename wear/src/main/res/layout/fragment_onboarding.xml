@@ -7,10 +7,11 @@
 
         <variable
             name="viewModel"
-            type="com.boswelja.devicemanager.setup.ui.SetupViewModel" />
+            type="com.boswelja.devicemanager.onboarding.ui.OnboardingViewModel" />
     </data>
 
     <ScrollView
+        android:id="@+id/scroll_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 

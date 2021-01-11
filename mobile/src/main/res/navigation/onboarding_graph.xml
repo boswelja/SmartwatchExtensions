@@ -7,25 +7,20 @@
 
     <fragment
         android:id="@+id/welcomeFragment"
-        android:name="com.boswelja.devicemanager.watchsetup.ui.WelcomeFragment"
+        android:name="com.boswelja.devicemanager.onboarding.ui.WelcomeFragment"
         tools:layout="@layout/fragment_welcome">
         <action
             android:id="@+id/to_setupFragment"
             app:destination="@id/watchSetupFragment"
             app:enterAnim="@anim/slide_in_right"
-            app:exitAnim="@anim/slide_out_left" />
-
-        <action
-            android:id="@+id/start_setupFragment"
-            app:destination="@id/watchSetupFragment"
-            app:popUpTo="@id/welcomeFragment"
-            app:popUpToInclusive="true" />
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
     </fragment>
 
     <fragment
         android:id="@+id/watchSetupFragment"
-        android:name="com.boswelja.devicemanager.watchsetup.ui.WatchSetupFragment"
-        android:label="@string/register_watch_toolbar_title"
-        tools:layout="@layout/fragment_watch_setup" />
+        android:name="com.boswelja.devicemanager.watchmanager.ui.register.RegisterWatchFragment"
+        tools:layout="@layout/fragment_watch_register_results" />
 
 </navigation>

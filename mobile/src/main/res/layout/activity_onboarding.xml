@@ -18,6 +18,6 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/toolbar_layout"
-        app:navGraph="@navigation/setup_graph" />
+        app:navGraph="@navigation/onboarding_graph" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
