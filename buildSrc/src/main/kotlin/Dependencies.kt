@@ -5,7 +5,7 @@ const val kotlinVersion = "1.4.21"
 object BuildPlugins {
     object Versions {
         const val buildToolsVersion = "7.0.0-alpha04"
-        const val googleServicesVersion = "4.3.3"
+        const val googleServicesVersion = "4.3.4"
         const val androidxNavigation = Libraries.Versions.androidxNavigation
     }
 

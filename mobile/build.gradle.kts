@@ -59,6 +59,9 @@ dependencies {
     implementation(project(":common"))
     implementation(kotlin("reflect"))
 
+    implementation(platform("com.google.firebase:firebase-bom:26.2.0"))
+    implementation("com.google.firebase:firebase-analytics-ktx")
+
     implementation(Libraries.androidxAppCompat)
     implementation(Libraries.androidxBrowser)
     implementation(Libraries.androidxConstraintLayout)
