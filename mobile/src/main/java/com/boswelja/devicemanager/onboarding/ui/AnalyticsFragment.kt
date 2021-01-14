@@ -58,5 +58,4 @@ class AnalyticsFragment : Fragment() {
         Timber.d("showPrivacyPolicy() called")
         customTabsIntent.launchUrl(requireContext(), getString(R.string.privacy_policy_url).toUri())
     }
-
 }
