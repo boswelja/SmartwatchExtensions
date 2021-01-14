@@ -1,15 +1,28 @@
 package com.boswelja.devicemanager.analytics
 
 import android.content.Context
+import android.content.SharedPreferences
 import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.common.preference.SyncPreferences
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.ktx.logEvent
 
-class Analytics(context: Context) {
-    private val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
-    private val firebaseAnalytics: FirebaseAnalytics by lazy {
-        FirebaseAnalytics.getInstance(context)
+class Analytics {
+
+    private val sharedPreferences: SharedPreferences
+    private val firebaseAnalytics: FirebaseAnalytics
+
+    internal constructor(
+        firebaseAnalytics: FirebaseAnalytics,
+        sharedPreferences: SharedPreferences
+    ) {
+        this.sharedPreferences = sharedPreferences
+        this.firebaseAnalytics = firebaseAnalytics
+    }
+
+    constructor(context: Context) {
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
+        firebaseAnalytics = FirebaseAnalytics.getInstance(context)
     }
 
     fun logSettingChanged(key: String, value: Any) {
