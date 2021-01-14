@@ -23,6 +23,16 @@
         android:key="daynight_mode"
         android:title="@string/pref_daynight_title" />
 
+    <androidx.preference.PreferenceCategory
+        android:title="@string/pref_category_analytics">
+
+        <androidx.preference.CheckBoxPreference
+            android:key="send_analytics"
+            android:title="@string/pref_analytics_title"
+            android:defaultValue="false" />
+
+    </androidx.preference.PreferenceCategory>
+
     <androidx.preference.PreferenceCategory android:title="@string/pref_category_watch_connection">
 
         <androidx.preference.Preference
