@@ -52,9 +52,6 @@ android {
 dependencies {
     implementation(project(":common"))
 
-    implementation(platform("com.google.firebase:firebase-bom:26.2.0"))
-    implementation("com.google.firebase:firebase-analytics-ktx")
-
     implementation(Libraries.androidxAppCompat)
     implementation(Libraries.androidxConstraintLayout)
     implementation(Libraries.androidxCoreKtx)
