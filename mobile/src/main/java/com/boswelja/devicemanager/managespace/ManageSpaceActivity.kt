@@ -16,6 +16,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.core.content.edit
 import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.R
+import com.boswelja.devicemanager.analytics.Analytics
 import com.boswelja.devicemanager.batterysync.BatterySyncWorker
 import com.boswelja.devicemanager.batterysync.database.WatchBatteryStatsDatabase
 import com.boswelja.devicemanager.common.ui.BaseToolbarActivity
@@ -40,6 +41,7 @@ class ManageSpaceActivity : BaseToolbarActivity() {
     private lateinit var binding: ActivityManageSpaceBinding
     private lateinit var activityManager: ActivityManager
 
+    private val analytics: Analytics by lazy { Analytics(this) }
     private val watchManager: WatchManager by lazy { WatchManager.get(this) }
     private val watchPreferenceManager by lazy { WatchPreferenceManager.get(this) }
     private var hasResetApp = false
@@ -160,12 +162,16 @@ class ManageSpaceActivity : BaseToolbarActivity() {
      * missed anything.
      * @return true if successful, false otherwise.
      */
-    private fun clearData(): Boolean = activityManager.clearApplicationUserData()
+    private fun clearData(): Boolean {
+        analytics.logStorageManagerAction("clearData")
+        return activityManager.clearApplicationUserData()
+    }
 
     /** Attempts to clear all of Wearable Extension's cache. */
     private fun clearCache() {
         val cacheFiles = getFiles(codeCacheDir) + getFiles(cacheDir)
         if (cacheFiles.isNotEmpty()) {
+            analytics.logStorageManagerAction("clearCache")
             setButtonsEnabled(false)
             initProgressBar(cacheFiles.size)
             setProgressStatus(R.string.clear_cache_clearing)
@@ -200,6 +206,7 @@ class ManageSpaceActivity : BaseToolbarActivity() {
         coroutineScope.launch(Dispatchers.IO) {
             val registeredWatches = watchManager.getRegisteredWatches()
             if (registeredWatches.isNotEmpty()) {
+                analytics.logStorageManagerAction("clearSettings")
                 initProgressBar(registeredWatches.count())
                 for (watch in registeredWatches) {
                     withContext(Dispatchers.Main) {
@@ -235,6 +242,7 @@ class ManageSpaceActivity : BaseToolbarActivity() {
     private fun doFullReset() {
         setButtonsEnabled(false)
         coroutineScope.launch(Dispatchers.IO) {
+            analytics.logStorageManagerAction("fullReset")
             var totalSteps = DATABASE_COUNT + PREFERENCE_STORE_COUNT
             initProgressBar(totalSteps)
             val registeredWatches = watchManager.getRegisteredWatches()

@@ -13,6 +13,7 @@ import androidx.core.content.edit
 import androidx.preference.PreferenceManager
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.boswelja.devicemanager.analytics.Analytics
 import com.boswelja.devicemanager.common.preference.SyncPreferences
 import com.boswelja.devicemanager.watchmanager.database.WatchDatabase
 import com.boswelja.devicemanager.watchmanager.item.IntPreference
@@ -49,6 +50,9 @@ class WatchPreferenceManagerTest {
     @RelaxedMockK
     lateinit var database: WatchDatabase
 
+    @RelaxedMockK
+    lateinit var analytics: Analytics
+
     @SpyK
     var sharedPreferences: SharedPreferences =
         PreferenceManager.getDefaultSharedPreferences(ApplicationProvider.getApplicationContext())
@@ -67,7 +71,8 @@ class WatchPreferenceManagerTest {
                 coroutineScope = coroutineScope,
                 dataClient = dataClient,
                 sharedPreferences = sharedPreferences,
-                database = database
+                database = database,
+                analytics = analytics
             )
     }
 

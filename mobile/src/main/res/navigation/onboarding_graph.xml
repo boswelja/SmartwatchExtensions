@@ -10,6 +10,19 @@
         android:name="com.boswelja.devicemanager.onboarding.ui.WelcomeFragment"
         tools:layout="@layout/fragment_welcome">
         <action
+            android:id="@+id/to_analyticsFragment"
+            app:destination="@id/analyticsFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/analyticsFragment"
+        android:name="com.boswelja.devicemanager.onboarding.ui.AnalyticsFragment"
+        tools:layout="@layout/fragment_onboarding_analytics">
+        <action
             android:id="@+id/to_setupFragment"
             app:destination="@id/watchSetupFragment"
             app:enterAnim="@anim/slide_in_right"

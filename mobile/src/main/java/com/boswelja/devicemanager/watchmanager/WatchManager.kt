@@ -9,6 +9,7 @@ package com.boswelja.devicemanager.watchmanager
 
 import android.content.Context
 import androidx.lifecycle.LiveData
+import com.boswelja.devicemanager.analytics.Analytics
 import com.boswelja.devicemanager.common.References.REQUEST_RESET_APP
 import com.boswelja.devicemanager.watchmanager.Utils.getCapableNodes
 import com.boswelja.devicemanager.watchmanager.Utils.getConnectedNodes
@@ -36,6 +37,7 @@ class WatchManager internal constructor(
     private val capabilityClient: CapabilityClient = Wearable.getCapabilityClient(context),
     private val nodeClient: NodeClient = Wearable.getNodeClient(context),
     private val messageClient: MessageClient = Wearable.getMessageClient(context),
+    private val analytics: Analytics = Analytics(context),
     val database: WatchDatabase = WatchDatabase.get(context)
 ) {
 
@@ -107,6 +109,7 @@ class WatchManager internal constructor(
                 com.boswelja.devicemanager.common.setup.References.WATCH_REGISTERED_PATH,
                 null
             )
+            analytics.logWatchRegistered()
         }
     }
 
@@ -122,6 +125,7 @@ class WatchManager internal constructor(
                 if (success) {
                     database.watchDao().remove(watchId)
                     requestResetWatch(watchId)
+                    analytics.logWatchRemoved()
                 }
                 return@withContext success
             }

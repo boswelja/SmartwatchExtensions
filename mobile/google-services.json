@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "391939050283",
+    "project_id": "wearable-extensions-37233",
+    "storage_bucket": "wearable-extensions-37233.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:391939050283:android:52b729cc3f28695d99536e",
+        "android_client_info": {
+          "package_name": "com.boswelja.devicemanager"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "391939050283-52ubv93t8136d9m8on9h53e7325o4pcb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDR8gZVfBZigxlXnHheTzrYu4duj7BB2P4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "391939050283-52ubv93t8136d9m8on9h53e7325o4pcb.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,6 +1,13 @@
+Additions:
+Support for in-app updates
+Anonymous usage stat reporting. This is disabled by default, please opt in if you're interested in helping Wearable Extensions grow
+More tests.
+
+Changes & Fixes:
 Reworked how the selected watch status is shown and updated
 Reworked setting up watches
-Added support for in-app updates
 Updated the app's styles to be more consistent
-Removed built-in changelog, you can see what's new via the in-app link to GitHub
-Created more tests. You should see stability and consistency improve as more tests are created
+You should see stability and consistency improvements for the foreseeable future
+
+Removals:
+Built-in changelog, you can see what's new via the in-app link to GitHub
