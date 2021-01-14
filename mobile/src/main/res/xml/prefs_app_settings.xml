@@ -29,6 +29,7 @@
         <androidx.preference.CheckBoxPreference
             android:key="send_analytics"
             android:title="@string/pref_analytics_title"
+            android:icon="@drawable/pref_ic_analytics"
             android:defaultValue="false" />
 
     </androidx.preference.PreferenceCategory>
