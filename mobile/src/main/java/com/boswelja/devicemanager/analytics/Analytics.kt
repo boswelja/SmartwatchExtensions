@@ -76,10 +76,10 @@ class Analytics {
     companion object {
         const val ANALYTICS_ENABLED_KEY = "send_analytics"
 
-        private const val EVENT_EXTENSION_SETTING_CHANGED = "extension_setting_changed"
-        private const val EVENT_APP_SETTING_CHANGED = "app_setting_changed"
-        private const val EVENT_WATCH_REGISTERED = "watch_registered"
-        private const val EVENT_WATCH_REMOVED = "watch_registered"
-        private const val EVENT_STORAGE_MANAGER = "storage_manager"
+        internal const val EVENT_EXTENSION_SETTING_CHANGED = "extension_setting_changed"
+        internal const val EVENT_APP_SETTING_CHANGED = "app_setting_changed"
+        internal const val EVENT_WATCH_REGISTERED = "watch_registered"
+        internal const val EVENT_WATCH_REMOVED = "watch_registered"
+        internal const val EVENT_STORAGE_MANAGER = "storage_manager"
     }
 }
