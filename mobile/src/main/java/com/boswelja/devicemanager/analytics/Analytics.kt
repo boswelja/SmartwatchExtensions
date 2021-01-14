@@ -2,6 +2,7 @@ package com.boswelja.devicemanager.analytics
 
 import android.content.Context
 import androidx.preference.PreferenceManager
+import com.boswelja.devicemanager.common.preference.SyncPreferences
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.ktx.logEvent
 
@@ -9,6 +10,16 @@ class Analytics(context: Context) {
     private val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
     private val firebaseAnalytics: FirebaseAnalytics by lazy {
         FirebaseAnalytics.getInstance(context)
+    }
+
+    fun logSettingChanged(key: String, value: String) {
+        if (sharedPreferences.getBoolean(ANALYTICS_ENABLED_KEY, false)) {
+            if (key in SyncPreferences.ALL_PREFS) {
+                logExtensionSettingChanged(key, value)
+            } else {
+                logAppSettingChanged(key, value)
+            }
+        }
     }
 
     fun logExtensionSettingChanged(key: String, value: String) {
