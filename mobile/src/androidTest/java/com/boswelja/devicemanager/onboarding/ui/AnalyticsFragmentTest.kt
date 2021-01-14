@@ -7,7 +7,7 @@ import androidx.navigation.Navigation
 import androidx.navigation.testing.TestNavHostController
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
@@ -16,10 +16,10 @@ import com.google.common.truth.Truth.assertThat
 import org.junit.Before
 import org.junit.Test
 
-class WelcomeFragmentTest {
+class AnalyticsFragmentTest {
 
     private lateinit var navController: NavHostController
-    private lateinit var fragmentScenario: FragmentScenario<WelcomeFragment>
+    private lateinit var fragmentScenario: FragmentScenario<AnalyticsFragment>
 
     @Before
     fun setUp() {
@@ -33,15 +33,17 @@ class WelcomeFragmentTest {
 
     @Test
     fun uiElementsVisible() {
-        onView(withId(R.id.app_icon)).check(matches(isCompletelyDisplayed()))
-        onView(withId(R.id.welcome_to_text)).check(matches(isCompletelyDisplayed()))
-        onView(withId(R.id.app_name_text)).check(matches(isCompletelyDisplayed()))
-        onView(withId(R.id.get_started_button)).check(matches(isCompletelyDisplayed()))
+        onView(withId(R.id.icon)).check(matches(isCompletelyDisplayed()))
+        onView(withId(R.id.title)).check(matches(isCompletelyDisplayed()))
+        onView(withId(R.id.content)).check(matches(isCompletelyDisplayed()))
+        onView(withId(R.id.next_button)).check(matches(isCompletelyDisplayed()))
+        onView(withId(R.id.priv_policy_button)).check(matches(isCompletelyDisplayed()))
+        onView(withId(R.id.send_analytics_checkbox)).check(matches(isCompletelyDisplayed()))
     }
 
     @Test
-    fun navigateToAnalyticsFragment() {
-        onView(withId(R.id.get_started_button)).perform(click())
-        assertThat(navController.currentDestination?.id).isEqualTo(R.id.analyticsFragment)
+    fun navigateToSetupFragment() {
+        onView(withId(R.id.next_button)).perform(ViewActions.click())
+        assertThat(navController.currentDestination?.id).isEqualTo(R.id.watchSetupFragment)
     }
 }
