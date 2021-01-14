@@ -30,7 +30,7 @@ class WelcomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         binding.getStartedButton.setOnClickListener {
-            findNavController().navigate(WelcomeFragmentDirections.toSetupFragment())
+            findNavController().navigate(WelcomeFragmentDirections.toAnalyticsFragment())
         }
     }
 }
