@@ -12,7 +12,7 @@ class Analytics(context: Context) {
         FirebaseAnalytics.getInstance(context)
     }
 
-    fun logSettingChanged(key: String, value: String) {
+    fun logSettingChanged(key: String, value: Any) {
         if (sharedPreferences.getBoolean(ANALYTICS_ENABLED_KEY, false)) {
             if (key in SyncPreferences.ALL_PREFS) {
                 logExtensionSettingChanged(key, value)
@@ -22,20 +22,20 @@ class Analytics(context: Context) {
         }
     }
 
-    fun logExtensionSettingChanged(key: String, value: String) {
+    fun logExtensionSettingChanged(key: String, value: Any) {
         if (sharedPreferences.getBoolean(ANALYTICS_ENABLED_KEY, false)) {
             firebaseAnalytics.logEvent(EVENT_EXTENSION_SETTING_CHANGED) {
                 param(FirebaseAnalytics.Param.ITEM_ID, key)
-                param(FirebaseAnalytics.Param.VALUE, value)
+                param(FirebaseAnalytics.Param.VALUE, value.toString())
             }
         }
     }
 
-    fun logAppSettingChanged(key: String, value: String) {
+    fun logAppSettingChanged(key: String, value: Any) {
         if (sharedPreferences.getBoolean(ANALYTICS_ENABLED_KEY, false)) {
             firebaseAnalytics.logEvent(EVENT_APP_SETTING_CHANGED) {
                 param(FirebaseAnalytics.Param.ITEM_ID, key)
-                param(FirebaseAnalytics.Param.VALUE, value)
+                param(FirebaseAnalytics.Param.VALUE, value.toString())
             }
         }
     }
