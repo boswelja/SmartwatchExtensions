@@ -11,6 +11,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import androidx.core.content.edit
 import androidx.preference.PreferenceManager
+import com.boswelja.devicemanager.analytics.Analytics
 import com.boswelja.devicemanager.common.preference.SyncPreferences
 import com.boswelja.devicemanager.watchmanager.database.WatchDatabase
 import com.boswelja.devicemanager.watchmanager.item.BoolPreference
@@ -39,7 +40,8 @@ internal constructor(
     private val dataClient: DataClient = Wearable.getDataClient(context),
     private val sharedPreferences: SharedPreferences =
         PreferenceManager.getDefaultSharedPreferences(context),
-    private val database: WatchDatabase = WatchDatabase.get(context)
+    private val database: WatchDatabase = WatchDatabase.get(context),
+    private val analytics: Analytics = Analytics(context)
 ) {
 
     /**
@@ -100,6 +102,7 @@ internal constructor(
      * @return true if the update was successful, false otherwise.
      */
     fun updatePreferenceInDatabase(watchId: String, preferenceKey: String, newValue: Any): Boolean {
+        analytics.logSettingChanged(preferenceKey, newValue)
         return database.updatePrefInDatabase(watchId, preferenceKey, newValue)
     }
 

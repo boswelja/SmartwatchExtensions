@@ -13,6 +13,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.preference.PreferenceManager
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.boswelja.devicemanager.analytics.Analytics
 import com.boswelja.devicemanager.watchmanager.database.WatchDatabase
 import com.boswelja.devicemanager.watchmanager.item.Watch
 import com.google.android.gms.wearable.CapabilityClient
@@ -70,6 +71,9 @@ class WatchManagerTest {
     lateinit var messageClient: MessageClient
 
     @RelaxedMockK
+    lateinit var analytics: Analytics
+
+    @RelaxedMockK
     lateinit var database: WatchDatabase
 
     private lateinit var watchManager: WatchManager
@@ -94,6 +98,7 @@ class WatchManagerTest {
                     capabilityClient,
                     nodeClient,
                     messageClient,
+                    analytics,
                     database
                 )
             )
