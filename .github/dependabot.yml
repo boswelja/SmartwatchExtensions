@@ -6,8 +6,29 @@ updates:
     schedule:
       interval: "weekly"
 
-  # Maintain dependencies for Wearable Extensions
+  # Maintain dependencies for mobile module
   - package-ecosystem: "gradle"
-    directory: "/"
+    directory: "/mobile"
     schedule:
       interval: "daily"
+    labels:
+      - "mobile"
+      - "dependencies"
+
+  # Maintain dependencies for wear module
+  - package-ecosystem: "gradle"
+    directory: "/wear"
+    schedule:
+      interval: "daily"
+    labels:
+      - "wearos"
+      - "dependencies"
+
+  # Maintain dependencies for common module
+  - package-ecosystem: "gradle"
+    directory: "/common"
+    schedule:
+      interval: "daily"
+    labels:
+      - "common"
+      - "dependencies"
