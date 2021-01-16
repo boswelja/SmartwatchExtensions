@@ -39,7 +39,7 @@ jobs:
           keyStorePassword: ${{ secrets.KEYSTORE_PASS }}
           keyPassword: ${{ secrets.KEYSTORE_ALIAS_PASS }}
       - name: Save Signed Mobile Bundle
-        uses: actions/upload-artifact@v2.2.0
+        uses: actions/upload-artifact@v2.2.2
         with:
           name: mobile-release.aab
           path: ${{ steps.sign-mobile-release.outputs.signedReleaseFile }}
@@ -55,7 +55,7 @@ jobs:
           keyStorePassword: ${{ secrets.KEYSTORE_PASS }}
           keyPassword: ${{ secrets.KEYSTORE_ALIAS_PASS }}
       - name: Save Signed Wear Bundle
-        uses: actions/upload-artifact@v2.2.0
+        uses: actions/upload-artifact@v2.2.2
         with:
           name: wear-release.aab
           path: ${{ steps.sign-wear-release.outputs.signedReleaseFile }}
