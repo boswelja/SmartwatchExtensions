@@ -127,6 +127,7 @@ dependencies {
     androidTestImplementation("androidx.navigation:navigation-testing:$androidxNavigation")
     androidTestImplementation("androidx.test:runner:$androidxTest")
     androidTestImplementation("androidx.test:rules:$androidxTest")
+    androidTestImplementation("androidx.test:core-ktx:$androidxTest")
     androidTestImplementation("com.google.truth:truth:$truth")
     androidTestImplementation("io.mockk:mockk-android:$mockk")
 }
