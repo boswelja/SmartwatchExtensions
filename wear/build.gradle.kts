@@ -6,11 +6,11 @@ plugins {
 }
 
 android {
-    compileSdkVersion(AndroidSdk.compile)
+    compileSdkVersion(PackageInfo.targetSdk)
 
     defaultConfig {
-        minSdkVersion(AndroidSdk.wearMin)
-        targetSdkVersion(AndroidSdk.target)
+        minSdkVersion(25)
+        targetSdkVersion(PackageInfo.targetSdk)
 
         applicationId = PackageInfo.packageName
         versionCode = PackageInfo.getVersionCode()

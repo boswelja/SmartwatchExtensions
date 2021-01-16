@@ -5,6 +5,7 @@ object DebugInfo {
 }
 
 object PackageInfo {
+    const val targetSdk = 30
     const val packageName = "com.boswelja.devicemanager"
     const val versionName = "2.5.6"
 
