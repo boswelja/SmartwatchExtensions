@@ -115,7 +115,7 @@ jobs:
           asset_name: wear-release.aab
           asset_content_type: application/zip
       - name: Upload to Google Play
-        uses: r0adkll/upload-google-play@v1
+        uses: r0adkll/upload-google-play@v1.0.12
         with:
           serviceAccountJsonPlainText: ${{ secrets.SERVICE_ACCOUNT_JSON }}
           packageName: "com.boswelja.devicemanager"
