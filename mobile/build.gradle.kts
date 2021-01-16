@@ -107,6 +107,7 @@ dependencies {
     implementation("com.android.billingclient:billing-ktx:$billingClient")
     implementation("com.google.android.material:material:$googleMaterial")
     implementation("com.google.android.play:core:$googlePlayCore")
+    implementation("com.google.android.play:core-ktx:1.8.1")
     implementation("com.google.android.gms:play-services-wearable:$playServicesWearable")
     implementation("com.jakewharton.timber:timber:$timber")
 
