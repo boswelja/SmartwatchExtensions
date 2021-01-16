@@ -37,12 +37,21 @@ android {
 }
 
 dependencies {
-    implementation(Libraries.androidxAppCompat)
-    implementation(Libraries.androidxConstraintLayout)
-    implementation(Libraries.androidxCoreKtx)
-    implementation(Libraries.androidxPreference)
+    val androidxAppCompat = "1.3.0-alpha02"
+    val androidxConstraintLayout = "2.1.0-alpha1"
+    val androidxCoreKtx = "1.5.0-alpha05"
+    val androidxPreference = "1.1.1"
 
-    implementation(Libraries.materialComponents)
-    implementation(Libraries.playServicesWearable)
-    implementation(Libraries.timber)
+    val googleMaterial = "1.3.0-alpha04"
+    val playServicesWearable = "17.0.0"
+    val timber = "4.7.1"
+
+    implementation("androidx.appcompat:appcompat:$androidxAppCompat")
+    implementation("androidx.constraintlayout:constraintlayout:$androidxConstraintLayout")
+    implementation("androidx.core:core-ktx:$androidxCoreKtx")
+    implementation("androidx.preference:preference:$androidxPreference")
+
+    implementation("com.google.android.gms:play-services-wearable:$playServicesWearable")
+    implementation("com.google.android.material:material:$googleMaterial")
+    implementation("com.jakewharton.timber:timber:$timber")
 }
