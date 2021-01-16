@@ -71,12 +71,12 @@ jobs:
         with:
           java-version: 11
       - name: Download mobile-release.aab
-        uses: actions/download-artifact@v2.0.6
+        uses: actions/download-artifact@v2.0.8
         with:
           name: mobile-release.aab
           path: release/
       - name: Download wear-release.aab
-        uses: actions/download-artifact@v2.0.6
+        uses: actions/download-artifact@v2.0.8
         with:
           name: wear-release.aab
           path: release/
