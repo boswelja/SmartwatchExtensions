@@ -180,7 +180,7 @@ jobs:
           name: wear-release.aab
           path: release/
       - name: Get Release Info
-        uses: boswelja/aab-info-action@main
+        uses: boswelja/aab-info-action@v1.0.9
         id: aab-info
         with:
           aabPath: release/mobile-release.aab
