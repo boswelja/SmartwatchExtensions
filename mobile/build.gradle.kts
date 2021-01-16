@@ -81,7 +81,7 @@ dependencies {
     val truth = "1.1"
     val mockk = "1.10.3"
     val robolectric = "4.4"
-    val coroutines = "1.4.2"
+    val coroutines = "1.4.2-native-mt"
 
     implementation(project(":common"))
     implementation(kotlin("reflect"))
