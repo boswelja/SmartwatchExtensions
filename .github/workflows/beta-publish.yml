@@ -39,7 +39,7 @@ jobs:
           keyStorePassword: ${{ secrets.KEYSTORE_PASS }}
           keyPassword: ${{ secrets.KEYSTORE_ALIAS_PASS }}
       - name: Save Signed Mobile Bundle
-        uses: actions/upload-artifact@v2.2.0
+        uses: actions/upload-artifact@v2.2.2
         with:
           name: mobile-release.aab
           path: ${{ steps.sign-mobile-release.outputs.signedReleaseFile }}
@@ -55,7 +55,7 @@ jobs:
           keyStorePassword: ${{ secrets.KEYSTORE_PASS }}
           keyPassword: ${{ secrets.KEYSTORE_ALIAS_PASS }}
       - name: Save Signed Wear Bundle
-        uses: actions/upload-artifact@v2.2.0
+        uses: actions/upload-artifact@v2.2.2
         with:
           name: wear-release.aab
           path: ${{ steps.sign-wear-release.outputs.signedReleaseFile }}
@@ -70,12 +70,12 @@ jobs:
         with:
           java-version: 11
       - name: Download mobile-release.aab
-        uses: actions/download-artifact@v2.0.6
+        uses: actions/download-artifact@v2.0.8
         with:
           name: mobile-release.aab
           path: release/
       - name: Download wear-release.aab
-        uses: actions/download-artifact@v2.0.6
+        uses: actions/download-artifact@v2.0.8
         with:
           name: wear-release.aab
           path: release/
@@ -114,7 +114,7 @@ jobs:
           asset_name: wear-release.aab
           asset_content_type: application/zip
       - name: Upload to Google Play
-        uses: r0adkll/upload-google-play@v1
+        uses: r0adkll/upload-google-play@v1.0.12
         with:
           serviceAccountJsonPlainText: ${{ secrets.SERVICE_ACCOUNT_JSON }}
           packageName: "com.boswelja.devicemanager"
