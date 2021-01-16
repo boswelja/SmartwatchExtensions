@@ -62,7 +62,7 @@ dependencies {
     val androidxNavigation = "2.3.2"
     val androidxPreference = "1.1.1"
     val androidxTest = "1.3.1-alpha02"
-    val androidxTestExt = "1.1.2-rc03"
+    val androidxTestExt = "1.1.3-alpha03"
     val androidxWear = "1.2.0-alpha05"
 
     val googleMaterial = "1.3.0-alpha04"

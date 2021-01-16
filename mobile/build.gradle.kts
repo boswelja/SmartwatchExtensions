@@ -69,7 +69,7 @@ dependencies {
     val androidxPreference = "1.1.1"
     val androidxRoom = "2.3.0-alpha03"
     val androidxTest = "1.3.1-alpha02"
-    val androidxTestExt = "1.1.2-rc03"
+    val androidxTestExt = "1.1.3-alpha03"
     val androidxWork = "2.5.0-beta02"
 
     val billingClient = "3.0.2"
