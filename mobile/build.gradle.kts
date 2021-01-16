@@ -57,7 +57,7 @@ android {
 
 dependencies {
     val androidxArch = "2.1.0"
-    val androidxAppCompat = "1.3.0-alpha02"
+    val androidxAppCompat = "1.3.0-beta01"
     val androidxBrowser = "1.3.0"
     val androidxConstraintLayout = "2.1.0-alpha1"
     val androidxCoreKtx = "1.5.0-alpha05"

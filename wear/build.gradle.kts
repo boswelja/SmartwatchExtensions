@@ -53,7 +53,7 @@ dependencies {
     implementation(project(":common"))
 
     val androidxArch = "2.1.0"
-    val androidxAppCompat = "1.3.0-alpha02"
+    val androidxAppCompat = "1.3.0-beta01"
     val androidxConstraintLayout = "2.1.0-alpha1"
     val androidxCoreKtx = "1.5.0-alpha05"
     val androidxEspresso = "3.1.0"
