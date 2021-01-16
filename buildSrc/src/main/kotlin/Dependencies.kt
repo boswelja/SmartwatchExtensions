@@ -66,17 +66,13 @@ object Libraries {
         "androidx.lifecycle:lifecycle-viewmodel-ktx:${Versions.androidxLifecycle}"
     const val androidxLifecycleLiveData =
         "androidx.lifecycle:lifecycle-livedata-ktx:${Versions.androidxLifecycle}"
-    const val androidxLifecycleService =
-        "androidx.lifecycle:lifecycle-service:${Versions.androidxLifecycle}"
     const val androidxLifecycleCommon =
         "androidx.lifecycle:lifecycle-common-java8:${Versions.androidxLifecycle}"
     const val androidxNavigationFragment =
         "androidx.navigation:navigation-fragment-ktx:${Versions.androidxNavigation}"
     const val androidxNavigationUI =
         "androidx.navigation:navigation-ui-ktx:${Versions.androidxNavigation}"
-    const val androidxPagingRuntime = "androidx.paging:paging-runtime:${Versions.androidxPaging}"
     const val androidxPreference = "androidx.preference:preference:${Versions.androidxPreference}"
-    const val androidxRoomRuntime = "androidx.room:room-runtime:${Versions.androidxRoom}"
     const val androidxRoomKtx = "androidx.room:room-ktx:${Versions.androidxRoom}"
     const val androidxRoomKapt = "androidx.room:room-compiler:${Versions.androidxRoom}"
     const val androidxWear = "androidx.wear:wear:${Versions.androidxWear}"
@@ -85,8 +81,6 @@ object Libraries {
     const val billingClient = "com.android.billingclient:billing-ktx:${Versions.billingClient}"
 
     const val materialComponents = "com.google.android.material:material:${Versions.googleMaterial}"
-    const val playCore = "com.google.android.play:core:${Versions.googlePlayCore}"
-    const val playCoreKtx = "com.google.android.play:core-ktx:1.8.1"
 
     const val playServicesWearable =
         "com.google.android.gms:play-services-wearable:${Versions.playServicesWearable}"
