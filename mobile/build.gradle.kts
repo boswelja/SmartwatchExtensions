@@ -73,7 +73,7 @@ dependencies {
     val androidxWork = "2.5.0-beta02"
 
     val billingClient = "3.0.2"
-    val googleMaterial = "1.3.0-alpha04"
+    val googleMaterial = "1.3.0-rc01"
     val googlePlayCore = "1.9.0"
     val playServicesWearable = "17.0.0"
     val timber = "4.7.1"

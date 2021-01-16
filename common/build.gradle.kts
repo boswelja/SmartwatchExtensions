@@ -42,7 +42,7 @@ dependencies {
     val androidxCoreKtx = "1.5.0-alpha05"
     val androidxPreference = "1.1.1"
 
-    val googleMaterial = "1.3.0-alpha04"
+    val googleMaterial = "1.3.0-rc01"
     val playServicesWearable = "17.0.0"
     val timber = "4.7.1"
 

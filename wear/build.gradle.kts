@@ -65,7 +65,7 @@ dependencies {
     val androidxTestExt = "1.1.2-rc03"
     val androidxWear = "1.2.0-alpha05"
 
-    val googleMaterial = "1.3.0-alpha04"
+    val googleMaterial = "1.3.0-rc01"
     val playServicesWearable = "17.0.0"
     val timber = "4.7.1"
     val junit = "4.13"
