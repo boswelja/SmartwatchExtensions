@@ -10,5 +10,5 @@ jobs:
     steps:
       - name: Promote GitHub release to production
         uses: boswelja/promote-prerelease-action@main
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
