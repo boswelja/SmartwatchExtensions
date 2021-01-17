@@ -8,7 +8,7 @@ android {
     compileSdkVersion(PackageInfo.targetSdk)
 
     defaultConfig {
-        minSdkVersion(21)
+        minSdkVersion(23)
         targetSdkVersion(PackageInfo.targetSdk)
     }
 
