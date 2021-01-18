@@ -8,7 +8,31 @@ jobs:
     name: Promote latest release to production
     runs-on: ubuntu-latest
     steps:
+      - name: Get last release name
+        uses: pozetroninc/github-action-get-latest-release@v0.5.0
+        id: old_release
+        with:
+          repository: "boswelja/WearableExtensions"
+          excludes: 'prerelease,draft'
+      - name: Get new release name
+        uses: pozetroninc/github-action-get-latest-release@v0.5.0
+        id: new_release
+        with:
+          repository: "boswelja/WearableExtensions"
+          excludes: 'draft'
+      - name: Calculate update priority
+        uses: boswelja/update-priority-action@main
+        id: update_priority
+        with:
+          old-version: ${{ steps.old_version.outputs.release }}
+          new-version: ${{steps.new_release.outputs.release }}
       - name: Promote GitHub release to production
         uses: boswelja/promote-prerelease-action@main
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Promote Google Play release to production
+        uses: boswelja/promote-play-beta-action@main
+        with:
+          service-account-json-raw: ${{ secrets.SERVICE_ACCOUNT_JSON }}
+          package-name: com.boswelja.devicemanager
+          inapp-update-priority: ${{ steps.update_priority.outputs.update-priority }}
