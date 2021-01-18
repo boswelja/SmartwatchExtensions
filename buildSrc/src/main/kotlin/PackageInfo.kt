@@ -11,6 +11,6 @@ object PackageInfo {
 
     fun getVersionCode(): Int {
         // We need an offset to ensure it's newer than the old versions
-        return ((System.currentTimeMillis() / 1000) + 400000000).toInt()
+        return ((System.currentTimeMillis() / 1000) + 412900000).toInt()
     }
 }
