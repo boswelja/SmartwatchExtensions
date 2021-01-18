@@ -1,7 +1,7 @@
 Additions:
 Support for in-app updates
-Anonymous usage stat reporting. This is disabled by default, please opt in if you're interested in helping Wearable Extensions grow
-More tests.
+Anonymous usage stat reporting (disabled by default)
+Support for in-app update priorities
 
 Changes & Fixes:
 Reworked how the selected watch status is shown and updated
