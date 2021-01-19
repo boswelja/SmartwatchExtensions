@@ -7,7 +7,10 @@
  */
 package com.boswelja.devicemanager.appmanager.ui.info
 
+import android.os.Build
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.test.core.app.ApplicationProvider
+import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.boswelja.devicemanager.common.appmanager.AppPackageInfo
 import com.boswelja.devicemanager.common.appmanager.References.REQUEST_OPEN_PACKAGE
 import com.boswelja.devicemanager.common.appmanager.References.REQUEST_UNINSTALL_PACKAGE
@@ -23,7 +26,11 @@ import java.util.Locale
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import org.junit.runner.RunWith
+import org.robolectric.annotation.Config
 
+@RunWith(AndroidJUnit4::class)
+@Config(sdk = [Build.VERSION_CODES.Q])
 class AppPackageInfoViewModelTest {
 
     private val watchId = "123456"
@@ -39,7 +46,10 @@ class AppPackageInfoViewModelTest {
     @Before
     fun setUp() {
         MockKAnnotations.init(this)
-        viewModel = AppPackageInfoViewModel(messageClient)
+        viewModel = AppPackageInfoViewModel(
+            ApplicationProvider.getApplicationContext(),
+            messageClient
+        )
         viewModel.watchId = watchId
     }
 

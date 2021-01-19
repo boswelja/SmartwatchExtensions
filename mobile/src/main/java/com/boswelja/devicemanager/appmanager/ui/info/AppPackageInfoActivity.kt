@@ -16,14 +16,10 @@ import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.appmanager.AppPackageInfo
 import com.boswelja.devicemanager.common.ui.BaseToolbarActivity
 import com.boswelja.devicemanager.databinding.ActivityAppInfoBinding
-import com.google.android.gms.wearable.Wearable
 
 class AppPackageInfoActivity : BaseToolbarActivity() {
 
-    private val viewModel: AppPackageInfoViewModel by viewModels {
-        AppPackageInfoViewModelFactory(Wearable.getMessageClient(this))
-    }
-
+    private val viewModel: AppPackageInfoViewModel by viewModels()
     private lateinit var binding: ActivityAppInfoBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {

@@ -7,19 +7,26 @@
  */
 package com.boswelja.devicemanager.appmanager.ui.info
 
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import com.boswelja.devicemanager.BuildConfig
 import com.boswelja.devicemanager.common.appmanager.AppPackageInfo
 import com.boswelja.devicemanager.common.appmanager.References
 import com.google.android.gms.wearable.MessageClient
+import com.google.android.gms.wearable.Wearable
 import java.text.SimpleDateFormat
 import java.util.Locale
 
-class AppPackageInfoViewModel(private val messageClient: MessageClient) : ViewModel() {
+class AppPackageInfoViewModel internal constructor(
+    application: Application,
+    private val messageClient: MessageClient
+) : AndroidViewModel(application) {
+
+    constructor(application: Application) :
+        this(application, Wearable.getMessageClient(application))
 
     private val dateFormatter = SimpleDateFormat("EE, dd MMM yyyy, h:mm aa", Locale.getDefault())
 
@@ -73,18 +80,5 @@ class AppPackageInfoViewModel(private val messageClient: MessageClient) : ViewMo
             References.REQUEST_OPEN_PACKAGE,
             appInfo.value!!.packageName.toByteArray(Charsets.UTF_8)
         )
-    }
-}
-
-@Suppress("UNCHECKED_CAST")
-class AppPackageInfoViewModelFactory(private val messageClient: MessageClient) :
-    ViewModelProvider.NewInstanceFactory() {
-    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-        return when (modelClass) {
-            AppPackageInfoViewModel::class -> {
-                AppPackageInfoViewModel(messageClient) as T
-            }
-            else -> super.create(modelClass)
-        }
     }
 }
