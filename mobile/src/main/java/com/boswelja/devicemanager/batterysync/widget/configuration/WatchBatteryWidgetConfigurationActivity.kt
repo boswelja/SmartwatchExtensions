@@ -11,24 +11,22 @@ import android.app.Activity
 import android.appwidget.AppWidgetManager
 import android.content.Intent
 import android.os.Bundle
+import androidx.activity.viewModels
+import androidx.lifecycle.lifecycleScope
 import com.boswelja.devicemanager.R
-import com.boswelja.devicemanager.batterysync.widget.WatchBatteryWidget
 import com.boswelja.devicemanager.common.ui.BaseToolbarActivity
+import com.boswelja.devicemanager.common.ui.adapter.WatchAdapter
 import com.boswelja.devicemanager.databinding.ActivityWatchBatteryWidgetConfigurationBinding
-import com.boswelja.devicemanager.watchmanager.database.WatchDatabase
 import com.boswelja.devicemanager.widget.database.WatchBatteryWidgetId
-import com.boswelja.devicemanager.widget.database.WidgetDatabase
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
 class WatchBatteryWidgetConfigurationActivity : BaseToolbarActivity() {
 
+    private val viewModel: WatchBatteryWidgetConfigurationViewModel by viewModels()
     private val resultIntent = Intent()
-    private val coroutineScope = MainScope()
-    private val database by lazy { WatchDatabase.get(this) }
-    private val adapter by lazy { WatchPickerAdapter { finishAndCreateWidget(it.id) } }
+    private val adapter by lazy { WatchAdapter { finishAndCreateWidget(it.id) } }
 
     private lateinit var binding: ActivityWatchBatteryWidgetConfigurationBinding
 
@@ -42,7 +40,12 @@ class WatchBatteryWidgetConfigurationActivity : BaseToolbarActivity() {
 
         setupToolbar(binding.toolbarLayout.toolbar, showTitle = true, showUpButton = true)
         supportActionBar!!.setHomeAsUpIndicator(R.drawable.ic_close)
-        setupWatchPickerRecyclerView()
+
+        binding.watchPickerRecyclerView.adapter = adapter
+        viewModel.allRegisteredWatches.observe(this) {
+            Timber.d("Got ${it.count()} watches")
+            adapter.submitList(it)
+        }
 
         widgetId = getWidgetId()
         resultIntent.apply { putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId) }
@@ -59,25 +62,12 @@ class WatchBatteryWidgetConfigurationActivity : BaseToolbarActivity() {
         ) ?: AppWidgetManager.INVALID_APPWIDGET_ID
     }
 
-    /** Set up the watch picker RecyclerView. */
-    private fun setupWatchPickerRecyclerView() {
-        binding.watchPickerRecyclerView.adapter = adapter
-        database.watchDao().getAllObservable().observe(this) { adapter.submitList(it) }
-    }
-
     /** Stores the new widget's information, creates it then finishes this activity. */
     private fun finishAndCreateWidget(watchId: String) {
         Timber.d("finishAndCreateWidget($watchId) called")
         setResult(Activity.RESULT_OK, resultIntent)
 
-        coroutineScope.launch(Dispatchers.IO) {
-            WidgetDatabase.open(this@WatchBatteryWidgetConfigurationActivity).also {
-                it.watchBatteryWidgetDao().addWidget(WatchBatteryWidgetId(watchId, widgetId))
-                it.close()
-            }
-            WatchBatteryWidget.updateWidgets(
-                this@WatchBatteryWidgetConfigurationActivity, intArrayOf(widgetId)
-            )
+        viewModel.addWidgetToDatabase(WatchBatteryWidgetId(watchId, widgetId)).invokeOnCompletion {
             finish()
         }
     }

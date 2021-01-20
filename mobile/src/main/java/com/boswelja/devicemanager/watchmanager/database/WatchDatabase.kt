@@ -54,6 +54,7 @@ abstract class WatchDatabase : RoomDatabase() {
     }
 
     companion object {
+        @Volatile
         private var INSTANCE: WatchDatabase? = null
 
         /**
@@ -61,21 +62,25 @@ abstract class WatchDatabase : RoomDatabase() {
          * @param context [Context].
          */
         fun get(context: Context): WatchDatabase {
-            synchronized(this) {
-                if (INSTANCE == null) {
-                    INSTANCE =
-                        Room.databaseBuilder(context, WatchDatabase::class.java, "watch-db")
-                            .apply {
-                                addMigrations(
-                                    Migrations.MIGRATION_3_5,
-                                    Migrations.MIGRATION_4_5,
-                                    Migrations.MIGRATION_5_6
-                                )
-                                fallbackToDestructiveMigration()
-                            }
-                            .build()
-                }
+            if (INSTANCE != null) {
                 return INSTANCE!!
+            } else {
+                synchronized(this) {
+                    if (INSTANCE == null) {
+                        INSTANCE =
+                            Room.databaseBuilder(context, WatchDatabase::class.java, "watch-db")
+                                .apply {
+                                    addMigrations(
+                                        Migrations.MIGRATION_3_5,
+                                        Migrations.MIGRATION_4_5,
+                                        Migrations.MIGRATION_5_6
+                                    )
+                                    fallbackToDestructiveMigration()
+                                }
+                                .build()
+                    }
+                    return INSTANCE!!
+                }
             }
         }
     }
