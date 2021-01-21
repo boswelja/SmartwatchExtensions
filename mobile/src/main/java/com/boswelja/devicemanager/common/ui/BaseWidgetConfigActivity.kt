@@ -44,7 +44,7 @@ abstract class BaseWidgetConfigActivity : BaseToolbarActivity() {
      * Perform finishing touches for the widget config
      * @param widgetInfo An object containing the widget ID, and the associated watch ID.
      */
-    protected fun finishWidgetConfig(widgetInfo: WatchWidgetAssociation) {
+    internal fun finishWidgetConfig(widgetInfo: WatchWidgetAssociation) {
         Timber.d("finishWidgetConfig(${widgetInfo.widgetId}) called")
         setResult(RESULT_OK, resultIntent)
 

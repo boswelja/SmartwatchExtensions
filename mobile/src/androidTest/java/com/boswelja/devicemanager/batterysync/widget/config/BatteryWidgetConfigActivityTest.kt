@@ -2,6 +2,7 @@ package com.boswelja.devicemanager.batterysync.widget.config
 
 import androidx.room.Room
 import androidx.test.core.app.ActivityScenario
+import androidx.test.core.app.ApplicationProvider
 import androidx.test.core.app.launchActivity
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions.matches
@@ -10,7 +11,6 @@ import androidx.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withChild
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
-import androidx.test.platform.app.InstrumentationRegistry
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.watchmanager.database.WatchDatabase
 import com.boswelja.devicemanager.watchmanager.item.Watch
@@ -34,7 +34,7 @@ class BatteryWidgetConfigActivityTest {
     @Before
     fun setUp() {
         watchDatabase = Room.inMemoryDatabaseBuilder(
-            InstrumentationRegistry.getInstrumentation().context,
+            ApplicationProvider.getApplicationContext(),
             WatchDatabase::class.java
         ).build()
 
