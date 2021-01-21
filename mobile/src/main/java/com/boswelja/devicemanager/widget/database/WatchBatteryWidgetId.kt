@@ -9,6 +9,9 @@ package com.boswelja.devicemanager.widget.database
 
 import androidx.room.Entity
 
+/**
+ * Database item for associating a battery stats widget with a watch.
+ */
 @Entity(tableName = "watch_battery_widget_ids")
 class WatchBatteryWidgetId(watchId: String, widgetId: Int) :
     WatchWidgetAssociation(watchId, widgetId)

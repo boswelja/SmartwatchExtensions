@@ -3,6 +3,10 @@ package com.boswelja.devicemanager.widget.database
 import androidx.room.ColumnInfo
 import androidx.room.PrimaryKey
 
+/**
+ * Abstract class holding a [com.boswelja.devicemanager.watchmanager.item.Watch.id] and a widget ID
+ * for associating a widget with a watch.
+ */
 abstract class WatchWidgetAssociation(
     @ColumnInfo(name = "watch_id")
     val watchId: String,
