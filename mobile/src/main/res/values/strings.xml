@@ -221,10 +221,14 @@
     <!-- Donate strings -->
     <string name="donate_title">Donate</string>
 
+    <!-- Widget setup strings -->
+    <string name="widget_config_battery_stats_hint">Choose a watch to show battery stats for in this widget</string>
+
     <string name="button_undo">Undo</string>
     <string name="button_done">Done</string>
     <string name="button_retry">Try Again</string>
     <string name="button_next">Continue</string>
+    <string name="button_finish">Finish</string>
 
     <string name="privacy_policy_url" translatable="false">https://github.com/boswelja/WearableExtensions/blob/main/PRIVACY.md</string>
     <string name="github_url" translatable="false">https://github.com/boswelja/WearableExtensions</string>

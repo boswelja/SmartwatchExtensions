@@ -183,7 +183,7 @@
                 android:resource="@xml/widget_watch_battery_metadata" />
         </receiver>
         <activity
-            android:name="com.boswelja.devicemanager.batterysync.widget.configuration.WatchBatteryWidgetConfigurationActivity"
+            android:name="com.boswelja.devicemanager.batterysync.widget.config.BatteryWidgetConfigActivity"
             android:label="@string/widget_watch_battery_config_title">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
