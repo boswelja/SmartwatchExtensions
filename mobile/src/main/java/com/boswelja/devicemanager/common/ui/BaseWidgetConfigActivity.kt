@@ -6,6 +6,7 @@ import android.os.Bundle
 import androidx.lifecycle.lifecycleScope
 import com.boswelja.devicemanager.batterysync.widget.WatchBatteryWidget
 import com.boswelja.devicemanager.widget.database.WatchBatteryWidgetId
+import com.boswelja.devicemanager.widget.database.WatchWidgetAssociation
 import com.boswelja.devicemanager.widget.database.WidgetDatabase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -43,16 +44,21 @@ abstract class BaseWidgetConfigActivity : BaseToolbarActivity() {
      * Perform finishing touches for the widget config
      * @param widgetInfo An object containing the widget ID, and the associated watch ID.
      */
-    protected fun finishWidgetConfig(widgetInfo: WatchBatteryWidgetId) {
+    protected fun finishWidgetConfig(widgetInfo: WatchWidgetAssociation) {
         Timber.d("finishWidgetConfig(${widgetInfo.widgetId}) called")
         setResult(RESULT_OK, resultIntent)
 
         lifecycleScope.launch(Dispatchers.IO) {
-            widgetDatabase.watchBatteryWidgetDao().addWidget(widgetInfo)
-            WatchBatteryWidget.updateWidgets(
-                this@BaseWidgetConfigActivity,
-                intArrayOf(widgetInfo.widgetId)
-            )
+            when (widgetInfo) {
+                is WatchBatteryWidgetId -> {
+                    widgetDatabase.watchBatteryWidgetDao().addWidget(widgetInfo)
+                    WatchBatteryWidget.updateWidgets(
+                        this@BaseWidgetConfigActivity,
+                        intArrayOf(widgetInfo.widgetId)
+                    )
+                }
+                else -> Timber.w("Widget type not handled")
+            }
             finish()
         }
     }
