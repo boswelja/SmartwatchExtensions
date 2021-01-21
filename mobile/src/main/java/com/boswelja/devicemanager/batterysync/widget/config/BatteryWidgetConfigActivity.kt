@@ -5,7 +5,7 @@
  * This file, and any part of the Wearable Extensions app/s cannot be copied and/or distributed
  * without permission from Jack Boswell (boswelja) <boswela@outlook.com>
  */
-package com.boswelja.devicemanager.batterysync.widget.configuration
+package com.boswelja.devicemanager.batterysync.widget.config
 
 import android.os.Bundle
 import android.util.TypedValue
@@ -19,9 +19,9 @@ import com.boswelja.devicemanager.widget.database.WatchBatteryWidgetId
 import com.google.android.material.radiobutton.MaterialRadioButton
 import timber.log.Timber
 
-class WatchBatteryWidgetConfigurationActivity : BaseWidgetConfigActivity() {
+class BatteryWidgetConfigActivity : BaseWidgetConfigActivity() {
 
-    private val viewModel: WatchBatteryWidgetConfigurationViewModel by viewModels()
+    private val viewModel: BatteryWidgetConfigViewModel by viewModels()
 
     private lateinit var binding: ActivityWatchBatteryWidgetConfigurationBinding
 
