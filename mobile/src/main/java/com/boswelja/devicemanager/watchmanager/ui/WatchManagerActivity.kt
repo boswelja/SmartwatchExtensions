@@ -12,8 +12,8 @@ import android.os.Bundle
 import androidx.activity.viewModels
 import com.boswelja.devicemanager.common.ui.BaseToolbarActivity
 import com.boswelja.devicemanager.databinding.ActivityWatchManagerBinding
-import com.boswelja.devicemanager.onboarding.ui.OnboardingActivity
 import com.boswelja.devicemanager.watchmanager.item.Watch
+import com.boswelja.devicemanager.watchmanager.ui.register.RegisterWatchActivity
 
 class WatchManagerActivity : BaseToolbarActivity() {
 
@@ -38,9 +38,9 @@ class WatchManagerActivity : BaseToolbarActivity() {
         viewModel.registeredWatches.observe(this) { adapter.submitList(it) }
     }
 
-    /** Opens a [OnboardingActivity]. */
+    /** Opens a [RegisterWatchActivity]. */
     private fun openWatchSetupActivity() {
-        Intent(this, OnboardingActivity::class.java)
+        Intent(this, RegisterWatchActivity::class.java)
             .also { startActivity(it) }
     }
 
