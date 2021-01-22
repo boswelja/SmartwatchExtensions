@@ -80,6 +80,10 @@
             android:name=".widget.ui.WidgetSettingsActivity"
             android:exported="false" />
 
+        <activity
+            android:name=".watchmanager.ui.register.RegisterWatchActivity"
+            android:exported="false" />
+
         <receiver
             android:name=".phonelocking.DeviceAdminChangeReceiver"
             android:description="@string/device_admin_desc"

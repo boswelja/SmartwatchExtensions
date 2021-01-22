@@ -8,18 +8,15 @@
 package com.boswelja.devicemanager.watchmanager.ui
 
 import android.view.ViewGroup
-import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.boswelja.devicemanager.R
-import com.boswelja.devicemanager.common.WatchDiffCallback
 import com.boswelja.devicemanager.common.recyclerview.item.IconOneLineViewHolder
-import com.boswelja.devicemanager.common.recyclerview.item.IconTwoLineViewHolder
 import com.boswelja.devicemanager.common.recyclerview.item.SectionHeaderViewHolder
-import com.boswelja.devicemanager.watchmanager.WatchStatus
+import com.boswelja.devicemanager.common.ui.adapter.WatchAdapter
 import com.boswelja.devicemanager.watchmanager.item.Watch
 
 class WatchManagerAdapter(private val clickListener: (watch: Watch?) -> Unit) :
-    ListAdapter<Watch, RecyclerView.ViewHolder>(WatchDiffCallback()) {
+    WatchAdapter(clickListener) {
 
     override fun getItemCount(): Int = super.getItemCount() + 2
 
@@ -35,7 +32,7 @@ class WatchManagerAdapter(private val clickListener: (watch: Watch?) -> Unit) :
         return when (viewType) {
             VIEW_TYPE_ADD_WATCH -> IconOneLineViewHolder.from(parent)
             VIEW_TYPE_SECTION_HEADER -> SectionHeaderViewHolder.from(parent)
-            else -> IconTwoLineViewHolder.from(parent)
+            else -> super.onCreateViewHolder(parent, viewType)
         }
     }
 
@@ -51,26 +48,9 @@ class WatchManagerAdapter(private val clickListener: (watch: Watch?) -> Unit) :
             is SectionHeaderViewHolder -> {
                 holder.bind(context.getString(R.string.watch_manager_registered_watch_header))
             }
-            is IconTwoLineViewHolder -> {
-                val watch = getWatch(position)
-                val summary =
-                    context.getString(
-                        when (watch.status) {
-                            WatchStatus.CONNECTED -> R.string.watch_status_connected
-                            WatchStatus.DISCONNECTED -> R.string.watch_status_disconnected
-                            WatchStatus.MISSING_APP -> R.string.watch_status_missing_app
-                            else -> R.string.watch_status_error
-                        }
-                    )
-                holder.apply {
-                    bind(R.drawable.ic_watch, watch.name, summary)
-                    itemView.setOnClickListener { clickListener(watch) }
-                }
-            }
+            else -> super.onBindViewHolder(holder, position - 2)
         }
     }
-
-    private fun getWatch(position: Int) = currentList[position - 2]
 
     companion object {
         private const val VIEW_TYPE_ADD_WATCH = -1

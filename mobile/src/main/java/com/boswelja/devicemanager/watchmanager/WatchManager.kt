@@ -9,6 +9,8 @@ package com.boswelja.devicemanager.watchmanager
 
 import android.content.Context
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.liveData
+import androidx.lifecycle.switchMap
 import com.boswelja.devicemanager.analytics.Analytics
 import com.boswelja.devicemanager.common.References.REQUEST_RESET_APP
 import com.boswelja.devicemanager.watchmanager.Utils.getCapableNodes
@@ -40,6 +42,20 @@ class WatchManager internal constructor(
     private val analytics: Analytics = Analytics(context),
     val database: WatchDatabase = WatchDatabase.get(context)
 ) {
+
+    /**
+     * The observable list of registered watches, saturated with watch statuses
+     */
+    val registeredWatches = database.watchDao().getAllObservable().switchMap {
+        liveData {
+            val capableNodes = getCapableNodes(capabilityClient)
+            val connectedNodes = getConnectedNodes(nodeClient)
+            for (watch in it) {
+                watch.status = getWatchStatus(watch.id, database, capableNodes, connectedNodes)
+            }
+            emit(it)
+        }
+    }
 
     val connectedWatch: LiveData<Watch?>
         get() = selectedWatchHandler.selectedWatch
