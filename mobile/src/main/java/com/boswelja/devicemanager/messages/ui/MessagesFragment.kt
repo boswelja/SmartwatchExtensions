@@ -146,7 +146,7 @@ class MessagesFragment : Fragment() {
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         startActivity(intent)
     }
-    
+
     private fun showChangelog() {
         customTabsIntent.launchUrl(requireContext(), getString(R.string.changelog_url).toUri())
     }
