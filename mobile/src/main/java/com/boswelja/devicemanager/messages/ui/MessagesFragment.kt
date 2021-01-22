@@ -7,6 +7,8 @@ import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.browser.customtabs.CustomTabsIntent
+import androidx.core.net.toUri
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -25,12 +27,16 @@ import timber.log.Timber
 
 class MessagesFragment : Fragment() {
 
+    private val customTabsIntent: CustomTabsIntent by lazy {
+        CustomTabsIntent.Builder().setShowTitle(true).build()
+    }
+
     private val viewModel: MessagesViewModel by viewModels()
     private val adapter by lazy {
         MessagesAdapter { messageAction ->
             when (messageAction) {
                 Message.Action.LAUNCH_NOTIFICATION_SETTINGS -> openNotiSettings()
-                Message.Action.LAUNCH_CHANGELOG -> viewModel.showChangelog()
+                Message.Action.LAUNCH_CHANGELOG -> showChangelog()
                 Message.Action.INSTALL_UPDATE -> viewModel.startUpdateFlow(requireActivity())
             }
         }
@@ -139,5 +145,9 @@ class MessagesFragment : Fragment() {
         }
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         startActivity(intent)
+    }
+    
+    private fun showChangelog() {
+        customTabsIntent.launchUrl(requireContext(), getString(R.string.changelog_url).toUri())
     }
 }
