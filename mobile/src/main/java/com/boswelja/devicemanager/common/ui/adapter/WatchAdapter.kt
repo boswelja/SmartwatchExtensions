@@ -9,20 +9,22 @@ package com.boswelja.devicemanager.common.ui.adapter
 
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
+import androidx.recyclerview.widget.RecyclerView
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.WatchDiffCallback
 import com.boswelja.devicemanager.common.recyclerview.item.IconTwoLineViewHolder
 import com.boswelja.devicemanager.watchmanager.WatchStatus
 import com.boswelja.devicemanager.watchmanager.item.Watch
 
-class WatchAdapter(private val clickCallback: ((watch: Watch) -> Unit)?) :
-    ListAdapter<Watch, IconTwoLineViewHolder>(WatchDiffCallback()) {
+open class WatchAdapter(private val clickCallback: ((watch: Watch) -> Unit)?) :
+    ListAdapter<Watch, RecyclerView.ViewHolder>(WatchDiffCallback()) {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): IconTwoLineViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return IconTwoLineViewHolder.from(parent)
     }
 
-    override fun onBindViewHolder(holder: IconTwoLineViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        holder as IconTwoLineViewHolder
         val watch = getItem(position)
         val context = holder.itemView.context
         val summary =
