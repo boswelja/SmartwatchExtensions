@@ -1,13 +1,12 @@
 Additions:
 Support for in-app updates
 Anonymous usage stat reporting (disabled by default)
-Support for in-app update priorities
 
 Changes & Fixes:
 Reworked how the selected watch status is shown and updated
 Reworked setting up watches
+Fixed watch manager always showing watches status as 'error'
+Fixed being unable to finish battery widget setup
+Potential fix for app crashes when interacting with update messages
 Updated the app's styles to be more consistent
-You should see stability and consistency improvements for the foreseeable future
-
-Removals:
-Built-in changelog, you can see what's new via the in-app link to GitHub
+You should see stability improvements over the next few releases
