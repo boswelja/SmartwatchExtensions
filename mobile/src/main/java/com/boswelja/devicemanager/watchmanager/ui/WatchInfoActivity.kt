@@ -25,9 +25,9 @@ import timber.log.Timber
 class WatchInfoActivity : BaseToolbarActivity() {
 
     private val coroutineScope = MainScope()
-    private val watchManager by lazy { WatchManager.get(this) }
     private val watchPreferenceManager by lazy { WatchPreferenceManager.get(this) }
 
+    private lateinit var watchManager: WatchManager
     private lateinit var binding: ActivityWatchInfoBinding
 
     private val watchId by lazy { intent?.getStringExtra(EXTRA_WATCH_ID)!! }
@@ -43,6 +43,8 @@ class WatchInfoActivity : BaseToolbarActivity() {
             clearPreferencesButton.setOnClickListener { confirmClearPreferences() }
             forgetWatchButton.setOnClickListener { confirmForgetWatch() }
         }
+
+        watchManager = WatchManager.get(this)
 
         resetNicknameTextField()
     }
