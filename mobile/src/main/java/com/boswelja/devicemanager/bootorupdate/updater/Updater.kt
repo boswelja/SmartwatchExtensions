@@ -29,7 +29,6 @@ import com.google.android.gms.wearable.Wearable
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import timber.log.Timber
 
 class Updater(private val context: Context) {
@@ -61,7 +60,7 @@ class Updater(private val context: Context) {
      * Restarts all [BatterySyncWorker] instances.
      * @param database The [WatchDatabase] to get worker IDs from.
      */
-    private fun doBatterySyncUpdate(database: WatchDatabase) {
+    private suspend fun doBatterySyncUpdate(database: WatchDatabase) {
         var needsRestart = false
         if (sharedPreferences.contains("job_id_key")) {
             sharedPreferences.edit().remove("job_id_key").apply()
@@ -81,7 +80,7 @@ class Updater(private val context: Context) {
                     .filter { it.value }
                     .map { it.watchId }
             for (watchId in watchesWithWorkers) {
-                runBlocking { BatterySyncWorker.startWorker(context, watchId) }
+                BatterySyncWorker.startWorker(context, watchId)
             }
         }
     }
@@ -157,10 +156,10 @@ class Updater(private val context: Context) {
 
     /** Performs an update on databases as necessary. */
     private fun doFullUpdate() {
-        if (lastAppVersion < 2019120600) {
-            Wearable.getCapabilityClient(context)
-                .getCapability(CAPABILITY_WATCH_APP, CapabilityClient.FILTER_ALL)
-                .addOnSuccessListener { capabilityInfo ->
+        Wearable.getCapabilityClient(context)
+            .getCapability(CAPABILITY_WATCH_APP, CapabilityClient.FILTER_ALL)
+            .addOnSuccessListener { capabilityInfo ->
+                coroutineScope.launch {
                     val messageClient = Wearable.getMessageClient(context)
                     val database = WatchDatabase.get(context)
 
@@ -191,9 +190,8 @@ class Updater(private val context: Context) {
                         }
                         doBatterySyncUpdate(database)
                     }
-                    database.close()
                 }
-        }
+            }
     }
 
     companion object {
