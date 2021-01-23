@@ -25,6 +25,7 @@ class AppPackageInfoViewModel internal constructor(
     private val messageClient: MessageClient
 ) : AndroidViewModel(application) {
 
+    @Suppress("unused")
     constructor(application: Application) :
         this(application, Wearable.getMessageClient(application))
 

@@ -16,10 +16,16 @@ import com.google.android.gms.wearable.MessageClient
 import com.google.android.gms.wearable.Wearable
 import timber.log.Timber
 
-class AppInfoViewModel @JvmOverloads constructor(
+class AppInfoViewModel internal constructor(
     application: Application,
-    private val messageClient: MessageClient = Wearable.getMessageClient(application)
+    private val messageClient: MessageClient
 ) : AndroidViewModel(application) {
+
+    @Suppress("unused")
+    constructor(application: Application) : this(
+        application,
+        Wearable.getMessageClient(application)
+    )
 
     private val messageListener =
         MessageClient.OnMessageReceivedListener {
