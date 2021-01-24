@@ -11,7 +11,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.Ignore
 import androidx.room.PrimaryKey
-import com.boswelja.devicemanager.watchmanager.WatchStatus
+import com.boswelja.devicemanager.watchmanager.communication.WatchStatus
 import com.google.android.gms.wearable.Node
 
 @Entity(tableName = "watches")
