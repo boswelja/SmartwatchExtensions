@@ -46,18 +46,6 @@ class RegisterWatchViewModelTest {
     }
 
     @Test
-    fun `isWorking updates correctly when availableWatches is null`(): Unit = runBlocking {
-        // By the time watchManager.getAvailableWatches() is called, isWorking should be true.
-        coEvery { watchManager.getAvailableWatches() } answers {
-            viewModel.isWorking.getOrAwaitValue { assertThat(it).isTrue() }
-            null
-        }
-        viewModel.isWorking.getOrAwaitValue { assertThat(it).isFalse() }
-        viewModel.suspendRegisterAvailableWatches()
-        viewModel.isWorking.getOrAwaitValue { assertThat(it).isFalse() }
-    }
-
-    @Test
     fun `isWorking updates correctly when availableWatches is empty`(): Unit = runBlocking {
         // By the time watchManager.getAvailableWatches() is called, isWorking should be true.
         coEvery { watchManager.getAvailableWatches() } answers {
@@ -90,15 +78,6 @@ class RegisterWatchViewModelTest {
         }
         coVerify(exactly = 1) { watchManager.getAvailableWatches() }
     }
-
-    @Test
-    fun `registerAvailableWatches does nothing when availableWatches is null`(): Unit =
-        runBlocking {
-            coEvery { watchManager.getAvailableWatches() } returns null
-            viewModel.suspendRegisterAvailableWatches()
-            coVerify(exactly = 0) { watchManager.registerWatch(any()) }
-            coVerify(exactly = 1) { watchManager.getAvailableWatches() }
-        }
 
     @Test
     fun `registerAvailableWatches does nothing when availableWatches is empty`(): Unit =
