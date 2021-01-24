@@ -26,7 +26,6 @@ import com.boswelja.devicemanager.watchmanager.WatchPreferenceManager
 import com.boswelja.devicemanager.watchmanager.database.WatchDatabase
 import com.boswelja.devicemanager.watchmanager.item.Watch
 import com.boswelja.devicemanager.widget.database.WidgetDatabase
-import com.google.android.gms.tasks.Tasks
 import java.io.File
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
@@ -264,7 +263,7 @@ class ManageSpaceActivity : BaseToolbarActivity() {
                         return@launch
                     }
                     try {
-                        Tasks.await(watchManager.requestResetWatch(watch.id))
+                        watchManager.requestResetWatch(watch.id)
                         withContext(Dispatchers.Main) { incrementProgressBar() }
                     } catch (e: Exception) {
                         withContext(Dispatchers.Main) {
