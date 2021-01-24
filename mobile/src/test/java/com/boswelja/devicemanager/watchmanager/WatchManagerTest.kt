@@ -14,23 +14,15 @@ import androidx.preference.PreferenceManager
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.boswelja.devicemanager.analytics.Analytics
+import com.boswelja.devicemanager.common.References.REQUEST_RESET_APP
+import com.boswelja.devicemanager.watchmanager.communication.WearOSConnectionManager
 import com.boswelja.devicemanager.watchmanager.database.WatchDatabase
-import com.boswelja.devicemanager.watchmanager.item.Watch
-import com.google.android.gms.wearable.CapabilityClient
-import com.google.android.gms.wearable.MessageClient
-import com.google.android.gms.wearable.Node
-import com.google.android.gms.wearable.NodeClient
-import com.google.common.truth.Truth.assertThat
 import io.mockk.MockKAnnotations
-import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.impl.annotations.SpyK
 import io.mockk.mockkObject
-import io.mockk.spyk
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.test.TestCoroutineScope
+import io.mockk.verify
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -38,22 +30,12 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.annotation.Config
 
-@ExperimentalCoroutinesApi
 @RunWith(AndroidJUnit4::class)
 @Config(sdk = [Build.VERSION_CODES.R])
 class WatchManagerTest {
 
     @get:Rule
     val instantExecutorRule = InstantTaskExecutorRule()
-
-    private val coroutineScope = TestCoroutineScope()
-    private val dummyWatch = Watch("an-id-1234", "Watch 1")
-    private val dummyWatchNode =
-        object : Node {
-            override fun getDisplayName(): String = dummyWatch.name
-            override fun getId(): String = dummyWatch.id
-            override fun isNearby(): Boolean = true
-        }
 
     @RelaxedMockK
     lateinit var watchPreferenceManager: WatchPreferenceManager
@@ -62,13 +44,7 @@ class WatchManagerTest {
     lateinit var selectedWatchHandler: SelectedWatchHandler
 
     @RelaxedMockK
-    lateinit var capabilityClient: CapabilityClient
-
-    @RelaxedMockK
-    lateinit var nodeClient: NodeClient
-
-    @RelaxedMockK
-    lateinit var messageClient: MessageClient
+    lateinit var connectionManager: WearOSConnectionManager
 
     @RelaxedMockK
     lateinit var analytics: Analytics
@@ -89,54 +65,31 @@ class WatchManagerTest {
 
         every { database.isOpen } returns true
 
-        watchManager =
-            spyk(
-                WatchManager(
-                    ApplicationProvider.getApplicationContext(),
-                    watchPreferenceManager,
-                    selectedWatchHandler,
-                    capabilityClient,
-                    nodeClient,
-                    messageClient,
-                    analytics,
-                    database
-                )
-            )
+        watchManager = WatchManager(
+            ApplicationProvider.getApplicationContext(),
+            watchPreferenceManager,
+            selectedWatchHandler,
+            connectionManager,
+            analytics,
+            database
+        )
     }
 
     @After
     fun tearDown() {
-        coroutineScope.cleanupTestCoroutines()
         sharedPreferences.edit().clear().commit()
     }
 
     @Test
-    fun `getAvailableWatches returns an empty list when all watches are registered`() =
-        runBlocking {
-            coEvery { watchManager.getRegisteredWatches() } returns listOf(dummyWatch)
-            coEvery { Utils.getConnectedNodes(nodeClient) } returns listOf(dummyWatchNode)
-            coEvery { Utils.getCapableNodes(capabilityClient) } returns setOf(dummyWatchNode)
-
-            val result = watchManager.getAvailableWatches()
-            assertThat(result).isEmpty()
-        }
-
-    @Test
-    fun `getAvailableWatches returns null when getConnectedWatches fails`() = runBlocking {
-        coEvery { Utils.getConnectedNodes(nodeClient) } returns null
-
-        val result = watchManager.getAvailableWatches()
-        assertThat(result).isNull()
+    fun `getAvailableWatches calls the underlying ConnectionManager`() {
+        watchManager.getAvailableWatches()
+        verify(exactly = 1) { connectionManager.getAvailableWatches() }
     }
 
     @Test
-    fun `getAvailableWatches returns all unregistered watches`() = runBlocking {
-        coEvery { watchManager.getRegisteredWatches() } returns emptyList()
-        coEvery { Utils.getConnectedNodes(nodeClient) } returns listOf(dummyWatchNode)
-        coEvery { Utils.getCapableNodes(capabilityClient) } returns setOf(dummyWatchNode)
-
-        val result = watchManager.getAvailableWatches()
-        assertThat(result).isNotNull()
-        assertThat(result!!.any { it.id == dummyWatch.id }).isTrue()
+    fun `requestResetWatch calls the underlying ConnectionManager`() {
+        val id = "watch-id"
+        watchManager.requestResetWatch(id)
+        verify(exactly = 1) { connectionManager.sendMessage(id, REQUEST_RESET_APP) }
     }
 }
