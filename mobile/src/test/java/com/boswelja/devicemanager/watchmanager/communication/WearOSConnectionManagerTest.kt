@@ -87,41 +87,41 @@ class WearOSConnectionManagerTest {
         connectionManager.nodesWithApp = setOf(dummyNode)
         connectionManager.connectedNodes = listOf(dummyNode)
         assertThat(connectionManager.getWatchStatus(dummyWatch, true))
-            .isEquivalentAccordingToCompareTo(WatchStatus.CONNECTED)
+            .isEquivalentAccordingToCompareTo(Watch.Status.CONNECTED)
 
         connectionManager.nodesWithApp = setOf(dummyNode)
         connectionManager.connectedNodes = listOf(dummyNode)
         assertThat(connectionManager.getWatchStatus(dummyWatch, false))
-            .isEquivalentAccordingToCompareTo(WatchStatus.NOT_REGISTERED)
+            .isEquivalentAccordingToCompareTo(Watch.Status.NOT_REGISTERED)
 
         connectionManager.nodesWithApp = emptySet()
         connectionManager.connectedNodes = listOf(dummyNode)
         assertThat(connectionManager.getWatchStatus(dummyWatch, true))
-            .isEquivalentAccordingToCompareTo(WatchStatus.MISSING_APP)
+            .isEquivalentAccordingToCompareTo(Watch.Status.MISSING_APP)
 
         connectionManager.nodesWithApp = emptySet()
         connectionManager.connectedNodes = listOf(dummyNode)
         assertThat(connectionManager.getWatchStatus(dummyWatch, false))
-            .isEquivalentAccordingToCompareTo(WatchStatus.MISSING_APP)
+            .isEquivalentAccordingToCompareTo(Watch.Status.MISSING_APP)
 
         connectionManager.nodesWithApp = setOf(dummyNode)
         connectionManager.connectedNodes = emptyList()
         assertThat(connectionManager.getWatchStatus(dummyWatch, true))
-            .isEquivalentAccordingToCompareTo(WatchStatus.DISCONNECTED)
+            .isEquivalentAccordingToCompareTo(Watch.Status.DISCONNECTED)
 
         connectionManager.nodesWithApp = setOf(dummyNode)
         connectionManager.connectedNodes = emptyList()
         assertThat(connectionManager.getWatchStatus(dummyWatch, false))
-            .isEquivalentAccordingToCompareTo(WatchStatus.ERROR)
+            .isEquivalentAccordingToCompareTo(Watch.Status.ERROR)
 
         connectionManager.nodesWithApp = emptySet()
         connectionManager.connectedNodes = emptyList()
         assertThat(connectionManager.getWatchStatus(dummyWatch, true))
-            .isEquivalentAccordingToCompareTo(WatchStatus.ERROR)
+            .isEquivalentAccordingToCompareTo(Watch.Status.ERROR)
 
         connectionManager.nodesWithApp = emptySet()
         connectionManager.connectedNodes = emptyList()
         assertThat(connectionManager.getWatchStatus(dummyWatch, false))
-            .isEquivalentAccordingToCompareTo(WatchStatus.ERROR)
+            .isEquivalentAccordingToCompareTo(Watch.Status.ERROR)
     }
 }

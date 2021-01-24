@@ -1,7 +1,6 @@
 package com.boswelja.devicemanager.watchmanager
 
 import com.boswelja.devicemanager.watchmanager.Utils.getWatchStatus
-import com.boswelja.devicemanager.watchmanager.communication.WatchStatus
 import com.boswelja.devicemanager.watchmanager.database.WatchDatabase
 import com.boswelja.devicemanager.watchmanager.item.Watch
 import com.google.android.gms.wearable.Node
@@ -38,22 +37,22 @@ class UtilsTest {
         every { database.watchDao().get(dummyWatch.id) } returns dummyWatch
 
         var result = getWatchStatus(dummyWatch.id, database)
-        assertThat(result).isEqualTo(WatchStatus.DISCONNECTED)
+        assertThat(result).isEquivalentAccordingToCompareTo(Watch.Status.DISCONNECTED)
 
         result = getWatchStatus(dummyWatch.id, database, setOf(dummyWatchNode))
-        assertThat(result).isEqualTo(WatchStatus.DISCONNECTED)
+        assertThat(result).isEquivalentAccordingToCompareTo(Watch.Status.DISCONNECTED)
 
         result = getWatchStatus(dummyWatch.id, database, connectedNodes = listOf(dummyWatchNode))
-        assertThat(result).isEqualTo(WatchStatus.ERROR)
+        assertThat(result).isEquivalentAccordingToCompareTo(Watch.Status.ERROR)
 
         result = getWatchStatus(dummyWatch.id, database, setOf(), listOf())
-        assertThat(result).isEqualTo(WatchStatus.DISCONNECTED)
+        assertThat(result).isEquivalentAccordingToCompareTo(Watch.Status.DISCONNECTED)
 
         result =
             getWatchStatus(
                 dummyWatch.id, database, setOf(dummyWatchNode), listOf(dummyWatchNode)
             )
-        assertThat(result).isEqualTo(WatchStatus.CONNECTED)
+        assertThat(result).isEquivalentAccordingToCompareTo(Watch.Status.CONNECTED)
     }
 
     @Test
@@ -65,24 +64,24 @@ class UtilsTest {
             getWatchStatus(
                 dummyWatch.id, database, setOf(dummyWatchNode), listOf(dummyWatchNode)
             )
-        assertThat(result).isEqualTo(WatchStatus.NOT_REGISTERED)
+        assertThat(result).isEquivalentAccordingToCompareTo(Watch.Status.NOT_REGISTERED)
 
         result = getWatchStatus(dummyWatch.id, database, setOf(dummyWatchNode), listOf())
-        assertThat(result).isEqualTo(WatchStatus.NOT_REGISTERED)
+        assertThat(result).isEquivalentAccordingToCompareTo(Watch.Status.NOT_REGISTERED)
 
         result = getWatchStatus(dummyWatch.id, database, setOf(dummyWatchNode))
-        assertThat(result).isEqualTo(WatchStatus.NOT_REGISTERED)
+        assertThat(result).isEquivalentAccordingToCompareTo(Watch.Status.NOT_REGISTERED)
 
         result = getWatchStatus(dummyWatch.id, database, setOf(), listOf(dummyWatchNode))
-        assertThat(result).isEqualTo(WatchStatus.MISSING_APP)
+        assertThat(result).isEquivalentAccordingToCompareTo(Watch.Status.MISSING_APP)
 
         result = getWatchStatus(dummyWatch.id, database, connectedNodes = listOf(dummyWatchNode))
-        assertThat(result).isEqualTo(WatchStatus.MISSING_APP)
+        assertThat(result).isEquivalentAccordingToCompareTo(Watch.Status.MISSING_APP)
 
         result = getWatchStatus(dummyWatch.id, database, setOf(), listOf())
-        assertThat(result).isEqualTo(WatchStatus.MISSING_APP)
+        assertThat(result).isEquivalentAccordingToCompareTo(Watch.Status.MISSING_APP)
 
         result = getWatchStatus(dummyWatch.id, database)
-        assertThat(result).isEqualTo(WatchStatus.MISSING_APP)
+        assertThat(result).isEquivalentAccordingToCompareTo(Watch.Status.MISSING_APP)
     }
 }
