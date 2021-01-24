@@ -13,16 +13,10 @@ import androidx.lifecycle.liveData
 import androidx.lifecycle.switchMap
 import com.boswelja.devicemanager.analytics.Analytics
 import com.boswelja.devicemanager.common.References.REQUEST_RESET_APP
-import com.boswelja.devicemanager.watchmanager.Utils.getCapableNodes
-import com.boswelja.devicemanager.watchmanager.Utils.getConnectedNodes
-import com.boswelja.devicemanager.watchmanager.Utils.getWatchStatus
+import com.boswelja.devicemanager.common.setup.References
+import com.boswelja.devicemanager.watchmanager.communication.WearOSConnectionManager
 import com.boswelja.devicemanager.watchmanager.database.WatchDatabase
 import com.boswelja.devicemanager.watchmanager.item.Watch
-import com.google.android.gms.tasks.Task
-import com.google.android.gms.wearable.CapabilityClient
-import com.google.android.gms.wearable.MessageClient
-import com.google.android.gms.wearable.NodeClient
-import com.google.android.gms.wearable.Wearable
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import timber.log.Timber
@@ -36,9 +30,7 @@ class WatchManager internal constructor(
     private val watchPreferenceManager: WatchPreferenceManager =
         WatchPreferenceManager.get(context),
     private val selectedWatchHandler: SelectedWatchHandler = SelectedWatchHandler.get(context),
-    private val capabilityClient: CapabilityClient = Wearable.getCapabilityClient(context),
-    private val nodeClient: NodeClient = Wearable.getNodeClient(context),
-    private val messageClient: MessageClient = Wearable.getMessageClient(context),
+    private val connectionManager: WearOSConnectionManager = WearOSConnectionManager(context),
     private val analytics: Analytics = Analytics(context),
     val database: WatchDatabase = WatchDatabase.get(context)
 ) {
@@ -48,10 +40,8 @@ class WatchManager internal constructor(
      */
     val registeredWatches = database.watchDao().getAllObservable().switchMap {
         liveData {
-            val capableNodes = getCapableNodes(capabilityClient)
-            val connectedNodes = getConnectedNodes(nodeClient)
             for (watch in it) {
-                watch.status = getWatchStatus(watch.id, database, capableNodes, connectedNodes)
+                watch.status = connectionManager.getWatchStatus(watch, true)
             }
             emit(it)
         }
@@ -70,46 +60,18 @@ class WatchManager internal constructor(
      * Gets a list of watches that are reachable, capable and not already registered.
      * @return A [List] of [Watch] objects that are ready to register.
      */
-    suspend fun getAvailableWatches(): List<Watch>? {
+    fun getAvailableWatches(): List<Watch> {
         Timber.d("getAvailableWatches() called")
-        return withContext(Dispatchers.IO) {
-            val connectedNodes = getConnectedNodes(nodeClient)
-            if (connectedNodes != null) {
-                val availableWatches = ArrayList<Watch>()
-                val capableNodes = getCapableNodes(capabilityClient)
-                val registeredWatches = getRegisteredWatches()
-                return@withContext withContext(Dispatchers.Default) {
-                    for (node in connectedNodes) {
-                        if (registeredWatches.none { it.id == node.id }) {
-                            val status = getWatchStatus(node.id, database, capableNodes)
-                            availableWatches.add(Watch(node, status))
-                        }
-                    }
-                    availableWatches
-                }
-            } else {
-                Timber.w("Failed to get available watches")
-                null
-            }
-        }
+        return connectionManager.getAvailableWatches()
     }
 
     /**
-     * Gets all registered watches, and finds their [WatchStatus]. Can be empty if no watches are
-     * registered.
+     * Gets all registered watches.
      * @return The [List] of [Watch] objects that are registered.
      */
-    suspend fun getRegisteredWatches(): List<Watch> {
+    fun getRegisteredWatches(): List<Watch> {
         Timber.d("getRegisteredWatches() called")
-        return withContext(Dispatchers.IO) {
-            val capableNodes = getCapableNodes(capabilityClient)
-            val connectedNodes = getConnectedNodes(nodeClient)
-            val databaseWatches = database.watchDao().getAll()
-            for (watch in databaseWatches) {
-                watch.status = getWatchStatus(watch.id, database, capableNodes, connectedNodes)
-            }
-            return@withContext databaseWatches
-        }
+        return registeredWatches.value!!
     }
 
     /**
@@ -120,10 +82,9 @@ class WatchManager internal constructor(
     suspend fun registerWatch(watch: Watch) {
         return withContext(Dispatchers.IO) {
             database.watchDao().add(watch)
-            messageClient.sendMessage(
+            connectionManager.sendMessage(
                 watch.id,
-                com.boswelja.devicemanager.common.setup.References.WATCH_REGISTERED_PATH,
-                null
+                References.WATCH_REGISTERED_PATH
             )
             analytics.logWatchRegistered()
         }
@@ -152,10 +113,9 @@ class WatchManager internal constructor(
     /**
      * Sends [REQUEST_RESET_APP] to the given [Watch].
      * @param watchId The [Watch.id] to send the message to.
-     * @return The [Task] for the message send job.
      */
-    fun requestResetWatch(watchId: String): Task<Int> {
-        return messageClient.sendMessage(watchId, REQUEST_RESET_APP, null)
+    fun requestResetWatch(watchId: String) {
+        return connectionManager.sendMessage(watchId, REQUEST_RESET_APP)
     }
 
     companion object {
