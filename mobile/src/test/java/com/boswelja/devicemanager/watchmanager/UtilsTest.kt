@@ -1,6 +1,7 @@
 package com.boswelja.devicemanager.watchmanager
 
 import com.boswelja.devicemanager.watchmanager.Utils.getWatchStatus
+import com.boswelja.devicemanager.watchmanager.communication.WatchStatus
 import com.boswelja.devicemanager.watchmanager.database.WatchDatabase
 import com.boswelja.devicemanager.watchmanager.item.Watch
 import com.google.android.gms.wearable.Node
