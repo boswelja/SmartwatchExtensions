@@ -8,7 +8,7 @@ import com.boswelja.devicemanager.watchmanager.item.Watch
 interface WatchConnectionInterface {
 
     /**
-     * Get a [List] of [Watch]es that are not registered, and have Wearable Extensions installed.
+     * Get a [List] of [Watch]es that are connected, and have Wearable Extensions installed
      */
     fun getAvailableWatches(): List<Watch>
 
@@ -26,5 +26,5 @@ interface WatchConnectionInterface {
      * @param path The message path to send.
      * @param data The data to send with the message, if any.
      */
-    fun sendMessage(watchId: String, path: String, data: Any? = null): Boolean
+    fun sendMessage(watchId: String, path: String, data: ByteArray? = null)
 }
