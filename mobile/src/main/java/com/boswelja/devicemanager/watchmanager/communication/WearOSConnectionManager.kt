@@ -1,8 +1,10 @@
 package com.boswelja.devicemanager.watchmanager.communication
 
 import android.content.Context
+import androidx.annotation.VisibleForTesting
 import com.boswelja.devicemanager.common.References.CAPABILITY_WATCH_APP
 import com.boswelja.devicemanager.watchmanager.item.Watch
+import com.google.android.gms.tasks.Task
 import com.google.android.gms.wearable.CapabilityClient
 import com.google.android.gms.wearable.MessageClient
 import com.google.android.gms.wearable.Node
@@ -22,8 +24,8 @@ class WearOSConnectionManager(
         Wearable.getMessageClient(context)
     )
 
-    private var nodesWithApp: Set<Node> = emptySet()
-    private var connectedNodes: List<Node> = emptyList()
+    @VisibleForTesting internal var nodesWithApp: Set<Node> = emptySet()
+    @VisibleForTesting internal var connectedNodes: List<Node> = emptyList()
 
     private val capableWatchesListener = CapabilityClient.OnCapabilityChangedListener {
         Timber.d("${it.name} capability changed")
@@ -46,9 +48,9 @@ class WearOSConnectionManager(
         val isConnected = connectedNodes.any { it.id == watch.id }
         return when {
             hasWatchApp && isConnected && isRegistered -> WatchStatus.CONNECTED
-            !isConnected && isRegistered -> WatchStatus.DISCONNECTED
-            hasWatchApp && !isRegistered -> WatchStatus.NOT_REGISTERED
-            !hasWatchApp && !isRegistered -> WatchStatus.MISSING_APP
+            hasWatchApp && isConnected && !isRegistered -> WatchStatus.NOT_REGISTERED
+            hasWatchApp && !isConnected && isRegistered -> WatchStatus.DISCONNECTED
+            !hasWatchApp && isConnected -> WatchStatus.MISSING_APP
             else -> WatchStatus.ERROR
         }
     }
@@ -57,8 +59,8 @@ class WearOSConnectionManager(
         messageClient.sendMessage(watchId, path, data)
     }
 
-    private fun refreshConnectedNodes() {
-        nodeClient.connectedNodes
+    internal fun refreshConnectedNodes(): Task<List<Node>> {
+        return nodeClient.connectedNodes
             .addOnSuccessListener {
                 connectedNodes = it
             }
