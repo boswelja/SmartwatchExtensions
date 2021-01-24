@@ -13,12 +13,12 @@ interface WatchConnectionInterface {
     fun getAvailableWatches(): List<Watch>
 
     /**
-     * Get the [WatchStatus] for a given [Watch].
+     * Get the [Watch.Status] for a given [Watch].
      * @param watch The [Watch] to get the status of.
      * @param isRegistered Whether the given watch has been registered.
-     * @return The [WatchStatus] for the given watch.
+     * @return The [Watch.Status] for the given watch.
      */
-    fun getWatchStatus(watch: Watch, isRegistered: Boolean): WatchStatus
+    fun getWatchStatus(watch: Watch, isRegistered: Boolean): Watch.Status
 
     /**
      * Send a message to a watch with the given ID.

@@ -7,11 +7,13 @@
  */
 package com.boswelja.devicemanager.watchmanager.item
 
+import androidx.annotation.DrawableRes
+import androidx.annotation.StringRes
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.Ignore
 import androidx.room.PrimaryKey
-import com.boswelja.devicemanager.watchmanager.communication.WatchStatus
+import com.boswelja.devicemanager.R
 import com.google.android.gms.wearable.Node
 
 @Entity(tableName = "watches")
@@ -19,13 +21,25 @@ data class Watch(
     @PrimaryKey val id: String,
     @ColumnInfo(name = "name")
     val name: String,
-    @Ignore var status: WatchStatus
+    @Ignore var status: Status
 ) {
     constructor(id: String, name: String) : this(
-        id, name, WatchStatus.UNKNOWN
+        id, name, Status.UNKNOWN
     )
 
-    constructor(node: Node, status: WatchStatus) : this(node.id, node.displayName, status)
+    constructor(node: Node, status: Status) : this(node.id, node.displayName, status)
 
-    constructor(node: Node) : this(node.id, node.displayName, WatchStatus.UNKNOWN)
+    constructor(node: Node) : this(node.id, node.displayName, Status.UNKNOWN)
+
+    enum class Status(
+        @StringRes val stringRes: Int,
+        @DrawableRes val iconRes: Int
+    ) {
+        UNKNOWN(R.string.watch_status_unknown, R.drawable.ic_error),
+        ERROR(R.string.watch_status_error, R.drawable.ic_error),
+        MISSING_APP(R.string.watch_status_missing_app, R.drawable.ic_error),
+        NOT_REGISTERED(R.string.watch_status_not_registered, R.drawable.ic_error),
+        DISCONNECTED(R.string.watch_status_disconnected, R.drawable.ic_disconnected),
+        CONNECTED(R.string.watch_status_connected, R.drawable.ic_connected)
+    }
 }

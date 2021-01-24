@@ -42,16 +42,16 @@ class WearOSConnectionManager(
         return availableNodes.map { Watch(it) }
     }
 
-    override fun getWatchStatus(watch: Watch, isRegistered: Boolean): WatchStatus {
+    override fun getWatchStatus(watch: Watch, isRegistered: Boolean): Watch.Status {
         Timber.d("getWatchStatus($watch, $isRegistered) called")
         val hasWatchApp = nodesWithApp.any { it.id == watch.id }
         val isConnected = connectedNodes.any { it.id == watch.id }
         return when {
-            hasWatchApp && isConnected && isRegistered -> WatchStatus.CONNECTED
-            hasWatchApp && isConnected && !isRegistered -> WatchStatus.NOT_REGISTERED
-            hasWatchApp && !isConnected && isRegistered -> WatchStatus.DISCONNECTED
-            !hasWatchApp && isConnected -> WatchStatus.MISSING_APP
-            else -> WatchStatus.ERROR
+            hasWatchApp && isConnected && isRegistered -> Watch.Status.CONNECTED
+            hasWatchApp && isConnected && !isRegistered -> Watch.Status.NOT_REGISTERED
+            hasWatchApp && !isConnected && isRegistered -> Watch.Status.DISCONNECTED
+            !hasWatchApp && isConnected -> Watch.Status.MISSING_APP
+            else -> Watch.Status.ERROR
         }
     }
 

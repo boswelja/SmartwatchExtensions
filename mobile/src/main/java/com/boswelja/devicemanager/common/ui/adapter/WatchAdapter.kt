@@ -13,7 +13,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.WatchDiffCallback
 import com.boswelja.devicemanager.common.recyclerview.item.IconTwoLineViewHolder
-import com.boswelja.devicemanager.watchmanager.communication.WatchStatus
 import com.boswelja.devicemanager.watchmanager.item.Watch
 
 open class WatchAdapter(private val clickCallback: ((watch: Watch) -> Unit)?) :
@@ -30,12 +29,12 @@ open class WatchAdapter(private val clickCallback: ((watch: Watch) -> Unit)?) :
         val summary =
             context.getString(
                 when (watch.status) {
-                    WatchStatus.NOT_REGISTERED -> R.string.watch_status_not_registered
-                    WatchStatus.MISSING_APP -> R.string.watch_status_missing_app
-                    WatchStatus.UNKNOWN -> R.string.watch_status_unknown
-                    WatchStatus.ERROR -> R.string.watch_status_error
-                    WatchStatus.DISCONNECTED -> R.string.watch_status_disconnected
-                    WatchStatus.CONNECTED -> R.string.watch_status_connected
+                    Watch.Status.NOT_REGISTERED -> R.string.watch_status_not_registered
+                    Watch.Status.MISSING_APP -> R.string.watch_status_missing_app
+                    Watch.Status.UNKNOWN -> R.string.watch_status_unknown
+                    Watch.Status.ERROR -> R.string.watch_status_error
+                    Watch.Status.DISCONNECTED -> R.string.watch_status_disconnected
+                    Watch.Status.CONNECTED -> R.string.watch_status_connected
                 }
             )
         holder.apply {

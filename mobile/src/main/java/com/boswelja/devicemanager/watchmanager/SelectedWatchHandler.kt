@@ -16,7 +16,6 @@ import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.watchmanager.Utils.getCapableNodes
 import com.boswelja.devicemanager.watchmanager.Utils.getConnectedNodes
 import com.boswelja.devicemanager.watchmanager.Utils.getWatchStatus
-import com.boswelja.devicemanager.watchmanager.communication.WatchStatus
 import com.boswelja.devicemanager.watchmanager.database.WatchDatabase
 import com.boswelja.devicemanager.watchmanager.item.Watch
 import com.google.android.gms.wearable.CapabilityClient
@@ -43,11 +42,11 @@ internal constructor(
 ) {
 
     private val _selectedWatch = MutableLiveData<Watch?>()
-    private val _status = MutableLiveData(WatchStatus.UNKNOWN)
+    private val _status = MutableLiveData(Watch.Status.UNKNOWN)
 
     val selectedWatch: LiveData<Watch?>
         get() = _selectedWatch
-    val status: LiveData<WatchStatus>
+    val status: LiveData<Watch.Status>
         get() = _status
 
     init {
