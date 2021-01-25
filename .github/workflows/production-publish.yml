@@ -24,7 +24,7 @@ jobs:
         uses: boswelja/update-priority-action@main
         id: update_priority
         with:
-          old-version: ${{ steps.old_version.outputs.release }}
+          old-version: ${{ steps.old_release.outputs.release }}
           new-version: ${{steps.new_release.outputs.release }}
       - name: Promote GitHub release to production
         uses: boswelja/promote-prerelease-action@main
