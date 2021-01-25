@@ -126,7 +126,7 @@ jobs:
           old-version: ${{ steps.old_release.outputs.release }}
           new-version: ${{steps.new_release.outputs.versionName }}
       - name: Upload to Google Play
-        uses: r0adkll/upload-google-play@v1.0.12
+        uses: boswelja/upload-google-play@ncc-build
         with:
           serviceAccountJsonPlainText: ${{ secrets.SERVICE_ACCOUNT_JSON }}
           packageName: "com.boswelja.devicemanager"
