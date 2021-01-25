@@ -25,7 +25,7 @@ import timber.log.Timber
 
 class AppInfoFragment : BasePreferenceFragment(), Preference.OnPreferenceClickListener {
 
-    private val watchManager by lazy { WatchManager.get(requireContext()) }
+    private val watchManager by lazy { WatchManager(requireContext()) }
     private val viewModel: AppInfoViewModel by viewModels()
 
     private val watchVersionPreference: Preference by lazy { findPreference(WATCH_VERSION_KEY)!! }
