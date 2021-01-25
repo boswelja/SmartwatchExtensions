@@ -123,7 +123,7 @@ jobs:
         uses: boswelja/update-priority-action@main
         id: update_priority
         with:
-          old-version: ${{ steps.old_version.outputs.release }}
+          old-version: ${{ steps.old_release.outputs.release }}
           new-version: ${{steps.new_release.outputs.versionName }}
       - name: Upload to Google Play
         uses: r0adkll/upload-google-play@v1.0.12
