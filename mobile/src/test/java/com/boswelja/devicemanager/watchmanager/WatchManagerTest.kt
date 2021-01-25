@@ -66,7 +66,6 @@ class WatchManagerTest {
         every { database.isOpen } returns true
 
         watchManager = WatchManager(
-            ApplicationProvider.getApplicationContext(),
             watchPreferenceManager,
             selectedWatchHandler,
             connectionManager,
