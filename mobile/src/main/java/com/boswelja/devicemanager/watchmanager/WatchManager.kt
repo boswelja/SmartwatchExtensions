@@ -26,14 +26,20 @@ import timber.log.Timber
  * local SharedPreferences when the connected watch changes.
  */
 class WatchManager internal constructor(
-    context: Context,
-    private val watchPreferenceManager: WatchPreferenceManager =
-        WatchPreferenceManager.get(context),
-    private val selectedWatchHandler: SelectedWatchHandler = SelectedWatchHandler.get(context),
-    private val connectionManager: WearOSConnectionManager = WearOSConnectionManager(context),
-    private val analytics: Analytics = Analytics(context),
-    val database: WatchDatabase = WatchDatabase.get(context)
+    private val watchPreferenceManager: WatchPreferenceManager,
+    private val selectedWatchHandler: SelectedWatchHandler,
+    private val connectionManager: WearOSConnectionManager,
+    private val analytics: Analytics,
+    val database: WatchDatabase
 ) {
+
+    constructor(context: Context) : this(
+        WatchPreferenceManager.get(context),
+        SelectedWatchHandler.get(context),
+        WearOSConnectionManager(context),
+        Analytics(context),
+        WatchDatabase.get(context)
+    )
 
     /**
      * The observable list of registered watches, saturated with watch statuses
@@ -116,17 +122,5 @@ class WatchManager internal constructor(
      */
     fun requestResetWatch(watchId: String) {
         return connectionManager.sendMessage(watchId, REQUEST_RESET_APP)
-    }
-
-    companion object {
-        private var INSTANCE: WatchManager? = null
-
-        /** Gets an instance of [WatchManager]. */
-        fun get(context: Context): WatchManager {
-            synchronized(this) {
-                if (INSTANCE == null) INSTANCE = WatchManager(context)
-                return INSTANCE!!
-            }
-        }
     }
 }

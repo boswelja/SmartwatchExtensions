@@ -23,7 +23,7 @@ import timber.log.Timber
 
 class InitialCheckViewModel(application: Application) : AndroidViewModel(application) {
 
-    private val watchManager = WatchManager.get(application)
+    private val watchManager = WatchManager(application)
     private val watchId = watchManager.connectedWatch.value!!.id
 
     private val messageClient = Wearable.getMessageClient(application)

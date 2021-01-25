@@ -24,7 +24,7 @@ import timber.log.Timber
 class RegisterWatchViewModel internal constructor(
     application: Application,
     autoRegisterOnCreate: Boolean,
-    private val watchManager: WatchManager = WatchManager.get(application)
+    private val watchManager: WatchManager = WatchManager(application)
 ) : AndroidViewModel(application) {
 
     @Suppress("unused")
@@ -60,12 +60,10 @@ class RegisterWatchViewModel internal constructor(
     internal suspend fun suspendRegisterAvailableWatches() {
         _isWorking.postValue(true)
         val availableWatches = watchManager.getAvailableWatches()
-        if (availableWatches != null) {
-            availableWatches.forEach { watch ->
-                watchManager.registerWatch(watch)
-            }
-            registeredWatches = availableWatches
+        availableWatches.forEach { watch ->
+            watchManager.registerWatch(watch)
         }
+        registeredWatches = availableWatches
         _isWorking.postValue(false)
     }
 }
