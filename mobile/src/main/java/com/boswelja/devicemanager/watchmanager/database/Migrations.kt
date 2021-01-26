@@ -56,8 +56,10 @@ object Migrations {
 
     val MIGRATION_6_7 = object : Migration(6, 7) {
         override fun migrate(database: SupportSQLiteDatabase) {
-            database.execSQL("ALTER TABLE new_watches ADD platform TEXT NOT NULL")
-            database.execSQL("UPDATE new_watches SET platform ${Watch.Platform.WEAR_OS.name}")
+            database.execSQL(
+                "ALTER TABLE watches " +
+                    "ADD platform TEXT NOT NULL DEFAULT ${Watch.Platform.WEAR_OS.name}"
+            )
         }
     }
 }
