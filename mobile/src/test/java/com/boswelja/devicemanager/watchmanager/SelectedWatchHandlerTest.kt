@@ -7,22 +7,25 @@
  */
 package com.boswelja.devicemanager.watchmanager
 
+import android.content.SharedPreferences
 import android.os.Build
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.preference.PreferenceManager
+import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.boswelja.devicemanager.getOrAwaitValue
+import com.boswelja.devicemanager.watchmanager.communication.WearOSConnectionManager
 import com.boswelja.devicemanager.watchmanager.database.WatchDatabase
 import com.boswelja.devicemanager.watchmanager.item.Watch
 import com.google.common.truth.Truth.assertThat
 import io.mockk.MockKAnnotations
 import io.mockk.every
-import io.mockk.impl.annotations.RelaxedMockK
-import io.mockk.impl.annotations.SpyK
+import io.mockk.impl.annotations.MockK
+import io.mockk.spyk
+import java.util.concurrent.TimeoutException
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineScope
-import kotlinx.coroutines.test.runBlockingTest
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -40,12 +43,13 @@ class SelectedWatchHandlerTest {
 
     private val dummyWatch = Watch("an-id-1234", "Watch 1")
 
-    @RelaxedMockK
-    private lateinit var dummyDatabase: WatchDatabase
+    private lateinit var database: WatchDatabase
 
-    @SpyK
-    private var sharedPreferences =
-        PreferenceManager.getDefaultSharedPreferences(ApplicationProvider.getApplicationContext())
+    @MockK
+    private lateinit var connectionManager: WearOSConnectionManager
+
+    private lateinit var sharedPreferences: SharedPreferences
+
     private lateinit var selectedWatchHandler: SelectedWatchHandler
     private val coroutineScope = TestCoroutineScope()
 
@@ -53,16 +57,28 @@ class SelectedWatchHandlerTest {
     fun setUp() {
         MockKAnnotations.init(this)
 
-        // Emulate normal database behaviour, assuming dummyWatch exists.
-        every { dummyDatabase.watchDao().get(dummyWatch.id) } returns dummyWatch
-        every { dummyDatabase.watchDao().get("") } returns null
+        every { connectionManager.getWatchStatus(any(), any()) } returns Watch.Status.CONNECTED
+
+        database = Room.inMemoryDatabaseBuilder(
+            ApplicationProvider.getApplicationContext(),
+            WatchDatabase::class.java
+        ).allowMainThreadQueries().build()
+        database.watchDao().add(dummyWatch)
+
+        sharedPreferences = spyk(
+            PreferenceManager
+                .getDefaultSharedPreferences(
+                    ApplicationProvider.getApplicationContext()
+                )
+        )
 
         selectedWatchHandler =
             SelectedWatchHandler(
                 ApplicationProvider.getApplicationContext(),
                 sharedPreferences = sharedPreferences,
                 coroutineScope = coroutineScope,
-                database = dummyDatabase
+                connectionManager = connectionManager,
+                database = database
             )
     }
 
@@ -73,25 +89,50 @@ class SelectedWatchHandlerTest {
     }
 
     @Test
-    fun `Selecting a watch correctly updates corresponding LiveData`(): Unit =
-        coroutineScope.runBlockingTest {
-            selectedWatchHandler.selectWatchById(dummyWatch.id)
-            selectedWatchHandler.selectedWatch.getOrAwaitValue {
-                assertThat(it).isEqualTo(dummyWatch)
-            }
-
-            selectedWatchHandler.selectWatchById("")
-            selectedWatchHandler.selectedWatch.getOrAwaitValue { assertThat(it).isNull() }
+    fun `Selecting a watch correctly updates selectedWatch LiveData`() {
+        selectedWatchHandler.selectWatchById(dummyWatch.id)
+        selectedWatchHandler.selectedWatch.getOrAwaitValue {
+            assertThat(it).isEqualTo(dummyWatch)
         }
+    }
+
+    @Test(expected = TimeoutException::class)
+    fun `Selecting an invalid watch does nothing`() {
+        selectedWatchHandler.selectWatchById("")
+        // This should throw TimeoutException as LiveData doesn't change
+        selectedWatchHandler.selectedWatch.getOrAwaitValue()
+    }
 
     @Test
-    fun `Selecting a watch correctly updates SharedPreferences values`(): Unit =
-        coroutineScope.runBlockingTest {
-            selectedWatchHandler.selectWatchById(dummyWatch.id)
-            assertThat(sharedPreferences.getString("last_connected_id", ""))
-                .isEqualTo(dummyWatch.id)
+    fun `Selecting a watch correctly updates SharedPreferences values`() {
+        selectedWatchHandler.selectWatchById(dummyWatch.id)
+        // Wait for the selected watch to be updated before running any checks
+        selectedWatchHandler.selectedWatch.getOrAwaitValue()
 
-            selectedWatchHandler.selectWatchById("")
-            assertThat(sharedPreferences.getString("last_connected_id", "")).isEmpty()
+        assertThat(sharedPreferences.getString("last_connected_id", ""))
+            .isEqualTo(dummyWatch.id)
+    }
+
+    @Test
+    fun `Selecting a watch updates status LiveData`() {
+        selectedWatchHandler.selectWatchById(dummyWatch.id)
+        selectedWatchHandler.status.getOrAwaitValue {
+            assertThat(it).isEquivalentAccordingToCompareTo(Watch.Status.CONNECTED)
         }
+    }
+
+    @Test
+    fun `Refreshing connected status updates status LiveData`() {
+        // Set the initial value, and ensure it's correct
+        selectedWatchHandler.selectWatchById(dummyWatch.id)
+        selectedWatchHandler.status.getOrAwaitValue {
+            assertThat(it).isEquivalentAccordingToCompareTo(Watch.Status.CONNECTED)
+        }
+
+        every { connectionManager.getWatchStatus(any(), any()) } returns Watch.Status.DISCONNECTED
+        selectedWatchHandler.refreshStatus()
+        selectedWatchHandler.status.getOrAwaitValue {
+            assertThat(it).isEquivalentAccordingToCompareTo(Watch.Status.DISCONNECTED)
+        }
+    }
 }
