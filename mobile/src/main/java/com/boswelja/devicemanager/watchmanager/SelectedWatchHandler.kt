@@ -13,14 +13,9 @@ import androidx.core.content.edit
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.preference.PreferenceManager
-import com.boswelja.devicemanager.watchmanager.Utils.getCapableNodes
-import com.boswelja.devicemanager.watchmanager.Utils.getConnectedNodes
-import com.boswelja.devicemanager.watchmanager.Utils.getWatchStatus
+import com.boswelja.devicemanager.watchmanager.communication.WearOSConnectionManager
 import com.boswelja.devicemanager.watchmanager.database.WatchDatabase
 import com.boswelja.devicemanager.watchmanager.item.Watch
-import com.google.android.gms.wearable.CapabilityClient
-import com.google.android.gms.wearable.NodeClient
-import com.google.android.gms.wearable.Wearable
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -36,8 +31,7 @@ internal constructor(
     private val sharedPreferences: SharedPreferences =
         PreferenceManager.getDefaultSharedPreferences(context),
     private val coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.IO),
-    private val capabilityClient: CapabilityClient = Wearable.getCapabilityClient(context),
-    private val nodeClient: NodeClient = Wearable.getNodeClient(context),
+    private val connectionManager: WearOSConnectionManager = WearOSConnectionManager(context),
     val database: WatchDatabase = WatchDatabase.get(context)
 ) {
 
@@ -65,10 +59,14 @@ internal constructor(
             Timber.d("Setting connected watch to $watchId")
             coroutineScope.launch {
                 val newWatch = database.watchDao().get(watchId)
+                if (newWatch == null) {
+                    Timber.w("Tried to select a watch with id $watchId, but it wasn't registered")
+                    return@launch
+                }
                 _selectedWatch.postValue(newWatch)
-                sharedPreferences.edit { putString(LAST_SELECTED_NODE_ID_KEY, newWatch?.id) }
+                sharedPreferences.edit { putString(LAST_SELECTED_NODE_ID_KEY, newWatch.id) }
+                _status.postValue(connectionManager.getWatchStatus(newWatch, true))
             }
-            refreshStatus(watchId)
         }
     }
 
@@ -77,19 +75,7 @@ internal constructor(
      */
     fun refreshStatus() {
         _selectedWatch.value?.let {
-            refreshStatus(it.id)
-        }
-    }
-
-    /**
-     * Update [status] for the specified watch.
-     */
-    private fun refreshStatus(watchId: String) {
-        coroutineScope.launch {
-            val capableNodes = getCapableNodes(capabilityClient)
-            val connectedNodes = getConnectedNodes(nodeClient)
-            val newStatus = getWatchStatus(watchId, database, capableNodes, connectedNodes)
-            _status.postValue(newStatus)
+            _status.postValue(connectionManager.getWatchStatus(it, true))
         }
     }
 
