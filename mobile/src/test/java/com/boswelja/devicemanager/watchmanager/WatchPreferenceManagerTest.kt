@@ -41,7 +41,7 @@ class WatchPreferenceManagerTest {
 
     private val coroutineScope = TestCoroutineScope()
 
-    private val dummyWatch = Watch("an-id-1234", "Watch 1")
+    private val dummyWatch = Watch("an-id-1234", "Watch 1", Watch.Platform.WEAR_OS)
     private val dummyPreference = IntPreference(dummyWatch.id, "preference", 123)
 
     @RelaxedMockK

@@ -168,7 +168,11 @@ class Updater(private val context: Context) {
                         capableNodes.firstOrNull { it.isNearby } ?: capableNodes.firstOrNull()
 
                     if (defaultWatch != null) {
-                        val watch = Watch(defaultWatch)
+                        val watch = Watch(
+                            defaultWatch.id,
+                            defaultWatch.displayName,
+                            Watch.Platform.WEAR_OS
+                        )
                         coroutineScope.launch { database.watchDao().add(watch) }
                         messageClient.sendMessage(watch.id, References.WATCH_REGISTERED_PATH, null)
                         sharedPreferences.edit { putString(LAST_SELECTED_NODE_ID_KEY, watch.id) }

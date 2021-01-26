@@ -23,9 +23,9 @@ class BatteryWidgetConfigViewModelTest {
     @get:Rule
     val instantExecutorRule = InstantTaskExecutorRule()
 
-    private val dummyWatch1 = Watch("an-id-1234", "Watch 1")
-    private val dummyWatch2 = Watch("an-id-2345", "Watch 2")
-    private val dummyWatch3 = Watch("an-id-3456", "Watch 3")
+    private val dummyWatch1 = Watch("an-id-1234", "Watch 1", Watch.Platform.WEAR_OS)
+    private val dummyWatch2 = Watch("an-id-2345", "Watch 2", Watch.Platform.WEAR_OS)
+    private val dummyWatch3 = Watch("an-id-3456", "Watch 3", Watch.Platform.WEAR_OS)
 
     private lateinit var watchDatabase: WatchDatabase
     private lateinit var viewModel: BatteryWidgetConfigViewModel
