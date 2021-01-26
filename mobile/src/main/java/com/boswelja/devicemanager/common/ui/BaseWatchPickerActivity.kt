@@ -37,7 +37,7 @@ import timber.log.Timber
 abstract class BaseWatchPickerActivity : BaseToolbarActivity(), AdapterView.OnItemSelectedListener {
 
     private val adapter: WatchPickerAdapter by lazy { WatchPickerAdapter(this) }
-    internal val selectedWatchHandler by lazy { SelectedWatchHandler.get(this) }
+    internal val selectedWatchHandler by lazy { SelectedWatchHandler(this) }
     internal val coroutineScope = MainScope()
     internal val database by lazy { WatchDatabase.get(this) }
 

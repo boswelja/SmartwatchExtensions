@@ -74,11 +74,10 @@ class SelectedWatchHandlerTest {
 
         selectedWatchHandler =
             SelectedWatchHandler(
-                ApplicationProvider.getApplicationContext(),
-                sharedPreferences = sharedPreferences,
-                coroutineScope = coroutineScope,
-                connectionManager = connectionManager,
-                database = database
+                sharedPreferences,
+                coroutineScope,
+                connectionManager,
+                database
             )
     }
 

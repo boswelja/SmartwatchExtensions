@@ -30,7 +30,7 @@ class ResultViewModel(application: Application) : AndroidViewModel(application) 
 
     private val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(application)
     private val watchPreferenceManager = WatchPreferenceManager.get(application)
-    private val connectedWatchHandler = SelectedWatchHandler.get(application)
+    private val connectedWatchHandler = SelectedWatchHandler(application)
 
     override fun onCleared() {
         Timber.i("onCleared() called")

@@ -34,7 +34,7 @@ class BatterySyncPreferenceWidgetFragment : Fragment() {
             }
         }
 
-    private val selectedWatchHandler by lazy { SelectedWatchHandler.get(requireContext()) }
+    private val selectedWatchHandler by lazy { SelectedWatchHandler(requireContext()) }
     private lateinit var lastUpdateTimer: LastUpdateTimer
 
     private lateinit var binding: SettingsWidgetBatterySyncBinding

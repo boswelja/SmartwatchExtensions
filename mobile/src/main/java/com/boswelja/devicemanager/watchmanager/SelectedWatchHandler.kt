@@ -22,18 +22,22 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 
 /**
- * A singleton that keeps track of and updates the currently selected watch. Changes can be observed
- * via [selectedWatch]. Use [SelectedWatchHandler.get] to get an instance.
+ * A class to help keep track of and updates the currently selected watch. Changes can be observed
+ * via [selectedWatch].
  */
-class SelectedWatchHandler
-internal constructor(
-    context: Context,
-    private val sharedPreferences: SharedPreferences =
-        PreferenceManager.getDefaultSharedPreferences(context),
-    private val coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.IO),
-    private val connectionManager: WearOSConnectionManager = WearOSConnectionManager(context),
-    val database: WatchDatabase = WatchDatabase.get(context)
+class SelectedWatchHandler internal constructor(
+    private val sharedPreferences: SharedPreferences,
+    private val coroutineScope: CoroutineScope,
+    private val connectionManager: WearOSConnectionManager,
+    val database: WatchDatabase
 ) {
+
+    constructor(context: Context) : this(
+        PreferenceManager.getDefaultSharedPreferences(context),
+        CoroutineScope(Dispatchers.IO),
+        WearOSConnectionManager(context),
+        WatchDatabase.get(context)
+    )
 
     private val _selectedWatch = MutableLiveData<Watch?>()
     private val _status = MutableLiveData(Watch.Status.UNKNOWN)
@@ -81,18 +85,5 @@ internal constructor(
 
     companion object {
         const val LAST_SELECTED_NODE_ID_KEY = "last_connected_id"
-
-        private var INSTANCE: SelectedWatchHandler? = null
-
-        /** Get an instance of [SelectedWatchHandler] */
-        fun get(context: Context): SelectedWatchHandler {
-            if (INSTANCE != null) return INSTANCE!!
-            synchronized(this) {
-                if (INSTANCE == null) {
-                    INSTANCE = SelectedWatchHandler(context)
-                }
-                return INSTANCE!!
-            }
-        }
     }
 }
