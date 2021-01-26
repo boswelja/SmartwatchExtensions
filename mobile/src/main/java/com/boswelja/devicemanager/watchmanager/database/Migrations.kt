@@ -9,6 +9,7 @@ package com.boswelja.devicemanager.watchmanager.database
 
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
+import com.boswelja.devicemanager.watchmanager.item.Watch
 
 object Migrations {
 
@@ -50,6 +51,13 @@ object Migrations {
             database.execSQL("INSERT INTO new_watches (id, name) SELECT id, name FROM watches")
             database.execSQL("DROP TABLE watches")
             database.execSQL("ALTER TABLE new_watches RENAME TO watches")
+        }
+    }
+
+    val MIGRATION_6_7 = object : Migration(6, 7) {
+        override fun migrate(database: SupportSQLiteDatabase) {
+            database.execSQL("ALTER TABLE new_watches ADD platform TEXT NOT NULL")
+            database.execSQL("UPDATE new_watches SET platform ${Watch.Platform.WEAR_OS.name}")
         }
     }
 }

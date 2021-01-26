@@ -2,6 +2,7 @@ package com.boswelja.devicemanager.common
 
 import androidx.room.TypeConverter
 import com.boswelja.devicemanager.messages.Message
+import com.boswelja.devicemanager.watchmanager.item.Watch
 
 class RoomTypeConverters {
     @TypeConverter
@@ -30,5 +31,15 @@ class RoomTypeConverters {
     @TypeConverter
     fun iconToString(icon: Message.Icon?): String? {
         return icon?.toString()
+    }
+
+    @TypeConverter
+    fun platformToString(platform: Watch.Platform): String {
+        return platform.name
+    }
+
+    @TypeConverter
+    fun platformFromInt(name: String): Watch.Platform {
+        return Watch.Platform.valueOf(name)
     }
 }
