@@ -11,11 +11,14 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
+import com.boswelja.devicemanager.common.RoomTypeConverters
 import com.boswelja.devicemanager.watchmanager.item.BoolPreference
 import com.boswelja.devicemanager.watchmanager.item.IntPreference
 import com.boswelja.devicemanager.watchmanager.item.Watch
 
-@Database(entities = [Watch::class, IntPreference::class, BoolPreference::class], version = 6)
+@Database(entities = [Watch::class, IntPreference::class, BoolPreference::class], version = 7)
+@TypeConverters(RoomTypeConverters::class)
 abstract class WatchDatabase : RoomDatabase() {
 
     abstract fun watchDao(): WatchDao
@@ -73,7 +76,8 @@ abstract class WatchDatabase : RoomDatabase() {
                                     addMigrations(
                                         Migrations.MIGRATION_3_5,
                                         Migrations.MIGRATION_4_5,
-                                        Migrations.MIGRATION_5_6
+                                        Migrations.MIGRATION_5_6,
+                                        Migrations.MIGRATION_6_7
                                     )
                                     fallbackToDestructiveMigration()
                                 }
