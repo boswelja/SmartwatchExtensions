@@ -14,7 +14,6 @@ import androidx.room.Entity
 import androidx.room.Ignore
 import androidx.room.PrimaryKey
 import com.boswelja.devicemanager.R
-import com.google.android.gms.wearable.Node
 
 @Entity(tableName = "watches")
 data class Watch(
@@ -27,15 +26,6 @@ data class Watch(
     constructor(id: String, name: String, platform: Platform) : this(
         id, name, platform, Status.UNKNOWN
     )
-
-    constructor(node: Node, status: Status) : this(
-        node.id,
-        node.displayName,
-        Platform.WEAR_OS,
-        status
-    )
-
-    constructor(node: Node) : this(node.id, node.displayName, Platform.WEAR_OS, Status.UNKNOWN)
 
     enum class Status(
         @StringRes val stringRes: Int,

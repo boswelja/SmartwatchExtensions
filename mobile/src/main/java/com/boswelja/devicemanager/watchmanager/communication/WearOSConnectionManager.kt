@@ -39,7 +39,7 @@ class WearOSConnectionManager(
 
     override fun getAvailableWatches(): List<Watch> {
         val availableNodes = connectedNodes.intersect(nodesWithApp)
-        return availableNodes.map { Watch(it) }
+        return availableNodes.map { Watch(it.id, it.displayName, Watch.Platform.WEAR_OS) }
     }
 
     override fun getWatchStatus(watch: Watch, isRegistered: Boolean): Watch.Status {

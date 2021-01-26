@@ -16,11 +16,17 @@ import org.junit.Test
 
 class WearOSConnectionManagerTest {
 
+    private val transformNodeToWatch: (node: Node) -> Watch = {
+        Watch(it.id, it.displayName, Watch.Platform.WEAR_OS)
+    }
+
     private val dummyNodes = setOf<Node>(
         TestNode("id1", "Watch 1"),
         TestNode("id2", "Watch 2"),
         TestNode("id3", "Watch 3")
     )
+
+    private val dummyWatches = dummyNodes.map(transformNodeToWatch)
 
     @RelaxedMockK private lateinit var capabilityClient: CapabilityClient
     @RelaxedMockK private lateinit var nodeClient: NodeClient
@@ -41,7 +47,7 @@ class WearOSConnectionManagerTest {
 
     @Test
     fun `getAvailableWatches returns only the watches that have the app and are connected`() {
-        var expectedWatches = dummyNodes.map { Watch(it) }
+        var expectedWatches = dummyWatches
         // Test with matching sets
         connectionManager.connectedNodes = dummyNodes.toList()
         connectionManager.nodesWithApp = dummyNodes
@@ -50,7 +56,7 @@ class WearOSConnectionManagerTest {
 
         // Test with more connected nodes than capable nodes
         val nodesWithApp = dummyNodes.drop(1).toSet()
-        expectedWatches = nodesWithApp.map { Watch(it) }
+        expectedWatches = nodesWithApp.map(transformNodeToWatch)
         connectionManager.connectedNodes = dummyNodes.toList()
         connectionManager.nodesWithApp = nodesWithApp
         assertThat(connectionManager.getAvailableWatches())
@@ -58,7 +64,7 @@ class WearOSConnectionManagerTest {
 
         // Test with more capable nodes than connected nodes
         val connectedNodes = dummyNodes.drop(1)
-        expectedWatches = connectedNodes.map { Watch(it) }
+        expectedWatches = connectedNodes.map(transformNodeToWatch)
         connectionManager.connectedNodes = connectedNodes
         connectionManager.nodesWithApp = dummyNodes
         assertThat(connectionManager.getAvailableWatches())
@@ -72,7 +78,8 @@ class WearOSConnectionManagerTest {
 
     @Test
     fun `sendMessage passes the request to MessageClient`() {
-        val dummyWatch = Watch(dummyNodes.first())
+        val node = dummyNodes.first()
+        val dummyWatch = transformNodeToWatch(node)
         val path = "/message-path"
         val data = ByteArray(8)
         connectionManager.sendMessage(dummyWatch.id, path, data)
@@ -82,7 +89,7 @@ class WearOSConnectionManagerTest {
     @Test
     fun `getWatchStatus returns the correct status`() {
         val dummyNode = dummyNodes.first()
-        val dummyWatch = Watch(dummyNode)
+        val dummyWatch = transformNodeToWatch(dummyNode)
 
         connectionManager.nodesWithApp = setOf(dummyNode)
         connectionManager.connectedNodes = listOf(dummyNode)
