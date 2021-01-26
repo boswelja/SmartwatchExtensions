@@ -35,7 +35,7 @@ class WatchManager internal constructor(
 
     constructor(context: Context) : this(
         WatchPreferenceManager.get(context),
-        SelectedWatchHandler.get(context),
+        SelectedWatchHandler(context),
         WearOSConnectionManager(context),
         Analytics(context),
         WatchDatabase.get(context)

@@ -30,7 +30,7 @@ abstract class BasePreferenceFragment : PreferenceFragmentCompat() {
         WatchPreferenceManager.get(requireContext())
     }
     protected val selectedWatchHandler: SelectedWatchHandler by lazy {
-        SelectedWatchHandler.get(requireContext())
+        SelectedWatchHandler(requireContext())
     }
 
     protected var connectedWatchId: String? = null

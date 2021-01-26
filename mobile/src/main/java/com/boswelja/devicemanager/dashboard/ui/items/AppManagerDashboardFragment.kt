@@ -9,7 +9,7 @@ import com.boswelja.devicemanager.watchmanager.SelectedWatchHandler
 
 class AppManagerDashboardFragment : BaseDashboardItemFragment() {
 
-    private val selectedWatchHandler by lazy { SelectedWatchHandler.get(requireContext()) }
+    private val selectedWatchHandler by lazy { SelectedWatchHandler(requireContext()) }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

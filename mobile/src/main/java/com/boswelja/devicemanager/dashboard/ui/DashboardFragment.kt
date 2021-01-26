@@ -16,7 +16,7 @@ import timber.log.Timber
 
 class DashboardFragment : Fragment() {
 
-    private val selectedWatchHandler by lazy { SelectedWatchHandler.get(requireContext()) }
+    private val selectedWatchHandler by lazy { SelectedWatchHandler(requireContext()) }
 
     private lateinit var binding: FragmentDashboardBinding
 
