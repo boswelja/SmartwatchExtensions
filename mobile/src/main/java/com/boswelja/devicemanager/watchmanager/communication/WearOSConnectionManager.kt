@@ -34,6 +34,9 @@ class WearOSConnectionManager(
 
     init {
         capabilityClient.addListener(capableWatchesListener, CAPABILITY_WATCH_APP)
+        capabilityClient.getCapability(CAPABILITY_WATCH_APP, CapabilityClient.FILTER_ALL)
+            .addOnSuccessListener { nodesWithApp = it.nodes }
+            .addOnFailureListener { Timber.w("Failed to get capable nodes") }
         refreshConnectedNodes()
     }
 
