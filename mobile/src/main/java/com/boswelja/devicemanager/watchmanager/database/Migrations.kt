@@ -9,7 +9,7 @@ package com.boswelja.devicemanager.watchmanager.database
 
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
-import com.boswelja.devicemanager.watchmanager.item.Watch
+import com.boswelja.devicemanager.watchmanager.communication.WearOSConnectionManager
 
 object Migrations {
 
@@ -58,7 +58,7 @@ object Migrations {
         override fun migrate(database: SupportSQLiteDatabase) {
             database.execSQL(
                 "ALTER TABLE watches " +
-                    "ADD platform TEXT NOT NULL DEFAULT ${Watch.Platform.WEAR_OS.name}"
+                    "ADD platform TEXT NOT NULL DEFAULT ${WearOSConnectionManager.PLATFORM}"
             )
         }
     }

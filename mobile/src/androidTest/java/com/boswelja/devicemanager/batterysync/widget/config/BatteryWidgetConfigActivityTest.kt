@@ -12,6 +12,7 @@ import androidx.test.espresso.matcher.ViewMatchers.withChild
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import com.boswelja.devicemanager.R
+import com.boswelja.devicemanager.watchmanager.communication.WearOSConnectionManager
 import com.boswelja.devicemanager.watchmanager.database.WatchDatabase
 import com.boswelja.devicemanager.watchmanager.item.Watch
 import io.mockk.every
@@ -24,9 +25,9 @@ import org.junit.Test
 
 class BatteryWidgetConfigActivityTest {
 
-    private val dummyWatch1 = Watch("an-id-1234", "Watch 1", Watch.Platform.WEAR_OS)
-    private val dummyWatch2 = Watch("an-id-2345", "Watch 2", Watch.Platform.WEAR_OS)
-    private val dummyWatch3 = Watch("an-id-3456", "Watch 3", Watch.Platform.WEAR_OS)
+    private val dummyWatch1 = Watch("an-id-1234", "Watch 1", WearOSConnectionManager.PLATFORM)
+    private val dummyWatch2 = Watch("an-id-2345", "Watch 2", WearOSConnectionManager.PLATFORM)
+    private val dummyWatch3 = Watch("an-id-3456", "Watch 3", WearOSConnectionManager.PLATFORM)
 
     private lateinit var scenario: ActivityScenario<BatteryWidgetConfigActivity>
     private lateinit var watchDatabase: WatchDatabase

@@ -27,4 +27,10 @@ interface WatchConnectionInterface {
      * @param data The data to send with the message, if any.
      */
     fun sendMessage(watchId: String, path: String, data: ByteArray? = null)
+
+    /**
+     * Returns a string unique to the platform handling the connections. It's important this is
+     * constant as it will be stored with registered watches.
+     */
+    fun getPlatformIdentifier(): String
 }

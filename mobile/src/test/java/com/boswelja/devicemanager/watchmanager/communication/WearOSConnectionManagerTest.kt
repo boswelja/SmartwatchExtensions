@@ -33,7 +33,7 @@ class WearOSConnectionManagerTest {
     val instantExecutorRule = InstantTaskExecutorRule()
 
     private val transformNodeToWatch: (node: Node) -> Watch = {
-        Watch(it.id, it.displayName, Watch.Platform.WEAR_OS)
+        Watch(it.id, it.displayName, WearOSConnectionManager.PLATFORM)
     }
 
     private val dummyNodes = setOf<Node>(

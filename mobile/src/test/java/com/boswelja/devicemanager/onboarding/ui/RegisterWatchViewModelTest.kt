@@ -6,6 +6,7 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.boswelja.devicemanager.getOrAwaitValue
 import com.boswelja.devicemanager.watchmanager.WatchManager
+import com.boswelja.devicemanager.watchmanager.communication.WearOSConnectionManager
 import com.boswelja.devicemanager.watchmanager.item.Watch
 import com.boswelja.devicemanager.watchmanager.ui.register.RegisterWatchViewModel
 import com.google.common.truth.Truth.assertThat
@@ -27,9 +28,9 @@ class RegisterWatchViewModelTest {
     @get:Rule
     val instantExecutorRule = InstantTaskExecutorRule()
 
-    private val dummyWatch1 = Watch("an-id-1234", "Watch 1", Watch.Platform.WEAR_OS)
-    private val dummyWatch2 = Watch("an-id-2345", "Watch 2", Watch.Platform.WEAR_OS)
-    private val dummyWatch3 = Watch("an-id-3456", "Watch 3", Watch.Platform.WEAR_OS)
+    private val dummyWatch1 = Watch("an-id-1234", "Watch 1", WearOSConnectionManager.PLATFORM)
+    private val dummyWatch2 = Watch("an-id-2345", "Watch 2", WearOSConnectionManager.PLATFORM)
+    private val dummyWatch3 = Watch("an-id-3456", "Watch 3", WearOSConnectionManager.PLATFORM)
     private val dummyWatches = listOf(dummyWatch1, dummyWatch2, dummyWatch3)
 
     @RelaxedMockK private lateinit var watchManager: WatchManager
