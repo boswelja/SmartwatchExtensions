@@ -15,6 +15,7 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.boswelja.devicemanager.analytics.Analytics
 import com.boswelja.devicemanager.common.preference.SyncPreferences
+import com.boswelja.devicemanager.watchmanager.communication.WearOSConnectionManager
 import com.boswelja.devicemanager.watchmanager.database.WatchDatabase
 import com.boswelja.devicemanager.watchmanager.item.IntPreference
 import com.boswelja.devicemanager.watchmanager.item.Watch
@@ -41,7 +42,7 @@ class WatchPreferenceManagerTest {
 
     private val coroutineScope = TestCoroutineScope()
 
-    private val dummyWatch = Watch("an-id-1234", "Watch 1", Watch.Platform.WEAR_OS)
+    private val dummyWatch = Watch("an-id-1234", "Watch 1", WearOSConnectionManager.PLATFORM)
     private val dummyPreference = IntPreference(dummyWatch.id, "preference", 123)
 
     @RelaxedMockK

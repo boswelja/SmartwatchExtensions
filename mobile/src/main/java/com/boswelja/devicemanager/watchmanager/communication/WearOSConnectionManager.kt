@@ -40,9 +40,11 @@ class WearOSConnectionManager(
         refreshConnectedNodes()
     }
 
+    override fun getPlatformIdentifier(): String = PLATFORM
+
     override fun getAvailableWatches(): List<Watch> {
         val availableNodes = connectedNodes.intersect(nodesWithApp)
-        return availableNodes.map { Watch(it.id, it.displayName, Watch.Platform.WEAR_OS) }
+        return availableNodes.map { Watch(it.id, it.displayName, PLATFORM) }
     }
 
     override fun getWatchStatus(watch: Watch, isRegistered: Boolean): Watch.Status {
@@ -74,5 +76,9 @@ class WearOSConnectionManager(
 
     fun dispose() {
         capabilityClient.removeListener(capableWatchesListener, CAPABILITY_WATCH_APP)
+    }
+
+    companion object {
+        const val PLATFORM = "WEAR_OS"
     }
 }

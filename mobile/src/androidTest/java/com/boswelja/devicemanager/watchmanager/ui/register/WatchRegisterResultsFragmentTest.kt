@@ -15,6 +15,7 @@ import com.boswelja.devicemanager.TestExtensions.getOrAwaitValue
 import com.boswelja.devicemanager.TestExtensions.hasPlural
 import com.boswelja.devicemanager.TestExtensions.hasText
 import com.boswelja.devicemanager.TestExtensions.withDrawable
+import com.boswelja.devicemanager.watchmanager.communication.WearOSConnectionManager
 import com.boswelja.devicemanager.watchmanager.item.Watch
 import com.google.common.truth.Truth.assertThat
 import org.junit.Before
@@ -22,9 +23,9 @@ import org.junit.Test
 
 class WatchRegisterResultsFragmentTest {
 
-    private val dummyWatch1 = Watch("an-id-1234", "Watch 1", Watch.Platform.WEAR_OS)
-    private val dummyWatch2 = Watch("an-id-2345", "Watch 2", Watch.Platform.WEAR_OS)
-    private val dummyWatch3 = Watch("an-id-3456", "Watch 3", Watch.Platform.WEAR_OS)
+    private val dummyWatch1 = Watch("an-id-1234", "Watch 1", WearOSConnectionManager.PLATFORM)
+    private val dummyWatch2 = Watch("an-id-2345", "Watch 2", WearOSConnectionManager.PLATFORM)
+    private val dummyWatch3 = Watch("an-id-3456", "Watch 3", WearOSConnectionManager.PLATFORM)
     private val dummyWatches = listOf(dummyWatch1, dummyWatch2, dummyWatch3)
 
     private lateinit var fragmentScenario: FragmentScenario<EmptyParentFragment>

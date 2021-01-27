@@ -20,10 +20,10 @@ data class Watch(
     @PrimaryKey val id: String,
     @ColumnInfo(name = "name")
     val name: String,
-    val platform: Platform,
+    val platform: String,
     @Ignore var status: Status
 ) {
-    constructor(id: String, name: String, platform: Platform) : this(
+    constructor(id: String, name: String, platform: String) : this(
         id, name, platform, Status.UNKNOWN
     )
 
@@ -37,9 +37,5 @@ data class Watch(
         NOT_REGISTERED(R.string.watch_status_not_registered, R.drawable.ic_error),
         DISCONNECTED(R.string.watch_status_disconnected, R.drawable.ic_disconnected),
         CONNECTED(R.string.watch_status_connected, R.drawable.ic_connected)
-    }
-
-    enum class Platform {
-        WEAR_OS
     }
 }
