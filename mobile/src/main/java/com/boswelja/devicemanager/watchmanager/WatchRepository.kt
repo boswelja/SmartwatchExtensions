@@ -89,7 +89,7 @@ class WatchRepository(
         get() = registeredWatches.value?.contains(this) == true
 
     /**
-     * Takes a list of watches from varying platforms and an additional list of watcches from a
+     * Takes a list of watches from varying platforms and an additional list of watches from a
      * single platform, and replaces all watches in the original list from the same platform with
      * the new list.
      * @param existingWatches The [List] of [Watch]es from varying platforms.
@@ -109,6 +109,13 @@ class WatchRepository(
         return null
     }
 
+    /**
+     * Takes a list of watches from varying platforms and updates the [Watch.Status] of all watches
+     * from a specified platform.
+     * @param watches The [List] of [Watch] from varying platforms.
+     * @param platform The [Watch.platform] to update [Watch.Status] for.
+     * @return The [List] of [Watch] with newly added [Watch.Status]
+     */
     private fun updateStatusForPlatform(watches: List<Watch>, platform: String): List<Watch> {
         val platformWatches = watches.filter { it.platform == platform }
         val connectionManager = connectionManagers[platform]
