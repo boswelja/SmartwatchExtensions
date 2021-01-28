@@ -203,7 +203,7 @@ class ManageSpaceActivity : BaseToolbarActivity() {
     private fun doSettingsReset() {
         setButtonsEnabled(false)
         coroutineScope.launch(Dispatchers.IO) {
-            val registeredWatches = watchManager.getRegisteredWatches()
+            val registeredWatches = watchManager.registeredWatches.value!!
             if (registeredWatches.isNotEmpty()) {
                 analytics.logStorageManagerAction("clearSettings")
                 initProgressBar(registeredWatches.count())
@@ -244,7 +244,7 @@ class ManageSpaceActivity : BaseToolbarActivity() {
             analytics.logStorageManagerAction("fullReset")
             var totalSteps = DATABASE_COUNT + PREFERENCE_STORE_COUNT
             initProgressBar(totalSteps)
-            val registeredWatches = watchManager.getRegisteredWatches()
+            val registeredWatches = watchManager.registeredWatches.value!!
             if (registeredWatches.isNotEmpty()) {
                 totalSteps += (registeredWatches.count() * 3)
                 withContext(Dispatchers.Main) { initProgressBar(totalSteps) }
@@ -263,7 +263,7 @@ class ManageSpaceActivity : BaseToolbarActivity() {
                         return@launch
                     }
                     try {
-                        watchManager.requestResetWatch(watch.id)
+                        watchManager.requestResetWatch(watch)
                         withContext(Dispatchers.Main) { incrementProgressBar() }
                     } catch (e: Exception) {
                         withContext(Dispatchers.Main) {
@@ -273,7 +273,7 @@ class ManageSpaceActivity : BaseToolbarActivity() {
                         }
                         return@launch
                     }
-                    watchManager.forgetWatch(watch.id)
+                    watchManager.forgetWatch(watch)
                     withContext(Dispatchers.Main) { incrementProgressBar() }
                 }
             }

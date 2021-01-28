@@ -2,6 +2,7 @@ package com.boswelja.devicemanager.onboarding.ui
 
 import android.os.Build
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.lifecycle.MutableLiveData
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.boswelja.devicemanager.getOrAwaitValue
@@ -13,6 +14,7 @@ import com.google.common.truth.Truth.assertThat
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.coVerify
+import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
 import kotlinx.coroutines.runBlocking
 import org.junit.Before
@@ -49,9 +51,9 @@ class RegisterWatchViewModelTest {
     @Test
     fun `isWorking updates correctly when availableWatches is empty`(): Unit = runBlocking {
         // By the time watchManager.getAvailableWatches() is called, isWorking should be true.
-        coEvery { watchManager.getAvailableWatches() } answers {
+        coEvery { watchManager.availableWatches } answers {
             viewModel.isWorking.getOrAwaitValue { assertThat(it).isTrue() }
-            emptyList()
+            MutableLiveData(emptyList())
         }
         viewModel.isWorking.getOrAwaitValue { assertThat(it).isFalse() }
         viewModel.suspendRegisterAvailableWatches()
@@ -61,9 +63,9 @@ class RegisterWatchViewModelTest {
     @Test
     fun `isWorking updates correctly when availableWatches is not empty`(): Unit = runBlocking {
         // By the time watchManager.getAvailableWatches() is called, isWorking should be true.
-        coEvery { watchManager.getAvailableWatches() } answers {
+        coEvery { watchManager.availableWatches } answers {
             viewModel.isWorking.getOrAwaitValue { assertThat(it).isTrue() }
-            dummyWatches
+            MutableLiveData(dummyWatches)
         }
         viewModel.isWorking.getOrAwaitValue { assertThat(it).isFalse() }
         viewModel.suspendRegisterAvailableWatches()
@@ -72,20 +74,20 @@ class RegisterWatchViewModelTest {
 
     @Test
     fun `registerAvailableWatches registers every watch in availableWatches`(): Unit = runBlocking {
-        coEvery { watchManager.getAvailableWatches() } returns dummyWatches
+        every { watchManager.availableWatches } returns MutableLiveData(dummyWatches)
         viewModel.suspendRegisterAvailableWatches()
         dummyWatches.forEach {
             coVerify(exactly = 1) { watchManager.registerWatch(it) }
         }
-        coVerify(exactly = 1) { watchManager.getAvailableWatches() }
+        coVerify(exactly = 1) { watchManager.availableWatches }
     }
 
     @Test
     fun `registerAvailableWatches does nothing when availableWatches is empty`(): Unit =
         runBlocking {
-            coEvery { watchManager.getAvailableWatches() } returns emptyList()
+            coEvery { watchManager.availableWatches } returns MutableLiveData(emptyList())
             viewModel.suspendRegisterAvailableWatches()
             coVerify(exactly = 0) { watchManager.registerWatch(any()) }
-            coVerify(exactly = 1) { watchManager.getAvailableWatches() }
+            coVerify(exactly = 1) { watchManager.availableWatches }
         }
 }

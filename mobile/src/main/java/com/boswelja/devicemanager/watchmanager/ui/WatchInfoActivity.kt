@@ -52,7 +52,8 @@ class WatchInfoActivity : BaseToolbarActivity() {
     /** Resets the text in the watch name field to the nickname stored in [WatchManager]. */
     private fun resetNicknameTextField() {
         coroutineScope.launch(Dispatchers.IO) {
-            val watchName = watchManager.database.watchDao().get(watchId)?.name
+            val watchName =
+                watchManager.registeredWatches.value?.firstOrNull { it.id == watchId }?.name
             withContext(Dispatchers.Main) {
                 binding.apply {
                     watchNameField.setText(watchName)
@@ -61,7 +62,8 @@ class WatchInfoActivity : BaseToolbarActivity() {
                             Timber.i("Updating watch nickname")
                             watchNameLayout.isErrorEnabled = false
                             coroutineScope.launch(Dispatchers.IO) {
-                                watchManager.database.watchDao().setName(watchId, it.toString())
+                                // TODO We need a path for updating watch nicknames
+                                // watchManager.database.watchDao().setName(watchId, it.toString())
                             }
                         } else {
                             Timber.w("Invalid watch nickname")
@@ -124,7 +126,7 @@ class WatchInfoActivity : BaseToolbarActivity() {
     private fun confirmForgetWatch() {
         Timber.d("confirmForgetWatch() called")
         coroutineScope.launch(Dispatchers.IO) {
-            val watch = watchManager.database.watchDao().get(watchId)
+            val watch = watchManager.registeredWatches.value?.firstOrNull { it.id == watchId }
             withContext(Dispatchers.Main) {
                 AlertDialog.Builder(this@WatchInfoActivity)
                     .apply {
@@ -152,14 +154,14 @@ class WatchInfoActivity : BaseToolbarActivity() {
     private fun forgetWatch(watch: Watch?) {
         Timber.d("forgetWatch() called")
         coroutineScope.launch(Dispatchers.IO) {
-            val success = watchManager.forgetWatch(watch?.id)
+            val success = watchManager.forgetWatch(watch!!)
             withContext(Dispatchers.Main) {
                 if (success) {
                     Timber.i("Successfully forgot watch")
                     finish()
                 } else {
                     Timber.w("Failed to forget watch")
-                    createSnackBar("Failed to forget your ${watch?.name}")
+                    createSnackBar("Failed to forget your ${watch.name}")
                 }
             }
         }
