@@ -73,7 +73,7 @@ class WatchRepository(
             _registeredWatches.addSource(connectionManager.dataChanged) {
                 if (it) {
                     val watches = updateStatusForPlatform(
-                        _registeredWatches.value!!,
+                        _registeredWatches.value ?: emptyList(),
                         connectionManager.getPlatformIdentifier()
                     )
                     _registeredWatches.postValue(watches)
@@ -126,7 +126,7 @@ class WatchRepository(
         platformWatches.forEach {
             it.status = connectionManager.getWatchStatus(it, it.isRegistered)
         }
-        return replaceForPlatform(watches, platformWatches)!!
+        return replaceForPlatform(watches, platformWatches) ?: emptyList()
     }
 
     /**
