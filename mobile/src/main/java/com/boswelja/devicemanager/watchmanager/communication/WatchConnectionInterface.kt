@@ -1,6 +1,7 @@
 package com.boswelja.devicemanager.watchmanager.communication
 
 import androidx.lifecycle.LiveData
+import com.boswelja.devicemanager.common.Event
 import com.boswelja.devicemanager.watchmanager.item.Watch
 
 /**
@@ -8,6 +9,14 @@ import com.boswelja.devicemanager.watchmanager.item.Watch
  */
 interface WatchConnectionInterface {
 
+    /**
+     * Event that's fired whenever user-facing data is changed.
+     */
+    val dataChanged: Event
+
+    /**
+     * An observable list of all available watches.
+     */
     val availableWatches: LiveData<List<Watch>>
 
     /**

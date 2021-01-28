@@ -5,6 +5,7 @@ import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.map
+import com.boswelja.devicemanager.common.Event
 import com.boswelja.devicemanager.common.References.CAPABILITY_WATCH_APP
 import com.boswelja.devicemanager.watchmanager.item.Watch
 import com.google.android.gms.tasks.Task
@@ -34,7 +35,10 @@ class WearOSConnectionManager(
     private val capableWatchesListener = CapabilityClient.OnCapabilityChangedListener {
         Timber.d("${it.name} capability changed")
         nodesWithApp = it.nodes
+        dataChanged.fire()
     }
+
+    override val dataChanged: Event = Event()
 
     override val availableWatches: LiveData<List<Watch>> = connectedNodes.map { connectedNodes ->
         connectedNodes.intersect(nodesWithApp).map { Watch(it.id, it.displayName, PLATFORM) }
@@ -43,7 +47,10 @@ class WearOSConnectionManager(
     init {
         capabilityClient.addListener(capableWatchesListener, CAPABILITY_WATCH_APP)
         capabilityClient.getCapability(CAPABILITY_WATCH_APP, CapabilityClient.FILTER_ALL)
-            .addOnSuccessListener { nodesWithApp = it.nodes }
+            .addOnSuccessListener {
+                nodesWithApp = it.nodes
+                dataChanged.fire()
+            }
             .addOnFailureListener { Timber.w("Failed to get capable nodes") }
         refreshConnectedNodes()
     }
@@ -73,6 +80,7 @@ class WearOSConnectionManager(
         return nodeClient.connectedNodes
             .addOnSuccessListener {
                 connectedNodes.postValue(it)
+                dataChanged.fire()
             }
             .addOnFailureListener {
                 Timber.e(it)
