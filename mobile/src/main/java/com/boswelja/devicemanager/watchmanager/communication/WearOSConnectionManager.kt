@@ -3,8 +3,8 @@ package com.boswelja.devicemanager.watchmanager.communication
 import android.content.Context
 import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.map
 import com.boswelja.devicemanager.common.Event
 import com.boswelja.devicemanager.common.References.CAPABILITY_WATCH_APP
 import com.boswelja.devicemanager.watchmanager.item.Watch
@@ -38,13 +38,15 @@ class WearOSConnectionManager(
         dataChanged.fire()
     }
 
+    private val _availableWatches = MediatorLiveData<List<Watch>>()
+
     override val dataChanged: Event = Event()
 
-    override val availableWatches: LiveData<List<Watch>> = connectedNodes.map { connectedNodes ->
-        connectedNodes.intersect(nodesWithApp).map { Watch(it.id, it.displayName, PLATFORM) }
-    }
+    override val availableWatches: LiveData<List<Watch>>
+        get() = _availableWatches
 
     init {
+        // Set up connectedNodes and nodesWithApp updates
         capabilityClient.addListener(capableWatchesListener, CAPABILITY_WATCH_APP)
         capabilityClient.getCapability(CAPABILITY_WATCH_APP, CapabilityClient.FILTER_ALL)
             .addOnSuccessListener {
@@ -53,6 +55,25 @@ class WearOSConnectionManager(
             }
             .addOnFailureListener { Timber.w("Failed to get capable nodes") }
         refreshConnectedNodes()
+
+        // Set up _availableWatches
+        _availableWatches.addSource(connectedNodes) { connectedNodes ->
+            val watches = connectedNodes.intersect(nodesWithApp).map {
+                Watch(it.id, it.displayName, PLATFORM).apply {
+                    getWatchStatus(this, false)
+                }
+            }
+            _availableWatches.postValue(watches)
+        }
+        _availableWatches.addSource(dataChanged) {
+            if (it) {
+                val watches = _availableWatches.value?.map { watch ->
+                    watch.status = getWatchStatus(watch, false)
+                    watch
+                }
+                _availableWatches.postValue(watches ?: emptyList())
+            }
+        }
     }
 
     override fun getPlatformIdentifier(): String = PLATFORM
