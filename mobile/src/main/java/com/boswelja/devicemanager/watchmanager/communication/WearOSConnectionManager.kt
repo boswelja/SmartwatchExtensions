@@ -2,6 +2,9 @@ package com.boswelja.devicemanager.watchmanager.communication
 
 import android.content.Context
 import androidx.annotation.VisibleForTesting
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.map
 import com.boswelja.devicemanager.common.References.CAPABILITY_WATCH_APP
 import com.boswelja.devicemanager.watchmanager.item.Watch
 import com.google.android.gms.tasks.Task
@@ -25,11 +28,16 @@ class WearOSConnectionManager(
     )
 
     @VisibleForTesting internal var nodesWithApp: Set<Node> = emptySet()
-    @VisibleForTesting internal var connectedNodes: List<Node> = emptyList()
+    @VisibleForTesting internal var connectedNodes: MutableLiveData<List<Node>> =
+        MutableLiveData(emptyList())
 
     private val capableWatchesListener = CapabilityClient.OnCapabilityChangedListener {
         Timber.d("${it.name} capability changed")
         nodesWithApp = it.nodes
+    }
+
+    override val availableWatches: LiveData<List<Watch>> = connectedNodes.map { connectedNodes ->
+        connectedNodes.intersect(nodesWithApp).map { Watch(it.id, it.displayName, PLATFORM) }
     }
 
     init {
@@ -42,15 +50,12 @@ class WearOSConnectionManager(
 
     override fun getPlatformIdentifier(): String = PLATFORM
 
-    override fun getAvailableWatches(): List<Watch> {
-        val availableNodes = connectedNodes.intersect(nodesWithApp)
-        return availableNodes.map { Watch(it.id, it.displayName, PLATFORM) }
-    }
+    override fun getAvailableWatches(): List<Watch> = availableWatches.value ?: emptyList()
 
     override fun getWatchStatus(watch: Watch, isRegistered: Boolean): Watch.Status {
         Timber.d("getWatchStatus($watch, $isRegistered) called")
         val hasWatchApp = nodesWithApp.any { it.id == watch.id }
-        val isConnected = connectedNodes.any { it.id == watch.id }
+        val isConnected = connectedNodes.value!!.any { it.id == watch.id }
         return when {
             hasWatchApp && isConnected && isRegistered -> Watch.Status.CONNECTED
             hasWatchApp && isConnected && !isRegistered -> Watch.Status.NOT_REGISTERED
@@ -67,7 +72,7 @@ class WearOSConnectionManager(
     internal fun refreshConnectedNodes(): Task<List<Node>> {
         return nodeClient.connectedNodes
             .addOnSuccessListener {
-                connectedNodes = it
+                connectedNodes.postValue(it)
             }
             .addOnFailureListener {
                 Timber.e(it)
