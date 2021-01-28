@@ -18,24 +18,25 @@ import timber.log.Timber
  * data from the connection managers.
  */
 class WatchRepository(
-    private val context: Context,
+    context: Context,
     private val database: WatchDatabase
 ) {
 
     constructor(context: Context) : this(context, WatchDatabase.get(context))
 
     private val connectionManagers = HashMap<String, WatchConnectionInterface>()
+    private val _registeredWatches: MediatorLiveData<List<Watch>> = MediatorLiveData()
+    private val _availableWatches: MediatorLiveData<List<Watch>> = MediatorLiveData()
 
     /**
-     * An observable list of watches registered in the database.
+     * An observable list of watches registered in the database, saturated with statuses.
      */
     val registeredWatches: LiveData<List<Watch>>
-        get() = database.watchDao().getAllObservable()
+        get() = _registeredWatches
 
     /**
-     * A list of all available watches, saturated with watch status already.
+     * A list of all available watches, saturated with statuses.
      */
-    private val _availableWatches: MediatorLiveData<List<Watch>> = MediatorLiveData()
     val availableWatches: LiveData<List<Watch>>
         get() = _availableWatches
 
@@ -53,6 +54,30 @@ class WatchRepository(
                     newAvailableWatches
                 )
                 _availableWatches.postValue(newWatches)
+            }
+        }
+
+        // Set up _registeredWatches
+        _registeredWatches.addSource(database.watchDao().getAllObservable()) { watches ->
+            watches.forEach {
+                val connectionManager = it.connectionManager
+                if (connectionManager != null) {
+                    it.status = connectionManager.getWatchStatus(it, true)
+                } else {
+                    Timber.w("Platform ${it.platform} not registered")
+                }
+            }
+            _registeredWatches.postValue(watches)
+        }
+        connectionManagers.values.forEach { connectionManager ->
+            _registeredWatches.addSource(connectionManager.dataChanged) {
+                if (it) {
+                    val watches = updateStatusForPlatform(
+                        _registeredWatches.value!!,
+                        connectionManager.getPlatformIdentifier()
+                    )
+                    _registeredWatches.postValue(watches)
+                }
             }
         }
     }
