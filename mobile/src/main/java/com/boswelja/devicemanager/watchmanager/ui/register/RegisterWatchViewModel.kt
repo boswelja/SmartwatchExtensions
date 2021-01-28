@@ -59,7 +59,7 @@ class RegisterWatchViewModel internal constructor(
 
     internal suspend fun suspendRegisterAvailableWatches() {
         _isWorking.postValue(true)
-        val availableWatches = watchManager.getAvailableWatches()
+        val availableWatches = watchManager.availableWatches.value!!
         availableWatches.forEach { watch ->
             watchManager.registerWatch(watch)
         }
