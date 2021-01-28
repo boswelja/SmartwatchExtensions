@@ -6,6 +6,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.boswelja.devicemanager.TestCapabilityInfo
 import com.boswelja.devicemanager.TestNode
 import com.boswelja.devicemanager.common.References.CAPABILITY_WATCH_APP
+import com.boswelja.devicemanager.getOrAwaitValue
 import com.boswelja.devicemanager.watchmanager.item.Watch
 import com.google.android.gms.tasks.Tasks
 import com.google.android.gms.wearable.CapabilityClient
@@ -61,35 +62,35 @@ class WearOSConnectionManagerTest {
     }
 
     @Test
-    fun `getAvailableWatches returns only the watches that have the app and are connected`() {
+    fun `availableWatches contains only the watches that have the app and are connected`() {
         connectionManager = WearOSConnectionManager(capabilityClient, nodeClient, messageClient)
         var expectedWatches = dummyWatches
         // Test with matching sets
-        connectionManager.connectedNodes = dummyNodes.toList()
+        connectionManager.connectedNodes.value = dummyNodes.toList()
         connectionManager.nodesWithApp = dummyNodes
-        assertThat(connectionManager.getAvailableWatches())
+        assertThat(connectionManager.availableWatches.getOrAwaitValue())
             .containsExactlyElementsIn(expectedWatches)
 
         // Test with more connected nodes than capable nodes
         val nodesWithApp = dummyNodes.drop(1).toSet()
         expectedWatches = nodesWithApp.map(transformNodeToWatch)
-        connectionManager.connectedNodes = dummyNodes.toList()
+        connectionManager.connectedNodes.value = dummyNodes.toList()
         connectionManager.nodesWithApp = nodesWithApp
-        assertThat(connectionManager.getAvailableWatches())
+        assertThat(connectionManager.availableWatches.getOrAwaitValue())
             .containsExactlyElementsIn(expectedWatches)
 
         // Test with more capable nodes than connected nodes
         val connectedNodes = dummyNodes.drop(1)
         expectedWatches = connectedNodes.map(transformNodeToWatch)
-        connectionManager.connectedNodes = connectedNodes
+        connectionManager.connectedNodes.value = connectedNodes
         connectionManager.nodesWithApp = dummyNodes
-        assertThat(connectionManager.getAvailableWatches())
+        assertThat(connectionManager.availableWatches.getOrAwaitValue())
             .containsExactlyElementsIn(expectedWatches)
 
         // Test with no nodes
-        connectionManager.connectedNodes = emptyList()
+        connectionManager.connectedNodes.value = emptyList()
         connectionManager.nodesWithApp = emptySet()
-        assertThat(connectionManager.getAvailableWatches()).isEmpty()
+        assertThat(connectionManager.availableWatches.getOrAwaitValue()).isEmpty()
     }
 
     @Test
@@ -110,42 +111,42 @@ class WearOSConnectionManagerTest {
         val dummyWatch = transformNodeToWatch(dummyNode)
 
         connectionManager.nodesWithApp = setOf(dummyNode)
-        connectionManager.connectedNodes = listOf(dummyNode)
+        connectionManager.connectedNodes.value = listOf(dummyNode)
         assertThat(connectionManager.getWatchStatus(dummyWatch, true))
             .isEquivalentAccordingToCompareTo(Watch.Status.CONNECTED)
 
         connectionManager.nodesWithApp = setOf(dummyNode)
-        connectionManager.connectedNodes = listOf(dummyNode)
+        connectionManager.connectedNodes.value = listOf(dummyNode)
         assertThat(connectionManager.getWatchStatus(dummyWatch, false))
             .isEquivalentAccordingToCompareTo(Watch.Status.NOT_REGISTERED)
 
         connectionManager.nodesWithApp = emptySet()
-        connectionManager.connectedNodes = listOf(dummyNode)
+        connectionManager.connectedNodes.value = listOf(dummyNode)
         assertThat(connectionManager.getWatchStatus(dummyWatch, true))
             .isEquivalentAccordingToCompareTo(Watch.Status.MISSING_APP)
 
         connectionManager.nodesWithApp = emptySet()
-        connectionManager.connectedNodes = listOf(dummyNode)
+        connectionManager.connectedNodes.value = listOf(dummyNode)
         assertThat(connectionManager.getWatchStatus(dummyWatch, false))
             .isEquivalentAccordingToCompareTo(Watch.Status.MISSING_APP)
 
         connectionManager.nodesWithApp = setOf(dummyNode)
-        connectionManager.connectedNodes = emptyList()
+        connectionManager.connectedNodes.value = emptyList()
         assertThat(connectionManager.getWatchStatus(dummyWatch, true))
             .isEquivalentAccordingToCompareTo(Watch.Status.DISCONNECTED)
 
         connectionManager.nodesWithApp = setOf(dummyNode)
-        connectionManager.connectedNodes = emptyList()
+        connectionManager.connectedNodes.value = emptyList()
         assertThat(connectionManager.getWatchStatus(dummyWatch, false))
             .isEquivalentAccordingToCompareTo(Watch.Status.ERROR)
 
         connectionManager.nodesWithApp = emptySet()
-        connectionManager.connectedNodes = emptyList()
+        connectionManager.connectedNodes.value = emptyList()
         assertThat(connectionManager.getWatchStatus(dummyWatch, true))
             .isEquivalentAccordingToCompareTo(Watch.Status.ERROR)
 
         connectionManager.nodesWithApp = emptySet()
-        connectionManager.connectedNodes = emptyList()
+        connectionManager.connectedNodes.value = emptyList()
         assertThat(connectionManager.getWatchStatus(dummyWatch, false))
             .isEquivalentAccordingToCompareTo(Watch.Status.ERROR)
     }
@@ -162,7 +163,7 @@ class WearOSConnectionManagerTest {
 
         task.continueWith {
             verify(exactly = 1) { capabilityClient.getCapability(CAPABILITY_WATCH_APP, any()) }
-            assertThat(connectionManager.connectedNodes).containsExactlyElementsIn(dummyNodes)
+            assertThat(connectionManager.connectedNodes.value).containsExactlyElementsIn(dummyNodes)
         }
     }
 }

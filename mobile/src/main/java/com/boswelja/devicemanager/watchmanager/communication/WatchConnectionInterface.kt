@@ -1,11 +1,14 @@
 package com.boswelja.devicemanager.watchmanager.communication
 
+import androidx.lifecycle.LiveData
 import com.boswelja.devicemanager.watchmanager.item.Watch
 
 /**
  * An interface for managing connections with third party watch APIs
  */
 interface WatchConnectionInterface {
+
+    val availableWatches: LiveData<List<Watch>>
 
     /**
      * Get a [List] of [Watch]es that are connected, and have Wearable Extensions installed
