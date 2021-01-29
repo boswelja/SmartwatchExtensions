@@ -24,7 +24,7 @@ import timber.log.Timber
 class RegisterWatchViewModel internal constructor(
     application: Application,
     autoRegisterOnCreate: Boolean,
-    private val watchManager: WatchManager = WatchManager(application)
+    private val watchManager: WatchManager = WatchManager.getInstance(application)
 ) : AndroidViewModel(application) {
 
     @Suppress("unused")

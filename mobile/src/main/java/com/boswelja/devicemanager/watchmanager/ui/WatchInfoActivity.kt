@@ -44,7 +44,7 @@ class WatchInfoActivity : BaseToolbarActivity() {
             forgetWatchButton.setOnClickListener { confirmForgetWatch() }
         }
 
-        watchManager = WatchManager(this)
+        watchManager = WatchManager.getInstance(this)
 
         resetNicknameTextField()
     }
