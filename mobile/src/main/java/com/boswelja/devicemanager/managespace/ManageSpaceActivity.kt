@@ -307,7 +307,7 @@ class ManageSpaceActivity : BaseToolbarActivity() {
                     )
                 )
             }
-            WatchDatabase.get(this@ManageSpaceActivity).apply { clearAllTables() }.also {
+            WatchDatabase.getInstance(this@ManageSpaceActivity).apply { clearAllTables() }.also {
                 it.close()
             }
             withContext(Dispatchers.Main) {

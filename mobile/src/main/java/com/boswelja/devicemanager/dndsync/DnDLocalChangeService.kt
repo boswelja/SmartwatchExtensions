@@ -28,7 +28,7 @@ import timber.log.Timber
 
 class DnDLocalChangeService : LifecycleService() {
 
-    private val database by lazy { WatchDatabase.get(this) }
+    private val database by lazy { WatchDatabase.getInstance(this) }
     private val dataClient by lazy { Wearable.getDataClient(this) }
 
     private val dndChangeReceiver =

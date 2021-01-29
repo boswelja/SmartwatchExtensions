@@ -39,7 +39,7 @@ abstract class BaseWatchPickerActivity : BaseToolbarActivity(), AdapterView.OnIt
     private val adapter: WatchPickerAdapter by lazy { WatchPickerAdapter(this) }
     internal val selectedWatchHandler by lazy { SelectedWatchHandler(this) }
     internal val coroutineScope = MainScope()
-    internal val database by lazy { WatchDatabase.get(this) }
+    internal val database by lazy { WatchDatabase.getInstance(this) }
 
     private lateinit var watchPickerSpinner: AppCompatSpinner
 

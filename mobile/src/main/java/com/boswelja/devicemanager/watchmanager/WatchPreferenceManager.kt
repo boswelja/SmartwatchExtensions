@@ -40,7 +40,7 @@ internal constructor(
     private val dataClient: DataClient = Wearable.getDataClient(context),
     private val sharedPreferences: SharedPreferences =
         PreferenceManager.getDefaultSharedPreferences(context),
-    private val database: WatchDatabase = WatchDatabase.get(context),
+    private val database: WatchDatabase = WatchDatabase.getInstance(context),
     private val analytics: Analytics = Analytics(context)
 ) {
 

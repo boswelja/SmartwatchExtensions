@@ -13,6 +13,7 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.boswelja.devicemanager.common.RoomTypeConverters
+import com.boswelja.devicemanager.common.SingletonHolder
 import com.boswelja.devicemanager.watchmanager.item.BoolPreference
 import com.boswelja.devicemanager.watchmanager.item.IntPreference
 import com.boswelja.devicemanager.watchmanager.item.Watch
@@ -51,41 +52,17 @@ abstract class WatchDatabase : RoomDatabase() {
         return false
     }
 
-    override fun close() {
-        INSTANCE = null
-        super.close()
-    }
-
-    companion object {
-        @Volatile
-        private var INSTANCE: WatchDatabase? = null
-
-        /**
-         * Gets an instance of [WatchDatabase].
-         * @param context [Context].
-         */
-        fun get(context: Context): WatchDatabase {
-            if (INSTANCE != null) {
-                return INSTANCE!!
-            } else {
-                synchronized(this) {
-                    if (INSTANCE == null) {
-                        INSTANCE =
-                            Room.databaseBuilder(context, WatchDatabase::class.java, "watch-db")
-                                .apply {
-                                    addMigrations(
-                                        Migrations.MIGRATION_3_5,
-                                        Migrations.MIGRATION_4_5,
-                                        Migrations.MIGRATION_5_6,
-                                        Migrations.MIGRATION_6_7
-                                    )
-                                    fallbackToDestructiveMigration()
-                                }
-                                .build()
-                    }
-                    return INSTANCE!!
-                }
+    companion object : SingletonHolder<WatchDatabase, Context>({ context ->
+        Room.databaseBuilder(context, WatchDatabase::class.java, "watch-db")
+            .apply {
+                addMigrations(
+                    Migrations.MIGRATION_3_5,
+                    Migrations.MIGRATION_4_5,
+                    Migrations.MIGRATION_5_6,
+                    Migrations.MIGRATION_6_7
+                )
+                fallbackToDestructiveMigration()
             }
-        }
-    }
+            .build()
+    })
 }

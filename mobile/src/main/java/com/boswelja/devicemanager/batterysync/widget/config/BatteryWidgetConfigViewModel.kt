@@ -11,7 +11,10 @@ class BatteryWidgetConfigViewModel internal constructor(
 ) : AndroidViewModel(application) {
 
     @Suppress("unused")
-    constructor(application: Application) : this(application, WatchDatabase.get(application))
+    constructor(application: Application) : this(
+        application,
+        WatchDatabase.getInstance(application)
+    )
 
     val allRegisteredWatches = watchDatabase.watchDao().getAllObservable()
 

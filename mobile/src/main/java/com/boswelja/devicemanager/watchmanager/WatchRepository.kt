@@ -22,7 +22,7 @@ class WatchRepository(
     private val database: WatchDatabase
 ) {
 
-    constructor(context: Context) : this(context, WatchDatabase.get(context))
+    constructor(context: Context) : this(context, WatchDatabase.getInstance(context))
 
     private val connectionManagers = HashMap<String, WatchConnectionInterface>()
     private val _registeredWatches: MediatorLiveData<List<Watch>> = MediatorLiveData()

@@ -159,7 +159,7 @@ class BootOrUpdateHandlerService : Service() {
     private fun restartServices() {
         Timber.d("bindWatchManager.getInstance() called")
         MainScope().launch(Dispatchers.IO) {
-            WatchDatabase.get(this@BootOrUpdateHandlerService).also {
+            WatchDatabase.getInstance(this@BootOrUpdateHandlerService).also {
                 tryStartBatterySyncWorkers(it)
                 tryStartInterruptFilterSyncService(it)
                 finish()
