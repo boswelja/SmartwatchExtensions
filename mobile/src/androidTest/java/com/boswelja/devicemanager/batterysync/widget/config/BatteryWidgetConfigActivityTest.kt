@@ -40,7 +40,7 @@ class BatteryWidgetConfigActivityTest {
         ).build()
 
         mockkObject(WatchDatabase)
-        every { WatchDatabase.get(any()) } returns watchDatabase
+        every { WatchDatabase.getInstance(any()) } returns watchDatabase
 
         scenario = launchActivity()
     }

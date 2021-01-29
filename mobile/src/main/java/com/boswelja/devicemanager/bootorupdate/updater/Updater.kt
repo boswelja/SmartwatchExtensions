@@ -162,7 +162,7 @@ class Updater(private val context: Context) {
             .addOnSuccessListener { capabilityInfo ->
                 coroutineScope.launch {
                     val messageClient = Wearable.getMessageClient(context)
-                    val database = WatchDatabase.get(context)
+                    val database = WatchDatabase.getInstance(context)
 
                     val capableNodes = capabilityInfo.nodes
                     val defaultWatch =

@@ -36,7 +36,7 @@ class SelectedWatchHandler internal constructor(
         PreferenceManager.getDefaultSharedPreferences(context),
         CoroutineScope(Dispatchers.IO),
         WearOSConnectionManager(context),
-        WatchDatabase.get(context)
+        WatchDatabase.getInstance(context)
     )
 
     private val _selectedWatch = MutableLiveData<Watch?>()
