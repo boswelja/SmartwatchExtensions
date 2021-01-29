@@ -153,6 +153,17 @@ class WatchRepository(
     }
 
     /**
+     * Changes a watches stored name.
+     * @param watch The [Watch] to rename.
+     * @param newName The new name to set for the watch.
+     */
+    suspend fun renameWatch(watch: Watch, newName: String) {
+        withContext(Dispatchers.IO) {
+            database.watchDao().setName(watch.id, newName)
+        }
+    }
+
+    /**
      * Sends the app request message to a given watch.
      * @param watch The [Watch] to reset Wearable Extensions on.
      */

@@ -51,25 +51,23 @@ class WatchInfoActivity : BaseToolbarActivity() {
 
     /** Resets the text in the watch name field to the nickname stored in [WatchManager]. */
     private fun resetNicknameTextField() {
-        coroutineScope.launch(Dispatchers.IO) {
-            val watchName =
-                watchManager.registeredWatches.value?.firstOrNull { it.id == watchId }?.name
-            withContext(Dispatchers.Main) {
-                binding.apply {
-                    watchNameField.setText(watchName)
-                    watchNameField.doAfterTextChanged {
-                        if (!it.isNullOrBlank()) {
-                            Timber.i("Updating watch nickname")
-                            watchNameLayout.isErrorEnabled = false
-                            coroutineScope.launch(Dispatchers.IO) {
-                                // TODO We need a path for updating watch nicknames
-                                // watchManager.database.watchDao().setName(watchId, it.toString())
-                            }
-                        } else {
-                            Timber.w("Invalid watch nickname")
-                            watchNameLayout.isErrorEnabled = true
-                            watchNameField.error = "Nickname cannot be blank"
+        val watch = watchManager.registeredWatches.value!!.firstOrNull { it.id == watchId }
+        if (watch == null) {
+            Timber.w("Failed to get watch")
+        } else {
+            binding.apply {
+                watchNameField.setText(watch.name)
+                watchNameField.doAfterTextChanged {
+                    if (!it.isNullOrBlank()) {
+                        Timber.i("Updating watch nickname")
+                        watchNameLayout.isErrorEnabled = false
+                        coroutineScope.launch(Dispatchers.IO) {
+                            watchManager.renameWatch(watch, it.toString())
                         }
+                    } else {
+                        Timber.w("Invalid watch nickname")
+                        watchNameLayout.isErrorEnabled = true
+                        watchNameField.error = "Nickname cannot be blank"
                     }
                 }
             }
