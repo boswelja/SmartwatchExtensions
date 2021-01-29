@@ -7,25 +7,30 @@ import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import com.boswelja.devicemanager.common.Event
 import com.boswelja.devicemanager.common.References.CAPABILITY_WATCH_APP
+import com.boswelja.devicemanager.common.preference.SyncPreferences
 import com.boswelja.devicemanager.watchmanager.item.Watch
 import com.google.android.gms.tasks.Task
 import com.google.android.gms.wearable.CapabilityClient
+import com.google.android.gms.wearable.DataClient
 import com.google.android.gms.wearable.MessageClient
 import com.google.android.gms.wearable.Node
 import com.google.android.gms.wearable.NodeClient
+import com.google.android.gms.wearable.PutDataMapRequest
 import com.google.android.gms.wearable.Wearable
 import timber.log.Timber
 
 class WearOSConnectionManager(
     private val capabilityClient: CapabilityClient,
     private val nodeClient: NodeClient,
-    private val messageClient: MessageClient
+    private val messageClient: MessageClient,
+    private val dataClient: DataClient
 ) : WatchConnectionInterface {
 
     constructor(context: Context) : this(
         Wearable.getCapabilityClient(context),
         Wearable.getNodeClient(context),
-        Wearable.getMessageClient(context)
+        Wearable.getMessageClient(context),
+        Wearable.getDataClient(context)
     )
 
     @VisibleForTesting internal var nodesWithApp: Set<Node> = emptySet()
@@ -95,6 +100,27 @@ class WearOSConnectionManager(
 
     override fun sendMessage(watchId: String, path: String, data: ByteArray?) {
         messageClient.sendMessage(watchId, path, data)
+    }
+
+    override fun updatePreferenceOnWatch(watch: Watch, key: String, value: Any) {
+        val syncedPrefUpdateReq = PutDataMapRequest.create("/preference-change_${watch.id}")
+        when (key) {
+            in SyncPreferences.BOOL_PREFS -> {
+                if (value is Boolean) syncedPrefUpdateReq.dataMap.putBoolean(key, value)
+                else Timber.w("Invalid value ($value) for preference $key")
+            }
+            in SyncPreferences.INT_PREFS -> {
+                if (value is Int) syncedPrefUpdateReq.dataMap.putInt(key, value)
+                else Timber.w("Invalid value ($value) for preference $key")
+            }
+        }
+        if (!syncedPrefUpdateReq.dataMap.isEmpty) {
+            Timber.i("Sending updated preference")
+            syncedPrefUpdateReq.setUrgent()
+            dataClient.putDataItem(syncedPrefUpdateReq.asPutDataRequest())
+        } else {
+            Timber.w("No preference to update")
+        }
     }
 
     internal fun refreshConnectedNodes(): Task<List<Node>> {

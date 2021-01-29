@@ -41,6 +41,14 @@ interface WatchConnectionInterface {
     fun sendMessage(watchId: String, path: String, data: ByteArray? = null)
 
     /**
+     * Notify the watch a specified preference has been changed.
+     * @param watch The target [Watch].
+     * @param key The preference key to send to the watch.
+     * @param value The new value of the preference.
+     */
+    fun updatePreferenceOnWatch(watch: Watch, key: String, value: Any)
+
+    /**
      * Returns a string unique to the platform handling the connections. It's important this is
      * constant as it will be stored with registered watches.
      */
