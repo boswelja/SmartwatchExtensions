@@ -10,6 +10,7 @@ package com.boswelja.devicemanager.watchmanager
 import android.content.Context
 import androidx.lifecycle.LiveData
 import com.boswelja.devicemanager.analytics.Analytics
+import com.boswelja.devicemanager.common.SingletonHolder
 import com.boswelja.devicemanager.watchmanager.item.Watch
 
 /**
@@ -65,4 +66,6 @@ class WatchManager internal constructor(
     fun requestResetWatch(watch: Watch) {
         watchRepository.resetWatch(watch)
     }
+
+    companion object : SingletonHolder<WatchManager, Context>(::WatchManager)
 }
