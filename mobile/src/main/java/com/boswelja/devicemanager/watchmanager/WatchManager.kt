@@ -58,6 +58,10 @@ class WatchManager internal constructor(
         return success
     }
 
+    suspend fun renameWatch(watch: Watch, newName: String) {
+        watchRepository.renameWatch(watch, newName)
+    }
+
     fun requestResetWatch(watch: Watch) {
         watchRepository.resetWatch(watch)
     }
