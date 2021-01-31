@@ -17,12 +17,10 @@ import androidx.core.content.edit
 import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.analytics.Analytics
-import com.boswelja.devicemanager.batterysync.BatterySyncWorker
 import com.boswelja.devicemanager.batterysync.database.WatchBatteryStatsDatabase
 import com.boswelja.devicemanager.common.ui.BaseToolbarActivity
 import com.boswelja.devicemanager.databinding.ActivityManageSpaceBinding
 import com.boswelja.devicemanager.watchmanager.WatchManager
-import com.boswelja.devicemanager.watchmanager.WatchPreferenceManager
 import com.boswelja.devicemanager.watchmanager.database.WatchDatabase
 import com.boswelja.devicemanager.watchmanager.item.Watch
 import com.boswelja.devicemanager.widget.database.WidgetDatabase
@@ -42,7 +40,6 @@ class ManageSpaceActivity : BaseToolbarActivity() {
 
     private val analytics: Analytics by lazy { Analytics(this) }
     private val watchManager: WatchManager by lazy { WatchManager.getInstance(this) }
-    private val watchPreferenceManager by lazy { WatchPreferenceManager.get(this) }
     private var hasResetApp = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -333,9 +330,10 @@ class ManageSpaceActivity : BaseToolbarActivity() {
      * @return true if preferences were successfully cleared, false otherwise.
      */
     private suspend fun resetWatchPreferences(watch: Watch): Boolean {
-        val success = watchPreferenceManager.clearPreferencesForWatch(watch.id)
-        BatterySyncWorker.stopWorker(this, watch.id)
-        return success
+        // TODO we need a path to clear preferences. The previous method seemed to be bugged anyways
+        // val success = watchPreferenceManager.clearPreferencesForWatch(watch.id)
+        // BatterySyncWorker.stopWorker(this, watch.id)
+        return false
     }
 
     /**

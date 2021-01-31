@@ -9,6 +9,8 @@ import com.boswelja.devicemanager.common.setup.References
 import com.boswelja.devicemanager.watchmanager.connection.WatchConnectionInterface
 import com.boswelja.devicemanager.watchmanager.connection.WearOSConnectionInterface
 import com.boswelja.devicemanager.watchmanager.database.WatchDatabase
+import com.boswelja.devicemanager.watchmanager.item.BoolPreference
+import com.boswelja.devicemanager.watchmanager.item.IntPreference
 import com.boswelja.devicemanager.watchmanager.item.Watch
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -164,6 +166,18 @@ class WatchRepository(
         }
     }
 
+    suspend fun getIntPreferences(watch: Watch): List<IntPreference> {
+        return withContext(Dispatchers.IO) {
+            return@withContext database.intPrefDao().getAllForWatch(watch.id)
+        }
+    }
+
+    suspend fun getBoolPreferences(watch: Watch): List<BoolPreference> {
+        return withContext(Dispatchers.IO) {
+            return@withContext database.boolPrefDao().getAllForWatch(watch.id)
+        }
+    }
+
     /**
      * Sends the app request message to a given watch.
      * @param watch The [Watch] to reset Wearable Extensions on.
@@ -188,5 +202,16 @@ class WatchRepository(
                 Timber.w("Tried to update a non-synced preference")
             }
         }
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    suspend fun <T> getPreference(watch: Watch, key: String): T? {
+        return withContext(Dispatchers.IO) {
+            return@withContext when (key) {
+                in SyncPreferences.INT_PREFS -> database.intPrefDao().get(watch.id, key)
+                in SyncPreferences.BOOL_PREFS -> database.boolPrefDao().get(watch.id, key)
+                else -> null
+            }
+        } as T?
     }
 }
