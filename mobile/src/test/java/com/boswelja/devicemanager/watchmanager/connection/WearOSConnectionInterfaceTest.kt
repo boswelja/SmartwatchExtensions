@@ -1,4 +1,4 @@
-package com.boswelja.devicemanager.watchmanager.communication
+package com.boswelja.devicemanager.watchmanager.connection
 
 import android.os.Build
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
@@ -11,6 +11,7 @@ import com.boswelja.devicemanager.watchmanager.item.Watch
 import com.google.android.gms.tasks.Tasks
 import com.google.android.gms.wearable.CapabilityClient
 import com.google.android.gms.wearable.CapabilityInfo
+import com.google.android.gms.wearable.DataClient
 import com.google.android.gms.wearable.MessageClient
 import com.google.android.gms.wearable.Node
 import com.google.android.gms.wearable.NodeClient
@@ -28,13 +29,13 @@ import org.robolectric.annotation.Config
 
 @RunWith(AndroidJUnit4::class)
 @Config(sdk = [Build.VERSION_CODES.R])
-class WearOSConnectionManagerTest {
+class WearOSConnectionInterfaceTest {
 
     @get:Rule
     val instantExecutorRule = InstantTaskExecutorRule()
 
     private val transformNodeToWatch: (node: Node) -> Watch = {
-        Watch(it.id, it.displayName, WearOSConnectionManager.PLATFORM)
+        Watch(it.id, it.displayName, WearOSConnectionInterface.PLATFORM)
     }
 
     private val dummyNodes = setOf<Node>(
@@ -48,8 +49,9 @@ class WearOSConnectionManagerTest {
     @RelaxedMockK private lateinit var capabilityClient: CapabilityClient
     @RelaxedMockK private lateinit var nodeClient: NodeClient
     @RelaxedMockK private lateinit var messageClient: MessageClient
+    @RelaxedMockK private lateinit var dataClient: DataClient
 
-    private lateinit var connectionManager: WearOSConnectionManager
+    private lateinit var connectionInterface: WearOSConnectionInterface
 
     @Before
     fun setUp() {
@@ -58,96 +60,111 @@ class WearOSConnectionManagerTest {
 
     @After
     fun tearDown() {
-        connectionManager.dispose()
+        connectionInterface.dispose()
     }
 
     @Test
     fun `availableWatches contains only the watches that have the app and are connected`() {
-        connectionManager = WearOSConnectionManager(capabilityClient, nodeClient, messageClient)
+        connectionInterface = WearOSConnectionInterface(
+            capabilityClient,
+            nodeClient,
+            messageClient,
+            dataClient
+        )
         var expectedWatches = dummyWatches
         // Test with matching sets
-        connectionManager.connectedNodes.value = dummyNodes.toList()
-        connectionManager.nodesWithApp = dummyNodes
-        assertThat(connectionManager.availableWatches.getOrAwaitValue())
+        connectionInterface.connectedNodes.value = dummyNodes.toList()
+        connectionInterface.nodesWithApp = dummyNodes
+        assertThat(connectionInterface.availableWatches.getOrAwaitValue())
             .containsExactlyElementsIn(expectedWatches)
 
         // Test with more connected nodes than capable nodes
         val nodesWithApp = dummyNodes.drop(1).toSet()
         expectedWatches = nodesWithApp.map(transformNodeToWatch)
-        connectionManager.connectedNodes.value = dummyNodes.toList()
-        connectionManager.nodesWithApp = nodesWithApp
-        assertThat(connectionManager.availableWatches.getOrAwaitValue())
+        connectionInterface.connectedNodes.value = dummyNodes.toList()
+        connectionInterface.nodesWithApp = nodesWithApp
+        assertThat(connectionInterface.availableWatches.getOrAwaitValue())
             .containsExactlyElementsIn(expectedWatches)
 
         // Test with more capable nodes than connected nodes
         val connectedNodes = dummyNodes.drop(1)
         expectedWatches = connectedNodes.map(transformNodeToWatch)
-        connectionManager.connectedNodes.value = connectedNodes
-        connectionManager.nodesWithApp = dummyNodes
-        assertThat(connectionManager.availableWatches.getOrAwaitValue())
+        connectionInterface.connectedNodes.value = connectedNodes
+        connectionInterface.nodesWithApp = dummyNodes
+        assertThat(connectionInterface.availableWatches.getOrAwaitValue())
             .containsExactlyElementsIn(expectedWatches)
 
         // Test with no nodes
-        connectionManager.connectedNodes.value = emptyList()
-        connectionManager.nodesWithApp = emptySet()
-        assertThat(connectionManager.availableWatches.getOrAwaitValue()).isEmpty()
+        connectionInterface.connectedNodes.value = emptyList()
+        connectionInterface.nodesWithApp = emptySet()
+        assertThat(connectionInterface.availableWatches.getOrAwaitValue()).isEmpty()
     }
 
     @Test
     fun `sendMessage passes the request to MessageClient`() {
-        connectionManager = WearOSConnectionManager(capabilityClient, nodeClient, messageClient)
+        connectionInterface = WearOSConnectionInterface(
+            capabilityClient,
+            nodeClient,
+            messageClient,
+            dataClient
+        )
         val node = dummyNodes.first()
         val dummyWatch = transformNodeToWatch(node)
         val path = "/message-path"
         val data = ByteArray(8)
-        connectionManager.sendMessage(dummyWatch.id, path, data)
+        connectionInterface.sendMessage(dummyWatch.id, path, data)
         verify(exactly = 1) { messageClient.sendMessage(dummyWatch.id, path, data) }
     }
 
     @Test
     fun `getWatchStatus returns the correct status`() {
-        connectionManager = WearOSConnectionManager(capabilityClient, nodeClient, messageClient)
+        connectionInterface = WearOSConnectionInterface(
+            capabilityClient,
+            nodeClient,
+            messageClient,
+            dataClient
+        )
         val dummyNode = dummyNodes.first()
         val dummyWatch = transformNodeToWatch(dummyNode)
 
-        connectionManager.nodesWithApp = setOf(dummyNode)
-        connectionManager.connectedNodes.value = listOf(dummyNode)
-        assertThat(connectionManager.getWatchStatus(dummyWatch, true))
+        connectionInterface.nodesWithApp = setOf(dummyNode)
+        connectionInterface.connectedNodes.value = listOf(dummyNode)
+        assertThat(connectionInterface.getWatchStatus(dummyWatch, true))
             .isEquivalentAccordingToCompareTo(Watch.Status.CONNECTED)
 
-        connectionManager.nodesWithApp = setOf(dummyNode)
-        connectionManager.connectedNodes.value = listOf(dummyNode)
-        assertThat(connectionManager.getWatchStatus(dummyWatch, false))
+        connectionInterface.nodesWithApp = setOf(dummyNode)
+        connectionInterface.connectedNodes.value = listOf(dummyNode)
+        assertThat(connectionInterface.getWatchStatus(dummyWatch, false))
             .isEquivalentAccordingToCompareTo(Watch.Status.NOT_REGISTERED)
 
-        connectionManager.nodesWithApp = emptySet()
-        connectionManager.connectedNodes.value = listOf(dummyNode)
-        assertThat(connectionManager.getWatchStatus(dummyWatch, true))
+        connectionInterface.nodesWithApp = emptySet()
+        connectionInterface.connectedNodes.value = listOf(dummyNode)
+        assertThat(connectionInterface.getWatchStatus(dummyWatch, true))
             .isEquivalentAccordingToCompareTo(Watch.Status.MISSING_APP)
 
-        connectionManager.nodesWithApp = emptySet()
-        connectionManager.connectedNodes.value = listOf(dummyNode)
-        assertThat(connectionManager.getWatchStatus(dummyWatch, false))
+        connectionInterface.nodesWithApp = emptySet()
+        connectionInterface.connectedNodes.value = listOf(dummyNode)
+        assertThat(connectionInterface.getWatchStatus(dummyWatch, false))
             .isEquivalentAccordingToCompareTo(Watch.Status.MISSING_APP)
 
-        connectionManager.nodesWithApp = setOf(dummyNode)
-        connectionManager.connectedNodes.value = emptyList()
-        assertThat(connectionManager.getWatchStatus(dummyWatch, true))
+        connectionInterface.nodesWithApp = setOf(dummyNode)
+        connectionInterface.connectedNodes.value = emptyList()
+        assertThat(connectionInterface.getWatchStatus(dummyWatch, true))
             .isEquivalentAccordingToCompareTo(Watch.Status.DISCONNECTED)
 
-        connectionManager.nodesWithApp = setOf(dummyNode)
-        connectionManager.connectedNodes.value = emptyList()
-        assertThat(connectionManager.getWatchStatus(dummyWatch, false))
+        connectionInterface.nodesWithApp = setOf(dummyNode)
+        connectionInterface.connectedNodes.value = emptyList()
+        assertThat(connectionInterface.getWatchStatus(dummyWatch, false))
             .isEquivalentAccordingToCompareTo(Watch.Status.ERROR)
 
-        connectionManager.nodesWithApp = emptySet()
-        connectionManager.connectedNodes.value = emptyList()
-        assertThat(connectionManager.getWatchStatus(dummyWatch, true))
+        connectionInterface.nodesWithApp = emptySet()
+        connectionInterface.connectedNodes.value = emptyList()
+        assertThat(connectionInterface.getWatchStatus(dummyWatch, true))
             .isEquivalentAccordingToCompareTo(Watch.Status.ERROR)
 
-        connectionManager.nodesWithApp = emptySet()
-        connectionManager.connectedNodes.value = emptyList()
-        assertThat(connectionManager.getWatchStatus(dummyWatch, false))
+        connectionInterface.nodesWithApp = emptySet()
+        connectionInterface.connectedNodes.value = emptyList()
+        assertThat(connectionInterface.getWatchStatus(dummyWatch, false))
             .isEquivalentAccordingToCompareTo(Watch.Status.ERROR)
     }
 
@@ -159,11 +176,17 @@ class WearOSConnectionManagerTest {
         every {
             capabilityClient.getCapability(CAPABILITY_WATCH_APP, any())
         } returns task
-        connectionManager = WearOSConnectionManager(capabilityClient, nodeClient, messageClient)
+        connectionInterface = WearOSConnectionInterface(
+            capabilityClient,
+            nodeClient,
+            messageClient,
+            dataClient
+        )
 
         task.continueWith {
             verify(exactly = 1) { capabilityClient.getCapability(CAPABILITY_WATCH_APP, any()) }
-            assertThat(connectionManager.connectedNodes.value).containsExactlyElementsIn(dummyNodes)
+            assertThat(connectionInterface.connectedNodes.value)
+                .containsExactlyElementsIn(dummyNodes)
         }
     }
 }

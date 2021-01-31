@@ -1,4 +1,4 @@
-package com.boswelja.devicemanager.watchmanager.communication
+package com.boswelja.devicemanager.watchmanager.connection
 
 import android.content.Context
 import androidx.annotation.VisibleForTesting
@@ -19,7 +19,7 @@ import com.google.android.gms.wearable.PutDataMapRequest
 import com.google.android.gms.wearable.Wearable
 import timber.log.Timber
 
-class WearOSConnectionManager(
+class WearOSConnectionInterface(
     private val capabilityClient: CapabilityClient,
     private val nodeClient: NodeClient,
     private val messageClient: MessageClient,

@@ -5,8 +5,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import com.boswelja.devicemanager.common.References.REQUEST_RESET_APP
 import com.boswelja.devicemanager.common.setup.References
-import com.boswelja.devicemanager.watchmanager.communication.WatchConnectionInterface
-import com.boswelja.devicemanager.watchmanager.communication.WearOSConnectionManager
+import com.boswelja.devicemanager.watchmanager.connection.WatchConnectionInterface
+import com.boswelja.devicemanager.watchmanager.connection.WearOSConnectionInterface
 import com.boswelja.devicemanager.watchmanager.database.WatchDatabase
 import com.boswelja.devicemanager.watchmanager.item.Watch
 import kotlinx.coroutines.Dispatchers
@@ -43,7 +43,7 @@ class WatchRepository(
     init {
         Timber.d("Creating new repository")
         // Create Wear OS connection manager
-        val wearOS = WearOSConnectionManager(context)
+        val wearOS = WearOSConnectionInterface(context)
         connectionManagers[wearOS.getPlatformIdentifier()] = wearOS
 
         // Set up _availableWatches

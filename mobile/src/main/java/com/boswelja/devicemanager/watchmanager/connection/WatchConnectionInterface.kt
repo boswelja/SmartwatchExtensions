@@ -1,4 +1,4 @@
-package com.boswelja.devicemanager.watchmanager.communication
+package com.boswelja.devicemanager.watchmanager.connection
 
 import androidx.lifecycle.LiveData
 import com.boswelja.devicemanager.common.Event

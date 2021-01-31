@@ -15,7 +15,7 @@ import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.boswelja.devicemanager.getOrAwaitValue
-import com.boswelja.devicemanager.watchmanager.communication.WearOSConnectionManager
+import com.boswelja.devicemanager.watchmanager.connection.WearOSConnectionInterface
 import com.boswelja.devicemanager.watchmanager.database.WatchDatabase
 import com.boswelja.devicemanager.watchmanager.item.Watch
 import com.google.common.truth.Truth.assertThat
@@ -41,12 +41,12 @@ class SelectedWatchHandlerTest {
     @get:Rule
     val instantExecutorRule = InstantTaskExecutorRule()
 
-    private val dummyWatch = Watch("an-id-1234", "Watch 1", WearOSConnectionManager.PLATFORM)
+    private val dummyWatch = Watch("an-id-1234", "Watch 1", WearOSConnectionInterface.PLATFORM)
 
     private lateinit var database: WatchDatabase
 
     @MockK
-    private lateinit var connectionManager: WearOSConnectionManager
+    private lateinit var connectionInterface: WearOSConnectionInterface
 
     private lateinit var sharedPreferences: SharedPreferences
 
@@ -57,7 +57,7 @@ class SelectedWatchHandlerTest {
     fun setUp() {
         MockKAnnotations.init(this)
 
-        every { connectionManager.getWatchStatus(any(), any()) } returns Watch.Status.CONNECTED
+        every { connectionInterface.getWatchStatus(any(), any()) } returns Watch.Status.CONNECTED
 
         database = Room.inMemoryDatabaseBuilder(
             ApplicationProvider.getApplicationContext(),
@@ -76,7 +76,7 @@ class SelectedWatchHandlerTest {
             SelectedWatchHandler(
                 sharedPreferences,
                 coroutineScope,
-                connectionManager,
+                connectionInterface,
                 database
             )
     }
@@ -128,7 +128,7 @@ class SelectedWatchHandlerTest {
             assertThat(it).isEquivalentAccordingToCompareTo(Watch.Status.CONNECTED)
         }
 
-        every { connectionManager.getWatchStatus(any(), any()) } returns Watch.Status.DISCONNECTED
+        every { connectionInterface.getWatchStatus(any(), any()) } returns Watch.Status.DISCONNECTED
         selectedWatchHandler.refreshStatus()
         selectedWatchHandler.status.getOrAwaitValue {
             assertThat(it).isEquivalentAccordingToCompareTo(Watch.Status.DISCONNECTED)
