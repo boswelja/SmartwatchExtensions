@@ -13,7 +13,7 @@ import androidx.core.content.edit
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.preference.PreferenceManager
-import com.boswelja.devicemanager.watchmanager.communication.WearOSConnectionManager
+import com.boswelja.devicemanager.watchmanager.connection.WearOSConnectionInterface
 import com.boswelja.devicemanager.watchmanager.database.WatchDatabase
 import com.boswelja.devicemanager.watchmanager.item.Watch
 import kotlinx.coroutines.CoroutineScope
@@ -28,14 +28,14 @@ import timber.log.Timber
 class SelectedWatchHandler internal constructor(
     private val sharedPreferences: SharedPreferences,
     private val coroutineScope: CoroutineScope,
-    private val connectionManager: WearOSConnectionManager,
+    private val connectionInterface: WearOSConnectionInterface,
     val database: WatchDatabase
 ) {
 
     constructor(context: Context) : this(
         PreferenceManager.getDefaultSharedPreferences(context),
         CoroutineScope(Dispatchers.IO),
-        WearOSConnectionManager(context),
+        WearOSConnectionInterface(context),
         WatchDatabase.getInstance(context)
     )
 
@@ -69,7 +69,7 @@ class SelectedWatchHandler internal constructor(
                 }
                 _selectedWatch.postValue(newWatch)
                 sharedPreferences.edit { putString(LAST_SELECTED_NODE_ID_KEY, newWatch.id) }
-                _status.postValue(connectionManager.getWatchStatus(newWatch, true))
+                _status.postValue(connectionInterface.getWatchStatus(newWatch, true))
             }
         }
     }
@@ -79,7 +79,7 @@ class SelectedWatchHandler internal constructor(
      */
     fun refreshStatus() {
         _selectedWatch.value?.let {
-            _status.postValue(connectionManager.getWatchStatus(it, true))
+            _status.postValue(connectionInterface.getWatchStatus(it, true))
         }
     }
 
