@@ -14,8 +14,8 @@ import android.view.ViewGroup
 import androidx.preference.PreferenceFragmentCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.boswelja.devicemanager.R
-import com.boswelja.devicemanager.watchmanager.SelectedWatchHandler
-import com.boswelja.devicemanager.watchmanager.WatchPreferenceManager
+import com.boswelja.devicemanager.watchmanager.WatchManager
+import com.boswelja.devicemanager.watchmanager.item.Watch
 
 /**
  * A [PreferenceFragmentCompat] that automatically adjusts it's [RecyclerView] properties to fit the
@@ -26,14 +26,14 @@ abstract class BasePreferenceFragment : PreferenceFragmentCompat() {
     protected val sharedPreferences: SharedPreferences
         get() = preferenceManager.sharedPreferences
 
-    protected val watchPreferenceManager: WatchPreferenceManager by lazy {
-        WatchPreferenceManager.get(requireContext())
-    }
-    protected val selectedWatchHandler: SelectedWatchHandler by lazy {
-        SelectedWatchHandler(requireContext())
-    }
+    protected lateinit var watchManager: WatchManager
 
-    protected var connectedWatchId: String? = null
+    protected var connectedWatch: Watch? = null
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        watchManager = WatchManager.getInstance(requireContext())
+    }
 
     override fun onCreateRecyclerView(
         inflater: LayoutInflater?,
@@ -48,8 +48,8 @@ abstract class BasePreferenceFragment : PreferenceFragmentCompat() {
     }
 
     fun observeConnectedWatchId() {
-        selectedWatchHandler.selectedWatch.observe(viewLifecycleOwner) { newWatch ->
-            newWatch?.let { connectedWatchId = it.id }
+        watchManager.connectedWatch.observe(viewLifecycleOwner) { newWatch ->
+            newWatch?.let { connectedWatch = it }
         }
     }
 }

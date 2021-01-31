@@ -135,8 +135,8 @@ class PhoneLockingPreferenceFragment :
         if (enabled) snackbar?.dismiss()
         coroutineScope.launch(Dispatchers.IO) {
             sharedPreferences.edit(commit = true) { putBoolean(PHONE_LOCKING_ENABLED_KEY, enabled) }
-            watchPreferenceManager.updatePreferenceOnWatch(
-                connectedWatchId!!, PHONE_LOCKING_ENABLED_KEY
+            watchManager.updatePreference(
+                connectedWatch!!, PHONE_LOCKING_ENABLED_KEY, enabled
             )
         }
     }
