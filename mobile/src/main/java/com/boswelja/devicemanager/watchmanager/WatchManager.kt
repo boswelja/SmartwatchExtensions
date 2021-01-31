@@ -67,5 +67,8 @@ class WatchManager internal constructor(
         watchRepository.resetWatch(watch)
     }
 
+    suspend fun updatePreference(watch: Watch, key: String, value: Any) =
+        watchRepository.updatePreference(watch, key, value)
+
     companion object : SingletonHolder<WatchManager, Context>(::WatchManager)
 }

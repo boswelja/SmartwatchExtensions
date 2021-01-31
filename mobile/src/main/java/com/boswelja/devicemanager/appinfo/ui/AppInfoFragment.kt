@@ -20,12 +20,10 @@ import androidx.preference.Preference
 import com.boswelja.devicemanager.BuildConfig
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.ui.BasePreferenceFragment
-import com.boswelja.devicemanager.watchmanager.WatchManager
 import timber.log.Timber
 
 class AppInfoFragment : BasePreferenceFragment(), Preference.OnPreferenceClickListener {
 
-    private val watchManager by lazy { WatchManager.getInstance(requireContext()) }
     private val viewModel: AppInfoViewModel by viewModels()
 
     private val watchVersionPreference: Preference by lazy { findPreference(WATCH_VERSION_KEY)!! }

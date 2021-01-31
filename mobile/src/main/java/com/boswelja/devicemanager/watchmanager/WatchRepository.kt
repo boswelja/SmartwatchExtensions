@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import com.boswelja.devicemanager.common.References.REQUEST_RESET_APP
+import com.boswelja.devicemanager.common.preference.SyncPreferences
 import com.boswelja.devicemanager.common.setup.References
 import com.boswelja.devicemanager.watchmanager.connection.WatchConnectionInterface
 import com.boswelja.devicemanager.watchmanager.connection.WearOSConnectionInterface
@@ -169,5 +170,23 @@ class WatchRepository(
      */
     fun resetWatch(watch: Watch) {
         watch.connectionManager?.sendMessage(watch.id, REQUEST_RESET_APP)
+    }
+
+    /**
+     * Notify the watch a specified preference has been changed, and updates the preference in the
+     * database.
+     * @param watch The target [Watch].
+     * @param key The preference key to send to the watch.
+     * @param value The new value of the preference.
+     */
+    suspend fun updatePreference(watch: Watch, key: String, value: Any) {
+        withContext(Dispatchers.IO) {
+            if (key in SyncPreferences.ALL_PREFS) {
+                database.updatePrefInDatabase(watch.id, key, value)
+                watch.connectionManager?.updatePreferenceOnWatch(watch, key, value)
+            } else {
+                Timber.w("Tried to update a non-synced preference")
+            }
+        }
     }
 }
