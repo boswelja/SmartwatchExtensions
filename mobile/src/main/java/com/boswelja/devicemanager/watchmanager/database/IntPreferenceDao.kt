@@ -19,7 +19,7 @@ import com.boswelja.devicemanager.watchmanager.item.IntPreference
 interface IntPreferenceDao {
 
     @Query("SELECT * FROM int_preferences WHERE id = :watchId")
-    fun getAllForWatch(watchId: String): Array<IntPreference>
+    fun getAllForWatch(watchId: String): List<IntPreference>
 
     @Query("SELECT * FROM int_preferences WHERE id = :id AND pref_key = :key LIMIT 1")
     fun get(id: String, key: String): IntPreference?

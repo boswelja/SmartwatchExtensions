@@ -18,7 +18,8 @@ import com.boswelja.devicemanager.common.References.LOCK_PHONE_PATH
 import com.boswelja.devicemanager.common.preference.PreferenceKey.PHONE_LOCKING_ENABLED_KEY
 import com.boswelja.devicemanager.phonelocking.ui.PhoneLockingPreferenceFragment.Companion.PHONE_LOCKING_MODE_ACCESSIBILITY_SERVICE
 import com.boswelja.devicemanager.phonelocking.ui.PhoneLockingPreferenceFragment.Companion.PHONE_LOCKING_MODE_KEY
-import com.boswelja.devicemanager.watchmanager.WatchPreferenceManager
+import com.boswelja.devicemanager.watchmanager.WatchManager
+import com.boswelja.devicemanager.watchmanager.item.Watch
 import com.google.android.gms.wearable.MessageClient
 import com.google.android.gms.wearable.MessageEvent
 import com.google.android.gms.wearable.Wearable
@@ -39,11 +40,11 @@ class PhoneLockingAccessibilityService :
     private lateinit var sharedPreferences: SharedPreferences
     private lateinit var messageClient: MessageClient
 
-    private val watchPreferenceManager: WatchPreferenceManager by lazy {
-        WatchPreferenceManager.get(this)
+    private val watchManager: WatchManager by lazy {
+        WatchManager.getInstance(this)
     }
     private var isStopping = false
-    private var lastNodeId: String? = null
+    private var lastWatch: Watch? = null
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
         if (key == PHONE_LOCKING_MODE_KEY &&
@@ -90,14 +91,19 @@ class PhoneLockingAccessibilityService :
     private fun tryLockDevice(messageEvent: MessageEvent) {
         coroutineScope.launch(Dispatchers.IO) {
             val watchId = messageEvent.sourceNodeId
-            lastNodeId = watchId
-            val phoneLockingEnabledForWatch =
-                watchPreferenceManager.getBool(watchId, PHONE_LOCKING_ENABLED_KEY)
-            if (phoneLockingEnabledForWatch) {
-                Timber.i("Trying to lock phone")
-                withContext(Dispatchers.Main) { performGlobalAction(GLOBAL_ACTION_LOCK_SCREEN) }
+            val watch = watchManager.registeredWatches.value?.firstOrNull { it.id == watchId }
+            lastWatch = watch
+            if (watch != null) {
+                val phoneLockingEnabledForWatch =
+                    watchManager.getPreference<Boolean>(watch, PHONE_LOCKING_ENABLED_KEY) == false
+                if (phoneLockingEnabledForWatch) {
+                    Timber.i("Trying to lock phone")
+                    withContext(Dispatchers.Main) { performGlobalAction(GLOBAL_ACTION_LOCK_SCREEN) }
+                } else {
+                    Timber.w("$watchId tried to lock phone, doesn't have permission")
+                }
             } else {
-                Timber.i("$watchId tried to lock phone, doesn't have permission")
+                Timber.w("Sending watch not registered")
             }
         }
     }
@@ -112,9 +118,9 @@ class PhoneLockingAccessibilityService :
                 putBoolean(ACCESSIBILITY_SERVICE_ENABLED_KEY, false)
                 putBoolean(PHONE_LOCKING_ENABLED_KEY, false)
             }
-            lastNodeId?.let {
+            lastWatch?.let {
                 coroutineScope.launch(Dispatchers.IO) {
-                    watchPreferenceManager.updatePreferenceOnWatch(it, PHONE_LOCKING_ENABLED_KEY)
+                    watchManager.updatePreference(it, PHONE_LOCKING_ENABLED_KEY, false)
                 }
             }
             messageClient.removeListener(this)
