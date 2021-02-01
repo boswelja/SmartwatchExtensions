@@ -68,16 +68,15 @@ class WatchManager internal constructor(
                 sharedPreferences.edit(commit = true) {
                     SyncPreferences.ALL_PREFS.forEach { remove(it) }
                 }
-                val boolPrefs = watchRepository.getBoolPreferences(watch)
-                val intPrefs = watchRepository.getIntPreferences(watch)
+                val prefs = watchRepository.getAllPreferences(watch)
                 sharedPreferences.edit {
-                    boolPrefs.forEach {
+                    prefs.forEach {
                         Timber.i("Setting ${it.key} to ${it.value}")
-                        putBoolean(it.key, it.value)
-                    }
-                    intPrefs.forEach {
-                        Timber.i("Setting ${it.key} to ${it.value}")
-                        putInt(it.key, it.value)
+                        when (it.value) {
+                            is Int -> putInt(it.key, it.value)
+                            is Boolean -> putBoolean(it.key, it.value)
+                            else -> Timber.w("Unsupported preference type")
+                        }
                     }
                 }
             }
