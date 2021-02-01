@@ -7,15 +7,8 @@
  */
 package com.boswelja.devicemanager.watchmanager.item
 
-import androidx.room.ColumnInfo
 import androidx.room.Entity
 
 @Entity(primaryKeys = ["id", "pref_key"], tableName = "int_preferences")
-data class IntPreference(
-    @ColumnInfo(name = "id")
-    val watchId: String,
-    @ColumnInfo(name = "pref_key")
-    val key: String,
-    @ColumnInfo(name = "value")
-    val value: Int
-)
+class IntPreference(watchId: String, key: String, value: Int) :
+    Preference<Int>(watchId, key, value)
