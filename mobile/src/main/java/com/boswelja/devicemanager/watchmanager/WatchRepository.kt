@@ -165,18 +165,23 @@ class WatchRepository(
         }
     }
 
-    suspend fun getAllPreferences(watch: Watch): List<Preference<Any>> {
-        return withContext(Dispatchers.IO) {
-            return@withContext database.getAllPreferences(watch)
-        }
-    }
-
     /**
      * Sends the app request message to a given watch.
      * @param watch The [Watch] to reset Wearable Extensions on.
      */
     fun resetWatch(watch: Watch) {
         watch.connectionManager?.sendMessage(watch.id, REQUEST_RESET_APP)
+    }
+
+    /**
+     * Gets all preferences stored for a given [Watch].
+     * @param watch The [Watch] to get preferences for.
+     * @return A [List] of [Preference]s for the given watch.
+     */
+    suspend fun getAllPreferences(watch: Watch): List<Preference<Any>> {
+        return withContext(Dispatchers.IO) {
+            return@withContext database.getAllPreferences(watch)
+        }
     }
 
     /**
