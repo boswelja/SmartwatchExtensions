@@ -7,10 +7,12 @@ import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import com.boswelja.devicemanager.common.Event
 import com.boswelja.devicemanager.common.References.CAPABILITY_WATCH_APP
+import com.boswelja.devicemanager.common.References.REQUEST_RESET_APP
 import com.boswelja.devicemanager.common.preference.SyncPreferences
 import com.boswelja.devicemanager.watchmanager.item.Watch
 import com.google.android.gms.tasks.Task
 import com.google.android.gms.wearable.CapabilityClient
+import com.google.android.gms.wearable.CapabilityInfo
 import com.google.android.gms.wearable.DataClient
 import com.google.android.gms.wearable.MessageClient
 import com.google.android.gms.wearable.Node
@@ -53,13 +55,7 @@ class WearOSConnectionInterface(
     init {
         // Set up connectedNodes and nodesWithApp updates
         capabilityClient.addListener(capableWatchesListener, CAPABILITY_WATCH_APP)
-        capabilityClient.getCapability(CAPABILITY_WATCH_APP, CapabilityClient.FILTER_ALL)
-            .addOnSuccessListener {
-                nodesWithApp = it.nodes
-                dataChanged.fire()
-            }
-            .addOnFailureListener { Timber.w("Failed to get capable nodes") }
-        refreshConnectedNodes()
+        updateStatusInfo()
 
         // Set up _availableWatches
         _availableWatches.addSource(connectedNodes) { connectedNodes ->
@@ -123,7 +119,16 @@ class WearOSConnectionInterface(
         }
     }
 
-    internal fun refreshConnectedNodes(): Task<List<Node>> {
+    override fun resetWatchApp(watch: Watch) {
+        sendMessage(watch.id, REQUEST_RESET_APP)
+    }
+
+    override fun updateStatusInfo() {
+        refreshCapableNodes()
+        refreshConnectedNodes()
+    }
+
+    private fun refreshConnectedNodes(): Task<List<Node>> {
         return nodeClient.connectedNodes
             .addOnSuccessListener {
                 connectedNodes.postValue(it)
@@ -132,6 +137,15 @@ class WearOSConnectionInterface(
             .addOnFailureListener {
                 Timber.e(it)
             }
+    }
+
+    private fun refreshCapableNodes(): Task<CapabilityInfo> {
+        return capabilityClient.getCapability(CAPABILITY_WATCH_APP, CapabilityClient.FILTER_ALL)
+            .addOnSuccessListener {
+                nodesWithApp = it.nodes
+                dataChanged.fire()
+            }
+            .addOnFailureListener { Timber.w("Failed to get capable nodes") }
     }
 
     fun dispose() {
