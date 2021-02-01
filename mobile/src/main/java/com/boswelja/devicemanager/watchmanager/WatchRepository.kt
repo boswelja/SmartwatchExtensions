@@ -3,7 +3,6 @@ package com.boswelja.devicemanager.watchmanager
 import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
-import com.boswelja.devicemanager.common.References.REQUEST_RESET_APP
 import com.boswelja.devicemanager.common.preference.SyncPreferences
 import com.boswelja.devicemanager.common.setup.References
 import com.boswelja.devicemanager.watchmanager.connection.WatchConnectionInterface
@@ -170,7 +169,7 @@ class WatchRepository(
      * @param watch The [Watch] to reset Wearable Extensions on.
      */
     fun resetWatch(watch: Watch) {
-        watch.connectionManager?.sendMessage(watch.id, REQUEST_RESET_APP)
+        watch.connectionManager?.resetWatchApp(watch)
     }
 
     /**
