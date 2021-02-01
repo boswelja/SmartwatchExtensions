@@ -56,7 +56,7 @@ abstract class WatchDatabase : RoomDatabase() {
 
     @Suppress("UNCHECKED_CAST")
     inline fun <reified T> getPreference(watch: Watch, key: String): Preference<T>? {
-        return when(T::class) {
+        return when (T::class) {
             Int::class -> intPrefDao().get(watch.id, key) as Preference<T>?
             Boolean::class -> boolPrefDao().get(watch.id, key) as Preference<T>?
             else -> {
