@@ -21,7 +21,7 @@ import timber.log.Timber
  */
 class WatchRepository(
     context: Context,
-    private val database: WatchDatabase
+    val database: WatchDatabase
 ) {
 
     constructor(context: Context) : this(context, WatchDatabase.getInstance(context))
@@ -202,14 +202,15 @@ class WatchRepository(
         }
     }
 
-    @Suppress("UNCHECKED_CAST")
-    suspend fun <T> getPreference(watch: Watch, key: String): T? {
+    /**
+     * Gets a preference for a given watch with a specified key.
+     * @param watch The [Watch] to get the preference for.
+     * @param key The [Preference.key] of the preference to find.
+     * @return The value of the preference, or null if it doesn't exist.
+     */
+    suspend inline fun <reified T> getPreference(watch: Watch, key: String): T? {
         return withContext(Dispatchers.IO) {
-            return@withContext when (key) {
-                in SyncPreferences.INT_PREFS -> database.intPrefDao().get(watch.id, key)
-                in SyncPreferences.BOOL_PREFS -> database.boolPrefDao().get(watch.id, key)
-                else -> null
-            }
-        } as T?
+            return@withContext database.getPreference<T>(watch, key)?.value
+        }
     }
 }
