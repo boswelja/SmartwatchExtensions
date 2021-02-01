@@ -9,8 +9,7 @@ import com.boswelja.devicemanager.common.setup.References
 import com.boswelja.devicemanager.watchmanager.connection.WatchConnectionInterface
 import com.boswelja.devicemanager.watchmanager.connection.WearOSConnectionInterface
 import com.boswelja.devicemanager.watchmanager.database.WatchDatabase
-import com.boswelja.devicemanager.watchmanager.item.BoolPreference
-import com.boswelja.devicemanager.watchmanager.item.IntPreference
+import com.boswelja.devicemanager.watchmanager.item.Preference
 import com.boswelja.devicemanager.watchmanager.item.Watch
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -166,15 +165,9 @@ class WatchRepository(
         }
     }
 
-    suspend fun getIntPreferences(watch: Watch): List<IntPreference> {
+    suspend fun getAllPreferences(watch: Watch): List<Preference<Any>> {
         return withContext(Dispatchers.IO) {
-            return@withContext database.intPrefDao().getAllForWatch(watch.id)
-        }
-    }
-
-    suspend fun getBoolPreferences(watch: Watch): List<BoolPreference> {
-        return withContext(Dispatchers.IO) {
-            return@withContext database.boolPrefDao().getAllForWatch(watch.id)
+            return@withContext database.getAllPreferences(watch)
         }
     }
 
