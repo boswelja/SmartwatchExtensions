@@ -29,7 +29,7 @@ import timber.log.Timber
 class WatchManager internal constructor(
     private val sharedPreferences: SharedPreferences,
     private val selectedWatchHandler: SelectedWatchHandler,
-    private val watchRepository: WatchRepository,
+    val watchRepository: WatchRepository,
     private val analytics: Analytics,
     private val coroutineScope: CoroutineScope
 ) {
@@ -105,7 +105,7 @@ class WatchManager internal constructor(
         watchRepository.resetWatch(watch)
     }
 
-    suspend fun <T> getPreference(watch: Watch, key: String) =
+    suspend inline fun <reified T> getPreference(watch: Watch, key: String) =
         watchRepository.getPreference<T>(watch, key)
 
     suspend fun updatePreference(watch: Watch, key: String, value: Any) =
