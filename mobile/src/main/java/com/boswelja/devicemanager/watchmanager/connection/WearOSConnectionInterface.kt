@@ -35,13 +35,14 @@ class WearOSConnectionInterface(
         Wearable.getDataClient(context)
     )
 
-    @VisibleForTesting internal var nodesWithApp: Set<Node> = emptySet()
+    @VisibleForTesting internal var nodesWithApp: MutableLiveData<Set<Node>> =
+        MutableLiveData(emptySet())
     @VisibleForTesting internal var connectedNodes: MutableLiveData<List<Node>> =
         MutableLiveData(emptyList())
 
     private val capableWatchesListener = CapabilityClient.OnCapabilityChangedListener {
         Timber.d("${it.name} capability changed")
-        nodesWithApp = it.nodes
+        nodesWithApp.postValue(it.nodes)
         dataChanged.fire()
     }
 
@@ -59,7 +60,7 @@ class WearOSConnectionInterface(
 
         // Set up _availableWatches
         _availableWatches.addSource(connectedNodes) { connectedNodes ->
-            val watches = connectedNodes.intersect(nodesWithApp).map {
+            val watches = connectedNodes.intersect(nodesWithApp.value ?: emptySet()).map {
                 Watch(it.id, it.displayName, PLATFORM).apply {
                     getWatchStatus(this, false)
                 }
@@ -83,7 +84,7 @@ class WearOSConnectionInterface(
 
     override fun getWatchStatus(watch: Watch, isRegistered: Boolean): Watch.Status {
         Timber.d("getWatchStatus($watch, $isRegistered) called")
-        val hasWatchApp = nodesWithApp.any { it.id == watch.id }
+        val hasWatchApp = nodesWithApp.value!!.any { it.id == watch.id }
         val isConnected = connectedNodes.value!!.any { it.id == watch.id }
         return when {
             hasWatchApp && isConnected && isRegistered -> Watch.Status.CONNECTED
@@ -142,7 +143,7 @@ class WearOSConnectionInterface(
     private fun refreshCapableNodes(): Task<CapabilityInfo> {
         return capabilityClient.getCapability(CAPABILITY_WATCH_APP, CapabilityClient.FILTER_ALL)
             .addOnSuccessListener {
-                nodesWithApp = it.nodes
+                nodesWithApp.postValue(it.nodes)
                 dataChanged.fire()
             }
             .addOnFailureListener { Timber.w("Failed to get capable nodes") }
