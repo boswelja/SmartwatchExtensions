@@ -74,7 +74,7 @@ class WearOSConnectionInterfaceTest {
         var expectedWatches = dummyWatches
         // Test with matching sets
         connectionInterface.connectedNodes.value = dummyNodes.toList()
-        connectionInterface.nodesWithApp = dummyNodes
+        connectionInterface.nodesWithApp.value = dummyNodes
         assertThat(connectionInterface.availableWatches.getOrAwaitValue())
             .containsExactlyElementsIn(expectedWatches)
 
@@ -82,7 +82,7 @@ class WearOSConnectionInterfaceTest {
         val nodesWithApp = dummyNodes.drop(1).toSet()
         expectedWatches = nodesWithApp.map(transformNodeToWatch)
         connectionInterface.connectedNodes.value = dummyNodes.toList()
-        connectionInterface.nodesWithApp = nodesWithApp
+        connectionInterface.nodesWithApp.value = nodesWithApp
         assertThat(connectionInterface.availableWatches.getOrAwaitValue())
             .containsExactlyElementsIn(expectedWatches)
 
@@ -90,13 +90,13 @@ class WearOSConnectionInterfaceTest {
         val connectedNodes = dummyNodes.drop(1)
         expectedWatches = connectedNodes.map(transformNodeToWatch)
         connectionInterface.connectedNodes.value = connectedNodes
-        connectionInterface.nodesWithApp = dummyNodes
+        connectionInterface.nodesWithApp.value = dummyNodes
         assertThat(connectionInterface.availableWatches.getOrAwaitValue())
             .containsExactlyElementsIn(expectedWatches)
 
         // Test with no nodes
         connectionInterface.connectedNodes.value = emptyList()
-        connectionInterface.nodesWithApp = emptySet()
+        connectionInterface.nodesWithApp.value = emptySet()
         assertThat(connectionInterface.availableWatches.getOrAwaitValue()).isEmpty()
     }
 
@@ -127,42 +127,42 @@ class WearOSConnectionInterfaceTest {
         val dummyNode = dummyNodes.first()
         val dummyWatch = transformNodeToWatch(dummyNode)
 
-        connectionInterface.nodesWithApp = setOf(dummyNode)
+        connectionInterface.nodesWithApp.value = setOf(dummyNode)
         connectionInterface.connectedNodes.value = listOf(dummyNode)
         assertThat(connectionInterface.getWatchStatus(dummyWatch, true))
             .isEquivalentAccordingToCompareTo(Watch.Status.CONNECTED)
 
-        connectionInterface.nodesWithApp = setOf(dummyNode)
+        connectionInterface.nodesWithApp.value = setOf(dummyNode)
         connectionInterface.connectedNodes.value = listOf(dummyNode)
         assertThat(connectionInterface.getWatchStatus(dummyWatch, false))
             .isEquivalentAccordingToCompareTo(Watch.Status.NOT_REGISTERED)
 
-        connectionInterface.nodesWithApp = emptySet()
+        connectionInterface.nodesWithApp.value = emptySet()
         connectionInterface.connectedNodes.value = listOf(dummyNode)
         assertThat(connectionInterface.getWatchStatus(dummyWatch, true))
             .isEquivalentAccordingToCompareTo(Watch.Status.MISSING_APP)
 
-        connectionInterface.nodesWithApp = emptySet()
+        connectionInterface.nodesWithApp.value = emptySet()
         connectionInterface.connectedNodes.value = listOf(dummyNode)
         assertThat(connectionInterface.getWatchStatus(dummyWatch, false))
             .isEquivalentAccordingToCompareTo(Watch.Status.MISSING_APP)
 
-        connectionInterface.nodesWithApp = setOf(dummyNode)
+        connectionInterface.nodesWithApp.value = setOf(dummyNode)
         connectionInterface.connectedNodes.value = emptyList()
         assertThat(connectionInterface.getWatchStatus(dummyWatch, true))
             .isEquivalentAccordingToCompareTo(Watch.Status.DISCONNECTED)
 
-        connectionInterface.nodesWithApp = setOf(dummyNode)
+        connectionInterface.nodesWithApp.value = setOf(dummyNode)
         connectionInterface.connectedNodes.value = emptyList()
         assertThat(connectionInterface.getWatchStatus(dummyWatch, false))
             .isEquivalentAccordingToCompareTo(Watch.Status.ERROR)
 
-        connectionInterface.nodesWithApp = emptySet()
+        connectionInterface.nodesWithApp.value = emptySet()
         connectionInterface.connectedNodes.value = emptyList()
         assertThat(connectionInterface.getWatchStatus(dummyWatch, true))
             .isEquivalentAccordingToCompareTo(Watch.Status.ERROR)
 
-        connectionInterface.nodesWithApp = emptySet()
+        connectionInterface.nodesWithApp.value = emptySet()
         connectionInterface.connectedNodes.value = emptyList()
         assertThat(connectionInterface.getWatchStatus(dummyWatch, false))
             .isEquivalentAccordingToCompareTo(Watch.Status.ERROR)
