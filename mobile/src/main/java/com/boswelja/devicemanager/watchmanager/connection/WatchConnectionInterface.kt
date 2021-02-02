@@ -20,11 +20,6 @@ interface WatchConnectionInterface {
     val availableWatches: LiveData<List<Watch>>
 
     /**
-     * Get a [List] of [Watch]es that are connected, and have Wearable Extensions installed
-     */
-    fun getAvailableWatches(): List<Watch>
-
-    /**
      * Get the [Watch.Status] for a given [Watch].
      * @param watch The [Watch] to get the status of.
      * @param isRegistered Whether the given watch has been registered.

@@ -1,6 +1,7 @@
 package com.boswelja.devicemanager.watchmanager
 
 import android.content.Context
+import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import com.boswelja.devicemanager.common.preference.SyncPreferences
@@ -18,12 +19,15 @@ import timber.log.Timber
  * A repository to handle passing requests on to the appropriate connection manager, and collect
  * data from the connection managers.
  */
-class WatchRepository(
-    context: Context,
-    val database: WatchDatabase
+class WatchRepository internal constructor(
+    val database: WatchDatabase,
+    vararg connectionInterfaces: WatchConnectionInterface
 ) {
 
-    constructor(context: Context) : this(context, WatchDatabase.getInstance(context))
+    constructor(context: Context) : this(
+        WatchDatabase.getInstance(context),
+        WearOSConnectionInterface(context)
+    )
 
     private val connectionManagers = HashMap<String, WatchConnectionInterface>()
     private val _registeredWatches: MediatorLiveData<List<Watch>> = MediatorLiveData()
@@ -43,9 +47,11 @@ class WatchRepository(
 
     init {
         Timber.d("Creating new repository")
-        // Create Wear OS connection manager
-        val wearOS = WearOSConnectionInterface(context)
-        connectionManagers[wearOS.getPlatformIdentifier()] = wearOS
+
+        // Create a map of platforms to WatchConnectionInterface
+        connectionInterfaces.forEach {
+            connectionManagers[it.getPlatformIdentifier()] = it
+        }
 
         // Set up _availableWatches
         connectionManagers.values.forEach {
@@ -98,16 +104,17 @@ class WatchRepository(
      * @return A [List] of [Watch]es with all watches from the platform matching [newWatches]
      * replaced with [newWatches].
      */
-    private fun replaceForPlatform(
+    @VisibleForTesting
+    internal fun replaceForPlatform(
         existingWatches: List<Watch>,
         newWatches: List<Watch>
-    ): List<Watch>? {
+    ): List<Watch> {
         newWatches.firstOrNull()?.platform?.let { platform ->
             val watchesWithoutPlatform = existingWatches.filterNot { it.platform == platform }
             // Since we've removed all watches from the platform, we don't need union.
             return watchesWithoutPlatform + newWatches
         }
-        return null
+        return existingWatches
     }
 
     /**
@@ -117,7 +124,8 @@ class WatchRepository(
      * @param platform The [Watch.platform] to update [Watch.Status] for.
      * @return The [List] of [Watch] with newly added [Watch.Status]
      */
-    private fun updateStatusForPlatform(watches: List<Watch>, platform: String): List<Watch> {
+    @VisibleForTesting
+    internal fun updateStatusForPlatform(watches: List<Watch>, platform: String): List<Watch> {
         val platformWatches = watches.filter { it.platform == platform }
         val connectionManager = connectionManagers[platform]
         if (connectionManager == null) {
