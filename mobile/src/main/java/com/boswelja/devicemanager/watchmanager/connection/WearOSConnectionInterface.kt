@@ -80,8 +80,6 @@ class WearOSConnectionInterface(
 
     override fun getPlatformIdentifier(): String = PLATFORM
 
-    override fun getAvailableWatches(): List<Watch> = availableWatches.value ?: emptyList()
-
     override fun getWatchStatus(watch: Watch, isRegistered: Boolean): Watch.Status {
         Timber.d("getWatchStatus($watch, $isRegistered) called")
         val hasWatchApp = nodesWithApp.value!!.any { it.id == watch.id }
