@@ -71,7 +71,7 @@ dependencies {
     val junit = "4.13.1"
     val truth = "1.1.2"
     val mockk = "1.10.5"
-    val robolectric = "4.5"
+    val robolectric = "4.5.1"
     val coroutines = "1.4.2"
     val wearableSupport = "2.8.1"
 
