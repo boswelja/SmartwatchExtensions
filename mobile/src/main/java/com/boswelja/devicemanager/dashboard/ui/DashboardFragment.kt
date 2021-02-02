@@ -10,13 +10,13 @@ import com.boswelja.devicemanager.dashboard.ui.items.BatterySyncDashboardFragmen
 import com.boswelja.devicemanager.dashboard.ui.items.DnDSyncDashboardFragment
 import com.boswelja.devicemanager.dashboard.ui.items.PhoneLockingDashboardFragment
 import com.boswelja.devicemanager.databinding.FragmentDashboardBinding
-import com.boswelja.devicemanager.watchmanager.SelectedWatchHandler
+import com.boswelja.devicemanager.watchmanager.WatchManager
 import kotlin.reflect.full.primaryConstructor
 import timber.log.Timber
 
 class DashboardFragment : Fragment() {
 
-    private val selectedWatchHandler by lazy { SelectedWatchHandler(requireContext()) }
+    private val watchManager by lazy { WatchManager.getInstance(requireContext()) }
 
     private lateinit var binding: FragmentDashboardBinding
 
@@ -43,17 +43,21 @@ class DashboardFragment : Fragment() {
 
     override fun onStart() {
         super.onStart()
-        selectedWatchHandler.status.observe(this) { status ->
-            Timber.d("Got watch status: $status")
-            binding.watchStatusText.setText(status.stringRes)
-            binding.watchStatusIcon.setImageResource(status.iconRes)
+        watchManager.selectedWatch.observe(this) { watch ->
+            if (watch == null) {
+                Timber.w("Selected watch is null")
+                return@observe
+            }
+            Timber.d("Got watch status: ${watch.status}")
+            binding.watchStatusText.setText(watch.status.stringRes)
+            binding.watchStatusIcon.setImageResource(watch.status.iconRes)
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        selectedWatchHandler.refreshStatus()
-    }
+//    override fun onResume() {
+//        super.onResume()
+//        watchManager.refreshStatus()
+//    }
 
     companion object {
         private val ALL_FRAGMENTS = listOf(
