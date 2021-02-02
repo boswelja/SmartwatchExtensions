@@ -135,7 +135,7 @@ class WatchRepository internal constructor(
         platformWatches.forEach {
             it.status = connectionManager.getWatchStatus(it, it.isRegistered)
         }
-        return replaceForPlatform(watches, platformWatches) ?: emptyList()
+        return replaceForPlatform(watches, platformWatches)
     }
 
     /**
