@@ -55,9 +55,9 @@ interface WatchConnectionInterface {
     fun resetWatchApp(watch: Watch)
 
     /**
-     * Manually refresh watch status info.
+     * Manually refresh info such as watch status and available watches.
      */
-    fun updateStatusInfo()
+    fun refreshData()
 
     /**
      * Returns a string unique to the platform handling the connections. It's important this is

@@ -69,7 +69,7 @@ class AppInfoFragment : BasePreferenceFragment(), Preference.OnPreferenceClickLi
                 }
             }
         }
-        watchManager.connectedWatch.observe(viewLifecycleOwner) {
+        watchManager.selectedWatch.observe(viewLifecycleOwner) {
             it?.id?.let { id -> viewModel.requestUpdateWatchVersion(id) }
         }
     }

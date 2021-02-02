@@ -173,6 +173,16 @@ class WatchRepository(
     }
 
     /**
+     * Requests all [WatchConnectionInterface]s update their available watches, as well as watch
+     * statuses.
+     */
+    fun refreshData() {
+        connectionManagers.values.forEach {
+            it.refreshData()
+        }
+    }
+
+    /**
      * Gets all preferences stored for a given [Watch].
      * @param watch The [Watch] to get preferences for.
      * @return A [List] of [Preference]s for the given watch.

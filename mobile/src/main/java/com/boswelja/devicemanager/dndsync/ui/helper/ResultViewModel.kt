@@ -43,7 +43,7 @@ class ResultViewModel(application: Application) : AndroidViewModel(application) 
                 putBoolean(PreferenceKey.DND_SYNC_TO_WATCH_KEY, isEnabled)
             }
             watchManager.updatePreference(
-                watchManager.connectedWatch.value!!, PreferenceKey.DND_SYNC_TO_WATCH_KEY, isEnabled
+                watchManager.selectedWatch.value!!, PreferenceKey.DND_SYNC_TO_WATCH_KEY, isEnabled
             )
             if (isEnabled) {
                 val context = getApplication<Application>()

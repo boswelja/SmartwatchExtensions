@@ -66,4 +66,8 @@ class RegisterWatchViewModel internal constructor(
         registeredWatches = availableWatches
         _isWorking.postValue(false)
     }
+
+    fun refreshAvailableWatches() {
+        watchManager.watchRepository.refreshData()
+    }
 }

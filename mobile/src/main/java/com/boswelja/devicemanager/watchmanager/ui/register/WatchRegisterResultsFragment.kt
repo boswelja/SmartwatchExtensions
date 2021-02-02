@@ -45,7 +45,10 @@ class WatchRegisterResultsFragment : Fragment() {
 
         // Set up common elements
         binding.finishButton.setOnClickListener { requireActivity().finish() }
-        binding.tryAgainButton.setOnClickListener { viewModel.registerAvailableWatches() }
+        binding.tryAgainButton.setOnClickListener {
+            viewModel.refreshAvailableWatches()
+            viewModel.registerAvailableWatches()
+        }
         binding.registeredWatchesRecyclerview.adapter = adapter
     }
 

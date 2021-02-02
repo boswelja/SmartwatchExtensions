@@ -55,7 +55,7 @@ class WearOSConnectionInterface(
     init {
         // Set up connectedNodes and nodesWithApp updates
         capabilityClient.addListener(capableWatchesListener, CAPABILITY_WATCH_APP)
-        updateStatusInfo()
+        refreshData()
 
         // Set up _availableWatches
         _availableWatches.addSource(connectedNodes) { connectedNodes ->
@@ -123,7 +123,7 @@ class WearOSConnectionInterface(
         sendMessage(watch.id, REQUEST_RESET_APP)
     }
 
-    override fun updateStatusInfo() {
+    override fun refreshData() {
         refreshCapableNodes()
         refreshConnectedNodes()
     }

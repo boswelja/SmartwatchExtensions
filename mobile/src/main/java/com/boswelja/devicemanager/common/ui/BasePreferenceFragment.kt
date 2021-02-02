@@ -48,7 +48,7 @@ abstract class BasePreferenceFragment : PreferenceFragmentCompat() {
     }
 
     fun observeConnectedWatchId() {
-        watchManager.connectedWatch.observe(viewLifecycleOwner) { newWatch ->
+        watchManager.selectedWatch.observe(viewLifecycleOwner) { newWatch ->
             newWatch?.let { connectedWatch = it }
         }
     }
