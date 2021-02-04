@@ -8,11 +8,11 @@ import com.boswelja.devicemanager.watchmanager.item.Watch
 /**
  * A dummy [WatchConnectionInterface] for testing purposes.
  */
-class DummyConnectionInterface : WatchConnectionInterface {
+class DummyConnectionInterface(platform: String) : WatchConnectionInterface {
 
     override val dataChanged: Event = Event()
     override val availableWatches: LiveData<List<Watch>> = MutableLiveData()
-    override val platformIdentifier: String = PLATFORM
+    override val platformIdentifier: String = platform
 
     override fun getWatchStatus(watch: Watch, isRegistered: Boolean): Watch.Status {
         return Watch.Status.UNKNOWN
@@ -27,8 +27,4 @@ class DummyConnectionInterface : WatchConnectionInterface {
     override fun resetWatchPreferences(watch: Watch) {}
 
     override fun refreshData() {}
-
-    companion object {
-        const val PLATFORM = "dummy"
-    }
 }

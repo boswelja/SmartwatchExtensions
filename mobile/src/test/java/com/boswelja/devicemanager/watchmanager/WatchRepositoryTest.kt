@@ -10,7 +10,6 @@ import com.boswelja.devicemanager.watchmanager.connection.DummyConnectionInterfa
 import com.boswelja.devicemanager.watchmanager.database.WatchDatabase
 import com.boswelja.devicemanager.watchmanager.item.Watch
 import com.google.common.truth.Truth.assertThat
-import io.mockk.confirmVerified
 import io.mockk.every
 import io.mockk.spyk
 import io.mockk.verify
@@ -29,29 +28,37 @@ class WatchRepositoryTest {
 
     @get:Rule val taskExecutorRule = InstantTaskExecutorRule()
 
-    private val dummyWatch1 = Watch("an-id-1234", "Watch 1", DummyConnectionInterface.PLATFORM)
-    private val dummyWatch2 = Watch("an-id-2345", "Watch 2", DummyConnectionInterface.PLATFORM)
-    private val dummyWatch3 = Watch("an-id-3456", "Watch 3", DummyConnectionInterface.PLATFORM)
+    private val platformIdentifier1 = "dummy1"
+    private val platformIdentifier2 = "dummy2"
+
+    private val dummyWatch1 = Watch("an-id-1234", "Watch 1", platformIdentifier1)
+    private val dummyWatch2 = Watch("an-id-2345", "Watch 2", platformIdentifier1)
+    private val dummyWatch3 = Watch("an-id-3456", "Watch 3", platformIdentifier2)
     private val dummyWatches = listOf(dummyWatch1, dummyWatch2, dummyWatch3)
 
     private lateinit var repository: WatchRepository
     private lateinit var database: WatchDatabase
-    private lateinit var connectionInterface: DummyConnectionInterface
+    private lateinit var connectionInterface1: DummyConnectionInterface
+    private lateinit var connectionInterface2: DummyConnectionInterface
 
     @Before
     fun setUp() {
-        connectionInterface = spyk(DummyConnectionInterface())
+        connectionInterface1 = spyk(DummyConnectionInterface(platformIdentifier1))
+        connectionInterface2 = spyk(DummyConnectionInterface(platformIdentifier2))
         database = spyk(
             Room.inMemoryDatabaseBuilder(
                 ApplicationProvider.getApplicationContext(),
                 WatchDatabase::class.java
             ).build()
         )
-        repository = WatchRepository(database, connectionInterface)
+        repository = WatchRepository(database, connectionInterface1, connectionInterface2)
         verifyAll {
-            connectionInterface.availableWatches
-            connectionInterface.dataChanged
-            connectionInterface.platformIdentifier
+            connectionInterface1.availableWatches
+            connectionInterface1.platformIdentifier
+            connectionInterface1.dataChanged
+            connectionInterface2.availableWatches
+            connectionInterface2.platformIdentifier
+            connectionInterface2.dataChanged
         }
     }
 
@@ -77,32 +84,52 @@ class WatchRepositoryTest {
 
     @Test
     fun `replaceForPlatform correctly removes all watches for a platform and replaces them`() {
-        val newWatches = dummyWatches.drop(1)
+        val newWatches = dummyWatches
+            .filter { it.platform == connectionInterface1.platformIdentifier }
+            .map {
+                it.status = Watch.Status.MISSING_APP
+                it
+            }
         val result = repository.replaceForPlatform(dummyWatches, newWatches)
-        assertThat(result).containsExactlyElementsIn(newWatches)
+        assertThat(result).hasSize(dummyWatches.size)
+        result.filter { it.platform == connectionInterface1.platformIdentifier }.forEach {
+            assertThat(it.status).isEquivalentAccordingToCompareTo(Watch.Status.MISSING_APP)
+        }
     }
 
     @Test
     fun `updateStatusForPlatform calls getStatus on the correct watches`() {
         // Change the returning status
-        every { connectionInterface.getWatchStatus(any(), any()) } returns Watch.Status.CONNECTED
+        every { connectionInterface1.getWatchStatus(any(), any()) } returns Watch.Status.CONNECTED
+        every { connectionInterface2.getWatchStatus(any(), any()) } returns
+            Watch.Status.DISCONNECTED
 
-        val result =
-            repository.updateStatusForPlatform(dummyWatches, DummyConnectionInterface.PLATFORM)
-        dummyWatches.forEach {
-            verify(exactly = 1) { connectionInterface.getWatchStatus(it, any()) }
+        // Check with first connection interface
+        var result = repository
+            .updateStatusForPlatform(dummyWatches, connectionInterface1.platformIdentifier)
+        dummyWatches.filter { it.platform == connectionInterface1.platformIdentifier }.forEach {
+            verify(exactly = 1) { connectionInterface1.getWatchStatus(it, any()) }
         }
-        // Ensure no extra calls to getWatchStatus were made
-        confirmVerified(connectionInterface)
-        result.filter { it.platform == DummyConnectionInterface.PLATFORM }.forEach {
+        result.filter { it.platform == connectionInterface1.platformIdentifier }.forEach {
             assertThat(it.status).isEquivalentAccordingToCompareTo(Watch.Status.CONNECTED)
+        }
+
+        // Check with second connection interface
+        result = repository
+            .updateStatusForPlatform(dummyWatches, connectionInterface2.platformIdentifier)
+        dummyWatches.filter { it.platform == connectionInterface2.platformIdentifier }.forEach {
+            verify(exactly = 1) { connectionInterface2.getWatchStatus(it, any()) }
+        }
+        result.filter { it.platform == connectionInterface2.platformIdentifier }.forEach {
+            assertThat(it.status).isEquivalentAccordingToCompareTo(Watch.Status.DISCONNECTED)
         }
     }
 
     @Test
     fun `refreshData calls correct function on all provided WatchConnectionInterface`() {
         repository.refreshData()
-        verify(exactly = 1) { connectionInterface.refreshData() }
+        verify(exactly = 1) { connectionInterface1.refreshData() }
+        verify(exactly = 1) { connectionInterface2.refreshData() }
     }
 
     @Test
@@ -110,7 +137,8 @@ class WatchRepositoryTest {
         val key = "dummy-key"
         repository.updatePreference(dummyWatch1, key, 0)
         verify(exactly = 0) { database.updatePrefInDatabase(any(), any(), any()) }
-        verify(exactly = 0) { connectionInterface.updatePreferenceOnWatch(any(), any(), any()) }
+        verify(exactly = 0) { connectionInterface1.updatePreferenceOnWatch(any(), any(), any()) }
+        verify(exactly = 0) { connectionInterface2.updatePreferenceOnWatch(any(), any(), any()) }
     }
 
     @Test
@@ -119,7 +147,9 @@ class WatchRepositoryTest {
             val key = SyncPreferences.INT_PREFS.first()
             repository.updatePreference(dummyWatch1, key, 0)
             verify(exactly = 1) { database.updatePrefInDatabase(dummyWatch1.id, key, 0) }
-            verify(exactly = 1) { connectionInterface.updatePreferenceOnWatch(dummyWatch1, key, 0) }
+            verify(exactly = 1) {
+                connectionInterface1.updatePreferenceOnWatch(dummyWatch1, key, 0)
+            }
         }
 
     @Test
@@ -127,7 +157,7 @@ class WatchRepositoryTest {
         runBlocking {
             repository.forgetWatch(dummyWatch1)
             verify(exactly = 1) { database.forgetWatch(dummyWatch1) }
-            verify(exactly = 1) { connectionInterface.resetWatchApp(dummyWatch1) }
+            verify(exactly = 1) { connectionInterface1.resetWatchApp(dummyWatch1) }
         }
 
     @Test
@@ -140,18 +170,19 @@ class WatchRepositoryTest {
     @Test
     fun `resetWatch calls the correct connectionInterface`() {
         repository.resetWatch(dummyWatch1)
-        verify(exactly = 1) { connectionInterface.resetWatchApp(dummyWatch1) }
+        verify(exactly = 1) { connectionInterface1.resetWatchApp(dummyWatch1) }
     }
 
     @Test
     fun `resetWatchPreferences calls the correct connectionInterface`() {
         repository.resetWatchPreferences(dummyWatch1)
-        verify(exactly = 1) { connectionInterface.resetWatchPreferences(dummyWatch1) }
+        verify(exactly = 1) { connectionInterface1.resetWatchPreferences(dummyWatch1) }
     }
 
     @Test
     fun `refreshData calls refreshData on all provided connection interfaces`() {
         repository.refreshData()
-        verify(exactly = 1) { connectionInterface.refreshData() }
+        verify(exactly = 1) { connectionInterface1.refreshData() }
+        verify(exactly = 1) { connectionInterface2.refreshData() }
     }
 }
