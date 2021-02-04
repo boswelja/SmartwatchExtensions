@@ -24,6 +24,8 @@ class DummyConnectionInterface : WatchConnectionInterface {
 
     override fun resetWatchApp(watch: Watch) {}
 
+    override fun resetWatchPreferences(watch: Watch) {}
+
     override fun refreshData() {}
 
     companion object {

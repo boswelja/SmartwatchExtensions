@@ -11,7 +11,7 @@ import android.os.Build
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.boswelja.devicemanager.common.References.REQUEST_APP_VERSION
+import com.boswelja.devicemanager.common.connection.Messages.REQUEST_APP_VERSION
 import com.boswelja.devicemanager.getOrAwaitValue
 import com.google.android.gms.wearable.MessageClient
 import com.google.common.truth.Truth.assertThat
