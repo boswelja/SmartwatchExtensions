@@ -53,6 +53,8 @@ class WearOSConnectionInterface(
     override val availableWatches: LiveData<List<Watch>>
         get() = _availableWatches
 
+    override val platformIdentifier: String = PLATFORM
+
     init {
         Timber.i("Creating WearOSConnectionInterface")
         // Set up _availableWatches
@@ -99,8 +101,6 @@ class WearOSConnectionInterface(
         capabilityClient.addListener(capableWatchesListener, CAPABILITY_WATCH_APP)
         refreshData()
     }
-
-    override fun getPlatformIdentifier(): String = PLATFORM
 
     override fun getWatchStatus(watch: Watch, isRegistered: Boolean): Watch.Status {
         Timber.d("getWatchStatus($watch, $isRegistered) called")

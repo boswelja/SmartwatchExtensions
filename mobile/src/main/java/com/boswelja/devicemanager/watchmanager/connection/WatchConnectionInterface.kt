@@ -20,6 +20,12 @@ interface WatchConnectionInterface {
     val availableWatches: LiveData<List<Watch>>
 
     /**
+     * Returns a string unique to the platform handling the connections. It's important this is
+     * constant as it will be stored with registered watches.
+     */
+    val platformIdentifier: String
+
+    /**
      * Get the [Watch.Status] for a given [Watch].
      * @param watch The [Watch] to get the status of.
      * @param isRegistered Whether the given watch has been registered.
@@ -53,10 +59,4 @@ interface WatchConnectionInterface {
      * Manually refresh info such as watch status and available watches.
      */
     fun refreshData()
-
-    /**
-     * Returns a string unique to the platform handling the connections. It's important this is
-     * constant as it will be stored with registered watches.
-     */
-    fun getPlatformIdentifier(): String
 }

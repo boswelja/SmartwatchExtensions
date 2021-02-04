@@ -85,7 +85,7 @@ class WatchRepositoryTest {
         verifyAll {
             connectionInterface.availableWatches
             connectionInterface.dataChanged
-            connectionInterface.getPlatformIdentifier()
+            connectionInterface.platformIdentifier
         }
         val result =
             repository.updateStatusForPlatform(dummyWatches, DummyConnectionInterface.PLATFORM)
@@ -104,7 +104,7 @@ class WatchRepositoryTest {
         verifyAll {
             connectionInterface.availableWatches
             connectionInterface.dataChanged
-            connectionInterface.getPlatformIdentifier()
+            connectionInterface.platformIdentifier
         }
         repository.refreshData()
         verify(exactly = 1) { connectionInterface.refreshData() }
@@ -116,7 +116,7 @@ class WatchRepositoryTest {
         verifyAll {
             connectionInterface.availableWatches
             connectionInterface.dataChanged
-            connectionInterface.getPlatformIdentifier()
+            connectionInterface.platformIdentifier
         }
 
         repository.updatePreference(dummyWatch1, key, 0)
@@ -131,7 +131,7 @@ class WatchRepositoryTest {
             verifyAll {
                 connectionInterface.availableWatches
                 connectionInterface.dataChanged
-                connectionInterface.getPlatformIdentifier()
+                connectionInterface.platformIdentifier
             }
 
             repository.updatePreference(dummyWatch1, key, 0)

@@ -50,7 +50,7 @@ class WatchRepository internal constructor(
 
         // Create a map of platforms to WatchConnectionInterface
         connectionInterfaces.forEach {
-            connectionManagers[it.getPlatformIdentifier()] = it
+            connectionManagers[it.platformIdentifier] = it
         }
 
         // Set up _availableWatches
@@ -82,7 +82,7 @@ class WatchRepository internal constructor(
                 if (it) {
                     val watches = updateStatusForPlatform(
                         _registeredWatches.value ?: emptyList(),
-                        connectionManager.getPlatformIdentifier()
+                        connectionManager.platformIdentifier
                     )
                     _registeredWatches.postValue(watches)
                 }

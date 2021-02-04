@@ -12,6 +12,7 @@ class DummyConnectionInterface : WatchConnectionInterface {
 
     override val dataChanged: Event = Event()
     override val availableWatches: LiveData<List<Watch>> = MutableLiveData()
+    override val platformIdentifier: String = PLATFORM
 
     override fun getWatchStatus(watch: Watch, isRegistered: Boolean): Watch.Status {
         return Watch.Status.UNKNOWN
@@ -24,8 +25,6 @@ class DummyConnectionInterface : WatchConnectionInterface {
     override fun resetWatchApp(watch: Watch) {}
 
     override fun refreshData() {}
-
-    override fun getPlatformIdentifier(): String = PLATFORM
 
     companion object {
         const val PLATFORM = "dummy"
