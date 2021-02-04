@@ -111,6 +111,10 @@ class WatchManager internal constructor(
         watchRepository.resetWatch(watch)
     }
 
+    fun resetWatchPreferences(watch: Watch) {
+        watchRepository.resetWatchPreferences(watch)
+    }
+
     /**
      * Selects a watch by a given [Watch.id]. This will update [selectedWatch].
      * @param watchId The ID of the [Watch] to select.

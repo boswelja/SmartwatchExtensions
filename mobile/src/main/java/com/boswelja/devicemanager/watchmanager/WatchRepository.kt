@@ -174,11 +174,21 @@ class WatchRepository internal constructor(
     }
 
     /**
-     * Sends the app request message to a given watch.
-     * @param watch The [Watch] to reset Wearable Extensions on.
+     * Calls [WatchConnectionInterface.resetWatchApp] on the corresponding
+     * [WatchConnectionInterface].
+     * @param watch The [Watch] to perform the request on.
      */
     fun resetWatch(watch: Watch) {
         watch.connectionManager?.resetWatchApp(watch)
+    }
+
+    /**
+     * Calls [WatchConnectionInterface.resetWatchPreferences] on the corresponding
+     * [WatchConnectionInterface].
+     * @param watch The [Watch] to perform the request on.
+     */
+    fun resetWatchPreferences(watch: Watch) {
+        watch.connectionManager?.resetWatchPreferences(watch)
     }
 
     /**
