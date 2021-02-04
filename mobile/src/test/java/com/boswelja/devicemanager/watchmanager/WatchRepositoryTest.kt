@@ -48,6 +48,11 @@ class WatchRepositoryTest {
             ).build()
         )
         repository = WatchRepository(database, connectionInterface)
+        verifyAll {
+            connectionInterface.availableWatches
+            connectionInterface.dataChanged
+            connectionInterface.platformIdentifier
+        }
     }
 
     @After
@@ -81,12 +86,7 @@ class WatchRepositoryTest {
     fun `updateStatusForPlatform calls getStatus on the correct watches`() {
         // Change the returning status
         every { connectionInterface.getWatchStatus(any(), any()) } returns Watch.Status.CONNECTED
-        // Ensure we've verified any calls to connectionInterface before testing
-        verifyAll {
-            connectionInterface.availableWatches
-            connectionInterface.dataChanged
-            connectionInterface.platformIdentifier
-        }
+
         val result =
             repository.updateStatusForPlatform(dummyWatches, DummyConnectionInterface.PLATFORM)
         dummyWatches.forEach {
@@ -101,11 +101,6 @@ class WatchRepositoryTest {
 
     @Test
     fun `refreshData calls correct function on all provided WatchConnectionInterface`() {
-        verifyAll {
-            connectionInterface.availableWatches
-            connectionInterface.dataChanged
-            connectionInterface.platformIdentifier
-        }
         repository.refreshData()
         verify(exactly = 1) { connectionInterface.refreshData() }
     }
@@ -113,12 +108,6 @@ class WatchRepositoryTest {
     @Test
     fun `updatePreference does nothing with invalid keys`(): Unit = runBlocking {
         val key = "dummy-key"
-        verifyAll {
-            connectionInterface.availableWatches
-            connectionInterface.dataChanged
-            connectionInterface.platformIdentifier
-        }
-
         repository.updatePreference(dummyWatch1, key, 0)
         verify(exactly = 0) { database.updatePrefInDatabase(any(), any(), any()) }
         verify(exactly = 0) { connectionInterface.updatePreferenceOnWatch(any(), any(), any()) }
@@ -128,14 +117,41 @@ class WatchRepositoryTest {
     fun `updatePreference correctly updates preference if contained in SyncPreferences`(): Unit =
         runBlocking {
             val key = SyncPreferences.INT_PREFS.first()
-            verifyAll {
-                connectionInterface.availableWatches
-                connectionInterface.dataChanged
-                connectionInterface.platformIdentifier
-            }
-
             repository.updatePreference(dummyWatch1, key, 0)
             verify(exactly = 1) { database.updatePrefInDatabase(dummyWatch1.id, key, 0) }
             verify(exactly = 1) { connectionInterface.updatePreferenceOnWatch(dummyWatch1, key, 0) }
         }
+
+    @Test
+    fun `forgetWatch removes the watch from the database and calls resetWatch`(): Unit =
+        runBlocking {
+            repository.forgetWatch(dummyWatch1)
+            verify(exactly = 1) { database.forgetWatch(dummyWatch1) }
+            verify(exactly = 1) { connectionInterface.resetWatchApp(dummyWatch1) }
+        }
+
+    @Test
+    fun `renameWatch renames the watch in the database`(): Unit = runBlocking {
+        val newName = "new name"
+        repository.renameWatch(dummyWatch1, newName)
+        verify(exactly = 1) { database.renameWatch(dummyWatch1, newName) }
+    }
+
+    @Test
+    fun `resetWatch calls the correct connectionInterface`() {
+        repository.resetWatch(dummyWatch1)
+        verify(exactly = 1) { connectionInterface.resetWatchApp(dummyWatch1) }
+    }
+
+    @Test
+    fun `resetWatchPreferences calls the correct connectionInterface`() {
+        repository.resetWatchPreferences(dummyWatch1)
+        verify(exactly = 1) { connectionInterface.resetWatchPreferences(dummyWatch1) }
+    }
+
+    @Test
+    fun `refreshData calls refreshData on all provided connection interfaces`() {
+        repository.refreshData()
+        verify(exactly = 1) { connectionInterface.refreshData() }
+    }
 }
