@@ -13,8 +13,6 @@ import com.boswelja.devicemanager.watchmanager.ui.register.RegisterWatchViewMode
 import com.google.common.truth.Truth.assertThat
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
-import io.mockk.coVerify
-import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
 import kotlinx.coroutines.runBlocking
 import org.junit.Before
@@ -71,23 +69,4 @@ class RegisterWatchViewModelTest {
         viewModel.suspendRegisterAvailableWatches()
         viewModel.isWorking.getOrAwaitValue { assertThat(it).isFalse() }
     }
-
-    @Test
-    fun `registerAvailableWatches registers every watch in availableWatches`(): Unit = runBlocking {
-        every { watchManager.availableWatches } returns MutableLiveData(dummyWatches)
-        viewModel.suspendRegisterAvailableWatches()
-        dummyWatches.forEach {
-            coVerify(exactly = 1) { watchManager.registerWatch(it) }
-        }
-        coVerify(exactly = 1) { watchManager.availableWatches }
-    }
-
-    @Test
-    fun `registerAvailableWatches does nothing when availableWatches is empty`(): Unit =
-        runBlocking {
-            coEvery { watchManager.availableWatches } returns MutableLiveData(emptyList())
-            viewModel.suspendRegisterAvailableWatches()
-            coVerify(exactly = 0) { watchManager.registerWatch(any()) }
-            coVerify(exactly = 1) { watchManager.availableWatches }
-        }
 }
