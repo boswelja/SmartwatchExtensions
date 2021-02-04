@@ -100,22 +100,10 @@ class WatchInfoActivity : BaseToolbarActivity() {
     /** Clears the preferences for a given [Watch], and notifies the user of the result. */
     private fun clearPreferences() {
         Timber.d("clearPreferences() called")
-        coroutineScope.launch(Dispatchers.IO) {
-            val success = false // watchManager.clearPreferencesForWatch(watchId)
-            withContext(Dispatchers.Main) {
-                if (success) {
-                    Timber.i("Successfully cleared preferences")
-                    createSnackBar(
-                        "Successfully cleared settings for your ${binding.watchNameField.text}"
-                    )
-                } else {
-                    Timber.w("Failed to clear preferences")
-                    createSnackBar(
-                        "Failed to clear settings for your ${binding.watchNameField.text}"
-                    )
-                }
-            }
-        }
+        watchManager.resetWatchPreferences(
+            watchManager.registeredWatches.value!!.first { it.id == watchId }
+        )
+        createSnackBar("Successfully cleared settings for your ${binding.watchNameField.text}")
     }
 
     /** Asks the user if they want to forget their [Watch]. */
