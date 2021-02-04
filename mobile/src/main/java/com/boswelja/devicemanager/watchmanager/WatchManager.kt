@@ -56,7 +56,7 @@ class WatchManager internal constructor(
         sharedPreferences.getString(LAST_SELECTED_NODE_ID_KEY, "")?.let {
             selectWatchById(it)
         }
-        selectedWatch.observeForever {
+        _selectedWatch.observeForever {
             it?.let { watch -> updateLocalPreferences(watch) }
         }
     }

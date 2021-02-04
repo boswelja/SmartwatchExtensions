@@ -54,11 +54,6 @@ class DashboardFragment : Fragment() {
         }
     }
 
-//    override fun onResume() {
-//        super.onResume()
-//        watchManager.refreshStatus()
-//    }
-
     companion object {
         private val ALL_FRAGMENTS = listOf(
             BatterySyncDashboardFragment::class,
