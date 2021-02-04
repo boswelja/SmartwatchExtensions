@@ -16,8 +16,8 @@ import kotlinx.coroutines.withContext
 import timber.log.Timber
 
 /**
- * A repository to handle passing requests on to the appropriate connection manager, and collect
- * data from the connection managers.
+ * A repository to handle collecting data from and passing requests to the appropriate
+ * [WatchConnectionInterface].
  */
 class WatchRepository internal constructor(
     val database: WatchDatabase,
@@ -66,15 +66,16 @@ class WatchRepository internal constructor(
 
         // Set up _registeredWatches
         _registeredWatches.addSource(database.watchDao().getAllObservable()) { watches ->
-            watches.forEach {
+            val watchesWithStatus = watches.map {
                 val connectionManager = it.connectionManager
                 if (connectionManager != null) {
                     it.status = connectionManager.getWatchStatus(it, true)
                 } else {
                     Timber.w("Platform ${it.platform} not registered")
                 }
+                it
             }
-            _registeredWatches.postValue(watches)
+            _registeredWatches.postValue(watchesWithStatus)
         }
         connectionManagers.values.forEach { connectionManager ->
             _registeredWatches.addSource(connectionManager.dataChanged) {
