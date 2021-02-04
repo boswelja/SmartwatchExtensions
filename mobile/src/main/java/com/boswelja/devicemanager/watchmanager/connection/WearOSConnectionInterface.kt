@@ -54,10 +54,7 @@ class WearOSConnectionInterface(
         get() = _availableWatches
 
     init {
-        // Set up connectedNodes and nodesWithApp updates
-        capabilityClient.addListener(capableWatchesListener, CAPABILITY_WATCH_APP)
-        refreshData()
-
+        Timber.i("Creating WearOSConnectionInterface")
         // Set up _availableWatches
         _availableWatches.addSource(connectedNodes) { connectedNodes ->
             val watches = connectedNodes.intersect(nodesWithApp.value ?: emptySet()).map {
@@ -65,6 +62,26 @@ class WearOSConnectionInterface(
                     getWatchStatus(this, false)
                 }
             }
+            Timber.d(
+                "Found %s available watches from %s connected and %s capable nodes",
+                watches.count(),
+                connectedNodes.count(),
+                nodesWithApp.value?.count()
+            )
+            _availableWatches.postValue(watches)
+        }
+        _availableWatches.addSource(nodesWithApp) { nodesWithApp ->
+            val watches = nodesWithApp.intersect(connectedNodes.value ?: emptySet()).map {
+                Watch(it.id, it.displayName, PLATFORM).apply {
+                    getWatchStatus(this, false)
+                }
+            }
+            Timber.d(
+                "Found %s available watches from %s connected and %s capable nodes",
+                watches.count(),
+                connectedNodes.value?.count(),
+                nodesWithApp.count()
+            )
             _availableWatches.postValue(watches)
         }
         _availableWatches.addSource(dataChanged) {
@@ -72,10 +89,15 @@ class WearOSConnectionInterface(
                 val watches = _availableWatches.value?.map { watch ->
                     watch.status = getWatchStatus(watch, false)
                     watch
-                }
-                _availableWatches.postValue(watches ?: emptyList())
+                } ?: emptyList()
+                Timber.d("Data changed, updating ${watches.count()} availableWatch status")
+                _availableWatches.postValue(watches)
             }
         }
+
+        // Set up connectedNodes and nodesWithApp updates
+        capabilityClient.addListener(capableWatchesListener, CAPABILITY_WATCH_APP)
+        refreshData()
     }
 
     override fun getPlatformIdentifier(): String = PLATFORM
@@ -123,6 +145,7 @@ class WearOSConnectionInterface(
     }
 
     override fun refreshData() {
+        Timber.d("refreshData() called")
         refreshCapableNodes()
         refreshConnectedNodes()
     }
@@ -130,6 +153,7 @@ class WearOSConnectionInterface(
     private fun refreshConnectedNodes(): Task<List<Node>> {
         return nodeClient.connectedNodes
             .addOnSuccessListener {
+                Timber.d("Found ${it.count()} connected nodes")
                 connectedNodes.postValue(it)
                 dataChanged.fire()
             }
@@ -141,10 +165,11 @@ class WearOSConnectionInterface(
     private fun refreshCapableNodes(): Task<CapabilityInfo> {
         return capabilityClient.getCapability(CAPABILITY_WATCH_APP, CapabilityClient.FILTER_ALL)
             .addOnSuccessListener {
+                Timber.d("Found ${it.nodes.count()} capable nodes")
                 nodesWithApp.postValue(it.nodes)
                 dataChanged.fire()
             }
-            .addOnFailureListener { Timber.w("Failed to get capable nodes") }
+            .addOnFailureListener { Timber.e(it.cause) }
     }
 
     fun dispose() {

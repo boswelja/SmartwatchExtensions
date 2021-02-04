@@ -11,6 +11,7 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Observer
 import androidx.lifecycle.viewModelScope
 import com.boswelja.devicemanager.watchmanager.WatchManager
 import com.boswelja.devicemanager.watchmanager.item.Watch
@@ -36,6 +37,11 @@ class RegisterWatchViewModel internal constructor(
 
     private val _isWorking = MutableLiveData(false)
 
+    private var availableWatches: List<Watch> = emptyList()
+    private val availableWatchObserver = Observer<List<Watch>> {
+        availableWatches = it
+    }
+
     /**
      * Notifies observers when the ViewModel is or isn't working (i.e. registering watches)
      */
@@ -44,6 +50,12 @@ class RegisterWatchViewModel internal constructor(
 
     init {
         if (autoRegisterOnCreate) registerAvailableWatches()
+        watchManager.availableWatches.observeForever(availableWatchObserver)
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        watchManager.availableWatches.removeObserver(availableWatchObserver)
     }
 
     /**
@@ -59,7 +71,6 @@ class RegisterWatchViewModel internal constructor(
 
     internal suspend fun suspendRegisterAvailableWatches() {
         _isWorking.postValue(true)
-        val availableWatches = watchManager.availableWatches.value ?: emptyList()
         availableWatches.forEach { watch ->
             watchManager.registerWatch(watch)
         }
