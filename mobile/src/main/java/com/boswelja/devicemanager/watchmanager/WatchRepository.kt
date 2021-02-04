@@ -145,7 +145,7 @@ class WatchRepository internal constructor(
      */
     suspend fun registerWatch(watch: Watch) {
         withContext(Dispatchers.IO) {
-            database.watchDao().add(watch)
+            database.addWatch(watch)
             val connectionManager = watch.connectionManager
             connectionManager?.sendMessage(watch.id, References.WATCH_REGISTERED_PATH)
         }
@@ -157,7 +157,7 @@ class WatchRepository internal constructor(
      */
     suspend fun forgetWatch(watch: Watch) {
         withContext(Dispatchers.IO) {
-            database.watchDao().remove(watch.id)
+            database.forgetWatch(watch)
             resetWatch(watch)
         }
     }
@@ -169,7 +169,7 @@ class WatchRepository internal constructor(
      */
     suspend fun renameWatch(watch: Watch, newName: String) {
         withContext(Dispatchers.IO) {
-            database.watchDao().setName(watch.id, newName)
+            database.renameWatch(watch, newName)
         }
     }
 

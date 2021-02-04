@@ -54,6 +54,18 @@ abstract class WatchDatabase : RoomDatabase() {
         return false
     }
 
+    fun renameWatch(watch: Watch, newName: String) {
+        watchDao().setName(watch.id, newName)
+    }
+
+    fun forgetWatch(watch: Watch) {
+        watchDao().remove(watch.id)
+    }
+
+    fun addWatch(watch: Watch) {
+        watchDao().add(watch)
+    }
+
     @Suppress("UNCHECKED_CAST")
     inline fun <reified T> getPreference(watch: Watch, key: String): Preference<T>? {
         return when (T::class) {
