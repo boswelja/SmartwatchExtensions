@@ -11,7 +11,7 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.boswelja.devicemanager.common.References
+import com.boswelja.devicemanager.common.connection.Messages.REQUEST_APP_VERSION
 import com.google.android.gms.wearable.MessageClient
 import com.google.android.gms.wearable.Wearable
 import timber.log.Timber
@@ -30,7 +30,7 @@ class AppInfoViewModel internal constructor(
     private val messageListener =
         MessageClient.OnMessageReceivedListener {
             when (it.path) {
-                References.REQUEST_APP_VERSION -> {
+                REQUEST_APP_VERSION -> {
                     Timber.i("Got watch app version")
                     val versionInfo = parseWatchVersionInfo(it.data)
                     _watchAppVersion.postValue(versionInfo)
@@ -59,7 +59,7 @@ class AppInfoViewModel internal constructor(
         Timber.d("requestUpdateWatchVersionPreference")
         if (connectedWatchId.isNotEmpty()) {
             messageClient
-                .sendMessage(connectedWatchId, References.REQUEST_APP_VERSION, null)
+                .sendMessage(connectedWatchId, REQUEST_APP_VERSION, null)
                 .addOnFailureListener {
                     Timber.w(it)
                     _watchAppVersion.postValue(null)

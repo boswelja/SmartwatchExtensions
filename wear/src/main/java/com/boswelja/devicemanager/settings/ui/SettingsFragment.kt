@@ -22,7 +22,7 @@ import com.boswelja.devicemanager.ConfirmationActivityHandler
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.Compat
 import com.boswelja.devicemanager.common.Extensions.fromByteArray
-import com.boswelja.devicemanager.common.References
+import com.boswelja.devicemanager.common.connection.Messages.LAUNCH_APP
 import com.boswelja.devicemanager.common.dndsync.References.REQUEST_INTERRUPT_FILTER_ACCESS_STATUS_PATH
 import com.boswelja.devicemanager.common.preference.PreferenceKey.BATTERY_PHONE_CHARGE_NOTI_KEY
 import com.boswelja.devicemanager.common.preference.PreferenceKey.BATTERY_SYNC_ENABLED_KEY
@@ -212,9 +212,7 @@ class SettingsFragment :
     private fun launchMobileApp(context: Context, phoneId: String, key: String) {
         if (phoneId.isNotEmpty()) {
             Wearable.getMessageClient(context)
-                .sendMessage(
-                    phoneId, References.REQUEST_LAUNCH_APP_PATH, key.toByteArray(Charsets.UTF_8)
-                )
+                .sendMessage(phoneId, LAUNCH_APP, key.toByteArray(Charsets.UTF_8))
         }
     }
 }

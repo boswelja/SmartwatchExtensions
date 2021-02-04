@@ -7,7 +7,7 @@ import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import com.boswelja.devicemanager.common.Event
 import com.boswelja.devicemanager.common.References.CAPABILITY_WATCH_APP
-import com.boswelja.devicemanager.common.References.REQUEST_RESET_APP
+import com.boswelja.devicemanager.common.connection.Messages.RESET_APP
 import com.boswelja.devicemanager.common.preference.SyncPreferences
 import com.boswelja.devicemanager.watchmanager.item.Watch
 import com.google.android.gms.tasks.Task
@@ -141,7 +141,7 @@ class WearOSConnectionInterface(
     }
 
     override fun resetWatchApp(watch: Watch) {
-        sendMessage(watch.id, REQUEST_RESET_APP)
+        sendMessage(watch.id, RESET_APP)
     }
 
     override fun refreshData() {
