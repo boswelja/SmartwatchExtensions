@@ -24,8 +24,8 @@ import kotlinx.coroutines.withContext
 import timber.log.Timber
 
 /**
- * Provides a simplified interface for managing registered watches, finding new watches and updating
- * local SharedPreferences when the connected watch changes.
+ * Provides a simplified interface for interacting with [WatchRepository], as well as maintaining
+ * the selected watch state.
  */
 class WatchManager internal constructor(
     private val sharedPreferences: SharedPreferences,
@@ -48,16 +48,16 @@ class WatchManager internal constructor(
     val availableWatches: LiveData<List<Watch>>
         get() = watchRepository.availableWatches
 
+    /**
+     * The currently selected watch
+     */
     val selectedWatch: LiveData<Watch?>
         get() = _selectedWatch
 
     init {
-        // Set the initial connectedWatch value if possible.
+        // Set the initial selectedWatch value if possible.
         sharedPreferences.getString(LAST_SELECTED_NODE_ID_KEY, "")?.let {
             selectWatchById(it)
-        }
-        _selectedWatch.observeForever {
-            it?.let { watch -> updateLocalPreferences(watch) }
         }
     }
 
@@ -115,6 +115,7 @@ class WatchManager internal constructor(
      * @param watchId The ID of the [Watch] to select.
      */
     fun selectWatchById(watchId: String) {
+        // Make sure the new selected watch is different from the current selection
         if (watchId != _selectedWatch.value?.id) {
             val newWatch = registeredWatches.value?.firstOrNull { it.id == watchId }
             if (newWatch == null) {
@@ -123,6 +124,7 @@ class WatchManager internal constructor(
             }
             Timber.d("Setting connected watch to $watchId")
             _selectedWatch.postValue(newWatch)
+            updateLocalPreferences(newWatch)
             sharedPreferences.edit { putString(LAST_SELECTED_NODE_ID_KEY, newWatch.id) }
         }
     }
