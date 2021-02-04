@@ -83,6 +83,7 @@ class WatchManager internal constructor(
                             else -> Timber.w("Unsupported preference type")
                         }
                     }
+                    putString(LAST_SELECTED_NODE_ID_KEY, watch.id)
                 }
             }
         }
@@ -125,7 +126,6 @@ class WatchManager internal constructor(
             Timber.d("Setting connected watch to $watchId")
             _selectedWatch.postValue(newWatch)
             updateLocalPreferences(newWatch)
-            sharedPreferences.edit { putString(LAST_SELECTED_NODE_ID_KEY, newWatch.id) }
         }
     }
 
