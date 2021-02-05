@@ -59,7 +59,13 @@ abstract class WatchDatabase : RoomDatabase() {
     }
 
     fun forgetWatch(watch: Watch) {
+        clearWatchPreferences(watch)
         watchDao().remove(watch.id)
+    }
+
+    fun clearWatchPreferences(watch: Watch) {
+        intPrefDao().deleteAllForWatch(watch.id)
+        boolPrefDao().deleteAllForWatch(watch.id)
     }
 
     fun addWatch(watch: Watch) {

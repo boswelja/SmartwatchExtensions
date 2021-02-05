@@ -111,7 +111,7 @@ class WatchManager internal constructor(
     }
 
     suspend fun forgetWatch(watch: Watch) {
-        watchRepository.forgetWatch(watch)
+        watchRepository.resetWatch(watch)
         analytics.logWatchRemoved()
     }
 
@@ -119,11 +119,11 @@ class WatchManager internal constructor(
         watchRepository.renameWatch(watch, newName)
     }
 
-    fun requestResetWatch(watch: Watch) {
+    suspend fun requestResetWatch(watch: Watch) {
         watchRepository.resetWatch(watch)
     }
 
-    fun resetWatchPreferences(watch: Watch) {
+    suspend fun resetWatchPreferences(watch: Watch) {
         watchRepository.resetWatchPreferences(watch)
     }
 

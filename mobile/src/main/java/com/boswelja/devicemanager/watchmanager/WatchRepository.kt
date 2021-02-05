@@ -152,17 +152,6 @@ class WatchRepository internal constructor(
     }
 
     /**
-     * Removes a given watch from the database, and lets it know it's been removed.
-     * @param watch The [Watch] to remove.
-     */
-    suspend fun forgetWatch(watch: Watch) {
-        withContext(Dispatchers.IO) {
-            database.forgetWatch(watch)
-            resetWatch(watch)
-        }
-    }
-
-    /**
      * Changes a watches stored name.
      * @param watch The [Watch] to rename.
      * @param newName The new name to set for the watch.
@@ -174,12 +163,14 @@ class WatchRepository internal constructor(
     }
 
     /**
-     * Calls [WatchConnectionInterface.resetWatchApp] on the corresponding
-     * [WatchConnectionInterface].
+     * Removes a given [Watch] from the database, and sends the app reset request.
      * @param watch The [Watch] to perform the request on.
      */
-    fun resetWatch(watch: Watch) {
-        watch.connectionManager?.resetWatchApp(watch)
+    suspend fun resetWatch(watch: Watch) {
+        withContext(Dispatchers.IO) {
+            watch.connectionManager?.resetWatchApp(watch)
+            database.forgetWatch(watch)
+        }
     }
 
     /**
@@ -187,8 +178,11 @@ class WatchRepository internal constructor(
      * [WatchConnectionInterface].
      * @param watch The [Watch] to perform the request on.
      */
-    fun resetWatchPreferences(watch: Watch) {
-        watch.connectionManager?.resetWatchPreferences(watch)
+    suspend fun resetWatchPreferences(watch: Watch) {
+        withContext(Dispatchers.IO) {
+            watch.connectionManager?.resetWatchPreferences(watch)
+            database.clearWatchPreferences(watch)
+        }
     }
 
     /**

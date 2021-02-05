@@ -125,7 +125,7 @@ class WatchManagerTest {
         watchManager = getWatchManager()
         watchManager.forgetWatch(dummyWatch1)
         verify(exactly = 1) { analytics.logWatchRemoved() }
-        coVerify(exactly = 1) { repository.forgetWatch(dummyWatch1) }
+        coVerify(exactly = 1) { repository.resetWatch(dummyWatch1) }
     }
 
     @Test
@@ -137,17 +137,17 @@ class WatchManagerTest {
     }
 
     @Test
-    fun `requestResetWatch calls repository`() {
+    fun `requestResetWatch calls repository`(): Unit = runBlocking {
         watchManager = getWatchManager()
         watchManager.requestResetWatch(dummyWatch1)
-        verify(exactly = 1) { repository.resetWatch(dummyWatch1) }
+        coVerify(exactly = 1) { repository.resetWatch(dummyWatch1) }
     }
 
     @Test
-    fun `resetWatchPreferences calls repository`() {
+    fun `resetWatchPreferences calls repository`(): Unit = runBlocking {
         watchManager = getWatchManager()
         watchManager.resetWatchPreferences(dummyWatch1)
-        verify(exactly = 1) { repository.resetWatchPreferences(dummyWatch1) }
+        coVerify(exactly = 1) { repository.resetWatchPreferences(dummyWatch1) }
     }
 
     private fun getWatchManager(): WatchManager {

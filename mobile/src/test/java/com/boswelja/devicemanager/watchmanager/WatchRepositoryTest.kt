@@ -156,14 +156,6 @@ class WatchRepositoryTest {
         }
 
     @Test
-    fun `forgetWatch removes the watch from the database and calls resetWatch`(): Unit =
-        runBlocking {
-            repository.forgetWatch(dummyWatch1)
-            verify(exactly = 1) { database.forgetWatch(dummyWatch1) }
-            verify(exactly = 1) { connectionInterface1.resetWatchApp(dummyWatch1) }
-        }
-
-    @Test
     fun `renameWatch renames the watch in the database`(): Unit = runBlocking {
         val newName = "new name"
         repository.renameWatch(dummyWatch1, newName)
@@ -171,16 +163,21 @@ class WatchRepositoryTest {
     }
 
     @Test
-    fun `resetWatch calls the correct connectionInterface`() {
+    fun `resetWatch calls the correct connectionInterface and database`(): Unit = runBlocking {
+        // Add the watch to the database to ensure no hangs/crashes here
+        database.addWatch(dummyWatch1)
         repository.resetWatch(dummyWatch1)
         verify(exactly = 1) { connectionInterface1.resetWatchApp(dummyWatch1) }
+        verify(exactly = 1) { database.forgetWatch(dummyWatch1) }
     }
 
     @Test
-    fun `resetWatchPreferences calls the correct connectionInterface`() {
-        repository.resetWatchPreferences(dummyWatch1)
-        verify(exactly = 1) { connectionInterface1.resetWatchPreferences(dummyWatch1) }
-    }
+    fun `resetWatchPreferences calls the correct connectionInterface and database`(): Unit =
+        runBlocking {
+            repository.resetWatchPreferences(dummyWatch1)
+            verify(exactly = 1) { connectionInterface1.resetWatchPreferences(dummyWatch1) }
+            verify(exactly = 1) { database.clearWatchPreferences(dummyWatch1) }
+        }
 
     @Test
     fun `refreshData calls refreshData on all provided connection interfaces`() {

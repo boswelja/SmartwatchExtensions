@@ -211,15 +211,8 @@ class ManageSpaceActivity : BaseToolbarActivity() {
                             getString(R.string.reset_settings_resetting_for, watch.name)
                         )
                     }
-                    val success = resetWatchPreferences(watch)
-                    if (success) {
-                        withContext(Dispatchers.Main) { incrementProgressBar() }
-                    } else {
-                        binding.progressStatus.text =
-                            getString(R.string.reset_settings_failed_for, watch.name)
-                        setButtonsEnabled(true)
-                        return@launch
-                    }
+                    resetWatchPreferences(watch)
+                    withContext(Dispatchers.Main) { incrementProgressBar() }
                 }
                 withContext(Dispatchers.Main) {
                     setProgressStatus(R.string.reset_settings_success)
@@ -250,16 +243,8 @@ class ManageSpaceActivity : BaseToolbarActivity() {
                     withContext(Dispatchers.Main) {
                         setProgressStatus(getString(R.string.reset_app_resetting_for, watch.name))
                     }
-                    val success = resetWatchPreferences(watch)
-                    if (success) {
-                        withContext(Dispatchers.Main) { incrementProgressBar() }
-                    } else {
-                        withContext(Dispatchers.Main) {
-                            setProgressStatus(getString(R.string.reset_app_failed_for, watch.name))
-                            setButtonsEnabled(true)
-                        }
-                        return@launch
-                    }
+                    resetWatchPreferences(watch)
+                    withContext(Dispatchers.Main) { incrementProgressBar() }
                     try {
                         watchManager.requestResetWatch(watch)
                         withContext(Dispatchers.Main) { incrementProgressBar() }
@@ -330,10 +315,11 @@ class ManageSpaceActivity : BaseToolbarActivity() {
      * @param watch The [Watch] to clear preferences for.
      * @return true if preferences were successfully cleared, false otherwise.
      */
-    private fun resetWatchPreferences(watch: Watch): Boolean {
-        watchManager.resetWatchPreferences(watch)
-        BatterySyncWorker.stopWorker(this, watch.id)
-        return false
+    private fun resetWatchPreferences(watch: Watch) {
+        coroutineScope.launch {
+            watchManager.resetWatchPreferences(watch)
+            BatterySyncWorker.stopWorker(this@ManageSpaceActivity, watch.id)
+        }
     }
 
     /**
