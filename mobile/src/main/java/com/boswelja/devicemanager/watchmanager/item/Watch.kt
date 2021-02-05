@@ -27,6 +27,20 @@ data class Watch(
         id, name, platform, Status.UNKNOWN
     )
 
+    override fun equals(other: Any?): Boolean {
+        if (other !is Watch) return super.equals(other)
+        return other.id == id &&
+            other.name == name &&
+            other.platform == platform
+    }
+
+    override fun hashCode(): Int {
+        var result = id.hashCode()
+        result = 31 * result + name.hashCode()
+        result = 31 * result + platform.hashCode()
+        return result
+    }
+
     enum class Status(
         @StringRes val stringRes: Int,
         @DrawableRes val iconRes: Int
