@@ -21,7 +21,6 @@ import io.mockk.MockKAnnotations
 import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.verify
-import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -58,11 +57,6 @@ class WearOSConnectionInterfaceTest {
     @Before
     fun setUp() {
         MockKAnnotations.init(this)
-    }
-
-    @After
-    fun tearDown() {
-        connectionInterface.dispose()
     }
 
     @Test

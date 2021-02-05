@@ -41,12 +41,6 @@ class WearOSConnectionInterface(
     @VisibleForTesting internal var connectedNodes: MutableLiveData<List<Node>> =
         MutableLiveData(emptyList())
 
-    private val capableWatchesListener = CapabilityClient.OnCapabilityChangedListener {
-        Timber.d("${it.name} capability changed")
-        nodesWithApp.postValue(it.nodes)
-        dataChanged.fire()
-    }
-
     private val _availableWatches = MediatorLiveData<List<Watch>>()
 
     override val dataChanged: Event = Event()
@@ -98,8 +92,6 @@ class WearOSConnectionInterface(
             }
         }
 
-        // Set up connectedNodes and nodesWithApp updates
-        capabilityClient.addListener(capableWatchesListener, CAPABILITY_WATCH_APP)
         refreshData()
     }
 
@@ -175,10 +167,6 @@ class WearOSConnectionInterface(
                 dataChanged.fire()
             }
             .addOnFailureListener { Timber.e(it.cause) }
-    }
-
-    fun dispose() {
-        capabilityClient.removeListener(capableWatchesListener, CAPABILITY_WATCH_APP)
     }
 
     companion object {
