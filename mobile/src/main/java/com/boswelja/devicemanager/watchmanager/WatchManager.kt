@@ -110,13 +110,9 @@ class WatchManager internal constructor(
         analytics.logWatchRegistered()
     }
 
-    suspend fun forgetWatch(watch: Watch): Boolean {
-        val success = false // watchRepository.clearPreferencesForWatch(watch.id)
-        if (success) {
-            watchRepository.forgetWatch(watch)
-            analytics.logWatchRemoved()
-        }
-        return success
+    suspend fun forgetWatch(watch: Watch) {
+        watchRepository.forgetWatch(watch)
+        analytics.logWatchRemoved()
     }
 
     suspend fun renameWatch(watch: Watch, newName: String) {

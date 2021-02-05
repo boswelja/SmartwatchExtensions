@@ -138,15 +138,10 @@ class WatchInfoActivity : BaseToolbarActivity() {
     private fun forgetWatch(watch: Watch?) {
         Timber.d("forgetWatch() called")
         coroutineScope.launch(Dispatchers.IO) {
-            val success = watchManager.forgetWatch(watch!!)
+            watchManager.forgetWatch(watch!!)
             withContext(Dispatchers.Main) {
-                if (success) {
-                    Timber.i("Successfully forgot watch")
-                    finish()
-                } else {
-                    Timber.w("Failed to forget watch")
-                    createSnackBar("Failed to forget your ${watch.name}")
-                }
+                Timber.i("Successfully forgot watch")
+                finish()
             }
         }
     }
