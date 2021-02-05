@@ -7,6 +7,9 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.boswelja.devicemanager.TestCapabilityInfo
 import com.boswelja.devicemanager.TestNode
 import com.boswelja.devicemanager.common.References.CAPABILITY_WATCH_APP
+import com.boswelja.devicemanager.common.connection.Messages.CLEAR_PREFERENCES
+import com.boswelja.devicemanager.common.connection.Messages.RESET_APP
+import com.boswelja.devicemanager.common.preference.SyncPreferences
 import com.boswelja.devicemanager.getOrAwaitValue
 import com.boswelja.devicemanager.watchmanager.item.Watch
 import com.google.android.gms.tasks.Tasks
@@ -176,6 +179,83 @@ class WearOSConnectionInterfaceTest {
         assertThat(connectionInterface.connectedNodes.getOrAwaitValue())
             .containsExactlyElementsIn(dummyNodes)
         verify(exactly = 1) { nodeClient.connectedNodes }
+    }
+
+    @Test
+    fun `refreshData calls appropriate functions and updates LiveData`() {
+        connectionInterface = getConnectionInterface()
+
+        shadowOf(getMainLooper()).idle()
+
+        every { nodeClient.connectedNodes } returns Tasks.forResult(dummyNodes.toList())
+        every {
+            capabilityClient.getCapability(CAPABILITY_WATCH_APP, any())
+        } returns Tasks.forResult(
+            TestCapabilityInfo(CAPABILITY_WATCH_APP, dummyNodes.toMutableSet()) as CapabilityInfo
+        )
+
+        connectionInterface.refreshData()
+
+        shadowOf(getMainLooper()).idle()
+
+        verify { nodeClient.connectedNodes }
+        verify { capabilityClient.getCapability(CAPABILITY_WATCH_APP, any()) }
+        assertThat(connectionInterface.availableWatches.getOrAwaitValue())
+            .containsExactlyElementsIn(dummyWatches)
+    }
+
+    @Test
+    fun `updatePreferenceOnWatch does nothing with invalid key`() {
+        val key = "non-sync-key"
+        connectionInterface = getConnectionInterface()
+        connectionInterface.updatePreferenceOnWatch(dummyWatches.first(), key, 0)
+        verify(exactly = 0) { dataClient.putDataItem(any()) }
+    }
+
+    @Test
+    fun `updatePreferenceOnWatch correctly syncs all bool prefs`() {
+        connectionInterface = getConnectionInterface()
+        SyncPreferences.BOOL_PREFS.forEach {
+            connectionInterface.updatePreferenceOnWatch(dummyWatches.first(), it, false)
+        }
+        verify(exactly = SyncPreferences.BOOL_PREFS.count()) { dataClient.putDataItem(any()) }
+    }
+
+    @Test
+    fun `updatePreferenceOnWatch correctly syncs all int prefs`() {
+        connectionInterface = getConnectionInterface()
+        SyncPreferences.INT_PREFS.forEach {
+            connectionInterface.updatePreferenceOnWatch(dummyWatches.first(), it, 0)
+        }
+        verify(exactly = SyncPreferences.INT_PREFS.count()) { dataClient.putDataItem(any()) }
+    }
+
+    @Test
+    fun `updatePreferenceOnWatch does nothing in invalid data type for key`() {
+        connectionInterface = getConnectionInterface()
+        SyncPreferences.BOOL_PREFS.forEach {
+            connectionInterface.updatePreferenceOnWatch(dummyWatches.first(), it, 0)
+        }
+        SyncPreferences.INT_PREFS.forEach {
+            connectionInterface.updatePreferenceOnWatch(dummyWatches.first(), it, false)
+        }
+        verify(exactly = 0) { dataClient.putDataItem(any()) }
+    }
+
+    @Test
+    fun `resetWatchApp sends the reset message to the watch`() {
+        val watch = dummyWatches.first()
+        connectionInterface = getConnectionInterface()
+        connectionInterface.resetWatchApp(watch)
+        verify(exactly = 1) { messageClient.sendMessage(watch.id, RESET_APP, null) }
+    }
+
+    @Test
+    fun `resetWatchPreferences sends the reset message to the watch`() {
+        val watch = dummyWatches.first()
+        connectionInterface = getConnectionInterface()
+        connectionInterface.resetWatchPreferences(watch)
+        verify(exactly = 1) { messageClient.sendMessage(watch.id, CLEAR_PREFERENCES, null) }
     }
 
     private fun getConnectionInterface(): WearOSConnectionInterface {
