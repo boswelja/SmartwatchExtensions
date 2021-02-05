@@ -11,6 +11,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import androidx.core.content.edit
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.analytics.Analytics
@@ -41,7 +42,8 @@ class WatchManager internal constructor(
         CoroutineScope(Dispatchers.IO)
     )
 
-    private val _selectedWatch = MutableLiveData<Watch?>()
+    private val _selectedWatchId = MutableLiveData("")
+    private val _selectedWatch = MediatorLiveData<Watch?>()
 
     val registeredWatches: LiveData<List<Watch>>
         get() = watchRepository.registeredWatches
@@ -58,6 +60,20 @@ class WatchManager internal constructor(
         // Set the initial selectedWatch value if possible.
         sharedPreferences.getString(LAST_SELECTED_NODE_ID_KEY, "")?.let {
             selectWatchById(it)
+        }
+
+        _selectedWatch.addSource(registeredWatches) {
+            val watch = it.firstOrNull { watch -> watch.id == _selectedWatchId.value }
+            _selectedWatch.postValue(watch)
+        }
+        _selectedWatch.addSource(_selectedWatchId) {
+            val watch = registeredWatches.value?.firstOrNull { watch -> watch.id == it }
+            if (watch == null) {
+                Timber.w("Tried to select a watch with id $it, but it wasn't registered")
+            } else {
+                _selectedWatch.postValue(watch)
+                updateLocalPreferences(watch)
+            }
         }
     }
 
@@ -120,17 +136,7 @@ class WatchManager internal constructor(
      * @param watchId The ID of the [Watch] to select.
      */
     fun selectWatchById(watchId: String) {
-        // Make sure the new selected watch is different from the current selection
-        if (watchId != _selectedWatch.value?.id) {
-            val newWatch = registeredWatches.value?.firstOrNull { it.id == watchId }
-            if (newWatch == null) {
-                Timber.w("Tried to select a watch with id $watchId, but it wasn't registered")
-                return
-            }
-            Timber.d("Setting connected watch to $watchId")
-            _selectedWatch.postValue(newWatch)
-            updateLocalPreferences(newWatch)
-        }
+        _selectedWatchId.postValue(watchId)
     }
 
     suspend inline fun <reified T> getPreference(watch: Watch, key: String) =
