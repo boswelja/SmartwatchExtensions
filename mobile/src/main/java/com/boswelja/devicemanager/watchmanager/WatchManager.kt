@@ -38,7 +38,7 @@ class WatchManager internal constructor(
     constructor(context: Context) : this(
         PreferenceManager.getDefaultSharedPreferences(context),
         WatchRepository(context),
-        Analytics(context),
+        Analytics(),
         CoroutineScope(Dispatchers.IO)
     )
 
@@ -117,6 +117,7 @@ class WatchManager internal constructor(
 
     suspend fun renameWatch(watch: Watch, newName: String) {
         watchRepository.renameWatch(watch, newName)
+        analytics.logWatchRenamed()
     }
 
     suspend fun requestResetWatch(watch: Watch) {
@@ -138,8 +139,10 @@ class WatchManager internal constructor(
     suspend inline fun <reified T> getPreference(watch: Watch, key: String) =
         watchRepository.getPreference<T>(watch, key)
 
-    suspend fun updatePreference(watch: Watch, key: String, value: Any) =
+    suspend fun updatePreference(watch: Watch, key: String, value: Any) {
         watchRepository.updatePreference(watch, key, value)
+        analytics.logExtensionSettingChanged(key, value)
+    }
 
     companion object : SingletonHolder<WatchManager, Context>(::WatchManager) {
         const val LAST_SELECTED_NODE_ID_KEY = "last_connected_id"

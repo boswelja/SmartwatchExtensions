@@ -129,10 +129,11 @@ class WatchManagerTest {
     }
 
     @Test
-    fun `renameWatch calls repository`(): Unit = runBlocking {
+    fun `renameWatch calls repository and logs analytics event`(): Unit = runBlocking {
         val newName = "dummy name"
         watchManager = getWatchManager()
         watchManager.renameWatch(dummyWatch1, newName)
+        verify(exactly = 1) { analytics.logWatchRenamed() }
         coVerify(exactly = 1) { repository.renameWatch(dummyWatch1, newName) }
     }
 

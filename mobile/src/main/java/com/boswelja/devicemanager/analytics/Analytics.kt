@@ -1,75 +1,71 @@
 package com.boswelja.devicemanager.analytics
 
-import android.content.Context
-import android.content.SharedPreferences
-import androidx.preference.PreferenceManager
-import com.boswelja.devicemanager.common.preference.SyncPreferences
 import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.analytics.ktx.logEvent
+import com.google.firebase.ktx.Firebase
 
-class Analytics {
+/**
+ * Wrapper for [FirebaseAnalytics] to simplify logging analytics events.
+ */
+class Analytics constructor(private val firebaseAnalytics: FirebaseAnalytics = Firebase.analytics) {
 
-    private val sharedPreferences: SharedPreferences
-    private val firebaseAnalytics: FirebaseAnalytics
-
-    internal constructor(
-        firebaseAnalytics: FirebaseAnalytics,
-        sharedPreferences: SharedPreferences
-    ) {
-        this.sharedPreferences = sharedPreferences
-        this.firebaseAnalytics = firebaseAnalytics
+    /**
+     * Set whether analytics collection is enabled.
+     */
+    fun setAnalyticsEnabled(isEnabled: Boolean) {
+        firebaseAnalytics.setAnalyticsCollectionEnabled(isEnabled)
     }
 
-    constructor(context: Context) {
-        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
-        firebaseAnalytics = FirebaseAnalytics.getInstance(context)
-    }
-
-    fun logSettingChanged(key: String, value: Any) {
-        if (sharedPreferences.getBoolean(ANALYTICS_ENABLED_KEY, false)) {
-            if (key in SyncPreferences.ALL_PREFS) {
-                logExtensionSettingChanged(key, value)
-            } else {
-                logAppSettingChanged(key, value)
-            }
-        }
-    }
-
+    /**
+     * Log an extension setting change.
+     * @param key The key for the preference that was changed.
+     * @param value The value of the changed preference.
+     */
     fun logExtensionSettingChanged(key: String, value: Any) {
-        if (sharedPreferences.getBoolean(ANALYTICS_ENABLED_KEY, false)) {
-            firebaseAnalytics.logEvent(EVENT_EXTENSION_SETTING_CHANGED) {
-                param(FirebaseAnalytics.Param.ITEM_ID, key)
-                param(FirebaseAnalytics.Param.VALUE, value.toString())
-            }
+        firebaseAnalytics.logEvent(EVENT_EXTENSION_SETTING_CHANGED) {
+            param(FirebaseAnalytics.Param.ITEM_ID, key)
+            param(FirebaseAnalytics.Param.VALUE, value.toString())
         }
     }
 
-    fun logAppSettingChanged(key: String, value: Any) {
-        if (sharedPreferences.getBoolean(ANALYTICS_ENABLED_KEY, false)) {
-            firebaseAnalytics.logEvent(EVENT_APP_SETTING_CHANGED) {
-                param(FirebaseAnalytics.Param.ITEM_ID, key)
-                param(FirebaseAnalytics.Param.VALUE, value.toString())
-            }
+    /**
+     * Log an app setting change.
+     * @param key The key for the preference that was changed.
+     */
+    fun logAppSettingChanged(key: String) {
+        firebaseAnalytics.logEvent(EVENT_APP_SETTING_CHANGED) {
+            param(FirebaseAnalytics.Param.ITEM_ID, key)
         }
     }
 
+    /**
+     * Log a new watch being registered.
+     */
     fun logWatchRegistered() {
-        if (sharedPreferences.getBoolean(ANALYTICS_ENABLED_KEY, false)) {
-            firebaseAnalytics.logEvent(EVENT_WATCH_REGISTERED, null)
-        }
+        firebaseAnalytics.logEvent(EVENT_WATCH_REGISTERED, null)
     }
 
+    /**
+     * Log an existing watch being removed.
+     */
     fun logWatchRemoved() {
-        if (sharedPreferences.getBoolean(ANALYTICS_ENABLED_KEY, false)) {
-            firebaseAnalytics.logEvent(EVENT_WATCH_REMOVED, null)
-        }
+        firebaseAnalytics.logEvent(EVENT_WATCH_REMOVED, null)
     }
 
+    /**
+     * Log a watch being renamed.
+     */
+    fun logWatchRenamed() {
+        firebaseAnalytics.logEvent(EVENT_WATCH_RENAMED, null)
+    }
+
+    /**
+     * Log an action being performed in StorageManager.
+     */
     fun logStorageManagerAction(action: String) {
-        if (sharedPreferences.getBoolean(ANALYTICS_ENABLED_KEY, false)) {
-            firebaseAnalytics.logEvent(EVENT_STORAGE_MANAGER) {
-                param(FirebaseAnalytics.Param.METHOD, action)
-            }
+        firebaseAnalytics.logEvent(EVENT_STORAGE_MANAGER) {
+            param(FirebaseAnalytics.Param.METHOD, action)
         }
     }
 
@@ -80,6 +76,7 @@ class Analytics {
         internal const val EVENT_APP_SETTING_CHANGED = "app_setting_changed"
         internal const val EVENT_WATCH_REGISTERED = "watch_registered"
         internal const val EVENT_WATCH_REMOVED = "watch_registered"
+        internal const val EVENT_WATCH_RENAMED = "watch_renamed"
         internal const val EVENT_STORAGE_MANAGER = "storage_manager"
     }
 }

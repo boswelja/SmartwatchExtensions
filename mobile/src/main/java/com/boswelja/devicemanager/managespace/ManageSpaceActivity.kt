@@ -39,7 +39,7 @@ class ManageSpaceActivity : BaseToolbarActivity() {
     private lateinit var binding: ActivityManageSpaceBinding
     private lateinit var activityManager: ActivityManager
 
-    private val analytics: Analytics by lazy { Analytics(this) }
+    private val analytics: Analytics by lazy { Analytics() }
     private val watchManager: WatchManager by lazy { WatchManager.getInstance(this) }
     private var hasResetApp = false
 
