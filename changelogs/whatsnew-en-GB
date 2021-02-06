@@ -1,3 +1,4 @@
 Changes & Fixes:
 Reworked the underlying watch connection interface
+Made some improvements to the way analytics events are logged
 You should see stability improvements over the next few releases
