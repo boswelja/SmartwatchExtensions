@@ -13,6 +13,7 @@ import android.os.Build
 import android.view.accessibility.AccessibilityEvent
 import androidx.annotation.RequiresApi
 import androidx.core.content.edit
+import androidx.lifecycle.Observer
 import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.common.connection.Messages.LOCK_PHONE
 import com.boswelja.devicemanager.common.preference.PreferenceKey.PHONE_LOCKING_ENABLED_KEY
@@ -35,16 +36,19 @@ class PhoneLockingAccessibilityService :
     MessageClient.OnMessageReceivedListener,
     SharedPreferences.OnSharedPreferenceChangeListener {
 
+    private val registeredWatchObserver = Observer<List<Watch>> {
+        registeredWatches = it
+    }
     private val coroutineScope = MainScope()
+    private val watchManager: WatchManager by lazy {
+        WatchManager.getInstance(this)
+    }
 
     private lateinit var sharedPreferences: SharedPreferences
     private lateinit var messageClient: MessageClient
 
-    private val watchManager: WatchManager by lazy {
-        WatchManager.getInstance(this)
-    }
     private var isStopping = false
-    private var lastWatch: Watch? = null
+    private var registeredWatches: List<Watch> = emptyList()
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
         if (key == PHONE_LOCKING_MODE_KEY &&
@@ -69,6 +73,7 @@ class PhoneLockingAccessibilityService :
         messageClient = Wearable.getMessageClient(this)
         sharedPreferences.edit { putBoolean(ACCESSIBILITY_SERVICE_ENABLED_KEY, true) }
         messageClient.addListener(this)
+        watchManager.registeredWatches.observeForever(registeredWatchObserver)
     }
 
     override fun onAccessibilityEvent(event: AccessibilityEvent?) {
@@ -91,8 +96,7 @@ class PhoneLockingAccessibilityService :
     private fun tryLockDevice(messageEvent: MessageEvent) {
         coroutineScope.launch(Dispatchers.IO) {
             val watchId = messageEvent.sourceNodeId
-            val watch = watchManager.registeredWatches.value?.firstOrNull { it.id == watchId }
-            lastWatch = watch
+            val watch = registeredWatches.firstOrNull { it.id == watchId }
             if (watch != null) {
                 val phoneLockingEnabledForWatch =
                     watchManager.getPreference<Boolean>(watch, PHONE_LOCKING_ENABLED_KEY) == false
@@ -118,12 +122,13 @@ class PhoneLockingAccessibilityService :
                 putBoolean(ACCESSIBILITY_SERVICE_ENABLED_KEY, false)
                 putBoolean(PHONE_LOCKING_ENABLED_KEY, false)
             }
-            lastWatch?.let {
-                coroutineScope.launch(Dispatchers.IO) {
+            coroutineScope.launch(Dispatchers.IO) {
+                registeredWatches.forEach {
                     watchManager.updatePreference(it, PHONE_LOCKING_ENABLED_KEY, false)
                 }
             }
             messageClient.removeListener(this)
+            watchManager.registeredWatches.removeObserver(registeredWatchObserver)
         }
     }
 
