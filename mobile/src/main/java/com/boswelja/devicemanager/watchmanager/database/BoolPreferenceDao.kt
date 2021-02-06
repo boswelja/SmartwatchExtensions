@@ -19,7 +19,7 @@ import com.boswelja.devicemanager.watchmanager.item.BoolPreference
 interface BoolPreferenceDao {
 
     @Query("SELECT * FROM bool_preferences WHERE id = :watchId")
-    fun getAllForWatch(watchId: String): Array<BoolPreference>
+    fun getAllForWatch(watchId: String): List<BoolPreference>
 
     @Query("SELECT * FROM bool_preferences WHERE pref_key = :key")
     fun getAllForKey(key: String): Array<BoolPreference>

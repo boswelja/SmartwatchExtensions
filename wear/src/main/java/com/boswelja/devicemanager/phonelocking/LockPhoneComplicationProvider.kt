@@ -16,7 +16,7 @@ import android.support.wearable.complications.ComplicationText
 import com.boswelja.devicemanager.ActionServiceStarter
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.BaseComplicationProviderService
-import com.boswelja.devicemanager.common.References.LOCK_PHONE_PATH
+import com.boswelja.devicemanager.common.connection.Messages.LOCK_PHONE
 
 class LockPhoneComplicationProvider : BaseComplicationProviderService() {
 
@@ -31,7 +31,7 @@ class LockPhoneComplicationProvider : BaseComplicationProviderService() {
         }
 
         val intent =
-            Intent(this, ActionServiceStarter::class.java).apply { action = LOCK_PHONE_PATH }
+            Intent(this, ActionServiceStarter::class.java).apply { action = LOCK_PHONE }
         val pendingIntent =
             PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_IMMUTABLE)
 

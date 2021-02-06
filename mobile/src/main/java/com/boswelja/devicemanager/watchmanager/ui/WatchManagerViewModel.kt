@@ -10,7 +10,7 @@ class WatchManagerViewModel internal constructor(
 ) : AndroidViewModel(application) {
 
     @Suppress("unused")
-    constructor(application: Application) : this(application, WatchManager.get(application))
+    constructor(application: Application) : this(application, WatchManager.getInstance(application))
 
     val registeredWatches = manager.registeredWatches
 }

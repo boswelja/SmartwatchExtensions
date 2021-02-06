@@ -15,10 +15,10 @@ import com.boswelja.devicemanager.batterysync.ui.BatterySyncPreferenceActivity
 import com.boswelja.devicemanager.common.Compat
 import com.boswelja.devicemanager.common.Extensions.toByteArray
 import com.boswelja.devicemanager.common.References.CAPABILITY_WATCH_APP
-import com.boswelja.devicemanager.common.References.LOCK_PHONE_PATH
-import com.boswelja.devicemanager.common.References.REQUEST_LAUNCH_APP_PATH
 import com.boswelja.devicemanager.common.batterysync.References.REQUEST_BATTERY_UPDATE_PATH
 import com.boswelja.devicemanager.common.batterysync.Utils
+import com.boswelja.devicemanager.common.connection.Messages.LAUNCH_APP
+import com.boswelja.devicemanager.common.connection.Messages.LOCK_PHONE
 import com.boswelja.devicemanager.common.dndsync.References.REQUEST_INTERRUPT_FILTER_ACCESS_STATUS_PATH
 import com.boswelja.devicemanager.common.preference.PreferenceKey
 import com.boswelja.devicemanager.common.setup.References.CHECK_WATCH_REGISTERED_PATH
@@ -44,8 +44,8 @@ class WatchMessageReceiver : WearableListenerService() {
     override fun onMessageReceived(messageEvent: MessageEvent?) {
         Timber.i("onMessageReceived() called")
         when (messageEvent?.path) {
-            LOCK_PHONE_PATH -> tryLockDevice()
-            REQUEST_LAUNCH_APP_PATH -> {
+            LOCK_PHONE -> tryLockDevice()
+            LAUNCH_APP -> {
                 val key = String(messageEvent.data, Charsets.UTF_8)
                 launchAppTo(key)
             }
@@ -138,7 +138,7 @@ class WatchMessageReceiver : WearableListenerService() {
         Timber.i("sendIsWatchRegistered() called")
         MainScope().launch(Dispatchers.IO) {
             // TODO Access the database through WatchConnectionService
-            val database = WatchDatabase.get(this@WatchMessageReceiver)
+            val database = WatchDatabase.getInstance(this@WatchMessageReceiver)
             val messageCode =
                 if (database.watchDao().get(sourceNodeId) != null) {
                     WATCH_REGISTERED_PATH

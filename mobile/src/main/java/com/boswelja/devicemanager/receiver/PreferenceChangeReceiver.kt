@@ -27,7 +27,7 @@ class PreferenceChangeReceiver : WearableListenerService() {
 
     private val coroutineScope = MainScope()
 
-    private val database: WatchDatabase by lazy { WatchDatabase.get(this) }
+    private val database: WatchDatabase by lazy { WatchDatabase.getInstance(this) }
 
     override fun onDataChanged(dataEvents: DataEventBuffer?) {
         Timber.i("onDataChanged() called")

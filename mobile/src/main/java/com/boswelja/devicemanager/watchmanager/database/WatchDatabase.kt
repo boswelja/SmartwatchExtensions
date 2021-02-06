@@ -11,11 +11,14 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import com.boswelja.devicemanager.common.SingletonHolder
 import com.boswelja.devicemanager.watchmanager.item.BoolPreference
 import com.boswelja.devicemanager.watchmanager.item.IntPreference
+import com.boswelja.devicemanager.watchmanager.item.Preference
 import com.boswelja.devicemanager.watchmanager.item.Watch
+import timber.log.Timber
 
-@Database(entities = [Watch::class, IntPreference::class, BoolPreference::class], version = 6)
+@Database(entities = [Watch::class, IntPreference::class, BoolPreference::class], version = 7)
 abstract class WatchDatabase : RoomDatabase() {
 
     abstract fun watchDao(): WatchDao
@@ -48,40 +51,54 @@ abstract class WatchDatabase : RoomDatabase() {
         return false
     }
 
-    override fun close() {
-        INSTANCE = null
-        super.close()
+    fun renameWatch(watch: Watch, newName: String) {
+        watchDao().setName(watch.id, newName)
     }
 
-    companion object {
-        @Volatile
-        private var INSTANCE: WatchDatabase? = null
+    fun forgetWatch(watch: Watch) {
+        clearWatchPreferences(watch)
+        watchDao().remove(watch.id)
+    }
 
-        /**
-         * Gets an instance of [WatchDatabase].
-         * @param context [Context].
-         */
-        fun get(context: Context): WatchDatabase {
-            if (INSTANCE != null) {
-                return INSTANCE!!
-            } else {
-                synchronized(this) {
-                    if (INSTANCE == null) {
-                        INSTANCE =
-                            Room.databaseBuilder(context, WatchDatabase::class.java, "watch-db")
-                                .apply {
-                                    addMigrations(
-                                        Migrations.MIGRATION_3_5,
-                                        Migrations.MIGRATION_4_5,
-                                        Migrations.MIGRATION_5_6
-                                    )
-                                    fallbackToDestructiveMigration()
-                                }
-                                .build()
-                    }
-                    return INSTANCE!!
-                }
+    fun clearWatchPreferences(watch: Watch) {
+        intPrefDao().deleteAllForWatch(watch.id)
+        boolPrefDao().deleteAllForWatch(watch.id)
+    }
+
+    fun addWatch(watch: Watch) {
+        watchDao().add(watch)
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    inline fun <reified T> getPreference(watch: Watch, key: String): Preference<T>? {
+        return when (T::class) {
+            Int::class -> intPrefDao().get(watch.id, key) as Preference<T>?
+            Boolean::class -> boolPrefDao().get(watch.id, key) as Preference<T>?
+            else -> {
+                Timber.w("Tried to get preference for unsupported type ${T::class}")
+                null
             }
         }
     }
+
+    @Suppress("UNCHECKED_CAST")
+    fun getAllPreferences(watch: Watch): List<Preference<Any>> {
+        val intPrefs = intPrefDao().getAllForWatch(watch.id) as List<Preference<Any>>
+        val boolPrefs = boolPrefDao().getAllForWatch(watch.id) as List<Preference<Any>>
+        return intPrefs + boolPrefs
+    }
+
+    companion object : SingletonHolder<WatchDatabase, Context>({ context ->
+        Room.databaseBuilder(context, WatchDatabase::class.java, "watch-db")
+            .apply {
+                addMigrations(
+                    Migrations.MIGRATION_3_5,
+                    Migrations.MIGRATION_4_5,
+                    Migrations.MIGRATION_5_6,
+                    Migrations.MIGRATION_6_7
+                )
+                fallbackToDestructiveMigration()
+            }
+            .build()
+    })
 }

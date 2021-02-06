@@ -119,8 +119,8 @@ class DnDSyncPreferenceFragment :
                     findPreference<SwitchPreference>(changingKey!!)!!.isChecked = true
                     coroutineScope.launch {
                         sharedPreferences.edit(commit = true) { putBoolean(changingKey, true) }
-                        watchPreferenceManager.updatePreferenceOnWatch(
-                            connectedWatchId!!, changingKey!!
+                        watchManager.updatePreference(
+                            connectedWatch!!, changingKey!!, true
                         )
                         changingKey = null
                     }
@@ -138,8 +138,8 @@ class DnDSyncPreferenceFragment :
         dndSyncToWatchPreference.isChecked = enabled
         coroutineScope.launch {
             sharedPreferences.edit(commit = true) { putBoolean(DND_SYNC_TO_WATCH_KEY, enabled) }
-            watchPreferenceManager.updatePreferenceOnWatch(
-                connectedWatchId!!, DND_SYNC_TO_WATCH_KEY
+            watchManager.updatePreference(
+                connectedWatch!!, DND_SYNC_TO_WATCH_KEY, enabled
             )
         }
         if (enabled) {
@@ -178,7 +178,7 @@ class DnDSyncPreferenceFragment :
         if (updateState) {
             coroutineScope.launch {
                 sharedPreferences.edit(commit = true) { putBoolean(key, enabled) }
-                watchPreferenceManager.updatePreferenceOnWatch(connectedWatchId!!, key)
+                watchManager.updatePreference(connectedWatch!!, key, enabled)
             }
         }
     }

@@ -21,7 +21,8 @@ import com.boswelja.devicemanager.common.preference.PreferenceKey
 import com.boswelja.devicemanager.common.preference.PreferenceKey.BATTERY_SYNC_ENABLED_KEY
 import com.boswelja.devicemanager.common.setup.References
 import com.boswelja.devicemanager.phonelocking.ui.PhoneLockingPreferenceFragment.Companion.PHONE_LOCKING_MODE_KEY
-import com.boswelja.devicemanager.watchmanager.SelectedWatchHandler.Companion.LAST_SELECTED_NODE_ID_KEY
+import com.boswelja.devicemanager.watchmanager.WatchManager.Companion.LAST_SELECTED_NODE_ID_KEY
+import com.boswelja.devicemanager.watchmanager.connection.WearOSConnectionInterface
 import com.boswelja.devicemanager.watchmanager.database.WatchDatabase
 import com.boswelja.devicemanager.watchmanager.item.Watch
 import com.google.android.gms.wearable.CapabilityClient
@@ -161,14 +162,18 @@ class Updater(private val context: Context) {
             .addOnSuccessListener { capabilityInfo ->
                 coroutineScope.launch {
                     val messageClient = Wearable.getMessageClient(context)
-                    val database = WatchDatabase.get(context)
+                    val database = WatchDatabase.getInstance(context)
 
                     val capableNodes = capabilityInfo.nodes
                     val defaultWatch =
                         capableNodes.firstOrNull { it.isNearby } ?: capableNodes.firstOrNull()
 
                     if (defaultWatch != null) {
-                        val watch = Watch(defaultWatch)
+                        val watch = Watch(
+                            defaultWatch.id,
+                            defaultWatch.displayName,
+                            WearOSConnectionInterface.PLATFORM
+                        )
                         coroutineScope.launch { database.watchDao().add(watch) }
                         messageClient.sendMessage(watch.id, References.WATCH_REGISTERED_PATH, null)
                         sharedPreferences.edit { putString(LAST_SELECTED_NODE_ID_KEY, watch.id) }

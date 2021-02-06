@@ -7,25 +7,52 @@
  */
 package com.boswelja.devicemanager.watchmanager.item
 
+import androidx.annotation.DrawableRes
+import androidx.annotation.StringRes
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.Ignore
 import androidx.room.PrimaryKey
-import com.boswelja.devicemanager.watchmanager.WatchStatus
-import com.google.android.gms.wearable.Node
+import com.boswelja.devicemanager.R
 
+/**
+ * A representation of a watch that can be stored in a Room database.
+ */
 @Entity(tableName = "watches")
 data class Watch(
     @PrimaryKey val id: String,
     @ColumnInfo(name = "name")
     val name: String,
-    @Ignore var status: WatchStatus
+    val platform: String,
+    @Ignore var status: Status
 ) {
-    constructor(id: String, name: String) : this(
-        id, name, WatchStatus.UNKNOWN
+    constructor(id: String, name: String, platform: String) : this(
+        id, name, platform, Status.UNKNOWN
     )
 
-    constructor(node: Node, status: WatchStatus) : this(node.id, node.displayName, status)
+    override fun equals(other: Any?): Boolean {
+        if (other !is Watch) return super.equals(other)
+        return other.id == id &&
+            other.name == name &&
+            other.platform == platform
+    }
 
-    constructor(node: Node) : this(node.id, node.displayName, WatchStatus.UNKNOWN)
+    override fun hashCode(): Int {
+        var result = id.hashCode()
+        result = 31 * result + name.hashCode()
+        result = 31 * result + platform.hashCode()
+        return result
+    }
+
+    enum class Status(
+        @StringRes val stringRes: Int,
+        @DrawableRes val iconRes: Int
+    ) {
+        UNKNOWN(R.string.watch_status_unknown, R.drawable.ic_error),
+        ERROR(R.string.watch_status_error, R.drawable.ic_error),
+        MISSING_APP(R.string.watch_status_missing_app, R.drawable.ic_error),
+        NOT_REGISTERED(R.string.watch_status_not_registered, R.drawable.ic_error),
+        DISCONNECTED(R.string.watch_status_disconnected, R.drawable.ic_disconnected),
+        CONNECTED(R.string.watch_status_connected, R.drawable.ic_connected)
+    }
 }

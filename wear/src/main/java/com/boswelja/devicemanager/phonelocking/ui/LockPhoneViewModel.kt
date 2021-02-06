@@ -16,7 +16,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.ConfirmationActivityHandler
 import com.boswelja.devicemanager.R
-import com.boswelja.devicemanager.common.References.LOCK_PHONE_PATH
+import com.boswelja.devicemanager.common.connection.Messages.LOCK_PHONE
 import com.boswelja.devicemanager.common.preference.PreferenceKey.PHONE_LOCKING_ENABLED_KEY
 import com.boswelja.devicemanager.phoneconnectionmanager.References
 import com.boswelja.devicemanager.phoneconnectionmanager.References.PHONE_CONNECTED_KEY
@@ -97,7 +97,7 @@ class LockPhoneViewModel(application: Application) : AndroidViewModel(applicatio
         val isPhoneConnected = phoneConnected.value == true
         if (isPhoneConnected && phoneLockingEnabled) {
             ConfirmationActivityHandler.successAnimation(getApplication())
-            messageClient.sendMessage(phoneId, LOCK_PHONE_PATH, null)
+            messageClient.sendMessage(phoneId, LOCK_PHONE, null)
         } else if (!phoneLockingEnabled) {
             ConfirmationActivityHandler.failAnimation(getApplication(), phoneLockingDisabledString)
         } else {

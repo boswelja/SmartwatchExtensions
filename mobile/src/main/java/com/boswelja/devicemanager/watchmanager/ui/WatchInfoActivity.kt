@@ -14,7 +14,6 @@ import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.ui.BaseToolbarActivity
 import com.boswelja.devicemanager.databinding.ActivityWatchInfoBinding
 import com.boswelja.devicemanager.watchmanager.WatchManager
-import com.boswelja.devicemanager.watchmanager.WatchPreferenceManager
 import com.boswelja.devicemanager.watchmanager.item.Watch
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
@@ -25,7 +24,6 @@ import timber.log.Timber
 class WatchInfoActivity : BaseToolbarActivity() {
 
     private val coroutineScope = MainScope()
-    private val watchPreferenceManager by lazy { WatchPreferenceManager.get(this) }
 
     private lateinit var watchManager: WatchManager
     private lateinit var binding: ActivityWatchInfoBinding
@@ -44,30 +42,30 @@ class WatchInfoActivity : BaseToolbarActivity() {
             forgetWatchButton.setOnClickListener { confirmForgetWatch() }
         }
 
-        watchManager = WatchManager.get(this)
+        watchManager = WatchManager.getInstance(this)
 
         resetNicknameTextField()
     }
 
     /** Resets the text in the watch name field to the nickname stored in [WatchManager]. */
     private fun resetNicknameTextField() {
-        coroutineScope.launch(Dispatchers.IO) {
-            val watchName = watchManager.database.watchDao().get(watchId)?.name
-            withContext(Dispatchers.Main) {
-                binding.apply {
-                    watchNameField.setText(watchName)
-                    watchNameField.doAfterTextChanged {
-                        if (!it.isNullOrBlank()) {
-                            Timber.i("Updating watch nickname")
-                            watchNameLayout.isErrorEnabled = false
-                            coroutineScope.launch(Dispatchers.IO) {
-                                watchManager.database.watchDao().setName(watchId, it.toString())
-                            }
-                        } else {
-                            Timber.w("Invalid watch nickname")
-                            watchNameLayout.isErrorEnabled = true
-                            watchNameField.error = "Nickname cannot be blank"
+        val watch = watchManager.registeredWatches.value!!.firstOrNull { it.id == watchId }
+        if (watch == null) {
+            Timber.w("Failed to get watch")
+        } else {
+            binding.apply {
+                watchNameField.setText(watch.name)
+                watchNameField.doAfterTextChanged {
+                    if (!it.isNullOrBlank()) {
+                        Timber.i("Updating watch nickname")
+                        watchNameLayout.isErrorEnabled = false
+                        coroutineScope.launch(Dispatchers.IO) {
+                            watchManager.renameWatch(watch, it.toString())
                         }
+                    } else {
+                        Timber.w("Invalid watch nickname")
+                        watchNameLayout.isErrorEnabled = true
+                        watchNameField.error = "Nickname cannot be blank"
                     }
                 }
             }
@@ -102,20 +100,11 @@ class WatchInfoActivity : BaseToolbarActivity() {
     /** Clears the preferences for a given [Watch], and notifies the user of the result. */
     private fun clearPreferences() {
         Timber.d("clearPreferences() called")
-        coroutineScope.launch(Dispatchers.IO) {
-            val success = watchPreferenceManager.clearPreferencesForWatch(watchId)
+        coroutineScope.launch {
+            val watch = watchManager.registeredWatches.value!!.first { it.id == watchId }
+            watchManager.resetWatchPreferences(watch)
             withContext(Dispatchers.Main) {
-                if (success) {
-                    Timber.i("Successfully cleared preferences")
-                    createSnackBar(
-                        "Successfully cleared settings for your ${binding.watchNameField.text}"
-                    )
-                } else {
-                    Timber.w("Failed to clear preferences")
-                    createSnackBar(
-                        "Failed to clear settings for your ${binding.watchNameField.text}"
-                    )
-                }
+                createSnackBar("Successfully cleared settings for your ${watch.name}")
             }
         }
     }
@@ -124,7 +113,7 @@ class WatchInfoActivity : BaseToolbarActivity() {
     private fun confirmForgetWatch() {
         Timber.d("confirmForgetWatch() called")
         coroutineScope.launch(Dispatchers.IO) {
-            val watch = watchManager.database.watchDao().get(watchId)
+            val watch = watchManager.registeredWatches.value?.firstOrNull { it.id == watchId }
             withContext(Dispatchers.Main) {
                 AlertDialog.Builder(this@WatchInfoActivity)
                     .apply {
@@ -152,15 +141,10 @@ class WatchInfoActivity : BaseToolbarActivity() {
     private fun forgetWatch(watch: Watch?) {
         Timber.d("forgetWatch() called")
         coroutineScope.launch(Dispatchers.IO) {
-            val success = watchManager.forgetWatch(watch?.id)
+            watchManager.forgetWatch(watch!!)
             withContext(Dispatchers.Main) {
-                if (success) {
-                    Timber.i("Successfully forgot watch")
-                    finish()
-                } else {
-                    Timber.w("Failed to forget watch")
-                    createSnackBar("Failed to forget your ${watch?.name}")
-                }
+                Timber.i("Successfully forgot watch")
+                finish()
             }
         }
     }

@@ -18,7 +18,7 @@ import androidx.lifecycle.Observer
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.batterysync.database.WatchBatteryStats
 import com.boswelja.devicemanager.databinding.SettingsWidgetBatterySyncBinding
-import com.boswelja.devicemanager.watchmanager.SelectedWatchHandler
+import com.boswelja.devicemanager.watchmanager.WatchManager
 import java.util.concurrent.TimeUnit
 import timber.log.Timber
 
@@ -34,7 +34,7 @@ class BatterySyncPreferenceWidgetFragment : Fragment() {
             }
         }
 
-    private val selectedWatchHandler by lazy { SelectedWatchHandler.get(requireContext()) }
+    private val watchManager by lazy { WatchManager.getInstance(requireContext()) }
     private lateinit var lastUpdateTimer: LastUpdateTimer
 
     private lateinit var binding: SettingsWidgetBatterySyncBinding
@@ -57,7 +57,7 @@ class BatterySyncPreferenceWidgetFragment : Fragment() {
         lastUpdateTimer = LastUpdateTimer(lifecycle)
         lastUpdateTimer.totalMinutes.observe(viewLifecycleOwner) { setLastUpdateTime(it) }
 
-        selectedWatchHandler.selectedWatch.observe(viewLifecycleOwner) { watch ->
+        watchManager.selectedWatch.observe(viewLifecycleOwner) { watch ->
             watch?.id?.let { setObservingWatchStats(it) }
         }
         viewModel.batterySyncEnabled.observe(viewLifecycleOwner) {
