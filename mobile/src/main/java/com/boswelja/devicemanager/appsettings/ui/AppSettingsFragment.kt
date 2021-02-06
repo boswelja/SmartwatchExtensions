@@ -8,6 +8,7 @@
 package com.boswelja.devicemanager.appsettings.ui
 
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
@@ -15,15 +16,32 @@ import androidx.navigation.fragment.findNavController
 import androidx.preference.ListPreference
 import androidx.preference.Preference
 import com.boswelja.devicemanager.R
+import com.boswelja.devicemanager.analytics.Analytics
 import com.boswelja.devicemanager.common.Compat
 import com.boswelja.devicemanager.common.ui.BaseDayNightActivity.Companion.DAYNIGHT_MODE_KEY
 import com.boswelja.devicemanager.common.ui.BasePreferenceFragment
 import timber.log.Timber
 
-class AppSettingsFragment : BasePreferenceFragment(), Preference.OnPreferenceClickListener {
+class AppSettingsFragment :
+    BasePreferenceFragment(),
+    Preference.OnPreferenceClickListener,
+    SharedPreferences.OnSharedPreferenceChangeListener {
+
+    private val analytics = Analytics()
 
     private lateinit var openNotiSettingsPreference: Preference
     private lateinit var daynightModePreference: ListPreference
+
+    override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
+        if (key != null) {
+            when (key) {
+                Analytics.ANALYTICS_ENABLED_KEY -> {
+                    analytics.setAnalyticsEnabled(sharedPreferences!!.getBoolean(key, false))
+                }
+                else -> analytics.logAppSettingChanged(key)
+            }
+        }
+    }
 
     override fun onPreferenceClick(preference: Preference?): Boolean {
         return when (preference?.key) {

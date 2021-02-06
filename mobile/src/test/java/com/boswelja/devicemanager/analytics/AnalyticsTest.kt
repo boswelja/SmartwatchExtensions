@@ -1,20 +1,14 @@
 package com.boswelja.devicemanager.analytics
 
-import android.content.SharedPreferences
 import android.os.Build
 import android.os.Bundle
-import androidx.core.content.edit
-import androidx.preference.PreferenceManager
-import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.boswelja.devicemanager.matchBundle
 import com.google.firebase.analytics.FirebaseAnalytics
-import io.mockk.Called
 import io.mockk.MockKAnnotations
 import io.mockk.confirmVerified
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.verify
-import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -26,60 +20,16 @@ class AnalyticsTest {
 
     @RelaxedMockK private lateinit var firebaseAnalytics: FirebaseAnalytics
 
-    private lateinit var sharedPreferences: SharedPreferences
     private lateinit var analytics: Analytics
 
     @Before
     fun setUp() {
         MockKAnnotations.init(this)
-        sharedPreferences = PreferenceManager
-            .getDefaultSharedPreferences(ApplicationProvider.getApplicationContext())
-        analytics = Analytics(firebaseAnalytics, sharedPreferences)
-    }
-
-    @After
-    fun tearDown() {
-        sharedPreferences.edit(commit = true) { clear() }
-    }
-
-    @Test
-    fun `Analytics are not logged if the user has them disabled`() {
-        // Set send_analytics to false
-        setAnalyticsEnabled(false)
-
-        // Call every log function from Analytics
-        analytics.logStorageManagerAction("action")
-        analytics.logWatchRemoved()
-        analytics.logWatchRegistered()
-        analytics.logAppSettingChanged("key", "value")
-        analytics.logExtensionSettingChanged("key", "value")
-
-        // Verify firebaseAnalytics was not called
-        verify { firebaseAnalytics wasNot Called }
-    }
-
-    @Test
-    fun `Analytics are logged if the user has them enabled`() {
-        // Set send_analytics to false
-        setAnalyticsEnabled(true)
-
-        // Call every log function from Analytics
-        analytics.logStorageManagerAction("action")
-        analytics.logWatchRemoved()
-        analytics.logWatchRegistered()
-        analytics.logAppSettingChanged("key", "value")
-        analytics.logExtensionSettingChanged("key", "value")
-
-        // Verify firebaseAnalytics was not called
-        verify(exactly = 5) { firebaseAnalytics.logEvent(any(), any()) }
-        confirmVerified()
+        analytics = Analytics(firebaseAnalytics)
     }
 
     @Test
     fun `logStorageManagerAction correctly logs an event`() {
-        // Set send_analytics to false
-        setAnalyticsEnabled(true)
-
         val action = "action"
         val bundle = Bundle()
         bundle.putString(FirebaseAnalytics.Param.METHOD, action)
@@ -93,9 +43,6 @@ class AnalyticsTest {
 
     @Test
     fun `logWatchRemoved correctly logs an event`() {
-        // Set send_analytics to false
-        setAnalyticsEnabled(true)
-
         analytics.logWatchRemoved()
         verify(exactly = 1) {
             firebaseAnalytics.logEvent(Analytics.EVENT_WATCH_REMOVED, null)
@@ -104,10 +51,16 @@ class AnalyticsTest {
     }
 
     @Test
-    fun `logWatchRegistered correctly logs an event`() {
-        // Set send_analytics to false
-        setAnalyticsEnabled(true)
+    fun `logWatchRenamed correctly logs an event`() {
+        analytics.logWatchRenamed()
+        verify(exactly = 1) {
+            firebaseAnalytics.logEvent(Analytics.EVENT_WATCH_RENAMED, null)
+        }
+        confirmVerified()
+    }
 
+    @Test
+    fun `logWatchRegistered correctly logs an event`() {
         analytics.logWatchRegistered()
         verify(exactly = 1) {
             firebaseAnalytics.logEvent(Analytics.EVENT_WATCH_REGISTERED, null)
@@ -117,16 +70,11 @@ class AnalyticsTest {
 
     @Test
     fun `logAppSettingChanged correctly logs an event`() {
-        // Set send_analytics to false
-        setAnalyticsEnabled(true)
-
         val key = "key"
-        val value = true
         val bundle = Bundle()
         bundle.putString(FirebaseAnalytics.Param.ITEM_ID, key)
-        bundle.putString(FirebaseAnalytics.Param.VALUE, value.toString())
 
-        analytics.logAppSettingChanged(key, value)
+        analytics.logAppSettingChanged(key)
         verify(exactly = 1) {
             firebaseAnalytics.logEvent(Analytics.EVENT_APP_SETTING_CHANGED, matchBundle(bundle))
         }
@@ -135,9 +83,6 @@ class AnalyticsTest {
 
     @Test
     fun `logExtensionSettingChanged correctly logs an event`() {
-        // Set send_analytics to false
-        setAnalyticsEnabled(true)
-
         val key = "key"
         val value = true
         val bundle = Bundle()
@@ -152,11 +97,5 @@ class AnalyticsTest {
             )
         }
         confirmVerified()
-    }
-
-    private fun setAnalyticsEnabled(enabled: Boolean) {
-        sharedPreferences.edit(commit = true) {
-            putBoolean(Analytics.ANALYTICS_ENABLED_KEY, enabled)
-        }
     }
 }
