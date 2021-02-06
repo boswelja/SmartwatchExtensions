@@ -1,5 +1,11 @@
 package com.boswelja.devicemanager.common
 
+/**
+ * A common implementation for creating a singleton class
+ * @property T The output class of getInstance.
+ * @property A The input types expected to create [T].
+ * @param creator The function used to create [T] from [A].
+ */
 abstract class SingletonHolder<out T : Any, in A>(creator: (A) -> T) {
     private var creator: ((A) -> T)? = creator
     @Volatile private var instance: T? = null

@@ -310,10 +310,8 @@ class ManageSpaceActivity : BaseToolbarActivity() {
     }
 
     /**
-     * Resets preferences for a given [Watch], and stops any services or workers that may need
-     * stopping.
+     * Resets preferences for a given [Watch], and stops any running services or workers.
      * @param watch The [Watch] to clear preferences for.
-     * @return true if preferences were successfully cleared, false otherwise.
      */
     private fun resetWatchPreferences(watch: Watch) {
         coroutineScope.launch {

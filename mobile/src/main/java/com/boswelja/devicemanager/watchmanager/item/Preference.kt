@@ -2,6 +2,9 @@ package com.boswelja.devicemanager.watchmanager.item
 
 import androidx.room.ColumnInfo
 
+/**
+ * An abstract class for storing preferences inside a Room database.
+ */
 abstract class Preference<T>(
     @ColumnInfo(name = "id")
     val watchId: String,

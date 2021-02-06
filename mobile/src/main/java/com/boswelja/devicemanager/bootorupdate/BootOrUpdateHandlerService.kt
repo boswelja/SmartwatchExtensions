@@ -157,7 +157,7 @@ class BootOrUpdateHandlerService : Service() {
 
     /** Binds to the [WatchManager]. */
     private fun restartServices() {
-        Timber.d("bindWatchManager.getInstance() called")
+        Timber.d("restartServices() called")
         MainScope().launch(Dispatchers.IO) {
             WatchDatabase.getInstance(this@BootOrUpdateHandlerService).also {
                 tryStartBatterySyncWorkers(it)

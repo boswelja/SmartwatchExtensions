@@ -15,6 +15,9 @@ import androidx.room.Ignore
 import androidx.room.PrimaryKey
 import com.boswelja.devicemanager.R
 
+/**
+ * A representation of a watch that can be stored in a Room database.
+ */
 @Entity(tableName = "watches")
 data class Watch(
     @PrimaryKey val id: String,
