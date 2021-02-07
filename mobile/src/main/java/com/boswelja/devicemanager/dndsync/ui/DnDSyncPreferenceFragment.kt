@@ -48,8 +48,6 @@ class DnDSyncPreferenceFragment :
         findPreference(DND_SYNC_WITH_THEATER_KEY)!!
     }
 
-    private var changingKey: String? = null
-
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
         when (key) {
             DND_SYNC_TO_WATCH_KEY -> {
@@ -145,21 +143,19 @@ class DnDSyncPreferenceFragment :
             if (Compat.canSetDnD(requireContext())) {
                 updateState = true
             } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                changingKey = key
                 Toast.makeText(
                     context,
                     getString(R.string.dnd_sync_request_policy_access_message),
                     Toast.LENGTH_SHORT
                 ).show()
                 registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-                    if (changingKey != null && Compat.canSetDnD(requireContext())) {
-                        findPreference<SwitchPreference>(changingKey!!)!!.isChecked = true
+                    if (Compat.canSetDnD(requireContext())) {
+                        findPreference<SwitchPreference>(key)!!.isChecked = true
                         coroutineScope.launch {
-                            sharedPreferences.edit(commit = true) { putBoolean(changingKey, true) }
+                            sharedPreferences.edit(commit = true) { putBoolean(key, true) }
                             watchManager.updatePreference(
-                                connectedWatch!!, changingKey!!, true
+                                connectedWatch!!, key, true
                             )
-                            changingKey = null
                         }
                     }
                 }.launch(Intent(Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS))
@@ -178,9 +174,5 @@ class DnDSyncPreferenceFragment :
     /** Starts a new [DnDSyncHelperActivity] instance and shows it. */
     private fun startDnDSyncHelper() {
         Intent(context, DnDSyncHelperActivity::class.java).also { startActivity(it) }
-    }
-
-    companion object {
-        private const val NOTI_POLICY_SETTINGS_REQUEST_CODE = 54312
     }
 }
