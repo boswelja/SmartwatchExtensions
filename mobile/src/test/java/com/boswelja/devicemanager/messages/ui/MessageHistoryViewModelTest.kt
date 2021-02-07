@@ -1,6 +1,7 @@
 package com.boswelja.devicemanager.messages.ui
 
 import android.os.Build
+import android.os.Looper.getMainLooper
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
@@ -12,6 +13,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.robolectric.Shadows.shadowOf
 import org.robolectric.annotation.Config
 
 @RunWith(AndroidJUnit4::class)
@@ -37,6 +39,7 @@ class MessageHistoryViewModelTest {
     @Test
     fun `clearMessageHistory calls database`() {
         viewModel.clearMessageHistory()
+        shadowOf(getMainLooper()).idle()
         verify(exactly = 1) { database.clearMessageHistory() }
     }
 }
