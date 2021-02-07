@@ -14,6 +14,13 @@ abstract class MessageDatabase : RoomDatabase() {
 
     abstract fun messageDao(): MessageDao
 
+    /**
+     * Deletes all messages that were previously dismissed.
+     */
+    fun clearMessageHistory() {
+        messageDao().clearDismissedMessages()
+    }
+
     companion object {
         private var INSTANCE: MessageDatabase? = null
 
