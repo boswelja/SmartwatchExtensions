@@ -3,7 +3,8 @@ package com.boswelja.devicemanager.common
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import java.util.Timer
-import java.util.TimerTask
+import java.util.concurrent.ScheduledFuture
+import java.util.concurrent.ScheduledThreadPoolExecutor
 import java.util.concurrent.TimeUnit
 import timber.log.Timber
 
@@ -15,29 +16,33 @@ import timber.log.Timber
  * @param callback The function to call when the timer task is run.
  */
 class LifecycleAwareTimer(
-    period: Long,
-    unit: TimeUnit = TimeUnit.SECONDS,
-    callback: () -> Unit
+    private val period: Long,
+    private val unit: TimeUnit = TimeUnit.SECONDS,
+    private val callback: () -> Unit
 ) : DefaultLifecycleObserver {
 
-    private val periodMs = TimeUnit.MILLISECONDS.convert(period, unit)
-    private lateinit var timer: Timer
-    private val task = object : TimerTask() {
-        override fun run() {
-            callback()
-        }
-    }
+    private val timer = ScheduledThreadPoolExecutor(1)
+    private lateinit var task: ScheduledFuture<*>
 
     override fun onStart(owner: LifecycleOwner) {
         super.onStart(owner)
-        Timber.d("Scheduling new timer with rate $periodMs")
-        timer = Timer()
-        timer.scheduleAtFixedRate(task, 0, periodMs)
+        Timber.d("Scheduling new timer with rate $period")
+        task = timer.scheduleAtFixedRate(
+            callback,
+            0,
+            period,
+            unit
+        )
     }
 
     override fun onStop(owner: LifecycleOwner) {
         super.onStop(owner)
         Timber.d("Stopping timer")
-        timer.cancel()
+        task.cancel(false)
+    }
+
+    override fun onDestroy(owner: LifecycleOwner) {
+        super.onDestroy(owner)
+        timer.shutdownNow()
     }
 }
