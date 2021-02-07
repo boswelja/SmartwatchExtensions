@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import com.boswelja.devicemanager.common.LifecycleAwareTimer
 import com.boswelja.devicemanager.dashboard.ui.items.AppManagerDashboardFragment
 import com.boswelja.devicemanager.dashboard.ui.items.BatterySyncDashboardFragment
 import com.boswelja.devicemanager.dashboard.ui.items.DnDSyncDashboardFragment
@@ -17,6 +18,9 @@ import timber.log.Timber
 class DashboardFragment : Fragment() {
 
     private val watchManager by lazy { WatchManager.getInstance(requireContext()) }
+    private val refreshDataTimer = LifecycleAwareTimer(period = 10) {
+        watchManager.refreshData()
+    }
 
     private lateinit var binding: FragmentDashboardBinding
 
@@ -39,6 +43,7 @@ class DashboardFragment : Fragment() {
             }
             transaction.commit()
         }
+        viewLifecycleOwner.lifecycle.addObserver(refreshDataTimer)
     }
 
     override fun onStart() {
@@ -52,7 +57,6 @@ class DashboardFragment : Fragment() {
             binding.watchStatusText.setText(watch.status.stringRes)
             binding.watchStatusIcon.setImageResource(watch.status.iconRes)
         }
-        watchManager.refreshData()
     }
 
     companion object {
