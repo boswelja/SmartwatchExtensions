@@ -64,6 +64,11 @@ abstract class BaseWatchPickerActivity : BaseToolbarActivity(), AdapterView.OnIt
         watchManager.selectedWatch.observe(this) { it?.let { selectWatch(it.id) } }
     }
 
+    override fun onStart() {
+        super.onStart()
+        watchManager.refreshData()
+    }
+
     /**
      * Checks the [watchPickerSpinner] has the correct watch selected. It should always match what's
      * selected in [WatchManager].

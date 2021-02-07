@@ -151,6 +151,13 @@ class WatchManagerTest {
         coVerify(exactly = 1) { repository.resetWatchPreferences(dummyWatch1) }
     }
 
+    @Test
+    fun `refreshData calls WatchRepository`() {
+        watchManager = getWatchManager()
+        watchManager.refreshData()
+        verify(exactly = 1) { repository.refreshData() }
+    }
+
     private fun getWatchManager(): WatchManager {
         return WatchManager(sharedPreferences, repository, analytics, coroutineScope)
     }
