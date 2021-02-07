@@ -27,4 +27,7 @@ interface MessageDao {
 
     @Query("UPDATE messages SET deleted = 0 WHERE id = :messageId")
     fun restoreMessage(messageId: Long)
+
+    @Query("DELETE FROM messages WHERE deleted")
+    fun clearDismissedMessages()
 }
