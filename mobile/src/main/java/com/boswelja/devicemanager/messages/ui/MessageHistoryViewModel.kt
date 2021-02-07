@@ -11,9 +11,13 @@ import com.boswelja.devicemanager.messages.ui.Utils.MESSAGE_PAGE_SIZE
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class MessageHistoryViewModel(application: Application) : AndroidViewModel(application) {
+class MessageHistoryViewModel internal constructor(
+    application: Application,
+    private val messageDatabase: MessageDatabase
+) : AndroidViewModel(application) {
 
-    private val messageDatabase = MessageDatabase.get(application)
+    @Suppress("unused")
+    constructor(application: Application) : this(application, MessageDatabase.get(application))
 
     val dismissedMessagesPager = Pager(PagingConfig(MESSAGE_PAGE_SIZE)) {
         messageDatabase.messageDao().getDismissedMessages()
@@ -24,7 +28,7 @@ class MessageHistoryViewModel(application: Application) : AndroidViewModel(appli
      */
     fun clearMessageHistory() {
         viewModelScope.launch(Dispatchers.IO) {
-            messageDatabase.messageDao().clearDismissedMessages()
+            messageDatabase.clearMessageHistory()
         }
     }
 }
