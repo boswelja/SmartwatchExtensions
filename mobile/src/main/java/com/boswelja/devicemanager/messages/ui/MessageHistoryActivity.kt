@@ -48,12 +48,20 @@ class MessageHistoryActivity : BaseToolbarActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.clear -> {
-                viewModel.clearMessageHistory()
-                Snackbar.make(
-                    binding.root,
-                    R.string.message_history_cleared,
-                    Snackbar.LENGTH_LONG
-                ).show()
+                if (adapter.itemCount > 0) {
+                    viewModel.clearMessageHistory()
+                    Snackbar.make(
+                        binding.root,
+                        R.string.message_history_cleared,
+                        Snackbar.LENGTH_LONG
+                    ).show()
+                } else {
+                    Snackbar.make(
+                        binding.root,
+                        R.string.message_history_not_cleared,
+                        Snackbar.LENGTH_LONG
+                    ).show()
+                }
                 true
             }
             else -> super.onOptionsItemSelected(item)
