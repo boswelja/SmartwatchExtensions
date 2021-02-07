@@ -1,13 +1,17 @@
 package com.boswelja.devicemanager.messages.ui
 
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import androidx.activity.viewModels
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.DividerItemDecoration
+import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.ui.BaseToolbarActivity
 import com.boswelja.devicemanager.databinding.ActivityMessageHistoryBinding
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -34,6 +38,26 @@ class MessageHistoryActivity : BaseToolbarActivity() {
         setupRecyclerView()
         observeMessages()
         observeLoadState()
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.message_history_menu, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.clear -> {
+                viewModel.clearMessageHistory()
+                Snackbar.make(
+                    binding.root,
+                    R.string.message_history_cleared,
+                    Snackbar.LENGTH_LONG
+                ).show()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
     }
 
     /**
