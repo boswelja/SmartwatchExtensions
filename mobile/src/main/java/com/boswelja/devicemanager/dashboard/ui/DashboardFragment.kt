@@ -52,6 +52,7 @@ class DashboardFragment : Fragment() {
             binding.watchStatusText.setText(watch.status.stringRes)
             binding.watchStatusIcon.setImageResource(watch.status.iconRes)
         }
+        watchManager.refreshData()
     }
 
     companion object {
