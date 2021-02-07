@@ -9,19 +9,23 @@ package com.boswelja.devicemanager.watchmanager.ui
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.activity.viewModels
+import com.boswelja.devicemanager.common.LifecycleAwareTimer
 import com.boswelja.devicemanager.common.ui.BaseToolbarActivity
 import com.boswelja.devicemanager.databinding.ActivityWatchManagerBinding
+import com.boswelja.devicemanager.watchmanager.WatchManager
 import com.boswelja.devicemanager.watchmanager.item.Watch
 import com.boswelja.devicemanager.watchmanager.ui.register.RegisterWatchActivity
 
 class WatchManagerActivity : BaseToolbarActivity() {
 
-    private val viewModel: WatchManagerViewModel by viewModels()
+    private val watchManager by lazy { WatchManager.getInstance(this) }
     private val adapter by lazy {
         WatchManagerAdapter {
             if (it != null) openWatchInfoActivity(it) else openWatchSetupActivity()
         }
+    }
+    private val refreshDataTimer = LifecycleAwareTimer(period = 20) {
+        watchManager.refreshData()
     }
 
     private lateinit var binding: ActivityWatchManagerBinding
@@ -35,7 +39,8 @@ class WatchManagerActivity : BaseToolbarActivity() {
         setupToolbar(binding.toolbarLayout.toolbar, showTitle = true, showUpButton = true)
         binding.watchManagerRecyclerView.adapter = adapter
 
-        viewModel.registeredWatches.observe(this) { adapter.submitList(it) }
+        watchManager.registeredWatches.observe(this) { adapter.submitList(it) }
+        lifecycle.addObserver(refreshDataTimer)
     }
 
     /** Opens a [RegisterWatchActivity]. */
