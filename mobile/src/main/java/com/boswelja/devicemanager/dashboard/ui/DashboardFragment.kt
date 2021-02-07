@@ -12,7 +12,6 @@ import com.boswelja.devicemanager.dashboard.ui.items.DnDSyncDashboardFragment
 import com.boswelja.devicemanager.dashboard.ui.items.PhoneLockingDashboardFragment
 import com.boswelja.devicemanager.databinding.FragmentDashboardBinding
 import com.boswelja.devicemanager.watchmanager.WatchManager
-import kotlin.reflect.full.primaryConstructor
 import timber.log.Timber
 
 class DashboardFragment : Fragment() {
@@ -37,9 +36,11 @@ class DashboardFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         if (savedInstanceState == null) {
             val transaction = childFragmentManager.beginTransaction()
-            ALL_FRAGMENTS.forEach {
-                Timber.d("Adding $it")
-                transaction.add(binding.dashboardItems.id, it.primaryConstructor!!.call())
+            binding.dashboardItems.id.let {
+                transaction.add(it, BatterySyncDashboardFragment())
+                transaction.add(it, DnDSyncDashboardFragment())
+                transaction.add(it, PhoneLockingDashboardFragment())
+                transaction.add(it, AppManagerDashboardFragment())
             }
             transaction.commit()
         }
@@ -57,14 +58,5 @@ class DashboardFragment : Fragment() {
             binding.watchStatusText.setText(watch.status.stringRes)
             binding.watchStatusIcon.setImageResource(watch.status.iconRes)
         }
-    }
-
-    companion object {
-        private val ALL_FRAGMENTS = listOf(
-            BatterySyncDashboardFragment::class,
-            DnDSyncDashboardFragment::class,
-            PhoneLockingDashboardFragment::class,
-            AppManagerDashboardFragment::class
-        )
     }
 }
