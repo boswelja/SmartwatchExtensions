@@ -14,6 +14,7 @@ import android.os.Bundle
 import android.provider.Settings
 import android.view.View
 import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.edit
 import androidx.preference.Preference
@@ -46,6 +47,30 @@ class DnDSyncPreferenceFragment :
     }
     private val dndSyncWithTheaterPreference: SwitchPreference by lazy {
         findPreference(DND_SYNC_WITH_THEATER_KEY)!!
+    }
+
+    private lateinit var notiPolicyAccessLauncher:
+        ActivityResultLauncher<Intent>
+
+    private var changingKey: String? = null
+
+    init {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            notiPolicyAccessLauncher = registerForActivityResult(
+                ActivityResultContracts.StartActivityForResult()
+            ) {
+                changingKey?.let {
+                    if (Compat.canSetDnD(requireContext())) {
+                        findPreference<SwitchPreference>(it)!!.isChecked = true
+                        coroutineScope.launch {
+                            sharedPreferences.edit(commit = true) { putBoolean(it, true) }
+                            watchManager.updatePreference(connectedWatch!!, it, true)
+                        }
+                    }
+                    changingKey = null
+                }
+            }
+        }
     }
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
@@ -143,22 +168,14 @@ class DnDSyncPreferenceFragment :
             if (Compat.canSetDnD(requireContext())) {
                 updateState = true
             } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                changingKey = key
                 Toast.makeText(
                     context,
                     getString(R.string.dnd_sync_request_policy_access_message),
                     Toast.LENGTH_SHORT
                 ).show()
-                registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-                    if (Compat.canSetDnD(requireContext())) {
-                        findPreference<SwitchPreference>(key)!!.isChecked = true
-                        coroutineScope.launch {
-                            sharedPreferences.edit(commit = true) { putBoolean(key, true) }
-                            watchManager.updatePreference(
-                                connectedWatch!!, key, true
-                            )
-                        }
-                    }
-                }.launch(Intent(Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS))
+                notiPolicyAccessLauncher
+                    .launch(Intent(Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS))
             }
         } else {
             updateState = true
