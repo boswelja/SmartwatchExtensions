@@ -69,6 +69,13 @@ class Analytics constructor(private val firebaseAnalytics: FirebaseAnalytics = F
         }
     }
 
+    /**
+     * Resets all analytics data. See [FirebaseAnalytics.resetAnalyticsData].
+     */
+    fun resetAnalytics() {
+        firebaseAnalytics.resetAnalyticsData()
+    }
+
     companion object {
         const val ANALYTICS_ENABLED_KEY = "send_analytics"
 
