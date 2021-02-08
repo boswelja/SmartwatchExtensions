@@ -207,11 +207,6 @@
     <string name="reset_app_success">Successfully cleared all data!</string>
     <string name="reset_app_restarting_note">We just need to restart Wearable Extensions to finish resetting what we can. Tap \`finish\` below to proceed.</string>
 
-    <!-- Database names -->
-    <string name="database_name_main">Watch Settings</string>
-    <string name="database_name_widget">Widget</string>
-    <string name="database_name_battery_stats">Battery Sync</string>
-
     <!-- Update checker strings -->
     <string name="update_available_title">Update available</string>
     <string name="update_available_text">A new version of Wearable Extensions is available</string>
