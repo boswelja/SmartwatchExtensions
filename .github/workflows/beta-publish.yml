@@ -86,7 +86,7 @@ jobs:
           repository: "boswelja/WearableExtensions"
           excludes: 'draft'
       - name: Get new release name
-        uses: boswelja/aab-info-action@v1.0.9
+        uses: boswelja/aab-info-action@v1.0.10
         id: new_release
         with:
           aabPath: release/mobile-release.aab
