@@ -28,7 +28,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import timber.log.Timber
 
 class ManageSpaceActivity : BaseToolbarActivity() {
 
@@ -51,6 +50,7 @@ class ManageSpaceActivity : BaseToolbarActivity() {
 
         setupToolbar(binding.toolbarLayout.toolbar, showTitle = true, showUpButton = true)
         setupButtons()
+        viewModel
     }
 
     override fun onDestroy() {
@@ -147,35 +147,8 @@ class ManageSpaceActivity : BaseToolbarActivity() {
 
     /** Attempts to clear all of Wearable Extension's cache. */
     private fun clearCache() {
-        val cacheFiles = viewModel.cacheFiles.value!!
-        if (cacheFiles.isNotEmpty()) {
-            analytics.logStorageManagerAction("clearCache")
-            setButtonsEnabled(false)
-            initProgressBar(cacheFiles.size)
-            setProgressStatus(getString(R.string.clear_cache_clearing))
-            coroutineScope.launch(Dispatchers.IO) {
-                for (cacheFile in cacheFiles) {
-                    val deleted = cacheFile.delete()
-                    withContext(Dispatchers.Main) {
-                        if (deleted) {
-                            incrementProgressBar()
-                        } else {
-                            Timber.w("Failed to delete cache file ${cacheFile.absolutePath}")
-                            setProgressStatus(getString(R.string.clear_cache_failed))
-                            setButtonsEnabled(true)
-                            return@withContext
-                        }
-                    }
-                }
-                withContext(Dispatchers.Main) {
-                    setProgressStatus(getString(R.string.clear_cache_success))
-                    setButtonsEnabled(true)
-                }
-            }
-        } else {
-            initProgressBar(0)
-            setProgressStatus(getString(R.string.clear_cache_no_cache))
-        }
+        ClearCacheBottomSheet()
+            .show(supportFragmentManager, ClearCacheBottomSheet::class.simpleName)
     }
 
     /** Attempts to reset settings for each watch registered with Wearable Extensions. */

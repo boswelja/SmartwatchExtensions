@@ -233,6 +233,8 @@
     <string name="button_next">Continue</string>
     <string name="button_finish">Finish</string>
 
+    <string name="please_wait">Please Wait…</string>
+
     <string name="privacy_policy_url" translatable="false">https://github.com/boswelja/WearableExtensions/blob/main/PRIVACY.md</string>
     <string name="github_url" translatable="false">https://github.com/boswelja/WearableExtensions</string>
     <string name="changelog_url" translatable="false">https://github.com/boswelja/WearableExtensions/releases</string>
