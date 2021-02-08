@@ -207,8 +207,9 @@
     <string name="reset_settings_failed_for">Failed to reset settings for %s</string>
     <string name="reset_settings_failed">Failed to reset settings</string>
     <string name="reset_settings_success">Successfully reset settings for all watches</string>
+    <string name="reset_app_resetting">Resetting Wearable Extensions</string>
     <string name="reset_app_resetting_for">Resetting Wearable Extensions on %s</string>
-    <string name="reset_app_failed_for">Failed to reset %s, make sure it\'s powered on and nearby, and try again</string>
+    <string name="reset_app_failed">Failed to completely reset Wearable Extensions</string>
     <string name="reset_app_resetting_database_for">Clearing %s database</string>
     <string name="reset_app_resetting_preferences">Resetting Wearable Extensions settings</string>
     <string name="reset_app_success">Successfully cleared all data!</string>
