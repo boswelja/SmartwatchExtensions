@@ -26,7 +26,7 @@ class ManageSpaceActivity : BaseToolbarActivity() {
 
         binding.apply {
             clearCacheButton.setOnClickListener { showClearCacheSheet() }
-            resetSettingsButton.setOnClickListener { showResetSettingsSheet() }
+            resetExtensionsButton.setOnClickListener { showResetSettingsSheet() }
             resetAppButton.setOnClickListener { showResetAppSheet() }
         }
     }
