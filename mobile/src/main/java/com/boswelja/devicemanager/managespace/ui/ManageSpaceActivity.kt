@@ -64,7 +64,7 @@ class ManageSpaceActivity : BaseToolbarActivity() {
     private fun setupButtons() {
         binding.apply {
             clearCacheButton.setOnClickListener { clearCache() }
-            resetSettingsButton.setOnClickListener { showSettingsResetConfirmation() }
+            resetSettingsButton.setOnClickListener { doSettingsReset() }
             resetAppButton.setOnClickListener { showFullResetConfirmation() }
         }
     }
@@ -105,21 +105,6 @@ class ManageSpaceActivity : BaseToolbarActivity() {
     }
 
     /**
-     * Shows a custom [AlertDialog] to confirm the user would like to reset their watch settings. If
-     * the user chooses to reset their settings, the reset will be started from here.
-     */
-    private fun showSettingsResetConfirmation() {
-        AlertDialog.Builder(this)
-            .apply {
-                setTitle(R.string.dialog_reset_settings_title)
-                setMessage(R.string.dialog_reset_settings_message)
-                setPositiveButton(R.string.dialog_button_reset) { _, _ -> doSettingsReset() }
-                setNegativeButton(R.string.dialog_button_cancel) { dialog, _ -> dialog.cancel() }
-            }
-            .show()
-    }
-
-    /**
      * Shows a custom [AlertDialog] to confirm the user would like to fully reset Wearable
      * Extensions. If the user chooses to reset Wearable Extensions, the reset will be started from
      * here.
@@ -153,33 +138,7 @@ class ManageSpaceActivity : BaseToolbarActivity() {
 
     /** Attempts to reset settings for each watch registered with Wearable Extensions. */
     private fun doSettingsReset() {
-        setButtonsEnabled(false)
-        coroutineScope.launch(Dispatchers.IO) {
-            val registeredWatches = watchManager.registeredWatches.value!!
-            if (registeredWatches.isNotEmpty()) {
-                analytics.logStorageManagerAction("clearSettings")
-                initProgressBar(registeredWatches.count())
-                for (watch in registeredWatches) {
-                    withContext(Dispatchers.Main) {
-                        setProgressStatus(
-                            getString(R.string.reset_settings_resetting_for, watch.name)
-                        )
-                    }
-                    resetWatchPreferences(watch)
-                    withContext(Dispatchers.Main) { incrementProgressBar() }
-                }
-                withContext(Dispatchers.Main) {
-                    setProgressStatus(getString(R.string.reset_settings_success))
-                    setButtonsEnabled(true)
-                }
-            } else {
-                withContext(Dispatchers.Main) {
-                    initProgressBar(0)
-                    setProgressStatus(getString(R.string.reset_settings_failed))
-                    setButtonsEnabled(true)
-                }
-            }
-        }
+        ResetSettingsBottomSheet().show(supportFragmentManager, "ResetSettingsBottomSheet")
     }
 
     /** Attempts a full reset of Wearable Extensions. */

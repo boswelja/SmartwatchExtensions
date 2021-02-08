@@ -202,6 +202,7 @@
     <string name="clear_cache_failed">Failed to clear cache</string>
     <string name="clear_cache_success">Successfully cleared cache</string>
     <string name="clear_cache_no_cache">No cache files to clear</string>
+    <string name="reset_settings_resetting">Resetting settings</string>
     <string name="reset_settings_resetting_for">Resetting settings for %s</string>
     <string name="reset_settings_failed_for">Failed to reset settings for %s</string>
     <string name="reset_settings_failed">Failed to reset settings</string>
