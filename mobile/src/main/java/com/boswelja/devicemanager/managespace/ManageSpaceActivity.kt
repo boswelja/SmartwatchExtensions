@@ -10,7 +10,6 @@ package com.boswelja.devicemanager.managespace
 import android.app.ActivityManager
 import android.content.Context
 import android.os.Bundle
-import android.view.MenuItem
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.edit
@@ -58,16 +57,6 @@ class ManageSpaceActivity : BaseToolbarActivity() {
         super.onDestroy()
         if (hasResetApp) {
             clearData()
-        }
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            android.R.id.home -> {
-                finish()
-                true
-            }
-            else -> super.onOptionsItemSelected(item)
         }
     }
 
