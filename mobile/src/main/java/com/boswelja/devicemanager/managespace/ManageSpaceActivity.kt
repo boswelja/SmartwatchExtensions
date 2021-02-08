@@ -10,6 +10,7 @@ package com.boswelja.devicemanager.managespace
 import android.app.ActivityManager
 import android.content.Context
 import android.os.Bundle
+import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.edit
 import androidx.preference.PreferenceManager
@@ -23,7 +24,6 @@ import com.boswelja.devicemanager.watchmanager.WatchManager
 import com.boswelja.devicemanager.watchmanager.database.WatchDatabase
 import com.boswelja.devicemanager.watchmanager.item.Watch
 import com.boswelja.devicemanager.widget.database.WidgetDatabase
-import java.io.File
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
@@ -37,6 +37,7 @@ class ManageSpaceActivity : BaseToolbarActivity() {
     private lateinit var binding: ActivityManageSpaceBinding
     private lateinit var activityManager: ActivityManager
 
+    private val viewModel: ManageSpaceViewModel by viewModels()
     private val analytics: Analytics by lazy { Analytics() }
     private val watchManager: WatchManager by lazy { WatchManager.getInstance(this) }
     private var hasResetApp = false
@@ -146,7 +147,7 @@ class ManageSpaceActivity : BaseToolbarActivity() {
 
     /** Attempts to clear all of Wearable Extension's cache. */
     private fun clearCache() {
-        val cacheFiles = getFiles(codeCacheDir) + getFiles(cacheDir)
+        val cacheFiles = viewModel.cacheFiles.value!!
         if (cacheFiles.isNotEmpty()) {
             analytics.logStorageManagerAction("clearCache")
             setButtonsEnabled(false)
@@ -298,30 +299,6 @@ class ManageSpaceActivity : BaseToolbarActivity() {
             watchManager.resetWatchPreferences(watch)
             BatterySyncWorker.stopWorker(this@ManageSpaceActivity, watch.id)
         }
-    }
-
-    /**
-     * Recursive function to get an [Array] of all the files contained within the given [File].
-     * @param file The [File] to return children of.
-     * @return An [Array] of all the files found inside the given [File].
-     */
-    private fun getFiles(file: File): Array<File> {
-        val files = ArrayList<File>()
-        if (file.isDirectory) {
-            Timber.i("${file.absolutePath} is a directory")
-            val innerFiles = file.listFiles()
-            if (innerFiles != null && innerFiles.isNotEmpty()) {
-                for (innerFile in innerFiles) {
-                    files.addAll(getFiles(innerFile))
-                }
-            } else {
-                Timber.i("${file.absolutePath} has no inner files")
-            }
-        } else {
-            Timber.i("${file.absolutePath} is not a directory")
-            files.add(file)
-        }
-        return files.toTypedArray()
     }
 
     companion object {
