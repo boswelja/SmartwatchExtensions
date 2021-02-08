@@ -85,6 +85,34 @@ class ManageSpaceViewModel internal constructor(
     }
 
     /**
+     * Requests all registered watches be reset, and removes them from the database. This should be
+     * followed by a call to [android.app.ActivityManager.clearApplicationUserData] to clean up
+     * everything else.
+     * @param onProgressChanged The function to call when clear progress is changed.
+     * @param onCompleteFunction The function to call when the job completes.
+     */
+    fun resetApp(
+        onProgressChanged: (progress: Int) -> Unit,
+        onCompleteFunction: (isSuccessful: Boolean) -> Unit
+    ) {
+        viewModelScope.launch(coroutineDispatcher) {
+            analytics.logStorageManagerAction("fullReset")
+            val registeredWatches = registeredWatches
+            var progress: Int
+            if (!registeredWatches.isNullOrEmpty()) {
+                val watchCount = registeredWatches.count()
+                val progressMultiplier = 100.0 / (watchCount + 1)
+                registeredWatches.forEachIndexed { index, watch ->
+                    watchManager.requestResetWatch(watch)
+                    progress = floor((index + 1) * progressMultiplier).toInt()
+                    withContext(Dispatchers.Main) { onProgressChanged(progress) }
+                }
+            }
+            onCompleteFunction(true)
+        }
+    }
+
+    /**
      * Clears the app cache.
      * @param onProgressChanged The function to call when clear progress is changed.
      * @param onCompleteFunction The function to call when the job completes.
