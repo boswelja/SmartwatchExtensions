@@ -23,6 +23,6 @@
 
     <dimen name="rotation_offset">0</dimen>
 
-    <dimen name="modal_bottom_sheet_height">200dp</dimen>
+    <dimen name="modal_bottom_sheet_height">320dp</dimen>
     <dimen name="modal_bottom_sheet_margin">32dp</dimen>
 </resources>
