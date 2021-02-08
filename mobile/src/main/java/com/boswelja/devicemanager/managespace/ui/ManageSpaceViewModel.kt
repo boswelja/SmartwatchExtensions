@@ -1,10 +1,14 @@
 package com.boswelja.devicemanager.managespace.ui
 
 import android.app.Application
+import android.content.SharedPreferences
+import androidx.core.content.edit
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.Observer
 import androidx.lifecycle.viewModelScope
+import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.analytics.Analytics
+import com.boswelja.devicemanager.common.preference.SyncPreferences
 import com.boswelja.devicemanager.watchmanager.WatchManager
 import com.boswelja.devicemanager.watchmanager.item.Watch
 import java.io.File
@@ -19,6 +23,7 @@ class ManageSpaceViewModel internal constructor(
     application: Application,
     private val analytics: Analytics,
     private val watchManager: WatchManager,
+    private val sharedPreferences: SharedPreferences,
     private val coroutineDispatcher: CoroutineDispatcher
 ) : AndroidViewModel(application) {
 
@@ -33,6 +38,7 @@ class ManageSpaceViewModel internal constructor(
         application,
         Analytics(),
         WatchManager.getInstance(application),
+        PreferenceManager.getDefaultSharedPreferences(application),
         Dispatchers.IO
     )
 
@@ -45,6 +51,44 @@ class ManageSpaceViewModel internal constructor(
         watchManager.registeredWatches.removeObserver(registeredWatchesObserver)
     }
 
+    /**
+     * Reset settings for each registered watch.
+     * @param onProgressChanged The function to call when clear progress is changed.
+     * @param onCompleteFunction The function to call when the job completes.
+     */
+    fun resetSettings(
+        onProgressChanged: (progress: Int) -> Unit,
+        onCompleteFunction: (isSuccessful: Boolean) -> Unit
+    ) {
+        viewModelScope.launch(coroutineDispatcher) {
+            analytics.logStorageManagerAction("fullReset")
+            val registeredWatches = registeredWatches
+            var progress: Int
+            if (!registeredWatches.isNullOrEmpty()) {
+                val watchCount = registeredWatches.count()
+                val progressMultiplier =
+                    100.0 / (watchCount + SyncPreferences.ALL_PREFS.count())
+                registeredWatches.forEachIndexed { index, watch ->
+                    watchManager.resetWatchPreferences(watch)
+                    progress = floor((index + 1) * progressMultiplier).toInt()
+                    withContext(Dispatchers.Main) { onProgressChanged(progress) }
+                }
+                sharedPreferences.edit(commit = true) {
+                    SyncPreferences.ALL_PREFS.forEachIndexed { index, s ->
+                        remove(s)
+                        progress = floor((watchCount + index + 1) * progressMultiplier).toInt()
+                    }
+                }
+            }
+            onCompleteFunction(true)
+        }
+    }
+
+    /**
+     * Clears the app cache.
+     * @param onProgressChanged The function to call when clear progress is changed.
+     * @param onCompleteFunction The function to call when the job completes.
+     */
     fun clearCache(
         onProgressChanged: (progress: Int) -> Unit,
         onCompleteFunction: (isSuccessful: Boolean) -> Unit
