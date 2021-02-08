@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
-import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.commit
@@ -34,10 +33,10 @@ abstract class BaseResetBottomSheet : BottomSheetDialogFragment() {
         savedInstanceState: Bundle?
     ): View? {
         return FrameLayout(requireContext()).apply {
-            updateLayoutParams {
-                height = ViewGroup.LayoutParams.WRAP_CONTENT
-                width = ViewGroup.LayoutParams.MATCH_PARENT
-            }
+            layoutParams = ViewGroup.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+            )
             id = R.id.fragment_holder
         }
     }
@@ -49,6 +48,7 @@ abstract class BaseResetBottomSheet : BottomSheetDialogFragment() {
             isCancelable = false
             progressFragment = onCreateProgress()
             showFragment(progressFragment)
+            onStartWork()
         }
         showFragment(confirmationFragment)
     }
