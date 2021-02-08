@@ -67,16 +67,16 @@ class ManageSpaceViewModel internal constructor(
             if (!registeredWatches.isNullOrEmpty()) {
                 val watchCount = registeredWatches.count()
                 val progressMultiplier =
-                    100.0 / (watchCount + SyncPreferences.ALL_PREFS.count())
+                    floor(100.0 / (watchCount + SyncPreferences.ALL_PREFS.count())).toInt()
                 registeredWatches.forEachIndexed { index, watch ->
                     watchManager.resetWatchPreferences(watch)
-                    progress = floor((index + 1) * progressMultiplier).toInt()
+                    progress = (index + 1) * progressMultiplier
                     withContext(Dispatchers.Main) { onProgressChanged(progress) }
                 }
                 sharedPreferences.edit(commit = true) {
                     SyncPreferences.ALL_PREFS.forEachIndexed { index, s ->
                         remove(s)
-                        progress = floor((watchCount + index + 1) * progressMultiplier).toInt()
+                        progress = (watchCount + index + 1) * progressMultiplier
                     }
                 }
             }
@@ -101,10 +101,10 @@ class ManageSpaceViewModel internal constructor(
             var progress: Int
             if (!registeredWatches.isNullOrEmpty()) {
                 val watchCount = registeredWatches.count()
-                val progressMultiplier = 100.0 / (watchCount + 1)
+                val progressMultiplier = floor(100.0 / (watchCount + 1)).toInt()
                 registeredWatches.forEachIndexed { index, watch ->
                     watchManager.requestResetWatch(watch)
-                    progress = floor((index + 1) * progressMultiplier).toInt()
+                    progress = (index + 1) * progressMultiplier
                     withContext(Dispatchers.Main) { onProgressChanged(progress) }
                 }
             }
@@ -129,7 +129,7 @@ class ManageSpaceViewModel internal constructor(
             Timber.d("Got ${cacheFiles.count()} cache files")
 
             if (cacheFiles.isNotEmpty()) {
-                val progressMultiplier = 100.0 / cacheFiles.size
+                val progressMultiplier = floor(100.0 / cacheFiles.size).toInt()
                 var currentProgress: Int
                 cacheFiles.forEachIndexed { index, file ->
                     Timber.d("Deleting ${file.path}")
@@ -139,7 +139,7 @@ class ManageSpaceViewModel internal constructor(
                         withContext(Dispatchers.Main) { onCompleteFunction(false) }
                         return@launch
                     }
-                    currentProgress = floor((index + 1) * progressMultiplier).toInt()
+                    currentProgress = (index + 1) * progressMultiplier
                     withContext(Dispatchers.Main) { onProgressChanged(currentProgress) }
                 }
             } else {
