@@ -47,7 +47,7 @@ class ResetAppBottomSheet : BaseResetBottomSheet() {
     }
 
     override fun onStartWork() {
-        viewModel.clearCache(
+        viewModel.resetApp(
             { setProgress(it) },
             {
                 successful = it
