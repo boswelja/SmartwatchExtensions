@@ -3,6 +3,9 @@ package com.boswelja.devicemanager.managespace.ui
 import androidx.core.content.ContextCompat
 import com.boswelja.devicemanager.R
 
+/**
+ * A [BaseResetBottomSheet] to handle clearing Wearable Extensions cache.
+ */
 class ClearCacheBottomSheet : BaseResetBottomSheet() {
 
     private var successful = false

@@ -5,6 +5,9 @@ import android.content.Context
 import androidx.core.content.ContextCompat
 import com.boswelja.devicemanager.R
 
+/**
+ * A [BaseResetBottomSheet] to handle resetting all of Wearable Extensions.
+ */
 class ResetAppBottomSheet : BaseResetBottomSheet() {
 
     private var successful = false
