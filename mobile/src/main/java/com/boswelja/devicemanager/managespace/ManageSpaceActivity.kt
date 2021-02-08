@@ -10,7 +10,6 @@ package com.boswelja.devicemanager.managespace
 import android.app.ActivityManager
 import android.content.Context
 import android.os.Bundle
-import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.edit
 import androidx.preference.PreferenceManager
@@ -98,14 +97,6 @@ class ManageSpaceActivity : BaseToolbarActivity() {
 
     /**
      * Updates the progress status text.
-     * @param statusTextRes The resource identifier used to get a new [String] to use for progress
-     * status.
-     */
-    private fun setProgressStatus(@StringRes statusTextRes: Int) =
-        setProgressStatus(getString(statusTextRes))
-
-    /**
-     * Updates the progress status text.
      * @param statusText The new [String] to use for progress status.
      */
     private fun setProgressStatus(statusText: String) {
@@ -160,7 +151,7 @@ class ManageSpaceActivity : BaseToolbarActivity() {
             analytics.logStorageManagerAction("clearCache")
             setButtonsEnabled(false)
             initProgressBar(cacheFiles.size)
-            setProgressStatus(R.string.clear_cache_clearing)
+            setProgressStatus(getString(R.string.clear_cache_clearing))
             coroutineScope.launch(Dispatchers.IO) {
                 for (cacheFile in cacheFiles) {
                     val deleted = cacheFile.delete()
@@ -169,20 +160,20 @@ class ManageSpaceActivity : BaseToolbarActivity() {
                             incrementProgressBar()
                         } else {
                             Timber.w("Failed to delete cache file ${cacheFile.absolutePath}")
-                            setProgressStatus(R.string.clear_cache_failed)
+                            setProgressStatus(getString(R.string.clear_cache_failed))
                             setButtonsEnabled(true)
                             return@withContext
                         }
                     }
                 }
                 withContext(Dispatchers.Main) {
-                    setProgressStatus(R.string.clear_cache_success)
+                    setProgressStatus(getString(R.string.clear_cache_success))
                     setButtonsEnabled(true)
                 }
             }
         } else {
             initProgressBar(0)
-            setProgressStatus(R.string.clear_cache_no_cache)
+            setProgressStatus(getString(R.string.clear_cache_no_cache))
         }
     }
 
@@ -204,13 +195,13 @@ class ManageSpaceActivity : BaseToolbarActivity() {
                     withContext(Dispatchers.Main) { incrementProgressBar() }
                 }
                 withContext(Dispatchers.Main) {
-                    setProgressStatus(R.string.reset_settings_success)
+                    setProgressStatus(getString(R.string.reset_settings_success))
                     setButtonsEnabled(true)
                 }
             } else {
                 withContext(Dispatchers.Main) {
                     initProgressBar(0)
-                    setProgressStatus(R.string.reset_settings_failed)
+                    setProgressStatus(getString(R.string.reset_settings_failed))
                     setButtonsEnabled(true)
                 }
             }
@@ -284,14 +275,14 @@ class ManageSpaceActivity : BaseToolbarActivity() {
             }
             withContext(Dispatchers.Main) {
                 incrementProgressBar()
-                setProgressStatus(R.string.reset_app_resetting_preferences)
+                setProgressStatus(getString(R.string.reset_app_resetting_preferences))
             }
             PreferenceManager.getDefaultSharedPreferences(this@ManageSpaceActivity).edit(
                 commit = true
             ) { clear() }
             withContext(Dispatchers.Main) {
                 incrementProgressBar()
-                setProgressStatus(R.string.reset_app_success)
+                setProgressStatus(getString(R.string.reset_app_success))
                 setButtonsEnabled(true)
             }
             hasResetApp = true
