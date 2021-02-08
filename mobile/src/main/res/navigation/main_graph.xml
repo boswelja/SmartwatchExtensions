@@ -121,5 +121,5 @@
 
     <activity
         android:id="@+id/manageSpaceActivity"
-        android:name="com.boswelja.devicemanager.managespace.ManageSpaceActivity" />
+        android:name="com.boswelja.devicemanager.managespace.ui.ManageSpaceActivity" />
 </navigation>

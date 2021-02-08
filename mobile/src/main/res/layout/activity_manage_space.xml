@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:layout_marginStart="@dimen/content_margin_manage_space_side"
     android:layout_marginEnd="@dimen/content_margin_manage_space_side"
-    tools:context=".managespace.ManageSpaceActivity">
+    tools:context=".managespace.ui.ManageSpaceActivity">
 
     <include
         android:id="@+id/toolbar_layout"
