@@ -1,4 +1,4 @@
-package com.boswelja.devicemanager.managespace
+package com.boswelja.devicemanager.managespace.ui
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
