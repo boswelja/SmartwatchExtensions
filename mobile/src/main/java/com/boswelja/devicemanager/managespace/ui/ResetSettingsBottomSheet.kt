@@ -9,8 +9,8 @@ class ResetSettingsBottomSheet : BaseResetBottomSheet() {
 
     override fun onCreateConfirmation(showProgress: () -> Unit): ConfirmationFragment {
         return ConfirmationFragment(
-            getString(R.string.manage_space_reset_settings_title),
-            getString(R.string.manage_space_reset_settings_desc),
+            getString(R.string.manage_space_reset_extensions_title),
+            getString(R.string.manage_space_reset_extensions_desc),
             getString(R.string.dialog_button_reset),
             ContextCompat.getDrawable(requireContext(), R.drawable.ic_chevron_right)!!,
             showProgress
