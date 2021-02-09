@@ -20,7 +20,7 @@ class ManageSpaceActivity : BaseToolbarActivity() {
     private lateinit var binding: ActivityManageSpaceBinding
 
     private val clearCacheSheet by lazy { ClearCacheBottomSheet() }
-    private val resetSettingsSheet by lazy { ResetSettingsBottomSheet() }
+    private val resetSettingsSheet by lazy { ResetExtensionsBottomSheet() }
     private val resetAppSheet by lazy { ResetAppBottomSheet() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -41,9 +41,9 @@ class ManageSpaceActivity : BaseToolbarActivity() {
      */
     private fun createClearCacheAction() {
         val fragment = SpaceActionFragment(
-            getString(R.string.manage_space_clear_cache_title),
-            getString(R.string.manage_space_clear_cache_desc),
-            getString(R.string.manage_space_clear_cache_button)
+            getString(R.string.clear_cache_title),
+            getString(R.string.clear_cache_desc),
+            getString(R.string.clear_cache_title)
         ) {
             clearCacheSheet.show(supportFragmentManager, clearCacheSheet::class.simpleName)
         }
@@ -56,9 +56,9 @@ class ManageSpaceActivity : BaseToolbarActivity() {
      */
     private fun createExtensionResetAction() {
         val fragment = SpaceActionFragment(
-            getString(R.string.manage_space_reset_extensions_title),
-            getString(R.string.manage_space_reset_extensions_desc),
-            getString(R.string.manage_space_reset_settings_button)
+            getString(R.string.reset_extensions_title),
+            getString(R.string.reset_extensions_desc),
+            getString(R.string.reset_extensions_title)
         ) {
             resetSettingsSheet.show(supportFragmentManager, resetSettingsSheet::class.simpleName)
         }
@@ -71,9 +71,9 @@ class ManageSpaceActivity : BaseToolbarActivity() {
      */
     private fun createAppResetAction() {
         val fragment = SpaceActionFragment(
-            getString(R.string.manage_space_reset_app_title),
-            getString(R.string.manage_space_reset_app_desc),
-            getString(R.string.manage_space_reset_app_button)
+            getString(R.string.reset_app_title),
+            getString(R.string.reset_app_desc),
+            getString(R.string.reset_app_title)
         ) {
             resetAppSheet.show(supportFragmentManager, resetAppSheet::class.simpleName)
         }

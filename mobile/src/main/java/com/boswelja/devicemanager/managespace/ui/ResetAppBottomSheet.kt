@@ -14,7 +14,7 @@ class ResetAppBottomSheet : BaseResetBottomSheet() {
 
     override fun onCreateConfirmation(showProgress: () -> Unit): ConfirmationFragment {
         return ConfirmationFragment(
-            getString(R.string.manage_space_reset_app_title),
+            getString(R.string.reset_app_title),
             getString(R.string.reset_app_warning),
             getString(R.string.dialog_button_reset),
             ContextCompat.getDrawable(requireContext(), R.drawable.ic_chevron_right)!!,

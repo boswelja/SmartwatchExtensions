@@ -12,8 +12,8 @@ class ClearCacheBottomSheet : BaseResetBottomSheet() {
 
     override fun onCreateConfirmation(showProgress: () -> Unit): ConfirmationFragment {
         return ConfirmationFragment(
-            getString(R.string.manage_space_clear_cache_title),
-            getString(R.string.manage_space_clear_cache_desc),
+            getString(R.string.clear_cache_title),
+            getString(R.string.clear_cache_desc),
             getString(R.string.dialog_button_reset),
             ContextCompat.getDrawable(requireContext(), R.drawable.ic_chevron_right)!!,
             showProgress
