@@ -107,6 +107,8 @@ class ManageSpaceViewModel internal constructor(
                     progress = (index + 1) * progressMultiplier
                     withContext(Dispatchers.Main) { onProgressChanged(progress) }
                 }
+                analytics.resetAnalytics()
+                progress = (watchCount + 1) * progressMultiplier
             }
             onCompleteFunction(true)
         }
