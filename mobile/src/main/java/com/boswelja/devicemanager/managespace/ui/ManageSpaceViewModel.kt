@@ -2,6 +2,7 @@ package com.boswelja.devicemanager.managespace.ui
 
 import android.app.Application
 import android.content.SharedPreferences
+import androidx.annotation.VisibleForTesting
 import androidx.core.content.edit
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.Observer
@@ -45,7 +46,8 @@ class ManageSpaceViewModel internal constructor(
         watchManager.registeredWatches.observeForever(registeredWatchesObserver)
     }
 
-    override fun onCleared() {
+    @VisibleForTesting(otherwise = VisibleForTesting.PROTECTED)
+    public override fun onCleared() {
         super.onCleared()
         watchManager.registeredWatches.removeObserver(registeredWatchesObserver)
     }
@@ -191,6 +193,6 @@ class ManageSpaceViewModel internal constructor(
     }
 
     companion object {
-        private const val MAX_PROGRESS = 100.0
+        internal const val MAX_PROGRESS = 100.0
     }
 }
