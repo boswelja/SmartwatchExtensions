@@ -52,11 +52,24 @@ class ManageSpaceViewModel internal constructor(
     }
 
     /**
-     * Reset settings for each registered watch.
+     * Reset analytics storage. See [Analytics.resetAnalytics].
+     */
+    fun resetAnalytics(
+        onCompleteFunction: (isSuccessful: Boolean) -> Unit
+    ) {
+        viewModelScope.launch(coroutineDispatcher) {
+            analytics.logStorageManagerAction("analyticsReset")
+            analytics.resetAnalytics()
+            onCompleteFunction(true)
+        }
+    }
+
+    /**
+     * Reset extension settings for all registered watches.
      * @param onProgressChanged The function to call when clear progress is changed.
      * @param onCompleteFunction The function to call when the job completes.
      */
-    fun resetSettings(
+    fun resetExtensionSettings(
         onProgressChanged: (progress: Int) -> Unit,
         onCompleteFunction: (isSuccessful: Boolean) -> Unit
     ) {

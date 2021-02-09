@@ -20,6 +20,7 @@ class ManageSpaceActivity : BaseToolbarActivity() {
     private lateinit var binding: ActivityManageSpaceBinding
 
     private val clearCacheSheet by lazy { ClearCacheBottomSheet() }
+    private val resetAnalyticsSheet by lazy { ResetAnalyticsBottomSheet() }
     private val resetSettingsSheet by lazy { ResetExtensionsBottomSheet() }
     private val resetAppSheet by lazy { ResetAppBottomSheet() }
 
@@ -32,6 +33,7 @@ class ManageSpaceActivity : BaseToolbarActivity() {
         setupToolbar(binding.toolbarLayout.toolbar, showTitle = true, showUpButton = true)
 
         createClearCacheAction()
+        createAnalyticsResetAction()
         createExtensionResetAction()
         createAppResetAction()
     }
@@ -46,6 +48,17 @@ class ManageSpaceActivity : BaseToolbarActivity() {
             getString(R.string.clear_cache_title)
         ) {
             clearCacheSheet.show(supportFragmentManager, clearCacheSheet::class.simpleName)
+        }
+        addAction(fragment)
+    }
+
+    private fun createAnalyticsResetAction() {
+        val fragment = SpaceActionFragment(
+            getString(R.string.reset_analytics_title),
+            getString(R.string.reset_analytics_desc),
+            getString(R.string.reset_analytics_title)
+        ) {
+            resetAnalyticsSheet.show(supportFragmentManager, resetAnalyticsSheet::class.simpleName)
         }
         addAction(fragment)
     }
