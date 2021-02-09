@@ -145,7 +145,7 @@ class ManageSpaceViewModel internal constructor(
                 val watchCount = registeredWatches.count()
                 val progressMultiplier = floor(100.0 / (watchCount + 1)).toInt()
                 registeredWatches.forEachIndexed { index, watch ->
-                    watchManager.requestResetWatch(watch)
+                    watchManager.forgetWatch(watch)
                     progress = (index + 1) * progressMultiplier
                     withContext(Dispatchers.Main) { onProgressChanged(progress) }
                 }

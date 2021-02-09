@@ -10,6 +10,7 @@ import androidx.preference.PreferenceManager
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.boswelja.devicemanager.analytics.Analytics
+import com.boswelja.devicemanager.batterysync.database.WatchBatteryStatsDatabase
 import com.boswelja.devicemanager.getOrAwaitValue
 import com.boswelja.devicemanager.watchmanager.item.Watch
 import com.google.common.truth.Truth.assertThat
@@ -45,6 +46,7 @@ class WatchManagerTest {
 
     @RelaxedMockK private lateinit var repository: WatchRepository
     @RelaxedMockK private lateinit var analytics: Analytics
+    @RelaxedMockK private lateinit var batteryStatsDatabase: WatchBatteryStatsDatabase
 
     private lateinit var coroutineScope: CoroutineScope
     private lateinit var sharedPreferences: SharedPreferences
@@ -138,13 +140,6 @@ class WatchManagerTest {
     }
 
     @Test
-    fun `requestResetWatch calls repository`(): Unit = runBlocking {
-        watchManager = getWatchManager()
-        watchManager.requestResetWatch(dummyWatch1)
-        coVerify(exactly = 1) { repository.resetWatch(dummyWatch1) }
-    }
-
-    @Test
     fun `resetWatchPreferences calls repository`(): Unit = runBlocking {
         watchManager = getWatchManager()
         watchManager.resetWatchPreferences(dummyWatch1)
@@ -159,6 +154,12 @@ class WatchManagerTest {
     }
 
     private fun getWatchManager(): WatchManager {
-        return WatchManager(sharedPreferences, repository, analytics, coroutineScope)
+        return WatchManager(
+            sharedPreferences,
+            repository,
+            batteryStatsDatabase,
+            analytics,
+            coroutineScope
+        )
     }
 }
