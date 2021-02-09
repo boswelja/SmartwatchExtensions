@@ -10,6 +10,11 @@ import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.ui.BaseToolbarActivity
 import com.boswelja.devicemanager.databinding.ActivityManageSpaceBinding
 import com.boswelja.devicemanager.databinding.ManageSpaceItemBinding
+import com.boswelja.devicemanager.managespace.ui.sheets.ClearCacheBottomSheet
+import com.boswelja.devicemanager.managespace.ui.sheets.ResetAnalyticsBottomSheet
+import com.boswelja.devicemanager.managespace.ui.sheets.ResetAppBottomSheet
+import com.boswelja.devicemanager.managespace.ui.sheets.ResetAppSettingsBottomSheet
+import com.boswelja.devicemanager.managespace.ui.sheets.ResetExtensionsBottomSheet
 
 /**
  * An activity to present the user with options for resetting various data used by Wearable

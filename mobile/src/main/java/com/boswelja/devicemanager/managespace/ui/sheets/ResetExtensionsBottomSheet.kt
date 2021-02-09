@@ -1,4 +1,4 @@
-package com.boswelja.devicemanager.managespace.ui
+package com.boswelja.devicemanager.managespace.ui.sheets
 
 import androidx.core.content.ContextCompat
 import com.boswelja.devicemanager.R

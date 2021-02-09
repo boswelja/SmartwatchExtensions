@@ -1,4 +1,4 @@
-package com.boswelja.devicemanager.managespace.ui
+package com.boswelja.devicemanager.managespace.ui.sheets
 
 import android.graphics.drawable.Drawable
 import android.os.Bundle
@@ -12,6 +12,7 @@ import androidx.fragment.app.commit
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.databinding.BottomSheetConfirmationBinding
 import com.boswelja.devicemanager.databinding.BottomSheetProgressBinding
+import com.boswelja.devicemanager.managespace.ui.ManageSpaceViewModel
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import timber.log.Timber
 
