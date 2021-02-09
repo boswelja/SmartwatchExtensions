@@ -11,7 +11,6 @@ import com.boswelja.devicemanager.analytics.Analytics
 import com.boswelja.devicemanager.common.preference.SyncPreferences
 import com.boswelja.devicemanager.watchmanager.WatchManager
 import com.boswelja.devicemanager.watchmanager.item.Watch
-import java.io.File
 import kotlin.math.floor
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
@@ -167,11 +166,10 @@ class ManageSpaceViewModel internal constructor(
     ) {
         viewModelScope.launch(coroutineDispatcher) {
             analytics.logStorageManagerAction("clearCache")
-
-            val cacheFiles = getFiles(getApplication<Application>().cacheDir) +
-                getFiles(getApplication<Application>().codeCacheDir)
+            val context = getApplication<Application>()
+            val cacheFiles = (context.cacheDir.walkBottomUp() + context.codeCacheDir.walkBottomUp())
+                .toList()
             Timber.d("Got ${cacheFiles.count()} cache files")
-
             if (cacheFiles.isNotEmpty()) {
                 val progressMultiplier = floor(MAX_PROGRESS / cacheFiles.size).toInt()
                 var currentProgress: Int
@@ -191,30 +189,6 @@ class ManageSpaceViewModel internal constructor(
             }
             withContext(Dispatchers.Main) { onCompleteFunction(true) }
         }
-    }
-
-    /**
-     * Recursive function to get an [List] of all the files contained within the given [File].
-     * @param file The [File] to return children of.
-     * @return An [Array] of all the files found inside the given [File].
-     */
-    private fun getFiles(file: File): List<File> {
-        val files = ArrayList<File>()
-        if (file.isDirectory) {
-            Timber.i("${file.absolutePath} is a directory")
-            val innerFiles = file.listFiles()
-            if (innerFiles != null && innerFiles.isNotEmpty()) {
-                for (innerFile in innerFiles) {
-                    files.addAll(getFiles(innerFile))
-                }
-            } else {
-                Timber.i("${file.absolutePath} has no inner files")
-            }
-        } else {
-            Timber.i("${file.absolutePath} is not a directory")
-            files.add(file)
-        }
-        return files
     }
 
     companion object {
