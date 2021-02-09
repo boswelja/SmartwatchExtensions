@@ -22,10 +22,13 @@ class ManageSpaceActivity : BaseToolbarActivity() {
     private val clearCacheSheet by lazy { ClearCacheBottomSheet() }
     private val resetAnalyticsSheet by lazy { ResetAnalyticsBottomSheet() }
     private val resetSettingsSheet by lazy { ResetExtensionsBottomSheet() }
+    private val resetAppSettingsSheet by lazy { ResetAppSettingsBottomSheet() }
     private val resetAppSheet by lazy { ResetAppBottomSheet() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        shouldAutoSwitchNightMode = false
 
         binding = ActivityManageSpaceBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -34,6 +37,7 @@ class ManageSpaceActivity : BaseToolbarActivity() {
 
         createClearCacheAction()
         createAnalyticsResetAction()
+        createAppSettingsResetAction()
         createExtensionResetAction()
         createAppResetAction()
     }
@@ -74,6 +78,24 @@ class ManageSpaceActivity : BaseToolbarActivity() {
             getString(R.string.reset_extensions_title)
         ) {
             resetSettingsSheet.show(supportFragmentManager, resetSettingsSheet::class.simpleName)
+        }
+        addAction(fragment)
+    }
+
+    /**
+     * Creates a [SpaceActionFragment] for resetting extension related settings, and adds it to the
+     * view.
+     */
+    private fun createAppSettingsResetAction() {
+        val fragment = SpaceActionFragment(
+            getString(R.string.reset_settings_title),
+            getString(R.string.reset_settings_desc),
+            getString(R.string.reset_settings_title)
+        ) {
+            resetAppSettingsSheet.show(
+                supportFragmentManager,
+                resetAppSettingsSheet::class.simpleName
+            )
         }
         addAction(fragment)
     }

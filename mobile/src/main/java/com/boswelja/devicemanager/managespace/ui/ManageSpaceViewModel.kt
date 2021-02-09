@@ -53,6 +53,7 @@ class ManageSpaceViewModel internal constructor(
 
     /**
      * Reset analytics storage. See [Analytics.resetAnalytics].
+     * @param onCompleteFunction The function to call when the job completes.
      */
     fun resetAnalytics(
         onCompleteFunction: (isSuccessful: Boolean) -> Unit
@@ -94,6 +95,34 @@ class ManageSpaceViewModel internal constructor(
                 }
             }
             onCompleteFunction(true)
+        }
+    }
+
+    /**
+     * Reset app settings for Wearable Extensions. This does not include extension settings.
+     * @param onProgressChanged The function to call when clear progress is changed.
+     * @param onCompleteFunction The function to call when the job completes.
+     */
+    fun resetAppSettings(
+        onProgressChanged: (progress: Int) -> Unit,
+        onCompleteFunction: (isSuccessful: Boolean) -> Unit
+    ) {
+        viewModelScope.launch(coroutineDispatcher) {
+            val preferencesToClear = sharedPreferences.all
+                .map { it.key }
+                .filterNot { SyncPreferences.ALL_PREFS.contains(it) }
+            if (preferencesToClear.isNotEmpty()) {
+                val progressMultiplier = floor(100.0 / preferencesToClear.count()).toInt()
+                var progress: Int
+                sharedPreferences.edit(commit = true) {
+                    preferencesToClear.forEachIndexed { index, s ->
+                        remove(s)
+                        progress = (index + 1) * progressMultiplier
+                        withContext(Dispatchers.Main) { onProgressChanged(progress) }
+                    }
+                }
+            }
+            withContext(Dispatchers.Main) { onCompleteFunction(true) }
         }
     }
 

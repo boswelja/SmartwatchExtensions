@@ -195,6 +195,11 @@
     <string name="reset_extensions_resetting">Resetting extensions</string>
     <string name="reset_extensions_failed">Failed to reset extensions</string>
     <string name="reset_extensions_success">Successfully reset extensions</string>
+    <string name="reset_settings_title">Reset App Settings</string>
+    <string name="reset_settings_desc">Reset all your Wearable Extensions app settings. This does not include extension settings.</string>
+    <string name="reset_settings_resetting">Resetting app settings</string>
+    <string name="reset_settings_failed">Failed to reset app settings</string>
+    <string name="reset_settings_success">Successfully reset app settings</string>
     <string name="reset_app_title">Reset Wearable Extensions</string>
     <string name="reset_app_desc">This will reset Wearable Extensions on all your registered watches, as well as here on your phone.</string>
     <string name="reset_app_warning">We will reset Wearable Extensions on all your registered watches, then here on your phone. This includes permissions, settings and widgets.</string>
