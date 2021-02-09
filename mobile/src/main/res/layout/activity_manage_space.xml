@@ -20,93 +20,10 @@
         app:layout_constraintBottom_toBottomOf="parent">
 
         <androidx.appcompat.widget.LinearLayoutCompat
+            android:id="@+id/action_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical" />
 
-            <androidx.appcompat.widget.LinearLayoutCompat
-                android:id="@+id/clear_cache_view"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    style="@style/TextAppearance.ManageSpace.Title"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/manage_space_clear_cache_title"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/toolbar_layout" />
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    style="@style/TextAppearance.ManageSpace.Description"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/manage_space_clear_cache_desc" />
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/clear_cache_button"
-                    style="?materialButtonOutlinedStyle"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/manage_space_clear_cache_button" />
-
-            </androidx.appcompat.widget.LinearLayoutCompat>
-
-            <androidx.appcompat.widget.LinearLayoutCompat
-                android:id="@+id/reset_extensions_view"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    style="@style/TextAppearance.ManageSpace.Title"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/manage_space_reset_extensions_title" />
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    style="@style/TextAppearance.ManageSpace.Description"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/manage_space_reset_extensions_desc" />
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/reset_extensions_button"
-                    style="?materialButtonOutlinedStyle"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/manage_space_reset_settings_button" />
-
-            </androidx.appcompat.widget.LinearLayoutCompat>
-
-            <androidx.appcompat.widget.LinearLayoutCompat
-                android:id="@+id/reset_app_view"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    style="@style/TextAppearance.ManageSpace.Title"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/manage_space_reset_app_title" />
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    style="@style/TextAppearance.ManageSpace.Description"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/manage_space_reset_app_desc" />
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/reset_app_button"
-                    style="?materialButtonOutlinedStyle"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/manage_space_reset_app_button" />
-
-            </androidx.appcompat.widget.LinearLayoutCompat>
-        </androidx.appcompat.widget.LinearLayoutCompat>
     </androidx.core.widget.NestedScrollView>
-
 </androidx.constraintlayout.widget.ConstraintLayout>
