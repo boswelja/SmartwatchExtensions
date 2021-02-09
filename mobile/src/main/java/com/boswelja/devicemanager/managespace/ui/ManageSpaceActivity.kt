@@ -1,20 +1,15 @@
 package com.boswelja.devicemanager.managespace.ui
 
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.ui.BaseToolbarActivity
 import com.boswelja.devicemanager.databinding.ActivityManageSpaceBinding
-import com.boswelja.devicemanager.databinding.ManageSpaceItemBinding
-import com.boswelja.devicemanager.managespace.ui.sheets.ClearCacheBottomSheet
-import com.boswelja.devicemanager.managespace.ui.sheets.ResetAnalyticsBottomSheet
-import com.boswelja.devicemanager.managespace.ui.sheets.ResetAppBottomSheet
-import com.boswelja.devicemanager.managespace.ui.sheets.ResetAppSettingsBottomSheet
-import com.boswelja.devicemanager.managespace.ui.sheets.ResetExtensionsBottomSheet
+import com.boswelja.devicemanager.managespace.ui.actions.ClearCacheActionFragment
+import com.boswelja.devicemanager.managespace.ui.actions.ResetAnalyticsActionFragment
+import com.boswelja.devicemanager.managespace.ui.actions.ResetAppActionFragment
+import com.boswelja.devicemanager.managespace.ui.actions.ResetAppSettingsActionFragment
+import com.boswelja.devicemanager.managespace.ui.actions.ResetExtensionsActionFragment
 
 /**
  * An activity to present the user with options for resetting various data used by Wearable
@@ -23,12 +18,6 @@ import com.boswelja.devicemanager.managespace.ui.sheets.ResetExtensionsBottomShe
 class ManageSpaceActivity : BaseToolbarActivity() {
 
     private lateinit var binding: ActivityManageSpaceBinding
-
-    private val clearCacheSheet by lazy { ClearCacheBottomSheet() }
-    private val resetAnalyticsSheet by lazy { ResetAnalyticsBottomSheet() }
-    private val resetSettingsSheet by lazy { ResetExtensionsBottomSheet() }
-    private val resetAppSettingsSheet by lazy { ResetAppSettingsBottomSheet() }
-    private val resetAppSheet by lazy { ResetAppBottomSheet() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,124 +29,14 @@ class ManageSpaceActivity : BaseToolbarActivity() {
 
         setupToolbar(binding.toolbarLayout.toolbar, showTitle = true, showUpButton = true)
 
-        createClearCacheAction()
-        createAnalyticsResetAction()
-        createAppSettingsResetAction()
-        createExtensionResetAction()
-        createAppResetAction()
-    }
-
-    /**
-     * Creates a [SpaceActionFragment] for clearing cache, and adds it to the view.
-     */
-    private fun createClearCacheAction() {
-        val fragment = SpaceActionFragment(
-            getString(R.string.clear_cache_title),
-            getString(R.string.clear_cache_desc),
-            getString(R.string.clear_cache_title)
-        ) {
-            clearCacheSheet.show(supportFragmentManager, clearCacheSheet::class.simpleName)
-        }
-        addAction(fragment)
-    }
-
-    private fun createAnalyticsResetAction() {
-        val fragment = SpaceActionFragment(
-            getString(R.string.reset_analytics_title),
-            getString(R.string.reset_analytics_desc),
-            getString(R.string.reset_analytics_title)
-        ) {
-            resetAnalyticsSheet.show(supportFragmentManager, resetAnalyticsSheet::class.simpleName)
-        }
-        addAction(fragment)
-    }
-
-    /**
-     * Creates a [SpaceActionFragment] for resetting extension related settings, and adds it to the
-     * view.
-     */
-    private fun createExtensionResetAction() {
-        val fragment = SpaceActionFragment(
-            getString(R.string.reset_extensions_title),
-            getString(R.string.reset_extensions_desc),
-            getString(R.string.reset_extensions_title)
-        ) {
-            resetSettingsSheet.show(supportFragmentManager, resetSettingsSheet::class.simpleName)
-        }
-        addAction(fragment)
-    }
-
-    /**
-     * Creates a [SpaceActionFragment] for resetting extension related settings, and adds it to the
-     * view.
-     */
-    private fun createAppSettingsResetAction() {
-        val fragment = SpaceActionFragment(
-            getString(R.string.reset_settings_title),
-            getString(R.string.reset_settings_desc),
-            getString(R.string.reset_settings_title)
-        ) {
-            resetAppSettingsSheet.show(
-                supportFragmentManager,
-                resetAppSettingsSheet::class.simpleName
-            )
-        }
-        addAction(fragment)
-    }
-
-    /**
-     * Creates a [SpaceActionFragment] for resetting extension related settings, and adds it to the
-     * view.
-     */
-    private fun createAppResetAction() {
-        val fragment = SpaceActionFragment(
-            getString(R.string.reset_app_title),
-            getString(R.string.reset_app_desc),
-            getString(R.string.reset_app_title)
-        ) {
-            resetAppSheet.show(supportFragmentManager, resetAppSheet::class.simpleName)
-        }
-        addAction(fragment)
-    }
-
-    /**
-     * Adds a [SpaceActionFragment] to [R.id.action_container].
-     */
-    private fun addAction(fragment: SpaceActionFragment) {
-        supportFragmentManager.commit {
-            add(R.id.action_container, fragment)
-        }
-    }
-
-    /**
-     * A [Fragment] for displaying information about an action, and a button to execute said action.
-     * @param title The title to display.
-     * @param description The description of the action to display.
-     * @param buttonLabel The button label to display
-     * @param onButtonClick A function to be called when the button is clicked.
-     */
-    class SpaceActionFragment(
-        private val title: String,
-        private val description: String,
-        private val buttonLabel: String,
-        private val onButtonClick: () -> Unit
-    ) : Fragment() {
-        private lateinit var binding: ManageSpaceItemBinding
-
-        override fun onCreateView(
-            inflater: LayoutInflater,
-            container: ViewGroup?,
-            savedInstanceState: Bundle?
-        ): View {
-            binding = ManageSpaceItemBinding.inflate(inflater, container, false)
-            return binding.root
-        }
-
-        override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-            binding.title.text = title
-            binding.desc.text = description
-            binding.button.text = buttonLabel
-            binding.button.setOnClickListener { onButtonClick() }
+        if (savedInstanceState == null) {
+            supportFragmentManager.commit {
+                add(R.id.action_container, ClearCacheActionFragment())
+                add(R.id.action_container, ResetAnalyticsActionFragment())
+                add(R.id.action_container, ResetAppSettingsActionFragment())
+                add(R.id.action_container, ResetExtensionsActionFragment())
+                add(R.id.action_container, ResetAppActionFragment())
+            }
         }
     }
 }
