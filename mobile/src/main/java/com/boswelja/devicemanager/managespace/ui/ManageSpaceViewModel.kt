@@ -76,8 +76,8 @@ class ManageSpaceViewModel internal constructor(
         viewModelScope.launch(coroutineDispatcher) {
             analytics.logStorageManagerAction("fullReset")
             val registeredWatches = registeredWatches
-            var progress: Int
             if (!registeredWatches.isNullOrEmpty()) {
+                var progress: Int
                 val watchCount = registeredWatches.count()
                 val progressMultiplier =
                     floor(MAX_PROGRESS / (watchCount + SyncPreferences.ALL_PREFS.count())).toInt()
@@ -139,9 +139,9 @@ class ManageSpaceViewModel internal constructor(
         viewModelScope.launch(coroutineDispatcher) {
             analytics.logStorageManagerAction("fullReset")
             val registeredWatches = registeredWatches
-            var progress: Int
             if (!registeredWatches.isNullOrEmpty()) {
                 val watchCount = registeredWatches.count()
+                var progress: Int
                 val progressMultiplier = floor(MAX_PROGRESS / (watchCount + 1)).toInt()
                 registeredWatches.forEachIndexed { index, watch ->
                     watchManager.forgetWatch(watch)
@@ -172,17 +172,16 @@ class ManageSpaceViewModel internal constructor(
             Timber.d("Got ${cacheFiles.count()} cache files")
             if (cacheFiles.isNotEmpty()) {
                 val progressMultiplier = floor(MAX_PROGRESS / cacheFiles.size).toInt()
-                var currentProgress: Int
+                var progress: Int
                 cacheFiles.forEachIndexed { index, file ->
                     Timber.d("Deleting ${file.path}")
-                    val successfullyDeleted = file.delete()
-                    if (!successfullyDeleted) {
+                    if (!file.delete()) {
                         Timber.w("Failed to delete cache file ${file.absolutePath}")
                         withContext(Dispatchers.Main) { onCompleteFunction(false) }
                         return@launch
                     }
-                    currentProgress = (index + 1) * progressMultiplier
-                    withContext(Dispatchers.Main) { onProgressChanged(currentProgress) }
+                    progress = (index + 1) * progressMultiplier
+                    withContext(Dispatchers.Main) { onProgressChanged(progress) }
                 }
             } else {
                 Timber.w("Cache files null or empty")
