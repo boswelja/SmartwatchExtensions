@@ -12,6 +12,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import androidx.preference.PreferenceManager
+import com.boswelja.devicemanager.capability.CapabilityUpdater
 import com.boswelja.devicemanager.common.Compat
 import com.boswelja.devicemanager.common.preference.PreferenceKey.DND_SYNC_TO_PHONE_KEY
 import com.boswelja.devicemanager.common.preference.PreferenceKey.DND_SYNC_WITH_THEATER_KEY
@@ -29,11 +30,12 @@ class BootReceiver : BroadcastReceiver() {
     }
 
     private fun onBootCompleted(context: Context?) {
+        CapabilityUpdater(context!!).updateCapabilities()
         if (sharedPreferences.getBoolean(DND_SYNC_TO_PHONE_KEY, false) ||
             sharedPreferences.getBoolean(DND_SYNC_WITH_THEATER_KEY, false)
         ) {
             Intent(context, DnDLocalChangeListener::class.java).also {
-                Compat.startForegroundService(context!!, it)
+                Compat.startForegroundService(context, it)
             }
         }
     }
