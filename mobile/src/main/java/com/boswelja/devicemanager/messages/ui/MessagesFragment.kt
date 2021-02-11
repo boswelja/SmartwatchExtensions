@@ -123,10 +123,11 @@ class MessagesFragment : Fragment() {
      */
     private fun showMessageDismissedSnackbar(messageId: Long) {
         Snackbar.make(requireView(), R.string.message_dismissed, Snackbar.LENGTH_INDEFINITE)
-            .setAction(R.string.button_undo) {
-                viewModel.restoreMessage(messageId)
-            }
-            .show()
+            .apply {
+                setAction(R.string.button_undo) {
+                    viewModel.restoreMessage(messageId)
+                }
+            }.show()
     }
 
     /**
