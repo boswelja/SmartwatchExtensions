@@ -115,7 +115,8 @@ class AppManagerViewModel @JvmOverloads constructor(
     }
 
     /**
-     * Converts an [AppPackageInfoList] into an [ArrayList] that can be used by [AppsAdapter].
+     * Converts an [AppPackageInfoList] into an [ArrayList] that can be used by
+     * [com.boswelja.devicemanager.appmanager.ui.adapter.AppsAdapter].
      * @param appPackageInfoList The [AppPackageInfoList] to convert.
      * @return The newly created [ArrayList].
      */
