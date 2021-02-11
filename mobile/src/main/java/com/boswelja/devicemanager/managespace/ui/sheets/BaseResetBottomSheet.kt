@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import androidx.annotation.VisibleForTesting
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.commit
@@ -44,11 +45,9 @@ abstract class BaseResetBottomSheet : BottomSheetDialogFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        // By default, we provide the callback to show the progress fragment.
         confirmationFragment = onCreateConfirmation {
-            // By default, we provide the callback to show the progress fragment.
-            isCancelable = false
-            progressFragment = onCreateProgress()
-            showFragment(progressFragment)
+            showProgress()
             onStartWork()
         }
         showFragment(confirmationFragment)
@@ -82,6 +81,26 @@ abstract class BaseResetBottomSheet : BottomSheetDialogFragment() {
     internal abstract fun onStartWork()
 
     /**
+     * Navigates to [progressFragment].
+     */
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    internal fun showProgress() {
+        isCancelable = false
+        progressFragment = onCreateProgress()
+        showFragment(progressFragment)
+    }
+
+    /**
+     * Navigates to [resultsFragment].
+     */
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    internal fun showResults() {
+        resultsFragment = onCreateResult { dismiss() }
+        showFragment(resultsFragment)
+        isCancelable = true
+    }
+
+    /**
      * Set the progress fragment indicator progress. When progress is 0 or lower, the indicator is
      * indeterminate. When the progress is equal to or higher than 100, the result fragment is shown
      * @param progress The progress of the current operation. Should be in range 0-100.
@@ -89,9 +108,7 @@ abstract class BaseResetBottomSheet : BottomSheetDialogFragment() {
     internal fun setProgress(progress: Int) {
         Timber.d("setProgress($progress) called")
         if (progress >= 100) {
-            resultsFragment = onCreateResult { dismiss() }
-            showFragment(resultsFragment)
-            isCancelable = true
+            showResults()
         } else {
             try {
                 progressFragment.setProgress(progress)
