@@ -1,4 +1,4 @@
-package com.boswelja.devicemanager.watchmanager.connection
+package com.boswelja.devicemanager.watchmanager.connection.wearos
 
 import android.content.Context
 import androidx.annotation.VisibleForTesting
@@ -10,6 +10,7 @@ import com.boswelja.devicemanager.common.References.CAPABILITY_WATCH_APP
 import com.boswelja.devicemanager.common.connection.Messages.CLEAR_PREFERENCES
 import com.boswelja.devicemanager.common.connection.Messages.RESET_APP
 import com.boswelja.devicemanager.common.preference.SyncPreferences
+import com.boswelja.devicemanager.watchmanager.connection.WatchConnectionInterface
 import com.boswelja.devicemanager.watchmanager.item.Watch
 import com.google.android.gms.tasks.Task
 import com.google.android.gms.wearable.CapabilityClient

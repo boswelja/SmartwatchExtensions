@@ -7,7 +7,7 @@ import androidx.lifecycle.MediatorLiveData
 import com.boswelja.devicemanager.common.preference.SyncPreferences
 import com.boswelja.devicemanager.common.setup.References
 import com.boswelja.devicemanager.watchmanager.connection.WatchConnectionInterface
-import com.boswelja.devicemanager.watchmanager.connection.WearOSConnectionInterface
+import com.boswelja.devicemanager.watchmanager.connection.wearos.WearOSConnectionInterface
 import com.boswelja.devicemanager.watchmanager.database.WatchDatabase
 import com.boswelja.devicemanager.watchmanager.item.Preference
 import com.boswelja.devicemanager.watchmanager.item.Watch

@@ -12,7 +12,7 @@ import androidx.test.espresso.matcher.ViewMatchers.withChild
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import com.boswelja.devicemanager.R
-import com.boswelja.devicemanager.watchmanager.connection.WearOSConnectionInterface
+import com.boswelja.devicemanager.watchmanager.connection.wearos.WearOSConnectionInterface
 import com.boswelja.devicemanager.watchmanager.database.WatchDatabase
 import com.boswelja.devicemanager.watchmanager.item.Watch
 import io.mockk.every

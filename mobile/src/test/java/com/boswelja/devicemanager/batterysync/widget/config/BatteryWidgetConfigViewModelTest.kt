@@ -6,7 +6,7 @@ import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.boswelja.devicemanager.getOrAwaitValue
-import com.boswelja.devicemanager.watchmanager.connection.WearOSConnectionInterface
+import com.boswelja.devicemanager.watchmanager.connection.wearos.WearOSConnectionInterface
 import com.boswelja.devicemanager.watchmanager.database.WatchDatabase
 import com.boswelja.devicemanager.watchmanager.item.Watch
 import com.google.common.truth.Truth.assertThat

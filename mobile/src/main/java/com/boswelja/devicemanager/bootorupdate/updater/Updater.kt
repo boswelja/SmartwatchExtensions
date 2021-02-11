@@ -22,7 +22,7 @@ import com.boswelja.devicemanager.common.preference.PreferenceKey.BATTERY_SYNC_E
 import com.boswelja.devicemanager.common.setup.References
 import com.boswelja.devicemanager.phonelocking.ui.PhoneLockingPreferenceFragment.Companion.PHONE_LOCKING_MODE_KEY
 import com.boswelja.devicemanager.watchmanager.WatchManager.Companion.LAST_SELECTED_NODE_ID_KEY
-import com.boswelja.devicemanager.watchmanager.connection.WearOSConnectionInterface
+import com.boswelja.devicemanager.watchmanager.connection.wearos.WearOSConnectionInterface
 import com.boswelja.devicemanager.watchmanager.database.WatchDatabase
 import com.boswelja.devicemanager.watchmanager.item.Watch
 import com.google.android.gms.wearable.CapabilityClient

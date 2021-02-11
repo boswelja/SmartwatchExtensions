@@ -137,7 +137,7 @@
             </intent-filter>
         </service>
 
-        <service android:name=".receiver.WatchMessageReceiver">
+        <service android:name=".watchmanager.connection.wearos.WatchMessageReceiver">
             <intent-filter>
                 <action android:name="com.google.android.gms.wearable.MESSAGE_RECEIVED" />
 
@@ -194,7 +194,7 @@
             </intent-filter>
         </activity>
 
-        <service android:name=".receiver.PreferenceChangeReceiver">
+        <service android:name=".watchmanager.connection.wearos.PreferenceChangeReceiver">
             <intent-filter>
                 <action android:name="com.google.android.gms.wearable.DATA_CHANGED" />
                 <data
