@@ -19,7 +19,8 @@ import com.boswelja.devicemanager.common.preference.PreferenceKey.BATTERY_SYNC_E
 
 class BatterySyncViewModel(application: Application) : AndroidViewModel(application) {
 
-    private val database: WatchBatteryStatsDatabase = WatchBatteryStatsDatabase.get(application)
+    private val database: WatchBatteryStatsDatabase =
+        WatchBatteryStatsDatabase.getInstance(application)
 
     private val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(application)
     private val preferenceChangeListener =

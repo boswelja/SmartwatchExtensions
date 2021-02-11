@@ -36,7 +36,7 @@ abstract class BaseWidgetConfigActivity : BaseToolbarActivity() {
         resultIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId)
         setResult(RESULT_CANCELED, resultIntent)
         lifecycleScope.launch(Dispatchers.IO) {
-            widgetDatabase = WidgetDatabase.open(this@BaseWidgetConfigActivity)
+            widgetDatabase = WidgetDatabase.getInstance(this@BaseWidgetConfigActivity)
         }
     }
 

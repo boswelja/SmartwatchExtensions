@@ -40,7 +40,7 @@ class WatchManager internal constructor(
     constructor(context: Context) : this(
         PreferenceManager.getDefaultSharedPreferences(context),
         WatchRepository(context),
-        WatchBatteryStatsDatabase.get(context),
+        WatchBatteryStatsDatabase.getInstance(context),
         Analytics(),
         CoroutineScope(Dispatchers.IO)
     )

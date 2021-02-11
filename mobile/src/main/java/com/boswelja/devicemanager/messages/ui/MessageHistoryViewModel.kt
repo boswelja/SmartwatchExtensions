@@ -21,7 +21,7 @@ class MessageHistoryViewModel internal constructor(
     @Suppress("unused")
     constructor(application: Application) : this(
         application,
-        MessageDatabase.get(application),
+        MessageDatabase.getInstance(application),
         Dispatchers.IO
     )
 

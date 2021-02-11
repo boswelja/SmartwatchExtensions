@@ -12,6 +12,7 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.boswelja.devicemanager.batterysync.widget.WatchBatteryWidget
+import com.boswelja.devicemanager.common.SingletonHolder
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -20,21 +21,13 @@ abstract class WidgetDatabase : RoomDatabase() {
 
     abstract fun watchBatteryWidgetDao(): WatchBatteryWidgetDao
 
-    companion object {
-
-        /**
-         * Opens a new [WidgetDatabase] instance.
-         * @param context [Context].
-         */
-        suspend fun open(context: Context): WidgetDatabase {
-            return withContext(Dispatchers.IO) {
-                return@withContext Room.databaseBuilder(
-                    context, WidgetDatabase::class.java, "widget-db"
-                )
-                    .build()
-            }
-        }
-
+    companion object : SingletonHolder<WidgetDatabase, Context>({ context ->
+        Room.databaseBuilder(
+            context, WidgetDatabase::class.java, "widget-db"
+        ).apply {
+            fallbackToDestructiveMigration()
+        }.build()
+    }) {
         /**
          * Update all the widgets for a specified
          * [com.boswelja.devicemanager.watchmanager.item.Watch].
@@ -43,7 +36,7 @@ abstract class WidgetDatabase : RoomDatabase() {
          */
         suspend fun updateWatchWidgets(context: Context, watchId: String) {
             withContext(Dispatchers.IO) {
-                val database = open(context)
+                val database = getInstance(context)
                 val widgetIds =
                     database
                         .watchBatteryWidgetDao()

@@ -6,6 +6,7 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.boswelja.devicemanager.common.RoomTypeConverters
+import com.boswelja.devicemanager.common.SingletonHolder
 import com.boswelja.devicemanager.messages.Message
 
 @Database(entities = [Message::class], version = 5)
@@ -21,24 +22,10 @@ abstract class MessageDatabase : RoomDatabase() {
         messageDao().clearDismissedMessages()
     }
 
-    companion object {
-        private var INSTANCE: MessageDatabase? = null
-
-        /**
-         * Gets an instance of [MessageDatabase].
-         * @param context [Context].
-         * @return The [MessageDatabase] instance.
-         */
-        fun get(context: Context): MessageDatabase {
-            synchronized(this) {
-                if (INSTANCE == null) {
-                    INSTANCE =
-                        Room.databaseBuilder(context, MessageDatabase::class.java, "messages-db")
-                            .fallbackToDestructiveMigration()
-                            .build()
-                }
-                return INSTANCE!!
-            }
-        }
-    }
+    companion object : SingletonHolder<MessageDatabase, Context>({ context ->
+        Room.databaseBuilder(context, MessageDatabase::class.java, "messages-db")
+            .apply {
+                fallbackToDestructiveMigration()
+            }.build()
+    })
 }

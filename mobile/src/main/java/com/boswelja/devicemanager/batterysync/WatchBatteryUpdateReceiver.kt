@@ -58,7 +58,7 @@ class WatchBatteryUpdateReceiver : WearableListenerService() {
     }
 
     private fun updateStatsInDatabase() {
-        WatchBatteryStatsDatabase.get(this).batteryStatsDao().updateStats(watchBatteryStats)
+        WatchBatteryStatsDatabase.getInstance(this).batteryStatsDao().updateStats(watchBatteryStats)
     }
 
     private fun handleNoti(database: WatchDatabase, watch: Watch) {

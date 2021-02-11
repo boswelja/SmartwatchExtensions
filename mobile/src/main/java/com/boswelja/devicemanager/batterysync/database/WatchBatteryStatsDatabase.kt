@@ -11,35 +11,19 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import com.boswelja.devicemanager.common.SingletonHolder
 
 @Database(entities = [WatchBatteryStats::class], version = 2)
 abstract class WatchBatteryStatsDatabase : RoomDatabase() {
 
     abstract fun batteryStatsDao(): BatteryStatsDao
 
-    override fun close() {
-        INSTANCE = null
-        super.close()
-    }
-
-    companion object {
-        private var INSTANCE: WatchBatteryStatsDatabase? = null
-
-        /**
-         * Gets an instance of [WatchBatteryStatsDatabase].
-         * @param context [Context].
-         * @return The [WatchBatteryStatsDatabase] instance.
-         */
-        fun get(context: Context): WatchBatteryStatsDatabase {
-            synchronized(this) {
-                if (INSTANCE == null) {
-                    INSTANCE =
-                        Room.databaseBuilder(
-                            context, WatchBatteryStatsDatabase::class.java, "battery-stats-db"
-                        ).addMigrations(Migrations.MIGRATION_1_2).build()
-                }
-                return INSTANCE!!
-            }
-        }
-    }
+    companion object : SingletonHolder<WatchBatteryStatsDatabase, Context>({ context ->
+        Room.databaseBuilder(
+            context, WatchBatteryStatsDatabase::class.java, "battery-stats-db"
+        ).apply {
+            addMigrations(Migrations.MIGRATION_1_2)
+            fallbackToDestructiveMigration()
+        }.build()
+    })
 }

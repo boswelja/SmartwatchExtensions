@@ -22,7 +22,7 @@ import timber.log.Timber
 
 class MessagesViewModel @JvmOverloads constructor(
     application: Application,
-    private val messageDatabase: MessageDatabase = MessageDatabase.get(application),
+    private val messageDatabase: MessageDatabase = MessageDatabase.getInstance(application),
     private val appUpdateManager: AppUpdateManager = AppUpdateManagerFactory.create(application),
     private val coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.IO)
 ) : AndroidViewModel(application) {

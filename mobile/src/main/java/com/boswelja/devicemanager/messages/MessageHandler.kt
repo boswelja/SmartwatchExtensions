@@ -24,7 +24,7 @@ object MessageHandler {
         context: Context,
         message: Message,
         priority: Priority = Priority.LOW,
-        database: MessageDatabase = MessageDatabase.get(context),
+        database: MessageDatabase = MessageDatabase.getInstance(context),
         coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.IO)
     ) {
         coroutineScope.launch {

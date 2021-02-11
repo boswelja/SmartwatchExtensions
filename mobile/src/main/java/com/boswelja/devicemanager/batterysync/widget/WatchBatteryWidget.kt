@@ -38,7 +38,7 @@ class WatchBatteryWidget : AppWidgetProvider() {
         super.onDeleted(context, appWidgetIds)
         if (appWidgetIds != null && appWidgetIds.isNotEmpty()) {
             coroutineScope.launch(Dispatchers.IO) {
-                WidgetDatabase.open(context!!).also {
+                WidgetDatabase.getInstance(context!!).also {
                     for (widgetId in appWidgetIds) {
                         it.watchBatteryWidgetDao().removeWidget(widgetId)
                     }
@@ -96,8 +96,8 @@ class WatchBatteryWidget : AppWidgetProvider() {
         height: Int
     ) {
         coroutineScope.launch(Dispatchers.IO) {
-            val widgetDatabase = WidgetDatabase.open(context!!)
-            val batteryStatsDatabase = WatchBatteryStatsDatabase.get(context)
+            val widgetDatabase = WidgetDatabase.getInstance(context!!)
+            val batteryStatsDatabase = WatchBatteryStatsDatabase.getInstance(context)
 
             val watchId =
                 widgetDatabase.watchBatteryWidgetDao().findByWidgetId(appWidgetId)?.watchId
