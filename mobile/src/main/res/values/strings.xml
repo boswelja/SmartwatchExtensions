@@ -184,38 +184,35 @@
 
     <!-- Manage Space strings -->
     <string name="manage_space_title">Manage Space</string>
-    <string name="manage_space_clear_cache_title">Clear Cache</string>
-    <string name="manage_space_reset_settings_title">Reset Settings</string>
-    <string name="manage_space_reset_app_title">Reset Wearable Extensions</string>
-    <string name="manage_space_clear_cache_desc">Clear Wearable Extensions cache.</string>
-    <string name="manage_space_reset_settings_desc">Reset all your settings in Wearable Extensions. Try this first if you\'re experiencing crashes.</string>
-    <string name="manage_space_reset_app_desc">Reset Wearable Extensions. This will reset Wearable Extensions on all your registered watches, as well as here on your phone. This may take a while.</string>
-    <string name="manage_space_clear_cache_button">Clear\nCache</string>
-    <string name="manage_space_reset_settings_button">Reset\nSettings</string>
-    <string name="manage_space_reset_app_button">Reset\nApp</string>
-    <string name="manage_space_progress_status_placeholder">You\'ll see the progress of any actions down here</string>
-    <string name="dialog_reset_settings_title">@string/manage_space_reset_settings_title</string>
-    <string name="dialog_reset_settings_message">Are you sure? This will clear settings for all your registered watches. This may fix some problems.\nPlease make sure all your registered watches are powered on and nearby.</string>
-    <string name="dialog_reset_app_title">@string/manage_space_reset_app_title</string>
-    <string name="dialog_reset_app_message">Are you sure? This will clear all your registered watches and settings, as well as any granted permissions. Wearable Extensions will also be reset on any registered watches.\nPlease make sure all your registered watches are powered on and nearby.</string>
+    <string name="clear_cache_title">Clear Cache</string>
+    <string name="clear_cache_desc">Clear all Wearable Extensions cache.</string>
     <string name="clear_cache_clearing">Clearing cache</string>
     <string name="clear_cache_failed">Failed to clear cache</string>
     <string name="clear_cache_success">Successfully cleared cache</string>
-    <string name="clear_cache_no_cache">No cache files to clear</string>
-    <string name="reset_settings_resetting_for">Resetting settings for %s</string>
-    <string name="reset_settings_failed_for">Failed to reset settings for %s</string>
-    <string name="reset_settings_failed">Failed to reset settings</string>
-    <string name="reset_settings_success">Successfully reset settings for all watches</string>
-    <string name="reset_app_resetting_for">Resetting Wearable Extensions on %s</string>
-    <string name="reset_app_failed_for">Failed to reset %s, make sure it\'s powered on and nearby, and try again</string>
-    <string name="reset_app_resetting_database_for">Clearing %s database</string>
-    <string name="reset_app_resetting_preferences">Resetting Wearable Extensions settings</string>
+    <string name="reset_extensions_title">Reset Extensions</string>
+    <string name="reset_extensions_desc">Reset all your extension settings on your phone and registered watches.</string>
+    <string name="reset_extensions_warning">This will reset extension settings for all your registered watches. Please make sure your registered watches are powered on and nearby.</string>
+    <string name="reset_extensions_resetting">Resetting extensions</string>
+    <string name="reset_extensions_failed">Failed to reset extensions</string>
+    <string name="reset_extensions_success">Successfully reset extensions</string>
+    <string name="reset_settings_title">Reset App Settings</string>
+    <string name="reset_settings_desc">Reset all your Wearable Extensions app settings. This does not include extension settings.</string>
+    <string name="reset_settings_resetting">Resetting app settings</string>
+    <string name="reset_settings_failed">Failed to reset app settings</string>
+    <string name="reset_settings_success">Successfully reset app settings</string>
+    <string name="reset_app_title">Reset Wearable Extensions</string>
+    <string name="reset_app_desc">This will reset Wearable Extensions on all your registered watches, as well as here on your phone.</string>
+    <string name="reset_app_warning">We will reset Wearable Extensions on all your registered watches, then here on your phone. This includes permissions, settings and widgets.</string>
+    <string name="reset_app_resetting">Resetting Wearable Extensions</string>
+    <string name="reset_app_failed">Failed to completely reset Wearable Extensions</string>
     <string name="reset_app_success">Successfully cleared all data!</string>
-
-    <!-- Database names -->
-    <string name="database_name_main">Watch Settings</string>
-    <string name="database_name_widget">Widget</string>
-    <string name="database_name_battery_stats">Battery Sync</string>
+    <string name="reset_app_restarting_note">We just need to restart Wearable Extensions to finish resetting what we can. Tap \`finish\` below to proceed.</string>
+    <string name="reset_analytics_title">Reset Analytics</string>
+    <string name="reset_analytics_desc">This will reset any data stored by Firebase about this app instance.</string>
+    <string name="reset_analytics_resetting">Resetting analytics</string>
+    <string name="reset_analytics_success">Successfully reset analytics</string>
+    <string name="reset_analytics_failed">Failed to reset analytics</string>
+    <string name="please_wait">Please Wait…</string>
 
     <!-- Update checker strings -->
     <string name="update_available_title">Update available</string>

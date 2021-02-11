@@ -15,6 +15,7 @@ import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.analytics.Analytics
+import com.boswelja.devicemanager.batterysync.database.WatchBatteryStatsDatabase
 import com.boswelja.devicemanager.common.SingletonHolder
 import com.boswelja.devicemanager.common.preference.SyncPreferences
 import com.boswelja.devicemanager.watchmanager.item.Watch
@@ -31,6 +32,7 @@ import timber.log.Timber
 class WatchManager internal constructor(
     private val sharedPreferences: SharedPreferences,
     val watchRepository: WatchRepository,
+    private val batteryStatsDatabase: WatchBatteryStatsDatabase,
     private val analytics: Analytics,
     private val coroutineScope: CoroutineScope
 ) {
@@ -38,6 +40,7 @@ class WatchManager internal constructor(
     constructor(context: Context) : this(
         PreferenceManager.getDefaultSharedPreferences(context),
         WatchRepository(context),
+        WatchBatteryStatsDatabase.get(context),
         Analytics(),
         CoroutineScope(Dispatchers.IO)
     )
@@ -111,8 +114,11 @@ class WatchManager internal constructor(
     }
 
     suspend fun forgetWatch(watch: Watch) {
-        watchRepository.resetWatch(watch)
-        analytics.logWatchRemoved()
+        withContext(Dispatchers.IO) {
+            batteryStatsDatabase.batteryStatsDao().deleteStatsForWatch(watch.id)
+            watchRepository.resetWatch(watch)
+            analytics.logWatchRemoved()
+        }
     }
 
     suspend fun renameWatch(watch: Watch, newName: String) {
@@ -120,12 +126,11 @@ class WatchManager internal constructor(
         analytics.logWatchRenamed()
     }
 
-    suspend fun requestResetWatch(watch: Watch) {
-        watchRepository.resetWatch(watch)
-    }
-
     suspend fun resetWatchPreferences(watch: Watch) {
-        watchRepository.resetWatchPreferences(watch)
+        withContext(Dispatchers.IO) {
+            batteryStatsDatabase.batteryStatsDao().deleteStatsForWatch(watch.id)
+            watchRepository.resetWatchPreferences(watch)
+        }
     }
 
     /**

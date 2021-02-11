@@ -20,13 +20,21 @@ import timber.log.Timber
 abstract class BaseDayNightActivity :
     AppCompatActivity(), SharedPreferences.OnSharedPreferenceChangeListener {
 
+    /**
+     * Determines whether night mode should be automatically enabled/disabled when DAYNIGHT_MODE_KEY
+     * changes. Defaults to true.
+     */
+    internal var shouldAutoSwitchNightMode = true
+
     lateinit var sharedPreferences: SharedPreferences
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
         when (key) {
             DAYNIGHT_MODE_KEY -> {
-                Timber.i("$DAYNIGHT_MODE_KEY changed, recreating")
-                recreate()
+                if (shouldAutoSwitchNightMode) {
+                    Timber.i("$DAYNIGHT_MODE_KEY changed, recreating")
+                    recreate()
+                }
             }
         }
     }
