@@ -28,7 +28,7 @@ internal class SetupFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = FragmentDndsyncHelperSetupBinding.inflate(inflater, container, false)
         return binding.root
     }

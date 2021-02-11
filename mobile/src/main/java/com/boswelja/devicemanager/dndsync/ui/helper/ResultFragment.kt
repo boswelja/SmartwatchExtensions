@@ -28,7 +28,7 @@ internal class ResultFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = FragmentDndsyncHelperResultBinding.inflate(inflater, container, false)
         return binding.root
     }
