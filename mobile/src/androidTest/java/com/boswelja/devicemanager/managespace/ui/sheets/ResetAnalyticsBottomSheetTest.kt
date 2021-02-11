@@ -3,10 +3,13 @@ package com.boswelja.devicemanager.managespace.ui.sheets
 import androidx.fragment.app.testing.FragmentScenario
 import androidx.fragment.app.testing.launchFragmentInContainer
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.withText
 import com.boswelja.devicemanager.R
+import com.google.common.truth.Truth.assertThat
 import org.junit.Before
 import org.junit.Test
 
@@ -49,5 +52,21 @@ class ResetAnalyticsBottomSheetTest {
         onView(withId(R.id.title)).check(matches(isCompletelyDisplayed()))
         onView(withId(R.id.desc)).check(matches(isCompletelyDisplayed()))
         onView(withId(R.id.button)).check(matches(isCompletelyDisplayed()))
+    }
+
+    @Test
+    fun uiFlowCompletes() {
+        onView(withId(R.id.button)).perform(click())
+        scenario.onFragment {
+            // Ensure pending transactions are complete
+            it.childFragmentManager.executePendingTransactions()
+
+            // Check whether the current fragment is the end of the flow
+            assertThat(it.childFragmentManager.findFragmentById(R.id.fragment_holder))
+                .isInstanceOf(BaseResetBottomSheet.ConfirmationFragment::class.java)
+        }
+
+        // Check the button text is right to validate we are on the end fragment
+        onView(withId(R.id.button)).check(matches(withText(R.string.button_done)))
     }
 }
