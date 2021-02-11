@@ -7,7 +7,7 @@ object DebugInfo {
 object PackageInfo {
     const val targetSdk = 30
     const val packageName = "com.boswelja.devicemanager"
-    const val versionName = "2.6.4"
+    const val versionName = "2.6.5"
 
     fun getVersionCode(): Int {
         // We need an offset to ensure it's newer than the old versions
