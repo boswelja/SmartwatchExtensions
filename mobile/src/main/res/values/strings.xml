@@ -132,7 +132,6 @@
     <string name="dialog_button_cancel">Cancel</string>
     <string name="dialog_button_yes">Yes</string>
     <string name="dialog_button_no">No</string>
-    <string name="dialog_button_ok">OK</string>
     <string name="dialog_button_enable">Enable</string>
     <string name="dialog_button_reset">Reset</string>
 
