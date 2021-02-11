@@ -41,7 +41,7 @@ class BaseWidgetConfigActivityTest {
         ).build()
 
         mockkObject(WidgetDatabase)
-        coEvery { WidgetDatabase.open(any()) } returns widgetDatabase
+        coEvery { WidgetDatabase.getInstance(any()) } returns widgetDatabase
 
         scenario = launchActivity(intent = dummyIntent)
     }
