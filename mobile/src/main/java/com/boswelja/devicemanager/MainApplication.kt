@@ -14,6 +14,7 @@ import com.boswelja.devicemanager.bootorupdate.updater.Updater
 import com.boswelja.devicemanager.common.Compat
 import timber.log.Timber
 
+@Suppress("unused")
 class MainApplication : Application() {
 
     override fun onCreate() {
