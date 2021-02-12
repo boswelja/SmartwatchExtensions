@@ -124,6 +124,10 @@
                     android:host="*"
                     android:path="/request_sdk_int"
                     android:scheme="wear" />
+                <data
+                    android:host="*"
+                    android:path="/update_capabilities"
+                    android:scheme="wear" />
             </intent-filter>
         </service>
 
