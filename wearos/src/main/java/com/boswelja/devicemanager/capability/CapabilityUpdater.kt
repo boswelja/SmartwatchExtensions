@@ -34,7 +34,7 @@ class CapabilityUpdater(
     /**
      * Update [Capability.SEND_DND].
      */
-    private fun updateSendDnD() {
+    internal fun updateSendDnD() {
         // We can always read DnD state
         capabilityClient.addLocalCapability(Capability.SEND_DND)
     }
@@ -42,7 +42,9 @@ class CapabilityUpdater(
     /**
      * Update [Capability.RECEIVE_DND].
      */
-    private fun updateReceiveDnD() {
+    internal fun updateReceiveDnD() {
+        // Either the watch is capable of granting ACCESS_NOTIFICATION_POLICY (via older SDKs), or
+        // it's already granted.
         if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.O ||
             hasPermission(Manifest.permission.ACCESS_NOTIFICATION_POLICY)
         ) {
@@ -55,7 +57,7 @@ class CapabilityUpdater(
     /**
      * Update [Capability.SYNC_BATTERY].
      */
-    private fun updateSendBattery() {
+    internal fun updateSendBattery() {
         // We can always get battery stats
         capabilityClient.addLocalCapability(Capability.SYNC_BATTERY)
     }
@@ -63,8 +65,10 @@ class CapabilityUpdater(
     /**
      * Update [Capability.MANAGE_APPS].
      */
-    private fun updateManageApps() {
-        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.R ||
+    internal fun updateManageApps() {
+        // QUERY_ALL_APPS should be granted automatically upon app install, so we only check if it's
+        // been granted.
+        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.Q ||
             hasPermission(Manifest.permission.QUERY_ALL_PACKAGES)
         ) {
             capabilityClient.addLocalCapability(Capability.MANAGE_APPS)
@@ -73,7 +77,7 @@ class CapabilityUpdater(
         }
     }
 
-    private fun hasPermission(permission: String): Boolean {
+    internal fun hasPermission(permission: String): Boolean {
         return context.checkSelfPermission(permission) == PackageManager.PERMISSION_GRANTED
     }
 }
