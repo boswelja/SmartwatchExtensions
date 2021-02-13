@@ -7,6 +7,7 @@ import android.os.Build
 import com.boswelja.devicemanager.common.connection.Capability
 import com.google.android.gms.wearable.CapabilityClient
 import com.google.android.gms.wearable.Wearable
+import java.util.EnumSet
 
 /**
  * A class for handling adding and removing local capabilities based on what permissions the watch
@@ -29,6 +30,7 @@ class CapabilityUpdater(
         updateReceiveDnD()
         updateSendBattery()
         updateManageApps()
+        EnumSet.of(Capability.SEND_DND, Capability.SYNC_BATTERY)
     }
 
     /**
@@ -36,7 +38,7 @@ class CapabilityUpdater(
      */
     internal fun updateSendDnD() {
         // We can always read DnD state
-        capabilityClient.addLocalCapability(Capability.SEND_DND)
+        capabilityClient.addLocalCapability(Capability.SEND_DND.name)
     }
 
     /**
@@ -48,9 +50,9 @@ class CapabilityUpdater(
         if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.O ||
             hasPermission(Manifest.permission.ACCESS_NOTIFICATION_POLICY)
         ) {
-            capabilityClient.addLocalCapability(Capability.RECEIVE_DND)
+            capabilityClient.addLocalCapability(Capability.RECEIVE_DND.name)
         } else {
-            capabilityClient.removeLocalCapability(Capability.RECEIVE_DND)
+            capabilityClient.removeLocalCapability(Capability.RECEIVE_DND.name)
         }
     }
 
@@ -59,7 +61,7 @@ class CapabilityUpdater(
      */
     internal fun updateSendBattery() {
         // We can always get battery stats
-        capabilityClient.addLocalCapability(Capability.SYNC_BATTERY)
+        capabilityClient.addLocalCapability(Capability.SYNC_BATTERY.name)
     }
 
     /**
@@ -71,9 +73,9 @@ class CapabilityUpdater(
         if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.Q ||
             hasPermission(Manifest.permission.QUERY_ALL_PACKAGES)
         ) {
-            capabilityClient.addLocalCapability(Capability.MANAGE_APPS)
+            capabilityClient.addLocalCapability(Capability.MANAGE_APPS.name)
         } else {
-            capabilityClient.removeLocalCapability(Capability.MANAGE_APPS)
+            capabilityClient.removeLocalCapability(Capability.MANAGE_APPS.name)
         }
     }
 

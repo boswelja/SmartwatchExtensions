@@ -3,25 +3,25 @@ package com.boswelja.devicemanager.common.connection
 /**
  * Definitions for different watch capabilities
  */
-object Capability {
+enum class Capability(val id: Short) {
 
     /**
      * Whether a node can manage it's own apps.
      */
-    const val MANAGE_APPS = "manage_apps"
+    MANAGE_APPS(0x0001),
 
     /**
      * Whether a node can read it's battery state.
      */
-    const val SYNC_BATTERY = "sync_battery"
+    SYNC_BATTERY(0x0002),
 
     /**
      * Whether a node can read it's own DnD state.
      */
-    const val SEND_DND = "send_dnd"
+    SEND_DND(0x0004),
 
     /**
      * Whether a node can update it's own DnD state.
      */
-    const val RECEIVE_DND = "receive_dnd"
+    RECEIVE_DND(0x0008)
 }
