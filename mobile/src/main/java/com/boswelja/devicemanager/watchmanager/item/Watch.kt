@@ -24,10 +24,11 @@ data class Watch(
     @ColumnInfo(name = "name")
     val name: String,
     val platform: String,
+    var capabilities: Short,
     @Ignore var status: Status
 ) {
     constructor(id: String, name: String, platform: String) : this(
-        id, name, platform, Status.UNKNOWN
+        id, name, platform, 0, Status.UNKNOWN
     )
 
     override fun equals(other: Any?): Boolean {
