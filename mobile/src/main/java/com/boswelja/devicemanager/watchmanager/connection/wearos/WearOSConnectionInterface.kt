@@ -7,6 +7,7 @@ import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import com.boswelja.devicemanager.common.Event
 import com.boswelja.devicemanager.common.References.CAPABILITY_WATCH_APP
+import com.boswelja.devicemanager.common.connection.Capability
 import com.boswelja.devicemanager.common.connection.Messages.CLEAR_PREFERENCES
 import com.boswelja.devicemanager.common.connection.Messages.RESET_APP
 import com.boswelja.devicemanager.common.preference.SyncPreferences
@@ -21,6 +22,9 @@ import com.google.android.gms.wearable.Node
 import com.google.android.gms.wearable.NodeClient
 import com.google.android.gms.wearable.PutDataMapRequest
 import com.google.android.gms.wearable.Wearable
+import kotlin.experimental.and
+import kotlin.experimental.inv
+import kotlin.experimental.or
 import timber.log.Timber
 
 class WearOSConnectionInterface(
@@ -146,6 +150,7 @@ class WearOSConnectionInterface(
         Timber.d("refreshData() called")
         refreshNodesWithApp()
         refreshConnectedNodes()
+        refreshCapabilities()
     }
 
     private fun refreshConnectedNodes(): Task<List<Node>> {
@@ -168,6 +173,30 @@ class WearOSConnectionInterface(
                 dataChanged.fire()
             }
             .addOnFailureListener { Timber.e(it.cause) }
+    }
+
+    private fun refreshCapabilities() {
+        Capability.values().forEach { capability ->
+            capabilityClient.getCapability(capability.name, CapabilityClient.FILTER_ALL)
+                .addOnSuccessListener {
+                    updateNodeCapability(capability, it.nodes)
+                    dataChanged.fire()
+                }
+                .addOnFailureListener { Timber.e(it.cause) }
+        }
+    }
+
+    private fun updateNodeCapability(capability: Capability, nodes: Set<Node>) {
+        val updatedWatches = _availableWatches.value?.map {
+            val hasCapability = nodes.any { node -> node.id == it.id }
+            if (hasCapability) {
+                it.capabilities = it.capabilities or capability.id
+            } else {
+                it.capabilities = it.capabilities and capability.id.inv()
+            }
+            it
+        } ?: emptyList()
+        _availableWatches.postValue(updatedWatches)
     }
 
     companion object {
