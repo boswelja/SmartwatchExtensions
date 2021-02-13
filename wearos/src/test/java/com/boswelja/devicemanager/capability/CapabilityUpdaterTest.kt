@@ -42,13 +42,13 @@ class CapabilityUpdaterTest {
     @Test
     fun `updateSendBattery enables SYNC_BATTERY capability`() {
         capabilityUpdater.updateSendBattery()
-        verify(exactly = 1) { capabilityClient.addLocalCapability(SYNC_BATTERY) }
+        verify(exactly = 1) { capabilityClient.addLocalCapability(SYNC_BATTERY.name) }
     }
 
     @Test
     fun `updateSendDnD enables SEND_DND capability`() {
         capabilityUpdater.updateSendDnD()
-        verify(exactly = 1) { capabilityClient.addLocalCapability(SEND_DND) }
+        verify(exactly = 1) { capabilityClient.addLocalCapability(SEND_DND.name) }
     }
 
     @Test
@@ -56,17 +56,17 @@ class CapabilityUpdaterTest {
         // If SDK is old enough to not need permission, capability should be added.
         if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.O) {
             capabilityUpdater.updateReceiveDnD()
-            verify(exactly = 1) { capabilityClient.addLocalCapability(RECEIVE_DND) }
+            verify(exactly = 1) { capabilityClient.addLocalCapability(RECEIVE_DND.name) }
         } else {
             // Emulate permission granted
             every { capabilityUpdater.hasPermission(ACCESS_NOTIFICATION_POLICY) } returns true
             capabilityUpdater.updateReceiveDnD()
-            verify(exactly = 1) { capabilityClient.addLocalCapability(RECEIVE_DND) }
+            verify(exactly = 1) { capabilityClient.addLocalCapability(RECEIVE_DND.name) }
 
             // Emulate permission denied
             every { capabilityUpdater.hasPermission(ACCESS_NOTIFICATION_POLICY) } returns false
             capabilityUpdater.updateReceiveDnD()
-            verify(exactly = 1) { capabilityClient.removeLocalCapability(RECEIVE_DND) }
+            verify(exactly = 1) { capabilityClient.removeLocalCapability(RECEIVE_DND.name) }
         }
     }
 
@@ -75,17 +75,17 @@ class CapabilityUpdaterTest {
         // If SDK is old enough to not need permission, capability should be added.
         if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.Q) {
             capabilityUpdater.updateManageApps()
-            verify(exactly = 1) { capabilityClient.addLocalCapability(MANAGE_APPS) }
+            verify(exactly = 1) { capabilityClient.addLocalCapability(MANAGE_APPS.name) }
         } else {
             // Emulate permission granted
             every { capabilityUpdater.hasPermission(QUERY_ALL_PACKAGES) } returns true
             capabilityUpdater.updateManageApps()
-            verify(exactly = 1) { capabilityClient.addLocalCapability(MANAGE_APPS) }
+            verify(exactly = 1) { capabilityClient.addLocalCapability(MANAGE_APPS.name) }
 
             // Emulate permission denied
             every { capabilityUpdater.hasPermission(QUERY_ALL_PACKAGES) } returns false
             capabilityUpdater.updateManageApps()
-            verify(exactly = 1) { capabilityClient.removeLocalCapability(MANAGE_APPS) }
+            verify(exactly = 1) { capabilityClient.removeLocalCapability(MANAGE_APPS.name) }
         }
     }
 }
