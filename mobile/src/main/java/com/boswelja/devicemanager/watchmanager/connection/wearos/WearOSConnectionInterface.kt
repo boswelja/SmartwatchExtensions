@@ -144,7 +144,7 @@ class WearOSConnectionInterface(
 
     override fun refreshData() {
         Timber.d("refreshData() called")
-        refreshCapableNodes()
+        refreshNodesWithApp()
         refreshConnectedNodes()
     }
 
@@ -160,7 +160,7 @@ class WearOSConnectionInterface(
             }
     }
 
-    private fun refreshCapableNodes(): Task<CapabilityInfo> {
+    private fun refreshNodesWithApp(): Task<CapabilityInfo> {
         return capabilityClient.getCapability(CAPABILITY_WATCH_APP, CapabilityClient.FILTER_ALL)
             .addOnSuccessListener {
                 Timber.d("Found ${it.nodes.count()} capable nodes")
