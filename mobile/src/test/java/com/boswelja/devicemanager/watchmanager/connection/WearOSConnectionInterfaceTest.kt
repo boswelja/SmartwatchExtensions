@@ -68,30 +68,34 @@ class WearOSConnectionInterfaceTest {
         connectionInterface = getConnectionInterface()
         var expectedWatches = dummyWatches
         // Test with matching sets
-        connectionInterface.connectedNodes.value = dummyNodes.toList()
-        connectionInterface.nodesWithApp.value = dummyNodes
+        connectionInterface.connectedNodes = dummyNodes.toList()
+        connectionInterface.nodesWithApp = dummyNodes.toList()
+        connectionInterface.dataChanged.fire()
         assertThat(connectionInterface.availableWatches.getOrAwaitValue())
             .containsExactlyElementsIn(expectedWatches)
 
         // Test with more connected nodes than capable nodes
-        val nodesWithApp = dummyNodes.drop(1).toSet()
+        val nodesWithApp = dummyNodes.drop(1)
         expectedWatches = nodesWithApp.map(transformNodeToWatch)
-        connectionInterface.connectedNodes.value = dummyNodes.toList()
-        connectionInterface.nodesWithApp.value = nodesWithApp
+        connectionInterface.connectedNodes = dummyNodes.toList()
+        connectionInterface.nodesWithApp = nodesWithApp
+        connectionInterface.dataChanged.fire()
         assertThat(connectionInterface.availableWatches.getOrAwaitValue())
             .containsExactlyElementsIn(expectedWatches)
 
         // Test with more capable nodes than connected nodes
         val connectedNodes = dummyNodes.drop(1)
         expectedWatches = connectedNodes.map(transformNodeToWatch)
-        connectionInterface.connectedNodes.value = connectedNodes
-        connectionInterface.nodesWithApp.value = dummyNodes
+        connectionInterface.connectedNodes = connectedNodes
+        connectionInterface.nodesWithApp = dummyNodes.toList()
+        connectionInterface.dataChanged.fire()
         assertThat(connectionInterface.availableWatches.getOrAwaitValue())
             .containsExactlyElementsIn(expectedWatches)
 
         // Test with no nodes
-        connectionInterface.connectedNodes.value = emptyList()
-        connectionInterface.nodesWithApp.value = emptySet()
+        connectionInterface.connectedNodes = emptyList()
+        connectionInterface.nodesWithApp = emptyList()
+        connectionInterface.dataChanged.fire()
         assertThat(connectionInterface.availableWatches.getOrAwaitValue()).isEmpty()
     }
 
@@ -112,43 +116,43 @@ class WearOSConnectionInterfaceTest {
         val dummyNode = dummyNodes.first()
         val dummyWatch = transformNodeToWatch(dummyNode)
 
-        connectionInterface.nodesWithApp.value = setOf(dummyNode)
-        connectionInterface.connectedNodes.value = listOf(dummyNode)
+        connectionInterface.nodesWithApp = listOf(dummyNode)
+        connectionInterface.connectedNodes = listOf(dummyNode)
         assertThat(connectionInterface.getWatchStatus(dummyWatch, true))
             .isEquivalentAccordingToCompareTo(Watch.Status.CONNECTED)
 
-        connectionInterface.nodesWithApp.value = setOf(dummyNode)
-        connectionInterface.connectedNodes.value = listOf(dummyNode)
+        connectionInterface.nodesWithApp = listOf(dummyNode)
+        connectionInterface.connectedNodes = listOf(dummyNode)
         assertThat(connectionInterface.getWatchStatus(dummyWatch, false))
             .isEquivalentAccordingToCompareTo(Watch.Status.NOT_REGISTERED)
 
-        connectionInterface.nodesWithApp.value = emptySet()
-        connectionInterface.connectedNodes.value = listOf(dummyNode)
+        connectionInterface.nodesWithApp = emptyList()
+        connectionInterface.connectedNodes = listOf(dummyNode)
         assertThat(connectionInterface.getWatchStatus(dummyWatch, true))
             .isEquivalentAccordingToCompareTo(Watch.Status.MISSING_APP)
 
-        connectionInterface.nodesWithApp.value = emptySet()
-        connectionInterface.connectedNodes.value = listOf(dummyNode)
+        connectionInterface.nodesWithApp = emptyList()
+        connectionInterface.connectedNodes = listOf(dummyNode)
         assertThat(connectionInterface.getWatchStatus(dummyWatch, false))
             .isEquivalentAccordingToCompareTo(Watch.Status.MISSING_APP)
 
-        connectionInterface.nodesWithApp.value = setOf(dummyNode)
-        connectionInterface.connectedNodes.value = emptyList()
+        connectionInterface.nodesWithApp = listOf(dummyNode)
+        connectionInterface.connectedNodes = emptyList()
         assertThat(connectionInterface.getWatchStatus(dummyWatch, true))
             .isEquivalentAccordingToCompareTo(Watch.Status.DISCONNECTED)
 
-        connectionInterface.nodesWithApp.value = setOf(dummyNode)
-        connectionInterface.connectedNodes.value = emptyList()
+        connectionInterface.nodesWithApp = listOf(dummyNode)
+        connectionInterface.connectedNodes = emptyList()
         assertThat(connectionInterface.getWatchStatus(dummyWatch, false))
             .isEquivalentAccordingToCompareTo(Watch.Status.ERROR)
 
-        connectionInterface.nodesWithApp.value = emptySet()
-        connectionInterface.connectedNodes.value = emptyList()
+        connectionInterface.nodesWithApp = emptyList()
+        connectionInterface.connectedNodes = emptyList()
         assertThat(connectionInterface.getWatchStatus(dummyWatch, true))
             .isEquivalentAccordingToCompareTo(Watch.Status.ERROR)
 
-        connectionInterface.nodesWithApp.value = emptySet()
-        connectionInterface.connectedNodes.value = emptyList()
+        connectionInterface.nodesWithApp = emptyList()
+        connectionInterface.connectedNodes = emptyList()
         assertThat(connectionInterface.getWatchStatus(dummyWatch, false))
             .isEquivalentAccordingToCompareTo(Watch.Status.ERROR)
     }
@@ -165,7 +169,7 @@ class WearOSConnectionInterfaceTest {
 
         shadowOf(getMainLooper()).idle()
 
-        assertThat(connectionInterface.nodesWithApp.value)
+        assertThat(connectionInterface.nodesWithApp)
             .containsExactlyElementsIn(dummyNodes)
         verify(exactly = 1) { capabilityClient.getCapability(CAPABILITY_WATCH_APP, any()) }
     }
@@ -177,7 +181,7 @@ class WearOSConnectionInterfaceTest {
 
         shadowOf(getMainLooper()).idle()
 
-        assertThat(connectionInterface.connectedNodes.getOrAwaitValue())
+        assertThat(connectionInterface.connectedNodes)
             .containsExactlyElementsIn(dummyNodes)
         verify(exactly = 1) { nodeClient.connectedNodes }
     }
