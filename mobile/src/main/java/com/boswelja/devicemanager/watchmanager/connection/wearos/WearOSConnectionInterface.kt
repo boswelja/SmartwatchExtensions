@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.MutableLiveData
 import com.boswelja.devicemanager.common.Event
 import com.boswelja.devicemanager.common.References.CAPABILITY_WATCH_APP
 import com.boswelja.devicemanager.common.connection.Capability
@@ -21,8 +22,6 @@ import com.google.android.gms.wearable.Node
 import com.google.android.gms.wearable.NodeClient
 import com.google.android.gms.wearable.PutDataMapRequest
 import com.google.android.gms.wearable.Wearable
-import kotlin.experimental.and
-import kotlin.experimental.inv
 import kotlin.experimental.or
 import timber.log.Timber
 
@@ -43,12 +42,16 @@ class WearOSConnectionInterface(
     @VisibleForTesting internal var nodesWithApp: List<Node> = emptyList()
     @VisibleForTesting internal var connectedNodes: List<Node> = emptyList()
 
+    private val _watchCapabilities = MutableLiveData<Map<String, Short>>(emptyMap())
     private val _availableWatches = MediatorLiveData<List<Watch>>()
 
     override val dataChanged: Event = Event()
 
     override val availableWatches: LiveData<List<Watch>>
         get() = _availableWatches
+
+    override val watchCapabilities: LiveData<Map<String, Short>>
+        get() = _watchCapabilities
 
     override val platformIdentifier: String = PLATFORM
 
@@ -66,7 +69,15 @@ class WearOSConnectionInterface(
                 _availableWatches.postValue(watches)
             }
         }
-
+        _availableWatches.addSource(_watchCapabilities) {
+            val watches = _availableWatches.value ?: emptyList()
+            watches.map { watch ->
+                val capabilities = it[watch.id] ?: watch.capabilities
+                watch.capabilities = capabilities
+                watch
+            }
+            _availableWatches.postValue(watches)
+        }
         refreshData()
     }
 
@@ -146,27 +157,18 @@ class WearOSConnectionInterface(
     }
 
     private fun refreshCapabilities() {
+        val capabilityMap = HashMap<String, Short>()
         Capability.values().forEach { capability ->
             capabilityClient.getCapability(capability.name, CapabilityClient.FILTER_ALL)
                 .addOnSuccessListener {
-                    updateNodeCapability(capability, it.nodes)
-                    dataChanged.fire()
+                    it.nodes.forEach { node ->
+                        val capabilities = capabilityMap[node.id] ?: 0
+                        capabilityMap[node.id] = capabilities or capability.id
+                        _watchCapabilities.postValue(capabilityMap)
+                    }
                 }
                 .addOnFailureListener { Timber.e(it.cause) }
         }
-    }
-
-    private fun updateNodeCapability(capability: Capability, nodes: Set<Node>) {
-        val updatedWatches = _availableWatches.value?.map {
-            val hasCapability = nodes.any { node -> node.id == it.id }
-            if (hasCapability) {
-                it.capabilities = it.capabilities or capability.id
-            } else {
-                it.capabilities = it.capabilities and capability.id.inv()
-            }
-            it
-        } ?: emptyList()
-        _availableWatches.postValue(updatedWatches)
     }
 
     companion object {
