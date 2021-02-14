@@ -13,15 +13,17 @@ import com.boswelja.devicemanager.common.connection.Messages.RESET_APP
 import com.boswelja.devicemanager.common.preference.SyncPreferences
 import com.boswelja.devicemanager.watchmanager.connection.WatchConnectionInterface
 import com.boswelja.devicemanager.watchmanager.item.Watch
-import com.google.android.gms.tasks.Task
+import com.google.android.gms.tasks.Tasks
 import com.google.android.gms.wearable.CapabilityClient
-import com.google.android.gms.wearable.CapabilityInfo
 import com.google.android.gms.wearable.DataClient
 import com.google.android.gms.wearable.MessageClient
 import com.google.android.gms.wearable.Node
 import com.google.android.gms.wearable.NodeClient
 import com.google.android.gms.wearable.PutDataMapRequest
 import com.google.android.gms.wearable.Wearable
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlin.experimental.or
 import timber.log.Timber
 
@@ -29,14 +31,16 @@ class WearOSConnectionInterface(
     private val capabilityClient: CapabilityClient,
     private val nodeClient: NodeClient,
     private val messageClient: MessageClient,
-    private val dataClient: DataClient
+    private val dataClient: DataClient,
+    private val coroutineScope: CoroutineScope
 ) : WatchConnectionInterface {
 
     constructor(context: Context) : this(
         Wearable.getCapabilityClient(context),
         Wearable.getNodeClient(context),
         Wearable.getMessageClient(context),
-        Wearable.getDataClient(context)
+        Wearable.getDataClient(context),
+        CoroutineScope(Dispatchers.IO)
     )
 
     @VisibleForTesting internal var nodesWithApp: List<Node> = emptyList()
@@ -129,45 +133,51 @@ class WearOSConnectionInterface(
 
     override fun refreshData() {
         Timber.d("refreshData() called")
-        refreshNodesWithApp()
-        refreshConnectedNodes()
-        refreshCapabilities()
+        coroutineScope.launch {
+            refreshConnectedNodes()
+            refreshNodesWithApp()
+            refreshCapabilities()
+            dataChanged.fire()
+        }
     }
 
-    private fun refreshConnectedNodes(): Task<List<Node>> {
-        return nodeClient.connectedNodes
-            .addOnSuccessListener {
-                Timber.d("Found ${it.count()} connected nodes")
-                connectedNodes = it
-                dataChanged.fire()
-            }
-            .addOnFailureListener {
-                Timber.e(it)
-            }
+    private fun refreshConnectedNodes() {
+        try {
+            val result = Tasks.await(nodeClient.connectedNodes)
+            Timber.d("Found ${it.count()} connected nodes")
+            connectedNodes = result
+        } catch(e: Exception) {
+            Timber.e(e)
+        }
     }
 
-    private fun refreshNodesWithApp(): Task<CapabilityInfo> {
-        return capabilityClient.getCapability(CAPABILITY_WATCH_APP, CapabilityClient.FILTER_ALL)
-            .addOnSuccessListener {
-                Timber.d("Found ${it.nodes.count()} nodes with app")
-                nodesWithApp = it.nodes.toList()
-                dataChanged.fire()
-            }
-            .addOnFailureListener { Timber.e(it.cause) }
+    private fun refreshNodesWithApp() {
+        try {
+            val result = Tasks.await(
+                capabilityClient.getCapability(CAPABILITY_WATCH_APP, CapabilityClient.FILTER_ALL)
+            )
+            Timber.d("Found ${it.nodes.count()} nodes with app")
+            nodesWithApp = it.nodes.toList()
+        } catch(e: Exception) {
+            Timber.e(e)
+        }
     }
 
     private fun refreshCapabilities() {
-        val capabilityMap = HashMap<String, Short>()
-        Capability.values().forEach { capability ->
-            capabilityClient.getCapability(capability.name, CapabilityClient.FILTER_ALL)
-                .addOnSuccessListener {
-                    it.nodes.forEach { node ->
-                        val capabilities = capabilityMap[node.id] ?: 0
-                        capabilityMap[node.id] = capabilities or capability.id
-                        _watchCapabilities.postValue(capabilityMap)
-                    }
+        try {
+            val capabilityMap = HashMap<String, Short>()
+            Capability.values().forEach { capability ->
+                val result = Tasks.await(
+                    capabilityClient.getCapability(capability.name, CapabilityClient.FILTER_ALL)
+                )
+                result.nodes.forEach { node ->
+                    val capabilities = capabilityMap[node.id] ?: 0
+                    capabilityMap[node.id] = capabilities or capability.id
                 }
-                .addOnFailureListener { Timber.e(it.cause) }
+            }
+            _watchCapabilities.postValue(capabilityMap)
+        } catch(e: Exception) {
+            Timber.e(e)
         }
     }
 
