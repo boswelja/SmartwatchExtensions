@@ -144,7 +144,7 @@ class WearOSConnectionInterface(
     private fun refreshConnectedNodes() {
         try {
             val result = Tasks.await(nodeClient.connectedNodes)
-            Timber.d("Found ${it.count()} connected nodes")
+            Timber.d("Found ${result.count()} connected nodes")
             connectedNodes = result
         } catch(e: Exception) {
             Timber.e(e)
@@ -156,8 +156,8 @@ class WearOSConnectionInterface(
             val result = Tasks.await(
                 capabilityClient.getCapability(CAPABILITY_WATCH_APP, CapabilityClient.FILTER_ALL)
             )
-            Timber.d("Found ${it.nodes.count()} nodes with app")
-            nodesWithApp = it.nodes.toList()
+            Timber.d("Found ${result.nodes.count()} nodes with app")
+            nodesWithApp = result.nodes.toList()
         } catch(e: Exception) {
             Timber.e(e)
         }
