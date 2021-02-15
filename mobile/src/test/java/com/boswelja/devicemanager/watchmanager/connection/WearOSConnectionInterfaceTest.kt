@@ -25,6 +25,8 @@ import io.mockk.MockKAnnotations
 import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.verify
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.TestCoroutineScope
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -32,6 +34,7 @@ import org.junit.runner.RunWith
 import org.robolectric.Shadows.shadowOf
 import org.robolectric.annotation.Config
 
+@ExperimentalCoroutinesApi
 @RunWith(AndroidJUnit4::class)
 @Config(sdk = [Build.VERSION_CODES.R])
 class WearOSConnectionInterfaceTest {
@@ -39,6 +42,7 @@ class WearOSConnectionInterfaceTest {
     @get:Rule
     val instantExecutorRule = InstantTaskExecutorRule()
 
+    private val coroutineScope = TestCoroutineScope()
     private val transformNodeToWatch: (node: Node) -> Watch = {
         Watch(it.id, it.displayName, WearOSConnectionInterface.PLATFORM)
     }
@@ -268,7 +272,8 @@ class WearOSConnectionInterfaceTest {
             capabilityClient,
             nodeClient,
             messageClient,
-            dataClient
+            dataClient,
+            coroutineScope
         )
     }
 }
