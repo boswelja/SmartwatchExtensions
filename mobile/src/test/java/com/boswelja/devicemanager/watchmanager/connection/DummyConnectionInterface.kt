@@ -11,7 +11,10 @@ import com.boswelja.devicemanager.watchmanager.item.Watch
 class DummyConnectionInterface(platform: String) : WatchConnectionInterface {
 
     val mutableAvailableWatches = MutableLiveData<List<Watch>>()
+    val mutableWatchCapabilities = MutableLiveData<Map<String, Short>>()
 
+    override val watchCapabilities: LiveData<Map<String, Short>>
+        get() = mutableWatchCapabilities
     override val dataChanged: Event = Event()
     override val availableWatches: LiveData<List<Watch>>
         get() = mutableAvailableWatches
