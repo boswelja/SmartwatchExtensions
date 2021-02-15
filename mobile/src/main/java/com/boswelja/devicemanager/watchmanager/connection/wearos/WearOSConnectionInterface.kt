@@ -21,10 +21,10 @@ import com.google.android.gms.wearable.Node
 import com.google.android.gms.wearable.NodeClient
 import com.google.android.gms.wearable.PutDataMapRequest
 import com.google.android.gms.wearable.Wearable
+import kotlin.experimental.or
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlin.experimental.or
 import timber.log.Timber
 
 class WearOSConnectionInterface(
@@ -146,7 +146,7 @@ class WearOSConnectionInterface(
             val result = Tasks.await(nodeClient.connectedNodes)
             Timber.d("Found ${result.count()} connected nodes")
             connectedNodes = result
-        } catch(e: Exception) {
+        } catch (e: Exception) {
             Timber.e(e)
         }
     }
@@ -158,7 +158,7 @@ class WearOSConnectionInterface(
             )
             Timber.d("Found ${result.nodes.count()} nodes with app")
             nodesWithApp = result.nodes.toList()
-        } catch(e: Exception) {
+        } catch (e: Exception) {
             Timber.e(e)
         }
     }
@@ -176,7 +176,7 @@ class WearOSConnectionInterface(
                 }
             }
             _watchCapabilities.postValue(capabilityMap)
-        } catch(e: Exception) {
+        } catch (e: Exception) {
             Timber.e(e)
         }
     }
