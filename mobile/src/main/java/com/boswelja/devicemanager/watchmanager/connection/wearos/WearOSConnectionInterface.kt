@@ -4,7 +4,6 @@ import android.content.Context
 import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
-import androidx.lifecycle.MutableLiveData
 import com.boswelja.devicemanager.common.Event
 import com.boswelja.devicemanager.common.References.CAPABILITY_WATCH_APP
 import com.boswelja.devicemanager.common.connection.Capability
@@ -46,7 +45,7 @@ class WearOSConnectionInterface(
     @VisibleForTesting internal var nodesWithApp: List<Node> = emptyList()
     @VisibleForTesting internal var connectedNodes: List<Node> = emptyList()
 
-    private val _watchCapabilities = MutableLiveData<Map<String, Short>>(emptyMap())
+    private var _watchCapabilities: Map<String, Short> = emptyMap()
     private val _availableWatches = MediatorLiveData<List<Watch>>()
 
     override val dataChanged: Event = Event()
@@ -54,7 +53,7 @@ class WearOSConnectionInterface(
     override val availableWatches: LiveData<List<Watch>>
         get() = _availableWatches
 
-    override val watchCapabilities: LiveData<Map<String, Short>>
+    override val watchCapabilities: Map<String, Short>
         get() = _watchCapabilities
 
     override val platformIdentifier: String = PLATFORM
@@ -67,20 +66,12 @@ class WearOSConnectionInterface(
                 val watches = nodesWithApp.intersect(connectedNodes).map { node ->
                     Watch(node.id, node.displayName, PLATFORM).apply {
                         getWatchStatus(this, false)
+                        capabilities = _watchCapabilities[id] ?: 0
                     }
                 }
                 Timber.d("Data changed, updating ${watches.count()} availableWatch status")
                 _availableWatches.postValue(watches)
             }
-        }
-        _availableWatches.addSource(_watchCapabilities) {
-            val watches = _availableWatches.value ?: emptyList()
-            watches.map { watch ->
-                val capabilities = it[watch.id] ?: watch.capabilities
-                watch.capabilities = capabilities
-                watch
-            }
-            _availableWatches.postValue(watches)
         }
         refreshData()
     }
@@ -175,7 +166,7 @@ class WearOSConnectionInterface(
                     capabilityMap[node.id] = capabilities or capability.id
                 }
             }
-            _watchCapabilities.postValue(capabilityMap)
+            _watchCapabilities = capabilityMap
         } catch (e: Exception) {
             Timber.e(e)
         }

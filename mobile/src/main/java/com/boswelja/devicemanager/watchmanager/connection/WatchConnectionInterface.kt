@@ -20,9 +20,9 @@ interface WatchConnectionInterface {
     val availableWatches: LiveData<List<Watch>>
 
     /**
-     * An observable map of watch IDs to capabilities.
+     * A map of watch IDs to capabilities.
      */
-    val watchCapabilities: LiveData<Map<String, Short>>
+    val watchCapabilities: Map<String, Short>
 
     /**
      * Returns a string unique to the platform handling the connections. It's important this is

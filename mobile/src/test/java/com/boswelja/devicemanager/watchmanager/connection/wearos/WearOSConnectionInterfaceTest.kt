@@ -221,7 +221,8 @@ class WearOSConnectionInterfaceTest {
         }
 
         // Verify data was updated
-        connectionInterface.watchCapabilities.getOrAwaitValue()
+        assertThat(connectionInterface.watchCapabilities.keys)
+            .containsExactlyElementsIn(dummyNodes.map { it.id })
     }
 
     @Test
