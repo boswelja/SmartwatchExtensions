@@ -1,30 +1,32 @@
-package com.boswelja.devicemanager.watchmanager.connection
+package com.boswelja.devicemanager.watchmanager.connection.wearos
 
 import android.os.Build
 import android.os.Looper.getMainLooper
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.boswelja.devicemanager.TasksAwaitRule
 import com.boswelja.devicemanager.TestCapabilityInfo
 import com.boswelja.devicemanager.TestNode
 import com.boswelja.devicemanager.common.References.CAPABILITY_WATCH_APP
+import com.boswelja.devicemanager.common.connection.Capability
 import com.boswelja.devicemanager.common.connection.Messages.CLEAR_PREFERENCES
 import com.boswelja.devicemanager.common.connection.Messages.RESET_APP
 import com.boswelja.devicemanager.common.preference.SyncPreferences
 import com.boswelja.devicemanager.getOrAwaitValue
-import com.boswelja.devicemanager.watchmanager.connection.wearos.WearOSConnectionInterface
 import com.boswelja.devicemanager.watchmanager.item.Watch
 import com.google.android.gms.tasks.Tasks
 import com.google.android.gms.wearable.CapabilityClient
-import com.google.android.gms.wearable.CapabilityInfo
 import com.google.android.gms.wearable.DataClient
 import com.google.android.gms.wearable.MessageClient
 import com.google.android.gms.wearable.Node
 import com.google.android.gms.wearable.NodeClient
 import com.google.common.truth.Truth.assertThat
 import io.mockk.MockKAnnotations
+import io.mockk.confirmVerified
 import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.verify
+import io.mockk.verifyAll
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineScope
 import org.junit.Before
@@ -42,12 +44,15 @@ class WearOSConnectionInterfaceTest {
     @get:Rule
     val instantExecutorRule = InstantTaskExecutorRule()
 
+    @get:Rule
+    val tasksAwaitRule = TasksAwaitRule()
+
     private val coroutineScope = TestCoroutineScope()
     private val transformNodeToWatch: (node: Node) -> Watch = {
         Watch(it.id, it.displayName, WearOSConnectionInterface.PLATFORM)
     }
 
-    private val dummyNodes = setOf<Node>(
+    private val dummyNodes = listOf<Node>(
         TestNode("id1", "Watch 1"),
         TestNode("id2", "Watch 2"),
         TestNode("id3", "Watch 3")
@@ -65,15 +70,28 @@ class WearOSConnectionInterfaceTest {
     @Before
     fun setUp() {
         MockKAnnotations.init(this)
+        connectionInterface = WearOSConnectionInterface(
+            capabilityClient,
+            nodeClient,
+            messageClient,
+            dataClient,
+            coroutineScope
+        )
+
+        shadowOf(getMainLooper()).idle()
+
+        // Verify any existing calls
+        verifyAll { capabilityClient.getCapability(any(), any()) }
+        verifyAll { nodeClient.connectedNodes }
+        confirmVerified()
     }
 
     @Test
     fun `availableWatches contains only the watches that have the app and are connected`() {
-        connectionInterface = getConnectionInterface()
         var expectedWatches = dummyWatches
         // Test with matching sets
-        connectionInterface.connectedNodes = dummyNodes.toList()
-        connectionInterface.nodesWithApp = dummyNodes.toList()
+        connectionInterface.connectedNodes = dummyNodes
+        connectionInterface.nodesWithApp = dummyNodes
         connectionInterface.dataChanged.fire()
         assertThat(connectionInterface.availableWatches.getOrAwaitValue())
             .containsExactlyElementsIn(expectedWatches)
@@ -81,7 +99,7 @@ class WearOSConnectionInterfaceTest {
         // Test with more connected nodes than capable nodes
         val nodesWithApp = dummyNodes.drop(1)
         expectedWatches = nodesWithApp.map(transformNodeToWatch)
-        connectionInterface.connectedNodes = dummyNodes.toList()
+        connectionInterface.connectedNodes = dummyNodes
         connectionInterface.nodesWithApp = nodesWithApp
         connectionInterface.dataChanged.fire()
         assertThat(connectionInterface.availableWatches.getOrAwaitValue())
@@ -91,7 +109,7 @@ class WearOSConnectionInterfaceTest {
         val connectedNodes = dummyNodes.drop(1)
         expectedWatches = connectedNodes.map(transformNodeToWatch)
         connectionInterface.connectedNodes = connectedNodes
-        connectionInterface.nodesWithApp = dummyNodes.toList()
+        connectionInterface.nodesWithApp = dummyNodes
         connectionInterface.dataChanged.fire()
         assertThat(connectionInterface.availableWatches.getOrAwaitValue())
             .containsExactlyElementsIn(expectedWatches)
@@ -105,7 +123,6 @@ class WearOSConnectionInterfaceTest {
 
     @Test
     fun `sendMessage passes the request to MessageClient`() {
-        connectionInterface = getConnectionInterface()
         val node = dummyNodes.first()
         val dummyWatch = transformNodeToWatch(node)
         val path = "/message-path"
@@ -116,7 +133,6 @@ class WearOSConnectionInterfaceTest {
 
     @Test
     fun `getWatchStatus returns the correct status`() {
-        connectionInterface = getConnectionInterface()
         val dummyNode = dummyNodes.first()
         val dummyWatch = transformNodeToWatch(dummyNode)
 
@@ -162,68 +178,61 @@ class WearOSConnectionInterfaceTest {
     }
 
     @Test
-    fun `nodesWithApp is correctly updated on init`() {
-        every {
-            capabilityClient.getCapability(CAPABILITY_WATCH_APP, any())
-        } returns Tasks.forResult(
-            TestCapabilityInfo(CAPABILITY_WATCH_APP, dummyNodes.toMutableSet()) as CapabilityInfo
-        )
+    fun `refreshConnectedNodes calls appropriate functions and updates data`() {
+        every { nodeClient.connectedNodes } returns Tasks.forResult(dummyNodes)
 
-        connectionInterface = getConnectionInterface()
+        connectionInterface.refreshConnectedNodes()
 
-        shadowOf(getMainLooper()).idle()
-
-        assertThat(connectionInterface.nodesWithApp)
-            .containsExactlyElementsIn(dummyNodes)
-        verify(exactly = 1) { capabilityClient.getCapability(CAPABILITY_WATCH_APP, any()) }
-    }
-
-    @Test
-    fun `connectedNodes is correctly updated on init`() {
-        every { nodeClient.connectedNodes } returns Tasks.forResult(dummyNodes.toList())
-        connectionInterface = getConnectionInterface()
-
-        shadowOf(getMainLooper()).idle()
-
-        assertThat(connectionInterface.connectedNodes)
-            .containsExactlyElementsIn(dummyNodes)
-        verify(exactly = 1) { nodeClient.connectedNodes }
-    }
-
-    @Test
-    fun `refreshData calls appropriate functions and updates LiveData`() {
-        connectionInterface = getConnectionInterface()
-
-        shadowOf(getMainLooper()).idle()
-
-        every { nodeClient.connectedNodes } returns Tasks.forResult(dummyNodes.toList())
-        every {
-            capabilityClient.getCapability(CAPABILITY_WATCH_APP, any())
-        } returns Tasks.forResult(
-            TestCapabilityInfo(CAPABILITY_WATCH_APP, dummyNodes.toMutableSet()) as CapabilityInfo
-        )
-
-        connectionInterface.refreshData()
-
-        shadowOf(getMainLooper()).idle()
-
+        // Verify connected nodes were checked
         verify { nodeClient.connectedNodes }
+
+        // Verify data updated
+        assertThat(connectionInterface.connectedNodes).containsExactlyElementsIn(dummyNodes)
+    }
+
+    @Test
+    fun `refreshNodesWithApp calls appropriate functions and updates data`() {
+        every {
+            capabilityClient.getCapability(CAPABILITY_WATCH_APP, any())
+        } returns Tasks.forResult(
+            TestCapabilityInfo(CAPABILITY_WATCH_APP, dummyNodes.toMutableSet())
+        )
+
+        connectionInterface.refreshNodesWithApp()
+
+        // Verify nodes with app were checked
         verify { capabilityClient.getCapability(CAPABILITY_WATCH_APP, any()) }
-        assertThat(connectionInterface.availableWatches.getOrAwaitValue())
-            .containsExactlyElementsIn(dummyWatches)
+
+        // Verify data updated
+        assertThat(connectionInterface.nodesWithApp).containsExactlyElementsIn(dummyNodes)
+    }
+
+    @Test
+    fun `refreshCapabilities calls appropriate functions and updates data`() {
+        Capability.values().forEach {
+            mockCapability(it, dummyNodes)
+        }
+
+        connectionInterface.refreshCapabilities()
+
+        // Verify node capabilities were checked
+        Capability.values().forEach {
+            verify { capabilityClient.getCapability(it.name, any()) }
+        }
+
+        // Verify data was updated
+        connectionInterface.watchCapabilities.getOrAwaitValue()
     }
 
     @Test
     fun `updatePreferenceOnWatch does nothing with invalid key`() {
         val key = "non-sync-key"
-        connectionInterface = getConnectionInterface()
         connectionInterface.updatePreferenceOnWatch(dummyWatches.first(), key, 0)
-        verify(exactly = 0) { dataClient.putDataItem(any()) }
+        verify(inverse = true) { dataClient.putDataItem(any()) }
     }
 
     @Test
     fun `updatePreferenceOnWatch correctly syncs all bool prefs`() {
-        connectionInterface = getConnectionInterface()
         SyncPreferences.BOOL_PREFS.forEach {
             connectionInterface.updatePreferenceOnWatch(dummyWatches.first(), it, false)
         }
@@ -232,7 +241,6 @@ class WearOSConnectionInterfaceTest {
 
     @Test
     fun `updatePreferenceOnWatch correctly syncs all int prefs`() {
-        connectionInterface = getConnectionInterface()
         SyncPreferences.INT_PREFS.forEach {
             connectionInterface.updatePreferenceOnWatch(dummyWatches.first(), it, 0)
         }
@@ -241,20 +249,18 @@ class WearOSConnectionInterfaceTest {
 
     @Test
     fun `updatePreferenceOnWatch does nothing in invalid data type for key`() {
-        connectionInterface = getConnectionInterface()
         SyncPreferences.BOOL_PREFS.forEach {
             connectionInterface.updatePreferenceOnWatch(dummyWatches.first(), it, 0)
         }
         SyncPreferences.INT_PREFS.forEach {
             connectionInterface.updatePreferenceOnWatch(dummyWatches.first(), it, false)
         }
-        verify(exactly = 0) { dataClient.putDataItem(any()) }
+        verify(inverse = true) { dataClient.putDataItem(any()) }
     }
 
     @Test
     fun `resetWatchApp sends the reset message to the watch`() {
         val watch = dummyWatches.first()
-        connectionInterface = getConnectionInterface()
         connectionInterface.resetWatchApp(watch)
         verify(exactly = 1) { messageClient.sendMessage(watch.id, RESET_APP, null) }
     }
@@ -262,18 +268,13 @@ class WearOSConnectionInterfaceTest {
     @Test
     fun `resetWatchPreferences sends the reset message to the watch`() {
         val watch = dummyWatches.first()
-        connectionInterface = getConnectionInterface()
         connectionInterface.resetWatchPreferences(watch)
         verify(exactly = 1) { messageClient.sendMessage(watch.id, CLEAR_PREFERENCES, null) }
     }
 
-    private fun getConnectionInterface(): WearOSConnectionInterface {
-        return WearOSConnectionInterface(
-            capabilityClient,
-            nodeClient,
-            messageClient,
-            dataClient,
-            coroutineScope
-        )
+    private fun mockCapability(capability: Capability, nodes: List<Node>) {
+        every {
+            capabilityClient.getCapability(capability.name, any())
+        } returns Tasks.forResult(TestCapabilityInfo(capability.name, nodes.toMutableSet()))
     }
 }
