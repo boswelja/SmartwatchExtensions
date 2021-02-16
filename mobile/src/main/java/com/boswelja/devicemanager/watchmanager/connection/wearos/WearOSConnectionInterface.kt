@@ -141,7 +141,7 @@ class WearOSConnectionInterface(
         }
     }
 
-    private fun refreshConnectedNodes() {
+    @VisibleForTesting internal fun refreshConnectedNodes() {
         try {
             val result = Tasks.await(nodeClient.connectedNodes)
             Timber.d("Found ${result.count()} connected nodes")
@@ -151,7 +151,7 @@ class WearOSConnectionInterface(
         }
     }
 
-    private fun refreshNodesWithApp() {
+    @VisibleForTesting internal fun refreshNodesWithApp() {
         try {
             val result = Tasks.await(
                 capabilityClient.getCapability(CAPABILITY_WATCH_APP, CapabilityClient.FILTER_ALL)
@@ -163,7 +163,7 @@ class WearOSConnectionInterface(
         }
     }
 
-    private fun refreshCapabilities() {
+    @VisibleForTesting internal fun refreshCapabilities() {
         try {
             val capabilityMap = HashMap<String, Short>()
             Capability.values().forEach { capability ->
