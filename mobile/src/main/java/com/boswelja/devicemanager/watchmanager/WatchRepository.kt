@@ -80,8 +80,12 @@ class WatchRepository internal constructor(
         connectionManagers.values.forEach { connectionManager ->
             _registeredWatches.addSource(connectionManager.dataChanged) {
                 if (it) {
-                    val watches = updateStatusForPlatform(
+                    val watchesWithStatus = updateStatusForPlatform(
                         _registeredWatches.value ?: emptyList(),
+                        connectionManager.platformIdentifier
+                    )
+                    val watches = updateCapabilitiesForPlatform(
+                        watchesWithStatus,
                         connectionManager.platformIdentifier
                     )
                     _registeredWatches.postValue(watches)
@@ -123,7 +127,7 @@ class WatchRepository internal constructor(
      * from a specified platform.
      * @param watches The [List] of [Watch] from varying platforms.
      * @param platform The [Watch.platform] to update [Watch.Status] for.
-     * @return The [List] of [Watch] with newly added [Watch.Status]
+     * @return The [List] of [Watch] with newly updated [Watch.Status]
      */
     @VisibleForTesting
     internal fun updateStatusForPlatform(watches: List<Watch>, platform: String): List<Watch> {
@@ -135,6 +139,30 @@ class WatchRepository internal constructor(
         }
         platformWatches.forEach {
             it.status = connectionManager.getWatchStatus(it, it.isRegistered)
+        }
+        return replaceForPlatform(watches, platformWatches)
+    }
+
+    /**
+     * Takes a list of watches from varying platforms and updates [Watch.capabilities] of all
+     * watches.
+     * @param watches The [List] of [Watch] from varying platforms.
+     * @param platform The [Watch.platform] to update [Watch.capabilities] for.
+     * @return The [List] of [Watch] with newly updated [Watch.capabilities]
+     */
+    @VisibleForTesting
+    internal fun updateCapabilitiesForPlatform(
+        watches: List<Watch>,
+        platform: String
+    ): List<Watch> {
+        val platformWatches = watches.filter { it.platform == platform }
+        val connectionManager = connectionManagers[platform]
+        if (connectionManager == null) {
+            Timber.w("Platform $platform not registered")
+            return watches
+        }
+        platformWatches.forEach {
+            it.capabilities = connectionManager.watchCapabilities[it.id] ?: 0
         }
         return replaceForPlatform(watches, platformWatches)
     }
