@@ -18,7 +18,7 @@ import com.boswelja.devicemanager.watchmanager.item.Preference
 import com.boswelja.devicemanager.watchmanager.item.Watch
 import timber.log.Timber
 
-@Database(entities = [Watch::class, IntPreference::class, BoolPreference::class], version = 8)
+@Database(entities = [Watch::class, IntPreference::class, BoolPreference::class], version = 7)
 abstract class WatchDatabase : RoomDatabase() {
 
     abstract fun watchDao(): WatchDao
@@ -95,8 +95,7 @@ abstract class WatchDatabase : RoomDatabase() {
                     Migrations.MIGRATION_3_5,
                     Migrations.MIGRATION_4_5,
                     Migrations.MIGRATION_5_6,
-                    Migrations.MIGRATION_6_7,
-                    Migrations.MIGRATION_7_8
+                    Migrations.MIGRATION_6_7
                 )
                 fallbackToDestructiveMigration()
             }

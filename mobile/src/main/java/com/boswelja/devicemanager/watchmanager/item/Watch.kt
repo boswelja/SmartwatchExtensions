@@ -26,7 +26,7 @@ data class Watch(
     @ColumnInfo(name = "name")
     val name: String,
     val platform: String,
-    var capabilities: Short,
+    @Ignore var capabilities: Short,
     @Ignore var status: Status
 ) {
     constructor(id: String, name: String, platform: String) : this(
