@@ -164,7 +164,10 @@ class WatchBatteryWidget : AppWidgetProvider() {
         context?.let {
             // Set battery indicator image
             ContextCompat.getDrawable(context, R.drawable.ic_watch_battery)!!
-                .apply { level = batteryPercent }
+                .apply {
+                    level = batteryPercent
+                    setTint(ContextCompat.getColor(it, R.color.widgetForeground))
+                }
                 .also { remoteViews.setImageViewBitmap(R.id.battery_indicator, it.toBitmap()) }
 
             // Set battery indicator text
