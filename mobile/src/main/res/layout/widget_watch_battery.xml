@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -24,7 +24,6 @@
             android:layout_above="@+id/battery_indicator_text"
             android:layout_alignParentTop="true"
             android:src="@drawable/watch_battery_unknown"
-            app:tint="@color/widgetForeground"
             tools:ignore="ContentDescription" />
 
         <TextView
@@ -37,5 +36,6 @@
             android:textAlignment="center"
             android:textColor="@color/widgetForeground"
             android:textSize="20sp" />
+
     </RelativeLayout>
 </FrameLayout>
