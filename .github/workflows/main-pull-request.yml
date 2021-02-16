@@ -107,4 +107,4 @@ jobs:
           xml_path: mobile/build/reports/lint-results-debug.xml
       - uses: yutailang0119/action-android-lint@v1.0.2
         with:
-          xml_path: wear/build/reports/lint-results-debug.xml
+          xml_path: wearos/build/reports/lint-results-debug.xml
