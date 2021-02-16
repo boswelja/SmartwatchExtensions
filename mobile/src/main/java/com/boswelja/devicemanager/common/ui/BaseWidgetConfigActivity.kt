@@ -23,7 +23,6 @@ abstract class BaseWidgetConfigActivity : BaseToolbarActivity() {
      * The ID of the widget we're configuring
      */
     protected var widgetId: Int = 0
-    private lateinit var widgetDatabase: WidgetDatabase
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,9 +34,6 @@ abstract class BaseWidgetConfigActivity : BaseToolbarActivity() {
 
         resultIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId)
         setResult(RESULT_CANCELED, resultIntent)
-        lifecycleScope.launch(Dispatchers.IO) {
-            widgetDatabase = WidgetDatabase.getInstance(this@BaseWidgetConfigActivity)
-        }
     }
 
     /**
@@ -51,7 +47,8 @@ abstract class BaseWidgetConfigActivity : BaseToolbarActivity() {
         lifecycleScope.launch(Dispatchers.IO) {
             when (widgetInfo) {
                 is WatchBatteryWidgetId -> {
-                    widgetDatabase.watchBatteryWidgetDao().addWidget(widgetInfo)
+                    WidgetDatabase.getInstance(this@BaseWidgetConfigActivity)
+                        .watchBatteryWidgetDao().addWidget(widgetInfo)
                     WatchBatteryWidget.updateWidgets(
                         this@BaseWidgetConfigActivity,
                         intArrayOf(widgetInfo.widgetId)
