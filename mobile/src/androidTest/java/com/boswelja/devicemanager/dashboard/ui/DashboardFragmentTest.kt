@@ -1,5 +1,6 @@
 package com.boswelja.devicemanager.dashboard.ui
 
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.fragment.app.testing.FragmentScenario
 import androidx.fragment.app.testing.launchFragmentInContainer
 import androidx.lifecycle.Lifecycle
@@ -18,9 +19,13 @@ import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.mockkObject
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 
 class DashboardFragmentTest {
+
+    @get:Rule
+    val taskExecutorRule = InstantTaskExecutorRule()
 
     private val dummyWatch1 = Watch("an-id-1234", "Watch 1", WearOSConnectionInterface.PLATFORM)
 
@@ -44,50 +49,44 @@ class DashboardFragmentTest {
     fun watchStatusUpdatesCorrectlyWithInitialValue() {
         val dummySelectedWatch = MutableLiveData(dummyWatch1)
         every { watchManager.selectedWatch } returns dummySelectedWatch
+
         // Move the fragment to State.STARTED
         scenario.moveToState(Lifecycle.State.STARTED)
-        Thread.sleep(500)
+
         onView(withId(R.id.watch_status_text))
             .check(matches(withText(dummyWatch1.status.stringRes)))
-        onView(withId(R.id.watch_status_icon))
-            .check(matches(withText(dummyWatch1.status.iconRes)))
     }
 
     @Test
     fun watchStatusUpdatesCorrectlyWithUpdatingValue() {
         val dummySelectedWatch = MutableLiveData<Watch>()
         every { watchManager.selectedWatch } returns dummySelectedWatch
+
         // Move the fragment to State.STARTED
         scenario.moveToState(Lifecycle.State.STARTED)
 
         // Check with updated watch
-        dummySelectedWatch.value = dummyWatch1
-        Thread.sleep(500)
+        dummySelectedWatch.postValue(dummyWatch1)
         onView(withId(R.id.watch_status_text))
             .check(matches(withText(dummyWatch1.status.stringRes)))
-        onView(withId(R.id.watch_status_icon))
-            .check(matches(withText(dummyWatch1.status.iconRes)))
 
         // Check with status change
         val newDummy = dummyWatch1
         newDummy.status = Watch.Status.CONNECTED
-        dummySelectedWatch.value = newDummy
-        Thread.sleep(500)
+        dummySelectedWatch.postValue(newDummy)
         onView(withId(R.id.watch_status_text))
             .check(matches(withText(dummyWatch1.status.stringRes)))
-        onView(withId(R.id.watch_status_icon))
-            .check(matches(withText(dummyWatch1.status.iconRes)))
     }
 
     @Test
     fun watchStatusIsCompletelyVisible() {
         val dummySelectedWatch = MutableLiveData(dummyWatch1)
         every { watchManager.selectedWatch } returns dummySelectedWatch
+
         // Move the fragment to State.STARTED
         scenario.moveToState(Lifecycle.State.STARTED)
 
         // Ensure watch status is populated first
-        Thread.sleep(500)
         onView(withId(R.id.watch_status_text))
             .check(matches(isCompletelyDisplayed()))
         onView(withId(R.id.watch_status_icon))

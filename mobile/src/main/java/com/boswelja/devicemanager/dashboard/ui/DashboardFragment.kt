@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import com.boswelja.devicemanager.common.LifecycleAwareTimer
 import com.boswelja.devicemanager.dashboard.ui.items.AppManagerDashboardFragment
 import com.boswelja.devicemanager.dashboard.ui.items.BatterySyncDashboardFragment
@@ -12,6 +13,8 @@ import com.boswelja.devicemanager.dashboard.ui.items.DnDSyncDashboardFragment
 import com.boswelja.devicemanager.dashboard.ui.items.PhoneLockingDashboardFragment
 import com.boswelja.devicemanager.databinding.FragmentDashboardBinding
 import com.boswelja.devicemanager.watchmanager.WatchManager
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import timber.log.Timber
 
 class DashboardFragment : Fragment() {
@@ -54,9 +57,11 @@ class DashboardFragment : Fragment() {
                 Timber.w("Selected watch is null")
                 return@observe
             }
-            Timber.d("Got watch status: ${watch.status}")
-            binding.watchStatusText.setText(watch.status.stringRes)
-            binding.watchStatusIcon.setImageResource(watch.status.iconRes)
+            lifecycleScope.launch(Dispatchers.Main) {
+                Timber.d("Got watch status: ${watch.status}")
+                binding.watchStatusText.setText(watch.status.stringRes)
+                binding.watchStatusIcon.setImageResource(watch.status.iconRes)
+            }
         }
     }
 }

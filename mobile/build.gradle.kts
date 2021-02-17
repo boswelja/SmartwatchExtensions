@@ -125,6 +125,7 @@ dependencies {
     testImplementation("io.mockk:mockk:$mockk")
     testImplementation("org.robolectric:robolectric:$robolectric")
 
+    androidTestImplementation("androidx.arch.core:core-testing:$androidxArch")
     androidTestImplementation("androidx.test.espresso:espresso-core:$androidxEspresso")
     androidTestImplementation("androidx.navigation:navigation-testing:$androidxNavigation")
     androidTestImplementation("androidx.test:runner:$androidxTest")

@@ -15,11 +15,14 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.batterysync.database.WatchBatteryStats
 import com.boswelja.devicemanager.databinding.SettingsWidgetBatterySyncBinding
 import com.boswelja.devicemanager.watchmanager.WatchManager
 import java.util.concurrent.TimeUnit
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import timber.log.Timber
 
 class BatterySyncPreferenceWidgetFragment : Fragment() {
@@ -66,9 +69,11 @@ class BatterySyncPreferenceWidgetFragment : Fragment() {
     }
 
     private fun setObservingWatchStats(watchId: String) {
-        batteryStatsObservable?.removeObserver(batteryStatsObserver)
-        batteryStatsObservable = viewModel.getBatteryStatsObservable(watchId)
-        batteryStatsObservable!!.observe(viewLifecycleOwner, batteryStatsObserver)
+        lifecycleScope.launch(Dispatchers.IO) {
+            batteryStatsObservable?.removeObserver(batteryStatsObserver)
+            batteryStatsObservable = viewModel.getBatteryStatsObservable(watchId)
+            batteryStatsObservable!!.observe(viewLifecycleOwner, batteryStatsObserver)
+        }
     }
 
     private fun showBatterySyncDisabled() {
