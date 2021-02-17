@@ -41,7 +41,7 @@ object TestExtensions {
         }
     }
 
-    fun hasPlural(@StringRes id: Int, quantity: Int) = object : TypeSafeMatcher<View>() {
+    fun withPlural(@StringRes id: Int, quantity: Int) = object : TypeSafeMatcher<View>() {
         override fun describeTo(description: Description) {
             description.appendText(
                 "TextView with text same as plural with id $id and quantity $quantity"

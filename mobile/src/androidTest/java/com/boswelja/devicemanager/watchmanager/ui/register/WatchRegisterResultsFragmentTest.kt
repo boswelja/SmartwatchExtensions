@@ -13,8 +13,8 @@ import androidx.test.espresso.matcher.ViewMatchers.withText
 import com.boswelja.devicemanager.EmptyParentFragment
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.TestExtensions.getOrAwaitValue
-import com.boswelja.devicemanager.TestExtensions.hasPlural
 import com.boswelja.devicemanager.TestExtensions.withDrawable
+import com.boswelja.devicemanager.TestExtensions.withPlural
 import com.boswelja.devicemanager.watchmanager.connection.wearos.WearOSConnectionInterface
 import com.boswelja.devicemanager.watchmanager.item.Watch
 import com.google.common.truth.Truth.assertThat
@@ -56,7 +56,9 @@ class WatchRegisterResultsFragmentTest {
             .check(matches(withDrawable(R.drawable.wizard_ic_success)))
             .check(matches(isCompletelyDisplayed()))
         onView(withId(R.id.status_title))
-            .check(matches(hasPlural(R.plurals.register_watch_success_title, dummyWatches.count())))
+            .check(
+                matches(withPlural(R.plurals.register_watch_success_title, dummyWatches.count()))
+            )
             .check(matches(isCompletelyDisplayed()))
         onView(withId(R.id.status_text))
             .check(matches(withText(R.string.register_watch_success_info)))
@@ -77,7 +79,7 @@ class WatchRegisterResultsFragmentTest {
             .check(matches(withDrawable(R.drawable.wizard_ic_success)))
             .check(matches(isCompletelyDisplayed()))
         onView(withId(R.id.status_title))
-            .check(matches(hasPlural(R.plurals.register_watch_success_title, 1)))
+            .check(matches(withPlural(R.plurals.register_watch_success_title, 1)))
             .check(matches(isCompletelyDisplayed()))
         onView(withId(R.id.status_text))
             .check(matches(withText(R.string.register_watch_success_info)))
