@@ -16,14 +16,10 @@ import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toBitmap
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
-import androidx.test.espresso.UiController
-import androidx.test.espresso.ViewAction
-import androidx.test.espresso.matcher.ViewMatchers.isAssignableFrom
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.TimeoutException
 import org.hamcrest.Description
-import org.hamcrest.Matcher
 import org.hamcrest.TypeSafeMatcher
 
 object TestExtensions {
@@ -51,22 +47,6 @@ object TestExtensions {
         override fun matchesSafely(view: View): Boolean {
             val expectedString = view.context.resources.getQuantityString(id, quantity)
             return view is TextView && view.text == expectedString
-        }
-    }
-
-    fun setVisibility(visibility: Int): ViewAction {
-        return object : ViewAction {
-            override fun getConstraints(): Matcher<View> {
-                return isAssignableFrom(View::class.java)
-            }
-
-            override fun perform(uiController: UiController?, view: View) {
-                view.visibility = visibility
-            }
-
-            override fun getDescription(): String {
-                return "Set view visibility"
-            }
         }
     }
 

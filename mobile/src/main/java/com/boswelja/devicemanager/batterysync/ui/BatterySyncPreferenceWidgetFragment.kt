@@ -102,6 +102,7 @@ class BatterySyncPreferenceWidgetFragment : Fragment() {
         lastUpdateTimer.resetTimer()
         binding.apply {
             watchBatteryIndicator.setImageLevel(batteryStats.percent)
+            binding.lastUpdatedTime.visibility = View.VISIBLE
             watchBatteryPercent.text =
                 getString(R.string.battery_sync_percent_short, batteryStats.percent.toString())
         }
@@ -117,6 +118,5 @@ class BatterySyncPreferenceWidgetFragment : Fragment() {
                 )
             }
         binding.lastUpdatedTime.text = lastUpdateText
-        binding.lastUpdatedTime.visibility = View.VISIBLE
     }
 }
