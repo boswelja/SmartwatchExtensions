@@ -45,10 +45,10 @@ abstract class BaseWidgetConfigActivity : BaseToolbarActivity() {
         setResult(RESULT_OK, resultIntent)
 
         lifecycleScope.launch(Dispatchers.IO) {
+            val database = WidgetDatabase.getInstance(this@BaseWidgetConfigActivity)
             when (widgetInfo) {
                 is WatchBatteryWidgetId -> {
-                    WidgetDatabase.getInstance(this@BaseWidgetConfigActivity)
-                        .watchBatteryWidgetDao().addWidget(widgetInfo)
+                    database.addWidget(widgetInfo)
                     WatchBatteryWidget.updateWidgets(
                         this@BaseWidgetConfigActivity,
                         intArrayOf(widgetInfo.widgetId)

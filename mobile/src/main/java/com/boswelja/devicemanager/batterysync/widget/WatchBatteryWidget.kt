@@ -40,7 +40,7 @@ class WatchBatteryWidget : AppWidgetProvider() {
             coroutineScope.launch(Dispatchers.IO) {
                 WidgetDatabase.getInstance(context!!).also {
                     for (widgetId in appWidgetIds) {
-                        it.watchBatteryWidgetDao().removeWidget(widgetId)
+                        it.removeWidget(widgetId)
                     }
                     it.close()
                 }
@@ -100,7 +100,7 @@ class WatchBatteryWidget : AppWidgetProvider() {
             val batteryStatsDatabase = WatchBatteryStatsDatabase.getInstance(context)
 
             val watchId =
-                widgetDatabase.watchBatteryWidgetDao().findByWidgetId(appWidgetId)?.watchId
+                widgetDatabase.getForWidget(appWidgetId)?.watchId
             if (!watchId.isNullOrEmpty()) {
                 val batteryStats = batteryStatsDatabase.batteryStatsDao().getStatsForWatch(watchId)
                 val remoteViews = createWidgetRemoteView(context, width, height, batteryStats)

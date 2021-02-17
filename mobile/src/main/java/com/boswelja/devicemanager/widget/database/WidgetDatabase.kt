@@ -21,6 +21,22 @@ abstract class WidgetDatabase : RoomDatabase() {
 
     abstract fun watchBatteryWidgetDao(): WatchBatteryWidgetDao
 
+    fun addWidget(widgetAssociation: WatchWidgetAssociation) {
+        when (widgetAssociation) {
+            is WatchBatteryWidgetId -> {
+                watchBatteryWidgetDao().addWidget(widgetAssociation)
+            }
+        }
+    }
+
+    fun removeWidget(widgetId: Int) {
+        watchBatteryWidgetDao().removeWidget(widgetId)
+    }
+
+    fun getForWidget(widgetId: Int): WatchWidgetAssociation? {
+        return watchBatteryWidgetDao().findByWidgetId(widgetId)
+    }
+
     companion object : SingletonHolder<WidgetDatabase, Context>({ context ->
         Room.databaseBuilder(
             context, WidgetDatabase::class.java, "widget-db"
