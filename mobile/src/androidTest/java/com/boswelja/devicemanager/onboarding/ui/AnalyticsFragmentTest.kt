@@ -28,6 +28,8 @@ class AnalyticsFragmentTest {
         fragmentScenario.onFragment {
             navController.setGraph(R.navigation.onboarding_graph)
             Navigation.setViewNavController(it.requireView(), navController)
+            // Ensure we're starting on the right destination
+            navController.navigate(R.id.to_analyticsFragment)
         }
     }
 
