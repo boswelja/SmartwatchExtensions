@@ -11,6 +11,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.VisibleForTesting
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.LiveData
@@ -76,7 +77,8 @@ class BatterySyncPreferenceWidgetFragment : Fragment() {
         }
     }
 
-    private fun showBatterySyncDisabled() {
+    @VisibleForTesting
+    internal fun showBatterySyncDisabled() {
         lastUpdateTimer.stopTimer()
         binding.apply {
             watchBatteryIndicator.setImageLevel(0)
@@ -85,7 +87,8 @@ class BatterySyncPreferenceWidgetFragment : Fragment() {
         }
     }
 
-    private fun updateBatteryStats(batteryStats: WatchBatteryStats) {
+    @VisibleForTesting
+    internal fun updateBatteryStats(batteryStats: WatchBatteryStats) {
         val dataAgeMinutes =
             TimeUnit.MILLISECONDS
                 .toMinutes(System.currentTimeMillis() - batteryStats.lastUpdatedMillis)
