@@ -11,4 +11,5 @@ object Messages {
     const val CLEAR_PREFERENCES = "/clear_preferences"
 
     const val REQUEST_APP_VERSION = "/request_app_version"
+    const val REQUEST_UPDATE_CAPABILITIES = "/update_capabilities"
 }

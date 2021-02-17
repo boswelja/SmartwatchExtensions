@@ -9,7 +9,7 @@ package com.boswelja.devicemanager.watchmanager.database
 
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
-import com.boswelja.devicemanager.watchmanager.connection.WearOSConnectionInterface
+import com.boswelja.devicemanager.watchmanager.connection.wearos.WearOSConnectionInterface
 
 object Migrations {
 

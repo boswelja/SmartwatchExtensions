@@ -15,11 +15,13 @@ import androidx.core.content.edit
 import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.BuildConfig
 import com.boswelja.devicemanager.appmanager.AppManagerService
+import com.boswelja.devicemanager.capability.CapabilityUpdater
 import com.boswelja.devicemanager.common.Compat
 import com.boswelja.devicemanager.common.Extensions.toByteArray
 import com.boswelja.devicemanager.common.appmanager.References
 import com.boswelja.devicemanager.common.connection.Messages.CLEAR_PREFERENCES
 import com.boswelja.devicemanager.common.connection.Messages.REQUEST_APP_VERSION
+import com.boswelja.devicemanager.common.connection.Messages.REQUEST_UPDATE_CAPABILITIES
 import com.boswelja.devicemanager.common.connection.Messages.RESET_APP
 import com.boswelja.devicemanager.common.dndsync.References.REQUEST_INTERRUPT_FILTER_ACCESS_STATUS_PATH
 import com.boswelja.devicemanager.common.dndsync.References.REQUEST_SDK_INT_PATH
@@ -71,6 +73,9 @@ class MessageReceiver : WearableListenerService() {
                 sharedPreferences.edit {
                     clear()
                 }
+            }
+            REQUEST_UPDATE_CAPABILITIES -> {
+                CapabilityUpdater(this).updateCapabilities()
             }
         }
     }

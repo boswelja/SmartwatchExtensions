@@ -124,6 +124,10 @@
                     android:host="*"
                     android:path="/request_sdk_int"
                     android:scheme="wear" />
+                <data
+                    android:host="*"
+                    android:path="/update_capabilities"
+                    android:scheme="wear" />
             </intent-filter>
         </service>
 
@@ -156,10 +160,11 @@
             android:exported="false" />
 
         <receiver
-            android:name=".BootReceiver"
+            android:name=".BootOrUpdateReceiver"
             android:exported="false">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
             </intent-filter>
         </receiver>
 

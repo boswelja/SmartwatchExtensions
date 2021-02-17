@@ -1,46 +1,51 @@
-package com.boswelja.devicemanager.watchmanager.connection
+package com.boswelja.devicemanager.watchmanager.connection.wearos
 
 import android.content.Context
 import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
-import androidx.lifecycle.MutableLiveData
 import com.boswelja.devicemanager.common.Event
 import com.boswelja.devicemanager.common.References.CAPABILITY_WATCH_APP
+import com.boswelja.devicemanager.common.connection.Capability
 import com.boswelja.devicemanager.common.connection.Messages.CLEAR_PREFERENCES
 import com.boswelja.devicemanager.common.connection.Messages.RESET_APP
 import com.boswelja.devicemanager.common.preference.SyncPreferences
+import com.boswelja.devicemanager.watchmanager.connection.WatchConnectionInterface
 import com.boswelja.devicemanager.watchmanager.item.Watch
-import com.google.android.gms.tasks.Task
+import com.google.android.gms.tasks.Tasks
 import com.google.android.gms.wearable.CapabilityClient
-import com.google.android.gms.wearable.CapabilityInfo
 import com.google.android.gms.wearable.DataClient
 import com.google.android.gms.wearable.MessageClient
 import com.google.android.gms.wearable.Node
 import com.google.android.gms.wearable.NodeClient
 import com.google.android.gms.wearable.PutDataMapRequest
 import com.google.android.gms.wearable.Wearable
+import kotlin.experimental.or
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import timber.log.Timber
 
 class WearOSConnectionInterface(
     private val capabilityClient: CapabilityClient,
     private val nodeClient: NodeClient,
     private val messageClient: MessageClient,
-    private val dataClient: DataClient
+    private val dataClient: DataClient,
+    private val coroutineScope: CoroutineScope
 ) : WatchConnectionInterface {
 
     constructor(context: Context) : this(
         Wearable.getCapabilityClient(context),
         Wearable.getNodeClient(context),
         Wearable.getMessageClient(context),
-        Wearable.getDataClient(context)
+        Wearable.getDataClient(context),
+        CoroutineScope(Dispatchers.IO)
     )
 
-    @VisibleForTesting internal var nodesWithApp: MutableLiveData<Set<Node>> =
-        MutableLiveData(emptySet())
-    @VisibleForTesting internal var connectedNodes: MutableLiveData<List<Node>> =
-        MutableLiveData(emptyList())
+    @VisibleForTesting internal var nodesWithApp: List<Node> = emptyList()
+    @VisibleForTesting internal var connectedNodes: List<Node> = emptyList()
 
+    private var _watchCapabilities: Map<String, Short> = emptyMap()
     private val _availableWatches = MediatorLiveData<List<Watch>>()
 
     override val dataChanged: Event = Event()
@@ -48,57 +53,33 @@ class WearOSConnectionInterface(
     override val availableWatches: LiveData<List<Watch>>
         get() = _availableWatches
 
+    override val watchCapabilities: Map<String, Short>
+        get() = _watchCapabilities
+
     override val platformIdentifier: String = PLATFORM
 
     init {
         Timber.i("Creating WearOSConnectionInterface")
         // Set up _availableWatches
-        _availableWatches.addSource(connectedNodes) { connectedNodes ->
-            val watches = connectedNodes.intersect(nodesWithApp.value ?: emptySet()).map {
-                Watch(it.id, it.displayName, PLATFORM).apply {
-                    getWatchStatus(this, false)
-                }
-            }
-            Timber.d(
-                "Found %s available watches from %s connected and %s capable nodes",
-                watches.count(),
-                connectedNodes.count(),
-                nodesWithApp.value?.count()
-            )
-            _availableWatches.postValue(watches)
-        }
-        _availableWatches.addSource(nodesWithApp) { nodesWithApp ->
-            val watches = nodesWithApp.intersect(connectedNodes.value ?: emptySet()).map {
-                Watch(it.id, it.displayName, PLATFORM).apply {
-                    getWatchStatus(this, false)
-                }
-            }
-            Timber.d(
-                "Found %s available watches from %s connected and %s capable nodes",
-                watches.count(),
-                connectedNodes.value?.count(),
-                nodesWithApp.count()
-            )
-            _availableWatches.postValue(watches)
-        }
         _availableWatches.addSource(dataChanged) {
             if (it) {
-                val watches = _availableWatches.value?.map { watch ->
-                    watch.status = getWatchStatus(watch, false)
-                    watch
-                } ?: emptyList()
+                val watches = nodesWithApp.intersect(connectedNodes).map { node ->
+                    Watch(node.id, node.displayName, PLATFORM).apply {
+                        getWatchStatus(this, false)
+                        capabilities = _watchCapabilities[id] ?: 0
+                    }
+                }
                 Timber.d("Data changed, updating ${watches.count()} availableWatch status")
                 _availableWatches.postValue(watches)
             }
         }
-
         refreshData()
     }
 
     override fun getWatchStatus(watch: Watch, isRegistered: Boolean): Watch.Status {
         Timber.d("getWatchStatus($watch, $isRegistered) called")
-        val hasWatchApp = nodesWithApp.value!!.any { it.id == watch.id }
-        val isConnected = connectedNodes.value!!.any { it.id == watch.id }
+        val hasWatchApp = nodesWithApp.any { it.id == watch.id }
+        val isConnected = connectedNodes.any { it.id == watch.id }
         return when {
             hasWatchApp && isConnected && isRegistered -> Watch.Status.CONNECTED
             hasWatchApp && isConnected && !isRegistered -> Watch.Status.NOT_REGISTERED
@@ -143,30 +124,52 @@ class WearOSConnectionInterface(
 
     override fun refreshData() {
         Timber.d("refreshData() called")
-        refreshCapableNodes()
-        refreshConnectedNodes()
+        coroutineScope.launch {
+            refreshConnectedNodes()
+            refreshNodesWithApp()
+            refreshCapabilities()
+            dataChanged.fire()
+        }
     }
 
-    private fun refreshConnectedNodes(): Task<List<Node>> {
-        return nodeClient.connectedNodes
-            .addOnSuccessListener {
-                Timber.d("Found ${it.count()} connected nodes")
-                connectedNodes.postValue(it)
-                dataChanged.fire()
-            }
-            .addOnFailureListener {
-                Timber.e(it)
-            }
+    @VisibleForTesting internal fun refreshConnectedNodes() {
+        try {
+            val result = Tasks.await(nodeClient.connectedNodes)
+            Timber.d("Found ${result.count()} connected nodes")
+            connectedNodes = result
+        } catch (e: Exception) {
+            Timber.e(e)
+        }
     }
 
-    private fun refreshCapableNodes(): Task<CapabilityInfo> {
-        return capabilityClient.getCapability(CAPABILITY_WATCH_APP, CapabilityClient.FILTER_ALL)
-            .addOnSuccessListener {
-                Timber.d("Found ${it.nodes.count()} capable nodes")
-                nodesWithApp.postValue(it.nodes)
-                dataChanged.fire()
+    @VisibleForTesting internal fun refreshNodesWithApp() {
+        try {
+            val result = Tasks.await(
+                capabilityClient.getCapability(CAPABILITY_WATCH_APP, CapabilityClient.FILTER_ALL)
+            )
+            Timber.d("Found ${result.nodes.count()} nodes with app")
+            nodesWithApp = result.nodes.toList()
+        } catch (e: Exception) {
+            Timber.e(e)
+        }
+    }
+
+    @VisibleForTesting internal fun refreshCapabilities() {
+        try {
+            val capabilityMap = HashMap<String, Short>()
+            Capability.values().forEach { capability ->
+                val result = Tasks.await(
+                    capabilityClient.getCapability(capability.name, CapabilityClient.FILTER_ALL)
+                )
+                result.nodes.forEach { node ->
+                    val capabilities = capabilityMap[node.id] ?: 0
+                    capabilityMap[node.id] = capabilities or capability.id
+                }
             }
-            .addOnFailureListener { Timber.e(it.cause) }
+            _watchCapabilities = capabilityMap
+        } catch (e: Exception) {
+            Timber.e(e)
+        }
     }
 
     companion object {

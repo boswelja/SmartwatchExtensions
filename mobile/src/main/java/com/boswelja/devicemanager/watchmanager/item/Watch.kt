@@ -14,6 +14,8 @@ import androidx.room.Entity
 import androidx.room.Ignore
 import androidx.room.PrimaryKey
 import com.boswelja.devicemanager.R
+import com.boswelja.devicemanager.common.connection.Capability
+import kotlin.experimental.and
 
 /**
  * A representation of a watch that can be stored in a Room database.
@@ -24,10 +26,11 @@ data class Watch(
     @ColumnInfo(name = "name")
     val name: String,
     val platform: String,
+    @Ignore var capabilities: Short,
     @Ignore var status: Status
 ) {
     constructor(id: String, name: String, platform: String) : this(
-        id, name, platform, Status.UNKNOWN
+        id, name, platform, 0, Status.UNKNOWN
     )
 
     override fun equals(other: Any?): Boolean {
@@ -42,6 +45,16 @@ data class Watch(
         result = 31 * result + name.hashCode()
         result = 31 * result + platform.hashCode()
         return result
+    }
+
+    /**
+     * Check whether this [Watch] instance has a specified capability.
+     * @param capability The [Capability] to check for.
+     * @return true if this watch is capable, false otherwise.
+     */
+    fun hasCapability(capability: Capability): Boolean {
+        val id = capability.id
+        return (capabilities and id) == id
     }
 
     enum class Status(

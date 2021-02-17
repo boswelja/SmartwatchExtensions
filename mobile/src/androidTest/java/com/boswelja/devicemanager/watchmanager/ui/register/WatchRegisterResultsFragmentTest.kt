@@ -15,7 +15,7 @@ import com.boswelja.devicemanager.TestExtensions.getOrAwaitValue
 import com.boswelja.devicemanager.TestExtensions.hasPlural
 import com.boswelja.devicemanager.TestExtensions.hasText
 import com.boswelja.devicemanager.TestExtensions.withDrawable
-import com.boswelja.devicemanager.watchmanager.connection.WearOSConnectionInterface
+import com.boswelja.devicemanager.watchmanager.connection.wearos.WearOSConnectionInterface
 import com.boswelja.devicemanager.watchmanager.item.Watch
 import com.google.common.truth.Truth.assertThat
 import org.junit.Before
