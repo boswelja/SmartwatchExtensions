@@ -27,6 +27,7 @@ import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.verify
 import io.mockk.verifyAll
+import kotlin.experimental.and
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineScope
 import org.junit.Before
@@ -223,6 +224,101 @@ class WearOSConnectionInterfaceTest {
         // Verify data was updated
         assertThat(connectionInterface.watchCapabilities.keys)
             .containsExactlyElementsIn(dummyNodes.map { it.id })
+    }
+
+    @Test
+    fun `refreshCapabilities correctly updates data when a single node is present`() {
+        val node = dummyNodes.first()
+
+        // Check with all capabilities available for a node
+        Capability.values().forEach {
+            mockCapability(it, listOf(node))
+        }
+        connectionInterface.refreshCapabilities()
+        (connectionInterface.watchCapabilities[node.id] ?: 0).let { capabilities ->
+            Capability.values().forEach {
+                val id = it.id
+                assertThat((capabilities and id) == id).isTrue()
+            }
+        }
+
+        // Check with sone capabilities available for a node
+        val expectedCapabilities = listOf(Capability.SYNC_BATTERY, Capability.MANAGE_APPS)
+        Capability.values().forEach {
+            mockCapability(it, emptyList())
+        }
+        expectedCapabilities.forEach {
+            mockCapability(it, listOf(node))
+        }
+        connectionInterface.refreshCapabilities()
+        (connectionInterface.watchCapabilities[node.id] ?: 0).let { capabilities ->
+            Capability.values().forEach {
+                val id = it.id
+                assertThat((capabilities and id) == id).isEqualTo(expectedCapabilities.contains(it))
+            }
+        }
+
+        // Check with no capabilities available for a node
+        Capability.values().forEach {
+            mockCapability(it, emptyList())
+        }
+        connectionInterface.refreshCapabilities()
+        (connectionInterface.watchCapabilities[node.id] ?: 0).let { capabilities ->
+            Capability.values().forEach {
+                val id = it.id
+                assertThat((capabilities and id) == id).isFalse()
+            }
+        }
+    }
+
+    @Test
+    fun `refreshCapabilities correctly updates data when multiple nodes are present`() {
+        // Check with all capabilities available for a node
+        Capability.values().forEach {
+            mockCapability(it, dummyNodes)
+        }
+        connectionInterface.refreshCapabilities()
+        dummyNodes.forEach { node ->
+            (connectionInterface.watchCapabilities[node.id] ?: 0).let { capabilities ->
+                Capability.values().forEach {
+                    val id = it.id
+                    assertThat((capabilities and id) == id).isTrue()
+                }
+            }
+        }
+
+        // Check with sone capabilities available for a node
+        val expectedCapabilities = listOf(Capability.SYNC_BATTERY, Capability.MANAGE_APPS)
+        Capability.values().forEach {
+            mockCapability(it, emptyList())
+        }
+        expectedCapabilities.forEach {
+            mockCapability(it, dummyNodes)
+        }
+        connectionInterface.refreshCapabilities()
+        dummyNodes.forEach { node ->
+            (connectionInterface.watchCapabilities[node.id] ?: 0).let { capabilities ->
+                Capability.values().forEach {
+                    val id = it.id
+                    assertThat((capabilities and id) == id)
+                        .isEqualTo(expectedCapabilities.contains(it))
+                }
+            }
+        }
+
+        // Check with no capabilities available for any nodes
+        Capability.values().forEach {
+            mockCapability(it, emptyList())
+        }
+        connectionInterface.refreshCapabilities()
+        dummyNodes.forEach { node ->
+            (connectionInterface.watchCapabilities[node.id] ?: 0).let { capabilities ->
+                Capability.values().forEach {
+                    val id = it.id
+                    assertThat((capabilities and id) == id).isFalse()
+                }
+            }
+        }
     }
 
     @Test
