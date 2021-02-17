@@ -8,8 +8,8 @@
 package com.boswelja.devicemanager.batterysync.ui
 
 import androidx.fragment.app.Fragment
-import com.boswelja.devicemanager.common.ui.BasePreferenceFragment
-import com.boswelja.devicemanager.common.ui.BaseWatchPickerPreferenceActivity
+import com.boswelja.devicemanager.common.ui.activity.BasePreferenceFragment
+import com.boswelja.devicemanager.common.ui.activity.BaseWatchPickerPreferenceActivity
 
 class BatterySyncPreferenceActivity : BaseWatchPickerPreferenceActivity() {
 

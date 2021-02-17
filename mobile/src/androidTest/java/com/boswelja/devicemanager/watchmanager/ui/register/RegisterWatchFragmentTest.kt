@@ -5,7 +5,7 @@ import androidx.fragment.app.testing.launchFragmentInContainer
 import androidx.fragment.app.viewModels
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.TestExtensions.getOrAwaitValue
-import com.boswelja.devicemanager.common.ui.LoadingFragment
+import com.boswelja.devicemanager.common.ui.fragment.LoadingFragment
 import com.google.common.truth.Truth.assertThat
 import org.junit.Before
 import org.junit.Test

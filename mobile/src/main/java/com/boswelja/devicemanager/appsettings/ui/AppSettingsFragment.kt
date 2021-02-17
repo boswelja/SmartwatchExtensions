@@ -18,8 +18,8 @@ import androidx.preference.Preference
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.analytics.Analytics
 import com.boswelja.devicemanager.common.Compat
-import com.boswelja.devicemanager.common.ui.BaseDayNightActivity.Companion.DAYNIGHT_MODE_KEY
-import com.boswelja.devicemanager.common.ui.BasePreferenceFragment
+import com.boswelja.devicemanager.common.ui.activity.BaseDayNightActivity.Companion.DAYNIGHT_MODE_KEY
+import com.boswelja.devicemanager.common.ui.activity.BasePreferenceFragment
 import timber.log.Timber
 
 class AppSettingsFragment :

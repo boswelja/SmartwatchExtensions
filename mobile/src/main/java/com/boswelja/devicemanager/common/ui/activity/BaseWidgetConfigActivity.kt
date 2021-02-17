@@ -1,4 +1,4 @@
-package com.boswelja.devicemanager.common.ui
+package com.boswelja.devicemanager.common.ui.activity
 
 import android.appwidget.AppWidgetManager
 import android.content.Intent

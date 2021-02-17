@@ -4,6 +4,7 @@ import android.app.ActivityManager
 import android.content.Context
 import androidx.core.content.ContextCompat
 import com.boswelja.devicemanager.R
+import com.boswelja.devicemanager.common.ui.sheet.BaseResetBottomSheet
 
 /**
  * A [BaseResetBottomSheet] to handle resetting all of Wearable Extensions.

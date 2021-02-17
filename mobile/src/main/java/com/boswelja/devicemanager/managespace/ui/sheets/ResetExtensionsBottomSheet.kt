@@ -2,6 +2,7 @@ package com.boswelja.devicemanager.managespace.ui.sheets
 
 import androidx.core.content.ContextCompat
 import com.boswelja.devicemanager.R
+import com.boswelja.devicemanager.common.ui.sheet.BaseResetBottomSheet
 
 /**
  * A [BaseResetBottomSheet] to handle resetting all extension-related settings.

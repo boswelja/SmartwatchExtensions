@@ -9,8 +9,8 @@ package com.boswelja.devicemanager.widget.ui
 
 import androidx.fragment.app.Fragment
 import com.boswelja.devicemanager.batterysync.widget.WatchBatteryWidget
-import com.boswelja.devicemanager.common.ui.BasePreferenceActivity
-import com.boswelja.devicemanager.common.ui.BasePreferenceFragment
+import com.boswelja.devicemanager.common.ui.activity.BasePreferenceActivity
+import com.boswelja.devicemanager.common.ui.activity.BasePreferenceFragment
 
 class WidgetSettingsActivity : BasePreferenceActivity() {
 

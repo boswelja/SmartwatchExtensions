@@ -11,7 +11,7 @@ import android.os.Bundle
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.boswelja.devicemanager.R
-import com.boswelja.devicemanager.common.ui.BaseWatchPickerActivity
+import com.boswelja.devicemanager.common.ui.activity.BaseWatchPickerActivity
 import com.boswelja.devicemanager.databinding.ActivityMainBinding
 import com.boswelja.devicemanager.messages.Message
 import com.boswelja.devicemanager.messages.MessageHandler

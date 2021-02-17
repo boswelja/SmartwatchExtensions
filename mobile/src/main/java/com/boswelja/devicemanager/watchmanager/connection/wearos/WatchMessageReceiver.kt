@@ -24,7 +24,7 @@ import com.boswelja.devicemanager.common.preference.PreferenceKey
 import com.boswelja.devicemanager.common.setup.References.CHECK_WATCH_REGISTERED_PATH
 import com.boswelja.devicemanager.common.setup.References.WATCH_NOT_REGISTERED_PATH
 import com.boswelja.devicemanager.common.setup.References.WATCH_REGISTERED_PATH
-import com.boswelja.devicemanager.common.ui.BaseWatchPickerPreferenceActivity.Companion.EXTRA_PREFERENCE_KEY
+import com.boswelja.devicemanager.common.ui.activity.BaseWatchPickerPreferenceActivity.Companion.EXTRA_PREFERENCE_KEY
 import com.boswelja.devicemanager.dndsync.ui.DnDSyncPreferenceActivity
 import com.boswelja.devicemanager.main.MainActivity
 import com.boswelja.devicemanager.phonelocking.Utils.isDeviceAdminEnabled

@@ -3,7 +3,7 @@ package com.boswelja.devicemanager.managespace.ui
 import android.os.Bundle
 import androidx.fragment.app.commit
 import com.boswelja.devicemanager.R
-import com.boswelja.devicemanager.common.ui.BaseToolbarActivity
+import com.boswelja.devicemanager.common.ui.activity.BaseToolbarActivity
 import com.boswelja.devicemanager.databinding.ActivityManageSpaceBinding
 import com.boswelja.devicemanager.managespace.ui.actions.ClearCacheActionFragment
 import com.boswelja.devicemanager.managespace.ui.actions.ResetAnalyticsActionFragment

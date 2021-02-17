@@ -9,7 +9,7 @@ package com.boswelja.devicemanager.widget.ui
 
 import android.os.Bundle
 import com.boswelja.devicemanager.R
-import com.boswelja.devicemanager.common.ui.BasePreferenceFragment
+import com.boswelja.devicemanager.common.ui.activity.BasePreferenceFragment
 
 class WidgetSettingsFragment : BasePreferenceFragment() {
 

@@ -1,4 +1,4 @@
-package com.boswelja.devicemanager.managespace.ui.sheets
+package com.boswelja.devicemanager.common.ui.sheet
 
 import android.graphics.drawable.Drawable
 import android.os.Bundle

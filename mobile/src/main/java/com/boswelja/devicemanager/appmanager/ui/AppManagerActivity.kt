@@ -11,8 +11,8 @@ import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.navigation.navArgs
 import com.boswelja.devicemanager.R
-import com.boswelja.devicemanager.common.ui.BaseToolbarActivity
-import com.boswelja.devicemanager.common.ui.LoadingFragment
+import com.boswelja.devicemanager.common.ui.activity.BaseToolbarActivity
+import com.boswelja.devicemanager.common.ui.fragment.LoadingFragment
 import com.boswelja.devicemanager.databinding.ActivityAppManagerBinding
 import timber.log.Timber
 

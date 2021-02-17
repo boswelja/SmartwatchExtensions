@@ -16,7 +16,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import androidx.fragment.app.viewModels
 import com.boswelja.devicemanager.R
-import com.boswelja.devicemanager.common.ui.LoadingFragment
+import com.boswelja.devicemanager.common.ui.fragment.LoadingFragment
 import timber.log.Timber
 
 class RegisterWatchFragment : Fragment() {

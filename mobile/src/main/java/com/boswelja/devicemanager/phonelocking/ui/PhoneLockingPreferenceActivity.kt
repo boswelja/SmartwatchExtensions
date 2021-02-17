@@ -8,8 +8,8 @@
 package com.boswelja.devicemanager.phonelocking.ui
 
 import androidx.fragment.app.Fragment
-import com.boswelja.devicemanager.common.ui.BasePreferenceFragment
-import com.boswelja.devicemanager.common.ui.BaseWatchPickerPreferenceActivity
+import com.boswelja.devicemanager.common.ui.activity.BasePreferenceFragment
+import com.boswelja.devicemanager.common.ui.activity.BaseWatchPickerPreferenceActivity
 
 class PhoneLockingPreferenceActivity : BaseWatchPickerPreferenceActivity() {
     override fun getWidgetFragment(): Fragment? = null

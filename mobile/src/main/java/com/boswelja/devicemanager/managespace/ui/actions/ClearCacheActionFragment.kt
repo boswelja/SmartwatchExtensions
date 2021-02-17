@@ -3,7 +3,7 @@ package com.boswelja.devicemanager.managespace.ui.actions
 import android.os.Bundle
 import android.view.View
 import com.boswelja.devicemanager.R
-import com.boswelja.devicemanager.managespace.ui.sheets.BaseResetBottomSheet
+import com.boswelja.devicemanager.common.ui.sheet.BaseResetBottomSheet
 import com.boswelja.devicemanager.managespace.ui.sheets.ClearCacheBottomSheet
 
 /**

@@ -12,7 +12,7 @@ import android.util.TypedValue
 import android.view.ViewGroup
 import androidx.activity.viewModels
 import com.boswelja.devicemanager.R
-import com.boswelja.devicemanager.common.ui.BaseWidgetConfigActivity
+import com.boswelja.devicemanager.common.ui.activity.BaseWidgetConfigActivity
 import com.boswelja.devicemanager.databinding.ActivityWatchBatteryWidgetConfigurationBinding
 import com.boswelja.devicemanager.watchmanager.item.Watch
 import com.boswelja.devicemanager.widget.database.WatchBatteryWidgetId

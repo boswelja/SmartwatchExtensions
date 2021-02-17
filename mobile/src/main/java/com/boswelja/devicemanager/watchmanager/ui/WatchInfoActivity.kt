@@ -11,7 +11,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
 import androidx.core.widget.doAfterTextChanged
 import com.boswelja.devicemanager.R
-import com.boswelja.devicemanager.common.ui.BaseToolbarActivity
+import com.boswelja.devicemanager.common.ui.activity.BaseToolbarActivity
 import com.boswelja.devicemanager.databinding.ActivityWatchInfoBinding
 import com.boswelja.devicemanager.watchmanager.WatchManager
 import com.boswelja.devicemanager.watchmanager.item.Watch

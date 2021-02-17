@@ -14,7 +14,7 @@ import androidx.appcompat.widget.AppCompatTextView
 import androidx.databinding.DataBindingUtil
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.appmanager.AppPackageInfo
-import com.boswelja.devicemanager.common.ui.BaseToolbarActivity
+import com.boswelja.devicemanager.common.ui.activity.BaseToolbarActivity
 import com.boswelja.devicemanager.databinding.ActivityAppInfoBinding
 
 class AppPackageInfoActivity : BaseToolbarActivity() {

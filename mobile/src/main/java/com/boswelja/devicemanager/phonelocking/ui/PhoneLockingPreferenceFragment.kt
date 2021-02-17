@@ -21,7 +21,7 @@ import androidx.preference.Preference
 import androidx.preference.SwitchPreference
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.preference.PreferenceKey.PHONE_LOCKING_ENABLED_KEY
-import com.boswelja.devicemanager.common.ui.BasePreferenceFragment
+import com.boswelja.devicemanager.common.ui.activity.BasePreferenceFragment
 import com.boswelja.devicemanager.phonelocking.Utils
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.Dispatchers

@@ -19,7 +19,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.preference.Preference
 import com.boswelja.devicemanager.BuildConfig
 import com.boswelja.devicemanager.R
-import com.boswelja.devicemanager.common.ui.BasePreferenceFragment
+import com.boswelja.devicemanager.common.ui.activity.BasePreferenceFragment
 import timber.log.Timber
 
 class AppInfoFragment : BasePreferenceFragment(), Preference.OnPreferenceClickListener {

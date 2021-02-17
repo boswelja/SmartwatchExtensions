@@ -10,7 +10,7 @@ package com.boswelja.devicemanager.watchmanager.ui
 import android.content.Intent
 import android.os.Bundle
 import com.boswelja.devicemanager.common.LifecycleAwareTimer
-import com.boswelja.devicemanager.common.ui.BaseToolbarActivity
+import com.boswelja.devicemanager.common.ui.activity.BaseToolbarActivity
 import com.boswelja.devicemanager.databinding.ActivityWatchManagerBinding
 import com.boswelja.devicemanager.watchmanager.WatchManager
 import com.boswelja.devicemanager.watchmanager.item.Watch

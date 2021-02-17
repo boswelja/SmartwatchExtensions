@@ -9,6 +9,7 @@ import androidx.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import com.boswelja.devicemanager.R
+import com.boswelja.devicemanager.common.ui.sheet.BaseResetBottomSheet
 import com.google.common.truth.Truth.assertThat
 import org.junit.Before
 import org.junit.Test
