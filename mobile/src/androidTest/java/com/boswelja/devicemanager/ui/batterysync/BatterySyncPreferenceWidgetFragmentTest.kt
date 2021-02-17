@@ -9,6 +9,7 @@ package com.boswelja.devicemanager.ui.batterysync
 
 import android.content.pm.ActivityInfo
 import android.view.View
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.fragment.app.testing.FragmentScenario
 import androidx.fragment.app.testing.launchFragmentInContainer
 import androidx.test.espresso.Espresso.onView
@@ -19,9 +20,13 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.TestExtensions.setVisibility
 import com.boswelja.devicemanager.batterysync.ui.BatterySyncPreferenceWidgetFragment
+import org.junit.Rule
 import org.junit.Test
 
 class BatterySyncPreferenceWidgetFragmentTest {
+
+    @get:Rule
+    val taskExecutorRule = InstantTaskExecutorRule()
 
     private fun createScenario(
         landscape: Boolean = false
