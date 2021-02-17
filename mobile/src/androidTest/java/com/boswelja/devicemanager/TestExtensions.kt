@@ -35,9 +35,9 @@ object TestExtensions {
 
         override fun matchesSafely(view: View): Boolean {
             val expectedBitmap = ContextCompat.getDrawable(view.context, id)!!
-                .toBitmap(view.width, view.height)
+                .toBitmap()
             return view is ImageView && view.drawable
-                .toBitmap(view.width, view.height).sameAs(expectedBitmap)
+                .toBitmap().sameAs(expectedBitmap)
         }
     }
 
