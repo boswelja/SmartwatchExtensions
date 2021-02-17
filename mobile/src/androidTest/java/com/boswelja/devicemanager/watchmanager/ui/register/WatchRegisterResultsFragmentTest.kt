@@ -9,11 +9,11 @@ import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withEffectiveVisibility
 import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.withText
 import com.boswelja.devicemanager.EmptyParentFragment
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.TestExtensions.getOrAwaitValue
 import com.boswelja.devicemanager.TestExtensions.hasPlural
-import com.boswelja.devicemanager.TestExtensions.hasText
 import com.boswelja.devicemanager.TestExtensions.withDrawable
 import com.boswelja.devicemanager.watchmanager.connection.wearos.WearOSConnectionInterface
 import com.boswelja.devicemanager.watchmanager.item.Watch
@@ -59,7 +59,7 @@ class WatchRegisterResultsFragmentTest {
             .check(matches(hasPlural(R.plurals.register_watch_success_title, dummyWatches.count())))
             .check(matches(isCompletelyDisplayed()))
         onView(withId(R.id.status_text))
-            .check(matches(hasText(R.string.register_watch_success_info)))
+            .check(matches(withText(R.string.register_watch_success_info)))
             .check(matches(isCompletelyDisplayed()))
         onView(withId(R.id.finish_button)).check(matches(isCompletelyDisplayed()))
         onView(withId(R.id.try_again_button))
@@ -80,7 +80,7 @@ class WatchRegisterResultsFragmentTest {
             .check(matches(hasPlural(R.plurals.register_watch_success_title, 1)))
             .check(matches(isCompletelyDisplayed()))
         onView(withId(R.id.status_text))
-            .check(matches(hasText(R.string.register_watch_success_info)))
+            .check(matches(withText(R.string.register_watch_success_info)))
             .check(matches(isCompletelyDisplayed()))
         onView(withId(R.id.finish_button)).check(matches(isCompletelyDisplayed()))
         onView(withId(R.id.try_again_button))
@@ -98,10 +98,10 @@ class WatchRegisterResultsFragmentTest {
             .check(matches(withDrawable(R.drawable.wizard_ic_warning)))
             .check(matches(isCompletelyDisplayed()))
         onView(withId(R.id.status_title))
-            .check(matches(hasText(R.string.register_watch_no_watches_title)))
+            .check(matches(withText(R.string.register_watch_no_watches_title)))
             .check(matches(isCompletelyDisplayed()))
         onView(withId(R.id.status_text))
-            .check(matches(hasText(R.string.register_watch_no_watches_info)))
+            .check(matches(withText(R.string.register_watch_no_watches_info)))
             .check(matches(isCompletelyDisplayed()))
         onView(withId(R.id.finish_button)).check(matches(isCompletelyDisplayed()))
         onView(withId(R.id.try_again_button))

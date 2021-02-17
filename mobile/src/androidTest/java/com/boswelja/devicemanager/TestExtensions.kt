@@ -36,19 +36,10 @@ object TestExtensions {
         }
 
         override fun matchesSafely(view: View): Boolean {
-            val expectedBitmap = ContextCompat.getDrawable(view.context, id)!!.toBitmap()
-            return view is ImageView && view.drawable.toBitmap().sameAs(expectedBitmap)
-        }
-    }
-
-    fun hasText(@StringRes id: Int) = object : TypeSafeMatcher<View>() {
-        override fun describeTo(description: Description) {
-            description.appendText("TextView with text same as string with id $id")
-        }
-
-        override fun matchesSafely(view: View): Boolean {
-            val expectedString = view.context.getString(id)
-            return view is TextView && view.text == expectedString
+            val expectedBitmap = ContextCompat.getDrawable(view.context, id)!!
+                .toBitmap(view.width, view.height)
+            return view is ImageView && view.drawable
+                .toBitmap(view.width, view.height).sameAs(expectedBitmap)
         }
     }
 
