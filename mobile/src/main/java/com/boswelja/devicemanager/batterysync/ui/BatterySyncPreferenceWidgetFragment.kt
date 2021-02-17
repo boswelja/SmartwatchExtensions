@@ -19,6 +19,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.batterysync.database.WatchBatteryStats
+import com.boswelja.devicemanager.common.LifecycleAwareTimer
 import com.boswelja.devicemanager.databinding.SettingsWidgetBatterySyncBinding
 import com.boswelja.devicemanager.watchmanager.WatchManager
 import java.util.concurrent.TimeUnit
@@ -39,7 +40,15 @@ class BatterySyncPreferenceWidgetFragment : Fragment() {
         }
 
     private val watchManager by lazy { WatchManager.getInstance(requireContext()) }
-    private lateinit var lastUpdateTimer: LastUpdateTimer
+    private val lastUpdateTimer = LifecycleAwareTimer(1, TimeUnit.MINUTES) {
+        batteryStatsObservable?.value?.let { batteryStats ->
+            val dataAgeMinutes =
+                TimeUnit.MILLISECONDS
+                    .toMinutes(System.currentTimeMillis() - batteryStats.lastUpdatedMillis)
+                    .toInt()
+            setLastUpdateTime(dataAgeMinutes)
+        }
+    }
 
     private lateinit var binding: SettingsWidgetBatterySyncBinding
 
@@ -58,14 +67,15 @@ class BatterySyncPreferenceWidgetFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        lastUpdateTimer = LastUpdateTimer(lifecycle)
-        lastUpdateTimer.totalMinutes.observe(viewLifecycleOwner) { setLastUpdateTime(it) }
+        lifecycle.addObserver(lastUpdateTimer)
 
         watchManager.selectedWatch.observe(viewLifecycleOwner) { watch ->
             watch?.id?.let { setObservingWatchStats(it) }
         }
         viewModel.batterySyncEnabled.observe(viewLifecycleOwner) {
-            if (!it) showBatterySyncDisabled()
+            if (!it) {
+                showBatterySyncDisabled()
+            }
         }
     }
 
@@ -79,7 +89,6 @@ class BatterySyncPreferenceWidgetFragment : Fragment() {
 
     @VisibleForTesting
     internal fun showBatterySyncDisabled() {
-        lastUpdateTimer.stopTimer()
         binding.apply {
             watchBatteryIndicator.setImageLevel(0)
             watchBatteryPercent.setText(R.string.battery_sync_disabled)
@@ -89,11 +98,7 @@ class BatterySyncPreferenceWidgetFragment : Fragment() {
 
     @VisibleForTesting
     internal fun updateBatteryStats(batteryStats: WatchBatteryStats) {
-        val dataAgeMinutes =
-            TimeUnit.MILLISECONDS
-                .toMinutes(System.currentTimeMillis() - batteryStats.lastUpdatedMillis)
-                .toInt()
-        lastUpdateTimer.resetTimer(dataAgeMinutes)
+        lastUpdateTimer.resetTimer()
         binding.apply {
             watchBatteryIndicator.setImageLevel(batteryStats.percent)
             watchBatteryPercent.text =
