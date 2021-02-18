@@ -45,6 +45,7 @@ class WatchInfoViewModel internal constructor(
                 _watch.postValue(it)
             }
         }
+        watchManager.refreshData()
     }
 
     /**

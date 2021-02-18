@@ -43,10 +43,12 @@ class WatchInfoActivity : BaseToolbarActivity() {
 
         viewModel.watch.observe(this) { watch ->
             val capabilities = Capability.values().filter { watch.hasCapability(it) }
+            Timber.d("Got ${capabilities.count()} capabilities")
             capabilitiesAdapter.submitList(capabilities)
 
             // If not recreating from saved instance state (i.e. not recreating after rotating)
             if (savedInstanceState == null) {
+                Timber.d("Updating name field")
                 binding.watchNameField.setText(watch.name)
             }
         }
