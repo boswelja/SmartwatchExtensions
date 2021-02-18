@@ -7,6 +7,7 @@ import android.os.Build
 import com.boswelja.devicemanager.common.connection.Capability
 import com.google.android.gms.wearable.CapabilityClient
 import com.google.android.gms.wearable.Wearable
+import timber.log.Timber
 import java.util.EnumSet
 
 /**
@@ -26,6 +27,7 @@ class CapabilityUpdater(
      * Update all capabilities.
      */
     fun updateCapabilities() {
+        Timber.d("Updating capabilities")
         updateSendDnD()
         updateReceiveDnD()
         updateSendBattery()

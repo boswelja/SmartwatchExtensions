@@ -16,25 +16,24 @@ import com.boswelja.devicemanager.common.Compat
 import com.boswelja.devicemanager.common.preference.PreferenceKey.DND_SYNC_TO_PHONE_KEY
 import com.boswelja.devicemanager.common.preference.PreferenceKey.DND_SYNC_WITH_THEATER_KEY
 import com.boswelja.devicemanager.dndsync.DnDLocalChangeListener
+import timber.log.Timber
 
 class BootOrUpdateReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context?, intent: Intent?) {
+        Timber.d("Intent received")
         when (intent?.action) {
             Intent.ACTION_MY_PACKAGE_REPLACED, Intent.ACTION_BOOT_COMPLETED -> {
-                onBootCompleted(context)
-            }
-        }
-    }
-
-    private fun onBootCompleted(context: Context?) {
-        CapabilityUpdater(context!!).updateCapabilities()
-        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
-        if (sharedPreferences.getBoolean(DND_SYNC_TO_PHONE_KEY, false) ||
-            sharedPreferences.getBoolean(DND_SYNC_WITH_THEATER_KEY, false)
-        ) {
-            Intent(context, DnDLocalChangeListener::class.java).also {
-                Compat.startForegroundService(context, it)
+                Timber.d("Boot or update, handling")
+                CapabilityUpdater(context!!).updateCapabilities()
+                val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
+                if (sharedPreferences.getBoolean(DND_SYNC_TO_PHONE_KEY, false) ||
+                    sharedPreferences.getBoolean(DND_SYNC_WITH_THEATER_KEY, false)
+                ) {
+                    Intent(context, DnDLocalChangeListener::class.java).also {
+                        Compat.startForegroundService(context, it)
+                    }
+                }
             }
         }
     }
