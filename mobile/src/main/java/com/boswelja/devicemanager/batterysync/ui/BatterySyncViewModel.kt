@@ -12,12 +12,14 @@ import android.content.SharedPreferences
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.switchMap
 import androidx.preference.PreferenceManager
-import com.boswelja.devicemanager.batterysync.database.WatchBatteryStats
 import com.boswelja.devicemanager.batterysync.database.WatchBatteryStatsDatabase
 import com.boswelja.devicemanager.common.preference.PreferenceKey.BATTERY_SYNC_ENABLED_KEY
 
 class BatterySyncViewModel(application: Application) : AndroidViewModel(application) {
+
+    private val watchId = MutableLiveData<String>()
 
     private val database: WatchBatteryStatsDatabase =
         WatchBatteryStatsDatabase.getInstance(application)
@@ -34,8 +36,12 @@ class BatterySyncViewModel(application: Application) : AndroidViewModel(applicat
 
     private val _batterySyncEnabled =
         MutableLiveData(sharedPreferences.getBoolean(BATTERY_SYNC_ENABLED_KEY, false))
+
     val batterySyncEnabled: LiveData<Boolean>
         get() = _batterySyncEnabled
+    val batteryStats = watchId.switchMap {
+        database.batteryStatsDao().getObservableStatsForWatch(it)
+    }
 
     init {
         sharedPreferences.registerOnSharedPreferenceChangeListener(preferenceChangeListener)
@@ -46,7 +52,7 @@ class BatterySyncViewModel(application: Application) : AndroidViewModel(applicat
         sharedPreferences.unregisterOnSharedPreferenceChangeListener(preferenceChangeListener)
     }
 
-    fun getBatteryStatsObservable(watchId: String): LiveData<WatchBatteryStats?> {
-        return database.batteryStatsDao().getObservableStatsForWatch(watchId)
+    fun setWatchId(watchId: String) {
+        this.watchId.postValue(watchId)
     }
 }

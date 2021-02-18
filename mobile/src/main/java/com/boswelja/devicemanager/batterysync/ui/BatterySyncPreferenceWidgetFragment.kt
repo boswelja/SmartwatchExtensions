@@ -15,29 +15,17 @@ import androidx.annotation.VisibleForTesting
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.Observer
-import androidx.lifecycle.lifecycleScope
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.batterysync.database.WatchBatteryStats
 import com.boswelja.devicemanager.common.LifecycleAwareTimer
 import com.boswelja.devicemanager.databinding.SettingsWidgetBatterySyncBinding
 import com.boswelja.devicemanager.watchmanager.WatchManager
-import java.util.concurrent.TimeUnit
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import timber.log.Timber
+import java.util.concurrent.TimeUnit
 
 class BatterySyncPreferenceWidgetFragment : Fragment() {
 
     private val viewModel: BatterySyncViewModel by activityViewModels()
-    private val batteryStatsObserver =
-        Observer<WatchBatteryStats?> {
-            if (it != null) {
-                updateBatteryStats(it)
-            } else {
-                Timber.w("Battery stats null")
-            }
-        }
 
     private val watchManager by lazy { WatchManager.getInstance(requireContext()) }
     private val lastUpdateTimer = LifecycleAwareTimer(1, TimeUnit.MINUTES) {
@@ -70,20 +58,19 @@ class BatterySyncPreferenceWidgetFragment : Fragment() {
         lifecycle.addObserver(lastUpdateTimer)
 
         watchManager.selectedWatch.observe(viewLifecycleOwner) { watch ->
-            watch?.id?.let { setObservingWatchStats(it) }
+            watch?.id?.let { viewModel.setWatchId(it) }
         }
         viewModel.batterySyncEnabled.observe(viewLifecycleOwner) {
             if (!it) {
                 showBatterySyncDisabled()
             }
         }
-    }
-
-    private fun setObservingWatchStats(watchId: String) {
-        lifecycleScope.launch(Dispatchers.IO) {
-            batteryStatsObservable?.removeObserver(batteryStatsObserver)
-            batteryStatsObservable = viewModel.getBatteryStatsObservable(watchId)
-            batteryStatsObservable!!.observe(viewLifecycleOwner, batteryStatsObserver)
+        viewModel.batteryStats.observe(viewLifecycleOwner) {
+            if (it != null) {
+                updateBatteryStats(it)
+            } else {
+                Timber.w("Battery stats null")
+            }
         }
     }
 
