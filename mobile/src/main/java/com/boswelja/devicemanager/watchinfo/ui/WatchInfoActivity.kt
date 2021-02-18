@@ -34,21 +34,42 @@ class WatchInfoActivity : BaseToolbarActivity() {
 
         viewModel.setWatch(watchId)
 
-        binding.apply {
-            setupToolbar(toolbarLayout.toolbar, showUpButton = true)
-            clearPreferencesButton.setOnClickListener {
-                clearPreferencesSheet.show(
-                    supportFragmentManager,
-                    ClearWatchPreferencesSheet::class.simpleName
-                )
-            }
-            forgetWatchButton.setOnClickListener {
-                forgetWatchSleet.show(supportFragmentManager, ForgetWatchSheet::class.simpleName)
-            }
-        }
+        setupToolbar(binding.toolbarLayout.toolbar, showUpButton = true)
 
         binding.capabilitiesRecyclerview.adapter = capabilitiesAdapter
 
+        setupButtons()
+        setupWatchNameEditor()
+
+        viewModel.watch.observe(this) { watch ->
+            val capabilities = Capability.values().filter { watch.hasCapability(it) }
+            capabilitiesAdapter.submitList(capabilities)
+
+            // If not recreating from saved instance state (i.e. not recreating after rotating)
+            if (savedInstanceState == null) {
+                binding.watchNameField.setText(watch.name)
+            }
+        }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        updateWatchNickname()
+    }
+
+    private fun setupButtons() {
+        binding.clearPreferencesButton.setOnClickListener {
+            clearPreferencesSheet.show(
+                supportFragmentManager,
+                ClearWatchPreferencesSheet::class.simpleName
+            )
+        }
+        binding.forgetWatchButton.setOnClickListener {
+            forgetWatchSleet.show(supportFragmentManager, ForgetWatchSheet::class.simpleName)
+        }
+    }
+
+    private fun setupWatchNameEditor() {
         binding.watchNameLayout.setOnFocusChangeListener { _, hasFocus ->
             Timber.d("watchNamelayout focus changed")
             if (!hasFocus) {
@@ -65,21 +86,6 @@ class WatchInfoActivity : BaseToolbarActivity() {
                 }
             }
         }
-
-        viewModel.watch.observe(this) { watch ->
-            val capabilities = Capability.values().filter { watch.hasCapability(it) }
-            capabilitiesAdapter.submitList(capabilities)
-
-            // If not recreating from saved instance state (i.e. not recreating after rotating)
-            if (savedInstanceState == null) {
-                binding.watchNameField.setText(watch.name)
-            }
-        }
-    }
-
-    override fun onStop() {
-        super.onStop()
-        updateWatchNickname()
     }
 
     /**
