@@ -14,7 +14,6 @@ import android.view.ViewGroup
 import androidx.annotation.VisibleForTesting
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.LiveData
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.batterysync.database.WatchBatteryStats
 import com.boswelja.devicemanager.common.LifecycleAwareTimer
@@ -29,7 +28,7 @@ class BatterySyncPreferenceWidgetFragment : Fragment() {
 
     private val watchManager by lazy { WatchManager.getInstance(requireContext()) }
     private val lastUpdateTimer = LifecycleAwareTimer(1, TimeUnit.MINUTES) {
-        batteryStatsObservable?.value?.let { batteryStats ->
+        viewModel.batteryStats.value?.let { batteryStats ->
             val dataAgeMinutes =
                 TimeUnit.MILLISECONDS
                     .toMinutes(System.currentTimeMillis() - batteryStats.lastUpdatedMillis)
@@ -39,8 +38,6 @@ class BatterySyncPreferenceWidgetFragment : Fragment() {
     }
 
     private lateinit var binding: SettingsWidgetBatterySyncBinding
-
-    private var batteryStatsObservable: LiveData<WatchBatteryStats?>? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
