@@ -1,6 +1,7 @@
 package com.boswelja.devicemanager.watchinfo.ui
 
 import android.view.ViewGroup
+import androidx.core.view.updatePaddingRelative
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import com.boswelja.devicemanager.common.connection.Capability
@@ -12,7 +13,9 @@ import com.boswelja.devicemanager.common.recyclerview.item.OneLineViewHolder
 class CapabilitiesAdapter : ListAdapter<Capability, OneLineViewHolder>(CapabilityDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): OneLineViewHolder {
-        return OneLineViewHolder.from(parent)
+        val holder = OneLineViewHolder.from(parent)
+        holder.itemView.updatePaddingRelative(start = 0, end = 0)
+        return holder
     }
 
     override fun onBindViewHolder(holder: OneLineViewHolder, position: Int) {
@@ -26,7 +29,7 @@ class CapabilitiesAdapter : ListAdapter<Capability, OneLineViewHolder>(Capabilit
         }
 
         override fun areItemsTheSame(oldItem: Capability, newItem: Capability): Boolean {
-            return oldItem == newItem
+            return oldItem.id == newItem.id
         }
     }
 }
