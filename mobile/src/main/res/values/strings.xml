@@ -162,6 +162,7 @@
     <string name="forget_watch_warning">Tap \'Finish\' below to return to the watch manager</string>
     <string name="forget_watch_dialog_title">@string/button_forget_watch</string>
     <string name="forget_watch_dialog_message">Are you sure you want to forget your %s? This will clear all Wearable Extensions settings, and remove your %s from the app.</string>
+    <string name="capabilities_title">On this watch, Wearable Extensions can:</string>
 
     <!-- Watch Manager strings -->
     <string name="watch_manager_title">Watch Manager</string>

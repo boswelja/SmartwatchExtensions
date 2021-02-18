@@ -11,6 +11,7 @@ import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.core.widget.doOnTextChanged
 import com.boswelja.devicemanager.R
+import com.boswelja.devicemanager.common.connection.Capability
 import com.boswelja.devicemanager.common.ui.activity.BaseToolbarActivity
 import com.boswelja.devicemanager.databinding.ActivityWatchInfoBinding
 import timber.log.Timber
@@ -21,7 +22,7 @@ class WatchInfoActivity : BaseToolbarActivity() {
 
     private val forgetWatchSleet by lazy { ForgetWatchSheet() }
     private val clearPreferencesSheet by lazy { ClearWatchPreferencesSheet() }
-
+    private val capabilitiesAdapter by lazy { CapabilitiesAdapter() }
     private val watchId by lazy { intent?.getStringExtra(EXTRA_WATCH_ID)!! }
     private val viewModel: WatchInfoViewModel by viewModels()
 
@@ -46,12 +47,7 @@ class WatchInfoActivity : BaseToolbarActivity() {
             }
         }
 
-        viewModel.watch.observe(this) {
-            // If not recreating from saved instance state (i.e. not recreating after rotating)
-            if (savedInstanceState == null) {
-                binding.watchNameField.setText(it.name)
-            }
-        }
+        binding.capabilitiesRecyclerview.adapter = capabilitiesAdapter
 
         binding.watchNameLayout.setOnFocusChangeListener { _, hasFocus ->
             Timber.d("watchNamelayout focus changed")
@@ -67,6 +63,16 @@ class WatchInfoActivity : BaseToolbarActivity() {
                 } else {
                     isErrorEnabled = false
                 }
+            }
+        }
+
+        viewModel.watch.observe(this) { watch ->
+            val capabilities = Capability.values().filter { watch.hasCapability(it) }
+            capabilitiesAdapter.submitList(capabilities)
+
+            // If not recreating from saved instance state (i.e. not recreating after rotating)
+            if (savedInstanceState == null) {
+                binding.watchNameField.setText(watch.name)
             }
         }
     }

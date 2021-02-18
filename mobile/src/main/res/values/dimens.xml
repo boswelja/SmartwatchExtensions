@@ -24,4 +24,8 @@
 
     <dimen name="modal_bottom_sheet_height">280dp</dimen>
     <dimen name="modal_bottom_sheet_margin">32dp</dimen>
+
+    <dimen name="watch_info_vertical_margin">16dp</dimen>
+    <dimen name="watch_info_horizontal_margin">16dp</dimen>
+    <dimen name="watch_info_section_vertical_margin">16dp</dimen>
 </resources>
