@@ -75,26 +75,22 @@ class WatchInfoActivity : BaseToolbarActivity() {
     /** Asks the user if they would like to clear preferences for their [Watch]. */
     private fun confirmClearPreferences() {
         Timber.d("confirmClearPreferences() called")
-        coroutineScope.launch(Dispatchers.IO) {
-            withContext(Dispatchers.Main) {
-                AlertDialog.Builder(this@WatchInfoActivity)
-                    .apply {
-                        setTitle(R.string.clear_preferences_dialog_title)
-                        setMessage(
-                            getString(
-                                R.string.clear_preferences_dialog_message,
-                                binding.watchNameField.text
-                            )
-                        )
-                        setPositiveButton(R.string.dialog_button_yes) { _, _ -> clearPreferences() }
-                        setNegativeButton(R.string.dialog_button_no) { dialogInterface, _ ->
-                            Timber.i("User aborted")
-                            dialogInterface.dismiss()
-                        }
-                    }
-                    .show()
+        AlertDialog.Builder(this@WatchInfoActivity)
+            .apply {
+                setTitle(R.string.clear_preferences_dialog_title)
+                setMessage(
+                    getString(
+                        R.string.clear_preferences_dialog_message,
+                        binding.watchNameField.text
+                    )
+                )
+                setPositiveButton(R.string.dialog_button_yes) { _, _ -> clearPreferences() }
+                setNegativeButton(R.string.dialog_button_no) { dialogInterface, _ ->
+                    Timber.i("User aborted")
+                    dialogInterface.dismiss()
+                }
             }
-        }
+            .show()
     }
 
     /** Clears the preferences for a given [Watch], and notifies the user of the result. */
@@ -112,26 +108,22 @@ class WatchInfoActivity : BaseToolbarActivity() {
     /** Asks the user if they want to forget their [Watch]. */
     private fun confirmForgetWatch() {
         Timber.d("confirmForgetWatch() called")
-        coroutineScope.launch(Dispatchers.IO) {
-            val watch = watchManager.registeredWatches.value?.firstOrNull { it.id == watchId }
-            withContext(Dispatchers.Main) {
-                AlertDialog.Builder(this@WatchInfoActivity)
-                    .apply {
-                        setTitle(R.string.forget_watch_dialog_title)
-                        setMessage(
-                            getString(
-                                R.string.forget_watch_dialog_message, watch?.name, watch?.name
-                            )
-                        )
-                        setPositiveButton(R.string.dialog_button_yes) { _, _ -> forgetWatch(watch) }
-                        setNegativeButton(R.string.dialog_button_no) { dialogInterface, _ ->
-                            Timber.i("User aborted")
-                            dialogInterface.dismiss()
-                        }
-                    }
-                    .show()
+        val watch = watchManager.registeredWatches.value?.firstOrNull { it.id == watchId }
+        AlertDialog.Builder(this@WatchInfoActivity)
+            .apply {
+                setTitle(R.string.forget_watch_dialog_title)
+                setMessage(
+                    getString(
+                        R.string.forget_watch_dialog_message, watch?.name, watch?.name
+                    )
+                )
+                setPositiveButton(R.string.dialog_button_yes) { _, _ -> forgetWatch(watch) }
+                setNegativeButton(R.string.dialog_button_no) { dialogInterface, _ ->
+                    Timber.i("User aborted")
+                    dialogInterface.dismiss()
+                }
             }
-        }
+            .show()
     }
 
     /**
