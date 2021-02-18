@@ -19,8 +19,8 @@ import com.boswelja.devicemanager.batterysync.database.WatchBatteryStats
 import com.boswelja.devicemanager.common.LifecycleAwareTimer
 import com.boswelja.devicemanager.databinding.SettingsWidgetBatterySyncBinding
 import com.boswelja.devicemanager.watchmanager.WatchManager
-import timber.log.Timber
 import java.util.concurrent.TimeUnit
+import timber.log.Timber
 
 class BatterySyncPreferenceWidgetFragment : Fragment() {
 
