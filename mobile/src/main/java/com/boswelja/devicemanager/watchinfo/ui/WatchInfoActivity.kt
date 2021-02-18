@@ -13,7 +13,6 @@ import androidx.core.widget.doOnTextChanged
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.ui.activity.BaseToolbarActivity
 import com.boswelja.devicemanager.databinding.ActivityWatchInfoBinding
-import com.google.android.material.textfield.TextInputLayout
 import timber.log.Timber
 
 class WatchInfoActivity : BaseToolbarActivity() {
@@ -54,12 +53,10 @@ class WatchInfoActivity : BaseToolbarActivity() {
             }
         }
 
-        binding.watchNameLayout.setOnFocusChangeListener { v, hasFocus ->
-            // If view is text field, doesn't have focus, and doesn't have an error shown
+        binding.watchNameLayout.setOnFocusChangeListener { _, hasFocus ->
             Timber.d("watchNamelayout focus changed")
-            if (v is TextInputLayout && !hasFocus && v.isErrorEnabled) {
-                Timber.d("Updating watch nickname")
-                viewModel.updateWatchName(v.editText!!.text.toString())
+            if (!hasFocus) {
+                updateWatchNickname()
             }
         }
         binding.watchNameField.doOnTextChanged { text, _, _, _ ->
@@ -71,6 +68,21 @@ class WatchInfoActivity : BaseToolbarActivity() {
                     isErrorEnabled = false
                 }
             }
+        }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        updateWatchNickname()
+    }
+
+    /**
+     * Get current value from watch name field and update the watch name in database.
+     */
+    private fun updateWatchNickname() {
+        if (!binding.watchNameLayout.isErrorEnabled) {
+            Timber.d("Updating watch nickname")
+            viewModel.updateWatchName(binding.watchNameField.text.toString())
         }
     }
 
