@@ -57,6 +57,7 @@
                 android:id="@+id/capabilities_recyclerview"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:nestedScrollingEnabled="false"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 tools:listitem="@layout/recyclerview_item_one_line"
                 tools:itemCount="5" />
