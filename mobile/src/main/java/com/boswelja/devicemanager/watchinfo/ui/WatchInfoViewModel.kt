@@ -1,4 +1,4 @@
-package com.boswelja.devicemanager.watchmanager.ui
+package com.boswelja.devicemanager.watchinfo.ui
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
