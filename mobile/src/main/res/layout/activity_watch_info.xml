@@ -64,7 +64,7 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="8dp"
-        android:text="@string/forget_watch_button_text"
+        android:text="@string/button_forget_watch"
         android:textColor="@color/warningRed"
         app:icon="@drawable/ic_delete"
         app:iconGravity="start"
