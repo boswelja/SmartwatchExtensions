@@ -12,15 +12,19 @@ import com.boswelja.devicemanager.watchmanager.item.Watch
 import com.boswelja.devicemanager.watchmanager.ui.register.RegisterWatchViewModel
 import com.google.common.truth.Truth.assertThat
 import io.mockk.MockKAnnotations
-import io.mockk.coEvery
+import io.mockk.coVerify
+import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
-import kotlinx.coroutines.runBlocking
+import io.mockk.verify
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.TestCoroutineDispatcher
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.annotation.Config
 
+@ExperimentalCoroutinesApi
 @RunWith(AndroidJUnit4::class)
 @Config(sdk = [Build.VERSION_CODES.R])
 class RegisterWatchViewModelTest {
@@ -28,10 +32,13 @@ class RegisterWatchViewModelTest {
     @get:Rule
     val instantExecutorRule = InstantTaskExecutorRule()
 
+    private val testDispatcher = TestCoroutineDispatcher()
+
     private val dummyWatch1 = Watch("an-id-1234", "Watch 1", WearOSConnectionInterface.PLATFORM)
     private val dummyWatch2 = Watch("an-id-2345", "Watch 2", WearOSConnectionInterface.PLATFORM)
     private val dummyWatch3 = Watch("an-id-3456", "Watch 3", WearOSConnectionInterface.PLATFORM)
     private val dummyWatches = listOf(dummyWatch1, dummyWatch2, dummyWatch3)
+    private val availableWatches = MutableLiveData(dummyWatches)
 
     @RelaxedMockK private lateinit var watchManager: WatchManager
     private lateinit var viewModel: RegisterWatchViewModel
@@ -39,34 +46,25 @@ class RegisterWatchViewModelTest {
     @Before
     fun setUp() {
         MockKAnnotations.init(this)
+        every { watchManager.availableWatches } returns availableWatches
+
         viewModel = RegisterWatchViewModel(
             ApplicationProvider.getApplicationContext(),
-            false,
-            watchManager
+            watchManager,
+            testDispatcher
         )
     }
 
     @Test
-    fun `isWorking updates correctly when availableWatches is empty`(): Unit = runBlocking {
-        // By the time watchManager.getAvailableWatches() is called, isWorking should be true.
-        coEvery { watchManager.availableWatches } answers {
-            viewModel.isWorking.getOrAwaitValue { assertThat(it).isTrue() }
-            MutableLiveData(emptyList())
-        }
-        viewModel.isWorking.getOrAwaitValue { assertThat(it).isFalse() }
-        viewModel.suspendRegisterAvailableWatches()
-        viewModel.isWorking.getOrAwaitValue { assertThat(it).isFalse() }
+    fun `refreshData calls watchManager`() {
+        viewModel.refreshData()
+        verify { watchManager.refreshData() }
     }
 
     @Test
-    fun `isWorking updates correctly when availableWatches is not empty`(): Unit = runBlocking {
-        // By the time watchManager.getAvailableWatches() is called, isWorking should be true.
-        coEvery { watchManager.availableWatches } answers {
-            viewModel.isWorking.getOrAwaitValue { assertThat(it).isTrue() }
-            MutableLiveData(dummyWatches)
-        }
-        viewModel.isWorking.getOrAwaitValue { assertThat(it).isFalse() }
-        viewModel.suspendRegisterAvailableWatches()
-        viewModel.isWorking.getOrAwaitValue { assertThat(it).isFalse() }
+    fun `registerWatch calls watchManager and updates LiveData`() {
+        viewModel.registerWatch(dummyWatch1)
+        coVerify { watchManager.registerWatch(dummyWatch1) }
+        assertThat(viewModel.registeredWatches.getOrAwaitValue()).contains(dummyWatch1)
     }
 }
