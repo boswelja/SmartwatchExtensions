@@ -49,6 +49,10 @@ class RegisterWatchFragment : Fragment() {
         }
 
         lifecycle.addObserver(availableWatchUpdateTimer)
+
+        binding.finishButton.setOnClickListener {
+            requireActivity().finish()
+        }
     }
 
     private fun observeAvailableWatches() {
