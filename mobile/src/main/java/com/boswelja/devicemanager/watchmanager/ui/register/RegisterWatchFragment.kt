@@ -41,6 +41,8 @@ class RegisterWatchFragment : Fragment() {
 
         observeAvailableWatches()
 
+        binding.registeredWatchesRecyclerview.adapter = adapter
+
         viewModel.registeredWatches.observe(viewLifecycleOwner) {
             binding.finishButton.isEnabled = it.isNotEmpty()
             adapter.submitList(it)
