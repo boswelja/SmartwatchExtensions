@@ -5,43 +5,45 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_margin="16dp">
-
-    <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/status_indicator"
-        android:layout_width="180dp"
-        android:layout_height="180dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:src="@drawable/wizard_ic_success" />
+    android:paddingTop="@dimen/register_watch_vertical_margin"
+    android:paddingBottom="@dimen/register_watch_vertical_margin"
+    android:paddingStart="@dimen/register_watch_horizontal_margin"
+    android:paddingEnd="@dimen/register_watch_horizontal_margin">
 
     <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/status_title"
+        android:id="@+id/title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textAppearance="?textAppearanceHeadline5"
         android:textAlignment="center"
-        app:layout_constraintTop_toBottomOf="@id/status_indicator"
-        tools:text="@string/register_watch_no_watches_title" />
+        android:text="@string/register_watch_title"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/status_text"
+        android:id="@+id/desc"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textAppearance="?textAppearanceSubtitle1"
         android:textAlignment="center"
-        app:layout_constraintTop_toBottomOf="@id/status_title"
-        tools:text="@string/register_watch_no_watches_info" />
+        android:text="@string/register_watch_desc"
+        app:layout_constraintTop_toBottomOf="@id/title" />
+
+    <com.google.android.material.progressindicator.LinearProgressIndicator
+        android:id="@+id/progress_indicator"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/register_watch_section_margin"
+        app:layout_constraintTop_toBottomOf="@id/desc" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/registered_watches_recyclerview"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:layout_marginTop="@dimen/register_watch_section_margin"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        app:layout_constraintTop_toBottomOf="@id/status_text"
+        app:layout_constraintTop_toBottomOf="@id/progress_indicator"
         app:layout_constraintBottom_toTopOf="@id/finish_button"
-        tools:listitem="@layout/recyclerview_item_icon_two_line" />
+        tools:listitem="@layout/recyclerview_item_icon_one_line" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@id/finish_button"
@@ -51,16 +53,6 @@
         app:icon="@drawable/ic_check"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        style="?materialButtonOutlinedStyle" />
-
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/try_again_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/button_retry"
-        app:icon="@drawable/ic_refresh"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
         style="?materialButtonOutlinedStyle" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

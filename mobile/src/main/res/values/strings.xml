@@ -170,9 +170,8 @@
     <string name="watch_manager_registered_watch_header">Registered Watches</string>
 
     <!-- Register Watch strings -->
-    <string name="register_watch_no_watches_title">No new watches found</string>
-    <string name="register_watch_no_watches_info">Make sure your watch is turned on, is nearby, and has Wearable Extensions installed.</string>
-    <string name="register_watch_success_info">We found the following watches, and got them all set up for you.</string>
+    <string name="register_watch_title">Searching for Watches</string>
+    <string name="register_watch_desc">Make sure your watch is turned on nearby, and has Wearable Extensions installed.</string>
 
     <!-- Boot & Update handler notification strings -->
     <string name="notification_boot_handler_title">Starting required services</string>

@@ -11,10 +11,10 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Observer
 import androidx.lifecycle.viewModelScope
 import com.boswelja.devicemanager.watchmanager.WatchManager
 import com.boswelja.devicemanager.watchmanager.item.Watch
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -24,61 +24,36 @@ import timber.log.Timber
  */
 class RegisterWatchViewModel internal constructor(
     application: Application,
-    autoRegisterOnCreate: Boolean,
-    private val watchManager: WatchManager = WatchManager.getInstance(application)
+    private val watchManager: WatchManager,
+    private val dispatcher: CoroutineDispatcher
 ) : AndroidViewModel(application) {
 
+    private val _registeredWatches = ArrayList<Watch>()
+    private val _registeredWatchesLive = MutableLiveData<List<Watch>>(emptyList())
+
     @Suppress("unused")
-    constructor(
-        application: Application
-    ) : this(application, true)
+    constructor(application: Application) : this(
+        application,
+        WatchManager.getInstance(application),
+        Dispatchers.IO
+    )
 
-    var registeredWatches: List<Watch> = emptyList()
+    val registeredWatches: LiveData<List<Watch>>
+        get() = _registeredWatchesLive
 
-    private val _isWorking = MutableLiveData(false)
+    val availableWatches: LiveData<List<Watch>>
+        get() = watchManager.availableWatches
 
-    private var availableWatches: List<Watch> = emptyList()
-    private val availableWatchObserver = Observer<List<Watch>> {
-        availableWatches = it
-    }
-
-    /**
-     * Notifies observers when the ViewModel is or isn't working (i.e. registering watches)
-     */
-    val isWorking: LiveData<Boolean>
-        get() = _isWorking
-
-    init {
-        if (autoRegisterOnCreate) registerAvailableWatches()
-        watchManager.availableWatches.observeForever(availableWatchObserver)
-    }
-
-    override fun onCleared() {
-        super.onCleared()
-        watchManager.availableWatches.removeObserver(availableWatchObserver)
-    }
-
-    /**
-     * Gets a list of all watches that are connected, not registered and have Wearable Extensions
-     * installed, and registers each one.
-     */
-    fun registerAvailableWatches() {
-        Timber.d("registerAvailableWatches() called")
-        viewModelScope.launch(Dispatchers.IO) {
-            suspendRegisterAvailableWatches()
-        }
-    }
-
-    internal suspend fun suspendRegisterAvailableWatches() {
-        _isWorking.postValue(true)
-        availableWatches.forEach { watch ->
+    fun registerWatch(watch: Watch) {
+        Timber.d("registerWatch($watch) called")
+        viewModelScope.launch(dispatcher) {
             watchManager.registerWatch(watch)
+            addToRegistered(watch)
         }
-        registeredWatches = availableWatches
-        _isWorking.postValue(false)
     }
 
-    fun refreshAvailableWatches() {
-        watchManager.watchRepository.refreshData()
+    private fun addToRegistered(watch: Watch) {
+        _registeredWatches.add(watch)
+        _registeredWatchesLive.postValue(_registeredWatches)
     }
 }
