@@ -13,6 +13,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import com.boswelja.devicemanager.common.LifecycleAwareTimer
 import com.boswelja.devicemanager.common.ui.adapter.WatchAdapter
 import com.boswelja.devicemanager.databinding.FragmentRegisterWatchBinding
 
@@ -20,6 +21,9 @@ class RegisterWatchFragment : Fragment() {
 
     private val viewModel: RegisterWatchViewModel by viewModels()
     private val adapter: WatchAdapter by lazy { WatchAdapter(null) }
+    private val availableWatchUpdateTimer = LifecycleAwareTimer(5) {
+        viewModel.refreshData()
+    }
 
     private lateinit var binding: FragmentRegisterWatchBinding
 
@@ -41,6 +45,8 @@ class RegisterWatchFragment : Fragment() {
             binding.finishButton.isEnabled = it.isNotEmpty()
             adapter.submitList(it)
         }
+
+        lifecycle.addObserver(availableWatchUpdateTimer)
     }
 
     private fun observeAvailableWatches() {

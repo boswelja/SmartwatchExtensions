@@ -52,6 +52,10 @@ class RegisterWatchViewModel internal constructor(
         }
     }
 
+    fun refreshData() {
+        watchManager.refreshData()
+    }
+
     private fun addToRegistered(watch: Watch) {
         _registeredWatches.add(watch)
         _registeredWatchesLive.postValue(_registeredWatches)
