@@ -7,8 +7,8 @@ import android.os.Build
 import com.boswelja.devicemanager.common.connection.Capability
 import com.google.android.gms.wearable.CapabilityClient
 import com.google.android.gms.wearable.Wearable
-import timber.log.Timber
 import java.util.EnumSet
+import timber.log.Timber
 
 /**
  * A class for handling adding and removing local capabilities based on what permissions the watch

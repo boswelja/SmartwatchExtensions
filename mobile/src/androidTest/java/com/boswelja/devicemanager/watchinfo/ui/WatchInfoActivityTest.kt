@@ -26,9 +26,9 @@ import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.mockkObject
+import kotlin.experimental.or
 import org.junit.Before
 import org.junit.Test
-import kotlin.experimental.or
 
 class WatchInfoActivityTest {
 
