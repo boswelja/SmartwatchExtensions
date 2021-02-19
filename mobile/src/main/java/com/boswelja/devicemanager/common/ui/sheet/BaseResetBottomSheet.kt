@@ -8,12 +8,10 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.annotation.VisibleForTesting
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.commit
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.databinding.BottomSheetConfirmationBinding
 import com.boswelja.devicemanager.databinding.BottomSheetProgressBinding
-import com.boswelja.devicemanager.managespace.ui.ManageSpaceViewModel
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import timber.log.Timber
 
@@ -23,7 +21,6 @@ import timber.log.Timber
 abstract class BaseResetBottomSheet : BottomSheetDialogFragment() {
 
     internal lateinit var binding: BottomSheetProgressBinding
-    internal val viewModel: ManageSpaceViewModel by activityViewModels()
 
     private lateinit var confirmationFragment: ConfirmationFragment
     private lateinit var progressFragment: ProgressFragment

@@ -8,6 +8,7 @@ import com.boswelja.devicemanager.common.connection.Capability
 import com.google.android.gms.wearable.CapabilityClient
 import com.google.android.gms.wearable.Wearable
 import java.util.EnumSet
+import timber.log.Timber
 
 /**
  * A class for handling adding and removing local capabilities based on what permissions the watch
@@ -26,6 +27,7 @@ class CapabilityUpdater(
      * Update all capabilities.
      */
     fun updateCapabilities() {
+        Timber.d("Updating capabilities")
         updateSendDnD()
         updateReceiveDnD()
         updateSendBattery()

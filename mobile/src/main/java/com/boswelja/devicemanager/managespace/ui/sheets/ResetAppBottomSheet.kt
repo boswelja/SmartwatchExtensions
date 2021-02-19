@@ -3,13 +3,17 @@ package com.boswelja.devicemanager.managespace.ui.sheets
 import android.app.ActivityManager
 import android.content.Context
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.activityViewModels
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.ui.sheet.BaseResetBottomSheet
+import com.boswelja.devicemanager.managespace.ui.ManageSpaceViewModel
 
 /**
  * A [BaseResetBottomSheet] to handle resetting all of Wearable Extensions.
  */
 class ResetAppBottomSheet : BaseResetBottomSheet() {
+
+    private val viewModel: ManageSpaceViewModel by activityViewModels()
 
     private var successful = false
 

@@ -165,6 +165,7 @@ class WearOSConnectionInterface(
                     val capabilities = capabilityMap[node.id] ?: 0
                     capabilityMap[node.id] = capabilities or capability.id
                 }
+                Timber.d("Found ${result.nodes.count()} nodes with capability $capability")
             }
             _watchCapabilities = capabilityMap
         } catch (e: Exception) {

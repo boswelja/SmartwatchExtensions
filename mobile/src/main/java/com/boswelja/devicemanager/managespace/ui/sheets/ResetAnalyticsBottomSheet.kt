@@ -1,13 +1,17 @@
 package com.boswelja.devicemanager.managespace.ui.sheets
 
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.activityViewModels
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.ui.sheet.BaseResetBottomSheet
+import com.boswelja.devicemanager.managespace.ui.ManageSpaceViewModel
 
 /**
  * A [BaseResetBottomSheet] to handle resetting analytics storage.
  */
 class ResetAnalyticsBottomSheet : BaseResetBottomSheet() {
+
+    private val viewModel: ManageSpaceViewModel by activityViewModels()
 
     private var successful = false
 

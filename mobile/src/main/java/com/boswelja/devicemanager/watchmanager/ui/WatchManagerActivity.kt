@@ -12,6 +12,7 @@ import android.os.Bundle
 import com.boswelja.devicemanager.common.LifecycleAwareTimer
 import com.boswelja.devicemanager.common.ui.activity.BaseToolbarActivity
 import com.boswelja.devicemanager.databinding.ActivityWatchManagerBinding
+import com.boswelja.devicemanager.watchinfo.ui.WatchInfoActivity
 import com.boswelja.devicemanager.watchmanager.WatchManager
 import com.boswelja.devicemanager.watchmanager.item.Watch
 import com.boswelja.devicemanager.watchmanager.ui.register.RegisterWatchActivity
