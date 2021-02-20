@@ -7,14 +7,20 @@
  */
 package com.boswelja.devicemanager.onboarding.ui
 
+import android.content.Intent
 import android.os.Bundle
+import androidx.activity.viewModels
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.ui.activity.BaseToolbarActivity
 import com.boswelja.devicemanager.databinding.ActivityOnboardingBinding
+import com.boswelja.devicemanager.main.MainActivity
+import com.boswelja.devicemanager.watchmanager.ui.register.RegisterWatchViewModel
 
 class OnboardingActivity : BaseToolbarActivity() {
+
+    private val registerWatchViewModel: RegisterWatchViewModel by viewModels()
 
     private val navController by lazy {
         (supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment)
@@ -31,5 +37,11 @@ class OnboardingActivity : BaseToolbarActivity() {
 
         setupToolbar(binding.toolbarLayout.toolbar)
         NavigationUI.setupActionBarWithNavController(this, navController)
+
+        // When watch registration completes, head back to MainActivity
+        registerWatchViewModel.onFinished.observe(this) {
+            startActivity(Intent(this, MainActivity::class.java))
+            finish()
+        }
     }
 }
