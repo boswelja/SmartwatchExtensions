@@ -8,9 +8,11 @@
 package com.boswelja.devicemanager.watchmanager.ui.register
 
 import android.app.Application
+import android.database.sqlite.SQLiteException
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
 import com.boswelja.devicemanager.watchmanager.WatchManager
 import com.boswelja.devicemanager.watchmanager.item.Watch
@@ -41,14 +43,19 @@ class RegisterWatchViewModel internal constructor(
     val registeredWatches: LiveData<List<Watch>>
         get() = _registeredWatchesLive
 
-    val availableWatches: LiveData<List<Watch>>
-        get() = watchManager.availableWatches
+    val availableWatches = watchManager.availableWatches.map { watches ->
+        watches.filterNot { watchManager.registeredWatches.value?.contains(it) == true }
+    }
 
     fun registerWatch(watch: Watch) {
         Timber.d("registerWatch($watch) called")
         viewModelScope.launch(dispatcher) {
-            watchManager.registerWatch(watch)
-            addToRegistered(watch)
+            try {
+                watchManager.registerWatch(watch)
+                addToRegistered(watch)
+            } catch (e: SQLiteException) {
+                Timber.w("Tried to register a watch that's already registered")
+            }
         }
     }
 
