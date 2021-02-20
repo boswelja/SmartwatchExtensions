@@ -17,7 +17,7 @@ class RegisterWatchActivity : BaseToolbarActivity() {
 
         setupToolbar(
             binding.toolbarLayout.toolbar,
-            showTitle = true,
+            showTitle = false,
             showUpButton = true
         )
 
