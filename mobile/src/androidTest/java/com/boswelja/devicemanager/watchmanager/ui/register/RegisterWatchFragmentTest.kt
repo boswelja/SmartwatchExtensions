@@ -1,9 +1,8 @@
 package com.boswelja.devicemanager.watchmanager.ui.register
 
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.testing.FragmentScenario
 import androidx.fragment.app.testing.launchFragmentInContainer
-import androidx.fragment.app.viewModels
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.MutableLiveData
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
@@ -58,10 +57,12 @@ class RegisterWatchFragmentTest {
     }
 
     @Test
-    fun finishButtonFinishesActivity() {
+    fun finishButtonFiresViewModelEvent() {
         onView(withId(R.id.finish_button)).perform(click())
         fragmentScenario.onFragment {
-            assertThat(it.lifecycle.currentState).isAtLeast(Lifecycle.State.DESTROYED)
+            assertThat(
+                it.activityViewModels<RegisterWatchViewModel>().value.onFinished.getOrAwaitValue()
+            ).isTrue()
         }
     }
 
@@ -76,7 +77,8 @@ class RegisterWatchFragmentTest {
         // Populate availableWatches and let fragment populate registeredWatches
         fragmentScenario.onFragment {
             availableWatches.postValue(dummyWatches)
-            it.viewModels<RegisterWatchViewModel>().value.registeredWatches.getOrAwaitValue()
+            it.activityViewModels<RegisterWatchViewModel>().value
+                .registeredWatches.getOrAwaitValue()
         }
         onView(withId(R.id.finish_button)).check(matches(isEnabled()))
     }
@@ -90,7 +92,8 @@ class RegisterWatchFragmentTest {
         fragmentScenario.onFragment {
             availableWatches.postValue(dummyWatches)
             assertThat(
-                it.viewModels<RegisterWatchViewModel>().value.registeredWatches.getOrAwaitValue()
+                it.activityViewModels<RegisterWatchViewModel>().value
+                    .registeredWatches.getOrAwaitValue()
             ).isEmpty()
         }
 
@@ -98,7 +101,8 @@ class RegisterWatchFragmentTest {
         fragmentScenario.onFragment {
             availableWatches.postValue(listOf(dummyWatch1))
             assertThat(
-                it.viewModels<RegisterWatchViewModel>().value.registeredWatches.getOrAwaitValue()
+                it.activityViewModels<RegisterWatchViewModel>().value
+                    .registeredWatches.getOrAwaitValue()
             ).containsExactly(dummyWatch1)
         }
 
@@ -106,7 +110,8 @@ class RegisterWatchFragmentTest {
         fragmentScenario.onFragment {
             availableWatches.postValue(dummyWatches)
             assertThat(
-                it.viewModels<RegisterWatchViewModel>().value.registeredWatches.getOrAwaitValue()
+                it.activityViewModels<RegisterWatchViewModel>().value
+                    .registeredWatches.getOrAwaitValue()
             ).containsExactlyElementsIn(dummyWatches)
         }
     }
