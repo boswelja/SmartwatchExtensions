@@ -7,8 +7,10 @@ import androidx.lifecycle.MutableLiveData
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isEnabled
+import androidx.test.espresso.matcher.ViewMatchers.withEffectiveVisibility
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.TestExtensions.getOrAwaitValue
@@ -64,6 +66,24 @@ class RegisterWatchFragmentTest {
                 it.activityViewModels<RegisterWatchViewModel>().value.onFinished.getOrAwaitValue()
             ).isTrue()
         }
+    }
+
+    @Test
+    fun noWatchesViewShownWhenNoWatches() {
+        // Test with availableWatches empty
+        fragmentScenario.onFragment {
+            availableWatches.postValue(emptyList())
+        }
+        onView(withId(R.id.no_watches_text)).check(matches(isCompletelyDisplayed()))
+
+        // Populate availableWatches and let fragment populate registeredWatches
+        fragmentScenario.onFragment {
+            availableWatches.postValue(dummyWatches)
+            it.activityViewModels<RegisterWatchViewModel>().value
+                .registeredWatches.getOrAwaitValue()
+        }
+        onView(withId(R.id.no_watches_text))
+            .check(matches(withEffectiveVisibility(ViewMatchers.Visibility.INVISIBLE)))
     }
 
     @Test
