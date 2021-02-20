@@ -11,6 +11,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import com.boswelja.devicemanager.common.LifecycleAwareTimer
@@ -45,6 +46,7 @@ class RegisterWatchFragment : Fragment() {
 
         viewModel.registeredWatches.observe(viewLifecycleOwner) {
             binding.finishButton.isEnabled = it.isNotEmpty()
+            binding.noWatchesText.isVisible = it.isEmpty()
             adapter.submitList(it)
         }
 

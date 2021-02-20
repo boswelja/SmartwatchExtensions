@@ -172,6 +172,7 @@
     <!-- Register Watch strings -->
     <string name="register_watch_title">Searching for Watches</string>
     <string name="register_watch_desc">Make sure your watch is turned on, nearby, and has Wearable Extensions installed. We\'ll automatically register any watches found.</string>
+    <string name="register_watch_no_watches">No new watches found. We\'ll keep looking.</string>
 
     <!-- Boot & Update handler notification strings -->
     <string name="notification_boot_handler_title">Starting required services</string>

@@ -45,6 +45,16 @@
         app:layout_constraintBottom_toTopOf="@id/finish_button"
         tools:listitem="@layout/recyclerview_item_icon_one_line" />
 
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/no_watches_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/register_watch_no_watches"
+        android:textAppearance="?textAppearanceBody2"
+        android:textAlignment="center"
+        app:layout_constraintTop_toTopOf="@id/registered_watches_recyclerview"
+        app:layout_constraintBottom_toBottomOf="@id/registered_watches_recyclerview" />
+
     <com.google.android.material.button.MaterialButton
         android:id="@id/finish_button"
         android:layout_width="wrap_content"
