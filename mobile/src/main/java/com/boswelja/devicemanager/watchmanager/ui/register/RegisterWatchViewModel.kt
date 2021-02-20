@@ -10,8 +10,6 @@ package com.boswelja.devicemanager.watchmanager.ui.register
 import android.app.Application
 import android.database.sqlite.SQLiteException
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
 import com.boswelja.devicemanager.watchmanager.WatchManager
@@ -30,8 +28,7 @@ class RegisterWatchViewModel internal constructor(
     private val dispatcher: CoroutineDispatcher
 ) : AndroidViewModel(application) {
 
-    private val _registeredWatches = ArrayList<Watch>()
-    private val _registeredWatchesLive = MutableLiveData<List<Watch>>(emptyList())
+    private val registeredWatchIds = ArrayList<String>()
 
     @Suppress("unused")
     constructor(application: Application) : this(
@@ -40,8 +37,9 @@ class RegisterWatchViewModel internal constructor(
         Dispatchers.IO
     )
 
-    val registeredWatches: LiveData<List<Watch>>
-        get() = _registeredWatchesLive
+    val registeredWatches = watchManager.availableWatches.map { watches ->
+        watches.filter { registeredWatchIds.contains(it.id) }
+    }
 
     val availableWatches = watchManager.availableWatches.map { watches ->
         watches.filterNot { watchManager.registeredWatches.value?.contains(it) == true }
@@ -52,7 +50,7 @@ class RegisterWatchViewModel internal constructor(
         viewModelScope.launch(dispatcher) {
             try {
                 watchManager.registerWatch(watch)
-                addToRegistered(watch)
+                registeredWatchIds.add(watch.id)
             } catch (e: SQLiteException) {
                 Timber.w("Tried to register a watch that's already registered")
             }
@@ -61,10 +59,5 @@ class RegisterWatchViewModel internal constructor(
 
     fun refreshData() {
         watchManager.refreshData()
-    }
-
-    private fun addToRegistered(watch: Watch) {
-        _registeredWatches.add(watch)
-        _registeredWatchesLive.postValue(_registeredWatches)
     }
 }
