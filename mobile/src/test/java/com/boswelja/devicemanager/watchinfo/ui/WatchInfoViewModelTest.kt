@@ -85,6 +85,19 @@ class WatchInfoViewModelTest {
     }
 
     @Test
+    fun `refreshCapabilities calls watchManager if watch is not null`() {
+        // Check with no / invalid watch selected
+        viewModel.refreshCapabilities()
+        coVerify(inverse = true) { watchManager.requestRefreshCapabilities(any()) }
+
+        // Check with valid watch selected
+        viewModel.setWatch(dummyWatch.id)
+        viewModel.watch.getOrAwaitValue()
+        viewModel.refreshCapabilities()
+        coVerify { watchManager.requestRefreshCapabilities(dummyWatch) }
+    }
+
+    @Test
     fun `forgetWatch calls watchManager if watch is not null`() {
         // Check with no / invalid watch selected
         viewModel.forgetWatch()

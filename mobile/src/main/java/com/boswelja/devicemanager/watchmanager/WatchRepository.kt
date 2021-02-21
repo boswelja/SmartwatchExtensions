@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
+import com.boswelja.devicemanager.common.connection.Messages
 import com.boswelja.devicemanager.common.preference.SyncPreferences
 import com.boswelja.devicemanager.common.setup.References
 import com.boswelja.devicemanager.watchmanager.connection.WatchConnectionInterface
@@ -221,6 +222,14 @@ class WatchRepository internal constructor(
         connectionManagers.values.forEach {
             it.refreshData()
         }
+    }
+
+    /**
+     * Sends [Messages.REQUEST_UPDATE_CAPABILITIES] to a given [Watch].
+     * @param watch The [Watch] to request capabilities be updated for.
+     */
+    fun requestRefreshCapabilities(watch: Watch) {
+        watch.connectionManager?.sendMessage(watch.id, Messages.REQUEST_UPDATE_CAPABILITIES)
     }
 
     /**

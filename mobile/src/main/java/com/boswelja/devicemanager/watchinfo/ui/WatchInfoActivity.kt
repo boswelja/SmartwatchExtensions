@@ -60,6 +60,10 @@ class WatchInfoActivity : BaseToolbarActivity() {
     }
 
     private fun setupButtons() {
+        binding.refreshCapabilitiesButton.setOnClickListener {
+            viewModel.refreshCapabilities()
+            createSnackBar(getString(R.string.refresh_capabilities_requested))
+        }
         binding.clearPreferencesButton.setOnClickListener {
             clearPreferencesSheet.show(
                 supportFragmentManager,

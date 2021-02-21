@@ -69,6 +69,12 @@ class WatchInfoViewModel internal constructor(
         }
     }
 
+    fun refreshCapabilities() {
+        _watch.value?.let {
+            watchManager.requestRefreshCapabilities(it)
+        }
+    }
+
     /**
      * Forgets the current watch.
      */
