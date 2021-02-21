@@ -11,56 +11,61 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.FrameLayout
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.commit
-import androidx.fragment.app.viewModels
-import com.boswelja.devicemanager.R
-import com.boswelja.devicemanager.common.ui.fragment.LoadingFragment
-import timber.log.Timber
+import androidx.fragment.app.activityViewModels
+import com.boswelja.devicemanager.common.LifecycleAwareTimer
+import com.boswelja.devicemanager.common.ui.adapter.WatchAdapter
+import com.boswelja.devicemanager.databinding.FragmentRegisterWatchBinding
 
 class RegisterWatchFragment : Fragment() {
 
-    private val viewModel: RegisterWatchViewModel by viewModels()
-
-    private val loadingFragment: LoadingFragment by lazy { LoadingFragment() }
-    private val registerResultsFragment: WatchRegisterResultsFragment by lazy {
-        WatchRegisterResultsFragment()
+    private val viewModel: RegisterWatchViewModel by activityViewModels()
+    private val adapter: WatchAdapter by lazy { WatchAdapter(null) }
+    private val availableWatchUpdateTimer = LifecycleAwareTimer(TIMER_UPDATE_SECONDS) {
+        viewModel.refreshData()
     }
+
+    private lateinit var binding: FragmentRegisterWatchBinding
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val view = FrameLayout(requireContext())
-        view.id = R.id.fragment_holder
-        view.layoutParams = ViewGroup.LayoutParams(
-            ViewGroup.LayoutParams.MATCH_PARENT,
-            ViewGroup.LayoutParams.MATCH_PARENT
-        )
-        return view
+        binding = FragmentRegisterWatchBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        viewModel.isWorking.observe(viewLifecycleOwner) {
-            setLoading(it)
+        super.onViewCreated(view, savedInstanceState)
+
+        observeAvailableWatches()
+
+        binding.registeredWatchesRecyclerview.adapter = adapter
+
+        viewModel.registeredWatches.observe(viewLifecycleOwner) {
+            binding.finishButton.isEnabled = it.isNotEmpty()
+            binding.noWatchesText.isVisible = it.isEmpty()
+            adapter.submitList(it)
+        }
+
+        lifecycle.addObserver(availableWatchUpdateTimer)
+
+        binding.finishButton.setOnClickListener {
+            viewModel.onFinished.fire()
         }
     }
 
-    /**
-     * Sets whether the loading view should be shown.
-     * @param loading true if the loading view should be shown, false otherwise
-     */
-    internal fun setLoading(loading: Boolean) {
-        Timber.d("setLoading($loading)")
-        childFragmentManager.commit {
-            if (loading) {
-                replace(requireView().id, loadingFragment)
-            } else {
-                replace(requireView().id, registerResultsFragment)
+    private fun observeAvailableWatches() {
+        viewModel.availableWatches.observe(viewLifecycleOwner) {
+            it.forEach { watch ->
+                viewModel.registerWatch(watch)
             }
-            setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)
         }
+    }
+
+    companion object {
+        private const val TIMER_UPDATE_SECONDS: Long = 5
     }
 }
