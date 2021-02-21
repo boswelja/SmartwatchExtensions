@@ -18,13 +18,13 @@ import com.boswelja.devicemanager.common.preference.PreferenceKey.DND_SYNC_WITH_
 import com.boswelja.devicemanager.dndsync.DnDLocalChangeListener
 import timber.log.Timber
 
-class BootOrUpdateReceiver : BroadcastReceiver() {
+class BootReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context?, intent: Intent?) {
         Timber.d("Intent received")
         when (intent?.action) {
-            Intent.ACTION_MY_PACKAGE_REPLACED, Intent.ACTION_BOOT_COMPLETED -> {
-                Timber.d("Boot or update, handling")
+            Intent.ACTION_BOOT_COMPLETED -> {
+                Timber.d("Handling ${intent.action}")
                 CapabilityUpdater(context!!).updateCapabilities()
                 val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
                 if (sharedPreferences.getBoolean(DND_SYNC_TO_PHONE_KEY, false) ||
