@@ -141,6 +141,10 @@ class WatchManager internal constructor(
         _selectedWatchId.postValue(watchId)
     }
 
+    fun requestRefreshCapabilities(watch: Watch) {
+        watchRepository.requestRefreshCapabilities(watch)
+    }
+
     fun refreshData() = watchRepository.refreshData()
 
     suspend inline fun <reified T> getPreference(watch: Watch, key: String) =

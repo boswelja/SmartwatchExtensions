@@ -63,6 +63,17 @@
                 tools:itemCount="5" />
 
             <com.google.android.material.button.MaterialButton
+                android:id="@+id/refresh_capabilities_button"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton.Icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/watch_info_section_vertical_margin"
+                android:text="@string/refresh_capabilities"
+                android:layout_gravity="center_horizontal"
+                app:icon="@drawable/ic_refresh"
+                app:iconGravity="start" />
+
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/clear_preferences_button"
                 style="@style/Widget.MaterialComponents.Button.OutlinedButton.Icon"
                 android:layout_width="wrap_content"

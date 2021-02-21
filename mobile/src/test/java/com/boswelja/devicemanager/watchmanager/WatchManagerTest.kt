@@ -115,6 +115,13 @@ class WatchManagerTest {
     }
 
     @Test
+    fun `requestRefreshCapabilities calls repository`(): Unit = runBlocking {
+        watchManager = getWatchManager()
+        watchManager.requestRefreshCapabilities(dummyWatch1)
+        coVerify(exactly = 1) { repository.requestRefreshCapabilities(dummyWatch1) }
+    }
+
+    @Test
     fun `registerWatch calls repository and logs analytics event`(): Unit = runBlocking {
         watchManager = getWatchManager()
         watchManager.registerWatch(dummyWatch1)
