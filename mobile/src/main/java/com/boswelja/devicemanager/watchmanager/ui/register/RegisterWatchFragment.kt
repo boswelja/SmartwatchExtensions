@@ -22,7 +22,7 @@ class RegisterWatchFragment : Fragment() {
 
     private val viewModel: RegisterWatchViewModel by activityViewModels()
     private val adapter: WatchAdapter by lazy { WatchAdapter(null) }
-    private val availableWatchUpdateTimer = LifecycleAwareTimer(5) {
+    private val availableWatchUpdateTimer = LifecycleAwareTimer(TIMER_UPDATE_SECONDS) {
         viewModel.refreshData()
     }
 
@@ -63,5 +63,9 @@ class RegisterWatchFragment : Fragment() {
                 viewModel.registerWatch(watch)
             }
         }
+    }
+
+    companion object {
+        private const val TIMER_UPDATE_SECONDS: Long = 5
     }
 }
