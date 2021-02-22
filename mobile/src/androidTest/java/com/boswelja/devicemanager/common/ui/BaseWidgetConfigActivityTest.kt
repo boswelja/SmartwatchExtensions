@@ -6,7 +6,6 @@ import android.content.Intent
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.core.app.launchActivity
-import com.boswelja.devicemanager.widget.database.WatchBatteryWidgetId
 import com.boswelja.devicemanager.widget.database.WatchWidgetAssociation
 import com.boswelja.devicemanager.widget.database.WidgetDatabase
 import com.google.common.truth.Truth.assertThat
@@ -66,12 +65,12 @@ class BaseWidgetConfigActivityTest {
 
     @Test
     fun finishWithConfigReturnsOK() {
-        checkCommonFinishWithConfig(WatchBatteryWidgetId(dummyWatchId, dummyWidgetId))
+        checkCommonFinishWithConfig(WatchWidgetAssociation(dummyWatchId, dummyWidgetId))
     }
 
     @Test
     fun finishWithWatchBatteryWidgetUpdatesDatabase() {
-        val watchWidgetAssociation = WatchBatteryWidgetId(dummyWatchId, dummyWidgetId)
+        val watchWidgetAssociation = WatchWidgetAssociation(dummyWatchId, dummyWidgetId)
         checkCommonFinishWithConfig(watchWidgetAssociation)
         verify(exactly = 1) { widgetDatabase.addWidget(watchWidgetAssociation) }
     }

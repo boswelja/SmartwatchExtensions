@@ -5,7 +5,6 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.lifecycle.lifecycleScope
 import com.boswelja.devicemanager.batterysync.widget.WatchBatteryWidget
-import com.boswelja.devicemanager.widget.database.WatchBatteryWidgetId
 import com.boswelja.devicemanager.widget.database.WatchWidgetAssociation
 import com.boswelja.devicemanager.widget.database.WidgetDatabase
 import kotlinx.coroutines.Dispatchers
@@ -46,16 +45,11 @@ abstract class BaseWidgetConfigActivity : BaseToolbarActivity() {
 
         lifecycleScope.launch(Dispatchers.IO) {
             val database = WidgetDatabase.getInstance(this@BaseWidgetConfigActivity)
-            when (widgetInfo) {
-                is WatchBatteryWidgetId -> {
-                    database.addWidget(widgetInfo)
-                    WatchBatteryWidget.updateWidgets(
-                        this@BaseWidgetConfigActivity,
-                        intArrayOf(widgetInfo.widgetId)
-                    )
-                }
-                else -> Timber.w("Widget type not handled")
-            }
+            database.addWidget(widgetInfo)
+            WatchBatteryWidget.updateWidgets(
+                this@BaseWidgetConfigActivity,
+                intArrayOf(widgetInfo.widgetId)
+            )
             finish()
         }
     }

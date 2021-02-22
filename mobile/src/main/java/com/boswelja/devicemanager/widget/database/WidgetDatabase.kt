@@ -16,31 +16,31 @@ import com.boswelja.devicemanager.common.SingletonHolder
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-@Database(entities = [WatchBatteryWidgetId::class], version = 1)
+@Database(entities = [WatchWidgetAssociation::class], version = 2)
 abstract class WidgetDatabase : RoomDatabase() {
 
-    abstract fun watchBatteryWidgetDao(): WatchBatteryWidgetDao
+    abstract fun widgetDao(): WidgetDao
 
+    /**
+     * Add a [WatchWidgetAssociation] to the database
+     */
     fun addWidget(widgetAssociation: WatchWidgetAssociation) {
-        when (widgetAssociation) {
-            is WatchBatteryWidgetId -> {
-                watchBatteryWidgetDao().addWidget(widgetAssociation)
-            }
-        }
+        widgetDao().addWidget(widgetAssociation)
     }
 
     fun removeWidget(widgetId: Int) {
-        watchBatteryWidgetDao().removeWidget(widgetId)
+        widgetDao().removeWidget(widgetId)
     }
 
-    fun getForWidget(widgetId: Int): WatchWidgetAssociation? {
-        return watchBatteryWidgetDao().findByWidgetId(widgetId)
+    fun getForWidget(widgetId: Int): WatchWidgetAssociation {
+        return widgetDao().findByWidgetId(widgetId)
     }
 
     companion object : SingletonHolder<WidgetDatabase, Context>({ context ->
         Room.databaseBuilder(
             context, WidgetDatabase::class.java, "widget-db"
         ).apply {
+            addMigrations(Migrations.MIGRATION_1_2)
             fallbackToDestructiveMigration()
         }.build()
     }) {
@@ -55,7 +55,7 @@ abstract class WidgetDatabase : RoomDatabase() {
                 val database = getInstance(context)
                 val widgetIds =
                     database
-                        .watchBatteryWidgetDao()
+                        .widgetDao()
                         .getAllForWatch(watchId)
                         .map { it.widgetId }
                         .toIntArray()

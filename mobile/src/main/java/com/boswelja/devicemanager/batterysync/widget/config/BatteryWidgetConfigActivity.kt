@@ -15,7 +15,7 @@ import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.ui.activity.BaseWidgetConfigActivity
 import com.boswelja.devicemanager.databinding.ActivityWatchBatteryWidgetConfigurationBinding
 import com.boswelja.devicemanager.watchmanager.item.Watch
-import com.boswelja.devicemanager.widget.database.WatchBatteryWidgetId
+import com.boswelja.devicemanager.widget.database.WatchWidgetAssociation
 import com.google.android.material.radiobutton.MaterialRadioButton
 import timber.log.Timber
 
@@ -52,7 +52,7 @@ class BatteryWidgetConfigActivity : BaseWidgetConfigActivity() {
             val watch =
                 viewModel.getWatchByIndex(binding.availableWatchesGroup.checkedRadioButtonId)
             watch?.let {
-                finishWidgetConfig(WatchBatteryWidgetId(watch.id, widgetId))
+                finishWidgetConfig(WatchWidgetAssociation(watch.id, widgetId))
             }
         }
     }
