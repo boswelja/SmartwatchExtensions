@@ -12,11 +12,17 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.boswelja.devicemanager.common.SingletonHolder
+import com.boswelja.devicemanager.widget.database.WidgetDatabase
 
 @Database(entities = [WatchBatteryStats::class], version = 2)
 abstract class WatchBatteryStatsDatabase : RoomDatabase() {
 
     abstract fun batteryStatsDao(): BatteryStatsDao
+
+    override fun close() {
+        WidgetDatabase.destroyInstance()
+        super.close()
+    }
 
     companion object : SingletonHolder<WatchBatteryStatsDatabase, Context>({ context ->
         Room.databaseBuilder(
