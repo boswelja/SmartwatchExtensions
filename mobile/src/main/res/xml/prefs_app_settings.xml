@@ -30,7 +30,7 @@
             android:key="send_analytics"
             android:title="@string/pref_analytics_title"
             android:icon="@drawable/pref_ic_analytics"
-            android:defaultValue="false" />
+            android:defaultValue="true" />
 
     </androidx.preference.PreferenceCategory>
 

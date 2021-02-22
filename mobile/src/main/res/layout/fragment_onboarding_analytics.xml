@@ -41,6 +41,7 @@
         android:layout_height="wrap_content"
         android:text="@string/pref_analytics_title"
         android:textAppearance="?textAppearanceBody1"
+        android:checked="true"
         app:layout_constraintTop_toBottomOf="@id/content"
         app:layout_constraintBottom_toTopOf="@id/next_button"
         app:layout_constraintStart_toStartOf="parent"

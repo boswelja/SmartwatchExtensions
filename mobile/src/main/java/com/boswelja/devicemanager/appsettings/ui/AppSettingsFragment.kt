@@ -36,7 +36,7 @@ class AppSettingsFragment :
         if (key != null) {
             when (key) {
                 Analytics.ANALYTICS_ENABLED_KEY -> {
-                    analytics.setAnalyticsEnabled(sharedPreferences!!.getBoolean(key, false))
+                    analytics.setAnalyticsEnabled(sharedPreferences!!.getBoolean(key, true))
                 }
                 else -> analytics.logAppSettingChanged(key)
             }
