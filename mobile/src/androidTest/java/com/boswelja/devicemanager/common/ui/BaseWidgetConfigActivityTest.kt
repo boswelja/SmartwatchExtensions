@@ -6,8 +6,7 @@ import android.content.Intent
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.core.app.launchActivity
-import com.boswelja.devicemanager.widget.database.WatchBatteryWidgetId
-import com.boswelja.devicemanager.widget.database.WatchWidgetAssociation
+import com.boswelja.devicemanager.watchmanager.item.Watch
 import com.boswelja.devicemanager.widget.database.WidgetDatabase
 import com.google.common.truth.Truth.assertThat
 import io.mockk.MockKAnnotations
@@ -22,7 +21,7 @@ import org.junit.Test
 
 class BaseWidgetConfigActivityTest {
 
-    private val dummyWatchId = "watch-id"
+    private val dummyWatch = Watch("watch-id", "Watch", "platform")
     private val dummyWidgetId = 1234
     private lateinit var dummyIntent: Intent
 
@@ -66,19 +65,18 @@ class BaseWidgetConfigActivityTest {
 
     @Test
     fun finishWithConfigReturnsOK() {
-        checkCommonFinishWithConfig(WatchBatteryWidgetId(dummyWatchId, dummyWidgetId))
+        checkCommonFinishWithConfig(dummyWatch)
     }
 
     @Test
     fun finishWithWatchBatteryWidgetUpdatesDatabase() {
-        val watchWidgetAssociation = WatchBatteryWidgetId(dummyWatchId, dummyWidgetId)
-        checkCommonFinishWithConfig(watchWidgetAssociation)
-        verify(exactly = 1) { widgetDatabase.addWidget(watchWidgetAssociation) }
+        checkCommonFinishWithConfig(dummyWatch)
+        verify(exactly = 1) { widgetDatabase.addWidget(dummyWidgetId, dummyWatch.id) }
     }
 
-    private fun checkCommonFinishWithConfig(config: WatchWidgetAssociation) {
+    private fun checkCommonFinishWithConfig(watch: Watch) {
         scenario.onActivity {
-            it.finishWidgetConfig(config)
+            it.finishWidgetConfig(watch)
         }
         assertThat(scenario.result.resultCode).isEqualTo(Activity.RESULT_OK)
         assertThat(
