@@ -8,7 +8,6 @@
 package com.boswelja.devicemanager.common.ui.activity
 
 import android.view.MenuItem
-import com.boswelja.devicemanager.R
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.snackbar.Snackbar
 import timber.log.Timber
@@ -32,7 +31,7 @@ abstract class BaseToolbarActivity : BaseDayNightActivity() {
      * @param message The message to show the [Snackbar] with.
      */
     fun createSnackBar(message: String) {
-        Snackbar.make(findViewById(R.id.content_view), message, Snackbar.LENGTH_LONG).show()
+        Snackbar.make(findViewById(android.R.id.content), message, Snackbar.LENGTH_LONG).show()
     }
 
     /**
