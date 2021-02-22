@@ -43,22 +43,22 @@ jobs:
         with:
           name: mobile-release.aab
           path: ${{ steps.sign-mobile-release.outputs.signedReleaseFile }}
-      - name: Build Wear Release Artifacts
-        run: ./gradlew :wear:bundleRelease
-      - name: Sign Wear Release
-        id: sign-wear-release
+      - name: Build Wear OS Release Artifacts
+        run: ./gradlew :wearos:bundleRelease
+      - name: Sign Wear OS Release
+        id: sign-wearos-release
         uses: r0adkll/sign-android-release@v1.0.4
         with:
-          releaseDirectory: wear/build/outputs/bundle/release/
+          releaseDirectory: wearos/build/outputs/bundle/release/
           signingKeyBase64: ${{ secrets.KEYSTORE_FILE }}
           alias: ${{ secrets.KEYSTORE_ALIAS }}
           keyStorePassword: ${{ secrets.KEYSTORE_PASS }}
           keyPassword: ${{ secrets.KEYSTORE_ALIAS_PASS }}
-      - name: Save Signed Wear Bundle
+      - name: Save Signed Wear OS Bundle
         uses: actions/upload-artifact@v2.2.2
         with:
-          name: wear-release.aab
-          path: ${{ steps.sign-wear-release.outputs.signedReleaseFile }}
+          name: wearos-release.aab
+          path: ${{ steps.sign-wearos-release.outputs.signedReleaseFile }}
 
   upload:
     name: Upload to Google Play & Create Release
@@ -74,10 +74,10 @@ jobs:
         with:
           name: mobile-release.aab
           path: release/
-      - name: Download wear-release.aab
+      - name: Download wearos-release.aab
         uses: actions/download-artifact@v2.0.8
         with:
-          name: wear-release.aab
+          name: wearos-release.aab
           path: release/
       - name: Get last release name
         uses: pozetroninc/github-action-get-latest-release@v0.5.0
@@ -110,14 +110,14 @@ jobs:
           asset_path: release/mobile-release.aab
           asset_name: mobile-release.aab
           asset_content_type: application/zip
-      - name: Upload Wear Release Asset
+      - name: Upload Wear OS Release Asset
         uses: actions/upload-release-asset@v1.0.2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: release/wear-release.aab
-          asset_name: wear-release.aab
+          asset_path: release/wearos-release.aab
+          asset_name: wearos-release.aab
           asset_content_type: application/zip
       - name: Calculate update priority
         uses: boswelja/update-priority-action@main
@@ -130,7 +130,7 @@ jobs:
         with:
           serviceAccountJsonPlainText: ${{ secrets.SERVICE_ACCOUNT_JSON }}
           packageName: "com.boswelja.devicemanager"
-          releaseFiles: "release/mobile-release.aab,release/wear-release.aab"
+          releaseFiles: "release/mobile-release.aab,release/wearos-release.aab"
           whatsNewDirectory: changelogs/
           inAppUpdatePriority: ${{ steps.update_priority.outputs.update-priority }}
           track: beta
