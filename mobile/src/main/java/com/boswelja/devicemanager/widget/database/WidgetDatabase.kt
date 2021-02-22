@@ -22,18 +22,30 @@ abstract class WidgetDatabase : RoomDatabase() {
     abstract fun widgetDao(): WidgetDao
 
     /**
-     * Add a [WatchWidgetAssociation] to the database
+     * Add a [WatchWidgetAssociation] to the database.
+     * @param widgetId The ID of the widget to associate with a watch.
+     * @param watchId The ID of the watch to associate with a widget.
      */
-    fun addWidget(widgetAssociation: WatchWidgetAssociation) {
-        widgetDao().addWidget(widgetAssociation)
+    fun addWidget(widgetId: Int, watchId: String) {
+        widgetDao().addWidget(WatchWidgetAssociation(watchId, widgetId))
     }
 
+    /**
+     * Remove a [WatchWidgetAssociation] from the database.
+     * @param widgetId The ID of the widget to find and remove the corresponding
+     * [WatchWidgetAssociation].
+     */
     fun removeWidget(widgetId: Int) {
         widgetDao().removeWidget(widgetId)
     }
 
-    fun getForWidget(widgetId: Int): WatchWidgetAssociation {
-        return widgetDao().findByWidgetId(widgetId)
+    /**
+     * Gets the associated watch ID for a given widget.
+     * @param widgetId The ID of the widget to get the associated watch ID for.
+     * @return The ID of the associated watch.
+     */
+    fun getWatchIDForWidget(widgetId: Int): String {
+        return widgetDao().findByWidgetId(widgetId).watchId
     }
 
     companion object : SingletonHolder<WidgetDatabase, Context>({ context ->

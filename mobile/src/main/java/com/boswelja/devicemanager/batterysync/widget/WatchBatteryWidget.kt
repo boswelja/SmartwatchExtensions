@@ -99,8 +99,7 @@ class WatchBatteryWidget : AppWidgetProvider() {
             val widgetDatabase = WidgetDatabase.getInstance(context!!)
             val batteryStatsDatabase = WatchBatteryStatsDatabase.getInstance(context)
 
-            val watchId =
-                widgetDatabase.getForWidget(appWidgetId).watchId
+            val watchId = widgetDatabase.getWatchIDForWidget(appWidgetId)
             if (watchId.isNotEmpty()) {
                 val batteryStats = batteryStatsDatabase.batteryStatsDao().getStatsForWatch(watchId)
                 val remoteViews = createWidgetRemoteView(context, width, height, batteryStats)
