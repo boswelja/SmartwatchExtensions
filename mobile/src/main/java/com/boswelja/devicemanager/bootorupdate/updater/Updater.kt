@@ -14,6 +14,7 @@ import android.os.Build
 import androidx.core.content.edit
 import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.BuildConfig
+import com.boswelja.devicemanager.analytics.Analytics
 import com.boswelja.devicemanager.batterysync.BatterySyncWorker
 import com.boswelja.devicemanager.batterysync.widget.WatchBatteryWidget
 import com.boswelja.devicemanager.common.References.CAPABILITY_WATCH_APP
@@ -135,6 +136,11 @@ class Updater(private val context: Context) {
                 }
                 if (sharedPreferences.contains("notification_channels_created")) {
                     remove("notification_channels_created")
+                }
+                if (lastAppVersion < 2025600000) {
+                    Analytics().setAnalyticsEnabled(
+                        sharedPreferences.getBoolean(Analytics.ANALYTICS_ENABLED_KEY, false)
+                    )
                 }
                 if (lastAppVersion < 2020072700) {
                     WatchBatteryWidget.enableWidget(context)
