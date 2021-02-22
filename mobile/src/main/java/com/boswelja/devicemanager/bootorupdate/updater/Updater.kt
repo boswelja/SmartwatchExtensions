@@ -40,22 +40,17 @@ class Updater(private val context: Context) {
         PreferenceManager.getDefaultSharedPreferences(context)
 
     private val currentAppVersion: Int = BuildConfig.VERSION_CODE
-    private val lastAppVersion: Int
+    private val lastAppVersion: Int = try {
+        sharedPreferences.getInt(APP_VERSION_KEY, currentAppVersion)
+    } catch (e: ClassCastException) {
+        Timber.w(
+            "Failed to get lat app version, falling back to version 0 to force upgrade"
+        )
+        0
+    }
 
     val needsUpdate: Boolean
         get() = lastAppVersion < currentAppVersion
-
-    init {
-        lastAppVersion =
-            try {
-                sharedPreferences.getInt(APP_VERSION_KEY, currentAppVersion)
-            } catch (e: ClassCastException) {
-                Timber.w(
-                    "Failed to get lat app version, falling back to version 0 to force upgrade"
-                )
-                0
-            }
-    }
 
     /**
      * Restarts all [BatterySyncWorker] instances.
