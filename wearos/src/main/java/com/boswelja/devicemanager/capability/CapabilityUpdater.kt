@@ -77,7 +77,7 @@ class CapabilityUpdater(
         }
     }
 
-    private fun canQueryAllPackages(): Boolean {
+    internal fun canQueryAllPackages(): Boolean {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             context.checkSelfPermission(Manifest.permission.QUERY_ALL_PACKAGES) ==
                 PackageManager.PERMISSION_GRANTED
@@ -86,7 +86,7 @@ class CapabilityUpdater(
         }
     }
 
-    private fun hasNotiPolicyAccess(): Boolean {
+    internal fun hasNotiPolicyAccess(): Boolean {
         return context.getSystemService<NotificationManager>()
             ?.isNotificationPolicyAccessGranted == true
     }
