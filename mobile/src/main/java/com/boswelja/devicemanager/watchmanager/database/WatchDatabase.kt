@@ -16,7 +16,6 @@ import com.boswelja.devicemanager.watchmanager.item.BoolPreference
 import com.boswelja.devicemanager.watchmanager.item.IntPreference
 import com.boswelja.devicemanager.watchmanager.item.Preference
 import com.boswelja.devicemanager.watchmanager.item.Watch
-import com.boswelja.devicemanager.widget.database.WidgetDatabase
 import timber.log.Timber
 
 @Database(entities = [Watch::class, IntPreference::class, BoolPreference::class], version = 7)
@@ -87,11 +86,6 @@ abstract class WatchDatabase : RoomDatabase() {
         val intPrefs = intPrefDao().getAllForWatch(watch.id) as List<Preference<Any>>
         val boolPrefs = boolPrefDao().getAllForWatch(watch.id) as List<Preference<Any>>
         return intPrefs + boolPrefs
-    }
-
-    override fun close() {
-        WidgetDatabase.destroyInstance()
-        super.close()
     }
 
     companion object : SingletonHolder<WatchDatabase, Context>({ context ->
