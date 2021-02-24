@@ -1,7 +1,5 @@
 package com.boswelja.devicemanager.capability
 
-import android.Manifest.permission.ACCESS_NOTIFICATION_POLICY
-import android.Manifest.permission.QUERY_ALL_PACKAGES
 import android.os.Build
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -59,12 +57,12 @@ class CapabilityUpdaterTest {
             verify(exactly = 1) { capabilityClient.addLocalCapability(RECEIVE_DND.name) }
         } else {
             // Emulate permission granted
-            every { capabilityUpdater.hasPermission(ACCESS_NOTIFICATION_POLICY) } returns true
+            every { capabilityUpdater.hasNotiPolicyAccess() } returns true
             capabilityUpdater.updateReceiveDnD()
             verify(exactly = 1) { capabilityClient.addLocalCapability(RECEIVE_DND.name) }
 
             // Emulate permission denied
-            every { capabilityUpdater.hasPermission(ACCESS_NOTIFICATION_POLICY) } returns false
+            every { capabilityUpdater.hasNotiPolicyAccess() } returns false
             capabilityUpdater.updateReceiveDnD()
             verify(exactly = 1) { capabilityClient.removeLocalCapability(RECEIVE_DND.name) }
         }
@@ -78,12 +76,12 @@ class CapabilityUpdaterTest {
             verify(exactly = 1) { capabilityClient.addLocalCapability(MANAGE_APPS.name) }
         } else {
             // Emulate permission granted
-            every { capabilityUpdater.hasPermission(QUERY_ALL_PACKAGES) } returns true
+            every { capabilityUpdater.canQueryAllPackages() } returns true
             capabilityUpdater.updateManageApps()
             verify(exactly = 1) { capabilityClient.addLocalCapability(MANAGE_APPS.name) }
 
             // Emulate permission denied
-            every { capabilityUpdater.hasPermission(QUERY_ALL_PACKAGES) } returns false
+            every { capabilityUpdater.canQueryAllPackages() } returns false
             capabilityUpdater.updateManageApps()
             verify(exactly = 1) { capabilityClient.removeLocalCapability(MANAGE_APPS.name) }
         }

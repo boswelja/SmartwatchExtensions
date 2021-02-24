@@ -1,13 +1,14 @@
 package com.boswelja.devicemanager.capability
 
 import android.Manifest
+import android.app.NotificationManager
 import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
+import androidx.core.content.getSystemService
 import com.boswelja.devicemanager.common.connection.Capability
 import com.google.android.gms.wearable.CapabilityClient
 import com.google.android.gms.wearable.Wearable
-import java.util.EnumSet
 import timber.log.Timber
 
 /**
@@ -32,7 +33,6 @@ class CapabilityUpdater(
         updateReceiveDnD()
         updateSendBattery()
         updateManageApps()
-        EnumSet.of(Capability.SEND_DND, Capability.SYNC_BATTERY)
     }
 
     /**
@@ -49,9 +49,7 @@ class CapabilityUpdater(
     internal fun updateReceiveDnD() {
         // Either the watch is capable of granting ACCESS_NOTIFICATION_POLICY (via older SDKs), or
         // it's already granted.
-        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.O ||
-            hasPermission(Manifest.permission.ACCESS_NOTIFICATION_POLICY)
-        ) {
+        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.O || hasNotiPolicyAccess()) {
             capabilityClient.addLocalCapability(Capability.RECEIVE_DND.name)
         } else {
             capabilityClient.removeLocalCapability(Capability.RECEIVE_DND.name)
@@ -72,16 +70,24 @@ class CapabilityUpdater(
     internal fun updateManageApps() {
         // QUERY_ALL_APPS should be granted automatically upon app install, so we only check if it's
         // been granted.
-        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.Q ||
-            hasPermission(Manifest.permission.QUERY_ALL_PACKAGES)
-        ) {
+        if (canQueryAllPackages()) {
             capabilityClient.addLocalCapability(Capability.MANAGE_APPS.name)
         } else {
             capabilityClient.removeLocalCapability(Capability.MANAGE_APPS.name)
         }
     }
 
-    internal fun hasPermission(permission: String): Boolean {
-        return context.checkSelfPermission(permission) == PackageManager.PERMISSION_GRANTED
+    internal fun canQueryAllPackages(): Boolean {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            context.checkSelfPermission(Manifest.permission.QUERY_ALL_PACKAGES) ==
+                PackageManager.PERMISSION_GRANTED
+        } else {
+            true
+        }
+    }
+
+    internal fun hasNotiPolicyAccess(): Boolean {
+        return context.getSystemService<NotificationManager>()
+            ?.isNotificationPolicyAccessGranted == true
     }
 }
