@@ -15,6 +15,7 @@ import com.boswelja.devicemanager.NotificationChannelHelper
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.batterysync.database.WatchBatteryStats
 import com.boswelja.devicemanager.batterysync.database.WatchBatteryStatsDatabase
+import com.boswelja.devicemanager.batterysync.widget.WatchBatteryWidget
 import com.boswelja.devicemanager.common.Compat
 import com.boswelja.devicemanager.common.batterysync.References.BATTERY_STATUS_PATH
 import com.boswelja.devicemanager.common.preference.PreferenceKey.BATTERY_CHARGED_NOTI_SENT
@@ -41,24 +42,40 @@ class WatchBatteryUpdateReceiver : WearableListenerService() {
 
     override fun onMessageReceived(messageEvent: MessageEvent?) {
         if (messageEvent?.path == BATTERY_STATUS_PATH) {
-            Timber.i("Got BATTERY_STATUS_PATH")
+            Timber.i("Got ${messageEvent.path}")
             watchBatteryStats = WatchBatteryStats.fromMessage(messageEvent)
 
-            coroutineScope.launch {
+            coroutineScope.launch(Dispatchers.IO) {
                 val database = WatchDatabase.getInstance(this@WatchBatteryUpdateReceiver)
                 database.watchDao().get(watchBatteryStats.watchId)?.let {
                     handleNoti(database, it)
                 }
                 updateStatsInDatabase()
-                WidgetDatabase.updateWatchWidgets(
-                    this@WatchBatteryUpdateReceiver, watchBatteryStats.watchId
-                )
+                updateWidgetsForWatch(watchBatteryStats.watchId)
             }
         }
     }
 
     private fun updateStatsInDatabase() {
         WatchBatteryStatsDatabase.getInstance(this).batteryStatsDao().updateStats(watchBatteryStats)
+    }
+
+    /**
+     * Update all instances of [WatchBatteryWidget] associated with a given watch ID.
+     * @param watchId The [Watch.id] of the associated watch.
+     */
+    private fun updateWidgetsForWatch(watchId: String) {
+        Timber.d("updateWidgetsForWatch($watchId) called")
+        val database = WidgetDatabase.getInstance(this)
+        if (database.isOpen) {
+            // If we can, try to update widgets associated only with the given ID
+            val widgets = database.getAllWidgetsForWatch(watchId)
+            WatchBatteryWidget.updateWidgets(this, widgets.toIntArray())
+            database.close()
+        } else {
+            // Fallback to updating all widgets if database isn't open
+            WatchBatteryWidget.updateWidgets(this)
+        }
     }
 
     private fun handleNoti(database: WatchDatabase, watch: Watch) {
