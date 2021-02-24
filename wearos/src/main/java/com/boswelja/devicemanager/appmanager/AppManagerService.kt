@@ -68,22 +68,20 @@ class AppManagerService : Service() {
                 Timber.d("onReceive($context, $intent) called")
                 intent?.data?.let { data ->
                     val isReplacingPackage = intent.getBooleanExtra(Intent.EXTRA_REPLACING, false)
+                    val packageName = data.encodedSchemeSpecificPart
                     when (intent.action) {
                         Intent.ACTION_PACKAGE_ADDED -> {
-                            val packageName = data.encodedSchemeSpecificPart
                             AppPackageInfo(
                                 packageManager, packageManager.getPackageInfo(packageName, 0)
-                            )
-                                .also {
-                                    if (isReplacingPackage) {
-                                        sendAppUpdatedMessage(it)
-                                    } else {
-                                        sendAppAddedMessage(it)
-                                    }
+                            ).also {
+                                if (isReplacingPackage) {
+                                    sendAppUpdatedMessage(it)
+                                } else {
+                                    sendAppAddedMessage(it)
                                 }
+                            }
                         }
                         Intent.ACTION_PACKAGE_REMOVED -> {
-                            val packageName = data.encodedSchemeSpecificPart
                             if (!isReplacingPackage) {
                                 sendAppRemovedMessage(packageName)
                             } else {
@@ -117,7 +115,7 @@ class AppManagerService : Service() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        createNotification().also { startForeground(APP_MANAGER_NOTI_ID, it) }
+        startForeground(APP_MANAGER_NOTI_ID, createNotification())
         sendAllAppsMessage()
         return START_NOT_STICKY
     }
@@ -189,7 +187,7 @@ class AppManagerService : Service() {
         messageClient.sendMessage(phoneId!!, PACKAGE_UPDATED, data)
     }
 
-    /** Sends a message to the phone informing an error */
+    /** Sends a message to the phone informing an error occurred */
     private fun sendErrorMessage() {
         messageClient.sendMessage(phoneId!!, ERROR, null)
         stopService()
