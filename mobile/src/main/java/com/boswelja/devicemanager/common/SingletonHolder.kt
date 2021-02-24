@@ -30,10 +30,6 @@ abstract class SingletonHolder<out T : Any, in A>(creator: (A) -> T) {
     }
 
     fun destroyInstance() {
-        if (instance != null) {
-            synchronized(this) {
-                instance = null
-            }
-        }
+        instance = null
     }
 }
