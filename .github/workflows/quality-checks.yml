@@ -1,7 +1,14 @@
-name: Main Quality Checks
+name: Quality Checks
 
 on:
   push:
+    branches:
+      - 'main'
+    paths-ignore:
+      - 'changelogs/**'
+      - '**.md'
+      - '.github/*.yml'
+  pull_request:
     branches:
       - 'main'
     paths-ignore:
