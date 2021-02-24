@@ -28,8 +28,4 @@ abstract class SingletonHolder<out T : Any, in A>(creator: (A) -> T) {
             }
         }
     }
-
-    fun destroyInstance() {
-        instance = null
-    }
 }

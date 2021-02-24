@@ -48,11 +48,6 @@ abstract class WidgetDatabase : RoomDatabase() {
         return widgetDao().findByWidgetId(widgetId).watchId
     }
 
-    override fun close() {
-        destroyInstance()
-        super.close()
-    }
-
     companion object : SingletonHolder<WidgetDatabase, Context>({ context ->
         Room.databaseBuilder(
             context, WidgetDatabase::class.java, "widget-db"
