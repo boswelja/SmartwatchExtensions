@@ -21,3 +21,4 @@
 #-renamesourcefileattribute SourceFile
 -keep class com.boswelja.devicemanager.common.appmanager.AppPackageInfo { *; }
 -keep class com.boswelja.devicemanager.common.appmanager.AppPackageInfoList { *; }
+-keep class com.boswelja.devicemanager.common.SerializableBitmap { *; }
