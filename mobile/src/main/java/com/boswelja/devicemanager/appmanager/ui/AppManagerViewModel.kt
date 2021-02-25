@@ -12,6 +12,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.boswelja.devicemanager.appmanager.State
+import com.boswelja.devicemanager.common.DelayedFunction
 import com.boswelja.devicemanager.common.appmanager.App
 import com.boswelja.devicemanager.common.appmanager.Messages
 import com.google.android.gms.wearable.MessageClient
@@ -48,7 +49,9 @@ class AppManagerViewModel internal constructor(
         }
     }
 
-    private var isServiceRunning: Boolean = false
+    private val stateDisconnectedDelay = DelayedFunction(15) {
+        _state.postValue(State.DISCONNECTED)
+    }
 
     /**
      * The current [State] of the App Manager.
@@ -74,9 +77,8 @@ class AppManagerViewModel internal constructor(
     /** Start the App Manager service on the connected watch. */
     fun startAppManagerService() {
         Timber.i("startAppManagerService() called")
-        if (!isServiceRunning) {
+        if (_state.value != State.READY) {
             Timber.i("Trying to start App Manager service")
-            isServiceRunning = true
             messageClient.sendMessage(watchId!!, Messages.START_SERVICE, null)
         }
     }
@@ -84,9 +86,8 @@ class AppManagerViewModel internal constructor(
     /** Stop the App Manager service on the connected watch. */
     fun tryStopAppManagerService() {
         Timber.i("stopAppManagerService() called")
-        if (isServiceRunning && canStopAppManagerService) {
+        if (_state.value == State.READY && canStopAppManagerService) {
             Timber.i("Trying to stop App Manager service")
-            isServiceRunning = false
             messageClient.sendMessage(watchId!!, Messages.STOP_SERVICE, null)
         }
     }
@@ -112,5 +113,6 @@ class AppManagerViewModel internal constructor(
 
     internal fun serviceRunning() {
         Timber.i("App Manager service is running")
+        stateDisconnectedDelay.reset()
     }
 }
