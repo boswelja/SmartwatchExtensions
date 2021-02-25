@@ -10,7 +10,6 @@ package com.boswelja.devicemanager.appmanager
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
-import android.app.Service
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -19,11 +18,12 @@ import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
-import android.os.IBinder
 import androidx.core.app.NotificationCompat
 import androidx.core.content.getSystemService
+import androidx.lifecycle.LifecycleService
 import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.R
+import com.boswelja.devicemanager.common.LifecycleAwareTimer
 import com.boswelja.devicemanager.common.appmanager.App
 import com.boswelja.devicemanager.common.appmanager.Messages.EXPECTED_APP_COUNT
 import com.boswelja.devicemanager.common.appmanager.Messages.PACKAGE_ADDED
@@ -31,16 +31,18 @@ import com.boswelja.devicemanager.common.appmanager.Messages.PACKAGE_REMOVED
 import com.boswelja.devicemanager.common.appmanager.Messages.PACKAGE_UPDATED
 import com.boswelja.devicemanager.common.appmanager.Messages.REQUEST_OPEN_PACKAGE
 import com.boswelja.devicemanager.common.appmanager.Messages.REQUEST_UNINSTALL_PACKAGE
+import com.boswelja.devicemanager.common.appmanager.Messages.SERVICE_RUNNING
 import com.boswelja.devicemanager.common.appmanager.Messages.STOP_SERVICE
 import com.boswelja.devicemanager.phoneconnectionmanager.References.PHONE_ID_KEY
 import com.google.android.gms.wearable.MessageClient
 import com.google.android.gms.wearable.Wearable
 import timber.log.Timber
 
-class AppManagerService : Service() {
+class AppManagerService : LifecycleService() {
 
     private lateinit var sharedPreferences: SharedPreferences
     private lateinit var messageClient: MessageClient
+    private lateinit var serviceRunningNotifier: LifecycleAwareTimer
 
     private var phoneId: String? = null
 
@@ -95,8 +97,6 @@ class AppManagerService : Service() {
         }
     }
 
-    override fun onBind(intent: Intent?): IBinder? = null
-
     override fun onCreate() {
         super.onCreate()
 
@@ -112,12 +112,16 @@ class AppManagerService : Service() {
             addAction(Intent.ACTION_PACKAGE_REMOVED)
             addDataScheme("package")
         }.also { registerReceiver(packageChangeReceiver, it) }
+
+        serviceRunningNotifier = LifecycleAwareTimer(10) {
+            messageClient.sendMessage(phoneId!!, SERVICE_RUNNING, null)
+        }
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         startForeground(APP_MANAGER_NOTI_ID, createNotification())
         sendAllApps()
-        return START_NOT_STICKY
+        return super.onStartCommand(intent, flags, startId)
     }
 
     override fun onDestroy() {
