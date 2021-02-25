@@ -20,5 +20,4 @@
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
 -keep class com.boswelja.devicemanager.common.appmanager.App { *; }
--keep class com.boswelja.devicemanager.common.appmanager.AppPackageInfoList { *; }
 -keep class com.boswelja.devicemanager.common.SerializableBitmap { *; }

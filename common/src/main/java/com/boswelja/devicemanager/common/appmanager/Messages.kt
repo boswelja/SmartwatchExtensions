@@ -9,8 +9,6 @@ package com.boswelja.devicemanager.common.appmanager
 
 object Messages {
 
-    const val GET_ALL_PACKAGES = "/app_manager_request_all_packages"
-
     const val PACKAGE_ADDED = "/app_manager_package_added"
     const val PACKAGE_REMOVED = "/app_manager_package_removed"
     const val PACKAGE_UPDATED = "/app_manager_package_updated"
