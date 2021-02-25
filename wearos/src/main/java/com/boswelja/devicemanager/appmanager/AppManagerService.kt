@@ -15,6 +15,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
@@ -37,8 +38,8 @@ import timber.log.Timber
 
 class AppManagerService : Service() {
 
-    private val sharedPreferences by lazy { PreferenceManager.getDefaultSharedPreferences(this) }
-    private val messageClient by lazy { Wearable.getMessageClient(this) }
+    private lateinit var sharedPreferences: SharedPreferences
+    private lateinit var messageClient: MessageClient
 
     private var phoneId: String? = null
 
@@ -99,6 +100,9 @@ class AppManagerService : Service() {
 
     override fun onCreate() {
         super.onCreate()
+
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
+        messageClient = Wearable.getMessageClient(this)
 
         phoneId = sharedPreferences.getString(PHONE_ID_KEY, "")
 
