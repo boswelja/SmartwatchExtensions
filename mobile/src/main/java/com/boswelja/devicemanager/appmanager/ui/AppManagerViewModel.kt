@@ -13,6 +13,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import com.boswelja.devicemanager.R
+import com.boswelja.devicemanager.appmanager.State
 import com.boswelja.devicemanager.appmanager.ui.adapter.Item
 import com.boswelja.devicemanager.common.appmanager.AppPackageInfo
 import com.boswelja.devicemanager.common.appmanager.AppPackageInfoList
@@ -32,6 +33,9 @@ class AppManagerViewModel internal constructor(
         application,
         Wearable.getMessageClient(application)
     )
+
+    private val _state = MutableLiveData(State.CONNECTING)
+    private val _allAppsList = MutableLiveData<AppPackageInfoList?>(null)
 
     private val messageListener =
         MessageClient.OnMessageReceivedListener {
@@ -75,14 +79,19 @@ class AppManagerViewModel internal constructor(
             }
         }
 
-    private val _allAppsList = MutableLiveData<AppPackageInfoList?>(null)
+    private var isServiceRunning: Boolean = false
+
     val allAppsList: LiveData<AppPackageInfoList?>
         get() = _allAppsList
 
     val adapterList: LiveData<List<Item>?> =
         Transformations.map(allAppsList) { if (it != null) separateAppListToSections(it) else null }
 
-    private var isServiceRunning: Boolean = false
+    /**
+     * The current [State] of the App Manager.
+     */
+    val state: LiveData<State>
+        get() = _state
 
     var canStopAppManagerService: Boolean = true
     var watchId: String? = null
