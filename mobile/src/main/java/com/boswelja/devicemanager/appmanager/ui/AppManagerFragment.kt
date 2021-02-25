@@ -20,6 +20,7 @@ import com.boswelja.devicemanager.appmanager.ui.info.AppPackageInfoActivity
 import com.boswelja.devicemanager.common.appmanager.App
 import com.boswelja.devicemanager.common.recyclerview.adapter.ItemClickCallback
 import com.boswelja.devicemanager.databinding.FragmentAppManagerBinding
+import timber.log.Timber
 
 class AppManagerFragment : Fragment(), ItemClickCallback<Item> {
 
@@ -30,7 +31,7 @@ class AppManagerFragment : Fragment(), ItemClickCallback<Item> {
 
     override fun onClick(item: Item) {
         if (item is Item.App) {
-            viewModel.getAppDetails(item)?.let { launchAppInfoActivity(it) }
+            Timber.i("App clicked")
         }
     }
 
@@ -45,8 +46,10 @@ class AppManagerFragment : Fragment(), ItemClickCallback<Item> {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         binding.appsRecyclerview.adapter = appsAdapter
-        viewModel.adapterList.observe(viewLifecycleOwner) {
-            it?.let { allApps -> appsAdapter.submitList(allApps) }
+        viewModel.apps.observe(viewLifecycleOwner) {
+            it?.let { allApps ->
+                // appsAdapter.submitList(allApps)
+            }
         }
     }
 

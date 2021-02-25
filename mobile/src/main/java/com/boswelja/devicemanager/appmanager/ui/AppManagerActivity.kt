@@ -11,6 +11,7 @@ import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.navigation.navArgs
 import com.boswelja.devicemanager.R
+import com.boswelja.devicemanager.appmanager.State
 import com.boswelja.devicemanager.common.ui.activity.BaseToolbarActivity
 import com.boswelja.devicemanager.common.ui.fragment.LoadingFragment
 import com.boswelja.devicemanager.databinding.ActivityAppManagerBinding
@@ -41,11 +42,12 @@ class AppManagerActivity : BaseToolbarActivity() {
 
         viewModel.watchId = args.watchId
 
-        viewModel.allAppsList.observe(this) {
-            if (it.isNullOrEmpty()) {
-                showLoadingFragment()
-            } else {
-                showAppManagerFragment()
+        viewModel.state.observe(this) {
+            when (it) {
+                State.DISCONNECTED, State.CONNECTING, State.LOADING_APPS -> showLoadingFragment()
+                State.READY -> showAppManagerFragment()
+                State.ERROR -> TODO()
+                else -> Timber.e("App Manager state is null")
             }
         }
         lifecycle.addObserver(watchServiceLifecycleObserver)
