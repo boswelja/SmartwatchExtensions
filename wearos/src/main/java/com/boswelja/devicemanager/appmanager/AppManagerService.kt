@@ -21,6 +21,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
+import androidx.core.content.getSystemService
 import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.appmanager.App
@@ -43,58 +44,56 @@ class AppManagerService : Service() {
 
     private var phoneId: String? = null
 
-    private val messageReceiver =
-        MessageClient.OnMessageReceivedListener {
-            when (it.path) {
-                REQUEST_UNINSTALL_PACKAGE -> {
-                    getPackageNameFromBytes(it.data)?.also { packageName ->
-                        requestUninstallPackage(packageName)
-                    }
-                }
-                REQUEST_OPEN_PACKAGE -> {
-                    getPackageNameFromBytes(it.data)?.also { packageName ->
-                        openPackage(packageName)
-                    }
-                }
-                STOP_SERVICE -> {
-                    stopService()
+    private val messageReceiver = MessageClient.OnMessageReceivedListener {
+        when (it.path) {
+            REQUEST_UNINSTALL_PACKAGE -> {
+                getPackageNameFromBytes(it.data)?.also { packageName ->
+                    requestUninstallPackage(packageName)
                 }
             }
+            REQUEST_OPEN_PACKAGE -> {
+                getPackageNameFromBytes(it.data)?.also { packageName ->
+                    openPackage(packageName)
+                }
+            }
+            STOP_SERVICE -> {
+                stopService()
+            }
         }
+    }
 
-    private val packageChangeReceiver =
-        object : BroadcastReceiver() {
-            override fun onReceive(context: Context?, intent: Intent?) {
-                Timber.d("onReceive($context, $intent) called")
-                intent?.data?.let { data ->
-                    val isReplacingPackage = intent.getBooleanExtra(Intent.EXTRA_REPLACING, false)
-                    val packageName = data.encodedSchemeSpecificPart
-                    when (intent.action) {
-                        Intent.ACTION_PACKAGE_ADDED -> {
-                            App(
-                                packageManager, packageManager.getPackageInfo(packageName, 0)
-                            ).also {
-                                if (isReplacingPackage) {
-                                    sendAppUpdatedMessage(it)
-                                } else {
-                                    sendAppAddedMessage(it)
-                                }
-                            }
-                        }
-                        Intent.ACTION_PACKAGE_REMOVED -> {
-                            if (!isReplacingPackage) {
-                                sendAppRemovedMessage(packageName)
+    private val packageChangeReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            Timber.d("onReceive($context, $intent) called")
+            intent?.data?.let { data ->
+                val isReplacingPackage = intent.getBooleanExtra(Intent.EXTRA_REPLACING, false)
+                val packageName = data.encodedSchemeSpecificPart
+                when (intent.action) {
+                    Intent.ACTION_PACKAGE_ADDED -> {
+                        App(
+                            packageManager, packageManager.getPackageInfo(packageName, 0)
+                        ).also {
+                            if (isReplacingPackage) {
+                                sendAppUpdatedMessage(it)
                             } else {
-                                Timber.i(
-                                    "Package removed, but system indicated it's being replaced."
-                                )
+                                sendAppAddedMessage(it)
                             }
                         }
-                        else -> Timber.w("Unknown intent received")
                     }
+                    Intent.ACTION_PACKAGE_REMOVED -> {
+                        if (!isReplacingPackage) {
+                            sendAppRemovedMessage(packageName)
+                        } else {
+                            Timber.i(
+                                "Package removed, but system indicated it's being replaced."
+                            )
+                        }
+                    }
+                    else -> Timber.w("Unknown intent received")
                 }
             }
         }
+    }
 
     override fun onBind(intent: Intent?): IBinder? = null
 
@@ -108,13 +107,11 @@ class AppManagerService : Service() {
 
         messageClient.addListener(messageReceiver)
 
-        IntentFilter()
-            .apply {
-                addAction(Intent.ACTION_PACKAGE_ADDED)
-                addAction(Intent.ACTION_PACKAGE_REMOVED)
-                addDataScheme("package")
-            }
-            .also { registerReceiver(packageChangeReceiver, it) }
+        IntentFilter().apply {
+            addAction(Intent.ACTION_PACKAGE_ADDED)
+            addAction(Intent.ACTION_PACKAGE_REMOVED)
+            addDataScheme("package")
+        }.also { registerReceiver(packageChangeReceiver, it) }
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -141,15 +138,14 @@ class AppManagerService : Service() {
      */
     private fun createNotification(): Notification {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val notificationManager =
-                getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-            if (notificationManager.getNotificationChannel(APP_MANAGER_NOTI_CHANNEL_ID) == null) {
+            val notificationManager = getSystemService<NotificationManager>()
+            if (notificationManager?.getNotificationChannel(APP_MANAGER_NOTI_CHANNEL_ID) == null) {
                 NotificationChannel(
                     APP_MANAGER_NOTI_CHANNEL_ID,
                     getString(R.string.app_manager_noti_channel_title),
                     NotificationManager.IMPORTANCE_LOW
                 )
-                    .also { notificationManager.createNotificationChannel(it) }
+                    .also { notificationManager?.createNotificationChannel(it) }
             }
         }
         return NotificationCompat.Builder(this, APP_MANAGER_NOTI_CHANNEL_ID)
@@ -240,13 +236,11 @@ class AppManagerService : Service() {
      */
     private fun requestUninstallPackage(packageName: String) {
         if (isPackageInstalled(packageName)) {
-            Intent()
-                .apply {
-                    action = Intent.ACTION_DELETE
-                    data = Uri.fromParts("package", packageName, null)
-                    flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                }
-                .also { startActivity(it) }
+            Intent().apply {
+                action = Intent.ACTION_DELETE
+                data = Uri.fromParts("package", packageName, null)
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK
+            }.also { startActivity(it) }
         } else {
             sendAppRemovedMessage(packageName)
         }
@@ -257,8 +251,7 @@ class AppManagerService : Service() {
      * @param packageName The name of the package to try open.
      */
     private fun openPackage(packageName: String) {
-        packageManager
-            .getLaunchIntentForPackage(packageName)
+        packageManager.getLaunchIntentForPackage(packageName)
             ?.apply { flags = Intent.FLAG_ACTIVITY_NEW_TASK }
             ?.also { startActivity(it) }
     }
