@@ -10,6 +10,7 @@ package com.boswelja.devicemanager.appmanager.ui
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 
+@ExperimentalUnsignedTypes
 class WatchServiceLifecycleObserver(private val viewModel: AppManagerViewModel) :
     DefaultLifecycleObserver {
 

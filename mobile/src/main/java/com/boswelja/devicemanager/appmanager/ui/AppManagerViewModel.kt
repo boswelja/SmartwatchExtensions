@@ -8,7 +8,13 @@ import androidx.lifecycle.Observer
 import com.boswelja.devicemanager.appmanager.State
 import com.boswelja.devicemanager.common.DelayedFunction
 import com.boswelja.devicemanager.common.appmanager.App
-import com.boswelja.devicemanager.common.appmanager.Messages
+import com.boswelja.devicemanager.common.appmanager.Messages.EXPECTED_APP_COUNT
+import com.boswelja.devicemanager.common.appmanager.Messages.PACKAGE_ADDED
+import com.boswelja.devicemanager.common.appmanager.Messages.PACKAGE_REMOVED
+import com.boswelja.devicemanager.common.appmanager.Messages.PACKAGE_UPDATED
+import com.boswelja.devicemanager.common.appmanager.Messages.SERVICE_RUNNING
+import com.boswelja.devicemanager.common.appmanager.Messages.START_SERVICE
+import com.boswelja.devicemanager.common.appmanager.Messages.STOP_SERVICE
 import com.boswelja.devicemanager.watchmanager.WatchManager
 import com.boswelja.devicemanager.watchmanager.item.Watch
 import com.google.android.gms.wearable.MessageClient
@@ -38,22 +44,25 @@ class AppManagerViewModel internal constructor(
         if (it.sourceNodeId == watchId) {
             when (it.path) {
                 // Package change messages
-                Messages.PACKAGE_ADDED -> addPackage(App.fromByteArray(it.data))
-                Messages.PACKAGE_UPDATED -> updatePackage(App.fromByteArray(it.data))
-                Messages.PACKAGE_REMOVED -> removePackage(App.fromByteArray(it.data))
+                PACKAGE_ADDED -> addPackage(App.fromByteArray(it.data))
+                PACKAGE_UPDATED -> updatePackage(App.fromByteArray(it.data))
+                PACKAGE_REMOVED -> removePackage(App.fromByteArray(it.data))
 
                 // Service state messages
-                Messages.SERVICE_RUNNING -> serviceRunning()
-                Messages.EXPECTED_APP_COUNT -> expectPackages(it.data.first().toUByte())
+                SERVICE_RUNNING -> serviceRunning()
+                EXPECTED_APP_COUNT -> expectPackages(it.data.first().toUByte())
 
                 else -> Timber.w("Unknown path received, ignoring")
             }
+        } else if (it.path == SERVICE_RUNNING) {
+            // If we get SERVICE_RUNNING from any watch that's not the selected watch, stop it.
+            messageClient.sendMessage(it.sourceNodeId, STOP_SERVICE, null)
         }
     }
 
     private val selectedWatchObserver = Observer<Watch?> {
         _state.postValue(State.CONNECTING)
-        messageClient.sendMessage(watchId!!, Messages.STOP_SERVICE, null)
+        messageClient.sendMessage(watchId!!, STOP_SERVICE, null)
         _apps.clear()
         _appsObservable.postValue(_apps)
         watchId = it.id
@@ -94,7 +103,7 @@ class AppManagerViewModel internal constructor(
         Timber.d("startAppManagerService() called")
         if (_state.value != State.READY) {
             Timber.d("Trying to start App Manager service")
-            messageClient.sendMessage(watchId!!, Messages.START_SERVICE, null)
+            messageClient.sendMessage(watchId!!, START_SERVICE, null)
             stateDisconnectedDelay.reset()
         }
     }
@@ -104,7 +113,7 @@ class AppManagerViewModel internal constructor(
         Timber.d("stopAppManagerService() called")
         if (_state.value == State.READY && canStopAppManagerService) {
             Timber.d("Trying to stop App Manager service")
-            messageClient.sendMessage(watchId!!, Messages.STOP_SERVICE, null)
+            messageClient.sendMessage(watchId!!, STOP_SERVICE, null)
         }
     }
 
