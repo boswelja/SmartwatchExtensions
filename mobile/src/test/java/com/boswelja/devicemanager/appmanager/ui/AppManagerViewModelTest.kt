@@ -11,8 +11,8 @@ import android.os.Build
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.boswelja.devicemanager.common.appmanager.References.START_SERVICE
-import com.boswelja.devicemanager.common.appmanager.References.STOP_SERVICE
+import com.boswelja.devicemanager.common.appmanager.Messages.START_SERVICE
+import com.boswelja.devicemanager.common.appmanager.Messages.STOP_SERVICE
 import com.google.android.gms.wearable.MessageClient
 import io.mockk.MockKAnnotations
 import io.mockk.confirmVerified

@@ -16,17 +16,17 @@ import java.io.ObjectOutputStream
 import java.io.Serializable
 
 class AppPackageInfoList(packageManager: PackageManager) :
-    ArrayList<AppPackageInfo>(), Serializable {
+    ArrayList<App>(), Serializable {
 
     init {
         val allPackages =
             packageManager.getInstalledPackages(PackageManager.GET_PERMISSIONS).map {
-                AppPackageInfo(packageManager, it)
+                App(packageManager, it)
             }
         addAll(filterAppsList(allPackages))
     }
 
-    private fun filterAppsList(apps: List<AppPackageInfo>): List<AppPackageInfo> =
+    private fun filterAppsList(apps: List<App>): List<App> =
         apps.filter {
             (!blacklistedApps.contains(it.packageName)) &&
                 ((it.isSystemApp && it.hasLaunchActivity) || (!it.isSystemApp))

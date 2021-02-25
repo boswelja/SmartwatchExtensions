@@ -21,16 +21,16 @@ import android.os.IBinder
 import androidx.core.app.NotificationCompat
 import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.R
-import com.boswelja.devicemanager.common.appmanager.AppPackageInfo
+import com.boswelja.devicemanager.common.appmanager.App
 import com.boswelja.devicemanager.common.appmanager.AppPackageInfoList
-import com.boswelja.devicemanager.common.appmanager.References.ERROR
-import com.boswelja.devicemanager.common.appmanager.References.GET_ALL_PACKAGES
-import com.boswelja.devicemanager.common.appmanager.References.PACKAGE_ADDED
-import com.boswelja.devicemanager.common.appmanager.References.PACKAGE_REMOVED
-import com.boswelja.devicemanager.common.appmanager.References.PACKAGE_UPDATED
-import com.boswelja.devicemanager.common.appmanager.References.REQUEST_OPEN_PACKAGE
-import com.boswelja.devicemanager.common.appmanager.References.REQUEST_UNINSTALL_PACKAGE
-import com.boswelja.devicemanager.common.appmanager.References.STOP_SERVICE
+import com.boswelja.devicemanager.common.appmanager.Messages.ERROR
+import com.boswelja.devicemanager.common.appmanager.Messages.GET_ALL_PACKAGES
+import com.boswelja.devicemanager.common.appmanager.Messages.PACKAGE_ADDED
+import com.boswelja.devicemanager.common.appmanager.Messages.PACKAGE_REMOVED
+import com.boswelja.devicemanager.common.appmanager.Messages.PACKAGE_UPDATED
+import com.boswelja.devicemanager.common.appmanager.Messages.REQUEST_OPEN_PACKAGE
+import com.boswelja.devicemanager.common.appmanager.Messages.REQUEST_UNINSTALL_PACKAGE
+import com.boswelja.devicemanager.common.appmanager.Messages.STOP_SERVICE
 import com.boswelja.devicemanager.phoneconnectionmanager.References.PHONE_ID_KEY
 import com.google.android.gms.wearable.MessageClient
 import com.google.android.gms.wearable.Wearable
@@ -71,7 +71,7 @@ class AppManagerService : Service() {
                     val packageName = data.encodedSchemeSpecificPart
                     when (intent.action) {
                         Intent.ACTION_PACKAGE_ADDED -> {
-                            AppPackageInfo(
+                            App(
                                 packageManager, packageManager.getPackageInfo(packageName, 0)
                             ).also {
                                 if (isReplacingPackage) {
@@ -171,18 +171,18 @@ class AppManagerService : Service() {
 
     /**
      * Sends a message to the phone informing of a package install.
-     * @param packageInfo The [AppPackageInfo] for the package that was installed.
+     * @param packageInfo The [App] for the package that was installed.
      */
-    private fun sendAppAddedMessage(packageInfo: AppPackageInfo) {
+    private fun sendAppAddedMessage(packageInfo: App) {
         val data = packageInfo.toByteArray()
         messageClient.sendMessage(phoneId!!, PACKAGE_ADDED, data)
     }
 
     /**
      * Sends a message to the phone informing of a package update.
-     * @param packageInfo The [AppPackageInfo] for the package that was installed.
+     * @param packageInfo The [App] for the package that was installed.
      */
-    private fun sendAppUpdatedMessage(packageInfo: AppPackageInfo) {
+    private fun sendAppUpdatedMessage(packageInfo: App) {
         val data = packageInfo.toByteArray()
         messageClient.sendMessage(phoneId!!, PACKAGE_UPDATED, data)
     }

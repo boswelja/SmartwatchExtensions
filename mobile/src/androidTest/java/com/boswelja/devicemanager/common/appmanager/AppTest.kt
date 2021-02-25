@@ -14,15 +14,15 @@ import java.io.IOException
 import org.junit.Test
 import timber.log.Timber
 
-class AppPackageInfoTest {
+class AppTest {
 
     @Test
     fun isSystemApp() {
         val context = InstrumentationRegistry.getInstrumentation().targetContext
         val systemAppInfo = context.packageManager.getPackageInfo("com.android.systemui", 0)
-        val systemUiInfo = AppPackageInfo(context.packageManager, systemAppInfo)
+        val systemUiInfo = App(context.packageManager, systemAppInfo)
         val userAppInfo = context.packageManager.getPackageInfo(context.packageName, 0)
-        val wearableExtensionsInfo = AppPackageInfo(context.packageManager, userAppInfo)
+        val wearableExtensionsInfo = App(context.packageManager, userAppInfo)
 
         assertThat(systemUiInfo.isSystemApp).isTrue()
         assertThat(wearableExtensionsInfo.isSystemApp).isFalse()
@@ -32,9 +32,9 @@ class AppPackageInfoTest {
     fun getHasLaunchActivity() {
         val context = InstrumentationRegistry.getInstrumentation().targetContext
         val systemAppInfo = context.packageManager.getPackageInfo("com.android.systemui", 0)
-        val systemUiInfo = AppPackageInfo(context.packageManager, systemAppInfo)
+        val systemUiInfo = App(context.packageManager, systemAppInfo)
         val userAppInfo = context.packageManager.getPackageInfo(context.packageName, 0)
-        val wearableExtensionsInfo = AppPackageInfo(context.packageManager, userAppInfo)
+        val wearableExtensionsInfo = App(context.packageManager, userAppInfo)
 
         assertThat(systemUiInfo.hasLaunchActivity).isFalse()
         assertThat(wearableExtensionsInfo.hasLaunchActivity).isTrue()
@@ -44,10 +44,10 @@ class AppPackageInfoTest {
     fun byteArrayConversions() {
         val context = InstrumentationRegistry.getInstrumentation().targetContext
         val userAppInfo = context.packageManager.getPackageInfo(context.packageName, 0)
-        val wearableExtensionsInfo = AppPackageInfo(context.packageManager, userAppInfo)
+        val wearableExtensionsInfo = App(context.packageManager, userAppInfo)
         try {
             val byteArray = wearableExtensionsInfo.toByteArray()
-            val infoFromByteArray = AppPackageInfo.fromByteArray(byteArray)
+            val infoFromByteArray = App.fromByteArray(byteArray)
 
             assertThat(infoFromByteArray.isSystemApp).isEqualTo(wearableExtensionsInfo.isSystemApp)
             assertThat(infoFromByteArray.hasLaunchActivity)

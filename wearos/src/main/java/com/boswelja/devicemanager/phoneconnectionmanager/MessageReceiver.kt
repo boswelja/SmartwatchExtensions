@@ -18,7 +18,7 @@ import com.boswelja.devicemanager.appmanager.AppManagerService
 import com.boswelja.devicemanager.capability.CapabilityUpdater
 import com.boswelja.devicemanager.common.Compat
 import com.boswelja.devicemanager.common.Extensions.toByteArray
-import com.boswelja.devicemanager.common.appmanager.References
+import com.boswelja.devicemanager.common.appmanager.Messages
 import com.boswelja.devicemanager.common.connection.Messages.CLEAR_PREFERENCES
 import com.boswelja.devicemanager.common.connection.Messages.REQUEST_APP_VERSION
 import com.boswelja.devicemanager.common.connection.Messages.REQUEST_UPDATE_CAPABILITIES
@@ -52,7 +52,7 @@ class MessageReceiver : WearableListenerService() {
                         )
                     )
             }
-            References.START_SERVICE -> {
+            Messages.START_SERVICE -> {
                 val intent = Intent(this, AppManagerService::class.java)
                 Compat.startForegroundService(this, intent)
             }

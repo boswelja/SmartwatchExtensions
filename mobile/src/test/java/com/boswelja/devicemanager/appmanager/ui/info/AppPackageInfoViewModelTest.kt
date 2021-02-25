@@ -11,9 +11,9 @@ import android.os.Build
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.boswelja.devicemanager.common.appmanager.AppPackageInfo
-import com.boswelja.devicemanager.common.appmanager.References.REQUEST_OPEN_PACKAGE
-import com.boswelja.devicemanager.common.appmanager.References.REQUEST_UNINSTALL_PACKAGE
+import com.boswelja.devicemanager.common.appmanager.App
+import com.boswelja.devicemanager.common.appmanager.Messages.REQUEST_OPEN_PACKAGE
+import com.boswelja.devicemanager.common.appmanager.Messages.REQUEST_UNINSTALL_PACKAGE
 import com.boswelja.devicemanager.getOrAwaitValue
 import com.google.android.gms.wearable.MessageClient
 import com.google.common.truth.Truth.assertThat
@@ -140,7 +140,7 @@ class AppPackageInfoViewModelTest {
     }
 
     private fun getTestApp(isSystemApp: Boolean, isLaunchable: Boolean) =
-        AppPackageInfo(
+        App(
             null,
             1,
             "1.0.0",

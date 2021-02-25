@@ -17,7 +17,7 @@ import androidx.fragment.app.activityViewModels
 import com.boswelja.devicemanager.appmanager.ui.adapter.AppsAdapter
 import com.boswelja.devicemanager.appmanager.ui.adapter.Item
 import com.boswelja.devicemanager.appmanager.ui.info.AppPackageInfoActivity
-import com.boswelja.devicemanager.common.appmanager.AppPackageInfo
+import com.boswelja.devicemanager.common.appmanager.App
 import com.boswelja.devicemanager.common.recyclerview.adapter.ItemClickCallback
 import com.boswelja.devicemanager.databinding.FragmentAppManagerBinding
 
@@ -51,14 +51,14 @@ class AppManagerFragment : Fragment(), ItemClickCallback<Item> {
     }
 
     /**
-     * Launches an [AppPackageInfoActivity] for a given [AppPackageInfo].
-     * @param appPackageInfo The [AppPackageInfo] object to pass on to the [AppPackageInfoActivity].
+     * Launches an [AppPackageInfoActivity] for a given [App].
+     * @param app The [App] object to pass on to the [AppPackageInfoActivity].
      */
-    private fun launchAppInfoActivity(appPackageInfo: AppPackageInfo) {
+    private fun launchAppInfoActivity(app: App) {
         viewModel.canStopAppManagerService = false
         Intent(context, AppPackageInfoActivity::class.java)
             .apply {
-                putExtra(AppPackageInfoActivity.EXTRA_APP_INFO, appPackageInfo)
+                putExtra(AppPackageInfoActivity.EXTRA_APP_INFO, app)
                 putExtra(AppPackageInfoActivity.EXTRA_WATCH_ID, viewModel.watchId)
             }
             .also { startActivity(it) }

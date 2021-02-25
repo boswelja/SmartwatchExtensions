@@ -13,8 +13,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import com.boswelja.devicemanager.BuildConfig
-import com.boswelja.devicemanager.common.appmanager.AppPackageInfo
-import com.boswelja.devicemanager.common.appmanager.References
+import com.boswelja.devicemanager.common.appmanager.App
+import com.boswelja.devicemanager.common.appmanager.Messages
 import com.google.android.gms.wearable.MessageClient
 import com.google.android.gms.wearable.Wearable
 import java.text.SimpleDateFormat
@@ -37,7 +37,7 @@ class AppPackageInfoViewModel internal constructor(
 
     var watchId: String? = null
 
-    val appInfo = MutableLiveData<AppPackageInfo>()
+    val appInfo = MutableLiveData<App>()
 
     val appName = Transformations.map(appInfo) { it.packageLabel }
 
@@ -68,7 +68,7 @@ class AppPackageInfoViewModel internal constructor(
     fun sendUninstallRequestMessage() {
         messageClient.sendMessage(
             watchId!!,
-            References.REQUEST_UNINSTALL_PACKAGE,
+            Messages.REQUEST_UNINSTALL_PACKAGE,
             appInfo.value!!.packageName.toByteArray(Charsets.UTF_8)
         )
         _finishActivity.postValue(true)
@@ -78,7 +78,7 @@ class AppPackageInfoViewModel internal constructor(
     fun sendOpenRequestMessage() {
         messageClient.sendMessage(
             watchId!!,
-            References.REQUEST_OPEN_PACKAGE,
+            Messages.REQUEST_OPEN_PACKAGE,
             appInfo.value!!.packageName.toByteArray(Charsets.UTF_8)
         )
     }

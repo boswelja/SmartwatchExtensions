@@ -20,7 +20,7 @@ import java.io.ObjectInputStream
 import java.io.ObjectOutputStream
 import java.io.Serializable
 
-data class AppPackageInfo(
+data class App(
     val packageIcon: SerializableBitmap?,
     val versionCode: Long,
     val versionName: String?,
@@ -51,7 +51,7 @@ data class AppPackageInfo(
     }
 
     override fun equals(other: Any?): Boolean {
-        return if (other is AppPackageInfo) {
+        return if (other is App) {
             packageName == other.packageName &&
                 packageLabel == other.packageLabel &&
                 versionCode == other.versionCode &&
@@ -92,9 +92,9 @@ data class AppPackageInfo(
         const val serialVersionUID: Long = 7
 
         @Throws(IOException::class, ClassNotFoundException::class)
-        fun fromByteArray(byteArray: ByteArray): AppPackageInfo {
+        fun fromByteArray(byteArray: ByteArray): App {
             ObjectInputStream(ByteArrayInputStream(byteArray)).use {
-                return it.readObject() as AppPackageInfo
+                return it.readObject() as App
             }
         }
 

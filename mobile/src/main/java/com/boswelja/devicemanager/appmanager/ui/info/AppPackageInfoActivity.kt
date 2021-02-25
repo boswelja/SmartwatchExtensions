@@ -13,7 +13,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.databinding.DataBindingUtil
 import com.boswelja.devicemanager.R
-import com.boswelja.devicemanager.common.appmanager.AppPackageInfo
+import com.boswelja.devicemanager.common.appmanager.App
 import com.boswelja.devicemanager.common.ui.activity.BaseToolbarActivity
 import com.boswelja.devicemanager.databinding.ActivityAppInfoBinding
 
@@ -33,7 +33,7 @@ class AppPackageInfoActivity : BaseToolbarActivity() {
 
         val watchId = intent?.getStringExtra(EXTRA_WATCH_ID)
         viewModel.watchId = watchId
-        val appInfo = intent?.getSerializableExtra(EXTRA_APP_INFO) as AppPackageInfo?
+        val appInfo = intent?.getSerializableExtra(EXTRA_APP_INFO) as App?
         viewModel.appInfo.postValue(appInfo)
 
         viewModel.appInfo.observe(this) { setupRequestedPermissions(it) }
@@ -49,9 +49,9 @@ class AppPackageInfoActivity : BaseToolbarActivity() {
 
     /**
      * Sets up the requested permissions view.
-     * @param appInfo The [AppPackageInfo] to use for data etc.
+     * @param appInfo The [App] to use for data etc.
      */
-    private fun setupRequestedPermissions(appInfo: AppPackageInfo) {
+    private fun setupRequestedPermissions(appInfo: App) {
         val requestsPermissions = !appInfo.requestedPermissions.isNullOrEmpty()
         binding.apply {
             permissionsInfo.findViewById<AppCompatTextView>(R.id.top_line).text =
