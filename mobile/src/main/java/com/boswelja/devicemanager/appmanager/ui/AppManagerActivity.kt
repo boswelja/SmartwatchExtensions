@@ -17,6 +17,7 @@ import com.boswelja.devicemanager.common.ui.fragment.LoadingFragment
 import com.boswelja.devicemanager.databinding.ActivityAppManagerBinding
 import timber.log.Timber
 
+@ExperimentalUnsignedTypes
 class AppManagerActivity : BaseToolbarActivity() {
 
     private val args: AppManagerActivityArgs by navArgs()
@@ -39,8 +40,6 @@ class AppManagerActivity : BaseToolbarActivity() {
             showUpButton = true,
             toolbarSubtitle = getString(R.string.app_manager_activity_subtitle, args.watchName)
         )
-
-        viewModel.watchId = args.watchId
 
         viewModel.state.observe(this) {
             when (it) {

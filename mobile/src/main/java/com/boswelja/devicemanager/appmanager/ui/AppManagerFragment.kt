@@ -22,6 +22,7 @@ import com.boswelja.devicemanager.common.recyclerview.adapter.ItemClickCallback
 import com.boswelja.devicemanager.databinding.FragmentAppManagerBinding
 import timber.log.Timber
 
+@ExperimentalUnsignedTypes
 class AppManagerFragment : Fragment(), ItemClickCallback<Item> {
 
     private val viewModel: AppManagerViewModel by activityViewModels()
@@ -62,7 +63,7 @@ class AppManagerFragment : Fragment(), ItemClickCallback<Item> {
         Intent(context, AppPackageInfoActivity::class.java)
             .apply {
                 putExtra(AppPackageInfoActivity.EXTRA_APP_INFO, app)
-                putExtra(AppPackageInfoActivity.EXTRA_WATCH_ID, viewModel.watchId)
+                // putExtra(AppPackageInfoActivity.EXTRA_WATCH_ID, viewModel.watchId)
             }
             .also { startActivity(it) }
     }
