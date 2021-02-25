@@ -15,6 +15,7 @@ import com.google.android.gms.wearable.MessageClient
 import com.google.android.gms.wearable.Wearable
 import timber.log.Timber
 
+@ExperimentalUnsignedTypes
 class AppManagerViewModel internal constructor(
     application: Application,
     private val messageClient: MessageClient,
@@ -43,6 +44,7 @@ class AppManagerViewModel internal constructor(
 
                 // Service state messages
                 Messages.SERVICE_RUNNING -> serviceRunning()
+                Messages.EXPECTED_APP_COUNT -> expectPackages(it.data.first().toUByte())
 
                 else -> Timber.w("Unknown path received, ignoring")
             }
@@ -63,6 +65,7 @@ class AppManagerViewModel internal constructor(
     }
 
     private var watchId: String? = null
+    private var expectedPackageCount: UByte = 0u
 
     /**
      * The current [State] of the App Manager.
@@ -88,9 +91,9 @@ class AppManagerViewModel internal constructor(
 
     /** Start the App Manager service on the connected watch. */
     fun startAppManagerService() {
-        Timber.i("startAppManagerService() called")
+        Timber.d("startAppManagerService() called")
         if (_state.value != State.READY) {
-            Timber.i("Trying to start App Manager service")
+            Timber.d("Trying to start App Manager service")
             messageClient.sendMessage(watchId!!, Messages.START_SERVICE, null)
             stateDisconnectedDelay.reset()
         }
@@ -98,34 +101,49 @@ class AppManagerViewModel internal constructor(
 
     /** Stop the App Manager service on the connected watch. */
     fun tryStopAppManagerService() {
-        Timber.i("stopAppManagerService() called")
+        Timber.d("stopAppManagerService() called")
         if (_state.value == State.READY && canStopAppManagerService) {
-            Timber.i("Trying to stop App Manager service")
+            Timber.d("Trying to stop App Manager service")
             messageClient.sendMessage(watchId!!, Messages.STOP_SERVICE, null)
         }
     }
 
+    internal fun expectPackages(count: UByte) {
+        _state.postValue(State.LOADING_APPS)
+        expectedPackageCount = count
+    }
+
     internal fun addPackage(app: App) {
-        Timber.i("Adding app to list")
+        Timber.d("Adding app to list")
         _apps.add(app)
-        _appsObservable.postValue(_apps)
+        if (expectedPackageCount > 0u) {
+            Timber.d("Expected a package, decrementing expectedPackageCount")
+            expectedPackageCount--
+            if (expectedPackageCount <= 0u) {
+                Timber.d("No more expected packages, setting State to READY")
+                _state.postValue(State.READY)
+            }
+        } else {
+            Timber.d("Updating LiveData")
+            _appsObservable.postValue(_apps)
+        }
     }
 
     internal fun updatePackage(app: App) {
-        Timber.i("Updating app in list")
+        Timber.d("Updating app in list")
         _apps.removeAll { it.packageName == app.packageName }
         _apps.add(app)
         _appsObservable.postValue(_apps)
     }
 
     internal fun removePackage(app: App) {
-        Timber.i("Removing app from list")
+        Timber.d("Removing app from list")
         _apps.removeAll { it.packageName == app.packageName }
         _appsObservable.postValue(_apps)
     }
 
     internal fun serviceRunning() {
-        Timber.i("App Manager service is running")
+        Timber.d("App Manager service is running")
         stateDisconnectedDelay.reset()
     }
 }

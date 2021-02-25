@@ -22,4 +22,6 @@ object Messages {
     const val STOP_SERVICE = "/stop_app_manager_service"
 
     const val SERVICE_RUNNING = "/app_manager_running"
+
+    const val EXPECTED_APP_COUNT = "/app_manager_expected_count"
 }
