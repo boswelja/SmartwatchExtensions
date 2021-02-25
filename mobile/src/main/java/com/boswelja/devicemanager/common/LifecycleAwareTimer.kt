@@ -2,15 +2,14 @@ package com.boswelja.devicemanager.common
 
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
-import java.util.Timer
 import java.util.concurrent.ScheduledFuture
 import java.util.concurrent.ScheduledThreadPoolExecutor
 import java.util.concurrent.TimeUnit
 import timber.log.Timber
 
 /**
- * A wrapper for [Timer] that automatically starts/stops with [LifecycleOwner] start/stop.
- * Timer lifecycle is handled automatically to simplify setup.
+ * A wrapper for [ScheduledThreadPoolExecutor] that automatically starts/stops with [LifecycleOwner]
+ * start/stop. Executor lifecycle is handled automatically to simplify setup.
  * @param period The period between function executions.
  * @param unit The [TimeUnit] the period is measured in The default is [TimeUnit.SECONDS].
  * @param callback The function to call when the timer task is run.
