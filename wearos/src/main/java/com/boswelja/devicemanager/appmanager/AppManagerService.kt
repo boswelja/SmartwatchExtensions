@@ -15,6 +15,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.os.IBinder
@@ -22,9 +23,7 @@ import androidx.core.app.NotificationCompat
 import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.appmanager.App
-import com.boswelja.devicemanager.common.appmanager.AppPackageInfoList
-import com.boswelja.devicemanager.common.appmanager.Messages.ERROR
-import com.boswelja.devicemanager.common.appmanager.Messages.GET_ALL_PACKAGES
+import com.boswelja.devicemanager.common.appmanager.Messages.EXPECTED_APP_COUNT
 import com.boswelja.devicemanager.common.appmanager.Messages.PACKAGE_ADDED
 import com.boswelja.devicemanager.common.appmanager.Messages.PACKAGE_REMOVED
 import com.boswelja.devicemanager.common.appmanager.Messages.PACKAGE_UPDATED
@@ -116,7 +115,7 @@ class AppManagerService : Service() {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         startForeground(APP_MANAGER_NOTI_ID, createNotification())
-        sendAllAppsMessage()
+        sendAllApps()
         return START_NOT_STICKY
     }
 
@@ -187,23 +186,20 @@ class AppManagerService : Service() {
         messageClient.sendMessage(phoneId!!, PACKAGE_UPDATED, data)
     }
 
-    /** Sends a message to the phone informing an error occurred */
-    private fun sendErrorMessage() {
-        messageClient.sendMessage(phoneId!!, ERROR, null)
-        stopService()
-    }
-
     /**
-     * Sends a message to the phone containing an [AppPackageInfoList] of all packages installed.
+     * Starts sending all apps to the connected phone.
      */
-    private fun sendAllAppsMessage() {
-        try {
-            val packagesToSend = AppPackageInfoList(packageManager)
-            val data = packagesToSend.toByteArray()
-            messageClient.sendMessage(phoneId!!, GET_ALL_PACKAGES, data)
-        } catch (e: IllegalStateException) {
-            e.printStackTrace()
-            sendErrorMessage()
+    private fun sendAllApps() {
+        val allPackages = packageManager.getInstalledPackages(PackageManager.GET_PERMISSIONS).map {
+            App(packageManager, it)
+        }
+        // Send expected app count to the phone
+        val data = byteArrayOf(allPackages.count().toByte())
+        messageClient.sendMessage(phoneId!!, EXPECTED_APP_COUNT, data)
+
+        // Start sending apps
+        allPackages.forEach {
+            messageClient.sendMessage(phoneId!!, PACKAGE_ADDED, it.toByteArray())
         }
     }
 
