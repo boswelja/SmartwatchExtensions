@@ -8,14 +8,15 @@
 package com.boswelja.devicemanager.appmanager.ui.adapter
 
 import androidx.recyclerview.widget.DiffUtil
+import com.boswelja.devicemanager.common.appmanager.App
 
-class AppDiffCallback : DiffUtil.ItemCallback<Item>() {
+class AppDiffCallback : DiffUtil.ItemCallback<App>() {
 
-    override fun areContentsTheSame(oldItem: Item, newItem: Item): Boolean {
+    override fun areContentsTheSame(oldItem: App, newItem: App): Boolean {
         return oldItem == newItem
     }
 
-    override fun areItemsTheSame(oldItem: Item, newItem: Item): Boolean {
-        return oldItem.id == newItem.id
+    override fun areItemsTheSame(oldItem: App, newItem: App): Boolean {
+        return oldItem.packageName == newItem.packageName
     }
 }

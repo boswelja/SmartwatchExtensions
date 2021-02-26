@@ -14,26 +14,26 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.recyclerview.widget.ConcatAdapter
+import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.appmanager.ui.adapter.AppsAdapter
-import com.boswelja.devicemanager.appmanager.ui.adapter.Item
+import com.boswelja.devicemanager.appmanager.ui.adapter.HeaderAdapter
 import com.boswelja.devicemanager.appmanager.ui.info.AppPackageInfoActivity
 import com.boswelja.devicemanager.common.appmanager.App
-import com.boswelja.devicemanager.common.recyclerview.adapter.ItemClickCallback
 import com.boswelja.devicemanager.databinding.FragmentAppManagerBinding
 import timber.log.Timber
 
-class AppManagerFragment : Fragment(), ItemClickCallback<Item> {
+class AppManagerFragment : Fragment() {
 
     private val viewModel: AppManagerViewModel by activityViewModels()
-    private val appsAdapter = AppsAdapter(this)
+    private val userAppsAdapter by lazy { AppsAdapter(onAppClick) }
+    private val systemAppsAdapter by lazy { AppsAdapter(onAppClick) }
+
+    private val onAppClick = { app: App ->
+        launchAppInfoActivity(app)
+    }
 
     private lateinit var binding: FragmentAppManagerBinding
-
-    override fun onClick(item: Item) {
-        if (item is Item.App) {
-            Timber.i("App clicked")
-        }
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -45,12 +45,34 @@ class AppManagerFragment : Fragment(), ItemClickCallback<Item> {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        binding.appsRecyclerview.adapter = appsAdapter
+        binding.appsRecyclerview.adapter = ConcatAdapter(
+            HeaderAdapter(getString(R.string.app_manager_section_user_apps)),
+            userAppsAdapter,
+            HeaderAdapter(getString(R.string.app_manager_section_system_apps)),
+            systemAppsAdapter
+        )
         viewModel.apps.observe(viewLifecycleOwner) {
             it?.let { allApps ->
-                // appsAdapter.submitList(allApps)
+                updateAppsInAdapter(allApps)
             }
         }
+    }
+
+    /**
+     * Separate a given [List] of [App]s into sections, and submit the new lists to the appropriate
+     * adapter.
+     * @param allApps The [List] of [App]s to separate.
+     */
+    private fun updateAppsInAdapter(allApps: List<App>) {
+        Timber.d("updateAppsInAdapter($allApps) called")
+        val userApps = ArrayList<App>()
+        val systemApps = ArrayList<App>()
+        allApps.forEach { app ->
+            if (app.isSystemApp) systemApps.add(app)
+            else userApps.add(app)
+        }
+        userAppsAdapter.submitList(userApps)
+        systemAppsAdapter.submitList(systemApps)
     }
 
     /**
@@ -58,6 +80,7 @@ class AppManagerFragment : Fragment(), ItemClickCallback<Item> {
      * @param app The [App] object to pass on to the [AppPackageInfoActivity].
      */
     private fun launchAppInfoActivity(app: App) {
+        Timber.d("launchAppInfoActivity($app) called")
         viewModel.canStopAppManagerService = false
         Intent(context, AppPackageInfoActivity::class.java)
             .apply {
