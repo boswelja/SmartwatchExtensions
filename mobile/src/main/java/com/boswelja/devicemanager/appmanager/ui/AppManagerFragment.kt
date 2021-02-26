@@ -22,7 +22,6 @@ import com.boswelja.devicemanager.common.recyclerview.adapter.ItemClickCallback
 import com.boswelja.devicemanager.databinding.FragmentAppManagerBinding
 import timber.log.Timber
 
-@ExperimentalUnsignedTypes
 class AppManagerFragment : Fragment(), ItemClickCallback<Item> {
 
     private val viewModel: AppManagerViewModel by activityViewModels()
