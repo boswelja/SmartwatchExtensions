@@ -23,6 +23,7 @@ import androidx.core.content.getSystemService
 import androidx.lifecycle.LifecycleService
 import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.R
+import com.boswelja.devicemanager.common.Extensions.toByteArray
 import com.boswelja.devicemanager.common.LifecycleAwareTimer
 import com.boswelja.devicemanager.common.appmanager.App
 import com.boswelja.devicemanager.common.appmanager.Messages.EXPECTED_APP_COUNT
@@ -198,7 +199,7 @@ class AppManagerService : LifecycleService() {
             App(packageManager, it)
         }
         // Send expected app count to the phone
-        val data = byteArrayOf(allPackages.count().toByte())
+        val data = allPackages.count().toByteArray()
         messageClient.sendMessage(phoneId!!, EXPECTED_APP_COUNT, data)
 
         // Start sending apps
