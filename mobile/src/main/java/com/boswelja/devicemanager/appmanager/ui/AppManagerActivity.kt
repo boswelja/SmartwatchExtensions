@@ -34,7 +34,7 @@ class AppManagerActivity : BaseWatchPickerActivity() {
             R.string.app_manager_disconnected,
             Snackbar.LENGTH_INDEFINITE
         ).setAction(R.string.button_retry) {
-            // TODO try reconnect to the selected watch
+            viewModel.startAppManagerService()
         }
     }
 

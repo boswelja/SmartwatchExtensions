@@ -144,6 +144,7 @@ class AppManager internal constructor(
     fun startAppManagerService() {
         Timber.d("startAppManagerService() called")
         if (_state.value != State.READY) {
+            _state.postValue(State.CONNECTING)
             Timber.d("Trying to start App Manager service")
             messageClient.sendMessage(watchId!!, Messages.START_SERVICE, null)
             stateDisconnectedDelay.reset()
