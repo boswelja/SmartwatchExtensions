@@ -32,4 +32,8 @@
     <dimen name="register_watch_vertical_margin">32dp</dimen>
     <dimen name="register_watch_horizontal_margin">32dp</dimen>
     <dimen name="register_watch_section_margin">8dp</dimen>
+
+    <dimen name="app_info_section_vertical_margin">32dp</dimen>
+    <dimen name="app_info_horizontal_margin">16dp</dimen>
+    <dimen name="app_info_vertical_margin">16dp</dimen>
 </resources>

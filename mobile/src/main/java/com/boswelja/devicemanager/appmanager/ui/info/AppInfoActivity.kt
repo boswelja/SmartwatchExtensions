@@ -10,8 +10,7 @@ package com.boswelja.devicemanager.appmanager.ui.info
 import android.os.Bundle
 import android.view.MenuItem
 import androidx.activity.viewModels
-import androidx.appcompat.widget.AppCompatTextView
-import androidx.databinding.DataBindingUtil
+import androidx.core.view.isVisible
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.appmanager.App
 import com.boswelja.devicemanager.common.ui.activity.BaseToolbarActivity
@@ -25,19 +24,22 @@ class AppInfoActivity : BaseToolbarActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_app_info)
-        binding.viewModel = viewModel
-        binding.lifecycleOwner = this
+        binding = ActivityAppInfoBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        setupToolbar(binding.toolbarLayout.toolbar, showTitle = true, showUpButton = true)
+        setupToolbar(binding.toolbarLayout.toolbar, showTitle = false, showUpButton = true)
 
         val watchId = intent?.getStringExtra(EXTRA_WATCH_ID)
         viewModel.watchId = watchId
-        val appInfo = intent?.getSerializableExtra(EXTRA_APP_INFO) as App?
-        viewModel.appInfo.postValue(appInfo)
+        val app = intent?.getSerializableExtra(EXTRA_APP_INFO) as App?
+        viewModel.app = app
 
-        viewModel.appInfo.observe(this) { setupRequestedPermissions(it) }
-        viewModel.finishActivity.observe(this) { if (it) finish() }
+        app?.let {
+            setupAppInfo(it)
+            setupButtons(it)
+            setupRequestedPermissions(it)
+            setupPackageInfoViews(it)
+        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -48,17 +50,47 @@ class AppInfoActivity : BaseToolbarActivity() {
     }
 
     /**
-     * Sets up the requested permissions view.
-     * @param appInfo The [App] to use for data etc.
+     * Sets up the header view containing the app icon and name.
+     * @param app The [App] to use data from.
      */
-    private fun setupRequestedPermissions(appInfo: App) {
-        val requestsPermissions = !appInfo.requestedPermissions.isNullOrEmpty()
+    private fun setupAppInfo(app: App) {
         binding.apply {
-            permissionsInfo.findViewById<AppCompatTextView>(R.id.top_line).text =
+            app.packageIcon?.bitmap?.let {
+                appIcon.setImageBitmap(it)
+            }
+            appName.text = app.packageLabel
+        }
+    }
+
+    /**
+     * Sets up button views.
+     * @param app The [App] to use data from.
+     */
+    private fun setupButtons(app: App) {
+        binding.apply {
+            openButton.isEnabled = app.hasLaunchActivity
+            openButton.setOnClickListener {
+                viewModel.sendOpenRequestMessage()
+            }
+            uninstallButton.isEnabled = !app.isSystemApp
+            uninstallButton.setOnClickListener {
+                viewModel.sendUninstallRequestMessage()
+            }
+        }
+    }
+
+    /**
+     * Sets up the requested permissions view.
+     * @param app The [App] to use data from.
+     */
+    private fun setupRequestedPermissions(app: App) {
+        val requestsPermissions = !app.requestedPermissions.isNullOrEmpty()
+        binding.apply {
+            permissionsInfo.topLine.text =
                 getString(R.string.app_info_requested_permissions_title)
-            permissionsInfo.findViewById<AppCompatTextView>(R.id.bottom_line).text =
+            permissionsInfo.bottomLine.text =
                 if (requestsPermissions) {
-                    val requestedPermissionCount = appInfo.requestedPermissions!!.size
+                    val requestedPermissionCount = app.requestedPermissions!!.size
                     resources.getQuantityString(
                         R.plurals.app_info_requested_permissions_count,
                         requestedPermissionCount,
@@ -67,12 +99,34 @@ class AppInfoActivity : BaseToolbarActivity() {
                 } else {
                     getString(R.string.app_info_requested_permissions_none)
                 }
-            permissionsInfo.setOnClickListener {
+            permissionsInfo.root.setOnClickListener {
                 if (requestsPermissions) {
-                    AppPermissionDialogFragment(appInfo.requestedPermissions!!)
+                    AppPermissionDialogFragment(app.requestedPermissions!!)
                         .show(supportFragmentManager)
                 }
             }
+        }
+    }
+
+    /**
+     * Sets up package info views.
+     * @param app The [App] to use data from.
+     */
+    private fun setupPackageInfoViews(app: App) {
+        binding.apply {
+            appInstallTime.text = getString(
+                R.string.app_info_first_installed_prefix,
+                viewModel.formatDate(app.installTime)
+            )
+            appLastUpdatedTime.isVisible = app.installTime != app.lastUpdateTime
+            appLastUpdatedTime.text = getString(
+                R.string.app_info_last_updated_prefix,
+                viewModel.formatDate(app.lastUpdateTime)
+            )
+            appVersionView.text = getString(
+                R.string.app_info_version_prefix,
+                app.versionName ?: app.versionCode.toString()
+            )
         }
     }
 
