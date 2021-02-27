@@ -28,10 +28,12 @@ import com.boswelja.devicemanager.common.dndsync.References.REQUEST_SDK_INT_PATH
 import com.google.android.gms.wearable.MessageEvent
 import com.google.android.gms.wearable.Wearable
 import com.google.android.gms.wearable.WearableListenerService
+import timber.log.Timber
 
 class MessageReceiver : WearableListenerService() {
 
     override fun onMessageReceived(messageEvent: MessageEvent?) {
+        Timber.d("Received ${messageEvent?.path}")
         when (messageEvent?.path) {
             REQUEST_INTERRUPT_FILTER_ACCESS_STATUS_PATH -> {
                 val hasDnDAccess: Boolean = Compat.canSetDnD(this)
