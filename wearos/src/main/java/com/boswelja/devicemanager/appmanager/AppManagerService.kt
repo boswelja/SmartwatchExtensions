@@ -43,9 +43,13 @@ class AppManagerService : LifecycleService() {
 
     private lateinit var sharedPreferences: SharedPreferences
     private lateinit var messageClient: MessageClient
-    private lateinit var serviceRunningNotifier: LifecycleAwareTimer
 
     private var phoneId: String? = null
+
+    private val serviceRunningNotifier = LifecycleAwareTimer(10) {
+        Timber.d("Notifying service running")
+        messageClient.sendMessage(phoneId!!, SERVICE_RUNNING, null)
+    }
 
     private val messageReceiver = MessageClient.OnMessageReceivedListener {
         when (it.path) {
@@ -116,9 +120,7 @@ class AppManagerService : LifecycleService() {
             addDataScheme("package")
         }.also { registerReceiver(packageChangeReceiver, it) }
 
-        serviceRunningNotifier = LifecycleAwareTimer(10) {
-            messageClient.sendMessage(phoneId!!, SERVICE_RUNNING, null)
-        }
+        lifecycle.addObserver(serviceRunningNotifier)
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
