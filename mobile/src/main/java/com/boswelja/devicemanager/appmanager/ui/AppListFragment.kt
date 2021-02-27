@@ -20,10 +20,10 @@ import com.boswelja.devicemanager.appmanager.ui.adapter.AppsAdapter
 import com.boswelja.devicemanager.appmanager.ui.adapter.HeaderAdapter
 import com.boswelja.devicemanager.appmanager.ui.info.AppPackageInfoActivity
 import com.boswelja.devicemanager.common.appmanager.App
-import com.boswelja.devicemanager.databinding.FragmentAppManagerBinding
+import com.boswelja.devicemanager.databinding.FragmentAppListBinding
 import timber.log.Timber
 
-class AppManagerFragment : Fragment() {
+class AppListFragment : Fragment() {
 
     private val viewModel: AppManagerViewModel by activityViewModels()
     private val userAppsAdapter by lazy { AppsAdapter(onAppClick) }
@@ -33,14 +33,14 @@ class AppManagerFragment : Fragment() {
         launchAppInfoActivity(app)
     }
 
-    private lateinit var binding: FragmentAppManagerBinding
+    private lateinit var binding: FragmentAppListBinding
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentAppManagerBinding.inflate(inflater, container, false)
+        binding = FragmentAppListBinding.inflate(inflater, container, false)
         return binding.root
     }
 

@@ -60,13 +60,13 @@ class AppManagerActivity : BaseToolbarActivity() {
             .commit()
     }
 
-    /** Shows the [AppManagerFragment]. */
+    /** Shows the [AppListFragment]. */
     private fun showAppManagerFragment() {
         Timber.i("showAppManagerFragment() called")
         supportFragmentManager
             .beginTransaction()
             .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)
-            .replace(R.id.fragment_holder, AppManagerFragment())
+            .replace(R.id.fragment_holder, AppListFragment())
             .commit()
     }
 }
