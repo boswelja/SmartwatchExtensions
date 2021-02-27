@@ -15,6 +15,7 @@ import com.boswelja.devicemanager.appmanager.State
 import com.boswelja.devicemanager.common.ui.activity.BaseWatchPickerActivity
 import com.boswelja.devicemanager.common.ui.fragment.LoadingFragment
 import com.boswelja.devicemanager.databinding.ActivityAppManagerBinding
+import com.google.android.material.snackbar.Snackbar
 import timber.log.Timber
 
 class AppManagerActivity : BaseWatchPickerActivity() {
@@ -26,6 +27,16 @@ class AppManagerActivity : BaseWatchPickerActivity() {
     private val watchServiceLifecycleObserver by lazy { WatchServiceLifecycleObserver(viewModel) }
     private val loadingFragment = LoadingFragment()
     private val appListFragment by lazy { AppListFragment() }
+
+    private val disconnectedSnackbar by lazy {
+        Snackbar.make(
+            findViewById(android.R.id.content),
+            R.string.app_manager_disconnected,
+            Snackbar.LENGTH_INDEFINITE
+        ).setAction(R.string.button_retry) {
+            // TODO try reconnect to the selected watch
+        }
+    }
 
     private lateinit var binding: ActivityAppManagerBinding
 
@@ -68,7 +79,7 @@ class AppManagerActivity : BaseWatchPickerActivity() {
     }
 
     private fun notifyDisconnected() {
-        // TODO show a disconnected indicator in App List fragment
+        disconnectedSnackbar.show()
     }
 
     /** Shows the [AppListFragment]. */
