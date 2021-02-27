@@ -11,6 +11,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.MutableLiveData
 import com.boswelja.devicemanager.R
@@ -40,9 +41,19 @@ class LoadingFragment : Fragment() {
         progress.observe(viewLifecycleOwner) {
             if (it > -1) {
                 binding.progressBar.progress = it
+                setProgressIndeterninate(false)
+            } else {
+                setProgressIndeterninate(true)
             }
-            binding.progressBar.isIndeterminate = it > -1
         }
         Timber.i("Successfully created")
+    }
+
+    private fun setProgressIndeterninate(isIndeterminate: Boolean) {
+        if (binding.progressBar.isIndeterminate != isIndeterminate) {
+            binding.progressBar.isVisible = false
+            binding.progressBar.isIndeterminate = isIndeterminate
+            binding.progressBar.isVisible = true
+        }
     }
 }
