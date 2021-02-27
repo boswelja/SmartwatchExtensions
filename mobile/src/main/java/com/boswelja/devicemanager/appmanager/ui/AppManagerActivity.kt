@@ -50,7 +50,6 @@ class AppManagerActivity : BaseToolbarActivity() {
                 State.CONNECTING, State.LOADING_APPS -> showLoadingFragment()
                 State.READY -> showAppManagerFragment()
                 State.DISCONNECTED -> notifyDisconnected()
-                State.ERROR -> TODO()
                 else -> Timber.e("App Manager state is null")
             }
         }
