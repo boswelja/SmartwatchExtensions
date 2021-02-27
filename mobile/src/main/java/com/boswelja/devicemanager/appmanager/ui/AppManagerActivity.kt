@@ -50,6 +50,7 @@ class AppManagerActivity : BaseWatchPickerActivity() {
         setupWatchPickerSpinner(binding.toolbarLayout.toolbar)
 
         viewModel.state.observe(this) {
+            Timber.d("State = ${it.name}")
             when (it) {
                 State.CONNECTING, State.LOADING_APPS -> showLoadingFragment()
                 State.READY -> showAppManagerFragment()

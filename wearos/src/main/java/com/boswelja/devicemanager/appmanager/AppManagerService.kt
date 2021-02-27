@@ -101,6 +101,8 @@ class AppManagerService : LifecycleService() {
     override fun onCreate() {
         super.onCreate()
 
+        Timber.d("onCreate() called")
+
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
         messageClient = Wearable.getMessageClient(this)
 
@@ -120,12 +122,14 @@ class AppManagerService : LifecycleService() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        Timber.d("onStartCommand received")
         startForeground(APP_MANAGER_NOTI_ID, createNotification())
         sendAllApps()
         return super.onStartCommand(intent, flags, startId)
     }
 
     override fun onDestroy() {
+        Timber.d("onDestroy() called")
         unregisterReceiver(packageChangeReceiver)
         messageClient.removeListener(messageReceiver)
         super.onDestroy()
