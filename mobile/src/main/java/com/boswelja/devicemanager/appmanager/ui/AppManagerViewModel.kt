@@ -6,7 +6,6 @@ import androidx.lifecycle.LiveData
 import com.boswelja.devicemanager.appmanager.AppManager
 import com.boswelja.devicemanager.appmanager.State
 import com.boswelja.devicemanager.common.appmanager.App
-import timber.log.Timber
 
 class AppManagerViewModel internal constructor(
     application: Application,
@@ -34,14 +33,5 @@ class AppManagerViewModel internal constructor(
         appManager.destroy()
     }
 
-    /** Start the App Manager service on the connected watch. */
-    fun startAppManagerService() {
-        Timber.d("startAppManagerService() called")
-        appManager.startAppManagerService()
-    }
-
-    fun tryStopAppManagerService() {
-        Timber.d("stopAppManagerService() called")
-        appManager.tryStopAppManagerService()
-    }
+    fun startAppManagerService() = appManager.startAppManagerService()
 }

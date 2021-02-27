@@ -87,15 +87,16 @@ class AppManager internal constructor(
     }
 
     private val selectedWatchObserver = Observer<Watch?> {
-        _state.postValue(State.CONNECTING)
-        _progress.postValue(-1)
-        watchId?.let { watchId ->
-            messageClient.sendMessage(watchId, STOP_SERVICE, null)
-            _apps.clear()
-            _appsObservable.postValue(_apps)
+        if (it?.id != null && it.id != watchId) {
+            Timber.d("selectedWatch changed, reconnecting App Manager service")
+            _state.postValue(State.CONNECTING)
+            _progress.postValue(-1)
+            watchId?.let { watchId ->
+                messageClient.sendMessage(watchId, STOP_SERVICE, null)
+            }
+            watchId = it.id
+            startAppManagerService()
         }
-        watchId = it.id
-        startAppManagerService()
     }
 
     init {
@@ -139,7 +140,7 @@ class AppManager internal constructor(
     internal fun serviceRunning() {
         Timber.d("App Manager service is running")
         stateDisconnectedDelay.reset()
-        if (expectedPackageCount <= 0) {
+        if (_apps.count() >= expectedPackageCount) {
             Timber.d("No more expected packages, setting State to READY")
             _state.postValue(State.READY)
         }
@@ -148,25 +149,22 @@ class AppManager internal constructor(
     /** Start the App Manager service on the connected watch. */
     fun startAppManagerService() {
         Timber.d("startAppManagerService() called")
-        if (_state.value != State.READY) {
-            _state.postValue(State.CONNECTING)
-            Timber.d("Trying to start App Manager service")
-            messageClient.sendMessage(watchId!!, START_SERVICE, null)
-            stateDisconnectedDelay.reset()
-        }
+        _state.postValue(State.CONNECTING)
+        _apps.clear()
+        _appsObservable.postValue(_apps)
+        messageClient.sendMessage(watchId!!, START_SERVICE, null)
+        stateDisconnectedDelay.reset()
     }
 
     /** Stop the App Manager service on the connected watch. */
-    fun tryStopAppManagerService() {
+    fun stopAppManagerService() {
         Timber.d("stopAppManagerService() called")
-        if (_state.value == State.READY && canStopAppManagerService) {
-            Timber.d("Trying to stop App Manager service")
-            messageClient.sendMessage(watchId!!, STOP_SERVICE, null)
-        }
+        messageClient.sendMessage(watchId!!, STOP_SERVICE, null)
     }
 
     fun destroy() {
         messageClient.removeListener(messageListener)
         watchManager.selectedWatch.removeObserver(selectedWatchObserver)
+        stopAppManagerService()
     }
 }
