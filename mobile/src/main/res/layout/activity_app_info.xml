@@ -6,10 +6,10 @@
     android:id="@+id/content_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginStart="@dimen/app_info_horizontal_margin"
-    android:layout_marginEnd="@dimen/app_info_vertical_margin"
-    android:layout_marginTop="@dimen/app_info_vertical_margin"
-    android:layout_marginBottom="@dimen/app_info_vertical_margin"
+    android:paddingStart="@dimen/app_info_horizontal_margin"
+    android:paddingEnd="@dimen/app_info_vertical_margin"
+    android:paddingTop="@dimen/app_info_vertical_margin"
+    android:paddingBottom="@dimen/app_info_vertical_margin"
     android:orientation="vertical">
 
     <include
@@ -45,6 +45,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/app_info_section_vertical_margin"
+        android:layout_marginEnd="4dp"
         android:text="@string/app_info_open_button"
         app:icon="@drawable/ic_open"
         app:layout_constraintTop_toBottomOf="@id/app_name"
@@ -57,6 +58,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/app_info_section_vertical_margin"
+        android:layout_marginStart="8dp"
         android:text="@string/app_info_uninstall_button"
         app:icon="@drawable/ic_delete"
         app:layout_constraintTop_toBottomOf="@id/app_name"
