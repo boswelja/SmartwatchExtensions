@@ -55,10 +55,10 @@ class AppInfoActivity : BaseToolbarActivity() {
      */
     private fun setupAppInfo(app: App) {
         binding.apply {
-            app.packageIcon?.bitmap?.let {
+            app.icon?.bitmap?.let {
                 appIcon.setImageBitmap(it)
             }
-            appName.text = app.packageLabel
+            appName.text = app.label
         }
     }
 
@@ -84,13 +84,13 @@ class AppInfoActivity : BaseToolbarActivity() {
      * @param app The [App] to use data from.
      */
     private fun setupRequestedPermissions(app: App) {
-        val requestsPermissions = !app.requestedPermissions.isNullOrEmpty()
+        val requestsPermissions = app.requestedPermissions.isNotEmpty()
         binding.apply {
             permissionsInfo.topLine.text =
                 getString(R.string.app_info_requested_permissions_title)
             permissionsInfo.bottomLine.text =
                 if (requestsPermissions) {
-                    val requestedPermissionCount = app.requestedPermissions!!.size
+                    val requestedPermissionCount = app.requestedPermissions.size
                     resources.getQuantityString(
                         R.plurals.app_info_requested_permissions_count,
                         requestedPermissionCount,
@@ -101,7 +101,7 @@ class AppInfoActivity : BaseToolbarActivity() {
                 }
             permissionsInfo.root.setOnClickListener {
                 if (requestsPermissions) {
-                    AppPermissionDialogFragment(app.requestedPermissions!!)
+                    AppPermissionDialogFragment(app.requestedPermissions)
                         .show(supportFragmentManager)
                 }
             }
@@ -123,10 +123,7 @@ class AppInfoActivity : BaseToolbarActivity() {
                 R.string.app_info_last_updated_prefix,
                 viewModel.formatDate(app.lastUpdateTime)
             )
-            appVersionView.text = getString(
-                R.string.app_info_version_prefix,
-                app.versionName ?: app.versionCode.toString()
-            )
+            appVersionView.text = getString(R.string.app_info_version_prefix, app.version)
         }
     }
 

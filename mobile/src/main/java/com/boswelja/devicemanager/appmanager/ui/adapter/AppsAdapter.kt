@@ -22,18 +22,10 @@ class AppsAdapter(private val clickCallback: (App) -> Unit) :
 
     override fun onBindViewHolder(holder: IconTwoLineViewHolder, position: Int) {
         val app = getItem(position)
-        if (app.packageIcon?.bitmap != null) {
-            holder.bind(
-                app.packageIcon!!.bitmap,
-                app.packageLabel,
-                app.versionName ?: app.versionCode.toString()
-            )
+        if (app.icon?.bitmap != null) {
+            holder.bind(app.icon!!.bitmap, app.label, app.version)
         } else {
-            holder.bind(
-                R.drawable.android_head,
-                app.packageLabel,
-                app.versionName ?: app.versionCode.toString()
-            )
+            holder.bind(R.drawable.android_head, app.label, app.version)
         }
         holder.itemView.setOnClickListener { clickCallback(app) }
     }

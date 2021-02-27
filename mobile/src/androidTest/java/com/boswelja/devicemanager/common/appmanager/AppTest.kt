@@ -55,19 +55,14 @@ class AppTest {
             assertThat(infoFromByteArray.installTime).isEqualTo(wearableExtensionsInfo.installTime)
             assertThat(infoFromByteArray.lastUpdateTime)
                 .isEqualTo(wearableExtensionsInfo.lastUpdateTime)
-            assertThat(infoFromByteArray.packageLabel)
-                .isEqualTo(wearableExtensionsInfo.packageLabel)
+            assertThat(infoFromByteArray.label)
+                .isEqualTo(wearableExtensionsInfo.label)
             assertThat(infoFromByteArray.packageName).isEqualTo(wearableExtensionsInfo.packageName)
-            assertThat(infoFromByteArray.versionCode).isEqualTo(wearableExtensionsInfo.versionCode)
-            assertThat(infoFromByteArray.versionName).isEqualTo(wearableExtensionsInfo.versionName)
-            if (wearableExtensionsInfo.requestedPermissions == null) {
-                assertThat(infoFromByteArray.requestedPermissions).isNull()
-            } else {
-                assertThat(wearableExtensionsInfo.requestedPermissions)
-                    .asList()
-                    .containsExactly(infoFromByteArray.requestedPermissions)
-                    .inOrder()
-            }
+            assertThat(infoFromByteArray.version).isEqualTo(wearableExtensionsInfo.version)
+            assertThat(wearableExtensionsInfo.requestedPermissions)
+                .asList()
+                .containsExactly(infoFromByteArray.requestedPermissions)
+                .inOrder()
         } catch (e: IOException) {
             Timber.e(e)
             assertWithMessage("Failed to convert between ByteArray and AppPackageInfo").fail()
