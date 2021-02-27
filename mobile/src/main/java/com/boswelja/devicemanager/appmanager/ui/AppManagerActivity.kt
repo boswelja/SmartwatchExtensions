@@ -10,19 +10,17 @@ package com.boswelja.devicemanager.appmanager.ui
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.fragment.app.commit
-import androidx.navigation.navArgs
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.appmanager.State
-import com.boswelja.devicemanager.common.ui.activity.BaseToolbarActivity
+import com.boswelja.devicemanager.common.ui.activity.BaseWatchPickerActivity
 import com.boswelja.devicemanager.common.ui.fragment.LoadingFragment
 import com.boswelja.devicemanager.databinding.ActivityAppManagerBinding
 import timber.log.Timber
 
-class AppManagerActivity : BaseToolbarActivity() {
+class AppManagerActivity : BaseWatchPickerActivity() {
 
     private var shouldAnimateTransitions = false
 
-    private val args: AppManagerActivityArgs by navArgs()
     private val viewModel: AppManagerViewModel by viewModels()
 
     private val watchServiceLifecycleObserver by lazy { WatchServiceLifecycleObserver(viewModel) }
@@ -38,12 +36,7 @@ class AppManagerActivity : BaseToolbarActivity() {
         binding = ActivityAppManagerBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        setupToolbar(
-            binding.toolbarLayout.toolbar,
-            showTitle = true,
-            showUpButton = true,
-            toolbarSubtitle = getString(R.string.app_manager_activity_subtitle, args.watchName)
-        )
+        setupWatchPickerSpinner(binding.toolbarLayout.toolbar)
 
         viewModel.state.observe(this) {
             when (it) {
