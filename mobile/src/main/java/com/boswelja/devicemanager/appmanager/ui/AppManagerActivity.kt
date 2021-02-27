@@ -9,6 +9,7 @@ package com.boswelja.devicemanager.appmanager.ui
 
 import android.os.Bundle
 import androidx.activity.viewModels
+import androidx.fragment.app.commit
 import androidx.navigation.navArgs
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.appmanager.State
@@ -19,10 +20,14 @@ import timber.log.Timber
 
 class AppManagerActivity : BaseToolbarActivity() {
 
+    private var shouldAnimateTransitions = false
+
     private val args: AppManagerActivityArgs by navArgs()
     private val viewModel: AppManagerViewModel by viewModels()
 
     private val watchServiceLifecycleObserver by lazy { WatchServiceLifecycleObserver(viewModel) }
+    private val loadingFragment = LoadingFragment()
+    private val appListFragment by lazy { AppListFragment() }
 
     private lateinit var binding: ActivityAppManagerBinding
 
@@ -42,31 +47,48 @@ class AppManagerActivity : BaseToolbarActivity() {
 
         viewModel.state.observe(this) {
             when (it) {
-                State.DISCONNECTED, State.CONNECTING, State.LOADING_APPS -> showLoadingFragment()
+                State.CONNECTING, State.LOADING_APPS -> showLoadingFragment()
                 State.READY -> showAppManagerFragment()
+                State.DISCONNECTED -> notifyDisconnected()
                 State.ERROR -> TODO()
                 else -> Timber.e("App Manager state is null")
             }
         }
+
+        viewModel.progress.observe(this) {
+            loadingFragment.progress.postValue(it)
+        }
+
         lifecycle.addObserver(watchServiceLifecycleObserver)
     }
 
     /** Shows a [LoadingFragment]. */
     private fun showLoadingFragment() {
         Timber.i("showLoadingFragment() called")
-        supportFragmentManager
-            .beginTransaction()
-            .replace(R.id.fragment_holder, LoadingFragment())
-            .commit()
+        supportFragmentManager.commit {
+            if (shouldAnimateTransitions) {
+                setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)
+            } else {
+                shouldAnimateTransitions = true
+            }
+            replace(R.id.fragment_holder, loadingFragment)
+        }
+    }
+
+    private fun notifyDisconnected() {
+        // TODO show a disconnected indicator in App List fragment
     }
 
     /** Shows the [AppListFragment]. */
     private fun showAppManagerFragment() {
         Timber.i("showAppManagerFragment() called")
-        supportFragmentManager
-            .beginTransaction()
-            .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)
-            .replace(R.id.fragment_holder, AppListFragment())
-            .commit()
+        supportFragmentManager.commit {
+            if (shouldAnimateTransitions) {
+                setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)
+            } else {
+                shouldAnimateTransitions = true
+            }
+            replace(R.id.fragment_holder, appListFragment)
+        }
     }
 }

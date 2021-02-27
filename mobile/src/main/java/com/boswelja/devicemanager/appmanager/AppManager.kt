@@ -33,6 +33,7 @@ class AppManager internal constructor(
 
     private val _state = MutableLiveData(State.CONNECTING)
     private val _appsObservable = MutableLiveData<List<App>>(emptyList())
+    private val _progress = MutableLiveData(-1)
 
     private val _apps = ArrayList<App>()
 
@@ -50,6 +51,12 @@ class AppManager internal constructor(
      */
     val apps: LiveData<List<App>>
         get() = _appsObservable
+
+    /**
+     * The progress of any ongoing operations, or -1 if progress can't be reported.
+     */
+    val progress: LiveData<Int>
+        get() = _progress
 
     /**
      * Indicates whether we should allow the App Manager service to be stopped automatically.
@@ -78,6 +85,7 @@ class AppManager internal constructor(
 
     private val selectedWatchObserver = Observer<Watch?> {
         _state.postValue(State.CONNECTING)
+        _progress.postValue(-1)
         messageClient.sendMessage(watchId!!, Messages.STOP_SERVICE, null)
         _apps.clear()
         _appsObservable.postValue(_apps)
@@ -92,22 +100,21 @@ class AppManager internal constructor(
 
     internal fun expectPackages(count: Int) {
         _state.postValue(State.LOADING_APPS)
+        _progress.postValue(0)
         expectedPackageCount = count
     }
 
     internal fun addPackage(app: App) {
         Timber.d("Adding app to list")
         _apps.add(app)
-        if (expectedPackageCount > 0) {
-            Timber.d("Expected a package, decrementing expectedPackageCount")
-            expectedPackageCount--
-            if (expectedPackageCount <= 0) {
-                Timber.d("No more expected packages, setting State to READY")
-                _state.postValue(State.READY)
-            }
-        } else {
-            Timber.d("Updating LiveData")
+        if (_apps.count() >= expectedPackageCount) {
+            Timber.d("Got all expected packages, updating LiveData")
+            _progress.postValue(-1)
             _appsObservable.postValue(_apps)
+        } else {
+            val progress = ((_apps.count() / expectedPackageCount.toFloat()) * 100).toInt()
+            Timber.d("Progress $progress")
+            _progress.postValue(progress)
         }
     }
 

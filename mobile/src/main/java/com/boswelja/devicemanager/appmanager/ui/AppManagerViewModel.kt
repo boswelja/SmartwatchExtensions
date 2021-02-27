@@ -22,6 +22,9 @@ class AppManagerViewModel internal constructor(
     val apps: LiveData<List<App>>
         get() = appManager.apps
 
+    val progress: LiveData<Int>
+        get() = appManager.progress
+
     var canStopAppManagerService: Boolean
         get() = appManager.canStopAppManagerService
         set(value) { appManager.canStopAppManagerService = value }
