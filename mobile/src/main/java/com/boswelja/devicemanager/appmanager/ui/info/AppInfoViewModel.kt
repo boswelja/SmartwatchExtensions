@@ -24,7 +24,12 @@ class AppInfoViewModel internal constructor(
     var watchId: String? = null
     var app: App? = null
 
-    fun formatDate(dateMillis: Long) = dateFormatter.format(dateMillis)
+    /**
+     * Format a given date in milliseconds to the correct formet for display.
+     * @param dateMillis The date in milliseconds to convert.
+     * @return The formatted date string.
+     */
+    fun formatDate(dateMillis: Long): String = dateFormatter.format(dateMillis)
 
     /** Request uninstalling an app from the connected watch. */
     fun sendUninstallRequestMessage() {
