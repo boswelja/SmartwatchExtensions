@@ -24,7 +24,6 @@ class AppManagerActivity : BaseWatchPickerActivity() {
 
     private val viewModel: AppManagerViewModel by viewModels()
 
-    private val watchServiceLifecycleObserver by lazy { WatchServiceLifecycleObserver(viewModel) }
     private val loadingFragment = LoadingFragment()
     private val appListFragment by lazy { AppListFragment() }
 
@@ -47,7 +46,7 @@ class AppManagerActivity : BaseWatchPickerActivity() {
         binding = ActivityAppManagerBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        setupWatchPickerSpinner(binding.toolbarLayout.toolbar)
+        setupWatchPickerSpinner(binding.toolbarLayout.toolbar, showUpButton = true)
 
         viewModel.state.observe(this) {
             Timber.d("State = ${it.name}")
@@ -62,8 +61,6 @@ class AppManagerActivity : BaseWatchPickerActivity() {
         viewModel.progress.observe(this) {
             loadingFragment.progress.postValue(it)
         }
-
-        lifecycle.addObserver(watchServiceLifecycleObserver)
     }
 
     /** Shows a [LoadingFragment]. */
