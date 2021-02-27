@@ -31,7 +31,7 @@ import org.robolectric.annotation.Config
 
 @RunWith(AndroidJUnit4::class)
 @Config(sdk = [Build.VERSION_CODES.R])
-class AppPackageInfoViewModelTest {
+class AppInfoViewModelTest {
 
     private val watchId = "123456"
 
@@ -41,12 +41,12 @@ class AppPackageInfoViewModelTest {
     @MockK(relaxed = true)
     private lateinit var messageClient: MessageClient
 
-    private lateinit var viewModel: AppPackageInfoViewModel
+    private lateinit var viewModel: AppInfoViewModel
 
     @Before
     fun setUp() {
         MockKAnnotations.init(this)
-        viewModel = AppPackageInfoViewModel(
+        viewModel = AppInfoViewModel(
             ApplicationProvider.getApplicationContext(),
             messageClient
         )

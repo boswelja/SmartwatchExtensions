@@ -20,7 +20,7 @@ import com.google.android.gms.wearable.Wearable
 import java.text.SimpleDateFormat
 import java.util.Locale
 
-class AppPackageInfoViewModel internal constructor(
+class AppInfoViewModel internal constructor(
     application: Application,
     private val messageClient: MessageClient
 ) : AndroidViewModel(application) {

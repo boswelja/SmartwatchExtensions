@@ -18,7 +18,7 @@ import androidx.recyclerview.widget.ConcatAdapter
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.appmanager.ui.adapter.AppsAdapter
 import com.boswelja.devicemanager.appmanager.ui.adapter.HeaderAdapter
-import com.boswelja.devicemanager.appmanager.ui.info.AppPackageInfoActivity
+import com.boswelja.devicemanager.appmanager.ui.info.AppInfoActivity
 import com.boswelja.devicemanager.common.appmanager.App
 import com.boswelja.devicemanager.databinding.FragmentAppListBinding
 import timber.log.Timber
@@ -76,15 +76,15 @@ class AppListFragment : Fragment() {
     }
 
     /**
-     * Launches an [AppPackageInfoActivity] for a given [App].
-     * @param app The [App] object to pass on to the [AppPackageInfoActivity].
+     * Launches an [AppInfoActivity] for a given [App].
+     * @param app The [App] object to pass on to the [AppInfoActivity].
      */
     private fun launchAppInfoActivity(app: App) {
         Timber.d("launchAppInfoActivity($app) called")
         viewModel.canStopAppManagerService = false
-        Intent(context, AppPackageInfoActivity::class.java)
+        Intent(context, AppInfoActivity::class.java)
             .apply {
-                putExtra(AppPackageInfoActivity.EXTRA_APP_INFO, app)
+                putExtra(AppInfoActivity.EXTRA_APP_INFO, app)
                 // putExtra(AppPackageInfoActivity.EXTRA_WATCH_ID, viewModel.watchId)
             }
             .also { startActivity(it) }

@@ -17,9 +17,9 @@ import com.boswelja.devicemanager.common.appmanager.App
 import com.boswelja.devicemanager.common.ui.activity.BaseToolbarActivity
 import com.boswelja.devicemanager.databinding.ActivityAppInfoBinding
 
-class AppPackageInfoActivity : BaseToolbarActivity() {
+class AppInfoActivity : BaseToolbarActivity() {
 
-    private val viewModel: AppPackageInfoViewModel by viewModels()
+    private val viewModel: AppInfoViewModel by viewModels()
     private lateinit var binding: ActivityAppInfoBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {

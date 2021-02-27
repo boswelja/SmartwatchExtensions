@@ -21,8 +21,9 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import java.util.Locale
 import timber.log.Timber
 
-class AppPermissionDialogFragment(private val requestedPermissions: Array<String>) :
-    BottomSheetDialogFragment() {
+class AppPermissionDialogFragment(
+    private val requestedPermissions: Array<String>
+) : BottomSheetDialogFragment() {
 
     private val permissions: Array<String> by lazy { processPermissions() }
 

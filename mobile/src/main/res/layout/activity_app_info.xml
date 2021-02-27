@@ -9,7 +9,7 @@
 
         <variable
             name="viewModel"
-            type="com.boswelja.devicemanager.appmanager.ui.info.AppPackageInfoViewModel" />
+            type="com.boswelja.devicemanager.appmanager.ui.info.AppInfoViewModel" />
     </data>
 
     <LinearLayout
