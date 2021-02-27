@@ -82,6 +82,7 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-common-java8:$androidxLifecycle")
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:$androidxLifecycle")
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:$androidxLifecycle")
+    implementation("androidx.lifecycle:lifecycle-service:$androidxLifecycle")
     implementation("androidx.navigation:navigation-fragment-ktx:$androidxNavigation")
     implementation("androidx.navigation:navigation-ui-ktx:$androidxNavigation")
     implementation("androidx.preference:preference:$androidxPreference")
