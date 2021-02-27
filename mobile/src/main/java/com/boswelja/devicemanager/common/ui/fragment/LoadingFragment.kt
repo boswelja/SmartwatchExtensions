@@ -11,22 +11,37 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.widget.AppCompatTextView
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.MutableLiveData
 import com.boswelja.devicemanager.R
+import com.boswelja.devicemanager.databinding.CommonFragmentLoadingBinding
 import timber.log.Timber
 
 class LoadingFragment : Fragment() {
+
+    private lateinit var binding: CommonFragmentLoadingBinding
+
+    /**
+     * The progress the indicator should display, or -1 for indeterminate.
+     */
+    val progress = MutableLiveData(-1)
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? = inflater.inflate(R.layout.common_fragment_loading, container, false)
+    ): View {
+        binding = CommonFragmentLoadingBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        view.findViewById<AppCompatTextView>(R.id.loading_text)!!.apply {
-            text = getString(R.string.dnd_sync_helper_loading_text)
+        binding.loadingText.text = getString(R.string.dnd_sync_helper_loading_text)
+        progress.observe(viewLifecycleOwner) {
+            if (it > -1) {
+                binding.progressBar.progress = it
+            }
+            binding.progressBar.isIndeterminate = it > -1
         }
         Timber.i("Successfully created")
     }
