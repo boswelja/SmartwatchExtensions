@@ -119,13 +119,12 @@ class AppManagerService : LifecycleService() {
             addAction(Intent.ACTION_PACKAGE_REMOVED)
             addDataScheme("package")
         }.also { registerReceiver(packageChangeReceiver, it) }
-
-        lifecycle.addObserver(serviceRunningNotifier)
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         Timber.d("onStartCommand received")
         startForeground(APP_MANAGER_NOTI_ID, createNotification())
+        lifecycle.removeObserver(serviceRunningNotifier)
         sendAllApps()
         return super.onStartCommand(intent, flags, startId)
     }
@@ -212,6 +211,8 @@ class AppManagerService : LifecycleService() {
         allPackages.forEach {
             messageClient.sendMessage(phoneId!!, PACKAGE_ADDED, it.toByteArray())
         }
+
+        lifecycle.addObserver(serviceRunningNotifier)
     }
 
     /**
