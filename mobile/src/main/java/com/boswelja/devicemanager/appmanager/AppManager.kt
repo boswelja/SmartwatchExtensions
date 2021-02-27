@@ -8,6 +8,8 @@ import com.boswelja.devicemanager.common.DelayedFunction
 import com.boswelja.devicemanager.common.Extensions.fromByteArray
 import com.boswelja.devicemanager.common.appmanager.App
 import com.boswelja.devicemanager.common.appmanager.Messages
+import com.boswelja.devicemanager.common.appmanager.Messages.START_SERVICE
+import com.boswelja.devicemanager.common.appmanager.Messages.STOP_SERVICE
 import com.boswelja.devicemanager.watchmanager.WatchManager
 import com.boswelja.devicemanager.watchmanager.item.Watch
 import com.google.android.gms.wearable.MessageClient
@@ -78,17 +80,20 @@ class AppManager internal constructor(
                 else -> Timber.w("Unknown path received, ignoring")
             }
         } else if (it.path == Messages.SERVICE_RUNNING) {
-            // If we get SERVICE_RUNNING from any watch that's not the selected watch, stop it.
-            messageClient.sendMessage(it.sourceNodeId, Messages.STOP_SERVICE, null)
+            // If we get SERVICE_RUNNING from any watch that's not the selected watch, stop it
+            Timber.w("Non-selected watch still has App Manager running, stopping...")
+            messageClient.sendMessage(it.sourceNodeId, STOP_SERVICE, null)
         }
     }
 
     private val selectedWatchObserver = Observer<Watch?> {
         _state.postValue(State.CONNECTING)
         _progress.postValue(-1)
-        messageClient.sendMessage(watchId!!, Messages.STOP_SERVICE, null)
-        _apps.clear()
-        _appsObservable.postValue(_apps)
+        watchId?.let { watchId ->
+            messageClient.sendMessage(watchId, STOP_SERVICE, null)
+            _apps.clear()
+            _appsObservable.postValue(_apps)
+        }
         watchId = it.id
         startAppManagerService()
     }
@@ -146,7 +151,7 @@ class AppManager internal constructor(
         if (_state.value != State.READY) {
             _state.postValue(State.CONNECTING)
             Timber.d("Trying to start App Manager service")
-            messageClient.sendMessage(watchId!!, Messages.START_SERVICE, null)
+            messageClient.sendMessage(watchId!!, START_SERVICE, null)
             stateDisconnectedDelay.reset()
         }
     }
@@ -156,7 +161,7 @@ class AppManager internal constructor(
         Timber.d("stopAppManagerService() called")
         if (_state.value == State.READY && canStopAppManagerService) {
             Timber.d("Trying to stop App Manager service")
-            messageClient.sendMessage(watchId!!, Messages.STOP_SERVICE, null)
+            messageClient.sendMessage(watchId!!, STOP_SERVICE, null)
         }
     }
 
