@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.RecyclerView
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.recyclerview.adapter.StringAdapter
@@ -14,11 +15,9 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import java.util.Locale
 import timber.log.Timber
 
-class AppPermissionDialogFragment(
-    private val requestedPermissions: Array<String>
-) : BottomSheetDialogFragment() {
+class AppPermissionDialogFragment() : BottomSheetDialogFragment() {
 
-    private val permissions: Array<String> by lazy { processPermissions() }
+    private val viewModel: AppInfoViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -31,14 +30,17 @@ class AppPermissionDialogFragment(
         Timber.d("onViewCreated() called")
         view.findViewById<AppCompatTextView>(R.id.title)
             .setText(R.string.app_info_requested_permissions_dialog_title)
-        view.findViewById<RecyclerView>(R.id.recyclerview).adapter = StringAdapter(permissions)
+        viewModel.app?.let { app ->
+            val permissions = processPermissions(app.requestedPermissions)
+            view.findViewById<RecyclerView>(R.id.recyclerview).adapter = StringAdapter(permissions)
+        }
     }
 
     /**
      * Attempts to convert system permissions strings into something meaningful to the user.
      * Fallback is to just use the system strings.
      */
-    private fun processPermissions(): Array<String> {
+    private fun processPermissions(requestedPermissions: Array<String>): Array<String> {
         val processedPermissions = ArrayList<String>()
         for (permission in requestedPermissions) {
             try {

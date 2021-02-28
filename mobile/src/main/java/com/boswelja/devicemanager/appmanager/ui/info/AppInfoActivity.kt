@@ -12,6 +12,8 @@ import com.boswelja.devicemanager.databinding.ActivityAppInfoBinding
 class AppInfoActivity : BaseToolbarActivity() {
 
     private val viewModel: AppInfoViewModel by viewModels()
+    private val permissionDialogFragment by lazy { AppPermissionDialogFragment() }
+
     private lateinit var binding: ActivityAppInfoBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -22,8 +24,7 @@ class AppInfoActivity : BaseToolbarActivity() {
 
         setupToolbar(binding.toolbarLayout.toolbar, showTitle = false, showUpButton = true)
 
-        val watchId = intent?.getStringExtra(EXTRA_WATCH_ID)
-        viewModel.watchId = watchId
+        viewModel.watchId = intent?.getStringExtra(EXTRA_WATCH_ID)
         val app = intent?.getSerializableExtra(EXTRA_APP_INFO) as App?
         viewModel.app = app
 
@@ -94,8 +95,7 @@ class AppInfoActivity : BaseToolbarActivity() {
                 }
             permissionsInfo.root.setOnClickListener {
                 if (requestsPermissions) {
-                    AppPermissionDialogFragment(app.requestedPermissions)
-                        .show(supportFragmentManager)
+                    permissionDialogFragment.show(supportFragmentManager)
                 }
             }
         }
