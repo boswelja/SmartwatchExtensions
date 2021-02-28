@@ -149,17 +149,21 @@ class AppManager internal constructor(
     /** Start the App Manager service on the connected watch. */
     fun startAppManagerService() {
         Timber.d("startAppManagerService() called")
-        _state.postValue(State.CONNECTING)
-        _apps.clear()
-        _appsObservable.postValue(_apps)
-        messageClient.sendMessage(watchId!!, START_SERVICE, null)
-        stateDisconnectedDelay.reset()
+        watchId?.let {
+            _state.postValue(State.CONNECTING)
+            _apps.clear()
+            _appsObservable.postValue(_apps)
+            messageClient.sendMessage(it, START_SERVICE, null)
+            stateDisconnectedDelay.reset()
+        }
     }
 
     /** Stop the App Manager service on the connected watch. */
     fun stopAppManagerService() {
         Timber.d("stopAppManagerService() called")
-        messageClient.sendMessage(watchId!!, STOP_SERVICE, null)
+        watchId?.let {
+            messageClient.sendMessage(it, STOP_SERVICE, null)
+        }
     }
 
     fun destroy() {
