@@ -60,11 +60,6 @@ class AppManager internal constructor(
     val progress: LiveData<Int>
         get() = _progress
 
-    /**
-     * Indicates whether we should allow the App Manager service to be stopped automatically.
-     */
-    var canStopAppManagerService: Boolean = true
-
     private val messageListener = MessageClient.OnMessageReceivedListener {
         if (it.sourceNodeId == watchId) {
             try {

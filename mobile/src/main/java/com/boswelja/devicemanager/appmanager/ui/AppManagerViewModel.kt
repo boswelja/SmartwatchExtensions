@@ -24,10 +24,6 @@ class AppManagerViewModel internal constructor(
     val progress: LiveData<Int>
         get() = appManager.progress
 
-    var canStopAppManagerService: Boolean
-        get() = appManager.canStopAppManagerService
-        set(value) { appManager.canStopAppManagerService = value }
-
     override fun onCleared() {
         super.onCleared()
         appManager.destroy()

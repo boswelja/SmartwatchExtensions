@@ -74,7 +74,6 @@ class AppListFragment : Fragment() {
      */
     private fun launchAppInfoActivity(app: App) {
         Timber.d("launchAppInfoActivity($app) called")
-        viewModel.canStopAppManagerService = false
         Intent(context, AppInfoActivity::class.java)
             .apply {
                 putExtra(AppInfoActivity.EXTRA_APP_INFO, app)
