@@ -23,5 +23,10 @@ enum class State {
     /**
      * Received all apps from the watch, and is ready to perform actions.
      */
-    READY
+    READY,
+
+    /**
+     * Indicates there was an issue with App Manager.
+     */
+    ERROR
 }
