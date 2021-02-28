@@ -75,6 +75,8 @@
     <string name="app_manager_section_system_apps">System Apps</string>
     <string name="app_manager_activity_title">@string/main_app_manager_title</string>
     <string name="app_manager_disconnected">Connection lost</string>
+    <string name="app_manager_error_title">Something Went Wrong</string>
+    <string name="app_manager_error_desc">Make sure Wearable Extensions is up to date on your phone and watch, and try again</string>
 
     <!-- Phone Lock preference strings -->
     <string name="main_phone_locking_title">Phone Locking</string>
