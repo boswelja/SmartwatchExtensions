@@ -67,18 +67,24 @@ class AppManager internal constructor(
 
     private val messageListener = MessageClient.OnMessageReceivedListener {
         if (it.sourceNodeId == watchId) {
-            when (it.path) {
-                // Package change messages
-                Messages.PACKAGE_ADDED -> addPackage(App.fromByteArray(it.data))
-                Messages.PACKAGE_UPDATED -> updatePackage(App.fromByteArray(it.data))
-                Messages.PACKAGE_REMOVED -> removePackage(App.fromByteArray(it.data))
+            try {
+                when (it.path) {
+                    // Package change messages
+                    Messages.PACKAGE_ADDED -> addPackage(App.fromByteArray(it.data))
+                    Messages.PACKAGE_UPDATED -> updatePackage(App.fromByteArray(it.data))
+                    Messages.PACKAGE_REMOVED -> removePackage(App.fromByteArray(it.data))
 
-                // Service state messages
-                Messages.SERVICE_RUNNING -> serviceRunning()
-                Messages.EXPECTED_APP_COUNT -> expectPackages(Int.fromByteArray(it.data))
+                    // Service state messages
+                    Messages.SERVICE_RUNNING -> serviceRunning()
+                    Messages.EXPECTED_APP_COUNT -> expectPackages(Int.fromByteArray(it.data))
 
-                else -> Timber.w("Unknown path received, ignoring")
+                    else -> Timber.w("Unknown path received, ignoring")
+                }
+            } catch (e: Exception) {
+                Timber.e(e)
+                _state.postValue(State.ERROR)
             }
+            
         } else if (it.path == Messages.SERVICE_RUNNING) {
             // If we get SERVICE_RUNNING from any watch that's not the selected watch, stop it
             Timber.w("Non-selected watch still has App Manager running, stopping...")
