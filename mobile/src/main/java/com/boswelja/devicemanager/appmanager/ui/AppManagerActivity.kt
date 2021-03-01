@@ -19,6 +19,7 @@ class AppManagerActivity : BaseWatchPickerActivity() {
 
     private val loadingFragment = LoadingFragment()
     private val appListFragment by lazy { AppListFragment() }
+    private val errorFragment by lazy { ErrorFragment() }
 
     private val disconnectedSnackbar by lazy {
         Snackbar.make(
@@ -47,6 +48,7 @@ class AppManagerActivity : BaseWatchPickerActivity() {
                 State.CONNECTING, State.LOADING_APPS -> showLoadingFragment()
                 State.READY -> showAppManagerFragment()
                 State.DISCONNECTED -> notifyDisconnected()
+                State.ERROR -> showErrorFragment()
                 else -> Timber.e("App Manager state is null")
             }
         }
@@ -56,7 +58,7 @@ class AppManagerActivity : BaseWatchPickerActivity() {
         }
     }
 
-    /** Shows a [LoadingFragment]. */
+    /** Shows the [loadingFragment]. */
     private fun showLoadingFragment() {
         Timber.i("showLoadingFragment() called")
         supportFragmentManager.commit {
@@ -69,11 +71,24 @@ class AppManagerActivity : BaseWatchPickerActivity() {
         }
     }
 
+    /** Shows the [errorFragment] */
+    private fun showErrorFragment() {
+        Timber.i("showErrorFragment() called")
+        supportFragmentManager.commit {
+            if (shouldAnimateTransitions) {
+                setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)
+            } else {
+                shouldAnimateTransitions = true
+            }
+            replace(R.id.fragment_holder, errorFragment)
+        }
+    }
+
     private fun notifyDisconnected() {
         disconnectedSnackbar.show()
     }
 
-    /** Shows the [AppListFragment]. */
+    /** Shows the [appListFragment]. */
     private fun showAppManagerFragment() {
         Timber.i("showAppManagerFragment() called")
         supportFragmentManager.commit {
