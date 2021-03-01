@@ -84,7 +84,6 @@ class AppManager internal constructor(
                 Timber.e(e)
                 _state.postValue(State.ERROR)
             }
-            
         } else if (it.path == Messages.SERVICE_RUNNING) {
             // If we get SERVICE_RUNNING from any watch that's not the selected watch, stop it
             Timber.w("Non-selected watch still has App Manager running, stopping...")
