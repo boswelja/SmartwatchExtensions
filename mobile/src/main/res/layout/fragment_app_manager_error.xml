@@ -4,7 +4,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:paddingTop="@dimen/app_manager_vertical_margin"
+    android:paddingBottom="@dimen/app_manager_vertical_margin"
+    android:paddingStart="@dimen/app_manager_horizontal_margin"
+    android:paddingEnd="@dimen/app_manager_horizontal_margin">
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/icon"
@@ -22,10 +26,6 @@
         android:id="@+id/title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:paddingTop="4dp"
-        android:paddingBottom="4dp"
         android:autoLink="web"
         android:textAppearance="?textAppearanceHeadline4"
         android:textAlignment="center"
@@ -38,9 +38,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:paddingStart="32dp"
-        android:paddingTop="8dp"
-        android:paddingEnd="32dp"
         android:textAppearance="?textAppearanceHeadline6"
         android:textAlignment="center"
         android:text="@string/app_manager_error_title"
@@ -54,7 +51,6 @@
         android:id="@+id/retry_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="32dp"
         android:enabled="false"
         android:text="@string/button_retry"
         app:icon="@drawable/ic_refresh"
