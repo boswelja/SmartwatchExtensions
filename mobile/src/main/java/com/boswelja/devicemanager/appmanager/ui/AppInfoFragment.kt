@@ -1,46 +1,44 @@
-package com.boswelja.devicemanager.appmanager.ui.info
+package com.boswelja.devicemanager.appmanager.ui
 
 import android.os.Bundle
-import android.view.MenuItem
-import androidx.activity.viewModels
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.appmanager.App
-import com.boswelja.devicemanager.common.ui.activity.BaseToolbarActivity
-import com.boswelja.devicemanager.databinding.ActivityAppInfoBinding
+import com.boswelja.devicemanager.databinding.FragmentAppManagerInfoBinding
 
-class AppInfoActivity : BaseToolbarActivity() {
+/**
+ * A fragment for showing detailed info about a single [App].
+ */
+class AppInfoFragment : Fragment() {
 
-    private val viewModel: AppInfoViewModel by viewModels()
-    private val permissionDialogFragment by lazy { AppPermissionDialogFragment() }
+    private val viewModel: AppManagerViewModel by activityViewModels()
+    private val args: AppInfoFragmentArgs by navArgs()
 
-    private lateinit var binding: ActivityAppInfoBinding
+    private lateinit var binding: FragmentAppManagerInfoBinding
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentAppManagerInfoBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
-        binding = ActivityAppInfoBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-
-        setupToolbar(binding.toolbarLayout.toolbar, showTitle = false, showUpButton = true)
-
-        viewModel.watchId = intent?.getStringExtra(EXTRA_WATCH_ID)
-        val app = intent?.getSerializableExtra(EXTRA_APP_INFO) as App?
-        viewModel.app = app
-
-        app?.let {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        args.app.let {
             setupAppInfo(it)
             setupButtons(it)
             setupRequestedPermissions(it)
             setupPackageInfoViews(it)
         }
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (item.itemId == android.R.id.home) {
-            onBackPressed()
-        }
-        return super.onOptionsItemSelected(item)
     }
 
     /**
@@ -64,11 +62,11 @@ class AppInfoActivity : BaseToolbarActivity() {
         binding.apply {
             openButton.isEnabled = app.hasLaunchActivity
             openButton.setOnClickListener {
-                viewModel.sendOpenRequestMessage()
+                viewModel.sendOpenRequest(app)
             }
             uninstallButton.isEnabled = !app.isSystemApp
             uninstallButton.setOnClickListener {
-                viewModel.sendUninstallRequestMessage()
+                viewModel.sendUninstallRequest(app)
             }
         }
     }
@@ -95,7 +93,9 @@ class AppInfoActivity : BaseToolbarActivity() {
                 }
             permissionsInfo.root.setOnClickListener {
                 if (requestsPermissions) {
-                    permissionDialogFragment.show(supportFragmentManager)
+                    findNavController().navigate(
+                        AppInfoFragmentDirections.appInfoFragmentToAppPermissionDialogFragment(app)
+                    )
                 }
             }
         }
@@ -118,10 +118,5 @@ class AppInfoActivity : BaseToolbarActivity() {
             )
             appVersionView.text = getString(R.string.app_info_version_prefix, app.version)
         }
-    }
-
-    companion object {
-        const val EXTRA_APP_INFO = "extra_app_info"
-        const val EXTRA_WATCH_ID = "extra_watch_id"
     }
 }

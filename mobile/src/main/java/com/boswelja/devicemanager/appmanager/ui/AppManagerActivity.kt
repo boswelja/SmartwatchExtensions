@@ -2,24 +2,18 @@ package com.boswelja.devicemanager.appmanager.ui
 
 import android.os.Bundle
 import androidx.activity.viewModels
-import androidx.fragment.app.commit
+import androidx.navigation.findNavController
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.appmanager.State
 import com.boswelja.devicemanager.common.ui.activity.BaseWatchPickerActivity
-import com.boswelja.devicemanager.common.ui.fragment.LoadingFragment
 import com.boswelja.devicemanager.databinding.ActivityAppManagerBinding
 import com.google.android.material.snackbar.Snackbar
 import timber.log.Timber
 
 class AppManagerActivity : BaseWatchPickerActivity() {
 
-    private var shouldAnimateTransitions = false
-
     private val viewModel: AppManagerViewModel by viewModels()
-
-    private val loadingFragment = LoadingFragment()
-    private val appListFragment by lazy { AppListFragment() }
-    private val errorFragment by lazy { ErrorFragment() }
+    private val navController by lazy { findNavController(R.id.nav_host_fragment) }
 
     private val disconnectedSnackbar by lazy {
         Snackbar.make(
@@ -45,59 +39,37 @@ class AppManagerActivity : BaseWatchPickerActivity() {
         viewModel.state.observe(this) {
             Timber.d("State = ${it.name}")
             when (it) {
-                State.CONNECTING, State.LOADING_APPS -> showLoadingFragment()
-                State.READY -> showAppManagerFragment()
+                State.CONNECTING, State.LOADING_APPS -> showLoading()
+                State.READY -> showAppList()
                 State.DISCONNECTED -> notifyDisconnected()
-                State.ERROR -> showErrorFragment()
+                State.ERROR -> showError()
                 else -> Timber.e("App Manager state is null")
             }
         }
+    }
 
-        viewModel.progress.observe(this) {
-            loadingFragment.progress.postValue(it)
+    private fun showLoading() {
+        Timber.i("showLoading() called")
+        if (navController.currentDestination?.id != R.id.loadingFragment) {
+            navController.navigate(R.id.to_loadingFragment)
         }
     }
 
-    /** Shows the [loadingFragment]. */
-    private fun showLoadingFragment() {
-        Timber.i("showLoadingFragment() called")
-        supportFragmentManager.commit {
-            if (shouldAnimateTransitions) {
-                setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)
-            } else {
-                shouldAnimateTransitions = true
-            }
-            replace(R.id.fragment_holder, loadingFragment)
+    private fun showError() {
+        Timber.i("showError() called")
+        if (navController.currentDestination?.id != R.id.errorFragment) {
+            navController.navigate(R.id.to_errorFragment)
         }
     }
 
-    /** Shows the [errorFragment] */
-    private fun showErrorFragment() {
-        Timber.i("showErrorFragment() called")
-        supportFragmentManager.commit {
-            if (shouldAnimateTransitions) {
-                setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)
-            } else {
-                shouldAnimateTransitions = true
-            }
-            replace(R.id.fragment_holder, errorFragment)
+    private fun showAppList() {
+        Timber.i("showAppList() called")
+        if (navController.currentDestination?.id == R.id.loadingFragment) {
+            navController.navigate(R.id.loadingFragment_to_appListFragment)
         }
     }
 
     private fun notifyDisconnected() {
         disconnectedSnackbar.show()
-    }
-
-    /** Shows the [appListFragment]. */
-    private fun showAppManagerFragment() {
-        Timber.i("showAppManagerFragment() called")
-        supportFragmentManager.commit {
-            if (shouldAnimateTransitions) {
-                setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)
-            } else {
-                shouldAnimateTransitions = true
-            }
-            replace(R.id.fragment_holder, appListFragment)
-        }
     }
 }

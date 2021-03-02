@@ -1,17 +1,16 @@
 package com.boswelja.devicemanager.appmanager.ui
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ConcatAdapter
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.appmanager.ui.adapter.AppsAdapter
 import com.boswelja.devicemanager.appmanager.ui.adapter.HeaderAdapter
-import com.boswelja.devicemanager.appmanager.ui.info.AppInfoActivity
 import com.boswelja.devicemanager.common.appmanager.App
 import com.boswelja.devicemanager.databinding.FragmentAppListBinding
 import timber.log.Timber
@@ -23,7 +22,8 @@ class AppListFragment : Fragment() {
     private val systemAppsAdapter by lazy { AppsAdapter(onAppClick) }
 
     private val onAppClick = { app: App ->
-        launchAppInfoActivity(app)
+        findNavController()
+            .navigate(AppListFragmentDirections.appListFragmentToAppInfoFragment(app))
     }
 
     private lateinit var binding: FragmentAppListBinding
@@ -66,19 +66,5 @@ class AppListFragment : Fragment() {
         }
         userAppsAdapter.submitList(userApps)
         systemAppsAdapter.submitList(systemApps)
-    }
-
-    /**
-     * Launches an [AppInfoActivity] for a given [App].
-     * @param app The [App] object to pass on to the [AppInfoActivity].
-     */
-    private fun launchAppInfoActivity(app: App) {
-        Timber.d("launchAppInfoActivity($app) called")
-        Intent(context, AppInfoActivity::class.java)
-            .apply {
-                putExtra(AppInfoActivity.EXTRA_APP_INFO, app)
-                // putExtra(AppPackageInfoActivity.EXTRA_WATCH_ID, viewModel.watchId)
-            }
-            .also { startActivity(it) }
     }
 }

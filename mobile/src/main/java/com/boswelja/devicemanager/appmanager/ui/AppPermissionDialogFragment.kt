@@ -1,4 +1,4 @@
-package com.boswelja.devicemanager.appmanager.ui.info
+package com.boswelja.devicemanager.appmanager.ui
 
 import android.content.pm.PackageManager
 import android.os.Bundle
@@ -7,7 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.RecyclerView
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.recyclerview.adapter.StringAdapter
@@ -15,9 +15,9 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import java.util.Locale
 import timber.log.Timber
 
-class AppPermissionDialogFragment() : BottomSheetDialogFragment() {
+class AppPermissionDialogFragment : BottomSheetDialogFragment() {
 
-    private val viewModel: AppInfoViewModel by activityViewModels()
+    private val args: AppPermissionDialogFragmentArgs by navArgs()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -30,8 +30,9 @@ class AppPermissionDialogFragment() : BottomSheetDialogFragment() {
         Timber.d("onViewCreated() called")
         view.findViewById<AppCompatTextView>(R.id.title)
             .setText(R.string.app_info_requested_permissions_dialog_title)
-        viewModel.app?.let { app ->
-            val permissions = processPermissions(app.requestedPermissions)
+
+        args.app.requestedPermissions.let {
+            val permissions = processPermissions(it)
             view.findViewById<RecyclerView>(R.id.recyclerview).adapter = StringAdapter(permissions)
         }
     }

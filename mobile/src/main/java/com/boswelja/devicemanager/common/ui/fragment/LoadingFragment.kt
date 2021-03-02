@@ -13,19 +13,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.MutableLiveData
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.databinding.CommonFragmentLoadingBinding
 import timber.log.Timber
 
-class LoadingFragment : Fragment() {
+open class LoadingFragment : Fragment() {
 
     private lateinit var binding: CommonFragmentLoadingBinding
-
-    /**
-     * The progress the indicator should display, or -1 for indeterminate.
-     */
-    val progress = MutableLiveData(-1)
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -38,14 +32,6 @@ class LoadingFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         binding.loadingText.text = getString(R.string.dnd_sync_helper_loading_text)
-        progress.observe(viewLifecycleOwner) {
-            if (it > -1) {
-                binding.progressBar.progress = it
-                setProgressIndeterninate(false)
-            } else {
-                setProgressIndeterninate(true)
-            }
-        }
         Timber.i("Successfully created")
     }
 
@@ -54,6 +40,19 @@ class LoadingFragment : Fragment() {
             binding.progressBar.isVisible = false
             binding.progressBar.isIndeterminate = isIndeterminate
             binding.progressBar.isVisible = true
+        }
+    }
+
+    /**
+     * Set the progress displayed to the user. Use -1 to set indeterminate.
+     * @param progress The progress to display.
+     */
+    fun setProgress(progress: Int) {
+        if (progress > -1) {
+            binding.progressBar.progress = progress
+            setProgressIndeterninate(false)
+        } else {
+            setProgressIndeterninate(true)
         }
     }
 }

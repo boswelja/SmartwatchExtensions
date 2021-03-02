@@ -168,6 +168,30 @@ class AppManager internal constructor(
         }
     }
 
+    /**
+     * Request uninstalling an app from the connected watch.
+     * @param app The [App] to request uninstall for.
+     */
+    fun sendUninstallRequestMessage(app: App) {
+        messageClient.sendMessage(
+            watchId!!,
+            Messages.REQUEST_UNINSTALL_PACKAGE,
+            app.packageName.toByteArray(Charsets.UTF_8)
+        )
+    }
+
+    /**
+     * Request opening an app's launch activity on the connected watch.
+     * @param app The [App] to request open for.
+     */
+    fun sendOpenRequestMessage(app: App) {
+        messageClient.sendMessage(
+            watchId!!,
+            Messages.REQUEST_OPEN_PACKAGE,
+            app.packageName.toByteArray(Charsets.UTF_8)
+        )
+    }
+
     fun destroy() {
         messageClient.removeListener(messageListener)
         watchManager.selectedWatch.removeObserver(selectedWatchObserver)
