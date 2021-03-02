@@ -30,7 +30,9 @@ class AppManager internal constructor(
     )
 
     private val stateDisconnectedDelay = DelayedFunction(15) {
-        _state.postValue(State.DISCONNECTED)
+        if (_state.value != State.ERROR) {
+            _state.postValue(State.DISCONNECTED)
+        }
     }
 
     private val _state = MutableLiveData(State.CONNECTING)
@@ -61,7 +63,7 @@ class AppManager internal constructor(
         get() = _progress
 
     private val messageListener = MessageClient.OnMessageReceivedListener {
-        if (it.sourceNodeId == watchId) {
+        if (it.sourceNodeId == watchId && _state.value != State.ERROR) {
             try {
                 when (it.path) {
                     // Package change messages
@@ -81,7 +83,7 @@ class AppManager internal constructor(
             }
         } else if (it.path == Messages.SERVICE_RUNNING) {
             // If we get SERVICE_RUNNING from any watch that's not the selected watch, stop it
-            Timber.w("Non-selected watch still has App Manager running, stopping...")
+            Timber.w("Issue with received message, stopping App Manager on the watch")
             messageClient.sendMessage(it.sourceNodeId, STOP_SERVICE, null)
         }
     }
