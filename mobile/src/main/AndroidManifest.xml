@@ -60,14 +60,12 @@
             android:name=".appmanager.ui.AppManagerActivity"
             android:exported="false"
             android:label="@string/app_manager_activity_title" />
-        <activity
-            android:name=".appmanager.ui.info.AppInfoActivity"
-            android:exported="false" />
 
         <activity
             android:name=".watchmanager.ui.WatchManagerActivity"
             android:exported="false"
             android:label="@string/watch_manager_title" />
+
         <activity
             android:name=".watchinfo.ui.WatchInfoActivity"
             android:exported="false" />
