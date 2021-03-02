@@ -1,6 +1,7 @@
 Changes & Fixes:
 Reworked the 'Manage Space' screen
 Reworked the 'Watch Info' screen
+Reworked 'App Manager'. You'll notice many UI & UX changes
 Reworked the underlying watch connection interface
 Fixes towards missing icons in App Manager
 Made some improvements to the way widgets store and retrievve their date
