@@ -5,7 +5,7 @@
  * This file, and any part of the Wearable Extensions app/s cannot be copied and/or distributed
  * without permission from Jack Boswell (boswelja) <boswela@outlook.com>
  */
-package com.boswelja.devicemanager.common
+package com.boswelja.devicemanager.common.connection
 
 object References {
     const val CAPABILITY_PHONE_APP = "extensions_phone_app"

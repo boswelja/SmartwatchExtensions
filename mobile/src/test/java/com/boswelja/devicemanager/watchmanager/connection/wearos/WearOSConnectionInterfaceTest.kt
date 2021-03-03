@@ -7,10 +7,10 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.boswelja.devicemanager.TasksAwaitRule
 import com.boswelja.devicemanager.TestCapabilityInfo
 import com.boswelja.devicemanager.TestNode
-import com.boswelja.devicemanager.common.References.CAPABILITY_WATCH_APP
 import com.boswelja.devicemanager.common.connection.Capability
 import com.boswelja.devicemanager.common.connection.Messages.CLEAR_PREFERENCES
 import com.boswelja.devicemanager.common.connection.Messages.RESET_APP
+import com.boswelja.devicemanager.common.connection.References.CAPABILITY_WATCH_APP
 import com.boswelja.devicemanager.common.preference.SyncPreferences
 import com.boswelja.devicemanager.getOrAwaitValue
 import com.boswelja.devicemanager.watchmanager.item.Watch

@@ -17,7 +17,7 @@ import com.boswelja.devicemanager.BuildConfig
 import com.boswelja.devicemanager.analytics.Analytics
 import com.boswelja.devicemanager.batterysync.BatterySyncWorker
 import com.boswelja.devicemanager.batterysync.widget.WatchBatteryWidget
-import com.boswelja.devicemanager.common.References.CAPABILITY_WATCH_APP
+import com.boswelja.devicemanager.common.connection.References.CAPABILITY_WATCH_APP
 import com.boswelja.devicemanager.common.preference.PreferenceKey
 import com.boswelja.devicemanager.common.preference.PreferenceKey.BATTERY_SYNC_ENABLED_KEY
 import com.boswelja.devicemanager.common.setup.References

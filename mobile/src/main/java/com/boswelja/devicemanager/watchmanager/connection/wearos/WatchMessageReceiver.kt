@@ -14,11 +14,11 @@ import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.batterysync.ui.BatterySyncPreferenceActivity
 import com.boswelja.devicemanager.common.Compat
 import com.boswelja.devicemanager.common.Extensions.toByteArray
-import com.boswelja.devicemanager.common.References.CAPABILITY_WATCH_APP
 import com.boswelja.devicemanager.common.batterysync.References.REQUEST_BATTERY_UPDATE_PATH
 import com.boswelja.devicemanager.common.batterysync.Utils
 import com.boswelja.devicemanager.common.connection.Messages.LAUNCH_APP
 import com.boswelja.devicemanager.common.connection.Messages.LOCK_PHONE
+import com.boswelja.devicemanager.common.connection.References.CAPABILITY_WATCH_APP
 import com.boswelja.devicemanager.common.dndsync.References.REQUEST_INTERRUPT_FILTER_ACCESS_STATUS_PATH
 import com.boswelja.devicemanager.common.preference.PreferenceKey
 import com.boswelja.devicemanager.common.setup.References.CHECK_WATCH_REGISTERED_PATH
