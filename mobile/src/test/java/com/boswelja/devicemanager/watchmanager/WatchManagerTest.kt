@@ -10,14 +10,18 @@ import androidx.preference.PreferenceManager
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.boswelja.devicemanager.analytics.Analytics
+import com.boswelja.devicemanager.batterysync.database.WatchBatteryStatsDatabase
 import com.boswelja.devicemanager.common.connection.Messages.REQUEST_UPDATE_CAPABILITIES
 import com.boswelja.devicemanager.getOrAwaitValue
 import com.boswelja.devicemanager.watchmanager.item.Watch
+import com.boswelja.devicemanager.widget.database.WidgetDatabase
 import com.google.common.truth.Truth.assertThat
 import io.mockk.MockKAnnotations
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
+import io.mockk.mockkObject
+import io.mockk.unmockkObject
 import io.mockk.verify
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -46,6 +50,8 @@ class WatchManagerTest {
 
     @RelaxedMockK private lateinit var repository: WatchRepository
     @RelaxedMockK private lateinit var analytics: Analytics
+    @RelaxedMockK private lateinit var widgetDatabase: WidgetDatabase
+    @RelaxedMockK private lateinit var watchBatteryStatsDatabase: WatchBatteryStatsDatabase
 
     private lateinit var coroutineScope: CoroutineScope
     private lateinit var sharedPreferences: SharedPreferences
@@ -54,6 +60,13 @@ class WatchManagerTest {
     @Before
     fun setUp() {
         MockKAnnotations.init(this)
+        mockkObject(WidgetDatabase.Companion)
+        mockkObject(WatchBatteryStatsDatabase.Companion)
+        every { WidgetDatabase.Companion.getInstance(any()) } returns widgetDatabase
+        every {
+            WatchBatteryStatsDatabase.Companion.getInstance(any())
+        } returns watchBatteryStatsDatabase
+
         coroutineScope = TestCoroutineScope()
         sharedPreferences = PreferenceManager
             .getDefaultSharedPreferences(ApplicationProvider.getApplicationContext())
@@ -62,6 +75,8 @@ class WatchManagerTest {
     @After
     fun tearDown() {
         sharedPreferences.edit(commit = true) { clear() }
+        unmockkObject(WidgetDatabase.Companion)
+        unmockkObject(WatchBatteryStatsDatabase.Companion)
     }
 
     @Test
