@@ -10,6 +10,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.boswelja.devicemanager.R
+import com.boswelja.devicemanager.appmanager.State
 import com.boswelja.devicemanager.common.appmanager.App
 import com.boswelja.devicemanager.databinding.FragmentAppManagerInfoBinding
 
@@ -60,11 +61,11 @@ class AppInfoFragment : Fragment() {
      */
     private fun setupButtons(app: App) {
         binding.apply {
-            openButton.isEnabled = app.hasLaunchActivity
+            openButton.isEnabled = app.hasLaunchActivity && viewModel.state.value == State.READY
             openButton.setOnClickListener {
                 viewModel.sendOpenRequest(app)
             }
-            uninstallButton.isEnabled = !app.isSystemApp
+            uninstallButton.isEnabled = !app.isSystemApp && viewModel.state.value == State.READY
             uninstallButton.setOnClickListener {
                 viewModel.sendUninstallRequest(app)
             }
