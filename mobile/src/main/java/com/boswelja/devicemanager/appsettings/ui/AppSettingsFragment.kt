@@ -12,12 +12,12 @@ import android.content.SharedPreferences
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
+import androidx.core.app.NotificationManagerCompat
 import androidx.navigation.fragment.findNavController
 import androidx.preference.ListPreference
 import androidx.preference.Preference
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.analytics.Analytics
-import com.boswelja.devicemanager.common.Compat
 import com.boswelja.devicemanager.common.ui.activity.BaseDayNightActivity.Companion.DAYNIGHT_MODE_KEY
 import com.boswelja.devicemanager.common.ui.activity.BasePreferenceFragment
 import timber.log.Timber
@@ -93,7 +93,8 @@ class AppSettingsFragment :
      */
     private fun updateNotiSettingsPreferenceSummary() {
         Timber.d("updateNotiSettingsPreferenceSummary() called")
-        val notificationsAllowed = Compat.areNotificationsEnabled(requireContext())
+        val notificationsAllowed =
+            NotificationManagerCompat.from(requireContext()).areNotificationsEnabled()
         if (notificationsAllowed) {
             Timber.i("Notifications allowed")
             openNotiSettingsPreference.apply {

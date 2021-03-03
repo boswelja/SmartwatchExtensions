@@ -9,9 +9,9 @@ package com.boswelja.devicemanager
 
 import android.app.Application
 import android.content.Intent
+import androidx.core.content.ContextCompat
 import com.boswelja.devicemanager.bootorupdate.BootOrUpdateHandlerService
 import com.boswelja.devicemanager.bootorupdate.updater.Updater
-import com.boswelja.devicemanager.common.Compat
 import timber.log.Timber
 
 @Suppress("unused")
@@ -34,7 +34,7 @@ class MainApplication : Application() {
             Timber.i("Starting updater service")
             Intent(this, BootOrUpdateHandlerService::class.java)
                 .apply { action = Intent.ACTION_MY_PACKAGE_REPLACED }
-                .also { Compat.startForegroundService(this, it) }
+                .also { ContextCompat.startForegroundService(this, it) }
         }
     }
 }

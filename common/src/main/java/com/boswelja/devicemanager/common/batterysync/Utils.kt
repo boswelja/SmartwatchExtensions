@@ -1,10 +1,3 @@
-/* Copyright (C) 2020 Jack Boswell <boswelja@outlook.com>
- *
- * This file is part of Wearable Extensions
- *
- * This file, and any part of the Wearable Extensions app/s cannot be copied and/or distributed
- * without permission from Jack Boswell (boswelja) <boswela@outlook.com>
- */
 package com.boswelja.devicemanager.common.batterysync
 
 import android.content.Context
@@ -18,6 +11,7 @@ import com.google.android.gms.wearable.Wearable
 object Utils {
 
     /** Sends a battery status update to connected devices. */
+    @Deprecated("Use respective connection interfaces instead")
     fun updateBatteryStats(context: Context, target: String) {
         val iFilter = IntentFilter(Intent.ACTION_BATTERY_CHANGED)
         val batteryStatus = context.registerReceiver(null, iFilter)

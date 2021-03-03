@@ -17,10 +17,10 @@ import com.boswelja.devicemanager.BuildConfig
 import com.boswelja.devicemanager.analytics.Analytics
 import com.boswelja.devicemanager.batterysync.BatterySyncWorker
 import com.boswelja.devicemanager.batterysync.widget.WatchBatteryWidget
-import com.boswelja.devicemanager.common.References.CAPABILITY_WATCH_APP
+import com.boswelja.devicemanager.common.connection.Messages.WATCH_REGISTERED_PATH
+import com.boswelja.devicemanager.common.connection.References.CAPABILITY_WATCH_APP
 import com.boswelja.devicemanager.common.preference.PreferenceKey
 import com.boswelja.devicemanager.common.preference.PreferenceKey.BATTERY_SYNC_ENABLED_KEY
-import com.boswelja.devicemanager.common.setup.References
 import com.boswelja.devicemanager.phonelocking.ui.PhoneLockingPreferenceFragment.Companion.PHONE_LOCKING_MODE_KEY
 import com.boswelja.devicemanager.watchmanager.WatchManager.Companion.LAST_SELECTED_NODE_ID_KEY
 import com.boswelja.devicemanager.watchmanager.connection.wearos.WearOSConnectionInterface
@@ -176,7 +176,7 @@ class Updater(private val context: Context) {
                             WearOSConnectionInterface.PLATFORM
                         )
                         coroutineScope.launch { database.watchDao().add(watch) }
-                        messageClient.sendMessage(watch.id, References.WATCH_REGISTERED_PATH, null)
+                        messageClient.sendMessage(watch.id, WATCH_REGISTERED_PATH, null)
                         sharedPreferences.edit { putString(LAST_SELECTED_NODE_ID_KEY, watch.id) }
                         sharedPreferences.all.forEach {
                             if (it.value != null) {

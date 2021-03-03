@@ -1,10 +1,3 @@
-/* Copyright (C) 2020 Jack Boswell <boswelja@outlook.com>
- *
- * This file is part of Wearable Extensions
- *
- * This file, and any part of the Wearable Extensions app/s cannot be copied and/or distributed
- * without permission from Jack Boswell (boswelja) <boswela@outlook.com>
- */
 package com.boswelja.devicemanager.common.dndsync
 
 import android.content.Context
@@ -17,6 +10,7 @@ import com.google.android.gms.wearable.Wearable
 object Utils {
 
     /** Ensure Interruption Filter state is properly synced between devices. */
+    @Deprecated("Use respective connection interfaces instead")
     fun updateInterruptionFilter(context: Context) {
         val interruptionFilterEnabled = Compat.isDndEnabled(context)
         updateInterruptionFilter(context, interruptionFilterEnabled)
@@ -26,6 +20,7 @@ object Utils {
      * Sets a new Interruption Filter state across devices.
      * @param interruptionFilterEnabled Whether Interruption Filter should be enabled.
      */
+    @Deprecated("Use respective connection interfaces instead")
     fun updateInterruptionFilter(context: Context, interruptionFilterEnabled: Boolean) {
         val dataClient = Wearable.getDataClient(context)
         val putDataMapReq = PutDataMapRequest.create(DND_STATUS_PATH)

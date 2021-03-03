@@ -11,13 +11,13 @@ import android.app.ActivityManager
 import android.content.Context
 import android.content.Intent
 import android.os.Build
+import androidx.core.content.ContextCompat
 import androidx.core.content.edit
 import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.BuildConfig
 import com.boswelja.devicemanager.appmanager.AppManagerService
 import com.boswelja.devicemanager.capability.CapabilityUpdater
 import com.boswelja.devicemanager.common.Compat
-import com.boswelja.devicemanager.common.Extensions.toByteArray
 import com.boswelja.devicemanager.common.appmanager.Messages
 import com.boswelja.devicemanager.common.connection.Messages.CLEAR_PREFERENCES
 import com.boswelja.devicemanager.common.connection.Messages.REQUEST_APP_VERSION
@@ -25,6 +25,7 @@ import com.boswelja.devicemanager.common.connection.Messages.REQUEST_UPDATE_CAPA
 import com.boswelja.devicemanager.common.connection.Messages.RESET_APP
 import com.boswelja.devicemanager.common.dndsync.References.REQUEST_INTERRUPT_FILTER_ACCESS_STATUS_PATH
 import com.boswelja.devicemanager.common.dndsync.References.REQUEST_SDK_INT_PATH
+import com.boswelja.devicemanager.common.toByteArray
 import com.google.android.gms.wearable.MessageEvent
 import com.google.android.gms.wearable.Wearable
 import com.google.android.gms.wearable.WearableListenerService
@@ -56,7 +57,7 @@ class MessageReceiver : WearableListenerService() {
             }
             Messages.START_SERVICE -> {
                 val intent = Intent(this, AppManagerService::class.java)
-                Compat.startForegroundService(this, intent)
+                ContextCompat.startForegroundService(this, intent)
             }
             REQUEST_SDK_INT_PATH -> {
                 Wearable.getMessageClient(this)

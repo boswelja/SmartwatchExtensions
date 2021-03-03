@@ -16,9 +16,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.R
-import com.boswelja.devicemanager.common.Event
-import com.boswelja.devicemanager.common.setup.References
-import com.boswelja.devicemanager.common.setup.References.CHECK_WATCH_REGISTERED_PATH
+import com.boswelja.devicemanager.common.connection.Messages.CHECK_WATCH_REGISTERED_PATH
+import com.boswelja.devicemanager.common.connection.Messages.WATCH_REGISTERED_PATH
 import com.boswelja.devicemanager.phoneconnectionmanager.References.PHONE_ID_KEY
 import com.google.android.gms.wearable.MessageClient
 import com.google.android.gms.wearable.NodeClient
@@ -38,14 +37,14 @@ constructor(
     val messageListener =
         MessageClient.OnMessageReceivedListener {
             when (it.path) {
-                References.WATCH_REGISTERED_PATH -> {
+                WATCH_REGISTERED_PATH -> {
                     sharedPreferences.edit { putString(PHONE_ID_KEY, it.sourceNodeId) }
-                    onWatchRegistered.fire()
+                    onWatchRegistered.postValue(true)
                 }
             }
         }
 
-    val onWatchRegistered = Event()
+    val onWatchRegistered = MutableLiveData(false)
 
     private val _localName = MutableLiveData<String?>(null)
     val setupNameText =

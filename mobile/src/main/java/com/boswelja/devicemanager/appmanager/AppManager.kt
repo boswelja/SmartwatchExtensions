@@ -5,11 +5,11 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import com.boswelja.devicemanager.common.DelayedFunction
-import com.boswelja.devicemanager.common.Extensions.fromByteArray
 import com.boswelja.devicemanager.common.appmanager.App
 import com.boswelja.devicemanager.common.appmanager.Messages
 import com.boswelja.devicemanager.common.appmanager.Messages.START_SERVICE
 import com.boswelja.devicemanager.common.appmanager.Messages.STOP_SERVICE
+import com.boswelja.devicemanager.common.fromByteArray
 import com.boswelja.devicemanager.watchmanager.WatchManager
 import com.boswelja.devicemanager.watchmanager.item.Watch
 import com.google.android.gms.wearable.MessageClient

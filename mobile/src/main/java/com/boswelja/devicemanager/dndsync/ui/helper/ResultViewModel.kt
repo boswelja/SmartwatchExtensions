@@ -9,10 +9,10 @@ package com.boswelja.devicemanager.dndsync.ui.helper
 
 import android.app.Application
 import android.content.Intent
+import androidx.core.content.ContextCompat
 import androidx.core.content.edit
 import androidx.lifecycle.AndroidViewModel
 import androidx.preference.PreferenceManager
-import com.boswelja.devicemanager.common.Compat
 import com.boswelja.devicemanager.common.preference.PreferenceKey
 import com.boswelja.devicemanager.dndsync.DnDLocalChangeService
 import com.boswelja.devicemanager.watchmanager.WatchManager
@@ -47,7 +47,7 @@ class ResultViewModel(application: Application) : AndroidViewModel(application) 
             )
             if (isEnabled) {
                 val context = getApplication<Application>()
-                Compat.startForegroundService(
+                ContextCompat.startForegroundService(
                     context, Intent(context, DnDLocalChangeService::class.java)
                 )
             }

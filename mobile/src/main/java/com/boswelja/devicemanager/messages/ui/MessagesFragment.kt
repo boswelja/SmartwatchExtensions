@@ -48,6 +48,7 @@ class MessagesFragment : Fragment() {
                     canShowLoading = false
                     viewModel.dismissMessage(message.id)
                     adapter.notifyItemRemoved(position)
+                    showMessageDismissedSnackbar(message.id)
                 }
             }
         )
@@ -74,10 +75,6 @@ class MessagesFragment : Fragment() {
 
         binding.messageHistoryButton.setOnClickListener {
             findNavController().navigate(MessagesFragmentDirections.toMessageHistoryActivity())
-        }
-
-        viewModel.messageDismissedEvent.observe(viewLifecycleOwner) {
-            showMessageDismissedSnackbar(it!!)
         }
     }
 

@@ -10,7 +10,7 @@ package com.boswelja.devicemanager.bootorupdate
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import com.boswelja.devicemanager.common.Compat
+import androidx.core.content.ContextCompat
 import timber.log.Timber
 
 class BootOrUpdateReceiver : BroadcastReceiver() {
@@ -22,7 +22,7 @@ class BootOrUpdateReceiver : BroadcastReceiver() {
                 Timber.i("Starting BootOrUpdateHandlerService")
                 Intent(context!!.applicationContext, BootOrUpdateHandlerService::class.java)
                     .apply { action = broadcastAction }
-                    .also { Compat.startForegroundService(context.applicationContext, it) }
+                    .also { ContextCompat.startForegroundService(context.applicationContext, it) }
             }
         }
     }

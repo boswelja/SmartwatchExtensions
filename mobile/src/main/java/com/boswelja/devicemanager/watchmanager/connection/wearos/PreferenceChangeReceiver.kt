@@ -8,8 +8,8 @@
 package com.boswelja.devicemanager.watchmanager.connection.wearos
 
 import android.content.Intent
+import androidx.core.content.ContextCompat
 import com.boswelja.devicemanager.batterysync.BatterySyncWorker
-import com.boswelja.devicemanager.common.Compat
 import com.boswelja.devicemanager.common.preference.PreferenceKey
 import com.boswelja.devicemanager.dndsync.DnDLocalChangeService
 import com.boswelja.devicemanager.watchmanager.database.WatchDatabase
@@ -62,7 +62,7 @@ class PreferenceChangeReceiver : WearableListenerService() {
         if (dndSyncEnabled) {
             Intent(this, DnDLocalChangeService::class.java).also {
                 Timber.i("Starting DnDLocalChangeService")
-                Compat.startForegroundService(this, it)
+                ContextCompat.startForegroundService(this, it)
             }
         }
     }

@@ -5,11 +5,11 @@
  * This file, and any part of the Wearable Extensions app/s cannot be copied and/or distributed
  * without permission from Jack Boswell (boswelja) <boswela@outlook.com>
  */
-package com.boswelja.devicemanager.common.recyclerview.adapter
+package com.boswelja.devicemanager.common.ui.adapter
 
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.boswelja.devicemanager.common.recyclerview.item.OneLineViewHolder
+import com.boswelja.devicemanager.common.ui.OneLineViewHolder
 
 class StringAdapter(private val strings: Array<String>) :
     RecyclerView.Adapter<OneLineViewHolder>() {

@@ -11,7 +11,6 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
 import android.os.Build
-import androidx.core.app.NotificationManagerCompat
 import androidx.test.platform.app.InstrumentationRegistry
 import com.google.common.truth.Truth.assertWithMessage
 import org.junit.After
@@ -80,21 +79,6 @@ class CompatTest {
         } else {
             assertWithMessage("Missing notification policy access, grant and try again").fail()
         }
-    }
-
-    @Test
-    fun areNotificationsEnabled() {
-        assertWithMessage("Checking overall notification status is correct")
-            .that(Compat.areNotificationsEnabled(context))
-            .isEqualTo(NotificationManagerCompat.from(context).areNotificationsEnabled())
-
-        val supportsNotificationChannels = (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-        assertWithMessage("Checking notification channel enabled status is correct")
-            .that(Compat.areNotificationsEnabled(context, ENABLED_CHANNEL_ID))
-            .isEqualTo(true)
-        assertWithMessage("Checking notification channel disabled status is correct")
-            .that(Compat.areNotificationsEnabled(context, DISABLED_CHANNEL_ID))
-            .isEqualTo(!supportsNotificationChannels)
     }
 
     companion object {

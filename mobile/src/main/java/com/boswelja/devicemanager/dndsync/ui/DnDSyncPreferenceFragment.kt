@@ -16,6 +16,7 @@ import android.view.View
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat
 import androidx.core.content.edit
 import androidx.preference.Preference
 import androidx.preference.SwitchPreference
@@ -151,7 +152,7 @@ class DnDSyncPreferenceFragment :
         if (enabled) {
             Timber.i("Starting DnDLocalChangeService")
             Intent(requireContext(), DnDLocalChangeService::class.java).also {
-                Compat.startForegroundService(requireContext(), it)
+                ContextCompat.startForegroundService(requireContext(), it)
             }
         }
     }
