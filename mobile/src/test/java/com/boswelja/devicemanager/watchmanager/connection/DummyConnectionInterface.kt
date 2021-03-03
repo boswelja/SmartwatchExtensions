@@ -29,9 +29,5 @@ class DummyConnectionInterface(platform: String) : WatchConnectionInterface {
 
     override fun updatePreferenceOnWatch(watch: Watch, key: String, value: Any) {}
 
-    override fun resetWatchApp(watch: Watch) {}
-
-    override fun resetWatchPreferences(watch: Watch) {}
-
     override fun refreshData() {}
 }

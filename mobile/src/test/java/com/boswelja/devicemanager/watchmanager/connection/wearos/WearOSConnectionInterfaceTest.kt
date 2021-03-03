@@ -8,8 +8,6 @@ import com.boswelja.devicemanager.TasksAwaitRule
 import com.boswelja.devicemanager.TestCapabilityInfo
 import com.boswelja.devicemanager.TestNode
 import com.boswelja.devicemanager.common.connection.Capability
-import com.boswelja.devicemanager.common.connection.Messages.CLEAR_PREFERENCES
-import com.boswelja.devicemanager.common.connection.Messages.RESET_APP
 import com.boswelja.devicemanager.common.connection.References.CAPABILITY_WATCH_APP
 import com.boswelja.devicemanager.common.preference.SyncPreferences
 import com.boswelja.devicemanager.getOrAwaitValue
@@ -353,20 +351,6 @@ class WearOSConnectionInterfaceTest {
             connectionInterface.updatePreferenceOnWatch(dummyWatches.first(), it, false)
         }
         verify(inverse = true) { dataClient.putDataItem(any()) }
-    }
-
-    @Test
-    fun `resetWatchApp sends the reset message to the watch`() {
-        val watch = dummyWatches.first()
-        connectionInterface.resetWatchApp(watch)
-        verify(exactly = 1) { messageClient.sendMessage(watch.id, RESET_APP, null) }
-    }
-
-    @Test
-    fun `resetWatchPreferences sends the reset message to the watch`() {
-        val watch = dummyWatches.first()
-        connectionInterface.resetWatchPreferences(watch)
-        verify(exactly = 1) { messageClient.sendMessage(watch.id, CLEAR_PREFERENCES, null) }
     }
 
     private fun mockCapability(capability: Capability, nodes: List<Node>) {

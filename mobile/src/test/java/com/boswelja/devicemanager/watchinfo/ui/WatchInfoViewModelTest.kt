@@ -101,25 +101,25 @@ class WatchInfoViewModelTest {
     fun `forgetWatch calls watchManager if watch is not null`() {
         // Check with no / invalid watch selected
         viewModel.forgetWatch()
-        coVerify(inverse = true) { watchManager.forgetWatch(any()) }
+        coVerify(inverse = true) { watchManager.forgetWatch(any(), any()) }
 
         // Check with valid watch selected
         viewModel.setWatch(dummyWatch.id)
         viewModel.watch.getOrAwaitValue()
         viewModel.forgetWatch()
-        coVerify { watchManager.forgetWatch(dummyWatch) }
+        coVerify { watchManager.forgetWatch(any(), dummyWatch) }
     }
 
     @Test
     fun `resetWatchPreferences calls watchManager if watch is not null`() {
         // Check with no / invalid watch selected
         viewModel.resetWatchPreferences()
-        coVerify(inverse = true) { watchManager.resetWatchPreferences(any()) }
+        coVerify(inverse = true) { watchManager.resetWatchPreferences(any(), any()) }
 
         // Check with valid watch selected
         viewModel.setWatch(dummyWatch.id)
         viewModel.watch.getOrAwaitValue()
         viewModel.resetWatchPreferences()
-        coVerify { watchManager.resetWatchPreferences(dummyWatch) }
+        coVerify { watchManager.resetWatchPreferences(any(), dummyWatch) }
     }
 }
