@@ -4,7 +4,8 @@ import android.content.Context
 import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
-import com.boswelja.devicemanager.common.connection.Messages
+import com.boswelja.devicemanager.common.connection.Messages.CLEAR_PREFERENCES
+import com.boswelja.devicemanager.common.connection.Messages.RESET_APP
 import com.boswelja.devicemanager.common.connection.Messages.WATCH_REGISTERED_PATH
 import com.boswelja.devicemanager.common.preference.SyncPreferences
 import com.boswelja.devicemanager.watchmanager.connection.WatchConnectionInterface
@@ -175,8 +176,7 @@ class WatchRepository internal constructor(
     suspend fun registerWatch(watch: Watch) {
         withContext(Dispatchers.IO) {
             database.addWatch(watch)
-            val connectionManager = watch.connectionManager
-            connectionManager?.sendMessage(watch.id, WATCH_REGISTERED_PATH)
+            watch.connectionManager?.sendMessage(watch.id, WATCH_REGISTERED_PATH)
         }
     }
 
@@ -197,19 +197,18 @@ class WatchRepository internal constructor(
      */
     suspend fun resetWatch(watch: Watch) {
         withContext(Dispatchers.IO) {
-            watch.connectionManager?.resetWatchApp(watch)
+            watch.connectionManager?.sendMessage(watch.id, RESET_APP)
             database.forgetWatch(watch)
         }
     }
 
     /**
-     * Calls [WatchConnectionInterface.resetWatchPreferences] on the corresponding
-     * [WatchConnectionInterface].
+     * Sends [CLEAR_PREFERENCES] to the corresponding [WatchConnectionInterface].
      * @param watch The [Watch] to perform the request on.
      */
     suspend fun resetWatchPreferences(watch: Watch) {
         withContext(Dispatchers.IO) {
-            watch.connectionManager?.resetWatchPreferences(watch)
+            watch.connectionManager?.sendMessage(watch.id, CLEAR_PREFERENCES)
             database.clearWatchPreferences(watch)
         }
     }
@@ -222,14 +221,6 @@ class WatchRepository internal constructor(
         connectionManagers.values.forEach {
             it.refreshData()
         }
-    }
-
-    /**
-     * Sends [Messages.REQUEST_UPDATE_CAPABILITIES] to a given [Watch].
-     * @param watch The [Watch] to request capabilities be updated for.
-     */
-    fun requestRefreshCapabilities(watch: Watch) {
-        watch.connectionManager?.sendMessage(watch.id, Messages.REQUEST_UPDATE_CAPABILITIES)
     }
 
     /**
@@ -260,6 +251,15 @@ class WatchRepository internal constructor(
             }
         }
     }
+
+    /**
+     * Send a message to a watch with the given ID.
+     * @param watch The [Watch] to send a message to.
+     * @param messagePath The message path to send.
+     * @param data The data to send with the message, if any.
+     */
+    fun sendMessage(watch: Watch, messagePath: String, data: ByteArray? = null) =
+        watch.connectionManager?.sendMessage(watch.id, messagePath, data)
 
     /**
      * Gets a preference for a given watch with a specified key.

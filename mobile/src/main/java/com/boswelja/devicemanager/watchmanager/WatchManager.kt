@@ -17,6 +17,7 @@ import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.analytics.Analytics
 import com.boswelja.devicemanager.batterysync.database.WatchBatteryStatsDatabase
 import com.boswelja.devicemanager.common.SingletonHolder
+import com.boswelja.devicemanager.common.connection.Messages.REQUEST_UPDATE_CAPABILITIES
 import com.boswelja.devicemanager.common.preference.SyncPreferences
 import com.boswelja.devicemanager.watchmanager.item.Watch
 import kotlinx.coroutines.CoroutineScope
@@ -142,7 +143,7 @@ class WatchManager internal constructor(
     }
 
     fun requestRefreshCapabilities(watch: Watch) {
-        watchRepository.requestRefreshCapabilities(watch)
+        watchRepository.sendMessage(watch, REQUEST_UPDATE_CAPABILITIES)
     }
 
     fun refreshData() = watchRepository.refreshData()
