@@ -1,11 +1,4 @@
-/* Copyright (C) 2020 Jack Boswell <boswelja@outlook.com>
- *
- * This file is part of Wearable Extensions
- *
- * This file, and any part of the Wearable Extensions app/s cannot be copied and/or distributed
- * without permission from Jack Boswell (boswelja) <boswela@outlook.com>
- */
-package com.boswelja.devicemanager.appmanager.ui.info
+package com.boswelja.devicemanager.appmanager.ui
 
 import android.content.pm.PackageManager
 import android.os.Bundle
@@ -14,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.fragment.app.FragmentManager
+import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.RecyclerView
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.recyclerview.adapter.StringAdapter
@@ -21,10 +15,9 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import java.util.Locale
 import timber.log.Timber
 
-class AppPermissionDialogFragment(private val requestedPermissions: Array<String>) :
-    BottomSheetDialogFragment() {
+class AppPermissionDialogFragment : BottomSheetDialogFragment() {
 
-    private val permissions: Array<String> by lazy { processPermissions() }
+    private val args: AppPermissionDialogFragmentArgs by navArgs()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -37,14 +30,18 @@ class AppPermissionDialogFragment(private val requestedPermissions: Array<String
         Timber.d("onViewCreated() called")
         view.findViewById<AppCompatTextView>(R.id.title)
             .setText(R.string.app_info_requested_permissions_dialog_title)
-        view.findViewById<RecyclerView>(R.id.recyclerview).adapter = StringAdapter(permissions)
+
+        args.app.requestedPermissions.let {
+            val permissions = processPermissions(it)
+            view.findViewById<RecyclerView>(R.id.recyclerview).adapter = StringAdapter(permissions)
+        }
     }
 
     /**
      * Attempts to convert system permissions strings into something meaningful to the user.
      * Fallback is to just use the system strings.
      */
-    private fun processPermissions(): Array<String> {
+    private fun processPermissions(requestedPermissions: Array<String>): Array<String> {
         val processedPermissions = ArrayList<String>()
         for (permission in requestedPermissions) {
             try {

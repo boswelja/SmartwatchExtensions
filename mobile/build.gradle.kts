@@ -28,7 +28,6 @@ android {
     }
 
     buildFeatures.viewBinding = true
-    buildFeatures.dataBinding = true
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
@@ -97,6 +96,7 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:$androidxLifecycle")
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:$androidxLifecycle")
     implementation("androidx.lifecycle:lifecycle-common-java8:$androidxLifecycle")
+    implementation("androidx.lifecycle:lifecycle-service:$androidxLifecycle")
     implementation("androidx.navigation:navigation-fragment-ktx:$androidxNavigation")
     implementation("androidx.navigation:navigation-ui-ktx:$androidxNavigation")
     implementation("androidx.paging:paging-runtime:$androidxPaging")

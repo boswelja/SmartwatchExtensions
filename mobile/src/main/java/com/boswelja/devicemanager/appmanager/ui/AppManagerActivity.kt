@@ -1,27 +1,29 @@
-/* Copyright (C) 2020 Jack Boswell <boswelja@outlook.com>
- *
- * This file is part of Wearable Extensions
- *
- * This file, and any part of the Wearable Extensions app/s cannot be copied and/or distributed
- * without permission from Jack Boswell (boswelja) <boswela@outlook.com>
- */
 package com.boswelja.devicemanager.appmanager.ui
 
 import android.os.Bundle
 import androidx.activity.viewModels
-import androidx.navigation.navArgs
+import androidx.navigation.findNavController
 import com.boswelja.devicemanager.R
-import com.boswelja.devicemanager.common.ui.activity.BaseToolbarActivity
-import com.boswelja.devicemanager.common.ui.fragment.LoadingFragment
+import com.boswelja.devicemanager.appmanager.State
+import com.boswelja.devicemanager.common.ui.activity.BaseWatchPickerActivity
 import com.boswelja.devicemanager.databinding.ActivityAppManagerBinding
+import com.google.android.material.snackbar.Snackbar
 import timber.log.Timber
 
-class AppManagerActivity : BaseToolbarActivity() {
+class AppManagerActivity : BaseWatchPickerActivity() {
 
-    private val args: AppManagerActivityArgs by navArgs()
     private val viewModel: AppManagerViewModel by viewModels()
+    private val navController by lazy { findNavController(R.id.nav_host_fragment) }
 
-    private val watchServiceLifecycleObserver by lazy { WatchServiceLifecycleObserver(viewModel) }
+    private val disconnectedSnackbar by lazy {
+        Snackbar.make(
+            findViewById(android.R.id.content),
+            R.string.app_manager_disconnected,
+            Snackbar.LENGTH_INDEFINITE
+        ).setAction(R.string.button_retry) {
+            viewModel.startAppManagerService()
+        }
+    }
 
     private lateinit var binding: ActivityAppManagerBinding
 
@@ -32,41 +34,42 @@ class AppManagerActivity : BaseToolbarActivity() {
         binding = ActivityAppManagerBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        setupToolbar(
-            binding.toolbarLayout.toolbar,
-            showTitle = true,
-            showUpButton = true,
-            toolbarSubtitle = getString(R.string.app_manager_activity_subtitle, args.watchName)
-        )
+        setupWatchPickerSpinner(binding.toolbarLayout.toolbar, showUpButton = true)
 
-        viewModel.watchId = args.watchId
-
-        viewModel.allAppsList.observe(this) {
-            if (it.isNullOrEmpty()) {
-                showLoadingFragment()
-            } else {
-                showAppManagerFragment()
+        viewModel.state.observe(this) {
+            Timber.d("State = ${it.name}")
+            when (it) {
+                State.CONNECTING, State.LOADING_APPS -> showLoading()
+                State.READY -> showAppList()
+                State.DISCONNECTED -> notifyDisconnected()
+                State.ERROR -> showError()
+                else -> Timber.e("App Manager state is null")
             }
         }
-        lifecycle.addObserver(watchServiceLifecycleObserver)
     }
 
-    /** Shows a [LoadingFragment]. */
-    private fun showLoadingFragment() {
-        Timber.i("showLoadingFragment() called")
-        supportFragmentManager
-            .beginTransaction()
-            .replace(R.id.fragment_holder, LoadingFragment())
-            .commit()
+    private fun showLoading() {
+        Timber.i("showLoading() called")
+        if (navController.currentDestination?.id != R.id.loadingFragment) {
+            navController.navigate(R.id.to_loadingFragment)
+        }
     }
 
-    /** Shows the [AppManagerFragment]. */
-    private fun showAppManagerFragment() {
-        Timber.i("showAppManagerFragment() called")
-        supportFragmentManager
-            .beginTransaction()
-            .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)
-            .replace(R.id.fragment_holder, AppManagerFragment())
-            .commit()
+    private fun showError() {
+        Timber.i("showError() called")
+        if (navController.currentDestination?.id != R.id.errorFragment) {
+            navController.navigate(R.id.to_errorFragment)
+        }
+    }
+
+    private fun showAppList() {
+        Timber.i("showAppList() called")
+        if (navController.currentDestination?.id == R.id.loadingFragment) {
+            navController.navigate(R.id.loadingFragment_to_appListFragment)
+        }
+    }
+
+    private fun notifyDisconnected() {
+        disconnectedSnackbar.show()
     }
 }

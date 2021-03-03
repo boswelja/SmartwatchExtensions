@@ -19,5 +19,5 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
--keep class com.boswelja.devicemanager.common.appmanager.AppPackageInfo { *; }
--keep class com.boswelja.devicemanager.common.appmanager.AppPackageInfoList { *; }
+-keep class com.boswelja.devicemanager.common.appmanager.App { *; }
+-keep class com.boswelja.devicemanager.common.SerializableBitmap { *; }

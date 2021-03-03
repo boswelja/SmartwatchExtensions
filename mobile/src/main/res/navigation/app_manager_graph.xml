@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/app_manager_graph"
+    app:startDestination="@id/loadingFragment">
+
+    <fragment
+        android:id="@+id/loadingFragment"
+        android:name="com.boswelja.devicemanager.appmanager.ui.LoadingFragment"
+        tools:layout="@layout/common_fragment_loading" >
+        <action
+            android:id="@+id/loadingFragment_to_appListFragment"
+            app:destination="@id/appListFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popUpTo="@id/app_manager_graph"
+            app:popUpToInclusive="true" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/appListFragment"
+        android:name="com.boswelja.devicemanager.appmanager.ui.AppListFragment"
+        tools:layout="@layout/fragment_app_list" >
+        <action
+            android:id="@+id/appListFragment_to_appInfoFragment"
+            app:destination="@id/appInfoFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/errorFragment"
+        android:name="com.boswelja.devicemanager.appmanager.ui.ErrorFragment"
+        tools:layout="@layout/fragment_app_manager_error" />
+
+    <dialog
+        android:id="@+id/appPermissionDialogFragment"
+        android:name="com.boswelja.devicemanager.appmanager.ui.AppPermissionDialogFragment"
+        tools:layout="@layout/bottom_sheet_list">
+        <argument
+            android:name="app"
+            app:argType="com.boswelja.devicemanager.common.appmanager.App" />
+    </dialog>
+
+    <fragment
+        android:id="@+id/appInfoFragment"
+        android:name="com.boswelja.devicemanager.appmanager.ui.AppInfoFragment"
+        tools:layout="@layout/fragment_app_manager_info">
+        <argument
+            android:name="app"
+            app:argType="com.boswelja.devicemanager.common.appmanager.App" />
+        <action
+            android:id="@+id/appInfoFragment_to_appPermissionDialogFragment"
+            app:destination="@id/appPermissionDialogFragment" />
+    </fragment>
+
+    <action
+        android:id="@+id/to_errorFragment"
+        app:enterAnim="@anim/slide_in_right"
+        app:exitAnim="@anim/slide_out_left"
+        app:destination="@id/errorFragment"
+        app:popUpTo="@id/app_manager_graph"
+        app:popUpToInclusive="true" />
+
+    <action
+        android:id="@+id/to_loadingFragment"
+        app:destination="@id/loadingFragment"
+        app:enterAnim="@anim/slide_in_right"
+        app:exitAnim="@anim/slide_out_left"
+        app:popUpTo="@id/app_manager_graph"
+        app:popUpToInclusive="true" />
+
+</navigation>

@@ -1,158 +1,48 @@
-/* Copyright (C) 2020 Jack Boswell <boswelja@outlook.com>
- *
- * This file is part of Wearable Extensions
- *
- * This file, and any part of the Wearable Extensions app/s cannot be copied and/or distributed
- * without permission from Jack Boswell (boswelja) <boswela@outlook.com>
- */
 package com.boswelja.devicemanager.appmanager.ui
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations
-import com.boswelja.devicemanager.R
-import com.boswelja.devicemanager.appmanager.ui.adapter.Item
-import com.boswelja.devicemanager.common.appmanager.AppPackageInfo
-import com.boswelja.devicemanager.common.appmanager.AppPackageInfoList
-import com.boswelja.devicemanager.common.appmanager.References
-import com.google.android.gms.wearable.MessageClient
-import com.google.android.gms.wearable.Wearable
-import java.io.InvalidClassException
-import timber.log.Timber
+import com.boswelja.devicemanager.appmanager.AppManager
+import com.boswelja.devicemanager.appmanager.State
+import com.boswelja.devicemanager.common.appmanager.App
+import java.text.SimpleDateFormat
+import java.util.Locale
 
-class AppManagerViewModel @JvmOverloads constructor(
+class AppManagerViewModel internal constructor(
     application: Application,
-    private val messageClient: MessageClient = Wearable.getMessageClient(application)
+    private val appManager: AppManager
 ) : AndroidViewModel(application) {
 
-    private val messageListener =
-        MessageClient.OnMessageReceivedListener {
-            Timber.i("Received a message")
-            when (it.path) {
-                References.GET_ALL_PACKAGES -> {
-                    Timber.i("Updating app list")
-                    try {
-                        val appPackageInfoList = AppPackageInfoList.fromByteArray(it.data)
-                        _allAppsList.postValue(appPackageInfoList)
-                    } catch (e: InvalidClassException) {
-                        Timber.w("App list version mismatch")
-                    }
-                }
-                References.PACKAGE_ADDED -> {
-                    Timber.i("Adding app to list")
-                    val appPackageInfo = AppPackageInfo.fromByteArray(it.data)
-                    _allAppsList.value?.let { appList ->
-                        appList.add(appPackageInfo)
-                        _allAppsList.postValue(appList)
-                    }
-                }
-                References.PACKAGE_UPDATED -> {
-                    Timber.i("Updating app in list")
-                    val appPackageInfo = AppPackageInfo.fromByteArray(it.data)
-                    _allAppsList.value?.let { allApps ->
-                        allApps.removeAll { app -> app.packageName == appPackageInfo.packageName }
-                        allApps.add(appPackageInfo)
-                        _allAppsList.postValue(allApps)
-                    }
-                }
-                References.PACKAGE_REMOVED -> {
-                    Timber.i("Removing app from list")
-                    val appPackageName = String(it.data, Charsets.UTF_8)
-                    val appList = _allAppsList.value
-                    appList?.let { list ->
-                        list.removeAll { app -> app.packageName == appPackageName }
-                        _allAppsList.postValue(list)
-                    }
-                }
-            }
-        }
+    @Suppress("unused")
+    constructor(application: Application) : this(application, AppManager(application))
 
-    private val _allAppsList = MutableLiveData<AppPackageInfoList?>(null)
-    val allAppsList: LiveData<AppPackageInfoList?>
-        get() = _allAppsList
+    private val dateFormatter = SimpleDateFormat("EE, dd MMM yyyy, h:mm aa", Locale.getDefault())
 
-    val adapterList: LiveData<List<Item>?> =
-        Transformations.map(allAppsList) { if (it != null) separateAppListToSections(it) else null }
+    val state: LiveData<State>
+        get() = appManager.state
 
-    private var isServiceRunning: Boolean = false
+    val apps: LiveData<List<App>>
+        get() = appManager.apps
 
-    var canStopAppManagerService: Boolean = true
-    var watchId: String? = null
+    val progress: LiveData<Int>
+        get() = appManager.progress
 
-    init {
-        messageClient.addListener(messageListener)
-    }
+    /**
+     * Format a given date in milliseconds to the correct formet for display.
+     * @param dateMillis The date in milliseconds to convert.
+     * @return The formatted date string.
+     */
+    fun formatDate(dateMillis: Long): String = dateFormatter.format(dateMillis)
+
+    fun startAppManagerService() = appManager.startAppManagerService()
+
+    fun sendOpenRequest(app: App) = appManager.sendOpenRequestMessage(app)
+
+    fun sendUninstallRequest(app: App) = appManager.sendUninstallRequestMessage(app)
 
     override fun onCleared() {
         super.onCleared()
-        messageClient.removeListener(messageListener)
-    }
-
-    /** Start the App Manager service on the connected watch. */
-    fun startAppManagerService() {
-        Timber.i("startAppManagerService() called")
-        if (!isServiceRunning) {
-            Timber.i("Trying to start App Manager service")
-            isServiceRunning = true
-            messageClient.sendMessage(watchId!!, References.START_SERVICE, null)
-        }
-    }
-
-    /** Stop the App Manager service on the connected watch. */
-    fun tryStopAppManagerService() {
-        Timber.i("stopAppManagerService() called")
-        if (isServiceRunning && canStopAppManagerService) {
-            Timber.i("Trying to stop App Manager service")
-            isServiceRunning = false
-            messageClient.sendMessage(watchId!!, References.STOP_SERVICE, null)
-        }
-    }
-
-    fun getAppDetails(appInfo: Item.App): AppPackageInfo? {
-        return _allAppsList.value?.first { it.packageName == appInfo.packageName }
-    }
-
-    /**
-     * Converts an [AppPackageInfoList] into an [ArrayList] that can be used by
-     * [com.boswelja.devicemanager.appmanager.ui.adapter.AppsAdapter].
-     * @param appPackageInfoList The [AppPackageInfoList] to convert.
-     * @return The newly created [ArrayList].
-     */
-    private fun separateAppListToSections(appPackageInfoList: AppPackageInfoList): List<Item> {
-        val context = getApplication<Application>()
-        val result = ArrayList<Item>()
-        val userApps = appPackageInfoList.filterNot { it.isSystemApp }.sortedBy { it.packageLabel }
-        result.add(
-            Item.Header(context.getString(R.string.app_manager_section_user_apps), 0.toString())
-        )
-        result.addAll(
-            userApps.map {
-                Item.App(
-                    it.packageIcon?.bitmap,
-                    it.packageName,
-                    it.packageLabel,
-                    it.versionName ?: it.versionCode.toString()
-                )
-            }
-        )
-
-        val systemApps = appPackageInfoList.filter { it.isSystemApp }.sortedBy { it.packageLabel }
-        result.add(
-            Item.Header(context.getString(R.string.app_manager_section_system_apps), 1.toString())
-        )
-        result.addAll(
-            systemApps.map {
-                Item.App(
-                    it.packageIcon?.bitmap,
-                    it.packageName,
-                    it.packageLabel,
-                    it.versionName ?: it.versionCode.toString()
-                )
-            }
-        )
-
-        return result
+        appManager.destroy()
     }
 }

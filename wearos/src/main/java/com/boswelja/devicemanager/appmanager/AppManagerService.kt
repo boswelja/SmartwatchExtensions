@@ -10,119 +10,127 @@ package com.boswelja.devicemanager.appmanager
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
-import android.app.Service
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.SharedPreferences
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
-import android.os.IBinder
 import androidx.core.app.NotificationCompat
+import androidx.core.content.getSystemService
+import androidx.lifecycle.LifecycleService
 import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.R
-import com.boswelja.devicemanager.common.appmanager.AppPackageInfo
-import com.boswelja.devicemanager.common.appmanager.AppPackageInfoList
-import com.boswelja.devicemanager.common.appmanager.References.ERROR
-import com.boswelja.devicemanager.common.appmanager.References.GET_ALL_PACKAGES
-import com.boswelja.devicemanager.common.appmanager.References.PACKAGE_ADDED
-import com.boswelja.devicemanager.common.appmanager.References.PACKAGE_REMOVED
-import com.boswelja.devicemanager.common.appmanager.References.PACKAGE_UPDATED
-import com.boswelja.devicemanager.common.appmanager.References.REQUEST_OPEN_PACKAGE
-import com.boswelja.devicemanager.common.appmanager.References.REQUEST_UNINSTALL_PACKAGE
-import com.boswelja.devicemanager.common.appmanager.References.STOP_SERVICE
+import com.boswelja.devicemanager.common.Extensions.toByteArray
+import com.boswelja.devicemanager.common.LifecycleAwareTimer
+import com.boswelja.devicemanager.common.appmanager.App
+import com.boswelja.devicemanager.common.appmanager.Messages.EXPECTED_APP_COUNT
+import com.boswelja.devicemanager.common.appmanager.Messages.PACKAGE_ADDED
+import com.boswelja.devicemanager.common.appmanager.Messages.PACKAGE_REMOVED
+import com.boswelja.devicemanager.common.appmanager.Messages.PACKAGE_UPDATED
+import com.boswelja.devicemanager.common.appmanager.Messages.REQUEST_OPEN_PACKAGE
+import com.boswelja.devicemanager.common.appmanager.Messages.REQUEST_UNINSTALL_PACKAGE
+import com.boswelja.devicemanager.common.appmanager.Messages.SERVICE_RUNNING
+import com.boswelja.devicemanager.common.appmanager.Messages.STOP_SERVICE
 import com.boswelja.devicemanager.phoneconnectionmanager.References.PHONE_ID_KEY
 import com.google.android.gms.wearable.MessageClient
 import com.google.android.gms.wearable.Wearable
 import timber.log.Timber
 
-class AppManagerService : Service() {
+class AppManagerService : LifecycleService() {
 
-    private val sharedPreferences by lazy { PreferenceManager.getDefaultSharedPreferences(this) }
-    private val messageClient by lazy { Wearable.getMessageClient(this) }
+    private lateinit var sharedPreferences: SharedPreferences
+    private lateinit var messageClient: MessageClient
 
     private var phoneId: String? = null
 
-    private val messageReceiver =
-        MessageClient.OnMessageReceivedListener {
-            when (it.path) {
-                REQUEST_UNINSTALL_PACKAGE -> {
-                    getPackageNameFromBytes(it.data)?.also { packageName ->
-                        requestUninstallPackage(packageName)
-                    }
-                }
-                REQUEST_OPEN_PACKAGE -> {
-                    getPackageNameFromBytes(it.data)?.also { packageName ->
-                        openPackage(packageName)
-                    }
-                }
-                STOP_SERVICE -> {
-                    stopService()
+    private val serviceRunningNotifier = LifecycleAwareTimer(10) {
+        Timber.d("Notifying service running")
+        messageClient.sendMessage(phoneId!!, SERVICE_RUNNING, null)
+    }
+
+    private val messageReceiver = MessageClient.OnMessageReceivedListener {
+        when (it.path) {
+            REQUEST_UNINSTALL_PACKAGE -> {
+                getPackageNameFromBytes(it.data)?.also { packageName ->
+                    requestUninstallPackage(packageName)
                 }
             }
+            REQUEST_OPEN_PACKAGE -> {
+                getPackageNameFromBytes(it.data)?.also { packageName ->
+                    openPackage(packageName)
+                }
+            }
+            STOP_SERVICE -> {
+                stopService()
+            }
         }
+    }
 
-    private val packageChangeReceiver =
-        object : BroadcastReceiver() {
-            override fun onReceive(context: Context?, intent: Intent?) {
-                Timber.d("onReceive($context, $intent) called")
-                intent?.data?.let { data ->
-                    val isReplacingPackage = intent.getBooleanExtra(Intent.EXTRA_REPLACING, false)
-                    when (intent.action) {
-                        Intent.ACTION_PACKAGE_ADDED -> {
-                            val packageName = data.encodedSchemeSpecificPart
-                            AppPackageInfo(
-                                packageManager, packageManager.getPackageInfo(packageName, 0)
-                            )
-                                .also {
-                                    if (isReplacingPackage) {
-                                        sendAppUpdatedMessage(it)
-                                    } else {
-                                        sendAppAddedMessage(it)
-                                    }
-                                }
-                        }
-                        Intent.ACTION_PACKAGE_REMOVED -> {
-                            val packageName = data.encodedSchemeSpecificPart
-                            if (!isReplacingPackage) {
-                                sendAppRemovedMessage(packageName)
+    private val packageChangeReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            Timber.d("onReceive($context, $intent) called")
+            intent?.data?.let { data ->
+                val isReplacingPackage = intent.getBooleanExtra(Intent.EXTRA_REPLACING, false)
+                val packageName = data.encodedSchemeSpecificPart
+                when (intent.action) {
+                    Intent.ACTION_PACKAGE_ADDED -> {
+                        App(
+                            packageManager, packageManager.getPackageInfo(packageName, 0)
+                        ).also {
+                            if (isReplacingPackage) {
+                                sendAppUpdatedMessage(it)
                             } else {
-                                Timber.i(
-                                    "Package removed, but system indicated it's being replaced."
-                                )
+                                sendAppAddedMessage(it)
                             }
                         }
-                        else -> Timber.w("Unknown intent received")
                     }
+                    Intent.ACTION_PACKAGE_REMOVED -> {
+                        if (!isReplacingPackage) {
+                            sendAppRemovedMessage(packageName)
+                        } else {
+                            Timber.i(
+                                "Package removed, but system indicated it's being replaced."
+                            )
+                        }
+                    }
+                    else -> Timber.w("Unknown intent received")
                 }
             }
         }
-
-    override fun onBind(intent: Intent?): IBinder? = null
+    }
 
     override fun onCreate() {
         super.onCreate()
+
+        Timber.d("onCreate() called")
+
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
+        messageClient = Wearable.getMessageClient(this)
 
         phoneId = sharedPreferences.getString(PHONE_ID_KEY, "")
 
         messageClient.addListener(messageReceiver)
 
-        IntentFilter()
-            .apply {
-                addAction(Intent.ACTION_PACKAGE_ADDED)
-                addAction(Intent.ACTION_PACKAGE_REMOVED)
-                addDataScheme("package")
-            }
-            .also { registerReceiver(packageChangeReceiver, it) }
+        IntentFilter().apply {
+            addAction(Intent.ACTION_PACKAGE_ADDED)
+            addAction(Intent.ACTION_PACKAGE_REMOVED)
+            addDataScheme("package")
+        }.also { registerReceiver(packageChangeReceiver, it) }
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        createNotification().also { startForeground(APP_MANAGER_NOTI_ID, it) }
-        sendAllAppsMessage()
-        return START_NOT_STICKY
+        Timber.d("onStartCommand received")
+        startForeground(APP_MANAGER_NOTI_ID, createNotification())
+        lifecycle.removeObserver(serviceRunningNotifier)
+        sendAllApps()
+        return super.onStartCommand(intent, flags, startId)
     }
 
     override fun onDestroy() {
+        Timber.d("onDestroy() called")
         unregisterReceiver(packageChangeReceiver)
         messageClient.removeListener(messageReceiver)
         super.onDestroy()
@@ -140,15 +148,14 @@ class AppManagerService : Service() {
      */
     private fun createNotification(): Notification {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val notificationManager =
-                getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-            if (notificationManager.getNotificationChannel(APP_MANAGER_NOTI_CHANNEL_ID) == null) {
+            val notificationManager = getSystemService<NotificationManager>()
+            if (notificationManager?.getNotificationChannel(APP_MANAGER_NOTI_CHANNEL_ID) == null) {
                 NotificationChannel(
                     APP_MANAGER_NOTI_CHANNEL_ID,
                     getString(R.string.app_manager_noti_channel_title),
                     NotificationManager.IMPORTANCE_LOW
                 )
-                    .also { notificationManager.createNotificationChannel(it) }
+                    .also { notificationManager?.createNotificationChannel(it) }
             }
         }
         return NotificationCompat.Builder(this, APP_MANAGER_NOTI_CHANNEL_ID)
@@ -173,40 +180,39 @@ class AppManagerService : Service() {
 
     /**
      * Sends a message to the phone informing of a package install.
-     * @param packageInfo The [AppPackageInfo] for the package that was installed.
+     * @param packageInfo The [App] for the package that was installed.
      */
-    private fun sendAppAddedMessage(packageInfo: AppPackageInfo) {
+    private fun sendAppAddedMessage(packageInfo: App) {
         val data = packageInfo.toByteArray()
         messageClient.sendMessage(phoneId!!, PACKAGE_ADDED, data)
     }
 
     /**
      * Sends a message to the phone informing of a package update.
-     * @param packageInfo The [AppPackageInfo] for the package that was installed.
+     * @param packageInfo The [App] for the package that was installed.
      */
-    private fun sendAppUpdatedMessage(packageInfo: AppPackageInfo) {
+    private fun sendAppUpdatedMessage(packageInfo: App) {
         val data = packageInfo.toByteArray()
         messageClient.sendMessage(phoneId!!, PACKAGE_UPDATED, data)
     }
 
-    /** Sends a message to the phone informing an error */
-    private fun sendErrorMessage() {
-        messageClient.sendMessage(phoneId!!, ERROR, null)
-        stopService()
-    }
-
     /**
-     * Sends a message to the phone containing an [AppPackageInfoList] of all packages installed.
+     * Starts sending all apps to the connected phone.
      */
-    private fun sendAllAppsMessage() {
-        try {
-            val packagesToSend = AppPackageInfoList(packageManager)
-            val data = packagesToSend.toByteArray()
-            messageClient.sendMessage(phoneId!!, GET_ALL_PACKAGES, data)
-        } catch (e: IllegalStateException) {
-            e.printStackTrace()
-            sendErrorMessage()
+    private fun sendAllApps() {
+        val allPackages = packageManager.getInstalledPackages(PackageManager.GET_PERMISSIONS).map {
+            App(packageManager, it)
         }
+        // Send expected app count to the phone
+        val data = allPackages.count().toByteArray()
+        messageClient.sendMessage(phoneId!!, EXPECTED_APP_COUNT, data)
+
+        // Start sending apps
+        allPackages.forEach {
+            messageClient.sendMessage(phoneId!!, PACKAGE_ADDED, it.toByteArray())
+        }
+
+        lifecycle.addObserver(serviceRunningNotifier)
     }
 
     /**
@@ -242,13 +248,11 @@ class AppManagerService : Service() {
      */
     private fun requestUninstallPackage(packageName: String) {
         if (isPackageInstalled(packageName)) {
-            Intent()
-                .apply {
-                    action = Intent.ACTION_DELETE
-                    data = Uri.fromParts("package", packageName, null)
-                    flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                }
-                .also { startActivity(it) }
+            Intent().apply {
+                action = Intent.ACTION_DELETE
+                data = Uri.fromParts("package", packageName, null)
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK
+            }.also { startActivity(it) }
         } else {
             sendAppRemovedMessage(packageName)
         }
@@ -259,8 +263,7 @@ class AppManagerService : Service() {
      * @param packageName The name of the package to try open.
      */
     private fun openPackage(packageName: String) {
-        packageManager
-            .getLaunchIntentForPackage(packageName)
+        packageManager.getLaunchIntentForPackage(packageName)
             ?.apply { flags = Intent.FLAG_ACTIVITY_NEW_TASK }
             ?.also { startActivity(it) }
     }

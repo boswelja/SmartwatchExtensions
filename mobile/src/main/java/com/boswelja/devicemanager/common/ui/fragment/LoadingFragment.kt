@@ -11,23 +11,48 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.widget.AppCompatTextView
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import com.boswelja.devicemanager.R
+import com.boswelja.devicemanager.databinding.CommonFragmentLoadingBinding
 import timber.log.Timber
 
-class LoadingFragment : Fragment() {
+open class LoadingFragment : Fragment() {
+
+    private lateinit var binding: CommonFragmentLoadingBinding
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? = inflater.inflate(R.layout.common_fragment_loading, container, false)
+    ): View {
+        binding = CommonFragmentLoadingBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        view.findViewById<AppCompatTextView>(R.id.loading_text)!!.apply {
-            text = getString(R.string.dnd_sync_helper_loading_text)
-        }
+        binding.loadingText.text = getString(R.string.dnd_sync_helper_loading_text)
         Timber.i("Successfully created")
+    }
+
+    private fun setProgressIndeterninate(isIndeterminate: Boolean) {
+        if (binding.progressBar.isIndeterminate != isIndeterminate) {
+            binding.progressBar.isVisible = false
+            binding.progressBar.isIndeterminate = isIndeterminate
+            binding.progressBar.isVisible = true
+        }
+    }
+
+    /**
+     * Set the progress displayed to the user. Use -1 to set indeterminate.
+     * @param progress The progress to display.
+     */
+    fun setProgress(progress: Int) {
+        if (progress > -1) {
+            binding.progressBar.progress = progress
+            setProgressIndeterninate(false)
+        } else {
+            setProgressIndeterninate(true)
+        }
     }
 }

@@ -1,7 +1,7 @@
+Additions:
+App Manager now shows initial loading progress
+App Manager detects when your watch is disconnected
+
 Changes & Fixes:
-Reworked the 'Manage Space' screen
-Reworked the 'Watch Info' screen
-Reworked the underlying watch connection interface
-Made some improvements to the way widgets store and retrievve their date
-Made some improvements to the way analytics events are logged
+App Manager got some UI tweaks
 You should see stability improvements over the next few releases

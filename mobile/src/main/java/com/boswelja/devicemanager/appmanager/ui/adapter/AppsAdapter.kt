@@ -1,60 +1,25 @@
-/* Copyright (C) 2020 Jack Boswell <boswelja@outlook.com>
- *
- * This file is part of Wearable Extensions
- *
- * This file, and any part of the Wearable Extensions app/s cannot be copied and/or distributed
- * without permission from Jack Boswell (boswelja) <boswela@outlook.com>
- */
 package com.boswelja.devicemanager.appmanager.ui.adapter
 
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
-import androidx.recyclerview.widget.RecyclerView
 import com.boswelja.devicemanager.R
-import com.boswelja.devicemanager.common.recyclerview.adapter.ItemClickCallback
-import com.boswelja.devicemanager.common.recyclerview.item.IconTwoLineViewHolder
-import com.boswelja.devicemanager.common.recyclerview.item.SectionHeaderViewHolder
+import com.boswelja.devicemanager.common.appmanager.App
+import com.boswelja.devicemanager.common.ui.IconTwoLineViewHolder
 
-class AppsAdapter(private val itemClickCallback: ItemClickCallback<Item>) :
-    ListAdapter<Item, RecyclerView.ViewHolder>(AppDiffCallback()) {
+class AppsAdapter(private val clickCallback: (App) -> Unit) :
+    ListAdapter<App, IconTwoLineViewHolder>(AppDiffCallback()) {
 
-    override fun getItemViewType(position: Int): Int {
-        return when (getItem(position)) {
-            is Item.Header -> TYPE_HEADER
-            else -> TYPE_APP
-        }
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): IconTwoLineViewHolder {
+        return IconTwoLineViewHolder.from(parent)
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        return when (viewType) {
-            TYPE_HEADER -> SectionHeaderViewHolder.from(parent)
-            else -> IconTwoLineViewHolder.from(parent)
+    override fun onBindViewHolder(holder: IconTwoLineViewHolder, position: Int) {
+        val app = getItem(position)
+        if (app.icon?.bitmap != null) {
+            holder.bind(app.icon!!.bitmap, app.label, app.version)
+        } else {
+            holder.bind(R.drawable.android_head, app.label, app.version)
         }
-    }
-
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        val item = getItem(position)
-        when (holder) {
-            is SectionHeaderViewHolder -> {
-                if (item is Item.Header) {
-                    holder.bind(item.label, position != 0)
-                }
-            }
-            is IconTwoLineViewHolder -> {
-                if (item is Item.App) {
-                    if (item.icon != null) {
-                        holder.bind(item.icon, item.label, item.versionText)
-                    } else {
-                        holder.bind(R.drawable.android_head, item.label, item.versionText)
-                    }
-                }
-            }
-        }
-        holder.itemView.setOnClickListener { itemClickCallback.onClick(item) }
-    }
-
-    companion object {
-        private const val TYPE_APP = 0
-        private const val TYPE_HEADER = 1
+        holder.itemView.setOnClickListener { clickCallback(app) }
     }
 }

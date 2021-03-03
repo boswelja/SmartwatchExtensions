@@ -7,9 +7,7 @@
  */
 package com.boswelja.devicemanager.common.appmanager
 
-object References {
-
-    const val GET_ALL_PACKAGES = "/app_manager_request_all_packages"
+object Messages {
 
     const val PACKAGE_ADDED = "/app_manager_package_added"
     const val PACKAGE_REMOVED = "/app_manager_package_removed"
@@ -21,5 +19,7 @@ object References {
     const val START_SERVICE = "/start_app_manager_service"
     const val STOP_SERVICE = "/stop_app_manager_service"
 
-    const val ERROR = "/app_manager_error"
+    const val SERVICE_RUNNING = "/app_manager_running"
+
+    const val EXPECTED_APP_COUNT = "/app_manager_expected_count"
 }

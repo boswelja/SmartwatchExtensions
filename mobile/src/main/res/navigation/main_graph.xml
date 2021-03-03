@@ -87,17 +87,7 @@
 
     <activity
         android:id="@+id/appManagerActivity"
-        android:name="com.boswelja.devicemanager.appmanager.ui.AppManagerActivity"
-        android:label="AppManagerActivity">
-
-        <argument
-            android:name="watchId"
-            app:argType="string" />
-
-        <argument
-            android:name="watchName"
-            app:argType="string" />
-    </activity>
+        android:name="com.boswelja.devicemanager.appmanager.ui.AppManagerActivity" />
 
     <activity
         android:id="@+id/messageHistoryActivity"

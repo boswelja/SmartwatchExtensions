@@ -18,7 +18,7 @@ import com.boswelja.devicemanager.appmanager.AppManagerService
 import com.boswelja.devicemanager.capability.CapabilityUpdater
 import com.boswelja.devicemanager.common.Compat
 import com.boswelja.devicemanager.common.Extensions.toByteArray
-import com.boswelja.devicemanager.common.appmanager.References
+import com.boswelja.devicemanager.common.appmanager.Messages
 import com.boswelja.devicemanager.common.connection.Messages.CLEAR_PREFERENCES
 import com.boswelja.devicemanager.common.connection.Messages.REQUEST_APP_VERSION
 import com.boswelja.devicemanager.common.connection.Messages.REQUEST_UPDATE_CAPABILITIES
@@ -28,10 +28,12 @@ import com.boswelja.devicemanager.common.dndsync.References.REQUEST_SDK_INT_PATH
 import com.google.android.gms.wearable.MessageEvent
 import com.google.android.gms.wearable.Wearable
 import com.google.android.gms.wearable.WearableListenerService
+import timber.log.Timber
 
 class MessageReceiver : WearableListenerService() {
 
     override fun onMessageReceived(messageEvent: MessageEvent?) {
+        Timber.d("Received ${messageEvent?.path}")
         when (messageEvent?.path) {
             REQUEST_INTERRUPT_FILTER_ACCESS_STATUS_PATH -> {
                 val hasDnDAccess: Boolean = Compat.canSetDnD(this)
@@ -52,7 +54,7 @@ class MessageReceiver : WearableListenerService() {
                         )
                     )
             }
-            References.START_SERVICE -> {
+            Messages.START_SERVICE -> {
                 val intent = Intent(this, AppManagerService::class.java)
                 Compat.startForegroundService(this, intent)
             }

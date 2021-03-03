@@ -22,7 +22,6 @@ android {
     }
 
     buildFeatures.viewBinding = true
-    buildFeatures.dataBinding = true
     buildTypes {
         getByName("release") {
             isMinifyEnabled = true

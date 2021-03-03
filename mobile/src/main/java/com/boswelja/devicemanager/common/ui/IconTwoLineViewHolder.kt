@@ -5,14 +5,14 @@
  * This file, and any part of the Wearable Extensions app/s cannot be copied and/or distributed
  * without permission from Jack Boswell (boswelja) <boswela@outlook.com>
  */
-package com.boswelja.devicemanager.common.recyclerview.item
+package com.boswelja.devicemanager.common.ui
 
 import android.graphics.Bitmap
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.annotation.DrawableRes
 import androidx.recyclerview.widget.RecyclerView
-import com.boswelja.devicemanager.common.databinding.RecyclerviewItemIconTwoLineBinding
+import com.boswelja.devicemanager.databinding.RecyclerviewItemIconTwoLineBinding
 
 open class IconTwoLineViewHolder(private val binding: RecyclerviewItemIconTwoLineBinding) :
     RecyclerView.ViewHolder(binding.root) {

@@ -11,7 +11,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import com.android.billingclient.api.SkuDetails
 import com.boswelja.devicemanager.R
-import com.boswelja.devicemanager.common.recyclerview.item.IconTwoLineViewHolder
+import com.boswelja.devicemanager.common.ui.IconTwoLineViewHolder
 import com.boswelja.devicemanager.donate.SkuDetailDiffer
 
 class DonateAdapter(private val clickCallback: (sku: SkuDetails) -> Unit) :
