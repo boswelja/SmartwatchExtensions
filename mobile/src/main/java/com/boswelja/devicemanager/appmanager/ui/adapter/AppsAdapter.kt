@@ -4,7 +4,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.appmanager.App
-import com.boswelja.devicemanager.common.recyclerview.item.IconTwoLineViewHolder
+import com.boswelja.devicemanager.common.ui.IconTwoLineViewHolder
 
 class AppsAdapter(private val clickCallback: (App) -> Unit) :
     ListAdapter<App, IconTwoLineViewHolder>(AppDiffCallback()) {
