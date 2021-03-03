@@ -5,13 +5,13 @@
  * This file, and any part of the Wearable Extensions app/s cannot be copied and/or distributed
  * without permission from Jack Boswell (boswelja) <boswela@outlook.com>
  */
-package com.boswelja.devicemanager.common.recyclerview.item
+package com.boswelja.devicemanager.common.ui
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.boswelja.devicemanager.common.databinding.RecyclerviewSectionHeaderBinding
+import com.boswelja.devicemanager.databinding.RecyclerviewSectionHeaderBinding
 
 open class SectionHeaderViewHolder(private val binding: RecyclerviewSectionHeaderBinding) :
     RecyclerView.ViewHolder(binding.root) {
