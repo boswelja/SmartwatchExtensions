@@ -81,7 +81,7 @@ class WatchInfoViewModel internal constructor(
     fun forgetWatch() {
         _watch.value?.let { watch ->
             viewModelScope.launch(dispatcher) {
-                watchManager.forgetWatch(watch)
+                watchManager.forgetWatch(getApplication(), watch)
             }
         }
     }
@@ -92,7 +92,7 @@ class WatchInfoViewModel internal constructor(
     fun resetWatchPreferences() {
         _watch.value?.let { watch ->
             viewModelScope.launch(dispatcher) {
-                watchManager.resetWatchPreferences(watch)
+                watchManager.resetWatchPreferences(getApplication(), watch)
             }
         }
     }

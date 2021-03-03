@@ -25,4 +25,7 @@ interface WidgetDao {
 
     @Query("DELETE FROM watch_widget_associations WHERE widgetId = :widgetId")
     fun removeWidget(widgetId: Int)
+
+    @Query("DELETE FROM watch_widget_associations WHERE watch_id = :watchId")
+    fun removeWidgetsFor(watchId: String)
 }

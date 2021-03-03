@@ -10,7 +10,7 @@ import androidx.preference.PreferenceManager
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.boswelja.devicemanager.analytics.Analytics
-import com.boswelja.devicemanager.batterysync.database.WatchBatteryStatsDatabase
+import com.boswelja.devicemanager.common.connection.Messages.REQUEST_UPDATE_CAPABILITIES
 import com.boswelja.devicemanager.getOrAwaitValue
 import com.boswelja.devicemanager.watchmanager.item.Watch
 import com.google.common.truth.Truth.assertThat
@@ -46,7 +46,6 @@ class WatchManagerTest {
 
     @RelaxedMockK private lateinit var repository: WatchRepository
     @RelaxedMockK private lateinit var analytics: Analytics
-    @RelaxedMockK private lateinit var batteryStatsDatabase: WatchBatteryStatsDatabase
 
     private lateinit var coroutineScope: CoroutineScope
     private lateinit var sharedPreferences: SharedPreferences
@@ -118,7 +117,7 @@ class WatchManagerTest {
     fun `requestRefreshCapabilities calls repository`(): Unit = runBlocking {
         watchManager = getWatchManager()
         watchManager.requestRefreshCapabilities(dummyWatch1)
-        coVerify(exactly = 1) { repository.requestRefreshCapabilities(dummyWatch1) }
+        coVerify(exactly = 1) { repository.sendMessage(dummyWatch1, REQUEST_UPDATE_CAPABILITIES) }
     }
 
     @Test
@@ -132,7 +131,7 @@ class WatchManagerTest {
     @Test
     fun `forgetWatch calls repository and logs analytics event`(): Unit = runBlocking {
         watchManager = getWatchManager()
-        watchManager.forgetWatch(dummyWatch1)
+        watchManager.forgetWatch(ApplicationProvider.getApplicationContext(), dummyWatch1)
         verify(exactly = 1) { analytics.logWatchRemoved() }
         coVerify(exactly = 1) { repository.resetWatch(dummyWatch1) }
     }
@@ -149,7 +148,7 @@ class WatchManagerTest {
     @Test
     fun `resetWatchPreferences calls repository`(): Unit = runBlocking {
         watchManager = getWatchManager()
-        watchManager.resetWatchPreferences(dummyWatch1)
+        watchManager.resetWatchPreferences(ApplicationProvider.getApplicationContext(), dummyWatch1)
         coVerify(exactly = 1) { repository.resetWatchPreferences(dummyWatch1) }
     }
 
@@ -164,7 +163,6 @@ class WatchManagerTest {
         return WatchManager(
             sharedPreferences,
             repository,
-            batteryStatsDatabase,
             analytics,
             coroutineScope
         )
