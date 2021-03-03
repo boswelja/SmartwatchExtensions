@@ -10,7 +10,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.RecyclerView
 import com.boswelja.devicemanager.R
-import com.boswelja.devicemanager.common.recyclerview.adapter.StringAdapter
+import com.boswelja.devicemanager.common.ui.adapter.StringAdapter
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import java.util.Locale
 import timber.log.Timber

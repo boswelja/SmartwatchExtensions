@@ -10,7 +10,7 @@ package com.boswelja.devicemanager.watchmanager.ui
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.boswelja.devicemanager.R
-import com.boswelja.devicemanager.common.recyclerview.item.IconOneLineViewHolder
+import com.boswelja.devicemanager.common.ui.IconOneLineViewHolder
 import com.boswelja.devicemanager.common.ui.SectionHeaderViewHolder
 import com.boswelja.devicemanager.common.ui.adapter.WatchAdapter
 import com.boswelja.devicemanager.watchmanager.item.Watch

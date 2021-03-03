@@ -5,7 +5,7 @@ import androidx.core.view.updatePaddingRelative
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import com.boswelja.devicemanager.common.connection.Capability
-import com.boswelja.devicemanager.common.recyclerview.item.OneLineViewHolder
+import com.boswelja.devicemanager.common.ui.OneLineViewHolder
 
 /**
  * An adapter for presenting a list of [Capability] to the user.
