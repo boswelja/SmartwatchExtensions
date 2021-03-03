@@ -9,7 +9,6 @@ package com.boswelja.devicemanager.common
 
 import android.app.NotificationManager
 import android.content.Context
-import android.content.Intent
 import android.os.Build
 import androidx.core.app.NotificationManagerCompat
 import timber.log.Timber
@@ -52,18 +51,6 @@ object Compat {
     }
 
     /**
-     * Starts a service in the foreground.
-     * @param intent Intent for the service.
-     */
-    fun startForegroundService(context: Context, intent: Intent) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            context.startForegroundService(intent)
-        } else {
-            context.startService(intent)
-        }
-    }
-
-    /**
      * Checks whether Do not Disturb is currently active. Will fall back to silent / vibrate on
      * older Android versions
      * @return true if DnD is enabled, false otherwise.
@@ -90,18 +77,18 @@ object Compat {
 
     /**
      * Checks whether notifications are enabled for this app.
-     * @param channelId ID of the notification channel to check. Ignored on platforms below API26
-     * and can be left null to check whether notifications are enabled overall for this app.
+     * @param channelId ID of the notification channel to check. Ignored on platforms below API26.
+     * Can be left null to check global app notifications.
      * @return true if notifications are enabled, false otherwise.
      */
     fun areNotificationsEnabled(context: Context, channelId: String? = null): Boolean {
+        val notificationManagerCompat = NotificationManagerCompat.from(context)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && !channelId.isNullOrBlank()) {
-            (context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager).also {
-                val channel = it.getNotificationChannel(channelId)
-                return channel != null && channel.importance != NotificationManager.IMPORTANCE_NONE
+            notificationManagerCompat.getNotificationChannel(channelId).let {
+                return it != null && it.importance != NotificationManager.IMPORTANCE_NONE
             }
         } else {
-            return NotificationManagerCompat.from(context).areNotificationsEnabled()
+            return notificationManagerCompat.areNotificationsEnabled()
         }
     }
 }

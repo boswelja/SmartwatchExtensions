@@ -11,6 +11,7 @@ import android.app.ActivityManager
 import android.content.Context
 import android.content.Intent
 import android.os.Build
+import androidx.core.content.ContextCompat
 import androidx.core.content.edit
 import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.BuildConfig
@@ -56,7 +57,7 @@ class MessageReceiver : WearableListenerService() {
             }
             Messages.START_SERVICE -> {
                 val intent = Intent(this, AppManagerService::class.java)
-                Compat.startForegroundService(this, intent)
+                ContextCompat.startForegroundService(this, intent)
             }
             REQUEST_SDK_INT_PATH -> {
                 Wearable.getMessageClient(this)

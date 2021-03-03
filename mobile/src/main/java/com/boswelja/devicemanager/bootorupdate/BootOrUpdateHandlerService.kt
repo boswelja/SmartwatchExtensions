@@ -14,13 +14,13 @@ import android.content.Intent
 import android.os.Build
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
+import androidx.core.content.ContextCompat
 import com.boswelja.devicemanager.BuildConfig
 import com.boswelja.devicemanager.NotificationChannelHelper
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.batterysync.BatterySyncWorker
 import com.boswelja.devicemanager.bootorupdate.updater.Result
 import com.boswelja.devicemanager.bootorupdate.updater.Updater
-import com.boswelja.devicemanager.common.Compat
 import com.boswelja.devicemanager.common.preference.PreferenceKey
 import com.boswelja.devicemanager.dndsync.DnDLocalChangeService
 import com.boswelja.devicemanager.messages.Message
@@ -122,7 +122,7 @@ class BootOrUpdateHandlerService : Service() {
                 "tryStartInterruptFilterSyncService dndSyncToWatchEnabled = $dndSyncToWatchEnabled"
             )
             if (dndSyncToWatchEnabled) {
-                Compat.startForegroundService(
+                ContextCompat.startForegroundService(
                     applicationContext,
                     Intent(applicationContext, DnDLocalChangeService::class.java)
                 )

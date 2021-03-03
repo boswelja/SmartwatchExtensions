@@ -11,10 +11,10 @@ import android.content.ComponentName
 import android.content.Intent
 import android.content.SharedPreferences
 import android.support.wearable.complications.ProviderUpdateRequester
+import androidx.core.content.ContextCompat
 import androidx.core.content.edit
 import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.batterysync.PhoneBatteryComplicationProvider
-import com.boswelja.devicemanager.common.Compat
 import com.boswelja.devicemanager.common.preference.PreferenceKey
 import com.boswelja.devicemanager.common.preference.SyncPreferences
 import com.boswelja.devicemanager.dndsync.DnDLocalChangeListener
@@ -81,7 +81,7 @@ class PreferenceChangeReceiver : WearableListenerService() {
             PreferenceKey.DND_SYNC_TO_PHONE_KEY, PreferenceKey.DND_SYNC_WITH_THEATER_KEY -> {
                 if (newValue == true) {
                     Intent(this, DnDLocalChangeListener::class.java).also {
-                        Compat.startForegroundService(this, it)
+                        ContextCompat.startForegroundService(this, it)
                     }
                 }
             }
