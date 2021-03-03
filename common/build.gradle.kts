@@ -37,12 +37,9 @@ android {
 
 dependencies {
     val androidxCoreKtx = "1.5.0-alpha05"
-
     val playServicesWearable = "17.0.0"
-    val timber = "4.7.1"
 
     implementation("androidx.core:core-ktx:$androidxCoreKtx")
 
     implementation("com.google.android.gms:play-services-wearable:$playServicesWearable")
-    implementation("com.jakewharton.timber:timber:$timber")
 }

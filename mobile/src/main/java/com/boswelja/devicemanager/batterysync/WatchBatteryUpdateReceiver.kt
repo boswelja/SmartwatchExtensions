@@ -10,13 +10,13 @@ package com.boswelja.devicemanager.batterysync
 import android.app.NotificationManager
 import android.os.Build
 import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.getSystemService
 import com.boswelja.devicemanager.NotificationChannelHelper
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.batterysync.database.WatchBatteryStats
 import com.boswelja.devicemanager.batterysync.database.WatchBatteryStatsDatabase
 import com.boswelja.devicemanager.batterysync.widget.WatchBatteryWidget
-import com.boswelja.devicemanager.common.Compat
 import com.boswelja.devicemanager.common.batterysync.References.BATTERY_STATUS_PATH
 import com.boswelja.devicemanager.common.preference.PreferenceKey.BATTERY_CHARGED_NOTI_SENT
 import com.boswelja.devicemanager.common.preference.PreferenceKey.BATTERY_CHARGE_THRESHOLD_KEY
@@ -119,7 +119,7 @@ class WatchBatteryUpdateReceiver : WearableListenerService() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
             NotificationChannelHelper.createForBatteryCharged(this, notificationManager)
 
-        if (Compat.areNotificationsEnabled(this, BATTERY_CHARGED_NOTI_CHANNEL_ID)) {
+        if (areNotificationsEnabled()) {
             Timber.i("Sending charged notification")
             NotificationCompat.Builder(this, BATTERY_CHARGED_NOTI_CHANNEL_ID)
                 .setSmallIcon(R.drawable.battery_full)
@@ -132,6 +132,21 @@ class WatchBatteryUpdateReceiver : WearableListenerService() {
                 .also { notificationManager.notify(BATTERY_CHARGED_NOTI_ID, it.build()) }
         } else {
             Timber.w("Failed to send charged notification")
+        }
+    }
+
+    /**
+     * Checks whether notifications are enabled for the required channel.
+     * @return true if notifications are enabled, false otherwise.
+     */
+    private fun areNotificationsEnabled(): Boolean {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val notificationManager = getSystemService(NotificationManager::class.java)
+            notificationManager.getNotificationChannel(BATTERY_CHARGED_NOTI_CHANNEL_ID).let {
+                return it != null && it.importance != NotificationManager.IMPORTANCE_NONE
+            }
+        } else {
+            return NotificationManagerCompat.from(this).areNotificationsEnabled()
         }
     }
 

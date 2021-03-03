@@ -18,6 +18,7 @@ import com.google.android.gms.wearable.Wearable
 object Utils {
 
     /** Sends a battery status update to connected devices. */
+    @Deprecated("Use respective connection interfaces instead")
     fun updateBatteryStats(context: Context, target: String) {
         val iFilter = IntentFilter(Intent.ACTION_BATTERY_CHANGED)
         val batteryStatus = context.registerReceiver(null, iFilter)

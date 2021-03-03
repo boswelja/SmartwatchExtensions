@@ -9,9 +9,6 @@ package com.boswelja.devicemanager.common
 
 import android.app.NotificationManager
 import android.content.Context
-import android.os.Build
-import androidx.core.app.NotificationManagerCompat
-import timber.log.Timber
 
 /**
  * Compatibility layer to aid support for different Android versions
@@ -41,9 +38,7 @@ object Compat {
                     )
                 }
                 return true
-            } catch (e: SecurityException) {
-                Timber.e(e)
-            }
+            } catch (ignored: SecurityException) { }
         } else {
             return true
         }
@@ -73,22 +68,5 @@ object Compat {
         val notiManager =
             context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         return notiManager.isNotificationPolicyAccessGranted
-    }
-
-    /**
-     * Checks whether notifications are enabled for this app.
-     * @param channelId ID of the notification channel to check. Ignored on platforms below API26.
-     * Can be left null to check global app notifications.
-     * @return true if notifications are enabled, false otherwise.
-     */
-    fun areNotificationsEnabled(context: Context, channelId: String? = null): Boolean {
-        val notificationManagerCompat = NotificationManagerCompat.from(context)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && !channelId.isNullOrBlank()) {
-            notificationManagerCompat.getNotificationChannel(channelId).let {
-                return it != null && it.importance != NotificationManager.IMPORTANCE_NONE
-            }
-        } else {
-            return notificationManagerCompat.areNotificationsEnabled()
-        }
     }
 }

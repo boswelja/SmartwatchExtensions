@@ -7,17 +7,17 @@
  */
 package com.boswelja.devicemanager.about.ui
 
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.boswelja.devicemanager.BuildConfig
-import com.boswelja.devicemanager.common.Event
 
 class AboutViewModel : ViewModel() {
 
     val version = BuildConfig.VERSION_NAME
 
-    val openPlayStoreEvent = Event()
-    val openAppInfoEvent = Event()
+    val openPlayStoreEvent = MutableLiveData(false)
+    val openAppInfoEvent = MutableLiveData(false)
 
-    fun fireOpenPlayStoreEvent() = openPlayStoreEvent.fire()
-    fun fireOpenAppInfoEvent() = openAppInfoEvent.fire()
+    fun fireOpenPlayStoreEvent() = openPlayStoreEvent.postValue(true)
+    fun fireOpenAppInfoEvent() = openAppInfoEvent.postValue(true)
 }
