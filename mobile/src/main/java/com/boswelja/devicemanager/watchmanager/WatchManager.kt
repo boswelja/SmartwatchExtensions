@@ -153,6 +153,9 @@ class WatchManager internal constructor(
 
     fun refreshData() = watchRepository.refreshData()
 
+    fun sendMessage(watch: Watch, messagePath: String, data: ByteArray? = null) =
+        watchRepository.sendMessage(watch, messagePath, data)
+
     suspend inline fun <reified T> getPreference(watch: Watch, key: String) =
         watchRepository.getPreference<T>(watch, key)
 
