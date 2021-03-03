@@ -27,7 +27,9 @@
             android:name=".managespace.ui.ManageSpaceActivity"
             android:label="@string/manage_space_title" />
 
-        <activity android:name="com.boswelja.devicemanager.main.MainActivity">
+        <activity
+            android:name="com.boswelja.devicemanager.main.MainActivity"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <action android:name="android.intent.action.VIEW" />
@@ -99,7 +101,8 @@
         <service
             android:name=".phonelocking.PhoneLockingAccessibilityService"
             android:label="@string/phone_locking_accessibility_service_label"
-            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
+            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.accessibilityservice.AccessibilityService" />
             </intent-filter>
@@ -125,7 +128,9 @@
             android:name=".dndsync.DnDLocalChangeService"
             android:exported="false" />
 
-        <service android:name=".dndsync.DnDRemoteChangeReceiver">
+        <service
+            android:name=".dndsync.DnDRemoteChangeReceiver"
+            android:exported="true">
             <intent-filter>
                 <action android:name="com.google.android.gms.wearable.DATA_CHANGED" />
                 <data
@@ -135,7 +140,9 @@
             </intent-filter>
         </service>
 
-        <service android:name=".watchmanager.connection.wearos.WatchMessageReceiver">
+        <service
+            android:name=".watchmanager.connection.wearos.WatchMessageReceiver"
+            android:exported="true">
             <intent-filter>
                 <action android:name="com.google.android.gms.wearable.MESSAGE_RECEIVED" />
 
@@ -162,7 +169,9 @@
             </intent-filter>
         </service>
 
-        <service android:name=".batterysync.WatchBatteryUpdateReceiver">
+        <service
+            android:name=".batterysync.WatchBatteryUpdateReceiver"
+            android:exported="true">
             <intent-filter>
                 <action android:name="com.google.android.gms.wearable.MESSAGE_RECEIVED" />
                 <data
@@ -186,13 +195,16 @@
         </receiver>
         <activity
             android:name="com.boswelja.devicemanager.batterysync.widget.config.BatteryWidgetConfigActivity"
-            android:label="@string/widget_watch_battery_config_title">
+            android:label="@string/widget_watch_battery_config_title"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
             </intent-filter>
         </activity>
 
-        <service android:name=".watchmanager.connection.wearos.PreferenceChangeReceiver">
+        <service
+            android:name=".watchmanager.connection.wearos.PreferenceChangeReceiver"
+            android:exported="true">
             <intent-filter>
                 <action android:name="com.google.android.gms.wearable.DATA_CHANGED" />
                 <data
