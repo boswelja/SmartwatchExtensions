@@ -14,8 +14,8 @@ import androidx.core.content.edit
 import androidx.preference.PreferenceManager
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.boswelja.devicemanager.common.setup.References.CHECK_WATCH_REGISTERED_PATH
-import com.boswelja.devicemanager.common.setup.References.WATCH_REGISTERED_PATH
+import com.boswelja.devicemanager.common.connection.Messages.CHECK_WATCH_REGISTERED_PATH
+import com.boswelja.devicemanager.common.connection.Messages.WATCH_REGISTERED_PATH
 import com.boswelja.devicemanager.getOrAwaitValue
 import com.boswelja.devicemanager.phoneconnectionmanager.References.PHONE_ID_KEY
 import com.google.android.gms.wearable.MessageClient

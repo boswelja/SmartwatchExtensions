@@ -5,8 +5,8 @@ import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import com.boswelja.devicemanager.common.connection.Messages
+import com.boswelja.devicemanager.common.connection.Messages.WATCH_REGISTERED_PATH
 import com.boswelja.devicemanager.common.preference.SyncPreferences
-import com.boswelja.devicemanager.common.setup.References
 import com.boswelja.devicemanager.watchmanager.connection.WatchConnectionInterface
 import com.boswelja.devicemanager.watchmanager.connection.wearos.WearOSConnectionInterface
 import com.boswelja.devicemanager.watchmanager.database.WatchDatabase
@@ -176,7 +176,7 @@ class WatchRepository internal constructor(
         withContext(Dispatchers.IO) {
             database.addWatch(watch)
             val connectionManager = watch.connectionManager
-            connectionManager?.sendMessage(watch.id, References.WATCH_REGISTERED_PATH)
+            connectionManager?.sendMessage(watch.id, WATCH_REGISTERED_PATH)
         }
     }
 
