@@ -13,7 +13,6 @@ import android.content.Intent
 import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.batterysync.ui.BatterySyncPreferenceActivity
 import com.boswelja.devicemanager.common.Compat
-import com.boswelja.devicemanager.common.Extensions.toByteArray
 import com.boswelja.devicemanager.common.batterysync.References.REQUEST_BATTERY_UPDATE_PATH
 import com.boswelja.devicemanager.common.batterysync.Utils
 import com.boswelja.devicemanager.common.connection.Messages.CHECK_WATCH_REGISTERED_PATH
@@ -24,6 +23,7 @@ import com.boswelja.devicemanager.common.connection.Messages.WATCH_REGISTERED_PA
 import com.boswelja.devicemanager.common.connection.References.CAPABILITY_WATCH_APP
 import com.boswelja.devicemanager.common.dndsync.References.REQUEST_INTERRUPT_FILTER_ACCESS_STATUS_PATH
 import com.boswelja.devicemanager.common.preference.PreferenceKey
+import com.boswelja.devicemanager.common.toByteArray
 import com.boswelja.devicemanager.common.ui.activity.BaseWatchPickerPreferenceActivity.Companion.EXTRA_PREFERENCE_KEY
 import com.boswelja.devicemanager.dndsync.ui.DnDSyncPreferenceActivity
 import com.boswelja.devicemanager.main.MainActivity

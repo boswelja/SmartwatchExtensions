@@ -23,7 +23,6 @@ import androidx.core.content.getSystemService
 import androidx.lifecycle.LifecycleService
 import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.R
-import com.boswelja.devicemanager.common.Extensions.toByteArray
 import com.boswelja.devicemanager.common.LifecycleAwareTimer
 import com.boswelja.devicemanager.common.appmanager.App
 import com.boswelja.devicemanager.common.appmanager.Messages.EXPECTED_APP_COUNT
@@ -34,6 +33,7 @@ import com.boswelja.devicemanager.common.appmanager.Messages.REQUEST_OPEN_PACKAG
 import com.boswelja.devicemanager.common.appmanager.Messages.REQUEST_UNINSTALL_PACKAGE
 import com.boswelja.devicemanager.common.appmanager.Messages.SERVICE_RUNNING
 import com.boswelja.devicemanager.common.appmanager.Messages.STOP_SERVICE
+import com.boswelja.devicemanager.common.toByteArray
 import com.boswelja.devicemanager.phoneconnectionmanager.References.PHONE_ID_KEY
 import com.google.android.gms.wearable.MessageClient
 import com.google.android.gms.wearable.Wearable
