@@ -9,7 +9,7 @@ package com.boswelja.devicemanager.dndsync
 
 import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.common.Compat.setInterruptionFilter
-import com.boswelja.devicemanager.common.References
+import com.boswelja.devicemanager.common.dndsync.References.NEW_DND_STATE_KEY
 import com.boswelja.devicemanager.common.preference.PreferenceKey
 import com.google.android.gms.wearable.DataEvent
 import com.google.android.gms.wearable.DataEventBuffer
@@ -42,9 +42,5 @@ class DnDRemoteChangeReceiver : WearableListenerService() {
         Timber.i("getDnDStateFromDataEvent() called")
         val dataMap = DataMapItem.fromDataItem(dataEvent.dataItem).dataMap
         return dataMap.getBoolean(NEW_DND_STATE_KEY)
-    }
-
-    companion object {
-        const val NEW_DND_STATE_KEY = "${References.packageName}.dnd-enabled"
     }
 }

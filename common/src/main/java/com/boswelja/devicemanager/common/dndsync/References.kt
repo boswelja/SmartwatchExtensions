@@ -7,12 +7,10 @@
  */
 package com.boswelja.devicemanager.common.dndsync
 
-import com.boswelja.devicemanager.common.References
-
 object References {
 
     const val DND_STATUS_PATH = "/dnd_status"
-    const val NEW_DND_STATE_KEY = "${References.packageName}.dnd-enabled"
+    const val NEW_DND_STATE_KEY = "com.boswelja.devicemanager.dnd-enabled"
     const val REQUEST_INTERRUPT_FILTER_ACCESS_STATUS_PATH = "/request_noti_policy_access_status"
     const val REQUEST_SDK_INT_PATH = "/request_sdk_int"
 
