@@ -13,7 +13,7 @@ import android.os.Build
 import androidx.core.app.NotificationManagerCompat
 import timber.log.Timber
 
-/*
+/**
  * Compatibility layer to aid support for different Android versions
  */
 object Compat {
