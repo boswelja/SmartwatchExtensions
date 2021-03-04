@@ -12,6 +12,7 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import com.android.billingclient.api.BillingClient
 import com.android.billingclient.api.BillingClientStateListener
 import com.android.billingclient.api.BillingFlowParams
@@ -22,7 +23,6 @@ import com.android.billingclient.api.PurchasesUpdatedListener
 import com.android.billingclient.api.SkuDetails
 import com.android.billingclient.api.SkuDetailsParams
 import com.android.billingclient.api.consumePurchase
-import com.android.billingclient.api.querySkuDetails
 import com.boswelja.devicemanager.donate.Skus
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -42,7 +42,7 @@ class DonateViewModel(application: Application) : AndroidViewModel(application) 
             override fun onBillingSetupFinished(result: BillingResult) {
                 if (result.responseCode == BillingClient.BillingResponseCode.OK) {
                     _clientConnected.postValue(true)
-                    querySkuDetails()
+                    updateOneTimeSkuDetails()
                 }
             }
 
@@ -81,24 +81,28 @@ class DonateViewModel(application: Application) : AndroidViewModel(application) 
         billingClient.startConnection(clientStateListener)
     }
 
-    private fun querySkuDetails() {
-        coroutineScope.launch {
-            val params =
-                SkuDetailsParams.newBuilder()
-                    .setSkusList(Skus.ALL_ONE_TIME)
-                    .setType(BillingClient.SkuType.INAPP)
-                    .build()
-            val skuDetails = billingClient.querySkuDetails(params)
-            if (skuDetails.billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
-                _oneTimeDonations.postValue(skuDetails.skuDetailsList ?: emptyList())
-            } else {
-                _oneTimeDonations.postValue(emptyList())
-            }
+    private fun updateOneTimeSkuDetails() {
+        val oneTimeSkuDetailParams = SkuDetailsParams.newBuilder()
+            .setSkusList(Skus.ALL_ONE_TIME)
+            .setType(BillingClient.SkuType.INAPP)
+            .build()
+        billingClient.querySkuDetailsAsync(oneTimeSkuDetailParams) { _, skus ->
+            _oneTimeDonations.postValue(skus ?: emptyList())
+        }
+    }
+
+    private fun updateRecurringSkuDetails() {
+        val recurringSkuDetailParams = SkuDetailsParams.newBuilder()
+            .setSkusList(Skus.ALL_RECURRING)
+            .setType(BillingClient.SkuType.SUBS)
+            .build()
+        billingClient.querySkuDetailsAsync(recurringSkuDetailParams) { _, skus ->
+            _recurringDonations.postValue(skus ?: emptyList())
         }
     }
 
     private fun consumePurchase(purchase: Purchase) {
-        coroutineScope.launch {
+        viewModelScope.launch {
             if (purchase.purchaseState == Purchase.PurchaseState.PURCHASED) {
                 val params =
                     ConsumeParams.newBuilder().setPurchaseToken(purchase.purchaseToken).build()
