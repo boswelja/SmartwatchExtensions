@@ -12,7 +12,6 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.viewModelScope
 import com.android.billingclient.api.BillingClient
 import com.android.billingclient.api.BillingClientStateListener
 import com.android.billingclient.api.BillingFlowParams
@@ -22,9 +21,8 @@ import com.android.billingclient.api.Purchase
 import com.android.billingclient.api.PurchasesUpdatedListener
 import com.android.billingclient.api.SkuDetails
 import com.android.billingclient.api.SkuDetailsParams
-import com.android.billingclient.api.consumePurchase
 import com.boswelja.devicemanager.donate.Skus
-import kotlinx.coroutines.launch
+import timber.log.Timber
 
 class DonateViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -63,7 +61,7 @@ class DonateViewModel(application: Application) : AndroidViewModel(application) 
         get() = _clientConnected
 
     init {
-        connectClient()
+        startClientConnection()
     }
 
     override fun onCleared() {
@@ -71,7 +69,7 @@ class DonateViewModel(application: Application) : AndroidViewModel(application) 
         if (clientConnected.value == true) billingClient.endConnection()
     }
 
-    private fun connectClient() {
+    private fun startClientConnection() {
         billingClient.startConnection(clientStateListener)
     }
 
@@ -96,12 +94,9 @@ class DonateViewModel(application: Application) : AndroidViewModel(application) 
     }
 
     private fun consumePurchase(purchase: Purchase) {
-        viewModelScope.launch {
-            if (purchase.purchaseState == Purchase.PurchaseState.PURCHASED) {
-                val params =
-                    ConsumeParams.newBuilder().setPurchaseToken(purchase.purchaseToken).build()
-                billingClient.consumePurchase(params)
-            }
+        val params = ConsumeParams.newBuilder().setPurchaseToken(purchase.purchaseToken).build()
+        billingClient.consumeAsync(params) { _, _ ->
+            Timber.i("Donation received")
         }
     }
 
