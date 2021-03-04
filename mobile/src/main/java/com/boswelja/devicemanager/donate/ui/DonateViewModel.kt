@@ -5,6 +5,7 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.android.billingclient.api.AcknowledgePurchaseParams
 import com.android.billingclient.api.BillingClient
 import com.android.billingclient.api.BillingClientStateListener
 import com.android.billingclient.api.BillingFlowParams
@@ -14,13 +15,21 @@ import com.android.billingclient.api.Purchase
 import com.android.billingclient.api.PurchasesUpdatedListener
 import com.android.billingclient.api.SkuDetails
 import com.android.billingclient.api.SkuDetailsParams
+import com.boswelja.devicemanager.common.Event
 import com.boswelja.devicemanager.donate.Skus
 import timber.log.Timber
 
 class DonateViewModel(application: Application) : AndroidViewModel(application) {
 
-    private val purchasesUpdatedListener =
-        PurchasesUpdatedListener { _, purchases -> purchases?.forEach { consumePurchase(it) } }
+    private val purchasesUpdatedListener = PurchasesUpdatedListener { _, purchases ->
+        purchases?.forEach {
+            if (it.sku in Skus.ALL_RECURRING) {
+                acknowledgeRecurringPurchase(it)
+            } else {
+                consumeOneTimePurchase(it)
+            }
+        }
+    }
 
     private val clientStateListener =
         object : BillingClientStateListener {
@@ -53,6 +62,7 @@ class DonateViewModel(application: Application) : AndroidViewModel(application) 
         get() = _recurringDonations
     val clientConnected: LiveData<Boolean>
         get() = _clientConnected
+    val onDonated = Event()
 
     init {
         startClientConnection()
@@ -87,10 +97,21 @@ class DonateViewModel(application: Application) : AndroidViewModel(application) 
         }
     }
 
-    private fun consumePurchase(purchase: Purchase) {
+    private fun consumeOneTimePurchase(purchase: Purchase) {
+        Timber.d("consumeOneTimePurchase($purchase) called")
         val params = ConsumeParams.newBuilder().setPurchaseToken(purchase.purchaseToken).build()
         billingClient.consumeAsync(params) { _, _ ->
-            Timber.i("Donation received")
+            onDonated.fire()
+        }
+    }
+
+    private fun acknowledgeRecurringPurchase(purchase: Purchase) {
+        Timber.d("acknowledgeRecurringPurchase($purchase) called")
+        val params = AcknowledgePurchaseParams.newBuilder()
+            .setPurchaseToken(purchase.purchaseToken)
+            .build()
+        billingClient.acknowledgePurchase(params) {
+            onDonated.fire()
         }
     }
 
