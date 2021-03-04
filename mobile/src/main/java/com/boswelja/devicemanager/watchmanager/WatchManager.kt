@@ -114,29 +114,46 @@ class WatchManager internal constructor(
     }
 
     suspend fun forgetWatch(context: Context, watch: Watch) {
+        forgetWatch(
+            WatchBatteryStatsDatabase.getInstance(context),
+            WidgetDatabase.getInstance(context),
+            watch
+        )
+    }
+
+    internal suspend fun forgetWatch(
+        batteryStatsDatabase: WatchBatteryStatsDatabase,
+        widgetDatabase: WidgetDatabase,
+        watch: Watch
+    ) {
         withContext(Dispatchers.IO) {
-            WatchBatteryStatsDatabase.getInstance(context)
-                .batteryStatsDao().deleteStatsForWatch(watch.id)
-            WidgetDatabase.getInstance(context)
-                .widgetDao().removeWidgetsFor(watch.id)
+            batteryStatsDatabase.batteryStatsDao().deleteStatsForWatch(watch.id)
+            widgetDatabase.widgetDao().removeWidgetsFor(watch.id)
             watchRepository.resetWatch(watch)
             analytics.logWatchRemoved()
         }
     }
-
     suspend fun renameWatch(watch: Watch, newName: String) {
         watchRepository.renameWatch(watch, newName)
         analytics.logWatchRenamed()
     }
 
     suspend fun resetWatchPreferences(context: Context, watch: Watch) {
-        withContext(Dispatchers.IO) {
-            WatchBatteryStatsDatabase.getInstance(context)
-                .batteryStatsDao().deleteStatsForWatch(watch.id)
-            WidgetDatabase.getInstance(context)
-                .widgetDao().removeWidgetsFor(watch.id)
-            watchRepository.resetWatchPreferences(watch)
-        }
+        resetWatchPreferences(
+            WatchBatteryStatsDatabase.getInstance(context),
+            WidgetDatabase.getInstance(context),
+            watch
+        )
+    }
+
+    internal suspend fun resetWatchPreferences(
+        batteryStatsDatabase: WatchBatteryStatsDatabase,
+        widgetDatabase: WidgetDatabase,
+        watch: Watch
+    ) {
+        batteryStatsDatabase.batteryStatsDao().deleteStatsForWatch(watch.id)
+        widgetDatabase.widgetDao().removeWidgetsFor(watch.id)
+        watchRepository.resetWatchPreferences(watch)
     }
 
     /**
