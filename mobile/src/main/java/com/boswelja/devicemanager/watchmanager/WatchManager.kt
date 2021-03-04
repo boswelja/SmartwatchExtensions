@@ -17,8 +17,10 @@ import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.analytics.Analytics
 import com.boswelja.devicemanager.batterysync.database.WatchBatteryStatsDatabase
 import com.boswelja.devicemanager.common.SingletonHolder
+import com.boswelja.devicemanager.common.connection.Messages.REQUEST_UPDATE_CAPABILITIES
 import com.boswelja.devicemanager.common.preference.SyncPreferences
 import com.boswelja.devicemanager.watchmanager.item.Watch
+import com.boswelja.devicemanager.widget.database.WidgetDatabase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -32,7 +34,6 @@ import timber.log.Timber
 class WatchManager internal constructor(
     private val sharedPreferences: SharedPreferences,
     val watchRepository: WatchRepository,
-    private val batteryStatsDatabase: WatchBatteryStatsDatabase,
     private val analytics: Analytics,
     private val coroutineScope: CoroutineScope
 ) {
@@ -40,7 +41,6 @@ class WatchManager internal constructor(
     constructor(context: Context) : this(
         PreferenceManager.getDefaultSharedPreferences(context),
         WatchRepository(context),
-        WatchBatteryStatsDatabase.getInstance(context),
         Analytics(),
         CoroutineScope(Dispatchers.IO)
     )
@@ -113,24 +113,47 @@ class WatchManager internal constructor(
         analytics.logWatchRegistered()
     }
 
-    suspend fun forgetWatch(watch: Watch) {
+    suspend fun forgetWatch(context: Context, watch: Watch) {
+        forgetWatch(
+            WatchBatteryStatsDatabase.getInstance(context),
+            WidgetDatabase.getInstance(context),
+            watch
+        )
+    }
+
+    internal suspend fun forgetWatch(
+        batteryStatsDatabase: WatchBatteryStatsDatabase,
+        widgetDatabase: WidgetDatabase,
+        watch: Watch
+    ) {
         withContext(Dispatchers.IO) {
             batteryStatsDatabase.batteryStatsDao().deleteStatsForWatch(watch.id)
+            widgetDatabase.widgetDao().removeWidgetsFor(watch.id)
             watchRepository.resetWatch(watch)
             analytics.logWatchRemoved()
         }
     }
-
     suspend fun renameWatch(watch: Watch, newName: String) {
         watchRepository.renameWatch(watch, newName)
         analytics.logWatchRenamed()
     }
 
-    suspend fun resetWatchPreferences(watch: Watch) {
-        withContext(Dispatchers.IO) {
-            batteryStatsDatabase.batteryStatsDao().deleteStatsForWatch(watch.id)
-            watchRepository.resetWatchPreferences(watch)
-        }
+    suspend fun resetWatchPreferences(context: Context, watch: Watch) {
+        resetWatchPreferences(
+            WatchBatteryStatsDatabase.getInstance(context),
+            WidgetDatabase.getInstance(context),
+            watch
+        )
+    }
+
+    internal suspend fun resetWatchPreferences(
+        batteryStatsDatabase: WatchBatteryStatsDatabase,
+        widgetDatabase: WidgetDatabase,
+        watch: Watch
+    ) {
+        batteryStatsDatabase.batteryStatsDao().deleteStatsForWatch(watch.id)
+        widgetDatabase.widgetDao().removeWidgetsFor(watch.id)
+        watchRepository.resetWatchPreferences(watch)
     }
 
     /**
@@ -142,10 +165,13 @@ class WatchManager internal constructor(
     }
 
     fun requestRefreshCapabilities(watch: Watch) {
-        watchRepository.requestRefreshCapabilities(watch)
+        watchRepository.sendMessage(watch, REQUEST_UPDATE_CAPABILITIES)
     }
 
     fun refreshData() = watchRepository.refreshData()
+
+    fun sendMessage(watch: Watch, messagePath: String, data: ByteArray? = null) =
+        watchRepository.sendMessage(watch, messagePath, data)
 
     suspend inline fun <reified T> getPreference(watch: Watch, key: String) =
         watchRepository.getPreference<T>(watch, key)

@@ -55,18 +55,6 @@ interface WatchConnectionInterface {
     fun updatePreferenceOnWatch(watch: Watch, key: String, value: Any)
 
     /**
-     * Requests the given watch resets it's app.
-     * @param watch The [Watch] to request a reset from.
-     */
-    fun resetWatchApp(watch: Watch)
-
-    /**
-     * Requests the given watch resets it's preferences.
-     * @param watch The [Watch] to send the request to.
-     */
-    fun resetWatchPreferences(watch: Watch)
-
-    /**
      * Manually refresh info such as watch status and available watches.
      */
     fun refreshData()

@@ -41,7 +41,7 @@ class AppManager internal constructor(
 
     private val _apps = ArrayList<App>()
 
-    private var watchId: String? = null
+    private var watch: Watch? = null
     private var expectedPackageCount: Int = 0
 
     /**
@@ -63,7 +63,7 @@ class AppManager internal constructor(
         get() = _progress
 
     private val messageListener = MessageClient.OnMessageReceivedListener {
-        if (it.sourceNodeId == watchId && _state.value != State.ERROR) {
+        if (it.sourceNodeId == watch?.id && _state.value != State.ERROR) {
             try {
                 when (it.path) {
                     // Package change messages
@@ -89,14 +89,14 @@ class AppManager internal constructor(
     }
 
     private val selectedWatchObserver = Observer<Watch?> {
-        if (it?.id != null && it.id != watchId) {
+        if (it?.id != null && it.id != watch?.id) {
             Timber.d("selectedWatch changed, reconnecting App Manager service")
             _state.postValue(State.CONNECTING)
             _progress.postValue(-1)
-            watchId?.let { watchId ->
-                messageClient.sendMessage(watchId, STOP_SERVICE, null)
+            watch?.let { watch ->
+                watchManager.sendMessage(watch, STOP_SERVICE, null)
             }
-            watchId = it.id
+            watch = it
             startAppManagerService()
         }
     }
@@ -151,11 +151,11 @@ class AppManager internal constructor(
     /** Start the App Manager service on the connected watch. */
     fun startAppManagerService() {
         Timber.d("startAppManagerService() called")
-        watchId?.let {
+        watch?.let {
             _state.postValue(State.CONNECTING)
             _apps.clear()
             _appsObservable.postValue(_apps)
-            messageClient.sendMessage(it, START_SERVICE, null)
+            watchManager.sendMessage(it, START_SERVICE, null)
             stateDisconnectedDelay.reset()
         }
     }
@@ -163,8 +163,8 @@ class AppManager internal constructor(
     /** Stop the App Manager service on the connected watch. */
     fun stopAppManagerService() {
         Timber.d("stopAppManagerService() called")
-        watchId?.let {
-            messageClient.sendMessage(it, STOP_SERVICE, null)
+        watch?.let {
+            watchManager.sendMessage(it, STOP_SERVICE, null)
         }
     }
 
@@ -173,11 +173,13 @@ class AppManager internal constructor(
      * @param app The [App] to request uninstall for.
      */
     fun sendUninstallRequestMessage(app: App) {
-        messageClient.sendMessage(
-            watchId!!,
-            Messages.REQUEST_UNINSTALL_PACKAGE,
-            app.packageName.toByteArray(Charsets.UTF_8)
-        )
+        watch?.let {
+            watchManager.sendMessage(
+                it,
+                Messages.REQUEST_UNINSTALL_PACKAGE,
+                app.packageName.toByteArray(Charsets.UTF_8)
+            )
+        }
     }
 
     /**
@@ -185,11 +187,13 @@ class AppManager internal constructor(
      * @param app The [App] to request open for.
      */
     fun sendOpenRequestMessage(app: App) {
-        messageClient.sendMessage(
-            watchId!!,
-            Messages.REQUEST_OPEN_PACKAGE,
-            app.packageName.toByteArray(Charsets.UTF_8)
-        )
+        watch?.let {
+            watchManager.sendMessage(
+                it,
+                Messages.REQUEST_OPEN_PACKAGE,
+                app.packageName.toByteArray(Charsets.UTF_8)
+            )
+        }
     }
 
     fun destroy() {

@@ -6,8 +6,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import com.boswelja.devicemanager.common.Event
 import com.boswelja.devicemanager.common.connection.Capability
-import com.boswelja.devicemanager.common.connection.Messages.CLEAR_PREFERENCES
-import com.boswelja.devicemanager.common.connection.Messages.RESET_APP
 import com.boswelja.devicemanager.common.connection.References.CAPABILITY_WATCH_APP
 import com.boswelja.devicemanager.common.preference.SyncPreferences
 import com.boswelja.devicemanager.watchmanager.connection.WatchConnectionInterface
@@ -112,14 +110,6 @@ class WearOSConnectionInterface(
         } else {
             Timber.w("No preference to update")
         }
-    }
-
-    override fun resetWatchApp(watch: Watch) {
-        sendMessage(watch.id, RESET_APP)
-    }
-
-    override fun resetWatchPreferences(watch: Watch) {
-        sendMessage(watch.id, CLEAR_PREFERENCES)
     }
 
     override fun refreshData() {

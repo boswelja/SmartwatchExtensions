@@ -11,8 +11,10 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.boswelja.devicemanager.analytics.Analytics
 import com.boswelja.devicemanager.batterysync.database.WatchBatteryStatsDatabase
+import com.boswelja.devicemanager.common.connection.Messages.REQUEST_UPDATE_CAPABILITIES
 import com.boswelja.devicemanager.getOrAwaitValue
 import com.boswelja.devicemanager.watchmanager.item.Watch
+import com.boswelja.devicemanager.widget.database.WidgetDatabase
 import com.google.common.truth.Truth.assertThat
 import io.mockk.MockKAnnotations
 import io.mockk.coVerify
@@ -47,6 +49,7 @@ class WatchManagerTest {
     @RelaxedMockK private lateinit var repository: WatchRepository
     @RelaxedMockK private lateinit var analytics: Analytics
     @RelaxedMockK private lateinit var batteryStatsDatabase: WatchBatteryStatsDatabase
+    @RelaxedMockK private lateinit var widgetDatabase: WidgetDatabase
 
     private lateinit var coroutineScope: CoroutineScope
     private lateinit var sharedPreferences: SharedPreferences
@@ -55,6 +58,7 @@ class WatchManagerTest {
     @Before
     fun setUp() {
         MockKAnnotations.init(this)
+
         coroutineScope = TestCoroutineScope()
         sharedPreferences = PreferenceManager
             .getDefaultSharedPreferences(ApplicationProvider.getApplicationContext())
@@ -118,7 +122,7 @@ class WatchManagerTest {
     fun `requestRefreshCapabilities calls repository`(): Unit = runBlocking {
         watchManager = getWatchManager()
         watchManager.requestRefreshCapabilities(dummyWatch1)
-        coVerify(exactly = 1) { repository.requestRefreshCapabilities(dummyWatch1) }
+        coVerify(exactly = 1) { repository.sendMessage(dummyWatch1, REQUEST_UPDATE_CAPABILITIES) }
     }
 
     @Test
@@ -130,11 +134,13 @@ class WatchManagerTest {
     }
 
     @Test
-    fun `forgetWatch calls repository and logs analytics event`(): Unit = runBlocking {
+    fun `forgetWatch calls repository, databases and logs analytics event`(): Unit = runBlocking {
         watchManager = getWatchManager()
-        watchManager.forgetWatch(dummyWatch1)
+        watchManager.forgetWatch(batteryStatsDatabase, widgetDatabase, dummyWatch1)
         verify(exactly = 1) { analytics.logWatchRemoved() }
         coVerify(exactly = 1) { repository.resetWatch(dummyWatch1) }
+        verify(exactly = 1) { batteryStatsDatabase.batteryStatsDao() }
+        verify(exactly = 1) { widgetDatabase.widgetDao() }
     }
 
     @Test
@@ -147,10 +153,12 @@ class WatchManagerTest {
     }
 
     @Test
-    fun `resetWatchPreferences calls repository`(): Unit = runBlocking {
+    fun `resetWatchPreferences calls repository and databases`(): Unit = runBlocking {
         watchManager = getWatchManager()
-        watchManager.resetWatchPreferences(dummyWatch1)
+        watchManager.resetWatchPreferences(batteryStatsDatabase, widgetDatabase, dummyWatch1)
         coVerify(exactly = 1) { repository.resetWatchPreferences(dummyWatch1) }
+        verify(exactly = 1) { batteryStatsDatabase.batteryStatsDao() }
+        verify(exactly = 1) { widgetDatabase.widgetDao() }
     }
 
     @Test
@@ -164,7 +172,6 @@ class WatchManagerTest {
         return WatchManager(
             sharedPreferences,
             repository,
-            batteryStatsDatabase,
             analytics,
             coroutineScope
         )
