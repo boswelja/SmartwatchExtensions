@@ -82,7 +82,7 @@ class DonateViewModel(application: Application) : AndroidViewModel(application) 
         coroutineScope.launch {
             val params =
                 SkuDetailsParams.newBuilder()
-                    .setSkusList(Skus.all)
+                    .setSkusList(Skus.ALL_ONE_TIME)
                     .setType(BillingClient.SkuType.INAPP)
                     .build()
             val skuDetails = billingClient.querySkuDetails(params)
