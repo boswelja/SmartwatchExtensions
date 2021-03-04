@@ -58,12 +58,15 @@ class DonateViewModel(application: Application) : AndroidViewModel(application) 
             .build()
 
     private val _clientConnected = MutableLiveData(false)
+    private val _oneTimeDonations = MutableLiveData<List<SkuDetails>>(emptyList())
+    private val _recurringDonations = MutableLiveData<List<SkuDetails>>(emptyList())
+
+    val oneTimeDonations: LiveData<List<SkuDetails>>
+        get() = _oneTimeDonations
+    val recurringDonations: LiveData<List<SkuDetails>>
+        get() = _recurringDonations
     val clientConnected: LiveData<Boolean>
         get() = _clientConnected
-
-    private val _skus = MutableLiveData<List<SkuDetails>?>(emptyList())
-    val skus: LiveData<List<SkuDetails>?>
-        get() = _skus
 
     init {
         connectClient()
@@ -87,9 +90,9 @@ class DonateViewModel(application: Application) : AndroidViewModel(application) 
                     .build()
             val skuDetails = billingClient.querySkuDetails(params)
             if (skuDetails.billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
-                _skus.postValue(skuDetails.skuDetailsList ?: emptyList())
+                _oneTimeDonations.postValue(skuDetails.skuDetailsList ?: emptyList())
             } else {
-                _skus.postValue(null)
+                _oneTimeDonations.postValue(emptyList())
             }
         }
     }
