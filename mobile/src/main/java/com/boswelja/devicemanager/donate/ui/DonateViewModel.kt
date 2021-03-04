@@ -24,15 +24,9 @@ import com.android.billingclient.api.SkuDetails
 import com.android.billingclient.api.SkuDetailsParams
 import com.android.billingclient.api.consumePurchase
 import com.boswelja.devicemanager.donate.Skus
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
 class DonateViewModel(application: Application) : AndroidViewModel(application) {
-
-    private val coroutineJob = Job()
-    private val coroutineScope = CoroutineScope(Dispatchers.IO + coroutineJob)
 
     private val purchasesUpdatedListener =
         PurchasesUpdatedListener { _, purchases -> purchases?.forEach { consumePurchase(it) } }
