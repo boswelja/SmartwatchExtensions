@@ -38,8 +38,8 @@ class AppInfoFragment : BasePreferenceFragment(), Preference.OnPreferenceClickLi
             SHARE_APP_KEY -> showShareMenu()
             OPEN_GITHUB_KEY -> showGitHubPage()
             OPEN_CHANGELOG_KEY -> showChangelog()
-            OPEN_DONATE_DIALOG_KEY ->
-                findNavController().navigate(AppInfoFragmentDirections.toDonateFragment())
+            OPEN_DONATE_KEY ->
+                findNavController().navigate(AppInfoFragmentDirections.toDonateActivity())
             else -> return false
         }
         return true
@@ -85,8 +85,8 @@ class AppInfoFragment : BasePreferenceFragment(), Preference.OnPreferenceClickLi
             .onPreferenceClickListener = this
         findPreference<Preference>(OPEN_CHANGELOG_KEY)!!
             .onPreferenceClickListener = this
-        findPreference<Preference>(OPEN_DONATE_DIALOG_KEY)!!.apply {
-            isEnabled = !BuildConfig.DEBUG
+        findPreference<Preference>(OPEN_DONATE_KEY)!!.apply {
+            // isEnabled = !BuildConfig.DEBUG
             onPreferenceClickListener = this@AppInfoFragment
         }
         findPreference<Preference>(PHONE_VERSION_KEY)!!.apply {
@@ -144,7 +144,7 @@ class AppInfoFragment : BasePreferenceFragment(), Preference.OnPreferenceClickLi
         const val OPEN_PRIVACY_POLICY_KEY = "privacy_policy"
         const val SHARE_APP_KEY = "share"
         const val OPEN_GITHUB_KEY = "github"
-        const val OPEN_DONATE_DIALOG_KEY = "show_donate_dialog"
+        const val OPEN_DONATE_KEY = "show_donate_dialog"
         const val OPEN_CHANGELOG_KEY = "changelog"
         const val PHONE_VERSION_KEY = "phone_app_version"
         const val WATCH_VERSION_KEY = "watch_app_version"

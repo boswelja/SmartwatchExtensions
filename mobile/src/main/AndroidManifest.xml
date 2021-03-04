@@ -84,6 +84,10 @@
             android:name=".watchmanager.ui.register.RegisterWatchActivity"
             android:exported="false" />
 
+        <activity
+            android:name=".donate.ui.DonateActivity"
+            android:exported="true" />
+
         <receiver
             android:name=".phonelocking.DeviceAdminChangeReceiver"
             android:description="@string/device_admin_desc"

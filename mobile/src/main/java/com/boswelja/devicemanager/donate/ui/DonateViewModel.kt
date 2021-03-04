@@ -28,6 +28,7 @@ class DonateViewModel(application: Application) : AndroidViewModel(application) 
                 if (result.responseCode == BillingClient.BillingResponseCode.OK) {
                     _clientConnected.postValue(true)
                     updateOneTimeSkuDetails()
+                    updateRecurringSkuDetails()
                 }
             }
 
