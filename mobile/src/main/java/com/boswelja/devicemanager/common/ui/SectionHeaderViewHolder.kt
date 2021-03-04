@@ -1,24 +1,16 @@
-/* Copyright (C) 2020 Jack Boswell <boswelja@outlook.com>
- *
- * This file is part of Wearable Extensions
- *
- * This file, and any part of the Wearable Extensions app/s cannot be copied and/or distributed
- * without permission from Jack Boswell (boswelja) <boswela@outlook.com>
- */
 package com.boswelja.devicemanager.common.ui
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.boswelja.devicemanager.databinding.RecyclerviewSectionHeaderBinding
 
-open class SectionHeaderViewHolder(private val binding: RecyclerviewSectionHeaderBinding) :
-    RecyclerView.ViewHolder(binding.root) {
+open class SectionHeaderViewHolder(
+    private val binding: RecyclerviewSectionHeaderBinding
+) : RecyclerView.ViewHolder(binding.root) {
 
-    fun bind(text: String, showDivider: Boolean = true) {
-        binding.sectionHeaderText.text = text
-        binding.divider.visibility = if (showDivider) View.VISIBLE else View.GONE
+    fun bind(text: String) {
+        binding.title.text = text
     }
 
     companion object {

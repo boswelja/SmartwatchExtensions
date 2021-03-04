@@ -1,20 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/recyclerview_section_header"
     android:layout_width="match_parent"
     android:layout_height="@dimen/recyclerview_item_section_height"
     android:orientation="vertical">
 
-    <View
-        android:id="@+id/divider"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="?android:attr/listDivider" />
-
     <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/section_header_text"
-        style="@style/TextAppearance.MaterialComponents.Subtitle2"
+        android:id="@+id/title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/recyclerview_item_horizontal_padding"
@@ -25,6 +19,7 @@
         android:paddingStart="@dimen/recyclerview_section_header_text_inset"
         android:paddingEnd="@dimen/recyclerview_item_horizontal_padding"
         android:textColor="@color/colorPrimary"
+        android:textAppearance="?textAppearanceSubtitle2"
         tools:text="Header" />
 
 </LinearLayout>
