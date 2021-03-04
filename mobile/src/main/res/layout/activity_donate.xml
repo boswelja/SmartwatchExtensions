@@ -14,8 +14,28 @@
         android:id="@+id/donate_widget"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:padding="16dp"
         app:layout_constraintDimensionRatio="3:1"
         app:layout_constraintTop_toBottomOf="@id/toolbar_layout">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/widget_icon"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            app:srcCompat="@drawable/pref_ic_donate"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintDimensionRatio="1:1"/>
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textAppearance="?textAppearanceHeadline6"
+            android:text="@string/donate_thank_you"
+            android:textAlignment="center"
+            app:layout_constraintStart_toEndOf="@id/widget_icon"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

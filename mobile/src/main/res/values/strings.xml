@@ -228,6 +228,7 @@
 
     <!-- Donate strings -->
     <string name="donate_title">Donate</string>
+    <string name="donate_thank_you">Thank you for wanting to donate! Check out the options below.</string>
 
     <!-- Widget setup strings -->
     <string name="widget_config_battery_stats_hint">Choose a watch to show battery stats for in this widget</string>
