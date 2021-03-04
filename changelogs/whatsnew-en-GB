@@ -4,4 +4,6 @@ App Manager detects when your watch is disconnected
 
 Changes & Fixes:
 App Manager got some UI tweaks
+Cleaned up some unneeded code
+Behind the scenes changes to the watch connection interface
 You should see stability improvements over the next few releases
