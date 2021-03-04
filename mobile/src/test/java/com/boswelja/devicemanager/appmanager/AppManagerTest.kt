@@ -74,21 +74,21 @@ class AppManagerTest {
         assertThat(appManager.state.getOrAwaitValue())
             .isEquivalentAccordingToCompareTo(State.CONNECTING)
         assertThat(appManager.apps.getOrAwaitValue()).isEmpty()
-        verify { messageClient.sendMessage(watch.id, START_SERVICE, null) }
+        verify { watchManager.sendMessage(watch, START_SERVICE, null) }
     }
 
     @Test
     fun `startAppManagerService handles null watchId`() {
         // watchId should be inherently null by default, since we don't mock selectedWatch
         appManager.startAppManagerService()
-        verify(inverse = true) { messageClient.sendMessage(any(), any(), any()) }
+        verify(inverse = true) { watchManager.sendMessage(any(), any(), any()) }
     }
 
     @Test
     fun `stopAppManagerService handles null watchId`() {
         // watchId should be inherently null by default, since we don't mock selectedWatch
         appManager.stopAppManagerService()
-        verify(inverse = true) { messageClient.sendMessage(any(), any(), any()) }
+        verify(inverse = true) { watchManager.sendMessage(any(), any(), any()) }
     }
 
     @Test
