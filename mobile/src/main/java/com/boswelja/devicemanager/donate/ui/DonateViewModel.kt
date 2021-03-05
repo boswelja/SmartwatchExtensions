@@ -83,7 +83,8 @@ class DonateViewModel(application: Application) : AndroidViewModel(application) 
             .setType(BillingClient.SkuType.INAPP)
             .build()
         billingClient.querySkuDetailsAsync(oneTimeSkuDetailParams) { _, skus ->
-            _oneTimeDonations.postValue(skus ?: emptyList())
+            val skuDetails = skus ?: emptyList()
+            _oneTimeDonations.postValue(skuDetails.sortedBy { it.priceAmountMicros })
         }
     }
 
@@ -93,7 +94,8 @@ class DonateViewModel(application: Application) : AndroidViewModel(application) 
             .setType(BillingClient.SkuType.SUBS)
             .build()
         billingClient.querySkuDetailsAsync(recurringSkuDetailParams) { _, skus ->
-            _recurringDonations.postValue(skus ?: emptyList())
+            val skuDetails = skus ?: emptyList()
+            _recurringDonations.postValue(skuDetails.sortedBy { it.priceAmountMicros })
         }
     }
 
