@@ -65,6 +65,7 @@ dependencies {
     val androidxTest = "1.4.0-alpha04"
     val androidxTestExt = "1.1.3-alpha04"
     val androidxWear = "1.2.0-alpha06"
+    val androidxWearComplications = "1.0.0-alpha07"
 
     val googleMaterial = "1.4.0-alpha01"
     val playServicesWearable = "17.0.0"
@@ -87,6 +88,7 @@ dependencies {
     implementation("androidx.navigation:navigation-ui-ktx:$androidxNavigation")
     implementation("androidx.preference:preference:$androidxPreference")
     implementation("androidx.wear:wear:$androidxWear")
+    implementation("androidx.wear:wear-complications-provider:$androidxWearComplications")
 
     implementation("com.google.android.support:wearable:$wearableSupport")
     implementation("com.google.android.gms:play-services-wearable:$playServicesWearable")
