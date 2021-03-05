@@ -21,7 +21,7 @@ abstract class BaseWidgetConfigActivity : BaseToolbarActivity() {
     /**
      * The ID of the widget we're configuring
      */
-    protected var widgetId: Int = 0
+    private var widgetId: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
