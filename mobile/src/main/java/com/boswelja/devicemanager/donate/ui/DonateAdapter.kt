@@ -31,7 +31,7 @@ class DonateAdapter(private val clickCallback: (sku: SkuDetails) -> Unit) :
             skuDetails.sku.contains("large") -> R.drawable.ic_donate_large
             else -> R.drawable.ic_donate_small
         }
-        holder.bind(drawableRes, skuDetails.title, skuDetails.description)
+        holder.bind(drawableRes, skuDetails.price, skuDetails.description)
         holder.itemView.setOnClickListener { clickCallback(skuDetails) }
     }
 
