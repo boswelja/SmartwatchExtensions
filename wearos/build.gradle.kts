@@ -75,7 +75,6 @@ dependencies {
     val mockk = "1.10.6"
     val robolectric = "4.5.1"
     val coroutines = "1.4.3"
-    val wearableSupport = "2.8.1"
 
     implementation("androidx.appcompat:appcompat:$androidxAppCompat")
     implementation("androidx.constraintlayout:constraintlayout:$androidxConstraintLayout")
@@ -90,12 +89,9 @@ dependencies {
     implementation("androidx.wear:wear:$androidxWear")
     implementation("androidx.wear:wear-complications-provider:$androidxWearComplications")
 
-    implementation("com.google.android.support:wearable:$wearableSupport")
     implementation("com.google.android.gms:play-services-wearable:$playServicesWearable")
     implementation("com.google.android.material:material:$googleMaterial")
     implementation("com.jakewharton.timber:timber:$timber")
-
-    compileOnly("com.google.android.wearable:wearable:$wearableSupport")
 
     debugImplementation("androidx.fragment:fragment-testing:$androidxFragment")
 
