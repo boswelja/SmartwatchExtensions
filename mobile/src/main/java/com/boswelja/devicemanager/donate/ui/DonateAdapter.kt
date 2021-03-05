@@ -7,23 +7,50 @@
  */
 package com.boswelja.devicemanager.donate.ui
 
+import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.annotation.DrawableRes
 import androidx.recyclerview.widget.ListAdapter
+import androidx.recyclerview.widget.RecyclerView
 import com.android.billingclient.api.SkuDetails
 import com.boswelja.devicemanager.R
-import com.boswelja.devicemanager.common.ui.IconTwoLineViewHolder
+import com.boswelja.devicemanager.databinding.DonateItemBinding
 import com.boswelja.devicemanager.donate.SkuDetailDiffer
 
 class DonateAdapter(private val clickCallback: (sku: SkuDetails) -> Unit) :
-    ListAdapter<SkuDetails, IconTwoLineViewHolder>(SkuDetailDiffer()) {
+    ListAdapter<SkuDetails, DonateAdapter.DonateViewHolder>(SkuDetailDiffer()) {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): IconTwoLineViewHolder {
-        return IconTwoLineViewHolder.from(parent)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DonateViewHolder {
+        return DonateViewHolder.from(parent)
     }
 
-    override fun onBindViewHolder(holder: IconTwoLineViewHolder, position: Int) {
-        val sku = getItem(position)
-        holder.bind(R.drawable.ic_donate, sku.title, sku.price)
-        holder.itemView.setOnClickListener { clickCallback(sku) }
+    override fun onBindViewHolder(holder: DonateViewHolder, position: Int) {
+        val skuDetails = getItem(position)
+
+        val drawableRes = when {
+            skuDetails.sku.contains("large") -> R.drawable.ic_donate_large
+            else -> R.drawable.ic_donate_small
+        }
+        holder.bind(drawableRes, skuDetails.price, skuDetails.description)
+        holder.itemView.setOnClickListener { clickCallback(skuDetails) }
+    }
+
+    class DonateViewHolder internal constructor(
+        private val binding: DonateItemBinding
+    ) : RecyclerView.ViewHolder(binding.root) {
+
+        fun bind(@DrawableRes icon: Int, title: String, desc: String) {
+            binding.icon.setImageResource(icon)
+            binding.title.text = title
+            binding.desc.text = desc
+        }
+
+        companion object {
+            fun from(parent: ViewGroup): DonateViewHolder {
+                val layoutInflater = LayoutInflater.from(parent.context)
+                val binding = DonateItemBinding.inflate(layoutInflater, parent, false)
+                return DonateViewHolder(binding)
+            }
+        }
     }
 }

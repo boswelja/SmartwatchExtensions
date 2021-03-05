@@ -73,13 +73,13 @@
         android:name="com.boswelja.devicemanager.appinfo.ui.AppInfoFragment">
 
         <action
-            android:id="@+id/to_donateFragment"
-            app:destination="@id/donateSheetFragment" />
+            android:id="@+id/to_donateActivity"
+            app:destination="@id/donateActivity" />
     </fragment>
 
-    <dialog
-        android:id="@+id/donateSheetFragment"
-        android:name="com.boswelja.devicemanager.donate.ui.DonateSheet" />
+    <activity
+        android:id="@+id/donateActivity"
+        android:name="com.boswelja.devicemanager.donate.ui.DonateActivity" />
 
     <activity
         android:id="@+id/batterySyncPreferenceActivity"
