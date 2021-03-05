@@ -86,7 +86,7 @@ class AppInfoFragment : BasePreferenceFragment(), Preference.OnPreferenceClickLi
         findPreference<Preference>(OPEN_CHANGELOG_KEY)!!
             .onPreferenceClickListener = this
         findPreference<Preference>(OPEN_DONATE_KEY)!!.apply {
-            // isEnabled = !BuildConfig.DEBUG
+            isEnabled = !BuildConfig.DEBUG
             onPreferenceClickListener = this@AppInfoFragment
         }
         findPreference<Preference>(PHONE_VERSION_KEY)!!.apply {
