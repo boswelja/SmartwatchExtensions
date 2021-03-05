@@ -37,19 +37,6 @@ object TestExtensions {
         }
     }
 
-    fun withPlural(@StringRes id: Int, quantity: Int) = object : TypeSafeMatcher<View>() {
-        override fun describeTo(description: Description) {
-            description.appendText(
-                "TextView with text same as plural with id $id and quantity $quantity"
-            )
-        }
-
-        override fun matchesSafely(view: View): Boolean {
-            val expectedString = view.context.resources.getQuantityString(id, quantity)
-            return view is TextView && view.text == expectedString
-        }
-    }
-
     fun <T> LiveData<T>.getOrAwaitValue(
         time: Long = 2,
         timeUnit: TimeUnit = TimeUnit.SECONDS,

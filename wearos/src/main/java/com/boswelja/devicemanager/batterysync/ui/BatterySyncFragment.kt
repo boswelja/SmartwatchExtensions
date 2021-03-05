@@ -15,6 +15,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.boswelja.devicemanager.databinding.FragmentBatterySyncBinding
 
+@Suppress("unused")
 class BatterySyncFragment : Fragment() {
 
     private val viewModel: BatterySyncViewModel by viewModels()

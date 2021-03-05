@@ -15,6 +15,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.boswelja.devicemanager.databinding.FragmentLockPhoneBinding
 
+@Suppress("unused")
 class LockPhoneFragment : Fragment() {
 
     private val viewModel: LockPhoneViewModel by viewModels()

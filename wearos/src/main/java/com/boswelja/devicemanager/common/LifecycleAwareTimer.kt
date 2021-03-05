@@ -44,14 +44,4 @@ class LifecycleAwareTimer(
         super.onDestroy(owner)
         timer.shutdownNow()
     }
-
-    fun resetTimer() {
-        task.cancel(false)
-        task = timer.scheduleAtFixedRate(
-            callback,
-            0,
-            period,
-            unit
-        )
-    }
 }
