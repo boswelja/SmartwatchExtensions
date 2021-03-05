@@ -133,4 +133,6 @@ dependencies {
     androidTestImplementation("androidx.test:core-ktx:$androidxTest")
     androidTestImplementation("com.google.truth:truth:$truth")
     androidTestImplementation("io.mockk:mockk-android:$mockk")
+    // Workaround for MockK using an old version not found on mavenCentral
+    androidTestImplementation("com.linkedin.dexmaker:dexmaker:2.28.1")
 }
