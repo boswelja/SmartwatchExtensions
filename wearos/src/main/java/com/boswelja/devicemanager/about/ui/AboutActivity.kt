@@ -24,15 +24,15 @@ class AboutActivity : AppCompatActivity() {
 
         viewModel.openPlayStoreEvent.observe(this) {
             if (it) {
-                GooglePlayUtils.getPlayStoreIntent(this).also { startActivity(it) }
+                startActivity(GooglePlayUtils.getPlayStoreIntent(this))
                 viewModel.openPlayStoreEvent.postValue(false)
             }
         }
         viewModel.openAppInfoEvent.observe(this) {
             if (it) {
-                Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+                val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
                     .apply { data = Uri.fromParts("package", packageName, null) }
-                    .also { startActivity(it) }
+                startActivity(intent)
                 viewModel.openAppInfoEvent.postValue(false)
             }
         }
