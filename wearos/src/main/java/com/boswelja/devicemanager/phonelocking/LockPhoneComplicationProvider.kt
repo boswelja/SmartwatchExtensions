@@ -1,47 +1,60 @@
-/* Copyright (C) 2020 Jack Boswell <boswelja@outlook.com>
- *
- * This file is part of Wearable Extensions
- *
- * This file, and any part of the Wearable Extensions app/s cannot be copied and/or distributed
- * without permission from Jack Boswell (boswelja) <boswela@outlook.com>
- */
 package com.boswelja.devicemanager.phonelocking
 
 import android.app.PendingIntent
 import android.content.Intent
 import android.graphics.drawable.Icon
-import android.support.wearable.complications.ComplicationData
-import android.support.wearable.complications.ComplicationManager
-import android.support.wearable.complications.ComplicationText
+import androidx.wear.complications.ComplicationProviderService
+import androidx.wear.complications.data.ComplicationData
+import androidx.wear.complications.data.ComplicationText
+import androidx.wear.complications.data.ComplicationType
+import androidx.wear.complications.data.MonochromaticImage
+import androidx.wear.complications.data.ShortTextComplicationData
 import com.boswelja.devicemanager.ActionServiceStarter
 import com.boswelja.devicemanager.R
-import com.boswelja.devicemanager.common.BaseComplicationProviderService
 import com.boswelja.devicemanager.common.connection.Messages.LOCK_PHONE
+import timber.log.Timber
 
-class LockPhoneComplicationProvider : BaseComplicationProviderService() {
+class LockPhoneComplicationProvider : ComplicationProviderService() {
 
-    override fun onCreateComplication(
+    override fun onComplicationUpdate(
         complicationId: Int,
-        type: Int,
-        manager: ComplicationManager?
+        type: ComplicationType,
+        resultCallback: ComplicationUpdateCallback
     ) {
-        if (type != ComplicationData.TYPE_SHORT_TEXT) {
-            manager?.noUpdateRequired(complicationId)
-            return
+        val complicationData = createComplicationDataFor(type)
+
+        if (complicationData != null) {
+            resultCallback.onUpdateComplication(complicationData)
+        } else {
+            Timber.w("Complication type $type invalid")
         }
+    }
 
-        val intent =
-            Intent(this, ActionServiceStarter::class.java).apply { action = LOCK_PHONE }
-        val pendingIntent =
-            PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_IMMUTABLE)
+    override fun getPreviewData(type: ComplicationType): ComplicationData? {
+        return createComplicationDataFor(type)
+    }
 
-        val complicationData =
-            ComplicationData.Builder(type)
-                .setIcon(Icon.createWithResource(this, R.drawable.ic_phone_lock))
-                .setShortText(ComplicationText.plainText(getString(R.string.lock_phone_label)))
-                .setTapAction(pendingIntent)
-                .build()
+    private fun createComplicationDataFor(type: ComplicationType): ComplicationData? {
+        val intent = Intent(this, ActionServiceStarter::class.java)
+            .apply { action = LOCK_PHONE }
+        val pendingIntent = PendingIntent.getBroadcast(
+            this, 0, intent, PendingIntent.FLAG_IMMUTABLE
+        )
 
-        manager?.updateComplicationData(complicationId, complicationData)
+        val icon = MonochromaticImage.Builder(
+            Icon.createWithResource(this, R.drawable.ic_phone_lock)
+        ).build()
+        val text = ComplicationText.plain(getString(R.string.lock_phone_label))
+
+        return when (type) {
+            ComplicationType.SHORT_TEXT -> {
+                ShortTextComplicationData.Builder(text)
+                    .setTapAction(pendingIntent)
+                    .setContentDescription(text)
+                    .setMonochromaticImage(icon)
+                    .build()
+            }
+            else -> null
+        }
     }
 }

@@ -1,16 +1,7 @@
-/* Copyright (C) 2020 Jack Boswell <boswelja@outlook.com>
- *
- * This file is part of Wearable Extensions
- *
- * This file, and any part of the Wearable Extensions app/s cannot be copied and/or distributed
- * without permission from Jack Boswell (boswelja) <boswela@outlook.com>
- */
 package com.boswelja.devicemanager.phoneconnectionmanager
 
-import android.content.ComponentName
 import android.content.Intent
 import android.content.SharedPreferences
-import android.support.wearable.complications.ProviderUpdateRequester
 import androidx.core.content.ContextCompat
 import androidx.core.content.edit
 import androidx.preference.PreferenceManager
@@ -69,13 +60,7 @@ class PreferenceChangeReceiver : WearableListenerService() {
             PreferenceKey.BATTERY_SYNC_ENABLED_KEY -> {
                 if (newValue == false) {
                     sharedPreferences!!.edit().remove(PreferenceKey.BATTERY_PERCENT_KEY).apply()
-                    ProviderUpdateRequester(
-                        this,
-                        ComponentName(
-                            packageName, PhoneBatteryComplicationProvider::class.java.name
-                        )
-                    )
-                        .requestUpdateAll()
+                    PhoneBatteryComplicationProvider.updateAll(this)
                 }
             }
             PreferenceKey.DND_SYNC_TO_PHONE_KEY, PreferenceKey.DND_SYNC_WITH_THEATER_KEY -> {
