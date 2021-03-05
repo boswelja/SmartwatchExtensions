@@ -13,7 +13,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.media.AudioManager
-import android.os.Build
 import com.boswelja.devicemanager.common.Compat
 import timber.log.Timber
 
@@ -39,11 +38,7 @@ abstract class DnDLocalChangeReceiver : BroadcastReceiver() {
     fun register(context: Context) {
         IntentFilter()
             .apply {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    addAction(NotificationManager.ACTION_INTERRUPTION_FILTER_CHANGED)
-                } else {
-                    addAction(AudioManager.RINGER_MODE_CHANGED_ACTION)
-                }
+                addAction(NotificationManager.ACTION_INTERRUPTION_FILTER_CHANGED)
             }
             .also {
                 Timber.i("Registering a receiver")

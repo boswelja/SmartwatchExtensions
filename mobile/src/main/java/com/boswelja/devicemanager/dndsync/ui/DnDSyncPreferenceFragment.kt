@@ -1,15 +1,7 @@
-/* Copyright (C) 2020 Jack Boswell <boswelja@outlook.com>
- *
- * This file is part of Wearable Extensions
- *
- * This file, and any part of the Wearable Extensions app/s cannot be copied and/or distributed
- * without permission from Jack Boswell (boswelja) <boswela@outlook.com>
- */
 package com.boswelja.devicemanager.dndsync.ui
 
 import android.content.Intent
 import android.content.SharedPreferences
-import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import android.view.View
@@ -50,26 +42,23 @@ class DnDSyncPreferenceFragment :
         findPreference(DND_SYNC_WITH_THEATER_KEY)!!
     }
 
-    private lateinit var notiPolicyAccessLauncher:
-        ActivityResultLauncher<Intent>
+    private val notiPolicyAccessLauncher: ActivityResultLauncher<Intent>
 
     private var changingKey: String? = null
 
     init {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            notiPolicyAccessLauncher = registerForActivityResult(
-                ActivityResultContracts.StartActivityForResult()
-            ) {
-                changingKey?.let {
-                    if (Compat.canSetDnD(requireContext())) {
-                        findPreference<SwitchPreference>(it)!!.isChecked = true
-                        coroutineScope.launch {
-                            sharedPreferences.edit(commit = true) { putBoolean(it, true) }
-                            watchManager.updatePreference(connectedWatch!!, it, true)
-                        }
+        notiPolicyAccessLauncher = registerForActivityResult(
+            ActivityResultContracts.StartActivityForResult()
+        ) {
+            changingKey?.let {
+                if (Compat.canSetDnD(requireContext())) {
+                    findPreference<SwitchPreference>(it)!!.isChecked = true
+                    coroutineScope.launch {
+                        sharedPreferences.edit(commit = true) { putBoolean(it, true) }
+                        watchManager.updatePreference(connectedWatch!!, it, true)
                     }
-                    changingKey = null
                 }
+                changingKey = null
             }
         }
     }
@@ -168,7 +157,7 @@ class DnDSyncPreferenceFragment :
         if (enabled) {
             if (Compat.canSetDnD(requireContext())) {
                 updateState = true
-            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            } else {
                 changingKey = key
                 Toast.makeText(
                     context,
@@ -178,8 +167,6 @@ class DnDSyncPreferenceFragment :
                 notiPolicyAccessLauncher
                     .launch(Intent(Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS))
             }
-        } else {
-            updateState = true
         }
         if (updateState) {
             coroutineScope.launch {
