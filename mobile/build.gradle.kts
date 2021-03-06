@@ -1,9 +1,9 @@
 plugins {
     id("com.android.application")
     kotlin("android")
-    kotlin("kapt")
     id("androidx.navigation.safeargs.kotlin")
     id("com.google.gms.google-services")
+    id("com.google.devtools.ksp") version "1.4.30-1.0.0-alpha04"
 }
 
 android {
@@ -112,7 +112,7 @@ dependencies {
     implementation("com.google.android.gms:play-services-wearable:$playServicesWearable")
     implementation("com.jakewharton.timber:timber:$timber")
 
-    kapt("androidx.room:room-compiler:$androidxRoom")
+    ksp("androidx.room:room-compiler:$androidxRoom")
 
     debugImplementation("androidx.fragment:fragment-testing:$androidxFragment")
 
