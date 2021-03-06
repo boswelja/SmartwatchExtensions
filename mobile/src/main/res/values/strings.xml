@@ -172,6 +172,7 @@
     <string name="watch_manager_title">Watch Manager</string>
     <string name="watch_manager_add_watch_title">Add Watch</string>
     <string name="watch_manager_registered_watch_header">Registered Watches</string>
+    <string name="watch_manager_action_continue_on_watch">Continue on your watch</string>
 
     <!-- Register Watch strings -->
     <string name="register_watch_title">Searching for Watches</string>
