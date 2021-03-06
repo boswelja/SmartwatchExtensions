@@ -69,7 +69,7 @@ class AppManager internal constructor(
                     // Package change messages
                     Messages.PACKAGE_ADDED -> addPackage(App.fromByteArray(it.data))
                     Messages.PACKAGE_UPDATED -> updatePackage(App.fromByteArray(it.data))
-                    Messages.PACKAGE_REMOVED -> removePackage(App.fromByteArray(it.data))
+                    Messages.PACKAGE_REMOVED -> removePackage(String(it.data, Charsets.UTF_8))
 
                     // Service state messages
                     Messages.SERVICE_RUNNING -> serviceRunning()
@@ -133,9 +133,9 @@ class AppManager internal constructor(
         _appsObservable.postValue(_apps)
     }
 
-    internal fun removePackage(app: App) {
+    internal fun removePackage(packageName: String) {
         Timber.d("Removing app from list")
-        _apps.removeAll { it.packageName == app.packageName }
+        _apps.removeAll { it.packageName == packageName }
         _appsObservable.postValue(_apps)
     }
 
