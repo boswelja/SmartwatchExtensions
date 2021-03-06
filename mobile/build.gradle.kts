@@ -20,10 +20,8 @@ android {
         testApplicationId = PackageInfo.packageName + ".test"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
-        javaCompileOptions {
-            annotationProcessorOptions {
-                arguments(mapOf("room.schemaLocation" to "$rootDir/schemas"))
-            }
+        ksp {
+            arg("room.schemaLocation", "$rootDir/schemas")
         }
     }
 
