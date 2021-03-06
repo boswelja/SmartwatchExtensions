@@ -13,6 +13,7 @@ import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.appmanager.State
 import com.boswelja.devicemanager.common.appmanager.App
 import com.boswelja.devicemanager.databinding.FragmentAppManagerInfoBinding
+import com.google.android.material.snackbar.Snackbar
 
 /**
  * A fragment for showing detailed info about a single [App].
@@ -21,7 +22,13 @@ class AppInfoFragment : Fragment() {
 
     private val viewModel: AppManagerViewModel by activityViewModels()
     private val args: AppInfoFragmentArgs by navArgs()
-
+    private val continueOnWatchSnackbar by lazy {
+        Snackbar.make(
+            requireView(),
+            R.string.watch_manager_action_continue_on_watch,
+            Snackbar.LENGTH_LONG
+        )
+    }
     private lateinit var binding: FragmentAppManagerInfoBinding
 
     override fun onCreateView(
@@ -64,10 +71,12 @@ class AppInfoFragment : Fragment() {
             openButton.isEnabled = app.hasLaunchActivity && viewModel.state.value == State.READY
             openButton.setOnClickListener {
                 viewModel.sendOpenRequest(app)
+                continueOnWatchSnackbar.show()
             }
             uninstallButton.isEnabled = !app.isSystemApp && viewModel.state.value == State.READY
             uninstallButton.setOnClickListener {
                 viewModel.sendUninstallRequest(app)
+                continueOnWatchSnackbar.show()
             }
         }
     }

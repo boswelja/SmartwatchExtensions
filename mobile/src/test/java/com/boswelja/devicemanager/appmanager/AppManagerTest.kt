@@ -166,13 +166,13 @@ class AppManagerTest {
     @Test
     fun `removePackage correctly removes an app`() {
         appManager.addPackage(app)
-        appManager.removePackage(app)
+        appManager.removePackage(app.packageName)
         assertThat(appManager.apps.getOrAwaitValue()).isEmpty()
     }
 
     @Test
     fun `removePackage handles app that hasn't been added`() {
-        appManager.removePackage(app)
+        appManager.removePackage(app.packageName)
         assertThat(appManager.apps.getOrAwaitValue()).isEmpty()
     }
 }
