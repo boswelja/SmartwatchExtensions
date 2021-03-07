@@ -15,6 +15,15 @@ class Event : MutableLiveData<Boolean>(false) {
         }
     }
 
+    override fun observeForever(observer: Observer<in Boolean>) {
+        super.observeForever {
+            if (it) {
+                observer.onChanged(it)
+                postValue(false)
+            }
+        }
+    }
+
     fun fire() {
         postValue(true)
     }
