@@ -19,7 +19,5 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
--keep class com.boswelja.devicemanager.common.appmanager.App { *; }
--keep class com.boswelja.devicemanager.common.SerializableBitmap { *; }
 -keep class com.boswelja.devicemanager.common.ui.SectionHeaderViewHolder { *; }
 -keep class com.boswelja.devicemanager.common.ui.OneLineViewHolder { *; }

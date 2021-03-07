@@ -1,6 +1,6 @@
 # Add project specific ProGuard rules here.
 # You can control the set of applied configuration files using the
-# proguardFiles setting in build.gradle.kts.
+# proguardFiles setting in build.gradle.kts.kts.
 #
 # For more details, see
 #   http://developer.android.com/guide/developing/tools/proguard.html
@@ -19,5 +19,10 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
--keep class com.boswelja.devicemanager.common.appmanager.App { *; }
+-keep class com.boswelja.devicemanager.common.appmanager.* { *; }
+-keep class com.boswelja.devicemanager.common.batterysync.* { *; }
+-keep class com.boswelja.devicemanager.common.connection.* { *; }
+-keep class com.boswelja.devicemanager.common.dndsync.* { *; }
+-keep class com.boswelja.devicemanager.common.preference.* { *; }
+-keep class com.boswelja.devicemanager.common.Compat { *; }
 -keep class com.boswelja.devicemanager.common.SerializableBitmap { *; }

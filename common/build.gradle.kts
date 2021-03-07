@@ -9,6 +9,7 @@ android {
     defaultConfig {
         minSdkVersion(23)
         targetSdkVersion(PackageInfo.targetSdk)
+        consumerProguardFile("proguard-rules.pro")
     }
 
     compileOptions {
@@ -18,19 +19,6 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
         useIR = true
-    }
-
-    buildTypes {
-        getByName("release") {
-            isMinifyEnabled = true
-            isShrinkResources = false
-            proguardFiles(
-                getDefaultProguardFile(
-                    "proguard-android-optimize.txt"
-                ),
-                "proguard-rules.pro"
-            )
-        }
     }
 }
 
