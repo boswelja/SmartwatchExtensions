@@ -7,5 +7,6 @@ Changes & Fixes:
 App Manager got some UI tweaks
 Cleaned up some unneeded code
 Moved Wear OS complications to newer APIs
+Potential fix for the app sometimes not finding any watches
 Behind the scenes changes to the watch connection interface
 You should see stability improvements over the next few releases
