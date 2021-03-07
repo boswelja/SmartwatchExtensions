@@ -54,8 +54,8 @@ class WatchInfoActivity : BaseToolbarActivity() {
         }
     }
 
-    override fun onStop() {
-        super.onStop()
+    override fun onPause() {
+        super.onPause()
         updateWatchNickname()
     }
 
