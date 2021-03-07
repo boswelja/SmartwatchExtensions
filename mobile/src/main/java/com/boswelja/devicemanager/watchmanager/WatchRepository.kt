@@ -52,12 +52,14 @@ class WatchRepository internal constructor(
 
         // Create a map of platforms to WatchConnectionInterface
         connectionInterfaces.forEach {
+            Timber.d("Initializing ${it.platformIdentifier}")
             connectionManagers[it.platformIdentifier] = it
         }
 
         // Set up _availableWatches
         connectionManagers.values.forEach {
             _availableWatches.addSource(it.availableWatches) { newAvailableWatches ->
+                Timber.d("availableWatches updated for ${it.platformIdentifier}")
                 val newWatches = replaceForPlatform(
                     _availableWatches.value ?: emptyList(),
                     newAvailableWatches
@@ -68,6 +70,7 @@ class WatchRepository internal constructor(
 
         // Set up _registeredWatches
         _registeredWatches.addSource(database.watchDao().getAllObservable()) { watches ->
+            Timber.d("registeredWatches updated")
             val watchesWithStatus = watches.map {
                 val connectionManager = it.connectionManager
                 if (connectionManager != null) {
@@ -82,6 +85,7 @@ class WatchRepository internal constructor(
         connectionManagers.values.forEach { connectionManager ->
             _registeredWatches.addSource(connectionManager.dataChanged) {
                 if (it) {
+                    Timber.d("dataChanged fired for ${connectionManager.platformIdentifier}")
                     val watchesWithStatus = updateStatusForPlatform(
                         _registeredWatches.value ?: emptyList(),
                         connectionManager.platformIdentifier
