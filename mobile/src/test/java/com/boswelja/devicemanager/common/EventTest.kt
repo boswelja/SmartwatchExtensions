@@ -5,6 +5,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LifecycleRegistry
+import androidx.lifecycle.Observer
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.boswelja.devicemanager.getOrAwaitValue
 import com.google.common.truth.Truth.assertThat
@@ -75,6 +76,24 @@ class EventTest {
         event.observeForever(observer)
         event.fire()
         event.removeObserver(observer)
+    }
+
+    @Test
+    fun `removeObserver removes observers added with observe`() {
+        val observer = Observer<Boolean> { }
+        event.observe(testLifecycleOwner, observer)
+        assertThat(event.hasActiveObservers()).isTrue()
+        event.removeObserver(observer)
+        assertThat(event.hasObservers()).isFalse()
+    }
+
+    @Test
+    fun `removeObserver removes observers added with observeForever`() {
+        val observer = Observer<Boolean> { }
+        event.observeForever(observer)
+        assertThat(event.hasActiveObservers()).isTrue()
+        event.removeObserver(observer)
+        assertThat(event.hasObservers()).isFalse()
     }
 
     @Test
