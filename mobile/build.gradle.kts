@@ -52,6 +52,10 @@ android {
     testOptions.unitTests {
         isIncludeAndroidResources = true
     }
+
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.0.0-beta01"
+    }
 }
 
 dependencies {
@@ -70,6 +74,8 @@ dependencies {
     val androidxTest = "1.4.0-alpha04"
     val androidxTestExt = "1.1.3-alpha04"
     val androidxWork = "2.7.0-alpha01"
+
+    val compose = "1.0.0-beta01"
 
     val billingClient = "3.0.2"
     val googleMaterial = "1.4.0-alpha01"
@@ -110,6 +116,16 @@ dependencies {
     implementation("com.google.android.gms:play-services-wearable:$playServicesWearable")
     implementation("com.jakewharton.timber:timber:$timber")
 
+    implementation("androidx.compose.ui:ui:$compose")
+    implementation("androidx.compose.ui:ui-tooling:$compose")
+    implementation("androidx.compose.foundation:foundation:$compose")
+    implementation("androidx.compose.material:material:$compose")
+    implementation("androidx.compose.material:material-icons-core:$compose")
+    implementation("androidx.compose.material:material-icons-extended:$compose")
+    implementation("androidx.activity:activity-compose:1.3.0-alpha03")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:1.0.0-alpha02")
+    implementation("androidx.compose.runtime:runtime-livedata:$compose")
+
     ksp("androidx.room:room-compiler:$androidxRoom")
 
     debugImplementation("androidx.fragment:fragment-testing:$androidxFragment")
@@ -130,6 +146,7 @@ dependencies {
     androidTestImplementation("androidx.test:rules:$androidxTest")
     androidTestImplementation("androidx.test:core-ktx:$androidxTest")
     androidTestImplementation("com.google.truth:truth:$truth")
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4:$compose")
     androidTestImplementation("io.mockk:mockk-android:$mockk")
     // Workaround for MockK using an old version not found on mavenCentral
     androidTestImplementation("com.linkedin.dexmaker:dexmaker:2.28.1")
