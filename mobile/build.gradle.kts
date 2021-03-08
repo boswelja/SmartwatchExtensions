@@ -26,6 +26,7 @@ android {
     }
 
     buildFeatures.viewBinding = true
+    buildFeatures.compose = true
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
@@ -59,6 +60,9 @@ android {
 }
 
 dependencies {
+    repositories {
+        jcenter()
+    }
     val androidxArch = "2.1.0"
     val androidxAppCompat = "1.3.0-beta01"
     val androidxBrowser = "1.3.0"

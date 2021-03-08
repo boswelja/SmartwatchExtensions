@@ -11,7 +11,7 @@ class LoadingFragment : LoadingFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModel.progress.observe(viewLifecycleOwner) {
-            setProgress(it)
+            progress = it / 100f
         }
     }
 }

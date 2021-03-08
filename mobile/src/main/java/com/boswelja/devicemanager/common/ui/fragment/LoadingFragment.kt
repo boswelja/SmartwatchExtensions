@@ -1,58 +1,64 @@
-/* Copyright (C) 2020 Jack Boswell <boswelja@outlook.com>
- *
- * This file is part of Wearable Extensions
- *
- * This file, and any part of the Wearable Extensions app/s cannot be copied and/or distributed
- * without permission from Jack Boswell (boswelja) <boswela@outlook.com>
- */
 package com.boswelja.devicemanager.common.ui.fragment
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.view.isVisible
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.material.LinearProgressIndicator
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.fragment.app.Fragment
 import com.boswelja.devicemanager.R
-import com.boswelja.devicemanager.databinding.CommonFragmentLoadingBinding
-import timber.log.Timber
 
 open class LoadingFragment : Fragment() {
 
-    private lateinit var binding: CommonFragmentLoadingBinding
+    /**
+     * The progress displayed to the user. Use 0 to set indeterminate.
+     * Works on a range of 0.0 for indeterminate to 1.0 for full progress.
+     */
+    internal var progress by mutableStateOf(0f)
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = CommonFragmentLoadingBinding.inflate(inflater, container, false)
-        return binding.root
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        binding.loadingText.text = getString(R.string.dnd_sync_helper_loading_text)
-        Timber.i("Successfully created")
-    }
-
-    private fun setProgressIndeterninate(isIndeterminate: Boolean) {
-        if (binding.progressBar.isIndeterminate != isIndeterminate) {
-            binding.progressBar.isVisible = false
-            binding.progressBar.isIndeterminate = isIndeterminate
-            binding.progressBar.isVisible = true
+        return ComposeView(requireContext()).apply {
+            setContent {
+                MaterialTheme {
+                    Loading()
+                }
+            }
         }
     }
 
-    /**
-     * Set the progress displayed to the user. Use -1 to set indeterminate.
-     * @param progress The progress to display.
-     */
-    fun setProgress(progress: Int) {
-        if (progress > -1) {
-            binding.progressBar.progress = progress
-            setProgressIndeterninate(false)
-        } else {
-            setProgressIndeterninate(true)
+    @Preview(showBackground = true)
+    @Composable
+    fun Loading() {
+        Column(
+            Modifier.fillMaxWidth().fillMaxHeight(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            if (progress == 0.0f) {
+                LinearProgressIndicator()
+            } else {
+                LinearProgressIndicator(progress = progress)
+            }
+            Text(stringResource(R.string.dnd_sync_helper_loading_text))
         }
     }
 }

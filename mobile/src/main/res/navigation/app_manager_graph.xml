@@ -8,8 +8,7 @@
 
     <fragment
         android:id="@+id/loadingFragment"
-        android:name="com.boswelja.devicemanager.appmanager.ui.LoadingFragment"
-        tools:layout="@layout/common_fragment_loading" >
+        android:name="com.boswelja.devicemanager.appmanager.ui.LoadingFragment" >
         <action
             android:id="@+id/loadingFragment_to_appListFragment"
             app:destination="@id/appListFragment"
