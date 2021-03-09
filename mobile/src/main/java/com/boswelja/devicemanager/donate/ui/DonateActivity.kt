@@ -16,16 +16,20 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Scaffold
+import androidx.compose.material.ScaffoldState
 import androidx.compose.material.Tab
 import androidx.compose.material.TabRow
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.FavoriteBorder
+import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -39,6 +43,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.android.billingclient.api.SkuDetails
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.ui.UpNavigationTopAppBar
+import kotlinx.coroutines.launch
 
 class DonateActivity : AppCompatActivity() {
 
@@ -46,13 +51,36 @@ class DonateActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         setContent {
+            val scaffoldState = rememberScaffoldState()
+            val viewModel: DonateViewModel = viewModel()
+            val hasDonated = viewModel.onDonated.observeAsState()
+
             MaterialTheme {
-                Column(Modifier.fillMaxSize()) {
-                    UpNavigationTopAppBar(onNavigateUp = { finish() })
-                    DonateHeader()
-                    DonateOptions()
+                Scaffold(scaffoldState = scaffoldState) {
+                    Column(Modifier.fillMaxSize()) {
+                        UpNavigationTopAppBar(onNavigateUp = { finish() })
+                        DonateHeader()
+                        DonateOptions()
+                    }
+                    hasDonated.value?.let {
+                        if (it) {
+                            DonationCompleteSnackbar(scaffoldState)
+                        }
+                    }
                 }
             }
+        }
+    }
+
+    @Composable
+    fun DonationCompleteSnackbar(scaffoldState: ScaffoldState) {
+        val scope = rememberCoroutineScope()
+        val text = stringResource(id = R.string.donate_complete)
+        scope.launch {
+            scaffoldState.snackbarHostState.showSnackbar(
+                text,
+                null
+            )
         }
     }
 
