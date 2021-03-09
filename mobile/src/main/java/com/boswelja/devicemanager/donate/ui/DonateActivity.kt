@@ -15,14 +15,11 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Tab
 import androidx.compose.material.TabRow
 import androidx.compose.material.Text
-import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -41,6 +38,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.android.billingclient.api.SkuDetails
 import com.boswelja.devicemanager.R
+import com.boswelja.devicemanager.common.ui.UpNavigationTopAppBar
 
 class DonateActivity : AppCompatActivity() {
 
@@ -50,19 +48,7 @@ class DonateActivity : AppCompatActivity() {
         setContent {
             MaterialTheme {
                 Column(Modifier.fillMaxSize()) {
-                    TopAppBar(
-                        title = { },
-                        backgroundColor = MaterialTheme.colors.background,
-                        elevation = 0.dp,
-                        navigationIcon = {
-                            IconButton({ finish() }) {
-                                Icon(
-                                    Icons.Outlined.ArrowBack,
-                                    contentDescription = null
-                                )
-                            }
-                        }
-                    )
+                    UpNavigationTopAppBar(onNavigateUp = { finish() })
                     DonateHeader()
                     DonateOptions()
                 }
@@ -147,21 +133,21 @@ class DonateActivity : AppCompatActivity() {
     fun DonateOptions() {
         val viewModel: DonateViewModel = viewModel()
         val titles = listOf("Monthly", "One-Time")
-        var state by remember { mutableStateOf(0) }
+        var tabIndex by remember { mutableStateOf(0) }
         Column(Modifier.fillMaxSize()) {
             TabRow(
-                selectedTabIndex = state,
+                selectedTabIndex = tabIndex,
                 backgroundColor = MaterialTheme.colors.background
             ) {
                 titles.forEachIndexed { index, title ->
                     Tab(
                         text = { Text(title) },
-                        selected = state == index,
-                        onClick = { state = index }
+                        selected = tabIndex == index,
+                        onClick = { tabIndex = index }
                     )
                 }
             }
-            val options = when (state) {
+            val options = when (tabIndex) {
                 0 -> viewModel.recurringDonations.observeAsState()
                 else -> viewModel.oneTimeDonations.observeAsState()
             }
