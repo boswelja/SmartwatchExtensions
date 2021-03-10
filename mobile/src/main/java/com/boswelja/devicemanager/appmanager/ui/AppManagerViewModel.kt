@@ -22,8 +22,11 @@ class AppManagerViewModel internal constructor(
     val state: LiveData<State>
         get() = appManager.state
 
-    val apps: LiveData<List<App>>
-        get() = appManager.apps
+    val userApps: LiveData<List<App>>
+        get() = appManager.userApps
+
+    val systemApps: LiveData<List<App>>
+        get() = appManager.systemApps
 
     val progress: LiveData<Int>
         get() = appManager.progress

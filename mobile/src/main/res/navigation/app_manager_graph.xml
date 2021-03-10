@@ -20,8 +20,7 @@
 
     <fragment
         android:id="@+id/appListFragment"
-        android:name="com.boswelja.devicemanager.appmanager.ui.AppListFragment"
-        tools:layout="@layout/fragment_app_list" >
+        android:name="com.boswelja.devicemanager.appmanager.ui.AppListFragment">
         <action
             android:id="@+id/appListFragment_to_appInfoFragment"
             app:destination="@id/appInfoFragment"

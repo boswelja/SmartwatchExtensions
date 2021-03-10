@@ -36,10 +36,12 @@ class AppManager internal constructor(
     }
 
     private val _state = MutableLiveData(State.CONNECTING)
-    private val _appsObservable = MutableLiveData<List<App>>(emptyList())
+    private val _userAppsObservable = MutableLiveData<List<App>>(emptyList())
+    private val _systemAppsObservable = MutableLiveData<List<App>>(emptyList())
     private val _progress = MutableLiveData(-1)
 
-    private val _apps = ArrayList<App>()
+    private val _userApps = ArrayList<App>()
+    private val _systemApps = ArrayList<App>()
 
     private var watch: Watch? = null
     private var expectedPackageCount: Int = 0
@@ -51,10 +53,16 @@ class AppManager internal constructor(
         get() = _state
 
     /**
-     * A [List] of all [App]s found on the selected watch.
+     * A [List] of all user-installed [App]s found on the selected watch.
      */
-    val apps: LiveData<List<App>>
-        get() = _appsObservable
+    val userApps: LiveData<List<App>>
+        get() = _userAppsObservable
+
+    /**
+     * A [List] of all system [App]s found on the selected watch.
+     */
+    val systemApps: LiveData<List<App>>
+        get() = _systemAppsObservable
 
     /**
      * The progress of any ongoing operations, or -1 if progress can't be reported.
@@ -114,13 +122,20 @@ class AppManager internal constructor(
 
     internal fun addPackage(app: App) {
         Timber.d("Adding app to list")
-        _apps.add(app)
-        if (_apps.count() >= expectedPackageCount) {
+        if (app.isSystemApp) {
+            _systemApps.add(app)
+        } else {
+            _userApps.add(app)
+        }
+        if ((_systemApps.count() + _userApps.count()) >= expectedPackageCount) {
             Timber.d("Got all expected packages, updating LiveData")
             _progress.postValue(-1)
-            _appsObservable.postValue(_apps)
+            _userAppsObservable.postValue(_userApps)
+            _systemAppsObservable.postValue(_systemApps)
         } else {
-            val progress = ((_apps.count() / expectedPackageCount.toFloat()) * 100).toInt()
+            val progress = (
+                ((_systemApps.count() + _userApps.count()) / expectedPackageCount.toFloat()) * 100
+                ).toInt()
             Timber.d("Progress $progress")
             _progress.postValue(progress)
         }
@@ -128,21 +143,29 @@ class AppManager internal constructor(
 
     internal fun updatePackage(app: App) {
         Timber.d("Updating app in list")
-        _apps.removeAll { it.packageName == app.packageName }
-        _apps.add(app)
-        _appsObservable.postValue(_apps)
+        _userApps.removeAll { it.packageName == app.packageName }
+        _systemApps.removeAll { it.packageName == app.packageName }
+        if (app.isSystemApp) {
+            _systemApps.add(app)
+            _systemAppsObservable.postValue(_systemApps)
+        } else {
+            _userApps.add(app)
+            _userAppsObservable.postValue(_userApps)
+        }
     }
 
     internal fun removePackage(packageName: String) {
         Timber.d("Removing app from list")
-        _apps.removeAll { it.packageName == packageName }
-        _appsObservable.postValue(_apps)
+        val wasUser = _userApps.removeAll { it.packageName == packageName }
+        val wasSystem = _systemApps.removeAll { it.packageName == packageName }
+        if (wasUser) _userAppsObservable.postValue(_userApps)
+        if (wasSystem) _systemAppsObservable.postValue(_systemApps)
     }
 
     internal fun serviceRunning() {
         Timber.d("App Manager service is running")
         stateDisconnectedDelay.reset()
-        if (_apps.count() >= expectedPackageCount) {
+        if ((_systemApps.count() + _userApps.count()) >= expectedPackageCount) {
             Timber.d("No more expected packages, setting State to READY")
             _state.postValue(State.READY)
         }
@@ -153,8 +176,10 @@ class AppManager internal constructor(
         Timber.d("startAppManagerService() called")
         watch?.let {
             _state.postValue(State.CONNECTING)
-            _apps.clear()
-            _appsObservable.postValue(_apps)
+            _userApps.clear()
+            _systemApps.clear()
+            _userAppsObservable.postValue(_userApps)
+            _systemAppsObservable.postValue(_systemApps)
             watchManager.sendMessage(it, START_SERVICE, null)
             stateDisconnectedDelay.reset()
         }
