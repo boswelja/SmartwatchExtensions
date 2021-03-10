@@ -36,25 +36,12 @@
         android:name="com.boswelja.devicemanager.appmanager.ui.ErrorFragment"
         tools:layout="@layout/fragment_app_manager_error" />
 
-    <dialog
-        android:id="@+id/appPermissionDialogFragment"
-        android:name="com.boswelja.devicemanager.appmanager.ui.AppPermissionDialogFragment"
-        tools:layout="@layout/bottom_sheet_list">
-        <argument
-            android:name="app"
-            app:argType="com.boswelja.devicemanager.common.appmanager.App" />
-    </dialog>
-
     <fragment
         android:id="@+id/appInfoFragment"
-        android:name="com.boswelja.devicemanager.appmanager.ui.AppInfoFragment"
-        tools:layout="@layout/fragment_app_manager_info">
+        android:name="com.boswelja.devicemanager.appmanager.ui.AppInfoFragment">
         <argument
             android:name="app"
             app:argType="com.boswelja.devicemanager.common.appmanager.App" />
-        <action
-            android:id="@+id/appInfoFragment_to_appPermissionDialogFragment"
-            app:destination="@id/appPermissionDialogFragment" />
     </fragment>
 
     <action
