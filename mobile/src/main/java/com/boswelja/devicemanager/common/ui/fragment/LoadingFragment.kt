@@ -49,14 +49,16 @@ open class LoadingFragment : Fragment() {
     @Composable
     fun Loading() {
         Column(
-            Modifier.fillMaxWidth().fillMaxHeight(),
+            Modifier
+                .fillMaxWidth()
+                .fillMaxHeight(),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            if (progress == 0.0f) {
-                LinearProgressIndicator()
-            } else {
+            if (progress > 0.0f) {
                 LinearProgressIndicator(progress = progress)
+            } else {
+                LinearProgressIndicator()
             }
             Text(stringResource(R.string.dnd_sync_helper_loading_text))
         }
