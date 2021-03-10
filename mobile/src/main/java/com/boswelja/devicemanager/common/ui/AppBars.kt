@@ -1,5 +1,6 @@
 package com.boswelja.devicemanager.common.ui
 
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
@@ -10,9 +11,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun UpNavigationTopAppBar(onNavigateUp: () -> Unit) {
+fun UpNavigationTopAppBar(
+    title: @Composable () -> Unit = { },
+    actions: @Composable RowScope.() -> Unit = { },
+    onNavigateUp: () -> Unit
+) {
     TopAppBar(
-        title = { },
+        title = title,
         backgroundColor = MaterialTheme.colors.background,
         elevation = 0.dp,
         navigationIcon = {
@@ -22,6 +27,7 @@ fun UpNavigationTopAppBar(onNavigateUp: () -> Unit) {
                     contentDescription = null
                 )
             }
-        }
+        },
+        actions = actions
     )
 }
