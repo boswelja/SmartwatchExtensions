@@ -9,18 +9,17 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.ListItem
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
@@ -43,6 +42,7 @@ class AppListFragment : Fragment() {
             .navigate(AppListFragmentDirections.appListFragmentToAppInfoFragment(app))
     }
 
+    @ExperimentalMaterialApi
     @ExperimentalFoundationApi
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -75,37 +75,23 @@ class AppListFragment : Fragment() {
         }
     }
 
+    @ExperimentalMaterialApi
     @Composable
     fun AppItem(app: App, onClick: (App) -> Unit) {
-        Row(
-            Modifier
-                .fillMaxWidth()
-                .padding(16.dp)
-                .clickable { onClick(app) },
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            val icon = app.icon?.bitmap?.asImageBitmap()
-                ?: ImageBitmap.imageResource(R.drawable.android_head)
-            Image(
-                bitmap = icon,
-                null,
-                Modifier.size(56.dp)
-            )
-            Column(
-                Modifier
-                    .fillMaxWidth()
-                    .padding(start = 16.dp)
-            ) {
-                Text(
-                    app.label,
-                    style = MaterialTheme.typography.body1
+        val icon = app.icon?.bitmap?.asImageBitmap()
+            ?: ImageBitmap.imageResource(R.drawable.android_head)
+        ListItem(
+            text = { Text(app.label) },
+            secondaryText = { Text(app.version) },
+            icon = {
+                Image(
+                    icon,
+                    contentDescription = null,
+                    Modifier.size(40.dp)
                 )
-                Text(
-                    app.version,
-                    style = MaterialTheme.typography.body2
-                )
-            }
-        }
+            },
+            modifier = Modifier.clickable { onClick(app) }
+        )
     }
 
     @Composable

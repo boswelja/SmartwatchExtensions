@@ -11,10 +11,11 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
+import androidx.compose.material.ListItem
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.ScaffoldState
@@ -47,6 +48,7 @@ import kotlinx.coroutines.launch
 
 class DonateActivity : AppCompatActivity() {
 
+    @ExperimentalMaterialApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -111,43 +113,24 @@ class DonateActivity : AppCompatActivity() {
         }
     }
 
+    @ExperimentalMaterialApi
     @Composable
     fun DonateItem(skuDetails: SkuDetails, onClick: (SkuDetails) -> Unit) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .clickable(onClick = { onClick(skuDetails) })
-                .padding(16.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            val icon = if (skuDetails.sku.contains("large"))
-                painterResource(id = R.drawable.ic_donate_large)
-            else
-                painterResource(id = R.drawable.ic_donate_small)
-            Icon(
-                icon,
-                skuDetails.price,
-                Modifier.size(64.dp),
-                tint = MaterialTheme.colors.onBackground
-            )
-            Column(
-                Modifier
-                    .fillMaxWidth()
-                    .padding(start = 16.dp)
-            ) {
-                Text(
-                    skuDetails.price,
-                    maxLines = 1,
-                    style = MaterialTheme.typography.body1
-                )
-                Text(
-                    skuDetails.description,
-                    style = MaterialTheme.typography.body2
-                )
-            }
-        }
+        val icon = if (skuDetails.sku.contains("large"))
+            painterResource(id = R.drawable.ic_donate_large)
+        else
+            painterResource(id = R.drawable.ic_donate_small)
+        ListItem(
+            text = { Text(skuDetails.price) },
+            secondaryText = { Text(skuDetails.description) },
+            icon = {
+                Icon(icon, null)
+            },
+            modifier = Modifier.clickable { onClick(skuDetails) }
+        )
     }
 
+    @ExperimentalMaterialApi
     @Composable
     fun DonateList(donateOptions: List<SkuDetails>, onClick: (SkuDetails) -> Unit) {
         LazyColumn {
@@ -157,6 +140,7 @@ class DonateActivity : AppCompatActivity() {
         }
     }
 
+    @ExperimentalMaterialApi
     @Composable
     fun DonateOptions() {
         val viewModel: DonateViewModel = viewModel()
