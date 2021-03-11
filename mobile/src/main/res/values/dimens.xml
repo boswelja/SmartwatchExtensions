@@ -3,10 +3,6 @@
 
     <dimen name="corner_radius">8dp</dimen>
 
-    <dimen name="message_item_padding">16dp</dimen>
-    <dimen name="message_icon_size">24dp</dimen>
-    <dimen name="swipe_icon_size">36dp</dimen>
-
     <dimen name="manage_space_item_horizontal_margin">32dp</dimen>
     <dimen name="manage_space_item_vertical_margin">16dp</dimen>
 
@@ -33,7 +29,6 @@
     <dimen name="register_watch_horizontal_margin">32dp</dimen>
     <dimen name="register_watch_section_margin">8dp</dimen>
 
-    <dimen name="app_manager_section_vertical_margin">32dp</dimen>
     <dimen name="app_manager_horizontal_margin">16dp</dimen>
     <dimen name="app_manager_vertical_margin">16dp</dimen>
 </resources>
