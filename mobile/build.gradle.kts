@@ -80,6 +80,9 @@ dependencies {
     val androidxWork = "2.7.0-alpha01"
 
     val compose = "1.0.0-beta01"
+    val lifecycleCompose = "1.0.0-alpha02"
+    val activityCompose = "1.3.0-alpha03"
+    val navigationCompose = "1.0.0-alpha09"
 
     val billingClient = "3.0.2"
     val googleMaterial = "1.4.0-alpha01"
@@ -126,9 +129,10 @@ dependencies {
     implementation("androidx.compose.material:material:$compose")
     implementation("androidx.compose.material:material-icons-core:$compose")
     implementation("androidx.compose.material:material-icons-extended:$compose")
-    implementation("androidx.activity:activity-compose:1.3.0-alpha03")
-    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:1.0.0-alpha02")
     implementation("androidx.compose.runtime:runtime-livedata:$compose")
+    implementation("androidx.activity:activity-compose:$activityCompose")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:$lifecycleCompose")
+    implementation("androidx.navigation:navigation-compose:$navigationCompose")
 
     ksp("androidx.room:room-compiler:$androidxRoom")
 
