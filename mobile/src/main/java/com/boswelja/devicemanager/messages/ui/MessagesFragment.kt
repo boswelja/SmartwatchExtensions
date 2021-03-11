@@ -4,26 +4,61 @@ import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
+import android.text.format.DateFormat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.browser.customtabs.CustomTabsIntent
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material.Card
+import androidx.compose.material.DismissDirection
+import androidx.compose.material.DismissValue
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.Icon
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.OutlinedButton
+import androidx.compose.material.Scaffold
+import androidx.compose.material.ScaffoldState
+import androidx.compose.material.SnackbarDuration
+import androidx.compose.material.SnackbarResult
+import androidx.compose.material.SwipeToDismiss
+import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Archive
+import androidx.compose.material.icons.outlined.DoneAll
+import androidx.compose.material.rememberDismissState
+import androidx.compose.material.rememberScaffoldState
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
-import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.fragment.findNavController
-import androidx.paging.LoadState
-import androidx.recyclerview.widget.DividerItemDecoration
-import androidx.recyclerview.widget.ItemTouchHelper
 import com.boswelja.devicemanager.R
-import com.boswelja.devicemanager.databinding.FragmentMessagesBinding
 import com.boswelja.devicemanager.messages.Message
-import com.google.android.material.snackbar.Snackbar
-import kotlinx.coroutines.flow.collectLatest
+import java.util.Date
+import java.util.concurrent.TimeUnit
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
 class MessagesFragment : Fragment() {
 
@@ -31,100 +66,172 @@ class MessagesFragment : Fragment() {
         CustomTabsIntent.Builder().setShowTitle(true).build()
     }
 
-    private val viewModel: MessagesViewModel by viewModels()
-    private val adapter by lazy {
-        MessagesAdapter { messageAction ->
-            when (messageAction) {
-                Message.Action.LAUNCH_NOTIFICATION_SETTINGS -> openNotiSettings()
-                Message.Action.LAUNCH_CHANGELOG -> showChangelog()
-                Message.Action.INSTALL_UPDATE -> viewModel.startUpdateFlow(requireActivity())
-            }
-        }
-    }
-    private val swipeDismissCallback by lazy {
-        ItemTouchHelper(
-            SwipeDismissCallback(requireContext()) { position ->
-                adapter.peek(position)?.let { message ->
-                    canShowLoading = false
-                    viewModel.dismissMessage(message.id)
-                    adapter.notifyItemRemoved(position)
-                    showMessageDismissedSnackbar(message.id)
-                }
-            }
-        )
-    }
-
-    private lateinit var binding: FragmentMessagesBinding
-    private var canShowLoading: Boolean = true
-
+    @ExperimentalMaterialApi
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentMessagesBinding.inflate(inflater, container, false)
-        return binding.root
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        setupRecyclerView()
-        observeMessages()
-        observeLoadState()
-
-        binding.messageHistoryButton.setOnClickListener {
-            findNavController().navigate(MessagesFragmentDirections.toMessageHistoryActivity())
-        }
-    }
-
-    /**
-     * Set up the messages [androidx.recyclerview.widget.RecyclerView].
-     */
-    private fun setupRecyclerView() {
-        binding.messagesRecyclerView.adapter = adapter
-        binding.messagesRecyclerView.addItemDecoration(
-            DividerItemDecoration(requireContext(), DividerItemDecoration.VERTICAL)
-        )
-        swipeDismissCallback.attachToRecyclerView(binding.messagesRecyclerView)
-    }
-
-    /**
-     * Observe active messages in the database and pass them to [adapter].
-     */
-    private fun observeMessages() {
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.activeMessagesPager.collectLatest {
-                adapter.submitData(it)
-            }
-        }
-    }
-
-    /**
-     * Observe [adapter] loading state and update UI accordingly.
-     */
-    private fun observeLoadState() {
-        viewLifecycleOwner.lifecycleScope.launch {
-            adapter.loadStateFlow.collectLatest { loadStates ->
-                val isLoading = loadStates.refresh is LoadState.Loading
-                Timber.d("isLoading = $isLoading")
-                binding.progressHorizontal.isVisible = isLoading && canShowLoading
-                binding.noMessagesView.isVisible = !isLoading && adapter.itemCount <= 0
-                if (!isLoading) canShowLoading = true
-            }
-        }
-    }
-
-    /**
-     * Show a snackbar with an undo action when a message is dismissed.
-     */
-    private fun showMessageDismissedSnackbar(messageId: Long) {
-        Snackbar.make(requireView(), R.string.message_dismissed, Snackbar.LENGTH_INDEFINITE)
-            .apply {
-                setAction(R.string.button_undo) {
-                    viewModel.restoreMessage(messageId)
+        return ComposeView(requireContext()).apply {
+            setContent {
+                val viewModel: MessagesViewModel = viewModel()
+                val scaffoldState = rememberScaffoldState()
+                val messages by viewModel.activeMessagesFlow.collectAsState(emptyList())
+                Scaffold(scaffoldState = scaffoldState) {
+                    if (messages.isNotEmpty()) {
+                        MessagesList(messages, scaffoldState)
+                    } else {
+                        NoMessagesView()
+                    }
                 }
-            }.show()
+            }
+        }
+    }
+
+    @ExperimentalMaterialApi
+    @Composable
+    fun MessagesList(messages: List<Message>, scaffoldState: ScaffoldState) {
+        val viewModel: MessagesViewModel = viewModel()
+        val scope = rememberCoroutineScope()
+        LazyColumn {
+            items(messages) { message ->
+                val dismissState = rememberDismissState {
+                    if (it != DismissValue.Default) {
+                        scope.launch {
+                            viewModel.dismissMessage(message.id)
+                            val result = scaffoldState.snackbarHostState.showSnackbar(
+                                getString(R.string.message_dismissed),
+                                getString(R.string.button_undo),
+                                SnackbarDuration.Long
+                            )
+                            if (result == SnackbarResult.ActionPerformed) {
+                                viewModel.restoreMessage(message.id)
+                            }
+                        }
+                        true
+                    } else false
+                }
+                SwipeToDismiss(
+                    state = dismissState,
+                    background = {
+                        val direction = dismissState.dismissDirection ?: return@SwipeToDismiss
+                        val color = Color.LightGray
+                        val alignment = when (direction) {
+                            DismissDirection.StartToEnd -> Alignment.CenterStart
+                            DismissDirection.EndToStart -> Alignment.CenterEnd
+                        }
+                        val icon = Icons.Outlined.Archive
+
+                        Box(
+                            Modifier
+                                .fillMaxSize()
+                                .background(color)
+                                .padding(horizontal = 32.dp),
+                            contentAlignment = alignment
+                        ) {
+                            Icon(
+                                icon,
+                                contentDescription = null,
+                                modifier = Modifier.size(36.dp)
+                            )
+                        }
+                    }
+                ) {
+                    Card(
+                        elevation = animateDpAsState(
+                            if (dismissState.dismissDirection != null) 4.dp else 0.dp
+                        ).value
+                    ) {
+                        MessageItem(message)
+                    }
+                }
+            }
+        }
+    }
+
+    @Composable
+    fun NoMessagesView() {
+        Column(
+            Modifier
+                .fillMaxSize()
+                .padding(16.dp),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Icon(
+                Icons.Outlined.DoneAll,
+                contentDescription = null,
+                Modifier.size(120.dp)
+            )
+            Text(
+                stringResource(R.string.messages_empty),
+                style = MaterialTheme.typography.h5
+            )
+            OutlinedButton(
+                modifier = Modifier.padding(top = 16.dp),
+                onClick = {
+                    findNavController()
+                        .navigate(MessagesFragmentDirections.toMessageHistoryActivity())
+                }
+            ) {
+                Text(stringResource(R.string.message_history_label))
+            }
+        }
+    }
+
+    @Composable
+    fun MessageItem(message: Message) {
+        Column(
+            Modifier
+                .fillMaxWidth()
+                .background(MaterialTheme.colors.background)
+                .padding(16.dp)
+        ) {
+            Row(
+                Modifier.fillMaxWidth()
+            ) {
+                Icon(
+                    painterResource(id = message.icon.iconRes),
+                    null,
+                    Modifier.size(24.dp)
+                )
+                Column(
+                    Modifier
+                        .weight(1f)
+                        .padding(start = 16.dp)
+                ) {
+                    Text(
+                        message.title,
+                        style = MaterialTheme.typography.body1
+                    )
+                    Text(
+                        message.text,
+                        style = MaterialTheme.typography.body2
+                    )
+                }
+                Text(
+                    getReceivedString(message.timestamp),
+                    style = MaterialTheme.typography.body2
+                )
+            }
+            if (message.action != null) {
+                val viewModel: MessagesViewModel = viewModel()
+                OutlinedButton(
+                    onClick = {
+                        when (message.action) {
+                            Message.Action.LAUNCH_NOTIFICATION_SETTINGS -> openNotiSettings()
+                            Message.Action.LAUNCH_CHANGELOG -> showChangelog()
+                            Message.Action.INSTALL_UPDATE ->
+                                viewModel.startUpdateFlow(requireActivity())
+                        }
+                    },
+                    content = { Text(stringResource(message.action.labelRes)) },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 16.dp)
+                )
+            }
+        }
     }
 
     /**
@@ -147,5 +254,21 @@ class MessagesFragment : Fragment() {
 
     private fun showChangelog() {
         customTabsIntent.launchUrl(requireContext(), getString(R.string.changelog_url).toUri())
+    }
+
+    /**
+     * Convert millisecond time into a readable date string.
+     * Shows time received if it's within the last 24 hours, otherwise shows the date.
+     * @param timeInMillis The time milliseconds to convert to a readable string.
+     */
+    private fun getReceivedString(timeInMillis: Long): String {
+        val todayMillis = System.currentTimeMillis()
+        val received = Date(timeInMillis)
+        val isToday = (todayMillis - timeInMillis) < TimeUnit.DAYS.toMillis(1)
+        return if (isToday) {
+            DateFormat.getTimeFormat(requireContext()).format(received)
+        } else {
+            DateFormat.getDateFormat(requireContext()).format(received)
+        }
     }
 }
