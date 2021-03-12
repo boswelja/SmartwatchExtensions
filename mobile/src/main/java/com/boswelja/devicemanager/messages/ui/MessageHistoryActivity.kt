@@ -32,7 +32,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.boswelja.devicemanager.R
-import com.boswelja.devicemanager.common.ui.UpNavigationTopAppBar
+import com.boswelja.devicemanager.common.ui.UpNavigationAppBar
 import com.boswelja.devicemanager.common.ui.activity.BaseToolbarActivity
 import com.boswelja.devicemanager.messages.Message
 import java.util.Date
@@ -52,7 +52,7 @@ class MessageHistoryActivity : BaseToolbarActivity() {
             Scaffold(
                 scaffoldState = scaffoldState,
                 topBar = {
-                    UpNavigationTopAppBar(
+                    UpNavigationAppBar(
                         title = { Text(stringResource(R.string.message_history_label)) },
                         actions = {
                             val clearText = if (messages.isEmpty())
