@@ -79,7 +79,7 @@ dependencies {
     val androidxTestExt = "1.1.3-alpha04"
     val androidxWork = "2.7.0-alpha01"
 
-    val compose = "1.0.0-beta01"
+    val compose = "1.0.0-beta02"
     val lifecycleCompose = "1.0.0-alpha02"
     val activityCompose = "1.3.0-alpha03"
     val navigationCompose = "1.0.0-alpha09"
