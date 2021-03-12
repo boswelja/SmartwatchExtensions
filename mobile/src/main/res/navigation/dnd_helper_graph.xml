@@ -7,8 +7,7 @@
 
     <fragment
         android:id="@+id/setupFragment"
-        android:name="com.boswelja.devicemanager.dndsync.ui.helper.SetupFragment"
-        tools:layout="@layout/fragment_dndsync_helper_setup">
+        android:name="com.boswelja.devicemanager.dndsync.ui.helper.SetupFragment">
 
         <action
             android:id="@+id/to_resultFragment"
@@ -44,8 +43,7 @@
 
     <fragment
         android:id="@+id/resultFragment"
-        android:name="com.boswelja.devicemanager.dndsync.ui.helper.ResultFragment"
-        tools:layout="@layout/fragment_dndsync_helper_result">
+        android:name="com.boswelja.devicemanager.dndsync.ui.helper.ResultFragment">
         <argument
             android:name="success"
             app:argType="boolean" />

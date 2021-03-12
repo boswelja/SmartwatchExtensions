@@ -58,7 +58,6 @@
     <string name="dnd_sync_helper_warning_title">Warning</string>
     <string name="dnd_sync_helper_warning_watch_version">Your watch is running an incompatible Wear OS version (System version newer than 8.0). The required permission cannot be granted on watches running system versions newer than 8.0. You can find out more at https://issuetracker.google.com/issues/72786396</string>
     <string name="dnd_sync_helper_setup_title">Setup</string>
-    <string name="dnd_sync_helper_button_finish">Finish</string>
     <string name="dnd_sync_helper_button_next">Next</string>
 
     <!-- App Manager strings -->

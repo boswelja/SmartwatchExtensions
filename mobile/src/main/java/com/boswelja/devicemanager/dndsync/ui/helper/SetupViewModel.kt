@@ -1,16 +1,8 @@
-/* Copyright (C) 2020 Jack Boswell <boswelja@outlook.com>
- *
- * This file is part of Wearable Extensions
- *
- * This file, and any part of the Wearable Extensions app/s cannot be copied and/or distributed
- * without permission from Jack Boswell (boswelja) <boswela@outlook.com>
- */
 package com.boswelja.devicemanager.dndsync.ui.helper
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
+import com.boswelja.devicemanager.common.Event
 import com.boswelja.devicemanager.common.dndsync.References.REQUEST_INTERRUPT_FILTER_ACCESS_STATUS_PATH
 import com.boswelja.devicemanager.common.fromByteArray
 import com.boswelja.devicemanager.watchmanager.WatchManager
@@ -29,14 +21,12 @@ class SetupViewModel(application: Application) : AndroidViewModel(application) {
             when (it.path) {
                 REQUEST_INTERRUPT_FILTER_ACCESS_STATUS_PATH -> {
                     val hasNotiPolicyAccess = Boolean.fromByteArray(it.data)
-                    _hasNotiPolicyAccess.postValue(hasNotiPolicyAccess)
+                    if (hasNotiPolicyAccess) onNotiPolicyAccessGranted.fire()
                 }
             }
         }
 
-    private val _hasNotiPolicyAccess = MutableLiveData<Boolean?>(null)
-    val hasNotiPolicyAccess: LiveData<Boolean?>
-        get() = _hasNotiPolicyAccess
+    val onNotiPolicyAccessGranted = Event()
 
     init {
         messageClient.addListener(messageListener)
@@ -50,9 +40,5 @@ class SetupViewModel(application: Application) : AndroidViewModel(application) {
 
     fun requestCheckPermission() {
         messageClient.sendMessage(watchId, REQUEST_INTERRUPT_FILTER_ACCESS_STATUS_PATH, null)
-    }
-
-    fun permissionRequestHandled() {
-        _hasNotiPolicyAccess.postValue(null)
     }
 }
