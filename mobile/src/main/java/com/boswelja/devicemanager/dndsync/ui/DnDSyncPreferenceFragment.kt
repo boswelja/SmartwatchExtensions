@@ -112,15 +112,15 @@ class DnDSyncPreferenceFragment :
         dndSyncToWatchPreference.onPreferenceChangeListener = this
         dndSyncToPhonePreference.onPreferenceChangeListener = this
         dndSyncWithTheaterPreference.onPreferenceChangeListener = this
-        watchManager.selectedWatch.observe(viewLifecycleOwner) {
-            dndSyncToWatchPreference.isEnabled = it?.hasCapability(Capability.RECEIVE_DND) == true
-        }
     }
 
     override fun onStart() {
         super.onStart()
         Timber.d("onStart() called")
         sharedPreferences.registerOnSharedPreferenceChangeListener(this)
+        watchManager.selectedWatch.observe(viewLifecycleOwner) {
+            dndSyncToWatchPreference.isEnabled = it?.hasCapability(Capability.RECEIVE_DND) == true
+        }
     }
 
     override fun onStop() {
