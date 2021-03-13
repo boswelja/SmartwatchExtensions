@@ -41,14 +41,13 @@ import kotlinx.coroutines.launch
 fun AppInfo(
     app: App,
     scaffoldState: ScaffoldState,
-    viewModel: AppManagerViewModel,
-    processedPermissions: Array<String>
+    viewModel: AppManagerViewModel
 ) {
     val modalSheetState = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
     ModalBottomSheetLayout(
         sheetState = modalSheetState,
         sheetContent = {
-            PermissionsSheet(permissions = processedPermissions)
+            PermissionsSheet(permissions = app.requestedPermissions)
         }
     ) {
         Column(Modifier.fillMaxSize()) {

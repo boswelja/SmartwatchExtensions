@@ -1,6 +1,5 @@
 package com.boswelja.devicemanager.appmanager.ui
 
-import android.content.pm.PackageManager
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
@@ -88,8 +87,7 @@ class AppManagerActivity : AppCompatActivity() {
                             AppInfo(
                                 app,
                                 scaffoldState,
-                                viewModel,
-                                processPermissions(app.requestedPermissions)
+                                viewModel
                             )
                         }
                     }
@@ -139,28 +137,6 @@ class AppManagerActivity : AppCompatActivity() {
         } catch (e: Exception) {
             Timber.w("Problem with nav controller, aborting")
         }
-    }
-
-    /**
-     * Attempts to convert system permissions strings into something meaningful to the user.
-     * Fallback is to just use the system strings.
-     */
-    private fun processPermissions(requestedPermissions: Array<String>): Array<String> {
-        val processedPermissions = ArrayList<String>()
-        for (permission in requestedPermissions) {
-            val localizedPermission = try {
-                val permissionInfo =
-                    packageManager?.getPermissionInfo(
-                        permission, PackageManager.GET_META_DATA
-                    )
-                permissionInfo?.loadLabel(packageManager)?.toString() ?: permission
-            } catch (e: Exception) {
-                permission
-            }
-            processedPermissions.add(localizedPermission)
-        }
-        processedPermissions.sort()
-        return processedPermissions.toTypedArray()
     }
 
     companion object Destinations {

@@ -47,7 +47,7 @@ data class App(
         packageManager.getLaunchIntentForPackage(packageInfo.packageName) != null,
         packageInfo.firstInstallTime,
         packageInfo.lastUpdateTime,
-        packageInfo.requestedPermissions ?: emptyArray()
+        getLocalizedPermissions(packageManager, packageInfo)
     )
 
     override fun toString(): String {
@@ -98,6 +98,31 @@ data class App(
             ObjectInputStream(ByteArrayInputStream(byteArray)).use {
                 return it.readObject() as App
             }
+        }
+
+        /**
+         * Attempts to convert system permissions strings into something meaningful to the user.
+         * Fallback is to just use the system strings.
+         */
+        private fun getLocalizedPermissions(
+            packageManager: PackageManager,
+            packageInfo: PackageInfo
+        ): Array<String> {
+            val processedPermissions = ArrayList<String>()
+            for (permission in packageInfo.requestedPermissions) {
+                val localizedPermission = try {
+                    val permissionInfo =
+                        packageManager.getPermissionInfo(
+                            permission, PackageManager.GET_META_DATA
+                        )
+                    permissionInfo?.loadLabel(packageManager)?.toString() ?: permission
+                } catch (e: Exception) {
+                    permission
+                }
+                processedPermissions.add(localizedPermission)
+            }
+            processedPermissions.sort()
+            return processedPermissions.toTypedArray()
         }
 
         private fun isSystemApp(applicationInfo: ApplicationInfo): Boolean {
