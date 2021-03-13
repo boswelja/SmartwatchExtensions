@@ -14,6 +14,7 @@ import androidx.preference.Preference
 import androidx.preference.SwitchPreference
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.Compat
+import com.boswelja.devicemanager.common.connection.Capability
 import com.boswelja.devicemanager.common.preference.PreferenceKey.DND_SYNC_TO_PHONE_KEY
 import com.boswelja.devicemanager.common.preference.PreferenceKey.DND_SYNC_TO_WATCH_KEY
 import com.boswelja.devicemanager.common.preference.PreferenceKey.DND_SYNC_WITH_THEATER_KEY
@@ -111,6 +112,9 @@ class DnDSyncPreferenceFragment :
         dndSyncToWatchPreference.onPreferenceChangeListener = this
         dndSyncToPhonePreference.onPreferenceChangeListener = this
         dndSyncWithTheaterPreference.onPreferenceChangeListener = this
+        watchManager.selectedWatch.observe(viewLifecycleOwner) {
+            dndSyncToWatchPreference.isEnabled = it?.hasCapability(Capability.RECEIVE_DND) == true
+        }
     }
 
     override fun onStart() {
