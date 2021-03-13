@@ -26,7 +26,6 @@ import com.boswelja.devicemanager.appmanager.State
 import com.boswelja.devicemanager.common.appmanager.App
 import com.boswelja.devicemanager.common.ui.UpNavigationWatchPickerAppBar
 import com.boswelja.devicemanager.common.ui.fragment.Loading
-import com.boswelja.devicemanager.watchmanager.WatchManager
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -38,14 +37,13 @@ class AppManagerActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         Timber.i("onCreate() called")
 
-        val watchManager = WatchManager.getInstance(this)
         setContent {
             val viewModel: AppManagerViewModel = viewModel()
             val progress by viewModel.progress.observeAsState()
             val state by viewModel.state.observeAsState()
 
-            val selectedWatch by watchManager.selectedWatch.observeAsState()
-            val registeredWatches by watchManager.registeredWatches.observeAsState()
+            val selectedWatch by viewModel.watchManager.selectedWatch.observeAsState()
+            val registeredWatches by viewModel.watchManager.registeredWatches.observeAsState()
 
             val scaffoldState = rememberScaffoldState()
             val navController = rememberNavController()
@@ -57,7 +55,7 @@ class AppManagerActivity : AppCompatActivity() {
                         UpNavigationWatchPickerAppBar(
                             selectedWatch = selectedWatch,
                             watches = registeredWatches,
-                            onWatchSelected = { watchManager.selectWatchById(it.id) },
+                            onWatchSelected = { viewModel.watchManager.selectWatchById(it.id) },
                             onNavigateUp = {
                                 if (navController.previousBackStackEntry != null) {
                                     navController.popBackStack()

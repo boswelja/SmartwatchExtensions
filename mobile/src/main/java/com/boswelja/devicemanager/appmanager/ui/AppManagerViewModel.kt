@@ -6,16 +6,22 @@ import androidx.lifecycle.LiveData
 import com.boswelja.devicemanager.appmanager.AppManager
 import com.boswelja.devicemanager.appmanager.State
 import com.boswelja.devicemanager.common.appmanager.App
+import com.boswelja.devicemanager.watchmanager.WatchManager
 import java.text.SimpleDateFormat
 import java.util.Locale
 
 class AppManagerViewModel internal constructor(
     application: Application,
-    private val appManager: AppManager
+    private val appManager: AppManager,
+    val watchManager: WatchManager
 ) : AndroidViewModel(application) {
 
     @Suppress("unused")
-    constructor(application: Application) : this(application, AppManager(application))
+    constructor(application: Application) : this(
+        application,
+        AppManager(application),
+        WatchManager.getInstance(application)
+    )
 
     private val dateFormatter = SimpleDateFormat("EE, dd MMM yyyy, h:mm aa", Locale.getDefault())
 
