@@ -21,16 +21,15 @@ import androidx.compose.material.ScaffoldState
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Delete
+import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.OpenInNew
 import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.boswelja.devicemanager.R
@@ -95,13 +94,19 @@ fun AppHeaderView(app: App) {
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        val icon = app.icon?.bitmap?.asImageBitmap()
-            ?: ImageBitmap.imageResource(R.drawable.android_head)
-        Image(
-            icon,
-            null,
-            Modifier.size(72.dp)
-        )
+        if (app.icon?.bitmap != null) {
+            Image(
+                app.icon!!.bitmap.asImageBitmap(),
+                null,
+                Modifier.size(72.dp)
+            )
+        } else {
+            Image(
+                Icons.Outlined.Info,
+                null,
+                Modifier.size(72.dp)
+            )
+        }
         Text(
             app.label,
             style = MaterialTheme.typography.h6

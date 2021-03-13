@@ -14,12 +14,12 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ListItem
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Info
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
-import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.boswelja.devicemanager.R
@@ -54,17 +54,23 @@ fun AppList(viewModel: AppManagerViewModel, onAppClick: (App) -> Unit) {
 @ExperimentalMaterialApi
 @Composable
 fun AppItem(app: App, onClick: (App) -> Unit) {
-    val icon = app.icon?.bitmap?.asImageBitmap()
-        ?: ImageBitmap.imageResource(R.drawable.android_head)
     ListItem(
         text = { Text(app.label) },
         secondaryText = { Text(app.version) },
         icon = {
-            Image(
-                icon,
-                contentDescription = null,
-                Modifier.size(40.dp)
-            )
+            if (app.icon?.bitmap != null) {
+                Image(
+                    app.icon!!.bitmap.asImageBitmap(),
+                    contentDescription = null,
+                    Modifier.size(40.dp)
+                )
+            } else {
+                Image(
+                    Icons.Outlined.Info,
+                    contentDescription = null,
+                    Modifier.size(40.dp)
+                )
+            }
         },
         modifier = Modifier.clickable { onClick(app) }
     )
