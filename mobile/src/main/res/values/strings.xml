@@ -152,11 +152,7 @@
     <string name="clear_preferences_button_text">Clear Settings</string>
     <string name="clear_preferences_dialog_title">@string/clear_preferences_button_text</string>
     <string name="clear_preferences_dialog_message">Are you sure you want to clear Wearable Extensions settings for your %s?</string>
-    <string name="clear_preferences_clearing">Clearing prefrences</string>
     <string name="clear_preferences_success">Successfully cleared preferences</string>
-    <string name="forget_watch_forgetting">Forgetting watch</string>
-    <string name="forget_watch_success">Successfully forgot watch</string>
-    <string name="forget_watch_warning">Tap \'Finish\' below to return to the watch manager</string>
     <string name="forget_watch_dialog_title">@string/button_forget_watch</string>
     <string name="forget_watch_dialog_message">Are you sure you want to forget your %s? This will clear all Wearable Extensions settings, and remove your %s from the app.</string>
     <string name="capabilities_title">On this watch, Wearable Extensions can:</string>

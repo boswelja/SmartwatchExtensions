@@ -11,9 +11,4 @@
         <item quantity="other">Last updated %s minutes ago</item>
     </plurals>
 
-    <plurals name="register_watch_success_title">
-        <item quantity="one">Watch Registered</item>
-        <item quantity="other">Watches Registered</item>
-    </plurals>
-
 </resources>

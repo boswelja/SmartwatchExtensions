@@ -17,7 +17,4 @@
     <color name="dividerColor">#1f000000</color>
 
     <color name="iconTint">@color/colorPrimary</color>
-
-    <color name="warningRed">#D32F2F</color>
-
 </resources>
