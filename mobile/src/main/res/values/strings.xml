@@ -54,11 +54,7 @@
     <string name="dnd_sync_helper_success_message">Phone to Watch Sync has successfully been enabled!</string>
     <string name="dnd_sync_helper_failed_title">Something Went Wrong</string>
     <string name="dnd_sync_helper_failed_message">Failed to enable Phone to Watch sync.</string>
-    <string name="dnd_sync_helper_warning_acknowledged">I acknowledge this may not work</string>
-    <string name="dnd_sync_helper_warning_title">Warning</string>
-    <string name="dnd_sync_helper_warning_watch_version">Your watch is running an incompatible Wear OS version (System version newer than 8.0). The required permission cannot be granted on watches running system versions newer than 8.0. You can find out more at https://issuetracker.google.com/issues/72786396</string>
     <string name="dnd_sync_helper_setup_title">Setup</string>
-    <string name="dnd_sync_helper_button_next">Next</string>
 
     <!-- App Manager strings -->
     <string name="main_app_manager_title">App Manager</string>
@@ -227,7 +223,6 @@
     <string name="update_available_text">A new version of Wearable Extensions is available</string>
 
     <!-- Donate strings -->
-    <string name="donate_title">Donate</string>
     <string name="donate_thank_you">Thank you for choosing to donate! Check out the options below.</string>
     <string name="donate_complete">Thanks for supporting Wearable Extensions!</string>
 
