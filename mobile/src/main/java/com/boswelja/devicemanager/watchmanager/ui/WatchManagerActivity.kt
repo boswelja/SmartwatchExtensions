@@ -10,6 +10,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.ExperimentalMaterialApi
@@ -75,7 +76,13 @@ class WatchManagerActivity : AppCompatActivity() {
                         }
                         items(registeredWatches ?: emptyList()) { watch ->
                             ListItem(
-                                icon = { Icon(Icons.Outlined.Watch, null) },
+                                icon = {
+                                    Icon(
+                                        Icons.Outlined.Watch,
+                                        null,
+                                        Modifier.size(40.dp)
+                                    )
+                                },
                                 text = { Text(watch.name) },
                                 secondaryText = { Text(stringResource(watch.status.stringRes)) },
                                 modifier = Modifier.clickable {
