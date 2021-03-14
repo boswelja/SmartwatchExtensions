@@ -5,7 +5,6 @@ import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.ScaffoldState
 import androidx.compose.material.SnackbarResult
@@ -24,6 +23,7 @@ import androidx.navigation.compose.rememberNavController
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.appmanager.State
 import com.boswelja.devicemanager.common.appmanager.App
+import com.boswelja.devicemanager.common.ui.AppTheme
 import com.boswelja.devicemanager.common.ui.UpNavigationWatchPickerAppBar
 import com.boswelja.devicemanager.common.ui.fragment.Loading
 import kotlinx.coroutines.launch
@@ -48,7 +48,7 @@ class AppManagerActivity : AppCompatActivity() {
             val scaffoldState = rememberScaffoldState()
             val navController = rememberNavController()
 
-            MaterialTheme {
+            AppTheme {
                 Scaffold(
                     scaffoldState = scaffoldState,
                     topBar = {

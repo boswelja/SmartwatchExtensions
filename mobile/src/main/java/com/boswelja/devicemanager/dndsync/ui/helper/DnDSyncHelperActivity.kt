@@ -36,6 +36,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.boswelja.devicemanager.R
+import com.boswelja.devicemanager.common.ui.AppTheme
 import com.boswelja.devicemanager.common.ui.UpNavigationAppBar
 import com.boswelja.devicemanager.common.ui.activity.BaseToolbarActivity
 import timber.log.Timber
@@ -51,7 +52,7 @@ class DnDSyncHelperActivity : BaseToolbarActivity() {
             val viewModel: HelperViewModel = viewModel()
             val setupResult by viewModel.result.observeAsState()
             var isLoading by mutableStateOf(false)
-            MaterialTheme {
+            AppTheme {
                 Scaffold(
                     topBar = {
                         UpNavigationAppBar(onNavigateUp = { finish() })

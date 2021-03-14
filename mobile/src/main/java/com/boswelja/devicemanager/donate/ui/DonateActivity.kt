@@ -43,6 +43,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.android.billingclient.api.SkuDetails
 import com.boswelja.devicemanager.R
+import com.boswelja.devicemanager.common.ui.AppTheme
 import com.boswelja.devicemanager.common.ui.UpNavigationAppBar
 import kotlinx.coroutines.launch
 
@@ -57,7 +58,7 @@ class DonateActivity : AppCompatActivity() {
             val viewModel: DonateViewModel = viewModel()
             val hasDonated = viewModel.onDonated.observeAsState()
 
-            MaterialTheme {
+            AppTheme {
                 Scaffold(scaffoldState = scaffoldState) {
                     Column(Modifier.fillMaxSize()) {
                         UpNavigationAppBar(onNavigateUp = { finish() })

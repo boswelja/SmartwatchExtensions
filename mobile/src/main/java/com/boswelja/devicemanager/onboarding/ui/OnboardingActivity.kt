@@ -11,7 +11,6 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ExtendedFloatingActionButton
 import androidx.compose.material.FabPosition
 import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
@@ -29,6 +28,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.LifecycleAwareTimer
+import com.boswelja.devicemanager.common.ui.AppTheme
 import com.boswelja.devicemanager.common.ui.UpNavigationAppBar
 import com.boswelja.devicemanager.main.MainActivity
 import com.boswelja.devicemanager.watchmanager.ui.register.RegisterWatchViewModel
@@ -50,7 +50,7 @@ class OnboardingActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         setContent {
-            MaterialTheme {
+            AppTheme {
                 val navController = rememberNavController()
                 val registeredWatches by registerWatchViewModel.registeredWatches.observeAsState()
                 Scaffold(
