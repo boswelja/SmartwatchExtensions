@@ -10,11 +10,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.AlertDialog
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedButton
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
+import androidx.compose.material.TextButton
 import androidx.compose.material.TextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ClearAll
@@ -22,6 +24,7 @@ import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.icons.outlined.Refresh
 import androidx.compose.material.icons.outlined.Watch
 import androidx.compose.material.rememberScaffoldState
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
@@ -42,8 +45,6 @@ import timber.log.Timber
 
 class WatchInfoActivity : AppCompatActivity() {
 
-    private val forgetWatchSheet by lazy { ForgetWatchSheet() }
-    private val clearPreferencesSheet by lazy { ClearWatchPreferencesSheet() }
     private val watchId by lazy { intent?.getStringExtra(EXTRA_WATCH_ID)!! }
     private val viewModel: WatchInfoViewModel by viewModels()
     private var watchName by mutableStateOf("")
@@ -59,9 +60,13 @@ class WatchInfoActivity : AppCompatActivity() {
         setContent {
             AppTheme {
                 val scaffoldState = rememberScaffoldState()
-                var watchNameError by remember { mutableStateOf(false) }
                 val watch by viewModel.watch.observeAsState()
                 val scope = rememberCoroutineScope()
+
+                var watchNameError by remember { mutableStateOf(false) }
+                var clearPreferencesDialogVisible by remember { mutableStateOf(false) }
+                var forgetWatchDialogVisible by remember { mutableStateOf(false) }
+
                 Scaffold(
                     scaffoldState = scaffoldState,
                     topBar = { UpNavigationAppBar(onNavigateUp = { finish() }) }
@@ -118,29 +123,41 @@ class WatchInfoActivity : AppCompatActivity() {
                             Text(stringResource(R.string.refresh_capabilities))
                         }
                         OutlinedButton(
-                            onClick = {
-                                clearPreferencesSheet.show(
-                                    supportFragmentManager,
-                                    ClearWatchPreferencesSheet::class.simpleName
-                                )
-                            },
+                            onClick = { clearPreferencesDialogVisible = true },
                             modifier = Modifier.padding(top = 16.dp)
                         ) {
                             Icon(Icons.Outlined.ClearAll, null)
                             Text(stringResource(R.string.clear_preferences_button_text))
                         }
                         OutlinedButton(
-                            onClick = {
-                                forgetWatchSheet.show(
-                                    supportFragmentManager,
-                                    ForgetWatchSheet::class.simpleName
-                                )
-                            },
+                            onClick = { forgetWatchDialogVisible = true },
                             modifier = Modifier.padding(top = 16.dp)
                         ) {
                             Icon(Icons.Outlined.Delete, null)
                             Text(stringResource(R.string.button_forget_watch))
                         }
+                    }
+                    if (clearPreferencesDialogVisible) {
+                        ResetSettingsDialog(
+                            onDismissDialog = {
+                                clearPreferencesDialogVisible = false
+                                if (it) {
+                                    scope.launch {
+                                        scaffoldState.snackbarHostState.showSnackbar(
+                                            getString(R.string.clear_preferences_success)
+                                        )
+                                    }
+                                }
+                            }
+                        )
+                    }
+                    if (forgetWatchDialogVisible) {
+                        ForgetWatchDialog(
+                            onDismissDialog = {
+                                forgetWatchDialogVisible = false
+                                if (it) finish()
+                            }
+                        )
                     }
                 }
             }
@@ -152,6 +169,69 @@ class WatchInfoActivity : AppCompatActivity() {
         if (watchName.isNotBlank()) {
             viewModel.updateWatchName(watchName)
         }
+    }
+
+    @Composable
+    fun ResetSettingsDialog(onDismissDialog: (Boolean) -> Unit) {
+        AlertDialog(
+            onDismissRequest = { onDismissDialog(false) },
+            title = { Text(stringResource(R.string.clear_preferences_dialog_title)) },
+            text = {
+                Text(
+                    stringResource(
+                        R.string.clear_preferences_dialog_message,
+                        viewModel.watch.value?.name.toString()
+                    )
+                )
+            },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        viewModel.resetWatchPreferences()
+                        onDismissDialog(true)
+                    }
+                ) {
+                    Text(stringResource(R.string.dialog_button_reset))
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { onDismissDialog(false) }) {
+                    Text(stringResource(R.string.dialog_button_cancel))
+                }
+            }
+        )
+    }
+
+    @Composable
+    fun ForgetWatchDialog(onDismissDialog: (Boolean) -> Unit) {
+        AlertDialog(
+            onDismissRequest = { onDismissDialog(false) },
+            title = { Text(stringResource(R.string.forget_watch_dialog_title)) },
+            text = {
+                Text(
+                    stringResource(
+                        R.string.forget_watch_dialog_message,
+                        viewModel.watch.value?.name.toString(),
+                        viewModel.watch.value?.name.toString()
+                    )
+                )
+            },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        viewModel.forgetWatch()
+                        onDismissDialog(true)
+                    }
+                ) {
+                    Text(stringResource(R.string.button_forget_watch))
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { onDismissDialog(false) }) {
+                    Text(stringResource(R.string.dialog_button_cancel))
+                }
+            }
+        )
     }
 
     companion object {
