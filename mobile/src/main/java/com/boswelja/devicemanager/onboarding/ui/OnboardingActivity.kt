@@ -3,13 +3,10 @@ package com.boswelja.devicemanager.onboarding.ui
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.view.ViewGroup
-import android.widget.FrameLayout
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.browser.customtabs.CustomTabsIntent
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ExtendedFloatingActionButton
 import androidx.compose.material.FabPosition
@@ -19,11 +16,10 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.NavigateNext
-import androidx.compose.ui.Modifier
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.net.toUri
-import androidx.fragment.app.commit
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.KEY_ROUTE
 import androidx.navigation.compose.NavHost
@@ -32,10 +28,11 @@ import androidx.navigation.compose.navigate
 import androidx.navigation.compose.rememberNavController
 import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.R
+import com.boswelja.devicemanager.common.LifecycleAwareTimer
 import com.boswelja.devicemanager.common.ui.UpNavigationAppBar
 import com.boswelja.devicemanager.main.MainActivity
-import com.boswelja.devicemanager.watchmanager.ui.register.RegisterWatchFragment
 import com.boswelja.devicemanager.watchmanager.ui.register.RegisterWatchViewModel
+import com.boswelja.devicemanager.watchmanager.ui.register.RegisterWatchesScreen
 
 class OnboardingActivity : AppCompatActivity() {
 
@@ -43,6 +40,9 @@ class OnboardingActivity : AppCompatActivity() {
     private val customTabIntent = CustomTabsIntent.Builder().setShowTitle(true).build()
     private val sharedPreferences: SharedPreferences by lazy {
         PreferenceManager.getDefaultSharedPreferences(this)
+    }
+    private val availableWatchUpdateTimer = LifecycleAwareTimer(TIMER_UPDATE_SECONDS) {
+        registerWatchViewModel.refreshData()
     }
 
     @ExperimentalMaterialApi
@@ -52,6 +52,7 @@ class OnboardingActivity : AppCompatActivity() {
         setContent {
             MaterialTheme {
                 val navController = rememberNavController()
+                val registeredWatches by registerWatchViewModel.registeredWatches.observeAsState()
                 Scaffold(
                     topBar = {
                         UpNavigationAppBar(
@@ -85,24 +86,18 @@ class OnboardingActivity : AppCompatActivity() {
                             )
                         }
                         composable("registerWatches") {
-                            AndroidView(
-                                factory = {
-                                    val view = FrameLayout(it)
-                                    view.layoutParams = ViewGroup.LayoutParams(
-                                        ViewGroup.LayoutParams.MATCH_PARENT,
-                                        ViewGroup.LayoutParams.MATCH_PARENT
-                                    )
-                                    view.id = R.id.fragment_holder
-                                    supportFragmentManager.commit {
-                                        replace(R.id.fragment_holder, RegisterWatchFragment())
-                                    }
-                                    view
-                                },
-                                modifier = Modifier.fillMaxSize()
-                            )
+                            RegisterWatchesScreen(registeredWatches = registeredWatches)
                         }
                     }
                 }
+            }
+        }
+
+        lifecycle.addObserver(availableWatchUpdateTimer)
+
+        registerWatchViewModel.availableWatches.observe(this) {
+            it.forEach { watch ->
+                registerWatchViewModel.registerWatch(watch)
             }
         }
     }
@@ -119,5 +114,9 @@ class OnboardingActivity : AppCompatActivity() {
             }
             else -> navController.navigate("welcome")
         }
+    }
+
+    companion object {
+        private const val TIMER_UPDATE_SECONDS: Long = 5
     }
 }
