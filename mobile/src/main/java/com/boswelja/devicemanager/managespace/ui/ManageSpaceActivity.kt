@@ -306,11 +306,13 @@ class ManageSpaceActivity : AppCompatActivity() {
                         { onProgressChange(it / 100f) },
                         {
                             onProgressChange(0f)
-                            scope.launch {
-                                scaffoldState.snackbarHostState.showSnackbar(
-                                    if (it) getString(R.string.reset_app_success)
-                                    else getString(R.string.reset_app_failed)
-                                )
+                            if (it) finish()
+                            else {
+                                scope.launch {
+                                    scaffoldState.snackbarHostState.showSnackbar(
+                                        getString(R.string.reset_app_failed)
+                                    )
+                                }
                             }
                         }
                     )
