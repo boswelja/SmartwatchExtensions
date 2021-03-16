@@ -52,7 +52,12 @@ class WatchManagerActivity : AppCompatActivity() {
         setContent {
             AppTheme {
                 Scaffold(
-                    topBar = { UpNavigationAppBar(onNavigateUp = { finish() }) }
+                    topBar = {
+                        UpNavigationAppBar(
+                            onNavigateUp = { finish() },
+                            title = { Text(stringResource(R.string.watch_manager_title)) }
+                        )
+                    }
                 ) {
                     val registeredWatches by watchManager.registeredWatches.observeAsState()
                     LazyColumn(Modifier.padding(vertical = 8.dp)) {
