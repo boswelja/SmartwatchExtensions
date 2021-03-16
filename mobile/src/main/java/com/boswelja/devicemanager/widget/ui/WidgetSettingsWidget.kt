@@ -50,18 +50,7 @@ class WidgetSettingsWidget : Fragment() {
     ): View {
         return ComposeView(requireContext()).apply {
             setContent {
-                Column(
-                    Modifier.fillMaxWidth().aspectRatio(16f / 9)
-                ) {
-                    val backgroundVisible by viewModel.widgetBackgroundVisible.observeAsState()
-                    val backgroundOpacity by viewModel.widgetBackgroundOpacity.observeAsState()
-                    WidgetPreviews(
-                        backgroundVisible = backgroundVisible ?: true,
-                        backgroundOpacity = backgroundOpacity ?: 60,
-                        modifier = Modifier.weight(1f)
-                    )
-                    PreviewIndicator()
-                }
+                WidgetSettingsHeader()
             }
         }
     }
@@ -73,6 +62,24 @@ class WidgetSettingsWidget : Fragment() {
     private fun getDeviceWallpaper(): Drawable {
         val wallpaperManager = requireContext().getSystemService<WallpaperManager>()!!
         return wallpaperManager.builtInDrawable
+    }
+
+    @Composable
+    fun WidgetSettingsHeader() {
+        Column(
+            Modifier
+                .fillMaxWidth()
+                .aspectRatio(16f / 9)
+        ) {
+            val backgroundVisible by viewModel.widgetBackgroundVisible.observeAsState()
+            val backgroundOpacity by viewModel.widgetBackgroundOpacity.observeAsState()
+            WidgetPreviews(
+                backgroundVisible = backgroundVisible ?: true,
+                backgroundOpacity = backgroundOpacity ?: 60,
+                modifier = Modifier.weight(1f)
+            )
+            PreviewIndicator()
+        }
     }
 
     @Preview(showBackground = true)
