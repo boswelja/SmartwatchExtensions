@@ -19,6 +19,7 @@ import androidx.compose.material.icons.outlined.ArrowDropDown
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -93,7 +94,7 @@ fun WatchPickerDropdown(
     watches: List<Watch>?,
     onWatchSelected: (Watch) -> Unit
 ) {
-    var expanded by mutableStateOf(false)
+    var expanded by remember { mutableStateOf(false) }
     Box(
         Modifier.wrapContentSize(Alignment.TopStart)
     ) {
