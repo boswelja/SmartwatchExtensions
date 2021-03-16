@@ -1,8 +1,6 @@
 package com.boswelja.devicemanager.common
 
 import androidx.compose.material.Icon
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.BatteryStd
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
@@ -11,10 +9,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 
-@PreviewParameter(PreviewProvider::class)
-@Preview(showBackground = true)
+@Preview
+@PreviewParameter(PreviewProvider::class, 100)
 @Composable
-fun WatchBatteryIcon(
+fun BatteryIcon(
     percent: Int,
     modifier: Modifier = Modifier
 ) {
@@ -31,7 +29,6 @@ fun WatchBatteryIcon(
         100 -> R.drawable.battery_full
         else -> R.drawable.battery_unknown
     }
-    Icons.Default.BatteryStd
     Icon(
         painterResource(drawable),
         null,
@@ -42,5 +39,5 @@ fun WatchBatteryIcon(
 
 private class PreviewProvider : PreviewParameterProvider<Int> {
     override val values: Sequence<Int>
-        get() = sequenceOf(0, 1, 11, 21, 31, 41, 51, 61, 71, 81, 91, 100)
+        get() = sequenceOf(-1, 0, 1, 11, 21, 31, 41, 51, 61, 71, 81, 91, 100)
 }
