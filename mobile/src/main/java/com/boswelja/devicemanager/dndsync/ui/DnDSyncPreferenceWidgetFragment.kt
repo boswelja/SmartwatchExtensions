@@ -20,6 +20,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.LocalConfiguration
@@ -115,7 +116,7 @@ fun DnDSyncSettingsHeader() {
                 Icon(
                     painterResource(it),
                     null,
-                    modifier = Modifier.size(40.dp),
+                    modifier = Modifier.size(40.dp).rotate(90f),
                     tint = MaterialTheme.colors.onBackground
                 )
             }
