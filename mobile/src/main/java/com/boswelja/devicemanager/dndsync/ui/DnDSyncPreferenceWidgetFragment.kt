@@ -52,7 +52,7 @@ class DnDSyncPreferenceWidgetFragment : Fragment() {
 
 @Composable
 fun DnDSyncSettingsHeader() {
-    val viewModel: DnDSyncPreferenceWidgetViewModel = viewModel()
+    val viewModel: DnDSyncPreferenceViewModel = viewModel()
     val iconRes by viewModel.drawableRes.observeAsState()
     if (LocalConfiguration.current.orientation == ORIENTATION_PORTRAIT) {
         Row(

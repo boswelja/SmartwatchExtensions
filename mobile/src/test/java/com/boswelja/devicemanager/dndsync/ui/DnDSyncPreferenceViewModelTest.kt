@@ -21,17 +21,17 @@ import org.robolectric.annotation.Config
 
 @RunWith(AndroidJUnit4::class)
 @Config(sdk = [Build.VERSION_CODES.R])
-class DnDSyncPreferenceWidgetViewModelTest {
+class DnDSyncPreferenceViewModelTest {
 
     @get:Rule
     val instantExecutorRule = InstantTaskExecutorRule()
 
-    private lateinit var viewModel: DnDSyncPreferenceWidgetViewModel
+    private lateinit var viewModel: DnDSyncPreferenceViewModel
     private lateinit var sharedPreferences: SharedPreferences
 
     @Before
     fun setUp() {
-        viewModel = DnDSyncPreferenceWidgetViewModel(ApplicationProvider.getApplicationContext())
+        viewModel = DnDSyncPreferenceViewModel(ApplicationProvider.getApplicationContext())
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(
             ApplicationProvider.getApplicationContext()
         )

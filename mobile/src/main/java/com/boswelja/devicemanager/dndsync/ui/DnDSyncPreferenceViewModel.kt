@@ -9,8 +9,9 @@ import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.preference.PreferenceKey.DND_SYNC_TO_PHONE_KEY
 import com.boswelja.devicemanager.common.preference.PreferenceKey.DND_SYNC_TO_WATCH_KEY
+import com.boswelja.devicemanager.watchmanager.WatchManager
 
-class DnDSyncPreferenceWidgetViewModel(application: Application) : AndroidViewModel(application) {
+class DnDSyncPreferenceViewModel(application: Application) : AndroidViewModel(application) {
 
     private val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(application)
     private val preferenceChangeListener = SharedPreferences.OnSharedPreferenceChangeListener {
@@ -34,6 +35,8 @@ class DnDSyncPreferenceWidgetViewModel(application: Application) : AndroidViewMo
     private val _drawableRes = MutableLiveData(R.drawable.ic_dnd_sync_none)
     val drawableRes: LiveData<Int>
         get() = _drawableRes
+
+    val watchManager = WatchManager.getInstance(application)
 
     init {
         sharedPreferences.registerOnSharedPreferenceChangeListener(preferenceChangeListener)
