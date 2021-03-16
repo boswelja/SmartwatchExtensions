@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
@@ -25,6 +26,7 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -48,12 +50,15 @@ class WidgetSettingsWidget : Fragment() {
     ): View {
         return ComposeView(requireContext()).apply {
             setContent {
-                Column(Modifier.fillMaxWidth()) {
+                Column(
+                    Modifier.fillMaxWidth().aspectRatio(16f / 9)
+                ) {
                     val backgroundVisible by viewModel.widgetBackgroundVisible.observeAsState()
                     val backgroundOpacity by viewModel.widgetBackgroundOpacity.observeAsState()
                     WidgetPreviews(
                         backgroundVisible = backgroundVisible ?: true,
-                        backgroundOpacity = backgroundOpacity ?: 60
+                        backgroundOpacity = backgroundOpacity ?: 60,
+                        modifier = Modifier.weight(1f)
                     )
                     PreviewIndicator()
                 }
@@ -91,9 +96,13 @@ class WidgetSettingsWidget : Fragment() {
     @Composable
     fun BatteryWidgetPreview(
         backgroundVisible: Boolean,
-        backgroundOpacity: Int
+        backgroundOpacity: Int,
+        modifier: Modifier = Modifier
     ) {
-        AndroidViewBinding(WidgetWatchBatteryBinding::inflate) {
+        AndroidViewBinding(
+            WidgetWatchBatteryBinding::inflate,
+            modifier = modifier.size(width = 100.dp, height = 150.dp)
+        ) {
             batteryIndicator.drawable.level = BATTERY_WIDGET_PREVIEW_PERCENT
             batteryIndicatorText.text = getString(
                 R.string.battery_sync_percent_short, BATTERY_WIDGET_PREVIEW_PERCENT.toString()
@@ -110,21 +119,20 @@ class WidgetSettingsWidget : Fragment() {
     @Composable
     fun WidgetPreviews(
         backgroundVisible: Boolean,
-        backgroundOpacity: Int
+        backgroundOpacity: Int,
+        modifier: Modifier = Modifier
     ) {
-        Box(
-            Modifier
-                .fillMaxWidth()
-                .aspectRatio(16f / 9)
-        ) {
+        Box(modifier = modifier.fillMaxWidth()) {
             Image(
                 getDeviceWallpaper().toBitmap().asImageBitmap(),
+                contentScale = ContentScale.FillBounds,
                 contentDescription = null,
                 modifier = Modifier.fillMaxSize()
             )
             BatteryWidgetPreview(
                 backgroundVisible = backgroundVisible,
-                backgroundOpacity = backgroundOpacity
+                backgroundOpacity = backgroundOpacity,
+                modifier = Modifier.align(Alignment.Center)
             )
         }
     }
