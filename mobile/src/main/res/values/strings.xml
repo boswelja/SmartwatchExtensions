@@ -11,7 +11,6 @@
     <string name="message_action_noti_settings">Notification Settings</string>
     <string name="message_action_install_update">Install Update</string>
     <string name="message_dismissed">Message Dismissed</string>
-    <string name="message_history_clear">Clear History</string>
     <string name="message_history_cleared">Message history cleared</string>
     <string name="message_history_not_cleared">No messages to delete</string>
 
