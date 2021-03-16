@@ -3,9 +3,6 @@
 
     <dimen name="corner_radius">8dp</dimen>
 
-    <dimen name="manage_space_item_horizontal_margin">32dp</dimen>
-    <dimen name="manage_space_item_vertical_margin">16dp</dimen>
-
     <dimen name="recyclerview_vertical_padding">8dp</dimen>
 
     <dimen name="watch_selector_horizontal_margin">16dp</dimen>
@@ -17,7 +14,4 @@
     <dimen name="settings_widget_horizontal_margin">4dp</dimen>
 
     <dimen name="rotation_offset">0</dimen>
-
-    <dimen name="modal_bottom_sheet_height">280dp</dimen>
-    <dimen name="modal_bottom_sheet_margin">32dp</dimen>
 </resources>

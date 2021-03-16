@@ -125,6 +125,7 @@ dependencies {
 
     implementation("androidx.compose.ui:ui:$compose")
     implementation("androidx.compose.ui:ui-tooling:$compose")
+    implementation("androidx.compose.ui:ui-viewbinding:$compose")
     implementation("androidx.compose.foundation:foundation:$compose")
     implementation("androidx.compose.material:material:$compose")
     implementation("androidx.compose.material:material-icons-core:$compose")
