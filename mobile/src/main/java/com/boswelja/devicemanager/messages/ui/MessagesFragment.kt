@@ -4,7 +4,6 @@ import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
-import android.text.format.DateFormat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,7 +13,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -47,7 +45,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.ComposeView
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
@@ -55,9 +52,8 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.fragment.findNavController
 import com.boswelja.devicemanager.R
+import com.boswelja.devicemanager.common.ui.AppTheme
 import com.boswelja.devicemanager.messages.Message
-import java.util.Date
-import java.util.concurrent.TimeUnit
 import kotlinx.coroutines.launch
 
 class MessagesFragment : Fragment() {
@@ -74,14 +70,16 @@ class MessagesFragment : Fragment() {
     ): View {
         return ComposeView(requireContext()).apply {
             setContent {
-                val viewModel: MessagesViewModel = viewModel()
-                val scaffoldState = rememberScaffoldState()
-                val messages by viewModel.activeMessagesFlow.collectAsState(emptyList())
-                Scaffold(scaffoldState = scaffoldState) {
-                    if (messages.isNotEmpty()) {
-                        MessagesList(messages, scaffoldState)
-                    } else {
-                        NoMessagesView()
+                AppTheme {
+                    val viewModel: MessagesViewModel = viewModel()
+                    val scaffoldState = rememberScaffoldState()
+                    val messages by viewModel.activeMessagesFlow.collectAsState(emptyList())
+                    Scaffold(scaffoldState = scaffoldState) {
+                        if (messages.isNotEmpty()) {
+                            MessagesList(messages, scaffoldState)
+                        } else {
+                            NoMessagesView()
+                        }
                     }
                 }
             }
@@ -142,7 +140,7 @@ class MessagesFragment : Fragment() {
                             if (dismissState.dismissDirection != null) 4.dp else 0.dp
                         ).value
                     ) {
-                        MessageItem(message)
+                        MessageItemWithAction(message)
                     }
                 }
             }
@@ -179,41 +177,16 @@ class MessagesFragment : Fragment() {
         }
     }
 
+    @ExperimentalMaterialApi
     @Composable
-    fun MessageItem(message: Message) {
+    fun MessageItemWithAction(message: Message) {
         Column(
             Modifier
                 .fillMaxWidth()
                 .background(MaterialTheme.colors.background)
                 .padding(16.dp)
         ) {
-            Row(
-                Modifier.fillMaxWidth()
-            ) {
-                Icon(
-                    painterResource(id = message.icon.iconRes),
-                    null,
-                    Modifier.size(24.dp)
-                )
-                Column(
-                    Modifier
-                        .weight(1f)
-                        .padding(start = 16.dp)
-                ) {
-                    Text(
-                        message.title,
-                        style = MaterialTheme.typography.body1
-                    )
-                    Text(
-                        message.text,
-                        style = MaterialTheme.typography.body2
-                    )
-                }
-                Text(
-                    getReceivedString(message.timestamp),
-                    style = MaterialTheme.typography.body2
-                )
-            }
+            MessageItem(message)
             if (message.action != null) {
                 val viewModel: MessagesViewModel = viewModel()
                 OutlinedButton(
@@ -254,21 +227,5 @@ class MessagesFragment : Fragment() {
 
     private fun showChangelog() {
         customTabsIntent.launchUrl(requireContext(), getString(R.string.changelog_url).toUri())
-    }
-
-    /**
-     * Convert millisecond time into a readable date string.
-     * Shows time received if it's within the last 24 hours, otherwise shows the date.
-     * @param timeInMillis The time milliseconds to convert to a readable string.
-     */
-    private fun getReceivedString(timeInMillis: Long): String {
-        val todayMillis = System.currentTimeMillis()
-        val received = Date(timeInMillis)
-        val isToday = (todayMillis - timeInMillis) < TimeUnit.DAYS.toMillis(1)
-        return if (isToday) {
-            DateFormat.getTimeFormat(requireContext()).format(received)
-        } else {
-            DateFormat.getDateFormat(requireContext()).format(received)
-        }
     }
 }
