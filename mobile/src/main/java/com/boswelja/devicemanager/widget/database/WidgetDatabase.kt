@@ -41,8 +41,8 @@ abstract class WidgetDatabase : RoomDatabase() {
      * @param widgetId The ID of the widget to get the associated watch ID for.
      * @return The ID of the associated watch.
      */
-    fun getWatchIDForWidget(widgetId: Int): String {
-        return widgetDao().findByWidgetId(widgetId).watchId
+    fun getWatchIDForWidget(widgetId: Int): String? {
+        return widgetDao().findByWidgetId(widgetId)?.watchId
     }
 
     fun getAllWidgetsForWatch(watchId: String): List<Int> {
