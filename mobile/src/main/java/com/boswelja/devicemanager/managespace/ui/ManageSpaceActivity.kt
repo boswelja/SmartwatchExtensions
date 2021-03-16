@@ -260,7 +260,7 @@ class ManageSpaceActivity : AppCompatActivity() {
         if (dialogVisible) {
             RequestDialog(
                 title = stringResource(R.string.reset_extensions_title),
-                text = stringResource(R.string.reset_extensions_desc),
+                text = stringResource(R.string.reset_extensions_warning),
                 onRequestGranted = {
                     dialogVisible = false
                     viewModel.resetExtensionSettings(
@@ -299,7 +299,7 @@ class ManageSpaceActivity : AppCompatActivity() {
         if (dialogVisible) {
             RequestDialog(
                 title = stringResource(R.string.reset_app_title),
-                text = stringResource(R.string.reset_app_desc),
+                text = stringResource(R.string.reset_app_warning),
                 onRequestGranted = {
                     dialogVisible = false
                     viewModel.resetApp(
