@@ -3,7 +3,6 @@ package com.boswelja.devicemanager.batterysync.widget.config
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import com.boswelja.devicemanager.watchmanager.database.WatchDatabase
-import com.boswelja.devicemanager.watchmanager.item.Watch
 
 class BatteryWidgetConfigViewModel internal constructor(
     application: Application,
@@ -16,9 +15,5 @@ class BatteryWidgetConfigViewModel internal constructor(
         WatchDatabase.getInstance(application)
     )
 
-    val allRegisteredWatches = watchDatabase.watchDao().getAllObservable()
-
-    fun getWatchByIndex(index: Int): Watch? {
-        return allRegisteredWatches.value?.get(index)
-    }
+    val registeredWatches = watchDatabase.watchDao().getAllObservable()
 }

@@ -54,19 +54,19 @@ class BatteryWidgetConfigViewModelTest {
     fun `allRegisteredWatches updates correctly when watches change`() {
         // Check with multiple watches
         setWatchesInDatabase(listOf(dummyWatch1, dummyWatch2, dummyWatch3))
-        viewModel.allRegisteredWatches.getOrAwaitValue {
+        viewModel.registeredWatches.getOrAwaitValue {
             assertThat(it).containsExactly(dummyWatch1, dummyWatch2, dummyWatch3)
         }
 
         // Check with single watch
         setWatchesInDatabase(listOf(dummyWatch1))
-        viewModel.allRegisteredWatches.getOrAwaitValue {
+        viewModel.registeredWatches.getOrAwaitValue {
             assertThat(it).containsExactly(dummyWatch1)
         }
 
         // Check with no watches
         setWatchesInDatabase(emptyList())
-        viewModel.allRegisteredWatches.getOrAwaitValue { assertThat(it).isEmpty() }
+        viewModel.registeredWatches.getOrAwaitValue { assertThat(it).isEmpty() }
     }
 
     /**
