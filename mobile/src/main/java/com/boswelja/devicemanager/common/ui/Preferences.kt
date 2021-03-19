@@ -6,9 +6,14 @@ import androidx.compose.material.Checkbox
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
 import androidx.compose.material.ListItem
+import androidx.compose.material.Slider
 import androidx.compose.material.Switch
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
@@ -59,14 +64,30 @@ fun CheckboxPreference(
 }
 
 @ExperimentalMaterialApi
-@Preview(showBackground = true, showSystemUi = false)
 @Composable
-fun SwitchPreferencePreview() {
-    SwitchPreference(
-        text = "Preference",
-        secondaryText = "Secondary line",
-        isChecked = true,
-        onCheckChanged = {
+fun SliderPreference(
+    text: String,
+    icon: ImageVector? = null,
+    valueRange: ClosedFloatingPointRange<Float> = 0f..1f,
+    value: Float,
+    onSliderValueChanged: (Float) -> Unit
+) {
+    ListItem(
+        text = { Text(text) },
+        icon = { if (icon != null) { Icon(icon, null, Modifier.size(40.dp)) } },
+        secondaryText = {
+            Slider(
+                value = value / 100f,
+                valueRange = valueRange,
+                onValueChange = {
+                    onSliderValueChanged(it)
+                }
+            )
+        },
+        trailing = {
+            Text(
+                "$value%"
+            )
         }
     )
 }
@@ -74,12 +95,37 @@ fun SwitchPreferencePreview() {
 @ExperimentalMaterialApi
 @Preview(showBackground = true, showSystemUi = false)
 @Composable
+fun SwitchPreferencePreview() {
+    var value by remember { mutableStateOf(true) }
+    SwitchPreference(
+        text = "Preference",
+        secondaryText = "Secondary line",
+        isChecked = value,
+        onCheckChanged = { value = it }
+    )
+}
+
+@ExperimentalMaterialApi
+@Preview(showBackground = true, showSystemUi = false)
+@Composable
 fun CheckboxPreferencePreview() {
+    var value by remember { mutableStateOf(true) }
     CheckboxPreference(
         text = "Preference",
         secondaryText = "Secondary line",
-        isChecked = true,
-        onCheckChanged = {
-        }
+        isChecked = value,
+        onCheckChanged = { value = it }
+    )
+}
+
+@ExperimentalMaterialApi
+@Preview(showBackground = true, showSystemUi = false)
+@Composable
+fun SliderPreferencePreview() {
+    var value by remember { mutableStateOf(.5f) }
+    SliderPreference(
+        text = "Preference",
+        value = value,
+        onSliderValueChanged = { value = it }
     )
 }
