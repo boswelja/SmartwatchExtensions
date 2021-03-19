@@ -9,10 +9,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 
-@Preview
-@PreviewParameter(PreviewProvider::class, 100)
+@Preview(widthDp = 40, heightDp = 40)
 @Composable
 fun BatteryIcon(
+    @PreviewParameter(BatteryPercentProvider::class, limit = 100)
     percent: Int,
     modifier: Modifier = Modifier
 ) {
@@ -37,7 +37,10 @@ fun BatteryIcon(
     )
 }
 
-private class PreviewProvider : PreviewParameterProvider<Int> {
+private class BatteryPercentProvider : PreviewParameterProvider<Int> {
     override val values: Sequence<Int>
         get() = sequenceOf(-1, 0, 1, 11, 21, 31, 41, 51, 61, 71, 81, 91, 100)
+
+    override val count: Int
+        get() = values.count()
 }
