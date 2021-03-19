@@ -1,5 +1,6 @@
 package com.boswelja.devicemanager.common.ui
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.Checkbox
 import androidx.compose.material.ExperimentalMaterialApi
@@ -27,7 +28,10 @@ fun SwitchPreference(
         secondaryText = if (secondaryText != null) { { Text(secondaryText) } } else null,
         icon = { if (icon != null) { Icon(icon, null, Modifier.size(40.dp)) } },
         trailing = {
-            Switch(checked = isChecked, onCheckedChange = onCheckChanged)
+            Switch(checked = isChecked, onCheckedChange = null)
+        },
+        modifier = Modifier.clickable {
+            onCheckChanged(!isChecked)
         }
     )
 }
@@ -46,7 +50,10 @@ fun CheckboxPreference(
         secondaryText = if (secondaryText != null) { { Text(secondaryText) } } else null,
         icon = { if (icon != null) { Icon(icon, null, Modifier.size(40.dp)) } },
         trailing = {
-            Checkbox(checked = isChecked, onCheckedChange = onCheckChanged)
+            Checkbox(checked = isChecked, onCheckedChange = null)
+        },
+        modifier = Modifier.clickable {
+            onCheckChanged(!isChecked)
         }
     )
 }
