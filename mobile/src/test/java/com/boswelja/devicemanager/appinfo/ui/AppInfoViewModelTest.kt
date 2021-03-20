@@ -9,6 +9,7 @@ package com.boswelja.devicemanager.appinfo.ui
 
 import android.os.Build
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.browser.customtabs.CustomTabsIntent
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.boswelja.devicemanager.common.connection.Messages.REQUEST_APP_VERSION
@@ -37,12 +38,19 @@ class AppInfoViewModelTest {
     @MockK(relaxed = true)
     private lateinit var messageClient: MessageClient
 
+    @MockK(relaxed = true)
+    private lateinit var customTabs: CustomTabsIntent
+
     private lateinit var viewModel: AppInfoViewModel
 
     @Before
     fun setUp() {
         MockKAnnotations.init(this)
-        viewModel = AppInfoViewModel(ApplicationProvider.getApplicationContext(), messageClient)
+        viewModel = AppInfoViewModel(
+            ApplicationProvider.getApplicationContext(),
+            messageClient,
+            customTabs
+        )
         verify { messageClient.addListener(any()) }
     }
 

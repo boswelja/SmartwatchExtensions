@@ -8,6 +8,7 @@
 package com.boswelja.devicemanager.appinfo.ui
 
 import android.app.Application
+import androidx.browser.customtabs.CustomTabsIntent
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -18,13 +19,15 @@ import timber.log.Timber
 
 class AppInfoViewModel internal constructor(
     application: Application,
-    private val messageClient: MessageClient
+    private val messageClient: MessageClient,
+    val customTabsIntent: CustomTabsIntent
 ) : AndroidViewModel(application) {
 
     @Suppress("unused")
     constructor(application: Application) : this(
         application,
-        Wearable.getMessageClient(application)
+        Wearable.getMessageClient(application),
+        CustomTabsIntent.Builder().setShowTitle(true).build()
     )
 
     private val messageListener =

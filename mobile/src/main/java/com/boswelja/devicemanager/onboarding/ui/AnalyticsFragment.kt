@@ -83,7 +83,7 @@ fun UsageStatsScreen(
             onClick = onShowPrivacyPolicy,
             modifier = Modifier.padding(top = 16.dp)
         ) {
-            Text(stringResource(R.string.pref_about_priv_policy_title))
+            Text(stringResource(R.string.about_priv_policy_title))
         }
     }
 }
