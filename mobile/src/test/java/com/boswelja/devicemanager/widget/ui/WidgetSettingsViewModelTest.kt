@@ -1,10 +1,3 @@
-/* Copyright (C) 2020 Jack Boswell <boswelja@outlook.com>
- *
- * This file is part of Wearable Extensions
- *
- * This file, and any part of the Wearable Extensions app/s cannot be copied and/or distributed
- * without permission from Jack Boswell (boswelja) <boswela@outlook.com>
- */
 package com.boswelja.devicemanager.widget.ui
 
 import android.os.Build
@@ -13,7 +6,8 @@ import androidx.core.content.edit
 import androidx.preference.PreferenceManager
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.boswelja.devicemanager.appsettings.ui.AppSettingsFragment
+import com.boswelja.devicemanager.batterysync.widget.WatchBatteryWidget.Companion.SHOW_WIDGET_BACKGROUND_KEY
+import com.boswelja.devicemanager.batterysync.widget.WatchBatteryWidget.Companion.WIDGET_BACKGROUND_OPACITY_KEY
 import com.boswelja.devicemanager.getOrAwaitValue
 import com.google.common.truth.Truth.assertThat
 import org.junit.Before
@@ -43,12 +37,12 @@ class WidgetSettingsViewModelTest {
                 ApplicationProvider.getApplicationContext()
             )
         sharedPreferences.edit(commit = true) {
-            putBoolean(AppSettingsFragment.SHOW_WIDGET_BACKGROUND_KEY, false)
+            putBoolean(SHOW_WIDGET_BACKGROUND_KEY, false)
         }
         viewModel.widgetBackgroundVisible.getOrAwaitValue { assertThat(it).isFalse() }
 
         sharedPreferences.edit(commit = true) {
-            putBoolean(AppSettingsFragment.SHOW_WIDGET_BACKGROUND_KEY, true)
+            putBoolean(SHOW_WIDGET_BACKGROUND_KEY, true)
         }
         viewModel.widgetBackgroundVisible.getOrAwaitValue { assertThat(it).isTrue() }
     }
@@ -60,17 +54,17 @@ class WidgetSettingsViewModelTest {
                 ApplicationProvider.getApplicationContext()
             )
         sharedPreferences.edit(commit = true) {
-            putInt(AppSettingsFragment.WIDGET_BACKGROUND_OPACITY_KEY, 0)
+            putInt(WIDGET_BACKGROUND_OPACITY_KEY, 0)
         }
         viewModel.widgetBackgroundOpacity.getOrAwaitValue { assertThat(it).isEqualTo(0) }
 
         sharedPreferences.edit(commit = true) {
-            putInt(AppSettingsFragment.WIDGET_BACKGROUND_OPACITY_KEY, 100)
+            putInt(WIDGET_BACKGROUND_OPACITY_KEY, 100)
         }
         viewModel.widgetBackgroundOpacity.getOrAwaitValue { assertThat(it).isEqualTo(100) }
 
         sharedPreferences.edit(commit = true) {
-            putInt(AppSettingsFragment.WIDGET_BACKGROUND_OPACITY_KEY, 50)
+            putInt(WIDGET_BACKGROUND_OPACITY_KEY, 50)
         }
         viewModel.widgetBackgroundOpacity.getOrAwaitValue { assertThat(it).isEqualTo(50) }
     }

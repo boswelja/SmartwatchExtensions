@@ -1,22 +1,15 @@
-/* Copyright (C) 2020 Jack Boswell <boswelja@outlook.com>
- *
- * This file is part of Wearable Extensions
- *
- * This file, and any part of the Wearable Extensions app/s cannot be copied and/or distributed
- * without permission from Jack Boswell (boswelja) <boswela@outlook.com>
- */
 package com.boswelja.devicemanager.common.ui.activity
 
 import android.view.MenuItem
+import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.snackbar.Snackbar
 import timber.log.Timber
 
 /**
- * An activity that extends [BaseDayNightActivity]. This automatically handles setting up a toolbar
- * with optional elevation.
+ * An activity that automatically handles setting up a toolbar with optional elevation.
  */
-abstract class BaseToolbarActivity : BaseDayNightActivity() {
+abstract class BaseToolbarActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == android.R.id.home) {

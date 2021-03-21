@@ -1,147 +1,175 @@
-/* Copyright (C) 2020 Jack Boswell <boswelja@outlook.com>
- *
- * This file is part of Wearable Extensions
- *
- * This file, and any part of the Wearable Extensions app/s cannot be copied and/or distributed
- * without permission from Jack Boswell (boswelja) <boswela@outlook.com>
- */
 package com.boswelja.devicemanager.appsettings.ui
 
 import android.content.Intent
-import android.content.SharedPreferences
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
-import androidx.core.app.NotificationManagerCompat
-import androidx.navigation.fragment.findNavController
-import androidx.preference.ListPreference
-import androidx.preference.Preference
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Column
+import androidx.compose.material.Divider
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.Icon
+import androidx.compose.material.ListItem
+import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Analytics
+import androidx.compose.material.icons.outlined.DarkMode
+import androidx.compose.material.icons.outlined.LightMode
+import androidx.compose.material.icons.outlined.Notifications
+import androidx.compose.material.icons.outlined.Storage
+import androidx.compose.material.icons.outlined.Watch
+import androidx.compose.material.icons.outlined.Widgets
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.boswelja.devicemanager.R
-import com.boswelja.devicemanager.analytics.Analytics
-import com.boswelja.devicemanager.common.ui.activity.BaseDayNightActivity.Companion.DAYNIGHT_MODE_KEY
-import com.boswelja.devicemanager.common.ui.activity.BasePreferenceFragment
-import timber.log.Timber
+import com.boswelja.devicemanager.appmanager.ui.HeaderItem
+import com.boswelja.devicemanager.common.ui.AppTheme
+import com.boswelja.devicemanager.common.ui.CheckboxPreference
+import com.boswelja.devicemanager.common.ui.DialogPreference
+import com.boswelja.devicemanager.managespace.ui.ManageSpaceActivity
+import com.boswelja.devicemanager.watchmanager.ui.WatchManagerActivity
 
-class AppSettingsFragment :
-    BasePreferenceFragment(),
-    Preference.OnPreferenceClickListener,
-    SharedPreferences.OnSharedPreferenceChangeListener {
-
-    private val analytics = Analytics()
-
-    private lateinit var openNotiSettingsPreference: Preference
-    private lateinit var daynightModePreference: ListPreference
-
-    override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
-        if (key != null) {
-            when (key) {
-                Analytics.ANALYTICS_ENABLED_KEY -> {
-                    analytics.setAnalyticsEnabled(sharedPreferences!!.getBoolean(key, true))
-                }
-                else -> analytics.logAppSettingChanged(key)
-            }
-        }
-    }
-
-    override fun onPreferenceClick(preference: Preference?): Boolean {
-        return when (preference?.key) {
-            OPEN_NOTI_SETTINGS_KEY -> {
-                openNotificationSettings()
-                true
-            }
-            OPEN_WATCH_MANAGER_KEY -> {
-                findNavController().navigate(AppSettingsFragmentDirections.toWatchManagerActivity())
-                true
-            }
-            OPEN_MANAGE_SPACE_KEY -> {
-                findNavController().navigate(AppSettingsFragmentDirections.toManageSpaceActivity())
-                true
-            }
-            OPEN_WIDGET_SETTINGS_KEY -> {
-                findNavController()
-                    .navigate(AppSettingsFragmentDirections.toWidgetSettingsActivity())
-                true
-            }
-            else -> false
-        }
-    }
-
-    override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
-        Timber.d("onCreatePreferences() called")
-        addPreferencesFromResource(R.xml.prefs_app_settings)
-
-        openNotiSettingsPreference = findPreference(OPEN_NOTI_SETTINGS_KEY)!!
-        openNotiSettingsPreference.onPreferenceClickListener = this
-
-        daynightModePreference = findPreference(DAYNIGHT_MODE_KEY)!!
-
-        findPreference<Preference>(OPEN_WATCH_MANAGER_KEY)?.onPreferenceClickListener = this
-        findPreference<Preference>(OPEN_MANAGE_SPACE_KEY)?.onPreferenceClickListener = this
-        findPreference<Preference>(OPEN_WIDGET_SETTINGS_KEY)?.onPreferenceClickListener = this
-    }
-
-    override fun onStart() {
-        super.onStart()
-        Timber.d("onStart() called")
-        updateNotiSettingsPreferenceSummary()
-        updateDayNightModePreferenceSummary()
-    }
-
-    /**
-     * Checks whether app notifications are allowed, and updates [openNotiSettingsPreference]
-     * summary.
-     */
-    private fun updateNotiSettingsPreferenceSummary() {
-        Timber.d("updateNotiSettingsPreferenceSummary() called")
-        val notificationsAllowed =
-            NotificationManagerCompat.from(requireContext()).areNotificationsEnabled()
-        if (notificationsAllowed) {
-            Timber.i("Notifications allowed")
-            openNotiSettingsPreference.apply {
-                summary = getString(R.string.pref_noti_status_summary_enabled)
-                setIcon(R.drawable.pref_ic_notifications_enabled)
-            }
-        } else {
-            Timber.i("Notifications disabled")
-            openNotiSettingsPreference.apply {
-                summary = getString(R.string.pref_noti_status_summary_disabled)
-                setIcon(R.drawable.pref_ic_notifications_disabled)
-            }
-        }
-    }
-
-    /** Updates [daynightModePreference] summary to reflect the current state of day/night mode. */
-    private fun updateDayNightModePreferenceSummary() {
-        daynightModePreference.summary = daynightModePreference.entry
-    }
-
-    /** Opens the system's notification settings for Wearable Extensions. */
-    private fun openNotificationSettings() {
-        Intent()
-            .apply {
-                flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    action = Settings.ACTION_APP_NOTIFICATION_SETTINGS
-                    putExtra(Settings.EXTRA_APP_PACKAGE, context?.packageName!!)
-                } else {
-                    action = "android.settings.APP_NOTIFICATION_SETTINGS"
-                    putExtra("app_package", context?.packageName!!)
-                    putExtra("app_uid", context?.applicationInfo?.uid!!)
+class AppSettingsFragment : Fragment() {
+    @ExperimentalMaterialApi
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        return ComposeView(requireContext()).apply {
+            setContent {
+                AppTheme {
+                    AppSettingsScreen()
                 }
             }
-            .also {
-                Timber.i("Starting notification settings activity")
-                startActivity(it)
-            }
+        }
     }
+}
 
-    companion object {
-        const val SHOW_WIDGET_BACKGROUND_KEY = "show_widget_background"
-        const val WIDGET_BACKGROUND_OPACITY_KEY = "widget_background_opacity"
+@ExperimentalMaterialApi
+@Composable
+fun AppSettingsScreen() {
+    Column {
+        AppSettings()
+        Divider()
+        AnalyticsSettings()
+        Divider()
+        WatchSettings()
+    }
+}
 
-        const val OPEN_NOTI_SETTINGS_KEY = "show_noti_settings"
-        const val OPEN_WATCH_MANAGER_KEY = "open_watch_manager"
-        const val OPEN_MANAGE_SPACE_KEY = "show_manage_space"
-        const val OPEN_WIDGET_SETTINGS_KEY = "show_widget_settings"
+@ExperimentalMaterialApi
+@Composable
+fun AppSettings() {
+    Column {
+        val viewModel: AppSettingsViewModel = viewModel()
+        val context = LocalContext.current
+        val appThemeOptions = remember {
+            arrayOf(
+                Pair(context.getString(R.string.app_theme_light), AppCompatDelegate.MODE_NIGHT_NO),
+                Pair(context.getString(R.string.app_theme_dark), AppCompatDelegate.MODE_NIGHT_YES),
+                Pair(
+                    context.getString(R.string.app_theme_follow_system),
+                    AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+                )
+            )
+        }
+        val currentAppTheme by viewModel.appTheme.observeAsState()
+        val currentThemeOption = appThemeOptions.first { it.second == currentAppTheme }
+
+        ListItem(
+            text = { Text(stringResource(R.string.noti_settings_title)) },
+            icon = {
+                Icon(Icons.Outlined.Notifications, null)
+            },
+            modifier = Modifier.clickable {
+                Intent()
+                    .apply {
+                        flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                            action = Settings.ACTION_APP_NOTIFICATION_SETTINGS
+                            putExtra(Settings.EXTRA_APP_PACKAGE, context.packageName!!)
+                        } else {
+                            action = "android.settings.APP_NOTIFICATION_SETTINGS"
+                            putExtra("app_package", context.packageName!!)
+                            putExtra("app_uid", context.applicationInfo?.uid!!)
+                        }
+                    }
+                    .also {
+                        context.startActivity(it)
+                    }
+            }
+        )
+        ListItem(
+            text = { Text(stringResource(R.string.manage_space_title)) },
+            icon = { Icon(Icons.Outlined.Storage, null) },
+            modifier = Modifier.clickable {
+                context.startActivity(Intent(context, ManageSpaceActivity::class.java))
+            }
+        )
+        ListItem(
+            text = { Text(stringResource(R.string.widget_settings_title)) },
+            icon = { Icon(Icons.Outlined.Widgets, null) },
+            modifier = Modifier.clickable {
+                context.startActivity(Intent(context, ManageSpaceActivity::class.java))
+            }
+        )
+        DialogPreference(
+            text = stringResource(R.string.app_theme_title),
+            secondaryText = currentThemeOption.first,
+            icon = if (currentAppTheme == AppCompatDelegate.MODE_NIGHT_YES)
+                Icons.Outlined.DarkMode
+            else
+                Icons.Outlined.LightMode,
+            values = appThemeOptions,
+            value = currentThemeOption,
+            onValueChanged = { viewModel.setAppTheme(it.second) }
+        )
+    }
+}
+
+@ExperimentalMaterialApi
+@Composable
+fun AnalyticsSettings() {
+    val viewModel: AppSettingsViewModel = viewModel()
+    val analyticsEnabled by viewModel.analyticsEnabled.observeAsState()
+    Column {
+        HeaderItem(stringResource(R.string.category_analytics))
+        CheckboxPreference(
+            text = stringResource(R.string.analytics_enabled_title),
+            icon = Icons.Outlined.Analytics,
+            isChecked = analyticsEnabled == true,
+            onCheckChanged = {
+                viewModel.setAnalyticsEnabled(it)
+            }
+        )
+    }
+}
+
+@ExperimentalMaterialApi
+@Composable
+fun WatchSettings() {
+    val context = LocalContext.current
+    Column {
+        HeaderItem(stringResource(R.string.category_watch_settings))
+        ListItem(
+            text = { Text(stringResource(R.string.manage_watches_title)) },
+            icon = { Icon(Icons.Outlined.Watch, null) },
+            modifier = Modifier.clickable {
+                context.startActivity(Intent(context, WatchManagerActivity::class.java))
+            }
+        )
     }
 }

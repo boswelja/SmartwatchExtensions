@@ -6,8 +6,8 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.preference.PreferenceManager
-import com.boswelja.devicemanager.appsettings.ui.AppSettingsFragment.Companion.SHOW_WIDGET_BACKGROUND_KEY
-import com.boswelja.devicemanager.appsettings.ui.AppSettingsFragment.Companion.WIDGET_BACKGROUND_OPACITY_KEY
+import com.boswelja.devicemanager.batterysync.widget.WatchBatteryWidget.Companion.SHOW_WIDGET_BACKGROUND_KEY
+import com.boswelja.devicemanager.batterysync.widget.WatchBatteryWidget.Companion.WIDGET_BACKGROUND_OPACITY_KEY
 
 class WidgetSettingsViewModel(application: Application) : AndroidViewModel(application) {
 

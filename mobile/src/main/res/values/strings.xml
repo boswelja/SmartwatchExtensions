@@ -88,19 +88,16 @@
     <string name="dialog_phone_locking_accessibility_service_desc">You\'ve chosen to use the Accessibility Service as your phone locking method. To enable this, you need to enable "Phone Locking" as an accessibility service in your phone settings. Tap "enable" below to go there now.</string>
 
     <!-- App Settings strings -->
-    <string name="pref_noti_status_title">Notification Settings</string>
-    <string name="pref_noti_status_summary_enabled">Notifications are enabled</string>
-    <string name="pref_noti_status_summary_disabled">Notifications are disabled</string>
-    <string name="pref_daynight_title">App Theme</string>
-    <string name="pref_daynight_option_light">Light</string>
-    <string name="pref_daynight_option_dark">Dark</string>
-    <string name="pref_daynight_option_battery">Set by Battery Saver</string>
-    <string name="pref_daynight_option_system">Follow System</string>
-    <string name="pref_widget_settings_title">Widget Settings</string>
-    <string name="pref_category_watch_connection">Watch Connection</string>
-    <string name="pref_manage_watches_title">Manage Watches</string>
-    <string name="pref_category_analytics">Analytics</string>
-    <string name="pref_analytics_title">Send Anonymous Usage Stats</string>
+    <string name="noti_settings_title">Notification Settings</string>
+    <string name="app_theme_title">App Theme</string>
+    <string name="app_theme_light">Light</string>
+    <string name="app_theme_dark">Dark</string>
+    <string name="app_theme_follow_system">Follow System</string>
+    <string name="widget_settings_title">Widget Settings</string>
+    <string name="category_watch_settings">Watch Settings</string>
+    <string name="manage_watches_title">Manage Watches</string>
+    <string name="category_analytics">Analytics</string>
+    <string name="analytics_enabled_title">Send Anonymous Usage Stats</string>
 
     <string name="widget_watch_battery_title">Watch Battery</string>
     <string name="widget_watch_battery_config_title">Watch Battery Widget Setup</string>

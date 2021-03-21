@@ -29,7 +29,7 @@ class WidgetSettingsActivity : AppCompatActivity() {
                     topBar = {
                         UpNavigationAppBar(
                             onNavigateUp = { finish() },
-                            title = { Text(stringResource(R.string.pref_widget_settings_title)) }
+                            title = { Text(stringResource(R.string.widget_settings_title)) }
                         )
                     }
                 ) {
