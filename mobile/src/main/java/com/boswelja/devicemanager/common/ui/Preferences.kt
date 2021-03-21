@@ -1,7 +1,6 @@
 package com.boswelja.devicemanager.common.ui
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.size
 import androidx.compose.material.Checkbox
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
@@ -17,7 +16,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 
 @ExperimentalMaterialApi
 @Composable
@@ -31,7 +29,7 @@ fun SwitchPreference(
     ListItem(
         text = { Text(text) },
         secondaryText = if (secondaryText != null) { { Text(secondaryText) } } else null,
-        icon = { if (icon != null) { Icon(icon, null, Modifier.size(40.dp)) } },
+        icon = { if (icon != null) { Icon(icon, null) } },
         trailing = {
             Switch(checked = isChecked, onCheckedChange = null)
         },
@@ -53,7 +51,7 @@ fun CheckboxPreference(
     ListItem(
         text = { Text(text) },
         secondaryText = if (secondaryText != null) { { Text(secondaryText) } } else null,
-        icon = { if (icon != null) { Icon(icon, null, Modifier.size(40.dp)) } },
+        icon = { if (icon != null) { Icon(icon, null) } },
         trailing = {
             Checkbox(checked = isChecked, onCheckedChange = null)
         },
@@ -74,7 +72,7 @@ fun SliderPreference(
 ) {
     ListItem(
         text = { Text(text) },
-        icon = { if (icon != null) { Icon(icon, null, Modifier.size(40.dp)) } },
+        icon = { if (icon != null) { Icon(icon, null) } },
         secondaryText = {
             Slider(
                 value = value / 100f,
