@@ -73,7 +73,7 @@ fun AboutApp() {
     val context = LocalContext.current
     val viewModel: AppInfoViewModel = viewModel()
     Column {
-        HeaderItem("About Wearable Extensions")
+        HeaderItem(stringResource(R.string.about_category_about))
         ListItem(
             text = { Text(stringResource(R.string.about_priv_policy_title)) },
             icon = { Icon(Icons.Outlined.Policy, null) },
@@ -167,7 +167,7 @@ fun SupportApp() {
             .build()
 
     Column {
-        HeaderItem("Support Wearable Extensions")
+        HeaderItem(stringResource(R.string.about_category_support))
         ListItem(
             text = { Text(stringResource(R.string.about_donate_title)) },
             icon = { Icon(Icons.Outlined.FavoriteBorder, null) },
