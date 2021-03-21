@@ -1,32 +1,31 @@
-/* Copyright (C) 2020 Jack Boswell <boswelja@outlook.com>
- *
- * This file is part of Wearable Extensions
- *
- * This file, and any part of the Wearable Extensions app/s cannot be copied and/or distributed
- * without permission from Jack Boswell (boswelja) <boswela@outlook.com>
- */
 package com.boswelja.devicemanager.phonelocking.ui
 
+import android.annotation.SuppressLint
+import android.app.admin.DevicePolicyManager
 import android.content.ComponentName
+import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Build
 import android.os.Bundle
+import android.provider.Settings
 import android.view.View
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.edit
+import androidx.fragment.app.viewModels
 import androidx.preference.DropDownPreference
 import androidx.preference.Preference
 import androidx.preference.SwitchPreference
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.preference.PreferenceKey.PHONE_LOCKING_ENABLED_KEY
 import com.boswelja.devicemanager.common.ui.activity.BasePreferenceFragment
+import com.boswelja.devicemanager.phonelocking.DeviceAdminChangeReceiver
 import com.boswelja.devicemanager.phonelocking.Utils
+import com.boswelja.devicemanager.phonelocking.ui.PhoneLockingSettingsViewModel.Companion.PHONE_LOCKING_MODE_ACCESSIBILITY_SERVICE
+import com.boswelja.devicemanager.phonelocking.ui.PhoneLockingSettingsViewModel.Companion.PHONE_LOCKING_MODE_DEVICE_ADMIN
+import com.boswelja.devicemanager.phonelocking.ui.PhoneLockingSettingsViewModel.Companion.PHONE_LOCKING_MODE_KEY
 import com.google.android.material.snackbar.Snackbar
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.launch
 import timber.log.Timber
 
 class PhoneLockingPreferenceFragment :
@@ -35,7 +34,7 @@ class PhoneLockingPreferenceFragment :
     Preference.OnPreferenceClickListener,
     Preference.OnPreferenceChangeListener {
 
-    private val coroutineScope = MainScope()
+    private val viewModel: PhoneLockingSettingsViewModel by viewModels()
 
     private lateinit var phoneLockModePreference: DropDownPreference
     private lateinit var openDeviceSettingsPreference: Preference
@@ -117,6 +116,7 @@ class PhoneLockingPreferenceFragment :
      * Checks whether phone locking can be enabled, i.e. the required services are enabled.
      * @return true if phone locking can be enabled, false otherwise.
      */
+    @SuppressLint("NewApi")
     private fun canEnablePhoneLocking(): Boolean {
         return if (isInAccessibilityMode()) {
             Utils.isAccessibilityServiceEnabled(requireContext())
@@ -133,12 +133,7 @@ class PhoneLockingPreferenceFragment :
         Timber.d("setPhoneLockingEnabled($enabled) called")
         phoneLockPreference.isChecked = enabled
         if (enabled) snackbar?.dismiss()
-        coroutineScope.launch(Dispatchers.IO) {
-            sharedPreferences.edit(commit = true) { putBoolean(PHONE_LOCKING_ENABLED_KEY, enabled) }
-            watchManager.updatePreference(
-                connectedWatch!!, PHONE_LOCKING_ENABLED_KEY, enabled
-            )
-        }
+        viewModel.setPhoneLockingEnabled(enabled)
     }
 
     /**
@@ -163,11 +158,7 @@ class PhoneLockingPreferenceFragment :
      * @return true if phone locking is in accessibility mode, false otherwise.
      */
     private fun isInAccessibilityMode(): Boolean =
-        Build.VERSION.SDK_INT >= Build.VERSION_CODES.P &&
-            (
-                sharedPreferences.getString(PHONE_LOCKING_MODE_KEY, "0") ==
-                    PHONE_LOCKING_MODE_ACCESSIBILITY_SERVICE
-                )
+        viewModel.phoneLockingMode.value == PHONE_LOCKING_MODE_ACCESSIBILITY_SERVICE
 
     /**
      * Opens the device settings that correspond to phone locking mode. If phone locking mode is
@@ -178,7 +169,7 @@ class PhoneLockingPreferenceFragment :
         Timber.d("openDeviceSettings() called")
         if (isInAccessibilityMode()) {
             Timber.i("Opening accessibility settings")
-            Utils.launchAccessibilitySettings(requireContext())
+            requireContext().startActivity(Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS))
         } else {
             Timber.i("Opening device admin settings")
             Intent()
@@ -211,14 +202,14 @@ class PhoneLockingPreferenceFragment :
                         setMessage(R.string.dialog_phone_locking_accessibility_service_desc)
                         setPositiveButton(R.string.dialog_button_enable) { _, _ ->
                             Timber.i("Opening accessibility settings")
-                            Utils.launchAccessibilitySettings(context)
+                            startActivity(Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS))
                         }
                     } else {
                         setTitle(R.string.device_admin_perm_grant_dialog_title)
                         setMessage(R.string.device_admin_perm_grant_dialog_message)
                         setPositiveButton(R.string.dialog_button_grant) { _, _ ->
                             Timber.i("Opening device admin request")
-                            Utils.requestDeviceAdminPerms(context)
+                            requestDeviceAdminPerms()
                         }
                     }
                 }
@@ -253,11 +244,11 @@ class PhoneLockingPreferenceFragment :
         when (newMode) {
             PHONE_LOCKING_MODE_DEVICE_ADMIN -> {
                 Timber.i("Switching to device admin mode")
-                Utils.switchToDeviceAdminMode(requireContext())
+                viewModel.switchToDeviceAdminMode()
             }
             PHONE_LOCKING_MODE_ACCESSIBILITY_SERVICE -> {
                 Timber.i("Switching to accessibility service mode")
-                Utils.switchToAccessibilityServiceMode(requireContext())
+                viewModel.switchToAccessibilityServiceMode()
             }
             else -> Timber.w("Unknown or invalid phone locking mode")
         }
@@ -274,11 +265,26 @@ class PhoneLockingPreferenceFragment :
             }
     }
 
-    companion object {
-        const val PHONE_LOCKING_MODE_KEY = "phone_locking_mode"
-        const val PHONE_LOCKING_MODE_DEVICE_ADMIN = "0"
-        const val PHONE_LOCKING_MODE_ACCESSIBILITY_SERVICE = "1"
+    /**
+     * Request Device Administrator permissions for Wearable Extensions.
+     * @param context [Context].
+     */
+    private fun requestDeviceAdminPerms() {
+        val intent =
+            Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN).apply {
+                putExtra(
+                    DevicePolicyManager.EXTRA_DEVICE_ADMIN,
+                    DeviceAdminChangeReceiver().getWho(requireContext())
+                )
+                putExtra(
+                    DevicePolicyManager.EXTRA_ADD_EXPLANATION,
+                    getString(R.string.device_admin_desc)
+                )
+            }
+        startActivity(intent)
+    }
 
+    companion object {
         private const val OPEN_DEVICE_SETTINGS_KEY = "open_device_settings"
     }
 }
