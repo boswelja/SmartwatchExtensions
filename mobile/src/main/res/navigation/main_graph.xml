@@ -99,7 +99,7 @@
 
     <activity
         android:id="@+id/phoneLockingPreferenceActivity"
-        android:name="com.boswelja.devicemanager.phonelocking.ui.PhoneLockingPreferenceActivity" />
+        android:name="com.boswelja.devicemanager.phonelocking.ui.PhoneLockingSettingsActivity" />
 
     <activity
         android:id="@+id/widgetSettingsActivity"

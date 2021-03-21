@@ -1,15 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string-array name="pref_phone_locking_mode_entries">
-        <item>@string/phone_locking_mode_admin</item>
-        <item>@string/phone_locking_mode_accessibility</item>
-    </string-array>
-    <string-array name="pref_phone_locking_mode_entry_values">
-        <item>0</item>
-        <item>1</item>
-    </string-array>
-
     <string-array name="interrupt_filter_sync_to_watch_steps">
         <item>1. On your computer, make sure you have access to ADB. If you don\'t, you can get it from <a href="https://forum.xda-developers.com/showthread.php?t=2317790">this thread on XDA</a>.</item>
         <item>2. Go to Developer Options on your watch. If not already visible, enable it by heading to Settings -> System -> About, then tapping \'Build number\' until you get a popup saying you are now a developer. You should now have Developer Options in your settings.</item>

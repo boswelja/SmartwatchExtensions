@@ -14,6 +14,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import androidx.preference.PreferenceManager
+import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.preference.PreferenceKey.PHONE_LOCKING_ENABLED_KEY
 import com.boswelja.devicemanager.phonelocking.DeviceAdminChangeReceiver
 import com.boswelja.devicemanager.phonelocking.PhoneLockingAccessibilityService
@@ -35,14 +36,36 @@ class PhoneLockingSettingsViewModel internal constructor(
         sharedPreferences.getBoolean(PHONE_LOCKING_ENABLED_KEY, false)
     )
     private val _phoneLockingMode = MutableLiveData(
-        sharedPreferences.getString(PHONE_LOCKING_MODE_KEY, PHONE_LOCKING_MODE_DEVICE_ADMIN)
-            ?: PHONE_LOCKING_MODE_DEVICE_ADMIN
+        sharedPreferences.getString(
+            PHONE_LOCKING_MODE_KEY,
+            PHONE_LOCKING_MODE_DEVICE_ADMIN.toString()
+        )?.toInt() ?: PHONE_LOCKING_MODE_DEVICE_ADMIN
     )
 
     val phoneLockingEnabled: LiveData<Boolean>
         get() = _phoneLockingEnabled
-    val phoneLockingMode: LiveData<String>
+    val phoneLockingMode: LiveData<Int>
         get() = _phoneLockingMode
+
+    val phoneLockingModes = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+        arrayOf(
+            Pair(
+                application.getString(R.string.phone_locking_mode_admin),
+                PHONE_LOCKING_MODE_DEVICE_ADMIN
+            ),
+            Pair(
+                application.getString(R.string.phone_locking_mode_accessibility),
+                PHONE_LOCKING_MODE_ACCESSIBILITY_SERVICE
+            )
+        )
+    } else {
+        arrayOf(
+            Pair(
+                application.getString(R.string.phone_locking_mode_admin),
+                PHONE_LOCKING_MODE_DEVICE_ADMIN
+            )
+        )
+    }
 
     @Suppress("unused")
     constructor(application: Application) : this(
@@ -51,6 +74,19 @@ class PhoneLockingSettingsViewModel internal constructor(
         PreferenceManager.getDefaultSharedPreferences(application),
         WatchManager.getInstance(application)
     )
+
+    fun switchMode(mode: Int) {
+        when (mode) {
+            PHONE_LOCKING_MODE_ACCESSIBILITY_SERVICE -> {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                    switchToAccessibilityServiceMode()
+                } else {
+                    Timber.w("Unsupported SDK tried switching to accessibility service mode")
+                }
+            }
+            PHONE_LOCKING_MODE_DEVICE_ADMIN -> switchToDeviceAdminMode()
+        }
+    }
 
     /**
      * Switch Phone Locking mode to Device Administrator. This disables Accessibility Service
@@ -73,7 +109,7 @@ class PhoneLockingSettingsViewModel internal constructor(
                 )
             }
             sharedPreferences.edit {
-                putString(PHONE_LOCKING_MODE_KEY, PHONE_LOCKING_MODE_DEVICE_ADMIN)
+                putString(PHONE_LOCKING_MODE_KEY, PHONE_LOCKING_MODE_DEVICE_ADMIN.toString())
                 putBoolean(PHONE_LOCKING_ENABLED_KEY, false) // Disable phone locking automatically
             }
             _phoneLockingMode.postValue(PHONE_LOCKING_MODE_DEVICE_ADMIN)
@@ -112,7 +148,10 @@ class PhoneLockingSettingsViewModel internal constructor(
                 )
             }
             sharedPreferences.edit {
-                putString(PHONE_LOCKING_MODE_KEY, PHONE_LOCKING_MODE_ACCESSIBILITY_SERVICE)
+                putString(
+                    PHONE_LOCKING_MODE_KEY,
+                    PHONE_LOCKING_MODE_ACCESSIBILITY_SERVICE.toString()
+                )
                 putBoolean(PHONE_LOCKING_ENABLED_KEY, false) // Disable phone locking automatically
             }
             _phoneLockingMode.postValue(PHONE_LOCKING_MODE_ACCESSIBILITY_SERVICE)
@@ -133,9 +172,20 @@ class PhoneLockingSettingsViewModel internal constructor(
         }
     }
 
+    fun canEnablePhoneLocking(): Boolean {
+        return if (
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.P &&
+            phoneLockingMode.value == PHONE_LOCKING_MODE_ACCESSIBILITY_SERVICE
+        ) {
+            Utils.isAccessibilityServiceEnabled(getApplication())
+        } else {
+            Utils.isDeviceAdminEnabled(getApplication())
+        }
+    }
+
     companion object {
         const val PHONE_LOCKING_MODE_KEY = "phone_locking_mode"
-        const val PHONE_LOCKING_MODE_DEVICE_ADMIN = "0"
-        const val PHONE_LOCKING_MODE_ACCESSIBILITY_SERVICE = "1"
+        const val PHONE_LOCKING_MODE_DEVICE_ADMIN = 0
+        const val PHONE_LOCKING_MODE_ACCESSIBILITY_SERVICE = 1
     }
 }

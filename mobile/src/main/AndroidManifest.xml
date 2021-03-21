@@ -55,7 +55,7 @@
             android:exported="false" />
 
         <activity
-            android:name=".phonelocking.ui.PhoneLockingPreferenceActivity"
+            android:name=".phonelocking.ui.PhoneLockingSettingsActivity"
             android:exported="false" />
 
         <activity

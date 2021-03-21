@@ -17,12 +17,6 @@
     <!-- Dashboard generic strings -->
     <string name="dashboard_settings_label">%s settings</string>
 
-    <!-- Device Admin strings -->
-    <string name="device_admin_label">@string/app_name</string>
-    <string name="device_admin_desc">Allows locking your phone from your watch</string>
-    <string name="device_admin_perm_grant_dialog_title">Missing Permission</string>
-    <string name="device_admin_perm_grant_dialog_message">Wearable Extensions requires device administrator permissions to be able to lock your phone. WARNING: You will not be able to uninstall Wearable Extensions until you revoke Device Administrator permissions from your device settings.</string>
-
     <!-- Battery Sync preference strings -->
     <string name="main_battery_sync_title">Battery Sync</string>
     <string name="pref_battery_sync_enable_title">Enable Battery Sync</string>
@@ -72,20 +66,22 @@
     <string name="app_manager_error_title">Something Went Wrong</string>
     <string name="app_manager_error_desc">Make sure Wearable Extensions is up to date on your phone and watch, and try again</string>
 
-    <!-- Phone Lock preference strings -->
+    <!-- Phone Locking strings -->
     <string name="main_phone_locking_title">Phone Locking</string>
-    <string name="pref_phone_locking_mode_title">Phone Locking Method</string>
-    <string name="pref_phone_locking_mode_no_option_summary">Android versions below 9.0 can only use Device Administrator mode</string>
-    <string name="pref_phone_locking_accessibility_settings_title">Open Accessibility Settings</string>
-    <string name="pref_phone_locking_admin_settings_title">Open Device Admin Settings</string>
-    <string name="pref_lock_phone_enabled_title">Remote phone locking</string>
-    <string name="pref_lock_phone_enabled_desc">Allow locking your phone from your wearable</string>
+    <string name="phone_locking_mode_title">Phone Locking Method</string>
+    <string name="phone_locking_accessibility_settings">Open Accessibility Settings</string>
+    <string name="phone_locking_admin_settings">Open Device Admin Settings</string>
+    <string name="phone_locking_enabled_title">Remote phone locking</string>
+    <string name="phone_locking_enabled_summary">Allow locking your phone from your wearable</string>
     <string name="phone_locking_accessibility_service_label">Phone Locking</string>
     <string name="phone_locking_mode_admin">Device Administrator</string>
     <string name="phone_locking_mode_accessibility">Accessibility Service</string>
-    <string name="phone_locking_disabled_by_mode_change">Phone Locking has been automatically disabled, re-enable it to start using your new Phone Locking method</string>
-    <string name="dialog_phone_locking_accessibility_service_title">Enable Accessibility Service</string>
-    <string name="dialog_phone_locking_accessibility_service_desc">You\'ve chosen to use the Accessibility Service as your phone locking method. To enable this, you need to enable "Phone Locking" as an accessibility service in your phone settings. Tap "enable" below to go there now.</string>
+    <string name="phone_locking_setup_accessibility_title">Enable Accessibility Service</string>
+    <string name="phone_locking_setup_accessibility_desc">You\'ve chosen to use the Accessibility Service as your phone locking method. To enable this, you need to enable "Phone Locking" as an accessibility service in your phone settings. Tap "enable" below to go there now.</string>
+    <string name="phone_locking_setup_admin_title">Missing Permission</string>
+    <string name="phone_locking_setup_admin_desc">Wearable Extensions requires device administrator permissions to be able to lock your phone. WARNING: You will not be able to uninstall Wearable Extensions until you revoke Device Administrator permissions from your device settings.</string>
+    <string name="device_admin_label">@string/app_name</string>
+    <string name="device_admin_desc">Allows locking your phone from your watch</string>
 
     <!-- App Settings strings -->
     <string name="noti_settings_title">Notification Settings</string>

@@ -21,8 +21,8 @@ import com.boswelja.devicemanager.common.ui.activity.BaseWatchPickerPreferenceAc
 import com.boswelja.devicemanager.dndsync.ui.DnDSyncPreferenceActivity
 import com.boswelja.devicemanager.main.MainActivity
 import com.boswelja.devicemanager.phonelocking.Utils.isDeviceAdminEnabled
-import com.boswelja.devicemanager.phonelocking.ui.PhoneLockingPreferenceFragment.Companion.PHONE_LOCKING_MODE_ACCESSIBILITY_SERVICE
-import com.boswelja.devicemanager.phonelocking.ui.PhoneLockingPreferenceFragment.Companion.PHONE_LOCKING_MODE_KEY
+import com.boswelja.devicemanager.phonelocking.ui.PhoneLockingSettingsViewModel.Companion.PHONE_LOCKING_MODE_ACCESSIBILITY_SERVICE
+import com.boswelja.devicemanager.phonelocking.ui.PhoneLockingSettingsViewModel.Companion.PHONE_LOCKING_MODE_KEY
 import com.boswelja.devicemanager.watchmanager.database.WatchDatabase
 import com.google.android.gms.wearable.MessageEvent
 import com.google.android.gms.wearable.Wearable
@@ -54,7 +54,8 @@ class WatchMessageReceiver : WearableListenerService() {
         Timber.i("tryLockDevice() called")
         val isInDeviceAdminMode =
             PreferenceManager.getDefaultSharedPreferences(this)
-                .getString(PHONE_LOCKING_MODE_KEY, "0") != PHONE_LOCKING_MODE_ACCESSIBILITY_SERVICE
+                .getString(PHONE_LOCKING_MODE_KEY, "0") !=
+                PHONE_LOCKING_MODE_ACCESSIBILITY_SERVICE.toString()
         val isDeviceAdminEnabled = isDeviceAdminEnabled(this)
         if (isInDeviceAdminMode && isDeviceAdminEnabled) {
             Timber.i("Trying to lock device")
