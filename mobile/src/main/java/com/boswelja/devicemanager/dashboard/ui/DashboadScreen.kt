@@ -121,10 +121,10 @@ fun DashboardItem(
     buttonLabel: String,
     onClick: () -> Unit
 ) {
-    Card(
-        Modifier.clickable(onClick = onClick)
-    ) {
-        Column {
+    Card {
+        Column(
+            Modifier.clickable(onClick = onClick)
+        ) {
             content()
             Row(
                 horizontalArrangement = Arrangement.Center,
