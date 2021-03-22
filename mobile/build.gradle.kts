@@ -69,7 +69,6 @@ dependencies {
     val androidxCoreKtx = "1.5.0-beta02"
     val androidxEspresso = "3.1.0"
     val androidxLifecycle = "2.3.0"
-    val androidxNavigation = "2.3.3"
     val androidxPaging = "3.0.0-beta01"
     val androidxPreference = "1.1.1"
     val androidxRoom = "2.3.0-beta02"
@@ -104,8 +103,6 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:$androidxLifecycle")
     implementation("androidx.lifecycle:lifecycle-common-java8:$androidxLifecycle")
     implementation("androidx.lifecycle:lifecycle-service:$androidxLifecycle")
-    implementation("androidx.navigation:navigation-fragment-ktx:$androidxNavigation")
-    implementation("androidx.navigation:navigation-ui-ktx:$androidxNavigation")
     implementation("androidx.paging:paging-runtime:$androidxPaging")
     implementation("androidx.preference:preference:$androidxPreference")
     implementation("androidx.room:room-runtime:$androidxRoom")
@@ -143,7 +140,6 @@ dependencies {
 
     androidTestImplementation("androidx.arch.core:core-testing:$androidxArch")
     androidTestImplementation("androidx.test.espresso:espresso-core:$androidxEspresso")
-    androidTestImplementation("androidx.navigation:navigation-testing:$androidxNavigation")
     androidTestImplementation("androidx.test:runner:$androidxTest")
     androidTestImplementation("androidx.test:rules:$androidxTest")
     androidTestImplementation("androidx.test:core-ktx:$androidxTest")
