@@ -24,8 +24,8 @@ import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.appmanager.State
 import com.boswelja.devicemanager.common.appmanager.App
 import com.boswelja.devicemanager.common.ui.AppTheme
+import com.boswelja.devicemanager.common.ui.LoadingScreen
 import com.boswelja.devicemanager.common.ui.UpNavigationWatchPickerAppBar
-import com.boswelja.devicemanager.common.ui.fragment.Loading
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -67,7 +67,7 @@ class AppManagerActivity : AppCompatActivity() {
                     }
                 ) {
                     NavHost(navController, startDestination = LOADING) {
-                        composable(LOADING) { Loading((progress ?: 0) / 100f) }
+                        composable(LOADING) { LoadingScreen((progress ?: 0) / 100f) }
                         composable(ERROR) { Error(viewModel) }
                         composable(APP_LIST) {
                             AppList(

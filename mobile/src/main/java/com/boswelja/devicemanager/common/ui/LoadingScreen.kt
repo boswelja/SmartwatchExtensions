@@ -1,4 +1,4 @@
-package com.boswelja.devicemanager.common.ui.fragment
+package com.boswelja.devicemanager.common.ui
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -13,7 +13,7 @@ import androidx.compose.ui.res.stringResource
 import com.boswelja.devicemanager.R
 
 @Composable
-fun Loading(progress: Float) {
+fun LoadingScreen(progress: Float) {
     Column(
         Modifier
             .fillMaxWidth()
