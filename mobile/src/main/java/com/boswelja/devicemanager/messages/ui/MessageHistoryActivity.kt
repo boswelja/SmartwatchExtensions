@@ -2,6 +2,7 @@ package com.boswelja.devicemanager.messages.ui
 
 import android.os.Bundle
 import androidx.activity.compose.setContent
+import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -28,11 +29,10 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.ui.AppTheme
 import com.boswelja.devicemanager.common.ui.UpNavigationAppBar
-import com.boswelja.devicemanager.common.ui.activity.BaseToolbarActivity
 import com.boswelja.devicemanager.messages.Message
 import kotlinx.coroutines.launch
 
-class MessageHistoryActivity : BaseToolbarActivity() {
+class MessageHistoryActivity : AppCompatActivity() {
 
     @ExperimentalMaterialApi
     override fun onCreate(savedInstanceState: Bundle?) {

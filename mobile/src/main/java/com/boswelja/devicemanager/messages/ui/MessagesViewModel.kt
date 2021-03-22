@@ -2,6 +2,7 @@ package com.boswelja.devicemanager.messages.ui
 
 import android.app.Activity
 import android.app.Application
+import androidx.browser.customtabs.CustomTabsIntent
 import androidx.lifecycle.AndroidViewModel
 import com.boswelja.devicemanager.messages.database.MessageDatabase
 import com.google.android.play.core.appupdate.AppUpdateManager
@@ -16,7 +17,8 @@ import timber.log.Timber
 class MessagesViewModel @JvmOverloads constructor(
     application: Application,
     private val messageDatabase: MessageDatabase = MessageDatabase.getInstance(application),
-    private val appUpdateManager: AppUpdateManager = AppUpdateManagerFactory.create(application)
+    private val appUpdateManager: AppUpdateManager = AppUpdateManagerFactory.create(application),
+    val customTabsIntent: CustomTabsIntent = CustomTabsIntent.Builder().setShowTitle(true).build()
 ) : AndroidViewModel(application) {
 
     /**

@@ -2,6 +2,7 @@ package com.boswelja.devicemanager.dndsync.ui.helper
 
 import android.os.Bundle
 import androidx.activity.compose.setContent
+import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -38,10 +39,9 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.ui.AppTheme
 import com.boswelja.devicemanager.common.ui.UpNavigationAppBar
-import com.boswelja.devicemanager.common.ui.activity.BaseToolbarActivity
 import timber.log.Timber
 
-class DnDSyncHelperActivity : BaseToolbarActivity() {
+class DnDSyncHelperActivity : AppCompatActivity() {
 
     @ExperimentalMaterialApi
     override fun onCreate(savedInstanceState: Bundle?) {

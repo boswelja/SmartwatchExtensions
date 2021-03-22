@@ -1,12 +1,8 @@
-package com.boswelja.devicemanager.appinfo.ui
+package com.boswelja.devicemanager.aboutapp.ui
 
 import android.content.ContentResolver
 import android.content.Intent
 import android.net.Uri
-import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -26,38 +22,18 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.core.net.toUri
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.boswelja.devicemanager.BuildConfig
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.appmanager.ui.HeaderItem
-import com.boswelja.devicemanager.common.ui.AppTheme
 import com.boswelja.devicemanager.donate.ui.DonateActivity
-
-class AppInfoFragment : Fragment() {
-    @ExperimentalMaterialApi
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        return ComposeView(requireContext()).apply {
-            setContent {
-                AppTheme {
-                    AboutScreen()
-                }
-            }
-        }
-    }
-}
 
 @ExperimentalMaterialApi
 @Composable
-fun AboutScreen() {
+fun AboutAppScreen() {
     Column(Modifier.fillMaxSize()) {
         AboutApp()
         Divider()

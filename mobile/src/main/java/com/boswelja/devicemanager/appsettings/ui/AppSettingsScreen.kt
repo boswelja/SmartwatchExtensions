@@ -2,11 +2,7 @@ package com.boswelja.devicemanager.appsettings.ui
 
 import android.content.Intent
 import android.os.Build
-import android.os.Bundle
 import android.provider.Settings
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -28,36 +24,16 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.appmanager.ui.HeaderItem
-import com.boswelja.devicemanager.common.ui.AppTheme
 import com.boswelja.devicemanager.common.ui.CheckboxPreference
 import com.boswelja.devicemanager.common.ui.DialogPreference
 import com.boswelja.devicemanager.managespace.ui.ManageSpaceActivity
 import com.boswelja.devicemanager.watchmanager.ui.WatchManagerActivity
 import com.boswelja.devicemanager.widget.ui.WidgetSettingsActivity
-
-class AppSettingsFragment : Fragment() {
-    @ExperimentalMaterialApi
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        return ComposeView(requireContext()).apply {
-            setContent {
-                AppTheme {
-                    AppSettingsScreen()
-                }
-            }
-        }
-    }
-}
 
 @ExperimentalMaterialApi
 @Composable
