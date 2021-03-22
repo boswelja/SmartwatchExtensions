@@ -56,6 +56,6 @@ class AppSettingsViewModel internal constructor(
     }
 
     companion object {
-        private const val DAYNIGHT_MODE_KEY = "daynight_mode"
+        const val DAYNIGHT_MODE_KEY = "daynight_mode"
     }
 }

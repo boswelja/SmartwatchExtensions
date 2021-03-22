@@ -1,15 +1,11 @@
-/* Copyright (C) 2020 Jack Boswell <boswelja@outlook.com>
- *
- * This file is part of Wearable Extensions
- *
- * This file, and any part of the Wearable Extensions app/s cannot be copied and/or distributed
- * without permission from Jack Boswell (boswelja) <boswela@outlook.com>
- */
 package com.boswelja.devicemanager
 
 import android.app.Application
 import android.content.Intent
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
+import androidx.preference.PreferenceManager
+import com.boswelja.devicemanager.appsettings.ui.AppSettingsViewModel.Companion.DAYNIGHT_MODE_KEY
 import com.boswelja.devicemanager.bootorupdate.BootOrUpdateHandlerService
 import com.boswelja.devicemanager.bootorupdate.updater.Updater
 import timber.log.Timber
@@ -23,6 +19,12 @@ class MainApplication : Application() {
         if (BuildConfig.DEBUG) {
             Timber.plant(Timber.DebugTree())
         }
+
+        val nightMode = PreferenceManager.getDefaultSharedPreferences(this).getString(
+            DAYNIGHT_MODE_KEY,
+            AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM.toString()
+        )?.toInt() ?: AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+        AppCompatDelegate.setDefaultNightMode(nightMode)
 
         ensureEnvironmentUpdated()
     }
