@@ -75,25 +75,24 @@ fun SliderPreference(
     icon: ImageVector? = null,
     valueRange: ClosedFloatingPointRange<Float> = 0f..1f,
     value: Float,
-    onSliderValueChanged: (Float) -> Unit
+    trailingFormat: String? = null,
+    onSliderValueChanged: (Float) -> Unit,
+    onSliderValueFinished: () -> Unit
 ) {
     ListItem(
         text = { Text(text) },
         icon = { if (icon != null) { Icon(icon, null) } },
         secondaryText = {
             Slider(
-                value = value / 100f,
+                value = value,
                 valueRange = valueRange,
-                onValueChange = {
-                    onSliderValueChanged(it)
-                }
+                onValueChange = onSliderValueChanged,
+                onValueChangeFinished = onSliderValueFinished
             )
         },
-        trailing = {
-            Text(
-                "$value%"
-            )
-        }
+        trailing = if (trailingFormat != null) {
+            { Text(trailingFormat.format((value * 100).toInt())) }
+        } else null
     )
 }
 
@@ -192,6 +191,7 @@ fun SliderPreferencePreview() {
     SliderPreference(
         text = "Preference",
         value = value,
-        onSliderValueChanged = { value = it }
+        onSliderValueChanged = { value = it },
+        onSliderValueFinished = { }
     )
 }
