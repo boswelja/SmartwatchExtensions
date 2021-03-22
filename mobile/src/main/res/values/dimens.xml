@@ -9,7 +9,5 @@
     <dimen name="dashboard_card_spacing">4dp</dimen>
     <dimen name="dashboard_content_padding">16dp</dimen>
 
-    <dimen name="settings_widget_horizontal_margin">4dp</dimen>
-
     <dimen name="rotation_offset">0</dimen>
 </resources>
