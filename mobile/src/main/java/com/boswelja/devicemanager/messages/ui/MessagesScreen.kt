@@ -65,7 +65,7 @@ fun MessagesList(messages: List<Message>, scaffoldState: ScaffoldState) {
     val viewModel: MessagesViewModel = viewModel()
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
-    LazyColumn {
+    LazyColumn(Modifier.fillMaxSize()) {
         items(messages) { message ->
             val dismissState = rememberDismissState {
                 if (it != DismissValue.Default) {

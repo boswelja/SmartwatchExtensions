@@ -6,6 +6,7 @@ import android.provider.Settings
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.Divider
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
@@ -38,7 +39,7 @@ import com.boswelja.devicemanager.widget.ui.WidgetSettingsActivity
 @ExperimentalMaterialApi
 @Composable
 fun AppSettingsScreen() {
-    Column {
+    Column(Modifier.fillMaxSize()) {
         AppSettings()
         Divider()
         AnalyticsSettings()
