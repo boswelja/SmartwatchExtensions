@@ -66,10 +66,8 @@ dependencies {
     val androidxArch = "2.1.0"
     val androidxAppCompat = "1.3.0-beta01"
     val androidxBrowser = "1.3.0"
-    val androidxConstraintLayout = "2.1.0-alpha2"
     val androidxCoreKtx = "1.5.0-beta02"
     val androidxEspresso = "3.1.0"
-    val androidxFragment = "1.3.0"
     val androidxLifecycle = "2.3.0"
     val androidxNavigation = "2.3.3"
     val androidxPaging = "3.0.0-beta01"
@@ -85,7 +83,6 @@ dependencies {
     val navigationCompose = "1.0.0-alpha09"
 
     val billingClient = "3.0.2"
-    val googleMaterial = "1.4.0-alpha01"
     val googlePlayCore = "1.9.1"
     val playServicesWearable = "17.0.0"
     val timber = "4.7.1"
@@ -102,7 +99,6 @@ dependencies {
 
     implementation("androidx.appcompat:appcompat:$androidxAppCompat")
     implementation("androidx.browser:browser:$androidxBrowser")
-    implementation("androidx.constraintlayout:constraintlayout:$androidxConstraintLayout")
     implementation("androidx.core:core-ktx:$androidxCoreKtx")
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:$androidxLifecycle")
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:$androidxLifecycle")
@@ -117,7 +113,6 @@ dependencies {
     implementation("androidx.work:work-runtime-ktx:$androidxWork")
 
     implementation("com.android.billingclient:billing-ktx:$billingClient")
-    implementation("com.google.android.material:material:$googleMaterial")
     implementation("com.google.android.play:core:$googlePlayCore")
     implementation("com.google.android.play:core-ktx:1.8.1")
     implementation("com.google.android.gms:play-services-wearable:$playServicesWearable")
@@ -136,8 +131,6 @@ dependencies {
     implementation("androidx.navigation:navigation-compose:$navigationCompose")
 
     ksp("androidx.room:room-compiler:$androidxRoom")
-
-    debugImplementation("androidx.fragment:fragment-testing:$androidxFragment")
 
     testImplementation("androidx.arch.core:core-testing:$androidxArch")
     testImplementation("androidx.test:core-ktx:$androidxTest")
