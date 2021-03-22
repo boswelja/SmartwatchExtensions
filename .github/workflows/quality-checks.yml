@@ -110,12 +110,12 @@ jobs:
           path: ./**/build/
           key: ${{ runner.os }}-build-${{ github.sha }}
       - run: bash ./gradlew lint
-      - uses: yutailang0119/action-android-lint@v1.0.2
+      - uses: yutailang0119/action-android-lint@v1.1.0
         if: ${{ always() }}
         continue-on-error: true
         with:
           xml_path: mobile/build/reports/lint-results-debug.xml
-      - uses: yutailang0119/action-android-lint@v1.0.2
+      - uses: yutailang0119/action-android-lint@v1.1.0
         if: ${{ always() }}
         continue-on-error: true
         with:
