@@ -44,7 +44,7 @@
             android:label="@string/message_history_label" />
 
         <activity
-            android:name=".batterysync.ui.BatterySyncPreferenceActivity"
+            android:name=".batterysync.ui.BatterySyncSettingsActivity"
             android:exported="false" />
 
         <activity

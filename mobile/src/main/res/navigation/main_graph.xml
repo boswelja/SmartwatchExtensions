@@ -83,7 +83,7 @@
 
     <activity
         android:id="@+id/batterySyncPreferenceActivity"
-        android:name="com.boswelja.devicemanager.batterysync.ui.BatterySyncPreferenceActivity" />
+        android:name="com.boswelja.devicemanager.batterysync.ui.BatterySyncSettingsActivity" />
 
     <activity
         android:id="@+id/appManagerActivity"

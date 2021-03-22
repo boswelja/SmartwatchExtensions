@@ -1,9 +1,5 @@
 package com.boswelja.devicemanager.batterysync.ui
 
-import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material.Divider
 import androidx.compose.material.ExperimentalMaterialApi
@@ -13,34 +9,13 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.res.stringResource
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.appmanager.ui.HeaderItem
-import com.boswelja.devicemanager.common.ui.AppTheme
 import com.boswelja.devicemanager.common.ui.CheckboxPreference
 import com.boswelja.devicemanager.common.ui.SliderPreference
 import com.boswelja.devicemanager.common.ui.SwitchPreference
-
-class BatterySyncPreferenceFragment : Fragment() {
-
-    @ExperimentalMaterialApi
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        return ComposeView(requireContext()).apply {
-            setContent {
-                AppTheme {
-                    BatterySyncSettingsScreen()
-                }
-            }
-        }
-    }
-}
 
 @ExperimentalMaterialApi
 @Composable
@@ -105,7 +80,7 @@ fun ChargeNotificationSettings() {
             text = stringResource(R.string.battery_sync_phone_charge_noti_title),
             secondaryText = stringResource(
                 R.string.battery_sync_phone_charge_noti_summary,
-                currentThreshold.toString()
+                (currentThreshold * 100).toInt().toString()
             ),
             isChecked = phoneChargeNotiEnabled == true,
             onCheckChanged = {
@@ -116,7 +91,7 @@ fun ChargeNotificationSettings() {
             text = stringResource(R.string.battery_sync_watch_charge_noti_title),
             secondaryText = stringResource(
                 R.string.battery_sync_watch_charge_noti_summary,
-                currentThreshold.toString()
+                (currentThreshold * 100).toInt().toString()
             ),
             isChecked = watchChargeNotiEnabled == true,
             onCheckChanged = {
