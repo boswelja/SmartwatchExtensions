@@ -14,7 +14,7 @@ class BatterySyncDashboardFragment : BaseDashboardItemFragment() {
         setupWidget(
             getString(
                 R.string.dashboard_settings_label,
-                getString(R.string.main_battery_sync_title)
+                getString(R.string.battery_sync_title)
             ),
             BatterySyncPreferenceWidgetFragment()
         ) {

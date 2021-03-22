@@ -83,7 +83,7 @@ fun BatteryWidgetPreview(
     ) {
         batteryIndicator.drawable.level = previewPercent
         batteryIndicatorText.text = root.context.getString(
-            R.string.battery_sync_percent_short, previewPercent.toString()
+            R.string.battery_percent, previewPercent.toString()
         )
         if (backgroundVisible) {
             widgetBackground.setImageResource(R.drawable.widget_background)

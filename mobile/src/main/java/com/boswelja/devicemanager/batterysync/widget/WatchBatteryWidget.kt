@@ -172,7 +172,7 @@ class WatchBatteryWidget : AppWidgetProvider() {
                 remoteViews.setTextViewText(
                     R.id.battery_indicator_text,
                     context.getString(
-                        R.string.battery_sync_percent_short, batteryPercent.toString()
+                        R.string.battery_percent, batteryPercent.toString()
                     )
                 )
             } else {

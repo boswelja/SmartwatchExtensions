@@ -3,8 +3,6 @@
 
     <dimen name="corner_radius">8dp</dimen>
 
-    <dimen name="recyclerview_vertical_padding">8dp</dimen>
-
     <dimen name="watch_selector_horizontal_margin">16dp</dimen>
     <dimen name="watch_selector_vertical_margin">8dp</dimen>
 

@@ -18,7 +18,6 @@ import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.batterysync.database.WatchBatteryStats
 import com.boswelja.devicemanager.common.LifecycleAwareTimer
 import com.boswelja.devicemanager.databinding.SettingsWidgetBatterySyncBinding
-import com.boswelja.devicemanager.watchmanager.WatchManager
 import java.util.concurrent.TimeUnit
 import timber.log.Timber
 
@@ -26,7 +25,6 @@ class BatterySyncPreferenceWidgetFragment : Fragment() {
 
     private val viewModel: BatterySyncViewModel by activityViewModels()
 
-    private val watchManager by lazy { WatchManager.getInstance(requireContext()) }
     private val lastUpdateTimer = LifecycleAwareTimer(1, TimeUnit.MINUTES) {
         viewModel.batteryStats.value?.let { batteryStats ->
             val dataAgeMinutes =
@@ -54,9 +52,6 @@ class BatterySyncPreferenceWidgetFragment : Fragment() {
 
         lifecycle.addObserver(lastUpdateTimer)
 
-        watchManager.selectedWatch.observe(viewLifecycleOwner) { watch ->
-            watch?.id?.let { viewModel.setWatchId(it) }
-        }
         viewModel.batterySyncEnabled.observe(viewLifecycleOwner) {
             if (!it) {
                 showBatterySyncDisabled()
@@ -88,14 +83,14 @@ class BatterySyncPreferenceWidgetFragment : Fragment() {
             watchBatteryIndicator.setImageLevel(batteryStats.percent)
             binding.lastUpdatedTime.visibility = View.VISIBLE
             watchBatteryPercent.text =
-                getString(R.string.battery_sync_percent_short, batteryStats.percent.toString())
+                getString(R.string.battery_percent, batteryStats.percent.toString())
         }
     }
 
     private fun setLastUpdateTime(minutes: Int) {
         val lastUpdateText =
             if (minutes < 1) {
-                getString(R.string.battery_sync_last_updated_under_minute)
+                getString(R.string.battery_sync_last_update_recent)
             } else {
                 resources.getQuantityString(
                     R.plurals.battery_sync_last_updated_minutes, minutes, minutes

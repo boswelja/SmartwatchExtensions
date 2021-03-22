@@ -16,8 +16,8 @@ import timber.log.Timber
 
 abstract class BaseWatchPickerPreferenceActivity : BaseWatchPickerActivity() {
 
-    /** Get an instance of a class that extends [BasePreferenceFragment] here. Must not be null. */
-    abstract fun getPreferenceFragment(): BasePreferenceFragment
+    /** Get an instance of a class that extends [Fragment] here. Must not be null. */
+    abstract fun getPreferenceFragment(): Fragment
 
     /**
      * Get an instance of a class that extends [Fragment] here to be used as a settings widget. Null

@@ -18,20 +18,20 @@
     <string name="dashboard_settings_label">%s settings</string>
 
     <!-- Battery Sync preference strings -->
-    <string name="main_battery_sync_title">Battery Sync</string>
-    <string name="pref_battery_sync_enable_title">Enable Battery Sync</string>
-    <string name="pref_battery_sync_interval_title">Sync Interval</string>
-    <string name="pref_battery_sync_interval_summary">Sync interval in minutes</string>
-    <string name="pref_battery_sync_phone_charged_noti_title">Phone Charged Notification</string>
-    <string name="pref_battery_sync_phone_charged_noti_summary">Get a notification on your watch when your phone is %s%% charged</string>
-    <string name="pref_battery_sync_watch_charged_noti_title">Watch Charged Notification</string>
-    <string name="pref_battery_sync_watch_charged_noti_summary">Get a notification on your phone when your watch is %s%% charged</string>
-    <string name="pref_battery_sync_charge_threshold_title">Battery Charge Threshold</string>
-    <string name="pref_battery_sync_charge_threshold_summary">Adjust the minimum charge percent to consider your device charged</string>
+    <string name="battery_sync_title">Battery Sync</string>
+    <string name="battery_sync_toggle_title">Enable Battery Sync</string>
+    <string name="battery_sync_interval_title">Sync Interval</string>
+    <string name="battery_sync_phone_charge_noti_title">Phone Charged Notification</string>
+    <string name="battery_sync_phone_charge_noti_summary">Get a notification on your watch when your phone is %s%% charged</string>
+    <string name="battery_sync_watch_charge_noti_title">Watch Charged Notification</string>
+    <string name="battery_sync_watch_charge_noti_summary">Get a notification on your phone when your watch is %s%% charged</string>
+    <string name="battery_sync_charge_threshold_title">Battery Charge Threshold</string>
     <string name="battery_sync_disabled">Battery Sync disabled</string>
-    <string name="battery_sync_last_updated_under_minute">Last updated less than a minute ago</string>
-    <string name="battery_sync_percent_short">%s%%</string>
-    <string name="battery_sync_enable_failed">Failed to enable battery Sync</string>
+    <string name="battery_sync_last_update_recent">Last updated less than a minute ago</string>
+    <string name="battery_percent">%s%%</string>
+    <string name="battery_sync_interval">%s min</string>
+    <string name="category_charge_notifications">Charge Notifications</string>
+    <string name="category_battery_sync_settings">Battery Sync Settings</string>
 
     <!-- Do not Disturb Sync preference strings -->
     <string name="main_dnd_sync_title">Do not Disturb Sync</string>
