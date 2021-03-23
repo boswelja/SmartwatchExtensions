@@ -1,43 +1,99 @@
-/* Copyright (C) 2020 Jack Boswell <boswelja@outlook.com>
- *
- * This file is part of Wearable Extensions
- *
- * This file, and any part of the Wearable Extensions app/s cannot be copied and/or distributed
- * without permission from Jack Boswell (boswelja) <boswela@outlook.com>
- */
 package com.boswelja.devicemanager.batterysync.ui
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.ListItem
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
-import com.boswelja.devicemanager.databinding.FragmentBatterySyncBinding
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.boswelja.devicemanager.R
+import com.boswelja.devicemanager.common.AppTheme
+import com.boswelja.devicemanager.common.BatteryIcon
 
-@Suppress("unused")
 class BatterySyncFragment : Fragment() {
 
-    private val viewModel: BatterySyncViewModel by viewModels()
-
-    private lateinit var binding: FragmentBatterySyncBinding
-
+    @ExperimentalMaterialApi
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentBatterySyncBinding.inflate(inflater, container, false)
-        binding.viewModel = viewModel
-        binding.lifecycleOwner = viewLifecycleOwner
-        return binding.root
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        viewModel.batterySyncEnabled.observe(viewLifecycleOwner) {
-            if (it) binding.motionLayout.transitionToStart()
-            else binding.motionLayout.transitionToEnd()
+        return ComposeView(requireContext()).apply {
+            setContent {
+                AppTheme {
+                    BatterySyncScreen()
+                }
+            }
         }
+    }
+}
+
+@ExperimentalMaterialApi
+@Composable
+fun BatterySyncScreen() {
+    val viewModel: BatterySyncViewModel = viewModel()
+    val batterySyncEnabled by viewModel.batterySyncEnabled.observeAsState()
+    if (batterySyncEnabled == true) {
+        val batteryPercent by viewModel.batteryPercent.observeAsState()
+        val phoneName by viewModel.phoneName.observeAsState()
+        BatteryStatus(
+            percent = batteryPercent ?: 0,
+            phoneName = phoneName ?: stringResource(R.string.default_phone_name)
+        ) {
+            viewModel.updateBatteryStats()
+        }
+    } else {
+        BatterySyncDisabled()
+    }
+}
+
+@ExperimentalMaterialApi
+@Composable
+fun BatterySyncDisabled() {
+    ListItem(
+        text = { Text(stringResource(R.string.battery_sync_disabled)) },
+        icon = { BatteryIcon(percent = -1) }
+    )
+}
+
+@Composable
+fun BatteryStatus(
+    percent: Int,
+    phoneName: String,
+    onClick: () -> Unit
+) {
+    Column(
+        Modifier
+            .fillMaxWidth()
+            .clickable(onClick = onClick)
+            .padding(8.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        BatteryIcon(percent, modifier = Modifier.size(56.dp))
+        Text(
+            stringResource(R.string.battery_sync_hint_text, phoneName),
+            style = MaterialTheme.typography.body1
+        )
+        Text(
+            stringResource(R.string.battery_percent, percent.toString()),
+            style = MaterialTheme.typography.h6
+        )
     }
 }
