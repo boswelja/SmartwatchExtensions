@@ -12,7 +12,8 @@ private val Purple200 = Color(0xffd05ce3)
 
 private val DarkColors = darkColors(
     primary = Purple200,
-    secondary = Purple200
+    secondary = Purple200,
+    background = Color.Black
 )
 
 private val shapes = Shapes(

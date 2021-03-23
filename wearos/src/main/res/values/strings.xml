@@ -46,7 +46,6 @@
     <string name="setup_phone_helper_text">On your phone, download and install Wearable Extensions from the Play Store</string>
     <string name="setup_instructions_text">Look for this watch in Wearable Extensions</string>
     <string name="setup_hint_text">Setup will continue automatically</string>
-    <string name="setup_manual_check_text">Already registered this watch? Tap to check manually</string>
 
     <!-- About App strings -->
     <string name="about_app_title">About</string>

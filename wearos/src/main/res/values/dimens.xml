@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="setup_chevron_size">24dp</dimen>
-    <dimen name="setup_app_icon_size">48dp</dimen>
-
     <dimen name="extension_big_vertical_padding">20dp</dimen>
     <dimen name="extension_big_icon_size">48dp</dimen>
     <dimen name="extension_big_text_size">20</dimen> <!-- Converted to sp automatically -->
