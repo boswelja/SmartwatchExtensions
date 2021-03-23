@@ -20,6 +20,7 @@ android {
 
     buildFeatures.viewBinding = true
     buildFeatures.dataBinding = true
+    buildFeatures.compose = true
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
@@ -65,6 +66,11 @@ dependencies {
     val androidxWear = "1.2.0-alpha06"
     val androidxWearComplications = "1.0.0-alpha07"
 
+    val compose = "1.0.0-beta02"
+    val lifecycleCompose = "1.0.0-alpha02"
+    val activityCompose = "1.3.0-alpha03"
+    val navigationCompose = "1.0.0-alpha09"
+
     val googleMaterial = "1.4.0-alpha01"
     val playServicesWearable = "17.0.0"
     val timber = "4.7.1"
@@ -90,6 +96,18 @@ dependencies {
     implementation("com.google.android.gms:play-services-wearable:$playServicesWearable")
     implementation("com.google.android.material:material:$googleMaterial")
     implementation("com.jakewharton.timber:timber:$timber")
+
+    implementation("androidx.compose.ui:ui:$compose")
+    implementation("androidx.compose.ui:ui-tooling:$compose")
+    implementation("androidx.compose.ui:ui-viewbinding:$compose")
+    implementation("androidx.compose.foundation:foundation:$compose")
+    implementation("androidx.compose.material:material:$compose")
+    implementation("androidx.compose.material:material-icons-core:$compose")
+    implementation("androidx.compose.material:material-icons-extended:$compose")
+    implementation("androidx.compose.runtime:runtime-livedata:$compose")
+    implementation("androidx.activity:activity-compose:$activityCompose")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:$lifecycleCompose")
+    implementation("androidx.navigation:navigation-compose:$navigationCompose")
 
     debugImplementation("androidx.fragment:fragment-testing:$androidxFragment")
 
