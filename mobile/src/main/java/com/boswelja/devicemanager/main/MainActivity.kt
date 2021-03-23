@@ -4,10 +4,13 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
+import androidx.compose.material.ContentAlpha
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
@@ -20,6 +23,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.remember
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.KEY_ROUTE
@@ -124,13 +128,15 @@ class MainActivity : AppCompatActivity() {
 
     @Composable
     fun BottonNav(navController: NavHostController) {
-        BottomNavigation {
+        BottomNavigation(
+            backgroundColor = MaterialTheme.colors.background
+        ) {
             val navBackStackEntry by navController.currentBackStackEntryAsState()
             val currentRoute = navBackStackEntry?.arguments?.getString(KEY_ROUTE)
-            BottomNavigationItem(
+            BottomNavItem(
                 selected = currentRoute == ROUTE_DASHBOARD,
-                icon = { Icon(Icons.Outlined.Dashboard, null) },
-                label = { Text(stringResource(R.string.bottom_nav_dashboard_label)) },
+                icon = Icons.Outlined.Dashboard,
+                label = stringResource(R.string.bottom_nav_dashboard_label),
                 onClick = {
                     navController.navigate(ROUTE_DASHBOARD) {
                         popUpTo = navController.graph.startDestination
@@ -138,10 +144,10 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
             )
-            BottomNavigationItem(
+            BottomNavItem(
                 selected = currentRoute == ROUTE_MESSAGES,
-                icon = { Icon(Icons.Outlined.Message, null) },
-                label = { Text(stringResource(R.string.nav_messages_label)) },
+                icon = Icons.Outlined.Message,
+                label = stringResource(R.string.nav_messages_label),
                 onClick = {
                     navController.navigate(ROUTE_MESSAGES) {
                         popUpTo = navController.graph.startDestination
@@ -149,10 +155,10 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
             )
-            BottomNavigationItem(
+            BottomNavItem(
                 selected = currentRoute == ROUTE_SETTINGS,
-                icon = { Icon(Icons.Outlined.Settings, null) },
-                label = { Text(stringResource(R.string.bottom_nav_app_settings_label)) },
+                icon = Icons.Outlined.Settings,
+                label = stringResource(R.string.bottom_nav_app_settings_label),
                 onClick = {
                     navController.navigate(ROUTE_SETTINGS) {
                         popUpTo = navController.graph.startDestination
@@ -160,10 +166,10 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
             )
-            BottomNavigationItem(
+            BottomNavItem(
                 selected = currentRoute == ROUTE_ABOUT,
-                icon = { Icon(Icons.Outlined.Info, null) },
-                label = { Text(stringResource(R.string.bottom_nav_about_label)) },
+                icon = Icons.Outlined.Info,
+                label = stringResource(R.string.bottom_nav_about_label),
                 onClick = {
                     navController.navigate(ROUTE_ABOUT) {
                         popUpTo = navController.graph.startDestination
@@ -172,6 +178,25 @@ class MainActivity : AppCompatActivity() {
                 }
             )
         }
+    }
+
+    @Composable
+    fun RowScope.BottomNavItem(
+        icon: ImageVector,
+        label: String,
+        selected: Boolean,
+        onClick: () -> Unit
+    ) {
+        BottomNavigationItem(
+            selected = selected,
+            icon = { Icon(icon, null) },
+            label = { Text(label) },
+            onClick = onClick,
+            alwaysShowLabel = false,
+            selectedContentColor = MaterialTheme.colors.primary,
+            unselectedContentColor = MaterialTheme.colors.onSurface
+                .copy(alpha = ContentAlpha.medium)
+        )
     }
 
     companion object {
