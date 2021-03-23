@@ -50,6 +50,9 @@ android {
 }
 
 dependencies {
+    repositories {
+        jcenter()
+    }
     implementation(project(":common"))
 
     val androidxArch = "2.1.0"
