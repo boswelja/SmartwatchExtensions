@@ -20,10 +20,14 @@ class MainApplication : Application() {
             Timber.plant(Timber.DebugTree())
         }
 
-        val nightMode = PreferenceManager.getDefaultSharedPreferences(this).getString(
-            DAYNIGHT_MODE_KEY,
-            AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM.toString()
-        )?.toInt() ?: AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+        val nightMode = try {
+            PreferenceManager.getDefaultSharedPreferences(this).getInt(
+                DAYNIGHT_MODE_KEY,
+                AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+            )
+        } catch (ignored: Exception) {
+            AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+        }
         AppCompatDelegate.setDefaultNightMode(nightMode)
 
         ensureEnvironmentUpdated()

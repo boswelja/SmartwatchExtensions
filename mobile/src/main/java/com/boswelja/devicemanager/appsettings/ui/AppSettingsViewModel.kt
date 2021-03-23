@@ -21,10 +21,10 @@ class AppSettingsViewModel internal constructor(
         sharedPreferences.getBoolean(ANALYTICS_ENABLED_KEY, true)
     )
     private val _appTheme = MutableLiveData(
-        sharedPreferences.getString(
+        sharedPreferences.getInt(
             DAYNIGHT_MODE_KEY,
-            AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM.toString()
-        )?.toInt() ?: AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+            AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+        )
     )
 
     val analyticsEnabled: LiveData<Boolean>
@@ -50,7 +50,7 @@ class AppSettingsViewModel internal constructor(
     fun setAppTheme(nightMode: Int) {
         AppCompatDelegate.setDefaultNightMode(nightMode)
         sharedPreferences.edit {
-            putString(DAYNIGHT_MODE_KEY, nightMode.toString())
+            putInt(DAYNIGHT_MODE_KEY, nightMode)
         }
         _appTheme.postValue(nightMode)
     }
