@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -114,7 +113,43 @@ fun MessagesList(messages: List<Message>, scaffoldState: ScaffoldState) {
                         if (dismissState.dismissDirection != null) 4.dp else 0.dp
                     ).value
                 ) {
-                    MessageItemWithAction(message)
+                    MessageItem(
+                        message,
+                        onActionClick = {
+                            when (message.action) {
+                                Message.Action.LAUNCH_NOTIFICATION_SETTINGS -> {
+                                    val intent =
+                                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                            Intent(
+                                                Settings.ACTION_APP_NOTIFICATION_SETTINGS
+                                            ).apply {
+                                                putExtra(
+                                                    Settings.EXTRA_APP_PACKAGE,
+                                                    context.packageName
+                                                )
+                                            }
+                                        } else {
+                                            Intent(
+                                                "android.settings.APP_NOTIFICATION_SETTINGS"
+                                            ).apply {
+                                                putExtra("app_package", context.packageName)
+                                                putExtra("app_uid", context.applicationInfo.uid)
+                                            }
+                                        }
+                                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                                    context.startActivity(intent)
+                                }
+                                Message.Action.LAUNCH_CHANGELOG -> {
+                                    viewModel.customTabsIntent.launchUrl(
+                                        context,
+                                        context.getString(R.string.changelog_url).toUri()
+                                    )
+                                }
+                                Message.Action.INSTALL_UPDATE ->
+                                    viewModel.startUpdateFlow(context as Activity)
+                            }
+                        }
+                    )
                 }
             }
         }
@@ -147,56 +182,6 @@ fun NoMessagesView() {
             }
         ) {
             Text(stringResource(R.string.message_history_label))
-        }
-    }
-}
-
-@ExperimentalMaterialApi
-@Composable
-fun MessageItemWithAction(message: Message) {
-    Column(
-        Modifier
-            .fillMaxWidth()
-            .background(MaterialTheme.colors.background)
-            .padding(16.dp)
-    ) {
-        MessageItem(message)
-        if (message.action != null) {
-            val viewModel: MessagesViewModel = viewModel()
-            val context = LocalContext.current
-            OutlinedButton(
-                onClick = {
-                    // TODO Move to activity to be handled
-                    when (message.action) {
-                        Message.Action.LAUNCH_NOTIFICATION_SETTINGS -> {
-                            val intent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                                Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS).apply {
-                                    putExtra(Settings.EXTRA_APP_PACKAGE, context.packageName)
-                                }
-                            } else {
-                                Intent("android.settings.APP_NOTIFICATION_SETTINGS").apply {
-                                    putExtra("app_package", context.packageName)
-                                    putExtra("app_uid", context.applicationInfo.uid)
-                                }
-                            }
-                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                            context.startActivity(intent)
-                        }
-                        Message.Action.LAUNCH_CHANGELOG -> {
-                            viewModel.customTabsIntent.launchUrl(
-                                context,
-                                context.getString(R.string.changelog_url).toUri()
-                            )
-                        }
-                        Message.Action.INSTALL_UPDATE ->
-                            viewModel.startUpdateFlow(context as Activity)
-                    }
-                },
-                content = { Text(stringResource(message.action.labelRes)) },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 16.dp)
-            )
         }
     }
 }

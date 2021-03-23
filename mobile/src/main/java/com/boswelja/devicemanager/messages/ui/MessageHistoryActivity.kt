@@ -82,7 +82,7 @@ class MessageHistoryActivity : AppCompatActivity() {
     fun MessageList(messages: List<Message>) {
         LazyColumn {
             items(messages) { message ->
-                MessageItem(message)
+                MessageItem(message, showAction = false)
             }
         }
     }

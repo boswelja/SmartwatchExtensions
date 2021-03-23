@@ -1,16 +1,21 @@
 package com.boswelja.devicemanager.messages.ui
 
 import android.text.format.DateFormat
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
 import androidx.compose.material.ListItem
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.OutlinedButton
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.boswelja.devicemanager.messages.Message
 import java.util.Date
@@ -35,7 +40,11 @@ private fun getReceivedString(timeInMillis: Long): String {
 
 @ExperimentalMaterialApi
 @Composable
-fun MessageItem(message: Message) {
+fun MessageItem(
+    message: Message,
+    showAction: Boolean = true,
+    onActionClick: (Message.Action) -> Unit = { }
+) {
     ListItem(
         icon = {
             Icon(
@@ -51,10 +60,23 @@ fun MessageItem(message: Message) {
             )
         },
         secondaryText = {
-            Text(
-                message.text,
-                style = MaterialTheme.typography.body2
-            )
+            Column {
+                Text(
+                    message.text,
+                    style = MaterialTheme.typography.body2
+                )
+                if (showAction) {
+                    message.action?.let {
+                        OutlinedButton(
+                            onClick = { onActionClick(it) },
+                            content = { Text(stringResource(it.labelRes)) },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 8.dp)
+                        )
+                    }
+                }
+            }
         },
         trailing = {
             Text(
