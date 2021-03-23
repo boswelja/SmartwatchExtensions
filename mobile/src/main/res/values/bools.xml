@@ -2,6 +2,5 @@
 <resources>
 
     <bool name="lightNavigationBar">true</bool>
-    <bool name="lightStatusBar">true</bool>
 
 </resources>
