@@ -1,5 +1,6 @@
 package com.boswelja.devicemanager.main
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
@@ -37,6 +38,7 @@ import com.boswelja.devicemanager.messages.Message
 import com.boswelja.devicemanager.messages.MessageHandler
 import com.boswelja.devicemanager.messages.Priority
 import com.boswelja.devicemanager.messages.ui.MessagesScreen
+import com.boswelja.devicemanager.onboarding.ui.OnboardingActivity
 import com.boswelja.devicemanager.watchmanager.WatchManager
 import com.google.android.play.core.appupdate.AppUpdateManagerFactory
 import com.google.android.play.core.appupdate.AppUpdateOptions
@@ -80,6 +82,9 @@ class MainActivity : AppCompatActivity() {
                         composable(ROUTE_ABOUT) { AboutAppScreen() }
                     }
                 }
+            }
+            if (registeredWatches != null && registeredWatches!!.isEmpty()) {
+                startActivity(Intent(this, OnboardingActivity::class.java))
             }
         }
 
