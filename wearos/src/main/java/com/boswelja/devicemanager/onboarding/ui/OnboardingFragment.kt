@@ -14,6 +14,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.databinding.FragmentOnboardingBinding
 
 class OnboardingFragment : Fragment() {
@@ -35,7 +36,7 @@ class OnboardingFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         viewModel.onWatchRegistered.observe(viewLifecycleOwner) {
-            findNavController().navigate(OnboardingFragmentDirections.toExtensionsFragment())
+            findNavController().navigate(R.id.to_extensionsFragment)
         }
     }
 }
