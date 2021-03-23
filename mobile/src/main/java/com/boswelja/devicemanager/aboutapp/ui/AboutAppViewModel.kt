@@ -1,10 +1,3 @@
-/* Copyright (C) 2020 Jack Boswell <boswelja@outlook.com>
- *
- * This file is part of Wearable Extensions
- *
- * This file, and any part of the Wearable Extensions app/s cannot be copied and/or distributed
- * without permission from Jack Boswell (boswelja) <boswela@outlook.com>
- */
 package com.boswelja.devicemanager.aboutapp.ui
 
 import android.app.Application
@@ -13,20 +6,23 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.boswelja.devicemanager.common.connection.Messages.REQUEST_APP_VERSION
+import com.boswelja.devicemanager.watchmanager.WatchManager
 import com.google.android.gms.wearable.MessageClient
 import com.google.android.gms.wearable.Wearable
 import timber.log.Timber
 
-class AppInfoViewModel internal constructor(
+class AboutAppViewModel internal constructor(
     application: Application,
     private val messageClient: MessageClient,
-    val customTabsIntent: CustomTabsIntent
+    private val watchManager: WatchManager,
+    val customTabsIntent: CustomTabsIntent,
 ) : AndroidViewModel(application) {
 
     @Suppress("unused")
     constructor(application: Application) : this(
         application,
         Wearable.getMessageClient(application),
+        WatchManager.getInstance(application),
         CustomTabsIntent.Builder().setShowTitle(true).build()
     )
 
@@ -47,6 +43,7 @@ class AppInfoViewModel internal constructor(
 
     init {
         messageClient.addListener(messageListener)
+        requestUpdateWatchVersion()
     }
 
     override fun onCleared() {
@@ -58,11 +55,11 @@ class AppInfoViewModel internal constructor(
      * Requests the current app version info from the connected watch. Result received in
      * [messageListener] if sending the message was successful.
      */
-    fun requestUpdateWatchVersion(connectedWatchId: String) {
+    fun requestUpdateWatchVersion() {
         Timber.d("requestUpdateWatchVersionPreference")
-        if (connectedWatchId.isNotEmpty()) {
+        if (!watchManager.selectedWatch.value?.id.isNullOrBlank()) {
             messageClient
-                .sendMessage(connectedWatchId, REQUEST_APP_VERSION, null)
+                .sendMessage(watchManager.selectedWatch.value!!.id, REQUEST_APP_VERSION, null)
                 .addOnFailureListener {
                     Timber.w(it)
                     _watchAppVersion.postValue(null)

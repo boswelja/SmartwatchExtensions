@@ -47,7 +47,7 @@ fun AboutAppScreen() {
 @Composable
 fun AboutApp() {
     val context = LocalContext.current
-    val viewModel: AppInfoViewModel = viewModel()
+    val viewModel: AboutAppViewModel = viewModel()
     Column {
         HeaderItem(stringResource(R.string.about_category_about))
         ListItem(
@@ -83,8 +83,8 @@ fun AboutApp() {
 @ExperimentalMaterialApi
 @Composable
 fun Versions() {
-    val viewModel: AppInfoViewModel = viewModel()
-    val watchVersion by viewModel.watchAppVersion.observeAsState()
+    val viewModelAbout: AboutAppViewModel = viewModel()
+    val watchVersion by viewModelAbout.watchAppVersion.observeAsState()
     Column {
         HeaderItem(stringResource(R.string.about_category_versions))
         ListItem(
