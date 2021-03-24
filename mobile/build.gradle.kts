@@ -68,12 +68,11 @@ dependencies {
     val androidxCoreKtx = "1.5.0-beta02"
     val androidxEspresso = "3.1.0"
     val androidxLifecycle = "2.3.0"
-    val androidxPaging = "3.0.0-beta01"
     val androidxPreference = "1.1.1"
-    val androidxRoom = "2.3.0-beta02"
-    val androidxTest = "1.4.0-alpha04"
+    val androidxRoom = "2.3.0-beta03"
+    val androidxTest = "1.4.0-alpha05"
     val androidxTestExt = "1.1.3-alpha04"
-    val androidxWork = "2.7.0-alpha01"
+    val androidxWork = "2.7.0-alpha02"
 
     val compose = "1.0.0-beta02"
     val lifecycleCompose = "1.0.0-alpha02"
@@ -102,7 +101,6 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:$androidxLifecycle")
     implementation("androidx.lifecycle:lifecycle-common-java8:$androidxLifecycle")
     implementation("androidx.lifecycle:lifecycle-service:$androidxLifecycle")
-    implementation("androidx.paging:paging-runtime:$androidxPaging")
     implementation("androidx.preference:preference:$androidxPreference")
     implementation("androidx.room:room-runtime:$androidxRoom")
     implementation("androidx.room:room-ktx:$androidxRoom")

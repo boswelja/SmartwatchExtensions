@@ -59,10 +59,10 @@ dependencies {
     val androidxEspresso = "3.1.0"
     val androidxLifecycle = "2.3.0"
     val androidxPreference = "1.1.1"
-    val androidxTest = "1.4.0-alpha04"
+    val androidxTest = "1.4.0-alpha05"
     val androidxTestExt = "1.1.3-alpha04"
     val androidxWear = "1.2.0-alpha06"
-    val androidxWearComplications = "1.0.0-alpha07"
+    val androidxWearComplications = "1.0.0-alpha09"
 
     val compose = "1.0.0-beta02"
     val lifecycleCompose = "1.0.0-alpha02"
