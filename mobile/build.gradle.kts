@@ -98,7 +98,7 @@ dependencies {
     implementation("androidx.appcompat:appcompat:$androidxAppCompat")
     implementation("androidx.browser:browser:$androidxBrowser")
     implementation("androidx.core:core-ktx:$androidxCoreKtx")
-    implementation("androidx.fragment:fragment:$androidxFragment")
+    implementation("androidx.fragment:fragment-ktx:$androidxFragment")
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:$androidxLifecycle")
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:$androidxLifecycle")
     implementation("androidx.lifecycle:lifecycle-common-java8:$androidxLifecycle")
