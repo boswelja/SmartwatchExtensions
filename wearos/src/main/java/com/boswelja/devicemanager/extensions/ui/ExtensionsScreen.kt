@@ -1,8 +1,10 @@
 package com.boswelja.devicemanager.extensions.ui
 
 import android.content.Intent
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
@@ -32,17 +34,34 @@ import com.boswelja.devicemanager.phonelocking.ui.PhoneLockingScreen
 @Composable
 fun ExtensionsScreen() {
     val scrollState = rememberScrollState()
-    Column(
-        Modifier
-            .verticalScroll(scrollState)
-            .padding(top = 8.dp, start = 8.dp, end = 8.dp, bottom = 64.dp)
-    ) {
+    ColumnInsetLayout(scrollState) {
         Extensions()
         Divider()
         Links()
     }
 }
 
+@Composable
+fun ColumnInsetLayout(
+    scrollState: ScrollState,
+    content: @Composable ColumnScope.() -> Unit
+) {
+    if (LocalContext.current.resources.configuration.isScreenRound) {
+        Column(
+            Modifier
+                .verticalScroll(scrollState)
+                .padding(horizontal = 8.dp, vertical = 64.dp),
+            content = content
+        )
+    } else {
+        Column(
+            Modifier
+                .verticalScroll(scrollState)
+                .padding(8.dp),
+            content = content
+        )
+    }
+}
 @ExperimentalMaterialApi
 @Composable
 fun Extensions() {
@@ -72,7 +91,9 @@ fun Extensions() {
 fun Links() {
     val context = LocalContext.current
     Column(
-        modifier = Modifier.fillMaxWidth().padding(8.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(8.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
