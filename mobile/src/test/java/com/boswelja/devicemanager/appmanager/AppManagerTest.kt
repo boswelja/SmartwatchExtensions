@@ -147,37 +147,6 @@ class AppManagerTest {
     }
 
     @Test
-    fun `updatePackage correctly replaces an app`() {
-        appManager.addPackage(app)
-        val newApp = App(
-            null,
-            "v2.0.0",
-            "com.dummy.app",
-            "Dummy App 1",
-            isSystemApp = false,
-            hasLaunchActivity = false,
-            installTime = 0,
-            lastUpdateTime = 10,
-            requestedPermissions = emptyArray()
-        )
-        appManager.updatePackage(newApp)
-        assertThat(appManager.userApps.getOrAwaitValue()).containsExactly(newApp)
-        val newSystemApp = App(
-            null,
-            "v2.0.0",
-            "com.dummy.app",
-            "Dummy App 1",
-            isSystemApp = true,
-            hasLaunchActivity = false,
-            installTime = 0,
-            lastUpdateTime = 10,
-            requestedPermissions = emptyArray()
-        )
-        appManager.updatePackage(newSystemApp)
-        assertThat(appManager.systemApps.getOrAwaitValue()).containsExactly(newApp)
-    }
-
-    @Test
     fun `removePackage correctly removes an app`() {
         appManager.addPackage(app)
         appManager.removePackage(app.packageName)
@@ -193,8 +162,8 @@ class AppManagerTest {
             lastUpdateTime = 10,
             requestedPermissions = emptyArray()
         )
-        appManager.addPackage(app)
-        appManager.removePackage(app.packageName)
+        appManager.addPackage(newSystemApp)
+        appManager.removePackage(newSystemApp.packageName)
         assertThat(appManager.systemApps.getOrAwaitValue()).isEmpty()
     }
 
