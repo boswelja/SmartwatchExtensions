@@ -17,7 +17,6 @@ import androidx.compose.material.OutlinedButton
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Info
-import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
@@ -34,7 +33,6 @@ import com.boswelja.devicemanager.about.ui.AboutActivity
 import com.boswelja.devicemanager.batterysync.ui.BatterySyncScreen
 import com.boswelja.devicemanager.common.AppTheme
 import com.boswelja.devicemanager.phonelocking.ui.PhoneLockingScreen
-import com.boswelja.devicemanager.settings.ui.SettingsActivity
 
 class ExtensionsFragment : Fragment() {
     @ExperimentalMaterialApi
@@ -100,15 +98,6 @@ fun Links() {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        OutlinedButton(
-            content = {
-                Icon(Icons.Outlined.Settings, null)
-                Text(stringResource(R.string.settings_title))
-            },
-            onClick = {
-                context.startActivity(Intent(context, SettingsActivity::class.java))
-            }
-        )
         OutlinedButton(
             content = {
                 Icon(Icons.Outlined.Info, null)

@@ -10,16 +10,7 @@
 
     <fragment
         android:id="@+id/extensionsFragment"
-        android:name="com.boswelja.devicemanager.extensions.ui.ExtensionsFragment">
-
-        <action
-            android:id="@+id/to_settingsActivity"
-            app:destination="@id/settingsActivity" />
-
-        <action
-            android:id="@+id/to_aboutActivity"
-            app:destination="@id/aboutActivity" />
-    </fragment>
+        android:name="com.boswelja.devicemanager.extensions.ui.ExtensionsFragment" />
 
     <fragment
         android:id="@+id/setupFragment"
@@ -35,8 +26,4 @@
     <activity
         android:id="@+id/aboutActivity"
         android:name="com.boswelja.devicemanager.about.ui.AboutActivity" />
-
-    <activity
-        android:id="@+id/settingsActivity"
-        android:name="com.boswelja.devicemanager.settings.ui.SettingsActivity" />
 </navigation>

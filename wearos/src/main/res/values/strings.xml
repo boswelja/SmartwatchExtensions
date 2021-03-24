@@ -28,18 +28,6 @@
     <string name="app_manager_noti_title">App Manager Running</string>
     <string name="app_manager_noti_desc">App Manager is currently running on your phone</string>
 
-    <!-- Settings strings -->
-    <string name="pref_category_battery_sync_title">Battery Sync</string>
-    <string name="pref_battery_sync_enable_title">Enable Battery Sync</string>
-    <string name="pref_battery_sync_phone_charged_noti_title">Phone Charged Notification</string>
-    <string name="pref_battery_sync_watch_charged_noti_title">Watch Charged Notification</string>
-    <string name="pref_category_interrupt_filter_sync_title">DnD Sync</string>
-    <string name="pref_dnd_sync_to_watch_title">Phone to Watch Sync</string>
-    <string name="pref_dnd_sync_to_phone_title">Watch to Phone Sync</string>
-    <string name="pref_dnd_sync_with_theater_title">Sync with Theater Mode</string>
-    <string name="additional_setup_required">Additional setup required</string>
-    <string name="settings_title">Settings</string>
-
     <!-- Setup strings -->
     <string name="welcome_to_text">Welcome to</string>
     <string name="content_description_scroll_down">Scroll down to read more</string>
