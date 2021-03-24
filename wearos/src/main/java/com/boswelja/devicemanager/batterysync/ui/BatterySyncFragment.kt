@@ -38,7 +38,17 @@ class BatterySyncFragment : Fragment() {
         return ComposeView(requireContext()).apply {
             setContent {
                 AppTheme {
-                    BatterySyncScreen()
+                    val viewModel: BatterySyncViewModel = viewModel()
+                    val batterySyncEnabled by viewModel.batterySyncEnabled.observeAsState()
+                    val batteryPercent by viewModel.batteryPercent.observeAsState()
+                    val phoneName by viewModel.phoneName.observeAsState()
+                    BatterySyncScreen(
+                        batterySyncEnabled == true,
+                        batteryPercent ?: 0,
+                        phoneName ?: stringResource(R.string.default_phone_name)
+                    ) {
+                        viewModel.updateBatteryStats()
+                    }
                 }
             }
         }
@@ -47,18 +57,18 @@ class BatterySyncFragment : Fragment() {
 
 @ExperimentalMaterialApi
 @Composable
-fun BatterySyncScreen() {
-    val viewModel: BatterySyncViewModel = viewModel()
-    val batterySyncEnabled by viewModel.batterySyncEnabled.observeAsState()
-    if (batterySyncEnabled == true) {
-        val batteryPercent by viewModel.batteryPercent.observeAsState()
-        val phoneName by viewModel.phoneName.observeAsState()
+fun BatterySyncScreen(
+    batterySyncEnabled: Boolean,
+    batteryPercent: Int,
+    phoneName: String,
+    onClick: () -> Unit
+) {
+    if (batterySyncEnabled) {
         BatteryStatus(
-            percent = batteryPercent ?: 0,
-            phoneName = phoneName ?: stringResource(R.string.default_phone_name)
-        ) {
-            viewModel.updateBatteryStats()
-        }
+            percent = batteryPercent,
+            phoneName = phoneName,
+            onClick = onClick
+        )
     } else {
         BatterySyncDisabled()
     }

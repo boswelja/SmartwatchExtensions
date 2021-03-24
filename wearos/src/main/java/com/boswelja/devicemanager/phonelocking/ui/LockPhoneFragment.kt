@@ -27,8 +27,8 @@ import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.boswelja.devicemanager.R
+import com.boswelja.devicemanager.common.AppTheme
 
-@Suppress("unused")
 class LockPhoneFragment : Fragment() {
 
     @ExperimentalMaterialApi
@@ -39,7 +39,17 @@ class LockPhoneFragment : Fragment() {
     ): View {
         return ComposeView(requireContext()).apply {
             setContent {
-                PhoneLockingScreen()
+                AppTheme {
+                    val viewModel: LockPhoneViewModel = viewModel()
+                    val phoneLockingEnabled by viewModel.phoneLockingEnabled.observeAsState()
+                    val phoneName by viewModel.phoneName.observeAsState()
+                    PhoneLockingScreen(
+                        phoneLockingEnabled == true,
+                        phoneName ?: stringResource(R.string.default_phone_name)
+                    ) {
+                        viewModel.requestLockPhone()
+                    }
+                }
             }
         }
     }
@@ -47,16 +57,16 @@ class LockPhoneFragment : Fragment() {
 
 @ExperimentalMaterialApi
 @Composable
-fun PhoneLockingScreen() {
-    val viewModel: LockPhoneViewModel = viewModel()
-    val phoneLockingEnabled by viewModel.phoneLockingEnabled.observeAsState()
+fun PhoneLockingScreen(
+    phoneLockingEnabled: Boolean,
+    phoneName: String,
+    onClick: () -> Unit
+) {
     if (phoneLockingEnabled == true) {
-        val phoneName by viewModel.phoneName.observeAsState()
         PhoneLockingEnabled(
-            phoneName = phoneName ?: stringResource(R.string.default_phone_name)
-        ) {
-            viewModel.requestLockPhone()
-        }
+            phoneName = phoneName,
+            onClick = onClick
+        )
     } else {
         PhoneLockingDisabled()
     }
