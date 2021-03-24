@@ -1,25 +1,31 @@
 package com.boswelja.devicemanager.main.ui
 
 import android.os.Bundle
-import androidx.activity.viewModels
+import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
-import androidx.navigation.fragment.NavHostFragment
-import com.boswelja.devicemanager.R
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.boswelja.devicemanager.common.AppTheme
+import com.boswelja.devicemanager.extensions.ui.ExtensionsScreen
+import com.boswelja.devicemanager.onboarding.ui.OnboardingFlow
 
 class MainActivity : AppCompatActivity() {
 
-    private val viewModel: MainViewModel by viewModels()
-
+    @ExperimentalMaterialApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-    }
-
-    override fun onStart() {
-        super.onStart()
-        if (!viewModel.isRegistered) {
-            (supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment)
-                .navController.navigate(R.id.to_setup)
+        setContent {
+            val viewModel: MainViewModel = viewModel()
+            val isRegistered by viewModel.isRegistered.observeAsState()
+            AppTheme {
+                if (isRegistered == true) {
+                    ExtensionsScreen()
+                } else {
+                    OnboardingFlow()
+                }
+            }
         }
     }
 }

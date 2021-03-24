@@ -16,15 +16,20 @@ import com.google.android.gms.wearable.MessageClient
 import com.google.android.gms.wearable.NodeClient
 import com.google.android.gms.wearable.Wearable
 
-class OnboardingViewModel
-@JvmOverloads
-constructor(
+class OnboardingViewModel internal constructor(
     application: Application,
-    private val nodeClient: NodeClient = Wearable.getNodeClient(application),
-    private val messageClient: MessageClient = Wearable.getMessageClient(application),
-    private val sharedPreferences: SharedPreferences =
-        PreferenceManager.getDefaultSharedPreferences(application)
+    private val nodeClient: NodeClient,
+    private val messageClient: MessageClient,
+    private val sharedPreferences: SharedPreferences
 ) : AndroidViewModel(application) {
+
+    @Suppress("unused")
+    constructor(application: Application) : this(
+        application,
+        Wearable.getNodeClient(application),
+        Wearable.getMessageClient(application),
+        PreferenceManager.getDefaultSharedPreferences(application)
+    )
 
     @VisibleForTesting
     val messageListener =
@@ -32,12 +37,9 @@ constructor(
             when (it.path) {
                 WATCH_REGISTERED_PATH -> {
                     sharedPreferences.edit { putString(PHONE_ID_KEY, it.sourceNodeId) }
-                    onWatchRegistered.postValue(true)
                 }
             }
         }
-
-    val onWatchRegistered = MutableLiveData(false)
 
     private val _localName = MutableLiveData<String?>(null)
     val setupNameText =
