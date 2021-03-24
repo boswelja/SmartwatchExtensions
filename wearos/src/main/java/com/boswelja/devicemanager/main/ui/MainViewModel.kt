@@ -19,6 +19,7 @@ class MainViewModel internal constructor(
     private val sharedPreferences: SharedPreferences
 ) : AndroidViewModel(application) {
 
+    @Suppress("unused")
     constructor(application: Application) : this(
         application,
         Dispatchers.IO,
