@@ -15,6 +15,7 @@ import androidx.compose.material.icons.outlined.PhonelinkLock
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.boswelja.devicemanager.R
@@ -41,7 +42,14 @@ fun PhoneLockingScreen(
 fun PhoneLockingDisabled() {
     ListItem(
         text = { Text(stringResource(R.string.lock_phone_disabled)) },
-        icon = { Icon(Icons.Outlined.PhonelinkLock, null) }
+        icon = {
+            Icon(
+                Icons.Outlined.PhonelinkLock,
+                null,
+                modifier = Modifier.size(32.dp),
+                tint = Color.White
+            )
+        }
     )
 }
 

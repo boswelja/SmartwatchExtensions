@@ -41,7 +41,7 @@ fun BatterySyncScreen(
 fun BatterySyncDisabled() {
     ListItem(
         text = { Text(stringResource(R.string.battery_sync_disabled)) },
-        icon = { BatteryIcon(percent = -1) }
+        icon = { BatteryIcon(percent = -1, modifier = Modifier.size(32.dp)) }
     )
 }
 

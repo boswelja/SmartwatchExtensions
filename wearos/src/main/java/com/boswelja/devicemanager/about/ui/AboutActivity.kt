@@ -25,6 +25,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.graphics.drawable.toBitmap
@@ -76,10 +77,11 @@ fun WearableExtensionsInfo() {
         )
         Text(
             stringResource(R.string.app_name),
-            style = MaterialTheme.typography.h6
+            style = MaterialTheme.typography.h6,
+            textAlign = TextAlign.Center
         )
         Text(
-            BuildConfig.VERSION_NAME,
+            stringResource(R.string.version_string, BuildConfig.VERSION_NAME),
             style = MaterialTheme.typography.subtitle1
         )
     }
@@ -90,7 +92,7 @@ fun WearableExtensionsInfo() {
 fun Links() {
     val context = LocalContext.current
     Column(
-        Modifier.fillMaxWidth(),
+        Modifier.fillMaxWidth().padding(8.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {

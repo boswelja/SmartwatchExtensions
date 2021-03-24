@@ -18,6 +18,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -125,6 +126,7 @@ fun DownArrow() {
     Icon(
         Icons.Outlined.ArrowDownward,
         stringResource(R.string.content_description_scroll_down),
-        Modifier.padding(8.dp).size(24.dp)
+        Modifier.padding(8.dp).size(24.dp),
+        tint = Color.White
     )
 }
