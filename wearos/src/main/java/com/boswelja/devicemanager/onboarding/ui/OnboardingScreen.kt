@@ -29,7 +29,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.boswelja.devicemanager.R
 
 @Composable
-fun OnboardingFlow() {
+fun OnboardingScreen() {
     LazyColumn {
         item {
             WelcomeScreen()

@@ -9,7 +9,7 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.boswelja.devicemanager.common.AppTheme
 import com.boswelja.devicemanager.extensions.ui.ExtensionsScreen
-import com.boswelja.devicemanager.onboarding.ui.OnboardingFlow
+import com.boswelja.devicemanager.onboarding.ui.OnboardingScreen
 
 class MainActivity : AppCompatActivity() {
 
@@ -23,7 +23,7 @@ class MainActivity : AppCompatActivity() {
                 if (isRegistered == true) {
                     ExtensionsScreen()
                 } else {
-                    OnboardingFlow()
+                    OnboardingScreen()
                 }
             }
         }
