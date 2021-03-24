@@ -1,9 +1,8 @@
 package com.boswelja.devicemanager.onboarding.ui
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -51,7 +50,8 @@ fun WelcomeScreen() {
             .fillMaxWidth()
             .aspectRatio(1f)
             .padding(8.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
     ) {
         Image(
             context.packageManager.getApplicationIcon(context.packageName)
@@ -65,7 +65,8 @@ fun WelcomeScreen() {
         )
         Text(
             stringResource(R.string.app_name),
-            style = MaterialTheme.typography.h6
+            style = MaterialTheme.typography.h6,
+            textAlign = TextAlign.Center
         )
         DownArrow()
     }
@@ -77,7 +78,9 @@ fun PhoneInstallInstructions() {
         Modifier
             .fillMaxWidth()
             .aspectRatio(1f)
-            .padding(8.dp)
+            .padding(8.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
     ) {
         Text(
             stringResource(R.string.setup_phone_helper_text),
@@ -96,7 +99,9 @@ fun PhoneSetupInstructions() {
         Modifier
             .fillMaxWidth()
             .aspectRatio(1f)
-            .padding(8.dp)
+            .padding(8.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
     ) {
         Text(
             stringResource(R.string.setup_instructions_text),
@@ -116,15 +121,10 @@ fun PhoneSetupInstructions() {
 }
 
 @Composable
-fun ColumnScope.DownArrow() {
-    Box(
-        Modifier.weight(1f),
-        contentAlignment = Alignment.BottomCenter
-    ) {
-        Icon(
-            Icons.Outlined.ArrowDownward,
-            stringResource(R.string.content_description_scroll_down),
-            Modifier.size(24.dp)
-        )
-    }
+fun DownArrow() {
+    Icon(
+        Icons.Outlined.ArrowDownward,
+        stringResource(R.string.content_description_scroll_down),
+        Modifier.padding(8.dp).size(24.dp)
+    )
 }
