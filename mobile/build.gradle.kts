@@ -67,6 +67,7 @@ dependencies {
     val androidxBrowser = "1.3.0"
     val androidxCoreKtx = "1.5.0-beta02"
     val androidxEspresso = "3.1.0"
+    val androidxFragment = "1.3.1"
     val androidxLifecycle = "2.3.0"
     val androidxPreference = "1.1.1"
     val androidxRoom = "2.3.0-beta03"
@@ -97,6 +98,7 @@ dependencies {
     implementation("androidx.appcompat:appcompat:$androidxAppCompat")
     implementation("androidx.browser:browser:$androidxBrowser")
     implementation("androidx.core:core-ktx:$androidxCoreKtx")
+    implementation("androidx.fragment:fragment:$androidxFragment")
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:$androidxLifecycle")
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:$androidxLifecycle")
     implementation("androidx.lifecycle:lifecycle-common-java8:$androidxLifecycle")
