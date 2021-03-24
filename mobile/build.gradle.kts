@@ -67,7 +67,7 @@ dependencies {
     val androidxBrowser = "1.3.0"
     val androidxCoreKtx = "1.5.0-beta02"
     val androidxEspresso = "3.1.0"
-    val androidxFragment = "1.3.1"
+    val androidxFragment = "1.3.0"
     val androidxLifecycle = "2.3.0"
     val androidxPreference = "1.1.1"
     val androidxRoom = "2.3.0-beta03"
