@@ -63,6 +63,14 @@ android {
 }
 
 dependencies {
+    repositories {
+        jcenter {
+            content {
+                includeModule("org.jetbrains.kotlinx", "kotlinx-collections-immutable-jvm")
+            }
+        }
+    }
+
     val androidxArch = "2.1.0"
     val androidxAppCompat = "1.3.0-beta01"
     val androidxBrowser = "1.3.0"
