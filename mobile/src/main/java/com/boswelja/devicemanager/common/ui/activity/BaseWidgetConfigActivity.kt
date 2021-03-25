@@ -3,6 +3,7 @@ package com.boswelja.devicemanager.common.ui.activity
 import android.appwidget.AppWidgetManager
 import android.content.Intent
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.boswelja.devicemanager.batterysync.widget.WatchBatteryWidget
 import com.boswelja.devicemanager.watchmanager.item.Watch
@@ -14,7 +15,7 @@ import timber.log.Timber
 /**
  * An activity containing common code for widget configuration activities
  */
-abstract class BaseWidgetConfigActivity : BaseToolbarActivity() {
+abstract class BaseWidgetConfigActivity : AppCompatActivity() {
 
     private val resultIntent = Intent()
 

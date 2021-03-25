@@ -11,17 +11,19 @@ import android.app.job.JobScheduler
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Build
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.edit
 import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.BuildConfig
 import com.boswelja.devicemanager.analytics.Analytics
+import com.boswelja.devicemanager.appsettings.ui.AppSettingsViewModel.Companion.DAYNIGHT_MODE_KEY
 import com.boswelja.devicemanager.batterysync.BatterySyncWorker
 import com.boswelja.devicemanager.batterysync.widget.WatchBatteryWidget
 import com.boswelja.devicemanager.common.connection.Messages.WATCH_REGISTERED_PATH
 import com.boswelja.devicemanager.common.connection.References.CAPABILITY_WATCH_APP
 import com.boswelja.devicemanager.common.preference.PreferenceKey
 import com.boswelja.devicemanager.common.preference.PreferenceKey.BATTERY_SYNC_ENABLED_KEY
-import com.boswelja.devicemanager.phonelocking.ui.PhoneLockingPreferenceFragment.Companion.PHONE_LOCKING_MODE_KEY
+import com.boswelja.devicemanager.phonelocking.ui.PhoneLockingSettingsViewModel.Companion.PHONE_LOCKING_MODE_KEY
 import com.boswelja.devicemanager.watchmanager.WatchManager.Companion.LAST_SELECTED_NODE_ID_KEY
 import com.boswelja.devicemanager.watchmanager.connection.wearos.WearOSConnectionInterface
 import com.boswelja.devicemanager.watchmanager.database.WatchDatabase
@@ -136,6 +138,15 @@ class Updater(private val context: Context) {
                 }
                 if (sharedPreferences.contains("notification_channels_created")) {
                     remove("notification_channels_created")
+                }
+                if (lastAppVersion < 2026800000) {
+                    val value = sharedPreferences.getString(
+                        DAYNIGHT_MODE_KEY, AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM.toString()
+                    )
+                    putInt(
+                        DAYNIGHT_MODE_KEY,
+                        value?.toInt() ?: AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+                    )
                 }
                 if (lastAppVersion < 2025600000) {
                     Analytics().setAnalyticsEnabled(

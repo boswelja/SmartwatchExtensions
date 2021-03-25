@@ -5,9 +5,9 @@ import android.content.Intent
 import android.graphics.drawable.Icon
 import androidx.wear.complications.ComplicationProviderService
 import androidx.wear.complications.data.ComplicationData
-import androidx.wear.complications.data.ComplicationText
 import androidx.wear.complications.data.ComplicationType
 import androidx.wear.complications.data.MonochromaticImage
+import androidx.wear.complications.data.PlainComplicationText
 import androidx.wear.complications.data.ShortTextComplicationData
 import com.boswelja.devicemanager.ActionServiceStarter
 import com.boswelja.devicemanager.R
@@ -44,7 +44,7 @@ class LockPhoneComplicationProvider : ComplicationProviderService() {
         val icon = MonochromaticImage.Builder(
             Icon.createWithResource(this, R.drawable.ic_phone_lock)
         ).build()
-        val text = ComplicationText.plain(getString(R.string.lock_phone_label))
+        val text = PlainComplicationText.Builder(getString(R.string.lock_phone_label)).build()
 
         return when (type) {
             ComplicationType.SHORT_TEXT -> {

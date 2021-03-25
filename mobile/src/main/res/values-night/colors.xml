@@ -3,16 +3,8 @@
 
     <color name="colorPrimary">#d05ce3</color>
 
-    <color name="statusBarColor">#000000</color>
     <color name="navBarColor">#000000</color>
-    <color name="dividerColor">#1fffffff</color>
 
     <color name="widgetBackground">#000000</color>
     <color name="widgetForeground">#FFFFFF</color>
-
-    <color name="windowBackground">#000000</color>
-    <color name="dialogBackground">#212121</color>
-
-    <color name="warningRed">#F44336</color>
-
 </resources>

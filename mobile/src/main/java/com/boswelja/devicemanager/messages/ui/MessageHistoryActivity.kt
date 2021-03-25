@@ -1,105 +1,104 @@
 package com.boswelja.devicemanager.messages.ui
 
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuItem
-import androidx.activity.viewModels
-import androidx.core.view.isVisible
-import androidx.lifecycle.lifecycleScope
-import androidx.paging.LoadState
-import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.activity.compose.setContent
+import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Scaffold
+import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.ClearAll
+import androidx.compose.material.rememberScaffoldState
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.boswelja.devicemanager.R
-import com.boswelja.devicemanager.common.ui.activity.BaseToolbarActivity
-import com.boswelja.devicemanager.databinding.ActivityMessageHistoryBinding
-import com.google.android.material.snackbar.Snackbar
-import kotlinx.coroutines.flow.collectLatest
+import com.boswelja.devicemanager.common.ui.AppTheme
+import com.boswelja.devicemanager.common.ui.UpNavigationAppBar
+import com.boswelja.devicemanager.messages.Message
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
-class MessageHistoryActivity : BaseToolbarActivity() {
+class MessageHistoryActivity : AppCompatActivity() {
 
-    private val viewModel: MessageHistoryViewModel by viewModels()
-    private val adapter: MessagesAdapter by lazy { MessagesAdapter(false) { } }
-
-    private lateinit var binding: ActivityMessageHistoryBinding
-
+    @ExperimentalMaterialApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        binding = ActivityMessageHistoryBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-
-        setupToolbar(
-            binding.toolbarLayout.toolbar,
-            showTitle = true,
-            showUpButton = true
-        )
-
-        setupRecyclerView()
-        observeMessages()
-        observeLoadState()
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.message_history_menu, menu)
-        return true
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.clear -> {
-                if (adapter.itemCount > 0) {
-                    viewModel.clearMessageHistory()
-                    Snackbar.make(
-                        binding.root,
-                        R.string.message_history_cleared,
-                        Snackbar.LENGTH_LONG
-                    ).show()
-                } else {
-                    Snackbar.make(
-                        binding.root,
-                        R.string.message_history_not_cleared,
-                        Snackbar.LENGTH_LONG
-                    ).show()
+        setContent {
+            AppTheme {
+                val viewModel: MessageHistoryViewModel = viewModel()
+                val messages by viewModel.dismissedMessagesFlow.collectAsState(emptyList())
+                val scope = rememberCoroutineScope()
+                val scaffoldState = rememberScaffoldState()
+                Scaffold(
+                    scaffoldState = scaffoldState,
+                    topBar = {
+                        UpNavigationAppBar(
+                            title = { Text(stringResource(R.string.message_history_label)) },
+                            actions = {
+                                val clearText = if (messages.isEmpty())
+                                    stringResource(R.string.message_history_not_cleared)
+                                else
+                                    stringResource(R.string.message_history_cleared)
+                                IconButton({
+                                    scope.launch {
+                                        viewModel.clearMessageHistory()
+                                        scaffoldState.snackbarHostState.showSnackbar(clearText)
+                                    }
+                                }) {
+                                    Icon(Icons.Outlined.ClearAll, null)
+                                }
+                            },
+                            onNavigateUp = { finish() }
+                        )
+                    }
+                ) {
+                    if (messages.isNotEmpty()) {
+                        MessageList(messages = messages)
+                    } else {
+                        NoMessagesView()
+                    }
                 }
-                true
-            }
-            else -> super.onOptionsItemSelected(item)
-        }
-    }
-
-    /**
-     * Set up the message [androidx.recyclerview.widget.RecyclerView].
-     */
-    private fun setupRecyclerView() {
-        binding.messagesRecyclerView.adapter = adapter
-        binding.messagesRecyclerView.addItemDecoration(
-            DividerItemDecoration(this, DividerItemDecoration.VERTICAL)
-        )
-    }
-
-    /**
-     * Observe dismissed messages in the database and pass them to [adapter].
-     */
-    private fun observeMessages() {
-        lifecycleScope.launch {
-            viewModel.dismissedMessagesPager.collectLatest {
-                adapter.submitData(it)
             }
         }
     }
 
-    /**
-     * Observe the [adapter] loading state and update the UI accordingly.
-     */
-    private fun observeLoadState() {
-        lifecycleScope.launch {
-            adapter.loadStateFlow.collectLatest { loadStates ->
-                val isLoading = loadStates.refresh is LoadState.Loading
-                Timber.d("isLoading = $isLoading")
-                binding.progressHorizontal.isVisible = isLoading
-                binding.noMessagesView.isVisible = !isLoading && adapter.itemCount <= 0
+    @ExperimentalMaterialApi
+    @Composable
+    fun MessageList(messages: List<Message>) {
+        LazyColumn {
+            items(messages) { message ->
+                MessageItem(message, showAction = false)
             }
+        }
+    }
+
+    @Composable
+    fun NoMessagesView() {
+        Box(
+            Modifier
+                .fillMaxSize()
+                .padding(16.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                stringResource(R.string.message_history_empty),
+                style = MaterialTheme.typography.h6
+            )
         }
     }
 }

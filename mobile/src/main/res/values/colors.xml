@@ -4,20 +4,11 @@
     <color name="appIconBackground">#9c27b0</color>
 
     <color name="colorPrimary">#9c27b0</color>
-    <color name="primaryTextColor">#ffffff</color>
 
-    <color name="statusBarColor">#ffffff</color>
     <color name="navBarColor">#FFFFFF</color>
 
     <color name="widgetBackground">#FFFFFF</color>
     <color name="widgetForeground">#000000</color>
 
-    <color name="windowBackground">#FFFFFF</color>
-    <color name="dialogBackground">@color/windowBackground</color>
-    <color name="dividerColor">#1f000000</color>
-
     <color name="iconTint">@color/colorPrimary</color>
-
-    <color name="warningRed">#D32F2F</color>
-
 </resources>

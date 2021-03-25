@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="Theme.App" parent="Theme.Base">
+    <style name="Theme.App" parent="Theme.AppCompat.DayNight.NoActionBar">
         <item name="android:windowLightNavigationBar">@bool/lightNavigationBar</item>
         <item name="android:navigationBarColor">@color/navBarColor</item>
-        <item name="android:windowLightStatusBar">@bool/lightStatusBar</item>
+        <item name="android:windowLightStatusBar">false</item>
     </style>
 
 </resources>

@@ -2,9 +2,12 @@ package com.boswelja.devicemanager.donate.ui
 
 import android.app.Activity
 import android.app.Application
+import android.content.SharedPreferences
+import androidx.core.content.edit
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.preference.PreferenceManager
 import com.android.billingclient.api.AcknowledgePurchaseParams
 import com.android.billingclient.api.BillingClient
 import com.android.billingclient.api.BillingClientStateListener
@@ -19,7 +22,16 @@ import com.boswelja.devicemanager.common.Event
 import com.boswelja.devicemanager.donate.Skus
 import timber.log.Timber
 
-class DonateViewModel(application: Application) : AndroidViewModel(application) {
+class DonateViewModel internal constructor(
+    application: Application,
+    private val sharedPreferences: SharedPreferences
+) : AndroidViewModel(application) {
+
+    @Suppress("unused")
+    constructor(application: Application) : this(
+        application,
+        PreferenceManager.getDefaultSharedPreferences(application)
+    )
 
     private val purchasesUpdatedListener = PurchasesUpdatedListener { _, purchases ->
         purchases?.forEach {
@@ -103,6 +115,7 @@ class DonateViewModel(application: Application) : AndroidViewModel(application) 
         Timber.d("consumeOneTimePurchase($purchase) called")
         val params = ConsumeParams.newBuilder().setPurchaseToken(purchase.purchaseToken).build()
         billingClient.consumeAsync(params) { _, _ ->
+            sharedPreferences.edit { putBoolean(HAS_DONATED_KEY, true) }
             onDonated.fire()
         }
     }
@@ -113,6 +126,7 @@ class DonateViewModel(application: Application) : AndroidViewModel(application) 
             .setPurchaseToken(purchase.purchaseToken)
             .build()
         billingClient.acknowledgePurchase(params) {
+            sharedPreferences.edit { putBoolean(HAS_DONATED_KEY, true) }
             onDonated.fire()
         }
     }
@@ -120,5 +134,9 @@ class DonateViewModel(application: Application) : AndroidViewModel(application) 
     fun launchBillingFlow(activity: Activity, sku: SkuDetails) {
         val params = BillingFlowParams.newBuilder().setSkuDetails(sku).build()
         billingClient.launchBillingFlow(activity, params)
+    }
+
+    companion object {
+        private const val HAS_DONATED_KEY = "has_donated"
     }
 }

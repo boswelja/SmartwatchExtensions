@@ -73,7 +73,8 @@ class AppManagerTest {
         appManager.startAppManagerService()
         assertThat(appManager.state.getOrAwaitValue())
             .isEquivalentAccordingToCompareTo(State.CONNECTING)
-        assertThat(appManager.apps.getOrAwaitValue()).isEmpty()
+        assertThat(appManager.userApps.getOrAwaitValue()).isEmpty()
+        assertThat(appManager.systemApps.getOrAwaitValue()).isEmpty()
         verify { watchManager.sendMessage(watch, START_SERVICE, null) }
     }
 
@@ -135,7 +136,7 @@ class AppManagerTest {
     fun `addPackage updates apps once all expected packages are received`() {
         // expectedPackageCount should be 0 by default
         appManager.addPackage(app)
-        assertThat(appManager.apps.getOrAwaitValue()).containsExactly(app)
+        assertThat(appManager.userApps.getOrAwaitValue()).containsExactly(app)
     }
 
     @Test
@@ -146,33 +147,30 @@ class AppManagerTest {
     }
 
     @Test
-    fun `updatePackage correctly replaces an app`() {
+    fun `removePackage correctly removes an app`() {
         appManager.addPackage(app)
-        val newApp = App(
+        appManager.removePackage(app.packageName)
+        assertThat(appManager.userApps.getOrAwaitValue()).isEmpty()
+        val newSystemApp = App(
             null,
             "v2.0.0",
             "com.dummy.app",
             "Dummy App 1",
-            isSystemApp = false,
+            isSystemApp = true,
             hasLaunchActivity = false,
             installTime = 0,
             lastUpdateTime = 10,
             requestedPermissions = emptyArray()
         )
-        appManager.updatePackage(newApp)
-        assertThat(appManager.apps.getOrAwaitValue()).containsExactly(newApp)
-    }
-
-    @Test
-    fun `removePackage correctly removes an app`() {
-        appManager.addPackage(app)
-        appManager.removePackage(app.packageName)
-        assertThat(appManager.apps.getOrAwaitValue()).isEmpty()
+        appManager.addPackage(newSystemApp)
+        appManager.removePackage(newSystemApp.packageName)
+        assertThat(appManager.systemApps.getOrAwaitValue()).isEmpty()
     }
 
     @Test
     fun `removePackage handles app that hasn't been added`() {
         appManager.removePackage(app.packageName)
-        assertThat(appManager.apps.getOrAwaitValue()).isEmpty()
+        assertThat(appManager.userApps.getOrAwaitValue()).isEmpty()
+        assertThat(appManager.systemApps.getOrAwaitValue()).isEmpty()
     }
 }

@@ -2,33 +2,30 @@ package com.boswelja.devicemanager.messages.ui
 
 import android.app.Activity
 import android.app.Application
+import androidx.browser.customtabs.CustomTabsIntent
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.viewModelScope
-import androidx.paging.Pager
-import androidx.paging.PagingConfig
-import androidx.paging.cachedIn
 import com.boswelja.devicemanager.messages.database.MessageDatabase
-import com.boswelja.devicemanager.messages.ui.Utils.MESSAGE_PAGE_SIZE
 import com.google.android.play.core.appupdate.AppUpdateManager
 import com.google.android.play.core.appupdate.AppUpdateManagerFactory
 import com.google.android.play.core.appupdate.AppUpdateOptions
 import com.google.android.play.core.install.model.AppUpdateType
 import com.google.android.play.core.install.model.UpdateAvailability
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import timber.log.Timber
 
 class MessagesViewModel @JvmOverloads constructor(
     application: Application,
     private val messageDatabase: MessageDatabase = MessageDatabase.getInstance(application),
     private val appUpdateManager: AppUpdateManager = AppUpdateManagerFactory.create(application),
-    private val coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.IO)
+    val customTabsIntent: CustomTabsIntent = CustomTabsIntent.Builder().setShowTitle(true).build()
 ) : AndroidViewModel(application) {
 
-    val activeMessagesPager = Pager(PagingConfig(MESSAGE_PAGE_SIZE)) {
-        messageDatabase.messageDao().getActiveMessages()
-    }.flow.cachedIn(viewModelScope)
+    /**
+     * Gets a [kotlinx.coroutines.flow.Flow] of all active
+     * [com.boswelja.devicemanager.messages.Message] instances from the database.
+     */
+    val activeMessagesFlow = messageDatabase.messageDao().getActiveMessages()
 
     /**
      * Checks for updates and starts the appropriate update flow.
@@ -61,13 +58,15 @@ class MessagesViewModel @JvmOverloads constructor(
         }
     }
 
-    fun dismissMessage(messageId: Long) {
-        coroutineScope.launch {
+    suspend fun dismissMessage(messageId: Long) {
+        withContext(Dispatchers.IO) {
             messageDatabase.messageDao().dismissMessage(messageId)
         }
     }
 
-    fun restoreMessage(messageId: Long) {
-        coroutineScope.launch { messageDatabase.messageDao().restoreMessage(messageId) }
+    suspend fun restoreMessage(messageId: Long) {
+        withContext(Dispatchers.IO) {
+            messageDatabase.messageDao().restoreMessage(messageId)
+        }
     }
 }

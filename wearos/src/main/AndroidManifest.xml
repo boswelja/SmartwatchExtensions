@@ -45,10 +45,6 @@
         </activity>
 
         <activity
-            android:name=".settings.ui.SettingsActivity"
-            android:exported="false" />
-
-        <activity
             android:name=".about.ui.AboutActivity"
             android:exported="false" />
 

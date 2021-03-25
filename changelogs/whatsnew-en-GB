@@ -1,12 +1,3 @@
-Additions:
-App Manager now shows initial loading progress
-App Manager detects when your watch is disconnected
-Added some new donation options, check them out if you're enjoying the app!
-
 Changes & Fixes:
-App Manager got some UI tweaks
-Cleaned up some unneeded code
-Moved Wear OS complications to newer APIs
-Potential fix for the app sometimes not finding any watches
-Behind the scenes changes to the watch connection interface
+Mobile app is now built on Jetpack Compose
 You should see stability improvements over the next few releases

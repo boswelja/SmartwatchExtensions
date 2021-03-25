@@ -44,7 +44,7 @@
             android:label="@string/message_history_label" />
 
         <activity
-            android:name=".batterysync.ui.BatterySyncPreferenceActivity"
+            android:name=".batterysync.ui.BatterySyncSettingsActivity"
             android:exported="false" />
 
         <activity
@@ -55,7 +55,7 @@
             android:exported="false" />
 
         <activity
-            android:name=".phonelocking.ui.PhoneLockingPreferenceActivity"
+            android:name=".phonelocking.ui.PhoneLockingSettingsActivity"
             android:exported="false" />
 
         <activity

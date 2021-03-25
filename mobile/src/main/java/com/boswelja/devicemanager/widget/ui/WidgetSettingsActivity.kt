@@ -1,21 +1,45 @@
-/* Copyright (C) 2020 Jack Boswell <boswelja@outlook.com>
- *
- * This file is part of Wearable Extensions
- *
- * This file, and any part of the Wearable Extensions app/s cannot be copied and/or distributed
- * without permission from Jack Boswell (boswelja) <boswela@outlook.com>
- */
 package com.boswelja.devicemanager.widget.ui
 
-import androidx.fragment.app.Fragment
+import android.os.Bundle
+import androidx.activity.compose.setContent
+import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material.Divider
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.Scaffold
+import androidx.compose.material.Text
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.batterysync.widget.WatchBatteryWidget
-import com.boswelja.devicemanager.common.ui.activity.BasePreferenceActivity
-import com.boswelja.devicemanager.common.ui.activity.BasePreferenceFragment
+import com.boswelja.devicemanager.common.ui.AppTheme
+import com.boswelja.devicemanager.common.ui.UpNavigationAppBar
 
-class WidgetSettingsActivity : BasePreferenceActivity() {
+class WidgetSettingsActivity : AppCompatActivity() {
 
-    override fun getWidgetFragment(): Fragment = WidgetSettingsWidget()
-    override fun getPreferenceFragment(): BasePreferenceFragment = WidgetSettingsFragment()
+    @ExperimentalMaterialApi
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContent {
+            AppTheme {
+                Scaffold(
+                    topBar = {
+                        UpNavigationAppBar(
+                            onNavigateUp = { finish() },
+                            title = { Text(stringResource(R.string.widget_settings_title)) }
+                        )
+                    }
+                ) {
+                    Column(Modifier.fillMaxSize()) {
+                        WidgetSettingsHeader()
+                        Divider()
+                        WidgetSettingsScreen()
+                    }
+                }
+            }
+        }
+    }
 
     override fun onStop() {
         super.onStop()

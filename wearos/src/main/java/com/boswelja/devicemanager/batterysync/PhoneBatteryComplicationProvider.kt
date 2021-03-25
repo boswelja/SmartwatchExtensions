@@ -11,9 +11,9 @@ import androidx.preference.PreferenceManager
 import androidx.wear.complications.ComplicationProviderService
 import androidx.wear.complications.ProviderUpdateRequester
 import androidx.wear.complications.data.ComplicationData
-import androidx.wear.complications.data.ComplicationText
 import androidx.wear.complications.data.ComplicationType
 import androidx.wear.complications.data.MonochromaticImage
+import androidx.wear.complications.data.PlainComplicationText
 import androidx.wear.complications.data.RangedValueComplicationData
 import androidx.wear.complications.data.ShortTextComplicationData
 import com.boswelja.devicemanager.ActionServiceStarter
@@ -70,18 +70,19 @@ class PhoneBatteryComplicationProvider : ComplicationProviderService() {
             else getString(R.string.battery_percent_unknown)
         val icon = MonochromaticImage.Builder(createIcon(percent)).build()
 
+        val complicationText = PlainComplicationText.Builder(text).build()
         return when (type) {
             ComplicationType.RANGED_VALUE -> {
                 RangedValueComplicationData.Builder(percent.toFloat(), 0f, 100f)
-                    .setText(ComplicationText.plain(text))
+                    .setText(complicationText)
                     .setTapAction(pendingIntent)
                     .setMonochromaticImage(icon)
-                    .setContentDescription(ComplicationText.plain(text))
+                    .setContentDescription(complicationText)
                     .build()
             }
             ComplicationType.SHORT_TEXT -> {
-                ShortTextComplicationData.Builder(ComplicationText.plain(text))
-                    .setContentDescription(ComplicationText.plain(text))
+                ShortTextComplicationData.Builder(complicationText)
+                    .setContentDescription(complicationText)
                     .setMonochromaticImage(icon)
                     .setTapAction(pendingIntent)
                     .build()

@@ -11,34 +11,27 @@
     <string name="message_action_noti_settings">Notification Settings</string>
     <string name="message_action_install_update">Install Update</string>
     <string name="message_dismissed">Message Dismissed</string>
-    <string name="message_history_clear">Clear History</string>
     <string name="message_history_cleared">Message history cleared</string>
     <string name="message_history_not_cleared">No messages to delete</string>
 
     <!-- Dashboard generic strings -->
     <string name="dashboard_settings_label">%s settings</string>
 
-    <!-- Device Admin strings -->
-    <string name="device_admin_label">@string/app_name</string>
-    <string name="device_admin_desc">Allows locking your phone from your watch</string>
-    <string name="device_admin_perm_grant_dialog_title">Missing Permission</string>
-    <string name="device_admin_perm_grant_dialog_message">Wearable Extensions requires device administrator permissions to be able to lock your phone. WARNING: You will not be able to uninstall Wearable Extensions until you revoke Device Administrator permissions from your device settings.</string>
-
     <!-- Battery Sync preference strings -->
-    <string name="main_battery_sync_title">Battery Sync</string>
-    <string name="pref_battery_sync_enable_title">Enable Battery Sync</string>
-    <string name="pref_battery_sync_interval_title">Sync Interval</string>
-    <string name="pref_battery_sync_interval_summary">Sync interval in minutes</string>
-    <string name="pref_battery_sync_phone_charged_noti_title">Phone Charged Notification</string>
-    <string name="pref_battery_sync_phone_charged_noti_summary">Get a notification on your watch when your phone is %s%% charged</string>
-    <string name="pref_battery_sync_watch_charged_noti_title">Watch Charged Notification</string>
-    <string name="pref_battery_sync_watch_charged_noti_summary">Get a notification on your phone when your watch is %s%% charged</string>
-    <string name="pref_battery_sync_charge_threshold_title">Battery Charge Threshold</string>
-    <string name="pref_battery_sync_charge_threshold_summary">Adjust the minimum charge percent to consider your device charged</string>
+    <string name="battery_sync_title">Battery Sync</string>
+    <string name="battery_sync_toggle_title">Enable Battery Sync</string>
+    <string name="battery_sync_interval_title">Sync Interval</string>
+    <string name="battery_sync_phone_charge_noti_title">Phone Charged Notification</string>
+    <string name="battery_sync_phone_charge_noti_summary">Get a notification on your watch when your phone is %s%% charged</string>
+    <string name="battery_sync_watch_charge_noti_title">Watch Charged Notification</string>
+    <string name="battery_sync_watch_charge_noti_summary">Get a notification on your phone when your watch is %s%% charged</string>
+    <string name="battery_sync_charge_threshold_title">Battery Charge Threshold</string>
     <string name="battery_sync_disabled">Battery Sync disabled</string>
-    <string name="battery_sync_last_updated_under_minute">Last updated less than a minute ago</string>
-    <string name="battery_sync_percent_short">%s%%</string>
-    <string name="battery_sync_enable_failed">Failed to enable battery Sync</string>
+    <string name="battery_sync_last_update_recent">Last updated less than a minute ago</string>
+    <string name="battery_percent">%s%%</string>
+    <string name="battery_sync_interval">%s min</string>
+    <string name="category_charge_notifications">Charge Notifications</string>
+    <string name="category_battery_sync_settings">Battery Sync Settings</string>
 
     <!-- Do not Disturb Sync preference strings -->
     <string name="main_dnd_sync_title">Do not Disturb Sync</string>
@@ -54,12 +47,7 @@
     <string name="dnd_sync_helper_success_message">Phone to Watch Sync has successfully been enabled!</string>
     <string name="dnd_sync_helper_failed_title">Something Went Wrong</string>
     <string name="dnd_sync_helper_failed_message">Failed to enable Phone to Watch sync.</string>
-    <string name="dnd_sync_helper_warning_acknowledged">I acknowledge this may not work</string>
-    <string name="dnd_sync_helper_warning_title">Warning</string>
-    <string name="dnd_sync_helper_warning_watch_version">Your watch is running an incompatible Wear OS version (System version newer than 8.0). The required permission cannot be granted on watches running system versions newer than 8.0. You can find out more at https://issuetracker.google.com/issues/72786396</string>
     <string name="dnd_sync_helper_setup_title">Setup</string>
-    <string name="dnd_sync_helper_button_finish">Finish</string>
-    <string name="dnd_sync_helper_button_next">Next</string>
 
     <!-- App Manager strings -->
     <string name="main_app_manager_title">App Manager</string>
@@ -78,35 +66,34 @@
     <string name="app_manager_error_title">Something Went Wrong</string>
     <string name="app_manager_error_desc">Make sure Wearable Extensions is up to date on your phone and watch, and try again</string>
 
-    <!-- Phone Lock preference strings -->
+    <!-- Phone Locking strings -->
     <string name="main_phone_locking_title">Phone Locking</string>
-    <string name="pref_phone_locking_mode_title">Phone Locking Method</string>
-    <string name="pref_phone_locking_mode_no_option_summary">Android versions below 9.0 can only use Device Administrator mode</string>
-    <string name="pref_phone_locking_accessibility_settings_title">Open Accessibility Settings</string>
-    <string name="pref_phone_locking_admin_settings_title">Open Device Admin Settings</string>
-    <string name="pref_lock_phone_enabled_title">Remote phone locking</string>
-    <string name="pref_lock_phone_enabled_desc">Allow locking your phone from your wearable</string>
+    <string name="phone_locking_mode_title">Phone Locking Method</string>
+    <string name="phone_locking_accessibility_settings">Open Accessibility Settings</string>
+    <string name="phone_locking_admin_settings">Open Device Admin Settings</string>
+    <string name="phone_locking_enabled_title">Remote phone locking</string>
+    <string name="phone_locking_enabled_summary">Allow locking your phone from your wearable</string>
     <string name="phone_locking_accessibility_service_label">Phone Locking</string>
     <string name="phone_locking_mode_admin">Device Administrator</string>
     <string name="phone_locking_mode_accessibility">Accessibility Service</string>
-    <string name="phone_locking_disabled_by_mode_change">Phone Locking has been automatically disabled, re-enable it to start using your new Phone Locking method</string>
-    <string name="dialog_phone_locking_accessibility_service_title">Enable Accessibility Service</string>
-    <string name="dialog_phone_locking_accessibility_service_desc">You\'ve chosen to use the Accessibility Service as your phone locking method. To enable this, you need to enable "Phone Locking" as an accessibility service in your phone settings. Tap "enable" below to go there now.</string>
+    <string name="phone_locking_setup_accessibility_title">Enable Accessibility Service</string>
+    <string name="phone_locking_setup_accessibility_desc">You\'ve chosen to use the Accessibility Service as your phone locking method. To enable this, you need to enable "Phone Locking" as an accessibility service in your phone settings. Tap "enable" below to go there now.</string>
+    <string name="phone_locking_setup_admin_title">Missing Permission</string>
+    <string name="phone_locking_setup_admin_desc">Wearable Extensions requires device administrator permissions to be able to lock your phone. WARNING: You will not be able to uninstall Wearable Extensions until you revoke Device Administrator permissions from your device settings.</string>
+    <string name="device_admin_label">@string/app_name</string>
+    <string name="device_admin_desc">Allows locking your phone from your watch</string>
 
     <!-- App Settings strings -->
-    <string name="pref_noti_status_title">Notification Settings</string>
-    <string name="pref_noti_status_summary_enabled">Notifications are enabled</string>
-    <string name="pref_noti_status_summary_disabled">Notifications are disabled</string>
-    <string name="pref_daynight_title">App Theme</string>
-    <string name="pref_daynight_option_light">Light</string>
-    <string name="pref_daynight_option_dark">Dark</string>
-    <string name="pref_daynight_option_battery">Set by Battery Saver</string>
-    <string name="pref_daynight_option_system">Follow System</string>
-    <string name="pref_widget_settings_title">Widget Settings</string>
-    <string name="pref_category_watch_connection">Watch Connection</string>
-    <string name="pref_manage_watches_title">Manage Watches</string>
-    <string name="pref_category_analytics">Analytics</string>
-    <string name="pref_analytics_title">Send Anonymous Usage Stats</string>
+    <string name="noti_settings_title">Notification Settings</string>
+    <string name="app_theme_title">App Theme</string>
+    <string name="app_theme_light">Light</string>
+    <string name="app_theme_dark">Dark</string>
+    <string name="app_theme_follow_system">Follow System</string>
+    <string name="widget_settings_title">Widget Settings</string>
+    <string name="category_watch_settings">Watch Settings</string>
+    <string name="manage_watches_title">Manage Watches</string>
+    <string name="category_analytics">Analytics</string>
+    <string name="analytics_enabled_title">Send Anonymous Usage Stats</string>
 
     <string name="widget_watch_battery_title">Watch Battery</string>
     <string name="widget_watch_battery_config_title">Watch Battery Widget Setup</string>
@@ -117,17 +104,19 @@
     <string name="pref_show_widget_background_title">Show Background</string>
     <string name="pref_widget_background_opacity_title">Background Opacity</string>
 
-    <!-- About preference strings -->
-    <string name="pref_category_about_versions">Versions</string>
-    <string name="pref_about_priv_policy_title">Privacy Policy</string>
-    <string name="pref_about_share_title">Share Wearable Extensions</string>
-    <string name="pref_about_github">View Source on GitHub</string>
-    <string name="pref_about_changelog">View Changelog</string>
-    <string name="pref_about_donate_title">Donate</string>
-    <string name="pref_about_phone_version_title">Phone Version: %s</string>
-    <string name="pref_about_watch_version_title">Watch Version: %s</string>
-    <string name="pref_about_watch_version_loading">Watch Version Loading</string>
-    <string name="pref_about_watch_version_failed">Failed to get Watch Version</string>
+    <!-- About strings -->
+    <string name="about_category_about">About</string>
+    <string name="about_category_versions">Versions</string>
+    <string name="about_category_support">Support Wearable Extensions</string>
+    <string name="about_priv_policy_title">Privacy Policy</string>
+    <string name="about_share_title">Share Wearable Extensions</string>
+    <string name="about_github">View Source on GitHub</string>
+    <string name="about_changelog">View Changelog</string>
+    <string name="about_donate_title">Donate</string>
+    <string name="about_phone_version_title">Phone Version: %s</string>
+    <string name="about_watch_version_title">Watch Version: %s</string>
+    <string name="about_watch_version_loading">Watch Version Loading</string>
+    <string name="about_watch_version_failed">Failed to get Watch Version</string>
 
     <!-- Dialog button strings -->
     <string name="dialog_button_grant">Grant</string>
@@ -157,11 +146,7 @@
     <string name="clear_preferences_button_text">Clear Settings</string>
     <string name="clear_preferences_dialog_title">@string/clear_preferences_button_text</string>
     <string name="clear_preferences_dialog_message">Are you sure you want to clear Wearable Extensions settings for your %s?</string>
-    <string name="clear_preferences_clearing">Clearing prefrences</string>
     <string name="clear_preferences_success">Successfully cleared preferences</string>
-    <string name="forget_watch_forgetting">Forgetting watch</string>
-    <string name="forget_watch_success">Successfully forgot watch</string>
-    <string name="forget_watch_warning">Tap \'Finish\' below to return to the watch manager</string>
     <string name="forget_watch_dialog_title">@string/button_forget_watch</string>
     <string name="forget_watch_dialog_message">Are you sure you want to forget your %s? This will clear all Wearable Extensions settings, and remove your %s from the app.</string>
     <string name="capabilities_title">On this watch, Wearable Extensions can:</string>
@@ -195,30 +180,23 @@
     <string name="manage_space_title">Manage Space</string>
     <string name="clear_cache_title">Clear Cache</string>
     <string name="clear_cache_desc">Clear all Wearable Extensions cache.</string>
-    <string name="clear_cache_clearing">Clearing cache</string>
     <string name="clear_cache_failed">Failed to clear cache</string>
     <string name="clear_cache_success">Successfully cleared cache</string>
     <string name="reset_extensions_title">Reset Extensions</string>
     <string name="reset_extensions_desc">Reset all your extension settings on your phone and registered watches.</string>
     <string name="reset_extensions_warning">This will reset extension settings for all your registered watches. Please make sure your registered watches are powered on and nearby.</string>
-    <string name="reset_extensions_resetting">Resetting extensions</string>
     <string name="reset_extensions_failed">Failed to reset extensions</string>
     <string name="reset_extensions_success">Successfully reset extensions</string>
     <string name="reset_settings_title">Reset App Settings</string>
     <string name="reset_settings_desc">Reset all your Wearable Extensions app settings. This does not include extension settings.</string>
-    <string name="reset_settings_resetting">Resetting app settings</string>
     <string name="reset_settings_failed">Failed to reset app settings</string>
     <string name="reset_settings_success">Successfully reset app settings</string>
     <string name="reset_app_title">Reset Wearable Extensions</string>
     <string name="reset_app_desc">This will reset Wearable Extensions on all your registered watches, as well as here on your phone.</string>
     <string name="reset_app_warning">We will reset Wearable Extensions on all your registered watches, then here on your phone. This includes permissions, settings and widgets.</string>
-    <string name="reset_app_resetting">Resetting Wearable Extensions</string>
     <string name="reset_app_failed">Failed to completely reset Wearable Extensions</string>
-    <string name="reset_app_success">Successfully cleared all data!</string>
-    <string name="reset_app_restarting_note">We just need to restart Wearable Extensions to finish resetting what we can. Tap \`finish\` below to proceed.</string>
     <string name="reset_analytics_title">Reset Analytics</string>
     <string name="reset_analytics_desc">This will reset any data stored by Firebase about this app instance.</string>
-    <string name="reset_analytics_resetting">Resetting analytics</string>
     <string name="reset_analytics_success">Successfully reset analytics</string>
     <string name="reset_analytics_failed">Failed to reset analytics</string>
     <string name="please_wait">Please Wait…</string>
@@ -228,7 +206,6 @@
     <string name="update_available_text">A new version of Wearable Extensions is available</string>
 
     <!-- Donate strings -->
-    <string name="donate_title">Donate</string>
     <string name="donate_thank_you">Thank you for choosing to donate! Check out the options below.</string>
     <string name="donate_complete">Thanks for supporting Wearable Extensions!</string>
 

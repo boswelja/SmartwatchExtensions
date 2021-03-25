@@ -4,7 +4,7 @@ import android.app.admin.DevicePolicyManager
 import android.content.Context
 import android.content.Intent
 import androidx.preference.PreferenceManager
-import com.boswelja.devicemanager.batterysync.ui.BatterySyncPreferenceActivity
+import com.boswelja.devicemanager.batterysync.ui.BatterySyncSettingsActivity
 import com.boswelja.devicemanager.common.Compat
 import com.boswelja.devicemanager.common.batterysync.References.REQUEST_BATTERY_UPDATE_PATH
 import com.boswelja.devicemanager.common.batterysync.Utils
@@ -17,12 +17,11 @@ import com.boswelja.devicemanager.common.connection.References.CAPABILITY_WATCH_
 import com.boswelja.devicemanager.common.dndsync.References.REQUEST_INTERRUPT_FILTER_ACCESS_STATUS_PATH
 import com.boswelja.devicemanager.common.preference.PreferenceKey
 import com.boswelja.devicemanager.common.toByteArray
-import com.boswelja.devicemanager.common.ui.activity.BaseWatchPickerPreferenceActivity.Companion.EXTRA_PREFERENCE_KEY
 import com.boswelja.devicemanager.dndsync.ui.DnDSyncPreferenceActivity
 import com.boswelja.devicemanager.main.MainActivity
 import com.boswelja.devicemanager.phonelocking.Utils.isDeviceAdminEnabled
-import com.boswelja.devicemanager.phonelocking.ui.PhoneLockingPreferenceFragment.Companion.PHONE_LOCKING_MODE_ACCESSIBILITY_SERVICE
-import com.boswelja.devicemanager.phonelocking.ui.PhoneLockingPreferenceFragment.Companion.PHONE_LOCKING_MODE_KEY
+import com.boswelja.devicemanager.phonelocking.ui.PhoneLockingSettingsViewModel.Companion.PHONE_LOCKING_MODE_ACCESSIBILITY_SERVICE
+import com.boswelja.devicemanager.phonelocking.ui.PhoneLockingSettingsViewModel.Companion.PHONE_LOCKING_MODE_KEY
 import com.boswelja.devicemanager.watchmanager.database.WatchDatabase
 import com.google.android.gms.wearable.MessageEvent
 import com.google.android.gms.wearable.Wearable
@@ -54,7 +53,8 @@ class WatchMessageReceiver : WearableListenerService() {
         Timber.i("tryLockDevice() called")
         val isInDeviceAdminMode =
             PreferenceManager.getDefaultSharedPreferences(this)
-                .getString(PHONE_LOCKING_MODE_KEY, "0") != PHONE_LOCKING_MODE_ACCESSIBILITY_SERVICE
+                .getString(PHONE_LOCKING_MODE_KEY, "0") !=
+                PHONE_LOCKING_MODE_ACCESSIBILITY_SERVICE.toString()
         val isDeviceAdminEnabled = isDeviceAdminEnabled(this)
         if (isInDeviceAdminMode && isDeviceAdminEnabled) {
             Timber.i("Trying to lock device")
@@ -83,7 +83,7 @@ class WatchMessageReceiver : WearableListenerService() {
             PreferenceKey.BATTERY_SYNC_INTERVAL_KEY,
             PreferenceKey.BATTERY_PHONE_CHARGE_NOTI_KEY,
             PreferenceKey.BATTERY_WATCH_CHARGE_NOTI_KEY -> {
-                Intent(this, BatterySyncPreferenceActivity::class.java)
+                Intent(this, BatterySyncSettingsActivity::class.java)
                     .apply {
                         putExtra(EXTRA_PREFERENCE_KEY, key)
                         addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
@@ -142,5 +142,9 @@ class WatchMessageReceiver : WearableListenerService() {
                 .sendMessage(sourceNodeId, messageCode, null)
             database.close()
         }
+    }
+
+    companion object {
+        const val EXTRA_PREFERENCE_KEY = "extra_preference_key"
     }
 }

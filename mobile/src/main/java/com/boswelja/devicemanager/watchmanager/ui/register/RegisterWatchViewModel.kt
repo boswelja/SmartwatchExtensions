@@ -5,7 +5,6 @@ import android.database.sqlite.SQLiteException
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
-import com.boswelja.devicemanager.common.Event
 import com.boswelja.devicemanager.watchmanager.WatchManager
 import com.boswelja.devicemanager.watchmanager.item.Watch
 import kotlinx.coroutines.CoroutineDispatcher
@@ -30,8 +29,6 @@ class RegisterWatchViewModel internal constructor(
         WatchManager.getInstance(application),
         Dispatchers.IO
     )
-
-    val onFinished = Event()
 
     val registeredWatches = watchManager.availableWatches.map { watches ->
         watches.filter { registeredWatchIds.contains(it.id) }
