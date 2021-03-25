@@ -45,14 +45,13 @@ android {
     testOptions.unitTests {
         isIncludeAndroidResources = true
     }
+
+    packagingOptions {
+        resources.excludes.addAll(arrayOf("META-INF/AL2.0", "META-INF/LGPL2.1"))
+    }
 }
 
 dependencies {
-    repositories {
-        jcenter()
-    }
-    implementation(project(":common"))
-
     val androidxArch = "2.1.0"
     val androidxAppCompat = "1.3.0-beta01"
     val androidxCoreKtx = "1.5.0-beta02"
@@ -75,6 +74,8 @@ dependencies {
     val mockk = "1.10.6"
     val robolectric = "4.5.1"
     val coroutines = "1.4.3"
+
+    implementation(project(":common"))
 
     implementation("androidx.appcompat:appcompat:$androidxAppCompat")
     implementation("androidx.core:core-ktx:$androidxCoreKtx")
@@ -114,6 +115,4 @@ dependencies {
     androidTestImplementation("androidx.test:core-ktx:$androidxTest")
     androidTestImplementation("com.google.truth:truth:$truth")
     androidTestImplementation("io.mockk:mockk-android:$mockk")
-    // Workaround for MockK using an old version not found on mavenCentral
-    androidTestImplementation("com.linkedin.dexmaker:dexmaker:2.28.1")
 }
