@@ -18,9 +18,7 @@ private val TextColor = Color.White
 private val DarkColors = darkColors(
     primary = Purple200,
     secondary = Purple200,
-    background = Color.Black,
-    onBackground = Color.White,
-    onSurface = Color.White
+    background = Color.Black
 )
 
 private val shapes = Shapes(

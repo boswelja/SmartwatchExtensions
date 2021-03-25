@@ -54,7 +54,7 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.0.0-beta02"
+        kotlinCompilerExtensionVersion = "1.0.0-beta03"
     }
 
     packagingOptions {
@@ -76,17 +76,17 @@ dependencies {
     val androidxBrowser = "1.3.0"
     val androidxCoreKtx = "1.5.0-beta02"
     val androidxEspresso = "3.1.0"
-    val androidxFragment = "1.3.0"
-    val androidxLifecycle = "2.3.0"
+    val androidxFragment = "1.3.1"
+    val androidxLifecycle = "2.3.1"
     val androidxPreference = "1.1.1"
     val androidxRoom = "2.3.0-beta03"
     val androidxTest = "1.4.0-alpha05"
     val androidxTestExt = "1.1.3-alpha04"
     val androidxWork = "2.7.0-alpha02"
 
-    val compose = "1.0.0-beta02"
-    val lifecycleCompose = "1.0.0-alpha02"
-    val activityCompose = "1.3.0-alpha03"
+    val compose = "1.0.0-beta03"
+    val lifecycleCompose = "1.0.0-alpha03"
+    val activityCompose = "1.3.0-alpha05"
     val navigationCompose = "1.0.0-alpha09"
 
     val billingClient = "3.0.2"
