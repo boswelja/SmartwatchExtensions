@@ -46,6 +46,10 @@ android {
         isIncludeAndroidResources = true
     }
 
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.0.0-beta02"
+    }
+
     packagingOptions {
         resources.excludes.addAll(arrayOf("META-INF/AL2.0", "META-INF/LGPL2.1"))
     }
