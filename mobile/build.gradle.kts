@@ -83,6 +83,7 @@ dependencies {
     val androidxTest = "1.4.0-alpha05"
     val androidxTestExt = "1.1.3-alpha04"
     val androidxWork = "2.7.0-alpha02"
+    val androidxDataStore = "1.0.0-alpha08"
 
     val compose = "1.0.0-beta03"
     val lifecycleCompose = "1.0.0-alpha03"
@@ -116,6 +117,7 @@ dependencies {
     implementation("androidx.room:room-runtime:$androidxRoom")
     implementation("androidx.room:room-ktx:$androidxRoom")
     implementation("androidx.work:work-runtime-ktx:$androidxWork")
+    implementation("androidx.datastore:datastore-preferences:$androidxDataStore")
 
     implementation("com.android.billingclient:billing-ktx:$billingClient")
     implementation("com.google.android.play:core:$googlePlayCore")

@@ -15,6 +15,7 @@ class WidgetSettingsViewModel internal constructor(
     private val sharedPreferences: SharedPreferences
 ) : AndroidViewModel(application) {
 
+    @Suppress("unused")
     constructor(application: Application) : this(
         application,
         PreferenceManager.getDefaultSharedPreferences(application)
