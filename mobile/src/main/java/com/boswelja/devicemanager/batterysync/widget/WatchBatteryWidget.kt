@@ -15,7 +15,6 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.R
-import com.boswelja.devicemanager.batterysync.database.WatchBatteryStats
 import com.boswelja.devicemanager.batterysync.database.WatchBatteryStatsDatabase
 import com.boswelja.devicemanager.main.MainActivity
 import com.boswelja.devicemanager.widget.widgetIdStore
@@ -96,13 +95,11 @@ class WatchBatteryWidget : AppWidgetProvider() {
                     it[stringPreferencesKey(appWidgetId.toString())]
                 }
                 watchId.collect {
-                    if (!it.isNullOrBlank()) {
-                        val batteryStats = WatchBatteryStatsDatabase.getInstance(context)
-                            .batteryStatsDao().getStatsForWatch(it)
-                        val remoteViews =
-                            createWidgetRemoteView(context, width, height, batteryStats)
-                        appWidgetManager?.updateAppWidget(appWidgetId, remoteViews)
-                    }
+                    val batteryPercent = WatchBatteryStatsDatabase.getInstance(context)
+                        .batteryStatsDao().getStatsForWatch(it)?.percent ?: -1
+                    val remoteViews =
+                        createWidgetRemoteView(context, width, height, batteryPercent)
+                    appWidgetManager?.updateAppWidget(appWidgetId, remoteViews)
                 }
             }
         }
@@ -113,17 +110,14 @@ class WatchBatteryWidget : AppWidgetProvider() {
      * @param context [Context].
      * @param width The target width of the updated view.
      * @param height The target height of the updated view.
-     * @param batteryStats The [WatchBatteryStats] object containing battery information for the
-     * widget to use, if available.
+     * @param batteryPercent The battery percent to display in the widget.
      */
     private fun createWidgetRemoteView(
         context: Context?,
         width: Int,
         height: Int,
-        batteryStats: WatchBatteryStats?
+        batteryPercent: Int
     ): RemoteViews {
-        val batteryPercent = batteryStats?.percent ?: 0
-
         val remoteViews = RemoteViews(context?.packageName, R.layout.widget_watch_battery)
 
         // Set click intent
