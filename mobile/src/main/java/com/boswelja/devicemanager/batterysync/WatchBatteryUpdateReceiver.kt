@@ -1,10 +1,3 @@
-/* Copyright (C) 2020 Jack Boswell <boswelja@outlook.com>
- *
- * This file is part of Wearable Extensions
- *
- * This file, and any part of the Wearable Extensions app/s cannot be copied and/or distributed
- * without permission from Jack Boswell (boswelja) <boswela@outlook.com>
- */
 package com.boswelja.devicemanager.batterysync
 
 import android.app.NotificationManager
@@ -24,7 +17,6 @@ import com.boswelja.devicemanager.common.preference.PreferenceKey.BATTERY_WATCH_
 import com.boswelja.devicemanager.watchmanager.database.WatchDatabase
 import com.boswelja.devicemanager.watchmanager.item.BoolPreference
 import com.boswelja.devicemanager.watchmanager.item.Watch
-import com.boswelja.devicemanager.widget.database.WidgetDatabase
 import com.google.android.gms.wearable.MessageEvent
 import com.google.android.gms.wearable.WearableListenerService
 import java.util.Locale
@@ -51,7 +43,7 @@ class WatchBatteryUpdateReceiver : WearableListenerService() {
                     handleNoti(database, it)
                 }
                 updateStatsInDatabase()
-                updateWidgetsForWatch(watchBatteryStats.watchId)
+                updateWidgetsForWatch()
             }
         }
     }
@@ -62,20 +54,11 @@ class WatchBatteryUpdateReceiver : WearableListenerService() {
 
     /**
      * Update all instances of [WatchBatteryWidget] associated with a given watch ID.
-     * @param watchId The [Watch.id] of the associated watch.
      */
-    private fun updateWidgetsForWatch(watchId: String) {
-        Timber.d("updateWidgetsForWatch($watchId) called")
-        val database = WidgetDatabase.getInstance(this)
-        if (database.isOpen) {
-            // If we can, try to update widgets associated only with the given ID
-            val widgets = database.getAllWidgetsForWatch(watchId)
-            WatchBatteryWidget.updateWidgets(this, widgets.toIntArray())
-            database.close()
-        } else {
-            // Fallback to updating all widgets if database isn't open
-            WatchBatteryWidget.updateWidgets(this)
-        }
+    private fun updateWidgetsForWatch() {
+        Timber.d("updateWidgetsForWatch called")
+        // Fallback to updating all widgets if database isn't open
+        WatchBatteryWidget.updateWidgets(this)
     }
 
     private fun handleNoti(database: WatchDatabase, watch: Watch) {

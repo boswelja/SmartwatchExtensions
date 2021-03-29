@@ -11,14 +11,18 @@ import android.os.Bundle
 import android.widget.RemoteViews
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toBitmap
+import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.batterysync.database.WatchBatteryStats
 import com.boswelja.devicemanager.batterysync.database.WatchBatteryStatsDatabase
 import com.boswelja.devicemanager.main.MainActivity
-import com.boswelja.devicemanager.widget.database.WidgetDatabase
+import com.boswelja.devicemanager.widget.widgetIdStore
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
 class WatchBatteryWidget : AppWidgetProvider() {
@@ -27,13 +31,12 @@ class WatchBatteryWidget : AppWidgetProvider() {
 
     override fun onDeleted(context: Context?, appWidgetIds: IntArray?) {
         super.onDeleted(context, appWidgetIds)
-        if (appWidgetIds != null && appWidgetIds.isNotEmpty()) {
+        if (context != null && appWidgetIds != null && appWidgetIds.isNotEmpty()) {
             coroutineScope.launch(Dispatchers.IO) {
-                WidgetDatabase.getInstance(context!!).also {
-                    for (widgetId in appWidgetIds) {
-                        it.removeWidget(widgetId)
+                context.widgetIdStore.edit { widgetIds ->
+                    appWidgetIds.forEach { widgetId ->
+                        widgetIds.remove(stringPreferencesKey(widgetId.toString()))
                     }
-                    it.close()
                 }
             }
         }
@@ -86,18 +89,22 @@ class WatchBatteryWidget : AppWidgetProvider() {
         width: Int,
         height: Int
     ) {
-        coroutineScope.launch(Dispatchers.IO) {
-            val widgetDatabase = WidgetDatabase.getInstance(context!!)
-            val batteryStatsDatabase = WatchBatteryStatsDatabase.getInstance(context)
-
-            val watchId = widgetDatabase.getWatchIDForWidget(appWidgetId)
-            if (!watchId.isNullOrBlank()) {
-                val batteryStats = batteryStatsDatabase.batteryStatsDao().getStatsForWatch(watchId)
-                val remoteViews = createWidgetRemoteView(context, width, height, batteryStats)
-                appWidgetManager?.updateAppWidget(appWidgetId, remoteViews)
+        if (context != null) {
+            coroutineScope.launch(Dispatchers.IO) {
+                val widgetIdStore = context.widgetIdStore
+                val watchId = widgetIdStore.data.map {
+                    it[stringPreferencesKey(appWidgetId.toString())]
+                }
+                watchId.collect {
+                    if (!it.isNullOrBlank()) {
+                        val batteryStats = WatchBatteryStatsDatabase.getInstance(context)
+                            .batteryStatsDao().getStatsForWatch(it)
+                        val remoteViews =
+                            createWidgetRemoteView(context, width, height, batteryStats)
+                        appWidgetManager?.updateAppWidget(appWidgetId, remoteViews)
+                    }
+                }
             }
-
-            widgetDatabase.close()
         }
     }
 

@@ -14,7 +14,6 @@ import com.boswelja.devicemanager.batterysync.database.WatchBatteryStatsDatabase
 import com.boswelja.devicemanager.common.connection.Messages.REQUEST_UPDATE_CAPABILITIES
 import com.boswelja.devicemanager.getOrAwaitValue
 import com.boswelja.devicemanager.watchmanager.item.Watch
-import com.boswelja.devicemanager.widget.database.WidgetDatabase
 import com.google.common.truth.Truth.assertThat
 import io.mockk.MockKAnnotations
 import io.mockk.coVerify
@@ -49,7 +48,6 @@ class WatchManagerTest {
     @RelaxedMockK private lateinit var repository: WatchRepository
     @RelaxedMockK private lateinit var analytics: Analytics
     @RelaxedMockK private lateinit var batteryStatsDatabase: WatchBatteryStatsDatabase
-    @RelaxedMockK private lateinit var widgetDatabase: WidgetDatabase
 
     private lateinit var coroutineScope: CoroutineScope
     private lateinit var sharedPreferences: SharedPreferences
@@ -136,11 +134,10 @@ class WatchManagerTest {
     @Test
     fun `forgetWatch calls repository, databases and logs analytics event`(): Unit = runBlocking {
         watchManager = getWatchManager()
-        watchManager.forgetWatch(batteryStatsDatabase, widgetDatabase, dummyWatch1)
+        watchManager.forgetWatch(batteryStatsDatabase, dummyWatch1)
         verify(exactly = 1) { analytics.logWatchRemoved() }
         coVerify(exactly = 1) { repository.resetWatch(dummyWatch1) }
         verify(exactly = 1) { batteryStatsDatabase.batteryStatsDao() }
-        verify(exactly = 1) { widgetDatabase.widgetDao() }
     }
 
     @Test
@@ -155,10 +152,9 @@ class WatchManagerTest {
     @Test
     fun `resetWatchPreferences calls repository and databases`(): Unit = runBlocking {
         watchManager = getWatchManager()
-        watchManager.resetWatchPreferences(batteryStatsDatabase, widgetDatabase, dummyWatch1)
+        watchManager.resetWatchPreferences(batteryStatsDatabase, dummyWatch1)
         coVerify(exactly = 1) { repository.resetWatchPreferences(dummyWatch1) }
         verify(exactly = 1) { batteryStatsDatabase.batteryStatsDao() }
-        verify(exactly = 1) { widgetDatabase.widgetDao() }
     }
 
     @Test

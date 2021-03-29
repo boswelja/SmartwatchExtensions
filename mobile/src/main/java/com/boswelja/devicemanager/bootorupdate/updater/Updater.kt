@@ -13,7 +13,10 @@ import android.content.SharedPreferences
 import android.os.Build
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.edit
+import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.preference.PreferenceManager
+import androidx.room.Room
 import com.boswelja.devicemanager.BuildConfig
 import com.boswelja.devicemanager.analytics.Analytics
 import com.boswelja.devicemanager.appsettings.ui.AppSettingsViewModel.Companion.DAYNIGHT_MODE_KEY
@@ -28,11 +31,14 @@ import com.boswelja.devicemanager.watchmanager.WatchManager.Companion.LAST_SELEC
 import com.boswelja.devicemanager.watchmanager.connection.wearos.WearOSConnectionInterface
 import com.boswelja.devicemanager.watchmanager.database.WatchDatabase
 import com.boswelja.devicemanager.watchmanager.item.Watch
+import com.boswelja.devicemanager.widget.database.WidgetDatabase
+import com.boswelja.devicemanager.widget.widgetIdStore
 import com.google.android.gms.wearable.CapabilityClient
 import com.google.android.gms.wearable.Wearable
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import timber.log.Timber
 
 class Updater(private val context: Context) {
@@ -163,8 +169,28 @@ class Updater(private val context: Context) {
                 }
                 putInt(APP_VERSION_KEY, lastAppVersion)
             }
+            if (lastAppVersion < 2027000000) {
+                runBlocking { updateWidgetImpl() }
+                updateStatus = Result.COMPLETED
+            }
         }
         return updateStatus
+    }
+
+    private suspend fun updateWidgetImpl() {
+        val widgetIdStore = context.widgetIdStore
+        Room.databaseBuilder(context, WidgetDatabase::class.java, "widget-db")
+            .fallbackToDestructiveMigration()
+            .allowMainThreadQueries()
+            .build().also { database ->
+                widgetIdStore.edit { widgetIds ->
+                    database.widgetDao().getAll().forEach {
+                        widgetIds[stringPreferencesKey(it.widgetId.toString())] = it.watchId
+                    }
+                }
+                database.clearAllTables()
+                database.close()
+            }
     }
 
     /** Performs an update on databases as necessary. */

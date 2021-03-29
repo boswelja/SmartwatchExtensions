@@ -13,7 +13,6 @@ import com.boswelja.devicemanager.common.SingletonHolder
 import com.boswelja.devicemanager.common.connection.Messages.REQUEST_UPDATE_CAPABILITIES
 import com.boswelja.devicemanager.common.preference.SyncPreferences
 import com.boswelja.devicemanager.watchmanager.item.Watch
-import com.boswelja.devicemanager.widget.database.WidgetDatabase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -109,19 +108,16 @@ class WatchManager internal constructor(
     suspend fun forgetWatch(context: Context, watch: Watch) {
         forgetWatch(
             WatchBatteryStatsDatabase.getInstance(context),
-            WidgetDatabase.getInstance(context),
             watch
         )
     }
 
     internal suspend fun forgetWatch(
         batteryStatsDatabase: WatchBatteryStatsDatabase,
-        widgetDatabase: WidgetDatabase,
         watch: Watch
     ) {
         withContext(Dispatchers.IO) {
             batteryStatsDatabase.batteryStatsDao().deleteStatsForWatch(watch.id)
-            widgetDatabase.widgetDao().removeWidgetsFor(watch.id)
             watchRepository.resetWatch(watch)
             analytics.logWatchRemoved()
         }
@@ -134,18 +130,15 @@ class WatchManager internal constructor(
     suspend fun resetWatchPreferences(context: Context, watch: Watch) {
         resetWatchPreferences(
             WatchBatteryStatsDatabase.getInstance(context),
-            WidgetDatabase.getInstance(context),
             watch
         )
     }
 
     internal suspend fun resetWatchPreferences(
         batteryStatsDatabase: WatchBatteryStatsDatabase,
-        widgetDatabase: WidgetDatabase,
         watch: Watch
     ) {
         batteryStatsDatabase.batteryStatsDao().deleteStatsForWatch(watch.id)
-        widgetDatabase.widgetDao().removeWidgetsFor(watch.id)
         watchRepository.resetWatchPreferences(watch)
     }
 

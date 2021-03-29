@@ -84,7 +84,7 @@ class ManageSpaceViewModel internal constructor(
                 val progressMultiplier =
                     floor(MAX_PROGRESS / (watchCount + SyncPreferences.ALL_PREFS.count())).toInt()
                 registeredWatches.forEachIndexed { index, watch ->
-                    watchManager.resetWatchPreferences(getApplication(), watch)
+                    watchManager.resetWatchPreferences(getApplication<Application>(), watch)
                     progress = (index + 1) * progressMultiplier
                     withContext(Dispatchers.Main) { onProgressChanged(progress) }
                 }
@@ -146,7 +146,7 @@ class ManageSpaceViewModel internal constructor(
                 var progress: Int
                 val progressMultiplier = floor(MAX_PROGRESS / (watchCount + 1)).toInt()
                 registeredWatches.forEachIndexed { index, watch ->
-                    watchManager.forgetWatch(getApplication(), watch)
+                    watchManager.forgetWatch(getApplication<Application>(), watch)
                     progress = (index + 1) * progressMultiplier
                     withContext(Dispatchers.Main) { onProgressChanged(progress) }
                 }
