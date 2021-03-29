@@ -13,6 +13,7 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.boswelja.devicemanager.common.SingletonHolder
 
+@Deprecated("Switch to DataStore implementation")
 @Database(entities = [WatchWidgetAssociation::class], version = 2)
 abstract class WidgetDatabase : RoomDatabase() {
 
