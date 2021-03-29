@@ -183,7 +183,9 @@ class ManageSpaceViewModelTest {
         verify(exactly = 1) { analytics.logStorageManagerAction(any()) }
         dummyWatches.forEach {
             coVerify(exactly = 1) {
-                watchManager.resetWatchPreferences(ApplicationProvider.getApplicationContext(), it)
+                watchManager.resetWatchPreferences(
+                    ApplicationProvider.getApplicationContext<Application>(), it
+                )
             }
         }
         assertThat(sharedPreferences.contains(nonExtensionKey)).isTrue()
@@ -428,7 +430,9 @@ class ManageSpaceViewModelTest {
         verify(exactly = 1) { analytics.resetAnalytics() }
         dummyWatches.forEach {
             coVerify(exactly = 1) {
-                watchManager.forgetWatch(ApplicationProvider.getApplicationContext(), it)
+                watchManager.forgetWatch(
+                    ApplicationProvider.getApplicationContext<Application>(), it
+                )
             }
         }
     }
