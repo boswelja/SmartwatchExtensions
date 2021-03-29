@@ -1,3 +1,4 @@
 Changes & Fixes:
 Wearable Extensions is now built on Jetpack Compose!
+We've made some improvements to widgets under the hood
 You should see stability improvements over the next few releases
