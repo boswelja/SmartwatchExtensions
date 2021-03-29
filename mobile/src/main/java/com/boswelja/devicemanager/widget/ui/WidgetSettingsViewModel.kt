@@ -6,8 +6,8 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.boswelja.devicemanager.batterysync.widget.WatchBatteryWidget.Companion.SHOW_WIDGET_BACKGROUND_KEY
-import com.boswelja.devicemanager.batterysync.widget.WatchBatteryWidget.Companion.WIDGET_BACKGROUND_OPACITY_KEY
+import com.boswelja.devicemanager.widget.ui.WidgetSettingsActivity.Companion.SHOW_WIDGET_BACKGROUND_KEY
+import com.boswelja.devicemanager.widget.ui.WidgetSettingsActivity.Companion.WIDGET_BACKGROUND_OPACITY_KEY
 import com.boswelja.devicemanager.widget.widgetSettings
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.map
@@ -27,10 +27,12 @@ class WidgetSettingsViewModel(application: Application) : AndroidViewModel(appli
 
     init {
         viewModelScope.launch {
-            widgetSettings.data.map { it[SHOW_WIDGET_BACKGROUND_KEY] }
-                .collect { _widgetBackgroundVisible.postValue(it) }
-            widgetSettings.data.map { it[WIDGET_BACKGROUND_OPACITY_KEY] }
-                .collect { _widgetBackgroundOpacity.postValue(it) }
+            widgetSettings.data.map { it[SHOW_WIDGET_BACKGROUND_KEY] }.collect {
+                _widgetBackgroundVisible.postValue(it)
+            }
+            widgetSettings.data.map { it[WIDGET_BACKGROUND_OPACITY_KEY] }.collect {
+                _widgetBackgroundOpacity.postValue(it)
+            }
         }
     }
 

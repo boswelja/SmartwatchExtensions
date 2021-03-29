@@ -11,6 +11,8 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.datastore.preferences.core.booleanPreferencesKey
+import androidx.datastore.preferences.core.intPreferencesKey
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.batterysync.widget.WatchBatteryWidget
 import com.boswelja.devicemanager.common.ui.AppTheme
@@ -44,5 +46,10 @@ class WidgetSettingsActivity : AppCompatActivity() {
     override fun onStop() {
         super.onStop()
         WatchBatteryWidget.updateWidgets(this)
+    }
+
+    companion object {
+        val SHOW_WIDGET_BACKGROUND_KEY = booleanPreferencesKey("show_widget_background")
+        val WIDGET_BACKGROUND_OPACITY_KEY = intPreferencesKey("widget_background_opacity")
     }
 }

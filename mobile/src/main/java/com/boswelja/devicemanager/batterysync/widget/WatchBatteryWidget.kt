@@ -11,13 +11,13 @@ import android.os.Bundle
 import android.widget.RemoteViews
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toBitmap
-import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
-import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.batterysync.database.WatchBatteryStatsDatabase
 import com.boswelja.devicemanager.main.MainActivity
+import com.boswelja.devicemanager.widget.ui.WidgetSettingsActivity.Companion.SHOW_WIDGET_BACKGROUND_KEY
+import com.boswelja.devicemanager.widget.ui.WidgetSettingsActivity.Companion.WIDGET_BACKGROUND_OPACITY_KEY
 import com.boswelja.devicemanager.widget.widgetIdStore
 import com.boswelja.devicemanager.widget.widgetSettings
 import kotlinx.coroutines.Dispatchers
@@ -185,9 +185,6 @@ class WatchBatteryWidget : AppWidgetProvider() {
     }
 
     companion object {
-        val SHOW_WIDGET_BACKGROUND_KEY = booleanPreferencesKey("show_widget_background")
-        val WIDGET_BACKGROUND_OPACITY_KEY = intPreferencesKey("widget_background_opacity")
-
         /**
          * Update all [WatchBatteryWidget] instances.
          * @param context [Context].

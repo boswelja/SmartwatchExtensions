@@ -17,8 +17,6 @@ import com.boswelja.devicemanager.analytics.Analytics
 import com.boswelja.devicemanager.appsettings.ui.AppSettingsViewModel.Companion.DAYNIGHT_MODE_KEY
 import com.boswelja.devicemanager.batterysync.BatterySyncWorker
 import com.boswelja.devicemanager.batterysync.widget.WatchBatteryWidget
-import com.boswelja.devicemanager.batterysync.widget.WatchBatteryWidget.Companion.SHOW_WIDGET_BACKGROUND_KEY
-import com.boswelja.devicemanager.batterysync.widget.WatchBatteryWidget.Companion.WIDGET_BACKGROUND_OPACITY_KEY
 import com.boswelja.devicemanager.common.connection.Messages.WATCH_REGISTERED_PATH
 import com.boswelja.devicemanager.common.connection.References.CAPABILITY_WATCH_APP
 import com.boswelja.devicemanager.common.preference.PreferenceKey
@@ -29,6 +27,8 @@ import com.boswelja.devicemanager.watchmanager.connection.wearos.WearOSConnectio
 import com.boswelja.devicemanager.watchmanager.database.WatchDatabase
 import com.boswelja.devicemanager.watchmanager.item.Watch
 import com.boswelja.devicemanager.widget.database.WidgetDatabase
+import com.boswelja.devicemanager.widget.ui.WidgetSettingsActivity.Companion.SHOW_WIDGET_BACKGROUND_KEY
+import com.boswelja.devicemanager.widget.ui.WidgetSettingsActivity.Companion.WIDGET_BACKGROUND_OPACITY_KEY
 import com.boswelja.devicemanager.widget.widgetIdStore
 import com.boswelja.devicemanager.widget.widgetSettings
 import com.google.android.gms.wearable.CapabilityClient
