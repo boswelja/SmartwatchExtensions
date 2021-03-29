@@ -151,6 +151,7 @@ class Updater(private val context: Context) {
                             it[SHOW_WIDGET_BACKGROUND_KEY] = showBackground
                         }
                     }
+                    remove(SHOW_WIDGET_BACKGROUND_KEY.name)
                 }
                 if (sharedPreferences.contains(WIDGET_BACKGROUND_OPACITY_KEY.name)) {
                     val backgroundOpacity = sharedPreferences
@@ -160,6 +161,7 @@ class Updater(private val context: Context) {
                             it[WIDGET_BACKGROUND_OPACITY_KEY] = backgroundOpacity
                         }
                     }
+                    remove(WIDGET_BACKGROUND_OPACITY_KEY.name)
                 }
                 if (lastAppVersion < 2026800000) {
                     val value = sharedPreferences.getString(
