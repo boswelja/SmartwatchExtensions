@@ -1,47 +1,54 @@
 package com.boswelja.devicemanager.widget.ui
 
 import android.app.Application
-import android.content.SharedPreferences
-import androidx.core.content.edit
+import androidx.datastore.preferences.core.edit
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.preference.PreferenceManager
+import androidx.lifecycle.viewModelScope
 import com.boswelja.devicemanager.batterysync.widget.WatchBatteryWidget.Companion.SHOW_WIDGET_BACKGROUND_KEY
 import com.boswelja.devicemanager.batterysync.widget.WatchBatteryWidget.Companion.WIDGET_BACKGROUND_OPACITY_KEY
+import com.boswelja.devicemanager.widget.widgetSettings
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
 
-class WidgetSettingsViewModel internal constructor(
-    application: Application,
-    private val sharedPreferences: SharedPreferences
-) : AndroidViewModel(application) {
+class WidgetSettingsViewModel(application: Application) : AndroidViewModel(application) {
 
-    @Suppress("unused")
-    constructor(application: Application) : this(
-        application,
-        PreferenceManager.getDefaultSharedPreferences(application)
-    )
+    private val widgetSettings = application.widgetSettings
 
-    private val _widgetBackgroundVisible =
-        MutableLiveData(sharedPreferences.getBoolean(SHOW_WIDGET_BACKGROUND_KEY, true))
-    private val _widgetBackgroundOpacity =
-        MutableLiveData(sharedPreferences.getInt(WIDGET_BACKGROUND_OPACITY_KEY, 60))
+    private val _widgetBackgroundVisible = MutableLiveData(true)
+    private val _widgetBackgroundOpacity = MutableLiveData(60)
 
     val widgetBackgroundVisible: LiveData<Boolean>
         get() = _widgetBackgroundVisible
     val widgetBackgroundOpacity: LiveData<Int>
         get() = _widgetBackgroundOpacity
 
+    init {
+        viewModelScope.launch {
+            widgetSettings.data.map { it[SHOW_WIDGET_BACKGROUND_KEY] }
+                .collect { _widgetBackgroundVisible.postValue(it) }
+            widgetSettings.data.map { it[WIDGET_BACKGROUND_OPACITY_KEY] }
+                .collect { _widgetBackgroundOpacity.postValue(it) }
+        }
+    }
+
     fun setShowBackground(showBackground: Boolean) {
         _widgetBackgroundVisible.postValue(showBackground)
-        sharedPreferences.edit {
-            putBoolean(SHOW_WIDGET_BACKGROUND_KEY, showBackground)
+        viewModelScope.launch {
+            widgetSettings.edit {
+                it[SHOW_WIDGET_BACKGROUND_KEY] = showBackground
+            }
         }
     }
 
     fun setBackgroundOpacity(opacity: Int) {
         _widgetBackgroundOpacity.postValue(opacity)
-        sharedPreferences.edit {
-            putInt(WIDGET_BACKGROUND_OPACITY_KEY, opacity)
+        viewModelScope.launch {
+            widgetSettings.edit {
+                it[WIDGET_BACKGROUND_OPACITY_KEY] = opacity
+            }
         }
     }
 }

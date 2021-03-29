@@ -1,10 +1,5 @@
-/* Copyright (C) 2020 Jack Boswell <boswelja@outlook.com>
- *
- * This file is part of Wearable Extensions
- *
- * This file, and any part of the Wearable Extensions app/s cannot be copied and/or distributed
- * without permission from Jack Boswell (boswelja) <boswela@outlook.com>
- */
+@file:Suppress("DEPRECATION")
+
 package com.boswelja.devicemanager.bootorupdate.updater
 
 import android.app.job.JobScheduler
@@ -22,6 +17,8 @@ import com.boswelja.devicemanager.analytics.Analytics
 import com.boswelja.devicemanager.appsettings.ui.AppSettingsViewModel.Companion.DAYNIGHT_MODE_KEY
 import com.boswelja.devicemanager.batterysync.BatterySyncWorker
 import com.boswelja.devicemanager.batterysync.widget.WatchBatteryWidget
+import com.boswelja.devicemanager.batterysync.widget.WatchBatteryWidget.Companion.SHOW_WIDGET_BACKGROUND_KEY
+import com.boswelja.devicemanager.batterysync.widget.WatchBatteryWidget.Companion.WIDGET_BACKGROUND_OPACITY_KEY
 import com.boswelja.devicemanager.common.connection.Messages.WATCH_REGISTERED_PATH
 import com.boswelja.devicemanager.common.connection.References.CAPABILITY_WATCH_APP
 import com.boswelja.devicemanager.common.preference.PreferenceKey
@@ -33,6 +30,7 @@ import com.boswelja.devicemanager.watchmanager.database.WatchDatabase
 import com.boswelja.devicemanager.watchmanager.item.Watch
 import com.boswelja.devicemanager.widget.database.WidgetDatabase
 import com.boswelja.devicemanager.widget.widgetIdStore
+import com.boswelja.devicemanager.widget.widgetSettings
 import com.google.android.gms.wearable.CapabilityClient
 import com.google.android.gms.wearable.Wearable
 import kotlinx.coroutines.CoroutineScope
@@ -144,6 +142,24 @@ class Updater(private val context: Context) {
                 }
                 if (sharedPreferences.contains("notification_channels_created")) {
                     remove("notification_channels_created")
+                }
+                if (sharedPreferences.contains(SHOW_WIDGET_BACKGROUND_KEY.name)) {
+                    val showBackground = sharedPreferences
+                        .getBoolean(SHOW_WIDGET_BACKGROUND_KEY.name, true)
+                    runBlocking {
+                        context.widgetSettings.edit {
+                            it[SHOW_WIDGET_BACKGROUND_KEY] = showBackground
+                        }
+                    }
+                }
+                if (sharedPreferences.contains(WIDGET_BACKGROUND_OPACITY_KEY.name)) {
+                    val backgroundOpacity = sharedPreferences
+                        .getInt(WIDGET_BACKGROUND_OPACITY_KEY.name, 60)
+                    runBlocking {
+                        context.widgetSettings.edit {
+                            it[WIDGET_BACKGROUND_OPACITY_KEY] = backgroundOpacity
+                        }
+                    }
                 }
                 if (lastAppVersion < 2026800000) {
                     val value = sharedPreferences.getString(

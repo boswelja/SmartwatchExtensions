@@ -11,16 +11,19 @@ import android.os.Bundle
 import android.widget.RemoteViews
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toBitmap
+import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
-import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.batterysync.database.WatchBatteryStatsDatabase
 import com.boswelja.devicemanager.main.MainActivity
 import com.boswelja.devicemanager.widget.widgetIdStore
+import com.boswelja.devicemanager.widget.widgetSettings
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
@@ -112,7 +115,7 @@ class WatchBatteryWidget : AppWidgetProvider() {
      * @param height The target height of the updated view.
      * @param batteryPercent The battery percent to display in the widget.
      */
-    private fun createWidgetRemoteView(
+    private suspend fun createWidgetRemoteView(
         context: Context?,
         width: Int,
         height: Int,
@@ -130,36 +133,38 @@ class WatchBatteryWidget : AppWidgetProvider() {
             remoteViews.setOnClickPendingIntent(R.id.widget_background, it)
         }
 
-        if (width > 0 && height > 0) {
-            // Set widget background
-            PreferenceManager.getDefaultSharedPreferences(context).also { sharedPreferences ->
-                if (sharedPreferences.getBoolean(SHOW_WIDGET_BACKGROUND_KEY, true)) {
-                    val opacity = sharedPreferences.getInt(WIDGET_BACKGROUND_OPACITY_KEY, 60)
-                    val calculatedAlpha = ((opacity / 100.0f) * 255).toInt()
-                    context?.let {
-                        ContextCompat.getDrawable(context, R.drawable.widget_background)!!
-                            .apply { alpha = calculatedAlpha }
-                            .also { widgetBackground ->
-                                remoteViews.setImageViewBitmap(
-                                    R.id.widget_background,
-                                    widgetBackground.toBitmap(width, height)
-                                )
-                            }
-                    }
+        context?.let {
+            if (width > 0 && height > 0) {
+                // Set widget background
+                val widgetSettings = it.widgetSettings.data.first()
+
+                // Synchronous is desired here, since we're already in a suspend function
+                val showBackground = widgetSettings[SHOW_WIDGET_BACKGROUND_KEY]
+                if (showBackground == true) {
+                    val backgroundOpacity = widgetSettings[WIDGET_BACKGROUND_OPACITY_KEY] ?: 60
+                    val calculatedAlpha = ((backgroundOpacity / 100.0f) * 255).toInt()
+                    ContextCompat.getDrawable(context, R.drawable.widget_background)!!
+                        .apply { alpha = calculatedAlpha }
+                        .also { widgetBackground ->
+                            remoteViews.setImageViewBitmap(
+                                R.id.widget_background,
+                                widgetBackground.toBitmap(width, height)
+                            )
+                        }
                 } else {
                     remoteViews.setInt(R.id.widget_background, "setBackgroundColor", 0)
                 }
             }
-        }
 
-        context?.let {
             // Set battery indicator image
             ContextCompat.getDrawable(context, R.drawable.ic_watch_battery)!!
                 .apply {
                     level = batteryPercent
                     setTint(ContextCompat.getColor(it, R.color.widgetForeground))
                 }
-                .also { remoteViews.setImageViewBitmap(R.id.battery_indicator, it.toBitmap()) }
+                .also { indicator ->
+                    remoteViews.setImageViewBitmap(R.id.battery_indicator, indicator.toBitmap())
+                }
 
             // Set battery indicator text
             if (batteryPercent >= 0) {
@@ -180,8 +185,8 @@ class WatchBatteryWidget : AppWidgetProvider() {
     }
 
     companion object {
-        const val SHOW_WIDGET_BACKGROUND_KEY = "show_widget_background"
-        const val WIDGET_BACKGROUND_OPACITY_KEY = "widget_background_opacity"
+        val SHOW_WIDGET_BACKGROUND_KEY = booleanPreferencesKey("show_widget_background")
+        val WIDGET_BACKGROUND_OPACITY_KEY = intPreferencesKey("widget_background_opacity")
 
         /**
          * Update all [WatchBatteryWidget] instances.
