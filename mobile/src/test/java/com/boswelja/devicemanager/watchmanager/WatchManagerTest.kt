@@ -1,11 +1,14 @@
 package com.boswelja.devicemanager.watchmanager
 
+import android.content.Context
 import android.content.SharedPreferences
 import android.os.Build
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.core.content.edit
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.liveData
 import androidx.preference.PreferenceManager
@@ -16,6 +19,7 @@ import com.boswelja.devicemanager.batterysync.database.WatchBatteryStatsDatabase
 import com.boswelja.devicemanager.common.connection.Messages.REQUEST_UPDATE_CAPABILITIES
 import com.boswelja.devicemanager.getOrAwaitValue
 import com.boswelja.devicemanager.watchmanager.item.Watch
+import com.boswelja.devicemanager.widget.widgetIdStore
 import com.google.common.truth.Truth.assertThat
 import io.mockk.MockKAnnotations
 import io.mockk.coVerify
@@ -24,6 +28,7 @@ import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.verify
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.TestCoroutineScope
 import org.junit.After
@@ -173,6 +178,21 @@ class WatchManagerTest {
         watchManager = getWatchManager()
         watchManager.refreshData()
         verify(exactly = 1) { repository.refreshData() }
+    }
+
+    @Test
+    fun `removeWidgetsForWatch removes only widgets for the given watch`(): Unit = runBlocking {
+        val widgetIdStore = ApplicationProvider.getApplicationContext<Context>().widgetIdStore
+        widgetIdStore.edit {
+            it[stringPreferencesKey("0")] = dummyWatch1.id
+            it[stringPreferencesKey("1")] = dummyWatch1.id
+            it[stringPreferencesKey("2")] = dummyWatch2.id
+        }
+        watchManager = getWatchManager()
+
+        watchManager.removeWidgetsForWatch(dummyWatch1, widgetIdStore)
+        assertThat(widgetIdStore.data.first()[stringPreferencesKey("2")])
+            .isEqualTo(dummyWatch2.id)
     }
 
     private fun getWatchManager(): WatchManager {

@@ -19,7 +19,7 @@ import com.boswelja.devicemanager.watchmanager.item.Watch
 import com.boswelja.devicemanager.widget.widgetIdStore
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
@@ -157,12 +157,11 @@ class WatchManager internal constructor(
         watch: Watch,
         widgetIdStore: DataStore<Preferences>
     ) {
-        widgetIdStore.data.collectLatest { preferences ->
-            val widgetsToRemove = preferences.asMap().filter { it.value == watch.id }.keys
-            widgetIdStore.edit { mutablePreferences ->
-                widgetsToRemove.forEach {
-                    mutablePreferences.remove(it)
-                }
+        val widgetsToRemove = widgetIdStore.data.first().asMap()
+            .filter { it.value == watch.id }.keys
+        widgetIdStore.edit { mutablePreferences ->
+            widgetsToRemove.forEach {
+                mutablePreferences.remove(it)
             }
         }
     }
