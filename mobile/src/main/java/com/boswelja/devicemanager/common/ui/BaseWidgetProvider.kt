@@ -34,7 +34,7 @@ abstract class BaseWidgetProvider : AppWidgetProvider() {
      * @param height The height of the widget.
      * @return Then widget content as a [RemoteViews].
      */
-    abstract fun onUpdateView(context: Context?, width: Int, height: Int): RemoteViews
+    abstract suspend fun onUpdateView(context: Context?, width: Int, height: Int): RemoteViews
 
     override fun onDeleted(context: Context?, appWidgetIds: IntArray?) {
         super.onDeleted(context, appWidgetIds)
@@ -93,8 +93,9 @@ abstract class BaseWidgetProvider : AppWidgetProvider() {
                 context.packageName,
                 R.layout.common_widget_background
             )
-            widgetView.addView(R.id.widget_container, onUpdateView(context, width, height))
             coroutineScope.launch {
+                widgetView.addView(R.id.widget_container, onUpdateView(context, width, height))
+
                 val background = getBackground(context, width, height)
                 if (background != null) {
                     widgetView.setImageViewBitmap(R.id.widget_background, background)
