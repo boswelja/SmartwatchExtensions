@@ -4,6 +4,8 @@ import android.content.SharedPreferences
 import android.os.Build
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.core.content.edit
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.liveData
 import androidx.preference.PreferenceManager
@@ -45,6 +47,7 @@ class WatchManagerTest {
     private val dummyWatch3 = Watch("an-id-3456", "Watch 3", platformIdentifier)
     private val dummyWatches = listOf(dummyWatch1, dummyWatch2, dummyWatch3)
 
+    @RelaxedMockK private lateinit var widgetIdStore: DataStore<Preferences>
     @RelaxedMockK private lateinit var repository: WatchRepository
     @RelaxedMockK private lateinit var analytics: Analytics
     @RelaxedMockK private lateinit var batteryStatsDatabase: WatchBatteryStatsDatabase
@@ -134,7 +137,11 @@ class WatchManagerTest {
     @Test
     fun `forgetWatch calls repository, databases and logs analytics event`(): Unit = runBlocking {
         watchManager = getWatchManager()
-        watchManager.forgetWatch(batteryStatsDatabase, dummyWatch1)
+        watchManager.forgetWatch(
+            widgetIdStore,
+            batteryStatsDatabase,
+            dummyWatch1
+        )
         verify(exactly = 1) { analytics.logWatchRemoved() }
         coVerify(exactly = 1) { repository.resetWatch(dummyWatch1) }
         verify(exactly = 1) { batteryStatsDatabase.batteryStatsDao() }
@@ -152,7 +159,11 @@ class WatchManagerTest {
     @Test
     fun `resetWatchPreferences calls repository and databases`(): Unit = runBlocking {
         watchManager = getWatchManager()
-        watchManager.resetWatchPreferences(batteryStatsDatabase, dummyWatch1)
+        watchManager.resetWatchPreferences(
+            widgetIdStore,
+            batteryStatsDatabase,
+            dummyWatch1
+        )
         coVerify(exactly = 1) { repository.resetWatchPreferences(dummyWatch1) }
         verify(exactly = 1) { batteryStatsDatabase.batteryStatsDao() }
     }
