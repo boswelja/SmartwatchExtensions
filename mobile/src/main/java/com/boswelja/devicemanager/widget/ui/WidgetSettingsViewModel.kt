@@ -28,10 +28,10 @@ class WidgetSettingsViewModel(application: Application) : AndroidViewModel(appli
     init {
         viewModelScope.launch {
             widgetSettings.data.map { it[SHOW_WIDGET_BACKGROUND_KEY] }.collect {
-                _widgetBackgroundVisible.postValue(it)
+                _widgetBackgroundVisible.postValue(it ?: true)
             }
             widgetSettings.data.map { it[WIDGET_BACKGROUND_OPACITY_KEY] }.collect {
-                _widgetBackgroundOpacity.postValue(it)
+                _widgetBackgroundOpacity.postValue(it ?: 60)
             }
         }
     }
