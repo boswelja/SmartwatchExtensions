@@ -22,6 +22,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 /**
  * An [AppWidgetProvider] that applies our default widget background with user settings.
@@ -105,11 +106,13 @@ abstract class BaseWidgetProvider : AppWidgetProvider() {
                 val widgetIdStore = context.widgetIdStore
                 val watchId =
                     widgetIdStore.data.first()[stringPreferencesKey(appWidgetId.toString())]
-                if (!watchId.isNullOrBlank()) {
-                    val widgetContent = onUpdateView(context, width, height, watchId)
-                    widgetView.addView(R.id.widget_container, widgetContent)
+                val widgetContent = if (!watchId.isNullOrBlank()) {
+                    onUpdateView(context, width, height, watchId)
+                } else {
+                    Timber.w("Watch ID for widget %s is null or blank", appWidgetId)
+                    RemoteViews(context.packageName, R.layout.common_widget_error)
                 }
-                // TODO handle missing watch ID
+                widgetView.addView(R.id.widget_container, widgetContent)
 
                 val background = getBackground(context, width, height)
                 if (background != null) {
