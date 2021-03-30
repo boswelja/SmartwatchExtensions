@@ -7,7 +7,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.lifecycle.lifecycleScope
-import com.boswelja.devicemanager.batterysync.widget.WatchBatteryWidget
 import com.boswelja.devicemanager.watchmanager.item.Watch
 import com.boswelja.devicemanager.widget.widgetIdStore
 import kotlinx.coroutines.Dispatchers
@@ -50,7 +49,7 @@ abstract class BaseWidgetConfigActivity : AppCompatActivity() {
             widgetIdStore.edit { widgetIds ->
                 widgetIds[stringPreferencesKey(widgetId.toString())] = watch.id
             }
-            WatchBatteryWidget.updateWidgets(
+            BaseWidgetProvider.updateWidgets(
                 this@BaseWidgetConfigActivity,
                 intArrayOf(widgetId)
             )

@@ -14,6 +14,7 @@ import com.boswelja.devicemanager.common.batterysync.References.BATTERY_STATUS_P
 import com.boswelja.devicemanager.common.preference.PreferenceKey.BATTERY_CHARGED_NOTI_SENT
 import com.boswelja.devicemanager.common.preference.PreferenceKey.BATTERY_CHARGE_THRESHOLD_KEY
 import com.boswelja.devicemanager.common.preference.PreferenceKey.BATTERY_WATCH_CHARGE_NOTI_KEY
+import com.boswelja.devicemanager.common.ui.BaseWidgetProvider
 import com.boswelja.devicemanager.watchmanager.database.WatchDatabase
 import com.boswelja.devicemanager.watchmanager.item.BoolPreference
 import com.boswelja.devicemanager.watchmanager.item.Watch
@@ -58,7 +59,7 @@ class WatchBatteryUpdateReceiver : WearableListenerService() {
     private fun updateWidgetsForWatch() {
         Timber.d("updateWidgetsForWatch called")
         // Fallback to updating all widgets if database isn't open
-        WatchBatteryWidget.updateWidgets(this)
+        BaseWidgetProvider.updateWidgets(this)
     }
 
     private fun handleNoti(database: WatchDatabase, watch: Watch) {

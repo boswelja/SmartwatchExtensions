@@ -2,7 +2,9 @@ package com.boswelja.devicemanager.common.ui
 
 import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
+import android.content.ComponentName
 import android.content.Context
+import android.content.Intent
 import android.graphics.Bitmap
 import android.os.Bundle
 import android.widget.RemoteViews
@@ -11,6 +13,7 @@ import androidx.core.graphics.drawable.toBitmap
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.boswelja.devicemanager.R
+import com.boswelja.devicemanager.batterysync.widget.WatchBatteryWidget
 import com.boswelja.devicemanager.widget.ui.WidgetSettingsActivity.Companion.SHOW_WIDGET_BACKGROUND_KEY
 import com.boswelja.devicemanager.widget.ui.WidgetSettingsActivity.Companion.WIDGET_BACKGROUND_OPACITY_KEY
 import com.boswelja.devicemanager.widget.widgetIdStore
@@ -34,7 +37,12 @@ abstract class BaseWidgetProvider : AppWidgetProvider() {
      * @param height The height of the widget.
      * @return Then widget content as a [RemoteViews].
      */
-    abstract suspend fun onUpdateView(context: Context?, width: Int, height: Int): RemoteViews
+    abstract suspend fun onUpdateView(
+        context: Context,
+        width: Int,
+        height: Int,
+        watchId: String
+    ): RemoteViews
 
     override fun onDeleted(context: Context?, appWidgetIds: IntArray?) {
         super.onDeleted(context, appWidgetIds)
@@ -94,7 +102,14 @@ abstract class BaseWidgetProvider : AppWidgetProvider() {
                 R.layout.common_widget_background
             )
             coroutineScope.launch {
-                widgetView.addView(R.id.widget_container, onUpdateView(context, width, height))
+                val widgetIdStore = context.widgetIdStore
+                val watchId =
+                    widgetIdStore.data.first()[stringPreferencesKey(appWidgetId.toString())]
+                if (!watchId.isNullOrBlank()) {
+                    val widgetContent = onUpdateView(context, width, height, watchId)
+                    widgetView.addView(R.id.widget_container, widgetContent)
+                }
+                // TODO handle missing watch ID
 
                 val background = getBackground(context, width, height)
                 if (background != null) {
@@ -122,6 +137,33 @@ abstract class BaseWidgetProvider : AppWidgetProvider() {
                 .toBitmap(width, height)
         } else {
             null
+        }
+    }
+
+    companion object {
+        /**
+         * Update all [WatchBatteryWidget] instances.
+         * @param context [Context].
+         */
+        fun updateWidgets(context: Context) {
+            val ids =
+                AppWidgetManager.getInstance(context)
+                    .getAppWidgetIds(ComponentName(context, WatchBatteryWidget::class.java))
+            updateWidgets(context, ids)
+        }
+
+        /**
+         * Update a specified set of widgets.
+         * @param context [Context].
+         * @param widgetIds An array of IDs of all the [WatchBatteryWidget] instances to update.
+         */
+        fun updateWidgets(context: Context, widgetIds: IntArray) {
+            val intent =
+                Intent(context, WatchBatteryWidget::class.java).apply {
+                    action = AppWidgetManager.ACTION_APPWIDGET_UPDATE
+                    putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, widgetIds)
+                }
+            context.sendBroadcast(intent)
         }
     }
 }
