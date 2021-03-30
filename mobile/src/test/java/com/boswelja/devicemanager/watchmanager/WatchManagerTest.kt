@@ -4,6 +4,8 @@ import android.content.SharedPreferences
 import android.os.Build
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.core.content.edit
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.liveData
 import androidx.preference.PreferenceManager
@@ -14,7 +16,6 @@ import com.boswelja.devicemanager.batterysync.database.WatchBatteryStatsDatabase
 import com.boswelja.devicemanager.common.connection.Messages.REQUEST_UPDATE_CAPABILITIES
 import com.boswelja.devicemanager.getOrAwaitValue
 import com.boswelja.devicemanager.watchmanager.item.Watch
-import com.boswelja.devicemanager.widget.database.WidgetDatabase
 import com.google.common.truth.Truth.assertThat
 import io.mockk.MockKAnnotations
 import io.mockk.coVerify
@@ -46,10 +47,10 @@ class WatchManagerTest {
     private val dummyWatch3 = Watch("an-id-3456", "Watch 3", platformIdentifier)
     private val dummyWatches = listOf(dummyWatch1, dummyWatch2, dummyWatch3)
 
+    @RelaxedMockK private lateinit var widgetIdStore: DataStore<Preferences>
     @RelaxedMockK private lateinit var repository: WatchRepository
     @RelaxedMockK private lateinit var analytics: Analytics
     @RelaxedMockK private lateinit var batteryStatsDatabase: WatchBatteryStatsDatabase
-    @RelaxedMockK private lateinit var widgetDatabase: WidgetDatabase
 
     private lateinit var coroutineScope: CoroutineScope
     private lateinit var sharedPreferences: SharedPreferences
@@ -136,11 +137,14 @@ class WatchManagerTest {
     @Test
     fun `forgetWatch calls repository, databases and logs analytics event`(): Unit = runBlocking {
         watchManager = getWatchManager()
-        watchManager.forgetWatch(batteryStatsDatabase, widgetDatabase, dummyWatch1)
+        watchManager.forgetWatch(
+            widgetIdStore,
+            batteryStatsDatabase,
+            dummyWatch1
+        )
         verify(exactly = 1) { analytics.logWatchRemoved() }
         coVerify(exactly = 1) { repository.resetWatch(dummyWatch1) }
         verify(exactly = 1) { batteryStatsDatabase.batteryStatsDao() }
-        verify(exactly = 1) { widgetDatabase.widgetDao() }
     }
 
     @Test
@@ -155,10 +159,13 @@ class WatchManagerTest {
     @Test
     fun `resetWatchPreferences calls repository and databases`(): Unit = runBlocking {
         watchManager = getWatchManager()
-        watchManager.resetWatchPreferences(batteryStatsDatabase, widgetDatabase, dummyWatch1)
+        watchManager.resetWatchPreferences(
+            widgetIdStore,
+            batteryStatsDatabase,
+            dummyWatch1
+        )
         coVerify(exactly = 1) { repository.resetWatchPreferences(dummyWatch1) }
         verify(exactly = 1) { batteryStatsDatabase.batteryStatsDao() }
-        verify(exactly = 1) { widgetDatabase.widgetDao() }
     }
 
     @Test
@@ -167,6 +174,21 @@ class WatchManagerTest {
         watchManager.refreshData()
         verify(exactly = 1) { repository.refreshData() }
     }
+
+//    @Test
+//    fun `removeWidgetsForWatch removes only widgets for the given watch`(): Unit = runBlocking {
+//        val widgetIdStore = ApplicationProvider.getApplicationContext<Context>().widgetIdStore
+//        widgetIdStore.edit {
+//            it[stringPreferencesKey("0")] = dummyWatch1.id
+//            it[stringPreferencesKey("1")] = dummyWatch1.id
+//            it[stringPreferencesKey("2")] = dummyWatch2.id
+//        }
+//        watchManager = getWatchManager()
+//
+//        watchManager.removeWidgetsForWatch(dummyWatch1, widgetIdStore)
+//        assertThat(widgetIdStore.data.first()[stringPreferencesKey("2")])
+//            .isEqualTo(dummyWatch2.id)
+//    }
 
     private fun getWatchManager(): WatchManager {
         return WatchManager(

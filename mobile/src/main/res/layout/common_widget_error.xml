@@ -12,7 +12,7 @@
         android:layout_height="0dp"
         android:layout_above="@+id/battery_indicator_text"
         android:layout_alignParentTop="true"
-        android:src="@drawable/watch_battery_unknown"
+        android:src="@drawable/ic_error"
         tools:ignore="ContentDescription" />
 
     <TextView
@@ -21,7 +21,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_margin="8dp"
-        android:text="@string/battery_sync_disabled"
+        android:text="@string/watch_status_error"
         android:textAlignment="center"
         android:textColor="@color/widgetForeground"
         android:textSize="20sp" />

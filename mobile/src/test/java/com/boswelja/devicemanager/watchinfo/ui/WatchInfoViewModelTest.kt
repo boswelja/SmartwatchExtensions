@@ -1,5 +1,6 @@
 package com.boswelja.devicemanager.watchinfo.ui
 
+import android.content.Context
 import android.os.Build
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.MutableLiveData
@@ -101,25 +102,25 @@ class WatchInfoViewModelTest {
     fun `forgetWatch calls watchManager if watch is not null`() {
         // Check with no / invalid watch selected
         viewModel.forgetWatch()
-        coVerify(inverse = true) { watchManager.forgetWatch(any(), any()) }
+        coVerify(inverse = true) { watchManager.forgetWatch(any<Context>(), any()) }
 
         // Check with valid watch selected
         viewModel.setWatch(dummyWatch.id)
         viewModel.watch.getOrAwaitValue()
         viewModel.forgetWatch()
-        coVerify { watchManager.forgetWatch(any(), dummyWatch) }
+        coVerify { watchManager.forgetWatch(any<Context>(), dummyWatch) }
     }
 
     @Test
     fun `resetWatchPreferences calls watchManager if watch is not null`() {
         // Check with no / invalid watch selected
         viewModel.resetWatchPreferences()
-        coVerify(inverse = true) { watchManager.resetWatchPreferences(any(), any()) }
+        coVerify(inverse = true) { watchManager.resetWatchPreferences(any<Context>(), any()) }
 
         // Check with valid watch selected
         viewModel.setWatch(dummyWatch.id)
         viewModel.watch.getOrAwaitValue()
         viewModel.resetWatchPreferences()
-        coVerify { watchManager.resetWatchPreferences(any(), dummyWatch) }
+        coVerify { watchManager.resetWatchPreferences(any<Context>(), dummyWatch) }
     }
 }

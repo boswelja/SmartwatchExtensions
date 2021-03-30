@@ -1,6 +1,7 @@
 package com.boswelja.devicemanager.widget.ui
 
 import android.app.WallpaperManager
+import android.view.LayoutInflater
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -31,6 +32,7 @@ import androidx.core.content.getSystemService
 import androidx.core.graphics.drawable.toBitmap
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.boswelja.devicemanager.R
+import com.boswelja.devicemanager.databinding.CommonWidgetBackgroundBinding
 import com.boswelja.devicemanager.databinding.WidgetWatchBatteryBinding
 
 @Composable
@@ -78,13 +80,17 @@ fun BatteryWidgetPreview(
 ) {
     val previewPercent = 50
     AndroidViewBinding(
-        WidgetWatchBatteryBinding::inflate,
+        CommonWidgetBackgroundBinding::inflate,
         modifier = modifier.size(width = 100.dp, height = 150.dp)
     ) {
-        batteryIndicator.drawable.level = previewPercent
-        batteryIndicatorText.text = root.context.getString(
-            R.string.battery_percent, previewPercent.toString()
-        )
+        val batteryWidgetContent = WidgetWatchBatteryBinding
+            .inflate(LayoutInflater.from(root.context)).apply {
+                batteryIndicator.drawable.level = previewPercent
+                batteryIndicatorText.text = root.context.getString(
+                    R.string.battery_percent, previewPercent.toString()
+                )
+            }
+        widgetContainer.addView(batteryWidgetContent.root)
         if (backgroundVisible) {
             widgetBackground.setImageResource(R.drawable.widget_background)
             widgetBackground.alpha = backgroundOpacity / 100f

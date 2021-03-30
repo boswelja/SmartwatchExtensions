@@ -32,8 +32,8 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.ui.AppTheme
+import com.boswelja.devicemanager.common.ui.BaseWidgetConfigActivity
 import com.boswelja.devicemanager.common.ui.UpNavigationAppBar
-import com.boswelja.devicemanager.common.ui.activity.BaseWidgetConfigActivity
 import com.boswelja.devicemanager.watchmanager.item.Watch
 
 class BatteryWidgetConfigActivity : BaseWidgetConfigActivity() {

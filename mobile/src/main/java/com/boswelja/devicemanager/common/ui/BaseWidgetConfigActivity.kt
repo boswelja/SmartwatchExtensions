@@ -1,13 +1,14 @@
-package com.boswelja.devicemanager.common.ui.activity
+package com.boswelja.devicemanager.common.ui
 
 import android.appwidget.AppWidgetManager
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.lifecycle.lifecycleScope
-import com.boswelja.devicemanager.batterysync.widget.WatchBatteryWidget
 import com.boswelja.devicemanager.watchmanager.item.Watch
-import com.boswelja.devicemanager.widget.database.WidgetDatabase
+import com.boswelja.devicemanager.widget.widgetIdStore
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -45,9 +46,10 @@ abstract class BaseWidgetConfigActivity : AppCompatActivity() {
         setResult(RESULT_OK, resultIntent)
 
         lifecycleScope.launch(Dispatchers.IO) {
-            val database = WidgetDatabase.getInstance(this@BaseWidgetConfigActivity)
-            database.addWidget(widgetId, watch.id)
-            WatchBatteryWidget.updateWidgets(
+            widgetIdStore.edit { widgetIds ->
+                widgetIds[stringPreferencesKey(widgetId.toString())] = watch.id
+            }
+            BaseWidgetProvider.updateWidgets(
                 this@BaseWidgetConfigActivity,
                 intArrayOf(widgetId)
             )

@@ -1,10 +1,5 @@
-/* Copyright (C) 2020 Jack Boswell <boswelja@outlook.com>
- *
- * This file is part of Wearable Extensions
- *
- * This file, and any part of the Wearable Extensions app/s cannot be copied and/or distributed
- * without permission from Jack Boswell (boswelja) <boswela@outlook.com>
- */
+@file:Suppress("DEPRECATION")
+
 package com.boswelja.devicemanager.bootorupdate.updater
 
 import android.app.job.JobScheduler
@@ -13,7 +8,10 @@ import android.content.SharedPreferences
 import android.os.Build
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.edit
+import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.preference.PreferenceManager
+import androidx.room.Room
 import com.boswelja.devicemanager.BuildConfig
 import com.boswelja.devicemanager.analytics.Analytics
 import com.boswelja.devicemanager.appsettings.ui.AppSettingsViewModel.Companion.DAYNIGHT_MODE_KEY
@@ -28,11 +26,17 @@ import com.boswelja.devicemanager.watchmanager.WatchManager.Companion.LAST_SELEC
 import com.boswelja.devicemanager.watchmanager.connection.wearos.WearOSConnectionInterface
 import com.boswelja.devicemanager.watchmanager.database.WatchDatabase
 import com.boswelja.devicemanager.watchmanager.item.Watch
+import com.boswelja.devicemanager.widget.database.WidgetDatabase
+import com.boswelja.devicemanager.widget.ui.WidgetSettingsActivity.Companion.SHOW_WIDGET_BACKGROUND_KEY
+import com.boswelja.devicemanager.widget.ui.WidgetSettingsActivity.Companion.WIDGET_BACKGROUND_OPACITY_KEY
+import com.boswelja.devicemanager.widget.widgetIdStore
+import com.boswelja.devicemanager.widget.widgetSettings
 import com.google.android.gms.wearable.CapabilityClient
 import com.google.android.gms.wearable.Wearable
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import timber.log.Timber
 
 class Updater(private val context: Context) {
@@ -139,6 +143,26 @@ class Updater(private val context: Context) {
                 if (sharedPreferences.contains("notification_channels_created")) {
                     remove("notification_channels_created")
                 }
+                if (sharedPreferences.contains(SHOW_WIDGET_BACKGROUND_KEY.name)) {
+                    val showBackground = sharedPreferences
+                        .getBoolean(SHOW_WIDGET_BACKGROUND_KEY.name, true)
+                    runBlocking {
+                        context.widgetSettings.edit {
+                            it[SHOW_WIDGET_BACKGROUND_KEY] = showBackground
+                        }
+                    }
+                    remove(SHOW_WIDGET_BACKGROUND_KEY.name)
+                }
+                if (sharedPreferences.contains(WIDGET_BACKGROUND_OPACITY_KEY.name)) {
+                    val backgroundOpacity = sharedPreferences
+                        .getInt(WIDGET_BACKGROUND_OPACITY_KEY.name, 60)
+                    runBlocking {
+                        context.widgetSettings.edit {
+                            it[WIDGET_BACKGROUND_OPACITY_KEY] = backgroundOpacity
+                        }
+                    }
+                    remove(WIDGET_BACKGROUND_OPACITY_KEY.name)
+                }
                 if (lastAppVersion < 2026800000) {
                     val value = sharedPreferences.getString(
                         DAYNIGHT_MODE_KEY, AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM.toString()
@@ -163,8 +187,28 @@ class Updater(private val context: Context) {
                 }
                 putInt(APP_VERSION_KEY, lastAppVersion)
             }
+            if (lastAppVersion < 2027000000) {
+                runBlocking { updateWidgetImpl() }
+                updateStatus = Result.COMPLETED
+            }
         }
         return updateStatus
+    }
+
+    private suspend fun updateWidgetImpl() {
+        val widgetIdStore = context.widgetIdStore
+        Room.databaseBuilder(context, WidgetDatabase::class.java, "widget-db")
+            .fallbackToDestructiveMigration()
+            .allowMainThreadQueries()
+            .build().also { database ->
+                widgetIdStore.edit { widgetIds ->
+                    database.widgetDao().getAll().forEach {
+                        widgetIds[stringPreferencesKey(it.widgetId.toString())] = it.watchId
+                    }
+                }
+                database.clearAllTables()
+                database.close()
+            }
     }
 
     /** Performs an update on databases as necessary. */
