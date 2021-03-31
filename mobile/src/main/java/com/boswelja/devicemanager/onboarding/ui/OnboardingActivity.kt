@@ -109,7 +109,7 @@ class OnboardingActivity : AppCompatActivity() {
             visible = currentDestination == Destination.WELCOME,
             exit = slideOut(
                 { fullSize -> IntOffset(fullSize.width * -1, 0) },
-                tween(250, easing = FastOutSlowInEasing)
+                tween(easing = FastOutSlowInEasing)
             )
         ) {
             WelcomeScreen()
@@ -118,11 +118,11 @@ class OnboardingActivity : AppCompatActivity() {
             visible = currentDestination == Destination.SHARE_USAGE_STATS,
             exit = slideOut(
                 { fullSize -> IntOffset(fullSize.width * -1, 0) },
-                tween(250, easing = FastOutSlowInEasing)
+                tween(easing = FastOutSlowInEasing)
             ),
             enter = slideIn(
                 { fullSize -> IntOffset(fullSize.width, 0) },
-                tween(250, easing = FastOutSlowInEasing)
+                tween(easing = FastOutSlowInEasing)
             )
         ) {
             UsageStatsScreen(
@@ -138,7 +138,7 @@ class OnboardingActivity : AppCompatActivity() {
             visible = currentDestination == Destination.REGISTER_WATCHES,
             enter = slideIn(
                 { fullSize -> IntOffset(fullSize.width, 0) },
-                tween(250, easing = FastOutSlowInEasing)
+                tween(easing = FastOutSlowInEasing)
             )
         ) {
             RegisterWatchesScreen(registeredWatches = registeredWatches)
