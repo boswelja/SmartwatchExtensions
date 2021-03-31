@@ -50,7 +50,7 @@ class BatterySyncViewModel internal constructor(
     private val _chargeThreshold =
         MutableLiveData(sharedPreferences.getInt(BATTERY_CHARGE_THRESHOLD_KEY, 90))
     private val _syncInterval =
-        MutableLiveData(sharedPreferences.getInt(BATTERY_SYNC_INTERVAL_KEY, 90))
+        MutableLiveData(sharedPreferences.getInt(BATTERY_SYNC_INTERVAL_KEY, 15))
 
     val batterySyncEnabled: LiveData<Boolean>
         get() = _batterySyncEnabled
