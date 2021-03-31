@@ -30,7 +30,7 @@ import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.appmanager.ui.AppManagerActivity
 import com.boswelja.devicemanager.batterysync.ui.BatterySyncSettingsActivity
 import com.boswelja.devicemanager.batterysync.ui.BatterySyncSettingsHeader
-import com.boswelja.devicemanager.dndsync.ui.DnDSyncPreferenceActivity
+import com.boswelja.devicemanager.dndsync.ui.DnDSyncSettingsActivity
 import com.boswelja.devicemanager.phonelocking.ui.PhoneLockingSettingsActivity
 import com.boswelja.devicemanager.watchmanager.WatchManager
 import com.boswelja.devicemanager.watchmanager.item.Watch
@@ -64,7 +64,7 @@ fun DashboardScreen() {
                 stringResource(R.string.main_dnd_sync_title)
             ),
             onClick = {
-                context.startActivity(Intent(context, DnDSyncPreferenceActivity::class.java))
+                context.startActivity(Intent(context, DnDSyncSettingsActivity::class.java))
             }
         )
         DashboardItem(

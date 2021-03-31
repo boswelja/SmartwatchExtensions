@@ -21,13 +21,13 @@ class BatterySyncSettingsActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         setContent {
-            val watchManager = remember {
-                WatchManager.getInstance(this)
-            }
-            val selectedWatch by watchManager.selectedWatch.observeAsState()
-            val registeredWatches by watchManager.registeredWatches.observeAsState()
-
             AppTheme {
+                val watchManager = remember {
+                    WatchManager.getInstance(this)
+                }
+                val selectedWatch by watchManager.selectedWatch.observeAsState()
+                val registeredWatches by watchManager.registeredWatches.observeAsState()
+
                 Scaffold(
                     topBar = {
                         UpNavigationWatchPickerAppBar(

@@ -11,14 +11,14 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.boswelja.devicemanager.common.ui.AppTheme
 import com.boswelja.devicemanager.common.ui.UpNavigationWatchPickerAppBar
 
-class DnDSyncPreferenceActivity : AppCompatActivity() {
+class DnDSyncSettingsActivity : AppCompatActivity() {
 
     @ExperimentalMaterialApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             AppTheme {
-                val viewModel: DnDSyncPreferenceViewModel = viewModel()
+                val viewModel: DnDSyncSettingsViewModel = viewModel()
                 val registeredWatches by viewModel.watchManager.registeredWatches.observeAsState()
                 val selectedWatch by viewModel.watchManager.selectedWatch.observeAsState()
                 Scaffold(
@@ -31,7 +31,7 @@ class DnDSyncPreferenceActivity : AppCompatActivity() {
                         )
                     }
                 ) {
-                    DnDSyncPreferences()
+                    DnDSyncSettingsScreen()
                 }
             }
         }

@@ -17,7 +17,7 @@ import com.boswelja.devicemanager.common.connection.References.CAPABILITY_WATCH_
 import com.boswelja.devicemanager.common.dndsync.References.REQUEST_INTERRUPT_FILTER_ACCESS_STATUS_PATH
 import com.boswelja.devicemanager.common.preference.PreferenceKey
 import com.boswelja.devicemanager.common.toByteArray
-import com.boswelja.devicemanager.dndsync.ui.DnDSyncPreferenceActivity
+import com.boswelja.devicemanager.dndsync.ui.DnDSyncSettingsActivity
 import com.boswelja.devicemanager.main.MainActivity
 import com.boswelja.devicemanager.phonelocking.Utils.isDeviceAdminEnabled
 import com.boswelja.devicemanager.phonelocking.ui.PhoneLockingSettingsViewModel.Companion.PHONE_LOCKING_MODE_ACCESSIBILITY_SERVICE
@@ -93,7 +93,7 @@ class WatchMessageReceiver : WearableListenerService() {
             PreferenceKey.DND_SYNC_TO_WATCH_KEY,
             PreferenceKey.DND_SYNC_TO_PHONE_KEY,
             PreferenceKey.DND_SYNC_WITH_THEATER_KEY -> {
-                Intent(this, DnDSyncPreferenceActivity::class.java)
+                Intent(this, DnDSyncSettingsActivity::class.java)
                     .apply {
                         putExtra(EXTRA_PREFERENCE_KEY, key)
                         addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)

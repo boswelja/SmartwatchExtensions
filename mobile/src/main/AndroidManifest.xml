@@ -48,7 +48,7 @@
             android:exported="false" />
 
         <activity
-            android:name=".dndsync.ui.DnDSyncPreferenceActivity"
+            android:name=".dndsync.ui.DnDSyncSettingsActivity"
             android:exported="false" />
         <activity
             android:name=".dndsync.ui.helper.DnDSyncHelperActivity"
