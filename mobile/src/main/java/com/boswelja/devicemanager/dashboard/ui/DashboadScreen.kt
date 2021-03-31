@@ -29,7 +29,7 @@ import androidx.compose.ui.unit.dp
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.appmanager.ui.AppManagerActivity
 import com.boswelja.devicemanager.batterysync.ui.BatterySyncSettingsActivity
-import com.boswelja.devicemanager.batterysync.ui.BatterySyncSettingsWidget
+import com.boswelja.devicemanager.batterysync.ui.BatterySyncSettingsHeader
 import com.boswelja.devicemanager.dndsync.ui.DnDSyncPreferenceActivity
 import com.boswelja.devicemanager.dndsync.ui.DnDSyncSettingsHeader
 import com.boswelja.devicemanager.phonelocking.ui.PhoneLockingSettingsActivity
@@ -49,7 +49,7 @@ fun DashboardScreen() {
     ) {
         SelectedWatchStatus()
         DashboardItem(
-            content = { BatterySyncSettingsWidget() },
+            content = { BatterySyncSettingsHeader() },
             buttonLabel = stringResource(
                 R.string.dashboard_settings_label,
                 stringResource(R.string.battery_sync_title)

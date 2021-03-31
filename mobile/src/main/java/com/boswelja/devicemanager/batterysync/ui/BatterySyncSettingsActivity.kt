@@ -39,7 +39,7 @@ class BatterySyncSettingsActivity : AppCompatActivity() {
                     }
                 ) {
                     Column {
-                        BatterySyncSettingsWidget()
+                        BatterySyncSettingsHeader()
                         Divider()
                         BatterySyncSettingsScreen()
                     }

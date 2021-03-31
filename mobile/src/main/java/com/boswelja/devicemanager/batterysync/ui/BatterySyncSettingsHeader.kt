@@ -24,7 +24,7 @@ import com.boswelja.devicemanager.common.BatteryIcon
 import java.util.concurrent.TimeUnit
 
 @Composable
-fun BatterySyncSettingsWidget() {
+fun BatterySyncSettingsHeader() {
     val viewModel: BatterySyncViewModel = viewModel()
     val batterySyncEnabled by viewModel.batterySyncEnabled.observeAsState()
     if (batterySyncEnabled == true) {
