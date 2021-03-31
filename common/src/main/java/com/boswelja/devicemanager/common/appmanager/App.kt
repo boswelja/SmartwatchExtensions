@@ -109,7 +109,7 @@ data class App(
             packageInfo: PackageInfo
         ): Array<String> {
             val processedPermissions = ArrayList<String>()
-            for (permission in packageInfo.requestedPermissions) {
+            packageInfo.requestedPermissions?.forEach { permission ->
                 val localizedPermission = try {
                     val permissionInfo =
                         packageManager.getPermissionInfo(
