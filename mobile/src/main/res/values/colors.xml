@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
     <color name="appIconBackground">#9c27b0</color>
-
-    <color name="colorPrimary">#9c27b0</color>
 
     <color name="navBarColor">#FFFFFF</color>
 
