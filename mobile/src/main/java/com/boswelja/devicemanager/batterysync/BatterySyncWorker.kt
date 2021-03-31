@@ -15,6 +15,7 @@ import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
 import com.boswelja.devicemanager.common.preference.PreferenceKey.BATTERY_SYNC_INTERVAL_KEY
+import com.boswelja.devicemanager.watchmanager.WatchManager
 import com.boswelja.devicemanager.watchmanager.database.WatchDatabase
 import java.util.concurrent.TimeUnit
 import kotlinx.coroutines.Dispatchers
@@ -27,12 +28,13 @@ class BatterySyncWorker(appContext: Context, workerParams: WorkerParameters) :
     override suspend fun doWork(): Result {
         Timber.i("doWork() called")
         val watchId = inputData.getString(EXTRA_WATCH_ID)
-        if (!watchId.isNullOrEmpty()) {
-            Utils.updateBatteryStats(applicationContext, watchId)
+        WatchManager.getInstance(applicationContext).registeredWatches.value!!.firstOrNull {
+            it.id == watchId
+        }?.let {
+            Utils.updateBatteryStats(applicationContext, it)
             return Result.success()
-        } else {
-            Timber.w("watchId null or empty")
         }
+        Timber.w("watchId null or empty")
         return Result.retry()
     }
 

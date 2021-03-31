@@ -13,7 +13,6 @@ import com.boswelja.devicemanager.common.connection.Messages.LAUNCH_APP
 import com.boswelja.devicemanager.common.connection.Messages.LOCK_PHONE
 import com.boswelja.devicemanager.common.connection.Messages.WATCH_NOT_REGISTERED_PATH
 import com.boswelja.devicemanager.common.connection.Messages.WATCH_REGISTERED_PATH
-import com.boswelja.devicemanager.common.connection.References.CAPABILITY_WATCH_APP
 import com.boswelja.devicemanager.common.dndsync.References.REQUEST_INTERRUPT_FILTER_ACCESS_STATUS_PATH
 import com.boswelja.devicemanager.common.preference.PreferenceKey
 import com.boswelja.devicemanager.common.toByteArray
@@ -26,12 +25,15 @@ import com.boswelja.devicemanager.watchmanager.database.WatchDatabase
 import com.google.android.gms.wearable.MessageEvent
 import com.google.android.gms.wearable.Wearable
 import com.google.android.gms.wearable.WearableListenerService
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
 class WatchMessageReceiver : WearableListenerService() {
+
+    private val coroutineScope = CoroutineScope(Dispatchers.IO)
 
     override fun onMessageReceived(messageEvent: MessageEvent?) {
         Timber.i("onMessageReceived() called")
@@ -41,7 +43,8 @@ class WatchMessageReceiver : WearableListenerService() {
                 val key = String(messageEvent.data, Charsets.UTF_8)
                 launchAppTo(key)
             }
-            REQUEST_BATTERY_UPDATE_PATH -> updateBatteryStats(this, CAPABILITY_WATCH_APP)
+            REQUEST_BATTERY_UPDATE_PATH ->
+                coroutineScope.launch { updateBatteryStats(this@WatchMessageReceiver) }
             REQUEST_INTERRUPT_FILTER_ACCESS_STATUS_PATH ->
                 sendInterruptFilterAccess(messageEvent.sourceNodeId!!)
             CHECK_WATCH_REGISTERED_PATH -> sendIsWatchRegistered(messageEvent.sourceNodeId!!)
