@@ -4,10 +4,10 @@ import android.app.admin.DevicePolicyManager
 import android.content.Context
 import android.content.Intent
 import androidx.preference.PreferenceManager
+import com.boswelja.devicemanager.batterysync.Utils.updateBatteryStats
 import com.boswelja.devicemanager.batterysync.ui.BatterySyncSettingsActivity
 import com.boswelja.devicemanager.common.Compat
 import com.boswelja.devicemanager.common.batterysync.References.REQUEST_BATTERY_UPDATE_PATH
-import com.boswelja.devicemanager.common.batterysync.Utils
 import com.boswelja.devicemanager.common.connection.Messages.CHECK_WATCH_REGISTERED_PATH
 import com.boswelja.devicemanager.common.connection.Messages.LAUNCH_APP
 import com.boswelja.devicemanager.common.connection.Messages.LOCK_PHONE
@@ -41,7 +41,7 @@ class WatchMessageReceiver : WearableListenerService() {
                 val key = String(messageEvent.data, Charsets.UTF_8)
                 launchAppTo(key)
             }
-            REQUEST_BATTERY_UPDATE_PATH -> Utils.updateBatteryStats(this, CAPABILITY_WATCH_APP)
+            REQUEST_BATTERY_UPDATE_PATH -> updateBatteryStats(this, CAPABILITY_WATCH_APP)
             REQUEST_INTERRUPT_FILTER_ACCESS_STATUS_PATH ->
                 sendInterruptFilterAccess(messageEvent.sourceNodeId!!)
             CHECK_WATCH_REGISTERED_PATH -> sendIsWatchRegistered(messageEvent.sourceNodeId!!)
