@@ -28,7 +28,7 @@ import androidx.core.net.toUri
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.boswelja.devicemanager.BuildConfig
 import com.boswelja.devicemanager.R
-import com.boswelja.devicemanager.appmanager.ui.HeaderItem
+import com.boswelja.devicemanager.common.ui.HeaderItem
 import com.boswelja.devicemanager.donate.ui.DonateActivity
 
 @ExperimentalMaterialApi

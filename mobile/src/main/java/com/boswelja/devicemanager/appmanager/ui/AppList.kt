@@ -2,17 +2,12 @@ package com.boswelja.devicemanager.appmanager.ui
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ListItem
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Info
@@ -24,6 +19,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.appmanager.App
+import com.boswelja.devicemanager.common.ui.HeaderItem
 
 @ExperimentalMaterialApi
 @ExperimentalFoundationApi
@@ -74,18 +70,4 @@ fun AppItem(app: App, onClick: (App) -> Unit) {
         },
         modifier = Modifier.clickable { onClick(app) }
     )
-}
-
-@Composable
-fun HeaderItem(text: String) {
-    Box(Modifier.background(MaterialTheme.colors.background)) {
-        Text(
-            text,
-            Modifier
-                .fillMaxWidth()
-                .padding(start = 72.dp, top = 8.dp, bottom = 8.dp, end = 8.dp),
-            style = MaterialTheme.typography.subtitle2,
-            color = MaterialTheme.colors.primary
-        )
-    }
 }

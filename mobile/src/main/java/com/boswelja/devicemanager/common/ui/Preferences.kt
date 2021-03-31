@@ -1,6 +1,10 @@
 package com.boswelja.devicemanager.common.ui
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.AlertDialog
@@ -8,6 +12,7 @@ import androidx.compose.material.Checkbox
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
 import androidx.compose.material.ListItem
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.RadioButton
 import androidx.compose.material.Slider
 import androidx.compose.material.Switch
@@ -22,6 +27,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.boswelja.devicemanager.R
 
 @ExperimentalMaterialApi
@@ -157,8 +163,28 @@ fun DialogPreference(
     }
 }
 
+@Composable
+fun HeaderItem(text: String) {
+    Box(Modifier.background(MaterialTheme.colors.background)) {
+        Text(
+            text,
+            Modifier
+                .fillMaxWidth()
+                .padding(start = 72.dp, top = 16.dp, bottom = 8.dp, end = 8.dp),
+            style = MaterialTheme.typography.subtitle2,
+            color = MaterialTheme.colors.primary
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun HeaderItemPreview() {
+    HeaderItem("Header")
+}
+
 @ExperimentalMaterialApi
-@Preview(showBackground = true, showSystemUi = false)
+@Preview(showBackground = true)
 @Composable
 fun SwitchPreferencePreview() {
     var value by remember { mutableStateOf(true) }
@@ -171,7 +197,7 @@ fun SwitchPreferencePreview() {
 }
 
 @ExperimentalMaterialApi
-@Preview(showBackground = true, showSystemUi = false)
+@Preview(showBackground = true)
 @Composable
 fun CheckboxPreferencePreview() {
     var value by remember { mutableStateOf(true) }
@@ -184,7 +210,7 @@ fun CheckboxPreferencePreview() {
 }
 
 @ExperimentalMaterialApi
-@Preview(showBackground = true, showSystemUi = false)
+@Preview(showBackground = true)
 @Composable
 fun SliderPreferencePreview() {
     var value by remember { mutableStateOf(.5f) }

@@ -12,8 +12,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.boswelja.devicemanager.R
-import com.boswelja.devicemanager.appmanager.ui.HeaderItem
 import com.boswelja.devicemanager.common.ui.CheckboxPreference
+import com.boswelja.devicemanager.common.ui.HeaderItem
 import com.boswelja.devicemanager.common.ui.SliderPreference
 import com.boswelja.devicemanager.common.ui.SwitchPreference
 

@@ -29,9 +29,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.boswelja.devicemanager.R
-import com.boswelja.devicemanager.appmanager.ui.HeaderItem
 import com.boswelja.devicemanager.common.ui.CheckboxPreference
 import com.boswelja.devicemanager.common.ui.DialogPreference
+import com.boswelja.devicemanager.common.ui.HeaderItem
 import com.boswelja.devicemanager.managespace.ui.ManageSpaceActivity
 import com.boswelja.devicemanager.watchmanager.ui.WatchManagerActivity
 import com.boswelja.devicemanager.widget.ui.WidgetSettingsActivity
