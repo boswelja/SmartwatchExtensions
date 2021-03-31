@@ -33,7 +33,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -96,8 +95,7 @@ class DonateActivity : AppCompatActivity() {
                 contentDescription = null,
                 Modifier
                     .fillMaxHeight()
-                    .aspectRatio(1f),
-                tint = colorResource(id = R.color.iconTint)
+                    .aspectRatio(1f)
             )
             Text(
                 stringResource(id = R.string.donate_thank_you),

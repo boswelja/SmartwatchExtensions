@@ -9,6 +9,4 @@
 
     <color name="widgetBackground">#FFFFFF</color>
     <color name="widgetForeground">#000000</color>
-
-    <color name="iconTint">@color/colorPrimary</color>
 </resources>
