@@ -3,7 +3,6 @@ package com.boswelja.devicemanager.common
 import androidx.compose.material.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
@@ -32,8 +31,7 @@ fun BatteryIcon(
     Icon(
         painterResource(drawable),
         null,
-        modifier,
-        tint = colorResource(id = R.color.iconTint)
+        modifier
     )
 }
 
