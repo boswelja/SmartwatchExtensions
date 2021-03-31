@@ -3,6 +3,8 @@ package com.boswelja.devicemanager.messages.ui
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.animation.Crossfade
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -34,6 +36,7 @@ import kotlinx.coroutines.launch
 
 class MessageHistoryActivity : AppCompatActivity() {
 
+    @ExperimentalAnimationApi
     @ExperimentalMaterialApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -67,10 +70,9 @@ class MessageHistoryActivity : AppCompatActivity() {
                         )
                     }
                 ) {
-                    if (messages.isNotEmpty()) {
-                        MessageList(messages = messages)
-                    } else {
-                        NoMessagesView()
+                    Crossfade(targetState = messages.isNotEmpty()) {
+                        if (it) MessageList(messages = messages)
+                        else NoMessagesView()
                     }
                 }
             }
