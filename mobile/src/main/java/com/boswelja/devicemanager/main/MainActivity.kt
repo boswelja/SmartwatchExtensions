@@ -27,6 +27,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import com.boswelja.devicemanager.R
@@ -50,6 +51,8 @@ import timber.log.Timber
 
 class MainActivity : AppCompatActivity() {
 
+    private var currentDestination by mutableStateOf(Destination.DASHBOARD)
+
     @ExperimentalAnimationApi
     @ExperimentalMaterialApi
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -63,9 +66,6 @@ class MainActivity : AppCompatActivity() {
             val registeredWatches by watchManager.registeredWatches.observeAsState()
 
             val scaffoldState = rememberScaffoldState()
-            val (currentDestination, setCurrentDestination) = remember {
-                mutableStateOf(Destination.DASHBOARD)
-            }
 
             AppTheme {
                 Scaffold(
@@ -78,7 +78,7 @@ class MainActivity : AppCompatActivity() {
                         )
                     },
                     bottomBar = {
-                        BottonNav(currentDestination, setCurrentDestination)
+                        BottonNav(currentDestination) { currentDestination = it }
                     }
                 ) {
                     MainScreen(
@@ -93,6 +93,11 @@ class MainActivity : AppCompatActivity() {
         }
 
         ensureAppUpdated()
+    }
+
+    override fun onBackPressed() {
+        if (currentDestination != Destination.DASHBOARD) currentDestination = Destination.DASHBOARD
+        else super.onBackPressed()
     }
 
     private fun ensureAppUpdated() {
