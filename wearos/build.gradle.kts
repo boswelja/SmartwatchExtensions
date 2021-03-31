@@ -65,15 +65,15 @@ dependencies {
     }
 
     val androidxArch = "2.1.0"
-    val androidxAppCompat = "1.3.0-beta01"
-    val androidxCoreKtx = "1.5.0-beta02"
+    val androidxAppCompat = "1.3.0-rc01"
+    val androidxCoreKtx = "1.5.0-rc01"
     val androidxEspresso = "3.1.0"
-    val androidxLifecycle = "2.3.1"
+    val androidxLifecycle = "2.4.0-alpha01"
     val androidxPreference = "1.1.1"
     val androidxTest = "1.4.0-alpha05"
     val androidxTestExt = "1.1.3-alpha04"
-    val androidxWear = "1.2.0-alpha06"
-    val androidxWearComplications = "1.0.0-alpha09"
+    val androidxWear = "1.2.0-alpha07"
+    val androidxWearComplications = "1.0.0-alpha10"
 
     val compose = "1.0.0-beta03"
     val lifecycleCompose = "1.0.0-alpha03"
