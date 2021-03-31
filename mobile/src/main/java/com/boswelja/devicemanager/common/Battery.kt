@@ -25,7 +25,7 @@ fun BatteryIcon(
         in 60..70 -> R.drawable.battery_60
         in 70..80 -> R.drawable.battery_70
         in 80..90 -> R.drawable.battery_80
-        in 90..100 -> R.drawable.battery_90
+        in 90..99 -> R.drawable.battery_90
         100 -> R.drawable.battery_full
         else -> R.drawable.battery_unknown
     }
