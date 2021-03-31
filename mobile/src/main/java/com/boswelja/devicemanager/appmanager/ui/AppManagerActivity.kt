@@ -7,6 +7,7 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Scaffold
 import androidx.compose.material.ScaffoldState
+import androidx.compose.material.SnackbarDuration
 import androidx.compose.material.SnackbarResult
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
@@ -109,7 +110,8 @@ class AppManagerActivity : AppCompatActivity() {
             val result = scaffoldState.snackbarHostState
                 .showSnackbar(
                     getString(R.string.app_manager_disconnected),
-                    getString(R.string.button_retry)
+                    getString(R.string.button_retry),
+                    SnackbarDuration.Indefinite
                 )
             if (result == SnackbarResult.ActionPerformed) {
                 viewModel.startAppManagerService()
