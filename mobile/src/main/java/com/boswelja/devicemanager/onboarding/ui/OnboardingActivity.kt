@@ -6,12 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.browser.customtabs.CustomTabsIntent
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.animation.core.FastOutSlowInEasing
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.slideIn
-import androidx.compose.animation.slideOut
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ExtendedFloatingActionButton
 import androidx.compose.material.FabPosition
@@ -26,12 +21,12 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.IntOffset
 import androidx.core.net.toUri
 import androidx.navigation.compose.rememberNavController
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.LifecycleAwareTimer
 import com.boswelja.devicemanager.common.ui.AppTheme
+import com.boswelja.devicemanager.common.ui.Crossflow
 import com.boswelja.devicemanager.common.ui.UpNavigationAppBar
 import com.boswelja.devicemanager.main.MainActivity
 import com.boswelja.devicemanager.watchmanager.ui.register.RegisterWatchViewModel
@@ -105,43 +100,21 @@ class OnboardingActivity : AppCompatActivity() {
     @Composable
     fun OnboardingScreen(currentDestination: Destination) {
         val registeredWatches by registerWatchViewModel.registeredWatches.observeAsState()
-        AnimatedVisibility(
-            visible = currentDestination == Destination.WELCOME,
-            exit = slideOut(
-                { fullSize -> IntOffset(fullSize.width * -1, 0) },
-                tween(easing = FastOutSlowInEasing)
-            )
-        ) {
-            WelcomeScreen()
-        }
-        AnimatedVisibility(
-            visible = currentDestination == Destination.SHARE_USAGE_STATS,
-            exit = slideOut(
-                { fullSize -> IntOffset(fullSize.width * -1, 0) },
-                tween(easing = FastOutSlowInEasing)
-            ),
-            enter = slideIn(
-                { fullSize -> IntOffset(fullSize.width, 0) },
-                tween(easing = FastOutSlowInEasing)
-            )
-        ) {
-            UsageStatsScreen(
-                onShowPrivacyPolicy = {
-                    customTabIntent.launchUrl(
-                        this@OnboardingActivity,
-                        getString(R.string.privacy_policy_url).toUri()
+        Crossflow(targetState = currentDestination) {
+            when (it) {
+                Destination.WELCOME -> WelcomeScreen()
+                Destination.SHARE_USAGE_STATS -> {
+                    UsageStatsScreen(
+                        onShowPrivacyPolicy = {
+                            customTabIntent.launchUrl(
+                                this@OnboardingActivity,
+                                getString(R.string.privacy_policy_url).toUri()
+                            )
+                        }
                     )
                 }
-            )
-        }
-        AnimatedVisibility(
-            visible = currentDestination == Destination.REGISTER_WATCHES,
-            enter = slideIn(
-                { fullSize -> IntOffset(fullSize.width, 0) },
-                tween(easing = FastOutSlowInEasing)
-            )
-        ) {
-            RegisterWatchesScreen(registeredWatches = registeredWatches)
+                Destination.REGISTER_WATCHES -> RegisterWatchesScreen(registeredWatches)
+            }
         }
     }
 
