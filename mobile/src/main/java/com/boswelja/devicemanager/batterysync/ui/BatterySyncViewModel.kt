@@ -30,6 +30,7 @@ class BatterySyncViewModel internal constructor(
     private val dispatcher: CoroutineDispatcher
 ) : AndroidViewModel(application) {
 
+    @Suppress("unused")
     constructor(application: Application) : this(
         application,
         WatchManager.getInstance(application),
