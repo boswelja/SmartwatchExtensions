@@ -1,7 +1,6 @@
 package com.boswelja.devicemanager.onboarding.ui
 
 import android.content.Intent
-import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -25,7 +24,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigate
 import androidx.navigation.compose.rememberNavController
-import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.LifecycleAwareTimer
 import com.boswelja.devicemanager.common.ui.AppTheme
@@ -38,9 +36,6 @@ class OnboardingActivity : AppCompatActivity() {
 
     private val registerWatchViewModel: RegisterWatchViewModel by viewModels()
     private val customTabIntent = CustomTabsIntent.Builder().setShowTitle(true).build()
-    private val sharedPreferences: SharedPreferences by lazy {
-        PreferenceManager.getDefaultSharedPreferences(this)
-    }
     private val availableWatchUpdateTimer = LifecycleAwareTimer(TIMER_UPDATE_SECONDS) {
         registerWatchViewModel.refreshData()
     }
@@ -72,11 +67,10 @@ class OnboardingActivity : AppCompatActivity() {
                         )
                     }
                 ) {
-                    NavHost(navController = navController, "welcome") {
-                        composable("welcome") { WelcomeScreen() }
-                        composable("analytics") {
+                    NavHost(navController = navController, ROUTE_WELCOME) {
+                        composable(ROUTE_WELCOME) { WelcomeScreen() }
+                        composable(ROUTE_USAGE_STATS) {
                             UsageStatsScreen(
-                                sharedPreferences = sharedPreferences,
                                 onShowPrivacyPolicy = {
                                     customTabIntent.launchUrl(
                                         this@OnboardingActivity,
@@ -85,7 +79,7 @@ class OnboardingActivity : AppCompatActivity() {
                                 }
                             )
                         }
-                        composable("registerWatches") {
+                        composable(ROUTE_REGISTER_WATCHES) {
                             RegisterWatchesScreen(registeredWatches = registeredWatches)
                         }
                     }
@@ -104,19 +98,23 @@ class OnboardingActivity : AppCompatActivity() {
 
     private fun navigateNext(navController: NavHostController) {
         when (navController.currentBackStackEntry?.arguments?.getString(KEY_ROUTE)) {
-            "welcome" -> navController.navigate("analytics")
-            "analytics" -> navController.navigate("registerWatches")
-            "registerWatches" -> {
+            ROUTE_WELCOME -> navController.navigate(ROUTE_USAGE_STATS)
+            ROUTE_USAGE_STATS -> navController.navigate(ROUTE_REGISTER_WATCHES)
+            ROUTE_REGISTER_WATCHES -> {
                 if (!registerWatchViewModel.registeredWatches.value.isNullOrEmpty()) {
                     startActivity(Intent(this, MainActivity::class.java))
                     finish()
                 }
             }
-            else -> navController.navigate("welcome")
+            else -> navController.navigate(ROUTE_WELCOME)
         }
     }
 
     companion object {
         private const val TIMER_UPDATE_SECONDS: Long = 5
+
+        private const val ROUTE_WELCOME = "welcome"
+        private const val ROUTE_USAGE_STATS = "analytics"
+        private const val ROUTE_REGISTER_WATCHES = "registerWatches"
     }
 }

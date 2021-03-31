@@ -1,6 +1,5 @@
 package com.boswelja.devicemanager.onboarding.ui
 
-import android.content.SharedPreferences
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -29,13 +28,14 @@ import androidx.compose.ui.unit.dp
 import androidx.core.content.edit
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.analytics.Analytics
+import com.boswelja.devicemanager.common.rememberSharedPreferences
 
 @ExperimentalMaterialApi
 @Composable
 fun UsageStatsScreen(
-    sharedPreferences: SharedPreferences,
     onShowPrivacyPolicy: () -> Unit
 ) {
+    val sharedPreferences = rememberSharedPreferences()
     val analytics = Analytics()
     var checkboxChecked by remember { mutableStateOf(true) }
     Column(
@@ -68,16 +68,18 @@ fun UsageStatsScreen(
                     onCheckedChange = null // null recommended for accessibility with screenreaders
                 )
             },
-            modifier = Modifier.toggleable(
-                value = checkboxChecked,
-                onValueChange = {
-                    checkboxChecked = it
-                    analytics.setAnalyticsEnabled(it)
-                    sharedPreferences.edit {
-                        putBoolean(Analytics.ANALYTICS_ENABLED_KEY, it)
+            modifier = Modifier
+                .toggleable(
+                    value = checkboxChecked,
+                    onValueChange = {
+                        checkboxChecked = it
+                        analytics.setAnalyticsEnabled(it)
+                        sharedPreferences.edit {
+                            putBoolean(Analytics.ANALYTICS_ENABLED_KEY, it)
+                        }
                     }
-                }
-            ).padding(16.dp)
+                )
+                .padding(16.dp)
         )
         OutlinedButton(
             onClick = onShowPrivacyPolicy,
