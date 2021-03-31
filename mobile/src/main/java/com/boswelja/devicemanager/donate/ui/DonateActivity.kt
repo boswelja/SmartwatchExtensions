@@ -18,7 +18,6 @@ import androidx.compose.material.Icon
 import androidx.compose.material.ListItem
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
-import androidx.compose.material.ScaffoldState
 import androidx.compose.material.Tab
 import androidx.compose.material.TabRow
 import androidx.compose.material.Text
@@ -67,23 +66,18 @@ class DonateActivity : AppCompatActivity() {
                     }
                     hasDonated.value?.let {
                         if (it) {
-                            DonationCompleteSnackbar(scaffoldState)
+                            val scope = rememberCoroutineScope()
+                            val text = stringResource(id = R.string.donate_complete)
+                            scope.launch {
+                                scaffoldState.snackbarHostState.showSnackbar(
+                                    text,
+                                    null
+                                )
+                            }
                         }
                     }
                 }
             }
-        }
-    }
-
-    @Composable
-    fun DonationCompleteSnackbar(scaffoldState: ScaffoldState) {
-        val scope = rememberCoroutineScope()
-        val text = stringResource(id = R.string.donate_complete)
-        scope.launch {
-            scaffoldState.snackbarHostState.showSnackbar(
-                text,
-                null
-            )
         }
     }
 

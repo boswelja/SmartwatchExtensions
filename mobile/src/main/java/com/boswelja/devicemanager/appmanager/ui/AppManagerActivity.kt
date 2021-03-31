@@ -6,11 +6,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Scaffold
-import androidx.compose.material.ScaffoldState
 import androidx.compose.material.SnackbarDuration
 import androidx.compose.material.SnackbarResult
 import androidx.compose.material.rememberScaffoldState
-import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.rememberCoroutineScope
@@ -96,25 +94,21 @@ class AppManagerActivity : AppCompatActivity() {
             when (state) {
                 State.CONNECTING, State.LOADING_APPS -> navController.navigateTo(LOADING)
                 State.READY -> navController.navigateTo(APP_LIST)
-                State.DISCONNECTED -> Disconnected(scaffoldState)
+                State.DISCONNECTED -> {
+                    val scope = rememberCoroutineScope()
+                    scope.launch {
+                        val result = scaffoldState.snackbarHostState
+                            .showSnackbar(
+                                getString(R.string.app_manager_disconnected),
+                                getString(R.string.button_retry),
+                                SnackbarDuration.Indefinite
+                            )
+                        if (result == SnackbarResult.ActionPerformed) {
+                            viewModel.startAppManagerService()
+                        }
+                    }
+                }
                 State.ERROR -> navController.navigateTo(ERROR)
-            }
-        }
-    }
-
-    @Composable
-    private fun Disconnected(scaffoldState: ScaffoldState) {
-        val scope = rememberCoroutineScope()
-        val viewModel: AppManagerViewModel = viewModel()
-        scope.launch {
-            val result = scaffoldState.snackbarHostState
-                .showSnackbar(
-                    getString(R.string.app_manager_disconnected),
-                    getString(R.string.button_retry),
-                    SnackbarDuration.Indefinite
-                )
-            if (result == SnackbarResult.ActionPerformed) {
-                viewModel.startAppManagerService()
             }
         }
     }
