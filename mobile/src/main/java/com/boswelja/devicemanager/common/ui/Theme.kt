@@ -15,11 +15,15 @@ private val Purple500 = Color(0xff9c27b0)
 
 private val DarkColors = darkColors(
     primary = Purple200,
-    secondary = Purple200
+    primaryVariant = Purple200,
+    secondary = Purple200,
+    secondaryVariant = Purple200
 )
 private val LightColors = lightColors(
     primary = Purple500,
-    secondary = Purple500
+    primaryVariant = Purple500,
+    secondary = Purple500,
+    secondaryVariant = Purple500
 )
 
 private val shapes = Shapes(
