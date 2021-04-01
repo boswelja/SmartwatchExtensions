@@ -1,5 +1,8 @@
 package com.boswelja.devicemanager.appmanager.ui
 
+import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -8,24 +11,27 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
+import androidx.compose.material.ListItem
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.ModalBottomSheetLayout
-import androidx.compose.material.ModalBottomSheetState
-import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.OutlinedButton
 import androidx.compose.material.ScaffoldState
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Delete
+import androidx.compose.material.icons.outlined.ExpandLess
+import androidx.compose.material.icons.outlined.ExpandMore
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.OpenInNew
-import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.asImageBitmap
@@ -44,45 +50,16 @@ fun AppInfo(
     viewModel: AppManagerViewModel
 ) {
     app?.let {
-        val modalSheetState = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
-        ModalBottomSheetLayout(
-            sheetState = modalSheetState,
-            sheetContent = {
-                PermissionsSheet(permissions = it.requestedPermissions)
-            }
+        val scrollState = rememberScrollState()
+        Column(
+            Modifier
+                .fillMaxSize()
+                .verticalScroll(scrollState)
         ) {
-            Column(Modifier.fillMaxSize()) {
-                AppHeaderView(app = it)
-                ActionButtons(app = it, scaffoldState = scaffoldState, viewModel)
-                PermissionsInfo(
-                    permissions = it.requestedPermissions,
-                    state = modalSheetState
-                )
-                AppInstallInfo(it, viewModel)
-            }
-        }
-    }
-}
-
-@Composable
-fun PermissionsSheet(permissions: Array<String>) {
-    Column(
-        Modifier
-            .fillMaxWidth()
-            .padding(16.dp)
-    ) {
-        Text(
-            stringResource(R.string.app_info_requested_permissions_dialog_title),
-            style = MaterialTheme.typography.h5,
-            modifier = Modifier.padding(bottom = 8.dp)
-        )
-        LazyColumn {
-            items(permissions) { permission ->
-                Text(
-                    permission,
-                    style = MaterialTheme.typography.body1
-                )
-            }
+            AppHeaderView(app = it)
+            ActionButtons(app = it, scaffoldState = scaffoldState, viewModel)
+            PermissionsInfo(it.requestedPermissions)
+            AppInstallInfo(it, viewModel)
         }
     }
 }
@@ -153,35 +130,43 @@ fun ActionButtons(app: App, scaffoldState: ScaffoldState, viewModel: AppManagerV
 
 @ExperimentalMaterialApi
 @Composable
-fun PermissionsInfo(permissions: Array<String>, state: ModalBottomSheetState) {
-    val scope = rememberCoroutineScope()
-    Column(
-        Modifier
-            .fillMaxWidth()
-            .padding(16.dp)
-            .clickable {
-                scope.launch {
-                    state.show()
-                }
-            }
-    ) {
-        Text(
-            stringResource(R.string.app_info_requested_permissions_title),
-            style = MaterialTheme.typography.body1
-        )
-        val permissionText = if (permissions.isNotEmpty()) {
-            val resources = LocalContext.current.resources
-            resources.getQuantityString(
+fun PermissionsInfo(permissions: Array<String>) {
+    if (permissions.isNotEmpty()) {
+        var isExpanded by remember { mutableStateOf(false) }
+        Column(
+            Modifier
+                .fillMaxWidth()
+                .clickable { isExpanded = !isExpanded }
+                .animateContentSize(tween(easing = FastOutSlowInEasing))
+        ) {
+            val permissionText = LocalContext.current.resources.getQuantityString(
                 R.plurals.app_info_requested_permissions_count,
                 permissions.count(),
                 permissions.count()
             )
-        } else {
-            stringResource(R.string.app_info_requested_permissions_none)
+            ListItem(
+                text = { Text(permissionText) },
+                secondaryText = { Text("Tap to show more") },
+                trailing = {
+                    Icon(
+                        if (isExpanded) Icons.Outlined.ExpandLess else Icons.Outlined.ExpandMore,
+                        null
+                    )
+                }
+            )
+            if (isExpanded) {
+                Column(Modifier.padding(16.dp)) {
+                    permissions.forEach { permission ->
+                        ListItem(
+                            text = { Text(permission) }
+                        )
+                    }
+                }
+            }
         }
-        Text(
-            permissionText,
-            style = MaterialTheme.typography.body2
+    } else {
+        ListItem(
+            text = { Text(stringResource(R.string.app_info_requested_permissions_none)) }
         )
     }
 }
