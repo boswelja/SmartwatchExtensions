@@ -1,7 +1,11 @@
 package com.boswelja.devicemanager.watchmanager.item
 
-import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.CheckCircleOutline
+import androidx.compose.material.icons.outlined.CloudOff
+import androidx.compose.material.icons.outlined.ErrorOutline
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.Ignore
@@ -52,13 +56,13 @@ data class Watch(
 
     enum class Status(
         @StringRes val stringRes: Int,
-        @DrawableRes val iconRes: Int
+        val imageVector: ImageVector
     ) {
-        UNKNOWN(R.string.watch_status_unknown, R.drawable.ic_error),
-        ERROR(R.string.watch_status_error, R.drawable.ic_error),
-        MISSING_APP(R.string.watch_status_missing_app, R.drawable.ic_error),
-        NOT_REGISTERED(R.string.watch_status_not_registered, R.drawable.ic_error),
-        DISCONNECTED(R.string.watch_status_disconnected, R.drawable.ic_disconnected),
-        CONNECTED(R.string.watch_status_connected, R.drawable.ic_connected)
+        UNKNOWN(R.string.watch_status_unknown, Icons.Outlined.ErrorOutline),
+        ERROR(R.string.watch_status_error, Icons.Outlined.ErrorOutline),
+        MISSING_APP(R.string.watch_status_missing_app, Icons.Outlined.ErrorOutline),
+        NOT_REGISTERED(R.string.watch_status_not_registered, Icons.Outlined.ErrorOutline),
+        DISCONNECTED(R.string.watch_status_disconnected, Icons.Outlined.CloudOff),
+        CONNECTED(R.string.watch_status_connected, Icons.Outlined.CheckCircleOutline)
     }
 }
