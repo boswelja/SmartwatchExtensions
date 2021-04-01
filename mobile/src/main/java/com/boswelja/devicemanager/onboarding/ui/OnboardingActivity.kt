@@ -22,7 +22,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.res.stringResource
 import androidx.core.net.toUri
-import androidx.navigation.compose.rememberNavController
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.LifecycleAwareTimer
 import com.boswelja.devicemanager.common.ui.AppTheme
@@ -49,14 +48,10 @@ class OnboardingActivity : AppCompatActivity() {
 
         setContent {
             AppTheme {
-                val navController = rememberNavController()
-
                 Scaffold(
                     topBar = {
                         UpNavigationAppBar(
-                            onNavigateUp = {
-                                if (!navController.popBackStack()) finish()
-                            }
+                            onNavigateUp = { onBackPressed() }
                         )
                     },
                     floatingActionButtonPosition = FabPosition.End,

@@ -87,7 +87,6 @@ dependencies {
     val compose = "1.0.0-beta03"
     val lifecycleCompose = "1.0.0-alpha03"
     val activityCompose = "1.3.0-alpha05"
-    val navigationCompose = "1.0.0-alpha09"
 
     val billingClient = "3.0.3"
     val googlePlayCore = "1.10.0"
@@ -133,7 +132,6 @@ dependencies {
     implementation("androidx.compose.runtime:runtime-livedata:$compose")
     implementation("androidx.activity:activity-compose:$activityCompose")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:$lifecycleCompose")
-    implementation("androidx.navigation:navigation-compose:$navigationCompose")
 
     ksp("androidx.room:room-compiler:$androidxRoom")
 
