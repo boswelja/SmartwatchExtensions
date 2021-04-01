@@ -39,25 +39,27 @@ import kotlinx.coroutines.launch
 @ExperimentalMaterialApi
 @Composable
 fun AppInfo(
-    app: App,
+    app: App?,
     scaffoldState: ScaffoldState,
     viewModel: AppManagerViewModel
 ) {
-    val modalSheetState = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
-    ModalBottomSheetLayout(
-        sheetState = modalSheetState,
-        sheetContent = {
-            PermissionsSheet(permissions = app.requestedPermissions)
-        }
-    ) {
-        Column(Modifier.fillMaxSize()) {
-            AppHeaderView(app = app)
-            ActionButtons(app = app, scaffoldState = scaffoldState, viewModel)
-            PermissionsInfo(
-                permissions = app.requestedPermissions,
-                state = modalSheetState
-            )
-            AppInstallInfo(app, viewModel)
+    app?.let {
+        val modalSheetState = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
+        ModalBottomSheetLayout(
+            sheetState = modalSheetState,
+            sheetContent = {
+                PermissionsSheet(permissions = it.requestedPermissions)
+            }
+        ) {
+            Column(Modifier.fillMaxSize()) {
+                AppHeaderView(app = it)
+                ActionButtons(app = it, scaffoldState = scaffoldState, viewModel)
+                PermissionsInfo(
+                    permissions = it.requestedPermissions,
+                    state = modalSheetState
+                )
+                AppInstallInfo(it, viewModel)
+            }
         }
     }
 }
