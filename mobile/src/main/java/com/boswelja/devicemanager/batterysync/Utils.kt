@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.BatteryManager
+import com.boswelja.devicemanager.common.batterysync.BatteryStats
 import com.boswelja.devicemanager.common.batterysync.References.BATTERY_STATUS_PATH
 import com.boswelja.devicemanager.common.preference.PreferenceKey.BATTERY_SYNC_ENABLED_KEY
 import com.boswelja.devicemanager.watchmanager.WatchManager
@@ -42,21 +43,24 @@ object Utils {
     suspend fun updateBatteryStats(context: Context, watch: Watch? = null) {
         withContext(Dispatchers.IO) {
             Timber.i("Updating battery stats for ${watch?.id}")
-            context.getBatteryStats { percent, charging ->
-                val message = "$percent|$charging".toByteArray(Charsets.UTF_8)
-
+            val batteryStats = BatteryStats.createForDevice(context)
+            if (batteryStats != null) {
                 val watchManager = WatchManager.getInstance(context)
                 if (watch != null) {
-                    watchManager.sendMessage(watch, BATTERY_STATUS_PATH, message)
+                    watchManager.sendMessage(watch, BATTERY_STATUS_PATH, batteryStats.toByteArray())
                 } else {
                     watchManager.registeredWatches.value?.forEach {
                         if (watchManager.getPreference<Boolean>(it, BATTERY_SYNC_ENABLED_KEY)
                             == true
                         ) {
-                            watchManager.sendMessage(it, BATTERY_STATUS_PATH, message)
+                            watchManager.sendMessage(
+                                it, BATTERY_STATUS_PATH, batteryStats.toByteArray()
+                            )
                         }
                     }
                 }
+            } else {
+                Timber.w("batteryStats null, skipping...")
             }
         }
     }

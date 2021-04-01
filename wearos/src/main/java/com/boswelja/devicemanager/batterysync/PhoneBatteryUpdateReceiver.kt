@@ -3,9 +3,6 @@ package com.boswelja.devicemanager.batterysync
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
-import android.os.BatteryManager
 import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.core.content.edit
@@ -32,7 +29,7 @@ class PhoneBatteryUpdateReceiver : WearableListenerService() {
         if (messageEvent?.path == BATTERY_STATUS_PATH) {
             Timber.i("Got battery stats from ${messageEvent.sourceNodeId}")
 
-            val batteryStats = BatteryStats.fromMessage(messageEvent)
+            val batteryStats = BatteryStats.fromByteArray(messageEvent.data)
             sharedPreferences.edit {
                 putInt(PreferenceKey.BATTERY_PERCENT_KEY, batteryStats.percent)
             }
@@ -122,29 +119,15 @@ class PhoneBatteryUpdateReceiver : WearableListenerService() {
         }
     }
 
-    /**
-     * Get battery stats for this device.
-     * @param function The function to be called when we've got the battery stats. This may not be
-     * called if there's an issue retrieving battery stats. The function is called with battery
-     * percent and a boolean to represent whether the device is charging.
-     */
-    private fun Context.getBatteryStats(function: (Int, Boolean) -> Unit) {
-        val iFilter = IntentFilter(Intent.ACTION_BATTERY_CHANGED)
-        registerReceiver(null, iFilter)?.let {
-            val batteryLevel = it.getIntExtra(BatteryManager.EXTRA_LEVEL, -1)
-            val batteryScale = it.getIntExtra(BatteryManager.EXTRA_SCALE, -1)
-            val percent = (batteryLevel * 100) / batteryScale
-            val charging = it.getIntExtra(BatteryManager.EXTRA_STATUS, -1) ==
-                BatteryManager.BATTERY_STATUS_CHARGING
-            function(percent, charging)
-        }
-    }
-
     /** Sends a battery status update to connected devices. */
     private fun updateBatteryStats(context: Context, phoneId: String) {
-        context.getBatteryStats { percent, isCharging ->
-            val message = "$percent|$isCharging".toByteArray(Charsets.UTF_8)
-            Wearable.getMessageClient(context).sendMessage(phoneId, BATTERY_STATUS_PATH, message)
+        val batteryStats = BatteryStats.createForDevice(context)
+        if (batteryStats != null) {
+            Wearable.getMessageClient(context).sendMessage(
+                phoneId, BATTERY_STATUS_PATH, batteryStats.toByteArray()
+            )
+        } else {
+            Timber.w("batteryStats null, skipping...")
         }
     }
 
