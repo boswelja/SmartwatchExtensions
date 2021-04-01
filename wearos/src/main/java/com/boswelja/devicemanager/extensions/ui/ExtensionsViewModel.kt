@@ -116,7 +116,10 @@ class ExtensionsViewModel internal constructor(
                 getApplication<Application>().getString(R.string.battery_sync_disabled)
             )
         } else {
-            ConfirmationActivityHandler.failAnimation(getApplication())
+            ConfirmationActivityHandler.failAnimation(
+                getApplication(),
+                getApplication<Application>().getString(R.string.phone_not_connected)
+            )
         }
     }
 
@@ -132,7 +135,10 @@ class ExtensionsViewModel internal constructor(
                 getApplication<Application>().getString(R.string.lock_phone_disabled)
             )
         } else {
-            ConfirmationActivityHandler.failAnimation(getApplication())
+            ConfirmationActivityHandler.failAnimation(
+                getApplication(),
+                getApplication<Application>().getString(R.string.phone_not_connected)
+            )
         }
     }
 }
