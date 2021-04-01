@@ -1,7 +1,11 @@
 package com.boswelja.devicemanager.messages
 
-import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.ErrorOutline
+import androidx.compose.material.icons.outlined.Help
+import androidx.compose.material.icons.outlined.Update
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.boswelja.devicemanager.R
@@ -25,10 +29,10 @@ data class Message(
     }
 
     /** Possible icons for a given [Message] **/
-    enum class Icon(@DrawableRes val iconRes: Int) {
-        UPDATE(R.drawable.message_ic_update),
-        HELP(R.drawable.message_ic_help),
-        ERROR(R.drawable.message_ic_error)
+    enum class Icon(val imageVector: ImageVector) {
+        UPDATE(Icons.Outlined.Update),
+        HELP(Icons.Outlined.Help),
+        ERROR(Icons.Outlined.ErrorOutline)
     }
 
     override fun equals(other: Any?): Boolean {
