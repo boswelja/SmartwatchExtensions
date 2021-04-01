@@ -4,6 +4,8 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Build
 import android.provider.Settings
+import androidx.compose.animation.Crossfade
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -46,15 +48,15 @@ import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.messages.Message
 import kotlinx.coroutines.launch
 
+@ExperimentalAnimationApi
 @ExperimentalMaterialApi
 @Composable
 fun MessagesScreen(scaffoldState: ScaffoldState) {
     val viewModel: MessagesViewModel = viewModel()
     val messages by viewModel.activeMessagesFlow.collectAsState(emptyList())
-    if (messages.isNotEmpty()) {
-        MessagesList(messages, scaffoldState)
-    } else {
-        NoMessagesView()
+    Crossfade(targetState = messages.isNotEmpty()) {
+        if (it) MessagesList(messages, scaffoldState)
+        else NoMessagesView()
     }
 }
 

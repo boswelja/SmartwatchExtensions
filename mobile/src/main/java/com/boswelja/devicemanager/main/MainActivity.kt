@@ -4,6 +4,8 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.animation.Crossfade
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
@@ -12,6 +14,7 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
+import androidx.compose.material.ScaffoldState
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Dashboard
@@ -22,16 +25,11 @@ import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.KEY_ROUTE
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.currentBackStackEntryAsState
-import androidx.navigation.compose.navigate
-import androidx.navigation.compose.rememberNavController
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.aboutapp.ui.AboutAppScreen
 import com.boswelja.devicemanager.appsettings.ui.AppSettingsScreen
@@ -53,6 +51,9 @@ import timber.log.Timber
 
 class MainActivity : AppCompatActivity() {
 
+    private var currentDestination by mutableStateOf(Destination.DASHBOARD)
+
+    @ExperimentalAnimationApi
     @ExperimentalMaterialApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -64,7 +65,6 @@ class MainActivity : AppCompatActivity() {
             val selectedWatch by watchManager.selectedWatch.observeAsState()
             val registeredWatches by watchManager.registeredWatches.observeAsState()
 
-            val navController = rememberNavController()
             val scaffoldState = rememberScaffoldState()
 
             AppTheme {
@@ -77,14 +77,14 @@ class MainActivity : AppCompatActivity() {
                             onWatchSelected = { watchManager.selectWatchById(it.id) }
                         )
                     },
-                    bottomBar = { BottonNav(navController = navController) }
-                ) {
-                    NavHost(navController = navController, startDestination = ROUTE_DASHBOARD) {
-                        composable(ROUTE_DASHBOARD) { DashboardScreen() }
-                        composable(ROUTE_MESSAGES) { MessagesScreen(scaffoldState = scaffoldState) }
-                        composable(ROUTE_SETTINGS) { AppSettingsScreen() }
-                        composable(ROUTE_ABOUT) { AboutAppScreen() }
+                    bottomBar = {
+                        BottonNav(currentDestination) { currentDestination = it }
                     }
+                ) {
+                    MainScreen(
+                        scaffoldState = scaffoldState,
+                        currentDestination = currentDestination
+                    )
                 }
             }
             if (registeredWatches != null && registeredWatches!!.isEmpty()) {
@@ -93,6 +93,11 @@ class MainActivity : AppCompatActivity() {
         }
 
         ensureAppUpdated()
+    }
+
+    override fun onBackPressed() {
+        if (currentDestination != Destination.DASHBOARD) currentDestination = Destination.DASHBOARD
+        else super.onBackPressed()
     }
 
     private fun ensureAppUpdated() {
@@ -126,55 +131,55 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    @ExperimentalMaterialApi
+    @ExperimentalAnimationApi
     @Composable
-    fun BottonNav(navController: NavHostController) {
+    fun MainScreen(scaffoldState: ScaffoldState, currentDestination: Destination) {
+        Crossfade(targetState = currentDestination) {
+            when (it) {
+                Destination.DASHBOARD -> DashboardScreen()
+                Destination.MESSAGES -> MessagesScreen(scaffoldState = scaffoldState)
+                Destination.SETTINGS -> AppSettingsScreen()
+                Destination.ABOUT -> AboutAppScreen()
+            }
+        }
+    }
+
+    @Composable
+    fun BottonNav(currentDestination: Destination, setCurrentDestination: (Destination) -> Unit) {
         BottomNavigation(
             backgroundColor = MaterialTheme.colors.background
         ) {
-            val navBackStackEntry by navController.currentBackStackEntryAsState()
-            val currentRoute = navBackStackEntry?.arguments?.getString(KEY_ROUTE)
             BottomNavItem(
-                selected = currentRoute == ROUTE_DASHBOARD,
+                selected = currentDestination == Destination.DASHBOARD,
                 icon = Icons.Outlined.Dashboard,
                 label = stringResource(R.string.bottom_nav_dashboard_label),
                 onClick = {
-                    navController.navigate(ROUTE_DASHBOARD) {
-                        popUpTo = navController.graph.startDestination
-                        launchSingleTop = true
-                    }
+                    setCurrentDestination(Destination.DASHBOARD)
                 }
             )
             BottomNavItem(
-                selected = currentRoute == ROUTE_MESSAGES,
+                selected = currentDestination == Destination.MESSAGES,
                 icon = Icons.Outlined.Message,
                 label = stringResource(R.string.nav_messages_label),
                 onClick = {
-                    navController.navigate(ROUTE_MESSAGES) {
-                        popUpTo = navController.graph.startDestination
-                        launchSingleTop = true
-                    }
+                    setCurrentDestination(Destination.MESSAGES)
                 }
             )
             BottomNavItem(
-                selected = currentRoute == ROUTE_SETTINGS,
+                selected = currentDestination == Destination.SETTINGS,
                 icon = Icons.Outlined.Settings,
                 label = stringResource(R.string.bottom_nav_app_settings_label),
                 onClick = {
-                    navController.navigate(ROUTE_SETTINGS) {
-                        popUpTo = navController.graph.startDestination
-                        launchSingleTop = true
-                    }
+                    setCurrentDestination(Destination.SETTINGS)
                 }
             )
             BottomNavItem(
-                selected = currentRoute == ROUTE_ABOUT,
+                selected = currentDestination == Destination.ABOUT,
                 icon = Icons.Outlined.Info,
                 label = stringResource(R.string.bottom_nav_about_label),
                 onClick = {
-                    navController.navigate(ROUTE_ABOUT) {
-                        popUpTo = navController.graph.startDestination
-                        launchSingleTop = true
-                    }
+                    setCurrentDestination(Destination.ABOUT)
                 }
             )
         }
@@ -199,12 +204,14 @@ class MainActivity : AppCompatActivity() {
         )
     }
 
-    companion object {
-        private const val ROUTE_DASHBOARD = "dashboard"
-        private const val ROUTE_MESSAGES = "messages"
-        private const val ROUTE_SETTINGS = "settings"
-        private const val ROUTE_ABOUT = "about"
+    enum class Destination {
+        DASHBOARD,
+        MESSAGES,
+        SETTINGS,
+        ABOUT
+    }
 
+    companion object {
         private const val LOW_PRIORITY_UPDATE = 2
         private const val HIGH_PRIORITY_UPDATE = 5
     }

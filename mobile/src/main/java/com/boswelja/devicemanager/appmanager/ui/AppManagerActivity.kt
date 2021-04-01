@@ -3,26 +3,27 @@ package com.boswelja.devicemanager.appmanager.ui
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Scaffold
+import androidx.compose.material.ScaffoldState
 import androidx.compose.material.SnackbarDuration
 import androidx.compose.material.SnackbarResult
 import androidx.compose.material.rememberScaffoldState
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.navigate
-import androidx.navigation.compose.popUpTo
-import androidx.navigation.compose.rememberNavController
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.appmanager.State
 import com.boswelja.devicemanager.common.appmanager.App
 import com.boswelja.devicemanager.common.ui.AppTheme
+import com.boswelja.devicemanager.common.ui.Crossflow
 import com.boswelja.devicemanager.common.ui.LoadingScreen
 import com.boswelja.devicemanager.common.ui.UpNavigationWatchPickerAppBar
 import kotlinx.coroutines.launch
@@ -30,6 +31,9 @@ import timber.log.Timber
 
 class AppManagerActivity : AppCompatActivity() {
 
+    private var currentDestination by mutableStateOf(Destination.LOADING)
+
+    @ExperimentalAnimationApi
     @ExperimentalFoundationApi
     @ExperimentalMaterialApi
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -38,14 +42,12 @@ class AppManagerActivity : AppCompatActivity() {
 
         setContent {
             val viewModel: AppManagerViewModel = viewModel()
-            val progress by viewModel.progress.observeAsState()
             val state by viewModel.state.observeAsState()
 
             val selectedWatch by viewModel.watchManager.selectedWatch.observeAsState()
             val registeredWatches by viewModel.watchManager.registeredWatches.observeAsState()
 
             val scaffoldState = rememberScaffoldState()
-            val navController = rememberNavController()
 
             AppTheme {
                 Scaffold(
@@ -55,45 +57,20 @@ class AppManagerActivity : AppCompatActivity() {
                             selectedWatch = selectedWatch,
                             watches = registeredWatches,
                             onWatchSelected = { viewModel.watchManager.selectWatchById(it.id) },
-                            onNavigateUp = {
-                                if (navController.previousBackStackEntry != null) {
-                                    navController.popBackStack()
-                                } else {
-                                    finish()
-                                }
-                            }
+                            onNavigateUp = { onBackPressed() }
                         )
                     }
                 ) {
-                    NavHost(navController, startDestination = LOADING) {
-                        composable(LOADING) { LoadingScreen((progress ?: 0) / 100f) }
-                        composable(ERROR) { Error(viewModel) }
-                        composable(APP_LIST) {
-                            AppList(
-                                viewModel,
-                                onAppClick = {
-                                    navController.currentBackStackEntry?.arguments
-                                        ?.putSerializable("app", it)
-                                    navController.navigateTo(APP_INFO)
-                                }
-                            )
-                        }
-                        composable(APP_INFO) {
-                            val app = navController.previousBackStackEntry?.arguments
-                                ?.getSerializable("app") as App
-                            AppInfo(
-                                app,
-                                scaffoldState,
-                                viewModel
-                            )
-                        }
-                    }
+                    AppManagerScreen(
+                        scaffoldState = scaffoldState,
+                        currentDestination = currentDestination
+                    )
                 }
             }
 
             when (state) {
-                State.CONNECTING, State.LOADING_APPS -> navController.navigateTo(LOADING)
-                State.READY -> navController.navigateTo(APP_LIST)
+                State.CONNECTING, State.LOADING_APPS -> currentDestination = Destination.LOADING
+                State.READY -> currentDestination = Destination.APP_LIST
                 State.DISCONNECTED -> {
                     val scope = rememberCoroutineScope()
                     scope.launch {
@@ -108,30 +85,53 @@ class AppManagerActivity : AppCompatActivity() {
                         }
                     }
                 }
-                State.ERROR -> navController.navigateTo(ERROR)
+                State.ERROR -> currentDestination = Destination.ERROR
             }
         }
     }
 
-    private fun NavHostController.navigateTo(route: String) {
-        try {
-            navigate(route) {
-                launchSingleTop = true
-                if (route != APP_INFO) {
-                    popUpTo(LOADING) {
-                        inclusive = true
-                    }
+    override fun onBackPressed() {
+        if (currentDestination == Destination.APP_INFO) {
+            currentDestination = Destination.APP_LIST
+        } else {
+            super.onBackPressed()
+        }
+    }
+
+    @ExperimentalFoundationApi
+    @ExperimentalMaterialApi
+    @ExperimentalAnimationApi
+    @Composable
+    fun AppManagerScreen(scaffoldState: ScaffoldState, currentDestination: Destination) {
+        var selectedApp by remember { mutableStateOf<App?>(null) }
+        val viewModel: AppManagerViewModel = viewModel()
+        Crossflow(targetState = currentDestination) {
+            when (it) {
+                Destination.LOADING -> {
+                    val progress by viewModel.progress.observeAsState()
+                    LoadingScreen((progress ?: 0) / 100f)
                 }
+                Destination.APP_LIST -> AppList(
+                    viewModel,
+                    onAppClick = { app ->
+                        selectedApp = app
+                        this.currentDestination = Destination.APP_INFO
+                    }
+                )
+                Destination.APP_INFO -> AppInfo(
+                    selectedApp,
+                    scaffoldState,
+                    viewModel
+                )
+                Destination.ERROR -> Error(viewModel)
             }
-        } catch (e: Exception) {
-            Timber.w("Problem with nav controller, aborting")
         }
     }
 
-    companion object Destinations {
-        private const val LOADING = "loading"
-        private const val APP_LIST = "applist"
-        private const val APP_INFO = "appinfo"
-        private const val ERROR = "error"
+    enum class Destination {
+        LOADING,
+        APP_LIST,
+        APP_INFO,
+        ERROR
     }
 }
