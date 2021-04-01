@@ -20,7 +20,7 @@ class MainActivity : AppCompatActivity() {
             val viewModel: MainViewModel = viewModel()
             val isRegistered by viewModel.isRegistered.observeAsState()
             AppTheme {
-                if (isRegistered == false) {
+                if (isRegistered == true) {
                     ExtensionsScreen()
                 } else {
                     OnboardingScreen()
