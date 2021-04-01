@@ -171,15 +171,6 @@ class Updater(private val context: Context) {
                     }
                     remove(WIDGET_BACKGROUND_OPACITY_KEY.name)
                 }
-                if (lastAppVersion < 2026800000) {
-                    val value = sharedPreferences.getString(
-                        DAYNIGHT_MODE_KEY, AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM.toString()
-                    )
-                    putInt(
-                        DAYNIGHT_MODE_KEY,
-                        value?.toInt() ?: AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
-                    )
-                }
                 if (lastAppVersion < 2025600000) {
                     Analytics().setAnalyticsEnabled(
                         sharedPreferences.getBoolean(Analytics.ANALYTICS_ENABLED_KEY, false)
@@ -199,6 +190,18 @@ class Updater(private val context: Context) {
                 runBlocking { updateWidgetImpl() }
                 updateStatus = Result.COMPLETED
             }
+            try {
+                val value = sharedPreferences.getString(
+                    DAYNIGHT_MODE_KEY, AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM.toString()
+                )
+                sharedPreferences.edit(commit = true) { remove(DAYNIGHT_MODE_KEY) }
+                sharedPreferences.edit(commit = true) {
+                    putInt(
+                        DAYNIGHT_MODE_KEY,
+                        value?.toInt() ?: AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+                    )
+                }
+            } catch (ignored: Exception) { }
         }
         return updateStatus
     }
