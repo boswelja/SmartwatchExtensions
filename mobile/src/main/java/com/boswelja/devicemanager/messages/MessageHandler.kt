@@ -5,6 +5,7 @@ import android.content.Context
 import android.os.Build
 import androidx.core.app.NotificationCompat
 import com.boswelja.devicemanager.NotificationChannelHelper
+import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.messages.database.MessageDatabase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -37,7 +38,7 @@ object MessageHandler {
                 }
                 val notification =
                     NotificationCompat.Builder(context, MESSAGE_NOTIFICATION_CHANNEL_ID)
-                        .setSmallIcon(message.icon.iconRes)
+                        .setSmallIcon(R.drawable.noti_ic_watch)
                         .setContentTitle(message.title)
                         .setContentText(message.text)
                         .build()
