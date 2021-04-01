@@ -1,10 +1,3 @@
-/* Copyright (C) 2020 Jack Boswell <boswelja@outlook.com>
- *
- * This file is part of Wearable Extensions
- *
- * This file, and any part of the Wearable Extensions app/s cannot be copied and/or distributed
- * without permission from Jack Boswell (boswelja) <boswela@outlook.com>
- */
 package com.boswelja.devicemanager.dndsync
 
 import android.app.Notification
@@ -27,13 +20,15 @@ import androidx.core.app.NotificationCompat
 import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.Compat
+import com.boswelja.devicemanager.common.dndsync.References
 import com.boswelja.devicemanager.common.dndsync.References.DND_SYNC_LOCAL_NOTI_ID
 import com.boswelja.devicemanager.common.dndsync.References.DND_SYNC_NOTI_CHANNEL_ID
 import com.boswelja.devicemanager.common.dndsync.References.START_ACTIVITY_FROM_NOTI_ID
-import com.boswelja.devicemanager.common.dndsync.Utils
 import com.boswelja.devicemanager.common.preference.PreferenceKey.DND_SYNC_TO_PHONE_KEY
 import com.boswelja.devicemanager.common.preference.PreferenceKey.DND_SYNC_WITH_THEATER_KEY
 import com.boswelja.devicemanager.main.ui.MainActivity
+import com.google.android.gms.wearable.PutDataMapRequest
+import com.google.android.gms.wearable.Wearable
 
 class DnDLocalChangeListener : Service() {
 
@@ -49,8 +44,7 @@ class DnDLocalChangeListener : Service() {
                 if (context != null &&
                     intent!!.action == NotificationManager.ACTION_INTERRUPTION_FILTER_CHANGED
                 ) {
-                    val dndEnabled = Compat.isDndEnabled(context)
-                    Utils.updateInterruptionFilter(this@DnDLocalChangeListener, dndEnabled)
+                    updateInterruptionFilter(this@DnDLocalChangeListener)
                 }
             }
         }
@@ -85,7 +79,7 @@ class DnDLocalChangeListener : Service() {
             createNotificationChannel()
         }
         startForeground(DND_SYNC_LOCAL_NOTI_ID, createNotification())
-        Utils.updateInterruptionFilter(this)
+        updateInterruptionFilter(this)
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -165,6 +159,18 @@ class DnDLocalChangeListener : Service() {
                 tryStop()
             }
         }
+    }
+
+    /**
+     * Sets a new Interruption Filter state across devices.
+     */
+    private fun updateInterruptionFilter(context: Context) {
+        val interruptionFilterEnabled = Compat.isDndEnabled(context)
+        val dataClient = Wearable.getDataClient(context)
+        val putDataMapReq = PutDataMapRequest.create(References.DND_STATUS_PATH)
+        putDataMapReq.dataMap.putBoolean(References.NEW_DND_STATE_KEY, interruptionFilterEnabled)
+        putDataMapReq.setUrgent()
+        dataClient.putDataItem(putDataMapReq.asPutDataRequest())
     }
 
     @RequiresApi(Build.VERSION_CODES.O)

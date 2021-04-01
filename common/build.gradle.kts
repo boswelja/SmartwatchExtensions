@@ -24,9 +24,6 @@ android {
 
 dependencies {
     val androidxCoreKtx = "1.6.0-alpha01"
-    val playServicesWearable = "17.0.0"
 
     implementation("androidx.core:core-ktx:$androidxCoreKtx")
-
-    implementation("com.google.android.gms:play-services-wearable:$playServicesWearable")
 }
