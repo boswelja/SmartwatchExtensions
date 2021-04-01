@@ -26,7 +26,7 @@ data class WatchBatteryStats(
     companion object {
         fun fromMessage(messageEvent: MessageEvent): WatchBatteryStats {
             val watchId = messageEvent.sourceNodeId
-            val batteryStats = BatteryStats.fromMessage(messageEvent)
+            val batteryStats = BatteryStats.fromByteArray(messageEvent.data)
             return WatchBatteryStats(watchId, batteryStats.percent, batteryStats.isCharging)
         }
     }

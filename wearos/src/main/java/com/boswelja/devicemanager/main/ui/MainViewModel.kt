@@ -5,24 +5,18 @@ import android.content.SharedPreferences
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.viewModelScope
 import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.capability.CapabilityUpdater
 import com.boswelja.devicemanager.phoneconnectionmanager.References.PHONE_ID_KEY
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
 class MainViewModel internal constructor(
     application: Application,
-    coroutineDispatcher: CoroutineDispatcher,
     private val sharedPreferences: SharedPreferences
 ) : AndroidViewModel(application) {
 
     @Suppress("unused")
     constructor(application: Application) : this(
         application,
-        Dispatchers.IO,
         PreferenceManager.getDefaultSharedPreferences(application)
     )
 
@@ -43,9 +37,7 @@ class MainViewModel internal constructor(
 
     init {
         sharedPreferences.registerOnSharedPreferenceChangeListener(registrationObserver)
-        viewModelScope.launch(coroutineDispatcher) {
-            CapabilityUpdater(application).updateCapabilities()
-        }
+        CapabilityUpdater(application).updateCapabilities()
     }
 
     override fun onCleared() {

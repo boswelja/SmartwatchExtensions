@@ -43,4 +43,5 @@
 
     <string name="error">An error has occurred</string>
     <string name="default_phone_name">Phone</string>
+    <string name="phone_not_connected">Can\'t connect to your phone</string>
 </resources>

@@ -3,9 +3,6 @@ package com.boswelja.devicemanager.batterysync
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
-import android.os.BatteryManager
 import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.core.content.edit
@@ -14,10 +11,11 @@ import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.batterysync.BatteryStats
 import com.boswelja.devicemanager.common.batterysync.References.BATTERY_STATUS_PATH
-import com.boswelja.devicemanager.common.connection.References.CAPABILITY_PHONE_APP
 import com.boswelja.devicemanager.common.preference.PreferenceKey
+import com.boswelja.devicemanager.common.preference.PreferenceKey.BATTERY_CHARGED_NOTI_SENT
+import com.boswelja.devicemanager.common.preference.PreferenceKey.BATTERY_CHARGE_THRESHOLD_KEY
+import com.boswelja.devicemanager.common.preference.PreferenceKey.BATTERY_PHONE_CHARGE_NOTI_KEY
 import com.boswelja.devicemanager.phoneconnectionmanager.References.PHONE_NAME_KEY
-import com.google.android.gms.wearable.CapabilityClient
 import com.google.android.gms.wearable.MessageEvent
 import com.google.android.gms.wearable.Wearable
 import com.google.android.gms.wearable.WearableListenerService
@@ -31,14 +29,14 @@ class PhoneBatteryUpdateReceiver : WearableListenerService() {
         if (messageEvent?.path == BATTERY_STATUS_PATH) {
             Timber.i("Got battery stats from ${messageEvent.sourceNodeId}")
 
-            val batteryStats = BatteryStats.fromMessage(messageEvent)
+            val batteryStats = BatteryStats.fromByteArray(messageEvent.data)
             sharedPreferences.edit {
                 putInt(PreferenceKey.BATTERY_PERCENT_KEY, batteryStats.percent)
             }
 
             handleChargeNotification(batteryStats)
 
-            updateBatteryStats(this, CAPABILITY_PHONE_APP)
+            updateBatteryStats(this, messageEvent.sourceNodeId)
             PhoneBatteryComplicationProvider.updateAll(this)
         }
     }
@@ -51,12 +49,12 @@ class PhoneBatteryUpdateReceiver : WearableListenerService() {
     private fun handleChargeNotification(batteryStats: BatteryStats) {
         Timber.d("handleChargeNotification($batteryStats) called")
         val shouldNotifyUser =
-            sharedPreferences.getBoolean(PreferenceKey.BATTERY_PHONE_CHARGE_NOTI_KEY, false)
+            sharedPreferences.getBoolean(BATTERY_PHONE_CHARGE_NOTI_KEY, false)
         if (batteryStats.isCharging && shouldNotifyUser) {
             val chargeThreshold =
-                sharedPreferences.getInt(PreferenceKey.BATTERY_CHARGE_THRESHOLD_KEY, 90)
+                sharedPreferences.getInt(BATTERY_CHARGE_THRESHOLD_KEY, 90)
             val hasNotiBeenSent =
-                sharedPreferences.getBoolean(PreferenceKey.BATTERY_CHARGED_NOTI_SENT, false)
+                sharedPreferences.getBoolean(BATTERY_CHARGED_NOTI_SENT, false)
 
             if (batteryStats.percent >= chargeThreshold && !hasNotiBeenSent) {
                 val phoneName =
@@ -69,7 +67,7 @@ class PhoneBatteryUpdateReceiver : WearableListenerService() {
         } else {
             Timber.i("Cancelling any existing charge notifications")
             getSystemService<NotificationManager>()?.cancel(BATTERY_CHARGED_NOTI_ID)
-            sharedPreferences.edit { putBoolean(PreferenceKey.BATTERY_CHARGED_NOTI_SENT, false) }
+            sharedPreferences.edit { putBoolean(BATTERY_CHARGED_NOTI_SENT, false) }
         }
     }
 
@@ -116,36 +114,21 @@ class PhoneBatteryUpdateReceiver : WearableListenerService() {
                     .build()
 
             notificationManager.notify(BATTERY_CHARGED_NOTI_ID, noti)
-            sharedPreferences.edit { putBoolean(PreferenceKey.BATTERY_CHARGED_NOTI_SENT, true) }
+            sharedPreferences.edit { putBoolean(BATTERY_CHARGED_NOTI_SENT, true) }
             Timber.i("Notification sent")
         }
     }
 
     /** Sends a battery status update to connected devices. */
-    private fun updateBatteryStats(context: Context, target: String) {
-        val iFilter = IntentFilter(Intent.ACTION_BATTERY_CHANGED)
-        val batteryStatus = context.registerReceiver(null, iFilter)
-        val batteryPct = (
-            (
-                batteryStatus?.getIntExtra(BatteryManager.EXTRA_LEVEL, -1)!! /
-                    batteryStatus.getIntExtra(BatteryManager.EXTRA_SCALE, -1).toFloat()
-                ) * 100
-            ).toInt()
-        val charging =
-            batteryStatus.getIntExtra(BatteryManager.EXTRA_STATUS, -1) ==
-                BatteryManager.BATTERY_STATUS_CHARGING
-        val message = "$batteryPct|$charging"
-
-        Wearable.getCapabilityClient(context)
-            .getCapability(target, CapabilityClient.FILTER_REACHABLE)
-            .addOnSuccessListener { capabilityInfo ->
-                for (node in capabilityInfo.nodes) {
-                    val messageClient = Wearable.getMessageClient(context)
-                    messageClient.sendMessage(
-                        node.id, BATTERY_STATUS_PATH, message.toByteArray(Charsets.UTF_8)
-                    )
-                }
-            }
+    private fun updateBatteryStats(context: Context, phoneId: String) {
+        val batteryStats = BatteryStats.createForDevice(context)
+        if (batteryStats != null) {
+            Wearable.getMessageClient(context).sendMessage(
+                phoneId, BATTERY_STATUS_PATH, batteryStats.toByteArray()
+            )
+        } else {
+            Timber.w("batteryStats null, skipping...")
+        }
     }
 
     companion object {

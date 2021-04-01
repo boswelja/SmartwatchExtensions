@@ -1,10 +1,3 @@
-/* Copyright (C) 2020 Jack Boswell <boswelja@outlook.com>
- *
- * This file is part of Wearable Extensions
- *
- * This file, and any part of the Wearable Extensions app/s cannot be copied and/or distributed
- * without permission from Jack Boswell (boswelja) <boswela@outlook.com>
- */
 package com.boswelja.devicemanager
 
 import android.content.BroadcastReceiver
@@ -14,29 +7,21 @@ import androidx.core.app.JobIntentService
 import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.common.batterysync.References.REQUEST_BATTERY_UPDATE_PATH
 import com.boswelja.devicemanager.common.connection.Messages.LOCK_PHONE
-import com.boswelja.devicemanager.common.preference.PreferenceKey
 import com.boswelja.devicemanager.common.preference.PreferenceKey.BATTERY_SYNC_ENABLED_KEY
+import com.boswelja.devicemanager.common.preference.PreferenceKey.PHONE_LOCKING_ENABLED_KEY
 import com.boswelja.devicemanager.phoneconnectionmanager.References.PHONE_ID_KEY
 import com.google.android.gms.wearable.Wearable
 import timber.log.Timber
 
 class ActionService : JobIntentService() {
 
-    private val messageClient by lazy { Wearable.getMessageClient(this) }
-    private val sharedPreferences by lazy { PreferenceManager.getDefaultSharedPreferences(this) }
-    private val phoneId by lazy { sharedPreferences.getString(PHONE_ID_KEY, "") ?: "" }
-
     override fun onHandleWork(intent: Intent) {
         Timber.d("onHandleWork($intent) called")
-        if (phoneId.isNotEmpty()) {
-            when (
-                val action = intent.action
-            ) {
+        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
+        sharedPreferences.getString(PHONE_ID_KEY, "")?.let { phoneId ->
+            when (val action = intent.action) {
                 LOCK_PHONE -> {
-                    if (sharedPreferences.getBoolean(
-                            PreferenceKey.PHONE_LOCKING_ENABLED_KEY, false
-                        )
-                    ) {
+                    if (sharedPreferences.getBoolean(PHONE_LOCKING_ENABLED_KEY, false)) {
                         sendMessage(
                             phoneId,
                             action,
@@ -65,7 +50,7 @@ class ActionService : JobIntentService() {
         successMessage: String,
         failMessage: String
     ) {
-        messageClient
+        Wearable.getMessageClient(this)
             .sendMessage(nodeId, action, null)
             .addOnSuccessListener {
                 ConfirmationActivityHandler.successAnimation(this, successMessage)
