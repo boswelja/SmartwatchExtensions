@@ -36,7 +36,7 @@ fun ExtensionsScreen() {
     val scrollState = rememberScrollState()
     ColumnInsetLayout(scrollState) {
         Extensions()
-        Divider()
+        Divider(Modifier.padding(vertical = 8.dp))
         Links()
     }
 }
@@ -50,7 +50,7 @@ fun ColumnInsetLayout(
         Column(
             Modifier
                 .verticalScroll(scrollState)
-                .padding(horizontal = 8.dp, vertical = 64.dp),
+                .padding(horizontal = 8.dp, vertical = 56.dp),
             content = content
         )
     } else {
@@ -62,6 +62,7 @@ fun ColumnInsetLayout(
         )
     }
 }
+
 @ExperimentalMaterialApi
 @Composable
 fun Extensions() {

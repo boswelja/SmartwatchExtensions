@@ -13,6 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.BatteryIcon
@@ -61,11 +62,13 @@ fun BatteryStatus(
         BatteryIcon(percent, modifier = Modifier.size(56.dp))
         Text(
             stringResource(R.string.battery_sync_hint_text, phoneName),
-            style = MaterialTheme.typography.body1
+            style = MaterialTheme.typography.body1,
+            textAlign = TextAlign.Center
         )
         Text(
             stringResource(R.string.battery_percent, percent.toString()),
-            style = MaterialTheme.typography.h6
+            style = MaterialTheme.typography.h6,
+            textAlign = TextAlign.Center
         )
     }
 }

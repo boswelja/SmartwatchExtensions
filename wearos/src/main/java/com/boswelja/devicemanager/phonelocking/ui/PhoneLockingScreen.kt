@@ -17,6 +17,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.boswelja.devicemanager.R
 
@@ -68,11 +69,13 @@ fun PhoneLockingEnabled(
         Icon(
             Icons.Outlined.PhonelinkLock,
             null,
-            Modifier.size(56.dp)
+            Modifier.size(56.dp),
+            tint = Color.White
         )
         Text(
             stringResource(R.string.lock_phone, phoneName),
-            style = MaterialTheme.typography.h6
+            style = MaterialTheme.typography.h6,
+            textAlign = TextAlign.Center
         )
     }
 }
