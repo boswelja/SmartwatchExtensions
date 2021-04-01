@@ -5,6 +5,7 @@ import android.content.SharedPreferences
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.ConfirmationActivityHandler
 import com.boswelja.devicemanager.R
@@ -15,9 +16,13 @@ import com.boswelja.devicemanager.common.preference.PreferenceKey.BATTERY_SYNC_E
 import com.boswelja.devicemanager.common.preference.PreferenceKey.PHONE_LOCKING_ENABLED_KEY
 import com.boswelja.devicemanager.phoneconnectionmanager.References.PHONE_ID_KEY
 import com.boswelja.devicemanager.phoneconnectionmanager.References.PHONE_NAME_KEY
+import com.google.android.gms.tasks.Tasks
 import com.google.android.gms.wearable.MessageClient
 import com.google.android.gms.wearable.NodeClient
 import com.google.android.gms.wearable.Wearable
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import timber.log.Timber
 
 class ExtensionsViewModel internal constructor(
     application: Application,
@@ -89,14 +94,13 @@ class ExtensionsViewModel internal constructor(
     }
 
     fun checkPhoneConnection() {
-        nodeClient.connectedNodes.addOnCompleteListener {
-            if (it.isSuccessful && !it.result.isNullOrEmpty()) {
-                val isPhoneConnected =
-                    it.result!!.any { node -> node.id == phoneId && node.isNearby }
-                _phoneConnected.postValue(isPhoneConnected)
-            } else {
-                _phoneConnected.postValue(false)
-            }
+        viewModelScope.launch(Dispatchers.IO) {
+            Timber.d("Checking phone with ID %s is connected", phoneId)
+            val connectedNodes = Tasks.await(nodeClient.connectedNodes)
+            val isPhoneConnected =
+                connectedNodes.any { node -> node.id == phoneId && node.isNearby }
+            _phoneConnected.postValue(isPhoneConnected)
+            Timber.d("isPhoneConnected = %s", isPhoneConnected)
         }
     }
 
