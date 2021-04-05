@@ -116,6 +116,7 @@ dependencies {
     implementation("androidx.room:room-ktx:$androidxRoom")
     implementation("androidx.work:work-runtime-ktx:$androidxWork")
     implementation("androidx.datastore:datastore-preferences:$androidxDataStore")
+    implementation ("androidx.datastore:datastore-core:$androidxDataStore")
 
     implementation("com.android.billingclient:billing-ktx:$billingClient")
     implementation("com.google.android.play:core:$googlePlayCore")
