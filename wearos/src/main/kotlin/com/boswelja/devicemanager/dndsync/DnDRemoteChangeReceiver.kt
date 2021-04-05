@@ -1,13 +1,5 @@
-/* Copyright (C) 2020 Jack Boswell <boswelja@outlook.com>
- *
- * This file is part of Wearable Extensions
- *
- * This file, and any part of the Wearable Extensions app/s cannot be copied and/or distributed
- * without permission from Jack Boswell (boswelja) <boswela@outlook.com>
- */
 package com.boswelja.devicemanager.dndsync
 
-import androidx.core.content.edit
 import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.common.Compat
 import com.boswelja.devicemanager.common.dndsync.References
@@ -33,15 +25,10 @@ class DnDRemoteChangeReceiver : WearableListenerService() {
                 val interruptFilterEnabled = dataMap.getBoolean(References.NEW_DND_STATE_KEY)
                 val success = Compat.setInterruptionFilter(this, interruptFilterEnabled)
                 if (!success) {
-                    sharedPreferences.edit(commit = true) {
-                        putBoolean(DND_SYNC_TO_WATCH_KEY, false)
-                    }
                     PreferenceSyncHelper(
                         this,
-                        sharedPreferences,
                         sharedPreferences.getString(PHONE_ID_KEY, "") ?: ""
-                    )
-                        .also { it.pushNewData(DND_SYNC_TO_WATCH_KEY) }
+                    ).also { it.pushData(DND_SYNC_TO_WATCH_KEY, false) }
                 }
             }
             dataEventBuffer.release()
