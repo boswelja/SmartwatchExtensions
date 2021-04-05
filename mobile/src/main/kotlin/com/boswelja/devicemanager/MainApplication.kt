@@ -9,6 +9,7 @@ import com.boswelja.devicemanager.appsettings.appSettingsStore
 import com.boswelja.devicemanager.bootorupdate.BootOrUpdateHandlerService
 import com.boswelja.devicemanager.bootorupdate.updater.Updater
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.runBlocking
 import timber.log.Timber
 
@@ -23,7 +24,8 @@ class MainApplication : Application() {
         }
 
         // TODO We shouldn't have a blocking call on the main thread like this
-        val nightMode = when (runBlocking { appSettingsStore.data.first().appTheme }) {
+        val storedNightMode = appSettingsStore.data.map { it.appTheme }
+        val nightMode = when (runBlocking { storedNightMode.first() }) {
             Settings.Theme.FOLLOW_SYSTEM -> AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
             Settings.Theme.LIGHT -> AppCompatDelegate.MODE_NIGHT_NO
             Settings.Theme.DARK -> AppCompatDelegate.MODE_NIGHT_YES
