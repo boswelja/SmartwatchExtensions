@@ -68,6 +68,7 @@ dependencies {
     val androidxArch = "2.1.0"
     val androidxAppCompat = "1.3.0-rc01"
     val androidxCoreKtx = "1.5.0-rc01"
+    val androidxDataStore = "1.0.0-alpha08"
     val androidxEspresso = "3.1.0"
     val androidxLifecycle = "2.4.0-alpha01"
     val androidxPreference = "1.1.1"
@@ -99,6 +100,7 @@ dependencies {
     implementation("androidx.preference:preference:$androidxPreference")
     implementation("androidx.wear:wear:$androidxWear")
     implementation("androidx.wear:wear-complications-provider:$androidxWearComplications")
+    implementation("androidx.datastore:datastore:$androidxDataStore")
 
     implementation("com.google.android.gms:play-services-wearable:$playServicesWearable")
     implementation("com.jakewharton.timber:timber:$timber")
