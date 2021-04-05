@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+option java_package = "com.boswelja.devicemanager.appsettings";
+option java_multiple_files = true;
+
+message Settings {
+
+  enum Theme {
+    FOLLOW_SYSTEM = 0;
+    LIGHT = 1;
+    DARK = 2;
+  }
+
+  bool analyticsEnabled = 1;
+  Theme appTheme = 2;
+}
