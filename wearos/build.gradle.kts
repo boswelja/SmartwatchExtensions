@@ -76,6 +76,7 @@ dependencies {
     val androidxTestExt = "1.1.3-alpha04"
     val androidxWear = "1.2.0-alpha07"
     val androidxWearComplications = "1.0.0-alpha10"
+    val androidxWork = "2.7.0-alpha02"
 
     val compose = "1.0.0-beta03"
     val lifecycleCompose = "1.0.0-alpha03"
@@ -101,6 +102,7 @@ dependencies {
     implementation("androidx.wear:wear:$androidxWear")
     implementation("androidx.wear:wear-complications-provider:$androidxWearComplications")
     implementation("androidx.datastore:datastore:$androidxDataStore")
+    implementation("androidx.work:work-runtime-ktx:$androidxWork")
 
     implementation("com.google.android.gms:play-services-wearable:$playServicesWearable")
     implementation("com.jakewharton.timber:timber:$timber")
