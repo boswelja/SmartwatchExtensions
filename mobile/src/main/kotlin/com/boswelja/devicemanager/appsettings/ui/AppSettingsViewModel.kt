@@ -10,7 +10,7 @@ import androidx.lifecycle.viewModelScope
 import com.boswelja.devicemanager.analytics.Analytics
 import com.boswelja.devicemanager.appsettings.Settings
 import com.boswelja.devicemanager.appsettings.appSettingsStore
-import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 class AppSettingsViewModel internal constructor(
@@ -36,9 +36,9 @@ class AppSettingsViewModel internal constructor(
 
     init {
         viewModelScope.launch {
-            dataStore.data.first().apply {
-                _analyticsEnabled.postValue(analyticsEnabled)
-                _appTheme.postValue(appTheme)
+            dataStore.data.collect {
+                _analyticsEnabled.postValue(it.analyticsEnabled)
+                _appTheme.postValue(it.appTheme)
             }
         }
     }
