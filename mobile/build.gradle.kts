@@ -3,6 +3,7 @@ plugins {
     kotlin("android")
     id("com.google.gms.google-services")
     id("com.google.devtools.ksp") version "1.4.31-1.0.0-alpha06"
+    id("com.squareup.wire")
 }
 
 android {
@@ -152,4 +153,10 @@ dependencies {
     androidTestImplementation("com.google.truth:truth:$truth")
     androidTestImplementation("androidx.compose.ui:ui-test-junit4:$compose")
     androidTestImplementation("io.mockk:mockk-android:$mockk")
+}
+
+wire {
+    kotlin {
+        android = true
+    }
 }
