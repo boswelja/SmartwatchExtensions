@@ -1,6 +1,7 @@
 plugins {
     id("com.android.application")
     kotlin("android")
+    id("com.squareup.wire")
 }
 
 android {
@@ -127,4 +128,10 @@ dependencies {
     androidTestImplementation("androidx.test:core-ktx:$androidxTest")
     androidTestImplementation("com.google.truth:truth:$truth")
     androidTestImplementation("io.mockk:mockk-android:$mockk")
+}
+
+wire {
+    kotlin {
+        android = true
+    }
 }
