@@ -77,8 +77,6 @@ class Analytics constructor(private val firebaseAnalytics: FirebaseAnalytics = F
     }
 
     companion object {
-        const val ANALYTICS_ENABLED_KEY = "send_analytics"
-
         internal const val EVENT_EXTENSION_SETTING_CHANGED = "extension_setting_changed"
         internal const val EVENT_APP_SETTING_CHANGED = "app_setting_changed"
         internal const val EVENT_WATCH_REGISTERED = "watch_registered"

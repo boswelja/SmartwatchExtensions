@@ -4,10 +4,12 @@ import android.app.Application
 import android.content.Intent
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
-import androidx.preference.PreferenceManager
-import com.boswelja.devicemanager.appsettings.ui.AppSettingsViewModel.Companion.DAYNIGHT_MODE_KEY
+import com.boswelja.devicemanager.appsettings.Settings
+import com.boswelja.devicemanager.appsettings.appSettingsStore
 import com.boswelja.devicemanager.bootorupdate.BootOrUpdateHandlerService
 import com.boswelja.devicemanager.bootorupdate.updater.Updater
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.runBlocking
 import timber.log.Timber
 
 @Suppress("unused")
@@ -20,13 +22,11 @@ class MainApplication : Application() {
             Timber.plant(Timber.DebugTree())
         }
 
-        val nightMode = try {
-            PreferenceManager.getDefaultSharedPreferences(this).getInt(
-                DAYNIGHT_MODE_KEY,
-                AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
-            )
-        } catch (ignored: Exception) {
-            AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+        // TODO We shouldn't have a blocking call on the main thread like this
+        val nightMode = when (runBlocking { appSettingsStore.data.first().appTheme }) {
+            Settings.Theme.FOLLOW_SYSTEM -> AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+            Settings.Theme.LIGHT -> AppCompatDelegate.MODE_NIGHT_NO
+            Settings.Theme.DARK -> AppCompatDelegate.MODE_NIGHT_YES
         }
         AppCompatDelegate.setDefaultNightMode(nightMode)
 

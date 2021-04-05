@@ -6,15 +6,12 @@ import android.app.job.JobScheduler
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Build
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.edit
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.preference.PreferenceManager
 import androidx.room.Room
 import com.boswelja.devicemanager.BuildConfig
-import com.boswelja.devicemanager.analytics.Analytics
-import com.boswelja.devicemanager.appsettings.ui.AppSettingsViewModel.Companion.DAYNIGHT_MODE_KEY
 import com.boswelja.devicemanager.batterysync.BatterySyncWorker
 import com.boswelja.devicemanager.batterysync.widget.WatchBatteryWidget
 import com.boswelja.devicemanager.common.connection.Messages.WATCH_REGISTERED_PATH
@@ -171,10 +168,11 @@ class Updater(private val context: Context) {
                     }
                     remove(WIDGET_BACKGROUND_OPACITY_KEY.name)
                 }
-                if (lastAppVersion < 2025600000) {
-                    Analytics().setAnalyticsEnabled(
-                        sharedPreferences.getBoolean(Analytics.ANALYTICS_ENABLED_KEY, false)
-                    )
+                if (sharedPreferences.contains("daynight_mode")) {
+                    remove("daynight_mode")
+                }
+                if (sharedPreferences.contains("send_analytics")) {
+                    remove("send_analytics")
                 }
                 if (lastAppVersion < 2020072700) {
                     WatchBatteryWidget.enableWidget(context)
@@ -190,18 +188,6 @@ class Updater(private val context: Context) {
                 runBlocking { updateWidgetImpl() }
                 updateStatus = Result.COMPLETED
             }
-            try {
-                val value = sharedPreferences.getString(
-                    DAYNIGHT_MODE_KEY, AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM.toString()
-                )
-                sharedPreferences.edit(commit = true) { remove(DAYNIGHT_MODE_KEY) }
-                sharedPreferences.edit(commit = true) {
-                    putInt(
-                        DAYNIGHT_MODE_KEY,
-                        value?.toInt() ?: AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
-                    )
-                }
-            } catch (ignored: Exception) { }
         }
         return updateStatus
     }
