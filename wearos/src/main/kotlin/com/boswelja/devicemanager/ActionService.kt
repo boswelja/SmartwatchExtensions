@@ -7,21 +7,25 @@ import androidx.core.app.JobIntentService
 import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.common.batterysync.References.REQUEST_BATTERY_UPDATE_PATH
 import com.boswelja.devicemanager.common.connection.Messages.LOCK_PHONE
-import com.boswelja.devicemanager.common.preference.PreferenceKey.BATTERY_SYNC_ENABLED_KEY
-import com.boswelja.devicemanager.common.preference.PreferenceKey.PHONE_LOCKING_ENABLED_KEY
+import com.boswelja.devicemanager.extensions.extensionSettingsStore
 import com.boswelja.devicemanager.phoneconnectionmanager.References.PHONE_ID_KEY
 import com.google.android.gms.wearable.Wearable
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.runBlocking
 import timber.log.Timber
 
 class ActionService : JobIntentService() {
 
-    override fun onHandleWork(intent: Intent) {
+    override fun onHandleWork(intent: Intent): Unit = runBlocking {
         Timber.d("onHandleWork($intent) called")
-        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
+        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this@ActionService)
         sharedPreferences.getString(PHONE_ID_KEY, "")?.let { phoneId ->
             when (val action = intent.action) {
                 LOCK_PHONE -> {
-                    if (sharedPreferences.getBoolean(PHONE_LOCKING_ENABLED_KEY, false)) {
+                    val phoneLockingEnabled = extensionSettingsStore.data
+                        .map { it.phoneLockingEnabled }.first()
+                    if (phoneLockingEnabled) {
                         sendMessage(
                             phoneId,
                             action,
@@ -31,7 +35,9 @@ class ActionService : JobIntentService() {
                     }
                 }
                 REQUEST_BATTERY_UPDATE_PATH -> {
-                    if (sharedPreferences.getBoolean(BATTERY_SYNC_ENABLED_KEY, false)) {
+                    val batterySyncEnabled = extensionSettingsStore.data
+                        .map { it.batterySyncEnabled }.first()
+                    if (batterySyncEnabled) {
                         sendMessage(
                             phoneId,
                             action,
