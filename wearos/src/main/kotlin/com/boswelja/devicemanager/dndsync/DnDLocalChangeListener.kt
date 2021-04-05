@@ -4,35 +4,32 @@ import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
-import android.app.Service
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.content.SharedPreferences
 import android.os.Build
 import android.os.Handler
-import android.os.IBinder
 import android.os.Looper
 import android.provider.Settings
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
-import androidx.preference.PreferenceManager
+import androidx.lifecycle.LifecycleService
+import androidx.lifecycle.asLiveData
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.Compat
 import com.boswelja.devicemanager.common.dndsync.References
 import com.boswelja.devicemanager.common.dndsync.References.DND_SYNC_LOCAL_NOTI_ID
 import com.boswelja.devicemanager.common.dndsync.References.DND_SYNC_NOTI_CHANNEL_ID
 import com.boswelja.devicemanager.common.dndsync.References.START_ACTIVITY_FROM_NOTI_ID
-import com.boswelja.devicemanager.common.preference.PreferenceKey.DND_SYNC_TO_PHONE_KEY
-import com.boswelja.devicemanager.common.preference.PreferenceKey.DND_SYNC_WITH_THEATER_KEY
+import com.boswelja.devicemanager.extensions.extensionSettingsStore
 import com.boswelja.devicemanager.main.ui.MainActivity
 import com.google.android.gms.wearable.PutDataMapRequest
 import com.google.android.gms.wearable.Wearable
+import kotlinx.coroutines.flow.map
 
-class DnDLocalChangeListener : Service() {
+class DnDLocalChangeListener : LifecycleService() {
 
-    private lateinit var sharedPreferences: SharedPreferences
     private lateinit var notificationManager: NotificationManager
 
     private var dndSyncToPhone: Boolean = false
@@ -50,45 +47,28 @@ class DnDLocalChangeListener : Service() {
         }
 
     private val theaterModeObserver = TheaterModeObserver(this, Handler(Looper.getMainLooper()))
-    private val preferenceChangeListener =
-        SharedPreferences.OnSharedPreferenceChangeListener { sharedPreferences, key ->
-            when (key) {
-                DND_SYNC_TO_PHONE_KEY -> {
-                    setDnDSyncToPhone(sharedPreferences.getBoolean(key, false))
-                }
-                DND_SYNC_WITH_THEATER_KEY -> {
-                    setDnDSyncWithTheaterMode(sharedPreferences.getBoolean(key, false))
-                }
-            }
-        }
-
-    override fun onBind(p0: Intent?): IBinder? = null
 
     override fun onCreate() {
         super.onCreate()
 
         notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
 
-        sharedPreferences.registerOnSharedPreferenceChangeListener(preferenceChangeListener)
-
-        setDnDSyncToPhone(sharedPreferences.getBoolean(DND_SYNC_TO_PHONE_KEY, false))
-        setDnDSyncWithTheaterMode(sharedPreferences.getBoolean(DND_SYNC_WITH_THEATER_KEY, false))
+        extensionSettingsStore.data.map {
+            it.dndSyncToPhone
+        }.asLiveData().observe(this) {
+            setDnDSyncToPhone(it)
+        }
+        extensionSettingsStore.data.map {
+            it.dndSyncWithTheater
+        }.asLiveData().observe(this) {
+            setDnDSyncWithTheaterMode(it)
+        }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             createNotificationChannel()
         }
         startForeground(DND_SYNC_LOCAL_NOTI_ID, createNotification())
         updateInterruptionFilter(this)
-    }
-
-    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        return START_STICKY
-    }
-
-    override fun onDestroy() {
-        sharedPreferences.unregisterOnSharedPreferenceChangeListener(preferenceChangeListener)
-        super.onDestroy()
     }
 
     private fun createNotification(): Notification {
@@ -154,8 +134,7 @@ class DnDLocalChangeListener : Service() {
             } else {
                 try {
                     unregisterReceiver(dndChangeReceiver)
-                } catch (ignored: IllegalArgumentException) {
-                }
+                } catch (ignored: IllegalArgumentException) { }
                 tryStop()
             }
         }
