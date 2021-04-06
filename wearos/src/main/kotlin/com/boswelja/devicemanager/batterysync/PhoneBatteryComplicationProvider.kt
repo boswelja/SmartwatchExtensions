@@ -7,7 +7,6 @@ import android.content.Intent
 import android.graphics.drawable.Icon
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toBitmap
-import androidx.preference.PreferenceManager
 import androidx.wear.complications.ComplicationProviderService
 import androidx.wear.complications.ProviderUpdateRequester
 import androidx.wear.complications.data.ComplicationData
@@ -19,7 +18,12 @@ import androidx.wear.complications.data.ShortTextComplicationData
 import com.boswelja.devicemanager.ActionServiceStarter
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.batterysync.References.REQUEST_BATTERY_UPDATE_PATH
-import com.boswelja.devicemanager.common.preference.PreferenceKey
+import com.boswelja.devicemanager.phoneStateStore
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
 import timber.log.Timber
 
 /**
@@ -27,20 +31,23 @@ import timber.log.Timber
  */
 class PhoneBatteryComplicationProvider : ComplicationProviderService() {
 
+    private val coroutineScope = CoroutineScope(Dispatchers.IO)
+
     override fun onComplicationUpdate(
         complicationId: Int,
         type: ComplicationType,
         resultCallback: ComplicationUpdateCallback
     ) {
-        val prefs = PreferenceManager.getDefaultSharedPreferences(this)
-        val percent = prefs.getInt(PreferenceKey.BATTERY_PERCENT_KEY, 0)
+        coroutineScope.launch {
+            phoneStateStore.data.map { it.batteryPercent }.collect {
+                val complicationData = createComplicationDataFor(it, type)
 
-        val complicationData = createComplicationDataFor(percent, type)
-
-        if (complicationData != null) {
-            resultCallback.onUpdateComplication(complicationData)
-        } else {
-            Timber.w("Complication type $type invalid")
+                if (complicationData != null) {
+                    resultCallback.onUpdateComplication(complicationData)
+                } else {
+                    Timber.w("Complication type $type invalid")
+                }
+            }
         }
     }
 
