@@ -12,7 +12,6 @@ import com.boswelja.devicemanager.widget.database.WidgetDatabase
 import com.boswelja.devicemanager.widget.widgetIdStore
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.runBlocking
 
 class Updater(private val context: Context) {
 
@@ -27,10 +26,10 @@ class Updater(private val context: Context) {
      * Update the app's working environment.
      * @return The [Result] of the update
      */
-    fun doUpdate(): Result {
+    suspend fun doUpdate(): Result {
         var updateStatus = Result.NOT_NEEDED
         if (lastAppVersion < 2027000000) {
-            runBlocking { updateWidgetImpl() }
+            updateWidgetImpl()
             updateStatus = Result.COMPLETED
         }
         return updateStatus
