@@ -4,11 +4,9 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import androidx.core.app.JobIntentService
-import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.common.batterysync.References.REQUEST_BATTERY_UPDATE_PATH
 import com.boswelja.devicemanager.common.connection.Messages.LOCK_PHONE
 import com.boswelja.devicemanager.extensions.extensionSettingsStore
-import com.boswelja.devicemanager.phoneconnectionmanager.References.PHONE_ID_KEY
 import com.google.android.gms.wearable.Wearable
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
@@ -19,32 +17,30 @@ class ActionService : JobIntentService() {
 
     override fun onHandleWork(intent: Intent): Unit = runBlocking {
         Timber.d("onHandleWork($intent) called")
-        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this@ActionService)
-        sharedPreferences.getString(PHONE_ID_KEY, "")?.let { phoneId ->
-            when (val action = intent.action) {
-                LOCK_PHONE -> {
-                    val phoneLockingEnabled = extensionSettingsStore.data
-                        .map { it.phoneLockingEnabled }.first()
-                    if (phoneLockingEnabled) {
-                        sendMessage(
-                            phoneId,
-                            action,
-                            getString(R.string.lock_phone_success),
-                            getString(R.string.lock_phone_failed)
-                        )
-                    }
+        val phoneId = runBlocking { phoneStateStore.data.map { it.id }.first() }
+        when (val action = intent.action) {
+            LOCK_PHONE -> {
+                val phoneLockingEnabled = extensionSettingsStore.data
+                    .map { it.phoneLockingEnabled }.first()
+                if (phoneLockingEnabled) {
+                    sendMessage(
+                        phoneId,
+                        action,
+                        getString(R.string.lock_phone_success),
+                        getString(R.string.lock_phone_failed)
+                    )
                 }
-                REQUEST_BATTERY_UPDATE_PATH -> {
-                    val batterySyncEnabled = extensionSettingsStore.data
-                        .map { it.batterySyncEnabled }.first()
-                    if (batterySyncEnabled) {
-                        sendMessage(
-                            phoneId,
-                            action,
-                            getString(R.string.battery_sync_refresh_success),
-                            getString(R.string.battery_sync_refresh_failed)
-                        )
-                    }
+            }
+            REQUEST_BATTERY_UPDATE_PATH -> {
+                val batterySyncEnabled = extensionSettingsStore.data
+                    .map { it.batterySyncEnabled }.first()
+                if (batterySyncEnabled) {
+                    sendMessage(
+                        phoneId,
+                        action,
+                        getString(R.string.battery_sync_refresh_success),
+                        getString(R.string.battery_sync_refresh_failed)
+                    )
                 }
             }
         }
