@@ -2,12 +2,11 @@ package com.boswelja.devicemanager.donate.ui
 
 import android.app.Activity
 import android.app.Application
-import android.content.SharedPreferences
-import androidx.core.content.edit
+import androidx.datastore.core.DataStore
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.preference.PreferenceManager
+import androidx.lifecycle.viewModelScope
 import com.android.billingclient.api.AcknowledgePurchaseParams
 import com.android.billingclient.api.BillingClient
 import com.android.billingclient.api.BillingClientStateListener
@@ -18,19 +17,22 @@ import com.android.billingclient.api.Purchase
 import com.android.billingclient.api.PurchasesUpdatedListener
 import com.android.billingclient.api.SkuDetails
 import com.android.billingclient.api.SkuDetailsParams
+import com.boswelja.devicemanager.appsettings.Settings
+import com.boswelja.devicemanager.appsettings.appSettingsStore
 import com.boswelja.devicemanager.common.Event
 import com.boswelja.devicemanager.donate.Skus
+import kotlinx.coroutines.launch
 import timber.log.Timber
 
 class DonateViewModel internal constructor(
     application: Application,
-    private val sharedPreferences: SharedPreferences
+    private val dataStore: DataStore<Settings>
 ) : AndroidViewModel(application) {
 
     @Suppress("unused")
     constructor(application: Application) : this(
         application,
-        PreferenceManager.getDefaultSharedPreferences(application)
+        application.appSettingsStore
     )
 
     private val purchasesUpdatedListener = PurchasesUpdatedListener { _, purchases ->
@@ -115,8 +117,12 @@ class DonateViewModel internal constructor(
         Timber.d("consumeOneTimePurchase($purchase) called")
         val params = ConsumeParams.newBuilder().setPurchaseToken(purchase.purchaseToken).build()
         billingClient.consumeAsync(params) { _, _ ->
-            sharedPreferences.edit { putBoolean(HAS_DONATED_KEY, true) }
             onDonated.fire()
+            viewModelScope.launch {
+                dataStore.updateData {
+                    it.copy(hasDonated = true)
+                }
+            }
         }
     }
 
@@ -126,17 +132,17 @@ class DonateViewModel internal constructor(
             .setPurchaseToken(purchase.purchaseToken)
             .build()
         billingClient.acknowledgePurchase(params) {
-            sharedPreferences.edit { putBoolean(HAS_DONATED_KEY, true) }
             onDonated.fire()
+            viewModelScope.launch {
+                dataStore.updateData {
+                    it.copy(hasDonated = true)
+                }
+            }
         }
     }
 
     fun launchBillingFlow(activity: Activity, sku: SkuDetails) {
         val params = BillingFlowParams.newBuilder().setSkuDetails(sku).build()
         billingClient.launchBillingFlow(activity, params)
-    }
-
-    companion object {
-        private const val HAS_DONATED_KEY = "has_donated"
     }
 }
