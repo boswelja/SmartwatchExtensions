@@ -13,4 +13,6 @@ message Settings {
 
   bool analyticsEnabled = 1;
   Theme appTheme = 2;
+
+  bool hasDonated = 3;
 }
