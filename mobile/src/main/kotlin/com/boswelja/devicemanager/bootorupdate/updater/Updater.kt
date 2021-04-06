@@ -14,7 +14,7 @@ class Updater(private val context: Context) {
 
     suspend fun checkNeedsUpdate(): Boolean {
         lastAppVersion = context.appStateStore.data.map { it.lastAppVersion }.first()
-        return lastAppVersion < BuildConfig.VERSION_CODE
+        return lastAppVersion > 0 && lastAppVersion < BuildConfig.VERSION_CODE
     }
 
     /**
