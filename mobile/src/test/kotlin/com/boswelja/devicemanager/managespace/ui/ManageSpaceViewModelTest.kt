@@ -9,7 +9,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.boswelja.devicemanager.analytics.Analytics
-import com.boswelja.devicemanager.appsettings.AppSettingsSerializer
 import com.boswelja.devicemanager.appsettings.Settings
 import com.boswelja.devicemanager.managespace.ui.ManageSpaceViewModel.Companion.MAX_PROGRESS
 import com.boswelja.devicemanager.watchmanager.WatchManager
@@ -217,9 +216,7 @@ class ManageSpaceViewModelTest {
         viewModel.resetAppSettings { }
         shadowOf(getMainLooper()).idle()
         coVerify {
-            dataStore.updateData {
-                AppSettingsSerializer().defaultValue
-            }
+            dataStore.updateData(any())
         }
     }
 
