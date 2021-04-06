@@ -11,8 +11,14 @@ message Settings {
     DARK = 2;
   }
 
+  enum PhoneLockMode {
+    DEVICE_ADMIN = 0;
+    ACCESSIBILITY_SERVICE = 1;
+  }
   bool analyticsEnabled = 1;
   Theme appTheme = 2;
 
   bool hasDonated = 3;
+
+  PhoneLockMode phoneLockMode = 4;
 }

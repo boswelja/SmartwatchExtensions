@@ -19,7 +19,8 @@ class AppSettingsSerializer : Serializer<Settings> {
     override val defaultValue = Settings(
         true,
         Settings.Theme.FOLLOW_SYSTEM,
-        false
+        false,
+        Settings.PhoneLockMode.DEVICE_ADMIN
     )
 
     override suspend fun readFrom(input: InputStream): Settings {
