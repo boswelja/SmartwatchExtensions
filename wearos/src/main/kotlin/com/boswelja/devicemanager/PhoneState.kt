@@ -15,9 +15,10 @@ val Context.phoneStateStore: DataStore<PhoneState> by dataStore(
 @Suppress("BlockingMethodInNonBlockingContext")
 class PhoneStateSerializer : Serializer<PhoneState> {
     override val defaultValue = PhoneState(
-        phoneId = "",
-        phoneBatteryPercent = 0,
-        phoneChargeNotiSent = false
+        id = "",
+        name = "Phone",
+        batteryPercent = 0,
+        chargeNotiSent = false
     )
 
     override suspend fun readFrom(input: InputStream): PhoneState =
