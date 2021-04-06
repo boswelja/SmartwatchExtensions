@@ -21,4 +21,6 @@ message Settings {
   bool hasDonated = 3;
 
   PhoneLockMode phoneLockMode = 4;
+
+  string lastSelectedWatchId = 5;
 }

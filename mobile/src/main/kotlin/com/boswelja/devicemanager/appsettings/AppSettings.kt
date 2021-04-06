@@ -20,7 +20,8 @@ class AppSettingsSerializer : Serializer<Settings> {
         true,
         Settings.Theme.FOLLOW_SYSTEM,
         false,
-        Settings.PhoneLockMode.DEVICE_ADMIN
+        Settings.PhoneLockMode.DEVICE_ADMIN,
+        ""
     )
 
     override suspend fun readFrom(input: InputStream): Settings {
