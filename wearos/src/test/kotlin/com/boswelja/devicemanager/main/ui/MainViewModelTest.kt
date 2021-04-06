@@ -1,22 +1,21 @@
 package com.boswelja.devicemanager.main.ui
 
-import android.content.SharedPreferences
 import android.os.Build
-import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.core.content.edit
-import androidx.preference.PreferenceManager
+import androidx.datastore.core.DataStore
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.boswelja.devicemanager.PhoneState
 import com.boswelja.devicemanager.capability.CapabilityUpdater
 import com.boswelja.devicemanager.getOrAwaitValue
-import com.boswelja.devicemanager.phoneconnectionmanager.References.PHONE_ID_KEY
 import com.google.common.truth.Truth.assertThat
 import io.mockk.every
+import io.mockk.mockk
 import io.mockk.mockkConstructor
 import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.runBlocking
 import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.annotation.Config
@@ -26,43 +25,43 @@ import org.robolectric.annotation.Config
 @ExperimentalCoroutinesApi
 class MainViewModelTest {
 
-    @get:Rule
-    val taskExecutorRule = InstantTaskExecutorRule()
+    private lateinit var dataStore: DataStore<PhoneState>
 
-    private lateinit var sharedPreferences: SharedPreferences
+    private val phoneState = MutableStateFlow<PhoneState>(PhoneState())
 
     @Before
-    fun setUp() {
+    fun setUp(): Unit = runBlocking {
+        dataStore = mockk()
         mockkConstructor(CapabilityUpdater::class)
         every { anyConstructed<CapabilityUpdater>().updateCapabilities() } answers { }
-
-        sharedPreferences = PreferenceManager
-            .getDefaultSharedPreferences(ApplicationProvider.getApplicationContext())
+        every { dataStore.data } returns phoneState
     }
 
     @Test
-    fun `isRegistered correctly updates on ViewModel init`() {
-        // Check with a 'valid' ID
-        sharedPreferences.edit(commit = true) { putString(PHONE_ID_KEY, "id") }
-        var viewModel = getViewModel()
+    fun `isRegistered is true on ViewModel init with ID set`(): Unit = runBlocking {
+        updatePhoneId("id")
+        val viewModel = getViewModel()
         assertThat(viewModel.isRegistered.getOrAwaitValue()).isTrue()
+    }
 
-        // Check with no ID
-        sharedPreferences.edit(commit = true) { putString(PHONE_ID_KEY, "") }
-        viewModel = getViewModel()
+    @Test
+    fun `isRegistered is false on ViewModel init with no ID`(): Unit = runBlocking {
+        updatePhoneId("")
+        val viewModel = getViewModel()
         assertThat(viewModel.isRegistered.getOrAwaitValue()).isFalse()
     }
 
     @Test
-    fun `isRegistered correctly updates after ViewModel init`() {
+    fun `isRegistered is true when ID set after ViewModel init`(): Unit = runBlocking {
         val viewModel = getViewModel()
-
-        // Check with a 'valid' ID
-        sharedPreferences.edit(commit = true) { putString(PHONE_ID_KEY, "id") }
+        updatePhoneId("id")
         assertThat(viewModel.isRegistered.getOrAwaitValue()).isTrue()
+    }
 
-        // Check with no ID
-        sharedPreferences.edit(commit = true) { putString(PHONE_ID_KEY, "") }
+    @Test
+    fun `isRegistered is false when ID cleared after ViewModel init`(): Unit = runBlocking {
+        val viewModel = getViewModel()
+        updatePhoneId("")
         assertThat(viewModel.isRegistered.getOrAwaitValue()).isFalse()
     }
 
@@ -71,8 +70,12 @@ class MainViewModelTest {
         getViewModel()
         verify(exactly = 1) { anyConstructed<CapabilityUpdater>().updateCapabilities() }
     }
+
+    private suspend fun updatePhoneId(id: String) {
+        phoneState.emit(PhoneState(id = id))
+    }
+
     private fun getViewModel(): MainViewModel = MainViewModel(
-        ApplicationProvider.getApplicationContext(),
-        sharedPreferences
+        ApplicationProvider.getApplicationContext(), dataStore
     )
 }
