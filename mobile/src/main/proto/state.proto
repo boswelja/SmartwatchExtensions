@@ -6,4 +6,5 @@ option java_multiple_files = true;
 message AppState {
   bool hasDonated = 1;
   string lastSelectedWatchId = 2;
+  int32 lastAppVersion = 3;
 }
