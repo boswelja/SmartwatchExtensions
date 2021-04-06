@@ -71,7 +71,6 @@ dependencies {
     val androidxDataStore = "1.0.0-alpha08"
     val androidxEspresso = "3.1.0"
     val androidxLifecycle = "2.4.0-alpha01"
-    val androidxPreference = "1.1.1"
     val androidxTest = "1.4.0-alpha05"
     val androidxTestExt = "1.1.3-alpha04"
     val androidxWear = "1.2.0-alpha07"
@@ -98,7 +97,6 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:$androidxLifecycle")
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:$androidxLifecycle")
     implementation("androidx.lifecycle:lifecycle-service:$androidxLifecycle")
-    implementation("androidx.preference:preference:$androidxPreference")
     implementation("androidx.wear:wear:$androidxWear")
     implementation("androidx.wear:wear-complications-provider:$androidxWearComplications")
     implementation("androidx.datastore:datastore:$androidxDataStore")

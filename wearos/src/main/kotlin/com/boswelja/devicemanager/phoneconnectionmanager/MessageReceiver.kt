@@ -1,10 +1,3 @@
-/* Copyright (C) 2020 Jack Boswell <boswelja@outlook.com>
- *
- * This file is part of Wearable Extensions
- *
- * This file, and any part of the Wearable Extensions app/s cannot be copied and/or distributed
- * without permission from Jack Boswell (boswelja) <boswela@outlook.com>
- */
 package com.boswelja.devicemanager.phoneconnectionmanager
 
 import android.app.ActivityManager
@@ -12,8 +5,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import androidx.core.content.ContextCompat
-import androidx.core.content.edit
-import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.BuildConfig
 import com.boswelja.devicemanager.appmanager.AppManagerService
 import com.boswelja.devicemanager.capability.CapabilityUpdater
@@ -26,9 +17,12 @@ import com.boswelja.devicemanager.common.connection.Messages.RESET_APP
 import com.boswelja.devicemanager.common.dndsync.References.REQUEST_INTERRUPT_FILTER_ACCESS_STATUS_PATH
 import com.boswelja.devicemanager.common.dndsync.References.REQUEST_SDK_INT_PATH
 import com.boswelja.devicemanager.common.toByteArray
+import com.boswelja.devicemanager.extensions.SettingsSerializer
+import com.boswelja.devicemanager.extensions.extensionSettingsStore
 import com.google.android.gms.wearable.MessageEvent
 import com.google.android.gms.wearable.Wearable
 import com.google.android.gms.wearable.WearableListenerService
+import kotlinx.coroutines.runBlocking
 import timber.log.Timber
 
 class MessageReceiver : WearableListenerService() {
@@ -72,9 +66,11 @@ class MessageReceiver : WearableListenerService() {
                 activityManager.clearApplicationUserData()
             }
             CLEAR_PREFERENCES -> {
-                val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
-                sharedPreferences.edit {
-                    clear()
+                runBlocking {
+                    extensionSettingsStore.updateData {
+                        // Recreate the DataStore with default values
+                        SettingsSerializer().defaultValue
+                    }
                 }
             }
             REQUEST_UPDATE_CAPABILITIES -> {
