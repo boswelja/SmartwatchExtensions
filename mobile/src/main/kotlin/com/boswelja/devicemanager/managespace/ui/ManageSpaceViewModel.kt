@@ -7,6 +7,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.Observer
 import androidx.lifecycle.viewModelScope
 import com.boswelja.devicemanager.analytics.Analytics
+import com.boswelja.devicemanager.appsettings.AppSettingsSerializer
 import com.boswelja.devicemanager.appsettings.Settings
 import com.boswelja.devicemanager.appsettings.appSettingsStore
 import com.boswelja.devicemanager.watchmanager.WatchManager
@@ -101,11 +102,7 @@ class ManageSpaceViewModel internal constructor(
     ) {
         viewModelScope.launch(coroutineDispatcher) {
             appSettingsDataStore.updateData {
-                // Reset settings to their default value, excluding hasDonated
-                it.copy(
-                    analyticsEnabled = true,
-                    appTheme = Settings.Theme.FOLLOW_SYSTEM
-                )
+                AppSettingsSerializer().defaultValue
             }
             withContext(Dispatchers.Main) { onCompleteFunction(true) }
         }
