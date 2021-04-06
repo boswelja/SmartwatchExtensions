@@ -10,7 +10,7 @@ import java.io.InputStream
 import java.io.OutputStream
 
 val Context.appSettingsStore: DataStore<Settings> by dataStore(
-    "app_settings.pb",
+    "appSettings.pb",
     AppSettingsSerializer()
 )
 
@@ -19,9 +19,7 @@ class AppSettingsSerializer : Serializer<Settings> {
     override val defaultValue = Settings(
         true,
         Settings.Theme.FOLLOW_SYSTEM,
-        false,
-        Settings.PhoneLockMode.DEVICE_ADMIN,
-        ""
+        Settings.PhoneLockMode.DEVICE_ADMIN
     )
 
     override suspend fun readFrom(input: InputStream): Settings {

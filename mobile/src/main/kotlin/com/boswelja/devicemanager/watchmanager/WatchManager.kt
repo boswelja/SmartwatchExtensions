@@ -7,9 +7,9 @@ import androidx.datastore.preferences.core.edit
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
+import com.boswelja.devicemanager.AppState
 import com.boswelja.devicemanager.analytics.Analytics
-import com.boswelja.devicemanager.appsettings.Settings
-import com.boswelja.devicemanager.appsettings.appSettingsStore
+import com.boswelja.devicemanager.appStateStore
 import com.boswelja.devicemanager.batterysync.database.WatchBatteryStatsDatabase
 import com.boswelja.devicemanager.common.SingletonHolder
 import com.boswelja.devicemanager.common.connection.Messages.REQUEST_UPDATE_CAPABILITIES
@@ -31,14 +31,14 @@ import timber.log.Timber
 class WatchManager internal constructor(
     val watchRepository: WatchRepository,
     private val analytics: Analytics,
-    private val dataStore: DataStore<Settings>,
+    private val dataStore: DataStore<AppState>,
     private val coroutineScope: CoroutineScope
 ) {
 
     constructor(context: Context) : this(
         WatchRepository(context),
         Analytics(),
-        context.appSettingsStore,
+        context.appStateStore,
         CoroutineScope(Dispatchers.IO)
     )
 

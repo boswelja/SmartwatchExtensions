@@ -17,8 +17,8 @@ import com.android.billingclient.api.Purchase
 import com.android.billingclient.api.PurchasesUpdatedListener
 import com.android.billingclient.api.SkuDetails
 import com.android.billingclient.api.SkuDetailsParams
-import com.boswelja.devicemanager.appsettings.Settings
-import com.boswelja.devicemanager.appsettings.appSettingsStore
+import com.boswelja.devicemanager.AppState
+import com.boswelja.devicemanager.appStateStore
 import com.boswelja.devicemanager.common.Event
 import com.boswelja.devicemanager.donate.Skus
 import kotlinx.coroutines.launch
@@ -26,13 +26,13 @@ import timber.log.Timber
 
 class DonateViewModel internal constructor(
     application: Application,
-    private val dataStore: DataStore<Settings>
+    private val dataStore: DataStore<AppState>
 ) : AndroidViewModel(application) {
 
     @Suppress("unused")
     constructor(application: Application) : this(
         application,
-        application.appSettingsStore
+        application.appStateStore
     )
 
     private val purchasesUpdatedListener = PurchasesUpdatedListener { _, purchases ->
