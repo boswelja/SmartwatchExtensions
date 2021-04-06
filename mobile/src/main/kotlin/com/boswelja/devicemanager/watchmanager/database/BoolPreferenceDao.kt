@@ -37,4 +37,7 @@ interface BoolPreferenceDao {
 
     @Query("SELECT * FROM bool_preferences WHERE id = :watchId AND pref_key = :key LIMIT 1")
     fun getObservable(watchId: String, key: String): LiveData<BoolPreference?>
+
+    @Query("UPDATE bool_preferences SET value = :newValue WHERE pref_key = :key")
+    fun updateAllForKey(key: String, newValue: Boolean)
 }
