@@ -1,13 +1,9 @@
 package com.boswelja.devicemanager
 
 import android.app.Application
-import android.content.Intent
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.core.content.ContextCompat
 import com.boswelja.devicemanager.appsettings.Settings
 import com.boswelja.devicemanager.appsettings.appSettingsStore
-import com.boswelja.devicemanager.bootorupdate.BootOrUpdateHandlerService
-import com.boswelja.devicemanager.bootorupdate.updater.Updater
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.runBlocking
@@ -31,18 +27,5 @@ class MainApplication : Application() {
             Settings.Theme.DARK -> AppCompatDelegate.MODE_NIGHT_YES
         }
         AppCompatDelegate.setDefaultNightMode(nightMode)
-
-        ensureEnvironmentUpdated()
-    }
-
-    /** Checks the environment is up to date, otherwise starts a [BootOrUpdateHandlerService]. */
-    private fun ensureEnvironmentUpdated() {
-        val updater = Updater(this)
-        if (updater.needsUpdate) {
-            Timber.i("Starting updater service")
-            Intent(this, BootOrUpdateHandlerService::class.java)
-                .apply { action = Intent.ACTION_MY_PACKAGE_REPLACED }
-                .also { ContextCompat.startForegroundService(this, it) }
-        }
     }
 }
