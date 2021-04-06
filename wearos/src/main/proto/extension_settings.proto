@@ -8,7 +8,7 @@ message ExtensionSettings {
 
   bool batterySyncEnabled = 2;
   bool phoneChargeNotiEnabled = 3;
-  float batteryChargeThreshold = 4;
+  int32 batteryChargeThreshold = 4;
 
   bool dndSyncToPhone = 5;
   bool dndSyncWithTheater = 6;

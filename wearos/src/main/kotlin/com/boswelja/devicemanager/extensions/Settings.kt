@@ -18,7 +18,7 @@ class SettingsSerializer : Serializer<ExtensionSettings> {
         phoneLockingEnabled = false,
         batterySyncEnabled = false,
         phoneChargeNotiEnabled = false,
-        batteryChargeThreshold = 0.9f,
+        batteryChargeThreshold = 90,
         dndSyncToPhone = false,
         dndSyncWithTheater = false
     )
