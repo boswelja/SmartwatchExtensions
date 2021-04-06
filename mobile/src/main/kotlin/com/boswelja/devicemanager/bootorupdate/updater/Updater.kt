@@ -3,13 +3,8 @@
 package com.boswelja.devicemanager.bootorupdate.updater
 
 import android.content.Context
-import androidx.datastore.preferences.core.edit
-import androidx.datastore.preferences.core.stringPreferencesKey
-import androidx.room.Room
 import com.boswelja.devicemanager.BuildConfig
 import com.boswelja.devicemanager.appStateStore
-import com.boswelja.devicemanager.widget.database.WidgetDatabase
-import com.boswelja.devicemanager.widget.widgetIdStore
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 
@@ -29,26 +24,11 @@ class Updater(private val context: Context) {
     suspend fun doUpdate(): Result {
         var updateStatus = Result.NOT_NEEDED
         if (lastAppVersion < 2027000000) {
-            updateWidgetImpl()
-            updateStatus = Result.COMPLETED
+            updateStatus = Result.RECOMMEND_RESET
+        }
+        context.appStateStore.updateData {
+            it.copy(lastAppVersion = BuildConfig.VERSION_CODE)
         }
         return updateStatus
-    }
-
-    private suspend fun updateWidgetImpl() {
-        // TODO remove this
-        val widgetIdStore = context.widgetIdStore
-        Room.databaseBuilder(context, WidgetDatabase::class.java, "widget-db")
-            .fallbackToDestructiveMigration()
-            .allowMainThreadQueries()
-            .build().also { database ->
-                widgetIdStore.edit { widgetIds ->
-                    database.widgetDao().getAll().forEach {
-                        widgetIds[stringPreferencesKey(it.widgetId.toString())] = it.watchId
-                    }
-                }
-                database.clearAllTables()
-                database.close()
-            }
     }
 }
