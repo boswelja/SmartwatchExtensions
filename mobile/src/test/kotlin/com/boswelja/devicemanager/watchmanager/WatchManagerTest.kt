@@ -57,6 +57,7 @@ class WatchManagerTest {
     @Before
     fun setUp() {
         MockKAnnotations.init(this)
+        every { dataStore.data } returns appState
 
         coroutineScope = TestCoroutineScope()
     }
