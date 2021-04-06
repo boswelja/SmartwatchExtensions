@@ -12,13 +12,9 @@ import com.google.android.gms.wearable.DataEventBuffer
 import com.google.android.gms.wearable.DataMapItem
 import com.google.android.gms.wearable.Wearable
 import com.google.android.gms.wearable.WearableListenerService
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
 class PreferenceChangeReceiver : WearableListenerService() {
-
-    private val coroutineScope = CoroutineScope(Dispatchers.IO)
 
     override fun onDataChanged(dataEvents: DataEventBuffer?) {
         if (dataEvents != null) {
@@ -32,9 +28,9 @@ class PreferenceChangeReceiver : WearableListenerService() {
     }
 
     private fun handlePreferenceChange(event: DataEvent) {
-        coroutineScope.launch {
-            val dataMap = DataMapItem.fromDataItem(event.dataItem).dataMap
-            if (!dataMap.isEmpty) {
+        val dataMap = DataMapItem.fromDataItem(event.dataItem).dataMap
+        if (!dataMap.isEmpty) {
+            runBlocking {
                 extensionSettingsStore.updateData {
                     var batterySyncEnabled = it.batterySyncEnabled
                     var phoneLockingEnabled = it.phoneLockingEnabled
