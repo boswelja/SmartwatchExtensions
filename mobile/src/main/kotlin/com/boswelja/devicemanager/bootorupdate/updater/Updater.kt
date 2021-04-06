@@ -5,7 +5,6 @@ package com.boswelja.devicemanager.bootorupdate.updater
 import android.app.job.JobScheduler
 import android.content.Context
 import android.content.SharedPreferences
-import android.os.Build
 import androidx.core.content.edit
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
@@ -18,9 +17,6 @@ import com.boswelja.devicemanager.common.connection.Messages.WATCH_REGISTERED_PA
 import com.boswelja.devicemanager.common.connection.References.CAPABILITY_WATCH_APP
 import com.boswelja.devicemanager.common.preference.PreferenceKey
 import com.boswelja.devicemanager.common.preference.PreferenceKey.BATTERY_SYNC_ENABLED_KEY
-import com.boswelja.devicemanager.phonelocking.ui.PhoneLockingSettingsViewModel.Companion.PHONE_LOCKING_MODE_ACCESSIBILITY_SERVICE
-import com.boswelja.devicemanager.phonelocking.ui.PhoneLockingSettingsViewModel.Companion.PHONE_LOCKING_MODE_DEVICE_ADMIN
-import com.boswelja.devicemanager.phonelocking.ui.PhoneLockingSettingsViewModel.Companion.PHONE_LOCKING_MODE_KEY
 import com.boswelja.devicemanager.watchmanager.WatchManager.Companion.LAST_SELECTED_NODE_ID_KEY
 import com.boswelja.devicemanager.watchmanager.connection.wearos.WearOSConnectionInterface
 import com.boswelja.devicemanager.watchmanager.database.WatchDatabase
@@ -128,19 +124,6 @@ class Updater(private val context: Context) {
                 if (sharedPreferences.contains("message_count")) {
                     remove("message_count")
                     updateStatus = Result.COMPLETED
-                }
-                if (!sharedPreferences.contains(PHONE_LOCKING_MODE_KEY)) {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                        putString(
-                            PHONE_LOCKING_MODE_KEY,
-                            PHONE_LOCKING_MODE_ACCESSIBILITY_SERVICE.toString()
-                        )
-                    } else {
-                        putString(
-                            PHONE_LOCKING_MODE_KEY,
-                            PHONE_LOCKING_MODE_DEVICE_ADMIN.toString()
-                        )
-                    }
                 }
                 if (sharedPreferences.contains("has_completed_first_run")) {
                     remove("has_completed_first_run")

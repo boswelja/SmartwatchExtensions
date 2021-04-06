@@ -1,31 +1,20 @@
-/* Copyright (C) 2020 Jack Boswell <boswelja@outlook.com>
- *
- * This file is part of Wearable Extensions
- *
- * This file, and any part of the Wearable Extensions app/s cannot be copied and/or distributed
- * without permission from Jack Boswell (boswelja) <boswela@outlook.com>
- */
 package com.boswelja.devicemanager.phonelocking
 
 import android.accessibilityservice.AccessibilityService
-import android.content.SharedPreferences
 import android.os.Build
 import android.view.accessibility.AccessibilityEvent
 import androidx.annotation.RequiresApi
-import androidx.core.content.edit
 import androidx.lifecycle.Observer
-import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.common.connection.Messages.LOCK_PHONE
 import com.boswelja.devicemanager.common.preference.PreferenceKey.PHONE_LOCKING_ENABLED_KEY
-import com.boswelja.devicemanager.phonelocking.ui.PhoneLockingSettingsViewModel.Companion.PHONE_LOCKING_MODE_ACCESSIBILITY_SERVICE
-import com.boswelja.devicemanager.phonelocking.ui.PhoneLockingSettingsViewModel.Companion.PHONE_LOCKING_MODE_KEY
 import com.boswelja.devicemanager.watchmanager.WatchManager
+import com.boswelja.devicemanager.watchmanager.item.BoolPreference
 import com.boswelja.devicemanager.watchmanager.item.Watch
 import com.google.android.gms.wearable.MessageClient
 import com.google.android.gms.wearable.MessageEvent
 import com.google.android.gms.wearable.Wearable
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
@@ -33,32 +22,30 @@ import timber.log.Timber
 @RequiresApi(Build.VERSION_CODES.P)
 class PhoneLockingAccessibilityService :
     AccessibilityService(),
-    MessageClient.OnMessageReceivedListener,
-    SharedPreferences.OnSharedPreferenceChangeListener {
+    MessageClient.OnMessageReceivedListener {
 
     private val registeredWatchObserver = Observer<List<Watch>> {
         registeredWatches = it
     }
-    private val coroutineScope = MainScope()
+    private val settingsObserver = Observer<Array<BoolPreference>> { prefs ->
+        if (prefs.none { it.value }) stop()
+    }
+
+    private val coroutineScope = CoroutineScope(Dispatchers.IO)
     private val watchManager: WatchManager by lazy {
         WatchManager.getInstance(this)
     }
 
-    private lateinit var sharedPreferences: SharedPreferences
+    private val settingsLiveData by lazy {
+        watchManager.watchRepository.database.boolPrefDao().getAllObservableForKey(
+            PHONE_LOCKING_ENABLED_KEY
+        )
+    }
+
     private lateinit var messageClient: MessageClient
 
     private var isStopping = false
     private var registeredWatches: List<Watch> = emptyList()
-
-    override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
-        if (key == PHONE_LOCKING_MODE_KEY &&
-            sharedPreferences?.getString(key, "0") !=
-            PHONE_LOCKING_MODE_ACCESSIBILITY_SERVICE.toString()
-        ) {
-            Timber.i("Phone Locking mode changed, attempting to stop self")
-            stopSelf()
-        }
-    }
 
     override fun onMessageReceived(messageEvent: MessageEvent) {
         when (messageEvent.path) {
@@ -70,11 +57,10 @@ class PhoneLockingAccessibilityService :
 
     override fun onServiceConnected() {
         Timber.i("onServiceConnected() called")
-        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
         messageClient = Wearable.getMessageClient(this)
-        sharedPreferences.edit { putBoolean(ACCESSIBILITY_SERVICE_ENABLED_KEY, true) }
         messageClient.addListener(this)
         watchManager.registeredWatches.observeForever(registeredWatchObserver)
+        settingsLiveData.observeForever(settingsObserver)
     }
 
     override fun onAccessibilityEvent(event: AccessibilityEvent?) {
@@ -103,7 +89,9 @@ class PhoneLockingAccessibilityService :
                     watchManager.getPreference<Boolean>(watch, PHONE_LOCKING_ENABLED_KEY) == false
                 if (phoneLockingEnabledForWatch) {
                     Timber.i("Trying to lock phone")
-                    withContext(Dispatchers.Main) { performGlobalAction(GLOBAL_ACTION_LOCK_SCREEN) }
+                    withContext(Dispatchers.Main) {
+                        performGlobalAction(GLOBAL_ACTION_LOCK_SCREEN)
+                    }
                 } else {
                     Timber.w("$watchId tried to lock phone, doesn't have permission")
                 }
@@ -119,17 +107,14 @@ class PhoneLockingAccessibilityService :
         if (!isStopping) {
             Timber.i("Stopping")
             isStopping = true
-            sharedPreferences.edit {
-                putBoolean(ACCESSIBILITY_SERVICE_ENABLED_KEY, false)
-                putBoolean(PHONE_LOCKING_ENABLED_KEY, false)
-            }
             coroutineScope.launch(Dispatchers.IO) {
-                registeredWatches.forEach {
-                    watchManager.updatePreference(it, PHONE_LOCKING_ENABLED_KEY, false)
-                }
+                watchManager.watchRepository.database.boolPrefDao().updateAllForKey(
+                    PHONE_LOCKING_ENABLED_KEY, false
+                )
             }
             messageClient.removeListener(this)
             watchManager.registeredWatches.removeObserver(registeredWatchObserver)
+            settingsLiveData.removeObserver(settingsObserver)
         }
     }
 

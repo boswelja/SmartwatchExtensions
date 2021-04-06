@@ -3,7 +3,8 @@ package com.boswelja.devicemanager.watchmanager.connection.wearos
 import android.app.admin.DevicePolicyManager
 import android.content.Context
 import android.content.Intent
-import androidx.preference.PreferenceManager
+import com.boswelja.devicemanager.appsettings.Settings
+import com.boswelja.devicemanager.appsettings.appSettingsStore
 import com.boswelja.devicemanager.batterysync.Utils.updateBatteryStats
 import com.boswelja.devicemanager.batterysync.ui.BatterySyncSettingsActivity
 import com.boswelja.devicemanager.common.Compat
@@ -19,8 +20,6 @@ import com.boswelja.devicemanager.common.toByteArray
 import com.boswelja.devicemanager.dndsync.ui.DnDSyncSettingsActivity
 import com.boswelja.devicemanager.main.MainActivity
 import com.boswelja.devicemanager.phonelocking.Utils.isDeviceAdminEnabled
-import com.boswelja.devicemanager.phonelocking.ui.PhoneLockingSettingsViewModel.Companion.PHONE_LOCKING_MODE_ACCESSIBILITY_SERVICE
-import com.boswelja.devicemanager.phonelocking.ui.PhoneLockingSettingsViewModel.Companion.PHONE_LOCKING_MODE_KEY
 import com.boswelja.devicemanager.watchmanager.database.WatchDatabase
 import com.google.android.gms.wearable.MessageEvent
 import com.google.android.gms.wearable.Wearable
@@ -28,7 +27,10 @@ import com.google.android.gms.wearable.WearableListenerService
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import timber.log.Timber
 
 class WatchMessageReceiver : WearableListenerService() {
@@ -54,11 +56,10 @@ class WatchMessageReceiver : WearableListenerService() {
     /** Tries to lock the device via Device Administrator permissions. */
     private fun tryLockDevice() {
         Timber.i("tryLockDevice() called")
-        val isInDeviceAdminMode =
-            PreferenceManager.getDefaultSharedPreferences(this)
-                .getString(PHONE_LOCKING_MODE_KEY, "0") !=
-                PHONE_LOCKING_MODE_ACCESSIBILITY_SERVICE.toString()
+        val phoneLockMode = runBlocking { appSettingsStore.data.map { it.phoneLockMode }.first() }
+        val isInDeviceAdminMode = phoneLockMode == Settings.PhoneLockMode.DEVICE_ADMIN
         val isDeviceAdminEnabled = isDeviceAdminEnabled(this)
+        // TODO If phone locking state is out of sync, sync up
         if (isInDeviceAdminMode && isDeviceAdminEnabled) {
             Timber.i("Trying to lock device")
             val devicePolicyManager: DevicePolicyManager =
