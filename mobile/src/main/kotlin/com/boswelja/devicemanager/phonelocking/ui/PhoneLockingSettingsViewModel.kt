@@ -18,7 +18,8 @@ import com.boswelja.devicemanager.appsettings.appSettingsStore
 import com.boswelja.devicemanager.common.preference.PreferenceKey.PHONE_LOCKING_ENABLED_KEY
 import com.boswelja.devicemanager.phonelocking.DeviceAdminChangeReceiver
 import com.boswelja.devicemanager.phonelocking.PhoneLockingAccessibilityService
-import com.boswelja.devicemanager.phonelocking.Utils
+import com.boswelja.devicemanager.phonelocking.Utils.isAccessibilityServiceEnabled
+import com.boswelja.devicemanager.phonelocking.Utils.isDeviceAdminEnabled
 import com.boswelja.devicemanager.watchmanager.WatchManager
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
@@ -134,10 +135,7 @@ class PhoneLockingSettingsViewModel internal constructor(
         if (phoneLockingMode.value != Settings.PhoneLockMode.ACCESSIBILITY_SERVICE) {
             val context = getApplication<Application>()
             Timber.i("Switching to Accessibility Service mode")
-            if (Utils.isDeviceAdminEnabled(context)) {
-//                sharedPreferences.edit {
-//                    putBoolean(DeviceAdminChangeReceiver.DEVICE_ADMIN_ENABLED_KEY, false)
-//                }
+            if (context.isDeviceAdminEnabled()) {
                 context.getSystemService<DevicePolicyManager>()?.removeActiveAdmin(
                     ComponentName(context, DeviceAdminChangeReceiver::class.java)
                 )
@@ -184,9 +182,9 @@ class PhoneLockingSettingsViewModel internal constructor(
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.P &&
             phoneLockingMode.value == Settings.PhoneLockMode.ACCESSIBILITY_SERVICE
         ) {
-            Utils.isAccessibilityServiceEnabled(getApplication())
+            getApplication<Application>().isAccessibilityServiceEnabled()
         } else {
-            Utils.isDeviceAdminEnabled(getApplication())
+            getApplication<Application>().isDeviceAdminEnabled()
         }
     }
 }

@@ -117,8 +117,4 @@ class PhoneLockingAccessibilityService :
             settingsLiveData.removeObserver(settingsObserver)
         }
     }
-
-    companion object {
-        const val ACCESSIBILITY_SERVICE_ENABLED_KEY = "accessibility_service_enabled"
-    }
 }

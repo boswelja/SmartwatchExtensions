@@ -58,7 +58,7 @@ class WatchMessageReceiver : WearableListenerService() {
         Timber.i("tryLockDevice() called")
         val phoneLockMode = runBlocking { appSettingsStore.data.map { it.phoneLockMode }.first() }
         val isInDeviceAdminMode = phoneLockMode == Settings.PhoneLockMode.DEVICE_ADMIN
-        val isDeviceAdminEnabled = isDeviceAdminEnabled(this)
+        val isDeviceAdminEnabled = isDeviceAdminEnabled()
         // TODO If phone locking state is out of sync, sync up
         if (isInDeviceAdminMode && isDeviceAdminEnabled) {
             Timber.i("Trying to lock device")
