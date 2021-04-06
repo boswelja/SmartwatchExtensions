@@ -13,12 +13,14 @@ import com.boswelja.devicemanager.common.batterysync.BatteryStats
 import com.boswelja.devicemanager.common.batterysync.References.BATTERY_STATUS_PATH
 import com.boswelja.devicemanager.common.preference.PreferenceKey
 import com.boswelja.devicemanager.common.preference.PreferenceKey.BATTERY_CHARGED_NOTI_SENT
-import com.boswelja.devicemanager.common.preference.PreferenceKey.BATTERY_CHARGE_THRESHOLD_KEY
-import com.boswelja.devicemanager.common.preference.PreferenceKey.BATTERY_PHONE_CHARGE_NOTI_KEY
+import com.boswelja.devicemanager.extensions.extensionSettingsStore
 import com.boswelja.devicemanager.phoneconnectionmanager.References.PHONE_NAME_KEY
 import com.google.android.gms.wearable.MessageEvent
 import com.google.android.gms.wearable.Wearable
 import com.google.android.gms.wearable.WearableListenerService
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.runBlocking
 import timber.log.Timber
 
 class PhoneBatteryUpdateReceiver : WearableListenerService() {
@@ -26,6 +28,8 @@ class PhoneBatteryUpdateReceiver : WearableListenerService() {
     private val sharedPreferences by lazy { PreferenceManager.getDefaultSharedPreferences(this) }
 
     override fun onMessageReceived(messageEvent: MessageEvent?) {
+        // Execution here runs on a separate background thread.
+        // See https://developer.android.com/training/wearables/data-layer/events#sync-waiting
         if (messageEvent?.path == BATTERY_STATUS_PATH) {
             Timber.i("Got battery stats from ${messageEvent.sourceNodeId}")
 
@@ -34,7 +38,7 @@ class PhoneBatteryUpdateReceiver : WearableListenerService() {
                 putInt(PreferenceKey.BATTERY_PERCENT_KEY, batteryStats.percent)
             }
 
-            handleChargeNotification(batteryStats)
+            runBlocking { handleChargeNotification(batteryStats) }
 
             updateBatteryStats(this, messageEvent.sourceNodeId)
             PhoneBatteryComplicationProvider.updateAll(this)
@@ -46,13 +50,12 @@ class PhoneBatteryUpdateReceiver : WearableListenerService() {
      * the notification or cancels any existing notifications accordingly.
      * @param batteryStats The [BatteryStats] object to read data from.
      */
-    private fun handleChargeNotification(batteryStats: BatteryStats) {
+    private suspend fun handleChargeNotification(batteryStats: BatteryStats) {
         Timber.d("handleChargeNotification($batteryStats) called")
-        val shouldNotifyUser =
-            sharedPreferences.getBoolean(BATTERY_PHONE_CHARGE_NOTI_KEY, false)
+        val shouldNotifyUser = extensionSettingsStore.data.map { it.phoneChargeNotiEnabled }.first()
         if (batteryStats.isCharging && shouldNotifyUser) {
-            val chargeThreshold =
-                sharedPreferences.getInt(BATTERY_CHARGE_THRESHOLD_KEY, 90)
+            val chargeThreshold = extensionSettingsStore.data
+                .map { it.batteryChargeThreshold }.first()
             val hasNotiBeenSent =
                 sharedPreferences.getBoolean(BATTERY_CHARGED_NOTI_SENT, false)
 
@@ -60,8 +63,7 @@ class PhoneBatteryUpdateReceiver : WearableListenerService() {
                 val phoneName =
                     sharedPreferences.getString(
                         PHONE_NAME_KEY, getString(R.string.default_phone_name)
-                    )
-                        ?: getString(R.string.default_phone_name)
+                    ) ?: getString(R.string.default_phone_name)
                 notifyCharged(phoneName, chargeThreshold)
             }
         } else {
