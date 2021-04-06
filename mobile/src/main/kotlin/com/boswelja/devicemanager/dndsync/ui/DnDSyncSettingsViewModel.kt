@@ -1,12 +1,10 @@
 package com.boswelja.devicemanager.dndsync.ui
 
 import android.app.Application
-import androidx.core.content.edit
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.common.preference.PreferenceKey.DND_SYNC_TO_PHONE_KEY
 import com.boswelja.devicemanager.common.preference.PreferenceKey.DND_SYNC_TO_WATCH_KEY
 import com.boswelja.devicemanager.common.preference.PreferenceKey.DND_SYNC_WITH_THEATER_KEY
@@ -15,14 +13,9 @@ import kotlinx.coroutines.launch
 
 class DnDSyncSettingsViewModel(application: Application) : AndroidViewModel(application) {
 
-    private val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(application)
-
-    private var _syncToPhone =
-        MutableLiveData(sharedPreferences.getBoolean(DND_SYNC_TO_PHONE_KEY, false))
-    private var _syncToWatch =
-        MutableLiveData(sharedPreferences.getBoolean(DND_SYNC_TO_WATCH_KEY, false))
-    private var _syncWithTheater =
-        MutableLiveData(sharedPreferences.getBoolean(DND_SYNC_WITH_THEATER_KEY, false))
+    private var _syncToPhone = MutableLiveData<Boolean>()
+    private var _syncToWatch = MutableLiveData<Boolean>()
+    private var _syncWithTheater = MutableLiveData<Boolean>()
 
     val watchManager = WatchManager.getInstance(application)
     val syncToPhone: LiveData<Boolean>
@@ -32,12 +25,25 @@ class DnDSyncSettingsViewModel(application: Application) : AndroidViewModel(appl
     val syncWithTheater: LiveData<Boolean>
         get() = _syncWithTheater
 
+    init {
+        watchManager.selectedWatch.value?.let { selectedWatch ->
+            viewModelScope.launch {
+                _syncToPhone.postValue(
+                    watchManager.getPreference(selectedWatch, DND_SYNC_TO_PHONE_KEY)
+                )
+                _syncToWatch.postValue(
+                    watchManager.getPreference(selectedWatch, DND_SYNC_TO_WATCH_KEY)
+                )
+                _syncWithTheater.postValue(
+                    watchManager.getPreference(selectedWatch, DND_SYNC_WITH_THEATER_KEY)
+                )
+            }
+        }
+    }
+
     fun setSyncToPhone(isEnabled: Boolean) {
         viewModelScope.launch {
             _syncToPhone.postValue(isEnabled)
-            sharedPreferences.edit {
-                putBoolean(DND_SYNC_TO_PHONE_KEY, isEnabled)
-            }
             watchManager.updatePreference(
                 watchManager.selectedWatch.value!!,
                 DND_SYNC_TO_PHONE_KEY,
@@ -49,9 +55,6 @@ class DnDSyncSettingsViewModel(application: Application) : AndroidViewModel(appl
     fun setSyncToWatch(isEnabled: Boolean) {
         viewModelScope.launch {
             _syncToWatch.postValue(isEnabled)
-            sharedPreferences.edit {
-                putBoolean(DND_SYNC_TO_WATCH_KEY, isEnabled)
-            }
             watchManager.updatePreference(
                 watchManager.selectedWatch.value!!,
                 DND_SYNC_TO_WATCH_KEY,
@@ -63,9 +66,6 @@ class DnDSyncSettingsViewModel(application: Application) : AndroidViewModel(appl
     fun setSyncWithTheater(isEnabled: Boolean) {
         viewModelScope.launch {
             _syncToWatch.postValue(isEnabled)
-            sharedPreferences.edit {
-                putBoolean(DND_SYNC_WITH_THEATER_KEY, isEnabled)
-            }
             watchManager.updatePreference(
                 watchManager.selectedWatch.value!!,
                 DND_SYNC_WITH_THEATER_KEY,
