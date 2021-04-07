@@ -5,8 +5,10 @@ import androidx.browser.customtabs.CustomTabsIntent
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Observer
 import com.boswelja.devicemanager.common.connection.Messages.REQUEST_APP_VERSION
 import com.boswelja.devicemanager.watchmanager.WatchManager
+import com.boswelja.devicemanager.watchmanager.item.Watch
 import com.google.android.gms.wearable.MessageClient
 import com.google.android.gms.wearable.Wearable
 import timber.log.Timber
@@ -26,6 +28,24 @@ class AboutAppViewModel internal constructor(
         CustomTabsIntent.Builder().setShowTitle(true).build()
     )
 
+    private val selectedWatchObserver = Observer<Watch?> { watch ->
+        if (!watch?.id.isNullOrBlank()) {
+            messageClient
+                .sendMessage(watch.id, REQUEST_APP_VERSION, null)
+                .addOnFailureListener {
+                    Timber.w(it)
+                    _watchAppVersion.postValue(null)
+                }
+                .addOnSuccessListener {
+                    Timber.i("Message sent successfully")
+                    _watchAppVersion.postValue(Pair(null, null))
+                }
+        } else {
+            Timber.w("Selected watch null")
+            _watchAppVersion.postValue(null)
+        }
+    }
+
     private val messageListener =
         MessageClient.OnMessageReceivedListener {
             when (it.path) {
@@ -43,35 +63,13 @@ class AboutAppViewModel internal constructor(
 
     init {
         messageClient.addListener(messageListener)
-        requestUpdateWatchVersion()
+        watchManager.selectedWatch.observeForever(selectedWatchObserver)
     }
 
     override fun onCleared() {
         super.onCleared()
         messageClient.removeListener(messageListener)
-    }
-
-    /**
-     * Requests the current app version info from the connected watch. Result received in
-     * [messageListener] if sending the message was successful.
-     */
-    fun requestUpdateWatchVersion() {
-        Timber.d("requestUpdateWatchVersionPreference")
-        if (!watchManager.selectedWatch.value?.id.isNullOrBlank()) {
-            messageClient
-                .sendMessage(watchManager.selectedWatch.value!!.id, REQUEST_APP_VERSION, null)
-                .addOnFailureListener {
-                    Timber.w(it)
-                    _watchAppVersion.postValue(null)
-                }
-                .addOnSuccessListener {
-                    Timber.i("Message sent successfully")
-                    _watchAppVersion.postValue(Pair(null, null))
-                }
-        } else {
-            Timber.w("connectedWatchId null or empty")
-            _watchAppVersion.postValue(null)
-        }
+        watchManager.selectedWatch.removeObserver(selectedWatchObserver)
     }
 
     /**
