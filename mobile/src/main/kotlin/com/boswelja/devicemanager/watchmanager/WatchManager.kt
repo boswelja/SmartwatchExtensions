@@ -76,13 +76,18 @@ class WatchManager internal constructor(
         }
 
         _selectedWatch.addSource(registeredWatches) {
-            val watch = it.firstOrNull { watch -> watch.id == _selectedWatchId.value }
+            val watch = it.firstOrNull { watch ->
+                watch.id == _selectedWatchId.value
+            } ?: it.firstOrNull()
             _selectedWatch.postValue(watch)
         }
         _selectedWatch.addSource(_selectedWatchId) {
             val watch = registeredWatches.value?.firstOrNull { watch -> watch.id == it }
             if (watch == null) {
                 Timber.w("Tried to select a watch with id $it, but it wasn't registered")
+                registeredWatches.value?.firstOrNull()?.let { fallbackWatch ->
+                    selectWatchById(fallbackWatch.id)
+                }
             } else {
                 _selectedWatch.postValue(watch)
             }
