@@ -70,9 +70,9 @@ class OnboardingActivity : AppCompatActivity() {
 
         lifecycle.addObserver(availableWatchUpdateTimer)
 
-        registerWatchViewModel.availableWatches.observe(this) {
+        registerWatchViewModel.watchesToAdd.observe(this) {
             it.forEach { watch ->
-                registerWatchViewModel.registerWatch(watch)
+                registerWatchViewModel.addWatch(watch)
             }
         }
     }

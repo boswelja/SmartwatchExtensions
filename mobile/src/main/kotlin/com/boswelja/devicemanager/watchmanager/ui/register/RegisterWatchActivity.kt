@@ -50,9 +50,9 @@ class RegisterWatchActivity : AppCompatActivity() {
 
         lifecycle.addObserver(availableWatchUpdateTimer)
 
-        viewModel.availableWatches.observe(this) {
+        viewModel.watchesToAdd.observe(this) {
             it.forEach { watch ->
-                viewModel.registerWatch(watch)
+                viewModel.addWatch(watch)
             }
         }
     }

@@ -39,6 +39,7 @@ class RegisterWatchViewModelTest {
     private val dummyWatch3 = Watch("an-id-3456", "Watch 3", WearOSConnectionInterface.PLATFORM)
     private val dummyWatches = listOf(dummyWatch1, dummyWatch2, dummyWatch3)
     private val availableWatches = MutableLiveData(dummyWatches)
+    private val registeredWatches = MutableLiveData(emptyList<Watch>())
 
     @RelaxedMockK private lateinit var watchManager: WatchManager
     private lateinit var viewModel: RegisterWatchViewModel
@@ -46,7 +47,12 @@ class RegisterWatchViewModelTest {
     @Before
     fun setUp() {
         MockKAnnotations.init(this)
+
+        availableWatches.postValue(dummyWatches)
+        registeredWatches.postValue(emptyList())
+
         every { watchManager.availableWatches } returns availableWatches
+        every { watchManager.registeredWatches } returns registeredWatches
 
         viewModel = RegisterWatchViewModel(
             ApplicationProvider.getApplicationContext(),
@@ -62,9 +68,49 @@ class RegisterWatchViewModelTest {
     }
 
     @Test
-    fun `registerWatch calls watchManager and updates LiveData`() {
-        viewModel.registerWatch(dummyWatch1)
+    fun `addWatch calls watchManager and updates LiveData`() {
+        availableWatches.postValue(listOf(dummyWatch1))
+        registeredWatches.postValue(emptyList())
+
+        viewModel.addWatch(dummyWatch1)
         coVerify { watchManager.registerWatch(dummyWatch1) }
         assertThat(viewModel.registeredWatches.getOrAwaitValue()).contains(dummyWatch1)
+    }
+
+    @Test
+    fun `addWatch does nothing if a watch is already registered`() {
+        // We need to register a watch first
+        viewModel.addWatch(dummyWatch1)
+        viewModel.addWatch(dummyWatch1)
+        // Verify watch was only added once
+        coVerify(exactly = 1) { watchManager.registerWatch(dummyWatch1) }
+    }
+
+    @Test
+    fun `watchesToRegister contains all available watches`() {
+        assertThat(viewModel.watchesToAdd.getOrAwaitValue())
+            .containsExactlyElementsIn(dummyWatches)
+
+        availableWatches.postValue(listOf(dummyWatch1))
+        assertThat(viewModel.watchesToAdd.getOrAwaitValue())
+            .containsExactlyElementsIn(listOf(dummyWatch1))
+
+        availableWatches.postValue(listOf(dummyWatch1, dummyWatch3))
+        assertThat(viewModel.watchesToAdd.getOrAwaitValue())
+            .containsExactlyElementsIn(listOf(dummyWatch1, dummyWatch3))
+    }
+
+    @Test
+    fun `watchesToRegister doesn't contain any registered watches`() {
+        registeredWatches.postValue(dummyWatches)
+        assertThat(viewModel.watchesToAdd.getOrAwaitValue()).isEmpty()
+
+        registeredWatches.postValue(listOf(dummyWatch1))
+        assertThat(viewModel.watchesToAdd.getOrAwaitValue())
+            .containsNoneIn(listOf(dummyWatch1))
+
+        registeredWatches.postValue(listOf(dummyWatch1, dummyWatch2))
+        assertThat(viewModel.watchesToAdd.getOrAwaitValue())
+            .containsNoneIn(listOf(dummyWatch1, dummyWatch2))
     }
 }
