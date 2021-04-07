@@ -4,22 +4,19 @@ import android.content.Context
 import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
-import com.boswelja.devicemanager.common.connection.Messages.CLEAR_PREFERENCES
 import com.boswelja.devicemanager.common.connection.Messages.RESET_APP
 import com.boswelja.devicemanager.common.connection.Messages.WATCH_REGISTERED_PATH
-import com.boswelja.devicemanager.common.preference.SyncPreferences
 import com.boswelja.devicemanager.watchmanager.connection.WatchConnectionInterface
 import com.boswelja.devicemanager.watchmanager.connection.wearos.WearOSConnectionInterface
 import com.boswelja.devicemanager.watchmanager.database.WatchDatabase
-import com.boswelja.devicemanager.watchmanager.item.Preference
 import com.boswelja.devicemanager.watchmanager.item.Watch
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 
 /**
- * A repository to handle collecting data from and passing requests to the appropriate
- * [WatchConnectionInterface].
+ * A repository to handle both registered and available watches, as well as propagating requests to
+ * the correct [WatchConnectionInterface].
  */
 class WatchRepository internal constructor(
     val database: WatchDatabase,
@@ -207,17 +204,6 @@ class WatchRepository internal constructor(
     }
 
     /**
-     * Sends [CLEAR_PREFERENCES] to the corresponding [WatchConnectionInterface].
-     * @param watch The [Watch] to perform the request on.
-     */
-    suspend fun resetWatchPreferences(watch: Watch) {
-        withContext(Dispatchers.IO) {
-            watch.connectionManager?.sendMessage(watch.id, CLEAR_PREFERENCES)
-            database.clearWatchPreferences(watch)
-        }
-    }
-
-    /**
      * Requests all [WatchConnectionInterface]s update their available watches, as well as watch
      * statuses.
      */
@@ -227,34 +213,8 @@ class WatchRepository internal constructor(
         }
     }
 
-    /**
-     * Gets all preferences stored for a given [Watch].
-     * @param watch The [Watch] to get preferences for.
-     * @return A [List] of [Preference]s for the given watch.
-     */
-    suspend fun getAllPreferences(watch: Watch): List<Preference<Any>> {
-        return withContext(Dispatchers.IO) {
-            return@withContext database.getAllPreferences(watch)
-        }
-    }
-
-    /**
-     * Notify the watch a specified preference has been changed, and updates the preference in the
-     * database.
-     * @param watch The target [Watch].
-     * @param key The preference key to send to the watch.
-     * @param value The new value of the preference.
-     */
-    suspend fun updatePreference(watch: Watch, key: String, value: Any) {
-        withContext(Dispatchers.IO) {
-            if (key in SyncPreferences.ALL_PREFS) {
-                database.updatePrefInDatabase(watch.id, key, value)
-                watch.connectionManager?.updatePreferenceOnWatch(watch, key, value)
-            } else {
-                Timber.w("Tried to update a non-synced preference")
-            }
-        }
-    }
+    fun updatePreferenceOnWatch(watch: Watch, key: String, value: Any) =
+        watch.connectionManager?.updatePreferenceOnWatch(watch, key, value)
 
     /**
      * Send a message to a watch with the given ID.
@@ -264,16 +224,4 @@ class WatchRepository internal constructor(
      */
     fun sendMessage(watch: Watch, messagePath: String, data: ByteArray? = null) =
         watch.connectionManager?.sendMessage(watch.id, messagePath, data)
-
-    /**
-     * Gets a preference for a given watch with a specified key.
-     * @param watch The [Watch] to get the preference for.
-     * @param key The [Preference.key] of the preference to find.
-     * @return The value of the preference, or null if it doesn't exist.
-     */
-    suspend inline fun <reified T> getPreference(watch: Watch, key: String): T? {
-        return withContext(Dispatchers.IO) {
-            return@withContext database.getPreference<T>(watch, key)?.value
-        }
-    }
 }

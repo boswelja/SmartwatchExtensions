@@ -12,7 +12,9 @@ import com.boswelja.devicemanager.analytics.Analytics
 import com.boswelja.devicemanager.appStateStore
 import com.boswelja.devicemanager.batterysync.database.WatchBatteryStatsDatabase
 import com.boswelja.devicemanager.common.SingletonHolder
+import com.boswelja.devicemanager.common.connection.Messages.CLEAR_PREFERENCES
 import com.boswelja.devicemanager.common.connection.Messages.REQUEST_UPDATE_CAPABILITIES
+import com.boswelja.devicemanager.watchmanager.item.Preference
 import com.boswelja.devicemanager.watchmanager.item.Watch
 import com.boswelja.devicemanager.widget.widgetIdStore
 import kotlinx.coroutines.CoroutineScope
@@ -127,7 +129,8 @@ class WatchManager internal constructor(
         watch: Watch
     ) {
         batteryStatsDatabase.batteryStatsDao().deleteStatsForWatch(watch.id)
-        watchRepository.resetWatchPreferences(watch)
+        watchRepository.sendMessage(watch, CLEAR_PREFERENCES)
+        watchRepository.database.clearWatchPreferences(watch)
         removeWidgetsForWatch(watch, widgetIdStore)
     }
 
@@ -163,15 +166,23 @@ class WatchManager internal constructor(
     fun sendMessage(watch: Watch, messagePath: String, data: ByteArray? = null) =
         watchRepository.sendMessage(watch, messagePath, data)
 
-    suspend inline fun <reified T> getPreference(watch: Watch, key: String) =
-        watchRepository.getPreference<T>(watch, key)
+    /**
+     * Gets a preference for a given watch with a specified key.
+     * @param watch The [Watch] to get the preference for.
+     * @param key The [Preference.key] of the preference to find.
+     * @return The value of the preference, or null if it doesn't exist.
+     */
+    suspend inline fun <reified T> getPreference(watch: Watch, key: String): T? {
+        return withContext(Dispatchers.IO) {
+            return@withContext watchRepository.database.getPreference<T>(watch, key)?.value
+        }
+    }
 
-    suspend fun updatePreference(watch: Watch, key: String, value: Any) {
-        watchRepository.updatePreference(watch, key, value)
+    fun updatePreference(watch: Watch, key: String, value: Any) {
+        watchRepository.updatePreferenceOnWatch(watch, key, value)
+        watchRepository.database.updatePrefInDatabase(watch.id, key, value)
         analytics.logExtensionSettingChanged(key, value)
     }
 
-    companion object : SingletonHolder<WatchManager, Context>(::WatchManager) {
-        const val LAST_SELECTED_NODE_ID_KEY = "last_connected_id"
-    }
+    companion object : SingletonHolder<WatchManager, Context>(::WatchManager)
 }

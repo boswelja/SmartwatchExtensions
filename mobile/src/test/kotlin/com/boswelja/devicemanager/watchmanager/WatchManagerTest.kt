@@ -10,6 +10,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.boswelja.devicemanager.AppState
 import com.boswelja.devicemanager.analytics.Analytics
 import com.boswelja.devicemanager.batterysync.database.WatchBatteryStatsDatabase
+import com.boswelja.devicemanager.common.connection.Messages.CLEAR_PREFERENCES
 import com.boswelja.devicemanager.common.connection.Messages.REQUEST_UPDATE_CAPABILITIES
 import com.boswelja.devicemanager.getOrAwaitValue
 import com.boswelja.devicemanager.watchmanager.item.Watch
@@ -150,7 +151,7 @@ class WatchManagerTest {
             batteryStatsDatabase,
             dummyWatch1
         )
-        coVerify(exactly = 1) { repository.resetWatchPreferences(dummyWatch1) }
+        coVerify(exactly = 1) { repository.sendMessage(dummyWatch1, CLEAR_PREFERENCES) }
         verify(exactly = 1) { batteryStatsDatabase.batteryStatsDao() }
     }
 

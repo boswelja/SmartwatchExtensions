@@ -74,13 +74,6 @@ abstract class WatchDatabase : RoomDatabase() {
         }
     }
 
-    @Suppress("UNCHECKED_CAST")
-    fun getAllPreferences(watch: Watch): List<Preference<Any>> {
-        val intPrefs = intPrefDao().getAllForWatch(watch.id) as List<Preference<Any>>
-        val boolPrefs = boolPrefDao().getAllForWatch(watch.id) as List<Preference<Any>>
-        return intPrefs + boolPrefs
-    }
-
     companion object : SingletonHolder<WatchDatabase, Context>({ context ->
         Room.databaseBuilder(context, WatchDatabase::class.java, "watch-db")
             .apply {

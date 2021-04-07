@@ -6,7 +6,6 @@ import androidx.lifecycle.Observer
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.boswelja.devicemanager.common.preference.SyncPreferences
 import com.boswelja.devicemanager.getOrAwaitValue
 import com.boswelja.devicemanager.watchmanager.connection.DummyConnectionInterface
 import com.boswelja.devicemanager.watchmanager.database.WatchDatabase
@@ -134,26 +133,6 @@ class WatchRepositoryTest {
         verify(exactly = 1) { connectionInterface1.refreshData() }
         verify(exactly = 1) { connectionInterface2.refreshData() }
     }
-
-    @Test
-    fun `updatePreference does nothing with invalid keys`(): Unit = runBlocking {
-        val key = "dummy-key"
-        repository.updatePreference(dummyWatch1, key, 0)
-        verify(exactly = 0) { database.updatePrefInDatabase(any(), any(), any()) }
-        verify(exactly = 0) { connectionInterface1.updatePreferenceOnWatch(any(), any(), any()) }
-        verify(exactly = 0) { connectionInterface2.updatePreferenceOnWatch(any(), any(), any()) }
-    }
-
-    @Test
-    fun `updatePreference correctly updates preference if contained in SyncPreferences`(): Unit =
-        runBlocking {
-            val key = SyncPreferences.INT_PREFS.first()
-            repository.updatePreference(dummyWatch1, key, 0)
-            verify(exactly = 1) { database.updatePrefInDatabase(dummyWatch1.id, key, 0) }
-            verify(exactly = 1) {
-                connectionInterface1.updatePreferenceOnWatch(dummyWatch1, key, 0)
-            }
-        }
 
     @Test
     fun `renameWatch renames the watch in the database`(): Unit = runBlocking {
