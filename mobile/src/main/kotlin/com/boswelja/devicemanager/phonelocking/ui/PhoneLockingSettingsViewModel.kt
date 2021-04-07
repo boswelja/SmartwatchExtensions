@@ -23,6 +23,8 @@ import com.boswelja.devicemanager.phonelocking.Utils.isDeviceAdminEnabled
 import com.boswelja.devicemanager.watchmanager.WatchManager
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -34,7 +36,7 @@ class PhoneLockingSettingsViewModel internal constructor(
 ) : AndroidViewModel(application) {
 
     private val _phoneLockingEnabled = MutableLiveData<Boolean>()
-    private val _phoneLockingMode = MutableLiveData<Settings.PhoneLockMode>()
+    private val _phoneLockingMode = MutableLiveData(Settings.PhoneLockMode.DEVICE_ADMIN)
 
     val phoneLockingEnabled: LiveData<Boolean>
         get() = _phoneLockingEnabled
@@ -76,6 +78,9 @@ class PhoneLockingSettingsViewModel internal constructor(
                     watchManager.getPreference(selectedWatch, PHONE_LOCKING_ENABLED_KEY)
                 )
             }
+            dataStore.data.map { it.phoneLockMode }.collect {
+                _phoneLockingMode.postValue(it)
+            }
         }
     }
 
@@ -114,7 +119,7 @@ class PhoneLockingSettingsViewModel internal constructor(
             }
             _phoneLockingMode.postValue(Settings.PhoneLockMode.DEVICE_ADMIN)
             _phoneLockingEnabled.postValue(false)
-            viewModelScope.launch {
+            viewModelScope.launch(dispatcher) {
                 dataStore.updateData {
                     it.copy(phoneLockMode = Settings.PhoneLockMode.DEVICE_ADMIN)
                 }
@@ -155,7 +160,7 @@ class PhoneLockingSettingsViewModel internal constructor(
             }
             _phoneLockingMode.postValue(Settings.PhoneLockMode.ACCESSIBILITY_SERVICE)
             _phoneLockingEnabled.postValue(false)
-            viewModelScope.launch {
+            viewModelScope.launch(dispatcher) {
                 dataStore.updateData {
                     it.copy(phoneLockMode = Settings.PhoneLockMode.DEVICE_ADMIN)
                 }
