@@ -21,6 +21,7 @@ import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.verify
+import java.util.concurrent.TimeUnit
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -164,6 +165,52 @@ class WatchManagerTest {
         watchManager.refreshData()
         verify(exactly = 1) { repository.refreshData() }
     }
+
+    @Test
+    fun `selectedWatch is null if there are no registered watches`() {
+        every { repository.registeredWatches } returns liveData { emit(emptyList<Watch>()) }
+        watchManager = getWatchManager()
+        try {
+            // We expect this to throw an exception, so use a shorter timeout
+            assertThat(
+                watchManager.selectedWatch.getOrAwaitValue(
+                    time = 500, timeUnit = TimeUnit.MILLISECONDS
+                )
+            ).isNull()
+        } catch (e: Exception) {
+            assertThat(watchManager.selectedWatch.value).isNull()
+        }
+    }
+
+    @Test
+    fun `selectedWatch is not null if there are registered watches and last watch ID is known`():
+        Unit = runBlocking {
+            appState.emit(AppState(lastSelectedWatchId = dummyWatch1.id))
+            every { repository.registeredWatches } returns liveData { emit(dummyWatches) }
+            watchManager = getWatchManager()
+            try {
+                assertThat(
+                    watchManager.selectedWatch.getOrAwaitValue()
+                ).isNotNull()
+            } catch (e: Exception) {
+                assertThat(watchManager.selectedWatch.value).isNotNull()
+            }
+        }
+
+    @Test
+    fun `selectedWatch is not null if there are registered watches and no last watch ID is known`():
+        Unit = runBlocking {
+            appState.emit(AppState(lastSelectedWatchId = ""))
+            every { repository.registeredWatches } returns liveData { emit(dummyWatches) }
+            watchManager = getWatchManager()
+            try {
+                assertThat(
+                    watchManager.selectedWatch.getOrAwaitValue()
+                ).isNotNull()
+            } catch (e: Exception) {
+                assertThat(watchManager.selectedWatch.value).isNotNull()
+            }
+        }
 
     private fun getWatchManager(): WatchManager {
         return WatchManager(
