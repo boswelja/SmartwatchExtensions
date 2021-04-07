@@ -1,10 +1,3 @@
-/* Copyright (C) 2020 Jack Boswell <boswelja@outlook.com>
- *
- * This file is part of Wearable Extensions
- *
- * This file, and any part of the Wearable Extensions app/s cannot be copied and/or distributed
- * without permission from Jack Boswell (boswelja) <boswela@outlook.com>
- */
 package com.boswelja.devicemanager.dndsync
 
 import android.app.Notification
@@ -20,7 +13,7 @@ import com.boswelja.devicemanager.common.R
 import com.boswelja.devicemanager.common.dndsync.References
 import com.boswelja.devicemanager.common.preference.PreferenceKey.DND_SYNC_TO_WATCH_KEY
 import com.boswelja.devicemanager.main.MainActivity
-import com.boswelja.devicemanager.watchmanager.database.WatchDatabase
+import com.boswelja.devicemanager.watchmanager.database.WatchSettingsDatabase
 import com.google.android.gms.wearable.DataClient
 import com.google.android.gms.wearable.PutDataMapRequest
 import com.google.android.gms.wearable.Wearable
@@ -28,7 +21,7 @@ import timber.log.Timber
 
 class DnDLocalChangeService : LifecycleService() {
 
-    private val database by lazy { WatchDatabase.getInstance(this) }
+    private val database by lazy { WatchSettingsDatabase.getInstance(this) }
     private val dataClient by lazy { Wearable.getDataClient(this) }
 
     private val dndChangeReceiver =

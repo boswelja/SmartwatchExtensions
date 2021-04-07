@@ -5,7 +5,7 @@ import androidx.core.content.ContextCompat
 import com.boswelja.devicemanager.batterysync.BatterySyncWorker
 import com.boswelja.devicemanager.common.preference.PreferenceKey
 import com.boswelja.devicemanager.dndsync.DnDLocalChangeService
-import com.boswelja.devicemanager.watchmanager.database.WatchDatabase
+import com.boswelja.devicemanager.watchmanager.database.WatchSettingsDatabase
 import com.google.android.gms.wearable.DataEvent
 import com.google.android.gms.wearable.DataEventBuffer
 import com.google.android.gms.wearable.DataMapItem
@@ -20,7 +20,7 @@ class PreferenceChangeReceiver : WearableListenerService() {
 
     private val coroutineScope = MainScope()
 
-    private val database: WatchDatabase by lazy { WatchDatabase.getInstance(this) }
+    private val database by lazy { WatchSettingsDatabase.getInstance(this) }
 
     override fun onDataChanged(dataEvents: DataEventBuffer?) {
         Timber.i("onDataChanged() called")

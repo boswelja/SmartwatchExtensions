@@ -15,5 +15,5 @@ class BatteryWidgetConfigViewModel internal constructor(
         WatchDatabase.getInstance(application)
     )
 
-    val registeredWatches = watchDatabase.watchDao().getAllObservable()
+    val registeredWatches = watchDatabase.getAll()
 }

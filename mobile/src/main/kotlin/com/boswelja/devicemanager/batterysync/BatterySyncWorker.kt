@@ -1,10 +1,3 @@
-/* Copyright (C) 2020 Jack Boswell <boswelja@outlook.com>
- *
- * This file is part of Wearable Extensions
- *
- * This file, and any part of the Wearable Extensions app/s cannot be copied and/or distributed
- * without permission from Jack Boswell (boswelja) <boswela@outlook.com>
- */
 package com.boswelja.devicemanager.batterysync
 
 import android.content.Context
@@ -16,7 +9,7 @@ import androidx.work.WorkManager
 import androidx.work.WorkerParameters
 import com.boswelja.devicemanager.common.preference.PreferenceKey.BATTERY_SYNC_INTERVAL_KEY
 import com.boswelja.devicemanager.watchmanager.WatchManager
-import com.boswelja.devicemanager.watchmanager.database.WatchDatabase
+import com.boswelja.devicemanager.watchmanager.database.WatchSettingsDatabase
 import java.util.concurrent.TimeUnit
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -43,7 +36,7 @@ class BatterySyncWorker(appContext: Context, workerParams: WorkerParameters) :
 
         suspend fun startWorker(context: Context, watchId: String): Boolean {
             return withContext(Dispatchers.IO) {
-                val database = WatchDatabase.getInstance(context)
+                val database = WatchSettingsDatabase.getInstance(context)
                 val syncIntervalMinutes =
                     (database.intPrefDao().get(watchId, BATTERY_SYNC_INTERVAL_KEY)?.value ?: 15)
                         .toLong()

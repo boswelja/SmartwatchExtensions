@@ -55,4 +55,11 @@ object Migrations {
             )
         }
     }
+
+    val MIGRATION_7_8 = object : Migration(7, 8) {
+        override fun migrate(database: SupportSQLiteDatabase) {
+            database.execSQL("DROP TABLE bool_preferences")
+            database.execSQL("DROP TABLE int_preferences")
+        }
+    }
 }

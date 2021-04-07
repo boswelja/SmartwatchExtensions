@@ -119,7 +119,7 @@ class PhoneLockingSettingsViewModel internal constructor(
                     it.copy(phoneLockMode = Settings.PhoneLockMode.DEVICE_ADMIN)
                 }
                 // Disable phone locking so the user is forced to re-enable and set up the new mode
-                watchManager.watchRepository.database.boolPrefDao().updateAllForKey(
+                watchManager.settingsDatabase.boolPrefDao().updateAllForKey(
                     PHONE_LOCKING_ENABLED_KEY, false
                 )
             }
@@ -160,7 +160,7 @@ class PhoneLockingSettingsViewModel internal constructor(
                     it.copy(phoneLockMode = Settings.PhoneLockMode.DEVICE_ADMIN)
                 }
                 // Disable phone locking so the user is forced to re-enable and set up the new mode
-                watchManager.watchRepository.database.boolPrefDao().updateAllForKey(
+                watchManager.settingsDatabase.boolPrefDao().updateAllForKey(
                     PHONE_LOCKING_ENABLED_KEY, false
                 )
             }

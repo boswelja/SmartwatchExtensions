@@ -13,6 +13,7 @@ import com.boswelja.devicemanager.batterysync.database.WatchBatteryStatsDatabase
 import com.boswelja.devicemanager.common.connection.Messages.CLEAR_PREFERENCES
 import com.boswelja.devicemanager.common.connection.Messages.REQUEST_UPDATE_CAPABILITIES
 import com.boswelja.devicemanager.getOrAwaitValue
+import com.boswelja.devicemanager.watchmanager.database.WatchSettingsDatabase
 import com.boswelja.devicemanager.watchmanager.item.Watch
 import com.google.common.truth.Truth.assertThat
 import io.mockk.MockKAnnotations
@@ -50,7 +51,8 @@ class WatchManagerTest {
     @RelaxedMockK private lateinit var repository: WatchRepository
     @RelaxedMockK private lateinit var analytics: Analytics
     @RelaxedMockK private lateinit var batteryStatsDatabase: WatchBatteryStatsDatabase
-    @RelaxedMockK lateinit var dataStore: DataStore<AppState>
+    @RelaxedMockK private lateinit var dataStore: DataStore<AppState>
+    @RelaxedMockK private lateinit var settingsDatabase: WatchSettingsDatabase
 
     private lateinit var coroutineScope: CoroutineScope
     private lateinit var watchManager: WatchManager
@@ -152,6 +154,7 @@ class WatchManagerTest {
             dummyWatch1
         )
         coVerify(exactly = 1) { repository.sendMessage(dummyWatch1, CLEAR_PREFERENCES) }
+        verify(exactly = 1) { settingsDatabase.clearWatchPreferences(dummyWatch1) }
         verify(exactly = 1) { batteryStatsDatabase.batteryStatsDao() }
     }
 
@@ -165,6 +168,7 @@ class WatchManagerTest {
     private fun getWatchManager(): WatchManager {
         return WatchManager(
             repository,
+            settingsDatabase,
             analytics,
             dataStore,
             coroutineScope

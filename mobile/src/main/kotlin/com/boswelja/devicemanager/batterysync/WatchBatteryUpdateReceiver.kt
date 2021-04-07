@@ -16,6 +16,7 @@ import com.boswelja.devicemanager.common.preference.PreferenceKey.BATTERY_CHARGE
 import com.boswelja.devicemanager.common.preference.PreferenceKey.BATTERY_WATCH_CHARGE_NOTI_KEY
 import com.boswelja.devicemanager.common.ui.BaseWidgetProvider
 import com.boswelja.devicemanager.watchmanager.database.WatchDatabase
+import com.boswelja.devicemanager.watchmanager.database.WatchSettingsDatabase
 import com.boswelja.devicemanager.watchmanager.item.BoolPreference
 import com.boswelja.devicemanager.watchmanager.item.Watch
 import com.google.android.gms.wearable.MessageEvent
@@ -40,8 +41,10 @@ class WatchBatteryUpdateReceiver : WearableListenerService() {
 
             coroutineScope.launch(Dispatchers.IO) {
                 val database = WatchDatabase.getInstance(this@WatchBatteryUpdateReceiver)
-                database.watchDao().get(watchBatteryStats.watchId)?.let {
-                    handleNoti(database, it)
+                database.getById(watchBatteryStats.watchId)?.let {
+                    handleNoti(
+                        WatchSettingsDatabase.getInstance(this@WatchBatteryUpdateReceiver), it
+                    )
                 }
                 updateStatsInDatabase()
                 updateWidgetsForWatch()
@@ -62,7 +65,7 @@ class WatchBatteryUpdateReceiver : WearableListenerService() {
         BaseWidgetProvider.updateWidgets(this)
     }
 
-    private fun handleNoti(database: WatchDatabase, watch: Watch) {
+    private fun handleNoti(database: WatchSettingsDatabase, watch: Watch) {
         val chargedThreshold =
             database.intPrefDao().get(watch.id, BATTERY_CHARGE_THRESHOLD_KEY)?.value ?: 90
         if (canSendChargedNoti(database, watch.id, chargedThreshold)) {
@@ -81,7 +84,7 @@ class WatchBatteryUpdateReceiver : WearableListenerService() {
      * @return true if we can send a charged notification, false otherwise.
      */
     private fun canSendChargedNoti(
-        database: WatchDatabase,
+        database: WatchSettingsDatabase,
         watchId: String,
         chargedThreshold: Int
     ): Boolean {

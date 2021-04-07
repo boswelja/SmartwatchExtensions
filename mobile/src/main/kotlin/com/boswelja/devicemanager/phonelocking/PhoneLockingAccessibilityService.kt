@@ -37,7 +37,7 @@ class PhoneLockingAccessibilityService :
     }
 
     private val settingsLiveData by lazy {
-        watchManager.watchRepository.database.boolPrefDao().getAllObservableForKey(
+        watchManager.settingsDatabase.boolPrefDao().getAllObservableForKey(
             PHONE_LOCKING_ENABLED_KEY
         )
     }
@@ -108,7 +108,7 @@ class PhoneLockingAccessibilityService :
             Timber.i("Stopping")
             isStopping = true
             coroutineScope.launch(Dispatchers.IO) {
-                watchManager.watchRepository.database.boolPrefDao().updateAllForKey(
+                watchManager.settingsDatabase.boolPrefDao().updateAllForKey(
                     PHONE_LOCKING_ENABLED_KEY, false
                 )
             }

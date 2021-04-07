@@ -9,9 +9,6 @@ import com.boswelja.devicemanager.watchmanager.item.Watch
 @Dao
 interface WatchDao {
 
-    @Query("SELECT * FROM watches")
-    fun getAll(): List<Watch>
-
     @Query("SELECT * FROM watches WHERE id = :watchId LIMIT 1")
     fun get(watchId: String): Watch?
 

@@ -20,7 +20,7 @@ import com.boswelja.devicemanager.messages.Message
 import com.boswelja.devicemanager.messages.MessageHandler
 import com.boswelja.devicemanager.messages.Priority
 import com.boswelja.devicemanager.watchmanager.WatchManager
-import com.boswelja.devicemanager.watchmanager.database.WatchDatabase
+import com.boswelja.devicemanager.watchmanager.database.WatchSettingsDatabase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
@@ -109,7 +109,7 @@ class BootOrUpdateHandlerService : LifecycleService() {
     }
 
     /** Try to start Do not Disturb change listener service if needed. */
-    private suspend fun tryStartInterruptFilterSyncService(database: WatchDatabase) {
+    private suspend fun tryStartInterruptFilterSyncService(database: WatchSettingsDatabase) {
         withContext(Dispatchers.IO) {
             val dndSyncToWatchEnabled =
                 database.boolPrefDao().getAllForKey(PreferenceKey.DND_SYNC_TO_WATCH_KEY).any {
@@ -128,7 +128,7 @@ class BootOrUpdateHandlerService : LifecycleService() {
     }
 
     /** Try to start any needed [BatterySyncWorker] instances. */
-    private suspend fun tryStartBatterySyncWorkers(database: WatchDatabase) {
+    private suspend fun tryStartBatterySyncWorkers(database: WatchSettingsDatabase) {
         val watchBatterySyncInfo =
             database.boolPrefDao().getAllForKey(PreferenceKey.BATTERY_SYNC_ENABLED_KEY)
         if (watchBatterySyncInfo.isNotEmpty()) {
@@ -156,7 +156,7 @@ class BootOrUpdateHandlerService : LifecycleService() {
     private fun restartServices() {
         Timber.d("restartServices() called")
         MainScope().launch(Dispatchers.IO) {
-            WatchDatabase.getInstance(this@BootOrUpdateHandlerService).also {
+            WatchSettingsDatabase.getInstance(this@BootOrUpdateHandlerService).also {
                 tryStartBatterySyncWorkers(it)
                 tryStartInterruptFilterSyncService(it)
                 finish()

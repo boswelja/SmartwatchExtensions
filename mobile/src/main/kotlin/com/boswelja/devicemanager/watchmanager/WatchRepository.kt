@@ -66,7 +66,7 @@ class WatchRepository internal constructor(
         }
 
         // Set up _registeredWatches
-        _registeredWatches.addSource(database.watchDao().getAllObservable()) { watches ->
+        _registeredWatches.addSource(database.getAll()) { watches ->
             Timber.d("registeredWatches updated")
             val watchesWithStatus = watches.map {
                 val connectionManager = it.connectionManager
@@ -199,7 +199,7 @@ class WatchRepository internal constructor(
     suspend fun resetWatch(watch: Watch) {
         withContext(Dispatchers.IO) {
             watch.connectionManager?.sendMessage(watch.id, RESET_APP)
-            database.forgetWatch(watch)
+            database.removeWatch(watch)
         }
     }
 

@@ -14,6 +14,7 @@ import com.boswelja.devicemanager.batterysync.database.WatchBatteryStatsDatabase
 import com.boswelja.devicemanager.common.SingletonHolder
 import com.boswelja.devicemanager.common.connection.Messages.CLEAR_PREFERENCES
 import com.boswelja.devicemanager.common.connection.Messages.REQUEST_UPDATE_CAPABILITIES
+import com.boswelja.devicemanager.watchmanager.database.WatchSettingsDatabase
 import com.boswelja.devicemanager.watchmanager.item.Preference
 import com.boswelja.devicemanager.watchmanager.item.Watch
 import com.boswelja.devicemanager.widget.widgetIdStore
@@ -31,7 +32,8 @@ import timber.log.Timber
  * the selected watch state.
  */
 class WatchManager internal constructor(
-    val watchRepository: WatchRepository,
+    private val watchRepository: WatchRepository,
+    val settingsDatabase: WatchSettingsDatabase,
     private val analytics: Analytics,
     private val dataStore: DataStore<AppState>,
     private val coroutineScope: CoroutineScope
@@ -39,6 +41,7 @@ class WatchManager internal constructor(
 
     constructor(context: Context) : this(
         WatchRepository(context),
+        WatchSettingsDatabase.getInstance(context),
         Analytics(),
         context.appStateStore,
         CoroutineScope(Dispatchers.IO)
@@ -130,7 +133,7 @@ class WatchManager internal constructor(
     ) {
         batteryStatsDatabase.batteryStatsDao().deleteStatsForWatch(watch.id)
         watchRepository.sendMessage(watch, CLEAR_PREFERENCES)
-        watchRepository.database.clearWatchPreferences(watch)
+        settingsDatabase.clearWatchPreferences(watch)
         removeWidgetsForWatch(watch, widgetIdStore)
     }
 
@@ -174,13 +177,13 @@ class WatchManager internal constructor(
      */
     suspend inline fun <reified T> getPreference(watch: Watch, key: String): T? {
         return withContext(Dispatchers.IO) {
-            return@withContext watchRepository.database.getPreference<T>(watch, key)?.value
+            return@withContext settingsDatabase.getPreference<T>(watch, key)?.value
         }
     }
 
     fun updatePreference(watch: Watch, key: String, value: Any) {
         watchRepository.updatePreferenceOnWatch(watch, key, value)
-        watchRepository.database.updatePrefInDatabase(watch.id, key, value)
+        settingsDatabase.updatePrefInDatabase(watch.id, key, value)
         analytics.logExtensionSettingChanged(key, value)
     }
 

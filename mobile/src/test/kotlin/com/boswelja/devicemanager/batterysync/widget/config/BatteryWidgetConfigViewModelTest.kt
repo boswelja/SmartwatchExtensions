@@ -75,7 +75,7 @@ class BatteryWidgetConfigViewModelTest {
     private fun setWatchesInDatabase(watches: List<Watch>) {
         watchDatabase.clearAllTables()
         watches.forEach {
-            watchDatabase.watchDao().add(it)
+            watchDatabase.addWatch(it)
         }
     }
 }
