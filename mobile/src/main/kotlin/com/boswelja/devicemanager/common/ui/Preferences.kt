@@ -104,13 +104,13 @@ fun SliderPreference(
 
 @ExperimentalMaterialApi
 @Composable
-fun DialogPreference(
+fun <T> DialogPreference(
     text: String,
     secondaryText: String? = null,
     icon: ImageVector? = null,
-    values: Array<Pair<String, Int>>,
-    value: Pair<String, Int>,
-    onValueChanged: (Pair<String, Int>) -> Unit
+    values: Array<Pair<String, T>>,
+    value: Pair<String, T>,
+    onValueChanged: (Pair<String, T>) -> Unit
 ) {
     var dialogVisible by remember { mutableStateOf(false) }
     ListItem(

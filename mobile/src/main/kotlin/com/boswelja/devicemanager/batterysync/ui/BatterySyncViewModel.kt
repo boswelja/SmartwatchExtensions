@@ -1,15 +1,12 @@
 package com.boswelja.devicemanager.batterysync.ui
 
 import android.app.Application
-import android.content.SharedPreferences
-import androidx.core.content.edit
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.liveData
 import androidx.lifecycle.switchMap
 import androidx.lifecycle.viewModelScope
-import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.batterysync.BatterySyncWorker
 import com.boswelja.devicemanager.batterysync.Utils.updateBatteryStats
 import com.boswelja.devicemanager.batterysync.database.WatchBatteryStatsDatabase
@@ -27,7 +24,6 @@ import timber.log.Timber
 class BatterySyncViewModel internal constructor(
     application: Application,
     private val watchManager: WatchManager,
-    private val sharedPreferences: SharedPreferences,
     private val dispatcher: CoroutineDispatcher
 ) : AndroidViewModel(application) {
 
@@ -35,23 +31,17 @@ class BatterySyncViewModel internal constructor(
     constructor(application: Application) : this(
         application,
         WatchManager.getInstance(application),
-        PreferenceManager.getDefaultSharedPreferences(application),
         Dispatchers.IO
     )
 
     private val database: WatchBatteryStatsDatabase =
         WatchBatteryStatsDatabase.getInstance(application)
 
-    private val _batterySyncEnabled =
-        MutableLiveData(sharedPreferences.getBoolean(BATTERY_SYNC_ENABLED_KEY, false))
-    private val _phoneChargeNotiEnabled =
-        MutableLiveData(sharedPreferences.getBoolean(BATTERY_PHONE_CHARGE_NOTI_KEY, false))
-    private val _watchChargeNotiEnabled =
-        MutableLiveData(sharedPreferences.getBoolean(BATTERY_WATCH_CHARGE_NOTI_KEY, false))
-    private val _chargeThreshold =
-        MutableLiveData(sharedPreferences.getInt(BATTERY_CHARGE_THRESHOLD_KEY, 90))
-    private val _syncInterval =
-        MutableLiveData(sharedPreferences.getInt(BATTERY_SYNC_INTERVAL_KEY, 15))
+    private val _batterySyncEnabled = MutableLiveData<Boolean>()
+    private val _phoneChargeNotiEnabled = MutableLiveData<Boolean>()
+    private val _watchChargeNotiEnabled = MutableLiveData<Boolean>()
+    private val _chargeThreshold = MutableLiveData<Int>()
+    private val _syncInterval = MutableLiveData<Int>()
 
     val batterySyncEnabled: LiveData<Boolean>
         get() = _batterySyncEnabled
@@ -69,6 +59,28 @@ class BatterySyncViewModel internal constructor(
         else liveData { }
     }
 
+    init {
+        watchManager.selectedWatch.value?.let { selectedWatch ->
+            viewModelScope.launch {
+                _batterySyncEnabled.postValue(
+                    watchManager.getPreference(selectedWatch, BATTERY_SYNC_ENABLED_KEY)
+                )
+                _phoneChargeNotiEnabled.postValue(
+                    watchManager.getPreference(selectedWatch, BATTERY_PHONE_CHARGE_NOTI_KEY)
+                )
+                _watchChargeNotiEnabled.postValue(
+                    watchManager.getPreference(selectedWatch, BATTERY_WATCH_CHARGE_NOTI_KEY)
+                )
+                _chargeThreshold.postValue(
+                    watchManager.getPreference(selectedWatch, BATTERY_CHARGE_THRESHOLD_KEY)
+                )
+                _syncInterval.postValue(
+                    watchManager.getPreference(selectedWatch, BATTERY_SYNC_INTERVAL_KEY)
+                )
+            }
+        }
+    }
+
     fun setBatterySyncEnabled(isEnabled: Boolean) {
         viewModelScope.launch(dispatcher) {
             if (isEnabled) {
@@ -77,9 +89,6 @@ class BatterySyncViewModel internal constructor(
                 )
                 if (workerStartSuccessful) {
                     _batterySyncEnabled.postValue(isEnabled)
-                    sharedPreferences.edit(commit = true) {
-                        putBoolean(BATTERY_SYNC_ENABLED_KEY, isEnabled)
-                    }
                     watchManager.updatePreference(
                         watchManager.selectedWatch.value!!, BATTERY_SYNC_ENABLED_KEY, isEnabled
                     )
@@ -89,9 +98,6 @@ class BatterySyncViewModel internal constructor(
                 }
             } else {
                 _batterySyncEnabled.postValue(isEnabled)
-                sharedPreferences.edit(commit = true) {
-                    putBoolean(BATTERY_SYNC_ENABLED_KEY, isEnabled)
-                }
                 watchManager.updatePreference(
                     watchManager.selectedWatch.value!!, BATTERY_SYNC_ENABLED_KEY, isEnabled
                 )
@@ -105,9 +111,6 @@ class BatterySyncViewModel internal constructor(
     fun setSyncInterval(syncInterval: Int) {
         _syncInterval.postValue(syncInterval)
         viewModelScope.launch(dispatcher) {
-            sharedPreferences.edit(commit = true) {
-                putInt(BATTERY_SYNC_INTERVAL_KEY, syncInterval)
-            }
             watchManager.updatePreference(
                 watchManager.selectedWatch.value!!, BATTERY_SYNC_INTERVAL_KEY, syncInterval
             )
@@ -119,9 +122,6 @@ class BatterySyncViewModel internal constructor(
     fun setChargeThreshold(chargeThreshold: Int) {
         _chargeThreshold.postValue(chargeThreshold)
         viewModelScope.launch(dispatcher) {
-            sharedPreferences.edit(commit = true) {
-                putInt(BATTERY_CHARGE_THRESHOLD_KEY, chargeThreshold)
-            }
             watchManager.updatePreference(
                 watchManager.selectedWatch.value!!, BATTERY_CHARGE_THRESHOLD_KEY, chargeThreshold
             )
@@ -130,9 +130,6 @@ class BatterySyncViewModel internal constructor(
 
     fun setPhoneChargeNotiEnabled(isEnabled: Boolean) {
         viewModelScope.launch(dispatcher) {
-            sharedPreferences.edit(commit = true) {
-                putBoolean(BATTERY_PHONE_CHARGE_NOTI_KEY, isEnabled)
-            }
             watchManager.updatePreference(
                 watchManager.selectedWatch.value!!, BATTERY_PHONE_CHARGE_NOTI_KEY, chargeThreshold
             )
@@ -142,9 +139,6 @@ class BatterySyncViewModel internal constructor(
 
     fun setWatchChargeNotiEnabled(isEnabled: Boolean) {
         viewModelScope.launch(dispatcher) {
-            sharedPreferences.edit(commit = true) {
-                putBoolean(BATTERY_WATCH_CHARGE_NOTI_KEY, isEnabled)
-            }
             watchManager.updatePreference(
                 watchManager.selectedWatch.value!!, BATTERY_WATCH_CHARGE_NOTI_KEY, chargeThreshold
             )

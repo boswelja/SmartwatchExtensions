@@ -1,26 +1,27 @@
 package com.boswelja.devicemanager.onboarding.ui
 
 import android.app.Application
-import android.content.SharedPreferences
 import androidx.annotation.VisibleForTesting
-import androidx.core.content.edit
+import androidx.datastore.core.DataStore
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
-import androidx.preference.PreferenceManager
+import androidx.lifecycle.viewModelScope
+import com.boswelja.devicemanager.PhoneState
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.connection.Messages.CHECK_WATCH_REGISTERED_PATH
 import com.boswelja.devicemanager.common.connection.Messages.WATCH_REGISTERED_PATH
-import com.boswelja.devicemanager.phoneconnectionmanager.References.PHONE_ID_KEY
+import com.boswelja.devicemanager.phoneStateStore
 import com.google.android.gms.wearable.MessageClient
 import com.google.android.gms.wearable.NodeClient
 import com.google.android.gms.wearable.Wearable
+import kotlinx.coroutines.launch
 
 class OnboardingViewModel internal constructor(
     application: Application,
     private val nodeClient: NodeClient,
     private val messageClient: MessageClient,
-    private val sharedPreferences: SharedPreferences
+    private val dataStore: DataStore<PhoneState>
 ) : AndroidViewModel(application) {
 
     @Suppress("unused")
@@ -28,7 +29,7 @@ class OnboardingViewModel internal constructor(
         application,
         Wearable.getNodeClient(application),
         Wearable.getMessageClient(application),
-        PreferenceManager.getDefaultSharedPreferences(application)
+        application.phoneStateStore
     )
 
     @VisibleForTesting
@@ -36,7 +37,11 @@ class OnboardingViewModel internal constructor(
         MessageClient.OnMessageReceivedListener {
             when (it.path) {
                 WATCH_REGISTERED_PATH -> {
-                    sharedPreferences.edit { putString(PHONE_ID_KEY, it.sourceNodeId) }
+                    viewModelScope.launch {
+                        dataStore.updateData { state ->
+                            state.copy(id = it.sourceNodeId)
+                        }
+                    }
                 }
             }
         }

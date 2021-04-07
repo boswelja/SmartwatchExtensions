@@ -1,6 +1,7 @@
 plugins {
     id("com.android.application")
     kotlin("android")
+    id("com.squareup.wire")
 }
 
 android {
@@ -67,13 +68,14 @@ dependencies {
     val androidxArch = "2.1.0"
     val androidxAppCompat = "1.3.0-rc01"
     val androidxCoreKtx = "1.5.0-rc01"
+    val androidxDataStore = "1.0.0-alpha08"
     val androidxEspresso = "3.1.0"
     val androidxLifecycle = "2.4.0-alpha01"
-    val androidxPreference = "1.1.1"
     val androidxTest = "1.4.0-alpha05"
     val androidxTestExt = "1.1.3-alpha04"
     val androidxWear = "1.2.0-alpha07"
     val androidxWearComplications = "1.0.0-alpha10"
+    val androidxWork = "2.7.0-alpha02"
 
     val compose = "1.0.0-beta03"
     val lifecycleCompose = "1.0.0-alpha03"
@@ -95,9 +97,10 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:$androidxLifecycle")
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:$androidxLifecycle")
     implementation("androidx.lifecycle:lifecycle-service:$androidxLifecycle")
-    implementation("androidx.preference:preference:$androidxPreference")
     implementation("androidx.wear:wear:$androidxWear")
     implementation("androidx.wear:wear-complications-provider:$androidxWearComplications")
+    implementation("androidx.datastore:datastore:$androidxDataStore")
+    implementation("androidx.work:work-runtime-ktx:$androidxWork")
 
     implementation("com.google.android.gms:play-services-wearable:$playServicesWearable")
     implementation("com.jakewharton.timber:timber:$timber")
@@ -127,4 +130,10 @@ dependencies {
     androidTestImplementation("androidx.test:core-ktx:$androidxTest")
     androidTestImplementation("com.google.truth:truth:$truth")
     androidTestImplementation("io.mockk:mockk-android:$mockk")
+}
+
+wire {
+    kotlin {
+        android = true
+    }
 }

@@ -167,7 +167,7 @@
             android:exported="false" />
 
         <receiver
-            android:name=".BootReceiver"
+            android:name=".BootHandler"
             android:exported="false">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />

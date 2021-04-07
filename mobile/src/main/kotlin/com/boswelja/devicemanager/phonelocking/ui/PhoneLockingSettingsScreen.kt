@@ -3,7 +3,7 @@ package com.boswelja.devicemanager.phonelocking.ui
 import android.app.admin.DevicePolicyManager
 import android.content.ComponentName
 import android.content.Intent
-import android.provider.Settings
+import android.provider.Settings.ACTION_ACCESSIBILITY_SETTINGS
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material.AlertDialog
@@ -26,10 +26,10 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.boswelja.devicemanager.R
+import com.boswelja.devicemanager.appsettings.Settings
 import com.boswelja.devicemanager.common.ui.DialogPreference
 import com.boswelja.devicemanager.common.ui.SwitchPreference
 import com.boswelja.devicemanager.phonelocking.DeviceAdminChangeReceiver
-import com.boswelja.devicemanager.phonelocking.ui.PhoneLockingSettingsViewModel.Companion.PHONE_LOCKING_MODE_ACCESSIBILITY_SERVICE
 import timber.log.Timber
 
 @ExperimentalMaterialApi
@@ -54,16 +54,16 @@ fun PhoneLockingSettingsScreen() {
         ListItem(
             icon = { Icon(Icons.Outlined.Settings, null) },
             text = {
-                if (phoneLockingMode == PHONE_LOCKING_MODE_ACCESSIBILITY_SERVICE) {
+                if (phoneLockingMode == Settings.PhoneLockMode.ACCESSIBILITY_SERVICE) {
                     Text(stringResource(R.string.phone_locking_accessibility_settings))
                 } else {
                     Text(stringResource(R.string.phone_locking_admin_settings))
                 }
             },
             modifier = Modifier.clickable {
-                if (phoneLockingMode == PHONE_LOCKING_MODE_ACCESSIBILITY_SERVICE) {
+                if (phoneLockingMode == Settings.PhoneLockMode.ACCESSIBILITY_SERVICE) {
                     Timber.i("Opening accessibility settings")
-                    context.startActivity(Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS))
+                    context.startActivity(Intent(ACTION_ACCESSIBILITY_SETTINGS))
                 } else {
                     Timber.i("Opening device admin settings")
                     Intent().apply {
@@ -94,14 +94,14 @@ fun PhoneLockingSettingsScreen() {
         if (phoneLockingSetupVisible) {
             AlertDialog(
                 title = {
-                    if (phoneLockingMode == PHONE_LOCKING_MODE_ACCESSIBILITY_SERVICE) {
+                    if (phoneLockingMode == Settings.PhoneLockMode.ACCESSIBILITY_SERVICE) {
                         Text(stringResource(R.string.phone_locking_setup_accessibility_title))
                     } else {
                         Text(stringResource(R.string.phone_locking_setup_admin_title))
                     }
                 },
                 text = {
-                    if (phoneLockingMode == PHONE_LOCKING_MODE_ACCESSIBILITY_SERVICE) {
+                    if (phoneLockingMode == Settings.PhoneLockMode.ACCESSIBILITY_SERVICE) {
                         Text(stringResource(R.string.phone_locking_setup_accessibility_desc))
                     } else {
                         Text(stringResource(R.string.phone_locking_setup_admin_desc))
@@ -111,9 +111,9 @@ fun PhoneLockingSettingsScreen() {
                     TextButton(
                         content = { Text(stringResource(R.string.dialog_button_grant)) },
                         onClick = {
-                            if (phoneLockingMode == PHONE_LOCKING_MODE_ACCESSIBILITY_SERVICE) {
+                            if (phoneLockingMode == Settings.PhoneLockMode.ACCESSIBILITY_SERVICE) {
                                 context
-                                    .startActivity(Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS))
+                                    .startActivity(Intent(ACTION_ACCESSIBILITY_SETTINGS))
                             } else {
                                 val intent =
                                     Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN).apply {

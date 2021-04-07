@@ -19,23 +19,26 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.core.content.edit
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.analytics.Analytics
-import com.boswelja.devicemanager.common.rememberSharedPreferences
+import com.boswelja.devicemanager.appsettings.appSettingsStore
+import kotlinx.coroutines.launch
 
 @ExperimentalMaterialApi
 @Composable
 fun UsageStatsScreen(
     onShowPrivacyPolicy: () -> Unit
 ) {
-    val sharedPreferences = rememberSharedPreferences()
+    val coroutineScope = rememberCoroutineScope()
+    val context = LocalContext.current
     val analytics = Analytics()
     var checkboxChecked by remember { mutableStateOf(true) }
     Column(
@@ -73,9 +76,11 @@ fun UsageStatsScreen(
                     value = checkboxChecked,
                     onValueChange = {
                         checkboxChecked = it
-                        analytics.setAnalyticsEnabled(it)
-                        sharedPreferences.edit {
-                            putBoolean(Analytics.ANALYTICS_ENABLED_KEY, it)
+                        coroutineScope.launch {
+                            analytics.setAnalyticsEnabled(it)
+                            context.appSettingsStore.updateData { settings ->
+                                settings.copy(analyticsEnabled = it)
+                            }
                         }
                     }
                 )

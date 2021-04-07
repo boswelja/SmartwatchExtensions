@@ -224,18 +224,15 @@ class ManageSpaceActivity : AppCompatActivity() {
                 text = stringResource(R.string.reset_settings_desc),
                 onRequestGranted = {
                     dialogVisible = false
-                    viewModel.resetAppSettings(
-                        { onProgressChange(it / 100f) },
-                        {
-                            onProgressChange(0f)
-                            scope.launch {
-                                scaffoldState.snackbarHostState.showSnackbar(
-                                    if (it) getString(R.string.reset_settings_success)
-                                    else getString(R.string.reset_settings_failed)
-                                )
-                            }
+                    viewModel.resetAppSettings {
+                        onProgressChange(0f)
+                        scope.launch {
+                            scaffoldState.snackbarHostState.showSnackbar(
+                                if (it) getString(R.string.reset_settings_success)
+                                else getString(R.string.reset_settings_failed)
+                            )
                         }
-                    )
+                    }
                 },
                 onRequestDenied = { dialogVisible = false }
             )

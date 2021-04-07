@@ -1,30 +1,32 @@
 package com.boswelja.devicemanager.phonelocking
 
+import android.accessibilityservice.AccessibilityServiceInfo
+import android.app.admin.DevicePolicyManager
+import android.content.ComponentName
 import android.content.Context
 import android.os.Build
+import android.view.accessibility.AccessibilityManager
 import androidx.annotation.RequiresApi
-import androidx.preference.PreferenceManager
-import com.boswelja.devicemanager.phonelocking.DeviceAdminChangeReceiver.Companion.DEVICE_ADMIN_ENABLED_KEY
-import com.boswelja.devicemanager.phonelocking.PhoneLockingAccessibilityService.Companion.ACCESSIBILITY_SERVICE_ENABLED_KEY
+import androidx.core.content.getSystemService
 
 object Utils {
 
     /**
-     * Checks whether Device Administrator mode is enabled.
-     * @param context [Context].
-     * @return true if Wearable Extensions is a Device Administrator, false otherwise.
+     * Checks whether Device Administrator is enabled for this package.
+     * @return true if this package is a Device Administrator, false otherwise.
      */
-    fun isDeviceAdminEnabled(context: Context): Boolean =
-        PreferenceManager.getDefaultSharedPreferences(context)
-            .getBoolean(DEVICE_ADMIN_ENABLED_KEY, false)
+    fun Context.isDeviceAdminEnabled(): Boolean =
+        getSystemService<DevicePolicyManager>()
+            ?.isAdminActive(ComponentName(this, DeviceAdminChangeReceiver::class.java)) ?: false
 
     /**
-     * Checks whether Phone Locking accessibility service is enabled.
-     * @param context [Context].
-     * @return true if Accessibility Service is enabled, false otherwise.
+     * Checks whether this package has an accessibility service enabled.
+     * @return true if accessibility service is enabled, false otherwise.
      */
     @RequiresApi(Build.VERSION_CODES.P)
-    fun isAccessibilityServiceEnabled(context: Context): Boolean =
-        PreferenceManager.getDefaultSharedPreferences(context)
-            .getBoolean(ACCESSIBILITY_SERVICE_ENABLED_KEY, false)
+    fun Context.isAccessibilityServiceEnabled(): Boolean {
+        return getSystemService<AccessibilityManager>()
+            ?.getEnabledAccessibilityServiceList(AccessibilityServiceInfo.FEEDBACK_ALL_MASK)
+            ?.any { it.resolveInfo.serviceInfo.packageName == packageName } ?: false
+    }
 }

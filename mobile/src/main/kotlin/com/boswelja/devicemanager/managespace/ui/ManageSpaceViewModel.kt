@@ -1,15 +1,15 @@
 package com.boswelja.devicemanager.managespace.ui
 
 import android.app.Application
-import android.content.SharedPreferences
 import androidx.annotation.VisibleForTesting
-import androidx.core.content.edit
+import androidx.datastore.core.DataStore
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.Observer
 import androidx.lifecycle.viewModelScope
-import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.analytics.Analytics
-import com.boswelja.devicemanager.common.preference.SyncPreferences
+import com.boswelja.devicemanager.appsettings.AppSettingsSerializer
+import com.boswelja.devicemanager.appsettings.Settings
+import com.boswelja.devicemanager.appsettings.appSettingsStore
 import com.boswelja.devicemanager.watchmanager.WatchManager
 import com.boswelja.devicemanager.watchmanager.item.Watch
 import kotlin.math.floor
@@ -23,7 +23,7 @@ class ManageSpaceViewModel internal constructor(
     application: Application,
     private val analytics: Analytics,
     private val watchManager: WatchManager,
-    private val sharedPreferences: SharedPreferences,
+    private val appSettingsDataStore: DataStore<Settings>,
     private val coroutineDispatcher: CoroutineDispatcher
 ) : AndroidViewModel(application) {
 
@@ -38,7 +38,7 @@ class ManageSpaceViewModel internal constructor(
         application,
         Analytics(),
         WatchManager.getInstance(application),
-        PreferenceManager.getDefaultSharedPreferences(application),
+        application.appSettingsStore,
         Dispatchers.IO
     )
 
@@ -82,17 +82,11 @@ class ManageSpaceViewModel internal constructor(
                 var progress: Int
                 val watchCount = registeredWatches.count()
                 val progressMultiplier =
-                    floor(MAX_PROGRESS / (watchCount + SyncPreferences.ALL_PREFS.count())).toInt()
+                    floor(MAX_PROGRESS / watchCount).toInt()
                 registeredWatches.forEachIndexed { index, watch ->
                     watchManager.resetWatchPreferences(getApplication<Application>(), watch)
                     progress = (index + 1) * progressMultiplier
                     withContext(Dispatchers.Main) { onProgressChanged(progress) }
-                }
-                sharedPreferences.edit(commit = true) {
-                    SyncPreferences.ALL_PREFS.forEachIndexed { index, s ->
-                        remove(s)
-                        progress = (watchCount + index + 1) * progressMultiplier
-                    }
                 }
             }
             onCompleteFunction(true)
@@ -101,27 +95,14 @@ class ManageSpaceViewModel internal constructor(
 
     /**
      * Reset app settings for Wearable Extensions. This does not include extension settings.
-     * @param onProgressChanged The function to call when clear progress is changed.
      * @param onCompleteFunction The function to call when the job completes.
      */
     fun resetAppSettings(
-        onProgressChanged: (progress: Int) -> Unit,
         onCompleteFunction: (isSuccessful: Boolean) -> Unit
     ) {
         viewModelScope.launch(coroutineDispatcher) {
-            val preferencesToClear = sharedPreferences.all
-                .map { it.key }
-                .filterNot { SyncPreferences.ALL_PREFS.contains(it) }
-            if (preferencesToClear.isNotEmpty()) {
-                val progressMultiplier = floor(MAX_PROGRESS / preferencesToClear.count()).toInt()
-                var progress: Int
-                sharedPreferences.edit(commit = true) {
-                    preferencesToClear.forEachIndexed { index, s ->
-                        remove(s)
-                        progress = (index + 1) * progressMultiplier
-                        withContext(Dispatchers.Main) { onProgressChanged(progress) }
-                    }
-                }
+            appSettingsDataStore.updateData {
+                AppSettingsSerializer().defaultValue
             }
             withContext(Dispatchers.Main) { onCompleteFunction(true) }
         }

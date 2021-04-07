@@ -1,61 +1,71 @@
 package com.boswelja.devicemanager.appsettings.ui
 
 import android.app.Application
-import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.core.content.edit
+import androidx.datastore.core.DataStore
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.preference.PreferenceManager
+import androidx.lifecycle.viewModelScope
 import com.boswelja.devicemanager.analytics.Analytics
-import com.boswelja.devicemanager.analytics.Analytics.Companion.ANALYTICS_ENABLED_KEY
+import com.boswelja.devicemanager.appsettings.Settings
+import com.boswelja.devicemanager.appsettings.appSettingsStore
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 
 class AppSettingsViewModel internal constructor(
     application: Application,
-    private val sharedPreferences: SharedPreferences,
+    private val dataStore: DataStore<Settings>,
     private val analytics: Analytics
 ) : AndroidViewModel(application) {
 
-    private val _analyticsEnabled = MutableLiveData(
-        sharedPreferences.getBoolean(ANALYTICS_ENABLED_KEY, true)
-    )
-    private val _appTheme = MutableLiveData(
-        sharedPreferences.getInt(
-            DAYNIGHT_MODE_KEY,
-            AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
-        )
-    )
+    private val _analyticsEnabled = MutableLiveData<Boolean>()
+    private val _appTheme = MutableLiveData<Settings.Theme>()
 
     val analyticsEnabled: LiveData<Boolean>
         get() = _analyticsEnabled
-    val appTheme: LiveData<Int>
+    val appTheme: LiveData<Settings.Theme>
         get() = _appTheme
 
     @Suppress("unused")
     constructor(application: Application) : this(
         application,
-        PreferenceManager.getDefaultSharedPreferences(application),
+        application.appSettingsStore,
         Analytics()
     )
 
+    init {
+        viewModelScope.launch {
+            dataStore.data.collect {
+                _analyticsEnabled.postValue(it.analyticsEnabled)
+                _appTheme.postValue(it.appTheme)
+            }
+        }
+    }
+
     fun setAnalyticsEnabled(analyticsEnabled: Boolean) {
-        analytics.setAnalyticsEnabled(analyticsEnabled)
-        sharedPreferences.edit {
-            putBoolean(ANALYTICS_ENABLED_KEY, analyticsEnabled)
+        viewModelScope.launch {
+            _analyticsEnabled.postValue(analyticsEnabled)
+            analytics.setAnalyticsEnabled(analyticsEnabled)
+            dataStore.updateData {
+                it.copy(analyticsEnabled = analyticsEnabled)
+            }
         }
-        _analyticsEnabled.postValue(analyticsEnabled)
     }
 
-    fun setAppTheme(nightMode: Int) {
-        AppCompatDelegate.setDefaultNightMode(nightMode)
-        sharedPreferences.edit {
-            putInt(DAYNIGHT_MODE_KEY, nightMode)
+    fun setAppTheme(appTheme: Settings.Theme) {
+        viewModelScope.launch {
+            _appTheme.postValue(appTheme)
+            dataStore.updateData {
+                it.copy(appTheme = appTheme)
+            }
+            AppCompatDelegate.setDefaultNightMode(
+                when (appTheme) {
+                    Settings.Theme.FOLLOW_SYSTEM -> AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+                    Settings.Theme.LIGHT -> AppCompatDelegate.MODE_NIGHT_NO
+                    Settings.Theme.DARK -> AppCompatDelegate.MODE_NIGHT_YES
+                }
+            )
         }
-        _appTheme.postValue(nightMode)
-    }
-
-    companion object {
-        const val DAYNIGHT_MODE_KEY = "daynight_mode"
     }
 }

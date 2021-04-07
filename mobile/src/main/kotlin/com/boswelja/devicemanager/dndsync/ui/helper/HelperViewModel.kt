@@ -2,14 +2,11 @@ package com.boswelja.devicemanager.dndsync.ui.helper
 
 import android.app.Application
 import android.content.Intent
-import android.content.SharedPreferences
 import androidx.core.content.ContextCompat
-import androidx.core.content.edit
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import androidx.preference.PreferenceManager
 import com.boswelja.devicemanager.common.dndsync.References
 import com.boswelja.devicemanager.common.fromByteArray
 import com.boswelja.devicemanager.common.preference.PreferenceKey
@@ -23,7 +20,6 @@ import timber.log.Timber
 class HelperViewModel internal constructor(
     application: Application,
     private val watchManager: WatchManager,
-    private val sharedPreferences: SharedPreferences,
     private val messageClient: MessageClient
 ) : AndroidViewModel(application) {
 
@@ -31,7 +27,6 @@ class HelperViewModel internal constructor(
     constructor(application: Application) : this(
         application,
         WatchManager.getInstance(application),
-        PreferenceManager.getDefaultSharedPreferences(application),
         Wearable.getMessageClient(application)
     )
 
@@ -72,9 +67,6 @@ class HelperViewModel internal constructor(
     private fun setSyncToWatch(isEnabled: Boolean) {
         Timber.i("setSyncToWatch() called")
         viewModelScope.launch {
-            sharedPreferences.edit(commit = true) {
-                putBoolean(PreferenceKey.DND_SYNC_TO_WATCH_KEY, isEnabled)
-            }
             watchManager.updatePreference(
                 watchManager.selectedWatch.value!!, PreferenceKey.DND_SYNC_TO_WATCH_KEY, isEnabled
             )

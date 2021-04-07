@@ -1,10 +1,3 @@
-/* Copyright (C) 2020 Jack Boswell <boswelja@outlook.com>
- *
- * This file is part of Wearable Extensions
- *
- * This file, and any part of the Wearable Extensions app/s cannot be copied and/or distributed
- * without permission from Jack Boswell (boswelja) <boswela@outlook.com>
- */
 package com.boswelja.devicemanager.appmanager
 
 import android.app.Notification
@@ -14,14 +7,13 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.core.content.getSystemService
 import androidx.lifecycle.LifecycleService
-import androidx.preference.PreferenceManager
+import androidx.lifecycle.lifecycleScope
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.common.LifecycleAwareTimer
 import com.boswelja.devicemanager.common.appmanager.App
@@ -34,21 +26,28 @@ import com.boswelja.devicemanager.common.appmanager.Messages.REQUEST_UNINSTALL_P
 import com.boswelja.devicemanager.common.appmanager.Messages.SERVICE_RUNNING
 import com.boswelja.devicemanager.common.appmanager.Messages.STOP_SERVICE
 import com.boswelja.devicemanager.common.toByteArray
-import com.boswelja.devicemanager.phoneconnectionmanager.References.PHONE_ID_KEY
+import com.boswelja.devicemanager.phoneStateStore
 import com.google.android.gms.wearable.MessageClient
 import com.google.android.gms.wearable.Wearable
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
 import timber.log.Timber
 
 class AppManagerService : LifecycleService() {
 
-    private lateinit var sharedPreferences: SharedPreferences
     private lateinit var messageClient: MessageClient
 
-    private var phoneId: String? = null
+    private lateinit var phoneId: Flow<String>
 
     private val serviceRunningNotifier = LifecycleAwareTimer(10) {
-        Timber.d("Notifying service running")
-        messageClient.sendMessage(phoneId!!, SERVICE_RUNNING, null)
+        lifecycleScope.launch {
+            phoneId.collect {
+                Timber.d("Notifying service running")
+                messageClient.sendMessage(it, SERVICE_RUNNING, null)
+            }
+        }
     }
 
     private val messageReceiver = MessageClient.OnMessageReceivedListener {
@@ -104,14 +103,11 @@ class AppManagerService : LifecycleService() {
 
     override fun onCreate() {
         super.onCreate()
-
         Timber.d("onCreate() called")
 
-        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
+        phoneId = phoneStateStore.data.map { it.id }
+
         messageClient = Wearable.getMessageClient(this)
-
-        phoneId = sharedPreferences.getString(PHONE_ID_KEY, "")
-
         messageClient.addListener(messageReceiver)
 
         IntentFilter().apply {
@@ -174,45 +170,64 @@ class AppManagerService : LifecycleService() {
      * @param packageName The name of the package that was removed.
      */
     private fun sendAppRemovedMessage(packageName: String?) {
-        val data = packageName?.toByteArray(Charsets.UTF_8)
-        messageClient.sendMessage(phoneId!!, PACKAGE_REMOVED, data)
+        lifecycleScope.launch {
+            phoneId.collect {
+                val data = packageName?.toByteArray(Charsets.UTF_8)
+                messageClient.sendMessage(it, PACKAGE_REMOVED, data)
+            }
+        }
     }
 
     /**
      * Sends a message to the phone informing of a package install.
      * @param packageInfo The [App] for the package that was installed.
      */
+    @Suppress("BlockingMethodInNonBlockingContext")
     private fun sendAppAddedMessage(packageInfo: App) {
-        val data = packageInfo.toByteArray()
-        messageClient.sendMessage(phoneId!!, PACKAGE_ADDED, data)
+        lifecycleScope.launch {
+            val data = packageInfo.toByteArray()
+            phoneId.collect {
+                messageClient.sendMessage(it, PACKAGE_ADDED, data)
+            }
+        }
     }
 
     /**
      * Sends a message to the phone informing of a package update.
      * @param packageInfo The [App] for the package that was installed.
      */
+    @Suppress("BlockingMethodInNonBlockingContext")
     private fun sendAppUpdatedMessage(packageInfo: App) {
-        val data = packageInfo.toByteArray()
-        messageClient.sendMessage(phoneId!!, PACKAGE_UPDATED, data)
+        lifecycleScope.launch {
+            val data = packageInfo.toByteArray()
+            phoneId.collect {
+                messageClient.sendMessage(it, PACKAGE_UPDATED, data)
+            }
+        }
     }
 
     /**
      * Starts sending all apps to the connected phone.
      */
     private fun sendAllApps() {
-        val allPackages = packageManager.getInstalledPackages(PackageManager.GET_PERMISSIONS).map {
-            App(packageManager, it)
-        }
-        // Send expected app count to the phone
-        val data = allPackages.count().toByteArray()
-        messageClient.sendMessage(phoneId!!, EXPECTED_APP_COUNT, data)
+        lifecycleScope.launch {
+            val allPackages = packageManager.getInstalledPackages(PackageManager.GET_PERMISSIONS)
+                .map {
+                    App(packageManager, it)
+                }
+            phoneId.collect {
+                // Send expected app count to the phone
+                val data = allPackages.count().toByteArray()
+                messageClient.sendMessage(it, EXPECTED_APP_COUNT, data)
 
-        // Start sending apps
-        allPackages.forEach {
-            messageClient.sendMessage(phoneId!!, PACKAGE_ADDED, it.toByteArray())
-        }
+                // Start sending apps
+                allPackages.forEach { app ->
+                    messageClient.sendMessage(it, PACKAGE_ADDED, app.toByteArray())
+                }
+            }
 
-        lifecycle.addObserver(serviceRunningNotifier)
+            lifecycle.addObserver(serviceRunningNotifier)
+        }
     }
 
     /**

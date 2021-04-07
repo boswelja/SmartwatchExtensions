@@ -1,16 +1,13 @@
 package com.boswelja.devicemanager.watchmanager
 
-import android.content.SharedPreferences
 import android.os.Build
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.core.content.edit
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.liveData
-import androidx.preference.PreferenceManager
-import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.boswelja.devicemanager.AppState
 import com.boswelja.devicemanager.analytics.Analytics
 import com.boswelja.devicemanager.batterysync.database.WatchBatteryStatsDatabase
 import com.boswelja.devicemanager.common.connection.Messages.REQUEST_UPDATE_CAPABILITIES
@@ -24,9 +21,9 @@ import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.verify
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.TestCoroutineScope
-import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -46,49 +43,40 @@ class WatchManagerTest {
     private val dummyWatch2 = Watch("an-id-2345", "Watch 2", platformIdentifier)
     private val dummyWatch3 = Watch("an-id-3456", "Watch 3", platformIdentifier)
     private val dummyWatches = listOf(dummyWatch1, dummyWatch2, dummyWatch3)
+    private val appState = MutableStateFlow(AppState())
 
     @RelaxedMockK private lateinit var widgetIdStore: DataStore<Preferences>
     @RelaxedMockK private lateinit var repository: WatchRepository
     @RelaxedMockK private lateinit var analytics: Analytics
     @RelaxedMockK private lateinit var batteryStatsDatabase: WatchBatteryStatsDatabase
+    @RelaxedMockK lateinit var dataStore: DataStore<AppState>
 
     private lateinit var coroutineScope: CoroutineScope
-    private lateinit var sharedPreferences: SharedPreferences
     private lateinit var watchManager: WatchManager
 
     @Before
     fun setUp() {
         MockKAnnotations.init(this)
+        every { dataStore.data } returns appState
 
         coroutineScope = TestCoroutineScope()
-        sharedPreferences = PreferenceManager
-            .getDefaultSharedPreferences(ApplicationProvider.getApplicationContext())
-    }
-
-    @After
-    fun tearDown() {
-        sharedPreferences.edit(commit = true) { clear() }
     }
 
     @Test
-    fun `selectedWatch is updated correctly on init`() {
+    fun `selectedWatch is updated correctly on init`(): Unit = runBlocking {
         every { repository.registeredWatches } returns liveData { emit(dummyWatches) }
-        sharedPreferences.edit(commit = true) {
-            putString(WatchManager.LAST_SELECTED_NODE_ID_KEY, dummyWatch1.id)
-        }
+        appState.emit(AppState(lastSelectedWatchId = dummyWatch1.id))
         watchManager = getWatchManager()
 
         assertThat(watchManager.selectedWatch.getOrAwaitValue()).isEqualTo(dummyWatch1)
     }
 
     @Test
-    fun `selectedWatch is updated when registeredWatches is updated`() {
+    fun `selectedWatch is updated when registeredWatches is updated`(): Unit = runBlocking {
         // Initialise WatchManager
         val registeredWatches = MutableLiveData(dummyWatches)
         every { repository.registeredWatches } returns registeredWatches
-        sharedPreferences.edit(commit = true) {
-            putString(WatchManager.LAST_SELECTED_NODE_ID_KEY, dummyWatch1.id)
-        }
+        appState.emit(AppState(lastSelectedWatchId = dummyWatch1.id))
         watchManager = getWatchManager()
 
         // Modify the selected watches status
@@ -106,12 +94,10 @@ class WatchManagerTest {
     }
 
     @Test
-    fun `selectWatchById updates selectedWatch`() {
+    fun `selectWatchById updates selectedWatch`(): Unit = runBlocking {
         // Initialise WatchManager
         every { repository.registeredWatches } returns liveData { emit(dummyWatches) }
-        sharedPreferences.edit(commit = true) {
-            putString(WatchManager.LAST_SELECTED_NODE_ID_KEY, dummyWatch1.id)
-        }
+        appState.emit(AppState(lastSelectedWatchId = dummyWatch1.id))
         watchManager = getWatchManager()
         watchManager.selectWatchById(dummyWatch2.id)
 
@@ -175,26 +161,11 @@ class WatchManagerTest {
         verify(exactly = 1) { repository.refreshData() }
     }
 
-//    @Test
-//    fun `removeWidgetsForWatch removes only widgets for the given watch`(): Unit = runBlocking {
-//        val widgetIdStore = ApplicationProvider.getApplicationContext<Context>().widgetIdStore
-//        widgetIdStore.edit {
-//            it[stringPreferencesKey("0")] = dummyWatch1.id
-//            it[stringPreferencesKey("1")] = dummyWatch1.id
-//            it[stringPreferencesKey("2")] = dummyWatch2.id
-//        }
-//        watchManager = getWatchManager()
-//
-//        watchManager.removeWidgetsForWatch(dummyWatch1, widgetIdStore)
-//        assertThat(widgetIdStore.data.first()[stringPreferencesKey("2")])
-//            .isEqualTo(dummyWatch2.id)
-//    }
-
     private fun getWatchManager(): WatchManager {
         return WatchManager(
-            sharedPreferences,
             repository,
             analytics,
+            dataStore,
             coroutineScope
         )
     }

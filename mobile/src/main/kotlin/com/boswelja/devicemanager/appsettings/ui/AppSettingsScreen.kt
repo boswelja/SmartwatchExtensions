@@ -2,8 +2,8 @@ package com.boswelja.devicemanager.appsettings.ui
 
 import android.content.Intent
 import android.os.Build
-import android.provider.Settings
-import androidx.appcompat.app.AppCompatDelegate
+import android.provider.Settings.ACTION_APP_NOTIFICATION_SETTINGS
+import android.provider.Settings.EXTRA_APP_PACKAGE
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -29,6 +29,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.boswelja.devicemanager.R
+import com.boswelja.devicemanager.appsettings.Settings
 import com.boswelja.devicemanager.common.ui.CheckboxPreference
 import com.boswelja.devicemanager.common.ui.DialogPreference
 import com.boswelja.devicemanager.common.ui.HeaderItem
@@ -56,16 +57,18 @@ fun AppSettings() {
         val context = LocalContext.current
         val appThemeOptions = remember {
             arrayOf(
-                Pair(context.getString(R.string.app_theme_light), AppCompatDelegate.MODE_NIGHT_NO),
-                Pair(context.getString(R.string.app_theme_dark), AppCompatDelegate.MODE_NIGHT_YES),
+                Pair(context.getString(R.string.app_theme_light), Settings.Theme.LIGHT),
+                Pair(context.getString(R.string.app_theme_dark), Settings.Theme.DARK),
                 Pair(
                     context.getString(R.string.app_theme_follow_system),
-                    AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+                    Settings.Theme.FOLLOW_SYSTEM
                 )
             )
         }
         val currentAppTheme by viewModel.appTheme.observeAsState()
-        val currentThemeOption = appThemeOptions.first { it.second == currentAppTheme }
+        val currentThemeOption = appThemeOptions.first {
+            it.second == (currentAppTheme ?: Settings.Theme.FOLLOW_SYSTEM)
+        }
 
         ListItem(
             text = { Text(stringResource(R.string.noti_settings_title)) },
@@ -77,8 +80,8 @@ fun AppSettings() {
                     .apply {
                         flags = Intent.FLAG_ACTIVITY_NEW_TASK
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                            action = Settings.ACTION_APP_NOTIFICATION_SETTINGS
-                            putExtra(Settings.EXTRA_APP_PACKAGE, context.packageName!!)
+                            action = ACTION_APP_NOTIFICATION_SETTINGS
+                            putExtra(EXTRA_APP_PACKAGE, context.packageName!!)
                         } else {
                             action = "android.settings.APP_NOTIFICATION_SETTINGS"
                             putExtra("app_package", context.packageName!!)
@@ -107,7 +110,7 @@ fun AppSettings() {
         DialogPreference(
             text = stringResource(R.string.app_theme_title),
             secondaryText = currentThemeOption.first,
-            icon = if (currentAppTheme == AppCompatDelegate.MODE_NIGHT_YES)
+            icon = if (currentAppTheme == Settings.Theme.DARK)
                 Icons.Outlined.DarkMode
             else
                 Icons.Outlined.LightMode,

@@ -1,47 +1,29 @@
 package com.boswelja.devicemanager.main.ui
 
 import android.app.Application
-import android.content.SharedPreferences
+import androidx.datastore.core.DataStore
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.preference.PreferenceManager
+import androidx.lifecycle.asLiveData
+import androidx.lifecycle.map
+import com.boswelja.devicemanager.PhoneState
 import com.boswelja.devicemanager.capability.CapabilityUpdater
-import com.boswelja.devicemanager.phoneconnectionmanager.References.PHONE_ID_KEY
+import com.boswelja.devicemanager.phoneStateStore
+import kotlinx.coroutines.flow.map
 
 class MainViewModel internal constructor(
     application: Application,
-    private val sharedPreferences: SharedPreferences
+    dataStore: DataStore<PhoneState>
 ) : AndroidViewModel(application) {
 
     @Suppress("unused")
     constructor(application: Application) : this(
         application,
-        PreferenceManager.getDefaultSharedPreferences(application)
+        application.phoneStateStore
     )
 
-    private val registrationObserver =
-        SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
-            if (key == PHONE_ID_KEY) {
-                _isRegistered.postValue(
-                    !sharedPreferences.getString(PHONE_ID_KEY, "").isNullOrBlank()
-                )
-            }
-        }
-
-    private val _isRegistered =
-        MutableLiveData(!sharedPreferences.getString(PHONE_ID_KEY, "").isNullOrBlank())
-
-    val isRegistered: LiveData<Boolean>
-        get() = _isRegistered
+    val isRegistered = dataStore.data.map { it.id }.asLiveData().map { it.isNotBlank() }
 
     init {
-        sharedPreferences.registerOnSharedPreferenceChangeListener(registrationObserver)
         CapabilityUpdater(application).updateCapabilities()
-    }
-
-    override fun onCleared() {
-        super.onCleared()
-        sharedPreferences.unregisterOnSharedPreferenceChangeListener(registrationObserver)
     }
 }

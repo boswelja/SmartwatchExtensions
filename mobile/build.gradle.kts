@@ -3,6 +3,7 @@ plugins {
     kotlin("android")
     id("com.google.gms.google-services")
     id("com.google.devtools.ksp") version "1.4.31-1.0.0-alpha06"
+    id("com.squareup.wire")
 }
 
 android {
@@ -78,7 +79,6 @@ dependencies {
     val androidxDataStore = "1.0.0-alpha08"
     val androidxEspresso = "3.1.0"
     val androidxLifecycle = "2.4.0-alpha01"
-    val androidxPreference = "1.1.1"
     val androidxRoom = "2.3.0-rc01"
     val androidxTest = "1.4.0-alpha05"
     val androidxTestExt = "1.1.3-alpha04"
@@ -110,11 +110,11 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:$androidxLifecycle")
     implementation("androidx.lifecycle:lifecycle-common-java8:$androidxLifecycle")
     implementation("androidx.lifecycle:lifecycle-service:$androidxLifecycle")
-    implementation("androidx.preference:preference:$androidxPreference")
     implementation("androidx.room:room-runtime:$androidxRoom")
     implementation("androidx.room:room-ktx:$androidxRoom")
     implementation("androidx.work:work-runtime-ktx:$androidxWork")
     implementation("androidx.datastore:datastore-preferences:$androidxDataStore")
+    implementation("androidx.datastore:datastore:$androidxDataStore")
 
     implementation("com.android.billingclient:billing-ktx:$billingClient")
     implementation("com.google.android.play:core:$googlePlayCore")
@@ -152,4 +152,10 @@ dependencies {
     androidTestImplementation("com.google.truth:truth:$truth")
     androidTestImplementation("androidx.compose.ui:ui-test-junit4:$compose")
     androidTestImplementation("io.mockk:mockk-android:$mockk")
+}
+
+wire {
+    kotlin {
+        android = true
+    }
 }

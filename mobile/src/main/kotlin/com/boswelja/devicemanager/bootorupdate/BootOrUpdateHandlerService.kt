@@ -1,20 +1,13 @@
-/* Copyright (C) 2020 Jack Boswell <boswelja@outlook.com>
- *
- * This file is part of Wearable Extensions
- *
- * This file, and any part of the Wearable Extensions app/s cannot be copied and/or distributed
- * without permission from Jack Boswell (boswelja) <boswela@outlook.com>
- */
 package com.boswelja.devicemanager.bootorupdate
 
 import android.app.Notification
 import android.app.NotificationManager
-import android.app.Service
 import android.content.Intent
 import android.os.Build
-import android.os.IBinder
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.LifecycleService
+import androidx.lifecycle.lifecycleScope
 import com.boswelja.devicemanager.BuildConfig
 import com.boswelja.devicemanager.NotificationChannelHelper
 import com.boswelja.devicemanager.R
@@ -25,6 +18,7 @@ import com.boswelja.devicemanager.common.preference.PreferenceKey
 import com.boswelja.devicemanager.dndsync.DnDLocalChangeService
 import com.boswelja.devicemanager.messages.Message
 import com.boswelja.devicemanager.messages.MessageHandler
+import com.boswelja.devicemanager.messages.Priority
 import com.boswelja.devicemanager.watchmanager.WatchManager
 import com.boswelja.devicemanager.watchmanager.database.WatchDatabase
 import kotlinx.coroutines.Dispatchers
@@ -33,11 +27,9 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 
-class BootOrUpdateHandlerService : Service() {
+class BootOrUpdateHandlerService : LifecycleService() {
 
     private var isUpdating = false
-
-    override fun onBind(intent: Intent?): IBinder? = null
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         Timber.i("onStartCommand called")
@@ -62,16 +54,21 @@ class BootOrUpdateHandlerService : Service() {
     /** Initialise an [Updater] instance and perform updates. */
     private fun performUpdates() {
         if (!isUpdating) {
-            Timber.i("Starting update process")
             isUpdating = true
-            val updater = Updater(this)
-            startForeground(NOTI_ID, createUpdaterNotification())
-            when (updater.doUpdate()) {
-                Result.COMPLETED -> Timber.i("Updated app and changes were made")
-                Result.NOT_NEEDED -> Timber.i("Update not needed")
+            Timber.i("Starting update process")
+            lifecycleScope.launch(Dispatchers.IO) {
+                val updater = Updater(this@BootOrUpdateHandlerService)
+                if (updater.checkNeedsUpdate()) {
+                    startForeground(NOTI_ID, createUpdaterNotification())
+                    when (updater.doUpdate()) {
+                        Result.COMPLETED -> Timber.i("Updated app and changes were made")
+                        Result.NOT_NEEDED -> Timber.i("Update not needed")
+                        Result.RECOMMEND_RESET -> notifyResetRecommended()
+                    }
+                    restartServices()
+                    notifyUpdateComplete()
+                }
             }
-            restartServices()
-            notifyUpdateComplete()
         }
     }
 
@@ -178,6 +175,19 @@ class BootOrUpdateHandlerService : Service() {
             Message.Action.LAUNCH_CHANGELOG
         )
         MessageHandler.postMessage(this, message)
+    }
+
+    /**
+     * Sends a message to the user notifying them they should reset the app.
+     */
+    private fun notifyResetRecommended() {
+        val message = Message(
+            Message.Icon.UPDATE,
+            "We recommend reinstalling Wearable Extensions",
+            "A lot has changed behind the scenes. To ensure the best performance, " +
+                "we recommend reinstalling Wearable Extensions on both your phone and watch."
+        )
+        MessageHandler.postMessage(this, message, priority = Priority.HIGH)
     }
 
     companion object {
