@@ -11,6 +11,7 @@ import androidx.lifecycle.lifecycleScope
 import com.boswelja.devicemanager.BuildConfig
 import com.boswelja.devicemanager.NotificationChannelHelper
 import com.boswelja.devicemanager.R
+import com.boswelja.devicemanager.appStateStore
 import com.boswelja.devicemanager.batterysync.BatterySyncWorker
 import com.boswelja.devicemanager.bootorupdate.updater.Result
 import com.boswelja.devicemanager.bootorupdate.updater.Updater
@@ -22,6 +23,8 @@ import com.boswelja.devicemanager.messages.Priority
 import com.boswelja.devicemanager.watchmanager.WatchManager
 import com.boswelja.devicemanager.watchmanager.database.WatchSettingsDatabase
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
@@ -57,6 +60,11 @@ class BootOrUpdateHandlerService : LifecycleService() {
             Timber.i("Starting update process")
             startForeground(NOTI_ID, createUpdaterNotification())
             lifecycleScope.launch(Dispatchers.IO) {
+                if (appStateStore.data.map { it.lastAppVersion }.first() <= 0) {
+                    appStateStore.updateData {
+                        it.copy(lastAppVersion = 1)
+                    }
+                }
                 val updater = Updater(this@BootOrUpdateHandlerService)
                 if (updater.checkNeedsUpdate()) {
                     when (updater.doUpdate()) {
