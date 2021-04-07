@@ -26,7 +26,7 @@ import com.boswelja.devicemanager.watchmanager.item.Watch
 
 @ExperimentalMaterialApi
 @Composable
-fun RegisterWatchesScreen(registeredWatches: List<Watch>?) {
+fun RegisterWatchScreen(registeredWatches: List<Watch>?) {
     Column(
         Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally

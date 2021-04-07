@@ -43,7 +43,7 @@ class RegisterWatchActivity : AppCompatActivity() {
                         )
                     }
                 ) {
-                    RegisterWatchesScreen(registeredWatches = registeredWatches)
+                    RegisterWatchScreen(registeredWatches = registeredWatches)
                 }
             }
         }

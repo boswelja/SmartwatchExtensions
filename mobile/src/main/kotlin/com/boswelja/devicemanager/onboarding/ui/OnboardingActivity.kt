@@ -28,8 +28,8 @@ import com.boswelja.devicemanager.common.ui.AppTheme
 import com.boswelja.devicemanager.common.ui.Crossflow
 import com.boswelja.devicemanager.common.ui.UpNavigationAppBar
 import com.boswelja.devicemanager.main.MainActivity
+import com.boswelja.devicemanager.watchmanager.ui.register.RegisterWatchScreen
 import com.boswelja.devicemanager.watchmanager.ui.register.RegisterWatchViewModel
-import com.boswelja.devicemanager.watchmanager.ui.register.RegisterWatchesScreen
 
 class OnboardingActivity : AppCompatActivity() {
 
@@ -108,7 +108,7 @@ class OnboardingActivity : AppCompatActivity() {
                         }
                     )
                 }
-                Destination.REGISTER_WATCHES -> RegisterWatchesScreen(registeredWatches)
+                Destination.REGISTER_WATCHES -> RegisterWatchScreen(registeredWatches)
             }
         }
     }
