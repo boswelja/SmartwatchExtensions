@@ -65,7 +65,13 @@ class WatchManager internal constructor(
         // Set the initial selectedWatch value if possible.
         coroutineScope.launch {
             dataStore.data.map { it.lastSelectedWatchId }.collect {
-                selectWatchById(it)
+                if (it.isNotBlank()) selectWatchById(it)
+                else {
+                    Timber.w("No watch previously selected")
+                    registeredWatches.value?.firstOrNull()?.let { watch ->
+                        selectWatchById(watch.id)
+                    }
+                }
             }
         }
 
