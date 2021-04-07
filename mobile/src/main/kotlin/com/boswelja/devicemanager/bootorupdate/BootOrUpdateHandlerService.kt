@@ -22,7 +22,6 @@ import com.boswelja.devicemanager.messages.Priority
 import com.boswelja.devicemanager.watchmanager.WatchManager
 import com.boswelja.devicemanager.watchmanager.database.WatchSettingsDatabase
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
@@ -44,7 +43,7 @@ class BootOrUpdateHandlerService : LifecycleService() {
             Intent.ACTION_BOOT_COMPLETED -> {
                 Timber.i("Device restarted")
                 startForeground(NOTI_ID, createBootNotification())
-                restartServices()
+                lifecycleScope.launch { restartServices() }
             }
             else -> return super.onStartCommand(intent, flags, startId)
         }
@@ -56,10 +55,10 @@ class BootOrUpdateHandlerService : LifecycleService() {
         if (!isUpdating) {
             isUpdating = true
             Timber.i("Starting update process")
+            startForeground(NOTI_ID, createUpdaterNotification())
             lifecycleScope.launch(Dispatchers.IO) {
                 val updater = Updater(this@BootOrUpdateHandlerService)
                 if (updater.checkNeedsUpdate()) {
-                    startForeground(NOTI_ID, createUpdaterNotification())
                     when (updater.doUpdate()) {
                         Result.COMPLETED -> Timber.i("Updated app and changes were made")
                         Result.NOT_NEEDED -> Timber.i("Update not needed")
@@ -153,14 +152,12 @@ class BootOrUpdateHandlerService : LifecycleService() {
     }
 
     /** Binds to the [WatchManager]. */
-    private fun restartServices() {
+    private suspend fun restartServices() {
         Timber.d("restartServices() called")
-        MainScope().launch(Dispatchers.IO) {
-            WatchSettingsDatabase.getInstance(this@BootOrUpdateHandlerService).also {
-                tryStartBatterySyncWorkers(it)
-                tryStartInterruptFilterSyncService(it)
-                finish()
-            }
+        WatchSettingsDatabase.getInstance(this@BootOrUpdateHandlerService).also {
+            tryStartBatterySyncWorkers(it)
+            tryStartInterruptFilterSyncService(it)
+            finish()
         }
     }
 
