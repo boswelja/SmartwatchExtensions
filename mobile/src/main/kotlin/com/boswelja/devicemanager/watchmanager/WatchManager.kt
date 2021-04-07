@@ -86,11 +86,6 @@ class WatchManager internal constructor(
             } else {
                 _selectedWatch.postValue(watch)
             }
-            coroutineScope.launch {
-                dataStore.updateData { settings ->
-                    settings.copy(lastSelectedWatchId = it)
-                }
-            }
         }
     }
 
@@ -163,7 +158,13 @@ class WatchManager internal constructor(
      * @param watchId The ID of the [Watch] to select.
      */
     fun selectWatchById(watchId: String) {
+        Timber.d("selectWatchById(%s) called", watchId)
         _selectedWatchId.postValue(watchId)
+        coroutineScope.launch {
+            dataStore.updateData { settings ->
+                settings.copy(lastSelectedWatchId = watchId)
+            }
+        }
     }
 
     fun requestRefreshCapabilities(watch: Watch) {
