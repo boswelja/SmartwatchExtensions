@@ -55,7 +55,7 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.0.0-beta03"
+        kotlinCompilerExtensionVersion = "1.0.0-beta04"
     }
 
     packagingOptions {
@@ -63,15 +63,16 @@ android {
     }
 }
 
-dependencies {
-    repositories {
-        jcenter {
-            content {
-                includeModule("org.jetbrains.kotlinx", "kotlinx-collections-immutable-jvm")
-            }
+configurations.all {
+    resolutionStrategy.eachDependency {
+        if (requested.name == "kotlinx-collections-immutable-jvm") {
+            useTarget("org.jetbrains.kotlinx:kotlinx-collections-immutable-jvm:0.3.4")
+            because("Use 0.3.4 since 0.3.3 isn't available on mavenCentral()")
         }
     }
+}
 
+dependencies {
     val androidxArch = "2.1.0"
     val androidxAppCompat = "1.3.0-rc01"
     val androidxBrowser = "1.3.0"
@@ -84,9 +85,9 @@ dependencies {
     val androidxTestExt = "1.1.3-alpha04"
     val androidxWork = "2.7.0-alpha02"
 
-    val compose = "1.0.0-beta03"
-    val lifecycleCompose = "1.0.0-alpha03"
-    val activityCompose = "1.3.0-alpha05"
+    val compose = "1.0.0-beta04"
+    val lifecycleCompose = "1.0.0-alpha04"
+    val activityCompose = "1.3.0-alpha06"
 
     val billingClient = "3.0.3"
     val googlePlayCore = "1.10.0"

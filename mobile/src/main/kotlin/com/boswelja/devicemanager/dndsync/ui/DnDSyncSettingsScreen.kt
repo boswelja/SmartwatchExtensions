@@ -3,7 +3,7 @@ package com.boswelja.devicemanager.dndsync.ui
 import android.content.Intent
 import android.provider.Settings
 import android.widget.Toast
-import androidx.activity.compose.registerForActivityResult
+import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material.ExperimentalMaterialApi
@@ -34,7 +34,7 @@ fun DnDSyncSettingsScreen() {
 
         var changingKey = remember<String?> { null }
         val notiPolicyAccessLauncher =
-            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) {
                 changingKey?.let {
                     if (Compat.canSetDnD(context)) {
                         when (it) {
