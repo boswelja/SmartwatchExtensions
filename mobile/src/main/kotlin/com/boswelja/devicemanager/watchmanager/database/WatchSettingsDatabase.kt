@@ -1,6 +1,7 @@
 package com.boswelja.devicemanager.watchmanager.database
 
 import android.content.Context
+import androidx.lifecycle.LiveData
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
@@ -58,6 +59,20 @@ abstract class WatchSettingsDatabase : RoomDatabase() {
             }
         }
     }
+
+    @Suppress("UNCHECKED_CAST")
+    inline fun <reified T> getPreferenceObservable(watch: Watch, key: String):
+        LiveData<Preference<T>?>? {
+            return when (T::class) {
+                Int::class -> intPrefDao().getObservable(watch.id, key) as LiveData<Preference<T>?>
+                Boolean::class ->
+                    boolPrefDao().getObservable(watch.id, key) as LiveData<Preference<T>?>
+                else -> {
+                    Timber.w("Tried to get preference for unsupported type ${T::class}")
+                    null
+                }
+            }
+        }
 
     companion object : SingletonHolder<WatchSettingsDatabase, Context>({ context ->
         Room.databaseBuilder(context, WatchSettingsDatabase::class.java, "pref-db")

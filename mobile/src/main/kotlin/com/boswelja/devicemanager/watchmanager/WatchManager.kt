@@ -7,6 +7,7 @@ import androidx.datastore.preferences.core.edit
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.map
 import com.boswelja.devicemanager.AppState
 import com.boswelja.devicemanager.analytics.Analytics
 import com.boswelja.devicemanager.appStateStore
@@ -192,6 +193,20 @@ class WatchManager internal constructor(
             return@withContext settingsDatabase.getPreference<T>(watch, key)?.value
         }
     }
+
+    /**
+     * Gets a preference for a given watch with a specified key, wrapped in a LiveData.
+     * @param watch The [Watch] to get the preference for.
+     * @param key The [Preference.key] of the preference to find.
+     * @return The value of the preference, or null if it doesn't exist.
+     */
+    suspend inline fun <reified T> getPreferenceObservable(watch: Watch, key: String):
+        LiveData<T?>? {
+            return withContext(Dispatchers.IO) {
+                return@withContext settingsDatabase.getPreferenceObservable<T>(watch, key)
+                    ?.map { it?.value }
+            }
+        }
 
     fun updatePreference(watch: Watch, key: String, value: Any) {
         watchRepository.updatePreferenceOnWatch(watch, key, value)
