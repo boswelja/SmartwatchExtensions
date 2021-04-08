@@ -10,6 +10,8 @@ import com.boswelja.devicemanager.watchmanager.item.BoolPreference
 import com.boswelja.devicemanager.watchmanager.item.IntPreference
 import com.boswelja.devicemanager.watchmanager.item.Preference
 import com.boswelja.devicemanager.watchmanager.item.Watch
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import timber.log.Timber
 
 @Database(entities = [IntPreference::class, BoolPreference::class], version = 1)
@@ -17,9 +19,11 @@ abstract class WatchSettingsDatabase : RoomDatabase() {
     abstract fun intPrefDao(): IntPreferenceDao
     abstract fun boolPrefDao(): BoolPreferenceDao
 
-    fun clearWatchPreferences(watch: Watch) {
-        intPrefDao().deleteAllForWatch(watch.id)
-        boolPrefDao().deleteAllForWatch(watch.id)
+    suspend fun clearWatchPreferences(watch: Watch) {
+        withContext(Dispatchers.IO) {
+            intPrefDao().deleteAllForWatch(watch.id)
+            boolPrefDao().deleteAllForWatch(watch.id)
+        }
     }
 
     /**
@@ -29,41 +33,54 @@ abstract class WatchSettingsDatabase : RoomDatabase() {
      * @param newValue The new value of the preference to update.
      * @return true if the preference was successfully updated, false otherwise.
      */
-    fun updatePrefInDatabase(watchId: String, preferenceKey: String, newValue: Any): Boolean {
-        if (isOpen) {
-            return when (newValue) {
-                is Boolean -> {
-                    BoolPreference(watchId, preferenceKey, newValue).also {
-                        boolPrefDao().update(it)
+    suspend fun updatePrefInDatabase(
+        watchId: String,
+        preferenceKey: String,
+        newValue: Any
+    ): Boolean {
+        return withContext(Dispatchers.IO) {
+            if (isOpen) {
+                return@withContext when (newValue) {
+                    is Boolean -> {
+                        BoolPreference(watchId, preferenceKey, newValue).also {
+                            boolPrefDao().update(it)
+                        }
+                        true
                     }
-                    true
+                    is Int -> {
+                        IntPreference(watchId, preferenceKey, newValue).also {
+                            intPrefDao().update(it)
+                        }
+                        true
+                    }
+                    else -> false
                 }
-                is Int -> {
-                    IntPreference(watchId, preferenceKey, newValue).also { intPrefDao().update(it) }
-                    true
-                }
-                else -> false
             }
-        }
-        return false
-    }
-
-    @Suppress("UNCHECKED_CAST")
-    inline fun <reified T> getPreference(watch: Watch, key: String): Preference<T>? {
-        return when (T::class) {
-            Int::class -> intPrefDao().get(watch.id, key) as Preference<T>?
-            Boolean::class -> boolPrefDao().get(watch.id, key) as Preference<T>?
-            else -> {
-                Timber.w("Tried to get preference for unsupported type ${T::class}")
-                null
-            }
+            return@withContext false
         }
     }
 
     @Suppress("UNCHECKED_CAST")
-    inline fun <reified T> getPreferenceObservable(watch: Watch, key: String):
-        LiveData<Preference<T>?>? {
-            return when (T::class) {
+    suspend inline fun <reified T> getPreference(watch: Watch, key: String): Preference<T>? {
+        return withContext(Dispatchers.IO) {
+            return@withContext when (T::class) {
+                Int::class -> intPrefDao().get(watch.id, key) as Preference<T>?
+                Boolean::class -> boolPrefDao().get(watch.id, key) as Preference<T>?
+                else -> {
+                    Timber.w("Tried to get preference for unsupported type ${T::class}")
+                    null
+                }
+            }
+        }
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    suspend inline fun <reified T> getPreferenceObservable(
+        watch: Watch,
+        key: String
+    ): LiveData<Preference<T>?>? {
+        return withContext(Dispatchers.IO) {
+            return@withContext when (T::class) {
                 Int::class -> intPrefDao().getObservable(watch.id, key) as LiveData<Preference<T>?>
                 Boolean::class ->
                     boolPrefDao().getObservable(watch.id, key) as LiveData<Preference<T>?>
@@ -73,6 +90,7 @@ abstract class WatchSettingsDatabase : RoomDatabase() {
                 }
             }
         }
+    }
 
     companion object : SingletonHolder<WatchSettingsDatabase, Context>({ context ->
         Room.databaseBuilder(context, WatchSettingsDatabase::class.java, "pref-db")
