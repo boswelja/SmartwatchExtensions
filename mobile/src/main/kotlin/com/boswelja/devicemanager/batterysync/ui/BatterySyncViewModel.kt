@@ -2,8 +2,6 @@ package com.boswelja.devicemanager.batterysync.ui
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.liveData
 import androidx.lifecycle.switchMap
 import androidx.lifecycle.viewModelScope
@@ -37,48 +35,36 @@ class BatterySyncViewModel internal constructor(
     private val database: WatchBatteryStatsDatabase =
         WatchBatteryStatsDatabase.getInstance(application)
 
-    private val _batterySyncEnabled = MutableLiveData<Boolean>()
-    private val _phoneChargeNotiEnabled = MutableLiveData<Boolean>()
-    private val _watchChargeNotiEnabled = MutableLiveData<Boolean>()
-    private val _chargeThreshold = MutableLiveData<Int>()
-    private val _syncInterval = MutableLiveData<Int>()
-
-    val batterySyncEnabled: LiveData<Boolean>
-        get() = _batterySyncEnabled
-    val phoneChargeNotiEnabled: LiveData<Boolean>
-        get() = _phoneChargeNotiEnabled
-    val watchChargeNotiEnabled: LiveData<Boolean>
-        get() = _watchChargeNotiEnabled
-    val chargeThreshold: LiveData<Int>
-        get() = _chargeThreshold
-    val syncInterval: LiveData<Int>
-        get() = _syncInterval
-
-    val batteryStats = watchManager.selectedWatch.switchMap {
-        if (it != null) database.batteryStatsDao().getObservableStatsForWatch(it.id)
-        else liveData { }
+    val batterySyncEnabled = watchManager.selectedWatch.switchMap {
+        it?.let {
+            watchManager.getPreferenceObservable<Boolean>(it, BATTERY_SYNC_ENABLED_KEY)
+        } ?: liveData { }
+    }
+    val phoneChargeNotiEnabled = watchManager.selectedWatch.switchMap {
+        it?.let {
+            watchManager.getPreferenceObservable<Boolean>(it, BATTERY_PHONE_CHARGE_NOTI_KEY)
+        } ?: liveData { }
+    }
+    val watchChargeNotiEnabled = watchManager.selectedWatch.switchMap {
+        it?.let {
+            watchManager.getPreferenceObservable<Boolean>(it, BATTERY_WATCH_CHARGE_NOTI_KEY)
+        } ?: liveData { }
+    }
+    val chargeThreshold = watchManager.selectedWatch.switchMap {
+        it?.let {
+            watchManager.getPreferenceObservable<Int>(it, BATTERY_CHARGE_THRESHOLD_KEY)
+        } ?: liveData { }
+    }
+    val syncInterval = watchManager.selectedWatch.switchMap {
+        it?.let {
+            watchManager.getPreferenceObservable<Int>(it, BATTERY_SYNC_INTERVAL_KEY)
+        } ?: liveData { }
     }
 
-    init {
-        watchManager.selectedWatch.value?.let { selectedWatch ->
-            viewModelScope.launch {
-                _batterySyncEnabled.postValue(
-                    watchManager.getPreference(selectedWatch, BATTERY_SYNC_ENABLED_KEY)
-                )
-                _phoneChargeNotiEnabled.postValue(
-                    watchManager.getPreference(selectedWatch, BATTERY_PHONE_CHARGE_NOTI_KEY)
-                )
-                _watchChargeNotiEnabled.postValue(
-                    watchManager.getPreference(selectedWatch, BATTERY_WATCH_CHARGE_NOTI_KEY)
-                )
-                _chargeThreshold.postValue(
-                    watchManager.getPreference(selectedWatch, BATTERY_CHARGE_THRESHOLD_KEY)
-                )
-                _syncInterval.postValue(
-                    watchManager.getPreference(selectedWatch, BATTERY_SYNC_INTERVAL_KEY)
-                )
-            }
-        }
+    val batteryStats = watchManager.selectedWatch.switchMap {
+        it?.let {
+            database.batteryStatsDao().getObservableStatsForWatch(it.id)
+        } ?: liveData { }
     }
 
     fun setBatterySyncEnabled(isEnabled: Boolean) {
@@ -88,7 +74,6 @@ class BatterySyncViewModel internal constructor(
                     getApplication(), watchManager.selectedWatch.value!!.id
                 )
                 if (workerStartSuccessful) {
-                    _batterySyncEnabled.postValue(isEnabled)
                     watchManager.updatePreference(
                         watchManager.selectedWatch.value!!, BATTERY_SYNC_ENABLED_KEY, isEnabled
                     )
@@ -97,7 +82,6 @@ class BatterySyncViewModel internal constructor(
                     Timber.w("Failed to enable battery sync")
                 }
             } else {
-                _batterySyncEnabled.postValue(isEnabled)
                 watchManager.updatePreference(
                     watchManager.selectedWatch.value!!, BATTERY_SYNC_ENABLED_KEY, isEnabled
                 )
@@ -109,7 +93,6 @@ class BatterySyncViewModel internal constructor(
     }
 
     fun setSyncInterval(syncInterval: Int) {
-        _syncInterval.postValue(syncInterval)
         viewModelScope.launch(dispatcher) {
             watchManager.updatePreference(
                 watchManager.selectedWatch.value!!, BATTERY_SYNC_INTERVAL_KEY, syncInterval
@@ -120,7 +103,6 @@ class BatterySyncViewModel internal constructor(
     }
 
     fun setChargeThreshold(chargeThreshold: Int) {
-        _chargeThreshold.postValue(chargeThreshold)
         viewModelScope.launch(dispatcher) {
             watchManager.updatePreference(
                 watchManager.selectedWatch.value!!, BATTERY_CHARGE_THRESHOLD_KEY, chargeThreshold
@@ -131,18 +113,16 @@ class BatterySyncViewModel internal constructor(
     fun setPhoneChargeNotiEnabled(isEnabled: Boolean) {
         viewModelScope.launch(dispatcher) {
             watchManager.updatePreference(
-                watchManager.selectedWatch.value!!, BATTERY_PHONE_CHARGE_NOTI_KEY, chargeThreshold
+                watchManager.selectedWatch.value!!, BATTERY_PHONE_CHARGE_NOTI_KEY, isEnabled
             )
-            _phoneChargeNotiEnabled.postValue(isEnabled)
         }
     }
 
     fun setWatchChargeNotiEnabled(isEnabled: Boolean) {
         viewModelScope.launch(dispatcher) {
             watchManager.updatePreference(
-                watchManager.selectedWatch.value!!, BATTERY_WATCH_CHARGE_NOTI_KEY, chargeThreshold
+                watchManager.selectedWatch.value!!, BATTERY_WATCH_CHARGE_NOTI_KEY, isEnabled
             )
-            _watchChargeNotiEnabled.postValue(isEnabled)
         }
     }
 }
