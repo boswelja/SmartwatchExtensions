@@ -11,6 +11,8 @@ import androidx.datastore.core.DataStore
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.liveData
+import androidx.lifecycle.switchMap
 import androidx.lifecycle.viewModelScope
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.appsettings.Settings
@@ -35,11 +37,13 @@ class PhoneLockingSettingsViewModel internal constructor(
     private val dataStore: DataStore<Settings>
 ) : AndroidViewModel(application) {
 
-    private val _phoneLockingEnabled = MutableLiveData<Boolean>()
     private val _phoneLockingMode = MutableLiveData(Settings.PhoneLockMode.DEVICE_ADMIN)
 
-    val phoneLockingEnabled: LiveData<Boolean>
-        get() = _phoneLockingEnabled
+    val phoneLockingEnabled = watchManager.selectedWatch.switchMap {
+        it?.let {
+            watchManager.getPreferenceObservable<Boolean>(it, PHONE_LOCKING_ENABLED_KEY)
+        } ?: liveData { }
+    }
     val phoneLockingMode: LiveData<Settings.PhoneLockMode>
         get() = _phoneLockingMode
 
@@ -73,11 +77,6 @@ class PhoneLockingSettingsViewModel internal constructor(
 
     init {
         viewModelScope.launch {
-            watchManager.selectedWatch.value?.let { selectedWatch ->
-                _phoneLockingEnabled.postValue(
-                    watchManager.getPreference(selectedWatch, PHONE_LOCKING_ENABLED_KEY)
-                )
-            }
             dataStore.data.map { it.phoneLockMode }.collect {
                 _phoneLockingMode.postValue(it)
             }
@@ -118,7 +117,6 @@ class PhoneLockingSettingsViewModel internal constructor(
                 )
             }
             _phoneLockingMode.postValue(Settings.PhoneLockMode.DEVICE_ADMIN)
-            _phoneLockingEnabled.postValue(false)
             viewModelScope.launch(dispatcher) {
                 dataStore.updateData {
                     it.copy(phoneLockMode = Settings.PhoneLockMode.DEVICE_ADMIN)
@@ -159,7 +157,6 @@ class PhoneLockingSettingsViewModel internal constructor(
                 )
             }
             _phoneLockingMode.postValue(Settings.PhoneLockMode.ACCESSIBILITY_SERVICE)
-            _phoneLockingEnabled.postValue(false)
             viewModelScope.launch(dispatcher) {
                 dataStore.updateData {
                     it.copy(phoneLockMode = Settings.PhoneLockMode.DEVICE_ADMIN)
