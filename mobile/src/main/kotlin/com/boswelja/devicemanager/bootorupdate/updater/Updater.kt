@@ -14,6 +14,9 @@ class Updater(private val context: Context) {
 
     suspend fun checkNeedsUpdate(): Boolean {
         lastAppVersion = context.appStateStore.data.map { it.lastAppVersion }.first()
+        context.appStateStore.updateData {
+            it.copy(lastAppVersion = BuildConfig.VERSION_CODE)
+        }
         return lastAppVersion > 0 && lastAppVersion < BuildConfig.VERSION_CODE
     }
 
@@ -21,13 +24,10 @@ class Updater(private val context: Context) {
      * Update the app's working environment.
      * @return The [Result] of the update
      */
-    suspend fun doUpdate(): Result {
+    fun doUpdate(): Result {
         var updateStatus = Result.NOT_NEEDED
         if (lastAppVersion < 2027000000) {
             updateStatus = Result.RECOMMEND_RESET
-        }
-        context.appStateStore.updateData {
-            it.copy(lastAppVersion = BuildConfig.VERSION_CODE)
         }
         return updateStatus
     }
