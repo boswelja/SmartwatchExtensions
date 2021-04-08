@@ -1,5 +1,6 @@
 package com.boswelja.devicemanager.common.ui
 
+import androidx.browser.customtabs.CustomTabsIntent
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.RowScope
@@ -16,6 +17,7 @@ import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.material.icons.outlined.ArrowDropDown
+import androidx.compose.material.icons.outlined.HelpOutline
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -23,7 +25,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.core.net.toUri
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.watchmanager.item.Watch
 
@@ -63,7 +67,8 @@ fun WatchPickerAppBar(
                 watches = watches,
                 onWatchSelected = onWatchSelected
             )
-        }
+        },
+        actions = { WikiAction() }
     )
 }
 
@@ -83,8 +88,22 @@ fun UpNavigationWatchPickerAppBar(
                 watches = watches,
                 onWatchSelected = onWatchSelected
             )
-        }
+        },
+        actions = { WikiAction() }
     )
+}
+
+@Composable
+fun WikiAction() {
+    val context = LocalContext.current
+    val customTabsIntent = remember { CustomTabsIntent.Builder().build() }
+    IconButton(
+        onClick = {
+            customTabsIntent.launchUrl(context, context.getString(R.string.wiki_url).toUri())
+        }
+    ) {
+        Icon(Icons.Outlined.HelpOutline, stringResource(R.string.wiki_label))
+    }
 }
 
 @ExperimentalMaterialApi
