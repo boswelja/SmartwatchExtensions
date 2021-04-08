@@ -197,7 +197,7 @@ class WatchManager internal constructor(
      * @param key The [Preference.key] of the preference to find.
      * @return The value of the preference, or null if it doesn't exist.
      */
-    suspend inline fun <reified T> getPreferenceObservable(watch: Watch, key: String) =
+    inline fun <reified T> getPreferenceObservable(watch: Watch, key: String) =
         settingsDatabase.getPreferenceObservable<T>(watch, key)?.map { it?.value }
 
     suspend fun updatePreference(watch: Watch, key: String, value: Any) {
