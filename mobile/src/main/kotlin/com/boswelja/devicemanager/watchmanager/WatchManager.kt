@@ -7,6 +7,7 @@ import androidx.datastore.preferences.core.edit
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.liveData
 import androidx.lifecycle.map
 import com.boswelja.devicemanager.AppState
 import com.boswelja.devicemanager.analytics.Analytics
@@ -198,7 +199,7 @@ class WatchManager internal constructor(
      * @return The value of the preference, or null if it doesn't exist.
      */
     inline fun <reified T> getPreferenceObservable(watch: Watch, key: String) =
-        settingsDatabase.getPreferenceObservable<T>(watch, key)?.map { it?.value }
+        settingsDatabase.getPreferenceObservable<T>(watch, key)?.map { it?.value } ?: liveData { }
 
     suspend fun updatePreference(watch: Watch, key: String, value: Any) {
         watchRepository.updatePreferenceOnWatch(watch, key, value)
