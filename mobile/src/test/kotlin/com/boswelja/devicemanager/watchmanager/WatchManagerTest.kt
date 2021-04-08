@@ -155,7 +155,7 @@ class WatchManagerTest {
             dummyWatch1
         )
         coVerify(exactly = 1) { repository.sendMessage(dummyWatch1, CLEAR_PREFERENCES) }
-        verify(exactly = 1) { settingsDatabase.clearWatchPreferences(dummyWatch1) }
+        coVerify(exactly = 1) { settingsDatabase.clearWatchPreferences(dummyWatch1) }
         verify(exactly = 1) { batteryStatsDatabase.batteryStatsDao() }
     }
 
