@@ -122,9 +122,9 @@ class WearOSConnectionInterface(
         }
     }
 
-    @VisibleForTesting internal fun refreshConnectedNodes() {
+    @VisibleForTesting internal suspend fun refreshConnectedNodes() {
         try {
-            val result = Tasks.await(nodeClient.connectedNodes)
+            val result = nodeClient.connectedNodes.await()
             Timber.d("Found ${result.count()} connected nodes")
             connectedNodes = result
         } catch (e: Exception) {
@@ -132,11 +132,9 @@ class WearOSConnectionInterface(
         }
     }
 
-    @VisibleForTesting internal fun refreshNodesWithApp() {
+    @VisibleForTesting internal suspend fun refreshNodesWithApp() {
         try {
-            val result = Tasks.await(
-                capabilityClient.getCapability(CAPABILITY_WATCH_APP, CapabilityClient.FILTER_ALL)
-            )
+            val result = capabilityClient.getCapability(CAPABILITY_WATCH_APP, CapabilityClient.FILTER_ALL).await()
             Timber.d("Found ${result.nodes.count()} nodes with app")
             nodesWithApp = result.nodes.toList()
         } catch (e: Exception) {
@@ -148,9 +146,7 @@ class WearOSConnectionInterface(
         try {
             val capabilityMap = HashMap<String, Short>()
             Capability.values().forEach { capability ->
-                val result = Tasks.await(
-                    capabilityClient.getCapability(capability.name, CapabilityClient.FILTER_ALL)
-                )
+                val result = capabilityClient.getCapability(capability.name, CapabilityClient.FILTER_ALL).await()
                 result.nodes.forEach { node ->
                     val capabilities = capabilityMap[node.id] ?: 0
                     capabilityMap[node.id] = capabilities or capability.id
