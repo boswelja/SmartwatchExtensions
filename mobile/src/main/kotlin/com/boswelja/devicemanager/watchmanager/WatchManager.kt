@@ -201,10 +201,31 @@ class WatchManager internal constructor(
     inline fun <reified T> getPreferenceObservable(watch: Watch, key: String) =
         settingsDatabase.getPreferenceObservable<T>(watch, key)?.map { it?.value } ?: liveData { }
 
+    /**
+     * Update a preference for a given watch.
+     * @param watch The [Watch] to send the preference update to.
+     * @param key The preference key to update.
+     * @param value The new preference value.
+     */
     suspend fun updatePreference(watch: Watch, key: String, value: Any) {
         watchRepository.updatePreferenceOnWatch(watch, key, value)
         settingsDatabase.updatePrefInDatabase(watch.id, key, value)
         analytics.logExtensionSettingChanged(key, value)
+    }
+
+    /**
+     * Update a preference for all registered watches.
+     * @param key The preference key to update.
+     * @param value The new preference value.
+     */
+    suspend fun updatePreference(key: String, value: Boolean) {
+        withContext(Dispatchers.getIO()) {
+            settingsDatabase.boolPrefDao().updateAllForKey(key, value)
+            registeredWatches.value?.forEach {
+                watchRepository.updatePreferenceOnWatch(it, key, value)
+            }
+            analytics.logExtensionSettingChanged(key, value)
+        }
     }
 
     companion object : SingletonHolder<WatchManager, Context>(::WatchManager)
