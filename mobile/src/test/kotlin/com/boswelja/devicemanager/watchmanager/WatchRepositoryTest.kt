@@ -110,7 +110,7 @@ class WatchRepositoryTest {
         var result = repository
             .updateStatusForPlatform(dummyWatches, connectionInterface1.platformIdentifier)
         dummyWatches.filter { it.platform == connectionInterface1.platformIdentifier }.forEach {
-            verify(exactly = 1) { connectionInterface1.getWatchStatus(it, any()) }
+            verify(exactly = 1) { connectionInterface1.getWatchStatus(it.id, any()) }
         }
         result.filter { it.platform == connectionInterface1.platformIdentifier }.forEach {
             assertThat(it.status).isEquivalentAccordingToCompareTo(Watch.Status.CONNECTED)
@@ -120,7 +120,7 @@ class WatchRepositoryTest {
         result = repository
             .updateStatusForPlatform(dummyWatches, connectionInterface2.platformIdentifier)
         dummyWatches.filter { it.platform == connectionInterface2.platformIdentifier }.forEach {
-            verify(exactly = 1) { connectionInterface2.getWatchStatus(it, any()) }
+            verify(exactly = 1) { connectionInterface2.getWatchStatus(it.id, any()) }
         }
         result.filter { it.platform == connectionInterface2.platformIdentifier }.forEach {
             assertThat(it.status).isEquivalentAccordingToCompareTo(Watch.Status.DISCONNECTED)
@@ -183,13 +183,13 @@ class WatchRepositoryTest {
         connectionInterface1.dataChanged.fire()
 
         dummyWatches.filter { it.platform == connectionInterface1.platformIdentifier }.forEach {
-            verify { connectionInterface1.getWatchStatus(it, true) }
+            verify { connectionInterface1.getWatchStatus(it.id, true) }
         }
 
         connectionInterface2.dataChanged.fire()
 
         dummyWatches.filter { it.platform == connectionInterface2.platformIdentifier }.forEach {
-            verify { connectionInterface2.getWatchStatus(it, true) }
+            verify { connectionInterface2.getWatchStatus(it.id, true) }
         }
 
         repository.registeredWatches.removeObserver(dummyObserver)

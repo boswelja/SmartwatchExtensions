@@ -61,11 +61,11 @@ abstract class WatchSettingsDatabase : RoomDatabase() {
     }
 
     @Suppress("UNCHECKED_CAST")
-    suspend inline fun <reified T> getPreference(watch: Watch, key: String): Preference<T>? {
+    suspend inline fun <reified T> getPreference(watchId: String, key: String): Preference<T>? {
         return withContext(Dispatchers.getIO()) {
             return@withContext when (T::class) {
-                Int::class -> intPrefDao().get(watch.id, key) as Preference<T>?
-                Boolean::class -> boolPrefDao().get(watch.id, key) as Preference<T>?
+                Int::class -> intPrefDao().get(watchId, key) as Preference<T>?
+                Boolean::class -> boolPrefDao().get(watchId, key) as Preference<T>?
                 else -> {
                     Timber.w("Tried to get preference for unsupported type ${T::class}")
                     null
@@ -76,13 +76,13 @@ abstract class WatchSettingsDatabase : RoomDatabase() {
 
     @Suppress("UNCHECKED_CAST")
     inline fun <reified T> getPreferenceObservable(
-        watch: Watch,
+        watchId: String,
         key: String
     ): LiveData<Preference<T>?>? {
         return when (T::class) {
-            Int::class -> intPrefDao().getObservable(watch.id, key) as LiveData<Preference<T>?>
+            Int::class -> intPrefDao().getObservable(watchId, key) as LiveData<Preference<T>?>
             Boolean::class ->
-                boolPrefDao().getObservable(watch.id, key) as LiveData<Preference<T>?>
+                boolPrefDao().getObservable(watchId, key) as LiveData<Preference<T>?>
             else -> {
                 Timber.w("Tried to get preference for unsupported type ${T::class}")
                 null

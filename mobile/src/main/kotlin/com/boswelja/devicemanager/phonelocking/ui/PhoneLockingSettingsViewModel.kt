@@ -41,7 +41,7 @@ class PhoneLockingSettingsViewModel internal constructor(
 
     val phoneLockingEnabled = watchManager.selectedWatch.switchMap {
         it?.let {
-            watchManager.getPreferenceObservable<Boolean>(it, PHONE_LOCKING_ENABLED_KEY)
+            watchManager.getPreferenceObservable<Boolean>(it.id, PHONE_LOCKING_ENABLED_KEY)
         } ?: liveData { }
     }
     val phoneLockingMode: LiveData<Settings.PhoneLockMode>

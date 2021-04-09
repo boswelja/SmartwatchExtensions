@@ -29,7 +29,7 @@ object Utils {
                     watchManager.sendMessage(watch, BATTERY_STATUS_PATH, batteryStats.toByteArray())
                 } else {
                     watchManager.registeredWatches.value?.forEach {
-                        if (watchManager.getPreference<Boolean>(it, BATTERY_SYNC_ENABLED_KEY)
+                        if (watchManager.getPreference<Boolean>(it.id, BATTERY_SYNC_ENABLED_KEY)
                             == true
                         ) {
                             watchManager.sendMessage(

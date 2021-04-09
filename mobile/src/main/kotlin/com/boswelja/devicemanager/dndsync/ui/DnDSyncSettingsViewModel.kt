@@ -16,17 +16,17 @@ class DnDSyncSettingsViewModel(application: Application) : AndroidViewModel(appl
     val watchManager = WatchManager.getInstance(application)
     val syncToPhone = watchManager.selectedWatch.switchMap {
         it?.let {
-            watchManager.getPreferenceObservable<Boolean>(it, DND_SYNC_TO_PHONE_KEY)
+            watchManager.getPreferenceObservable<Boolean>(it.id, DND_SYNC_TO_PHONE_KEY)
         } ?: liveData { }
     }
     val syncToWatch = watchManager.selectedWatch.switchMap {
         it?.let {
-            watchManager.getPreferenceObservable<Boolean>(it, DND_SYNC_TO_WATCH_KEY)
+            watchManager.getPreferenceObservable<Boolean>(it.id, DND_SYNC_TO_WATCH_KEY)
         } ?: liveData { }
     }
     val syncWithTheater = watchManager.selectedWatch.switchMap {
         it?.let {
-            watchManager.getPreferenceObservable<Boolean>(it, DND_SYNC_WITH_THEATER_KEY)
+            watchManager.getPreferenceObservable<Boolean>(it.id, DND_SYNC_WITH_THEATER_KEY)
         } ?: liveData { }
     }
 

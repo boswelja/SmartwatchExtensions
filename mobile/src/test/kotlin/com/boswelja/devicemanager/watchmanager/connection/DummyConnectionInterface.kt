@@ -21,13 +21,13 @@ class DummyConnectionInterface(platform: String) : WatchConnectionInterface {
 
     override val platformIdentifier: String = platform
 
-    override fun getWatchStatus(watch: Watch, isRegistered: Boolean): Watch.Status {
+    override fun getWatchStatus(watchId: String, isRegistered: Boolean): Watch.Status {
         return Watch.Status.UNKNOWN
     }
 
     override fun sendMessage(watchId: String, path: String, data: ByteArray?) {}
 
-    override fun updatePreferenceOnWatch(watch: Watch, key: String, value: Any) {}
+    override fun updatePreferenceOnWatch(watchId: String, key: String, value: Any) {}
 
     override fun refreshData() {}
 }

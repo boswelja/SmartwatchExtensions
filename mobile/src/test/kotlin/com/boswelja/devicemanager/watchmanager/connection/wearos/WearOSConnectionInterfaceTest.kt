@@ -27,6 +27,7 @@ import io.mockk.verify
 import io.mockk.verifyAll
 import kotlin.experimental.and
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.TestCoroutineScope
 import org.junit.Before
 import org.junit.Rule
@@ -137,47 +138,47 @@ class WearOSConnectionInterfaceTest {
 
         connectionInterface.nodesWithApp = listOf(dummyNode)
         connectionInterface.connectedNodes = listOf(dummyNode)
-        assertThat(connectionInterface.getWatchStatus(dummyWatch, true))
+        assertThat(connectionInterface.getWatchStatus(dummyWatch.id, true))
             .isEquivalentAccordingToCompareTo(Watch.Status.CONNECTED)
 
         connectionInterface.nodesWithApp = listOf(dummyNode)
         connectionInterface.connectedNodes = listOf(dummyNode)
-        assertThat(connectionInterface.getWatchStatus(dummyWatch, false))
+        assertThat(connectionInterface.getWatchStatus(dummyWatch.id, false))
             .isEquivalentAccordingToCompareTo(Watch.Status.NOT_REGISTERED)
 
         connectionInterface.nodesWithApp = emptyList()
         connectionInterface.connectedNodes = listOf(dummyNode)
-        assertThat(connectionInterface.getWatchStatus(dummyWatch, true))
+        assertThat(connectionInterface.getWatchStatus(dummyWatch.id, true))
             .isEquivalentAccordingToCompareTo(Watch.Status.MISSING_APP)
 
         connectionInterface.nodesWithApp = emptyList()
         connectionInterface.connectedNodes = listOf(dummyNode)
-        assertThat(connectionInterface.getWatchStatus(dummyWatch, false))
+        assertThat(connectionInterface.getWatchStatus(dummyWatch.id, false))
             .isEquivalentAccordingToCompareTo(Watch.Status.MISSING_APP)
 
         connectionInterface.nodesWithApp = listOf(dummyNode)
         connectionInterface.connectedNodes = emptyList()
-        assertThat(connectionInterface.getWatchStatus(dummyWatch, true))
+        assertThat(connectionInterface.getWatchStatus(dummyWatch.id, true))
             .isEquivalentAccordingToCompareTo(Watch.Status.DISCONNECTED)
 
         connectionInterface.nodesWithApp = listOf(dummyNode)
         connectionInterface.connectedNodes = emptyList()
-        assertThat(connectionInterface.getWatchStatus(dummyWatch, false))
+        assertThat(connectionInterface.getWatchStatus(dummyWatch.id, false))
             .isEquivalentAccordingToCompareTo(Watch.Status.ERROR)
 
         connectionInterface.nodesWithApp = emptyList()
         connectionInterface.connectedNodes = emptyList()
-        assertThat(connectionInterface.getWatchStatus(dummyWatch, true))
+        assertThat(connectionInterface.getWatchStatus(dummyWatch.id, true))
             .isEquivalentAccordingToCompareTo(Watch.Status.ERROR)
 
         connectionInterface.nodesWithApp = emptyList()
         connectionInterface.connectedNodes = emptyList()
-        assertThat(connectionInterface.getWatchStatus(dummyWatch, false))
+        assertThat(connectionInterface.getWatchStatus(dummyWatch.id, false))
             .isEquivalentAccordingToCompareTo(Watch.Status.ERROR)
     }
 
     @Test
-    fun `refreshConnectedNodes calls appropriate functions and updates data`() {
+    fun `refreshConnectedNodes calls appropriate functions and updates data`(): Unit = runBlocking {
         every { nodeClient.connectedNodes } returns Tasks.forResult(dummyNodes)
 
         connectionInterface.refreshConnectedNodes()
@@ -190,7 +191,7 @@ class WearOSConnectionInterfaceTest {
     }
 
     @Test
-    fun `refreshNodesWithApp calls appropriate functions and updates data`() {
+    fun `refreshNodesWithApp calls appropriate functions and updates data`(): Unit = runBlocking {
         every {
             capabilityClient.getCapability(CAPABILITY_WATCH_APP, any())
         } returns Tasks.forResult(
@@ -207,7 +208,7 @@ class WearOSConnectionInterfaceTest {
     }
 
     @Test
-    fun `refreshCapabilities calls appropriate functions and updates data`() {
+    fun `refreshCapabilities calls appropriate functions and updates data`(): Unit = runBlocking {
         Capability.values().forEach {
             mockCapability(it, dummyNodes)
         }
@@ -225,76 +226,31 @@ class WearOSConnectionInterfaceTest {
     }
 
     @Test
-    fun `refreshCapabilities correctly updates data when a single node is present`() {
-        val node = dummyNodes.first()
+    fun `refreshCapabilities correctly updates data when a single node is present`(): Unit =
+        runBlocking {
+            val node = dummyNodes.first()
 
-        // Check with all capabilities available for a node
-        Capability.values().forEach {
-            mockCapability(it, listOf(node))
-        }
-        connectionInterface.refreshCapabilities()
-        (connectionInterface.watchCapabilities[node.id] ?: 0).let { capabilities ->
+            // Check with all capabilities available for a node
             Capability.values().forEach {
-                val id = it.id
-                assertThat((capabilities and id) == id).isTrue()
+                mockCapability(it, listOf(node))
             }
-        }
-
-        // Check with sone capabilities available for a node
-        val expectedCapabilities = listOf(Capability.SYNC_BATTERY, Capability.MANAGE_APPS)
-        Capability.values().forEach {
-            mockCapability(it, emptyList())
-        }
-        expectedCapabilities.forEach {
-            mockCapability(it, listOf(node))
-        }
-        connectionInterface.refreshCapabilities()
-        (connectionInterface.watchCapabilities[node.id] ?: 0).let { capabilities ->
-            Capability.values().forEach {
-                val id = it.id
-                assertThat((capabilities and id) == id).isEqualTo(expectedCapabilities.contains(it))
-            }
-        }
-
-        // Check with no capabilities available for a node
-        Capability.values().forEach {
-            mockCapability(it, emptyList())
-        }
-        connectionInterface.refreshCapabilities()
-        (connectionInterface.watchCapabilities[node.id] ?: 0).let { capabilities ->
-            Capability.values().forEach {
-                val id = it.id
-                assertThat((capabilities and id) == id).isFalse()
-            }
-        }
-    }
-
-    @Test
-    fun `refreshCapabilities correctly updates data when multiple nodes are present`() {
-        // Check with all capabilities available for a node
-        Capability.values().forEach {
-            mockCapability(it, dummyNodes)
-        }
-        connectionInterface.refreshCapabilities()
-        dummyNodes.forEach { node ->
+            connectionInterface.refreshCapabilities()
             (connectionInterface.watchCapabilities[node.id] ?: 0).let { capabilities ->
                 Capability.values().forEach {
                     val id = it.id
                     assertThat((capabilities and id) == id).isTrue()
                 }
             }
-        }
 
-        // Check with sone capabilities available for a node
-        val expectedCapabilities = listOf(Capability.SYNC_BATTERY, Capability.MANAGE_APPS)
-        Capability.values().forEach {
-            mockCapability(it, emptyList())
-        }
-        expectedCapabilities.forEach {
-            mockCapability(it, dummyNodes)
-        }
-        connectionInterface.refreshCapabilities()
-        dummyNodes.forEach { node ->
+            // Check with sone capabilities available for a node
+            val expectedCapabilities = listOf(Capability.SYNC_BATTERY, Capability.MANAGE_APPS)
+            Capability.values().forEach {
+                mockCapability(it, emptyList())
+            }
+            expectedCapabilities.forEach {
+                mockCapability(it, listOf(node))
+            }
+            connectionInterface.refreshCapabilities()
             (connectionInterface.watchCapabilities[node.id] ?: 0).let { capabilities ->
                 Capability.values().forEach {
                     val id = it.id
@@ -302,14 +258,12 @@ class WearOSConnectionInterfaceTest {
                         .isEqualTo(expectedCapabilities.contains(it))
                 }
             }
-        }
 
-        // Check with no capabilities available for any nodes
-        Capability.values().forEach {
-            mockCapability(it, emptyList())
-        }
-        connectionInterface.refreshCapabilities()
-        dummyNodes.forEach { node ->
+            // Check with no capabilities available for a node
+            Capability.values().forEach {
+                mockCapability(it, emptyList())
+            }
+            connectionInterface.refreshCapabilities()
             (connectionInterface.watchCapabilities[node.id] ?: 0).let { capabilities ->
                 Capability.values().forEach {
                     val id = it.id
@@ -317,19 +271,69 @@ class WearOSConnectionInterfaceTest {
                 }
             }
         }
-    }
+
+    @Test
+    fun `refreshCapabilities correctly updates data when multiple nodes are present`(): Unit =
+        runBlocking {
+            // Check with all capabilities available for a node
+            Capability.values().forEach {
+                mockCapability(it, dummyNodes)
+            }
+            connectionInterface.refreshCapabilities()
+            dummyNodes.forEach { node ->
+                (connectionInterface.watchCapabilities[node.id] ?: 0).let { capabilities ->
+                    Capability.values().forEach {
+                        val id = it.id
+                        assertThat((capabilities and id) == id).isTrue()
+                    }
+                }
+            }
+
+            // Check with sone capabilities available for a node
+            val expectedCapabilities = listOf(Capability.SYNC_BATTERY, Capability.MANAGE_APPS)
+            Capability.values().forEach {
+                mockCapability(it, emptyList())
+            }
+            expectedCapabilities.forEach {
+                mockCapability(it, dummyNodes)
+            }
+            connectionInterface.refreshCapabilities()
+            dummyNodes.forEach { node ->
+                (connectionInterface.watchCapabilities[node.id] ?: 0).let { capabilities ->
+                    Capability.values().forEach {
+                        val id = it.id
+                        assertThat((capabilities and id) == id)
+                            .isEqualTo(expectedCapabilities.contains(it))
+                    }
+                }
+            }
+
+            // Check with no capabilities available for any nodes
+            Capability.values().forEach {
+                mockCapability(it, emptyList())
+            }
+            connectionInterface.refreshCapabilities()
+            dummyNodes.forEach { node ->
+                (connectionInterface.watchCapabilities[node.id] ?: 0).let { capabilities ->
+                    Capability.values().forEach {
+                        val id = it.id
+                        assertThat((capabilities and id) == id).isFalse()
+                    }
+                }
+            }
+        }
 
     @Test
     fun `updatePreferenceOnWatch does nothing with invalid key`() {
         val key = "non-sync-key"
-        connectionInterface.updatePreferenceOnWatch(dummyWatches.first(), key, 0)
+        connectionInterface.updatePreferenceOnWatch(dummyWatches.first().id, key, 0)
         verify(inverse = true) { dataClient.putDataItem(any()) }
     }
 
     @Test
     fun `updatePreferenceOnWatch correctly syncs all bool prefs`() {
         SyncPreferences.BOOL_PREFS.forEach {
-            connectionInterface.updatePreferenceOnWatch(dummyWatches.first(), it, false)
+            connectionInterface.updatePreferenceOnWatch(dummyWatches.first().id, it, false)
         }
         verify(exactly = SyncPreferences.BOOL_PREFS.count()) { dataClient.putDataItem(any()) }
     }
@@ -337,7 +341,7 @@ class WearOSConnectionInterfaceTest {
     @Test
     fun `updatePreferenceOnWatch correctly syncs all int prefs`() {
         SyncPreferences.INT_PREFS.forEach {
-            connectionInterface.updatePreferenceOnWatch(dummyWatches.first(), it, 0)
+            connectionInterface.updatePreferenceOnWatch(dummyWatches.first().id, it, 0)
         }
         verify(exactly = SyncPreferences.INT_PREFS.count()) { dataClient.putDataItem(any()) }
     }
@@ -345,10 +349,10 @@ class WearOSConnectionInterfaceTest {
     @Test
     fun `updatePreferenceOnWatch does nothing in invalid data type for key`() {
         SyncPreferences.BOOL_PREFS.forEach {
-            connectionInterface.updatePreferenceOnWatch(dummyWatches.first(), it, 0)
+            connectionInterface.updatePreferenceOnWatch(dummyWatches.first().id, it, 0)
         }
         SyncPreferences.INT_PREFS.forEach {
-            connectionInterface.updatePreferenceOnWatch(dummyWatches.first(), it, false)
+            connectionInterface.updatePreferenceOnWatch(dummyWatches.first().id, it, false)
         }
         verify(inverse = true) { dataClient.putDataItem(any()) }
     }

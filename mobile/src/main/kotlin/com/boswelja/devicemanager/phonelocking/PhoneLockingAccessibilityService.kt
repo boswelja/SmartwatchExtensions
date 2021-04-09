@@ -85,8 +85,9 @@ class PhoneLockingAccessibilityService :
             val watchId = messageEvent.sourceNodeId
             val watch = registeredWatches.firstOrNull { it.id == watchId }
             if (watch != null) {
-                val phoneLockingEnabledForWatch =
-                    watchManager.getPreference<Boolean>(watch, PHONE_LOCKING_ENABLED_KEY) == false
+                val phoneLockingEnabledForWatch = watchManager.getPreference<Boolean>(
+                    watch.id, PHONE_LOCKING_ENABLED_KEY
+                ) == false
                 if (phoneLockingEnabledForWatch) {
                     Timber.i("Trying to lock phone")
                     withContext(Dispatchers.getMain()) {

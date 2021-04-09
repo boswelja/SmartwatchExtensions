@@ -185,21 +185,21 @@ class WatchManager internal constructor(
 
     /**
      * Gets a preference for a given watch with a specified key.
-     * @param watch The [Watch] to get the preference for.
+     * @param watchId See [Watch.id].
      * @param key The [Preference.key] of the preference to find.
      * @return The value of the preference, or null if it doesn't exist.
      */
-    suspend inline fun <reified T> getPreference(watch: Watch, key: String) =
-        settingsDatabase.getPreference<T>(watch, key)?.value
+    suspend inline fun <reified T> getPreference(watchId: String, key: String) =
+        settingsDatabase.getPreference<T>(watchId, key)?.value
 
     /**
      * Gets a preference for a given watch with a specified key, wrapped in a LiveData.
-     * @param watch The [Watch] to get the preference for.
+     * @param watchId See [Watch.id].
      * @param key The [Preference.key] of the preference to find.
      * @return The value of the preference, or null if it doesn't exist.
      */
-    inline fun <reified T> getPreferenceObservable(watch: Watch, key: String) =
-        settingsDatabase.getPreferenceObservable<T>(watch, key)?.map { it?.value } ?: liveData { }
+    inline fun <reified T> getPreferenceObservable(watchId: String, key: String) =
+        settingsDatabase.getPreferenceObservable<T>(watchId, key)?.map { it?.value } ?: liveData { }
 
     /**
      * Update a preference for a given watch.

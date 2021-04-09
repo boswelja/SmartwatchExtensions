@@ -37,27 +37,27 @@ class BatterySyncViewModel internal constructor(
 
     val batterySyncEnabled = watchManager.selectedWatch.switchMap {
         it?.let {
-            watchManager.getPreferenceObservable<Boolean>(it, BATTERY_SYNC_ENABLED_KEY)
+            watchManager.getPreferenceObservable<Boolean>(it.id, BATTERY_SYNC_ENABLED_KEY)
         } ?: liveData { }
     }
     val phoneChargeNotiEnabled = watchManager.selectedWatch.switchMap {
         it?.let {
-            watchManager.getPreferenceObservable<Boolean>(it, BATTERY_PHONE_CHARGE_NOTI_KEY)
+            watchManager.getPreferenceObservable<Boolean>(it.id, BATTERY_PHONE_CHARGE_NOTI_KEY)
         } ?: liveData { }
     }
     val watchChargeNotiEnabled = watchManager.selectedWatch.switchMap {
         it?.let {
-            watchManager.getPreferenceObservable<Boolean>(it, BATTERY_WATCH_CHARGE_NOTI_KEY)
+            watchManager.getPreferenceObservable<Boolean>(it.id, BATTERY_WATCH_CHARGE_NOTI_KEY)
         } ?: liveData { }
     }
     val chargeThreshold = watchManager.selectedWatch.switchMap {
         it?.let {
-            watchManager.getPreferenceObservable<Int>(it, BATTERY_CHARGE_THRESHOLD_KEY)
+            watchManager.getPreferenceObservable<Int>(it.id, BATTERY_CHARGE_THRESHOLD_KEY)
         } ?: liveData { }
     }
     val syncInterval = watchManager.selectedWatch.switchMap {
         it?.let {
-            watchManager.getPreferenceObservable<Int>(it, BATTERY_SYNC_INTERVAL_KEY)
+            watchManager.getPreferenceObservable<Int>(it.id, BATTERY_SYNC_INTERVAL_KEY)
         } ?: liveData { }
     }
 
