@@ -27,7 +27,7 @@ class MainViewModelTest {
 
     private lateinit var dataStore: DataStore<PhoneState>
 
-    private val phoneState = MutableStateFlow<PhoneState>(PhoneState())
+    private val phoneState = MutableStateFlow(PhoneState())
 
     @Before
     fun setUp(): Unit = runBlocking {

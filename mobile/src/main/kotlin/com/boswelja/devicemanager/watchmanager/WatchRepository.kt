@@ -175,7 +175,7 @@ class WatchRepository internal constructor(
      * @param watch The [Watch] to register.
      */
     suspend fun registerWatch(watch: Watch) {
-        withContext(Dispatchers.IO) {
+        withContext(Dispatchers.getIO()) {
             database.addWatch(watch)
             watch.connectionManager?.sendMessage(watch.id, WATCH_REGISTERED_PATH)
         }
@@ -187,7 +187,7 @@ class WatchRepository internal constructor(
      * @param newName The new name to set for the watch.
      */
     suspend fun renameWatch(watch: Watch, newName: String) {
-        withContext(Dispatchers.IO) {
+        withContext(Dispatchers.getIO()) {
             database.renameWatch(watch, newName)
         }
     }
@@ -197,7 +197,7 @@ class WatchRepository internal constructor(
      * @param watch The [Watch] to perform the request on.
      */
     suspend fun resetWatch(watch: Watch) {
-        withContext(Dispatchers.IO) {
+        withContext(Dispatchers.getIO()) {
             watch.connectionManager?.sendMessage(watch.id, RESET_APP)
             database.removeWatch(watch)
         }

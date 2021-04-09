@@ -37,7 +37,7 @@ class WearOSConnectionInterface(
         Wearable.getNodeClient(context),
         Wearable.getMessageClient(context),
         Wearable.getDataClient(context),
-        CoroutineScope(Dispatchers.IO)
+        CoroutineScope(Dispatchers.getIO())
     )
 
     @VisibleForTesting internal var nodesWithApp: List<Node> = emptyList()

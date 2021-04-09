@@ -56,9 +56,7 @@
     <string name="app_info_last_updated_prefix">Last updated: %s</string>
     <string name="app_info_open_button">Open</string>
     <string name="app_info_uninstall_button">Uninstall</string>
-    <string name="app_info_requested_permissions_title">Requested Permissions</string>
     <string name="app_info_requested_permissions_none">No permissions requested</string>
-    <string name="app_info_requested_permissions_dialog_title">@string/app_info_requested_permissions_title</string>
     <string name="app_manager_section_user_apps">User Apps</string>
     <string name="app_manager_section_system_apps">System Apps</string>
     <string name="app_manager_activity_title">@string/main_app_manager_title</string>

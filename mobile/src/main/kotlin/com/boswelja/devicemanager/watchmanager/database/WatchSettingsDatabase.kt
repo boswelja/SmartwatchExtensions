@@ -20,7 +20,7 @@ abstract class WatchSettingsDatabase : RoomDatabase() {
     abstract fun boolPrefDao(): BoolPreferenceDao
 
     suspend fun clearWatchPreferences(watch: Watch) {
-        withContext(Dispatchers.IO) {
+        withContext(Dispatchers.getIO()) {
             intPrefDao().deleteAllForWatch(watch.id)
             boolPrefDao().deleteAllForWatch(watch.id)
         }
@@ -38,7 +38,7 @@ abstract class WatchSettingsDatabase : RoomDatabase() {
         preferenceKey: String,
         newValue: Any
     ): Boolean {
-        return withContext(Dispatchers.IO) {
+        return withContext(Dispatchers.getIO()) {
             if (isOpen) {
                 return@withContext when (newValue) {
                     is Boolean -> {
@@ -62,7 +62,7 @@ abstract class WatchSettingsDatabase : RoomDatabase() {
 
     @Suppress("UNCHECKED_CAST")
     suspend inline fun <reified T> getPreference(watch: Watch, key: String): Preference<T>? {
-        return withContext(Dispatchers.IO) {
+        return withContext(Dispatchers.getIO()) {
             return@withContext when (T::class) {
                 Int::class -> intPrefDao().get(watch.id, key) as Preference<T>?
                 Boolean::class -> boolPrefDao().get(watch.id, key) as Preference<T>?

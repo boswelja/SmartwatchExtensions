@@ -46,7 +46,7 @@ class WatchManager internal constructor(
         WatchSettingsDatabase.getInstance(context),
         Analytics(),
         context.appStateStore,
-        CoroutineScope(Dispatchers.IO)
+        CoroutineScope(Dispatchers.getIO())
     )
 
     private val _selectedWatchId = MutableLiveData("")
@@ -114,7 +114,7 @@ class WatchManager internal constructor(
         batteryStatsDatabase: WatchBatteryStatsDatabase,
         watch: Watch
     ) {
-        withContext(Dispatchers.IO) {
+        withContext(Dispatchers.getIO()) {
             batteryStatsDatabase.batteryStatsDao().deleteStatsForWatch(watch.id)
             watchRepository.resetWatch(watch)
             removeWidgetsForWatch(watch, widgetIdStore)

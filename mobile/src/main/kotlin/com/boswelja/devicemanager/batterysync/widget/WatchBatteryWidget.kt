@@ -1,10 +1,8 @@
 package com.boswelja.devicemanager.batterysync.widget
 
 import android.app.PendingIntent
-import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.widget.RemoteViews
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toBitmap
@@ -61,19 +59,5 @@ class WatchBatteryWidget : BaseWidgetProvider() {
         }
 
         return remoteViews
-    }
-
-    companion object {
-        /**
-         * Enable the [WatchBatteryWidget] component.
-         * @param context [Context].
-         */
-        fun enableWidget(context: Context) {
-            context.packageManager.setComponentEnabledSetting(
-                ComponentName(context, WatchBatteryWidget::class.java),
-                PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
-                PackageManager.DONT_KILL_APP
-            )
-        }
     }
 }

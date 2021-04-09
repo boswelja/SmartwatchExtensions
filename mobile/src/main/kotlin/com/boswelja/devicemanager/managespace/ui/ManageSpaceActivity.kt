@@ -49,7 +49,7 @@ class ManageSpaceActivity : AppCompatActivity() {
 
         setContent {
             AppTheme {
-                var progress by mutableStateOf(0f)
+                var progress by remember { mutableStateOf(0f) }
                 val scaffoldState = rememberScaffoldState()
                 Scaffold(
                     scaffoldState = scaffoldState,

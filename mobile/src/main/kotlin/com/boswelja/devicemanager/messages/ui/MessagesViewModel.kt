@@ -59,13 +59,13 @@ class MessagesViewModel @JvmOverloads constructor(
     }
 
     suspend fun dismissMessage(messageId: Long) {
-        withContext(Dispatchers.IO) {
+        withContext(Dispatchers.getIO()) {
             messageDatabase.messageDao().dismissMessage(messageId)
         }
     }
 
     suspend fun restoreMessage(messageId: Long) {
-        withContext(Dispatchers.IO) {
+        withContext(Dispatchers.getIO()) {
             messageDatabase.messageDao().restoreMessage(messageId)
         }
     }

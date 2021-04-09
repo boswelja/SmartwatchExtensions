@@ -35,7 +35,7 @@ class BatterySyncWorker(appContext: Context, workerParams: WorkerParameters) :
         private const val EXTRA_WATCH_ID: String = "extra_watch_id"
 
         suspend fun startWorker(context: Context, watchId: String): Boolean {
-            return withContext(Dispatchers.IO) {
+            return withContext(Dispatchers.getIO()) {
                 val database = WatchSettingsDatabase.getInstance(context)
                 val syncIntervalMinutes =
                     (database.intPrefDao().get(watchId, BATTERY_SYNC_INTERVAL_KEY)?.value ?: 15)

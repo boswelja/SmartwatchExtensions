@@ -59,7 +59,7 @@ class BootOrUpdateHandlerService : LifecycleService() {
             isUpdating = true
             Timber.i("Starting update process")
             startForeground(NOTI_ID, createUpdaterNotification())
-            lifecycleScope.launch(Dispatchers.IO) {
+            lifecycleScope.launch(Dispatchers.getIO()) {
                 if (appStateStore.data.map { it.lastAppVersion }.first() <= 0) {
                     appStateStore.updateData {
                         it.copy(lastAppVersion = 1)
@@ -117,7 +117,7 @@ class BootOrUpdateHandlerService : LifecycleService() {
 
     /** Try to start Do not Disturb change listener service if needed. */
     private suspend fun tryStartInterruptFilterSyncService(database: WatchSettingsDatabase) {
-        withContext(Dispatchers.IO) {
+        withContext(Dispatchers.getIO()) {
             val dndSyncToWatchEnabled =
                 database.boolPrefDao().getAllForKey(PreferenceKey.DND_SYNC_TO_WATCH_KEY).any {
                     it.value

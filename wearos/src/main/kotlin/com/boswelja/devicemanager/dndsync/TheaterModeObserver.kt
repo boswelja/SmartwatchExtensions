@@ -24,7 +24,7 @@ class TheaterModeObserver(private val context: Context, handler: Handler) :
      * Sets a new Interruption Filter state across devices.
      * @param interruptionFilterEnabled Whether Interruption Filter should be enabled.
      */
-    fun updateInterruptionFilter(context: Context, interruptionFilterEnabled: Boolean) {
+    private fun updateInterruptionFilter(context: Context, interruptionFilterEnabled: Boolean) {
         val dataClient = Wearable.getDataClient(context)
         val putDataMapReq = PutDataMapRequest.create(References.DND_STATUS_PATH)
         putDataMapReq.dataMap.putBoolean(References.NEW_DND_STATE_KEY, interruptionFilterEnabled)
