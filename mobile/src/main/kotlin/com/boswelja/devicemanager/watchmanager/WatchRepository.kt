@@ -71,7 +71,7 @@ class WatchRepository internal constructor(
             val watchesWithStatus = watches.map {
                 val connectionManager = it.connectionManager
                 if (connectionManager != null) {
-                    it.status = connectionManager.getWatchStatus(it, true)
+                    it.status = connectionManager.getWatchStatus(it.id, true)
                 } else {
                     Timber.w("Platform ${it.platform} not registered")
                 }
@@ -141,7 +141,7 @@ class WatchRepository internal constructor(
             return watches
         }
         platformWatches.forEach {
-            it.status = connectionManager.getWatchStatus(it, it.isRegistered)
+            it.status = connectionManager.getWatchStatus(it.id, it.isRegistered)
         }
         return replaceForPlatform(watches, platformWatches)
     }
@@ -214,7 +214,7 @@ class WatchRepository internal constructor(
     }
 
     fun updatePreferenceOnWatch(watch: Watch, key: String, value: Any) =
-        watch.connectionManager?.updatePreferenceOnWatch(watch, key, value)
+        watch.connectionManager?.updatePreferenceOnWatch(watch.id, key, value)
 
     /**
      * Send a message to a watch with the given ID.

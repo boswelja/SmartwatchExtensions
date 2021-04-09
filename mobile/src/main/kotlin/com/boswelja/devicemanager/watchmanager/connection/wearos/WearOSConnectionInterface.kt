@@ -63,7 +63,7 @@ class WearOSConnectionInterface(
             if (it) {
                 val watches = nodesWithApp.intersect(connectedNodes).map { node ->
                     Watch(node.id, node.displayName, PLATFORM).apply {
-                        getWatchStatus(this, false)
+                        getWatchStatus(id, false)
                         capabilities = _watchCapabilities[id] ?: 0
                     }
                 }
@@ -74,10 +74,10 @@ class WearOSConnectionInterface(
         refreshData()
     }
 
-    override fun getWatchStatus(watch: Watch, isRegistered: Boolean): Watch.Status {
-        Timber.d("getWatchStatus($watch, $isRegistered) called")
-        val hasWatchApp = nodesWithApp.any { it.id == watch.id }
-        val isConnected = connectedNodes.any { it.id == watch.id }
+    override fun getWatchStatus(watchId: String, isRegistered: Boolean): Watch.Status {
+        Timber.d("getWatchStatus($watchId, $isRegistered) called")
+        val hasWatchApp = nodesWithApp.any { it.id == watchId }
+        val isConnected = connectedNodes.any { it.id == watchId }
         return when {
             hasWatchApp && isConnected && isRegistered -> Watch.Status.CONNECTED
             hasWatchApp && isConnected && !isRegistered -> Watch.Status.NOT_REGISTERED
@@ -91,8 +91,8 @@ class WearOSConnectionInterface(
         messageClient.sendMessage(watchId, path, data)
     }
 
-    override fun updatePreferenceOnWatch(watch: Watch, key: String, value: Any) {
-        val syncedPrefUpdateReq = PutDataMapRequest.create("/preference-change_${watch.id}")
+    override fun updatePreferenceOnWatch(watchId: String, key: String, value: Any) {
+        val syncedPrefUpdateReq = PutDataMapRequest.create("/preference-change_$watchId")
         when (key) {
             in SyncPreferences.BOOL_PREFS -> {
                 if (value is Boolean) syncedPrefUpdateReq.dataMap.putBoolean(key, value)

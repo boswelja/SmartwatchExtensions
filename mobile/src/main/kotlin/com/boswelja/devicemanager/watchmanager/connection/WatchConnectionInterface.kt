@@ -32,11 +32,11 @@ interface WatchConnectionInterface {
 
     /**
      * Get the [Watch.Status] for a given [Watch].
-     * @param watch The [Watch] to get the status of.
+     * @param watchId See [Watch.id].
      * @param isRegistered Whether the given watch has been registered.
      * @return The [Watch.Status] for the given watch.
      */
-    fun getWatchStatus(watch: Watch, isRegistered: Boolean): Watch.Status
+    fun getWatchStatus(watchId: String, isRegistered: Boolean): Watch.Status
 
     /**
      * Send a message to a watch with the given ID.
@@ -48,11 +48,11 @@ interface WatchConnectionInterface {
 
     /**
      * Notify the watch a specified preference has been changed.
-     * @param watch The target [Watch].
+     * @param watchId See [Watch.id].
      * @param key The preference key to send to the watch.
      * @param value The new value of the preference.
      */
-    fun updatePreferenceOnWatch(watch: Watch, key: String, value: Any)
+    fun updatePreferenceOnWatch(watchId: String, key: String, value: Any)
 
     /**
      * Manually refresh info such as watch status and available watches.
