@@ -16,10 +16,12 @@ import com.boswelja.devicemanager.common.connection.Messages.WATCH_NOT_REGISTERE
 import com.boswelja.devicemanager.common.connection.Messages.WATCH_REGISTERED_PATH
 import com.boswelja.devicemanager.common.dndsync.References.REQUEST_INTERRUPT_FILTER_ACCESS_STATUS_PATH
 import com.boswelja.devicemanager.common.preference.PreferenceKey
+import com.boswelja.devicemanager.common.preference.PreferenceKey.PHONE_LOCKING_ENABLED_KEY
 import com.boswelja.devicemanager.common.toByteArray
 import com.boswelja.devicemanager.dndsync.ui.DnDSyncSettingsActivity
 import com.boswelja.devicemanager.main.MainActivity
 import com.boswelja.devicemanager.phonelocking.Utils.isDeviceAdminEnabled
+import com.boswelja.devicemanager.watchmanager.WatchManager
 import com.boswelja.devicemanager.watchmanager.database.WatchDatabase
 import com.google.android.gms.wearable.MessageEvent
 import com.google.android.gms.wearable.Wearable
@@ -30,7 +32,6 @@ import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import timber.log.Timber
 
 class WatchMessageReceiver : WearableListenerService() {
@@ -40,7 +41,11 @@ class WatchMessageReceiver : WearableListenerService() {
     override fun onMessageReceived(messageEvent: MessageEvent?) {
         Timber.i("onMessageReceived() called")
         when (messageEvent?.path) {
-            LOCK_PHONE -> tryLockDevice()
+            LOCK_PHONE -> {
+                coroutineScope.launch {
+                    tryLockDevice(messageEvent.sourceNodeId)
+                }
+            }
             LAUNCH_APP -> {
                 val key = String(messageEvent.data, Charsets.UTF_8)
                 launchAppTo(key)
@@ -53,18 +58,31 @@ class WatchMessageReceiver : WearableListenerService() {
         }
     }
 
-    /** Tries to lock the device via Device Administrator permissions. */
-    private fun tryLockDevice() {
-        Timber.i("tryLockDevice() called")
-        val phoneLockMode = runBlocking { appSettingsStore.data.map { it.phoneLockMode }.first() }
-        val isInDeviceAdminMode = phoneLockMode == Settings.PhoneLockMode.DEVICE_ADMIN
-        val isDeviceAdminEnabled = isDeviceAdminEnabled()
-        // TODO If phone locking state is out of sync, sync up
-        if (isInDeviceAdminMode && isDeviceAdminEnabled) {
-            Timber.i("Trying to lock device")
-            val devicePolicyManager: DevicePolicyManager =
-                getSystemService(Context.DEVICE_POLICY_SERVICE) as DevicePolicyManager
-            devicePolicyManager.lockNow()
+    /**
+     * Tries to lock the device via Device Administrator permissions. We shouldn't handle this here
+     * if phone locking mode is [Settings.PhoneLockMode.ACCESSIBILITY_SERVICE].
+     */
+    private suspend fun tryLockDevice(watchId: String?) {
+        Timber.i("tryLockDevice($watchId) called")
+        if (!watchId.isNullOrBlank()) {
+            val phoneLockMode = appSettingsStore.data.map { it.phoneLockMode }.first()
+            val isInDeviceAdminMode = phoneLockMode == Settings.PhoneLockMode.DEVICE_ADMIN
+            if (isInDeviceAdminMode) {
+                val watchManager = WatchManager.getInstance(this)
+                val isPhoneLockingEnabled =
+                    watchManager.getPreference<Boolean>(watchId, PHONE_LOCKING_ENABLED_KEY) == true
+                if (isPhoneLockingEnabled && isDeviceAdminEnabled()) {
+                    Timber.i("Trying to lock device")
+                    val devicePolicyManager: DevicePolicyManager =
+                        getSystemService(Context.DEVICE_POLICY_SERVICE) as DevicePolicyManager
+                    devicePolicyManager.lockNow()
+                } else {
+                    Timber.w("Phone locking disabled or permission not granted, disabling")
+                    watchManager.updatePreference(PHONE_LOCKING_ENABLED_KEY, false)
+                }
+            }
+        } else {
+            Timber.w("Watch ID null or blank")
         }
     }
 
@@ -75,7 +93,7 @@ class WatchMessageReceiver : WearableListenerService() {
     private fun launchAppTo(key: String?) {
         Timber.i("launchAppTo($key) called")
         when (key) {
-            PreferenceKey.PHONE_LOCKING_ENABLED_KEY -> {
+            PHONE_LOCKING_ENABLED_KEY -> {
                 Intent(this, MainActivity::class.java)
                     .apply {
                         putExtra(EXTRA_PREFERENCE_KEY, key)
