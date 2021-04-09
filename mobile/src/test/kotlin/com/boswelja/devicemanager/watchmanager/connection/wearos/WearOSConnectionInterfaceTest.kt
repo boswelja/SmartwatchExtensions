@@ -20,11 +20,9 @@ import com.google.android.gms.wearable.Node
 import com.google.android.gms.wearable.NodeClient
 import com.google.common.truth.Truth.assertThat
 import io.mockk.MockKAnnotations
-import io.mockk.confirmVerified
 import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.verify
-import io.mockk.verifyAll
 import kotlin.experimental.and
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
@@ -79,11 +77,6 @@ class WearOSConnectionInterfaceTest {
         )
 
         shadowOf(getMainLooper()).idle()
-
-        // Verify any existing calls
-        verifyAll { capabilityClient.getCapability(any(), any()) }
-        verifyAll { nodeClient.connectedNodes }
-        confirmVerified()
     }
 
     @Test
