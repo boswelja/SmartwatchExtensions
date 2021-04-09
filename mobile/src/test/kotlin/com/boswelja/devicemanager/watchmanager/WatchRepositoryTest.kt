@@ -11,7 +11,6 @@ import com.boswelja.devicemanager.watchmanager.connection.DummyConnectionInterfa
 import com.boswelja.devicemanager.watchmanager.database.WatchDatabase
 import com.boswelja.devicemanager.watchmanager.item.Watch
 import com.google.common.truth.Truth.assertThat
-import io.mockk.every
 import io.mockk.spyk
 import io.mockk.verify
 import io.mockk.verifyAll
@@ -67,64 +66,6 @@ class WatchRepositoryTest {
     @After
     fun tearDown() {
         database.close()
-    }
-
-    @Test
-    fun `replaceForPlatform returns only newWatches if empty existingWatches`() {
-        val result = repository.replaceForPlatform(emptyList(), dummyWatches)
-        assertThat(result).containsExactlyElementsIn(dummyWatches)
-    }
-
-    @Test
-    fun `replaceForPlatform returns existingWatches if newWatches is empty`() {
-        var result = repository.replaceForPlatform(emptyList(), emptyList())
-        assertThat(result).isEmpty()
-
-        result = repository.replaceForPlatform(dummyWatches, emptyList())
-        assertThat(result).containsExactlyElementsIn(dummyWatches)
-    }
-
-    @Test
-    fun `replaceForPlatform correctly removes all watches for a platform and replaces them`() {
-        val newWatches = dummyWatches
-            .filter { it.platform == connectionInterface1.platformIdentifier }
-            .map {
-                it.status = Watch.Status.MISSING_APP
-                it
-            }
-        val result = repository.replaceForPlatform(dummyWatches, newWatches)
-        assertThat(result).hasSize(dummyWatches.size)
-        result.filter { it.platform == connectionInterface1.platformIdentifier }.forEach {
-            assertThat(it.status).isEquivalentAccordingToCompareTo(Watch.Status.MISSING_APP)
-        }
-    }
-
-    @Test
-    fun `updateStatusForPlatform calls getStatus on the correct watches`() {
-        // Change the returning status
-        every { connectionInterface1.getWatchStatus(any(), any()) } returns Watch.Status.CONNECTED
-        every { connectionInterface2.getWatchStatus(any(), any()) } returns
-            Watch.Status.DISCONNECTED
-
-        // Check with first connection interface
-        var result = repository
-            .updateStatusForPlatform(dummyWatches, connectionInterface1.platformIdentifier)
-        dummyWatches.filter { it.platform == connectionInterface1.platformIdentifier }.forEach {
-            verify(exactly = 1) { connectionInterface1.getWatchStatus(it.id, any()) }
-        }
-        result.filter { it.platform == connectionInterface1.platformIdentifier }.forEach {
-            assertThat(it.status).isEquivalentAccordingToCompareTo(Watch.Status.CONNECTED)
-        }
-
-        // Check with second connection interface
-        result = repository
-            .updateStatusForPlatform(dummyWatches, connectionInterface2.platformIdentifier)
-        dummyWatches.filter { it.platform == connectionInterface2.platformIdentifier }.forEach {
-            verify(exactly = 1) { connectionInterface2.getWatchStatus(it.id, any()) }
-        }
-        result.filter { it.platform == connectionInterface2.platformIdentifier }.forEach {
-            assertThat(it.status).isEquivalentAccordingToCompareTo(Watch.Status.DISCONNECTED)
-        }
     }
 
     @Test

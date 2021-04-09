@@ -1,9 +1,7 @@
 package com.boswelja.devicemanager.watchmanager
 
 import android.content.Context
-import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MediatorLiveData
 import com.boswelja.devicemanager.common.connection.Messages.RESET_APP
 import com.boswelja.devicemanager.common.connection.Messages.WATCH_REGISTERED_PATH
 import com.boswelja.devicemanager.watchmanager.connection.WatchConnectionInterface
@@ -29,8 +27,8 @@ class WatchRepository internal constructor(
     )
 
     private val connectionManagers = HashMap<String, WatchConnectionInterface>()
-    private val _registeredWatches: MediatorLiveData<List<Watch>> = MediatorLiveData()
-    private val _availableWatches: MediatorLiveData<List<Watch>> = MediatorLiveData()
+    private val _registeredWatches = MutableWatchList()
+    private val _availableWatches = MutableWatchList()
 
     /**
      * An observable list of watches registered in the database, saturated with statuses.
@@ -53,45 +51,37 @@ class WatchRepository internal constructor(
             connectionManagers[it.platformIdentifier] = it
         }
 
-        // Set up _availableWatches
-        connectionManagers.values.forEach {
-            _availableWatches.addSource(it.availableWatches) { newAvailableWatches ->
-                Timber.d("availableWatches updated for ${it.platformIdentifier}")
-                val newWatches = replaceForPlatform(
-                    _availableWatches.value ?: emptyList(),
-                    newAvailableWatches
-                )
-                _availableWatches.postValue(newWatches)
-            }
-        }
-
         // Set up _registeredWatches
         _registeredWatches.addSource(database.getAll()) { watches ->
             Timber.d("registeredWatches updated")
             val watchesWithStatus = watches.map {
                 val connectionManager = it.connectionManager
-                if (connectionManager != null) {
-                    it.status = connectionManager.getWatchStatus(it.id, true)
-                } else {
-                    Timber.w("Platform ${it.platform} not registered")
-                }
+                it.status = connectionManager?.getWatchStatus(it.id, true)
+                    ?: Watch.Status.ERROR
+                it.capabilities = connectionManager?.watchCapabilities?.get(it.id) ?: 0
                 it
             }
             _registeredWatches.postValue(watchesWithStatus)
         }
-        connectionManagers.values.forEach { connectionManager ->
-            _registeredWatches.addSource(connectionManager.dataChanged) {
-                if (it) {
-                    Timber.d("dataChanged fired for ${connectionManager.platformIdentifier}")
-                    val watchesWithStatus = updateStatusForPlatform(
-                        _registeredWatches.value ?: emptyList(),
-                        connectionManager.platformIdentifier
-                    )
-                    val watches = updateCapabilitiesForPlatform(
-                        watchesWithStatus,
-                        connectionManager.platformIdentifier
-                    )
-                    _registeredWatches.postValue(watches)
+
+        // Set up connection manager observers
+        connectionManagers.values.forEach {
+            _availableWatches.addSource(it.availableWatches) { newAvailableWatches ->
+                Timber.d("availableWatches updated for ${it.platformIdentifier}")
+                _availableWatches.postValueForPlatform(newAvailableWatches)
+            }
+            _registeredWatches.addSource(it.dataChanged) { dataChanged ->
+                if (dataChanged) {
+                    Timber.d("dataChanged fired for ${it.platformIdentifier}")
+                    val platformWatches = ArrayList<Watch>()
+                    (_registeredWatches.value ?: emptyList()).forEach { watch ->
+                        if (watch.platform == it.platformIdentifier) {
+                            watch.status = it.getWatchStatus(watch.id, true)
+                            watch.capabilities = it.watchCapabilities[watch.id] ?: 0
+                            platformWatches.add(watch)
+                        }
+                    }
+                    _registeredWatches.postValueForPlatform(platformWatches)
                 }
             }
         }
@@ -99,76 +89,6 @@ class WatchRepository internal constructor(
 
     private val Watch.connectionManager: WatchConnectionInterface?
         get() = connectionManagers[this.platform]
-
-    private val Watch.isRegistered: Boolean
-        get() = registeredWatches.value?.contains(this) == true
-
-    /**
-     * Takes a list of watches from varying platforms and an additional list of watches from a
-     * single platform, and replaces all watches in the original list from the same platform with
-     * the new list.
-     * @param existingWatches The [List] of [Watch]es from varying platforms.
-     * @param newWatches The new [List] of [Watch] from a single platform.
-     * @return A [List] of [Watch]es with all watches from the platform matching [newWatches]
-     * replaced with [newWatches].
-     */
-    @VisibleForTesting
-    internal fun replaceForPlatform(
-        existingWatches: List<Watch>,
-        newWatches: List<Watch>
-    ): List<Watch> {
-        newWatches.firstOrNull()?.platform?.let { platform ->
-            val watchesWithoutPlatform = existingWatches.filterNot { it.platform == platform }
-            // Since we've removed all watches from the platform, we don't need union.
-            return watchesWithoutPlatform + newWatches
-        }
-        return existingWatches
-    }
-
-    /**
-     * Takes a list of watches from varying platforms and updates the [Watch.Status] of all watches
-     * from a specified platform.
-     * @param watches The [List] of [Watch] from varying platforms.
-     * @param platform The [Watch.platform] to update [Watch.Status] for.
-     * @return The [List] of [Watch] with newly updated [Watch.Status]
-     */
-    @VisibleForTesting
-    internal fun updateStatusForPlatform(watches: List<Watch>, platform: String): List<Watch> {
-        val platformWatches = watches.filter { it.platform == platform }
-        val connectionManager = connectionManagers[platform]
-        if (connectionManager == null) {
-            Timber.w("Platform $platform not registered")
-            return watches
-        }
-        platformWatches.forEach {
-            it.status = connectionManager.getWatchStatus(it.id, it.isRegistered)
-        }
-        return replaceForPlatform(watches, platformWatches)
-    }
-
-    /**
-     * Takes a list of watches from varying platforms and updates [Watch.capabilities] of all
-     * watches.
-     * @param watches The [List] of [Watch] from varying platforms.
-     * @param platform The [Watch.platform] to update [Watch.capabilities] for.
-     * @return The [List] of [Watch] with newly updated [Watch.capabilities]
-     */
-    @VisibleForTesting
-    internal fun updateCapabilitiesForPlatform(
-        watches: List<Watch>,
-        platform: String
-    ): List<Watch> {
-        val platformWatches = watches.filter { it.platform == platform }
-        val connectionManager = connectionManagers[platform]
-        if (connectionManager == null) {
-            Timber.w("Platform $platform not registered")
-            return watches
-        }
-        platformWatches.forEach {
-            it.capabilities = connectionManager.watchCapabilities[it.id] ?: 0
-        }
-        return replaceForPlatform(watches, platformWatches)
-    }
 
     /**
      * Register a given watch, and let it know it's been registered.

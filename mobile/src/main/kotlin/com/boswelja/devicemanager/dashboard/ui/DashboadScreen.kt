@@ -89,9 +89,7 @@ fun DashboardScreen() {
 @Composable
 fun SelectedWatchStatus() {
     val context = LocalContext.current
-    val watchManager = remember {
-        WatchManager.getInstance(context)
-    }
+    val watchManager = remember { WatchManager.getInstance(context) }
     val selectedWatch by watchManager.selectedWatch.observeAsState()
 
     Card {
