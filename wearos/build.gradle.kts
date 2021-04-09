@@ -105,6 +105,7 @@ dependencies {
 
     implementation("com.google.android.gms:play-services-wearable:$playServicesWearable")
     implementation("com.jakewharton.timber:timber:$timber")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:$coroutines")
 
     implementation("androidx.compose.ui:ui:$compose")
     implementation("androidx.compose.ui:ui-tooling:$compose")

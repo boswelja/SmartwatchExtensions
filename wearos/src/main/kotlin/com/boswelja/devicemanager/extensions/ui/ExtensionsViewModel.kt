@@ -15,14 +15,15 @@ import com.boswelja.devicemanager.common.connection.Messages
 import com.boswelja.devicemanager.extensions.ExtensionSettings
 import com.boswelja.devicemanager.extensions.extensionSettingsStore
 import com.boswelja.devicemanager.phoneStateStore
-import com.google.android.gms.tasks.Tasks
 import com.google.android.gms.wearable.MessageClient
 import com.google.android.gms.wearable.NodeClient
 import com.google.android.gms.wearable.Wearable
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 import timber.log.Timber
 
 class ExtensionsViewModel internal constructor(
@@ -60,15 +61,13 @@ class ExtensionsViewModel internal constructor(
     }
 
     fun checkPhoneConnection() {
-        viewModelScope.launch(Dispatchers.IO) {
-            phoneId.collect {
-                Timber.d("Checking phone with ID %s is connected", it)
-                val connectedNodes = Tasks.await(nodeClient.connectedNodes)
-                val isPhoneConnected =
-                    connectedNodes.any { node -> node.id == it && node.isNearby }
-                _phoneConnected.postValue(isPhoneConnected)
-                Timber.d("isPhoneConnected = %s", isPhoneConnected)
-            }
+        viewModelScope.launch(Dispatchers.getIO()) {
+            val id = phoneId.first()
+            Timber.d("Checking phone with ID %s is connected", id)
+            val connectedNodes = nodeClient.connectedNodes.await()
+            val isPhoneConnected = connectedNodes.any { node -> node.id == id && node.isNearby }
+            _phoneConnected.postValue(isPhoneConnected)
+            Timber.d("isPhoneConnected = %s", isPhoneConnected)
         }
     }
 

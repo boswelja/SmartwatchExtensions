@@ -31,7 +31,7 @@ import timber.log.Timber
  */
 class PhoneBatteryComplicationProvider : ComplicationProviderService() {
 
-    private val coroutineScope = CoroutineScope(Dispatchers.IO)
+    private val coroutineScope = CoroutineScope(Dispatchers.getIO())
 
     override fun onComplicationUpdate(
         complicationId: Int,
