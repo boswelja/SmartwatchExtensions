@@ -10,7 +10,6 @@ import com.boswelja.devicemanager.common.connection.References.CAPABILITY_WATCH_
 import com.boswelja.devicemanager.common.preference.SyncPreferences
 import com.boswelja.devicemanager.watchmanager.connection.WatchConnectionInterface
 import com.boswelja.devicemanager.watchmanager.item.Watch
-import com.google.android.gms.tasks.Tasks
 import com.google.android.gms.wearable.CapabilityClient
 import com.google.android.gms.wearable.DataClient
 import com.google.android.gms.wearable.MessageClient
@@ -22,6 +21,7 @@ import kotlin.experimental.or
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 import timber.log.Timber
 
 class WearOSConnectionInterface(
@@ -134,7 +134,9 @@ class WearOSConnectionInterface(
 
     @VisibleForTesting internal suspend fun refreshNodesWithApp() {
         try {
-            val result = capabilityClient.getCapability(CAPABILITY_WATCH_APP, CapabilityClient.FILTER_ALL).await()
+            val result = capabilityClient.getCapability(
+                CAPABILITY_WATCH_APP, CapabilityClient.FILTER_ALL
+            ).await()
             Timber.d("Found ${result.nodes.count()} nodes with app")
             nodesWithApp = result.nodes.toList()
         } catch (e: Exception) {
@@ -142,11 +144,13 @@ class WearOSConnectionInterface(
         }
     }
 
-    @VisibleForTesting internal fun refreshCapabilities() {
+    @VisibleForTesting internal suspend fun refreshCapabilities() {
         try {
             val capabilityMap = HashMap<String, Short>()
             Capability.values().forEach { capability ->
-                val result = capabilityClient.getCapability(capability.name, CapabilityClient.FILTER_ALL).await()
+                val result = capabilityClient.getCapability(
+                    capability.name, CapabilityClient.FILTER_ALL
+                ).await()
                 result.nodes.forEach { node ->
                     val capabilities = capabilityMap[node.id] ?: 0
                     capabilityMap[node.id] = capabilities or capability.id
