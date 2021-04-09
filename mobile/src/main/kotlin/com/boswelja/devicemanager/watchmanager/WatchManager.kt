@@ -78,6 +78,7 @@ class WatchManager internal constructor(
         }
 
         _selectedWatch.addSource(registeredWatches) {
+            Timber.d("registeredWatches changed, updating _selectedWatch")
             val watch = it.firstOrNull { watch ->
                 watch.id == _selectedWatchId.value
             } ?: it.firstOrNull()
@@ -94,6 +95,8 @@ class WatchManager internal constructor(
                 _selectedWatch.postValue(watch)
             }
         }
+
+        refreshData()
     }
 
     suspend fun registerWatch(watch: Watch) {
