@@ -26,7 +26,7 @@ class RegisterWatchViewModel internal constructor(
     constructor(application: Application) : this(
         application,
         WatchManager.getInstance(application),
-        Dispatchers.getIO()
+        Dispatchers.IO
     )
 
     private val _addedWatches = MutableLiveData<List<Watch>>()

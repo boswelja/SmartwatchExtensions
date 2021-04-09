@@ -31,7 +31,7 @@ class PhoneLockingAccessibilityService :
         if (prefs.none { it.value }) stop()
     }
 
-    private val coroutineScope = CoroutineScope(Dispatchers.getIO())
+    private val coroutineScope = CoroutineScope(Dispatchers.IO)
     private val watchManager: WatchManager by lazy {
         WatchManager.getInstance(this)
     }
@@ -81,7 +81,7 @@ class PhoneLockingAccessibilityService :
      * @param messageEvent The [MessageEvent] requesting a device lock.
      */
     private fun tryLockDevice(messageEvent: MessageEvent) {
-        coroutineScope.launch(Dispatchers.getIO()) {
+        coroutineScope.launch(Dispatchers.IO) {
             val watchId = messageEvent.sourceNodeId
             val watch = registeredWatches.firstOrNull { it.id == watchId }
             if (watch != null) {
@@ -90,7 +90,7 @@ class PhoneLockingAccessibilityService :
                 ) == false
                 if (phoneLockingEnabledForWatch) {
                     Timber.i("Trying to lock phone")
-                    withContext(Dispatchers.getMain()) {
+                    withContext(Dispatchers.Main) {
                         performGlobalAction(GLOBAL_ACTION_LOCK_SCREEN)
                     }
                 } else {
@@ -108,7 +108,7 @@ class PhoneLockingAccessibilityService :
         if (!isStopping) {
             Timber.i("Stopping")
             isStopping = true
-            coroutineScope.launch(Dispatchers.getIO()) {
+            coroutineScope.launch(Dispatchers.IO) {
                 watchManager.settingsDatabase.boolPrefDao().updateAllForKey(
                     PHONE_LOCKING_ENABLED_KEY, false
                 )

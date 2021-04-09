@@ -70,7 +70,7 @@ class PhoneLockingSettingsViewModel internal constructor(
     @Suppress("unused")
     constructor(application: Application) : this(
         application,
-        Dispatchers.getIO(),
+        Dispatchers.IO,
         WatchManager.getInstance(application),
         application.appSettingsStore
     )

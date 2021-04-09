@@ -29,7 +29,7 @@ class BatterySyncViewModel internal constructor(
     constructor(application: Application) : this(
         application,
         WatchManager.getInstance(application),
-        Dispatchers.getIO()
+        Dispatchers.IO
     )
 
     private val database: WatchBatteryStatsDatabase =

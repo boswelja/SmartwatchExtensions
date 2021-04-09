@@ -29,7 +29,7 @@ class WatchInfoViewModel internal constructor(
     constructor(application: Application) : this(
         application,
         WatchManager.getInstance(application),
-        Dispatchers.getIO()
+        Dispatchers.IO
     )
 
     init {

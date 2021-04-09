@@ -29,7 +29,7 @@ import timber.log.Timber
  */
 abstract class BaseWidgetProvider : AppWidgetProvider() {
 
-    internal val coroutineScope = CoroutineScope(Dispatchers.getIO())
+    internal val coroutineScope = CoroutineScope(Dispatchers.IO)
 
     /**
      * Called when widget content is required. A background is not needed.
@@ -48,7 +48,7 @@ abstract class BaseWidgetProvider : AppWidgetProvider() {
     override fun onDeleted(context: Context?, appWidgetIds: IntArray?) {
         super.onDeleted(context, appWidgetIds)
         if (context != null && appWidgetIds != null && appWidgetIds.isNotEmpty()) {
-            coroutineScope.launch(Dispatchers.getIO()) {
+            coroutineScope.launch(Dispatchers.IO) {
                 context.widgetIdStore.edit { widgetIds ->
                     appWidgetIds.forEach { widgetId ->
                         widgetIds.remove(stringPreferencesKey(widgetId.toString()))

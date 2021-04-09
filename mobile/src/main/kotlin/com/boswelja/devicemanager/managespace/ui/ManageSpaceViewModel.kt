@@ -39,7 +39,7 @@ class ManageSpaceViewModel internal constructor(
         Analytics(),
         WatchManager.getInstance(application),
         application.appSettingsStore,
-        Dispatchers.getIO()
+        Dispatchers.IO
     )
 
     init {
@@ -86,7 +86,7 @@ class ManageSpaceViewModel internal constructor(
                 registeredWatches.forEachIndexed { index, watch ->
                     watchManager.resetWatchPreferences(getApplication<Application>(), watch)
                     progress = (index + 1) * progressMultiplier
-                    withContext(Dispatchers.getMain()) { onProgressChanged(progress) }
+                    withContext(Dispatchers.Main) { onProgressChanged(progress) }
                 }
             }
             onCompleteFunction(true)
@@ -104,7 +104,7 @@ class ManageSpaceViewModel internal constructor(
             appSettingsDataStore.updateData {
                 AppSettingsSerializer().defaultValue
             }
-            withContext(Dispatchers.getMain()) { onCompleteFunction(true) }
+            withContext(Dispatchers.Main) { onCompleteFunction(true) }
         }
     }
 
@@ -129,7 +129,7 @@ class ManageSpaceViewModel internal constructor(
                 registeredWatches.forEachIndexed { index, watch ->
                     watchManager.forgetWatch(getApplication<Application>(), watch)
                     progress = (index + 1) * progressMultiplier
-                    withContext(Dispatchers.getMain()) { onProgressChanged(progress) }
+                    withContext(Dispatchers.Main) { onProgressChanged(progress) }
                 }
                 analytics.resetAnalytics()
                 progress = (watchCount + 1) * progressMultiplier
@@ -160,16 +160,16 @@ class ManageSpaceViewModel internal constructor(
                     Timber.d("Deleting ${file.path}")
                     if (!file.delete()) {
                         Timber.w("Failed to delete cache file ${file.absolutePath}")
-                        withContext(Dispatchers.getMain()) { onCompleteFunction(false) }
+                        withContext(Dispatchers.Main) { onCompleteFunction(false) }
                         return@launch
                     }
                     progress = (index + 1) * progressMultiplier
-                    withContext(Dispatchers.getMain()) { onProgressChanged(progress) }
+                    withContext(Dispatchers.Main) { onProgressChanged(progress) }
                 }
             } else {
                 Timber.w("Cache files null or empty")
             }
-            withContext(Dispatchers.getMain()) { onCompleteFunction(true) }
+            withContext(Dispatchers.Main) { onCompleteFunction(true) }
         }
     }
 

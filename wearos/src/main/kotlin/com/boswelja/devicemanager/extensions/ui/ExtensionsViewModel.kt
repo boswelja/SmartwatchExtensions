@@ -61,7 +61,7 @@ class ExtensionsViewModel internal constructor(
     }
 
     fun checkPhoneConnection() {
-        viewModelScope.launch(Dispatchers.getIO()) {
+        viewModelScope.launch(Dispatchers.IO) {
             val id = phoneId.first()
             Timber.d("Checking phone with ID %s is connected", id)
             val connectedNodes = nodeClient.connectedNodes.await()

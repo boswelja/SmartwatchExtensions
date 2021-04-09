@@ -39,7 +39,7 @@ class PreferenceChangeReceiver : WearableListenerService() {
      * @param watchId The watch ID to start/stop the worker for.
      */
     private suspend fun updateBatterySyncWorker(batterySyncEnabled: Boolean, watchId: String) {
-        withContext(Dispatchers.getIO()) {
+        withContext(Dispatchers.IO) {
             if (batterySyncEnabled) {
                 Timber.i("Starting BatterySyncWorker")
                 BatterySyncWorker.startWorker(this@PreferenceChangeReceiver, watchId)
@@ -65,7 +65,7 @@ class PreferenceChangeReceiver : WearableListenerService() {
      * @param event The [DataEvent] that holds a change in preferences.
      */
     private fun handleWatchPreferenceChange(senderId: String, event: DataEvent) {
-        coroutineScope.launch(Dispatchers.getIO()) {
+        coroutineScope.launch(Dispatchers.IO) {
             try {
                 val dataMap = DataMapItem.fromDataItem(event.dataItem).dataMap
                 if (!dataMap.isEmpty) {

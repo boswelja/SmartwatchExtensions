@@ -46,7 +46,7 @@ class WatchManager internal constructor(
         WatchSettingsDatabase.getInstance(context),
         Analytics(),
         context.appStateStore,
-        CoroutineScope(Dispatchers.getIO())
+        CoroutineScope(Dispatchers.IO)
     )
 
     private val _selectedWatchId = MutableLiveData("")
@@ -114,7 +114,7 @@ class WatchManager internal constructor(
         batteryStatsDatabase: WatchBatteryStatsDatabase,
         watch: Watch
     ) {
-        withContext(Dispatchers.getIO()) {
+        withContext(Dispatchers.IO) {
             batteryStatsDatabase.batteryStatsDao().deleteStatsForWatch(watch.id)
             watchRepository.resetWatch(watch)
             removeWidgetsForWatch(watch, widgetIdStore)
@@ -219,7 +219,7 @@ class WatchManager internal constructor(
      * @param value The new preference value.
      */
     suspend fun updatePreference(key: String, value: Boolean) {
-        withContext(Dispatchers.getIO()) {
+        withContext(Dispatchers.IO) {
             settingsDatabase.boolPrefDao().updateAllForKey(key, value)
             registeredWatches.value?.forEach {
                 watchRepository.updatePreferenceOnWatch(it, key, value)

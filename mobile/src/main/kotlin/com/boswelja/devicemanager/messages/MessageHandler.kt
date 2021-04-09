@@ -26,7 +26,7 @@ object MessageHandler {
         message: Message,
         priority: Priority = Priority.LOW,
         database: MessageDatabase = MessageDatabase.getInstance(context),
-        coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.getIO())
+        coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.IO)
     ) {
         coroutineScope.launch {
             val id = database.messageDao().createMessage(message)

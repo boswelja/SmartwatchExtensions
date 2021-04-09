@@ -36,7 +36,7 @@ import timber.log.Timber
 
 class WatchMessageReceiver : WearableListenerService() {
 
-    private val coroutineScope = CoroutineScope(Dispatchers.getIO())
+    private val coroutineScope = CoroutineScope(Dispatchers.IO)
 
     override fun onMessageReceived(messageEvent: MessageEvent?) {
         Timber.i("onMessageReceived() called")
@@ -151,7 +151,7 @@ class WatchMessageReceiver : WearableListenerService() {
      */
     private fun sendIsWatchRegistered(sourceNodeId: String) {
         Timber.i("sendIsWatchRegistered() called")
-        MainScope().launch(Dispatchers.getIO()) {
+        MainScope().launch(Dispatchers.IO) {
             // TODO Access the database through WatchConnectionService
             val database = WatchDatabase.getInstance(this@WatchMessageReceiver)
             val messageCode =

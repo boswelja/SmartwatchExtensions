@@ -17,7 +17,7 @@ class MessageHistoryViewModel internal constructor(
     constructor(application: Application) : this(
         application,
         MessageDatabase.getInstance(application),
-        Dispatchers.getIO()
+        Dispatchers.IO
     )
 
     val dismissedMessagesFlow = messageDatabase.messageDao().getDismissedMessages()

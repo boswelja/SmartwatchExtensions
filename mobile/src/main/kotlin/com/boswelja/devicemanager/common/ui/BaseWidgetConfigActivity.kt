@@ -45,7 +45,7 @@ abstract class BaseWidgetConfigActivity : AppCompatActivity() {
         Timber.d("finishWidgetConfig($watch) called")
         setResult(RESULT_OK, resultIntent)
 
-        lifecycleScope.launch(Dispatchers.getIO()) {
+        lifecycleScope.launch(Dispatchers.IO) {
             widgetIdStore.edit { widgetIds ->
                 widgetIds[stringPreferencesKey(widgetId.toString())] = watch.id
             }

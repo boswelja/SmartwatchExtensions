@@ -29,7 +29,7 @@ import timber.log.Timber
 
 class WatchBatteryUpdateReceiver : WearableListenerService() {
 
-    private val coroutineScope = CoroutineScope(Dispatchers.getIO())
+    private val coroutineScope = CoroutineScope(Dispatchers.IO)
     private val notificationManager: NotificationManager by lazy { getSystemService()!! }
 
     private lateinit var watchBatteryStats: WatchBatteryStats
@@ -40,7 +40,7 @@ class WatchBatteryUpdateReceiver : WearableListenerService() {
             watchBatteryStats = WatchBatteryStats.fromMessage(messageEvent)
 
             // TODO We shouldn't need to launch a coroutine scope here
-            coroutineScope.launch(Dispatchers.getIO()) {
+            coroutineScope.launch(Dispatchers.IO) {
                 val database = WatchDatabase.getInstance(this@WatchBatteryUpdateReceiver)
                 database.getById(watchBatteryStats.watchId)?.let {
                     handleNoti(

@@ -20,7 +20,7 @@ object Utils {
      * possible watches.
      */
     suspend fun updateBatteryStats(context: Context, watch: Watch? = null) {
-        withContext(Dispatchers.getIO()) {
+        withContext(Dispatchers.IO) {
             Timber.i("Updating battery stats for ${watch?.id}")
             val batteryStats = BatteryStats.createForDevice(context)
             if (batteryStats != null) {

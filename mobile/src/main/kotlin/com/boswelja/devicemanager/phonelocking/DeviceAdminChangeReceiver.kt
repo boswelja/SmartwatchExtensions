@@ -18,7 +18,7 @@ class DeviceAdminChangeReceiver : DeviceAdminReceiver() {
 
     override fun onDisabled(context: Context, intent: Intent) {
         Timber.i("onDisabled() called")
-        CoroutineScope(Dispatchers.getIO()).launch {
+        CoroutineScope(Dispatchers.IO).launch {
             WatchManager.getInstance(context).updatePreference(PHONE_LOCKING_ENABLED_KEY, false)
         }
     }
