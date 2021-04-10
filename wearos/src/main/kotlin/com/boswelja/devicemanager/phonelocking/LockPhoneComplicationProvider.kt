@@ -19,7 +19,7 @@ class LockPhoneComplicationProvider : ComplicationProviderService() {
     override fun onComplicationUpdate(
         complicationId: Int,
         type: ComplicationType,
-        resultCallback: ComplicationUpdateCallback
+        resultCallback: ComplicationUpdateListener
     ) {
         val complicationData = createComplicationDataFor(type)
 

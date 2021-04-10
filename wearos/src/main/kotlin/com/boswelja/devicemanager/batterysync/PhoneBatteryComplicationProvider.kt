@@ -36,7 +36,7 @@ class PhoneBatteryComplicationProvider : ComplicationProviderService() {
     override fun onComplicationUpdate(
         complicationId: Int,
         type: ComplicationType,
-        resultCallback: ComplicationUpdateCallback
+        resultCallback: ComplicationUpdateListener
     ) {
         coroutineScope.launch {
             phoneStateStore.data.map { it.batteryPercent }.collect {
