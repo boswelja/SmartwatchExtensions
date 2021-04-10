@@ -17,6 +17,7 @@ import com.boswelja.devicemanager.watchmanager.database.WatchSettingsDatabase
 import com.boswelja.devicemanager.watchmanager.item.Watch
 import com.google.common.truth.Truth.assertThat
 import io.mockk.MockKAnnotations
+import io.mockk.clearAllMocks
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
@@ -213,12 +214,22 @@ class WatchManagerTest {
         }
 
     private fun getWatchManager(): WatchManager {
-        return WatchManager(
+        val watchManager = WatchManager(
             repository,
             settingsDatabase,
             analytics,
             dataStore,
             coroutineScope
         )
+        clearAllMocks(
+            answers = false,
+            recordedCalls = true,
+            childMocks = false,
+            regularMocks = true,
+            objectMocks = false,
+            staticMocks = false,
+            constructorMocks = false
+        )
+        return watchManager
     }
 }
