@@ -98,7 +98,6 @@ class WatchManager internal constructor(
                 }
             }
         }
-
     }
 
     suspend fun registerWatch(watch: Watch) {
@@ -126,6 +125,7 @@ class WatchManager internal constructor(
             analytics.logWatchRemoved()
         }
     }
+
     suspend fun renameWatch(watch: Watch, newName: String) {
         watchRepository.renameWatch(watch, newName)
         analytics.logWatchRenamed()
