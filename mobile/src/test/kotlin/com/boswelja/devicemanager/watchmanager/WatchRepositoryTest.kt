@@ -11,9 +11,9 @@ import com.boswelja.devicemanager.watchmanager.connection.DummyConnectionInterfa
 import com.boswelja.devicemanager.watchmanager.database.WatchDatabase
 import com.boswelja.devicemanager.watchmanager.item.Watch
 import com.google.common.truth.Truth.assertThat
+import io.mockk.clearAllMocks
 import io.mockk.spyk
 import io.mockk.verify
-import io.mockk.verifyAll
 import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Before
@@ -53,14 +53,15 @@ class WatchRepositoryTest {
             ).allowMainThreadQueries().build()
         )
         repository = WatchRepository(database, connectionInterface1, connectionInterface2)
-        verifyAll {
-            connectionInterface1.availableWatches
-            connectionInterface1.platformIdentifier
-            connectionInterface1.dataChanged
-            connectionInterface2.availableWatches
-            connectionInterface2.platformIdentifier
-            connectionInterface2.dataChanged
-        }
+        clearAllMocks(
+            answers = false,
+            recordedCalls = true,
+            childMocks = false,
+            regularMocks = true,
+            objectMocks = false,
+            staticMocks = false,
+            constructorMocks = false
+        )
     }
 
     @After
@@ -109,17 +110,6 @@ class WatchRepositoryTest {
         }
         repository.registeredWatches.observeForever(dummyObserver)
         dummyWatches.forEach { database.addWatch(it) }
-
-        verifyAll {
-            connectionInterface1.platformIdentifier
-            connectionInterface2.platformIdentifier
-            connectionInterface1.availableWatches
-            connectionInterface2.availableWatches
-            connectionInterface1.dataChanged
-            connectionInterface2.dataChanged
-            connectionInterface1.getWatchStatus(any(), any())
-            connectionInterface2.getWatchStatus(any(), any())
-        }
 
         connectionInterface1.dataChanged.fire()
 
