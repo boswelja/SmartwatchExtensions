@@ -64,6 +64,28 @@ class WatchManager internal constructor(
         get() = _selectedWatch
 
     init {
+        Timber.d("Creating WatchManager")
+        _selectedWatch.addSource(registeredWatches) {
+            Timber.d("registeredWatches changed, updating _selectedWatch")
+            val watch = it.firstOrNull { watch ->
+                watch.id == _selectedWatchId.value
+            } ?: it.firstOrNull()
+            _selectedWatch.value = watch
+        }
+        _selectedWatch.addSource(_selectedWatchId) {
+            val watch = registeredWatches.value?.firstOrNull { watch -> watch.id == it }
+            if (watch == null) {
+                Timber.w("Tried to select a watch with id $it, but it wasn't registered")
+                registeredWatches.value?.firstOrNull()?.let { fallbackWatch ->
+                    _selectedWatch.value = fallbackWatch
+                }
+            } else {
+                _selectedWatch.value = watch
+            }
+        }
+
+        refreshData()
+
         // Set the initial selectedWatch value if possible.
         coroutineScope.launch {
             dataStore.data.map { it.lastSelectedWatchId }.collect {
@@ -74,24 +96,6 @@ class WatchManager internal constructor(
                         selectWatchById(watch.id)
                     }
                 }
-            }
-        }
-
-        _selectedWatch.addSource(registeredWatches) {
-            val watch = it.firstOrNull { watch ->
-                watch.id == _selectedWatchId.value
-            } ?: it.firstOrNull()
-            _selectedWatch.postValue(watch)
-        }
-        _selectedWatch.addSource(_selectedWatchId) {
-            val watch = registeredWatches.value?.firstOrNull { watch -> watch.id == it }
-            if (watch == null) {
-                Timber.w("Tried to select a watch with id $it, but it wasn't registered")
-                registeredWatches.value?.firstOrNull()?.let { fallbackWatch ->
-                    selectWatchById(fallbackWatch.id)
-                }
-            } else {
-                _selectedWatch.postValue(watch)
             }
         }
     }
@@ -121,6 +125,7 @@ class WatchManager internal constructor(
             analytics.logWatchRemoved()
         }
     }
+
     suspend fun renameWatch(watch: Watch, newName: String) {
         watchRepository.renameWatch(watch, newName)
         analytics.logWatchRenamed()

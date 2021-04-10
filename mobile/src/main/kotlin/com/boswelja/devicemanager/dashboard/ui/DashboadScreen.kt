@@ -25,6 +25,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.map
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.appmanager.ui.AppManagerActivity
 import com.boswelja.devicemanager.batterysync.ui.BatterySyncSettingsActivity
@@ -33,11 +34,15 @@ import com.boswelja.devicemanager.dndsync.ui.DnDSyncSettingsActivity
 import com.boswelja.devicemanager.phonelocking.ui.PhoneLockingSettingsActivity
 import com.boswelja.devicemanager.watchmanager.WatchManager
 import com.boswelja.devicemanager.watchmanager.item.Watch
+import timber.log.Timber
 
 @Composable
 fun DashboardScreen() {
     val context = LocalContext.current
     val scrollState = rememberScrollState()
+    val watchManager = remember { WatchManager.getInstance(context) }
+    val selectedWatchStatus by watchManager.selectedWatch
+        .map { it?.status ?: Watch.Status.ERROR }.observeAsState(Watch.Status.UNKNOWN)
     Column(
         Modifier
             .fillMaxSize()
@@ -45,7 +50,7 @@ fun DashboardScreen() {
             .verticalScroll(scrollState),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        SelectedWatchStatus()
+        WatchStatus(selectedWatchStatus)
         DashboardItem(
             content = { BatterySyncSettingsHeader() },
             buttonLabel = stringResource(
@@ -87,13 +92,8 @@ fun DashboardScreen() {
 }
 
 @Composable
-fun SelectedWatchStatus() {
-    val context = LocalContext.current
-    val watchManager = remember {
-        WatchManager.getInstance(context)
-    }
-    val selectedWatch by watchManager.selectedWatch.observeAsState()
-
+fun WatchStatus(status: Watch.Status) {
+    Timber.d("Selected watch status = %s", status)
     Card {
         Row(
             Modifier
@@ -101,14 +101,11 @@ fun SelectedWatchStatus() {
                 .padding(16.dp),
             horizontalArrangement = Arrangement.Center
         ) {
-            selectedWatch.let {
-                val status = it?.status ?: Watch.Status.UNKNOWN
-                Icon(status.imageVector, null)
-                Text(
-                    stringResource(status.stringRes),
-                    modifier = Modifier.padding(start = 8.dp)
-                )
-            }
+            Icon(status.imageVector, null)
+            Text(
+                stringResource(status.stringRes),
+                modifier = Modifier.padding(start = 8.dp)
+            )
         }
     }
 }
