@@ -66,20 +66,12 @@
 
     <!-- Phone Locking strings -->
     <string name="main_phone_locking_title">Phone Locking</string>
-    <string name="phone_locking_mode_title">Phone Locking Method</string>
     <string name="phone_locking_accessibility_settings">Open Accessibility Settings</string>
-    <string name="phone_locking_admin_settings">Open Device Admin Settings</string>
     <string name="phone_locking_enabled_title">Remote phone locking</string>
     <string name="phone_locking_enabled_summary">Allow locking your phone from your wearable</string>
     <string name="phone_locking_accessibility_service_label">Phone Locking</string>
-    <string name="phone_locking_mode_admin">Device Administrator</string>
-    <string name="phone_locking_mode_accessibility">Accessibility Service</string>
     <string name="phone_locking_setup_accessibility_title">Enable Accessibility Service</string>
     <string name="phone_locking_setup_accessibility_desc">You\'ve chosen to use the Accessibility Service as your phone locking method. To enable this, you need to enable "Phone Locking" as an accessibility service in your phone settings. Tap "enable" below to go there now.</string>
-    <string name="phone_locking_setup_admin_title">Missing Permission</string>
-    <string name="phone_locking_setup_admin_desc">Wearable Extensions requires device administrator permissions to be able to lock your phone. WARNING: You will not be able to uninstall Wearable Extensions until you revoke Device Administrator permissions from your device settings.</string>
-    <string name="device_admin_label">@string/app_name</string>
-    <string name="device_admin_desc">Allows locking your phone from your watch</string>
 
     <!-- App Settings strings -->
     <string name="noti_settings_title">Notification Settings</string>
