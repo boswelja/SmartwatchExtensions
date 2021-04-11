@@ -15,8 +15,10 @@ import androidx.work.WorkerParameters
 import com.boswelja.devicemanager.capability.CapabilityUpdater
 import com.boswelja.devicemanager.dndsync.DnDLocalChangeListener
 import com.boswelja.devicemanager.extensions.extensionSettingsStore
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.withContext
 import timber.log.Timber
 
 class BootHandler : BroadcastReceiver() {
@@ -47,13 +49,15 @@ class BootWorker(
 
     override suspend fun doWork(): Result {
         CapabilityUpdater(applicationContext).updateCapabilities()
-        val dndSyncToPhone = applicationContext.extensionSettingsStore.data
-            .map { it.dndSyncToPhone }.first()
-        val dndSyncWithTheater = applicationContext.extensionSettingsStore.data
-            .map { it.dndSyncWithTheater }.first()
-        if (dndSyncToPhone || dndSyncWithTheater) {
-            Intent(applicationContext, DnDLocalChangeListener::class.java).also {
-                ContextCompat.startForegroundService(applicationContext, it)
+        withContext(Dispatchers.IO) {
+            val dndSyncToPhone = applicationContext.extensionSettingsStore.data
+                .map { it.dndSyncToPhone }.first()
+            val dndSyncWithTheater = applicationContext.extensionSettingsStore.data
+                .map { it.dndSyncWithTheater }.first()
+            if (dndSyncToPhone || dndSyncWithTheater) {
+                Intent(applicationContext, DnDLocalChangeListener::class.java).also {
+                    ContextCompat.startForegroundService(applicationContext, it)
+                }
             }
         }
         return Result.success()
