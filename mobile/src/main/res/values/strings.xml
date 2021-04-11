@@ -208,6 +208,11 @@
     <!-- Wiki strings -->
     <string name="wiki_label">Get Help</string>
 
+    <!-- Notification Channel strings -->
+    <string name="noti_channel_watch_charged_title">Watch Charged</string>
+    <string name="noti_channel_dnd_sync_title">Do not Disturb Sync</string>
+    <string name="noti_channel_boot_or_update_title">Boot &amp; App Update Handler</string>
+
     <string name="button_undo">Undo</string>
     <string name="button_done">Done</string>
     <string name="button_retry">Try Again</string>
