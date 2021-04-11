@@ -10,7 +10,6 @@ package com.boswelja.devicemanager.common
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
-import android.os.Build
 import androidx.test.platform.app.InstrumentationRegistry
 import com.google.common.truth.Truth.assertWithMessage
 import org.junit.After
@@ -26,30 +25,24 @@ class CompatTest {
     fun setUp() {
         notificationManager =
             context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        // Create notification channels if supported
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel(
-                ENABLED_CHANNEL_ID,
-                "Enabled Test Channel",
-                NotificationManager.IMPORTANCE_DEFAULT
-            )
-                .also { notificationManager.createNotificationChannel(it) }
-            NotificationChannel(
-                DISABLED_CHANNEL_ID,
-                "Disabled Test Channel",
-                NotificationManager.IMPORTANCE_NONE
-            )
-                .also { notificationManager.createNotificationChannel(it) }
-        }
+        // Create notification channels
+        NotificationChannel(
+            ENABLED_CHANNEL_ID,
+            "Enabled Test Channel",
+            NotificationManager.IMPORTANCE_DEFAULT
+        ).also { notificationManager.createNotificationChannel(it) }
+        NotificationChannel(
+            DISABLED_CHANNEL_ID,
+            "Disabled Test Channel",
+            NotificationManager.IMPORTANCE_NONE
+        ).also { notificationManager.createNotificationChannel(it) }
     }
 
     @After
     fun tearDown() {
-        // Delete notification channels if supported
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            notificationManager.deleteNotificationChannel(ENABLED_CHANNEL_ID)
-            notificationManager.deleteNotificationChannel(DISABLED_CHANNEL_ID)
-        }
+        // Delete notification channels
+        notificationManager.deleteNotificationChannel(ENABLED_CHANNEL_ID)
+        notificationManager.deleteNotificationChannel(DISABLED_CHANNEL_ID)
     }
 
     @Test
