@@ -3,9 +3,11 @@ package com.boswelja.devicemanager
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import androidx.work.CoroutineWorker
 import androidx.work.ExperimentalExpeditedWork
+import androidx.work.ForegroundInfo
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.OutOfQuotaPolicy
 import androidx.work.WorkManager
@@ -55,5 +57,26 @@ class BootWorker(
             }
         }
         return Result.success()
+    }
+
+    @ExperimentalExpeditedWork
+    override suspend fun getForegroundInfo(): ForegroundInfo {
+        val notification = NotificationCompat
+            .Builder(applicationContext, BOOT_OR_UPDATE_NOTI_CHANNEL_ID)
+            .setOngoing(true)
+            .setShowWhen(false)
+            .setUsesChronometer(false)
+            .setProgress(0, 0, true)
+            .setPriority(NotificationCompat.PRIORITY_LOW)
+            .setVisibility(NotificationCompat.VISIBILITY_PRIVATE)
+            .setContentTitle(applicationContext.getString(R.string.notification_boot_handler_title))
+            .setSmallIcon(R.drawable.noti_ic_update)
+            .build()
+        return ForegroundInfo(NOTI_ID, notification)
+    }
+
+    companion object {
+        const val BOOT_OR_UPDATE_NOTI_CHANNEL_ID = "boot_or_update_noti_channel"
+        const val NOTI_ID = 69102
     }
 }

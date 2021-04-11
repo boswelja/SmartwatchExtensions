@@ -41,6 +41,8 @@
     <string name="open_play_store_title">Show in Google Play</string>
     <string name="open_app_info_title">Open App Info</string>
 
+    <string name="notification_boot_handler_title">Starting required services</string>
+
     <string name="error">An error has occurred</string>
     <string name="default_phone_name">Phone</string>
     <string name="phone_not_connected">Can\'t connect to your phone</string>
