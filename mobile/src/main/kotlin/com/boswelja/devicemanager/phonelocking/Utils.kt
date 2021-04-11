@@ -1,6 +1,6 @@
 package com.boswelja.devicemanager.phonelocking
 
-import android.accessibilityservice.AccessibilityServiceInfo
+import android.accessibilityservice.AccessibilityServiceInfo.FEEDBACK_GENERIC
 import android.app.admin.DevicePolicyManager
 import android.content.ComponentName
 import android.content.Context
@@ -26,7 +26,7 @@ object Utils {
     @RequiresApi(Build.VERSION_CODES.P)
     fun Context.isAccessibilityServiceEnabled(): Boolean {
         return getSystemService<AccessibilityManager>()
-            ?.getEnabledAccessibilityServiceList(AccessibilityServiceInfo.FEEDBACK_ALL_MASK)
+            ?.getEnabledAccessibilityServiceList(FEEDBACK_GENERIC)
             ?.any { it.resolveInfo.serviceInfo.packageName == packageName } ?: false
     }
 }

@@ -101,7 +101,7 @@ class PhoneLockingSettingsViewModel internal constructor(
      * components.
      */
     fun switchToDeviceAdminMode() {
-        if (phoneLockingMode.value != Settings.PhoneLockMode.DEVICE_ADMIN) {
+        if (_phoneLockingMode.value != Settings.PhoneLockMode.DEVICE_ADMIN) {
             val context = getApplication<Application>()
             Timber.i("Switching to Device Administrator mode")
             context.packageManager.apply {
@@ -135,7 +135,7 @@ class PhoneLockingSettingsViewModel internal constructor(
      */
     @RequiresApi(Build.VERSION_CODES.P)
     fun switchToAccessibilityServiceMode() {
-        if (phoneLockingMode.value != Settings.PhoneLockMode.ACCESSIBILITY_SERVICE) {
+        if (_phoneLockingMode.value != Settings.PhoneLockMode.ACCESSIBILITY_SERVICE) {
             val context = getApplication<Application>()
             Timber.i("Switching to Accessibility Service mode")
             if (context.isDeviceAdminEnabled()) {
@@ -159,7 +159,7 @@ class PhoneLockingSettingsViewModel internal constructor(
             _phoneLockingMode.postValue(Settings.PhoneLockMode.ACCESSIBILITY_SERVICE)
             viewModelScope.launch(dispatcher) {
                 dataStore.updateData {
-                    it.copy(phoneLockMode = Settings.PhoneLockMode.DEVICE_ADMIN)
+                    it.copy(phoneLockMode = Settings.PhoneLockMode.ACCESSIBILITY_SERVICE)
                 }
                 // Disable phone locking so the user is forced to re-enable and set up the new mode
                 watchManager.settingsDatabase.boolPrefDao().updateAllForKey(
@@ -182,7 +182,7 @@ class PhoneLockingSettingsViewModel internal constructor(
     fun canEnablePhoneLocking(): Boolean {
         return if (
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.P &&
-            phoneLockingMode.value == Settings.PhoneLockMode.ACCESSIBILITY_SERVICE
+            _phoneLockingMode.value == Settings.PhoneLockMode.ACCESSIBILITY_SERVICE
         ) {
             getApplication<Application>().isAccessibilityServiceEnabled()
         } else {
