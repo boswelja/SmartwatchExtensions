@@ -3,7 +3,6 @@ package com.boswelja.devicemanager.dndsync
 import android.app.Notification
 import android.app.PendingIntent
 import android.content.Intent
-import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.core.content.getSystemService
 import androidx.lifecycle.LifecycleService
@@ -68,9 +67,7 @@ class DnDLocalChangeService : LifecycleService() {
      * @return The created [Notification].
      */
     private fun createNotification(): Notification {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-            NotificationChannelHelper.createForDnDSync(this, getSystemService()!!)
-
+        NotificationChannelHelper.createForDnDSync(this, getSystemService()!!)
         val launchActivityIntent = Intent(this, MainActivity::class.java)
         val notiTapIntent = PendingIntent.getActivity(
             this,

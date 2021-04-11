@@ -3,7 +3,6 @@ package com.boswelja.devicemanager.bootorupdate
 import android.app.Notification
 import android.app.NotificationManager
 import android.content.Intent
-import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleService
@@ -35,10 +34,9 @@ class BootOrUpdateHandlerService : LifecycleService() {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         Timber.i("onStartCommand called")
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-            NotificationChannelHelper.createForBootOrUpdate(
-                this, getSystemService(NotificationManager::class.java)
-            )
+        NotificationChannelHelper.createForBootOrUpdate(
+            this, getSystemService(NotificationManager::class.java)
+        )
         when (intent?.action) {
             Intent.ACTION_MY_PACKAGE_REPLACED -> {
                 performUpdates()

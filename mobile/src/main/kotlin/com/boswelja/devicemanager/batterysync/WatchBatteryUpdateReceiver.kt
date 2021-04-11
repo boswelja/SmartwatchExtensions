@@ -1,9 +1,7 @@
 package com.boswelja.devicemanager.batterysync
 
 import android.app.NotificationManager
-import android.os.Build
 import androidx.core.app.NotificationCompat
-import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.getSystemService
 import com.boswelja.devicemanager.NotificationChannelHelper
 import com.boswelja.devicemanager.R
@@ -104,9 +102,7 @@ class WatchBatteryUpdateReceiver : WearableListenerService() {
      * @param watch The [Watch] to send a notification for.
      */
     private fun notifyWatchCharged(watch: Watch, chargeThreshold: Int) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-            NotificationChannelHelper.createForBatteryCharged(this, notificationManager)
-
+        NotificationChannelHelper.createForBatteryCharged(this, notificationManager)
         if (areNotificationsEnabled()) {
             Timber.i("Sending charged notification")
             NotificationCompat.Builder(this, BATTERY_CHARGED_NOTI_CHANNEL_ID)
@@ -128,13 +124,9 @@ class WatchBatteryUpdateReceiver : WearableListenerService() {
      * @return true if notifications are enabled, false otherwise.
      */
     private fun areNotificationsEnabled(): Boolean {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val notificationManager = getSystemService(NotificationManager::class.java)
-            notificationManager.getNotificationChannel(BATTERY_CHARGED_NOTI_CHANNEL_ID).let {
-                return it != null && it.importance != NotificationManager.IMPORTANCE_NONE
-            }
-        } else {
-            return NotificationManagerCompat.from(this).areNotificationsEnabled()
+        val notificationManager = getSystemService(NotificationManager::class.java)
+        notificationManager.getNotificationChannel(BATTERY_CHARGED_NOTI_CHANNEL_ID).let {
+            return it != null && it.importance != NotificationManager.IMPORTANCE_NONE
         }
     }
 
