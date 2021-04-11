@@ -136,19 +136,21 @@ class BootOrUpdateHandlerService : LifecycleService() {
 
     /** Try to start any needed [BatterySyncWorker] instances. */
     private suspend fun tryStartBatterySyncWorkers(database: WatchSettingsDatabase) {
-        val watchBatterySyncInfo =
-            database.boolPrefDao().getAllForKey(PreferenceKey.BATTERY_SYNC_ENABLED_KEY)
-        if (watchBatterySyncInfo.isNotEmpty()) {
-            for (batterySyncBoolPreference in watchBatterySyncInfo) {
-                if (batterySyncBoolPreference.value) {
-                    Timber.i("tryStartBatterySyncWorkers Starting a Battery Sync Worker")
-                    BatterySyncWorker.startWorker(
-                        applicationContext, batterySyncBoolPreference.watchId
-                    )
+        withContext(Dispatchers.IO) {
+            val watchBatterySyncInfo =
+                database.boolPrefDao().getAllForKey(PreferenceKey.BATTERY_SYNC_ENABLED_KEY)
+            if (watchBatterySyncInfo.isNotEmpty()) {
+                for (batterySyncBoolPreference in watchBatterySyncInfo) {
+                    if (batterySyncBoolPreference.value) {
+                        Timber.i("tryStartBatterySyncWorkers Starting a Battery Sync Worker")
+                        BatterySyncWorker.startWorker(
+                            applicationContext, batterySyncBoolPreference.watchId
+                        )
+                    }
                 }
+            } else {
+                Timber.w("tryStartBatterySyncWorkers watchBatterySyncInfo possibly null")
             }
-        } else {
-            Timber.w("tryStartBatterySyncWorkers watchBatterySyncInfo possibly null")
         }
     }
 
