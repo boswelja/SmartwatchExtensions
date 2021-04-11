@@ -2,7 +2,7 @@
 name: Feature request
 about: Suggest an idea for Wearable Extensions
 title: ''
-labels: enhancement
+labels: feature
 assignees: ''
 
 ---
