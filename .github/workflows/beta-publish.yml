@@ -70,12 +70,12 @@ jobs:
         with:
           java-version: 11
       - name: Download mobile-release.aab
-        uses: actions/download-artifact@v2.0.8
+        uses: actions/download-artifact@v2.0.9
         with:
           name: mobile-release.aab
           path: release/
       - name: Download wearos-release.aab
-        uses: actions/download-artifact@v2.0.8
+        uses: actions/download-artifact@v2.0.9
         with:
           name: wearos-release.aab
           path: release/
