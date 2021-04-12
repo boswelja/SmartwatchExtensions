@@ -41,7 +41,6 @@ object MessageHandler {
                             .build()
                     it.notify(id.toInt(), notification)
                 }
-
             }
         }
     }
