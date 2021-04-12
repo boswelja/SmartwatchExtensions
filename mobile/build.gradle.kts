@@ -10,7 +10,7 @@ android {
     compileSdkVersion(PackageInfo.targetSdk)
 
     defaultConfig {
-        minSdkVersion(23)
+        minSdkVersion(28)
         targetSdkVersion(PackageInfo.targetSdk)
 
         applicationId = PackageInfo.packageName

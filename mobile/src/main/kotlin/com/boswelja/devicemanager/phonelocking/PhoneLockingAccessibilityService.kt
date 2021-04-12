@@ -1,9 +1,7 @@
 package com.boswelja.devicemanager.phonelocking
 
 import android.accessibilityservice.AccessibilityService
-import android.os.Build
 import android.view.accessibility.AccessibilityEvent
-import androidx.annotation.RequiresApi
 import androidx.lifecycle.Observer
 import com.boswelja.devicemanager.common.connection.Messages.LOCK_PHONE
 import com.boswelja.devicemanager.common.preference.PreferenceKey.PHONE_LOCKING_ENABLED_KEY
@@ -19,7 +17,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 
-@RequiresApi(Build.VERSION_CODES.P)
 class PhoneLockingAccessibilityService :
     AccessibilityService(),
     MessageClient.OnMessageReceivedListener {

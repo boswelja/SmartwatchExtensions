@@ -1,23 +1,13 @@
-/* Copyright (C) 2020 Jack Boswell <boswelja@outlook.com>
- *
- * This file is part of Wearable Extensions
- *
- * This file, and any part of the Wearable Extensions app/s cannot be copied and/or distributed
- * without permission from Jack Boswell (boswelja) <boswela@outlook.com>
- */
 package com.boswelja.devicemanager
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
-import android.os.Build
-import androidx.annotation.RequiresApi
 import com.boswelja.devicemanager.batterysync.WatchBatteryUpdateReceiver
 import com.boswelja.devicemanager.bootorupdate.BootOrUpdateHandlerService
 import com.boswelja.devicemanager.common.dndsync.References
 import com.boswelja.devicemanager.messages.MessageHandler
 
-@RequiresApi(Build.VERSION_CODES.O)
 object NotificationChannelHelper {
 
     fun createForBatteryCharged(context: Context, notificationManager: NotificationManager) {

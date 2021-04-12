@@ -26,7 +26,7 @@ import org.robolectric.annotation.Config
 
 @ExperimentalCoroutinesApi
 @RunWith(AndroidJUnit4::class)
-@Config(sdk = [Build.VERSION_CODES.N, Build.VERSION_CODES.O])
+@Config(sdk = [Build.VERSION_CODES.R])
 class MessageHandlerTest {
 
     @get:Rule
@@ -93,7 +93,7 @@ class MessageHandlerTest {
     }
 
     @Test
-    fun `Notification channel is created if needed`() {
+    fun `Notification channel is created`() {
         MessageHandler.postMessage(
             context,
             message,
@@ -101,8 +101,6 @@ class MessageHandlerTest {
             messageDatabase,
             coroutineScope
         )
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            verify(exactly = 1) { notificationManager.createNotificationChannel(any()) }
-        }
+        verify(exactly = 1) { notificationManager.createNotificationChannel(any()) }
     }
 }

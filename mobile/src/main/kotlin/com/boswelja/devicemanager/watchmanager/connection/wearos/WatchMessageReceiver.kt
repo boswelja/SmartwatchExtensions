@@ -1,17 +1,12 @@
 package com.boswelja.devicemanager.watchmanager.connection.wearos
 
-import android.app.admin.DevicePolicyManager
-import android.content.Context
 import android.content.Intent
-import com.boswelja.devicemanager.appsettings.Settings
-import com.boswelja.devicemanager.appsettings.appSettingsStore
 import com.boswelja.devicemanager.batterysync.Utils.updateBatteryStats
 import com.boswelja.devicemanager.batterysync.ui.BatterySyncSettingsActivity
 import com.boswelja.devicemanager.common.Compat
 import com.boswelja.devicemanager.common.batterysync.References.REQUEST_BATTERY_UPDATE_PATH
 import com.boswelja.devicemanager.common.connection.Messages.CHECK_WATCH_REGISTERED_PATH
 import com.boswelja.devicemanager.common.connection.Messages.LAUNCH_APP
-import com.boswelja.devicemanager.common.connection.Messages.LOCK_PHONE
 import com.boswelja.devicemanager.common.connection.Messages.WATCH_NOT_REGISTERED_PATH
 import com.boswelja.devicemanager.common.connection.Messages.WATCH_REGISTERED_PATH
 import com.boswelja.devicemanager.common.dndsync.References.REQUEST_INTERRUPT_FILTER_ACCESS_STATUS_PATH
@@ -20,8 +15,6 @@ import com.boswelja.devicemanager.common.preference.PreferenceKey.PHONE_LOCKING_
 import com.boswelja.devicemanager.common.toByteArray
 import com.boswelja.devicemanager.dndsync.ui.DnDSyncSettingsActivity
 import com.boswelja.devicemanager.main.MainActivity
-import com.boswelja.devicemanager.phonelocking.Utils.isDeviceAdminEnabled
-import com.boswelja.devicemanager.watchmanager.WatchManager
 import com.boswelja.devicemanager.watchmanager.database.WatchDatabase
 import com.google.android.gms.wearable.MessageEvent
 import com.google.android.gms.wearable.Wearable
@@ -29,8 +22,6 @@ import com.google.android.gms.wearable.WearableListenerService
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -41,11 +32,6 @@ class WatchMessageReceiver : WearableListenerService() {
     override fun onMessageReceived(messageEvent: MessageEvent?) {
         Timber.i("onMessageReceived() called")
         when (messageEvent?.path) {
-            LOCK_PHONE -> {
-                coroutineScope.launch {
-                    tryLockDevice(messageEvent.sourceNodeId)
-                }
-            }
             LAUNCH_APP -> {
                 val key = String(messageEvent.data, Charsets.UTF_8)
                 launchAppTo(key)
@@ -55,34 +41,6 @@ class WatchMessageReceiver : WearableListenerService() {
             REQUEST_INTERRUPT_FILTER_ACCESS_STATUS_PATH ->
                 sendInterruptFilterAccess(messageEvent.sourceNodeId!!)
             CHECK_WATCH_REGISTERED_PATH -> sendIsWatchRegistered(messageEvent.sourceNodeId!!)
-        }
-    }
-
-    /**
-     * Tries to lock the device via Device Administrator permissions. We shouldn't handle this here
-     * if phone locking mode is [Settings.PhoneLockMode.ACCESSIBILITY_SERVICE].
-     */
-    private suspend fun tryLockDevice(watchId: String?) {
-        Timber.i("tryLockDevice($watchId) called")
-        if (!watchId.isNullOrBlank()) {
-            val phoneLockMode = appSettingsStore.data.map { it.phoneLockMode }.first()
-            val isInDeviceAdminMode = phoneLockMode == Settings.PhoneLockMode.DEVICE_ADMIN
-            if (isInDeviceAdminMode) {
-                val watchManager = WatchManager.getInstance(this)
-                val isPhoneLockingEnabled =
-                    watchManager.getPreference<Boolean>(watchId, PHONE_LOCKING_ENABLED_KEY) == true
-                if (isPhoneLockingEnabled && isDeviceAdminEnabled()) {
-                    Timber.i("Trying to lock device")
-                    val devicePolicyManager: DevicePolicyManager =
-                        getSystemService(Context.DEVICE_POLICY_SERVICE) as DevicePolicyManager
-                    devicePolicyManager.lockNow()
-                } else {
-                    Timber.w("Phone locking disabled or permission not granted, disabling")
-                    watchManager.updatePreference(PHONE_LOCKING_ENABLED_KEY, false)
-                }
-            }
-        } else {
-            Timber.w("Watch ID null or blank")
         }
     }
 

@@ -1,7 +1,5 @@
 package com.boswelja.devicemanager.phonelocking.ui
 
-import android.app.admin.DevicePolicyManager
-import android.content.ComponentName
 import android.content.Intent
 import android.provider.Settings.ACTION_ACCESSIBILITY_SETTINGS
 import androidx.compose.foundation.clickable
@@ -26,10 +24,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.boswelja.devicemanager.R
-import com.boswelja.devicemanager.appsettings.Settings
-import com.boswelja.devicemanager.common.ui.DialogPreference
 import com.boswelja.devicemanager.common.ui.SwitchPreference
-import com.boswelja.devicemanager.phonelocking.DeviceAdminChangeReceiver
 import timber.log.Timber
 
 @ExperimentalMaterialApi
@@ -38,40 +33,16 @@ fun PhoneLockingSettingsScreen() {
     val context = LocalContext.current
     val viewModel: PhoneLockingSettingsViewModel = viewModel()
     val phoneLockingEnabled by viewModel.phoneLockingEnabled.observeAsState()
-    val phoneLockingMode by viewModel.phoneLockingMode.observeAsState()
-    val currentMode = viewModel.phoneLockingModes.first { it.second == phoneLockingMode }
     var phoneLockingSetupVisible by remember { mutableStateOf(false) }
     Column {
-        DialogPreference(
-            text = stringResource(R.string.phone_locking_mode_title),
-            secondaryText = currentMode.first,
-            values = viewModel.phoneLockingModes,
-            value = currentMode,
-            onValueChanged = {
-                viewModel.switchMode(it.second)
-            }
-        )
         ListItem(
             icon = { Icon(Icons.Outlined.Settings, null) },
             text = {
-                if (phoneLockingMode == Settings.PhoneLockMode.ACCESSIBILITY_SERVICE) {
-                    Text(stringResource(R.string.phone_locking_accessibility_settings))
-                } else {
-                    Text(stringResource(R.string.phone_locking_admin_settings))
-                }
+                Text(stringResource(R.string.phone_locking_accessibility_settings))
             },
             modifier = Modifier.clickable {
-                if (phoneLockingMode == Settings.PhoneLockMode.ACCESSIBILITY_SERVICE) {
-                    Timber.i("Opening accessibility settings")
-                    context.startActivity(Intent(ACTION_ACCESSIBILITY_SETTINGS))
-                } else {
-                    Timber.i("Opening device admin settings")
-                    Intent().apply {
-                        ComponentName(
-                            "com.android.settings", "com.android.settings.DeviceAdminSettings"
-                        ).also { component = it }
-                    }.also { context.startActivity(it) }
-                }
+                Timber.i("Opening accessibility settings")
+                context.startActivity(Intent(ACTION_ACCESSIBILITY_SETTINGS))
             }
         )
         SwitchPreference(
@@ -94,40 +65,16 @@ fun PhoneLockingSettingsScreen() {
         if (phoneLockingSetupVisible) {
             AlertDialog(
                 title = {
-                    if (phoneLockingMode == Settings.PhoneLockMode.ACCESSIBILITY_SERVICE) {
-                        Text(stringResource(R.string.phone_locking_setup_accessibility_title))
-                    } else {
-                        Text(stringResource(R.string.phone_locking_setup_admin_title))
-                    }
+                    Text(stringResource(R.string.phone_locking_setup_accessibility_title))
                 },
                 text = {
-                    if (phoneLockingMode == Settings.PhoneLockMode.ACCESSIBILITY_SERVICE) {
-                        Text(stringResource(R.string.phone_locking_setup_accessibility_desc))
-                    } else {
-                        Text(stringResource(R.string.phone_locking_setup_admin_desc))
-                    }
+                    Text(stringResource(R.string.phone_locking_setup_accessibility_desc))
                 },
                 confirmButton = {
                     TextButton(
                         content = { Text(stringResource(R.string.dialog_button_grant)) },
                         onClick = {
-                            if (phoneLockingMode == Settings.PhoneLockMode.ACCESSIBILITY_SERVICE) {
-                                context
-                                    .startActivity(Intent(ACTION_ACCESSIBILITY_SETTINGS))
-                            } else {
-                                val intent =
-                                    Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN).apply {
-                                        putExtra(
-                                            DevicePolicyManager.EXTRA_DEVICE_ADMIN,
-                                            DeviceAdminChangeReceiver().getWho(context)
-                                        )
-                                        putExtra(
-                                            DevicePolicyManager.EXTRA_ADD_EXPLANATION,
-                                            context.getString(R.string.device_admin_desc)
-                                        )
-                                    }
-                                context.startActivity(intent)
-                            }
+                            context.startActivity(Intent(ACTION_ACCESSIBILITY_SETTINGS))
                             phoneLockingSetupVisible = false
                         }
                     )

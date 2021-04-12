@@ -2,7 +2,6 @@ package com.boswelja.devicemanager.messages.ui
 
 import android.app.Activity
 import android.content.Intent
-import android.os.Build
 import android.provider.Settings
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.ExperimentalAnimationApi
@@ -120,25 +119,14 @@ fun MessagesList(messages: List<Message>, scaffoldState: ScaffoldState) {
                         onActionClick = {
                             when (message.action) {
                                 Message.Action.LAUNCH_NOTIFICATION_SETTINGS -> {
-                                    val intent =
-                                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                                            Intent(
-                                                Settings.ACTION_APP_NOTIFICATION_SETTINGS
-                                            ).apply {
-                                                putExtra(
-                                                    Settings.EXTRA_APP_PACKAGE,
-                                                    context.packageName
-                                                )
-                                            }
-                                        } else {
-                                            Intent(
-                                                "android.settings.APP_NOTIFICATION_SETTINGS"
-                                            ).apply {
-                                                putExtra("app_package", context.packageName)
-                                                putExtra("app_uid", context.applicationInfo.uid)
-                                            }
+                                    val intent = Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS)
+                                        .apply {
+                                            putExtra(
+                                                Settings.EXTRA_APP_PACKAGE,
+                                                context.packageName
+                                            )
+                                            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                                         }
-                                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                                     context.startActivity(intent)
                                 }
                                 Message.Action.LAUNCH_CHANGELOG -> {
