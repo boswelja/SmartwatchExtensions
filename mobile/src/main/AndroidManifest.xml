@@ -88,20 +88,6 @@
             android:name=".donate.ui.DonateActivity"
             android:exported="true" />
 
-        <receiver
-            android:name=".phonelocking.DeviceAdminChangeReceiver"
-            android:description="@string/device_admin_desc"
-            android:exported="true"
-            android:label="@string/device_admin_label"
-            android:permission="android.permission.BIND_DEVICE_ADMIN">
-            <meta-data
-                android:name="android.app.device_admin"
-                android:resource="@xml/device_admin_policies" />
-
-            <intent-filter>
-                <action android:name="android.app.action.DEVICE_ADMIN_ENABLED" />
-            </intent-filter>
-        </receiver>
         <service
             android:name=".phonelocking.PhoneLockingAccessibilityService"
             android:label="@string/phone_locking_accessibility_service_label"

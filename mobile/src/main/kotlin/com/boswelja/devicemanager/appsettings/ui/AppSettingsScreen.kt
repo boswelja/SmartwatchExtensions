@@ -1,7 +1,6 @@
 package com.boswelja.devicemanager.appsettings.ui
 
 import android.content.Intent
-import android.os.Build
 import android.provider.Settings.ACTION_APP_NOTIFICATION_SETTINGS
 import android.provider.Settings.EXTRA_APP_PACKAGE
 import androidx.compose.foundation.clickable
@@ -79,14 +78,8 @@ fun AppSettings() {
                 Intent()
                     .apply {
                         flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                            action = ACTION_APP_NOTIFICATION_SETTINGS
-                            putExtra(EXTRA_APP_PACKAGE, context.packageName!!)
-                        } else {
-                            action = "android.settings.APP_NOTIFICATION_SETTINGS"
-                            putExtra("app_package", context.packageName!!)
-                            putExtra("app_uid", context.applicationInfo?.uid!!)
-                        }
+                        action = ACTION_APP_NOTIFICATION_SETTINGS
+                        putExtra(EXTRA_APP_PACKAGE, context.packageName!!)
                     }
                     .also {
                         context.startActivity(it)

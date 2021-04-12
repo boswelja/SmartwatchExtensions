@@ -2,8 +2,8 @@ package com.boswelja.devicemanager.messages
 
 import android.app.NotificationManager
 import android.content.Context
-import android.os.Build
 import androidx.core.app.NotificationCompat
+import androidx.core.content.getSystemService
 import com.boswelja.devicemanager.NotificationChannelHelper
 import com.boswelja.devicemanager.R
 import com.boswelja.devicemanager.messages.database.MessageDatabase
@@ -31,18 +31,16 @@ object MessageHandler {
         coroutineScope.launch {
             val id = database.messageDao().createMessage(message)
             if (priority == Priority.HIGH) {
-                val notificationManager =
-                    context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    NotificationChannelHelper.createForSystemMessages(context, notificationManager)
+                context.getSystemService<NotificationManager>()?.let {
+                    NotificationChannelHelper.createForSystemMessages(context, it)
+                    val notification =
+                        NotificationCompat.Builder(context, MESSAGE_NOTIFICATION_CHANNEL_ID)
+                            .setSmallIcon(R.drawable.noti_ic_watch)
+                            .setContentTitle(message.title)
+                            .setContentText(message.text)
+                            .build()
+                    it.notify(id.toInt(), notification)
                 }
-                val notification =
-                    NotificationCompat.Builder(context, MESSAGE_NOTIFICATION_CHANNEL_ID)
-                        .setSmallIcon(R.drawable.noti_ic_watch)
-                        .setContentTitle(message.title)
-                        .setContentText(message.text)
-                        .build()
-                notificationManager.notify(id.toInt(), notification)
             }
         }
     }
