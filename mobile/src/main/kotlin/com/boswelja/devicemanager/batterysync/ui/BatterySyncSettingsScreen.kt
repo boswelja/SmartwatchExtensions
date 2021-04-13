@@ -24,6 +24,8 @@ fun BatterySyncSettingsScreen() {
         BatterySyncSettings()
         Divider()
         ChargeNotificationSettings()
+        Divider()
+        LowBatteryNotificationSettings()
     }
 }
 
@@ -108,6 +110,57 @@ fun ChargeNotificationSettings() {
             },
             onSliderValueFinished = {
                 viewModel.setChargeThreshold((currentThreshold * 100).toInt())
+            }
+        )
+    }
+}
+
+@ExperimentalMaterialApi
+@Composable
+fun LowBatteryNotificationSettings() {
+    val viewModel: BatterySyncViewModel = viewModel()
+
+    val phoneLowNotiEnabled by viewModel.phoneLowNotiEnabled.observeAsState()
+    val watchLowNotiEnabled by viewModel.watchLowNotiEnabled.observeAsState()
+    val batteryLowThreshold by viewModel.batteryLowThreshold.observeAsState()
+    var currentThreshold by remember {
+        mutableStateOf((batteryLowThreshold ?: 90) / 100f)
+    }
+
+    Column {
+        HeaderItem(stringResource(R.string.category_low_notifications))
+        CheckboxPreference(
+            text = stringResource(R.string.battery_sync_phone_low_noti_title),
+            secondaryText = stringResource(
+                R.string.battery_sync_phone_low_noti_summary,
+                (currentThreshold * 100).toInt().toString()
+            ),
+            isChecked = phoneLowNotiEnabled == true,
+            onCheckChanged = {
+                viewModel.setPhoneLowNotiEnabled(it)
+            }
+        )
+        CheckboxPreference(
+            text = stringResource(R.string.battery_sync_watch_low_noti_title),
+            secondaryText = stringResource(
+                R.string.battery_sync_watch_low_noti_summary,
+                (currentThreshold * 100).toInt().toString()
+            ),
+            isChecked = watchLowNotiEnabled == true,
+            onCheckChanged = {
+                viewModel.setWatchLowNotiEnabled(it)
+            }
+        )
+        SliderPreference(
+            text = stringResource(R.string.battery_sync_low_threshold_title),
+            valueRange = 0.05f..0.35f,
+            value = currentThreshold,
+            trailingFormat = stringResource(R.string.battery_percent),
+            onSliderValueChanged = {
+                currentThreshold = it
+            },
+            onSliderValueFinished = {
+                viewModel.setLowBatteryThreshold((currentThreshold * 100).toInt())
             }
         )
     }
