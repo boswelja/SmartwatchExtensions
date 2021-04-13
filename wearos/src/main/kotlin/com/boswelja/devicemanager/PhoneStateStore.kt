@@ -18,7 +18,8 @@ class PhoneStateSerializer : Serializer<PhoneState> {
         id = "",
         name = "Phone",
         batteryPercent = 0,
-        chargeNotiSent = false
+        chargeNotiSent = false,
+        lowNotiSent = false
     )
 
     override suspend fun readFrom(input: InputStream): PhoneState =
