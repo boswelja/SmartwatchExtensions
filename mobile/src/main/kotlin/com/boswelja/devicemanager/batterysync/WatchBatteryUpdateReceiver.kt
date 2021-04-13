@@ -100,7 +100,7 @@ class WatchBatteryUpdateReceiver : WearableListenerService() {
         val canSendChargeNoti =
             shouldSendChargeNotis && hasSentNoti && batteryStats.percent >= chargeThreshold
         if (canSendChargeNoti) {
-            NotificationChannelHelper.createForBatteryCharged(this, notificationManager)
+            NotificationChannelHelper.createForBatteryStats(this, notificationManager)
             if (areNotificationsEnabled()) {
                 Timber.i("Sending charged notification")
                 NotificationCompat.Builder(this, BATTERY_STATS_NOTI_CHANNEL_ID)
@@ -145,7 +145,7 @@ class WatchBatteryUpdateReceiver : WearableListenerService() {
         val canSendLowNoti =
             shouldSendChargeNotis && hasSentNoti && batteryStats.percent <= chargeThreshold
         if (canSendLowNoti) {
-            NotificationChannelHelper.createForBatteryCharged(this, notificationManager)
+            NotificationChannelHelper.createForBatteryStats(this, notificationManager)
             if (areNotificationsEnabled()) {
                 Timber.i("Sending low notification")
                 NotificationCompat.Builder(this, BATTERY_STATS_NOTI_CHANNEL_ID)

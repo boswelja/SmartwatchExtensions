@@ -10,13 +10,13 @@ import com.boswelja.devicemanager.messages.MessageHandler
 
 object NotificationChannelHelper {
 
-    fun createForBatteryCharged(context: Context, notificationManager: NotificationManager) {
+    fun createForBatteryStats(context: Context, notificationManager: NotificationManager) {
         if (notificationManager.getNotificationChannel(
-                WatchBatteryUpdateReceiver.BATTERY_CHARGED_NOTI_CHANNEL_ID
+                WatchBatteryUpdateReceiver.BATTERY_STATS_NOTI_CHANNEL_ID
             ) == null
         ) {
             NotificationChannel(
-                WatchBatteryUpdateReceiver.BATTERY_CHARGED_NOTI_CHANNEL_ID,
+                WatchBatteryUpdateReceiver.BATTERY_STATS_NOTI_CHANNEL_ID,
                 context.getString(R.string.noti_channel_watch_charged_title),
                 NotificationManager.IMPORTANCE_HIGH
             )
