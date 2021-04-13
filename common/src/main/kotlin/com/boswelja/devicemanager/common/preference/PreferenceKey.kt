@@ -14,6 +14,7 @@ object PreferenceKey {
     const val BATTERY_LOW_THRESHOLD_KEY = "battery_low_threshold"
 
     const val BATTERY_CHARGED_NOTI_SENT = "battery_charged_notified"
+    const val BATTERY_LOW_NOTI_SENT = "battery_low_notified"
     const val BATTERY_PERCENT_KEY = "battery_percent"
 
     const val DND_SYNC_TO_WATCH_KEY = "interrupt_filter_sync_to_watch"
