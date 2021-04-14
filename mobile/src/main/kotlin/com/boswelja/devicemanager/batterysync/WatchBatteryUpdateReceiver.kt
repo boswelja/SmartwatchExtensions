@@ -43,7 +43,8 @@ class WatchBatteryUpdateReceiver : WearableListenerService() {
             coroutineScope.launch {
                 val database = WatchDatabase.getInstance(this@WatchBatteryUpdateReceiver)
                 database.getById(watchBatteryStats.watchId)?.let {
-                    val settingsDb = WatchSettingsDatabase.getInstance(this@WatchBatteryUpdateReceiver)
+                    val settingsDb =
+                        WatchSettingsDatabase.getInstance(this@WatchBatteryUpdateReceiver)
                     if (watchBatteryStats.isCharging) {
                         handleWatchChargeNoti(
                             watchBatteryStats,
@@ -65,7 +66,8 @@ class WatchBatteryUpdateReceiver : WearableListenerService() {
     }
 
     private fun updateStatsInDatabase() {
-        WatchBatteryStatsDatabase.getInstance(this).batteryStatsDao().updateStats(watchBatteryStats)
+        WatchBatteryStatsDatabase.getInstance(this)
+            .batteryStatsDao().updateStats(watchBatteryStats)
     }
 
     /**
