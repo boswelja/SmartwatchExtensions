@@ -35,6 +35,8 @@ class PreferenceChangeReceiver : WearableListenerService() {
                     var batterySyncEnabled = it.batterySyncEnabled
                     var phoneLockingEnabled = it.phoneLockingEnabled
                     var phoneChargeNotiEnabled = it.phoneChargeNotiEnabled
+                    var phoneLowNotiEnabled = it.phoneLowNotiEnabled
+                    var batteryLowThreshold = it.batteryLowThreshold
                     var batteryChargeThreshold = it.batteryChargeThreshold
                     var dndSyncToPhone = it.dndSyncToPhone
                     var dndSyncWithTheater = it.dndSyncWithTheater
@@ -50,6 +52,8 @@ class PreferenceChangeReceiver : WearableListenerService() {
                             }
                             PreferenceKey.BATTERY_PHONE_CHARGE_NOTI_KEY ->
                                 phoneChargeNotiEnabled = dataMap.getBoolean(key)
+                            PreferenceKey.BATTERY_PHONE_LOW_NOTI_KEY ->
+                                phoneLowNotiEnabled = dataMap.getBoolean(key)
                             PreferenceKey.BATTERY_CHARGE_THRESHOLD_KEY ->
                                 batteryChargeThreshold = dataMap.getInt(key)
                             PreferenceKey.DND_SYNC_TO_PHONE_KEY -> {
@@ -71,6 +75,8 @@ class PreferenceChangeReceiver : WearableListenerService() {
                         phoneLockingEnabled,
                         batterySyncEnabled,
                         phoneChargeNotiEnabled,
+                        phoneLowNotiEnabled,
+                        batteryLowThreshold,
                         batteryChargeThreshold,
                         dndSyncToPhone,
                         dndSyncWithTheater

@@ -9,4 +9,5 @@ message PhoneState {
 
   int32 batteryPercent = 3;
   bool chargeNotiSent = 4;
+  bool lowNotiSent = 5;
 }

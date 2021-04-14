@@ -2,6 +2,7 @@ package com.boswelja.devicemanager.batterysync.ui
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.liveData
 import androidx.lifecycle.switchMap
 import androidx.lifecycle.viewModelScope
@@ -9,10 +10,13 @@ import com.boswelja.devicemanager.batterysync.BatterySyncWorker
 import com.boswelja.devicemanager.batterysync.Utils.updateBatteryStats
 import com.boswelja.devicemanager.batterysync.database.WatchBatteryStatsDatabase
 import com.boswelja.devicemanager.common.preference.PreferenceKey.BATTERY_CHARGE_THRESHOLD_KEY
+import com.boswelja.devicemanager.common.preference.PreferenceKey.BATTERY_LOW_THRESHOLD_KEY
 import com.boswelja.devicemanager.common.preference.PreferenceKey.BATTERY_PHONE_CHARGE_NOTI_KEY
+import com.boswelja.devicemanager.common.preference.PreferenceKey.BATTERY_PHONE_LOW_NOTI_KEY
 import com.boswelja.devicemanager.common.preference.PreferenceKey.BATTERY_SYNC_ENABLED_KEY
 import com.boswelja.devicemanager.common.preference.PreferenceKey.BATTERY_SYNC_INTERVAL_KEY
 import com.boswelja.devicemanager.common.preference.PreferenceKey.BATTERY_WATCH_CHARGE_NOTI_KEY
+import com.boswelja.devicemanager.common.preference.PreferenceKey.BATTERY_WATCH_LOW_NOTI_KEY
 import com.boswelja.devicemanager.watchmanager.WatchManager
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
@@ -35,31 +39,14 @@ class BatterySyncViewModel internal constructor(
     private val database: WatchBatteryStatsDatabase =
         WatchBatteryStatsDatabase.getInstance(application)
 
-    val batterySyncEnabled = watchManager.selectedWatch.switchMap {
-        it?.let {
-            watchManager.getPreferenceObservable<Boolean>(it.id, BATTERY_SYNC_ENABLED_KEY)
-        } ?: liveData { }
-    }
-    val phoneChargeNotiEnabled = watchManager.selectedWatch.switchMap {
-        it?.let {
-            watchManager.getPreferenceObservable<Boolean>(it.id, BATTERY_PHONE_CHARGE_NOTI_KEY)
-        } ?: liveData { }
-    }
-    val watchChargeNotiEnabled = watchManager.selectedWatch.switchMap {
-        it?.let {
-            watchManager.getPreferenceObservable<Boolean>(it.id, BATTERY_WATCH_CHARGE_NOTI_KEY)
-        } ?: liveData { }
-    }
-    val chargeThreshold = watchManager.selectedWatch.switchMap {
-        it?.let {
-            watchManager.getPreferenceObservable<Int>(it.id, BATTERY_CHARGE_THRESHOLD_KEY)
-        } ?: liveData { }
-    }
-    val syncInterval = watchManager.selectedWatch.switchMap {
-        it?.let {
-            watchManager.getPreferenceObservable<Int>(it.id, BATTERY_SYNC_INTERVAL_KEY)
-        } ?: liveData { }
-    }
+    val batterySyncEnabled = preferenceForSelectedWatch<Boolean>(BATTERY_SYNC_ENABLED_KEY)
+    val syncInterval = preferenceForSelectedWatch<Int>(BATTERY_SYNC_INTERVAL_KEY)
+    val phoneChargeNotiEnabled = preferenceForSelectedWatch<Boolean>(BATTERY_PHONE_CHARGE_NOTI_KEY)
+    val watchChargeNotiEnabled = preferenceForSelectedWatch<Boolean>(BATTERY_WATCH_CHARGE_NOTI_KEY)
+    val chargeThreshold = preferenceForSelectedWatch<Int>(BATTERY_CHARGE_THRESHOLD_KEY)
+    val phoneLowNotiEnabled = preferenceForSelectedWatch<Boolean>(BATTERY_PHONE_CHARGE_NOTI_KEY)
+    val watchLowNotiEnabled = preferenceForSelectedWatch<Boolean>(BATTERY_WATCH_CHARGE_NOTI_KEY)
+    val batteryLowThreshold = preferenceForSelectedWatch<Int>(BATTERY_CHARGE_THRESHOLD_KEY)
 
     val batteryStats = watchManager.selectedWatch.switchMap {
         it?.let {
@@ -123,6 +110,38 @@ class BatterySyncViewModel internal constructor(
             watchManager.updatePreference(
                 watchManager.selectedWatch.value!!, BATTERY_WATCH_CHARGE_NOTI_KEY, isEnabled
             )
+        }
+    }
+
+    fun setPhoneLowNotiEnabled(isEnabled: Boolean) {
+        viewModelScope.launch(dispatcher) {
+            watchManager.updatePreference(
+                watchManager.selectedWatch.value!!, BATTERY_PHONE_LOW_NOTI_KEY, isEnabled
+            )
+        }
+    }
+
+    fun setWatchLowNotiEnabled(isEnabled: Boolean) {
+        viewModelScope.launch(dispatcher) {
+            watchManager.updatePreference(
+                watchManager.selectedWatch.value!!, BATTERY_WATCH_LOW_NOTI_KEY, isEnabled
+            )
+        }
+    }
+
+    fun setLowBatteryThreshold(lowThreshold: Int) {
+        viewModelScope.launch(dispatcher) {
+            watchManager.updatePreference(
+                watchManager.selectedWatch.value!!, BATTERY_LOW_THRESHOLD_KEY, lowThreshold
+            )
+        }
+    }
+
+    private inline fun <reified T> preferenceForSelectedWatch(key: String): LiveData<T?> {
+        return watchManager.selectedWatch.switchMap {
+            it?.let {
+                watchManager.getPreferenceObservable<T>(it.id, key)
+            } ?: liveData { }
         }
     }
 }
