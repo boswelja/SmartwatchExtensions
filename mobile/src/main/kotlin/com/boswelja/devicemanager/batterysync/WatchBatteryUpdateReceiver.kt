@@ -105,9 +105,11 @@ class WatchBatteryUpdateReceiver : WearableListenerService() {
                 Timber.i("Sending charged notification")
                 NotificationCompat.Builder(this, BATTERY_STATS_NOTI_CHANNEL_ID)
                     .setSmallIcon(R.drawable.battery_full)
-                    .setContentTitle(getString(R.string.device_charged_noti_title, watch.name))
+                    .setContentTitle(
+                        getString(R.string.device_battery_charged_noti_title, watch.name)
+                    )
                     .setContentText(
-                        getString(R.string.device_charged_noti_desc)
+                        getString(R.string.device_battery_charged_noti_desc)
                             .format(Locale.getDefault(), watch.name, chargeThreshold)
                     )
                     .setLocalOnly(true)
@@ -150,9 +152,9 @@ class WatchBatteryUpdateReceiver : WearableListenerService() {
                 Timber.i("Sending low notification")
                 NotificationCompat.Builder(this, BATTERY_STATS_NOTI_CHANNEL_ID)
                     .setSmallIcon(R.drawable.battery_alert)
-                    .setContentTitle(getString(R.string.device_charged_noti_title, watch.name))
+                    .setContentTitle(getString(R.string.device_battery_low_noti_title, watch.name))
                     .setContentText(
-                        getString(R.string.device_charged_noti_desc)
+                        getString(R.string.device_battery_low_noti_desc)
                             .format(Locale.getDefault(), watch.name, chargeThreshold)
                     )
                     .setLocalOnly(true)

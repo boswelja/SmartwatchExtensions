@@ -114,7 +114,7 @@ class PhoneBatteryUpdateReceiver : WearableListenerService() {
                 val channel =
                     NotificationChannel(
                         BATTERY_STATS_NOTI_CHANNEL_ID,
-                        getString(R.string.noti_channel_phone_charged_title),
+                        getString(R.string.noti_channel_battery_stats_title),
                         NotificationManager.IMPORTANCE_HIGH
                     )
                         .apply {
@@ -126,11 +126,11 @@ class PhoneBatteryUpdateReceiver : WearableListenerService() {
 
             val noti =
                 NotificationCompat.Builder(this, BATTERY_STATS_NOTI_CHANNEL_ID)
-                    .setSmallIcon(R.drawable.battery_full)
-                    .setContentTitle(getString(R.string.device_charged_noti_title, deviceName))
+                    .setSmallIcon(R.drawable.battery_alert)
+                    .setContentTitle(getString(R.string.device_battery_low_noti_title, deviceName))
                     .setContentText(
                         getString(
-                            R.string.device_charged_noti_desc,
+                            R.string.device_battery_low_noti_desc,
                             deviceName,
                             chargeThreshold.toString()
                         )
@@ -164,7 +164,7 @@ class PhoneBatteryUpdateReceiver : WearableListenerService() {
                 val channel =
                     NotificationChannel(
                         BATTERY_STATS_NOTI_CHANNEL_ID,
-                        getString(R.string.noti_channel_phone_charged_title),
+                        getString(R.string.noti_channel_battery_stats_title),
                         NotificationManager.IMPORTANCE_HIGH
                     )
                         .apply {
@@ -177,10 +177,12 @@ class PhoneBatteryUpdateReceiver : WearableListenerService() {
             val noti =
                 NotificationCompat.Builder(this, BATTERY_STATS_NOTI_CHANNEL_ID)
                     .setSmallIcon(R.drawable.battery_full)
-                    .setContentTitle(getString(R.string.device_charged_noti_title, deviceName))
+                    .setContentTitle(
+                        getString(R.string.device_battery_charged_noti_title, deviceName)
+                    )
                     .setContentText(
                         getString(
-                            R.string.device_charged_noti_desc,
+                            R.string.device_battery_charged_noti_desc,
                             deviceName,
                             chargeThreshold.toString()
                         )
