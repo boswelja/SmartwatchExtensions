@@ -15,7 +15,7 @@ android {
 
         applicationId = PackageInfo.packageName
         versionCode = PackageInfo.getVersionCode('0')
-        versionName = PackageInfo.versionName
+        versionName = PackageInfo.getVersionName()
 
         testApplicationId = PackageInfo.packageName + ".test"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
