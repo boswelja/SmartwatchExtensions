@@ -12,7 +12,8 @@ android {
         targetSdkVersion(PackageInfo.targetSdk)
 
         applicationId = PackageInfo.packageName
-        versionCode = PackageInfo.getVersionCode()
+        // Add 1 here to ensure it's different from mobile module
+        versionCode = PackageInfo.getVersionCode('1')
         versionName = PackageInfo.versionName
 
         testApplicationId = PackageInfo.packageName + ".test"

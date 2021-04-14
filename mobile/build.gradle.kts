@@ -14,7 +14,7 @@ android {
         targetSdkVersion(PackageInfo.targetSdk)
 
         applicationId = PackageInfo.packageName
-        versionCode = PackageInfo.getVersionCode()
+        versionCode = PackageInfo.getVersionCode('0')
         versionName = PackageInfo.versionName
 
         testApplicationId = PackageInfo.packageName + ".test"
