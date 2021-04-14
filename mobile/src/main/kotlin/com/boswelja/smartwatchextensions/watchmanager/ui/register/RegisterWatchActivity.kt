@@ -1,0 +1,63 @@
+package com.boswelja.smartwatchextensions.watchmanager.ui.register
+
+import android.os.Bundle
+import androidx.activity.compose.setContent
+import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.ExtendedFloatingActionButton
+import androidx.compose.material.Icon
+import androidx.compose.material.Scaffold
+import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Done
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.res.stringResource
+import com.boswelja.smartwatchextensions.R
+import com.boswelja.smartwatchextensions.common.LifecycleAwareTimer
+import com.boswelja.smartwatchextensions.common.ui.AppTheme
+import com.boswelja.smartwatchextensions.common.ui.UpNavigationAppBar
+
+class RegisterWatchActivity : AppCompatActivity() {
+
+    private val viewModel: RegisterWatchViewModel by viewModels()
+    private val availableWatchUpdateTimer = LifecycleAwareTimer(TIMER_UPDATE_SECONDS) {
+        viewModel.refreshData()
+    }
+
+    @ExperimentalMaterialApi
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        setContent {
+            AppTheme {
+                val registeredWatches by viewModel.registeredWatches.observeAsState()
+                Scaffold(
+                    topBar = { UpNavigationAppBar(onNavigateUp = { finish() }) },
+                    floatingActionButton = {
+                        ExtendedFloatingActionButton(
+                            text = { Text(stringResource(R.string.button_finish)) },
+                            icon = { Icon(Icons.Outlined.Done, null) },
+                            onClick = { finish() }
+                        )
+                    }
+                ) {
+                    RegisterWatchScreen(registeredWatches = registeredWatches)
+                }
+            }
+        }
+
+        lifecycle.addObserver(availableWatchUpdateTimer)
+
+        viewModel.watchesToAdd.observe(this) {
+            it.forEach { watch ->
+                viewModel.addWatch(watch)
+            }
+        }
+    }
+
+    companion object {
+        private const val TIMER_UPDATE_SECONDS: Long = 5
+    }
+}

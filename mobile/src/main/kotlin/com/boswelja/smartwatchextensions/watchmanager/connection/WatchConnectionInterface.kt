@@ -1,0 +1,61 @@
+package com.boswelja.smartwatchextensions.watchmanager.connection
+
+import androidx.lifecycle.LiveData
+import com.boswelja.smartwatchextensions.common.Event
+import com.boswelja.smartwatchextensions.watchmanager.item.Watch
+
+/**
+ * An interface for managing connections with third party watch APIs
+ */
+interface WatchConnectionInterface {
+
+    /**
+     * Event that's fired whenever user-facing data is changed.
+     */
+    val dataChanged: Event
+
+    /**
+     * An observable list of all available watches.
+     */
+    val availableWatches: LiveData<List<Watch>>
+
+    /**
+     * A map of watch IDs to capabilities.
+     */
+    val watchCapabilities: Map<String, Short>
+
+    /**
+     * Returns a string unique to the platform handling the connections. It's important this is
+     * constant as it will be stored with registered watches.
+     */
+    val platformIdentifier: String
+
+    /**
+     * Get the [Watch.Status] for a given [Watch].
+     * @param watchId See [Watch.id].
+     * @param isRegistered Whether the given watch has been registered.
+     * @return The [Watch.Status] for the given watch.
+     */
+    fun getWatchStatus(watchId: String, isRegistered: Boolean): Watch.Status
+
+    /**
+     * Send a message to a watch with the given ID.
+     * @param watchId See [Watch.id].
+     * @param path The message path to send.
+     * @param data The data to send with the message, if any.
+     */
+    fun sendMessage(watchId: String, path: String, data: ByteArray? = null)
+
+    /**
+     * Notify the watch a specified preference has been changed.
+     * @param watchId See [Watch.id].
+     * @param key The preference key to send to the watch.
+     * @param value The new value of the preference.
+     */
+    fun updatePreferenceOnWatch(watchId: String, key: String, value: Any)
+
+    /**
+     * Manually refresh info such as watch status and available watches.
+     */
+    fun refreshData()
+}
