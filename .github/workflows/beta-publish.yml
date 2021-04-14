@@ -4,15 +4,23 @@ on:
   workflow_dispatch
 
 jobs:
-  sign:
-    name: Sign and Save Bundles
+  build-sign:
+    name: Build, Sign and Save Bundles
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2.3.4
+        with:
+          ref: ${{ github.head_ref }}   # checkout the correct branch name
+          fetch-depth: 0                # fetch the whole repo history
       - uses: actions/setup-java@v2
         with:
           distribution: 'adopt'
           java-version: 11
+      - name: Git Version
+        uses: codacy/git-version@2.2.0
+        id: version
+        with:
+          release-branch: main
       - name: Cache Gradle Packages
         uses: actions/cache@v2.1.4
         with:
@@ -30,6 +38,8 @@ jobs:
           key: ${{ runner.os }}-build-${{ github.sha }}
       - name: Build Mobile Release Artifacts
         run: ./gradlew :mobile:bundleRelease
+        env:
+          VERSION_NAME: ${{ steps.version.outputs.version }}
       - name: Sign Mobile Release
         id: sign-mobile-release
         uses: r0adkll/sign-android-release@v1.0.4
@@ -46,6 +56,8 @@ jobs:
           path: ${{ steps.sign-mobile-release.outputs.signedReleaseFile }}
       - name: Build Wear OS Release Artifacts
         run: ./gradlew :wearos:bundleRelease
+        env:
+          VERSION_NAME: ${{ steps.version.outputs.version }}
       - name: Sign Wear OS Release
         id: sign-wearos-release
         uses: r0adkll/sign-android-release@v1.0.4
@@ -67,10 +79,18 @@ jobs:
     needs: sign
     steps:
       - uses: actions/checkout@v2.3.4
+        with:
+          ref: ${{ github.head_ref }}   # checkout the correct branch name
+          fetch-depth: 0                # fetch the whole repo history
       - uses: actions/setup-java@v2
         with:
           distribution: 'adopt'
           java-version: 11
+      - name: Git Version
+        uses: codacy/git-version@2.2.0
+        id: version
+        with:
+          release-branch: main
       - name: Download mobile-release.aab
         uses: actions/download-artifact@v2.0.9
         with:
@@ -81,17 +101,6 @@ jobs:
         with:
           name: wearos-release.aab
           path: release/
-      - name: Get last release name
-        uses: pozetroninc/github-action-get-latest-release@v0.5.0
-        id: old_release
-        with:
-          repository: "boswelja/WearableExtensions"
-          excludes: 'draft'
-      - name: Get new release name
-        uses: boswelja/aab-info-action@v1.0.10
-        id: new_release
-        with:
-          aabPath: release/mobile-release.aab
       - name: Create Release Tag
         uses: actions/create-release@v1.1.4
         id: create_release
@@ -125,8 +134,8 @@ jobs:
         uses: boswelja/update-priority-action@main
         id: update_priority
         with:
-          old-version: ${{ steps.old_release.outputs.release }}
-          new-version: ${{steps.new_release.outputs.versionName }}
+          old-version: ${{ steps.version.outputs.previous-version }}
+          new-version: ${{steps.version.outputs.version }}
       - name: Upload to Google Play
         uses: r0adkll/upload-google-play@v1.0.15
         with:
