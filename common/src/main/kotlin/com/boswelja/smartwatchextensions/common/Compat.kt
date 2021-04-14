@@ -53,7 +53,7 @@ object Compat {
     }
 
     /**
-     * Checks whether Wearable Extensions has permission to set the device's Do not Disturb state.
+     * Checks whether Smartwatch Extensions has permission to set the device's Do not Disturb state.
      * @param context [Context].
      * @return true if we can set the Do not Disturb state, false otherwise
      */

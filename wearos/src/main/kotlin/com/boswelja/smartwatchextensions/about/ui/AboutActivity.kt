@@ -57,14 +57,14 @@ fun AboutScreen() {
             .padding(top = 8.dp, bottom = 72.dp, start = 8.dp, end = 8.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        WearableExtensionsInfo()
+        AppInfo()
         Links()
     }
 }
 
 @Preview(showBackground = true)
 @Composable
-fun WearableExtensionsInfo() {
+fun AppInfo() {
     val context = LocalContext.current
     Column(
         Modifier.fillMaxWidth(),

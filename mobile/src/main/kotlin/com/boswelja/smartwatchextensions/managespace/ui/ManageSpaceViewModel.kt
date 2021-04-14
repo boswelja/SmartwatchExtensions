@@ -94,7 +94,7 @@ class ManageSpaceViewModel internal constructor(
     }
 
     /**
-     * Reset app settings for Wearable Extensions. This does not include extension settings.
+     * Reset app settings for Smartwatch Extensions. This does not include extension settings.
      * @param onCompleteFunction The function to call when the job completes.
      */
     fun resetAppSettings(

@@ -78,7 +78,7 @@ class ManageSpaceActivity : AppCompatActivity() {
                             scaffoldState = scaffoldState,
                             onProgressChange = { progress = it }
                         )
-                        ResetWearableExtensionsAction(
+                        ResetAppAction(
                             scaffoldState = scaffoldState,
                             onProgressChange = { progress = it }
                         )
@@ -280,7 +280,7 @@ class ManageSpaceActivity : AppCompatActivity() {
 
     @ExperimentalMaterialApi
     @Composable
-    fun ResetWearableExtensionsAction(
+    fun ResetAppAction(
         scaffoldState: ScaffoldState,
         onProgressChange: (Float) -> Unit
     ) {

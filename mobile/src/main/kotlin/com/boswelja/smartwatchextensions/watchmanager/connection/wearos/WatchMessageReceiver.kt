@@ -45,8 +45,8 @@ class WatchMessageReceiver : WearableListenerService() {
     }
 
     /**
-     * Launches Wearable Extensions to an activity containing a specified preference key.
-     * @param key The key to launch Wearable Extensions to.
+     * Launches Smartwatch Extensions to an activity containing a specified preference key.
+     * @param key The key to launch Smartwatch Extensions to.
      */
     private fun launchAppTo(key: String?) {
         Timber.i("launchAppTo($key) called")
@@ -104,7 +104,7 @@ class WatchMessageReceiver : WearableListenerService() {
     }
 
     /**
-     * Tells the source node whether it is registered with Wearable Extensions.
+     * Tells the source node whether it is registered with Smartwatch Extensions.
      * @param sourceNodeId The target node ID to send the response to.
      */
     private fun sendIsWatchRegistered(sourceNodeId: String) {
