@@ -1,6 +1,7 @@
 package com.boswelja.smartwatchextensions.widget.ui
 
 import android.app.WallpaperManager
+import android.view.LayoutInflater
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
