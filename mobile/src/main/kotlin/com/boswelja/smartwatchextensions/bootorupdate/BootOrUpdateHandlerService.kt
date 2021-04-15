@@ -18,7 +18,6 @@ import com.boswelja.smartwatchextensions.common.preference.PreferenceKey
 import com.boswelja.smartwatchextensions.dndsync.DnDLocalChangeService
 import com.boswelja.smartwatchextensions.messages.Message
 import com.boswelja.smartwatchextensions.messages.MessageHandler
-import com.boswelja.smartwatchextensions.messages.Priority
 import com.boswelja.smartwatchextensions.watchmanager.WatchManager
 import com.boswelja.smartwatchextensions.watchmanager.database.WatchSettingsDatabase
 import kotlinx.coroutines.Dispatchers

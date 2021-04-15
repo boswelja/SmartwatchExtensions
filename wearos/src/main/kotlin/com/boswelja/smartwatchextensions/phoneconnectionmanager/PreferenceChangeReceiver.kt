@@ -56,6 +56,8 @@ class PreferenceChangeReceiver : WearableListenerService() {
                                 phoneLowNotiEnabled = dataMap.getBoolean(key)
                             PreferenceKey.BATTERY_CHARGE_THRESHOLD_KEY ->
                                 batteryChargeThreshold = dataMap.getInt(key)
+                            PreferenceKey.BATTERY_LOW_THRESHOLD_KEY ->
+                                batteryLowThreshold = dataMap.getInt(key)
                             PreferenceKey.DND_SYNC_TO_PHONE_KEY -> {
                                 dndSyncToPhone = dataMap.getBoolean(key)
                                 if (dndSyncToPhone) {

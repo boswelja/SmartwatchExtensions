@@ -8,9 +8,9 @@ import com.boswelja.smartwatchextensions.TasksAwaitRule
 import com.boswelja.smartwatchextensions.TestCapabilityInfo
 import com.boswelja.smartwatchextensions.TestNode
 import com.boswelja.smartwatchextensions.common.connection.Capability
-import com.boswelja.smartwatchextensions.common.connection.References.CAPABILITY_WATCH_APP
 import com.boswelja.smartwatchextensions.common.preference.SyncPreferences
 import com.boswelja.smartwatchextensions.getOrAwaitValue
+import com.boswelja.smartwatchextensions.watchmanager.connection.wearos.WearOSConnectionInterface.Companion.CAPABILITY_WATCH_APP
 import com.boswelja.smartwatchextensions.watchmanager.item.Watch
 import com.google.android.gms.tasks.Tasks
 import com.google.android.gms.wearable.CapabilityClient

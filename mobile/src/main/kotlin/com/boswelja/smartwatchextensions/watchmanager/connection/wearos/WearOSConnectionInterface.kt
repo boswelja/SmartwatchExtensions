@@ -6,7 +6,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import com.boswelja.smartwatchextensions.common.Event
 import com.boswelja.smartwatchextensions.common.connection.Capability
-import com.boswelja.smartwatchextensions.common.connection.References.CAPABILITY_WATCH_APP
 import com.boswelja.smartwatchextensions.common.preference.SyncPreferences
 import com.boswelja.smartwatchextensions.watchmanager.connection.WatchConnectionInterface
 import com.boswelja.smartwatchextensions.watchmanager.item.Watch
@@ -165,5 +164,6 @@ class WearOSConnectionInterface(
 
     companion object {
         const val PLATFORM = "WEAR_OS"
+        const val CAPABILITY_WATCH_APP = "extensions_watch_app"
     }
 }
