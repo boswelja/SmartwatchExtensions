@@ -218,8 +218,8 @@
     <string name="button_finish">Finish</string>
     <string name="button_forget_watch">Forget Watch</string>
 
-    <string name="privacy_policy_url" translatable="false">https://github.com/boswelja/WearableExtensions/blob/main/PRIVACY.md</string>
-    <string name="github_url" translatable="false">https://github.com/boswelja/WearableExtensions</string>
-    <string name="changelog_url" translatable="false">https://github.com/boswelja/WearableExtensions/releases</string>
-    <string name="wiki_url" translatable="false">https://github.com/boswelja/WearableExtensions/wiki</string>
+    <string name="privacy_policy_url" translatable="false">https://github.com/boswelja/SmartwatchExtensions/blob/main/PRIVACY.md</string>
+    <string name="github_url" translatable="false">https://github.com/boswelja/SmartwatchExtensions</string>
+    <string name="changelog_url" translatable="false">https://github.com/boswelja/SmartwatchExtensions/releases</string>
+    <string name="wiki_url" translatable="false">https://github.com/boswelja/SmartwatchExtensions/wiki</string>
 </resources>
