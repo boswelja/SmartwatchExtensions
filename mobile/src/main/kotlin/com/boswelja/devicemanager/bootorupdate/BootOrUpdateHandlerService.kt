@@ -2,9 +2,12 @@ package com.boswelja.devicemanager.bootorupdate
 
 import android.app.Notification
 import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.Intent
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
+import androidx.core.content.getSystemService
+import androidx.core.net.toUri
 import androidx.lifecycle.LifecycleService
 import androidx.lifecycle.lifecycleScope
 import com.boswelja.devicemanager.BuildConfig
@@ -21,6 +24,7 @@ import com.boswelja.devicemanager.messages.MessageHandler
 import com.boswelja.devicemanager.watchmanager.WatchManager
 import com.boswelja.devicemanager.watchmanager.database.WatchSettingsDatabase
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -38,11 +42,13 @@ class BootOrUpdateHandlerService : LifecycleService() {
         when (intent?.action) {
             Intent.ACTION_MY_PACKAGE_REPLACED -> {
                 performUpdates()
+                notifyRedownload()
             }
             Intent.ACTION_BOOT_COMPLETED -> {
                 Timber.i("Device restarted")
                 startForeground(NOTI_ID, createBootNotification())
                 lifecycleScope.launch { restartServices() }
+                notifyRedownload()
             }
             else -> return super.onStartCommand(intent, flags, startId)
         }
@@ -177,6 +183,30 @@ class BootOrUpdateHandlerService : LifecycleService() {
             Message.Action.LAUNCH_CHANGELOG
         )
         MessageHandler.postMessage(this, message)
+    }
+
+    /**
+     * Sends a message to the user notifying them the update has been completed.
+     */
+    private fun notifyRedownload() {
+        val url = "https://play.google.com/store/apps/details?id=com.boswelja.smartwatchextensions"
+        val intent = Intent(Intent.ACTION_VIEW, url.toUri())
+        NotificationCompat.Builder(this, BOOT_OR_UPDATE_NOTI_CHANNEL_ID)
+            .setOngoing(false)
+            .setShowWhen(true)
+            .setUsesChronometer(false)
+            .setPriority(NotificationCompat.PRIORITY_HIGH)
+            .setSmallIcon(R.drawable.noti_ic_update)
+            .setContentIntent(
+                PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_IMMUTABLE)
+            )
+            .setContentTitle("Please re-download Wearable Extensions")
+            .setContentText(
+                "Due to a backend issue, we're relaunching Wearable Extensions on Google Play." +
+                    " Tap to go to the new listing and re-download."
+            ).also {
+                getSystemService<NotificationManager>()?.notify(0, it.build())
+            }
     }
 
     companion object {
