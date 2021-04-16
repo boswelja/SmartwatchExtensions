@@ -48,12 +48,14 @@ abstract class BaseWidgetProvider : AppWidgetProvider() {
     override fun onDeleted(context: Context?, appWidgetIds: IntArray?) {
         super.onDeleted(context, appWidgetIds)
         if (context != null && appWidgetIds != null && appWidgetIds.isNotEmpty()) {
+            val pendingResult = goAsync()
             coroutineScope.launch(Dispatchers.IO) {
                 context.widgetIdStore.edit { widgetIds ->
                     appWidgetIds.forEach { widgetId ->
                         widgetIds.remove(stringPreferencesKey(widgetId.toString()))
                     }
                 }
+                pendingResult.finish()
             }
         }
     }
@@ -102,6 +104,7 @@ abstract class BaseWidgetProvider : AppWidgetProvider() {
                 context.packageName,
                 R.layout.common_widget_background
             )
+            val pendingResult = goAsync()
             coroutineScope.launch {
                 val widgetIdStore = context.widgetIdStore
                 val watchId =
@@ -121,6 +124,7 @@ abstract class BaseWidgetProvider : AppWidgetProvider() {
                     widgetView.setInt(R.id.widget_background, "setBackgroundColor", 0)
                 }
                 appWidgetManager?.updateAppWidget(appWidgetId, widgetView)
+                pendingResult.finish()
             }
         }
     }
