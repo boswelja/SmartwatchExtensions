@@ -18,11 +18,9 @@ import com.boswelja.devicemanager.common.preference.PreferenceKey
 import com.boswelja.devicemanager.dndsync.DnDLocalChangeService
 import com.boswelja.devicemanager.messages.Message
 import com.boswelja.devicemanager.messages.MessageHandler
-import com.boswelja.devicemanager.messages.Priority
 import com.boswelja.devicemanager.watchmanager.WatchManager
 import com.boswelja.devicemanager.watchmanager.database.WatchSettingsDatabase
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -68,7 +66,6 @@ class BootOrUpdateHandlerService : LifecycleService() {
                     when (updater.doUpdate()) {
                         Result.COMPLETED -> Timber.i("Updated app and changes were made")
                         Result.NOT_NEEDED -> Timber.i("Update not needed")
-                        Result.RECOMMEND_RESET -> notifyResetRecommended()
                     }
                     restartServices()
                     notifyUpdateComplete()
@@ -180,19 +177,6 @@ class BootOrUpdateHandlerService : LifecycleService() {
             Message.Action.LAUNCH_CHANGELOG
         )
         MessageHandler.postMessage(this, message)
-    }
-
-    /**
-     * Sends a message to the user notifying them they should reset the app.
-     */
-    private fun notifyResetRecommended() {
-        val message = Message(
-            Message.Icon.UPDATE,
-            "We recommend reinstalling Wearable Extensions",
-            "A lot has changed behind the scenes. To ensure the best performance, " +
-                "we recommend reinstalling Wearable Extensions on both your phone and watch."
-        )
-        MessageHandler.postMessage(this, message, priority = Priority.HIGH)
     }
 
     companion object {

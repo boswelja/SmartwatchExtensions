@@ -29,15 +29,13 @@ class Updater(private val context: Context) {
      */
     fun doUpdate(): Result {
         var updateStatus = Result.NOT_NEEDED
-        if (lastAppVersion < 2027000000) {
-            updateStatus = Result.RECOMMEND_RESET
-        }
         if (lastAppVersion < 2028500000) {
             context.packageManager.setComponentEnabledSetting(
                 ComponentName(context, PhoneLockingAccessibilityService::class.java),
                 PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
                 PackageManager.DONT_KILL_APP
             )
+            updateStatus = Result.COMPLETED
         }
         return updateStatus
     }
