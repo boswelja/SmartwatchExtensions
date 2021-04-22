@@ -16,6 +16,7 @@ import com.boswelja.smartwatchextensions.batterysync.database.WatchBatteryStatsD
 import com.boswelja.smartwatchextensions.common.SingletonHolder
 import com.boswelja.smartwatchextensions.common.connection.Messages
 import com.boswelja.smartwatchextensions.common.connection.Messages.CLEAR_PREFERENCES
+import com.boswelja.smartwatchextensions.common.connection.Preference.toByteArray
 import com.boswelja.smartwatchextensions.watchmanager.database.DbWatch.Companion.toDbWatch
 import com.boswelja.smartwatchextensions.watchmanager.database.WatchDatabase
 import com.boswelja.smartwatchextensions.watchmanager.database.WatchSettingsDatabase
@@ -208,11 +209,16 @@ class WatchManager internal constructor(
      * @param value The new preference value.
      */
     suspend fun updatePreference(watch: Watch, key: String, value: Any) {
+        val message = when (value) {
+            is Boolean -> Messages.UPDATE_BOOL_PREFERENCE
+            is Int -> Messages.UPDATE_INT_PREFERENCE
+            else -> throw IllegalArgumentException()
+        }
         withContext(Dispatchers.IO) {
             connectionClient.sendMessage(
                 watch,
-                Messages.UPDATE_PREFERENCE,
-                "$key|$value".toByteArray(Charsets.UTF_8)
+                message,
+                Pair(key, value).toByteArray()
             )
             settingsDatabase.updatePrefInDatabase(watch.id, key, value)
             analytics.logExtensionSettingChanged(key, value)
