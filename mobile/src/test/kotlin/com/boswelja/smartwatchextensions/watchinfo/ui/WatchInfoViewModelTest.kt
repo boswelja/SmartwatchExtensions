@@ -44,6 +44,7 @@ class WatchInfoViewModelTest {
     fun setUp() {
         MockKAnnotations.init(this)
         every { watchManager.registeredWatches } returns registeredWatches
+        every { watchManager.observeWatchById(dummyWatch.id) } returns MutableLiveData(dummyWatch)
 
         viewModel = WatchInfoViewModel(
             ApplicationProvider.getApplicationContext(),
