@@ -66,7 +66,7 @@ class WatchManager internal constructor(
     }
 
     val registeredWatches: LiveData<List<Watch>>
-        get() = watchDatabase.getAll().map { it } // Apparently we need a Map to not throw an error
+        get() = watchDatabase.watchDao().getAllObservable().map { it } // Apparently we need a Map to not throw an error
 
     @ExperimentalCoroutinesApi
     val availableWatches: Flow<Watch>

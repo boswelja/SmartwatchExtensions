@@ -4,7 +4,8 @@ import android.os.Build
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
-import androidx.lifecycle.liveData
+import androidx.room.Room
+import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.boswelja.smartwatchextensions.AppState
 import com.boswelja.smartwatchextensions.analytics.Analytics
@@ -51,7 +52,6 @@ class WatchManagerTest {
     private val dummyWatches = listOf(dummyWatch1, dummyWatch2, dummyWatch3)
     private val appState = MutableStateFlow(AppState())
 
-    @RelaxedMockK private lateinit var watchDatabase: WatchDatabase
     @RelaxedMockK private lateinit var connectionClient: WatchConnectionClient
     @RelaxedMockK private lateinit var widgetIdStore: DataStore<Preferences>
     @RelaxedMockK private lateinit var analytics: Analytics
@@ -61,20 +61,23 @@ class WatchManagerTest {
 
     private lateinit var coroutineScope: CoroutineScope
     private lateinit var watchManager: WatchManager
+    private lateinit var watchDatabase: WatchDatabase
 
     @Before
     fun setUp() {
         MockKAnnotations.init(this)
         every { dataStore.data } returns appState
 
+        watchDatabase = Room.inMemoryDatabaseBuilder(
+            ApplicationProvider.getApplicationContext(),
+            WatchDatabase::class.java
+        ).allowMainThreadQueries().build()
         coroutineScope = TestCoroutineScope()
     }
 
     @Test
     fun `selectedWatch is updated correctly on init`(): Unit = runBlocking {
-        every { watchDatabase.watchDao().getAllObservable() } returns liveData {
-            emit(dummyWatches.map { it.toDbWatch() })
-        }
+        setRegisteredWatches(dummyWatches)
         appState.emit(AppState(lastSelectedWatchId = dummyWatch1.id.toString()))
         watchManager = getWatchManager()
 
@@ -84,7 +87,7 @@ class WatchManagerTest {
     @Test
     fun `selectWatchById updates selectedWatch`(): Unit = runBlocking {
         // Initialise WatchManager
-        every { watchManager.registeredWatches } returns liveData { emit(dummyWatches) }
+        setRegisteredWatches(dummyWatches)
         appState.emit(AppState(lastSelectedWatchId = dummyWatch1.id.toString()))
         watchManager = getWatchManager()
         watchManager.selectWatchById(dummyWatch2.id)
@@ -106,7 +109,9 @@ class WatchManagerTest {
         watchManager.registerWatch(dummyWatch1)
         verify(exactly = 1) { analytics.logWatchRegistered() }
         coVerify(exactly = 1) { connectionClient.sendMessage(dummyWatch1, Messages.WATCH_REGISTERED_PATH) }
-        coVerify(exactly = 1) { watchDatabase.watchDao().add(dummyWatch1.toDbWatch()) }
+
+        // Verify watch was added to the database
+        assertThat(watchDatabase.watchDao().get(dummyWatch1.id)).isNotNull()
     }
 
     @Test
@@ -118,18 +123,23 @@ class WatchManagerTest {
             dummyWatch1
         )
         verify(exactly = 1) { analytics.logWatchRemoved() }
-        coVerify(exactly = 1) { watchDatabase.watchDao().remove(dummyWatch1.id) }
         coVerify(exactly = 1) { connectionClient.sendMessage(dummyWatch1, Messages.RESET_APP) }
         verify(exactly = 1) { batteryStatsDatabase.batteryStatsDao() }
+
+        // Verify watch isn't in database
+        assertThat(watchDatabase.watchDao().get(dummyWatch1.id)).isNull()
     }
 
     @Test
-    fun `renameWatch calls repository and logs analytics event`(): Unit = runBlocking {
+    fun `renameWatch updates database and logs analytics event`(): Unit = runBlocking {
         val newName = "dummy name"
+        setRegisteredWatches(dummyWatches)
         watchManager = getWatchManager()
         watchManager.renameWatch(dummyWatch1, newName)
         verify(exactly = 1) { analytics.logWatchRenamed() }
-        coVerify(exactly = 1) { watchDatabase.watchDao().setName(dummyWatch1.id, newName) }
+
+        // Verify name was changed in the database
+        assertThat(watchDatabase.watchDao().get(dummyWatch1.id)?.name).isEqualTo(newName)
     }
 
     @Test
@@ -147,9 +157,7 @@ class WatchManagerTest {
 
     @Test
     fun `selectedWatch is null if there are no registered watches`() {
-        every { watchDatabase.watchDao().getAllObservable() } returns liveData {
-            emit(dummyWatches.map { it.toDbWatch() })
-        }
+        setRegisteredWatches(dummyWatches)
         watchManager = getWatchManager()
         try {
             // We expect this to throw an exception, so use a shorter timeout
@@ -167,9 +175,7 @@ class WatchManagerTest {
     fun `selectedWatch is not null if there are registered watches and last watch ID is known`():
         Unit = runBlocking {
         appState.emit(AppState(lastSelectedWatchId = dummyWatch1.id.toString()))
-        every { watchDatabase.watchDao().getAllObservable() } returns liveData {
-            emit(dummyWatches.map { it.toDbWatch() })
-        }
+        setRegisteredWatches(dummyWatches)
         watchManager = getWatchManager()
         try {
             assertThat(
@@ -184,9 +190,7 @@ class WatchManagerTest {
     fun `selectedWatch is not null if there are registered watches and no last watch ID is known`():
         Unit = runBlocking {
         appState.emit(AppState(lastSelectedWatchId = ""))
-        every { watchDatabase.watchDao().getAllObservable() } returns liveData {
-            emit(dummyWatches.map { it.toDbWatch() })
-        }
+        setRegisteredWatches(dummyWatches)
         watchManager = getWatchManager()
         try {
             assertThat(
@@ -195,6 +199,10 @@ class WatchManagerTest {
         } catch (e: Exception) {
             assertThat(watchManager.selectedWatch.value).isNotNull()
         }
+    }
+
+    private fun setRegisteredWatches(watches: List<Watch>): Unit = runBlocking {
+        watches.forEach { watchDatabase.watchDao().add(it.toDbWatch()) }
     }
 
     private fun getWatchManager(): WatchManager {
