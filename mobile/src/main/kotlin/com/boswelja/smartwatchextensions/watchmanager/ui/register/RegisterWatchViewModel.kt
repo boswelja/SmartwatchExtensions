@@ -4,18 +4,23 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.boswelja.smartwatchextensions.watchmanager.WatchManager
-import com.boswelja.smartwatchextensions.watchmanager.item.Watch
+import com.boswelja.watchconnection.core.Watch
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
 /**
  * A ViewModel for handling the discovery and registration of watches.
  */
+@ExperimentalCoroutinesApi
 class RegisterWatchViewModel internal constructor(
     application: Application,
     private val watchManager: WatchManager,
@@ -29,47 +34,33 @@ class RegisterWatchViewModel internal constructor(
         Dispatchers.IO
     )
 
-    private val _addedWatches = MutableLiveData<List<Watch>>()
+    private val _addedWatches = MutableStateFlow<Watch?>(null)
     private val _watchesToAdd = MediatorLiveData<List<Watch>>()
 
-    val registeredWatches: LiveData<List<Watch>>
-        get() = _addedWatches
+    val registeredWatches: Flow<Watch>
+        get() = _addedWatches.mapNotNull { it }
 
     val watchesToAdd: LiveData<List<Watch>>
         get() = _watchesToAdd
 
     init {
-        _watchesToAdd.addSource(watchManager.availableWatches) {
-            val watchesToRegister = it.filterNot { watch ->
-                watchManager.registeredWatches.value?.contains(watch) == true
+        startRegisteringWatches()
+    }
+
+    @ExperimentalCoroutinesApi
+    fun startRegisteringWatches() {
+        viewModelScope.launch {
+            watchManager.availableWatches.collect {
+                addWatch(it)
             }
-            _watchesToAdd.postValue(watchesToRegister)
-        }
-        _watchesToAdd.addSource(watchManager.registeredWatches) { registeredWatches ->
-            val watchesToRegister = _watchesToAdd.value?.let {
-                it.filterNot { watch -> registeredWatches.contains(watch) }
-            } ?: emptyList()
-            _watchesToAdd.postValue(watchesToRegister)
         }
     }
 
     fun addWatch(watch: Watch) {
         Timber.d("registerWatch($watch) called")
-        val shouldRegisterWatch = (_addedWatches.value ?: emptyList())
-            .none { it.id == watch.id }
-        if (shouldRegisterWatch) {
-            _addedWatches.postValue(
-                _addedWatches.value?.plus(watch) ?: listOf(watch)
-            )
-            viewModelScope.launch(dispatcher) {
-                watchManager.registerWatch(watch)
-            }
-        } else {
-            Timber.w("Tried registering a watch that isn't available to register")
+        viewModelScope.launch(dispatcher) {
+            watchManager.registerWatch(watch)
+            _addedWatches.emit(watch)
         }
-    }
-
-    fun refreshData() {
-        watchManager.refreshData()
     }
 }

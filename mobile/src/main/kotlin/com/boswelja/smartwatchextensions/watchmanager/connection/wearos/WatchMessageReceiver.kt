@@ -16,6 +16,7 @@ import com.boswelja.smartwatchextensions.common.toByteArray
 import com.boswelja.smartwatchextensions.dndsync.ui.DnDSyncSettingsActivity
 import com.boswelja.smartwatchextensions.main.MainActivity
 import com.boswelja.smartwatchextensions.watchmanager.database.WatchDatabase
+import com.boswelja.watchconnection.wearos.WearOSConnectionHandler
 import com.google.android.gms.wearable.MessageEvent
 import com.google.android.gms.wearable.Wearable
 import com.google.android.gms.wearable.WearableListenerService
@@ -112,8 +113,9 @@ class WatchMessageReceiver : WearableListenerService() {
         MainScope().launch(Dispatchers.IO) {
             // TODO Access the database through WatchConnectionService
             val database = WatchDatabase.getInstance(this@WatchMessageReceiver)
+            val watch = database.getByPlatformAndId(WearOSConnectionHandler.PLATFORM, sourceNodeId)
             val messageCode =
-                if (database.getById(sourceNodeId) != null) {
+                if (watch != null) {
                     WATCH_REGISTERED_PATH
                 } else {
                     WATCH_NOT_REGISTERED_PATH

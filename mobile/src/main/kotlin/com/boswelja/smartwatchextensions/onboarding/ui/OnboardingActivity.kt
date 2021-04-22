@@ -17,30 +17,35 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.NavigateNext
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.res.stringResource
 import androidx.core.net.toUri
+import androidx.lifecycle.lifecycleScope
 import com.boswelja.smartwatchextensions.R
-import com.boswelja.smartwatchextensions.common.LifecycleAwareTimer
 import com.boswelja.smartwatchextensions.common.ui.AppTheme
 import com.boswelja.smartwatchextensions.common.ui.Crossflow
 import com.boswelja.smartwatchextensions.common.ui.UpNavigationAppBar
 import com.boswelja.smartwatchextensions.main.MainActivity
 import com.boswelja.smartwatchextensions.watchmanager.ui.register.RegisterWatchScreen
 import com.boswelja.smartwatchextensions.watchmanager.ui.register.RegisterWatchViewModel
+import com.boswelja.watchconnection.core.Watch
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 
 class OnboardingActivity : AppCompatActivity() {
 
+    @ExperimentalCoroutinesApi
     private val registerWatchViewModel: RegisterWatchViewModel by viewModels()
     private val customTabIntent = CustomTabsIntent.Builder().setShowTitle(true).build()
-    private val availableWatchUpdateTimer = LifecycleAwareTimer(TIMER_UPDATE_SECONDS) {
-        registerWatchViewModel.refreshData()
-    }
+    private val registeredWatches = mutableStateListOf<Watch>()
 
     private var currentDestination by mutableStateOf(Destination.WELCOME)
 
+    @ExperimentalCoroutinesApi
     @ExperimentalAnimationApi
     @ExperimentalMaterialApi
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -68,23 +73,24 @@ class OnboardingActivity : AppCompatActivity() {
             }
         }
 
-        lifecycle.addObserver(availableWatchUpdateTimer)
-
-        registerWatchViewModel.watchesToAdd.observe(this) {
-            it.forEach { watch ->
-                registerWatchViewModel.addWatch(watch)
+        lifecycleScope.launch {
+            registerWatchViewModel.registeredWatches.collect {
+                registeredWatches.add(it)
             }
         }
     }
 
+    @ExperimentalCoroutinesApi
     private fun navigateNext() {
         when (currentDestination) {
             Destination.WELCOME -> currentDestination = Destination.SHARE_USAGE_STATS
             Destination.SHARE_USAGE_STATS -> currentDestination = Destination.REGISTER_WATCHES
             Destination.REGISTER_WATCHES -> {
-                if (!registerWatchViewModel.registeredWatches.value.isNullOrEmpty()) {
-                    startActivity(Intent(this, MainActivity::class.java))
-                    finish()
+                lifecycleScope.launch {
+                    if (registerWatchViewModel.registeredWatches.first() != null) {
+                        startActivity(Intent(this@OnboardingActivity, MainActivity::class.java))
+                        finish()
+                    }
                 }
             }
         }
@@ -94,7 +100,6 @@ class OnboardingActivity : AppCompatActivity() {
     @ExperimentalAnimationApi
     @Composable
     fun OnboardingScreen(currentDestination: Destination) {
-        val registeredWatches by registerWatchViewModel.registeredWatches.observeAsState()
         Crossflow(targetState = currentDestination) {
             when (it) {
                 Destination.WELCOME -> WelcomeScreen()
@@ -117,9 +122,5 @@ class OnboardingActivity : AppCompatActivity() {
         WELCOME,
         SHARE_USAGE_STATS,
         REGISTER_WATCHES
-    }
-
-    companion object {
-        private const val TIMER_UPDATE_SECONDS: Long = 5
     }
 }

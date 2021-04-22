@@ -11,28 +11,30 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Done
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.ui.res.stringResource
+import androidx.lifecycle.lifecycleScope
 import com.boswelja.smartwatchextensions.R
-import com.boswelja.smartwatchextensions.common.LifecycleAwareTimer
 import com.boswelja.smartwatchextensions.common.ui.AppTheme
 import com.boswelja.smartwatchextensions.common.ui.UpNavigationAppBar
+import com.boswelja.watchconnection.core.Watch
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 
 class RegisterWatchActivity : AppCompatActivity() {
 
+    @ExperimentalCoroutinesApi
     private val viewModel: RegisterWatchViewModel by viewModels()
-    private val availableWatchUpdateTimer = LifecycleAwareTimer(TIMER_UPDATE_SECONDS) {
-        viewModel.refreshData()
-    }
 
+    @ExperimentalCoroutinesApi
     @ExperimentalMaterialApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val registeredWatches = mutableStateListOf<Watch>()
 
         setContent {
             AppTheme {
-                val registeredWatches by viewModel.registeredWatches.observeAsState()
                 Scaffold(
                     topBar = { UpNavigationAppBar(onNavigateUp = { finish() }) },
                     floatingActionButton = {
@@ -48,16 +50,10 @@ class RegisterWatchActivity : AppCompatActivity() {
             }
         }
 
-        lifecycle.addObserver(availableWatchUpdateTimer)
-
-        viewModel.watchesToAdd.observe(this) {
-            it.forEach { watch ->
-                viewModel.addWatch(watch)
+        lifecycleScope.launch {
+            viewModel.registeredWatches.collect {
+                registeredWatches.add(it)
             }
         }
-    }
-
-    companion object {
-        private const val TIMER_UPDATE_SECONDS: Long = 5
     }
 }

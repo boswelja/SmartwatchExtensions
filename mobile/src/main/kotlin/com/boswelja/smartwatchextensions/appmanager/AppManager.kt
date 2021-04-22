@@ -11,22 +11,30 @@ import com.boswelja.smartwatchextensions.common.appmanager.Messages.START_SERVIC
 import com.boswelja.smartwatchextensions.common.appmanager.Messages.STOP_SERVICE
 import com.boswelja.smartwatchextensions.common.fromByteArray
 import com.boswelja.smartwatchextensions.watchmanager.WatchManager
-import com.boswelja.smartwatchextensions.watchmanager.item.Watch
-import com.google.android.gms.wearable.MessageClient
-import com.google.android.gms.wearable.Wearable
+import com.boswelja.watchconnection.core.MessageListener
+import com.boswelja.watchconnection.core.Watch
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 import timber.log.Timber
+import java.util.UUID
 
 /**
  * Class for handling the connection with an App Manager service on a connected watch.
  */
 class AppManager internal constructor(
-    private val messageClient: MessageClient,
-    private val watchManager: WatchManager
+    private val watchManager: WatchManager,
+    dispatcher: CoroutineDispatcher
 ) {
 
+    private val coroutineJob = Job()
+    private val coroutineScope = CoroutineScope(dispatcher + coroutineJob)
+
     constructor(context: Context) : this(
-        Wearable.getMessageClient(context),
-        WatchManager.getInstance(context)
+        WatchManager.getInstance(context),
+        Dispatchers.IO
     )
 
     private val stateDisconnectedDelay = DelayedFunction(15) {
@@ -70,29 +78,43 @@ class AppManager internal constructor(
     val progress: LiveData<Int>
         get() = _progress
 
-    private val messageListener = MessageClient.OnMessageReceivedListener {
-        if (it.sourceNodeId == watch?.id && _state.value != State.ERROR) {
-            try {
-                when (it.path) {
-                    // Package change messages
-                    Messages.PACKAGE_ADDED -> addPackage(App.fromByteArray(it.data))
-                    Messages.PACKAGE_UPDATED -> updatePackage(App.fromByteArray(it.data))
-                    Messages.PACKAGE_REMOVED -> removePackage(String(it.data, Charsets.UTF_8))
+    private val messageListener = object : MessageListener {
+        override fun onMessageReceived(sourceWatchId: UUID, message: String, data: ByteArray?) {
+            if (sourceWatchId == watch?.id && _state.value != State.ERROR) {
+                try {
+                    when (message) {
+                        // Package change messages
+                        Messages.PACKAGE_ADDED -> data?.let {
+                            addPackage(App.fromByteArray(data))
+                        }
+                        Messages.PACKAGE_UPDATED -> data?.let {
+                            updatePackage(App.fromByteArray(data))
+                        }
+                        Messages.PACKAGE_REMOVED -> data?.let {
+                            removePackage(String(data, Charsets.UTF_8))
+                        }
 
-                    // Service state messages
-                    Messages.SERVICE_RUNNING -> serviceRunning()
-                    Messages.EXPECTED_APP_COUNT -> expectPackages(Int.fromByteArray(it.data))
+                        // Service state messages
+                        Messages.SERVICE_RUNNING -> serviceRunning()
+                        Messages.EXPECTED_APP_COUNT -> data?.let {
+                            expectPackages(Int.fromByteArray(data))
+                        }
 
-                    else -> Timber.w("Unknown path received, ignoring")
+                        else -> Timber.w("Unknown path received, ignoring")
+                    }
+                } catch (e: Exception) {
+                    Timber.e(e)
+                    _state.postValue(State.ERROR)
                 }
-            } catch (e: Exception) {
-                Timber.e(e)
-                _state.postValue(State.ERROR)
+            } else if (message == Messages.SERVICE_RUNNING) {
+                // If we get SERVICE_RUNNING from any watch that's not the selected watch, stop it
+                Timber.w("Issue with received message, stopping App Manager on the watch")
+                coroutineScope.launch {
+                    watchManager.getWatchById(sourceWatchId)?.let {
+                        watchManager.sendMessage(it, STOP_SERVICE, null)
+                    }
+                }
             }
-        } else if (it.path == Messages.SERVICE_RUNNING) {
-            // If we get SERVICE_RUNNING from any watch that's not the selected watch, stop it
-            Timber.w("Issue with received message, stopping App Manager on the watch")
-            messageClient.sendMessage(it.sourceNodeId, STOP_SERVICE, null)
         }
     }
 
@@ -102,7 +124,9 @@ class AppManager internal constructor(
             _state.postValue(State.CONNECTING)
             _progress.postValue(-1)
             watch?.let { watch ->
-                watchManager.sendMessage(watch, STOP_SERVICE, null)
+                coroutineScope.launch {
+                    watchManager.sendMessage(watch, STOP_SERVICE, null)
+                }
             }
             watch = it
             startAppManagerService()
@@ -110,7 +134,7 @@ class AppManager internal constructor(
     }
 
     init {
-        messageClient.addListener(messageListener)
+        watchManager.registerMessageListener(messageListener)
         watchManager.selectedWatch.observeForever(selectedWatchObserver)
     }
 
@@ -175,13 +199,15 @@ class AppManager internal constructor(
     fun startAppManagerService() {
         Timber.d("startAppManagerService() called")
         watch?.let {
-            _state.postValue(State.CONNECTING)
-            _userApps.clear()
-            _systemApps.clear()
-            _userAppsObservable.postValue(_userApps)
-            _systemAppsObservable.postValue(_systemApps)
-            watchManager.sendMessage(it, START_SERVICE, null)
-            stateDisconnectedDelay.reset()
+            coroutineScope.launch {
+                _state.postValue(State.CONNECTING)
+                _userApps.clear()
+                _systemApps.clear()
+                _userAppsObservable.postValue(_userApps)
+                _systemAppsObservable.postValue(_systemApps)
+                watchManager.sendMessage(it, START_SERVICE, null)
+                stateDisconnectedDelay.reset()
+            }
         }
     }
 
@@ -189,7 +215,9 @@ class AppManager internal constructor(
     fun stopAppManagerService() {
         Timber.d("stopAppManagerService() called")
         watch?.let {
-            watchManager.sendMessage(it, STOP_SERVICE, null)
+            coroutineScope.launch {
+                watchManager.sendMessage(it, STOP_SERVICE, null)
+            }
         }
     }
 
@@ -199,11 +227,13 @@ class AppManager internal constructor(
      */
     fun sendUninstallRequestMessage(app: App) {
         watch?.let {
-            watchManager.sendMessage(
-                it,
-                Messages.REQUEST_UNINSTALL_PACKAGE,
-                app.packageName.toByteArray(Charsets.UTF_8)
-            )
+            coroutineScope.launch {
+                watchManager.sendMessage(
+                    it,
+                    Messages.REQUEST_UNINSTALL_PACKAGE,
+                    app.packageName.toByteArray(Charsets.UTF_8)
+                )
+            }
         }
     }
 
@@ -213,16 +243,19 @@ class AppManager internal constructor(
      */
     fun sendOpenRequestMessage(app: App) {
         watch?.let {
-            watchManager.sendMessage(
-                it,
-                Messages.REQUEST_OPEN_PACKAGE,
-                app.packageName.toByteArray(Charsets.UTF_8)
-            )
+            coroutineScope.launch {
+                watchManager.sendMessage(
+                    it,
+                    Messages.REQUEST_OPEN_PACKAGE,
+                    app.packageName.toByteArray(Charsets.UTF_8)
+                )
+            }
         }
     }
 
     fun destroy() {
-        messageClient.removeListener(messageListener)
+        coroutineJob.cancel()
+        watchManager.unregisterMessageListener(messageListener)
         watchManager.selectedWatch.removeObserver(selectedWatchObserver)
         stopAppManagerService()
     }

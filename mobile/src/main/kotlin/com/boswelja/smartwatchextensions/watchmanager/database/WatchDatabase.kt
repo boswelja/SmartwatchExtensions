@@ -4,30 +4,30 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
+import com.boswelja.smartwatchextensions.common.RoomTypeConverters
 import com.boswelja.smartwatchextensions.common.SingletonHolder
-import com.boswelja.smartwatchextensions.watchmanager.item.Watch
+import com.boswelja.smartwatchextensions.watchmanager.database.DbWatch.Companion.toDbWatch
+import com.boswelja.watchconnection.core.Watch
+import java.util.UUID
 
-@Database(entities = [Watch::class], version = 8)
+@Database(entities = [DbWatch::class], version = 1)
+@TypeConverters(RoomTypeConverters::class)
 abstract class WatchDatabase : RoomDatabase() {
 
     internal abstract fun watchDao(): WatchDao
 
-    fun renameWatch(watch: Watch, newName: String) = watchDao().setName(watch.id, newName)
-    fun addWatch(watch: Watch) = watchDao().add(watch)
-    fun removeWatch(watch: Watch) = watchDao().remove(watch.id)
+    suspend fun renameWatch(watch: Watch, newName: String) = watchDao().setName(watch.id, newName)
+    suspend fun addWatch(watch: Watch) = watchDao().add(watch.toDbWatch())
+    suspend fun removeWatch(watch: Watch) = watchDao().remove(watch.id)
     fun getAll() = watchDao().getAllObservable()
-    fun getById(watchId: String) = watchDao().get(watchId)
+    fun getById(watchId: UUID) = watchDao().getObservable(watchId)
+    suspend fun getByPlatformAndId(platform: String, platformId: String) =
+        watchDao().get(platform, platformId)
 
     companion object : SingletonHolder<WatchDatabase, Context>({ context ->
         Room.databaseBuilder(context, WatchDatabase::class.java, "watch-db")
             .apply {
-                addMigrations(
-                    Migrations.MIGRATION_3_5,
-                    Migrations.MIGRATION_4_5,
-                    Migrations.MIGRATION_5_6,
-                    Migrations.MIGRATION_6_7,
-                    Migrations.MIGRATION_7_8
-                )
                 fallbackToDestructiveMigration()
             }
             .build()

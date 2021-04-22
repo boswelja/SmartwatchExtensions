@@ -17,6 +17,7 @@ import com.google.android.gms.wearable.DataClient
 import com.google.android.gms.wearable.PutDataMapRequest
 import com.google.android.gms.wearable.Wearable
 import timber.log.Timber
+import java.util.UUID
 
 class DnDLocalChangeService : LifecycleService() {
 
@@ -30,7 +31,7 @@ class DnDLocalChangeService : LifecycleService() {
             }
         }
 
-    private val sendToWatch = HashMap<String, Boolean>()
+    private val sendToWatch = HashMap<UUID, Boolean>()
 
     override fun onCreate() {
         super.onCreate()

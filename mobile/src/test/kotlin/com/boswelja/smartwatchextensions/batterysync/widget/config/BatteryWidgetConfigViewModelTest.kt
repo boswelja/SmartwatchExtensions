@@ -6,10 +6,11 @@ import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.boswelja.smartwatchextensions.getOrAwaitValue
-import com.boswelja.smartwatchextensions.watchmanager.connection.wearos.WearOSConnectionInterface
 import com.boswelja.smartwatchextensions.watchmanager.database.WatchDatabase
-import com.boswelja.smartwatchextensions.watchmanager.item.Watch
+import com.boswelja.watchconnection.core.Watch
+import com.boswelja.watchconnection.wearos.WearOSConnectionHandler
 import com.google.common.truth.Truth.assertThat
+import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -24,9 +25,9 @@ class BatteryWidgetConfigViewModelTest {
     @get:Rule
     val instantExecutorRule = InstantTaskExecutorRule()
 
-    private val dummyWatch1 = Watch("an-id-1234", "Watch 1", WearOSConnectionInterface.PLATFORM)
-    private val dummyWatch2 = Watch("an-id-2345", "Watch 2", WearOSConnectionInterface.PLATFORM)
-    private val dummyWatch3 = Watch("an-id-3456", "Watch 3", WearOSConnectionInterface.PLATFORM)
+    private val dummyWatch1 = Watch("an-id-1234", "Watch 1", WearOSConnectionHandler.PLATFORM)
+    private val dummyWatch2 = Watch("an-id-2345", "Watch 2", WearOSConnectionHandler.PLATFORM)
+    private val dummyWatch3 = Watch("an-id-3456", "Watch 3", WearOSConnectionHandler.PLATFORM)
 
     private lateinit var watchDatabase: WatchDatabase
     private lateinit var viewModel: BatteryWidgetConfigViewModel
@@ -72,7 +73,7 @@ class BatteryWidgetConfigViewModelTest {
     /**
      * Clear the database and add a list of [Watch] to it.
      */
-    private fun setWatchesInDatabase(watches: List<Watch>) {
+    private fun setWatchesInDatabase(watches: List<Watch>): Unit = runBlocking {
         watchDatabase.clearAllTables()
         watches.forEach {
             watchDatabase.addWatch(it)

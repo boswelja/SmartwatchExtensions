@@ -8,12 +8,11 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.boswelja.smartwatchextensions.common.connection.Messages
 import com.boswelja.smartwatchextensions.watchmanager.WatchManager
-import com.boswelja.smartwatchextensions.watchmanager.item.Watch
-import com.google.android.gms.wearable.MessageClient
+import com.boswelja.watchconnection.core.Watch
 import io.mockk.MockKAnnotations
+import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
-import io.mockk.verify
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -27,12 +26,11 @@ class AboutAppViewModelTest {
     @get:Rule
     val taskExecutorRule = InstantTaskExecutorRule()
 
-    private val selectedWatch = MutableLiveData<Watch?>()
+    private val selectedWatch = MutableLiveData<Watch>()
 
-    private val dummyWatch1 = Watch("an-id-1234", "Watch 1", "")
-    private val dummyWatch2 = Watch("an-id-2345", "Watch 2", "")
+    private val dummyWatch1 = Watch("Watch 1", "id1", "")
+    private val dummyWatch2 = Watch("Watch 2", "id2", "")
 
-    @RelaxedMockK private lateinit var messageClient: MessageClient
     @RelaxedMockK private lateinit var watchManager: WatchManager
     @RelaxedMockK private lateinit var customTabIntent: CustomTabsIntent
 
@@ -47,7 +45,6 @@ class AboutAppViewModelTest {
 
         viewModel = AboutAppViewModel(
             ApplicationProvider.getApplicationContext(),
-            messageClient,
             watchManager,
             customTabIntent
         )
@@ -55,14 +52,14 @@ class AboutAppViewModelTest {
 
     @Test
     fun `Watch version update requested on init`() {
-        verify { messageClient.sendMessage(dummyWatch1.id, Messages.REQUEST_APP_VERSION, null) }
+        coVerify { watchManager.sendMessage(dummyWatch1, Messages.REQUEST_APP_VERSION, null) }
     }
 
     @Test
     fun `Switching selected watch requests new watch version`() {
         selectedWatch.postValue(dummyWatch1)
-        verify { messageClient.sendMessage(dummyWatch1.id, Messages.REQUEST_APP_VERSION, null) }
+        coVerify { watchManager.sendMessage(dummyWatch1, Messages.REQUEST_APP_VERSION, null) }
         selectedWatch.postValue(dummyWatch2)
-        verify { messageClient.sendMessage(dummyWatch2.id, Messages.REQUEST_APP_VERSION, null) }
+        coVerify { watchManager.sendMessage(dummyWatch1, Messages.REQUEST_APP_VERSION, null) }
     }
 }

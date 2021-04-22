@@ -26,7 +26,7 @@ import androidx.compose.material.icons.outlined.Watch
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -36,31 +36,34 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.lifecycleScope
 import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.common.connection.Capability
 import com.boswelja.smartwatchextensions.common.ui.AppTheme
 import com.boswelja.smartwatchextensions.common.ui.UpNavigationAppBar
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import java.util.UUID
 
 class WatchInfoActivity : AppCompatActivity() {
 
     private val watchId by lazy { intent?.getStringExtra(EXTRA_WATCH_ID)!! }
     private val viewModel: WatchInfoViewModel by viewModels()
     private var watchName by mutableStateOf("")
+    private val capabilities = mutableStateListOf<Capability>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        viewModel.setWatch(watchId)
+        viewModel.setWatch(UUID.fromString(watchId))
         viewModel.watch.observe(this) {
-            watchName = it.name
+            it?.let { watch -> watchName = watch.name }
         }
 
         setContent {
             AppTheme {
                 val scaffoldState = rememberScaffoldState()
-                val watch by viewModel.watch.observeAsState()
                 val scope = rememberCoroutineScope()
 
                 var watchNameError by remember { mutableStateOf(false) }
@@ -89,28 +92,24 @@ class WatchInfoActivity : AppCompatActivity() {
                             },
                             modifier = Modifier.padding(top = 16.dp)
                         )
-                        if (watch?.capabilities != null && watch!!.capabilities != 0.toShort()) {
-                            Text(
-                                stringResource(R.string.capabilities_title),
-                                textAlign = TextAlign.Center,
-                                style = MaterialTheme.typography.h6,
-                                modifier = Modifier.padding(top = 16.dp)
-                            )
-                            val capabilities = Capability.values()
-                                .filter { watch!!.hasCapability(it) }
-                            LazyColumn(horizontalAlignment = Alignment.CenterHorizontally) {
-                                items(capabilities) { capability ->
-                                    Text(
-                                        stringResource(capability.label),
-                                        textAlign = TextAlign.Center,
-                                        style = MaterialTheme.typography.body1
-                                    )
-                                }
+                        Text(
+                            stringResource(R.string.capabilities_title),
+                            textAlign = TextAlign.Center,
+                            style = MaterialTheme.typography.h6,
+                            modifier = Modifier.padding(top = 16.dp)
+                        )
+                        LazyColumn(horizontalAlignment = Alignment.CenterHorizontally) {
+                            items(capabilities) { capability ->
+                                Text(
+                                    stringResource(capability.label),
+                                    textAlign = TextAlign.Center,
+                                    style = MaterialTheme.typography.body1
+                                )
                             }
                         }
                         OutlinedButton(
                             onClick = {
-                                viewModel.refreshCapabilities()
+                                refreshCapabilities()
                                 scope.launch {
                                     scaffoldState.snackbarHostState.showSnackbar(
                                         getString(R.string.refresh_capabilities_requested)
@@ -164,6 +163,12 @@ class WatchInfoActivity : AppCompatActivity() {
         }
     }
 
+    private fun refreshCapabilities() {
+        capabilities.clear()
+        lifecycleScope.launch {
+            viewModel.getCapabilities()?.collect { capabilities.add(Capability.valueOf(it)) }
+        }
+    }
     override fun onPause() {
         super.onPause()
         if (watchName.isNotBlank()) {

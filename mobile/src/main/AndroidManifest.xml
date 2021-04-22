@@ -191,18 +191,5 @@
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
             </intent-filter>
         </activity>
-
-        <service
-            android:name=".watchmanager.connection.wearos.PreferenceChangeReceiver"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="com.google.android.gms.wearable.DATA_CHANGED" />
-                <data
-                    android:host="*"
-                    android:path="/preference_change"
-                    android:scheme="wear" />
-            </intent-filter>
-        </service>
-
     </application>
 </manifest>

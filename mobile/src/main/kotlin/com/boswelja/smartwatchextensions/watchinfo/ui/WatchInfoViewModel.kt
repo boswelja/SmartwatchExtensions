@@ -3,15 +3,18 @@ package com.boswelja.smartwatchextensions.watchinfo.ui
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.map
+import androidx.lifecycle.switchMap
 import androidx.lifecycle.viewModelScope
 import com.boswelja.smartwatchextensions.watchmanager.WatchManager
-import com.boswelja.smartwatchextensions.watchmanager.item.Watch
+import com.boswelja.watchconnection.core.Watch
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import java.util.UUID
 
 class WatchInfoViewModel internal constructor(
     application: Application,
@@ -19,11 +22,10 @@ class WatchInfoViewModel internal constructor(
     private val dispatcher: CoroutineDispatcher
 ) : AndroidViewModel(application) {
 
-    private val _watch = MediatorLiveData<Watch>()
-    private val watchId = MutableLiveData<String>()
+    private val watchId = MutableLiveData<UUID>()
 
-    val watch: LiveData<Watch>
-        get() = _watch
+    val watch: LiveData<Watch?> =
+        watchId.switchMap { id -> watchManager.observeWatchById(id).map { it } }
 
     @Suppress("unused")
     constructor(application: Application) : this(
@@ -32,27 +34,11 @@ class WatchInfoViewModel internal constructor(
         Dispatchers.IO
     )
 
-    init {
-        _watch.addSource(watchManager.registeredWatches) { watches ->
-            Timber.d("registeredWatches updated")
-            watches.firstOrNull { it.id == watchId.value }?.let {
-                _watch.postValue(it)
-            }
-        }
-        _watch.addSource(watchId) { id ->
-            Timber.d("watchId updated")
-            watchManager.registeredWatches.value?.firstOrNull { it.id == id }?.let {
-                _watch.postValue(it)
-            }
-        }
-        watchManager.refreshData()
-    }
-
     /**
      * Sets the ID of the current watch we're showing info for.
      * @param watchId The [Watch.id] of the current watch.
      */
-    fun setWatch(watchId: String) {
+    fun setWatch(watchId: UUID) {
         this.watchId.postValue(watchId)
     }
 
@@ -61,7 +47,7 @@ class WatchInfoViewModel internal constructor(
      */
     fun updateWatchName(name: String) {
         Timber.d("updateWatchName($name) called")
-        _watch.value?.let { watch ->
+        watch.value?.let { watch ->
             viewModelScope.launch(dispatcher) {
                 Timber.d("Updating watch name")
                 watchManager.renameWatch(watch, name)
@@ -69,17 +55,15 @@ class WatchInfoViewModel internal constructor(
         }
     }
 
-    fun refreshCapabilities() {
-        _watch.value?.let {
-            watchManager.requestRefreshCapabilities(it)
-        }
+    fun getCapabilities(): Flow<String>? {
+        return watch.value?.let { watchManager.getCapabilitiesFor(it) }
     }
 
     /**
      * Forgets the current watch.
      */
     fun forgetWatch() {
-        _watch.value?.let { watch ->
+        watch.value?.let { watch ->
             viewModelScope.launch(dispatcher) {
                 watchManager.forgetWatch(getApplication<Application>(), watch)
             }
@@ -90,7 +74,7 @@ class WatchInfoViewModel internal constructor(
      * Resets the current watch preferences.
      */
     fun resetWatchPreferences() {
-        _watch.value?.let { watch ->
+        watch.value?.let { watch ->
             viewModelScope.launch(dispatcher) {
                 watchManager.resetWatchPreferences(getApplication<Application>(), watch)
             }

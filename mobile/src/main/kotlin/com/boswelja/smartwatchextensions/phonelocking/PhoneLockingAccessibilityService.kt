@@ -7,23 +7,20 @@ import com.boswelja.smartwatchextensions.common.connection.Messages.LOCK_PHONE
 import com.boswelja.smartwatchextensions.common.preference.PreferenceKey.PHONE_LOCKING_ENABLED_KEY
 import com.boswelja.smartwatchextensions.watchmanager.WatchManager
 import com.boswelja.smartwatchextensions.watchmanager.item.BoolPreference
-import com.boswelja.smartwatchextensions.watchmanager.item.Watch
-import com.google.android.gms.wearable.MessageClient
+import com.boswelja.watchconnection.core.MessageListener
+import com.boswelja.watchconnection.core.Watch
 import com.google.android.gms.wearable.MessageEvent
-import com.google.android.gms.wearable.Wearable
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
+import java.util.UUID
 
 class PhoneLockingAccessibilityService :
     AccessibilityService(),
-    MessageClient.OnMessageReceivedListener {
+    MessageListener {
 
-    private val registeredWatchObserver = Observer<List<Watch>> {
-        registeredWatches = it
-    }
     private val settingsObserver = Observer<Array<BoolPreference>> { prefs ->
         if (prefs.none { it.value }) stop()
     }
@@ -39,24 +36,19 @@ class PhoneLockingAccessibilityService :
         )
     }
 
-    private lateinit var messageClient: MessageClient
-
     private var isStopping = false
-    private var registeredWatches: List<Watch> = emptyList()
 
-    override fun onMessageReceived(messageEvent: MessageEvent) {
-        when (messageEvent.path) {
+    override fun onMessageReceived(sourceWatchId: UUID, message: String, data: ByteArray?) {
+        when (message) {
             LOCK_PHONE -> {
-                tryLockDevice(messageEvent)
+                tryLockDevice(sourceWatchId)
             }
         }
     }
 
     override fun onServiceConnected() {
         Timber.i("onServiceConnected() called")
-        messageClient = Wearable.getMessageClient(this)
-        messageClient.addListener(this)
-        watchManager.registeredWatches.observeForever(registeredWatchObserver)
+        watchManager.registerMessageListener(this)
         settingsLiveData.observeForever(settingsObserver)
     }
 
@@ -75,12 +67,11 @@ class PhoneLockingAccessibilityService :
 
     /**
      * Tries to lock the device after receiving a [MessageEvent].
-     * @param messageEvent The [MessageEvent] requesting a device lock.
+     * @param watchId The [Watch.id] of the watch requesting a device lock.
      */
-    private fun tryLockDevice(messageEvent: MessageEvent) {
+    private fun tryLockDevice(watchId: UUID) {
         coroutineScope.launch(Dispatchers.IO) {
-            val watchId = messageEvent.sourceNodeId
-            val watch = registeredWatches.firstOrNull { it.id == watchId }
+            val watch = watchManager.getWatchById(watchId)
             if (watch != null) {
                 val phoneLockingEnabledForWatch = watchManager.getPreference<Boolean>(
                     watch.id, PHONE_LOCKING_ENABLED_KEY
@@ -110,8 +101,7 @@ class PhoneLockingAccessibilityService :
                     PHONE_LOCKING_ENABLED_KEY, false
                 )
             }
-            messageClient.removeListener(this)
-            watchManager.registeredWatches.removeObserver(registeredWatchObserver)
+            watchManager.unregisterMessageListener(this)
             settingsLiveData.removeObserver(settingsObserver)
         }
     }

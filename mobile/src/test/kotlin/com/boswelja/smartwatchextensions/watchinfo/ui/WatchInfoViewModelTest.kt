@@ -5,17 +5,17 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.MutableLiveData
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.boswelja.smartwatchextensions.common.connection.Capability
 import com.boswelja.smartwatchextensions.getOrAwaitValue
 import com.boswelja.smartwatchextensions.watchmanager.WatchManager
-import com.boswelja.smartwatchextensions.watchmanager.item.Watch
+import com.boswelja.watchconnection.core.Watch
 import com.google.common.truth.Truth.assertThat
 import io.mockk.MockKAnnotations
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
-import kotlin.experimental.or
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import org.junit.Before
 import org.junit.Rule
@@ -31,7 +31,7 @@ class WatchInfoViewModelTest {
     @get:Rule
     val taskExecutorRule = InstantTaskExecutorRule()
 
-    private val dummyWatch = Watch("watch-id", "Watch Name", "platform")
+    private val dummyWatch = Watch("Watch Name", "watch-id", "platform")
     private val registeredWatches = MutableLiveData(listOf(dummyWatch))
     private val dispatcher = TestCoroutineDispatcher()
 
@@ -59,19 +59,6 @@ class WatchInfoViewModelTest {
     }
 
     @Test
-    fun `capability changes update selected watch`() {
-        viewModel.setWatch(dummyWatch.id)
-
-        // Swap watch out
-        val dummyWatch2 = dummyWatch
-        dummyWatch2.capabilities = Capability.SYNC_BATTERY.id or Capability.SEND_DND.id
-        registeredWatches.value = listOf(dummyWatch2)
-
-        assertThat(viewModel.watch.getOrAwaitValue().capabilities)
-            .isEqualTo(dummyWatch2.capabilities)
-    }
-
-    @Test
     fun `updateWatchName calls watchManager if watch is not null`() {
         // Check with no / invalid watch selected
         viewModel.updateWatchName("new name")
@@ -85,16 +72,16 @@ class WatchInfoViewModelTest {
     }
 
     @Test
-    fun `refreshCapabilities calls watchManager if watch is not null`() {
+    fun `getCapabilities calls watchManager if watch is not null`(): Unit = runBlocking {
         // Check with no / invalid watch selected
-        viewModel.refreshCapabilities()
-        coVerify(inverse = true) { watchManager.requestRefreshCapabilities(any()) }
+        viewModel.getCapabilities()?.collect()
+        coVerify(inverse = true) { watchManager.getCapabilitiesFor(any()) }
 
         // Check with valid watch selected
         viewModel.setWatch(dummyWatch.id)
         viewModel.watch.getOrAwaitValue()
-        viewModel.refreshCapabilities()
-        coVerify { watchManager.requestRefreshCapabilities(dummyWatch) }
+        viewModel.getCapabilities()?.collect()
+        coVerify { watchManager.getCapabilitiesFor(dummyWatch) }
     }
 
     @Test

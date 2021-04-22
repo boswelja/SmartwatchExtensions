@@ -18,14 +18,15 @@ import com.boswelja.smartwatchextensions.common.preference.PreferenceKey.BATTERY
 import com.boswelja.smartwatchextensions.common.ui.BaseWidgetProvider
 import com.boswelja.smartwatchextensions.watchmanager.database.WatchDatabase
 import com.boswelja.smartwatchextensions.watchmanager.database.WatchSettingsDatabase
-import com.boswelja.smartwatchextensions.watchmanager.item.Watch
+import com.boswelja.watchconnection.core.Watch
+import com.boswelja.watchconnection.wearos.WearOSConnectionHandler
 import com.google.android.gms.wearable.MessageEvent
 import com.google.android.gms.wearable.WearableListenerService
-import java.util.Locale
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import java.util.Locale
 
 class WatchBatteryUpdateReceiver : WearableListenerService() {
 
@@ -37,25 +38,28 @@ class WatchBatteryUpdateReceiver : WearableListenerService() {
     override fun onMessageReceived(messageEvent: MessageEvent?) {
         if (messageEvent?.path == BATTERY_STATUS_PATH) {
             Timber.i("Got ${messageEvent.path}")
-            watchBatteryStats = WatchBatteryStats.fromMessage(messageEvent)
 
             // TODO We shouldn't need to launch a coroutine scope here
             coroutineScope.launch {
                 val database = WatchDatabase.getInstance(this@WatchBatteryUpdateReceiver)
-                database.getById(watchBatteryStats.watchId)?.let {
+                database.getByPlatformAndId(
+                    WearOSConnectionHandler.PLATFORM,
+                    messageEvent.sourceNodeId
+                )?.let { watch ->
+                    watchBatteryStats = WatchBatteryStats.fromMessage(watch.id, messageEvent)
                     val settingsDb =
                         WatchSettingsDatabase.getInstance(this@WatchBatteryUpdateReceiver)
                     if (watchBatteryStats.isCharging) {
                         handleWatchChargeNoti(
                             watchBatteryStats,
                             settingsDb,
-                            it
+                            watch
                         )
                     } else {
                         handleWatchLowNoti(
                             watchBatteryStats,
                             settingsDb,
-                            it
+                            watch
                         )
                     }
                 }

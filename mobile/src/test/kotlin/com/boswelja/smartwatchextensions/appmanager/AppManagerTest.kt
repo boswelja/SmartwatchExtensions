@@ -8,13 +8,16 @@ import com.boswelja.smartwatchextensions.common.appmanager.App
 import com.boswelja.smartwatchextensions.common.appmanager.Messages.START_SERVICE
 import com.boswelja.smartwatchextensions.getOrAwaitValue
 import com.boswelja.smartwatchextensions.watchmanager.WatchManager
-import com.boswelja.smartwatchextensions.watchmanager.item.Watch
+import com.boswelja.watchconnection.core.Watch
 import com.google.android.gms.wearable.MessageClient
 import com.google.common.truth.Truth.assertThat
 import io.mockk.MockKAnnotations
+import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.verify
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.TestCoroutineDispatcher
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -25,7 +28,7 @@ import org.robolectric.annotation.Config
 @Config(sdk = [Build.VERSION_CODES.R])
 class AppManagerTest {
 
-    private val watch = Watch("watch-id", "Watch 1", "platform")
+    private val watch = Watch("Watch 1", "watch-id", "platform")
     private val selectedWatch = MutableLiveData(watch)
     private val app = App(
         null,
@@ -49,10 +52,11 @@ class AppManagerTest {
 
     private lateinit var appManager: AppManager
 
+    @ExperimentalCoroutinesApi
     @Before
     fun setUp() {
         MockKAnnotations.init(this)
-        appManager = AppManager(messageClient, watchManager)
+        appManager = AppManager(watchManager, TestCoroutineDispatcher())
     }
 
     @Test
@@ -65,31 +69,32 @@ class AppManagerTest {
             .isEqualTo(0)
     }
 
+    @ExperimentalCoroutinesApi
     @Test
     fun `startAppManagerService updates state, clears app list and sends message`() {
         every { watchManager.selectedWatch } returns selectedWatch
-        appManager = AppManager(messageClient, watchManager)
+        appManager = AppManager(watchManager, TestCoroutineDispatcher())
 
         appManager.startAppManagerService()
         assertThat(appManager.state.getOrAwaitValue())
             .isEquivalentAccordingToCompareTo(State.CONNECTING)
         assertThat(appManager.userApps.getOrAwaitValue()).isEmpty()
         assertThat(appManager.systemApps.getOrAwaitValue()).isEmpty()
-        verify { watchManager.sendMessage(watch, START_SERVICE, null) }
+        coVerify { watchManager.sendMessage(watch, START_SERVICE, null) }
     }
 
     @Test
     fun `startAppManagerService handles null watchId`() {
         // watchId should be inherently null by default, since we don't mock selectedWatch
         appManager.startAppManagerService()
-        verify(inverse = true) { watchManager.sendMessage(any(), any(), any()) }
+        coVerify(inverse = true) { watchManager.sendMessage(any(), any(), any()) }
     }
 
     @Test
     fun `stopAppManagerService handles null watchId`() {
         // watchId should be inherently null by default, since we don't mock selectedWatch
         appManager.stopAppManagerService()
-        verify(inverse = true) { watchManager.sendMessage(any(), any(), any()) }
+        coVerify(inverse = true) { watchManager.sendMessage(any(), any(), any()) }
     }
 
     @Test
@@ -106,10 +111,11 @@ class AppManagerTest {
         verify { messageClient.removeListener(any()) }
     }
 
+    @ExperimentalCoroutinesApi
     @Test
     fun `selectedWatch is observed for the lifetime of AppManager`() {
         every { watchManager.selectedWatch } returns selectedWatch
-        appManager = AppManager(messageClient, watchManager)
+        appManager = AppManager(watchManager, TestCoroutineDispatcher())
 
         assertThat(selectedWatch.hasActiveObservers()).isTrue()
 

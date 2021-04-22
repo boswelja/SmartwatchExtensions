@@ -11,13 +11,13 @@ import com.boswelja.smartwatchextensions.appsettings.AppSettingsSerializer
 import com.boswelja.smartwatchextensions.appsettings.Settings
 import com.boswelja.smartwatchextensions.appsettings.appSettingsStore
 import com.boswelja.smartwatchextensions.watchmanager.WatchManager
-import com.boswelja.smartwatchextensions.watchmanager.item.Watch
-import kotlin.math.floor
+import com.boswelja.watchconnection.core.Watch
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
+import kotlin.math.floor
 
 class ManageSpaceViewModel internal constructor(
     application: Application,

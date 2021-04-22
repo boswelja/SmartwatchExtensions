@@ -16,4 +16,6 @@ object Messages {
     const val CHECK_WATCH_REGISTERED_PATH = "/check_watch_registered"
     const val WATCH_NOT_REGISTERED_PATH = "/watch_not_registered"
     const val WATCH_REGISTERED_PATH = "/watch_registered"
+
+    const val UPDATE_PREFERENCE = "/update_preference"
 }

@@ -56,11 +56,13 @@ class HelperViewModel internal constructor(
 
     fun requestCheckPermission() {
         watchManager.selectedWatch.value?.let {
-            watchManager.sendMessage(
-                it,
-                References.REQUEST_INTERRUPT_FILTER_ACCESS_STATUS_PATH,
-                null
-            )
+            viewModelScope.launch {
+                watchManager.sendMessage(
+                    it,
+                    References.REQUEST_INTERRUPT_FILTER_ACCESS_STATUS_PATH,
+                    null
+                )
+            }
         }
     }
 

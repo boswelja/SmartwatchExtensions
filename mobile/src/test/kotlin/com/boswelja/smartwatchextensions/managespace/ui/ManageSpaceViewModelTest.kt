@@ -12,7 +12,7 @@ import com.boswelja.smartwatchextensions.analytics.Analytics
 import com.boswelja.smartwatchextensions.appsettings.Settings
 import com.boswelja.smartwatchextensions.managespace.ui.ManageSpaceViewModel.Companion.MAX_PROGRESS
 import com.boswelja.smartwatchextensions.watchmanager.WatchManager
-import com.boswelja.smartwatchextensions.watchmanager.item.Watch
+import com.boswelja.watchconnection.core.Watch
 import com.google.common.truth.Truth.assertThat
 import io.mockk.MockKAnnotations
 import io.mockk.coVerify
@@ -20,7 +20,6 @@ import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.mockk
 import io.mockk.verify
-import java.io.File
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.runBlocking
@@ -31,6 +30,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.Shadows.shadowOf
 import org.robolectric.annotation.Config
+import java.io.File
 
 @ExperimentalCoroutinesApi
 @RunWith(AndroidJUnit4::class)
@@ -39,9 +39,9 @@ class ManageSpaceViewModelTest {
 
     @get:Rule val taskExecutorRule = InstantTaskExecutorRule()
 
-    private val dummyWatch1 = Watch("an-id-1234", "Watch 1", "")
-    private val dummyWatch2 = Watch("an-id-2345", "Watch 2", "")
-    private val dummyWatch3 = Watch("an-id-3456", "Watch 3", "")
+    private val dummyWatch1 = Watch("Watch 1", "id1", "")
+    private val dummyWatch2 = Watch("Watch 2", "id2", "")
+    private val dummyWatch3 = Watch("Watch 3", "id3", "")
     private val dummyWatches = listOf(dummyWatch1, dummyWatch2, dummyWatch3)
     private val appSettings = MutableStateFlow(Settings())
 

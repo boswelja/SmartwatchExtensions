@@ -7,18 +7,19 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.boswelja.smartwatchextensions.watchmanager.item.BoolPreference
+import java.util.UUID
 
 @Dao
 interface BoolPreferenceDao {
 
     @Query("SELECT * FROM bool_preferences WHERE id = :watchId")
-    fun getAllForWatch(watchId: String): List<BoolPreference>
+    fun getAllForWatch(watchId: UUID): List<BoolPreference>
 
     @Query("SELECT * FROM bool_preferences WHERE pref_key = :key")
     fun getAllForKey(key: String): Array<BoolPreference>
 
     @Query("SELECT * FROM bool_preferences WHERE id = :watchId AND pref_key = :key LIMIT 1")
-    fun get(watchId: String, key: String): BoolPreference?
+    fun get(watchId: UUID, key: String): BoolPreference?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun update(boolPreference: BoolPreference)
@@ -27,16 +28,16 @@ interface BoolPreferenceDao {
     fun remove(boolPreference: BoolPreference)
 
     @Query("DELETE FROM bool_preferences WHERE id = :watchId")
-    fun deleteAllForWatch(watchId: String)
+    fun deleteAllForWatch(watchId: UUID)
 
     @Query("SELECT * FROM bool_preferences WHERE id = :watchId")
-    fun getAllObservableForWatch(watchId: String): LiveData<Array<BoolPreference>>
+    fun getAllObservableForWatch(watchId: UUID): LiveData<Array<BoolPreference>>
 
     @Query("SELECT * FROM bool_preferences WHERE pref_key = :key")
     fun getAllObservableForKey(key: String): LiveData<Array<BoolPreference>>
 
     @Query("SELECT * FROM bool_preferences WHERE id = :watchId AND pref_key = :key LIMIT 1")
-    fun getObservable(watchId: String, key: String): LiveData<BoolPreference?>
+    fun getObservable(watchId: UUID, key: String): LiveData<BoolPreference?>
 
     @Query("UPDATE bool_preferences SET value = :newValue WHERE pref_key = :key")
     fun updateAllForKey(key: String, newValue: Boolean)

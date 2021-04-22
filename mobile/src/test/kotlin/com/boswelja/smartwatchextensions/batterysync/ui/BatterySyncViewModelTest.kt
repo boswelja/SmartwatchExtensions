@@ -9,7 +9,7 @@ import com.boswelja.smartwatchextensions.common.preference.PreferenceKey.BATTERY
 import com.boswelja.smartwatchextensions.common.preference.PreferenceKey.BATTERY_PHONE_LOW_NOTI_KEY
 import com.boswelja.smartwatchextensions.common.preference.PreferenceKey.BATTERY_WATCH_LOW_NOTI_KEY
 import com.boswelja.smartwatchextensions.watchmanager.WatchManager
-import com.boswelja.smartwatchextensions.watchmanager.item.Watch
+import com.boswelja.watchconnection.core.Watch
 import io.mockk.MockKAnnotations
 import io.mockk.coVerify
 import io.mockk.every
@@ -29,7 +29,7 @@ class BatterySyncViewModelTest {
 
     @get:Rule val taskExecutorRule = InstantTaskExecutorRule()
 
-    private val dummyWatch = Watch("id", "Name", "platform")
+    private val dummyWatch = Watch("Name", "id", "platform")
     private val dummyWatchLive = MutableLiveData(dummyWatch)
     private val testDispatcher = TestCoroutineDispatcher()
 
