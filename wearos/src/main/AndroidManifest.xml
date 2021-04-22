@@ -147,18 +147,6 @@
         </service>
 
         <service
-            android:name=".phoneconnectionmanager.PreferenceChangeReceiver"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="com.google.android.gms.wearable.DATA_CHANGED" />
-                <data
-                    android:host="*"
-                    android:pathPrefix="/preference-change_"
-                    android:scheme="wear" />
-            </intent-filter>
-        </service>
-
-        <service
             android:name=".dndsync.DnDLocalChangeListener"
             android:exported="false" />
 
