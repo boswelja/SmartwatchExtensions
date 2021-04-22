@@ -9,7 +9,6 @@ import com.boswelja.smartwatchextensions.common.appmanager.Messages.START_SERVIC
 import com.boswelja.smartwatchextensions.getOrAwaitValue
 import com.boswelja.smartwatchextensions.watchmanager.WatchManager
 import com.boswelja.watchconnection.core.Watch
-import com.google.android.gms.wearable.MessageClient
 import com.google.common.truth.Truth.assertThat
 import io.mockk.MockKAnnotations
 import io.mockk.coVerify
@@ -45,8 +44,6 @@ class AppManagerTest {
     @get:Rule
     val taskExecutorRule = InstantTaskExecutorRule()
 
-    @RelaxedMockK
-    private lateinit var messageClient: MessageClient
     @RelaxedMockK
     private lateinit var watchManager: WatchManager
 
@@ -105,10 +102,10 @@ class AppManagerTest {
 
     @Test
     fun `Message listener is registered on init and removed on destroy`() {
-        verify { messageClient.addListener(any()) }
+        verify { watchManager.registerMessageListener(any()) }
 
         appManager.destroy()
-        verify { messageClient.removeListener(any()) }
+        verify { watchManager.unregisterMessageListener(any()) }
     }
 
     @ExperimentalCoroutinesApi
