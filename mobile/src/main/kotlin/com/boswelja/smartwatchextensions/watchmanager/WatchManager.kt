@@ -239,7 +239,8 @@ class WatchManager internal constructor(
     }
 
     suspend fun getWatchById(id: UUID) = watchDatabase.watchDao().get(id)
-    fun observeWatchById(id: UUID) = watchDatabase.watchDao().getObservable(id)
+    fun observeWatchById(id: UUID): LiveData<Watch?> =
+        watchDatabase.watchDao().getObservable(id).map { it }
 
     fun registerMessageListener(messageListener: MessageListener) =
         connectionClient.registerMessageListener(messageListener)
