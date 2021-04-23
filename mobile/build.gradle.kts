@@ -55,7 +55,7 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.0.0-beta04"
+        kotlinCompilerExtensionVersion = "1.0.0-beta05"
     }
 
     packagingOptions {
@@ -76,16 +76,16 @@ dependencies {
     val androidxArch = "2.1.0"
     val androidxAppCompat = "1.3.0-rc01"
     val androidxBrowser = "1.3.0"
-    val androidxCoreKtx = "1.5.0-rc01"
-    val androidxDataStore = "1.0.0-alpha08"
+    val androidxCoreKtx = "1.6.0-alpha02"
+    val androidxDataStore = "1.0.0-beta01"
     val androidxEspresso = "3.4.0-alpha05"
     val androidxLifecycle = "2.4.0-alpha01"
-    val androidxRoom = "2.3.0-rc01"
+    val androidxRoom = "2.4.0-alpha01"
     val androidxTest = "1.4.0-alpha05"
     val androidxTestExt = "1.1.3-alpha05"
-    val androidxWork = "2.7.0-alpha02"
+    val androidxWork = "2.7.0-alpha03"
 
-    val compose = "1.0.0-beta04"
+    val compose = "1.0.0-beta05"
     val lifecycleCompose = "1.0.0-alpha04"
     val activityCompose = "1.3.0-alpha06"
 
