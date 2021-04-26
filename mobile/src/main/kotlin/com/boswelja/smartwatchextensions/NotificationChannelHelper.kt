@@ -3,20 +3,20 @@ package com.boswelja.smartwatchextensions
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
-import com.boswelja.smartwatchextensions.batterysync.WatchBatteryUpdateReceiver
 import com.boswelja.smartwatchextensions.bootorupdate.BootOrUpdateHandlerService
 import com.boswelja.smartwatchextensions.common.dndsync.References
 import com.boswelja.smartwatchextensions.messages.MessageHandler
+import com.boswelja.smartwatchextensions.watchmanager.connection.WatchMessageReceiver.Companion.BATTERY_STATS_NOTI_CHANNEL_ID
 
 object NotificationChannelHelper {
 
     fun createForBatteryStats(context: Context, notificationManager: NotificationManager) {
         if (notificationManager.getNotificationChannel(
-                WatchBatteryUpdateReceiver.BATTERY_STATS_NOTI_CHANNEL_ID
+                BATTERY_STATS_NOTI_CHANNEL_ID
             ) == null
         ) {
             NotificationChannel(
-                WatchBatteryUpdateReceiver.BATTERY_STATS_NOTI_CHANNEL_ID,
+                BATTERY_STATS_NOTI_CHANNEL_ID,
                 context.getString(R.string.noti_channel_watch_charged_title),
                 NotificationManager.IMPORTANCE_HIGH
             )

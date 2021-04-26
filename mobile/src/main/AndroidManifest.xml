@@ -138,18 +138,6 @@
             </intent-filter>
         </receiver>
 
-        <service
-            android:name=".batterysync.WatchBatteryUpdateReceiver"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="com.google.android.gms.wearable.MESSAGE_RECEIVED" />
-                <data
-                    android:host="*"
-                    android:path="/battery_status"
-                    android:scheme="wear" />
-            </intent-filter>
-        </service>
-
         <receiver
             android:name=".batterysync.widget.WatchBatteryWidget"
             android:enabled="true"
