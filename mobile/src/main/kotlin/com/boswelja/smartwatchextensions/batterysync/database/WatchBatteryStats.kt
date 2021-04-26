@@ -22,5 +22,9 @@ data class WatchBatteryStats(
             val batteryStats = fromByteArray(messageEvent.data)
             return WatchBatteryStats(watchId, batteryStats.percent, batteryStats.isCharging)
         }
+
+        fun BatteryStats.toWatchBatteryStats(watchId: UUID): WatchBatteryStats {
+            return WatchBatteryStats(watchId, percent, isCharging, lastUpdatedMillis)
+        }
     }
 }
