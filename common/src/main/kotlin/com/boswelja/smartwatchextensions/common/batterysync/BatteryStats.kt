@@ -11,17 +11,17 @@ import android.os.BatteryManager
  * @param isCharging true if the device is charging, false otherwise.
  * @param lastUpdatedMillis The time in milliseconds this data was fetched.
  */
-data class BatteryStats internal constructor(
-    val percent: Int,
-    val isCharging: Boolean,
-    val lastUpdatedMillis: Long = System.currentTimeMillis()
+open class BatteryStats internal constructor(
+    open val percent: Int,
+    open val isCharging: Boolean,
+    open val lastUpdatedMillis: Long = System.currentTimeMillis()
 ) {
 
     /**
      * Convert this [BatteryStats] to a [ByteArray].
      */
     fun toByteArray(): ByteArray {
-        return "$percent|$isCharging".toByteArray(Charsets.UTF_8)
+        return "$percent|$isCharging|$lastUpdatedMillis".toByteArray(Charsets.UTF_8)
     }
 
     companion object {
@@ -33,7 +33,8 @@ data class BatteryStats internal constructor(
             val messageSplit = message.split("|")
             val batteryPercent = messageSplit[0].toInt()
             val isWatchCharging = messageSplit[1] == true.toString()
-            return BatteryStats(batteryPercent, isWatchCharging)
+            val lastUpdatedMillis = messageSplit[2].toLong()
+            return BatteryStats(batteryPercent, isWatchCharging, lastUpdatedMillis)
         }
 
         /**
