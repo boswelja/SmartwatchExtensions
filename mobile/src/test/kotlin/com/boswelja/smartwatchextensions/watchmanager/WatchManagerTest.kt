@@ -17,7 +17,7 @@ import com.boswelja.smartwatchextensions.watchmanager.database.DbWatch.Companion
 import com.boswelja.smartwatchextensions.watchmanager.database.WatchDatabase
 import com.boswelja.smartwatchextensions.watchmanager.database.WatchSettingsDatabase
 import com.boswelja.watchconnection.core.Watch
-import com.boswelja.watchconnection.core.WatchConnectionClient
+import com.boswelja.watchconnection.core.WatchPlatformManager
 import com.google.common.truth.Truth.assertThat
 import io.mockk.MockKAnnotations
 import io.mockk.clearAllMocks
@@ -52,7 +52,7 @@ class WatchManagerTest {
     private val dummyWatches = listOf(dummyWatch1, dummyWatch2, dummyWatch3)
     private val appState = MutableStateFlow(AppState())
 
-    @RelaxedMockK private lateinit var connectionClient: WatchConnectionClient
+    @RelaxedMockK private lateinit var connectionClient: WatchPlatformManager
     @RelaxedMockK private lateinit var widgetIdStore: DataStore<Preferences>
     @RelaxedMockK private lateinit var analytics: Analytics
     @RelaxedMockK private lateinit var batteryStatsDatabase: WatchBatteryStatsDatabase

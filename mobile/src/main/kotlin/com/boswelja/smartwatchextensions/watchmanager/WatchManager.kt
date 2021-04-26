@@ -14,6 +14,7 @@ import com.boswelja.smartwatchextensions.analytics.Analytics
 import com.boswelja.smartwatchextensions.appStateStore
 import com.boswelja.smartwatchextensions.batterysync.database.WatchBatteryStatsDatabase
 import com.boswelja.smartwatchextensions.common.SingletonHolder
+import com.boswelja.smartwatchextensions.common.connection.Capability
 import com.boswelja.smartwatchextensions.common.connection.Messages
 import com.boswelja.smartwatchextensions.common.connection.Messages.CLEAR_PREFERENCES
 import com.boswelja.smartwatchextensions.common.connection.Preference.toByteArray
@@ -24,8 +25,8 @@ import com.boswelja.smartwatchextensions.watchmanager.item.Preference
 import com.boswelja.smartwatchextensions.widget.widgetIdStore
 import com.boswelja.watchconnection.core.MessageListener
 import com.boswelja.watchconnection.core.Watch
-import com.boswelja.watchconnection.core.WatchConnectionClient
-import com.boswelja.watchconnection.wearos.WearOSConnectionHandler
+import com.boswelja.watchconnection.core.WatchPlatformManager
+import com.boswelja.watchconnection.wearos.WearOSPlatform
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -45,7 +46,7 @@ import java.util.UUID
 class WatchManager internal constructor(
     val settingsDatabase: WatchSettingsDatabase,
     private val watchDatabase: WatchDatabase,
-    private val connectionClient: WatchConnectionClient,
+    private val connectionClient: WatchPlatformManager,
     private val analytics: Analytics,
     private val dataStore: DataStore<AppState>,
     private val coroutineScope: CoroutineScope
@@ -54,7 +55,9 @@ class WatchManager internal constructor(
     constructor(context: Context) : this(
         WatchSettingsDatabase.getInstance(context),
         WatchDatabase.getInstance(context),
-        WatchConnectionClient(WearOSConnectionHandler(context, CAPABILITY_WATCH_APP)),
+        WatchPlatformManager(
+            WearOSPlatform(context, CAPABILITY_WATCH_APP, Capability.values().map { it.name })
+        ),
         Analytics(),
         context.appStateStore,
         CoroutineScope(Dispatchers.IO)
@@ -243,9 +246,9 @@ class WatchManager internal constructor(
         watchDatabase.watchDao().getObservable(id).map { it }
 
     fun registerMessageListener(messageListener: MessageListener) =
-        connectionClient.registerMessageListener(messageListener)
+        connectionClient.addMessageListener(messageListener)
     fun unregisterMessageListener(messageListener: MessageListener) =
-        connectionClient.unregisterMessageListener(messageListener)
+        connectionClient.removeMessageListener(messageListener)
 
     companion object : SingletonHolder<WatchManager, Context>(::WatchManager) {
         const val CAPABILITY_WATCH_APP = "extensions_watch_app"

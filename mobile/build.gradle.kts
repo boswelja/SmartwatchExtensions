@@ -89,7 +89,7 @@ dependencies {
     val lifecycleCompose = "1.0.0-alpha04"
     val activityCompose = "1.3.0-alpha06"
 
-    val watchconnection = "0.3.6"
+    val watchconnection = "1.0.2"
     val billingClient = "3.0.3"
     val googlePlayCore = "1.10.0"
     val timber = "4.7.1"

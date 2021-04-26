@@ -19,7 +19,7 @@ import com.boswelja.smartwatchextensions.common.ui.BaseWidgetProvider
 import com.boswelja.smartwatchextensions.watchmanager.database.WatchDatabase
 import com.boswelja.smartwatchextensions.watchmanager.database.WatchSettingsDatabase
 import com.boswelja.watchconnection.core.Watch
-import com.boswelja.watchconnection.wearos.WearOSConnectionHandler
+import com.boswelja.watchconnection.wearos.WearOSPlatform
 import com.google.android.gms.wearable.MessageEvent
 import com.google.android.gms.wearable.WearableListenerService
 import kotlinx.coroutines.CoroutineScope
@@ -43,7 +43,7 @@ class WatchBatteryUpdateReceiver : WearableListenerService() {
             coroutineScope.launch {
                 val database = WatchDatabase.getInstance(this@WatchBatteryUpdateReceiver)
                 database.getByPlatformAndId(
-                    WearOSConnectionHandler.PLATFORM,
+                    WearOSPlatform.PLATFORM,
                     messageEvent.sourceNodeId
                 )?.let { watch ->
                     watchBatteryStats = WatchBatteryStats.fromMessage(watch.id, messageEvent)

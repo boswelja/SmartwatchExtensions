@@ -8,7 +8,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.boswelja.smartwatchextensions.getOrAwaitValue
 import com.boswelja.smartwatchextensions.watchmanager.database.WatchDatabase
 import com.boswelja.watchconnection.core.Watch
-import com.boswelja.watchconnection.wearos.WearOSConnectionHandler
+import com.boswelja.watchconnection.wearos.WearOSPlatform
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.runBlocking
 import org.junit.After
@@ -25,9 +25,9 @@ class BatteryWidgetConfigViewModelTest {
     @get:Rule
     val instantExecutorRule = InstantTaskExecutorRule()
 
-    private val dummyWatch1 = Watch("an-id-1234", "Watch 1", WearOSConnectionHandler.PLATFORM)
-    private val dummyWatch2 = Watch("an-id-2345", "Watch 2", WearOSConnectionHandler.PLATFORM)
-    private val dummyWatch3 = Watch("an-id-3456", "Watch 3", WearOSConnectionHandler.PLATFORM)
+    private val dummyWatch1 = Watch("an-id-1234", "Watch 1", WearOSPlatform.PLATFORM)
+    private val dummyWatch2 = Watch("an-id-2345", "Watch 2", WearOSPlatform.PLATFORM)
+    private val dummyWatch3 = Watch("an-id-3456", "Watch 3", WearOSPlatform.PLATFORM)
 
     private lateinit var watchDatabase: WatchDatabase
     private lateinit var viewModel: BatteryWidgetConfigViewModel
