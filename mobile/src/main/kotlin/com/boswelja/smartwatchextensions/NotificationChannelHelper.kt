@@ -3,10 +3,10 @@ package com.boswelja.smartwatchextensions
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
+import com.boswelja.smartwatchextensions.batterysync.Utils.BATTERY_STATS_NOTI_CHANNEL_ID
 import com.boswelja.smartwatchextensions.bootorupdate.BootOrUpdateHandlerService
 import com.boswelja.smartwatchextensions.common.dndsync.References
 import com.boswelja.smartwatchextensions.messages.MessageHandler
-import com.boswelja.smartwatchextensions.watchmanager.connection.WatchMessageReceiver.Companion.BATTERY_STATS_NOTI_CHANNEL_ID
 
 object NotificationChannelHelper {
 
