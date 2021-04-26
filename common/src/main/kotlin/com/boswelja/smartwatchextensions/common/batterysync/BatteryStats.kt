@@ -11,7 +11,7 @@ import android.os.BatteryManager
  * @param isCharging true if the device is charging, false otherwise.
  * @param lastUpdatedMillis The time in milliseconds this data was fetched.
  */
-open class BatteryStats internal constructor(
+open class BatteryStats(
     open val percent: Int,
     open val isCharging: Boolean,
     open val lastUpdatedMillis: Long = System.currentTimeMillis()

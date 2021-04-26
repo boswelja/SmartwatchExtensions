@@ -11,15 +11,15 @@ import java.util.UUID
 data class WatchBatteryStats(
     @PrimaryKey val watchId: UUID,
     @ColumnInfo(name = "watch_battery_percent")
-    var percent: Int,
+    override val percent: Int,
     @ColumnInfo(name = "watch_charging")
-    var isCharging: Boolean,
+    override val isCharging: Boolean,
     @ColumnInfo(name = "last_update_time")
-    var lastUpdatedMillis: Long = System.currentTimeMillis()
-) {
+    override val lastUpdatedMillis: Long = System.currentTimeMillis()
+) : BatteryStats(percent, isCharging, lastUpdatedMillis) {
     companion object {
         fun fromMessage(watchId: UUID, messageEvent: MessageEvent): WatchBatteryStats {
-            val batteryStats = BatteryStats.fromByteArray(messageEvent.data)
+            val batteryStats = fromByteArray(messageEvent.data)
             return WatchBatteryStats(watchId, batteryStats.percent, batteryStats.isCharging)
         }
     }
