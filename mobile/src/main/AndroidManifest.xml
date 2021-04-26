@@ -130,34 +130,13 @@
             </intent-filter>
         </service>
 
-        <service
-            android:name=".watchmanager.connection.wearos.WatchMessageReceiver"
-            android:exported="true">
+        <receiver
+            android:name=".watchmanager.connection.WatchMessageReceiver"
+            android:exported="false">
             <intent-filter>
-                <action android:name="com.google.android.gms.wearable.MESSAGE_RECEIVED" />
-
-                <data
-                    android:host="*"
-                    android:pathPrefix="/lock_phone"
-                    android:scheme="wear" />
-                <data
-                    android:host="*"
-                    android:pathPrefix="/request_battery_update"
-                    android:scheme="wear" />
-                <data
-                    android:host="*"
-                    android:pathPrefix="/launch_app"
-                    android:scheme="wear" />
-                <data
-                    android:host="*"
-                    android:pathPrefix="/request_phone_dnd_access_status"
-                    android:scheme="wear" />
-                <data
-                    android:host="*"
-                    android:pathPrefix="/check_watch_registered"
-                    android:scheme="wear" />
+                <action android:name="com.boswelja.watchconnection.messages.ACTION_MESSAGE_RECEIVED" />
             </intent-filter>
-        </service>
+        </receiver>
 
         <service
             android:name=".batterysync.WatchBatteryUpdateReceiver"
