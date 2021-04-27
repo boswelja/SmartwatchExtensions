@@ -107,8 +107,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ steps.new_release.outputs.versionName }}
-          release_name: ${{ steps.new_release.outputs.versionName }}
+          tag_name: ${{ steps.version.outputs.version }}
+          release_name: ${{ steps.version.outputs.version }}
           body_path: changelogs/whatsnew-en-GB
           draft: false
           prerelease: true
@@ -135,7 +135,7 @@ jobs:
         id: update_priority
         with:
           old-version: ${{ steps.version.outputs.previous-version }}
-          new-version: ${{steps.version.outputs.version }}
+          new-version: ${{ steps.version.outputs.version }}
       - name: Upload to Google Play
         uses: r0adkll/upload-google-play@v1.0.15
         with:
