@@ -89,9 +89,9 @@ dependencies {
     val lifecycleCompose = "1.0.0-alpha04"
     val activityCompose = "1.3.0-alpha06"
 
+    val watchconnection = "1.0.2"
     val billingClient = "3.0.3"
     val googlePlayCore = "1.10.0"
-    val playServicesWearable = "17.0.0"
     val timber = "4.7.1"
     val junit = "4.13.2"
     val truth = "1.1.2"
@@ -120,10 +120,9 @@ dependencies {
     implementation("com.android.billingclient:billing-ktx:$billingClient")
     implementation("com.google.android.play:core:$googlePlayCore")
     implementation("com.google.android.play:core-ktx:1.8.1")
-    implementation("com.google.android.gms:play-services-wearable:$playServicesWearable")
     implementation("com.jakewharton.timber:timber:$timber")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:$coroutines")
 
+    implementation("io.github.boswelja.watchconnection:wearos:$watchconnection")
     implementation("androidx.compose.ui:ui:$compose")
     implementation("androidx.compose.ui:ui-tooling:$compose")
     implementation("androidx.compose.ui:ui-viewbinding:$compose")

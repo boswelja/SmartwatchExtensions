@@ -17,32 +17,24 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.NavigateNext
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.map
 import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.appmanager.ui.AppManagerActivity
 import com.boswelja.smartwatchextensions.batterysync.ui.BatterySyncSettingsActivity
 import com.boswelja.smartwatchextensions.batterysync.ui.BatterySyncSettingsHeader
 import com.boswelja.smartwatchextensions.dndsync.ui.DnDSyncSettingsActivity
 import com.boswelja.smartwatchextensions.phonelocking.ui.PhoneLockingSettingsActivity
-import com.boswelja.smartwatchextensions.watchmanager.WatchManager
-import com.boswelja.smartwatchextensions.watchmanager.item.Watch
-import timber.log.Timber
 
 @Composable
 fun DashboardScreen() {
     val context = LocalContext.current
     val scrollState = rememberScrollState()
-    val watchManager = remember { WatchManager.getInstance(context) }
-    val selectedWatchStatus by watchManager.selectedWatch
-        .map { it?.status ?: Watch.Status.ERROR }.observeAsState(Watch.Status.UNKNOWN)
+    // val watchManager = remember { WatchManager.getInstance(context) }
+    // val selectedWatchStatus by mutableStateOf(null)
     Column(
         Modifier
             .fillMaxSize()
@@ -50,7 +42,7 @@ fun DashboardScreen() {
             .verticalScroll(scrollState),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        WatchStatus(selectedWatchStatus)
+        // WatchStatus(selectedWatchStatus)
         DashboardItem(
             content = { BatterySyncSettingsHeader() },
             buttonLabel = stringResource(
@@ -91,24 +83,24 @@ fun DashboardScreen() {
     }
 }
 
-@Composable
-fun WatchStatus(status: Watch.Status) {
-    Timber.d("Selected watch status = %s", status)
-    Card {
-        Row(
-            Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            horizontalArrangement = Arrangement.Center
-        ) {
-            Icon(status.imageVector, null)
-            Text(
-                stringResource(status.stringRes),
-                modifier = Modifier.padding(start = 8.dp)
-            )
-        }
-    }
-}
+// @Composable
+// fun WatchStatus(status: Watch.Status) {
+//     Timber.d("Selected watch status = %s", status)
+//     Card {
+//         Row(
+//             Modifier
+//                 .fillMaxWidth()
+//                 .padding(16.dp),
+//             horizontalArrangement = Arrangement.Center
+//         ) {
+//             Icon(status.imageVector, null)
+//             Text(
+//                 stringResource(status.stringRes),
+//                 modifier = Modifier.padding(start = 8.dp)
+//             )
+//         }
+//     }
+// }
 
 @Composable
 fun DashboardItem(

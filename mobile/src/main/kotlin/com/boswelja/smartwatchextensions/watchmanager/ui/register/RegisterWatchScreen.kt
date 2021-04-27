@@ -22,7 +22,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.boswelja.smartwatchextensions.R
-import com.boswelja.smartwatchextensions.watchmanager.item.Watch
+import com.boswelja.watchconnection.core.Watch
 
 @ExperimentalMaterialApi
 @Composable

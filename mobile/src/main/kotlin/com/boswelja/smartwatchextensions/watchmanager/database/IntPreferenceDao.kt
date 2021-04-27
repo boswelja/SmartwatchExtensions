@@ -7,15 +7,16 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.boswelja.smartwatchextensions.watchmanager.item.IntPreference
+import java.util.UUID
 
 @Dao
 interface IntPreferenceDao {
 
     @Query("SELECT * FROM int_preferences WHERE id = :watchId")
-    fun getAllForWatch(watchId: String): List<IntPreference>
+    fun getAllForWatch(watchId: UUID): List<IntPreference>
 
-    @Query("SELECT * FROM int_preferences WHERE id = :id AND pref_key = :key LIMIT 1")
-    fun get(id: String, key: String): IntPreference?
+    @Query("SELECT * FROM int_preferences WHERE id = :watchId AND pref_key = :key LIMIT 1")
+    fun get(watchId: UUID, key: String): IntPreference?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun update(intPreference: IntPreference)
@@ -24,14 +25,14 @@ interface IntPreferenceDao {
     fun remove(intPreference: IntPreference)
 
     @Query("DELETE FROM int_preferences WHERE id = :watchId")
-    fun deleteAllForWatch(watchId: String)
+    fun deleteAllForWatch(watchId: UUID)
 
     @Query("SELECT * FROM int_preferences WHERE id = :watchId")
-    fun getAllObservableForWatch(watchId: String): LiveData<Array<IntPreference>>
+    fun getAllObservableForWatch(watchId: UUID): LiveData<Array<IntPreference>>
 
     @Query("SELECT * FROM int_preferences WHERE pref_key = :key")
     fun getAllObservableForKey(key: String): LiveData<Array<IntPreference>>
 
     @Query("SELECT * FROM int_preferences WHERE id = :watchId AND pref_key = :key LIMIT 1")
-    fun getObservable(watchId: String, key: String): LiveData<IntPreference?>
+    fun getObservable(watchId: UUID, key: String): LiveData<IntPreference?>
 }

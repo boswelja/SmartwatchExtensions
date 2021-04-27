@@ -6,16 +6,17 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
+import androidx.lifecycle.viewModelScope
 import com.boswelja.smartwatchextensions.common.connection.Messages.REQUEST_APP_VERSION
 import com.boswelja.smartwatchextensions.watchmanager.WatchManager
-import com.boswelja.smartwatchextensions.watchmanager.item.Watch
-import com.google.android.gms.wearable.MessageClient
-import com.google.android.gms.wearable.Wearable
+import com.boswelja.watchconnection.core.MessageListener
+import com.boswelja.watchconnection.core.Watch
+import kotlinx.coroutines.launch
 import timber.log.Timber
+import java.util.UUID
 
 class AboutAppViewModel internal constructor(
     application: Application,
-    private val messageClient: MessageClient,
     private val watchManager: WatchManager,
     val customTabsIntent: CustomTabsIntent,
 ) : AndroidViewModel(application) {
@@ -23,52 +24,48 @@ class AboutAppViewModel internal constructor(
     @Suppress("unused")
     constructor(application: Application) : this(
         application,
-        Wearable.getMessageClient(application),
         WatchManager.getInstance(application),
         CustomTabsIntent.Builder().setShowTitle(true).build()
     )
 
     private val selectedWatchObserver = Observer<Watch?> { watch ->
-        if (!watch?.id.isNullOrBlank()) {
-            messageClient
-                .sendMessage(watch.id, REQUEST_APP_VERSION, null)
-                .addOnFailureListener {
-                    Timber.w(it)
-                    _watchAppVersion.postValue(null)
-                }
-                .addOnSuccessListener {
-                    Timber.i("Message sent successfully")
-                    _watchAppVersion.postValue(Pair(null, null))
-                }
+        if (watch?.id != null) {
+            viewModelScope.launch {
+                watchManager.sendMessage(watch, REQUEST_APP_VERSION, null)
+                // TODO hook this up when WatchConnectionClient gets patched
+                // On fail
+                // _watchAppVersion.postValue(null)
+
+                // On success
+                // _watchAppVersion.postValue(Pair(null, null))
+            }
         } else {
             Timber.w("Selected watch null")
             _watchAppVersion.postValue(null)
         }
     }
 
-    private val messageListener =
-        MessageClient.OnMessageReceivedListener {
-            when (it.path) {
-                REQUEST_APP_VERSION -> {
-                    Timber.i("Got watch app version")
-                    val versionInfo = parseWatchVersionInfo(it.data)
-                    _watchAppVersion.postValue(versionInfo)
-                }
+    private val messageListener = object : MessageListener {
+        override fun onMessageReceived(sourceWatchId: UUID, message: String, data: ByteArray?) {
+            data?.let {
+                val versionInfo = parseWatchVersionInfo(it)
+                _watchAppVersion.postValue(versionInfo)
             }
         }
+    }
 
     private val _watchAppVersion = MutableLiveData<Pair<String?, String?>?>()
     val watchAppVersion: LiveData<Pair<String?, String?>?>
         get() = _watchAppVersion
 
     init {
-        messageClient.addListener(messageListener)
+        watchManager.registerMessageListener(messageListener)
         watchManager.selectedWatch.observeForever(selectedWatchObserver)
     }
 
     override fun onCleared() {
         super.onCleared()
-        messageClient.removeListener(messageListener)
+        watchManager.unregisterMessageListener(messageListener)
         watchManager.selectedWatch.removeObserver(selectedWatchObserver)
     }
 

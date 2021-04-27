@@ -2,6 +2,7 @@ package com.boswelja.smartwatchextensions.common
 
 import androidx.room.TypeConverter
 import com.boswelja.smartwatchextensions.messages.Message
+import java.util.UUID
 
 class RoomTypeConverters {
     @TypeConverter
@@ -30,5 +31,15 @@ class RoomTypeConverters {
     @TypeConverter
     fun iconToString(icon: Message.Icon?): String? {
         return icon?.toString()
+    }
+
+    @TypeConverter
+    fun uuidFromString(value: String?): UUID? {
+        return value?.let { UUID.fromString(it) }
+    }
+
+    @TypeConverter
+    fun uuidToString(value: UUID?): String? {
+        return value?.toString()
     }
 }

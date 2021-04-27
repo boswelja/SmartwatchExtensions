@@ -10,6 +10,7 @@ import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.batterysync.database.WatchBatteryStatsDatabase
 import com.boswelja.smartwatchextensions.common.ui.BaseWidgetProvider
 import com.boswelja.smartwatchextensions.main.MainActivity
+import java.util.UUID
 
 class WatchBatteryWidget : BaseWidgetProvider() {
 
@@ -17,7 +18,7 @@ class WatchBatteryWidget : BaseWidgetProvider() {
         context: Context,
         width: Int,
         height: Int,
-        watchId: String
+        watchId: UUID
     ): RemoteViews {
         val remoteViews = RemoteViews(context.packageName, R.layout.widget_watch_battery)
 

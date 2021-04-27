@@ -29,20 +29,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.boswelja.smartwatchextensions.R
-import com.boswelja.smartwatchextensions.common.LifecycleAwareTimer
 import com.boswelja.smartwatchextensions.common.ui.AppTheme
 import com.boswelja.smartwatchextensions.common.ui.UpNavigationAppBar
 import com.boswelja.smartwatchextensions.watchinfo.ui.WatchInfoActivity
 import com.boswelja.smartwatchextensions.watchmanager.WatchManager
-import com.boswelja.smartwatchextensions.watchmanager.item.Watch
 import com.boswelja.smartwatchextensions.watchmanager.ui.register.RegisterWatchActivity
+import com.boswelja.watchconnection.core.Watch
 
 class WatchManagerActivity : AppCompatActivity() {
 
     private val watchManager by lazy { WatchManager.getInstance(this) }
-    private val refreshDataTimer = LifecycleAwareTimer(period = 20) {
-        watchManager.refreshData()
-    }
 
     @ExperimentalFoundationApi
     @ExperimentalMaterialApi
@@ -89,7 +85,6 @@ class WatchManagerActivity : AppCompatActivity() {
                                     )
                                 },
                                 text = { Text(watch.name) },
-                                secondaryText = { Text(stringResource(watch.status.stringRes)) },
                                 modifier = Modifier.clickable {
                                     openWatchInfoActivity(watch)
                                 }
@@ -99,8 +94,6 @@ class WatchManagerActivity : AppCompatActivity() {
                 }
             }
         }
-
-        lifecycle.addObserver(refreshDataTimer)
     }
 
     /** Opens a [RegisterWatchActivity]. */
@@ -112,7 +105,7 @@ class WatchManagerActivity : AppCompatActivity() {
     /** Opens a [WatchInfoActivity]. */
     private fun openWatchInfoActivity(watch: Watch) {
         Intent(this, WatchInfoActivity::class.java)
-            .apply { putExtra(WatchInfoActivity.EXTRA_WATCH_ID, watch.id) }
+            .apply { putExtra(WatchInfoActivity.EXTRA_WATCH_ID, watch.id.toString()) }
             .also { startActivity(it) }
     }
 

@@ -4,23 +4,29 @@ import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
-import com.boswelja.smartwatchextensions.watchmanager.item.Watch
+import java.util.UUID
 
 @Dao
 interface WatchDao {
 
     @Query("SELECT * FROM watches WHERE id = :watchId LIMIT 1")
-    fun get(watchId: String): Watch?
+    fun getObservable(watchId: UUID): LiveData<DbWatch?>
+
+    @Query("SELECT * FROM watches WHERE id = :watchId LIMIT 1")
+    suspend fun get(watchId: UUID): DbWatch?
 
     @Query("UPDATE watches SET name = :name WHERE id = :watchId")
-    fun setName(watchId: String, name: String)
+    suspend fun setName(watchId: UUID, name: String)
 
     @Insert
-    fun add(watch: Watch)
+    suspend fun add(watch: DbWatch)
 
     @Query("DELETE FROM watches WHERE id = :watchId")
-    fun remove(watchId: String)
+    suspend fun remove(watchId: UUID)
 
     @Query("SELECT * FROM watches")
-    fun getAllObservable(): LiveData<List<Watch>>
+    fun getAllObservable(): LiveData<List<DbWatch>>
+
+    @Query("SELECT * FROM watches WHERE platform = :platform AND platformId = :platformId LIMIT 1")
+    suspend fun get(platform: String, platformId: String): DbWatch?
 }

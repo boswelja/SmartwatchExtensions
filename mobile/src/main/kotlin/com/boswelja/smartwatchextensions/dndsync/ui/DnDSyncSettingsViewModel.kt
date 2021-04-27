@@ -2,7 +2,6 @@ package com.boswelja.smartwatchextensions.dndsync.ui
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.liveData
 import androidx.lifecycle.switchMap
 import androidx.lifecycle.viewModelScope
 import com.boswelja.smartwatchextensions.common.preference.PreferenceKey.DND_SYNC_TO_PHONE_KEY
@@ -15,19 +14,13 @@ class DnDSyncSettingsViewModel(application: Application) : AndroidViewModel(appl
 
     val watchManager = WatchManager.getInstance(application)
     val syncToPhone = watchManager.selectedWatch.switchMap {
-        it?.let {
-            watchManager.getPreferenceObservable<Boolean>(it.id, DND_SYNC_TO_PHONE_KEY)
-        } ?: liveData { }
+        watchManager.getPreferenceObservable<Boolean>(it.id, DND_SYNC_TO_PHONE_KEY)
     }
     val syncToWatch = watchManager.selectedWatch.switchMap {
-        it?.let {
-            watchManager.getPreferenceObservable<Boolean>(it.id, DND_SYNC_TO_WATCH_KEY)
-        } ?: liveData { }
+        watchManager.getPreferenceObservable<Boolean>(it.id, DND_SYNC_TO_WATCH_KEY)
     }
     val syncWithTheater = watchManager.selectedWatch.switchMap {
-        it?.let {
-            watchManager.getPreferenceObservable<Boolean>(it.id, DND_SYNC_WITH_THEATER_KEY)
-        } ?: liveData { }
+        watchManager.getPreferenceObservable<Boolean>(it.id, DND_SYNC_WITH_THEATER_KEY)
     }
 
     fun setSyncToPhone(isEnabled: Boolean) {

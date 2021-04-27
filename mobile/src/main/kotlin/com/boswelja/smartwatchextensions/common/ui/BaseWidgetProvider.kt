@@ -23,6 +23,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import java.util.UUID
 
 /**
  * An [AppWidgetProvider] that applies our default widget background with user settings.
@@ -42,7 +43,7 @@ abstract class BaseWidgetProvider : AppWidgetProvider() {
         context: Context,
         width: Int,
         height: Int,
-        watchId: String
+        watchId: UUID
     ): RemoteViews
 
     override fun onDeleted(context: Context?, appWidgetIds: IntArray?) {
@@ -110,7 +111,7 @@ abstract class BaseWidgetProvider : AppWidgetProvider() {
                 val watchId =
                     widgetIdStore.data.first()[stringPreferencesKey(appWidgetId.toString())]
                 val widgetContent = if (!watchId.isNullOrBlank()) {
-                    onUpdateView(context, width, height, watchId)
+                    onUpdateView(context, width, height, UUID.fromString(watchId))
                 } else {
                     Timber.w("Watch ID for widget %s is null or blank", appWidgetId)
                     RemoteViews(context.packageName, R.layout.common_widget_error)

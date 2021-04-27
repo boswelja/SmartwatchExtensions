@@ -5,16 +5,20 @@ import androidx.lifecycle.LiveData
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
+import com.boswelja.smartwatchextensions.common.RoomTypeConverters
 import com.boswelja.smartwatchextensions.common.SingletonHolder
 import com.boswelja.smartwatchextensions.watchmanager.item.BoolPreference
 import com.boswelja.smartwatchextensions.watchmanager.item.IntPreference
 import com.boswelja.smartwatchextensions.watchmanager.item.Preference
-import com.boswelja.smartwatchextensions.watchmanager.item.Watch
+import com.boswelja.watchconnection.core.Watch
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import timber.log.Timber
+import java.util.UUID
 
 @Database(entities = [IntPreference::class, BoolPreference::class], version = 1)
+@TypeConverters(RoomTypeConverters::class)
 abstract class WatchSettingsDatabase : RoomDatabase() {
     abstract fun intPrefDao(): IntPreferenceDao
     abstract fun boolPrefDao(): BoolPreferenceDao
@@ -34,7 +38,7 @@ abstract class WatchSettingsDatabase : RoomDatabase() {
      * @return true if the preference was successfully updated, false otherwise.
      */
     suspend fun updatePrefInDatabase(
-        watchId: String,
+        watchId: UUID,
         preferenceKey: String,
         newValue: Any
     ): Boolean {
@@ -61,7 +65,7 @@ abstract class WatchSettingsDatabase : RoomDatabase() {
     }
 
     @Suppress("UNCHECKED_CAST")
-    suspend inline fun <reified T> getPreference(watchId: String, key: String): Preference<T>? {
+    suspend inline fun <reified T> getPreference(watchId: UUID, key: String): Preference<T>? {
         return withContext(Dispatchers.IO) {
             return@withContext when (T::class) {
                 Int::class -> intPrefDao().get(watchId, key) as Preference<T>?
@@ -76,7 +80,7 @@ abstract class WatchSettingsDatabase : RoomDatabase() {
 
     @Suppress("UNCHECKED_CAST")
     inline fun <reified T> getPreferenceObservable(
-        watchId: String,
+        watchId: UUID,
         key: String
     ): LiveData<Preference<T>?>? {
         return when (T::class) {

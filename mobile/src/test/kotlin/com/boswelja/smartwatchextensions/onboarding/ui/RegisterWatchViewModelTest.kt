@@ -5,19 +5,18 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.MutableLiveData
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.boswelja.smartwatchextensions.getOrAwaitValue
 import com.boswelja.smartwatchextensions.watchmanager.WatchManager
-import com.boswelja.smartwatchextensions.watchmanager.connection.wearos.WearOSConnectionInterface
-import com.boswelja.smartwatchextensions.watchmanager.item.Watch
 import com.boswelja.smartwatchextensions.watchmanager.ui.register.RegisterWatchViewModel
-import com.google.common.truth.Truth.assertThat
+import com.boswelja.watchconnection.core.Watch
+import com.boswelja.watchconnection.wearos.WearOSPlatform
 import io.mockk.MockKAnnotations
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
-import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.TestCoroutineDispatcher
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -32,13 +31,11 @@ class RegisterWatchViewModelTest {
     @get:Rule
     val instantExecutorRule = InstantTaskExecutorRule()
 
-    private val testDispatcher = TestCoroutineDispatcher()
-
-    private val dummyWatch1 = Watch("an-id-1234", "Watch 1", WearOSConnectionInterface.PLATFORM)
-    private val dummyWatch2 = Watch("an-id-2345", "Watch 2", WearOSConnectionInterface.PLATFORM)
-    private val dummyWatch3 = Watch("an-id-3456", "Watch 3", WearOSConnectionInterface.PLATFORM)
-    private val dummyWatches = listOf(dummyWatch1, dummyWatch2, dummyWatch3)
-    private val availableWatches = MutableLiveData(dummyWatches)
+    private val dummyWatch1 = Watch("Watch 1", "id1", WearOSPlatform.PLATFORM)
+    private val dummyWatch2 = Watch("Watch 2", "id2", WearOSPlatform.PLATFORM)
+    private val dummyWatch3 = Watch("Watch 3", "id3", WearOSPlatform.PLATFORM)
+    private val dummyWatches = arrayOf(dummyWatch1, dummyWatch2, dummyWatch3)
+    private var availableWatches: Flow<Watch> = flow { }
     private val registeredWatches = MutableLiveData(emptyList<Watch>())
 
     @RelaxedMockK private lateinit var watchManager: WatchManager
@@ -48,7 +45,7 @@ class RegisterWatchViewModelTest {
     fun setUp() {
         MockKAnnotations.init(this)
 
-        availableWatches.postValue(dummyWatches)
+        setAvailableWatches(*dummyWatches)
         registeredWatches.postValue(emptyList())
 
         every { watchManager.availableWatches } returns availableWatches
@@ -56,61 +53,22 @@ class RegisterWatchViewModelTest {
 
         viewModel = RegisterWatchViewModel(
             ApplicationProvider.getApplicationContext(),
-            watchManager,
-            testDispatcher
+            watchManager
         )
     }
 
     @Test
-    fun `refreshData calls watchManager`() {
-        viewModel.refreshData()
-        verify { watchManager.refreshData() }
-    }
-
-    @Test
-    fun `addWatch calls watchManager and updates LiveData`() {
-        availableWatches.postValue(listOf(dummyWatch1))
+    fun `addWatch calls watchManager and updates LiveData`(): Unit = runBlocking {
+        setAvailableWatches(dummyWatch1)
         registeredWatches.postValue(emptyList())
 
         viewModel.addWatch(dummyWatch1)
         coVerify { watchManager.registerWatch(dummyWatch1) }
-        assertThat(viewModel.registeredWatches.getOrAwaitValue()).contains(dummyWatch1)
     }
 
-    @Test
-    fun `addWatch does nothing if a watch is already registered`() {
-        // We need to register a watch first
-        viewModel.addWatch(dummyWatch1)
-        viewModel.addWatch(dummyWatch1)
-        // Verify watch was only added once
-        coVerify(exactly = 1) { watchManager.registerWatch(dummyWatch1) }
-    }
-
-    @Test
-    fun `watchesToRegister contains all available watches`() {
-        assertThat(viewModel.watchesToAdd.getOrAwaitValue())
-            .containsExactlyElementsIn(dummyWatches)
-
-        availableWatches.postValue(listOf(dummyWatch1))
-        assertThat(viewModel.watchesToAdd.getOrAwaitValue())
-            .containsExactlyElementsIn(listOf(dummyWatch1))
-
-        availableWatches.postValue(listOf(dummyWatch1, dummyWatch3))
-        assertThat(viewModel.watchesToAdd.getOrAwaitValue())
-            .containsExactlyElementsIn(listOf(dummyWatch1, dummyWatch3))
-    }
-
-    @Test
-    fun `watchesToRegister doesn't contain any registered watches`() {
-        registeredWatches.postValue(dummyWatches)
-        assertThat(viewModel.watchesToAdd.getOrAwaitValue()).isEmpty()
-
-        registeredWatches.postValue(listOf(dummyWatch1))
-        assertThat(viewModel.watchesToAdd.getOrAwaitValue())
-            .containsNoneIn(listOf(dummyWatch1))
-
-        registeredWatches.postValue(listOf(dummyWatch1, dummyWatch2))
-        assertThat(viewModel.watchesToAdd.getOrAwaitValue())
-            .containsNoneIn(listOf(dummyWatch1, dummyWatch2))
+    private fun setAvailableWatches(vararg available: Watch) {
+        availableWatches = flow {
+            available.forEach { emit(it) }
+        }
     }
 }
