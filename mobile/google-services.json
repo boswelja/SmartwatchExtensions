@@ -1,33 +1,33 @@
 {
   "project_info": {
-    "project_number": "391939050283",
-    "project_id": "wearable-extensions-37233",
-    "storage_bucket": "wearable-extensions-37233.appspot.com"
+    "project_number": "26789974154",
+    "project_id": "smartwatch-extensions-6672d",
+    "storage_bucket": "smartwatch-extensions-6672d.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:391939050283:android:52b729cc3f28695d99536e",
+        "mobilesdk_app_id": "1:26789974154:android:c8cd3e413e7fd9a0ce9d73",
         "android_client_info": {
-          "package_name": "com.boswelja.devicemanager"
+          "package_name": "com.boswelja.smartwatchextensions"
         }
       },
       "oauth_client": [
         {
-          "client_id": "391939050283-52ubv93t8136d9m8on9h53e7325o4pcb.apps.googleusercontent.com",
+          "client_id": "26789974154-6ckj3nah7lnoab27i804re8r6if2d9lu.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyDR8gZVfBZigxlXnHheTzrYu4duj7BB2P4"
+          "current_key": "AIzaSyCoXS2bqJ5FZMVt-OGd2rbpQ6j5FIvDUDU"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "391939050283-52ubv93t8136d9m8on9h53e7325o4pcb.apps.googleusercontent.com",
+              "client_id": "26789974154-6ckj3nah7lnoab27i804re8r6if2d9lu.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
@@ -36,27 +36,27 @@
     },
     {
       "client_info": {
-        "mobilesdk_app_id": "1:391939050283:android:5084fb71d66a723c99536e",
+        "mobilesdk_app_id": "1:26789974154:android:921ad593ab3a3db0ce9d73",
         "android_client_info": {
-          "package_name": "com.boswelja.devicemanager.debug"
+          "package_name": "com.boswelja.smartwatchextensions.debug"
         }
       },
       "oauth_client": [
         {
-          "client_id": "391939050283-52ubv93t8136d9m8on9h53e7325o4pcb.apps.googleusercontent.com",
+          "client_id": "26789974154-6ckj3nah7lnoab27i804re8r6if2d9lu.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyDR8gZVfBZigxlXnHheTzrYu4duj7BB2P4"
+          "current_key": "AIzaSyCoXS2bqJ5FZMVt-OGd2rbpQ6j5FIvDUDU"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "391939050283-52ubv93t8136d9m8on9h53e7325o4pcb.apps.googleusercontent.com",
+              "client_id": "26789974154-6ckj3nah7lnoab27i804re8r6if2d9lu.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

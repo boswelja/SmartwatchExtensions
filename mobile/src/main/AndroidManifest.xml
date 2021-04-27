@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.boswelja.devicemanager">
+    package="com.boswelja.smartwatchextensions">
 
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
@@ -16,7 +16,7 @@
         android:allowBackup="false"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:manageSpaceActivity="com.boswelja.devicemanager.managespace.ui.ManageSpaceActivity"
+        android:manageSpaceActivity=".managespace.ui.ManageSpaceActivity"
         android:resizeableActivity="true"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
@@ -28,7 +28,7 @@
             android:label="@string/manage_space_title" />
 
         <activity
-            android:name="com.boswelja.devicemanager.main.MainActivity"
+            android:name=".main.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -118,58 +118,13 @@
             android:name=".dndsync.DnDLocalChangeService"
             android:exported="false" />
 
-        <service
-            android:name=".dndsync.DnDRemoteChangeReceiver"
-            android:exported="true">
+        <receiver
+            android:name=".watchmanager.connection.WatchMessageReceiver"
+            android:exported="false">
             <intent-filter>
-                <action android:name="com.google.android.gms.wearable.DATA_CHANGED" />
-                <data
-                    android:host="*"
-                    android:path="/dnd_status"
-                    android:scheme="wear" />
+                <action android:name="com.boswelja.watchconnection.messages.ACTION_MESSAGE_RECEIVED" />
             </intent-filter>
-        </service>
-
-        <service
-            android:name=".watchmanager.connection.wearos.WatchMessageReceiver"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="com.google.android.gms.wearable.MESSAGE_RECEIVED" />
-
-                <data
-                    android:host="*"
-                    android:pathPrefix="/lock_phone"
-                    android:scheme="wear" />
-                <data
-                    android:host="*"
-                    android:pathPrefix="/request_battery_update"
-                    android:scheme="wear" />
-                <data
-                    android:host="*"
-                    android:pathPrefix="/launch_app"
-                    android:scheme="wear" />
-                <data
-                    android:host="*"
-                    android:pathPrefix="/request_phone_dnd_access_status"
-                    android:scheme="wear" />
-                <data
-                    android:host="*"
-                    android:pathPrefix="/check_watch_registered"
-                    android:scheme="wear" />
-            </intent-filter>
-        </service>
-
-        <service
-            android:name=".batterysync.WatchBatteryUpdateReceiver"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="com.google.android.gms.wearable.MESSAGE_RECEIVED" />
-                <data
-                    android:host="*"
-                    android:path="/battery_status"
-                    android:scheme="wear" />
-            </intent-filter>
-        </service>
+        </receiver>
 
         <receiver
             android:name=".batterysync.widget.WatchBatteryWidget"
@@ -184,25 +139,12 @@
                 android:resource="@xml/widget_watch_battery_metadata" />
         </receiver>
         <activity
-            android:name="com.boswelja.devicemanager.batterysync.widget.config.BatteryWidgetConfigActivity"
+            android:name=".batterysync.widget.config.BatteryWidgetConfigActivity"
             android:label="@string/widget_watch_battery_config_title"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
             </intent-filter>
         </activity>
-
-        <service
-            android:name=".watchmanager.connection.wearos.PreferenceChangeReceiver"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="com.google.android.gms.wearable.DATA_CHANGED" />
-                <data
-                    android:host="*"
-                    android:path="/preference_change"
-                    android:scheme="wear" />
-            </intent-filter>
-        </service>
-
     </application>
 </manifest>

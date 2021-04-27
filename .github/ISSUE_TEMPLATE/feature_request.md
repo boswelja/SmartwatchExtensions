@@ -1,6 +1,6 @@
 ---
 name: Feature request
-about: Suggest an idea for Wearable Extensions
+about: Suggest an idea for Smartwatch Extensions
 title: ''
 labels: feature
 assignees: ''

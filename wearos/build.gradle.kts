@@ -12,8 +12,9 @@ android {
         targetSdkVersion(PackageInfo.targetSdk)
 
         applicationId = PackageInfo.packageName
-        versionCode = PackageInfo.getVersionCode()
-        versionName = PackageInfo.versionName
+        // Add 1 here to ensure it's different from mobile module
+        versionCode = PackageInfo.getVersionCode('1')
+        versionName = PackageInfo.getVersionName()
 
         testApplicationId = PackageInfo.packageName + ".test"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"

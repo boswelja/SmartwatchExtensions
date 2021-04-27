@@ -19,10 +19,10 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
--keep class com.boswelja.devicemanager.common.appmanager.* { *; }
--keep class com.boswelja.devicemanager.common.batterysync.* { *; }
--keep class com.boswelja.devicemanager.common.connection.* { *; }
--keep class com.boswelja.devicemanager.common.dndsync.* { *; }
--keep class com.boswelja.devicemanager.common.preference.* { *; }
--keep class com.boswelja.devicemanager.common.Compat { *; }
--keep class com.boswelja.devicemanager.common.SerializableBitmap { *; }
+-keep class com.boswelja.smartwatchextensions.common.appmanager.* { *; }
+-keep class com.boswelja.smartwatchextensions.common.batterysync.* { *; }
+-keep class com.boswelja.smartwatchextensions.common.connection.* { *; }
+-keep class com.boswelja.smartwatchextensions.common.dndsync.* { *; }
+-keep class com.boswelja.smartwatchextensions.common.preference.* { *; }
+-keep class com.boswelja.smartwatchextensions.common.Compat { *; }
+-keep class com.boswelja.smartwatchextensions.common.SerializableBitmap { *; }

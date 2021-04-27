@@ -7,5 +7,5 @@
     android:canRequestFilterKeyEvents="false"
     android:canRequestTouchExplorationMode="false"
     android:canRetrieveWindowContent="false"
-    android:packageNames="com.boswelja.devicemanager"
+    android:packageNames="com.boswelja.smartwatchextensions"
     tools:targetApi="28" />

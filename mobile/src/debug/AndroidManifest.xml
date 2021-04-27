@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.boswelja.devicemanager">
+    package="com.boswelja.smartwatchextensions">
 
     <application>
         <activity android:name=".common.ui.ConcreteBaseWidgetConfigActivity" />
