@@ -157,7 +157,7 @@ class WatchManagerTest {
 
     @Test
     fun `selectedWatch is null if there are no registered watches`() {
-        setRegisteredWatches(dummyWatches)
+        setRegisteredWatches(emptyList())
         watchManager = getWatchManager()
         try {
             // We expect this to throw an exception, so use a shorter timeout

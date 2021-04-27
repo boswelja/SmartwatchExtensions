@@ -6,6 +6,7 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.asFlow
 import androidx.lifecycle.liveData
 import androidx.lifecycle.map
 import androidx.lifecycle.switchMap
@@ -33,6 +34,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
@@ -89,7 +91,7 @@ class WatchManager internal constructor(
                 if (it.isNotBlank()) selectWatchById(UUID.fromString(it))
                 else {
                     Timber.w("No watch previously selected")
-                    registeredWatches.value?.firstOrNull()?.let { watch ->
+                    registeredWatches.asFlow().first().firstOrNull()?.let { watch ->
                         selectWatchById(watch.id)
                     }
                 }
