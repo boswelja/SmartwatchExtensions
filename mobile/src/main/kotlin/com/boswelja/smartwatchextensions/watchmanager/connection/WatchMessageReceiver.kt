@@ -12,8 +12,11 @@ import com.boswelja.smartwatchextensions.common.connection.Capability
 import com.boswelja.smartwatchextensions.common.connection.Messages.CHECK_WATCH_REGISTERED_PATH
 import com.boswelja.smartwatchextensions.common.connection.Messages.LAUNCH_APP
 import com.boswelja.smartwatchextensions.common.connection.Messages.WATCH_REGISTERED_PATH
+import com.boswelja.smartwatchextensions.common.dndsync.References.DND_STATUS_PATH
 import com.boswelja.smartwatchextensions.common.dndsync.References.REQUEST_INTERRUPT_FILTER_ACCESS_STATUS_PATH
+import com.boswelja.smartwatchextensions.common.fromByteArray
 import com.boswelja.smartwatchextensions.common.toByteArray
+import com.boswelja.smartwatchextensions.dndsync.Utils.handleDnDStateChange
 import com.boswelja.smartwatchextensions.main.MainActivity
 import com.boswelja.smartwatchextensions.watchmanager.WatchManager
 import com.boswelja.smartwatchextensions.watchmanager.database.WatchDatabase
@@ -41,6 +44,9 @@ class WatchMessageReceiver : MessageReceiver() {
             CHECK_WATCH_REGISTERED_PATH -> sendIsWatchRegistered(context, sourceWatchId)
             BATTERY_STATUS_PATH -> data?.let {
                 handleBatteryStats(context, sourceWatchId, BatteryStats.fromByteArray(data))
+            }
+            DND_STATUS_PATH -> data?.let {
+                handleDnDStateChange(context, sourceWatchId, Boolean.fromByteArray(data))
             }
         }
     }

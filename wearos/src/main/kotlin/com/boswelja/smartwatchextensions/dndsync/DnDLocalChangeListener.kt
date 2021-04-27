@@ -18,19 +18,25 @@ import androidx.lifecycle.LifecycleService
 import androidx.lifecycle.asLiveData
 import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.common.Compat
-import com.boswelja.smartwatchextensions.common.dndsync.References
+import com.boswelja.smartwatchextensions.common.dndsync.References.DND_STATUS_PATH
 import com.boswelja.smartwatchextensions.common.dndsync.References.DND_SYNC_LOCAL_NOTI_ID
 import com.boswelja.smartwatchextensions.common.dndsync.References.DND_SYNC_NOTI_CHANNEL_ID
 import com.boswelja.smartwatchextensions.common.dndsync.References.START_ACTIVITY_FROM_NOTI_ID
+import com.boswelja.smartwatchextensions.common.toByteArray
 import com.boswelja.smartwatchextensions.extensions.extensionSettingsStore
 import com.boswelja.smartwatchextensions.main.ui.MainActivity
-import com.google.android.gms.wearable.PutDataMapRequest
+import com.boswelja.smartwatchextensions.phoneStateStore
 import com.google.android.gms.wearable.Wearable
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.runBlocking
 
 class DnDLocalChangeListener : LifecycleService() {
 
+    private val messageClient by lazy { Wearable.getMessageClient(this) }
+
     private lateinit var notificationManager: NotificationManager
+    private lateinit var phoneId: String
 
     private var dndSyncToPhone: Boolean = false
     private var dndSyncWithTheater: Boolean = false
@@ -41,7 +47,7 @@ class DnDLocalChangeListener : LifecycleService() {
                 if (context != null &&
                     intent!!.action == NotificationManager.ACTION_INTERRUPTION_FILTER_CHANGED
                 ) {
-                    updateInterruptionFilter(this@DnDLocalChangeListener)
+                    updateInterruptionFilter()
                 }
             }
         }
@@ -52,6 +58,8 @@ class DnDLocalChangeListener : LifecycleService() {
         super.onCreate()
 
         notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+
+        phoneId = runBlocking { phoneStateStore.data.map { it.id }.first() }
 
         extensionSettingsStore.data.map {
             it.dndSyncToPhone
@@ -68,7 +76,7 @@ class DnDLocalChangeListener : LifecycleService() {
             createNotificationChannel()
         }
         startForeground(DND_SYNC_LOCAL_NOTI_ID, createNotification())
-        updateInterruptionFilter(this)
+        updateInterruptionFilter()
     }
 
     private fun createNotification(): Notification {
@@ -143,13 +151,9 @@ class DnDLocalChangeListener : LifecycleService() {
     /**
      * Sets a new Interruption Filter state across devices.
      */
-    private fun updateInterruptionFilter(context: Context) {
-        val interruptionFilterEnabled = Compat.isDndEnabled(context)
-        val dataClient = Wearable.getDataClient(context)
-        val putDataMapReq = PutDataMapRequest.create(References.DND_STATUS_PATH)
-        putDataMapReq.dataMap.putBoolean(References.NEW_DND_STATE_KEY, interruptionFilterEnabled)
-        putDataMapReq.setUrgent()
-        dataClient.putDataItem(putDataMapReq.asPutDataRequest())
+    private fun updateInterruptionFilter() {
+        val dndSyncEnabled = Compat.isDndEnabled(this)
+        messageClient.sendMessage(phoneId, DND_STATUS_PATH, dndSyncEnabled.toByteArray())
     }
 
     @RequiresApi(Build.VERSION_CODES.O)

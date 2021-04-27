@@ -118,18 +118,6 @@
             android:name=".dndsync.DnDLocalChangeService"
             android:exported="false" />
 
-        <service
-            android:name=".dndsync.DnDRemoteChangeReceiver"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="com.google.android.gms.wearable.DATA_CHANGED" />
-                <data
-                    android:host="*"
-                    android:path="/dnd_status"
-                    android:scheme="wear" />
-            </intent-filter>
-        </service>
-
         <receiver
             android:name=".watchmanager.connection.WatchMessageReceiver"
             android:exported="false">
