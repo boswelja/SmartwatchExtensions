@@ -67,7 +67,8 @@ class WatchManager internal constructor(
 
     private val _selectedWatchId = MutableLiveData<UUID>(null)
     private val _selectedWatch = _selectedWatchId.switchMap { id ->
-        watchDatabase.getById(id)
+        if (id != null) watchDatabase.getById(id)
+        else liveData { }
     }
 
     val registeredWatches: LiveData<List<Watch>>
