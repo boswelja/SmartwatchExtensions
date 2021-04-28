@@ -215,6 +215,7 @@ class WatchManager internal constructor(
      * @param value The new preference value.
      */
     suspend fun updatePreference(watch: Watch, key: String, value: Any) {
+        Timber.d("updatePreference(%s, %s, %s) called", watch.toString(), key, value.toString())
         val message = when (value) {
             is Boolean -> Messages.UPDATE_BOOL_PREFERENCE
             is Int -> Messages.UPDATE_INT_PREFERENCE
