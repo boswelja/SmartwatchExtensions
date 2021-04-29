@@ -2,11 +2,9 @@ package com.boswelja.smartwatchextensions.phonelocking
 
 import android.accessibilityservice.AccessibilityService
 import android.view.accessibility.AccessibilityEvent
-import androidx.lifecycle.Observer
 import com.boswelja.smartwatchextensions.common.connection.Messages.LOCK_PHONE
 import com.boswelja.smartwatchextensions.common.preference.PreferenceKey.PHONE_LOCKING_ENABLED_KEY
 import com.boswelja.smartwatchextensions.watchmanager.WatchManager
-import com.boswelja.smartwatchextensions.watchmanager.item.BoolPreference
 import com.boswelja.watchconnection.core.MessageListener
 import com.boswelja.watchconnection.core.Watch
 import com.google.android.gms.wearable.MessageEvent
@@ -21,19 +19,9 @@ class PhoneLockingAccessibilityService :
     AccessibilityService(),
     MessageListener {
 
-    private val settingsObserver = Observer<Array<BoolPreference>> { prefs ->
-        if (prefs.none { it.value }) stop()
-    }
-
     private val coroutineScope = CoroutineScope(Dispatchers.IO)
     private val watchManager: WatchManager by lazy {
         WatchManager.getInstance(this)
-    }
-
-    private val settingsLiveData by lazy {
-        watchManager.settingsDatabase.boolPrefDao().getAllObservableForKey(
-            PHONE_LOCKING_ENABLED_KEY
-        )
     }
 
     private var isStopping = false
@@ -49,7 +37,6 @@ class PhoneLockingAccessibilityService :
     override fun onServiceConnected() {
         Timber.i("onServiceConnected() called")
         watchManager.registerMessageListener(this)
-        settingsLiveData.observeForever(settingsObserver)
     }
 
     override fun onAccessibilityEvent(event: AccessibilityEvent?) {
@@ -75,7 +62,7 @@ class PhoneLockingAccessibilityService :
             if (watch != null) {
                 val phoneLockingEnabledForWatch = watchManager.getPreference<Boolean>(
                     watch.id, PHONE_LOCKING_ENABLED_KEY
-                ) == false
+                ) == true
                 if (phoneLockingEnabledForWatch) {
                     Timber.i("Trying to lock phone")
                     withContext(Dispatchers.Main) {
@@ -86,6 +73,7 @@ class PhoneLockingAccessibilityService :
                 }
             } else {
                 Timber.w("Sending watch not registered")
+                // TODO tell the watch it isn't registered
             }
         }
     }
@@ -102,7 +90,6 @@ class PhoneLockingAccessibilityService :
                 )
             }
             watchManager.unregisterMessageListener(this)
-            settingsLiveData.removeObserver(settingsObserver)
         }
     }
 }

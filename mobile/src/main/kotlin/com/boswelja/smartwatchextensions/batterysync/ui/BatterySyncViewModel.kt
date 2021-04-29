@@ -43,9 +43,9 @@ class BatterySyncViewModel internal constructor(
     val phoneChargeNotiEnabled = preferenceForSelectedWatch<Boolean>(BATTERY_PHONE_CHARGE_NOTI_KEY)
     val watchChargeNotiEnabled = preferenceForSelectedWatch<Boolean>(BATTERY_WATCH_CHARGE_NOTI_KEY)
     val chargeThreshold = preferenceForSelectedWatch<Int>(BATTERY_CHARGE_THRESHOLD_KEY)
-    val phoneLowNotiEnabled = preferenceForSelectedWatch<Boolean>(BATTERY_PHONE_CHARGE_NOTI_KEY)
-    val watchLowNotiEnabled = preferenceForSelectedWatch<Boolean>(BATTERY_WATCH_CHARGE_NOTI_KEY)
-    val batteryLowThreshold = preferenceForSelectedWatch<Int>(BATTERY_CHARGE_THRESHOLD_KEY)
+    val phoneLowNotiEnabled = preferenceForSelectedWatch<Boolean>(BATTERY_PHONE_LOW_NOTI_KEY)
+    val watchLowNotiEnabled = preferenceForSelectedWatch<Boolean>(BATTERY_WATCH_LOW_NOTI_KEY)
+    val batteryLowThreshold = preferenceForSelectedWatch<Int>(BATTERY_LOW_THRESHOLD_KEY)
 
     val batteryStats = watchManager.selectedWatch.switchMap {
         database.batteryStatsDao().getObservableStatsForWatch(it.id)

@@ -70,6 +70,7 @@ object Utils {
         watchId: UUID,
         batteryStats: BatteryStats
     ) {
+        Timber.d("handleBatteryStats(%s, %s) called", watchId, batteryStats)
         withContext(Dispatchers.IO) {
             val database = WatchDatabase.getInstance(context)
             database.watchDao().get(watchId)?.let { watch ->
@@ -113,6 +114,7 @@ object Utils {
         database: WatchSettingsDatabase,
         watch: Watch
     ) {
+        Timber.d("handleWatchChargeNoti called")
         val notificationManager = context.getSystemService<NotificationManager>()!!
         val chargeThreshold = database
             .getPreference<Int>(watch.id, PreferenceKey.BATTERY_CHARGE_THRESHOLD_KEY)?.value ?: 90
@@ -120,10 +122,17 @@ object Utils {
             .getPreference<Boolean>(watch.id, PreferenceKey.BATTERY_WATCH_CHARGE_NOTI_KEY)?.value ?: false
         val hasSentNoti = database
             .getPreference<Boolean>(watch.id, PreferenceKey.BATTERY_CHARGED_NOTI_SENT)?.value ?: false
+        Timber.d(
+            "chargeThreshold = %s, shouldSendChargeNotis = %s, hasSentNoti = %s, batteryPercent = %s",
+            chargeThreshold,
+            shouldSendChargeNotis,
+            hasSentNoti,
+            batteryStats.percent
+        )
         // We can send a charge noti if the user has enabled them, we haven't already sent it and
         // the watch is sufficiently charged.
         val canSendChargeNoti =
-            shouldSendChargeNotis && hasSentNoti && batteryStats.percent >= chargeThreshold
+            shouldSendChargeNotis && !hasSentNoti && batteryStats.percent >= chargeThreshold
         if (canSendChargeNoti) {
             NotificationChannelHelper.createForBatteryStats(context, notificationManager)
             if (areNotificationsEnabled(context)) {
@@ -148,6 +157,7 @@ object Utils {
             }
             database.updatePrefInDatabase(watch.id, PreferenceKey.BATTERY_CHARGED_NOTI_SENT, true)
         } else {
+            Timber.d("Dismissing charge notifications")
             notificationManager.cancel(BATTERY_CHARGED_NOTI_ID)
             database.updatePrefInDatabase(watch.id, PreferenceKey.BATTERY_CHARGED_NOTI_SENT, false)
         }
@@ -165,17 +175,26 @@ object Utils {
         database: WatchSettingsDatabase,
         watch: Watch
     ) {
+        Timber.d("handleWatchLowNoti called")
         val notificationManager = context.getSystemService<NotificationManager>()!!
-        val chargeThreshold = database
+        val lowThreshold = database
             .getPreference<Int>(watch.id, PreferenceKey.BATTERY_LOW_THRESHOLD_KEY)?.value ?: 15
-        val shouldSendChargeNotis = database
+        val shouldSendLowNoti = database
             .getPreference<Boolean>(watch.id, PreferenceKey.BATTERY_WATCH_LOW_NOTI_KEY)?.value ?: false
         val hasSentNoti = database
             .getPreference<Boolean>(watch.id, PreferenceKey.BATTERY_LOW_NOTI_SENT)?.value ?: false
+        Timber.d(
+            "lowThreshold = %s, shouldSendLowNoti = %s, hasSentNoti = %s, batteryPercent = %s",
+            lowThreshold,
+            shouldSendLowNoti,
+            hasSentNoti,
+            batteryStats.percent
+        )
+
         // We can send a low noti if the user has enabled them, we haven't already sent it and
         // the watch is sufficiently discharged.
         val canSendLowNoti =
-            shouldSendChargeNotis && hasSentNoti && batteryStats.percent <= chargeThreshold
+            shouldSendLowNoti && !hasSentNoti && batteryStats.percent <= lowThreshold
         if (canSendLowNoti) {
             NotificationChannelHelper.createForBatteryStats(context, notificationManager)
             if (areNotificationsEnabled(context)) {
@@ -188,7 +207,7 @@ object Utils {
                     .setContentTitle(context.getString(R.string.device_battery_low_noti_title, watch.name))
                     .setContentText(
                         context.getString(R.string.device_battery_low_noti_desc)
-                            .format(Locale.getDefault(), watch.name, chargeThreshold)
+                            .format(Locale.getDefault(), watch.name, lowThreshold)
                     )
                     .setLocalOnly(true)
                     .also { notificationManager.notify(BATTERY_LOW_NOTI_ID, it.build()) }
