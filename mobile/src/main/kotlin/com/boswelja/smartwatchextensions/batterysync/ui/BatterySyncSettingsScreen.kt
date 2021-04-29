@@ -1,6 +1,8 @@
 package com.boswelja.smartwatchextensions.batterysync.ui
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Divider
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.runtime.Composable
@@ -9,6 +11,7 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.boswelja.smartwatchextensions.R
@@ -20,7 +23,10 @@ import com.boswelja.smartwatchextensions.common.ui.SwitchPreference
 @ExperimentalMaterialApi
 @Composable
 fun BatterySyncSettingsScreen() {
-    Column {
+    val scrollState = rememberScrollState()
+    Column(
+        Modifier.verticalScroll(scrollState)
+    ) {
         BatterySyncSettings()
         Divider()
         ChargeNotificationSettings()
