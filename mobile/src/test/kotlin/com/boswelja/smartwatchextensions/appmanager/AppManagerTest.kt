@@ -150,6 +150,13 @@ class AppManagerTest {
     }
 
     @Test
+    fun `addPackage sets state to READY if all expected packages are received`() {
+        // expectedPackageCount should be 0 by default
+        appManager.addPackage(app)
+        assertThat(appManager.state.getOrAwaitValue()).isEquivalentAccordingToCompareTo(State.READY)
+    }
+
+    @Test
     fun `removePackage correctly removes an app`() {
         appManager.addPackage(app)
         appManager.removePackage(app.packageName)

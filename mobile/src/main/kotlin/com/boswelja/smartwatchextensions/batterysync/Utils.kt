@@ -4,6 +4,7 @@ import android.app.NotificationManager
 import android.content.Context
 import androidx.core.app.NotificationCompat
 import androidx.core.content.getSystemService
+import androidx.lifecycle.asFlow
 import com.boswelja.smartwatchextensions.NotificationChannelHelper
 import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.batterysync.database.WatchBatteryStats.Companion.toWatchBatteryStats
@@ -18,6 +19,7 @@ import com.boswelja.smartwatchextensions.watchmanager.database.WatchDatabase
 import com.boswelja.smartwatchextensions.watchmanager.database.WatchSettingsDatabase
 import com.boswelja.watchconnection.core.Watch
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 import java.util.Locale
@@ -46,15 +48,16 @@ object Utils {
                 if (watch != null) {
                     watchManager.sendMessage(watch, BATTERY_STATUS_PATH, batteryStats.toByteArray())
                 } else {
-                    watchManager.registeredWatches.value?.forEach {
-                        if (watchManager.getPreference<Boolean>(it.id, BATTERY_SYNC_ENABLED_KEY)
-                            == true
-                        ) {
+                    watchManager.registeredWatches.asFlow().first()
+                        .filter {
+                            watchManager.getPreference<Boolean>(
+                                it.id, BATTERY_SYNC_ENABLED_KEY
+                            ) == true
+                        }.forEach {
                             watchManager.sendMessage(
                                 it, BATTERY_STATUS_PATH, batteryStats.toByteArray()
                             )
                         }
-                    }
                 }
             } else {
                 Timber.w("batteryStats null, skipping...")

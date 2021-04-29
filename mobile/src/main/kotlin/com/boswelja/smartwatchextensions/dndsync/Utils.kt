@@ -8,7 +8,8 @@ import com.boswelja.smartwatchextensions.common.preference.PreferenceKey.DND_SYN
 import com.boswelja.smartwatchextensions.common.preference.PreferenceKey.DND_SYNC_WITH_THEATER_KEY
 import com.boswelja.smartwatchextensions.common.toByteArray
 import com.boswelja.smartwatchextensions.watchmanager.WatchManager
-import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.first
+import timber.log.Timber
 import java.util.UUID
 
 object Utils {
@@ -24,13 +25,14 @@ object Utils {
 
         if (success) {
             // Let other watches know DnD state changed
-            watchManager.registeredWatches.asFlow().collectLatest { watches ->
-                watches.filterNot { it.id == sourceWatchId }.forEach { watch ->
+            Timber.d("Successfully set DnD state")
+            watchManager.registeredWatches.asFlow().first()
+                .filterNot { it.id == sourceWatchId }.forEach { watch ->
                     watchManager.sendMessage(watch, DND_STATUS_PATH, isDnDEnabled.toByteArray())
                 }
-            }
         } else {
             // Setting DnD failed, likely due to no permission. Disable extensions.
+            Timber.w("Failed to set DnD state")
             watchManager.updatePreference(DND_SYNC_TO_PHONE_KEY, false)
             watchManager.updatePreference(DND_SYNC_WITH_THEATER_KEY, false)
             // TODO Send a message to let the user know

@@ -39,6 +39,7 @@ class AppManager internal constructor(
 
     private val stateDisconnectedDelay = DelayedFunction(15) {
         if (_state.value != State.ERROR) {
+            Timber.d("No heartbeat from watch, assuming Disconnected")
             _state.postValue(State.DISCONNECTED)
         }
     }
@@ -156,6 +157,7 @@ class AppManager internal constructor(
             _progress.postValue(-1)
             _userAppsObservable.postValue(_userApps)
             _systemAppsObservable.postValue(_systemApps)
+            serviceRunning()
         } else {
             val progress = (
                 ((_systemApps.count() + _userApps.count()) / expectedPackageCount.toFloat()) * 100

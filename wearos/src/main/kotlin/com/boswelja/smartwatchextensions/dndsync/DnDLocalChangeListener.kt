@@ -30,6 +30,7 @@ import com.google.android.gms.wearable.Wearable
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.runBlocking
+import timber.log.Timber
 
 class DnDLocalChangeListener : LifecycleService() {
 
@@ -153,6 +154,7 @@ class DnDLocalChangeListener : LifecycleService() {
      */
     private fun updateInterruptionFilter() {
         val dndSyncEnabled = Compat.isDndEnabled(this)
+        Timber.d("Sending DND %s to %s", dndSyncEnabled, phoneId)
         messageClient.sendMessage(phoneId, DND_STATUS_PATH, dndSyncEnabled.toByteArray())
     }
 
