@@ -22,7 +22,10 @@ class PhoneLockingAccessibilityService :
     MessageListener {
 
     private val settingsObserver = Observer<Array<BoolPreference>> { prefs ->
-        if (prefs.none { it.value }) stop()
+        if (prefs.none { it.value }) {
+            Timber.d("Stopping due to no watches with Phone Locking enabled")
+            stop()
+        }
     }
 
     private val coroutineScope = CoroutineScope(Dispatchers.IO)
@@ -75,7 +78,7 @@ class PhoneLockingAccessibilityService :
             if (watch != null) {
                 val phoneLockingEnabledForWatch = watchManager.getPreference<Boolean>(
                     watch.id, PHONE_LOCKING_ENABLED_KEY
-                ) == false
+                ) == true
                 if (phoneLockingEnabledForWatch) {
                     Timber.i("Trying to lock phone")
                     withContext(Dispatchers.Main) {
@@ -86,6 +89,7 @@ class PhoneLockingAccessibilityService :
                 }
             } else {
                 Timber.w("Sending watch not registered")
+                // TODO tell the watch it isn't registered
             }
         }
     }
