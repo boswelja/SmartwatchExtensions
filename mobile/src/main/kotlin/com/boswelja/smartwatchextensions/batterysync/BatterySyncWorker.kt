@@ -42,7 +42,7 @@ class BatterySyncWorker(appContext: Context, workerParams: WorkerParameters) :
                 val data = Data.Builder().apply { putString(EXTRA_WATCH_ID, watchId.toString()) }.build()
                 val request =
                     PeriodicWorkRequestBuilder<BatterySyncWorker>(
-                        syncIntervalMinutes, TimeUnit.SECONDS
+                        syncIntervalMinutes, TimeUnit.MINUTES
                     ).apply { setInputData(data) }.build()
                 WorkManager.getInstance(context).enqueueUniquePeriodicWork(
                     "$watchId-batterysync",
