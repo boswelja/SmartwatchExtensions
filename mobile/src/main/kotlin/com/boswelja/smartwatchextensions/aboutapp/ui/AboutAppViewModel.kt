@@ -31,13 +31,14 @@ class AboutAppViewModel internal constructor(
     private val selectedWatchObserver = Observer<Watch?> { watch ->
         if (watch?.id != null) {
             viewModelScope.launch {
-                watchManager.sendMessage(watch, REQUEST_APP_VERSION, null)
-                // TODO hook this up when WatchConnectionClient gets patched
-                // On fail
-                // _watchAppVersion.postValue(null)
-
-                // On success
-                // _watchAppVersion.postValue(Pair(null, null))
+                val result = watchManager.sendMessage(watch, REQUEST_APP_VERSION, null)
+                if (result) {
+                    // Successfully sent message
+                    _watchAppVersion.postValue(Pair(null, null))
+                } else {
+                    // Failed to send message
+                    _watchAppVersion.postValue(null)
+                }
             }
         } else {
             Timber.w("Selected watch null")
