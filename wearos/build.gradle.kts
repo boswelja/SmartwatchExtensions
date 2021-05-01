@@ -5,11 +5,11 @@ plugins {
 }
 
 android {
-    compileSdkVersion(PackageInfo.targetSdk)
+    compileSdk = PackageInfo.targetSdk
 
     defaultConfig {
-        minSdkVersion(25)
-        targetSdkVersion(PackageInfo.targetSdk)
+        minSdk = 25
+        targetSdk = PackageInfo.targetSdk
 
         applicationId = PackageInfo.packageName
         // Add 1 here to ensure it's different from mobile module
@@ -32,11 +32,10 @@ android {
 
     buildTypes {
         getByName("debug") {
-            applicationIdSuffix(DebugInfo.idSuffix)
+            applicationIdSuffix = DebugInfo.idSuffix
         }
         getByName("release") {
             isMinifyEnabled = true
-            isShrinkResources = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
