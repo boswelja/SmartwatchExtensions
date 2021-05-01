@@ -130,7 +130,7 @@ fun LowBatteryNotificationSettings() {
     val watchLowNotiEnabled by viewModel.watchLowNotiEnabled.observeAsState()
     val batteryLowThreshold by viewModel.batteryLowThreshold.observeAsState()
     var currentThreshold by remember {
-        mutableStateOf((batteryLowThreshold ?: 90) / 100f)
+        mutableStateOf((batteryLowThreshold ?: 15) / 100f)
     }
 
     Column {
