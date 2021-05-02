@@ -1,10 +1,14 @@
 package com.boswelja.smartwatchextensions.common.appmanager
 
 import androidx.test.platform.app.InstrumentationRegistry
-import com.google.common.truth.Truth.assertThat
-import com.google.common.truth.Truth.assertWithMessage
 import java.io.IOException
+import org.junit.Assert
 import org.junit.Test
+import strikt.api.expectThat
+import strikt.assertions.containsExactly
+import strikt.assertions.isEqualTo
+import strikt.assertions.isFalse
+import strikt.assertions.isTrue
 import timber.log.Timber
 
 class AppTest {
@@ -17,8 +21,8 @@ class AppTest {
         val userAppInfo = context.packageManager.getPackageInfo(context.packageName, 0)
         val wearableExtensionsInfo = App(context.packageManager, userAppInfo)
 
-        assertThat(systemUiInfo.isSystemApp).isTrue()
-        assertThat(wearableExtensionsInfo.isSystemApp).isFalse()
+        expectThat(systemUiInfo.isSystemApp).isTrue()
+        expectThat(wearableExtensionsInfo.isSystemApp).isFalse()
     }
 
     @Test
@@ -29,8 +33,8 @@ class AppTest {
         val userAppInfo = context.packageManager.getPackageInfo(context.packageName, 0)
         val wearableExtensionsInfo = App(context.packageManager, userAppInfo)
 
-        assertThat(systemUiInfo.hasLaunchActivity).isFalse()
-        assertThat(wearableExtensionsInfo.hasLaunchActivity).isTrue()
+        expectThat(systemUiInfo.hasLaunchActivity).isFalse()
+        expectThat(wearableExtensionsInfo.hasLaunchActivity).isTrue()
     }
 
     @Test
@@ -42,23 +46,21 @@ class AppTest {
             val byteArray = wearableExtensionsInfo.toByteArray()
             val infoFromByteArray = App.fromByteArray(byteArray)
 
-            assertThat(infoFromByteArray.isSystemApp).isEqualTo(wearableExtensionsInfo.isSystemApp)
-            assertThat(infoFromByteArray.hasLaunchActivity)
+            expectThat(infoFromByteArray.isSystemApp).isEqualTo(wearableExtensionsInfo.isSystemApp)
+            expectThat(infoFromByteArray.hasLaunchActivity)
                 .isEqualTo(wearableExtensionsInfo.hasLaunchActivity)
-            assertThat(infoFromByteArray.installTime).isEqualTo(wearableExtensionsInfo.installTime)
-            assertThat(infoFromByteArray.lastUpdateTime)
+            expectThat(infoFromByteArray.installTime).isEqualTo(wearableExtensionsInfo.installTime)
+            expectThat(infoFromByteArray.lastUpdateTime)
                 .isEqualTo(wearableExtensionsInfo.lastUpdateTime)
-            assertThat(infoFromByteArray.label)
+            expectThat(infoFromByteArray.label)
                 .isEqualTo(wearableExtensionsInfo.label)
-            assertThat(infoFromByteArray.packageName).isEqualTo(wearableExtensionsInfo.packageName)
-            assertThat(infoFromByteArray.version).isEqualTo(wearableExtensionsInfo.version)
-            assertThat(wearableExtensionsInfo.requestedPermissions)
-                .asList()
+            expectThat(infoFromByteArray.packageName).isEqualTo(wearableExtensionsInfo.packageName)
+            expectThat(infoFromByteArray.version).isEqualTo(wearableExtensionsInfo.version)
+            expectThat(wearableExtensionsInfo.requestedPermissions.toList())
                 .containsExactly(infoFromByteArray.requestedPermissions)
-                .inOrder()
         } catch (e: IOException) {
             Timber.e(e)
-            assertWithMessage("Failed to convert between ByteArray and AppPackageInfo").fail()
+            Assert.fail("Failed to convert between ByteArray and App")
         }
     }
 }

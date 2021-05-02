@@ -9,7 +9,6 @@ import com.boswelja.smartwatchextensions.common.connection.Capability
 import com.boswelja.smartwatchextensions.getOrAwaitValue
 import com.boswelja.smartwatchextensions.watchmanager.WatchManager
 import com.boswelja.watchconnection.core.Watch
-import com.google.common.truth.Truth.assertThat
 import io.mockk.MockKAnnotations
 import io.mockk.coVerify
 import io.mockk.every
@@ -24,6 +23,8 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.annotation.Config
+import strikt.api.expectThat
+import strikt.assertions.isEqualTo
 
 @ExperimentalCoroutinesApi
 @RunWith(AndroidJUnit4::class)
@@ -58,7 +59,7 @@ class WatchInfoViewModelTest {
     @Test
     fun `setWatch correctly picks a watch from registeredWatches`() {
         viewModel.setWatch(dummyWatch.id)
-        assertThat(viewModel.watch.getOrAwaitValue()).isEqualTo(dummyWatch)
+        expectThat(viewModel.watch.getOrAwaitValue()).isEqualTo(dummyWatch)
     }
 
     @Test

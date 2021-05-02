@@ -13,7 +13,6 @@ import com.boswelja.smartwatchextensions.appsettings.Settings
 import com.boswelja.smartwatchextensions.managespace.ui.ManageSpaceViewModel.Companion.MAX_PROGRESS
 import com.boswelja.smartwatchextensions.watchmanager.WatchManager
 import com.boswelja.watchconnection.core.Watch
-import com.google.common.truth.Truth.assertThat
 import io.mockk.MockKAnnotations
 import io.mockk.coVerify
 import io.mockk.every
@@ -30,6 +29,10 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.Shadows.shadowOf
 import org.robolectric.annotation.Config
+import strikt.api.expectThat
+import strikt.assertions.isFalse
+import strikt.assertions.isLessThanOrEqualTo
+import strikt.assertions.isTrue
 import java.io.File
 
 @ExperimentalCoroutinesApi
@@ -72,10 +75,10 @@ class ManageSpaceViewModelTest {
     @Test
     fun `registeredWatches is observed for the lifecycle of the view model`() {
         verify { watchManager.registeredWatches }
-        assertThat(registeredWatches.hasActiveObservers()).isTrue()
+        expectThat(registeredWatches.hasActiveObservers()).isTrue()
         viewModel.onCleared()
         verify { watchManager.registeredWatches }
-        assertThat(registeredWatches.hasActiveObservers()).isFalse()
+        expectThat(registeredWatches.hasActiveObservers()).isFalse()
     }
 
     @Test
@@ -114,7 +117,7 @@ class ManageSpaceViewModelTest {
 
         viewModel.clearCache({ }, { })
         shadowOf(getMainLooper()).idle()
-        assertThat(testFile.exists()).isFalse()
+        expectThat(testFile.exists()).isFalse()
     }
 
     @Test
@@ -132,20 +135,20 @@ class ManageSpaceViewModelTest {
         }
         viewModel.clearCache(onProgressChanged, { })
         shadowOf(getMainLooper()).idle()
-        assertThat(currentProgress).isAtMost(MAX_PROGRESS.toInt())
+        expectThat(currentProgress).isLessThanOrEqualTo(MAX_PROGRESS.toInt())
 
         // Test with single cache file
         if (!cacheDir.exists()) cacheDir.mkdirs()
         File(cacheDir, "test").createNewFile()
         viewModel.clearCache(onProgressChanged, { })
         shadowOf(getMainLooper()).idle()
-        assertThat(currentProgress).isAtMost(MAX_PROGRESS.toInt())
+        expectThat(currentProgress).isLessThanOrEqualTo(MAX_PROGRESS.toInt())
 
         // Test with no cache files
         cacheDir.listFiles()?.forEach { it.deleteRecursively() }
         viewModel.clearCache(onProgressChanged, { })
         shadowOf(getMainLooper()).idle()
-        assertThat(currentProgress).isAtMost(MAX_PROGRESS.toInt())
+        expectThat(currentProgress).isLessThanOrEqualTo(MAX_PROGRESS.toInt())
     }
 
     @Test
@@ -186,19 +189,19 @@ class ManageSpaceViewModelTest {
         registeredWatches.value = dummyWatches
         viewModel.resetExtensionSettings(onProgressChanged, { })
         shadowOf(getMainLooper()).idle()
-        assertThat(currentProgress).isAtMost(MAX_PROGRESS.toInt())
+        expectThat(currentProgress).isLessThanOrEqualTo(MAX_PROGRESS.toInt())
 
         // Test with single registered watch
         registeredWatches.value = listOf(dummyWatch1)
         viewModel.resetExtensionSettings(onProgressChanged, { })
         shadowOf(getMainLooper()).idle()
-        assertThat(currentProgress).isAtMost(MAX_PROGRESS.toInt())
+        expectThat(currentProgress).isLessThanOrEqualTo(MAX_PROGRESS.toInt())
 
         // Test with no registered watches
         registeredWatches.value = emptyList()
         viewModel.resetExtensionSettings(onProgressChanged, { })
         shadowOf(getMainLooper()).idle()
-        assertThat(currentProgress).isAtMost(MAX_PROGRESS.toInt())
+        expectThat(currentProgress).isLessThanOrEqualTo(MAX_PROGRESS.toInt())
     }
 
     @Test
@@ -260,18 +263,18 @@ class ManageSpaceViewModelTest {
         registeredWatches.value = dummyWatches
         viewModel.resetApp(onProgressChanged, { })
         shadowOf(getMainLooper()).idle()
-        assertThat(currentProgress).isAtMost(MAX_PROGRESS.toInt())
+        expectThat(currentProgress).isLessThanOrEqualTo(MAX_PROGRESS.toInt())
 
         // Test with registered watch
         registeredWatches.value = listOf(dummyWatch1)
         viewModel.resetApp(onProgressChanged, { })
         shadowOf(getMainLooper()).idle()
-        assertThat(currentProgress).isAtMost(MAX_PROGRESS.toInt())
+        expectThat(currentProgress).isLessThanOrEqualTo(MAX_PROGRESS.toInt())
 
         // Test with no registered watches
         registeredWatches.value = emptyList()
         viewModel.resetApp(onProgressChanged, { })
         shadowOf(getMainLooper()).idle()
-        assertThat(currentProgress).isAtMost(MAX_PROGRESS.toInt())
+        expectThat(currentProgress).isLessThanOrEqualTo(MAX_PROGRESS.toInt())
     }
 }

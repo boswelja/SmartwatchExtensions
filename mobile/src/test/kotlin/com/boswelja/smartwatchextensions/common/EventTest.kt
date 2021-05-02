@@ -8,12 +8,14 @@ import androidx.lifecycle.LifecycleRegistry
 import androidx.lifecycle.Observer
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.boswelja.smartwatchextensions.getOrAwaitValue
-import com.google.common.truth.Truth.assertThat
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.annotation.Config
+import strikt.api.expectThat
+import strikt.assertions.isFalse
+import strikt.assertions.isTrue
 
 @RunWith(AndroidJUnit4::class)
 @Config(sdk = [Build.VERSION_CODES.R])
@@ -47,13 +49,13 @@ class EventTest {
         val observer = { _: Boolean -> }
         event.observe(testLifecycleOwner, observer)
         event.fire()
-        assertThat(event.value).isFalse()
+        expectThat(event.value).isFalse()
     }
 
     @Test
     fun `Observer boolean is never false using observe`() {
-        val observer = { value: Boolean ->
-            assertThat(value).isTrue()
+        val observer = Observer { value: Boolean ->
+            expectThat(value).isTrue()
         }
         event.observe(testLifecycleOwner, observer)
         event.fire()
@@ -64,14 +66,14 @@ class EventTest {
         val observer = { _: Boolean -> }
         event.observeForever(observer)
         event.fire()
-        assertThat(event.value).isFalse()
+        expectThat(event.value).isFalse()
         event.removeObserver(observer)
     }
 
     @Test
     fun `Observer boolean is never false using observeForever`() {
-        val observer = { value: Boolean ->
-            assertThat(value).isTrue()
+        val observer = Observer { value: Boolean ->
+            expectThat(value).isTrue()
         }
         event.observeForever(observer)
         event.fire()
@@ -82,23 +84,23 @@ class EventTest {
     fun `removeObserver removes observers added with observe`() {
         val observer = Observer<Boolean> { }
         event.observe(testLifecycleOwner, observer)
-        assertThat(event.hasActiveObservers()).isTrue()
+        expectThat(event.hasActiveObservers()).isTrue()
         event.removeObserver(observer)
-        assertThat(event.hasObservers()).isFalse()
+        expectThat(event.hasObservers()).isFalse()
     }
 
     @Test
     fun `removeObserver removes observers added with observeForever`() {
         val observer = Observer<Boolean> { }
         event.observeForever(observer)
-        assertThat(event.hasActiveObservers()).isTrue()
+        expectThat(event.hasActiveObservers()).isTrue()
         event.removeObserver(observer)
-        assertThat(event.hasObservers()).isFalse()
+        expectThat(event.hasObservers()).isFalse()
     }
 
     @Test
     fun `Firing event fires event`() {
         event.fire()
-        assertThat(event.getOrAwaitValue()).isTrue()
+        expectThat(event.getOrAwaitValue()).isTrue()
     }
 }

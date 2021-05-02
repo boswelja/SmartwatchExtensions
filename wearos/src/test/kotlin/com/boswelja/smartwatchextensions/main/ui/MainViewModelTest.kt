@@ -7,7 +7,6 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.boswelja.smartwatchextensions.PhoneState
 import com.boswelja.smartwatchextensions.capability.CapabilityUpdater
 import com.boswelja.smartwatchextensions.getOrAwaitValue
-import com.google.common.truth.Truth.assertThat
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkConstructor
@@ -19,6 +18,9 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.annotation.Config
+import strikt.api.expectThat
+import strikt.assertions.isFalse
+import strikt.assertions.isTrue
 
 @RunWith(AndroidJUnit4::class)
 @Config(sdk = [Build.VERSION_CODES.R])
@@ -41,28 +43,28 @@ class MainViewModelTest {
     fun `isRegistered is true on ViewModel init with ID set`(): Unit = runBlocking {
         updatePhoneId("id")
         val viewModel = getViewModel()
-        assertThat(viewModel.isRegistered.getOrAwaitValue()).isTrue()
+        expectThat(viewModel.isRegistered.getOrAwaitValue()).isTrue()
     }
 
     @Test
     fun `isRegistered is false on ViewModel init with no ID`(): Unit = runBlocking {
         updatePhoneId("")
         val viewModel = getViewModel()
-        assertThat(viewModel.isRegistered.getOrAwaitValue()).isFalse()
+        expectThat(viewModel.isRegistered.getOrAwaitValue()).isFalse()
     }
 
     @Test
     fun `isRegistered is true when ID set after ViewModel init`(): Unit = runBlocking {
         val viewModel = getViewModel()
         updatePhoneId("id")
-        assertThat(viewModel.isRegistered.getOrAwaitValue()).isTrue()
+        expectThat(viewModel.isRegistered.getOrAwaitValue()).isTrue()
     }
 
     @Test
     fun `isRegistered is false when ID cleared after ViewModel init`(): Unit = runBlocking {
         val viewModel = getViewModel()
         updatePhoneId("")
-        assertThat(viewModel.isRegistered.getOrAwaitValue()).isFalse()
+        expectThat(viewModel.isRegistered.getOrAwaitValue()).isFalse()
     }
 
     @Test
