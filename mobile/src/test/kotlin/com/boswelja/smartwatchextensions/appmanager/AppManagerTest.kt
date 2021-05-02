@@ -9,7 +9,6 @@ import com.boswelja.smartwatchextensions.common.appmanager.Messages.START_SERVIC
 import com.boswelja.smartwatchextensions.getOrAwaitValue
 import com.boswelja.smartwatchextensions.watchmanager.WatchManager
 import com.boswelja.watchconnection.core.Watch
-import com.google.common.truth.Truth.assertThat
 import io.mockk.MockKAnnotations
 import io.mockk.coVerify
 import io.mockk.every
@@ -22,6 +21,13 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.annotation.Config
+import strikt.api.expectThat
+import strikt.assertions.containsExactly
+import strikt.assertions.isEmpty
+import strikt.assertions.isEqualTo
+import strikt.assertions.isFalse
+import strikt.assertions.isNotEqualTo
+import strikt.assertions.isTrue
 
 @RunWith(AndroidJUnit4::class)
 @Config(sdk = [Build.VERSION_CODES.R])
@@ -59,10 +65,10 @@ class AppManagerTest {
     @Test
     fun `expectPackages updates state and progress`() {
         appManager.expectPackages(1)
-        assertThat(appManager.state.getOrAwaitValue())
-            .isEquivalentAccordingToCompareTo(State.LOADING_APPS)
+        expectThat(appManager.state.getOrAwaitValue())
+            .isEqualTo(State.LOADING_APPS)
         // Progress should be reset to 0
-        assertThat(appManager.progress.getOrAwaitValue())
+        expectThat(appManager.progress.getOrAwaitValue())
             .isEqualTo(0)
     }
 
@@ -73,10 +79,10 @@ class AppManagerTest {
         appManager = AppManager(watchManager, TestCoroutineDispatcher())
 
         appManager.startAppManagerService()
-        assertThat(appManager.state.getOrAwaitValue())
-            .isEquivalentAccordingToCompareTo(State.CONNECTING)
-        assertThat(appManager.userApps.getOrAwaitValue()).isEmpty()
-        assertThat(appManager.systemApps.getOrAwaitValue()).isEmpty()
+        expectThat(appManager.state.getOrAwaitValue())
+            .isEqualTo(State.CONNECTING)
+        expectThat(appManager.userApps.getOrAwaitValue()).isEmpty()
+        expectThat(appManager.systemApps.getOrAwaitValue()).isEmpty()
         coVerify { watchManager.sendMessage(watch, START_SERVICE, null) }
     }
 
@@ -96,8 +102,8 @@ class AppManagerTest {
 
     @Test
     fun `State is connecting on init`() {
-        assertThat(appManager.state.getOrAwaitValue())
-            .isEquivalentAccordingToCompareTo(State.CONNECTING)
+        expectThat(appManager.state.getOrAwaitValue())
+            .isEqualTo(State.CONNECTING)
     }
 
     @Test
@@ -114,17 +120,17 @@ class AppManagerTest {
         every { watchManager.selectedWatch } returns selectedWatch
         appManager = AppManager(watchManager, TestCoroutineDispatcher())
 
-        assertThat(selectedWatch.hasActiveObservers()).isTrue()
+        expectThat(selectedWatch.hasActiveObservers()).isTrue()
 
         appManager.destroy()
-        assertThat(selectedWatch.hasObservers()).isFalse()
+        expectThat(selectedWatch.hasObservers()).isFalse()
     }
 
     @Test
     fun `serviceRunning moves state to READY if we've received all expected packages`() {
         // expectedPackageCount is 0 by default, and _apps.count() should also be 0
         appManager.serviceRunning()
-        assertThat(appManager.state.getOrAwaitValue()).isEquivalentAccordingToCompareTo(State.READY)
+        expectThat(appManager.state.getOrAwaitValue()).isEqualTo(State.READY)
     }
 
     @Test
@@ -132,35 +138,35 @@ class AppManagerTest {
         // _apps.count() should be 0 by default
         appManager.expectPackages(1)
         appManager.serviceRunning()
-        assertThat(appManager.state.getOrAwaitValue()).isNotEqualTo(State.READY)
+        expectThat(appManager.state.getOrAwaitValue()).isNotEqualTo(State.READY)
     }
 
     @Test
     fun `addPackage updates apps once all expected packages are received`() {
         // expectedPackageCount should be 0 by default
         appManager.addPackage(app)
-        assertThat(appManager.userApps.getOrAwaitValue()).containsExactly(app)
+        expectThat(appManager.userApps.getOrAwaitValue()).containsExactly(app)
     }
 
     @Test
     fun `addPackage updates progress while receiving expected packages`() {
         appManager.expectPackages(10)
         appManager.addPackage(app)
-        assertThat(appManager.progress.getOrAwaitValue()).isEqualTo(10)
+        expectThat(appManager.progress.getOrAwaitValue()).isEqualTo(10)
     }
 
     @Test
     fun `addPackage sets state to READY if all expected packages are received`() {
         // expectedPackageCount should be 0 by default
         appManager.addPackage(app)
-        assertThat(appManager.state.getOrAwaitValue()).isEquivalentAccordingToCompareTo(State.READY)
+        expectThat(appManager.state.getOrAwaitValue()).isEqualTo(State.READY)
     }
 
     @Test
     fun `removePackage correctly removes an app`() {
         appManager.addPackage(app)
         appManager.removePackage(app.packageName)
-        assertThat(appManager.userApps.getOrAwaitValue()).isEmpty()
+        expectThat(appManager.userApps.getOrAwaitValue()).isEmpty()
         val newSystemApp = App(
             null,
             "v2.0.0",
@@ -174,13 +180,13 @@ class AppManagerTest {
         )
         appManager.addPackage(newSystemApp)
         appManager.removePackage(newSystemApp.packageName)
-        assertThat(appManager.systemApps.getOrAwaitValue()).isEmpty()
+        expectThat(appManager.systemApps.getOrAwaitValue()).isEmpty()
     }
 
     @Test
     fun `removePackage handles app that hasn't been added`() {
         appManager.removePackage(app.packageName)
-        assertThat(appManager.userApps.getOrAwaitValue()).isEmpty()
-        assertThat(appManager.systemApps.getOrAwaitValue()).isEmpty()
+        expectThat(appManager.userApps.getOrAwaitValue()).isEmpty()
+        expectThat(appManager.systemApps.getOrAwaitValue()).isEmpty()
     }
 }

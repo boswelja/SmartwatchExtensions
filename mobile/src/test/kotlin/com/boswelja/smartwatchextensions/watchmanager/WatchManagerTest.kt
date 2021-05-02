@@ -18,7 +18,6 @@ import com.boswelja.smartwatchextensions.watchmanager.database.WatchDatabase
 import com.boswelja.smartwatchextensions.watchmanager.database.WatchSettingsDatabase
 import com.boswelja.watchconnection.core.Watch
 import com.boswelja.watchconnection.core.WatchPlatformManager
-import com.google.common.truth.Truth.assertThat
 import io.mockk.MockKAnnotations
 import io.mockk.clearAllMocks
 import io.mockk.coVerify
@@ -35,7 +34,13 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.annotation.Config
+import strikt.api.expectThat
+import strikt.api.expectThrows
+import strikt.assertions.isEqualTo
+import strikt.assertions.isNotNull
+import strikt.assertions.isNull
 import java.util.concurrent.TimeUnit
+import java.util.concurrent.TimeoutException
 
 @RunWith(AndroidJUnit4::class)
 @Config(sdk = [Build.VERSION_CODES.R])
@@ -81,7 +86,7 @@ class WatchManagerTest {
         appState.emit(AppState(lastSelectedWatchId = dummyWatch1.id.toString()))
         watchManager = getWatchManager()
 
-        assertThat(watchManager.selectedWatch.getOrAwaitValue()).isEqualTo(dummyWatch1)
+        expectThat(watchManager.selectedWatch.getOrAwaitValue()).isEqualTo(dummyWatch1)
     }
 
     @Test
@@ -93,7 +98,7 @@ class WatchManagerTest {
         watchManager.selectWatchById(dummyWatch2.id)
 
         // Check the selected watch has been updated
-        assertThat(watchManager.selectedWatch.getOrAwaitValue()).isEqualTo(dummyWatch2)
+        expectThat(watchManager.selectedWatch.getOrAwaitValue()).isEqualTo(dummyWatch2)
     }
 
     @Test
@@ -111,7 +116,7 @@ class WatchManagerTest {
         coVerify(exactly = 1) { connectionClient.sendMessage(dummyWatch1, Messages.WATCH_REGISTERED_PATH) }
 
         // Verify watch was added to the database
-        assertThat(watchDatabase.watchDao().get(dummyWatch1.id)).isNotNull()
+        expectThat(watchDatabase.watchDao().get(dummyWatch1.id)).isNotNull()
     }
 
     @Test
@@ -127,7 +132,7 @@ class WatchManagerTest {
         verify(exactly = 1) { batteryStatsDatabase.batteryStatsDao() }
 
         // Verify watch isn't in database
-        assertThat(watchDatabase.watchDao().get(dummyWatch1.id)).isNull()
+        expectThat(watchDatabase.watchDao().get(dummyWatch1.id)).isNull()
     }
 
     @Test
@@ -139,7 +144,7 @@ class WatchManagerTest {
         verify(exactly = 1) { analytics.logWatchRenamed() }
 
         // Verify name was changed in the database
-        assertThat(watchDatabase.watchDao().get(dummyWatch1.id)?.name).isEqualTo(newName)
+        expectThat(watchDatabase.watchDao().get(dummyWatch1.id)?.name).isEqualTo(newName)
     }
 
     @Test
@@ -159,15 +164,8 @@ class WatchManagerTest {
     fun `selectedWatch is null if there are no registered watches`() {
         setRegisteredWatches(emptyList())
         watchManager = getWatchManager()
-        try {
-            // We expect this to throw an exception, so use a shorter timeout
-            assertThat(
-                watchManager.selectedWatch.getOrAwaitValue(
-                    time = 500, timeUnit = TimeUnit.MILLISECONDS
-                )
-            ).isNull()
-        } catch (e: Exception) {
-            assertThat(watchManager.selectedWatch.value).isNull()
+        expectThrows<TimeoutException> {
+            watchManager.selectedWatch.getOrAwaitValue(time = 500, timeUnit = TimeUnit.MILLISECONDS)
         }
     }
 
@@ -177,13 +175,8 @@ class WatchManagerTest {
         appState.emit(AppState(lastSelectedWatchId = dummyWatch1.id.toString()))
         setRegisteredWatches(dummyWatches)
         watchManager = getWatchManager()
-        try {
-            assertThat(
-                watchManager.selectedWatch.getOrAwaitValue()
-            ).isNotNull()
-        } catch (e: Exception) {
-            assertThat(watchManager.selectedWatch.value).isNotNull()
-        }
+        // Get the value, throws TimeoutException if watch was not set
+        watchManager.selectedWatch.getOrAwaitValue()
     }
 
     @Test
@@ -192,13 +185,8 @@ class WatchManagerTest {
         appState.emit(AppState(lastSelectedWatchId = ""))
         setRegisteredWatches(dummyWatches)
         watchManager = getWatchManager()
-        try {
-            assertThat(
-                watchManager.selectedWatch.getOrAwaitValue()
-            ).isNotNull()
-        } catch (e: Exception) {
-            assertThat(watchManager.selectedWatch.value).isNotNull()
-        }
+        // Get the value, throws TimeoutException if watch was not set
+        watchManager.selectedWatch.getOrAwaitValue()
     }
 
     private fun setRegisteredWatches(watches: List<Watch>): Unit = runBlocking {

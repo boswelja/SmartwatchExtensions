@@ -9,7 +9,6 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.boswelja.smartwatchextensions.getOrAwaitValue
 import com.boswelja.smartwatchextensions.messages.database.MessageDatabase
-import com.google.common.truth.Truth.assertThat
 import io.mockk.MockKAnnotations
 import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
@@ -23,6 +22,8 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.annotation.Config
+import strikt.api.expectThat
+import strikt.assertions.isEqualTo
 
 @ExperimentalCoroutinesApi
 @RunWith(AndroidJUnit4::class)
@@ -72,7 +73,7 @@ class MessageHandlerTest {
         verify(exactly = 0) { notificationManager.notify(any(), any()) }
         val count = messageDatabase.messageDao().getActiveMessagesCount()
         count.getOrAwaitValue {
-            assertThat(it).isEqualTo(1)
+            expectThat(it).isEqualTo(1)
         }
     }
 
@@ -88,7 +89,7 @@ class MessageHandlerTest {
         verify(exactly = 1) { notificationManager.notify(any(), any()) }
         val count = messageDatabase.messageDao().getActiveMessagesCount()
         count.getOrAwaitValue {
-            assertThat(it).isEqualTo(1)
+            expectThat(it).isEqualTo(1)
         }
     }
 

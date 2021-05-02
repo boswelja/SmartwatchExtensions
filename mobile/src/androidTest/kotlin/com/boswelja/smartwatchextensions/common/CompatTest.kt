@@ -4,10 +4,13 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
 import androidx.test.platform.app.InstrumentationRegistry
-import com.google.common.truth.Truth.assertWithMessage
 import org.junit.After
+import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
+import strikt.api.expectThat
+import strikt.assertions.isFalse
+import strikt.assertions.isTrue
 
 class CompatTest {
 
@@ -48,9 +51,7 @@ class CompatTest {
                 if (retryCounter >= 3) break
                 Thread.sleep(25)
             }
-            assertWithMessage("Checking DnD state detection logic works")
-                .that(Compat.isDndEnabled(context))
-                .isTrue()
+            expectThat(Compat.isDndEnabled(context)).isTrue()
 
             Compat.setInterruptionFilter(context, false)
             retryCounter = 0
@@ -59,11 +60,9 @@ class CompatTest {
                 if (retryCounter >= 3) break
                 Thread.sleep(25)
             }
-            assertWithMessage("Checking DnD state detection logic works")
-                .that(Compat.isDndEnabled(context))
-                .isFalse()
+            expectThat(Compat.isDndEnabled(context)).isFalse()
         } else {
-            assertWithMessage("Missing notification policy access, grant and try again").fail()
+            Assert.fail("Missing notification policy access, grant and try again")
         }
     }
 
