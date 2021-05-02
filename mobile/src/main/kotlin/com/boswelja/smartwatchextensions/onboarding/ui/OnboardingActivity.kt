@@ -33,7 +33,6 @@ import com.boswelja.smartwatchextensions.watchmanager.ui.register.RegisterWatchV
 import com.boswelja.watchconnection.core.Watch
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 class OnboardingActivity : AppCompatActivity() {
@@ -86,11 +85,9 @@ class OnboardingActivity : AppCompatActivity() {
             Destination.WELCOME -> currentDestination = Destination.SHARE_USAGE_STATS
             Destination.SHARE_USAGE_STATS -> currentDestination = Destination.REGISTER_WATCHES
             Destination.REGISTER_WATCHES -> {
-                lifecycleScope.launch {
-                    if (registerWatchViewModel.registeredWatches.first() != null) {
-                        startActivity(Intent(this@OnboardingActivity, MainActivity::class.java))
-                        finish()
-                    }
+                if (registeredWatches.isNotEmpty()) {
+                    startActivity(Intent(this@OnboardingActivity, MainActivity::class.java))
+                    finish()
                 }
             }
         }

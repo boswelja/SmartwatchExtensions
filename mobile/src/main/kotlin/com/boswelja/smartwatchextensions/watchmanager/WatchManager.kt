@@ -33,10 +33,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
@@ -75,9 +75,11 @@ class WatchManager internal constructor(
         get() = watchDatabase.watchDao().getAllObservable().map { it } // Apparently we need a Map to not throw an error
 
     @ExperimentalCoroutinesApi
-    val availableWatches: Flow<Watch>
+    val availableWatches: Flow<List<Watch>>
         get() = connectionClient.watchesWithApp()
-            .filter { watchDatabase.watchDao().get(it.id) == null }
+            .mapNotNull { watches ->
+                watches.filter { watchDatabase.watchDao().get(it.id) == null }
+            }
 
     /**
      * The currently selected watch

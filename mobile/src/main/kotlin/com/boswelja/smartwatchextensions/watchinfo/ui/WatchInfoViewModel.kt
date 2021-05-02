@@ -4,14 +4,17 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.asLiveData
+import androidx.lifecycle.liveData
 import androidx.lifecycle.map
 import androidx.lifecycle.switchMap
 import androidx.lifecycle.viewModelScope
+import com.boswelja.smartwatchextensions.common.connection.Capability
 import com.boswelja.smartwatchextensions.watchmanager.WatchManager
 import com.boswelja.watchconnection.core.Watch
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.util.UUID
@@ -55,8 +58,17 @@ class WatchInfoViewModel internal constructor(
         }
     }
 
-    fun getCapabilities(): Flow<String>? {
-        return watch.value?.let { watchManager.getCapabilitiesFor(it) }
+    fun getCapabilities(): LiveData<Array<Capability>> {
+        return watch.switchMap { watch ->
+            watch?.let {
+                watchManager.getCapabilitiesFor(it)
+                    ?.mapNotNull { capabilities ->
+                        capabilities.map { capability ->
+                            Capability.valueOf(capability)
+                        }.toTypedArray()
+                    }?.asLiveData()
+            } ?: liveData { }
+        }
     }
 
     /**
