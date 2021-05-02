@@ -5,6 +5,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.MutableLiveData
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.boswelja.smartwatchextensions.common.connection.Capability
 import com.boswelja.smartwatchextensions.getOrAwaitValue
 import com.boswelja.smartwatchextensions.watchmanager.WatchManager
 import com.boswelja.watchconnection.core.Watch
@@ -14,9 +15,10 @@ import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.TestCoroutineDispatcher
+import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -74,14 +76,24 @@ class WatchInfoViewModelTest {
 
     @Test
     fun `getCapabilities calls watchManager if watch is not null`(): Unit = runBlocking {
+        // Mock capabilities from WatchManager
+        every { watchManager.getCapabilitiesFor(any()) } returns flow {
+            emit(Capability.values().map { it.name }.toTypedArray())
+        }
+
         // Check with no / invalid watch selected
-        viewModel.getCapabilities()?.collect()
+        try {
+            viewModel.getCapabilities().getOrAwaitValue()
+            Assert.fail("Expected TimeoutException")
+        } catch (e: Exception) {
+            // We expect an exception
+        }
         coVerify(inverse = true) { watchManager.getCapabilitiesFor(any()) }
 
         // Check with valid watch selected
         viewModel.setWatch(dummyWatch.id)
-        viewModel.watch.getOrAwaitValue()
-        viewModel.getCapabilities()?.collect()
+        viewModel.watch.getOrAwaitValue() // Make sure value is up to date
+        viewModel.getCapabilities().getOrAwaitValue()
         coVerify { watchManager.getCapabilitiesFor(dummyWatch) }
     }
 

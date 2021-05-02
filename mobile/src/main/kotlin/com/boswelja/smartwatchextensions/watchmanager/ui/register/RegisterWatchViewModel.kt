@@ -8,7 +8,7 @@ import com.boswelja.watchconnection.core.Watch
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -40,8 +40,8 @@ class RegisterWatchViewModel internal constructor(
     @ExperimentalCoroutinesApi
     fun startRegisteringWatches() {
         viewModelScope.launch {
-            watchManager.availableWatches.collect {
-                addWatch(it)
+            watchManager.availableWatches.collectLatest { watches ->
+                watches.forEach { watch -> addWatch(watch) }
             }
         }
     }

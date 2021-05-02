@@ -21,12 +21,11 @@ import androidx.compose.material.TextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ClearAll
 import androidx.compose.material.icons.outlined.Delete
-import androidx.compose.material.icons.outlined.Refresh
 import androidx.compose.material.icons.outlined.Watch
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -36,12 +35,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.lifecycleScope
 import com.boswelja.smartwatchextensions.R
-import com.boswelja.smartwatchextensions.common.connection.Capability
 import com.boswelja.smartwatchextensions.common.ui.AppTheme
 import com.boswelja.smartwatchextensions.common.ui.UpNavigationAppBar
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.util.UUID
@@ -51,7 +47,6 @@ class WatchInfoActivity : AppCompatActivity() {
     private val watchId by lazy { intent?.getStringExtra(EXTRA_WATCH_ID)!! }
     private val viewModel: WatchInfoViewModel by viewModels()
     private var watchName by mutableStateOf("")
-    private val capabilities = mutableStateListOf<Capability>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -69,7 +64,7 @@ class WatchInfoActivity : AppCompatActivity() {
                 var watchNameError by remember { mutableStateOf(false) }
                 var clearPreferencesDialogVisible by remember { mutableStateOf(false) }
                 var forgetWatchDialogVisible by remember { mutableStateOf(false) }
-
+                val capabilities by viewModel.getCapabilities().observeAsState()
                 Scaffold(
                     scaffoldState = scaffoldState,
                     topBar = { UpNavigationAppBar(onNavigateUp = { finish() }) }
@@ -98,28 +93,16 @@ class WatchInfoActivity : AppCompatActivity() {
                             style = MaterialTheme.typography.h6,
                             modifier = Modifier.padding(top = 16.dp)
                         )
-                        LazyColumn(horizontalAlignment = Alignment.CenterHorizontally) {
-                            items(capabilities) { capability ->
-                                Text(
-                                    stringResource(capability.label),
-                                    textAlign = TextAlign.Center,
-                                    style = MaterialTheme.typography.body1
-                                )
-                            }
-                        }
-                        OutlinedButton(
-                            onClick = {
-                                refreshCapabilities()
-                                scope.launch {
-                                    scaffoldState.snackbarHostState.showSnackbar(
-                                        getString(R.string.refresh_capabilities_requested)
+                        capabilities?.let { capabilities ->
+                            LazyColumn(horizontalAlignment = Alignment.CenterHorizontally) {
+                                items(capabilities) { capability ->
+                                    Text(
+                                        stringResource(capability.label),
+                                        textAlign = TextAlign.Center,
+                                        style = MaterialTheme.typography.body1
                                     )
                                 }
-                            },
-                            modifier = Modifier.padding(top = 16.dp)
-                        ) {
-                            Icon(Icons.Outlined.Refresh, null)
-                            Text(stringResource(R.string.refresh_capabilities))
+                            }
                         }
                         OutlinedButton(
                             onClick = { clearPreferencesDialogVisible = true },
@@ -163,12 +146,6 @@ class WatchInfoActivity : AppCompatActivity() {
         }
     }
 
-    private fun refreshCapabilities() {
-        capabilities.clear()
-        lifecycleScope.launch {
-            viewModel.getCapabilities()?.collect { capabilities.add(Capability.valueOf(it)) }
-        }
-    }
     override fun onPause() {
         super.onPause()
         if (watchName.isNotBlank()) {
