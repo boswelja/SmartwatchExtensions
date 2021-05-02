@@ -113,27 +113,30 @@ class WatchManagerTest {
         watchManager = getWatchManager()
         watchManager.registerWatch(dummyWatch1)
         verify(exactly = 1) { analytics.logWatchRegistered() }
-        coVerify(exactly = 1) { connectionClient.sendMessage(dummyWatch1, Messages.WATCH_REGISTERED_PATH) }
+        coVerify(exactly = 1) {
+            connectionClient.sendMessage(dummyWatch1, Messages.WATCH_REGISTERED_PATH)
+        }
 
         // Verify watch was added to the database
         expectThat(watchDatabase.watchDao().get(dummyWatch1.id)).isNotNull()
     }
 
     @Test
-    fun `forgetWatch calls connection client, databases and logs analytics event`(): Unit = runBlocking {
-        watchManager = getWatchManager()
-        watchManager.forgetWatch(
-            widgetIdStore,
-            batteryStatsDatabase,
-            dummyWatch1
-        )
-        verify(exactly = 1) { analytics.logWatchRemoved() }
-        coVerify(exactly = 1) { connectionClient.sendMessage(dummyWatch1, Messages.RESET_APP) }
-        verify(exactly = 1) { batteryStatsDatabase.batteryStatsDao() }
+    fun `forgetWatch calls connection client, databases and logs analytics event`(): Unit =
+        runBlocking {
+            watchManager = getWatchManager()
+            watchManager.forgetWatch(
+                widgetIdStore,
+                batteryStatsDatabase,
+                dummyWatch1
+            )
+            verify(exactly = 1) { analytics.logWatchRemoved() }
+            coVerify(exactly = 1) { connectionClient.sendMessage(dummyWatch1, Messages.RESET_APP) }
+            verify(exactly = 1) { batteryStatsDatabase.batteryStatsDao() }
 
-        // Verify watch isn't in database
-        expectThat(watchDatabase.watchDao().get(dummyWatch1.id)).isNull()
-    }
+            // Verify watch isn't in database
+            expectThat(watchDatabase.watchDao().get(dummyWatch1.id)).isNull()
+        }
 
     @Test
     fun `renameWatch updates database and logs analytics event`(): Unit = runBlocking {

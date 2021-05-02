@@ -1,6 +1,7 @@
 package com.boswelja.smartwatchextensions.common.appmanager
 
 import androidx.test.platform.app.InstrumentationRegistry
+import java.io.IOException
 import org.junit.Assert
 import org.junit.Test
 import strikt.api.expectThat
@@ -9,7 +10,6 @@ import strikt.assertions.isEqualTo
 import strikt.assertions.isFalse
 import strikt.assertions.isTrue
 import timber.log.Timber
-import java.io.IOException
 
 class AppTest {
 
