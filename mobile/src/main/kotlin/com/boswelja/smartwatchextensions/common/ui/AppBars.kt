@@ -121,7 +121,7 @@ fun WatchPickerDropdown(
             modifier = Modifier
                 .clickable { expanded = !expanded },
             text = {
-                Text(selectedWatch?.name ?: stringResource(R.string.watch_status_unknown))
+                Text(selectedWatch?.name ?: stringResource(R.string.watch_status_connecting))
             },
             trailing = {
                 Icon(Icons.Outlined.ArrowDropDown, null)
