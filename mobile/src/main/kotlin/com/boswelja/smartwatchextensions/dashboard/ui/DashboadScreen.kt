@@ -95,6 +95,30 @@ fun DashboardScreen() {
 @Composable
 fun WatchStatus(status: Status?) {
     Timber.d("Selected watch status = %s", status)
+    val (icon, label) = when (status) {
+        Status.CONNECTING ->
+            Pair(Icons.Outlined.Sync, stringResource(R.string.watch_status_connecting))
+        Status.CONNECTED ->
+            Pair(
+                Icons.Outlined.CheckCircleOutline,
+                stringResource(R.string.watch_status_connected)
+            )
+        Status.DISCONNECTED ->
+            Pair(
+                Icons.Outlined.ErrorOutline,
+                stringResource(R.string.watch_status_disconnected)
+            )
+        Status.MISSING_APP ->
+            Pair(
+                Icons.Outlined.ErrorOutline,
+                stringResource(R.string.watch_status_missing_app)
+            )
+        else ->
+            Pair(
+                Icons.Outlined.ErrorOutline,
+                stringResource(R.string.watch_status_error)
+            )
+    }
     Card {
         Row(
             Modifier
@@ -102,43 +126,8 @@ fun WatchStatus(status: Status?) {
                 .padding(16.dp),
             horizontalArrangement = Arrangement.Center
         ) {
-            when (status) {
-                Status.CONNECTING -> {
-                    Icon(Icons.Outlined.Sync, null)
-                    Text(
-                        stringResource(R.string.watch_status_connecting),
-                        modifier = Modifier.padding(start = 8.dp)
-                    )
-                }
-                Status.CONNECTED -> {
-                    Icon(Icons.Outlined.CheckCircleOutline, null)
-                    Text(
-                        stringResource(R.string.watch_status_connected),
-                        modifier = Modifier.padding(start = 8.dp)
-                    )
-                }
-                Status.DISCONNECTED -> {
-                    Icon(Icons.Outlined.ErrorOutline, null)
-                    Text(
-                        stringResource(R.string.watch_status_disconnected),
-                        modifier = Modifier.padding(start = 8.dp)
-                    )
-                }
-                Status.MISSING_APP -> {
-                    Icon(Icons.Outlined.ErrorOutline, null)
-                    Text(
-                        stringResource(R.string.watch_status_missing_app),
-                        modifier = Modifier.padding(start = 8.dp)
-                    )
-                }
-                Status.ERROR -> {
-                    Icon(Icons.Outlined.ErrorOutline, null)
-                    Text(
-                        stringResource(R.string.watch_status_error),
-                        modifier = Modifier.padding(start = 8.dp)
-                    )
-                }
-            }
+            Icon(icon, null)
+            Text(label, modifier = Modifier.padding(start = 8.dp))
         }
     }
 }
