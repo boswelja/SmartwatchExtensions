@@ -85,7 +85,7 @@ dependencies {
     val playServicesWearable = "17.0.0"
     val timber = "4.7.1"
     val junit = "4.13.2"
-    val truth = "1.1.2"
+    val strikt = "0.31.0"
     val mockk = "1.11.0"
     val robolectric = "4.5.1"
     val coroutines = "1.4.3"
@@ -122,7 +122,8 @@ dependencies {
     testImplementation("androidx.test.ext:junit-ktx:$androidxTestExt")
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutines")
     testImplementation("junit:junit:$junit")
-    testImplementation("com.google.truth:truth:$truth")
+    testImplementation("io.strikt:strikt-core:$strikt")
+    testImplementation("io.strikt:strikt-mockk:$strikt")
     testImplementation("io.mockk:mockk:$mockk")
     testImplementation("org.robolectric:robolectric:$robolectric")
 
@@ -130,7 +131,8 @@ dependencies {
     androidTestImplementation("androidx.test:runner:$androidxTest")
     androidTestImplementation("androidx.test:rules:$androidxTest")
     androidTestImplementation("androidx.test:core-ktx:$androidxTest")
-    androidTestImplementation("com.google.truth:truth:$truth")
+    androidTestImplementation("io.strikt:strikt-core:$strikt")
+    androidTestImplementation("io.strikt:strikt-mockk:$strikt")
     androidTestImplementation("io.mockk:mockk-android:$mockk")
 }
 
