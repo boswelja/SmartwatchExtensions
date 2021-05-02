@@ -35,7 +35,7 @@ class RegisterWatchViewModelTest {
     private val dummyWatch2 = Watch("Watch 2", "id2", WearOSPlatform.PLATFORM)
     private val dummyWatch3 = Watch("Watch 3", "id3", WearOSPlatform.PLATFORM)
     private val dummyWatches = arrayOf(dummyWatch1, dummyWatch2, dummyWatch3)
-    private var availableWatches: Flow<Watch> = flow { }
+    private var availableWatches: Flow<List<Watch>> = flow { }
     private val registeredWatches = MutableLiveData(emptyList<Watch>())
 
     @RelaxedMockK private lateinit var watchManager: WatchManager
@@ -68,7 +68,7 @@ class RegisterWatchViewModelTest {
 
     private fun setAvailableWatches(vararg available: Watch) {
         availableWatches = flow {
-            available.forEach { emit(it) }
+            emit(available.toList())
         }
     }
 }
