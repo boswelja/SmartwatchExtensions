@@ -28,6 +28,7 @@ import com.boswelja.watchconnection.core.MessageListener
 import com.boswelja.watchconnection.core.Watch
 import com.boswelja.watchconnection.core.WatchPlatformManager
 import com.boswelja.watchconnection.wearos.WearOSPlatform
+import java.util.UUID
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -40,7 +41,6 @@ import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
-import java.util.UUID
 
 /**
  * Provides a simplified interface for interacting with all watch-related classes.
@@ -186,6 +186,8 @@ class WatchManager internal constructor(
             }
         }
     }
+
+    fun getStatusFor(watch: Watch) = connectionClient.getStatusFor(watch)
 
     fun getCapabilitiesFor(watch: Watch) = connectionClient.getCapabilitiesFor(watch)
 

@@ -15,26 +15,35 @@ import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.CheckCircleOutline
+import androidx.compose.material.icons.outlined.ErrorOutline
 import androidx.compose.material.icons.outlined.NavigateNext
+import androidx.compose.material.icons.outlined.Sync
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.appmanager.ui.AppManagerActivity
 import com.boswelja.smartwatchextensions.batterysync.ui.BatterySyncSettingsActivity
 import com.boswelja.smartwatchextensions.batterysync.ui.BatterySyncSettingsHeader
 import com.boswelja.smartwatchextensions.dndsync.ui.DnDSyncSettingsActivity
 import com.boswelja.smartwatchextensions.phonelocking.ui.PhoneLockingSettingsActivity
+import com.boswelja.watchconnection.core.Status
+import timber.log.Timber
 
 @Composable
 fun DashboardScreen() {
     val context = LocalContext.current
     val scrollState = rememberScrollState()
-    // val watchManager = remember { WatchManager.getInstance(context) }
-    // val selectedWatchStatus by mutableStateOf(null)
+    val viewModel: DashboardViewModel = viewModel()
+    val watchStatus by viewModel.status.observeAsState()
+
     Column(
         Modifier
             .fillMaxSize()
@@ -42,7 +51,7 @@ fun DashboardScreen() {
             .verticalScroll(scrollState),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        // WatchStatus(selectedWatchStatus)
+        WatchStatus(watchStatus)
         DashboardItem(
             content = { BatterySyncSettingsHeader() },
             buttonLabel = stringResource(
@@ -83,24 +92,45 @@ fun DashboardScreen() {
     }
 }
 
-// @Composable
-// fun WatchStatus(status: Watch.Status) {
-//     Timber.d("Selected watch status = %s", status)
-//     Card {
-//         Row(
-//             Modifier
-//                 .fillMaxWidth()
-//                 .padding(16.dp),
-//             horizontalArrangement = Arrangement.Center
-//         ) {
-//             Icon(status.imageVector, null)
-//             Text(
-//                 stringResource(status.stringRes),
-//                 modifier = Modifier.padding(start = 8.dp)
-//             )
-//         }
-//     }
-// }
+@Composable
+fun WatchStatus(status: Status?) {
+    Timber.d("Selected watch status = %s", status)
+    val (icon, label) = when (status) {
+        Status.CONNECTING ->
+            Pair(Icons.Outlined.Sync, stringResource(R.string.watch_status_connecting))
+        Status.CONNECTED ->
+            Pair(
+                Icons.Outlined.CheckCircleOutline,
+                stringResource(R.string.watch_status_connected)
+            )
+        Status.DISCONNECTED ->
+            Pair(
+                Icons.Outlined.ErrorOutline,
+                stringResource(R.string.watch_status_disconnected)
+            )
+        Status.MISSING_APP ->
+            Pair(
+                Icons.Outlined.ErrorOutline,
+                stringResource(R.string.watch_status_missing_app)
+            )
+        else ->
+            Pair(
+                Icons.Outlined.ErrorOutline,
+                stringResource(R.string.watch_status_error)
+            )
+    }
+    Card {
+        Row(
+            Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            horizontalArrangement = Arrangement.Center
+        ) {
+            Icon(icon, null)
+            Text(label, modifier = Modifier.padding(start = 8.dp))
+        }
+    }
+}
 
 @Composable
 fun DashboardItem(
@@ -116,7 +146,9 @@ fun DashboardItem(
             Row(
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.fillMaxWidth().padding(16.dp)
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
             ) {
                 Text(
                     buttonLabel,
