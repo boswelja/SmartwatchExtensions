@@ -23,7 +23,5 @@ android {
 }
 
 dependencies {
-    val androidxCoreKtx = "1.6.0-alpha01"
-
-    implementation("androidx.core:core-ktx:$androidxCoreKtx")
+    implementation(libs.androidx.core.ktx)
 }

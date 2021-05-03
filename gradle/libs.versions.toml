@@ -1,0 +1,107 @@
+[versions]
+# AndroidX versions
+androidxArch = "2.1.0"
+androidxAppCompat = "1.3.0-rc01"
+androidxBrowser = "1.3.0"
+androidxCore = "1.6.0-alpha02"
+androidxDataStore = "1.0.0-beta01"
+androidxEspresso = "3.4.0-alpha05"
+androidxLifecycle = "2.4.0-alpha01"
+androidxRoom = "2.4.0-alpha01"
+androidxTest = "1.4.0-alpha05"
+androidxTestExt = "1.1.3-alpha05"
+androidxWear = "1.2.0-alpha07"
+androidxWearComplications = "1.0.0-alpha11"
+androidxWork = "2.7.0-alpha03"
+# Compose versions
+compose = "1.0.0-beta05"
+activityCompose = "1.3.0-alpha06"
+lifecycleCompose = "1.0.0-alpha04"
+# Misc versions
+billingClient = "3.0.3"
+coroutines = "1.4.3"
+firebaseAnalytics = "18.0.3"
+googlePlayCore = "1.10.0"
+googlePlayCoreKtx = "1.8.1"
+junit = "4.13.2"
+mockk = "1.11.0"
+playServicesWearable = "17.0.0"
+robolectric = "4.5.1"
+strikt = "0.31.0"
+timber = "4.7.1"
+watchconnection = "2.0.1"
+
+[libraries]
+# AndroidX Libraries
+androidx-arch-core-test = { module = "androidx.arch.core:core-testing", version.ref = "androidxArch" }
+androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "androidxAppCompat" }
+androidx-browser = { module = "androidx.browser:browser", version.ref = "androidxBrowser" }
+androidx-core-ktx = { module = "androidx.core:core-ktx", version.ref = "androidxCore" }
+androidx-lifecycle-viewmodel-ktx = { module = "androidx.lifecycle:lifecycle-viewmodel-ktx", version.ref = "androidxLifecycle" }
+androidx-lifecycle-livedata-ktx = { module = "androidx.lifecycle:lifecycle-livedata-ktx", version.ref = "androidxLifecycle" }
+androidx-lifecycle-common-java8 = { module = "androidx.lifecycle:lifecycle-common-java8", version.ref = "androidxLifecycle" }
+androidx-lifecycle-service = { module = "androidx.lifecycle:lifecycle-service", version.ref = "androidxLifecycle" }
+androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "androidxRoom" }
+androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "androidxRoom" }
+androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "androidxRoom" }
+androidx-test-corektx = { module = "androidx.test:core-ktx", version.ref = "androidxTest" }
+androidx-test-espresso = { module = "androidx.test.espresso:espresso-core", version.ref = "androidxEspresso" }
+androidx-test-runner = { module = "androidx.test:runner", version.ref = "androidxTest" }
+androidx-test-rules = { module = "androidx.test:rules", version.ref = "androidxTest" }
+androidx-test-ext-junit = { module = "androidx.test.ext:junit-ktx", version.ref = "androidxTestExt" }
+androidx-wear-core = { module = "androidx.wear:wear", version.ref = "androidxWear" }
+androidx-wear-complications-provider = { module = "androidx.wear:wear-complications-provider", version.ref = "androidxWearComplications" }
+androidx-work-ktx = { module = "androidx.work:work-runtime-ktx", version.ref = "androidxWork" }
+androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "androidxDataStore" }
+androidx-datastore-proto = { module = "androidx.datastore:datastore", version.ref = "androidxDataStore" }
+# Compose Libraries
+androidx-compose-ui-core = { module = "androidx.compose.ui:ui", version.ref = "compose" }
+androidx-compose-ui-tooling = { module = "androidx.compose.ui:ui-tooling", version.ref = "compose" }
+androidx-compose-ui-viewbinding = { module = "androidx.compose.ui:ui-viewbinding", version.ref = "compose" }
+androidx-compose-ui-test = { module = "androidx.compose.ui:ui-test-junit4", version.ref = "compose" }
+androidx-compose-foundation = { module = "androidx.compose.foundation:foundation", version.ref = "compose" }
+androidx-compose-material-core = { module = "androidx.compose.material:material", version.ref = "compose" }
+androidx-compose-material-icons-core = { module = "androidx.compose.material:material-icons-core", version.ref = "compose" }
+androidx-compose-material-icons-extended = { module = "androidx.compose.material:material-icons-extended", version.ref = "compose" }
+androidx-compose-runtime-livedata = { module = "androidx.compose.runtime:runtime-livedata", version.ref = "compose" }
+androidx-compose-activity = { module = "androidx.activity:activity-compose", version.ref = "activityCompose" }
+androidx-compose-viewmodel = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "lifecycleCompose" }
+# Misc libraries
+billingclient = { module = "com.android.billingclient:billing-ktx", version.ref = "billingClient" }
+firebase-analytics = { module = "com.google.firebase:firebase-analytics-ktx", version.ref = "firebaseAnalytics" }
+googleplay-core = { module = "com.google.android.play:core", version.ref = "googlePlayCore" }
+googleplay-corektx = { module = "com.google.android.play:core-ktx", version.ref = "googlePlayCoreKtx" }
+junit = { module = "junit:junit", version.ref = "junit" }
+kotlinx-coroutines-playservices = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-play-services", version.ref = "coroutines" }
+kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "coroutines" }
+mockk-core = { module = "io.mockk:mockk", version.ref = "mockk" }
+mockk-android = { module = "io.mockk:mockk-android", version.ref = "mockk" }
+play-services-wearable = { module = "com.google.android.gms:play-services-wearable", version.ref = "playServicesWearable" }
+robolectric = { module = "org.robolectric:robolectric", version.ref = "robolectric" }
+strikt-core = { module = "io.strikt:strikt-core", version.ref = "strikt" }
+strikt-mockk = { module = "io.strikt:strikt-mockk", version.ref = "strikt" }
+timber = { module = "com.jakewharton.timber:timber", version.ref = "timber" }
+watchconnection-wearos = { module = "io.github.boswelja.watchconnection:wearos", version.ref = "watchconnection" }
+
+[bundles]
+compose = [
+    "androidx-compose-ui-core",
+    "androidx-compose-ui-tooling",
+    "androidx-compose-foundation",
+    "androidx-compose-material-core",
+    "androidx-compose-material-icons-core",
+    "androidx-compose-material-icons-extended",
+    "androidx-compose-runtime-livedata",
+    "androidx-compose-activity",
+    "androidx-compose-viewmodel"
+]
+lifecycle = [
+    "androidx-lifecycle-viewmodel-ktx",
+    "androidx-lifecycle-livedata-ktx",
+    "androidx-lifecycle-common-java8",
+    "androidx-lifecycle-service"
+]
+room = [
+    "androidx-room-ktx",
+    "androidx-room-runtime"
+]

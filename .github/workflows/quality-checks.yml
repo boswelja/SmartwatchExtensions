@@ -23,7 +23,7 @@ jobs:
         uses: actions/cache@v2.1.5
         with:
           path: ~/.gradle/caches
-          key: ${{ runner.os }}-gradle-cache-${{ hashFiles('**/*.gradle.kts') }}
+          key: ${{ runner.os }}-gradle-cache-${{ hashFiles('gradle/libs.versions.toml') }}
       - name: Cache Gradle Wrapper
         uses: actions/cache@v2.1.5
         with:
@@ -51,7 +51,7 @@ jobs:
         uses: actions/cache@v2.1.5
         with:
           path: ~/.gradle/caches
-          key: ${{ runner.os }}-gradle-cache-${{ hashFiles('**/*.gradle.kts') }}
+          key: ${{ runner.os }}-gradle-cache-${{ hashFiles('gradle/libs.versions.toml') }}
       - name: Cache Gradle Wrapper
         uses: actions/cache@v2.1.5
         with:
@@ -90,7 +90,7 @@ jobs:
         uses: actions/cache@v2.1.5
         with:
           path: ~/.gradle/caches
-          key: ${{ runner.os }}-gradle-cache-${{ hashFiles('**/*.gradle.kts') }}
+          key: ${{ runner.os }}-gradle-cache-${{ hashFiles('gradle/libs.versions.toml') }}
       - name: Cache Gradle Wrapper
         uses: actions/cache@v2.1.5
         with:
