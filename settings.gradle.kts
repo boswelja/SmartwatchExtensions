@@ -5,3 +5,5 @@ pluginManagement {
         google()
     }
 }
+
+enableFeaturePreview("VERSION_CATALOGS")
