@@ -14,6 +14,7 @@ import android.os.Looper
 import android.provider.Settings
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
+import androidx.core.content.getSystemService
 import androidx.lifecycle.LifecycleService
 import androidx.lifecycle.asLiveData
 import com.boswelja.smartwatchextensions.R
@@ -36,7 +37,7 @@ class DnDLocalChangeListener : LifecycleService() {
 
     private val messageClient by lazy { Wearable.getMessageClient(this) }
 
-    private lateinit var notificationManager: NotificationManager
+    private val notificationManager: NotificationManager by lazy { getSystemService()!! }
     private lateinit var phoneId: String
 
     private var dndSyncToPhone: Boolean = false
@@ -58,7 +59,10 @@ class DnDLocalChangeListener : LifecycleService() {
     override fun onCreate() {
         super.onCreate()
 
-        notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            Timber.d("Creating notification channel")
+            createNotificationChannel()
+        }
 
         phoneId = runBlocking { phoneStateStore.data.map { it.id }.first() }
 
@@ -73,14 +77,12 @@ class DnDLocalChangeListener : LifecycleService() {
             setDnDSyncWithTheaterMode(it)
         }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            createNotificationChannel()
-        }
         startForeground(DND_SYNC_LOCAL_NOTI_ID, createNotification())
         updateInterruptionFilter()
     }
 
     private fun createNotification(): Notification {
+        Timber.d("Creating notification")
         NotificationCompat.Builder(this, DND_SYNC_NOTI_CHANNEL_ID)
             .apply {
                 setContentTitle(getString(R.string.dnd_sync_active_noti_title))
@@ -109,8 +111,7 @@ class DnDLocalChangeListener : LifecycleService() {
                     START_ACTIVITY_FROM_NOTI_ID,
                     launchIntent,
                     PendingIntent.FLAG_IMMUTABLE
-                )
-                    .also { setContentIntent(it) }
+                ).also { setContentIntent(it) }
             }
             .also {
                 return it.build()
@@ -160,21 +161,16 @@ class DnDLocalChangeListener : LifecycleService() {
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun createNotificationChannel() {
-        val notificationManager =
-            getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-
         if (notificationManager.getNotificationChannel(DND_SYNC_NOTI_CHANNEL_ID) == null) {
             NotificationChannel(
                 DND_SYNC_NOTI_CHANNEL_ID,
                 getString(R.string.noti_channel_dnd_sync_title),
                 NotificationManager.IMPORTANCE_LOW
-            )
-                .apply {
-                    enableLights(false)
-                    enableVibration(false)
-                    setShowBadge(false)
-                }
-                .also { notificationManager.createNotificationChannel(it) }
+            ).apply {
+                enableLights(false)
+                enableVibration(false)
+                setShowBadge(false)
+            }.also { notificationManager.createNotificationChannel(it) }
         }
     }
 
