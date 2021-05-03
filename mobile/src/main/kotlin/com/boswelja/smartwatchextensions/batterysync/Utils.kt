@@ -11,19 +11,24 @@ import com.boswelja.smartwatchextensions.batterysync.database.WatchBatteryStats.
 import com.boswelja.smartwatchextensions.batterysync.database.WatchBatteryStatsDatabase
 import com.boswelja.smartwatchextensions.common.batterysync.BatteryStats
 import com.boswelja.smartwatchextensions.common.batterysync.References.BATTERY_STATUS_PATH
-import com.boswelja.smartwatchextensions.common.preference.PreferenceKey
+import com.boswelja.smartwatchextensions.common.preference.PreferenceKey.BATTERY_CHARGED_NOTI_SENT
+import com.boswelja.smartwatchextensions.common.preference.PreferenceKey.BATTERY_CHARGE_THRESHOLD_KEY
+import com.boswelja.smartwatchextensions.common.preference.PreferenceKey.BATTERY_LOW_NOTI_SENT
+import com.boswelja.smartwatchextensions.common.preference.PreferenceKey.BATTERY_LOW_THRESHOLD_KEY
 import com.boswelja.smartwatchextensions.common.preference.PreferenceKey.BATTERY_SYNC_ENABLED_KEY
+import com.boswelja.smartwatchextensions.common.preference.PreferenceKey.BATTERY_WATCH_CHARGE_NOTI_KEY
+import com.boswelja.smartwatchextensions.common.preference.PreferenceKey.BATTERY_WATCH_LOW_NOTI_KEY
 import com.boswelja.smartwatchextensions.common.ui.BaseWidgetProvider
 import com.boswelja.smartwatchextensions.watchmanager.WatchManager
 import com.boswelja.smartwatchextensions.watchmanager.database.WatchDatabase
 import com.boswelja.smartwatchextensions.watchmanager.database.WatchSettingsDatabase
 import com.boswelja.watchconnection.core.Watch
+import java.util.Locale
+import java.util.UUID
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withContext
 import timber.log.Timber
-import java.util.Locale
-import java.util.UUID
 
 object Utils {
 
@@ -117,13 +122,13 @@ object Utils {
         Timber.d("handleWatchChargeNoti called")
         val notificationManager = context.getSystemService<NotificationManager>()!!
         val chargeThreshold = database
-            .getPreference<Int>(watch.id, PreferenceKey.BATTERY_CHARGE_THRESHOLD_KEY)?.value ?: 90
+            .getPreference<Int>(watch.id, BATTERY_CHARGE_THRESHOLD_KEY)?.value ?: 90
         val shouldSendChargeNotis = database
-            .getPreference<Boolean>(watch.id, PreferenceKey.BATTERY_WATCH_CHARGE_NOTI_KEY)?.value ?: false
+            .getPreference<Boolean>(watch.id, BATTERY_WATCH_CHARGE_NOTI_KEY)?.value ?: false
         val hasSentNoti = database
-            .getPreference<Boolean>(watch.id, PreferenceKey.BATTERY_CHARGED_NOTI_SENT)?.value ?: false
+            .getPreference<Boolean>(watch.id, BATTERY_CHARGED_NOTI_SENT)?.value ?: false
         Timber.d(
-            "chargeThreshold = %s, shouldSendChargeNotis = %s, hasSentNoti = %s, batteryPercent = %s",
+            "chargeThreshold = %s, shouldSendChargeNotis = %s, hasSentNoti = %s, percent = %s",
             chargeThreshold,
             shouldSendChargeNotis,
             hasSentNoti,
@@ -155,11 +160,11 @@ object Utils {
                 // TODO Send a message informing the user of the issue
                 Timber.w("Failed to send charged notification")
             }
-            database.updatePrefInDatabase(watch.id, PreferenceKey.BATTERY_CHARGED_NOTI_SENT, true)
+            database.updatePrefInDatabase(watch.id, BATTERY_CHARGED_NOTI_SENT, true)
         } else {
             Timber.d("Dismissing charge notifications")
             notificationManager.cancel(BATTERY_CHARGED_NOTI_ID)
-            database.updatePrefInDatabase(watch.id, PreferenceKey.BATTERY_CHARGED_NOTI_SENT, false)
+            database.updatePrefInDatabase(watch.id, BATTERY_CHARGED_NOTI_SENT, false)
         }
     }
 
@@ -178,11 +183,11 @@ object Utils {
         Timber.d("handleWatchLowNoti called")
         val notificationManager = context.getSystemService<NotificationManager>()!!
         val lowThreshold = database
-            .getPreference<Int>(watch.id, PreferenceKey.BATTERY_LOW_THRESHOLD_KEY)?.value ?: 15
+            .getPreference<Int>(watch.id, BATTERY_LOW_THRESHOLD_KEY)?.value ?: 15
         val shouldSendLowNoti = database
-            .getPreference<Boolean>(watch.id, PreferenceKey.BATTERY_WATCH_LOW_NOTI_KEY)?.value ?: false
+            .getPreference<Boolean>(watch.id, BATTERY_WATCH_LOW_NOTI_KEY)?.value ?: false
         val hasSentNoti = database
-            .getPreference<Boolean>(watch.id, PreferenceKey.BATTERY_LOW_NOTI_SENT)?.value ?: false
+            .getPreference<Boolean>(watch.id, BATTERY_LOW_NOTI_SENT)?.value ?: false
         Timber.d(
             "lowThreshold = %s, shouldSendLowNoti = %s, hasSentNoti = %s, batteryPercent = %s",
             lowThreshold,
@@ -204,7 +209,9 @@ object Utils {
                     BATTERY_STATS_NOTI_CHANNEL_ID
                 )
                     .setSmallIcon(R.drawable.battery_alert)
-                    .setContentTitle(context.getString(R.string.device_battery_low_noti_title, watch.name))
+                    .setContentTitle(
+                        context.getString(R.string.device_battery_low_noti_title, watch.name)
+                    )
                     .setContentText(
                         context.getString(R.string.device_battery_low_noti_desc)
                             .format(Locale.getDefault(), watch.name, lowThreshold)
@@ -215,10 +222,10 @@ object Utils {
                 // TODO Send a message informing the user of the issue
                 Timber.w("Failed to send charged notification")
             }
-            database.updatePrefInDatabase(watch.id, PreferenceKey.BATTERY_LOW_NOTI_SENT, true)
+            database.updatePrefInDatabase(watch.id, BATTERY_LOW_NOTI_SENT, true)
         } else {
             notificationManager.cancel(BATTERY_LOW_NOTI_ID)
-            database.updatePrefInDatabase(watch.id, PreferenceKey.BATTERY_LOW_NOTI_SENT, false)
+            database.updatePrefInDatabase(watch.id, BATTERY_LOW_NOTI_SENT, false)
         }
     }
 
