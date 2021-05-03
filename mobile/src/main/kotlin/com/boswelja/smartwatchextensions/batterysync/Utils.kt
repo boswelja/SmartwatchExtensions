@@ -1,7 +1,9 @@
 package com.boswelja.smartwatchextensions.batterysync
 
 import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.Context
+import android.content.Intent
 import androidx.core.app.NotificationCompat
 import androidx.core.content.getSystemService
 import androidx.lifecycle.asFlow
@@ -19,6 +21,7 @@ import com.boswelja.smartwatchextensions.common.preference.PreferenceKey.BATTERY
 import com.boswelja.smartwatchextensions.common.preference.PreferenceKey.BATTERY_WATCH_CHARGE_NOTI_KEY
 import com.boswelja.smartwatchextensions.common.preference.PreferenceKey.BATTERY_WATCH_LOW_NOTI_KEY
 import com.boswelja.smartwatchextensions.common.ui.BaseWidgetProvider
+import com.boswelja.smartwatchextensions.main.MainActivity
 import com.boswelja.smartwatchextensions.watchmanager.WatchManager
 import com.boswelja.smartwatchextensions.watchmanager.database.WatchDatabase
 import com.boswelja.smartwatchextensions.watchmanager.database.WatchSettingsDatabase
@@ -154,6 +157,7 @@ object Utils {
                         context.getString(R.string.device_battery_charged_noti_desc)
                             .format(Locale.getDefault(), watch.name, chargeThreshold)
                     )
+                    .setContentIntent(getNotiPendingIntent(context))
                     .setLocalOnly(true)
                     .also { notificationManager.notify(BATTERY_CHARGED_NOTI_ID, it.build()) }
             } else {
@@ -212,6 +216,7 @@ object Utils {
                     .setContentTitle(
                         context.getString(R.string.device_battery_low_noti_title, watch.name)
                     )
+                    .setContentIntent(getNotiPendingIntent(context))
                     .setContentText(
                         context.getString(R.string.device_battery_low_noti_desc)
                             .format(Locale.getDefault(), watch.name, lowThreshold)
@@ -227,6 +232,11 @@ object Utils {
             notificationManager.cancel(BATTERY_LOW_NOTI_ID)
             database.updatePrefInDatabase(watch.id, BATTERY_LOW_NOTI_SENT, false)
         }
+    }
+
+    private fun getNotiPendingIntent(context: Context): PendingIntent {
+        val intent = Intent(context, MainActivity::class.java)
+        return PendingIntent.getActivity(context, 123, intent, PendingIntent.FLAG_IMMUTABLE)
     }
 
     /**
