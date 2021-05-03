@@ -48,8 +48,9 @@ open class BatteryStats(
                 val batteryLevel = it.getIntExtra(BatteryManager.EXTRA_LEVEL, -1)
                 val batteryScale = it.getIntExtra(BatteryManager.EXTRA_SCALE, -1)
                 val percent = (batteryLevel * 100) / batteryScale
-                val charging = it.getIntExtra(BatteryManager.EXTRA_STATUS, -1) ==
-                    BatteryManager.BATTERY_STATUS_CHARGING
+                val status = it.getIntExtra(BatteryManager.EXTRA_STATUS, -1)
+                val charging = (status == BatteryManager.BATTERY_STATUS_CHARGING) ||
+                    (status == BatteryManager.BATTERY_STATUS_FULL)
                 return BatteryStats(percent, charging)
             }
             return null
