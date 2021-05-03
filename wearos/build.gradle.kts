@@ -48,7 +48,7 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.0.0-beta04"
+        kotlinCompilerExtensionVersion = libs.versions.compose.get()
     }
 
     packagingOptions {
@@ -66,74 +66,41 @@ configurations.all {
 }
 
 dependencies {
-    val androidxArch = "2.1.0"
-    val androidxAppCompat = "1.3.0-rc01"
-    val androidxCoreKtx = "1.5.0-rc01"
-    val androidxDataStore = "1.0.0-alpha08"
-    val androidxEspresso = "3.4.0-alpha05"
-    val androidxLifecycle = "2.4.0-alpha01"
-    val androidxTest = "1.4.0-alpha05"
-    val androidxTestExt = "1.1.3-alpha05"
-    val androidxWear = "1.2.0-alpha07"
-    val androidxWearComplications = "1.0.0-alpha11"
-    val androidxWork = "2.7.0-alpha02"
-
-    val compose = "1.0.0-beta04"
-    val lifecycleCompose = "1.0.0-alpha04"
-    val activityCompose = "1.3.0-alpha06"
-
-    val playServicesWearable = "17.0.0"
-    val timber = "4.7.1"
-    val junit = "4.13.2"
-    val strikt = "0.31.0"
-    val mockk = "1.11.0"
-    val robolectric = "4.5.1"
-    val coroutines = "1.4.3"
-
     implementation(project(":common"))
 
-    implementation("androidx.appcompat:appcompat:$androidxAppCompat")
-    implementation("androidx.core:core-ktx:$androidxCoreKtx")
-    implementation("androidx.lifecycle:lifecycle-common-java8:$androidxLifecycle")
-    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:$androidxLifecycle")
-    implementation("androidx.lifecycle:lifecycle-livedata-ktx:$androidxLifecycle")
-    implementation("androidx.lifecycle:lifecycle-service:$androidxLifecycle")
-    implementation("androidx.wear:wear:$androidxWear")
-    implementation("androidx.wear:wear-complications-provider:$androidxWearComplications")
-    implementation("androidx.datastore:datastore:$androidxDataStore")
-    implementation("androidx.work:work-runtime-ktx:$androidxWork")
+    implementation(libs.androidx.appcompat)
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.bundles.lifecycle)
+    implementation(libs.androidx.datastore.proto)
+    implementation(libs.androidx.wear.core)
+    implementation(libs.androidx.wear.complications.provider)
+    implementation(libs.androidx.work.ktx)
 
-    implementation("com.google.android.gms:play-services-wearable:$playServicesWearable")
-    implementation("com.jakewharton.timber:timber:$timber")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:$coroutines")
+    implementation(libs.play.services.wearable)
+    implementation(libs.timber)
+    implementation(libs.kotlinx.coroutines.playservices)
 
-    implementation("androidx.compose.ui:ui:$compose")
-    implementation("androidx.compose.ui:ui-tooling:$compose")
-    implementation("androidx.compose.foundation:foundation:$compose")
-    implementation("androidx.compose.material:material:$compose")
-    implementation("androidx.compose.material:material-icons-core:$compose")
-    implementation("androidx.compose.material:material-icons-extended:$compose")
-    implementation("androidx.compose.runtime:runtime-livedata:$compose")
-    implementation("androidx.activity:activity-compose:$activityCompose")
-    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:$lifecycleCompose")
+    implementation(libs.bundles.compose)
 
-    testImplementation("androidx.arch.core:core-testing:$androidxArch")
-    testImplementation("androidx.test:core-ktx:$androidxTest")
-    testImplementation("androidx.test.ext:junit-ktx:$androidxTestExt")
-    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutines")
-    testImplementation("junit:junit:$junit")
-    testImplementation("io.strikt:strikt-core:$strikt")
-    testImplementation("io.strikt:strikt-mockk:$strikt")
-    testImplementation("io.mockk:mockk:$mockk")
-    testImplementation("org.robolectric:robolectric:$robolectric")
+    testImplementation(libs.androidx.arch.core.test)
+    testImplementation(libs.androidx.test.corektx)
+    testImplementation(libs.androidx.test.ext.junit)
+    testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.junit)
+    testImplementation(libs.strikt.core)
+    testImplementation(libs.strikt.mockk)
+    testImplementation(libs.mockk.core)
+    testImplementation(libs.robolectric)
 
-    androidTestImplementation("androidx.test.espresso:espresso-core:$androidxEspresso")
-    androidTestImplementation("androidx.test:runner:$androidxTest")
-    androidTestImplementation("androidx.test:rules:$androidxTest")
-    androidTestImplementation("androidx.test:core-ktx:$androidxTest")
-    androidTestImplementation("io.strikt:strikt-core:$strikt")
-    androidTestImplementation("io.strikt:strikt-mockk:$strikt")
-    androidTestImplementation("io.mockk:mockk-android:$mockk")
+    androidTestImplementation(libs.androidx.arch.core.test)
+    androidTestImplementation(libs.androidx.test.espresso)
+    androidTestImplementation(libs.androidx.test.runner)
+    androidTestImplementation(libs.androidx.test.rules)
+    androidTestImplementation(libs.androidx.test.corektx)
+    androidTestImplementation(libs.strikt.core)
+    androidTestImplementation(libs.strikt.mockk)
+    androidTestImplementation(libs.androidx.compose.ui.test)
+    androidTestImplementation(libs.mockk.android)
 }
 
 wire {
