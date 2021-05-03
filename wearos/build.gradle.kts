@@ -66,7 +66,7 @@ configurations.all {
 }
 
 dependencies {
-    implementation(project(":common"))
+    implementation(projects.common)
 
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.core.ktx)

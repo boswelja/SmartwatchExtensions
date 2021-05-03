@@ -72,7 +72,7 @@ configurations.all {
 }
 
 dependencies {
-    implementation(project(":common"))
+    implementation(projects.common)
 
     implementation(libs.firebase.analytics)
 
