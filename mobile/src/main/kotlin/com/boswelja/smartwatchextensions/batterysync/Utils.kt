@@ -82,18 +82,31 @@ object Utils {
         withContext(Dispatchers.IO) {
             val database = WatchDatabase.getInstance(context)
             database.watchDao().get(watchId)?.let { watch ->
+                val notificationManager = context.getSystemService<NotificationManager>()!!
                 val settingsDb =
                     WatchSettingsDatabase.getInstance(context)
                 if (batteryStats.isCharging) {
+                    dismissLowNoti(
+                        notificationManager,
+                        settingsDb,
+                        watch
+                    )
                     handleWatchChargeNoti(
                         context,
+                        notificationManager,
                         batteryStats,
                         settingsDb,
                         watch
                     )
                 } else {
+                    dismissChargeNoti(
+                        notificationManager,
+                        settingsDb,
+                        watch
+                    )
                     handleWatchLowNoti(
                         context,
+                        notificationManager,
                         batteryStats,
                         settingsDb,
                         watch
@@ -118,12 +131,12 @@ object Utils {
      */
     private suspend fun handleWatchChargeNoti(
         context: Context,
+        notificationManager: NotificationManager,
         batteryStats: BatteryStats,
         database: WatchSettingsDatabase,
         watch: Watch
     ) {
         Timber.d("handleWatchChargeNoti called")
-        val notificationManager = context.getSystemService<NotificationManager>()!!
         val chargeThreshold = database
             .getPreference<Int>(watch.id, BATTERY_CHARGE_THRESHOLD_KEY)?.value ?: 90
         val shouldSendChargeNotis = database
@@ -165,10 +178,6 @@ object Utils {
                 Timber.w("Failed to send charged notification")
             }
             database.updatePrefInDatabase(watch.id, BATTERY_CHARGED_NOTI_SENT, true)
-        } else {
-            Timber.d("Dismissing charge notifications")
-            notificationManager.cancel(BATTERY_CHARGED_NOTI_ID)
-            database.updatePrefInDatabase(watch.id, BATTERY_CHARGED_NOTI_SENT, false)
         }
     }
 
@@ -180,12 +189,12 @@ object Utils {
      */
     private suspend fun handleWatchLowNoti(
         context: Context,
+        notificationManager: NotificationManager,
         batteryStats: BatteryStats,
         database: WatchSettingsDatabase,
         watch: Watch
     ) {
         Timber.d("handleWatchLowNoti called")
-        val notificationManager = context.getSystemService<NotificationManager>()!!
         val lowThreshold = database
             .getPreference<Int>(watch.id, BATTERY_LOW_THRESHOLD_KEY)?.value ?: 15
         val shouldSendLowNoti = database
@@ -228,10 +237,27 @@ object Utils {
                 Timber.w("Failed to send charged notification")
             }
             database.updatePrefInDatabase(watch.id, BATTERY_LOW_NOTI_SENT, true)
-        } else {
-            notificationManager.cancel(BATTERY_LOW_NOTI_ID)
-            database.updatePrefInDatabase(watch.id, BATTERY_LOW_NOTI_SENT, false)
         }
+    }
+
+    private suspend fun dismissChargeNoti(
+        notificationManager: NotificationManager,
+        database: WatchSettingsDatabase,
+        watch: Watch
+    ) {
+        Timber.d("Dismissing charge notification for %s", watch.id)
+        notificationManager.cancel(BATTERY_CHARGED_NOTI_ID)
+        database.updatePrefInDatabase(watch.id, BATTERY_CHARGED_NOTI_SENT, false)
+    }
+
+    private suspend fun dismissLowNoti(
+        notificationManager: NotificationManager,
+        database: WatchSettingsDatabase,
+        watch: Watch
+    ) {
+        Timber.d("Dismissing low notification for %s", watch.id)
+        notificationManager.cancel(BATTERY_LOW_NOTI_ID)
+        database.updatePrefInDatabase(watch.id, BATTERY_LOW_NOTI_SENT, false)
     }
 
     private fun getNotiPendingIntent(context: Context): PendingIntent {
