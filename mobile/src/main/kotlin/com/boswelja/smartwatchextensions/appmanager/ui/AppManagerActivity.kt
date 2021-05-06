@@ -8,25 +8,20 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Scaffold
 import androidx.compose.material.ScaffoldState
-import androidx.compose.material.SnackbarDuration
-import androidx.compose.material.SnackbarResult
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.appmanager.State
 import com.boswelja.smartwatchextensions.common.appmanager.App
 import com.boswelja.smartwatchextensions.common.ui.AppTheme
 import com.boswelja.smartwatchextensions.common.ui.Crossflow
 import com.boswelja.smartwatchextensions.common.ui.LoadingScreen
 import com.boswelja.smartwatchextensions.common.ui.UpNavigationWatchPickerAppBar
-import kotlinx.coroutines.launch
 import timber.log.Timber
 
 class AppManagerActivity : AppCompatActivity() {
@@ -72,18 +67,19 @@ class AppManagerActivity : AppCompatActivity() {
                 State.CONNECTING, State.LOADING_APPS -> currentDestination = Destination.LOADING
                 State.READY -> currentDestination = Destination.APP_LIST
                 State.DISCONNECTED -> {
-                    val scope = rememberCoroutineScope()
-                    scope.launch {
-                        val result = scaffoldState.snackbarHostState
-                            .showSnackbar(
-                                getString(R.string.app_manager_disconnected),
-                                getString(R.string.button_retry),
-                                SnackbarDuration.Indefinite
-                            )
-                        if (result == SnackbarResult.ActionPerformed) {
-                            viewModel.startAppManagerService()
-                        }
-                    }
+                    // TODO re-enable this when we resolve detection issues
+//                    val scope = rememberCoroutineScope()
+//                    scope.launch {
+//                        val result = scaffoldState.snackbarHostState
+//                            .showSnackbar(
+//                                getString(R.string.app_manager_disconnected),
+//                                getString(R.string.button_retry),
+//                                SnackbarDuration.Indefinite
+//                            )
+//                        if (result == SnackbarResult.ActionPerformed) {
+//                            viewModel.startAppManagerService()
+//                        }
+//                    }
                 }
                 State.ERROR -> currentDestination = Destination.ERROR
             }
