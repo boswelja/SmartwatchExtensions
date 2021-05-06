@@ -27,6 +27,7 @@
     <string name="app_manager_noti_channel_title">App Manager Service</string>
     <string name="app_manager_noti_title">App Manager Running</string>
     <string name="app_manager_noti_desc">App Manager is currently running on your phone</string>
+    <string name="app_manager_stop">Stop</string>
 
     <!-- Setup strings -->
     <string name="welcome_to_text">Welcome to</string>

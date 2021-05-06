@@ -3,6 +3,7 @@ package com.boswelja.smartwatchextensions.appmanager
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -119,9 +120,15 @@ class AppManagerService : LifecycleService() {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         Timber.d("onStartCommand received")
-        startForeground(APP_MANAGER_NOTI_ID, createNotification())
-        lifecycle.removeObserver(serviceRunningNotifier)
-        sendAllApps()
+
+        if (intent?.action == ACTION_STOP_APP_MANAGER) {
+            stopService()
+        } else {
+            startForeground(APP_MANAGER_NOTI_ID, createNotification())
+            lifecycle.removeObserver(serviceRunningNotifier)
+            sendAllApps()
+        }
+
         return super.onStartCommand(intent, flags, startId)
     }
 
@@ -134,6 +141,7 @@ class AppManagerService : LifecycleService() {
 
     /** Stops the service. */
     private fun stopService() {
+        Timber.d("Stopping service")
         stopForeground(true)
         stopSelf()
     }
@@ -154,6 +162,11 @@ class AppManagerService : LifecycleService() {
                     .also { notificationManager?.createNotificationChannel(it) }
             }
         }
+        val stopIntent = Intent(this, AppManagerService::class.java).apply {
+            action = ACTION_STOP_APP_MANAGER
+        }.let {
+            PendingIntent.getService(this, 333, it, PendingIntent.FLAG_IMMUTABLE)
+        }
         return NotificationCompat.Builder(this, APP_MANAGER_NOTI_CHANNEL_ID)
             .setContentTitle(getString(R.string.app_manager_noti_title))
             .setContentText(getString(R.string.app_manager_noti_desc))
@@ -162,6 +175,11 @@ class AppManagerService : LifecycleService() {
             .setShowWhen(false)
             .setUsesChronometer(false)
             .setPriority(NotificationCompat.PRIORITY_LOW)
+            .addAction(
+                R.drawable.noti_ic_stop,
+                getString(R.string.app_manager_stop),
+                stopIntent
+            )
             .build()
     }
 
@@ -286,5 +304,6 @@ class AppManagerService : LifecycleService() {
     companion object {
         private const val APP_MANAGER_NOTI_CHANNEL_ID = "app_manager_service"
         private const val APP_MANAGER_NOTI_ID = 906
+        private const val ACTION_STOP_APP_MANAGER = "stop-appmanager"
     }
 }
