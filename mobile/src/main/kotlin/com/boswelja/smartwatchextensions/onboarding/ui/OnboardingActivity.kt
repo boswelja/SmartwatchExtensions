@@ -17,12 +17,11 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.NavigateNext
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.res.stringResource
 import androidx.core.net.toUri
-import androidx.lifecycle.lifecycleScope
 import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.common.ui.AppTheme
 import com.boswelja.smartwatchextensions.common.ui.Crossflow
@@ -30,17 +29,13 @@ import com.boswelja.smartwatchextensions.common.ui.UpNavigationAppBar
 import com.boswelja.smartwatchextensions.main.MainActivity
 import com.boswelja.smartwatchextensions.watchmanager.ui.register.RegisterWatchScreen
 import com.boswelja.smartwatchextensions.watchmanager.ui.register.RegisterWatchViewModel
-import com.boswelja.watchconnection.core.Watch
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.launch
 
 class OnboardingActivity : AppCompatActivity() {
 
     @ExperimentalCoroutinesApi
     private val registerWatchViewModel: RegisterWatchViewModel by viewModels()
     private val customTabIntent = CustomTabsIntent.Builder().setShowTitle(true).build()
-    private val registeredWatches = mutableStateListOf<Watch>()
 
     private var currentDestination by mutableStateOf(Destination.WELCOME)
 
@@ -71,12 +66,6 @@ class OnboardingActivity : AppCompatActivity() {
                 }
             }
         }
-
-        lifecycleScope.launch {
-            registerWatchViewModel.registeredWatches.collect {
-                registeredWatches.add(it)
-            }
-        }
     }
 
     @ExperimentalCoroutinesApi
@@ -85,14 +74,13 @@ class OnboardingActivity : AppCompatActivity() {
             Destination.WELCOME -> currentDestination = Destination.SHARE_USAGE_STATS
             Destination.SHARE_USAGE_STATS -> currentDestination = Destination.REGISTER_WATCHES
             Destination.REGISTER_WATCHES -> {
-                if (registeredWatches.isNotEmpty()) {
-                    startActivity(Intent(this@OnboardingActivity, MainActivity::class.java))
-                    finish()
-                }
+                startActivity(Intent(this@OnboardingActivity, MainActivity::class.java))
+                finish()
             }
         }
     }
 
+    @ExperimentalCoroutinesApi
     @ExperimentalMaterialApi
     @ExperimentalAnimationApi
     @Composable
@@ -110,7 +98,10 @@ class OnboardingActivity : AppCompatActivity() {
                         }
                     )
                 }
-                Destination.REGISTER_WATCHES -> RegisterWatchScreen(registeredWatches)
+                Destination.REGISTER_WATCHES -> {
+                    val addedWatches by registerWatchViewModel.registeredWatches.observeAsState()
+                    RegisterWatchScreen(addedWatches)
+                }
             }
         }
     }

@@ -37,7 +37,6 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
@@ -77,14 +76,14 @@ class WatchManager internal constructor(
     @ExperimentalCoroutinesApi
     val availableWatches: Flow<List<Watch>>
         get() = connectionClient.watchesWithApp()
-            .mapNotNull { watches ->
+            .map { watches ->
                 watches.filter { watchDatabase.watchDao().get(it.id) == null }
             }
 
     /**
      * The currently selected watch
      */
-    val selectedWatch = _selectedWatch.map { it as Watch }
+    val selectedWatch: LiveData<Watch?> = _selectedWatch.map { it }
 
     init {
         Timber.d("Creating WatchManager")

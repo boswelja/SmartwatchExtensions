@@ -2,14 +2,13 @@ package com.boswelja.smartwatchextensions.watchmanager.ui.register
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.boswelja.smartwatchextensions.watchmanager.WatchManager
 import com.boswelja.watchconnection.core.Watch
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.mapNotNull
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -28,10 +27,11 @@ class RegisterWatchViewModel internal constructor(
         WatchManager.getInstance(application)
     )
 
-    private val _addedWatches = MutableSharedFlow<Watch?>()
+    private val addedWatches = mutableListOf<Watch>()
+    private val liveAddedWatches = MutableLiveData<List<Watch>>(emptyList())
 
-    val registeredWatches: Flow<Watch>
-        get() = _addedWatches.mapNotNull { it }
+    val registeredWatches: LiveData<List<Watch>>
+        get() = liveAddedWatches
 
     init {
         startRegisteringWatches()
@@ -40,16 +40,21 @@ class RegisterWatchViewModel internal constructor(
     @ExperimentalCoroutinesApi
     fun startRegisteringWatches() {
         viewModelScope.launch {
-            watchManager.availableWatches.collectLatest { watches ->
-                watches.forEach { watch -> addWatch(watch) }
+            watchManager.availableWatches.collect { watches ->
+                Timber.d("Got %s watches", watches.count())
+                watches.forEach { watch ->
+                    Timber.i("Adding watch %s", watch.id)
+                    addWatch(watch)
+                }
             }
         }
     }
 
     suspend fun addWatch(watch: Watch) {
         Timber.d("registerWatch($watch) called")
-        if (!_addedWatches.replayCache.contains(watch)) {
-            _addedWatches.emit(watch)
+        if (!addedWatches.contains(watch)) {
+            addedWatches.add(watch)
+            liveAddedWatches.postValue(addedWatches)
             watchManager.registerWatch(watch)
         }
     }
