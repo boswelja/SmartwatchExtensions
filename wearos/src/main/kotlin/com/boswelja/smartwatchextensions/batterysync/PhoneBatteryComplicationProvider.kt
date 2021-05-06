@@ -8,6 +8,7 @@ import android.graphics.drawable.Icon
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toBitmap
 import androidx.wear.complications.ComplicationProviderService
+import androidx.wear.complications.ComplicationRequest
 import androidx.wear.complications.ProviderUpdateRequester
 import androidx.wear.complications.data.ComplicationData
 import androidx.wear.complications.data.ComplicationType
@@ -33,19 +34,18 @@ class PhoneBatteryComplicationProvider : ComplicationProviderService() {
 
     private val coroutineScope = CoroutineScope(Dispatchers.IO)
 
-    override fun onComplicationUpdate(
-        complicationId: Int,
-        type: ComplicationType,
-        resultCallback: ComplicationUpdateListener
+    override fun onComplicationRequest(
+        request: ComplicationRequest,
+        listener: ComplicationRequestListener
     ) {
         coroutineScope.launch {
             phoneStateStore.data.map { it.batteryPercent }.collect {
-                val complicationData = createComplicationDataFor(it, type)
+                val complicationData = createComplicationDataFor(it, request.complicationType)
 
                 if (complicationData != null) {
-                    resultCallback.onUpdateComplication(complicationData)
+                    listener.onComplicationData(complicationData)
                 } else {
-                    Timber.w("Complication type $type invalid")
+                    Timber.w("Complication type ${request.complicationType} invalid")
                 }
             }
         }
@@ -80,16 +80,19 @@ class PhoneBatteryComplicationProvider : ComplicationProviderService() {
         val complicationText = PlainComplicationText.Builder(text).build()
         return when (type) {
             ComplicationType.RANGED_VALUE -> {
-                RangedValueComplicationData.Builder(percent.toFloat(), 0f, 100f)
+                RangedValueComplicationData.Builder(
+                    percent.toFloat(),
+                    0f,
+                    100f,
+                    complicationText
+                )
                     .setText(complicationText)
                     .setTapAction(pendingIntent)
                     .setMonochromaticImage(icon)
-                    .setContentDescription(complicationText)
                     .build()
             }
             ComplicationType.SHORT_TEXT -> {
-                ShortTextComplicationData.Builder(complicationText)
-                    .setContentDescription(complicationText)
+                ShortTextComplicationData.Builder(complicationText, complicationText)
                     .setMonochromaticImage(icon)
                     .setTapAction(pendingIntent)
                     .build()
