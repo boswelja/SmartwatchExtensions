@@ -3,6 +3,7 @@ package com.boswelja.smartwatchextensions.batterysync.ui
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.liveData
 import androidx.lifecycle.switchMap
 import androidx.lifecycle.viewModelScope
 import com.boswelja.smartwatchextensions.batterysync.BatterySyncWorker
@@ -48,7 +49,7 @@ class BatterySyncViewModel internal constructor(
     val batteryLowThreshold = preferenceForSelectedWatch<Int>(BATTERY_LOW_THRESHOLD_KEY)
 
     val batteryStats = watchManager.selectedWatch.switchMap {
-        database.batteryStatsDao().getObservableStatsForWatch(it.id)
+        it?.let { database.batteryStatsDao().getObservableStatsForWatch(it.id) } ?: liveData { }
     }
 
     fun setBatterySyncEnabled(isEnabled: Boolean) {
@@ -136,7 +137,9 @@ class BatterySyncViewModel internal constructor(
 
     private inline fun <reified T> preferenceForSelectedWatch(key: String): LiveData<T?> {
         return watchManager.selectedWatch.switchMap {
-            watchManager.getPreferenceObservable<T>(it.id, key)
+            it?.let { watch ->
+                watchManager.getPreferenceObservable<T>(watch.id, key)
+            } ?: liveData { }
         }
     }
 }

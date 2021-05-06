@@ -2,6 +2,7 @@ package com.boswelja.smartwatchextensions.phonelocking.ui
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.liveData
 import androidx.lifecycle.switchMap
 import androidx.lifecycle.viewModelScope
 import com.boswelja.smartwatchextensions.common.preference.PreferenceKey.PHONE_LOCKING_ENABLED_KEY
@@ -18,7 +19,9 @@ class PhoneLockingSettingsViewModel internal constructor(
 ) : AndroidViewModel(application) {
 
     val phoneLockingEnabled = watchManager.selectedWatch.switchMap {
-        watchManager.getPreferenceObservable<Boolean>(it.id, PHONE_LOCKING_ENABLED_KEY)
+        it?.let { watch ->
+            watchManager.getPreferenceObservable<Boolean>(watch.id, PHONE_LOCKING_ENABLED_KEY)
+        } ?: liveData { }
     }
 
     @Suppress("unused")
