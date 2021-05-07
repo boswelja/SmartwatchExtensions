@@ -1,5 +1,6 @@
 package com.boswelja.smartwatchextensions.common
 
+import androidx.annotation.DrawableRes
 import androidx.compose.material.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -16,7 +17,18 @@ fun BatteryIcon(
     percent: Int,
     modifier: Modifier = Modifier
 ) {
-    val drawable = when (percent) {
+    val drawable = getBatteryResource(percent)
+    Icon(
+        painterResource(drawable),
+        null,
+        modifier,
+        tint = Color.White
+    )
+}
+
+@DrawableRes
+fun getBatteryResource(percent: Int): Int {
+    return when (percent) {
         in 0..20 -> R.drawable.battery_alert
         in 20..30 -> R.drawable.battery_20
         in 30..40 -> R.drawable.battery_30
@@ -29,12 +41,6 @@ fun BatteryIcon(
         100 -> R.drawable.battery_full
         else -> R.drawable.battery_unknown
     }
-    Icon(
-        painterResource(drawable),
-        null,
-        modifier,
-        tint = Color.White
-    )
 }
 
 private class BatteryPercentProvider : PreviewParameterProvider<Int> {

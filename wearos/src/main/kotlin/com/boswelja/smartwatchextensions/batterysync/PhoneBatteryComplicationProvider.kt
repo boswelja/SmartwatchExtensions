@@ -5,8 +5,6 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.graphics.drawable.Icon
-import androidx.core.content.ContextCompat
-import androidx.core.graphics.drawable.toBitmap
 import androidx.wear.complications.ComplicationProviderService
 import androidx.wear.complications.ComplicationRequest
 import androidx.wear.complications.ProviderUpdateRequester
@@ -19,6 +17,7 @@ import androidx.wear.complications.data.ShortTextComplicationData
 import com.boswelja.smartwatchextensions.ActionServiceStarter
 import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.common.batterysync.References.REQUEST_BATTERY_UPDATE_PATH
+import com.boswelja.smartwatchextensions.common.getBatteryResource
 import com.boswelja.smartwatchextensions.phoneStateStore
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -51,12 +50,6 @@ class PhoneBatteryComplicationProvider : ComplicationProviderService() {
         }
     }
 
-    private fun createIcon(batteryPercent: Int): Icon {
-        val drawable = ContextCompat.getDrawable(this, R.drawable.ic_phone_battery)!!
-        drawable.level = batteryPercent
-        return Icon.createWithBitmap(drawable.toBitmap())
-    }
-
     /**
      * Create a [ComplicationData] for a complication with given data.
      * @param percent The battery percent to create [ComplicationData] for.
@@ -75,7 +68,9 @@ class PhoneBatteryComplicationProvider : ComplicationProviderService() {
         val text =
             if (percent > 0) String.format(getString(R.string.battery_percent), percent)
             else getString(R.string.battery_percent_unknown)
-        val icon = MonochromaticImage.Builder(createIcon(percent)).build()
+        val icon = MonochromaticImage.Builder(
+            Icon.createWithResource(this, getBatteryResource(percent))
+        ).build()
 
         val complicationText = PlainComplicationText.Builder(text).build()
         return when (type) {
