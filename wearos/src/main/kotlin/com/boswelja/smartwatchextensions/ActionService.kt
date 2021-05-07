@@ -29,6 +29,11 @@ class ActionService : JobIntentService() {
                         getString(R.string.lock_phone_success),
                         getString(R.string.lock_phone_failed)
                     )
+                } else {
+                    ConfirmationActivityHandler.failAnimation(
+                        this@ActionService,
+                        getString(R.string.lock_phone_disabled)
+                    )
                 }
             }
             REQUEST_BATTERY_UPDATE_PATH -> {
@@ -40,6 +45,11 @@ class ActionService : JobIntentService() {
                         action,
                         getString(R.string.battery_sync_refresh_success),
                         getString(R.string.battery_sync_refresh_failed)
+                    )
+                } else {
+                    ConfirmationActivityHandler.failAnimation(
+                        this@ActionService,
+                        getString(R.string.battery_sync_disabled)
                     )
                 }
             }
