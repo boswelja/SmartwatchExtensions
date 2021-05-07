@@ -35,8 +35,10 @@ class PhoneBatteryUpdateReceiver : WearableListenerService() {
             val batteryStats = BatteryStats.fromByteArray(messageEvent.data)
             runBlocking {
                 if (batteryStats.isCharging) {
+                    cancelLowNoti()
                     handleChargeNotification(batteryStats)
                 } else {
+                    cancelChargeNoti()
                     handleLowNotification(batteryStats)
                 }
                 phoneStateStore.updateData {
@@ -66,12 +68,22 @@ class PhoneBatteryUpdateReceiver : WearableListenerService() {
                 val phoneName = phoneStateStore.data.map { it.name }.first()
                 notifyBatteryCharged(phoneName, chargeThreshold)
             }
-        } else {
-            Timber.i("Cancelling any existing charge notifications")
-            notificationManager.cancel(BATTERY_CHARGED_NOTI_ID)
-            phoneStateStore.updateData {
-                it.copy(chargeNotiSent = false)
-            }
+        }
+    }
+
+    private suspend fun cancelChargeNoti() {
+        Timber.i("Cancelling any existing charge notifications")
+        notificationManager.cancel(BATTERY_CHARGED_NOTI_ID)
+        phoneStateStore.updateData {
+            it.copy(chargeNotiSent = false)
+        }
+    }
+
+    private suspend fun cancelLowNoti() {
+        Timber.i("Cancelling any existing low notifications")
+        notificationManager.cancel(BATTERY_LOW_NOTI_ID)
+        phoneStateStore.updateData {
+            it.copy(lowNotiSent = false)
         }
     }
 
@@ -91,12 +103,6 @@ class PhoneBatteryUpdateReceiver : WearableListenerService() {
             if (batteryStats.percent <= chargeThreshold && !hasNotiBeenSent) {
                 val phoneName = phoneStateStore.data.map { it.name }.first()
                 notifyBatteryLow(phoneName, chargeThreshold)
-            }
-        } else {
-            Timber.i("Cancelling any existing low notifications")
-            notificationManager.cancel(BATTERY_LOW_NOTI_ID)
-            phoneStateStore.updateData {
-                it.copy(lowNotiSent = false)
             }
         }
     }
@@ -192,11 +198,10 @@ class PhoneBatteryUpdateReceiver : WearableListenerService() {
                     BATTERY_STATS_NOTI_CHANNEL_ID,
                     getString(R.string.noti_channel_battery_stats_title),
                     NotificationManager.IMPORTANCE_HIGH
-                )
-                    .apply {
-                        enableVibration(true)
-                        setShowBadge(true)
-                    }
+                ).apply {
+                    enableVibration(true)
+                    setShowBadge(true)
+                }
             notificationManager.createNotificationChannel(channel)
         }
     }
