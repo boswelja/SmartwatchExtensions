@@ -51,6 +51,11 @@ object Utils {
         withContext(Dispatchers.IO) {
             Timber.i("Updating battery stats for ${watch?.id}")
             val batteryStats = BatteryStats.createForDevice(context)
+            Timber.d(
+                "percent = %s, isCharging = %s",
+                batteryStats?.percent,
+                batteryStats?.isCharging
+            )
             if (batteryStats != null) {
                 val watchManager = WatchManager.getInstance(context)
                 if (watch != null) {

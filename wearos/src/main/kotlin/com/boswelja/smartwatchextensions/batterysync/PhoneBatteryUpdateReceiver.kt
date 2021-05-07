@@ -64,6 +64,12 @@ class PhoneBatteryUpdateReceiver : WearableListenerService() {
                 .map { it.batteryChargeThreshold }.first()
             val hasNotiBeenSent = phoneStateStore.data.map { it.chargeNotiSent }.first()
 
+            Timber.d(
+                "chargeThreshold = %s, percent = %s, hasNotiBeenSent = %s",
+                chargeThreshold,
+                batteryStats.percent,
+                hasNotiBeenSent
+            )
             if (batteryStats.percent >= chargeThreshold && !hasNotiBeenSent) {
                 val phoneName = phoneStateStore.data.map { it.name }.first()
                 notifyBatteryCharged(phoneName, chargeThreshold)
@@ -93,16 +99,21 @@ class PhoneBatteryUpdateReceiver : WearableListenerService() {
      * @param batteryStats The [BatteryStats] object to read data from.
      */
     private suspend fun handleLowNotification(batteryStats: BatteryStats) {
-        Timber.d("handleChargeNotification($batteryStats) called")
+        Timber.d("handleLowNotification($batteryStats) called")
         val shouldNotifyUser = extensionSettingsStore.data.map { it.phoneLowNotiEnabled }.first()
         if (shouldNotifyUser) {
-            val chargeThreshold = extensionSettingsStore.data
+            val lowThreshold = extensionSettingsStore.data
                 .map { it.batteryLowThreshold }.first()
             val hasNotiBeenSent = phoneStateStore.data.map { it.lowNotiSent }.first()
-
-            if (batteryStats.percent <= chargeThreshold && !hasNotiBeenSent) {
+            Timber.d(
+                "lowThreshold = %s, percent = %s, hasNotiBeenSent = %s",
+                lowThreshold,
+                batteryStats.percent,
+                hasNotiBeenSent
+            )
+            if (batteryStats.percent <= lowThreshold && !hasNotiBeenSent) {
                 val phoneName = phoneStateStore.data.map { it.name }.first()
-                notifyBatteryLow(phoneName, chargeThreshold)
+                notifyBatteryLow(phoneName, lowThreshold)
             }
         }
     }
