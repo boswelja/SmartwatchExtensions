@@ -35,14 +35,17 @@ class LockPhoneComplicationProvider : ComplicationProviderService() {
     }
 
     private fun createComplicationDataFor(type: ComplicationType): ComplicationData? {
-        val intent = Intent(this, ActionServiceStarter::class.java)
-            .apply { action = LOCK_PHONE }
+        val intent = Intent(this, ActionServiceStarter::class.java).apply {
+            action = LOCK_PHONE
+        }
         val pendingIntent = PendingIntent.getBroadcast(
             this, 0, intent, PendingIntent.FLAG_IMMUTABLE
         )
 
         val icon = MonochromaticImage.Builder(
-            Icon.createWithResource(this, R.drawable.ic_phone_lock)
+            Icon.createWithResource(this, R.drawable.complication_lock_phone)
+        ).setAmbientImage(
+            Icon.createWithResource(this, R.drawable.complication_lock_phone_ambient)
         ).build()
         val text = PlainComplicationText.Builder(getString(R.string.lock_phone_label)).build()
 
