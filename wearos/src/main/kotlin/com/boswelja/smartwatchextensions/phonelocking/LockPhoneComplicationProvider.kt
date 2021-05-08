@@ -10,7 +10,7 @@ import androidx.wear.complications.data.ComplicationType
 import androidx.wear.complications.data.MonochromaticImage
 import androidx.wear.complications.data.PlainComplicationText
 import androidx.wear.complications.data.ShortTextComplicationData
-import com.boswelja.smartwatchextensions.ActionServiceStarter
+import com.boswelja.smartwatchextensions.ActionsActivity
 import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.common.connection.Messages.LOCK_PHONE
 import timber.log.Timber
@@ -35,10 +35,10 @@ class LockPhoneComplicationProvider : ComplicationProviderService() {
     }
 
     private fun createComplicationDataFor(type: ComplicationType): ComplicationData? {
-        val intent = Intent(this, ActionServiceStarter::class.java).apply {
+        val intent = Intent(this, ActionsActivity::class.java).apply {
             action = LOCK_PHONE
         }
-        val pendingIntent = PendingIntent.getBroadcast(
+        val pendingIntent = PendingIntent.getActivity(
             this, 0, intent, PendingIntent.FLAG_IMMUTABLE
         )
 

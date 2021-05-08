@@ -14,7 +14,7 @@ import androidx.wear.complications.data.MonochromaticImage
 import androidx.wear.complications.data.PlainComplicationText
 import androidx.wear.complications.data.RangedValueComplicationData
 import androidx.wear.complications.data.ShortTextComplicationData
-import com.boswelja.smartwatchextensions.ActionServiceStarter
+import com.boswelja.smartwatchextensions.ActionsActivity
 import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.common.batterysync.References.REQUEST_BATTERY_UPDATE_PATH
 import com.boswelja.smartwatchextensions.common.getBatteryResource
@@ -58,10 +58,10 @@ class PhoneBatteryComplicationProvider : ComplicationProviderService() {
      */
     private fun createComplicationDataFor(percent: Int, type: ComplicationType): ComplicationData? {
         val refreshDataIntent =
-            Intent(this, ActionServiceStarter::class.java).apply {
+            Intent(this, ActionsActivity::class.java).apply {
                 action = REQUEST_BATTERY_UPDATE_PATH
             }
-        val pendingIntent = PendingIntent.getBroadcast(
+        val pendingIntent = PendingIntent.getActivity(
             this, 0, refreshDataIntent, PendingIntent.FLAG_IMMUTABLE
         )
 

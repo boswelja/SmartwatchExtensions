@@ -50,10 +50,7 @@
 
         <activity android:name="androidx.wear.activity.ConfirmationActivity" />
 
-        <service
-            android:name=".ActionService"
-            android:exported="true"
-            android:permission="android.permission.BIND_JOB_SERVICE" />
+        <activity android:name=".ActionsActivity" />
 
         <service
             android:name=".batterysync.PhoneBatteryComplicationProvider"
@@ -173,10 +170,6 @@
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
-
-        <receiver
-            android:name=".ActionServiceStarter"
-            android:exported="false" />
     </application>
 
 </manifest>
