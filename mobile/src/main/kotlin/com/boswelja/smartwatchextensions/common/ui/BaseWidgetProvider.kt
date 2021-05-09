@@ -18,12 +18,12 @@ import com.boswelja.smartwatchextensions.widget.ui.WidgetSettingsActivity.Compan
 import com.boswelja.smartwatchextensions.widget.ui.WidgetSettingsActivity.Companion.WIDGET_BACKGROUND_OPACITY_KEY
 import com.boswelja.smartwatchextensions.widget.widgetIdStore
 import com.boswelja.smartwatchextensions.widget.widgetSettings
+import java.util.UUID
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import java.util.UUID
 
 /**
  * An [AppWidgetProvider] that applies our default widget background with user settings.
