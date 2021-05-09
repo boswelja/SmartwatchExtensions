@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<accessibility-service xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<accessibility-service
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:description="@string/phone_locking_accessibility_service_desc"
     android:accessibilityFeedbackType="feedbackGeneric"
     android:canPerformGestures="true"
     android:canRequestEnhancedWebAccessibility="false"
     android:canRequestFilterKeyEvents="false"
     android:canRequestTouchExplorationMode="false"
     android:canRetrieveWindowContent="false"
-    android:packageNames="com.boswelja.smartwatchextensions"
-    tools:targetApi="28" />
+    android:packageNames="com.boswelja.smartwatchextensions" />
