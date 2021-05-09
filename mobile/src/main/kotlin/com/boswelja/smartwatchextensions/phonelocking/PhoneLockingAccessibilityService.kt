@@ -8,12 +8,12 @@ import com.boswelja.smartwatchextensions.watchmanager.WatchManager
 import com.boswelja.watchconnection.core.MessageListener
 import com.boswelja.watchconnection.core.Watch
 import com.google.android.gms.wearable.MessageEvent
+import java.util.UUID
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
-import java.util.UUID
 
 class PhoneLockingAccessibilityService :
     AccessibilityService(),
@@ -84,10 +84,10 @@ class PhoneLockingAccessibilityService :
         if (!isStopping) {
             Timber.i("Stopping")
             isStopping = true
+            // runBlocking here so we can update stuff without onDestroy returning
             coroutineScope.launch(Dispatchers.IO) {
-                watchManager.settingsDatabase.boolPrefDao().updateAllForKey(
-                    PHONE_LOCKING_ENABLED_KEY, false
-                )
+                Timber.d("Disabling phone locking on all devices")
+                watchManager.updatePreference(PHONE_LOCKING_ENABLED_KEY, false)
             }
             watchManager.unregisterMessageListener(this)
         }

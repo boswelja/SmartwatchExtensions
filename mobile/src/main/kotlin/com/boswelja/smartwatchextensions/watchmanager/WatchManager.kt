@@ -242,7 +242,7 @@ class WatchManager internal constructor(
      */
     suspend fun updatePreference(key: String, value: Boolean) {
         withContext(Dispatchers.IO) {
-            registeredWatches.value?.forEach {
+            watchDatabase.watchDao().getAll().forEach {
                 updatePreference(it, key, value)
             }
         }
