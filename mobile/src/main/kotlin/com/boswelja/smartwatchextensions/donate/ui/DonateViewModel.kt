@@ -87,8 +87,7 @@ class DonateViewModel internal constructor(
 
     val clientConnected: Flow<Boolean>
         get() = _clientConnected
-    val hasDonated: LiveData<Boolean> =
-        dataStore.data.map { it.hasDonated }.asLiveData(Dispatchers.IO)
+    val hasDonated: Flow<Boolean> = dataStore.data.map { it.hasDonated }
 
     init {
         startClientConnection()

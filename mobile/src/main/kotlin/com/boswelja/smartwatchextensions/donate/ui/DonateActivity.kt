@@ -15,6 +15,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
+import androidx.compose.material.LinearProgressIndicator
 import androidx.compose.material.ListItem
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
@@ -27,7 +28,6 @@ import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -55,25 +55,31 @@ class DonateActivity : AppCompatActivity() {
         setContent {
             val scaffoldState = rememberScaffoldState()
             val viewModel: DonateViewModel = viewModel()
-            val hasDonated = viewModel.hasDonated.observeAsState()
+            val hasDonated by viewModel.hasDonated.collectAsState(false)
+            val isReady by viewModel.clientConnected.collectAsState(false)
 
             AppTheme {
-                Scaffold(scaffoldState = scaffoldState) {
-                    Column(Modifier.fillMaxSize()) {
+                Scaffold(
+                    topBar = {
                         UpNavigationAppBar(onNavigateUp = { finish() })
+                    },
+                    scaffoldState = scaffoldState
+                ) {
+                    Column(Modifier.fillMaxSize()) {
                         DonateHeader()
+                        if (!isReady) {
+                            LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
+                        }
                         DonateOptions()
                     }
-                    hasDonated.value?.let {
-                        if (it) {
-                            val scope = rememberCoroutineScope()
-                            val text = stringResource(id = R.string.donate_complete)
-                            scope.launch {
-                                scaffoldState.snackbarHostState.showSnackbar(
-                                    text,
-                                    null
-                                )
-                            }
+                    if (hasDonated) {
+                        val scope = rememberCoroutineScope()
+                        val text = stringResource(id = R.string.donate_complete)
+                        scope.launch {
+                            scaffoldState.snackbarHostState.showSnackbar(
+                                text,
+                                null
+                            )
                         }
                     }
                 }
