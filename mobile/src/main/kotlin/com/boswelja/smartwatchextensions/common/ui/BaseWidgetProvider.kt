@@ -55,12 +55,13 @@ abstract class BaseWidgetProvider : AppWidgetProvider() {
      * Create the widget click [PendingIntent].
      * @param context [Context].
      * @param watchId The ID of the watch this widget is for.
-     * @return The [PendingIntent] to fire when the user clicks the widget.
+     * @return The [PendingIntent] to fire when the user clicks the widget, or null if nothing
+     * should happen.
      */
     open fun onCreateClickIntent(
         context: Context,
         watchId: UUID?
-    ): PendingIntent {
+    ): PendingIntent? {
         val intent = Intent(context, MainActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK
         }
@@ -154,10 +155,9 @@ abstract class BaseWidgetProvider : AppWidgetProvider() {
                 }
 
                 // Set click PendingIntent
-                widgetView.setOnClickPendingIntent(
-                    R.id.widget_container,
-                    onCreateClickIntent(context, watchId)
-                )
+                onCreateClickIntent(context, watchId)?.let {
+                    widgetView.setOnClickPendingIntent(R.id.widget_container, it)
+                }
 
                 val widgetContent = if (watchId != null) {
                     // Get the widget content from child class
