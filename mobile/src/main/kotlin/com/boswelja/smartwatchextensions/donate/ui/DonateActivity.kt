@@ -25,6 +25,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
@@ -153,8 +154,8 @@ class DonateActivity : AppCompatActivity() {
                 }
             }
             val options = when (tabIndex) {
-                0 -> viewModel.recurringDonations.observeAsState()
-                else -> viewModel.oneTimeDonations.observeAsState()
+                0 -> viewModel.recurringDonations().collectAsState(emptyList())
+                else -> viewModel.oneTimeDonations().collectAsState(emptyList())
             }
             options.value?.let { skuDetails ->
                 DonateList(

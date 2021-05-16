@@ -19,9 +19,12 @@ import com.android.billingclient.api.SkuDetails
 import com.android.billingclient.api.SkuDetailsParams
 import com.android.billingclient.api.acknowledgePurchase
 import com.android.billingclient.api.consumePurchase
+import com.android.billingclient.api.querySkuDetails
 import com.boswelja.smartwatchextensions.AppState
 import com.boswelja.smartwatchextensions.appStateStore
 import com.boswelja.smartwatchextensions.donate.Skus
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -36,6 +39,16 @@ class DonateViewModel internal constructor(
         application.appStateStore
     )
 
+    private val oneTimeSkuDetailParams = SkuDetailsParams.newBuilder()
+        .setSkusList(Skus.ALL_ONE_TIME)
+        .setType(BillingClient.SkuType.INAPP)
+        .build()
+
+    private val recurringSkuDetailParams = SkuDetailsParams.newBuilder()
+        .setSkusList(Skus.ALL_RECURRING)
+        .setType(BillingClient.SkuType.SUBS)
+        .build()
+
     private val purchasesUpdatedListener = PurchasesUpdatedListener { _, purchases ->
         purchases?.forEach {
             if (it.sku in Skus.ALL_RECURRING) {
@@ -49,11 +62,9 @@ class DonateViewModel internal constructor(
     private val clientStateListener =
         object : BillingClientStateListener {
             override fun onBillingSetupFinished(result: BillingResult) {
-                if (result.responseCode == BillingClient.BillingResponseCode.OK) {
-                    _clientConnected.postValue(true)
-                    updateOneTimeSkuDetails()
-                    updateRecurringSkuDetails()
-                }
+                _clientConnected.postValue(
+                    result.responseCode == BillingClient.BillingResponseCode.OK
+                )
             }
 
             override fun onBillingServiceDisconnected() {
@@ -68,14 +79,8 @@ class DonateViewModel internal constructor(
             .build()
 
     private val _clientConnected = MutableLiveData(false)
-    private val _oneTimeDonations = MutableLiveData<List<SkuDetails>>(emptyList())
-    private val _recurringDonations = MutableLiveData<List<SkuDetails>>(emptyList())
     private val _hasDonated = MutableLiveData(false)
 
-    val oneTimeDonations: LiveData<List<SkuDetails>>
-        get() = _oneTimeDonations
-    val recurringDonations: LiveData<List<SkuDetails>>
-        get() = _recurringDonations
     val clientConnected: LiveData<Boolean>
         get() = _clientConnected
     val hasDonated: LiveData<Boolean>
@@ -92,28 +97,6 @@ class DonateViewModel internal constructor(
 
     private fun startClientConnection() {
         billingClient.startConnection(clientStateListener)
-    }
-
-    private fun updateOneTimeSkuDetails() {
-        val oneTimeSkuDetailParams = SkuDetailsParams.newBuilder()
-            .setSkusList(Skus.ALL_ONE_TIME)
-            .setType(BillingClient.SkuType.INAPP)
-            .build()
-        billingClient.querySkuDetailsAsync(oneTimeSkuDetailParams) { _, skus ->
-            val skuDetails = skus ?: emptyList()
-            _oneTimeDonations.postValue(skuDetails.sortedBy { it.priceAmountMicros })
-        }
-    }
-
-    private fun updateRecurringSkuDetails() {
-        val recurringSkuDetailParams = SkuDetailsParams.newBuilder()
-            .setSkusList(Skus.ALL_RECURRING)
-            .setType(BillingClient.SkuType.SUBS)
-            .build()
-        billingClient.querySkuDetailsAsync(recurringSkuDetailParams) { _, skus ->
-            val skuDetails = skus ?: emptyList()
-            _recurringDonations.postValue(skuDetails.sortedBy { it.priceAmountMicros })
-        }
     }
 
     private fun consumeOneTimePurchase(purchase: Purchase) {
@@ -149,5 +132,15 @@ class DonateViewModel internal constructor(
     fun launchBillingFlow(activity: Activity, sku: SkuDetails) {
         val params = BillingFlowParams.newBuilder().setSkuDetails(sku).build()
         billingClient.launchBillingFlow(activity, params)
+    }
+
+    fun oneTimeDonations(): Flow<List<SkuDetails>?> = flow {
+        val details = billingClient.querySkuDetails(oneTimeSkuDetailParams)
+        emit(details.skuDetailsList)
+    }
+
+    fun recurringDonations(): Flow<List<SkuDetails>?> = flow {
+        val details = billingClient.querySkuDetails(recurringSkuDetailParams)
+        emit(details.skuDetailsList)
     }
 }
