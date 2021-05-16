@@ -24,6 +24,8 @@ import java.util.UUID
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -126,14 +128,15 @@ abstract class BaseWidgetProvider : AppWidgetProvider() {
             coroutineScope.launch {
                 // Get watch ID
                 val widgetIdStore = context.widgetIdStore
-                val watchId = widgetIdStore.data
-                    .first()[stringPreferencesKey(appWidgetId.toString())]?.let {
-                        try {
-                            UUID.fromString(it)
-                        } catch (e: Exception) {
-                            null
-                        }
+                val watchId = widgetIdStore.data.map { preferences ->
+                    preferences[stringPreferencesKey(appWidgetId.toString())]
+                }.firstOrNull()?.let { value ->
+                    try {
+                        UUID.fromString(value)
+                    } catch (e: Exception) {
+                        null
                     }
+                }
 
                 widgetView.setOnClickPendingIntent(
                     R.id.widget_container,
