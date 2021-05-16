@@ -175,8 +175,8 @@ class DonateActivity : AppCompatActivity() {
                 }
             }
             val options = when (tabIndex) {
-                0 -> viewModel.recurringDonations().collectAsState(emptyList())
-                else -> viewModel.oneTimeDonations().collectAsState(emptyList())
+                0 -> viewModel.recurringDonations.collectAsState(emptyList())
+                else -> viewModel.oneTimeDonations.collectAsState(emptyList())
             }
             options.value?.let { skuDetails ->
                 DonateList(
