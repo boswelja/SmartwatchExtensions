@@ -41,6 +41,7 @@ abstract class BaseWidgetProvider : AppWidgetProvider() {
      * @param context [Context].
      * @param width The width of the widget view.
      * @param height The height of the widget.
+     * @param watchId The ID of the watch this widget is for.
      * @return Then widget content as a [RemoteViews].
      */
     abstract suspend fun onUpdateView(
@@ -50,6 +51,12 @@ abstract class BaseWidgetProvider : AppWidgetProvider() {
         watchId: UUID
     ): RemoteViews
 
+    /**
+     * Create the widget click [PendingIntent].
+     * @param context [Context].
+     * @param watchId The ID of the watch this widget is for.
+     * @return The [PendingIntent] to fire when the user clicks the widget.
+     */
     open fun onCreateClickIntent(
         context: Context,
         watchId: UUID?
@@ -103,15 +110,23 @@ abstract class BaseWidgetProvider : AppWidgetProvider() {
     ) {
         if (newOptions != null && (
             newOptions.containsKey(AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT) ||
-                newOptions.containsKey(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH)
+                newOptions.containsKey(AppWidgetManager.OPTION_APPWIDGET_MAX_WIDTH)
             )
         ) {
             val height = newOptions.getInt(AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT)
-            val width = newOptions.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH)
+            val width = newOptions.getInt(AppWidgetManager.OPTION_APPWIDGET_MAX_WIDTH)
             updateView(context, appWidgetManager, appWidgetId, width, height)
         }
     }
 
+    /**
+     * Update the widget [RemoteViews].
+     * @param context [Context].
+     * @param appWidgetManager The [AppWidgetManager] instance to call.
+     * @param appWidgetId The ID of the widget.
+     * @param width The width of the widget.
+     * @param height The height of the widget.
+     */
     private fun updateView(
         context: Context?,
         appWidgetManager: AppWidgetManager?,
@@ -138,31 +153,44 @@ abstract class BaseWidgetProvider : AppWidgetProvider() {
                     }
                 }
 
+                // Set click PendingIntent
                 widgetView.setOnClickPendingIntent(
                     R.id.widget_container,
                     onCreateClickIntent(context, watchId)
                 )
 
                 val widgetContent = if (watchId != null) {
+                    // Get the widget content from child class
                     onUpdateView(context, width, height, watchId)
                 } else {
                     Timber.w("Watch ID for widget %s is null", appWidgetId)
+                    // Set error view
                     RemoteViews(context.packageName, R.layout.common_widget_error)
                 }
                 widgetView.addView(R.id.widget_container, widgetContent)
 
+                // Set background
                 val background = getBackground(context, width, height)
                 if (background != null) {
                     widgetView.setImageViewBitmap(R.id.widget_background, background)
                 } else {
                     widgetView.setInt(R.id.widget_background, "setBackgroundColor", 0)
                 }
+
+                // Update widget and finish
                 appWidgetManager?.updateAppWidget(appWidgetId, widgetView)
                 pendingResult.finish()
             }
         }
     }
 
+    /**
+     * Get the background that should be applied to widgets.
+     * @param context [Context].
+     * @param width The width of the background.
+     * @param height The height of the background.
+     * @return The background [Bitmap], or null if there is none.
+     */
     private suspend fun getBackground(context: Context, width: Int, height: Int): Bitmap? {
         // Set widget background
         val widgetSettings = context.widgetSettings.data.first()
