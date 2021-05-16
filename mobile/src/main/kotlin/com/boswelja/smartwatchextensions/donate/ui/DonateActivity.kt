@@ -54,7 +54,7 @@ class DonateActivity : AppCompatActivity() {
         setContent {
             val scaffoldState = rememberScaffoldState()
             val viewModel: DonateViewModel = viewModel()
-            val hasDonated = viewModel.onDonated.observeAsState()
+            val hasDonated = viewModel.hasDonated.observeAsState()
 
             AppTheme {
                 Scaffold(scaffoldState = scaffoldState) {

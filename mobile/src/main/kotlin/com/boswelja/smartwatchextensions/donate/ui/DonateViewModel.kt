@@ -17,9 +17,10 @@ import com.android.billingclient.api.Purchase
 import com.android.billingclient.api.PurchasesUpdatedListener
 import com.android.billingclient.api.SkuDetails
 import com.android.billingclient.api.SkuDetailsParams
+import com.android.billingclient.api.acknowledgePurchase
+import com.android.billingclient.api.consumePurchase
 import com.boswelja.smartwatchextensions.AppState
 import com.boswelja.smartwatchextensions.appStateStore
-import com.boswelja.smartwatchextensions.common.Event
 import com.boswelja.smartwatchextensions.donate.Skus
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -69,6 +70,7 @@ class DonateViewModel internal constructor(
     private val _clientConnected = MutableLiveData(false)
     private val _oneTimeDonations = MutableLiveData<List<SkuDetails>>(emptyList())
     private val _recurringDonations = MutableLiveData<List<SkuDetails>>(emptyList())
+    private val _hasDonated = MutableLiveData(false)
 
     val oneTimeDonations: LiveData<List<SkuDetails>>
         get() = _oneTimeDonations
@@ -76,7 +78,8 @@ class DonateViewModel internal constructor(
         get() = _recurringDonations
     val clientConnected: LiveData<Boolean>
         get() = _clientConnected
-    val onDonated = Event()
+    val hasDonated: LiveData<Boolean>
+        get() = _hasDonated
 
     init {
         startClientConnection()
@@ -116,9 +119,10 @@ class DonateViewModel internal constructor(
     private fun consumeOneTimePurchase(purchase: Purchase) {
         Timber.d("consumeOneTimePurchase($purchase) called")
         val params = ConsumeParams.newBuilder().setPurchaseToken(purchase.purchaseToken).build()
-        billingClient.consumeAsync(params) { _, _ ->
-            onDonated.fire()
-            viewModelScope.launch {
+        viewModelScope.launch {
+            val result = billingClient.consumePurchase(params)
+            if (result.purchaseToken != null) {
+                _hasDonated.postValue(true)
                 dataStore.updateData {
                     it.copy(hasDonated = true)
                 }
@@ -131,9 +135,10 @@ class DonateViewModel internal constructor(
         val params = AcknowledgePurchaseParams.newBuilder()
             .setPurchaseToken(purchase.purchaseToken)
             .build()
-        billingClient.acknowledgePurchase(params) {
-            onDonated.fire()
-            viewModelScope.launch {
+        viewModelScope.launch {
+            val result = billingClient.acknowledgePurchase(params)
+            if (result.responseCode == BillingClient.BillingResponseCode.OK) {
+                _hasDonated.postValue(true)
                 dataStore.updateData {
                     it.copy(hasDonated = true)
                 }
