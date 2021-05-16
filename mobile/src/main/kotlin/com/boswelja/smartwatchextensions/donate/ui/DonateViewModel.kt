@@ -24,7 +24,8 @@ import com.boswelja.smartwatchextensions.AppState
 import com.boswelja.smartwatchextensions.appStateStore
 import com.boswelja.smartwatchextensions.donate.Skus
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -62,13 +63,13 @@ class DonateViewModel internal constructor(
     private val clientStateListener =
         object : BillingClientStateListener {
             override fun onBillingSetupFinished(result: BillingResult) {
-                _clientConnected.postValue(
+                _clientConnected.tryEmit(
                     result.responseCode == BillingClient.BillingResponseCode.OK
                 )
             }
 
             override fun onBillingServiceDisconnected() {
-                _clientConnected.postValue(false)
+                _clientConnected.tryEmit(false)
             }
         }
 
@@ -78,10 +79,10 @@ class DonateViewModel internal constructor(
             .enablePendingPurchases()
             .build()
 
-    private val _clientConnected = MutableLiveData(false)
+    private val _clientConnected = MutableStateFlow(false)
     private val _hasDonated = MutableLiveData(false)
 
-    val clientConnected: LiveData<Boolean>
+    val clientConnected: Flow<Boolean>
         get() = _clientConnected
     val hasDonated: LiveData<Boolean>
         get() = _hasDonated
@@ -92,7 +93,7 @@ class DonateViewModel internal constructor(
 
     override fun onCleared() {
         super.onCleared()
-        if (clientConnected.value == true) billingClient.endConnection()
+        billingClient.endConnection()
     }
 
     private fun startClientConnection() {
@@ -134,13 +135,21 @@ class DonateViewModel internal constructor(
         billingClient.launchBillingFlow(activity, params)
     }
 
-    fun oneTimeDonations(): Flow<List<SkuDetails>?> = flow {
-        val details = billingClient.querySkuDetails(oneTimeSkuDetailParams)
-        emit(details.skuDetailsList)
+    fun oneTimeDonations(): Flow<List<SkuDetails>?> = _clientConnected.map { connected ->
+        if (connected) {
+            val details = billingClient.querySkuDetails(oneTimeSkuDetailParams)
+            details.skuDetailsList
+        } else {
+            null
+        }
     }
 
-    fun recurringDonations(): Flow<List<SkuDetails>?> = flow {
-        val details = billingClient.querySkuDetails(recurringSkuDetailParams)
-        emit(details.skuDetailsList)
+    fun recurringDonations(): Flow<List<SkuDetails>?> = _clientConnected.map { connected ->
+        if (connected) {
+            val details = billingClient.querySkuDetails(recurringSkuDetailParams)
+            details.skuDetailsList
+        } else {
+            null
+        }
     }
 }
