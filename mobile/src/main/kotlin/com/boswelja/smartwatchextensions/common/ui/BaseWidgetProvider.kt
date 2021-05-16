@@ -158,6 +158,7 @@ abstract class BaseWidgetProvider : AppWidgetProvider() {
             // Set error view
             RemoteViews(context.packageName, R.layout.common_widget_error)
         }
+        widgetView.removeAllViews(R.id.widget_container)
         widgetView.addView(R.id.widget_container, widgetContent)
 
         // Set background
