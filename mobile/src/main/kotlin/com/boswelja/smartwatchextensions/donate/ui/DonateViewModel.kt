@@ -51,11 +51,14 @@ class DonateViewModel internal constructor(
         .build()
 
     private val purchasesUpdatedListener = PurchasesUpdatedListener { _, purchases ->
-        purchases?.forEach {
-            if (it.sku in Skus.ALL_RECURRING) {
-                acknowledgeRecurringPurchase(it)
-            } else {
-                consumeOneTimePurchase(it)
+        viewModelScope.launch {
+            purchases?.forEach {
+                val result = if (it.isAutoRenewing) {
+                    acknowledgeRecurringPurchase(it)
+                } else {
+                    consumeOneTimePurchase(it)
+                }
+                handlePurchaseResult(result)
             }
         }
     }
@@ -100,32 +103,25 @@ class DonateViewModel internal constructor(
         billingClient.startConnection(clientStateListener)
     }
 
-    private fun consumeOneTimePurchase(purchase: Purchase) {
+    private suspend fun consumeOneTimePurchase(purchase: Purchase): BillingResult {
         Timber.d("consumeOneTimePurchase($purchase) called")
         val params = ConsumeParams.newBuilder().setPurchaseToken(purchase.purchaseToken).build()
-        viewModelScope.launch {
-            val result = billingClient.consumePurchase(params)
-            if (result.purchaseToken != null) {
-                _hasDonated.postValue(true)
-                dataStore.updateData {
-                    it.copy(hasDonated = true)
-                }
-            }
-        }
+        return billingClient.consumePurchase(params).billingResult
     }
 
-    private fun acknowledgeRecurringPurchase(purchase: Purchase) {
+    private suspend fun acknowledgeRecurringPurchase(purchase: Purchase): BillingResult {
         Timber.d("acknowledgeRecurringPurchase($purchase) called")
         val params = AcknowledgePurchaseParams.newBuilder()
             .setPurchaseToken(purchase.purchaseToken)
             .build()
-        viewModelScope.launch {
-            val result = billingClient.acknowledgePurchase(params)
-            if (result.responseCode == BillingClient.BillingResponseCode.OK) {
-                _hasDonated.postValue(true)
-                dataStore.updateData {
-                    it.copy(hasDonated = true)
-                }
+        return billingClient.acknowledgePurchase(params)
+    }
+
+    private suspend fun handlePurchaseResult(result: BillingResult) {
+        if (result.responseCode == BillingClient.BillingResponseCode.OK) {
+            _hasDonated.postValue(true)
+            dataStore.updateData {
+                it.copy(hasDonated = true)
             }
         }
     }
