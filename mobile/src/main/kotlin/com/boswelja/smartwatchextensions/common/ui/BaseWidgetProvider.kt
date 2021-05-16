@@ -76,11 +76,13 @@ abstract class BaseWidgetProvider : AppWidgetProvider() {
 
     override fun onDeleted(context: Context?, appWidgetIds: IntArray?) {
         super.onDeleted(context, appWidgetIds)
+        Timber.d("onDeleted called")
         if (context != null && appWidgetIds != null && appWidgetIds.isNotEmpty()) {
             val pendingResult = goAsync()
             coroutineScope.launch(Dispatchers.IO) {
                 context.widgetIdStore.edit { widgetIds ->
                     appWidgetIds.forEach { widgetId ->
+                        Timber.d("Removing widget with id = %s", widgetId)
                         widgetIds.remove(stringPreferencesKey(widgetId.toString()))
                     }
                 }
@@ -94,8 +96,10 @@ abstract class BaseWidgetProvider : AppWidgetProvider() {
         appWidgetManager: AppWidgetManager?,
         appWidgetIds: IntArray?
     ) {
+        Timber.d("onUpdate called")
         if (context != null && appWidgetManager != null) {
             appWidgetIds?.forEach { widgetId ->
+                Timber.i("Widget %s updated", widgetId)
                 val options = appWidgetManager.getAppWidgetOptions(widgetId)
                 updateView(context, widgetId, options, appWidgetManager)
             }
@@ -108,6 +112,7 @@ abstract class BaseWidgetProvider : AppWidgetProvider() {
         appWidgetId: Int,
         newOptions: Bundle?
     ) {
+        Timber.i("Widget %s options changed", appWidgetId)
         if (context != null && newOptions != null && appWidgetManager != null) {
             updateView(context, appWidgetId, newOptions, appWidgetManager)
         }
@@ -147,11 +152,13 @@ abstract class BaseWidgetProvider : AppWidgetProvider() {
 
         // Set click PendingIntent
         onCreateClickIntent(context, watchId)?.let {
+            Timber.d("Setting widget click intent")
             widgetView.setOnClickPendingIntent(R.id.widget_container, it)
         }
 
         val widgetContent = if (watchId != null) {
             // Get the widget content from child class
+            Timber.d("Getting widget content")
             onUpdateView(context, width, height, watchId)
         } else {
             Timber.w("Watch ID for widget %s is null", appWidgetId)
@@ -181,6 +188,7 @@ abstract class BaseWidgetProvider : AppWidgetProvider() {
      * @return The background [Bitmap], or null if there is none.
      */
     private suspend fun getBackground(context: Context, width: Int, height: Int): Bitmap? {
+        Timber.d("Getting widget background with width = %s and height = %s", width, height)
         // Set widget background
         val widgetSettings = context.widgetSettings.data.first()
 
@@ -189,11 +197,13 @@ abstract class BaseWidgetProvider : AppWidgetProvider() {
         return if (showBackground == true) {
             val backgroundOpacity =
                 widgetSettings[WIDGET_BACKGROUND_OPACITY_KEY] ?: 60
+            Timber.i("Getting background with opacity = %s", backgroundOpacity)
             val calculatedAlpha = ((backgroundOpacity / 100.0f) * 255).toInt()
             ContextCompat.getDrawable(context, R.drawable.widget_background)!!
                 .apply { alpha = calculatedAlpha }
                 .toBitmap(width, height)
         } else {
+            Timber.i("Background disabled, returning")
             null
         }
     }
