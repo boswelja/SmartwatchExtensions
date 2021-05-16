@@ -1,5 +1,6 @@
 package com.boswelja.smartwatchextensions.common.ui
 
+import android.app.PendingIntent
 import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
 import android.content.ComponentName
@@ -14,6 +15,7 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.batterysync.widget.WatchBatteryWidget
+import com.boswelja.smartwatchextensions.main.MainActivity
 import com.boswelja.smartwatchextensions.widget.ui.WidgetSettingsActivity.Companion.SHOW_WIDGET_BACKGROUND_KEY
 import com.boswelja.smartwatchextensions.widget.ui.WidgetSettingsActivity.Companion.WIDGET_BACKGROUND_OPACITY_KEY
 import com.boswelja.smartwatchextensions.widget.widgetIdStore
@@ -45,6 +47,21 @@ abstract class BaseWidgetProvider : AppWidgetProvider() {
         height: Int,
         watchId: UUID
     ): RemoteViews
+
+    open fun onCreateClickIntent(
+        context: Context,
+        watchId: UUID?
+    ): PendingIntent {
+        val intent = Intent(context, MainActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK
+        }
+        return PendingIntent.getActivity(
+            context,
+            0,
+            intent,
+            PendingIntent.FLAG_IMMUTABLE
+        )
+    }
 
     override fun onDeleted(context: Context?, appWidgetIds: IntArray?) {
         super.onDeleted(context, appWidgetIds)
@@ -107,13 +124,26 @@ abstract class BaseWidgetProvider : AppWidgetProvider() {
             )
             val pendingResult = goAsync()
             coroutineScope.launch {
+                // Get watch ID
                 val widgetIdStore = context.widgetIdStore
-                val watchId =
-                    widgetIdStore.data.first()[stringPreferencesKey(appWidgetId.toString())]
-                val widgetContent = if (!watchId.isNullOrBlank()) {
-                    onUpdateView(context, width, height, UUID.fromString(watchId))
+                val watchId = widgetIdStore.data
+                    .first()[stringPreferencesKey(appWidgetId.toString())]?.let {
+                        try {
+                            UUID.fromString(it)
+                        } catch (e: Exception) {
+                            null
+                        }
+                    }
+
+                widgetView.setOnClickPendingIntent(
+                    R.id.widget_container,
+                    onCreateClickIntent(context, watchId)
+                )
+
+                val widgetContent = if (watchId != null) {
+                    onUpdateView(context, width, height, watchId)
                 } else {
-                    Timber.w("Watch ID for widget %s is null or blank", appWidgetId)
+                    Timber.w("Watch ID for widget %s is null", appWidgetId)
                     RemoteViews(context.packageName, R.layout.common_widget_error)
                 }
                 widgetView.addView(R.id.widget_container, widgetContent)
