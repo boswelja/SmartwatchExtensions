@@ -4,8 +4,6 @@ import android.app.Activity
 import android.app.Application
 import androidx.datastore.core.DataStore
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.android.billingclient.api.AcknowledgePurchaseParams
 import com.android.billingclient.api.BillingClient
@@ -23,7 +21,7 @@ import com.android.billingclient.api.querySkuDetails
 import com.boswelja.smartwatchextensions.AppState
 import com.boswelja.smartwatchextensions.appStateStore
 import com.boswelja.smartwatchextensions.donate.Skus
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.map
@@ -41,6 +39,8 @@ class DonateViewModel internal constructor(
         application.appStateStore
     )
 
+    private val purchaseResultChannel = Channel<Boolean>()
+
     private val oneTimeSkuDetailParams = SkuDetailsParams.newBuilder()
         .setSkusList(Skus.ALL_ONE_TIME)
         .setType(BillingClient.SkuType.INAPP)
@@ -51,15 +51,19 @@ class DonateViewModel internal constructor(
         .setType(BillingClient.SkuType.SUBS)
         .build()
 
-    private val purchasesUpdatedListener = PurchasesUpdatedListener { _, purchases ->
+    private val purchasesUpdatedListener = PurchasesUpdatedListener { result, purchases ->
         viewModelScope.launch {
-            purchases?.forEach {
-                val result = if (it.isAutoRenewing) {
-                    acknowledgeRecurringPurchase(it)
-                } else {
-                    consumeOneTimePurchase(it)
+            if (result.responseCode == BillingClient.BillingResponseCode.OK) {
+                purchases?.forEach {
+                    val ackResult = if (it.isAutoRenewing) {
+                        acknowledgeRecurringPurchase(it)
+                    } else {
+                        consumeOneTimePurchase(it)
+                    }
+                    handlePurchaseResult(ackResult)
                 }
-                handlePurchaseResult(result)
+            } else {
+                purchaseResultChannel.send(false)
             }
         }
     }
@@ -121,12 +125,36 @@ class DonateViewModel internal constructor(
             dataStore.updateData {
                 it.copy(hasDonated = true)
             }
+            purchaseResultChannel.send(true)
+        } else {
+            purchaseResultChannel.send(false)
         }
     }
 
+    @Deprecated("Use tryDonate instead")
     fun launchBillingFlow(activity: Activity, sku: SkuDetails) {
         val params = BillingFlowParams.newBuilder().setSkuDetails(sku).build()
         billingClient.launchBillingFlow(activity, params)
+    }
+
+    /**
+     * Launch a billing flow and collect the result.
+     * @param activity [Activity].
+     * @param sku The [SkuDetails] for the donation to launch the flow for.
+     * @return true if the user successfully donated, false otherwise.
+     */
+    suspend fun tryDonate(activity: Activity, sku: SkuDetails): Boolean {
+        // Make the request
+        val params = BillingFlowParams.newBuilder().setSkuDetails(sku).build()
+        val launchResult = billingClient.launchBillingFlow(activity, params)
+
+        return if (launchResult.responseCode == BillingClient.BillingResponseCode.OK) {
+            // Wait for the result
+            purchaseResultChannel.receive()
+        } else {
+            // There was a problem launching
+            false
+        }
     }
 
     fun oneTimeDonations(): Flow<List<SkuDetails>?> = _clientConnected.map { connected ->
