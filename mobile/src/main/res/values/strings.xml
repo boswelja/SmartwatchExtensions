@@ -198,6 +198,7 @@
     <string name="update_available_text">A new version of Smartwatch Extensions is available</string>
 
     <!-- Donate strings -->
+    <string name="donate_fetching_options">Fetching available donations…</string>
     <string name="donate_thank_you">Thank you for choosing to donate! Check out the options below.</string>
     <string name="donate_complete">Thanks for supporting Smartwatch Extensions!</string>
 
