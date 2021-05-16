@@ -217,7 +217,7 @@ abstract class BaseWidgetProvider : AppWidgetProvider() {
         GlobalScope.launch {
             // Get size
             val height = widgetOptions.getInt(AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT)
-            val width = widgetOptions.getInt(AppWidgetManager.OPTION_APPWIDGET_MAX_WIDTH)
+            val width = widgetOptions.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH)
 
             // Create RemoteViews and update widget
             createRemoteViews(
