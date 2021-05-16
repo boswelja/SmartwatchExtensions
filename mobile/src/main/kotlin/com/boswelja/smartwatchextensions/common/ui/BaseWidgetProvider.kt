@@ -23,6 +23,7 @@ import com.boswelja.smartwatchextensions.widget.widgetSettings
 import java.util.UUID
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
@@ -93,12 +94,10 @@ abstract class BaseWidgetProvider : AppWidgetProvider() {
         appWidgetManager: AppWidgetManager?,
         appWidgetIds: IntArray?
     ) {
-        if (appWidgetIds != null && appWidgetIds.isNotEmpty()) {
-            for (widgetId in appWidgetIds) {
-                val options = appWidgetManager?.getAppWidgetOptions(widgetId)!!
-                val width = options.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH)
-                val height = options.getInt(AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT)
-                updateView(context, appWidgetManager, widgetId, width, height)
+        if (context != null && appWidgetManager != null) {
+            appWidgetIds?.forEach { widgetId ->
+                val options = appWidgetManager.getAppWidgetOptions(widgetId)
+                updateView(context, widgetId, options, appWidgetManager)
             }
         }
     }
@@ -109,79 +108,68 @@ abstract class BaseWidgetProvider : AppWidgetProvider() {
         appWidgetId: Int,
         newOptions: Bundle?
     ) {
-        if (newOptions != null && (
-            newOptions.containsKey(AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT) ||
-                newOptions.containsKey(AppWidgetManager.OPTION_APPWIDGET_MAX_WIDTH)
-            )
-        ) {
-            val height = newOptions.getInt(AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT)
-            val width = newOptions.getInt(AppWidgetManager.OPTION_APPWIDGET_MAX_WIDTH)
-            updateView(context, appWidgetManager, appWidgetId, width, height)
+        if (context != null && newOptions != null && appWidgetManager != null) {
+            updateView(context, appWidgetId, newOptions, appWidgetManager)
         }
     }
 
     /**
      * Update the widget [RemoteViews].
      * @param context [Context].
-     * @param appWidgetManager The [AppWidgetManager] instance to call.
      * @param appWidgetId The ID of the widget.
      * @param width The width of the widget.
      * @param height The height of the widget.
+     * @return The widget's new [RemoteViews].
      */
-    private fun updateView(
-        context: Context?,
-        appWidgetManager: AppWidgetManager?,
+    private suspend fun createRemoteViews(
+        context: Context,
         appWidgetId: Int,
         width: Int,
         height: Int
-    ) {
-        if (context != null) {
-            val widgetView = RemoteViews(
-                context.packageName,
-                R.layout.common_widget_background
-            )
-            val pendingResult = goAsync()
-            coroutineScope.launch {
-                // Get watch ID
-                val widgetIdStore = context.widgetIdStore
-                val watchId = widgetIdStore.data.map { preferences ->
-                    preferences[stringPreferencesKey(appWidgetId.toString())]
-                }.firstOrNull()?.let { value ->
-                    try {
-                        UUID.fromString(value)
-                    } catch (e: Exception) {
-                        null
-                    }
-                }
+    ): RemoteViews {
+        // Create new RemoteViews
+        val widgetView = RemoteViews(
+            context.packageName,
+            R.layout.common_widget_background
+        )
 
-                // Set click PendingIntent
-                onCreateClickIntent(context, watchId)?.let {
-                    widgetView.setOnClickPendingIntent(R.id.widget_container, it)
-                }
-
-                val widgetContent = if (watchId != null) {
-                    // Get the widget content from child class
-                    onUpdateView(context, width, height, watchId)
-                } else {
-                    Timber.w("Watch ID for widget %s is null", appWidgetId)
-                    // Set error view
-                    RemoteViews(context.packageName, R.layout.common_widget_error)
-                }
-                widgetView.addView(R.id.widget_container, widgetContent)
-
-                // Set background
-                val background = getBackground(context, width, height)
-                if (background != null) {
-                    widgetView.setImageViewBitmap(R.id.widget_background, background)
-                } else {
-                    widgetView.setInt(R.id.widget_background, "setBackgroundColor", 0)
-                }
-
-                // Update widget and finish
-                appWidgetManager?.updateAppWidget(appWidgetId, widgetView)
-                pendingResult.finish()
+        // Get watch ID
+        val widgetIdStore = context.widgetIdStore
+        val watchId = widgetIdStore.data.map { preferences ->
+            preferences[stringPreferencesKey(appWidgetId.toString())]
+        }.firstOrNull()?.let { value ->
+            try {
+                UUID.fromString(value)
+            } catch (e: Exception) {
+                null
             }
         }
+
+        // Set click PendingIntent
+        onCreateClickIntent(context, watchId)?.let {
+            widgetView.setOnClickPendingIntent(R.id.widget_container, it)
+        }
+
+        val widgetContent = if (watchId != null) {
+            // Get the widget content from child class
+            onUpdateView(context, width, height, watchId)
+        } else {
+            Timber.w("Watch ID for widget %s is null", appWidgetId)
+            // Set error view
+            RemoteViews(context.packageName, R.layout.common_widget_error)
+        }
+        widgetView.addView(R.id.widget_container, widgetContent)
+
+        // Set background
+        val background = getBackground(context, width, height)
+        if (background != null) {
+            widgetView.setImageViewBitmap(R.id.widget_background, background)
+        } else {
+            widgetView.setInt(R.id.widget_background, "setBackgroundColor", 0)
+        }
+
+        // Return new view
+        return widgetView
     }
 
     /**
@@ -206,6 +194,34 @@ abstract class BaseWidgetProvider : AppWidgetProvider() {
                 .toBitmap(width, height)
         } else {
             null
+        }
+    }
+
+    private fun updateView(
+        context: Context,
+        widgetId: Int,
+        widgetOptions: Bundle,
+        appWidgetManager: AppWidgetManager
+    ) {
+        // Going async
+        val pendingResult = goAsync()
+
+        // Launch coroutine
+        GlobalScope.launch {
+            // Get size
+            val height = widgetOptions.getInt(AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT)
+            val width = widgetOptions.getInt(AppWidgetManager.OPTION_APPWIDGET_MAX_WIDTH)
+
+            // Create RemoteViews and update widget
+            createRemoteViews(
+                context,
+                widgetId,
+                width,
+                height
+            ).let { appWidgetManager.updateAppWidget(widgetId, it) }
+
+            // Finish
+            pendingResult.finish()
         }
     }
 
