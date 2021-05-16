@@ -5,7 +5,7 @@ import android.app.Application
 import androidx.datastore.core.DataStore
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.android.billingclient.api.AcknowledgePurchaseParams
 import com.android.billingclient.api.BillingClient
@@ -23,6 +23,7 @@ import com.android.billingclient.api.querySkuDetails
 import com.boswelja.smartwatchextensions.AppState
 import com.boswelja.smartwatchextensions.appStateStore
 import com.boswelja.smartwatchextensions.donate.Skus
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.map
@@ -83,12 +84,11 @@ class DonateViewModel internal constructor(
             .build()
 
     private val _clientConnected = MutableStateFlow(false)
-    private val _hasDonated = MutableLiveData(false)
 
     val clientConnected: Flow<Boolean>
         get() = _clientConnected
-    val hasDonated: LiveData<Boolean>
-        get() = _hasDonated
+    val hasDonated: LiveData<Boolean> =
+        dataStore.data.map { it.hasDonated }.asLiveData(Dispatchers.IO)
 
     init {
         startClientConnection()
@@ -119,7 +119,6 @@ class DonateViewModel internal constructor(
 
     private suspend fun handlePurchaseResult(result: BillingResult) {
         if (result.responseCode == BillingClient.BillingResponseCode.OK) {
-            _hasDonated.postValue(true)
             dataStore.updateData {
                 it.copy(hasDonated = true)
             }
