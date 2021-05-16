@@ -21,8 +21,6 @@ import com.boswelja.smartwatchextensions.widget.ui.WidgetSettingsActivity.Compan
 import com.boswelja.smartwatchextensions.widget.widgetIdStore
 import com.boswelja.smartwatchextensions.widget.widgetSettings
 import java.util.UUID
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
@@ -34,8 +32,6 @@ import timber.log.Timber
  * An [AppWidgetProvider] that applies our default widget background with user settings.
  */
 abstract class BaseWidgetProvider : AppWidgetProvider() {
-
-    internal val coroutineScope = CoroutineScope(Dispatchers.IO)
 
     /**
      * Called when widget content is required. A background is not needed.
@@ -79,7 +75,7 @@ abstract class BaseWidgetProvider : AppWidgetProvider() {
         Timber.d("onDeleted called")
         if (context != null && appWidgetIds != null && appWidgetIds.isNotEmpty()) {
             val pendingResult = goAsync()
-            coroutineScope.launch(Dispatchers.IO) {
+            GlobalScope.launch {
                 context.widgetIdStore.edit { widgetIds ->
                     appWidgetIds.forEach { widgetId ->
                         Timber.d("Removing widget with id = %s", widgetId)
