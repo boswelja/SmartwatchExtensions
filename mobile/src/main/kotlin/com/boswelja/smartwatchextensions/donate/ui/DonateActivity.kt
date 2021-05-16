@@ -55,8 +55,8 @@ class DonateActivity : AppCompatActivity() {
         setContent {
             val scaffoldState = rememberScaffoldState()
             val viewModel: DonateViewModel = viewModel()
-            val hasDonated by viewModel.hasDonated.collectAsState(false)
             val isReady by viewModel.clientConnected.collectAsState(false)
+            val scope = rememberCoroutineScope()
 
             AppTheme {
                 Scaffold(
@@ -70,16 +70,16 @@ class DonateActivity : AppCompatActivity() {
                         if (!isReady) {
                             LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
                         }
-                        DonateOptions()
-                    }
-                    if (hasDonated) {
-                        val scope = rememberCoroutineScope()
-                        val text = stringResource(id = R.string.donate_complete)
-                        scope.launch {
-                            scaffoldState.snackbarHostState.showSnackbar(
-                                text,
-                                null
-                            )
+                        DonateOptions { sku ->
+                            scope.launch {
+                                val success = viewModel.tryDonate(this@DonateActivity, sku)
+                                if (success) {
+                                    scaffoldState.snackbarHostState.showSnackbar(
+                                        getString(R.string.donate_complete),
+                                        null
+                                    )
+                                }
+                            }
                         }
                     }
                 }
@@ -142,7 +142,9 @@ class DonateActivity : AppCompatActivity() {
 
     @ExperimentalMaterialApi
     @Composable
-    fun DonateOptions() {
+    fun DonateOptions(
+        onDonationClick: (SkuDetails) -> Unit
+    ) {
         val viewModel: DonateViewModel = viewModel()
         val titles = listOf("Monthly", "One-Time")
         var tabIndex by remember { mutableStateOf(0) }
@@ -166,7 +168,7 @@ class DonateActivity : AppCompatActivity() {
             options.value?.let { skuDetails ->
                 DonateList(
                     donateOptions = skuDetails,
-                    onClick = { viewModel.launchBillingFlow(this@DonateActivity, it) }
+                    onClick = onDonationClick
                 )
             }
         }

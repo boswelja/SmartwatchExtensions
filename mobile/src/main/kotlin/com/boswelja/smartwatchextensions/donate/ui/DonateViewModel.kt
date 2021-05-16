@@ -131,12 +131,6 @@ class DonateViewModel internal constructor(
         }
     }
 
-    @Deprecated("Use tryDonate instead")
-    fun launchBillingFlow(activity: Activity, sku: SkuDetails) {
-        val params = BillingFlowParams.newBuilder().setSkuDetails(sku).build()
-        billingClient.launchBillingFlow(activity, params)
-    }
-
     /**
      * Launch a billing flow and collect the result.
      * @param activity [Activity].
