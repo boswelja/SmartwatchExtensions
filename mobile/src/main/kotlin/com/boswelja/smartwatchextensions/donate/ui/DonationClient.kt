@@ -12,19 +12,14 @@ import com.android.billingclient.api.Purchase
 import com.android.billingclient.api.PurchasesUpdatedListener
 import com.android.billingclient.api.SkuDetails
 import com.android.billingclient.api.SkuDetailsParams
-import com.android.billingclient.api.acknowledgePurchase
-import com.android.billingclient.api.consumePurchase
 import com.android.billingclient.api.querySkuDetails
 import com.boswelja.smartwatchextensions.appStateStore
 import com.boswelja.smartwatchextensions.donate.Skus
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import timber.log.Timber
 
 /**
@@ -34,25 +29,20 @@ class DonationClient(application: Application) {
 
     private val stateStore = application.appStateStore
 
-    private val purchaseResultChannel = Channel<Boolean>()
-
-    private val coroutineJob = Job()
-    private val coroutineScope = CoroutineScope(Dispatchers.IO + coroutineJob)
+    private val purchaseResultChannel = Channel<Boolean>(capacity = 1)
 
     private val purchasesUpdatedListener = PurchasesUpdatedListener { result, purchases ->
-        coroutineScope.launch {
-            if (result.responseCode == BillingClient.BillingResponseCode.OK) {
-                purchases?.forEach {
-                    val ackResult = if (it.isAutoRenewing) {
-                        acknowledgeRecurringPurchase(it)
-                    } else {
-                        consumeOneTimePurchase(it)
-                    }
-                    handlePurchaseResult(ackResult)
+        if (result.responseCode == BillingClient.BillingResponseCode.OK) {
+            purchases?.forEach {
+                if (it.isAutoRenewing) {
+                    acknowledgeRecurringPurchase(it)
+                } else {
+                    consumeOneTimePurchase(it)
                 }
-            } else {
-                purchaseResultChannel.send(false)
             }
+        } else {
+            if (!purchaseResultChannel.offer(false))
+                Timber.w("Failed to post update to channel")
         }
     }
 
@@ -93,28 +83,37 @@ class DonationClient(application: Application) {
         billingClient.startConnection(clientStateListener)
     }
 
-    private suspend fun consumeOneTimePurchase(purchase: Purchase): BillingResult {
+    private fun consumeOneTimePurchase(purchase: Purchase) {
         Timber.d("consumeOneTimePurchase($purchase) called")
         val params = ConsumeParams.newBuilder().setPurchaseToken(purchase.purchaseToken).build()
-        return billingClient.consumePurchase(params).billingResult
+        billingClient.consumeAsync(params) { result, _ ->
+            handlePurchaseResult(result)
+        }
     }
 
-    private suspend fun acknowledgeRecurringPurchase(purchase: Purchase): BillingResult {
+    private fun acknowledgeRecurringPurchase(purchase: Purchase) {
         Timber.d("acknowledgeRecurringPurchase($purchase) called")
         val params = AcknowledgePurchaseParams.newBuilder()
             .setPurchaseToken(purchase.purchaseToken)
             .build()
-        return billingClient.acknowledgePurchase(params)
+        billingClient.acknowledgePurchase(params) { result ->
+            handlePurchaseResult(result)
+        }
     }
 
-    private suspend fun handlePurchaseResult(result: BillingResult) {
+    private fun handlePurchaseResult(result: BillingResult) {
         if (result.responseCode == BillingClient.BillingResponseCode.OK) {
-            stateStore.updateData {
-                it.copy(hasDonated = true)
+            runBlocking {
+                stateStore.updateData {
+                    it.copy(hasDonated = true)
+                }
             }
-            purchaseResultChannel.send(true)
+
+            if (!purchaseResultChannel.offer(true))
+                Timber.w("Failed to post update to channel")
         } else {
-            purchaseResultChannel.send(false)
+            if (!purchaseResultChannel.offer(false))
+                Timber.w("Failed to post update to channel")
         }
     }
 
@@ -166,7 +165,6 @@ class DonationClient(application: Application) {
      * Clean up the attached [BillingClient] and other resources.
      */
     fun destroy() {
-        coroutineJob.cancel()
         billingClient.endConnection()
     }
 }
