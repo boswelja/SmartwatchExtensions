@@ -12,30 +12,32 @@ import com.boswelja.smartwatchextensions.common.fromByteArray
 import com.boswelja.smartwatchextensions.common.preference.PreferenceKey
 import com.boswelja.smartwatchextensions.dndsync.DnDLocalChangeService
 import com.boswelja.smartwatchextensions.watchmanager.WatchManager
-import com.google.android.gms.wearable.MessageClient
-import com.google.android.gms.wearable.Wearable
+import com.boswelja.watchconnection.core.MessageListener
+import java.util.UUID
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
 class HelperViewModel internal constructor(
     application: Application,
-    private val watchManager: WatchManager,
-    private val messageClient: MessageClient
+    private val watchManager: WatchManager
 ) : AndroidViewModel(application) {
 
     @Suppress("unused")
     constructor(application: Application) : this(
         application,
-        WatchManager.getInstance(application),
-        Wearable.getMessageClient(application)
+        WatchManager.getInstance(application)
     )
 
-    private val messageListener = MessageClient.OnMessageReceivedListener {
-        when (it.path) {
-            References.REQUEST_INTERRUPT_FILTER_ACCESS_STATUS_PATH -> {
-                val hasNotiPolicyAccess = Boolean.fromByteArray(it.data)
-                _result.postValue(hasNotiPolicyAccess)
-                setSyncToWatch(hasNotiPolicyAccess)
+    private val messageListener = object : MessageListener {
+        override fun onMessageReceived(sourceWatchId: UUID, message: String, data: ByteArray?) {
+            when (message) {
+                References.REQUEST_INTERRUPT_FILTER_ACCESS_STATUS_PATH -> {
+                    data?.let {
+                        val hasNotiPolicyAccess = Boolean.fromByteArray(data)
+                        _result.postValue(hasNotiPolicyAccess)
+                        setSyncToWatch(hasNotiPolicyAccess)
+                    } ?: Timber.w("Received message but no data")
+                }
             }
         }
     }
@@ -45,13 +47,13 @@ class HelperViewModel internal constructor(
         get() = _result
 
     init {
-        messageClient.addListener(messageListener)
+        watchManager.registerMessageListener(messageListener)
     }
 
     override fun onCleared() {
         Timber.i("onCleared() called")
         super.onCleared()
-        messageClient.removeListener(messageListener)
+        watchManager.unregisterMessageListener(messageListener)
     }
 
     fun requestCheckPermission() {
