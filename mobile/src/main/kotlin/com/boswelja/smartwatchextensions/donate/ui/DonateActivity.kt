@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
@@ -15,6 +16,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
+import androidx.compose.material.LinearProgressIndicator
 import androidx.compose.material.ListItem
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
@@ -25,8 +27,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -54,24 +56,30 @@ class DonateActivity : AppCompatActivity() {
         setContent {
             val scaffoldState = rememberScaffoldState()
             val viewModel: DonateViewModel = viewModel()
-            val hasDonated = viewModel.onDonated.observeAsState()
+            val isReady by viewModel.clientConnected.collectAsState(false)
+            val scope = rememberCoroutineScope()
 
             AppTheme {
-                Scaffold(scaffoldState = scaffoldState) {
-                    Column(Modifier.fillMaxSize()) {
+                Scaffold(
+                    topBar = {
                         UpNavigationAppBar(onNavigateUp = { finish() })
+                    },
+                    scaffoldState = scaffoldState
+                ) {
+                    Column(Modifier.fillMaxSize()) {
                         DonateHeader()
-                        DonateOptions()
-                    }
-                    hasDonated.value?.let {
-                        if (it) {
-                            val scope = rememberCoroutineScope()
-                            val text = stringResource(id = R.string.donate_complete)
+                        if (!isReady) {
+                            LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
+                        }
+                        DonateOptions { sku ->
                             scope.launch {
-                                scaffoldState.snackbarHostState.showSnackbar(
-                                    text,
-                                    null
-                                )
+                                val success = viewModel.tryDonate(this@DonateActivity, sku)
+                                if (success) {
+                                    scaffoldState.snackbarHostState.showSnackbar(
+                                        getString(R.string.donate_complete),
+                                        null
+                                    )
+                                }
                             }
                         }
                     }
@@ -126,16 +134,30 @@ class DonateActivity : AppCompatActivity() {
     @ExperimentalMaterialApi
     @Composable
     fun DonateList(donateOptions: List<SkuDetails>, onClick: (SkuDetails) -> Unit) {
-        LazyColumn {
-            items(donateOptions) { donateOption ->
-                DonateItem(donateOption, onClick)
+        if (donateOptions.isNotEmpty()) {
+            LazyColumn {
+                items(donateOptions) { donateOption ->
+                    DonateItem(donateOption, onClick)
+                }
+            }
+        } else {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    stringResource(R.string.donate_fetching_options),
+                    textAlign = TextAlign.Center
+                )
             }
         }
     }
 
     @ExperimentalMaterialApi
     @Composable
-    fun DonateOptions() {
+    fun DonateOptions(
+        onDonationClick: (SkuDetails) -> Unit
+    ) {
         val viewModel: DonateViewModel = viewModel()
         val titles = listOf("Monthly", "One-Time")
         var tabIndex by remember { mutableStateOf(0) }
@@ -153,13 +175,13 @@ class DonateActivity : AppCompatActivity() {
                 }
             }
             val options = when (tabIndex) {
-                0 -> viewModel.recurringDonations.observeAsState()
-                else -> viewModel.oneTimeDonations.observeAsState()
+                0 -> viewModel.recurringDonations.collectAsState(emptyList())
+                else -> viewModel.oneTimeDonations.collectAsState(emptyList())
             }
             options.value?.let { skuDetails ->
                 DonateList(
                     donateOptions = skuDetails,
-                    onClick = { viewModel.launchBillingFlow(this@DonateActivity, it) }
+                    onClick = onDonationClick
                 )
             }
         }
