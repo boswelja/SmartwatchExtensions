@@ -4,6 +4,7 @@ import android.app.Activity
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import com.android.billingclient.api.SkuDetails
+import com.boswelja.smartwatchextensions.donate.DonationClient
 
 class DonateViewModel(application: Application) : AndroidViewModel(application) {
 

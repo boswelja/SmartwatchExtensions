@@ -1,4 +1,4 @@
-package com.boswelja.smartwatchextensions.donate.ui
+package com.boswelja.smartwatchextensions.donate
 
 import android.app.Activity
 import android.app.Application
@@ -14,7 +14,6 @@ import com.android.billingclient.api.SkuDetails
 import com.android.billingclient.api.SkuDetailsParams
 import com.android.billingclient.api.querySkuDetails
 import com.boswelja.smartwatchextensions.appStateStore
-import com.boswelja.smartwatchextensions.donate.Skus
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
