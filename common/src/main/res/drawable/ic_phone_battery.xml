@@ -7,31 +7,31 @@
         android:maxLevel="0" />
     <item
         android:drawable="@drawable/phone_battery_low"
-        android:maxLevel="15" />
-    <item
-        android:drawable="@drawable/phone_battery_20"
         android:maxLevel="20" />
     <item
-        android:drawable="@drawable/phone_battery_30"
+        android:drawable="@drawable/phone_battery_20"
         android:maxLevel="30" />
     <item
-        android:drawable="@drawable/phone_battery_40"
+        android:drawable="@drawable/phone_battery_30"
         android:maxLevel="40" />
     <item
-        android:drawable="@drawable/phone_battery_50"
+        android:drawable="@drawable/phone_battery_40"
         android:maxLevel="50" />
     <item
-        android:drawable="@drawable/phone_battery_60"
+        android:drawable="@drawable/phone_battery_50"
         android:maxLevel="60" />
     <item
-        android:drawable="@drawable/phone_battery_70"
+        android:drawable="@drawable/phone_battery_60"
         android:maxLevel="70" />
     <item
-        android:drawable="@drawable/phone_battery_80"
+        android:drawable="@drawable/phone_battery_70"
         android:maxLevel="80" />
     <item
-        android:drawable="@drawable/phone_battery_90"
+        android:drawable="@drawable/phone_battery_80"
         android:maxLevel="90" />
+    <item
+        android:drawable="@drawable/phone_battery_90"
+        android:maxLevel="99" />
     <item
         android:drawable="@drawable/phone_battery_full"
         android:maxLevel="100" />
