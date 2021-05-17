@@ -7,6 +7,6 @@
         <item>3. Enable ADB Debugging and Debug over WiFi from Developer Options on your watch.</item>
         <item>4. Connect your watch to your computer, either by USB or via Wi-Fi (You\'ll need to run \'adb connect\' followed by your watch IP address)</item>
         <item>5. Open a new terminal on your computer and type \'adb devices\', your watch should show up. Accept any popups on your watch.</item>
-        <item>6. Run the following command: adb shell settings put secure enabled_notification_listeners com.google.android.wearable.app/com.google.android.clockwork.stream.NotificationCollectorService:com.boswelja.devicemanager/com.boswelja.devicemanager.dndsync.DnDLocalChangeService</item>
+        <item>6. Run the following command: adb shell settings put secure enabled_notification_listeners com.google.android.wearable.app/com.google.android.clockwork.stream.NotificationCollectorService:com.boswelja.smartwatchextensions/com.boswelja.smartwatchextensions.dndsync.DnDLocalChangeService</item>
     </string-array>
 </resources>
