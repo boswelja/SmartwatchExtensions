@@ -26,7 +26,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
@@ -47,21 +46,24 @@ import com.google.android.play.core.appupdate.AppUpdateOptions
 import com.google.android.play.core.install.model.AppUpdateType
 import com.google.android.play.core.install.model.UpdateAvailability
 import com.google.android.play.core.ktx.updatePriority
+import java.util.UUID
 import timber.log.Timber
 
 class MainActivity : AppCompatActivity() {
 
     private var currentDestination by mutableStateOf(Destination.DASHBOARD)
+    private val watchManager by lazy { WatchManager.getInstance(this) }
 
     @ExperimentalAnimationApi
     @ExperimentalMaterialApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        if (intent?.hasExtra(EXTRA_WATCH_ID) == true) {
+            watchManager.selectWatchById(UUID.fromString(intent.getStringExtra(EXTRA_WATCH_ID)))
+        }
+
         setContent {
-            val watchManager = remember {
-                WatchManager.getInstance(this)
-            }
             val selectedWatch by watchManager.selectedWatch.observeAsState()
             val registeredWatches by watchManager.registeredWatches.observeAsState()
 
@@ -214,5 +216,7 @@ class MainActivity : AppCompatActivity() {
     companion object {
         private const val LOW_PRIORITY_UPDATE = 2
         private const val HIGH_PRIORITY_UPDATE = 5
+
+        const val EXTRA_WATCH_ID = "extra_watch_id"
     }
 }
