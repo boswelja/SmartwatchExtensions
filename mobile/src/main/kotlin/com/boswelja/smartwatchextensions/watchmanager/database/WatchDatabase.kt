@@ -22,8 +22,6 @@ abstract class WatchDatabase : RoomDatabase() {
     suspend fun removeWatch(watch: Watch) = watchDao().remove(watch.id)
     fun getAll() = watchDao().getAllObservable()
     fun getById(watchId: UUID) = watchDao().getObservable(watchId)
-    suspend fun getByPlatformAndId(platform: String, platformId: String) =
-        watchDao().get(platform, platformId)
 
     companion object : SingletonHolder<WatchDatabase, Context>({ context ->
         Room.databaseBuilder(context, WatchDatabase::class.java, "watch-db")
