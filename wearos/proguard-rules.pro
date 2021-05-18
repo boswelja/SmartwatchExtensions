@@ -19,3 +19,7 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+-keep class androidx.wear.complications.** { *; }
+-keep class com.boswelja.smartwatchextensions.phonelocking.LockPhoneComplicationProvider { *; }
+-keep class com.boswelja.smartwatchextensions.batterysync.PhoneBatteryComplicationProvider { *; }
+-keep class android.support.wearable.complications.** { *; } # Workaround for androidx lib still using wearable support lib
