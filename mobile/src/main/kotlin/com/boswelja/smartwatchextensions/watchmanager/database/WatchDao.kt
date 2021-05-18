@@ -29,7 +29,4 @@ interface WatchDao {
 
     @Query("SELECT * FROM watches")
     fun getAll(): List<DbWatch>
-
-    @Query("SELECT * FROM watches WHERE platform = :platform AND platformId = :platformId LIMIT 1")
-    suspend fun get(platform: String, platformId: String): DbWatch?
 }

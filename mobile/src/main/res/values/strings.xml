@@ -132,7 +132,6 @@
     <string name="watch_status_disconnected">Disconnected</string>
     <string name="watch_status_missing_app">Missing App</string>
     <string name="watch_status_error">Error</string>
-    <string name="watch_status_not_registered">Ready to add</string>
     <string name="watch_status_connecting">Connecting</string>
 
     <!-- Watch Info strings -->
@@ -144,8 +143,6 @@
     <string name="forget_watch_dialog_title">@string/button_forget_watch</string>
     <string name="forget_watch_dialog_message">Are you sure you want to forget your %s? This will clear all Smartwatch Extensions settings, and remove your %s from the app.</string>
     <string name="capabilities_title">On this watch, Smartwatch Extensions can:</string>
-    <string name="refresh_capabilities">Refresh Capabilities</string>
-    <string name="refresh_capabilities_requested">Requested this watch update it\'s capabilities</string>
 
     <!-- Watch Manager strings -->
     <string name="watch_manager_title">Watch Manager</string>

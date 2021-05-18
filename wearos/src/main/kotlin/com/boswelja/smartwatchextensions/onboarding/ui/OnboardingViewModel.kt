@@ -9,7 +9,6 @@ import androidx.lifecycle.Transformations
 import androidx.lifecycle.viewModelScope
 import com.boswelja.smartwatchextensions.PhoneState
 import com.boswelja.smartwatchextensions.R
-import com.boswelja.smartwatchextensions.common.connection.Messages.CHECK_WATCH_REGISTERED_PATH
 import com.boswelja.smartwatchextensions.common.connection.Messages.WATCH_REGISTERED_PATH
 import com.boswelja.smartwatchextensions.phoneStateStore
 import com.google.android.gms.wearable.MessageClient
@@ -62,17 +61,5 @@ class OnboardingViewModel internal constructor(
 
     private fun refreshLocalName() {
         nodeClient.localNode.addOnCompleteListener { _localName.postValue(it.result?.displayName) }
-    }
-
-    fun refreshRegisteredStatus() {
-        nodeClient.connectedNodes.addOnSuccessListener {
-            it.firstOrNull()?.id?.let { id ->
-                messageClient.sendMessage(
-                    id,
-                    CHECK_WATCH_REGISTERED_PATH,
-                    null
-                )
-            }
-        }
     }
 }
