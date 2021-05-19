@@ -7,6 +7,10 @@ import androidx.core.content.getSystemService
 /**
  * Compatibility layer to aid support for different Android versions
  */
+@Deprecated(
+    "These should be declared in the modules that use them, " +
+        "since there's platform specific optimisations we can make"
+)
 object Compat {
 
     /**
