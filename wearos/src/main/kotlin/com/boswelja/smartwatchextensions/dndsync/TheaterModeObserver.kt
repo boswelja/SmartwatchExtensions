@@ -1,34 +1,39 @@
 package com.boswelja.smartwatchextensions.dndsync
 
-import android.content.Context
+import android.content.ContentResolver
 import android.database.ContentObserver
-import android.os.Handler
 import android.provider.Settings
-import com.boswelja.smartwatchextensions.common.dndsync.References
-import com.google.android.gms.wearable.PutDataMapRequest
-import com.google.android.gms.wearable.Wearable
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.channels.sendBlocking
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.callbackFlow
+import timber.log.Timber
 
-class TheaterModeObserver(private val context: Context, handler: Handler) :
-    ContentObserver(handler) {
+object TheaterModeObserver {
+    const val THEATER_MODE_ON = "theater_mode_on"
 
-    override fun onChange(selfChange: Boolean) {
-        super.onChange(selfChange)
-        val isTheaterModeOn = isTheaterModeOn(context)
-        updateInterruptionFilter(context, isTheaterModeOn)
+    @ExperimentalCoroutinesApi
+    fun theaterMode(contentResolver: ContentResolver): Flow<Boolean> = callbackFlow {
+        Timber.d("Starting theater_mode_on collector flow")
+        val uri = Settings.Global.getUriFor(THEATER_MODE_ON)
+        val contentObserver = object : ContentObserver(null) {
+            override fun onChange(selfChange: Boolean) {
+                Timber.d("onChange(%s) called", selfChange)
+                if (!selfChange) {
+                    val isTheaterModeOn = isTheaterModeOn(contentResolver)
+                    Timber.d("isTheaterModeOn = %s", isTheaterModeOn)
+                    sendBlocking(isTheaterModeOn)
+                }
+            }
+        }
+        contentResolver.registerContentObserver(uri, false, contentObserver)
+        awaitClose {
+            Timber.d("Stopping theater_mode_on collector flow")
+            contentResolver.unregisterContentObserver(contentObserver)
+        }
     }
 
-    private fun isTheaterModeOn(context: Context): Boolean =
-        Settings.Global.getInt(context.contentResolver, "theater_mode_on", 0) == 1
-
-    /**
-     * Sets a new Interruption Filter state across devices.
-     * @param interruptionFilterEnabled Whether Interruption Filter should be enabled.
-     */
-    private fun updateInterruptionFilter(context: Context, interruptionFilterEnabled: Boolean) {
-        val dataClient = Wearable.getDataClient(context)
-        val putDataMapReq = PutDataMapRequest.create(References.DND_STATUS_PATH)
-        putDataMapReq.dataMap.putBoolean(References.NEW_DND_STATE_KEY, interruptionFilterEnabled)
-        putDataMapReq.setUrgent()
-        dataClient.putDataItem(putDataMapReq.asPutDataRequest())
-    }
+    private fun isTheaterModeOn(contentResolver: ContentResolver): Boolean =
+        Settings.Global.getInt(contentResolver, THEATER_MODE_ON, 0) == 1
 }
