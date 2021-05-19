@@ -67,6 +67,7 @@ object Utils {
         if (success) {
             // Let other watches know DnD state changed
             Timber.d("Successfully set DnD state")
+            // TODO we need to check whether watches have DnD Sync on
             watchManager.registeredWatches.asFlow().first()
                 .filterNot { it.id == sourceWatchId }.forEach { watch ->
                     watchManager.sendMessage(watch, DND_STATUS_PATH, isDnDEnabled.toByteArray())

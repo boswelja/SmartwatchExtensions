@@ -1,5 +1,6 @@
 package com.boswelja.smartwatchextensions.dndsync.ui
 
+import android.app.NotificationManager
 import android.content.Intent
 import android.provider.Settings
 import android.widget.Toast
@@ -13,9 +14,9 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.core.content.getSystemService
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.boswelja.smartwatchextensions.R
-import com.boswelja.smartwatchextensions.common.Compat
 import com.boswelja.smartwatchextensions.common.preference.PreferenceKey.DND_SYNC_TO_PHONE_KEY
 import com.boswelja.smartwatchextensions.common.preference.PreferenceKey.DND_SYNC_WITH_THEATER_KEY
 import com.boswelja.smartwatchextensions.common.ui.SwitchPreference
@@ -27,6 +28,9 @@ fun DnDSyncSettingsScreen() {
     Column {
         val viewModel: DnDSyncSettingsViewModel = viewModel()
         val context = LocalContext.current
+        val notificationManager = remember {
+            context.getSystemService<NotificationManager>()!!
+        }
 
         val dndSyncToWatch by viewModel.syncToWatch.observeAsState()
         val dndSyncToPhone by viewModel.syncToPhone.observeAsState()
@@ -35,9 +39,9 @@ fun DnDSyncSettingsScreen() {
         var changingKey = remember<String?> { null }
         val notiPolicyAccessLauncher =
             rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-                changingKey?.let {
-                    if (Compat.canSetDnD(context)) {
-                        when (it) {
+                changingKey?.let { key ->
+                    if (notificationManager.isNotificationPolicyAccessGranted) {
+                        when (key) {
                             DND_SYNC_TO_PHONE_KEY -> viewModel.setSyncToPhone(true)
                             DND_SYNC_WITH_THEATER_KEY -> viewModel.setSyncWithTheater(true)
                         }
@@ -64,7 +68,7 @@ fun DnDSyncSettingsScreen() {
             secondaryText = stringResource(R.string.pref_dnd_sync_to_phone_summary),
             isChecked = dndSyncToPhone == true,
             onCheckChanged = {
-                if ((it && Compat.canSetDnD(context)) || !it) {
+                if ((it && notificationManager.isNotificationPolicyAccessGranted) || !it) {
                     viewModel.setSyncToPhone(it)
                 } else {
                     changingKey = DND_SYNC_TO_PHONE_KEY
@@ -83,7 +87,7 @@ fun DnDSyncSettingsScreen() {
             secondaryText = stringResource(R.string.pref_dnd_sync_with_theater_summary),
             isChecked = dndSyncWithTheater == true,
             onCheckChanged = {
-                if ((it && Compat.canSetDnD(context)) || !it) {
+                if ((it && notificationManager.isNotificationPolicyAccessGranted) || !it) {
                     viewModel.setSyncWithTheater(it)
                 } else {
                     changingKey = DND_SYNC_WITH_THEATER_KEY
