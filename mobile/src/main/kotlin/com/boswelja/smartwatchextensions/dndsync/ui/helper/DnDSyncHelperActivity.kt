@@ -5,18 +5,19 @@ import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material.ExtendedFloatingActionButton
 import androidx.compose.material.FabPosition
 import androidx.compose.material.Icon
 import androidx.compose.material.LinearProgressIndicator
-import androidx.compose.material.ListItem
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
@@ -34,6 +35,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.boswelja.smartwatchextensions.R
@@ -43,7 +45,6 @@ import timber.log.Timber
 
 class DnDSyncHelperActivity : AppCompatActivity() {
 
-    @ExperimentalMaterialApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Timber.d("onCreate() called")
@@ -55,7 +56,14 @@ class DnDSyncHelperActivity : AppCompatActivity() {
             AppTheme {
                 Scaffold(
                     topBar = {
-                        UpNavigationAppBar(onNavigateUp = { finish() })
+                        UpNavigationAppBar(
+                            title = {
+                                if (setupResult == null) {
+                                    Text(stringResource(R.string.dnd_sync_helper_setup_title))
+                                }
+                            },
+                            onNavigateUp = { finish() }
+                        )
                     },
                     floatingActionButton = {
                         ExtendedFloatingActionButton(
@@ -88,25 +96,24 @@ class DnDSyncHelperActivity : AppCompatActivity() {
                     if (setupResult != null) {
                         ResultScreen(setupResult == true)
                     } else {
-                        SetupScreen(isLoading = isLoading)
+                        SetupScreen(
+                            isLoading = isLoading,
+                            modifier = Modifier.padding(it)
+                        )
                     }
                 }
             }
         }
     }
 
-    @ExperimentalMaterialApi
     @Composable
-    fun SetupScreen(isLoading: Boolean) {
+    fun SetupScreen(
+        isLoading: Boolean,
+        modifier: Modifier = Modifier
+    ) {
         Column(
-            Modifier
-                .fillMaxSize()
-                .padding(16.dp)
+            modifier = modifier
         ) {
-            Text(
-                stringResource(R.string.dnd_sync_helper_setup_title),
-                style = MaterialTheme.typography.h4
-            )
             if (isLoading) {
                 LinearProgressIndicator(Modifier.fillMaxWidth())
             }
@@ -114,17 +121,28 @@ class DnDSyncHelperActivity : AppCompatActivity() {
         }
     }
 
-    @ExperimentalMaterialApi
     @Composable
     fun SetupInstructions() {
         val setupInstructions = stringArrayResource(R.array.interrupt_filter_sync_to_watch_steps)
-        LazyColumn(modifier = Modifier.fillMaxSize()) {
-            items(setupInstructions) { instruction ->
-                ListItem(
-                    text = {
-                        Text(instruction)
+        LazyColumn(
+            modifier = Modifier.fillMaxSize(),
+            contentPadding = PaddingValues(bottom = 72.dp, top = 8.dp, start = 16.dp, end = 16.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            itemsIndexed(setupInstructions) { index, instruction ->
+                Row {
+                    Text(
+                        text = stringResource(id = R.string.setup_step_format, index + 1),
+                        style = MaterialTheme.typography.h6,
+                        textAlign = TextAlign.End,
+                        modifier = Modifier.padding(end = 8.dp)
+                    )
+                    SelectionContainer {
+                        Text(
+                            text = instruction
+                        )
                     }
-                )
+                }
             }
         }
     }
