@@ -37,6 +37,9 @@ object Observers {
             }
         }
         contentResolver.registerContentObserver(uri, false, contentObserver)
+
+        sendBlocking(isTheaterModeOn)
+
         awaitClose {
             Timber.d("Stopping theater_mode_on collector flow")
             contentResolver.unregisterContentObserver(contentObserver)
@@ -60,6 +63,8 @@ object Observers {
             addAction(ACTION_INTERRUPTION_FILTER_CHANGED)
         }
         this@dndState.registerReceiver(dndChangeReceiver, filter)
+
+        sendBlocking(notificationManager.isDndEnabled)
 
         awaitClose {
             this@dndState.unregisterReceiver(dndChangeReceiver)
