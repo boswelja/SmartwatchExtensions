@@ -74,11 +74,11 @@ class DnDLocalChangeListener : LifecycleService() {
             .apply {
                 setContentTitle(getString(R.string.dnd_sync_active_noti_title))
                 when {
-                    dndSyncToPhone and dndSyncWithTheater ->
+                    dndSyncToPhone && dndSyncWithTheater ->
                         setContentText(getString(R.string.dnd_sync_all_noti_desc))
-                    dndSyncToPhone and !dndSyncWithTheater ->
+                    dndSyncToPhone && !dndSyncWithTheater ->
                         setContentText(getString(R.string.dnd_sync_to_phone_noti_desc))
-                    dndSyncWithTheater and !dndSyncToPhone ->
+                    dndSyncWithTheater && !dndSyncToPhone ->
                         setContentText(getString(R.string.dnd_sync_with_theater_noti_desc))
                     else -> setContentText(getString(R.string.dnd_sync_none_noti_desc))
                 }
