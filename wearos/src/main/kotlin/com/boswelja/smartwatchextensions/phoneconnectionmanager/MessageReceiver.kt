@@ -1,14 +1,15 @@
 package com.boswelja.smartwatchextensions.phoneconnectionmanager
 
 import android.app.ActivityManager
+import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
 import android.os.Build
 import androidx.core.content.ContextCompat
+import androidx.core.content.getSystemService
 import com.boswelja.smartwatchextensions.BuildConfig
 import com.boswelja.smartwatchextensions.appmanager.AppManagerService
 import com.boswelja.smartwatchextensions.capability.CapabilityUpdater
-import com.boswelja.smartwatchextensions.common.Compat
 import com.boswelja.smartwatchextensions.common.appmanager.Messages
 import com.boswelja.smartwatchextensions.common.connection.Messages.CLEAR_PREFERENCES
 import com.boswelja.smartwatchextensions.common.connection.Messages.REQUEST_APP_VERSION
@@ -31,7 +32,8 @@ class MessageReceiver : WearableListenerService() {
         Timber.d("Received ${messageEvent?.path}")
         when (messageEvent?.path) {
             REQUEST_INTERRUPT_FILTER_ACCESS_STATUS_PATH -> {
-                val hasDnDAccess: Boolean = Compat.canSetDnD(this)
+                val hasDnDAccess =
+                    getSystemService<NotificationManager>()!!.isNotificationPolicyAccessGranted
                 Wearable.getMessageClient(this)
                     .sendMessage(
                         messageEvent.sourceNodeId,
