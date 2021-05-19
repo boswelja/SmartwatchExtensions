@@ -112,40 +112,36 @@ class DnDLocalChangeListener : LifecycleService() {
     }
 
     @ExperimentalCoroutinesApi
-    private fun setDnDSyncWithTheaterMode(enabled: Boolean) {
-        Timber.d("setDnDSyncWithTheaterMode(%s) called", enabled)
-        if (dndSyncWithTheater != enabled) {
-            dndSyncWithTheater = enabled
-            notificationManager.notify(DND_SYNC_LOCAL_NOTI_ID, createNotification())
-            if (enabled) {
-                lifecycleScope.launch(theaterCollectorJob) {
-                    Observers.theaterMode(contentResolver).collect { theaterMode ->
-                        updateDnDState(theaterMode)
-                    }
+    private fun setDnDSyncWithTheaterMode(isEnabled: Boolean) {
+        Timber.d("setDnDSyncWithTheaterMode(%s) called", isEnabled)
+        dndSyncWithTheater = isEnabled
+        notificationManager.notify(DND_SYNC_LOCAL_NOTI_ID, createNotification())
+        if (isEnabled) {
+            lifecycleScope.launch(theaterCollectorJob) {
+                Observers.theaterMode(contentResolver).collect { theaterMode ->
+                    updateDnDState(theaterMode)
                 }
-            } else {
-                theaterCollectorJob.cancel()
-                tryStop()
             }
+        } else {
+            theaterCollectorJob.cancel()
+            tryStop()
         }
     }
 
     @ExperimentalCoroutinesApi
-    private fun setDnDSyncToPhone(enabled: Boolean) {
-        Timber.d("setDnDSyncToPhone(%s)", enabled)
-        if (dndSyncToPhone != enabled) {
-            dndSyncToPhone = enabled
-            notificationManager.notify(DND_SYNC_LOCAL_NOTI_ID, createNotification())
-            if (enabled) {
-                lifecycleScope.launch(dndCollectorJob) {
-                    Observers.dndState(this@DnDLocalChangeListener).collect { dndEnabled ->
-                        updateDnDState(dndEnabled)
-                    }
+    private fun setDnDSyncToPhone(isEnabled: Boolean) {
+        Timber.d("setDnDSyncToPhone(%s) called", isEnabled)
+        dndSyncToPhone = isEnabled
+        notificationManager.notify(DND_SYNC_LOCAL_NOTI_ID, createNotification())
+        if (isEnabled) {
+            lifecycleScope.launch(dndCollectorJob) {
+                Observers.dndState(this@DnDLocalChangeListener).collect { dndEnabled ->
+                    updateDnDState(dndEnabled)
                 }
-            } else {
-                dndCollectorJob.cancel()
-                tryStop()
             }
+        } else {
+            dndCollectorJob.cancel()
+            tryStop()
         }
     }
 
