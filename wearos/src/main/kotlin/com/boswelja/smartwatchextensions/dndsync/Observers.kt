@@ -1,5 +1,6 @@
 package com.boswelja.smartwatchextensions.dndsync
 
+import android.app.NotificationManager
 import android.app.NotificationManager.ACTION_INTERRUPTION_FILTER_CHANGED
 import android.content.BroadcastReceiver
 import android.content.ContentResolver
@@ -8,7 +9,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.database.ContentObserver
 import android.provider.Settings
-import com.boswelja.smartwatchextensions.common.Compat
+import androidx.core.content.getSystemService
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.channels.sendBlocking
@@ -42,14 +43,14 @@ object Observers {
 
     @ExperimentalCoroutinesApi
     fun Context.dndState(): Flow<Boolean> = callbackFlow {
-        val dndChangeReceiver =
-            object : BroadcastReceiver() {
-                override fun onReceive(context: Context, intent: Intent?) {
-                    if (intent?.action == ACTION_INTERRUPTION_FILTER_CHANGED) {
-                        sendBlocking(Compat.isDndEnabled(context))
-                    }
+        val notificationManager = getSystemService<NotificationManager>()!!
+        val dndChangeReceiver = object : BroadcastReceiver() {
+            override fun onReceive(context: Context, intent: Intent?) {
+                if (intent?.action == ACTION_INTERRUPTION_FILTER_CHANGED) {
+                    sendBlocking(notificationManager.isDndEnabled())
                 }
             }
+        }
         val filter = IntentFilter().apply {
             addAction(ACTION_INTERRUPTION_FILTER_CHANGED)
         }
@@ -59,6 +60,14 @@ object Observers {
             this@dndState.unregisterReceiver(dndChangeReceiver)
         }
     }
+
+    /**
+     * Checks whether Do not Disturb is currently active. Will fall back to silent / vibrate on
+     * older Android versions
+     * @return true if DnD is enabled, false otherwise.
+     */
+    private fun NotificationManager.isDndEnabled(): Boolean =
+        currentInterruptionFilter != NotificationManager.INTERRUPTION_FILTER_ALL
 
     private fun isTheaterModeOn(contentResolver: ContentResolver): Boolean =
         Settings.Global.getInt(contentResolver, THEATER_MODE_ON, 0) == 1
