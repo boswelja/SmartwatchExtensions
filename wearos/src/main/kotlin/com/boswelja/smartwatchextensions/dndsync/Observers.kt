@@ -20,7 +20,7 @@ object Observers {
     const val THEATER_MODE_ON = "theater_mode_on"
 
     @ExperimentalCoroutinesApi
-    fun theaterMode(contentResolver: ContentResolver): Flow<Boolean> = callbackFlow {
+    fun Context.theaterMode(): Flow<Boolean> = callbackFlow {
         Timber.d("Starting theater_mode_on collector flow")
         val uri = Settings.Global.getUriFor(THEATER_MODE_ON)
         val contentObserver = object : ContentObserver(null) {
@@ -41,7 +41,7 @@ object Observers {
     }
 
     @ExperimentalCoroutinesApi
-    fun dndState(context: Context): Flow<Boolean> = callbackFlow {
+    fun Context.dndState(): Flow<Boolean> = callbackFlow {
         val dndChangeReceiver =
             object : BroadcastReceiver() {
                 override fun onReceive(context: Context, intent: Intent?) {
@@ -53,10 +53,10 @@ object Observers {
         val filter = IntentFilter().apply {
             addAction(ACTION_INTERRUPTION_FILTER_CHANGED)
         }
-        context.registerReceiver(dndChangeReceiver, filter)
+        this@dndState.registerReceiver(dndChangeReceiver, filter)
 
         awaitClose {
-            context.unregisterReceiver(dndChangeReceiver)
+            this@dndState.unregisterReceiver(dndChangeReceiver)
         }
     }
 

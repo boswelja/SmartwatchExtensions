@@ -17,6 +17,8 @@ import com.boswelja.smartwatchextensions.common.dndsync.References.DND_SYNC_LOCA
 import com.boswelja.smartwatchextensions.common.dndsync.References.DND_SYNC_NOTI_CHANNEL_ID
 import com.boswelja.smartwatchextensions.common.dndsync.References.START_ACTIVITY_FROM_NOTI_ID
 import com.boswelja.smartwatchextensions.common.toByteArray
+import com.boswelja.smartwatchextensions.dndsync.Observers.dndState
+import com.boswelja.smartwatchextensions.dndsync.Observers.theaterMode
 import com.boswelja.smartwatchextensions.extensions.extensionSettingsStore
 import com.boswelja.smartwatchextensions.main.ui.MainActivity
 import com.boswelja.smartwatchextensions.phoneStateStore
@@ -115,7 +117,7 @@ class DnDLocalChangeListener : LifecycleService() {
         val shouldUpdateNoti = if (isEnabled) {
             // Launch our theater mode collector
             lifecycleScope.launch(theaterCollectorJob) {
-                Observers.theaterMode(contentResolver).collect { theaterMode ->
+                theaterMode().collect { theaterMode ->
                     updateDnDState(theaterMode)
                 }
             }
@@ -140,7 +142,7 @@ class DnDLocalChangeListener : LifecycleService() {
         val shouldUpdateNoti = if (isEnabled) {
             // Launch our DnD state collector
             lifecycleScope.launch(dndCollectorJob) {
-                Observers.dndState(this@DnDLocalChangeListener).collect { dndEnabled ->
+                dndState().collect { dndEnabled ->
                     updateDnDState(dndEnabled)
                 }
             }
