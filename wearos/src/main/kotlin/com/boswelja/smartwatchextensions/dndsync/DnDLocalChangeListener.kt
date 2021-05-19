@@ -31,6 +31,10 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
+/**
+ * A [LifecycleService] that listens for changes in the appropriate settings, and sends DnD change
+ * requests to the connected phone.
+ */
 class DnDLocalChangeListener : LifecycleService() {
 
     private val theaterCollectorJob = Job()
@@ -52,6 +56,7 @@ class DnDLocalChangeListener : LifecycleService() {
             createNotificationChannel()
         }
 
+        // Collect DnD Sync to Phone
         lifecycleScope.launch {
             extensionSettingsStore.data.map {
                 it.dndSyncToPhone
@@ -59,6 +64,7 @@ class DnDLocalChangeListener : LifecycleService() {
                 setDnDSyncToPhone(it)
             }
         }
+        // Collect DnD Sync with Theater
         lifecycleScope.launch {
             extensionSettingsStore.data.map {
                 it.dndSyncWithTheater
@@ -70,6 +76,10 @@ class DnDLocalChangeListener : LifecycleService() {
         startForeground(DND_SYNC_LOCAL_NOTI_ID, createNotification())
     }
 
+    /**
+     * Create a foreground notification for this service.
+     * @return The notification to post for this service.
+     */
     private fun createNotification(): Notification {
         Timber.d("Creating notification")
         NotificationCompat.Builder(this, DND_SYNC_NOTI_CHANNEL_ID)
@@ -110,6 +120,11 @@ class DnDLocalChangeListener : LifecycleService() {
             }
     }
 
+    /**
+     * Sets whether DnD Sync with Theater Mode is enabled. This will handle our theater
+     * observer, as well as updating our notification.
+     * @param isEnabled Whether this sync type should be enabled.
+     */
     @ExperimentalCoroutinesApi
     private fun setDnDSyncWithTheaterMode(isEnabled: Boolean) {
         Timber.d("setDnDSyncWithTheaterMode(%s) called", isEnabled)
@@ -135,6 +150,11 @@ class DnDLocalChangeListener : LifecycleService() {
         }
     }
 
+    /**
+     * Sets whether DnD Sync to Phone is enabled. This will handle our DnD observer, as well as
+     * updating our notification.
+     * @param isEnabled Whether this sync type should be enabled.
+     */
     @ExperimentalCoroutinesApi
     private fun setDnDSyncToPhone(isEnabled: Boolean) {
         Timber.d("setDnDSyncToPhone(%s) called", isEnabled)
@@ -170,6 +190,9 @@ class DnDLocalChangeListener : LifecycleService() {
         messageClient.sendMessage(phoneId, DND_STATUS_PATH, dndSyncEnabled.toByteArray())
     }
 
+    /**
+     * Creates a [NotificationChannel] for [DND_SYNC_NOTI_CHANNEL_ID].
+     */
     @RequiresApi(Build.VERSION_CODES.O)
     fun createNotificationChannel() {
         if (notificationManager.getNotificationChannel(DND_SYNC_NOTI_CHANNEL_ID) == null) {
@@ -185,6 +208,10 @@ class DnDLocalChangeListener : LifecycleService() {
         }
     }
 
+    /**
+     * Stop the service if all sync features are disabled.
+     * @return true if we stopped the service, false otherwise.
+     */
     private fun tryStop(): Boolean {
         if (!dndSyncToPhone && !dndSyncWithTheater) {
             stopForeground(true)

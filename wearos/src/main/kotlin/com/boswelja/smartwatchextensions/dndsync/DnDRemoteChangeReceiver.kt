@@ -10,6 +10,9 @@ import com.google.android.gms.wearable.MessageEvent
 import com.google.android.gms.wearable.WearableListenerService
 import timber.log.Timber
 
+/**
+ * A [WearableListenerService] that receives DnD changes from the connected phone.
+ */
 class DnDRemoteChangeReceiver : WearableListenerService() {
 
     override fun onMessageReceived(messageEvent: MessageEvent?) {
@@ -20,6 +23,11 @@ class DnDRemoteChangeReceiver : WearableListenerService() {
         // TODO Let phone know if there's as an issue
     }
 
+    /**
+     * Try to set the system DnD status. This will fail if permission is not granted.
+     * @param isEnabled Whether DnD should be enabled.
+     * @return true if setting DnD succeeds, false otherwise.
+     */
     private fun NotificationManager.setDnD(isEnabled: Boolean): Boolean {
         return if (isNotificationPolicyAccessGranted) {
             val newFilter = if (isEnabled)

@@ -3,7 +3,6 @@ package com.boswelja.smartwatchextensions.dndsync
 import android.app.NotificationManager
 import android.app.NotificationManager.ACTION_INTERRUPTION_FILTER_CHANGED
 import android.content.BroadcastReceiver
-import android.content.ContentResolver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
@@ -18,17 +17,20 @@ import kotlinx.coroutines.flow.callbackFlow
 import timber.log.Timber
 
 object Observers {
-    private const val THEATER_MODE_ON = "theater_mode_on"
+    private const val THEATER_MODE = "theater_mode_on"
 
+    /**
+     * Gets a [Flow] of this watches Theater Mode state.
+     */
     @ExperimentalCoroutinesApi
     fun Context.theaterMode(): Flow<Boolean> = callbackFlow {
         Timber.d("Starting theater_mode_on collector flow")
-        val uri = Settings.Global.getUriFor(THEATER_MODE_ON)
+        val uri = Settings.Global.getUriFor(THEATER_MODE)
         val contentObserver = object : ContentObserver(null) {
             override fun onChange(selfChange: Boolean) {
                 Timber.d("onChange(%s) called", selfChange)
                 if (!selfChange) {
-                    val isTheaterModeOn = isTheaterModeOn(contentResolver)
+                    val isTheaterModeOn = isTheaterModeOn
                     Timber.d("isTheaterModeOn = %s", isTheaterModeOn)
                     sendBlocking(isTheaterModeOn)
                 }
@@ -41,13 +43,16 @@ object Observers {
         }
     }
 
+    /**
+     * Gets a [Flow] of this watches DnD state.
+     */
     @ExperimentalCoroutinesApi
     fun Context.dndState(): Flow<Boolean> = callbackFlow {
         val notificationManager = getSystemService<NotificationManager>()!!
         val dndChangeReceiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context, intent: Intent?) {
                 if (intent?.action == ACTION_INTERRUPTION_FILTER_CHANGED) {
-                    sendBlocking(notificationManager.isDndEnabled())
+                    sendBlocking(notificationManager.isDndEnabled)
                 }
             }
         }
@@ -62,13 +67,15 @@ object Observers {
     }
 
     /**
-     * Checks whether Do not Disturb is currently active. Will fall back to silent / vibrate on
-     * older Android versions
+     * Checks whether DnD is enabled for this watch.
      * @return true if DnD is enabled, false otherwise.
      */
-    private fun NotificationManager.isDndEnabled(): Boolean =
-        currentInterruptionFilter != NotificationManager.INTERRUPTION_FILTER_ALL
+    private val NotificationManager.isDndEnabled: Boolean
+        get() = this.currentInterruptionFilter != NotificationManager.INTERRUPTION_FILTER_ALL
 
-    private fun isTheaterModeOn(contentResolver: ContentResolver): Boolean =
-        Settings.Global.getInt(contentResolver, THEATER_MODE_ON, 0) == 1
+    /**
+     * Checks whether theater mode is currently enabled for this watch.
+     */
+    private val Context.isTheaterModeOn: Boolean
+        get() = Settings.Global.getInt(contentResolver, THEATER_MODE, 0) == 1
 }
