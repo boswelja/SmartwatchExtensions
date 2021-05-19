@@ -12,7 +12,6 @@ import androidx.core.content.getSystemService
 import androidx.lifecycle.LifecycleService
 import androidx.lifecycle.lifecycleScope
 import com.boswelja.smartwatchextensions.R
-import com.boswelja.smartwatchextensions.common.Compat
 import com.boswelja.smartwatchextensions.common.dndsync.References.DND_STATUS_PATH
 import com.boswelja.smartwatchextensions.common.dndsync.References.DND_SYNC_LOCAL_NOTI_ID
 import com.boswelja.smartwatchextensions.common.dndsync.References.DND_SYNC_NOTI_CHANNEL_ID
@@ -28,7 +27,6 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import timber.log.Timber
 
 class DnDLocalChangeListener : LifecycleService() {
@@ -39,7 +37,6 @@ class DnDLocalChangeListener : LifecycleService() {
     private val messageClient by lazy { Wearable.getMessageClient(this) }
 
     private val notificationManager: NotificationManager by lazy { getSystemService()!! }
-    private lateinit var phoneId: String
 
     private var dndSyncToPhone: Boolean = false
     private var dndSyncWithTheater: Boolean = false
@@ -52,8 +49,6 @@ class DnDLocalChangeListener : LifecycleService() {
             Timber.d("Creating notification channel")
             createNotificationChannel()
         }
-
-        phoneId = runBlocking { phoneStateStore.data.map { it.id }.first() }
 
         lifecycleScope.launch {
             extensionSettingsStore.data.map {
@@ -71,7 +66,6 @@ class DnDLocalChangeListener : LifecycleService() {
         }
 
         startForeground(DND_SYNC_LOCAL_NOTI_ID, createNotification())
-        updateDnDState(Compat.isDndEnabled(this@DnDLocalChangeListener))
     }
 
     private fun createNotification(): Notification {
@@ -149,8 +143,9 @@ class DnDLocalChangeListener : LifecycleService() {
      * Sets a new DnD state across devices.
      * @param dndSyncEnabled Whether Interruption Filter should be enabled.
      */
-    private fun updateDnDState(dndSyncEnabled: Boolean) {
+    private suspend fun updateDnDState(dndSyncEnabled: Boolean) {
         Timber.d("DnD set to %s", dndSyncEnabled)
+        val phoneId = phoneStateStore.data.map { it.id }.first()
         messageClient.sendMessage(phoneId, DND_STATUS_PATH, dndSyncEnabled.toByteArray())
     }
 
@@ -171,8 +166,6 @@ class DnDLocalChangeListener : LifecycleService() {
 
     private fun tryStop() {
         if (!dndSyncToPhone && !dndSyncWithTheater) {
-            theaterCollectorJob.cancel()
-            dndCollectorJob.cancel()
             stopForeground(true)
             stopSelf()
         }
