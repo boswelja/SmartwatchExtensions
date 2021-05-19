@@ -17,7 +17,7 @@ import kotlinx.coroutines.flow.callbackFlow
 import timber.log.Timber
 
 object Observers {
-    const val THEATER_MODE_ON = "theater_mode_on"
+    private const val THEATER_MODE_ON = "theater_mode_on"
 
     @ExperimentalCoroutinesApi
     fun Context.theaterMode(): Flow<Boolean> = callbackFlow {
