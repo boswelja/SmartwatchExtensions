@@ -4,10 +4,7 @@ import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
-import android.content.BroadcastReceiver
-import android.content.Context
 import android.content.Intent
-import android.content.IntentFilter
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
@@ -38,6 +35,7 @@ import timber.log.Timber
 class DnDLocalChangeListener : LifecycleService() {
 
     private val theaterCollectorJob = Job()
+    private val dndCollectorJob = Job()
 
     private val messageClient by lazy { Wearable.getMessageClient(this) }
 
@@ -46,17 +44,6 @@ class DnDLocalChangeListener : LifecycleService() {
 
     private var dndSyncToPhone: Boolean = false
     private var dndSyncWithTheater: Boolean = false
-
-    private var dndChangeReceiver =
-        object : BroadcastReceiver() {
-            override fun onReceive(context: Context?, intent: Intent?) {
-                if (context != null &&
-                    intent!!.action == NotificationManager.ACTION_INTERRUPTION_FILTER_CHANGED
-                ) {
-                    updateDnDState()
-                }
-            }
-        }
 
     @ExperimentalCoroutinesApi
     override fun onCreate() {
@@ -129,7 +116,7 @@ class DnDLocalChangeListener : LifecycleService() {
             notificationManager.notify(DND_SYNC_LOCAL_NOTI_ID, createNotification())
             if (enabled) {
                 lifecycleScope.launch(theaterCollectorJob) {
-                    TheaterModeObserver.theaterMode(contentResolver).collect { theaterMode ->
+                    Observers.theaterMode(contentResolver).collect { theaterMode ->
                         updateDnDState(theaterMode)
                     }
                 }
@@ -140,18 +127,19 @@ class DnDLocalChangeListener : LifecycleService() {
         }
     }
 
+    @ExperimentalCoroutinesApi
     private fun setDnDSyncToPhone(enabled: Boolean) {
         if (dndSyncToPhone != enabled) {
             dndSyncToPhone = enabled
             notificationManager.notify(DND_SYNC_LOCAL_NOTI_ID, createNotification())
             if (enabled) {
-                IntentFilter()
-                    .apply { addAction(NotificationManager.ACTION_INTERRUPTION_FILTER_CHANGED) }
-                    .also { registerReceiver(dndChangeReceiver, it) }
+                lifecycleScope.launch(dndCollectorJob) {
+                    Observers.dndState(this@DnDLocalChangeListener).collect { dndEnabled ->
+                        updateDnDState(dndEnabled)
+                    }
+                }
             } else {
-                try {
-                    unregisterReceiver(dndChangeReceiver)
-                } catch (ignored: IllegalArgumentException) { }
+                dndCollectorJob.cancel()
                 tryStop()
             }
         }
@@ -192,6 +180,7 @@ class DnDLocalChangeListener : LifecycleService() {
     private fun tryStop() {
         if (!dndSyncToPhone && !dndSyncWithTheater) {
             theaterCollectorJob.cancel()
+            dndCollectorJob.cancel()
             stopForeground(true)
             stopSelf()
         }

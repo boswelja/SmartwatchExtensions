@@ -1,8 +1,14 @@
 package com.boswelja.smartwatchextensions.dndsync
 
+import android.app.NotificationManager.ACTION_INTERRUPTION_FILTER_CHANGED
+import android.content.BroadcastReceiver
 import android.content.ContentResolver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.database.ContentObserver
 import android.provider.Settings
+import com.boswelja.smartwatchextensions.common.Compat
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.channels.sendBlocking
@@ -10,7 +16,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import timber.log.Timber
 
-object TheaterModeObserver {
+object Observers {
     const val THEATER_MODE_ON = "theater_mode_on"
 
     @ExperimentalCoroutinesApi
@@ -31,6 +37,26 @@ object TheaterModeObserver {
         awaitClose {
             Timber.d("Stopping theater_mode_on collector flow")
             contentResolver.unregisterContentObserver(contentObserver)
+        }
+    }
+
+    @ExperimentalCoroutinesApi
+    fun dndState(context: Context): Flow<Boolean> = callbackFlow {
+        val dndChangeReceiver =
+            object : BroadcastReceiver() {
+                override fun onReceive(context: Context, intent: Intent?) {
+                    if (intent?.action == ACTION_INTERRUPTION_FILTER_CHANGED) {
+                        sendBlocking(Compat.isDndEnabled(context))
+                    }
+                }
+            }
+        val filter = IntentFilter().apply {
+            addAction(ACTION_INTERRUPTION_FILTER_CHANGED)
+        }
+        context.registerReceiver(dndChangeReceiver, filter)
+
+        awaitClose {
+            context.unregisterReceiver(dndChangeReceiver)
         }
     }
 
