@@ -10,7 +10,6 @@ import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import androidx.core.content.getSystemService
 import androidx.lifecycle.LifecycleService
-import androidx.lifecycle.asLiveData
 import androidx.lifecycle.lifecycleScope
 import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.common.Compat
@@ -56,19 +55,23 @@ class DnDLocalChangeListener : LifecycleService() {
 
         phoneId = runBlocking { phoneStateStore.data.map { it.id }.first() }
 
-        extensionSettingsStore.data.map {
-            it.dndSyncToPhone
-        }.asLiveData().observe(this) {
-            setDnDSyncToPhone(it)
+        lifecycleScope.launch {
+            extensionSettingsStore.data.map {
+                it.dndSyncToPhone
+            }.collect {
+                setDnDSyncToPhone(it)
+            }
         }
-        extensionSettingsStore.data.map {
-            it.dndSyncWithTheater
-        }.asLiveData().observe(this) {
-            setDnDSyncWithTheaterMode(it)
+        lifecycleScope.launch {
+            extensionSettingsStore.data.map {
+                it.dndSyncWithTheater
+            }.collect {
+                setDnDSyncWithTheaterMode(it)
+            }
         }
 
         startForeground(DND_SYNC_LOCAL_NOTI_ID, createNotification())
-        updateDnDState()
+        updateDnDState(Compat.isDndEnabled(this@DnDLocalChangeListener))
     }
 
     private fun createNotification(): Notification {
@@ -129,6 +132,7 @@ class DnDLocalChangeListener : LifecycleService() {
 
     @ExperimentalCoroutinesApi
     private fun setDnDSyncToPhone(enabled: Boolean) {
+        Timber.d("setDnDSyncToPhone(%s)", enabled)
         if (dndSyncToPhone != enabled) {
             dndSyncToPhone = enabled
             notificationManager.notify(DND_SYNC_LOCAL_NOTI_ID, createNotification())
@@ -147,18 +151,10 @@ class DnDLocalChangeListener : LifecycleService() {
 
     /**
      * Sets a new DnD state across devices.
-     */
-    private fun updateDnDState() {
-        val dndSyncEnabled = Compat.isDndEnabled(this)
-        Timber.d("Sending DND %s to %s", dndSyncEnabled, phoneId)
-        updateDnDState(dndSyncEnabled)
-    }
-
-    /**
-     * Sets a new DnD state across devices.
      * @param dndSyncEnabled Whether Interruption Filter should be enabled.
      */
     private fun updateDnDState(dndSyncEnabled: Boolean) {
+        Timber.d("DnD set to %s", dndSyncEnabled)
         messageClient.sendMessage(phoneId, DND_STATUS_PATH, dndSyncEnabled.toByteArray())
     }
 
