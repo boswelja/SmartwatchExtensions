@@ -80,7 +80,10 @@ class DnDLocalChangeListener : LifecycleService() {
                         setContentText(getString(R.string.dnd_sync_to_phone_noti_desc))
                     dndSyncWithTheater && !dndSyncToPhone ->
                         setContentText(getString(R.string.dnd_sync_with_theater_noti_desc))
-                    else -> setContentText(getString(R.string.dnd_sync_none_noti_desc))
+                    else ->
+                        throw IllegalStateException(
+                            "Cannot have a notification with no DnD Sync options enabled"
+                        )
                 }
                 setSmallIcon(R.drawable.ic_sync)
                 setOngoing(true)
@@ -109,16 +112,24 @@ class DnDLocalChangeListener : LifecycleService() {
     private fun setDnDSyncWithTheaterMode(isEnabled: Boolean) {
         Timber.d("setDnDSyncWithTheaterMode(%s) called", isEnabled)
         dndSyncWithTheater = isEnabled
-        notificationManager.notify(DND_SYNC_LOCAL_NOTI_ID, createNotification())
-        if (isEnabled) {
+        val shouldUpdateNoti = if (isEnabled) {
+            // Launch our theater mode collector
             lifecycleScope.launch(theaterCollectorJob) {
                 Observers.theaterMode(contentResolver).collect { theaterMode ->
                     updateDnDState(theaterMode)
                 }
             }
+            // Notification should be updated
+            true
         } else {
+            // Stop our theater mode collector
             theaterCollectorJob.cancel()
-            tryStop()
+            // Only update notification if tryStop failed
+            !tryStop()
+        }
+        // Update notification if possible
+        if (shouldUpdateNoti) {
+            notificationManager.notify(DND_SYNC_LOCAL_NOTI_ID, createNotification())
         }
     }
 
@@ -126,16 +137,24 @@ class DnDLocalChangeListener : LifecycleService() {
     private fun setDnDSyncToPhone(isEnabled: Boolean) {
         Timber.d("setDnDSyncToPhone(%s) called", isEnabled)
         dndSyncToPhone = isEnabled
-        notificationManager.notify(DND_SYNC_LOCAL_NOTI_ID, createNotification())
-        if (isEnabled) {
+        val shouldUpdateNoti = if (isEnabled) {
+            // Launch our DnD state collector
             lifecycleScope.launch(dndCollectorJob) {
                 Observers.dndState(this@DnDLocalChangeListener).collect { dndEnabled ->
                     updateDnDState(dndEnabled)
                 }
             }
+            // Notification should be updated
+            true
         } else {
+            // Stop our DnD state collector
             dndCollectorJob.cancel()
-            tryStop()
+            // Only update notification if tryStop failed
+            !tryStop()
+        }
+        // Update notification if possible
+        if (shouldUpdateNoti) {
+            notificationManager.notify(DND_SYNC_LOCAL_NOTI_ID, createNotification())
         }
     }
 
@@ -164,10 +183,12 @@ class DnDLocalChangeListener : LifecycleService() {
         }
     }
 
-    private fun tryStop() {
+    private fun tryStop(): Boolean {
         if (!dndSyncToPhone && !dndSyncWithTheater) {
             stopForeground(true)
             stopSelf()
+            return true
         }
+        return false
     }
 }
