@@ -16,12 +16,12 @@ import com.boswelja.smartwatchextensions.common.toByteArray
 import com.boswelja.smartwatchextensions.dndsync.Utils.dndState
 import com.boswelja.smartwatchextensions.main.MainActivity
 import com.boswelja.smartwatchextensions.watchmanager.WatchManager
-import com.boswelja.smartwatchextensions.watchmanager.item.BoolPreference
 import com.boswelja.watchconnection.core.Watch
 import com.google.android.gms.wearable.DataClient
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -38,8 +38,20 @@ class DnDLocalChangeService : LifecycleService() {
         super.onCreate()
         Timber.i("onCreate() called")
 
-        watchManager.settingsDatabase.boolPrefDao().getAllObservableForKey(DND_SYNC_TO_WATCH_KEY)
-            .observe(this) { handleDnDSyncSettingsChange(it) }
+        lifecycleScope.launch {
+            watchManager.settingsDatabase.boolPrefDao().getAllFlowForKey(DND_SYNC_TO_WATCH_KEY)
+                .mapLatest { prefs ->
+                    prefs.filter { pref ->
+                        pref.value
+                    }.mapNotNull { pref ->
+                        watchManager.getWatchById(pref.watchId)
+                    }
+                }.collect {
+                    targetWatches.clear()
+                    targetWatches.addAll(it)
+                    stopIfUnneeded()
+                }
+        }
 
         lifecycleScope.launch(dndCollectorJob) {
             dndState().collect { sendNewDnDState(it) }
@@ -57,30 +69,6 @@ class DnDLocalChangeService : LifecycleService() {
         Timber.i("onDestroy() called")
 
         dndCollectorJob.cancel()
-    }
-
-    /**
-     * Process a new array of [BoolPreference] representing the current DnD Sync to Watch settings.
-     * @param prefs the [Array] of [BoolPreference] to process.
-     */
-    private fun handleDnDSyncSettingsChange(prefs: Array<BoolPreference>) {
-        prefs.forEach { preference ->
-            if (!preference.value) {
-                // Remove watch if it exists in targetWatches
-                val removed = targetWatches.removeIf { it.id == preference.watchId }
-                // Try stop service
-                if (removed) stopIfUnneeded()
-            } else {
-                // Add watch to targetWatches if it doesn't exist
-                if (targetWatches.none { it.id == preference.watchId }) {
-                    lifecycleScope.launch {
-                        watchManager.getWatchById(preference.watchId)?.let { watch ->
-                            targetWatches.add(watch)
-                        }
-                    }
-                }
-            }
-        }
     }
 
     /**
