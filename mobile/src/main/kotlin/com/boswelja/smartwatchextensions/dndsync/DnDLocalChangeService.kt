@@ -37,12 +37,6 @@ class DnDLocalChangeService : LifecycleService() {
         super.onCreate()
         Timber.i("onCreate() called")
 
-        lifecycleScope.launch(dndCollectorJob) {
-            dndState().collect { dndEnabled ->
-                sendNewDnDState(dndEnabled)
-            }
-        }
-
         watchManager.settingsDatabase.boolPrefDao().getAllObservableForKey(DND_SYNC_TO_WATCH_KEY)
             .observe(this) { prefs ->
                 prefs.forEach { preference ->
@@ -63,6 +57,12 @@ class DnDLocalChangeService : LifecycleService() {
                     }
                 }
             }
+
+        lifecycleScope.launch(dndCollectorJob) {
+            dndState().collect { dndEnabled ->
+                sendNewDnDState(dndEnabled)
+            }
+        }
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
