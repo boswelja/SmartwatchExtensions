@@ -17,7 +17,7 @@ import kotlinx.coroutines.flow.callbackFlow
 import timber.log.Timber
 
 object Observers {
-    private const val THEATER_MODE = "theater_mode_on"
+    const val THEATER_MODE = "theater_mode_on"
 
     /**
      * Gets a [Flow] of this watches Theater Mode state.
@@ -75,12 +75,12 @@ object Observers {
      * Checks whether DnD is enabled for this watch.
      * @return true if DnD is enabled, false otherwise.
      */
-    private val NotificationManager.isDndEnabled: Boolean
+    val NotificationManager.isDndEnabled: Boolean
         get() = this.currentInterruptionFilter != NotificationManager.INTERRUPTION_FILTER_ALL
 
     /**
      * Checks whether theater mode is currently enabled for this watch.
      */
-    private val Context.isTheaterModeOn: Boolean
+    val Context.isTheaterModeOn: Boolean
         get() = Settings.Global.getInt(contentResolver, THEATER_MODE, 0) == 1
 }
