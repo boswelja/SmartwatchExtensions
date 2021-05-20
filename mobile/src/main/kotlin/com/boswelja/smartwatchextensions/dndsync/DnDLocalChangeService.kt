@@ -48,11 +48,9 @@ class DnDLocalChangeService : LifecycleService() {
                 prefs.forEach { preference ->
                     if (!preference.value) {
                         // Remove watch if it exists in targetWatches
-                        val index = targetWatches.indexOfFirst { it.id == preference.watchId }
-                        if (index > -1) targetWatches.removeAt(index)
-
+                        val removed = targetWatches.removeIf { it.id == preference.watchId }
                         // Try stop service
-                        stopIfUnneeded()
+                        if (removed) stopIfUnneeded()
                     } else {
                         // Add watch to targetWatches if it doesn't exist
                         if (targetWatches.none { it.id == preference.watchId }) {
