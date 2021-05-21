@@ -70,17 +70,17 @@ object Observers {
             this@dndState.unregisterReceiver(dndChangeReceiver)
         }
     }
-
-    /**
-     * Checks whether DnD is enabled for this watch.
-     * @return true if DnD is enabled, false otherwise.
-     */
-    val NotificationManager.isDndEnabled: Boolean
-        get() = this.currentInterruptionFilter != NotificationManager.INTERRUPTION_FILTER_ALL
-
-    /**
-     * Checks whether theater mode is currently enabled for this watch.
-     */
-    val Context.isTheaterModeOn: Boolean
-        get() = Settings.Global.getInt(contentResolver, THEATER_MODE, 0) == 1
 }
+
+/**
+ * Checks whether DnD is enabled for this watch.
+ * @return true if DnD is enabled, false otherwise.
+ */
+val NotificationManager.isDndEnabled: Boolean
+    get() = (currentInterruptionFilter != NotificationManager.INTERRUPTION_FILTER_ALL)
+
+/**
+ * Checks whether theater mode is currently enabled for this watch.
+ */
+val Context.isTheaterModeOn: Boolean
+    get() = Settings.Global.getInt(contentResolver, Observers.THEATER_MODE, 0) == 1
