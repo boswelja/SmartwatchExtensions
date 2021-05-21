@@ -39,8 +39,6 @@ import strikt.assertions.isTrue
 @Config(sdk = [Build.VERSION_CODES.R])
 class ObserversTest {
 
-    private val COROUTINE_TIMEOUT: Long = 250
-
     private lateinit var context: Context
 
     @Before
@@ -142,5 +140,9 @@ class ObserversTest {
 
         // Check result
         expectThat(results.last()).isTrue()
+    }
+
+    companion object {
+        private const val COROUTINE_TIMEOUT: Long = 500
     }
 }
