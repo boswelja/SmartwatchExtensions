@@ -1,16 +1,17 @@
 package com.boswelja.smartwatchextensions.dndsync
 
+import android.app.NotificationManager
 import android.content.Context
+import androidx.core.content.getSystemService
 import androidx.lifecycle.asFlow
-import com.boswelja.smartwatchextensions.common.Compat
 import com.boswelja.smartwatchextensions.common.dndsync.References.DND_STATUS_PATH
 import com.boswelja.smartwatchextensions.common.preference.PreferenceKey.DND_SYNC_TO_PHONE_KEY
 import com.boswelja.smartwatchextensions.common.preference.PreferenceKey.DND_SYNC_WITH_THEATER_KEY
 import com.boswelja.smartwatchextensions.common.toByteArray
 import com.boswelja.smartwatchextensions.watchmanager.WatchManager
+import java.util.UUID
 import kotlinx.coroutines.flow.first
 import timber.log.Timber
-import java.util.UUID
 
 object Utils {
 
@@ -21,11 +22,12 @@ object Utils {
         watchManager: WatchManager = WatchManager.getInstance(context)
     ) {
         // Set the new DnD state
-        val success = Compat.setInterruptionFilter(context, isDnDEnabled)
+        val success = context.getSystemService<NotificationManager>()!!.setDnD(isDnDEnabled)
 
         if (success) {
             // Let other watches know DnD state changed
             Timber.d("Successfully set DnD state")
+            // TODO we need to check whether watches have DnD Sync on
             watchManager.registeredWatches.asFlow().first()
                 .filterNot { it.id == sourceWatchId }.forEach { watch ->
                     watchManager.sendMessage(watch, DND_STATUS_PATH, isDnDEnabled.toByteArray())
@@ -36,6 +38,25 @@ object Utils {
             watchManager.updatePreference(DND_SYNC_TO_PHONE_KEY, false)
             watchManager.updatePreference(DND_SYNC_WITH_THEATER_KEY, false)
             // TODO Send a message to let the user know
+        }
+    }
+
+    /**
+     * Try to set the system DnD status. This will fail if permission is not granted.
+     * @param isEnabled Whether DnD should be enabled.
+     * @return true if setting DnD succeeds, false otherwise.
+     */
+    private fun NotificationManager.setDnD(isEnabled: Boolean): Boolean {
+        return if (isNotificationPolicyAccessGranted) {
+            val newFilter = if (isEnabled)
+                NotificationManager.INTERRUPTION_FILTER_PRIORITY
+            else
+                NotificationManager.INTERRUPTION_FILTER_ALL
+            setInterruptionFilter(newFilter)
+            true
+        } else {
+            Timber.w("No permission to set DnD state")
+            false
         }
     }
 }

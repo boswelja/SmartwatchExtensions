@@ -8,62 +8,54 @@ import androidx.core.content.getSystemService
 import androidx.lifecycle.LifecycleService
 import androidx.lifecycle.lifecycleScope
 import com.boswelja.smartwatchextensions.NotificationChannelHelper
-import com.boswelja.smartwatchextensions.common.Compat
 import com.boswelja.smartwatchextensions.common.R
 import com.boswelja.smartwatchextensions.common.dndsync.References
 import com.boswelja.smartwatchextensions.common.dndsync.References.DND_STATUS_PATH
+import com.boswelja.smartwatchextensions.common.dndsync.dndState
 import com.boswelja.smartwatchextensions.common.preference.PreferenceKey.DND_SYNC_TO_WATCH_KEY
 import com.boswelja.smartwatchextensions.common.toByteArray
 import com.boswelja.smartwatchextensions.main.MainActivity
 import com.boswelja.smartwatchextensions.watchmanager.WatchManager
 import com.boswelja.watchconnection.core.Watch
 import com.google.android.gms.wearable.DataClient
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
 class DnDLocalChangeService : LifecycleService() {
 
-    private val watchManager by lazy { WatchManager.getInstance(this) }
+    private val dndCollectorJob = Job()
 
-    private val dndChangeReceiver =
-        object : DnDLocalChangeReceiver() {
-            override fun onDnDChanged(dndEnabled: Boolean) {
-                sendNewDnDState(dndEnabled)
-            }
-        }
+    private val watchManager by lazy { WatchManager.getInstance(this) }
 
     private val targetWatches = ArrayList<Watch>()
 
+    @ExperimentalCoroutinesApi
     override fun onCreate() {
         super.onCreate()
         Timber.i("onCreate() called")
 
-        dndChangeReceiver.register(this)
-
-        // Sync up on start
-        sendNewDnDState(Compat.isDndEnabled(this))
-        watchManager.settingsDatabase.boolPrefDao().getAllObservableForKey(DND_SYNC_TO_WATCH_KEY)
-            .observe(this) { prefs ->
-                prefs.forEach { preference ->
-                    if (!preference.value) {
-                        // Remove watch if it exists in targetWatches
-                        val index = targetWatches.indexOfFirst { it.id == preference.watchId }
-                        if (index > -1) targetWatches.removeAt(index)
-
-                        // Try stop service
-                        stopIfUnneeded()
-                    } else {
-                        // Add watch to targetWatches if it doesn't exist
-                        if (targetWatches.none { it.id == preference.watchId }) {
-                            lifecycleScope.launch {
-                                watchManager.getWatchById(preference.watchId)?.let { watch ->
-                                    targetWatches.add(watch)
-                                }
-                            }
-                        }
+        lifecycleScope.launch {
+            watchManager.settingsDatabase.boolPrefDao().getAllFlowForKey(DND_SYNC_TO_WATCH_KEY)
+                .mapLatest { prefs ->
+                    prefs.filter { pref ->
+                        pref.value
+                    }.mapNotNull { pref ->
+                        watchManager.getWatchById(pref.watchId)
                     }
+                }.collect {
+                    targetWatches.clear()
+                    targetWatches.addAll(it)
+                    stopIfUnneeded()
                 }
-            }
+        }
+
+        lifecycleScope.launch(dndCollectorJob) {
+            dndState().collect { sendNewDnDState(it) }
+        }
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -76,10 +68,7 @@ class DnDLocalChangeService : LifecycleService() {
         super.onDestroy()
         Timber.i("onDestroy() called")
 
-        try {
-            dndChangeReceiver.unregister(this)
-        } catch (ignored: IllegalArgumentException) {
-        }
+        dndCollectorJob.cancel()
     }
 
     /**

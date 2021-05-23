@@ -2,13 +2,13 @@
 # AndroidX versions
 androidxAppCompat = "1.3.0"
 androidxArch = "2.1.0"
-androidxBrowser = "1.4.0-alpha01"
+androidxBrowser = "1.3.0"
 androidxCore = "1.6.0-beta01"
 androidxDataStore = "1.0.0-beta01"
 androidxEspresso = "3.4.0-alpha06"
 androidxLifecycle = "2.4.0-alpha01"
 androidxRoom = "2.4.0-alpha02"
-androidxTest = "1.4.0-alpha06"
+androidxTest = "1.4.0-beta01"
 androidxTestExt = "1.1.3-alpha06"
 androidxWear = "1.2.0-alpha09"
 androidxWearComplications = "1.0.0-alpha14"
@@ -74,6 +74,7 @@ googleplay-corektx = { module = "com.google.android.play:core-ktx", version.ref 
 junit = { module = "junit:junit", version.ref = "junit" }
 kotlinx-coroutines-playservices = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-play-services", version.ref = "coroutines" }
 kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "coroutines" }
+kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm", version.ref = "coroutines" }
 mockk-core = { module = "io.mockk:mockk", version.ref = "mockk" }
 mockk-android = { module = "io.mockk:mockk-android", version.ref = "mockk" }
 play-services-wearable = { module = "com.google.android.gms:play-services-wearable", version.ref = "playServicesWearable" }

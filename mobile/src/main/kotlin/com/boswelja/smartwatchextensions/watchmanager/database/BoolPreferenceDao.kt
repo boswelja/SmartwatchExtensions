@@ -8,6 +8,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.boswelja.smartwatchextensions.watchmanager.item.BoolPreference
 import java.util.UUID
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface BoolPreferenceDao {
@@ -33,8 +34,12 @@ interface BoolPreferenceDao {
     @Query("SELECT * FROM bool_preferences WHERE id = :watchId")
     fun getAllObservableForWatch(watchId: UUID): LiveData<Array<BoolPreference>>
 
+    @Deprecated("Use getAllFlowForKey")
     @Query("SELECT * FROM bool_preferences WHERE pref_key = :key")
     fun getAllObservableForKey(key: String): LiveData<Array<BoolPreference>>
+
+    @Query("SELECT * FROM bool_preferences WHERE pref_key = :key")
+    fun getAllFlowForKey(key: String): Flow<Array<BoolPreference>>
 
     @Query("SELECT * FROM bool_preferences WHERE id = :watchId AND pref_key = :key LIMIT 1")
     fun getObservable(watchId: UUID, key: String): LiveData<BoolPreference?>
