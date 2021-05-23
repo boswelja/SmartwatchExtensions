@@ -19,6 +19,7 @@ import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.mockk
 import io.mockk.verify
+import java.io.File
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.runBlocking
@@ -33,7 +34,6 @@ import strikt.api.expectThat
 import strikt.assertions.isFalse
 import strikt.assertions.isLessThanOrEqualTo
 import strikt.assertions.isTrue
-import java.io.File
 
 @ExperimentalCoroutinesApi
 @RunWith(AndroidJUnit4::class)

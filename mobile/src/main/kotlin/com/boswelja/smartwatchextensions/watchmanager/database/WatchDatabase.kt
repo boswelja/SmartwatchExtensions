@@ -9,7 +9,6 @@ import com.boswelja.smartwatchextensions.common.RoomTypeConverters
 import com.boswelja.smartwatchextensions.common.SingletonHolder
 import com.boswelja.smartwatchextensions.watchmanager.database.DbWatch.Companion.toDbWatch
 import com.boswelja.watchconnection.core.Watch
-import java.util.UUID
 
 @Database(entities = [DbWatch::class], version = 1)
 @TypeConverters(RoomTypeConverters::class)
@@ -20,8 +19,6 @@ abstract class WatchDatabase : RoomDatabase() {
     suspend fun renameWatch(watch: Watch, newName: String) = watchDao().setName(watch.id, newName)
     suspend fun addWatch(watch: Watch) = watchDao().add(watch.toDbWatch())
     suspend fun removeWatch(watch: Watch) = watchDao().remove(watch.id)
-    fun getAll() = watchDao().getAllObservable()
-    fun getById(watchId: UUID) = watchDao().getObservable(watchId)
 
     companion object : SingletonHolder<WatchDatabase, Context>({ context ->
         Room.databaseBuilder(context, WatchDatabase::class.java, "watch-db")

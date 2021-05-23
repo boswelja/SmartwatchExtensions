@@ -9,8 +9,8 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -32,9 +32,9 @@ fun DnDSyncSettingsScreen() {
             context.getSystemService<NotificationManager>()!!
         }
 
-        val dndSyncToWatch by viewModel.syncToWatch.observeAsState()
-        val dndSyncToPhone by viewModel.syncToPhone.observeAsState()
-        val dndSyncWithTheater by viewModel.syncWithTheater.observeAsState()
+        val dndSyncToWatch by viewModel.syncToWatch.collectAsState(false)
+        val dndSyncToPhone by viewModel.syncToPhone.collectAsState(false)
+        val dndSyncWithTheater by viewModel.syncWithTheater.collectAsState(false)
 
         var changingKey = remember<String?> { null }
         val notiPolicyAccessLauncher =
@@ -53,7 +53,7 @@ fun DnDSyncSettingsScreen() {
         SwitchPreference(
             text = stringResource(R.string.pref_dnd_sync_to_watch_title),
             secondaryText = stringResource(R.string.pref_dnd_sync_to_watch_summary),
-            isChecked = dndSyncToWatch == true,
+            isChecked = dndSyncToWatch,
             onCheckChanged = {
                 if (!it) {
                     viewModel.setSyncToWatch(false)
@@ -66,7 +66,7 @@ fun DnDSyncSettingsScreen() {
         SwitchPreference(
             text = stringResource(R.string.pref_dnd_sync_to_phone_title),
             secondaryText = stringResource(R.string.pref_dnd_sync_to_phone_summary),
-            isChecked = dndSyncToPhone == true,
+            isChecked = dndSyncToPhone,
             onCheckChanged = {
                 if ((it && notificationManager.isNotificationPolicyAccessGranted) || !it) {
                     viewModel.setSyncToPhone(it)
@@ -85,7 +85,7 @@ fun DnDSyncSettingsScreen() {
         SwitchPreference(
             text = stringResource(R.string.pref_dnd_sync_with_theater_title),
             secondaryText = stringResource(R.string.pref_dnd_sync_with_theater_summary),
-            isChecked = dndSyncWithTheater == true,
+            isChecked = dndSyncWithTheater,
             onCheckChanged = {
                 if ((it && notificationManager.isNotificationPolicyAccessGranted) || !it) {
                     viewModel.setSyncWithTheater(it)

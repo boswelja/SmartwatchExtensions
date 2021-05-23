@@ -11,6 +11,7 @@ import com.boswelja.smartwatchextensions.batterysync.database.WatchBatteryStatsD
 import com.boswelja.smartwatchextensions.common.ui.BaseWidgetProvider
 import com.boswelja.smartwatchextensions.main.MainActivity
 import java.util.UUID
+import kotlinx.coroutines.flow.firstOrNull
 
 class WatchBatteryWidget : BaseWidgetProvider() {
 
@@ -33,7 +34,7 @@ class WatchBatteryWidget : BaseWidgetProvider() {
         }
 
         val batteryPercent = WatchBatteryStatsDatabase.getInstance(context)
-            .batteryStatsDao().getStatsForWatch(watchId)?.percent ?: -1
+            .batteryStatsDao().getStats(watchId).firstOrNull()?.percent ?: -1
 
         // Set battery indicator image
         ContextCompat.getDrawable(context, R.drawable.ic_watch_battery)!!

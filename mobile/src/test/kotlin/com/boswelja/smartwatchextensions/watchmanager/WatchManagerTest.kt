@@ -24,9 +24,11 @@ import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.verify
+import java.util.concurrent.TimeUnit
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.TestCoroutineScope
 import org.junit.Before
@@ -35,12 +37,9 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.annotation.Config
 import strikt.api.expectThat
-import strikt.api.expectThrows
 import strikt.assertions.isEqualTo
 import strikt.assertions.isNotNull
 import strikt.assertions.isNull
-import java.util.concurrent.TimeUnit
-import java.util.concurrent.TimeoutException
 
 @RunWith(AndroidJUnit4::class)
 @Config(sdk = [Build.VERSION_CODES.R])
@@ -118,7 +117,7 @@ class WatchManagerTest {
         }
 
         // Verify watch was added to the database
-        expectThat(watchDatabase.watchDao().get(dummyWatch1.id)).isNotNull()
+        expectThat(watchDatabase.watchDao().get(dummyWatch1.id).firstOrNull()).isNotNull()
     }
 
     @Test
@@ -135,7 +134,7 @@ class WatchManagerTest {
             verify(exactly = 1) { batteryStatsDatabase.batteryStatsDao() }
 
             // Verify watch isn't in database
-            expectThat(watchDatabase.watchDao().get(dummyWatch1.id)).isNull()
+            expectThat(watchDatabase.watchDao().get(dummyWatch1.id).firstOrNull()).isNull()
         }
 
     @Test
@@ -147,7 +146,8 @@ class WatchManagerTest {
         verify(exactly = 1) { analytics.logWatchRenamed() }
 
         // Verify name was changed in the database
-        expectThat(watchDatabase.watchDao().get(dummyWatch1.id)?.name).isEqualTo(newName)
+        expectThat(watchDatabase.watchDao().get(dummyWatch1.id).firstOrNull()?.name)
+            .isEqualTo(newName)
     }
 
     @Test
@@ -159,7 +159,8 @@ class WatchManagerTest {
             dummyWatch1
         )
         coVerify(exactly = 1) { connectionClient.sendMessage(dummyWatch1, CLEAR_PREFERENCES) }
-        coVerify(exactly = 1) { settingsDatabase.clearWatchPreferences(dummyWatch1) }
+        verify(exactly = 1) { settingsDatabase.intSettings() }
+        verify(exactly = 1) { settingsDatabase.boolSettings() }
         verify(exactly = 1) { batteryStatsDatabase.batteryStatsDao() }
     }
 
@@ -167,9 +168,9 @@ class WatchManagerTest {
     fun `selectedWatch is null if there are no registered watches`() {
         setRegisteredWatches(emptyList())
         watchManager = getWatchManager()
-        expectThrows<TimeoutException> {
+        expectThat(
             watchManager.selectedWatch.getOrAwaitValue(time = 500, timeUnit = TimeUnit.MILLISECONDS)
-        }
+        ).isNull()
     }
 
     @Test

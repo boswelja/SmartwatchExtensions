@@ -14,6 +14,7 @@ import com.boswelja.smartwatchextensions.watchmanager.database.WatchSettingsData
 import java.util.UUID
 import java.util.concurrent.TimeUnit
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 
@@ -23,7 +24,7 @@ class BatterySyncWorker(appContext: Context, workerParams: WorkerParameters) :
     override suspend fun doWork(): Result {
         Timber.i("doWork() called")
         val watchId = UUID.fromString(inputData.getString(EXTRA_WATCH_ID))
-        WatchManager.getInstance(applicationContext).getWatchById(watchId)?.let {
+        WatchManager.getInstance(applicationContext).getWatchById(watchId).firstOrNull()?.let {
             Utils.updateBatteryStats(applicationContext, it)
             return Result.success()
         }
@@ -39,12 +40,11 @@ class BatterySyncWorker(appContext: Context, workerParams: WorkerParameters) :
             Timber.d("Starting BatterySyncWorker for %s", watchId)
             return withContext(Dispatchers.IO) {
                 val database = WatchSettingsDatabase.getInstance(context)
-                val syncIntervalMinutes =
-                    (database.intPrefDao().get(watchId, BATTERY_SYNC_INTERVAL_KEY)?.value ?: 15)
-                        .toLong()
+                val syncIntervalMinutes = database.intSettings()
+                    .get(watchId, BATTERY_SYNC_INTERVAL_KEY).firstOrNull()?.value ?: 15
                 val data = Data.Builder().putString(EXTRA_WATCH_ID, watchId.toString()).build()
                 val request = PeriodicWorkRequestBuilder<BatterySyncWorker>(
-                    syncIntervalMinutes, TimeUnit.MINUTES,
+                    syncIntervalMinutes.toLong(), TimeUnit.MINUTES,
                     PeriodicWorkRequest.MIN_PERIODIC_FLEX_MILLIS, TimeUnit.MILLISECONDS
                 ).apply {
                     setInputData(data)

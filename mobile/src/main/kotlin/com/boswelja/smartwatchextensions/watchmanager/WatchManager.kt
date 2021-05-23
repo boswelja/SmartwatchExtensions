@@ -5,11 +5,8 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.asFlow
-import androidx.lifecycle.liveData
-import androidx.lifecycle.map
-import androidx.lifecycle.switchMap
+import androidx.lifecycle.asLiveData
 import com.boswelja.smartwatchextensions.AppState
 import com.boswelja.smartwatchextensions.analytics.Analytics
 import com.boswelja.smartwatchextensions.appStateStore
@@ -22,7 +19,6 @@ import com.boswelja.smartwatchextensions.common.connection.Preference.toByteArra
 import com.boswelja.smartwatchextensions.watchmanager.database.DbWatch.Companion.toDbWatch
 import com.boswelja.smartwatchextensions.watchmanager.database.WatchDatabase
 import com.boswelja.smartwatchextensions.watchmanager.database.WatchSettingsDatabase
-import com.boswelja.smartwatchextensions.watchmanager.item.Preference
 import com.boswelja.smartwatchextensions.widget.widgetIdStore
 import com.boswelja.watchconnection.core.MessageListener
 import com.boswelja.watchconnection.core.Watch
@@ -33,9 +29,12 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -64,26 +63,29 @@ class WatchManager internal constructor(
         CoroutineScope(Dispatchers.IO)
     )
 
-    private val _selectedWatchId = MutableLiveData<UUID>(null)
-    private val _selectedWatch = _selectedWatchId.switchMap { id ->
-        if (id != null) watchDatabase.getById(id)
-        else liveData { }
+    private val _selectedWatchId = MutableStateFlow<UUID?>(null)
+    @ExperimentalCoroutinesApi
+    private val _selectedWatch = _selectedWatchId.flatMapLatest { id ->
+        id?.let {
+            watchDatabase.watchDao().get(id)
+        } ?: flow { emit(null) }
     }
 
     val registeredWatches: LiveData<List<Watch>>
-        get() = watchDatabase.watchDao().getAllObservable().map { it }
+        get() = watchDatabase.watchDao().getAll().asLiveData()
 
     @ExperimentalCoroutinesApi
     val availableWatches: Flow<List<Watch>>
         get() = connectionClient.watchesWithApp()
             .map { watches ->
-                watches.filter { watchDatabase.watchDao().get(it.id) == null }
+                watches.filter { watchDatabase.watchDao().get(it.id).firstOrNull() == null }
             }
 
     /**
      * The currently selected watch
      */
-    val selectedWatch: LiveData<Watch?> = _selectedWatch.map { it }
+    @ExperimentalCoroutinesApi
+    val selectedWatch: LiveData<Watch?> = _selectedWatch.asLiveData()
 
     init {
         Timber.d("Creating WatchManager")
@@ -123,7 +125,7 @@ class WatchManager internal constructor(
         watch: Watch
     ) {
         withContext(Dispatchers.IO) {
-            batteryStatsDatabase.batteryStatsDao().deleteStatsForWatch(watch.id)
+            batteryStatsDatabase.batteryStatsDao().deleteStats(watch.id)
             connectionClient.sendMessage(watch, Messages.RESET_APP)
             watchDatabase.removeWatch(watch)
             removeWidgetsForWatch(watch, widgetIdStore)
@@ -151,9 +153,10 @@ class WatchManager internal constructor(
         batteryStatsDatabase: WatchBatteryStatsDatabase,
         watch: Watch
     ) {
-        batteryStatsDatabase.batteryStatsDao().deleteStatsForWatch(watch.id)
+        batteryStatsDatabase.batteryStatsDao().deleteStats(watch.id)
         connectionClient.sendMessage(watch, CLEAR_PREFERENCES)
-        settingsDatabase.clearWatchPreferences(watch)
+        settingsDatabase.intSettings().deleteAllForWatch(watch.id)
+        settingsDatabase.boolSettings().deleteAllForWatch(watch.id)
         removeWidgetsForWatch(watch, widgetIdStore)
     }
 
@@ -178,8 +181,8 @@ class WatchManager internal constructor(
      */
     fun selectWatchById(watchId: UUID) {
         Timber.d("selectWatchById(%s) called", watchId)
-        _selectedWatchId.postValue(watchId)
         coroutineScope.launch {
+            _selectedWatchId.emit(watchId)
             dataStore.updateData { settings ->
                 settings.copy(lastSelectedWatchId = watchId.toString())
             }
@@ -193,23 +196,37 @@ class WatchManager internal constructor(
     suspend fun sendMessage(watch: Watch, message: String, data: ByteArray? = null) =
         connectionClient.sendMessage(watch, message, data)
 
-    /**
-     * Gets a preference for a given watch with a specified key.
-     * @param watchId See [Watch.id].
-     * @param key The [Preference.key] of the preference to find.
-     * @return The value of the preference, or null if it doesn't exist.
-     */
-    suspend inline fun <reified T> getPreference(watchId: UUID, key: String) =
-        settingsDatabase.getPreference<T>(watchId, key)?.value
+    @ExperimentalCoroutinesApi
+    fun getBoolSetting(key: String, watch: Watch? = null, default: Boolean = false): Flow<Boolean> {
+        return if (watch != null) {
+            settingsDatabase.boolSettings().get(watch.id, key).map { it?.value ?: default }
+        } else {
+            _selectedWatch.flatMapLatest { selectedWatch ->
+                if (selectedWatch != null) {
+                    settingsDatabase.boolSettings().get(selectedWatch.id, key)
+                        .map { it?.value ?: default }
+                } else {
+                    flow { emit(default) }
+                }
+            }
+        }
+    }
 
-    /**
-     * Gets a preference for a given watch with a specified key, wrapped in a LiveData.
-     * @param watchId See [Watch.id].
-     * @param key The [Preference.key] of the preference to find.
-     * @return The value of the preference, or null if it doesn't exist.
-     */
-    inline fun <reified T> getPreferenceObservable(watchId: UUID, key: String) =
-        settingsDatabase.getPreferenceObservable<T>(watchId, key)?.map { it?.value } ?: liveData { }
+    @ExperimentalCoroutinesApi
+    fun getIntSetting(key: String, watch: Watch? = null, default: Int = 0): Flow<Int> {
+        return if (watch != null) {
+            settingsDatabase.intSettings().get(watch.id, key).map { it?.value ?: default }
+        } else {
+            _selectedWatch.flatMapLatest { selectedWatch ->
+                if (selectedWatch != null) {
+                    settingsDatabase.intSettings().get(selectedWatch.id, key)
+                        .map { it?.value ?: default }
+                } else {
+                    flow { emit(default) }
+                }
+            }
+        }
+    }
 
     /**
      * Update a preference for a given watch.
@@ -230,7 +247,7 @@ class WatchManager internal constructor(
                 message,
                 Pair(key, value).toByteArray()
             )
-            settingsDatabase.updatePrefInDatabase(watch.id, key, value)
+            settingsDatabase.updateSetting(watch.id, key, value)
             analytics.logExtensionSettingChanged(key, value)
         }
     }
@@ -241,16 +258,14 @@ class WatchManager internal constructor(
      * @param value The new preference value.
      */
     suspend fun updatePreference(key: String, value: Boolean) {
-        withContext(Dispatchers.IO) {
-            watchDatabase.watchDao().getAll().forEach {
-                updatePreference(it, key, value)
-            }
+        watchDatabase.watchDao().getAll().first().forEach {
+            updatePreference(it, key, value)
         }
     }
 
-    suspend fun getWatchById(id: UUID) = watchDatabase.watchDao().get(id)
+    fun getWatchById(id: UUID) = watchDatabase.watchDao().get(id)
     fun observeWatchById(id: UUID): LiveData<Watch?> =
-        watchDatabase.watchDao().getObservable(id).map { it }
+        watchDatabase.watchDao().get(id).asLiveData()
 
     fun registerMessageListener(messageListener: MessageListener) =
         connectionClient.addMessageListener(messageListener)

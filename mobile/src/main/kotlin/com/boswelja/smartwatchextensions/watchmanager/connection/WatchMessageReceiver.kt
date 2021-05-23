@@ -20,10 +20,11 @@ import com.boswelja.smartwatchextensions.watchmanager.database.WatchDatabase
 import com.boswelja.watchconnection.core.MessageReceiver
 import com.boswelja.watchconnection.core.WatchPlatformManager
 import com.boswelja.watchconnection.wearos.WearOSPlatform
+import java.util.UUID
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.withContext
 import timber.log.Timber
-import java.util.UUID
 
 class WatchMessageReceiver : MessageReceiver() {
 
@@ -70,7 +71,7 @@ class WatchMessageReceiver : MessageReceiver() {
         Timber.i("sendIsWatchRegistered() called")
         withContext(Dispatchers.IO) {
             val database = WatchDatabase.getInstance(context)
-            val watch = database.watchDao().get(watchId)
+            val watch = database.watchDao().get(watchId).firstOrNull()
             // If watch is found in the database, let it know it's registered
             watch?.let {
                 WatchPlatformManager(

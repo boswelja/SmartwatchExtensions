@@ -4,5 +4,5 @@ import androidx.room.Entity
 import java.util.UUID
 
 @Entity(primaryKeys = ["id", "pref_key"], tableName = "int_preferences")
-class IntPreference(watchId: UUID, key: String, value: Int) :
-    Preference<Int>(watchId, key, value)
+class IntSetting(watchId: UUID, key: String, value: Int) :
+    Setting<Int>(watchId, key, value)

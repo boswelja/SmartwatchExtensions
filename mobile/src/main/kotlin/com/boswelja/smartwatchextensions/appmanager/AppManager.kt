@@ -13,13 +13,14 @@ import com.boswelja.smartwatchextensions.common.fromByteArray
 import com.boswelja.smartwatchextensions.watchmanager.WatchManager
 import com.boswelja.watchconnection.core.MessageListener
 import com.boswelja.watchconnection.core.Watch
+import java.util.UUID
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import java.util.UUID
 
 /**
  * Class for handling the connection with an App Manager service on a connected watch.
@@ -111,7 +112,7 @@ class AppManager internal constructor(
                 // If we get SERVICE_RUNNING from any watch that's not the selected watch, stop it
                 Timber.w("Issue with received message, stopping App Manager on the watch")
                 coroutineScope.launch {
-                    watchManager.getWatchById(sourceWatchId)?.let {
+                    watchManager.getWatchById(sourceWatchId).firstOrNull()?.let {
                         watchManager.sendMessage(it, STOP_SERVICE, null)
                     }
                 }

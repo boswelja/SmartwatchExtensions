@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
@@ -22,12 +23,14 @@ import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.batterysync.database.WatchBatteryStats
 import com.boswelja.smartwatchextensions.common.BatteryIcon
 import java.util.concurrent.TimeUnit
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
+@ExperimentalCoroutinesApi
 @Composable
 fun BatterySyncSettingsHeader() {
     val viewModel: BatterySyncViewModel = viewModel()
-    val batterySyncEnabled by viewModel.batterySyncEnabled.observeAsState()
-    if (batterySyncEnabled == true) {
+    val batterySyncEnabled by viewModel.batterySyncEnabled.collectAsState(false)
+    if (batterySyncEnabled) {
         val batteryStats by viewModel.batteryStats.observeAsState()
         batteryStats.let {
             if (it != null) {

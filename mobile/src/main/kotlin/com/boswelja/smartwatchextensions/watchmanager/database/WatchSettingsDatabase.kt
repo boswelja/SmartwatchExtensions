@@ -1,97 +1,53 @@
 package com.boswelja.smartwatchextensions.watchmanager.database
 
 import android.content.Context
-import androidx.lifecycle.LiveData
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.boswelja.smartwatchextensions.common.RoomTypeConverters
 import com.boswelja.smartwatchextensions.common.SingletonHolder
-import com.boswelja.smartwatchextensions.watchmanager.item.BoolPreference
-import com.boswelja.smartwatchextensions.watchmanager.item.IntPreference
-import com.boswelja.smartwatchextensions.watchmanager.item.Preference
+import com.boswelja.smartwatchextensions.watchmanager.item.BoolSetting
+import com.boswelja.smartwatchextensions.watchmanager.item.IntSetting
 import com.boswelja.watchconnection.core.Watch
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
-import timber.log.Timber
 import java.util.UUID
 
-@Database(entities = [IntPreference::class, BoolPreference::class], version = 1)
+@Database(entities = [IntSetting::class, BoolSetting::class], version = 1)
 @TypeConverters(RoomTypeConverters::class)
 abstract class WatchSettingsDatabase : RoomDatabase() {
-    abstract fun intPrefDao(): IntPreferenceDao
-    abstract fun boolPrefDao(): BoolPreferenceDao
-
-    suspend fun clearWatchPreferences(watch: Watch) {
-        withContext(Dispatchers.IO) {
-            intPrefDao().deleteAllForWatch(watch.id)
-            boolPrefDao().deleteAllForWatch(watch.id)
-        }
-    }
+    abstract fun intSettings(): IntSettingDao
+    abstract fun boolSettings(): BoolSettingDao
 
     /**
-     * Updates a stored preference value for a given preference and watch.
+     * Updates a stored setting for a given key and watch.
      * @param watchId The ID of the [Watch] whose preference we're updating.
-     * @param preferenceKey The key for the preference to update.
+     * @param key The key for the preference to update.
      * @param newValue The new value of the preference to update.
-     * @return true if the preference was successfully updated, false otherwise.
+     * @return true if the setting was successfully updated, false otherwise.
      */
-    suspend fun updatePrefInDatabase(
+    suspend fun updateSetting(
         watchId: UUID,
-        preferenceKey: String,
+        key: String,
         newValue: Any
     ): Boolean {
-        return withContext(Dispatchers.IO) {
-            if (isOpen) {
-                return@withContext when (newValue) {
-                    is Boolean -> {
-                        BoolPreference(watchId, preferenceKey, newValue).also {
-                            boolPrefDao().update(it)
-                        }
-                        true
+        if (isOpen) {
+            return when (newValue) {
+                is Boolean -> {
+                    BoolSetting(watchId, key, newValue).also {
+                        boolSettings().update(it)
                     }
-                    is Int -> {
-                        IntPreference(watchId, preferenceKey, newValue).also {
-                            intPrefDao().update(it)
-                        }
-                        true
+                    true
+                }
+                is Int -> {
+                    IntSetting(watchId, key, newValue).also {
+                        intSettings().update(it)
                     }
-                    else -> false
+                    true
                 }
-            }
-            return@withContext false
-        }
-    }
-
-    @Suppress("UNCHECKED_CAST")
-    suspend inline fun <reified T> getPreference(watchId: UUID, key: String): Preference<T>? {
-        return withContext(Dispatchers.IO) {
-            return@withContext when (T::class) {
-                Int::class -> intPrefDao().get(watchId, key) as Preference<T>?
-                Boolean::class -> boolPrefDao().get(watchId, key) as Preference<T>?
-                else -> {
-                    Timber.w("Tried to get preference for unsupported type ${T::class}")
-                    null
-                }
+                else -> false
             }
         }
-    }
-
-    @Suppress("UNCHECKED_CAST")
-    inline fun <reified T> getPreferenceObservable(
-        watchId: UUID,
-        key: String
-    ): LiveData<Preference<T>?>? {
-        return when (T::class) {
-            Int::class -> intPrefDao().getObservable(watchId, key) as LiveData<Preference<T>?>
-            Boolean::class ->
-                boolPrefDao().getObservable(watchId, key) as LiveData<Preference<T>?>
-            else -> {
-                Timber.w("Tried to get preference for unsupported type ${T::class}")
-                null
-            }
-        }
+        return false
     }
 
     companion object : SingletonHolder<WatchSettingsDatabase, Context>({ context ->

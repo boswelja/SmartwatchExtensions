@@ -6,7 +6,7 @@ import java.util.UUID
 /**
  * An abstract class for storing preferences inside a Room database.
  */
-abstract class Preference<T>(
+abstract class Setting<T>(
     @ColumnInfo(name = "id")
     val watchId: UUID,
     @ColumnInfo(name = "pref_key")

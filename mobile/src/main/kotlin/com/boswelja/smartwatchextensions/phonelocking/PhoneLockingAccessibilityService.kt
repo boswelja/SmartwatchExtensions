@@ -11,6 +11,8 @@ import com.google.android.gms.wearable.MessageEvent
 import java.util.UUID
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
@@ -58,11 +60,11 @@ class PhoneLockingAccessibilityService :
      */
     private fun tryLockDevice(watchId: UUID) {
         coroutineScope.launch(Dispatchers.IO) {
-            val watch = watchManager.getWatchById(watchId)
+            val watch = watchManager.getWatchById(watchId).firstOrNull()
             if (watch != null) {
-                val phoneLockingEnabledForWatch = watchManager.getPreference<Boolean>(
-                    watch.id, PHONE_LOCKING_ENABLED_KEY
-                ) == true
+                val phoneLockingEnabledForWatch = watchManager.getBoolSetting(
+                    PHONE_LOCKING_ENABLED_KEY, watch
+                ).first()
                 if (phoneLockingEnabledForWatch) {
                     Timber.i("Trying to lock phone")
                     withContext(Dispatchers.Main) {

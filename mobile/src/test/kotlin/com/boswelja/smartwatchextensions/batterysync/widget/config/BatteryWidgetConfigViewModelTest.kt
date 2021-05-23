@@ -5,10 +5,10 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.boswelja.smartwatchextensions.getOrAwaitValue
 import com.boswelja.smartwatchextensions.watchmanager.database.WatchDatabase
 import com.boswelja.watchconnection.core.Watch
 import com.boswelja.watchconnection.wearos.WearOSPlatform
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Before
@@ -19,7 +19,6 @@ import org.robolectric.annotation.Config
 import strikt.api.expectThat
 import strikt.assertions.containsExactly
 import strikt.assertions.isEmpty
-import strikt.assertions.isNotNull
 
 @RunWith(AndroidJUnit4::class)
 @Config(sdk = [Build.VERSION_CODES.R])
@@ -55,22 +54,24 @@ class BatteryWidgetConfigViewModelTest {
     }
 
     @Test
-    fun `allRegisteredWatches updates correctly when watches change`() {
+    fun `allRegisteredWatches updates correctly when watches change`(): Unit = runBlocking {
         // Check with multiple watches
         setWatchesInDatabase(listOf(dummyWatch1, dummyWatch2, dummyWatch3))
-        viewModel.registeredWatches.getOrAwaitValue {
-            expectThat(it).isNotNull().containsExactly(dummyWatch1, dummyWatch2, dummyWatch3)
-        }
+        expectThat(
+            viewModel.registeredWatches.first()
+        ).containsExactly(dummyWatch1, dummyWatch2, dummyWatch3)
 
         // Check with single watch
         setWatchesInDatabase(listOf(dummyWatch1))
-        viewModel.registeredWatches.getOrAwaitValue {
-            expectThat(it).isNotNull().containsExactly(dummyWatch1)
-        }
+        expectThat(
+            viewModel.registeredWatches.first()
+        ).containsExactly(dummyWatch1)
 
         // Check with no watches
         setWatchesInDatabase(emptyList())
-        viewModel.registeredWatches.getOrAwaitValue { expectThat(it).isNotNull().isEmpty() }
+        expectThat(
+            viewModel.registeredWatches.first()
+        ).isEmpty()
     }
 
     /**
