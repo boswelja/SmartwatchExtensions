@@ -5,12 +5,8 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.asFlow
 import androidx.lifecycle.asLiveData
-import androidx.lifecycle.liveData
-import androidx.lifecycle.map
-import androidx.lifecycle.switchMap
 import com.boswelja.smartwatchextensions.AppState
 import com.boswelja.smartwatchextensions.analytics.Analytics
 import com.boswelja.smartwatchextensions.appStateStore
@@ -33,9 +29,12 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -64,10 +63,12 @@ class WatchManager internal constructor(
         CoroutineScope(Dispatchers.IO)
     )
 
-    private val _selectedWatchId = MutableLiveData<UUID>(null)
-    private val _selectedWatch = _selectedWatchId.switchMap { id ->
-        if (id != null) watchDatabase.watchDao().get(id).asLiveData()
-        else liveData { }
+    private val _selectedWatchId = MutableStateFlow<UUID?>(null)
+    @ExperimentalCoroutinesApi
+    private val _selectedWatch = _selectedWatchId.flatMapLatest { id ->
+        id?.let {
+            watchDatabase.watchDao().get(id)
+        } ?: flow { emit(null) }
     }
 
     val registeredWatches: LiveData<List<Watch>>
@@ -83,7 +84,8 @@ class WatchManager internal constructor(
     /**
      * The currently selected watch
      */
-    val selectedWatch: LiveData<Watch?> = _selectedWatch.map { it }
+    @ExperimentalCoroutinesApi
+    val selectedWatch: LiveData<Watch?> = _selectedWatch.asLiveData()
 
     init {
         Timber.d("Creating WatchManager")
@@ -178,8 +180,8 @@ class WatchManager internal constructor(
      */
     fun selectWatchById(watchId: UUID) {
         Timber.d("selectWatchById(%s) called", watchId)
-        _selectedWatchId.postValue(watchId)
         coroutineScope.launch {
+            _selectedWatchId.emit(watchId)
             dataStore.updateData { settings ->
                 settings.copy(lastSelectedWatchId = watchId.toString())
             }
@@ -193,33 +195,35 @@ class WatchManager internal constructor(
     suspend fun sendMessage(watch: Watch, message: String, data: ByteArray? = null) =
         connectionClient.sendMessage(watch, message, data)
 
+    @ExperimentalCoroutinesApi
     fun getBoolSetting(key: String, watch: Watch? = null, default: Boolean = false): Flow<Boolean> {
         return if (watch != null) {
             settingsDatabase.boolPrefDao().get(watch.id, key).map { it?.value ?: default }
         } else {
-            selectedWatch.switchMap { selectedWatch ->
+            _selectedWatch.flatMapLatest { selectedWatch ->
                 if (selectedWatch != null) {
                     settingsDatabase.boolPrefDao().get(selectedWatch.id, key)
-                        .map { it?.value ?: default }.asLiveData()
+                        .map { it?.value ?: default }
                 } else {
-                    liveData { emit(default) }
+                    flow { emit(default) }
                 }
-            }.asFlow()
+            }
         }
     }
 
+    @ExperimentalCoroutinesApi
     fun getIntSetting(key: String, watch: Watch? = null, default: Int = 0): Flow<Int> {
         return if (watch != null) {
             settingsDatabase.intPrefDao().get(watch.id, key).map { it?.value ?: default }
         } else {
-            selectedWatch.switchMap { selectedWatch ->
+            _selectedWatch.flatMapLatest { selectedWatch ->
                 if (selectedWatch != null) {
                     settingsDatabase.intPrefDao().get(selectedWatch.id, key)
-                        .map { it?.value ?: default }.asLiveData()
+                        .map { it?.value ?: default }
                 } else {
-                    liveData { emit(default) }
+                    flow { emit(default) }
                 }
-            }.asFlow()
+            }
         }
     }
 
