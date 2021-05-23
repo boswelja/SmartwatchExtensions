@@ -28,5 +28,5 @@ interface WatchDao {
     fun getAllObservable(): LiveData<List<DbWatch>>
 
     @Query("SELECT * FROM watches")
-    fun getAll(): List<DbWatch>
+    suspend fun getAll(): List<DbWatch>
 }

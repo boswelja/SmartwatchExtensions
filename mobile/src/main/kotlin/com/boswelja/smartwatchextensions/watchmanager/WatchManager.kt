@@ -241,10 +241,8 @@ class WatchManager internal constructor(
      * @param value The new preference value.
      */
     suspend fun updatePreference(key: String, value: Boolean) {
-        withContext(Dispatchers.IO) {
-            watchDatabase.watchDao().getAll().forEach {
-                updatePreference(it, key, value)
-            }
+        watchDatabase.watchDao().getAll().forEach {
+            updatePreference(it, key, value)
         }
     }
 
