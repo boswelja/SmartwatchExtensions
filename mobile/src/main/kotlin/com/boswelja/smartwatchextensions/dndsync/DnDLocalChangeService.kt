@@ -11,9 +11,9 @@ import com.boswelja.smartwatchextensions.NotificationChannelHelper
 import com.boswelja.smartwatchextensions.common.R
 import com.boswelja.smartwatchextensions.common.dndsync.References
 import com.boswelja.smartwatchextensions.common.dndsync.References.DND_STATUS_PATH
+import com.boswelja.smartwatchextensions.common.dndsync.dndState
 import com.boswelja.smartwatchextensions.common.preference.PreferenceKey.DND_SYNC_TO_WATCH_KEY
 import com.boswelja.smartwatchextensions.common.toByteArray
-import com.boswelja.smartwatchextensions.dndsync.Utils.dndState
 import com.boswelja.smartwatchextensions.main.MainActivity
 import com.boswelja.smartwatchextensions.watchmanager.WatchManager
 import com.boswelja.watchconnection.core.Watch
