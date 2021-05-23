@@ -21,8 +21,8 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Check
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -63,7 +63,9 @@ class BatteryWidgetConfigActivity : BaseWidgetConfigActivity() {
                 ) {
                     Column(Modifier.fillMaxSize()) {
                         val viewModel: BatteryWidgetConfigViewModel = viewModel()
-                        val registeredWatches by viewModel.registeredWatches.observeAsState()
+                        val registeredWatches by viewModel.registeredWatches.collectAsState(
+                            emptyList()
+                        )
                         Text(
                             stringResource(R.string.widget_config_battery_stats_hint),
                             style = MaterialTheme.typography.body1,
@@ -71,7 +73,7 @@ class BatteryWidgetConfigActivity : BaseWidgetConfigActivity() {
                             modifier = Modifier.fillMaxWidth().padding(16.dp)
                         )
                         WatchPickerList(
-                            watches = registeredWatches ?: emptyList(),
+                            watches = registeredWatches,
                             selectedWatch = selectedWatch,
                             onWatchSelected = onWatchSelected
                         )

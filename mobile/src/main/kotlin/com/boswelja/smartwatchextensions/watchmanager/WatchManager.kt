@@ -66,18 +66,18 @@ class WatchManager internal constructor(
 
     private val _selectedWatchId = MutableLiveData<UUID>(null)
     private val _selectedWatch = _selectedWatchId.switchMap { id ->
-        if (id != null) watchDatabase.getById(id)
+        if (id != null) watchDatabase.watchDao().get(id).asLiveData()
         else liveData { }
     }
 
     val registeredWatches: LiveData<List<Watch>>
-        get() = watchDatabase.watchDao().getAllObservable().map { it }
+        get() = watchDatabase.watchDao().getAll().asLiveData()
 
     @ExperimentalCoroutinesApi
     val availableWatches: Flow<List<Watch>>
         get() = connectionClient.watchesWithApp()
             .map { watches ->
-                watches.filter { watchDatabase.watchDao().get(it.id) == null }
+                watches.filter { watchDatabase.watchDao().get(it.id).firstOrNull() == null }
             }
 
     /**
@@ -253,14 +253,14 @@ class WatchManager internal constructor(
      * @param value The new preference value.
      */
     suspend fun updatePreference(key: String, value: Boolean) {
-        watchDatabase.watchDao().getAll().forEach {
+        watchDatabase.watchDao().getAll().first().forEach {
             updatePreference(it, key, value)
         }
     }
 
-    suspend fun getWatchById(id: UUID) = watchDatabase.watchDao().get(id)
+    fun getWatchById(id: UUID) = watchDatabase.watchDao().get(id)
     fun observeWatchById(id: UUID): LiveData<Watch?> =
-        watchDatabase.watchDao().getObservable(id).map { it }
+        watchDatabase.watchDao().get(id).asLiveData()
 
     fun registerMessageListener(messageListener: MessageListener) =
         connectionClient.addMessageListener(messageListener)

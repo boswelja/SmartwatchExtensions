@@ -87,7 +87,7 @@ object Utils {
         Timber.d("handleBatteryStats(%s, %s) called", watchId, batteryStats)
         withContext(Dispatchers.IO) {
             val database = WatchDatabase.getInstance(context)
-            database.watchDao().get(watchId)?.let { watch ->
+            database.watchDao().get(watchId).firstOrNull()?.let { watch ->
                 val notificationManager = context.getSystemService<NotificationManager>()!!
                 val settingsDb =
                     WatchSettingsDatabase.getInstance(context)

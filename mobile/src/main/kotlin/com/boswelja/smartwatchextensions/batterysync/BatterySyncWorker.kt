@@ -24,7 +24,7 @@ class BatterySyncWorker(appContext: Context, workerParams: WorkerParameters) :
     override suspend fun doWork(): Result {
         Timber.i("doWork() called")
         val watchId = UUID.fromString(inputData.getString(EXTRA_WATCH_ID))
-        WatchManager.getInstance(applicationContext).getWatchById(watchId)?.let {
+        WatchManager.getInstance(applicationContext).getWatchById(watchId).firstOrNull()?.let {
             Utils.updateBatteryStats(applicationContext, it)
             return Result.success()
         }
