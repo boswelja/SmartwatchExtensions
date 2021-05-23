@@ -13,9 +13,6 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface BoolPreferenceDao {
 
-    @Query("SELECT * FROM bool_preferences WHERE id = :watchId")
-    suspend fun getAllForWatch(watchId: UUID): List<BoolPreference>
-
     @Query("SELECT * FROM bool_preferences WHERE pref_key = :key")
     suspend fun getAllForKey(key: String): Array<BoolPreference>
 

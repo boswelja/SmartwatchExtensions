@@ -12,9 +12,6 @@ import java.util.UUID
 @Dao
 interface IntPreferenceDao {
 
-    @Query("SELECT * FROM int_preferences WHERE id = :watchId")
-    suspend fun getAllForWatch(watchId: UUID): List<IntPreference>
-
     @Query("SELECT * FROM int_preferences WHERE id = :watchId AND pref_key = :key LIMIT 1")
     suspend fun get(watchId: UUID, key: String): IntPreference?
 
