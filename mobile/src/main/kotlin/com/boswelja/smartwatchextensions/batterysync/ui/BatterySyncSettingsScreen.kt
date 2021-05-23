@@ -6,8 +6,8 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Divider
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -40,17 +40,17 @@ fun BatterySyncSettingsScreen() {
 fun BatterySyncSettings() {
     val viewModel: BatterySyncViewModel = viewModel()
 
-    val batterySyncEnabled by viewModel.batterySyncEnabled.observeAsState()
-    val syncInterval by viewModel.syncInterval.observeAsState()
+    val batterySyncEnabled by viewModel.batterySyncEnabled.collectAsState(false)
+    val syncInterval by viewModel.syncInterval.collectAsState(15)
     var currentInterval by remember {
-        mutableStateOf((syncInterval ?: 15) / 100f)
+        mutableStateOf(syncInterval / 100f)
     }
 
     Column {
         HeaderItem(stringResource(R.string.category_battery_sync_settings))
         SwitchPreference(
             text = stringResource(R.string.battery_sync_toggle_title),
-            isChecked = batterySyncEnabled == true,
+            isChecked = batterySyncEnabled,
             onCheckChanged = {
                 viewModel.setBatterySyncEnabled(it)
             }
@@ -75,11 +75,11 @@ fun BatterySyncSettings() {
 fun ChargeNotificationSettings() {
     val viewModel: BatterySyncViewModel = viewModel()
 
-    val phoneChargeNotiEnabled by viewModel.phoneChargeNotiEnabled.observeAsState()
-    val watchChargeNotiEnabled by viewModel.watchChargeNotiEnabled.observeAsState()
-    val chargeThreshold by viewModel.chargeThreshold.observeAsState()
+    val phoneChargeNotiEnabled by viewModel.phoneChargeNotiEnabled.collectAsState(false)
+    val watchChargeNotiEnabled by viewModel.watchChargeNotiEnabled.collectAsState(false)
+    val chargeThreshold by viewModel.chargeThreshold.collectAsState(90)
     var currentThreshold by remember {
-        mutableStateOf((chargeThreshold ?: 90) / 100f)
+        mutableStateOf(chargeThreshold / 100f)
     }
 
     Column {
@@ -90,7 +90,7 @@ fun ChargeNotificationSettings() {
                 R.string.battery_sync_phone_charge_noti_summary,
                 (currentThreshold * 100).toInt().toString()
             ),
-            isChecked = phoneChargeNotiEnabled == true,
+            isChecked = phoneChargeNotiEnabled,
             onCheckChanged = {
                 viewModel.setPhoneChargeNotiEnabled(it)
             }
@@ -101,7 +101,7 @@ fun ChargeNotificationSettings() {
                 R.string.battery_sync_watch_charge_noti_summary,
                 (currentThreshold * 100).toInt().toString()
             ),
-            isChecked = watchChargeNotiEnabled == true,
+            isChecked = watchChargeNotiEnabled,
             onCheckChanged = {
                 viewModel.setWatchChargeNotiEnabled(it)
             }
@@ -126,11 +126,11 @@ fun ChargeNotificationSettings() {
 fun LowBatteryNotificationSettings() {
     val viewModel: BatterySyncViewModel = viewModel()
 
-    val phoneLowNotiEnabled by viewModel.phoneLowNotiEnabled.observeAsState()
-    val watchLowNotiEnabled by viewModel.watchLowNotiEnabled.observeAsState()
-    val batteryLowThreshold by viewModel.batteryLowThreshold.observeAsState()
+    val phoneLowNotiEnabled by viewModel.phoneLowNotiEnabled.collectAsState(false)
+    val watchLowNotiEnabled by viewModel.watchLowNotiEnabled.collectAsState(false)
+    val batteryLowThreshold by viewModel.batteryLowThreshold.collectAsState(20)
     var currentThreshold by remember {
-        mutableStateOf((batteryLowThreshold ?: 15) / 100f)
+        mutableStateOf(batteryLowThreshold / 100f)
     }
 
     Column {
@@ -141,7 +141,7 @@ fun LowBatteryNotificationSettings() {
                 R.string.battery_sync_phone_low_noti_summary,
                 (currentThreshold * 100).toInt().toString()
             ),
-            isChecked = phoneLowNotiEnabled == true,
+            isChecked = phoneLowNotiEnabled,
             onCheckChanged = {
                 viewModel.setPhoneLowNotiEnabled(it)
             }
@@ -152,7 +152,7 @@ fun LowBatteryNotificationSettings() {
                 R.string.battery_sync_watch_low_noti_summary,
                 (currentThreshold * 100).toInt().toString()
             ),
-            isChecked = watchLowNotiEnabled == true,
+            isChecked = watchLowNotiEnabled,
             onCheckChanged = {
                 viewModel.setWatchLowNotiEnabled(it)
             }

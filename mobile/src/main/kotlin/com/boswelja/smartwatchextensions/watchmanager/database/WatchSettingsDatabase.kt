@@ -1,7 +1,6 @@
 package com.boswelja.smartwatchextensions.watchmanager.database
 
 import android.content.Context
-import androidx.lifecycle.LiveData
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
@@ -10,10 +9,8 @@ import com.boswelja.smartwatchextensions.common.RoomTypeConverters
 import com.boswelja.smartwatchextensions.common.SingletonHolder
 import com.boswelja.smartwatchextensions.watchmanager.item.BoolPreference
 import com.boswelja.smartwatchextensions.watchmanager.item.IntPreference
-import com.boswelja.smartwatchextensions.watchmanager.item.Preference
 import com.boswelja.watchconnection.core.Watch
 import java.util.UUID
-import timber.log.Timber
 
 @Database(entities = [IntPreference::class, BoolPreference::class], version = 1)
 @TypeConverters(RoomTypeConverters::class)
@@ -56,34 +53,6 @@ abstract class WatchSettingsDatabase : RoomDatabase() {
             }
         }
         return false
-    }
-
-    @Suppress("UNCHECKED_CAST")
-    suspend inline fun <reified T> getPreference(watchId: UUID, key: String): Preference<T>? {
-        return when (T::class) {
-            Int::class -> intPrefDao().get(watchId, key) as Preference<T>?
-            Boolean::class -> boolPrefDao().get(watchId, key) as Preference<T>?
-            else -> {
-                Timber.w("Tried to get preference for unsupported type ${T::class}")
-                null
-            }
-        }
-    }
-
-    @Suppress("UNCHECKED_CAST")
-    inline fun <reified T> getPreferenceObservable(
-        watchId: UUID,
-        key: String
-    ): LiveData<Preference<T>?>? {
-        return when (T::class) {
-            Int::class -> intPrefDao().getObservable(watchId, key) as LiveData<Preference<T>?>
-            Boolean::class ->
-                boolPrefDao().getObservable(watchId, key) as LiveData<Preference<T>?>
-            else -> {
-                Timber.w("Tried to get preference for unsupported type ${T::class}")
-                null
-            }
-        }
     }
 
     companion object : SingletonHolder<WatchSettingsDatabase, Context>({ context ->

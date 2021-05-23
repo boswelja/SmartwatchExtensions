@@ -39,12 +39,12 @@ class DnDLocalChangeService : LifecycleService() {
         Timber.i("onCreate() called")
 
         lifecycleScope.launch {
-            watchManager.settingsDatabase.boolPrefDao().getAllFlowForKey(DND_SYNC_TO_WATCH_KEY)
-                .mapLatest { prefs ->
-                    prefs.filter { pref ->
-                        pref.value
-                    }.mapNotNull { pref ->
-                        watchManager.getWatchById(pref.watchId)
+            watchManager.settingsDatabase.boolSettingDao().getByKey(DND_SYNC_TO_WATCH_KEY)
+                .mapLatest { settings ->
+                    settings.filter { setting ->
+                        setting.value
+                    }.mapNotNull { setting ->
+                        watchManager.getWatchById(setting.watchId)
                     }
                 }.collect {
                     targetWatches.clear()

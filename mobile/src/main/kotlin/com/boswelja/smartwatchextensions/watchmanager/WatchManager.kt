@@ -7,6 +7,7 @@ import androidx.datastore.preferences.core.edit
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.asFlow
+import androidx.lifecycle.asLiveData
 import androidx.lifecycle.liveData
 import androidx.lifecycle.map
 import androidx.lifecycle.switchMap
@@ -22,7 +23,6 @@ import com.boswelja.smartwatchextensions.common.connection.Preference.toByteArra
 import com.boswelja.smartwatchextensions.watchmanager.database.DbWatch.Companion.toDbWatch
 import com.boswelja.smartwatchextensions.watchmanager.database.WatchDatabase
 import com.boswelja.smartwatchextensions.watchmanager.database.WatchSettingsDatabase
-import com.boswelja.smartwatchextensions.watchmanager.item.Preference
 import com.boswelja.smartwatchextensions.widget.widgetIdStore
 import com.boswelja.watchconnection.core.MessageListener
 import com.boswelja.watchconnection.core.Watch
@@ -193,23 +193,35 @@ class WatchManager internal constructor(
     suspend fun sendMessage(watch: Watch, message: String, data: ByteArray? = null) =
         connectionClient.sendMessage(watch, message, data)
 
-    /**
-     * Gets a preference for a given watch with a specified key.
-     * @param watchId See [Watch.id].
-     * @param key The [Preference.key] of the preference to find.
-     * @return The value of the preference, or null if it doesn't exist.
-     */
-    suspend inline fun <reified T> getPreference(watchId: UUID, key: String) =
-        settingsDatabase.getPreference<T>(watchId, key)?.value
+    fun getBoolSetting(key: String, watch: Watch? = null, default: Boolean = false): Flow<Boolean> {
+        return if (watch != null) {
+            settingsDatabase.boolPrefDao().get(watch.id, key).map { it?.value ?: default }
+        } else {
+            selectedWatch.switchMap { selectedWatch ->
+                if (selectedWatch != null) {
+                    settingsDatabase.boolPrefDao().get(selectedWatch.id, key)
+                        .map { it?.value ?: default }.asLiveData()
+                } else {
+                    liveData { emit(default) }
+                }
+            }.asFlow()
+        }
+    }
 
-    /**
-     * Gets a preference for a given watch with a specified key, wrapped in a LiveData.
-     * @param watchId See [Watch.id].
-     * @param key The [Preference.key] of the preference to find.
-     * @return The value of the preference, or null if it doesn't exist.
-     */
-    inline fun <reified T> getPreferenceObservable(watchId: UUID, key: String) =
-        settingsDatabase.getPreferenceObservable<T>(watchId, key)?.map { it?.value } ?: liveData { }
+    fun getIntSetting(key: String, watch: Watch? = null, default: Int = 0): Flow<Int> {
+        return if (watch != null) {
+            settingsDatabase.intPrefDao().get(watch.id, key).map { it?.value ?: default }
+        } else {
+            selectedWatch.switchMap { selectedWatch ->
+                if (selectedWatch != null) {
+                    settingsDatabase.intPrefDao().get(selectedWatch.id, key)
+                        .map { it?.value ?: default }.asLiveData()
+                } else {
+                    liveData { emit(default) }
+                }
+            }.asFlow()
+        }
+    }
 
     /**
      * Update a preference for a given watch.

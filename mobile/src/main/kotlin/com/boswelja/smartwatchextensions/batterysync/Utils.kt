@@ -30,6 +30,7 @@ import java.util.Locale
 import java.util.UUID
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 
@@ -63,9 +64,9 @@ object Utils {
                 } else {
                     watchManager.registeredWatches.asFlow().first()
                         .filter {
-                            watchManager.getPreference<Boolean>(
-                                it.id, BATTERY_SYNC_ENABLED_KEY
-                            ) == true
+                            watchManager.getBoolSetting(
+                                BATTERY_SYNC_ENABLED_KEY, it
+                            ).first()
                         }.forEach {
                             watchManager.sendMessage(
                                 it, BATTERY_STATUS_PATH, batteryStats.toByteArray()
@@ -142,12 +143,12 @@ object Utils {
         watch: Watch
     ) {
         Timber.d("handleWatchChargeNoti called")
-        val chargeThreshold = database
-            .getPreference<Int>(watch.id, BATTERY_CHARGE_THRESHOLD_KEY)?.value ?: 90
-        val shouldSendChargeNotis = database
-            .getPreference<Boolean>(watch.id, BATTERY_WATCH_CHARGE_NOTI_KEY)?.value ?: false
-        val hasSentNoti = database
-            .getPreference<Boolean>(watch.id, BATTERY_CHARGED_NOTI_SENT)?.value ?: false
+        val chargeThreshold = database.intPrefDao()
+            .get(watch.id, BATTERY_CHARGE_THRESHOLD_KEY).firstOrNull()?.value ?: 90
+        val shouldSendChargeNotis = database.boolPrefDao()
+            .get(watch.id, BATTERY_WATCH_CHARGE_NOTI_KEY).firstOrNull()?.value ?: false
+        val hasSentNoti = database.boolPrefDao()
+            .get(watch.id, BATTERY_CHARGED_NOTI_SENT).firstOrNull()?.value ?: false
         Timber.d(
             "chargeThreshold = %s, shouldSendChargeNotis = %s, hasSentNoti = %s, percent = %s",
             chargeThreshold,
@@ -200,12 +201,12 @@ object Utils {
         watch: Watch
     ) {
         Timber.d("handleWatchLowNoti called")
-        val lowThreshold = database
-            .getPreference<Int>(watch.id, BATTERY_LOW_THRESHOLD_KEY)?.value ?: 15
-        val shouldSendLowNoti = database
-            .getPreference<Boolean>(watch.id, BATTERY_WATCH_LOW_NOTI_KEY)?.value ?: false
-        val hasSentNoti = database
-            .getPreference<Boolean>(watch.id, BATTERY_LOW_NOTI_SENT)?.value ?: false
+        val lowThreshold = database.intPrefDao()
+            .get(watch.id, BATTERY_LOW_THRESHOLD_KEY).firstOrNull()?.value ?: 15
+        val shouldSendLowNoti = database.boolPrefDao()
+            .get(watch.id, BATTERY_WATCH_LOW_NOTI_KEY).firstOrNull()?.value ?: false
+        val hasSentNoti = database.boolPrefDao()
+            .get(watch.id, BATTERY_LOW_NOTI_SENT).firstOrNull()?.value ?: false
         Timber.d(
             "lowThreshold = %s, shouldSendLowNoti = %s, hasSentNoti = %s, batteryPercent = %s",
             lowThreshold,
