@@ -161,7 +161,8 @@ class WatchManagerTest {
             dummyWatch1
         )
         coVerify(exactly = 1) { connectionClient.sendMessage(dummyWatch1, CLEAR_PREFERENCES) }
-        coVerify(exactly = 1) { settingsDatabase.clearWatchPreferences(dummyWatch1) }
+        verify(exactly = 1) { settingsDatabase.intSettings() }
+        verify(exactly = 1) { settingsDatabase.boolSettings() }
         verify(exactly = 1) { batteryStatsDatabase.batteryStatsDao() }
     }
 

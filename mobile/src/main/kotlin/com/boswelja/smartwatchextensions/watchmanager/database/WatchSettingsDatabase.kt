@@ -7,45 +7,40 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.boswelja.smartwatchextensions.common.RoomTypeConverters
 import com.boswelja.smartwatchextensions.common.SingletonHolder
-import com.boswelja.smartwatchextensions.watchmanager.item.BoolPreference
-import com.boswelja.smartwatchextensions.watchmanager.item.IntPreference
+import com.boswelja.smartwatchextensions.watchmanager.item.BoolSetting
+import com.boswelja.smartwatchextensions.watchmanager.item.IntSetting
 import com.boswelja.watchconnection.core.Watch
 import java.util.UUID
 
-@Database(entities = [IntPreference::class, BoolPreference::class], version = 1)
+@Database(entities = [IntSetting::class, BoolSetting::class], version = 1)
 @TypeConverters(RoomTypeConverters::class)
 abstract class WatchSettingsDatabase : RoomDatabase() {
-    abstract fun intPrefDao(): IntPreferenceDao
-    abstract fun boolPrefDao(): BoolPreferenceDao
-
-    suspend fun clearWatchPreferences(watch: Watch) {
-        intPrefDao().deleteAllForWatch(watch.id)
-        boolPrefDao().deleteAllForWatch(watch.id)
-    }
+    abstract fun intSettings(): IntSettingDao
+    abstract fun boolSettings(): BoolSettingDao
 
     /**
-     * Updates a stored preference value for a given preference and watch.
+     * Updates a stored setting for a given key and watch.
      * @param watchId The ID of the [Watch] whose preference we're updating.
-     * @param preferenceKey The key for the preference to update.
+     * @param key The key for the preference to update.
      * @param newValue The new value of the preference to update.
-     * @return true if the preference was successfully updated, false otherwise.
+     * @return true if the setting was successfully updated, false otherwise.
      */
-    suspend fun updatePrefInDatabase(
+    suspend fun updateSetting(
         watchId: UUID,
-        preferenceKey: String,
+        key: String,
         newValue: Any
     ): Boolean {
         if (isOpen) {
             return when (newValue) {
                 is Boolean -> {
-                    BoolPreference(watchId, preferenceKey, newValue).also {
-                        boolPrefDao().update(it)
+                    BoolSetting(watchId, key, newValue).also {
+                        boolSettings().update(it)
                     }
                     true
                 }
                 is Int -> {
-                    IntPreference(watchId, preferenceKey, newValue).also {
-                        intPrefDao().update(it)
+                    IntSetting(watchId, key, newValue).also {
+                        intSettings().update(it)
                     }
                     true
                 }

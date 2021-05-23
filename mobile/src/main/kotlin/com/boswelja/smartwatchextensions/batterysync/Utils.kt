@@ -143,11 +143,11 @@ object Utils {
         watch: Watch
     ) {
         Timber.d("handleWatchChargeNoti called")
-        val chargeThreshold = database.intPrefDao()
+        val chargeThreshold = database.intSettings()
             .get(watch.id, BATTERY_CHARGE_THRESHOLD_KEY).firstOrNull()?.value ?: 90
-        val shouldSendChargeNotis = database.boolPrefDao()
+        val shouldSendChargeNotis = database.boolSettings()
             .get(watch.id, BATTERY_WATCH_CHARGE_NOTI_KEY).firstOrNull()?.value ?: false
-        val hasSentNoti = database.boolPrefDao()
+        val hasSentNoti = database.boolSettings()
             .get(watch.id, BATTERY_CHARGED_NOTI_SENT).firstOrNull()?.value ?: false
         Timber.d(
             "chargeThreshold = %s, shouldSendChargeNotis = %s, hasSentNoti = %s, percent = %s",
@@ -183,7 +183,7 @@ object Utils {
                 // TODO Send a message informing the user of the issue
                 Timber.w("Failed to send charged notification")
             }
-            database.updatePrefInDatabase(watch.id, BATTERY_CHARGED_NOTI_SENT, true)
+            database.updateSetting(watch.id, BATTERY_CHARGED_NOTI_SENT, true)
         }
     }
 
@@ -201,11 +201,11 @@ object Utils {
         watch: Watch
     ) {
         Timber.d("handleWatchLowNoti called")
-        val lowThreshold = database.intPrefDao()
+        val lowThreshold = database.intSettings()
             .get(watch.id, BATTERY_LOW_THRESHOLD_KEY).firstOrNull()?.value ?: 15
-        val shouldSendLowNoti = database.boolPrefDao()
+        val shouldSendLowNoti = database.boolSettings()
             .get(watch.id, BATTERY_WATCH_LOW_NOTI_KEY).firstOrNull()?.value ?: false
-        val hasSentNoti = database.boolPrefDao()
+        val hasSentNoti = database.boolSettings()
             .get(watch.id, BATTERY_LOW_NOTI_SENT).firstOrNull()?.value ?: false
         Timber.d(
             "lowThreshold = %s, shouldSendLowNoti = %s, hasSentNoti = %s, batteryPercent = %s",
@@ -242,7 +242,7 @@ object Utils {
                 // TODO Send a message informing the user of the issue
                 Timber.w("Failed to send charged notification")
             }
-            database.updatePrefInDatabase(watch.id, BATTERY_LOW_NOTI_SENT, true)
+            database.updateSetting(watch.id, BATTERY_LOW_NOTI_SENT, true)
         }
     }
 
@@ -253,7 +253,7 @@ object Utils {
     ) {
         Timber.d("Dismissing charge notification for %s", watch.id)
         notificationManager.cancel(BATTERY_CHARGED_NOTI_ID)
-        database.updatePrefInDatabase(watch.id, BATTERY_CHARGED_NOTI_SENT, false)
+        database.updateSetting(watch.id, BATTERY_CHARGED_NOTI_SENT, false)
     }
 
     private suspend fun dismissLowNoti(
@@ -263,7 +263,7 @@ object Utils {
     ) {
         Timber.d("Dismissing low notification for %s", watch.id)
         notificationManager.cancel(BATTERY_LOW_NOTI_ID)
-        database.updatePrefInDatabase(watch.id, BATTERY_LOW_NOTI_SENT, false)
+        database.updateSetting(watch.id, BATTERY_LOW_NOTI_SENT, false)
     }
 
     private fun getNotiPendingIntent(context: Context): PendingIntent {

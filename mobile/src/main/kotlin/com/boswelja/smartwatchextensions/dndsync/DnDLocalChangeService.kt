@@ -21,6 +21,7 @@ import com.google.android.gms.wearable.DataClient
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -39,12 +40,12 @@ class DnDLocalChangeService : LifecycleService() {
         Timber.i("onCreate() called")
 
         lifecycleScope.launch {
-            watchManager.settingsDatabase.boolSettingDao().getByKey(DND_SYNC_TO_WATCH_KEY)
+            watchManager.settingsDatabase.boolSettings().getByKey(DND_SYNC_TO_WATCH_KEY)
                 .mapLatest { settings ->
                     settings.filter { setting ->
                         setting.value
                     }.mapNotNull { setting ->
-                        watchManager.getWatchById(setting.watchId)
+                        watchManager.getWatchById(setting.watchId).firstOrNull()
                     }
                 }.collect {
                     targetWatches.clear()

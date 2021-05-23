@@ -40,7 +40,7 @@ class BatterySyncWorker(appContext: Context, workerParams: WorkerParameters) :
             Timber.d("Starting BatterySyncWorker for %s", watchId)
             return withContext(Dispatchers.IO) {
                 val database = WatchSettingsDatabase.getInstance(context)
-                val syncIntervalMinutes = database.intPrefDao()
+                val syncIntervalMinutes = database.intSettings()
                     .get(watchId, BATTERY_SYNC_INTERVAL_KEY).firstOrNull()?.value ?: 15
                 val data = Data.Builder().putString(EXTRA_WATCH_ID, watchId.toString()).build()
                 val request = PeriodicWorkRequestBuilder<BatterySyncWorker>(

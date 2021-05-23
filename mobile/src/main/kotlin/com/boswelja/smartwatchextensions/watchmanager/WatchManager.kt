@@ -155,7 +155,8 @@ class WatchManager internal constructor(
     ) {
         batteryStatsDatabase.batteryStatsDao().deleteStatsForWatch(watch.id)
         connectionClient.sendMessage(watch, CLEAR_PREFERENCES)
-        settingsDatabase.clearWatchPreferences(watch)
+        settingsDatabase.intSettings().deleteAllForWatch(watch.id)
+        settingsDatabase.boolSettings().deleteAllForWatch(watch.id)
         removeWidgetsForWatch(watch, widgetIdStore)
     }
 
@@ -198,11 +199,11 @@ class WatchManager internal constructor(
     @ExperimentalCoroutinesApi
     fun getBoolSetting(key: String, watch: Watch? = null, default: Boolean = false): Flow<Boolean> {
         return if (watch != null) {
-            settingsDatabase.boolPrefDao().get(watch.id, key).map { it?.value ?: default }
+            settingsDatabase.boolSettings().get(watch.id, key).map { it?.value ?: default }
         } else {
             _selectedWatch.flatMapLatest { selectedWatch ->
                 if (selectedWatch != null) {
-                    settingsDatabase.boolPrefDao().get(selectedWatch.id, key)
+                    settingsDatabase.boolSettings().get(selectedWatch.id, key)
                         .map { it?.value ?: default }
                 } else {
                     flow { emit(default) }
@@ -214,11 +215,11 @@ class WatchManager internal constructor(
     @ExperimentalCoroutinesApi
     fun getIntSetting(key: String, watch: Watch? = null, default: Int = 0): Flow<Int> {
         return if (watch != null) {
-            settingsDatabase.intPrefDao().get(watch.id, key).map { it?.value ?: default }
+            settingsDatabase.intSettings().get(watch.id, key).map { it?.value ?: default }
         } else {
             _selectedWatch.flatMapLatest { selectedWatch ->
                 if (selectedWatch != null) {
-                    settingsDatabase.intPrefDao().get(selectedWatch.id, key)
+                    settingsDatabase.intSettings().get(selectedWatch.id, key)
                         .map { it?.value ?: default }
                 } else {
                     flow { emit(default) }
@@ -246,7 +247,7 @@ class WatchManager internal constructor(
                 message,
                 Pair(key, value).toByteArray()
             )
-            settingsDatabase.updatePrefInDatabase(watch.id, key, value)
+            settingsDatabase.updateSetting(watch.id, key, value)
             analytics.logExtensionSettingChanged(key, value)
         }
     }

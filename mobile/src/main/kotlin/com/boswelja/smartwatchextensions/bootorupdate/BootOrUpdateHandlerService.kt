@@ -115,7 +115,7 @@ class BootOrUpdateHandlerService : LifecycleService() {
     private suspend fun tryStartInterruptFilterSyncService(database: WatchSettingsDatabase) {
         withContext(Dispatchers.IO) {
             val dndSyncToWatchEnabled =
-                database.boolPrefDao().getByKey(PreferenceKey.DND_SYNC_TO_WATCH_KEY).first().any {
+                database.boolSettings().getByKey(PreferenceKey.DND_SYNC_TO_WATCH_KEY).first().any {
                     it.value
                 }
             Timber.i(
@@ -134,7 +134,7 @@ class BootOrUpdateHandlerService : LifecycleService() {
     private suspend fun tryStartBatterySyncWorkers(database: WatchSettingsDatabase) {
         withContext(Dispatchers.IO) {
             val watchBatterySyncInfo =
-                database.boolPrefDao().getByKey(PreferenceKey.BATTERY_SYNC_ENABLED_KEY).first()
+                database.boolSettings().getByKey(PreferenceKey.BATTERY_SYNC_ENABLED_KEY).first()
             if (watchBatterySyncInfo.isNotEmpty()) {
                 for (batterySyncBoolPreference in watchBatterySyncInfo) {
                     if (batterySyncBoolPreference.value) {
