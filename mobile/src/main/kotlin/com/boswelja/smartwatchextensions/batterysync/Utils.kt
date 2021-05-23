@@ -29,11 +29,13 @@ import com.boswelja.watchconnection.core.Watch
 import java.util.Locale
 import java.util.UUID
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 
+@ExperimentalCoroutinesApi
 object Utils {
 
     private const val BATTERY_CHARGED_NOTI_ID = 408565

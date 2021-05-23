@@ -23,7 +23,9 @@ import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.batterysync.database.WatchBatteryStats
 import com.boswelja.smartwatchextensions.common.BatteryIcon
 import java.util.concurrent.TimeUnit
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
+@ExperimentalCoroutinesApi
 @Composable
 fun BatterySyncSettingsHeader() {
     val viewModel: BatterySyncViewModel = viewModel()

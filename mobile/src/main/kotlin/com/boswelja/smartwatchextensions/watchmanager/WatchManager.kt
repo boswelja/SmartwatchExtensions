@@ -125,7 +125,7 @@ class WatchManager internal constructor(
         watch: Watch
     ) {
         withContext(Dispatchers.IO) {
-            batteryStatsDatabase.batteryStatsDao().deleteStatsForWatch(watch.id)
+            batteryStatsDatabase.batteryStatsDao().deleteStats(watch.id)
             connectionClient.sendMessage(watch, Messages.RESET_APP)
             watchDatabase.removeWatch(watch)
             removeWidgetsForWatch(watch, widgetIdStore)
@@ -153,7 +153,7 @@ class WatchManager internal constructor(
         batteryStatsDatabase: WatchBatteryStatsDatabase,
         watch: Watch
     ) {
-        batteryStatsDatabase.batteryStatsDao().deleteStatsForWatch(watch.id)
+        batteryStatsDatabase.batteryStatsDao().deleteStats(watch.id)
         connectionClient.sendMessage(watch, CLEAR_PREFERENCES)
         settingsDatabase.intSettings().deleteAllForWatch(watch.id)
         settingsDatabase.boolSettings().deleteAllForWatch(watch.id)
