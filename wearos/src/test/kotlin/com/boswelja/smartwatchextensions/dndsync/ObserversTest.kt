@@ -9,9 +9,7 @@ import android.os.Build
 import android.provider.Settings
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.boswelja.smartwatchextensions.dndsync.Observers.THEATER_MODE
-import com.boswelja.smartwatchextensions.dndsync.Observers.dndState
-import com.boswelja.smartwatchextensions.dndsync.Observers.theaterMode
+import com.boswelja.smartwatchextensions.common.dndsync.dndState
 import io.mockk.every
 import io.mockk.mockkConstructor
 import io.mockk.spyk

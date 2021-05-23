@@ -8,7 +8,7 @@ import android.content.Intent
 import android.os.Build
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.boswelja.smartwatchextensions.dndsync.Utils.dndState
+import com.boswelja.smartwatchextensions.common.dndsync.dndState
 import io.mockk.every
 import io.mockk.mockkConstructor
 import io.mockk.spyk
