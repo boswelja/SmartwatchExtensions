@@ -12,10 +12,8 @@ import com.boswelja.smartwatchextensions.watchmanager.item.BoolPreference
 import com.boswelja.smartwatchextensions.watchmanager.item.IntPreference
 import com.boswelja.smartwatchextensions.watchmanager.item.Preference
 import com.boswelja.watchconnection.core.Watch
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
-import timber.log.Timber
 import java.util.UUID
+import timber.log.Timber
 
 @Database(entities = [IntPreference::class, BoolPreference::class], version = 1)
 @TypeConverters(RoomTypeConverters::class)
@@ -24,10 +22,8 @@ abstract class WatchSettingsDatabase : RoomDatabase() {
     abstract fun boolPrefDao(): BoolPreferenceDao
 
     suspend fun clearWatchPreferences(watch: Watch) {
-        withContext(Dispatchers.IO) {
-            intPrefDao().deleteAllForWatch(watch.id)
-            boolPrefDao().deleteAllForWatch(watch.id)
-        }
+        intPrefDao().deleteAllForWatch(watch.id)
+        boolPrefDao().deleteAllForWatch(watch.id)
     }
 
     /**
@@ -42,38 +38,34 @@ abstract class WatchSettingsDatabase : RoomDatabase() {
         preferenceKey: String,
         newValue: Any
     ): Boolean {
-        return withContext(Dispatchers.IO) {
-            if (isOpen) {
-                return@withContext when (newValue) {
-                    is Boolean -> {
-                        BoolPreference(watchId, preferenceKey, newValue).also {
-                            boolPrefDao().update(it)
-                        }
-                        true
+        if (isOpen) {
+            return when (newValue) {
+                is Boolean -> {
+                    BoolPreference(watchId, preferenceKey, newValue).also {
+                        boolPrefDao().update(it)
                     }
-                    is Int -> {
-                        IntPreference(watchId, preferenceKey, newValue).also {
-                            intPrefDao().update(it)
-                        }
-                        true
-                    }
-                    else -> false
+                    true
                 }
+                is Int -> {
+                    IntPreference(watchId, preferenceKey, newValue).also {
+                        intPrefDao().update(it)
+                    }
+                    true
+                }
+                else -> false
             }
-            return@withContext false
         }
+        return false
     }
 
     @Suppress("UNCHECKED_CAST")
     suspend inline fun <reified T> getPreference(watchId: UUID, key: String): Preference<T>? {
-        return withContext(Dispatchers.IO) {
-            return@withContext when (T::class) {
-                Int::class -> intPrefDao().get(watchId, key) as Preference<T>?
-                Boolean::class -> boolPrefDao().get(watchId, key) as Preference<T>?
-                else -> {
-                    Timber.w("Tried to get preference for unsupported type ${T::class}")
-                    null
-                }
+        return when (T::class) {
+            Int::class -> intPrefDao().get(watchId, key) as Preference<T>?
+            Boolean::class -> boolPrefDao().get(watchId, key) as Preference<T>?
+            else -> {
+                Timber.w("Tried to get preference for unsupported type ${T::class}")
+                null
             }
         }
     }

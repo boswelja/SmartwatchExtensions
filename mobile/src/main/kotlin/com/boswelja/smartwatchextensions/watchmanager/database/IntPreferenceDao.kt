@@ -13,19 +13,19 @@ import java.util.UUID
 interface IntPreferenceDao {
 
     @Query("SELECT * FROM int_preferences WHERE id = :watchId")
-    fun getAllForWatch(watchId: UUID): List<IntPreference>
+    suspend fun getAllForWatch(watchId: UUID): List<IntPreference>
 
     @Query("SELECT * FROM int_preferences WHERE id = :watchId AND pref_key = :key LIMIT 1")
-    fun get(watchId: UUID, key: String): IntPreference?
+    suspend fun get(watchId: UUID, key: String): IntPreference?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun update(intPreference: IntPreference)
+    suspend fun update(intPreference: IntPreference)
 
     @Delete
-    fun remove(intPreference: IntPreference)
+    suspend fun remove(intPreference: IntPreference)
 
     @Query("DELETE FROM int_preferences WHERE id = :watchId")
-    fun deleteAllForWatch(watchId: UUID)
+    suspend fun deleteAllForWatch(watchId: UUID)
 
     @Query("SELECT * FROM int_preferences WHERE id = :watchId")
     fun getAllObservableForWatch(watchId: UUID): LiveData<Array<IntPreference>>

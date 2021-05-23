@@ -14,22 +14,22 @@ import kotlinx.coroutines.flow.Flow
 interface BoolPreferenceDao {
 
     @Query("SELECT * FROM bool_preferences WHERE id = :watchId")
-    fun getAllForWatch(watchId: UUID): List<BoolPreference>
+    suspend fun getAllForWatch(watchId: UUID): List<BoolPreference>
 
     @Query("SELECT * FROM bool_preferences WHERE pref_key = :key")
-    fun getAllForKey(key: String): Array<BoolPreference>
+    suspend fun getAllForKey(key: String): Array<BoolPreference>
 
     @Query("SELECT * FROM bool_preferences WHERE id = :watchId AND pref_key = :key LIMIT 1")
-    fun get(watchId: UUID, key: String): BoolPreference?
+    suspend fun get(watchId: UUID, key: String): BoolPreference?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun update(boolPreference: BoolPreference)
+    suspend fun update(boolPreference: BoolPreference)
 
     @Delete
-    fun remove(boolPreference: BoolPreference)
+    suspend fun remove(boolPreference: BoolPreference)
 
     @Query("DELETE FROM bool_preferences WHERE id = :watchId")
-    fun deleteAllForWatch(watchId: UUID)
+    suspend fun deleteAllForWatch(watchId: UUID)
 
     @Query("SELECT * FROM bool_preferences WHERE id = :watchId")
     fun getAllObservableForWatch(watchId: UUID): LiveData<Array<BoolPreference>>
@@ -45,5 +45,5 @@ interface BoolPreferenceDao {
     fun getObservable(watchId: UUID, key: String): LiveData<BoolPreference?>
 
     @Query("UPDATE bool_preferences SET value = :newValue WHERE pref_key = :key")
-    fun updateAllForKey(key: String, newValue: Boolean)
+    suspend fun updateAllForKey(key: String, newValue: Boolean)
 }
