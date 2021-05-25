@@ -193,6 +193,14 @@ class WatchManager internal constructor(
 
     fun getCapabilitiesFor(watch: Watch) = connectionClient.getCapabilitiesFor(watch)
 
+    @ExperimentalCoroutinesApi
+    fun getCapabilitesForSelectedWatch() =
+        _selectedWatch.flatMapLatest<Watch?, Array<String>?> { watch ->
+            watch?.let {
+                connectionClient.getCapabilitiesFor(watch)
+            } ?: flow { emit(null) }
+        }
+
     suspend fun sendMessage(watch: Watch, message: String, data: ByteArray? = null) =
         connectionClient.sendMessage(watch, message, data)
 
