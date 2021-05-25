@@ -10,9 +10,11 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.boswelja.smartwatchextensions.common.ui.AppTheme
 import com.boswelja.smartwatchextensions.common.ui.UpNavigationWatchPickerAppBar
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 class DnDSyncSettingsActivity : AppCompatActivity() {
 
+    @ExperimentalCoroutinesApi
     @ExperimentalMaterialApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

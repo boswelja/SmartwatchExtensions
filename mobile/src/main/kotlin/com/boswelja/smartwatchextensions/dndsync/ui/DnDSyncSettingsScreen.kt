@@ -74,10 +74,15 @@ fun SyncToWatchSetting(
 ) {
     val context = LocalContext.current
     val dndSyncToWatch by viewModel.syncToWatch.collectAsState(false)
+    val canSyncToWatch by viewModel.canReceiveDnD.collectAsState(false)
     SwitchPreference(
         text = stringResource(R.string.pref_dnd_sync_to_watch_title),
-        secondaryText = stringResource(R.string.pref_dnd_sync_to_watch_summary),
+        secondaryText = if (canSyncToWatch)
+            stringResource(R.string.pref_dnd_sync_to_watch_summary)
+        else
+            stringResource(R.string.capability_not_supported),
         isChecked = dndSyncToWatch,
+        isEnabled = canSyncToWatch,
         onCheckChanged = {
             if (!it) {
                 viewModel.setSyncToWatch(false)
@@ -97,10 +102,15 @@ fun SyncToPhoneSetting(
     onRequestNotificationPolicyAccess: (String) -> Unit
 ) {
     val dndSyncToPhone by viewModel.syncToPhone.collectAsState(false)
+    val canSyncToPhone by viewModel.canSendDnD.collectAsState(false)
     SwitchPreference(
         text = stringResource(R.string.pref_dnd_sync_to_phone_title),
-        secondaryText = stringResource(R.string.pref_dnd_sync_to_phone_summary),
+        secondaryText = if (canSyncToPhone)
+            stringResource(R.string.pref_dnd_sync_to_phone_summary)
+        else
+            stringResource(R.string.capability_not_supported),
         isChecked = dndSyncToPhone,
+        isEnabled = canSyncToPhone,
         onCheckChanged = {
             if ((it && viewModel.hasNotificationPolicyAccess) || !it) {
                 viewModel.setSyncToPhone(it)
@@ -119,10 +129,14 @@ fun SyncWithTheaterSetting(
     onRequestNotificationPolicyAccess: (String) -> Unit
 ) {
     val dndSyncWithTheater by viewModel.syncWithTheater.collectAsState(false)
+    val canSyncWithTheater by viewModel.canSendDnD.collectAsState(false)
     SwitchPreference(
         text = stringResource(R.string.pref_dnd_sync_with_theater_title),
-        secondaryText = stringResource(R.string.pref_dnd_sync_with_theater_summary),
+        secondaryText = if (canSyncWithTheater)
+            stringResource(R.string.pref_dnd_sync_with_theater_summary)
+        else stringResource(R.string.capability_not_supported),
         isChecked = dndSyncWithTheater,
+        isEnabled = canSyncWithTheater,
         onCheckChanged = {
             if ((it && viewModel.hasNotificationPolicyAccess) || !it) {
                 viewModel.setSyncWithTheater(it)
