@@ -36,17 +36,24 @@ fun SwitchPreference(
     text: String,
     secondaryText: String? = null,
     icon: ImageVector? = null,
+    isEnabled: Boolean = true,
     isChecked: Boolean,
     onCheckChanged: (Boolean) -> Unit
 ) {
     ListItem(
-        text = { Text(text) },
+        text = {
+            Text(text = text)
+        },
         secondaryText = if (secondaryText != null) { { Text(secondaryText) } } else null,
         icon = { if (icon != null) { Icon(icon, null) } },
         trailing = {
-            Switch(checked = isChecked, onCheckedChange = null)
+            Switch(
+                checked = isChecked,
+                onCheckedChange = null,
+                enabled = isEnabled
+            )
         },
-        modifier = Modifier.clickable {
+        modifier = Modifier.clickable(enabled = isEnabled) {
             onCheckChanged(!isChecked)
         }
     )
@@ -58,6 +65,7 @@ fun CheckboxPreference(
     text: String,
     secondaryText: String? = null,
     icon: ImageVector? = null,
+    isEnabled: Boolean = true,
     isChecked: Boolean,
     onCheckChanged: (Boolean) -> Unit
 ) {
@@ -66,9 +74,13 @@ fun CheckboxPreference(
         secondaryText = if (secondaryText != null) { { Text(secondaryText) } } else null,
         icon = { if (icon != null) { Icon(icon, null) } },
         trailing = {
-            Checkbox(checked = isChecked, onCheckedChange = null)
+            Checkbox(
+                checked = isChecked,
+                onCheckedChange = null,
+                enabled = isEnabled
+            )
         },
-        modifier = Modifier.clickable {
+        modifier = Modifier.clickable(enabled = isEnabled) {
             onCheckChanged(!isChecked)
         }
     )
@@ -82,6 +94,7 @@ fun SliderPreference(
     valueRange: ClosedFloatingPointRange<Float> = 0f..1f,
     value: Float,
     trailingFormat: String? = null,
+    isEnabled: Boolean = true,
     onSliderValueChanged: (Float) -> Unit,
     onSliderValueFinished: () -> Unit
 ) {
@@ -93,7 +106,8 @@ fun SliderPreference(
                 value = value,
                 valueRange = valueRange,
                 onValueChange = onSliderValueChanged,
-                onValueChangeFinished = onSliderValueFinished
+                onValueChangeFinished = onSliderValueFinished,
+                enabled = isEnabled
             )
         },
         trailing = if (trailingFormat != null) {
@@ -108,6 +122,7 @@ fun <T> DialogPreference(
     text: String,
     secondaryText: String? = null,
     icon: ImageVector? = null,
+    isEnabled: Boolean = true,
     values: Array<Pair<String, T>>,
     value: Pair<String, T>,
     onValueChanged: (Pair<String, T>) -> Unit
@@ -117,7 +132,7 @@ fun <T> DialogPreference(
         text = { Text(text) },
         secondaryText = if (secondaryText != null) { { Text(secondaryText) } } else null,
         icon = { if (icon != null) { Icon(icon, null) } },
-        modifier = Modifier.clickable { dialogVisible = true }
+        modifier = Modifier.clickable(enabled = isEnabled) { dialogVisible = true }
     )
     if (dialogVisible) {
         var selectedValue by remember { mutableStateOf(value) }
