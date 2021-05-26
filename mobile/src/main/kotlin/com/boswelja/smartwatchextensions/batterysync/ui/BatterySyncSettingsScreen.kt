@@ -51,6 +51,7 @@ fun BatterySyncSettings(
 ) {
     val viewModel: BatterySyncViewModel = viewModel()
 
+    val canSyncBattery by viewModel.canSyncBattery.collectAsState(false)
     val batterySyncEnabled by viewModel.batterySyncEnabled.collectAsState(false)
     val syncInterval by viewModel.syncInterval.collectAsState(15)
     var currentInterval by remember {
@@ -61,10 +62,14 @@ fun BatterySyncSettings(
         HeaderItem(stringResource(R.string.category_battery_sync_settings))
         SwitchPreference(
             text = stringResource(R.string.battery_sync_toggle_title),
+            secondaryText = if (!canSyncBattery)
+                stringResource(R.string.capability_not_supported)
+            else null,
             isChecked = batterySyncEnabled,
             onCheckChanged = {
                 viewModel.setBatterySyncEnabled(it)
-            }
+            },
+            isEnabled = canSyncBattery
         )
         SliderPreference(
             text = stringResource(R.string.battery_sync_interval_title),
