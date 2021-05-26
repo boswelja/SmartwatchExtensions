@@ -25,15 +25,21 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 @ExperimentalMaterialApi
 @Composable
 fun BatterySyncSettingsScreen() {
+    val viewModel: BatterySyncViewModel = viewModel()
+    val batterySyncEnabled by viewModel.batterySyncEnabled.collectAsState(false)
     val scrollState = rememberScrollState()
     Column(
         Modifier.verticalScroll(scrollState)
     ) {
         BatterySyncSettings()
         Divider()
-        ChargeNotificationSettings()
+        ChargeNotificationSettings(
+            isEnabled = batterySyncEnabled
+        )
         Divider()
-        LowBatteryNotificationSettings()
+        LowBatteryNotificationSettings(
+            isEnabled = batterySyncEnabled
+        )
     }
 }
 
