@@ -19,7 +19,7 @@ class DnDSyncSettingsViewModel(application: Application) : AndroidViewModel(appl
 
     private val notificationManager = application.getSystemService<NotificationManager>()
     val watchManager = WatchManager.getInstance(application)
-    private val capabilities = watchManager.getCapabilitesForSelectedWatch()
+    private val capabilities = watchManager.selectedWatchCapabilities()
 
     val canSendDnD = capabilities.mapLatest {
         it?.contains(Capability.SEND_DND.name) == true

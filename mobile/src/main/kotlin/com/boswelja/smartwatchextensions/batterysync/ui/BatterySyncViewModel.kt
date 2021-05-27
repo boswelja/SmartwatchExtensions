@@ -52,7 +52,7 @@ class BatterySyncViewModel internal constructor(
     val watchLowNotiEnabled = watchManager.getBoolSetting(BATTERY_WATCH_LOW_NOTI_KEY)
     val batteryLowThreshold = watchManager.getIntSetting(BATTERY_LOW_THRESHOLD_KEY)
 
-    val canSyncBattery = watchManager.getCapabilitesForSelectedWatch().mapLatest { capabilities ->
+    val canSyncBattery = watchManager.selectedWatchCapabilities().mapLatest { capabilities ->
         capabilities?.contains(Capability.SYNC_BATTERY.name) == true
     }
 

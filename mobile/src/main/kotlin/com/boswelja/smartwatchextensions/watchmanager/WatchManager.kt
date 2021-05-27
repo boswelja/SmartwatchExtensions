@@ -194,7 +194,7 @@ class WatchManager internal constructor(
     fun getCapabilitiesFor(watch: Watch) = connectionClient.getCapabilitiesFor(watch)
 
     @ExperimentalCoroutinesApi
-    fun getCapabilitesForSelectedWatch() =
+    fun selectedWatchCapabilities() =
         _selectedWatch.flatMapLatest<Watch?, Array<String>?> { watch ->
             watch?.let {
                 connectionClient.getCapabilitiesFor(watch)
