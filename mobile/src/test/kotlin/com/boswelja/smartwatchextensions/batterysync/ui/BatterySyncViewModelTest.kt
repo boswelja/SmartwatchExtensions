@@ -5,6 +5,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.MutableLiveData
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.boswelja.smartwatchextensions.common.connection.Capability
 import com.boswelja.smartwatchextensions.common.preference.PreferenceKey.BATTERY_LOW_THRESHOLD_KEY
 import com.boswelja.smartwatchextensions.common.preference.PreferenceKey.BATTERY_PHONE_LOW_NOTI_KEY
 import com.boswelja.smartwatchextensions.common.preference.PreferenceKey.BATTERY_WATCH_LOW_NOTI_KEY
@@ -15,12 +16,19 @@ import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.take
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.annotation.Config
+import strikt.api.expectThat
+import strikt.assertions.isFalse
+import strikt.assertions.isTrue
 
 @ExperimentalCoroutinesApi
 @RunWith(AndroidJUnit4::class)
@@ -30,6 +38,7 @@ class BatterySyncViewModelTest {
     @get:Rule val taskExecutorRule = InstantTaskExecutorRule()
 
     private val dummyWatch = Watch("Name", "id", "platform")
+    private val dummyCapabilities = MutableStateFlow<Array<String>>(emptyArray())
     private val dummyWatchLive = MutableLiveData(dummyWatch)
     private val testDispatcher = TestCoroutineDispatcher()
 
@@ -40,6 +49,8 @@ class BatterySyncViewModelTest {
     @Before
     fun setUp() {
         MockKAnnotations.init(this)
+
+        runBlocking { dummyCapabilities.emit(emptyArray()) }
 
         every { watchManager.selectedWatch } returns dummyWatchLive
         viewModel = BatterySyncViewModel(
@@ -82,6 +93,28 @@ class BatterySyncViewModelTest {
         viewModel.setLowBatteryThreshold(15)
         coVerify(exactly = 1) {
             watchManager.updatePreference(dummyWatch, BATTERY_LOW_THRESHOLD_KEY, 15)
+        }
+    }
+
+    @Test
+    fun `canSyncBattery flows true when capability is present`(): Unit = runBlocking {
+        // Emulate capability presence
+        dummyCapabilities.emit(arrayOf(Capability.SYNC_BATTERY.name))
+
+        // Check canSyncBattery
+        viewModel.canSyncBattery.take(1).collect {
+            expectThat(it).isTrue()
+        }
+    }
+
+    @Test
+    fun `canSyncBattery flows false when capability is missing`(): Unit = runBlocking {
+        // Emulate capability missing
+        dummyCapabilities.emit(emptyArray())
+
+        // Check canSyncBattery
+        viewModel.canSyncBattery.take(1).collect {
+            expectThat(it).isFalse()
         }
     }
 }
