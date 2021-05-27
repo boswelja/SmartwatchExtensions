@@ -22,10 +22,10 @@ class DnDSyncSettingsViewModel(application: Application) : AndroidViewModel(appl
     private val capabilities = watchManager.selectedWatchCapabilities()
 
     val canSendDnD = capabilities.mapLatest {
-        it?.contains(Capability.SEND_DND.name) == true
+        it.contains(Capability.SEND_DND)
     }
     val canReceiveDnD = capabilities.mapLatest {
-        it?.contains(Capability.RECEIVE_DND.name) == true
+        it.contains(Capability.RECEIVE_DND)
     }
 
     val syncToPhone = watchManager.getBoolSetting(DND_SYNC_TO_PHONE_KEY)

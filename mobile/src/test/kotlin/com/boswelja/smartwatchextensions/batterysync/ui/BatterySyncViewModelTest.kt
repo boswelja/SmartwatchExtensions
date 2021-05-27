@@ -38,7 +38,7 @@ class BatterySyncViewModelTest {
     @get:Rule val taskExecutorRule = InstantTaskExecutorRule()
 
     private val dummyWatch = Watch("Name", "id", "platform")
-    private val dummyCapabilities = MutableStateFlow<Array<String>>(emptyArray())
+    private val dummyCapabilities = MutableStateFlow<List<Capability>>(emptyList())
     private val dummyWatchLive = MutableLiveData(dummyWatch)
     private val testDispatcher = TestCoroutineDispatcher()
 
@@ -50,9 +50,11 @@ class BatterySyncViewModelTest {
     fun setUp() {
         MockKAnnotations.init(this)
 
-        runBlocking { dummyCapabilities.emit(emptyArray()) }
+        runBlocking { dummyCapabilities.emit(emptyList()) }
 
+        every { watchManager.selectedWatchCapabilities() } returns dummyCapabilities
         every { watchManager.selectedWatch } returns dummyWatchLive
+
         viewModel = BatterySyncViewModel(
             ApplicationProvider.getApplicationContext(),
             watchManager,
@@ -99,7 +101,7 @@ class BatterySyncViewModelTest {
     @Test
     fun `canSyncBattery flows true when capability is present`(): Unit = runBlocking {
         // Emulate capability presence
-        dummyCapabilities.emit(arrayOf(Capability.SYNC_BATTERY.name))
+        dummyCapabilities.emit(listOf(Capability.SYNC_BATTERY))
 
         // Check canSyncBattery
         viewModel.canSyncBattery.take(1).collect {
@@ -110,7 +112,7 @@ class BatterySyncViewModelTest {
     @Test
     fun `canSyncBattery flows false when capability is missing`(): Unit = runBlocking {
         // Emulate capability missing
-        dummyCapabilities.emit(emptyArray())
+        dummyCapabilities.emit(emptyList())
 
         // Check canSyncBattery
         viewModel.canSyncBattery.take(1).collect {

@@ -36,6 +36,7 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
@@ -191,14 +192,18 @@ class WatchManager internal constructor(
 
     fun getStatusFor(watch: Watch) = connectionClient.getStatusFor(watch)
 
-    fun getCapabilitiesFor(watch: Watch) = connectionClient.getCapabilitiesFor(watch)
+    @ExperimentalCoroutinesApi
+    fun getCapabilitiesFor(watch: Watch) =
+        connectionClient.getCapabilitiesFor(watch)?.mapLatest { capabilities ->
+            capabilities.map { Capability.valueOf(it) }
+        }
 
     @ExperimentalCoroutinesApi
     fun selectedWatchCapabilities() =
-        _selectedWatch.flatMapLatest<Watch?, Array<String>?> { watch ->
+        _selectedWatch.flatMapLatest<Watch?, List<Capability>> { watch ->
             watch?.let {
-                connectionClient.getCapabilitiesFor(watch)
-            } ?: flow { emit(null) }
+                getCapabilitiesFor(watch)
+            } ?: flow { emit(emptyList<Capability>()) }
         }
 
     suspend fun sendMessage(watch: Watch, message: String, data: ByteArray? = null) =
