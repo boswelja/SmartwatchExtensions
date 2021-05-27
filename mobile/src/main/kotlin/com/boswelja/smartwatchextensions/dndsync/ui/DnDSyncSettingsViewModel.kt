@@ -15,10 +15,19 @@ import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.launch
 
 @ExperimentalCoroutinesApi
-class DnDSyncSettingsViewModel(application: Application) : AndroidViewModel(application) {
+class DnDSyncSettingsViewModel internal constructor(
+    application: Application,
+    val watchManager: WatchManager,
+    private val notificationManager: NotificationManager
+) : AndroidViewModel(application) {
 
-    private val notificationManager = application.getSystemService<NotificationManager>()
-    val watchManager = WatchManager.getInstance(application)
+    @Suppress("unused")
+    constructor(application: Application) : this(
+        application,
+        WatchManager.getInstance(application),
+        application.getSystemService<NotificationManager>()!!
+    )
+
     private val capabilities = watchManager.selectedWatchCapabilities()
 
     val canSendDnD = capabilities.mapLatest {
@@ -33,7 +42,7 @@ class DnDSyncSettingsViewModel(application: Application) : AndroidViewModel(appl
     val syncWithTheater = watchManager.getBoolSetting(DND_SYNC_WITH_THEATER_KEY)
 
     val hasNotificationPolicyAccess: Boolean
-        get() = notificationManager?.isNotificationPolicyAccessGranted == true
+        get() = notificationManager.isNotificationPolicyAccessGranted
 
     fun setSyncToPhone(isEnabled: Boolean) {
         viewModelScope.launch {
