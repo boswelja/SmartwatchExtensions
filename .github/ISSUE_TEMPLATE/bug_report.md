@@ -24,9 +24,9 @@ A clear and concise description of what you expected to happen.
 If applicable, add screenshots to help explain your problem.
 
 **Device:**
- - Device: [e.g. Pixel 5]
- - OS: [e.g. Android 11]
- - App Version [e.g. 3.0.0]
+ - Phone: [e.g. Pixel 5 running Android 11]
+ - Watch: [e.g. Fossil Gen 5 running Wear OS H MR2]
+ - App Version [e.g. 4.1.0]
 
 **Additional context**
 Add any other context about the problem here.
