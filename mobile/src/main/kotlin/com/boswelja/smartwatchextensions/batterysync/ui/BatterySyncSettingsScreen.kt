@@ -19,47 +19,64 @@ import com.boswelja.smartwatchextensions.common.ui.CheckboxPreference
 import com.boswelja.smartwatchextensions.common.ui.HeaderItem
 import com.boswelja.smartwatchextensions.common.ui.SliderPreference
 import com.boswelja.smartwatchextensions.common.ui.SwitchPreference
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
+@ExperimentalCoroutinesApi
 @ExperimentalMaterialApi
 @Composable
 fun BatterySyncSettingsScreen() {
+    val viewModel: BatterySyncViewModel = viewModel()
+    val batterySyncEnabled by viewModel.batterySyncEnabled.collectAsState(false)
     val scrollState = rememberScrollState()
     Column(
         Modifier.verticalScroll(scrollState)
     ) {
         BatterySyncSettings()
         Divider()
-        ChargeNotificationSettings()
+        ChargeNotificationSettings(
+            isEnabled = batterySyncEnabled
+        )
         Divider()
-        LowBatteryNotificationSettings()
+        LowBatteryNotificationSettings(
+            isEnabled = batterySyncEnabled
+        )
     }
 }
 
+@ExperimentalCoroutinesApi
 @ExperimentalMaterialApi
 @Composable
-fun BatterySyncSettings() {
+fun BatterySyncSettings(
+    modifier: Modifier = Modifier
+) {
     val viewModel: BatterySyncViewModel = viewModel()
 
+    val canSyncBattery by viewModel.canSyncBattery.collectAsState(false)
     val batterySyncEnabled by viewModel.batterySyncEnabled.collectAsState(false)
     val syncInterval by viewModel.syncInterval.collectAsState(15)
     var currentInterval by remember {
         mutableStateOf(syncInterval / 100f)
     }
 
-    Column {
+    Column(modifier) {
         HeaderItem(stringResource(R.string.category_battery_sync_settings))
         SwitchPreference(
             text = stringResource(R.string.battery_sync_toggle_title),
+            secondaryText = if (!canSyncBattery)
+                stringResource(R.string.capability_not_supported)
+            else null,
             isChecked = batterySyncEnabled,
             onCheckChanged = {
                 viewModel.setBatterySyncEnabled(it)
-            }
+            },
+            isEnabled = canSyncBattery
         )
         SliderPreference(
             text = stringResource(R.string.battery_sync_interval_title),
             value = currentInterval,
             valueRange = 0.15f..0.60f,
             trailingFormat = stringResource(R.string.battery_sync_interval),
+            isEnabled = batterySyncEnabled,
             onSliderValueChanged = {
                 currentInterval = it
             },
@@ -70,9 +87,13 @@ fun BatterySyncSettings() {
     }
 }
 
+@ExperimentalCoroutinesApi
 @ExperimentalMaterialApi
 @Composable
-fun ChargeNotificationSettings() {
+fun ChargeNotificationSettings(
+    modifier: Modifier = Modifier,
+    isEnabled: Boolean = true
+) {
     val viewModel: BatterySyncViewModel = viewModel()
 
     val phoneChargeNotiEnabled by viewModel.phoneChargeNotiEnabled.collectAsState(false)
@@ -82,7 +103,7 @@ fun ChargeNotificationSettings() {
         mutableStateOf(chargeThreshold / 100f)
     }
 
-    Column {
+    Column(modifier) {
         HeaderItem(stringResource(R.string.category_charge_notifications))
         CheckboxPreference(
             text = stringResource(R.string.battery_sync_phone_charge_noti_title),
@@ -91,6 +112,7 @@ fun ChargeNotificationSettings() {
                 (currentThreshold * 100).toInt().toString()
             ),
             isChecked = phoneChargeNotiEnabled,
+            isEnabled = isEnabled,
             onCheckChanged = {
                 viewModel.setPhoneChargeNotiEnabled(it)
             }
@@ -102,6 +124,7 @@ fun ChargeNotificationSettings() {
                 (currentThreshold * 100).toInt().toString()
             ),
             isChecked = watchChargeNotiEnabled,
+            isEnabled = isEnabled,
             onCheckChanged = {
                 viewModel.setWatchChargeNotiEnabled(it)
             }
@@ -110,6 +133,7 @@ fun ChargeNotificationSettings() {
             text = stringResource(R.string.battery_sync_charge_threshold_title),
             valueRange = 0.6f..1f,
             value = currentThreshold,
+            isEnabled = isEnabled,
             trailingFormat = stringResource(R.string.battery_percent),
             onSliderValueChanged = {
                 currentThreshold = it
@@ -121,9 +145,13 @@ fun ChargeNotificationSettings() {
     }
 }
 
+@ExperimentalCoroutinesApi
 @ExperimentalMaterialApi
 @Composable
-fun LowBatteryNotificationSettings() {
+fun LowBatteryNotificationSettings(
+    modifier: Modifier = Modifier,
+    isEnabled: Boolean = true
+) {
     val viewModel: BatterySyncViewModel = viewModel()
 
     val phoneLowNotiEnabled by viewModel.phoneLowNotiEnabled.collectAsState(false)
@@ -133,7 +161,7 @@ fun LowBatteryNotificationSettings() {
         mutableStateOf(batteryLowThreshold / 100f)
     }
 
-    Column {
+    Column(modifier) {
         HeaderItem(stringResource(R.string.category_low_notifications))
         CheckboxPreference(
             text = stringResource(R.string.battery_sync_phone_low_noti_title),
@@ -141,6 +169,7 @@ fun LowBatteryNotificationSettings() {
                 R.string.battery_sync_phone_low_noti_summary,
                 (currentThreshold * 100).toInt().toString()
             ),
+            isEnabled = isEnabled,
             isChecked = phoneLowNotiEnabled,
             onCheckChanged = {
                 viewModel.setPhoneLowNotiEnabled(it)
@@ -152,6 +181,7 @@ fun LowBatteryNotificationSettings() {
                 R.string.battery_sync_watch_low_noti_summary,
                 (currentThreshold * 100).toInt().toString()
             ),
+            isEnabled = isEnabled,
             isChecked = watchLowNotiEnabled,
             onCheckChanged = {
                 viewModel.setWatchLowNotiEnabled(it)
@@ -161,6 +191,7 @@ fun LowBatteryNotificationSettings() {
             text = stringResource(R.string.battery_sync_low_threshold_title),
             valueRange = 0.05f..0.35f,
             value = currentThreshold,
+            isEnabled = isEnabled,
             trailingFormat = stringResource(R.string.battery_percent),
             onSliderValueChanged = {
                 currentThreshold = it

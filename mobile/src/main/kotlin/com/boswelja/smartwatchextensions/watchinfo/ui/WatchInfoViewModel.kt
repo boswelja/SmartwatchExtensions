@@ -12,12 +12,12 @@ import androidx.lifecycle.viewModelScope
 import com.boswelja.smartwatchextensions.common.connection.Capability
 import com.boswelja.smartwatchextensions.watchmanager.WatchManager
 import com.boswelja.watchconnection.core.Watch
+import java.util.UUID
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.mapNotNull
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import java.util.UUID
 
 class WatchInfoViewModel internal constructor(
     application: Application,
@@ -58,15 +58,11 @@ class WatchInfoViewModel internal constructor(
         }
     }
 
-    fun getCapabilities(): LiveData<Array<Capability>> {
+    @ExperimentalCoroutinesApi
+    fun getCapabilities(): LiveData<List<Capability>> {
         return watch.switchMap { watch ->
             watch?.let {
-                watchManager.getCapabilitiesFor(it)
-                    ?.mapNotNull { capabilities ->
-                        capabilities.map { capability ->
-                            Capability.valueOf(capability)
-                        }.toTypedArray()
-                    }?.asLiveData()
+                watchManager.getCapabilitiesFor(it)?.asLiveData()
             } ?: liveData { }
         }
     }

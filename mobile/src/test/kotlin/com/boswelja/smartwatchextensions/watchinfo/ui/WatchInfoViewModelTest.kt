@@ -79,7 +79,7 @@ class WatchInfoViewModelTest {
     fun `getCapabilities calls watchManager if watch is not null`(): Unit = runBlocking {
         // Mock capabilities from WatchManager
         every { watchManager.getCapabilitiesFor(any()) } returns flow {
-            emit(Capability.values().map { it.name }.toTypedArray())
+            emit(Capability.values().toList())
         }
 
         // Check with no / invalid watch selected

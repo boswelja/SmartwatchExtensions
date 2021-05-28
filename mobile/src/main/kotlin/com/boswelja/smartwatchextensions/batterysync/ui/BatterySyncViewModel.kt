@@ -9,6 +9,7 @@ import androidx.lifecycle.viewModelScope
 import com.boswelja.smartwatchextensions.batterysync.BatterySyncWorker
 import com.boswelja.smartwatchextensions.batterysync.Utils.updateBatteryStats
 import com.boswelja.smartwatchextensions.batterysync.database.WatchBatteryStatsDatabase
+import com.boswelja.smartwatchextensions.common.connection.Capability
 import com.boswelja.smartwatchextensions.common.preference.PreferenceKey.BATTERY_CHARGE_THRESHOLD_KEY
 import com.boswelja.smartwatchextensions.common.preference.PreferenceKey.BATTERY_LOW_THRESHOLD_KEY
 import com.boswelja.smartwatchextensions.common.preference.PreferenceKey.BATTERY_PHONE_CHARGE_NOTI_KEY
@@ -21,6 +22,7 @@ import com.boswelja.smartwatchextensions.watchmanager.WatchManager
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -49,6 +51,10 @@ class BatterySyncViewModel internal constructor(
     val phoneLowNotiEnabled = watchManager.getBoolSetting(BATTERY_PHONE_LOW_NOTI_KEY)
     val watchLowNotiEnabled = watchManager.getBoolSetting(BATTERY_WATCH_LOW_NOTI_KEY)
     val batteryLowThreshold = watchManager.getIntSetting(BATTERY_LOW_THRESHOLD_KEY)
+
+    val canSyncBattery = watchManager.selectedWatchCapabilities().mapLatest { capabilities ->
+        capabilities.contains(Capability.SYNC_BATTERY)
+    }
 
     val batteryStats = watchManager.selectedWatch.switchMap {
         it?.let { database.batteryStatsDao().getStats(it.id) }?.asLiveData() ?: liveData { }
