@@ -6,13 +6,14 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.room.Room
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
-import com.boswelja.smartwatchextensions.getOrAwaitValue
 import com.boswelja.smartwatchextensions.messages.database.MessageDatabase
 import io.mockk.MockKAnnotations
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.spyk
 import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Before
@@ -66,8 +67,7 @@ class MessageHelpersTest {
             notificationManager
         )
         verify(inverse = true) { notificationManager.notify(any(), any()) }
-        val count = messageDatabase.messageDao().getActiveMessagesCount()
-        count.getOrAwaitValue {
+        messageDatabase.messages().activeMessagesCount().take(1).collect {
             expectThat(it).isEqualTo(1)
         }
     }
@@ -81,8 +81,7 @@ class MessageHelpersTest {
             notificationManager
         )
         verify(exactly = 1) { notificationManager.notify(any(), any()) }
-        val count = messageDatabase.messageDao().getActiveMessagesCount()
-        count.getOrAwaitValue {
+        messageDatabase.messages().activeMessagesCount().take(1).collect {
             expectThat(it).isEqualTo(1)
         }
     }

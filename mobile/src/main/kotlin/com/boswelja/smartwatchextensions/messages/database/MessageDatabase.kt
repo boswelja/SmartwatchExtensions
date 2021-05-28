@@ -13,14 +13,7 @@ import com.boswelja.smartwatchextensions.messages.Message
 @TypeConverters(RoomTypeConverters::class)
 abstract class MessageDatabase : RoomDatabase() {
 
-    abstract fun messageDao(): MessageDao
-
-    /**
-     * Deletes all messages that were previously dismissed.
-     */
-    fun clearMessageHistory() {
-        messageDao().clearDismissedMessages()
-    }
+    abstract fun messages(): MessageDao
 
     companion object : SingletonHolder<MessageDatabase, Context>({ context ->
         Room.databaseBuilder(context, MessageDatabase::class.java, "messages-db")

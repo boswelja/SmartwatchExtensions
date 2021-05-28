@@ -24,7 +24,7 @@ suspend fun Context.sendMessage(
     database: MessageDatabase = MessageDatabase.getInstance(this),
     notificationManager: NotificationManager = getSystemService()!!
 ) {
-    val id = database.messageDao().createMessage(message)
+    val id = database.messages().send(message)
     if (priority == Priority.HIGH) {
         NotificationChannelHelper.createForSystemMessages(this, notificationManager)
         val notification =
