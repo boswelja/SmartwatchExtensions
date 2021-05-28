@@ -38,6 +38,10 @@
     <string name="battery_sync_watch_low_noti_title">Watch Low Notification</string>
     <string name="battery_sync_watch_low_noti_summary">Get a notification on your phone when your watch has less than %s%% battery</string>
     <string name="battery_sync_low_threshold_title">Low Battery Threshold Threshold</string>
+    <string name="battery_charge_noti_issue_title">Error sending battery charge notification</string>
+    <string name="battery_charge_noti_issue_summary">We were unable to notify you when your watch battery was charged, due to notifications being disabled in your system settings. We have disabled watch battery charge notifications because of this.</string>
+    <string name="battery_low_noti_issue_title">Error sending battery low notification</string>
+    <string name="battery_low_noti_issue_summary">We were unable to notify you when your watch battery was low, due to notifications being disabled in your system settings. We have disabled watch battery low notifications because of this.</string>
 
     <!-- Do not Disturb Sync preference strings -->
     <string name="main_dnd_sync_title">Do not Disturb Sync</string>
