@@ -58,6 +58,8 @@
     <string name="dnd_sync_helper_failed_title">Something Went Wrong</string>
     <string name="dnd_sync_helper_failed_message">Failed to enable Phone to Watch sync.</string>
     <string name="dnd_sync_helper_setup_title">Setup</string>
+    <string name="dnd_sync_error_title">Error Syncing DnD</string>
+    <string name="dnd_sync_error_summary">We couldn\'t sync Do not Disturb state with your watch. This was likely due to the required permission being revoked. We\'ve disabled DnD Sync to your phone because of this.</string>
     <string name="setup_step_format">%s.</string>
 
     <!-- App Manager strings -->
