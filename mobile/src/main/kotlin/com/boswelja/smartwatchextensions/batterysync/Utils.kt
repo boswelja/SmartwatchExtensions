@@ -22,6 +22,8 @@ import com.boswelja.smartwatchextensions.common.preference.PreferenceKey.BATTERY
 import com.boswelja.smartwatchextensions.common.preference.PreferenceKey.BATTERY_WATCH_LOW_NOTI_KEY
 import com.boswelja.smartwatchextensions.common.ui.BaseWidgetProvider
 import com.boswelja.smartwatchextensions.main.MainActivity
+import com.boswelja.smartwatchextensions.messages.Message
+import com.boswelja.smartwatchextensions.messages.sendMessage
 import com.boswelja.smartwatchextensions.watchmanager.WatchManager
 import com.boswelja.smartwatchextensions.watchmanager.database.WatchDatabase
 import com.boswelja.smartwatchextensions.watchmanager.database.WatchSettingsDatabase
@@ -182,8 +184,16 @@ object Utils {
                     .setLocalOnly(true)
                     .also { notificationManager.notify(BATTERY_CHARGED_NOTI_ID, it.build()) }
             } else {
-                // TODO Send a message informing the user of the issue
-                Timber.w("Failed to send charged notification")
+                Timber.w("Failed to send battery charged notification")
+                context.sendMessage(
+                    Message(
+                        Message.Icon.ERROR,
+                        context.getString(R.string.battery_charge_noti_issue_title),
+                        context.getString(R.string.battery_charge_noti_issue_summary),
+                        Message.Action.LAUNCH_NOTIFICATION_SETTINGS
+                    )
+                )
+                database.boolSettings().updateByKey(BATTERY_WATCH_CHARGE_NOTI_KEY, false)
             }
             database.updateSetting(watch.id, BATTERY_CHARGED_NOTI_SENT, true)
         }
@@ -241,8 +251,16 @@ object Utils {
                     .setLocalOnly(true)
                     .also { notificationManager.notify(BATTERY_LOW_NOTI_ID, it.build()) }
             } else {
-                // TODO Send a message informing the user of the issue
-                Timber.w("Failed to send charged notification")
+                Timber.w("Failed to send battery low notification")
+                context.sendMessage(
+                    Message(
+                        Message.Icon.ERROR,
+                        context.getString(R.string.battery_low_noti_issue_title),
+                        context.getString(R.string.battery_low_noti_issue_summary),
+                        Message.Action.LAUNCH_NOTIFICATION_SETTINGS
+                    )
+                )
+                database.boolSettings().updateByKey(BATTERY_WATCH_LOW_NOTI_KEY, false)
             }
             database.updateSetting(watch.id, BATTERY_LOW_NOTI_SENT, true)
         }

@@ -25,7 +25,7 @@ class MessagesViewModel @JvmOverloads constructor(
      * Gets a [kotlinx.coroutines.flow.Flow] of all active
      * [com.boswelja.smartwatchextensions.messages.Message] instances from the database.
      */
-    val activeMessagesFlow = messageDatabase.messageDao().getActiveMessages()
+    val activeMessagesFlow = messageDatabase.messages().activeMessages()
 
     /**
      * Checks for updates and starts the appropriate update flow.
@@ -60,13 +60,13 @@ class MessagesViewModel @JvmOverloads constructor(
 
     suspend fun dismissMessage(messageId: Long) {
         withContext(Dispatchers.IO) {
-            messageDatabase.messageDao().dismissMessage(messageId)
+            messageDatabase.messages().dismiss(messageId)
         }
     }
 
     suspend fun restoreMessage(messageId: Long) {
         withContext(Dispatchers.IO) {
-            messageDatabase.messageDao().restoreMessage(messageId)
+            messageDatabase.messages().restore(messageId)
         }
     }
 }

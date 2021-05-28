@@ -1,6 +1,5 @@
 package com.boswelja.smartwatchextensions.messages.database
 
-import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
@@ -11,23 +10,23 @@ import kotlinx.coroutines.flow.Flow
 interface MessageDao {
 
     @Insert
-    fun createMessage(message: Message): Long
+    suspend fun send(message: Message): Long
 
     @Query("UPDATE messages SET deleted = 1 WHERE id = :messageId")
-    fun dismissMessage(messageId: Long)
-
-    @Query("SELECT * FROM messages WHERE NOT deleted ORDER BY timestamp DESC")
-    fun getActiveMessages(): Flow<List<Message>>
-
-    @Query("SELECT * FROM messages WHERE deleted ORDER BY timestamp DESC")
-    fun getDismissedMessages(): Flow<List<Message>>
-
-    @Query("SELECT COUNT(*) FROM messages WHERE NOT deleted")
-    fun getActiveMessagesCount(): LiveData<Int>
+    suspend fun dismiss(messageId: Long)
 
     @Query("UPDATE messages SET deleted = 0 WHERE id = :messageId")
-    fun restoreMessage(messageId: Long)
+    suspend fun restore(messageId: Long)
 
     @Query("DELETE FROM messages WHERE deleted")
-    fun clearDismissedMessages()
+    suspend fun deleteDismissed()
+
+    @Query("SELECT * FROM messages WHERE NOT deleted ORDER BY timestamp DESC")
+    fun activeMessages(): Flow<List<Message>>
+
+    @Query("SELECT * FROM messages WHERE deleted ORDER BY timestamp DESC")
+    fun dismissedMessages(): Flow<List<Message>>
+
+    @Query("SELECT COUNT(*) FROM messages WHERE NOT deleted")
+    fun activeMessagesCount(): Flow<Int>
 }

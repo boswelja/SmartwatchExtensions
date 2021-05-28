@@ -4,10 +4,13 @@ import android.app.NotificationManager
 import android.content.Context
 import androidx.core.content.getSystemService
 import androidx.lifecycle.asFlow
+import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.common.dndsync.References.DND_STATUS_PATH
 import com.boswelja.smartwatchextensions.common.preference.PreferenceKey.DND_SYNC_TO_PHONE_KEY
 import com.boswelja.smartwatchextensions.common.preference.PreferenceKey.DND_SYNC_WITH_THEATER_KEY
 import com.boswelja.smartwatchextensions.common.toByteArray
+import com.boswelja.smartwatchextensions.messages.Message
+import com.boswelja.smartwatchextensions.messages.sendMessage
 import com.boswelja.smartwatchextensions.watchmanager.WatchManager
 import java.util.UUID
 import kotlinx.coroutines.flow.first
@@ -37,7 +40,13 @@ object Utils {
             Timber.w("Failed to set DnD state")
             watchManager.updatePreference(DND_SYNC_TO_PHONE_KEY, false)
             watchManager.updatePreference(DND_SYNC_WITH_THEATER_KEY, false)
-            // TODO Send a message to let the user know
+            context.sendMessage(
+                Message(
+                    Message.Icon.ERROR,
+                    context.getString(R.string.dnd_sync_error_title),
+                    context.getString(R.string.dnd_sync_error_summary)
+                )
+            )
         }
     }
 
