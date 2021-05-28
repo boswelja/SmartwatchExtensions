@@ -17,7 +17,7 @@ import com.boswelja.smartwatchextensions.bootorupdate.updater.Updater
 import com.boswelja.smartwatchextensions.common.preference.PreferenceKey
 import com.boswelja.smartwatchextensions.dndsync.DnDLocalChangeService
 import com.boswelja.smartwatchextensions.messages.Message
-import com.boswelja.smartwatchextensions.messages.MessageHandler
+import com.boswelja.smartwatchextensions.messages.sendMessage
 import com.boswelja.smartwatchextensions.watchmanager.WatchManager
 import com.boswelja.smartwatchextensions.watchmanager.database.WatchSettingsDatabase
 import kotlinx.coroutines.Dispatchers
@@ -177,7 +177,9 @@ class BootOrUpdateHandlerService : LifecycleService() {
             getString(R.string.update_complete_text, BuildConfig.VERSION_NAME),
             Message.Action.LAUNCH_CHANGELOG
         )
-        MessageHandler.postMessage(this, message)
+        lifecycleScope.launch {
+            sendMessage(message)
+        }
     }
 
     companion object {

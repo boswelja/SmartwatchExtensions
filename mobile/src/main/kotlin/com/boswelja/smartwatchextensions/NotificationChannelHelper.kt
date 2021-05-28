@@ -6,10 +6,12 @@ import android.content.Context
 import com.boswelja.smartwatchextensions.batterysync.Utils.BATTERY_STATS_NOTI_CHANNEL_ID
 import com.boswelja.smartwatchextensions.bootorupdate.BootOrUpdateHandlerService
 import com.boswelja.smartwatchextensions.common.dndsync.References
-import com.boswelja.smartwatchextensions.messages.MessageHandler
+import com.boswelja.smartwatchextensions.messages.MESSAGE_NOTIFICATION_CHANNEL_ID
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 object NotificationChannelHelper {
 
+    @ExperimentalCoroutinesApi
     fun createForBatteryStats(context: Context, notificationManager: NotificationManager) {
         if (notificationManager.getNotificationChannel(
                 BATTERY_STATS_NOTI_CHANNEL_ID
@@ -68,7 +70,7 @@ object NotificationChannelHelper {
 
     fun createForSystemMessages(context: Context, notificationManager: NotificationManager) {
         NotificationChannel(
-            MessageHandler.MESSAGE_NOTIFICATION_CHANNEL_ID,
+            MESSAGE_NOTIFICATION_CHANNEL_ID,
             context.getString(R.string.messages_noti_channel_label),
             NotificationManager.IMPORTANCE_DEFAULT
         ).also {

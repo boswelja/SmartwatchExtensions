@@ -1,7 +1,6 @@
 package com.boswelja.smartwatchextensions.messages
 
 import android.app.NotificationManager
-import android.content.Context
 import android.os.Build
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.room.Room
@@ -10,12 +9,11 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.boswelja.smartwatchextensions.getOrAwaitValue
 import com.boswelja.smartwatchextensions.messages.database.MessageDatabase
 import io.mockk.MockKAnnotations
-import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.spyk
 import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.TestCoroutineScope
+import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -28,13 +26,12 @@ import strikt.assertions.isEqualTo
 @ExperimentalCoroutinesApi
 @RunWith(AndroidJUnit4::class)
 @Config(sdk = [Build.VERSION_CODES.R])
-class MessageHandlerTest {
+class MessageHelpersTest {
 
     @get:Rule
     val instantExecutorRule = InstantTaskExecutorRule()
 
     private val context = spyk(InstrumentationRegistry.getInstrumentation().context)
-    private val coroutineScope = TestCoroutineScope()
     private val message = Message(
         Message.Icon.HELP,
         "Test Message",
@@ -52,7 +49,6 @@ class MessageHandlerTest {
         messageDatabase = Room.inMemoryDatabaseBuilder(context, MessageDatabase::class.java)
             .allowMainThreadQueries()
             .build()
-        every { context.getSystemService(Context.NOTIFICATION_SERVICE) } returns notificationManager
     }
 
     @After
@@ -62,15 +58,14 @@ class MessageHandlerTest {
     }
 
     @Test
-    fun `Low priority message only posts the message to the database`() {
-        MessageHandler.postMessage(
-            context,
+    fun `Low priority message only posts the message to database`(): Unit = runBlocking {
+        context.sendMessage(
             message,
             Priority.LOW,
             messageDatabase,
-            coroutineScope
+            notificationManager
         )
-        verify(exactly = 0) { notificationManager.notify(any(), any()) }
+        verify(inverse = true) { notificationManager.notify(any(), any()) }
         val count = messageDatabase.messageDao().getActiveMessagesCount()
         count.getOrAwaitValue {
             expectThat(it).isEqualTo(1)
@@ -78,13 +73,12 @@ class MessageHandlerTest {
     }
 
     @Test
-    fun `High priority message only posts the message to the database`() {
-        MessageHandler.postMessage(
-            context,
+    fun `High priority message posts to database and NotificationManager`(): Unit = runBlocking {
+        context.sendMessage(
             message,
             Priority.HIGH,
             messageDatabase,
-            coroutineScope
+            notificationManager
         )
         verify(exactly = 1) { notificationManager.notify(any(), any()) }
         val count = messageDatabase.messageDao().getActiveMessagesCount()
@@ -94,13 +88,12 @@ class MessageHandlerTest {
     }
 
     @Test
-    fun `Notification channel is created`() {
-        MessageHandler.postMessage(
-            context,
+    fun `Notification channel is created`(): Unit = runBlocking {
+        context.sendMessage(
             message,
             Priority.HIGH,
             messageDatabase,
-            coroutineScope
+            notificationManager
         )
         verify(exactly = 1) { notificationManager.createNotificationChannel(any()) }
     }

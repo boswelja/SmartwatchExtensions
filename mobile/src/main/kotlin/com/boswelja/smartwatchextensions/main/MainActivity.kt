@@ -29,6 +29,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
+import androidx.lifecycle.lifecycleScope
 import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.aboutapp.ui.AboutAppScreen
 import com.boswelja.smartwatchextensions.appsettings.ui.AppSettingsScreen
@@ -36,8 +37,8 @@ import com.boswelja.smartwatchextensions.common.ui.AppTheme
 import com.boswelja.smartwatchextensions.common.ui.WatchPickerAppBar
 import com.boswelja.smartwatchextensions.dashboard.ui.DashboardScreen
 import com.boswelja.smartwatchextensions.messages.Message
-import com.boswelja.smartwatchextensions.messages.MessageHandler
 import com.boswelja.smartwatchextensions.messages.Priority
+import com.boswelja.smartwatchextensions.messages.sendMessage
 import com.boswelja.smartwatchextensions.messages.ui.MessagesScreen
 import com.boswelja.smartwatchextensions.onboarding.ui.OnboardingActivity
 import com.boswelja.smartwatchextensions.watchmanager.WatchManager
@@ -47,6 +48,8 @@ import com.google.android.play.core.install.model.AppUpdateType
 import com.google.android.play.core.install.model.UpdateAvailability
 import com.google.android.play.core.ktx.updatePriority
 import java.util.UUID
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.launch
 import timber.log.Timber
 
 class MainActivity : AppCompatActivity() {
@@ -54,6 +57,7 @@ class MainActivity : AppCompatActivity() {
     private var currentDestination by mutableStateOf(Destination.DASHBOARD)
     private val watchManager by lazy { WatchManager.getInstance(this) }
 
+    @ExperimentalCoroutinesApi
     @ExperimentalAnimationApi
     @ExperimentalMaterialApi
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -118,7 +122,9 @@ class MainActivity : AppCompatActivity() {
                             getString(R.string.update_available_title),
                             getString(R.string.update_available_text)
                         )
-                        MessageHandler.postMessage(this, message, Priority.LOW)
+                        lifecycleScope.launch {
+                            sendMessage(message, Priority.LOW)
+                        }
                     } else if (appUpdateInfo.isUpdateTypeAllowed(AppUpdateType.IMMEDIATE)) {
                         appUpdateManager.startUpdateFlow(
                             appUpdateInfo,
