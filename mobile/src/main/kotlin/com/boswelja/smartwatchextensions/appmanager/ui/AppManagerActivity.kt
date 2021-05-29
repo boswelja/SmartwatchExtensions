@@ -10,6 +10,7 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.ScaffoldState
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
@@ -22,12 +23,14 @@ import com.boswelja.smartwatchextensions.common.ui.AppTheme
 import com.boswelja.smartwatchextensions.common.ui.Crossflow
 import com.boswelja.smartwatchextensions.common.ui.LoadingScreen
 import com.boswelja.smartwatchextensions.common.ui.UpNavigationWatchPickerAppBar
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import timber.log.Timber
 
 class AppManagerActivity : AppCompatActivity() {
 
     private var currentDestination by mutableStateOf(Destination.LOADING)
 
+    @ExperimentalCoroutinesApi
     @ExperimentalAnimationApi
     @ExperimentalFoundationApi
     @ExperimentalMaterialApi
@@ -37,7 +40,7 @@ class AppManagerActivity : AppCompatActivity() {
 
         setContent {
             val viewModel: AppManagerViewModel = viewModel()
-            val state by viewModel.state.observeAsState()
+            val state by viewModel.state.collectAsState(State.CONNECTING)
 
             val selectedWatch by viewModel.watchManager.selectedWatch.observeAsState()
             val registeredWatches by viewModel.watchManager.registeredWatches.observeAsState()
@@ -94,6 +97,7 @@ class AppManagerActivity : AppCompatActivity() {
         }
     }
 
+    @ExperimentalCoroutinesApi
     @ExperimentalFoundationApi
     @ExperimentalMaterialApi
     @ExperimentalAnimationApi
@@ -104,8 +108,8 @@ class AppManagerActivity : AppCompatActivity() {
         Crossflow(targetState = currentDestination) {
             when (it) {
                 Destination.LOADING -> {
-                    val progress by viewModel.progress.observeAsState()
-                    LoadingScreen((progress ?: 0) / 100f)
+                    val progress by viewModel.progress.collectAsState(-1)
+                    LoadingScreen(progress / 100f)
                 }
                 Destination.APP_LIST -> AppList(
                     viewModel,

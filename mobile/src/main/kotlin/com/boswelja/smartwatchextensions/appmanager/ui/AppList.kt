@@ -12,7 +12,8 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.res.stringResource
@@ -20,29 +21,27 @@ import androidx.compose.ui.unit.dp
 import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.common.appmanager.App
 import com.boswelja.smartwatchextensions.common.ui.HeaderItem
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
+@ExperimentalCoroutinesApi
 @ExperimentalMaterialApi
 @ExperimentalFoundationApi
 @Composable
 fun AppList(viewModel: AppManagerViewModel, onAppClick: (App) -> Unit) {
-    val userApps = viewModel.userApps.observeAsState()
-    val systemApps = viewModel.systemApps.observeAsState()
+    val userApps by viewModel.userApps.collectAsState(emptyList())
+    val systemApps by viewModel.systemApps.collectAsState(emptyList())
     LazyColumn {
         stickyHeader {
             HeaderItem(stringResource(R.string.app_manager_section_user_apps))
         }
-        userApps.value?.let {
-            items(it) { app ->
-                AppItem(app, onAppClick)
-            }
+        items(userApps) { app ->
+            AppItem(app, onAppClick)
         }
         stickyHeader {
             HeaderItem(stringResource(R.string.app_manager_section_system_apps))
         }
-        systemApps.value?.let {
-            items(it) { app ->
-                AppItem(app, onAppClick)
-            }
+        items(systemApps) { app ->
+            AppItem(app, onAppClick)
         }
     }
 }

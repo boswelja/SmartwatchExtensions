@@ -1,8 +1,6 @@
 package com.boswelja.smartwatchextensions.appmanager
 
 import android.content.Context
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import com.boswelja.smartwatchextensions.common.appmanager.App
 import com.boswelja.smartwatchextensions.common.appmanager.Messages
@@ -18,6 +16,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -38,10 +38,10 @@ class AppManager internal constructor(
         Dispatchers.IO
     )
 
-    private val _state = MutableLiveData(State.CONNECTING)
-    private val _userAppsObservable = MutableLiveData<List<App>>(emptyList())
-    private val _systemAppsObservable = MutableLiveData<List<App>>(emptyList())
-    private val _progress = MutableLiveData(-1)
+    private val _state = MutableStateFlow(State.CONNECTING)
+    private val _userAppsObservable = MutableStateFlow<List<App>>(emptyList())
+    private val _systemAppsObservable = MutableStateFlow<List<App>>(emptyList())
+    private val _progress = MutableStateFlow(-1)
 
     private val _userApps = ArrayList<App>()
     private val _systemApps = ArrayList<App>()
@@ -52,25 +52,25 @@ class AppManager internal constructor(
     /**
      * The current [State] of the App Manager.
      */
-    val state: LiveData<State>
+    val state: Flow<State>
         get() = _state
 
     /**
      * A [List] of all user-installed [App]s found on the selected watch.
      */
-    val userApps: LiveData<List<App>>
+    val userApps: Flow<List<App>>
         get() = _userAppsObservable
 
     /**
      * A [List] of all system [App]s found on the selected watch.
      */
-    val systemApps: LiveData<List<App>>
+    val systemApps: Flow<List<App>>
         get() = _systemAppsObservable
 
     /**
      * The progress of any ongoing operations, or -1 if progress can't be reported.
      */
-    val progress: LiveData<Int>
+    val progress: Flow<Int>
         get() = _progress
 
     private val messageListener = object : MessageListener {
@@ -95,13 +95,13 @@ class AppManager internal constructor(
                         }
 
                         STOP_SERVICE -> {
-                            _state.postValue(State.STOPPED)
+                            _state.tryEmit(State.STOPPED)
                         }
                         else -> Timber.w("Unknown path received, ignoring")
                     }
                 } catch (e: Exception) {
                     Timber.e(e)
-                    _state.postValue(State.ERROR)
+                    _state.tryEmit(State.ERROR)
                 }
             }
         }
@@ -110,8 +110,8 @@ class AppManager internal constructor(
     private val selectedWatchObserver = Observer<Watch?> {
         if (it?.id != null && it.id != watch?.id) {
             Timber.d("selectedWatch changed, reconnecting App Manager service")
-            _state.postValue(State.CONNECTING)
-            _progress.postValue(-1)
+            _state.tryEmit(State.CONNECTING)
+            _progress.tryEmit(-1)
             watch?.let { watch ->
                 coroutineScope.launch {
                     watchManager.sendMessage(watch, STOP_SERVICE, null)
@@ -128,8 +128,8 @@ class AppManager internal constructor(
     }
 
     internal fun expectPackages(count: Int) {
-        _state.postValue(State.LOADING_APPS)
-        _progress.postValue(0)
+        _state.tryEmit(State.LOADING_APPS)
+        _progress.tryEmit(0)
         expectedPackageCount = count
     }
 
@@ -142,15 +142,15 @@ class AppManager internal constructor(
         }
         if ((_systemApps.count() + _userApps.count()) >= expectedPackageCount) {
             Timber.d("Got all expected packages, updating LiveData")
-            _progress.postValue(-1)
-            _userAppsObservable.postValue(_userApps)
-            _systemAppsObservable.postValue(_systemApps)
+            _progress.tryEmit(-1)
+            _userAppsObservable.tryEmit(_userApps)
+            _systemAppsObservable.tryEmit(_systemApps)
         } else {
             val progress = (
                 ((_systemApps.count() + _userApps.count()) / expectedPackageCount.toFloat()) * 100
                 ).toInt()
             Timber.d("Progress $progress")
-            _progress.postValue(progress)
+            _progress.tryEmit(progress)
         }
     }
 
@@ -160,10 +160,10 @@ class AppManager internal constructor(
         _systemApps.removeAll { it.packageName == app.packageName }
         if (app.isSystemApp) {
             _systemApps.add(app)
-            _systemAppsObservable.postValue(_systemApps)
+            _systemAppsObservable.tryEmit(_systemApps)
         } else {
             _userApps.add(app)
-            _userAppsObservable.postValue(_userApps)
+            _userAppsObservable.tryEmit(_userApps)
         }
     }
 
@@ -171,8 +171,8 @@ class AppManager internal constructor(
         Timber.d("Removing app from list")
         val wasUser = _userApps.removeAll { it.packageName == packageName }
         val wasSystem = _systemApps.removeAll { it.packageName == packageName }
-        if (wasUser) _userAppsObservable.postValue(_userApps)
-        if (wasSystem) _systemAppsObservable.postValue(_systemApps)
+        if (wasUser) _userAppsObservable.tryEmit(_userApps)
+        if (wasSystem) _systemAppsObservable.tryEmit(_systemApps)
     }
 
     /** Start the App Manager service on the connected watch. */
@@ -180,11 +180,11 @@ class AppManager internal constructor(
         Timber.d("startAppManagerService() called")
         watch?.let {
             coroutineScope.launch {
-                _state.postValue(State.CONNECTING)
+                _state.tryEmit(State.CONNECTING)
                 _userApps.clear()
                 _systemApps.clear()
-                _userAppsObservable.postValue(_userApps)
-                _systemAppsObservable.postValue(_systemApps)
+                _userAppsObservable.tryEmit(_userApps)
+                _systemAppsObservable.tryEmit(_systemApps)
                 watchManager.sendMessage(it, START_SERVICE, null)
             }
         }

@@ -2,14 +2,16 @@ package com.boswelja.smartwatchextensions.appmanager.ui
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
 import com.boswelja.smartwatchextensions.appmanager.AppManager
 import com.boswelja.smartwatchextensions.appmanager.State
 import com.boswelja.smartwatchextensions.common.appmanager.App
 import com.boswelja.smartwatchextensions.watchmanager.WatchManager
 import java.text.SimpleDateFormat
 import java.util.Locale
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.Flow
 
+@ExperimentalCoroutinesApi
 class AppManagerViewModel internal constructor(
     application: Application,
     private val appManager: AppManager,
@@ -25,16 +27,16 @@ class AppManagerViewModel internal constructor(
 
     private val dateFormatter = SimpleDateFormat("EE, dd MMM yyyy, h:mm aa", Locale.getDefault())
 
-    val state: LiveData<State>
+    val state: Flow<State>
         get() = appManager.state
 
-    val userApps: LiveData<List<App>>
+    val userApps: Flow<List<App>>
         get() = appManager.userApps
 
-    val systemApps: LiveData<List<App>>
+    val systemApps: Flow<List<App>>
         get() = appManager.systemApps
 
-    val progress: LiveData<Int>
+    val progress: Flow<Int>
         get() = appManager.progress
 
     /**
