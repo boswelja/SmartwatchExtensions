@@ -8,8 +8,6 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.content.pm.PackageManager
-import android.net.Uri
 import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.core.content.getSystemService
@@ -17,14 +15,12 @@ import androidx.lifecycle.LifecycleService
 import androidx.lifecycle.lifecycleScope
 import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.common.appmanager.App
-import com.boswelja.smartwatchextensions.common.appmanager.Messages.EXPECTED_APP_COUNT
 import com.boswelja.smartwatchextensions.common.appmanager.Messages.PACKAGE_ADDED
 import com.boswelja.smartwatchextensions.common.appmanager.Messages.PACKAGE_REMOVED
 import com.boswelja.smartwatchextensions.common.appmanager.Messages.PACKAGE_UPDATED
 import com.boswelja.smartwatchextensions.common.appmanager.Messages.REQUEST_OPEN_PACKAGE
 import com.boswelja.smartwatchextensions.common.appmanager.Messages.REQUEST_UNINSTALL_PACKAGE
 import com.boswelja.smartwatchextensions.common.appmanager.Messages.STOP_SERVICE
-import com.boswelja.smartwatchextensions.common.toByteArray
 import com.boswelja.smartwatchextensions.phoneStateStore
 import com.google.android.gms.wearable.MessageClient
 import com.google.android.gms.wearable.Wearable
@@ -45,12 +41,12 @@ class AppManagerService : LifecycleService() {
     private val messageReceiver = MessageClient.OnMessageReceivedListener {
         when (it.path) {
             REQUEST_UNINSTALL_PACKAGE -> {
-                getPackageNameFromBytes(it.data)?.also { packageName ->
+                it.data.toPackageName()?.also { packageName ->
                     requestUninstallPackage(packageName)
                 }
             }
             REQUEST_OPEN_PACKAGE -> {
-                getPackageNameFromBytes(it.data)?.also { packageName ->
+                it.data.toPackageName()?.also { packageName ->
                     openPackage(packageName)
                 }
             }
@@ -116,7 +112,11 @@ class AppManagerService : LifecycleService() {
             stopService()
         } else {
             startForeground(APP_MANAGER_NOTI_ID, createNotification())
-            sendAllApps()
+            lifecycleScope.launch {
+                phoneId.take(1).collect {
+                    sendAllApps(it)
+                }
+            }
         }
 
         return super.onStartCommand(intent, flags, startId)
@@ -217,81 +217,6 @@ class AppManagerService : LifecycleService() {
                 messageClient.sendMessage(it, PACKAGE_UPDATED, data)
             }
         }
-    }
-
-    /**
-     * Starts sending all apps to the connected phone.
-     */
-    private fun sendAllApps() {
-        lifecycleScope.launch {
-            val allPackages = packageManager.getInstalledPackages(PackageManager.GET_PERMISSIONS)
-                .map {
-                    App(packageManager, it)
-                }
-            phoneId.collect {
-                // Send expected app count to the phone
-                val data = allPackages.count().toByteArray()
-                messageClient.sendMessage(it, EXPECTED_APP_COUNT, data)
-
-                // Start sending apps
-                allPackages.forEach { app ->
-                    messageClient.sendMessage(it, PACKAGE_ADDED, app.toByteArray())
-                }
-            }
-        }
-    }
-
-    /**
-     * Converts a given [ByteArray] to a package name string.
-     * @param data The [ByteArray] to convert.
-     * @return THe package name, or null if data was invalid.
-     */
-    private fun getPackageNameFromBytes(data: ByteArray?): String? {
-        return if (data != null && data.isNotEmpty()) {
-            String(data, Charsets.UTF_8)
-        } else {
-            null
-        }
-    }
-
-    /**
-     * Checks whether a package is installed.
-     * @param packageName The name of the package to check.
-     * @return true if the package is installed, false otherwise.
-     */
-    private fun isPackageInstalled(packageName: String): Boolean {
-        return try {
-            packageManager.getApplicationInfo(packageName, 0)
-            true
-        } catch (ignored: Exception) {
-            false
-        }
-    }
-
-    /**
-     * If a package is installed, shows a prompt to allow the user to uninstall it.
-     * @param packageName The name of the package to try uninstall.
-     */
-    private fun requestUninstallPackage(packageName: String) {
-        if (isPackageInstalled(packageName)) {
-            Intent().apply {
-                action = Intent.ACTION_DELETE
-                data = Uri.fromParts("package", packageName, null)
-                flags = Intent.FLAG_ACTIVITY_NEW_TASK
-            }.also { startActivity(it) }
-        } else {
-            sendAppRemovedMessage(packageName)
-        }
-    }
-
-    /**
-     * Gets a launch intent for a given package and try start a new activity for it.
-     * @param packageName The name of the package to try open.
-     */
-    private fun openPackage(packageName: String) {
-        packageManager.getLaunchIntentForPackage(packageName)
-            ?.apply { flags = Intent.FLAG_ACTIVITY_NEW_TASK }
-            ?.also { startActivity(it) }
     }
 
     companion object {
