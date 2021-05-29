@@ -8,7 +8,7 @@ enum class State {
     /**
      * Disconnected from the selected watch.
      */
-    DISCONNECTED,
+    STOPPED,
 
     /**
      * Connecting to the selected watch.

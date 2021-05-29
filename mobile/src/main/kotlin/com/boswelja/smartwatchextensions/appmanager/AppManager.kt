@@ -95,7 +95,7 @@ class AppManager internal constructor(
                         }
 
                         STOP_SERVICE -> {
-                            _state.postValue(State.DISCONNECTED)
+                            _state.postValue(State.STOPPED)
                         }
                         else -> Timber.w("Unknown path received, ignoring")
                     }

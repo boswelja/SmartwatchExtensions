@@ -66,7 +66,7 @@ class AppManagerActivity : AppCompatActivity() {
             when (state) {
                 State.CONNECTING, State.LOADING_APPS -> currentDestination = Destination.LOADING
                 State.READY -> currentDestination = Destination.APP_LIST
-                State.DISCONNECTED -> {
+                State.STOPPED -> {
                     // TODO re-enable this when we resolve detection issues
 //                    val scope = rememberCoroutineScope()
 //                    scope.launch {
