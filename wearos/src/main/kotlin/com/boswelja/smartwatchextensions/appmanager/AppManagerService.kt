@@ -16,7 +16,6 @@ import androidx.core.content.getSystemService
 import androidx.lifecycle.LifecycleService
 import androidx.lifecycle.lifecycleScope
 import com.boswelja.smartwatchextensions.R
-import com.boswelja.smartwatchextensions.common.LifecycleAwareTimer
 import com.boswelja.smartwatchextensions.common.appmanager.App
 import com.boswelja.smartwatchextensions.common.appmanager.Messages.EXPECTED_APP_COUNT
 import com.boswelja.smartwatchextensions.common.appmanager.Messages.PACKAGE_ADDED
@@ -24,7 +23,6 @@ import com.boswelja.smartwatchextensions.common.appmanager.Messages.PACKAGE_REMO
 import com.boswelja.smartwatchextensions.common.appmanager.Messages.PACKAGE_UPDATED
 import com.boswelja.smartwatchextensions.common.appmanager.Messages.REQUEST_OPEN_PACKAGE
 import com.boswelja.smartwatchextensions.common.appmanager.Messages.REQUEST_UNINSTALL_PACKAGE
-import com.boswelja.smartwatchextensions.common.appmanager.Messages.SERVICE_RUNNING
 import com.boswelja.smartwatchextensions.common.appmanager.Messages.STOP_SERVICE
 import com.boswelja.smartwatchextensions.common.toByteArray
 import com.boswelja.smartwatchextensions.phoneStateStore
@@ -41,15 +39,6 @@ class AppManagerService : LifecycleService() {
     private lateinit var messageClient: MessageClient
 
     private lateinit var phoneId: Flow<String>
-
-    private val serviceRunningNotifier = LifecycleAwareTimer(10) {
-        lifecycleScope.launch {
-            phoneId.collect {
-                Timber.d("Notifying service running")
-                messageClient.sendMessage(it, SERVICE_RUNNING, null)
-            }
-        }
-    }
 
     private val messageReceiver = MessageClient.OnMessageReceivedListener {
         when (it.path) {
@@ -125,7 +114,6 @@ class AppManagerService : LifecycleService() {
             stopService()
         } else {
             startForeground(APP_MANAGER_NOTI_ID, createNotification())
-            lifecycle.removeObserver(serviceRunningNotifier)
             sendAllApps()
         }
 
@@ -243,8 +231,6 @@ class AppManagerService : LifecycleService() {
                     messageClient.sendMessage(it, PACKAGE_ADDED, app.toByteArray())
                 }
             }
-
-            lifecycle.addObserver(serviceRunningNotifier)
         }
     }
 

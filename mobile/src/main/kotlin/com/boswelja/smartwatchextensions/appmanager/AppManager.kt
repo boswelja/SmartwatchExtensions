@@ -4,7 +4,6 @@ import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
-import com.boswelja.smartwatchextensions.common.DelayedFunction
 import com.boswelja.smartwatchextensions.common.appmanager.App
 import com.boswelja.smartwatchextensions.common.appmanager.Messages
 import com.boswelja.smartwatchextensions.common.appmanager.Messages.START_SERVICE
@@ -17,6 +16,7 @@ import java.util.UUID
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
@@ -25,6 +25,7 @@ import timber.log.Timber
 /**
  * Class for handling the connection with an App Manager service on a connected watch.
  */
+@ExperimentalCoroutinesApi
 class AppManager internal constructor(
     private val watchManager: WatchManager,
     dispatcher: CoroutineDispatcher
@@ -37,13 +38,6 @@ class AppManager internal constructor(
         WatchManager.getInstance(context),
         Dispatchers.IO
     )
-
-    private val stateDisconnectedDelay = DelayedFunction(15) {
-        if (_state.value != State.ERROR) {
-            Timber.d("No heartbeat from watch, assuming Disconnected")
-            _state.postValue(State.DISCONNECTED)
-        }
-    }
 
     private val _state = MutableLiveData(State.CONNECTING)
     private val _userAppsObservable = MutableLiveData<List<App>>(emptyList())
@@ -97,7 +91,6 @@ class AppManager internal constructor(
                         }
 
                         // Service state messages
-                        Messages.SERVICE_RUNNING -> serviceRunning()
                         Messages.EXPECTED_APP_COUNT -> data?.let {
                             expectPackages(Int.fromByteArray(data))
                         }
@@ -158,7 +151,6 @@ class AppManager internal constructor(
             _progress.postValue(-1)
             _userAppsObservable.postValue(_userApps)
             _systemAppsObservable.postValue(_systemApps)
-            serviceRunning()
         } else {
             val progress = (
                 ((_systemApps.count() + _userApps.count()) / expectedPackageCount.toFloat()) * 100
@@ -189,15 +181,6 @@ class AppManager internal constructor(
         if (wasSystem) _systemAppsObservable.postValue(_systemApps)
     }
 
-    internal fun serviceRunning() {
-        Timber.d("App Manager service is running")
-        stateDisconnectedDelay.reset()
-        if ((_systemApps.count() + _userApps.count()) >= expectedPackageCount) {
-            Timber.d("No more expected packages, setting State to READY")
-            _state.postValue(State.READY)
-        }
-    }
-
     /** Start the App Manager service on the connected watch. */
     fun startAppManagerService() {
         Timber.d("startAppManagerService() called")
@@ -209,7 +192,6 @@ class AppManager internal constructor(
                 _userAppsObservable.postValue(_userApps)
                 _systemAppsObservable.postValue(_systemApps)
                 watchManager.sendMessage(it, START_SERVICE, null)
-                stateDisconnectedDelay.reset()
             }
         }
     }
