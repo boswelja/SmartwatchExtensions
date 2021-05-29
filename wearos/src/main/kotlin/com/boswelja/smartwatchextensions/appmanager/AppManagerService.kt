@@ -31,7 +31,9 @@ import com.google.android.gms.wearable.Wearable
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import timber.log.Timber
 
 class AppManagerService : LifecycleService() {
@@ -130,6 +132,11 @@ class AppManagerService : LifecycleService() {
     /** Stops the service. */
     private fun stopService() {
         Timber.d("Stopping service")
+        runBlocking {
+            phoneId.take(1).collect { id ->
+                messageClient.sendMessage(id, STOP_SERVICE, null)
+            }
+        }
         stopForeground(true)
         stopSelf()
     }

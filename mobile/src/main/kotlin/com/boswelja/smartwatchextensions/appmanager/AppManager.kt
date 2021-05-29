@@ -18,7 +18,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -95,19 +94,14 @@ class AppManager internal constructor(
                             expectPackages(Int.fromByteArray(data))
                         }
 
+                        STOP_SERVICE -> {
+                            _state.postValue(State.DISCONNECTED)
+                        }
                         else -> Timber.w("Unknown path received, ignoring")
                     }
                 } catch (e: Exception) {
                     Timber.e(e)
                     _state.postValue(State.ERROR)
-                }
-            } else if (message == Messages.SERVICE_RUNNING) {
-                // If we get SERVICE_RUNNING from any watch that's not the selected watch, stop it
-                Timber.w("Issue with received message, stopping App Manager on the watch")
-                coroutineScope.launch {
-                    watchManager.getWatchById(sourceWatchId).firstOrNull()?.let {
-                        watchManager.sendMessage(it, STOP_SERVICE, null)
-                    }
                 }
             }
         }
