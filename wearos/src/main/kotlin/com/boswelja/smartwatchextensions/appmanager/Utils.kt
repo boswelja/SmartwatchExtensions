@@ -6,10 +6,9 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import com.boswelja.smartwatchextensions.common.appmanager.App
 import com.boswelja.smartwatchextensions.common.appmanager.Messages
-import com.boswelja.smartwatchextensions.common.toByteArray
+import com.boswelja.smartwatchextensions.common.appmanager.compressToByteArray
 import com.google.android.gms.wearable.Wearable
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 
 /**
@@ -60,14 +59,14 @@ suspend fun Context.sendAllApps(phoneId: String) {
             }
 
         val messageClient = Wearable.getMessageClient(this@sendAllApps)
-        // Send expected app count to the phone
-        val data = allPackages.count().toByteArray()
-        messageClient.sendMessage(phoneId, Messages.EXPECTED_APP_COUNT, data).await()
 
-        // Start sending apps
-        allPackages.forEach { app ->
-            messageClient.sendMessage(phoneId, Messages.PACKAGE_ADDED, app.toByteArray()).await()
-        }
+        // Compress and send all apps
+        val bytes = allPackages.compressToByteArray()
+        messageClient.sendMessage(
+            phoneId,
+            Messages.ALL_APPS,
+            bytes
+        )
     }
 }
 

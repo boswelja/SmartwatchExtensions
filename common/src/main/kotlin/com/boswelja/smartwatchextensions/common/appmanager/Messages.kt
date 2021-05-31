@@ -12,7 +12,7 @@ object Messages {
     const val START_SERVICE = "/start_app_manager_service"
     const val STOP_SERVICE = "/stop_app_manager_service"
 
-    const val EXPECTED_APP_COUNT = "/app_manager_expected_count"
+    const val ALL_APPS = "/app_manager_all_apps"
 
     const val CHECK_CACHE_VALID = "/app_manager_cache_check"
 }
