@@ -14,6 +14,9 @@ interface WatchAppsDao {
     @Query("SELECT * FROM watch_apps WHERE watchId = :watchId")
     fun allForWatch(watchId: UUID): Flow<List<App>>
 
+    @Query("SELECT COUNT(packageName) FROM watch_apps WHERE watchId = :watchId")
+    fun countForWatch(watchId: UUID): Flow<Int>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun add(app: App)
 
