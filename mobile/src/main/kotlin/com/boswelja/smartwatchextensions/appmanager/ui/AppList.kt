@@ -12,14 +12,13 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.boswelja.smartwatchextensions.R
-import com.boswelja.smartwatchextensions.common.appmanager.App
+import com.boswelja.smartwatchextensions.appmanager.App
 import com.boswelja.smartwatchextensions.common.ui.HeaderItem
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
@@ -28,20 +27,24 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 @ExperimentalFoundationApi
 @Composable
 fun AppList(viewModel: AppManagerViewModel, onAppClick: (App) -> Unit) {
-    val userApps by viewModel.userApps.collectAsState(emptyList())
-    val systemApps by viewModel.systemApps.collectAsState(emptyList())
+    val userApps by viewModel.userApps.observeAsState()
+    val systemApps by viewModel.systemApps.observeAsState()
     LazyColumn {
-        stickyHeader {
-            HeaderItem(stringResource(R.string.app_manager_section_user_apps))
+        userApps?.let { apps ->
+            stickyHeader {
+                HeaderItem(stringResource(R.string.app_manager_section_user_apps))
+            }
+            items(apps) { app ->
+                AppItem(app, onAppClick)
+            }
         }
-        items(userApps) { app ->
-            AppItem(app, onAppClick)
-        }
-        stickyHeader {
-            HeaderItem(stringResource(R.string.app_manager_section_system_apps))
-        }
-        items(systemApps) { app ->
-            AppItem(app, onAppClick)
+        systemApps?.let { apps ->
+            stickyHeader {
+                HeaderItem(stringResource(R.string.app_manager_section_system_apps))
+            }
+            items(apps) { app ->
+                AppItem(app, onAppClick)
+            }
         }
     }
 }
@@ -53,19 +56,11 @@ fun AppItem(app: App, onClick: (App) -> Unit) {
         text = { Text(app.label) },
         secondaryText = { Text(app.version) },
         icon = {
-            if (app.icon?.bitmap != null) {
-                Image(
-                    app.icon!!.bitmap.asImageBitmap(),
-                    contentDescription = null,
-                    Modifier.size(40.dp)
-                )
-            } else {
-                Image(
-                    Icons.Outlined.Info,
-                    contentDescription = null,
-                    Modifier.size(40.dp)
-                )
-            }
+            Image(
+                Icons.Outlined.Info,
+                contentDescription = null,
+                Modifier.size(40.dp)
+            )
         },
         modifier = Modifier.clickable { onClick(app) }
     )

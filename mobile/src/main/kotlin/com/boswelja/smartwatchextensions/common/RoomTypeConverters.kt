@@ -2,6 +2,7 @@ package com.boswelja.smartwatchextensions.common
 
 import androidx.room.TypeConverter
 import com.boswelja.smartwatchextensions.messages.Message
+import com.google.gson.Gson
 import java.util.UUID
 
 class RoomTypeConverters {
@@ -41,5 +42,21 @@ class RoomTypeConverters {
     @TypeConverter
     fun uuidToString(value: UUID?): String? {
         return value?.toString()
+    }
+
+    @TypeConverter
+    fun stringArrayToString(value: Array<String>?): String? {
+        return value?.let {
+            val gson = Gson()
+            gson.toJson(value)
+        }
+    }
+
+    @TypeConverter
+    fun stringToStringArray(value: String?): Array<String>? {
+        return value?.let {
+            val gson = Gson()
+            gson.fromJson(value, Array<String>::class.java)
+        }
     }
 }

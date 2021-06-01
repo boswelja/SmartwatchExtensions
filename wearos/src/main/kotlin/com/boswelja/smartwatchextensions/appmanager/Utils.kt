@@ -13,7 +13,7 @@ import kotlinx.coroutines.withContext
 
 /**
  * Converts a given [ByteArray] to a package name string.
- * @return THe package name, or null if data was invalid.
+ * @return The package name, or null if data was invalid.
  */
 fun ByteArray.toPackageName(): String? {
     return if (isNotEmpty()) {

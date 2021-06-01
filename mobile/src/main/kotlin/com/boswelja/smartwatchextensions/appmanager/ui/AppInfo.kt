@@ -34,12 +34,11 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.boswelja.smartwatchextensions.R
-import com.boswelja.smartwatchextensions.common.appmanager.App
+import com.boswelja.smartwatchextensions.appmanager.App
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
 
@@ -74,19 +73,11 @@ fun AppHeaderView(app: App) {
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        if (app.icon?.bitmap != null) {
-            Image(
-                app.icon!!.bitmap.asImageBitmap(),
-                null,
-                Modifier.size(72.dp)
-            )
-        } else {
-            Image(
-                Icons.Outlined.Info,
-                null,
-                Modifier.size(72.dp)
-            )
-        }
+        Image(
+            Icons.Outlined.Info,
+            null,
+            Modifier.size(72.dp)
+        )
         Text(
             app.label,
             style = MaterialTheme.typography.h6
@@ -106,9 +97,10 @@ fun ActionButtons(app: App, scaffoldState: ScaffoldState, viewModel: AppManagerV
     ) {
         OutlinedButton(
             onClick = {
-                viewModel.sendOpenRequest(app)
                 scope.launch {
-                    scaffoldState.snackbarHostState.showSnackbar(continueOnWatchText, null)
+                    if (viewModel.sendOpenRequest(app)) {
+                        scaffoldState.snackbarHostState.showSnackbar(continueOnWatchText, null)
+                    }
                 }
             },
             Modifier.weight(1f)
@@ -118,9 +110,10 @@ fun ActionButtons(app: App, scaffoldState: ScaffoldState, viewModel: AppManagerV
         }
         OutlinedButton(
             onClick = {
-                viewModel.sendUninstallRequest(app)
                 scope.launch {
-                    scaffoldState.snackbarHostState.showSnackbar(continueOnWatchText, null)
+                    if (viewModel.sendUninstallRequest(app)) {
+                        scaffoldState.snackbarHostState.showSnackbar(continueOnWatchText, null)
+                    }
                 }
             },
             Modifier.weight(1f)

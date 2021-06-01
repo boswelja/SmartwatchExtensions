@@ -10,25 +10,22 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.ScaffoldState
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.boswelja.smartwatchextensions.appmanager.State
-import com.boswelja.smartwatchextensions.common.appmanager.App
+import com.boswelja.smartwatchextensions.appmanager.App
 import com.boswelja.smartwatchextensions.common.ui.AppTheme
 import com.boswelja.smartwatchextensions.common.ui.Crossflow
-import com.boswelja.smartwatchextensions.common.ui.LoadingScreen
 import com.boswelja.smartwatchextensions.common.ui.UpNavigationWatchPickerAppBar
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import timber.log.Timber
 
 class AppManagerActivity : AppCompatActivity() {
 
-    private var currentDestination by mutableStateOf(Destination.LOADING)
+    private var currentDestination by mutableStateOf(Destination.APP_LIST)
 
     @ExperimentalCoroutinesApi
     @ExperimentalAnimationApi
@@ -40,10 +37,10 @@ class AppManagerActivity : AppCompatActivity() {
 
         setContent {
             val viewModel: AppManagerViewModel = viewModel()
-            val state by viewModel.state.collectAsState(State.CONNECTING)
 
-            val selectedWatch by viewModel.watchManager.selectedWatch.observeAsState()
-            val registeredWatches by viewModel.watchManager.registeredWatches.observeAsState()
+            val selectedWatch by viewModel.selectedWatch.observeAsState()
+            val registeredWatches by viewModel.registeredWatches.observeAsState()
+            val state by viewModel.watchStatus.observeAsState()
 
             val scaffoldState = rememberScaffoldState()
 
@@ -54,7 +51,7 @@ class AppManagerActivity : AppCompatActivity() {
                         UpNavigationWatchPickerAppBar(
                             selectedWatch = selectedWatch,
                             watches = registeredWatches,
-                            onWatchSelected = { viewModel.watchManager.selectWatchById(it.id) },
+                            onWatchSelected = { viewModel.selectWatchById(it.id) },
                             onNavigateUp = { onBackPressed() }
                         )
                     }
@@ -64,27 +61,6 @@ class AppManagerActivity : AppCompatActivity() {
                         currentDestination = currentDestination
                     )
                 }
-            }
-
-            when (state) {
-                State.CONNECTING, State.LOADING_APPS -> currentDestination = Destination.LOADING
-                State.READY -> currentDestination = Destination.APP_LIST
-                State.STOPPED -> {
-                    // TODO re-enable this when we resolve detection issues
-//                    val scope = rememberCoroutineScope()
-//                    scope.launch {
-//                        val result = scaffoldState.snackbarHostState
-//                            .showSnackbar(
-//                                getString(R.string.app_manager_disconnected),
-//                                getString(R.string.button_retry),
-//                                SnackbarDuration.Indefinite
-//                            )
-//                        if (result == SnackbarResult.ActionPerformed) {
-//                            viewModel.startAppManagerService()
-//                        }
-//                    }
-                }
-                State.ERROR -> currentDestination = Destination.ERROR
             }
         }
     }
@@ -107,10 +83,6 @@ class AppManagerActivity : AppCompatActivity() {
         val viewModel: AppManagerViewModel = viewModel()
         Crossflow(targetState = currentDestination) {
             when (it) {
-                Destination.LOADING -> {
-                    val progress by viewModel.progress.collectAsState(-1)
-                    LoadingScreen(progress / 100f)
-                }
                 Destination.APP_LIST -> AppList(
                     viewModel,
                     onAppClick = { app ->
@@ -123,15 +95,12 @@ class AppManagerActivity : AppCompatActivity() {
                     scaffoldState,
                     viewModel
                 )
-                Destination.ERROR -> Error(viewModel)
             }
         }
     }
 
     enum class Destination {
-        LOADING,
         APP_LIST,
-        APP_INFO,
-        ERROR
+        APP_INFO
     }
 }
