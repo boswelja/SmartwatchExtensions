@@ -10,6 +10,7 @@ import com.boswelja.smartwatchextensions.common.appmanager.compressToByteArray
 import com.google.android.gms.wearable.Wearable
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import timber.log.Timber
 
 /**
  * Converts a given [ByteArray] to a package name string.
@@ -62,6 +63,7 @@ suspend fun Context.sendAllApps(phoneId: String) {
 
         // Compress and send all apps
         val bytes = allPackages.compressToByteArray()
+        Timber.d("Sending %s bytes", bytes.size)
         messageClient.sendMessage(
             phoneId,
             Messages.ALL_APPS,
