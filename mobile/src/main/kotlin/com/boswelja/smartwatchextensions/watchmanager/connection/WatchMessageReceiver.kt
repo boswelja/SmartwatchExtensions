@@ -2,8 +2,12 @@ package com.boswelja.smartwatchextensions.watchmanager.connection
 
 import android.content.Context
 import android.content.Intent
+import com.boswelja.smartwatchextensions.appmanager.database.WatchAppDatabase
 import com.boswelja.smartwatchextensions.batterysync.Utils
 import com.boswelja.smartwatchextensions.batterysync.Utils.handleBatteryStats
+import com.boswelja.smartwatchextensions.common.appmanager.App
+import com.boswelja.smartwatchextensions.common.appmanager.Messages.ALL_APPS
+import com.boswelja.smartwatchextensions.common.appmanager.decompressFromByteArray
 import com.boswelja.smartwatchextensions.common.batterysync.BatteryStats
 import com.boswelja.smartwatchextensions.common.batterysync.References.BATTERY_STATUS_PATH
 import com.boswelja.smartwatchextensions.common.batterysync.References.REQUEST_BATTERY_UPDATE_PATH
@@ -22,10 +26,12 @@ import com.boswelja.watchconnection.core.WatchPlatformManager
 import com.boswelja.watchconnection.wearos.WearOSPlatform
 import java.util.UUID
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 
+@ExperimentalCoroutinesApi
 class WatchMessageReceiver : MessageReceiver() {
 
     override suspend fun onMessageReceived(
@@ -36,6 +42,13 @@ class WatchMessageReceiver : MessageReceiver() {
     ) {
         Timber.d("Received %s", message)
         when (message) {
+            ALL_APPS -> {
+                data?.let {
+                    Timber.d("Received %s bytes", data.size)
+                    val apps = decompressFromByteArray(data)
+                    storeWatchApps(context, sourceWatchId, apps)
+                }
+            }
             LAUNCH_APP -> launchApp(context)
             REQUEST_BATTERY_UPDATE_PATH -> Utils.updateBatteryStats(context)
             CHECK_WATCH_REGISTERED_PATH -> sendIsWatchRegistered(context, sourceWatchId)
@@ -47,6 +60,24 @@ class WatchMessageReceiver : MessageReceiver() {
             }
         }
         Timber.d("Finished handling message")
+    }
+
+    private suspend fun storeWatchApps(
+        context: Context,
+        sourceWatchId: UUID,
+        allApps: List<App>
+    ) {
+        Timber.d("Received %s apps", allApps.count())
+        val database = WatchAppDatabase.getInstance(context)
+        database.apps().removeForWatch(sourceWatchId)
+        allApps.forEach { watchApp ->
+            database.apps().add(
+                com.boswelja.smartwatchextensions.appmanager.App(
+                    sourceWatchId,
+                    watchApp
+                )
+            )
+        }
     }
 
     /**
