@@ -7,6 +7,7 @@ import com.boswelja.smartwatchextensions.batterysync.Utils
 import com.boswelja.smartwatchextensions.batterysync.Utils.handleBatteryStats
 import com.boswelja.smartwatchextensions.common.appmanager.App
 import com.boswelja.smartwatchextensions.common.appmanager.Messages.ALL_APPS
+import com.boswelja.smartwatchextensions.common.appmanager.Messages.START_SENDING_APPS
 import com.boswelja.smartwatchextensions.common.appmanager.decompressFromByteArray
 import com.boswelja.smartwatchextensions.common.batterysync.BatteryStats
 import com.boswelja.smartwatchextensions.common.batterysync.References.BATTERY_STATUS_PATH
@@ -42,11 +43,14 @@ class WatchMessageReceiver : MessageReceiver() {
     ) {
         Timber.d("Received %s", message)
         when (message) {
+            START_SENDING_APPS -> {
+                clearAppsForWatch(context, sourceWatchId)
+            }
             ALL_APPS -> {
                 data?.let {
                     Timber.d("Received %s bytes", data.size)
-                    val apps = decompressFromByteArray(data)
-                    storeWatchApps(context, sourceWatchId, apps)
+                    val app = decompressFromByteArray(data)
+                    storeWatchApp(context, sourceWatchId, app)
                 }
             }
             LAUNCH_APP -> launchApp(context)
@@ -62,22 +66,26 @@ class WatchMessageReceiver : MessageReceiver() {
         Timber.d("Finished handling message")
     }
 
-    private suspend fun storeWatchApps(
+    private suspend fun clearAppsForWatch(
         context: Context,
-        sourceWatchId: UUID,
-        allApps: List<App>
+        sourceWatchId: UUID
     ) {
-        Timber.d("Received %s apps", allApps.count())
         val database = WatchAppDatabase.getInstance(context)
         database.apps().removeForWatch(sourceWatchId)
-        allApps.forEach { watchApp ->
-            database.apps().add(
-                com.boswelja.smartwatchextensions.appmanager.App(
-                    sourceWatchId,
-                    watchApp
-                )
+    }
+
+    private suspend fun storeWatchApp(
+        context: Context,
+        sourceWatchId: UUID,
+        app: App
+    ) {
+        val database = WatchAppDatabase.getInstance(context)
+        database.apps().add(
+            com.boswelja.smartwatchextensions.appmanager.App(
+                sourceWatchId,
+                app
             )
-        }
+        )
     }
 
     /**
