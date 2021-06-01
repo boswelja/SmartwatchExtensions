@@ -15,6 +15,7 @@ import com.boswelja.watchconnection.core.Status
 import java.text.SimpleDateFormat
 import java.util.Locale
 import java.util.UUID
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 @ExperimentalCoroutinesApi
@@ -38,13 +39,13 @@ class AppManagerViewModel internal constructor(
 
     val allApps = watchManager.selectedWatch.switchMap { watch ->
         watch?.let {
-            appDatabase.apps().allForWatch(watch.id).asLiveData()
+            appDatabase.apps().allForWatch(watch.id).asLiveData(Dispatchers.IO)
         } ?: liveData { emit(emptyList<App>()) }
     }
 
     val watchStatus = watchManager.selectedWatch.switchMap { watch ->
         watch?.let {
-            watchManager.getStatusFor(watch)?.asLiveData()
+            watchManager.getStatusFor(watch)?.asLiveData(Dispatchers.IO)
         } ?: liveData { emit(Status.ERROR) }
     }
 
