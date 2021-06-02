@@ -9,6 +9,7 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.boswelja.smartwatchextensions.AppState
 import com.boswelja.smartwatchextensions.analytics.Analytics
+import com.boswelja.smartwatchextensions.appmanager.database.WatchAppDatabase
 import com.boswelja.smartwatchextensions.batterysync.database.WatchBatteryStatsDatabase
 import com.boswelja.smartwatchextensions.common.connection.Messages
 import com.boswelja.smartwatchextensions.common.connection.Messages.CLEAR_PREFERENCES
@@ -59,7 +60,9 @@ class WatchManagerTest {
     @RelaxedMockK private lateinit var connectionClient: WatchPlatformManager
     @RelaxedMockK private lateinit var widgetIdStore: DataStore<Preferences>
     @RelaxedMockK private lateinit var analytics: Analytics
+    // TODO Don't mock databases, instead create in memory databases so we can validate data too
     @RelaxedMockK private lateinit var batteryStatsDatabase: WatchBatteryStatsDatabase
+    @RelaxedMockK private lateinit var watchAppDatabase: WatchAppDatabase
     @RelaxedMockK private lateinit var dataStore: DataStore<AppState>
     @RelaxedMockK private lateinit var settingsDatabase: WatchSettingsDatabase
 
@@ -127,11 +130,13 @@ class WatchManagerTest {
             watchManager.forgetWatch(
                 widgetIdStore,
                 batteryStatsDatabase,
+                watchAppDatabase,
                 dummyWatch1
             )
             verify(exactly = 1) { analytics.logWatchRemoved() }
             coVerify(exactly = 1) { connectionClient.sendMessage(dummyWatch1, Messages.RESET_APP) }
             verify(exactly = 1) { batteryStatsDatabase.batteryStatsDao() }
+            verify(exactly = 1) { watchAppDatabase.apps() }
 
             // Verify watch isn't in database
             expectThat(watchDatabase.watchDao().get(dummyWatch1.id).firstOrNull()).isNull()
