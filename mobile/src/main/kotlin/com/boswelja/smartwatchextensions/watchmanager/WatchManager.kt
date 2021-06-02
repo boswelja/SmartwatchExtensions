@@ -10,6 +10,7 @@ import androidx.lifecycle.asLiveData
 import com.boswelja.smartwatchextensions.AppState
 import com.boswelja.smartwatchextensions.analytics.Analytics
 import com.boswelja.smartwatchextensions.appStateStore
+import com.boswelja.smartwatchextensions.appmanager.database.WatchAppDatabase
 import com.boswelja.smartwatchextensions.batterysync.database.WatchBatteryStatsDatabase
 import com.boswelja.smartwatchextensions.common.SingletonHolder
 import com.boswelja.smartwatchextensions.common.connection.Capability
@@ -116,6 +117,7 @@ class WatchManager internal constructor(
         forgetWatch(
             context.widgetIdStore,
             WatchBatteryStatsDatabase.getInstance(context),
+            WatchAppDatabase.getInstance(context),
             watch
         )
     }
@@ -123,10 +125,12 @@ class WatchManager internal constructor(
     internal suspend fun forgetWatch(
         widgetIdStore: DataStore<Preferences>,
         batteryStatsDatabase: WatchBatteryStatsDatabase,
+        watchAppDatabase: WatchAppDatabase,
         watch: Watch
     ) {
         withContext(Dispatchers.IO) {
             batteryStatsDatabase.batteryStatsDao().deleteStats(watch.id)
+            watchAppDatabase.apps().removeForWatch(watch.id)
             connectionClient.sendMessage(watch, Messages.RESET_APP)
             watchDatabase.removeWatch(watch)
             removeWidgetsForWatch(watch, widgetIdStore)
