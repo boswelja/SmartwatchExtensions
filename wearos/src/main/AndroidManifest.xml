@@ -180,10 +180,6 @@
             android:name=".dndsync.DnDLocalChangeListener"
             android:exported="false" />
 
-        <service
-            android:name=".appmanager.AppManagerService"
-            android:exported="false" />
-
         <receiver
             android:name=".BootHandler"
             android:exported="false">

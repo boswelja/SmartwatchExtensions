@@ -3,14 +3,10 @@ package com.boswelja.smartwatchextensions.phoneconnectionmanager
 import android.app.ActivityManager
 import android.app.NotificationManager
 import android.content.Context
-import android.content.Intent
 import android.os.Build
-import androidx.core.content.ContextCompat
 import androidx.core.content.getSystemService
 import com.boswelja.smartwatchextensions.BuildConfig
-import com.boswelja.smartwatchextensions.appmanager.AppManagerService
 import com.boswelja.smartwatchextensions.capability.CapabilityUpdater
-import com.boswelja.smartwatchextensions.common.appmanager.Messages
 import com.boswelja.smartwatchextensions.common.connection.Messages.CLEAR_PREFERENCES
 import com.boswelja.smartwatchextensions.common.connection.Messages.REQUEST_APP_VERSION
 import com.boswelja.smartwatchextensions.common.connection.Messages.REQUEST_UPDATE_CAPABILITIES
@@ -50,10 +46,6 @@ class MessageReceiver : WearableListenerService() {
                             Charsets.UTF_8
                         )
                     )
-            }
-            Messages.START_SERVICE -> {
-                val intent = Intent(this, AppManagerService::class.java)
-                ContextCompat.startForegroundService(this, intent)
             }
             REQUEST_SDK_INT_PATH -> {
                 Wearable.getMessageClient(this)
