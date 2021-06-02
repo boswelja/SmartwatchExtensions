@@ -12,8 +12,8 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.res.stringResource
@@ -21,6 +21,7 @@ import androidx.compose.ui.unit.dp
 import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.appmanager.App
 import com.boswelja.smartwatchextensions.common.ui.HeaderItem
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 @ExperimentalCoroutinesApi
@@ -28,24 +29,20 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 @ExperimentalFoundationApi
 @Composable
 fun AppList(viewModel: AppManagerViewModel, onAppClick: (App) -> Unit) {
-    val userApps by viewModel.userApps.observeAsState()
-    val systemApps by viewModel.systemApps.observeAsState()
+    val userApps by viewModel.userApps.collectAsState(emptyList(), Dispatchers.IO)
+    val systemApps by viewModel.systemApps.collectAsState(emptyList(), Dispatchers.IO)
     LazyColumn {
-        userApps?.let { apps ->
-            stickyHeader {
-                HeaderItem(stringResource(R.string.app_manager_section_user_apps))
-            }
-            items(apps) { app ->
-                AppItem(app, onAppClick)
-            }
+        stickyHeader {
+            HeaderItem(stringResource(R.string.app_manager_section_user_apps))
         }
-        systemApps?.let { apps ->
-            stickyHeader {
-                HeaderItem(stringResource(R.string.app_manager_section_system_apps))
-            }
-            items(apps) { app ->
-                AppItem(app, onAppClick)
-            }
+        items(userApps) { app ->
+            AppItem(app, onAppClick)
+        }
+        stickyHeader {
+            HeaderItem(stringResource(R.string.app_manager_section_system_apps))
+        }
+        items(systemApps) { app ->
+            AppItem(app, onAppClick)
         }
     }
 }

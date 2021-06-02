@@ -13,7 +13,7 @@ class DashboardViewModel(application: Application) : AndroidViewModel(applicatio
 
     private val watchManager = WatchManager.getInstance(application)
 
-    val status = watchManager.selectedWatch.switchMap { watch ->
+    val status = watchManager.selectedWatchLiveData.switchMap { watch ->
         watch?.let {
             watchManager.getStatusFor(watch)?.asLiveData(Dispatchers.IO)
         } ?: liveData {

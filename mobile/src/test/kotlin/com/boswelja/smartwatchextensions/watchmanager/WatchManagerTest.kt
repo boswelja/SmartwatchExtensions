@@ -85,7 +85,7 @@ class WatchManagerTest {
         appState.emit(AppState(lastSelectedWatchId = dummyWatch1.id.toString()))
         watchManager = getWatchManager()
 
-        expectThat(watchManager.selectedWatch.getOrAwaitValue()).isEqualTo(dummyWatch1)
+        expectThat(watchManager.selectedWatchLiveData.getOrAwaitValue()).isEqualTo(dummyWatch1)
     }
 
     @Test
@@ -97,7 +97,7 @@ class WatchManagerTest {
         watchManager.selectWatchById(dummyWatch2.id)
 
         // Check the selected watch has been updated
-        expectThat(watchManager.selectedWatch.getOrAwaitValue()).isEqualTo(dummyWatch2)
+        expectThat(watchManager.selectedWatchLiveData.getOrAwaitValue()).isEqualTo(dummyWatch2)
     }
 
     @Test
@@ -169,7 +169,8 @@ class WatchManagerTest {
         setRegisteredWatches(emptyList())
         watchManager = getWatchManager()
         expectThat(
-            watchManager.selectedWatch.getOrAwaitValue(time = 500, timeUnit = TimeUnit.MILLISECONDS)
+            watchManager.selectedWatchLiveData
+                .getOrAwaitValue(time = 500, timeUnit = TimeUnit.MILLISECONDS)
         ).isNull()
     }
 
@@ -180,7 +181,7 @@ class WatchManagerTest {
         setRegisteredWatches(dummyWatches)
         watchManager = getWatchManager()
         // Get the value, throws TimeoutException if watch was not set
-        watchManager.selectedWatch.getOrAwaitValue()
+        watchManager.selectedWatchLiveData.getOrAwaitValue()
     }
 
     @Test
@@ -190,7 +191,7 @@ class WatchManagerTest {
         setRegisteredWatches(dummyWatches)
         watchManager = getWatchManager()
         // Get the value, throws TimeoutException if watch was not set
-        watchManager.selectedWatch.getOrAwaitValue()
+        watchManager.selectedWatchLiveData.getOrAwaitValue()
     }
 
     private fun setRegisteredWatches(watches: List<Watch>): Unit = runBlocking {

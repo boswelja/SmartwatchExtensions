@@ -2,10 +2,6 @@ package com.boswelja.smartwatchextensions.appmanager.ui
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.asLiveData
-import androidx.lifecycle.liveData
-import androidx.lifecycle.map
-import androidx.lifecycle.switchMap
 import com.boswelja.smartwatchextensions.appmanager.App
 import com.boswelja.smartwatchextensions.appmanager.database.WatchAppDatabase
 import com.boswelja.smartwatchextensions.common.appmanager.Messages.REQUEST_OPEN_PACKAGE
@@ -15,8 +11,11 @@ import com.boswelja.watchconnection.core.Status
 import java.text.SimpleDateFormat
 import java.util.Locale
 import java.util.UUID
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.mapLatest
 
 @ExperimentalCoroutinesApi
 class AppManagerViewModel internal constructor(
@@ -37,23 +36,23 @@ class AppManagerViewModel internal constructor(
     val selectedWatch = watchManager.selectedWatch
     val registeredWatches = watchManager.registeredWatches
 
-    val allApps = watchManager.selectedWatch.switchMap { watch ->
+    val allApps = watchManager.selectedWatch.flatMapLatest { watch ->
         watch?.let {
-            appDatabase.apps().allForWatch(watch.id).asLiveData(Dispatchers.IO)
-        } ?: liveData { emit(emptyList<App>()) }
+            appDatabase.apps().allForWatch(watch.id)
+        } ?: flow { emit(emptyList<App>()) }
     }
 
-    val watchStatus = watchManager.selectedWatch.switchMap { watch ->
+    val watchStatus = watchManager.selectedWatch.flatMapLatest { watch ->
         watch?.let {
-            watchManager.getStatusFor(watch)?.asLiveData(Dispatchers.IO)
-        } ?: liveData { emit(Status.ERROR) }
+            watchManager.getStatusFor(watch)
+        } ?: flow { emit(Status.ERROR) }
     }
 
-    val userApps = allApps.map { apps ->
+    val userApps = allApps.mapLatest { apps ->
         apps.filter { !it.isSystemApp }
     }
 
-    val systemApps = allApps.map { apps ->
+    val systemApps = allApps.mapLatest { apps ->
         apps.filter { it.isSystemApp }
     }
 
@@ -68,11 +67,13 @@ class AppManagerViewModel internal constructor(
 
     suspend fun sendOpenRequest(app: App): Boolean {
         val data = app.packageName.toByteArray(Charsets.UTF_8)
-        return watchManager.sendMessage(selectedWatch.value!!, REQUEST_OPEN_PACKAGE, data)
+        val watch = selectedWatch.first()!!
+        return watchManager.sendMessage(watch, REQUEST_OPEN_PACKAGE, data)
     }
 
     suspend fun sendUninstallRequest(app: App): Boolean {
         val data = app.packageName.toByteArray(Charsets.UTF_8)
-        return watchManager.sendMessage(selectedWatch.value!!, REQUEST_UNINSTALL_PACKAGE, data)
+        val watch = selectedWatch.first()!!
+        return watchManager.sendMessage(watch, REQUEST_UNINSTALL_PACKAGE, data)
     }
 }

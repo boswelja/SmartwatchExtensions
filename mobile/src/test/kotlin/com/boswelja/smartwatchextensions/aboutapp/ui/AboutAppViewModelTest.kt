@@ -43,7 +43,7 @@ class AboutAppViewModelTest {
         MockKAnnotations.init(this)
 
         selectedWatch.postValue(dummyWatch1)
-        every { watchManager.selectedWatch } returns selectedWatch
+        every { watchManager.selectedWatchLiveData } returns selectedWatch
 
         viewModel = AboutAppViewModel(
             ApplicationProvider.getApplicationContext(),

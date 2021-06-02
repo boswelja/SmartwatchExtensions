@@ -10,6 +10,7 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.ScaffoldState
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
@@ -20,6 +21,8 @@ import com.boswelja.smartwatchextensions.appmanager.App
 import com.boswelja.smartwatchextensions.common.ui.AppTheme
 import com.boswelja.smartwatchextensions.common.ui.Crossflow
 import com.boswelja.smartwatchextensions.common.ui.UpNavigationWatchPickerAppBar
+import com.boswelja.watchconnection.core.Status
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import timber.log.Timber
 
@@ -38,9 +41,9 @@ class AppManagerActivity : AppCompatActivity() {
         setContent {
             val viewModel: AppManagerViewModel = viewModel()
 
-            val selectedWatch by viewModel.selectedWatch.observeAsState()
+            val selectedWatch by viewModel.selectedWatch.collectAsState(null, Dispatchers.IO)
             val registeredWatches by viewModel.registeredWatches.observeAsState()
-            val state by viewModel.watchStatus.observeAsState()
+            val state by viewModel.watchStatus.collectAsState(Status.CONNECTING, Dispatchers.IO)
 
             val scaffoldState = rememberScaffoldState()
 

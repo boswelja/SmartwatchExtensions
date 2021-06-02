@@ -47,7 +47,7 @@ class DnDSyncSettingsViewModel internal constructor(
     fun setSyncToPhone(isEnabled: Boolean) {
         viewModelScope.launch {
             watchManager.updatePreference(
-                watchManager.selectedWatch.value!!,
+                watchManager.selectedWatchLiveData.value!!,
                 DND_SYNC_TO_PHONE_KEY,
                 isEnabled
             )
@@ -57,7 +57,7 @@ class DnDSyncSettingsViewModel internal constructor(
     fun setSyncToWatch(isEnabled: Boolean) {
         viewModelScope.launch {
             watchManager.updatePreference(
-                watchManager.selectedWatch.value!!,
+                watchManager.selectedWatchLiveData.value!!,
                 DND_SYNC_TO_WATCH_KEY,
                 isEnabled
             )
@@ -67,7 +67,7 @@ class DnDSyncSettingsViewModel internal constructor(
     fun setSyncWithTheater(isEnabled: Boolean) {
         viewModelScope.launch {
             watchManager.updatePreference(
-                watchManager.selectedWatch.value!!,
+                watchManager.selectedWatchLiveData.value!!,
                 DND_SYNC_WITH_THEATER_KEY,
                 isEnabled
             )

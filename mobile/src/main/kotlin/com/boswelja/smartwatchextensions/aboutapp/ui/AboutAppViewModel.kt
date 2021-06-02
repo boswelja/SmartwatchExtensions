@@ -11,9 +11,9 @@ import com.boswelja.smartwatchextensions.common.connection.Messages.REQUEST_APP_
 import com.boswelja.smartwatchextensions.watchmanager.WatchManager
 import com.boswelja.watchconnection.core.MessageListener
 import com.boswelja.watchconnection.core.Watch
+import java.util.UUID
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import java.util.UUID
 
 class AboutAppViewModel internal constructor(
     application: Application,
@@ -61,13 +61,13 @@ class AboutAppViewModel internal constructor(
 
     init {
         watchManager.registerMessageListener(messageListener)
-        watchManager.selectedWatch.observeForever(selectedWatchObserver)
+        watchManager.selectedWatchLiveData.observeForever(selectedWatchObserver)
     }
 
     override fun onCleared() {
         super.onCleared()
         watchManager.unregisterMessageListener(messageListener)
-        watchManager.selectedWatch.removeObserver(selectedWatchObserver)
+        watchManager.selectedWatchLiveData.removeObserver(selectedWatchObserver)
     }
 
     /**

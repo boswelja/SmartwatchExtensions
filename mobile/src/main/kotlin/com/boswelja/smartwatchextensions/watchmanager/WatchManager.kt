@@ -83,11 +83,15 @@ class WatchManager internal constructor(
                 watches.filter { watchDatabase.watchDao().get(it.id).firstOrNull() == null }
             }
 
+    @ExperimentalCoroutinesApi
+    @Deprecated("Use selectedWatch Flow instead")
+    val selectedWatchLiveData: LiveData<Watch?> = _selectedWatch.asLiveData()
+
     /**
      * The currently selected watch
      */
     @ExperimentalCoroutinesApi
-    val selectedWatch: LiveData<Watch?> = _selectedWatch.asLiveData()
+    val selectedWatch: Flow<Watch?> = _selectedWatch
 
     init {
         Timber.d("Creating WatchManager")
@@ -181,7 +185,7 @@ class WatchManager internal constructor(
     }
 
     /**
-     * Selects a watch by a given [Watch.id]. This will update [selectedWatch].
+     * Selects a watch by a given [Watch.id]. This will update [selectedWatchLiveData].
      * @param watchId The ID of the [Watch] to select.
      */
     fun selectWatchById(watchId: UUID) {
