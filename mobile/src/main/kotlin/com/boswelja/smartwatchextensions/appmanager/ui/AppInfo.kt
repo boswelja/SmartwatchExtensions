@@ -34,6 +34,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -73,11 +74,19 @@ fun AppHeaderView(app: App) {
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Image(
-            Icons.Outlined.Info,
-            null,
-            Modifier.size(72.dp)
-        )
+        if (app.icon != null) {
+            Image(
+                app.icon.asImageBitmap(),
+                null,
+                Modifier.size(72.dp)
+            )
+        } else {
+            Image(
+                Icons.Outlined.Info,
+                null,
+                Modifier.size(72.dp)
+            )
+        }
         Text(
             app.label,
             style = MaterialTheme.typography.h6

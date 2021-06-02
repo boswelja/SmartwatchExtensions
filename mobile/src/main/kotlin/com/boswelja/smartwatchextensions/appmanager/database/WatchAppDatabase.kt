@@ -9,7 +9,7 @@ import com.boswelja.smartwatchextensions.appmanager.App
 import com.boswelja.smartwatchextensions.common.RoomTypeConverters
 import com.boswelja.smartwatchextensions.common.SingletonHolder
 
-@Database(entities = [App::class], version = 1)
+@Database(entities = [App::class], version = 2)
 @TypeConverters(RoomTypeConverters::class)
 abstract class WatchAppDatabase : RoomDatabase() {
 

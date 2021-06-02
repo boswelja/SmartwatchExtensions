@@ -1,12 +1,12 @@
 {
   "formatVersion": 1,
   "database": {
-    "version": 1,
-    "identityHash": "1120928e4badf165d305d60fd760138d",
+    "version": 2,
+    "identityHash": "369137dabdf39cfc28d89e3c489933a7",
     "entities": [
       {
         "tableName": "watch_apps",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`watchId` TEXT NOT NULL, `appIcon` BLOB, `version` TEXT NOT NULL, `packageName` TEXT NOT NULL, `label` TEXT NOT NULL, `isSystemApp` INTEGER NOT NULL, `hasLaunchActivity` INTEGER NOT NULL, `installTime` INTEGER NOT NULL, `lastUpdateTime` INTEGER NOT NULL, `requestedPermissions` TEXT NOT NULL, PRIMARY KEY(`watchId`, `packageName`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`watchId` TEXT NOT NULL, `icon` BLOB, `version` TEXT NOT NULL, `packageName` TEXT NOT NULL, `label` TEXT NOT NULL, `isSystemApp` INTEGER NOT NULL, `hasLaunchActivity` INTEGER NOT NULL, `installTime` INTEGER NOT NULL, `lastUpdateTime` INTEGER NOT NULL, `requestedPermissions` TEXT NOT NULL, PRIMARY KEY(`watchId`, `packageName`))",
         "fields": [
           {
             "fieldPath": "watchId",
@@ -15,8 +15,8 @@
             "notNull": true
           },
           {
-            "fieldPath": "appIcon",
-            "columnName": "appIcon",
+            "fieldPath": "icon",
+            "columnName": "icon",
             "affinity": "BLOB",
             "notNull": false
           },
@@ -83,7 +83,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '1120928e4badf165d305d60fd760138d')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '369137dabdf39cfc28d89e3c489933a7')"
     ]
   }
 }

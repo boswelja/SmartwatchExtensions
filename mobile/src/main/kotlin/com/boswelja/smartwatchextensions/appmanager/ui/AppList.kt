@@ -15,6 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.boswelja.smartwatchextensions.R
@@ -56,11 +57,19 @@ fun AppItem(app: App, onClick: (App) -> Unit) {
         text = { Text(app.label) },
         secondaryText = { Text(app.version) },
         icon = {
-            Image(
-                Icons.Outlined.Info,
-                contentDescription = null,
-                Modifier.size(40.dp)
-            )
+            if (app.icon != null) {
+                Image(
+                    app.icon.asImageBitmap(),
+                    contentDescription = null,
+                    Modifier.size(40.dp)
+                )
+            } else {
+                Image(
+                    Icons.Outlined.Info,
+                    contentDescription = null,
+                    Modifier.size(40.dp)
+                )
+            }
         },
         modifier = Modifier.clickable { onClick(app) }
     )

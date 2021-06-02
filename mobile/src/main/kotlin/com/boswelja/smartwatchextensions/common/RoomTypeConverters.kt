@@ -1,8 +1,11 @@
 package com.boswelja.smartwatchextensions.common
 
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import androidx.room.TypeConverter
 import com.boswelja.smartwatchextensions.messages.Message
 import com.google.gson.Gson
+import java.io.ByteArrayOutputStream
 import java.util.UUID
 
 class RoomTypeConverters {
@@ -57,6 +60,23 @@ class RoomTypeConverters {
         return value?.let {
             val gson = Gson()
             gson.fromJson(value, Array<String>::class.java)
+        }
+    }
+
+    @TypeConverter
+    fun bitmapToByteArray(value: Bitmap?): ByteArray? {
+        return value?.let {
+            ByteArrayOutputStream().use { stream ->
+                it.compress(Bitmap.CompressFormat.PNG, 100, stream)
+                stream.toByteArray()
+            }
+        }
+    }
+
+    @TypeConverter
+    fun byteArrayToBitmap(value: ByteArray?): Bitmap? {
+        return value?.let {
+            BitmapFactory.decodeByteArray(value, 0, value.size)
         }
     }
 }

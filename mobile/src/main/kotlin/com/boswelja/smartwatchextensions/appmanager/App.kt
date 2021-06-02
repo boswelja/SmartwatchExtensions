@@ -2,7 +2,9 @@ package com.boswelja.smartwatchextensions.appmanager
 
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
 import androidx.core.content.pm.PackageInfoCompat
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import java.util.UUID
 
@@ -22,6 +24,8 @@ import java.util.UUID
 @Entity(tableName = "watch_apps", primaryKeys = ["watchId", "packageName"])
 data class App(
     val watchId: UUID,
+    @ColumnInfo(typeAffinity = ColumnInfo.BLOB)
+    val icon: Bitmap?,
     val version: String,
     val packageName: String,
     val label: String,
@@ -34,6 +38,7 @@ data class App(
 
     constructor(watchId: UUID, app: com.boswelja.smartwatchextensions.common.appmanager.App) : this(
         watchId,
+        app.icon?.bitmap,
         app.version,
         app.packageName,
         app.label,
