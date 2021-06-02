@@ -7,7 +7,7 @@ import android.net.Uri
 import com.boswelja.smartwatchextensions.common.appmanager.App
 import com.boswelja.smartwatchextensions.common.appmanager.Messages
 import com.boswelja.smartwatchextensions.common.appmanager.Messages.ALL_APPS
-import com.boswelja.smartwatchextensions.common.appmanager.compressToByteArray
+import com.boswelja.smartwatchextensions.common.appmanager.compress
 import com.google.android.gms.wearable.Wearable
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -71,7 +71,7 @@ suspend fun Context.sendAllApps(phoneId: String) {
             messageClient.sendMessage(
                 phoneId,
                 ALL_APPS,
-                app.compressToByteArray()
+                app.toByteArray().compress()
             )
         }
     }
