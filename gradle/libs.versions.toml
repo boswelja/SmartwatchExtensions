@@ -1,18 +1,18 @@
 [versions]
 # AndroidX versions
-androidxAppCompat = "1.3.0"
+androidxAppCompat = "1.4.0-alpha02"
 androidxArch = "2.1.0"
 androidxBrowser = "1.3.0"
-androidxCore = "1.6.0-beta01"
+androidxCore = "1.6.0-beta02"
 androidxDataStore = "1.0.0-beta01"
 androidxEspresso = "3.4.0-alpha06"
 androidxLifecycle = "2.4.0-alpha01"
 androidxRoom = "2.4.0-alpha02"
 androidxTest = "1.4.0-beta01"
 androidxTestExt = "1.1.3-alpha06"
-androidxWear = "1.2.0-alpha09"
-androidxWearComplications = "1.0.0-alpha14"
-androidxWork = "2.7.0-alpha03"
+androidxWear = "1.2.0-alpha10"
+androidxWearComplications = "1.0.0-alpha15"
+androidxWork = "2.7.0-alpha04"
 # Compose versions
 compose = "1.0.0-beta08"
 activityCompose = "1.3.0-beta01"
