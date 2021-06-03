@@ -2,7 +2,7 @@ plugins {
     id("com.android.application")
     kotlin("android")
     id("com.google.gms.google-services")
-    id("com.google.devtools.ksp") version "1.4.32-1.0.0-alpha08"
+    id("com.google.devtools.ksp") version "1.5.10-1.0.0-beta01"
     id("com.squareup.wire")
 }
 
@@ -33,7 +33,6 @@ android {
     }
     kotlinOptions {
         jvmTarget = "1.8"
-        useIR = true
     }
 
     buildTypes {
@@ -59,15 +58,6 @@ android {
 
     packagingOptions {
         resources.excludes.addAll(arrayOf("META-INF/AL2.0", "META-INF/LGPL2.1"))
-    }
-}
-
-configurations.all {
-    resolutionStrategy.eachDependency {
-        if (requested.name == "kotlinx-collections-immutable-jvm") {
-            useTarget("org.jetbrains.kotlinx:kotlinx-collections-immutable-jvm:0.3.4")
-            because("Use 0.3.4 since 0.3.3 isn't available on mavenCentral()")
-        }
     }
 }
 
