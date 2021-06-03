@@ -19,7 +19,7 @@ activityCompose = "1.3.0-beta01"
 lifecycleCompose = "1.0.0-alpha06"
 # Misc versions
 billingClient = "4.0.0"
-coroutines = "1.5.0-RC"
+coroutines = "1.5.0"
 firebaseAnalytics = "18.0.3"
 googlePlayCore = "1.10.0"
 googlePlayCoreKtx = "1.8.1"
