@@ -8,7 +8,6 @@ import android.content.IntentFilter
 import androidx.core.content.getSystemService
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.awaitClose
-import kotlinx.coroutines.channels.sendBlocking
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 
@@ -21,7 +20,7 @@ fun Context.dndState(): Flow<Boolean> = callbackFlow {
     val dndChangeReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent?) {
             if (intent?.action == NotificationManager.ACTION_INTERRUPTION_FILTER_CHANGED) {
-                sendBlocking(notificationManager.isDndEnabled)
+                trySend(notificationManager.isDndEnabled)
             }
         }
     }
