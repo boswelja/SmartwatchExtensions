@@ -20,17 +20,17 @@ jobs:
           distribution: 'adopt'
           java-version: 11
       - name: Cache Gradle packages
-        uses: actions/cache@v2.1.5
+        uses: actions/cache@v2.1.6
         with:
           path: ~/.gradle/caches
           key: ${{ runner.os }}-gradle-cache-${{ hashFiles('gradle/libs.versions.toml') }}
       - name: Cache Gradle Wrapper
-        uses: actions/cache@v2.1.5
+        uses: actions/cache@v2.1.6
         with:
           path: ~/.gradle/wrapper
           key: ${{ runner.os }}-gradle-wrapper-${{ hashFiles('gradle/wrapper/gradle-wrapper.properties') }}
       - name: Cache Build
-        uses: actions/cache@v2.1.5
+        uses: actions/cache@v2.1.6
         with:
           path: ./**/build/
           key: ${{ runner.os }}-build-${{ github.sha }}
@@ -48,17 +48,17 @@ jobs:
           distribution: 'adopt'
           java-version: 11
       - name: Cache Gradle packages
-        uses: actions/cache@v2.1.5
+        uses: actions/cache@v2.1.6
         with:
           path: ~/.gradle/caches
           key: ${{ runner.os }}-gradle-cache-${{ hashFiles('gradle/libs.versions.toml') }}
       - name: Cache Gradle Wrapper
-        uses: actions/cache@v2.1.5
+        uses: actions/cache@v2.1.6
         with:
           path: ~/.gradle/wrapper
           key: ${{ runner.os }}-gradle-wrapper-${{ hashFiles('gradle/wrapper/gradle-wrapper.properties') }}
       - name: Cache Build
-        uses: actions/cache@v2.1.5
+        uses: actions/cache@v2.1.6
         with:
           path: ./**/build/
           key: ${{ runner.os }}-build-${{ github.sha }}
@@ -87,17 +87,17 @@ jobs:
           repotoken: ${{ secrets.GITHUB_TOKEN }}
           arguments: "--android"
       - name: Cache Gradle Packages
-        uses: actions/cache@v2.1.5
+        uses: actions/cache@v2.1.6
         with:
           path: ~/.gradle/caches
           key: ${{ runner.os }}-gradle-cache-${{ hashFiles('gradle/libs.versions.toml') }}
       - name: Cache Gradle Wrapper
-        uses: actions/cache@v2.1.5
+        uses: actions/cache@v2.1.6
         with:
           path: ~/.gradle/wrapper
           key: ${{ runner.os }}-gradle-wrapper-${{ hashFiles('gradle/wrapper/gradle-wrapper.properties') }}
       - name: Cache Build
-        uses: actions/cache@v2.1.5
+        uses: actions/cache@v2.1.6
         with:
           path: ./**/build/
           key: ${{ runner.os }}-build-${{ github.sha }}
