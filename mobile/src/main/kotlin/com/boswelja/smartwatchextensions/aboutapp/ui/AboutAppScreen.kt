@@ -30,7 +30,9 @@ import com.boswelja.smartwatchextensions.BuildConfig
 import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.common.ui.HeaderItem
 import com.boswelja.smartwatchextensions.donate.ui.DonateActivity
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
+@ExperimentalCoroutinesApi
 @ExperimentalMaterialApi
 @Composable
 fun AboutAppScreen() {
@@ -43,6 +45,7 @@ fun AboutAppScreen() {
     }
 }
 
+@ExperimentalCoroutinesApi
 @ExperimentalMaterialApi
 @Composable
 fun AboutApp() {
@@ -80,6 +83,7 @@ fun AboutApp() {
     }
 }
 
+@ExperimentalCoroutinesApi
 @ExperimentalMaterialApi
 @Composable
 fun Versions() {

@@ -7,9 +7,11 @@ import com.boswelja.smartwatchextensions.appmanager.AppManager
 import com.boswelja.smartwatchextensions.appmanager.State
 import com.boswelja.smartwatchextensions.common.appmanager.App
 import com.boswelja.smartwatchextensions.watchmanager.WatchManager
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import java.text.SimpleDateFormat
 import java.util.Locale
 
+@ExperimentalCoroutinesApi
 class AppManagerViewModel internal constructor(
     application: Application,
     private val appManager: AppManager,

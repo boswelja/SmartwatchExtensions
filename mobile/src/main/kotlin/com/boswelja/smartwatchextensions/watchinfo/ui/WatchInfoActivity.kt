@@ -38,6 +38,7 @@ import androidx.compose.ui.unit.dp
 import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.common.ui.AppTheme
 import com.boswelja.smartwatchextensions.common.ui.UpNavigationAppBar
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.util.UUID
@@ -48,6 +49,7 @@ class WatchInfoActivity : AppCompatActivity() {
     private val viewModel: WatchInfoViewModel by viewModels()
     private var watchName by mutableStateOf("")
 
+    @ExperimentalCoroutinesApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 

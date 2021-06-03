@@ -40,8 +40,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.common.appmanager.App
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
 
+@ExperimentalCoroutinesApi
 @ExperimentalMaterialApi
 @Composable
 fun AppInfo(
@@ -92,6 +94,7 @@ fun AppHeaderView(app: App) {
     }
 }
 
+@ExperimentalCoroutinesApi
 @Composable
 fun ActionButtons(app: App, scaffoldState: ScaffoldState, viewModel: AppManagerViewModel) {
     val scope = rememberCoroutineScope()
@@ -171,6 +174,7 @@ fun PermissionsInfo(permissions: Array<String>) {
     }
 }
 
+@ExperimentalCoroutinesApi
 @Composable
 fun AppInstallInfo(app: App, viewModel: AppManagerViewModel) {
     Column(

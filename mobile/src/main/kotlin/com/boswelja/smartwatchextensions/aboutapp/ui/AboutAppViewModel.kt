@@ -11,10 +11,12 @@ import com.boswelja.smartwatchextensions.common.connection.Messages.REQUEST_APP_
 import com.boswelja.smartwatchextensions.watchmanager.WatchManager
 import com.boswelja.watchconnection.core.MessageListener
 import com.boswelja.watchconnection.core.Watch
+import java.util.UUID
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import java.util.UUID
 
+@ExperimentalCoroutinesApi
 class AboutAppViewModel internal constructor(
     application: Application,
     private val watchManager: WatchManager,
