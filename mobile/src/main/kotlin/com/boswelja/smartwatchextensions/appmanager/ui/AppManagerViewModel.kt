@@ -106,7 +106,9 @@ class AppManagerViewModel internal constructor(
         // Get a list of packages we have for the given watch
         val apps = appDatabase.apps().allForWatch(watch.id)
             .map { apps ->
-                apps.map { it.packageName }
+                apps
+                    .map { it.packageName }
+                    .sorted()
             }
             .first()
         val result = watchManager.sendMessage(watch, VALIDATE_CACHE, apps.hashCode().toByteArray())

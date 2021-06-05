@@ -31,6 +31,7 @@ class AppManagerMessageReceiver : WearableListenerService() {
                     .map {
                         it.packageName
                     }
+                    .sorted()
                     .hashCode()
                 val cacheHash = Int.fromByteArray(event.data)
                 if (cacheHash == currentPackages) {
