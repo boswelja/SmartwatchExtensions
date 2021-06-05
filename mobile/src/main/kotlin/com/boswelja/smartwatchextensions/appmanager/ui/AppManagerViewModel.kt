@@ -97,6 +97,7 @@ class AppManagerViewModel internal constructor(
     suspend fun sendUninstallRequest(app: App): Boolean {
         return selectedWatch?.let { watch ->
             val data = app.packageName.toByteArray(Charsets.UTF_8)
+            appDatabase.apps().remove(app)
             watchManager.sendMessage(watch, REQUEST_UNINSTALL_PACKAGE, data)
         } ?: false
     }
