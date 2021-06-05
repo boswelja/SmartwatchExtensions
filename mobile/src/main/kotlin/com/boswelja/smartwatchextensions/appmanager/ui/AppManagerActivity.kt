@@ -41,7 +41,6 @@ class AppManagerActivity : AppCompatActivity() {
         setContent {
             val viewModel: AppManagerViewModel = viewModel()
 
-            val selectedWatch by viewModel.selectedWatch.collectAsState(null, Dispatchers.IO)
             val registeredWatches by viewModel.registeredWatches.observeAsState()
             val state by viewModel.watchStatus.collectAsState(Status.CONNECTING, Dispatchers.IO)
 
@@ -52,7 +51,7 @@ class AppManagerActivity : AppCompatActivity() {
                     scaffoldState = scaffoldState,
                     topBar = {
                         UpNavigationWatchPickerAppBar(
-                            selectedWatch = selectedWatch,
+                            selectedWatch = viewModel.selectedWatch,
                             watches = registeredWatches,
                             onWatchSelected = { viewModel.selectWatchById(it.id) },
                             onNavigateUp = { onBackPressed() }
