@@ -10,6 +10,7 @@ import androidx.lifecycle.asLiveData
 import com.boswelja.smartwatchextensions.AppState
 import com.boswelja.smartwatchextensions.analytics.Analytics
 import com.boswelja.smartwatchextensions.appStateStore
+import com.boswelja.smartwatchextensions.appmanager.AppCacheUpdateWorker
 import com.boswelja.smartwatchextensions.appmanager.database.WatchAppDatabase
 import com.boswelja.smartwatchextensions.batterysync.database.WatchBatteryStatsDatabase
 import com.boswelja.smartwatchextensions.common.SingletonHolder
@@ -46,6 +47,7 @@ import timber.log.Timber
  * Provides a simplified interface for interacting with all watch-related classes.
  */
 class WatchManager internal constructor(
+    private val context: Context,
     val settingsDatabase: WatchSettingsDatabase,
     private val watchDatabase: WatchDatabase,
     private val connectionClient: WatchPlatformManager,
@@ -55,6 +57,7 @@ class WatchManager internal constructor(
 ) {
 
     constructor(context: Context) : this(
+        context.applicationContext,
         WatchSettingsDatabase.getInstance(context),
         WatchDatabase.getInstance(context),
         WatchPlatformManager(
@@ -113,6 +116,7 @@ class WatchManager internal constructor(
         withContext(Dispatchers.IO) {
             connectionClient.sendMessage(watch, Messages.WATCH_REGISTERED_PATH)
             watchDatabase.watchDao().add(watch.toDbWatch())
+            AppCacheUpdateWorker.enqueueWorkerFor(context, watch.id)
             analytics.logWatchRegistered()
         }
     }
@@ -138,6 +142,7 @@ class WatchManager internal constructor(
             connectionClient.sendMessage(watch, Messages.RESET_APP)
             watchDatabase.removeWatch(watch)
             removeWidgetsForWatch(watch, widgetIdStore)
+            AppCacheUpdateWorker.stopWorkerFor(context, watch.id)
             analytics.logWatchRemoved()
         }
     }
