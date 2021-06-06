@@ -6,12 +6,16 @@ import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.LinearProgressIndicator
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.ScaffoldState
 import androidx.compose.material.rememberScaffoldState
@@ -30,7 +34,6 @@ import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.appmanager.App
 import com.boswelja.smartwatchextensions.common.ui.AppTheme
 import com.boswelja.smartwatchextensions.common.ui.UpNavigationWatchPickerAppBar
-import com.boswelja.watchconnection.core.Status
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
@@ -50,7 +53,6 @@ class AppManagerActivity : AppCompatActivity() {
             val viewModel: AppManagerViewModel = viewModel()
 
             val registeredWatches by viewModel.registeredWatches.observeAsState()
-            val state by viewModel.watchStatus.collectAsState(Status.CONNECTING, Dispatchers.IO)
 
             val scaffoldState = rememberScaffoldState()
 
@@ -108,9 +110,15 @@ fun AppManagerScreen(scaffoldState: ScaffoldState) {
         isAppInfoVisible = false
     }
 
-    AnimatedVisibility(visible = isAppInfoVisible) {
+    AnimatedVisibility(
+        visible = isAppInfoVisible,
+        enter = expandVertically(),
+        exit = shrinkVertically()
+    ) {
         AppInfo(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colors.background),
             app = selectedApp,
             onOpenClicked = {
                 scope.launch {
