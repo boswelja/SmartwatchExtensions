@@ -33,7 +33,10 @@ fun AppList(
         stickyHeader {
             HeaderItem(stringResource(R.string.app_manager_section_user_apps))
         }
-        items(userApps) { app ->
+        items(
+            items = userApps,
+            key = { it.packageName }
+        ) { app ->
             AppItem(
                 app = app,
                 onClick = onAppClick
@@ -42,7 +45,10 @@ fun AppList(
         stickyHeader {
             HeaderItem(stringResource(R.string.app_manager_section_system_apps))
         }
-        items(systemApps) { app ->
+        items(
+            items = systemApps,
+            key = { it.packageName }
+        ) { app ->
             AppItem(
                 app = app,
                 onClick = onAppClick
