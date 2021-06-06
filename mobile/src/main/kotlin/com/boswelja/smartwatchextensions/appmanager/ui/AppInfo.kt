@@ -35,6 +35,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -63,7 +64,11 @@ fun AppInfo(
                 .fillMaxSize()
                 .verticalScroll(scrollState)
         ) {
-            AppHeaderView(app = it)
+            AppHeaderView(
+                modifier = Modifier.fillMaxWidth(),
+                appIcon = app.icon?.asImageBitmap(),
+                appName = app.label
+            )
             AppActionButtons(
                 modifier = Modifier.fillMaxWidth(),
                 onOpenClicked = {
@@ -88,16 +93,18 @@ fun AppInfo(
 }
 
 @Composable
-fun AppHeaderView(app: App) {
+fun AppHeaderView(
+    modifier: Modifier = Modifier,
+    appIcon: ImageBitmap?,
+    appName: String
+) {
     Column(
-        Modifier
-            .fillMaxWidth()
-            .padding(16.dp),
+        modifier,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        if (app.icon != null) {
+        if (appIcon != null) {
             Image(
-                app.icon.asImageBitmap(),
+                appIcon,
                 null,
                 Modifier.size(72.dp)
             )
@@ -109,7 +116,7 @@ fun AppHeaderView(app: App) {
             )
         }
         Text(
-            app.label,
+            appName,
             style = MaterialTheme.typography.h6
         )
     }
