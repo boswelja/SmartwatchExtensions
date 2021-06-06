@@ -98,6 +98,8 @@ fun AppManagerScreen(scaffoldState: ScaffoldState) {
     var destination by remember { mutableStateOf(Destination.APP_INFO) }
     var selectedApp by remember { mutableStateOf<App?>(null) }
     val viewModel: AppManagerViewModel = viewModel()
+    val userApps by viewModel.userApps.collectAsState(emptyList(), Dispatchers.IO)
+    val systemApps by viewModel.systemApps.collectAsState(emptyList(), Dispatchers.IO)
     Column {
         if (viewModel.isUpdatingCache) {
             LinearProgressIndicator(
@@ -107,7 +109,8 @@ fun AppManagerScreen(scaffoldState: ScaffoldState) {
         Crossflow(targetState = destination) {
             when (it) {
                 Destination.APP_LIST -> AppList(
-                    viewModel,
+                    userApps = userApps,
+                    systemApps = systemApps,
                     onAppClick = { app ->
                         selectedApp = app
                         destination = Destination.APP_INFO

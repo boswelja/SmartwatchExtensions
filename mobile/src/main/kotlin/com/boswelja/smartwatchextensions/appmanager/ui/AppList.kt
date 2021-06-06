@@ -12,8 +12,6 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.res.stringResource
@@ -21,35 +19,45 @@ import androidx.compose.ui.unit.dp
 import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.appmanager.App
 import com.boswelja.smartwatchextensions.common.ui.HeaderItem
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 
-@ExperimentalCoroutinesApi
 @ExperimentalMaterialApi
 @ExperimentalFoundationApi
 @Composable
-fun AppList(viewModel: AppManagerViewModel, onAppClick: (App) -> Unit) {
-    val userApps by viewModel.userApps.collectAsState(emptyList(), Dispatchers.IO)
-    val systemApps by viewModel.systemApps.collectAsState(emptyList(), Dispatchers.IO)
-    LazyColumn {
+fun AppList(
+    modifier: Modifier = Modifier,
+    userApps: List<App>,
+    systemApps: List<App>,
+    onAppClick: (App) -> Unit
+) {
+    LazyColumn(modifier) {
         stickyHeader {
             HeaderItem(stringResource(R.string.app_manager_section_user_apps))
         }
         items(userApps) { app ->
-            AppItem(app, onAppClick)
+            AppItem(
+                app = app,
+                onClick = onAppClick
+            )
         }
         stickyHeader {
             HeaderItem(stringResource(R.string.app_manager_section_system_apps))
         }
         items(systemApps) { app ->
-            AppItem(app, onAppClick)
+            AppItem(
+                app = app,
+                onClick = onAppClick
+            )
         }
     }
 }
 
 @ExperimentalMaterialApi
 @Composable
-fun AppItem(app: App, onClick: (App) -> Unit) {
+fun AppItem(
+    modifier: Modifier = Modifier,
+    app: App,
+    onClick: (App) -> Unit
+) {
     ListItem(
         text = { Text(app.label) },
         secondaryText = { Text(app.version) },
@@ -68,6 +76,6 @@ fun AppItem(app: App, onClick: (App) -> Unit) {
                 )
             }
         },
-        modifier = Modifier.clickable { onClick(app) }
+        modifier = modifier.clickable { onClick(app) }
     )
 }
