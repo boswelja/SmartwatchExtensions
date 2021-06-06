@@ -46,6 +46,7 @@ import java.util.Locale
 fun AppInfo(
     modifier: Modifier = Modifier,
     app: App?,
+    interactionEnabled: Boolean = true,
     onOpenClicked: (App) -> Unit,
     onUninstallClicked: (App) -> Unit
 ) {
@@ -61,6 +62,7 @@ fun AppInfo(
             )
             AppActionButtons(
                 modifier = Modifier.fillMaxWidth(),
+                buttonsEnabled = interactionEnabled,
                 onOpenClicked = { onOpenClicked(app) },
                 onUninstallClicked = { onUninstallClicked(app) }
             )
@@ -109,6 +111,7 @@ fun AppHeaderView(
 @Composable
 fun AppActionButtons(
     modifier: Modifier = Modifier,
+    buttonsEnabled: Boolean = true,
     onOpenClicked: () -> Unit,
     onUninstallClicked: () -> Unit
 ) {
@@ -118,14 +121,16 @@ fun AppActionButtons(
     ) {
         OutlinedButton(
             onClick = onOpenClicked,
-            Modifier.weight(1f)
+            enabled = buttonsEnabled,
+            modifier = Modifier.weight(1f)
         ) {
             Icon(Icons.Outlined.OpenInNew, null)
             Text(stringResource(R.string.app_info_open_button))
         }
         OutlinedButton(
             onClick = onUninstallClicked,
-            Modifier.weight(1f)
+            enabled = buttonsEnabled,
+            modifier = Modifier.weight(1f)
         ) {
             Icon(Icons.Outlined.Delete, null)
             Text(stringResource(R.string.app_info_uninstall_button))
