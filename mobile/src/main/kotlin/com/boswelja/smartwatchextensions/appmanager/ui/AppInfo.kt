@@ -53,7 +53,8 @@ fun AppInfo(
     val scrollState = rememberScrollState()
     app?.let {
         Column(
-            modifier.verticalScroll(scrollState)
+            modifier.verticalScroll(scrollState),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             AppHeaderView(
                 modifier = Modifier.fillMaxWidth(),

@@ -13,6 +13,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.LinearProgressIndicator
 import androidx.compose.material.MaterialTheme
@@ -29,6 +30,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.appmanager.App
@@ -118,7 +120,8 @@ fun AppManagerScreen(scaffoldState: ScaffoldState) {
         AppInfo(
             modifier = Modifier
                 .fillMaxSize()
-                .background(MaterialTheme.colors.background),
+                .background(MaterialTheme.colors.background)
+                .padding(16.dp),
             app = selectedApp,
             onOpenClicked = {
                 scope.launch {
