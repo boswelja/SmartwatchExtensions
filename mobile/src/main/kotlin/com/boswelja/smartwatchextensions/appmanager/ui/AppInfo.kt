@@ -188,7 +188,7 @@ fun AppInstallInfo(
     app: App
 ) {
     val dateFormatter = remember {
-        SimpleDateFormat("EE, dd MMM yyyy, h:mm aa", Locale.getDefault())
+        SimpleDateFormat("dd MMM yyyy, h:mm aa", Locale.getDefault())
     }
     Column(
         modifier,
