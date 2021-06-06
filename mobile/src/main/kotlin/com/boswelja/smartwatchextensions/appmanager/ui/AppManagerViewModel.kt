@@ -15,8 +15,6 @@ import com.boswelja.smartwatchextensions.common.toByteArray
 import com.boswelja.smartwatchextensions.watchmanager.WatchManager
 import com.boswelja.watchconnection.core.Status
 import com.boswelja.watchconnection.core.Watch
-import java.text.SimpleDateFormat
-import java.util.Locale
 import java.util.UUID
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collect
@@ -41,8 +39,6 @@ class AppManagerViewModel internal constructor(
         WatchAppDatabase.getInstance(application),
         WatchManager.getInstance(application)
     )
-
-    private val dateFormatter = SimpleDateFormat("EE, dd MMM yyyy, h:mm aa", Locale.getDefault())
 
     private val allApps = watchManager.selectedWatch.flatMapLatest { watch ->
         watch?.let {
@@ -82,13 +78,6 @@ class AppManagerViewModel internal constructor(
             }
         }
     }
-
-    /**
-     * Format a given date in milliseconds to the correct formet for display.
-     * @param dateMillis The date in milliseconds to convert.
-     * @return The formatted date string.
-     */
-    fun formatDate(dateMillis: Long): String = dateFormatter.format(dateMillis)
 
     fun selectWatchById(watchId: UUID) = watchManager.selectWatchById(watchId)
 

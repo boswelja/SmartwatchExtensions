@@ -41,6 +41,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.appmanager.App
+import java.text.SimpleDateFormat
+import java.util.Locale
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
 
@@ -80,7 +82,7 @@ fun AppInfo(
                 }
             )
             PermissionsInfo(it.requestedPermissions)
-            AppInstallInfo(it, viewModel)
+            AppInstallInfo(it)
         }
     }
 }
@@ -184,9 +186,11 @@ fun PermissionsInfo(permissions: Array<String>) {
     }
 }
 
-@ExperimentalCoroutinesApi
 @Composable
-fun AppInstallInfo(app: App, viewModel: AppManagerViewModel) {
+fun AppInstallInfo(app: App) {
+    val dateFormatter = remember {
+        SimpleDateFormat("EE, dd MMM yyyy, h:mm aa", Locale.getDefault())
+    }
     Column(
         Modifier
             .fillMaxWidth()
@@ -196,7 +200,7 @@ fun AppInstallInfo(app: App, viewModel: AppManagerViewModel) {
         Text(
             stringResource(
                 R.string.app_info_first_installed_prefix,
-                viewModel.formatDate(app.installTime)
+                dateFormatter.format(app.installTime)
             ),
             style = MaterialTheme.typography.body2
         )
@@ -204,7 +208,7 @@ fun AppInstallInfo(app: App, viewModel: AppManagerViewModel) {
             Text(
                 stringResource(
                     R.string.app_info_last_updated_prefix,
-                    viewModel.formatDate(app.lastUpdateTime)
+                    dateFormatter.format(app.lastUpdateTime)
                 ),
                 style = MaterialTheme.typography.body2
             )
