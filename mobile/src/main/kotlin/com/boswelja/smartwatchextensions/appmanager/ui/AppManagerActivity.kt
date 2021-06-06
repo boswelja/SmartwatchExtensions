@@ -1,8 +1,10 @@
 package com.boswelja.smartwatchextensions.appmanager.ui
 
 import android.os.Bundle
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Column
@@ -27,7 +29,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.appmanager.App
 import com.boswelja.smartwatchextensions.common.ui.AppTheme
-import com.boswelja.smartwatchextensions.common.ui.Crossflow
 import com.boswelja.smartwatchextensions.common.ui.UpNavigationWatchPickerAppBar
 import com.boswelja.watchconnection.core.Status
 import kotlinx.coroutines.Dispatchers
@@ -36,8 +37,6 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 
 class AppManagerActivity : AppCompatActivity() {
-
-    private var currentDestination by mutableStateOf(Destination.APP_LIST)
 
     @ExperimentalCoroutinesApi
     @ExperimentalAnimationApi
@@ -72,19 +71,6 @@ class AppManagerActivity : AppCompatActivity() {
             }
         }
     }
-
-    override fun onBackPressed() {
-        if (currentDestination == Destination.APP_INFO) {
-            currentDestination = Destination.APP_LIST
-        } else {
-            super.onBackPressed()
-        }
-    }
-}
-
-private enum class Destination {
-    APP_LIST,
-    APP_INFO
 }
 
 @ExperimentalCoroutinesApi
@@ -95,51 +81,56 @@ private enum class Destination {
 fun AppManagerScreen(scaffoldState: ScaffoldState) {
     val scope = rememberCoroutineScope()
     val continueOnWatchText = stringResource(R.string.watch_manager_action_continue_on_watch)
-    var destination by remember { mutableStateOf(Destination.APP_INFO) }
-    var selectedApp by remember { mutableStateOf<App?>(null) }
     val viewModel: AppManagerViewModel = viewModel()
     val userApps by viewModel.userApps.collectAsState(emptyList(), Dispatchers.IO)
     val systemApps by viewModel.systemApps.collectAsState(emptyList(), Dispatchers.IO)
+
+    var selectedApp by remember { mutableStateOf<App?>(null) }
+    var isAppInfoVisible by remember { mutableStateOf(false) }
+
     Column {
         if (viewModel.isUpdatingCache) {
             LinearProgressIndicator(
                 Modifier.fillMaxWidth()
             )
         }
-        Crossflow(targetState = destination) {
-            when (it) {
-                Destination.APP_LIST -> AppList(
-                    userApps = userApps,
-                    systemApps = systemApps,
-                    onAppClick = { app ->
-                        selectedApp = app
-                        destination = Destination.APP_INFO
-                    }
-                )
-                Destination.APP_INFO -> AppInfo(
-                    modifier = Modifier.fillMaxSize(),
-                    app = selectedApp,
-                    onOpenClicked = {
-                        scope.launch {
-                            if (viewModel.sendOpenRequest(it)) {
-                                scaffoldState.snackbarHostState.showSnackbar(
-                                    continueOnWatchText, null
-                                )
-                            }
-                        }
-                    },
-                    onUninstallClicked = {
-                        scope.launch {
-                            if (viewModel.sendUninstallRequest(it)) {
-                                scaffoldState.snackbarHostState.showSnackbar(
-                                    continueOnWatchText, null
-                                )
-                            }
-                        }
-                    }
-
-                )
+        AppList(
+            userApps = userApps,
+            systemApps = systemApps,
+            onAppClick = { app ->
+                selectedApp = app
+                isAppInfoVisible = true
             }
-        }
+        )
+    }
+
+    BackHandler(enabled = isAppInfoVisible) {
+        isAppInfoVisible = false
+    }
+
+    AnimatedVisibility(visible = isAppInfoVisible) {
+        AppInfo(
+            modifier = Modifier.fillMaxSize(),
+            app = selectedApp,
+            onOpenClicked = {
+                scope.launch {
+                    if (viewModel.sendOpenRequest(it)) {
+                        scaffoldState.snackbarHostState.showSnackbar(
+                            continueOnWatchText, null
+                        )
+                    }
+                }
+            },
+            onUninstallClicked = {
+                scope.launch {
+                    if (viewModel.sendUninstallRequest(it)) {
+                        scaffoldState.snackbarHostState.showSnackbar(
+                            continueOnWatchText, null
+                        )
+                        isAppInfoVisible = false
+                    }
+                }
+            }
+        )
     }
 }
