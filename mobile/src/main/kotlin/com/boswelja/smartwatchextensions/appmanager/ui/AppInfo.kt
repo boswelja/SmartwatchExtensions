@@ -5,6 +5,7 @@ import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -51,15 +52,33 @@ fun AppInfo(
     scaffoldState: ScaffoldState,
     viewModel: AppManagerViewModel
 ) {
+    val scope = rememberCoroutineScope()
+    val continueOnWatchText = stringResource(R.string.watch_manager_action_continue_on_watch)
+    val scrollState = rememberScrollState()
     app?.let {
-        val scrollState = rememberScrollState()
         Column(
             Modifier
                 .fillMaxSize()
                 .verticalScroll(scrollState)
         ) {
             AppHeaderView(app = it)
-            ActionButtons(app = it, scaffoldState = scaffoldState, viewModel)
+            AppActionButtons(
+                modifier = Modifier.fillMaxWidth(),
+                onOpenClicked = {
+                    scope.launch {
+                        if (viewModel.sendOpenRequest(app)) {
+                            scaffoldState.snackbarHostState.showSnackbar(continueOnWatchText, null)
+                        }
+                    }
+                },
+                onUninstallClicked = {
+                    scope.launch {
+                        if (viewModel.sendUninstallRequest(app)) {
+                            scaffoldState.snackbarHostState.showSnackbar(continueOnWatchText, null)
+                        }
+                    }
+                }
+            )
             PermissionsInfo(it.requestedPermissions)
             AppInstallInfo(it, viewModel)
         }
@@ -96,35 +115,24 @@ fun AppHeaderView(app: App) {
 
 @ExperimentalCoroutinesApi
 @Composable
-fun ActionButtons(app: App, scaffoldState: ScaffoldState, viewModel: AppManagerViewModel) {
-    val scope = rememberCoroutineScope()
-    val continueOnWatchText = stringResource(R.string.watch_manager_action_continue_on_watch)
+fun AppActionButtons(
+    modifier: Modifier = Modifier,
+    onOpenClicked: () -> Unit,
+    onUninstallClicked: () -> Unit
+) {
     Row(
-        Modifier
-            .fillMaxWidth()
-            .padding(16.dp)
+        modifier = modifier,
+        horizontalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         OutlinedButton(
-            onClick = {
-                scope.launch {
-                    if (viewModel.sendOpenRequest(app)) {
-                        scaffoldState.snackbarHostState.showSnackbar(continueOnWatchText, null)
-                    }
-                }
-            },
+            onClick = onOpenClicked,
             Modifier.weight(1f)
         ) {
             Icon(Icons.Outlined.OpenInNew, null)
             Text(stringResource(R.string.app_info_open_button))
         }
         OutlinedButton(
-            onClick = {
-                scope.launch {
-                    if (viewModel.sendUninstallRequest(app)) {
-                        scaffoldState.snackbarHostState.showSnackbar(continueOnWatchText, null)
-                    }
-                }
-            },
+            onClick = onUninstallClicked,
             Modifier.weight(1f)
         ) {
             Icon(Icons.Outlined.Delete, null)
