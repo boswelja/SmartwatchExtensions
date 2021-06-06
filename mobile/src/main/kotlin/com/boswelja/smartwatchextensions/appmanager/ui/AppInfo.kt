@@ -19,7 +19,6 @@ import androidx.compose.material.Icon
 import androidx.compose.material.ListItem
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedButton
-import androidx.compose.material.ScaffoldState
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Delete
@@ -31,7 +30,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -44,19 +42,14 @@ import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.appmanager.App
 import java.text.SimpleDateFormat
 import java.util.Locale
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.launch
 
-@ExperimentalCoroutinesApi
 @ExperimentalMaterialApi
 @Composable
 fun AppInfo(
     app: App?,
-    scaffoldState: ScaffoldState,
-    viewModel: AppManagerViewModel
+    onOpenClicked: (App) -> Unit,
+    onUninstallClicked: (App) -> Unit
 ) {
-    val scope = rememberCoroutineScope()
-    val continueOnWatchText = stringResource(R.string.watch_manager_action_continue_on_watch)
     val scrollState = rememberScrollState()
     app?.let {
         Column(
@@ -71,20 +64,8 @@ fun AppInfo(
             )
             AppActionButtons(
                 modifier = Modifier.fillMaxWidth(),
-                onOpenClicked = {
-                    scope.launch {
-                        if (viewModel.sendOpenRequest(app)) {
-                            scaffoldState.snackbarHostState.showSnackbar(continueOnWatchText, null)
-                        }
-                    }
-                },
-                onUninstallClicked = {
-                    scope.launch {
-                        if (viewModel.sendUninstallRequest(app)) {
-                            scaffoldState.snackbarHostState.showSnackbar(continueOnWatchText, null)
-                        }
-                    }
-                }
+                onOpenClicked = { onOpenClicked(app) },
+                onUninstallClicked = { onUninstallClicked(app) }
             )
             PermissionsInfo(it.requestedPermissions)
             AppInstallInfo(it)

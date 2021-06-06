@@ -18,9 +18,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.appmanager.App
 import com.boswelja.smartwatchextensions.common.ui.AppTheme
 import com.boswelja.smartwatchextensions.common.ui.Crossflow
@@ -28,6 +31,7 @@ import com.boswelja.smartwatchextensions.common.ui.UpNavigationWatchPickerAppBar
 import com.boswelja.watchconnection.core.Status
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.launch
 import timber.log.Timber
 
 class AppManagerActivity : AppCompatActivity() {
@@ -88,6 +92,8 @@ private enum class Destination {
 @ExperimentalAnimationApi
 @Composable
 fun AppManagerScreen(scaffoldState: ScaffoldState) {
+    val scope = rememberCoroutineScope()
+    val continueOnWatchText = stringResource(R.string.watch_manager_action_continue_on_watch)
     var destination by remember { mutableStateOf(Destination.APP_INFO) }
     var selectedApp by remember { mutableStateOf<App?>(null) }
     val viewModel: AppManagerViewModel = viewModel()
@@ -107,9 +113,26 @@ fun AppManagerScreen(scaffoldState: ScaffoldState) {
                     }
                 )
                 Destination.APP_INFO -> AppInfo(
-                    selectedApp,
-                    scaffoldState,
-                    viewModel
+                    app = selectedApp,
+                    onOpenClicked = {
+                        scope.launch {
+                            if (viewModel.sendOpenRequest(it)) {
+                                scaffoldState.snackbarHostState.showSnackbar(
+                                    continueOnWatchText, null
+                                )
+                            }
+                        }
+                    },
+                    onUninstallClicked = {
+                        scope.launch {
+                            if (viewModel.sendUninstallRequest(it)) {
+                                scaffoldState.snackbarHostState.showSnackbar(
+                                    continueOnWatchText, null
+                                )
+                            }
+                        }
+                    }
+
                 )
             }
         }
