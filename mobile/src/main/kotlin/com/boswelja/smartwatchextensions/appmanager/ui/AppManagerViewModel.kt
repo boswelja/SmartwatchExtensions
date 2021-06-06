@@ -51,6 +51,11 @@ class AppManagerViewModel internal constructor(
     }
 
     var selectedWatch: Watch? by mutableStateOf(null)
+        private set
+
+    var isUpdatingCache by mutableStateOf(false)
+        private set
+
     val registeredWatches = watchManager.registeredWatches
 
     val watchStatus = watchManager.selectedWatch.flatMapLatest { watch ->
