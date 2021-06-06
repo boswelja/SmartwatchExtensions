@@ -8,9 +8,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -46,6 +44,7 @@ import java.util.Locale
 @ExperimentalMaterialApi
 @Composable
 fun AppInfo(
+    modifier: Modifier = Modifier,
     app: App?,
     onOpenClicked: (App) -> Unit,
     onUninstallClicked: (App) -> Unit
@@ -53,9 +52,7 @@ fun AppInfo(
     val scrollState = rememberScrollState()
     app?.let {
         Column(
-            Modifier
-                .fillMaxSize()
-                .verticalScroll(scrollState)
+            modifier.verticalScroll(scrollState)
         ) {
             AppHeaderView(
                 modifier = Modifier.fillMaxWidth(),
@@ -67,8 +64,14 @@ fun AppInfo(
                 onOpenClicked = { onOpenClicked(app) },
                 onUninstallClicked = { onUninstallClicked(app) }
             )
-            PermissionsInfo(it.requestedPermissions)
-            AppInstallInfo(it)
+            PermissionsInfo(
+                modifier = Modifier.fillMaxWidth(),
+                permissions = app.requestedPermissions
+            )
+            AppInstallInfo(
+                modifier = Modifier.fillMaxWidth(),
+                app = app
+            )
         }
     }
 }
@@ -132,12 +135,14 @@ fun AppActionButtons(
 
 @ExperimentalMaterialApi
 @Composable
-fun PermissionsInfo(permissions: Array<String>) {
+fun PermissionsInfo(
+    modifier: Modifier = Modifier,
+    permissions: Array<String>
+) {
     if (permissions.isNotEmpty()) {
         var isExpanded by remember { mutableStateOf(false) }
         Column(
-            Modifier
-                .fillMaxWidth()
+            modifier
                 .clickable { isExpanded = !isExpanded }
                 .animateContentSize(tween(easing = FastOutSlowInEasing))
         ) {
@@ -157,12 +162,10 @@ fun PermissionsInfo(permissions: Array<String>) {
                 }
             )
             if (isExpanded) {
-                Column(Modifier.padding(16.dp)) {
-                    permissions.forEach { permission ->
-                        ListItem(
-                            text = { Text(permission) }
-                        )
-                    }
+                permissions.forEach { permission ->
+                    ListItem(
+                        text = { Text(permission) }
+                    )
                 }
             }
         }
@@ -174,14 +177,15 @@ fun PermissionsInfo(permissions: Array<String>) {
 }
 
 @Composable
-fun AppInstallInfo(app: App) {
+fun AppInstallInfo(
+    modifier: Modifier = Modifier,
+    app: App
+) {
     val dateFormatter = remember {
         SimpleDateFormat("EE, dd MMM yyyy, h:mm aa", Locale.getDefault())
     }
     Column(
-        Modifier
-            .fillMaxWidth()
-            .padding(16.dp),
+        modifier,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(

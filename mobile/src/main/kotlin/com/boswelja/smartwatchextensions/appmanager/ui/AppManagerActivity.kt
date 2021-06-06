@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.LinearProgressIndicator
@@ -113,6 +114,7 @@ fun AppManagerScreen(scaffoldState: ScaffoldState) {
                     }
                 )
                 Destination.APP_INFO -> AppInfo(
+                    modifier = Modifier.fillMaxSize(),
                     app = selectedApp,
                     onOpenClicked = {
                         scope.launch {
