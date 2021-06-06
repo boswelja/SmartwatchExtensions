@@ -63,7 +63,8 @@ fun AppInfo(
             )
             AppActionButtons(
                 modifier = Modifier.fillMaxWidth(),
-                buttonsEnabled = interactionEnabled,
+                openEnabled = interactionEnabled && app.hasLaunchActivity,
+                uninstallEnabled = interactionEnabled && !app.isSystemApp,
                 onOpenClicked = { onOpenClicked(app) },
                 onUninstallClicked = { onUninstallClicked(app) }
             )
@@ -112,7 +113,8 @@ fun AppHeaderView(
 @Composable
 fun AppActionButtons(
     modifier: Modifier = Modifier,
-    buttonsEnabled: Boolean = true,
+    openEnabled: Boolean = true,
+    uninstallEnabled: Boolean = true,
     onOpenClicked: () -> Unit,
     onUninstallClicked: () -> Unit
 ) {
@@ -122,7 +124,7 @@ fun AppActionButtons(
     ) {
         OutlinedButton(
             onClick = onOpenClicked,
-            enabled = buttonsEnabled,
+            enabled = openEnabled,
             modifier = Modifier.weight(1f)
         ) {
             Icon(Icons.Outlined.OpenInNew, null)
@@ -130,7 +132,7 @@ fun AppActionButtons(
         }
         OutlinedButton(
             onClick = onUninstallClicked,
-            enabled = buttonsEnabled,
+            enabled = uninstallEnabled,
             modifier = Modifier.weight(1f)
         ) {
             Icon(Icons.Outlined.Delete, null)
