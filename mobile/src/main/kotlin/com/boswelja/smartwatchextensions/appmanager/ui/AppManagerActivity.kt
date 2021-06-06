@@ -62,10 +62,7 @@ class AppManagerActivity : AppCompatActivity() {
                         )
                     }
                 ) {
-                    AppManagerScreen(
-                        scaffoldState = scaffoldState,
-                        currentDestination = currentDestination
-                    )
+                    AppManagerScreen(scaffoldState = scaffoldState)
                 }
             }
         }
@@ -78,42 +75,43 @@ class AppManagerActivity : AppCompatActivity() {
             super.onBackPressed()
         }
     }
+}
 
-    @ExperimentalCoroutinesApi
-    @ExperimentalFoundationApi
-    @ExperimentalMaterialApi
-    @ExperimentalAnimationApi
-    @Composable
-    fun AppManagerScreen(scaffoldState: ScaffoldState, currentDestination: Destination) {
-        var selectedApp by remember { mutableStateOf<App?>(null) }
-        val viewModel: AppManagerViewModel = viewModel()
-        Column {
-            if (viewModel.isUpdatingCache) {
-                LinearProgressIndicator(
-                    Modifier.fillMaxWidth()
+private enum class Destination {
+    APP_LIST,
+    APP_INFO
+}
+
+@ExperimentalCoroutinesApi
+@ExperimentalFoundationApi
+@ExperimentalMaterialApi
+@ExperimentalAnimationApi
+@Composable
+fun AppManagerScreen(scaffoldState: ScaffoldState) {
+    var destination by remember { mutableStateOf(Destination.APP_INFO) }
+    var selectedApp by remember { mutableStateOf<App?>(null) }
+    val viewModel: AppManagerViewModel = viewModel()
+    Column {
+        if (viewModel.isUpdatingCache) {
+            LinearProgressIndicator(
+                Modifier.fillMaxWidth()
+            )
+        }
+        Crossflow(targetState = destination) {
+            when (it) {
+                Destination.APP_LIST -> AppList(
+                    viewModel,
+                    onAppClick = { app ->
+                        selectedApp = app
+                        destination = Destination.APP_INFO
+                    }
+                )
+                Destination.APP_INFO -> AppInfo(
+                    selectedApp,
+                    scaffoldState,
+                    viewModel
                 )
             }
-            Crossflow(targetState = currentDestination) {
-                when (it) {
-                    Destination.APP_LIST -> AppList(
-                        viewModel,
-                        onAppClick = { app ->
-                            selectedApp = app
-                            this@AppManagerActivity.currentDestination = Destination.APP_INFO
-                        }
-                    )
-                    Destination.APP_INFO -> AppInfo(
-                        selectedApp,
-                        scaffoldState,
-                        viewModel
-                    )
-                }
-            }
         }
-    }
-
-    enum class Destination {
-        APP_LIST,
-        APP_INFO
     }
 }
