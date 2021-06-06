@@ -194,13 +194,15 @@ fun AppInstallInfo(
         modifier,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(
-            stringResource(
-                R.string.app_info_first_installed_prefix,
-                dateFormatter.format(app.installTime)
-            ),
-            style = MaterialTheme.typography.body2
-        )
+        if (!app.isSystemApp) {
+            Text(
+                stringResource(
+                    R.string.app_info_first_installed_prefix,
+                    dateFormatter.format(app.installTime)
+                ),
+                style = MaterialTheme.typography.body2
+            )
+        }
         if (app.installTime < app.lastUpdateTime) {
             Text(
                 stringResource(
