@@ -44,14 +44,14 @@ class AppManagerViewModel internal constructor(
 
     private val dateFormatter = SimpleDateFormat("EE, dd MMM yyyy, h:mm aa", Locale.getDefault())
 
-    var selectedWatch: Watch? by mutableStateOf(null)
-    val registeredWatches = watchManager.registeredWatches
-
-    val allApps = watchManager.selectedWatch.flatMapLatest { watch ->
+    private val allApps = watchManager.selectedWatch.flatMapLatest { watch ->
         watch?.let {
             appDatabase.apps().allForWatch(watch.id)
         } ?: flow { emit(emptyList<App>()) }
     }
+
+    var selectedWatch: Watch? by mutableStateOf(null)
+    val registeredWatches = watchManager.registeredWatches
 
     val watchStatus = watchManager.selectedWatch.flatMapLatest { watch ->
         watch?.let {
