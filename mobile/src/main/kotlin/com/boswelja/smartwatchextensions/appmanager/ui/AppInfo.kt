@@ -122,7 +122,6 @@ fun AppHeaderView(
     }
 }
 
-@ExperimentalCoroutinesApi
 @Composable
 fun AppActionButtons(
     modifier: Modifier = Modifier,
