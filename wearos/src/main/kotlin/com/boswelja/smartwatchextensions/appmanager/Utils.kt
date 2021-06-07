@@ -6,7 +6,7 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import com.boswelja.smartwatchextensions.common.appmanager.App
 import com.boswelja.smartwatchextensions.common.appmanager.Messages
-import com.boswelja.smartwatchextensions.common.appmanager.Messages.ALL_APPS
+import com.boswelja.smartwatchextensions.common.appmanager.Messages.APP_DATA
 import com.boswelja.smartwatchextensions.common.appmanager.Messages.APP_SENDING_COMPLETE
 import com.boswelja.smartwatchextensions.common.appmanager.compress
 import com.google.android.gms.wearable.Wearable
@@ -56,23 +56,26 @@ fun Context.requestUninstallPackage(packageName: String) {
  */
 suspend fun Context.sendAllApps(phoneId: String) {
     withContext(Dispatchers.IO) {
+        val messageClient = Wearable.getMessageClient(this@sendAllApps)
+
+        // Let the phone know what we're doing
+        messageClient.sendMessage(
+            phoneId,
+            Messages.APP_SENDING_START,
+            null
+        ).await()
+
+        // Get all current packages
         val allPackages = packageManager.getInstalledPackages(PackageManager.GET_PERMISSIONS)
             .map {
                 App(packageManager, it)
             }
 
-        val messageClient = Wearable.getMessageClient(this@sendAllApps)
-
         // Compress and send all apps
-        messageClient.sendMessage(
-            phoneId,
-            Messages.START_SENDING_APPS,
-            null
-        ).await()
         allPackages.forEach { app ->
             messageClient.sendMessage(
                 phoneId,
-                ALL_APPS,
+                APP_DATA,
                 app.toByteArray().compress()
             ).await()
         }

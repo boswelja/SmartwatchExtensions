@@ -6,8 +6,8 @@ import com.boswelja.smartwatchextensions.appmanager.database.WatchAppDatabase
 import com.boswelja.smartwatchextensions.batterysync.Utils
 import com.boswelja.smartwatchextensions.batterysync.Utils.handleBatteryStats
 import com.boswelja.smartwatchextensions.common.appmanager.App
-import com.boswelja.smartwatchextensions.common.appmanager.Messages.ALL_APPS
-import com.boswelja.smartwatchextensions.common.appmanager.Messages.START_SENDING_APPS
+import com.boswelja.smartwatchextensions.common.appmanager.Messages.APP_DATA
+import com.boswelja.smartwatchextensions.common.appmanager.Messages.APP_SENDING_START
 import com.boswelja.smartwatchextensions.common.appmanager.decompress
 import com.boswelja.smartwatchextensions.common.batterysync.BatteryStats
 import com.boswelja.smartwatchextensions.common.batterysync.References.BATTERY_STATUS_PATH
@@ -44,10 +44,10 @@ class WatchMessageReceiver : MessageReceiver() {
     ) {
         Timber.d("Received %s", message)
         when (message) {
-            START_SENDING_APPS -> {
+            APP_SENDING_START -> {
                 clearAppsForWatch(context, sourceWatchId)
             }
-            ALL_APPS -> {
+            APP_DATA -> {
                 data?.let {
                     Timber.d("Received %s bytes", data.size)
                     val decompressedBytes = data.decompress()

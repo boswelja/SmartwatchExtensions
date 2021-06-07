@@ -9,9 +9,9 @@ import androidx.lifecycle.viewModelScope
 import com.boswelja.smartwatchextensions.appmanager.App
 import com.boswelja.smartwatchextensions.appmanager.database.WatchAppDatabase
 import com.boswelja.smartwatchextensions.common.appmanager.Messages.APP_SENDING_COMPLETE
+import com.boswelja.smartwatchextensions.common.appmanager.Messages.APP_SENDING_START
 import com.boswelja.smartwatchextensions.common.appmanager.Messages.REQUEST_OPEN_PACKAGE
 import com.boswelja.smartwatchextensions.common.appmanager.Messages.REQUEST_UNINSTALL_PACKAGE
-import com.boswelja.smartwatchextensions.common.appmanager.Messages.START_SENDING_APPS
 import com.boswelja.smartwatchextensions.common.appmanager.Messages.VALIDATE_CACHE
 import com.boswelja.smartwatchextensions.common.toByteArray
 import com.boswelja.smartwatchextensions.watchmanager.WatchManager
@@ -53,7 +53,7 @@ class AppManagerViewModel internal constructor(
         override fun onMessageReceived(sourceWatchId: UUID, message: String, data: ByteArray?) {
             when (message) {
                 APP_SENDING_COMPLETE -> isUpdatingCache = false
-                START_SENDING_APPS -> isUpdatingCache = true
+                APP_SENDING_START -> isUpdatingCache = true
             }
         }
     }
