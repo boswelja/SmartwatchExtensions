@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
 import androidx.compose.material.LinearProgressIndicator
@@ -34,7 +35,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -181,13 +184,11 @@ fun CacheStatusIndicator(
     ) {
         Column(modifier) {
             LinearProgressIndicator(Modifier.fillMaxWidth())
-            Row(
+            StatusItem(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(16.dp)
-            ) {
-                Icon(Icons.Outlined.Info, contentDescription = null)
-                Text(stringResource(R.string.app_manager_updating_cache))
-            }
+                icon = Icons.Outlined.Info,
+                text = stringResource(R.string.app_manager_updating_cache)
+            )
         }
     }
 }
@@ -203,12 +204,33 @@ fun WatchStatusIndicator(
         enter = expandVertically(),
         exit = shrinkVertically()
     ) {
-        Row(
+        StatusItem(
             modifier = modifier,
-            horizontalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            Icon(Icons.Outlined.Warning, contentDescription = null)
-            Text(stringResource(R.string.app_manager_watch_disconnected))
-        }
+            icon = Icons.Outlined.Warning,
+            text = stringResource(R.string.app_manager_watch_disconnected)
+        )
+    }
+}
+
+@Composable
+fun StatusItem(
+    modifier: Modifier = Modifier,
+    icon: ImageVector,
+    text: String
+) {
+    Row(
+        modifier = modifier,
+        horizontalArrangement = Arrangement.spacedBy(16.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Icon(
+            modifier = Modifier.size(24.dp),
+            imageVector = icon,
+            contentDescription = null
+        )
+        Text(
+            text = text,
+            style = MaterialTheme.typography.subtitle1
+        )
     }
 }
