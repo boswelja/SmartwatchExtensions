@@ -23,6 +23,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.Warning
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
@@ -177,6 +178,13 @@ fun CacheStatusIndicator(
     ) {
         Column(modifier) {
             LinearProgressIndicator(Modifier.fillMaxWidth())
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                Icon(Icons.Outlined.Info, contentDescription = null)
+                Text(stringResource(R.string.app_manager_updating_cache))
+            }
         }
     }
 }
