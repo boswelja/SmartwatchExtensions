@@ -93,11 +93,10 @@ fun AppManagerScreen(scaffoldState: ScaffoldState) {
     var isAppInfoVisible by remember { mutableStateOf(false) }
 
     Column {
-        if (viewModel.isUpdatingCache) {
-            LinearProgressIndicator(
-                Modifier.fillMaxWidth()
-            )
-        }
+        CacheStatusIndicator(
+            modifier = Modifier.fillMaxWidth(),
+            isUpdatingCache = viewModel.isUpdatingCache
+        )
         AppList(
             userApps = userApps,
             systemApps = systemApps,
@@ -143,5 +142,18 @@ fun AppManagerScreen(scaffoldState: ScaffoldState) {
                 }
             }
         )
+    }
+}
+
+@ExperimentalAnimationApi
+@Composable
+fun CacheStatusIndicator(
+    modifier: Modifier = Modifier,
+    isUpdatingCache: Boolean
+) {
+    AnimatedVisibility(visible = isUpdatingCache) {
+        Column(modifier) {
+            LinearProgressIndicator(Modifier.fillMaxSize())
+        }
     }
 }
