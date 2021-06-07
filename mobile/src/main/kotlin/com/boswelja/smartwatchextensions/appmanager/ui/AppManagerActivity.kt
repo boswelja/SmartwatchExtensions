@@ -41,7 +41,6 @@ import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.appmanager.App
 import com.boswelja.smartwatchextensions.common.ui.AppTheme
 import com.boswelja.smartwatchextensions.common.ui.UpNavigationWatchPickerAppBar
-import com.boswelja.watchconnection.core.Status
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
@@ -118,7 +117,7 @@ fun AppManagerScreen(
 
     val userApps by viewModel.userApps.collectAsState(emptyList(), Dispatchers.IO)
     val systemApps by viewModel.systemApps.collectAsState(emptyList(), Dispatchers.IO)
-    val status by viewModel.watchStatus.collectAsState(initial = Status.CONNECTING, Dispatchers.IO)
+    val isWatchConnected by viewModel.isWatchConnected.collectAsState(true, Dispatchers.IO)
 
     var selectedApp by remember { mutableStateOf<App?>(null) }
     var isAppInfoVisible by remember { mutableStateOf(false) }
@@ -133,7 +132,7 @@ fun AppManagerScreen(
             isUpdatingCache = viewModel.isUpdatingCache
         )
         WatchStatusIndicator(
-            isWatchConnected = status != Status.CONNECTED || status != Status.CONNECTING
+            isWatchConnected = isWatchConnected
         )
         AppList(
             userApps = userApps,

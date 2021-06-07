@@ -66,10 +66,12 @@ class AppManagerViewModel internal constructor(
 
     val registeredWatches = watchManager.registeredWatches
 
-    val watchStatus = watchManager.selectedWatch.flatMapLatest { watch ->
+    val isWatchConnected = watchManager.selectedWatch.flatMapLatest { watch ->
         watch?.let {
             watchManager.getStatusFor(watch)
         } ?: flow { emit(Status.ERROR) }
+    }.map { status ->
+        status == Status.CONNECTING || status == Status.CONNECTED
     }
 
     val userApps = allApps.mapLatest { apps ->
