@@ -7,9 +7,11 @@ import android.net.Uri
 import com.boswelja.smartwatchextensions.common.appmanager.App
 import com.boswelja.smartwatchextensions.common.appmanager.Messages
 import com.boswelja.smartwatchextensions.common.appmanager.Messages.ALL_APPS
+import com.boswelja.smartwatchextensions.common.appmanager.Messages.APP_SENDING_COMPLETE
 import com.boswelja.smartwatchextensions.common.appmanager.compress
 import com.google.android.gms.wearable.Wearable
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 
 /**
@@ -66,14 +68,21 @@ suspend fun Context.sendAllApps(phoneId: String) {
             phoneId,
             Messages.START_SENDING_APPS,
             null
-        )
+        ).await()
         allPackages.forEach { app ->
             messageClient.sendMessage(
                 phoneId,
                 ALL_APPS,
                 app.toByteArray().compress()
-            )
+            ).await()
         }
+
+        // Send a message notifying the phone of a successful operation
+        messageClient.sendMessage(
+            phoneId,
+            APP_SENDING_COMPLETE,
+            null
+        ).await()
     }
 }
 

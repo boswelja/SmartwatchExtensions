@@ -7,6 +7,7 @@ object Messages {
 
     const val START_SENDING_APPS = "/app_manager_sending_all"
     const val ALL_APPS = "/app_manager_all_apps"
+    const val APP_SENDING_COMPLETE = "/app_manager_sending_complete"
 
     const val VALIDATE_CACHE = "/app_manager_cache_check"
 }
