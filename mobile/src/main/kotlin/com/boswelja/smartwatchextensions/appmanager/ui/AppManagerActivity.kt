@@ -168,7 +168,7 @@ fun CacheStatusIndicator(
         exit = shrinkVertically()
     ) {
         Column(modifier) {
-            LinearProgressIndicator(Modifier.fillMaxSize())
+            LinearProgressIndicator(Modifier.fillMaxWidth())
         }
     }
 }
