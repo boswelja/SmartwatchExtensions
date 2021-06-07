@@ -21,7 +21,6 @@ import androidx.compose.material.Icon
 import androidx.compose.material.LinearProgressIndicator
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
-import androidx.compose.material.ScaffoldState
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Warning
@@ -59,6 +58,9 @@ class AppManagerActivity : AppCompatActivity() {
         Timber.i("onCreate() called")
 
         setContent {
+            val coroutineScope = rememberCoroutineScope()
+            val continueOnWatchText =
+                stringResource(R.string.watch_manager_action_continue_on_watch)
             val viewModel: AppManagerViewModel = viewModel()
 
             val registeredWatches by viewModel.registeredWatches.observeAsState()
@@ -77,7 +79,26 @@ class AppManagerActivity : AppCompatActivity() {
                         )
                     }
                 ) {
-                    AppManagerScreen(scaffoldState = scaffoldState)
+                    AppManagerScreen(
+                        onOpenClicked = {
+                            coroutineScope.launch {
+                                if (viewModel.sendOpenRequest(it)) {
+                                    scaffoldState.snackbarHostState.showSnackbar(
+                                        continueOnWatchText, null
+                                    )
+                                }
+                            }
+                        },
+                        onUninstallClicked = {
+                            coroutineScope.launch {
+                                if (viewModel.sendUninstallRequest(it)) {
+                                    scaffoldState.snackbarHostState.showSnackbar(
+                                        continueOnWatchText, null
+                                    )
+                                }
+                            }
+                        }
+                    )
                 }
             }
         }
@@ -89,16 +110,22 @@ class AppManagerActivity : AppCompatActivity() {
 @ExperimentalMaterialApi
 @ExperimentalAnimationApi
 @Composable
-fun AppManagerScreen(scaffoldState: ScaffoldState) {
-    val scope = rememberCoroutineScope()
-    val continueOnWatchText = stringResource(R.string.watch_manager_action_continue_on_watch)
+fun AppManagerScreen(
+    onOpenClicked: (App) -> Unit,
+    onUninstallClicked: (App) -> Unit
+) {
     val viewModel: AppManagerViewModel = viewModel()
+
     val userApps by viewModel.userApps.collectAsState(emptyList(), Dispatchers.IO)
     val systemApps by viewModel.systemApps.collectAsState(emptyList(), Dispatchers.IO)
     val status by viewModel.watchStatus.collectAsState(initial = Status.CONNECTING, Dispatchers.IO)
 
     var selectedApp by remember { mutableStateOf<App?>(null) }
     var isAppInfoVisible by remember { mutableStateOf(false) }
+
+    BackHandler(enabled = isAppInfoVisible) {
+        isAppInfoVisible = false
+    }
 
     Column {
         CacheStatusIndicator(
@@ -118,10 +145,6 @@ fun AppManagerScreen(scaffoldState: ScaffoldState) {
         )
     }
 
-    BackHandler(enabled = isAppInfoVisible) {
-        isAppInfoVisible = false
-    }
-
     AnimatedVisibility(
         visible = isAppInfoVisible,
         enter = expandVertically(),
@@ -133,24 +156,10 @@ fun AppManagerScreen(scaffoldState: ScaffoldState) {
                 .background(MaterialTheme.colors.background)
                 .padding(16.dp),
             app = selectedApp,
-            onOpenClicked = {
-                scope.launch {
-                    if (viewModel.sendOpenRequest(it)) {
-                        scaffoldState.snackbarHostState.showSnackbar(
-                            continueOnWatchText, null
-                        )
-                    }
-                }
-            },
+            onOpenClicked = onOpenClicked,
             onUninstallClicked = {
-                scope.launch {
-                    if (viewModel.sendUninstallRequest(it)) {
-                        scaffoldState.snackbarHostState.showSnackbar(
-                            continueOnWatchText, null
-                        )
-                        isAppInfoVisible = false
-                    }
-                }
+                onUninstallClicked(it)
+                isAppInfoVisible = false
             }
         )
     }
