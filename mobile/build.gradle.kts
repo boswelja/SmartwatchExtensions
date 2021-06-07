@@ -1,8 +1,8 @@
 plugins {
     id("com.android.application")
     kotlin("android")
+    kotlin("kapt")
     id("com.google.gms.google-services")
-    id("com.google.devtools.ksp") version "1.5.10-1.0.0-beta01"
     id("com.squareup.wire")
 }
 
@@ -20,8 +20,10 @@ android {
         testApplicationId = PackageInfo.packageName + ".test"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
-        ksp {
-            arg("room.schemaLocation", "$rootDir/schemas")
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments += mapOf("room.schemaLocation" to "$rootDir/schemas")
+            }
         }
     }
 
@@ -84,7 +86,7 @@ dependencies {
     implementation(libs.bundles.compose)
     implementation(libs.androidx.compose.ui.viewbinding)
 
-    ksp(libs.androidx.room.compiler)
+    kapt(libs.androidx.room.compiler)
 
     testImplementation(libs.androidx.arch.core.test)
     testImplementation(libs.androidx.test.corektx)
