@@ -185,7 +185,10 @@ fun CacheStatusIndicator(
         enter = expandVertically(),
         exit = shrinkVertically()
     ) {
-        Column(Modifier.fillMaxWidth()) {
+        Column(
+            modifier = Modifier.fillMaxWidth(),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
             LinearProgressIndicator(Modifier.fillMaxWidth())
             StatusItem(
                 modifier = modifier,
