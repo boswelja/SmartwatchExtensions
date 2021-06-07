@@ -75,6 +75,7 @@
     <string name="app_manager_activity_title">@string/main_app_manager_title</string>
     <string name="app_manager_disconnected">Connection lost</string>
     <string name="app_manager_error_title">Something Went Wrong</string>
+    <string name="app_manager_watch_disconnected">We can\'t reach your watch right now. You may still view your apps, but you cannot make any changes</string>
     <string name="app_manager_error_desc">Make sure Smartwatch Extensions is up to date on your phone and watch, and try again</string>
 
     <!-- Phone Locking strings -->

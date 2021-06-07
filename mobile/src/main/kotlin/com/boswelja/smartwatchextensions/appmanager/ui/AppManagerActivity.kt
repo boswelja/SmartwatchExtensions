@@ -10,15 +10,21 @@ import androidx.compose.animation.expandVertically
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.Icon
 import androidx.compose.material.LinearProgressIndicator
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.ScaffoldState
+import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Warning
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -34,8 +40,10 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.appmanager.App
+import com.boswelja.smartwatchextensions.appmanager.State
 import com.boswelja.smartwatchextensions.common.ui.AppTheme
 import com.boswelja.smartwatchextensions.common.ui.UpNavigationWatchPickerAppBar
+import com.boswelja.watchconnection.core.Status
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
@@ -88,6 +96,7 @@ fun AppManagerScreen(scaffoldState: ScaffoldState) {
     val viewModel: AppManagerViewModel = viewModel()
     val userApps by viewModel.userApps.collectAsState(emptyList(), Dispatchers.IO)
     val systemApps by viewModel.systemApps.collectAsState(emptyList(), Dispatchers.IO)
+    val status by viewModel.watchStatus.collectAsState(initial = State.CONNECTING, Dispatchers.IO)
 
     var selectedApp by remember { mutableStateOf<App?>(null) }
     var isAppInfoVisible by remember { mutableStateOf(false) }
@@ -96,6 +105,9 @@ fun AppManagerScreen(scaffoldState: ScaffoldState) {
         CacheStatusIndicator(
             modifier = Modifier.fillMaxWidth(),
             isUpdatingCache = viewModel.isUpdatingCache
+        )
+        WatchStatusIndicator(
+            isWatchConnected = status != Status.CONNECTED || status != Status.CONNECTING
         )
         AppList(
             userApps = userApps,
@@ -151,9 +163,34 @@ fun CacheStatusIndicator(
     modifier: Modifier = Modifier,
     isUpdatingCache: Boolean
 ) {
-    AnimatedVisibility(visible = isUpdatingCache) {
+    AnimatedVisibility(
+        visible = isUpdatingCache,
+        enter = expandVertically(),
+        exit = shrinkVertically()
+    ) {
         Column(modifier) {
             LinearProgressIndicator(Modifier.fillMaxSize())
+        }
+    }
+}
+
+@ExperimentalAnimationApi
+@Composable
+fun WatchStatusIndicator(
+    modifier: Modifier = Modifier,
+    isWatchConnected: Boolean
+) {
+    AnimatedVisibility(
+        visible = !isWatchConnected,
+        enter = expandVertically(),
+        exit = shrinkVertically()
+    ) {
+        Row(
+            modifier = modifier,
+            horizontalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            Icon(Icons.Outlined.Warning, contentDescription = null)
+            Text(stringResource(R.string.app_manager_disconnected))
         }
     }
 }
