@@ -1,8 +1,8 @@
 plugins {
     id("com.android.application")
     kotlin("android")
+    kotlin("kapt")
     id("com.google.gms.google-services")
-    id("com.google.devtools.ksp") version "1.4.32-1.0.0-alpha08"
     id("com.squareup.wire")
 }
 
@@ -20,8 +20,10 @@ android {
         testApplicationId = PackageInfo.packageName + ".test"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
-        ksp {
-            arg("room.schemaLocation", "$rootDir/schemas")
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments += mapOf("room.schemaLocation" to "$rootDir/schemas")
+            }
         }
     }
 
@@ -33,7 +35,6 @@ android {
     }
     kotlinOptions {
         jvmTarget = "1.8"
-        useIR = true
     }
 
     buildTypes {
@@ -62,15 +63,6 @@ android {
     }
 }
 
-configurations.all {
-    resolutionStrategy.eachDependency {
-        if (requested.name == "kotlinx-collections-immutable-jvm") {
-            useTarget("org.jetbrains.kotlinx:kotlinx-collections-immutable-jvm:0.3.4")
-            because("Use 0.3.4 since 0.3.3 isn't available on mavenCentral()")
-        }
-    }
-}
-
 dependencies {
     implementation(projects.common)
 
@@ -95,7 +87,7 @@ dependencies {
     implementation(libs.androidx.compose.ui.viewbinding)
     implementation("com.google.code.gson:gson:2.8.7")
 
-    ksp(libs.androidx.room.compiler)
+    kapt(libs.androidx.room.compiler)
 
     testImplementation(libs.androidx.arch.core.test)
     testImplementation(libs.androidx.test.corektx)

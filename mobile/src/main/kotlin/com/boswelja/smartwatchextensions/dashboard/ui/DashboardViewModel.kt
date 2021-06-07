@@ -8,7 +8,9 @@ import androidx.lifecycle.switchMap
 import com.boswelja.smartwatchextensions.watchmanager.WatchManager
 import com.boswelja.watchconnection.core.Status
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
+@ExperimentalCoroutinesApi
 class DashboardViewModel(application: Application) : AndroidViewModel(application) {
 
     private val watchManager = WatchManager.getInstance(application)

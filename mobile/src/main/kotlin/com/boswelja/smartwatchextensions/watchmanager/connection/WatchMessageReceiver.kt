@@ -35,6 +35,7 @@ import timber.log.Timber
 @ExperimentalCoroutinesApi
 class WatchMessageReceiver : MessageReceiver() {
 
+    @ExperimentalCoroutinesApi
     override suspend fun onMessageReceived(
         context: Context,
         sourceWatchId: UUID,

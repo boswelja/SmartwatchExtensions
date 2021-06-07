@@ -22,7 +22,8 @@ import com.boswelja.smartwatchextensions.widget.ui.WidgetSettingsActivity.Compan
 import com.boswelja.smartwatchextensions.widget.widgetIdStore
 import com.boswelja.smartwatchextensions.widget.widgetSettings
 import java.util.UUID
-import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
@@ -33,6 +34,8 @@ import timber.log.Timber
  * An [AppWidgetProvider] that applies our default widget background with user settings.
  */
 abstract class BaseWidgetProvider : AppWidgetProvider() {
+
+    private val coroutineScope = CoroutineScope(Dispatchers.Default)
 
     /**
      * Called when widget content is required. A background is not needed.
@@ -77,7 +80,7 @@ abstract class BaseWidgetProvider : AppWidgetProvider() {
         Timber.d("onDeleted called")
         if (context != null && appWidgetIds != null && appWidgetIds.isNotEmpty()) {
             val pendingResult = goAsync()
-            GlobalScope.launch {
+            coroutineScope.launch {
                 context.widgetIdStore.edit { widgetIds ->
                     appWidgetIds.forEach { widgetId ->
                         Timber.d("Removing widget with id = %s", widgetId)
@@ -216,7 +219,7 @@ abstract class BaseWidgetProvider : AppWidgetProvider() {
         val pendingResult = goAsync()
 
         // Launch coroutine
-        GlobalScope.launch {
+        coroutineScope.launch {
             // Get size
             val height = widgetOptions.getInt(AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT)
             val width = widgetOptions.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH)

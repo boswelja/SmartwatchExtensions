@@ -11,8 +11,10 @@ import com.boswelja.smartwatchextensions.phonelocking.Utils.isAccessibilityServi
 import com.boswelja.smartwatchextensions.watchmanager.WatchManager
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
 
+@ExperimentalCoroutinesApi
 class PhoneLockingSettingsViewModel internal constructor(
     application: Application,
     private val dispatcher: CoroutineDispatcher,
