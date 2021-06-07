@@ -133,12 +133,15 @@ fun AppManagerScreen(
         isAppInfoVisible = false
     }
 
-    Column {
+    Column(
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
         CacheStatusIndicator(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
             isUpdatingCache = viewModel.isUpdatingCache
         )
         WatchStatusIndicator(
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
             isWatchConnected = isWatchConnected
         )
         AppList(
@@ -182,10 +185,10 @@ fun CacheStatusIndicator(
         enter = expandVertically(),
         exit = shrinkVertically()
     ) {
-        Column(modifier) {
+        Column(Modifier.fillMaxWidth()) {
             LinearProgressIndicator(Modifier.fillMaxWidth())
             StatusItem(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = modifier,
                 icon = Icons.Outlined.Info,
                 text = stringResource(R.string.app_manager_updating_cache)
             )
