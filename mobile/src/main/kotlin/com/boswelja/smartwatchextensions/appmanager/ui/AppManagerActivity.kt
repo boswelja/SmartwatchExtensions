@@ -22,12 +22,14 @@ import com.boswelja.smartwatchextensions.common.ui.AppTheme
 import com.boswelja.smartwatchextensions.common.ui.Crossflow
 import com.boswelja.smartwatchextensions.common.ui.LoadingScreen
 import com.boswelja.smartwatchextensions.common.ui.UpNavigationWatchPickerAppBar
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import timber.log.Timber
 
 class AppManagerActivity : AppCompatActivity() {
 
     private var currentDestination by mutableStateOf(Destination.LOADING)
 
+    @ExperimentalCoroutinesApi
     @ExperimentalAnimationApi
     @ExperimentalFoundationApi
     @ExperimentalMaterialApi
@@ -94,6 +96,7 @@ class AppManagerActivity : AppCompatActivity() {
         }
     }
 
+    @ExperimentalCoroutinesApi
     @ExperimentalFoundationApi
     @ExperimentalMaterialApi
     @ExperimentalAnimationApi

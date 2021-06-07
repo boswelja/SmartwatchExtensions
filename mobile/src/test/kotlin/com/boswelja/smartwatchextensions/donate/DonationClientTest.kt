@@ -321,7 +321,7 @@ class DonationClientTest {
 
     private fun createSkuDetails(): SkuDetails {
         val skuDetails = mockk<SkuDetails>()
-        every { skuDetails.zza() } returns "sku"
+        every { skuDetails.zzc() } returns "sku"
         return skuDetails
     }
 }

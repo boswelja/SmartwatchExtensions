@@ -5,7 +5,6 @@ import android.database.ContentObserver
 import android.provider.Settings
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.awaitClose
-import kotlinx.coroutines.channels.sendBlocking
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import timber.log.Timber
@@ -25,7 +24,7 @@ fun Context.theaterMode(): Flow<Boolean> = callbackFlow {
             if (!selfChange) {
                 val isTheaterModeOn = isTheaterModeOn
                 Timber.d("isTheaterModeOn = %s", isTheaterModeOn)
-                sendBlocking(isTheaterModeOn)
+                trySend(isTheaterModeOn)
             }
         }
     }

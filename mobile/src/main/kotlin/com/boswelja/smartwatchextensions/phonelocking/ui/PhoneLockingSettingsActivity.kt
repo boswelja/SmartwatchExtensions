@@ -11,9 +11,11 @@ import androidx.compose.runtime.remember
 import com.boswelja.smartwatchextensions.common.ui.AppTheme
 import com.boswelja.smartwatchextensions.common.ui.UpNavigationWatchPickerAppBar
 import com.boswelja.smartwatchextensions.watchmanager.WatchManager
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 class PhoneLockingSettingsActivity : AppCompatActivity() {
 
+    @ExperimentalCoroutinesApi
     @ExperimentalMaterialApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

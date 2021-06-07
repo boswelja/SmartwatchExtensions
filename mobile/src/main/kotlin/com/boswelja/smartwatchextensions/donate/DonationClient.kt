@@ -40,7 +40,7 @@ class DonationClient(application: Application) {
                 }
             }
         } else {
-            if (!purchaseResultChannel.offer(false))
+            if (purchaseResultChannel.trySend(false).isFailure)
                 Timber.w("Failed to post update to channel")
         }
     }
@@ -108,10 +108,10 @@ class DonationClient(application: Application) {
                 }
             }
 
-            if (!purchaseResultChannel.offer(true))
+            if (purchaseResultChannel.trySend(true).isFailure)
                 Timber.w("Failed to post update to channel")
         } else {
-            if (!purchaseResultChannel.offer(false))
+            if (!purchaseResultChannel.trySend(false).isFailure)
                 Timber.w("Failed to post update to channel")
         }
     }

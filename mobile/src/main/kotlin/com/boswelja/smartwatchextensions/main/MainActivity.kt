@@ -139,6 +139,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    @ExperimentalCoroutinesApi
     @ExperimentalMaterialApi
     @ExperimentalAnimationApi
     @Composable

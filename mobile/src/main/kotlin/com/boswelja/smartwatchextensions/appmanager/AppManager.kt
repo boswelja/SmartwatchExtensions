@@ -17,6 +17,7 @@ import java.util.UUID
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
@@ -25,6 +26,7 @@ import timber.log.Timber
 /**
  * Class for handling the connection with an App Manager service on a connected watch.
  */
+@ExperimentalCoroutinesApi
 class AppManager internal constructor(
     private val watchManager: WatchManager,
     dispatcher: CoroutineDispatcher

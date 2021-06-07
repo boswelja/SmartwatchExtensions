@@ -14,6 +14,7 @@ import com.boswelja.smartwatchextensions.watchmanager.database.WatchSettingsData
 import java.util.UUID
 import java.util.concurrent.TimeUnit
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.withContext
 import timber.log.Timber
@@ -21,6 +22,7 @@ import timber.log.Timber
 class BatterySyncWorker(appContext: Context, workerParams: WorkerParameters) :
     CoroutineWorker(appContext, workerParams) {
 
+    @ExperimentalCoroutinesApi
     override suspend fun doWork(): Result {
         Timber.i("doWork() called")
         val watchId = UUID.fromString(inputData.getString(EXTRA_WATCH_ID))
