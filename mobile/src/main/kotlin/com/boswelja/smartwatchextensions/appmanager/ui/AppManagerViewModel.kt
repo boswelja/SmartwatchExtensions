@@ -20,7 +20,9 @@ import com.boswelja.watchconnection.core.Status
 import com.boswelja.watchconnection.core.Watch
 import java.util.UUID
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
@@ -29,6 +31,7 @@ import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
+@FlowPreview
 @ExperimentalCoroutinesApi
 class AppManagerViewModel internal constructor(
     application: Application,
@@ -47,7 +50,7 @@ class AppManagerViewModel internal constructor(
         watch?.let {
             appDatabase.apps().allForWatch(watch.id)
         } ?: flow { emit(emptyList<App>()) }
-    }
+    }.debounce(APP_DEBOUNCE_MILLIS)
 
     private val messageListener = object : MessageListener {
         override fun onMessageReceived(sourceWatchId: UUID, message: String, data: ByteArray?) {
@@ -128,5 +131,9 @@ class AppManagerViewModel internal constructor(
             .first()
         val result = watchManager.sendMessage(watch, VALIDATE_CACHE, apps.hashCode().toByteArray())
         if (!result) Timber.w("Failed to request cache validation")
+    }
+
+    companion object {
+        private const val APP_DEBOUNCE_MILLIS = 250L
     }
 }
