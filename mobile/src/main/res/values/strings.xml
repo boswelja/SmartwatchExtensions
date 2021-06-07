@@ -73,10 +73,7 @@
     <string name="app_manager_section_user_apps">User Apps</string>
     <string name="app_manager_section_system_apps">System Apps</string>
     <string name="app_manager_activity_title">@string/main_app_manager_title</string>
-    <string name="app_manager_disconnected">Connection lost</string>
-    <string name="app_manager_error_title">Something Went Wrong</string>
     <string name="app_manager_watch_disconnected">We can\'t reach your watch right now. You may still view your apps, but you cannot make any changes</string>
-    <string name="app_manager_error_desc">Make sure Smartwatch Extensions is up to date on your phone and watch, and try again</string>
 
     <!-- Phone Locking strings -->
     <string name="main_phone_locking_title">Phone Locking</string>
@@ -223,7 +220,6 @@
 
     <string name="button_undo">Undo</string>
     <string name="button_done">Done</string>
-    <string name="button_retry">Try Again</string>
     <string name="button_next">Continue</string>
     <string name="button_finish">Finish</string>
     <string name="button_forget_watch">Forget Watch</string>

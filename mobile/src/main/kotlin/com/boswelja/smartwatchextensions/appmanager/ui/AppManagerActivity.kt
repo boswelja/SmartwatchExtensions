@@ -40,7 +40,6 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.appmanager.App
-import com.boswelja.smartwatchextensions.appmanager.State
 import com.boswelja.smartwatchextensions.common.ui.AppTheme
 import com.boswelja.smartwatchextensions.common.ui.UpNavigationWatchPickerAppBar
 import com.boswelja.watchconnection.core.Status
@@ -96,7 +95,7 @@ fun AppManagerScreen(scaffoldState: ScaffoldState) {
     val viewModel: AppManagerViewModel = viewModel()
     val userApps by viewModel.userApps.collectAsState(emptyList(), Dispatchers.IO)
     val systemApps by viewModel.systemApps.collectAsState(emptyList(), Dispatchers.IO)
-    val status by viewModel.watchStatus.collectAsState(initial = State.CONNECTING, Dispatchers.IO)
+    val status by viewModel.watchStatus.collectAsState(initial = Status.CONNECTING, Dispatchers.IO)
 
     var selectedApp by remember { mutableStateOf<App?>(null) }
     var isAppInfoVisible by remember { mutableStateOf(false) }
@@ -190,7 +189,7 @@ fun WatchStatusIndicator(
             horizontalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             Icon(Icons.Outlined.Warning, contentDescription = null)
-            Text(stringResource(R.string.app_manager_disconnected))
+            Text(stringResource(R.string.app_manager_watch_disconnected))
         }
     }
 }
