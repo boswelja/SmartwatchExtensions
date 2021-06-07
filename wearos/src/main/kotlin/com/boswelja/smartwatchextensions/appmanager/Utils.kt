@@ -58,18 +58,18 @@ suspend fun Context.sendAllApps(phoneId: String) {
     withContext(Dispatchers.IO) {
         val messageClient = Wearable.getMessageClient(this@sendAllApps)
 
+        // Get all current packages
+        val allPackages = packageManager.getInstalledPackages(PackageManager.GET_PERMISSIONS)
+            .map {
+                App(packageManager, it)
+            }
+
         // Let the phone know what we're doing
         messageClient.sendMessage(
             phoneId,
             Messages.APP_SENDING_START,
             null
         ).await()
-
-        // Get all current packages
-        val allPackages = packageManager.getInstalledPackages(PackageManager.GET_PERMISSIONS)
-            .map {
-                App(packageManager, it)
-            }
 
         // Compress and send all apps
         allPackages.forEach { app ->
