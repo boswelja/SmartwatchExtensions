@@ -8,11 +8,14 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.boswelja.smartwatchextensions.appmanager.App
 import com.boswelja.smartwatchextensions.appmanager.database.WatchAppDatabase
+import com.boswelja.smartwatchextensions.common.appmanager.Messages.APP_SENDING_COMPLETE
 import com.boswelja.smartwatchextensions.common.appmanager.Messages.REQUEST_OPEN_PACKAGE
 import com.boswelja.smartwatchextensions.common.appmanager.Messages.REQUEST_UNINSTALL_PACKAGE
+import com.boswelja.smartwatchextensions.common.appmanager.Messages.START_SENDING_APPS
 import com.boswelja.smartwatchextensions.common.appmanager.Messages.VALIDATE_CACHE
 import com.boswelja.smartwatchextensions.common.toByteArray
 import com.boswelja.smartwatchextensions.watchmanager.WatchManager
+import com.boswelja.watchconnection.core.MessageListener
 import com.boswelja.watchconnection.core.Status
 import com.boswelja.watchconnection.core.Watch
 import java.util.UUID
@@ -46,6 +49,15 @@ class AppManagerViewModel internal constructor(
         } ?: flow { emit(emptyList<App>()) }
     }
 
+    private val messageListener = object : MessageListener {
+        override fun onMessageReceived(sourceWatchId: UUID, message: String, data: ByteArray?) {
+            when (message) {
+                APP_SENDING_COMPLETE -> isUpdatingCache = false
+                START_SENDING_APPS -> isUpdatingCache = true
+            }
+        }
+    }
+
     var selectedWatch: Watch? by mutableStateOf(null)
         private set
 
@@ -77,6 +89,12 @@ class AppManagerViewModel internal constructor(
                 }
             }
         }
+        watchManager.registerMessageListener(messageListener)
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        watchManager.unregisterMessageListener(messageListener)
     }
 
     fun selectWatchById(watchId: UUID) = watchManager.selectWatchById(watchId)
