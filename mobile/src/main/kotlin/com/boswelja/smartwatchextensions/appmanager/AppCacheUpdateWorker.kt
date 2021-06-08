@@ -29,12 +29,18 @@ class AppCacheUpdateWorker(
     workerParams: WorkerParameters
 ) : CoroutineWorker(context, workerParams) {
 
-    private val watchManager = WatchManager.getInstance(applicationContext)
-    private val appDatabase = WatchAppDatabase.getInstance(applicationContext)
+    private val watchManager by lazy { WatchManager.getInstance(applicationContext) }
+    private val appDatabase by lazy { WatchAppDatabase.getInstance(applicationContext) }
 
     override suspend fun doWork(): Result {
+        val idString = inputData.getString(EXTRA_WATCH_ID)
+        if (idString.isNullOrBlank()) {
+            Timber.w("No watch ID passed to worker, cancelling")
+            return Result.failure()
+        }
+
         // Get watch ID
-        val watchId = UUID.fromString(inputData.getString(EXTRA_WATCH_ID))
+        val watchId = UUID.fromString(idString)
 
         val watch = watchManager.getWatchById(watchId).firstOrNull()
         if (watch != null && validateCacheFor(watch)) {
@@ -59,13 +65,13 @@ class AppCacheUpdateWorker(
     }
 
     companion object {
-        private const val EXTRA_WATCH_ID: String = "extra_watch_id"
+        const val EXTRA_WATCH_ID: String = "extra_watch_id"
 
         private fun getWorkerNameFor(watchId: UUID): String {
             return "appcache-$watchId"
         }
 
-        fun enqueueWorkerFor(context: Context, watchId: UUID) {
+        fun enqueueWorkerFor(context: Context, watchId: UUID): UUID {
             // Define work constraints
             val constraints = Constraints.Builder()
                 .setRequiresCharging(true)
@@ -89,6 +95,8 @@ class AppCacheUpdateWorker(
                 ExistingPeriodicWorkPolicy.REPLACE,
                 request
             )
+
+            return request.id
         }
 
         fun stopWorkerFor(context: Context, watchId: UUID) {
