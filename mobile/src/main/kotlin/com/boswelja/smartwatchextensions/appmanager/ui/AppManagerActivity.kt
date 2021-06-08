@@ -137,6 +137,10 @@ fun AppManagerScreen(
     Column(
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
+        LoadingIndicator(
+            modifier = Modifier.fillMaxWidth(),
+            isLoading = viewModel.isUpdatingCache
+        )
         CacheStatusIndicator(
             modifier = Modifier
                 .fillMaxWidth()
@@ -182,6 +186,21 @@ fun AppManagerScreen(
 
 @ExperimentalAnimationApi
 @Composable
+fun LoadingIndicator(
+    modifier: Modifier = Modifier,
+    isLoading: Boolean
+) {
+    AnimatedVisibility(
+        visible = isLoading,
+        enter = expandVertically(),
+        exit = shrinkVertically()
+    ) {
+        LinearProgressIndicator(modifier)
+    }
+}
+
+@ExperimentalAnimationApi
+@Composable
 fun CacheStatusIndicator(
     modifier: Modifier = Modifier,
     isUpdatingCache: Boolean
@@ -191,17 +210,11 @@ fun CacheStatusIndicator(
         enter = expandVertically(),
         exit = shrinkVertically()
     ) {
-        Column(
-            modifier = Modifier.fillMaxWidth(),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            LinearProgressIndicator(Modifier.fillMaxWidth())
-            StatusItem(
-                modifier = modifier,
-                icon = Icons.Outlined.Info,
-                text = stringResource(R.string.app_manager_updating_cache)
-            )
-        }
+        StatusItem(
+            modifier = modifier,
+            icon = Icons.Outlined.Info,
+            text = stringResource(R.string.app_manager_updating_cache)
+        )
     }
 }
 
