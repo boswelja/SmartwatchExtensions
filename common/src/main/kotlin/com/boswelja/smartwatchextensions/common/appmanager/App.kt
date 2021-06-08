@@ -37,20 +37,20 @@ data class App(
     val isEnabled: Boolean,
     val installTime: Long,
     val lastUpdateTime: Long,
-    val requestedPermissions: Array<String>
+    val requestedPermissions: List<String>
 ) : Serializable {
 
     constructor(packageManager: PackageManager, packageInfo: PackageInfo) : this(
         SerializableBitmap(packageManager.getApplicationIcon(packageInfo.packageName).toBitmap()),
-        getVersion(packageInfo),
+        packageInfo.version,
         packageInfo.packageName,
         packageManager.getApplicationLabel(packageInfo.applicationInfo).toString(),
-        isSystemApp(packageInfo.applicationInfo),
+        packageInfo.applicationInfo.isSystemApp,
         packageManager.getLaunchIntentForPackage(packageInfo.packageName) != null,
         packageInfo.applicationInfo.enabled,
         packageInfo.firstInstallTime,
         packageInfo.lastUpdateTime,
-        getLocalizedPermissions(packageManager, packageInfo)
+        packageManager.getLocalizedPermissions(packageInfo)
     )
 
     override fun toString(): String {
@@ -107,38 +107,27 @@ data class App(
 
         /**
          * Attempts to convert system permissions strings into something meaningful to the user.
-         * Fallback is to just use the system strings.
+         * Fallback to the standard permission string.
          */
-        private fun getLocalizedPermissions(
-            packageManager: PackageManager,
+        private fun PackageManager.getLocalizedPermissions(
             packageInfo: PackageInfo
-        ): Array<String> {
-            val processedPermissions = ArrayList<String>()
-            packageInfo.requestedPermissions?.forEach { permission ->
-                val localizedPermission = try {
-                    val permissionInfo =
-                        packageManager.getPermissionInfo(
-                            permission, PackageManager.GET_META_DATA
-                        )
-                    permissionInfo?.loadLabel(packageManager)?.toString() ?: permission
+        ): List<String> {
+            return packageInfo.requestedPermissions?.map { permission ->
+                try {
+                    val permissionInfo = getPermissionInfo(permission, PackageManager.GET_META_DATA)
+                    permissionInfo?.loadLabel(this)?.toString() ?: permission
                 } catch (e: Exception) {
                     permission
                 }
-                processedPermissions.add(localizedPermission)
-            }
-            processedPermissions.sort()
-            return processedPermissions.toTypedArray()
+            }?.sorted() ?: emptyList()
         }
 
-        private fun isSystemApp(applicationInfo: ApplicationInfo): Boolean {
-            return applicationInfo.flags.and(
+        private val ApplicationInfo.isSystemApp: Boolean
+            get() = flags.and(
                 ApplicationInfo.FLAG_SYSTEM or ApplicationInfo.FLAG_UPDATED_SYSTEM_APP
             ) != 0
-        }
 
-        private fun getVersion(packageInfo: PackageInfo): String {
-            return packageInfo.versionName
-                ?: PackageInfoCompat.getLongVersionCode(packageInfo).toString()
-        }
+        private val PackageInfo.version: String
+            get() = versionName ?: PackageInfoCompat.getLongVersionCode(this).toString()
     }
 }
