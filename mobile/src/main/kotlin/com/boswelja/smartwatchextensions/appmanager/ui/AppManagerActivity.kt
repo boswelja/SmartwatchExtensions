@@ -8,6 +8,8 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.shrinkVertically
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -168,8 +170,8 @@ fun AppManagerScreen(
 
     AnimatedVisibility(
         visible = isAppInfoVisible,
-        enter = expandVertically(),
-        exit = shrinkVertically()
+        enter = slideInVertically(initialOffsetY = { it }),
+        exit = slideOutVertically(targetOffsetY = { it })
     ) {
         AppInfo(
             modifier = Modifier
