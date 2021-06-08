@@ -8,7 +8,6 @@ import com.boswelja.smartwatchextensions.batterysync.Utils.handleBatteryStats
 import com.boswelja.smartwatchextensions.common.appmanager.App
 import com.boswelja.smartwatchextensions.common.appmanager.Messages.APP_DATA
 import com.boswelja.smartwatchextensions.common.appmanager.Messages.APP_SENDING_START
-import com.boswelja.smartwatchextensions.common.appmanager.decompress
 import com.boswelja.smartwatchextensions.common.batterysync.BatteryStats
 import com.boswelja.smartwatchextensions.common.batterysync.References.BATTERY_STATUS_PATH
 import com.boswelja.smartwatchextensions.common.batterysync.References.REQUEST_BATTERY_UPDATE_PATH
@@ -16,6 +15,7 @@ import com.boswelja.smartwatchextensions.common.connection.Capability
 import com.boswelja.smartwatchextensions.common.connection.Messages.CHECK_WATCH_REGISTERED_PATH
 import com.boswelja.smartwatchextensions.common.connection.Messages.LAUNCH_APP
 import com.boswelja.smartwatchextensions.common.connection.Messages.WATCH_REGISTERED_PATH
+import com.boswelja.smartwatchextensions.common.decompress
 import com.boswelja.smartwatchextensions.common.dndsync.References.DND_STATUS_PATH
 import com.boswelja.smartwatchextensions.common.fromByteArray
 import com.boswelja.smartwatchextensions.dndsync.Utils.handleDnDStateChange

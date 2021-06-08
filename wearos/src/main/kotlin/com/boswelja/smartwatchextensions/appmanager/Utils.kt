@@ -8,7 +8,7 @@ import com.boswelja.smartwatchextensions.common.appmanager.App
 import com.boswelja.smartwatchextensions.common.appmanager.Messages
 import com.boswelja.smartwatchextensions.common.appmanager.Messages.APP_DATA
 import com.boswelja.smartwatchextensions.common.appmanager.Messages.APP_SENDING_COMPLETE
-import com.boswelja.smartwatchextensions.common.appmanager.compress
+import com.boswelja.smartwatchextensions.common.compress
 import com.google.android.gms.wearable.Wearable
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.tasks.await
