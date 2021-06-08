@@ -71,6 +71,7 @@
     <string name="app_info_uninstall_button">Uninstall</string>
     <string name="app_info_requested_permissions_none">No permissions requested</string>
     <string name="app_manager_section_user_apps">User Apps</string>
+    <string name="app_manager_section_disabled_apps">Disabled Apps</string>
     <string name="app_manager_section_system_apps">System Apps</string>
     <string name="app_manager_activity_title">@string/main_app_manager_title</string>
     <string name="app_manager_watch_disconnected">We can\'t reach your watch right now. You may still view your apps, but you cannot make any changes</string>

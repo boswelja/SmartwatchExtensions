@@ -123,6 +123,7 @@ fun AppManagerScreen(
     val viewModel: AppManagerViewModel = viewModel()
 
     val userApps by viewModel.userApps.collectAsState(emptyList(), Dispatchers.IO)
+    val disabledApps by viewModel.disabledApps.collectAsState(emptyList(), Dispatchers.IO)
     val systemApps by viewModel.systemApps.collectAsState(emptyList(), Dispatchers.IO)
     val isWatchConnected by viewModel.isWatchConnected.collectAsState(true, Dispatchers.IO)
 
@@ -137,15 +138,20 @@ fun AppManagerScreen(
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         CacheStatusIndicator(
-            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp),
             isUpdatingCache = viewModel.isUpdatingCache
         )
         WatchStatusIndicator(
-            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp),
             isWatchConnected = isWatchConnected
         )
         AppList(
             userApps = userApps,
+            disabledApps = disabledApps,
             systemApps = systemApps,
             onAppClick = { app ->
                 selectedApp = app

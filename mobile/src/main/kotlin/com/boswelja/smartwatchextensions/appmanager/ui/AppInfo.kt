@@ -148,7 +148,7 @@ fun AppActionButtons(
 @Composable
 fun PermissionsInfo(
     modifier: Modifier = Modifier,
-    permissions: Array<String>
+    permissions: List<String>
 ) {
     if (permissions.isNotEmpty()) {
         var isExpanded by remember { mutableStateOf(false) }

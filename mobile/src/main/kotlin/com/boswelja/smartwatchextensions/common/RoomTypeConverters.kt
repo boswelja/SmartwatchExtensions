@@ -48,7 +48,7 @@ class RoomTypeConverters {
     }
 
     @TypeConverter
-    fun stringArrayToString(value: Array<String>?): String? {
+    fun stringListToString(value: List<String>?): String? {
         return value?.let {
             val gson = Gson()
             gson.toJson(value)
@@ -56,10 +56,10 @@ class RoomTypeConverters {
     }
 
     @TypeConverter
-    fun stringToStringArray(value: String?): Array<String>? {
+    fun stringToStringList(value: String?): List<String>? {
         return value?.let {
             val gson = Gson()
-            gson.fromJson(value, Array<String>::class.java)
+            gson.fromJson(value, Array<String>::class.java).toList()
         }
     }
 

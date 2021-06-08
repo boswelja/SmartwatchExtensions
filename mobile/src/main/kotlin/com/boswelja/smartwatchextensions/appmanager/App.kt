@@ -19,7 +19,7 @@ import java.util.UUID
  * @param hasLaunchActivity A boolean to determine whether the package is launchable.
  * @param installTime The time in milliseconds this package was first installed.
  * @param lastUpdateTime The time in milliseconds this package was last updated.
- * @param requestedPermissions An [Array] of [android.Manifest.permission]s this package requests.
+ * @param requestedPermissions An [List] of [android.Manifest.permission]s this package requests.
  */
 @Entity(tableName = "watch_apps", primaryKeys = ["watchId", "packageName"])
 data class App(
@@ -34,7 +34,7 @@ data class App(
     val isEnabled: Boolean,
     val installTime: Long,
     val lastUpdateTime: Long,
-    val requestedPermissions: Array<String>
+    val requestedPermissions: List<String>
 ) {
 
     constructor(watchId: UUID, app: com.boswelja.smartwatchextensions.common.appmanager.App) : this(

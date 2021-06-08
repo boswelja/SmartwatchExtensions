@@ -28,6 +28,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 fun AppList(
     modifier: Modifier = Modifier,
     userApps: List<App>,
+    disabledApps: List<App>,
     systemApps: List<App>,
     onAppClick: (App) -> Unit
 ) {
@@ -38,6 +39,20 @@ fun AppList(
             }
             items(
                 items = userApps,
+                key = { it.packageName }
+            ) { app ->
+                AppItem(
+                    app = app,
+                    onClick = onAppClick
+                )
+            }
+        }
+        if (disabledApps.isNotEmpty()) {
+            stickyHeader {
+                HeaderItem(stringResource(R.string.app_manager_section_disabled_apps))
+            }
+            items(
+                items = disabledApps,
                 key = { it.packageName }
             ) { app ->
                 AppItem(
