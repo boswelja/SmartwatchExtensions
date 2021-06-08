@@ -3,12 +3,12 @@ package com.boswelja.smartwatchextensions.appmanager
 import android.content.Context
 import androidx.work.Constraints
 import androidx.work.CoroutineWorker
-import androidx.work.Data
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.NetworkType
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
+import androidx.work.workDataOf
 import com.boswelja.smartwatchextensions.appmanager.database.WatchAppDatabase
 import com.boswelja.smartwatchextensions.common.appmanager.Messages.VALIDATE_CACHE
 import com.boswelja.smartwatchextensions.common.toByteArray
@@ -73,7 +73,7 @@ class AppCacheUpdateWorker(
                 .build()
 
             // Pass in watch ID
-            val data = Data.Builder().putString(EXTRA_WATCH_ID, watchId.toString()).build()
+            val data = workDataOf(EXTRA_WATCH_ID to watchId.toString())
 
             // Create a work request
             val request = PeriodicWorkRequestBuilder<AppCacheUpdateWorker>(
