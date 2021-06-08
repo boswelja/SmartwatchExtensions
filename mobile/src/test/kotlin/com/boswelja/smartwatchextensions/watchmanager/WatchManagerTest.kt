@@ -1,13 +1,16 @@
 package com.boswelja.smartwatchextensions.watchmanager
 
 import android.os.Build
+import android.util.Log
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.work.WorkManager
+import androidx.work.Configuration
+import androidx.work.impl.utils.SynchronousExecutor
+import androidx.work.testing.WorkManagerTestInitHelper
 import com.boswelja.smartwatchextensions.AppState
 import com.boswelja.smartwatchextensions.analytics.Analytics
 import com.boswelja.smartwatchextensions.appmanager.database.WatchAppDatabase
@@ -25,8 +28,6 @@ import io.mockk.clearAllMocks
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
-import io.mockk.mockk
-import io.mockk.mockkStatic
 import io.mockk.verify
 import java.util.concurrent.TimeUnit
 import kotlinx.coroutines.CoroutineScope
@@ -76,9 +77,15 @@ class WatchManagerTest {
     @Before
     fun setUp() {
         MockKAnnotations.init(this)
-        mockkStatic(WorkManager::class)
-        every { WorkManager.getInstance(any()) } returns mockk(relaxed = true)
         every { dataStore.data } returns appState
+
+        val config = Configuration.Builder()
+            .setMinimumLoggingLevel(Log.DEBUG)
+            .setExecutor(SynchronousExecutor())
+            .build()
+        WorkManagerTestInitHelper.initializeTestWorkManager(
+            ApplicationProvider.getApplicationContext(), config
+        )
 
         watchDatabase = Room.inMemoryDatabaseBuilder(
             ApplicationProvider.getApplicationContext(),
