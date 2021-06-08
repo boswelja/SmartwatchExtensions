@@ -85,7 +85,6 @@ dependencies {
 
     implementation(libs.bundles.compose)
     implementation(libs.androidx.compose.ui.viewbinding)
-    implementation("com.google.code.gson:gson:2.8.7")
 
     kapt(libs.androidx.room.compiler)
 

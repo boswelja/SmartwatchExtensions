@@ -4,7 +4,6 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import androidx.room.TypeConverter
 import com.boswelja.smartwatchextensions.messages.Message
-import com.google.gson.Gson
 import java.io.ByteArrayOutputStream
 import java.util.UUID
 
@@ -49,18 +48,12 @@ class RoomTypeConverters {
 
     @TypeConverter
     fun stringListToString(value: List<String>?): String? {
-        return value?.let {
-            val gson = Gson()
-            gson.toJson(value)
-        }
+        return value?.joinToString("|")
     }
 
     @TypeConverter
     fun stringToStringList(value: String?): List<String>? {
-        return value?.let {
-            val gson = Gson()
-            gson.fromJson(value, Array<String>::class.java).toList()
-        }
+        return value?.split("|")
     }
 
     @TypeConverter
