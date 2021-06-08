@@ -8,22 +8,21 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.work.ListenableWorker
 import androidx.work.testing.TestListenableWorkerBuilder
 import androidx.work.workDataOf
+import com.boswelja.smartwatchextensions.WatchManagerTestRule
 import com.boswelja.smartwatchextensions.appmanager.AppCacheUpdateWorker.Companion.EXTRA_WATCH_ID
 import com.boswelja.smartwatchextensions.appmanager.database.WatchAppDatabase
 import com.boswelja.smartwatchextensions.common.appmanager.Messages.VALIDATE_CACHE
-import com.boswelja.smartwatchextensions.watchmanager.WatchManager
 import com.boswelja.smartwatchextensions.watchmanager.database.DbWatch.Companion.toDbWatch
 import com.boswelja.watchconnection.core.Watch
-import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
-import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.mockkObject
 import java.util.UUID
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.runBlocking
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.annotation.Config
@@ -34,28 +33,23 @@ import strikt.assertions.isEqualTo
 @Config(sdk = [Build.VERSION_CODES.R])
 class AppCacheUpdateWorkerTest {
 
+    @get:Rule
+    val watchManagerRule = WatchManagerTestRule()
+
     private val watch = Watch(UUID.randomUUID(), "", "", "")
 
     private lateinit var context: Context
 
-    @RelaxedMockK
-    private lateinit var watchManager: WatchManager
     private lateinit var appDatabase: WatchAppDatabase
 
     @Before
     fun setUp() {
-        MockKAnnotations.init(this)
         context = ApplicationProvider.getApplicationContext()
 
         // Mock Watch Manager
-        mockkObject(WatchManager.Companion)
         every {
-            watchManager.getWatchById(watch.id)
+            watchManagerRule.watchManager.getWatchById(watch.id)
         } returns flow { emit(watch.toDbWatch()) }
-        every {
-            hint(WatchManager::class)
-            WatchManager.Companion.getInstance(any())
-        } returns watchManager
 
         // Set up dummy database
         appDatabase = Room.inMemoryDatabaseBuilder(context, WatchAppDatabase::class.java)
@@ -77,7 +71,7 @@ class AppCacheUpdateWorkerTest {
         ).build()
 
         // Mock message send failure
-        coEvery { watchManager.sendMessage(any(), any(), any()) } returns false
+        coEvery { watchManagerRule.watchManager.sendMessage(any(), any(), any()) } returns false
 
         // Do work and check result
         val result = worker.doWork()
@@ -93,7 +87,7 @@ class AppCacheUpdateWorkerTest {
         ).build()
 
         // Mock message send success
-        coEvery { watchManager.sendMessage(any(), any(), any()) } returns true
+        coEvery { watchManagerRule.watchManager.sendMessage(any(), any(), any()) } returns true
 
         // Do work and check result
         val result = worker.doWork()
@@ -109,11 +103,11 @@ class AppCacheUpdateWorkerTest {
         ).build()
 
         // Mock message send failure
-        coEvery { watchManager.sendMessage(any(), any(), any()) } returns true
+        coEvery { watchManagerRule.watchManager.sendMessage(any(), any(), any()) } returns true
 
         // Do work and check result
         worker.doWork()
-        coVerify { watchManager.sendMessage(watch, VALIDATE_CACHE, any()) }
+        coVerify { watchManagerRule.watchManager.sendMessage(watch, VALIDATE_CACHE, any()) }
     }
 
     @Test
