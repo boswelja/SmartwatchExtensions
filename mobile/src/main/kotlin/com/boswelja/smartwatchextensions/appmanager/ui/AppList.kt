@@ -32,29 +32,33 @@ fun AppList(
     onAppClick: (App) -> Unit
 ) {
     LazyColumn(modifier) {
-        stickyHeader {
-            HeaderItem(stringResource(R.string.app_manager_section_user_apps))
+        if (userApps.isNotEmpty()) {
+            stickyHeader {
+                HeaderItem(stringResource(R.string.app_manager_section_user_apps))
+            }
+            items(
+                items = userApps,
+                key = { it.packageName }
+            ) { app ->
+                AppItem(
+                    app = app,
+                    onClick = onAppClick
+                )
+            }
         }
-        items(
-            items = userApps,
-            key = { it.packageName }
-        ) { app ->
-            AppItem(
-                app = app,
-                onClick = onAppClick
-            )
-        }
-        stickyHeader {
-            HeaderItem(stringResource(R.string.app_manager_section_system_apps))
-        }
-        items(
-            items = systemApps,
-            key = { it.packageName }
-        ) { app ->
-            AppItem(
-                app = app,
-                onClick = onAppClick
-            )
+        if (systemApps.isNotEmpty()) {
+            stickyHeader {
+                HeaderItem(stringResource(R.string.app_manager_section_system_apps))
+            }
+            items(
+                items = systemApps,
+                key = { it.packageName }
+            ) { app ->
+                AppItem(
+                    app = app,
+                    onClick = onAppClick
+                )
+            }
         }
     }
 }
