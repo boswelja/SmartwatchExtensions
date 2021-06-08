@@ -31,6 +31,7 @@ data class App(
     val label: String,
     val isSystemApp: Boolean,
     val hasLaunchActivity: Boolean,
+    val isEnabled: Boolean,
     val installTime: Long,
     val lastUpdateTime: Long,
     val requestedPermissions: Array<String>
@@ -44,6 +45,7 @@ data class App(
         app.label,
         app.isSystemApp,
         app.hasLaunchActivity,
+        app.isEnabled,
         app.installTime,
         app.lastUpdateTime,
         app.requestedPermissions

@@ -22,6 +22,7 @@ import java.io.Serializable
  * @param label The user-facing name for the package. See [PackageManager.getApplicationLabel].
  * @param isSystemApp A boolean to determine whether the package is a system app.
  * @param hasLaunchActivity A boolean to determine whether the package is launchable.
+ * @param isEnabled A boolean to indicate whether the app is enabled.
  * @param installTime The time in milliseconds this package was first installed.
  * @param lastUpdateTime The time in milliseconds this package was last updated.
  * @param requestedPermissions An [Array] of [android.Manifest.permission]s this package requests.
@@ -33,6 +34,7 @@ data class App(
     val label: String,
     val isSystemApp: Boolean,
     val hasLaunchActivity: Boolean,
+    val isEnabled: Boolean,
     val installTime: Long,
     val lastUpdateTime: Long,
     val requestedPermissions: Array<String>
@@ -45,6 +47,7 @@ data class App(
         packageManager.getApplicationLabel(packageInfo.applicationInfo).toString(),
         isSystemApp(packageInfo.applicationInfo),
         packageManager.getLaunchIntentForPackage(packageInfo.packageName) != null,
+        packageInfo.applicationInfo.enabled,
         packageInfo.firstInstallTime,
         packageInfo.lastUpdateTime,
         getLocalizedPermissions(packageManager, packageInfo)
@@ -61,6 +64,7 @@ data class App(
                 version == other.version &&
                 isSystemApp == other.isSystemApp &&
                 hasLaunchActivity == other.hasLaunchActivity &&
+                isEnabled == other.isEnabled &&
                 installTime == other.installTime &&
                 lastUpdateTime == other.lastUpdateTime
         } else {
@@ -75,6 +79,7 @@ data class App(
         result = 31 * result + label.hashCode()
         result = 31 * result + isSystemApp.hashCode()
         result = 31 * result + hasLaunchActivity.hashCode()
+        result = 31 * result + isEnabled.hashCode()
         result = 31 * result + installTime.hashCode()
         result = 31 * result + lastUpdateTime.hashCode()
         return result
@@ -91,7 +96,7 @@ data class App(
     }
 
     companion object {
-        const val serialVersionUID: Long = 8
+        const val serialVersionUID: Long = 9
 
         @Throws(IOException::class, ClassNotFoundException::class)
         fun fromByteArray(byteArray: ByteArray): App {
