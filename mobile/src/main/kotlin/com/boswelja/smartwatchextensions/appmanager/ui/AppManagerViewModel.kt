@@ -78,15 +78,15 @@ class AppManagerViewModel internal constructor(
     }
 
     val userApps = allApps.mapLatest { apps ->
-        apps.filter { !it.isSystemApp && it.isEnabled }
+        apps.filter { !it.isSystemApp && it.isEnabled }.sortedBy { it.label }
     }
 
     val disabledApps = allApps.mapLatest { apps ->
-        apps.filter { !it.isEnabled }
+        apps.filter { !it.isEnabled }.sortedBy { it.label }
     }
 
     val systemApps = allApps.mapLatest { apps ->
-        apps.filter { it.isSystemApp && it.isEnabled }
+        apps.filter { it.isSystemApp && it.isEnabled }.sortedBy { it.label }
     }
 
     init {
