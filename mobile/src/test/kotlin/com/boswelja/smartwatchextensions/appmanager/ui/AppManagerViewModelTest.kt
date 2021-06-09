@@ -109,7 +109,7 @@ class AppManagerViewModelTest {
 
     @Test
     fun `validateCacheFor sends the correct message to the watch`(): Unit = runBlocking {
-        viewModel.validateCache(watch)
+        viewModel.validateCache()
 
         coVerify {
             watchManagerRule.watchManager.sendMessage(
