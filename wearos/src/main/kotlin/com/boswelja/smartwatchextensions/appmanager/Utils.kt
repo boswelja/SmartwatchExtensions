@@ -9,10 +9,9 @@ import com.boswelja.smartwatchextensions.common.appmanager.Messages
 import com.boswelja.smartwatchextensions.common.appmanager.Messages.APP_DATA
 import com.boswelja.smartwatchextensions.common.appmanager.Messages.APP_SENDING_COMPLETE
 import com.boswelja.smartwatchextensions.common.compress
+import com.google.android.gms.wearable.MessageClient
 import com.google.android.gms.wearable.Wearable
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.tasks.await
-import kotlinx.coroutines.withContext
 
 /**
  * Converts a given [ByteArray] to a package name string.
@@ -53,37 +52,37 @@ fun Context.requestUninstallPackage(packageName: String) {
 /**
  * Send all apps installed to the companion phone with a given ID.
  * @param phoneId The ID of the phone.
+ * @param messageClient The [MessageClient] instance to use.
  */
-suspend fun Context.sendAllApps(phoneId: String) {
-    withContext(Dispatchers.IO) {
-        val messageClient = Wearable.getMessageClient(this@sendAllApps)
+suspend fun Context.sendAllApps(
+    phoneId: String,
+    messageClient: MessageClient = Wearable.getMessageClient(this)
+) {
+    // Get all current packages
+    val allPackages = getAllApps()
 
-        // Get all current packages
-        val allPackages = getAllApps()
+    // Let the phone know what we're doing
+    messageClient.sendMessage(
+        phoneId,
+        Messages.APP_SENDING_START,
+        null
+    ).await()
 
-        // Let the phone know what we're doing
+    // Compress and send all apps
+    allPackages.forEach { app ->
         messageClient.sendMessage(
             phoneId,
-            Messages.APP_SENDING_START,
-            null
-        ).await()
-
-        // Compress and send all apps
-        allPackages.forEach { app ->
-            messageClient.sendMessage(
-                phoneId,
-                APP_DATA,
-                app.toByteArray().compress()
-            ).await()
-        }
-
-        // Send a message notifying the phone of a successful operation
-        messageClient.sendMessage(
-            phoneId,
-            APP_SENDING_COMPLETE,
-            null
+            APP_DATA,
+            app.toByteArray().compress()
         ).await()
     }
+
+    // Send a message notifying the phone of a successful operation
+    messageClient.sendMessage(
+        phoneId,
+        APP_SENDING_COMPLETE,
+        null
+    ).await()
 }
 
 /**
