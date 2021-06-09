@@ -61,6 +61,7 @@ dependencies {
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.core.ktx)
     implementation(libs.bundles.lifecycle)
+    implementation(libs.androidx.lifecycle.livedata.ktx)
     implementation(libs.androidx.datastore.proto)
     implementation(libs.androidx.wear.core)
     implementation(libs.androidx.wear.complications.provider)
@@ -71,6 +72,7 @@ dependencies {
     implementation(libs.kotlinx.coroutines.playservices)
 
     implementation(libs.bundles.compose)
+    implementation(libs.androidx.compose.runtime.livedata)
 
     testImplementation(libs.androidx.arch.core.test)
     testImplementation(libs.androidx.test.corektx)

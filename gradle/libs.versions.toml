@@ -93,13 +93,11 @@ compose = [
     "androidx-compose-material-core",
     "androidx-compose-material-icons-core",
     "androidx-compose-material-icons-extended",
-    "androidx-compose-runtime-livedata",
     "androidx-compose-activity",
     "androidx-compose-viewmodel"
 ]
 lifecycle = [
     "androidx-lifecycle-viewmodel-ktx",
-    "androidx-lifecycle-livedata-ktx",
     "androidx-lifecycle-common-java8",
     "androidx-lifecycle-service"
 ]
