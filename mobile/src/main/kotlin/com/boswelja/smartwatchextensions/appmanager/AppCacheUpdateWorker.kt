@@ -57,7 +57,7 @@ class AppCacheUpdateWorker(
         val apps = appDatabase.apps().allForWatch(watch.id)
             .map { apps ->
                 apps
-                    .map { it.packageName }
+                    .map { "${it.packageName},${it.lastUpdateTime}" }
                     .sorted()
             }
             .first()

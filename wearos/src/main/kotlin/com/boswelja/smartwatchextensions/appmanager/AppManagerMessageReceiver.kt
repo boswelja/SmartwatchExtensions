@@ -7,7 +7,6 @@ import com.boswelja.smartwatchextensions.common.fromByteArray
 import com.boswelja.smartwatchextensions.phoneStateStore
 import com.google.android.gms.wearable.MessageEvent
 import com.google.android.gms.wearable.WearableListenerService
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.runBlocking
 import timber.log.Timber
@@ -29,7 +28,7 @@ class AppManagerMessageReceiver : WearableListenerService() {
             VALIDATE_CACHE -> {
                 val currentPackages = packageManager.getInstalledPackages(0)
                     .map {
-                        it.packageName
+                        "${it.packageName},${it.lastUpdateTime}"
                     }
                     .sorted()
                     .hashCode()
