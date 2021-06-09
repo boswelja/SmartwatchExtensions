@@ -5,11 +5,10 @@ import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -18,7 +17,6 @@ import androidx.compose.material.Icon
 import androidx.compose.material.ListItem
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedButton
-import androidx.compose.material.ScaffoldState
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Delete
@@ -30,53 +28,73 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.boswelja.smartwatchextensions.R
-import com.boswelja.smartwatchextensions.common.appmanager.App
+import com.boswelja.smartwatchextensions.appmanager.App
+import java.text.SimpleDateFormat
+import java.util.Locale
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.launch
 
 @ExperimentalCoroutinesApi
 @ExperimentalMaterialApi
 @Composable
 fun AppInfo(
+    modifier: Modifier = Modifier,
     app: App?,
-    scaffoldState: ScaffoldState,
-    viewModel: AppManagerViewModel
+    interactionEnabled: Boolean = true,
+    onOpenClicked: (App) -> Unit,
+    onUninstallClicked: (App) -> Unit
 ) {
+    val scrollState = rememberScrollState()
     app?.let {
-        val scrollState = rememberScrollState()
         Column(
-            Modifier
-                .fillMaxSize()
-                .verticalScroll(scrollState)
+            modifier.verticalScroll(scrollState),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            AppHeaderView(app = it)
-            ActionButtons(app = it, scaffoldState = scaffoldState, viewModel)
-            PermissionsInfo(it.requestedPermissions)
-            AppInstallInfo(it, viewModel)
+            AppHeaderView(
+                modifier = Modifier.fillMaxWidth(),
+                appIcon = app.icon?.asImageBitmap(),
+                appName = app.label
+            )
+            AppActionButtons(
+                modifier = Modifier.fillMaxWidth(),
+                openEnabled = interactionEnabled && app.hasLaunchActivity,
+                uninstallEnabled = interactionEnabled && !app.isSystemApp,
+                onOpenClicked = { onOpenClicked(app) },
+                onUninstallClicked = { onUninstallClicked(app) }
+            )
+            PermissionsInfo(
+                modifier = Modifier.fillMaxWidth(),
+                permissions = app.requestedPermissions
+            )
+            AppInstallInfo(
+                modifier = Modifier.fillMaxWidth(),
+                app = app
+            )
         }
     }
 }
 
 @Composable
-fun AppHeaderView(app: App) {
+fun AppHeaderView(
+    modifier: Modifier = Modifier,
+    appIcon: ImageBitmap?,
+    appName: String
+) {
     Column(
-        Modifier
-            .fillMaxWidth()
-            .padding(16.dp),
+        modifier,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        if (app.icon?.bitmap != null) {
+        if (appIcon != null) {
             Image(
-                app.icon!!.bitmap.asImageBitmap(),
+                appIcon,
                 null,
                 Modifier.size(72.dp)
             )
@@ -88,7 +106,7 @@ fun AppHeaderView(app: App) {
             )
         }
         Text(
-            app.label,
+            appName,
             style = MaterialTheme.typography.h6
         )
     }
@@ -96,34 +114,29 @@ fun AppHeaderView(app: App) {
 
 @ExperimentalCoroutinesApi
 @Composable
-fun ActionButtons(app: App, scaffoldState: ScaffoldState, viewModel: AppManagerViewModel) {
-    val scope = rememberCoroutineScope()
-    val continueOnWatchText = stringResource(R.string.watch_manager_action_continue_on_watch)
+fun AppActionButtons(
+    modifier: Modifier = Modifier,
+    openEnabled: Boolean = true,
+    uninstallEnabled: Boolean = true,
+    onOpenClicked: () -> Unit,
+    onUninstallClicked: () -> Unit
+) {
     Row(
-        Modifier
-            .fillMaxWidth()
-            .padding(16.dp)
+        modifier = modifier,
+        horizontalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         OutlinedButton(
-            onClick = {
-                viewModel.sendOpenRequest(app)
-                scope.launch {
-                    scaffoldState.snackbarHostState.showSnackbar(continueOnWatchText, null)
-                }
-            },
-            Modifier.weight(1f)
+            onClick = onOpenClicked,
+            enabled = openEnabled,
+            modifier = Modifier.weight(1f)
         ) {
             Icon(Icons.Outlined.OpenInNew, null)
             Text(stringResource(R.string.app_info_open_button))
         }
         OutlinedButton(
-            onClick = {
-                viewModel.sendUninstallRequest(app)
-                scope.launch {
-                    scaffoldState.snackbarHostState.showSnackbar(continueOnWatchText, null)
-                }
-            },
-            Modifier.weight(1f)
+            onClick = onUninstallClicked,
+            enabled = uninstallEnabled,
+            modifier = Modifier.weight(1f)
         ) {
             Icon(Icons.Outlined.Delete, null)
             Text(stringResource(R.string.app_info_uninstall_button))
@@ -133,12 +146,14 @@ fun ActionButtons(app: App, scaffoldState: ScaffoldState, viewModel: AppManagerV
 
 @ExperimentalMaterialApi
 @Composable
-fun PermissionsInfo(permissions: Array<String>) {
+fun PermissionsInfo(
+    modifier: Modifier = Modifier,
+    permissions: List<String>
+) {
     if (permissions.isNotEmpty()) {
         var isExpanded by remember { mutableStateOf(false) }
         Column(
-            Modifier
-                .fillMaxWidth()
+            modifier
                 .clickable { isExpanded = !isExpanded }
                 .animateContentSize(tween(easing = FastOutSlowInEasing))
         ) {
@@ -158,12 +173,10 @@ fun PermissionsInfo(permissions: Array<String>) {
                 }
             )
             if (isExpanded) {
-                Column(Modifier.padding(16.dp)) {
-                    permissions.forEach { permission ->
-                        ListItem(
-                            text = { Text(permission) }
-                        )
-                    }
+                permissions.forEach { permission ->
+                    ListItem(
+                        text = { Text(permission) }
+                    )
                 }
             }
         }
@@ -176,25 +189,31 @@ fun PermissionsInfo(permissions: Array<String>) {
 
 @ExperimentalCoroutinesApi
 @Composable
-fun AppInstallInfo(app: App, viewModel: AppManagerViewModel) {
+fun AppInstallInfo(
+    modifier: Modifier = Modifier,
+    app: App
+) {
+    val dateFormatter = remember {
+        SimpleDateFormat("dd MMM yyyy, h:mm aa", Locale.getDefault())
+    }
     Column(
-        Modifier
-            .fillMaxWidth()
-            .padding(16.dp),
+        modifier,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(
-            stringResource(
-                R.string.app_info_first_installed_prefix,
-                viewModel.formatDate(app.installTime)
-            ),
-            style = MaterialTheme.typography.body2
-        )
+        if (!app.isSystemApp) {
+            Text(
+                stringResource(
+                    R.string.app_info_first_installed_prefix,
+                    dateFormatter.format(app.installTime)
+                ),
+                style = MaterialTheme.typography.body2
+            )
+        }
         if (app.installTime < app.lastUpdateTime) {
             Text(
                 stringResource(
                     R.string.app_info_last_updated_prefix,
-                    viewModel.formatDate(app.lastUpdateTime)
+                    dateFormatter.format(app.lastUpdateTime)
                 ),
                 style = MaterialTheme.typography.body2
             )

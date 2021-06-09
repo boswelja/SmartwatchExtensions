@@ -2,17 +2,34 @@ package com.boswelja.smartwatchextensions.common.appmanager
 
 object Messages {
 
-    const val PACKAGE_ADDED = "/app_manager_package_added"
-    const val PACKAGE_REMOVED = "/app_manager_package_removed"
-    const val PACKAGE_UPDATED = "/app_manager_package_updated"
-
+    /**
+     * Request opening a packages launch activity. The package name should be sent alongside this.
+     */
     const val REQUEST_OPEN_PACKAGE = "/app_manager_request_open_package"
+
+    /**
+     * Request uninstalling a package. The package name should be sent alongside this.
+     */
     const val REQUEST_UNINSTALL_PACKAGE = "/app_manager_request_uninstall_package"
 
-    const val START_SERVICE = "/start_app_manager_service"
-    const val STOP_SERVICE = "/stop_app_manager_service"
+    /**
+     * Notifies listeners of an incoming stream of [App] objects.
+     */
+    const val APP_SENDING_START = "/app_manager_sending_all"
 
-    const val SERVICE_RUNNING = "/app_manager_running"
+    /**
+     * Notifies listeners of the stream of [App] objects ending.
+     */
+    const val APP_SENDING_COMPLETE = "/app_manager_sending_complete"
 
-    const val EXPECTED_APP_COUNT = "/app_manager_expected_count"
+    /**
+     * An [App] object.
+     */
+    const val APP_DATA = "/app_manager_all_apps"
+
+    /**
+     * Requests cache validation. A hash code obtained from [CacheValidation.getHashCode] should be
+     * sent alongside this.
+     */
+    const val VALIDATE_CACHE = "/app_manager_cache_check"
 }

@@ -5,14 +5,13 @@ import androidx.browser.customtabs.CustomTabsIntent
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Observer
 import androidx.lifecycle.viewModelScope
 import com.boswelja.smartwatchextensions.common.connection.Messages.REQUEST_APP_VERSION
 import com.boswelja.smartwatchextensions.watchmanager.WatchManager
 import com.boswelja.watchconnection.core.MessageListener
-import com.boswelja.watchconnection.core.Watch
 import java.util.UUID
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -30,24 +29,6 @@ class AboutAppViewModel internal constructor(
         CustomTabsIntent.Builder().setShowTitle(true).build()
     )
 
-    private val selectedWatchObserver = Observer<Watch?> { watch ->
-        if (watch?.id != null) {
-            viewModelScope.launch {
-                val result = watchManager.sendMessage(watch, REQUEST_APP_VERSION, null)
-                if (result) {
-                    // Successfully sent message
-                    _watchAppVersion.postValue(Pair(null, null))
-                } else {
-                    // Failed to send message
-                    _watchAppVersion.postValue(null)
-                }
-            }
-        } else {
-            Timber.w("Selected watch null")
-            _watchAppVersion.postValue(null)
-        }
-    }
-
     private val messageListener = object : MessageListener {
         override fun onMessageReceived(sourceWatchId: UUID, message: String, data: ByteArray?) {
             data?.let {
@@ -63,13 +44,28 @@ class AboutAppViewModel internal constructor(
 
     init {
         watchManager.registerMessageListener(messageListener)
-        watchManager.selectedWatch.observeForever(selectedWatchObserver)
+        viewModelScope.launch {
+            watchManager.selectedWatch.collect { watch ->
+                if (watch?.id != null) {
+                    val result = watchManager.sendMessage(watch, REQUEST_APP_VERSION, null)
+                    if (result) {
+                        // Successfully sent message
+                        _watchAppVersion.postValue(Pair(null, null))
+                    } else {
+                        // Failed to send message
+                        _watchAppVersion.postValue(null)
+                    }
+                } else {
+                    Timber.w("Selected watch null")
+                    _watchAppVersion.postValue(null)
+                }
+            }
+        }
     }
 
     override fun onCleared() {
         super.onCleared()
         watchManager.unregisterMessageListener(messageListener)
-        watchManager.selectedWatch.removeObserver(selectedWatchObserver)
     }
 
     /**

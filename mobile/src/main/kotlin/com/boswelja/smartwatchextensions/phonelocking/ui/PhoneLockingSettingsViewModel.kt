@@ -21,7 +21,7 @@ class PhoneLockingSettingsViewModel internal constructor(
     private val watchManager: WatchManager
 ) : AndroidViewModel(application) {
 
-    val phoneLockingEnabled = watchManager.selectedWatch.switchMap {
+    val phoneLockingEnabled = watchManager.selectedWatchLiveData.switchMap {
         it?.let { watch ->
             watchManager.getBoolSetting(PHONE_LOCKING_ENABLED_KEY, watch)
         }?.asLiveData() ?: liveData { }
@@ -37,7 +37,7 @@ class PhoneLockingSettingsViewModel internal constructor(
     fun setPhoneLockingEnabled(isEnabled: Boolean) {
         viewModelScope.launch(dispatcher) {
             watchManager.updatePreference(
-                watchManager.selectedWatch.value!!,
+                watchManager.selectedWatchLiveData.value!!,
                 PHONE_LOCKING_ENABLED_KEY,
                 isEnabled
             )

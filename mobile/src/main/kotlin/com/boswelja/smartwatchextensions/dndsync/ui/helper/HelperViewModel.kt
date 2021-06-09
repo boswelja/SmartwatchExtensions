@@ -59,7 +59,7 @@ class HelperViewModel internal constructor(
     }
 
     fun requestCheckPermission() {
-        watchManager.selectedWatch.value?.let {
+        watchManager.selectedWatchLiveData.value?.let {
             viewModelScope.launch {
                 watchManager.sendMessage(
                     it,
@@ -74,7 +74,8 @@ class HelperViewModel internal constructor(
         Timber.i("setSyncToWatch() called")
         viewModelScope.launch {
             watchManager.updatePreference(
-                watchManager.selectedWatch.value!!, PreferenceKey.DND_SYNC_TO_WATCH_KEY, isEnabled
+                watchManager.selectedWatchLiveData.value!!,
+                PreferenceKey.DND_SYNC_TO_WATCH_KEY, isEnabled
             )
             if (isEnabled) {
                 val context = getApplication<Application>()

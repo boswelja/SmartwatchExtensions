@@ -3,7 +3,6 @@ package com.boswelja.smartwatchextensions.aboutapp.ui
 import android.os.Build
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.browser.customtabs.CustomTabsIntent
-import androidx.lifecycle.MutableLiveData
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.boswelja.smartwatchextensions.common.connection.Messages
@@ -14,6 +13,8 @@ import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -28,7 +29,7 @@ class AboutAppViewModelTest {
     @get:Rule
     val taskExecutorRule = InstantTaskExecutorRule()
 
-    private val selectedWatch = MutableLiveData<Watch>()
+    private val selectedWatch = MutableStateFlow<Watch?>(null)
 
     private val dummyWatch1 = Watch("Watch 1", "id1", "")
     private val dummyWatch2 = Watch("Watch 2", "id2", "")
@@ -42,7 +43,7 @@ class AboutAppViewModelTest {
     fun setUp() {
         MockKAnnotations.init(this)
 
-        selectedWatch.postValue(dummyWatch1)
+        selectedWatch.tryEmit(dummyWatch1)
         every { watchManager.selectedWatch } returns selectedWatch
 
         viewModel = AboutAppViewModel(
@@ -58,10 +59,10 @@ class AboutAppViewModelTest {
     }
 
     @Test
-    fun `Switching selected watch requests new watch version`() {
-        selectedWatch.postValue(dummyWatch1)
+    fun `Switching selected watch requests new watch version`(): Unit = runBlocking {
+        selectedWatch.emit(dummyWatch1)
         coVerify { watchManager.sendMessage(dummyWatch1, Messages.REQUEST_APP_VERSION, null) }
-        selectedWatch.postValue(dummyWatch2)
+        selectedWatch.emit(dummyWatch2)
         coVerify { watchManager.sendMessage(dummyWatch1, Messages.REQUEST_APP_VERSION, null) }
     }
 }

@@ -22,12 +22,6 @@
     <string name="dnd_sync_all_noti_desc">Syncing phone DnD with Theater Mode and DnD</string>
     <string name="dnd_sync_to_phone_noti_desc">Syncing phone DnD with DnD</string>
 
-    <!-- App Manager strings -->
-    <string name="app_manager_noti_channel_title">App Manager Service</string>
-    <string name="app_manager_noti_title">App Manager Running</string>
-    <string name="app_manager_noti_desc">App Manager is currently running on your phone</string>
-    <string name="app_manager_stop">Stop</string>
-
     <!-- Setup strings -->
     <string name="welcome_to_text">Welcome to</string>
     <string name="content_description_scroll_down">Scroll down to read more</string>

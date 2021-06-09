@@ -52,7 +52,7 @@ class DnDSyncSettingsViewModelTest {
         runBlocking { dummyCapabilities.emit(emptyList()) }
 
         every { watchManager.selectedWatchCapabilities() } returns dummyCapabilities
-        every { watchManager.selectedWatch } returns dummyWatchLive
+        every { watchManager.selectedWatchLiveData } returns dummyWatchLive
 
         viewModel = DnDSyncSettingsViewModel(
             ApplicationProvider.getApplicationContext(),

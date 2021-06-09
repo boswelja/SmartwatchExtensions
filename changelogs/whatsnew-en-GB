@@ -1,5 +1,2 @@
 Changes:
-When donating, a progress indicator will show while we're connecting to Google Play
-Widgets will now launch the app when tapped
-We made some improvements to the DnD Sync backend. This includes fixing Sync with Theater Mode
-We've started checking your watches capabilities, instead of allowing access to features that won't work
+Significantly improved App Manager, you can find out more on our wiki!

@@ -1,14 +1,19 @@
 package com.boswelja.smartwatchextensions.watchmanager
 
 import android.os.Build
+import android.util.Log
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.work.Configuration
+import androidx.work.impl.utils.SynchronousExecutor
+import androidx.work.testing.WorkManagerTestInitHelper
 import com.boswelja.smartwatchextensions.AppState
 import com.boswelja.smartwatchextensions.analytics.Analytics
+import com.boswelja.smartwatchextensions.appmanager.database.WatchAppDatabase
 import com.boswelja.smartwatchextensions.batterysync.database.WatchBatteryStatsDatabase
 import com.boswelja.smartwatchextensions.common.connection.Messages
 import com.boswelja.smartwatchextensions.common.connection.Messages.CLEAR_PREFERENCES
@@ -59,7 +64,9 @@ class WatchManagerTest {
     @RelaxedMockK private lateinit var connectionClient: WatchPlatformManager
     @RelaxedMockK private lateinit var widgetIdStore: DataStore<Preferences>
     @RelaxedMockK private lateinit var analytics: Analytics
+    // TODO Don't mock databases, instead create in memory databases so we can validate data too
     @RelaxedMockK private lateinit var batteryStatsDatabase: WatchBatteryStatsDatabase
+    @RelaxedMockK private lateinit var watchAppDatabase: WatchAppDatabase
     @RelaxedMockK private lateinit var dataStore: DataStore<AppState>
     @RelaxedMockK private lateinit var settingsDatabase: WatchSettingsDatabase
 
@@ -71,6 +78,14 @@ class WatchManagerTest {
     fun setUp() {
         MockKAnnotations.init(this)
         every { dataStore.data } returns appState
+
+        val config = Configuration.Builder()
+            .setMinimumLoggingLevel(Log.DEBUG)
+            .setExecutor(SynchronousExecutor())
+            .build()
+        WorkManagerTestInitHelper.initializeTestWorkManager(
+            ApplicationProvider.getApplicationContext(), config
+        )
 
         watchDatabase = Room.inMemoryDatabaseBuilder(
             ApplicationProvider.getApplicationContext(),
@@ -85,7 +100,7 @@ class WatchManagerTest {
         appState.emit(AppState(lastSelectedWatchId = dummyWatch1.id.toString()))
         watchManager = getWatchManager()
 
-        expectThat(watchManager.selectedWatch.getOrAwaitValue()).isEqualTo(dummyWatch1)
+        expectThat(watchManager.selectedWatchLiveData.getOrAwaitValue()).isEqualTo(dummyWatch1)
     }
 
     @Test
@@ -97,7 +112,7 @@ class WatchManagerTest {
         watchManager.selectWatchById(dummyWatch2.id)
 
         // Check the selected watch has been updated
-        expectThat(watchManager.selectedWatch.getOrAwaitValue()).isEqualTo(dummyWatch2)
+        expectThat(watchManager.selectedWatchLiveData.getOrAwaitValue()).isEqualTo(dummyWatch2)
     }
 
     @Test
@@ -127,11 +142,13 @@ class WatchManagerTest {
             watchManager.forgetWatch(
                 widgetIdStore,
                 batteryStatsDatabase,
+                watchAppDatabase,
                 dummyWatch1
             )
             verify(exactly = 1) { analytics.logWatchRemoved() }
             coVerify(exactly = 1) { connectionClient.sendMessage(dummyWatch1, Messages.RESET_APP) }
             verify(exactly = 1) { batteryStatsDatabase.batteryStatsDao() }
+            verify(exactly = 1) { watchAppDatabase.apps() }
 
             // Verify watch isn't in database
             expectThat(watchDatabase.watchDao().get(dummyWatch1.id).firstOrNull()).isNull()
@@ -169,7 +186,8 @@ class WatchManagerTest {
         setRegisteredWatches(emptyList())
         watchManager = getWatchManager()
         expectThat(
-            watchManager.selectedWatch.getOrAwaitValue(time = 500, timeUnit = TimeUnit.MILLISECONDS)
+            watchManager.selectedWatchLiveData
+                .getOrAwaitValue(time = 500, timeUnit = TimeUnit.MILLISECONDS)
         ).isNull()
     }
 
@@ -180,7 +198,7 @@ class WatchManagerTest {
         setRegisteredWatches(dummyWatches)
         watchManager = getWatchManager()
         // Get the value, throws TimeoutException if watch was not set
-        watchManager.selectedWatch.getOrAwaitValue()
+        watchManager.selectedWatchLiveData.getOrAwaitValue()
     }
 
     @Test
@@ -190,7 +208,7 @@ class WatchManagerTest {
         setRegisteredWatches(dummyWatches)
         watchManager = getWatchManager()
         // Get the value, throws TimeoutException if watch was not set
-        watchManager.selectedWatch.getOrAwaitValue()
+        watchManager.selectedWatchLiveData.getOrAwaitValue()
     }
 
     private fun setRegisteredWatches(watches: List<Watch>): Unit = runBlocking {
@@ -199,6 +217,7 @@ class WatchManagerTest {
 
     private fun getWatchManager(): WatchManager {
         val watchManager = WatchManager(
+            ApplicationProvider.getApplicationContext(),
             settingsDatabase,
             watchDatabase,
             connectionClient,

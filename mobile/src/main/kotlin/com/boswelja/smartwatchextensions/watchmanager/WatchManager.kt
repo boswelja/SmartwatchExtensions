@@ -10,6 +10,8 @@ import androidx.lifecycle.asLiveData
 import com.boswelja.smartwatchextensions.AppState
 import com.boswelja.smartwatchextensions.analytics.Analytics
 import com.boswelja.smartwatchextensions.appStateStore
+import com.boswelja.smartwatchextensions.appmanager.AppCacheUpdateWorker
+import com.boswelja.smartwatchextensions.appmanager.database.WatchAppDatabase
 import com.boswelja.smartwatchextensions.batterysync.database.WatchBatteryStatsDatabase
 import com.boswelja.smartwatchextensions.common.SingletonHolder
 import com.boswelja.smartwatchextensions.common.connection.Capability
@@ -45,6 +47,7 @@ import timber.log.Timber
  * Provides a simplified interface for interacting with all watch-related classes.
  */
 class WatchManager internal constructor(
+    private val context: Context,
     val settingsDatabase: WatchSettingsDatabase,
     private val watchDatabase: WatchDatabase,
     private val connectionClient: WatchPlatformManager,
@@ -54,6 +57,7 @@ class WatchManager internal constructor(
 ) {
 
     constructor(context: Context) : this(
+        context.applicationContext,
         WatchSettingsDatabase.getInstance(context),
         WatchDatabase.getInstance(context),
         WatchPlatformManager(
@@ -82,11 +86,15 @@ class WatchManager internal constructor(
                 watches.filter { watchDatabase.watchDao().get(it.id).firstOrNull() == null }
             }
 
+    @ExperimentalCoroutinesApi
+    @Deprecated("Use selectedWatch Flow instead")
+    val selectedWatchLiveData: LiveData<Watch?> = _selectedWatch.asLiveData()
+
     /**
      * The currently selected watch
      */
     @ExperimentalCoroutinesApi
-    val selectedWatch: LiveData<Watch?> = _selectedWatch.asLiveData()
+    val selectedWatch: Flow<Watch?> = _selectedWatch
 
     init {
         Timber.d("Creating WatchManager")
@@ -108,6 +116,7 @@ class WatchManager internal constructor(
         withContext(Dispatchers.IO) {
             connectionClient.sendMessage(watch, Messages.WATCH_REGISTERED_PATH)
             watchDatabase.watchDao().add(watch.toDbWatch())
+            AppCacheUpdateWorker.enqueueWorkerFor(context, watch.id)
             analytics.logWatchRegistered()
         }
     }
@@ -116,6 +125,7 @@ class WatchManager internal constructor(
         forgetWatch(
             context.widgetIdStore,
             WatchBatteryStatsDatabase.getInstance(context),
+            WatchAppDatabase.getInstance(context),
             watch
         )
     }
@@ -123,13 +133,16 @@ class WatchManager internal constructor(
     internal suspend fun forgetWatch(
         widgetIdStore: DataStore<Preferences>,
         batteryStatsDatabase: WatchBatteryStatsDatabase,
+        watchAppDatabase: WatchAppDatabase,
         watch: Watch
     ) {
         withContext(Dispatchers.IO) {
             batteryStatsDatabase.batteryStatsDao().deleteStats(watch.id)
+            watchAppDatabase.apps().removeForWatch(watch.id)
             connectionClient.sendMessage(watch, Messages.RESET_APP)
             watchDatabase.removeWatch(watch)
             removeWidgetsForWatch(watch, widgetIdStore)
+            AppCacheUpdateWorker.stopWorkerFor(context, watch.id)
             analytics.logWatchRemoved()
         }
     }
@@ -177,7 +190,7 @@ class WatchManager internal constructor(
     }
 
     /**
-     * Selects a watch by a given [Watch.id]. This will update [selectedWatch].
+     * Selects a watch by a given [Watch.id]. This will update [selectedWatchLiveData].
      * @param watchId The ID of the [Watch] to select.
      */
     fun selectWatchById(watchId: UUID) {

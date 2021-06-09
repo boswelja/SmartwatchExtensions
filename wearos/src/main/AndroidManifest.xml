@@ -144,6 +144,27 @@
         </service>
 
         <service
+            android:name=".appmanager.AppManagerMessageReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.google.android.gms.wearable.MESSAGE_RECEIVED" />
+
+                <data
+                    android:host="*"
+                    android:path="/app_manager_request_open_package"
+                    android:scheme="wear" />
+                <data
+                    android:host="*"
+                    android:path="/app_manager_request_uninstall_package"
+                    android:scheme="wear" />
+                <data
+                    android:host="*"
+                    android:path="/app_manager_cache_check"
+                    android:scheme="wear" />
+            </intent-filter>
+        </service>
+
+        <service
             android:name=".dndsync.DnDRemoteChangeReceiver"
             android:exported="true">
             <intent-filter>
@@ -157,10 +178,6 @@
 
         <service
             android:name=".dndsync.DnDLocalChangeListener"
-            android:exported="false" />
-
-        <service
-            android:name=".appmanager.AppManagerService"
             android:exported="false" />
 
         <receiver

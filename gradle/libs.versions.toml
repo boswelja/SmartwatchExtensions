@@ -52,6 +52,7 @@ androidx-test-ext-junit = { module = "androidx.test.ext:junit-ktx", version.ref 
 androidx-wear-core = { module = "androidx.wear:wear", version.ref = "androidxWear" }
 androidx-wear-complications-provider = { module = "androidx.wear:wear-complications-provider", version.ref = "androidxWearComplications" }
 androidx-work-ktx = { module = "androidx.work:work-runtime-ktx", version.ref = "androidxWork" }
+androidx-work-test = { module = "androidx.work:work-testing", version.ref = "androidxWork" }
 androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "androidxDataStore" }
 androidx-datastore-proto = { module = "androidx.datastore:datastore", version.ref = "androidxDataStore" }
 # Compose Libraries
