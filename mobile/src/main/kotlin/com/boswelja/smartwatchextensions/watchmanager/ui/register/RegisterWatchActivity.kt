@@ -10,8 +10,6 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Done
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.boswelja.smartwatchextensions.R
@@ -27,7 +25,6 @@ class RegisterWatchActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             val viewModel: RegisterWatchViewModel = viewModel()
-            val addedWatches by viewModel.registeredWatches.observeAsState()
             AppTheme {
                 Scaffold(
                     topBar = { UpNavigationAppBar(onNavigateUp = { finish() }) },
@@ -39,7 +36,7 @@ class RegisterWatchActivity : AppCompatActivity() {
                         )
                     }
                 ) {
-                    RegisterWatchScreen(registeredWatches = addedWatches)
+                    RegisterWatchScreen(registeredWatches = viewModel.addedWatches)
                 }
             }
         }

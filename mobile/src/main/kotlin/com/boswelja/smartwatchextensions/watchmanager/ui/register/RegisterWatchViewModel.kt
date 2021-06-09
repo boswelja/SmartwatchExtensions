@@ -1,9 +1,8 @@
 package com.boswelja.smartwatchextensions.watchmanager.ui.register
 
 import android.app.Application
+import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.boswelja.smartwatchextensions.watchmanager.WatchManager
 import com.boswelja.watchconnection.core.Watch
@@ -27,11 +26,7 @@ class RegisterWatchViewModel internal constructor(
         WatchManager.getInstance(application)
     )
 
-    private val addedWatches = mutableListOf<Watch>()
-    private val liveAddedWatches = MutableLiveData<List<Watch>>(emptyList())
-
-    val registeredWatches: LiveData<List<Watch>>
-        get() = liveAddedWatches
+    var addedWatches = mutableStateListOf<Watch>()
 
     init {
         startRegisteringWatches()
@@ -54,7 +49,6 @@ class RegisterWatchViewModel internal constructor(
         Timber.d("registerWatch($watch) called")
         if (!addedWatches.contains(watch)) {
             addedWatches.add(watch)
-            liveAddedWatches.postValue(addedWatches)
             watchManager.registerWatch(watch)
         }
     }
