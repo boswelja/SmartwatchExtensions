@@ -75,10 +75,6 @@ class WatchManager internal constructor(
         } ?: flow { emit(null) }
     }
 
-    @Deprecated("Use registeredWatches Flow instead")
-    val registeredWatchesLiveData: LiveData<List<Watch>>
-        get() = watchDatabase.watchDao().getAll().asLiveData()
-
     val registeredWatches: Flow<List<Watch>>
         get() = watchDatabase.watchDao().getAll()
 

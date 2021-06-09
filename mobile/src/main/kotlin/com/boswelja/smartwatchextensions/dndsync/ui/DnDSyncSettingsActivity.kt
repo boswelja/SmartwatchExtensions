@@ -5,11 +5,13 @@ import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Scaffold
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.boswelja.smartwatchextensions.common.ui.AppTheme
 import com.boswelja.smartwatchextensions.common.ui.UpNavigationWatchPickerAppBar
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 class DnDSyncSettingsActivity : AppCompatActivity() {
@@ -21,8 +23,8 @@ class DnDSyncSettingsActivity : AppCompatActivity() {
         setContent {
             AppTheme {
                 val viewModel: DnDSyncSettingsViewModel = viewModel()
-                val registeredWatches by viewModel.watchManager.registeredWatchesLiveData
-                    .observeAsState()
+                val registeredWatches by viewModel.watchManager.registeredWatches
+                    .collectAsState(emptyList(), Dispatchers.IO)
                 val selectedWatch by viewModel.watchManager.selectedWatchLiveData.observeAsState()
                 Scaffold(
                     topBar = {

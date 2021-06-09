@@ -75,9 +75,9 @@ class AppManagerViewModel internal constructor(
         private set
 
     /**
-     * See [WatchManager.registeredWatchesLiveData].
+     * See [WatchManager.registeredWatches].
      */
-    val registeredWatches = watchManager.registeredWatchesLiveData
+    val registeredWatches = watchManager.registeredWatches
 
     /**
      * A [kotlinx.coroutines.flow.Flow] of Boolean indicating whether the currently selected watch

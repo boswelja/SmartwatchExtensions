@@ -23,6 +23,7 @@ import androidx.compose.material.icons.outlined.Message
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
@@ -48,6 +49,7 @@ import com.google.android.play.core.install.model.AppUpdateType
 import com.google.android.play.core.install.model.UpdateAvailability
 import com.google.android.play.core.ktx.updatePriority
 import java.util.UUID
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -69,7 +71,8 @@ class MainActivity : AppCompatActivity() {
 
         setContent {
             val selectedWatch by watchManager.selectedWatchLiveData.observeAsState()
-            val registeredWatches by watchManager.registeredWatchesLiveData.observeAsState()
+            val registeredWatches by watchManager.registeredWatches
+                .collectAsState(emptyList(), Dispatchers.IO)
 
             val scaffoldState = rememberScaffoldState()
 
@@ -93,7 +96,7 @@ class MainActivity : AppCompatActivity() {
                     )
                 }
             }
-            if (registeredWatches != null && registeredWatches!!.isEmpty()) {
+            if (registeredWatches.isEmpty()) {
                 startActivity(Intent(this, OnboardingActivity::class.java))
             }
         }

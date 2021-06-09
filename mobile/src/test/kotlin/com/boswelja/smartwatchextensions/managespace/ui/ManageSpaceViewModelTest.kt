@@ -5,7 +5,6 @@ import android.os.Build
 import android.os.Looper.getMainLooper
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.datastore.core.DataStore
-import androidx.lifecycle.MutableLiveData
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.boswelja.smartwatchextensions.analytics.Analytics
@@ -33,7 +32,6 @@ import org.robolectric.annotation.Config
 import strikt.api.expectThat
 import strikt.assertions.isFalse
 import strikt.assertions.isLessThanOrEqualTo
-import strikt.assertions.isTrue
 
 @ExperimentalCoroutinesApi
 @RunWith(AndroidJUnit4::class)
@@ -50,7 +48,7 @@ class ManageSpaceViewModelTest {
 
     private val coroutineDispatcher = TestCoroutineDispatcher()
 
-    private val registeredWatches = MutableLiveData<List<Watch>>(emptyList())
+    private val registeredWatches = MutableStateFlow<List<Watch>>(emptyList())
 
     private lateinit var viewModel: ManageSpaceViewModel
 
@@ -61,7 +59,7 @@ class ManageSpaceViewModelTest {
     @Before
     fun setUp() {
         MockKAnnotations.init(this)
-        every { watchManager.registeredWatchesLiveData } returns registeredWatches
+        every { watchManager.registeredWatches } returns registeredWatches
         every { dataStore.data } returns appSettings
         viewModel = ManageSpaceViewModel(
             ApplicationProvider.getApplicationContext(),
@@ -70,15 +68,6 @@ class ManageSpaceViewModelTest {
             dataStore,
             coroutineDispatcher
         )
-    }
-
-    @Test
-    fun `registeredWatches is observed for the lifecycle of the view model`() {
-        verify { watchManager.registeredWatchesLiveData }
-        expectThat(registeredWatches.hasActiveObservers()).isTrue()
-        viewModel.onCleared()
-        verify { watchManager.registeredWatchesLiveData }
-        expectThat(registeredWatches.hasActiveObservers()).isFalse()
     }
 
     @Test

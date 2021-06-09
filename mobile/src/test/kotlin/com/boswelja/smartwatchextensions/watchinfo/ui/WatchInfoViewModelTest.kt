@@ -14,6 +14,7 @@ import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.TestCoroutineDispatcher
@@ -35,7 +36,7 @@ class WatchInfoViewModelTest {
     val taskExecutorRule = InstantTaskExecutorRule()
 
     private val dummyWatch = Watch("Watch Name", "watch-id", "platform")
-    private val registeredWatches = MutableLiveData(listOf(dummyWatch))
+    private val registeredWatches = MutableStateFlow(listOf(dummyWatch))
     private val dispatcher = TestCoroutineDispatcher()
 
     @RelaxedMockK
@@ -46,7 +47,7 @@ class WatchInfoViewModelTest {
     @Before
     fun setUp() {
         MockKAnnotations.init(this)
-        every { watchManager.registeredWatchesLiveData } returns registeredWatches
+        every { watchManager.registeredWatches } returns registeredWatches
         every { watchManager.observeWatchById(dummyWatch.id) } returns MutableLiveData(dummyWatch)
 
         viewModel = WatchInfoViewModel(

@@ -1,10 +1,8 @@
 package com.boswelja.smartwatchextensions.managespace.ui
 
 import android.app.Application
-import androidx.annotation.VisibleForTesting
 import androidx.datastore.core.DataStore
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.Observer
 import androidx.lifecycle.viewModelScope
 import com.boswelja.smartwatchextensions.analytics.Analytics
 import com.boswelja.smartwatchextensions.appsettings.AppSettingsSerializer
@@ -15,6 +13,7 @@ import com.boswelja.watchconnection.core.Watch
 import kotlin.math.floor
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
@@ -29,10 +28,6 @@ class ManageSpaceViewModel internal constructor(
 
     private var registeredWatches: List<Watch>? = null
 
-    private val registeredWatchesObserver = Observer<List<Watch>> {
-        registeredWatches = it
-    }
-
     @Suppress("unused")
     constructor(application: Application) : this(
         application,
@@ -43,13 +38,11 @@ class ManageSpaceViewModel internal constructor(
     )
 
     init {
-        watchManager.registeredWatchesLiveData.observeForever(registeredWatchesObserver)
-    }
-
-    @VisibleForTesting(otherwise = VisibleForTesting.PROTECTED)
-    public override fun onCleared() {
-        super.onCleared()
-        watchManager.registeredWatchesLiveData.removeObserver(registeredWatchesObserver)
+        viewModelScope.launch {
+            watchManager.registeredWatches.collect {
+                registeredWatches = it
+            }
+        }
     }
 
     /**

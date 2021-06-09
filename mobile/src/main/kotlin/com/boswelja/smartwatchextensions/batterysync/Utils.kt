@@ -6,7 +6,6 @@ import android.content.Context
 import android.content.Intent
 import androidx.core.app.NotificationCompat
 import androidx.core.content.getSystemService
-import androidx.lifecycle.asFlow
 import com.boswelja.smartwatchextensions.NotificationChannelHelper
 import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.batterysync.database.WatchBatteryStats.Companion.toWatchBatteryStats
@@ -66,7 +65,7 @@ object Utils {
                 if (watch != null) {
                     watchManager.sendMessage(watch, BATTERY_STATUS_PATH, batteryStats.toByteArray())
                 } else {
-                    watchManager.registeredWatchesLiveData.asFlow().first()
+                    watchManager.registeredWatches.first()
                         .filter {
                             watchManager.getBoolSetting(
                                 BATTERY_SYNC_ENABLED_KEY, it
