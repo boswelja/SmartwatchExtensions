@@ -20,8 +20,8 @@ import androidx.compose.material.icons.outlined.Storage
 import androidx.compose.material.icons.outlined.Watch
 import androidx.compose.material.icons.outlined.Widgets
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -35,6 +35,7 @@ import com.boswelja.smartwatchextensions.common.ui.HeaderItem
 import com.boswelja.smartwatchextensions.managespace.ui.ManageSpaceActivity
 import com.boswelja.smartwatchextensions.watchmanager.ui.WatchManagerActivity
 import com.boswelja.smartwatchextensions.widget.ui.WidgetSettingsActivity
+import kotlinx.coroutines.Dispatchers
 
 @ExperimentalMaterialApi
 @Composable
@@ -64,9 +65,10 @@ fun AppSettings() {
                 )
             )
         }
-        val currentAppTheme by viewModel.appTheme.observeAsState()
+        val currentAppTheme by viewModel.appTheme
+            .collectAsState(Settings.Theme.FOLLOW_SYSTEM, Dispatchers.IO)
         val currentThemeOption = appThemeOptions.first {
-            it.second == (currentAppTheme ?: Settings.Theme.FOLLOW_SYSTEM)
+            it.second == currentAppTheme
         }
 
         ListItem(
@@ -118,13 +120,13 @@ fun AppSettings() {
 @Composable
 fun AnalyticsSettings() {
     val viewModel: AppSettingsViewModel = viewModel()
-    val analyticsEnabled by viewModel.analyticsEnabled.observeAsState()
+    val analyticsEnabled by viewModel.analyticsEnabled.collectAsState(false, Dispatchers.IO)
     Column {
         HeaderItem(stringResource(R.string.category_analytics))
         CheckboxPreference(
             text = stringResource(R.string.analytics_enabled_title),
             icon = Icons.Outlined.Analytics,
-            isChecked = analyticsEnabled == true,
+            isChecked = analyticsEnabled,
             onCheckChanged = {
                 viewModel.setAnalyticsEnabled(it)
             }

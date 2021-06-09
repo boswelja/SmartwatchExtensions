@@ -4,13 +4,11 @@ import android.app.Application
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.datastore.core.DataStore
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.boswelja.smartwatchextensions.analytics.Analytics
 import com.boswelja.smartwatchextensions.appsettings.Settings
 import com.boswelja.smartwatchextensions.appsettings.appSettingsStore
-import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
 class AppSettingsViewModel internal constructor(
@@ -19,13 +17,8 @@ class AppSettingsViewModel internal constructor(
     private val analytics: Analytics
 ) : AndroidViewModel(application) {
 
-    private val _analyticsEnabled = MutableLiveData<Boolean>()
-    private val _appTheme = MutableLiveData<Settings.Theme>()
-
-    val analyticsEnabled: LiveData<Boolean>
-        get() = _analyticsEnabled
-    val appTheme: LiveData<Settings.Theme>
-        get() = _appTheme
+    val analyticsEnabled = dataStore.data.map { it.analyticsEnabled }
+    val appTheme = dataStore.data.map { it.appTheme }
 
     @Suppress("unused")
     constructor(application: Application) : this(
@@ -34,18 +27,8 @@ class AppSettingsViewModel internal constructor(
         Analytics()
     )
 
-    init {
-        viewModelScope.launch {
-            dataStore.data.collect {
-                _analyticsEnabled.postValue(it.analyticsEnabled)
-                _appTheme.postValue(it.appTheme)
-            }
-        }
-    }
-
     fun setAnalyticsEnabled(analyticsEnabled: Boolean) {
         viewModelScope.launch {
-            _analyticsEnabled.postValue(analyticsEnabled)
             analytics.setAnalyticsEnabled(analyticsEnabled)
             dataStore.updateData {
                 it.copy(analyticsEnabled = analyticsEnabled)
@@ -55,7 +38,6 @@ class AppSettingsViewModel internal constructor(
 
     fun setAppTheme(appTheme: Settings.Theme) {
         viewModelScope.launch {
-            _appTheme.postValue(appTheme)
             dataStore.updateData {
                 it.copy(appTheme = appTheme)
             }
