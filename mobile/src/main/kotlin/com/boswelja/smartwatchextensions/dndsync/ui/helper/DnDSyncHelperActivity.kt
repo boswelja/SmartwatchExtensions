@@ -26,8 +26,8 @@ import androidx.compose.material.icons.outlined.Check
 import androidx.compose.material.icons.outlined.ErrorOutline
 import androidx.compose.material.icons.outlined.NavigateNext
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -54,7 +54,7 @@ class DnDSyncHelperActivity : AppCompatActivity() {
 
         setContent {
             val viewModel: HelperViewModel = viewModel()
-            val setupResult by viewModel.result.observeAsState()
+            val setupResult by viewModel.result.collectAsState(null)
             var isLoading by remember { mutableStateOf(false) }
             AppTheme {
                 Scaffold(
