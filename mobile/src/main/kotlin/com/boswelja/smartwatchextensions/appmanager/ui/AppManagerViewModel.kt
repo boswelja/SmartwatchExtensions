@@ -62,14 +62,27 @@ class AppManagerViewModel internal constructor(
         }
     }
 
+    /**
+     * The currently selected watch, or null if there is none
+     */
     var selectedWatch: Watch? by mutableStateOf(null)
         private set
 
+    /**
+     * A boolean indicating whether App Manager cache is currently being updated.
+     */
     var isUpdatingCache by mutableStateOf(false)
         private set
 
+    /**
+     * See [WatchManager.registeredWatches].
+     */
     val registeredWatches = watchManager.registeredWatches
 
+    /**
+     * A [kotlinx.coroutines.flow.Flow] of Boolean indicating whether the currently selected watch
+     * is connected.
+     */
     val isWatchConnected = watchManager.selectedWatch.flatMapLatest { watch ->
         watch?.let {
             watchManager.getStatusFor(watch)
@@ -78,14 +91,23 @@ class AppManagerViewModel internal constructor(
         status == Status.CONNECTING || status == Status.CONNECTED
     }
 
+    /**
+     * A [kotlinx.coroutines.flow.Flow] of user-installed apps on the currently selected watch.
+     */
     val userApps = allApps.mapLatest { apps ->
         apps.filter { !it.isSystemApp && it.isEnabled }.sortedBy { it.label }
     }
 
+    /**
+     * A [kotlinx.coroutines.flow.Flow] of disabled apps on the currently selected watch.
+     */
     val disabledApps = allApps.mapLatest { apps ->
         apps.filter { !it.isEnabled }.sortedBy { it.label }
     }
 
+    /**
+     * A [kotlinx.coroutines.flow.Flow] of system apps on the currently selected watch.
+     */
     val systemApps = allApps.mapLatest { apps ->
         apps.filter { it.isSystemApp && it.isEnabled }.sortedBy { it.label }
     }
@@ -95,7 +117,7 @@ class AppManagerViewModel internal constructor(
             watchManager.selectedWatch.collect { watch ->
                 watch?.let {
                     selectedWatch = watch
-                    validateCacheFor(watch)
+                    validateCache()
                 }
             }
         }
@@ -107,8 +129,16 @@ class AppManagerViewModel internal constructor(
         watchManager.unregisterMessageListener(messageListener)
     }
 
+    /**
+     * See [WatchManager.selectWatchById].
+     */
     fun selectWatchById(watchId: UUID) = watchManager.selectWatchById(watchId)
 
+    /**
+     * Requests the selected watch launch a given [App].
+     * @param app The [App] to try launch.
+     * @return true if the request was sent successfully, false otherwise.
+     */
     suspend fun sendOpenRequest(app: App): Boolean {
         return selectedWatch?.let { watch ->
             val data = app.packageName.toByteArray(Charsets.UTF_8)
@@ -116,6 +146,11 @@ class AppManagerViewModel internal constructor(
         } ?: false
     }
 
+    /**
+     * Requests the selected watch uninstall a given [App].
+     * @param app The [App] to try uninstall.
+     * @return true if the request was sent successfully, false otherwise.
+     */
     suspend fun sendUninstallRequest(app: App): Boolean {
         return selectedWatch?.let { watch ->
             val data = app.packageName.toByteArray(Charsets.UTF_8)
@@ -124,20 +159,26 @@ class AppManagerViewModel internal constructor(
         } ?: false
     }
 
-    suspend fun validateCacheFor(watch: Watch) {
-        Timber.d("Validating cache for %s", watch.id)
-        // Get a list of packages we have for the given watch
-        val apps = appDatabase.apps().allForWatch(watch.id)
-            .map { apps ->
-                apps.map { it.packageName to it.lastUpdateTime }
-            }
-            .first()
-        val cacheHash = CacheValidation.getHashCode(apps)
-        val result = watchManager.sendMessage(watch, VALIDATE_CACHE, cacheHash.toByteArray())
-        if (!result) Timber.w("Failed to request cache validation")
+    /**
+     * Requests cache validation for the selected watch.
+     */
+    suspend fun validateCache() {
+        selectedWatch?.let { watch ->
+            Timber.d("Validating cache for %s", watch.id)
+            // Get a list of packages we have for the given watch
+            val apps = appDatabase.apps().allForWatch(watch.id)
+                .map { apps -> apps.map { it.packageName to it.lastUpdateTime } }
+                .first()
+            val cacheHash = CacheValidation.getHashCode(apps)
+            val result = watchManager.sendMessage(watch, VALIDATE_CACHE, cacheHash.toByteArray())
+            if (!result) Timber.w("Failed to request cache validation")
+        }
     }
 
     companion object {
+        /**
+         * Controls the debounce time for app list updates. See [debounce].
+         */
         private const val APP_DEBOUNCE_MILLIS = 250L
     }
 }

@@ -17,6 +17,7 @@ import java.util.UUID
  * @param label The user-facing name for the package. See [PackageManager.getApplicationLabel].
  * @param isSystemApp A boolean to determine whether the package is a system app.
  * @param hasLaunchActivity A boolean to determine whether the package is launchable.
+ * @param isEnabled A boolean to indicate whether the app is enabled.
  * @param installTime The time in milliseconds this package was first installed.
  * @param lastUpdateTime The time in milliseconds this package was last updated.
  * @param requestedPermissions An [List] of [android.Manifest.permission]s this package requests.

@@ -28,8 +28,11 @@ class AppManagerMessageReceiver : WearableListenerService() {
                 }
             }
             VALIDATE_CACHE -> {
+                // Get a list of apps installed on this device, and format for cache validation.
                 val currentPackages = packageManager.getInstalledPackages(0)
                     .map { it.packageName to it.lastUpdateTime }
+
+                // Get the hash code for our local app list, and check against the remote cache
                 val currentHash = CacheValidation.getHashCode(currentPackages)
                 val cacheHash = Int.fromByteArray(event.data)
                 if (cacheHash == currentHash) {
