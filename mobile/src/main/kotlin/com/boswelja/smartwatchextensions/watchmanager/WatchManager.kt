@@ -290,10 +290,6 @@ class WatchManager internal constructor(
 
     fun getWatchById(id: UUID): Flow<Watch?> = watchDatabase.watchDao().get(id)
 
-    @Deprecated("Use getWatchById instead")
-    fun observeWatchById(id: UUID): LiveData<Watch?> =
-        watchDatabase.watchDao().get(id).asLiveData()
-
     fun registerMessageListener(messageListener: MessageListener) =
         connectionClient.addMessageListener(messageListener)
     fun unregisterMessageListener(messageListener: MessageListener) =
