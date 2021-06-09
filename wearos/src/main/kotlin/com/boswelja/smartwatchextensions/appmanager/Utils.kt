@@ -59,10 +59,7 @@ suspend fun Context.sendAllApps(phoneId: String) {
         val messageClient = Wearable.getMessageClient(this@sendAllApps)
 
         // Get all current packages
-        val allPackages = packageManager.getInstalledPackages(PackageManager.GET_PERMISSIONS)
-            .map {
-                App(packageManager, it)
-            }
+        val allPackages = getAllApps()
 
         // Let the phone know what we're doing
         messageClient.sendMessage(
@@ -87,6 +84,16 @@ suspend fun Context.sendAllApps(phoneId: String) {
             null
         ).await()
     }
+}
+
+/**
+ * Get all packages installed on this device, and convert them to [App] instances.
+ */
+fun Context.getAllApps(): List<App> {
+    return packageManager.getInstalledPackages(PackageManager.GET_PERMISSIONS)
+        .map {
+            App(packageManager, it)
+        }
 }
 
 /**
