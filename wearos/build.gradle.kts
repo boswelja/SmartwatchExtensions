@@ -64,6 +64,7 @@ dependencies {
     implementation(libs.androidx.datastore.proto)
     implementation(libs.androidx.wear.core)
     implementation(libs.androidx.wear.complications.provider)
+    implementation(libs.androidx.work.ktx)
 
     implementation(libs.play.services.wearable)
     implementation(libs.timber)
