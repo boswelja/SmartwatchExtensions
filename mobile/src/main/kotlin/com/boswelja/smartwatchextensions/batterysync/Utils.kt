@@ -66,7 +66,7 @@ object Utils {
                 if (watch != null) {
                     watchManager.sendMessage(watch, BATTERY_STATUS_PATH, batteryStats.toByteArray())
                 } else {
-                    watchManager.registeredWatches.asFlow().first()
+                    watchManager.registeredWatchesLiveData.asFlow().first()
                         .filter {
                             watchManager.getBoolSetting(
                                 BATTERY_SYNC_ENABLED_KEY, it

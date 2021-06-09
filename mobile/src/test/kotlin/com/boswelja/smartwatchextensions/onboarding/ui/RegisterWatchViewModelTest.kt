@@ -49,7 +49,7 @@ class RegisterWatchViewModelTest {
         registeredWatches.postValue(emptyList())
 
         every { watchManager.availableWatches } returns availableWatches
-        every { watchManager.registeredWatches } returns registeredWatches
+        every { watchManager.registeredWatchesLiveData } returns registeredWatches
 
         viewModel = RegisterWatchViewModel(
             ApplicationProvider.getApplicationContext(),

@@ -43,13 +43,13 @@ class ManageSpaceViewModel internal constructor(
     )
 
     init {
-        watchManager.registeredWatches.observeForever(registeredWatchesObserver)
+        watchManager.registeredWatchesLiveData.observeForever(registeredWatchesObserver)
     }
 
     @VisibleForTesting(otherwise = VisibleForTesting.PROTECTED)
     public override fun onCleared() {
         super.onCleared()
-        watchManager.registeredWatches.removeObserver(registeredWatchesObserver)
+        watchManager.registeredWatchesLiveData.removeObserver(registeredWatchesObserver)
     }
 
     /**

@@ -76,7 +76,7 @@ class AppManagerViewModelTest {
             watchManagerRule.watchManager.selectedWatch
         } returns flow { emit(watch.toDbWatch()) }
         every {
-            watchManagerRule.watchManager.registeredWatches
+            watchManagerRule.watchManager.registeredWatchesLiveData
         } returns liveData { emit(listOf(watch)) }
         every { watchManagerRule.watchManager.registerMessageListener(any()) } just Runs
         every { watchManagerRule.watchManager.unregisterMessageListener(any()) } just Runs

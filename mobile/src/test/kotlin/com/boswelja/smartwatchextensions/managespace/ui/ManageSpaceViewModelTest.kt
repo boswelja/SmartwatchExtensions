@@ -61,7 +61,7 @@ class ManageSpaceViewModelTest {
     @Before
     fun setUp() {
         MockKAnnotations.init(this)
-        every { watchManager.registeredWatches } returns registeredWatches
+        every { watchManager.registeredWatchesLiveData } returns registeredWatches
         every { dataStore.data } returns appSettings
         viewModel = ManageSpaceViewModel(
             ApplicationProvider.getApplicationContext(),
@@ -74,10 +74,10 @@ class ManageSpaceViewModelTest {
 
     @Test
     fun `registeredWatches is observed for the lifecycle of the view model`() {
-        verify { watchManager.registeredWatches }
+        verify { watchManager.registeredWatchesLiveData }
         expectThat(registeredWatches.hasActiveObservers()).isTrue()
         viewModel.onCleared()
-        verify { watchManager.registeredWatches }
+        verify { watchManager.registeredWatchesLiveData }
         expectThat(registeredWatches.hasActiveObservers()).isFalse()
     }
 

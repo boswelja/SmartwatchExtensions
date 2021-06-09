@@ -21,7 +21,8 @@ class DnDSyncSettingsActivity : AppCompatActivity() {
         setContent {
             AppTheme {
                 val viewModel: DnDSyncSettingsViewModel = viewModel()
-                val registeredWatches by viewModel.watchManager.registeredWatches.observeAsState()
+                val registeredWatches by viewModel.watchManager.registeredWatchesLiveData
+                    .observeAsState()
                 val selectedWatch by viewModel.watchManager.selectedWatchLiveData.observeAsState()
                 Scaffold(
                     topBar = {

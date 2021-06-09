@@ -28,7 +28,7 @@ class BatterySyncSettingsActivity : AppCompatActivity() {
                     WatchManager.getInstance(this)
                 }
                 val selectedWatch by watchManager.selectedWatchLiveData.observeAsState()
-                val registeredWatches by watchManager.registeredWatches.observeAsState()
+                val registeredWatches by watchManager.registeredWatchesLiveData.observeAsState()
 
                 Scaffold(
                     topBar = {

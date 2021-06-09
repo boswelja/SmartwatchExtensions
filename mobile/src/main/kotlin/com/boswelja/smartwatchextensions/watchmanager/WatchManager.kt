@@ -5,7 +5,6 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.asFlow
 import androidx.lifecycle.asLiveData
 import com.boswelja.smartwatchextensions.AppState
 import com.boswelja.smartwatchextensions.analytics.Analytics
@@ -76,8 +75,12 @@ class WatchManager internal constructor(
         } ?: flow { emit(null) }
     }
 
-    val registeredWatches: LiveData<List<Watch>>
+    @Deprecated("Use registeredWatches Flow instead")
+    val registeredWatchesLiveData: LiveData<List<Watch>>
         get() = watchDatabase.watchDao().getAll().asLiveData()
+
+    val registeredWatches: Flow<List<Watch>>
+        get() = watchDatabase.watchDao().getAll()
 
     @ExperimentalCoroutinesApi
     val availableWatches: Flow<List<Watch>>
@@ -104,7 +107,7 @@ class WatchManager internal constructor(
                 if (it.isNotBlank()) selectWatchById(UUID.fromString(it))
                 else {
                     Timber.w("No watch previously selected")
-                    registeredWatches.asFlow().first().firstOrNull()?.let { watch ->
+                    registeredWatches.first().firstOrNull()?.let { watch ->
                         selectWatchById(watch.id)
                     }
                 }
@@ -289,7 +292,9 @@ class WatchManager internal constructor(
         }
     }
 
-    fun getWatchById(id: UUID) = watchDatabase.watchDao().get(id)
+    fun getWatchById(id: UUID): Flow<Watch?> = watchDatabase.watchDao().get(id)
+
+    @Deprecated("Use getWatchById instead")
     fun observeWatchById(id: UUID): LiveData<Watch?> =
         watchDatabase.watchDao().get(id).asLiveData()
 

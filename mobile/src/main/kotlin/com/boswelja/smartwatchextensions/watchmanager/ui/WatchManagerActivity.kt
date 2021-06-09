@@ -55,7 +55,7 @@ class WatchManagerActivity : AppCompatActivity() {
                         )
                     }
                 ) {
-                    val registeredWatches by watchManager.registeredWatches.observeAsState()
+                    val registeredWatches by watchManager.registeredWatchesLiveData.observeAsState()
                     LazyColumn(Modifier.padding(vertical = 8.dp)) {
                         item {
                             ListItem(

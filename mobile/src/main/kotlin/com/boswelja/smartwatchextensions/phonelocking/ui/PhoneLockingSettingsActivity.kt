@@ -22,7 +22,7 @@ class PhoneLockingSettingsActivity : AppCompatActivity() {
         setContent {
             val watchManager = remember { WatchManager.getInstance(this) }
             val selectedWatch by watchManager.selectedWatchLiveData.observeAsState()
-            val registeredWatches by watchManager.registeredWatches.observeAsState()
+            val registeredWatches by watchManager.registeredWatchesLiveData.observeAsState()
             AppTheme {
                 Scaffold(
                     topBar = {
