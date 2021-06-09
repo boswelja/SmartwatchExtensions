@@ -1,5 +1,6 @@
 package com.boswelja.smartwatchextensions.appmanager
 
+import com.boswelja.smartwatchextensions.common.appmanager.CacheValidation
 import com.boswelja.smartwatchextensions.common.appmanager.Messages.REQUEST_OPEN_PACKAGE
 import com.boswelja.smartwatchextensions.common.appmanager.Messages.REQUEST_UNINSTALL_PACKAGE
 import com.boswelja.smartwatchextensions.common.appmanager.Messages.VALIDATE_CACHE
@@ -28,13 +29,10 @@ class AppManagerMessageReceiver : WearableListenerService() {
             }
             VALIDATE_CACHE -> {
                 val currentPackages = packageManager.getInstalledPackages(0)
-                    .map {
-                        "${it.packageName},${it.lastUpdateTime}"
-                    }
-                    .sorted()
-                    .hashCode()
+                    .map { it.packageName to it.lastUpdateTime }
+                val currentHash = CacheValidation.getHashCode(currentPackages)
                 val cacheHash = Int.fromByteArray(event.data)
-                if (cacheHash == currentPackages) {
+                if (cacheHash == currentHash) {
                     Timber.d("Cache appears to be up to date")
                 } else {
                     Timber.d(

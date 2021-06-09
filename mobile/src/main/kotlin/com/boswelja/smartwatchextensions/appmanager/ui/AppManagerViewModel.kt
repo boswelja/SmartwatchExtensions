@@ -8,6 +8,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.boswelja.smartwatchextensions.appmanager.App
 import com.boswelja.smartwatchextensions.appmanager.database.WatchAppDatabase
+import com.boswelja.smartwatchextensions.common.appmanager.CacheValidation
 import com.boswelja.smartwatchextensions.common.appmanager.Messages.APP_SENDING_COMPLETE
 import com.boswelja.smartwatchextensions.common.appmanager.Messages.APP_SENDING_START
 import com.boswelja.smartwatchextensions.common.appmanager.Messages.REQUEST_OPEN_PACKAGE
@@ -128,12 +129,11 @@ class AppManagerViewModel internal constructor(
         // Get a list of packages we have for the given watch
         val apps = appDatabase.apps().allForWatch(watch.id)
             .map { apps ->
-                apps
-                    .map { it.packageName }
-                    .sorted()
+                apps.map { it.packageName to it.lastUpdateTime }
             }
             .first()
-        val result = watchManager.sendMessage(watch, VALIDATE_CACHE, apps.hashCode().toByteArray())
+        val cacheHash = CacheValidation.getHashCode(apps)
+        val result = watchManager.sendMessage(watch, VALIDATE_CACHE, cacheHash.toByteArray())
         if (!result) Timber.w("Failed to request cache validation")
     }
 

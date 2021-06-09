@@ -10,6 +10,7 @@ import androidx.work.WorkManager
 import androidx.work.WorkerParameters
 import androidx.work.workDataOf
 import com.boswelja.smartwatchextensions.appmanager.database.WatchAppDatabase
+import com.boswelja.smartwatchextensions.common.appmanager.CacheValidation
 import com.boswelja.smartwatchextensions.common.appmanager.Messages.VALIDATE_CACHE
 import com.boswelja.smartwatchextensions.common.toByteArray
 import com.boswelja.smartwatchextensions.watchmanager.WatchManager
@@ -56,12 +57,11 @@ class AppCacheUpdateWorker(
         // Get a list of packages we have for the given watch
         val apps = appDatabase.apps().allForWatch(watch.id)
             .map { apps ->
-                apps
-                    .map { "${it.packageName},${it.lastUpdateTime}" }
-                    .sorted()
+                apps.map { it.packageName to it.lastUpdateTime }
             }
             .first()
-        return watchManager.sendMessage(watch, VALIDATE_CACHE, apps.hashCode().toByteArray())
+        val cacheHash = CacheValidation.getHashCode(apps)
+        return watchManager.sendMessage(watch, VALIDATE_CACHE, cacheHash.toByteArray())
     }
 
     companion object {
