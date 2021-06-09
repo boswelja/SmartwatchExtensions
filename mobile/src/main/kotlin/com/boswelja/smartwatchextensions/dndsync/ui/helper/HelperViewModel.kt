@@ -7,7 +7,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.boswelja.smartwatchextensions.common.dndsync.References
+import com.boswelja.smartwatchextensions.common.dndsync.References.REQUEST_INTERRUPT_FILTER_ACCESS_STATUS_PATH
 import com.boswelja.smartwatchextensions.common.fromByteArray
 import com.boswelja.smartwatchextensions.common.preference.PreferenceKey
 import com.boswelja.smartwatchextensions.dndsync.DnDLocalChangeService
@@ -15,6 +15,7 @@ import com.boswelja.smartwatchextensions.watchmanager.WatchManager
 import com.boswelja.watchconnection.core.MessageListener
 import java.util.UUID
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -33,7 +34,7 @@ class HelperViewModel internal constructor(
     private val messageListener = object : MessageListener {
         override fun onMessageReceived(sourceWatchId: UUID, message: String, data: ByteArray?) {
             when (message) {
-                References.REQUEST_INTERRUPT_FILTER_ACCESS_STATUS_PATH -> {
+                REQUEST_INTERRUPT_FILTER_ACCESS_STATUS_PATH -> {
                     data?.let {
                         val hasNotiPolicyAccess = Boolean.fromByteArray(data)
                         _result.postValue(hasNotiPolicyAccess)
@@ -59,22 +60,21 @@ class HelperViewModel internal constructor(
     }
 
     fun requestCheckPermission() {
-        watchManager.selectedWatchLiveData.value?.let {
-            viewModelScope.launch {
-                watchManager.sendMessage(
-                    it,
-                    References.REQUEST_INTERRUPT_FILTER_ACCESS_STATUS_PATH,
-                    null
-                )
-            }
+        viewModelScope.launch {
+            val selectedWatch = watchManager.selectedWatch.first()
+            watchManager.sendMessage(
+                selectedWatch!!,
+                REQUEST_INTERRUPT_FILTER_ACCESS_STATUS_PATH
+            )
         }
     }
 
     private fun setSyncToWatch(isEnabled: Boolean) {
         Timber.i("setSyncToWatch() called")
         viewModelScope.launch {
+            val selectedWatch = watchManager.selectedWatch.first()
             watchManager.updatePreference(
-                watchManager.selectedWatchLiveData.value!!,
+                selectedWatch!!,
                 PreferenceKey.DND_SYNC_TO_WATCH_KEY, isEnabled
             )
             if (isEnabled) {

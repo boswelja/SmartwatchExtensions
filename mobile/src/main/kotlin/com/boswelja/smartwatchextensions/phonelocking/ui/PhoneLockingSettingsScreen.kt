@@ -14,8 +14,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.PhonelinkLock
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -25,6 +25,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.common.ui.SwitchPreference
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import timber.log.Timber
 
@@ -34,7 +35,7 @@ import timber.log.Timber
 fun PhoneLockingSettingsScreen() {
     val context = LocalContext.current
     val viewModel: PhoneLockingSettingsViewModel = viewModel()
-    val phoneLockingEnabled by viewModel.phoneLockingEnabled.observeAsState()
+    val phoneLockingEnabled by viewModel.phoneLockingEnabled.collectAsState(false, Dispatchers.IO)
     var phoneLockingSetupVisible by remember { mutableStateOf(false) }
     Column {
         ListItem(

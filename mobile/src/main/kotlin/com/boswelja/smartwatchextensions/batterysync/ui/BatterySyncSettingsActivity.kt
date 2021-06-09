@@ -9,7 +9,6 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.remember
 import com.boswelja.smartwatchextensions.common.ui.AppTheme
 import com.boswelja.smartwatchextensions.common.ui.UpNavigationWatchPickerAppBar
@@ -29,7 +28,7 @@ class BatterySyncSettingsActivity : AppCompatActivity() {
                 val watchManager = remember {
                     WatchManager.getInstance(this)
                 }
-                val selectedWatch by watchManager.selectedWatchLiveData.observeAsState()
+                val selectedWatch by watchManager.selectedWatch.collectAsState(null, Dispatchers.IO)
                 val registeredWatches by watchManager.registeredWatches
                     .collectAsState(emptyList(), Dispatchers.IO)
 

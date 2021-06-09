@@ -17,7 +17,6 @@ import com.boswelja.smartwatchextensions.appmanager.database.WatchAppDatabase
 import com.boswelja.smartwatchextensions.batterysync.database.WatchBatteryStatsDatabase
 import com.boswelja.smartwatchextensions.common.connection.Messages
 import com.boswelja.smartwatchextensions.common.connection.Messages.CLEAR_PREFERENCES
-import com.boswelja.smartwatchextensions.getOrAwaitValue
 import com.boswelja.smartwatchextensions.watchmanager.database.DbWatch.Companion.toDbWatch
 import com.boswelja.smartwatchextensions.watchmanager.database.WatchDatabase
 import com.boswelja.smartwatchextensions.watchmanager.database.WatchSettingsDatabase
@@ -29,10 +28,10 @@ import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.verify
-import java.util.concurrent.TimeUnit
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.TestCoroutineScope
@@ -100,7 +99,7 @@ class WatchManagerTest {
         appState.emit(AppState(lastSelectedWatchId = dummyWatch1.id.toString()))
         watchManager = getWatchManager()
 
-        expectThat(watchManager.selectedWatchLiveData.getOrAwaitValue()).isEqualTo(dummyWatch1)
+        expectThat(watchManager.selectedWatch.first()).isEqualTo(dummyWatch1)
     }
 
     @Test
@@ -112,7 +111,7 @@ class WatchManagerTest {
         watchManager.selectWatchById(dummyWatch2.id)
 
         // Check the selected watch has been updated
-        expectThat(watchManager.selectedWatchLiveData.getOrAwaitValue()).isEqualTo(dummyWatch2)
+        expectThat(watchManager.selectedWatch.first()).isEqualTo(dummyWatch2)
     }
 
     @Test
@@ -182,13 +181,10 @@ class WatchManagerTest {
     }
 
     @Test
-    fun `selectedWatch is null if there are no registered watches`() {
+    fun `selectedWatch is null if there are no registered watches`(): Unit = runBlocking {
         setRegisteredWatches(emptyList())
         watchManager = getWatchManager()
-        expectThat(
-            watchManager.selectedWatchLiveData
-                .getOrAwaitValue(time = 500, timeUnit = TimeUnit.MILLISECONDS)
-        ).isNull()
+        expectThat(watchManager.selectedWatch.firstOrNull()).isNull()
     }
 
     @Test
@@ -197,8 +193,7 @@ class WatchManagerTest {
         appState.emit(AppState(lastSelectedWatchId = dummyWatch1.id.toString()))
         setRegisteredWatches(dummyWatches)
         watchManager = getWatchManager()
-        // Get the value, throws TimeoutException if watch was not set
-        watchManager.selectedWatchLiveData.getOrAwaitValue()
+        expectThat(watchManager.selectedWatch.firstOrNull()).isNotNull()
     }
 
     @Test
@@ -207,8 +202,7 @@ class WatchManagerTest {
         appState.emit(AppState(lastSelectedWatchId = ""))
         setRegisteredWatches(dummyWatches)
         watchManager = getWatchManager()
-        // Get the value, throws TimeoutException if watch was not set
-        watchManager.selectedWatchLiveData.getOrAwaitValue()
+        expectThat(watchManager.selectedWatch.firstOrNull()).isNotNull()
     }
 
     private fun setRegisteredWatches(watches: List<Watch>): Unit = runBlocking {

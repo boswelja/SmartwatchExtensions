@@ -25,7 +25,6 @@ import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -70,7 +69,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         setContent {
-            val selectedWatch by watchManager.selectedWatchLiveData.observeAsState()
+            val selectedWatch by watchManager.selectedWatch.collectAsState(null, Dispatchers.IO)
             val registeredWatches by watchManager.registeredWatches
                 .collectAsState(emptyList(), Dispatchers.IO)
 

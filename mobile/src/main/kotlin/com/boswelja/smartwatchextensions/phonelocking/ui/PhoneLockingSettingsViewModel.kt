@@ -2,9 +2,6 @@ package com.boswelja.smartwatchextensions.phonelocking.ui
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.asLiveData
-import androidx.lifecycle.liveData
-import androidx.lifecycle.switchMap
 import androidx.lifecycle.viewModelScope
 import com.boswelja.smartwatchextensions.common.preference.PreferenceKey.PHONE_LOCKING_ENABLED_KEY
 import com.boswelja.smartwatchextensions.phonelocking.Utils.isAccessibilityServiceEnabled
@@ -12,6 +9,9 @@ import com.boswelja.smartwatchextensions.watchmanager.WatchManager
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 
 @ExperimentalCoroutinesApi
@@ -21,10 +21,10 @@ class PhoneLockingSettingsViewModel internal constructor(
     private val watchManager: WatchManager
 ) : AndroidViewModel(application) {
 
-    val phoneLockingEnabled = watchManager.selectedWatchLiveData.switchMap {
+    val phoneLockingEnabled = watchManager.selectedWatch.flatMapLatest {
         it?.let { watch ->
             watchManager.getBoolSetting(PHONE_LOCKING_ENABLED_KEY, watch)
-        }?.asLiveData() ?: liveData { }
+        } ?: flow { }
     }
 
     @Suppress("unused")
@@ -36,8 +36,9 @@ class PhoneLockingSettingsViewModel internal constructor(
 
     fun setPhoneLockingEnabled(isEnabled: Boolean) {
         viewModelScope.launch(dispatcher) {
+            val selectedWatch = watchManager.selectedWatch.first()
             watchManager.updatePreference(
-                watchManager.selectedWatchLiveData.value!!,
+                selectedWatch!!,
                 PHONE_LOCKING_ENABLED_KEY,
                 isEnabled
             )

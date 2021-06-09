@@ -20,8 +20,8 @@ import androidx.compose.material.icons.outlined.ErrorOutline
 import androidx.compose.material.icons.outlined.NavigateNext
 import androidx.compose.material.icons.outlined.Sync
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -35,6 +35,7 @@ import com.boswelja.smartwatchextensions.batterysync.ui.BatterySyncSettingsHeade
 import com.boswelja.smartwatchextensions.dndsync.ui.DnDSyncSettingsActivity
 import com.boswelja.smartwatchextensions.phonelocking.ui.PhoneLockingSettingsActivity
 import com.boswelja.watchconnection.core.Status
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import timber.log.Timber
 
@@ -45,7 +46,7 @@ fun DashboardScreen() {
     val context = LocalContext.current
     val scrollState = rememberScrollState()
     val viewModel: DashboardViewModel = viewModel()
-    val watchStatus by viewModel.status.observeAsState()
+    val watchStatus by viewModel.status.collectAsState(Status.CONNECTING, Dispatchers.IO)
 
     Column(
         Modifier

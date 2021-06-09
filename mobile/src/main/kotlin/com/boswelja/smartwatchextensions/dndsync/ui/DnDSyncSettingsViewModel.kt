@@ -11,6 +11,7 @@ import com.boswelja.smartwatchextensions.common.preference.PreferenceKey.DND_SYN
 import com.boswelja.smartwatchextensions.common.preference.PreferenceKey.DND_SYNC_WITH_THEATER_KEY
 import com.boswelja.smartwatchextensions.watchmanager.WatchManager
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.launch
 
@@ -46,8 +47,9 @@ class DnDSyncSettingsViewModel internal constructor(
 
     fun setSyncToPhone(isEnabled: Boolean) {
         viewModelScope.launch {
+            val selectedWatch = watchManager.selectedWatch.first()
             watchManager.updatePreference(
-                watchManager.selectedWatchLiveData.value!!,
+                selectedWatch!!,
                 DND_SYNC_TO_PHONE_KEY,
                 isEnabled
             )
@@ -56,8 +58,9 @@ class DnDSyncSettingsViewModel internal constructor(
 
     fun setSyncToWatch(isEnabled: Boolean) {
         viewModelScope.launch {
+            val selectedWatch = watchManager.selectedWatch.first()
             watchManager.updatePreference(
-                watchManager.selectedWatchLiveData.value!!,
+                selectedWatch!!,
                 DND_SYNC_TO_WATCH_KEY,
                 isEnabled
             )
@@ -66,8 +69,9 @@ class DnDSyncSettingsViewModel internal constructor(
 
     fun setSyncWithTheater(isEnabled: Boolean) {
         viewModelScope.launch {
+            val selectedWatch = watchManager.selectedWatch.first()
             watchManager.updatePreference(
-                watchManager.selectedWatchLiveData.value!!,
+                selectedWatch!!,
                 DND_SYNC_WITH_THEATER_KEY,
                 isEnabled
             )

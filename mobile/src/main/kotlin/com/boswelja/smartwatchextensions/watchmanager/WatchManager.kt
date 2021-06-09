@@ -4,8 +4,6 @@ import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.asLiveData
 import com.boswelja.smartwatchextensions.AppState
 import com.boswelja.smartwatchextensions.analytics.Analytics
 import com.boswelja.smartwatchextensions.appStateStore
@@ -84,10 +82,6 @@ class WatchManager internal constructor(
             .map { watches ->
                 watches.filter { watchDatabase.watchDao().get(it.id).firstOrNull() == null }
             }
-
-    @ExperimentalCoroutinesApi
-    @Deprecated("Use selectedWatch Flow instead")
-    val selectedWatchLiveData: LiveData<Watch?> = _selectedWatch.asLiveData()
 
     /**
      * The currently selected watch
@@ -189,7 +183,7 @@ class WatchManager internal constructor(
     }
 
     /**
-     * Selects a watch by a given [Watch.id]. This will update [selectedWatchLiveData].
+     * Selects a watch by a given [Watch.id]. This will update [selectedWatch].
      * @param watchId The ID of the [Watch] to select.
      */
     fun selectWatchById(watchId: UUID) {
