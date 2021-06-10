@@ -4,17 +4,16 @@ import android.app.Application
 import androidx.annotation.VisibleForTesting
 import androidx.datastore.core.DataStore
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations
 import androidx.lifecycle.viewModelScope
 import com.boswelja.smartwatchextensions.PhoneState
-import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.common.connection.Messages.WATCH_REGISTERED_PATH
 import com.boswelja.smartwatchextensions.phoneStateStore
 import com.google.android.gms.wearable.MessageClient
 import com.google.android.gms.wearable.NodeClient
 import com.google.android.gms.wearable.Wearable
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 
 class OnboardingViewModel internal constructor(
     application: Application,
@@ -45,21 +44,17 @@ class OnboardingViewModel internal constructor(
             }
         }
 
-    private val _localName = MutableLiveData<String?>(null)
-    val setupNameText =
-        Transformations.map(_localName) { it ?: application.getString(R.string.error) }
+    fun watchName() = flow {
+        val node = nodeClient.localNode.await()
+        emit(node.displayName)
+    }
 
     init {
         messageClient.addListener(messageListener)
-        refreshLocalName()
     }
 
     override fun onCleared() {
         super.onCleared()
         messageClient.removeListener(messageListener)
-    }
-
-    private fun refreshLocalName() {
-        nodeClient.localNode.addOnCompleteListener { _localName.postValue(it.result?.displayName) }
     }
 }
