@@ -3,8 +3,6 @@ package com.boswelja.smartwatchextensions.main.ui
 import android.app.Application
 import androidx.datastore.core.DataStore
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.asLiveData
-import androidx.lifecycle.map
 import com.boswelja.smartwatchextensions.PhoneState
 import com.boswelja.smartwatchextensions.capability.CapabilityUpdater
 import com.boswelja.smartwatchextensions.phoneStateStore
@@ -21,7 +19,7 @@ class MainViewModel internal constructor(
         application.phoneStateStore
     )
 
-    val isRegistered = dataStore.data.map { it.id }.asLiveData().map { it.isNotBlank() }
+    val isRegistered = dataStore.data.map { it.id.isNotBlank() }
 
     init {
         CapabilityUpdater(application).updateCapabilities()

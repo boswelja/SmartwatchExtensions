@@ -6,13 +6,13 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.boswelja.smartwatchextensions.PhoneState
 import com.boswelja.smartwatchextensions.capability.CapabilityUpdater
-import com.boswelja.smartwatchextensions.getOrAwaitValue
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkConstructor
 import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Test
@@ -43,28 +43,28 @@ class MainViewModelTest {
     fun `isRegistered is true on ViewModel init with ID set`(): Unit = runBlocking {
         updatePhoneId("id")
         val viewModel = getViewModel()
-        expectThat(viewModel.isRegistered.getOrAwaitValue()).isTrue()
+        expectThat(viewModel.isRegistered.first()).isTrue()
     }
 
     @Test
     fun `isRegistered is false on ViewModel init with no ID`(): Unit = runBlocking {
         updatePhoneId("")
         val viewModel = getViewModel()
-        expectThat(viewModel.isRegistered.getOrAwaitValue()).isFalse()
+        expectThat(viewModel.isRegistered.first()).isFalse()
     }
 
     @Test
     fun `isRegistered is true when ID set after ViewModel init`(): Unit = runBlocking {
         val viewModel = getViewModel()
         updatePhoneId("id")
-        expectThat(viewModel.isRegistered.getOrAwaitValue()).isTrue()
+        expectThat(viewModel.isRegistered.first()).isTrue()
     }
 
     @Test
     fun `isRegistered is false when ID cleared after ViewModel init`(): Unit = runBlocking {
         val viewModel = getViewModel()
         updatePhoneId("")
-        expectThat(viewModel.isRegistered.getOrAwaitValue()).isFalse()
+        expectThat(viewModel.isRegistered.first()).isFalse()
     }
 
     @Test
