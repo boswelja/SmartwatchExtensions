@@ -3,6 +3,7 @@ package com.boswelja.smartwatchextensions.main
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.ExperimentalAnimationApi
@@ -30,6 +31,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.whenStarted
 import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.aboutapp.ui.AboutAppScreen
 import com.boswelja.smartwatchextensions.appsettings.ui.AppSettingsScreen
@@ -41,7 +43,6 @@ import com.boswelja.smartwatchextensions.messages.Priority
 import com.boswelja.smartwatchextensions.messages.sendMessage
 import com.boswelja.smartwatchextensions.messages.ui.MessagesScreen
 import com.boswelja.smartwatchextensions.onboarding.ui.OnboardingActivity
-import com.boswelja.smartwatchextensions.watchmanager.WatchManager
 import com.google.android.play.core.appupdate.AppUpdateManagerFactory
 import com.google.android.play.core.appupdate.AppUpdateOptions
 import com.google.android.play.core.install.model.AppUpdateType
@@ -50,13 +51,16 @@ import com.google.android.play.core.ktx.updatePriority
 import java.util.UUID
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
 class MainActivity : AppCompatActivity() {
 
+    @ExperimentalCoroutinesApi
+    private val viewModel: MainViewModel by viewModels()
+
     private var currentDestination by mutableStateOf(Destination.DASHBOARD)
-    private val watchManager by lazy { WatchManager.getInstance(this) }
 
     @ExperimentalCoroutinesApi
     @ExperimentalAnimationApi
@@ -65,12 +69,12 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         if (intent?.hasExtra(EXTRA_WATCH_ID) == true) {
-            watchManager.selectWatchById(UUID.fromString(intent.getStringExtra(EXTRA_WATCH_ID)))
+            viewModel.selectWatchById(UUID.fromString(intent.getStringExtra(EXTRA_WATCH_ID)))
         }
 
         setContent {
-            val selectedWatch by watchManager.selectedWatch.collectAsState(null, Dispatchers.IO)
-            val registeredWatches by watchManager.registeredWatches
+            val selectedWatch by viewModel.selectedWatch.collectAsState(null, Dispatchers.IO)
+            val registeredWatches by viewModel.registeredWatches
                 .collectAsState(emptyList(), Dispatchers.IO)
 
             val scaffoldState = rememberScaffoldState()
@@ -82,7 +86,7 @@ class MainActivity : AppCompatActivity() {
                         WatchPickerAppBar(
                             selectedWatch = selectedWatch,
                             watches = registeredWatches,
-                            onWatchSelected = { watchManager.selectWatchById(it.id) }
+                            onWatchSelected = { viewModel.selectWatchById(it.id) }
                         )
                     },
                     bottomBar = {
@@ -95,11 +99,19 @@ class MainActivity : AppCompatActivity() {
                     )
                 }
             }
-            if (registeredWatches.isEmpty()) {
-                startActivity(Intent(this, OnboardingActivity::class.java))
-            }
         }
 
+        lifecycleScope.launch {
+            whenStarted {
+                viewModel.needsSetup.collect {
+                    if (it) {
+                        startActivity(
+                            Intent(this@MainActivity, OnboardingActivity::class.java)
+                        )
+                    }
+                }
+            }
+        }
         ensureAppUpdated()
     }
 
