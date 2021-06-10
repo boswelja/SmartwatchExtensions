@@ -3,9 +3,6 @@ package com.boswelja.smartwatchextensions.extensions.ui
 import android.app.Application
 import androidx.datastore.core.DataStore
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.boswelja.smartwatchextensions.ConfirmationActivityHandler
 import com.boswelja.smartwatchextensions.PhoneState
@@ -19,7 +16,8 @@ import com.google.android.gms.wearable.MessageClient
 import com.google.android.gms.wearable.NodeClient
 import com.google.android.gms.wearable.Wearable
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
@@ -45,15 +43,14 @@ class ExtensionsViewModel internal constructor(
 
     private val phoneId = phoneStateStore.data.map { it.id }
 
-    private val _phoneConnected = MutableLiveData(false)
+    private val _phoneConnected = MutableStateFlow(false)
 
-    val phoneLockingEnabled =
-        extensionSettingsStore.data.map { it.phoneLockingEnabled }.asLiveData()
-    val batterySyncEnabled = extensionSettingsStore.data.map { it.batterySyncEnabled }.asLiveData()
+    val phoneLockingEnabled = extensionSettingsStore.data.map { it.phoneLockingEnabled }
+    val batterySyncEnabled = extensionSettingsStore.data.map { it.batterySyncEnabled }
 
-    val batteryPercent = phoneStateStore.data.map { it.batteryPercent }.asLiveData()
-    val phoneName = phoneStateStore.data.map { it.name }.asLiveData()
-    val phoneConnected: LiveData<Boolean>
+    val batteryPercent = phoneStateStore.data.map { it.batteryPercent }
+    val phoneName = phoneStateStore.data.map { it.name }
+    val phoneConnected: Flow<Boolean>
         get() = _phoneConnected
 
     init {
@@ -66,54 +63,52 @@ class ExtensionsViewModel internal constructor(
             Timber.d("Checking phone with ID %s is connected", id)
             val connectedNodes = nodeClient.connectedNodes.await()
             val isPhoneConnected = connectedNodes.any { node -> node.id == id && node.isNearby }
-            _phoneConnected.postValue(isPhoneConnected)
+            _phoneConnected.emit(isPhoneConnected)
             Timber.d("isPhoneConnected = %s", isPhoneConnected)
         }
     }
 
     fun updateBatteryStats() {
-        val isBatterySyncEnabled = batterySyncEnabled.value == true
-        val isPhoneConnected = phoneConnected.value == true
-        if (isPhoneConnected && isBatterySyncEnabled) {
-            ConfirmationActivityHandler.successAnimation(getApplication())
-            viewModelScope.launch {
-                phoneId.collect {
-                    messageClient.sendMessage(it, REQUEST_BATTERY_UPDATE_PATH, null)
-                }
+        viewModelScope.launch {
+            val isBatterySyncEnabled = batterySyncEnabled.first()
+            val isPhoneConnected = phoneConnected.first()
+            if (isPhoneConnected && isBatterySyncEnabled) {
+                ConfirmationActivityHandler.successAnimation(getApplication())
+                val phoneId = phoneId.first()
+                messageClient.sendMessage(phoneId, REQUEST_BATTERY_UPDATE_PATH, null)
+            } else if (!isBatterySyncEnabled) {
+                ConfirmationActivityHandler.failAnimation(
+                    getApplication(),
+                    getApplication<Application>().getString(R.string.battery_sync_disabled)
+                )
+            } else {
+                ConfirmationActivityHandler.failAnimation(
+                    getApplication(),
+                    getApplication<Application>().getString(R.string.phone_not_connected)
+                )
             }
-        } else if (!isBatterySyncEnabled) {
-            ConfirmationActivityHandler.failAnimation(
-                getApplication(),
-                getApplication<Application>().getString(R.string.battery_sync_disabled)
-            )
-        } else {
-            ConfirmationActivityHandler.failAnimation(
-                getApplication(),
-                getApplication<Application>().getString(R.string.phone_not_connected)
-            )
         }
     }
 
     fun requestLockPhone() {
-        val phoneLockingEnabled = phoneLockingEnabled.value == true
-        val isPhoneConnected = phoneConnected.value == true
-        if (isPhoneConnected && phoneLockingEnabled) {
-            ConfirmationActivityHandler.successAnimation(getApplication())
-            viewModelScope.launch {
-                phoneId.collect {
-                    messageClient.sendMessage(it, Messages.LOCK_PHONE, null)
-                }
+        viewModelScope.launch {
+            val phoneLockingEnabled = phoneLockingEnabled.first()
+            val isPhoneConnected = phoneConnected.first()
+            if (isPhoneConnected && phoneLockingEnabled) {
+                ConfirmationActivityHandler.successAnimation(getApplication())
+                val phoneId = phoneId.first()
+                messageClient.sendMessage(phoneId, Messages.LOCK_PHONE, null)
+            } else if (!phoneLockingEnabled) {
+                ConfirmationActivityHandler.failAnimation(
+                    getApplication(),
+                    getApplication<Application>().getString(R.string.lock_phone_disabled)
+                )
+            } else {
+                ConfirmationActivityHandler.failAnimation(
+                    getApplication(),
+                    getApplication<Application>().getString(R.string.phone_not_connected)
+                )
             }
-        } else if (!phoneLockingEnabled) {
-            ConfirmationActivityHandler.failAnimation(
-                getApplication(),
-                getApplication<Application>().getString(R.string.lock_phone_disabled)
-            )
-        } else {
-            ConfirmationActivityHandler.failAnimation(
-                getApplication(),
-                getApplication<Application>().getString(R.string.phone_not_connected)
-            )
         }
     }
 }

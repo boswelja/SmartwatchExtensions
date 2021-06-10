@@ -3,7 +3,6 @@ package com.boswelja.smartwatchextensions.dndsync
 import android.app.NotificationManager
 import android.content.Context
 import androidx.core.content.getSystemService
-import androidx.lifecycle.asFlow
 import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.common.dndsync.References.DND_STATUS_PATH
 import com.boswelja.smartwatchextensions.common.preference.PreferenceKey.DND_SYNC_TO_PHONE_KEY
@@ -31,7 +30,7 @@ object Utils {
             // Let other watches know DnD state changed
             Timber.d("Successfully set DnD state")
             // TODO we need to check whether watches have DnD Sync on
-            watchManager.registeredWatches.asFlow().first()
+            watchManager.registeredWatches.first()
                 .filterNot { it.id == sourceWatchId }.forEach { watch ->
                     watchManager.sendMessage(watch, DND_STATUS_PATH, isDnDEnabled.toByteArray())
                 }

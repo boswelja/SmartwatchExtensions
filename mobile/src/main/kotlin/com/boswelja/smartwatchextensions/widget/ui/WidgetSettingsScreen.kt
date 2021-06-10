@@ -3,8 +3,8 @@ package com.boswelja.smartwatchextensions.widget.ui
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -14,14 +14,17 @@ import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.common.ui.CheckboxPreference
 import com.boswelja.smartwatchextensions.common.ui.HeaderItem
 import com.boswelja.smartwatchextensions.common.ui.SliderPreference
+import kotlinx.coroutines.Dispatchers
 
 @ExperimentalMaterialApi
 @Composable
 fun WidgetSettingsScreen() {
     val viewModel: WidgetSettingsViewModel = viewModel()
 
-    val showBackground by viewModel.widgetBackgroundVisible.observeAsState()
-    val backgroundOpacity by viewModel.widgetBackgroundOpacity.observeAsState()
+    val backgroundVisible by viewModel.widgetBackgroundVisible
+        .collectAsState(true, Dispatchers.IO)
+    val backgroundOpacity by viewModel.widgetBackgroundOpacity
+        .collectAsState(60, Dispatchers.IO)
     var currentOpacity by remember {
         mutableStateOf((backgroundOpacity ?: 60) / 100f)
     }
@@ -29,7 +32,7 @@ fun WidgetSettingsScreen() {
         HeaderItem(stringResource(R.string.pref_category_widget_customisation))
         CheckboxPreference(
             text = stringResource(R.string.pref_show_widget_background_title),
-            isChecked = showBackground == true,
+            isChecked = backgroundVisible == true,
             onCheckChanged = {
                 viewModel.setShowBackground(it)
             }

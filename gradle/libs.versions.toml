@@ -38,7 +38,6 @@ androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "a
 androidx-browser = { module = "androidx.browser:browser", version.ref = "androidxBrowser" }
 androidx-core-ktx = { module = "androidx.core:core-ktx", version.ref = "androidxCore" }
 androidx-lifecycle-viewmodel-ktx = { module = "androidx.lifecycle:lifecycle-viewmodel-ktx", version.ref = "androidxLifecycle" }
-androidx-lifecycle-livedata-ktx = { module = "androidx.lifecycle:lifecycle-livedata-ktx", version.ref = "androidxLifecycle" }
 androidx-lifecycle-common-java8 = { module = "androidx.lifecycle:lifecycle-common-java8", version.ref = "androidxLifecycle" }
 androidx-lifecycle-service = { module = "androidx.lifecycle:lifecycle-service", version.ref = "androidxLifecycle" }
 androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "androidxRoom" }
@@ -64,7 +63,6 @@ androidx-compose-foundation = { module = "androidx.compose.foundation:foundation
 androidx-compose-material-core = { module = "androidx.compose.material:material", version.ref = "compose" }
 androidx-compose-material-icons-core = { module = "androidx.compose.material:material-icons-core", version.ref = "compose" }
 androidx-compose-material-icons-extended = { module = "androidx.compose.material:material-icons-extended", version.ref = "compose" }
-androidx-compose-runtime-livedata = { module = "androidx.compose.runtime:runtime-livedata", version.ref = "compose" }
 androidx-compose-activity = { module = "androidx.activity:activity-compose", version.ref = "activityCompose" }
 androidx-compose-viewmodel = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "lifecycleCompose" }
 # Misc libraries
@@ -93,13 +91,11 @@ compose = [
     "androidx-compose-material-core",
     "androidx-compose-material-icons-core",
     "androidx-compose-material-icons-extended",
-    "androidx-compose-runtime-livedata",
     "androidx-compose-activity",
     "androidx-compose-viewmodel"
 ]
 lifecycle = [
     "androidx-lifecycle-viewmodel-ktx",
-    "androidx-lifecycle-livedata-ktx",
     "androidx-lifecycle-common-java8",
     "androidx-lifecycle-service"
 ]

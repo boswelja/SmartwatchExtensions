@@ -17,8 +17,8 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.asImageBitmap
@@ -34,6 +34,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.databinding.CommonWidgetBackgroundBinding
 import com.boswelja.smartwatchextensions.databinding.WidgetWatchBatteryBinding
+import kotlinx.coroutines.Dispatchers
 
 @Composable
 fun WidgetSettingsHeader() {
@@ -43,8 +44,10 @@ fun WidgetSettingsHeader() {
             .aspectRatio(16f / 9)
     ) {
         val viewModel: WidgetSettingsViewModel = viewModel()
-        val backgroundVisible by viewModel.widgetBackgroundVisible.observeAsState()
-        val backgroundOpacity by viewModel.widgetBackgroundOpacity.observeAsState()
+        val backgroundVisible by viewModel.widgetBackgroundVisible
+            .collectAsState(true, Dispatchers.IO)
+        val backgroundOpacity by viewModel.widgetBackgroundOpacity
+            .collectAsState(60, Dispatchers.IO)
         WidgetPreviews(
             backgroundVisible = backgroundVisible ?: true,
             backgroundOpacity = backgroundOpacity ?: 60,

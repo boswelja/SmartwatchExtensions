@@ -19,8 +19,8 @@ import androidx.compose.material.icons.outlined.Policy
 import androidx.compose.material.icons.outlined.Share
 import androidx.compose.material.icons.outlined.Source
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -88,7 +88,7 @@ fun AboutApp() {
 @Composable
 fun Versions() {
     val viewModelAbout: AboutAppViewModel = viewModel()
-    val watchVersion by viewModelAbout.watchAppVersion.observeAsState()
+    val watchVersion by viewModelAbout.watchAppVersion.collectAsState(null)
     Column {
         HeaderItem(stringResource(R.string.about_category_versions))
         ListItem(

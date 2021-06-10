@@ -23,8 +23,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material.icons.outlined.Watch
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -35,6 +35,7 @@ import com.boswelja.smartwatchextensions.watchinfo.ui.WatchInfoActivity
 import com.boswelja.smartwatchextensions.watchmanager.WatchManager
 import com.boswelja.smartwatchextensions.watchmanager.ui.register.RegisterWatchActivity
 import com.boswelja.watchconnection.core.Watch
+import kotlinx.coroutines.Dispatchers
 
 class WatchManagerActivity : AppCompatActivity() {
 
@@ -55,7 +56,8 @@ class WatchManagerActivity : AppCompatActivity() {
                         )
                     }
                 ) {
-                    val registeredWatches by watchManager.registeredWatches.observeAsState()
+                    val registeredWatches by watchManager.registeredWatches
+                        .collectAsState(emptyList(), Dispatchers.IO)
                     LazyColumn(Modifier.padding(vertical = 8.dp)) {
                         item {
                             ListItem(
@@ -75,7 +77,7 @@ class WatchManagerActivity : AppCompatActivity() {
                                 stringResource(R.string.watch_manager_registered_watch_header)
                             )
                         }
-                        items(registeredWatches ?: emptyList()) { watch ->
+                        items(registeredWatches) { watch ->
                             ListItem(
                                 icon = {
                                     Icon(

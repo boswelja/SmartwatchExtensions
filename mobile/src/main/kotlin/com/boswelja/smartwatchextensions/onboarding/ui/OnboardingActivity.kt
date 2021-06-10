@@ -17,7 +17,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.NavigateNext
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.res.stringResource
@@ -99,8 +98,7 @@ class OnboardingActivity : AppCompatActivity() {
                     )
                 }
                 Destination.REGISTER_WATCHES -> {
-                    val addedWatches by registerWatchViewModel.registeredWatches.observeAsState()
-                    RegisterWatchScreen(addedWatches)
+                    RegisterWatchScreen(registerWatchViewModel.addedWatches)
                 }
             }
         }

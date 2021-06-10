@@ -24,8 +24,8 @@ import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.icons.outlined.Watch
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -35,17 +35,22 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.lifecycleScope
 import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.common.ui.AppTheme
 import com.boswelja.smartwatchextensions.common.ui.UpNavigationAppBar
+import com.boswelja.watchconnection.core.Watch
+import java.util.UUID
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import java.util.UUID
 
 class WatchInfoActivity : AppCompatActivity() {
 
     private val watchId by lazy { intent?.getStringExtra(EXTRA_WATCH_ID)!! }
+    @ExperimentalCoroutinesApi
     private val viewModel: WatchInfoViewModel by viewModels()
     private var watchName by mutableStateOf("")
 
@@ -53,9 +58,11 @@ class WatchInfoActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        viewModel.setWatch(UUID.fromString(watchId))
-        viewModel.watch.observe(this) {
-            it?.let { watch -> watchName = watch.name }
+        viewModel.watchId.tryEmit(UUID.fromString(watchId))
+        lifecycleScope.launch {
+            viewModel.watch.collect {
+                it?.let { watch -> watchName = watch.name }
+            }
         }
 
         setContent {
@@ -66,7 +73,11 @@ class WatchInfoActivity : AppCompatActivity() {
                 var watchNameError by remember { mutableStateOf(false) }
                 var clearPreferencesDialogVisible by remember { mutableStateOf(false) }
                 var forgetWatchDialogVisible by remember { mutableStateOf(false) }
-                val capabilities by viewModel.getCapabilities().observeAsState()
+
+                val watch by viewModel.watch.collectAsState(null, Dispatchers.IO)
+                val capabilities by viewModel.getCapabilities()
+                    .collectAsState(emptyList(), Dispatchers.IO)
+
                 Scaffold(
                     scaffoldState = scaffoldState,
                     topBar = { UpNavigationAppBar(onNavigateUp = { finish() }) }
@@ -95,15 +106,13 @@ class WatchInfoActivity : AppCompatActivity() {
                             style = MaterialTheme.typography.h6,
                             modifier = Modifier.padding(top = 16.dp)
                         )
-                        capabilities?.let { capabilities ->
-                            LazyColumn(horizontalAlignment = Alignment.CenterHorizontally) {
-                                items(capabilities) { capability ->
-                                    Text(
-                                        stringResource(capability.label),
-                                        textAlign = TextAlign.Center,
-                                        style = MaterialTheme.typography.body1
-                                    )
-                                }
+                        LazyColumn(horizontalAlignment = Alignment.CenterHorizontally) {
+                            items(capabilities) { capability ->
+                                Text(
+                                    stringResource(capability.label),
+                                    textAlign = TextAlign.Center,
+                                    style = MaterialTheme.typography.body1
+                                )
                             }
                         }
                         OutlinedButton(
@@ -123,6 +132,7 @@ class WatchInfoActivity : AppCompatActivity() {
                     }
                     if (clearPreferencesDialogVisible) {
                         ResetSettingsDialog(
+                            watch = watch!!,
                             onDismissDialog = {
                                 clearPreferencesDialogVisible = false
                                 if (it) {
@@ -137,6 +147,7 @@ class WatchInfoActivity : AppCompatActivity() {
                     }
                     if (forgetWatchDialogVisible) {
                         ForgetWatchDialog(
+                            watch = watch!!,
                             onDismissDialog = {
                                 forgetWatchDialogVisible = false
                                 if (it) finish()
@@ -148,15 +159,23 @@ class WatchInfoActivity : AppCompatActivity() {
         }
     }
 
+    @ExperimentalCoroutinesApi
     override fun onPause() {
         super.onPause()
         if (watchName.isNotBlank()) {
-            viewModel.updateWatchName(watchName)
+            lifecycleScope.launch {
+                viewModel.updateWatchName(watchName)
+            }
         }
     }
 
+    @ExperimentalCoroutinesApi
     @Composable
-    fun ResetSettingsDialog(onDismissDialog: (Boolean) -> Unit) {
+    fun ResetSettingsDialog(
+        watch: Watch,
+        onDismissDialog: (Boolean) -> Unit
+    ) {
+        val coroutineScope = rememberCoroutineScope()
         AlertDialog(
             onDismissRequest = { onDismissDialog(false) },
             title = { Text(stringResource(R.string.clear_preferences_dialog_title)) },
@@ -164,15 +183,17 @@ class WatchInfoActivity : AppCompatActivity() {
                 Text(
                     stringResource(
                         R.string.clear_preferences_dialog_message,
-                        viewModel.watch.value?.name.toString()
+                        watch.name
                     )
                 )
             },
             confirmButton = {
                 TextButton(
                     onClick = {
-                        viewModel.resetWatchPreferences()
-                        onDismissDialog(true)
+                        coroutineScope.launch {
+                            viewModel.resetWatchPreferences()
+                            onDismissDialog(true)
+                        }
                     }
                 ) {
                     Text(stringResource(R.string.dialog_button_reset))
@@ -186,8 +207,13 @@ class WatchInfoActivity : AppCompatActivity() {
         )
     }
 
+    @ExperimentalCoroutinesApi
     @Composable
-    fun ForgetWatchDialog(onDismissDialog: (Boolean) -> Unit) {
+    fun ForgetWatchDialog(
+        watch: Watch,
+        onDismissDialog: (Boolean) -> Unit
+    ) {
+        val coroutineScope = rememberCoroutineScope()
         AlertDialog(
             onDismissRequest = { onDismissDialog(false) },
             title = { Text(stringResource(R.string.forget_watch_dialog_title)) },
@@ -195,16 +221,18 @@ class WatchInfoActivity : AppCompatActivity() {
                 Text(
                     stringResource(
                         R.string.forget_watch_dialog_message,
-                        viewModel.watch.value?.name.toString(),
-                        viewModel.watch.value?.name.toString()
+                        watch.name,
+                        watch.name
                     )
                 )
             },
             confirmButton = {
                 TextButton(
                     onClick = {
-                        viewModel.forgetWatch()
-                        onDismissDialog(true)
+                        coroutineScope.launch {
+                            viewModel.forgetWatch()
+                            onDismissDialog(true)
+                        }
                     }
                 ) {
                     Text(stringResource(R.string.button_forget_watch))

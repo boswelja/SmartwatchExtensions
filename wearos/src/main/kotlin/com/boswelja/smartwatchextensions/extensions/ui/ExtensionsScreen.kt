@@ -17,8 +17,8 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -29,6 +29,7 @@ import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.about.ui.AboutActivity
 import com.boswelja.smartwatchextensions.batterysync.ui.BatterySyncScreen
 import com.boswelja.smartwatchextensions.phonelocking.ui.PhoneLockingScreen
+import kotlinx.coroutines.Dispatchers
 
 @ExperimentalMaterialApi
 @Composable
@@ -68,20 +69,22 @@ fun ColumnInsetLayout(
 fun Extensions() {
     Column {
         val viewModel: ExtensionsViewModel = viewModel()
-        val batterySyncEnabled by viewModel.batterySyncEnabled.observeAsState()
-        val batteryPercent by viewModel.batteryPercent.observeAsState()
-        val phoneName by viewModel.phoneName.observeAsState()
+        val batterySyncEnabled by viewModel.batterySyncEnabled.collectAsState(false, Dispatchers.IO)
+        val batteryPercent by viewModel.batteryPercent.collectAsState(0, Dispatchers.IO)
+        val phoneName by viewModel.phoneName
+            .collectAsState(stringResource(R.string.default_phone_name), Dispatchers.IO)
         BatterySyncScreen(
-            batterySyncEnabled = batterySyncEnabled == true,
-            batteryPercent = batteryPercent ?: 0,
-            phoneName = phoneName ?: stringResource(R.string.default_phone_name)
+            batterySyncEnabled = batterySyncEnabled,
+            batteryPercent = batteryPercent,
+            phoneName = phoneName
         ) {
             viewModel.updateBatteryStats()
         }
-        val phoneLockingEnabled by viewModel.phoneLockingEnabled.observeAsState()
+        val phoneLockingEnabled by viewModel.phoneLockingEnabled
+            .collectAsState(false, Dispatchers.IO)
         PhoneLockingScreen(
-            phoneLockingEnabled = phoneLockingEnabled == true,
-            phoneName = phoneName ?: stringResource(R.string.default_phone_name)
+            phoneLockingEnabled = phoneLockingEnabled,
+            phoneName = phoneName
         ) {
             viewModel.requestLockPhone()
         }

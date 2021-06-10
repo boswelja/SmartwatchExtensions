@@ -32,7 +32,6 @@ import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -70,7 +69,8 @@ class AppManagerActivity : AppCompatActivity() {
                 stringResource(R.string.watch_manager_action_continue_on_watch)
             val viewModel: AppManagerViewModel = viewModel()
 
-            val registeredWatches by viewModel.registeredWatches.observeAsState()
+            val registeredWatches by viewModel.registeredWatches
+                .collectAsState(emptyList(), Dispatchers.IO)
 
             val scaffoldState = rememberScaffoldState()
 

@@ -14,8 +14,8 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ArrowDownward
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -27,6 +27,7 @@ import androidx.compose.ui.unit.dp
 import androidx.core.graphics.drawable.toBitmap
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.boswelja.smartwatchextensions.R
+import kotlinx.coroutines.Dispatchers
 
 @Composable
 fun OnboardingScreen() {
@@ -95,7 +96,7 @@ fun PhoneInstallInstructions() {
 @Composable
 fun PhoneSetupInstructions() {
     val viewModel: OnboardingViewModel = viewModel()
-    val watchName by viewModel.setupNameText.observeAsState()
+    val watchName by viewModel.watchName().collectAsState("Error", Dispatchers.Default)
     Column(
         Modifier
             .fillMaxWidth()
@@ -110,7 +111,7 @@ fun PhoneSetupInstructions() {
             textAlign = TextAlign.Center
         )
         Text(
-            watchName ?: "Error",
+            watchName,
             style = MaterialTheme.typography.h6
         )
         Text(
@@ -126,7 +127,9 @@ fun DownArrow() {
     Icon(
         Icons.Outlined.ArrowDownward,
         stringResource(R.string.content_description_scroll_down),
-        Modifier.padding(8.dp).size(24.dp),
+        Modifier
+            .padding(8.dp)
+            .size(24.dp),
         tint = Color.White
     )
 }

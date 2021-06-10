@@ -2,7 +2,6 @@ package com.boswelja.smartwatchextensions.onboarding.ui
 
 import android.os.Build
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.lifecycle.MutableLiveData
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.boswelja.smartwatchextensions.watchmanager.WatchManager
@@ -15,6 +14,7 @@ import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.runBlocking
 import org.junit.Before
@@ -36,7 +36,7 @@ class RegisterWatchViewModelTest {
     private val dummyWatch3 = Watch("Watch 3", "id3", WearOSPlatform.PLATFORM)
     private val dummyWatches = arrayOf(dummyWatch1, dummyWatch2, dummyWatch3)
     private var availableWatches: Flow<List<Watch>> = flow { }
-    private val registeredWatches = MutableLiveData(emptyList<Watch>())
+    private val registeredWatches = MutableStateFlow(emptyList<Watch>())
 
     @RelaxedMockK private lateinit var watchManager: WatchManager
     private lateinit var viewModel: RegisterWatchViewModel
@@ -46,7 +46,7 @@ class RegisterWatchViewModelTest {
         MockKAnnotations.init(this)
 
         setAvailableWatches(*dummyWatches)
-        registeredWatches.postValue(emptyList())
+        registeredWatches.tryEmit(emptyList())
 
         every { watchManager.availableWatches } returns availableWatches
         every { watchManager.registeredWatches } returns registeredWatches
@@ -60,7 +60,7 @@ class RegisterWatchViewModelTest {
     @Test
     fun `addWatch calls watchManager and updates LiveData`(): Unit = runBlocking {
         setAvailableWatches(dummyWatch1)
-        registeredWatches.postValue(emptyList())
+        registeredWatches.tryEmit(emptyList())
 
         viewModel.addWatch(dummyWatch1)
         coVerify { watchManager.registerWatch(dummyWatch1) }

@@ -3,7 +3,6 @@ package com.boswelja.smartwatchextensions.dndsync.ui
 import android.app.NotificationManager
 import android.os.Build
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.lifecycle.MutableLiveData
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.boswelja.smartwatchextensions.common.connection.Capability
@@ -36,7 +35,7 @@ class DnDSyncSettingsViewModelTest {
 
     private val dummyWatch = Watch("Name", "id", "platform")
     private val dummyCapabilities = MutableStateFlow<List<Capability>>(emptyList())
-    private val dummyWatchLive = MutableLiveData(dummyWatch)
+    private val dummyWatchLive = MutableStateFlow(dummyWatch)
 
     @RelaxedMockK
     private lateinit var watchManager: WatchManager
@@ -52,7 +51,7 @@ class DnDSyncSettingsViewModelTest {
         runBlocking { dummyCapabilities.emit(emptyList()) }
 
         every { watchManager.selectedWatchCapabilities() } returns dummyCapabilities
-        every { watchManager.selectedWatchLiveData } returns dummyWatchLive
+        every { watchManager.selectedWatch } returns dummyWatchLive
 
         viewModel = DnDSyncSettingsViewModel(
             ApplicationProvider.getApplicationContext(),

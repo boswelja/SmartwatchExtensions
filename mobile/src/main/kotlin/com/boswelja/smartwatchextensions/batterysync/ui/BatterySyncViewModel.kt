@@ -2,9 +2,6 @@ package com.boswelja.smartwatchextensions.batterysync.ui
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.asLiveData
-import androidx.lifecycle.liveData
-import androidx.lifecycle.switchMap
 import androidx.lifecycle.viewModelScope
 import com.boswelja.smartwatchextensions.batterysync.BatterySyncWorker
 import com.boswelja.smartwatchextensions.batterysync.Utils.updateBatteryStats
@@ -22,6 +19,9 @@ import com.boswelja.smartwatchextensions.watchmanager.WatchManager
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -56,31 +56,32 @@ class BatterySyncViewModel internal constructor(
         capabilities.contains(Capability.SYNC_BATTERY)
     }
 
-    val batteryStats = watchManager.selectedWatchLiveData.switchMap {
-        it?.let { database.batteryStatsDao().getStats(it.id) }?.asLiveData() ?: liveData { }
+    val batteryStats = watchManager.selectedWatch.flatMapLatest {
+        it?.let { database.batteryStatsDao().getStats(it.id) } ?: flow { }
     }
 
     fun setBatterySyncEnabled(isEnabled: Boolean) {
         viewModelScope.launch(dispatcher) {
+            val selectedWatch = watchManager.selectedWatch.first()
             if (isEnabled) {
                 val workerStartSuccessful = BatterySyncWorker.startWorker(
-                    getApplication(), watchManager.selectedWatchLiveData.value!!.id
+                    getApplication(), selectedWatch!!.id
                 )
                 if (workerStartSuccessful) {
                     watchManager.updatePreference(
-                        watchManager.selectedWatchLiveData.value!!,
+                        selectedWatch,
                         BATTERY_SYNC_ENABLED_KEY, isEnabled
                     )
-                    updateBatteryStats(getApplication(), watchManager.selectedWatchLiveData.value)
+                    updateBatteryStats(getApplication(), selectedWatch)
                 } else {
                     Timber.w("Failed to enable battery sync")
                 }
             } else {
                 watchManager.updatePreference(
-                    watchManager.selectedWatchLiveData.value!!, BATTERY_SYNC_ENABLED_KEY, isEnabled
+                    selectedWatch!!, BATTERY_SYNC_ENABLED_KEY, isEnabled
                 )
                 BatterySyncWorker.stopWorker(
-                    getApplication(), watchManager.selectedWatchLiveData.value!!.id
+                    getApplication(), selectedWatch.id
                 )
             }
         }
@@ -88,20 +89,22 @@ class BatterySyncViewModel internal constructor(
 
     fun setSyncInterval(syncInterval: Int) {
         viewModelScope.launch(dispatcher) {
+            val selectedWatch = watchManager.selectedWatch.first()
             watchManager.updatePreference(
-                watchManager.selectedWatchLiveData.value!!, BATTERY_SYNC_INTERVAL_KEY, syncInterval
+                selectedWatch!!, BATTERY_SYNC_INTERVAL_KEY, syncInterval
             )
             BatterySyncWorker
-                .stopWorker(getApplication(), watchManager.selectedWatchLiveData.value!!.id)
+                .stopWorker(getApplication(), selectedWatch.id)
             BatterySyncWorker
-                .startWorker(getApplication(), watchManager.selectedWatchLiveData.value!!.id)
+                .startWorker(getApplication(), selectedWatch.id)
         }
     }
 
     fun setChargeThreshold(chargeThreshold: Int) {
         viewModelScope.launch(dispatcher) {
+            val selectedWatch = watchManager.selectedWatch.first()
             watchManager.updatePreference(
-                watchManager.selectedWatchLiveData.value!!,
+                selectedWatch!!,
                 BATTERY_CHARGE_THRESHOLD_KEY, chargeThreshold
             )
         }
@@ -109,40 +112,45 @@ class BatterySyncViewModel internal constructor(
 
     fun setPhoneChargeNotiEnabled(isEnabled: Boolean) {
         viewModelScope.launch(dispatcher) {
+            val selectedWatch = watchManager.selectedWatch.first()
             watchManager.updatePreference(
-                watchManager.selectedWatchLiveData.value!!, BATTERY_PHONE_CHARGE_NOTI_KEY, isEnabled
+                selectedWatch!!, BATTERY_PHONE_CHARGE_NOTI_KEY, isEnabled
             )
         }
     }
 
     fun setWatchChargeNotiEnabled(isEnabled: Boolean) {
         viewModelScope.launch(dispatcher) {
+            val selectedWatch = watchManager.selectedWatch.first()
             watchManager.updatePreference(
-                watchManager.selectedWatchLiveData.value!!, BATTERY_WATCH_CHARGE_NOTI_KEY, isEnabled
+                selectedWatch!!, BATTERY_WATCH_CHARGE_NOTI_KEY, isEnabled
             )
         }
     }
 
     fun setPhoneLowNotiEnabled(isEnabled: Boolean) {
         viewModelScope.launch(dispatcher) {
+            val selectedWatch = watchManager.selectedWatch.first()
             watchManager.updatePreference(
-                watchManager.selectedWatchLiveData.value!!, BATTERY_PHONE_LOW_NOTI_KEY, isEnabled
+                selectedWatch!!, BATTERY_PHONE_LOW_NOTI_KEY, isEnabled
             )
         }
     }
 
     fun setWatchLowNotiEnabled(isEnabled: Boolean) {
         viewModelScope.launch(dispatcher) {
+            val selectedWatch = watchManager.selectedWatch.first()
             watchManager.updatePreference(
-                watchManager.selectedWatchLiveData.value!!, BATTERY_WATCH_LOW_NOTI_KEY, isEnabled
+                selectedWatch!!, BATTERY_WATCH_LOW_NOTI_KEY, isEnabled
             )
         }
     }
 
     fun setLowBatteryThreshold(lowThreshold: Int) {
         viewModelScope.launch(dispatcher) {
+            val selectedWatch = watchManager.selectedWatch.first()
             watchManager.updatePreference(
-                watchManager.selectedWatchLiveData.value!!, BATTERY_LOW_THRESHOLD_KEY, lowThreshold
+                selectedWatch!!, BATTERY_LOW_THRESHOLD_KEY, lowThreshold
             )
         }
     }

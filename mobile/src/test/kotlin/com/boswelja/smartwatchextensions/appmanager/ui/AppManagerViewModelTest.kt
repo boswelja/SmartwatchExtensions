@@ -3,7 +3,6 @@ package com.boswelja.smartwatchextensions.appmanager.ui
 import android.app.Application
 import android.os.Build
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.lifecycle.liveData
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -77,7 +76,7 @@ class AppManagerViewModelTest {
         } returns flow { emit(watch.toDbWatch()) }
         every {
             watchManagerRule.watchManager.registeredWatches
-        } returns liveData { emit(listOf(watch)) }
+        } returns flow { emit(listOf(watch)) }
         every { watchManagerRule.watchManager.registerMessageListener(any()) } just Runs
         every { watchManagerRule.watchManager.unregisterMessageListener(any()) } just Runs
         coEvery { watchManagerRule.watchManager.sendMessage(any(), any(), any()) } returns true

@@ -11,7 +11,6 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -23,6 +22,7 @@ import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.batterysync.database.WatchBatteryStats
 import com.boswelja.smartwatchextensions.common.BatteryIcon
 import java.util.concurrent.TimeUnit
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 @ExperimentalCoroutinesApi
@@ -31,7 +31,7 @@ fun BatterySyncSettingsHeader() {
     val viewModel: BatterySyncViewModel = viewModel()
     val batterySyncEnabled by viewModel.batterySyncEnabled.collectAsState(false)
     if (batterySyncEnabled) {
-        val batteryStats by viewModel.batteryStats.observeAsState()
+        val batteryStats by viewModel.batteryStats.collectAsState(null, Dispatchers.IO)
         batteryStats.let {
             if (it != null) {
                 BatteryStats(it)
