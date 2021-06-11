@@ -53,10 +53,6 @@ fun BatterySyncSettings(
 
     val canSyncBattery by viewModel.canSyncBattery.collectAsState(false)
     val batterySyncEnabled by viewModel.batterySyncEnabled.collectAsState(false)
-    val syncInterval by viewModel.syncInterval.collectAsState(15)
-    var currentInterval by remember {
-        mutableStateOf(syncInterval / 100f)
-    }
 
     Column(modifier) {
         HeaderItem(stringResource(R.string.category_battery_sync_settings))
@@ -70,19 +66,6 @@ fun BatterySyncSettings(
                 viewModel.setBatterySyncEnabled(it)
             },
             isEnabled = canSyncBattery
-        )
-        SliderPreference(
-            text = stringResource(R.string.battery_sync_interval_title),
-            value = currentInterval,
-            valueRange = 0.15f..0.60f,
-            trailingFormat = stringResource(R.string.battery_sync_interval),
-            isEnabled = batterySyncEnabled,
-            onSliderValueChanged = {
-                currentInterval = it
-            },
-            onSliderValueFinished = {
-                viewModel.setSyncInterval((currentInterval * 100).toInt())
-            }
         )
     }
 }
