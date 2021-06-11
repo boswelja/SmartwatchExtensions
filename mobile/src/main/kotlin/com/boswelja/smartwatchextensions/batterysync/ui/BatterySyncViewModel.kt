@@ -12,7 +12,6 @@ import com.boswelja.smartwatchextensions.common.preference.PreferenceKey.BATTERY
 import com.boswelja.smartwatchextensions.common.preference.PreferenceKey.BATTERY_PHONE_CHARGE_NOTI_KEY
 import com.boswelja.smartwatchextensions.common.preference.PreferenceKey.BATTERY_PHONE_LOW_NOTI_KEY
 import com.boswelja.smartwatchextensions.common.preference.PreferenceKey.BATTERY_SYNC_ENABLED_KEY
-import com.boswelja.smartwatchextensions.common.preference.PreferenceKey.BATTERY_SYNC_INTERVAL_KEY
 import com.boswelja.smartwatchextensions.common.preference.PreferenceKey.BATTERY_WATCH_CHARGE_NOTI_KEY
 import com.boswelja.smartwatchextensions.common.preference.PreferenceKey.BATTERY_WATCH_LOW_NOTI_KEY
 import com.boswelja.smartwatchextensions.watchmanager.WatchManager
@@ -44,7 +43,6 @@ class BatterySyncViewModel internal constructor(
         WatchBatteryStatsDatabase.getInstance(application)
 
     val batterySyncEnabled = watchManager.getBoolSetting(BATTERY_SYNC_ENABLED_KEY)
-    val syncInterval = watchManager.getIntSetting(BATTERY_SYNC_INTERVAL_KEY)
     val phoneChargeNotiEnabled = watchManager.getBoolSetting(BATTERY_PHONE_CHARGE_NOTI_KEY)
     val watchChargeNotiEnabled = watchManager.getBoolSetting(BATTERY_WATCH_CHARGE_NOTI_KEY)
     val chargeThreshold = watchManager.getIntSetting(BATTERY_CHARGE_THRESHOLD_KEY)
@@ -84,19 +82,6 @@ class BatterySyncViewModel internal constructor(
                     getApplication(), selectedWatch.id
                 )
             }
-        }
-    }
-
-    fun setSyncInterval(syncInterval: Int) {
-        viewModelScope.launch(dispatcher) {
-            val selectedWatch = watchManager.selectedWatch.first()
-            watchManager.updatePreference(
-                selectedWatch!!, BATTERY_SYNC_INTERVAL_KEY, syncInterval
-            )
-            BatterySyncWorker
-                .stopWorker(getApplication(), selectedWatch.id)
-            BatterySyncWorker
-                .startWorker(getApplication(), selectedWatch.id)
         }
     }
 

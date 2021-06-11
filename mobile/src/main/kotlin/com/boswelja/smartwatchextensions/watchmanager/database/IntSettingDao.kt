@@ -20,6 +20,9 @@ interface IntSettingDao {
     @Query("SELECT * FROM int_preferences WHERE pref_key = :key")
     fun getByKey(key: String): Flow<List<IntSetting>>
 
+    @Query("DELETE FROM int_preferences WHERE pref_key = :key")
+    suspend fun deleteByKey(key: String)
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun update(intPreference: IntSetting)
 
