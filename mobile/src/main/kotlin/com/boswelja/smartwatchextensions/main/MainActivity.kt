@@ -2,6 +2,7 @@ package com.boswelja.smartwatchextensions.main
 
 import android.content.Intent
 import android.os.Bundle
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -79,6 +80,11 @@ class MainActivity : AppCompatActivity() {
 
             val scaffoldState = rememberScaffoldState()
 
+            // Switch the destination back to Dashboard if we're not already there
+            BackHandler(enabled = currentDestination != Destination.DASHBOARD) {
+                currentDestination = Destination.DASHBOARD
+            }
+
             AppTheme {
                 Scaffold(
                     scaffoldState = scaffoldState,
@@ -113,11 +119,6 @@ class MainActivity : AppCompatActivity() {
             }
         }
         ensureAppUpdated()
-    }
-
-    override fun onBackPressed() {
-        if (currentDestination != Destination.DASHBOARD) currentDestination = Destination.DASHBOARD
-        else super.onBackPressed()
     }
 
     private fun ensureAppUpdated() {
