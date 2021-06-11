@@ -35,6 +35,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.lifecycleScope
 import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.aboutapp.ui.AboutAppScreen
+import com.boswelja.smartwatchextensions.analytics.Analytics
 import com.boswelja.smartwatchextensions.appsettings.ui.AppSettingsScreen
 import com.boswelja.smartwatchextensions.common.ui.AppTheme
 import com.boswelja.smartwatchextensions.common.ui.WatchPickerAppBar
@@ -53,6 +54,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 class MainActivity : AppCompatActivity() {
 
@@ -120,29 +122,36 @@ class MainActivity : AppCompatActivity() {
     }
 
     private suspend fun ensureAppUpdated() {
-        // Get update info
-        val appUpdateManager = AppUpdateManagerFactory.create(this)
-        val updateInfo = appUpdateManager.requestAppUpdateInfo()
+        // Wrap with try/catch to prevent crashing in cases where Smartwatch Extensions wasn't
+        // installed from Google Play
+        try {
+            // Get update info
+            val appUpdateManager = AppUpdateManagerFactory.create(this)
+            val updateInfo = appUpdateManager.requestAppUpdateInfo()
 
-        when (updateInfo.updatePriority()) {
-            HOTFIX_UPDATE,
-            FEATURE_UPDATE -> {
-                // Only send a message for low priority updates
-                val message = Message(
-                    Message.Icon.UPDATE,
-                    getString(R.string.update_available_title),
-                    getString(R.string.update_available_text)
-                )
-                sendMessage(message, Priority.LOW)
+            when (updateInfo.updatePriority()) {
+                HOTFIX_UPDATE,
+                FEATURE_UPDATE -> {
+                    // Only send a message for low priority updates
+                    val message = Message(
+                        Message.Icon.UPDATE,
+                        getString(R.string.update_available_title),
+                        getString(R.string.update_available_text)
+                    )
+                    sendMessage(message, Priority.LOW)
+                }
+                BREAKING_UPDATE -> {
+                    // Prompt the user to update immediately for high priority updates
+                    appUpdateManager.startUpdateFlow(
+                        updateInfo,
+                        this,
+                        AppUpdateOptions.defaultOptions(AppUpdateType.IMMEDIATE)
+                    )
+                }
             }
-            BREAKING_UPDATE -> {
-                // Prompt the user to update immediately for high priority updates
-                appUpdateManager.startUpdateFlow(
-                    updateInfo,
-                    this,
-                    AppUpdateOptions.defaultOptions(AppUpdateType.IMMEDIATE)
-                )
-            }
+        } catch (e: Exception) {
+            Timber.w("Not installed from Google Play, disabling Analytics")
+            Analytics().setAnalyticsEnabled(false)
         }
     }
 
