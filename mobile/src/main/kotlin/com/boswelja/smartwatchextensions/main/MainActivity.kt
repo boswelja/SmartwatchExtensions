@@ -145,13 +145,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    enum class Destination {
-        DASHBOARD,
-        MESSAGES,
-        SETTINGS,
-        ABOUT
-    }
-
     companion object {
         private const val HOTFIX_UPDATE = 1
         private const val FEATURE_UPDATE = 3
@@ -161,59 +154,66 @@ class MainActivity : AppCompatActivity() {
     }
 }
 
+enum class Destination {
+    DASHBOARD,
+    MESSAGES,
+    SETTINGS,
+    ABOUT
+}
+
 @ExperimentalCoroutinesApi
 @ExperimentalMaterialApi
 @ExperimentalAnimationApi
 @Composable
-fun MainScreen(scaffoldState: ScaffoldState, currentDestination: MainActivity.Destination) {
+fun MainScreen(scaffoldState: ScaffoldState, currentDestination: Destination) {
     Crossfade(targetState = currentDestination) {
         when (it) {
-            MainActivity.Destination.DASHBOARD -> DashboardScreen()
-            MainActivity.Destination.MESSAGES -> MessagesScreen(scaffoldState = scaffoldState)
-            MainActivity.Destination.SETTINGS -> AppSettingsScreen()
-            MainActivity.Destination.ABOUT -> AboutAppScreen()
+            Destination.DASHBOARD -> DashboardScreen()
+            Destination.MESSAGES -> MessagesScreen(scaffoldState = scaffoldState)
+            Destination.SETTINGS -> AppSettingsScreen()
+            Destination.ABOUT -> AboutAppScreen()
         }
     }
 }
 
 @Composable
 fun BottonNav(
-    currentDestination: MainActivity.Destination,
-    setCurrentDestination: (MainActivity.Destination) -> Unit
+    currentDestination: Destination,
+    setCurrentDestination: (Destination) -> Unit
 ) {
     BottomNavigation(
         backgroundColor = MaterialTheme.colors.background
     ) {
         BottomNavItem(
-            selected = currentDestination == MainActivity.Destination.DASHBOARD,
+            selected = currentDestination == Destination.DASHBOARD,
             icon = Icons.Outlined.Dashboard,
             label = stringResource(R.string.bottom_nav_dashboard_label),
             onClick = {
-                setCurrentDestination(MainActivity.Destination.DASHBOARD)
+                setCurrentDestination(Destination.DASHBOARD)
             }
         )
         BottomNavItem(
-            selected = currentDestination == MainActivity.Destination.MESSAGES,
+            selected = currentDestination == Destination.MESSAGES,
             icon = Icons.Outlined.Message,
             label = stringResource(R.string.nav_messages_label),
             onClick = {
-                setCurrentDestination(MainActivity.Destination.MESSAGES)
+                setCurrentDestination(Destination.MESSAGES)
             }
         )
         BottomNavItem(
-            selected = currentDestination == MainActivity.Destination.SETTINGS,
+            selected = currentDestination == Destination.SETTINGS,
             icon = Icons.Outlined.Settings,
             label = stringResource(R.string.bottom_nav_app_settings_label),
             onClick = {
-                setCurrentDestination(MainActivity.Destination.SETTINGS)
+                setCurrentDestination(Destination.SETTINGS)
             }
         )
         BottomNavItem(
-            selected = currentDestination == MainActivity.Destination.ABOUT,
+            selected = currentDestination == Destination.ABOUT,
             icon = Icons.Outlined.Info,
             label = stringResource(R.string.bottom_nav_about_label),
             onClick = {
-                setCurrentDestination(MainActivity.Destination.ABOUT)
+                setCurrentDestination(Destination.ABOUT)
             }
         )
     }
