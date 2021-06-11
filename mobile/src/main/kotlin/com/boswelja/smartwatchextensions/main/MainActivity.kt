@@ -28,6 +28,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
@@ -58,8 +59,6 @@ class MainActivity : AppCompatActivity() {
     @ExperimentalCoroutinesApi
     private val viewModel: MainViewModel by viewModels()
 
-    private var currentDestination by mutableStateOf(Destination.DASHBOARD)
-
     @ExperimentalCoroutinesApi
     @ExperimentalAnimationApi
     @ExperimentalMaterialApi
@@ -74,6 +73,8 @@ class MainActivity : AppCompatActivity() {
             val selectedWatch by viewModel.selectedWatch.collectAsState(null, Dispatchers.IO)
             val registeredWatches by viewModel.registeredWatches
                 .collectAsState(emptyList(), Dispatchers.IO)
+
+            var currentDestination by remember { mutableStateOf(Destination.DASHBOARD) }
 
             val scaffoldState = rememberScaffoldState()
 
