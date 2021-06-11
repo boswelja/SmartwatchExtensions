@@ -2,6 +2,7 @@ package com.boswelja.smartwatchextensions.main
 
 import android.content.Intent
 import android.os.Bundle
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -27,13 +28,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.whenStarted
 import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.aboutapp.ui.AboutAppScreen
+import com.boswelja.smartwatchextensions.analytics.Analytics
 import com.boswelja.smartwatchextensions.appsettings.ui.AppSettingsScreen
 import com.boswelja.smartwatchextensions.common.ui.AppTheme
 import com.boswelja.smartwatchextensions.common.ui.WatchPickerAppBar
@@ -46,8 +48,7 @@ import com.boswelja.smartwatchextensions.onboarding.ui.OnboardingActivity
 import com.google.android.play.core.appupdate.AppUpdateManagerFactory
 import com.google.android.play.core.appupdate.AppUpdateOptions
 import com.google.android.play.core.install.model.AppUpdateType
-import com.google.android.play.core.install.model.UpdateAvailability
-import com.google.android.play.core.ktx.updatePriority
+import com.google.android.play.core.ktx.requestAppUpdateInfo
 import java.util.UUID
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -59,8 +60,6 @@ class MainActivity : AppCompatActivity() {
 
     @ExperimentalCoroutinesApi
     private val viewModel: MainViewModel by viewModels()
-
-    private var currentDestination by mutableStateOf(Destination.DASHBOARD)
 
     @ExperimentalCoroutinesApi
     @ExperimentalAnimationApi
@@ -77,7 +76,14 @@ class MainActivity : AppCompatActivity() {
             val registeredWatches by viewModel.registeredWatches
                 .collectAsState(emptyList(), Dispatchers.IO)
 
+            var currentDestination by remember { mutableStateOf(Destination.DASHBOARD) }
+
             val scaffoldState = rememberScaffoldState()
+
+            // Switch the destination back to Dashboard if we're not already there
+            BackHandler(enabled = currentDestination != Destination.DASHBOARD) {
+                currentDestination = Destination.DASHBOARD
+            }
 
             AppTheme {
                 Scaffold(
@@ -102,142 +108,142 @@ class MainActivity : AppCompatActivity() {
         }
 
         lifecycleScope.launch {
-            whenStarted {
-                viewModel.needsSetup.collect {
-                    if (it) {
-                        startActivity(
-                            Intent(this@MainActivity, OnboardingActivity::class.java)
-                        )
-                    }
+            ensureAppUpdated()
+
+            viewModel.needsSetup.collect {
+                if (it) {
+                    startActivity(
+                        Intent(this@MainActivity, OnboardingActivity::class.java)
+                    )
+                    finish()
                 }
             }
         }
-        ensureAppUpdated()
     }
 
-    override fun onBackPressed() {
-        if (currentDestination != Destination.DASHBOARD) currentDestination = Destination.DASHBOARD
-        else super.onBackPressed()
-    }
+    private suspend fun ensureAppUpdated() {
+        // Wrap with try/catch to prevent crashing in cases where Smartwatch Extensions wasn't
+        // installed from Google Play
+        try {
+            // Get update info
+            val appUpdateManager = AppUpdateManagerFactory.create(this)
+            val updateInfo = appUpdateManager.requestAppUpdateInfo()
 
-    private fun ensureAppUpdated() {
-        val appUpdateManager = AppUpdateManagerFactory.create(this)
-        appUpdateManager.appUpdateInfo.addOnCompleteListener {
-            if (it.isSuccessful) {
-                val appUpdateInfo = it.result
-                if (appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE &&
-                    appUpdateInfo.updatePriority <= LOW_PRIORITY_UPDATE
-                ) {
-                    if (appUpdateInfo.updatePriority < HIGH_PRIORITY_UPDATE &&
-                        appUpdateInfo.isUpdateTypeAllowed(AppUpdateType.FLEXIBLE)
-                    ) {
-                        val message = Message(
-                            Message.Icon.UPDATE,
-                            getString(R.string.update_available_title),
-                            getString(R.string.update_available_text)
-                        )
-                        lifecycleScope.launch {
-                            sendMessage(message, Priority.LOW)
-                        }
-                    } else if (appUpdateInfo.isUpdateTypeAllowed(AppUpdateType.IMMEDIATE)) {
-                        appUpdateManager.startUpdateFlow(
-                            appUpdateInfo,
-                            this,
-                            AppUpdateOptions.defaultOptions(AppUpdateType.IMMEDIATE)
-                        )
-                    }
+            when (updateInfo.updatePriority()) {
+                HOTFIX_UPDATE,
+                FEATURE_UPDATE -> {
+                    // Only send a message for low priority updates
+                    val message = Message(
+                        Message.Icon.UPDATE,
+                        getString(R.string.update_available_title),
+                        getString(R.string.update_available_text)
+                    )
+                    sendMessage(message, Priority.LOW)
                 }
-            } else {
-                Timber.w("Failed to check for app updates")
+                BREAKING_UPDATE -> {
+                    // Prompt the user to update immediately for high priority updates
+                    appUpdateManager.startUpdateFlow(
+                        updateInfo,
+                        this,
+                        AppUpdateOptions.defaultOptions(AppUpdateType.IMMEDIATE)
+                    )
+                }
             }
+        } catch (e: Exception) {
+            Timber.w("Not installed from Google Play, disabling Analytics")
+            Analytics().setAnalyticsEnabled(false)
         }
-    }
-
-    @ExperimentalCoroutinesApi
-    @ExperimentalMaterialApi
-    @ExperimentalAnimationApi
-    @Composable
-    fun MainScreen(scaffoldState: ScaffoldState, currentDestination: Destination) {
-        Crossfade(targetState = currentDestination) {
-            when (it) {
-                Destination.DASHBOARD -> DashboardScreen()
-                Destination.MESSAGES -> MessagesScreen(scaffoldState = scaffoldState)
-                Destination.SETTINGS -> AppSettingsScreen()
-                Destination.ABOUT -> AboutAppScreen()
-            }
-        }
-    }
-
-    @Composable
-    fun BottonNav(currentDestination: Destination, setCurrentDestination: (Destination) -> Unit) {
-        BottomNavigation(
-            backgroundColor = MaterialTheme.colors.background
-        ) {
-            BottomNavItem(
-                selected = currentDestination == Destination.DASHBOARD,
-                icon = Icons.Outlined.Dashboard,
-                label = stringResource(R.string.bottom_nav_dashboard_label),
-                onClick = {
-                    setCurrentDestination(Destination.DASHBOARD)
-                }
-            )
-            BottomNavItem(
-                selected = currentDestination == Destination.MESSAGES,
-                icon = Icons.Outlined.Message,
-                label = stringResource(R.string.nav_messages_label),
-                onClick = {
-                    setCurrentDestination(Destination.MESSAGES)
-                }
-            )
-            BottomNavItem(
-                selected = currentDestination == Destination.SETTINGS,
-                icon = Icons.Outlined.Settings,
-                label = stringResource(R.string.bottom_nav_app_settings_label),
-                onClick = {
-                    setCurrentDestination(Destination.SETTINGS)
-                }
-            )
-            BottomNavItem(
-                selected = currentDestination == Destination.ABOUT,
-                icon = Icons.Outlined.Info,
-                label = stringResource(R.string.bottom_nav_about_label),
-                onClick = {
-                    setCurrentDestination(Destination.ABOUT)
-                }
-            )
-        }
-    }
-
-    @Composable
-    fun RowScope.BottomNavItem(
-        icon: ImageVector,
-        label: String,
-        selected: Boolean,
-        onClick: () -> Unit
-    ) {
-        BottomNavigationItem(
-            selected = selected,
-            icon = { Icon(icon, null) },
-            label = { Text(label) },
-            onClick = onClick,
-            alwaysShowLabel = false,
-            selectedContentColor = MaterialTheme.colors.primary,
-            unselectedContentColor = MaterialTheme.colors.onSurface
-                .copy(alpha = ContentAlpha.medium)
-        )
-    }
-
-    enum class Destination {
-        DASHBOARD,
-        MESSAGES,
-        SETTINGS,
-        ABOUT
     }
 
     companion object {
-        private const val LOW_PRIORITY_UPDATE = 2
-        private const val HIGH_PRIORITY_UPDATE = 5
+        private const val HOTFIX_UPDATE = 1
+        private const val FEATURE_UPDATE = 3
+        private const val BREAKING_UPDATE = 5
 
         const val EXTRA_WATCH_ID = "extra_watch_id"
     }
+}
+
+enum class Destination {
+    DASHBOARD,
+    MESSAGES,
+    SETTINGS,
+    ABOUT
+}
+
+@ExperimentalCoroutinesApi
+@ExperimentalMaterialApi
+@ExperimentalAnimationApi
+@Composable
+fun MainScreen(scaffoldState: ScaffoldState, currentDestination: Destination) {
+    Crossfade(targetState = currentDestination) {
+        when (it) {
+            Destination.DASHBOARD -> DashboardScreen()
+            Destination.MESSAGES -> MessagesScreen(scaffoldState = scaffoldState)
+            Destination.SETTINGS -> AppSettingsScreen()
+            Destination.ABOUT -> AboutAppScreen()
+        }
+    }
+}
+
+@Composable
+fun BottonNav(
+    currentDestination: Destination,
+    setCurrentDestination: (Destination) -> Unit
+) {
+    BottomNavigation(
+        backgroundColor = MaterialTheme.colors.background
+    ) {
+        BottomNavItem(
+            selected = currentDestination == Destination.DASHBOARD,
+            icon = Icons.Outlined.Dashboard,
+            label = stringResource(R.string.bottom_nav_dashboard_label),
+            onClick = {
+                setCurrentDestination(Destination.DASHBOARD)
+            }
+        )
+        BottomNavItem(
+            selected = currentDestination == Destination.MESSAGES,
+            icon = Icons.Outlined.Message,
+            label = stringResource(R.string.nav_messages_label),
+            onClick = {
+                setCurrentDestination(Destination.MESSAGES)
+            }
+        )
+        BottomNavItem(
+            selected = currentDestination == Destination.SETTINGS,
+            icon = Icons.Outlined.Settings,
+            label = stringResource(R.string.bottom_nav_app_settings_label),
+            onClick = {
+                setCurrentDestination(Destination.SETTINGS)
+            }
+        )
+        BottomNavItem(
+            selected = currentDestination == Destination.ABOUT,
+            icon = Icons.Outlined.Info,
+            label = stringResource(R.string.bottom_nav_about_label),
+            onClick = {
+                setCurrentDestination(Destination.ABOUT)
+            }
+        )
+    }
+}
+
+@Composable
+fun RowScope.BottomNavItem(
+    icon: ImageVector,
+    label: String,
+    selected: Boolean,
+    onClick: () -> Unit
+) {
+    BottomNavigationItem(
+        selected = selected,
+        icon = { Icon(icon, null) },
+        label = { Text(label) },
+        onClick = onClick,
+        alwaysShowLabel = false,
+        selectedContentColor = MaterialTheme.colors.primary,
+        unselectedContentColor = MaterialTheme.colors.onSurface
+            .copy(alpha = ContentAlpha.medium)
+    )
 }
