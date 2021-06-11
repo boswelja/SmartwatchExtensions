@@ -31,8 +31,8 @@ class AboutAppViewModel internal constructor(
 
     private val messageListener = object : MessageListener {
         override fun onMessageReceived(sourceWatchId: UUID, message: String, data: ByteArray?) {
-            data?.let {
-                val versionInfo = parseWatchVersionInfo(it)
+            if (message == REQUEST_APP_VERSION && data != null) {
+                val versionInfo = parseWatchVersionInfo(data)
                 _watchAppVersion.tryEmit(versionInfo)
             }
         }
