@@ -46,14 +46,12 @@ import com.boswelja.smartwatchextensions.onboarding.ui.OnboardingActivity
 import com.google.android.play.core.appupdate.AppUpdateManagerFactory
 import com.google.android.play.core.appupdate.AppUpdateOptions
 import com.google.android.play.core.install.model.AppUpdateType
-import com.google.android.play.core.install.model.UpdateAvailability
-import com.google.android.play.core.ktx.updatePriority
+import com.google.android.play.core.ktx.requestAppUpdateInfo
 import java.util.UUID
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
 class MainActivity : AppCompatActivity() {
 
@@ -107,6 +105,8 @@ class MainActivity : AppCompatActivity() {
         }
 
         lifecycleScope.launch {
+            ensureAppUpdated()
+
             viewModel.needsSetup.collect {
                 if (it) {
                     startActivity(
@@ -116,38 +116,31 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
-        ensureAppUpdated()
     }
 
-    private fun ensureAppUpdated() {
+    private suspend fun ensureAppUpdated() {
+        // Get update info
         val appUpdateManager = AppUpdateManagerFactory.create(this)
-        appUpdateManager.appUpdateInfo.addOnCompleteListener {
-            if (it.isSuccessful) {
-                val appUpdateInfo = it.result
-                if (appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE &&
-                    appUpdateInfo.updatePriority <= LOW_PRIORITY_UPDATE
-                ) {
-                    if (appUpdateInfo.updatePriority < HIGH_PRIORITY_UPDATE &&
-                        appUpdateInfo.isUpdateTypeAllowed(AppUpdateType.FLEXIBLE)
-                    ) {
-                        val message = Message(
-                            Message.Icon.UPDATE,
-                            getString(R.string.update_available_title),
-                            getString(R.string.update_available_text)
-                        )
-                        lifecycleScope.launch {
-                            sendMessage(message, Priority.LOW)
-                        }
-                    } else if (appUpdateInfo.isUpdateTypeAllowed(AppUpdateType.IMMEDIATE)) {
-                        appUpdateManager.startUpdateFlow(
-                            appUpdateInfo,
-                            this,
-                            AppUpdateOptions.defaultOptions(AppUpdateType.IMMEDIATE)
-                        )
-                    }
-                }
-            } else {
-                Timber.w("Failed to check for app updates")
+        val updateInfo = appUpdateManager.requestAppUpdateInfo()
+
+        when (updateInfo.updatePriority()) {
+            HOTFIX_UPDATE,
+            FEATURE_UPDATE -> {
+                // Only send a message for low priority updates
+                val message = Message(
+                    Message.Icon.UPDATE,
+                    getString(R.string.update_available_title),
+                    getString(R.string.update_available_text)
+                )
+                sendMessage(message, Priority.LOW)
+            }
+            BREAKING_UPDATE -> {
+                // Prompt the user to update immediately for high priority updates
+                appUpdateManager.startUpdateFlow(
+                    updateInfo,
+                    this,
+                    AppUpdateOptions.defaultOptions(AppUpdateType.IMMEDIATE)
+                )
             }
         }
     }
@@ -234,8 +227,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     companion object {
-        private const val LOW_PRIORITY_UPDATE = 2
-        private const val HIGH_PRIORITY_UPDATE = 5
+        private const val HOTFIX_UPDATE = 1
+        private const val FEATURE_UPDATE = 3
+        private const val BREAKING_UPDATE = 5
 
         const val EXTRA_WATCH_ID = "extra_watch_id"
     }
