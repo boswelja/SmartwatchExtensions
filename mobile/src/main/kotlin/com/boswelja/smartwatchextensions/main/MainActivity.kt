@@ -32,7 +32,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.whenStarted
 import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.aboutapp.ui.AboutAppScreen
 import com.boswelja.smartwatchextensions.appsettings.ui.AppSettingsScreen
@@ -108,13 +107,12 @@ class MainActivity : AppCompatActivity() {
         }
 
         lifecycleScope.launch {
-            whenStarted {
-                viewModel.needsSetup.collect {
-                    if (it) {
-                        startActivity(
-                            Intent(this@MainActivity, OnboardingActivity::class.java)
-                        )
-                    }
+            viewModel.needsSetup.collect {
+                if (it) {
+                    startActivity(
+                        Intent(this@MainActivity, OnboardingActivity::class.java)
+                    )
+                    finish()
                 }
             }
         }
