@@ -16,7 +16,6 @@ import com.boswelja.smartwatchextensions.common.appmanager.Messages.REQUEST_UNIN
 import com.boswelja.smartwatchextensions.common.appmanager.Messages.VALIDATE_CACHE
 import com.boswelja.smartwatchextensions.common.toByteArray
 import com.boswelja.smartwatchextensions.watchmanager.WatchManager
-import com.boswelja.watchconnection.core.MessageListener
 import com.boswelja.watchconnection.core.Status
 import com.boswelja.watchconnection.core.Watch
 import java.util.UUID
@@ -52,15 +51,6 @@ class AppManagerViewModel internal constructor(
             appDatabase.apps().allForWatch(watch.id)
         } ?: flow { emit(emptyList<App>()) }
     }.debounce(APP_DEBOUNCE_MILLIS)
-
-    private val messageListener = object : MessageListener {
-        override fun onMessageReceived(sourceWatchId: UUID, message: String, data: ByteArray?) {
-            when (message) {
-                APP_SENDING_COMPLETE -> isUpdatingCache = false
-                APP_SENDING_START -> isUpdatingCache = true
-            }
-        }
-    }
 
     /**
      * The currently selected watch, or null if there is none
@@ -113,6 +103,7 @@ class AppManagerViewModel internal constructor(
     }
 
     init {
+        // Re-validate cache when selected watch changes
         viewModelScope.launch {
             watchManager.selectedWatch.collect { watch ->
                 watch?.let {
@@ -121,12 +112,16 @@ class AppManagerViewModel internal constructor(
                 }
             }
         }
-        watchManager.registerMessageListener(messageListener)
-    }
 
-    override fun onCleared() {
-        super.onCleared()
-        watchManager.unregisterMessageListener(messageListener)
+        // Collect incoming messages
+        viewModelScope.launch {
+            watchManager.incomingMessages().collect { message ->
+                when (message.message) {
+                    APP_SENDING_COMPLETE -> isUpdatingCache = false
+                    APP_SENDING_START -> isUpdatingCache = true
+                }
+            }
+        }
     }
 
     /**

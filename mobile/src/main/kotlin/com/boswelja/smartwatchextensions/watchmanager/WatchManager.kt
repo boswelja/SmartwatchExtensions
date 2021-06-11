@@ -19,7 +19,6 @@ import com.boswelja.smartwatchextensions.watchmanager.database.DbWatch.Companion
 import com.boswelja.smartwatchextensions.watchmanager.database.WatchDatabase
 import com.boswelja.smartwatchextensions.watchmanager.database.WatchSettingsDatabase
 import com.boswelja.smartwatchextensions.widget.widgetIdStore
-import com.boswelja.watchconnection.core.MessageListener
 import com.boswelja.watchconnection.core.Watch
 import com.boswelja.watchconnection.core.WatchPlatformManager
 import com.boswelja.watchconnection.wearos.WearOSPlatform
@@ -284,10 +283,8 @@ class WatchManager internal constructor(
 
     fun getWatchById(id: UUID): Flow<Watch?> = watchDatabase.watchDao().get(id)
 
-    fun registerMessageListener(messageListener: MessageListener) =
-        connectionClient.addMessageListener(messageListener)
-    fun unregisterMessageListener(messageListener: MessageListener) =
-        connectionClient.removeMessageListener(messageListener)
+    @ExperimentalCoroutinesApi
+    fun incomingMessages() = connectionClient.incomingMessages()
 
     companion object : SingletonHolder<WatchManager, Context>(::WatchManager) {
         const val CAPABILITY_WATCH_APP = "extensions_watch_app"

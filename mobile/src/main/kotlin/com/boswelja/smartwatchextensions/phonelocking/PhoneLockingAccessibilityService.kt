@@ -5,13 +5,14 @@ import android.view.accessibility.AccessibilityEvent
 import com.boswelja.smartwatchextensions.common.connection.Messages.LOCK_PHONE
 import com.boswelja.smartwatchextensions.common.preference.PreferenceKey.PHONE_LOCKING_ENABLED_KEY
 import com.boswelja.smartwatchextensions.watchmanager.WatchManager
-import com.boswelja.watchconnection.core.MessageListener
 import com.boswelja.watchconnection.core.Watch
 import com.google.android.gms.wearable.MessageEvent
 import java.util.UUID
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
@@ -19,9 +20,7 @@ import kotlinx.coroutines.withContext
 import timber.log.Timber
 
 @ExperimentalCoroutinesApi
-class PhoneLockingAccessibilityService :
-    AccessibilityService(),
-    MessageListener {
+class PhoneLockingAccessibilityService : AccessibilityService() {
 
     private val coroutineScope = CoroutineScope(Dispatchers.IO)
     private val watchManager: WatchManager by lazy {
@@ -30,17 +29,13 @@ class PhoneLockingAccessibilityService :
 
     private var isStopping = false
 
-    override fun onMessageReceived(sourceWatchId: UUID, message: String, data: ByteArray?) {
-        when (message) {
-            LOCK_PHONE -> {
-                tryLockDevice(sourceWatchId)
-            }
-        }
-    }
-
     override fun onServiceConnected() {
         Timber.i("onServiceConnected() called")
-        watchManager.registerMessageListener(this)
+        coroutineScope.launch {
+            watchManager.incomingMessages().filter { it.message == LOCK_PHONE }.collect { message ->
+                tryLockDevice(message.sourceWatchId)
+            }
+        }
     }
 
     override fun onAccessibilityEvent(event: AccessibilityEvent?) {
@@ -93,7 +88,6 @@ class PhoneLockingAccessibilityService :
                 Timber.d("Disabling phone locking on all devices")
                 watchManager.updatePreference(PHONE_LOCKING_ENABLED_KEY, false)
             }
-            watchManager.unregisterMessageListener(this)
         }
     }
 }

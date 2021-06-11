@@ -6,12 +6,11 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.boswelja.smartwatchextensions.common.connection.Messages.REQUEST_APP_VERSION
 import com.boswelja.smartwatchextensions.watchmanager.WatchManager
-import com.boswelja.watchconnection.core.MessageListener
-import java.util.UUID
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -29,21 +28,12 @@ class AboutAppViewModel internal constructor(
         CustomTabsIntent.Builder().setShowTitle(true).build()
     )
 
-    private val messageListener = object : MessageListener {
-        override fun onMessageReceived(sourceWatchId: UUID, message: String, data: ByteArray?) {
-            if (message == REQUEST_APP_VERSION && data != null) {
-                val versionInfo = parseWatchVersionInfo(data)
-                _watchAppVersion.tryEmit(versionInfo)
-            }
-        }
-    }
-
     private val _watchAppVersion = MutableStateFlow<Pair<String?, String?>?>(null)
     val watchAppVersion: Flow<Pair<String?, String?>?>
         get() = _watchAppVersion
 
     init {
-        watchManager.registerMessageListener(messageListener)
+        // Send app version request to selected watches
         viewModelScope.launch {
             watchManager.selectedWatch.collect { watch ->
                 if (watch?.id != null) {
@@ -61,11 +51,16 @@ class AboutAppViewModel internal constructor(
                 }
             }
         }
-    }
 
-    override fun onCleared() {
-        super.onCleared()
-        watchManager.unregisterMessageListener(messageListener)
+        // Listen for app version responses
+        viewModelScope.launch {
+            watchManager.incomingMessages().filter {
+                it.message == REQUEST_APP_VERSION && it.data != null
+            }.collect { message ->
+                val versionInfo = parseWatchVersionInfo(message.data!!)
+                _watchAppVersion.tryEmit(versionInfo)
+            }
+        }
     }
 
     /**
