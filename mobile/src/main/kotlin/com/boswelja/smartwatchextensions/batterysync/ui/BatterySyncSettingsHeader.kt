@@ -1,6 +1,5 @@
 package com.boswelja.smartwatchextensions.batterysync.ui
 
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -13,15 +12,12 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.boswelja.smartwatchextensions.R
-import com.boswelja.smartwatchextensions.batterysync.database.WatchBatteryStats
 import com.boswelja.smartwatchextensions.common.BatteryIcon
-import java.util.concurrent.TimeUnit
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
@@ -34,54 +30,16 @@ fun BatterySyncSettingsHeader() {
         val batteryStats by viewModel.batteryStats.collectAsState(null, Dispatchers.IO)
         batteryStats.let {
             if (it != null) {
-                BatteryStats(it)
+                BatteryInfoLarge(
+                    Modifier.fillMaxWidth().aspectRatio(3f).padding(16.dp),
+                    it
+                )
             } else {
                 BatterySyncStatus(stringResource(R.string.please_wait))
             }
         }
     } else {
         BatterySyncStatus(stringResource(R.string.battery_sync_disabled))
-    }
-}
-
-@Composable
-fun BatteryStats(batteryStats: WatchBatteryStats) {
-    val dataAgeMinutes =
-        TimeUnit.MILLISECONDS
-            .toMinutes(System.currentTimeMillis() - batteryStats.lastUpdatedMillis)
-            .toInt()
-    Row(
-        Modifier
-            .fillMaxWidth()
-            .aspectRatio(3f)
-            .padding(16.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Column(Modifier.weight(1f)) {
-            Text(
-                text = stringResource(R.string.battery_percent, batteryStats.percent.toString()),
-                textAlign = TextAlign.Center,
-                style = MaterialTheme.typography.h5,
-                modifier = Modifier.fillMaxWidth()
-            )
-            Text(
-                text = if (dataAgeMinutes > 1)
-                    LocalContext.current.resources.getQuantityString(
-                        R.plurals.battery_sync_last_updated_minutes, dataAgeMinutes, dataAgeMinutes
-                    )
-                else stringResource(R.string.battery_sync_last_update_recent),
-                textAlign = TextAlign.Center,
-                style = MaterialTheme.typography.body1,
-                modifier = Modifier.fillMaxWidth()
-            )
-        }
-
-        BatteryIcon(
-            percent = batteryStats.percent,
-            modifier = Modifier
-                .fillMaxHeight()
-                .aspectRatio(1f)
-        )
     }
 }
 
