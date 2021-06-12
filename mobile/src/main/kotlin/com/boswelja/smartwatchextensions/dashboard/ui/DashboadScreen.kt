@@ -32,8 +32,9 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.appmanager.ui.AppManagerActivity
+import com.boswelja.smartwatchextensions.appmanager.ui.AppSummarySmall
+import com.boswelja.smartwatchextensions.batterysync.ui.BatteryInfoSmall
 import com.boswelja.smartwatchextensions.batterysync.ui.BatterySyncSettingsActivity
-import com.boswelja.smartwatchextensions.batterysync.ui.BatterySyncSettingsHeader
 import com.boswelja.smartwatchextensions.common.ui.StaggeredVerticalGrid
 import com.boswelja.smartwatchextensions.dndsync.ui.DnDSyncSettingsActivity
 import com.boswelja.smartwatchextensions.phonelocking.ui.PhoneLockingSettingsActivity
@@ -51,6 +52,8 @@ fun DashboardScreen() {
     val scrollState = rememberScrollState()
     val viewModel: DashboardViewModel = viewModel()
     val watchStatus by viewModel.status.collectAsState(Status.CONNECTING, Dispatchers.IO)
+    val batteryStats by viewModel.batteryStats.collectAsState(null, Dispatchers.IO)
+    val appCount by viewModel.appCount.collectAsState(null, Dispatchers.IO)
 
     Column(
         Modifier
@@ -69,13 +72,34 @@ fun DashboardScreen() {
             cells = GridCells.Fixed(2)
         ) {
             DashboardItem(
-                content = { BatterySyncSettingsHeader() },
+                content = {
+                    batteryStats?.let { batteryStats ->
+                        BatteryInfoSmall(
+                            modifier = Modifier.fillMaxWidth(0.33f),
+                            batteryStats = batteryStats
+                        )
+                    }
+                },
                 buttonLabel = stringResource(
                     R.string.dashboard_settings_label,
                     stringResource(R.string.battery_sync_title)
                 ),
                 onClick = {
                     context.startActivity(Intent(context, BatterySyncSettingsActivity::class.java))
+                }
+            )
+            DashboardItem(
+                content = {
+                    appCount?.let { count ->
+                        AppSummarySmall(
+                            modifier = Modifier.fillMaxWidth(0.33f),
+                            appCount = count
+                        )
+                    }
+                },
+                buttonLabel = stringResource(R.string.main_app_manager_title),
+                onClick = {
+                    context.startActivity(Intent(context, AppManagerActivity::class.java))
                 }
             )
             DashboardItem(
@@ -96,13 +120,6 @@ fun DashboardScreen() {
                 ),
                 onClick = {
                     context.startActivity(Intent(context, PhoneLockingSettingsActivity::class.java))
-                }
-            )
-            DashboardItem(
-                content = { },
-                buttonLabel = stringResource(R.string.main_app_manager_title),
-                onClick = {
-                    context.startActivity(Intent(context, AppManagerActivity::class.java))
                 }
             )
         }
@@ -162,7 +179,10 @@ fun DashboardItem(
         modifier = modifier.padding(8.dp),
         onClick = onClick
     ) {
-        Column(Modifier.fillMaxSize()) {
+        Column(
+            Modifier.fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
             content()
             Row(
                 horizontalArrangement = Arrangement.Center,
