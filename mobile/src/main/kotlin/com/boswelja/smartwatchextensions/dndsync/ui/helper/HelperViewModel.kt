@@ -10,11 +10,11 @@ import com.boswelja.smartwatchextensions.common.fromByteArray
 import com.boswelja.smartwatchextensions.common.preference.PreferenceKey
 import com.boswelja.smartwatchextensions.dndsync.DnDLocalChangeService
 import com.boswelja.smartwatchextensions.watchmanager.WatchManager
-import com.boswelja.watchconnection.core.MessageListener
-import java.util.UUID
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -31,32 +31,20 @@ class HelperViewModel internal constructor(
         WatchManager.getInstance(application)
     )
 
-    private val messageListener = object : MessageListener {
-        override fun onMessageReceived(sourceWatchId: UUID, message: String, data: ByteArray?) {
-            when (message) {
-                REQUEST_INTERRUPT_FILTER_ACCESS_STATUS_PATH -> {
-                    data?.let {
-                        val hasNotiPolicyAccess = Boolean.fromByteArray(data)
-                        _result.tryEmit(hasNotiPolicyAccess)
-                        setSyncToWatch(hasNotiPolicyAccess)
-                    } ?: Timber.w("Received message but no data")
-                }
-            }
-        }
-    }
-
     private val _result = MutableStateFlow<Boolean?>(null)
     val result: Flow<Boolean?>
         get() = _result
 
     init {
-        watchManager.registerMessageListener(messageListener)
-    }
-
-    override fun onCleared() {
-        Timber.i("onCleared() called")
-        super.onCleared()
-        watchManager.unregisterMessageListener(messageListener)
+        viewModelScope.launch {
+            watchManager.incomingMessages().filter {
+                it.message == REQUEST_INTERRUPT_FILTER_ACCESS_STATUS_PATH && it.data != null
+            }.collect { message ->
+                val hasNotiPolicyAccess = Boolean.fromByteArray(message.data!!)
+                _result.tryEmit(hasNotiPolicyAccess)
+                setSyncToWatch(hasNotiPolicyAccess)
+            }
+        }
     }
 
     fun requestCheckPermission() {
