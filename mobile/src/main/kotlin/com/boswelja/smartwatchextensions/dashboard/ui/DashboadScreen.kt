@@ -55,7 +55,10 @@ fun DashboardScreen() {
             .verticalScroll(scrollState),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        WatchStatus(watchStatus)
+        WatchStatus(
+            modifier = Modifier.fillMaxWidth(),
+            status = watchStatus
+        )
         DashboardItem(
             content = { BatterySyncSettingsHeader() },
             buttonLabel = stringResource(
@@ -97,7 +100,10 @@ fun DashboardScreen() {
 }
 
 @Composable
-fun WatchStatus(status: Status?) {
+fun WatchStatus(
+    modifier: Modifier = Modifier,
+    status: Status?
+) {
     Timber.d("Selected watch status = %s", status)
     val (icon, label) = when (status) {
         Status.CONNECTING ->
@@ -125,9 +131,7 @@ fun WatchStatus(status: Status?) {
     }
     Card {
         Row(
-            Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
+            modifier = modifier.padding(16.dp),
             horizontalArrangement = Arrangement.Center
         ) {
             Icon(icon, null)
@@ -139,14 +143,16 @@ fun WatchStatus(status: Status?) {
 @ExperimentalMaterialApi
 @Composable
 fun DashboardItem(
+    modifier: Modifier = Modifier,
     content: @Composable () -> Unit,
     buttonLabel: String,
     onClick: () -> Unit
 ) {
     Card(
+        modifier = modifier,
         onClick = onClick
     ) {
-        Column {
+        Column(Modifier.fillMaxSize()) {
             content()
             Row(
                 horizontalArrangement = Arrangement.Center,
