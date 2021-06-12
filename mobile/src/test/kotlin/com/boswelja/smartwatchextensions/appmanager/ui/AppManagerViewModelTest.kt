@@ -14,11 +14,9 @@ import com.boswelja.smartwatchextensions.common.appmanager.Messages.REQUEST_UNIN
 import com.boswelja.smartwatchextensions.common.appmanager.Messages.VALIDATE_CACHE
 import com.boswelja.smartwatchextensions.watchmanager.database.DbWatch.Companion.toDbWatch
 import com.boswelja.watchconnection.core.Watch
-import io.mockk.Runs
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
-import io.mockk.just
 import java.util.UUID
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
@@ -77,8 +75,7 @@ class AppManagerViewModelTest {
         every {
             watchManagerRule.watchManager.registeredWatches
         } returns flow { emit(listOf(watch)) }
-        every { watchManagerRule.watchManager.registerMessageListener(any()) } just Runs
-        every { watchManagerRule.watchManager.unregisterMessageListener(any()) } just Runs
+        every { watchManagerRule.watchManager.incomingMessages() } returns flow { }
         coEvery { watchManagerRule.watchManager.sendMessage(any(), any(), any()) } returns true
 
         viewModel = AppManagerViewModel(context, appDatabase, watchManagerRule.watchManager)
