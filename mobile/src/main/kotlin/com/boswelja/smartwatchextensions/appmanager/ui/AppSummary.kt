@@ -9,6 +9,9 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Apps
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.style.TextAlign
+import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.common.ui.FeatureSummarySmall
 
 @Composable
@@ -16,6 +19,7 @@ fun AppSummarySmall(
     modifier: Modifier = Modifier,
     appCount: Int
 ) {
+    val context = LocalContext.current
     FeatureSummarySmall(
         modifier = modifier,
         icon = {
@@ -29,7 +33,10 @@ fun AppSummarySmall(
         },
         text = {
             Text(
-                appCount.toString(),
+                context.resources.getQuantityString(
+                    R.plurals.app_manager_app_count, appCount, appCount
+                ),
+                textAlign = TextAlign.Center,
                 style = MaterialTheme.typography.h5
             )
         }
