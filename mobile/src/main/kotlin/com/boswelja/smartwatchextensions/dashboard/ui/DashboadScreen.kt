@@ -2,11 +2,13 @@ package com.boswelja.smartwatchextensions.dashboard.ui
 
 import android.content.Intent
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.GridCells
 import androidx.compose.foundation.rememberScrollState
@@ -17,17 +19,13 @@ import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.CheckCircleOutline
-import androidx.compose.material.icons.outlined.ErrorOutline
-import androidx.compose.material.icons.outlined.Sync
+import androidx.compose.material.icons.outlined.OpenInFull
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.boswelja.smartwatchextensions.R
@@ -38,10 +36,10 @@ import com.boswelja.smartwatchextensions.batterysync.ui.BatterySyncSettingsActiv
 import com.boswelja.smartwatchextensions.common.ui.StaggeredVerticalGrid
 import com.boswelja.smartwatchextensions.dndsync.ui.DnDSyncSettingsActivity
 import com.boswelja.smartwatchextensions.phonelocking.ui.PhoneLockingSettingsActivity
+import com.boswelja.smartwatchextensions.watchmanager.ui.WatchStatusSummarySmall
 import com.boswelja.watchconnection.core.Status
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import timber.log.Timber
 
 @ExperimentalFoundationApi
 @ExperimentalCoroutinesApi
@@ -60,108 +58,46 @@ fun DashboardScreen() {
             .fillMaxSize()
             .verticalScroll(scrollState)
     ) {
-        WatchStatus(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp)
-                .padding(top = 16.dp),
-            status = watchStatus
-        )
         StaggeredVerticalGrid(
             modifier = Modifier.padding(16.dp),
             cells = GridCells.Adaptive(172.dp),
             contentSpacing = 16.dp
         ) {
             DashboardItem(
+                content = {
+                    WatchStatusSummarySmall(watchStatus = watchStatus)
+                }
+            )
+            DashboardItem(
                 content = batteryStats?.let { batteryStats ->
-                    {
-                        BatterySummarySmall(
-                            modifier = Modifier.fillMaxWidth(),
-                            batteryStats = batteryStats
-                        )
-                    }
+                    { BatterySummarySmall(batteryStats = batteryStats) }
                 },
-                buttonLabel = stringResource(
-                    R.string.dashboard_settings_label,
-                    stringResource(R.string.battery_sync_title)
-                ),
+                titleText = stringResource(R.string.battery_sync_title),
                 onClick = {
                     context.startActivity(Intent(context, BatterySyncSettingsActivity::class.java))
                 }
             )
             DashboardItem(
                 content = if (appCount != null && appCount!! > 0) {
-                    {
-                        AppSummarySmall(
-                            modifier = Modifier.fillMaxWidth(),
-                            appCount = appCount!!
-                        )
-                    }
+                    { AppSummarySmall(appCount = appCount!!) }
                 } else null,
-                buttonLabel = stringResource(R.string.main_app_manager_title),
+                titleText = stringResource(R.string.main_app_manager_title),
                 onClick = {
                     context.startActivity(Intent(context, AppManagerActivity::class.java))
                 }
             )
             DashboardItem(
-                buttonLabel = stringResource(
-                    R.string.dashboard_settings_label,
-                    stringResource(R.string.main_dnd_sync_title)
-                ),
+                titleText = stringResource(R.string.main_dnd_sync_title),
                 onClick = {
                     context.startActivity(Intent(context, DnDSyncSettingsActivity::class.java))
                 }
             )
             DashboardItem(
-                buttonLabel = stringResource(
-                    R.string.dashboard_settings_label,
-                    stringResource(R.string.main_phone_locking_title)
-                ),
+                titleText = stringResource(R.string.main_phone_locking_title),
                 onClick = {
                     context.startActivity(Intent(context, PhoneLockingSettingsActivity::class.java))
                 }
             )
-        }
-    }
-}
-
-@Composable
-fun WatchStatus(
-    modifier: Modifier = Modifier,
-    status: Status?
-) {
-    Timber.d("Selected watch status = %s", status)
-    val (icon, label) = when (status) {
-        Status.CONNECTING ->
-            Pair(Icons.Outlined.Sync, stringResource(R.string.watch_status_connecting))
-        Status.CONNECTED ->
-            Pair(
-                Icons.Outlined.CheckCircleOutline,
-                stringResource(R.string.watch_status_connected)
-            )
-        Status.DISCONNECTED ->
-            Pair(
-                Icons.Outlined.ErrorOutline,
-                stringResource(R.string.watch_status_disconnected)
-            )
-        Status.MISSING_APP ->
-            Pair(
-                Icons.Outlined.ErrorOutline,
-                stringResource(R.string.watch_status_missing_app)
-            )
-        else ->
-            Pair(
-                Icons.Outlined.ErrorOutline,
-                stringResource(R.string.watch_status_error)
-            )
-    }
-    Card(modifier) {
-        Row(
-            modifier = Modifier.padding(16.dp),
-            horizontalArrangement = Arrangement.Center
-        ) {
-            Icon(icon, null)
-            Text(label, modifier = Modifier.padding(start = 8.dp))
         }
     }
 }
@@ -171,27 +107,41 @@ fun WatchStatus(
 fun DashboardItem(
     modifier: Modifier = Modifier,
     content: (@Composable () -> Unit)? = null,
-    buttonLabel: String,
-    onClick: () -> Unit
+    titleText: String? = null,
+    onClick: (() -> Unit)? = null
 ) {
     Card(
-        modifier = modifier,
-        onClick = onClick
+        modifier = modifier
     ) {
         Column(
-            Modifier.fillMaxSize().padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+            Modifier
+                .fillMaxSize()
+                .padding(16.dp)
+                .clickable(enabled = onClick != null) { onClick?.invoke() }
         ) {
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                titleText?.let {
+                    Text(
+                        text = titleText,
+                        modifier = Modifier.weight(1f)
+                    )
+                }
+                if (onClick != null) {
+                    Icon(
+                        imageVector = Icons.Outlined.OpenInFull,
+                        contentDescription = null,
+                        tint = MaterialTheme.colors.onSurface
+                    )
+                }
+            }
             content?.let {
+                if (titleText != null) {
+                    Spacer(modifier = Modifier.height(16.dp))
+                }
                 content()
             }
-            Text(
-                text = buttonLabel,
-                textAlign = TextAlign.Center,
-                style = MaterialTheme.typography.button,
-                color = MaterialTheme.colors.primary,
-                modifier = Modifier.fillMaxWidth().padding(top = 8.dp)
-            )
         }
     }
 }
