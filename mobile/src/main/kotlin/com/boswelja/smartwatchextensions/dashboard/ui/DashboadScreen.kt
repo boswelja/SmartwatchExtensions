@@ -116,8 +116,8 @@ fun DashboardItem(
         Column(
             Modifier
                 .fillMaxSize()
-                .padding(16.dp)
                 .clickable(enabled = onClick != null) { onClick?.invoke() }
+                .padding(16.dp)
         ) {
             Row(
                 horizontalArrangement = Arrangement.spacedBy(16.dp)
