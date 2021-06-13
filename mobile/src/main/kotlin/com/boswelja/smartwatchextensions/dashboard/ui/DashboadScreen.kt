@@ -69,7 +69,7 @@ fun DashboardScreen() {
         )
         StaggeredVerticalGrid(
             modifier = Modifier.padding(8.dp),
-            cells = GridCells.Adaptive(240.dp)
+            cells = GridCells.Adaptive(172.dp)
         ) {
             DashboardItem(
                 content = {

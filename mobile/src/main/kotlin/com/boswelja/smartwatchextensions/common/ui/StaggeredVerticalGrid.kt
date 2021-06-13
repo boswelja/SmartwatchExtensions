@@ -5,7 +5,7 @@ import androidx.compose.foundation.lazy.GridCells
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.Layout
-import kotlin.math.ceil
+import kotlin.math.floor
 
 @ExperimentalFoundationApi
 @Composable
@@ -23,7 +23,7 @@ fun StaggeredVerticalGrid(
         }
         val (columns, columnWidth) = when (cells) {
             is GridCells.Adaptive -> {
-                val columns = ceil(constraints.maxWidth / cells.minSize.toPx()).toInt()
+                val columns = floor(constraints.maxWidth / cells.minSize.toPx()).toInt()
                 val columnWidth = constraints.maxWidth / columns
                 Pair(columns, columnWidth)
             }
