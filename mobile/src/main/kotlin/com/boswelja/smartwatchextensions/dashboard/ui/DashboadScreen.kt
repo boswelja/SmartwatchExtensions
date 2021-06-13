@@ -90,10 +90,10 @@ fun DashboardScreen() {
             )
             DashboardItem(
                 content = {
-                    appCount?.let { count ->
+                    if (appCount != null && appCount!! > 0) {
                         AppSummarySmall(
                             modifier = Modifier.fillMaxWidth(),
-                            appCount = count
+                            appCount = appCount!!
                         )
                     }
                 },
