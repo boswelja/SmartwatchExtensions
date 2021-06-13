@@ -68,8 +68,9 @@ fun DashboardScreen() {
             status = watchStatus
         )
         StaggeredVerticalGrid(
-            modifier = Modifier.padding(8.dp),
-            cells = GridCells.Adaptive(172.dp)
+            modifier = Modifier.padding(16.dp),
+            cells = GridCells.Adaptive(172.dp),
+            contentSpacing = 16.dp
         ) {
             DashboardItem(
                 content = {
@@ -176,7 +177,7 @@ fun DashboardItem(
     onClick: () -> Unit
 ) {
     Card(
-        modifier = modifier.padding(8.dp),
+        modifier = modifier,
         onClick = onClick
     ) {
         Column(

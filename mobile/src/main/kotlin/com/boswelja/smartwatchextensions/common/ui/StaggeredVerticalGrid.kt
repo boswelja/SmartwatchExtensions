@@ -6,13 +6,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.layout.Placeable
-import kotlin.math.floor
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 
 @ExperimentalFoundationApi
 @Composable
 fun StaggeredVerticalGrid(
     modifier: Modifier = Modifier,
     cells: GridCells,
+    contentSpacing: Dp = 0.dp,
     content: @Composable () -> Unit
 ) {
     Layout(
@@ -22,29 +24,39 @@ fun StaggeredVerticalGrid(
         check(constraints.hasBoundedWidth) {
             "Unbounded width not supported"
         }
+
+        // Calculate column count, width and spacing
+        val contentSpacingPx = contentSpacing.roundToPx()
         val (columns, columnWidth) = when (cells) {
             is GridCells.Adaptive -> {
-                val columns = floor(constraints.maxWidth / cells.minSize.toPx()).toInt()
-                val columnWidth = constraints.maxWidth / columns
+                val columns = constraints.maxWidth / cells.minSize.roundToPx()
+                val columnWidth =
+                    (constraints.maxWidth - (contentSpacingPx * (columns - 1))) / columns
                 Pair(columns, columnWidth)
             }
             is GridCells.Fixed -> {
                 Pair(cells.count, constraints.maxWidth / cells.count)
             }
         }
+
+        // Calculate placeable location
         val itemConstraints = constraints.copy(maxWidth = columnWidth)
         val colHeights = IntArray(columns) { 0 } // track each column's height
         val placeableXY: MutableMap<Placeable, Pair<Int, Int>> = mutableMapOf()
         val placeables = measurables.map { measurable ->
             val column = shortestColumn(colHeights)
             val placeable = measurable.measure(itemConstraints)
-            placeableXY[placeable] = Pair(columnWidth * column, colHeights[column])
-            colHeights[column] += placeable.height
+            val x = columnWidth * column + (contentSpacingPx * column)
+            placeableXY[placeable] = Pair(x, colHeights[column])
+            colHeights[column] += placeable.height + contentSpacingPx
             placeable
         }
 
+        // Get the height of the content
         val height = colHeights.maxOrNull()?.coerceIn(constraints.minHeight, constraints.maxHeight)
             ?: constraints.minHeight
+
+        // Draw the layout
         layout(
             width = constraints.maxWidth,
             height = height
