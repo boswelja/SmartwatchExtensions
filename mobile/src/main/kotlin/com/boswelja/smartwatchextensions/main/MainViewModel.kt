@@ -13,6 +13,7 @@ class MainViewModel internal constructor(
     private val watchManager: WatchManager
 ) : AndroidViewModel(application) {
 
+    @Suppress("unused")
     constructor(application: Application) : this(
         application,
         WatchManager.getInstance(application)

@@ -51,7 +51,7 @@ fun DashboardScreen() {
     val viewModel: DashboardViewModel = viewModel()
     val watchStatus by viewModel.status.collectAsState(Status.CONNECTING, Dispatchers.IO)
     val batteryStats by viewModel.batteryStats.collectAsState(null, Dispatchers.IO)
-    val appCount by viewModel.appCount.collectAsState(null, Dispatchers.IO)
+    val appCount by viewModel.appCount.collectAsState(0, Dispatchers.IO)
 
     Column(
         Modifier
@@ -78,8 +78,8 @@ fun DashboardScreen() {
                 }
             )
             DashboardItem(
-                content = if (appCount != null && appCount!! > 0) {
-                    { AppSummarySmall(appCount = appCount!!) }
+                content = if (appCount > 0) {
+                    { AppSummarySmall(appCount = appCount) }
                 } else null,
                 titleText = stringResource(R.string.main_app_manager_title),
                 onClick = {
@@ -110,9 +110,7 @@ fun DashboardItem(
     titleText: String? = null,
     onClick: (() -> Unit)? = null
 ) {
-    Card(
-        modifier = modifier
-    ) {
+    Card(modifier) {
         Column(
             Modifier
                 .fillMaxSize()

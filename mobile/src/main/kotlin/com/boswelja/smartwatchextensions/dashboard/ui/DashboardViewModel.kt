@@ -18,6 +18,7 @@ class DashboardViewModel internal constructor(
     private val appDatabase: WatchAppDatabase
 ) : AndroidViewModel(application) {
 
+    @Suppress("unused")
     constructor(application: Application) : this(
         application,
         WatchManager.getInstance(application),
@@ -42,6 +43,6 @@ class DashboardViewModel internal constructor(
     val appCount = watchManager.selectedWatch.flatMapLatest { watch ->
         watch?.let {
             appDatabase.apps().countForWatch(watch.id)
-        } ?: flow { emit(null) }
+        } ?: flow { emit(0) }
     }
 }
