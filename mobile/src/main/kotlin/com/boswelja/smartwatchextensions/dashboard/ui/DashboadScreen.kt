@@ -45,7 +45,9 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 @ExperimentalCoroutinesApi
 @ExperimentalMaterialApi
 @Composable
-fun DashboardScreen() {
+fun DashboardScreen(
+    modifier: Modifier = Modifier
+) {
     val context = LocalContext.current
     val scrollState = rememberScrollState()
     val viewModel: DashboardViewModel = viewModel()
@@ -53,20 +55,14 @@ fun DashboardScreen() {
     val batteryStats by viewModel.batteryStats.collectAsState(null, Dispatchers.IO)
     val appCount by viewModel.appCount.collectAsState(0, Dispatchers.IO)
 
-    Column(
-        Modifier
-            .fillMaxSize()
-            .verticalScroll(scrollState)
-    ) {
+    Column(modifier.verticalScroll(scrollState)) {
         StaggeredVerticalGrid(
             modifier = Modifier.padding(16.dp),
             cells = GridCells.Adaptive(172.dp),
             contentSpacing = 16.dp
         ) {
             DashboardItem(
-                content = {
-                    WatchStatusSummarySmall(watchStatus = watchStatus)
-                }
+                content = { WatchStatusSummarySmall(watchStatus = watchStatus) }
             )
             DashboardItem(
                 content = batteryStats?.let { batteryStats ->
