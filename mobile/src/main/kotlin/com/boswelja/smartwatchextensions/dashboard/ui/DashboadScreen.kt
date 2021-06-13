@@ -33,7 +33,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.appmanager.ui.AppManagerActivity
 import com.boswelja.smartwatchextensions.appmanager.ui.AppSummarySmall
-import com.boswelja.smartwatchextensions.batterysync.ui.BatteryInfoSmall
+import com.boswelja.smartwatchextensions.batterysync.ui.BatterySummarySmall
 import com.boswelja.smartwatchextensions.batterysync.ui.BatterySyncSettingsActivity
 import com.boswelja.smartwatchextensions.common.ui.StaggeredVerticalGrid
 import com.boswelja.smartwatchextensions.dndsync.ui.DnDSyncSettingsActivity
@@ -69,13 +69,13 @@ fun DashboardScreen() {
         )
         StaggeredVerticalGrid(
             modifier = Modifier.padding(8.dp),
-            cells = GridCells.Fixed(2)
+            cells = GridCells.Adaptive(240.dp)
         ) {
             DashboardItem(
                 content = {
                     batteryStats?.let { batteryStats ->
-                        BatteryInfoSmall(
-                            modifier = Modifier.fillMaxWidth(0.33f),
+                        BatterySummarySmall(
+                            modifier = Modifier.fillMaxWidth().padding(16.dp),
                             batteryStats = batteryStats
                         )
                     }
@@ -92,7 +92,7 @@ fun DashboardScreen() {
                 content = {
                     appCount?.let { count ->
                         AppSummarySmall(
-                            modifier = Modifier.fillMaxWidth(0.33f),
+                            modifier = Modifier.fillMaxWidth().padding(16.dp),
                             appCount = count
                         )
                     }

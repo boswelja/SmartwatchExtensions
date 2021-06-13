@@ -18,32 +18,36 @@ import androidx.compose.ui.text.style.TextAlign
 import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.common.BatteryIcon
 import com.boswelja.smartwatchextensions.common.batterysync.BatteryStats
+import com.boswelja.smartwatchextensions.common.ui.FeatureSummarySmall
 import java.util.concurrent.TimeUnit
 import kotlinx.coroutines.delay
 
 @Composable
-fun BatteryInfoSmall(
+fun BatterySummarySmall(
     modifier: Modifier = Modifier,
     batteryStats: BatteryStats
 ) {
-    Column(modifier) {
-        BatteryIcon(
-            percent = batteryStats.percent,
-            modifier = Modifier
-                .fillMaxWidth()
-                .aspectRatio(1f)
-        )
-        Text(
-            text = stringResource(R.string.battery_percent, batteryStats.percent.toString()),
-            textAlign = TextAlign.Center,
-            style = MaterialTheme.typography.h5,
-            modifier = Modifier.fillMaxWidth()
-        )
-    }
+    FeatureSummarySmall(
+        modifier = modifier,
+        icon = {
+            BatteryIcon(
+                percent = batteryStats.percent,
+                modifier = Modifier
+                    .fillMaxWidth(0.33f)
+                    .aspectRatio(1f)
+            )
+        },
+        text = {
+            Text(
+                text = stringResource(R.string.battery_percent, batteryStats.percent.toString()),
+                style = MaterialTheme.typography.h5
+            )
+        }
+    )
 }
 
 @Composable
-fun BatteryInfoLarge(
+fun BatterySummaryLarge(
     modifier: Modifier = Modifier,
     batteryStats: BatteryStats
 ) {

@@ -8,6 +8,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
@@ -61,6 +62,7 @@ class MainActivity : AppCompatActivity() {
     @ExperimentalCoroutinesApi
     private val viewModel: MainViewModel by viewModels()
 
+    @ExperimentalFoundationApi
     @ExperimentalCoroutinesApi
     @ExperimentalAnimationApi
     @ExperimentalMaterialApi
@@ -171,6 +173,7 @@ enum class Destination {
     ABOUT
 }
 
+@ExperimentalFoundationApi
 @ExperimentalCoroutinesApi
 @ExperimentalMaterialApi
 @ExperimentalAnimationApi

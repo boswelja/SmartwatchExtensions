@@ -30,7 +30,7 @@ fun BatterySyncSettingsHeader() {
         val batteryStats by viewModel.batteryStats.collectAsState(null, Dispatchers.IO)
         batteryStats.let {
             if (it != null) {
-                BatteryInfoLarge(
+                BatterySummaryLarge(
                     Modifier.fillMaxWidth().aspectRatio(3f).padding(16.dp),
                     it
                 )
