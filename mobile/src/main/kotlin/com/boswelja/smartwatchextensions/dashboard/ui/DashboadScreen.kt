@@ -73,8 +73,8 @@ fun DashboardScreen() {
             contentSpacing = 16.dp
         ) {
             DashboardItem(
-                content = {
-                    batteryStats?.let { batteryStats ->
+                content = batteryStats?.let { batteryStats ->
+                    {
                         BatterySummarySmall(
                             modifier = Modifier.fillMaxWidth(),
                             batteryStats = batteryStats
@@ -90,21 +90,20 @@ fun DashboardScreen() {
                 }
             )
             DashboardItem(
-                content = {
-                    if (appCount != null && appCount!! > 0) {
+                content = if (appCount != null && appCount!! > 0) {
+                    {
                         AppSummarySmall(
                             modifier = Modifier.fillMaxWidth(),
                             appCount = appCount!!
                         )
                     }
-                },
+                } else null,
                 buttonLabel = stringResource(R.string.main_app_manager_title),
                 onClick = {
                     context.startActivity(Intent(context, AppManagerActivity::class.java))
                 }
             )
             DashboardItem(
-                content = { },
                 buttonLabel = stringResource(
                     R.string.dashboard_settings_label,
                     stringResource(R.string.main_dnd_sync_title)
@@ -114,7 +113,6 @@ fun DashboardScreen() {
                 }
             )
             DashboardItem(
-                content = { },
                 buttonLabel = stringResource(
                     R.string.dashboard_settings_label,
                     stringResource(R.string.main_phone_locking_title)
@@ -172,7 +170,7 @@ fun WatchStatus(
 @Composable
 fun DashboardItem(
     modifier: Modifier = Modifier,
-    content: @Composable () -> Unit,
+    content: (@Composable () -> Unit)? = null,
     buttonLabel: String,
     onClick: () -> Unit
 ) {
@@ -184,7 +182,9 @@ fun DashboardItem(
             Modifier.fillMaxSize().padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            content()
+            content?.let {
+                content()
+            }
             Text(
                 text = buttonLabel,
                 textAlign = TextAlign.Center,
