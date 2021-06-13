@@ -5,6 +5,7 @@ import androidx.compose.foundation.lazy.GridCells
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.Layout
+import androidx.compose.ui.layout.Placeable
 import kotlin.math.floor
 
 @ExperimentalFoundationApi
@@ -33,9 +34,11 @@ fun StaggeredVerticalGrid(
         }
         val itemConstraints = constraints.copy(maxWidth = columnWidth)
         val colHeights = IntArray(columns) { 0 } // track each column's height
+        val placeableXY: MutableMap<Placeable, Pair<Int, Int>> = mutableMapOf()
         val placeables = measurables.map { measurable ->
             val column = shortestColumn(colHeights)
             val placeable = measurable.measure(itemConstraints)
+            placeableXY[placeable] = Pair(columnWidth * column, colHeights[column])
             colHeights[column] += placeable.height
             placeable
         }
@@ -46,14 +49,12 @@ fun StaggeredVerticalGrid(
             width = constraints.maxWidth,
             height = height
         ) {
-            val colY = IntArray(columns) { 0 }
             placeables.forEach { placeable ->
-                val column = shortestColumn(colY)
+                val xy = placeableXY[placeable]!!
                 placeable.place(
-                    x = columnWidth * column,
-                    y = colY[column]
+                    x = xy.first,
+                    y = xy.second
                 )
-                colY[column] += placeable.height
             }
         }
     }
