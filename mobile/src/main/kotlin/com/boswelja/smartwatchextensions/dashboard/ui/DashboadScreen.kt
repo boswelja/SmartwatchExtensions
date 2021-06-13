@@ -19,7 +19,6 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.CheckCircleOutline
 import androidx.compose.material.icons.outlined.ErrorOutline
-import androidx.compose.material.icons.outlined.NavigateNext
 import androidx.compose.material.icons.outlined.Sync
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -28,6 +27,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.boswelja.smartwatchextensions.R
@@ -75,7 +75,7 @@ fun DashboardScreen() {
                 content = {
                     batteryStats?.let { batteryStats ->
                         BatterySummarySmall(
-                            modifier = Modifier.fillMaxWidth().padding(16.dp),
+                            modifier = Modifier.fillMaxWidth(),
                             batteryStats = batteryStats
                         )
                     }
@@ -92,7 +92,7 @@ fun DashboardScreen() {
                 content = {
                     appCount?.let { count ->
                         AppSummarySmall(
-                            modifier = Modifier.fillMaxWidth().padding(16.dp),
+                            modifier = Modifier.fillMaxWidth(),
                             appCount = count
                         )
                     }
@@ -180,28 +180,17 @@ fun DashboardItem(
         onClick = onClick
     ) {
         Column(
-            Modifier.fillMaxSize(),
+            Modifier.fillMaxSize().padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             content()
-            Row(
-                horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp)
-            ) {
-                Text(
-                    buttonLabel,
-                    style = MaterialTheme.typography.button,
-                    color = MaterialTheme.colors.primary
-                )
-                Icon(
-                    Icons.Outlined.NavigateNext,
-                    null,
-                    tint = MaterialTheme.colors.primary
-                )
-            }
+            Text(
+                text = buttonLabel,
+                textAlign = TextAlign.Center,
+                style = MaterialTheme.typography.button,
+                color = MaterialTheme.colors.primary,
+                modifier = Modifier.fillMaxWidth().padding(top = 8.dp)
+            )
         }
     }
 }
