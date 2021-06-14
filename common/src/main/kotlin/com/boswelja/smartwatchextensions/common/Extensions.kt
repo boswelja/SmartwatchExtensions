@@ -1,5 +1,9 @@
 package com.boswelja.smartwatchextensions.common
 
+import android.app.ActivityOptions
+import android.content.Context
+import android.content.Intent
+import android.os.Bundle
 import java.util.zip.Deflater
 import java.util.zip.Inflater
 
@@ -83,4 +87,16 @@ fun ByteArray.decompress(): ByteArray {
     val resultLength = decompressor.inflate(decompressedBytes)
     decompressor.end()
     return decompressedBytes.copyOf(resultLength)
+}
+
+inline fun <reified T> Context.startActivity(
+    flags: Int = 0,
+    extras: Bundle? = null,
+    options: ActivityOptions? = null
+) {
+    val intent = Intent(this, T::class.java).apply {
+        extras?.let { putExtras(extras) }
+        this.flags = flags
+    }
+    startActivity(intent, options?.toBundle())
 }

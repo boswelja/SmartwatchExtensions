@@ -28,6 +28,7 @@ import androidx.core.net.toUri
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.boswelja.smartwatchextensions.BuildConfig
 import com.boswelja.smartwatchextensions.R
+import com.boswelja.smartwatchextensions.common.startActivity
 import com.boswelja.smartwatchextensions.common.ui.HeaderItem
 import com.boswelja.smartwatchextensions.donate.ui.DonateActivity
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -152,7 +153,7 @@ fun SupportApp() {
             text = { Text(stringResource(R.string.about_donate_title)) },
             icon = { Icon(Icons.Outlined.FavoriteBorder, null) },
             modifier = Modifier.clickable {
-                context.startActivity(Intent(context, DonateActivity::class.java))
+                context.startActivity<DonateActivity>()
             }
         )
         ListItem(
