@@ -1,6 +1,5 @@
 package com.boswelja.smartwatchextensions.dashboard.ui
 
-import android.content.Intent
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -33,6 +32,7 @@ import com.boswelja.smartwatchextensions.appmanager.ui.AppManagerActivity
 import com.boswelja.smartwatchextensions.appmanager.ui.AppSummarySmall
 import com.boswelja.smartwatchextensions.batterysync.ui.BatterySummarySmall
 import com.boswelja.smartwatchextensions.batterysync.ui.BatterySyncSettingsActivity
+import com.boswelja.smartwatchextensions.common.startActivity
 import com.boswelja.smartwatchextensions.common.ui.StaggeredVerticalGrid
 import com.boswelja.smartwatchextensions.dndsync.ui.DnDSyncSettingsActivity
 import com.boswelja.smartwatchextensions.phonelocking.ui.PhoneLockingSettingsActivity
@@ -70,7 +70,7 @@ fun DashboardScreen(
                 },
                 titleText = stringResource(R.string.battery_sync_title),
                 onClick = {
-                    context.startActivity(Intent(context, BatterySyncSettingsActivity::class.java))
+                    context.startActivity<BatterySyncSettingsActivity>()
                 }
             )
             DashboardItem(
@@ -79,19 +79,19 @@ fun DashboardScreen(
                 } else null,
                 titleText = stringResource(R.string.main_app_manager_title),
                 onClick = {
-                    context.startActivity(Intent(context, AppManagerActivity::class.java))
+                    context.startActivity<AppManagerActivity>()
                 }
             )
             DashboardItem(
                 titleText = stringResource(R.string.main_dnd_sync_title),
                 onClick = {
-                    context.startActivity(Intent(context, DnDSyncSettingsActivity::class.java))
+                    context.startActivity<DnDSyncSettingsActivity>()
                 }
             )
             DashboardItem(
                 titleText = stringResource(R.string.main_phone_locking_title),
                 onClick = {
-                    context.startActivity(Intent(context, PhoneLockingSettingsActivity::class.java))
+                    context.startActivity<PhoneLockingSettingsActivity>()
                 }
             )
         }
