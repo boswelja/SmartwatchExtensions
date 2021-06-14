@@ -52,7 +52,7 @@ fun PhoneLockingSettingsScreen() {
             icon = Icons.Outlined.PhonelinkLock,
             text = stringResource(R.string.phone_locking_enabled_title),
             secondaryText = stringResource(R.string.phone_locking_enabled_summary),
-            isChecked = phoneLockingEnabled == true,
+            isChecked = phoneLockingEnabled,
             onCheckChanged = {
                 if (it) {
                     if (viewModel.canEnablePhoneLocking()) {

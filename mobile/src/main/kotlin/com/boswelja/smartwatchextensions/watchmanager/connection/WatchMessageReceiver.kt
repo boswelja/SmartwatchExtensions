@@ -18,6 +18,7 @@ import com.boswelja.smartwatchextensions.common.connection.Messages.WATCH_REGIST
 import com.boswelja.smartwatchextensions.common.decompress
 import com.boswelja.smartwatchextensions.common.dndsync.References.DND_STATUS_PATH
 import com.boswelja.smartwatchextensions.common.fromByteArray
+import com.boswelja.smartwatchextensions.common.startActivity
 import com.boswelja.smartwatchextensions.dndsync.Utils.handleDnDStateChange
 import com.boswelja.smartwatchextensions.main.MainActivity
 import com.boswelja.smartwatchextensions.watchmanager.WatchManager
@@ -97,11 +98,7 @@ class WatchMessageReceiver : MessageReceiver() {
      */
     private fun launchApp(context: Context) {
         Timber.i("launchApp() called")
-        Intent(context, MainActivity::class.java).apply {
-            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-        }.also {
-            context.startActivity(it)
-        }
+        context.startActivity<MainActivity>(flags = Intent.FLAG_ACTIVITY_NEW_TASK)
     }
 
     /**

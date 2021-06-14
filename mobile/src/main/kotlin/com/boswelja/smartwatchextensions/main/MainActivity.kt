@@ -8,7 +8,9 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.ContentAlpha
@@ -30,6 +32,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.lifecycleScope
@@ -61,6 +64,7 @@ class MainActivity : AppCompatActivity() {
     @ExperimentalCoroutinesApi
     private val viewModel: MainViewModel by viewModels()
 
+    @ExperimentalFoundationApi
     @ExperimentalCoroutinesApi
     @ExperimentalAnimationApi
     @ExperimentalMaterialApi
@@ -171,6 +175,7 @@ enum class Destination {
     ABOUT
 }
 
+@ExperimentalFoundationApi
 @ExperimentalCoroutinesApi
 @ExperimentalMaterialApi
 @ExperimentalAnimationApi
@@ -178,7 +183,7 @@ enum class Destination {
 fun MainScreen(scaffoldState: ScaffoldState, currentDestination: Destination) {
     Crossfade(targetState = currentDestination) {
         when (it) {
-            Destination.DASHBOARD -> DashboardScreen()
+            Destination.DASHBOARD -> DashboardScreen(Modifier.fillMaxSize())
             Destination.MESSAGES -> MessagesScreen(scaffoldState = scaffoldState)
             Destination.SETTINGS -> AppSettingsScreen()
             Destination.ABOUT -> AboutAppScreen()

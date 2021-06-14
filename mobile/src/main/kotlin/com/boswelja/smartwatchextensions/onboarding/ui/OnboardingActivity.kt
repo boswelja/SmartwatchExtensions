@@ -1,6 +1,5 @@
 package com.boswelja.smartwatchextensions.onboarding.ui
 
-import android.content.Intent
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -22,6 +21,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.res.stringResource
 import androidx.core.net.toUri
 import com.boswelja.smartwatchextensions.R
+import com.boswelja.smartwatchextensions.common.startActivity
 import com.boswelja.smartwatchextensions.common.ui.AppTheme
 import com.boswelja.smartwatchextensions.common.ui.Crossflow
 import com.boswelja.smartwatchextensions.common.ui.UpNavigationAppBar
@@ -73,7 +73,7 @@ class OnboardingActivity : AppCompatActivity() {
             Destination.WELCOME -> currentDestination = Destination.SHARE_USAGE_STATS
             Destination.SHARE_USAGE_STATS -> currentDestination = Destination.REGISTER_WATCHES
             Destination.REGISTER_WATCHES -> {
-                startActivity(Intent(this@OnboardingActivity, MainActivity::class.java))
+                startActivity<MainActivity>()
                 finish()
             }
         }

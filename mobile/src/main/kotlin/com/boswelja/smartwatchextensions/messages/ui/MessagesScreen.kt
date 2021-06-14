@@ -44,6 +44,7 @@ import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.boswelja.smartwatchextensions.R
+import com.boswelja.smartwatchextensions.common.startActivity
 import com.boswelja.smartwatchextensions.messages.Message
 import kotlinx.coroutines.launch
 
@@ -168,7 +169,7 @@ fun NoMessagesView() {
         OutlinedButton(
             modifier = Modifier.padding(top = 16.dp),
             onClick = {
-                context.startActivity(Intent(context, MessageHistoryActivity::class.java))
+                context.startActivity<MessageHistoryActivity>()
             }
         ) {
             Text(stringResource(R.string.message_history_label))

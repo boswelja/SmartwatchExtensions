@@ -29,6 +29,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.appsettings.Settings
+import com.boswelja.smartwatchextensions.common.startActivity
 import com.boswelja.smartwatchextensions.common.ui.CheckboxPreference
 import com.boswelja.smartwatchextensions.common.ui.DialogPreference
 import com.boswelja.smartwatchextensions.common.ui.HeaderItem
@@ -92,14 +93,14 @@ fun AppSettings() {
             text = { Text(stringResource(R.string.manage_space_title)) },
             icon = { Icon(Icons.Outlined.Storage, null) },
             modifier = Modifier.clickable {
-                context.startActivity(Intent(context, ManageSpaceActivity::class.java))
+                context.startActivity<ManageSpaceActivity>()
             }
         )
         ListItem(
             text = { Text(stringResource(R.string.widget_settings_title)) },
             icon = { Icon(Icons.Outlined.Widgets, null) },
             modifier = Modifier.clickable {
-                context.startActivity(Intent(context, WidgetSettingsActivity::class.java))
+                context.startActivity<WidgetSettingsActivity>()
             }
         )
         DialogPreference(
@@ -144,7 +145,7 @@ fun WatchSettings() {
             text = { Text(stringResource(R.string.manage_watches_title)) },
             icon = { Icon(Icons.Outlined.Watch, null) },
             modifier = Modifier.clickable {
-                context.startActivity(Intent(context, WatchManagerActivity::class.java))
+                context.startActivity<WatchManagerActivity>()
             }
         )
     }

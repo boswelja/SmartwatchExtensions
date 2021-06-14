@@ -17,6 +17,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.common.preference.PreferenceKey.DND_SYNC_TO_PHONE_KEY
 import com.boswelja.smartwatchextensions.common.preference.PreferenceKey.DND_SYNC_WITH_THEATER_KEY
+import com.boswelja.smartwatchextensions.common.startActivity
 import com.boswelja.smartwatchextensions.common.ui.SwitchPreference
 import com.boswelja.smartwatchextensions.dndsync.ui.helper.DnDSyncHelperActivity
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -87,8 +88,7 @@ fun SyncToWatchSetting(
             if (!it) {
                 viewModel.setSyncToWatch(false)
             } else {
-                Intent(context, DnDSyncHelperActivity::class.java)
-                    .also { intent -> context.startActivity(intent) }
+                context.startActivity<DnDSyncHelperActivity>()
             }
         }
     )

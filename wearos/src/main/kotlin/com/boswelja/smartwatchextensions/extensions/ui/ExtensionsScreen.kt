@@ -1,6 +1,5 @@
 package com.boswelja.smartwatchextensions.extensions.ui
 
-import android.content.Intent
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -28,6 +27,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.about.ui.AboutActivity
 import com.boswelja.smartwatchextensions.batterysync.ui.BatterySyncScreen
+import com.boswelja.smartwatchextensions.common.startActivity
 import com.boswelja.smartwatchextensions.phonelocking.ui.PhoneLockingScreen
 import kotlinx.coroutines.Dispatchers
 
@@ -107,7 +107,7 @@ fun Links() {
                 Text(stringResource(R.string.about_app_title))
             },
             onClick = {
-                context.startActivity(Intent(context, AboutActivity::class.java))
+                context.startActivity<AboutActivity>()
             }
         )
     }
