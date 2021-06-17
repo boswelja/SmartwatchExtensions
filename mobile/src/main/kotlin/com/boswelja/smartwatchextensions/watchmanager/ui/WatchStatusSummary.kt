@@ -23,7 +23,8 @@ fun WatchStatusSummarySmall(
     val (icon, label) = when (watchStatus) {
         Status.CONNECTING ->
             Pair(Icons.Outlined.Sync, stringResource(R.string.watch_status_connecting))
-        Status.CONNECTED ->
+        Status.CONNECTED,
+        Status.CONNECTED_NEARBY ->
             Pair(
                 Icons.Outlined.CheckCircleOutline,
                 stringResource(R.string.watch_status_connected)
@@ -38,7 +39,7 @@ fun WatchStatusSummarySmall(
                 Icons.Outlined.ErrorOutline,
                 stringResource(R.string.watch_status_missing_app)
             )
-        else ->
+        Status.ERROR ->
             Pair(
                 Icons.Outlined.ErrorOutline,
                 stringResource(R.string.watch_status_error)
