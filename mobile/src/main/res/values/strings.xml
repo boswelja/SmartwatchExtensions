@@ -89,6 +89,8 @@
     <string name="proximity_watch_noti_summary">Get notified when you leave your watch behind</string>
     <string name="proximity_observer_title">Monitoring watch connection</string>
     <string name="proximity_observer_summary">We\'re monitoring the connection to some watches, so we can notify you if they become disconnected</string>
+    <string name="separation_notification_title">%s out of range</string>
+    <string name="separation_notification_text">Your %s isn\'t nearby. Did you mean to leave it behind?</string>
 
     <!-- App Settings strings -->
     <string name="noti_settings_title">Notification Settings</string>
