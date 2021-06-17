@@ -20,8 +20,10 @@ import com.boswelja.smartwatchextensions.watchmanager.database.WatchDatabase
 import com.boswelja.smartwatchextensions.watchmanager.database.WatchSettingsDatabase
 import com.boswelja.smartwatchextensions.widget.widgetIdStore
 import com.boswelja.watchconnection.core.Watch
-import com.boswelja.watchconnection.core.WatchPlatformManager
-import com.boswelja.watchconnection.wearos.WearOSPlatform
+import com.boswelja.watchconnection.core.discovery.DiscoveryClient
+import com.boswelja.watchconnection.core.message.MessageClient
+import com.boswelja.watchconnection.wearos.WearOSDiscoveryPlatform
+import com.boswelja.watchconnection.wearos.WearOSMessagePlatform
 import java.util.UUID
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -46,7 +48,8 @@ class WatchManager internal constructor(
     private val context: Context,
     val settingsDatabase: WatchSettingsDatabase,
     private val watchDatabase: WatchDatabase,
-    private val connectionClient: WatchPlatformManager,
+    private val messageClient: MessageClient,
+    private val discoveryClient: DiscoveryClient,
     private val analytics: Analytics,
     private val dataStore: DataStore<AppState>,
     private val coroutineScope: CoroutineScope
@@ -56,8 +59,13 @@ class WatchManager internal constructor(
         context.applicationContext,
         WatchSettingsDatabase.getInstance(context),
         WatchDatabase.getInstance(context),
-        WatchPlatformManager(
-            WearOSPlatform(context, CAPABILITY_WATCH_APP, Capability.values().map { it.name })
+        MessageClient(
+            WearOSMessagePlatform(context)
+        ),
+        DiscoveryClient(
+            WearOSDiscoveryPlatform(
+                context, CAPABILITY_WATCH_APP, Capability.values().map { it.name }
+            )
         ),
         Analytics(),
         context.appStateStore,
@@ -77,7 +85,7 @@ class WatchManager internal constructor(
 
     @ExperimentalCoroutinesApi
     val availableWatches: Flow<List<Watch>>
-        get() = connectionClient.watchesWithApp()
+        get() = discoveryClient.watchesWithApp()
             .map { watches ->
                 watches.filter { watchDatabase.watchDao().get(it.id).firstOrNull() == null }
             }
@@ -106,7 +114,7 @@ class WatchManager internal constructor(
 
     suspend fun registerWatch(watch: Watch) {
         withContext(Dispatchers.IO) {
-            connectionClient.sendMessage(watch, Messages.WATCH_REGISTERED_PATH)
+            messageClient.sendMessage(watch, Messages.WATCH_REGISTERED_PATH)
             watchDatabase.watchDao().add(watch.toDbWatch())
             AppCacheUpdateWorker.enqueueWorkerFor(context, watch.id)
             analytics.logWatchRegistered()
@@ -131,7 +139,7 @@ class WatchManager internal constructor(
         withContext(Dispatchers.IO) {
             batteryStatsDatabase.batteryStatsDao().deleteStats(watch.id)
             watchAppDatabase.apps().removeForWatch(watch.id)
-            connectionClient.sendMessage(watch, Messages.RESET_APP)
+            messageClient.sendMessage(watch, Messages.RESET_APP)
             watchDatabase.removeWatch(watch)
             removeWidgetsForWatch(watch, widgetIdStore)
             AppCacheUpdateWorker.stopWorkerFor(context, watch.id)
@@ -160,7 +168,7 @@ class WatchManager internal constructor(
         watch: Watch
     ) {
         batteryStatsDatabase.batteryStatsDao().deleteStats(watch.id)
-        connectionClient.sendMessage(watch, CLEAR_PREFERENCES)
+        messageClient.sendMessage(watch, CLEAR_PREFERENCES)
         settingsDatabase.intSettings().deleteAllForWatch(watch.id)
         settingsDatabase.boolSettings().deleteAllForWatch(watch.id)
         removeWidgetsForWatch(watch, widgetIdStore)
@@ -195,11 +203,11 @@ class WatchManager internal constructor(
         }
     }
 
-    fun getStatusFor(watch: Watch) = connectionClient.getStatusFor(watch)
+    fun getStatusFor(watch: Watch) = discoveryClient.getStatusFor(watch)
 
     @ExperimentalCoroutinesApi
     fun getCapabilitiesFor(watch: Watch) =
-        connectionClient.getCapabilitiesFor(watch)?.mapLatest { capabilities ->
+        discoveryClient.getCapabilitiesFor(watch)?.mapLatest { capabilities ->
             capabilities.map { Capability.valueOf(it) }
         }
 
@@ -212,7 +220,7 @@ class WatchManager internal constructor(
         }
 
     suspend fun sendMessage(watch: Watch, message: String, data: ByteArray? = null) =
-        connectionClient.sendMessage(watch, message, data)
+        messageClient.sendMessage(watch, message, data)
 
     @ExperimentalCoroutinesApi
     fun getBoolSetting(key: String, watch: Watch? = null, default: Boolean = false): Flow<Boolean> {
@@ -260,7 +268,7 @@ class WatchManager internal constructor(
             else -> throw IllegalArgumentException()
         }
         withContext(Dispatchers.IO) {
-            connectionClient.sendMessage(
+            messageClient.sendMessage(
                 watch,
                 message,
                 Pair(key, value).toByteArray()
@@ -284,7 +292,7 @@ class WatchManager internal constructor(
     fun getWatchById(id: UUID): Flow<Watch?> = watchDatabase.watchDao().get(id)
 
     @ExperimentalCoroutinesApi
-    fun incomingMessages() = connectionClient.incomingMessages()
+    fun incomingMessages() = messageClient.incomingMessages()
 
     companion object : SingletonHolder<WatchManager, Context>(::WatchManager) {
         const val CAPABILITY_WATCH_APP = "extensions_watch_app"

@@ -7,7 +7,6 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.boswelja.smartwatchextensions.watchmanager.WatchManager
 import com.boswelja.smartwatchextensions.watchmanager.ui.register.RegisterWatchViewModel
 import com.boswelja.watchconnection.core.Watch
-import com.boswelja.watchconnection.wearos.WearOSPlatform
 import io.mockk.MockKAnnotations
 import io.mockk.coVerify
 import io.mockk.every
@@ -31,9 +30,10 @@ class RegisterWatchViewModelTest {
     @get:Rule
     val instantExecutorRule = InstantTaskExecutorRule()
 
-    private val dummyWatch1 = Watch("Watch 1", "id1", WearOSPlatform.PLATFORM)
-    private val dummyWatch2 = Watch("Watch 2", "id2", WearOSPlatform.PLATFORM)
-    private val dummyWatch3 = Watch("Watch 3", "id3", WearOSPlatform.PLATFORM)
+    private val dummyPlatform = "platform"
+    private val dummyWatch1 = Watch("Watch 1", "id1", dummyPlatform)
+    private val dummyWatch2 = Watch("Watch 2", "id2", dummyPlatform)
+    private val dummyWatch3 = Watch("Watch 3", "id3", dummyPlatform)
     private val dummyWatches = arrayOf(dummyWatch1, dummyWatch2, dummyWatch3)
     private var availableWatches: Flow<List<Watch>> = flow { }
     private val registeredWatches = MutableStateFlow(emptyList<Watch>())
