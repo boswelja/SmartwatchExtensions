@@ -21,7 +21,8 @@ import com.boswelja.smartwatchextensions.watchmanager.database.DbWatch.Companion
 import com.boswelja.smartwatchextensions.watchmanager.database.WatchDatabase
 import com.boswelja.smartwatchextensions.watchmanager.database.WatchSettingsDatabase
 import com.boswelja.watchconnection.core.Watch
-import com.boswelja.watchconnection.core.WatchPlatformManager
+import com.boswelja.watchconnection.core.discovery.DiscoveryClient
+import com.boswelja.watchconnection.core.message.MessageClient
 import io.mockk.MockKAnnotations
 import io.mockk.clearAllMocks
 import io.mockk.coVerify
@@ -60,7 +61,8 @@ class WatchManagerTest {
     private val dummyWatches = listOf(dummyWatch1, dummyWatch2, dummyWatch3)
     private val appState = MutableStateFlow(AppState())
 
-    @RelaxedMockK private lateinit var connectionClient: WatchPlatformManager
+    @RelaxedMockK private lateinit var messageClient: MessageClient
+    @RelaxedMockK private lateinit var discoveryClient: DiscoveryClient
     @RelaxedMockK private lateinit var widgetIdStore: DataStore<Preferences>
     @RelaxedMockK private lateinit var analytics: Analytics
     // TODO Don't mock databases, instead create in memory databases so we can validate data too
@@ -118,7 +120,7 @@ class WatchManagerTest {
     fun `requestRefreshCapabilities calls connection client`(): Unit = runBlocking {
         watchManager = getWatchManager()
         watchManager.getCapabilitiesFor(dummyWatch1)
-        coVerify(exactly = 1) { connectionClient.getCapabilitiesFor(dummyWatch1) }
+        coVerify(exactly = 1) { discoveryClient.getCapabilitiesFor(dummyWatch1) }
     }
 
     @Test
@@ -127,7 +129,7 @@ class WatchManagerTest {
         watchManager.registerWatch(dummyWatch1)
         verify(exactly = 1) { analytics.logWatchRegistered() }
         coVerify(exactly = 1) {
-            connectionClient.sendMessage(dummyWatch1, Messages.WATCH_REGISTERED_PATH)
+            messageClient.sendMessage(dummyWatch1, Messages.WATCH_REGISTERED_PATH)
         }
 
         // Verify watch was added to the database
@@ -145,7 +147,7 @@ class WatchManagerTest {
                 dummyWatch1
             )
             verify(exactly = 1) { analytics.logWatchRemoved() }
-            coVerify(exactly = 1) { connectionClient.sendMessage(dummyWatch1, Messages.RESET_APP) }
+            coVerify(exactly = 1) { messageClient.sendMessage(dummyWatch1, Messages.RESET_APP) }
             verify(exactly = 1) { batteryStatsDatabase.batteryStatsDao() }
             verify(exactly = 1) { watchAppDatabase.apps() }
 
@@ -174,7 +176,7 @@ class WatchManagerTest {
             batteryStatsDatabase,
             dummyWatch1
         )
-        coVerify(exactly = 1) { connectionClient.sendMessage(dummyWatch1, CLEAR_PREFERENCES) }
+        coVerify(exactly = 1) { messageClient.sendMessage(dummyWatch1, CLEAR_PREFERENCES) }
         verify(exactly = 1) { settingsDatabase.intSettings() }
         verify(exactly = 1) { settingsDatabase.boolSettings() }
         verify(exactly = 1) { batteryStatsDatabase.batteryStatsDao() }
@@ -214,7 +216,8 @@ class WatchManagerTest {
             ApplicationProvider.getApplicationContext(),
             settingsDatabase,
             watchDatabase,
-            connectionClient,
+            messageClient,
+            discoveryClient,
             analytics,
             dataStore,
             coroutineScope
