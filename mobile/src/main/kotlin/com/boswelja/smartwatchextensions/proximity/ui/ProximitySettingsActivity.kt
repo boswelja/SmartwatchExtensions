@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.boswelja.smartwatchextensions.R
+import com.boswelja.smartwatchextensions.common.ui.AppTheme
 import com.boswelja.smartwatchextensions.common.ui.SwitchPreference
 import com.boswelja.smartwatchextensions.common.ui.UpNavigationWatchPickerAppBar
 import com.boswelja.smartwatchextensions.watchmanager.WatchManager
@@ -38,17 +39,19 @@ class ProximitySettingsActivity : AppCompatActivity() {
             val registeredWatches by watchManager.registeredWatches
                 .collectAsState(emptyList(), Dispatchers.IO)
 
-            Scaffold(
-                topBar = {
-                    UpNavigationWatchPickerAppBar(
-                        selectedWatch = selectedWatch,
-                        watches = registeredWatches,
-                        onWatchSelected = { watchManager.selectWatchById(it.id) },
-                        onNavigateUp = { finish() }
-                    )
+            AppTheme {
+                Scaffold(
+                    topBar = {
+                        UpNavigationWatchPickerAppBar(
+                            selectedWatch = selectedWatch,
+                            watches = registeredWatches,
+                            onWatchSelected = { watchManager.selectWatchById(it.id) },
+                            onNavigateUp = { finish() }
+                        )
+                    }
+                ) {
+                    ProximitySettingsScreen(Modifier.padding(it))
                 }
-            ) {
-                ProximitySettingsScreen(Modifier.padding(it))
             }
         }
     }
