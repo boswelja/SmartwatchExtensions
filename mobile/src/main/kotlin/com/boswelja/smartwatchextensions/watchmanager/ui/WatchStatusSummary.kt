@@ -13,7 +13,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.common.ui.FeatureSummarySmall
-import com.boswelja.watchconnection.core.Status
+import com.boswelja.watchconnection.core.discovery.Status
 
 @Composable
 fun WatchStatusSummarySmall(
