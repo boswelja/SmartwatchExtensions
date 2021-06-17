@@ -18,4 +18,7 @@ object PreferenceKey {
     const val DND_SYNC_TO_WATCH_KEY = "interrupt_filter_sync_to_watch"
     const val DND_SYNC_TO_PHONE_KEY = "interrupt_filter_sync_to_phone"
     const val DND_SYNC_WITH_THEATER_KEY = "interrupt_filter_sync_with_theater"
+
+    const val WATCH_PROXIMITY_NOTI_KEY = "watch_proximity_notification"
+    const val PHONE_PROXIMITY_NOTI_KEY = "phone_proximity_notification"
 }
