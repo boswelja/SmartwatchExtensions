@@ -82,6 +82,7 @@
     <string name="phone_locking_accessibility_service_desc">Allows you to lock your phone from your watch with Smartwatch Extensions</string>
 
     <!-- Proximity settings strings -->
+    <string name="proximity_settings_title">PH BETA Proximity Alerts</string>
     <string name="proximity_phone_noti_title">PH Phone proximity notification</string>
     <string name="proximity_phone_noti_summary">Get notified when you leave your phone behind</string>
     <string name="proximity_watch_noti_title">PH Watch proximity notification</string>
