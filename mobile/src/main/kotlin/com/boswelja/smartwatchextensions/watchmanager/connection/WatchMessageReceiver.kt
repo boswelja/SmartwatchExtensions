@@ -11,7 +11,6 @@ import com.boswelja.smartwatchextensions.common.appmanager.Messages.APP_SENDING_
 import com.boswelja.smartwatchextensions.common.batterysync.BatteryStats
 import com.boswelja.smartwatchextensions.common.batterysync.References.BATTERY_STATUS_PATH
 import com.boswelja.smartwatchextensions.common.batterysync.References.REQUEST_BATTERY_UPDATE_PATH
-import com.boswelja.smartwatchextensions.common.connection.Capability
 import com.boswelja.smartwatchextensions.common.connection.Messages.CHECK_WATCH_REGISTERED_PATH
 import com.boswelja.smartwatchextensions.common.connection.Messages.LAUNCH_APP
 import com.boswelja.smartwatchextensions.common.connection.Messages.WATCH_REGISTERED_PATH
@@ -21,12 +20,11 @@ import com.boswelja.smartwatchextensions.common.fromByteArray
 import com.boswelja.smartwatchextensions.common.startActivity
 import com.boswelja.smartwatchextensions.dndsync.Utils.handleDnDStateChange
 import com.boswelja.smartwatchextensions.main.MainActivity
-import com.boswelja.smartwatchextensions.watchmanager.WatchManager
 import com.boswelja.smartwatchextensions.watchmanager.database.WatchDatabase
-import com.boswelja.watchconnection.core.Message
-import com.boswelja.watchconnection.core.MessageReceiver
-import com.boswelja.watchconnection.core.WatchPlatformManager
-import com.boswelja.watchconnection.wearos.WearOSPlatform
+import com.boswelja.watchconnection.core.message.Message
+import com.boswelja.watchconnection.core.message.MessageClient
+import com.boswelja.watchconnection.core.message.MessageReceiver
+import com.boswelja.watchconnection.wearos.WearOSMessagePlatform
 import java.util.UUID
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -113,12 +111,8 @@ class WatchMessageReceiver : MessageReceiver() {
             val watch = database.watchDao().get(watchId).firstOrNull()
             // If watch is found in the database, let it know it's registered
             watch?.let {
-                WatchPlatformManager(
-                    WearOSPlatform(
-                        context,
-                        WatchManager.CAPABILITY_WATCH_APP,
-                        Capability.values().map { it.name }
-                    )
+                MessageClient(
+                    WearOSMessagePlatform(context)
                 ).sendMessage(watch, WATCH_REGISTERED_PATH)
             }
         }
