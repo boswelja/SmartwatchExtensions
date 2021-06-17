@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import com.boswelja.smartwatchextensions.common.preference.PreferenceKey.PHONE_SEPARATION_NOTI_KEY
 import com.boswelja.smartwatchextensions.common.preference.PreferenceKey.WATCH_SEPARATION_NOTI_KEY
+import com.boswelja.smartwatchextensions.proximity.SeparationObserverService
 import com.boswelja.smartwatchextensions.watchmanager.WatchManager
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
@@ -35,6 +36,9 @@ class ProximitySettingsViewModel internal constructor(
     suspend fun setWatchProximityNotiEnabled(enabled: Boolean) {
         watchManager.selectedWatch.first()?.let {
             watchManager.updatePreference(it, WATCH_SEPARATION_NOTI_KEY, enabled)
+        }
+        if (enabled) {
+            SeparationObserverService.start(getApplication())
         }
     }
 }

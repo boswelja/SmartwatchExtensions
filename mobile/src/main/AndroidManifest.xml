@@ -105,6 +105,12 @@
                 android:resource="@xml/phone_locking_accessibility_service" />
         </service>
 
+        <service
+            android:name=".proximity.SeparationObserverService"
+            android:foregroundServiceType="connectedDevice"
+            android:label="@string/proximity_observer_title"
+            android:exported="false" />
+
         <receiver
             android:name=".bootorupdate.BootOrUpdateReceiver"
             android:exported="false">
