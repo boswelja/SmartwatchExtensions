@@ -64,7 +64,10 @@ class WatchManager internal constructor(
         ),
         DiscoveryClient(
             WearOSDiscoveryPlatform(
-                context, CAPABILITY_WATCH_APP, Capability.values().map { it.name }
+                context,
+                CAPABILITY_WATCH_APP,
+                Capability.values().map { it.name },
+                5000
             )
         ),
         Analytics(),
