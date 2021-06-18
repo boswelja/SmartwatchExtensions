@@ -1,4 +1,5 @@
 Changes:
 We've redesigned the dashboard, and made it easier to get an overview of all the features you've enabled
-Significantly improved App Manager, you can find out more on our wiki!
-Made some backend changes that should improve performance and reduce app size
+
+Fixes:
+We fixed a crash that was occurring rather frequently on a majority of smartwatches
