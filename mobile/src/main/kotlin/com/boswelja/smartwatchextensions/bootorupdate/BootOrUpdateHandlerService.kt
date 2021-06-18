@@ -15,9 +15,11 @@ import com.boswelja.smartwatchextensions.batterysync.BatterySyncWorker
 import com.boswelja.smartwatchextensions.bootorupdate.updater.Result
 import com.boswelja.smartwatchextensions.bootorupdate.updater.Updater
 import com.boswelja.smartwatchextensions.common.preference.PreferenceKey
+import com.boswelja.smartwatchextensions.common.preference.PreferenceKey.WATCH_SEPARATION_NOTI_KEY
 import com.boswelja.smartwatchextensions.dndsync.DnDLocalChangeService
 import com.boswelja.smartwatchextensions.messages.Message
 import com.boswelja.smartwatchextensions.messages.sendMessage
+import com.boswelja.smartwatchextensions.proximity.SeparationObserverService
 import com.boswelja.smartwatchextensions.watchmanager.WatchManager
 import com.boswelja.smartwatchextensions.watchmanager.database.WatchSettingsDatabase
 import kotlinx.coroutines.Dispatchers
@@ -130,6 +132,14 @@ class BootOrUpdateHandlerService : LifecycleService() {
         }
     }
 
+    private suspend fun tryStartSeparationObserverService(database: WatchSettingsDatabase) {
+        val watchSeparationAlertsEnabled =
+            database.boolSettings().getByKey(WATCH_SEPARATION_NOTI_KEY).first().any { it.value }
+        if (watchSeparationAlertsEnabled) {
+            SeparationObserverService.start(this)
+        }
+    }
+
     /** Try to start any needed [BatterySyncWorker] instances. */
     private suspend fun tryStartBatterySyncWorkers(database: WatchSettingsDatabase) {
         withContext(Dispatchers.IO) {
@@ -160,9 +170,10 @@ class BootOrUpdateHandlerService : LifecycleService() {
     /** Binds to the [WatchManager]. */
     private suspend fun restartServices() {
         Timber.d("restartServices() called")
-        WatchSettingsDatabase.getInstance(this@BootOrUpdateHandlerService).also {
+        WatchSettingsDatabase.getInstance(this).also {
             tryStartBatterySyncWorkers(it)
             tryStartInterruptFilterSyncService(it)
+            tryStartSeparationObserverService(it)
             finish()
         }
     }
