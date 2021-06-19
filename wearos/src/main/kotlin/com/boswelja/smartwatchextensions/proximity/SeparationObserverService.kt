@@ -27,6 +27,7 @@ import kotlinx.coroutines.tasks.await
 class SeparationObserverService : LifecycleService() {
 
     private val notificationManager by lazy { getSystemService<NotificationManager>()!! }
+    private var hasNotifiedThisDisconnect = false
 
     override fun onCreate() {
         super.onCreate()
@@ -62,11 +63,13 @@ class SeparationObserverService : LifecycleService() {
 
                 if (phoneNode?.isNearby == true) {
                     notificationManager.cancel(SEPARATION_NOTI_ID)
-                } else {
+                    hasNotifiedThisDisconnect = false
+                } else if (!hasNotifiedThisDisconnect) {
                     notificationManager.notify(
                         SEPARATION_NOTI_ID,
                         createSeparationNotification(phoneName.first())
                     )
+                    hasNotifiedThisDisconnect = true
                 }
 
                 // Wait for a specified interval before repeating
@@ -112,12 +115,12 @@ class SeparationObserverService : LifecycleService() {
         }
     }
 
-    fun createSeparationNotificationChannel() {
+    private fun createSeparationNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             if (notificationManager.getNotificationChannel(SEPARATION_NOTI_CHANNEL_ID) == null) {
                 NotificationChannel(
                     SEPARATION_NOTI_CHANNEL_ID,
-                    getString(R.string.proximity_observer_noti_channel_title),
+                    getString(R.string.separation_noti_channel_title),
                     NotificationManager.IMPORTANCE_HIGH
                 ).also {
                     notificationManager.createNotificationChannel(it)

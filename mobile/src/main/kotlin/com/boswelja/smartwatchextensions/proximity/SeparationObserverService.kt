@@ -33,6 +33,7 @@ class SeparationObserverService : LifecycleService() {
 
     private val watchManager by lazy { WatchManager.getInstance(this) }
     private val settingsDatabase by lazy { WatchSettingsDatabase.getInstance(this) }
+    private val hasSentNotiMap = hashMapOf<UUID, Boolean>()
     private var statusCollectorJob: Job? = null
 
     @FlowPreview
@@ -93,11 +94,13 @@ class SeparationObserverService : LifecycleService() {
         Timber.d("%s status changed to %s", watch.name, newStatus)
         val notificationManager = getSystemService<NotificationManager>()!!
         val notiId = watch.id.hashCode()
-        if (newStatus != Status.CONNECTED_NEARBY) {
-            val notification = createSeparationNotification(watch.name)
-            getSystemService<NotificationManager>()?.notify(notiId, notification)
-        } else {
+        if (newStatus == Status.CONNECTED_NEARBY) {
             notificationManager.cancel(notiId)
+            hasSentNotiMap[watch.id] = false
+        } else if (hasSentNotiMap[watch.id] != true) {
+            val notification = createSeparationNotification(watch.name)
+            notificationManager.notify(notiId, notification)
+            hasSentNotiMap[watch.id] = true
         }
     }
 
