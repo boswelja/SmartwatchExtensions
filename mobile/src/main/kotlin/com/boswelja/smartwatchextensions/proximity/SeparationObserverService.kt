@@ -47,7 +47,7 @@ class SeparationObserverService : LifecycleService() {
         super.onCreate()
         NotificationChannelHelper.createForSeparationObserver(this, getSystemService()!!)
         NotificationChannelHelper.createForSeparationNotis(this, getSystemService()!!)
-        startForeground(1, createForegroundNotification())
+        startForeground(FOREGROUND_NOTI_ID, createForegroundNotification())
         lifecycleScope.launch(Dispatchers.IO) {
             startCollectingSettings()
         }
@@ -123,6 +123,7 @@ class SeparationObserverService : LifecycleService() {
             .setContentTitle(getString(R.string.proximity_observer_title))
             .setContentText(getString(R.string.proximity_observer_summary))
             .setSmallIcon(R.drawable.noti_ic_watch)
+            .setOngoing(true)
             .setLocalOnly(true)
             .setUsesChronometer(false)
             .build()
@@ -136,6 +137,7 @@ class SeparationObserverService : LifecycleService() {
     }
 
     companion object {
+        const val FOREGROUND_NOTI_ID = 51126
         const val OBSERVER_NOTI_CHANNEL_ID = "proximity-observer"
         const val SEPARATION_NOTI_CHANNEL_ID = "watch-separation"
 
