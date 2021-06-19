@@ -43,6 +43,7 @@
     <string name="open_play_store_title">Show in Google Play</string>
     <string name="open_app_info_title">Open App Info</string>
 
+    <string name="boot_noti_channel_title">Boot &amp; Update Handler</string>
     <string name="notification_boot_handler_title">Starting required services</string>
 
     <string name="error">An error has occurred</string>

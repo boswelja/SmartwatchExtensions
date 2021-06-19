@@ -1,10 +1,15 @@
 package com.boswelja.smartwatchextensions
 
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.NotificationManager.IMPORTANCE_LOW
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
+import androidx.core.content.getSystemService
 import androidx.work.CoroutineWorker
 import androidx.work.ExperimentalExpeditedWork
 import androidx.work.ForegroundInfo
@@ -65,6 +70,7 @@ class BootWorker(
 
     @ExperimentalExpeditedWork
     override suspend fun getForegroundInfo(): ForegroundInfo {
+        createNotificationChannel()
         val notification = NotificationCompat
             .Builder(applicationContext, BOOT_OR_UPDATE_NOTI_CHANNEL_ID)
             .setOngoing(true)
@@ -77,6 +83,23 @@ class BootWorker(
             .setSmallIcon(R.drawable.noti_ic_update)
             .build()
         return ForegroundInfo(NOTI_ID, notification)
+    }
+
+    private fun createNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel(
+                BOOT_OR_UPDATE_NOTI_CHANNEL_ID,
+                applicationContext.getString(R.string.boot_noti_channel_title),
+                IMPORTANCE_LOW
+            ).apply {
+                enableLights(false)
+                enableVibration(false)
+                setShowBadge(false)
+            }.also {
+                applicationContext.getSystemService<NotificationManager>()
+                    ?.createNotificationChannel(it)
+            }
+        }
     }
 
     companion object {
