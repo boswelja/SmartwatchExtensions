@@ -14,18 +14,17 @@ import androidx.lifecycle.lifecycleScope
 import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.extensions.extensionSettingsStore
 import com.boswelja.smartwatchextensions.phoneStateStore
-import com.google.android.gms.wearable.CapabilityClient
-import com.google.android.gms.wearable.Wearable
+import com.boswelja.smartwatchextensions.phoneconnectionmanager.ConnectionHelper
+import com.boswelja.smartwatchextensions.phoneconnectionmanager.Status
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.tasks.await
 
 class SeparationObserverService : LifecycleService() {
 
+    private val connectionHelper by lazy { ConnectionHelper(this) }
     private val notificationManager by lazy { getSystemService<NotificationManager>()!! }
     private var hasNotifiedThisDisconnect = false
 
@@ -33,7 +32,7 @@ class SeparationObserverService : LifecycleService() {
         super.onCreate()
         createObserverNotificationChannel()
         createSeparationNotificationChannel()
-        startForeground(1, createForegroundNotification())
+        startForeground(FOREGROUND_NOTI_ID, createForegroundNotification())
         collectSettingChanges()
         collectPhoneState()
     }
@@ -49,19 +48,11 @@ class SeparationObserverService : LifecycleService() {
     }
 
     private fun collectPhoneState() {
-        val capabilityClient = Wearable.getCapabilityClient(this)
         val phoneStateStore = phoneStateStore
         lifecycleScope.launch(Dispatchers.Default) {
-            val phoneName = phoneStateStore.data.map { it.name }
-            while (true) {
-                val capabilityInfo = capabilityClient
-                    .getCapability("extensions_phone_app", CapabilityClient.FILTER_ALL)
-                    .await()
-
-                // We can assume the phone is the only one on the list
-                val phoneNode = capabilityInfo.nodes.firstOrNull()
-
-                if (phoneNode?.isNearby == true) {
+            connectionHelper.phoneStatus().collect { status ->
+                val phoneName = phoneStateStore.data.map { it.name }
+                if (status != Status.CONNECTED_NEARBY) {
                     notificationManager.cancel(SEPARATION_NOTI_ID)
                     hasNotifiedThisDisconnect = false
                 } else if (!hasNotifiedThisDisconnect) {
@@ -71,9 +62,6 @@ class SeparationObserverService : LifecycleService() {
                     )
                     hasNotifiedThisDisconnect = true
                 }
-
-                // Wait for a specified interval before repeating
-                delay(STATUS_CHECK_INTERVAL)
             }
         }
     }
@@ -136,8 +124,8 @@ class SeparationObserverService : LifecycleService() {
 
     companion object {
         private const val SEPARATION_NOTI_ID = 11
-        private const val STATUS_CHECK_INTERVAL = 5000L
 
+        const val FOREGROUND_NOTI_ID = 51126
         const val OBSERVER_NOTI_CHANNEL_ID = "proximity-observer"
         const val SEPARATION_NOTI_CHANNEL_ID = "phone-separation"
 
