@@ -5,7 +5,9 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
+import android.os.Binder
 import android.os.Build
+import android.os.IBinder
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.getSystemService
@@ -27,6 +29,11 @@ class SeparationObserverService : LifecycleService() {
     private val connectionHelper by lazy { ConnectionHelper(this) }
     private val notificationManager by lazy { getSystemService<NotificationManager>()!! }
     private var hasNotifiedThisDisconnect = false
+
+    override fun onBind(intent: Intent): IBinder {
+        super.onBind(intent)
+        return Binder()
+    }
 
     override fun onCreate() {
         super.onCreate()
