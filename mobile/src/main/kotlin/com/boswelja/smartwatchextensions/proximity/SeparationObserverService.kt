@@ -4,6 +4,8 @@ import android.app.Notification
 import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
+import android.os.Binder
+import android.os.IBinder
 import androidx.core.app.NotificationCompat
 import androidx.core.content.getSystemService
 import androidx.lifecycle.LifecycleService
@@ -33,6 +35,11 @@ class SeparationObserverService : LifecycleService() {
     private val watchManager by lazy { WatchManager.getInstance(this) }
     private val hasSentNotiMap = hashMapOf<UUID, Boolean>()
     private var statusCollectorJob: Job? = null
+
+    override fun onBind(intent: Intent): IBinder {
+        super.onBind(intent)
+        return Binder()
+    }
 
     @FlowPreview
     @ExperimentalCoroutinesApi
