@@ -31,7 +31,7 @@ class ConnectionHelper(
     fun phoneStatus(): Flow<Status> = flow {
         while (true) {
             val capabilityInfo = capabilityClient
-                .getCapability("extensions_phone_app", CapabilityClient.FILTER_REACHABLE)
+                .getCapability(CAPABILITY_PHONE_APP, CapabilityClient.FILTER_REACHABLE)
                 .await()
 
             // We can assume the phone is the only one on the list
@@ -47,6 +47,10 @@ class ConnectionHelper(
             // Wait for a specified interval before repeating
             delay(refreshInterval)
         }
+    }
+
+    companion object {
+        const val CAPABILITY_PHONE_APP = "extensions_phone_app"
     }
 }
 
