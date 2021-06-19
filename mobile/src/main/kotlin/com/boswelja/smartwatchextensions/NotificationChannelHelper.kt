@@ -36,7 +36,7 @@ object NotificationChannelHelper {
         if (notificationManager.getNotificationChannel(OBSERVER_NOTI_CHANNEL_ID) == null) {
             NotificationChannel(
                 OBSERVER_NOTI_CHANNEL_ID,
-                "Watch Connection Observer",
+                context.getString(R.string.proximity_observer_noti_channel_title),
                 NotificationManager.IMPORTANCE_LOW
             ).apply {
                 enableLights(false)

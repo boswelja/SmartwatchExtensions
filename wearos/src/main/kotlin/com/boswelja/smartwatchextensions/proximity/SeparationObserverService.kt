@@ -98,7 +98,7 @@ class SeparationObserverService : LifecycleService() {
             if (notificationManager.getNotificationChannel(OBSERVER_NOTI_CHANNEL_ID) == null) {
                 NotificationChannel(
                     OBSERVER_NOTI_CHANNEL_ID,
-                    "Phone Connection Observer",
+                    getString(R.string.proximity_observer_noti_channel_title),
                     NotificationManager.IMPORTANCE_LOW
                 ).apply {
                     enableLights(false)
