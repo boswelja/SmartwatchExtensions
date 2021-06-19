@@ -30,7 +30,8 @@ class SeparationObserverService : LifecycleService() {
 
     override fun onCreate() {
         super.onCreate()
-        createNotificationChannel()
+        createObserverNotificationChannel()
+        createSeparationNotificationChannel()
         startForeground(1, createForegroundNotification())
         collectSettingChanges()
         collectPhoneState()
@@ -85,7 +86,7 @@ class SeparationObserverService : LifecycleService() {
     }
 
     private fun createSeparationNotification(phoneName: String): Notification {
-        return NotificationCompat.Builder(this, OBSERVER_NOTI_CHANNEL_ID)
+        return NotificationCompat.Builder(this, SEPARATION_NOTI_CHANNEL_ID)
             .setContentTitle(getString(R.string.separation_notification_title, phoneName))
             .setContentText(getString(R.string.separation_notification_text, phoneName))
             .setSmallIcon(R.drawable.noti_ic_phone_lost)
@@ -93,7 +94,7 @@ class SeparationObserverService : LifecycleService() {
             .build()
     }
 
-    private fun createNotificationChannel() {
+    private fun createObserverNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             if (notificationManager.getNotificationChannel(OBSERVER_NOTI_CHANNEL_ID) == null) {
                 NotificationChannel(
@@ -111,6 +112,20 @@ class SeparationObserverService : LifecycleService() {
         }
     }
 
+    fun createSeparationNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            if (notificationManager.getNotificationChannel(SEPARATION_NOTI_CHANNEL_ID) == null) {
+                NotificationChannel(
+                    SEPARATION_NOTI_CHANNEL_ID,
+                    getString(R.string.proximity_observer_noti_channel_title),
+                    NotificationManager.IMPORTANCE_HIGH
+                ).also {
+                    notificationManager.createNotificationChannel(it)
+                }
+            }
+        }
+    }
+
     private fun tryStop() {
         stopForeground(true)
         stopSelf()
@@ -121,6 +136,7 @@ class SeparationObserverService : LifecycleService() {
         private const val STATUS_CHECK_INTERVAL = 5000L
 
         const val OBSERVER_NOTI_CHANNEL_ID = "proximity-observer"
+        const val SEPARATION_NOTI_CHANNEL_ID = "phone-separation"
 
         fun start(context: Context) {
             ContextCompat.startForegroundService(

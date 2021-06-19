@@ -28,6 +28,7 @@
     <string name="proximity_observer_title">Monitoring phone connection</string>
     <string name="proximity_observer_summary">We\'re monitoring the connection to your phone, so we can notify you if it becomes disconnected</string>
     <string name="proximity_observer_noti_channel_title">Phone Connection Observer</string>
+    <string name="separation_noti_channel_title">Phone Separation Alerts</string>
 
     <!-- Setup strings -->
     <string name="welcome_to_text">Welcome to</string>
