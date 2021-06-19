@@ -12,7 +12,6 @@ import com.boswelja.smartwatchextensions.NotificationChannelHelper
 import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.common.preference.PreferenceKey.WATCH_SEPARATION_NOTI_KEY
 import com.boswelja.smartwatchextensions.watchmanager.WatchManager
-import com.boswelja.smartwatchextensions.watchmanager.database.WatchSettingsDatabase
 import com.boswelja.watchconnection.core.Watch
 import com.boswelja.watchconnection.core.discovery.Status
 import java.util.UUID
@@ -32,7 +31,6 @@ import timber.log.Timber
 class SeparationObserverService : LifecycleService() {
 
     private val watchManager by lazy { WatchManager.getInstance(this) }
-    private val settingsDatabase by lazy { WatchSettingsDatabase.getInstance(this) }
     private val hasSentNotiMap = hashMapOf<UUID, Boolean>()
     private var statusCollectorJob: Job? = null
 
@@ -52,7 +50,7 @@ class SeparationObserverService : LifecycleService() {
     @ExperimentalCoroutinesApi
     private suspend fun startCollectingSettings() {
         Timber.d("Collecting settings changes")
-        settingsDatabase.boolSettings().getByKey(WATCH_SEPARATION_NOTI_KEY).mapLatest {
+        watchManager.settingsDatabase.boolSettings().getByKey(WATCH_SEPARATION_NOTI_KEY).mapLatest {
             it.filter { setting -> setting.value }.map { setting -> setting.watchId }
         }.collect { watchIds ->
             if (watchIds.isEmpty()) {
