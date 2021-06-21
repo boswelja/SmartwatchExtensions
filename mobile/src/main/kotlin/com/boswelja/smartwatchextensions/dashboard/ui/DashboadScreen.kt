@@ -36,6 +36,7 @@ import com.boswelja.smartwatchextensions.common.startActivity
 import com.boswelja.smartwatchextensions.common.ui.StaggeredVerticalGrid
 import com.boswelja.smartwatchextensions.dndsync.ui.DnDSyncSettingsActivity
 import com.boswelja.smartwatchextensions.phonelocking.ui.PhoneLockingSettingsActivity
+import com.boswelja.smartwatchextensions.proximity.ui.FindMyWatchSummarySmall
 import com.boswelja.smartwatchextensions.proximity.ui.ProximitySettingsActivity
 import com.boswelja.smartwatchextensions.watchmanager.ui.WatchStatusSummarySmall
 import com.boswelja.watchconnection.core.discovery.Status
@@ -101,6 +102,13 @@ fun DashboardScreen(
                     context.startActivity<ProximitySettingsActivity>()
                 }
             )
+            DashboardItem(
+                content = {
+                    FindMyWatchSummarySmall()
+                },
+                onClick = {
+                }
+            )
         }
     }
 }
@@ -123,11 +131,13 @@ fun DashboardItem(
             Row(
                 horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                titleText?.let {
+                if (titleText != null) {
                     Text(
                         text = titleText,
                         modifier = Modifier.weight(1f)
                     )
+                } else {
+                    Spacer(modifier = Modifier.weight(1f))
                 }
                 if (onClick != null) {
                     Icon(
