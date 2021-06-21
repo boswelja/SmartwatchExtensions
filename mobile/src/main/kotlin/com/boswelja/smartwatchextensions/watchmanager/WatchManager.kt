@@ -21,6 +21,7 @@ import com.boswelja.smartwatchextensions.watchmanager.database.WatchSettingsData
 import com.boswelja.smartwatchextensions.widget.widgetIdStore
 import com.boswelja.watchconnection.core.Watch
 import com.boswelja.watchconnection.core.discovery.DiscoveryClient
+import com.boswelja.watchconnection.core.message.Message
 import com.boswelja.watchconnection.core.message.MessageClient
 import com.boswelja.watchconnection.wearos.WearOSDiscoveryPlatform
 import com.boswelja.watchconnection.wearos.WearOSMessagePlatform
@@ -222,8 +223,12 @@ class WatchManager internal constructor(
             } ?: flow { emit(emptyList<Capability>()) }
         }
 
-    suspend fun sendMessage(watch: Watch, message: String, data: ByteArray? = null) =
-        messageClient.sendMessage(watch, message, data)
+    suspend fun sendMessage(
+        watch: Watch,
+        message: String,
+        data: ByteArray? = null,
+        priority: Message.Priority = Message.Priority.LOW
+    ) = messageClient.sendMessage(watch, message, data, priority)
 
     @ExperimentalCoroutinesApi
     fun getBoolSetting(key: String, watch: Watch? = null, default: Boolean = false): Flow<Boolean> {
