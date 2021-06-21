@@ -8,6 +8,9 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.tasks.await
 
+fun Context.phoneConnectionHelper(refreshInterval: Long = 5000) =
+    ConnectionHelper(this, refreshInterval)
+
 /**
  * A helper class for managing the connection to a phone.
  * @param capabilityClient [CapabilityClient].

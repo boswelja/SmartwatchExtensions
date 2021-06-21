@@ -16,17 +16,18 @@ import androidx.lifecycle.lifecycleScope
 import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.extensions.extensionSettingsStore
 import com.boswelja.smartwatchextensions.phoneStateStore
-import com.boswelja.smartwatchextensions.phoneconnectionmanager.ConnectionHelper
 import com.boswelja.smartwatchextensions.phoneconnectionmanager.Status
+import com.boswelja.smartwatchextensions.phoneconnectionmanager.phoneConnectionHelper
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 class SeparationObserverService : LifecycleService() {
 
-    private val connectionHelper by lazy { ConnectionHelper(this) }
+    private val connectionHelper by lazy { phoneConnectionHelper() }
     private val notificationManager by lazy { getSystemService<NotificationManager>()!! }
     private var hasNotifiedThisDisconnect = false
 
@@ -58,8 +59,9 @@ class SeparationObserverService : LifecycleService() {
         val phoneStateStore = phoneStateStore
         lifecycleScope.launch(Dispatchers.Default) {
             connectionHelper.phoneStatus().collect { status ->
+                Timber.d("Got status %s", status)
                 val phoneName = phoneStateStore.data.map { it.name }
-                if (status != Status.CONNECTED_NEARBY) {
+                if (status == Status.CONNECTED_NEARBY) {
                     notificationManager.cancel(SEPARATION_NOTI_ID)
                     hasNotifiedThisDisconnect = false
                 } else if (!hasNotifiedThisDisconnect) {
@@ -130,8 +132,7 @@ class SeparationObserverService : LifecycleService() {
     }
 
     companion object {
-        private const val SEPARATION_NOTI_ID = 11
-
+        const val SEPARATION_NOTI_ID = 11
         const val FOREGROUND_NOTI_ID = 51126
         const val OBSERVER_NOTI_CHANNEL_ID = "proximity-observer"
         const val SEPARATION_NOTI_CHANNEL_ID = "phone-separation"
