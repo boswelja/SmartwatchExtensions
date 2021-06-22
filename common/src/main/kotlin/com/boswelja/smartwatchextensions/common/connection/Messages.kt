@@ -19,6 +19,4 @@ object Messages {
 
     const val UPDATE_BOOL_PREFERENCE = "/update_preference_bool"
     const val UPDATE_INT_PREFERENCE = "/update_preference_int"
-
-    const val RING_WATCH = "/ring_watch"
 }
