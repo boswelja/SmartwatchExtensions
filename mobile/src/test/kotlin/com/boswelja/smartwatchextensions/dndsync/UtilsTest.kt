@@ -106,6 +106,6 @@ class UtilsTest {
     }
 
     companion object {
-        private const val COROUTINE_TIMEOUT: Long = 500
+        private const val COROUTINE_TIMEOUT: Long = 2000
     }
 }
