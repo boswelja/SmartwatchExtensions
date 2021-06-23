@@ -59,6 +59,10 @@
             android:exported="false" />
 
         <activity
+            android:name=".proximity.ui.ProximitySettingsActivity"
+            android:exported="false" />
+
+        <activity
             android:name=".appmanager.ui.AppManagerActivity"
             android:exported="false"
             android:label="@string/app_manager_activity_title" />
@@ -100,6 +104,12 @@
                 android:name="android.accessibilityservice"
                 android:resource="@xml/phone_locking_accessibility_service" />
         </service>
+
+        <service
+            android:name=".proximity.SeparationObserverService"
+            android:foregroundServiceType="connectedDevice"
+            android:label="@string/proximity_observer_title"
+            android:exported="false" />
 
         <receiver
             android:name=".bootorupdate.BootOrUpdateReceiver"

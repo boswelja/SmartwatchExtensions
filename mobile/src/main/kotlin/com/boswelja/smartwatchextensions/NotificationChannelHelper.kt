@@ -7,6 +7,8 @@ import com.boswelja.smartwatchextensions.batterysync.Utils.BATTERY_STATS_NOTI_CH
 import com.boswelja.smartwatchextensions.bootorupdate.BootOrUpdateHandlerService
 import com.boswelja.smartwatchextensions.common.dndsync.References
 import com.boswelja.smartwatchextensions.messages.MESSAGE_NOTIFICATION_CHANNEL_ID
+import com.boswelja.smartwatchextensions.proximity.SeparationObserverService.Companion.OBSERVER_NOTI_CHANNEL_ID
+import com.boswelja.smartwatchextensions.proximity.SeparationObserverService.Companion.SEPARATION_NOTI_CHANNEL_ID
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 object NotificationChannelHelper {
@@ -28,6 +30,34 @@ object NotificationChannelHelper {
                     setShowBadge(true)
                 }
                 .also { notificationManager.createNotificationChannel(it) }
+        }
+    }
+
+    fun createForSeparationObserver(context: Context, notificationManager: NotificationManager) {
+        if (notificationManager.getNotificationChannel(OBSERVER_NOTI_CHANNEL_ID) == null) {
+            NotificationChannel(
+                OBSERVER_NOTI_CHANNEL_ID,
+                context.getString(R.string.proximity_observer_noti_channel_title),
+                NotificationManager.IMPORTANCE_LOW
+            ).apply {
+                enableLights(false)
+                enableVibration(false)
+                setShowBadge(false)
+            }.also {
+                notificationManager.createNotificationChannel(it)
+            }
+        }
+    }
+
+    fun createForSeparationNotis(context: Context, notificationManager: NotificationManager) {
+        if (notificationManager.getNotificationChannel(SEPARATION_NOTI_CHANNEL_ID) == null) {
+            NotificationChannel(
+                SEPARATION_NOTI_CHANNEL_ID,
+                context.getString(R.string.separation_noti_channel_title),
+                NotificationManager.IMPORTANCE_HIGH
+            ).also {
+                notificationManager.createNotificationChannel(it)
+            }
         }
     }
 

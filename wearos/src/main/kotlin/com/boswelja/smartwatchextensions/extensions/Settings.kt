@@ -22,7 +22,8 @@ class SettingsSerializer : Serializer<ExtensionSettings> {
         batteryLowThreshold = 15,
         batteryChargeThreshold = 90,
         dndSyncToPhone = false,
-        dndSyncWithTheater = false
+        dndSyncWithTheater = false,
+        phoneSeparationNotis = false
     )
 
     override suspend fun readFrom(input: InputStream): ExtensionSettings {

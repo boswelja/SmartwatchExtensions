@@ -8,6 +8,7 @@ import com.boswelja.smartwatchextensions.common.connection.Preference.fromByteAr
 import com.boswelja.smartwatchextensions.common.preference.PreferenceKey
 import com.boswelja.smartwatchextensions.dndsync.DnDLocalChangeListener
 import com.boswelja.smartwatchextensions.extensions.extensionSettingsStore
+import com.boswelja.smartwatchextensions.proximity.SeparationObserverService
 import com.google.android.gms.wearable.MessageEvent
 import com.google.android.gms.wearable.WearableListenerService
 import kotlinx.coroutines.runBlocking
@@ -55,6 +56,7 @@ class PreferenceChangeReceiver : WearableListenerService() {
                 var phoneLowNotiEnabled = it.phoneLowNotiEnabled
                 var dndSyncToPhone = it.dndSyncToPhone
                 var dndSyncWithTheater = it.dndSyncWithTheater
+                var phoneSeparationNotis = it.phoneSeparationNotis
 
                 when (key) {
                     PreferenceKey.PHONE_LOCKING_ENABLED_KEY ->
@@ -80,6 +82,12 @@ class PreferenceChangeReceiver : WearableListenerService() {
                             startDnDListenerService()
                         }
                     }
+                    PreferenceKey.PHONE_SEPARATION_NOTI_KEY -> {
+                        phoneSeparationNotis = value
+                        if (phoneSeparationNotis) {
+                            SeparationObserverService.start(this@PreferenceChangeReceiver)
+                        }
+                    }
                 }
 
                 it.copy(
@@ -88,7 +96,8 @@ class PreferenceChangeReceiver : WearableListenerService() {
                     phoneChargeNotiEnabled = phoneChargeNotiEnabled,
                     phoneLowNotiEnabled = phoneLowNotiEnabled,
                     dndSyncToPhone = dndSyncToPhone,
-                    dndSyncWithTheater = dndSyncWithTheater
+                    dndSyncWithTheater = dndSyncWithTheater,
+                    phoneSeparationNotis = phoneSeparationNotis
                 )
             }
         }

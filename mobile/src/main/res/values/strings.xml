@@ -81,6 +81,19 @@
     <string name="phone_locking_setup_accessibility_desc">You need to enable "Phone Locking" as an accessibility service in your phone settings. Tap "enable" below to go there now.</string>
     <string name="phone_locking_accessibility_service_desc">Allows you to lock your phone from your watch with Smartwatch Extensions</string>
 
+    <!-- Proximity settings strings -->
+    <string name="proximity_settings_title">BETA Separation Alerts</string>
+    <string name="proximity_phone_noti_title">Phone separation notification</string>
+    <string name="proximity_phone_noti_summary">Get notified when you leave your phone behind</string>
+    <string name="proximity_watch_noti_title">Watch separation notification</string>
+    <string name="proximity_watch_noti_summary">Get notified when you leave your watch behind</string>
+    <string name="proximity_observer_noti_channel_title">Watch Connection Observer</string>
+    <string name="proximity_observer_title">Monitoring watch connection</string>
+    <string name="proximity_observer_summary">We\'re monitoring the connection to some watches, so we can notify you if they become disconnected</string>
+    <string name="separation_notification_title">%s out of range</string>
+    <string name="separation_notification_text">Your %s isn\'t nearby. Did you mean to leave it behind?</string>
+    <string name="separation_noti_channel_title">Watch Separation Alerts</string>
+
     <!-- App Settings strings -->
     <string name="noti_settings_title">Notification Settings</string>
     <string name="app_theme_title">App Theme</string>
