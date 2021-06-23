@@ -81,10 +81,6 @@
             android:exported="false" />
 
         <activity
-            android:name=".widget.ui.WidgetSettingsActivity"
-            android:exported="false" />
-
-        <activity
             android:name=".watchmanager.ui.register.RegisterWatchActivity"
             android:exported="false" />
 

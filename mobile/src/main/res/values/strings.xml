@@ -100,7 +100,6 @@
     <string name="app_theme_light">Light</string>
     <string name="app_theme_dark">Dark</string>
     <string name="app_theme_follow_system">Follow System</string>
-    <string name="widget_settings_title">Widget Settings</string>
     <string name="category_watch_settings">Watch Settings</string>
     <string name="manage_watches_title">Manage Watches</string>
     <string name="category_analytics">Analytics</string>
