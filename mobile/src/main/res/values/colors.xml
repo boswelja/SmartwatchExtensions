@@ -3,7 +3,4 @@
     <color name="appIconBackground">#9c27b0</color>
 
     <color name="navBarColor">#FFFFFF</color>
-
-    <color name="widgetBackground">#FFFFFF</color>
-    <color name="widgetForeground">#000000</color>
 </resources>

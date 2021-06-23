@@ -7,4 +7,5 @@
     android:resizeMode="horizontal|vertical"
     android:updatePeriodMillis="0"
     android:widgetFeatures="reconfigurable"
+    android:previewLayout="@layout/widget_watch_battery"
     android:widgetCategory="home_screen" />

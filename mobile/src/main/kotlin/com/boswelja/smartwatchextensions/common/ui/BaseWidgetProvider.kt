@@ -6,11 +6,8 @@ import android.appwidget.AppWidgetProvider
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
-import android.graphics.Bitmap
 import android.os.Bundle
 import android.widget.RemoteViews
-import androidx.core.content.ContextCompat
-import androidx.core.graphics.drawable.toBitmap
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.boswelja.smartwatchextensions.R
@@ -129,12 +126,6 @@ abstract class BaseWidgetProvider : AppWidgetProvider() {
         width: Int,
         height: Int
     ): RemoteViews {
-        // Create new RemoteViews
-        val widgetView = RemoteViews(
-            context.packageName,
-            R.layout.common_widget_background
-        )
-
         // Get watch ID
         val widgetIdStore = context.widgetIdStore
         val watchId = widgetIdStore.data.map { preferences ->
@@ -147,12 +138,6 @@ abstract class BaseWidgetProvider : AppWidgetProvider() {
             }
         }
 
-        // Set click PendingIntent
-        onCreateClickIntent(context, watchId)?.let {
-            Timber.d("Setting widget click intent")
-            widgetView.setOnClickPendingIntent(R.id.widget_container, it)
-        }
-
         val widgetContent = if (watchId != null) {
             // Get the widget content from child class
             Timber.d("Getting widget content")
@@ -162,36 +147,14 @@ abstract class BaseWidgetProvider : AppWidgetProvider() {
             // Set error view
             RemoteViews(context.packageName, R.layout.common_widget_error)
         }
-        widgetView.removeAllViews(R.id.widget_container)
-        widgetView.addView(R.id.widget_container, widgetContent)
-
-        // Set background
-        val background = getBackground(context, width, height)
-        if (background != null) {
-            widgetView.setImageViewBitmap(R.id.widget_background, background)
-        } else {
-            widgetView.setInt(R.id.widget_background, "setBackgroundColor", 0)
+        // Set click PendingIntent
+        onCreateClickIntent(context, watchId)?.let {
+            Timber.d("Setting widget click intent")
+            widgetContent.setOnClickPendingIntent(android.R.id.background, it)
         }
 
         // Return new view
-        return widgetView
-    }
-
-    /**
-     * Get the background that should be applied to widgets.
-     * @param context [Context].
-     * @param width The width of the background.
-     * @param height The height of the background.
-     * @return The background [Bitmap], or null if there is none.
-     */
-    private fun getBackground(context: Context, width: Int, height: Int): Bitmap? {
-        Timber.d("Getting widget background with width = %s and height = %s", width, height)
-        // Set widget background
-
-        // Synchronous is desired here, since we're already in a suspend function
-        return ContextCompat.getDrawable(
-            context, R.drawable.widget_background
-        )?.toBitmap(width, height)
+        return widgetContent
     }
 
     private fun updateView(

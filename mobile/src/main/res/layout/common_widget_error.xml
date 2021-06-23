@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:theme="@style/Theme.Widget">
 
     <ImageView
         android:id="@+id/battery_indicator"
@@ -13,6 +15,7 @@
         android:layout_above="@+id/battery_indicator_text"
         android:layout_alignParentTop="true"
         android:src="@drawable/ic_error"
+        app:tint="?android:attr/colorAccent"
         tools:ignore="ContentDescription" />
 
     <TextView
@@ -23,7 +26,7 @@
         android:layout_margin="8dp"
         android:text="@string/watch_status_error"
         android:textAlignment="center"
-        android:textColor="@color/widgetForeground"
+        android:textColor="?android:attr/textColorPrimary"
         android:textSize="20sp" />
 
 </RelativeLayout>
