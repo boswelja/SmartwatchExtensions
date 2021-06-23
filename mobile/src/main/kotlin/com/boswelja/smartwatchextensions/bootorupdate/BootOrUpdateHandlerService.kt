@@ -60,6 +60,7 @@ class BootOrUpdateHandlerService : LifecycleService() {
             startForeground(NOTI_ID, createUpdaterNotification())
             lifecycleScope.launch(Dispatchers.IO) {
                 if (appStateStore.data.map { it.lastAppVersion }.first() <= 0) {
+                    Timber.d("Updating 'lastAppVersion'")
                     appStateStore.updateData {
                         it.copy(lastAppVersion = 1)
                     }
@@ -72,6 +73,9 @@ class BootOrUpdateHandlerService : LifecycleService() {
                     }
                     restartServices()
                     notifyUpdateComplete()
+                } else {
+                    Timber.d("Update not needed, stopping")
+                    finish()
                 }
             }
         }
