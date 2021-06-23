@@ -109,12 +109,6 @@
     <string name="widget_watch_battery_title">Watch Battery</string>
     <string name="widget_watch_battery_config_title">Watch Battery Widget Setup</string>
 
-    <!-- Widget Customisation strings -->
-    <string name="widget_preview_info">This is just a preview, data shown is not accurate</string>
-    <string name="pref_category_widget_customisation">Widget Customisation</string>
-    <string name="pref_show_widget_background_title">Show Background</string>
-    <string name="pref_widget_background_opacity_title">Background Opacity</string>
-
     <!-- About strings -->
     <string name="about_category_about">About</string>
     <string name="about_category_versions">Versions</string>

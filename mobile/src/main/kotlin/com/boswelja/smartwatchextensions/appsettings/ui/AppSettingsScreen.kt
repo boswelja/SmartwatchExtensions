@@ -18,7 +18,6 @@ import androidx.compose.material.icons.outlined.LightMode
 import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.material.icons.outlined.Storage
 import androidx.compose.material.icons.outlined.Watch
-import androidx.compose.material.icons.outlined.Widgets
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -35,7 +34,6 @@ import com.boswelja.smartwatchextensions.common.ui.DialogPreference
 import com.boswelja.smartwatchextensions.common.ui.HeaderItem
 import com.boswelja.smartwatchextensions.managespace.ui.ManageSpaceActivity
 import com.boswelja.smartwatchextensions.watchmanager.ui.WatchManagerActivity
-import com.boswelja.smartwatchextensions.widget.ui.WidgetSettingsActivity
 import kotlinx.coroutines.Dispatchers
 
 @ExperimentalMaterialApi
@@ -94,13 +92,6 @@ fun AppSettings() {
             icon = { Icon(Icons.Outlined.Storage, null) },
             modifier = Modifier.clickable {
                 context.startActivity<ManageSpaceActivity>()
-            }
-        )
-        ListItem(
-            text = { Text(stringResource(R.string.widget_settings_title)) },
-            icon = { Icon(Icons.Outlined.Widgets, null) },
-            modifier = Modifier.clickable {
-                context.startActivity<WidgetSettingsActivity>()
             }
         )
         DialogPreference(

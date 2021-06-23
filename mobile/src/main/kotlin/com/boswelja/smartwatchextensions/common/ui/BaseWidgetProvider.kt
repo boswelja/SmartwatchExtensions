@@ -17,14 +17,10 @@ import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.batterysync.widget.WatchBatteryWidget
 import com.boswelja.smartwatchextensions.main.MainActivity
 import com.boswelja.smartwatchextensions.main.MainActivity.Companion.EXTRA_WATCH_ID
-import com.boswelja.smartwatchextensions.widget.ui.WidgetSettingsActivity.Companion.SHOW_WIDGET_BACKGROUND_KEY
-import com.boswelja.smartwatchextensions.widget.ui.WidgetSettingsActivity.Companion.WIDGET_BACKGROUND_OPACITY_KEY
 import com.boswelja.smartwatchextensions.widget.widgetIdStore
-import com.boswelja.smartwatchextensions.widget.widgetSettings
 import java.util.UUID
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
@@ -188,25 +184,14 @@ abstract class BaseWidgetProvider : AppWidgetProvider() {
      * @param height The height of the background.
      * @return The background [Bitmap], or null if there is none.
      */
-    private suspend fun getBackground(context: Context, width: Int, height: Int): Bitmap? {
+    private fun getBackground(context: Context, width: Int, height: Int): Bitmap? {
         Timber.d("Getting widget background with width = %s and height = %s", width, height)
         // Set widget background
-        val widgetSettings = context.widgetSettings.data.first()
 
         // Synchronous is desired here, since we're already in a suspend function
-        val showBackground = widgetSettings[SHOW_WIDGET_BACKGROUND_KEY]
-        return if (showBackground == true) {
-            val backgroundOpacity =
-                widgetSettings[WIDGET_BACKGROUND_OPACITY_KEY] ?: 60
-            Timber.i("Getting background with opacity = %s", backgroundOpacity)
-            val calculatedAlpha = ((backgroundOpacity / 100.0f) * 255).toInt()
-            ContextCompat.getDrawable(context, R.drawable.widget_background)!!
-                .apply { alpha = calculatedAlpha }
-                .toBitmap(width, height)
-        } else {
-            Timber.i("Background disabled, returning")
-            null
-        }
+        return ContextCompat.getDrawable(
+            context, R.drawable.widget_background
+        )?.toBitmap(width, height)
     }
 
     private fun updateView(
