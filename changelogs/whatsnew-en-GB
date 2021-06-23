@@ -1,5 +1,12 @@
+Additions:
+Separation Alerts! Now you can get notified when you leave a device behind
+
 Changes:
-We've redesigned the dashboard, and made it easier to get an overview of all the features you've enabled
+We've redesigned the dashboard, making it easier to get an overview of all the features you've enabled
+
+Removals:
+Removed Battery Sync Interval setting. Battery Sync will now run at it's default 15 minute intervals
 
 Fixes:
-We fixed a crash that was occurring rather frequently on a majority of smartwatches
+Fixed a crash that was occurring rather frequently on a majority of smartwatches
+Fixed updater not finishing in some cases
