@@ -7,11 +7,11 @@ plugins {
 }
 
 android {
-    compileSdk = PackageInfo.targetSdk
+    compileSdkPreview = PackageInfo.targetSdk
 
     defaultConfig {
         minSdk = 28
-        targetSdk = PackageInfo.targetSdk
+        targetSdkPreview = PackageInfo.targetSdk
 
         applicationId = PackageInfo.packageName
         versionCode = PackageInfo.getVersionCode('0')

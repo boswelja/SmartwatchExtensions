@@ -5,11 +5,11 @@ plugins {
 }
 
 android {
-    compileSdk = PackageInfo.targetSdk
+    compileSdkPreview = PackageInfo.targetSdk
 
     defaultConfig {
         minSdk = 25
-        targetSdk = PackageInfo.targetSdk
+        targetSdkPreview = PackageInfo.targetSdk
 
         applicationId = PackageInfo.packageName
         // Add 1 here to ensure it's different from mobile module
