@@ -10,10 +10,8 @@ import com.boswelja.smartwatchextensions.batterysync.BatterySyncWorker
 import com.boswelja.smartwatchextensions.common.preference.PreferenceKey.BATTERY_SYNC_ENABLED_KEY
 import com.boswelja.smartwatchextensions.watchmanager.database.WatchDatabase
 import com.boswelja.smartwatchextensions.watchmanager.database.WatchSettingsDatabase
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.take
 
 class Updater(private val context: Context) {
 
@@ -33,27 +31,24 @@ class Updater(private val context: Context) {
      */
     suspend fun doUpdate(): Result {
         if (lastAppVersion <= 401011) {
-            WatchDatabase.getInstance(context)
-                .watchDao().getAll().take(1)
-                .collect {
-                    it.forEach { watch ->
-                        AppCacheUpdateWorker.enqueueWorkerFor(context, watch.id)
-                    }
-                }
+            val watches = WatchDatabase.getInstance(context)
+                .watchDao().getAll().first()
+            watches.forEach { watch ->
+                AppCacheUpdateWorker.enqueueWorkerFor(context, watch.id)
+            }
             return Result.COMPLETED
         }
         // Restart Battery Sync workers to ensure the correct interval is set
         if (lastAppVersion <= 402011) {
             val database = WatchSettingsDatabase.getInstance(context)
-            database
-                .boolSettings().getByKey(BATTERY_SYNC_ENABLED_KEY).take(1)
+            val watchIds = database
+                .boolSettings().getByKey(BATTERY_SYNC_ENABLED_KEY)
                 .map { settings -> settings.filter { it.value }.map { it.watchId } }
-                .collect { watchIds ->
-                    watchIds.forEach { id ->
-                        BatterySyncWorker.startWorker(context, id)
-                        BatterySyncWorker.startWorker(context, id)
-                    }
-                }
+                .first()
+            watchIds.forEach { id ->
+                BatterySyncWorker.startWorker(context, id)
+                BatterySyncWorker.startWorker(context, id)
+            }
             database.intSettings().deleteByKey("battery_sync_interval")
             return Result.COMPLETED
         }
