@@ -12,7 +12,6 @@ import com.boswelja.smartwatchextensions.NotificationChannelHelper
 import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.appStateStore
 import com.boswelja.smartwatchextensions.batterysync.BatterySyncWorker
-import com.boswelja.smartwatchextensions.bootorupdate.updater.Result
 import com.boswelja.smartwatchextensions.bootorupdate.updater.Updater
 import com.boswelja.smartwatchextensions.common.preference.PreferenceKey
 import com.boswelja.smartwatchextensions.common.preference.PreferenceKey.WATCH_SEPARATION_NOTI_KEY
@@ -66,16 +65,11 @@ class BootOrUpdateHandlerService : LifecycleService() {
                     }
                 }
                 val updater = Updater(this@BootOrUpdateHandlerService)
-                if (updater.checkNeedsUpdate()) {
-                    when (updater.doUpdate()) {
-                        Result.COMPLETED -> Timber.i("Updated app and changes were made")
-                        Result.NOT_NEEDED -> Timber.i("Update not needed")
-                    }
-                    restartServices()
+                if (updater.migrate()) {
+                    // Update completed, notify user
                     notifyUpdateComplete()
                 } else {
-                    Timber.d("Update not needed, stopping")
-                    finish()
+                    Timber.w("Failed to update")
                 }
             }
         }
