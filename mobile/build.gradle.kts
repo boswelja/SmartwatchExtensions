@@ -78,6 +78,7 @@ dependencies {
     implementation(libs.billingclient)
     implementation(libs.googleplay.core)
     implementation(libs.googleplay.corektx)
+    implementation(libs.migration)
     implementation(libs.timber)
     implementation(libs.watchconnection.wearos)
 

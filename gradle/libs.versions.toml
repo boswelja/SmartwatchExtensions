@@ -24,6 +24,7 @@ firebaseAnalytics = "19.0.0"
 googlePlayCore = "1.10.0"
 googlePlayCoreKtx = "1.8.1"
 junit = "4.13.2"
+migration = "1.0.0"
 mockk = "1.11.0"
 playServicesWearable = "17.1.0"
 robolectric = "4.5.1"
@@ -74,6 +75,7 @@ junit = { module = "junit:junit", version.ref = "junit" }
 kotlinx-coroutines-playservices = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-play-services", version.ref = "coroutines" }
 kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "coroutines" }
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm", version.ref = "coroutines" }
+migration = { module = "io.github.boswelja.migration:migration", version.ref = "migration" }
 mockk-core = { module = "io.mockk:mockk", version.ref = "mockk" }
 mockk-android = { module = "io.mockk:mockk-android", version.ref = "mockk" }
 play-services-wearable = { module = "com.google.android.gms:play-services-wearable", version.ref = "playServicesWearable" }
