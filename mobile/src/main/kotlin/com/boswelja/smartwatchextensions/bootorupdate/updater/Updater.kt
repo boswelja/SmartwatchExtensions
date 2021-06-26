@@ -1,8 +1,7 @@
-@file:Suppress("DEPRECATION")
-
 package com.boswelja.smartwatchextensions.bootorupdate.updater
 
 import android.content.Context
+import com.boswelja.migration.Migrator
 import com.boswelja.smartwatchextensions.BuildConfig
 import com.boswelja.smartwatchextensions.appStateStore
 import com.boswelja.smartwatchextensions.appmanager.AppCacheUpdateWorker
@@ -13,7 +12,14 @@ import com.boswelja.smartwatchextensions.watchmanager.database.WatchSettingsData
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 
-class Updater(private val context: Context) {
+class Updater(private val context: Context) : Migrator(
+    currentVersion = 1,
+    migrations = listOf()
+) {
+
+    override suspend fun getOldVersion(): Int {
+        return context.appStateStore.data.map { it.lastAppVersion }.first()
+    }
 
     private var lastAppVersion: Int = BuildConfig.VERSION_CODE
 
