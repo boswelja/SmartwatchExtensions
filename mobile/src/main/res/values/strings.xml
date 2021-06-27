@@ -227,6 +227,8 @@
     <!-- Capability strings -->
     <string name="capability_not_supported">Your watch has indicated it does not support this feature</string>
 
+    <!-- QS Tile strings -->
+    <string name="battery_percent_qs_tile_fallback">%s%% (%s)</string>
     <string name="button_undo">Undo</string>
     <string name="button_done">Done</string>
     <string name="button_next">Continue</string>
