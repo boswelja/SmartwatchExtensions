@@ -12,7 +12,9 @@ import com.boswelja.smartwatchextensions.appsettings.appSettingsStore
 import com.boswelja.smartwatchextensions.batterysync.database.WatchBatteryStatsDatabase
 import com.boswelja.smartwatchextensions.batterysync.ui.BatterySyncSettingsActivity
 import com.boswelja.smartwatchextensions.common.getBatteryDrawable
+import com.boswelja.smartwatchextensions.common.preference.PreferenceKey.BATTERY_SYNC_ENABLED_KEY
 import com.boswelja.smartwatchextensions.watchmanager.WatchManager
+import com.boswelja.smartwatchextensions.watchmanager.database.WatchSettingsDatabase
 import com.boswelja.watchconnection.core.Watch
 import java.util.UUID
 import kotlinx.coroutines.CoroutineScope
@@ -68,25 +70,47 @@ class WatchBatteryTileService : TileService() {
                 return@launch
             }
 
-            val batteryStats = WatchBatteryStatsDatabase.getInstance(this@WatchBatteryTileService)
-                .batteryStatsDao()
-                .getStats(watch.id)
+            val isBatterySyncEnabled = WatchSettingsDatabase
+                .getInstance(this@WatchBatteryTileService)
+                .boolSettings()
+                .get(watch.id, BATTERY_SYNC_ENABLED_KEY)
                 .first()
+                ?.value ?: false
 
-            updateTile {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                    label = getString(R.string.battery_percent, batteryStats.percent.toString())
-                    subtitle = watch.name
-                } else {
-                    label = getString(
-                        R.string.battery_percent_qs_tile_fallback,
-                        batteryStats.percent.toString(),
-                        watch.name
+            if (isBatterySyncEnabled) {
+                val batteryStats = WatchBatteryStatsDatabase
+                    .getInstance(this@WatchBatteryTileService)
+                    .batteryStatsDao()
+                    .getStats(watch.id)
+                    .first()
+
+                updateTile {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                        label = getString(R.string.battery_percent, batteryStats.percent.toString())
+                        subtitle = watch.name
+                    } else {
+                        label = getString(
+                            R.string.battery_percent_qs_tile_fallback,
+                            batteryStats.percent.toString(),
+                            watch.name
+                        )
+                    }
+                    icon = Icon.createWithResource(
+                        this@WatchBatteryTileService, getBatteryDrawable(batteryStats.percent)
                     )
                 }
-                icon = Icon.createWithResource(
-                    this@WatchBatteryTileService, getBatteryDrawable(batteryStats.percent)
-                )
+            } else {
+                updateTile {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                        label = getString(R.string.widget_watch_battery_title)
+                        subtitle = getString(R.string.battery_sync_disabled)
+                    } else {
+                        label = getString(R.string.battery_sync_disabled)
+                    }
+                    icon = Icon.createWithResource(
+                        this@WatchBatteryTileService, R.drawable.battery_unknown
+                    )
+                }
             }
         }
     }
