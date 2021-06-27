@@ -10,6 +10,7 @@ import com.boswelja.smartwatchextensions.NotificationChannelHelper
 import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.batterysync.database.WatchBatteryStats.Companion.toWatchBatteryStats
 import com.boswelja.smartwatchextensions.batterysync.database.WatchBatteryStatsDatabase
+import com.boswelja.smartwatchextensions.batterysync.quicksettings.WatchBatteryTileService
 import com.boswelja.smartwatchextensions.common.batterysync.BatteryStats
 import com.boswelja.smartwatchextensions.common.batterysync.References.BATTERY_STATUS_PATH
 import com.boswelja.smartwatchextensions.common.preference.PreferenceKey.BATTERY_CHARGED_NOTI_SENT
@@ -128,6 +129,9 @@ object Utils {
 
             // Update battery stat widgets
             BaseWidgetProvider.updateWidgets(context)
+
+            // Update QS Tile
+            WatchBatteryTileService.requestTileUpdate(context)
         }
     }
 
