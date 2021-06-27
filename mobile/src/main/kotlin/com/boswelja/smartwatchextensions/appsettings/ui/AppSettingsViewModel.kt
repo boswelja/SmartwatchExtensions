@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.boswelja.smartwatchextensions.analytics.Analytics
 import com.boswelja.smartwatchextensions.appsettings.Settings
 import com.boswelja.smartwatchextensions.appsettings.appSettingsStore
+import com.boswelja.smartwatchextensions.batterysync.quicksettings.WatchBatteryTileService
 import com.boswelja.smartwatchextensions.watchmanager.WatchManager
 import com.boswelja.watchconnection.core.Watch
 import java.util.UUID
@@ -74,6 +75,8 @@ class AppSettingsViewModel internal constructor(
             dataStore.updateData {
                 it.copy(qsTileWatchId = watch.id.toString())
             }
+
+            WatchBatteryTileService.requestTileUpdate(getApplication())
         }
     }
 }
