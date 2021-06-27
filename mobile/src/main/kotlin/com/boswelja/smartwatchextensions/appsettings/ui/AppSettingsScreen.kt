@@ -22,7 +22,6 @@ import androidx.compose.material.icons.outlined.Widgets
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -37,7 +36,9 @@ import com.boswelja.smartwatchextensions.managespace.ui.ManageSpaceActivity
 import com.boswelja.smartwatchextensions.watchmanager.ui.WatchManagerActivity
 import com.boswelja.smartwatchextensions.widget.ui.WidgetSettingsActivity
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
+@ExperimentalCoroutinesApi
 @ExperimentalMaterialApi
 @Composable
 fun AppSettingsScreen() {
@@ -45,6 +46,8 @@ fun AppSettingsScreen() {
         AppSettings()
         Divider()
         AnalyticsSettings()
+        Divider()
+        QSTileSettings()
         Divider()
         WatchSettings()
     }
@@ -56,21 +59,8 @@ fun AppSettings() {
     Column {
         val viewModel: AppSettingsViewModel = viewModel()
         val context = LocalContext.current
-        val appThemeOptions = remember {
-            arrayOf(
-                Pair(context.getString(R.string.app_theme_light), Settings.Theme.LIGHT),
-                Pair(context.getString(R.string.app_theme_dark), Settings.Theme.DARK),
-                Pair(
-                    context.getString(R.string.app_theme_follow_system),
-                    Settings.Theme.FOLLOW_SYSTEM
-                )
-            )
-        }
         val currentAppTheme by viewModel.appTheme
             .collectAsState(Settings.Theme.FOLLOW_SYSTEM, Dispatchers.IO)
-        val currentThemeOption = appThemeOptions.first {
-            it.second == currentAppTheme
-        }
 
         ListItem(
             text = { Text(stringResource(R.string.noti_settings_title)) },
@@ -105,14 +95,26 @@ fun AppSettings() {
         )
         DialogPreference(
             text = stringResource(R.string.app_theme_title),
-            secondaryText = currentThemeOption.first,
+            secondaryText = when (currentAppTheme) {
+                Settings.Theme.LIGHT -> stringResource(R.string.app_theme_light)
+                Settings.Theme.DARK -> stringResource(R.string.app_theme_dark)
+                Settings.Theme.FOLLOW_SYSTEM -> stringResource(R.string.app_theme_follow_system)
+            },
             icon = if (currentAppTheme == Settings.Theme.DARK)
                 Icons.Outlined.DarkMode
             else
                 Icons.Outlined.LightMode,
-            values = appThemeOptions,
-            value = currentThemeOption,
-            onValueChanged = { viewModel.setAppTheme(it.second) }
+            values = Settings.Theme.values().toList(),
+            value = currentAppTheme,
+            onValueChanged = { viewModel.setAppTheme(it) },
+            valueLabel = {
+                val text = when (it) {
+                    Settings.Theme.LIGHT -> stringResource(R.string.app_theme_light)
+                    Settings.Theme.DARK -> stringResource(R.string.app_theme_dark)
+                    Settings.Theme.FOLLOW_SYSTEM -> stringResource(R.string.app_theme_follow_system)
+                }
+                Text(text)
+            }
         )
     }
 }
@@ -130,6 +132,33 @@ fun AnalyticsSettings() {
             isChecked = analyticsEnabled,
             onCheckChanged = {
                 viewModel.setAnalyticsEnabled(it)
+            }
+        )
+    }
+}
+
+@ExperimentalCoroutinesApi
+@ExperimentalMaterialApi
+@Composable
+fun QSTileSettings(
+    modifier: Modifier = Modifier
+) {
+    val viewModel: AppSettingsViewModel = viewModel()
+    val registeredWatches by viewModel.registeredWatches.collectAsState(emptyList(), Dispatchers.IO)
+    val qsTilesWatch by viewModel.qsTilesWatch.collectAsState(null, Dispatchers.IO)
+    Column(modifier) {
+        HeaderItem(stringResource(R.string.category_qstiles))
+        DialogPreference(
+            icon = Icons.Outlined.Watch,
+            text = stringResource(R.string.qstiles_selected_watch),
+            secondaryText = qsTilesWatch?.name,
+            values = registeredWatches,
+            value = qsTilesWatch,
+            onValueChanged = {
+                viewModel.setQSTilesWatch(it!!)
+            },
+            valueLabel = {
+                Text(it?.name ?: stringResource(R.string.watch_status_error))
             }
         )
     }
