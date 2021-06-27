@@ -4,10 +4,9 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.widget.RemoteViews
-import androidx.core.content.ContextCompat
-import androidx.core.graphics.drawable.toBitmap
 import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.batterysync.database.WatchBatteryStatsDatabase
+import com.boswelja.smartwatchextensions.common.getBatteryDrawable
 import com.boswelja.smartwatchextensions.common.ui.BaseWidgetProvider
 import com.boswelja.smartwatchextensions.main.MainActivity
 import java.util.UUID
@@ -37,14 +36,7 @@ class WatchBatteryWidget : BaseWidgetProvider() {
             .batteryStatsDao().getStats(watchId).firstOrNull()?.percent ?: -1
 
         // Set battery indicator image
-        ContextCompat.getDrawable(context, R.drawable.ic_watch_battery)!!
-            .apply {
-                level = batteryPercent
-                setTint(ContextCompat.getColor(context, R.color.widgetForeground))
-            }
-            .also { indicator ->
-                remoteViews.setImageViewBitmap(R.id.battery_indicator, indicator.toBitmap())
-            }
+        remoteViews.setImageViewResource(R.id.battery_indicator, getBatteryDrawable(batteryPercent))
 
         // Set battery indicator text
         if (batteryPercent >= 0) {
