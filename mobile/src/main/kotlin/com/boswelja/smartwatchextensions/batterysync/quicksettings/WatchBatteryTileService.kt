@@ -54,20 +54,34 @@ class WatchBatteryTileService : TileService() {
         // Do a one-shot update
         coroutineScope.launch {
             val watch = getWatch()
+            if (watch == null) {
+                // Couldn't get watch, set an error
+                updateTile {
+                    label = getString(R.string.widget_watch_battery_title)
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                        subtitle = getString(R.string.watch_status_error)
+                    }
+                    icon = Icon.createWithResource(
+                        this@WatchBatteryTileService, R.drawable.battery_unknown
+                    )
+                }
+                return@launch
+            }
+
             val batteryStats = WatchBatteryStatsDatabase.getInstance(this@WatchBatteryTileService)
                 .batteryStatsDao()
-                .getStats(watch?.id)
+                .getStats(watch.id)
                 .first()
 
             updateTile {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                     label = getString(R.string.battery_percent, batteryStats.percent.toString())
-                    subtitle = watch?.name
+                    subtitle = watch.name
                 } else {
                     label = getString(
                         R.string.battery_percent_qs_tile_fallback,
                         batteryStats.percent.toString(),
-                        watch?.name
+                        watch.name
                     )
                 }
                 icon = Icon.createWithResource(
