@@ -123,9 +123,10 @@ fun <T> DialogPreference(
     secondaryText: String? = null,
     icon: ImageVector? = null,
     isEnabled: Boolean = true,
-    values: Array<Pair<String, T>>,
-    value: Pair<String, T>,
-    onValueChanged: (Pair<String, T>) -> Unit
+    values: List<T>,
+    value: T,
+    onValueChanged: (T) -> Unit,
+    valueLabel: @Composable (T) -> Unit
 ) {
     var dialogVisible by remember { mutableStateOf(false) }
     ListItem(
@@ -142,10 +143,10 @@ fun <T> DialogPreference(
                 LazyColumn {
                     items(values) { item ->
                         ListItem(
-                            text = { Text(item.first) },
+                            text = { valueLabel(item) },
                             icon = {
                                 RadioButton(
-                                    selected = item.second == selectedValue.second,
+                                    selected = item == selectedValue,
                                     onClick = null
                                 )
                             },
