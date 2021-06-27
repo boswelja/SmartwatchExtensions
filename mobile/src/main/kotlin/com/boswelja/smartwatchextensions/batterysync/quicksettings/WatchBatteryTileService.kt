@@ -63,6 +63,7 @@ class WatchBatteryTileService : TileService() {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                         subtitle = getString(R.string.watch_status_error)
                     }
+                    state = Tile.STATE_UNAVAILABLE
                     icon = Icon.createWithResource(
                         this@WatchBatteryTileService, R.drawable.battery_unknown
                     )
@@ -95,6 +96,7 @@ class WatchBatteryTileService : TileService() {
                             watch.name
                         )
                     }
+                    state = Tile.STATE_ACTIVE
                     icon = Icon.createWithResource(
                         this@WatchBatteryTileService, getBatteryDrawable(batteryStats.percent)
                     )
@@ -107,6 +109,7 @@ class WatchBatteryTileService : TileService() {
                     } else {
                         label = getString(R.string.battery_sync_disabled)
                     }
+                    state = Tile.STATE_INACTIVE
                     icon = Icon.createWithResource(
                         this@WatchBatteryTileService, R.drawable.battery_unknown
                     )
