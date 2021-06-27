@@ -13,4 +13,6 @@ message Settings {
 
   bool analyticsEnabled = 1;
   Theme appTheme = 2;
+
+  string qsTileWatchId = 3;
 }

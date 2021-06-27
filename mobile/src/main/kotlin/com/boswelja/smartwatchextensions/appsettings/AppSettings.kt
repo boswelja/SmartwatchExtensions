@@ -18,7 +18,8 @@ val Context.appSettingsStore: DataStore<Settings> by dataStore(
 class AppSettingsSerializer : Serializer<Settings> {
     override val defaultValue = Settings(
         true,
-        Settings.Theme.FOLLOW_SYSTEM
+        Settings.Theme.FOLLOW_SYSTEM,
+        ""
     )
 
     override suspend fun readFrom(input: InputStream): Settings {
