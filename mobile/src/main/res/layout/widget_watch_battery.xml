@@ -38,8 +38,6 @@
             android:text="@string/battery_sync_widget_placeholder_percent"
             android:textAlignment="center"
             android:textColor="?android:attr/textColorPrimary"
-            android:maxLines="1"
-            android:ellipsize="marquee"
             android:textSize="20sp" />
 
     </RelativeLayout>
