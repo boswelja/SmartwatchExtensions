@@ -1,32 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@android:id/background"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="@dimen/widget_padding"
     android:theme="@style/Theme.Widget">
 
     <ImageView
-        android:id="@+id/battery_indicator"
+        android:id="@+id/widget_background"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_above="@+id/battery_indicator_text"
-        android:layout_alignParentTop="true"
-        android:src="@drawable/ic_error"
-        app:tint="?android:attr/colorAccent"
+        android:layout_height="match_parent"
+        android:src="@drawable/widget_background"
         tools:ignore="ContentDescription" />
 
-    <TextView
-        android:id="@+id/battery_indicator_text"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:text="@string/watch_status_error"
-        android:textAlignment="center"
-        android:textColor="?android:attr/textColorPrimary"
-        android:textSize="20sp" />
+        android:layout_height="match_parent"
+        android:padding="@dimen/widget_padding">
 
-</RelativeLayout>
+        <ImageView
+            android:id="@+id/error_indicator"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_above="@+id/error_text"
+            android:layout_alignParentTop="true"
+            android:src="@drawable/ic_error"
+            app:tint="?android:attr/colorAccent"
+            tools:ignore="ContentDescription" />
+
+        <TextView
+            android:id="@+id/error_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:text="@string/watch_status_error"
+            android:textAlignment="center"
+            android:textColor="?android:attr/textColorPrimary"
+            android:textSize="20sp" />
+
+    </RelativeLayout>
+</FrameLayout>
