@@ -12,7 +12,6 @@ import com.boswelja.smartwatchextensions.NotificationChannelHelper
 import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.appStateStore
 import com.boswelja.smartwatchextensions.batterysync.BatterySyncWorker
-import com.boswelja.smartwatchextensions.bootorupdate.updater.Updater
 import com.boswelja.smartwatchextensions.common.preference.PreferenceKey
 import com.boswelja.smartwatchextensions.common.preference.PreferenceKey.WATCH_SEPARATION_NOTI_KEY
 import com.boswelja.smartwatchextensions.dndsync.DnDLocalChangeService
