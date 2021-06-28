@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:padding="@dimen/widget_padding"
     android:theme="@style/Theme.Widget">
 
     <ImageView
@@ -23,7 +24,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_margin="8dp"
         android:text="@string/watch_status_error"
         android:textAlignment="center"
         android:textColor="?android:attr/textColorPrimary"

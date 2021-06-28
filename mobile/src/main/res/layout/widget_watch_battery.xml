@@ -17,7 +17,8 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:padding="@dimen/widget_padding">
 
         <ImageView
             android:id="@+id/battery_indicator"
@@ -34,7 +35,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:layout_margin="8dp"
             android:text="@string/battery_sync_widget_placeholder_percent"
             android:textAlignment="center"
             android:textColor="?android:attr/textColorPrimary"

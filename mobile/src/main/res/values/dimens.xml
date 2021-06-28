@@ -2,5 +2,5 @@
 <resources>
 
     <dimen name="widget_corner_radius">8dp</dimen>
-
+    <dimen name="widget_padding">8dp</dimen>
 </resources>
