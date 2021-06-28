@@ -1,4 +1,4 @@
-package com.boswelja.smartwatchextensions.bootorupdate.updater
+package com.boswelja.smartwatchextensions.bootorupdate
 
 import android.content.Context
 import com.boswelja.migration.Migrator

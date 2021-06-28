@@ -4,7 +4,7 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
 import com.boswelja.smartwatchextensions.batterysync.Utils.BATTERY_STATS_NOTI_CHANNEL_ID
-import com.boswelja.smartwatchextensions.bootorupdate.BootOrUpdateHandlerService
+import com.boswelja.smartwatchextensions.bootorupdate.BOOT_OR_UPDATE_NOTI_CHANNEL_ID
 import com.boswelja.smartwatchextensions.common.dndsync.References
 import com.boswelja.smartwatchextensions.messages.MESSAGE_NOTIFICATION_CHANNEL_ID
 import com.boswelja.smartwatchextensions.proximity.SeparationObserverService.Companion.OBSERVER_NOTI_CHANNEL_ID
@@ -81,11 +81,11 @@ object NotificationChannelHelper {
 
     fun createForBootOrUpdate(context: Context, notificationManager: NotificationManager) {
         if (notificationManager.getNotificationChannel(
-                BootOrUpdateHandlerService.BOOT_OR_UPDATE_NOTI_CHANNEL_ID
+                BOOT_OR_UPDATE_NOTI_CHANNEL_ID
             ) == null
         ) {
             NotificationChannel(
-                BootOrUpdateHandlerService.BOOT_OR_UPDATE_NOTI_CHANNEL_ID,
+                BOOT_OR_UPDATE_NOTI_CHANNEL_ID,
                 context.getString(R.string.noti_channel_boot_or_update_title),
                 NotificationManager.IMPORTANCE_LOW
             )
