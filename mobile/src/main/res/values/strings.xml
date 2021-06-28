@@ -15,6 +15,7 @@
     <string name="message_history_not_cleared">No messages to delete</string>
 
     <!-- Battery Sync preference strings -->
+    <string name="battery_sync_widget_placeholder_percent">50%</string>
     <string name="battery_sync_title">Battery Sync</string>
     <string name="battery_sync_toggle_title">Enable Battery Sync</string>
     <string name="battery_sync_phone_charge_noti_title">Phone Charged Notification</string>

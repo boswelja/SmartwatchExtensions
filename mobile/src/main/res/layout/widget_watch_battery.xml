@@ -25,7 +25,7 @@
             android:layout_height="0dp"
             android:layout_above="@+id/battery_indicator_text"
             android:layout_alignParentTop="true"
-            android:src="@drawable/battery_unknown"
+            android:src="@drawable/battery_50"
             app:tint="?android:attr/colorAccent"
             tools:ignore="ContentDescription" />
 
@@ -35,9 +35,11 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_margin="8dp"
-            android:text="@string/battery_sync_disabled"
+            android:text="@string/battery_sync_widget_placeholder_percent"
             android:textAlignment="center"
             android:textColor="?android:attr/textColorPrimary"
+            android:maxLines="1"
+            android:ellipsize="marquee"
             android:textSize="20sp" />
 
     </RelativeLayout>
