@@ -54,7 +54,7 @@
 
         <service
             android:name=".batterysync.PhoneBatteryComplicationProvider"
-            android:icon="@drawable/phone_battery_full"
+            android:icon="@drawable/battery_full"
             android:label="Phone Battery Status"
             android:permission="com.google.android.wearable.permission.BIND_COMPLICATION_PROVIDER"
             android:exported="true">
