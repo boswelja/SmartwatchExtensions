@@ -24,6 +24,8 @@ class WatchBatteryWidget : WatchWidgetProvider() {
     ): RemoteViews {
         val remoteViews = RemoteViews(context.packageName, R.layout.widget_watch_battery)
 
+        remoteViews.setTextViewText(R.id.watch_name, watch.name)
+
         // Set click intent
         PendingIntent.getActivity(
             context,
