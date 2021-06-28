@@ -25,7 +25,7 @@
             android:layout_height="0dp"
             android:layout_above="@+id/battery_indicator_text"
             android:layout_alignParentTop="true"
-            android:src="@drawable/watch_battery_unknown"
+            android:src="@drawable/battery_unknown"
             app:tint="?android:attr/colorAccent"
             tools:ignore="ContentDescription" />
 
