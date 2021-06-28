@@ -7,6 +7,7 @@ import com.boswelja.smartwatchextensions.batterysync.BatterySyncWorker
 import com.boswelja.smartwatchextensions.batterysync.Utils.updateBatteryStats
 import com.boswelja.smartwatchextensions.batterysync.database.WatchBatteryStatsDatabase
 import com.boswelja.smartwatchextensions.batterysync.quicksettings.WatchBatteryTileService
+import com.boswelja.smartwatchextensions.common.WatchWidgetProvider
 import com.boswelja.smartwatchextensions.common.connection.Capability
 import com.boswelja.smartwatchextensions.common.preference.PreferenceKey.BATTERY_CHARGE_THRESHOLD_KEY
 import com.boswelja.smartwatchextensions.common.preference.PreferenceKey.BATTERY_LOW_THRESHOLD_KEY
@@ -83,6 +84,7 @@ class BatterySyncViewModel internal constructor(
                     getApplication(), selectedWatch.id
                 )
                 WatchBatteryTileService.requestTileUpdate(getApplication())
+                WatchWidgetProvider.updateWidgets(getApplication())
             }
         }
     }
