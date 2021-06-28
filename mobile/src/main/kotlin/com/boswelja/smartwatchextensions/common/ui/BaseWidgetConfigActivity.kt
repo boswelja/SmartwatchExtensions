@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.lifecycle.lifecycleScope
+import com.boswelja.smartwatchextensions.common.WatchWidgetProvider
 import com.boswelja.smartwatchextensions.widget.widgetIdStore
 import com.boswelja.watchconnection.core.Watch
 import kotlinx.coroutines.Dispatchers
@@ -49,7 +50,7 @@ abstract class BaseWidgetConfigActivity : AppCompatActivity() {
             widgetIdStore.edit { widgetIds ->
                 widgetIds[stringPreferencesKey(widgetId.toString())] = watch.id.toString()
             }
-            BaseWidgetProvider.updateWidgets(
+            WatchWidgetProvider.updateWidgets(
                 this@BaseWidgetConfigActivity,
                 intArrayOf(widgetId)
             )

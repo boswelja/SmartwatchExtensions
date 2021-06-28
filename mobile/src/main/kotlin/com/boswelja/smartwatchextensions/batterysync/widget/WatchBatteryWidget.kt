@@ -6,13 +6,13 @@ import android.content.Intent
 import android.widget.RemoteViews
 import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.batterysync.database.WatchBatteryStatsDatabase
+import com.boswelja.smartwatchextensions.common.WatchWidgetProvider
 import com.boswelja.smartwatchextensions.common.getBatteryDrawable
-import com.boswelja.smartwatchextensions.common.ui.BaseWidgetProvider
 import com.boswelja.smartwatchextensions.main.MainActivity
 import java.util.UUID
 import kotlinx.coroutines.flow.firstOrNull
 
-class WatchBatteryWidget : BaseWidgetProvider() {
+class WatchBatteryWidget : WatchWidgetProvider() {
 
     override suspend fun onUpdateView(
         context: Context,

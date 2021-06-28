@@ -1,4 +1,4 @@
-package com.boswelja.smartwatchextensions.common.ui
+package com.boswelja.smartwatchextensions.common
 
 import android.app.PendingIntent
 import android.appwidget.AppWidgetManager
@@ -24,9 +24,9 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 
 /**
- * An [AppWidgetProvider] that applies our default widget background with user settings.
+ * An [AppWidgetProvider] provides the [Watch] from this widget's config.
  */
-abstract class BaseWidgetProvider : AppWidgetProvider() {
+abstract class WatchWidgetProvider : AppWidgetProvider() {
 
     private val coroutineScope = CoroutineScope(Dispatchers.Default)
 
