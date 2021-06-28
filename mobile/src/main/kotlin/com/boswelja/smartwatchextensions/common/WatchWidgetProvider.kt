@@ -14,7 +14,9 @@ import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.batterysync.widget.WatchBatteryWidget
 import com.boswelja.smartwatchextensions.main.MainActivity
 import com.boswelja.smartwatchextensions.main.MainActivity.Companion.EXTRA_WATCH_ID
+import com.boswelja.smartwatchextensions.watchmanager.WatchManager
 import com.boswelja.smartwatchextensions.widget.widgetIdStore
+import com.boswelja.watchconnection.core.Watch
 import java.util.UUID
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -35,14 +37,14 @@ abstract class WatchWidgetProvider : AppWidgetProvider() {
      * @param context [Context].
      * @param width The width of the widget view.
      * @param height The height of the widget.
-     * @param watchId The ID of the watch this widget is for.
+     * @param watch The [Watch] this widget is for.
      * @return Then widget content as a [RemoteViews].
      */
     abstract suspend fun onUpdateView(
         context: Context,
         width: Int,
         height: Int,
-        watchId: UUID
+        watch: Watch
     ): RemoteViews
 
     /**
@@ -137,11 +139,15 @@ abstract class WatchWidgetProvider : AppWidgetProvider() {
                 null
             }
         }
-
-        val widgetContent = if (watchId != null) {
+        val watch = watchId?.let {
+            WatchManager.getInstance(context)
+                .getWatchById(watchId)
+                .firstOrNull()
+        }
+        val widgetContent = if (watch != null) {
             // Get the widget content from child class
             Timber.d("Getting widget content")
-            onUpdateView(context, width, height, watchId)
+            onUpdateView(context, width, height, watch)
         } else {
             Timber.w("Watch ID for widget %s is null", appWidgetId)
             // Set error view
