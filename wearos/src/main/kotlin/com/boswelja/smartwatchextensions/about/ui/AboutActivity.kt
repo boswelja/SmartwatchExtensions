@@ -13,12 +13,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.OutlinedButton
-import androidx.compose.material.Text
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.OpenInNew
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -29,6 +23,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.graphics.drawable.toBitmap
+import androidx.wear.compose.material.Chip
+import androidx.wear.compose.material.ChipDefaults.chipColors
+import androidx.wear.compose.material.MaterialTheme
+import androidx.wear.compose.material.Text
 import com.boswelja.smartwatchextensions.BuildConfig
 import com.boswelja.smartwatchextensions.GooglePlayUtils
 import com.boswelja.smartwatchextensions.R
@@ -77,12 +75,12 @@ fun AppInfo() {
         )
         Text(
             stringResource(R.string.app_name),
-            style = MaterialTheme.typography.h6,
+            style = MaterialTheme.typography.caption1,
             textAlign = TextAlign.Center
         )
         Text(
             stringResource(R.string.version_string, BuildConfig.VERSION_NAME),
-            style = MaterialTheme.typography.subtitle1
+            style = MaterialTheme.typography.display3
         )
     }
 }
@@ -92,25 +90,29 @@ fun AppInfo() {
 fun Links() {
     val context = LocalContext.current
     Column(
-        Modifier.fillMaxWidth().padding(8.dp),
+        Modifier
+            .fillMaxWidth()
+            .padding(8.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        OutlinedButton(
-            onClick = { context.startActivity(GooglePlayUtils.getPlayStoreIntent(context)) }
-        ) {
-            Icon(Icons.Outlined.OpenInNew, null)
-            Text(stringResource(R.string.open_play_store_title))
-        }
-        OutlinedButton(
+        Chip(
+            onClick = { context.startActivity(GooglePlayUtils.getPlayStoreIntent(context)) },
+            content = {
+                Text(stringResource(R.string.open_play_store_title))
+            },
+            colors = chipColors()
+        )
+        Chip(
             onClick = {
                 val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
                     .apply { data = Uri.fromParts("package", context.packageName, null) }
                 context.startActivity(intent)
-            }
-        ) {
-            Icon(Icons.Outlined.OpenInNew, null)
-            Text(stringResource(R.string.open_app_info_title))
-        }
+            },
+            content = {
+                Text(stringResource(R.string.open_app_info_title))
+            },
+            colors = chipColors()
+        )
     }
 }

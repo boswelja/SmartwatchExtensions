@@ -5,11 +5,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.Icon
-import androidx.compose.material.ListItem
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.PhonelinkLock
 import androidx.compose.runtime.Composable
@@ -19,9 +14,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.wear.compose.material.Icon
+import androidx.wear.compose.material.MaterialTheme
+import androidx.wear.compose.material.Text
 import com.boswelja.smartwatchextensions.R
 
-@ExperimentalMaterialApi
 @Composable
 fun PhoneLockingScreen(
     phoneLockingEnabled: Boolean,
@@ -38,19 +35,11 @@ fun PhoneLockingScreen(
     }
 }
 
-@ExperimentalMaterialApi
 @Composable
 fun PhoneLockingDisabled() {
-    ListItem(
-        text = { Text(stringResource(R.string.lock_phone_disabled)) },
-        icon = {
-            Icon(
-                Icons.Outlined.PhonelinkLock,
-                null,
-                modifier = Modifier.size(32.dp),
-                tint = Color.White
-            )
-        }
+    Text(
+        modifier = Modifier.padding(16.dp),
+        text = stringResource(R.string.lock_phone_disabled)
     )
 }
 
@@ -74,7 +63,7 @@ fun PhoneLockingEnabled(
         )
         Text(
             stringResource(R.string.lock_phone, phoneName),
-            style = MaterialTheme.typography.h6,
+            style = MaterialTheme.typography.display2,
             textAlign = TextAlign.Center
         )
     }

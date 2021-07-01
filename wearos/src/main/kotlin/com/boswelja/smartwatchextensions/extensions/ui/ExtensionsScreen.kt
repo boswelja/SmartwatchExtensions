@@ -8,13 +8,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Divider
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.Icon
-import androidx.compose.material.OutlinedButton
-import androidx.compose.material.Text
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Info
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -24,6 +17,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.wear.compose.material.Chip
+import androidx.wear.compose.material.ChipDefaults.chipColors
+import androidx.wear.compose.material.Text
 import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.about.ui.AboutActivity
 import com.boswelja.smartwatchextensions.batterysync.ui.BatterySyncScreen
@@ -31,13 +27,11 @@ import com.boswelja.smartwatchextensions.common.startActivity
 import com.boswelja.smartwatchextensions.phonelocking.ui.PhoneLockingScreen
 import kotlinx.coroutines.Dispatchers
 
-@ExperimentalMaterialApi
 @Composable
 fun ExtensionsScreen() {
     val scrollState = rememberScrollState()
     ColumnInsetLayout(scrollState) {
         Extensions()
-        Divider(Modifier.padding(vertical = 8.dp))
         Links()
     }
 }
@@ -64,7 +58,6 @@ fun ColumnInsetLayout(
     }
 }
 
-@ExperimentalMaterialApi
 @Composable
 fun Extensions() {
     Column {
@@ -101,9 +94,9 @@ fun Links() {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        OutlinedButton(
+        Chip(
+            colors = chipColors(),
             content = {
-                Icon(Icons.Outlined.Info, null)
                 Text(stringResource(R.string.about_app_title))
             },
             onClick = {

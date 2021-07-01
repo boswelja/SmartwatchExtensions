@@ -70,7 +70,7 @@ dependencies {
     implementation(libs.timber)
     implementation(libs.kotlinx.coroutines.playservices)
 
-    implementation(libs.bundles.compose.mobile)
+    implementation(libs.bundles.compose.wear)
 
     testImplementation(libs.androidx.arch.core.test)
     testImplementation(libs.androidx.test.corektx)

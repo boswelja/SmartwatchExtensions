@@ -1,7 +1,6 @@
 package com.boswelja.smartwatchextensions.common
 
 import androidx.annotation.DrawableRes
-import androidx.compose.material.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -9,6 +8,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
+import androidx.wear.compose.material.Icon
 
 @Preview(widthDp = 40, heightDp = 40)
 @Composable
