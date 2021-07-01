@@ -1,8 +1,8 @@
 package com.boswelja.smartwatchextensions.main.ui
 
 import android.os.Bundle
+import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -11,7 +11,7 @@ import com.boswelja.smartwatchextensions.extensions.ui.ExtensionsScreen
 import com.boswelja.smartwatchextensions.onboarding.ui.OnboardingScreen
 import kotlinx.coroutines.Dispatchers
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
