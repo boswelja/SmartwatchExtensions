@@ -6,6 +6,8 @@ import androidx.core.content.getSystemService
 import androidx.work.CoroutineWorker
 import androidx.work.ExperimentalExpeditedWork
 import androidx.work.ForegroundInfo
+import androidx.work.ListenableWorker.Result.failure
+import androidx.work.ListenableWorker.Result.success
 import androidx.work.WorkerParameters
 import com.boswelja.smartwatchextensions.NotificationChannelHelper
 import com.boswelja.smartwatchextensions.R
@@ -23,10 +25,10 @@ class UpdateWorker(
         // Restart services
         applicationContext.restartServices()
 
-        return if (result) {
-            Result.success()
-        } else {
-            Result.retry()
+        return when (result) {
+            com.boswelja.migration.Result.SUCCESS,
+            com.boswelja.migration.Result.NOT_NEEDED -> success()
+            com.boswelja.migration.Result.FAILED -> failure()
         }
     }
 
