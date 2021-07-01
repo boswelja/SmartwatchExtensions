@@ -1,8 +1,8 @@
 package com.boswelja.smartwatchextensions
 
 import android.os.Bundle
+import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.getValue
@@ -27,7 +27,7 @@ import timber.log.Timber
  * An Activity for handling Actions triggered when the app is not running, e.g. from Complications,
  * Tiles etc.
  */
-class ActionsActivity : AppCompatActivity() {
+class ActionsActivity : ComponentActivity() {
 
     private val messageClient by lazy { Wearable.getMessageClient(this) }
 
