@@ -7,7 +7,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
 import androidx.wear.compose.material.Icon
 import androidx.wear.compose.material.MaterialTheme
 import androidx.wear.compose.material.Text
@@ -39,12 +38,14 @@ fun BatteryStatus(
 ) {
     ExtensionCard(
         modifier = Modifier.fillMaxWidth(),
-        icon = {
+        icon = { size ->
+            val iconModifier = Modifier.size(size)
             if (enabled) {
-                BatteryIcon(percent, modifier = Modifier.size(56.dp))
+                BatteryIcon(percent, modifier = iconModifier)
             } else {
                 Icon(
-                    painterResource(R.drawable.battery_unknown),
+                    modifier = iconModifier,
+                    painter = painterResource(R.drawable.battery_unknown),
                     contentDescription = null
                 )
             }
