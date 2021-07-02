@@ -9,7 +9,9 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
@@ -28,6 +30,7 @@ import androidx.compose.ui.unit.dp
 import androidx.core.graphics.drawable.toBitmap
 import androidx.wear.compose.material.Chip
 import androidx.wear.compose.material.ChipDefaults
+import androidx.wear.compose.material.ChipDefaults.secondaryChipColors
 import androidx.wear.compose.material.Icon
 import androidx.wear.compose.material.MaterialTheme
 import androidx.wear.compose.material.Text
@@ -56,15 +59,15 @@ fun AboutScreen() {
     Column(
         Modifier
             .verticalScroll(scrollState)
-            .padding(top = 8.dp, bottom = 72.dp, start = 8.dp, end = 8.dp),
+            .padding(top = 8.dp, bottom = 56.dp, start = 8.dp, end = 8.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         AppInfo(Modifier.fillMaxWidth())
-        Links()
+        Spacer(modifier = Modifier.height(16.dp))
+        Links(Modifier.fillMaxWidth())
     }
 }
 
-@Preview(showBackground = true)
 @Composable
 fun AppInfo(
     modifier: Modifier = Modifier
@@ -91,15 +94,14 @@ fun AppInfo(
     }
 }
 
-@Preview(showBackground = true)
 @Composable
-fun Links() {
+fun Links(
+    modifier: Modifier = Modifier
+) {
     val context = LocalContext.current
-    val chipColors = ChipDefaults.primaryChipColors()
+    val chipColors = secondaryChipColors()
     Column(
-        Modifier
-            .fillMaxWidth()
-            .padding(8.dp),
+        modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
