@@ -9,6 +9,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import com.boswelja.smartwatchextensions.common.InsetDefaults.RoundScreenInset
 
 @Composable
 fun ColumnInsetLayout(
@@ -19,7 +20,7 @@ fun ColumnInsetLayout(
 ) {
     if (LocalContext.current.resources.configuration.isScreenRound) {
         Column(
-            modifier = modifier.padding(vertical = 48.dp),
+            modifier = modifier.padding(vertical = RoundScreenInset),
             horizontalAlignment = horizontalAlignment,
             verticalArrangement = verticalArrangement,
             content = content
@@ -32,4 +33,8 @@ fun ColumnInsetLayout(
             content = content
         )
     }
+}
+
+object InsetDefaults {
+    val RoundScreenInset = 48.dp
 }
