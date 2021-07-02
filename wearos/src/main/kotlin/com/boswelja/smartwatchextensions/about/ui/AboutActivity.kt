@@ -54,10 +54,12 @@ class AboutActivity : ComponentActivity() {
 
 @Preview(showBackground = true)
 @Composable
-fun AboutScreen() {
+fun AboutScreen(
+    modifier: Modifier = Modifier
+) {
     val scrollState = rememberScrollState()
     Column(
-        Modifier
+        modifier
             .verticalScroll(scrollState)
             .padding(top = 8.dp, bottom = 56.dp, start = 8.dp, end = 8.dp),
         horizontalAlignment = Alignment.CenterHorizontally
