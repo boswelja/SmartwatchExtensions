@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="iconTint">@color/main_item_icon</color>
     <color name="colorPrimary">#ec80ff</color>
     <color name="windowBackground">@android:color/black</color>
 </resources>
