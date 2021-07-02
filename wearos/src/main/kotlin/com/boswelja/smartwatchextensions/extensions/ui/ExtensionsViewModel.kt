@@ -3,10 +3,7 @@ package com.boswelja.smartwatchextensions.extensions.ui
 import android.app.Application
 import androidx.datastore.core.DataStore
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.viewModelScope
-import com.boswelja.smartwatchextensions.ConfirmationActivityHandler
 import com.boswelja.smartwatchextensions.PhoneState
-import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.common.batterysync.References.REQUEST_BATTERY_UPDATE_PATH
 import com.boswelja.smartwatchextensions.common.connection.Messages
 import com.boswelja.smartwatchextensions.extensions.ExtensionSettings
@@ -20,7 +17,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapLatest
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 
 class ExtensionsViewModel internal constructor(
     application: Application,
@@ -49,51 +46,49 @@ class ExtensionsViewModel internal constructor(
 
     fun phoneStatus() = connectionHelper.phoneStatus()
 
-    fun updateBatteryStats() {
-        viewModelScope.launch {
-            val isBatterySyncEnabled = batterySyncEnabled.first()
-            val isPhoneConnected = isPhoneConnected()
-            if (isPhoneConnected && isBatterySyncEnabled) {
-                ConfirmationActivityHandler.successAnimation(getApplication())
-                val phoneId = phoneId.first()
-                messageClient.sendMessage(phoneId, REQUEST_BATTERY_UPDATE_PATH, null)
-            } else if (!isBatterySyncEnabled) {
-                ConfirmationActivityHandler.failAnimation(
-                    getApplication(),
-                    getApplication<Application>().getString(R.string.battery_sync_disabled)
-                )
-            } else {
-                ConfirmationActivityHandler.failAnimation(
-                    getApplication(),
-                    getApplication<Application>().getString(R.string.phone_not_connected)
-                )
-            }
-        }
-    }
-
+    /**
+     * Request updated battery stats from the connected device.
+     * @return true if the request was sent successfully, false otherwise.
+     */
     @ExperimentalCoroutinesApi
-    fun requestLockPhone() {
-        viewModelScope.launch {
-            val phoneLockingEnabled = phoneLockingEnabled.first()
-            val isPhoneConnected = isPhoneConnected()
-            if (isPhoneConnected && phoneLockingEnabled) {
-                ConfirmationActivityHandler.successAnimation(getApplication())
-                val phoneId = phoneId.first()
-                messageClient.sendMessage(phoneId, Messages.LOCK_PHONE, null)
-            } else if (!phoneLockingEnabled) {
-                ConfirmationActivityHandler.failAnimation(
-                    getApplication(),
-                    getApplication<Application>().getString(R.string.lock_phone_disabled)
-                )
-            } else {
-                ConfirmationActivityHandler.failAnimation(
-                    getApplication(),
-                    getApplication<Application>().getString(R.string.phone_not_connected)
-                )
+    suspend fun requestBatteryStats(): Boolean {
+        if (isPhoneConnected()) {
+            val phoneId = phoneId.first()
+            return try {
+                messageClient.sendMessage(phoneId, REQUEST_BATTERY_UPDATE_PATH, null).await()
+                true
+            } catch (e: Exception) {
+                e.printStackTrace()
+                false
             }
         }
+        return false
     }
 
+    /**
+     * Request locking the connected device.
+     * @return true if the request was sent successfully, false otherwise.
+     */
+    @ExperimentalCoroutinesApi
+    suspend fun requestLockPhone(): Boolean {
+        if (isPhoneConnected()) {
+            val phoneId = phoneId.first()
+            return try {
+                messageClient.sendMessage(phoneId, Messages.LOCK_PHONE, null)
+                true
+            } catch (e: Exception) {
+                e.printStackTrace()
+                false
+            }
+        }
+
+        return false
+    }
+
+    /**
+     * Gets the first value emitted by [ConnectionHelper.phoneStatus], and maps it to a Boolean
+     * indicating whether the device is connected.
+     */
     @ExperimentalCoroutinesApi
     private suspend fun isPhoneConnected(): Boolean {
         return phoneStatus().mapLatest {

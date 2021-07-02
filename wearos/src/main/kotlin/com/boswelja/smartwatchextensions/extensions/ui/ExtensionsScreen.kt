@@ -18,6 +18,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -26,17 +27,21 @@ import androidx.wear.compose.material.ChipDefaults
 import androidx.wear.compose.material.ChipDefaults.secondaryChipColors
 import androidx.wear.compose.material.Icon
 import androidx.wear.compose.material.Text
+import androidx.wear.widget.ConfirmationOverlay
 import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.about.ui.AboutActivity
 import com.boswelja.smartwatchextensions.batterysync.ui.BatteryStatsCard
 import com.boswelja.smartwatchextensions.common.InsetDefaults.RoundScreenInset
 import com.boswelja.smartwatchextensions.common.rotaryInput
 import com.boswelja.smartwatchextensions.common.roundScreenPadding
+import com.boswelja.smartwatchextensions.common.showConfirmationOverlay
 import com.boswelja.smartwatchextensions.common.startActivity
 import com.boswelja.smartwatchextensions.phonelocking.ui.PhoneLockingCard
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
 
+@ExperimentalCoroutinesApi
 @Composable
 fun ExtensionsScreen() {
     val coroutineScope = rememberCoroutineScope()
@@ -58,6 +63,7 @@ fun ExtensionsScreen() {
     }
 }
 
+@ExperimentalCoroutinesApi
 @Composable
 fun Extensions(
     modifier: Modifier = Modifier
@@ -66,7 +72,10 @@ fun Extensions(
         modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
+        val view = LocalView.current
+        val coroutineScope = rememberCoroutineScope()
         val viewModel: ExtensionsViewModel = viewModel()
+
         val batterySyncEnabled by viewModel.batterySyncEnabled.collectAsState(false, Dispatchers.IO)
         val phoneLockingEnabled by viewModel.phoneLockingEnabled
             .collectAsState(false, Dispatchers.IO)
@@ -81,14 +90,40 @@ fun Extensions(
             percent = batteryPercent,
             phoneName = phoneName
         ) {
-            viewModel.updateBatteryStats()
+            coroutineScope.launch {
+                val result = viewModel.requestBatteryStats()
+                if (result) {
+                    view.showConfirmationOverlay(
+                        type = ConfirmationOverlay.SUCCESS_ANIMATION,
+                        message = view.context.getString(R.string.battery_sync_refresh_success)
+                    )
+                } else {
+                    view.showConfirmationOverlay(
+                        type = ConfirmationOverlay.FAILURE_ANIMATION,
+                        message = view.context.getString(R.string.phone_not_connected)
+                    )
+                }
+            }
         }
         PhoneLockingCard(
             modifier = cardModifier,
             enabled = phoneLockingEnabled,
             phoneName = phoneName
         ) {
-            viewModel.requestLockPhone()
+            coroutineScope.launch {
+                val result = viewModel.requestLockPhone()
+                if (result) {
+                    view.showConfirmationOverlay(
+                        type = ConfirmationOverlay.SUCCESS_ANIMATION,
+                        message = view.context.getString(R.string.lock_phone_success)
+                    )
+                } else {
+                    view.showConfirmationOverlay(
+                        type = ConfirmationOverlay.FAILURE_ANIMATION,
+                        message = view.context.getString(R.string.phone_not_connected)
+                    )
+                }
+            }
         }
     }
 }
