@@ -11,20 +11,24 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.OpenInNew
+import androidx.compose.material.icons.outlined.SettingsApplications
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.graphics.drawable.toBitmap
 import androidx.wear.compose.material.Chip
-import androidx.wear.compose.material.ChipDefaults.chipColors
+import androidx.wear.compose.material.ChipDefaults
+import androidx.wear.compose.material.Icon
 import androidx.wear.compose.material.MaterialTheme
 import androidx.wear.compose.material.Text
 import com.boswelja.smartwatchextensions.BuildConfig
@@ -55,32 +59,34 @@ fun AboutScreen() {
             .padding(top = 8.dp, bottom = 72.dp, start = 8.dp, end = 8.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        AppInfo()
+        AppInfo(Modifier.fillMaxWidth())
         Links()
     }
 }
 
 @Preview(showBackground = true)
 @Composable
-fun AppInfo() {
+fun AppInfo(
+    modifier: Modifier = Modifier
+) {
     val context = LocalContext.current
     Column(
-        Modifier.fillMaxWidth(),
+        modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Image(
-            context.packageManager.getApplicationIcon(context.packageName)
+            modifier = Modifier.size(42.dp),
+            bitmap = context.packageManager.getApplicationIcon(context.packageName)
                 .toBitmap().asImageBitmap(),
-            null
+            contentDescription = null
         )
         Text(
-            stringResource(R.string.app_name),
-            style = MaterialTheme.typography.caption1,
-            textAlign = TextAlign.Center
+            text = stringResource(R.string.app_name),
+            style = MaterialTheme.typography.caption1
         )
         Text(
-            stringResource(R.string.version_string, BuildConfig.VERSION_NAME),
-            style = MaterialTheme.typography.display3
+            text = stringResource(R.string.version_string, BuildConfig.VERSION_NAME),
+            style = MaterialTheme.typography.title2
         )
     }
 }
@@ -89,6 +95,7 @@ fun AppInfo() {
 @Composable
 fun Links() {
     val context = LocalContext.current
+    val chipColors = ChipDefaults.primaryChipColors()
     Column(
         Modifier
             .fillMaxWidth()
@@ -98,10 +105,17 @@ fun Links() {
     ) {
         Chip(
             onClick = { context.startActivity(GooglePlayUtils.getPlayStoreIntent(context)) },
-            content = {
+            label = {
                 Text(stringResource(R.string.open_play_store_title))
             },
-            colors = chipColors()
+            icon = {
+                Icon(
+                    modifier = Modifier.size(ChipDefaults.IconSize),
+                    imageVector = Icons.Outlined.OpenInNew,
+                    contentDescription = null
+                )
+            },
+            colors = chipColors
         )
         Chip(
             onClick = {
@@ -109,10 +123,17 @@ fun Links() {
                     .apply { data = Uri.fromParts("package", context.packageName, null) }
                 context.startActivity(intent)
             },
-            content = {
+            label = {
                 Text(stringResource(R.string.open_app_info_title))
             },
-            colors = chipColors()
+            icon = {
+                Icon(
+                    modifier = Modifier.size(ChipDefaults.IconSize),
+                    imageVector = Icons.Outlined.SettingsApplications,
+                    contentDescription = null
+                )
+            },
+            colors = chipColors
         )
     }
 }
