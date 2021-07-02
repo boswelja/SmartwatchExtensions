@@ -101,7 +101,6 @@ compose-mobile = [
 ]
 compose-wear = [
     "androidx-compose-ui-core",
-    "androidx-compose-ui-tooling",
     "androidx-compose-material-icons-core",
     "androidx-compose-material-icons-extended",
     "androidx-compose-activity",

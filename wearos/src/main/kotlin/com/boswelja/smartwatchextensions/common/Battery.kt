@@ -5,15 +5,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.tooling.preview.PreviewParameter
-import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.wear.compose.material.Icon
 
-@Preview(widthDp = 40, heightDp = 40)
 @Composable
 fun BatteryIcon(
-    @PreviewParameter(BatteryPercentProvider::class, limit = 100)
     percent: Int,
     modifier: Modifier = Modifier
 ) {
@@ -41,12 +36,4 @@ fun getBatteryResource(percent: Int): Int {
         100 -> R.drawable.battery_full
         else -> R.drawable.battery_unknown
     }
-}
-
-private class BatteryPercentProvider : PreviewParameterProvider<Int> {
-    override val values: Sequence<Int>
-        get() = sequenceOf(-1, 0, 1, 11, 21, 31, 41, 51, 61, 71, 81, 91, 100)
-
-    override val count: Int
-        get() = values.count()
 }
