@@ -1,13 +1,14 @@
 package com.boswelja.smartwatchextensions.extensions.ui
 
-import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Info
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -18,11 +19,14 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.wear.compose.material.Chip
-import androidx.wear.compose.material.ChipDefaults.chipColors
+import androidx.wear.compose.material.ChipDefaults
+import androidx.wear.compose.material.ChipDefaults.secondaryChipColors
+import androidx.wear.compose.material.Icon
 import androidx.wear.compose.material.Text
 import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.about.ui.AboutActivity
 import com.boswelja.smartwatchextensions.batterysync.ui.BatterySyncScreen
+import com.boswelja.smartwatchextensions.common.ColumnInsetLayout
 import com.boswelja.smartwatchextensions.common.startActivity
 import com.boswelja.smartwatchextensions.phonelocking.ui.PhoneLockingScreen
 import kotlinx.coroutines.Dispatchers
@@ -30,31 +34,14 @@ import kotlinx.coroutines.Dispatchers
 @Composable
 fun ExtensionsScreen() {
     val scrollState = rememberScrollState()
-    ColumnInsetLayout(scrollState = scrollState) {
+    ColumnInsetLayout(
+        modifier = Modifier
+            .verticalScroll(scrollState)
+            .padding(8.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
         Extensions()
         Links()
-    }
-}
-
-@Composable
-fun ColumnInsetLayout(
-    scrollState: ScrollState,
-    content: @Composable ColumnScope.() -> Unit
-) {
-    if (LocalContext.current.resources.configuration.isScreenRound) {
-        Column(
-            Modifier
-                .verticalScroll(scrollState)
-                .padding(horizontal = 8.dp, vertical = 56.dp),
-            content = content
-        )
-    } else {
-        Column(
-            Modifier
-                .verticalScroll(scrollState)
-                .padding(8.dp),
-            content = content
-        )
     }
 }
 
@@ -91,15 +78,21 @@ fun Links() {
     val context = LocalContext.current
     Column(
         modifier = Modifier
-            .fillMaxWidth()
-            .padding(8.dp),
+            .fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         Chip(
-            colors = chipColors(),
-            content = {
+            colors = secondaryChipColors(),
+            label = {
                 Text(stringResource(R.string.about_app_title))
+            },
+            icon = {
+                Icon(
+                    modifier = Modifier.size(ChipDefaults.IconSize),
+                    imageVector = Icons.Outlined.Info,
+                    contentDescription = null
+                )
             },
             onClick = {
                 context.startActivity<AboutActivity>()
