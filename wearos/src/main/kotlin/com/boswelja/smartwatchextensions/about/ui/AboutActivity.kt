@@ -43,6 +43,7 @@ import com.boswelja.smartwatchextensions.GooglePlayUtils
 import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.common.AppTheme
 import com.boswelja.smartwatchextensions.common.InsetDefaults.RoundScreenInset
+import com.boswelja.smartwatchextensions.common.isScreenRound
 import com.boswelja.smartwatchextensions.common.rotaryInput
 import com.boswelja.smartwatchextensions.common.roundScreenPadding
 import kotlinx.coroutines.launch
@@ -71,7 +72,7 @@ fun AboutScreen(
         modifier
             .verticalScroll(scrollState)
             .padding(8.dp)
-            .roundScreenPadding(PaddingValues(bottom = RoundScreenInset))
+            .roundScreenPadding(isScreenRound(), PaddingValues(bottom = RoundScreenInset))
             .rotaryInput { delta ->
                 coroutineScope.launch {
                     scrollState.scrollBy(delta)

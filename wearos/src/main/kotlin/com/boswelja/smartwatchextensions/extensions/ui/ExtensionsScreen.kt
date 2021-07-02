@@ -32,6 +32,7 @@ import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.about.ui.AboutActivity
 import com.boswelja.smartwatchextensions.batterysync.ui.BatteryStatsCard
 import com.boswelja.smartwatchextensions.common.InsetDefaults.RoundScreenInset
+import com.boswelja.smartwatchextensions.common.isScreenRound
 import com.boswelja.smartwatchextensions.common.rotaryInput
 import com.boswelja.smartwatchextensions.common.roundScreenPadding
 import com.boswelja.smartwatchextensions.common.showConfirmationOverlay
@@ -50,7 +51,7 @@ fun ExtensionsScreen() {
         modifier = Modifier
             .verticalScroll(scrollState)
             .padding(8.dp)
-            .roundScreenPadding(PaddingValues(vertical = RoundScreenInset))
+            .roundScreenPadding(isScreenRound(), PaddingValues(vertical = RoundScreenInset))
             .rotaryInput { delta ->
                 coroutineScope.launch {
                     scrollState.scrollBy(delta)
