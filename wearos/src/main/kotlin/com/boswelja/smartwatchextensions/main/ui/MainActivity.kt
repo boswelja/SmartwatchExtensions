@@ -10,9 +10,11 @@ import com.boswelja.smartwatchextensions.common.AppTheme
 import com.boswelja.smartwatchextensions.extensions.ui.ExtensionsScreen
 import com.boswelja.smartwatchextensions.onboarding.ui.OnboardingScreen
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 class MainActivity : ComponentActivity() {
 
+    @ExperimentalCoroutinesApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
