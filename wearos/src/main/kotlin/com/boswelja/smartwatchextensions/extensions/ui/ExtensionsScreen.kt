@@ -25,10 +25,10 @@ import androidx.wear.compose.material.Icon
 import androidx.wear.compose.material.Text
 import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.about.ui.AboutActivity
-import com.boswelja.smartwatchextensions.batterysync.ui.BatterySyncScreen
+import com.boswelja.smartwatchextensions.batterysync.ui.BatteryStatsCard
 import com.boswelja.smartwatchextensions.common.ColumnInsetLayout
 import com.boswelja.smartwatchextensions.common.startActivity
-import com.boswelja.smartwatchextensions.phonelocking.ui.PhoneLockingScreen
+import com.boswelja.smartwatchextensions.phonelocking.ui.PhoneLockingCard
 import kotlinx.coroutines.Dispatchers
 
 @Composable
@@ -52,20 +52,24 @@ fun Extensions() {
     ) {
         val viewModel: ExtensionsViewModel = viewModel()
         val batterySyncEnabled by viewModel.batterySyncEnabled.collectAsState(false, Dispatchers.IO)
+        val phoneLockingEnabled by viewModel.phoneLockingEnabled
+            .collectAsState(false, Dispatchers.IO)
         val batteryPercent by viewModel.batteryPercent.collectAsState(0, Dispatchers.IO)
         val phoneName by viewModel.phoneName
             .collectAsState(stringResource(R.string.default_phone_name), Dispatchers.IO)
-        BatterySyncScreen(
-            batterySyncEnabled = batterySyncEnabled,
-            batteryPercent = batteryPercent,
+
+        val cardModifier = Modifier.fillMaxWidth()
+        BatteryStatsCard(
+            modifier = cardModifier,
+            enabled = batterySyncEnabled,
+            percent = batteryPercent,
             phoneName = phoneName
         ) {
             viewModel.updateBatteryStats()
         }
-        val phoneLockingEnabled by viewModel.phoneLockingEnabled
-            .collectAsState(false, Dispatchers.IO)
-        PhoneLockingScreen(
-            phoneLockingEnabled = phoneLockingEnabled,
+        PhoneLockingCard(
+            modifier = cardModifier,
+            enabled = phoneLockingEnabled,
             phoneName = phoneName
         ) {
             viewModel.requestLockPhone()

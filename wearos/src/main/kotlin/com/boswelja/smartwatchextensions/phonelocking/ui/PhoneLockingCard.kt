@@ -1,6 +1,5 @@
 package com.boswelja.smartwatchextensions.phonelocking.ui
 
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.PhonelinkLock
@@ -16,26 +15,14 @@ import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.common.ExtensionCard
 
 @Composable
-fun PhoneLockingScreen(
-    phoneLockingEnabled: Boolean,
+fun PhoneLockingCard(
+    modifier: Modifier = Modifier,
     phoneName: String,
+    enabled: Boolean = true,
     onClick: () -> Unit
 ) {
-    PhoneLockingEnabled(
-        phoneName = phoneName,
-        onClick = onClick,
-        enabled = phoneLockingEnabled
-    )
-}
-
-@Composable
-fun PhoneLockingEnabled(
-    phoneName: String,
-    onClick: () -> Unit,
-    enabled: Boolean
-) {
     ExtensionCard(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = modifier,
         icon = { size ->
             Icon(
                 Icons.Outlined.PhonelinkLock,

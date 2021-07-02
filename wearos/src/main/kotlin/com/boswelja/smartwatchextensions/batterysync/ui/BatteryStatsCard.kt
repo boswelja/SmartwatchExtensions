@@ -1,6 +1,5 @@
 package com.boswelja.smartwatchextensions.batterysync.ui
 
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -15,29 +14,15 @@ import com.boswelja.smartwatchextensions.common.BatteryIcon
 import com.boswelja.smartwatchextensions.common.ExtensionCard
 
 @Composable
-fun BatterySyncScreen(
-    batterySyncEnabled: Boolean,
-    batteryPercent: Int,
-    phoneName: String,
-    onClick: () -> Unit
-) {
-    BatteryStatus(
-        percent = batteryPercent,
-        phoneName = phoneName,
-        onClick = onClick,
-        enabled = batterySyncEnabled
-    )
-}
-
-@Composable
-fun BatteryStatus(
+fun BatteryStatsCard(
+    modifier: Modifier = Modifier,
     percent: Int,
     phoneName: String,
-    onClick: () -> Unit,
-    enabled: Boolean
+    enabled: Boolean = true,
+    onClick: () -> Unit
 ) {
     ExtensionCard(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = modifier,
         icon = { size ->
             val iconModifier = Modifier.size(size)
             if (enabled) {
