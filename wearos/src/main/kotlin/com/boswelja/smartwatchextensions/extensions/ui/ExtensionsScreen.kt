@@ -53,14 +53,17 @@ fun ExtensionsScreen() {
             },
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        Extensions()
-        Links()
+        Extensions(Modifier.fillMaxWidth())
+        Links(Modifier.fillMaxWidth())
     }
 }
 
 @Composable
-fun Extensions() {
+fun Extensions(
+    modifier: Modifier = Modifier
+) {
     Column(
+        modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         val viewModel: ExtensionsViewModel = viewModel()
@@ -91,11 +94,12 @@ fun Extensions() {
 }
 
 @Composable
-fun Links() {
+fun Links(
+    modifier: Modifier = Modifier
+) {
     val context = LocalContext.current
     Column(
-        modifier = Modifier
-            .fillMaxWidth(),
+        modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {

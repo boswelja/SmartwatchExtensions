@@ -18,7 +18,7 @@ fun BatteryStatsCard(
     modifier: Modifier = Modifier,
     percent: Int,
     phoneName: String,
-    enabled: Boolean = true,
+    enabled: Boolean,
     onClick: () -> Unit
 ) {
     ExtensionCard(
