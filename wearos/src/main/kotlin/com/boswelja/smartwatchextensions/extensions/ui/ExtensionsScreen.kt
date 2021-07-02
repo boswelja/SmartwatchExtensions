@@ -32,8 +32,8 @@ import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.about.ui.AboutActivity
 import com.boswelja.smartwatchextensions.batterysync.ui.BatteryStatsCard
 import com.boswelja.smartwatchextensions.common.InsetDefaults.RoundScreenInset
+import com.boswelja.smartwatchextensions.common.RotaryHandler
 import com.boswelja.smartwatchextensions.common.isScreenRound
-import com.boswelja.smartwatchextensions.common.rotaryInput
 import com.boswelja.smartwatchextensions.common.roundScreenPadding
 import com.boswelja.smartwatchextensions.common.showConfirmationOverlay
 import com.boswelja.smartwatchextensions.common.startActivity
@@ -47,16 +47,18 @@ import kotlinx.coroutines.launch
 fun ExtensionsScreen() {
     val coroutineScope = rememberCoroutineScope()
     val scrollState = rememberScrollState()
+
+    RotaryHandler { delta ->
+        coroutineScope.launch {
+            scrollState.scrollBy(delta)
+        }
+    }
+
     Column(
         modifier = Modifier
             .verticalScroll(scrollState)
             .padding(8.dp)
-            .roundScreenPadding(isScreenRound(), PaddingValues(vertical = RoundScreenInset))
-            .rotaryInput { delta ->
-                coroutineScope.launch {
-                    scrollState.scrollBy(delta)
-                }
-            },
+            .roundScreenPadding(isScreenRound(), PaddingValues(vertical = RoundScreenInset)),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         Extensions(Modifier.fillMaxWidth())
