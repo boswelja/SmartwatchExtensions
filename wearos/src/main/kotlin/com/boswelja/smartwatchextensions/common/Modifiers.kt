@@ -5,13 +5,19 @@ import android.view.ViewConfiguration
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
 import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.platform.debugInspectorInfo
 import androidx.core.view.InputDeviceCompat
 import androidx.core.view.MotionEventCompat
 import androidx.core.view.ViewConfigurationCompat
 
 fun Modifier.rotaryInput(
     onRotaryInput: (delta: Float) -> Unit
-) = composed {
+) = composed(
+    inspectorInfo = debugInspectorInfo {
+        name = "rotaryInput"
+        properties["onRotaryInput"] = onRotaryInput
+    }
+) {
     val rootView = LocalView.current
     val viewConfig = ViewConfiguration.get(rootView.context)
     val verticalScrollScale = ViewConfigurationCompat.getScaledVerticalScrollFactor(
