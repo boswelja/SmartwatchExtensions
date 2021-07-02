@@ -27,6 +27,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.graphics.drawable.toBitmap
@@ -97,11 +98,13 @@ fun AppInfo(
         )
         Text(
             text = stringResource(R.string.app_name),
-            style = MaterialTheme.typography.caption1
+            style = MaterialTheme.typography.caption1,
+            textAlign = TextAlign.Center
         )
         Text(
             text = stringResource(R.string.version_string, BuildConfig.VERSION_NAME),
-            style = MaterialTheme.typography.title2
+            style = MaterialTheme.typography.title2,
+            textAlign = TextAlign.Center
         )
     }
 }
