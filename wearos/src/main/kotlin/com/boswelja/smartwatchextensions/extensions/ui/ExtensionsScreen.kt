@@ -15,7 +15,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -36,7 +35,6 @@ import com.boswelja.smartwatchextensions.phonelocking.ui.PhoneLockingCard
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-@ExperimentalComposeUiApi
 @Composable
 fun ExtensionsScreen() {
     val coroutineScope = rememberCoroutineScope()
