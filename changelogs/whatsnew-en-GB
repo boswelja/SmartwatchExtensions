@@ -1,5 +1,8 @@
 Additions:
 Quick Settings tile for watch battery!
 
+Changes:
+Redesigned the Wear OS app to! We now make use of experimental components coming to Wear OS 3.0
+
 Fixes:
 More fixes for the stuck "Finishing Updates" notification
