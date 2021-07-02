@@ -30,7 +30,7 @@ import kotlinx.coroutines.Dispatchers
 @Composable
 fun ExtensionsScreen() {
     val scrollState = rememberScrollState()
-    ColumnInsetLayout(scrollState) {
+    ColumnInsetLayout(scrollState = scrollState) {
         Extensions()
         Links()
     }
@@ -60,7 +60,9 @@ fun ColumnInsetLayout(
 
 @Composable
 fun Extensions() {
-    Column {
+    Column(
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
         val viewModel: ExtensionsViewModel = viewModel()
         val batterySyncEnabled by viewModel.batterySyncEnabled.collectAsState(false, Dispatchers.IO)
         val batteryPercent by viewModel.batteryPercent.collectAsState(0, Dispatchers.IO)
