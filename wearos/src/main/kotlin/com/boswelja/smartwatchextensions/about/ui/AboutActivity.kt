@@ -10,6 +10,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.gestures.scrollBy
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -43,6 +44,7 @@ import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.common.AppTheme
 import com.boswelja.smartwatchextensions.common.InsetDefaults.RoundScreenInset
 import com.boswelja.smartwatchextensions.common.rotaryInput
+import com.boswelja.smartwatchextensions.common.roundScreenPadding
 import kotlinx.coroutines.launch
 
 class AboutActivity : ComponentActivity() {
@@ -68,7 +70,8 @@ fun AboutScreen(
     Column(
         modifier
             .verticalScroll(scrollState)
-            .padding(top = 8.dp, bottom = RoundScreenInset, start = 8.dp, end = 8.dp)
+            .padding(8.dp)
+            .roundScreenPadding(PaddingValues(bottom = RoundScreenInset))
             .rotaryInput { delta ->
                 coroutineScope.launch {
                     scrollState.scrollBy(delta)

@@ -3,6 +3,7 @@ package com.boswelja.smartwatchextensions.extensions.ui
 import androidx.compose.foundation.gestures.scrollBy
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -28,8 +29,9 @@ import androidx.wear.compose.material.Text
 import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.about.ui.AboutActivity
 import com.boswelja.smartwatchextensions.batterysync.ui.BatteryStatsCard
-import com.boswelja.smartwatchextensions.common.ColumnInsetLayout
+import com.boswelja.smartwatchextensions.common.InsetDefaults.RoundScreenInset
 import com.boswelja.smartwatchextensions.common.rotaryInput
+import com.boswelja.smartwatchextensions.common.roundScreenPadding
 import com.boswelja.smartwatchextensions.common.startActivity
 import com.boswelja.smartwatchextensions.phonelocking.ui.PhoneLockingCard
 import kotlinx.coroutines.Dispatchers
@@ -39,10 +41,11 @@ import kotlinx.coroutines.launch
 fun ExtensionsScreen() {
     val coroutineScope = rememberCoroutineScope()
     val scrollState = rememberScrollState()
-    ColumnInsetLayout(
+    Column(
         modifier = Modifier
             .verticalScroll(scrollState)
             .padding(8.dp)
+            .roundScreenPadding(PaddingValues(vertical = RoundScreenInset))
             .rotaryInput { delta ->
                 coroutineScope.launch {
                     scrollState.scrollBy(delta)
