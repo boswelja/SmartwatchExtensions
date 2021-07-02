@@ -7,6 +7,7 @@ import android.provider.Settings
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.gestures.scrollBy
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -20,6 +21,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.OpenInNew
 import androidx.compose.material.icons.outlined.SettingsApplications
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.asImageBitmap
@@ -38,6 +40,8 @@ import com.boswelja.smartwatchextensions.BuildConfig
 import com.boswelja.smartwatchextensions.GooglePlayUtils
 import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.common.AppTheme
+import com.boswelja.smartwatchextensions.common.rotaryInput
+import kotlinx.coroutines.launch
 
 class AboutActivity : ComponentActivity() {
 
@@ -58,10 +62,16 @@ fun AboutScreen(
     modifier: Modifier = Modifier
 ) {
     val scrollState = rememberScrollState()
+    val coroutineScope = rememberCoroutineScope()
     Column(
         modifier
             .verticalScroll(scrollState)
-            .padding(top = 8.dp, bottom = 56.dp, start = 8.dp, end = 8.dp),
+            .padding(top = 8.dp, bottom = 56.dp, start = 8.dp, end = 8.dp)
+            .rotaryInput { delta ->
+                coroutineScope.launch {
+                    scrollState.scrollBy(delta)
+                }
+            },
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         AppInfo(Modifier.fillMaxWidth())
