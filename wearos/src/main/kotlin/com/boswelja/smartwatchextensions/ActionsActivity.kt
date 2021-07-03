@@ -10,7 +10,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.lifecycleScope
+import androidx.wear.compose.material.MaterialTheme
+import androidx.wear.compose.material.Text
 import androidx.wear.widget.ConfirmationOverlay
 import com.boswelja.smartwatchextensions.common.AppTheme
 import com.boswelja.smartwatchextensions.common.batterysync.References.REQUEST_BATTERY_UPDATE_PATH
@@ -43,7 +46,10 @@ class ActionsActivity : ComponentActivity() {
                     contentAlignment = Alignment.Center
                 ) {
                     if (isLoading) {
-                        // TODO Progress indicator
+                        Text(
+                            text = stringResource(R.string.loading),
+                            style = MaterialTheme.typography.display3
+                        )
                     }
                 }
             }
