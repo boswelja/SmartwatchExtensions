@@ -1,6 +1,7 @@
 package com.boswelja.smartwatchextensions.onboarding.ui
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.gestures.scrollBy
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.aspectRatio
@@ -8,14 +9,13 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ArrowDownward
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -26,12 +26,28 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.core.graphics.drawable.toBitmap
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.wear.compose.material.Icon
+import androidx.wear.compose.material.MaterialTheme
+import androidx.wear.compose.material.Text
 import com.boswelja.smartwatchextensions.R
+import com.boswelja.smartwatchextensions.common.RotaryHandler
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 @Composable
 fun OnboardingScreen() {
-    LazyColumn {
+    val state = rememberLazyListState()
+    val coroutineScope = rememberCoroutineScope()
+
+    RotaryHandler { delta ->
+        coroutineScope.launch {
+            state.scrollBy(delta)
+        }
+    }
+
+    LazyColumn(
+        state = state
+    ) {
         item {
             WelcomeScreen()
         }
@@ -63,11 +79,11 @@ fun WelcomeScreen() {
         )
         Text(
             stringResource(R.string.welcome_to_text),
-            style = MaterialTheme.typography.body2
+            style = MaterialTheme.typography.body1
         )
         Text(
             stringResource(R.string.app_name),
-            style = MaterialTheme.typography.h6,
+            style = MaterialTheme.typography.display3,
             textAlign = TextAlign.Center
         )
         DownArrow()
@@ -86,7 +102,7 @@ fun PhoneInstallInstructions() {
     ) {
         Text(
             stringResource(R.string.setup_phone_helper_text),
-            style = MaterialTheme.typography.h6,
+            style = MaterialTheme.typography.body1,
             textAlign = TextAlign.Center
         )
         DownArrow()
@@ -112,7 +128,7 @@ fun PhoneSetupInstructions() {
         )
         Text(
             watchName,
-            style = MaterialTheme.typography.h6
+            style = MaterialTheme.typography.display3
         )
         Text(
             stringResource(R.string.setup_hint_text),
