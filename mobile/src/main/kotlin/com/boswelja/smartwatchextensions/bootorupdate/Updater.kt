@@ -10,6 +10,10 @@ class Updater(private val context: Context) : Migrator(
     currentVersion = 1,
     migrations = listOf()
 ) {
+    override suspend fun onMigratedTo(version: Int) {
+        context.appStateStore.updateData { it.copy(lastAppVersion = version) }
+    }
+
     override suspend fun getOldVersion(): Int {
         return context.appStateStore.data.map { it.lastAppVersion }.first()
     }

@@ -43,7 +43,7 @@ private val migrations = listOf(
     // TODO Remove this migration after initial release, we only need to reset lastAppVersion once
     object : DataMigration<AppState> {
         override suspend fun shouldMigrate(currentData: AppState): Boolean {
-            return currentData.lastAppVersion > 1
+            return currentData.lastAppVersion > 100
         }
 
         override suspend fun migrate(currentData: AppState): AppState {
