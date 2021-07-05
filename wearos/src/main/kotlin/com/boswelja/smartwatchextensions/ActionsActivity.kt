@@ -1,17 +1,19 @@
 package com.boswelja.smartwatchextensions
 
 import android.os.Bundle
+import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.lifecycleScope
+import androidx.wear.compose.material.MaterialTheme
+import androidx.wear.compose.material.Text
 import androidx.wear.widget.ConfirmationOverlay
 import com.boswelja.smartwatchextensions.common.AppTheme
 import com.boswelja.smartwatchextensions.common.batterysync.References.REQUEST_BATTERY_UPDATE_PATH
@@ -28,7 +30,7 @@ import timber.log.Timber
  * An Activity for handling Actions triggered when the app is not running, e.g. from Complications,
  * Tiles etc.
  */
-class ActionsActivity : AppCompatActivity() {
+class ActionsActivity : ComponentActivity() {
 
     private val messageClient by lazy { Wearable.getMessageClient(this) }
 
@@ -43,7 +45,12 @@ class ActionsActivity : AppCompatActivity() {
                     modifier = Modifier.fillMaxSize(),
                     contentAlignment = Alignment.Center
                 ) {
-                    if (isLoading) CircularProgressIndicator()
+                    if (isLoading) {
+                        Text(
+                            text = stringResource(R.string.loading),
+                            style = MaterialTheme.typography.display3
+                        )
+                    }
                 }
             }
         }

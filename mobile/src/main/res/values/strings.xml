@@ -105,6 +105,8 @@
     <string name="manage_watches_title">Manage Watches</string>
     <string name="category_analytics">Analytics</string>
     <string name="analytics_enabled_title">Send Anonymous Usage Stats</string>
+    <string name="category_qstiles">Quick Settings</string>
+    <string name="qstiles_selected_watch">Linked Watch</string>
 
     <string name="widget_watch_battery_title">Watch Battery</string>
     <string name="widget_watch_battery_config_title">Watch Battery Widget Setup</string>
@@ -227,6 +229,8 @@
     <!-- Capability strings -->
     <string name="capability_not_supported">Your watch has indicated it does not support this feature</string>
 
+    <!-- QS Tile strings -->
+    <string name="battery_percent_qs_tile_fallback">%s%% (%s)</string>
     <string name="button_undo">Undo</string>
     <string name="button_done">Done</string>
     <string name="button_next">Continue</string>

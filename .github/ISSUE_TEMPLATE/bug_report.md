@@ -23,10 +23,8 @@ A clear and concise description of what you expected to happen.
 **Screenshots**
 If applicable, add screenshots to help explain your problem.
 
-**Device:**
- - Phone: [e.g. Pixel 5 running Android 11]
- - Watch: [e.g. Fossil Gen 5 running Wear OS H MR2]
- - App Version [e.g. 4.1.0]
+**Relevant Device:**
+[e.g. Pixel 5 running Android 11, Fossil Gen 5 running Wear OS H MR2]
 
 **Additional context**
 Add any other context about the problem here.

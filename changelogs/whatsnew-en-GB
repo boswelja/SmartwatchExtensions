@@ -1,12 +1,9 @@
 Additions:
-Separation Alerts! Now you can get notified when you leave a device behind
+Quick Settings tile for watch battery!
+Rotary scrolling on Wear OS is back!
 
 Changes:
-We've redesigned the dashboard, making it easier to get an overview of all the features you've enabled
-
-Removals:
-Removed Battery Sync Interval setting. Battery Sync will now run at it's default 15 minute intervals
+Redesigned the Wear OS app! We now make use of some components coming to Wear OS 3.0
 
 Fixes:
-Fixed a crash that was occurring rather frequently on a majority of smartwatches
-Fixed updater not finishing in some cases
+More fixes for the stuck "Finishing Updates" notification

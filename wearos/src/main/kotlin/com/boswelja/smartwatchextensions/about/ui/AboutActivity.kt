@@ -4,37 +4,50 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
+import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.gestures.scrollBy
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.OutlinedButton
-import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.OpenInNew
+import androidx.compose.material.icons.outlined.SettingsApplications
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.graphics.drawable.toBitmap
+import androidx.wear.compose.material.Chip
+import androidx.wear.compose.material.ChipDefaults
+import androidx.wear.compose.material.ChipDefaults.secondaryChipColors
+import androidx.wear.compose.material.Icon
+import androidx.wear.compose.material.MaterialTheme
+import androidx.wear.compose.material.Text
 import com.boswelja.smartwatchextensions.BuildConfig
 import com.boswelja.smartwatchextensions.GooglePlayUtils
 import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.common.AppTheme
+import com.boswelja.smartwatchextensions.common.InsetDefaults.RoundScreenInset
+import com.boswelja.smartwatchextensions.common.RotaryHandler
+import com.boswelja.smartwatchextensions.common.isScreenRound
+import com.boswelja.smartwatchextensions.common.roundScreenPadding
+import kotlinx.coroutines.launch
 
-class AboutActivity : AppCompatActivity() {
+class AboutActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,70 +60,102 @@ class AboutActivity : AppCompatActivity() {
     }
 }
 
-@Preview(showBackground = true)
 @Composable
-fun AboutScreen() {
+fun AboutScreen(
+    modifier: Modifier = Modifier
+) {
     val scrollState = rememberScrollState()
+    val coroutineScope = rememberCoroutineScope()
+
+    RotaryHandler { delta ->
+        coroutineScope.launch {
+            scrollState.scrollBy(delta)
+        }
+    }
+
     Column(
-        Modifier
+        modifier
             .verticalScroll(scrollState)
-            .padding(top = 8.dp, bottom = 72.dp, start = 8.dp, end = 8.dp),
+            .padding(8.dp)
+            .roundScreenPadding(isScreenRound(), PaddingValues(bottom = RoundScreenInset)),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        AppInfo()
-        Links()
+        AppInfo(Modifier.fillMaxWidth())
+        Spacer(modifier = Modifier.height(16.dp))
+        Links(Modifier.fillMaxWidth())
     }
 }
 
-@Preview(showBackground = true)
 @Composable
-fun AppInfo() {
+fun AppInfo(
+    modifier: Modifier = Modifier
+) {
     val context = LocalContext.current
     Column(
-        Modifier.fillMaxWidth(),
+        modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Image(
-            context.packageManager.getApplicationIcon(context.packageName)
+            modifier = Modifier.size(42.dp),
+            bitmap = context.packageManager.getApplicationIcon(context.packageName)
                 .toBitmap().asImageBitmap(),
-            null
+            contentDescription = null
         )
         Text(
-            stringResource(R.string.app_name),
-            style = MaterialTheme.typography.h6,
+            text = stringResource(R.string.app_name),
+            style = MaterialTheme.typography.caption1,
             textAlign = TextAlign.Center
         )
         Text(
-            stringResource(R.string.version_string, BuildConfig.VERSION_NAME),
-            style = MaterialTheme.typography.subtitle1
+            text = stringResource(R.string.version_string, BuildConfig.VERSION_NAME),
+            style = MaterialTheme.typography.title2,
+            textAlign = TextAlign.Center
         )
     }
 }
 
-@Preview(showBackground = true)
 @Composable
-fun Links() {
+fun Links(
+    modifier: Modifier = Modifier
+) {
     val context = LocalContext.current
+    val chipColors = secondaryChipColors()
     Column(
-        Modifier.fillMaxWidth().padding(8.dp),
+        modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        OutlinedButton(
-            onClick = { context.startActivity(GooglePlayUtils.getPlayStoreIntent(context)) }
-        ) {
-            Icon(Icons.Outlined.OpenInNew, null)
-            Text(stringResource(R.string.open_play_store_title))
-        }
-        OutlinedButton(
+        Chip(
+            onClick = { context.startActivity(GooglePlayUtils.getPlayStoreIntent(context)) },
+            label = {
+                Text(stringResource(R.string.open_play_store_title))
+            },
+            icon = {
+                Icon(
+                    modifier = Modifier.size(ChipDefaults.IconSize),
+                    imageVector = Icons.Outlined.OpenInNew,
+                    contentDescription = null
+                )
+            },
+            colors = chipColors
+        )
+        Chip(
             onClick = {
                 val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
                     .apply { data = Uri.fromParts("package", context.packageName, null) }
                 context.startActivity(intent)
-            }
-        ) {
-            Icon(Icons.Outlined.OpenInNew, null)
-            Text(stringResource(R.string.open_app_info_title))
-        }
+            },
+            label = {
+                Text(stringResource(R.string.open_app_info_title))
+            },
+            icon = {
+                Icon(
+                    modifier = Modifier.size(ChipDefaults.IconSize),
+                    imageVector = Icons.Outlined.SettingsApplications,
+                    contentDescription = null
+                )
+            },
+            colors = chipColors
+        )
     }
 }

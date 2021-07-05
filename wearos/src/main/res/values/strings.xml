@@ -46,7 +46,7 @@
     <string name="boot_noti_channel_title">Boot &amp; Update Handler</string>
     <string name="notification_boot_handler_title">Starting required services</string>
 
-    <string name="error">An error has occurred</string>
+    <string name="loading">Loading</string>
     <string name="default_phone_name">Phone</string>
     <string name="phone_not_connected">Can\'t connect to your phone</string>
 </resources>

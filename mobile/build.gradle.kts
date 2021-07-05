@@ -78,10 +78,11 @@ dependencies {
     implementation(libs.billingclient)
     implementation(libs.googleplay.core)
     implementation(libs.googleplay.corektx)
+    implementation(libs.migration)
     implementation(libs.timber)
     implementation(libs.watchconnection.wearos)
 
-    implementation(libs.bundles.compose)
+    implementation(libs.bundles.compose.mobile)
     implementation(libs.androidx.compose.ui.viewbinding)
 
     ksp(libs.androidx.room.compiler)
