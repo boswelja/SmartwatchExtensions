@@ -9,8 +9,11 @@ import androidx.work.ForegroundInfo
 import androidx.work.ListenableWorker.Result.failure
 import androidx.work.ListenableWorker.Result.success
 import androidx.work.WorkerParameters
+import com.boswelja.smartwatchextensions.BuildConfig
 import com.boswelja.smartwatchextensions.NotificationChannelHelper
 import com.boswelja.smartwatchextensions.R
+import com.boswelja.smartwatchextensions.messages.Message
+import com.boswelja.smartwatchextensions.messages.sendMessage
 
 class UpdateWorker(
     appContext: Context,
@@ -27,7 +30,17 @@ class UpdateWorker(
 
         return when (result) {
             com.boswelja.migration.Result.SUCCESS,
-            com.boswelja.migration.Result.NOT_NEEDED -> success()
+            com.boswelja.migration.Result.NOT_NEEDED -> {
+                val message = Message(
+                    Message.Icon.UPDATE,
+                    applicationContext.getString(R.string.update_completed_title),
+                    applicationContext.getString(
+                        R.string.update_complete_text, BuildConfig.VERSION_NAME
+                    )
+                )
+                applicationContext.sendMessage(message)
+                success()
+            }
             com.boswelja.migration.Result.FAILED -> failure()
         }
     }

@@ -32,7 +32,7 @@ class BootOrUpdateReceiver : BroadcastReceiver() {
                     .build()
             }
             else -> throw IllegalArgumentException(
-                "Receiver started with unknows action ${intent?.action}"
+                "Receiver started with unknown action ${intent?.action}"
             )
         }
         WorkManager.getInstance(context).enqueue(workRequest)
