@@ -41,8 +41,6 @@ class DnDLocalChangeListener : LifecycleService() {
 
     private val messageClient by lazy { Wearable.getMessageClient(this) }
 
-    private val notificationManager: NotificationManager by lazy { getSystemService()!! }
-
     private var dndSyncToPhone: Boolean = false
     private var dndSyncWithTheater: Boolean = false
 
@@ -71,8 +69,6 @@ class DnDLocalChangeListener : LifecycleService() {
                 setDnDSyncWithTheaterMode(it)
             }
         }
-
-        startForeground(DND_SYNC_LOCAL_NOTI_ID, createNotification())
     }
 
     /**
@@ -145,7 +141,7 @@ class DnDLocalChangeListener : LifecycleService() {
         }
         // Update notification if possible
         if (shouldUpdateNoti) {
-            notificationManager.notify(DND_SYNC_LOCAL_NOTI_ID, createNotification())
+            startForeground(DND_SYNC_LOCAL_NOTI_ID, createNotification())
         }
     }
 
@@ -175,7 +171,7 @@ class DnDLocalChangeListener : LifecycleService() {
         }
         // Update notification if possible
         if (shouldUpdateNoti) {
-            notificationManager.notify(DND_SYNC_LOCAL_NOTI_ID, createNotification())
+            startForeground(DND_SYNC_LOCAL_NOTI_ID, createNotification())
         }
     }
 
@@ -194,6 +190,7 @@ class DnDLocalChangeListener : LifecycleService() {
      */
     @RequiresApi(Build.VERSION_CODES.O)
     fun createNotificationChannel() {
+        val notificationManager = getSystemService<NotificationManager>()!!
         if (notificationManager.getNotificationChannel(DND_SYNC_NOTI_CHANNEL_ID) == null) {
             NotificationChannel(
                 DND_SYNC_NOTI_CHANNEL_ID,
