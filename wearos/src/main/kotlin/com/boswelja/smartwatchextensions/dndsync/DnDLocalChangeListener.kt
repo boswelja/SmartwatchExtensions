@@ -53,6 +53,8 @@ class DnDLocalChangeListener : LifecycleService() {
             createNotificationChannel()
         }
 
+        startForeground(DND_SYNC_LOCAL_NOTI_ID, createNotification())
+
         // Collect DnD Sync to Phone
         lifecycleScope.launch {
             extensionSettingsStore.data.map {
@@ -88,9 +90,7 @@ class DnDLocalChangeListener : LifecycleService() {
                     dndSyncWithTheater && !dndSyncToPhone ->
                         setContentText(getString(R.string.dnd_sync_with_theater_noti_desc))
                     else ->
-                        throw IllegalStateException(
-                            "Cannot have a notification with no DnD Sync options enabled"
-                        )
+                        setContentText(getString(R.string.getting_ready))
                 }
                 setSmallIcon(R.drawable.ic_sync)
                 setOngoing(true)
