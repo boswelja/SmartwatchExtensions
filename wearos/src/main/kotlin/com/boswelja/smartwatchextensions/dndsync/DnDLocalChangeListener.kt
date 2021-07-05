@@ -36,8 +36,8 @@ import timber.log.Timber
  */
 class DnDLocalChangeListener : LifecycleService() {
 
-    private val theaterCollectorJob = Job()
-    private val dndCollectorJob = Job()
+    private var theaterCollectorJob: Job? = null
+    private var dndCollectorJob: Job? = null
 
     private val messageClient by lazy { Wearable.getMessageClient(this) }
 
@@ -58,17 +58,15 @@ class DnDLocalChangeListener : LifecycleService() {
         // Collect DnD Sync to Phone
         lifecycleScope.launch {
             extensionSettingsStore.data.map {
-                it.dndSyncToPhone
-            }.collect {
-                setDnDSyncToPhone(it)
-            }
-        }
-        // Collect DnD Sync with Theater
-        lifecycleScope.launch {
-            extensionSettingsStore.data.map {
-                it.dndSyncWithTheater
-            }.collect {
-                setDnDSyncWithTheaterMode(it)
+                Pair(it.dndSyncToPhone, it.dndSyncWithTheater)
+            }.collect { (dndSyncToPhone, dndSyncWithTheater) ->
+                val syncToPhoneChanged = setDnDSyncToPhone(dndSyncToPhone)
+                val syncWithTheaterChanged = setDnDSyncWithTheaterMode(dndSyncWithTheater)
+                if (syncToPhoneChanged || syncWithTheaterChanged) {
+                    if (!tryStop()) {
+                        startForeground(DND_SYNC_LOCAL_NOTI_ID, createNotification())
+                    }
+                }
             }
         }
     }
@@ -119,29 +117,30 @@ class DnDLocalChangeListener : LifecycleService() {
      * Sets whether DnD Sync with Theater Mode is enabled. This will handle our theater
      * observer, as well as updating our notification.
      * @param isEnabled Whether this sync type should be enabled.
+     * @return true if changes were made, false otherwise.
      */
     @ExperimentalCoroutinesApi
-    private fun setDnDSyncWithTheaterMode(isEnabled: Boolean) {
+    private fun setDnDSyncWithTheaterMode(isEnabled: Boolean): Boolean {
         Timber.d("setDnDSyncWithTheaterMode(%s) called", isEnabled)
-        dndSyncWithTheater = isEnabled
-        val shouldUpdateNoti = if (isEnabled) {
-            // Launch our theater mode collector
-            lifecycleScope.launch(theaterCollectorJob) {
-                theaterMode().collect { theaterMode ->
-                    updateDnDState(theaterMode)
+        return if (dndSyncWithTheater != isEnabled) {
+            dndSyncWithTheater = isEnabled
+
+            // Cancel any running collector jobs
+            theaterCollectorJob?.cancel()
+
+            if (isEnabled) {
+                // Launch our theater mode collector
+                theaterCollectorJob = lifecycleScope.launch {
+                    theaterMode().collect { theaterMode ->
+                        updateDnDState(theaterMode)
+                    }
                 }
             }
-            // Notification should be updated
+
             true
         } else {
-            // Stop our theater mode collector
-            theaterCollectorJob.cancel()
-            // Only update notification if tryStop failed
-            !tryStop()
-        }
-        // Update notification if possible
-        if (shouldUpdateNoti) {
-            startForeground(DND_SYNC_LOCAL_NOTI_ID, createNotification())
+            Timber.w("Got dndSyncWithTheater update but we were already up to date")
+            false
         }
     }
 
@@ -149,29 +148,30 @@ class DnDLocalChangeListener : LifecycleService() {
      * Sets whether DnD Sync to Phone is enabled. This will handle our DnD observer, as well as
      * updating our notification.
      * @param isEnabled Whether this sync type should be enabled.
+     * @return true if changes were made, false otherwise.
      */
     @ExperimentalCoroutinesApi
-    private fun setDnDSyncToPhone(isEnabled: Boolean) {
+    private fun setDnDSyncToPhone(isEnabled: Boolean): Boolean {
         Timber.d("setDnDSyncToPhone(%s) called", isEnabled)
-        dndSyncToPhone = isEnabled
-        val shouldUpdateNoti = if (isEnabled) {
-            // Launch our DnD state collector
-            lifecycleScope.launch(dndCollectorJob) {
-                dndState().collect { dndEnabled ->
-                    updateDnDState(dndEnabled)
+        return if (dndSyncToPhone != isEnabled) {
+            dndSyncToPhone = isEnabled
+
+            // Cancel any running collector jobs
+            dndCollectorJob?.cancel()
+
+            if (isEnabled) {
+                // Launch our DnD state collector
+                dndCollectorJob = lifecycleScope.launch {
+                    dndState().collect { dndEnabled ->
+                        updateDnDState(dndEnabled)
+                    }
                 }
             }
-            // Notification should be updated
+
             true
         } else {
-            // Stop our DnD state collector
-            dndCollectorJob.cancel()
-            // Only update notification if tryStop failed
-            !tryStop()
-        }
-        // Update notification if possible
-        if (shouldUpdateNoti) {
-            startForeground(DND_SYNC_LOCAL_NOTI_ID, createNotification())
+            Timber.w("Got dndSyncWithTheater update but we were already up to date")
+            false
         }
     }
 
