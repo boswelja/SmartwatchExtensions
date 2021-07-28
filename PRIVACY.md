@@ -14,9 +14,7 @@ Firebase may create an App Instance ID to differentiate your session from from o
 
 ## Third-Party Privacy Policies
 This Privacy Policy does not apply to any libraries used within Smartwatch Extensions. Libraries used include, but are not limited to:
-* AndroidX Compatibility components
-* AndroidX User Interface components
-* Google Material Design Components for Android
+* AndroidX components
 * Google Play Billing Library
 * Google WearOS Libraries
 * Firebase Analytics
