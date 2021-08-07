@@ -1,87 +1,59 @@
 package com.boswelja.smartwatchextensions.analytics
 
-import com.google.firebase.analytics.FirebaseAnalytics
-import com.google.firebase.analytics.ktx.analytics
-import com.google.firebase.analytics.ktx.logEvent
-import com.google.firebase.ktx.Firebase
+import com.boswelja.smartwatchextensions.BuildConfig
 
 /**
- * Wrapper for [FirebaseAnalytics] to simplify logging analytics events.
+ * Get an instance of [Analytics] to use.
  */
-class Analytics constructor(private val firebaseAnalytics: FirebaseAnalytics = Firebase.analytics) {
+fun getAnalytics(): Analytics {
+    return if (BuildConfig.DEBUG) {
+        LoggingAnalytics()
+    } else {
+        FirebaseAnalytics()
+    }
+}
+
+/**
+ * A generic interface for analytic collection
+ */
+interface Analytics {
 
     /**
      * Set whether analytics collection is enabled.
      */
-    fun setAnalyticsEnabled(isEnabled: Boolean) {
-        firebaseAnalytics.setAnalyticsCollectionEnabled(isEnabled)
-    }
+    fun setAnalyticsEnabled(isEnabled: Boolean)
 
     /**
      * Log an extension setting change.
      * @param key The key for the preference that was changed.
-     * @param value The value of the changed preference.
+     * @param value The value of the changed setting.
      */
-    fun logExtensionSettingChanged(key: String, value: Any) {
-        firebaseAnalytics.logEvent(EVENT_EXTENSION_SETTING_CHANGED) {
-            param(FirebaseAnalytics.Param.ITEM_ID, key)
-            param(FirebaseAnalytics.Param.VALUE, value.toString())
-        }
-    }
+    fun logExtensionSettingChanged(key: String, value: Any)
 
     /**
      * Log an app setting change.
      * @param key The key for the preference that was changed.
+     * @param value The value of the changed setting.
      */
-    fun logAppSettingChanged(key: String) {
-        firebaseAnalytics.logEvent(EVENT_APP_SETTING_CHANGED) {
-            param(FirebaseAnalytics.Param.ITEM_ID, key)
-        }
-    }
+    fun logAppSettingChanged(key: String, value: Any)
 
     /**
      * Log a new watch being registered.
      */
-    fun logWatchRegistered() {
-        firebaseAnalytics.logEvent(EVENT_WATCH_REGISTERED, null)
-    }
+    fun logWatchRegistered()
 
     /**
      * Log an existing watch being removed.
      */
-    fun logWatchRemoved() {
-        firebaseAnalytics.logEvent(EVENT_WATCH_REMOVED, null)
-    }
+    fun logWatchRemoved()
 
     /**
      * Log a watch being renamed.
      */
-    fun logWatchRenamed() {
-        firebaseAnalytics.logEvent(EVENT_WATCH_RENAMED, null)
-    }
+    fun logWatchRenamed()
 
     /**
-     * Log an action being performed in StorageManager.
+     * Resets all analytics data.
      */
-    fun logStorageManagerAction(action: String) {
-        firebaseAnalytics.logEvent(EVENT_STORAGE_MANAGER) {
-            param(FirebaseAnalytics.Param.METHOD, action)
-        }
-    }
-
-    /**
-     * Resets all analytics data. See [FirebaseAnalytics.resetAnalyticsData].
-     */
-    fun resetAnalytics() {
-        firebaseAnalytics.resetAnalyticsData()
-    }
-
-    companion object {
-        internal const val EVENT_EXTENSION_SETTING_CHANGED = "extension_setting_changed"
-        internal const val EVENT_APP_SETTING_CHANGED = "app_setting_changed"
-        internal const val EVENT_WATCH_REGISTERED = "watch_registered"
-        internal const val EVENT_WATCH_REMOVED = "watch_registered"
-        internal const val EVENT_WATCH_RENAMED = "watch_renamed"
-        internal const val EVENT_STORAGE_MANAGER = "storage_manager"
-    }
+    fun resetAnalytics()
 }
