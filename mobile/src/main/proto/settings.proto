@@ -15,4 +15,6 @@ message Settings {
   Theme appTheme = 2;
 
   string qsTileWatchId = 3;
+
+  bool checkForUpdates = 4;
 }

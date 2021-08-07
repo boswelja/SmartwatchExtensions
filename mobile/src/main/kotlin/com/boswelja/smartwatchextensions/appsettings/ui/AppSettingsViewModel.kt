@@ -10,6 +10,7 @@ import com.boswelja.smartwatchextensions.analytics.getAnalytics
 import com.boswelja.smartwatchextensions.appsettings.Settings
 import com.boswelja.smartwatchextensions.appsettings.appSettingsStore
 import com.boswelja.smartwatchextensions.batterysync.quicksettings.WatchBatteryTileService
+import com.boswelja.smartwatchextensions.updatechecker.UpdateCheckWorker
 import com.boswelja.smartwatchextensions.watchmanager.WatchManager
 import com.boswelja.watchconnection.core.Watch
 import java.util.UUID
@@ -38,6 +39,7 @@ class AppSettingsViewModel internal constructor(
             watchManager.registeredWatches.map { it.firstOrNull() }
         }
     }
+    val checkUpdatesDaily = dataStore.data.map { it.checkForUpdates }
 
     @Suppress("unused")
     constructor(application: Application) : this(
@@ -78,6 +80,19 @@ class AppSettingsViewModel internal constructor(
             }
 
             WatchBatteryTileService.requestTileUpdate(getApplication())
+        }
+    }
+
+    fun setCheckUpdatesDaily(newValue: Boolean) {
+        viewModelScope.launch {
+            dataStore.updateData {
+                it.copy(checkForUpdates = newValue)
+            }
+            if (newValue) {
+                UpdateCheckWorker.schedule(getApplication())
+            } else {
+                UpdateCheckWorker.cancel(getApplication())
+            }
         }
     }
 }

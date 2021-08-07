@@ -17,6 +17,7 @@ import androidx.compose.material.icons.outlined.DarkMode
 import androidx.compose.material.icons.outlined.LightMode
 import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.material.icons.outlined.Storage
+import androidx.compose.material.icons.outlined.Update
 import androidx.compose.material.icons.outlined.Watch
 import androidx.compose.material.icons.outlined.Widgets
 import androidx.compose.runtime.Composable
@@ -61,6 +62,7 @@ fun AppSettings() {
         val context = LocalContext.current
         val currentAppTheme by viewModel.appTheme
             .collectAsState(Settings.Theme.FOLLOW_SYSTEM, Dispatchers.IO)
+        val checkUpdatesDaily by viewModel.checkUpdatesDaily.collectAsState(false, Dispatchers.IO)
 
         ListItem(
             text = { Text(stringResource(R.string.noti_settings_title)) },
@@ -115,6 +117,12 @@ fun AppSettings() {
                 }
                 Text(text)
             }
+        )
+        CheckboxPreference(
+            text = stringResource(R.string.check_updates_daily_title),
+            icon = Icons.Outlined.Update,
+            isChecked = checkUpdatesDaily,
+            onCheckChanged = viewModel::setCheckUpdatesDaily
         )
     }
 }
