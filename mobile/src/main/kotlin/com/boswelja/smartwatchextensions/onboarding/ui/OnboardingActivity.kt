@@ -5,6 +5,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.browser.customtabs.CustomTabsIntent
+import androidx.compose.animation.Crossfade
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ExtendedFloatingActionButton
@@ -23,7 +24,6 @@ import androidx.core.net.toUri
 import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.common.startActivity
 import com.boswelja.smartwatchextensions.common.ui.AppTheme
-import com.boswelja.smartwatchextensions.common.ui.Crossflow
 import com.boswelja.smartwatchextensions.common.ui.UpNavigationAppBar
 import com.boswelja.smartwatchextensions.main.MainActivity
 import com.boswelja.smartwatchextensions.watchmanager.ui.register.RegisterWatchScreen
@@ -84,7 +84,7 @@ class OnboardingActivity : AppCompatActivity() {
     @ExperimentalAnimationApi
     @Composable
     fun OnboardingScreen(currentDestination: Destination) {
-        Crossflow(targetState = currentDestination) {
+        Crossfade(targetState = currentDestination) {
             when (it) {
                 Destination.WELCOME -> WelcomeScreen()
                 Destination.SHARE_USAGE_STATS -> {
