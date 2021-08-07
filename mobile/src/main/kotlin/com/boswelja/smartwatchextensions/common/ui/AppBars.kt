@@ -127,7 +127,10 @@ fun WatchPickerDropdown(
                 Icon(Icons.Outlined.ArrowDropDown, null)
             }
         )
-        DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+        DropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false }
+        ) {
             watches?.forEach {
                 DropdownMenuItem(
                     onClick = {
