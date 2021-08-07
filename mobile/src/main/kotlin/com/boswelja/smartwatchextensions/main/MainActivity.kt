@@ -38,7 +38,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.lifecycleScope
 import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.aboutapp.ui.AboutAppScreen
-import com.boswelja.smartwatchextensions.analytics.Analytics
 import com.boswelja.smartwatchextensions.appsettings.ui.AppSettingsScreen
 import com.boswelja.smartwatchextensions.common.ui.AppTheme
 import com.boswelja.smartwatchextensions.common.ui.WatchPickerAppBar
@@ -154,8 +153,7 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         } catch (e: Exception) {
-            Timber.w("Not installed from Google Play, disabling Analytics")
-            Analytics().setAnalyticsEnabled(false)
+            Timber.w("Not installed from Google Play")
         }
     }
 

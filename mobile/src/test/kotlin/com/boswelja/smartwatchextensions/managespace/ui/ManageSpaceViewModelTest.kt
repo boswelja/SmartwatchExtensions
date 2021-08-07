@@ -74,7 +74,6 @@ class ManageSpaceViewModelTest {
     fun `resetAnalytics resets analytics`() {
         viewModel.resetAnalytics { }
         shadowOf(getMainLooper()).idle()
-        verify(exactly = 1) { analytics.logStorageManagerAction(any()) }
         verify(exactly = 1) { analytics.resetAnalytics() }
     }
 
@@ -157,7 +156,6 @@ class ManageSpaceViewModelTest {
         viewModel.resetExtensionSettings({ }, { })
         shadowOf(getMainLooper()).idle()
 
-        verify(exactly = 1) { analytics.logStorageManagerAction(any()) }
         dummyWatches.forEach {
             coVerify(exactly = 1) {
                 watchManager.resetWatchPreferences(
@@ -230,7 +228,6 @@ class ManageSpaceViewModelTest {
         viewModel.resetApp({ }, { })
         shadowOf(getMainLooper()).idle()
 
-        verify(exactly = 1) { analytics.logStorageManagerAction(any()) }
         verify(exactly = 1) { analytics.resetAnalytics() }
         dummyWatches.forEach {
             coVerify(exactly = 1) {

@@ -5,6 +5,7 @@ import androidx.datastore.core.DataStore
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.boswelja.smartwatchextensions.analytics.Analytics
+import com.boswelja.smartwatchextensions.analytics.getAnalytics
 import com.boswelja.smartwatchextensions.appsettings.AppSettingsSerializer
 import com.boswelja.smartwatchextensions.appsettings.Settings
 import com.boswelja.smartwatchextensions.appsettings.appSettingsStore
@@ -31,7 +32,7 @@ class ManageSpaceViewModel internal constructor(
     @Suppress("unused")
     constructor(application: Application) : this(
         application,
-        Analytics(),
+        getAnalytics(),
         WatchManager.getInstance(application),
         application.appSettingsStore,
         Dispatchers.IO
@@ -53,7 +54,6 @@ class ManageSpaceViewModel internal constructor(
         onCompleteFunction: (isSuccessful: Boolean) -> Unit
     ) {
         viewModelScope.launch(coroutineDispatcher) {
-            analytics.logStorageManagerAction("analyticsReset")
             analytics.resetAnalytics()
             onCompleteFunction(true)
         }
@@ -69,7 +69,6 @@ class ManageSpaceViewModel internal constructor(
         onCompleteFunction: (isSuccessful: Boolean) -> Unit
     ) {
         viewModelScope.launch(coroutineDispatcher) {
-            analytics.logStorageManagerAction("fullReset")
             val registeredWatches = registeredWatches
             if (!registeredWatches.isNullOrEmpty()) {
                 var progress: Int
@@ -113,7 +112,6 @@ class ManageSpaceViewModel internal constructor(
         onCompleteFunction: (isSuccessful: Boolean) -> Unit
     ) {
         viewModelScope.launch(coroutineDispatcher) {
-            analytics.logStorageManagerAction("fullReset")
             val registeredWatches = registeredWatches
             if (!registeredWatches.isNullOrEmpty()) {
                 val watchCount = registeredWatches.count()
@@ -141,7 +139,6 @@ class ManageSpaceViewModel internal constructor(
         onCompleteFunction: (isSuccessful: Boolean) -> Unit
     ) {
         viewModelScope.launch(coroutineDispatcher) {
-            analytics.logStorageManagerAction("clearCache")
             val context = getApplication<Application>()
             val cacheFiles = (context.cacheDir.walkBottomUp() + context.codeCacheDir.walkBottomUp())
                 .toList()
