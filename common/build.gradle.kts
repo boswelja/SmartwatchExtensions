@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-    compileSdkPreview = PackageInfo.targetSdk
+    compileSdk = PackageInfo.targetSdk
 
     defaultConfig {
         minSdk = 23
-        targetSdkPreview = PackageInfo.targetSdk
+        targetSdk = PackageInfo.targetSdk
         consumerProguardFile("proguard-rules.pro")
     }
 
