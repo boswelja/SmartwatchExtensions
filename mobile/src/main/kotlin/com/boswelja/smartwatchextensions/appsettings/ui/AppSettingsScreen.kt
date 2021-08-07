@@ -17,6 +17,7 @@ import androidx.compose.material.icons.outlined.DarkMode
 import androidx.compose.material.icons.outlined.LightMode
 import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.material.icons.outlined.Storage
+import androidx.compose.material.icons.outlined.Update
 import androidx.compose.material.icons.outlined.Watch
 import androidx.compose.material.icons.outlined.Widgets
 import androidx.compose.runtime.Composable
@@ -119,6 +120,7 @@ fun AppSettings() {
         )
         CheckboxPreference(
             text = stringResource(R.string.check_updates_daily_title),
+            icon = Icons.Outlined.Update,
             isChecked = checkUpdatesDaily,
             onCheckChanged = viewModel::setCheckUpdatesDaily
         )
