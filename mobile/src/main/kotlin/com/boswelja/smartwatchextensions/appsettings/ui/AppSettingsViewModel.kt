@@ -6,6 +6,7 @@ import androidx.datastore.core.DataStore
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.boswelja.smartwatchextensions.analytics.Analytics
+import com.boswelja.smartwatchextensions.analytics.FirebaseAnalytics
 import com.boswelja.smartwatchextensions.appsettings.Settings
 import com.boswelja.smartwatchextensions.appsettings.appSettingsStore
 import com.boswelja.smartwatchextensions.batterysync.quicksettings.WatchBatteryTileService
@@ -42,7 +43,7 @@ class AppSettingsViewModel internal constructor(
     constructor(application: Application) : this(
         application,
         application.appSettingsStore,
-        Analytics(),
+        FirebaseAnalytics(),
         WatchManager.getInstance(application)
     )
 

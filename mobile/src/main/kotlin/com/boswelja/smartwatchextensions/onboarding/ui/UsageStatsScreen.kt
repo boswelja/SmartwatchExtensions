@@ -28,7 +28,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.boswelja.smartwatchextensions.R
-import com.boswelja.smartwatchextensions.analytics.Analytics
+import com.boswelja.smartwatchextensions.analytics.FirebaseAnalytics
 import com.boswelja.smartwatchextensions.appsettings.appSettingsStore
 import kotlinx.coroutines.launch
 
@@ -39,7 +39,7 @@ fun UsageStatsScreen(
 ) {
     val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
-    val analytics = Analytics()
+    val analytics = FirebaseAnalytics()
     var checkboxChecked by remember { mutableStateOf(true) }
     Column(
         Modifier

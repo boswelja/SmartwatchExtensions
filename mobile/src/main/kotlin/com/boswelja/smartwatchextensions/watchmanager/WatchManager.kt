@@ -6,6 +6,7 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import com.boswelja.smartwatchextensions.AppState
 import com.boswelja.smartwatchextensions.analytics.Analytics
+import com.boswelja.smartwatchextensions.analytics.FirebaseAnalytics
 import com.boswelja.smartwatchextensions.appStateStore
 import com.boswelja.smartwatchextensions.appmanager.AppCacheUpdateWorker
 import com.boswelja.smartwatchextensions.appmanager.database.WatchAppDatabase
@@ -71,7 +72,7 @@ class WatchManager internal constructor(
                 5000
             )
         ),
-        Analytics(),
+        FirebaseAnalytics(),
         context.appStateStore,
         CoroutineScope(Dispatchers.IO)
     )
