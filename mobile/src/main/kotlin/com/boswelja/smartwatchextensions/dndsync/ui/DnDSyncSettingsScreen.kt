@@ -18,7 +18,7 @@ import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.common.preference.PreferenceKey.DND_SYNC_TO_PHONE_KEY
 import com.boswelja.smartwatchextensions.common.preference.PreferenceKey.DND_SYNC_WITH_THEATER_KEY
 import com.boswelja.smartwatchextensions.common.startActivity
-import com.boswelja.smartwatchextensions.common.ui.SwitchPreference
+import com.boswelja.smartwatchextensions.common.ui.SwitchSetting
 import com.boswelja.smartwatchextensions.dndsync.ui.helper.DnDSyncHelperActivity
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
@@ -76,7 +76,7 @@ fun SyncToWatchSetting(
     val context = LocalContext.current
     val dndSyncToWatch by viewModel.syncToWatch.collectAsState(false)
     val canSyncToWatch by viewModel.canReceiveDnD.collectAsState(false)
-    SwitchPreference(
+    SwitchSetting(
         text = stringResource(R.string.pref_dnd_sync_to_watch_title),
         secondaryText = if (canSyncToWatch)
             stringResource(R.string.pref_dnd_sync_to_watch_summary)
@@ -103,7 +103,7 @@ fun SyncToPhoneSetting(
 ) {
     val dndSyncToPhone by viewModel.syncToPhone.collectAsState(false)
     val canSyncToPhone by viewModel.canSendDnD.collectAsState(false)
-    SwitchPreference(
+    SwitchSetting(
         text = stringResource(R.string.pref_dnd_sync_to_phone_title),
         secondaryText = if (canSyncToPhone)
             stringResource(R.string.pref_dnd_sync_to_phone_summary)
@@ -130,7 +130,7 @@ fun SyncWithTheaterSetting(
 ) {
     val dndSyncWithTheater by viewModel.syncWithTheater.collectAsState(false)
     val canSyncWithTheater by viewModel.canSendDnD.collectAsState(false)
-    SwitchPreference(
+    SwitchSetting(
         text = stringResource(R.string.pref_dnd_sync_with_theater_title),
         secondaryText = if (canSyncWithTheater)
             stringResource(R.string.pref_dnd_sync_with_theater_summary)

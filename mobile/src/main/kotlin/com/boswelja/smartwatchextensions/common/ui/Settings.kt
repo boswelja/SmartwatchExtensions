@@ -20,12 +20,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
 @ExperimentalMaterialApi
 @Composable
-fun SwitchPreference(
+fun SwitchSetting(
     text: String,
     secondaryText: String? = null,
     icon: ImageVector? = null,
@@ -54,7 +53,7 @@ fun SwitchPreference(
 
 @ExperimentalMaterialApi
 @Composable
-fun CheckboxPreference(
+fun CheckboxSetting(
     text: String,
     secondaryText: String? = null,
     icon: ImageVector? = null,
@@ -81,7 +80,7 @@ fun CheckboxPreference(
 
 @ExperimentalMaterialApi
 @Composable
-fun SliderPreference(
+fun SliderSetting(
     text: String,
     icon: ImageVector? = null,
     valueRange: ClosedFloatingPointRange<Float> = 0f..1f,
@@ -111,7 +110,7 @@ fun SliderPreference(
 
 @ExperimentalMaterialApi
 @Composable
-fun <T> DialogPreference(
+fun <T> DialogSetting(
     text: String,
     secondaryText: String? = null,
     icon: ImageVector? = null,
@@ -152,49 +151,4 @@ fun HeaderItem(text: String) {
             color = MaterialTheme.colors.primary
         )
     }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun HeaderItemPreview() {
-    HeaderItem("Header")
-}
-
-@ExperimentalMaterialApi
-@Preview(showBackground = true)
-@Composable
-fun SwitchPreferencePreview() {
-    var value by remember { mutableStateOf(true) }
-    SwitchPreference(
-        text = "Preference",
-        secondaryText = "Secondary line",
-        isChecked = value,
-        onCheckChanged = { value = it }
-    )
-}
-
-@ExperimentalMaterialApi
-@Preview(showBackground = true)
-@Composable
-fun CheckboxPreferencePreview() {
-    var value by remember { mutableStateOf(true) }
-    CheckboxPreference(
-        text = "Preference",
-        secondaryText = "Secondary line",
-        isChecked = value,
-        onCheckChanged = { value = it }
-    )
-}
-
-@ExperimentalMaterialApi
-@Preview(showBackground = true)
-@Composable
-fun SliderPreferencePreview() {
-    var value by remember { mutableStateOf(.5f) }
-    SliderPreference(
-        text = "Preference",
-        value = value,
-        onSliderValueChanged = { value = it },
-        onSliderValueFinished = { }
-    )
 }

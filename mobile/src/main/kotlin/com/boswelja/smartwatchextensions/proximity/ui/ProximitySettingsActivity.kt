@@ -17,7 +17,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.common.ui.AppTheme
-import com.boswelja.smartwatchextensions.common.ui.SwitchPreference
+import com.boswelja.smartwatchextensions.common.ui.SwitchSetting
 import com.boswelja.smartwatchextensions.common.ui.UpNavigationWatchPickerAppBar
 import com.boswelja.smartwatchextensions.watchmanager.WatchManager
 import kotlinx.coroutines.Dispatchers
@@ -68,7 +68,7 @@ fun ProximitySettingsScreen(modifier: Modifier = Modifier) {
     val watchProximityNotiEnabled by viewModel.watchProximityNotiSetting
         .collectAsState(false, Dispatchers.IO)
     Column(modifier) {
-        SwitchPreference(
+        SwitchSetting(
             text = stringResource(R.string.proximity_phone_noti_title),
             secondaryText = stringResource(R.string.proximity_phone_noti_summary),
             isChecked = phoneProximityNotiEnabled,
@@ -78,7 +78,7 @@ fun ProximitySettingsScreen(modifier: Modifier = Modifier) {
                 }
             }
         )
-        SwitchPreference(
+        SwitchSetting(
             text = stringResource(R.string.proximity_watch_noti_title),
             secondaryText = stringResource(R.string.proximity_watch_noti_summary),
             isChecked = watchProximityNotiEnabled,

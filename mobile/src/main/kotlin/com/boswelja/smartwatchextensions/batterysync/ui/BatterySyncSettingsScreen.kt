@@ -15,10 +15,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.boswelja.smartwatchextensions.R
-import com.boswelja.smartwatchextensions.common.ui.CheckboxPreference
+import com.boswelja.smartwatchextensions.common.ui.CheckboxSetting
 import com.boswelja.smartwatchextensions.common.ui.HeaderItem
-import com.boswelja.smartwatchextensions.common.ui.SliderPreference
-import com.boswelja.smartwatchextensions.common.ui.SwitchPreference
+import com.boswelja.smartwatchextensions.common.ui.SliderSetting
+import com.boswelja.smartwatchextensions.common.ui.SwitchSetting
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 @ExperimentalCoroutinesApi
@@ -56,7 +56,7 @@ fun BatterySyncSettings(
 
     Column(modifier) {
         HeaderItem(stringResource(R.string.category_battery_sync_settings))
-        SwitchPreference(
+        SwitchSetting(
             text = stringResource(R.string.battery_sync_toggle_title),
             secondaryText = if (!canSyncBattery)
                 stringResource(R.string.capability_not_supported)
@@ -88,7 +88,7 @@ fun ChargeNotificationSettings(
 
     Column(modifier) {
         HeaderItem(stringResource(R.string.category_charge_notifications))
-        CheckboxPreference(
+        CheckboxSetting(
             text = stringResource(R.string.battery_sync_phone_charge_noti_title),
             secondaryText = stringResource(
                 R.string.battery_sync_phone_charge_noti_summary,
@@ -100,7 +100,7 @@ fun ChargeNotificationSettings(
                 viewModel.setPhoneChargeNotiEnabled(it)
             }
         )
-        CheckboxPreference(
+        CheckboxSetting(
             text = stringResource(R.string.battery_sync_watch_charge_noti_title),
             secondaryText = stringResource(
                 R.string.battery_sync_watch_charge_noti_summary,
@@ -112,7 +112,7 @@ fun ChargeNotificationSettings(
                 viewModel.setWatchChargeNotiEnabled(it)
             }
         )
-        SliderPreference(
+        SliderSetting(
             text = stringResource(R.string.battery_sync_charge_threshold_title),
             valueRange = 0.6f..1f,
             value = currentThreshold,
@@ -146,7 +146,7 @@ fun LowBatteryNotificationSettings(
 
     Column(modifier) {
         HeaderItem(stringResource(R.string.category_low_notifications))
-        CheckboxPreference(
+        CheckboxSetting(
             text = stringResource(R.string.battery_sync_phone_low_noti_title),
             secondaryText = stringResource(
                 R.string.battery_sync_phone_low_noti_summary,
@@ -158,7 +158,7 @@ fun LowBatteryNotificationSettings(
                 viewModel.setPhoneLowNotiEnabled(it)
             }
         )
-        CheckboxPreference(
+        CheckboxSetting(
             text = stringResource(R.string.battery_sync_watch_low_noti_title),
             secondaryText = stringResource(
                 R.string.battery_sync_watch_low_noti_summary,
@@ -170,7 +170,7 @@ fun LowBatteryNotificationSettings(
                 viewModel.setWatchLowNotiEnabled(it)
             }
         )
-        SliderPreference(
+        SliderSetting(
             text = stringResource(R.string.battery_sync_low_threshold_title),
             valueRange = 0.05f..0.35f,
             value = currentThreshold,

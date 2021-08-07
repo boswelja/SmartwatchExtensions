@@ -30,8 +30,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.appsettings.Settings
 import com.boswelja.smartwatchextensions.common.startActivity
-import com.boswelja.smartwatchextensions.common.ui.CheckboxPreference
-import com.boswelja.smartwatchextensions.common.ui.DialogPreference
+import com.boswelja.smartwatchextensions.common.ui.CheckboxSetting
+import com.boswelja.smartwatchextensions.common.ui.DialogSetting
 import com.boswelja.smartwatchextensions.common.ui.HeaderItem
 import com.boswelja.smartwatchextensions.managespace.ui.ManageSpaceActivity
 import com.boswelja.smartwatchextensions.watchmanager.ui.WatchManagerActivity
@@ -95,7 +95,7 @@ fun AppSettings() {
                 context.startActivity<WidgetSettingsActivity>()
             }
         )
-        DialogPreference(
+        DialogSetting(
             text = stringResource(R.string.app_theme_title),
             secondaryText = when (currentAppTheme) {
                 Settings.Theme.LIGHT -> stringResource(R.string.app_theme_light)
@@ -118,7 +118,7 @@ fun AppSettings() {
                 Text(text)
             }
         )
-        CheckboxPreference(
+        CheckboxSetting(
             text = stringResource(R.string.check_updates_daily_title),
             icon = Icons.Outlined.Update,
             isChecked = checkUpdatesDaily,
@@ -134,7 +134,7 @@ fun AnalyticsSettings() {
     val analyticsEnabled by viewModel.analyticsEnabled.collectAsState(false, Dispatchers.IO)
     Column {
         HeaderItem(stringResource(R.string.category_analytics))
-        CheckboxPreference(
+        CheckboxSetting(
             text = stringResource(R.string.analytics_enabled_title),
             icon = Icons.Outlined.Analytics,
             isChecked = analyticsEnabled,
@@ -156,7 +156,7 @@ fun QSTileSettings(
     val qsTilesWatch by viewModel.qsTilesWatch.collectAsState(null, Dispatchers.IO)
     Column(modifier) {
         HeaderItem(stringResource(R.string.category_qstiles))
-        DialogPreference(
+        DialogSetting(
             icon = Icons.Outlined.Watch,
             text = stringResource(R.string.qstiles_selected_watch),
             secondaryText = qsTilesWatch?.name,

@@ -24,7 +24,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.boswelja.smartwatchextensions.R
-import com.boswelja.smartwatchextensions.common.ui.SwitchPreference
+import com.boswelja.smartwatchextensions.common.ui.SwitchSetting
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import timber.log.Timber
@@ -48,7 +48,7 @@ fun PhoneLockingSettingsScreen() {
                 context.startActivity(Intent(ACTION_ACCESSIBILITY_SETTINGS))
             }
         )
-        SwitchPreference(
+        SwitchSetting(
             icon = Icons.Outlined.PhonelinkLock,
             text = stringResource(R.string.phone_locking_enabled_title),
             secondaryText = stringResource(R.string.phone_locking_enabled_summary),
