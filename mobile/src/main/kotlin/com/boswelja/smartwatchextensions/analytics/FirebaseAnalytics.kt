@@ -20,12 +20,14 @@ class FirebaseAnalytics : Analytics {
         analytics.logEvent(EVENT_EXTENSION_SETTING_CHANGED) {
             param(FirebaseAnalytics.Param.SOURCE, key)
         }
+        analytics.setUserProperty(key, value.toString())
     }
 
     override fun logAppSettingChanged(key: String, value: Any) {
         analytics.logEvent(EVENT_APP_SETTING_CHANGED) {
             param(FirebaseAnalytics.Param.SOURCE, key)
         }
+        analytics.setUserProperty(key, value.toString())
     }
 
     override fun logWatchRegistered() {
