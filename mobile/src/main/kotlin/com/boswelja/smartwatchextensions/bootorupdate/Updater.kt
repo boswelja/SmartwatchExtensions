@@ -1,4 +1,4 @@
-package com.boswelja.smartwatchextensions.bootorupdate.updater
+package com.boswelja.smartwatchextensions.bootorupdate
 
 import android.content.Context
 import com.boswelja.migration.Migrator
@@ -10,6 +10,10 @@ class Updater(private val context: Context) : Migrator(
     currentVersion = 1,
     migrations = listOf()
 ) {
+    override suspend fun onMigratedTo(version: Int) {
+        context.appStateStore.updateData { it.copy(lastAppVersion = version) }
+    }
+
     override suspend fun getOldVersion(): Int {
         return context.appStateStore.data.map { it.lastAppVersion }.first()
     }

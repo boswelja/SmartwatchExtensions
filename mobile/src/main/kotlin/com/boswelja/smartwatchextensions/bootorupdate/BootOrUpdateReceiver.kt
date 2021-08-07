@@ -3,20 +3,38 @@ package com.boswelja.smartwatchextensions.bootorupdate
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import androidx.core.content.ContextCompat
+import androidx.work.ExperimentalExpeditedWork
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.OutOfQuotaPolicy
+import androidx.work.WorkManager
 import timber.log.Timber
 
 class BootOrUpdateReceiver : BroadcastReceiver() {
 
+    @ExperimentalExpeditedWork
     override fun onReceive(context: Context?, intent: Intent?) {
         Timber.i("Received a broadcast")
-        when (val broadcastAction = intent?.action) {
-            Intent.ACTION_MY_PACKAGE_REPLACED, Intent.ACTION_BOOT_COMPLETED -> {
-                Timber.i("Starting BootOrUpdateHandlerService")
-                Intent(context!!.applicationContext, BootOrUpdateHandlerService::class.java)
-                    .apply { action = broadcastAction }
-                    .also { ContextCompat.startForegroundService(context.applicationContext, it) }
-            }
+
+        if (context == null) {
+            Timber.w("Null context")
+            return
         }
+
+        val workRequest = when (intent?.action) {
+            Intent.ACTION_MY_PACKAGE_REPLACED -> {
+                OneTimeWorkRequestBuilder<UpdateWorker>()
+                    .setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
+                    .build()
+            }
+            Intent.ACTION_BOOT_COMPLETED -> {
+                OneTimeWorkRequestBuilder<BootWorker>()
+                    .setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
+                    .build()
+            }
+            else -> throw IllegalArgumentException(
+                "Receiver started with unknown action ${intent?.action}"
+            )
+        }
+        WorkManager.getInstance(context).enqueue(workRequest)
     }
 }

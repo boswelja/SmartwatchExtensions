@@ -117,10 +117,6 @@
         </receiver>
 
         <service
-            android:name=".bootorupdate.BootOrUpdateHandlerService"
-            android:exported="false" />
-
-        <service
             android:name=".dndsync.DnDLocalChangeService"
             android:exported="false" />
 

@@ -1,7 +1,7 @@
 plugins {
     id("com.android.application")
     kotlin("android")
-    id("com.google.devtools.ksp") version "1.5.10-1.0.0-beta02"
+    id("com.google.devtools.ksp") version "1.5.21-1.0.0-beta06"
     id("com.google.gms.google-services")
     id("com.squareup.wire")
 }
@@ -81,7 +81,7 @@ dependencies {
     implementation(libs.timber)
     implementation(libs.watchconnection.wearos)
 
-    implementation(libs.bundles.compose)
+    implementation(libs.bundles.compose.mobile)
     implementation(libs.androidx.compose.ui.viewbinding)
 
     ksp(libs.androidx.room.compiler)
