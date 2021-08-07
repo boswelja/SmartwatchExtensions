@@ -61,6 +61,7 @@ fun AppSettings() {
         val context = LocalContext.current
         val currentAppTheme by viewModel.appTheme
             .collectAsState(Settings.Theme.FOLLOW_SYSTEM, Dispatchers.IO)
+        val checkUpdatesDaily by viewModel.checkUpdatesDaily.collectAsState(false, Dispatchers.IO)
 
         ListItem(
             text = { Text(stringResource(R.string.noti_settings_title)) },
@@ -115,6 +116,11 @@ fun AppSettings() {
                 }
                 Text(text)
             }
+        )
+        CheckboxPreference(
+            text = stringResource(R.string.check_updates_daily_title),
+            isChecked = checkUpdatesDaily,
+            onCheckChanged = viewModel::setCheckUpdatesDaily
         )
     }
 }

@@ -209,6 +209,7 @@
     <!-- Update checker strings -->
     <string name="update_available_title">Update available</string>
     <string name="update_available_text">A new version of Smartwatch Extensions is available</string>
+    <string name="check_updates_daily_title">Check for Updates Daily</string>
 
     <!-- Donate strings -->
     <string name="donate_fetching_options">Fetching available donations…</string>
