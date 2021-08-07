@@ -5,7 +5,7 @@ import androidx.datastore.core.DataStore
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.boswelja.smartwatchextensions.analytics.Analytics
-import com.boswelja.smartwatchextensions.analytics.FirebaseAnalytics
+import com.boswelja.smartwatchextensions.analytics.getAnalytics
 import com.boswelja.smartwatchextensions.appsettings.AppSettingsSerializer
 import com.boswelja.smartwatchextensions.appsettings.Settings
 import com.boswelja.smartwatchextensions.appsettings.appSettingsStore
@@ -32,7 +32,7 @@ class ManageSpaceViewModel internal constructor(
     @Suppress("unused")
     constructor(application: Application) : this(
         application,
-        FirebaseAnalytics(),
+        getAnalytics(),
         WatchManager.getInstance(application),
         application.appSettingsStore,
         Dispatchers.IO
