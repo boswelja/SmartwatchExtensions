@@ -33,6 +33,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 
@@ -101,6 +102,7 @@ fun <T> LazyItemScope.SwipeDismissItem(
     item: T,
     icon: ImageVector = Icons.Default.Delete,
     backgroundColor: Color = MaterialTheme.colors.background,
+    backgroundShape: Shape = MaterialTheme.shapes.medium,
     directions: Set<DismissDirection> =
         setOf(DismissDirection.StartToEnd, DismissDirection.EndToStart),
     dismissThresholds: (DismissDirection) -> ThresholdConfig = { FractionalThreshold(0.5f) },
@@ -137,8 +139,8 @@ fun <T> LazyItemScope.SwipeDismissItem(
             Box(
                 Modifier
                     .fillMaxSize()
-                    .background(backgroundColor)
-                    .padding(horizontal = 32.dp),
+                    .background(backgroundColor, backgroundShape)
+                    .padding(horizontal = 16.dp),
                 contentAlignment = iconAlignment
             ) {
                 Icon(
