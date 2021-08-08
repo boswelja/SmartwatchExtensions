@@ -30,7 +30,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -71,7 +71,7 @@ class MainActivity : AppCompatActivity() {
             val registeredWatches by viewModel.registeredWatches
                 .collectAsState(emptyList(), Dispatchers.IO)
 
-            var currentDestination by remember { mutableStateOf(Destination.DASHBOARD) }
+            var currentDestination by rememberSaveable { mutableStateOf(Destination.DASHBOARD) }
 
             val scaffoldState = rememberScaffoldState()
 
