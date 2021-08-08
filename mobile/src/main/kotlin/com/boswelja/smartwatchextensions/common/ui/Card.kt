@@ -58,7 +58,7 @@ fun Card(
     elevation: Dp = 1.dp,
     content: @Composable () -> Unit
 ) {
-    Card(
+    androidx.compose.material.Card(
         modifier = modifier,
         shape = shape,
         backgroundColor = backgroundColor,
@@ -68,7 +68,7 @@ fun Card(
     ) {
         Column {
             header?.let {
-                header()
+                it()
                 Divider()
             }
             content()
