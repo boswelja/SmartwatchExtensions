@@ -7,13 +7,13 @@ import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Card
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedButton
@@ -40,33 +40,23 @@ import androidx.core.net.toUri
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.common.startActivity
+import com.boswelja.smartwatchextensions.common.ui.AnimatedVisibilityItem
 import com.boswelja.smartwatchextensions.common.ui.SwipeDismissItem
 import com.boswelja.smartwatchextensions.messages.Message
 import kotlinx.coroutines.launch
 
 @Composable
 fun MessagesScreen(scaffoldState: ScaffoldState) {
-    val viewModel: MessagesViewModel = viewModel()
-    val messages by viewModel.activeMessagesFlow.collectAsState(emptyList())
-    Crossfade(targetState = messages.isNotEmpty()) {
-        if (it) MessagesList(messages, scaffoldState)
-        else NoMessagesView()
-    }
-}
-
-@OptIn(ExperimentalMaterialApi::class)
-@Composable
-fun MessagesList(messages: List<Message>, scaffoldState: ScaffoldState) {
+    val context = LocalContext.current
     val viewModel: MessagesViewModel = viewModel()
     val scope = rememberCoroutineScope()
-    val context = LocalContext.current
-    LazyColumn(Modifier.fillMaxSize()) {
-        items(messages) { message ->
-            var isDismissing by remember { mutableStateOf(false) }
-            SwipeDismissItem(
-                item = message,
-                icon = Icons.Outlined.Archive,
-                onItemDismissed = {
+    val messages by viewModel.activeMessagesFlow.collectAsState(emptyList())
+
+    Crossfade(targetState = messages.isNotEmpty()) {
+        if (it) {
+            MessagesList(
+                messages = messages,
+                onMessageDismissed = { message ->
                     scope.launch {
                         viewModel.dismissMessage(message.id)
                         val result = scaffoldState.snackbarHostState.showSnackbar(
@@ -79,39 +69,72 @@ fun MessagesList(messages: List<Message>, scaffoldState: ScaffoldState) {
                         }
                     }
                 },
-                onDismissingChanged = { isDismissing = it }
-            ) {
-                Card(
-                    elevation = animateDpAsState(
-                        if (isDismissing) 4.dp else 0.dp
-                    ).value
-                ) {
-                    MessageItem(
-                        message,
-                        onActionClick = {
-                            when (message.action) {
-                                Message.Action.LAUNCH_NOTIFICATION_SETTINGS -> {
-                                    val intent = Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS)
-                                        .apply {
-                                            putExtra(
-                                                Settings.EXTRA_APP_PACKAGE,
-                                                context.packageName
-                                            )
-                                            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                                        }
-                                    context.startActivity(intent)
-                                }
-                                Message.Action.LAUNCH_CHANGELOG -> {
-                                    viewModel.customTabsIntent.launchUrl(
-                                        context,
-                                        context.getString(R.string.changelog_url).toUri()
+                onMessageActionClicked = { action ->
+                    when (action) {
+                        Message.Action.LAUNCH_NOTIFICATION_SETTINGS -> {
+                            val intent = Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS)
+                                .apply {
+                                    putExtra(
+                                        Settings.EXTRA_APP_PACKAGE,
+                                        context.packageName
                                     )
+                                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                                 }
-                                Message.Action.INSTALL_UPDATE ->
-                                    viewModel.startUpdateFlow(context as Activity)
-                            }
+                            context.startActivity(intent)
                         }
-                    )
+                        Message.Action.LAUNCH_CHANGELOG -> {
+                            viewModel.customTabsIntent.launchUrl(
+                                context,
+                                context.getString(R.string.changelog_url).toUri()
+                            )
+                        }
+                        Message.Action.INSTALL_UPDATE ->
+                            viewModel.startUpdateFlow(context as Activity)
+                    }
+                }
+            )
+        } else {
+            NoMessagesView()
+        }
+    }
+}
+
+@Composable
+fun MessagesList(
+    modifier: Modifier = Modifier,
+    messages: List<Message>,
+    onMessageDismissed: (Message) -> Unit,
+    onMessageActionClicked: (Message.Action) -> Unit
+) {
+    LazyColumn(
+        modifier = modifier,
+        verticalArrangement = Arrangement.spacedBy(16.dp),
+        contentPadding = PaddingValues(16.dp)
+    ) {
+        items(messages) { message ->
+            var isRemoving by remember { mutableStateOf(false) }
+            var isDismissing by remember { mutableStateOf(false) }
+            AnimatedVisibilityItem(
+                remove = isRemoving,
+                item = message,
+                onItemRemoved = onMessageDismissed
+            ) {
+                SwipeDismissItem(
+                    item = message,
+                    icon = Icons.Outlined.Archive,
+                    onItemDismissed = { isRemoving = true },
+                    onDismissingChanged = { isDismissing = it }
+                ) {
+                    Card(
+                        elevation = animateDpAsState(
+                            if (isDismissing) 4.dp else 1.dp
+                        ).value
+                    ) {
+                        MessageItem(
+                            message,
+                            onActionClick = onMessageActionClicked
+                        )
+                    }
                 }
             }
         }
