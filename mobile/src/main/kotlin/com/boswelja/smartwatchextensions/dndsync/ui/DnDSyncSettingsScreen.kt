@@ -6,7 +6,6 @@ import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Column
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -21,10 +20,7 @@ import com.boswelja.smartwatchextensions.common.preference.PreferenceKey.DND_SYN
 import com.boswelja.smartwatchextensions.common.startActivity
 import com.boswelja.smartwatchextensions.common.ui.SwitchSetting
 import com.boswelja.smartwatchextensions.dndsync.ui.helper.DnDSyncHelperActivity
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 
-@ExperimentalCoroutinesApi
-@ExperimentalMaterialApi
 @Composable
 fun DnDSyncSettingsScreen() {
     Column {
@@ -68,8 +64,6 @@ fun DnDSyncSettingsScreen() {
     }
 }
 
-@ExperimentalMaterialApi
-@ExperimentalCoroutinesApi
 @Composable
 fun SyncToWatchSetting(
     viewModel: DnDSyncSettingsViewModel
@@ -98,8 +92,6 @@ fun SyncToWatchSetting(
     )
 }
 
-@ExperimentalMaterialApi
-@ExperimentalCoroutinesApi
 @Composable
 fun SyncToPhoneSetting(
     viewModel: DnDSyncSettingsViewModel,
@@ -128,8 +120,6 @@ fun SyncToPhoneSetting(
     )
 }
 
-@ExperimentalCoroutinesApi
-@ExperimentalMaterialApi
 @Composable
 fun SyncWithTheaterSetting(
     viewModel: DnDSyncSettingsViewModel,

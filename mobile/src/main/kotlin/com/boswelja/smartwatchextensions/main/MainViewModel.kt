@@ -4,10 +4,8 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import com.boswelja.smartwatchextensions.watchmanager.WatchManager
 import java.util.UUID
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.map
 
-@ExperimentalCoroutinesApi
 class MainViewModel internal constructor(
     application: Application,
     private val watchManager: WatchManager

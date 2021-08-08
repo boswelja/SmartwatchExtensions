@@ -37,7 +37,7 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 
-@ExperimentalCoroutinesApi
+@OptIn(ExperimentalCoroutinesApi::class)
 object Utils {
 
     private const val BATTERY_CHARGED_NOTI_ID = 408565

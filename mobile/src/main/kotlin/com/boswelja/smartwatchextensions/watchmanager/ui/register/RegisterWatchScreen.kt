@@ -24,7 +24,7 @@ import androidx.compose.ui.unit.dp
 import com.boswelja.smartwatchextensions.R
 import com.boswelja.watchconnection.core.Watch
 
-@ExperimentalMaterialApi
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun RegisterWatchScreen(registeredWatches: List<Watch>?) {
     Column(

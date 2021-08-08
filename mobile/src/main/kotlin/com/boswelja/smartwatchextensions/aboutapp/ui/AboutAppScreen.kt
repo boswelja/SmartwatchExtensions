@@ -33,10 +33,7 @@ import com.boswelja.smartwatchextensions.BuildConfig
 import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.common.startActivity
 import com.boswelja.smartwatchextensions.donate.ui.DonateActivity
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 
-@ExperimentalCoroutinesApi
-@ExperimentalMaterialApi
 @Composable
 fun AboutAppScreen() {
     LazyColumn(
@@ -56,8 +53,7 @@ fun AboutAppScreen() {
     }
 }
 
-@ExperimentalCoroutinesApi
-@ExperimentalMaterialApi
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun AboutApp(modifier: Modifier = Modifier) {
     val context = LocalContext.current
@@ -98,8 +94,7 @@ fun AboutApp(modifier: Modifier = Modifier) {
     }
 }
 
-@ExperimentalCoroutinesApi
-@ExperimentalMaterialApi
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun Versions(modifier: Modifier = Modifier) {
     val viewModelAbout: AboutAppViewModel = viewModel()
@@ -149,7 +144,7 @@ fun Versions(modifier: Modifier = Modifier) {
     }
 }
 
-@ExperimentalMaterialApi
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun SupportApp(
     modifier: Modifier = Modifier

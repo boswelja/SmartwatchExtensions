@@ -10,7 +10,6 @@ import androidx.compose.animation.expandVertically
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -19,7 +18,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
 import androidx.compose.material.LinearProgressIndicator
 import androidx.compose.material.MaterialTheme
@@ -47,18 +45,11 @@ import com.boswelja.smartwatchextensions.appmanager.App
 import com.boswelja.smartwatchextensions.common.ui.AppTheme
 import com.boswelja.smartwatchextensions.common.ui.UpNavigationWatchPickerAppBar
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
 class AppManagerActivity : AppCompatActivity() {
 
-    @FlowPreview
-    @ExperimentalCoroutinesApi
-    @ExperimentalAnimationApi
-    @ExperimentalFoundationApi
-    @ExperimentalMaterialApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Timber.i("onCreate() called")
@@ -112,11 +103,7 @@ class AppManagerActivity : AppCompatActivity() {
     }
 }
 
-@FlowPreview
-@ExperimentalCoroutinesApi
-@ExperimentalFoundationApi
-@ExperimentalMaterialApi
-@ExperimentalAnimationApi
+@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun AppManagerScreen(
     onOpenClicked: (App) -> Unit,
@@ -203,7 +190,7 @@ fun LoadingIndicator(
     }
 }
 
-@ExperimentalAnimationApi
+@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun CacheStatusIndicator(
     modifier: Modifier = Modifier,
@@ -222,7 +209,7 @@ fun CacheStatusIndicator(
     }
 }
 
-@ExperimentalAnimationApi
+@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun WatchStatusIndicator(
     modifier: Modifier = Modifier,

@@ -7,14 +7,11 @@ import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.animation.Crossfade
-import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.ContentAlpha
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
@@ -46,19 +43,13 @@ import com.boswelja.smartwatchextensions.messages.ui.MessagesScreen
 import com.boswelja.smartwatchextensions.onboarding.ui.OnboardingActivity
 import java.util.UUID
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
 
-    @ExperimentalCoroutinesApi
     private val viewModel: MainViewModel by viewModels()
 
-    @ExperimentalFoundationApi
-    @ExperimentalCoroutinesApi
-    @ExperimentalAnimationApi
-    @ExperimentalMaterialApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -126,10 +117,6 @@ enum class Destination {
     ABOUT
 }
 
-@ExperimentalFoundationApi
-@ExperimentalCoroutinesApi
-@ExperimentalMaterialApi
-@ExperimentalAnimationApi
 @Composable
 fun MainScreen(scaffoldState: ScaffoldState, currentDestination: Destination) {
     Crossfade(targetState = currentDestination) {

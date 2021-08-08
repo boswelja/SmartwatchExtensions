@@ -9,7 +9,7 @@ import androidx.compose.ui.layout.Placeable
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
-@ExperimentalFoundationApi
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun StaggeredVerticalGrid(
     modifier: Modifier = Modifier,

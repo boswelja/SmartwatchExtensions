@@ -19,11 +19,8 @@ import androidx.compose.ui.unit.dp
 import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.appmanager.App
 import com.boswelja.smartwatchextensions.common.ui.HeaderItem
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 
-@ExperimentalCoroutinesApi
-@ExperimentalMaterialApi
-@ExperimentalFoundationApi
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun AppList(
     modifier: Modifier = Modifier,
@@ -84,7 +81,7 @@ fun AppList(
     }
 }
 
-@ExperimentalMaterialApi
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun AppItem(
     modifier: Modifier = Modifier,

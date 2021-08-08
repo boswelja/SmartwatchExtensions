@@ -6,7 +6,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.Divider
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.ui.Modifier
@@ -20,7 +19,6 @@ import com.boswelja.smartwatchextensions.common.ui.UpNavigationAppBar
 
 class WidgetSettingsActivity : AppCompatActivity() {
 
-    @ExperimentalMaterialApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {

@@ -38,7 +38,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.android.billingclient.api.SkuDetails
@@ -49,7 +48,6 @@ import kotlinx.coroutines.launch
 
 class DonateActivity : AppCompatActivity() {
 
-    @ExperimentalMaterialApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -88,7 +86,6 @@ class DonateActivity : AppCompatActivity() {
         }
     }
 
-    @Preview(showBackground = true)
     @Composable
     fun DonateHeader() {
         Row(
@@ -114,7 +111,7 @@ class DonateActivity : AppCompatActivity() {
         }
     }
 
-    @ExperimentalMaterialApi
+    @OptIn(ExperimentalMaterialApi::class)
     @Composable
     fun DonateItem(skuDetails: SkuDetails, onClick: (SkuDetails) -> Unit) {
         val icon = if (skuDetails.sku.contains("large"))
@@ -131,7 +128,6 @@ class DonateActivity : AppCompatActivity() {
         )
     }
 
-    @ExperimentalMaterialApi
     @Composable
     fun DonateList(donateOptions: List<SkuDetails>, onClick: (SkuDetails) -> Unit) {
         if (donateOptions.isNotEmpty()) {
@@ -153,7 +149,6 @@ class DonateActivity : AppCompatActivity() {
         }
     }
 
-    @ExperimentalMaterialApi
     @Composable
     fun DonateOptions(
         onDonationClick: (SkuDetails) -> Unit

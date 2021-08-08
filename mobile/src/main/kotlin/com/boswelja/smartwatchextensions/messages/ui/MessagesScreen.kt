@@ -4,7 +4,6 @@ import android.app.Activity
 import android.content.Intent
 import android.provider.Settings
 import androidx.compose.animation.Crossfade
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -48,8 +47,6 @@ import com.boswelja.smartwatchextensions.common.startActivity
 import com.boswelja.smartwatchextensions.messages.Message
 import kotlinx.coroutines.launch
 
-@ExperimentalAnimationApi
-@ExperimentalMaterialApi
 @Composable
 fun MessagesScreen(scaffoldState: ScaffoldState) {
     val viewModel: MessagesViewModel = viewModel()
@@ -60,7 +57,7 @@ fun MessagesScreen(scaffoldState: ScaffoldState) {
     }
 }
 
-@ExperimentalMaterialApi
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun MessagesList(messages: List<Message>, scaffoldState: ScaffoldState) {
     val viewModel: MessagesViewModel = viewModel()

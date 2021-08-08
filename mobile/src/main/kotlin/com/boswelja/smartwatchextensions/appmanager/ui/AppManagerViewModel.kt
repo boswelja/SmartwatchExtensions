@@ -31,8 +31,7 @@ import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
-@FlowPreview
-@ExperimentalCoroutinesApi
+@OptIn(ExperimentalCoroutinesApi::class)
 class AppManagerViewModel internal constructor(
     application: Application,
     private val appDatabase: WatchAppDatabase,
@@ -46,6 +45,7 @@ class AppManagerViewModel internal constructor(
         WatchManager.getInstance(application)
     )
 
+    @OptIn(FlowPreview::class)
     private val allApps = watchManager.selectedWatch.flatMapLatest { watch ->
         watch?.let {
             appDatabase.apps().allForWatch(watch.id)

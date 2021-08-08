@@ -41,8 +41,7 @@ class WatchManagerActivity : AppCompatActivity() {
 
     private val watchManager by lazy { WatchManager.getInstance(this) }
 
-    @ExperimentalFoundationApi
-    @ExperimentalMaterialApi
+    @OptIn(ExperimentalMaterialApi::class, ExperimentalFoundationApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 

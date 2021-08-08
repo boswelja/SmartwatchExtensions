@@ -34,7 +34,7 @@ class DnDLocalChangeService : LifecycleService() {
 
     private val targetWatches = ArrayList<Watch>()
 
-    @ExperimentalCoroutinesApi
+    @OptIn(ExperimentalCoroutinesApi::class)
     override fun onCreate() {
         super.onCreate()
         Timber.i("onCreate() called")

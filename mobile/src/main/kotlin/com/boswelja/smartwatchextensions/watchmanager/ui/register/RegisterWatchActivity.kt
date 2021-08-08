@@ -3,7 +3,6 @@ package com.boswelja.smartwatchextensions.watchmanager.ui.register
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ExtendedFloatingActionButton
 import androidx.compose.material.Icon
 import androidx.compose.material.Scaffold
@@ -15,12 +14,9 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.common.ui.AppTheme
 import com.boswelja.smartwatchextensions.common.ui.UpNavigationAppBar
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 class RegisterWatchActivity : AppCompatActivity() {
 
-    @ExperimentalCoroutinesApi
-    @ExperimentalMaterialApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {

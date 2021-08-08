@@ -37,10 +37,7 @@ import com.boswelja.smartwatchextensions.managespace.ui.ManageSpaceActivity
 import com.boswelja.smartwatchextensions.watchmanager.ui.WatchManagerActivity
 import com.boswelja.smartwatchextensions.widget.ui.WidgetSettingsActivity
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 
-@ExperimentalCoroutinesApi
-@ExperimentalMaterialApi
 @Composable
 fun AppSettingsScreen() {
     Column(Modifier.fillMaxSize()) {
@@ -54,7 +51,7 @@ fun AppSettingsScreen() {
     }
 }
 
-@ExperimentalMaterialApi
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun AppSettings() {
     Column {
@@ -133,7 +130,6 @@ fun AppSettings() {
     }
 }
 
-@ExperimentalMaterialApi
 @Composable
 fun AnalyticsSettings() {
     val viewModel: AppSettingsViewModel = viewModel()
@@ -153,8 +149,6 @@ fun AnalyticsSettings() {
     }
 }
 
-@ExperimentalCoroutinesApi
-@ExperimentalMaterialApi
 @Composable
 fun QSTileSettings(
     modifier: Modifier = Modifier
@@ -182,7 +176,7 @@ fun QSTileSettings(
     }
 }
 
-@ExperimentalMaterialApi
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun WatchSettings() {
     val context = LocalContext.current

@@ -40,10 +40,7 @@ import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.appmanager.App
 import java.text.SimpleDateFormat
 import java.util.Locale
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 
-@ExperimentalCoroutinesApi
-@ExperimentalMaterialApi
 @Composable
 fun AppInfo(
     modifier: Modifier = Modifier,
@@ -112,7 +109,6 @@ fun AppHeaderView(
     }
 }
 
-@ExperimentalCoroutinesApi
 @Composable
 fun AppActionButtons(
     modifier: Modifier = Modifier,
@@ -144,7 +140,7 @@ fun AppActionButtons(
     }
 }
 
-@ExperimentalMaterialApi
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun PermissionsInfo(
     modifier: Modifier = Modifier,
@@ -187,7 +183,6 @@ fun PermissionsInfo(
     }
 }
 
-@ExperimentalCoroutinesApi
 @Composable
 fun AppInstallInfo(
     modifier: Modifier = Modifier,

@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Divider
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -20,10 +19,7 @@ import com.boswelja.smartwatchextensions.common.ui.CheckboxSetting
 import com.boswelja.smartwatchextensions.common.ui.HeaderItem
 import com.boswelja.smartwatchextensions.common.ui.SliderSetting
 import com.boswelja.smartwatchextensions.common.ui.SwitchSetting
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 
-@ExperimentalCoroutinesApi
-@ExperimentalMaterialApi
 @Composable
 fun BatterySyncSettingsScreen() {
     val viewModel: BatterySyncViewModel = viewModel()
@@ -44,8 +40,6 @@ fun BatterySyncSettingsScreen() {
     }
 }
 
-@ExperimentalCoroutinesApi
-@ExperimentalMaterialApi
 @Composable
 fun BatterySyncSettings(
     modifier: Modifier = Modifier
@@ -73,8 +67,6 @@ fun BatterySyncSettings(
     }
 }
 
-@ExperimentalCoroutinesApi
-@ExperimentalMaterialApi
 @Composable
 fun ChargeNotificationSettings(
     modifier: Modifier = Modifier,
@@ -139,8 +131,6 @@ fun ChargeNotificationSettings(
     }
 }
 
-@ExperimentalCoroutinesApi
-@ExperimentalMaterialApi
 @Composable
 fun LowBatteryNotificationSettings(
     modifier: Modifier = Modifier,

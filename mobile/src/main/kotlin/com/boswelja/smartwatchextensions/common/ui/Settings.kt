@@ -22,7 +22,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
-@ExperimentalMaterialApi
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun SwitchSetting(
     modifier: Modifier = Modifier,
@@ -50,7 +50,7 @@ fun SwitchSetting(
     )
 }
 
-@ExperimentalMaterialApi
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun CheckboxSetting(
     modifier: Modifier = Modifier,
@@ -78,7 +78,7 @@ fun CheckboxSetting(
     )
 }
 
-@ExperimentalMaterialApi
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun SliderSetting(
     modifier: Modifier = Modifier,
@@ -110,7 +110,7 @@ fun SliderSetting(
     )
 }
 
-@ExperimentalMaterialApi
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun <T> DialogSetting(
     modifier: Modifier = Modifier,

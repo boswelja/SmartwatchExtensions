@@ -27,15 +27,12 @@ import com.boswelja.watchconnection.core.message.MessageReceiver
 import com.boswelja.watchconnection.wearos.WearOSMessagePlatform
 import java.util.UUID
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 
-@ExperimentalCoroutinesApi
 class WatchMessageReceiver : MessageReceiver() {
 
-    @ExperimentalCoroutinesApi
     override suspend fun onMessageReceived(
         context: Context,
         message: Message

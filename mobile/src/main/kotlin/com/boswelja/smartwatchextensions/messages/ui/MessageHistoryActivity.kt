@@ -4,13 +4,11 @@ import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.animation.Crossfade
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
@@ -36,8 +34,6 @@ import kotlinx.coroutines.launch
 
 class MessageHistoryActivity : AppCompatActivity() {
 
-    @ExperimentalAnimationApi
-    @ExperimentalMaterialApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -79,7 +75,6 @@ class MessageHistoryActivity : AppCompatActivity() {
         }
     }
 
-    @ExperimentalMaterialApi
     @Composable
     fun MessageList(messages: List<Message>) {
         LazyColumn {

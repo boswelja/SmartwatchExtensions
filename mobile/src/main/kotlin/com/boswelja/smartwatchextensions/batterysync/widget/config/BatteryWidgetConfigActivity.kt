@@ -38,7 +38,6 @@ import com.boswelja.watchconnection.core.Watch
 
 class BatteryWidgetConfigActivity : BaseWidgetConfigActivity() {
 
-    @ExperimentalMaterialApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -83,7 +82,7 @@ class BatteryWidgetConfigActivity : BaseWidgetConfigActivity() {
         }
     }
 
-    @ExperimentalMaterialApi
+    @OptIn(ExperimentalMaterialApi::class)
     @Composable
     fun WatchPickerList(
         watches: List<Watch>,

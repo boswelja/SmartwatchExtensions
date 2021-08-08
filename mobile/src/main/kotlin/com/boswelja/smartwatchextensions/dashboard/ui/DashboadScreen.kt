@@ -13,7 +13,6 @@ import androidx.compose.foundation.lazy.GridCells
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Card
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
@@ -40,11 +39,8 @@ import com.boswelja.smartwatchextensions.proximity.ui.ProximitySettingsActivity
 import com.boswelja.smartwatchextensions.watchmanager.ui.WatchStatusSummarySmall
 import com.boswelja.watchconnection.core.discovery.Status
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 
-@ExperimentalFoundationApi
-@ExperimentalCoroutinesApi
-@ExperimentalMaterialApi
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun DashboardScreen(
     modifier: Modifier = Modifier
@@ -105,7 +101,6 @@ fun DashboardScreen(
     }
 }
 
-@ExperimentalMaterialApi
 @Composable
 fun DashboardItem(
     modifier: Modifier = Modifier,

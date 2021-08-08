@@ -29,7 +29,7 @@ class AppSettingsViewModel internal constructor(
     val analyticsEnabled = dataStore.data.map { it.analyticsEnabled }
     val appTheme = dataStore.data.map { it.appTheme }
     val registeredWatches = watchManager.registeredWatches
-    @ExperimentalCoroutinesApi
+    @OptIn(ExperimentalCoroutinesApi::class)
     val qsTilesWatch = dataStore.data.map {
         it.qsTileWatchId
     }.flatMapLatest { idString ->

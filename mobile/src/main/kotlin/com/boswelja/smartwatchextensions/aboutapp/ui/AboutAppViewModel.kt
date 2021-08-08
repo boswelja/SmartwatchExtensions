@@ -14,7 +14,7 @@ import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
-@ExperimentalCoroutinesApi
+@OptIn(ExperimentalCoroutinesApi::class)
 class AboutAppViewModel internal constructor(
     application: Application,
     private val watchManager: WatchManager,

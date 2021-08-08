@@ -1,7 +1,6 @@
 package com.boswelja.smartwatchextensions.widget.ui
 
 import androidx.compose.foundation.layout.Column
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -17,7 +16,6 @@ import com.boswelja.smartwatchextensions.common.ui.HeaderItem
 import com.boswelja.smartwatchextensions.common.ui.SliderSetting
 import kotlinx.coroutines.Dispatchers
 
-@ExperimentalMaterialApi
 @Composable
 fun WidgetSettingsScreen() {
     val viewModel: WidgetSettingsViewModel = viewModel()

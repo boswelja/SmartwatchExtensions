@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.AlertDialog
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.LinearProgressIndicator
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedButton
@@ -43,7 +42,6 @@ import kotlinx.coroutines.launch
  */
 class ManageSpaceActivity : AppCompatActivity() {
 
-    @ExperimentalMaterialApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -152,7 +150,6 @@ class ManageSpaceActivity : AppCompatActivity() {
         )
     }
 
-    @ExperimentalMaterialApi
     @Composable
     fun ClearCacheAction(
         scaffoldState: ScaffoldState,
@@ -181,7 +178,6 @@ class ManageSpaceActivity : AppCompatActivity() {
         )
     }
 
-    @ExperimentalMaterialApi
     @Composable
     fun ResetAnalyticsAction(scaffoldState: ScaffoldState) {
         val scope = rememberCoroutineScope()
@@ -203,7 +199,6 @@ class ManageSpaceActivity : AppCompatActivity() {
         )
     }
 
-    @ExperimentalMaterialApi
     @Composable
     fun ResetAppSettingsAction(
         scaffoldState: ScaffoldState,
@@ -239,7 +234,6 @@ class ManageSpaceActivity : AppCompatActivity() {
         }
     }
 
-    @ExperimentalMaterialApi
     @Composable
     fun ResetExtensionsAction(
         scaffoldState: ScaffoldState,
@@ -278,7 +272,6 @@ class ManageSpaceActivity : AppCompatActivity() {
         }
     }
 
-    @ExperimentalMaterialApi
     @Composable
     fun ResetAppAction(
         scaffoldState: ScaffoldState,

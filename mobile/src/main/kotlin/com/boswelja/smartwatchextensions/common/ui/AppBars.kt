@@ -52,7 +52,6 @@ fun UpNavigationAppBar(
     )
 }
 
-@ExperimentalMaterialApi
 @Composable
 fun WatchPickerAppBar(
     selectedWatch: Watch?,
@@ -72,7 +71,6 @@ fun WatchPickerAppBar(
     )
 }
 
-@ExperimentalMaterialApi
 @Composable
 fun UpNavigationWatchPickerAppBar(
     selectedWatch: Watch?,
@@ -106,7 +104,7 @@ fun WikiAction() {
     }
 }
 
-@ExperimentalMaterialApi
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun WatchPickerDropdown(
     selectedWatch: Watch?,

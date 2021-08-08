@@ -46,6 +46,7 @@ import timber.log.Timber
 /**
  * Provides a simplified interface for interacting with all watch-related classes.
  */
+@OptIn(ExperimentalCoroutinesApi::class)
 class WatchManager internal constructor(
     private val context: Context,
     val settingsDatabase: WatchSettingsDatabase,
@@ -78,7 +79,6 @@ class WatchManager internal constructor(
     )
 
     private val _selectedWatchId = MutableStateFlow<UUID?>(null)
-    @ExperimentalCoroutinesApi
     private val _selectedWatch = _selectedWatchId.flatMapLatest { id ->
         id?.let {
             watchDatabase.watchDao().get(id)
@@ -88,7 +88,6 @@ class WatchManager internal constructor(
     val registeredWatches: Flow<List<Watch>>
         get() = watchDatabase.watchDao().getAll()
 
-    @ExperimentalCoroutinesApi
     val availableWatches: Flow<List<Watch>>
         get() = discoveryClient.watchesWithApp()
             .map { watches ->
@@ -98,7 +97,6 @@ class WatchManager internal constructor(
     /**
      * The currently selected watch
      */
-    @ExperimentalCoroutinesApi
     val selectedWatch: Flow<Watch?> = _selectedWatch
 
     init {
@@ -210,13 +208,11 @@ class WatchManager internal constructor(
 
     fun getStatusFor(watch: Watch) = discoveryClient.getStatusFor(watch)
 
-    @ExperimentalCoroutinesApi
     fun getCapabilitiesFor(watch: Watch) =
         discoveryClient.getCapabilitiesFor(watch)?.mapLatest { capabilities ->
             capabilities.map { Capability.valueOf(it) }
         }
 
-    @ExperimentalCoroutinesApi
     fun selectedWatchCapabilities() =
         _selectedWatch.flatMapLatest<Watch?, List<Capability>> { watch ->
             watch?.let {
@@ -231,7 +227,6 @@ class WatchManager internal constructor(
         priority: Message.Priority = Message.Priority.LOW
     ) = messageClient.sendMessage(watch, message, data, priority)
 
-    @ExperimentalCoroutinesApi
     fun getBoolSetting(key: String, watch: Watch? = null, default: Boolean = false): Flow<Boolean> {
         return if (watch != null) {
             settingsDatabase.boolSettings().get(watch.id, key).map { it?.value ?: default }
@@ -247,7 +242,6 @@ class WatchManager internal constructor(
         }
     }
 
-    @ExperimentalCoroutinesApi
     fun getIntSetting(key: String, watch: Watch? = null, default: Int = 0): Flow<Int> {
         return if (watch != null) {
             settingsDatabase.intSettings().get(watch.id, key).map { it?.value ?: default }
@@ -300,7 +294,6 @@ class WatchManager internal constructor(
 
     fun getWatchById(id: UUID): Flow<Watch?> = watchDatabase.watchDao().get(id)
 
-    @ExperimentalCoroutinesApi
     fun incomingMessages() = messageClient.incomingMessages()
 
     companion object : SingletonHolder<WatchManager, Context>(::WatchManager) {
