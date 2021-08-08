@@ -8,7 +8,6 @@ import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -35,18 +34,23 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.boswelja.smartwatchextensions.R
-import com.boswelja.smartwatchextensions.common.startActivity
 import com.boswelja.smartwatchextensions.common.ui.AnimatedVisibilityItem
 import com.boswelja.smartwatchextensions.common.ui.SwipeDismissItem
 import com.boswelja.smartwatchextensions.messages.Message
 import kotlinx.coroutines.launch
 
 @Composable
-fun MessagesScreen(scaffoldState: ScaffoldState) {
+fun MessagesScreen(
+    modifier: Modifier = Modifier,
+    contentPadding: Dp = 16.dp,
+    scaffoldState: ScaffoldState,
+    onNavigateTo: (MessageDestination) -> Unit
+) {
     val context = LocalContext.current
     val viewModel: MessagesViewModel = viewModel()
     val scope = rememberCoroutineScope()
@@ -55,6 +59,8 @@ fun MessagesScreen(scaffoldState: ScaffoldState) {
     Crossfade(targetState = messages.isNotEmpty()) {
         if (it) {
             MessagesList(
+                modifier = modifier,
+                contentPadding = contentPadding,
                 messages = messages,
                 onMessageDismissed = { message ->
                     scope.launch {
@@ -94,7 +100,10 @@ fun MessagesScreen(scaffoldState: ScaffoldState) {
                 }
             )
         } else {
-            NoMessagesView()
+            NoMessagesView(
+                modifier = modifier.padding(contentPadding),
+                onNavigateTo = onNavigateTo
+            )
         }
     }
 }
@@ -102,14 +111,15 @@ fun MessagesScreen(scaffoldState: ScaffoldState) {
 @Composable
 fun MessagesList(
     modifier: Modifier = Modifier,
+    contentPadding: Dp = 16.dp,
     messages: List<Message>,
     onMessageDismissed: (Message) -> Unit,
     onMessageActionClicked: (Message.Action) -> Unit
 ) {
     LazyColumn(
         modifier = modifier,
-        verticalArrangement = Arrangement.spacedBy(16.dp),
-        contentPadding = PaddingValues(16.dp)
+        verticalArrangement = Arrangement.spacedBy(contentPadding),
+        contentPadding = PaddingValues(contentPadding)
     ) {
         items(messages) { message ->
             var isRemoving by remember { mutableStateOf(false) }
@@ -143,12 +153,12 @@ fun MessagesList(
 }
 
 @Composable
-fun NoMessagesView() {
-    val context = LocalContext.current
+fun NoMessagesView(
+    modifier: Modifier = Modifier,
+    onNavigateTo: (MessageDestination) -> Unit,
+) {
     Column(
-        Modifier
-            .fillMaxSize()
-            .padding(16.dp),
+        modifier,
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -163,9 +173,7 @@ fun NoMessagesView() {
         )
         OutlinedButton(
             modifier = Modifier.padding(top = 16.dp),
-            onClick = {
-                context.startActivity<MessageHistoryActivity>()
-            }
+            onClick = { onNavigateTo(MessageDestination.MessageHistory) }
         ) {
             Text(stringResource(R.string.message_history_label))
         }

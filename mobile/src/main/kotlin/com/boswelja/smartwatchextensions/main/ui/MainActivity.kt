@@ -5,6 +5,8 @@ import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Scaffold
 import androidx.compose.material.ScaffoldState
 import androidx.compose.material.rememberScaffoldState
@@ -12,6 +14,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -22,6 +26,8 @@ import com.boswelja.smartwatchextensions.aboutapp.ui.AboutAppScreen
 import com.boswelja.smartwatchextensions.common.ui.AppTheme
 import com.boswelja.smartwatchextensions.common.ui.WatchPickerAppBar
 import com.boswelja.smartwatchextensions.dashboard.ui.DashboardScreen
+import com.boswelja.smartwatchextensions.messages.ui.MessageDestination
+import com.boswelja.smartwatchextensions.messages.ui.MessageHistoryScreen
 import com.boswelja.smartwatchextensions.messages.ui.MessagesScreen
 import com.boswelja.smartwatchextensions.onboarding.ui.OnboardingActivity
 import com.boswelja.smartwatchextensions.settings.ui.AppSettingsScreen
@@ -73,6 +79,7 @@ class MainActivity : AppCompatActivity() {
                     }
                 ) {
                     MainScreen(
+                        modifier = Modifier.fillMaxSize().padding(it),
                         scaffoldState = scaffoldState,
                         navController = navController
                     )
@@ -100,6 +107,7 @@ class MainActivity : AppCompatActivity() {
 @Composable
 fun MainScreen(
     modifier: Modifier = Modifier,
+    contentPadding: Dp = 16.dp,
     scaffoldState: ScaffoldState,
     navController: NavHostController
 ) {
@@ -111,13 +119,26 @@ fun MainScreen(
             DashboardScreen(modifier)
         }
         composable(BottomNavDestination.MESSAGES.route) {
-            MessagesScreen(scaffoldState = scaffoldState)
+            MessagesScreen(
+                modifier = modifier,
+                contentPadding = contentPadding,
+                scaffoldState = scaffoldState,
+                onNavigateTo = { navController.navigate(it.route) }
+            )
         }
         composable(BottomNavDestination.SETTINGS.route) {
             AppSettingsScreen()
         }
         composable(BottomNavDestination.ABOUT.route) {
             AboutAppScreen()
+        }
+        composable(MessageDestination.MessageHistory.route) {
+            MessageHistoryScreen(
+                modifier = modifier.padding(16.dp),
+                onShowSnackbar = {
+                    scaffoldState.snackbarHostState.showSnackbar(it)
+                }
+            )
         }
     }
 }
