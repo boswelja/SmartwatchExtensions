@@ -14,15 +14,19 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.common.startActivity
+import com.boswelja.smartwatchextensions.common.ui.Card
+import com.boswelja.smartwatchextensions.common.ui.CardHeader
 import com.boswelja.smartwatchextensions.watchmanager.ui.WatchManagerActivity
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun WatchSettings(modifier: Modifier = Modifier) {
     val context = LocalContext.current
-    SettingsCard(
+    Card(
         modifier = modifier,
-        title = { Text(stringResource(R.string.category_watch_settings)) }
+        header = {
+            CardHeader(title = { Text(stringResource(R.string.category_watch_settings)) })
+        }
     ) {
         Column {
             ListItem(

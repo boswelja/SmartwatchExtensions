@@ -12,6 +12,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.boswelja.smartwatchextensions.R
+import com.boswelja.smartwatchextensions.common.ui.Card
+import com.boswelja.smartwatchextensions.common.ui.CardHeader
 import com.boswelja.smartwatchextensions.common.ui.DialogSetting
 import kotlinx.coroutines.Dispatchers
 
@@ -22,9 +24,11 @@ fun QSTileSettingsCard(
     val viewModel: AppSettingsViewModel = viewModel()
     val registeredWatches by viewModel.registeredWatches.collectAsState(emptyList(), Dispatchers.IO)
     val qsTilesWatch by viewModel.qsTilesWatch.collectAsState(null, Dispatchers.IO)
-    SettingsCard(
+    Card(
         modifier = modifier,
-        title = { Text(stringResource(R.string.category_qstiles)) }
+        header = {
+            CardHeader(title = { Text(stringResource(R.string.category_qstiles)) })
+        }
     ) {
         Column {
             DialogSetting(

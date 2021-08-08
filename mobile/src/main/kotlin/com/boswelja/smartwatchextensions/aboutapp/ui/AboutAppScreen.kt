@@ -32,6 +32,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.boswelja.smartwatchextensions.BuildConfig
 import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.common.startActivity
+import com.boswelja.smartwatchextensions.common.ui.Card
+import com.boswelja.smartwatchextensions.common.ui.CardHeader
 import com.boswelja.smartwatchextensions.donate.ui.DonateActivity
 
 @Composable
@@ -58,9 +60,13 @@ fun AboutAppScreen() {
 fun AboutApp(modifier: Modifier = Modifier) {
     val context = LocalContext.current
     val viewModel: AboutAppViewModel = viewModel()
-    AboutSectionCard(
+    Card(
         modifier = modifier,
-        title = { Text(stringResource(R.string.about_category_about)) }
+        header = {
+            CardHeader(
+                title = { Text(stringResource(R.string.about_category_about)) }
+            )
+        }
     ) {
         Column {
             ListItem(
@@ -99,9 +105,13 @@ fun AboutApp(modifier: Modifier = Modifier) {
 fun Versions(modifier: Modifier = Modifier) {
     val viewModelAbout: AboutAppViewModel = viewModel()
     val watchVersion by viewModelAbout.watchAppVersion.collectAsState(null)
-    AboutSectionCard(
+    Card(
         modifier = modifier,
-        title = { Text(stringResource(R.string.about_category_versions)) }
+        header = {
+            CardHeader(
+                title = { Text(stringResource(R.string.about_category_versions)) }
+            )
+        }
     ) {
         Column {
             ListItem(
@@ -162,9 +172,11 @@ fun SupportApp(
             }
             .build()
 
-    AboutSectionCard(
+    Card(
         modifier = modifier,
-        title = { Text(stringResource(R.string.about_category_support)) }
+        header = {
+            CardHeader(title = { Text(stringResource(R.string.about_category_support)) })
+        }
     ) {
         Column {
             ListItem(
