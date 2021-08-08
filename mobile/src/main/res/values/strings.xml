@@ -104,7 +104,6 @@
     <string name="widget_settings_title">Widget Settings</string>
     <string name="category_watch_settings">Watch Settings</string>
     <string name="manage_watches_title">Manage Watches</string>
-    <string name="category_analytics">Analytics</string>
     <string name="analytics_enabled_title">Send Anonymous Usage Stats</string>
     <string name="category_qstiles">Quick Settings</string>
     <string name="qstiles_selected_watch">Linked Watch</string>

@@ -8,8 +8,8 @@ import androidx.datastore.core.DataStore
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.boswelja.smartwatchextensions.analytics.Analytics
-import com.boswelja.smartwatchextensions.settings.Settings
 import com.boswelja.smartwatchextensions.managespace.ui.ManageSpaceViewModel.Companion.MAX_PROGRESS
+import com.boswelja.smartwatchextensions.settings.Settings
 import com.boswelja.smartwatchextensions.watchmanager.WatchManager
 import com.boswelja.watchconnection.core.Watch
 import io.mockk.MockKAnnotations
@@ -121,20 +121,20 @@ class ManageSpaceViewModelTest {
         (1..10).forEach {
             File(cacheDir, it.toString()).createNewFile()
         }
-        viewModel.clearCache(onProgressChanged, { })
+        viewModel.clearCache(onProgressChanged) { }
         shadowOf(getMainLooper()).idle()
         expectThat(currentProgress).isLessThanOrEqualTo(MAX_PROGRESS.toInt())
 
         // Test with single cache file
         if (!cacheDir.exists()) cacheDir.mkdirs()
         File(cacheDir, "test").createNewFile()
-        viewModel.clearCache(onProgressChanged, { })
+        viewModel.clearCache(onProgressChanged) { }
         shadowOf(getMainLooper()).idle()
         expectThat(currentProgress).isLessThanOrEqualTo(MAX_PROGRESS.toInt())
 
         // Test with no cache files
         cacheDir.listFiles()?.forEach { it.deleteRecursively() }
-        viewModel.clearCache(onProgressChanged, { })
+        viewModel.clearCache(onProgressChanged) { }
         shadowOf(getMainLooper()).idle()
         expectThat(currentProgress).isLessThanOrEqualTo(MAX_PROGRESS.toInt())
     }
@@ -174,19 +174,19 @@ class ManageSpaceViewModelTest {
 
         // Test with multiple registeredWatches
         registeredWatches.value = dummyWatches
-        viewModel.resetExtensionSettings(onProgressChanged, { })
+        viewModel.resetExtensionSettings(onProgressChanged) { }
         shadowOf(getMainLooper()).idle()
         expectThat(currentProgress).isLessThanOrEqualTo(MAX_PROGRESS.toInt())
 
         // Test with single registered watch
         registeredWatches.value = listOf(dummyWatch1)
-        viewModel.resetExtensionSettings(onProgressChanged, { })
+        viewModel.resetExtensionSettings(onProgressChanged) { }
         shadowOf(getMainLooper()).idle()
         expectThat(currentProgress).isLessThanOrEqualTo(MAX_PROGRESS.toInt())
 
         // Test with no registered watches
         registeredWatches.value = emptyList()
-        viewModel.resetExtensionSettings(onProgressChanged, { })
+        viewModel.resetExtensionSettings(onProgressChanged) { }
         shadowOf(getMainLooper()).idle()
         expectThat(currentProgress).isLessThanOrEqualTo(MAX_PROGRESS.toInt())
     }
@@ -247,19 +247,19 @@ class ManageSpaceViewModelTest {
 
         // Test with registered watches
         registeredWatches.value = dummyWatches
-        viewModel.resetApp(onProgressChanged, { })
+        viewModel.resetApp(onProgressChanged) { }
         shadowOf(getMainLooper()).idle()
         expectThat(currentProgress).isLessThanOrEqualTo(MAX_PROGRESS.toInt())
 
         // Test with registered watch
         registeredWatches.value = listOf(dummyWatch1)
-        viewModel.resetApp(onProgressChanged, { })
+        viewModel.resetApp(onProgressChanged) { }
         shadowOf(getMainLooper()).idle()
         expectThat(currentProgress).isLessThanOrEqualTo(MAX_PROGRESS.toInt())
 
         // Test with no registered watches
         registeredWatches.value = emptyList()
-        viewModel.resetApp(onProgressChanged, { })
+        viewModel.resetApp(onProgressChanged) { }
         shadowOf(getMainLooper()).idle()
         expectThat(currentProgress).isLessThanOrEqualTo(MAX_PROGRESS.toInt())
     }
