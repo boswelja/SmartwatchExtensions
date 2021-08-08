@@ -15,8 +15,8 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.batterysync.widget.WatchBatteryWidget
-import com.boswelja.smartwatchextensions.main.MainActivity
-import com.boswelja.smartwatchextensions.main.MainActivity.Companion.EXTRA_WATCH_ID
+import com.boswelja.smartwatchextensions.main.ui.MainActivity
+import com.boswelja.smartwatchextensions.main.ui.MainActivity.Companion.EXTRA_WATCH_ID
 import com.boswelja.smartwatchextensions.widget.ui.WidgetSettingsActivity.Companion.SHOW_WIDGET_BACKGROUND_KEY
 import com.boswelja.smartwatchextensions.widget.ui.WidgetSettingsActivity.Companion.WIDGET_BACKGROUND_OPACITY_KEY
 import com.boswelja.smartwatchextensions.widget.widgetIdStore

@@ -25,7 +25,7 @@ import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.common.startActivity
 import com.boswelja.smartwatchextensions.common.ui.AppTheme
 import com.boswelja.smartwatchextensions.common.ui.UpNavigationAppBar
-import com.boswelja.smartwatchextensions.main.MainActivity
+import com.boswelja.smartwatchextensions.main.ui.MainActivity
 import com.boswelja.smartwatchextensions.watchmanager.ui.register.RegisterWatchScreen
 import com.boswelja.smartwatchextensions.watchmanager.ui.register.RegisterWatchViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi

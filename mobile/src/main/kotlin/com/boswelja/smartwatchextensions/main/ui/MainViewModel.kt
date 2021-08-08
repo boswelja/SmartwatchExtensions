@@ -1,4 +1,4 @@
-package com.boswelja.smartwatchextensions.main
+package com.boswelja.smartwatchextensions.main.ui
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel

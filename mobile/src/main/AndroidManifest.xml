@@ -28,7 +28,7 @@
             android:label="@string/manage_space_title" />
 
         <activity
-            android:name=".main.MainActivity"
+            android:name=".main.ui.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
