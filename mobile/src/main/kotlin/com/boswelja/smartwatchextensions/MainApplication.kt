@@ -2,8 +2,8 @@ package com.boswelja.smartwatchextensions
 
 import android.app.Application
 import androidx.appcompat.app.AppCompatDelegate
-import com.boswelja.smartwatchextensions.appsettings.Settings
-import com.boswelja.smartwatchextensions.appsettings.appSettingsStore
+import com.boswelja.smartwatchextensions.settings.Settings
+import com.boswelja.smartwatchextensions.settings.appSettingsStore
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.runBlocking

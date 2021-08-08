@@ -29,7 +29,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.analytics.getAnalytics
-import com.boswelja.smartwatchextensions.appsettings.appSettingsStore
+import com.boswelja.smartwatchextensions.settings.appSettingsStore
 import kotlinx.coroutines.launch
 
 @ExperimentalMaterialApi

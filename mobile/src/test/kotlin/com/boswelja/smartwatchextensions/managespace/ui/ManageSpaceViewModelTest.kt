@@ -8,7 +8,7 @@ import androidx.datastore.core.DataStore
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.boswelja.smartwatchextensions.analytics.Analytics
-import com.boswelja.smartwatchextensions.appsettings.Settings
+import com.boswelja.smartwatchextensions.settings.Settings
 import com.boswelja.smartwatchextensions.managespace.ui.ManageSpaceViewModel.Companion.MAX_PROGRESS
 import com.boswelja.smartwatchextensions.watchmanager.WatchManager
 import com.boswelja.watchconnection.core.Watch

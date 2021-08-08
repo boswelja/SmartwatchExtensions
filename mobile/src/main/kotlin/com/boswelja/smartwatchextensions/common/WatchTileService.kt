@@ -2,7 +2,7 @@ package com.boswelja.smartwatchextensions.common
 
 import android.service.quicksettings.Tile
 import android.service.quicksettings.TileService
-import com.boswelja.smartwatchextensions.appsettings.appSettingsStore
+import com.boswelja.smartwatchextensions.settings.appSettingsStore
 import com.boswelja.smartwatchextensions.watchmanager.WatchManager
 import com.boswelja.watchconnection.core.Watch
 import java.util.UUID

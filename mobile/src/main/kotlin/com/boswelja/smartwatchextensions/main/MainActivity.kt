@@ -35,7 +35,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.lifecycleScope
 import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.aboutapp.ui.AboutAppScreen
-import com.boswelja.smartwatchextensions.appsettings.ui.AppSettingsScreen
+import com.boswelja.smartwatchextensions.settings.ui.AppSettingsScreen
 import com.boswelja.smartwatchextensions.common.ui.AppTheme
 import com.boswelja.smartwatchextensions.common.ui.WatchPickerAppBar
 import com.boswelja.smartwatchextensions.dashboard.ui.DashboardScreen
@@ -156,7 +156,7 @@ fun BottonNav(
         BottomNavItem(
             selected = currentDestination == Destination.SETTINGS,
             icon = Icons.Outlined.Settings,
-            label = stringResource(R.string.bottom_nav_app_settings_label),
+            label = stringResource(R.string.bottom_nav_settings_label),
             onClick = {
                 setCurrentDestination(Destination.SETTINGS)
             }

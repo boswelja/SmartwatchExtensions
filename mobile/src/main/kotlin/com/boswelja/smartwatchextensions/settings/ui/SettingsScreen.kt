@@ -1,4 +1,4 @@
-package com.boswelja.smartwatchextensions.appsettings.ui
+package com.boswelja.smartwatchextensions.settings.ui
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues

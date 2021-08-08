@@ -1,4 +1,4 @@
-package com.boswelja.smartwatchextensions.appsettings.ui
+package com.boswelja.smartwatchextensions.settings.ui
 
 import android.app.Application
 import androidx.appcompat.app.AppCompatDelegate
@@ -7,8 +7,8 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.boswelja.smartwatchextensions.analytics.Analytics
 import com.boswelja.smartwatchextensions.analytics.getAnalytics
-import com.boswelja.smartwatchextensions.appsettings.Settings
-import com.boswelja.smartwatchextensions.appsettings.appSettingsStore
+import com.boswelja.smartwatchextensions.settings.Settings
+import com.boswelja.smartwatchextensions.settings.appSettingsStore
 import com.boswelja.smartwatchextensions.batterysync.quicksettings.WatchBatteryTileService
 import com.boswelja.smartwatchextensions.updatechecker.UpdateCheckWorker
 import com.boswelja.smartwatchextensions.watchmanager.WatchManager

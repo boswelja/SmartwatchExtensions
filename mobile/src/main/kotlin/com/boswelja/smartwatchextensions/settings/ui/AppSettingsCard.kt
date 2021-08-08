@@ -1,4 +1,4 @@
-package com.boswelja.smartwatchextensions.appsettings.ui
+package com.boswelja.smartwatchextensions.settings.ui
 
 import android.content.Intent
 import android.provider.Settings.ACTION_APP_NOTIFICATION_SETTINGS
@@ -25,11 +25,11 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.boswelja.smartwatchextensions.R
-import com.boswelja.smartwatchextensions.appsettings.Settings
 import com.boswelja.smartwatchextensions.common.startActivity
 import com.boswelja.smartwatchextensions.common.ui.CheckboxSetting
 import com.boswelja.smartwatchextensions.common.ui.DialogSetting
 import com.boswelja.smartwatchextensions.managespace.ui.ManageSpaceActivity
+import com.boswelja.smartwatchextensions.settings.Settings
 import com.boswelja.smartwatchextensions.widget.ui.WidgetSettingsActivity
 import kotlinx.coroutines.Dispatchers
 
@@ -45,7 +45,7 @@ fun AppSettingsCard(modifier: Modifier = Modifier) {
 
     SettingsCard(
         modifier = modifier,
-        title = { Text(stringResource(R.string.bottom_nav_app_settings_label)) }
+        title = { Text(stringResource(R.string.app_settings_title)) }
     ) {
         Column {
             ListItem(
