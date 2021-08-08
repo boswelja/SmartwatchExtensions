@@ -2,23 +2,22 @@ package com.boswelja.smartwatchextensions.main.ui
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.animation.Crossfade
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.Scaffold
 import androidx.compose.material.ScaffoldState
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.rememberNavController
 import com.boswelja.smartwatchextensions.aboutapp.ui.AboutAppScreen
 import com.boswelja.smartwatchextensions.common.ui.AppTheme
 import com.boswelja.smartwatchextensions.common.ui.WatchPickerAppBar
@@ -47,16 +46,9 @@ class MainActivity : AppCompatActivity() {
             val registeredWatches by viewModel.registeredWatches
                 .collectAsState(emptyList(), Dispatchers.IO)
 
-            var currentDestination by rememberSaveable {
-                mutableStateOf(BottomNavDestination.DASHBOARD)
-            }
-
+            val navController = rememberNavController()
+            val backStackEntry by navController.currentBackStackEntryAsState()
             val scaffoldState = rememberScaffoldState()
-
-            // Switch the destination back to Dashboard if we're not already there
-            BackHandler(enabled = currentDestination != BottomNavDestination.DASHBOARD) {
-                currentDestination = BottomNavDestination.DASHBOARD
-            }
 
             AppTheme {
                 Scaffold(
@@ -69,12 +61,20 @@ class MainActivity : AppCompatActivity() {
                         )
                     },
                     bottomBar = {
-                        BottonNav(currentDestination) { currentDestination = it }
+                        BottonNav(
+                            currentDestination = backStackEntry?.destination,
+                            onNavigateTo = {
+                                navController.navigate(it.route) {
+                                    popUpTo(BottomNavDestination.DASHBOARD.route)
+                                    launchSingleTop = true
+                                }
+                            }
+                        )
                     }
                 ) {
                     MainScreen(
                         scaffoldState = scaffoldState,
-                        currentBottomNavDestination = currentDestination
+                        navController = navController
                     )
                 }
             }
@@ -98,13 +98,26 @@ class MainActivity : AppCompatActivity() {
 }
 
 @Composable
-fun MainScreen(scaffoldState: ScaffoldState, currentBottomNavDestination: BottomNavDestination) {
-    Crossfade(targetState = currentBottomNavDestination) {
-        when (it) {
-            BottomNavDestination.DASHBOARD -> DashboardScreen(Modifier.fillMaxSize())
-            BottomNavDestination.MESSAGES -> MessagesScreen(scaffoldState = scaffoldState)
-            BottomNavDestination.SETTINGS -> AppSettingsScreen()
-            BottomNavDestination.ABOUT -> AboutAppScreen()
+fun MainScreen(
+    modifier: Modifier = Modifier,
+    scaffoldState: ScaffoldState,
+    navController: NavHostController
+) {
+    NavHost(
+        navController = navController,
+        startDestination = BottomNavDestination.DASHBOARD.route
+    ) {
+        composable(BottomNavDestination.DASHBOARD.route) {
+            DashboardScreen(modifier)
+        }
+        composable(BottomNavDestination.MESSAGES.route) {
+            MessagesScreen(scaffoldState = scaffoldState)
+        }
+        composable(BottomNavDestination.SETTINGS.route) {
+            AppSettingsScreen()
+        }
+        composable(BottomNavDestination.ABOUT.route) {
+            AboutAppScreen()
         }
     }
 }

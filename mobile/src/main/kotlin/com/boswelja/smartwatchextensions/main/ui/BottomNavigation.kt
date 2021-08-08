@@ -15,6 +15,8 @@ import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
+import androidx.navigation.NavDestination
+import androidx.navigation.NavDestination.Companion.hierarchy
 import com.boswelja.smartwatchextensions.R
 
 enum class BottomNavDestination(
@@ -46,19 +48,21 @@ enum class BottomNavDestination(
 
 @Composable
 fun BottonNav(
-    currentBottomNavDestination: BottomNavDestination,
-    setCurrentDestination: (BottomNavDestination) -> Unit
+    currentDestination: NavDestination?,
+    onNavigateTo: (BottomNavDestination) -> Unit
 ) {
     BottomNavigation(
         backgroundColor = MaterialTheme.colors.background
     ) {
-        BottomNavDestination.values().forEach {
-            val selected = currentBottomNavDestination == it
+        BottomNavDestination.values().forEach { destination ->
+            val selected = currentDestination
+                ?.hierarchy
+                ?.any { it.route == destination.route } ?: false
             BottomNavigationItem(
                 selected = selected,
-                icon = { Icon(it.icon, null) },
-                label = { Text(stringResource(it.labelRes)) },
-                onClick = { setCurrentDestination(it) },
+                icon = { Icon(destination.icon, null) },
+                label = { Text(stringResource(destination.labelRes)) },
+                onClick = { onNavigateTo(destination) },
                 alwaysShowLabel = false,
                 selectedContentColor = MaterialTheme.colors.primary,
                 unselectedContentColor = MaterialTheme.colors.onSurface
