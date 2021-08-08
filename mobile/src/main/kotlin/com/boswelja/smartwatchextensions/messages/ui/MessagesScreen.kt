@@ -122,6 +122,7 @@ fun MessagesList(
                 SwipeDismissItem(
                     item = message,
                     icon = Icons.Outlined.Archive,
+                    backgroundColor = MaterialTheme.colors.onBackground.copy(alpha = 0.12f),
                     onItemDismissed = { isRemoving = true },
                     onDismissingChanged = { isDismissing = it }
                 ) {
