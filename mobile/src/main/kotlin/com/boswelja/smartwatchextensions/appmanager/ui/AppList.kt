@@ -35,7 +35,9 @@ fun AppList(
     LazyColumn(modifier) {
         if (userApps.isNotEmpty()) {
             stickyHeader {
-                HeaderItem(stringResource(R.string.app_manager_section_user_apps))
+                HeaderItem(
+                    text = { Text(stringResource(R.string.app_manager_section_user_apps)) }
+                )
             }
             items(
                 items = userApps,
@@ -49,7 +51,9 @@ fun AppList(
         }
         if (disabledApps.isNotEmpty()) {
             stickyHeader {
-                HeaderItem(stringResource(R.string.app_manager_section_disabled_apps))
+                HeaderItem(
+                    text = { Text(stringResource(R.string.app_manager_section_disabled_apps)) }
+                )
             }
             items(
                 items = disabledApps,
@@ -63,7 +67,9 @@ fun AppList(
         }
         if (systemApps.isNotEmpty()) {
             stickyHeader {
-                HeaderItem(stringResource(R.string.app_manager_section_system_apps))
+                HeaderItem(
+                    text = { Text(stringResource(R.string.app_manager_section_system_apps)) }
+                )
             }
             items(
                 items = systemApps,

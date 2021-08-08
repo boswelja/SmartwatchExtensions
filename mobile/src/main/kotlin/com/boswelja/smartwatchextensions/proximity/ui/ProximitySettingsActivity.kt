@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Scaffold
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -69,9 +70,9 @@ fun ProximitySettingsScreen(modifier: Modifier = Modifier) {
         .collectAsState(false, Dispatchers.IO)
     Column(modifier) {
         SwitchSetting(
-            text = stringResource(R.string.proximity_phone_noti_title),
-            secondaryText = stringResource(R.string.proximity_phone_noti_summary),
-            isChecked = phoneProximityNotiEnabled,
+            label = { Text(stringResource(R.string.proximity_phone_noti_title)) },
+            summary = { Text(stringResource(R.string.proximity_phone_noti_summary)) },
+            checked = phoneProximityNotiEnabled,
             onCheckChanged = { isChecked ->
                 scope.launch {
                     viewModel.setPhoneProximityNotiEnabled(isChecked)
@@ -79,9 +80,9 @@ fun ProximitySettingsScreen(modifier: Modifier = Modifier) {
             }
         )
         SwitchSetting(
-            text = stringResource(R.string.proximity_watch_noti_title),
-            secondaryText = stringResource(R.string.proximity_watch_noti_summary),
-            isChecked = watchProximityNotiEnabled,
+            label = { Text(stringResource(R.string.proximity_watch_noti_title)) },
+            summary = { Text(stringResource(R.string.proximity_watch_noti_summary)) },
+            checked = watchProximityNotiEnabled,
             onCheckChanged = { isChecked ->
                 scope.launch {
                     viewModel.setWatchProximityNotiEnabled(isChecked)

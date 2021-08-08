@@ -96,16 +96,22 @@ fun AppSettings() {
             }
         )
         DialogSetting(
-            text = stringResource(R.string.app_theme_title),
-            secondaryText = when (currentAppTheme) {
-                Settings.Theme.LIGHT -> stringResource(R.string.app_theme_light)
-                Settings.Theme.DARK -> stringResource(R.string.app_theme_dark)
-                Settings.Theme.FOLLOW_SYSTEM -> stringResource(R.string.app_theme_follow_system)
+            label = { Text(stringResource(R.string.app_theme_title)) },
+            summary = {
+                val text = when (currentAppTheme) {
+                    Settings.Theme.LIGHT -> stringResource(R.string.app_theme_light)
+                    Settings.Theme.DARK -> stringResource(R.string.app_theme_dark)
+                    Settings.Theme.FOLLOW_SYSTEM -> stringResource(R.string.app_theme_follow_system)
+                }
+                Text(text)
             },
-            icon = if (currentAppTheme == Settings.Theme.DARK)
-                Icons.Outlined.DarkMode
-            else
-                Icons.Outlined.LightMode,
+            icon = {
+                val icon = if (currentAppTheme == Settings.Theme.DARK)
+                    Icons.Outlined.DarkMode
+                else
+                    Icons.Outlined.LightMode
+                Icon(icon, null)
+            },
             values = Settings.Theme.values().toList(),
             value = currentAppTheme,
             onValueChanged = { viewModel.setAppTheme(it) },
@@ -119,9 +125,9 @@ fun AppSettings() {
             }
         )
         CheckboxSetting(
-            text = stringResource(R.string.check_updates_daily_title),
-            icon = Icons.Outlined.Update,
-            isChecked = checkUpdatesDaily,
+            label = { Text(stringResource(R.string.check_updates_daily_title)) },
+            icon = { Icon(Icons.Outlined.Update, null) },
+            checked = checkUpdatesDaily,
             onCheckChanged = viewModel::setCheckUpdatesDaily
         )
     }
@@ -133,11 +139,13 @@ fun AnalyticsSettings() {
     val viewModel: AppSettingsViewModel = viewModel()
     val analyticsEnabled by viewModel.analyticsEnabled.collectAsState(false, Dispatchers.IO)
     Column {
-        HeaderItem(stringResource(R.string.category_analytics))
+        HeaderItem(
+            text = { Text(stringResource(R.string.category_analytics)) }
+        )
         CheckboxSetting(
-            text = stringResource(R.string.analytics_enabled_title),
-            icon = Icons.Outlined.Analytics,
-            isChecked = analyticsEnabled,
+            label = { Text(stringResource(R.string.analytics_enabled_title)) },
+            icon = { Icon(Icons.Outlined.Analytics, null) },
+            checked = analyticsEnabled,
             onCheckChanged = {
                 viewModel.setAnalyticsEnabled(it)
             }
@@ -155,11 +163,13 @@ fun QSTileSettings(
     val registeredWatches by viewModel.registeredWatches.collectAsState(emptyList(), Dispatchers.IO)
     val qsTilesWatch by viewModel.qsTilesWatch.collectAsState(null, Dispatchers.IO)
     Column(modifier) {
-        HeaderItem(stringResource(R.string.category_qstiles))
+        HeaderItem(
+            text = { Text(stringResource(R.string.category_qstiles)) }
+        )
         DialogSetting(
-            icon = Icons.Outlined.Watch,
-            text = stringResource(R.string.qstiles_selected_watch),
-            secondaryText = qsTilesWatch?.name,
+            icon = { Icon(Icons.Outlined.Watch, null) },
+            label = { Text(stringResource(R.string.qstiles_selected_watch)) },
+            summary = { Text(qsTilesWatch?.name ?: "") },
             values = registeredWatches,
             value = qsTilesWatch,
             onValueChanged = {
@@ -177,7 +187,9 @@ fun QSTileSettings(
 fun WatchSettings() {
     val context = LocalContext.current
     Column {
-        HeaderItem(stringResource(R.string.category_watch_settings))
+        HeaderItem(
+            text = { Text(stringResource(R.string.category_watch_settings)) }
+        )
         ListItem(
             text = { Text(stringResource(R.string.manage_watches_title)) },
             icon = { Icon(Icons.Outlined.Watch, null) },

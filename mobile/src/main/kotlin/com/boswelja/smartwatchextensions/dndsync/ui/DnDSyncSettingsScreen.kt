@@ -7,6 +7,7 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -77,13 +78,16 @@ fun SyncToWatchSetting(
     val dndSyncToWatch by viewModel.syncToWatch.collectAsState(false)
     val canSyncToWatch by viewModel.canReceiveDnD.collectAsState(false)
     SwitchSetting(
-        text = stringResource(R.string.pref_dnd_sync_to_watch_title),
-        secondaryText = if (canSyncToWatch)
-            stringResource(R.string.pref_dnd_sync_to_watch_summary)
-        else
-            stringResource(R.string.capability_not_supported),
-        isChecked = dndSyncToWatch,
-        isEnabled = canSyncToWatch,
+        label = { Text(stringResource(R.string.pref_dnd_sync_to_watch_title)) },
+        summary = {
+            val text = if (canSyncToWatch)
+                stringResource(R.string.pref_dnd_sync_to_watch_summary)
+            else
+                stringResource(R.string.capability_not_supported)
+            Text(text)
+        },
+        checked = dndSyncToWatch,
+        enabled = canSyncToWatch,
         onCheckChanged = {
             if (!it) {
                 viewModel.setSyncToWatch(false)
@@ -104,13 +108,16 @@ fun SyncToPhoneSetting(
     val dndSyncToPhone by viewModel.syncToPhone.collectAsState(false)
     val canSyncToPhone by viewModel.canSendDnD.collectAsState(false)
     SwitchSetting(
-        text = stringResource(R.string.pref_dnd_sync_to_phone_title),
-        secondaryText = if (canSyncToPhone)
-            stringResource(R.string.pref_dnd_sync_to_phone_summary)
-        else
-            stringResource(R.string.capability_not_supported),
-        isChecked = dndSyncToPhone,
-        isEnabled = canSyncToPhone,
+        label = { Text(stringResource(R.string.pref_dnd_sync_to_phone_title)) },
+        summary = {
+            val text = if (canSyncToPhone)
+                stringResource(R.string.pref_dnd_sync_to_phone_summary)
+            else
+                stringResource(R.string.capability_not_supported)
+            Text(text)
+        },
+        checked = dndSyncToPhone,
+        enabled = canSyncToPhone,
         onCheckChanged = {
             if ((it && viewModel.hasNotificationPolicyAccess) || !it) {
                 viewModel.setSyncToPhone(it)
@@ -131,12 +138,15 @@ fun SyncWithTheaterSetting(
     val dndSyncWithTheater by viewModel.syncWithTheater.collectAsState(false)
     val canSyncWithTheater by viewModel.canSendDnD.collectAsState(false)
     SwitchSetting(
-        text = stringResource(R.string.pref_dnd_sync_with_theater_title),
-        secondaryText = if (canSyncWithTheater)
-            stringResource(R.string.pref_dnd_sync_with_theater_summary)
-        else stringResource(R.string.capability_not_supported),
-        isChecked = dndSyncWithTheater,
-        isEnabled = canSyncWithTheater,
+        label = { Text(stringResource(R.string.pref_dnd_sync_with_theater_title)) },
+        summary = {
+            val text = if (canSyncWithTheater)
+                stringResource(R.string.pref_dnd_sync_with_theater_summary)
+            else stringResource(R.string.capability_not_supported)
+            Text(text)
+        },
+        checked = dndSyncWithTheater,
+        enabled = canSyncWithTheater,
         onCheckChanged = {
             if ((it && viewModel.hasNotificationPolicyAccess) || !it) {
                 viewModel.setSyncWithTheater(it)

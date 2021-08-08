@@ -53,7 +53,9 @@ fun AboutApp() {
     val context = LocalContext.current
     val viewModel: AboutAppViewModel = viewModel()
     Column {
-        HeaderItem(stringResource(R.string.about_category_about))
+        HeaderItem(
+            text = { Text(stringResource(R.string.about_category_about)) },
+        )
         ListItem(
             text = { Text(stringResource(R.string.about_priv_policy_title)) },
             icon = { Icon(Icons.Outlined.Policy, null) },
@@ -91,7 +93,9 @@ fun Versions() {
     val viewModelAbout: AboutAppViewModel = viewModel()
     val watchVersion by viewModelAbout.watchAppVersion.collectAsState(null)
     Column {
-        HeaderItem(stringResource(R.string.about_category_versions))
+        HeaderItem(
+            text = { Text(stringResource(R.string.about_category_versions)) },
+        )
         ListItem(
             text = {
                 Text(
@@ -148,7 +152,9 @@ fun SupportApp() {
             .build()
 
     Column {
-        HeaderItem(stringResource(R.string.about_category_support))
+        HeaderItem(
+            text = { Text(stringResource(R.string.about_category_support)) },
+        )
         ListItem(
             text = { Text(stringResource(R.string.about_donate_title)) },
             icon = { Icon(Icons.Outlined.FavoriteBorder, null) },

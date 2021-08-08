@@ -5,6 +5,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Divider
 import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -55,17 +56,19 @@ fun BatterySyncSettings(
     val batterySyncEnabled by viewModel.batterySyncEnabled.collectAsState(false)
 
     Column(modifier) {
-        HeaderItem(stringResource(R.string.category_battery_sync_settings))
+        HeaderItem(
+            text = { Text(stringResource(R.string.category_battery_sync_settings)) }
+        )
         SwitchSetting(
-            text = stringResource(R.string.battery_sync_toggle_title),
-            secondaryText = if (!canSyncBattery)
-                stringResource(R.string.capability_not_supported)
-            else null,
-            isChecked = batterySyncEnabled,
+            label = { Text(stringResource(R.string.battery_sync_toggle_title)) },
+            summary = if (!canSyncBattery) {
+                { Text(stringResource(R.string.capability_not_supported)) }
+            } else null,
+            checked = batterySyncEnabled,
             onCheckChanged = {
                 viewModel.setBatterySyncEnabled(it)
             },
-            isEnabled = canSyncBattery
+            enabled = canSyncBattery
         )
     }
 }
@@ -87,36 +90,44 @@ fun ChargeNotificationSettings(
     }
 
     Column(modifier) {
-        HeaderItem(stringResource(R.string.category_charge_notifications))
+        HeaderItem(
+            text = { Text(stringResource(R.string.category_charge_notifications)) }
+        )
         CheckboxSetting(
-            text = stringResource(R.string.battery_sync_phone_charge_noti_title),
-            secondaryText = stringResource(
-                R.string.battery_sync_phone_charge_noti_summary,
-                (currentThreshold * 100).toInt().toString()
-            ),
-            isChecked = phoneChargeNotiEnabled,
-            isEnabled = isEnabled,
+            label = { Text(stringResource(R.string.battery_sync_phone_charge_noti_title)) },
+            summary = {
+                val text = stringResource(
+                    R.string.battery_sync_phone_charge_noti_summary,
+                    (currentThreshold * 100).toInt().toString()
+                )
+                Text(text)
+            },
+            checked = phoneChargeNotiEnabled,
+            enabled = isEnabled,
             onCheckChanged = {
                 viewModel.setPhoneChargeNotiEnabled(it)
             }
         )
         CheckboxSetting(
-            text = stringResource(R.string.battery_sync_watch_charge_noti_title),
-            secondaryText = stringResource(
-                R.string.battery_sync_watch_charge_noti_summary,
-                (currentThreshold * 100).toInt().toString()
-            ),
-            isChecked = watchChargeNotiEnabled,
-            isEnabled = isEnabled,
+            label = { Text(stringResource(R.string.battery_sync_watch_charge_noti_title)) },
+            summary = {
+                val text = stringResource(
+                    R.string.battery_sync_watch_charge_noti_summary,
+                    (currentThreshold * 100).toInt().toString()
+                )
+                Text(text)
+            },
+            checked = watchChargeNotiEnabled,
+            enabled = isEnabled,
             onCheckChanged = {
                 viewModel.setWatchChargeNotiEnabled(it)
             }
         )
         SliderSetting(
-            text = stringResource(R.string.battery_sync_charge_threshold_title),
+            label = { Text(stringResource(R.string.battery_sync_charge_threshold_title)) },
             valueRange = 0.6f..1f,
             value = currentThreshold,
-            isEnabled = isEnabled,
+            enabled = isEnabled,
             trailingFormat = stringResource(R.string.battery_percent),
             onSliderValueChanged = {
                 currentThreshold = it
@@ -145,36 +156,44 @@ fun LowBatteryNotificationSettings(
     }
 
     Column(modifier) {
-        HeaderItem(stringResource(R.string.category_low_notifications))
+        HeaderItem(
+            text = { Text(stringResource(R.string.category_low_notifications)) }
+        )
         CheckboxSetting(
-            text = stringResource(R.string.battery_sync_phone_low_noti_title),
-            secondaryText = stringResource(
-                R.string.battery_sync_phone_low_noti_summary,
-                (currentThreshold * 100).toInt().toString()
-            ),
-            isEnabled = isEnabled,
-            isChecked = phoneLowNotiEnabled,
+            label = { Text(stringResource(R.string.battery_sync_phone_low_noti_title)) },
+            summary = {
+                val text = stringResource(
+                    R.string.battery_sync_phone_low_noti_summary,
+                    (currentThreshold * 100).toInt().toString()
+                )
+                Text(text)
+            },
+            enabled = isEnabled,
+            checked = phoneLowNotiEnabled,
             onCheckChanged = {
                 viewModel.setPhoneLowNotiEnabled(it)
             }
         )
         CheckboxSetting(
-            text = stringResource(R.string.battery_sync_watch_low_noti_title),
-            secondaryText = stringResource(
-                R.string.battery_sync_watch_low_noti_summary,
-                (currentThreshold * 100).toInt().toString()
-            ),
-            isEnabled = isEnabled,
-            isChecked = watchLowNotiEnabled,
+            label = { Text(stringResource(R.string.battery_sync_watch_low_noti_title)) },
+            summary = {
+                val text = stringResource(
+                    R.string.battery_sync_watch_low_noti_summary,
+                    (currentThreshold * 100).toInt().toString()
+                )
+                Text(text)
+            },
+            enabled = isEnabled,
+            checked = watchLowNotiEnabled,
             onCheckChanged = {
                 viewModel.setWatchLowNotiEnabled(it)
             }
         )
         SliderSetting(
-            text = stringResource(R.string.battery_sync_low_threshold_title),
+            label = { Text(stringResource(R.string.battery_sync_low_threshold_title)) },
             valueRange = 0.05f..0.35f,
             value = currentThreshold,
-            isEnabled = isEnabled,
+            enabled = isEnabled,
             trailingFormat = stringResource(R.string.battery_percent),
             onSliderValueChanged = {
                 currentThreshold = it
