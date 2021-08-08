@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.Card
 import androidx.compose.material.Divider
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
@@ -31,7 +32,6 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.common.ui.AppTheme
-import com.boswelja.smartwatchextensions.common.ui.Card
 import com.boswelja.smartwatchextensions.common.ui.UpNavigationAppBar
 import com.boswelja.smartwatchextensions.messages.Message
 import kotlinx.coroutines.launch

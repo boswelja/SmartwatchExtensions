@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.material.Card
 import androidx.compose.material.Divider
 import androidx.compose.material.LocalTextStyle
 import androidx.compose.material.MaterialTheme
@@ -50,7 +51,7 @@ fun CardHeader(
 @Composable
 fun Card(
     modifier: Modifier = Modifier,
-    header: @Composable (() -> Unit)? = null,
+    header: @Composable () -> Unit,
     shape: Shape = MaterialTheme.shapes.medium,
     backgroundColor: Color = MaterialTheme.colors.surface,
     contentColor: Color = contentColorFor(backgroundColor),
@@ -58,7 +59,7 @@ fun Card(
     elevation: Dp = 1.dp,
     content: @Composable () -> Unit
 ) {
-    androidx.compose.material.Card(
+    Card(
         modifier = modifier,
         shape = shape,
         backgroundColor = backgroundColor,
@@ -67,10 +68,8 @@ fun Card(
         elevation = elevation
     ) {
         Column {
-            header?.let {
-                it()
-                Divider()
-            }
+            header()
+            Divider()
             content()
         }
     }
