@@ -24,6 +24,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.boswelja.smartwatchextensions.aboutapp.ui.AboutAppScreen
 import com.boswelja.smartwatchextensions.common.ui.AppTheme
+import com.boswelja.smartwatchextensions.common.ui.UpNavigationWatchPickerAppBar
 import com.boswelja.smartwatchextensions.common.ui.WatchPickerAppBar
 import com.boswelja.smartwatchextensions.dashboard.ui.DashboardScreen
 import com.boswelja.smartwatchextensions.messages.ui.MessageDestination
@@ -60,11 +61,22 @@ class MainActivity : AppCompatActivity() {
                 Scaffold(
                     scaffoldState = scaffoldState,
                     topBar = {
-                        WatchPickerAppBar(
-                            selectedWatch = selectedWatch,
-                            watches = registeredWatches,
-                            onWatchSelected = { viewModel.selectWatchById(it.id) }
-                        )
+                        val showUpButton = BottomNavDestination.values()
+                            .none { it.route == backStackEntry?.destination?.route }
+                        if (showUpButton) {
+                            UpNavigationWatchPickerAppBar(
+                                selectedWatch = selectedWatch,
+                                watches = registeredWatches,
+                                onWatchSelected = { viewModel.selectWatchById(it.id) },
+                                onNavigateUp = { navController.popBackStack() }
+                            )
+                        } else {
+                            WatchPickerAppBar(
+                                selectedWatch = selectedWatch,
+                                watches = registeredWatches,
+                                onWatchSelected = { viewModel.selectWatchById(it.id) }
+                            )
+                        }
                     },
                     bottomBar = {
                         BottonNav(
@@ -79,7 +91,9 @@ class MainActivity : AppCompatActivity() {
                     }
                 ) {
                     MainScreen(
-                        modifier = Modifier.fillMaxSize().padding(it),
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(it),
                         scaffoldState = scaffoldState,
                         navController = navController
                     )
