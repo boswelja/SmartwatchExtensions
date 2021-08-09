@@ -13,19 +13,18 @@ import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.material.Divider
 import androidx.compose.material.Icon
 import androidx.compose.material.LinearProgressIndicator
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
+import androidx.compose.material.TextButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Info
-import androidx.compose.material.icons.outlined.Warning
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -34,15 +33,14 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.appmanager.App
 import com.boswelja.smartwatchextensions.common.ui.AppTheme
+import com.boswelja.smartwatchextensions.common.ui.Banner
 import com.boswelja.smartwatchextensions.common.ui.UpNavigationWatchPickerAppBar
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -120,6 +118,9 @@ fun AppManagerScreen(
 
     var selectedApp by remember { mutableStateOf<App?>(null) }
     var isAppInfoVisible by remember { mutableStateOf(false) }
+    var watchConnectionWarningVisible by remember(isLoading, isWatchConnected) {
+        mutableStateOf(!isLoading && !isWatchConnected)
+    }
 
     BackHandler(enabled = isAppInfoVisible) {
         isAppInfoVisible = false
@@ -132,17 +133,9 @@ fun AppManagerScreen(
             modifier = Modifier.fillMaxWidth(),
             isLoading = isLoading
         )
-        CacheStatusIndicator(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp),
-            isUpdatingCache = viewModel.isUpdatingCache
-        )
         WatchStatusIndicator(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp),
-            isWatchConnected = isWatchConnected
+            visible = watchConnectionWarningVisible,
+            onDismissRequest = { watchConnectionWarningVisible = false }
         )
         AppList(
             userApps = userApps,
@@ -175,7 +168,7 @@ fun AppManagerScreen(
     }
 }
 
-@ExperimentalAnimationApi
+@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun LoadingIndicator(
     modifier: Modifier = Modifier,
@@ -192,61 +185,34 @@ fun LoadingIndicator(
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
-fun CacheStatusIndicator(
-    modifier: Modifier = Modifier,
-    isUpdatingCache: Boolean
-) {
-    AnimatedVisibility(
-        visible = isUpdatingCache,
-        enter = expandVertically(),
-        exit = shrinkVertically()
-    ) {
-        StatusItem(
-            modifier = modifier,
-            icon = Icons.Outlined.Info,
-            text = stringResource(R.string.app_manager_updating_cache)
-        )
-    }
-}
-
-@OptIn(ExperimentalAnimationApi::class)
-@Composable
 fun WatchStatusIndicator(
     modifier: Modifier = Modifier,
-    isWatchConnected: Boolean
+    visible: Boolean,
+    onDismissRequest: () -> Unit
 ) {
     AnimatedVisibility(
-        visible = !isWatchConnected,
+        visible = visible,
         enter = expandVertically(),
         exit = shrinkVertically()
     ) {
-        StatusItem(
-            modifier = modifier,
-            icon = Icons.Outlined.Warning,
-            text = stringResource(R.string.app_manager_watch_disconnected)
-        )
-    }
-}
-
-@Composable
-fun StatusItem(
-    modifier: Modifier = Modifier,
-    icon: ImageVector,
-    text: String
-) {
-    Row(
-        modifier = modifier,
-        horizontalArrangement = Arrangement.spacedBy(16.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Icon(
-            modifier = Modifier.size(24.dp),
-            imageVector = icon,
-            contentDescription = null
-        )
-        Text(
-            text = text,
-            style = MaterialTheme.typography.subtitle1
-        )
+        Column {
+            Banner(
+                modifier = modifier,
+                icon = {
+                    Icon(
+                        modifier = Modifier.fillMaxSize(),
+                        imageVector = Icons.Outlined.Info,
+                        contentDescription = null
+                    )
+                },
+                text = { Text(stringResource(R.string.app_manager_watch_disconnected)) },
+                primaryButton = {
+                    TextButton(onClick = onDismissRequest) {
+                        Text(stringResource(R.string.watch_connection_dismiss))
+                    }
+                }
+            )
+            Divider()
+        }
     }
 }
