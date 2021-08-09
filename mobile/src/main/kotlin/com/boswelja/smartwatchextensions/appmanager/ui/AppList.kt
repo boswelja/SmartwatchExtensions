@@ -3,6 +3,7 @@ package com.boswelja.smartwatchextensions.appmanager.ui
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -33,6 +34,7 @@ fun AppList(
         if (userApps.isNotEmpty()) {
             stickyHeader {
                 HeaderItem(
+                    modifier = Modifier.fillMaxWidth(),
                     text = { Text(stringResource(R.string.app_manager_section_user_apps)) }
                 )
             }
@@ -49,6 +51,7 @@ fun AppList(
         if (disabledApps.isNotEmpty()) {
             stickyHeader {
                 HeaderItem(
+                    modifier = Modifier.fillMaxWidth(),
                     text = { Text(stringResource(R.string.app_manager_section_disabled_apps)) }
                 )
             }
@@ -65,6 +68,7 @@ fun AppList(
         if (systemApps.isNotEmpty()) {
             stickyHeader {
                 HeaderItem(
+                    modifier = Modifier.fillMaxWidth(),
                     text = { Text(stringResource(R.string.app_manager_section_system_apps)) }
                 )
             }
