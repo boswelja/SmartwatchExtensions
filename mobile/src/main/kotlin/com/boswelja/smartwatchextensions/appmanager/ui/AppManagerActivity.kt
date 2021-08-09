@@ -34,7 +34,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.boswelja.smartwatchextensions.R
@@ -53,9 +55,6 @@ class AppManagerActivity : AppCompatActivity() {
         Timber.i("onCreate() called")
 
         setContent {
-            val coroutineScope = rememberCoroutineScope()
-            val continueOnWatchText =
-                stringResource(R.string.watch_manager_action_continue_on_watch)
             val viewModel: AppManagerViewModel = viewModel()
 
             val registeredWatches by viewModel.registeredWatches
@@ -76,23 +75,8 @@ class AppManagerActivity : AppCompatActivity() {
                     }
                 ) {
                     AppManagerScreen(
-                        onOpenClicked = {
-                            coroutineScope.launch {
-                                if (viewModel.sendOpenRequest(it)) {
-                                    scaffoldState.snackbarHostState.showSnackbar(
-                                        continueOnWatchText, null
-                                    )
-                                }
-                            }
-                        },
-                        onUninstallClicked = {
-                            coroutineScope.launch {
-                                if (viewModel.sendUninstallRequest(it)) {
-                                    scaffoldState.snackbarHostState.showSnackbar(
-                                        continueOnWatchText, null
-                                    )
-                                }
-                            }
+                        onShowSnackbar = {
+                            scaffoldState.snackbarHostState.showSnackbar(it)
                         }
                     )
                 }
@@ -104,10 +88,13 @@ class AppManagerActivity : AppCompatActivity() {
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun AppManagerScreen(
-    onOpenClicked: (App) -> Unit,
-    onUninstallClicked: (App) -> Unit
+    modifier: Modifier = Modifier,
+    contentPadding: Dp = 16.dp,
+    onShowSnackbar: suspend (String) -> Unit
 ) {
     val viewModel: AppManagerViewModel = viewModel()
+    val coroutineScope = rememberCoroutineScope()
+    val context = LocalContext.current
 
     val userApps by viewModel.userApps.collectAsState(emptyList(), Dispatchers.IO)
     val disabledApps by viewModel.disabledApps.collectAsState(emptyList(), Dispatchers.IO)
@@ -138,6 +125,8 @@ fun AppManagerScreen(
             onDismissRequest = { watchConnectionWarningVisible = false }
         )
         AppList(
+            modifier = modifier,
+            contentPadding = contentPadding,
             userApps = userApps,
             disabledApps = disabledApps,
             systemApps = systemApps,
@@ -159,9 +148,23 @@ fun AppManagerScreen(
                 .background(MaterialTheme.colors.background)
                 .padding(16.dp),
             app = selectedApp,
-            onOpenClicked = onOpenClicked,
+            onOpenClicked = {
+                coroutineScope.launch {
+                    if (viewModel.sendOpenRequest(it)) {
+                        onShowSnackbar(
+                            context.getString(R.string.watch_manager_action_continue_on_watch)
+                        )
+                    }
+                }
+            },
             onUninstallClicked = {
-                onUninstallClicked(it)
+                coroutineScope.launch {
+                    if (viewModel.sendUninstallRequest(it)) {
+                        onShowSnackbar(
+                            context.getString(R.string.watch_manager_action_continue_on_watch)
+                        )
+                    }
+                }
                 isAppInfoVisible = false
             }
         )
