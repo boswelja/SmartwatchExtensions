@@ -24,6 +24,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.boswelja.smartwatchextensions.R
@@ -43,6 +44,7 @@ import kotlinx.coroutines.Dispatchers
 @Composable
 fun DashboardScreen(
     modifier: Modifier = Modifier,
+    contentPadding: Dp = 16.dp,
     onNavigateTo: (DashboardDestination) -> Unit
 ) {
     val context = LocalContext.current
@@ -54,9 +56,9 @@ fun DashboardScreen(
 
     Column(modifier.verticalScroll(scrollState)) {
         StaggeredVerticalGrid(
-            modifier = Modifier.padding(16.dp),
+            modifier = Modifier.padding(contentPadding),
             cells = GridCells.Adaptive(172.dp),
-            contentSpacing = 16.dp
+            contentSpacing = contentPadding
         ) {
             DashboardItem(
                 content = { WatchStatusSummarySmall(watchStatus = watchStatus) }

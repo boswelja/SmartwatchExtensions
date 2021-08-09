@@ -135,6 +135,7 @@ fun MainScreen(
         composable(BottomNavDestination.DASHBOARD.route) {
             DashboardScreen(
                 modifier = modifier,
+                contentPadding = contentPadding,
                 onNavigateTo = { navController.navigate(it.route) }
             )
         }
