@@ -3,8 +3,6 @@ package com.boswelja.smartwatchextensions.batterysync.ui
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.foundation.layout.Column
-import androidx.compose.material.Divider
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -38,11 +36,7 @@ class BatterySyncSettingsActivity : AppCompatActivity() {
                         )
                     }
                 ) {
-                    Column {
-                        BatterySyncSettingsHeader()
-                        Divider()
-                        BatterySyncSettingsScreen()
-                    }
+                    BatterySyncSettingsScreen()
                 }
             }
         }
