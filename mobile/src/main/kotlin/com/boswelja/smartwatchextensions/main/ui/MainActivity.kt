@@ -26,11 +26,13 @@ import com.boswelja.smartwatchextensions.aboutapp.ui.AboutAppScreen
 import com.boswelja.smartwatchextensions.common.ui.AppTheme
 import com.boswelja.smartwatchextensions.common.ui.UpNavigationWatchPickerAppBar
 import com.boswelja.smartwatchextensions.common.ui.WatchPickerAppBar
+import com.boswelja.smartwatchextensions.dashboard.ui.DashboardDestination
 import com.boswelja.smartwatchextensions.dashboard.ui.DashboardScreen
 import com.boswelja.smartwatchextensions.messages.ui.MessageDestination
 import com.boswelja.smartwatchextensions.messages.ui.MessageHistoryScreen
 import com.boswelja.smartwatchextensions.messages.ui.MessagesScreen
 import com.boswelja.smartwatchextensions.onboarding.ui.OnboardingActivity
+import com.boswelja.smartwatchextensions.proximity.ui.ProximitySettingsScreen
 import com.boswelja.smartwatchextensions.settings.ui.AppSettingsScreen
 import java.util.UUID
 import kotlinx.coroutines.Dispatchers
@@ -129,8 +131,12 @@ fun MainScreen(
         navController = navController,
         startDestination = BottomNavDestination.DASHBOARD.route
     ) {
+        // Bottom nav destinations
         composable(BottomNavDestination.DASHBOARD.route) {
-            DashboardScreen(modifier)
+            DashboardScreen(
+                modifier = modifier,
+                onNavigateTo = { navController.navigate(it.route) }
+            )
         }
         composable(BottomNavDestination.MESSAGES.route) {
             MessagesScreen(
@@ -146,6 +152,16 @@ fun MainScreen(
         composable(BottomNavDestination.ABOUT.route) {
             AboutAppScreen()
         }
+
+        // Dashboard destinations
+        composable(DashboardDestination.PROXIMITY_SETTINGS.route) {
+            ProximitySettingsScreen(
+                modifier = modifier,
+                contentPadding = contentPadding
+            )
+        }
+
+        // Message destinations
         composable(MessageDestination.MessageHistory.route) {
             MessageHistoryScreen(
                 modifier = modifier.padding(16.dp),

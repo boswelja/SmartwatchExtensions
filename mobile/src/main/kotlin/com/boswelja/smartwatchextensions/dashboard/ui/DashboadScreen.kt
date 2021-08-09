@@ -35,7 +35,6 @@ import com.boswelja.smartwatchextensions.common.startActivity
 import com.boswelja.smartwatchextensions.common.ui.StaggeredVerticalGrid
 import com.boswelja.smartwatchextensions.dndsync.ui.DnDSyncSettingsActivity
 import com.boswelja.smartwatchextensions.phonelocking.ui.PhoneLockingSettingsActivity
-import com.boswelja.smartwatchextensions.proximity.ui.ProximitySettingsActivity
 import com.boswelja.smartwatchextensions.watchmanager.ui.WatchStatusSummarySmall
 import com.boswelja.watchconnection.core.discovery.Status
 import kotlinx.coroutines.Dispatchers
@@ -43,7 +42,8 @@ import kotlinx.coroutines.Dispatchers
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun DashboardScreen(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onNavigateTo: (DashboardDestination) -> Unit
 ) {
     val context = LocalContext.current
     val scrollState = rememberScrollState()
@@ -94,7 +94,7 @@ fun DashboardScreen(
             DashboardItem(
                 titleText = stringResource(R.string.proximity_settings_title),
                 onClick = {
-                    context.startActivity<ProximitySettingsActivity>()
+                    onNavigateTo(DashboardDestination.PROXIMITY_SETTINGS)
                 }
             )
         }
