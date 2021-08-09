@@ -32,6 +32,7 @@ import com.boswelja.smartwatchextensions.messages.ui.MessageDestination
 import com.boswelja.smartwatchextensions.messages.ui.MessageHistoryScreen
 import com.boswelja.smartwatchextensions.messages.ui.MessagesScreen
 import com.boswelja.smartwatchextensions.onboarding.ui.OnboardingActivity
+import com.boswelja.smartwatchextensions.phonelocking.ui.PhoneLockingSettingsScreen
 import com.boswelja.smartwatchextensions.proximity.ui.ProximitySettingsScreen
 import com.boswelja.smartwatchextensions.settings.ui.AppSettingsScreen
 import java.util.UUID
@@ -155,6 +156,12 @@ fun MainScreen(
         }
 
         // Dashboard destinations
+        composable(DashboardDestination.PHONE_LOCKING_SETTINGS.route) {
+            PhoneLockingSettingsScreen(
+                modifier = modifier,
+                contentPadding = contentPadding
+            )
+        }
         composable(DashboardDestination.PROXIMITY_SETTINGS.route) {
             ProximitySettingsScreen(
                 modifier = modifier,

@@ -50,10 +50,6 @@
             android:exported="false" />
 
         <activity
-            android:name=".phonelocking.ui.PhoneLockingSettingsActivity"
-            android:exported="false" />
-
-        <activity
             android:name=".proximity.ui.ProximitySettingsActivity"
             android:exported="false" />
 
