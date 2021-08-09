@@ -150,10 +150,16 @@ fun MainScreen(
             )
         }
         composable(BottomNavDestination.SETTINGS.route) {
-            AppSettingsScreen()
+            AppSettingsScreen(
+                modifier = modifier,
+                contentPadding = contentPadding
+            )
         }
         composable(BottomNavDestination.ABOUT.route) {
-            AboutAppScreen()
+            AboutAppScreen(
+                modifier = modifier,
+                contentPadding = contentPadding
+            )
         }
 
         // Dashboard destinations
