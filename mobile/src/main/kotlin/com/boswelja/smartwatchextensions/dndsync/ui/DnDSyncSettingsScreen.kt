@@ -5,144 +5,189 @@ import android.provider.Settings
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.common.preference.PreferenceKey.DND_SYNC_TO_PHONE_KEY
 import com.boswelja.smartwatchextensions.common.preference.PreferenceKey.DND_SYNC_WITH_THEATER_KEY
 import com.boswelja.smartwatchextensions.common.startActivity
+import com.boswelja.smartwatchextensions.common.ui.Card
+import com.boswelja.smartwatchextensions.common.ui.CardHeader
 import com.boswelja.smartwatchextensions.common.ui.SwitchSetting
 import com.boswelja.smartwatchextensions.dndsync.ui.helper.DnDSyncHelperActivity
+import kotlinx.coroutines.Dispatchers
 
 @Composable
-fun DnDSyncSettingsScreen() {
-    Column {
-        val viewModel: DnDSyncSettingsViewModel = viewModel()
-        val context = LocalContext.current
+fun DnDSyncSettingsScreen(
+    modifier: Modifier = Modifier,
+    contentPadding: Dp = 16.dp
+) {
+    Column(
+        modifier = modifier.padding(contentPadding),
+        verticalArrangement = Arrangement.spacedBy(contentPadding)
+    ) {
+        DndSyncSettingsCard()
+    }
+}
 
-        var changingKey = remember<String?> { null }
-        val notiPolicyAccessLauncher =
-            rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-                changingKey?.let { key ->
-                    if (viewModel.hasNotificationPolicyAccess) {
-                        when (key) {
-                            DND_SYNC_TO_PHONE_KEY -> viewModel.setSyncToPhone(true)
-                            DND_SYNC_WITH_THEATER_KEY -> viewModel.setSyncWithTheater(true)
-                        }
-                    }
-                    changingKey = null
-                }
+@Composable
+fun DndSyncSettingsCard(modifier: Modifier = Modifier) {
+    val context = LocalContext.current
+    val viewModel: DnDSyncSettingsViewModel = viewModel()
+    var changingKey = rememberSaveable { "" }
+
+    val canReceiveDnD by viewModel.canReceiveDnD.collectAsState(false, Dispatchers.IO)
+    val canSendDnD by viewModel.canSendDnD.collectAsState(false, Dispatchers.IO)
+
+    val syncToWatch by viewModel.syncToWatch.collectAsState(false, Dispatchers.IO)
+    val syncToPhone by viewModel.syncToPhone.collectAsState(false, Dispatchers.IO)
+    val syncWithTheater by viewModel.syncWithTheater.collectAsState(false, Dispatchers.IO)
+
+    val notiPolicyAccessLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) {
+        if (viewModel.hasNotificationPolicyAccess) {
+            when (changingKey) {
+                DND_SYNC_TO_PHONE_KEY -> viewModel.setSyncToPhone(true)
+                DND_SYNC_WITH_THEATER_KEY -> viewModel.setSyncWithTheater(true)
             }
-
-        val onRequestNotiPolicyAccess = { key: String ->
-            changingKey = key
-            Toast.makeText(
-                context,
-                context.getString(R.string.dnd_sync_request_policy_access_message),
-                Toast.LENGTH_SHORT
-            ).show()
-            notiPolicyAccessLauncher
-                .launch(Intent(Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS))
         }
+    }
+    val onRequestNotiPolicyAccess = { key: String ->
+        changingKey = key
+        Toast.makeText(
+            context,
+            context.getString(R.string.dnd_sync_request_policy_access_message),
+            Toast.LENGTH_SHORT
+        ).show()
+        notiPolicyAccessLauncher
+            .launch(Intent(Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS))
+    }
 
-        SyncToWatchSetting(viewModel = viewModel)
-        SyncToPhoneSetting(
-            viewModel = viewModel,
-            onRequestNotificationPolicyAccess = onRequestNotiPolicyAccess
-        )
-        SyncWithTheaterSetting(
-            viewModel = viewModel,
-            onRequestNotificationPolicyAccess = onRequestNotiPolicyAccess
-        )
+    Card(
+        modifier = modifier,
+        header = {
+            CardHeader(
+                title = {
+                    Text(stringResource(R.string.main_dnd_sync_title))
+                }
+            )
+        }
+    ) {
+        Column {
+            SyncToWatchSetting(
+                enabled = canReceiveDnD,
+                checked = syncToWatch,
+                onCheckChanged = {
+                    if (!it) {
+                        viewModel.setSyncToWatch(false)
+                    } else {
+                        context.startActivity<DnDSyncHelperActivity>()
+                    }
+                }
+            )
+            SyncToPhoneSetting(
+                enabled = canSendDnD,
+                checked = syncToPhone,
+                onCheckChanged = {
+                    if (it && !viewModel.hasNotificationPolicyAccess) {
+                        onRequestNotiPolicyAccess(DND_SYNC_TO_PHONE_KEY)
+                    } else {
+                        viewModel.setSyncToPhone(it)
+                    }
+                }
+            )
+            SyncWithTheaterSetting(
+                enabled = canSendDnD,
+                checked = syncWithTheater,
+                onCheckChanged = {
+                    if (it && !viewModel.hasNotificationPolicyAccess) {
+                        onRequestNotiPolicyAccess(DND_SYNC_WITH_THEATER_KEY)
+                    } else {
+                        viewModel.setSyncWithTheater(it)
+                    }
+                }
+            )
+        }
     }
 }
 
 @Composable
 fun SyncToWatchSetting(
-    viewModel: DnDSyncSettingsViewModel
+    modifier: Modifier = Modifier,
+    checked: Boolean,
+    enabled: Boolean = true,
+    onCheckChanged: (Boolean) -> Unit
 ) {
-    val context = LocalContext.current
-    val dndSyncToWatch by viewModel.syncToWatch.collectAsState(false)
-    val canSyncToWatch by viewModel.canReceiveDnD.collectAsState(false)
     SwitchSetting(
+        modifier = modifier,
         label = { Text(stringResource(R.string.pref_dnd_sync_to_watch_title)) },
         summary = {
-            val text = if (canSyncToWatch)
+            val text = if (enabled)
                 stringResource(R.string.pref_dnd_sync_to_watch_summary)
             else
                 stringResource(R.string.capability_not_supported)
             Text(text)
         },
-        checked = dndSyncToWatch,
-        enabled = canSyncToWatch,
-        onCheckChanged = {
-            if (!it) {
-                viewModel.setSyncToWatch(false)
-            } else {
-                context.startActivity<DnDSyncHelperActivity>()
-            }
-        }
+        checked = checked,
+        enabled = enabled,
+        onCheckChanged = onCheckChanged
     )
 }
 
 @Composable
 fun SyncToPhoneSetting(
-    viewModel: DnDSyncSettingsViewModel,
-    onRequestNotificationPolicyAccess: (String) -> Unit
+    modifier: Modifier = Modifier,
+    checked: Boolean,
+    enabled: Boolean = true,
+    onCheckChanged: (Boolean) -> Unit
 ) {
-    val dndSyncToPhone by viewModel.syncToPhone.collectAsState(false)
-    val canSyncToPhone by viewModel.canSendDnD.collectAsState(false)
     SwitchSetting(
+        modifier = modifier,
         label = { Text(stringResource(R.string.pref_dnd_sync_to_phone_title)) },
         summary = {
-            val text = if (canSyncToPhone)
+            val text = if (enabled)
                 stringResource(R.string.pref_dnd_sync_to_phone_summary)
             else
                 stringResource(R.string.capability_not_supported)
             Text(text)
         },
-        checked = dndSyncToPhone,
-        enabled = canSyncToPhone,
-        onCheckChanged = {
-            if ((it && viewModel.hasNotificationPolicyAccess) || !it) {
-                viewModel.setSyncToPhone(it)
-            } else {
-                onRequestNotificationPolicyAccess(DND_SYNC_TO_PHONE_KEY)
-            }
-        }
+        checked = checked,
+        enabled = enabled,
+        onCheckChanged = onCheckChanged
     )
 }
 
 @Composable
 fun SyncWithTheaterSetting(
-    viewModel: DnDSyncSettingsViewModel,
-    onRequestNotificationPolicyAccess: (String) -> Unit
+    modifier: Modifier = Modifier,
+    checked: Boolean,
+    enabled: Boolean = true,
+    onCheckChanged: (Boolean) -> Unit
 ) {
-    val dndSyncWithTheater by viewModel.syncWithTheater.collectAsState(false)
-    val canSyncWithTheater by viewModel.canSendDnD.collectAsState(false)
     SwitchSetting(
+        modifier = modifier,
         label = { Text(stringResource(R.string.pref_dnd_sync_with_theater_title)) },
         summary = {
-            val text = if (canSyncWithTheater)
+            val text = if (enabled)
                 stringResource(R.string.pref_dnd_sync_with_theater_summary)
             else stringResource(R.string.capability_not_supported)
             Text(text)
         },
-        checked = dndSyncWithTheater,
-        enabled = canSyncWithTheater,
-        onCheckChanged = {
-            if ((it && viewModel.hasNotificationPolicyAccess) || !it) {
-                viewModel.setSyncWithTheater(it)
-            } else {
-                onRequestNotificationPolicyAccess(DND_SYNC_WITH_THEATER_KEY)
-            }
-        }
+        checked = checked,
+        enabled = enabled,
+        onCheckChanged = onCheckChanged
     )
 }
