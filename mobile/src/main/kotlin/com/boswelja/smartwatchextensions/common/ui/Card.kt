@@ -38,7 +38,7 @@ fun CardHeader(
     title: @Composable () -> Unit,
     subtitle: @Composable (() -> Unit)? = null,
     icon: @Composable (() -> Unit)? = null,
-    action: @Composable (() -> Unit)? = null
+    action: @Composable (() -> Unit)? = null,
 ) {
     Row(
         modifier = modifier.padding(16.dp),
@@ -78,6 +78,7 @@ fun Card(
     contentColor: Color = contentColorFor(backgroundColor),
     border: BorderStroke? = null,
     elevation: Dp = 1.dp,
+    dividerVisible: Boolean = true,
     content: @Composable () -> Unit
 ) {
     Card(
@@ -90,7 +91,7 @@ fun Card(
     ) {
         Column {
             header()
-            Divider()
+            if (dividerVisible) Divider()
             content()
         }
     }
@@ -117,6 +118,7 @@ fun ExpandableCard(
         contentColor = contentColor,
         border = border,
         elevation = elevation,
+        dividerVisible = expanded,
         header = {
             CardHeader(
                 modifier = Modifier.clickable(onClick = toggleExpanded),
