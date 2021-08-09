@@ -205,7 +205,7 @@ fun MainScreen(
         // Message destinations
         composable(MessageDestination.MessageHistory.route) {
             MessageHistoryScreen(
-                modifier = modifier.padding(16.dp),
+                modifier = modifier.padding(contentPadding),
                 onShowSnackbar = {
                     scaffoldState.snackbarHostState.showSnackbar(it)
                 }
