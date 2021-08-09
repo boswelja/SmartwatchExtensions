@@ -14,13 +14,13 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 
-@ExperimentalCoroutinesApi
 class PhoneLockingSettingsViewModel internal constructor(
     application: Application,
     private val dispatcher: CoroutineDispatcher,
     private val watchManager: WatchManager
 ) : AndroidViewModel(application) {
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     val phoneLockingEnabled = watchManager.selectedWatch.flatMapLatest {
         it?.let { watch ->
             watchManager.getBoolSetting(PHONE_LOCKING_ENABLED_KEY, watch)
@@ -34,7 +34,10 @@ class PhoneLockingSettingsViewModel internal constructor(
         WatchManager.getInstance(application)
     )
 
-    fun setPhoneLockingEnabled(isEnabled: Boolean) {
+    fun setPhoneLockingEnabled(isEnabled: Boolean): Boolean {
+        // Return false if we're trying to enable phone locking but we can't
+        if (isEnabled && !canEnablePhoneLocking()) return false
+
         viewModelScope.launch(dispatcher) {
             val selectedWatch = watchManager.selectedWatch.first()
             watchManager.updatePreference(
@@ -43,9 +46,11 @@ class PhoneLockingSettingsViewModel internal constructor(
                 isEnabled
             )
         }
+
+        return true
     }
 
-    fun canEnablePhoneLocking(): Boolean {
+    private fun canEnablePhoneLocking(): Boolean {
         return getApplication<Application>().isAccessibilityServiceEnabled()
     }
 }
