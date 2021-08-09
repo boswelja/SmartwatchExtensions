@@ -93,6 +93,7 @@
     <string name="separation_notification_title">%s out of range</string>
     <string name="separation_notification_text">Your %s isn\'t nearby. Did you mean to leave it behind?</string>
     <string name="separation_noti_channel_title">Watch Separation Alerts</string>
+    <string name="separation_alerts_title">Separation Alerts</string>
 
     <!-- App Settings strings -->
     <string name="app_settings_title">App Settings</string>
