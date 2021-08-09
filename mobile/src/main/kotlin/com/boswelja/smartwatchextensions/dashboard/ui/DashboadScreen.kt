@@ -22,16 +22,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.boswelja.smartwatchextensions.R
-import com.boswelja.smartwatchextensions.appmanager.ui.AppManagerActivity
 import com.boswelja.smartwatchextensions.appmanager.ui.AppSummarySmall
 import com.boswelja.smartwatchextensions.batterysync.ui.BatterySummarySmall
-import com.boswelja.smartwatchextensions.common.startActivity
 import com.boswelja.smartwatchextensions.common.ui.StaggeredVerticalGrid
 import com.boswelja.smartwatchextensions.watchmanager.ui.WatchStatusSummarySmall
 import com.boswelja.watchconnection.core.discovery.Status
@@ -44,7 +41,6 @@ fun DashboardScreen(
     contentPadding: Dp = 16.dp,
     onNavigateTo: (DashboardDestination) -> Unit
 ) {
-    val context = LocalContext.current
     val scrollState = rememberScrollState()
     val viewModel: DashboardViewModel = viewModel()
     val watchStatus by viewModel.status.collectAsState(Status.CONNECTING, Dispatchers.IO)
@@ -72,9 +68,7 @@ fun DashboardScreen(
                     { AppSummarySmall(appCount = appCount) }
                 } else null,
                 titleText = stringResource(R.string.main_app_manager_title),
-                onClick = {
-                    context.startActivity<AppManagerActivity>()
-                }
+                onClick = { onNavigateTo(DashboardDestination.APP_MANAGER) }
             )
             DashboardItem(
                 titleText = stringResource(R.string.main_dnd_sync_title),

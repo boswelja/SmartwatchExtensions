@@ -23,6 +23,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.boswelja.smartwatchextensions.aboutapp.ui.AboutAppScreen
+import com.boswelja.smartwatchextensions.appmanager.ui.AppManagerScreen
 import com.boswelja.smartwatchextensions.batterysync.ui.BatterySyncSettingsScreen
 import com.boswelja.smartwatchextensions.common.ui.AppTheme
 import com.boswelja.smartwatchextensions.common.ui.UpNavigationWatchPickerAppBar
@@ -164,6 +165,15 @@ fun MainScreen(
         }
 
         // Dashboard destinations
+        composable(DashboardDestination.APP_MANAGER.route) {
+            AppManagerScreen(
+                modifier = modifier,
+                contentPadding = contentPadding,
+                onShowSnackbar = {
+                    scaffoldState.snackbarHostState.showSnackbar(it)
+                }
+            )
+        }
         composable(DashboardDestination.BATTERY_SYNC_SETTINGS.route) {
             BatterySyncSettingsScreen(
                 modifier = modifier,

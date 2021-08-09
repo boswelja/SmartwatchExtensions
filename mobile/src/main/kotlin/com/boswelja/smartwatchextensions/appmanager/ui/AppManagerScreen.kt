@@ -1,9 +1,6 @@
 package com.boswelja.smartwatchextensions.appmanager.ui
 
-import android.os.Bundle
 import androidx.activity.compose.BackHandler
-import androidx.activity.compose.setContent
-import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.expandVertically
@@ -20,12 +17,10 @@ import androidx.compose.material.Divider
 import androidx.compose.material.Icon
 import androidx.compose.material.LinearProgressIndicator
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Info
-import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -41,49 +36,9 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.appmanager.App
-import com.boswelja.smartwatchextensions.common.ui.AppTheme
 import com.boswelja.smartwatchextensions.common.ui.Banner
-import com.boswelja.smartwatchextensions.common.ui.UpNavigationWatchPickerAppBar
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import timber.log.Timber
-
-class AppManagerActivity : AppCompatActivity() {
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        Timber.i("onCreate() called")
-
-        setContent {
-            val viewModel: AppManagerViewModel = viewModel()
-
-            val registeredWatches by viewModel.registeredWatches
-                .collectAsState(emptyList(), Dispatchers.IO)
-
-            val scaffoldState = rememberScaffoldState()
-
-            AppTheme {
-                Scaffold(
-                    scaffoldState = scaffoldState,
-                    topBar = {
-                        UpNavigationWatchPickerAppBar(
-                            selectedWatch = viewModel.selectedWatch,
-                            watches = registeredWatches,
-                            onWatchSelected = { viewModel.selectWatchById(it.id) },
-                            onNavigateUp = { onBackPressed() }
-                        )
-                    }
-                ) {
-                    AppManagerScreen(
-                        onShowSnackbar = {
-                            scaffoldState.snackbarHostState.showSnackbar(it)
-                        }
-                    )
-                }
-            }
-        }
-    }
-}
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
