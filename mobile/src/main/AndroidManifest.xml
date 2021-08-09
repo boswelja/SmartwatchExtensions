@@ -39,10 +39,6 @@
         </activity>
 
         <activity
-            android:name=".batterysync.ui.BatterySyncSettingsActivity"
-            android:exported="false" />
-
-        <activity
             android:name=".dndsync.ui.helper.DnDSyncHelperActivity"
             android:exported="false" />
 
