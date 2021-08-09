@@ -66,9 +66,7 @@ fun BatterySyncSettings(
     Card(
         modifier = modifier,
         header = {
-            CardHeader(
-                title = { Text(stringResource(R.string.battery_sync_title)) }
-            )
+            CardHeader(title = { Text(stringResource(R.string.category_battery_sync_settings)) })
         }
     ) {
         Column {
