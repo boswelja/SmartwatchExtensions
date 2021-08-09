@@ -78,7 +78,9 @@ class AppManagerViewModel internal constructor(
             watchManager.getStatusFor(watch)
         } ?: flow { emit(Status.ERROR) }
     }.map { status ->
-        status == Status.CONNECTING || status == Status.CONNECTED
+        status == Status.CONNECTING ||
+            status == Status.CONNECTED ||
+            status == Status.CONNECTED_NEARBY
     }
 
     /**
