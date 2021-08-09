@@ -11,7 +11,8 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun AppSettingsScreen(
     modifier: Modifier = Modifier,
-    contentPadding: Dp = 16.dp
+    contentPadding: Dp = 16.dp,
+    onNavigateTo: (SettingsDestination) -> Unit
 ) {
     LazyColumn(
         modifier = modifier,
@@ -25,7 +26,7 @@ fun AppSettingsScreen(
             QSTileSettingsCard()
         }
         item {
-            WatchSettings()
+            WatchSettings(onNavigateTo = onNavigateTo)
         }
     }
 }

@@ -1,16 +1,11 @@
 package com.boswelja.smartwatchextensions.watchmanager.ui
 
-import android.os.Bundle
-import androidx.activity.compose.setContent
-import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
 import androidx.compose.material.ListItem
-import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Add
@@ -26,36 +21,12 @@ import androidx.core.os.bundleOf
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.common.startActivity
-import com.boswelja.smartwatchextensions.common.ui.AppTheme
 import com.boswelja.smartwatchextensions.common.ui.Card
 import com.boswelja.smartwatchextensions.common.ui.CardHeader
-import com.boswelja.smartwatchextensions.common.ui.UpNavigationAppBar
 import com.boswelja.smartwatchextensions.watchinfo.ui.WatchInfoActivity
 import com.boswelja.smartwatchextensions.watchinfo.ui.WatchInfoActivity.Companion.EXTRA_WATCH_ID
 import com.boswelja.smartwatchextensions.watchmanager.ui.register.RegisterWatchActivity
 import kotlinx.coroutines.Dispatchers
-
-class WatchManagerActivity : AppCompatActivity() {
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        setContent {
-            AppTheme {
-                Scaffold(
-                    topBar = {
-                        UpNavigationAppBar(
-                            onNavigateUp = { finish() },
-                            title = { Text(stringResource(R.string.watch_manager_title)) }
-                        )
-                    }
-                ) {
-                    WatchManagerScreen(Modifier.padding(16.dp))
-                }
-            }
-        }
-    }
-}
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable

@@ -38,6 +38,8 @@ import com.boswelja.smartwatchextensions.onboarding.ui.OnboardingActivity
 import com.boswelja.smartwatchextensions.phonelocking.ui.PhoneLockingSettingsScreen
 import com.boswelja.smartwatchextensions.proximity.ui.ProximitySettingsScreen
 import com.boswelja.smartwatchextensions.settings.ui.AppSettingsScreen
+import com.boswelja.smartwatchextensions.settings.ui.SettingsDestination
+import com.boswelja.smartwatchextensions.watchmanager.ui.WatchManagerScreen
 import java.util.UUID
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
@@ -154,7 +156,8 @@ fun MainScreen(
         composable(BottomNavDestination.SETTINGS.route) {
             AppSettingsScreen(
                 modifier = modifier,
-                contentPadding = contentPadding
+                contentPadding = contentPadding,
+                onNavigateTo = { navController.navigate(it.route) }
             )
         }
         composable(BottomNavDestination.ABOUT.route) {
@@ -206,6 +209,13 @@ fun MainScreen(
                 onShowSnackbar = {
                     scaffoldState.snackbarHostState.showSnackbar(it)
                 }
+            )
+        }
+
+        // Settings destinations
+        composable(SettingsDestination.WATCH_MANAGER.route) {
+            WatchManagerScreen(
+                modifier = Modifier.padding(contentPadding)
             )
         }
     }

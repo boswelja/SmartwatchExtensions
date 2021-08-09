@@ -10,18 +10,17 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Watch
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import com.boswelja.smartwatchextensions.R
-import com.boswelja.smartwatchextensions.common.startActivity
 import com.boswelja.smartwatchextensions.common.ui.Card
 import com.boswelja.smartwatchextensions.common.ui.CardHeader
-import com.boswelja.smartwatchextensions.watchmanager.ui.WatchManagerActivity
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun WatchSettings(modifier: Modifier = Modifier) {
-    val context = LocalContext.current
+fun WatchSettings(
+    modifier: Modifier = Modifier,
+    onNavigateTo: (SettingsDestination) -> Unit
+) {
     Card(
         modifier = modifier,
         header = {
@@ -32,9 +31,7 @@ fun WatchSettings(modifier: Modifier = Modifier) {
             ListItem(
                 text = { Text(stringResource(R.string.manage_watches_title)) },
                 icon = { Icon(Icons.Outlined.Watch, null) },
-                modifier = Modifier.clickable {
-                    context.startActivity<WatchManagerActivity>()
-                }
+                modifier = Modifier.clickable { onNavigateTo(SettingsDestination.WATCH_MANAGER) }
             )
         }
     }
