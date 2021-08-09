@@ -6,13 +6,14 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material.Card
 import androidx.compose.material.Divider
-import androidx.compose.material.LocalTextStyle
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.ProvideTextStyle
 import androidx.compose.material.contentColorFor
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
@@ -24,26 +25,30 @@ fun CardHeader(
     modifier: Modifier = Modifier,
     title: @Composable () -> Unit,
     subtitle: @Composable (() -> Unit)? = null,
-    icon: @Composable (() -> Unit)? = null
+    icon: @Composable (() -> Unit)? = null,
+    action: @Composable (() -> Unit)? = null
 ) {
-    Row(modifier = modifier.padding(16.dp)) {
+    Row(
+        modifier = modifier.padding(16.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
         if (icon != null) {
             icon()
             Spacer(Modifier.width(16.dp))
         }
         Column {
-            CompositionLocalProvider(
-                LocalTextStyle provides MaterialTheme.typography.subtitle1
-            ) {
+            ProvideTextStyle(MaterialTheme.typography.subtitle1) {
                 title()
             }
             if (subtitle != null) {
-                CompositionLocalProvider(
-                    LocalTextStyle provides MaterialTheme.typography.subtitle2
-                ) {
+                ProvideTextStyle(MaterialTheme.typography.subtitle2) {
                     subtitle()
                 }
             }
+        }
+        if (action != null) {
+            Spacer(Modifier.weight(1f).widthIn(min = 16.dp))
+            action()
         }
     }
 }
