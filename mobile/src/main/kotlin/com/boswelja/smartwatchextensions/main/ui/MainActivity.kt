@@ -28,6 +28,7 @@ import com.boswelja.smartwatchextensions.common.ui.UpNavigationWatchPickerAppBar
 import com.boswelja.smartwatchextensions.common.ui.WatchPickerAppBar
 import com.boswelja.smartwatchextensions.dashboard.ui.DashboardDestination
 import com.boswelja.smartwatchextensions.dashboard.ui.DashboardScreen
+import com.boswelja.smartwatchextensions.dndsync.ui.DnDSyncSettingsScreen
 import com.boswelja.smartwatchextensions.messages.ui.MessageDestination
 import com.boswelja.smartwatchextensions.messages.ui.MessageHistoryScreen
 import com.boswelja.smartwatchextensions.messages.ui.MessagesScreen
@@ -156,6 +157,12 @@ fun MainScreen(
         }
 
         // Dashboard destinations
+        composable(DashboardDestination.DND_SYNC_SETTINGS.route) {
+            DnDSyncSettingsScreen(
+                modifier = modifier,
+                contentPadding = contentPadding
+            )
+        }
         composable(DashboardDestination.PHONE_LOCKING_SETTINGS.route) {
             PhoneLockingSettingsScreen(
                 modifier = modifier,

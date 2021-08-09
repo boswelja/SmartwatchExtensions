@@ -34,7 +34,6 @@ import com.boswelja.smartwatchextensions.batterysync.ui.BatterySummarySmall
 import com.boswelja.smartwatchextensions.batterysync.ui.BatterySyncSettingsActivity
 import com.boswelja.smartwatchextensions.common.startActivity
 import com.boswelja.smartwatchextensions.common.ui.StaggeredVerticalGrid
-import com.boswelja.smartwatchextensions.dndsync.ui.DnDSyncSettingsActivity
 import com.boswelja.smartwatchextensions.watchmanager.ui.WatchStatusSummarySmall
 import com.boswelja.watchconnection.core.discovery.Status
 import kotlinx.coroutines.Dispatchers
@@ -82,9 +81,7 @@ fun DashboardScreen(
             )
             DashboardItem(
                 titleText = stringResource(R.string.main_dnd_sync_title),
-                onClick = {
-                    context.startActivity<DnDSyncSettingsActivity>()
-                }
+                onClick = { onNavigateTo(DashboardDestination.DND_SYNC_SETTINGS) }
             )
             DashboardItem(
                 titleText = stringResource(R.string.main_phone_locking_title),
