@@ -23,6 +23,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.boswelja.smartwatchextensions.aboutapp.ui.AboutAppScreen
+import com.boswelja.smartwatchextensions.batterysync.ui.BatterySyncSettingsScreen
 import com.boswelja.smartwatchextensions.common.ui.AppTheme
 import com.boswelja.smartwatchextensions.common.ui.UpNavigationWatchPickerAppBar
 import com.boswelja.smartwatchextensions.common.ui.WatchPickerAppBar
@@ -163,6 +164,12 @@ fun MainScreen(
         }
 
         // Dashboard destinations
+        composable(DashboardDestination.BATTERY_SYNC_SETTINGS.route) {
+            BatterySyncSettingsScreen(
+                modifier = modifier,
+                contentPadding = contentPadding
+            )
+        }
         composable(DashboardDestination.DND_SYNC_SETTINGS.route) {
             DnDSyncSettingsScreen(
                 modifier = modifier,

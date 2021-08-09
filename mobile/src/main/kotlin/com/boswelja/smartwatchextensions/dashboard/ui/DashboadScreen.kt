@@ -31,7 +31,6 @@ import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.appmanager.ui.AppManagerActivity
 import com.boswelja.smartwatchextensions.appmanager.ui.AppSummarySmall
 import com.boswelja.smartwatchextensions.batterysync.ui.BatterySummarySmall
-import com.boswelja.smartwatchextensions.batterysync.ui.BatterySyncSettingsActivity
 import com.boswelja.smartwatchextensions.common.startActivity
 import com.boswelja.smartwatchextensions.common.ui.StaggeredVerticalGrid
 import com.boswelja.smartwatchextensions.watchmanager.ui.WatchStatusSummarySmall
@@ -66,9 +65,7 @@ fun DashboardScreen(
                     { BatterySummarySmall(batteryStats = batteryStats) }
                 },
                 titleText = stringResource(R.string.battery_sync_title),
-                onClick = {
-                    context.startActivity<BatterySyncSettingsActivity>()
-                }
+                onClick = { onNavigateTo(DashboardDestination.BATTERY_SYNC_SETTINGS) }
             )
             DashboardItem(
                 content = if (appCount > 0) {
