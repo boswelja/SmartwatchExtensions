@@ -1,4 +1,4 @@
-package com.boswelja.smartwatchextensions.watchinfo.ui
+package com.boswelja.smartwatchextensions.watchmanager.ui.info
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel

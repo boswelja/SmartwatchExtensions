@@ -43,7 +43,7 @@
             android:exported="false" />
 
         <activity
-            android:name=".watchinfo.ui.WatchInfoActivity"
+            android:name=".watchmanager.ui.info.WatchInfoActivity"
             android:exported="false" />
 
         <activity

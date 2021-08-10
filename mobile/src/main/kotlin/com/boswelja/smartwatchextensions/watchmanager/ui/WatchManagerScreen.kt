@@ -23,8 +23,8 @@ import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.common.startActivity
 import com.boswelja.smartwatchextensions.common.ui.Card
 import com.boswelja.smartwatchextensions.common.ui.CardHeader
-import com.boswelja.smartwatchextensions.watchinfo.ui.WatchInfoActivity
-import com.boswelja.smartwatchextensions.watchinfo.ui.WatchInfoActivity.Companion.EXTRA_WATCH_ID
+import com.boswelja.smartwatchextensions.watchmanager.ui.info.WatchInfoActivity
+import com.boswelja.smartwatchextensions.watchmanager.ui.info.WatchInfoActivity.Companion.EXTRA_WATCH_ID
 import com.boswelja.smartwatchextensions.watchmanager.ui.register.RegisterWatchActivity
 import kotlinx.coroutines.Dispatchers
 
