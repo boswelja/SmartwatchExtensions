@@ -12,9 +12,9 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
 import timber.log.Timber
 
-@ExperimentalCoroutinesApi
 class WatchInfoViewModel internal constructor(
     application: Application,
     private val watchManager: WatchManager
@@ -22,11 +22,14 @@ class WatchInfoViewModel internal constructor(
 
     val watchId = MutableStateFlow<UUID?>(null)
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     val watch: Flow<Watch?> = watchId.flatMapLatest { id ->
         id?.let {
             watchManager.getWatchById(id)
         } ?: flow { emit(null) }
     }
+
+    val watchName = watch.map { it?.name }
 
     @Suppress("unused")
     constructor(application: Application) : this(
@@ -45,7 +48,7 @@ class WatchInfoViewModel internal constructor(
         }
     }
 
-    @ExperimentalCoroutinesApi
+    @OptIn(ExperimentalCoroutinesApi::class)
     fun getCapabilities(): Flow<List<Capability>> = watch.flatMapLatest { watch ->
         watch?.let {
             watchManager.getCapabilitiesFor(it)
