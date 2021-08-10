@@ -1,9 +1,5 @@
 package com.boswelja.smartwatchextensions.watchmanager.ui.info
 
-import android.os.Bundle
-import androidx.activity.compose.setContent
-import androidx.activity.viewModels
-import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -14,7 +10,6 @@ import androidx.compose.material.AlertDialog
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedTextField
-import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
@@ -22,7 +17,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ClearAll
 import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.icons.outlined.Watch
-import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -41,63 +35,27 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.common.connection.Capability
-import com.boswelja.smartwatchextensions.common.ui.AppTheme
 import com.boswelja.smartwatchextensions.common.ui.BigButton
 import com.boswelja.smartwatchextensions.common.ui.ExpandableCard
-import com.boswelja.smartwatchextensions.common.ui.UpNavigationAppBar
-import java.util.UUID
+import com.boswelja.watchconnection.core.Watch
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-
-class WatchInfoActivity : AppCompatActivity() {
-
-    private val watchId by lazy { intent?.getStringExtra(EXTRA_WATCH_ID)!! }
-    private val viewModel: WatchInfoViewModel by viewModels()
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        viewModel.watchId.tryEmit(UUID.fromString(watchId))
-
-        setContent {
-            AppTheme {
-                val scaffoldState = rememberScaffoldState()
-
-                Scaffold(
-                    scaffoldState = scaffoldState,
-                    topBar = { UpNavigationAppBar(onNavigateUp = { finish() }) }
-                ) {
-                    WatchInfoScreen(
-                        onShowSnackbar = {
-                            scaffoldState.snackbarHostState.showSnackbar(it)
-                        },
-                        onWatchRemoved = { finish() }
-                    )
-                }
-            }
-        }
-    }
-
-    companion object {
-        const val EXTRA_WATCH_ID = "extra_watch_id"
-    }
-}
 
 @Composable
 fun WatchInfoScreen(
     modifier: Modifier = Modifier,
     contentPadding: Dp = 16.dp,
+    watch: Watch,
     onShowSnackbar: suspend (String) -> Unit,
     onWatchRemoved: () -> Unit
 ) {
+    val context = LocalContext.current
     val viewModel: WatchInfoViewModel = viewModel()
     val scope = rememberCoroutineScope()
-    val context = LocalContext.current
 
-    val watchName by viewModel.watchName.collectAsState(null, Dispatchers.IO)
-    val capabilities by viewModel.getCapabilities()
-        .collectAsState(emptyList(), Dispatchers.IO)
+    val watchName = watch.name
+    val capabilities by viewModel.getCapabilities(watch).collectAsState(emptyList(), Dispatchers.IO)
 
     Column(
         modifier.padding(contentPadding),
@@ -106,24 +64,24 @@ fun WatchInfoScreen(
     ) {
         Icon(Icons.Outlined.Watch, null, Modifier.size(180.dp))
         WatchNameField(
-            watchName = watchName ?: "",
+            watchName = watchName,
             onWatchNameChanged = { newName ->
                 scope.launch {
-                    viewModel.updateWatchName(newName)
+                    viewModel.updateWatchName(watch, newName)
                 }
             }
         )
         WatchActions(
-            watchName = watchName ?: "",
+            watchName = watchName,
             onResetSettings = {
                 scope.launch {
-                    viewModel.resetWatchPreferences()
+                    viewModel.resetWatchPreferences(watch)
                     onShowSnackbar(context.getString(R.string.clear_preferences_success))
                 }
             },
             onForgetWatch = {
                 scope.launch {
-                    viewModel.forgetWatch()
+                    viewModel.forgetWatch(watch)
                     onWatchRemoved()
                 }
             }

@@ -2,34 +2,15 @@ package com.boswelja.smartwatchextensions.watchmanager.ui.info
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
-import com.boswelja.smartwatchextensions.common.connection.Capability
 import com.boswelja.smartwatchextensions.watchmanager.WatchManager
 import com.boswelja.watchconnection.core.Watch
-import java.util.UUID
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.flowOf
 import timber.log.Timber
 
 class WatchInfoViewModel internal constructor(
     application: Application,
     private val watchManager: WatchManager
 ) : AndroidViewModel(application) {
-
-    val watchId = MutableStateFlow<UUID?>(null)
-
-    @OptIn(ExperimentalCoroutinesApi::class)
-    val watch: Flow<Watch?> = watchId.flatMapLatest { id ->
-        id?.let {
-            watchManager.getWatchById(id)
-        } ?: flow { emit(null) }
-    }
-
-    val watchName = watch.map { it?.name }
 
     @Suppress("unused")
     constructor(application: Application) : this(
@@ -40,36 +21,25 @@ class WatchInfoViewModel internal constructor(
     /**
      * Updates [Watch.name] in the database for the current watch.
      */
-    suspend fun updateWatchName(name: String) {
+    suspend fun updateWatchName(watch: Watch, name: String) {
         Timber.d("updateWatchName($name) called")
-        watch.first()?.let {
-            Timber.d("Updating watch name")
-            watchManager.renameWatch(it, name)
-        }
+        watchManager.renameWatch(watch, name)
     }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
-    fun getCapabilities(): Flow<List<Capability>> = watch.flatMapLatest { watch ->
-        watch?.let {
-            watchManager.getCapabilitiesFor(it)
-        } ?: flow { emit(emptyList<Capability>()) }
-    }
+    fun getCapabilities(watch: Watch) = watchManager.getCapabilitiesFor(watch)
+        ?: flowOf(emptyList())
 
     /**
      * Forgets the current watch.
      */
-    suspend fun forgetWatch() {
-        watch.first()?.let {
-            watchManager.forgetWatch(getApplication(), it)
-        }
+    suspend fun forgetWatch(watch: Watch) {
+        watchManager.forgetWatch(getApplication(), watch)
     }
 
     /**
      * Resets the current watch preferences.
      */
-    suspend fun resetWatchPreferences() {
-        watch.first()?.let {
-            watchManager.resetWatchPreferences(getApplication(), it)
-        }
+    suspend fun resetWatchPreferences(watch: Watch) {
+        watchManager.resetWatchPreferences(getApplication(), watch)
     }
 }

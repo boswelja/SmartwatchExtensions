@@ -215,7 +215,10 @@ fun MainScreen(
         // Settings destinations
         composable(SettingsDestination.WATCH_MANAGER.route) {
             WatchManagerScreen(
-                modifier = Modifier.padding(contentPadding)
+                modifier = Modifier.padding(contentPadding),
+                onShowSnackbar = {
+                    scaffoldState.snackbarHostState.showSnackbar(it)
+                }
             )
         }
     }
