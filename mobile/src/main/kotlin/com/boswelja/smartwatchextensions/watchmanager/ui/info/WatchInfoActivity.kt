@@ -6,14 +6,16 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material.AlertDialog
 import androidx.compose.material.Icon
-import androidx.compose.material.OutlinedButton
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Scaffold
+import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.material.icons.Icons
@@ -31,6 +33,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
@@ -39,6 +42,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.common.connection.Capability
 import com.boswelja.smartwatchextensions.common.ui.AppTheme
+import com.boswelja.smartwatchextensions.common.ui.BigButton
 import com.boswelja.smartwatchextensions.common.ui.ExpandableCard
 import com.boswelja.smartwatchextensions.common.ui.UpNavigationAppBar
 import java.util.UUID
@@ -109,7 +113,6 @@ fun WatchInfoScreen(
                 }
             }
         )
-        WatchCapabilityCard(capabilities = capabilities)
         WatchActions(
             watchName = watchName ?: "",
             onResetSettings = {
@@ -125,6 +128,7 @@ fun WatchInfoScreen(
                 }
             }
         )
+        WatchCapabilityCard(capabilities = capabilities)
     }
 }
 
@@ -189,6 +193,7 @@ fun WatchCapabilityCard(
 @Composable
 fun WatchActions(
     modifier: Modifier = Modifier,
+    contentSpacing: Dp = 1.dp,
     watchName: String,
     onResetSettings: () -> Unit,
     onForgetWatch: () -> Unit
@@ -196,18 +201,24 @@ fun WatchActions(
     var clearSettingsDialogVisible by rememberSaveable { mutableStateOf(false) }
     var forgetWatchDialogVisible by rememberSaveable { mutableStateOf(false) }
 
-    Column(modifier) {
-        OutlinedButton(
-            onClick = { clearSettingsDialogVisible = true }
-        ) {
-            Icon(Icons.Outlined.ClearAll, null)
-            Text(stringResource(R.string.clear_preferences_button_text))
-        }
-        OutlinedButton(
-            onClick = { forgetWatchDialogVisible = true }
-        ) {
-            Icon(Icons.Outlined.Delete, null)
-            Text(stringResource(R.string.button_forget_watch))
+    Surface(
+        modifier = modifier,
+        shape = MaterialTheme.shapes.medium,
+        color = Color.Transparent
+    ) {
+        Row(horizontalArrangement = Arrangement.spacedBy(contentSpacing)) {
+            BigButton(
+                modifier = Modifier.weight(1f),
+                icon = { Icon(Icons.Outlined.ClearAll, null) },
+                text = { Text(stringResource(R.string.clear_preferences_button_text)) },
+                onClick = { clearSettingsDialogVisible = true }
+            )
+            BigButton(
+                modifier = Modifier.weight(1f),
+                icon = { Icon(Icons.Outlined.Delete, null) },
+                text = { Text(stringResource(R.string.button_forget_watch)) },
+                onClick = { forgetWatchDialogVisible = true }
+            )
         }
     }
     if (clearSettingsDialogVisible) {
