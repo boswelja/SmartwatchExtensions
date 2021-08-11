@@ -23,20 +23,14 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.boswelja.smartwatchextensions.aboutapp.ui.AboutAppScreen
-import com.boswelja.smartwatchextensions.appmanager.ui.AppManagerScreen
-import com.boswelja.smartwatchextensions.batterysync.ui.BatterySyncSettingsScreen
 import com.boswelja.smartwatchextensions.common.ui.AppTheme
 import com.boswelja.smartwatchextensions.common.ui.UpNavigationWatchPickerAppBar
 import com.boswelja.smartwatchextensions.common.ui.WatchPickerAppBar
-import com.boswelja.smartwatchextensions.dashboard.ui.DashboardDestination
-import com.boswelja.smartwatchextensions.dashboard.ui.DashboardScreen
-import com.boswelja.smartwatchextensions.dndsync.ui.DnDSyncSettingsScreen
+import com.boswelja.smartwatchextensions.dashboard.ui.dashboardGraph
 import com.boswelja.smartwatchextensions.messages.ui.MessageDestination
 import com.boswelja.smartwatchextensions.messages.ui.MessageHistoryScreen
 import com.boswelja.smartwatchextensions.messages.ui.MessagesScreen
 import com.boswelja.smartwatchextensions.onboarding.ui.OnboardingActivity
-import com.boswelja.smartwatchextensions.phonelocking.ui.PhoneLockingSettingsScreen
-import com.boswelja.smartwatchextensions.proximity.ui.ProximitySettingsScreen
 import com.boswelja.smartwatchextensions.settings.ui.appSettingsGraph
 import java.util.UUID
 import kotlinx.coroutines.Dispatchers
@@ -136,13 +130,6 @@ fun MainScreen(
         startDestination = BottomNavDestination.DASHBOARD.route
     ) {
         // Bottom nav destinations
-        composable(BottomNavDestination.DASHBOARD.route) {
-            DashboardScreen(
-                modifier = modifier,
-                contentPadding = contentPadding,
-                onNavigateTo = { navController.navigate(it.route) }
-            )
-        }
         composable(BottomNavDestination.MESSAGES.route) {
             MessagesScreen(
                 modifier = modifier,
@@ -159,39 +146,15 @@ fun MainScreen(
         }
 
         // Dashboard destinations
-        composable(DashboardDestination.APP_MANAGER.route) {
-            AppManagerScreen(
-                modifier = modifier,
-                contentPadding = contentPadding,
-                onShowSnackbar = {
-                    scaffoldState.snackbarHostState.showSnackbar(it)
-                }
-            )
-        }
-        composable(DashboardDestination.BATTERY_SYNC_SETTINGS.route) {
-            BatterySyncSettingsScreen(
-                modifier = modifier,
-                contentPadding = contentPadding
-            )
-        }
-        composable(DashboardDestination.DND_SYNC_SETTINGS.route) {
-            DnDSyncSettingsScreen(
-                modifier = modifier,
-                contentPadding = contentPadding
-            )
-        }
-        composable(DashboardDestination.PHONE_LOCKING_SETTINGS.route) {
-            PhoneLockingSettingsScreen(
-                modifier = modifier,
-                contentPadding = contentPadding
-            )
-        }
-        composable(DashboardDestination.PROXIMITY_SETTINGS.route) {
-            ProximitySettingsScreen(
-                modifier = modifier,
-                contentPadding = contentPadding
-            )
-        }
+        dashboardGraph(
+            modifier = modifier,
+            contentPadding = contentPadding,
+            navController = navController,
+            route = BottomNavDestination.DASHBOARD.route,
+            onShowSnackbar = {
+                scaffoldState.snackbarHostState.showSnackbar(it)
+            }
+        )
 
         // Message destinations
         composable(MessageDestination.MessageHistory.route) {
@@ -208,7 +171,7 @@ fun MainScreen(
             modifier = modifier,
             contentPadding = contentPadding,
             navController = navController,
-            startRoute = BottomNavDestination.SETTINGS.route,
+            route = BottomNavDestination.SETTINGS.route,
             onShowSnackbar = {
                 scaffoldState.snackbarHostState.showSnackbar(it)
             }
