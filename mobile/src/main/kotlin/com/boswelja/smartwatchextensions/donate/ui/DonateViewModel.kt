@@ -8,7 +8,7 @@ import com.boswelja.smartwatchextensions.donate.DonationClient
 
 class DonateViewModel(application: Application) : AndroidViewModel(application) {
 
-    private val donationClient = DonationClient(application)
+    val donationClient = DonationClient(application)
 
     val clientConnected = donationClient.clientConnected
     val oneTimeDonations = donationClient.oneTimeDonations()
