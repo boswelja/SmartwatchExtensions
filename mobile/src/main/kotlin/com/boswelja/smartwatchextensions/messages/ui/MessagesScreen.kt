@@ -16,7 +16,6 @@ import androidx.compose.material.Card
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedButton
-import androidx.compose.material.ScaffoldState
 import androidx.compose.material.SnackbarDuration
 import androidx.compose.material.SnackbarResult
 import androidx.compose.material.Text
@@ -48,7 +47,7 @@ import kotlinx.coroutines.launch
 fun MessagesScreen(
     modifier: Modifier = Modifier,
     contentPadding: Dp = 16.dp,
-    scaffoldState: ScaffoldState,
+    onShowSnackbar: suspend (String, String, SnackbarDuration) -> SnackbarResult,
     onNavigateTo: (MessageDestination) -> Unit
 ) {
     val context = LocalContext.current
@@ -65,7 +64,7 @@ fun MessagesScreen(
                 onMessageDismissed = { message ->
                     scope.launch {
                         viewModel.dismissMessage(message.id)
-                        val result = scaffoldState.snackbarHostState.showSnackbar(
+                        val result = onShowSnackbar(
                             context.getString(R.string.message_dismissed),
                             context.getString(R.string.button_undo),
                             SnackbarDuration.Long

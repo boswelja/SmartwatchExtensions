@@ -27,9 +27,7 @@ import com.boswelja.smartwatchextensions.common.ui.AppTheme
 import com.boswelja.smartwatchextensions.common.ui.UpNavigationWatchPickerAppBar
 import com.boswelja.smartwatchextensions.common.ui.WatchPickerAppBar
 import com.boswelja.smartwatchextensions.dashboard.ui.dashboardGraph
-import com.boswelja.smartwatchextensions.messages.ui.MessageDestination
-import com.boswelja.smartwatchextensions.messages.ui.MessageHistoryScreen
-import com.boswelja.smartwatchextensions.messages.ui.MessagesScreen
+import com.boswelja.smartwatchextensions.messages.ui.messagesGraph
 import com.boswelja.smartwatchextensions.onboarding.ui.OnboardingActivity
 import com.boswelja.smartwatchextensions.settings.ui.appSettingsGraph
 import java.util.UUID
@@ -130,14 +128,6 @@ fun MainScreen(
         startDestination = BottomNavDestination.DASHBOARD.route
     ) {
         // Bottom nav destinations
-        composable(BottomNavDestination.MESSAGES.route) {
-            MessagesScreen(
-                modifier = modifier,
-                contentPadding = contentPadding,
-                scaffoldState = scaffoldState,
-                onNavigateTo = { navController.navigate(it.route) }
-            )
-        }
         composable(BottomNavDestination.ABOUT.route) {
             AboutAppScreen(
                 modifier = modifier,
@@ -157,14 +147,15 @@ fun MainScreen(
         )
 
         // Message destinations
-        composable(MessageDestination.MessageHistory.route) {
-            MessageHistoryScreen(
-                modifier = modifier.padding(contentPadding),
-                onShowSnackbar = {
-                    scaffoldState.snackbarHostState.showSnackbar(it)
-                }
-            )
-        }
+        messagesGraph(
+            modifier = modifier,
+            contentPadding = contentPadding,
+            navController = navController,
+            route = BottomNavDestination.MESSAGES.route,
+            onShowSnackbar = { text, action, duration ->
+                scaffoldState.snackbarHostState.showSnackbar(text, action, duration)
+            }
+        )
 
         // Load settings
         appSettingsGraph(
