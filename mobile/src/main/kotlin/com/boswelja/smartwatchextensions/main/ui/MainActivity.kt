@@ -37,9 +37,7 @@ import com.boswelja.smartwatchextensions.messages.ui.MessagesScreen
 import com.boswelja.smartwatchextensions.onboarding.ui.OnboardingActivity
 import com.boswelja.smartwatchextensions.phonelocking.ui.PhoneLockingSettingsScreen
 import com.boswelja.smartwatchextensions.proximity.ui.ProximitySettingsScreen
-import com.boswelja.smartwatchextensions.settings.ui.AppSettingsScreen
-import com.boswelja.smartwatchextensions.settings.ui.SettingsDestination
-import com.boswelja.smartwatchextensions.watchmanager.ui.WatchManagerScreen
+import com.boswelja.smartwatchextensions.settings.ui.appSettingsGraph
 import java.util.UUID
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
@@ -153,13 +151,6 @@ fun MainScreen(
                 onNavigateTo = { navController.navigate(it.route) }
             )
         }
-        composable(BottomNavDestination.SETTINGS.route) {
-            AppSettingsScreen(
-                modifier = modifier,
-                contentPadding = contentPadding,
-                onNavigateTo = { navController.navigate(it.route) }
-            )
-        }
         composable(BottomNavDestination.ABOUT.route) {
             AboutAppScreen(
                 modifier = modifier,
@@ -212,14 +203,15 @@ fun MainScreen(
             )
         }
 
-        // Settings destinations
-        composable(SettingsDestination.WATCH_MANAGER.route) {
-            WatchManagerScreen(
-                modifier = Modifier.padding(contentPadding),
-                onShowSnackbar = {
-                    scaffoldState.snackbarHostState.showSnackbar(it)
-                }
-            )
-        }
+        // Load settings
+        appSettingsGraph(
+            modifier = modifier,
+            contentPadding = contentPadding,
+            navController = navController,
+            startRoute = BottomNavDestination.SETTINGS.route,
+            onShowSnackbar = {
+                scaffoldState.snackbarHostState.showSnackbar(it)
+            }
+        )
     }
 }
