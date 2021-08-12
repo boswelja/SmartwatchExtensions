@@ -70,7 +70,6 @@ dependencies {
     implementation(libs.firebase.analytics)
 
     implementation(libs.androidx.appcompat)
-    implementation(libs.androidx.browser)
     implementation(libs.androidx.core.ktx)
     implementation(libs.bundles.lifecycle)
     implementation(libs.bundles.room)

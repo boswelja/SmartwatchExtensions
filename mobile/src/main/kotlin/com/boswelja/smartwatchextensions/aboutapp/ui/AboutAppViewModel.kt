@@ -1,7 +1,6 @@
 package com.boswelja.smartwatchextensions.aboutapp.ui
 
 import android.app.Application
-import androidx.browser.customtabs.CustomTabsIntent
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.boswelja.smartwatchextensions.common.connection.Messages.REQUEST_APP_VERSION
@@ -17,15 +16,13 @@ import timber.log.Timber
 @OptIn(ExperimentalCoroutinesApi::class)
 class AboutAppViewModel internal constructor(
     application: Application,
-    private val watchManager: WatchManager,
-    val customTabsIntent: CustomTabsIntent,
+    private val watchManager: WatchManager
 ) : AndroidViewModel(application) {
 
     @Suppress("unused")
     constructor(application: Application) : this(
         application,
-        WatchManager.getInstance(application),
-        CustomTabsIntent.Builder().setShowTitle(true).build()
+        WatchManager.getInstance(application)
     )
 
     private val _watchAppVersion = MutableStateFlow<Pair<String?, String?>?>(null)

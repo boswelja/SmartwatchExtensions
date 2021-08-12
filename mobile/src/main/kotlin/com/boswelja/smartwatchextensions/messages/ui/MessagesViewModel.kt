@@ -2,7 +2,6 @@ package com.boswelja.smartwatchextensions.messages.ui
 
 import android.app.Application
 import android.content.Context
-import androidx.browser.customtabs.CustomTabsIntent
 import androidx.lifecycle.AndroidViewModel
 import com.boswelja.smartwatchextensions.messages.database.MessageDatabase
 import com.boswelja.smartwatchextensions.updatechecker.UpdateChecker
@@ -13,8 +12,7 @@ import kotlinx.coroutines.withContext
 class MessagesViewModel @JvmOverloads constructor(
     application: Application,
     private val messageDatabase: MessageDatabase = MessageDatabase.getInstance(application),
-    private val updateChecker: UpdateChecker = getUpdateChecker(application),
-    val customTabsIntent: CustomTabsIntent = CustomTabsIntent.Builder().setShowTitle(true).build()
+    private val updateChecker: UpdateChecker = getUpdateChecker(application)
 ) : AndroidViewModel(application) {
 
     /**

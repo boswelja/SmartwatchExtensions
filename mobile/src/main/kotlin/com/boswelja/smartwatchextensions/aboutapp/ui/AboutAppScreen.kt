@@ -62,7 +62,6 @@ fun AboutAppScreen(
 @Composable
 fun AboutApp(modifier: Modifier = Modifier) {
     val context = LocalContext.current
-    val viewModel: AboutAppViewModel = viewModel()
     Card(
         modifier = modifier,
         header = {
@@ -76,27 +75,33 @@ fun AboutApp(modifier: Modifier = Modifier) {
                 text = { Text(stringResource(R.string.about_priv_policy_title)) },
                 icon = { Icon(Icons.Outlined.Policy, null) },
                 modifier = Modifier.clickable {
-                    viewModel.customTabsIntent.launchUrl(
-                        context, context.getString(R.string.privacy_policy_url).toUri()
-                    )
+                    context.startActivity { intent ->
+                        intent.action = Intent.ACTION_VIEW
+                        intent.data = context.getString(R.string.privacy_policy_url).toUri()
+                        intent
+                    }
                 }
             )
             ListItem(
                 text = { Text(stringResource(R.string.about_github)) },
                 icon = { Icon(Icons.Outlined.Source, null) },
                 modifier = Modifier.clickable {
-                    viewModel.customTabsIntent.launchUrl(
-                        context, context.getString(R.string.github_url).toUri()
-                    )
+                    context.startActivity { intent ->
+                        intent.action = Intent.ACTION_VIEW
+                        intent.data = context.getString(R.string.github_url).toUri()
+                        intent
+                    }
                 }
             )
             ListItem(
                 text = { Text(stringResource(R.string.about_changelog)) },
                 icon = { Icon(Icons.Outlined.ChangeHistory, null) },
                 modifier = Modifier.clickable {
-                    viewModel.customTabsIntent.launchUrl(
-                        context, context.getString(R.string.changelog_url).toUri()
-                    )
+                    context.startActivity { intent ->
+                        intent.action = Intent.ACTION_VIEW
+                        intent.data = context.getString(R.string.changelog_url).toUri()
+                        intent
+                    }
                 }
             )
         }

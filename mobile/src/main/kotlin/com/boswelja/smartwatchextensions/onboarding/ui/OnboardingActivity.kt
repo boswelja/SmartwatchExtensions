@@ -1,10 +1,10 @@
 package com.boswelja.smartwatchextensions.onboarding.ui
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.browser.customtabs.CustomTabsIntent
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.material.ExperimentalMaterialApi
@@ -34,7 +34,6 @@ class OnboardingActivity : AppCompatActivity() {
 
     @ExperimentalCoroutinesApi
     private val registerWatchViewModel: RegisterWatchViewModel by viewModels()
-    private val customTabIntent = CustomTabsIntent.Builder().setShowTitle(true).build()
 
     private var currentDestination by mutableStateOf(Destination.WELCOME)
 
@@ -90,10 +89,11 @@ class OnboardingActivity : AppCompatActivity() {
                 Destination.SHARE_USAGE_STATS -> {
                     UsageStatsScreen(
                         onShowPrivacyPolicy = {
-                            customTabIntent.launchUrl(
-                                this@OnboardingActivity,
-                                getString(R.string.privacy_policy_url).toUri()
-                            )
+                            startActivity { intent ->
+                                intent.action = Intent.ACTION_VIEW
+                                intent.data = getString(R.string.privacy_policy_url).toUri()
+                                intent
+                            }
                         }
                     )
                 }

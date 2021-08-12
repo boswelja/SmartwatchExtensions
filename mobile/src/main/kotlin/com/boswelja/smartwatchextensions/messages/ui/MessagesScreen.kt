@@ -38,6 +38,7 @@ import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.boswelja.smartwatchextensions.R
+import com.boswelja.smartwatchextensions.common.startActivity
 import com.boswelja.smartwatchextensions.common.ui.AnimatedVisibilityItem
 import com.boswelja.smartwatchextensions.common.ui.SwipeDismissItem
 import com.boswelja.smartwatchextensions.messages.Message
@@ -88,10 +89,11 @@ fun MessagesScreen(
                             context.startActivity(intent)
                         }
                         Message.Action.LAUNCH_CHANGELOG -> {
-                            viewModel.customTabsIntent.launchUrl(
-                                context,
-                                context.getString(R.string.changelog_url).toUri()
-                            )
+                            context.startActivity { intent ->
+                                intent.action = Intent.ACTION_VIEW
+                                intent.data = context.getString(R.string.changelog_url).toUri()
+                                intent
+                            }
                         }
                         Message.Action.INSTALL_UPDATE ->
                             viewModel.startUpdateFlow(context as Activity)

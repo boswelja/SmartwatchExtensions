@@ -1,6 +1,6 @@
 package com.boswelja.smartwatchextensions.common.ui
 
-import androidx.browser.customtabs.CustomTabsIntent
+import android.content.Intent
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.RowScope
@@ -29,6 +29,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.core.net.toUri
 import com.boswelja.smartwatchextensions.R
+import com.boswelja.smartwatchextensions.common.startActivity
 import com.boswelja.watchconnection.core.Watch
 
 @Composable
@@ -94,10 +95,13 @@ fun UpNavigationWatchPickerAppBar(
 @Composable
 fun WikiAction() {
     val context = LocalContext.current
-    val customTabsIntent = remember { CustomTabsIntent.Builder().build() }
     IconButton(
         onClick = {
-            customTabsIntent.launchUrl(context, context.getString(R.string.wiki_url).toUri())
+            context.startActivity { intent ->
+                intent.action = Intent.ACTION_VIEW
+                intent.data = context.getString(R.string.wiki_url).toUri()
+                intent
+            }
         }
     ) {
         Icon(Icons.Outlined.HelpOutline, stringResource(R.string.wiki_label))
