@@ -1,13 +1,12 @@
 package com.boswelja.smartwatchextensions.settings.ui
 
-import androidx.compose.foundation.layout.padding
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
-import com.boswelja.smartwatchextensions.watchmanager.ui.WatchManagerScreen
+import com.boswelja.smartwatchextensions.watchmanager.ui.watchManagerGraph
 
 enum class SettingsDestination(
     val route: String
@@ -37,10 +36,11 @@ fun NavGraphBuilder.appSettingsGraph(
             onNavigateTo = { navController.navigate(it.route) }
         )
     }
-    composable(SettingsDestination.WATCH_MANAGER.route) {
-        WatchManagerScreen(
-            modifier = Modifier.padding(contentPadding),
-            onShowSnackbar = onShowSnackbar
-        )
-    }
+    watchManagerGraph(
+        modifier = modifier,
+        contentPadding = contentPadding,
+        navController = navController,
+        route = SettingsDestination.WATCH_MANAGER.route,
+        onShowSnackbar = onShowSnackbar
+    )
 }

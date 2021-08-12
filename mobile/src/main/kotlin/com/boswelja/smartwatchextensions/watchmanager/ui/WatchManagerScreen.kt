@@ -20,16 +20,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.boswelja.smartwatchextensions.R
-import com.boswelja.smartwatchextensions.common.startActivity
 import com.boswelja.smartwatchextensions.common.ui.Card
 import com.boswelja.smartwatchextensions.common.ui.CardHeader
 import com.boswelja.smartwatchextensions.watchmanager.ui.info.WatchInfoScreen
-import com.boswelja.smartwatchextensions.watchmanager.ui.register.RegisterWatchActivity
 import com.boswelja.watchconnection.core.Watch
 import kotlinx.coroutines.Dispatchers
 
@@ -37,9 +34,9 @@ import kotlinx.coroutines.Dispatchers
 @Composable
 fun WatchManagerScreen(
     modifier: Modifier = Modifier,
-    onShowSnackbar: suspend (String) -> Unit
+    onShowSnackbar: suspend (String) -> Unit,
+    onNavigateTo: (WatchManagerDestination) -> Unit
 ) {
-    val context = LocalContext.current
     val viewModel: WatchManagerViewModel = viewModel()
     val registeredWatches by viewModel.registeredWatches.collectAsState(emptyList(), Dispatchers.IO)
 
@@ -81,7 +78,7 @@ fun WatchManagerScreen(
                     Icon(Icons.Outlined.Add, null)
                 },
                 modifier = Modifier.clickable {
-                    context.startActivity<RegisterWatchActivity>()
+                    onNavigateTo(WatchManagerDestination.REGISTER_WATCHES)
                 }
             )
         }
