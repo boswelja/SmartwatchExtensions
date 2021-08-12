@@ -6,7 +6,9 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.AlertDialog
 import androidx.compose.material.Card
 import androidx.compose.material.Icon
@@ -54,11 +56,14 @@ fun WatchInfoScreen(
     val context = LocalContext.current
     val viewModel: WatchInfoViewModel = viewModel()
     val scope = rememberCoroutineScope()
+    val scrollState = rememberScrollState()
 
     val capabilities by viewModel.getCapabilities(watch).collectAsState(emptyList(), Dispatchers.IO)
 
     Column(
-        modifier.padding(contentPadding),
+        modifier = modifier
+            .verticalScroll(scrollState)
+            .padding(contentPadding),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(contentPadding)
     ) {
