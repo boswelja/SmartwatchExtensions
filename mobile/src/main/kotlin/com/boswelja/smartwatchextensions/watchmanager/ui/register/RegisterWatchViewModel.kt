@@ -24,7 +24,7 @@ class RegisterWatchViewModel internal constructor(
         WatchManager.getInstance(application)
     )
 
-    var addedWatches = mutableStateListOf<Watch>()
+    var discoveredWatches = mutableStateListOf<Watch>()
 
     init {
         startRegisteringWatches()
@@ -44,8 +44,8 @@ class RegisterWatchViewModel internal constructor(
 
     suspend fun addWatch(watch: Watch) {
         Timber.d("registerWatch($watch) called")
-        if (!addedWatches.contains(watch)) {
-            addedWatches.add(watch)
+        if (!discoveredWatches.contains(watch)) {
+            discoveredWatches.add(watch)
             watchManager.registerWatch(watch)
         }
     }

@@ -3,7 +3,6 @@ package com.boswelja.smartwatchextensions.onboarding.ui
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.compose.setContent
-import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.ExperimentalAnimationApi
@@ -27,13 +26,9 @@ import com.boswelja.smartwatchextensions.common.ui.AppTheme
 import com.boswelja.smartwatchextensions.common.ui.UpNavigationAppBar
 import com.boswelja.smartwatchextensions.main.ui.MainActivity
 import com.boswelja.smartwatchextensions.watchmanager.ui.register.RegisterWatchScreen
-import com.boswelja.smartwatchextensions.watchmanager.ui.register.RegisterWatchViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 class OnboardingActivity : AppCompatActivity() {
-
-    @ExperimentalCoroutinesApi
-    private val registerWatchViewModel: RegisterWatchViewModel by viewModels()
 
     private var currentDestination by mutableStateOf(Destination.WELCOME)
 
@@ -98,7 +93,7 @@ class OnboardingActivity : AppCompatActivity() {
                     )
                 }
                 Destination.REGISTER_WATCHES -> {
-                    RegisterWatchScreen(registerWatchViewModel.addedWatches)
+                    RegisterWatchScreen()
                 }
             }
         }
