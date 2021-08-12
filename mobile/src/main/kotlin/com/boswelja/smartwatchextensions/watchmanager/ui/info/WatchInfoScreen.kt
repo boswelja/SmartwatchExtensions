@@ -3,10 +3,12 @@ package com.boswelja.smartwatchextensions.watchmanager.ui.info
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material.AlertDialog
+import androidx.compose.material.Card
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedTextField
@@ -36,7 +38,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.common.connection.Capability
 import com.boswelja.smartwatchextensions.common.ui.BigButton
-import com.boswelja.smartwatchextensions.common.ui.ExpandableCard
 import com.boswelja.watchconnection.core.Watch
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -54,7 +55,6 @@ fun WatchInfoScreen(
     val viewModel: WatchInfoViewModel = viewModel()
     val scope = rememberCoroutineScope()
 
-    val watchName = watch.name
     val capabilities by viewModel.getCapabilities(watch).collectAsState(emptyList(), Dispatchers.IO)
 
     Column(
@@ -63,16 +63,8 @@ fun WatchInfoScreen(
         verticalArrangement = Arrangement.spacedBy(contentPadding)
     ) {
         Icon(Icons.Outlined.Watch, null, Modifier.size(180.dp))
-        WatchNameField(
-            watchName = watchName,
-            onWatchNameChanged = { newName ->
-                scope.launch {
-                    viewModel.updateWatchName(watch, newName)
-                }
-            }
-        )
         WatchActions(
-            watchName = watchName,
+            watchName = watch.name,
             onResetSettings = {
                 scope.launch {
                     viewModel.resetWatchPreferences(watch)
@@ -86,7 +78,38 @@ fun WatchInfoScreen(
                 }
             }
         )
-        WatchCapabilityCard(capabilities = capabilities)
+        WatchDetailsCard(
+            modifier = Modifier.fillMaxWidth(),
+            contentPadding = contentPadding,
+            watch = watch,
+            capabilities = capabilities,
+            onNicknameChanged = { scope.launch { viewModel.updateWatchName(watch, it) } }
+        )
+    }
+}
+
+@Composable
+fun WatchDetailsCard(
+    modifier: Modifier = Modifier,
+    contentPadding: Dp = 16.dp,
+    watch: Watch,
+    capabilities: List<Capability>,
+    onNicknameChanged: (String) -> Unit
+) {
+    Card(
+        modifier = modifier
+    ) {
+        Column(
+            Modifier.padding(contentPadding),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(contentPadding)
+        ) {
+            WatchNameField(
+                watchName = watch.name,
+                onWatchNameChanged = onNicknameChanged
+            )
+            WatchCapabilities(capabilities = capabilities)
+        }
     }
 }
 
@@ -127,23 +150,18 @@ fun WatchNameField(
 }
 
 @Composable
-fun WatchCapabilityCard(
+fun WatchCapabilities(
     modifier: Modifier = Modifier,
     capabilities: List<Capability>
 ) {
-    var capabilitiesExpanded by rememberSaveable {
-        mutableStateOf(false)
-    }
-    ExpandableCard(
-        modifier = modifier,
-        title = { Text(stringResource(R.string.capabilities_title)) },
-        expanded = capabilitiesExpanded,
-        toggleExpanded = { capabilitiesExpanded = !capabilitiesExpanded }
+    Column(
+        modifier,
+        verticalArrangement = Arrangement.spacedBy(4.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Column {
-            capabilities.forEach { capability ->
-                Text(stringResource(capability.label))
-            }
+        Text(stringResource(R.string.capabilities_title))
+        capabilities.forEach { capability ->
+            Text(stringResource(capability.label))
         }
     }
 }
