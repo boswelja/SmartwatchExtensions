@@ -1,6 +1,7 @@
 package com.boswelja.smartwatchextensions.messages.ui
 
 import androidx.compose.animation.Crossfade
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
@@ -73,7 +74,7 @@ fun NoMessageHistory(
     }
 }
 
-@OptIn(ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterialApi::class, ExperimentalFoundationApi::class)
 @Composable
 fun MessagesHistoryList(
     modifier: Modifier = Modifier,
@@ -82,7 +83,7 @@ fun MessagesHistoryList(
 ) {
     Card(modifier) {
         LazyColumn {
-            item {
+            stickyHeader {
                 ListItem(
                     modifier = Modifier.clickable(onClick = onClearAll),
                     text = { Text(stringResource(R.string.message_history_clear_all)) },
