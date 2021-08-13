@@ -1,14 +1,13 @@
 package com.boswelja.smartwatchextensions.watchmanager.ui
 
 import androidx.activity.compose.BackHandler
-import androidx.compose.foundation.background
+import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
 import androidx.compose.material.ListItem
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Add
@@ -46,6 +45,33 @@ fun WatchManagerScreen(
         visibleWatch = null
     }
 
+    Crossfade(targetState = visibleWatch) { watch ->
+        if (watch != null) {
+            WatchInfoScreen(
+                modifier = modifier,
+                watch = watch,
+                onShowSnackbar = onShowSnackbar,
+                onWatchRemoved = { visibleWatch = null }
+            )
+        } else {
+            WatchManagerCard(
+                modifier = modifier,
+                registeredWatches = registeredWatches,
+                onWatchSelected = { visibleWatch = it },
+                onAddClicked = { onNavigateTo(WatchManagerDestination.REGISTER_WATCHES) }
+            )
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterialApi::class)
+@Composable
+fun WatchManagerCard(
+    modifier: Modifier = Modifier,
+    registeredWatches: List<Watch>,
+    onWatchSelected: (Watch) -> Unit,
+    onAddClicked: () -> Unit
+) {
     Card(
         modifier = modifier,
         header = {
@@ -66,30 +92,15 @@ fun WatchManagerScreen(
                     },
                     text = { Text(watch.name) },
                     modifier = Modifier.clickable {
-                        visibleWatch = watch
+                        onWatchSelected(watch)
                     }
                 )
             }
             ListItem(
-                text = {
-                    Text(stringResource(R.string.watch_manager_add_watch_title))
-                },
-                icon = {
-                    Icon(Icons.Outlined.Add, null)
-                },
-                modifier = Modifier.clickable {
-                    onNavigateTo(WatchManagerDestination.REGISTER_WATCHES)
-                }
+                text = { Text(stringResource(R.string.watch_manager_add_watch_title)) },
+                icon = { Icon(Icons.Outlined.Add, null) },
+                modifier = Modifier.clickable(onClick = onAddClicked)
             )
         }
-    }
-
-    visibleWatch?.let { watch ->
-        WatchInfoScreen(
-            modifier = Modifier.background(MaterialTheme.colors.background),
-            watch = watch,
-            onShowSnackbar = onShowSnackbar,
-            onWatchRemoved = { visibleWatch = null }
-        )
     }
 }
