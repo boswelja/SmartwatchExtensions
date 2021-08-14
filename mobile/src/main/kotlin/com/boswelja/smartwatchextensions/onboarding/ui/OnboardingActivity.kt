@@ -27,7 +27,9 @@ class OnboardingActivity : AppCompatActivity() {
                 Scaffold(
                     topBar = {
                         UpNavigationAppBar(
-                            onNavigateUp = navController::navigateUp,
+                            onNavigateUp = {
+                                if (!navController.navigateUp()) finish()
+                            },
                             backgroundColor = Color.Transparent,
                             elevation = 0.dp
                         )
