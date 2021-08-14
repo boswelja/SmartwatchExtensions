@@ -4,8 +4,11 @@ import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Scaffold
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.rememberNavController
 import com.boswelja.smartwatchextensions.common.startActivity
 import com.boswelja.smartwatchextensions.common.ui.AppTheme
@@ -23,11 +26,15 @@ class OnboardingActivity : AppCompatActivity() {
             AppTheme {
                 Scaffold(
                     topBar = {
-                        UpNavigationAppBar(onNavigateUp = navController::navigateUp)
+                        UpNavigationAppBar(
+                            onNavigateUp = navController::navigateUp,
+                            backgroundColor = Color.Transparent,
+                            elevation = 0.dp
+                        )
                     }
                 ) {
                     OnboardingScreen(
-                        modifier = Modifier.fillMaxSize(),
+                        modifier = Modifier.fillMaxSize().padding(it),
                         navController = navController,
                         onFinished = {
                             startActivity<MainActivity>()
