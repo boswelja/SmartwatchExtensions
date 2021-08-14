@@ -66,7 +66,7 @@ class MainActivity : AppCompatActivity() {
                                 selectedWatch = selectedWatch,
                                 watches = registeredWatches,
                                 onWatchSelected = { viewModel.selectWatchById(it.id) },
-                                onNavigateUp = { navController.popBackStack() }
+                                onNavigateUp = navController::navigateUp
                             )
                         } else {
                             WatchPickerAppBar(
