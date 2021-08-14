@@ -3,10 +3,16 @@ package com.boswelja.smartwatchextensions.onboarding.ui
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.material.ExtendedFloatingActionButton
+import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.NavigateNext
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -23,7 +29,8 @@ import com.boswelja.smartwatchextensions.R
 @Composable
 fun WelcomeScreen(
     modifier: Modifier = Modifier,
-    contentPadding: Dp = 16.dp
+    contentPadding: Dp = 16.dp,
+    onNavigateTo: (OnboardingDestination) -> Unit
 ) {
     Column(
         modifier.padding(contentPadding),
@@ -36,15 +43,21 @@ fun WelcomeScreen(
             null,
             Modifier.size(180.dp)
         )
+        Spacer(Modifier.height(contentPadding))
         Text(
             stringResource(R.string.welcome_to_text),
-            style = MaterialTheme.typography.h5,
-            modifier = Modifier.padding(top = contentPadding)
+            style = MaterialTheme.typography.h5
         )
         Text(
             stringResource(R.string.app_name),
             textAlign = TextAlign.Center,
             style = MaterialTheme.typography.h4
+        )
+        Spacer(Modifier.height(contentPadding))
+        ExtendedFloatingActionButton(
+            text = { Text(stringResource(R.string.get_started)) },
+            icon = { Icon(Icons.Outlined.NavigateNext, null) },
+            onClick = { onNavigateTo(OnboardingDestination.SHARE_USAGE_STATS) }
         )
     }
 }

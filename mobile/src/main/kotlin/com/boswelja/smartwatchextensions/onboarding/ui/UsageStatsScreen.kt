@@ -2,11 +2,14 @@ package com.boswelja.smartwatchextensions.onboarding.ui
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.selection.toggleable
 import androidx.compose.material.Checkbox
 import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.ExtendedFloatingActionButton
 import androidx.compose.material.Icon
 import androidx.compose.material.ListItem
 import androidx.compose.material.MaterialTheme
@@ -14,6 +17,7 @@ import androidx.compose.material.OutlinedButton
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Analytics
+import androidx.compose.material.icons.outlined.NavigateNext
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -37,7 +41,8 @@ import kotlinx.coroutines.launch
 fun UsageStatsScreen(
     modifier: Modifier = Modifier,
     contentPadding: Dp = 16.dp,
-    onShowPrivacyPolicy: () -> Unit
+    onShowPrivacyPolicy: () -> Unit,
+    onNavigateTo: (OnboardingDestination) -> Unit
 ) {
     val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
@@ -84,7 +89,7 @@ fun UsageStatsScreen(
                         }
                     }
                 )
-                .padding(16.dp)
+                .padding(contentPadding)
         )
         OutlinedButton(
             onClick = onShowPrivacyPolicy,
@@ -92,5 +97,11 @@ fun UsageStatsScreen(
         ) {
             Text(stringResource(R.string.about_priv_policy_title))
         }
+        Spacer(Modifier.height(contentPadding))
+        ExtendedFloatingActionButton(
+            text = { Text(stringResource(R.string.button_next)) },
+            icon = { Icon(Icons.Outlined.NavigateNext, null) },
+            onClick = { onNavigateTo(OnboardingDestination.REGISTER_WATCHES) }
+        )
     }
 }
