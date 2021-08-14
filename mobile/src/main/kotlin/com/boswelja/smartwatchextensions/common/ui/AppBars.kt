@@ -5,6 +5,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.material.AppBarDefaults
 import androidx.compose.material.DropdownMenu
 import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.ExperimentalMaterialApi
@@ -25,8 +26,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.Dp
 import androidx.core.net.toUri
 import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.common.startActivity
@@ -36,11 +39,14 @@ import com.boswelja.watchconnection.core.Watch
 fun UpNavigationAppBar(
     title: @Composable () -> Unit = { },
     actions: @Composable RowScope.() -> Unit = { },
+    backgroundColor: Color = MaterialTheme.colors.background,
+    elevation: Dp = AppBarDefaults.TopAppBarElevation,
     onNavigateUp: () -> Unit
 ) {
     TopAppBar(
         title = title,
-        backgroundColor = MaterialTheme.colors.background,
+        backgroundColor = backgroundColor,
+        elevation = elevation,
         navigationIcon = {
             IconButton(onNavigateUp) {
                 Icon(
@@ -57,10 +63,13 @@ fun UpNavigationAppBar(
 fun WatchPickerAppBar(
     selectedWatch: Watch?,
     watches: List<Watch>?,
+    backgroundColor: Color = MaterialTheme.colors.background,
+    elevation: Dp = AppBarDefaults.TopAppBarElevation,
     onWatchSelected: (Watch) -> Unit
 ) {
     TopAppBar(
-        backgroundColor = MaterialTheme.colors.background,
+        backgroundColor = backgroundColor,
+        elevation = elevation,
         title = {
             WatchPickerDropdown(
                 selectedWatch = selectedWatch,
@@ -76,11 +85,15 @@ fun WatchPickerAppBar(
 fun UpNavigationWatchPickerAppBar(
     selectedWatch: Watch?,
     watches: List<Watch>?,
+    backgroundColor: Color = MaterialTheme.colors.background,
+    elevation: Dp = AppBarDefaults.TopAppBarElevation,
     onWatchSelected: (Watch) -> Unit,
     onNavigateUp: () -> Unit
 ) {
     UpNavigationAppBar(
         onNavigateUp = onNavigateUp,
+        backgroundColor = backgroundColor,
+        elevation = elevation,
         title = {
             WatchPickerDropdown(
                 selectedWatch = selectedWatch,
