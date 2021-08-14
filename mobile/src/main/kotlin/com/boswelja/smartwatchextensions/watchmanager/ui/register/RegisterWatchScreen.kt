@@ -17,6 +17,7 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Watch
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -30,7 +31,8 @@ import com.boswelja.watchconnection.core.Watch
 @Composable
 fun RegisterWatchScreen(
     modifier: Modifier = Modifier,
-    contentPadding: Dp = 16.dp
+    contentPadding: Dp = 16.dp,
+    onWatchRegistered: (() -> Unit)? = null
 ) {
     val viewModel: RegisterWatchViewModel = viewModel()
     val discoveredWatches = viewModel.discoveredWatches
@@ -51,6 +53,12 @@ fun RegisterWatchScreen(
                     discoveredWatches = discoveredWatches
                 )
             }
+        }
+    }
+
+    if (onWatchRegistered != null && discoveredWatches.isNotEmpty()) {
+        LaunchedEffect(key1 = discoveredWatches) {
+            onWatchRegistered()
         }
     }
 }
