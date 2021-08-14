@@ -2,7 +2,6 @@ package com.boswelja.smartwatchextensions.onboarding.ui
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.selection.toggleable
@@ -26,15 +25,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.analytics.getAnalytics
 import com.boswelja.smartwatchextensions.settings.appSettingsStore
 import kotlinx.coroutines.launch
 
-@ExperimentalMaterialApi
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun UsageStatsScreen(
+    modifier: Modifier = Modifier,
+    contentPadding: Dp = 16.dp,
     onShowPrivacyPolicy: () -> Unit
 ) {
     val coroutineScope = rememberCoroutineScope()
@@ -42,9 +44,7 @@ fun UsageStatsScreen(
     val analytics = getAnalytics()
     var checkboxChecked by remember { mutableStateOf(true) }
     Column(
-        Modifier
-            .fillMaxSize()
-            .padding(16.dp),
+        modifier = modifier.padding(contentPadding),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -56,7 +56,7 @@ fun UsageStatsScreen(
         Text(
             stringResource(R.string.share_usage_title),
             style = MaterialTheme.typography.h4,
-            modifier = Modifier.padding(top = 16.dp)
+            modifier = Modifier.padding(top = contentPadding)
         )
         Text(
             stringResource(R.string.share_usage_desc),
@@ -88,7 +88,7 @@ fun UsageStatsScreen(
         )
         OutlinedButton(
             onClick = onShowPrivacyPolicy,
-            modifier = Modifier.padding(top = 16.dp)
+            modifier = Modifier.padding(top = contentPadding)
         ) {
             Text(stringResource(R.string.about_priv_policy_title))
         }

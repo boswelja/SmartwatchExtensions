@@ -3,7 +3,6 @@ package com.boswelja.smartwatchextensions.onboarding.ui
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.MaterialTheme
@@ -15,19 +14,19 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toBitmap
 import com.boswelja.smartwatchextensions.R
 
-@Preview(showBackground = true)
 @Composable
-fun WelcomeScreen() {
+fun WelcomeScreen(
+    modifier: Modifier = Modifier,
+    contentPadding: Dp = 16.dp
+) {
     Column(
-        Modifier
-            .fillMaxSize()
-            .padding(16.dp),
+        modifier.padding(contentPadding),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -40,7 +39,7 @@ fun WelcomeScreen() {
         Text(
             stringResource(R.string.welcome_to_text),
             style = MaterialTheme.typography.h5,
-            modifier = Modifier.padding(top = 16.dp)
+            modifier = Modifier.padding(top = contentPadding)
         )
         Text(
             stringResource(R.string.app_name),

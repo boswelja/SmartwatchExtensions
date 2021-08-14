@@ -6,6 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ExtendedFloatingActionButton
 import androidx.compose.material.FabPosition
@@ -18,7 +19,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
 import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.common.startActivity
@@ -55,7 +59,10 @@ class OnboardingActivity : AppCompatActivity() {
                         )
                     }
                 ) {
-                    OnboardingScreen(currentDestination = currentDestination)
+                    OnboardingScreen(
+                        modifier = Modifier.fillMaxSize(),
+                        currentDestination = currentDestination
+                    )
                 }
             }
         }
@@ -77,12 +84,20 @@ class OnboardingActivity : AppCompatActivity() {
     @ExperimentalMaterialApi
     @ExperimentalAnimationApi
     @Composable
-    fun OnboardingScreen(currentDestination: Destination) {
+    fun OnboardingScreen(
+        modifier: Modifier = Modifier,
+        contentPadding: Dp = 16.dp,
+        currentDestination: Destination
+    ) {
         Crossfade(targetState = currentDestination) {
             when (it) {
-                Destination.WELCOME -> WelcomeScreen()
+                Destination.WELCOME -> {
+                    WelcomeScreen(modifier = modifier, contentPadding = contentPadding)
+                }
                 Destination.SHARE_USAGE_STATS -> {
                     UsageStatsScreen(
+                        modifier = modifier,
+                        contentPadding = contentPadding,
                         onShowPrivacyPolicy = {
                             startActivity { intent ->
                                 intent.action = Intent.ACTION_VIEW
@@ -93,7 +108,10 @@ class OnboardingActivity : AppCompatActivity() {
                     )
                 }
                 Destination.REGISTER_WATCHES -> {
-                    RegisterWatchScreen()
+                    RegisterWatchScreen(
+                        modifier = modifier,
+                        contentPadding = contentPadding
+                    )
                 }
             }
         }
