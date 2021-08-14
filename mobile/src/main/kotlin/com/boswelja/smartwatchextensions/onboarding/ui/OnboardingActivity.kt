@@ -5,9 +5,7 @@ import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.animation.Crossfade
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ExtendedFloatingActionButton
 import androidx.compose.material.FabPosition
 import androidx.compose.material.Icon
@@ -30,15 +28,11 @@ import com.boswelja.smartwatchextensions.common.ui.AppTheme
 import com.boswelja.smartwatchextensions.common.ui.UpNavigationAppBar
 import com.boswelja.smartwatchextensions.main.ui.MainActivity
 import com.boswelja.smartwatchextensions.watchmanager.ui.register.RegisterWatchScreen
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 class OnboardingActivity : AppCompatActivity() {
 
     private var currentDestination by mutableStateOf(Destination.WELCOME)
 
-    @ExperimentalCoroutinesApi
-    @ExperimentalAnimationApi
-    @ExperimentalMaterialApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -68,7 +62,6 @@ class OnboardingActivity : AppCompatActivity() {
         }
     }
 
-    @ExperimentalCoroutinesApi
     private fun navigateNext() {
         when (currentDestination) {
             Destination.WELCOME -> currentDestination = Destination.SHARE_USAGE_STATS
@@ -80,9 +73,6 @@ class OnboardingActivity : AppCompatActivity() {
         }
     }
 
-    @ExperimentalCoroutinesApi
-    @ExperimentalMaterialApi
-    @ExperimentalAnimationApi
     @Composable
     fun OnboardingScreen(
         modifier: Modifier = Modifier,
