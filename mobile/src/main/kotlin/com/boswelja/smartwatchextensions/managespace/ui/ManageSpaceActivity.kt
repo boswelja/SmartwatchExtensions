@@ -8,11 +8,8 @@ import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.material.AlertDialog
-import androidx.compose.material.LinearProgressIndicator
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.rememberScaffoldState
@@ -29,6 +26,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.common.ui.AppTheme
+import com.boswelja.smartwatchextensions.common.ui.ProgressDialog
 import com.boswelja.smartwatchextensions.common.ui.UpNavigationAppBar
 import kotlinx.coroutines.launch
 
@@ -137,11 +135,10 @@ fun ManageSpaceScreen(
         )
     }
     if (progress > 0.0f) {
-        AlertDialog(
+        ProgressDialog(
             onDismissRequest = { if (progress >= 1f) progress = 0f },
             title = { Text(stringResource(R.string.please_wait)) },
-            text = { LinearProgressIndicator(progress, Modifier.fillMaxWidth()) },
-            buttons = { }
+            progress = progress
         )
     }
 }

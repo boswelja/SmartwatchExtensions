@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Divider
+import androidx.compose.material.LinearProgressIndicator
 import androidx.compose.material.LocalTextStyle
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.RadioButton
@@ -166,6 +167,37 @@ fun <T> ConfirmationDialog(
                         Text(stringResource(R.string.dialog_button_cancel))
                     }
                 }
+            )
+        }
+    }
+}
+
+@Composable
+fun ProgressDialog(
+    modifier: Modifier = Modifier,
+    elevation: Dp = 24.dp,
+    shape: Shape = MaterialTheme.shapes.medium,
+    backgroundColor: Color = MaterialTheme.colors.surface,
+    contentColor: Color = MaterialTheme.colors.contentColorFor(backgroundColor),
+    dialogProperties: DialogProperties = DialogProperties(),
+    onDismissRequest: () -> Unit,
+    title: @Composable () -> Unit,
+    progress: Float
+) {
+    MaterialDialog(
+        modifier = modifier,
+        elevation = elevation,
+        shape = shape,
+        contentColor = contentColor,
+        backgroundColor = backgroundColor,
+        dialogProperties = dialogProperties,
+        onDismissRequest = onDismissRequest
+    ) {
+        Column {
+            DialogHeader(title = title)
+            LinearProgressIndicator(
+                modifier = Modifier.padding(16.dp),
+                progress = progress
             )
         }
     }
