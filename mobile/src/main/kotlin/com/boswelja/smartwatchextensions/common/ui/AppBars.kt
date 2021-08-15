@@ -39,7 +39,7 @@ import com.boswelja.watchconnection.core.Watch
 fun UpNavigationAppBar(
     title: @Composable () -> Unit = { },
     actions: @Composable RowScope.() -> Unit = { },
-    backgroundColor: Color = MaterialTheme.colors.background,
+    backgroundColor: Color = MaterialTheme.colors.surface,
     elevation: Dp = AppBarDefaults.TopAppBarElevation,
     onNavigateUp: () -> Unit
 ) {
@@ -63,7 +63,7 @@ fun UpNavigationAppBar(
 fun WatchPickerAppBar(
     selectedWatch: Watch?,
     watches: List<Watch>?,
-    backgroundColor: Color = MaterialTheme.colors.background,
+    backgroundColor: Color = MaterialTheme.colors.surface,
     elevation: Dp = AppBarDefaults.TopAppBarElevation,
     onWatchSelected: (Watch) -> Unit
 ) {
@@ -85,7 +85,7 @@ fun WatchPickerAppBar(
 fun UpNavigationWatchPickerAppBar(
     selectedWatch: Watch?,
     watches: List<Watch>?,
-    backgroundColor: Color = MaterialTheme.colors.background,
+    backgroundColor: Color = MaterialTheme.colors.surface,
     elevation: Dp = AppBarDefaults.TopAppBarElevation,
     onWatchSelected: (Watch) -> Unit,
     onNavigateUp: () -> Unit

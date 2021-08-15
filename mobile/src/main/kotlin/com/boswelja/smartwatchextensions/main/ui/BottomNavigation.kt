@@ -52,7 +52,7 @@ fun BottonNav(
     onNavigateTo: (BottomNavDestination) -> Unit
 ) {
     BottomNavigation(
-        backgroundColor = MaterialTheme.colors.background
+        backgroundColor = MaterialTheme.colors.surface
     ) {
         BottomNavDestination.values().forEach { destination ->
             val selected = currentDestination
