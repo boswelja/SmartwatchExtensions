@@ -1,10 +1,6 @@
 package com.boswelja.smartwatchextensions.appmanager.ui
 
-import androidx.compose.animation.animateContentSize
-import androidx.compose.animation.core.FastOutSlowInEasing
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -20,8 +16,6 @@ import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Delete
-import androidx.compose.material.icons.outlined.ExpandLess
-import androidx.compose.material.icons.outlined.ExpandMore
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.OpenInNew
 import androidx.compose.runtime.Composable
@@ -40,6 +34,7 @@ import androidx.compose.ui.unit.dp
 import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.appmanager.App
 import com.boswelja.smartwatchextensions.common.ui.BigButton
+import com.boswelja.smartwatchextensions.common.ui.ExpandableCard
 import java.text.SimpleDateFormat
 import java.util.Locale
 
@@ -154,27 +149,20 @@ fun PermissionsInfo(
 ) {
     if (permissions.isNotEmpty()) {
         var isExpanded by remember { mutableStateOf(false) }
-        Column(
-            modifier
-                .clickable { isExpanded = !isExpanded }
-                .animateContentSize(tween(easing = FastOutSlowInEasing))
+        ExpandableCard(
+            modifier = modifier,
+            title = {
+                val permissionText = LocalContext.current.resources.getQuantityString(
+                    R.plurals.app_info_requested_permissions_count,
+                    permissions.count(),
+                    permissions.count()
+                )
+                Text(permissionText)
+            },
+            expanded = isExpanded,
+            toggleExpanded = { isExpanded = !isExpanded }
         ) {
-            val permissionText = LocalContext.current.resources.getQuantityString(
-                R.plurals.app_info_requested_permissions_count,
-                permissions.count(),
-                permissions.count()
-            )
-            ListItem(
-                text = { Text(permissionText) },
-                secondaryText = { Text("Tap to show more") },
-                trailing = {
-                    Icon(
-                        if (isExpanded) Icons.Outlined.ExpandLess else Icons.Outlined.ExpandMore,
-                        null
-                    )
-                }
-            )
-            if (isExpanded) {
+            Column {
                 permissions.forEach { permission ->
                     ListItem(
                         text = { Text(permission) }
@@ -182,10 +170,6 @@ fun PermissionsInfo(
                 }
             }
         }
-    } else {
-        ListItem(
-            text = { Text(stringResource(R.string.app_info_requested_permissions_none)) }
-        )
     }
 }
 
