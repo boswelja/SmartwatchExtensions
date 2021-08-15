@@ -63,13 +63,10 @@
     <string name="app_info_last_updated_prefix">Last updated: %s</string>
     <string name="app_info_open_button">Open</string>
     <string name="app_info_uninstall_button">Uninstall</string>
-    <string name="app_info_requested_permissions_none">No permissions requested</string>
     <string name="app_manager_section_user_apps">User Apps</string>
     <string name="app_manager_section_disabled_apps">Disabled Apps</string>
     <string name="app_manager_section_system_apps">System Apps</string>
-    <string name="app_manager_activity_title">@string/main_app_manager_title</string>
     <string name="app_manager_watch_disconnected">We can\'t reach your watch right now. You may still view your apps, but you cannot make any changes</string>
-    <string name="app_manager_updating_cache">We\'re updating the app list. The list may change suddenly</string>
     <string name="watch_connection_dismiss">Dismiss</string>
 
     <!-- Phone Locking strings -->
@@ -162,7 +159,6 @@
     <string name="capabilities_title">Here\'s what we can do on this watch</string>
 
     <!-- Watch Manager strings -->
-    <string name="watch_manager_title">Watch Manager</string>
     <string name="watch_manager_add_watch_title">Add Watch</string>
     <string name="watch_manager_registered_watch_header">Registered Watches</string>
     <string name="watch_manager_action_continue_on_watch">Continue on your watch</string>

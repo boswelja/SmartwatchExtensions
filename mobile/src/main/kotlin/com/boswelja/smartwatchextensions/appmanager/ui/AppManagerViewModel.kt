@@ -18,7 +18,6 @@ import com.boswelja.smartwatchextensions.common.toByteArray
 import com.boswelja.smartwatchextensions.watchmanager.WatchManager
 import com.boswelja.watchconnection.core.Watch
 import com.boswelja.watchconnection.core.discovery.Status
-import java.util.UUID
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.collect
@@ -125,11 +124,6 @@ class AppManagerViewModel internal constructor(
             }
         }
     }
-
-    /**
-     * See [WatchManager.selectWatchById].
-     */
-    fun selectWatchById(watchId: UUID) = watchManager.selectWatchById(watchId)
 
     /**
      * Requests the selected watch launch a given [App].
