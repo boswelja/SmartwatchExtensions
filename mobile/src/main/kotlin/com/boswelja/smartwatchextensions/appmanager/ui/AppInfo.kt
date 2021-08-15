@@ -16,7 +16,7 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
 import androidx.compose.material.ListItem
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.OutlinedButton
+import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Delete
@@ -31,6 +31,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
@@ -38,6 +39,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.appmanager.App
+import com.boswelja.smartwatchextensions.common.ui.BigButton
 import java.text.SimpleDateFormat
 import java.util.Locale
 
@@ -117,25 +119,29 @@ fun AppActionButtons(
     onOpenClicked: () -> Unit,
     onUninstallClicked: () -> Unit
 ) {
-    Row(
+    Surface(
         modifier = modifier,
-        horizontalArrangement = Arrangement.spacedBy(16.dp)
+        color = Color.Transparent,
+        shape = MaterialTheme.shapes.medium
     ) {
-        OutlinedButton(
-            onClick = onOpenClicked,
-            enabled = openEnabled,
-            modifier = Modifier.weight(1f)
+        Row(
+            modifier = modifier,
+            horizontalArrangement = Arrangement.spacedBy(1.dp)
         ) {
-            Icon(Icons.Outlined.OpenInNew, null)
-            Text(stringResource(R.string.app_info_open_button))
-        }
-        OutlinedButton(
-            onClick = onUninstallClicked,
-            enabled = uninstallEnabled,
-            modifier = Modifier.weight(1f)
-        ) {
-            Icon(Icons.Outlined.Delete, null)
-            Text(stringResource(R.string.app_info_uninstall_button))
+            BigButton(
+                modifier = Modifier.weight(1f),
+                icon = { Icon(Icons.Outlined.OpenInNew, null) },
+                text = { Text(stringResource(R.string.app_info_open_button)) },
+                onClick = onOpenClicked,
+                enabled = openEnabled
+            )
+            BigButton(
+                modifier = Modifier.weight(1f),
+                icon = { Icon(Icons.Outlined.Delete, null) },
+                text = { Text(stringResource(R.string.app_info_uninstall_button)) },
+                onClick = onUninstallClicked,
+                enabled = uninstallEnabled
+            )
         }
     }
 }
