@@ -41,38 +41,36 @@ import java.util.Locale
 @Composable
 fun AppInfo(
     modifier: Modifier = Modifier,
-    app: App?,
+    app: App,
     interactionEnabled: Boolean = true,
     onOpenClicked: (App) -> Unit,
     onUninstallClicked: (App) -> Unit
 ) {
     val scrollState = rememberScrollState()
-    app?.let {
-        Column(
-            modifier.verticalScroll(scrollState),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            AppHeaderView(
-                modifier = Modifier.fillMaxWidth(),
-                appIcon = app.icon?.asImageBitmap(),
-                appName = app.label
-            )
-            AppActionButtons(
-                modifier = Modifier.fillMaxWidth(),
-                openEnabled = interactionEnabled && app.hasLaunchActivity,
-                uninstallEnabled = interactionEnabled && !app.isSystemApp,
-                onOpenClicked = { onOpenClicked(app) },
-                onUninstallClicked = { onUninstallClicked(app) }
-            )
-            PermissionsInfo(
-                modifier = Modifier.fillMaxWidth(),
-                permissions = app.requestedPermissions
-            )
-            AppInstallInfo(
-                modifier = Modifier.fillMaxWidth(),
-                app = app
-            )
-        }
+    Column(
+        modifier.verticalScroll(scrollState),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        AppHeaderView(
+            modifier = Modifier.fillMaxWidth(),
+            appIcon = app.icon?.asImageBitmap(),
+            appName = app.label
+        )
+        AppActionButtons(
+            modifier = Modifier.fillMaxWidth(),
+            openEnabled = interactionEnabled && app.hasLaunchActivity,
+            uninstallEnabled = interactionEnabled && !app.isSystemApp,
+            onOpenClicked = { onOpenClicked(app) },
+            onUninstallClicked = { onUninstallClicked(app) }
+        )
+        PermissionsInfo(
+            modifier = Modifier.fillMaxWidth(),
+            permissions = app.requestedPermissions
+        )
+        AppInstallInfo(
+            modifier = Modifier.fillMaxWidth(),
+            app = app
+        )
     }
 }
 

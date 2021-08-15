@@ -2,11 +2,10 @@ package com.boswelja.smartwatchextensions.appmanager.ui
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.Crossfade
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.shrinkVertically
-import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -59,70 +58,64 @@ fun AppManagerScreen(
     val isLoading = systemApps.isEmpty() || viewModel.isUpdatingCache
 
     var selectedApp by remember { mutableStateOf<App?>(null) }
-    var isAppInfoVisible by remember { mutableStateOf(false) }
     var watchConnectionWarningVisible by remember(isLoading, isWatchConnected) {
         mutableStateOf(!isLoading && !isWatchConnected)
     }
 
-    BackHandler(enabled = isAppInfoVisible) {
-        isAppInfoVisible = false
+    BackHandler(enabled = selectedApp != null) {
+        selectedApp = null
     }
 
-    Column(
-        verticalArrangement = Arrangement.spacedBy(8.dp)
-    ) {
-        LoadingIndicator(
-            modifier = Modifier.fillMaxWidth(),
-            isLoading = isLoading
-        )
-        WatchStatusIndicator(
-            visible = watchConnectionWarningVisible,
-            onDismissRequest = { watchConnectionWarningVisible = false }
-        )
-        AppList(
-            modifier = modifier,
-            contentPadding = contentPadding,
-            userApps = userApps,
-            disabledApps = disabledApps,
-            systemApps = systemApps,
-            onAppClick = { app ->
-                selectedApp = app
-                isAppInfoVisible = true
-            }
-        )
-    }
-
-    AnimatedVisibility(
-        visible = isAppInfoVisible,
-        enter = slideInVertically(initialOffsetY = { it }),
-        exit = slideOutVertically(targetOffsetY = { it })
-    ) {
-        AppInfo(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(MaterialTheme.colors.background)
-                .padding(16.dp),
-            app = selectedApp,
-            onOpenClicked = {
-                coroutineScope.launch {
-                    if (viewModel.sendOpenRequest(it)) {
-                        onShowSnackbar(
-                            context.getString(R.string.watch_manager_action_continue_on_watch)
-                        )
+    Crossfade(targetState = selectedApp) {
+        if (it != null) {
+            AppInfo(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(MaterialTheme.colors.background)
+                    .padding(16.dp),
+                app = it,
+                onOpenClicked = {
+                    coroutineScope.launch {
+                        if (viewModel.sendOpenRequest(it)) {
+                            onShowSnackbar(
+                                context.getString(R.string.watch_manager_action_continue_on_watch)
+                            )
+                        }
+                    }
+                },
+                onUninstallClicked = {
+                    coroutineScope.launch {
+                        if (viewModel.sendUninstallRequest(it)) {
+                            selectedApp = null
+                            onShowSnackbar(
+                                context.getString(R.string.watch_manager_action_continue_on_watch)
+                            )
+                        }
                     }
                 }
-            },
-            onUninstallClicked = {
-                coroutineScope.launch {
-                    if (viewModel.sendUninstallRequest(it)) {
-                        onShowSnackbar(
-                            context.getString(R.string.watch_manager_action_continue_on_watch)
-                        )
-                    }
-                }
-                isAppInfoVisible = false
+            )
+        } else {
+            Column(
+                modifier = modifier,
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                LoadingIndicator(
+                    modifier = Modifier.fillMaxWidth(),
+                    isLoading = isLoading
+                )
+                WatchStatusIndicator(
+                    visible = watchConnectionWarningVisible,
+                    onDismissRequest = { watchConnectionWarningVisible = false }
+                )
+                AppList(
+                    contentPadding = contentPadding,
+                    userApps = userApps,
+                    disabledApps = disabledApps,
+                    systemApps = systemApps,
+                    onAppClick = { app -> selectedApp = app }
+                )
             }
-        )
+        }
     }
 }
 
