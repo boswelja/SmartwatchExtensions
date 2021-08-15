@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.AlertDialog
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.runtime.Composable
@@ -104,17 +105,26 @@ fun ResetAppSettingsAction(
         onButtonClick = { dialogVisible = true }
     )
     if (dialogVisible) {
-        RequestDialog(
-            title = stringResource(R.string.reset_settings_title),
-            text = stringResource(R.string.reset_settings_desc),
-            onRequestGranted = {
-                dialogVisible = false
-                viewModel.resetAppSettings {
-                    onProgressChange(1f)
-                    onActionFinished(it)
-                }
+        AlertDialog(
+            title = { Text(stringResource(R.string.reset_settings_title)) },
+            text = { Text(stringResource(R.string.reset_settings_desc)) },
+            onDismissRequest = { dialogVisible = false },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        dialogVisible = false
+                        viewModel.resetAppSettings {
+                            onProgressChange(1f)
+                            onActionFinished(it)
+                        }
+                    }
+                ) { Text(stringResource(R.string.dialog_button_reset)) }
             },
-            onRequestDenied = { dialogVisible = false }
+            dismissButton = {
+                TextButton(onClick = { dialogVisible = false }) {
+                    Text(stringResource(R.string.dialog_button_cancel))
+                }
+            }
         )
     }
 }
@@ -135,17 +145,26 @@ fun ResetExtensionsAction(
         onButtonClick = { dialogVisible = true }
     )
     if (dialogVisible) {
-        RequestDialog(
-            title = stringResource(R.string.reset_extensions_title),
-            text = stringResource(R.string.reset_extensions_warning),
-            onRequestGranted = {
-                dialogVisible = false
-                viewModel.resetExtensionSettings(
-                    { onProgressChange(it / 100f) },
-                    { onActionFinished(it) }
-                )
+        AlertDialog(
+            title = { Text(stringResource(R.string.reset_extensions_title)) },
+            text = { Text(stringResource(R.string.reset_extensions_warning)) },
+            onDismissRequest = { dialogVisible = false },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        dialogVisible = false
+                        viewModel.resetExtensionSettings(
+                            { onProgressChange(it / 100f) },
+                            { onActionFinished(it) }
+                        )
+                    }
+                ) { Text(stringResource(R.string.dialog_button_reset)) }
             },
-            onRequestDenied = { dialogVisible = false }
+            dismissButton = {
+                TextButton(onClick = { dialogVisible = false }) {
+                    Text(stringResource(R.string.dialog_button_cancel))
+                }
+            }
         )
     }
 }
@@ -166,17 +185,26 @@ fun ResetAppAction(
         onButtonClick = { dialogVisible = true }
     )
     if (dialogVisible) {
-        RequestDialog(
-            title = stringResource(R.string.reset_app_title),
-            text = stringResource(R.string.reset_app_warning),
-            onRequestGranted = {
-                dialogVisible = false
-                viewModel.resetApp(
-                    { onProgressChange(it / 100f) },
-                    { onActionFinished(it) }
-                )
+        AlertDialog(
+            title = { Text(stringResource(R.string.reset_app_title)) },
+            text = { Text(stringResource(R.string.reset_app_warning)) },
+            onDismissRequest = { dialogVisible = false },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        dialogVisible = false
+                        viewModel.resetApp(
+                            { onProgressChange(it / 100f) },
+                            { onActionFinished(it) }
+                        )
+                    }
+                ) { Text(stringResource(R.string.dialog_button_reset)) }
             },
-            onRequestDenied = { dialogVisible = false }
+            dismissButton = {
+                TextButton(onClick = { dialogVisible = false }) {
+                    Text(stringResource(R.string.dialog_button_cancel))
+                }
+            }
         )
     }
 }

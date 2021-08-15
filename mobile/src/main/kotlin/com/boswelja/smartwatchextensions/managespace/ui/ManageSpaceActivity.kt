@@ -15,7 +15,6 @@ import androidx.compose.material.AlertDialog
 import androidx.compose.material.LinearProgressIndicator
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
-import androidx.compose.material.TextButton
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -145,28 +144,4 @@ fun ManageSpaceScreen(
             buttons = { }
         )
     }
-}
-
-@Composable
-fun RequestDialog(
-    title: String,
-    text: String,
-    onRequestGranted: () -> Unit,
-    onRequestDenied: () -> Unit
-) {
-    AlertDialog(
-        onDismissRequest = onRequestDenied,
-        title = { Text(title) },
-        text = { Text(text) },
-        confirmButton = {
-            TextButton(onClick = onRequestGranted) {
-                Text(stringResource(R.string.dialog_button_reset))
-            }
-        },
-        dismissButton = {
-            TextButton(onClick = onRequestDenied) {
-                Text(stringResource(R.string.dialog_button_cancel))
-            }
-        }
-    )
 }
