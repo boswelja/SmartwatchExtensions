@@ -1,6 +1,5 @@
 package com.boswelja.smartwatchextensions.messages.ui
 
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material.SnackbarDuration
 import androidx.compose.material.SnackbarResult
 import androidx.compose.ui.Modifier
@@ -41,7 +40,8 @@ fun NavGraphBuilder.messagesGraph(
     }
     composable(MessageDestination.MessageHistory.route) {
         MessageHistoryScreen(
-            modifier = modifier.padding(contentPadding),
+            modifier = modifier,
+            contentPadding = contentPadding,
             onShowSnackbar = { onShowSnackbar(it, null, SnackbarDuration.Short) }
         )
     }

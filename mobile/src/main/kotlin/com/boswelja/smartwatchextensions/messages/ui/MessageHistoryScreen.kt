@@ -2,8 +2,10 @@ package com.boswelja.smartwatchextensions.messages.ui
 
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -41,12 +43,13 @@ fun MessageHistoryScreen(
     val scope = rememberCoroutineScope()
 
     Crossfade(
+        modifier = modifier,
         targetState = messages.isNotEmpty()
     ) {
         if (it) {
             val historyClearedText = stringResource(R.string.message_history_cleared)
             MessagesHistoryList(
-                modifier = modifier.padding(contentPadding),
+                modifier = Modifier.padding(contentPadding),
                 messages = messages,
                 onClearAll = {
                     scope.launch {
@@ -55,7 +58,7 @@ fun MessageHistoryScreen(
                     }
                 }
             )
-        } else NoMessageHistory(modifier.padding(16.dp))
+        } else NoMessageHistory(Modifier.fillMaxSize().padding(contentPadding))
     }
 }
 
@@ -85,7 +88,9 @@ fun MessagesHistoryList(
         LazyColumn {
             stickyHeader {
                 ListItem(
-                    modifier = Modifier.clickable(onClick = onClearAll),
+                    modifier = Modifier
+                        .clickable(onClick = onClearAll)
+                        .background(MaterialTheme.colors.surface),
                     text = { Text(stringResource(R.string.message_history_clear_all)) },
                     icon = { Icon(Icons.Outlined.ClearAll, null) }
                 )
