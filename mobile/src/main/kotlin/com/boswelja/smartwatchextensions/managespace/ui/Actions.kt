@@ -1,7 +1,9 @@
 package com.boswelja.smartwatchextensions.managespace.ui
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
@@ -28,9 +30,7 @@ fun Action(
 ) {
     Card(
         modifier = modifier,
-        header = {
-            CardHeader(title = { Text(title) })
-        }
+        header = { CardHeader(title = { Text(title) }) }
     ) {
         Column {
             Text(
@@ -43,6 +43,7 @@ fun Action(
             ) {
                 Text(buttonLabel)
             }
+            Spacer(Modifier.height(8.dp))
         }
     }
 }
