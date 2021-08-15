@@ -90,6 +90,7 @@ fun ManageSpaceScreen(
         ClearCacheAction(
             modifier = actionModifier,
             onActionFinished = { success ->
+                progress = 0f
                 val message = if (success) context.getString(R.string.clear_cache_success)
                 else context.getString(R.string.clear_cache_failed)
                 onShowSnackbar(message)
@@ -107,6 +108,7 @@ fun ManageSpaceScreen(
         ResetAppSettingsAction(
             modifier = actionModifier,
             onActionFinished = { success ->
+                progress = 0f
                 val message = if (success) context.getString(R.string.reset_settings_success)
                 else context.getString(R.string.reset_settings_failed)
                 onShowSnackbar(message)
@@ -116,6 +118,7 @@ fun ManageSpaceScreen(
         ResetExtensionsAction(
             modifier = actionModifier,
             onActionFinished = { success ->
+                progress = 0f
                 val message = if (success) context.getString(R.string.reset_extensions_success)
                 else context.getString(R.string.reset_extensions_failed)
                 onShowSnackbar(message)
@@ -125,6 +128,7 @@ fun ManageSpaceScreen(
         ResetAppAction(
             modifier = actionModifier,
             onActionFinished = { success ->
+                progress = 0f
                 if (success) {
                     onAppReset()
                 } else {
