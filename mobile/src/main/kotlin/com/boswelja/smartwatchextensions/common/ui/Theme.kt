@@ -14,8 +14,8 @@ import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 private val Purple200 = Color(0xffce93d8)
 private val Purple500 = Color(0xff9c27b0)
-private val Purple50 = Color(0xfff3e5f5)
-private val Purple10 = Color(0xfffdfafe)
+private val Purple50 = Color(0xfff0eaf1)
+private val Purple10 = Color(0xfffdfbfe)
 private val Purple900 = Color(0xff140b19)
 
 private val DarkColors = darkColors(
