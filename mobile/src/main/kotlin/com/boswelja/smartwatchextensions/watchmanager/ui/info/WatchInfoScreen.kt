@@ -174,7 +174,7 @@ fun WatchCapabilities(
 @Composable
 fun WatchActions(
     modifier: Modifier = Modifier,
-    contentSpacing: Dp = 1.dp,
+    contentSpacing: Dp = 2.dp,
     watchName: String,
     onResetSettings: () -> Unit,
     onForgetWatch: () -> Unit

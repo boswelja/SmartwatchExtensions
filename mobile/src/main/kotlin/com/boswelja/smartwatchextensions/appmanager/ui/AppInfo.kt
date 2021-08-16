@@ -119,7 +119,7 @@ fun AppActionButtons(
     ) {
         Row(
             modifier = modifier,
-            horizontalArrangement = Arrangement.spacedBy(1.dp)
+            horizontalArrangement = Arrangement.spacedBy(2.dp)
         ) {
             BigButton(
                 modifier = Modifier.weight(1f),
