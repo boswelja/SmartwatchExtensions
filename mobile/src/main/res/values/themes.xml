@@ -1,5 +1,10 @@
 <resources>
 
+    <style name="Theme.App.SplashScreen" parent="Theme.SplashScreen">
+        <item name="postSplashScreenTheme">@style/Theme.App</item>
+        <item name="windowSplashScreenAnimatedIcon">@mipmap/ic_launcher</item>
+    </style>
+
     <style name="Theme.App" parent="Theme.AppCompat.DayNight.NoActionBar">
         <item name="android:windowLightNavigationBar">@bool/lightNavigationBar</item>
         <item name="android:navigationBarColor">@color/navBarColor</item>
