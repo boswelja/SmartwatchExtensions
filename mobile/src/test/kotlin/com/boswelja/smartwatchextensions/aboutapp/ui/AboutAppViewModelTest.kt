@@ -2,7 +2,6 @@ package com.boswelja.smartwatchextensions.aboutapp.ui
 
 import android.os.Build
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.browser.customtabs.CustomTabsIntent
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.boswelja.smartwatchextensions.common.connection.Messages
@@ -35,7 +34,6 @@ class AboutAppViewModelTest {
     private val dummyWatch2 = Watch("Watch 2", "id2", "")
 
     @RelaxedMockK private lateinit var watchManager: WatchManager
-    @RelaxedMockK private lateinit var customTabIntent: CustomTabsIntent
 
     private lateinit var viewModel: AboutAppViewModel
 
@@ -48,8 +46,7 @@ class AboutAppViewModelTest {
 
         viewModel = AboutAppViewModel(
             ApplicationProvider.getApplicationContext(),
-            watchManager,
-            customTabIntent
+            watchManager
         )
     }
 
