@@ -2,7 +2,6 @@ package com.boswelja.smartwatchextensions.messages.ui
 
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -89,8 +88,7 @@ fun MessagesHistoryList(
             stickyHeader {
                 ListItem(
                     modifier = Modifier
-                        .clickable(onClick = onClearAll)
-                        .background(MaterialTheme.colors.surface),
+                        .clickable(onClick = onClearAll),
                     text = { Text(stringResource(R.string.message_history_clear_all)) },
                     icon = { Icon(Icons.Outlined.ClearAll, null) }
                 )
