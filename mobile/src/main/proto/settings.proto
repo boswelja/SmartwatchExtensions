@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-option java_package = "com.boswelja.smartwatchextensions.appsettings";
+option java_package = "com.boswelja.smartwatchextensions.settings";
 option java_multiple_files = true;
 
 message Settings {
@@ -15,4 +15,6 @@ message Settings {
   Theme appTheme = 2;
 
   string qsTileWatchId = 3;
+
+  bool checkForUpdates = 4;
 }

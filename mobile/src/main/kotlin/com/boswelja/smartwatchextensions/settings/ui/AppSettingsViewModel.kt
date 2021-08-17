@@ -1,4 +1,4 @@
-package com.boswelja.smartwatchextensions.appsettings.ui
+package com.boswelja.smartwatchextensions.settings.ui
 
 import android.app.Application
 import androidx.appcompat.app.AppCompatDelegate
@@ -7,9 +7,10 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.boswelja.smartwatchextensions.analytics.Analytics
 import com.boswelja.smartwatchextensions.analytics.getAnalytics
-import com.boswelja.smartwatchextensions.appsettings.Settings
-import com.boswelja.smartwatchextensions.appsettings.appSettingsStore
 import com.boswelja.smartwatchextensions.batterysync.quicksettings.WatchBatteryTileService
+import com.boswelja.smartwatchextensions.settings.Settings
+import com.boswelja.smartwatchextensions.settings.appSettingsStore
+import com.boswelja.smartwatchextensions.updatechecker.UpdateCheckWorker
 import com.boswelja.smartwatchextensions.watchmanager.WatchManager
 import com.boswelja.watchconnection.core.Watch
 import java.util.UUID
@@ -28,7 +29,7 @@ class AppSettingsViewModel internal constructor(
     val analyticsEnabled = dataStore.data.map { it.analyticsEnabled }
     val appTheme = dataStore.data.map { it.appTheme }
     val registeredWatches = watchManager.registeredWatches
-    @ExperimentalCoroutinesApi
+    @OptIn(ExperimentalCoroutinesApi::class)
     val qsTilesWatch = dataStore.data.map {
         it.qsTileWatchId
     }.flatMapLatest { idString ->
@@ -38,6 +39,7 @@ class AppSettingsViewModel internal constructor(
             watchManager.registeredWatches.map { it.firstOrNull() }
         }
     }
+    val checkUpdatesDaily = dataStore.data.map { it.checkForUpdates }
 
     @Suppress("unused")
     constructor(application: Application) : this(
@@ -78,6 +80,19 @@ class AppSettingsViewModel internal constructor(
             }
 
             WatchBatteryTileService.requestTileUpdate(getApplication())
+        }
+    }
+
+    fun setCheckUpdatesDaily(newValue: Boolean) {
+        viewModelScope.launch {
+            dataStore.updateData {
+                it.copy(checkForUpdates = newValue)
+            }
+            if (newValue) {
+                UpdateCheckWorker.schedule(getApplication())
+            } else {
+                UpdateCheckWorker.cancel(getApplication())
+            }
         }
     }
 }

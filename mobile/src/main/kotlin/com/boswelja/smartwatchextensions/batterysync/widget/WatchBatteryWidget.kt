@@ -6,10 +6,10 @@ import android.content.Intent
 import android.widget.RemoteViews
 import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.batterysync.database.WatchBatteryStatsDatabase
-import com.boswelja.smartwatchextensions.batterysync.ui.BatterySyncSettingsActivity
 import com.boswelja.smartwatchextensions.common.WatchWidgetProvider
 import com.boswelja.smartwatchextensions.common.getBatteryDrawable
 import com.boswelja.smartwatchextensions.common.preference.PreferenceKey.BATTERY_SYNC_ENABLED_KEY
+import com.boswelja.smartwatchextensions.main.ui.MainActivity
 import com.boswelja.smartwatchextensions.watchmanager.database.WatchSettingsDatabase
 import com.boswelja.watchconnection.core.Watch
 import kotlinx.coroutines.flow.firstOrNull
@@ -30,7 +30,7 @@ class WatchBatteryWidget : WatchWidgetProvider() {
         PendingIntent.getActivity(
             context,
             0,
-            Intent(context, BatterySyncSettingsActivity::class.java),
+            Intent(context, MainActivity::class.java),
             PendingIntent.FLAG_IMMUTABLE
         ).also {
             remoteViews.setOnClickPendingIntent(R.id.widget_background, it)

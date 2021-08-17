@@ -1,4 +1,4 @@
-package com.boswelja.smartwatchextensions.appsettings
+package com.boswelja.smartwatchextensions.settings
 
 import android.content.Context
 import androidx.datastore.core.CorruptionException
@@ -19,7 +19,8 @@ class AppSettingsSerializer : Serializer<Settings> {
     override val defaultValue = Settings(
         true,
         Settings.Theme.FOLLOW_SYSTEM,
-        ""
+        "",
+        false
     )
 
     override suspend fun readFrom(input: InputStream): Settings {

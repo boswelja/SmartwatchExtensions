@@ -2,7 +2,7 @@ package com.boswelja.smartwatchextensions.common
 
 import android.service.quicksettings.Tile
 import android.service.quicksettings.TileService
-import com.boswelja.smartwatchextensions.appsettings.appSettingsStore
+import com.boswelja.smartwatchextensions.settings.appSettingsStore
 import com.boswelja.smartwatchextensions.watchmanager.WatchManager
 import com.boswelja.watchconnection.core.Watch
 import java.util.UUID
@@ -22,6 +22,8 @@ abstract class WatchTileService : TileService() {
 
     private val coroutineScope = CoroutineScope(Dispatchers.IO)
     private var coroutineJob: Job? = null
+    internal lateinit var watchId: String
+        private set
 
     /**
      * Called when a tile update is requested.
@@ -54,6 +56,7 @@ abstract class WatchTileService : TileService() {
      */
     private suspend fun getWatch(): Watch? {
         val watchId = appSettingsStore.data.map { it.qsTileWatchId }.first()
+        this.watchId = watchId
         val watchManager = WatchManager.getInstance(this)
         return if (watchId.isNotBlank()) {
             val id = UUID.fromString(watchId)

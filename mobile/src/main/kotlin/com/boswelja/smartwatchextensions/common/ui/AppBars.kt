@@ -1,10 +1,11 @@
 package com.boswelja.smartwatchextensions.common.ui
 
-import androidx.browser.customtabs.CustomTabsIntent
+import android.content.Intent
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.material.AppBarDefaults
 import androidx.compose.material.DropdownMenu
 import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.ExperimentalMaterialApi
@@ -25,21 +26,27 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.Dp
 import androidx.core.net.toUri
 import com.boswelja.smartwatchextensions.R
+import com.boswelja.smartwatchextensions.common.startActivity
 import com.boswelja.watchconnection.core.Watch
 
 @Composable
 fun UpNavigationAppBar(
     title: @Composable () -> Unit = { },
     actions: @Composable RowScope.() -> Unit = { },
+    backgroundColor: Color = MaterialTheme.colors.surface,
+    elevation: Dp = AppBarDefaults.TopAppBarElevation,
     onNavigateUp: () -> Unit
 ) {
     TopAppBar(
         title = title,
-        backgroundColor = MaterialTheme.colors.background,
+        backgroundColor = backgroundColor,
+        elevation = elevation,
         navigationIcon = {
             IconButton(onNavigateUp) {
                 Icon(
@@ -52,15 +59,17 @@ fun UpNavigationAppBar(
     )
 }
 
-@ExperimentalMaterialApi
 @Composable
 fun WatchPickerAppBar(
     selectedWatch: Watch?,
     watches: List<Watch>?,
+    backgroundColor: Color = MaterialTheme.colors.surface,
+    elevation: Dp = AppBarDefaults.TopAppBarElevation,
     onWatchSelected: (Watch) -> Unit
 ) {
     TopAppBar(
-        backgroundColor = MaterialTheme.colors.background,
+        backgroundColor = backgroundColor,
+        elevation = elevation,
         title = {
             WatchPickerDropdown(
                 selectedWatch = selectedWatch,
@@ -72,16 +81,19 @@ fun WatchPickerAppBar(
     )
 }
 
-@ExperimentalMaterialApi
 @Composable
 fun UpNavigationWatchPickerAppBar(
     selectedWatch: Watch?,
     watches: List<Watch>?,
+    backgroundColor: Color = MaterialTheme.colors.surface,
+    elevation: Dp = AppBarDefaults.TopAppBarElevation,
     onWatchSelected: (Watch) -> Unit,
     onNavigateUp: () -> Unit
 ) {
     UpNavigationAppBar(
         onNavigateUp = onNavigateUp,
+        backgroundColor = backgroundColor,
+        elevation = elevation,
         title = {
             WatchPickerDropdown(
                 selectedWatch = selectedWatch,
@@ -96,17 +108,20 @@ fun UpNavigationWatchPickerAppBar(
 @Composable
 fun WikiAction() {
     val context = LocalContext.current
-    val customTabsIntent = remember { CustomTabsIntent.Builder().build() }
     IconButton(
         onClick = {
-            customTabsIntent.launchUrl(context, context.getString(R.string.wiki_url).toUri())
+            context.startActivity { intent ->
+                intent.action = Intent.ACTION_VIEW
+                intent.data = context.getString(R.string.wiki_url).toUri()
+                intent
+            }
         }
     ) {
         Icon(Icons.Outlined.HelpOutline, stringResource(R.string.wiki_label))
     }
 }
 
-@ExperimentalMaterialApi
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun WatchPickerDropdown(
     selectedWatch: Watch?,
@@ -127,7 +142,10 @@ fun WatchPickerDropdown(
                 Icon(Icons.Outlined.ArrowDropDown, null)
             }
         )
-        DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+        DropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false }
+        ) {
             watches?.forEach {
                 DropdownMenuItem(
                     onClick = {

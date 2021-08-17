@@ -12,7 +12,7 @@
     <string name="message_action_install_update">Install Update</string>
     <string name="message_dismissed">Message Dismissed</string>
     <string name="message_history_cleared">Message history cleared</string>
-    <string name="message_history_not_cleared">No messages to delete</string>
+    <string name="message_history_clear_all">Clear All</string>
 
     <!-- Battery Sync preference strings -->
     <string name="battery_sync_widget_placeholder_percent">50%</string>
@@ -64,13 +64,11 @@
     <string name="app_info_last_updated_prefix">Last updated: %s</string>
     <string name="app_info_open_button">Open</string>
     <string name="app_info_uninstall_button">Uninstall</string>
-    <string name="app_info_requested_permissions_none">No permissions requested</string>
     <string name="app_manager_section_user_apps">User Apps</string>
     <string name="app_manager_section_disabled_apps">Disabled Apps</string>
     <string name="app_manager_section_system_apps">System Apps</string>
-    <string name="app_manager_activity_title">@string/main_app_manager_title</string>
     <string name="app_manager_watch_disconnected">We can\'t reach your watch right now. You may still view your apps, but you cannot make any changes</string>
-    <string name="app_manager_updating_cache">We\'re updating the app list. The list may change suddenly</string>
+    <string name="watch_connection_dismiss">Dismiss</string>
 
     <!-- Phone Locking strings -->
     <string name="main_phone_locking_title">Phone Locking</string>
@@ -94,8 +92,10 @@
     <string name="separation_notification_title">%s out of range</string>
     <string name="separation_notification_text">Your %s isn\'t nearby. Did you mean to leave it behind?</string>
     <string name="separation_noti_channel_title">Watch Separation Alerts</string>
+    <string name="separation_alerts_title">Separation Alerts</string>
 
     <!-- App Settings strings -->
+    <string name="app_settings_title">App Settings</string>
     <string name="noti_settings_title">Notification Settings</string>
     <string name="app_theme_title">App Theme</string>
     <string name="app_theme_light">Light</string>
@@ -103,7 +103,6 @@
     <string name="app_theme_follow_system">Follow System</string>
     <string name="category_watch_settings">Watch Settings</string>
     <string name="manage_watches_title">Manage Watches</string>
-    <string name="category_analytics">Analytics</string>
     <string name="analytics_enabled_title">Send Anonymous Usage Stats</string>
     <string name="category_qstiles">Quick Settings</string>
     <string name="qstiles_selected_watch">Linked Watch</string>
@@ -133,7 +132,7 @@
     <!-- Bottom Navigation Bar strings -->
     <string name="bottom_nav_dashboard_label">Dashboard</string>
     <string name="nav_messages_label">Messages</string>
-    <string name="bottom_nav_app_settings_label">App Settings</string>
+    <string name="bottom_nav_settings_label">Settings</string>
     <string name="bottom_nav_about_label">About</string>
 
     <!-- Multi-watch strings -->
@@ -151,10 +150,9 @@
     <string name="clear_preferences_success">Successfully cleared preferences</string>
     <string name="forget_watch_dialog_title">@string/button_forget_watch</string>
     <string name="forget_watch_dialog_message">Are you sure you want to forget your %s? This will clear all Smartwatch Extensions settings, and remove your %s from the app.</string>
-    <string name="capabilities_title">On this watch, Smartwatch Extensions can:</string>
+    <string name="capabilities_title">Here\'s what we can do on this watch</string>
 
     <!-- Watch Manager strings -->
-    <string name="watch_manager_title">Watch Manager</string>
     <string name="watch_manager_add_watch_title">Add Watch</string>
     <string name="watch_manager_registered_watch_header">Registered Watches</string>
     <string name="watch_manager_action_continue_on_watch">Continue on your watch</string>
@@ -171,6 +169,7 @@
     <string name="update_complete_text">Successfully updated to version %s.</string>
 
     <!-- Onboarding strings -->
+    <string name="get_started">Get Started</string>
     <string name="welcome_to_text">Welcome to</string>
     <string name="share_usage_title">Share Usage Stats</string>
     <string name="share_usage_desc">Smartwatch Extensions would like to collect anonymous usage statistics. To find out more, view our privacy policy by clicking the link below.</string>
@@ -203,6 +202,7 @@
     <!-- Update checker strings -->
     <string name="update_available_title">Update available</string>
     <string name="update_available_text">A new version of Smartwatch Extensions is available</string>
+    <string name="check_updates_daily_title">Check for Updates Daily</string>
 
     <!-- Donate strings -->
     <string name="donate_fetching_options">Fetching available donations…</string>

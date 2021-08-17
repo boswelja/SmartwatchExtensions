@@ -27,7 +27,7 @@ import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
-@ExperimentalCoroutinesApi
+@OptIn(ExperimentalCoroutinesApi::class)
 class BatterySyncViewModel internal constructor(
     application: Application,
     private val watchManager: WatchManager,

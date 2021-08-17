@@ -19,7 +19,7 @@ import com.boswelja.smartwatchextensions.common.dndsync.References.DND_STATUS_PA
 import com.boswelja.smartwatchextensions.common.fromByteArray
 import com.boswelja.smartwatchextensions.common.startActivity
 import com.boswelja.smartwatchextensions.dndsync.Utils.handleDnDStateChange
-import com.boswelja.smartwatchextensions.main.MainActivity
+import com.boswelja.smartwatchextensions.main.ui.MainActivity
 import com.boswelja.smartwatchextensions.watchmanager.database.WatchDatabase
 import com.boswelja.watchconnection.core.message.Message
 import com.boswelja.watchconnection.core.message.MessageClient
@@ -27,15 +27,12 @@ import com.boswelja.watchconnection.core.message.MessageReceiver
 import com.boswelja.watchconnection.wearos.WearOSMessagePlatform
 import java.util.UUID
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 
-@ExperimentalCoroutinesApi
 class WatchMessageReceiver : MessageReceiver() {
 
-    @ExperimentalCoroutinesApi
     override suspend fun onMessageReceived(
         context: Context,
         message: Message
