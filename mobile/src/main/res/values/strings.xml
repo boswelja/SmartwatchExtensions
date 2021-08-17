@@ -97,10 +97,6 @@
     <!-- App Settings strings -->
     <string name="app_settings_title">App Settings</string>
     <string name="noti_settings_title">Notification Settings</string>
-    <string name="app_theme_title">App Theme</string>
-    <string name="app_theme_light">Light</string>
-    <string name="app_theme_dark">Dark</string>
-    <string name="app_theme_follow_system">Follow System</string>
     <string name="category_watch_settings">Watch Settings</string>
     <string name="manage_watches_title">Manage Watches</string>
     <string name="analytics_enabled_title">Send Anonymous Usage Stats</string>

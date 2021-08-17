@@ -18,7 +18,6 @@ val Context.appSettingsStore: DataStore<Settings> by dataStore(
 class AppSettingsSerializer : Serializer<Settings> {
     override val defaultValue = Settings(
         true,
-        Settings.Theme.FOLLOW_SYSTEM,
         "",
         false
     )

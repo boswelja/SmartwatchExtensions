@@ -11,8 +11,6 @@ import androidx.compose.material.ListItem
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Analytics
-import androidx.compose.material.icons.outlined.DarkMode
-import androidx.compose.material.icons.outlined.LightMode
 import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.material.icons.outlined.Storage
 import androidx.compose.material.icons.outlined.Update
@@ -28,9 +26,7 @@ import com.boswelja.smartwatchextensions.common.startActivity
 import com.boswelja.smartwatchextensions.common.ui.Card
 import com.boswelja.smartwatchextensions.common.ui.CardHeader
 import com.boswelja.smartwatchextensions.common.ui.CheckboxSetting
-import com.boswelja.smartwatchextensions.common.ui.DialogSetting
 import com.boswelja.smartwatchextensions.managespace.ui.ManageSpaceActivity
-import com.boswelja.smartwatchextensions.settings.Settings
 import kotlinx.coroutines.Dispatchers
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -38,8 +34,6 @@ import kotlinx.coroutines.Dispatchers
 fun AppSettingsCard(modifier: Modifier = Modifier) {
     val viewModel: AppSettingsViewModel = viewModel()
     val context = LocalContext.current
-    val currentAppTheme by viewModel.appTheme
-        .collectAsState(Settings.Theme.FOLLOW_SYSTEM, Dispatchers.IO)
     val checkUpdatesDaily by viewModel.checkUpdatesDaily.collectAsState(false, Dispatchers.IO)
     val analyticsEnabled by viewModel.analyticsEnabled.collectAsState(false, Dispatchers.IO)
 
@@ -74,21 +68,6 @@ fun AppSettingsCard(modifier: Modifier = Modifier) {
                     context.startActivity<ManageSpaceActivity>()
                 }
             )
-            DialogSetting(
-                label = { Text(stringResource(R.string.app_theme_title)) },
-                summary = { Text(getLabelForTheme(currentAppTheme)) },
-                icon = {
-                    val icon = if (currentAppTheme == Settings.Theme.DARK)
-                        Icons.Outlined.DarkMode
-                    else
-                        Icons.Outlined.LightMode
-                    Icon(icon, null)
-                },
-                values = Settings.Theme.values().toList(),
-                value = currentAppTheme,
-                onValueChanged = { viewModel.setAppTheme(it) },
-                valueLabel = { Text(getLabelForTheme(it)) }
-            )
             CheckboxSetting(
                 label = { Text(stringResource(R.string.check_updates_daily_title)) },
                 icon = { Icon(Icons.Outlined.Update, null) },
@@ -104,14 +83,5 @@ fun AppSettingsCard(modifier: Modifier = Modifier) {
                 }
             )
         }
-    }
-}
-
-@Composable
-private fun getLabelForTheme(theme: Settings.Theme): String {
-    return when (theme) {
-        Settings.Theme.LIGHT -> stringResource(R.string.app_theme_light)
-        Settings.Theme.DARK -> stringResource(R.string.app_theme_dark)
-        Settings.Theme.FOLLOW_SYSTEM -> stringResource(R.string.app_theme_follow_system)
     }
 }
