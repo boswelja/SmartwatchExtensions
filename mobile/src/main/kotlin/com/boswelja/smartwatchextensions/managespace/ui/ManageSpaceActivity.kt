@@ -1,8 +1,8 @@
 package com.boswelja.smartwatchextensions.managespace.ui
 
 import android.os.Bundle
+import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Arrangement
@@ -34,7 +34,7 @@ import kotlinx.coroutines.launch
  * An activity to present the user with options for resetting various data used by Wearable
  * Extensions.
  */
-class ManageSpaceActivity : AppCompatActivity() {
+class ManageSpaceActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
