@@ -1,4 +1,4 @@
-package com.boswelja.smartwatchextensions.watchinfo.ui
+package com.boswelja.smartwatchextensions.watchmanager.ui.info
 
 import android.os.Build
 import androidx.test.core.app.ApplicationProvider
@@ -44,37 +44,22 @@ class WatchInfoViewModelTest {
 
     @Test
     fun `updateWatchName calls watchManager if watch is not null`(): Unit = runBlocking {
-        // Check with no / invalid watch selected
-        viewModel.updateWatchName("new name")
-        coVerify(inverse = true) { watchManager.renameWatch(any(), any()) }
-
-        // Check with valid watch selected
-        viewModel.watchId.emit(dummyWatch.id)
-        viewModel.updateWatchName("new name")
+        viewModel.updateWatchName(
+            dummyWatch,
+            "new name"
+        )
         coVerify { watchManager.renameWatch(dummyWatch, any()) }
     }
 
     @Test
-    fun `forgetWatch calls watchManager if watch is not null`(): Unit = runBlocking {
-        // Check with no / invalid watch selected
-        viewModel.forgetWatch()
-        coVerify(inverse = true) { watchManager.forgetWatch(any(), any()) }
-
-        // Check with valid watch selected
-        viewModel.watchId.emit(dummyWatch.id)
-        viewModel.forgetWatch()
+    fun `forgetWatch calls watchManager`(): Unit = runBlocking {
+        viewModel.forgetWatch(dummyWatch)
         coVerify { watchManager.forgetWatch(any(), dummyWatch) }
     }
 
     @Test
-    fun `resetWatchPreferences calls watchManager if watch is not null`(): Unit = runBlocking {
-        // Check with no / invalid watch selected
-        viewModel.resetWatchPreferences()
-        coVerify(inverse = true) { watchManager.resetWatchPreferences(any(), any()) }
-
-        // Check with valid watch selected
-        viewModel.watchId.emit(dummyWatch.id)
-        viewModel.resetWatchPreferences()
+    fun `resetWatchPreferences calls watchManager`(): Unit = runBlocking {
+        viewModel.resetWatchPreferences(dummyWatch)
         coVerify { watchManager.resetWatchPreferences(any(), dummyWatch) }
     }
 }

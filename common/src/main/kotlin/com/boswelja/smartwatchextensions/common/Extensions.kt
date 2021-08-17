@@ -100,3 +100,11 @@ inline fun <reified T> Context.startActivity(
     }
     startActivity(intent, options?.toBundle())
 }
+
+inline fun Context.startActivity(
+    options: Bundle? = null,
+    intentBuilder: (Intent) -> Intent
+) {
+    val intent = Intent().let(intentBuilder)
+    startActivity(intent, options)
+}

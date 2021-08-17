@@ -37,7 +37,7 @@ private fun getReceivedString(timeInMillis: Long): String {
     }
 }
 
-@ExperimentalMaterialApi
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun MessageItem(
     message: Message,

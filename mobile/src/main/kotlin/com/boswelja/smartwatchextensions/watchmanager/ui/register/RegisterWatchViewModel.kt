@@ -6,7 +6,6 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.boswelja.smartwatchextensions.watchmanager.WatchManager
 import com.boswelja.watchconnection.core.Watch
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -14,7 +13,6 @@ import timber.log.Timber
 /**
  * A ViewModel for handling the discovery and registration of watches.
  */
-@ExperimentalCoroutinesApi
 class RegisterWatchViewModel internal constructor(
     application: Application,
     private val watchManager: WatchManager
@@ -26,13 +24,12 @@ class RegisterWatchViewModel internal constructor(
         WatchManager.getInstance(application)
     )
 
-    var addedWatches = mutableStateListOf<Watch>()
+    var discoveredWatches = mutableStateListOf<Watch>()
 
     init {
         startRegisteringWatches()
     }
 
-    @ExperimentalCoroutinesApi
     fun startRegisteringWatches() {
         viewModelScope.launch {
             watchManager.availableWatches.collect { watches ->
@@ -47,8 +44,8 @@ class RegisterWatchViewModel internal constructor(
 
     suspend fun addWatch(watch: Watch) {
         Timber.d("registerWatch($watch) called")
-        if (!addedWatches.contains(watch)) {
-            addedWatches.add(watch)
+        if (!discoveredWatches.contains(watch)) {
+            discoveredWatches.add(watch)
             watchManager.registerWatch(watch)
         }
     }

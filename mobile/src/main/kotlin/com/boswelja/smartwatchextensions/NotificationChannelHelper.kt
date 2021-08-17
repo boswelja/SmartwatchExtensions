@@ -9,11 +9,9 @@ import com.boswelja.smartwatchextensions.common.dndsync.References
 import com.boswelja.smartwatchextensions.messages.MESSAGE_NOTIFICATION_CHANNEL_ID
 import com.boswelja.smartwatchextensions.proximity.SeparationObserverService.Companion.OBSERVER_NOTI_CHANNEL_ID
 import com.boswelja.smartwatchextensions.proximity.SeparationObserverService.Companion.SEPARATION_NOTI_CHANNEL_ID
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 object NotificationChannelHelper {
 
-    @ExperimentalCoroutinesApi
     fun createForBatteryStats(context: Context, notificationManager: NotificationManager) {
         if (notificationManager.getNotificationChannel(
                 BATTERY_STATS_NOTI_CHANNEL_ID

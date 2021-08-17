@@ -1,14 +1,12 @@
 package com.boswelja.smartwatchextensions.donate.ui
 
-import android.app.Activity
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
-import com.android.billingclient.api.SkuDetails
 import com.boswelja.smartwatchextensions.donate.DonationClient
 
 class DonateViewModel(application: Application) : AndroidViewModel(application) {
 
-    private val donationClient = DonationClient(application)
+    val donationClient = DonationClient(application)
 
     val clientConnected = donationClient.clientConnected
     val oneTimeDonations = donationClient.oneTimeDonations()
@@ -18,7 +16,4 @@ class DonateViewModel(application: Application) : AndroidViewModel(application) 
         super.onCleared()
         donationClient.destroy()
     }
-
-    suspend fun tryDonate(activity: Activity, skuDetails: SkuDetails): Boolean =
-        donationClient.tryDonate(activity, skuDetails)
 }

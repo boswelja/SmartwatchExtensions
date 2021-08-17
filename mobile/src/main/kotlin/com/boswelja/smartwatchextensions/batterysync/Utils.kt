@@ -21,7 +21,7 @@ import com.boswelja.smartwatchextensions.common.preference.PreferenceKey.BATTERY
 import com.boswelja.smartwatchextensions.common.preference.PreferenceKey.BATTERY_WATCH_CHARGE_NOTI_KEY
 import com.boswelja.smartwatchextensions.common.preference.PreferenceKey.BATTERY_WATCH_LOW_NOTI_KEY
 import com.boswelja.smartwatchextensions.common.ui.BaseWidgetProvider
-import com.boswelja.smartwatchextensions.main.MainActivity
+import com.boswelja.smartwatchextensions.main.ui.MainActivity
 import com.boswelja.smartwatchextensions.messages.Message
 import com.boswelja.smartwatchextensions.messages.sendMessage
 import com.boswelja.smartwatchextensions.watchmanager.WatchManager
@@ -37,7 +37,7 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 
-@ExperimentalCoroutinesApi
+@OptIn(ExperimentalCoroutinesApi::class)
 object Utils {
 
     private const val BATTERY_CHARGED_NOTI_ID = 408565

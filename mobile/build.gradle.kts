@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
 plugins {
     id("com.android.application")
     kotlin("android")
@@ -68,7 +70,6 @@ dependencies {
     implementation(libs.firebase.analytics)
 
     implementation(libs.androidx.appcompat)
-    implementation(libs.androidx.browser)
     implementation(libs.androidx.core.ktx)
     implementation(libs.bundles.lifecycle)
     implementation(libs.bundles.room)
@@ -113,5 +114,11 @@ dependencies {
 wire {
     kotlin {
         android = true
+    }
+}
+
+tasks.withType<KotlinCompile>().configureEach {
+    kotlinOptions {
+        freeCompilerArgs = freeCompilerArgs + "-Xopt-in=kotlin.RequiresOptIn"
     }
 }

@@ -28,7 +28,7 @@
             android:label="@string/manage_space_title" />
 
         <activity
-            android:name=".main.MainActivity"
+            android:name=".main.ui.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -39,41 +39,7 @@
         </activity>
 
         <activity
-            android:name=".messages.ui.MessageHistoryActivity"
-            android:exported="false"
-            android:label="@string/message_history_label" />
-
-        <activity
-            android:name=".batterysync.ui.BatterySyncSettingsActivity"
-            android:exported="false" />
-
-        <activity
-            android:name=".dndsync.ui.DnDSyncSettingsActivity"
-            android:exported="false" />
-        <activity
             android:name=".dndsync.ui.helper.DnDSyncHelperActivity"
-            android:exported="false" />
-
-        <activity
-            android:name=".phonelocking.ui.PhoneLockingSettingsActivity"
-            android:exported="false" />
-
-        <activity
-            android:name=".proximity.ui.ProximitySettingsActivity"
-            android:exported="false" />
-
-        <activity
-            android:name=".appmanager.ui.AppManagerActivity"
-            android:exported="false"
-            android:label="@string/app_manager_activity_title" />
-
-        <activity
-            android:name=".watchmanager.ui.WatchManagerActivity"
-            android:exported="false"
-            android:label="@string/watch_manager_title" />
-
-        <activity
-            android:name=".watchinfo.ui.WatchInfoActivity"
             android:exported="false" />
 
         <activity
@@ -82,10 +48,6 @@
 
         <activity
             android:name=".widget.ui.WidgetSettingsActivity"
-            android:exported="false" />
-
-        <activity
-            android:name=".watchmanager.ui.register.RegisterWatchActivity"
             android:exported="false" />
 
         <activity

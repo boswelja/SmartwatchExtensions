@@ -13,7 +13,6 @@ import androidx.compose.foundation.lazy.GridCells
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Card
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
@@ -23,33 +22,25 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.boswelja.smartwatchextensions.R
-import com.boswelja.smartwatchextensions.appmanager.ui.AppManagerActivity
 import com.boswelja.smartwatchextensions.appmanager.ui.AppSummarySmall
 import com.boswelja.smartwatchextensions.batterysync.ui.BatterySummarySmall
-import com.boswelja.smartwatchextensions.batterysync.ui.BatterySyncSettingsActivity
-import com.boswelja.smartwatchextensions.common.startActivity
 import com.boswelja.smartwatchextensions.common.ui.StaggeredVerticalGrid
-import com.boswelja.smartwatchextensions.dndsync.ui.DnDSyncSettingsActivity
-import com.boswelja.smartwatchextensions.phonelocking.ui.PhoneLockingSettingsActivity
-import com.boswelja.smartwatchextensions.proximity.ui.ProximitySettingsActivity
 import com.boswelja.smartwatchextensions.watchmanager.ui.WatchStatusSummarySmall
 import com.boswelja.watchconnection.core.discovery.Status
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 
-@ExperimentalFoundationApi
-@ExperimentalCoroutinesApi
-@ExperimentalMaterialApi
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun DashboardScreen(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    contentPadding: Dp = 16.dp,
+    onNavigateTo: (DashboardDestination) -> Unit
 ) {
-    val context = LocalContext.current
     val scrollState = rememberScrollState()
     val viewModel: DashboardViewModel = viewModel()
     val watchStatus by viewModel.status.collectAsState(Status.CONNECTING, Dispatchers.IO)
@@ -58,9 +49,9 @@ fun DashboardScreen(
 
     Column(modifier.verticalScroll(scrollState)) {
         StaggeredVerticalGrid(
-            modifier = Modifier.padding(16.dp),
+            modifier = Modifier.padding(contentPadding),
             cells = GridCells.Adaptive(172.dp),
-            contentSpacing = 16.dp
+            contentSpacing = contentPadding
         ) {
             DashboardItem(
                 content = { WatchStatusSummarySmall(watchStatus = watchStatus) }
@@ -70,42 +61,31 @@ fun DashboardScreen(
                     { BatterySummarySmall(batteryStats = batteryStats) }
                 },
                 titleText = stringResource(R.string.battery_sync_title),
-                onClick = {
-                    context.startActivity<BatterySyncSettingsActivity>()
-                }
+                onClick = { onNavigateTo(DashboardDestination.BATTERY_SYNC_SETTINGS) }
             )
             DashboardItem(
                 content = if (appCount > 0) {
                     { AppSummarySmall(appCount = appCount) }
                 } else null,
                 titleText = stringResource(R.string.main_app_manager_title),
-                onClick = {
-                    context.startActivity<AppManagerActivity>()
-                }
+                onClick = { onNavigateTo(DashboardDestination.APP_MANAGER) }
             )
             DashboardItem(
                 titleText = stringResource(R.string.main_dnd_sync_title),
-                onClick = {
-                    context.startActivity<DnDSyncSettingsActivity>()
-                }
+                onClick = { onNavigateTo(DashboardDestination.DND_SYNC_SETTINGS) }
             )
             DashboardItem(
                 titleText = stringResource(R.string.main_phone_locking_title),
-                onClick = {
-                    context.startActivity<PhoneLockingSettingsActivity>()
-                }
+                onClick = { onNavigateTo(DashboardDestination.PHONE_LOCKING_SETTINGS) }
             )
             DashboardItem(
                 titleText = stringResource(R.string.proximity_settings_title),
-                onClick = {
-                    context.startActivity<ProximitySettingsActivity>()
-                }
+                onClick = { onNavigateTo(DashboardDestination.PROXIMITY_SETTINGS) }
             )
         }
     }
 }
 
-@ExperimentalMaterialApi
 @Composable
 fun DashboardItem(
     modifier: Modifier = Modifier,
