@@ -1,79 +1,34 @@
 package com.boswelja.smartwatchextensions.extensions.ui
 
-import androidx.compose.foundation.gestures.scrollBy
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Info
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.wear.compose.material.Chip
-import androidx.wear.compose.material.ChipDefaults
-import androidx.wear.compose.material.ChipDefaults.secondaryChipColors
-import androidx.wear.compose.material.Icon
-import androidx.wear.compose.material.Text
 import androidx.wear.widget.ConfirmationOverlay
 import com.boswelja.smartwatchextensions.R
-import com.boswelja.smartwatchextensions.about.ui.AboutActivity
 import com.boswelja.smartwatchextensions.batterysync.ui.BatteryStatsChip
-import com.boswelja.smartwatchextensions.common.startActivity
-import com.boswelja.smartwatchextensions.common.ui.InsetDefaults.RoundScreenInset
-import com.boswelja.smartwatchextensions.common.ui.RotaryHandler
-import com.boswelja.smartwatchextensions.common.ui.isScreenRound
-import com.boswelja.smartwatchextensions.common.ui.roundScreenPadding
 import com.boswelja.smartwatchextensions.common.ui.showConfirmationOverlay
 import com.boswelja.smartwatchextensions.phonelocking.ui.PhoneLockingChip
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
 
-@ExperimentalCoroutinesApi
-@Composable
-fun ExtensionsScreen() {
-    val coroutineScope = rememberCoroutineScope()
-    val scrollState = rememberScrollState()
-
-    RotaryHandler { delta ->
-        coroutineScope.launch {
-            scrollState.scrollBy(delta)
-        }
-    }
-
-    Column(
-        modifier = Modifier
-            .verticalScroll(scrollState)
-            .padding(8.dp)
-            .roundScreenPadding(isScreenRound(), PaddingValues(vertical = RoundScreenInset)),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
-    ) {
-        Extensions(Modifier.fillMaxWidth())
-        Links(Modifier.fillMaxWidth())
-    }
-}
-
-@ExperimentalCoroutinesApi
 @Composable
 fun Extensions(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    extensionModifier: Modifier = Modifier,
+    contentPadding: Dp = 8.dp
 ) {
     Column(
         modifier = modifier,
-        verticalArrangement = Arrangement.spacedBy(8.dp)
+        verticalArrangement = Arrangement.spacedBy(contentPadding)
     ) {
         val view = LocalView.current
         val coroutineScope = rememberCoroutineScope()
@@ -86,9 +41,8 @@ fun Extensions(
         val phoneName by viewModel.phoneName
             .collectAsState(stringResource(R.string.default_phone_name), Dispatchers.IO)
 
-        val cardModifier = Modifier.fillMaxWidth()
         BatteryStatsChip(
-            modifier = cardModifier,
+            modifier = extensionModifier,
             enabled = batterySyncEnabled,
             percent = batteryPercent,
             phoneName = phoneName
@@ -109,7 +63,7 @@ fun Extensions(
             }
         }
         PhoneLockingChip(
-            modifier = cardModifier,
+            modifier = extensionModifier,
             enabled = phoneLockingEnabled,
             phoneName = phoneName
         ) {
@@ -128,34 +82,5 @@ fun Extensions(
                 }
             }
         }
-    }
-}
-
-@Composable
-fun Links(
-    modifier: Modifier = Modifier
-) {
-    val context = LocalContext.current
-    Column(
-        modifier = modifier,
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(8.dp)
-    ) {
-        Chip(
-            colors = secondaryChipColors(),
-            label = {
-                Text(stringResource(R.string.about_app_title))
-            },
-            icon = {
-                Icon(
-                    modifier = Modifier.size(ChipDefaults.IconSize),
-                    imageVector = Icons.Outlined.Info,
-                    contentDescription = null
-                )
-            },
-            onClick = {
-                context.startActivity<AboutActivity>()
-            }
-        )
     }
 }
