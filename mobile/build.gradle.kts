@@ -27,7 +27,6 @@ android {
         }
     }
 
-    buildFeatures.viewBinding = true
     buildFeatures.compose = true
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
@@ -71,6 +70,7 @@ dependencies {
 
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.core.splashscreen)
     implementation(libs.bundles.lifecycle)
     implementation(libs.bundles.room)
     implementation(libs.androidx.work.ktx)

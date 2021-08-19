@@ -4,17 +4,8 @@ option java_package = "com.boswelja.smartwatchextensions.settings";
 option java_multiple_files = true;
 
 message Settings {
-
-  enum Theme {
-    FOLLOW_SYSTEM = 0;
-    LIGHT = 1;
-    DARK = 2;
-  }
-
   bool analyticsEnabled = 1;
-  Theme appTheme = 2;
-
+  reserved 2; // May contain old enum value for app theme
   string qsTileWatchId = 3;
-
   bool checkForUpdates = 4;
 }

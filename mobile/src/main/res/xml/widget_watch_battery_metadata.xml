@@ -2,8 +2,10 @@
 <appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
     android:configure="com.boswelja.smartwatchextensions.batterysync.widget.config.BatteryWidgetConfigActivity"
     android:initialLayout="@layout/widget_watch_battery"
-    android:minWidth="40dp"
+    android:minWidth="80dp"
     android:minHeight="40dp"
     android:resizeMode="horizontal|vertical"
     android:updatePeriodMillis="0"
+    android:widgetFeatures="reconfigurable"
+    android:previewLayout="@layout/widget_watch_battery"
     android:widgetCategory="home_screen" />

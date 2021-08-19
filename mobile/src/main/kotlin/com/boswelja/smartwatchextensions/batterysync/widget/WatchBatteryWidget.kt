@@ -6,21 +6,25 @@ import android.content.Intent
 import android.widget.RemoteViews
 import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.batterysync.database.WatchBatteryStatsDatabase
+import com.boswelja.smartwatchextensions.common.WatchWidgetProvider
 import com.boswelja.smartwatchextensions.common.getBatteryDrawable
-import com.boswelja.smartwatchextensions.common.ui.BaseWidgetProvider
+import com.boswelja.smartwatchextensions.common.preference.PreferenceKey.BATTERY_SYNC_ENABLED_KEY
 import com.boswelja.smartwatchextensions.main.ui.MainActivity
-import java.util.UUID
+import com.boswelja.smartwatchextensions.watchmanager.database.WatchSettingsDatabase
+import com.boswelja.watchconnection.core.Watch
 import kotlinx.coroutines.flow.firstOrNull
 
-class WatchBatteryWidget : BaseWidgetProvider() {
+class WatchBatteryWidget : WatchWidgetProvider() {
 
     override suspend fun onUpdateView(
         context: Context,
         width: Int,
         height: Int,
-        watchId: UUID
+        watch: Watch
     ): RemoteViews {
         val remoteViews = RemoteViews(context.packageName, R.layout.widget_watch_battery)
+
+        remoteViews.setTextViewText(R.id.watch_name, watch.name)
 
         // Set click intent
         PendingIntent.getActivity(
@@ -32,21 +36,37 @@ class WatchBatteryWidget : BaseWidgetProvider() {
             remoteViews.setOnClickPendingIntent(R.id.widget_background, it)
         }
 
-        val batteryPercent = WatchBatteryStatsDatabase.getInstance(context)
-            .batteryStatsDao().getStats(watchId).firstOrNull()?.percent ?: -1
+        val isBatterySyncEnabled = WatchSettingsDatabase.getInstance(context)
+            .boolSettings()
+            .get(watch.id, BATTERY_SYNC_ENABLED_KEY)
+            .firstOrNull()
+            ?.value ?: false
+        if (isBatterySyncEnabled) {
+            val batteryPercent = WatchBatteryStatsDatabase.getInstance(context)
+                .batteryStatsDao().getStats(watch.id).firstOrNull()?.percent ?: -1
 
-        // Set battery indicator image
-        remoteViews.setImageViewResource(R.id.battery_indicator, getBatteryDrawable(batteryPercent))
-
-        // Set battery indicator text
-        if (batteryPercent >= 0) {
-            remoteViews.setTextViewText(
-                R.id.battery_indicator_text,
-                context.getString(
-                    R.string.battery_percent, batteryPercent.toString()
-                )
+            // Set battery indicator image
+            remoteViews.setImageViewResource(
+                R.id.battery_indicator, getBatteryDrawable(batteryPercent)
             )
+
+            // Set battery indicator text
+            if (batteryPercent >= 0) {
+                remoteViews.setTextViewText(
+                    R.id.battery_indicator_text,
+                    context.getString(
+                        R.string.battery_percent, batteryPercent.toString()
+                    )
+                )
+            } else {
+                remoteViews.setTextViewText(
+                    R.id.battery_indicator_text, context.getString(R.string.battery_sync_disabled)
+                )
+            }
         } else {
+            remoteViews.setImageViewResource(
+                R.id.battery_indicator, R.drawable.battery_unknown
+            )
             remoteViews.setTextViewText(
                 R.id.battery_indicator_text, context.getString(R.string.battery_sync_disabled)
             )

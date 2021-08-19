@@ -11,6 +11,7 @@ import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.batterysync.database.WatchBatteryStats.Companion.toWatchBatteryStats
 import com.boswelja.smartwatchextensions.batterysync.database.WatchBatteryStatsDatabase
 import com.boswelja.smartwatchextensions.batterysync.quicksettings.WatchBatteryTileService
+import com.boswelja.smartwatchextensions.common.WatchWidgetProvider
 import com.boswelja.smartwatchextensions.common.batterysync.BatteryStats
 import com.boswelja.smartwatchextensions.common.batterysync.References.BATTERY_STATUS_PATH
 import com.boswelja.smartwatchextensions.common.preference.PreferenceKey.BATTERY_CHARGED_NOTI_SENT
@@ -20,7 +21,6 @@ import com.boswelja.smartwatchextensions.common.preference.PreferenceKey.BATTERY
 import com.boswelja.smartwatchextensions.common.preference.PreferenceKey.BATTERY_SYNC_ENABLED_KEY
 import com.boswelja.smartwatchextensions.common.preference.PreferenceKey.BATTERY_WATCH_CHARGE_NOTI_KEY
 import com.boswelja.smartwatchextensions.common.preference.PreferenceKey.BATTERY_WATCH_LOW_NOTI_KEY
-import com.boswelja.smartwatchextensions.common.ui.BaseWidgetProvider
 import com.boswelja.smartwatchextensions.main.ui.MainActivity
 import com.boswelja.smartwatchextensions.messages.Message
 import com.boswelja.smartwatchextensions.messages.sendMessage
@@ -128,7 +128,7 @@ object Utils {
                 .batteryStatsDao().updateStats(batteryStats.toWatchBatteryStats(watchId))
 
             // Update battery stat widgets
-            BaseWidgetProvider.updateWidgets(context)
+            WatchWidgetProvider.updateWidgets(context)
 
             // Update QS Tile
             WatchBatteryTileService.requestTileUpdate(context)

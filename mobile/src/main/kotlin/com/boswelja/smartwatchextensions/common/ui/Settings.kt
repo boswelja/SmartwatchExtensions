@@ -1,26 +1,18 @@
 package com.boswelja.smartwatchextensions.common.ui
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Checkbox
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ListItem
-import androidx.compose.material.LocalContentColor
-import androidx.compose.material.LocalTextStyle
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Slider
 import androidx.compose.material.Switch
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -141,24 +133,5 @@ fun <T> DialogSetting(
             selectedItem = value,
             onItemSelectionChanged = onValueChanged
         )
-    }
-}
-
-@Composable
-fun HeaderItem(
-    modifier: Modifier = Modifier,
-    text: @Composable () -> Unit
-) {
-    Box(
-        modifier = modifier
-            .background(MaterialTheme.colors.background)
-            .padding(start = 72.dp, top = 16.dp, bottom = 8.dp, end = 8.dp)
-    ) {
-        CompositionLocalProvider(
-            LocalTextStyle provides MaterialTheme.typography.subtitle2,
-            LocalContentColor provides MaterialTheme.colors.primary
-        ) {
-            text()
-        }
     }
 }

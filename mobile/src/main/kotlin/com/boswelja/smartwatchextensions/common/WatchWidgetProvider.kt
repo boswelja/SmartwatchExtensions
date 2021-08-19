@@ -1,4 +1,4 @@
-package com.boswelja.smartwatchextensions.common.ui
+package com.boswelja.smartwatchextensions.common
 
 import android.app.PendingIntent
 import android.appwidget.AppWidgetManager
@@ -6,34 +6,29 @@ import android.appwidget.AppWidgetProvider
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
-import android.graphics.Bitmap
 import android.os.Bundle
 import android.widget.RemoteViews
-import androidx.core.content.ContextCompat
-import androidx.core.graphics.drawable.toBitmap
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.batterysync.widget.WatchBatteryWidget
 import com.boswelja.smartwatchextensions.main.ui.MainActivity
 import com.boswelja.smartwatchextensions.main.ui.MainActivity.Companion.EXTRA_WATCH_ID
-import com.boswelja.smartwatchextensions.widget.ui.WidgetSettingsActivity.Companion.SHOW_WIDGET_BACKGROUND_KEY
-import com.boswelja.smartwatchextensions.widget.ui.WidgetSettingsActivity.Companion.WIDGET_BACKGROUND_OPACITY_KEY
+import com.boswelja.smartwatchextensions.watchmanager.WatchManager
 import com.boswelja.smartwatchextensions.widget.widgetIdStore
-import com.boswelja.smartwatchextensions.widget.widgetSettings
+import com.boswelja.watchconnection.core.Watch
 import java.util.UUID
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
 /**
- * An [AppWidgetProvider] that applies our default widget background with user settings.
+ * An [AppWidgetProvider] provides the [Watch] from this widget's config.
  */
-abstract class BaseWidgetProvider : AppWidgetProvider() {
+abstract class WatchWidgetProvider : AppWidgetProvider() {
 
     private val coroutineScope = CoroutineScope(Dispatchers.Default)
 
@@ -42,14 +37,14 @@ abstract class BaseWidgetProvider : AppWidgetProvider() {
      * @param context [Context].
      * @param width The width of the widget view.
      * @param height The height of the widget.
-     * @param watchId The ID of the watch this widget is for.
+     * @param watch The [Watch] this widget is for.
      * @return Then widget content as a [RemoteViews].
      */
     abstract suspend fun onUpdateView(
         context: Context,
         width: Int,
         height: Int,
-        watchId: UUID
+        watch: Watch
     ): RemoteViews
 
     /**
@@ -133,12 +128,6 @@ abstract class BaseWidgetProvider : AppWidgetProvider() {
         width: Int,
         height: Int
     ): RemoteViews {
-        // Create new RemoteViews
-        val widgetView = RemoteViews(
-            context.packageName,
-            R.layout.common_widget_background
-        )
-
         // Get watch ID
         val widgetIdStore = context.widgetIdStore
         val watchId = widgetIdStore.data.map { preferences ->
@@ -150,63 +139,28 @@ abstract class BaseWidgetProvider : AppWidgetProvider() {
                 null
             }
         }
-
-        // Set click PendingIntent
-        onCreateClickIntent(context, watchId)?.let {
-            Timber.d("Setting widget click intent")
-            widgetView.setOnClickPendingIntent(R.id.widget_container, it)
+        val watch = watchId?.let {
+            WatchManager.getInstance(context)
+                .getWatchById(watchId)
+                .firstOrNull()
         }
-
-        val widgetContent = if (watchId != null) {
+        val widgetContent = if (watch != null) {
             // Get the widget content from child class
             Timber.d("Getting widget content")
-            onUpdateView(context, width, height, watchId)
+            onUpdateView(context, width, height, watch)
         } else {
             Timber.w("Watch ID for widget %s is null", appWidgetId)
             // Set error view
             RemoteViews(context.packageName, R.layout.common_widget_error)
         }
-        widgetView.removeAllViews(R.id.widget_container)
-        widgetView.addView(R.id.widget_container, widgetContent)
-
-        // Set background
-        val background = getBackground(context, width, height)
-        if (background != null) {
-            widgetView.setImageViewBitmap(R.id.widget_background, background)
-        } else {
-            widgetView.setInt(R.id.widget_background, "setBackgroundColor", 0)
+        // Set click PendingIntent
+        onCreateClickIntent(context, watchId)?.let {
+            Timber.d("Setting widget click intent")
+            widgetContent.setOnClickPendingIntent(android.R.id.background, it)
         }
 
         // Return new view
-        return widgetView
-    }
-
-    /**
-     * Get the background that should be applied to widgets.
-     * @param context [Context].
-     * @param width The width of the background.
-     * @param height The height of the background.
-     * @return The background [Bitmap], or null if there is none.
-     */
-    private suspend fun getBackground(context: Context, width: Int, height: Int): Bitmap? {
-        Timber.d("Getting widget background with width = %s and height = %s", width, height)
-        // Set widget background
-        val widgetSettings = context.widgetSettings.data.first()
-
-        // Synchronous is desired here, since we're already in a suspend function
-        val showBackground = widgetSettings[SHOW_WIDGET_BACKGROUND_KEY]
-        return if (showBackground == true) {
-            val backgroundOpacity =
-                widgetSettings[WIDGET_BACKGROUND_OPACITY_KEY] ?: 60
-            Timber.i("Getting background with opacity = %s", backgroundOpacity)
-            val calculatedAlpha = ((backgroundOpacity / 100.0f) * 255).toInt()
-            ContextCompat.getDrawable(context, R.drawable.widget_background)!!
-                .apply { alpha = calculatedAlpha }
-                .toBitmap(width, height)
-        } else {
-            Timber.i("Background disabled, returning")
-            null
-        }
+        return widgetContent
     }
 
     private fun updateView(
