@@ -37,7 +37,7 @@ import com.boswelja.smartwatchextensions.common.ui.RotaryHandler
 import com.boswelja.smartwatchextensions.common.ui.isScreenRound
 import com.boswelja.smartwatchextensions.common.ui.roundScreenPadding
 import com.boswelja.smartwatchextensions.common.ui.showConfirmationOverlay
-import com.boswelja.smartwatchextensions.phonelocking.ui.PhoneLockingCard
+import com.boswelja.smartwatchextensions.phonelocking.ui.PhoneLockingChip
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
@@ -108,7 +108,7 @@ fun Extensions(
                 }
             }
         }
-        PhoneLockingCard(
+        PhoneLockingChip(
             modifier = cardModifier,
             enabled = phoneLockingEnabled,
             phoneName = phoneName
