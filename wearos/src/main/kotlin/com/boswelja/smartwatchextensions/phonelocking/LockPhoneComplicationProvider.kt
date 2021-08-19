@@ -3,19 +3,19 @@ package com.boswelja.smartwatchextensions.phonelocking
 import android.app.PendingIntent
 import android.content.Intent
 import android.graphics.drawable.Icon
-import androidx.wear.complications.ComplicationProviderService
-import androidx.wear.complications.ComplicationRequest
 import androidx.wear.complications.data.ComplicationData
 import androidx.wear.complications.data.ComplicationType
 import androidx.wear.complications.data.MonochromaticImage
 import androidx.wear.complications.data.PlainComplicationText
 import androidx.wear.complications.data.ShortTextComplicationData
+import androidx.wear.complications.datasource.ComplicationDataSourceService
+import androidx.wear.complications.datasource.ComplicationRequest
 import com.boswelja.smartwatchextensions.ActionsActivity
 import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.common.connection.Messages.LOCK_PHONE
 import timber.log.Timber
 
-class LockPhoneComplicationProvider : ComplicationProviderService() {
+class LockPhoneComplicationProvider : ComplicationDataSourceService() {
 
     override fun onComplicationRequest(
         request: ComplicationRequest,

@@ -63,7 +63,7 @@ dependencies {
     implementation(libs.bundles.lifecycle)
     implementation(libs.androidx.datastore.proto)
     implementation(libs.androidx.wear.core)
-    implementation(libs.androidx.wear.complications.provider)
+    implementation(libs.androidx.wear.complications.data.source)
     implementation(libs.androidx.work.ktx)
 
     implementation(libs.play.services.wearable)

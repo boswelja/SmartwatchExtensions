@@ -5,15 +5,15 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.graphics.drawable.Icon
-import androidx.wear.complications.ComplicationProviderService
-import androidx.wear.complications.ComplicationRequest
-import androidx.wear.complications.ProviderUpdateRequester
 import androidx.wear.complications.data.ComplicationData
 import androidx.wear.complications.data.ComplicationType
 import androidx.wear.complications.data.MonochromaticImage
 import androidx.wear.complications.data.PlainComplicationText
 import androidx.wear.complications.data.RangedValueComplicationData
 import androidx.wear.complications.data.ShortTextComplicationData
+import androidx.wear.complications.datasource.ComplicationDataSourceService
+import androidx.wear.complications.datasource.ComplicationDataSourceUpdateRequester
+import androidx.wear.complications.datasource.ComplicationRequest
 import com.boswelja.smartwatchextensions.ActionsActivity
 import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.common.batterysync.References.REQUEST_BATTERY_UPDATE_PATH
@@ -27,9 +27,9 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 
 /**
- * A [ComplicationProviderService] for displaying info about the connected phone's battery.
+ * A [ComplicationDataSourceService] for displaying info about the connected phone's battery.
  */
-class PhoneBatteryComplicationProvider : ComplicationProviderService() {
+class PhoneBatteryComplicationProvider : ComplicationDataSourceService() {
 
     private val coroutineScope = CoroutineScope(Dispatchers.IO)
 
@@ -102,7 +102,7 @@ class PhoneBatteryComplicationProvider : ComplicationProviderService() {
 
     companion object {
         fun updateAll(context: Context) {
-            ProviderUpdateRequester(
+            ComplicationDataSourceUpdateRequester.create(
                 context,
                 ComponentName(
                     context.packageName, PhoneBatteryComplicationProvider::class.java.name
