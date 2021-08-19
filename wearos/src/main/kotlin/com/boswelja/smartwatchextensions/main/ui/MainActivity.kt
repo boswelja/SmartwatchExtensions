@@ -6,7 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.boswelja.smartwatchextensions.common.AppTheme
+import com.boswelja.smartwatchextensions.common.ui.AppTheme
 import com.boswelja.smartwatchextensions.extensions.ui.ExtensionsScreen
 import com.boswelja.smartwatchextensions.onboarding.ui.OnboardingScreen
 import kotlinx.coroutines.Dispatchers

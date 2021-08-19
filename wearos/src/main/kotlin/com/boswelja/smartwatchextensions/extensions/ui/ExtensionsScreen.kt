@@ -31,12 +31,12 @@ import androidx.wear.widget.ConfirmationOverlay
 import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.about.ui.AboutActivity
 import com.boswelja.smartwatchextensions.batterysync.ui.BatteryStatsCard
-import com.boswelja.smartwatchextensions.common.InsetDefaults.RoundScreenInset
-import com.boswelja.smartwatchextensions.common.RotaryHandler
-import com.boswelja.smartwatchextensions.common.isScreenRound
-import com.boswelja.smartwatchextensions.common.roundScreenPadding
-import com.boswelja.smartwatchextensions.common.showConfirmationOverlay
 import com.boswelja.smartwatchextensions.common.startActivity
+import com.boswelja.smartwatchextensions.common.ui.InsetDefaults.RoundScreenInset
+import com.boswelja.smartwatchextensions.common.ui.RotaryHandler
+import com.boswelja.smartwatchextensions.common.ui.isScreenRound
+import com.boswelja.smartwatchextensions.common.ui.roundScreenPadding
+import com.boswelja.smartwatchextensions.common.ui.showConfirmationOverlay
 import com.boswelja.smartwatchextensions.phonelocking.ui.PhoneLockingCard
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi

@@ -40,11 +40,11 @@ import androidx.wear.compose.material.Text
 import com.boswelja.smartwatchextensions.BuildConfig
 import com.boswelja.smartwatchextensions.GooglePlayUtils
 import com.boswelja.smartwatchextensions.R
-import com.boswelja.smartwatchextensions.common.AppTheme
-import com.boswelja.smartwatchextensions.common.InsetDefaults.RoundScreenInset
-import com.boswelja.smartwatchextensions.common.RotaryHandler
-import com.boswelja.smartwatchextensions.common.isScreenRound
-import com.boswelja.smartwatchextensions.common.roundScreenPadding
+import com.boswelja.smartwatchextensions.common.ui.AppTheme
+import com.boswelja.smartwatchextensions.common.ui.InsetDefaults.RoundScreenInset
+import com.boswelja.smartwatchextensions.common.ui.RotaryHandler
+import com.boswelja.smartwatchextensions.common.ui.isScreenRound
+import com.boswelja.smartwatchextensions.common.ui.roundScreenPadding
 import kotlinx.coroutines.launch
 
 class AboutActivity : ComponentActivity() {

@@ -15,9 +15,9 @@ import androidx.lifecycle.lifecycleScope
 import androidx.wear.compose.material.MaterialTheme
 import androidx.wear.compose.material.Text
 import androidx.wear.widget.ConfirmationOverlay
-import com.boswelja.smartwatchextensions.common.AppTheme
 import com.boswelja.smartwatchextensions.common.batterysync.References.REQUEST_BATTERY_UPDATE_PATH
 import com.boswelja.smartwatchextensions.common.connection.Messages.LOCK_PHONE
+import com.boswelja.smartwatchextensions.common.ui.AppTheme
 import com.boswelja.smartwatchextensions.extensions.extensionSettingsStore
 import com.google.android.gms.wearable.Wearable
 import kotlinx.coroutines.flow.first

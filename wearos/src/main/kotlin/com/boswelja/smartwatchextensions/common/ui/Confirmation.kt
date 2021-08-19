@@ -1,4 +1,4 @@
-package com.boswelja.smartwatchextensions.common
+package com.boswelja.smartwatchextensions.common.ui
 
 import android.view.View
 import androidx.wear.widget.ConfirmationOverlay

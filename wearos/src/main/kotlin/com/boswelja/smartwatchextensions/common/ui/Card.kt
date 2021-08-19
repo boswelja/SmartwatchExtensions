@@ -1,4 +1,4 @@
-package com.boswelja.smartwatchextensions.common
+package com.boswelja.smartwatchextensions.common.ui
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row

@@ -12,7 +12,7 @@ import androidx.wear.compose.material.Icon
 import androidx.wear.compose.material.MaterialTheme
 import androidx.wear.compose.material.Text
 import com.boswelja.smartwatchextensions.R
-import com.boswelja.smartwatchextensions.common.ExtensionCard
+import com.boswelja.smartwatchextensions.common.ui.ExtensionCard
 
 @Composable
 fun PhoneLockingCard(

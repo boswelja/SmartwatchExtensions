@@ -30,7 +30,7 @@ import androidx.wear.compose.material.Icon
 import androidx.wear.compose.material.MaterialTheme
 import androidx.wear.compose.material.Text
 import com.boswelja.smartwatchextensions.R
-import com.boswelja.smartwatchextensions.common.RotaryHandler
+import com.boswelja.smartwatchextensions.common.ui.RotaryHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
