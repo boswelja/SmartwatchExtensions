@@ -1,9 +1,3 @@
-Additions:
-Quick Settings tile for watch battery!
-Rotary scrolling on Wear OS is back!
-
 Changes:
-Redesigned the Wear OS app! We now make use of some components coming to Wear OS 3.0
-
-Fixes:
-More fixes for the stuck "Finishing Updates" notification
+Redesigned the mobile app in preparation for Material You
+Cut down on activity count. You should see improved performance when navigating in-app
