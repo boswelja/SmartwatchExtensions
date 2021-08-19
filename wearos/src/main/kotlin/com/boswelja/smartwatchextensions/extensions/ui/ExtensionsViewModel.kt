@@ -50,7 +50,6 @@ class ExtensionsViewModel internal constructor(
      * Request updated battery stats from the connected device.
      * @return true if the request was sent successfully, false otherwise.
      */
-    @ExperimentalCoroutinesApi
     suspend fun requestBatteryStats(): Boolean {
         if (isPhoneConnected()) {
             val phoneId = phoneId.first()
@@ -69,7 +68,6 @@ class ExtensionsViewModel internal constructor(
      * Request locking the connected device.
      * @return true if the request was sent successfully, false otherwise.
      */
-    @ExperimentalCoroutinesApi
     suspend fun requestLockPhone(): Boolean {
         if (isPhoneConnected()) {
             val phoneId = phoneId.first()
@@ -89,7 +87,7 @@ class ExtensionsViewModel internal constructor(
      * Gets the first value emitted by [ConnectionHelper.phoneStatus], and maps it to a Boolean
      * indicating whether the device is connected.
      */
-    @ExperimentalCoroutinesApi
+    @OptIn(ExperimentalCoroutinesApi::class)
     private suspend fun isPhoneConnected(): Boolean {
         return phoneStatus().mapLatest {
             it == Status.CONNECTED_NEARBY || it == Status.CONNECTED

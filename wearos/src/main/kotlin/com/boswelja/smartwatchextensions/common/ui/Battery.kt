@@ -1,4 +1,4 @@
-package com.boswelja.smartwatchextensions.common
+package com.boswelja.smartwatchextensions.common.ui
 
 import androidx.annotation.DrawableRes
 import androidx.compose.runtime.Composable
@@ -6,6 +6,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.wear.compose.material.Icon
+import com.boswelja.smartwatchextensions.common.R
 
 @Composable
 fun BatteryIcon(
