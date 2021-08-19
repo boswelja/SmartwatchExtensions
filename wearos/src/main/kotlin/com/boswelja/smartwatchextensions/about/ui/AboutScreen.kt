@@ -2,10 +2,7 @@ package com.boswelja.smartwatchextensions.about.ui
 
 import android.content.Intent
 import android.net.Uri
-import android.os.Bundle
 import android.provider.Settings
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.gestures.scrollBy
 import androidx.compose.foundation.layout.Arrangement
@@ -40,24 +37,10 @@ import androidx.wear.compose.material.Text
 import com.boswelja.smartwatchextensions.BuildConfig
 import com.boswelja.smartwatchextensions.GooglePlayUtils
 import com.boswelja.smartwatchextensions.R
-import com.boswelja.smartwatchextensions.common.ui.AppTheme
 import com.boswelja.smartwatchextensions.common.ui.RotaryHandler
 import com.boswelja.smartwatchextensions.common.ui.RoundScreenDefaults.VerticalPadding
 import com.boswelja.smartwatchextensions.common.ui.roundScreenPadding
 import kotlinx.coroutines.launch
-
-class AboutActivity : ComponentActivity() {
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        setContent {
-            AppTheme {
-                AboutScreen()
-            }
-        }
-    }
-}
 
 @Composable
 fun AboutScreen(

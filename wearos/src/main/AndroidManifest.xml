@@ -44,10 +44,6 @@
             </intent-filter>
         </activity>
 
-        <activity
-            android:name=".about.ui.AboutActivity"
-            android:exported="false" />
-
         <activity android:name="androidx.wear.activity.ConfirmationActivity" />
 
         <activity android:name=".ActionsActivity" />
