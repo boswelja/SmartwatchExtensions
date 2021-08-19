@@ -30,7 +30,7 @@ import androidx.wear.compose.material.Text
 import androidx.wear.widget.ConfirmationOverlay
 import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.about.ui.AboutActivity
-import com.boswelja.smartwatchextensions.batterysync.ui.BatteryStatsCard
+import com.boswelja.smartwatchextensions.batterysync.ui.BatteryStatsChip
 import com.boswelja.smartwatchextensions.common.startActivity
 import com.boswelja.smartwatchextensions.common.ui.InsetDefaults.RoundScreenInset
 import com.boswelja.smartwatchextensions.common.ui.RotaryHandler
@@ -87,7 +87,7 @@ fun Extensions(
             .collectAsState(stringResource(R.string.default_phone_name), Dispatchers.IO)
 
         val cardModifier = Modifier.fillMaxWidth()
-        BatteryStatsCard(
+        BatteryStatsChip(
             modifier = cardModifier,
             enabled = batterySyncEnabled,
             percent = batteryPercent,

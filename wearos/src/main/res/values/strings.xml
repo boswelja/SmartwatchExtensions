@@ -14,7 +14,7 @@
     <string name="battery_sync_disabled">Battery Sync disabled</string>
     <string name="battery_sync_refresh_failed">Failed to update phone battery stats</string>
     <string name="battery_sync_refresh_success">Updated battery stats</string>
-    <string name="battery_sync_hint_text">Your %s is at</string>
+    <string name="battery_sync_hint_text">%s Battery</string>
 
     <!-- DnD Sync strings -->
     <string name="dnd_sync_active_noti_title">DnD Sync</string>
