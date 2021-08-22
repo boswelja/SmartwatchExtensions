@@ -1,6 +1,7 @@
 plugins {
     id("com.android.library")
     kotlin("android")
+    id("com.squareup.wire")
 }
 
 android {
@@ -24,4 +25,11 @@ android {
 dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.kotlinx.coroutines.core)
+    implementation(libs.watchconnection.core)
+}
+
+wire {
+    kotlin {
+        android = true
+    }
 }

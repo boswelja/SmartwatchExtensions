@@ -2,13 +2,14 @@ package com.boswelja.smartwatchextensions.appmanager
 
 import android.content.Context
 import android.content.Intent
+import android.content.pm.ApplicationInfo
+import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.net.Uri
 import com.boswelja.smartwatchextensions.common.appmanager.App
 import com.boswelja.smartwatchextensions.common.appmanager.Messages
 import com.boswelja.smartwatchextensions.common.appmanager.Messages.APP_DATA
 import com.boswelja.smartwatchextensions.common.appmanager.Messages.APP_SENDING_COMPLETE
-import com.boswelja.smartwatchextensions.common.compress
 import com.google.android.gms.wearable.MessageClient
 import com.google.android.gms.wearable.Wearable
 import kotlinx.coroutines.tasks.await
@@ -73,7 +74,7 @@ suspend fun Context.sendAllApps(
         messageClient.sendMessage(
             phoneId,
             APP_DATA,
-            app.toByteArray().compress()
+            App.ADAPTER.encode(app)
         ).await()
     }
 
@@ -89,10 +90,38 @@ suspend fun Context.sendAllApps(
  * Get all packages installed on this device, and convert them to [App] instances.
  */
 fun Context.getAllApps(): List<App> {
-    return packageManager.getInstalledPackages(PackageManager.GET_PERMISSIONS)
-        .map {
-            App(packageManager, it)
+    return packageManager.getInstalledPackages(PackageManager.GET_PERMISSIONS).map {
+        App(
+            version = it.versionName,
+            packageName = it.packageName,
+            label = it.applicationInfo.loadLabel(packageManager).toString(),
+            isSystemApp = it.applicationInfo.flags.and(
+                ApplicationInfo.FLAG_SYSTEM or ApplicationInfo.FLAG_UPDATED_SYSTEM_APP
+            ) != 0,
+            hasLaunchActivity = packageManager.getLaunchIntentForPackage(it.packageName) != null,
+            isEnabled = it.applicationInfo.enabled,
+            installTime = it.firstInstallTime,
+            lastUpdateTime = it.lastUpdateTime,
+            requestedPermissions = packageManager.getLocalizedPermissions(it)
+        )
+    }
+}
+
+/**
+ * Attempts to convert system permissions strings into something meaningful to the user.
+ * Fallback to the standard permission string.
+ */
+private fun PackageManager.getLocalizedPermissions(
+    packageInfo: PackageInfo
+): List<String> {
+    return packageInfo.requestedPermissions?.map { permission ->
+        try {
+            val permissionInfo = getPermissionInfo(permission, PackageManager.GET_META_DATA)
+            permissionInfo?.loadLabel(this)?.toString() ?: permission
+        } catch (e: Exception) {
+            permission
         }
+    }?.sorted() ?: emptyList()
 }
 
 /**

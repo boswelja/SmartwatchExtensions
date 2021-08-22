@@ -14,7 +14,6 @@ import com.boswelja.smartwatchextensions.common.batterysync.References.REQUEST_B
 import com.boswelja.smartwatchextensions.common.connection.Messages.CHECK_WATCH_REGISTERED_PATH
 import com.boswelja.smartwatchextensions.common.connection.Messages.LAUNCH_APP
 import com.boswelja.smartwatchextensions.common.connection.Messages.WATCH_REGISTERED_PATH
-import com.boswelja.smartwatchextensions.common.decompress
 import com.boswelja.smartwatchextensions.common.dndsync.References.DND_STATUS_PATH
 import com.boswelja.smartwatchextensions.common.fromByteArray
 import com.boswelja.smartwatchextensions.common.startActivity
@@ -48,8 +47,7 @@ class WatchMessageReceiver : MessageReceiver() {
             APP_DATA -> {
                 data?.let {
                     Timber.d("Received %s bytes", data.size)
-                    val decompressedBytes = data.decompress()
-                    val app = App.fromByteArray(decompressedBytes)
+                    val app = App.ADAPTER.decode(data)
                     storeWatchApp(context, sourceWatchId, app)
                 }
             }

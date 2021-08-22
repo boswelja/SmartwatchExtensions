@@ -40,7 +40,7 @@ data class App(
 
     constructor(watchId: UUID, app: com.boswelja.smartwatchextensions.common.appmanager.App) : this(
         watchId,
-        app.icon?.bitmap,
+        null, // TODO Get icon from bytes
         app.version,
         app.packageName,
         app.label,

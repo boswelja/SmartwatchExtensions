@@ -8,7 +8,6 @@ import com.boswelja.smartwatchextensions.common.appmanager.App
 import com.boswelja.smartwatchextensions.common.appmanager.Messages.APP_DATA
 import com.boswelja.smartwatchextensions.common.appmanager.Messages.APP_SENDING_COMPLETE
 import com.boswelja.smartwatchextensions.common.appmanager.Messages.APP_SENDING_START
-import com.boswelja.smartwatchextensions.common.compress
 import com.google.android.gms.tasks.Tasks
 import com.google.android.gms.wearable.MessageClient
 import io.mockk.every
@@ -47,7 +46,7 @@ class UtilsKtTest {
             messageClient.sendMessage(phoneId, APP_SENDING_START, null)
             dummyApps.forEach {
                 messageClient.sendMessage(
-                    phoneId, APP_DATA, it.toByteArray().compress()
+                    phoneId, APP_DATA, App.ADAPTER.encode(it)
                 )
             }
             messageClient.sendMessage(phoneId, APP_SENDING_COMPLETE, null)
@@ -57,7 +56,6 @@ class UtilsKtTest {
     private fun createDummyApps(range: IntRange): List<App> {
         return range.map {
             App(
-                icon = null,
                 version = "",
                 packageName = "",
                 label = "",
