@@ -21,9 +21,10 @@ import com.boswelja.smartwatchextensions.common.startActivity
 import com.boswelja.smartwatchextensions.dndsync.Utils.handleDnDStateChange
 import com.boswelja.smartwatchextensions.main.ui.MainActivity
 import com.boswelja.smartwatchextensions.watchmanager.database.WatchDatabase
-import com.boswelja.watchconnection.core.message.Message
+import com.boswelja.watchconnection.core.message.ByteArrayMessage
 import com.boswelja.watchconnection.core.message.MessageClient
 import com.boswelja.watchconnection.core.message.MessageReceiver
+import com.boswelja.watchconnection.core.message.ReceivedMessage
 import com.boswelja.watchconnection.wearos.WearOSMessagePlatform
 import java.util.UUID
 import kotlinx.coroutines.Dispatchers
@@ -35,14 +36,14 @@ class WatchMessageReceiver : MessageReceiver() {
 
     override suspend fun onMessageReceived(
         context: Context,
-        message: Message
+        message: ReceivedMessage<ByteArray?>
     ) {
-        val sourceWatchId = message.sourceWatchId
+        val sourceWatchId = message.sourceWatchID
         val data = message.data
         Timber.d("Received %s", message)
-        when (message.message) {
+        when (message.path) {
             APP_SENDING_START -> {
-                clearAppsForWatch(context, message.sourceWatchId)
+                clearAppsForWatch(context, sourceWatchId)
             }
             APP_DATA -> {
                 data?.let {
@@ -109,8 +110,8 @@ class WatchMessageReceiver : MessageReceiver() {
             // If watch is found in the database, let it know it's registered
             watch?.let {
                 MessageClient(
-                    WearOSMessagePlatform(context)
-                ).sendMessage(watch, WATCH_REGISTERED_PATH)
+                    platforms = listOf(WearOSMessagePlatform(context))
+                ).sendMessage(watch, ByteArrayMessage(WATCH_REGISTERED_PATH))
             }
         }
     }

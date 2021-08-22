@@ -117,7 +117,7 @@ class AppManagerViewModel internal constructor(
         // Collect incoming messages
         viewModelScope.launch {
             watchManager.incomingMessages().collect { message ->
-                when (message.message) {
+                when (message.path) {
                     APP_SENDING_COMPLETE -> isUpdatingCache = false
                     APP_SENDING_START -> isUpdatingCache = true
                 }

@@ -52,7 +52,7 @@ class AboutAppViewModel internal constructor(
         // Listen for app version responses
         viewModelScope.launch {
             watchManager.incomingMessages().filter {
-                it.message == REQUEST_APP_VERSION && it.data != null
+                it.path == REQUEST_APP_VERSION && it.data != null
             }.collect { message ->
                 val versionInfo = parseWatchVersionInfo(message.data!!)
                 _watchAppVersion.tryEmit(versionInfo)

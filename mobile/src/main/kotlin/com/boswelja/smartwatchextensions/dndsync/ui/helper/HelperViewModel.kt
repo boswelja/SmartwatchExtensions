@@ -36,7 +36,7 @@ class HelperViewModel internal constructor(
     init {
         viewModelScope.launch {
             watchManager.incomingMessages().filter {
-                it.message == REQUEST_INTERRUPT_FILTER_ACCESS_STATUS_PATH && it.data != null
+                it.path == REQUEST_INTERRUPT_FILTER_ACCESS_STATUS_PATH && it.data != null
             }.collect { message ->
                 val hasNotiPolicyAccess = Boolean.fromByteArray(message.data!!)
                 _result.tryEmit(hasNotiPolicyAccess)
