@@ -7,6 +7,7 @@ import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.net.Uri
 import com.boswelja.smartwatchextensions.common.appmanager.App
+import com.boswelja.smartwatchextensions.common.appmanager.AppList
 import com.boswelja.smartwatchextensions.common.appmanager.Messages
 import com.boswelja.smartwatchextensions.common.appmanager.Messages.APP_DATA
 import com.boswelja.smartwatchextensions.common.appmanager.Messages.APP_SENDING_COMPLETE
@@ -60,7 +61,7 @@ suspend fun Context.sendAllApps(
     messageClient: MessageClient = Wearable.getMessageClient(this)
 ) {
     // Get all current packages
-    val allPackages = getAllApps()
+    val allApps = getAllApps()
 
     // Let the phone know what we're doing
     messageClient.sendMessage(
@@ -69,14 +70,12 @@ suspend fun Context.sendAllApps(
         null
     ).await()
 
-    // Compress and send all apps
-    allPackages.forEach { app ->
-        messageClient.sendMessage(
-            phoneId,
-            APP_DATA,
-            App.ADAPTER.encode(app)
-        ).await()
-    }
+    // Send all apps
+    messageClient.sendMessage(
+        phoneId,
+        APP_DATA,
+        AppList.ADAPTER.encode(AppList(allApps))
+    ).await()
 
     // Send a message notifying the phone of a successful operation
     messageClient.sendMessage(

@@ -23,17 +23,17 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.boswelja.smartwatchextensions.R
-import com.boswelja.smartwatchextensions.appmanager.App
+import com.boswelja.smartwatchextensions.appmanager.database.DbApp
 import com.boswelja.smartwatchextensions.common.ui.ExpandableCard
 
 @Composable
 fun AppList(
     modifier: Modifier = Modifier,
     contentPadding: Dp = 16.dp,
-    userApps: List<App>,
-    disabledApps: List<App>,
-    systemApps: List<App>,
-    onAppClick: (App) -> Unit
+    userApps: List<DbApp>,
+    disabledApps: List<DbApp>,
+    systemApps: List<DbApp>,
+    onAppClick: (DbApp) -> Unit
 ) {
     var userAppsExpanded by rememberSaveable { mutableStateOf(true) }
     var disabledAppsExpanded by rememberSaveable { mutableStateOf(true) }
@@ -105,8 +105,8 @@ fun AppList(
 @Composable
 fun AppItem(
     modifier: Modifier = Modifier,
-    app: App,
-    onClick: (App) -> Unit
+    app: DbApp,
+    onClick: (DbApp) -> Unit
 ) {
     ListItem(
         text = { Text(app.label) },

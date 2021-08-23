@@ -32,7 +32,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.boswelja.smartwatchextensions.R
-import com.boswelja.smartwatchextensions.appmanager.App
+import com.boswelja.smartwatchextensions.appmanager.database.DbApp
 import com.boswelja.smartwatchextensions.common.ui.BigButton
 import com.boswelja.smartwatchextensions.common.ui.ExpandableCard
 import java.text.SimpleDateFormat
@@ -41,10 +41,10 @@ import java.util.Locale
 @Composable
 fun AppInfo(
     modifier: Modifier = Modifier,
-    app: App,
+    app: DbApp,
     interactionEnabled: Boolean = true,
-    onOpenClicked: (App) -> Unit,
-    onUninstallClicked: (App) -> Unit
+    onOpenClicked: (DbApp) -> Unit,
+    onUninstallClicked: (DbApp) -> Unit
 ) {
     val scrollState = rememberScrollState()
     Column(
@@ -174,7 +174,7 @@ fun PermissionsInfo(
 @Composable
 fun AppInstallInfo(
     modifier: Modifier = Modifier,
-    app: App
+    app: DbApp
 ) {
     val dateFormatter = remember {
         SimpleDateFormat("dd MMM yyyy, h:mm aa", Locale.getDefault())

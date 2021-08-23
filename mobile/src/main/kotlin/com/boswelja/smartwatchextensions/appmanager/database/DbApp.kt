@@ -1,4 +1,4 @@
-package com.boswelja.smartwatchextensions.appmanager
+package com.boswelja.smartwatchextensions.appmanager.database
 
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
@@ -23,7 +23,7 @@ import java.util.UUID
  * @param requestedPermissions An [List] of [android.Manifest.permission]s this package requests.
  */
 @Entity(tableName = "watch_apps", primaryKeys = ["watchId", "packageName"])
-data class App(
+data class DbApp(
     val watchId: UUID,
     @ColumnInfo(typeAffinity = ColumnInfo.BLOB)
     val icon: Bitmap?,
@@ -57,7 +57,7 @@ data class App(
     }
 
     override fun equals(other: Any?): Boolean {
-        return if (other is App) {
+        return if (other is DbApp) {
             watchId == other.watchId &&
                 packageName == other.packageName &&
                 installTime == other.installTime &&

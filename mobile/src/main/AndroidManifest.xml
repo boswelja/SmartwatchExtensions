@@ -84,6 +84,14 @@
             android:exported="false" />
 
         <receiver
+            android:name=".appmanager.WatchAppReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.boswelja.watchconnection.messages.ACTION_MESSAGE_RECEIVED" />
+            </intent-filter>
+        </receiver>
+
+        <receiver
             android:name=".watchmanager.connection.WatchMessageReceiver"
             android:exported="false">
             <intent-filter>

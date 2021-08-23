@@ -15,3 +15,8 @@ message App {
   repeated string requestedPermissions = 9; // The permissions requested by this package
   bytes iconBytes = 10; // The serialized bytes for this application icon
 }
+
+/* Contains a list of App messages */
+message AppList {
+  repeated App apps = 1;
+}

@@ -34,7 +34,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.boswelja.smartwatchextensions.R
-import com.boswelja.smartwatchextensions.appmanager.App
+import com.boswelja.smartwatchextensions.appmanager.database.DbApp
 import com.boswelja.smartwatchextensions.common.ui.Banner
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -57,7 +57,7 @@ fun AppManagerScreen(
     // Only check system apps (for now). It's effectively guaranteed we'll have some on any device
     val isLoading = systemApps.isEmpty() || viewModel.isUpdatingCache
 
-    var selectedApp by remember { mutableStateOf<App?>(null) }
+    var selectedApp by remember { mutableStateOf<DbApp?>(null) }
     var watchConnectionWarningVisible by remember(isLoading, isWatchConnected) {
         mutableStateOf(!isLoading && !isWatchConnected)
     }

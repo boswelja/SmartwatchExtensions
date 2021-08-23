@@ -5,8 +5,6 @@ import android.content.Intent
 import com.boswelja.smartwatchextensions.appmanager.database.WatchAppDatabase
 import com.boswelja.smartwatchextensions.batterysync.Utils
 import com.boswelja.smartwatchextensions.batterysync.Utils.handleBatteryStats
-import com.boswelja.smartwatchextensions.common.appmanager.App
-import com.boswelja.smartwatchextensions.common.appmanager.Messages.APP_DATA
 import com.boswelja.smartwatchextensions.common.appmanager.Messages.APP_SENDING_START
 import com.boswelja.smartwatchextensions.common.batterysync.BatteryStats
 import com.boswelja.smartwatchextensions.common.batterysync.References.BATTERY_STATUS_PATH
@@ -44,13 +42,6 @@ class WatchMessageReceiver : MessageReceiver() {
             APP_SENDING_START -> {
                 clearAppsForWatch(context, sourceWatchId)
             }
-            APP_DATA -> {
-                data?.let {
-                    Timber.d("Received %s bytes", data.size)
-                    val app = App.ADAPTER.decode(data)
-                    storeWatchApp(context, sourceWatchId, app)
-                }
-            }
             LAUNCH_APP -> launchApp(context)
             REQUEST_BATTERY_UPDATE_PATH -> Utils.updateBatteryStats(context)
             CHECK_WATCH_REGISTERED_PATH -> sendIsWatchRegistered(context, sourceWatchId)
@@ -70,20 +61,6 @@ class WatchMessageReceiver : MessageReceiver() {
     ) {
         val database = WatchAppDatabase.getInstance(context)
         database.apps().removeForWatch(sourceWatchId)
-    }
-
-    private suspend fun storeWatchApp(
-        context: Context,
-        sourceWatchId: UUID,
-        app: App
-    ) {
-        val database = WatchAppDatabase.getInstance(context)
-        database.apps().add(
-            com.boswelja.smartwatchextensions.appmanager.App(
-                sourceWatchId,
-                app
-            )
-        )
     }
 
     /**
