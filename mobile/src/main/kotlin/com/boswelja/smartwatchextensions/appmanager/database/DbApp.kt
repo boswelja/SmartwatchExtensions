@@ -2,9 +2,7 @@ package com.boswelja.smartwatchextensions.appmanager.database
 
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
-import android.graphics.Bitmap
 import androidx.core.content.pm.PackageInfoCompat
-import androidx.room.ColumnInfo
 import androidx.room.Entity
 import java.util.UUID
 
@@ -25,8 +23,6 @@ import java.util.UUID
 @Entity(tableName = "watch_apps", primaryKeys = ["watchId", "packageName"])
 data class DbApp(
     val watchId: UUID,
-    @ColumnInfo(typeAffinity = ColumnInfo.BLOB)
-    val icon: Bitmap?,
     val version: String,
     val packageName: String,
     val label: String,
@@ -40,7 +36,6 @@ data class DbApp(
 
     constructor(watchId: UUID, app: com.boswelja.smartwatchextensions.common.appmanager.App) : this(
         watchId,
-        null, // TODO Get icon from bytes
         app.version,
         app.packageName,
         app.label,

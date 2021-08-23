@@ -9,7 +9,7 @@ import android.net.Uri
 import com.boswelja.smartwatchextensions.common.appmanager.App
 import com.boswelja.smartwatchextensions.common.appmanager.AppList
 import com.boswelja.smartwatchextensions.common.appmanager.Messages
-import com.boswelja.smartwatchextensions.common.appmanager.Messages.APP_DATA
+import com.boswelja.smartwatchextensions.common.appmanager.Messages.APP_LIST
 import com.boswelja.smartwatchextensions.common.appmanager.Messages.APP_SENDING_COMPLETE
 import com.google.android.gms.wearable.MessageClient
 import com.google.android.gms.wearable.Wearable
@@ -73,7 +73,7 @@ suspend fun Context.sendAllApps(
     // Send all apps
     messageClient.sendMessage(
         phoneId,
-        APP_DATA,
+        APP_LIST,
         AppList.ADAPTER.encode(AppList(allApps))
     ).await()
 

@@ -4,7 +4,7 @@ import com.boswelja.watchconnection.core.message.serialized.MessageSerializer
 
 object AppListSerializer : MessageSerializer<AppList>(
     messagePaths = setOf(
-        Messages.APP_DATA
+        Messages.APP_LIST
     )
 ) {
     @Suppress("BlockingMethodInNonBlockingContext")

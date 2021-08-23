@@ -23,9 +23,9 @@ object Messages {
     const val APP_SENDING_COMPLETE = "/app_manager_sending_complete"
 
     /**
-     * An [App] object.
+     * A message containing [AppList].
      */
-    const val APP_DATA = "/app_manager_all_apps"
+    const val APP_LIST = "/app_manager_all_apps"
 
     /**
      * Requests cache validation. A hash code obtained from [CacheValidation.getHashCode] should be

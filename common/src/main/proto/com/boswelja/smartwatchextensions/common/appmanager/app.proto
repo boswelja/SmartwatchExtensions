@@ -13,7 +13,6 @@ message App {
   int64 installTime = 7; // The install time of this package in milliseconds since UNIX epoch
   int64 lastUpdateTime = 8; // The last update time of this package in milliseconds since UNIX epoch
   repeated string requestedPermissions = 9; // The permissions requested by this package
-  bytes iconBytes = 10; // The serialized bytes for this application icon
 }
 
 /* Contains a list of App messages */

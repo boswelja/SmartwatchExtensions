@@ -5,7 +5,7 @@ import android.os.Build
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.boswelja.smartwatchextensions.common.appmanager.App
-import com.boswelja.smartwatchextensions.common.appmanager.Messages.APP_DATA
+import com.boswelja.smartwatchextensions.common.appmanager.Messages.APP_LIST
 import com.boswelja.smartwatchextensions.common.appmanager.Messages.APP_SENDING_COMPLETE
 import com.boswelja.smartwatchextensions.common.appmanager.Messages.APP_SENDING_START
 import com.google.android.gms.tasks.Tasks
@@ -46,7 +46,7 @@ class UtilsKtTest {
             messageClient.sendMessage(phoneId, APP_SENDING_START, null)
             dummyApps.forEach {
                 messageClient.sendMessage(
-                    phoneId, APP_DATA, App.ADAPTER.encode(it)
+                    phoneId, APP_LIST, App.ADAPTER.encode(it)
                 )
             }
             messageClient.sendMessage(phoneId, APP_SENDING_COMPLETE, null)

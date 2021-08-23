@@ -18,7 +18,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -112,19 +111,11 @@ fun AppItem(
         text = { Text(app.label) },
         secondaryText = { Text(app.version) },
         icon = {
-            if (app.icon != null) {
-                Image(
-                    app.icon.asImageBitmap(),
-                    contentDescription = null,
-                    Modifier.size(40.dp)
-                )
-            } else {
-                Image(
-                    Icons.Outlined.Info,
-                    contentDescription = null,
-                    Modifier.size(40.dp)
-                )
-            }
+            Image(
+                Icons.Outlined.Info,
+                contentDescription = null,
+                Modifier.size(40.dp)
+            )
         },
         modifier = modifier.clickable { onClick(app) }
     )
