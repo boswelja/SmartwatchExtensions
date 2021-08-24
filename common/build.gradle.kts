@@ -25,7 +25,7 @@ android {
 dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.kotlinx.coroutines.core)
-    implementation(libs.watchconnection.core)
+    api(libs.watchconnection.core)
 }
 
 wire {

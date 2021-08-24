@@ -14,6 +14,8 @@ import com.boswelja.smartwatchextensions.common.connection.Messages.RESET_APP
 import com.boswelja.smartwatchextensions.common.dndsync.References.REQUEST_INTERRUPT_FILTER_ACCESS_STATUS_PATH
 import com.boswelja.smartwatchextensions.common.dndsync.References.REQUEST_SDK_INT_PATH
 import com.boswelja.smartwatchextensions.common.toByteArray
+import com.boswelja.smartwatchextensions.common.versioning.Version
+import com.boswelja.smartwatchextensions.common.versioning.VersionSerializer
 import com.boswelja.smartwatchextensions.extensions.SettingsSerializer
 import com.boswelja.smartwatchextensions.extensions.extensionSettingsStore
 import com.google.android.gms.wearable.MessageEvent
@@ -38,13 +40,16 @@ class MessageReceiver : WearableListenerService() {
                     )
             }
             REQUEST_APP_VERSION -> {
+                val data = runBlocking {
+                    VersionSerializer.serialize(
+                        Version(BuildConfig.VERSION_CODE, BuildConfig.VERSION_NAME)
+                    )
+                }
                 Wearable.getMessageClient(this)
                     .sendMessage(
                         messageEvent.sourceNodeId,
                         REQUEST_APP_VERSION,
-                        (BuildConfig.VERSION_NAME + "|" + BuildConfig.VERSION_CODE).toByteArray(
-                            Charsets.UTF_8
-                        )
+                        data
                     )
             }
             REQUEST_SDK_INT_PATH -> {

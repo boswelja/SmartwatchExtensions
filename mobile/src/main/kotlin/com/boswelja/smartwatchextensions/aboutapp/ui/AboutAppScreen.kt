@@ -135,27 +135,12 @@ fun Versions(modifier: Modifier = Modifier) {
             )
             ListItem(
                 text = {
-                    when {
-                        watchVersion?.first != null -> {
-                            Text(
-                                stringResource(
-                                    R.string.about_watch_version_title, watchVersion!!.first!!
-                                )
-                            )
-                        }
-                        watchVersion == null -> {
-                            Text(
-                                stringResource(R.string.about_watch_version_failed)
-                            )
-                        }
-                        else -> {
-                            Text(stringResource(R.string.about_watch_version_loading))
-                        }
-                    }
+                    val text = watchVersion?.let {
+                        stringResource(R.string.about_watch_version_title, it.versionName)
+                    } ?: stringResource(R.string.about_watch_version_loading)
+                    Text(text)
                 },
-                secondaryText = if (watchVersion?.second != null) {
-                    { Text(watchVersion!!.second!!) }
-                } else null,
+                secondaryText = watchVersion?.let { { Text(it.versionCode.toString()) } },
                 icon = { Icon(Icons.Outlined.Info, null) }
             )
         }

@@ -25,6 +25,7 @@ import com.boswelja.watchconnection.core.discovery.DiscoveryClient
 import com.boswelja.watchconnection.core.message.ByteArrayMessage
 import com.boswelja.watchconnection.core.message.MessageClient
 import com.boswelja.watchconnection.core.message.MessagePriority
+import com.boswelja.watchconnection.core.message.serialized.MessageSerializer
 import com.boswelja.watchconnection.wearos.WearOSDiscoveryPlatform
 import com.boswelja.watchconnection.wearos.WearOSMessagePlatform
 import java.util.UUID
@@ -302,6 +303,8 @@ class WatchManager internal constructor(
     fun getWatchById(id: UUID): Flow<Watch?> = watchDatabase.watchDao().get(id)
 
     fun incomingMessages() = messageClient.rawIncomingMessages()
+    fun <T> incomingMessages(serializer: MessageSerializer<T>) =
+        messageClient.incomingMessages(serializer)
 
     companion object : SingletonHolder<WatchManager, Context>(::WatchManager) {
         const val CAPABILITY_WATCH_APP = "extensions_watch_app"
