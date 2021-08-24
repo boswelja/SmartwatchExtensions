@@ -20,4 +20,8 @@ class WatchAppReceiver : TypedMessageReceiver<AppList>(AppListSerializer) {
                 .also { db.add(it) }
         }
     }
+
+    override suspend fun onDeserializeException(exception: Exception) {
+        // TODO Notify the user their apps may be out of date
+    }
 }
