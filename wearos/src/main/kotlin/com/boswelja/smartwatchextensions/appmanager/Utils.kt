@@ -8,12 +8,16 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import com.boswelja.smartwatchextensions.common.appmanager.App
 import com.boswelja.smartwatchextensions.common.appmanager.AppList
-import com.boswelja.smartwatchextensions.common.appmanager.Messages
+import com.boswelja.smartwatchextensions.common.appmanager.AppListSerializer
 import com.boswelja.smartwatchextensions.common.appmanager.Messages.APP_LIST
 import com.boswelja.smartwatchextensions.common.appmanager.Messages.APP_SENDING_COMPLETE
-import com.google.android.gms.wearable.MessageClient
-import com.google.android.gms.wearable.Wearable
-import kotlinx.coroutines.tasks.await
+import com.boswelja.smartwatchextensions.common.appmanager.Messages.APP_SENDING_START
+import com.boswelja.smartwatchextensions.discoveryClient
+import com.boswelja.smartwatchextensions.messageClient
+import com.boswelja.watchconnection.common.message.ByteArrayMessage
+import com.boswelja.watchconnection.common.message.serialized.TypedMessage
+import com.boswelja.watchconnection.wearos.discovery.DiscoveryClient
+import com.boswelja.watchconnection.wearos.message.MessageClient
 
 /**
  * Converts a given [ByteArray] to a package name string.
@@ -53,36 +57,40 @@ fun Context.requestUninstallPackage(packageName: String) {
 
 /**
  * Send all apps installed to the companion phone with a given ID.
- * @param phoneId The ID of the phone.
  * @param messageClient The [MessageClient] instance to use.
+ * @param discoveryClient The [DiscoveryClient] instance to use.
  */
 suspend fun Context.sendAllApps(
-    phoneId: String,
-    messageClient: MessageClient = Wearable.getMessageClient(this)
+    messageClient: MessageClient = messageClient(
+        listOf(AppListSerializer)
+    ),
+    discoveryClient: DiscoveryClient = discoveryClient()
 ) {
+    val phone = discoveryClient.pairedPhone()
+
     // Get all current packages
     val allApps = getAllApps()
 
     // Let the phone know what we're doing
     messageClient.sendMessage(
-        phoneId,
-        Messages.APP_SENDING_START,
-        null
-    ).await()
+        phone,
+        ByteArrayMessage(APP_SENDING_START)
+    )
 
     // Send all apps
     messageClient.sendMessage(
-        phoneId,
-        APP_LIST,
-        AppList.ADAPTER.encode(AppList(allApps))
-    ).await()
+        phone,
+        TypedMessage(
+            APP_LIST,
+            AppList(allApps)
+        )
+    )
 
     // Send a message notifying the phone of a successful operation
     messageClient.sendMessage(
-        phoneId,
-        APP_SENDING_COMPLETE,
-        null
-    ).await()
+        phone,
+        ByteArrayMessage(APP_SENDING_COMPLETE)
+    )
 }
 
 /**
