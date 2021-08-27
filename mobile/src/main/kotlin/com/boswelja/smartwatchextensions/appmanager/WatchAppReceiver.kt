@@ -5,8 +5,8 @@ import com.boswelja.smartwatchextensions.appmanager.database.DbApp
 import com.boswelja.smartwatchextensions.appmanager.database.WatchAppDatabase
 import com.boswelja.smartwatchextensions.common.appmanager.AppList
 import com.boswelja.smartwatchextensions.common.appmanager.AppListSerializer
-import com.boswelja.watchconnection.core.message.ReceivedMessage
-import com.boswelja.watchconnection.core.message.serialized.TypedMessageReceiver
+import com.boswelja.watchconnection.common.message.ReceivedMessage
+import com.boswelja.watchconnection.common.message.serialized.TypedMessageReceiver
 
 class WatchAppReceiver : TypedMessageReceiver<AppList>(AppListSerializer) {
     override suspend fun onTypedMessageReceived(

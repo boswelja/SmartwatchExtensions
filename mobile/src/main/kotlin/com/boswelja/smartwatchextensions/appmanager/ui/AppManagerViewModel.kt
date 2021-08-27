@@ -16,8 +16,8 @@ import com.boswelja.smartwatchextensions.common.appmanager.Messages.REQUEST_UNIN
 import com.boswelja.smartwatchextensions.common.appmanager.Messages.VALIDATE_CACHE
 import com.boswelja.smartwatchextensions.common.toByteArray
 import com.boswelja.smartwatchextensions.watchmanager.WatchManager
+import com.boswelja.watchconnection.common.discovery.Status
 import com.boswelja.watchconnection.core.Watch
-import com.boswelja.watchconnection.core.discovery.Status
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.collect

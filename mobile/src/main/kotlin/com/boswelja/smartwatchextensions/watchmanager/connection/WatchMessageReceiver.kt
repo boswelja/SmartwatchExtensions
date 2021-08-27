@@ -18,10 +18,10 @@ import com.boswelja.smartwatchextensions.common.startActivity
 import com.boswelja.smartwatchextensions.dndsync.Utils.handleDnDStateChange
 import com.boswelja.smartwatchextensions.main.ui.MainActivity
 import com.boswelja.smartwatchextensions.watchmanager.database.WatchDatabase
-import com.boswelja.watchconnection.core.message.ByteArrayMessage
+import com.boswelja.watchconnection.common.message.ByteArrayMessage
+import com.boswelja.watchconnection.common.message.MessageReceiver
+import com.boswelja.watchconnection.common.message.ReceivedMessage
 import com.boswelja.watchconnection.core.message.MessageClient
-import com.boswelja.watchconnection.core.message.MessageReceiver
-import com.boswelja.watchconnection.core.message.ReceivedMessage
 import com.boswelja.watchconnection.wearos.WearOSMessagePlatform
 import java.util.UUID
 import kotlinx.coroutines.Dispatchers

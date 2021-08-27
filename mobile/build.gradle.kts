@@ -82,7 +82,7 @@ dependencies {
     implementation(libs.googleplay.corektx)
     implementation(libs.migration)
     implementation(libs.timber)
-    implementation(libs.watchconnection.wearos)
+    implementation(libs.watchconnection.platform.wearos)
 
     implementation(libs.bundles.compose.mobile)
     implementation(libs.androidx.compose.ui.viewbinding)

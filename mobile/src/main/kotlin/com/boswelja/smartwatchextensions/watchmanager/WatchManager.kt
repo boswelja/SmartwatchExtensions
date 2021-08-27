@@ -20,12 +20,12 @@ import com.boswelja.smartwatchextensions.watchmanager.database.DbWatch.Companion
 import com.boswelja.smartwatchextensions.watchmanager.database.WatchDatabase
 import com.boswelja.smartwatchextensions.watchmanager.database.WatchSettingsDatabase
 import com.boswelja.smartwatchextensions.widget.widgetIdStore
+import com.boswelja.watchconnection.common.message.ByteArrayMessage
+import com.boswelja.watchconnection.common.message.MessagePriority
+import com.boswelja.watchconnection.common.message.serialized.MessageSerializer
 import com.boswelja.watchconnection.core.Watch
 import com.boswelja.watchconnection.core.discovery.DiscoveryClient
-import com.boswelja.watchconnection.core.message.ByteArrayMessage
 import com.boswelja.watchconnection.core.message.MessageClient
-import com.boswelja.watchconnection.core.message.MessagePriority
-import com.boswelja.watchconnection.core.message.serialized.MessageSerializer
 import com.boswelja.watchconnection.wearos.WearOSDiscoveryPlatform
 import com.boswelja.watchconnection.wearos.WearOSMessagePlatform
 import java.util.UUID

@@ -31,7 +31,7 @@ import com.boswelja.smartwatchextensions.appmanager.ui.AppSummarySmall
 import com.boswelja.smartwatchextensions.batterysync.ui.BatterySummarySmall
 import com.boswelja.smartwatchextensions.common.ui.StaggeredVerticalGrid
 import com.boswelja.smartwatchextensions.watchmanager.ui.WatchStatusSummarySmall
-import com.boswelja.watchconnection.core.discovery.Status
+import com.boswelja.watchconnection.common.discovery.Status
 import kotlinx.coroutines.Dispatchers
 
 @OptIn(ExperimentalFoundationApi::class)
