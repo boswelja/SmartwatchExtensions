@@ -48,7 +48,7 @@ class CapabilityUpdater(
         if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.O || hasNotiPolicyAccess()) {
             capabilityClient.addCapability(Capability.RECEIVE_DND.name)
         } else {
-            capabilityClient.addCapability(Capability.RECEIVE_DND.name)
+            capabilityClient.removeCapability(Capability.RECEIVE_DND.name)
         }
     }
 
@@ -69,7 +69,7 @@ class CapabilityUpdater(
         if (canQueryAllPackages()) {
             capabilityClient.addCapability(Capability.MANAGE_APPS.name)
         } else {
-            capabilityClient.addCapability(Capability.MANAGE_APPS.name)
+            capabilityClient.removeCapability(Capability.MANAGE_APPS.name)
         }
     }
 

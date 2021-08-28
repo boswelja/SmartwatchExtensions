@@ -73,20 +73,14 @@ class CapabilityUpdaterTest {
 
     @Test
     fun `updateManageApps updates MANAGE_APPS correctly`(): Unit = runBlockingTimeout(Timeout) {
-        // If SDK is old enough to not need permission, capability should be added.
-        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.Q) {
-            capabilityUpdater.updateManageApps()
-            coVerify(exactly = 1) { capabilityClient.addCapability(MANAGE_APPS.name) }
-        } else {
-            // Emulate permission granted
-            every { capabilityUpdater.canQueryAllPackages() } returns true
-            capabilityUpdater.updateManageApps()
-            coVerify(exactly = 1) { capabilityClient.addCapability(MANAGE_APPS.name) }
+        // Emulate permission granted
+        every { capabilityUpdater.canQueryAllPackages() } returns true
+        capabilityUpdater.updateManageApps()
+        coVerify(exactly = 1) { capabilityClient.addCapability(MANAGE_APPS.name) }
 
-            // Emulate permission denied
-            every { capabilityUpdater.canQueryAllPackages() } returns false
-            capabilityUpdater.updateManageApps()
-            coVerify(exactly = 1) { capabilityClient.removeCapability(MANAGE_APPS.name) }
-        }
+        // Emulate permission denied
+        every { capabilityUpdater.canQueryAllPackages() } returns false
+        capabilityUpdater.updateManageApps()
+        coVerify(exactly = 1) { capabilityClient.removeCapability(MANAGE_APPS.name) }
     }
 }
