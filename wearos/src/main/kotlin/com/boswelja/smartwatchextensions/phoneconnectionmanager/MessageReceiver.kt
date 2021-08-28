@@ -18,6 +18,8 @@ import com.boswelja.smartwatchextensions.common.versioning.Version
 import com.boswelja.smartwatchextensions.common.versioning.VersionSerializer
 import com.boswelja.smartwatchextensions.extensions.SettingsSerializer
 import com.boswelja.smartwatchextensions.extensions.extensionSettingsStore
+import com.boswelja.smartwatchextensions.messageClient
+import com.boswelja.watchconnection.common.message.serialized.TypedMessage
 import com.google.android.gms.wearable.MessageEvent
 import com.google.android.gms.wearable.Wearable
 import com.google.android.gms.wearable.WearableListenerService
@@ -40,17 +42,14 @@ class MessageReceiver : WearableListenerService() {
                     )
             }
             REQUEST_APP_VERSION -> {
-                val data = runBlocking {
-                    VersionSerializer.serialize(
-                        Version(BuildConfig.VERSION_CODE, BuildConfig.VERSION_NAME)
+                runBlocking {
+                    val version = Version(BuildConfig.VERSION_CODE, BuildConfig.VERSION_NAME)
+                    messageClient(
+                        listOf(VersionSerializer)
+                    ).sendMessage(
+                        TypedMessage(REQUEST_APP_VERSION, version)
                     )
                 }
-                Wearable.getMessageClient(this)
-                    .sendMessage(
-                        messageEvent.sourceNodeId,
-                        REQUEST_APP_VERSION,
-                        data
-                    )
             }
             REQUEST_SDK_INT_PATH -> {
                 Wearable.getMessageClient(this)

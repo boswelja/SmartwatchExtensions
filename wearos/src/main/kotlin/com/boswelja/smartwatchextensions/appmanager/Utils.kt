@@ -12,11 +12,9 @@ import com.boswelja.smartwatchextensions.common.appmanager.AppListSerializer
 import com.boswelja.smartwatchextensions.common.appmanager.Messages.APP_LIST
 import com.boswelja.smartwatchextensions.common.appmanager.Messages.APP_SENDING_COMPLETE
 import com.boswelja.smartwatchextensions.common.appmanager.Messages.APP_SENDING_START
-import com.boswelja.smartwatchextensions.discoveryClient
 import com.boswelja.smartwatchextensions.messageClient
 import com.boswelja.watchconnection.common.message.ByteArrayMessage
 import com.boswelja.watchconnection.common.message.serialized.TypedMessage
-import com.boswelja.watchconnection.wearos.discovery.DiscoveryClient
 import com.boswelja.watchconnection.wearos.message.MessageClient
 
 /**
@@ -58,28 +56,22 @@ fun Context.requestUninstallPackage(packageName: String) {
 /**
  * Send all apps installed to the companion phone with a given ID.
  * @param messageClient The [MessageClient] instance to use.
- * @param discoveryClient The [DiscoveryClient] instance to use.
  */
 suspend fun Context.sendAllApps(
     messageClient: MessageClient = messageClient(
         listOf(AppListSerializer)
-    ),
-    discoveryClient: DiscoveryClient = discoveryClient()
+    )
 ) {
-    val phone = discoveryClient.pairedPhone()
-
     // Get all current packages
     val allApps = getAllApps()
 
     // Let the phone know what we're doing
     messageClient.sendMessage(
-        phone,
         ByteArrayMessage(APP_SENDING_START)
     )
 
     // Send all apps
     messageClient.sendMessage(
-        phone,
         TypedMessage(
             APP_LIST,
             AppList(allApps)
@@ -88,7 +80,6 @@ suspend fun Context.sendAllApps(
 
     // Send a message notifying the phone of a successful operation
     messageClient.sendMessage(
-        phone,
         ByteArrayMessage(APP_SENDING_COMPLETE)
     )
 }
