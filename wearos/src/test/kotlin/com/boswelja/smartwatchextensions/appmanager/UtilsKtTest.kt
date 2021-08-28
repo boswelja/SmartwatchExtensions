@@ -5,15 +5,20 @@ import android.os.Build
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.boswelja.smartwatchextensions.common.appmanager.App
+import com.boswelja.smartwatchextensions.common.appmanager.AppList
 import com.boswelja.smartwatchextensions.common.appmanager.Messages.APP_LIST
 import com.boswelja.smartwatchextensions.common.appmanager.Messages.APP_SENDING_COMPLETE
 import com.boswelja.smartwatchextensions.common.appmanager.Messages.APP_SENDING_START
-import com.google.android.gms.tasks.Tasks
-import com.google.android.gms.wearable.MessageClient
+import com.boswelja.watchconnection.common.message.ByteArrayMessage
+import com.boswelja.watchconnection.common.message.serialized.TypedMessage
+import com.boswelja.watchconnection.core.Phone
+import com.boswelja.watchconnection.wearos.discovery.DiscoveryClient
+import com.boswelja.watchconnection.wearos.message.MessageClient
+import io.mockk.coEvery
+import io.mockk.coVerifyOrder
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkStatic
-import io.mockk.verifyOrder
 import kotlinx.coroutines.runBlocking
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -23,7 +28,7 @@ import org.robolectric.annotation.Config
 @Config(sdk = [Build.VERSION_CODES.R])
 class UtilsKtTest {
 
-    private val phoneId = "phone-id"
+    private val phone = Phone("name", "id")
     private val dummyApps = createDummyApps(0..10)
 
     @Test
@@ -32,24 +37,23 @@ class UtilsKtTest {
         mockkStatic(Context::getAllApps)
         every { any<Context>().getAllApps() } returns dummyApps
 
+        // Mock discovery client
+        val discoveryClient = mockk<DiscoveryClient>()
+        coEvery { discoveryClient.pairedPhone() } returns phone
+
         // Mock message client
         val messageClient = mockk<MessageClient>()
-        every {
-            messageClient.sendMessage(any(), any(), any())
-        } returns Tasks.forResult(1)
+        coEvery { messageClient.sendMessage(any(), any()) } returns true
 
         // Make the call
-        ApplicationProvider.getApplicationContext<Context>().sendAllApps(phoneId, messageClient)
+        ApplicationProvider.getApplicationContext<Context>()
+            .sendAllApps(messageClient, discoveryClient)
 
         // Verify messages
-        verifyOrder {
-            messageClient.sendMessage(phoneId, APP_SENDING_START, null)
-            dummyApps.forEach {
-                messageClient.sendMessage(
-                    phoneId, APP_LIST, App.ADAPTER.encode(it)
-                )
-            }
-            messageClient.sendMessage(phoneId, APP_SENDING_COMPLETE, null)
+        coVerifyOrder {
+            messageClient.sendMessage(phone, ByteArrayMessage(APP_SENDING_START))
+            messageClient.sendMessage(phone, TypedMessage(APP_LIST, AppList(dummyApps)))
+            messageClient.sendMessage(phone, ByteArrayMessage(APP_SENDING_COMPLETE))
         }
     }
 
