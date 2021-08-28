@@ -33,7 +33,7 @@ playServicesWearable = "17.1.0"
 robolectric = "4.6.1"
 strikt = "0.31.0"
 timber = "4.7.1"
-watchconnection = "5.0.3"
+watchconnection = "5.0.4"
 
 [libraries]
 # AndroidX Libraries
