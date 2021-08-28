@@ -14,6 +14,7 @@ import com.boswelja.smartwatchextensions.batterysync.quicksettings.WatchBatteryT
 import com.boswelja.smartwatchextensions.common.WatchWidgetProvider
 import com.boswelja.smartwatchextensions.common.batterysync.BatteryStats
 import com.boswelja.smartwatchextensions.common.batterysync.References.BATTERY_STATUS_PATH
+import com.boswelja.smartwatchextensions.common.batterysync.batteryStats
 import com.boswelja.smartwatchextensions.common.preference.PreferenceKey.BATTERY_CHARGED_NOTI_SENT
 import com.boswelja.smartwatchextensions.common.preference.PreferenceKey.BATTERY_CHARGE_THRESHOLD_KEY
 import com.boswelja.smartwatchextensions.common.preference.PreferenceKey.BATTERY_LOW_NOTI_SENT
@@ -55,16 +56,16 @@ object Utils {
     suspend fun updateBatteryStats(context: Context, watch: Watch? = null) {
         withContext(Dispatchers.IO) {
             Timber.i("Updating battery stats for ${watch?.id}")
-            val batteryStats = BatteryStats.createForDevice(context)
+            val batteryStats = context.batteryStats()
             Timber.d(
                 "percent = %s, isCharging = %s",
                 batteryStats?.percent,
-                batteryStats?.isCharging
+                batteryStats?.charging
             )
             if (batteryStats != null) {
                 val watchManager = WatchManager.getInstance(context)
                 if (watch != null) {
-                    watchManager.sendMessage(watch, BATTERY_STATUS_PATH, batteryStats.toByteArray())
+                    watchManager.sendMessage(watch, BATTERY_STATUS_PATH, batteryStats.encode())
                 } else {
                     watchManager.registeredWatches.first()
                         .filter {
@@ -73,7 +74,7 @@ object Utils {
                             ).first()
                         }.forEach {
                             watchManager.sendMessage(
-                                it, BATTERY_STATUS_PATH, batteryStats.toByteArray()
+                                it, BATTERY_STATUS_PATH, batteryStats.encode()
                             )
                         }
                 }
@@ -95,7 +96,7 @@ object Utils {
                 val notificationManager = context.getSystemService<NotificationManager>()!!
                 val settingsDb =
                     WatchSettingsDatabase.getInstance(context)
-                if (batteryStats.isCharging) {
+                if (batteryStats.charging) {
                     dismissLowNoti(
                         notificationManager,
                         settingsDb,

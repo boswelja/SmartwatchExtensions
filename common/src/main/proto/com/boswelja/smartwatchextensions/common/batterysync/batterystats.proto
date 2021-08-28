@@ -1,0 +1,10 @@
+syntax = "proto3";
+
+option java_package = "com.boswelja.smartwatchextensions.common.batterysync";
+
+/* Contains information about a device battery status. */
+message BatteryStats {
+  int32 percent = 1; // The current battery percent
+  bool charging = 2; // Whether the battery is currently charging
+  int64 timestamp = 3; // The timestamp of the battery stats in milliseconds since UNIX epoch
+}

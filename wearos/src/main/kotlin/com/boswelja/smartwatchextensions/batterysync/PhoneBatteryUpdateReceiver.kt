@@ -11,6 +11,7 @@ import androidx.core.content.getSystemService
 import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.common.batterysync.BatteryStats
 import com.boswelja.smartwatchextensions.common.batterysync.References.BATTERY_STATUS_PATH
+import com.boswelja.smartwatchextensions.common.batterysync.batteryStats
 import com.boswelja.smartwatchextensions.extensions.extensionSettingsStore
 import com.boswelja.smartwatchextensions.main.ui.MainActivity
 import com.boswelja.smartwatchextensions.phoneStateStore
@@ -32,9 +33,9 @@ class PhoneBatteryUpdateReceiver : WearableListenerService() {
         if (messageEvent?.path == BATTERY_STATUS_PATH) {
             Timber.i("Got battery stats from ${messageEvent.sourceNodeId}")
 
-            val batteryStats = BatteryStats.fromByteArray(messageEvent.data)
+            val batteryStats = BatteryStats.ADAPTER.decode(messageEvent.data)
             runBlocking {
-                if (batteryStats.isCharging) {
+                if (batteryStats.charging) {
                     cancelLowNoti()
                     handleChargeNotification(batteryStats)
                 } else {
@@ -188,10 +189,10 @@ class PhoneBatteryUpdateReceiver : WearableListenerService() {
 
     /** Sends a battery status update to connected devices. */
     private fun sendBatteryStatsUpdate(context: Context, phoneId: String) {
-        val batteryStats = BatteryStats.createForDevice(context)
+        val batteryStats = context.batteryStats()
         if (batteryStats != null) {
             Wearable.getMessageClient(context).sendMessage(
-                phoneId, BATTERY_STATUS_PATH, batteryStats.toByteArray()
+                phoneId, BATTERY_STATUS_PATH, BatteryStats.ADAPTER.encode(batteryStats)
             )
         } else {
             Timber.w("batteryStats null, skipping...")
