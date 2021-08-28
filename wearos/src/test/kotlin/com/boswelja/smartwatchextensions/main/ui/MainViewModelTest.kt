@@ -6,10 +6,11 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.boswelja.smartwatchextensions.PhoneState
 import com.boswelja.smartwatchextensions.capability.CapabilityUpdater
+import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkConstructor
-import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
@@ -35,7 +36,7 @@ class MainViewModelTest {
     fun setUp(): Unit = runBlocking {
         dataStore = mockk()
         mockkConstructor(CapabilityUpdater::class)
-        every { anyConstructed<CapabilityUpdater>().updateCapabilities() } answers { }
+        coEvery { anyConstructed<CapabilityUpdater>().updateCapabilities() } answers { }
         every { dataStore.data } returns phoneState
     }
 
@@ -70,7 +71,7 @@ class MainViewModelTest {
     @Test
     fun `Capabilities are updated on ViewModel init`() {
         getViewModel()
-        verify(exactly = 1) { anyConstructed<CapabilityUpdater>().updateCapabilities() }
+        coVerify(exactly = 1) { anyConstructed<CapabilityUpdater>().updateCapabilities() }
     }
 
     private suspend fun updatePhoneId(id: String) {

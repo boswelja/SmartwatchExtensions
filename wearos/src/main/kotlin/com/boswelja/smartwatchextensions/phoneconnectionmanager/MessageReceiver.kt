@@ -73,7 +73,9 @@ class MessageReceiver : WearableListenerService() {
                 }
             }
             REQUEST_UPDATE_CAPABILITIES -> {
-                CapabilityUpdater(this).updateCapabilities()
+                runBlocking {
+                    CapabilityUpdater(this@MessageReceiver).updateCapabilities()
+                }
             }
         }
     }
