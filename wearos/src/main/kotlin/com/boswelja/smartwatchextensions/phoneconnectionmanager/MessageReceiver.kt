@@ -19,9 +19,9 @@ import com.boswelja.smartwatchextensions.common.versioning.VersionSerializer
 import com.boswelja.smartwatchextensions.extensions.SettingsSerializer
 import com.boswelja.smartwatchextensions.extensions.extensionSettingsStore
 import com.boswelja.smartwatchextensions.messageClient
+import com.boswelja.watchconnection.common.message.ByteArrayMessage
 import com.boswelja.watchconnection.common.message.serialized.TypedMessage
 import com.google.android.gms.wearable.MessageEvent
-import com.google.android.gms.wearable.Wearable
 import com.google.android.gms.wearable.WearableListenerService
 import kotlinx.coroutines.runBlocking
 import timber.log.Timber
@@ -34,30 +34,32 @@ class MessageReceiver : WearableListenerService() {
             REQUEST_INTERRUPT_FILTER_ACCESS_STATUS_PATH -> {
                 val hasDnDAccess =
                     getSystemService<NotificationManager>()!!.isNotificationPolicyAccessGranted
-                Wearable.getMessageClient(this)
-                    .sendMessage(
-                        messageEvent.sourceNodeId,
-                        REQUEST_INTERRUPT_FILTER_ACCESS_STATUS_PATH,
-                        hasDnDAccess.toByteArray()
+                runBlocking {
+                    messageClient(listOf()).sendMessage(
+                        ByteArrayMessage(
+                            REQUEST_INTERRUPT_FILTER_ACCESS_STATUS_PATH,
+                            hasDnDAccess.toByteArray()
+                        )
                     )
+                }
             }
             REQUEST_APP_VERSION -> {
                 runBlocking {
                     val version = Version(BuildConfig.VERSION_CODE, BuildConfig.VERSION_NAME)
-                    messageClient(
-                        listOf(VersionSerializer)
-                    ).sendMessage(
+                    messageClient(listOf(VersionSerializer)).sendMessage(
                         TypedMessage(REQUEST_APP_VERSION, version)
                     )
                 }
             }
             REQUEST_SDK_INT_PATH -> {
-                Wearable.getMessageClient(this)
-                    .sendMessage(
-                        messageEvent.sourceNodeId,
-                        REQUEST_SDK_INT_PATH,
-                        Build.VERSION.SDK_INT.toBigInteger().toByteArray()
+                runBlocking {
+                    messageClient(listOf()).sendMessage(
+                        ByteArrayMessage(
+                            REQUEST_SDK_INT_PATH,
+                            Build.VERSION.SDK_INT.toBigInteger().toByteArray()
+                        )
                     )
+                }
             }
             RESET_APP -> {
                 val activityManager = getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
