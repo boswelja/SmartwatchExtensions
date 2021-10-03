@@ -89,18 +89,15 @@ class WatchManager internal constructor(
     private val _selectedWatchId = MutableStateFlow<String?>(null)
     private val _selectedWatch = _selectedWatchId.flatMapLatest { id ->
         id?.let {
-            watchDatabase.watchDao().get(id).map { it?.toWatch() }
-        } ?: flow { emit(null) }
+            watchDatabase.getById(id)
+        } ?: flowOf(null)
     }
 
     val registeredWatches: Flow<List<Watch>>
-        get() = watchDatabase.watchDao().getAll().map { watches -> watches.map { it.toWatch() } }
+        get() = watchDatabase.getAll()
 
     val availableWatches: Flow<List<Watch>>
         get() = discoveryClient.watchesWithCapability(CAPABILITY_WATCH_APP)
-            .map { watches ->
-                watches.filter { watchDatabase.watchDao().get(it.uid).firstOrNull() == null }
-            }
 
     /**
      * The currently selected watch
@@ -306,13 +303,12 @@ class WatchManager internal constructor(
      * @param value The new preference value.
      */
     suspend fun updatePreference(key: String, value: Boolean) {
-        watchDatabase.watchDao().getAll().first().forEach {
-            updatePreference(it.toWatch(), key, value)
+        watchDatabase.getAll().first().forEach {
+            updatePreference(it, key, value)
         }
     }
 
-    fun getWatchById(id: String): Flow<Watch?> = watchDatabase.watchDao().get(id)
-        .map { it?.toWatch() }
+    fun getWatchById(id: String): Flow<Watch?> = watchDatabase.getById(id)
 
     fun incomingMessages() = messageClient.rawIncomingMessages()
     fun <T> incomingMessages(serializer: MessageSerializer<T>) =

@@ -28,7 +28,6 @@ import com.boswelja.smartwatchextensions.watchmanager.database.WatchDatabase
 import com.boswelja.smartwatchextensions.watchmanager.database.WatchSettingsDatabase
 import com.boswelja.watchconnection.common.Watch
 import java.util.Locale
-import java.util.UUID
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
@@ -90,8 +89,7 @@ object Utils {
         Timber.d("handleBatteryStats(%s, %s) called", watchId, batteryStats)
         withContext(Dispatchers.IO) {
             val database = WatchDatabase.getInstance(context)
-            database.watchDao().get(watchId).firstOrNull()?.let {
-                val watch = it.toWatch()
+            database.getById(watchId).firstOrNull()?.let { watch ->
                 val notificationManager = context.getSystemService<NotificationManager>()!!
                 val settingsDb =
                     WatchSettingsDatabase.getInstance(context)

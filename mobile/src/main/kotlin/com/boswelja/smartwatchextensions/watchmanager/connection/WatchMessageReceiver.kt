@@ -81,12 +81,12 @@ class WatchMessageReceiver : MessageReceiver<Nothing?>(
         Timber.i("sendIsWatchRegistered() called")
         withContext(Dispatchers.IO) {
             val database = WatchDatabase.getInstance(context)
-            val watch = database.watchDao().get(watchId).firstOrNull()
+            val watch = database.getById(watchId).firstOrNull()
             // If watch is found in the database, let it know it's registered
             watch?.let {
                 MessageClient(
                     platforms = listOf(WearOSMessagePlatform(context))
-                ).sendMessage(watch.toWatch(), Message(WATCH_REGISTERED_PATH, null))
+                ).sendMessage(watch, Message(WATCH_REGISTERED_PATH, null))
             }
         }
     }
