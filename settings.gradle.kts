@@ -1,4 +1,5 @@
 include(
+    ":appmanager",
     ":batterysync",
     ":mobile",
     ":wearos",
