@@ -1,4 +1,9 @@
-include(":mobile", ":wearos", ":common")
+include(
+    ":batterysync",
+    ":mobile",
+    ":wearos",
+    ":common"
+)
 pluginManagement {
     repositories {
         gradlePluginPortal()
