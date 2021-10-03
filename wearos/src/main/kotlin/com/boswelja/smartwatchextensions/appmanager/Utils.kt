@@ -2,16 +2,20 @@ package com.boswelja.smartwatchextensions.appmanager
 
 import android.content.Context
 import android.content.Intent
+import android.content.pm.ApplicationInfo
+import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.net.Uri
 import com.boswelja.smartwatchextensions.common.appmanager.App
-import com.boswelja.smartwatchextensions.common.appmanager.Messages
-import com.boswelja.smartwatchextensions.common.appmanager.Messages.APP_DATA
+import com.boswelja.smartwatchextensions.common.appmanager.AppList
+import com.boswelja.smartwatchextensions.common.appmanager.AppListSerializer
+import com.boswelja.smartwatchextensions.common.appmanager.Messages.APP_LIST
 import com.boswelja.smartwatchextensions.common.appmanager.Messages.APP_SENDING_COMPLETE
-import com.boswelja.smartwatchextensions.common.compress
-import com.google.android.gms.wearable.MessageClient
-import com.google.android.gms.wearable.Wearable
-import kotlinx.coroutines.tasks.await
+import com.boswelja.smartwatchextensions.common.appmanager.Messages.APP_SENDING_START
+import com.boswelja.smartwatchextensions.messageClient
+import com.boswelja.watchconnection.common.message.ByteArrayMessage
+import com.boswelja.watchconnection.common.message.serialized.TypedMessage
+import com.boswelja.watchconnection.wearos.message.MessageClient
 
 /**
  * Converts a given [ByteArray] to a package name string.
@@ -51,48 +55,71 @@ fun Context.requestUninstallPackage(packageName: String) {
 
 /**
  * Send all apps installed to the companion phone with a given ID.
- * @param phoneId The ID of the phone.
  * @param messageClient The [MessageClient] instance to use.
  */
 suspend fun Context.sendAllApps(
-    phoneId: String,
-    messageClient: MessageClient = Wearable.getMessageClient(this)
+    messageClient: MessageClient = messageClient(
+        listOf(AppListSerializer)
+    )
 ) {
     // Get all current packages
-    val allPackages = getAllApps()
+    val allApps = getAllApps()
 
     // Let the phone know what we're doing
     messageClient.sendMessage(
-        phoneId,
-        Messages.APP_SENDING_START,
-        null
-    ).await()
+        ByteArrayMessage(APP_SENDING_START)
+    )
 
-    // Compress and send all apps
-    allPackages.forEach { app ->
-        messageClient.sendMessage(
-            phoneId,
-            APP_DATA,
-            app.toByteArray().compress()
-        ).await()
-    }
+    // Send all apps
+    messageClient.sendMessage(
+        TypedMessage(
+            APP_LIST,
+            AppList(allApps)
+        )
+    )
 
     // Send a message notifying the phone of a successful operation
     messageClient.sendMessage(
-        phoneId,
-        APP_SENDING_COMPLETE,
-        null
-    ).await()
+        ByteArrayMessage(APP_SENDING_COMPLETE)
+    )
 }
 
 /**
  * Get all packages installed on this device, and convert them to [App] instances.
  */
 fun Context.getAllApps(): List<App> {
-    return packageManager.getInstalledPackages(PackageManager.GET_PERMISSIONS)
-        .map {
-            App(packageManager, it)
+    return packageManager.getInstalledPackages(PackageManager.GET_PERMISSIONS).map {
+        App(
+            version = it.versionName,
+            packageName = it.packageName,
+            label = it.applicationInfo.loadLabel(packageManager).toString(),
+            isSystemApp = it.applicationInfo.flags.and(
+                ApplicationInfo.FLAG_SYSTEM or ApplicationInfo.FLAG_UPDATED_SYSTEM_APP
+            ) != 0,
+            hasLaunchActivity = packageManager.getLaunchIntentForPackage(it.packageName) != null,
+            isEnabled = it.applicationInfo.enabled,
+            installTime = it.firstInstallTime,
+            lastUpdateTime = it.lastUpdateTime,
+            requestedPermissions = packageManager.getLocalizedPermissions(it)
+        )
+    }
+}
+
+/**
+ * Attempts to convert system permissions strings into something meaningful to the user.
+ * Fallback to the standard permission string.
+ */
+private fun PackageManager.getLocalizedPermissions(
+    packageInfo: PackageInfo
+): List<String> {
+    return packageInfo.requestedPermissions?.map { permission ->
+        try {
+            val permissionInfo = getPermissionInfo(permission, PackageManager.GET_META_DATA)
+            permissionInfo?.loadLabel(this)?.toString() ?: permission
+        } catch (e: Exception) {
+            permission
         }
+    }?.sorted() ?: emptyList()
 }
 
 /**

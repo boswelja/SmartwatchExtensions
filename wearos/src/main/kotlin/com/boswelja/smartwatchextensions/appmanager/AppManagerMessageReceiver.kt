@@ -5,11 +5,8 @@ import com.boswelja.smartwatchextensions.common.appmanager.Messages.REQUEST_OPEN
 import com.boswelja.smartwatchextensions.common.appmanager.Messages.REQUEST_UNINSTALL_PACKAGE
 import com.boswelja.smartwatchextensions.common.appmanager.Messages.VALIDATE_CACHE
 import com.boswelja.smartwatchextensions.common.fromByteArray
-import com.boswelja.smartwatchextensions.phoneStateStore
 import com.google.android.gms.wearable.MessageEvent
 import com.google.android.gms.wearable.WearableListenerService
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.runBlocking
 import timber.log.Timber
 
@@ -45,8 +42,7 @@ class AppManagerMessageReceiver : WearableListenerService() {
                     )
                     // Since WearableListenerService runs on another thread, we can use runBlocking
                     runBlocking {
-                        val phoneId = phoneStateStore.data.map { it.id }.first()
-                        sendAllApps(phoneId)
+                        sendAllApps()
                     }
                 }
             }

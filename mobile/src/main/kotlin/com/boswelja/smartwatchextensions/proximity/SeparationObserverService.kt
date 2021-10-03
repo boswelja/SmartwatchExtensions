@@ -14,8 +14,8 @@ import com.boswelja.smartwatchextensions.NotificationChannelHelper
 import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.common.preference.PreferenceKey.WATCH_SEPARATION_NOTI_KEY
 import com.boswelja.smartwatchextensions.watchmanager.WatchManager
+import com.boswelja.watchconnection.common.discovery.Status
 import com.boswelja.watchconnection.core.Watch
-import com.boswelja.watchconnection.core.discovery.Status
 import java.util.UUID
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -41,8 +41,6 @@ class SeparationObserverService : LifecycleService() {
         return Binder()
     }
 
-    @FlowPreview
-    @ExperimentalCoroutinesApi
     override fun onCreate() {
         super.onCreate()
         NotificationChannelHelper.createForSeparationObserver(this, getSystemService()!!)
@@ -53,8 +51,7 @@ class SeparationObserverService : LifecycleService() {
         }
     }
 
-    @FlowPreview
-    @ExperimentalCoroutinesApi
+    @OptIn(ExperimentalCoroutinesApi::class)
     private suspend fun startCollectingSettings() {
         Timber.d("Collecting settings changes")
         watchManager.settingsDatabase.boolSettings().getByKey(WATCH_SEPARATION_NOTI_KEY).mapLatest {
@@ -68,8 +65,7 @@ class SeparationObserverService : LifecycleService() {
         }
     }
 
-    @FlowPreview
-    @ExperimentalCoroutinesApi
+    @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
     private suspend fun collectStatusesFor(watchIds: List<UUID>) {
         // Map IDs to a list of Flows
         val flows = watchIds.mapNotNull { watchId ->

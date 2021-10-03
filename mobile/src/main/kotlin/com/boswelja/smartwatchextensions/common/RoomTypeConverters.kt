@@ -1,9 +1,6 @@
 package com.boswelja.smartwatchextensions.common
 
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import androidx.room.TypeConverter
-import java.io.ByteArrayOutputStream
 import java.util.UUID
 
 class RoomTypeConverters {
@@ -26,22 +23,5 @@ class RoomTypeConverters {
     @TypeConverter
     fun stringToStringList(value: String?): List<String>? {
         return value?.split("|")
-    }
-
-    @TypeConverter
-    fun bitmapToByteArray(value: Bitmap?): ByteArray? {
-        return value?.let {
-            ByteArrayOutputStream().use { stream ->
-                it.compress(Bitmap.CompressFormat.PNG, 100, stream)
-                stream.toByteArray()
-            }
-        }
-    }
-
-    @TypeConverter
-    fun byteArrayToBitmap(value: ByteArray?): Bitmap? {
-        return value?.let {
-            BitmapFactory.decodeByteArray(value, 0, value.size)
-        }
     }
 }

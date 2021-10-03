@@ -98,17 +98,13 @@
             </intent-filter>
         </service>
 
-        <service
+        <receiver
             android:name=".batterysync.PhoneBatteryUpdateReceiver"
-            android:exported="true">
+            android:exported="false">
             <intent-filter>
-                <action android:name="com.google.android.gms.wearable.MESSAGE_RECEIVED" />
-                <data
-                    android:host="*"
-                    android:path="/battery_status"
-                    android:scheme="wear" />
+                <action android:name="com.boswelja.watchconnection.messages.ACTION_MESSAGE_RECEIVED" />
             </intent-filter>
-        </service>
+        </receiver>
 
         <service
             android:name=".phoneconnectionmanager.MessageReceiver"

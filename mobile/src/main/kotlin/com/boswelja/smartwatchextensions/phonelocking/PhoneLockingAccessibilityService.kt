@@ -32,8 +32,8 @@ class PhoneLockingAccessibilityService : AccessibilityService() {
     override fun onServiceConnected() {
         Timber.i("onServiceConnected() called")
         coroutineScope.launch {
-            watchManager.incomingMessages().filter { it.message == LOCK_PHONE }.collect { message ->
-                tryLockDevice(message.sourceWatchId)
+            watchManager.incomingMessages().filter { it.path == LOCK_PHONE }.collect { message ->
+                tryLockDevice(message.sourceWatchID)
             }
         }
     }

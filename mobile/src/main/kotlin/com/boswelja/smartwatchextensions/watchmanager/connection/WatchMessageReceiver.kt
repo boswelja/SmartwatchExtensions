@@ -5,8 +5,6 @@ import android.content.Intent
 import com.boswelja.smartwatchextensions.appmanager.database.WatchAppDatabase
 import com.boswelja.smartwatchextensions.batterysync.Utils
 import com.boswelja.smartwatchextensions.batterysync.Utils.handleBatteryStats
-import com.boswelja.smartwatchextensions.common.appmanager.App
-import com.boswelja.smartwatchextensions.common.appmanager.Messages.APP_DATA
 import com.boswelja.smartwatchextensions.common.appmanager.Messages.APP_SENDING_START
 import com.boswelja.smartwatchextensions.common.batterysync.BatteryStats
 import com.boswelja.smartwatchextensions.common.batterysync.References.BATTERY_STATUS_PATH
@@ -14,16 +12,16 @@ import com.boswelja.smartwatchextensions.common.batterysync.References.REQUEST_B
 import com.boswelja.smartwatchextensions.common.connection.Messages.CHECK_WATCH_REGISTERED_PATH
 import com.boswelja.smartwatchextensions.common.connection.Messages.LAUNCH_APP
 import com.boswelja.smartwatchextensions.common.connection.Messages.WATCH_REGISTERED_PATH
-import com.boswelja.smartwatchextensions.common.decompress
 import com.boswelja.smartwatchextensions.common.dndsync.References.DND_STATUS_PATH
 import com.boswelja.smartwatchextensions.common.fromByteArray
 import com.boswelja.smartwatchextensions.common.startActivity
 import com.boswelja.smartwatchextensions.dndsync.Utils.handleDnDStateChange
 import com.boswelja.smartwatchextensions.main.ui.MainActivity
 import com.boswelja.smartwatchextensions.watchmanager.database.WatchDatabase
-import com.boswelja.watchconnection.core.message.Message
+import com.boswelja.watchconnection.common.message.ByteArrayMessage
+import com.boswelja.watchconnection.common.message.MessageReceiver
+import com.boswelja.watchconnection.common.message.ReceivedMessage
 import com.boswelja.watchconnection.core.message.MessageClient
-import com.boswelja.watchconnection.core.message.MessageReceiver
 import com.boswelja.watchconnection.wearos.WearOSMessagePlatform
 import java.util.UUID
 import kotlinx.coroutines.Dispatchers
@@ -35,28 +33,20 @@ class WatchMessageReceiver : MessageReceiver() {
 
     override suspend fun onMessageReceived(
         context: Context,
-        message: Message
+        message: ReceivedMessage<ByteArray?>
     ) {
-        val sourceWatchId = message.sourceWatchId
+        val sourceWatchId = message.sourceWatchID
         val data = message.data
         Timber.d("Received %s", message)
-        when (message.message) {
+        when (message.path) {
             APP_SENDING_START -> {
-                clearAppsForWatch(context, message.sourceWatchId)
-            }
-            APP_DATA -> {
-                data?.let {
-                    Timber.d("Received %s bytes", data.size)
-                    val decompressedBytes = data.decompress()
-                    val app = App.fromByteArray(decompressedBytes)
-                    storeWatchApp(context, sourceWatchId, app)
-                }
+                clearAppsForWatch(context, sourceWatchId)
             }
             LAUNCH_APP -> launchApp(context)
             REQUEST_BATTERY_UPDATE_PATH -> Utils.updateBatteryStats(context)
             CHECK_WATCH_REGISTERED_PATH -> sendIsWatchRegistered(context, sourceWatchId)
             BATTERY_STATUS_PATH -> data?.let {
-                handleBatteryStats(context, sourceWatchId, BatteryStats.fromByteArray(data))
+                handleBatteryStats(context, sourceWatchId, BatteryStats.ADAPTER.decode(data))
             }
             DND_STATUS_PATH -> data?.let {
                 handleDnDStateChange(context, sourceWatchId, Boolean.fromByteArray(data))
@@ -71,20 +61,6 @@ class WatchMessageReceiver : MessageReceiver() {
     ) {
         val database = WatchAppDatabase.getInstance(context)
         database.apps().removeForWatch(sourceWatchId)
-    }
-
-    private suspend fun storeWatchApp(
-        context: Context,
-        sourceWatchId: UUID,
-        app: App
-    ) {
-        val database = WatchAppDatabase.getInstance(context)
-        database.apps().add(
-            com.boswelja.smartwatchextensions.appmanager.App(
-                sourceWatchId,
-                app
-            )
-        )
     }
 
     /**
@@ -109,8 +85,8 @@ class WatchMessageReceiver : MessageReceiver() {
             // If watch is found in the database, let it know it's registered
             watch?.let {
                 MessageClient(
-                    WearOSMessagePlatform(context)
-                ).sendMessage(watch, WATCH_REGISTERED_PATH)
+                    platforms = listOf(WearOSMessagePlatform(context))
+                ).sendMessage(watch, ByteArrayMessage(WATCH_REGISTERED_PATH))
             }
         }
     }

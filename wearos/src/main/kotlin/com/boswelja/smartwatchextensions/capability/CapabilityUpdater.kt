@@ -7,8 +7,8 @@ import android.content.pm.PackageManager
 import android.os.Build
 import androidx.core.content.getSystemService
 import com.boswelja.smartwatchextensions.common.connection.Capability
-import com.google.android.gms.wearable.CapabilityClient
-import com.google.android.gms.wearable.Wearable
+import com.boswelja.smartwatchextensions.discoveryClient
+import com.boswelja.watchconnection.wearos.discovery.DiscoveryClient
 import timber.log.Timber
 
 /**
@@ -17,17 +17,13 @@ import timber.log.Timber
  */
 class CapabilityUpdater(
     private val context: Context,
-    private val capabilityClient: CapabilityClient
+    private val capabilityClient: DiscoveryClient = context.discoveryClient()
 ) {
-    constructor(context: Context) : this(
-        context,
-        Wearable.getCapabilityClient(context)
-    )
 
     /**
      * Update all capabilities.
      */
-    fun updateCapabilities() {
+    suspend fun updateCapabilities() {
         Timber.d("Updating capabilities")
         updateSendDnD()
         updateReceiveDnD()
@@ -38,42 +34,42 @@ class CapabilityUpdater(
     /**
      * Update [Capability.SEND_DND].
      */
-    internal fun updateSendDnD() {
+    internal suspend fun updateSendDnD() {
         // We can always read DnD state
-        capabilityClient.addLocalCapability(Capability.SEND_DND.name)
+        capabilityClient.addCapability(Capability.SEND_DND.name)
     }
 
     /**
      * Update [Capability.RECEIVE_DND].
      */
-    internal fun updateReceiveDnD() {
+    internal suspend fun updateReceiveDnD() {
         // Either the watch is capable of granting ACCESS_NOTIFICATION_POLICY (via older SDKs), or
         // it's already granted.
         if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.O || hasNotiPolicyAccess()) {
-            capabilityClient.addLocalCapability(Capability.RECEIVE_DND.name)
+            capabilityClient.addCapability(Capability.RECEIVE_DND.name)
         } else {
-            capabilityClient.removeLocalCapability(Capability.RECEIVE_DND.name)
+            capabilityClient.removeCapability(Capability.RECEIVE_DND.name)
         }
     }
 
     /**
      * Update [Capability.SYNC_BATTERY].
      */
-    internal fun updateSendBattery() {
+    internal suspend fun updateSendBattery() {
         // We can always get battery stats
-        capabilityClient.addLocalCapability(Capability.SYNC_BATTERY.name)
+        capabilityClient.addCapability(Capability.SYNC_BATTERY.name)
     }
 
     /**
      * Update [Capability.MANAGE_APPS].
      */
-    internal fun updateManageApps() {
+    internal suspend fun updateManageApps() {
         // QUERY_ALL_APPS should be granted automatically upon app install, so we only check if it's
         // been granted.
         if (canQueryAllPackages()) {
-            capabilityClient.addLocalCapability(Capability.MANAGE_APPS.name)
+            capabilityClient.addCapability(Capability.MANAGE_APPS.name)
         } else {
-            capabilityClient.removeLocalCapability(Capability.MANAGE_APPS.name)
+            capabilityClient.removeCapability(Capability.MANAGE_APPS.name)
         }
     }
 

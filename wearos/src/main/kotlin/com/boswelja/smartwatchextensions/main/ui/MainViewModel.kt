@@ -3,10 +3,12 @@ package com.boswelja.smartwatchextensions.main.ui
 import android.app.Application
 import androidx.datastore.core.DataStore
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.viewModelScope
 import com.boswelja.smartwatchextensions.PhoneState
 import com.boswelja.smartwatchextensions.capability.CapabilityUpdater
 import com.boswelja.smartwatchextensions.phoneStateStore
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
 
 class MainViewModel internal constructor(
     application: Application,
@@ -22,6 +24,8 @@ class MainViewModel internal constructor(
     val isRegistered = dataStore.data.map { it.id.isNotBlank() }
 
     init {
-        CapabilityUpdater(application).updateCapabilities()
+        viewModelScope.launch {
+            CapabilityUpdater(application).updateCapabilities()
+        }
     }
 }

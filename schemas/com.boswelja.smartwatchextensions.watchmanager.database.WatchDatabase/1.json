@@ -6,11 +6,17 @@
     "entities": [
       {
         "tableName": "watches",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `name` TEXT NOT NULL, `platform` TEXT NOT NULL, `platformId` TEXT NOT NULL, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `platformId` TEXT NOT NULL, `name` TEXT NOT NULL, `platform` TEXT NOT NULL, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
             "columnName": "id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "internalId",
+            "columnName": "platformId",
             "affinity": "TEXT",
             "notNull": true
           },
@@ -23,12 +29,6 @@
           {
             "fieldPath": "platform",
             "columnName": "platform",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "platformId",
-            "columnName": "platformId",
             "affinity": "TEXT",
             "notNull": true
           }

@@ -66,9 +66,8 @@ dependencies {
     implementation(libs.androidx.wear.complications.data.source)
     implementation(libs.androidx.work.ktx)
 
-    implementation(libs.play.services.wearable)
     implementation(libs.timber)
-    implementation(libs.kotlinx.coroutines.playservices)
+    implementation(libs.watchconnection.wear.wearos)
 
     implementation(libs.bundles.compose.wear)
 

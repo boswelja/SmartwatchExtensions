@@ -6,7 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import com.boswelja.smartwatchextensions.appmanager.App
+import com.boswelja.smartwatchextensions.appmanager.database.DbApp
 import com.boswelja.smartwatchextensions.appmanager.database.WatchAppDatabase
 import com.boswelja.smartwatchextensions.common.appmanager.CacheValidation
 import com.boswelja.smartwatchextensions.common.appmanager.Messages.APP_SENDING_COMPLETE
@@ -16,8 +16,8 @@ import com.boswelja.smartwatchextensions.common.appmanager.Messages.REQUEST_UNIN
 import com.boswelja.smartwatchextensions.common.appmanager.Messages.VALIDATE_CACHE
 import com.boswelja.smartwatchextensions.common.toByteArray
 import com.boswelja.smartwatchextensions.watchmanager.WatchManager
+import com.boswelja.watchconnection.common.discovery.Status
 import com.boswelja.watchconnection.core.Watch
-import com.boswelja.watchconnection.core.discovery.Status
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.collect
@@ -48,7 +48,7 @@ class AppManagerViewModel internal constructor(
     private val allApps = watchManager.selectedWatch.flatMapLatest { watch ->
         watch?.let {
             appDatabase.apps().allForWatch(watch.id)
-        } ?: flow { emit(emptyList<App>()) }
+        } ?: flow { emit(emptyList<DbApp>()) }
     }.debounce(APP_DEBOUNCE_MILLIS)
 
     /**
@@ -117,7 +117,7 @@ class AppManagerViewModel internal constructor(
         // Collect incoming messages
         viewModelScope.launch {
             watchManager.incomingMessages().collect { message ->
-                when (message.message) {
+                when (message.path) {
                     APP_SENDING_COMPLETE -> isUpdatingCache = false
                     APP_SENDING_START -> isUpdatingCache = true
                 }
@@ -126,11 +126,11 @@ class AppManagerViewModel internal constructor(
     }
 
     /**
-     * Requests the selected watch launch a given [App].
-     * @param app The [App] to try launch.
+     * Requests the selected watch launch a given [DbApp].
+     * @param app The [DbApp] to try launch.
      * @return true if the request was sent successfully, false otherwise.
      */
-    suspend fun sendOpenRequest(app: App): Boolean {
+    suspend fun sendOpenRequest(app: DbApp): Boolean {
         return selectedWatch?.let { watch ->
             val data = app.packageName.toByteArray(Charsets.UTF_8)
             watchManager.sendMessage(watch, REQUEST_OPEN_PACKAGE, data)
@@ -138,11 +138,11 @@ class AppManagerViewModel internal constructor(
     }
 
     /**
-     * Requests the selected watch uninstall a given [App].
-     * @param app The [App] to try uninstall.
+     * Requests the selected watch uninstall a given [DbApp].
+     * @param app The [DbApp] to try uninstall.
      * @return true if the request was sent successfully, false otherwise.
      */
-    suspend fun sendUninstallRequest(app: App): Boolean {
+    suspend fun sendUninstallRequest(app: DbApp): Boolean {
         return selectedWatch?.let { watch ->
             val data = app.packageName.toByteArray(Charsets.UTF_8)
             appDatabase.apps().remove(app)

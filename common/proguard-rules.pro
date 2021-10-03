@@ -24,5 +24,4 @@
 -keep class com.boswelja.smartwatchextensions.common.connection.* { *; }
 -keep class com.boswelja.smartwatchextensions.common.dndsync.* { *; }
 -keep class com.boswelja.smartwatchextensions.common.preference.* { *; }
--keep class com.boswelja.smartwatchextensions.common.SerializableBitmap { *; }
 -keep class kotlin.collections.EmptyList { *; }

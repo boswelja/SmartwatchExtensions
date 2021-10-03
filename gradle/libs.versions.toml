@@ -32,7 +32,7 @@ playServicesWearable = "17.1.0"
 robolectric = "4.6.1"
 strikt = "0.31.0"
 timber = "4.7.1"
-watchconnection = "4.0.2"
+watchconnection = "5.0.5"
 
 [libraries]
 # AndroidX Libraries
@@ -89,7 +89,9 @@ robolectric = { module = "org.robolectric:robolectric", version.ref = "robolectr
 strikt-core = { module = "io.strikt:strikt-core", version.ref = "strikt" }
 strikt-mockk = { module = "io.strikt:strikt-mockk", version.ref = "strikt" }
 timber = { module = "com.jakewharton.timber:timber", version.ref = "timber" }
-watchconnection-wearos = { module = "io.github.boswelja.watchconnection:wearos", version.ref = "watchconnection" }
+watchconnection-common = { module = "io.github.boswelja.watchconnection:common", version.ref = "watchconnection" }
+watchconnection-platform-wearos = { module = "io.github.boswelja.watchconnection:platform-wearos", version.ref = "watchconnection" }
+watchconnection-wear-wearos = { module = "io.github.boswelja.watchconnection:wear-wearos", version.ref = "watchconnection" }
 
 [bundles]
 compose-mobile = [

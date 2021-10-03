@@ -16,8 +16,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import com.boswelja.smartwatchextensions.R
+import com.boswelja.smartwatchextensions.batterysync.database.WatchBatteryStats
 import com.boswelja.smartwatchextensions.common.BatteryIcon
-import com.boswelja.smartwatchextensions.common.batterysync.BatteryStats
 import com.boswelja.smartwatchextensions.common.ui.FeatureSummarySmall
 import java.util.concurrent.TimeUnit
 import kotlinx.coroutines.delay
@@ -25,7 +25,7 @@ import kotlinx.coroutines.delay
 @Composable
 fun BatterySummarySmall(
     modifier: Modifier = Modifier,
-    batteryStats: BatteryStats
+    batteryStats: WatchBatteryStats
 ) {
     FeatureSummarySmall(
         modifier = modifier,
@@ -49,7 +49,7 @@ fun BatterySummarySmall(
 @Composable
 fun BatterySummaryLarge(
     modifier: Modifier = Modifier,
-    batteryStats: BatteryStats
+    batteryStats: WatchBatteryStats
 ) {
 
     val dataAgeMinutes by timestampToAge(

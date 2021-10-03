@@ -7,7 +7,7 @@ import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.boswelja.smartwatchextensions.WatchManagerTestRule
-import com.boswelja.smartwatchextensions.appmanager.App
+import com.boswelja.smartwatchextensions.appmanager.database.DbApp
 import com.boswelja.smartwatchextensions.appmanager.database.WatchAppDatabase
 import com.boswelja.smartwatchextensions.common.appmanager.Messages.REQUEST_OPEN_PACKAGE
 import com.boswelja.smartwatchextensions.common.appmanager.Messages.REQUEST_UNINSTALL_PACKAGE
@@ -35,7 +35,7 @@ import org.robolectric.annotation.Config
 class AppManagerViewModelTest {
 
     private val watch = Watch(UUID.randomUUID(), "", "", "")
-    private val app = App(
+    private val app = DbApp(
         watchId = watch.id,
         icon = null,
         version = "",

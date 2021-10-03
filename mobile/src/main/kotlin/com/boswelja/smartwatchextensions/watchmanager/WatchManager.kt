@@ -20,9 +20,11 @@ import com.boswelja.smartwatchextensions.watchmanager.database.DbWatch.Companion
 import com.boswelja.smartwatchextensions.watchmanager.database.WatchDatabase
 import com.boswelja.smartwatchextensions.watchmanager.database.WatchSettingsDatabase
 import com.boswelja.smartwatchextensions.widget.widgetIdStore
+import com.boswelja.watchconnection.common.message.ByteArrayMessage
+import com.boswelja.watchconnection.common.message.MessagePriority
+import com.boswelja.watchconnection.common.message.serialized.MessageSerializer
 import com.boswelja.watchconnection.core.Watch
 import com.boswelja.watchconnection.core.discovery.DiscoveryClient
-import com.boswelja.watchconnection.core.message.Message
 import com.boswelja.watchconnection.core.message.MessageClient
 import com.boswelja.watchconnection.wearos.WearOSDiscoveryPlatform
 import com.boswelja.watchconnection.wearos.WearOSMessagePlatform
@@ -63,14 +65,18 @@ class WatchManager internal constructor(
         WatchSettingsDatabase.getInstance(context),
         WatchDatabase.getInstance(context),
         MessageClient(
-            WearOSMessagePlatform(context)
+            platforms = listOf(
+                WearOSMessagePlatform(context)
+            )
         ),
         DiscoveryClient(
-            WearOSDiscoveryPlatform(
-                context,
-                CAPABILITY_WATCH_APP,
-                Capability.values().map { it.name },
-                5000
+            listOf(
+                WearOSDiscoveryPlatform(
+                    context,
+                    CAPABILITY_WATCH_APP,
+                    Capability.values().map { it.name },
+                    5000
+                )
             )
         ),
         getAnalytics(),
@@ -117,7 +123,7 @@ class WatchManager internal constructor(
 
     suspend fun registerWatch(watch: Watch) {
         withContext(Dispatchers.IO) {
-            messageClient.sendMessage(watch, Messages.WATCH_REGISTERED_PATH)
+            messageClient.sendMessage(watch, ByteArrayMessage(Messages.WATCH_REGISTERED_PATH))
             watchDatabase.watchDao().add(watch.toDbWatch())
             AppCacheUpdateWorker.enqueueWorkerFor(context, watch.id)
             analytics.logWatchRegistered()
@@ -142,7 +148,7 @@ class WatchManager internal constructor(
         withContext(Dispatchers.IO) {
             batteryStatsDatabase.batteryStatsDao().deleteStats(watch.id)
             watchAppDatabase.apps().removeForWatch(watch.id)
-            messageClient.sendMessage(watch, Messages.RESET_APP)
+            messageClient.sendMessage(watch, ByteArrayMessage(Messages.RESET_APP))
             watchDatabase.removeWatch(watch)
             removeWidgetsForWatch(watch, widgetIdStore)
             AppCacheUpdateWorker.stopWorkerFor(context, watch.id)
@@ -171,7 +177,7 @@ class WatchManager internal constructor(
         watch: Watch
     ) {
         batteryStatsDatabase.batteryStatsDao().deleteStats(watch.id)
-        messageClient.sendMessage(watch, CLEAR_PREFERENCES)
+        messageClient.sendMessage(watch, ByteArrayMessage(CLEAR_PREFERENCES))
         settingsDatabase.intSettings().deleteAllForWatch(watch.id)
         settingsDatabase.boolSettings().deleteAllForWatch(watch.id)
         removeWidgetsForWatch(watch, widgetIdStore)
@@ -224,8 +230,8 @@ class WatchManager internal constructor(
         watch: Watch,
         message: String,
         data: ByteArray? = null,
-        priority: Message.Priority = Message.Priority.LOW
-    ) = messageClient.sendMessage(watch, message, data, priority)
+        priority: MessagePriority = MessagePriority.LOW
+    ) = messageClient.sendMessage(watch, ByteArrayMessage(message, data), priority)
 
     fun getBoolSetting(key: String, watch: Watch? = null, default: Boolean = false): Flow<Boolean> {
         return if (watch != null) {
@@ -273,8 +279,10 @@ class WatchManager internal constructor(
         withContext(Dispatchers.IO) {
             messageClient.sendMessage(
                 watch,
-                message,
-                Pair(key, value).toByteArray()
+                ByteArrayMessage(
+                    message,
+                    Pair(key, value).toByteArray()
+                )
             )
             settingsDatabase.updateSetting(watch.id, key, value)
             analytics.logExtensionSettingChanged(key, value)
@@ -294,7 +302,9 @@ class WatchManager internal constructor(
 
     fun getWatchById(id: UUID): Flow<Watch?> = watchDatabase.watchDao().get(id)
 
-    fun incomingMessages() = messageClient.incomingMessages()
+    fun incomingMessages() = messageClient.rawIncomingMessages()
+    fun <T> incomingMessages(serializer: MessageSerializer<T>) =
+        messageClient.incomingMessages(serializer)
 
     companion object : SingletonHolder<WatchManager, Context>(::WatchManager) {
         const val CAPABILITY_WATCH_APP = "extensions_watch_app"

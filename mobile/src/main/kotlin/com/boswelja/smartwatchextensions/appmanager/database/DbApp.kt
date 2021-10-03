@@ -1,10 +1,8 @@
-package com.boswelja.smartwatchextensions.appmanager
+package com.boswelja.smartwatchextensions.appmanager.database
 
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
-import android.graphics.Bitmap
 import androidx.core.content.pm.PackageInfoCompat
-import androidx.room.ColumnInfo
 import androidx.room.Entity
 import java.util.UUID
 
@@ -23,10 +21,8 @@ import java.util.UUID
  * @param requestedPermissions An [List] of [android.Manifest.permission]s this package requests.
  */
 @Entity(tableName = "watch_apps", primaryKeys = ["watchId", "packageName"])
-data class App(
+data class DbApp(
     val watchId: UUID,
-    @ColumnInfo(typeAffinity = ColumnInfo.BLOB)
-    val icon: Bitmap?,
     val version: String,
     val packageName: String,
     val label: String,
@@ -40,7 +36,6 @@ data class App(
 
     constructor(watchId: UUID, app: com.boswelja.smartwatchextensions.common.appmanager.App) : this(
         watchId,
-        app.icon?.bitmap,
         app.version,
         app.packageName,
         app.label,
@@ -57,7 +52,7 @@ data class App(
     }
 
     override fun equals(other: Any?): Boolean {
-        return if (other is App) {
+        return if (other is DbApp) {
             watchId == other.watchId &&
                 packageName == other.packageName &&
                 installTime == other.installTime &&
