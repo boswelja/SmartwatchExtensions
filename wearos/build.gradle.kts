@@ -8,7 +8,7 @@ android {
     compileSdk = PackageInfo.targetSdk
 
     defaultConfig {
-        minSdk = 25
+        minSdk = 26
         targetSdk = PackageInfo.targetSdk
 
         applicationId = PackageInfo.packageName

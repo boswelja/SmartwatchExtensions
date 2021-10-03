@@ -3,7 +3,6 @@ package com.boswelja.smartwatchextensions.bootorupdate
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import androidx.work.ExperimentalExpeditedWork
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.OutOfQuotaPolicy
 import androidx.work.WorkManager
@@ -11,7 +10,6 @@ import timber.log.Timber
 
 class BootOrUpdateReceiver : BroadcastReceiver() {
 
-    @ExperimentalExpeditedWork
     override fun onReceive(context: Context?, intent: Intent?) {
         Timber.i("Received a broadcast")
 
