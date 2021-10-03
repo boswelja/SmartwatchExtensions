@@ -3,6 +3,7 @@ include(
     ":batterysync",
     ":dndsync",
     ":settingssync",
+    ":versionsync",
     ":mobile",
     ":wearos",
     ":common"

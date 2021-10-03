@@ -14,9 +14,5 @@ object Messages {
     const val REQUEST_UPDATE_CAPABILITIES = "/update_capabilities"
 
     const val CHECK_WATCH_REGISTERED_PATH = "/check_watch_registered"
-    const val WATCH_NOT_REGISTERED_PATH = "/watch_not_registered"
     const val WATCH_REGISTERED_PATH = "/watch_registered"
-
-    const val UPDATE_BOOL_PREFERENCE = "/update_preference_bool"
-    const val UPDATE_INT_PREFERENCE = "/update_preference_int"
 }
