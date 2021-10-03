@@ -1,6 +1,6 @@
 package com.boswelja.smartwatchextensions.common.appmanager
 
-import com.boswelja.watchconnection.common.message.serialized.MessageSerializer
+import com.boswelja.watchconnection.common.message.MessageSerializer
 
 object AppListSerializer : MessageSerializer<AppList>(
     messagePaths = setOf(

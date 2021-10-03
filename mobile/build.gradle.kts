@@ -65,6 +65,7 @@ android {
 
 dependencies {
     implementation(projects.common)
+    implementation(projects.batterysync)
 
     implementation(libs.firebase.analytics)
 

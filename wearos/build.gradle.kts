@@ -57,6 +57,7 @@ android {
 
 dependencies {
     implementation(projects.common)
+    implementation(projects.batterysync)
 
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.core.ktx)

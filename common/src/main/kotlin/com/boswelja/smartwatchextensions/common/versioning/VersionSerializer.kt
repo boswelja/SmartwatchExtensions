@@ -1,7 +1,7 @@
 package com.boswelja.smartwatchextensions.common.versioning
 
 import com.boswelja.smartwatchextensions.common.connection.Messages.REQUEST_APP_VERSION
-import com.boswelja.watchconnection.common.message.serialized.MessageSerializer
+import com.boswelja.watchconnection.common.message.MessageSerializer
 
 object VersionSerializer : MessageSerializer<Version>(
     messagePaths = setOf(REQUEST_APP_VERSION)
