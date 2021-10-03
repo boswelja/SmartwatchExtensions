@@ -1,9 +1,0 @@
-syntax = "proto3";
-
-option java_package = "com.boswelja.smartwatchextensions.common.versioning";
-
-/* Contains information about the installed app's version. */
-message Version {
-  int32 versionCode = 1; // The version code
-  string versionName = 2; // The version name
-}

@@ -6,8 +6,6 @@ import android.content.pm.ApplicationInfo
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.net.Uri
-import com.boswelja.smartwatchextensions.common.appmanager.App
-import com.boswelja.smartwatchextensions.common.appmanager.AppList
 import com.boswelja.smartwatchextensions.discoveryClient
 import com.boswelja.smartwatchextensions.messageClient
 import com.boswelja.watchconnection.common.message.Message

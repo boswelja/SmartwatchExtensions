@@ -61,6 +61,7 @@ dependencies {
     implementation(projects.batterysync)
     implementation(projects.dndsync)
     implementation(projects.settingssync)
+    implementation(projects.versionsync)
 
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.core.ktx)

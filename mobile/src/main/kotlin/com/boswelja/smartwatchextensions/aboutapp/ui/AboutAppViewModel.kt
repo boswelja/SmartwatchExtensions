@@ -3,9 +3,9 @@ package com.boswelja.smartwatchextensions.aboutapp.ui
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import com.boswelja.smartwatchextensions.common.connection.Messages.REQUEST_APP_VERSION
-import com.boswelja.smartwatchextensions.common.versioning.Version
-import com.boswelja.smartwatchextensions.common.versioning.VersionSerializer
+import com.boswelja.smartwatchextensions.versionsync.REQUEST_APP_VERSION
+import com.boswelja.smartwatchextensions.versionsync.Version
+import com.boswelja.smartwatchextensions.versionsync.VersionSerializer
 import com.boswelja.smartwatchextensions.watchmanager.WatchManager
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -46,7 +46,7 @@ class AboutAppViewModel internal constructor(
 
         // Listen for app version responses
         viewModelScope.launch {
-            watchManager.incomingMessages<Version>(VersionSerializer)
+            watchManager.incomingMessages(VersionSerializer)
                 .collect { message -> _watchAppVersion.tryEmit(message.data) }
         }
     }

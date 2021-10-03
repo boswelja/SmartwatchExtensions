@@ -3,7 +3,7 @@ package com.boswelja.smartwatchextensions.batterysync.database
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.boswelja.smartwatchextensions.common.batterysync.BatteryStats
+import com.boswelja.smartwatchextensions.batterysync.BatteryStats
 
 @Entity(tableName = "watch_battery_stats")
 data class WatchBatteryStats(
