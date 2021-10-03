@@ -75,7 +75,16 @@
             </intent-filter>
         </receiver>
 
-        <receiver android:name=".batterysync.BatteryStatsReceiver"
+        <receiver
+            android:name=".dndsync.DnDStatusReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.boswelja.watchconnection.common.message.MessageReceived" />
+            </intent-filter>
+        </receiver>
+
+        <receiver
+            android:name=".batterysync.BatteryStatsReceiver"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.boswelja.watchconnection.common.message.MessageReceived" />

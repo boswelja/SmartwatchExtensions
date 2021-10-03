@@ -41,3 +41,21 @@ fun Context.dndState(): Flow<Boolean> = callbackFlow {
  */
 private val NotificationManager.isDndEnabled: Boolean
     get() = this.currentInterruptionFilter != NotificationManager.INTERRUPTION_FILTER_ALL
+
+/**
+ * Try to set the system DnD status. This will fail if permission is not granted.
+ * @param isEnabled Whether DnD should be enabled.
+ * @return true if setting DnD succeeds, false otherwise.
+ */
+fun NotificationManager.setDnD(isEnabled: Boolean): Boolean {
+    return if (isNotificationPolicyAccessGranted) {
+        val newFilter = if (isEnabled)
+            NotificationManager.INTERRUPTION_FILTER_PRIORITY
+        else
+            NotificationManager.INTERRUPTION_FILTER_ALL
+        setInterruptionFilter(newFilter)
+        true
+    } else {
+        false
+    }
+}

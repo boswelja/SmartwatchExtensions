@@ -46,9 +46,6 @@ class WatchMessageReceiver : MessageReceiver<Nothing?>(
             LAUNCH_APP -> launchApp(context)
             REQUEST_BATTERY_UPDATE_PATH -> Utils.updateBatteryStats(context)
             CHECK_WATCH_REGISTERED_PATH -> sendIsWatchRegistered(context, message.sourceUid)
-//            DND_STATUS_PATH -> data?.let {
-//                handleDnDStateChange(context, sourceWatchId, Boolean.fromByteArray(data))
-//            }
         }
     }
 
