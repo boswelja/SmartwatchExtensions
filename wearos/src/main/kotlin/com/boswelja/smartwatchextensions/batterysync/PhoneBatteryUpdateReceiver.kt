@@ -23,7 +23,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import timber.log.Timber
 
-class PhoneBatteryUpdateReceiver : MessageReceiver<BatteryStats?>(BatteryStatsSerializer()) {
+class PhoneBatteryUpdateReceiver : MessageReceiver<BatteryStats?>(BatteryStatsSerializer) {
 
     private lateinit var notificationManager: NotificationManager
     private lateinit var phoneStateStore: DataStore<PhoneState>
@@ -206,7 +206,7 @@ class PhoneBatteryUpdateReceiver : MessageReceiver<BatteryStats?>(BatteryStatsSe
     private suspend fun sendBatteryStatsUpdate(context: Context) {
         val batteryStats = context.batteryStats()
         if (batteryStats != null) {
-            context.messageClient(listOf(BatteryStatsSerializer())).sendMessage(
+            context.messageClient(listOf(BatteryStatsSerializer)).sendMessage(
                 context.discoveryClient().pairedPhone()!!,
                 Message(BATTERY_STATUS_PATH, batteryStats)
             )

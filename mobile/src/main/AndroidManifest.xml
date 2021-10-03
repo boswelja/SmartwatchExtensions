@@ -75,6 +75,12 @@
             </intent-filter>
         </receiver>
 
+        <receiver android:name=".batterysync.BatteryStatsReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.boswelja.watchconnection.common.message.MessageReceived" />
+            </intent-filter>
+        </receiver>
         <service
             android:name=".dndsync.DnDLocalChangeService"
             android:exported="false" />
@@ -83,7 +89,7 @@
             android:name=".appmanager.WatchAppReceiver"
             android:exported="false">
             <intent-filter>
-                <action android:name="com.boswelja.watchconnection.messages.ACTION_MESSAGE_RECEIVED" />
+                <action android:name="com.boswelja.watchconnection.common.message.MessageReceived" />
             </intent-filter>
         </receiver>
 
@@ -91,7 +97,7 @@
             android:name=".watchmanager.connection.WatchMessageReceiver"
             android:exported="false">
             <intent-filter>
-                <action android:name="com.boswelja.watchconnection.messages.ACTION_MESSAGE_RECEIVED" />
+                <action android:name="com.boswelja.watchconnection.common.message.MessageReceived" />
             </intent-filter>
         </receiver>
 
