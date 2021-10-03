@@ -1,3 +1,5 @@
+@file:Suppress("DeprecatedCallableAddReplaceWith")
+
 package com.boswelja.smartwatchextensions.common
 
 import android.app.ActivityOptions
@@ -9,6 +11,7 @@ import android.os.Bundle
  * Convert a single [Boolean] to a [ByteArray].
  * @return The created [ByteArray].
  */
+@Deprecated("Avoid sending raw ByteArray")
 fun Boolean.toByteArray(): ByteArray {
     val byte: Byte =
         if (this) {
@@ -24,6 +27,7 @@ fun Boolean.toByteArray(): ByteArray {
  * @param byteArray The [ByteArray] to convert to a [Boolean].
  * @return The [Boolean] result, or false if [ByteArray] was invalid.
  */
+@Deprecated("Avoid sending raw ByteArray")
 fun Boolean.Companion.fromByteArray(byteArray: ByteArray): Boolean {
     return if (byteArray.isNotEmpty()) {
         byteArray[0].toInt() == 1
@@ -36,6 +40,7 @@ fun Boolean.Companion.fromByteArray(byteArray: ByteArray): Boolean {
  * Convert a single [Int] to a [ByteArray].
  * @return The created [ByteArray].
  */
+@Deprecated("Avoid sending raw ByteArray")
 fun Int.toByteArray(): ByteArray {
     return byteArrayOf(
         (this ushr 24 and 0xff).toByte(),
@@ -50,6 +55,7 @@ fun Int.toByteArray(): ByteArray {
  * @param byteArray The [ByteArray] to convert to an [Int].
  * @return The [Int] from the given [ByteArray]
  */
+@Deprecated("Avoid sending raw ByteArray")
 fun Int.Companion.fromByteArray(byteArray: ByteArray): Int {
     return if (byteArray.size != 4) {
         -1
