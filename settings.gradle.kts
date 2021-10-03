@@ -2,6 +2,7 @@ include(
     ":appmanager",
     ":batterysync",
     ":dndsync",
+    ":settingssync",
     ":mobile",
     ":wearos",
     ":common"
