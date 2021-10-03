@@ -4,7 +4,6 @@ import android.content.Context
 import androidx.core.app.NotificationCompat
 import androidx.core.content.getSystemService
 import androidx.work.CoroutineWorker
-import androidx.work.ExperimentalExpeditedWork
 import androidx.work.ForegroundInfo
 import androidx.work.WorkerParameters
 import com.boswelja.smartwatchextensions.NotificationChannelHelper
@@ -20,7 +19,6 @@ class BootWorker(
         return Result.success()
     }
 
-    @ExperimentalExpeditedWork
     override suspend fun getForegroundInfo(): ForegroundInfo {
         NotificationChannelHelper.createForBootOrUpdate(
             applicationContext, applicationContext.getSystemService()!!

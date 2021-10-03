@@ -11,7 +11,6 @@ import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.getSystemService
 import androidx.work.CoroutineWorker
-import androidx.work.ExperimentalExpeditedWork
 import androidx.work.ForegroundInfo
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.OutOfQuotaPolicy
@@ -28,7 +27,6 @@ import timber.log.Timber
 
 class BootHandler : BroadcastReceiver() {
 
-    @ExperimentalExpeditedWork
     override fun onReceive(context: Context?, intent: Intent?) {
         Timber.d("Intent received")
         if (context == null) {
@@ -68,7 +66,6 @@ class BootWorker(
         return Result.success()
     }
 
-    @ExperimentalExpeditedWork
     override suspend fun getForegroundInfo(): ForegroundInfo {
         createNotificationChannel()
         val notification = NotificationCompat
@@ -86,19 +83,17 @@ class BootWorker(
     }
 
     private fun createNotificationChannel() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel(
-                BOOT_OR_UPDATE_NOTI_CHANNEL_ID,
-                applicationContext.getString(R.string.boot_noti_channel_title),
-                IMPORTANCE_LOW
-            ).apply {
-                enableLights(false)
-                enableVibration(false)
-                setShowBadge(false)
-            }.also {
-                applicationContext.getSystemService<NotificationManager>()
-                    ?.createNotificationChannel(it)
-            }
+        NotificationChannel(
+            BOOT_OR_UPDATE_NOTI_CHANNEL_ID,
+            applicationContext.getString(R.string.boot_noti_channel_title),
+            IMPORTANCE_LOW
+        ).apply {
+            enableLights(false)
+            enableVibration(false)
+            setShowBadge(false)
+        }.also {
+            applicationContext.getSystemService<NotificationManager>()
+                ?.createNotificationChannel(it)
         }
     }
 

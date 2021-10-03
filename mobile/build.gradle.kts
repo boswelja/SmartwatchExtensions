@@ -3,7 +3,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
     id("com.android.application")
     kotlin("android")
-    id("com.google.devtools.ksp") version "1.5.21-1.0.0-beta07"
+    id("com.google.devtools.ksp") version "1.5.31-1.0.0"
     id("com.google.gms.google-services")
     id("com.squareup.wire")
 }

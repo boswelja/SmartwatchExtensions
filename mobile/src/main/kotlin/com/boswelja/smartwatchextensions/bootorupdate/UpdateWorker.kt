@@ -4,7 +4,6 @@ import android.content.Context
 import androidx.core.app.NotificationCompat
 import androidx.core.content.getSystemService
 import androidx.work.CoroutineWorker
-import androidx.work.ExperimentalExpeditedWork
 import androidx.work.ForegroundInfo
 import androidx.work.ListenableWorker.Result.failure
 import androidx.work.ListenableWorker.Result.success
@@ -45,7 +44,6 @@ class UpdateWorker(
         }
     }
 
-    @ExperimentalExpeditedWork
     override suspend fun getForegroundInfo(): ForegroundInfo {
         NotificationChannelHelper.createForBootOrUpdate(
             applicationContext, applicationContext.getSystemService()!!
