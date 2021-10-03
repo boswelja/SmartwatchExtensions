@@ -10,15 +10,12 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
-                implementation(libs.kotlinx.coroutines.core)
                 api(libs.watchconnection.common)
                 api(libs.wire.runtime)
             }
         }
         val androidMain by getting {
-            dependencies {
-                implementation(libs.androidx.core.ktx)
-            }
+            dependencies { }
         }
     }
 }
