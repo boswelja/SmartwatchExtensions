@@ -9,11 +9,11 @@ import androidx.lifecycle.LifecycleService
 import androidx.lifecycle.lifecycleScope
 import com.boswelja.smartwatchextensions.NotificationChannelHelper
 import com.boswelja.smartwatchextensions.common.R
-import com.boswelja.smartwatchextensions.common.toByteArray
 import com.boswelja.smartwatchextensions.main.ui.MainActivity
 import com.boswelja.smartwatchextensions.settingssync.BoolSettingKeys.DND_SYNC_TO_WATCH_KEY
 import com.boswelja.smartwatchextensions.watchmanager.WatchManager
 import com.boswelja.watchconnection.common.Watch
+import com.boswelja.watchconnection.common.message.Message
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.collect
@@ -105,8 +105,10 @@ class DnDLocalChangeService : LifecycleService() {
             targetWatches.forEach { watch ->
                 val result = watchManager.sendMessage(
                     watch,
-                    DND_STATUS_PATH,
-                    dndEnabled.toByteArray()
+                    Message(
+                        DND_STATUS_PATH,
+                        dndEnabled
+                    )
                 )
                 if (!result) {
                     Timber.w("Failed to update DnD on ${watch.name}")

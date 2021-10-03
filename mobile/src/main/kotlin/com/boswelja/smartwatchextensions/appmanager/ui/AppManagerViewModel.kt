@@ -14,10 +14,10 @@ import com.boswelja.smartwatchextensions.appmanager.REQUEST_UNINSTALL_PACKAGE
 import com.boswelja.smartwatchextensions.appmanager.VALIDATE_CACHE
 import com.boswelja.smartwatchextensions.appmanager.database.DbApp
 import com.boswelja.smartwatchextensions.appmanager.database.WatchAppDatabase
-import com.boswelja.smartwatchextensions.common.toByteArray
 import com.boswelja.smartwatchextensions.watchmanager.WatchManager
 import com.boswelja.watchconnection.common.Watch
 import com.boswelja.watchconnection.common.discovery.ConnectionMode
+import com.boswelja.watchconnection.common.message.Message
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.collect
@@ -159,7 +159,7 @@ class AppManagerViewModel internal constructor(
                 .map { apps -> apps.map { it.packageName to it.lastUpdateTime } }
                 .first()
             val cacheHash = CacheValidation.getHashCode(apps)
-            val result = watchManager.sendMessage(watch, VALIDATE_CACHE, cacheHash.toByteArray())
+            val result = watchManager.sendMessage(watch, Message(VALIDATE_CACHE, cacheHash))
             if (!result) Timber.w("Failed to request cache validation")
         }
     }

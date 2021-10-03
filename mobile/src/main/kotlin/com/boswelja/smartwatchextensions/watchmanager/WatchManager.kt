@@ -9,12 +9,14 @@ import com.boswelja.smartwatchextensions.analytics.Analytics
 import com.boswelja.smartwatchextensions.analytics.getAnalytics
 import com.boswelja.smartwatchextensions.appStateStore
 import com.boswelja.smartwatchextensions.appmanager.AppCacheUpdateWorker
+import com.boswelja.smartwatchextensions.appmanager.CacheValidationSerializer
 import com.boswelja.smartwatchextensions.appmanager.database.WatchAppDatabase
 import com.boswelja.smartwatchextensions.batterysync.database.WatchBatteryStatsDatabase
 import com.boswelja.smartwatchextensions.common.SingletonHolder
 import com.boswelja.smartwatchextensions.common.connection.Capability
 import com.boswelja.smartwatchextensions.common.connection.Messages
 import com.boswelja.smartwatchextensions.common.connection.Messages.CLEAR_PREFERENCES
+import com.boswelja.smartwatchextensions.dndsync.DnDStatusSerializer
 import com.boswelja.smartwatchextensions.setingssync.IntSetting
 import com.boswelja.smartwatchextensions.settingssync.BoolSetting
 import com.boswelja.smartwatchextensions.settingssync.BoolSettingSerializer
@@ -70,7 +72,9 @@ class WatchManager internal constructor(
         MessageClient(
             serializers = listOf(
                 IntSettingSerializer,
-                BoolSettingSerializer
+                BoolSettingSerializer,
+                DnDStatusSerializer,
+                CacheValidationSerializer
             ),
             platforms = listOf(
                 WearOSMessagePlatform(context)
@@ -231,6 +235,11 @@ class WatchManager internal constructor(
         data: ByteArray? = null,
         priority: Message.Priority = Message.Priority.LOW
     ) = messageClient.sendMessage(watch, Message(message, data, priority))
+
+    suspend fun sendMessage(
+        watch: Watch,
+        message: Message<*>
+    ) = messageClient.sendMessage(watch, message)
 
     fun getBoolSetting(key: String, watch: Watch? = null, default: Boolean = false): Flow<Boolean> {
         return if (watch != null) {

@@ -10,9 +10,9 @@ import androidx.work.WorkManager
 import androidx.work.WorkerParameters
 import androidx.work.workDataOf
 import com.boswelja.smartwatchextensions.appmanager.database.WatchAppDatabase
-import com.boswelja.smartwatchextensions.common.toByteArray
 import com.boswelja.smartwatchextensions.watchmanager.WatchManager
 import com.boswelja.watchconnection.common.Watch
+import com.boswelja.watchconnection.common.message.Message
 import java.util.UUID
 import java.util.concurrent.TimeUnit
 import kotlinx.coroutines.flow.first
@@ -65,7 +65,13 @@ class AppCacheUpdateWorker(
 
         // Get a hash for our app list and send it
         val cacheHash = CacheValidation.getHashCode(apps)
-        return watchManager.sendMessage(watch, VALIDATE_CACHE, cacheHash.toByteArray())
+        return watchManager.sendMessage(
+            watch,
+            Message(
+                VALIDATE_CACHE,
+                cacheHash
+            )
+        )
     }
 
     companion object {
