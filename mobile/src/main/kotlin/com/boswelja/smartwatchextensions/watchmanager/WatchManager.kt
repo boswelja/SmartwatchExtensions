@@ -15,20 +15,23 @@ import com.boswelja.smartwatchextensions.common.SingletonHolder
 import com.boswelja.smartwatchextensions.common.connection.Capability
 import com.boswelja.smartwatchextensions.common.connection.Messages
 import com.boswelja.smartwatchextensions.common.connection.Messages.CLEAR_PREFERENCES
-import com.boswelja.smartwatchextensions.common.connection.Preference.toByteArray
+import com.boswelja.smartwatchextensions.setingssync.IntSetting
+import com.boswelja.smartwatchextensions.settingssync.BoolSetting
+import com.boswelja.smartwatchextensions.settingssync.BoolSettingSerializer
+import com.boswelja.smartwatchextensions.settingssync.IntSettingSerializer
+import com.boswelja.smartwatchextensions.settingssync.UPDATE_BOOL_PREFERENCE
+import com.boswelja.smartwatchextensions.settingssync.UPDATE_INT_PREFERENCE
 import com.boswelja.smartwatchextensions.watchmanager.database.DbWatch.Companion.toDbWatch
 import com.boswelja.smartwatchextensions.watchmanager.database.WatchDatabase
 import com.boswelja.smartwatchextensions.watchmanager.database.WatchSettingsDatabase
 import com.boswelja.smartwatchextensions.widget.widgetIdStore
-import com.boswelja.watchconnection.common.message.ByteArrayMessage
-import com.boswelja.watchconnection.common.message.MessagePriority
-import com.boswelja.watchconnection.common.message.serialized.MessageSerializer
-import com.boswelja.watchconnection.core.Watch
+import com.boswelja.watchconnection.common.Watch
+import com.boswelja.watchconnection.common.message.Message
+import com.boswelja.watchconnection.common.message.MessageSerializer
 import com.boswelja.watchconnection.core.discovery.DiscoveryClient
 import com.boswelja.watchconnection.core.message.MessageClient
-import com.boswelja.watchconnection.wearos.WearOSDiscoveryPlatform
-import com.boswelja.watchconnection.wearos.WearOSMessagePlatform
-import java.util.UUID
+import com.boswelja.watchconnection.wearos.discovery.WearOSDiscoveryPlatform
+import com.boswelja.watchconnection.wearos.message.WearOSMessagePlatform
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -39,8 +42,8 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
@@ -65,18 +68,17 @@ class WatchManager internal constructor(
         WatchSettingsDatabase.getInstance(context),
         WatchDatabase.getInstance(context),
         MessageClient(
+            serializers = listOf(
+                IntSettingSerializer,
+                BoolSettingSerializer
+            ),
             platforms = listOf(
                 WearOSMessagePlatform(context)
             )
         ),
         DiscoveryClient(
             listOf(
-                WearOSDiscoveryPlatform(
-                    context,
-                    CAPABILITY_WATCH_APP,
-                    Capability.values().map { it.name },
-                    5000
-                )
+                WearOSDiscoveryPlatform(context)
             )
         ),
         getAnalytics(),
@@ -84,20 +86,20 @@ class WatchManager internal constructor(
         CoroutineScope(Dispatchers.IO)
     )
 
-    private val _selectedWatchId = MutableStateFlow<UUID?>(null)
+    private val _selectedWatchId = MutableStateFlow<String?>(null)
     private val _selectedWatch = _selectedWatchId.flatMapLatest { id ->
         id?.let {
-            watchDatabase.watchDao().get(id)
+            watchDatabase.watchDao().get(id).map { it?.toWatch() }
         } ?: flow { emit(null) }
     }
 
     val registeredWatches: Flow<List<Watch>>
-        get() = watchDatabase.watchDao().getAll()
+        get() = watchDatabase.watchDao().getAll().map { watches -> watches.map { it.toWatch() } }
 
     val availableWatches: Flow<List<Watch>>
-        get() = discoveryClient.watchesWithApp()
+        get() = discoveryClient.watchesWithCapability(CAPABILITY_WATCH_APP)
             .map { watches ->
-                watches.filter { watchDatabase.watchDao().get(it.id).firstOrNull() == null }
+                watches.filter { watchDatabase.watchDao().get(it.uid).firstOrNull() == null }
             }
 
     /**
@@ -110,11 +112,11 @@ class WatchManager internal constructor(
         // Set the initial selectedWatch value if possible.
         coroutineScope.launch {
             dataStore.data.map { it.lastSelectedWatchId }.collect {
-                if (it.isNotBlank()) selectWatchById(UUID.fromString(it))
+                if (it.isNotBlank()) selectWatchById(it)
                 else {
                     Timber.w("No watch previously selected")
                     registeredWatches.first().firstOrNull()?.let { watch ->
-                        selectWatchById(watch.id)
+                        selectWatchById(watch.uid)
                     }
                 }
             }
@@ -123,9 +125,9 @@ class WatchManager internal constructor(
 
     suspend fun registerWatch(watch: Watch) {
         withContext(Dispatchers.IO) {
-            messageClient.sendMessage(watch, ByteArrayMessage(Messages.WATCH_REGISTERED_PATH))
+            messageClient.sendMessage(watch, Message(Messages.WATCH_REGISTERED_PATH, null))
             watchDatabase.watchDao().add(watch.toDbWatch())
-            AppCacheUpdateWorker.enqueueWorkerFor(context, watch.id)
+            AppCacheUpdateWorker.enqueueWorkerFor(context, watch.uid)
             analytics.logWatchRegistered()
         }
     }
@@ -146,12 +148,12 @@ class WatchManager internal constructor(
         watch: Watch
     ) {
         withContext(Dispatchers.IO) {
-            batteryStatsDatabase.batteryStatsDao().deleteStats(watch.id)
-            watchAppDatabase.apps().removeForWatch(watch.id)
-            messageClient.sendMessage(watch, ByteArrayMessage(Messages.RESET_APP))
+            batteryStatsDatabase.batteryStatsDao().deleteStats(watch.uid)
+            watchAppDatabase.apps().removeForWatch(watch.uid)
+            messageClient.sendMessage(watch, Message(Messages.RESET_APP, null))
             watchDatabase.removeWatch(watch)
             removeWidgetsForWatch(watch, widgetIdStore)
-            AppCacheUpdateWorker.stopWorkerFor(context, watch.id)
+            AppCacheUpdateWorker.stopWorkerFor(context, watch.uid)
             analytics.logWatchRemoved()
         }
     }
@@ -176,10 +178,10 @@ class WatchManager internal constructor(
         batteryStatsDatabase: WatchBatteryStatsDatabase,
         watch: Watch
     ) {
-        batteryStatsDatabase.batteryStatsDao().deleteStats(watch.id)
-        messageClient.sendMessage(watch, ByteArrayMessage(CLEAR_PREFERENCES))
-        settingsDatabase.intSettings().deleteAllForWatch(watch.id)
-        settingsDatabase.boolSettings().deleteAllForWatch(watch.id)
+        batteryStatsDatabase.batteryStatsDao().deleteStats(watch.uid)
+        messageClient.sendMessage(watch, Message(CLEAR_PREFERENCES, null))
+        settingsDatabase.intSettings().deleteAllForWatch(watch.uid)
+        settingsDatabase.boolSettings().deleteAllForWatch(watch.uid)
         removeWidgetsForWatch(watch, widgetIdStore)
     }
 
@@ -188,7 +190,7 @@ class WatchManager internal constructor(
         widgetIdStore: DataStore<Preferences>
     ) {
         val widgetsToRemove = widgetIdStore.data.firstOrNull()?.asMap()
-            ?.filter { it.value == watch.id }?.keys
+            ?.filter { it.value == watch.uid }?.keys
         if (!widgetsToRemove.isNullOrEmpty()) {
             widgetIdStore.edit { mutablePreferences ->
                 widgetsToRemove.forEach {
@@ -199,47 +201,47 @@ class WatchManager internal constructor(
     }
 
     /**
-     * Selects a watch by a given [Watch.id]. This will update [selectedWatch].
+     * Selects a watch by a given [Watch.uid]. This will update [selectedWatch].
      * @param watchId The ID of the [Watch] to select.
      */
-    fun selectWatchById(watchId: UUID) {
+    fun selectWatchById(watchId: String) {
         Timber.d("selectWatchById(%s) called", watchId)
         coroutineScope.launch {
             _selectedWatchId.emit(watchId)
             dataStore.updateData { settings ->
-                settings.copy(lastSelectedWatchId = watchId.toString())
+                settings.copy(lastSelectedWatchId = watchId)
             }
         }
     }
 
-    fun getStatusFor(watch: Watch) = discoveryClient.getStatusFor(watch)
+    fun getStatusFor(watch: Watch) = discoveryClient.connectionModeFor(watch)
 
-    fun getCapabilitiesFor(watch: Watch) =
-        discoveryClient.getCapabilitiesFor(watch)?.mapLatest { capabilities ->
-            capabilities.map { Capability.valueOf(it) }
+    suspend fun getCapabilitiesFor(watch: Watch) =
+        discoveryClient.getCapabilitiesFor(watch)?.map { capability ->
+            Capability.valueOf(capability)
         }
 
-    fun selectedWatchCapabilities() =
-        _selectedWatch.flatMapLatest<Watch?, List<Capability>> { watch ->
+    fun selectedWatchHasCapability(capability: Capability): Flow<Boolean> =
+        _selectedWatch.flatMapLatest { watch ->
             watch?.let {
-                getCapabilitiesFor(watch)
-            } ?: flow { emit(emptyList<Capability>()) }
+                discoveryClient.hasCapability(watch, capability.name)
+            } ?: flowOf(false)
         }
 
     suspend fun sendMessage(
         watch: Watch,
         message: String,
         data: ByteArray? = null,
-        priority: MessagePriority = MessagePriority.LOW
-    ) = messageClient.sendMessage(watch, ByteArrayMessage(message, data), priority)
+        priority: Message.Priority = Message.Priority.LOW
+    ) = messageClient.sendMessage(watch, Message(message, data, priority))
 
     fun getBoolSetting(key: String, watch: Watch? = null, default: Boolean = false): Flow<Boolean> {
         return if (watch != null) {
-            settingsDatabase.boolSettings().get(watch.id, key).map { it?.value ?: default }
+            settingsDatabase.boolSettings().get(watch.uid, key).map { it?.value ?: default }
         } else {
             _selectedWatch.flatMapLatest { selectedWatch ->
                 if (selectedWatch != null) {
-                    settingsDatabase.boolSettings().get(selectedWatch.id, key)
+                    settingsDatabase.boolSettings().get(selectedWatch.uid, key)
                         .map { it?.value ?: default }
                 } else {
                     flow { emit(default) }
@@ -250,11 +252,11 @@ class WatchManager internal constructor(
 
     fun getIntSetting(key: String, watch: Watch? = null, default: Int = 0): Flow<Int> {
         return if (watch != null) {
-            settingsDatabase.intSettings().get(watch.id, key).map { it?.value ?: default }
+            settingsDatabase.intSettings().get(watch.uid, key).map { it?.value ?: default }
         } else {
             _selectedWatch.flatMapLatest { selectedWatch ->
                 if (selectedWatch != null) {
-                    settingsDatabase.intSettings().get(selectedWatch.id, key)
+                    settingsDatabase.intSettings().get(selectedWatch.uid, key)
                         .map { it?.value ?: default }
                 } else {
                     flow { emit(default) }
@@ -271,20 +273,29 @@ class WatchManager internal constructor(
      */
     suspend fun updatePreference(watch: Watch, key: String, value: Any) {
         Timber.d("updatePreference(%s, %s, %s) called", watch.toString(), key, value.toString())
-        val message = when (value) {
-            is Boolean -> Messages.UPDATE_BOOL_PREFERENCE
-            is Int -> Messages.UPDATE_INT_PREFERENCE
-            else -> throw IllegalArgumentException()
-        }
         withContext(Dispatchers.IO) {
-            messageClient.sendMessage(
-                watch,
-                ByteArrayMessage(
-                    message,
-                    Pair(key, value).toByteArray()
-                )
-            )
-            settingsDatabase.updateSetting(watch.id, key, value)
+            when (value) {
+                is Boolean -> {
+                    messageClient.sendMessage(
+                        watch,
+                        Message(
+                            UPDATE_BOOL_PREFERENCE,
+                            BoolSetting(key, value)
+                        )
+                    )
+                }
+                is Int -> {
+                    messageClient.sendMessage(
+                        watch,
+                        Message(
+                            UPDATE_INT_PREFERENCE,
+                            IntSetting(key, value)
+                        )
+                    )
+                }
+            }
+
+            settingsDatabase.updateSetting(watch.uid, key, value)
             analytics.logExtensionSettingChanged(key, value)
         }
     }
@@ -296,11 +307,12 @@ class WatchManager internal constructor(
      */
     suspend fun updatePreference(key: String, value: Boolean) {
         watchDatabase.watchDao().getAll().first().forEach {
-            updatePreference(it, key, value)
+            updatePreference(it.toWatch(), key, value)
         }
     }
 
-    fun getWatchById(id: UUID): Flow<Watch?> = watchDatabase.watchDao().get(id)
+    fun getWatchById(id: String): Flow<Watch?> = watchDatabase.watchDao().get(id)
+        .map { it?.toWatch() }
 
     fun incomingMessages() = messageClient.rawIncomingMessages()
     fun <T> incomingMessages(serializer: MessageSerializer<T>) =

@@ -1,17 +1,13 @@
 package com.boswelja.smartwatchextensions
 
 import android.content.Context
-import com.boswelja.smartwatchextensions.common.connection.Capability
-import com.boswelja.smartwatchextensions.phoneconnectionmanager.ConnectionHelper.Companion.CAPABILITY_PHONE_APP
-import com.boswelja.watchconnection.common.message.serialized.MessageSerializer
-import com.boswelja.watchconnection.wearos.discovery.DiscoveryClient
-import com.boswelja.watchconnection.wearos.message.MessageClient
+import com.boswelja.watchconnection.common.message.MessageSerializer
+import com.boswelja.watchconnection.wear.discovery.DiscoveryClient
+import com.boswelja.watchconnection.wear.message.MessageClient
 
 fun Context.discoveryClient(): DiscoveryClient =
     DiscoveryClient(
-        this,
-        CAPABILITY_PHONE_APP,
-        Capability.values().map { it.name }
+        this
     )
 
 fun Context.messageClient(

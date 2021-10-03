@@ -10,7 +10,7 @@ import com.boswelja.smartwatchextensions.settings.AppSettingsSerializer
 import com.boswelja.smartwatchextensions.settings.Settings
 import com.boswelja.smartwatchextensions.settings.appSettingsStore
 import com.boswelja.smartwatchextensions.watchmanager.WatchManager
-import com.boswelja.watchconnection.core.Watch
+import com.boswelja.watchconnection.common.Watch
 import kotlin.math.floor
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers

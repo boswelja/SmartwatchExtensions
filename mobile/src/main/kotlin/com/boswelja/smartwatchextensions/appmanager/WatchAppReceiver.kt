@@ -3,25 +3,16 @@ package com.boswelja.smartwatchextensions.appmanager
 import android.content.Context
 import com.boswelja.smartwatchextensions.appmanager.database.DbApp
 import com.boswelja.smartwatchextensions.appmanager.database.WatchAppDatabase
-import com.boswelja.smartwatchextensions.common.appmanager.AppList
-import com.boswelja.smartwatchextensions.common.appmanager.AppListSerializer
+import com.boswelja.watchconection.common.message.MessageReceiver
 import com.boswelja.watchconnection.common.message.ReceivedMessage
-import com.boswelja.watchconnection.common.message.serialized.TypedMessageReceiver
 
-class WatchAppReceiver : TypedMessageReceiver<AppList>(AppListSerializer) {
-    override suspend fun onTypedMessageReceived(
-        context: Context,
-        message: ReceivedMessage<AppList>
-    ) {
+class WatchAppReceiver : MessageReceiver<AppList>(AppListSerializer) {
+    override suspend fun onMessageReceived(context: Context, message: ReceivedMessage<AppList>) {
         WatchAppDatabase.getInstance(context).apps().also { db ->
-            db.removeForWatch(message.sourceWatchID)
+            db.removeForWatch(message.sourceUid)
             message.data.apps
-                .map { DbApp(message.sourceWatchID, it) }
+                .map { DbApp(message.sourceUid, it) }
                 .also { db.add(it) }
         }
-    }
-
-    override suspend fun onDeserializeException(exception: Exception) {
-        // TODO Notify the user their apps may be out of date
     }
 }

@@ -60,6 +60,7 @@ dependencies {
     implementation(projects.appmanager)
     implementation(projects.batterysync)
     implementation(projects.dndsync)
+    implementation(projects.settingssync)
 
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.core.ktx)
@@ -70,7 +71,7 @@ dependencies {
     implementation(libs.androidx.work.ktx)
 
     implementation(libs.timber)
-    implementation(libs.watchconnection.wear.wearos)
+    implementation(libs.watchconnection.wear)
 
     implementation(libs.bundles.compose.wear)
 

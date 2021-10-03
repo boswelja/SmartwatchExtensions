@@ -31,7 +31,6 @@ import com.boswelja.smartwatchextensions.dashboard.ui.dashboardGraph
 import com.boswelja.smartwatchextensions.messages.ui.messagesGraph
 import com.boswelja.smartwatchextensions.onboarding.ui.OnboardingActivity
 import com.boswelja.smartwatchextensions.settings.ui.appSettingsGraph
-import java.util.UUID
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -45,7 +44,7 @@ class MainActivity : ComponentActivity() {
         installSplashScreen()
 
         if (intent?.hasExtra(EXTRA_WATCH_ID) == true) {
-            viewModel.selectWatchById(UUID.fromString(intent.getStringExtra(EXTRA_WATCH_ID)))
+            viewModel.selectWatchById(intent.getStringExtra(EXTRA_WATCH_ID)!!)
         }
 
         setContent {
@@ -67,14 +66,14 @@ class MainActivity : ComponentActivity() {
                             UpNavigationWatchPickerAppBar(
                                 selectedWatch = selectedWatch,
                                 watches = registeredWatches,
-                                onWatchSelected = { viewModel.selectWatchById(it.id) },
+                                onWatchSelected = { viewModel.selectWatchById(it.uid) },
                                 onNavigateUp = navController::navigateUp
                             )
                         } else {
                             WatchPickerAppBar(
                                 selectedWatch = selectedWatch,
                                 watches = registeredWatches,
-                                onWatchSelected = { viewModel.selectWatchById(it.id) }
+                                onWatchSelected = { viewModel.selectWatchById(it.uid) }
                             )
                         }
                     },

@@ -8,10 +8,10 @@ import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.batterysync.database.WatchBatteryStatsDatabase
 import com.boswelja.smartwatchextensions.common.WatchWidgetProvider
 import com.boswelja.smartwatchextensions.common.getBatteryDrawable
-import com.boswelja.smartwatchextensions.common.preference.PreferenceKey.BATTERY_SYNC_ENABLED_KEY
 import com.boswelja.smartwatchextensions.main.ui.MainActivity
+import com.boswelja.smartwatchextensions.settingssync.BoolSettingKeys.BATTERY_SYNC_ENABLED_KEY
 import com.boswelja.smartwatchextensions.watchmanager.database.WatchSettingsDatabase
-import com.boswelja.watchconnection.core.Watch
+import com.boswelja.watchconnection.common.Watch
 import kotlinx.coroutines.flow.firstOrNull
 
 class WatchBatteryWidget : WatchWidgetProvider() {
@@ -38,12 +38,12 @@ class WatchBatteryWidget : WatchWidgetProvider() {
 
         val isBatterySyncEnabled = WatchSettingsDatabase.getInstance(context)
             .boolSettings()
-            .get(watch.id, BATTERY_SYNC_ENABLED_KEY)
+            .get(watch.uid, BATTERY_SYNC_ENABLED_KEY)
             .firstOrNull()
             ?.value ?: false
         if (isBatterySyncEnabled) {
             val batteryPercent = WatchBatteryStatsDatabase.getInstance(context)
-                .batteryStatsDao().getStats(watch.id).firstOrNull()?.percent ?: -1
+                .batteryStatsDao().getStats(watch.uid).firstOrNull()?.percent ?: -1
 
             // Set battery indicator image
             remoteViews.setImageViewResource(

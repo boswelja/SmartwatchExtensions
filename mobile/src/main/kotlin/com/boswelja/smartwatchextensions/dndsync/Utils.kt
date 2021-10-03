@@ -4,14 +4,12 @@ import android.app.NotificationManager
 import android.content.Context
 import androidx.core.content.getSystemService
 import com.boswelja.smartwatchextensions.R
-import com.boswelja.smartwatchextensions.common.dndsync.References.DND_STATUS_PATH
-import com.boswelja.smartwatchextensions.common.preference.PreferenceKey.DND_SYNC_TO_PHONE_KEY
-import com.boswelja.smartwatchextensions.common.preference.PreferenceKey.DND_SYNC_WITH_THEATER_KEY
 import com.boswelja.smartwatchextensions.common.toByteArray
 import com.boswelja.smartwatchextensions.messages.Message
 import com.boswelja.smartwatchextensions.messages.sendMessage
+import com.boswelja.smartwatchextensions.settingssync.BoolSettingKeys.DND_SYNC_TO_PHONE_KEY
+import com.boswelja.smartwatchextensions.settingssync.BoolSettingKeys.DND_SYNC_WITH_THEATER_KEY
 import com.boswelja.smartwatchextensions.watchmanager.WatchManager
-import java.util.UUID
 import kotlinx.coroutines.flow.first
 import timber.log.Timber
 
@@ -19,7 +17,7 @@ object Utils {
 
     suspend fun handleDnDStateChange(
         context: Context,
-        sourceWatchId: UUID,
+        sourceWatchId: String,
         isDnDEnabled: Boolean,
         watchManager: WatchManager = WatchManager.getInstance(context)
     ) {
@@ -31,7 +29,7 @@ object Utils {
             Timber.d("Successfully set DnD state")
             // TODO we need to check whether watches have DnD Sync on
             watchManager.registeredWatches.first()
-                .filterNot { it.id == sourceWatchId }.forEach { watch ->
+                .filterNot { it.uid == sourceWatchId }.forEach { watch ->
                     watchManager.sendMessage(watch, DND_STATUS_PATH, isDnDEnabled.toByteArray())
                 }
         } else {

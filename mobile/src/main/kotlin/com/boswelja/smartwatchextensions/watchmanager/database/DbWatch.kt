@@ -3,19 +3,27 @@ package com.boswelja.smartwatchextensions.watchmanager.database
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.boswelja.watchconnection.core.Watch
-import java.util.UUID
+import com.boswelja.watchconnection.common.Watch
 
 @Entity(tableName = "watches")
-class DbWatch(
-    @PrimaryKey override val id: UUID,
-    name: String,
-    @ColumnInfo(name = "platformId") override val internalId: String,
-    platform: String
-) : Watch(id, name, internalId, platform) {
+data class DbWatch(
+    @PrimaryKey val id: String,
+    val name: String,
+    @ColumnInfo(name = "platformId") val internalId: String,
+    val platform: String
+) {
+    fun toWatch(): Watch {
+        return Watch(
+            id,
+            name,
+            internalId,
+            platform
+        )
+    }
+
     companion object {
         fun Watch.toDbWatch(): DbWatch {
-            return DbWatch(id, name, internalId, platform)
+            return DbWatch(uid, name, internalId, platform)
         }
     }
 }

@@ -1,5 +1,6 @@
 package com.boswelja.smartwatchextensions.common.preference
 
+@Deprecated("Use settingssync module instead")
 object PreferenceKey {
 
     const val PHONE_LOCKING_ENABLED_KEY = "lock_phone_enabled"

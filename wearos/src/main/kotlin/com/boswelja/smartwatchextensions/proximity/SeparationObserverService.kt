@@ -6,7 +6,6 @@ import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
 import android.os.Binder
-import android.os.Build
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
@@ -14,10 +13,10 @@ import androidx.core.content.getSystemService
 import androidx.lifecycle.LifecycleService
 import androidx.lifecycle.lifecycleScope
 import com.boswelja.smartwatchextensions.R
+import com.boswelja.smartwatchextensions.discoveryClient
 import com.boswelja.smartwatchextensions.extensions.extensionSettingsStore
 import com.boswelja.smartwatchextensions.phoneStateStore
-import com.boswelja.smartwatchextensions.phoneconnectionmanager.Status
-import com.boswelja.smartwatchextensions.phoneconnectionmanager.phoneConnectionHelper
+import com.boswelja.watchconnection.common.discovery.ConnectionMode
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.first
@@ -27,7 +26,7 @@ import timber.log.Timber
 
 class SeparationObserverService : LifecycleService() {
 
-    private val connectionHelper by lazy { phoneConnectionHelper() }
+    private val discoveryClient by lazy { discoveryClient() }
     private val notificationManager by lazy { getSystemService<NotificationManager>()!! }
     private var hasNotifiedThisDisconnect = false
 
@@ -58,10 +57,10 @@ class SeparationObserverService : LifecycleService() {
     private fun collectPhoneState() {
         val phoneStateStore = phoneStateStore
         lifecycleScope.launch(Dispatchers.Default) {
-            connectionHelper.phoneStatus().collect { status ->
+            discoveryClient.connectionMode().collect { status ->
                 Timber.d("Got status %s", status)
                 val phoneName = phoneStateStore.data.map { it.name }
-                if (status == Status.CONNECTED_NEARBY) {
+                if (status == ConnectionMode.Bluetooth) {
                     notificationManager.cancel(SEPARATION_NOTI_ID)
                     hasNotifiedThisDisconnect = false
                 } else if (!hasNotifiedThisDisconnect) {
@@ -95,33 +94,29 @@ class SeparationObserverService : LifecycleService() {
     }
 
     private fun createObserverNotificationChannel() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            if (notificationManager.getNotificationChannel(OBSERVER_NOTI_CHANNEL_ID) == null) {
-                NotificationChannel(
-                    OBSERVER_NOTI_CHANNEL_ID,
-                    getString(R.string.proximity_observer_noti_channel_title),
-                    NotificationManager.IMPORTANCE_LOW
-                ).apply {
-                    enableLights(false)
-                    enableVibration(false)
-                    setShowBadge(false)
-                }.also {
-                    notificationManager.createNotificationChannel(it)
-                }
+        if (notificationManager.getNotificationChannel(OBSERVER_NOTI_CHANNEL_ID) == null) {
+            NotificationChannel(
+                OBSERVER_NOTI_CHANNEL_ID,
+                getString(R.string.proximity_observer_noti_channel_title),
+                NotificationManager.IMPORTANCE_LOW
+            ).apply {
+                enableLights(false)
+                enableVibration(false)
+                setShowBadge(false)
+            }.also {
+                notificationManager.createNotificationChannel(it)
             }
         }
     }
 
     private fun createSeparationNotificationChannel() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            if (notificationManager.getNotificationChannel(SEPARATION_NOTI_CHANNEL_ID) == null) {
-                NotificationChannel(
-                    SEPARATION_NOTI_CHANNEL_ID,
-                    getString(R.string.separation_noti_channel_title),
-                    NotificationManager.IMPORTANCE_HIGH
-                ).also {
-                    notificationManager.createNotificationChannel(it)
-                }
+        if (notificationManager.getNotificationChannel(SEPARATION_NOTI_CHANNEL_ID) == null) {
+            NotificationChannel(
+                SEPARATION_NOTI_CHANNEL_ID,
+                getString(R.string.separation_noti_channel_title),
+                NotificationManager.IMPORTANCE_HIGH
+            ).also {
+                notificationManager.createNotificationChannel(it)
             }
         }
     }

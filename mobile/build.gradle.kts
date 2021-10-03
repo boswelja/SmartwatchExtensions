@@ -68,6 +68,7 @@ dependencies {
     implementation(projects.appmanager)
     implementation(projects.batterysync)
     implementation(projects.dndsync)
+    implementation(projects.settingssync)
 
     implementation(libs.firebase.analytics)
 

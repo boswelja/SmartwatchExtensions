@@ -5,35 +5,31 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.core.content.getSystemService
 import androidx.datastore.core.DataStore
 import com.boswelja.smartwatchextensions.PhoneState
 import com.boswelja.smartwatchextensions.R
-import com.boswelja.smartwatchextensions.common.batterysync.BatteryStats
-import com.boswelja.smartwatchextensions.common.batterysync.BatteryStatsSerializer
-import com.boswelja.smartwatchextensions.common.batterysync.References.BATTERY_STATUS_PATH
-import com.boswelja.smartwatchextensions.common.batterysync.batteryStats
+import com.boswelja.smartwatchextensions.discoveryClient
 import com.boswelja.smartwatchextensions.extensions.ExtensionSettings
 import com.boswelja.smartwatchextensions.extensions.extensionSettingsStore
 import com.boswelja.smartwatchextensions.main.ui.MainActivity
 import com.boswelja.smartwatchextensions.messageClient
 import com.boswelja.smartwatchextensions.phoneStateStore
+import com.boswelja.watchconection.common.message.MessageReceiver
+import com.boswelja.watchconnection.common.message.Message
 import com.boswelja.watchconnection.common.message.ReceivedMessage
-import com.boswelja.watchconnection.common.message.serialized.TypedMessage
-import com.boswelja.watchconnection.common.message.serialized.TypedMessageReceiver
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import timber.log.Timber
 
-class PhoneBatteryUpdateReceiver : TypedMessageReceiver<BatteryStats?>(BatteryStatsSerializer()) {
+class PhoneBatteryUpdateReceiver : MessageReceiver<BatteryStats?>(BatteryStatsSerializer()) {
 
     private lateinit var notificationManager: NotificationManager
     private lateinit var phoneStateStore: DataStore<PhoneState>
     private lateinit var extensionSettingsStore: DataStore<ExtensionSettings>
 
-    override suspend fun onTypedMessageReceived(
+    override suspend fun onMessageReceived(
         context: Context,
         message: ReceivedMessage<BatteryStats?>
     ) {
@@ -211,7 +207,8 @@ class PhoneBatteryUpdateReceiver : TypedMessageReceiver<BatteryStats?>(BatterySt
         val batteryStats = context.batteryStats()
         if (batteryStats != null) {
             context.messageClient(listOf(BatteryStatsSerializer())).sendMessage(
-                TypedMessage(BATTERY_STATUS_PATH, batteryStats)
+                context.discoveryClient().pairedPhone()!!,
+                Message(BATTERY_STATUS_PATH, batteryStats)
             )
         } else {
             Timber.w("batteryStats null, skipping...")
@@ -219,9 +216,7 @@ class PhoneBatteryUpdateReceiver : TypedMessageReceiver<BatteryStats?>(BatterySt
     }
 
     private fun createNotificationChannel(context: Context) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O &&
-            notificationManager.getNotificationChannel(BATTERY_STATS_NOTI_CHANNEL_ID) == null
-        ) {
+        if (notificationManager.getNotificationChannel(BATTERY_STATS_NOTI_CHANNEL_ID) == null) {
             Timber.i("Creating notification channel")
             val channel =
                 NotificationChannel(

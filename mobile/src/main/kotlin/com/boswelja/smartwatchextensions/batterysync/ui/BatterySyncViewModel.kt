@@ -23,7 +23,6 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -52,12 +51,10 @@ class BatterySyncViewModel internal constructor(
     val watchLowNotiEnabled = watchManager.getBoolSetting(BATTERY_WATCH_LOW_NOTI_KEY)
     val batteryLowThreshold = watchManager.getIntSetting(BATTERY_LOW_THRESHOLD_KEY)
 
-    val canSyncBattery = watchManager.selectedWatchCapabilities().mapLatest { capabilities ->
-        capabilities.contains(Capability.SYNC_BATTERY)
-    }
+    val canSyncBattery = watchManager.selectedWatchHasCapability(Capability.SYNC_BATTERY)
 
     val batteryStats = watchManager.selectedWatch.flatMapLatest {
-        it?.let { database.batteryStatsDao().getStats(it.id) } ?: flow { }
+        it?.let { database.batteryStatsDao().getStats(it.uid) } ?: flow { }
     }
 
     fun setBatterySyncEnabled(isEnabled: Boolean) {
@@ -65,7 +62,7 @@ class BatterySyncViewModel internal constructor(
             val selectedWatch = watchManager.selectedWatch.first()
             if (isEnabled) {
                 val workerStartSuccessful = BatterySyncWorker.startWorker(
-                    getApplication(), selectedWatch!!.id
+                    getApplication(), selectedWatch!!.uid
                 )
                 if (workerStartSuccessful) {
                     watchManager.updatePreference(
@@ -81,7 +78,7 @@ class BatterySyncViewModel internal constructor(
                     selectedWatch!!, BATTERY_SYNC_ENABLED_KEY, isEnabled
                 )
                 BatterySyncWorker.stopWorker(
-                    getApplication(), selectedWatch.id
+                    getApplication(), selectedWatch.uid
                 )
                 WatchBatteryTileService.requestTileUpdate(getApplication())
                 WatchWidgetProvider.updateWidgets(getApplication())

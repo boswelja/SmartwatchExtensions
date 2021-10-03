@@ -34,7 +34,7 @@ import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.common.ui.AppTheme
 import com.boswelja.smartwatchextensions.common.ui.BaseWidgetConfigActivity
 import com.boswelja.smartwatchextensions.common.ui.UpNavigationAppBar
-import com.boswelja.watchconnection.core.Watch
+import com.boswelja.watchconnection.common.Watch
 
 class BatteryWidgetConfigActivity : BaseWidgetConfigActivity() {
 

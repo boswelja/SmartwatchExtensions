@@ -8,26 +8,11 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import com.boswelja.smartwatchextensions.common.appmanager.App
 import com.boswelja.smartwatchextensions.common.appmanager.AppList
-import com.boswelja.smartwatchextensions.common.appmanager.AppListSerializer
-import com.boswelja.smartwatchextensions.common.appmanager.Messages.APP_LIST
-import com.boswelja.smartwatchextensions.common.appmanager.Messages.APP_SENDING_COMPLETE
-import com.boswelja.smartwatchextensions.common.appmanager.Messages.APP_SENDING_START
+import com.boswelja.smartwatchextensions.discoveryClient
 import com.boswelja.smartwatchextensions.messageClient
-import com.boswelja.watchconnection.common.message.ByteArrayMessage
-import com.boswelja.watchconnection.common.message.serialized.TypedMessage
-import com.boswelja.watchconnection.wearos.message.MessageClient
-
-/**
- * Converts a given [ByteArray] to a package name string.
- * @return The package name, or null if data was invalid.
- */
-fun ByteArray.toPackageName(): String? {
-    return if (isNotEmpty()) {
-        String(this, Charsets.UTF_8)
-    } else {
-        null
-    }
-}
+import com.boswelja.watchconnection.common.message.Message
+import com.boswelja.watchconnection.wear.discovery.DiscoveryClient
+import com.boswelja.watchconnection.wear.message.MessageClient
 
 /**
  * Gets a launch intent for a given package and try start a new activity for it.
@@ -60,19 +45,24 @@ fun Context.requestUninstallPackage(packageName: String) {
 suspend fun Context.sendAllApps(
     messageClient: MessageClient = messageClient(
         listOf(AppListSerializer)
-    )
+    ),
+    discoveryClient: DiscoveryClient = discoveryClient()
 ) {
+    val pairedPhone = discoveryClient.pairedPhone()!!
+
     // Get all current packages
     val allApps = getAllApps()
 
     // Let the phone know what we're doing
     messageClient.sendMessage(
-        ByteArrayMessage(APP_SENDING_START)
+        pairedPhone,
+        Message(APP_SENDING_START, null)
     )
 
     // Send all apps
     messageClient.sendMessage(
-        TypedMessage(
+        pairedPhone,
+        Message(
             APP_LIST,
             AppList(allApps)
         )
@@ -80,7 +70,8 @@ suspend fun Context.sendAllApps(
 
     // Send a message notifying the phone of a successful operation
     messageClient.sendMessage(
-        ByteArrayMessage(APP_SENDING_COMPLETE)
+        pairedPhone,
+        Message(APP_SENDING_COMPLETE, null)
     )
 }
 

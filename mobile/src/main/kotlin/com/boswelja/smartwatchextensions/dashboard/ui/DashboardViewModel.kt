@@ -5,10 +5,11 @@ import androidx.lifecycle.AndroidViewModel
 import com.boswelja.smartwatchextensions.appmanager.database.WatchAppDatabase
 import com.boswelja.smartwatchextensions.batterysync.database.WatchBatteryStatsDatabase
 import com.boswelja.smartwatchextensions.watchmanager.WatchManager
-import com.boswelja.watchconnection.common.discovery.Status
+import com.boswelja.watchconnection.common.discovery.ConnectionMode
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOf
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class DashboardViewModel internal constructor(
@@ -29,20 +30,18 @@ class DashboardViewModel internal constructor(
     val status = watchManager.selectedWatch.flatMapLatest { watch ->
         watch?.let {
             watchManager.getStatusFor(watch)
-        } ?: flow {
-            emit(Status.ERROR)
-        }
+        } ?: flowOf(ConnectionMode.Disconnected)
     }
 
     val batteryStats = watchManager.selectedWatch.flatMapLatest { watch ->
         watch?.let {
-            batteryStatsDatabase.batteryStatsDao().getStats(watch.id)
+            batteryStatsDatabase.batteryStatsDao().getStats(watch.uid)
         } ?: flow { emit(null) }
     }
 
     val appCount = watchManager.selectedWatch.flatMapLatest { watch ->
         watch?.let {
-            appDatabase.apps().countForWatch(watch.id)
+            appDatabase.apps().countForWatch(watch.uid)
         } ?: flow { emit(0) }
     }
 }

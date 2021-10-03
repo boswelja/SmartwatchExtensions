@@ -5,10 +5,10 @@ import android.content.Intent
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import com.boswelja.smartwatchextensions.common.dndsync.References.REQUEST_INTERRUPT_FILTER_ACCESS_STATUS_PATH
 import com.boswelja.smartwatchextensions.common.fromByteArray
 import com.boswelja.smartwatchextensions.common.preference.PreferenceKey
 import com.boswelja.smartwatchextensions.dndsync.DnDLocalChangeService
+import com.boswelja.smartwatchextensions.dndsync.REQUEST_INTERRUPT_FILTER_ACCESS_STATUS_PATH
 import com.boswelja.smartwatchextensions.watchmanager.WatchManager
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow

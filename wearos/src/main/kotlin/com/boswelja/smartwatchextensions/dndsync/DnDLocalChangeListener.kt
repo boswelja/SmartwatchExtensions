@@ -12,20 +12,13 @@ import androidx.core.content.getSystemService
 import androidx.lifecycle.LifecycleService
 import androidx.lifecycle.lifecycleScope
 import com.boswelja.smartwatchextensions.R
-import com.boswelja.smartwatchextensions.common.dndsync.References.DND_STATUS_PATH
-import com.boswelja.smartwatchextensions.common.dndsync.References.DND_SYNC_LOCAL_NOTI_ID
-import com.boswelja.smartwatchextensions.common.dndsync.References.DND_SYNC_NOTI_CHANNEL_ID
-import com.boswelja.smartwatchextensions.common.dndsync.References.START_ACTIVITY_FROM_NOTI_ID
-import com.boswelja.smartwatchextensions.common.dndsync.dndState
-import com.boswelja.smartwatchextensions.common.toByteArray
+import com.boswelja.smartwatchextensions.discoveryClient
 import com.boswelja.smartwatchextensions.extensions.extensionSettingsStore
 import com.boswelja.smartwatchextensions.main.ui.MainActivity
-import com.boswelja.smartwatchextensions.phoneStateStore
-import com.google.android.gms.wearable.Wearable
-import kotlinx.coroutines.ExperimentalCoroutinesApi
+import com.boswelja.smartwatchextensions.messageClient
+import com.boswelja.watchconnection.common.message.Message
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -39,19 +32,17 @@ class DnDLocalChangeListener : LifecycleService() {
     private var theaterCollectorJob: Job? = null
     private var dndCollectorJob: Job? = null
 
-    private val messageClient by lazy { Wearable.getMessageClient(this) }
+    private val discoveryClient by lazy { discoveryClient() }
+    private val messageClient by lazy { messageClient(listOf(DnDStatusSerializer)) }
 
     private var dndSyncToPhone: Boolean = false
     private var dndSyncWithTheater: Boolean = false
 
-    @ExperimentalCoroutinesApi
     override fun onCreate() {
         super.onCreate()
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            Timber.d("Creating notification channel")
-            createNotificationChannel()
-        }
+        Timber.d("Creating notification channel")
+        createNotificationChannel()
 
         startForeground(DND_SYNC_LOCAL_NOTI_ID, createNotification())
 
@@ -119,7 +110,6 @@ class DnDLocalChangeListener : LifecycleService() {
      * @param isEnabled Whether this sync type should be enabled.
      * @return true if changes were made, false otherwise.
      */
-    @ExperimentalCoroutinesApi
     private fun setDnDSyncWithTheaterMode(isEnabled: Boolean): Boolean {
         Timber.d("setDnDSyncWithTheaterMode(%s) called", isEnabled)
         return if (dndSyncWithTheater != isEnabled) {
@@ -150,7 +140,6 @@ class DnDLocalChangeListener : LifecycleService() {
      * @param isEnabled Whether this sync type should be enabled.
      * @return true if changes were made, false otherwise.
      */
-    @ExperimentalCoroutinesApi
     private fun setDnDSyncToPhone(isEnabled: Boolean): Boolean {
         Timber.d("setDnDSyncToPhone(%s) called", isEnabled)
         return if (dndSyncToPhone != isEnabled) {
@@ -181,8 +170,10 @@ class DnDLocalChangeListener : LifecycleService() {
      */
     private suspend fun updateDnDState(dndSyncEnabled: Boolean) {
         Timber.d("DnD set to %s", dndSyncEnabled)
-        val phoneId = phoneStateStore.data.map { it.id }.first()
-        messageClient.sendMessage(phoneId, DND_STATUS_PATH, dndSyncEnabled.toByteArray())
+        messageClient.sendMessage(
+            discoveryClient.pairedPhone()!!,
+            Message(DND_STATUS_PATH, dndSyncEnabled)
+        )
     }
 
     /**

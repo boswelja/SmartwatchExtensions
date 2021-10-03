@@ -16,7 +16,6 @@ import androidx.wear.complications.datasource.ComplicationDataSourceUpdateReques
 import androidx.wear.complications.datasource.ComplicationRequest
 import com.boswelja.smartwatchextensions.ActionsActivity
 import com.boswelja.smartwatchextensions.R
-import com.boswelja.smartwatchextensions.common.batterysync.References.REQUEST_BATTERY_UPDATE_PATH
 import com.boswelja.smartwatchextensions.common.ui.getBatteryResource
 import com.boswelja.smartwatchextensions.phoneStateStore
 import kotlinx.coroutines.CoroutineScope

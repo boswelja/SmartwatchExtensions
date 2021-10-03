@@ -14,7 +14,7 @@ const val THEATER_MODE = "theater_mode_on"
 /**
  * Gets a [Flow] of this watches Theater Mode state.
  */
-@ExperimentalCoroutinesApi
+@OptIn(ExperimentalCoroutinesApi::class)
 fun Context.theaterMode(): Flow<Boolean> = callbackFlow {
     Timber.d("Starting theater_mode_on collector flow")
     val uri = Settings.Global.getUriFor(THEATER_MODE)

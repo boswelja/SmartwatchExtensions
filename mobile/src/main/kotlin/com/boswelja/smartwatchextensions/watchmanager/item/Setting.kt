@@ -8,7 +8,7 @@ import java.util.UUID
  */
 abstract class Setting<T>(
     @ColumnInfo(name = "id")
-    val watchId: UUID,
+    val watchId: String,
     @ColumnInfo(name = "pref_key")
     val key: String,
     @ColumnInfo(name = "value")

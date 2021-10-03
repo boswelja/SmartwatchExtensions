@@ -31,7 +31,7 @@ import com.boswelja.smartwatchextensions.appmanager.ui.AppSummarySmall
 import com.boswelja.smartwatchextensions.batterysync.ui.BatterySummarySmall
 import com.boswelja.smartwatchextensions.common.ui.StaggeredVerticalGrid
 import com.boswelja.smartwatchextensions.watchmanager.ui.WatchStatusSummarySmall
-import com.boswelja.watchconnection.common.discovery.Status
+import com.boswelja.watchconnection.common.discovery.ConnectionMode
 import kotlinx.coroutines.Dispatchers
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -43,7 +43,7 @@ fun DashboardScreen(
 ) {
     val scrollState = rememberScrollState()
     val viewModel: DashboardViewModel = viewModel()
-    val watchStatus by viewModel.status.collectAsState(Status.CONNECTING, Dispatchers.IO)
+    val watchStatus by viewModel.status.collectAsState(ConnectionMode.Disconnected, Dispatchers.IO)
     val batteryStats by viewModel.batteryStats.collectAsState(null, Dispatchers.IO)
     val appCount by viewModel.appCount.collectAsState(0, Dispatchers.IO)
 

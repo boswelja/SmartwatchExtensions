@@ -11,10 +11,10 @@ import kotlinx.coroutines.flow.Flow
 interface BatteryStatsDao {
 
     @Query("SELECT * FROM watch_battery_stats WHERE watchId = :watchId LIMIT 1")
-    fun getStats(watchId: UUID?): Flow<WatchBatteryStats>
+    fun getStats(watchId: String?): Flow<WatchBatteryStats>
 
     @Query("DELETE FROM watch_battery_stats WHERE watchId = :watchId")
-    suspend fun deleteStats(watchId: UUID)
+    suspend fun deleteStats(watchId: String)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun updateStats(batteryStats: WatchBatteryStats)

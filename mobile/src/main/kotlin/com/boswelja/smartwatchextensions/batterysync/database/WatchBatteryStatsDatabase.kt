@@ -8,7 +8,7 @@ import androidx.room.TypeConverters
 import com.boswelja.smartwatchextensions.common.RoomTypeConverters
 import com.boswelja.smartwatchextensions.common.SingletonHolder
 
-@Database(entities = [WatchBatteryStats::class], version = 2)
+@Database(entities = [WatchBatteryStats::class], version = 3)
 @TypeConverters(RoomTypeConverters::class)
 abstract class WatchBatteryStatsDatabase : RoomDatabase() {
 

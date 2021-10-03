@@ -11,8 +11,7 @@ import com.boswelja.smartwatchextensions.settings.Settings
 import com.boswelja.smartwatchextensions.settings.appSettingsStore
 import com.boswelja.smartwatchextensions.updatechecker.UpdateCheckWorker
 import com.boswelja.smartwatchextensions.watchmanager.WatchManager
-import com.boswelja.watchconnection.core.Watch
-import java.util.UUID
+import com.boswelja.watchconnection.common.Watch
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
@@ -32,7 +31,7 @@ class AppSettingsViewModel internal constructor(
         it.qsTileWatchId
     }.flatMapLatest { idString ->
         if (idString.isNotEmpty()) {
-            watchManager.getWatchById(UUID.fromString(idString))
+            watchManager.getWatchById(idString)
         } else {
             watchManager.registeredWatches.map { it.firstOrNull() }
         }
@@ -59,7 +58,7 @@ class AppSettingsViewModel internal constructor(
     fun setQSTilesWatch(watch: Watch) {
         viewModelScope.launch {
             dataStore.updateData {
-                it.copy(qsTileWatchId = watch.id.toString())
+                it.copy(qsTileWatchId = watch.uid)
             }
 
             WatchBatteryTileService.requestTileUpdate(getApplication())

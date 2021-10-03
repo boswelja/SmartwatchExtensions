@@ -15,15 +15,16 @@ import androidx.lifecycle.lifecycleScope
 import androidx.wear.compose.material.MaterialTheme
 import androidx.wear.compose.material.Text
 import androidx.wear.widget.ConfirmationOverlay
-import com.boswelja.smartwatchextensions.common.batterysync.References.REQUEST_BATTERY_UPDATE_PATH
+import com.boswelja.smartwatchextensions.batterysync.REQUEST_BATTERY_UPDATE_PATH
 import com.boswelja.smartwatchextensions.common.connection.Messages.LOCK_PHONE
 import com.boswelja.smartwatchextensions.common.ui.AppTheme
 import com.boswelja.smartwatchextensions.extensions.extensionSettingsStore
-import com.google.android.gms.wearable.Wearable
+import com.boswelja.watchconnection.common.message.Message
+import com.boswelja.watchconnection.wear.discovery.DiscoveryClient
+import com.boswelja.watchconnection.wear.message.MessageClient
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.tasks.await
 import timber.log.Timber
 
 /**
@@ -32,7 +33,8 @@ import timber.log.Timber
  */
 class ActionsActivity : ComponentActivity() {
 
-    private val messageClient by lazy { Wearable.getMessageClient(this) }
+    private val discoveryClient by lazy { DiscoveryClient(this) }
+    private val messageClient by lazy { MessageClient(this, listOf()) }
 
     private var isLoading by mutableStateOf(true)
 
@@ -135,9 +137,23 @@ class ActionsActivity : ComponentActivity() {
         successMessage: CharSequence,
         failMessage: CharSequence
     ) {
-        val nodeId = getPhoneID()
+        val phone = discoveryClient.pairedPhone()
+        if (phone == null) {
+            showConfirmationOverlay(
+                ConfirmationOverlay.FAILURE_ANIMATION,
+                failMessage
+            )
+            return
+        }
+
         try {
-            messageClient.sendMessage(nodeId, action, null).await()
+            messageClient.sendMessage(
+                phone,
+                Message(
+                    action,
+                    null
+                )
+            )
             // If we get this far, we've succeeded
             showConfirmationOverlay(
                 ConfirmationOverlay.SUCCESS_ANIMATION,
@@ -150,13 +166,6 @@ class ActionsActivity : ComponentActivity() {
                 failMessage
             )
         }
-    }
-
-    /**
-     * Gets the registered phone ID.
-     */
-    private suspend fun getPhoneID(): String {
-        return phoneStateStore.data.map { it.id }.first()
     }
 
     /**

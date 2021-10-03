@@ -4,8 +4,7 @@ import android.service.quicksettings.Tile
 import android.service.quicksettings.TileService
 import com.boswelja.smartwatchextensions.settings.appSettingsStore
 import com.boswelja.smartwatchextensions.watchmanager.WatchManager
-import com.boswelja.watchconnection.core.Watch
-import java.util.UUID
+import com.boswelja.watchconnection.common.Watch
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -59,8 +58,7 @@ abstract class WatchTileService : TileService() {
         this.watchId = watchId
         val watchManager = WatchManager.getInstance(this)
         return if (watchId.isNotBlank()) {
-            val id = UUID.fromString(watchId)
-            watchManager.getWatchById(id).firstOrNull()
+            watchManager.getWatchById(watchId).firstOrNull()
         } else {
             val watch = WatchManager.getInstance(this)
                 .registeredWatches
@@ -68,7 +66,7 @@ abstract class WatchTileService : TileService() {
                 .firstOrNull()
 
             if (watch != null) {
-                appSettingsStore.updateData { it.copy(qsTileWatchId = watch.id.toString()) }
+                appSettingsStore.updateData { it.copy(qsTileWatchId = watch.uid) }
             }
             watch
         }

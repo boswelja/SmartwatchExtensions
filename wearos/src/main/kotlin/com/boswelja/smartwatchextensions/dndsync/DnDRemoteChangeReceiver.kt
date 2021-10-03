@@ -3,24 +3,20 @@ package com.boswelja.smartwatchextensions.dndsync
 import android.app.NotificationManager
 import android.app.NotificationManager.INTERRUPTION_FILTER_ALL
 import android.app.NotificationManager.INTERRUPTION_FILTER_PRIORITY
+import android.content.Context
 import androidx.core.content.getSystemService
-import com.boswelja.smartwatchextensions.common.dndsync.References.DND_STATUS_PATH
-import com.boswelja.smartwatchextensions.common.fromByteArray
-import com.google.android.gms.wearable.MessageEvent
-import com.google.android.gms.wearable.WearableListenerService
+import com.boswelja.watchconection.common.message.MessageReceiver
+import com.boswelja.watchconnection.common.message.ReceivedMessage
 import timber.log.Timber
 
 /**
- * A [WearableListenerService] that receives DnD changes from the connected phone.
+ * A [MessageReceiver] that receives DnD changes from the connected phone.
  */
-class DnDRemoteChangeReceiver : WearableListenerService() {
+class DnDRemoteChangeReceiver : MessageReceiver<Boolean>(DnDStatusSerializer) {
 
-    override fun onMessageReceived(messageEvent: MessageEvent?) {
-        if (messageEvent?.path != DND_STATUS_PATH) return
-        val interruptFilterEnabled = Boolean.fromByteArray(messageEvent.data)
-        val notificationManager = getSystemService<NotificationManager>()!!
-        notificationManager.setDnD(interruptFilterEnabled)
-        // TODO Let phone know if there's as an issue
+    override suspend fun onMessageReceived(context: Context, message: ReceivedMessage<Boolean>) {
+        val notificationManager = context.getSystemService<NotificationManager>()!!
+        notificationManager.setDnD(message.data)
     }
 
     /**

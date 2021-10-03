@@ -9,10 +9,8 @@ import com.boswelja.smartwatchextensions.common.RoomTypeConverters
 import com.boswelja.smartwatchextensions.common.SingletonHolder
 import com.boswelja.smartwatchextensions.watchmanager.item.BoolSetting
 import com.boswelja.smartwatchextensions.watchmanager.item.IntSetting
-import com.boswelja.watchconnection.core.Watch
-import java.util.UUID
 
-@Database(entities = [IntSetting::class, BoolSetting::class], version = 1)
+@Database(entities = [IntSetting::class, BoolSetting::class], version = 2)
 @TypeConverters(RoomTypeConverters::class)
 abstract class WatchSettingsDatabase : RoomDatabase() {
     abstract fun intSettings(): IntSettingDao
@@ -26,7 +24,7 @@ abstract class WatchSettingsDatabase : RoomDatabase() {
      * @return true if the setting was successfully updated, false otherwise.
      */
     suspend fun updateSetting(
-        watchId: UUID,
+        watchId: String,
         key: String,
         newValue: Any
     ): Boolean {

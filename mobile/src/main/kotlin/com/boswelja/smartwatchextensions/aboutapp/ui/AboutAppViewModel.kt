@@ -34,7 +34,7 @@ class AboutAppViewModel internal constructor(
         // Send app version request to selected watches
         viewModelScope.launch {
             watchManager.selectedWatch.collect { watch ->
-                if (watch?.id != null) {
+                if (watch?.uid != null) {
                     watchManager.sendMessage(watch, REQUEST_APP_VERSION, null)
                     _watchAppVersion.emit(null)
                 } else {
@@ -46,7 +46,7 @@ class AboutAppViewModel internal constructor(
 
         // Listen for app version responses
         viewModelScope.launch {
-            watchManager.incomingMessages(VersionSerializer)
+            watchManager.incomingMessages<Version>(VersionSerializer)
                 .collect { message -> _watchAppVersion.tryEmit(message.data) }
         }
     }

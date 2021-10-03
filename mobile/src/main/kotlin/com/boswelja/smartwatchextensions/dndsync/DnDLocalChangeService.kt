@@ -9,15 +9,11 @@ import androidx.lifecycle.LifecycleService
 import androidx.lifecycle.lifecycleScope
 import com.boswelja.smartwatchextensions.NotificationChannelHelper
 import com.boswelja.smartwatchextensions.common.R
-import com.boswelja.smartwatchextensions.common.dndsync.References
-import com.boswelja.smartwatchextensions.common.dndsync.References.DND_STATUS_PATH
-import com.boswelja.smartwatchextensions.common.dndsync.dndState
-import com.boswelja.smartwatchextensions.common.preference.PreferenceKey.DND_SYNC_TO_WATCH_KEY
 import com.boswelja.smartwatchextensions.common.toByteArray
 import com.boswelja.smartwatchextensions.main.ui.MainActivity
+import com.boswelja.smartwatchextensions.settingssync.BoolSettingKeys.DND_SYNC_TO_WATCH_KEY
 import com.boswelja.smartwatchextensions.watchmanager.WatchManager
-import com.boswelja.watchconnection.core.Watch
-import com.google.android.gms.wearable.DataClient
+import com.boswelja.watchconnection.common.Watch
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.collect
@@ -86,7 +82,7 @@ class DnDLocalChangeService : LifecycleService() {
             PendingIntent.FLAG_IMMUTABLE
         )
 
-        return NotificationCompat.Builder(this, References.DND_SYNC_NOTI_CHANNEL_ID)
+        return NotificationCompat.Builder(this, DND_SYNC_NOTI_CHANNEL_ID)
             .setContentTitle(getString(R.string.interrupt_filter_sync_active_noti_title))
             .setContentText(getString(R.string.interrupt_filter_sync_to_phone_noti_desc))
             .setSmallIcon(R.drawable.ic_sync)

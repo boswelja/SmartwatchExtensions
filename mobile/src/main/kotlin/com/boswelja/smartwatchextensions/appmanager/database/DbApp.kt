@@ -4,7 +4,7 @@ import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import androidx.core.content.pm.PackageInfoCompat
 import androidx.room.Entity
-import java.util.UUID
+import com.boswelja.smartwatchextensions.appmanager.App
 
 /**
  * A data class to store information we want to use from [PackageInfo] in a serializable format.
@@ -22,7 +22,7 @@ import java.util.UUID
  */
 @Entity(tableName = "watch_apps", primaryKeys = ["watchId", "packageName"])
 data class DbApp(
-    val watchId: UUID,
+    val watchId: String,
     val version: String,
     val packageName: String,
     val label: String,
@@ -34,7 +34,7 @@ data class DbApp(
     val requestedPermissions: List<String>
 ) {
 
-    constructor(watchId: UUID, app: com.boswelja.smartwatchextensions.common.appmanager.App) : this(
+    constructor(watchId: String, app: App) : this(
         watchId,
         app.version,
         app.packageName,
@@ -46,31 +46,4 @@ data class DbApp(
         app.lastUpdateTime,
         app.requestedPermissions
     )
-
-    override fun toString(): String {
-        return label
-    }
-
-    override fun equals(other: Any?): Boolean {
-        return if (other is DbApp) {
-            watchId == other.watchId &&
-                packageName == other.packageName &&
-                installTime == other.installTime &&
-                lastUpdateTime == other.lastUpdateTime
-        } else {
-            super.equals(other)
-        }
-    }
-
-    override fun hashCode(): Int {
-        var result = version.hashCode()
-        result = 31 * result + watchId.hashCode()
-        result = 31 * result + packageName.hashCode()
-        result = 31 * result + label.hashCode()
-        result = 31 * result + isSystemApp.hashCode()
-        result = 31 * result + hasLaunchActivity.hashCode()
-        result = 31 * result + installTime.hashCode()
-        result = 31 * result + lastUpdateTime.hashCode()
-        return result
-    }
 }

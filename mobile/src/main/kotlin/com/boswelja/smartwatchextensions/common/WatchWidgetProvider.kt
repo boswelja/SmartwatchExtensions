@@ -16,8 +16,7 @@ import com.boswelja.smartwatchextensions.main.ui.MainActivity
 import com.boswelja.smartwatchextensions.main.ui.MainActivity.Companion.EXTRA_WATCH_ID
 import com.boswelja.smartwatchextensions.watchmanager.WatchManager
 import com.boswelja.smartwatchextensions.widget.widgetIdStore
-import com.boswelja.watchconnection.core.Watch
-import java.util.UUID
+import com.boswelja.watchconnection.common.Watch
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.firstOrNull
@@ -56,11 +55,11 @@ abstract class WatchWidgetProvider : AppWidgetProvider() {
      */
     open fun onCreateClickIntent(
         context: Context,
-        watchId: UUID?
+        watchId: String?
     ): PendingIntent? {
         val intent = Intent(context, MainActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK
-            watchId?.let { putExtra(EXTRA_WATCH_ID, it.toString()) }
+            watchId?.let { putExtra(EXTRA_WATCH_ID, it) }
         }
         return PendingIntent.getActivity(
             context,
@@ -132,13 +131,7 @@ abstract class WatchWidgetProvider : AppWidgetProvider() {
         val widgetIdStore = context.widgetIdStore
         val watchId = widgetIdStore.data.map { preferences ->
             preferences[stringPreferencesKey(appWidgetId.toString())]
-        }.firstOrNull()?.let { value ->
-            try {
-                UUID.fromString(value)
-            } catch (e: Exception) {
-                null
-            }
-        }
+        }.firstOrNull()
         val watch = watchId?.let {
             WatchManager.getInstance(context)
                 .getWatchById(watchId)

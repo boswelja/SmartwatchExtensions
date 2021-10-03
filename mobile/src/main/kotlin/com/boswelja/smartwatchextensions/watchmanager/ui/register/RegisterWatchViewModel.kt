@@ -5,7 +5,7 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.boswelja.smartwatchextensions.watchmanager.WatchManager
-import com.boswelja.watchconnection.core.Watch
+import com.boswelja.watchconnection.common.Watch
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -35,7 +35,7 @@ class RegisterWatchViewModel internal constructor(
             watchManager.availableWatches.collect { watches ->
                 Timber.d("Got %s watches", watches.count())
                 watches.forEach { watch ->
-                    Timber.i("Adding watch %s", watch.id)
+                    Timber.i("Adding watch %s", watch.uid)
                     addWatch(watch)
                 }
             }
