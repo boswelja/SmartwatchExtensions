@@ -6,9 +6,9 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.boswelja.smartwatchextensions.common.fromByteArray
-import com.boswelja.smartwatchextensions.common.preference.PreferenceKey
 import com.boswelja.smartwatchextensions.dndsync.DnDLocalChangeService
 import com.boswelja.smartwatchextensions.dndsync.REQUEST_INTERRUPT_FILTER_ACCESS_STATUS_PATH
+import com.boswelja.smartwatchextensions.settingssync.BoolSettingKeys.DND_SYNC_TO_WATCH_KEY
 import com.boswelja.smartwatchextensions.watchmanager.WatchManager
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -61,7 +61,7 @@ class HelperViewModel internal constructor(
             val selectedWatch = watchManager.selectedWatch.first()
             watchManager.updatePreference(
                 selectedWatch!!,
-                PreferenceKey.DND_SYNC_TO_WATCH_KEY, isEnabled
+                DND_SYNC_TO_WATCH_KEY, isEnabled
             )
             if (isEnabled) {
                 val context = getApplication<Application>()

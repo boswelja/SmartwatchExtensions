@@ -10,9 +10,9 @@ import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.batterysync.database.WatchBatteryStatsDatabase
 import com.boswelja.smartwatchextensions.common.WatchTileService
 import com.boswelja.smartwatchextensions.common.getBatteryDrawable
-import com.boswelja.smartwatchextensions.common.preference.PreferenceKey.BATTERY_SYNC_ENABLED_KEY
 import com.boswelja.smartwatchextensions.main.ui.MainActivity
 import com.boswelja.smartwatchextensions.main.ui.MainActivity.Companion.EXTRA_WATCH_ID
+import com.boswelja.smartwatchextensions.settingssync.BoolSettingKeys.BATTERY_SYNC_ENABLED_KEY
 import com.boswelja.smartwatchextensions.watchmanager.database.WatchSettingsDatabase
 import com.boswelja.watchconnection.common.Watch
 import kotlinx.coroutines.flow.first

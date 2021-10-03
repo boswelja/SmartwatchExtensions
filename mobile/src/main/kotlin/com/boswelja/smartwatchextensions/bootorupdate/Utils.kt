@@ -4,10 +4,11 @@ import android.content.Context
 import android.content.Intent
 import androidx.core.content.ContextCompat
 import com.boswelja.smartwatchextensions.batterysync.BatterySyncWorker
-import com.boswelja.smartwatchextensions.common.preference.PreferenceKey
-import com.boswelja.smartwatchextensions.common.preference.PreferenceKey.WATCH_SEPARATION_NOTI_KEY
 import com.boswelja.smartwatchextensions.dndsync.DnDLocalChangeService
 import com.boswelja.smartwatchextensions.proximity.SeparationObserverService
+import com.boswelja.smartwatchextensions.settingssync.BoolSettingKeys.BATTERY_SYNC_ENABLED_KEY
+import com.boswelja.smartwatchextensions.settingssync.BoolSettingKeys.DND_SYNC_TO_WATCH_KEY
+import com.boswelja.smartwatchextensions.settingssync.BoolSettingKeys.WATCH_SEPARATION_NOTI_KEY
 import com.boswelja.smartwatchextensions.watchmanager.database.WatchSettingsDatabase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
@@ -30,7 +31,7 @@ internal suspend fun Context.restartServices() {
 private suspend fun Context.tryStartInterruptFilterSyncService(database: WatchSettingsDatabase) {
     withContext(Dispatchers.IO) {
         val dndSyncToWatchEnabled =
-            database.boolSettings().getByKey(PreferenceKey.DND_SYNC_TO_WATCH_KEY).first().any {
+            database.boolSettings().getByKey(DND_SYNC_TO_WATCH_KEY).first().any {
                 it.value
             }
         Timber.i(
@@ -57,7 +58,7 @@ private suspend fun Context.tryStartSeparationObserverService(database: WatchSet
 private suspend fun Context.tryStartBatterySyncWorkers(database: WatchSettingsDatabase) {
     withContext(Dispatchers.IO) {
         val watchBatterySyncInfo =
-            database.boolSettings().getByKey(PreferenceKey.BATTERY_SYNC_ENABLED_KEY).first()
+            database.boolSettings().getByKey(BATTERY_SYNC_ENABLED_KEY).first()
         if (watchBatterySyncInfo.isNotEmpty()) {
             for (batterySyncBoolPreference in watchBatterySyncInfo) {
                 if (batterySyncBoolPreference.value) {

@@ -3,7 +3,7 @@ package com.boswelja.smartwatchextensions.phonelocking
 import android.accessibilityservice.AccessibilityService
 import android.view.accessibility.AccessibilityEvent
 import com.boswelja.smartwatchextensions.common.connection.Messages.LOCK_PHONE
-import com.boswelja.smartwatchextensions.common.preference.PreferenceKey.PHONE_LOCKING_ENABLED_KEY
+import com.boswelja.smartwatchextensions.settingssync.BoolSettingKeys.PHONE_LOCKING_ENABLED_KEY
 import com.boswelja.smartwatchextensions.watchmanager.WatchManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
