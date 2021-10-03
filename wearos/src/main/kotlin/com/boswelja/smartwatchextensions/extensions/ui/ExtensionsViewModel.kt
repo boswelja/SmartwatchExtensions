@@ -71,5 +71,4 @@ class ExtensionsViewModel internal constructor(
         }
         return false
     }
-
 }

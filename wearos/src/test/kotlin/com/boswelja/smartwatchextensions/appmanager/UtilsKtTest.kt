@@ -4,16 +4,10 @@ import android.content.Context
 import android.os.Build
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.boswelja.smartwatchextensions.common.appmanager.App
-import com.boswelja.smartwatchextensions.common.appmanager.AppList
-import com.boswelja.smartwatchextensions.common.appmanager.Messages.APP_LIST
-import com.boswelja.smartwatchextensions.common.appmanager.Messages.APP_SENDING_COMPLETE
-import com.boswelja.smartwatchextensions.common.appmanager.Messages.APP_SENDING_START
-import com.boswelja.watchconnection.common.message.ByteArrayMessage
-import com.boswelja.watchconnection.common.message.serialized.TypedMessage
-import com.boswelja.watchconnection.core.Phone
-import com.boswelja.watchconnection.wearos.discovery.DiscoveryClient
-import com.boswelja.watchconnection.wearos.message.MessageClient
+import com.boswelja.watchconnection.common.Phone
+import com.boswelja.watchconnection.common.message.Message
+import com.boswelja.watchconnection.wear.discovery.DiscoveryClient
+import com.boswelja.watchconnection.wear.message.MessageClient
 import io.mockk.coEvery
 import io.mockk.coVerifyOrder
 import io.mockk.every
@@ -28,7 +22,7 @@ import org.robolectric.annotation.Config
 @Config(sdk = [Build.VERSION_CODES.R])
 class UtilsKtTest {
 
-    private val phone = Phone("name", "id")
+    private val phone = Phone("id", "name")
     private val dummyApps = createDummyApps(0..10)
 
     @Test
@@ -43,7 +37,7 @@ class UtilsKtTest {
 
         // Mock message client
         val messageClient = mockk<MessageClient>()
-        coEvery { messageClient.sendMessage(any(), any()) } returns true
+        coEvery { messageClient.sendMessage(any(), any<Message<Any?>>()) } returns true
 
         // Make the call
         ApplicationProvider.getApplicationContext<Context>()
@@ -51,9 +45,9 @@ class UtilsKtTest {
 
         // Verify messages
         coVerifyOrder {
-            messageClient.sendMessage(phone, ByteArrayMessage(APP_SENDING_START))
-            messageClient.sendMessage(phone, TypedMessage(APP_LIST, AppList(dummyApps)))
-            messageClient.sendMessage(phone, ByteArrayMessage(APP_SENDING_COMPLETE))
+            messageClient.sendMessage(phone, Message(APP_SENDING_START, null))
+            messageClient.sendMessage(phone, Message(APP_LIST, AppList(dummyApps)))
+            messageClient.sendMessage(phone, Message(APP_SENDING_COMPLETE, null))
         }
     }
 

@@ -11,14 +11,11 @@ import androidx.work.workDataOf
 import com.boswelja.smartwatchextensions.WatchManagerTestRule
 import com.boswelja.smartwatchextensions.appmanager.AppCacheUpdateWorker.Companion.EXTRA_WATCH_ID
 import com.boswelja.smartwatchextensions.appmanager.database.WatchAppDatabase
-import com.boswelja.smartwatchextensions.common.appmanager.Messages.VALIDATE_CACHE
-import com.boswelja.smartwatchextensions.watchmanager.database.DbWatch.Companion.toDbWatch
-import com.boswelja.watchconnection.core.Watch
+import com.boswelja.watchconnection.common.Watch
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockkObject
-import java.util.UUID
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.runBlocking
 import org.junit.Before
@@ -36,7 +33,7 @@ class AppCacheUpdateWorkerTest {
     @get:Rule
     val watchManagerRule = WatchManagerTestRule()
 
-    private val watch = Watch(UUID.randomUUID(), "", "", "")
+    private val watch = Watch("", "", "")
 
     private lateinit var context: Context
 
@@ -48,8 +45,8 @@ class AppCacheUpdateWorkerTest {
 
         // Mock Watch Manager
         every {
-            watchManagerRule.watchManager.getWatchById(watch.id)
-        } returns flow { emit(watch.toDbWatch()) }
+            watchManagerRule.watchManager.getWatchById(watch.uid)
+        } returns flow { emit(watch) }
 
         // Set up dummy database
         appDatabase = Room.inMemoryDatabaseBuilder(context, WatchAppDatabase::class.java)
@@ -67,7 +64,7 @@ class AppCacheUpdateWorkerTest {
         // Build worker
         val worker = TestListenableWorkerBuilder<AppCacheUpdateWorker>(
             context = context,
-            inputData = workDataOf(EXTRA_WATCH_ID to watch.id.toString())
+            inputData = workDataOf(EXTRA_WATCH_ID to watch.uid)
         ).build()
 
         // Mock message send failure
@@ -83,7 +80,7 @@ class AppCacheUpdateWorkerTest {
         // Build worker
         val worker = TestListenableWorkerBuilder<AppCacheUpdateWorker>(
             context = context,
-            inputData = workDataOf(EXTRA_WATCH_ID to watch.id.toString())
+            inputData = workDataOf(EXTRA_WATCH_ID to watch.uid)
         ).build()
 
         // Mock message send success
@@ -99,7 +96,7 @@ class AppCacheUpdateWorkerTest {
         // Build worker
         val worker = TestListenableWorkerBuilder<AppCacheUpdateWorker>(
             context = context,
-            inputData = workDataOf(EXTRA_WATCH_ID to watch.id.toString())
+            inputData = workDataOf(EXTRA_WATCH_ID to watch.uid)
         ).build()
 
         // Mock message send failure

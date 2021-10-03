@@ -2,22 +2,19 @@ package com.boswelja.smartwatchextensions.appmanager.ui
 
 import android.app.Application
 import android.os.Build
-import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.boswelja.smartwatchextensions.WatchManagerTestRule
+import com.boswelja.smartwatchextensions.appmanager.REQUEST_OPEN_PACKAGE
+import com.boswelja.smartwatchextensions.appmanager.REQUEST_UNINSTALL_PACKAGE
+import com.boswelja.smartwatchextensions.appmanager.VALIDATE_CACHE
 import com.boswelja.smartwatchextensions.appmanager.database.DbApp
 import com.boswelja.smartwatchextensions.appmanager.database.WatchAppDatabase
-import com.boswelja.smartwatchextensions.common.appmanager.Messages.REQUEST_OPEN_PACKAGE
-import com.boswelja.smartwatchextensions.common.appmanager.Messages.REQUEST_UNINSTALL_PACKAGE
-import com.boswelja.smartwatchextensions.common.appmanager.Messages.VALIDATE_CACHE
-import com.boswelja.smartwatchextensions.watchmanager.database.DbWatch.Companion.toDbWatch
-import com.boswelja.watchconnection.core.Watch
+import com.boswelja.watchconnection.common.Watch
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
-import java.util.UUID
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.flow
@@ -34,10 +31,9 @@ import org.robolectric.annotation.Config
 @Config(sdk = [Build.VERSION_CODES.R])
 class AppManagerViewModelTest {
 
-    private val watch = Watch(UUID.randomUUID(), "", "", "")
+    private val watch = Watch("", "", "")
     private val app = DbApp(
-        watchId = watch.id,
-        icon = null,
+        watchId = watch.uid,
         version = "",
         packageName = "",
         label = "",
@@ -48,9 +44,6 @@ class AppManagerViewModelTest {
         lastUpdateTime = 0,
         requestedPermissions = emptyList()
     )
-
-    @get:Rule
-    val taskExecutorRule = InstantTaskExecutorRule()
 
     @get:Rule
     val watchManagerRule = WatchManagerTestRule()
@@ -71,7 +64,7 @@ class AppManagerViewModelTest {
 
         every {
             watchManagerRule.watchManager.selectedWatch
-        } returns flow { emit(watch.toDbWatch()) }
+        } returns flow { emit(watch) }
         every {
             watchManagerRule.watchManager.registeredWatches
         } returns flow { emit(listOf(watch)) }

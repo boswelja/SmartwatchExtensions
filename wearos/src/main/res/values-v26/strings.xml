@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-
-    <!-- Notification Channel strings -->
-    <string name="noti_channel_battery_stats_title">Phone Battery Alerts</string>
-    <string name="noti_channel_dnd_sync_title">Do not Disturb Sync</string>
-
-</resources>

@@ -1,7 +1,6 @@
 package com.boswelja.smartwatchextensions.watchmanager.item
 
 import androidx.room.ColumnInfo
-import java.util.UUID
 
 /**
  * An abstract class for storing preferences inside a Room database.

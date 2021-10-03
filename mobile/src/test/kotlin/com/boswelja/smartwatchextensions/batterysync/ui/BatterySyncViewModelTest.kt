@@ -1,7 +1,6 @@
 package com.boswelja.smartwatchextensions.batterysync.ui
 
 import android.os.Build
-import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.boswelja.smartwatchextensions.common.connection.Capability
@@ -21,7 +20,6 @@ import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.annotation.Config
@@ -34,10 +32,8 @@ import strikt.assertions.isTrue
 @Config(sdk = [Build.VERSION_CODES.R])
 class BatterySyncViewModelTest {
 
-    @get:Rule val taskExecutorRule = InstantTaskExecutorRule()
-
     private val dummyWatch = Watch("Name", "id", "platform")
-    private val hasCapability = MutableStateFlow<Boolean>(false)
+    private val hasCapability = MutableStateFlow(false)
     private val dummyWatchLive = MutableStateFlow(dummyWatch)
     private val testDispatcher = TestCoroutineDispatcher()
 

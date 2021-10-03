@@ -50,4 +50,8 @@
     <string name="loading">Loading</string>
     <string name="default_phone_name">Phone</string>
     <string name="phone_not_connected">Can\'t connect to your phone</string>
+
+    <!-- Notification Channel strings -->
+    <string name="noti_channel_battery_stats_title">Phone Battery Alerts</string>
+    <string name="noti_channel_dnd_sync_title">Do not Disturb Sync</string>
 </resources>

@@ -90,12 +90,10 @@ dependencies {
     implementation(libs.watchconnection.platform.wearos)
 
     implementation(libs.bundles.compose.mobile)
-    implementation(libs.androidx.compose.ui.viewbinding)
 
     ksp(libs.androidx.room.compiler)
 
     testImplementation(libs.androidx.work.test)
-    testImplementation(libs.androidx.arch.core.test)
     testImplementation(libs.androidx.test.corektx)
     testImplementation(libs.androidx.test.ext.junit)
     testImplementation(libs.kotlinx.coroutines.test)
@@ -105,7 +103,6 @@ dependencies {
     testImplementation(libs.mockk.core)
     testImplementation(libs.robolectric)
 
-    androidTestImplementation(libs.androidx.arch.core.test)
     androidTestImplementation(libs.androidx.test.espresso)
     androidTestImplementation(libs.androidx.test.runner)
     androidTestImplementation(libs.androidx.test.rules)

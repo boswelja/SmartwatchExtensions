@@ -48,14 +48,6 @@
     <string name="pref_dnd_sync_with_theater_title">Sync with watch Theater mode</string>
     <string name="pref_dnd_sync_with_theater_summary">Sync DnD state with Wear OS theater mode</string>
     <string name="dnd_sync_request_policy_access_message">Please grant Smartwatch Extensions permission to change Do Not Disturb state</string>
-    <string name="dnd_sync_helper_success_title">All Set!</string>
-    <string name="dnd_sync_helper_success_message">Phone to Watch Sync has successfully been enabled!</string>
-    <string name="dnd_sync_helper_failed_title">Something Went Wrong</string>
-    <string name="dnd_sync_helper_failed_message">Failed to enable Phone to Watch sync.</string>
-    <string name="dnd_sync_helper_setup_title">Setup</string>
-    <string name="dnd_sync_error_title">Error Syncing DnD</string>
-    <string name="dnd_sync_error_summary">We couldn\'t sync Do not Disturb state with your watch. This was likely due to the required permission being revoked. We\'ve disabled DnD Sync to your phone because of this.</string>
-    <string name="setup_step_format">%s.</string>
 
     <!-- App Manager strings -->
     <string name="main_app_manager_title">App Manager</string>
@@ -132,8 +124,6 @@
 
     <!-- Multi-watch strings -->
     <string name="watch_status_connected">Connected</string>
-    <string name="watch_status_disconnected">Disconnected</string>
-    <string name="watch_status_missing_app">Missing App</string>
     <string name="watch_status_error">Error</string>
     <string name="watch_status_connecting">Connecting</string>
 

@@ -1,17 +1,15 @@
 package com.boswelja.smartwatchextensions.batterysync.widget.config
 
 import android.os.Build
-import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.boswelja.smartwatchextensions.watchmanager.database.WatchDatabase
-import com.boswelja.watchconnection.core.Watch
+import com.boswelja.watchconnection.common.Watch
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.annotation.Config
@@ -22,9 +20,6 @@ import strikt.assertions.isEmpty
 @RunWith(AndroidJUnit4::class)
 @Config(sdk = [Build.VERSION_CODES.R])
 class BatteryWidgetConfigViewModelTest {
-
-    @get:Rule
-    val instantExecutorRule = InstantTaskExecutorRule()
 
     private val dummyPlatform = "platform"
     private val dummyWatch1 = Watch("an-id-1234", "Watch 1", dummyPlatform)

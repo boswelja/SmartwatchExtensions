@@ -2,7 +2,6 @@ package com.boswelja.smartwatchextensions.watchmanager
 
 import android.os.Build
 import android.util.Log
-import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.room.Room
@@ -15,12 +14,14 @@ import com.boswelja.smartwatchextensions.AppState
 import com.boswelja.smartwatchextensions.analytics.Analytics
 import com.boswelja.smartwatchextensions.appmanager.database.WatchAppDatabase
 import com.boswelja.smartwatchextensions.batterysync.database.WatchBatteryStatsDatabase
-import com.boswelja.smartwatchextensions.common.connection.Messages
 import com.boswelja.smartwatchextensions.common.connection.Messages.CLEAR_PREFERENCES
+import com.boswelja.smartwatchextensions.common.connection.Messages.RESET_APP
+import com.boswelja.smartwatchextensions.common.connection.Messages.WATCH_REGISTERED_PATH
 import com.boswelja.smartwatchextensions.watchmanager.database.DbWatch.Companion.toDbWatch
 import com.boswelja.smartwatchextensions.watchmanager.database.WatchDatabase
 import com.boswelja.smartwatchextensions.watchmanager.database.WatchSettingsDatabase
-import com.boswelja.watchconnection.core.Watch
+import com.boswelja.watchconnection.common.Watch
+import com.boswelja.watchconnection.common.message.Message
 import com.boswelja.watchconnection.core.discovery.DiscoveryClient
 import com.boswelja.watchconnection.core.message.MessageClient
 import io.mockk.MockKAnnotations
@@ -37,7 +38,6 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.TestCoroutineScope
 import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.annotation.Config
@@ -50,8 +50,6 @@ import strikt.assertions.isNull
 @Config(sdk = [Build.VERSION_CODES.R])
 @ExperimentalCoroutinesApi
 class WatchManagerTest {
-
-    @get:Rule val taskExecutorRule = InstantTaskExecutorRule()
 
     private val platformIdentifier = "dummy"
 
@@ -98,7 +96,7 @@ class WatchManagerTest {
     @Test
     fun `selectedWatch is updated correctly on init`(): Unit = runBlocking {
         setRegisteredWatches(dummyWatches)
-        appState.emit(AppState(lastSelectedWatchId = dummyWatch1.id.toString()))
+        appState.emit(AppState(lastSelectedWatchId = dummyWatch1.uid))
         watchManager = getWatchManager()
 
         expectThat(watchManager.selectedWatch.first()).isEqualTo(dummyWatch1)
@@ -108,9 +106,9 @@ class WatchManagerTest {
     fun `selectWatchById updates selectedWatch`(): Unit = runBlocking {
         // Initialise WatchManager
         setRegisteredWatches(dummyWatches)
-        appState.emit(AppState(lastSelectedWatchId = dummyWatch1.id.toString()))
+        appState.emit(AppState(lastSelectedWatchId = dummyWatch1.uid))
         watchManager = getWatchManager()
-        watchManager.selectWatchById(dummyWatch2.id)
+        watchManager.selectWatchById(dummyWatch2.uid)
 
         // Check the selected watch has been updated
         expectThat(watchManager.selectedWatch.first()).isEqualTo(dummyWatch2)
@@ -129,11 +127,11 @@ class WatchManagerTest {
         watchManager.registerWatch(dummyWatch1)
         verify(exactly = 1) { analytics.logWatchRegistered() }
         coVerify(exactly = 1) {
-            messageClient.sendMessage(dummyWatch1, Messages.WATCH_REGISTERED_PATH)
+            messageClient.sendMessage(dummyWatch1, Message(WATCH_REGISTERED_PATH, null))
         }
 
         // Verify watch was added to the database
-        expectThat(watchDatabase.watchDao().get(dummyWatch1.id).firstOrNull()).isNotNull()
+        expectThat(watchDatabase.watchDao().get(dummyWatch1.uid).firstOrNull()).isNotNull()
     }
 
     @Test
@@ -147,12 +145,14 @@ class WatchManagerTest {
                 dummyWatch1
             )
             verify(exactly = 1) { analytics.logWatchRemoved() }
-            coVerify(exactly = 1) { messageClient.sendMessage(dummyWatch1, Messages.RESET_APP) }
+            coVerify(exactly = 1) {
+                messageClient.sendMessage(dummyWatch1, Message(RESET_APP, null))
+            }
             verify(exactly = 1) { batteryStatsDatabase.batteryStatsDao() }
             verify(exactly = 1) { watchAppDatabase.apps() }
 
             // Verify watch isn't in database
-            expectThat(watchDatabase.watchDao().get(dummyWatch1.id).firstOrNull()).isNull()
+            expectThat(watchDatabase.watchDao().get(dummyWatch1.uid).firstOrNull()).isNull()
         }
 
     @Test
@@ -164,7 +164,7 @@ class WatchManagerTest {
         verify(exactly = 1) { analytics.logWatchRenamed() }
 
         // Verify name was changed in the database
-        expectThat(watchDatabase.watchDao().get(dummyWatch1.id).firstOrNull()?.name)
+        expectThat(watchDatabase.watchDao().get(dummyWatch1.uid).firstOrNull()?.name)
             .isEqualTo(newName)
     }
 
@@ -176,7 +176,9 @@ class WatchManagerTest {
             batteryStatsDatabase,
             dummyWatch1
         )
-        coVerify(exactly = 1) { messageClient.sendMessage(dummyWatch1, CLEAR_PREFERENCES) }
+        coVerify(exactly = 1) {
+            messageClient.sendMessage(dummyWatch1, Message(CLEAR_PREFERENCES, null))
+        }
         verify(exactly = 1) { settingsDatabase.intSettings() }
         verify(exactly = 1) { settingsDatabase.boolSettings() }
         verify(exactly = 1) { batteryStatsDatabase.batteryStatsDao() }
@@ -192,7 +194,7 @@ class WatchManagerTest {
     @Test
     fun `selectedWatch is not null if there are registered watches and last watch ID is known`():
         Unit = runBlocking {
-        appState.emit(AppState(lastSelectedWatchId = dummyWatch1.id.toString()))
+        appState.emit(AppState(lastSelectedWatchId = dummyWatch1.uid))
         setRegisteredWatches(dummyWatches)
         watchManager = getWatchManager()
         expectThat(watchManager.selectedWatch.firstOrNull()).isNotNull()

@@ -1,7 +1,6 @@
 plugins {
     kotlin("multiplatform")
     id("com.android.library")
-    id("com.squareup.wire")
 }
 
 kotlin {
@@ -34,11 +33,4 @@ tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach 
     kotlinOptions {
         freeCompilerArgs = freeCompilerArgs + "-Xopt-in=kotlin.RequiresOptIn"
     }
-}
-
-wire {
-    sourcePath {
-        srcDir("src/commonMain/proto")
-    }
-    kotlin { }
 }
