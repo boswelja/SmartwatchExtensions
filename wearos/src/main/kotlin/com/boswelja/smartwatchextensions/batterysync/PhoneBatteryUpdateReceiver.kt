@@ -59,25 +59,20 @@ class PhoneBatteryUpdateReceiver : MessageReceiver<BatteryStats?>(BatteryStatsSe
      * @param batteryStats The [BatteryStats] object to read data from.
      */
     private suspend fun handleChargeNotification(context: Context, batteryStats: BatteryStats) {
-        Timber.d("handleChargeNotification($batteryStats) called")
-        val shouldNotifyUser = extensionSettingsStore.data
-            .map { it.phoneChargeNotiEnabled }
-            .first()
-        if (shouldNotifyUser) {
-            val chargeThreshold = extensionSettingsStore.data
-                .map { it.batteryChargeThreshold }.first()
-            val hasNotiBeenSent = phoneStateStore.data.map { it.chargeNotiSent }.first()
+        val notificationsEnabled = extensionSettingsStore.data
+            .map { it.phoneChargeNotiEnabled }.first()
+        val chargeThreshold = extensionSettingsStore.data
+            .map { it.batteryChargeThreshold }.first()
+        val hasNotiBeenSent = phoneStateStore.data.map { it.chargeNotiSent }.first()
 
-            Timber.d(
-                "chargeThreshold = %s, percent = %s, hasNotiBeenSent = %s",
-                chargeThreshold,
-                batteryStats.percent,
-                hasNotiBeenSent
-            )
-            if (batteryStats.percent >= chargeThreshold && !hasNotiBeenSent) {
-                val phoneName = phoneStateStore.data.map { it.name }.first()
-                notifyBatteryCharged(context, phoneName, chargeThreshold)
-            }
+        val shouldNotify = batteryStats.shouldPostChargeNotification(
+            chargeThreshold,
+            notificationsEnabled,
+            hasNotiBeenSent
+        )
+        if (shouldNotify) {
+            val phoneName = phoneStateStore.data.map { it.name }.first()
+            notifyBatteryCharged(context, phoneName, chargeThreshold)
         }
     }
 
@@ -107,20 +102,19 @@ class PhoneBatteryUpdateReceiver : MessageReceiver<BatteryStats?>(BatteryStatsSe
         batteryStats: BatteryStats
     ) {
         Timber.d("handleLowNotification($batteryStats) called")
-        val shouldNotifyUser = extensionSettingsStore.data.map { it.phoneLowNotiEnabled }.first()
-        if (shouldNotifyUser) {
-            val lowThreshold = extensionSettingsStore.data.map { it.batteryLowThreshold }.first()
-            val hasNotiBeenSent = phoneStateStore.data.map { it.lowNotiSent }.first()
-            Timber.d(
-                "lowThreshold = %s, percent = %s, hasNotiBeenSent = %s",
-                lowThreshold,
-                batteryStats.percent,
-                hasNotiBeenSent
-            )
-            if (batteryStats.percent <= lowThreshold && !hasNotiBeenSent) {
-                val phoneName = phoneStateStore.data.map { it.name }.first()
-                notifyBatteryLow(context, phoneName, lowThreshold)
-            }
+        val notificationsEnabled = extensionSettingsStore.data
+            .map { it.phoneLowNotiEnabled }.first()
+        val lowThreshold = extensionSettingsStore.data.map { it.batteryLowThreshold }.first()
+        val hasNotiBeenSent = phoneStateStore.data.map { it.lowNotiSent }.first()
+
+        val shouldNotify = batteryStats.shouldPostLowNotification(
+            lowThreshold,
+            notificationsEnabled,
+            hasNotiBeenSent
+        )
+        if (shouldNotify) {
+            val phoneName = phoneStateStore.data.map { it.name }.first()
+            notifyBatteryLow(context, phoneName, lowThreshold)
         }
     }
 

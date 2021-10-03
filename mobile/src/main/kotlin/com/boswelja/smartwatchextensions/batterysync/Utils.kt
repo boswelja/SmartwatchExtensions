@@ -160,11 +160,12 @@ object Utils {
             hasSentNoti,
             batteryStats.percent
         )
-        // We can send a charge noti if the user has enabled them, we haven't already sent it and
-        // the watch is sufficiently charged.
-        val canSendChargeNoti =
-            shouldSendChargeNotis && !hasSentNoti && batteryStats.percent >= chargeThreshold
-        if (canSendChargeNoti) {
+        val shouldNotify = batteryStats.shouldPostChargeNotification(
+            chargeThreshold,
+            shouldSendChargeNotis,
+            hasSentNoti
+        )
+        if (shouldNotify) {
             NotificationChannelHelper.createForBatteryStats(context, notificationManager)
             if (areNotificationsEnabled(context)) {
                 Timber.i("Sending charged notification")
@@ -229,9 +230,12 @@ object Utils {
 
         // We can send a low noti if the user has enabled them, we haven't already sent it and
         // the watch is sufficiently discharged.
-        val canSendLowNoti =
-            shouldSendLowNoti && !hasSentNoti && batteryStats.percent <= lowThreshold
-        if (canSendLowNoti) {
+        val shouldNotify = batteryStats.shouldPostLowNotification(
+            lowThreshold,
+            shouldSendLowNoti,
+            hasSentNoti
+        )
+        if (shouldNotify) {
             NotificationChannelHelper.createForBatteryStats(context, notificationManager)
             if (areNotificationsEnabled(context)) {
                 Timber.i("Sending low notification")
