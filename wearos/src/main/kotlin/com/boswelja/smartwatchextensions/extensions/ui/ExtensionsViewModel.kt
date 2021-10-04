@@ -9,6 +9,7 @@ import com.boswelja.smartwatchextensions.common.connection.Messages
 import com.boswelja.smartwatchextensions.extensions.ExtensionSettings
 import com.boswelja.smartwatchextensions.extensions.extensionSettingsStore
 import com.boswelja.smartwatchextensions.phoneStateStore
+import com.boswelja.smartwatchextensions.phonelocking.LOCK_PHONE
 import com.boswelja.watchconnection.common.discovery.ConnectionMode
 import com.boswelja.watchconnection.common.message.Message
 import com.boswelja.watchconnection.wear.discovery.DiscoveryClient
@@ -67,7 +68,7 @@ class ExtensionsViewModel internal constructor(
     suspend fun requestLockPhone(): Boolean {
         if (phoneConected().first()) {
             val phoneId = discoveryClient.pairedPhone()!!
-            return messageClient.sendMessage(phoneId, Message(Messages.LOCK_PHONE, null))
+            return messageClient.sendMessage(phoneId, Message(LOCK_PHONE, null))
         }
         return false
     }

@@ -4,7 +4,6 @@ package com.boswelja.smartwatchextensions.common.connection
  * Contains definitions for message paths.
  */
 object Messages {
-    const val LOCK_PHONE = "/lock_phone"
     const val LAUNCH_APP = "/launch_app"
 
     const val RESET_APP = "/reset_app"

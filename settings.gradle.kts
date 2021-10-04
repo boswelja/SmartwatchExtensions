@@ -2,6 +2,7 @@ include(
     ":appmanager",
     ":batterysync",
     ":dndsync",
+    ":phonelocking",
     ":settingssync",
     ":versionsync",
     ":mobile",
