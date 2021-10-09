@@ -3,11 +3,8 @@ package com.boswelja.smartwatchextensions.bootorupdate
 import android.content.Context
 import android.content.Intent
 import androidx.core.content.ContextCompat
-import com.boswelja.smartwatchextensions.batterysync.BaseBatterySyncWorker
-import com.boswelja.smartwatchextensions.batterysync.BatterySyncWorker
 import com.boswelja.smartwatchextensions.dndsync.DnDLocalChangeService
 import com.boswelja.smartwatchextensions.proximity.SeparationObserverService
-import com.boswelja.smartwatchextensions.settingssync.BoolSettingKeys.BATTERY_SYNC_ENABLED_KEY
 import com.boswelja.smartwatchextensions.settingssync.BoolSettingKeys.DND_SYNC_TO_WATCH_KEY
 import com.boswelja.smartwatchextensions.settingssync.BoolSettingKeys.WATCH_SEPARATION_NOTI_KEY
 import com.boswelja.smartwatchextensions.watchmanager.database.WatchSettingsDatabase
@@ -22,7 +19,6 @@ internal const val NOTI_ID = 69102
 internal suspend fun Context.restartServices() {
     Timber.d("restartServices() called")
     WatchSettingsDatabase.getInstance(this).also {
-        tryStartBatterySyncWorkers(it)
         tryStartInterruptFilterSyncService(it)
         tryStartSeparationObserverService(it)
     }
@@ -52,25 +48,5 @@ private suspend fun Context.tryStartSeparationObserverService(database: WatchSet
         database.boolSettings().getByKey(WATCH_SEPARATION_NOTI_KEY).first().any { it.value }
     if (watchSeparationAlertsEnabled) {
         SeparationObserverService.start(this)
-    }
-}
-
-/** Try to start any needed [BaseBatterySyncWorker] instances. */
-private suspend fun Context.tryStartBatterySyncWorkers(database: WatchSettingsDatabase) {
-    withContext(Dispatchers.IO) {
-        val watchBatterySyncInfo =
-            database.boolSettings().getByKey(BATTERY_SYNC_ENABLED_KEY).first()
-        if (watchBatterySyncInfo.isNotEmpty()) {
-            for (batterySyncBoolPreference in watchBatterySyncInfo) {
-                if (batterySyncBoolPreference.value) {
-                    Timber.i("tryStartBatterySyncWorkers Starting a Battery Sync Worker")
-                    BaseBatterySyncWorker.startSyncingFor<BatterySyncWorker>(
-                        applicationContext, batterySyncBoolPreference.watchId
-                    )
-                }
-            }
-        } else {
-            Timber.w("tryStartBatterySyncWorkers watchBatterySyncInfo possibly null")
-        }
     }
 }
