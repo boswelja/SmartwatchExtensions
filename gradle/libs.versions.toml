@@ -31,6 +31,7 @@ mockk = "1.12.0"
 playServicesWearable = "17.1.0"
 robolectric = "4.6.1"
 strikt = "0.31.0"
+sqldelight = "1.5.0"
 timber = "4.7.1"
 watchconnection = "6.0.2"
 wire = "3.7.0"
@@ -94,6 +95,9 @@ watchconnection-common = { module = "io.github.boswelja.watchconnection:common",
 watchconnection-platform-wearos = { module = "io.github.boswelja.watchconnection:platform-wearos", version.ref = "watchconnection" }
 watchconnection-wear = { module = "io.github.boswelja.watchconnection:wear", version.ref = "watchconnection" }
 wire-runtime = { module = "com.squareup.wire:wire-runtime", version.ref = "wire" }
+sqldelight-runtime = { module = "com.squareup.sqldelight:runtime", version.ref = "sqldelight" }
+sqldelight-coroutines = { module = "com.squareup.sqldelight:coroutines-extensions", version.ref = "sqldelight" }
+sqldelight-android = { module = "com.squareup.sqldelight:android-driver", version.ref = "sqldelight" }
 
 [bundles]
 compose-mobile = [

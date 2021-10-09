@@ -12,13 +12,13 @@ kotlin {
             dependencies {
                 api(projects.batterysync.common)
                 api(libs.watchconnection.common)
-                implementation("com.squareup.sqldelight:runtime:1.5.0")
-                implementation("com.squareup.sqldelight:coroutines-extensions:1.5.0")
+                implementation(libs.sqldelight.runtime)
+                implementation(libs.sqldelight.coroutines)
             }
         }
         val androidMain by getting {
             dependencies {
-                implementation("com.squareup.sqldelight:android-driver:1.5.0")
+                implementation(libs.sqldelight.android)
             }
         }
     }
