@@ -1,0 +1,6 @@
+syntax = "proto3";
+package com.boswelja.smartwatchextensions.watchmanager;
+
+message SelectedWatchState {
+  string selectedWatchId = 1;
+}
