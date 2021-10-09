@@ -1,5 +1,5 @@
 include(
-    ":appmanager",
+    ":appmanager:common",
     ":batterysync:common",
     ":batterysync:mobile",
     ":batterysync:wear",

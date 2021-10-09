@@ -57,7 +57,7 @@ android {
 
 dependencies {
     implementation(projects.common)
-    implementation(projects.appmanager)
+    implementation(projects.appmanager.common)
     implementation(projects.batterysync.wear)
     implementation(projects.dndsync)
     implementation(projects.phonelocking)
