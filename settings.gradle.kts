@@ -5,6 +5,7 @@ include(
     ":phonelocking",
     ":settingssync",
     ":versionsync",
+    ":watchmanager",
     ":mobile",
     ":wearos",
     ":common"
