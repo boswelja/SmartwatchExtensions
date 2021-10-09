@@ -1,6 +1,8 @@
 include(
     ":appmanager",
-    ":batterysync",
+    ":batterysync:common",
+    ":batterysync:mobile",
+    ":batterysync:wear",
     ":dndsync",
     ":phonelocking",
     ":settingssync",

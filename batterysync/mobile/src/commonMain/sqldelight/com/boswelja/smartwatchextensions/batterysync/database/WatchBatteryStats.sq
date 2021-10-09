@@ -1,0 +1,20 @@
+CREATE TABLE watchBatteryStats (
+    watch_id TEXT NOT NULL PRIMARY KEY,
+    percent INTEGER AS Int NOT NULL,
+    charging INTEGER AS Boolean NOT NULL,
+    timestamp_millis INTEGER NOT NULL
+);
+
+insert:
+INSERT OR REPLACE INTO watchBatteryStats(watch_id, percent, charging, timestamp_millis)
+VALUES (?, ?, ?, ?);
+
+getFor:
+SELECT *
+FROM watchBatteryStats
+WHERE watch_id = ?
+LIMIT 1;
+
+removeFor:
+DELETE FROM watchBatteryStats
+WHERE watch_id = ?;
