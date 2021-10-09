@@ -4,8 +4,9 @@ import android.app.Application
 import androidx.datastore.core.DataStore
 import androidx.lifecycle.AndroidViewModel
 import com.boswelja.smartwatchextensions.PhoneState
+import com.boswelja.smartwatchextensions.batterysync.BatteryStatsStore
 import com.boswelja.smartwatchextensions.batterysync.REQUEST_BATTERY_UPDATE_PATH
-import com.boswelja.smartwatchextensions.common.connection.Messages
+import com.boswelja.smartwatchextensions.batterysync.batteryStatsStore
 import com.boswelja.smartwatchextensions.extensions.ExtensionSettings
 import com.boswelja.smartwatchextensions.extensions.extensionSettingsStore
 import com.boswelja.smartwatchextensions.phoneStateStore
@@ -22,6 +23,7 @@ class ExtensionsViewModel internal constructor(
     private val messageClient: MessageClient,
     private val discoveryClient: DiscoveryClient,
     phoneStateStore: DataStore<PhoneState>,
+    batteryStatsStore: BatteryStatsStore,
     extensionSettingsStore: DataStore<ExtensionSettings>
 ) : AndroidViewModel(application) {
 
@@ -31,13 +33,14 @@ class ExtensionsViewModel internal constructor(
         MessageClient(application, listOf()),
         DiscoveryClient(application),
         application.phoneStateStore,
+        BatteryStatsStore(application.batteryStatsStore),
         application.extensionSettingsStore
     )
 
     val phoneLockingEnabled = extensionSettingsStore.data.map { it.phoneLockingEnabled }
     val batterySyncEnabled = extensionSettingsStore.data.map { it.batterySyncEnabled }
 
-    val batteryPercent = phoneStateStore.data.map { it.batteryPercent }
+    val batteryPercent = batteryStatsStore.getStatsForPhone().map { it.percent }
     val phoneName = phoneStateStore.data.map { it.name }
 
     fun phoneConected() = discoveryClient.connectionMode()

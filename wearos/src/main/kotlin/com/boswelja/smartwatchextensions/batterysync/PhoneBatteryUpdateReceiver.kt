@@ -45,9 +45,7 @@ class PhoneBatteryUpdateReceiver : MessageReceiver<BatteryStats?>(BatteryStatsSe
                 cancelChargeNoti()
                 handleLowNotification(context, batteryStats)
             }
-            context.phoneStateStore.updateData {
-                it.copy(batteryPercent = batteryStats.percent)
-            }
+            BatteryStatsStore(context.batteryStatsStore).updateStatsForPhone(batteryStats)
             sendBatteryStatsUpdate(context)
             PhoneBatteryComplicationProvider.updateAll(context)
         }

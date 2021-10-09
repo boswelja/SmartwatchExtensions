@@ -11,7 +11,8 @@ import com.boswelja.smartwatchextensions.appStateStore
 import com.boswelja.smartwatchextensions.appmanager.AppCacheUpdateWorker
 import com.boswelja.smartwatchextensions.appmanager.CacheValidationSerializer
 import com.boswelja.smartwatchextensions.appmanager.database.WatchAppDatabase
-import com.boswelja.smartwatchextensions.batterysync.database.WatchBatteryStatsDatabase
+import com.boswelja.smartwatchextensions.batterysync.BatteryStatsRepository
+import com.boswelja.smartwatchextensions.batterysync.BatteryStatsRepositoryLoader
 import com.boswelja.smartwatchextensions.common.SingletonHolder
 import com.boswelja.smartwatchextensions.common.connection.Capability
 import com.boswelja.smartwatchextensions.common.connection.Messages
@@ -136,7 +137,7 @@ class WatchManager internal constructor(
     suspend fun forgetWatch(context: Context, watch: Watch) {
         forgetWatch(
             context.widgetIdStore,
-            WatchBatteryStatsDatabase.getInstance(context),
+            BatteryStatsRepositoryLoader.getInstance(context),
             WatchAppDatabase.getInstance(context),
             watch
         )
@@ -144,12 +145,12 @@ class WatchManager internal constructor(
 
     internal suspend fun forgetWatch(
         widgetIdStore: DataStore<Preferences>,
-        batteryStatsDatabase: WatchBatteryStatsDatabase,
+        batteryStatsDatabase: BatteryStatsRepository,
         watchAppDatabase: WatchAppDatabase,
         watch: Watch
     ) {
         withContext(Dispatchers.IO) {
-            batteryStatsDatabase.batteryStatsDao().deleteStats(watch.uid)
+            batteryStatsDatabase.removeStatsFor(watch.uid)
             watchAppDatabase.apps().removeForWatch(watch.uid)
             messageClient.sendMessage(watch, Message(Messages.RESET_APP, null))
             watchDatabase.removeWatch(watch)
@@ -169,17 +170,17 @@ class WatchManager internal constructor(
     suspend fun resetWatchPreferences(context: Context, watch: Watch) {
         resetWatchPreferences(
             context.widgetIdStore,
-            WatchBatteryStatsDatabase.getInstance(context),
+            BatteryStatsRepositoryLoader.getInstance(context),
             watch
         )
     }
 
     internal suspend fun resetWatchPreferences(
         widgetIdStore: DataStore<Preferences>,
-        batteryStatsDatabase: WatchBatteryStatsDatabase,
+        batteryStatsDatabase: BatteryStatsRepository,
         watch: Watch
     ) {
-        batteryStatsDatabase.batteryStatsDao().deleteStats(watch.uid)
+        batteryStatsDatabase.removeStatsFor(watch.uid)
         messageClient.sendMessage(watch, Message(CLEAR_PREFERENCES, null))
         settingsDatabase.intSettings().deleteAllForWatch(watch.uid)
         settingsDatabase.boolSettings().deleteAllForWatch(watch.uid)

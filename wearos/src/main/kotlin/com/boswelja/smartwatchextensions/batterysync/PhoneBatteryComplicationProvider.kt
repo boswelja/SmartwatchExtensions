@@ -17,10 +17,9 @@ import androidx.wear.complications.datasource.ComplicationRequest
 import com.boswelja.smartwatchextensions.ActionsActivity
 import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.common.ui.getBatteryResource
-import com.boswelja.smartwatchextensions.phoneStateStore
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -37,14 +36,15 @@ class PhoneBatteryComplicationProvider : ComplicationDataSourceService() {
         listener: ComplicationRequestListener
     ) {
         coroutineScope.launch {
-            phoneStateStore.data.map { it.batteryPercent }.collect {
-                val complicationData = createComplicationDataFor(it, request.complicationType)
+            val batteryStats = BatteryStatsStore(batteryStatsStore).getStatsForPhone()
+                .map { it.percent }
+                .first()
+            val complicationData = createComplicationDataFor(batteryStats, request.complicationType)
 
-                if (complicationData != null) {
-                    listener.onComplicationData(complicationData)
-                } else {
-                    Timber.w("Complication type ${request.complicationType} invalid")
-                }
+            if (complicationData != null) {
+                listener.onComplicationData(complicationData)
+            } else {
+                Timber.w("Complication type ${request.complicationType} invalid")
             }
         }
     }

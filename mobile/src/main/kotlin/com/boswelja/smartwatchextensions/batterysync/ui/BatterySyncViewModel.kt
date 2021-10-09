@@ -3,9 +3,10 @@ package com.boswelja.smartwatchextensions.batterysync.ui
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import com.boswelja.smartwatchextensions.batterysync.BatteryStatsRepository
+import com.boswelja.smartwatchextensions.batterysync.BatteryStatsRepositoryLoader
 import com.boswelja.smartwatchextensions.batterysync.BatterySyncWorker
 import com.boswelja.smartwatchextensions.batterysync.Utils.updateBatteryStats
-import com.boswelja.smartwatchextensions.batterysync.database.WatchBatteryStatsDatabase
 import com.boswelja.smartwatchextensions.batterysync.quicksettings.WatchBatteryTileService
 import com.boswelja.smartwatchextensions.common.WatchWidgetProvider
 import com.boswelja.smartwatchextensions.common.connection.Capability
@@ -40,8 +41,8 @@ class BatterySyncViewModel internal constructor(
         Dispatchers.IO
     )
 
-    private val database: WatchBatteryStatsDatabase =
-        WatchBatteryStatsDatabase.getInstance(application)
+    private val repository: BatteryStatsRepository =
+        BatteryStatsRepositoryLoader.getInstance(application)
 
     val batterySyncEnabled = watchManager.getBoolSetting(BATTERY_SYNC_ENABLED_KEY)
     val phoneChargeNotiEnabled = watchManager.getBoolSetting(BATTERY_PHONE_CHARGE_NOTI_KEY)
@@ -54,7 +55,7 @@ class BatterySyncViewModel internal constructor(
     val canSyncBattery = watchManager.selectedWatchHasCapability(Capability.SYNC_BATTERY)
 
     val batteryStats = watchManager.selectedWatch.flatMapLatest {
-        it?.let { database.batteryStatsDao().getStats(it.uid) } ?: flow { }
+        it?.let { repository.batteryStatsFor(it.uid) } ?: flow { }
     }
 
     fun setBatterySyncEnabled(isEnabled: Boolean) {

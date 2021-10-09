@@ -17,7 +17,6 @@ class PhoneStateSerializer : Serializer<PhoneState> {
     override val defaultValue = PhoneState(
         id = "",
         name = "Phone",
-        batteryPercent = 0,
         chargeNotiSent = false,
         lowNotiSent = false
     )

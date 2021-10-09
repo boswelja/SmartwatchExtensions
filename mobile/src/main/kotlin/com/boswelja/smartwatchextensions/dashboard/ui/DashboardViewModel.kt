@@ -3,7 +3,8 @@ package com.boswelja.smartwatchextensions.dashboard.ui
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import com.boswelja.smartwatchextensions.appmanager.database.WatchAppDatabase
-import com.boswelja.smartwatchextensions.batterysync.database.WatchBatteryStatsDatabase
+import com.boswelja.smartwatchextensions.batterysync.BatteryStatsRepository
+import com.boswelja.smartwatchextensions.batterysync.BatteryStatsRepositoryLoader
 import com.boswelja.smartwatchextensions.watchmanager.WatchManager
 import com.boswelja.watchconnection.common.discovery.ConnectionMode
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -15,7 +16,7 @@ import kotlinx.coroutines.flow.flowOf
 class DashboardViewModel internal constructor(
     application: Application,
     private val watchManager: WatchManager,
-    private val batteryStatsDatabase: WatchBatteryStatsDatabase,
+    private val batteryStatsRepository: BatteryStatsRepository,
     private val appDatabase: WatchAppDatabase
 ) : AndroidViewModel(application) {
 
@@ -23,7 +24,7 @@ class DashboardViewModel internal constructor(
     constructor(application: Application) : this(
         application,
         WatchManager.getInstance(application),
-        WatchBatteryStatsDatabase.getInstance(application),
+        BatteryStatsRepositoryLoader.getInstance(application),
         WatchAppDatabase.getInstance(application)
     )
 
@@ -35,8 +36,8 @@ class DashboardViewModel internal constructor(
 
     val batteryStats = watchManager.selectedWatch.flatMapLatest { watch ->
         watch?.let {
-            batteryStatsDatabase.batteryStatsDao().getStats(watch.uid)
-        } ?: flow { emit(null) }
+            batteryStatsRepository.batteryStatsFor(watch.uid)
+        } ?: flowOf(null)
     }
 
     val appCount = watchManager.selectedWatch.flatMapLatest { watch ->
