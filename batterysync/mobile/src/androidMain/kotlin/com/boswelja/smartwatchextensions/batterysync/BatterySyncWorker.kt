@@ -8,22 +8,15 @@ import androidx.work.PeriodicWorkRequest
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
-import com.boswelja.smartwatchextensions.watchmanager.WatchManager
 import java.util.concurrent.TimeUnit
-import kotlinx.coroutines.flow.firstOrNull
-import timber.log.Timber
 
 class BatterySyncWorker(appContext: Context, workerParams: WorkerParameters) :
     CoroutineWorker(appContext, workerParams) {
 
     override suspend fun doWork(): Result {
-        Timber.i("doWork() called")
         val watchId = inputData.getString(EXTRA_WATCH_ID)!!
-        WatchManager.getInstance(applicationContext).getWatchById(watchId).firstOrNull()?.let {
-            Utils.updateBatteryStats(applicationContext, it)
-            return Result.success()
-        }
-        Timber.w("watchId null or empty")
+        if (sendBatteryStats(applicationContext, watchId)) return Result.success()
+
         return Result.retry()
     }
 
@@ -31,9 +24,10 @@ class BatterySyncWorker(appContext: Context, workerParams: WorkerParameters) :
         private const val SYNC_INTERVAL_MINUTES = 15L
         private const val EXTRA_WATCH_ID: String = "extra_watch_id"
 
+        private fun getWorkerIdFor(watchId: String): String = "$watchId-batterysync"
+
         /** Starts a battery sync worker for the watch with a given ID. */
-        fun startWorker(context: Context, watchId: String): Boolean {
-            Timber.d("Starting BatterySyncWorker for %s", watchId)
+        fun startSyncingFor(context: Context, watchId: String): Boolean {
             val data = Data.Builder().putString(EXTRA_WATCH_ID, watchId).build()
             val request = PeriodicWorkRequestBuilder<BatterySyncWorker>(
                 SYNC_INTERVAL_MINUTES, TimeUnit.MINUTES,
@@ -42,7 +36,7 @@ class BatterySyncWorker(appContext: Context, workerParams: WorkerParameters) :
                 setInputData(data)
             }.build()
             WorkManager.getInstance(context).enqueueUniquePeriodicWork(
-                "$watchId-batterysync",
+                getWorkerIdFor(watchId),
                 ExistingPeriodicWorkPolicy.REPLACE,
                 request
             )
@@ -50,9 +44,20 @@ class BatterySyncWorker(appContext: Context, workerParams: WorkerParameters) :
         }
 
         /** Stops the battery sync worker for the watch with a given ID. */
-        fun stopWorker(context: Context, watchId: String) {
-            Timber.d("Stopping BatterySyncWorker for %s", watchId)
-            WorkManager.getInstance(context).cancelUniqueWork("$watchId-batterysync")
+        fun stopSyncingFor(context: Context, watchId: String) {
+            WorkManager.getInstance(context).cancelUniqueWork(getWorkerIdFor(watchId))
         }
+
+        /**
+         * Get up to date battery stats for this device and send it to a specified watch, or all watches
+         * with battery sync enabled.
+         * @param context [Context].
+         * @param watchId The ID of the watch to send the stats to.
+         */
+        suspend fun sendBatteryStats(context: Context, watchId: String): Boolean {
+            val batteryStats = context.batteryStats()!!
+            TODO("Send the stats")
+        }
+
     }
 }

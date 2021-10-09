@@ -6,7 +6,6 @@ import androidx.lifecycle.viewModelScope
 import com.boswelja.smartwatchextensions.batterysync.BatteryStatsRepository
 import com.boswelja.smartwatchextensions.batterysync.BatteryStatsRepositoryLoader
 import com.boswelja.smartwatchextensions.batterysync.BatterySyncWorker
-import com.boswelja.smartwatchextensions.batterysync.Utils.updateBatteryStats
 import com.boswelja.smartwatchextensions.batterysync.quicksettings.WatchBatteryTileService
 import com.boswelja.smartwatchextensions.common.WatchWidgetProvider
 import com.boswelja.smartwatchextensions.common.connection.Capability
@@ -62,7 +61,7 @@ class BatterySyncViewModel internal constructor(
         viewModelScope.launch(dispatcher) {
             val selectedWatch = watchManager.selectedWatch.first()
             if (isEnabled) {
-                val workerStartSuccessful = BatterySyncWorker.startWorker(
+                val workerStartSuccessful = BatterySyncWorker.startSyncingFor(
                     getApplication(), selectedWatch!!.uid
                 )
                 if (workerStartSuccessful) {
@@ -70,7 +69,6 @@ class BatterySyncViewModel internal constructor(
                         selectedWatch,
                         BATTERY_SYNC_ENABLED_KEY, isEnabled
                     )
-                    updateBatteryStats(getApplication(), selectedWatch)
                 } else {
                     Timber.w("Failed to enable battery sync")
                 }
@@ -78,7 +76,7 @@ class BatterySyncViewModel internal constructor(
                 watchManager.updatePreference(
                     selectedWatch!!, BATTERY_SYNC_ENABLED_KEY, isEnabled
                 )
-                BatterySyncWorker.stopWorker(
+                BatterySyncWorker.stopSyncingFor(
                     getApplication(), selectedWatch.uid
                 )
                 WatchBatteryTileService.requestTileUpdate(getApplication())

@@ -19,6 +19,7 @@ kotlin {
         val androidMain by getting {
             dependencies {
                 implementation(libs.sqldelight.android)
+                implementation(libs.androidx.work.ktx)
             }
         }
     }

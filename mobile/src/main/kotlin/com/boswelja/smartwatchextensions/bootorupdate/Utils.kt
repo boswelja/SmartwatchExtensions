@@ -63,7 +63,7 @@ private suspend fun Context.tryStartBatterySyncWorkers(database: WatchSettingsDa
             for (batterySyncBoolPreference in watchBatterySyncInfo) {
                 if (batterySyncBoolPreference.value) {
                     Timber.i("tryStartBatterySyncWorkers Starting a Battery Sync Worker")
-                    BatterySyncWorker.startWorker(
+                    BatterySyncWorker.startSyncingFor(
                         applicationContext, batterySyncBoolPreference.watchId
                     )
                 }
