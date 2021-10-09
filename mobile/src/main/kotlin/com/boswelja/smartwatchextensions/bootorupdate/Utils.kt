@@ -3,6 +3,7 @@ package com.boswelja.smartwatchextensions.bootorupdate
 import android.content.Context
 import android.content.Intent
 import androidx.core.content.ContextCompat
+import com.boswelja.smartwatchextensions.batterysync.BaseBatterySyncWorker
 import com.boswelja.smartwatchextensions.batterysync.BatterySyncWorker
 import com.boswelja.smartwatchextensions.dndsync.DnDLocalChangeService
 import com.boswelja.smartwatchextensions.proximity.SeparationObserverService
@@ -54,7 +55,7 @@ private suspend fun Context.tryStartSeparationObserverService(database: WatchSet
     }
 }
 
-/** Try to start any needed [BatterySyncWorker] instances. */
+/** Try to start any needed [BaseBatterySyncWorker] instances. */
 private suspend fun Context.tryStartBatterySyncWorkers(database: WatchSettingsDatabase) {
     withContext(Dispatchers.IO) {
         val watchBatterySyncInfo =
@@ -63,7 +64,7 @@ private suspend fun Context.tryStartBatterySyncWorkers(database: WatchSettingsDa
             for (batterySyncBoolPreference in watchBatterySyncInfo) {
                 if (batterySyncBoolPreference.value) {
                     Timber.i("tryStartBatterySyncWorkers Starting a Battery Sync Worker")
-                    BatterySyncWorker.startSyncingFor(
+                    BaseBatterySyncWorker.startSyncingFor<BatterySyncWorker>(
                         applicationContext, batterySyncBoolPreference.watchId
                     )
                 }

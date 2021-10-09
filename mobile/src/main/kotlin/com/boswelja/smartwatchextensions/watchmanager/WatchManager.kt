@@ -13,6 +13,7 @@ import com.boswelja.smartwatchextensions.appmanager.CacheValidationSerializer
 import com.boswelja.smartwatchextensions.appmanager.database.WatchAppDatabase
 import com.boswelja.smartwatchextensions.batterysync.BatteryStatsRepository
 import com.boswelja.smartwatchextensions.batterysync.BatteryStatsRepositoryLoader
+import com.boswelja.smartwatchextensions.batterysync.BatteryStatsSerializer
 import com.boswelja.smartwatchextensions.common.SingletonHolder
 import com.boswelja.smartwatchextensions.common.connection.Capability
 import com.boswelja.smartwatchextensions.common.connection.Messages
@@ -75,7 +76,8 @@ class WatchManager internal constructor(
                 IntSettingSerializer,
                 BoolSettingSerializer,
                 DnDStatusSerializer,
-                CacheValidationSerializer
+                CacheValidationSerializer,
+                BatteryStatsSerializer
             ),
             platforms = listOf(
                 WearOSMessagePlatform(context)
