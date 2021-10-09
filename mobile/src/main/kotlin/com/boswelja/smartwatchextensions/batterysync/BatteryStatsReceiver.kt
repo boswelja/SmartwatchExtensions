@@ -8,6 +8,7 @@ import androidx.core.app.NotificationCompat
 import androidx.core.content.getSystemService
 import com.boswelja.smartwatchextensions.NotificationChannelHelper
 import com.boswelja.smartwatchextensions.R
+import com.boswelja.smartwatchextensions.batterysync.Utils.BATTERY_STATS_NOTI_CHANNEL_ID
 import com.boswelja.smartwatchextensions.batterysync.quicksettings.WatchBatteryTileService
 import com.boswelja.smartwatchextensions.common.WatchWidgetProvider
 import com.boswelja.smartwatchextensions.main.ui.MainActivity
@@ -17,9 +18,7 @@ import com.boswelja.smartwatchextensions.settingssync.BoolSettingKeys
 import com.boswelja.smartwatchextensions.settingssync.IntSettingKeys
 import com.boswelja.smartwatchextensions.watchmanager.database.WatchDatabase
 import com.boswelja.smartwatchextensions.watchmanager.database.WatchSettingsDatabase
-import com.boswelja.watchconection.common.message.MessageReceiver
 import com.boswelja.watchconnection.common.Watch
-import com.boswelja.watchconnection.common.message.ReceivedMessage
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.withContext
@@ -29,26 +28,16 @@ import java.util.Locale
 private const val BATTERY_CHARGED_NOTI_ID = 408565
 private const val BATTERY_LOW_NOTI_ID = 408566
 
-class BatteryStatsReceiver : MessageReceiver<BatteryStats?>(BatteryStatsSerializer) {
+class BatteryStatsReceiver : BaseBatteryStatsReceiver() {
 
-    override suspend fun onMessageReceived(
+    override suspend fun onBatteryStatsReceived(
         context: Context,
-        message: ReceivedMessage<BatteryStats?>
-    ) {
-        message.data?.let { batteryStats ->
-            handleBatteryStats(context, message.sourceUid, batteryStats)
-        }
-    }
-
-    suspend fun handleBatteryStats(
-        context: Context,
-        watchId: String,
+        sourceUid: String,
         batteryStats: BatteryStats
     ) {
-        Timber.d("handleBatteryStats(%s, %s) called", watchId, batteryStats)
         withContext(Dispatchers.IO) {
             val database = WatchDatabase.getInstance(context)
-            database.getById(watchId).firstOrNull()?.let { watch ->
+            database.getById(sourceUid).firstOrNull()?.let { watch ->
                 val notificationManager = context.getSystemService<NotificationManager>()!!
                 val settingsDb =
                     WatchSettingsDatabase.getInstance(context)
@@ -258,7 +247,7 @@ class BatteryStatsReceiver : MessageReceiver<BatteryStats?>(BatteryStatsSerializ
      */
     private fun areNotificationsEnabled(context: Context): Boolean {
         val notificationManager = context.getSystemService<NotificationManager>()!!
-        notificationManager.getNotificationChannel(Utils.BATTERY_STATS_NOTI_CHANNEL_ID).let {
+        notificationManager.getNotificationChannel(BATTERY_STATS_NOTI_CHANNEL_ID).let {
             return it != null && it.importance != NotificationManager.IMPORTANCE_NONE
         }
     }

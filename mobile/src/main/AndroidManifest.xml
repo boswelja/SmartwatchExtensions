@@ -76,7 +76,7 @@
         </receiver>
 
         <receiver
-            android:name=".batterysync.BatteryStatsReceiver"
+            android:name=".batterysync.BaseBatteryStatsReceiver"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.boswelja.watchconnection.common.message.MessageReceived" />
