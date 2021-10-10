@@ -13,6 +13,10 @@ get:
 SELECT value FROM intSetting
 WHERE watch_id = ? AND key = ?;
 
+getIdsWithSetting:
+SELECT watch_id FROM intSetting
+WHERE key = ? AND value = ?;
+
 deleteFor:
 DELETE FROM intSetting
 WHERE watch_id = ?;

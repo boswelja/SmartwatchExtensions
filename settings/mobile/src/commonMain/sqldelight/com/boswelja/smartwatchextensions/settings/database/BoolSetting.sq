@@ -13,6 +13,10 @@ get:
 SELECT value FROM boolSetting
 WHERE watch_id = ? AND key = ?;
 
+getIdsWithSetting:
+SELECT watch_id FROM boolSetting
+WHERE key = ? AND value = ?;
+
 deleteFor:
 DELETE FROM boolSetting
 WHERE watch_id = ?;
