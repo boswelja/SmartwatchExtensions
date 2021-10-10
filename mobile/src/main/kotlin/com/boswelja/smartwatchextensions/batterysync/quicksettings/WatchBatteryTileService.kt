@@ -13,7 +13,8 @@ import com.boswelja.smartwatchextensions.common.getBatteryDrawable
 import com.boswelja.smartwatchextensions.main.ui.MainActivity
 import com.boswelja.smartwatchextensions.main.ui.MainActivity.Companion.EXTRA_WATCH_ID
 import com.boswelja.smartwatchextensions.settings.BoolSettingKeys.BATTERY_SYNC_ENABLED_KEY
-import com.boswelja.smartwatchextensions.watchmanager.database.WatchSettingsDatabase
+import com.boswelja.smartwatchextensions.settings.WatchSettingsDbRepository
+import com.boswelja.smartwatchextensions.settings.database.WatchSettingsDatabaseLoader
 import com.boswelja.watchconnection.common.Watch
 import kotlinx.coroutines.flow.first
 
@@ -49,12 +50,9 @@ class WatchBatteryTileService : WatchTileService() {
             return
         }
 
-        val isBatterySyncEnabled = WatchSettingsDatabase
-            .getInstance(this@WatchBatteryTileService)
-            .boolSettings()
-            .get(watch.uid, BATTERY_SYNC_ENABLED_KEY)
-            .first()
-            ?.value ?: false
+        val isBatterySyncEnabled = WatchSettingsDbRepository(
+            WatchSettingsDatabaseLoader(this).createDatabase()
+        ).getBoolean(watch.uid, BATTERY_SYNC_ENABLED_KEY, false).first()
 
         if (isBatterySyncEnabled) {
             val batteryStats = BatteryStatsRepositoryLoader

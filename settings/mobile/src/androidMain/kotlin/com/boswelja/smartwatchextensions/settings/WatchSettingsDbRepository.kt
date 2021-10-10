@@ -9,9 +9,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 
-class SettingsDbRepository(
+class WatchSettingsDbRepository(
     private val database: WatchSettingsDatabase
-): SettingsRepository {
+): WatchSettingsRepository {
     override suspend fun putBoolean(watchId: String, key: String, value: Boolean) {
         withContext(Dispatchers.IO) {
             database.boolSettingQueries.update(

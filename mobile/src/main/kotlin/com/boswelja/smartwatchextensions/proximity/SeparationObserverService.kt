@@ -12,7 +12,6 @@ import androidx.lifecycle.LifecycleService
 import androidx.lifecycle.lifecycleScope
 import com.boswelja.smartwatchextensions.NotificationChannelHelper
 import com.boswelja.smartwatchextensions.R
-import com.boswelja.smartwatchextensions.settings.BoolSettingKeys.WATCH_SEPARATION_NOTI_KEY
 import com.boswelja.smartwatchextensions.watchmanager.WatchManager
 import com.boswelja.watchconnection.common.Watch
 import com.boswelja.watchconnection.common.discovery.ConnectionMode
@@ -52,16 +51,16 @@ class SeparationObserverService : LifecycleService() {
 
     @OptIn(ExperimentalCoroutinesApi::class)
     private suspend fun startCollectingSettings() {
-        Timber.d("Collecting settings changes")
-        watchManager.settingsDatabase.boolSettings().getByKey(WATCH_SEPARATION_NOTI_KEY).mapLatest {
-            it.filter { setting -> setting.value }.map { setting -> setting.watchId }
-        }.collect { watchIds ->
-            if (watchIds.isEmpty()) {
-                tryStop()
-            } else {
-                collectStatusesFor(watchIds)
-            }
-        }
+        // TODO Restore get by key functionality
+//        watchManager.settingsRepository.boolSettings().getByKey(WATCH_SEPARATION_NOTI_KEY).mapLatest {
+//            it.filter { setting -> setting.value }.map { setting -> setting.watchId }
+//        }.collect { watchIds ->
+//            if (watchIds.isEmpty()) {
+//                tryStop()
+//            } else {
+//                collectStatusesFor(watchIds)
+//            }
+//        }
     }
 
     @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)

@@ -25,9 +25,11 @@ import com.boswelja.smartwatchextensions.settings.IntSetting
 import com.boswelja.smartwatchextensions.settings.IntSettingSerializer
 import com.boswelja.smartwatchextensions.settings.UPDATE_BOOL_PREFERENCE
 import com.boswelja.smartwatchextensions.settings.UPDATE_INT_PREFERENCE
+import com.boswelja.smartwatchextensions.settings.WatchSettingsDbRepository
+import com.boswelja.smartwatchextensions.settings.WatchSettingsRepository
+import com.boswelja.smartwatchextensions.settings.database.WatchSettingsDatabaseLoader
 import com.boswelja.smartwatchextensions.watchmanager.database.DbWatch.Companion.toDbWatch
 import com.boswelja.smartwatchextensions.watchmanager.database.WatchDatabase
-import com.boswelja.smartwatchextensions.watchmanager.database.WatchSettingsDatabase
 import com.boswelja.smartwatchextensions.widget.widgetIdStore
 import com.boswelja.watchconnection.common.Watch
 import com.boswelja.watchconnection.common.message.Message
@@ -45,7 +47,6 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
@@ -58,7 +59,7 @@ import timber.log.Timber
 @OptIn(ExperimentalCoroutinesApi::class)
 class WatchManager internal constructor(
     private val context: Context,
-    val settingsDatabase: WatchSettingsDatabase,
+    val settingsRepository: WatchSettingsRepository,
     private val watchDatabase: WatchDatabase,
     private val messageClient: MessageClient,
     private val discoveryClient: DiscoveryClient,
@@ -69,7 +70,7 @@ class WatchManager internal constructor(
 
     constructor(context: Context) : this(
         context.applicationContext,
-        WatchSettingsDatabase.getInstance(context),
+        WatchSettingsDbRepository(WatchSettingsDatabaseLoader(context).createDatabase()),
         WatchDatabase.getInstance(context),
         MessageClient(
             serializers = listOf(
@@ -181,8 +182,7 @@ class WatchManager internal constructor(
     ) {
         batteryStatsDatabase.removeStatsFor(watch.uid)
         messageClient.sendMessage(watch, Message(CLEAR_PREFERENCES, null))
-        settingsDatabase.intSettings().deleteAllForWatch(watch.uid)
-        settingsDatabase.boolSettings().deleteAllForWatch(watch.uid)
+        settingsRepository.deleteForWatch(watch.uid)
         removeWidgetsForWatch(watch, widgetIdStore)
     }
 
@@ -243,14 +243,13 @@ class WatchManager internal constructor(
 
     fun getBoolSetting(key: String, watch: Watch? = null, default: Boolean = false): Flow<Boolean> {
         return if (watch != null) {
-            settingsDatabase.boolSettings().get(watch.uid, key).map { it?.value ?: default }
+            settingsRepository.getBoolean(watch.uid, key, default)
         } else {
             _selectedWatch.flatMapLatest { selectedWatch ->
                 if (selectedWatch != null) {
-                    settingsDatabase.boolSettings().get(selectedWatch.uid, key)
-                        .map { it?.value ?: default }
+                    settingsRepository.getBoolean(selectedWatch.uid, key, default)
                 } else {
-                    flow { emit(default) }
+                    flowOf(default)
                 }
             }
         }
@@ -258,14 +257,13 @@ class WatchManager internal constructor(
 
     fun getIntSetting(key: String, watch: Watch? = null, default: Int = 0): Flow<Int> {
         return if (watch != null) {
-            settingsDatabase.intSettings().get(watch.uid, key).map { it?.value ?: default }
+            settingsRepository.getInt(watch.uid, key, default)
         } else {
             _selectedWatch.flatMapLatest { selectedWatch ->
                 if (selectedWatch != null) {
-                    settingsDatabase.intSettings().get(selectedWatch.uid, key)
-                        .map { it?.value ?: default }
+                    settingsRepository.getInt(selectedWatch.uid, key, default)
                 } else {
-                    flow { emit(default) }
+                    flowOf(default)
                 }
             }
         }
@@ -289,6 +287,7 @@ class WatchManager internal constructor(
                             BoolSetting(key, value)
                         )
                     )
+                    settingsRepository.putBoolean(watch.uid, key, value)
                 }
                 is Int -> {
                     messageClient.sendMessage(
@@ -298,10 +297,10 @@ class WatchManager internal constructor(
                             IntSetting(key, value)
                         )
                     )
+                    settingsRepository.putInt(watch.uid, key, value)
                 }
             }
 
-            settingsDatabase.updateSetting(watch.uid, key, value)
             analytics.logExtensionSettingChanged(key, value)
         }
     }

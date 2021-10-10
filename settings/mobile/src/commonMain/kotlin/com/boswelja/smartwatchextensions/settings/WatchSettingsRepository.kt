@@ -5,7 +5,7 @@ import kotlinx.coroutines.flow.Flow
 /**
  * A repository for storing and retrieving key/value pairs tied to a specific watch.
  */
-interface SettingsRepository {
+interface WatchSettingsRepository {
 
     /**
      * Store a boolean value.

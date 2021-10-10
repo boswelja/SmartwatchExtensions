@@ -69,7 +69,7 @@ dependencies {
     implementation(projects.batterysync.mobile)
     implementation(projects.dndsync)
     implementation(projects.phonelocking)
-    implementation(projects.settings.common)
+    implementation(projects.settings.mobile)
     implementation(projects.versionsync)
 
     implementation(libs.firebase.analytics)
