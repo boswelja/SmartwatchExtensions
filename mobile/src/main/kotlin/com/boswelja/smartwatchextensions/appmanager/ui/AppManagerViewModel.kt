@@ -12,8 +12,11 @@ import com.boswelja.smartwatchextensions.appmanager.CacheValidation
 import com.boswelja.smartwatchextensions.appmanager.REQUEST_OPEN_PACKAGE
 import com.boswelja.smartwatchextensions.appmanager.REQUEST_UNINSTALL_PACKAGE
 import com.boswelja.smartwatchextensions.appmanager.VALIDATE_CACHE
-import com.boswelja.smartwatchextensions.appmanager.database.DbApp
+import com.boswelja.smartwatchextensions.appmanager.WatchAppDbRepository
+import com.boswelja.smartwatchextensions.appmanager.WatchAppDetails
+import com.boswelja.smartwatchextensions.appmanager.WatchAppRepository
 import com.boswelja.smartwatchextensions.appmanager.database.WatchAppDatabase
+import com.boswelja.smartwatchextensions.appmanager.database.WatchAppDatabaseLoader
 import com.boswelja.smartwatchextensions.watchmanager.WatchManager
 import com.boswelja.watchconnection.common.Watch
 import com.boswelja.watchconnection.common.discovery.ConnectionMode
@@ -33,21 +36,21 @@ import timber.log.Timber
 @OptIn(ExperimentalCoroutinesApi::class)
 class AppManagerViewModel internal constructor(
     application: Application,
-    private val appDatabase: WatchAppDatabase,
+    private val appRepository: WatchAppRepository,
     private val watchManager: WatchManager
 ) : AndroidViewModel(application) {
 
     @Suppress("unused")
     constructor(application: Application) : this(
         application,
-        WatchAppDatabase.getInstance(application),
+        WatchAppDbRepository(WatchAppDatabaseLoader(application).createDatabase()),
         WatchManager.getInstance(application)
     )
 
     @OptIn(FlowPreview::class)
     private val allApps = watchManager.selectedWatch.flatMapLatest { watch ->
         watch?.let {
-            appDatabase.apps().allForWatch(watch.uid)
+            appRepository.getAppsFor(watch.uid)
         } ?: flowOf(emptyList())
     }.debounce(APP_DEBOUNCE_MILLIS)
 
@@ -124,11 +127,11 @@ class AppManagerViewModel internal constructor(
     }
 
     /**
-     * Requests the selected watch launch a given [DbApp].
-     * @param app The [DbApp] to try launch.
+     * Requests the selected watch launch a given [WatchAppDetails].
+     * @param app The [WatchAppDetails] to try launch.
      * @return true if the request was sent successfully, false otherwise.
      */
-    suspend fun sendOpenRequest(app: DbApp): Boolean {
+    suspend fun sendOpenRequest(app: WatchAppDetails): Boolean {
         return selectedWatch?.let { watch ->
             val data = app.packageName.toByteArray(Charsets.UTF_8)
             watchManager.sendMessage(watch, REQUEST_OPEN_PACKAGE, data)
@@ -136,14 +139,14 @@ class AppManagerViewModel internal constructor(
     }
 
     /**
-     * Requests the selected watch uninstall a given [DbApp].
-     * @param app The [DbApp] to try uninstall.
+     * Requests the selected watch uninstall a given [WatchAppDetails].
+     * @param app The [WatchAppDetails] to try uninstall.
      * @return true if the request was sent successfully, false otherwise.
      */
-    suspend fun sendUninstallRequest(app: DbApp): Boolean {
+    suspend fun sendUninstallRequest(app: WatchAppDetails): Boolean {
         return selectedWatch?.let { watch ->
             val data = app.packageName.toByteArray(Charsets.UTF_8)
-            appDatabase.apps().remove(app)
+            appRepository.delete(app.watchId, app.packageName)
             watchManager.sendMessage(watch, REQUEST_UNINSTALL_PACKAGE, data)
         } ?: false
     }
@@ -155,8 +158,8 @@ class AppManagerViewModel internal constructor(
         selectedWatch?.let { watch ->
             Timber.d("Validating cache for %s", watch.uid)
             // Get a list of packages we have for the given watch
-            val apps = appDatabase.apps().allForWatch(watch.uid)
-                .map { apps -> apps.map { it.packageName to it.lastUpdateTime } }
+            val apps = appRepository.getAppVersionsFor(watch.uid)
+                .map { apps -> apps.map { it.packageName to it.updateTime } }
                 .first()
             val cacheHash = CacheValidation.getHashCode(apps)
             val result = watchManager.sendMessage(watch, Message(VALIDATE_CACHE, cacheHash))

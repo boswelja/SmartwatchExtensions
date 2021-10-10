@@ -9,13 +9,13 @@ import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
 import androidx.work.workDataOf
-import com.boswelja.smartwatchextensions.appmanager.database.WatchAppDatabase
+import com.boswelja.smartwatchextensions.appmanager.database.WatchAppDatabaseLoader
 import com.boswelja.smartwatchextensions.watchmanager.WatchManager
 import com.boswelja.watchconnection.common.Watch
 import com.boswelja.watchconnection.common.message.Message
+import kotlinx.coroutines.flow.first
 import java.util.UUID
 import java.util.concurrent.TimeUnit
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import timber.log.Timber
@@ -29,7 +29,9 @@ class AppCacheUpdateWorker(
 ) : CoroutineWorker(context, workerParams) {
 
     private val watchManager by lazy { WatchManager.getInstance(applicationContext) }
-    private val appDatabase by lazy { WatchAppDatabase.getInstance(applicationContext) }
+    private val appRepository: WatchAppRepository by lazy {
+        WatchAppDbRepository(WatchAppDatabaseLoader(applicationContext).createDatabase())
+    }
 
     override suspend fun doWork(): Result {
         val idString = inputData.getString(EXTRA_WATCH_ID)
@@ -57,9 +59,9 @@ class AppCacheUpdateWorker(
         Timber.d("Validating cache for %s", watch.uid)
 
         // Get a list of packages we have for the given watch
-        val apps = appDatabase.apps().allForWatch(watch.uid)
+        val apps = appRepository.getAppVersionsFor(watch.uid)
             .map { apps ->
-                apps.map { it.packageName to it.lastUpdateTime }
+                apps.map { it.packageName to it.updateTime }
             }
             .first()
 

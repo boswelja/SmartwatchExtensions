@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import com.boswelja.smartwatchextensions.appmanager.APP_SENDING_COMPLETE
 import com.boswelja.smartwatchextensions.appmanager.APP_SENDING_START
-import com.boswelja.smartwatchextensions.appmanager.database.WatchAppDatabase
 import com.boswelja.smartwatchextensions.batterysync.BATTERY_STATUS_PATH
 import com.boswelja.smartwatchextensions.batterysync.REQUEST_BATTERY_UPDATE_PATH
 import com.boswelja.smartwatchextensions.common.EmptySerializer
@@ -39,9 +38,6 @@ class WatchMessageReceiver : MessageReceiver<Nothing?>(
 
     override suspend fun onMessageReceived(context: Context, message: ReceivedMessage<Nothing?>) {
         when (message.path) {
-            APP_SENDING_START -> {
-                clearAppsForWatch(context, message.sourceUid)
-            }
             LAUNCH_APP -> launchApp(context)
             REQUEST_BATTERY_UPDATE_PATH -> {
                 // TODO Re-enable battery stats refresh
@@ -49,14 +45,6 @@ class WatchMessageReceiver : MessageReceiver<Nothing?>(
             }
             CHECK_WATCH_REGISTERED_PATH -> sendIsWatchRegistered(context, message.sourceUid)
         }
-    }
-
-    private suspend fun clearAppsForWatch(
-        context: Context,
-        sourceWatchId: String
-    ) {
-        val database = WatchAppDatabase.getInstance(context)
-        database.apps().removeForWatch(sourceWatchId)
     }
 
     /**

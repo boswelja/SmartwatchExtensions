@@ -11,6 +11,7 @@ kotlin {
         val commonMain by getting {
             dependencies {
                 api(libs.watchconnection.common)
+                api(projects.appmanager.common)
                 implementation(libs.sqldelight.runtime)
                 implementation(libs.sqldelight.coroutines)
             }

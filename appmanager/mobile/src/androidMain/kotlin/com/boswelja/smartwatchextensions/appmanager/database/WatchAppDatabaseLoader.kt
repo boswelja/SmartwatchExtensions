@@ -12,7 +12,7 @@ actual class WatchAppDatabaseLoader(private val context: Context) {
                 context = context,
                 name = "watchapps.db"
             ),
-            WatchApp.Adapter(
+            WatchAppDb.Adapter(
                 permissionsAdapter = object : ColumnAdapter<List<String>, String> {
                     override fun decode(databaseValue: String): List<String> =
                         databaseValue.split("|")

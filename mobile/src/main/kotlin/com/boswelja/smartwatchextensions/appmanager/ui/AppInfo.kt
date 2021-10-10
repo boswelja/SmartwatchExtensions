@@ -31,7 +31,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.boswelja.smartwatchextensions.R
-import com.boswelja.smartwatchextensions.appmanager.database.DbApp
+import com.boswelja.smartwatchextensions.appmanager.WatchAppDetails
 import com.boswelja.smartwatchextensions.common.ui.BigButton
 import com.boswelja.smartwatchextensions.common.ui.ExpandableCard
 import java.text.SimpleDateFormat
@@ -40,10 +40,10 @@ import java.util.Locale
 @Composable
 fun AppInfo(
     modifier: Modifier = Modifier,
-    app: DbApp,
+    app: WatchAppDetails,
     interactionEnabled: Boolean = true,
-    onOpenClicked: (DbApp) -> Unit,
-    onUninstallClicked: (DbApp) -> Unit
+    onOpenClicked: (WatchAppDetails) -> Unit,
+    onUninstallClicked: (WatchAppDetails) -> Unit
 ) {
     val scrollState = rememberScrollState()
     Column(
@@ -57,14 +57,14 @@ fun AppInfo(
         )
         AppActionButtons(
             modifier = Modifier.fillMaxWidth(),
-            openEnabled = interactionEnabled && app.hasLaunchActivity,
+            openEnabled = interactionEnabled && app.isLaunchable,
             uninstallEnabled = interactionEnabled && !app.isSystemApp,
             onOpenClicked = { onOpenClicked(app) },
             onUninstallClicked = { onUninstallClicked(app) }
         )
         PermissionsInfo(
             modifier = Modifier.fillMaxWidth(),
-            permissions = app.requestedPermissions
+            permissions = app.permissions
         )
         AppInstallInfo(
             modifier = Modifier.fillMaxWidth(),
@@ -173,7 +173,7 @@ fun PermissionsInfo(
 @Composable
 fun AppInstallInfo(
     modifier: Modifier = Modifier,
-    app: DbApp
+    app: WatchAppDetails
 ) {
     val dateFormatter = remember {
         SimpleDateFormat("dd MMM yyyy, h:mm aa", Locale.getDefault())
@@ -191,17 +191,17 @@ fun AppInstallInfo(
                 style = MaterialTheme.typography.body2
             )
         }
-        if (app.installTime < app.lastUpdateTime) {
+        if (app.installTime < app.updateTime) {
             Text(
                 stringResource(
                     R.string.app_info_last_updated_prefix,
-                    dateFormatter.format(app.lastUpdateTime)
+                    dateFormatter.format(app.updateTime)
                 ),
                 style = MaterialTheme.typography.body2
             )
         }
         Text(
-            stringResource(R.string.app_info_version_prefix, app.version),
+            stringResource(R.string.app_info_version_prefix, app.versionName),
             style = MaterialTheme.typography.body2
         )
     }

@@ -10,7 +10,6 @@ import com.boswelja.smartwatchextensions.analytics.getAnalytics
 import com.boswelja.smartwatchextensions.appStateStore
 import com.boswelja.smartwatchextensions.appmanager.AppCacheUpdateWorker
 import com.boswelja.smartwatchextensions.appmanager.CacheValidationSerializer
-import com.boswelja.smartwatchextensions.appmanager.database.WatchAppDatabase
 import com.boswelja.smartwatchextensions.batterysync.BatteryStatsRepository
 import com.boswelja.smartwatchextensions.batterysync.BatteryStatsRepositoryLoader
 import com.boswelja.smartwatchextensions.batterysync.BatteryStatsSerializer
@@ -140,7 +139,6 @@ class WatchManager internal constructor(
         forgetWatch(
             context.widgetIdStore,
             BatteryStatsRepositoryLoader.getInstance(context),
-            WatchAppDatabase.getInstance(context),
             watch
         )
     }
@@ -148,12 +146,10 @@ class WatchManager internal constructor(
     internal suspend fun forgetWatch(
         widgetIdStore: DataStore<Preferences>,
         batteryStatsDatabase: BatteryStatsRepository,
-        watchAppDatabase: WatchAppDatabase,
         watch: Watch
     ) {
         withContext(Dispatchers.IO) {
             batteryStatsDatabase.removeStatsFor(watch.uid)
-            watchAppDatabase.apps().removeForWatch(watch.uid)
             messageClient.sendMessage(watch, Message(Messages.RESET_APP, null))
             watchDatabase.removeWatch(watch)
             removeWidgetsForWatch(watch, widgetIdStore)
