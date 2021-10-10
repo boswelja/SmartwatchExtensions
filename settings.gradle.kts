@@ -7,7 +7,7 @@ include(
     ":batterysync:wear",
     ":dndsync",
     ":phonelocking",
-    ":settingssync",
+    ":settings",
     ":versionsync",
     ":watchmanager",
     ":mobile",

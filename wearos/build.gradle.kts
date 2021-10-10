@@ -61,7 +61,7 @@ dependencies {
     implementation(projects.batterysync.wear)
     implementation(projects.dndsync)
     implementation(projects.phonelocking)
-    implementation(projects.settingssync)
+    implementation(projects.settings)
     implementation(projects.versionsync)
 
     implementation(libs.androidx.appcompat)
