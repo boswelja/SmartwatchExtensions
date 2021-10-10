@@ -8,7 +8,7 @@ import androidx.room.Room
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ServiceTestRule
 import com.boswelja.smartwatchextensions.expectTrueWithinTimeout
-import com.boswelja.smartwatchextensions.settingssync.BoolSettingKeys.WATCH_SEPARATION_NOTI_KEY
+import com.boswelja.smartwatchextensions.settings.BoolSettingKeys.WATCH_SEPARATION_NOTI_KEY
 import com.boswelja.smartwatchextensions.watchmanager.WatchManager
 import com.boswelja.smartwatchextensions.watchmanager.database.WatchSettingsDatabase
 import com.boswelja.smartwatchextensions.watchmanager.item.BoolSetting

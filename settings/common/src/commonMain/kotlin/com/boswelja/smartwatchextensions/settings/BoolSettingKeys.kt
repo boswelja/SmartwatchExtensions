@@ -1,4 +1,4 @@
-package com.boswelja.smartwatchextensions.settingssync
+package com.boswelja.smartwatchextensions.settings
 
 object BoolSettingKeys {
 

@@ -1,6 +1,5 @@
-package com.boswelja.smartwatchextensions.settingssync
+package com.boswelja.smartwatchextensions.settings
 
-import com.boswelja.smartwatchextensions.setingssync.IntSetting
 import com.boswelja.watchconnection.common.message.MessageSerializer
 
 object IntSettingSerializer : MessageSerializer<IntSetting>(

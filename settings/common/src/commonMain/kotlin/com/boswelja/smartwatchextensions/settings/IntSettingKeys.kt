@@ -1,4 +1,4 @@
-package com.boswelja.smartwatchextensions.settingssync
+package com.boswelja.smartwatchextensions.settings
 
 object IntSettingKeys {
     const val BATTERY_CHARGE_THRESHOLD_KEY = "battery_charge_threshold"

@@ -2,9 +2,9 @@ package com.boswelja.smartwatchextensions.phoneconnectionmanager
 
 import android.content.Context
 import com.boswelja.smartwatchextensions.extensions.extensionSettingsStore
-import com.boswelja.smartwatchextensions.setingssync.IntSetting
-import com.boswelja.smartwatchextensions.settingssync.IntSettingKeys
-import com.boswelja.smartwatchextensions.settingssync.IntSettingSerializer
+import com.boswelja.smartwatchextensions.settings.IntSetting
+import com.boswelja.smartwatchextensions.settings.IntSettingKeys
+import com.boswelja.smartwatchextensions.settings.IntSettingSerializer
 import com.boswelja.watchconection.common.message.MessageReceiver
 import com.boswelja.watchconnection.common.message.ReceivedMessage
 

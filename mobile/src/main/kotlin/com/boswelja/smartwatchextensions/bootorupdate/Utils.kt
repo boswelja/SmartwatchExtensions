@@ -5,8 +5,8 @@ import android.content.Intent
 import androidx.core.content.ContextCompat
 import com.boswelja.smartwatchextensions.dndsync.DnDLocalChangeService
 import com.boswelja.smartwatchextensions.proximity.SeparationObserverService
-import com.boswelja.smartwatchextensions.settingssync.BoolSettingKeys.DND_SYNC_TO_WATCH_KEY
-import com.boswelja.smartwatchextensions.settingssync.BoolSettingKeys.WATCH_SEPARATION_NOTI_KEY
+import com.boswelja.smartwatchextensions.settings.BoolSettingKeys.DND_SYNC_TO_WATCH_KEY
+import com.boswelja.smartwatchextensions.settings.BoolSettingKeys.WATCH_SEPARATION_NOTI_KEY
 import com.boswelja.smartwatchextensions.watchmanager.database.WatchSettingsDatabase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first

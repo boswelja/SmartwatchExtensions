@@ -14,8 +14,8 @@ import com.boswelja.smartwatchextensions.common.WatchWidgetProvider
 import com.boswelja.smartwatchextensions.main.ui.MainActivity
 import com.boswelja.smartwatchextensions.messages.Message
 import com.boswelja.smartwatchextensions.messages.sendMessage
-import com.boswelja.smartwatchextensions.settingssync.BoolSettingKeys
-import com.boswelja.smartwatchextensions.settingssync.IntSettingKeys
+import com.boswelja.smartwatchextensions.settings.BoolSettingKeys
+import com.boswelja.smartwatchextensions.settings.IntSettingKeys
 import com.boswelja.smartwatchextensions.watchmanager.database.WatchDatabase
 import com.boswelja.smartwatchextensions.watchmanager.database.WatchSettingsDatabase
 import com.boswelja.watchconnection.common.Watch

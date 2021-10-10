@@ -1,5 +1,5 @@
 syntax = "proto3";
-package com.boswelja.smartwatchextensions.setingssync;
+package com.boswelja.smartwatchextensions.settings;
 
 /* Contains an int setting key/value pair */
 message IntSetting {

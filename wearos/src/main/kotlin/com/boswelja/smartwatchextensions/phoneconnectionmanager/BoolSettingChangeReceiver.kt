@@ -7,9 +7,9 @@ import com.boswelja.smartwatchextensions.batterysync.PhoneBatteryComplicationPro
 import com.boswelja.smartwatchextensions.dndsync.DnDLocalChangeListener
 import com.boswelja.smartwatchextensions.extensions.extensionSettingsStore
 import com.boswelja.smartwatchextensions.proximity.SeparationObserverService
-import com.boswelja.smartwatchextensions.settingssync.BoolSetting
-import com.boswelja.smartwatchextensions.settingssync.BoolSettingKeys
-import com.boswelja.smartwatchextensions.settingssync.BoolSettingSerializer
+import com.boswelja.smartwatchextensions.settings.BoolSetting
+import com.boswelja.smartwatchextensions.settings.BoolSettingKeys
+import com.boswelja.smartwatchextensions.settings.BoolSettingSerializer
 import com.boswelja.watchconection.common.message.MessageReceiver
 import com.boswelja.watchconnection.common.message.ReceivedMessage
 
