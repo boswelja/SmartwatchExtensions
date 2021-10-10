@@ -9,6 +9,7 @@ import com.boswelja.smartwatchextensions.analytics.Analytics
 import com.boswelja.smartwatchextensions.analytics.getAnalytics
 import com.boswelja.smartwatchextensions.appStateStore
 import com.boswelja.smartwatchextensions.appmanager.AppCacheUpdateWorker
+import com.boswelja.smartwatchextensions.appmanager.BaseAppCacheUpdateWorker
 import com.boswelja.smartwatchextensions.appmanager.CacheValidationSerializer
 import com.boswelja.smartwatchextensions.batterysync.BatteryStatsRepository
 import com.boswelja.smartwatchextensions.batterysync.BatteryStatsRepositoryLoader
@@ -130,7 +131,7 @@ class WatchManager internal constructor(
         withContext(Dispatchers.IO) {
             messageClient.sendMessage(watch, Message(Messages.WATCH_REGISTERED_PATH, null))
             watchDatabase.watchDao().add(watch.toDbWatch())
-            AppCacheUpdateWorker.enqueueWorkerFor(context, watch.uid)
+            BaseAppCacheUpdateWorker.enqueueWorkerFor<AppCacheUpdateWorker>(context, watch.uid)
             analytics.logWatchRegistered()
         }
     }
@@ -153,7 +154,7 @@ class WatchManager internal constructor(
             messageClient.sendMessage(watch, Message(Messages.RESET_APP, null))
             watchDatabase.removeWatch(watch)
             removeWidgetsForWatch(watch, widgetIdStore)
-            AppCacheUpdateWorker.stopWorkerFor(context, watch.uid)
+            BaseAppCacheUpdateWorker.stopWorkerFor(context, watch.uid)
             analytics.logWatchRemoved()
         }
     }
