@@ -1,31 +1,39 @@
 plugins {
-    kotlin("android")
+    kotlin("multiplatform")
     id("com.android.library")
-    id("com.google.devtools.ksp") version "1.5.31-1.0.0"
     id("com.squareup.wire")
+    id("com.squareup.sqldelight")
 }
 
-android {
-    compileSdk = PackageInfo.targetSdk
-    defaultConfig {
-        minSdk = 23
-        targetSdk = PackageInfo.targetSdk
-        consumerProguardFile("proguard-rules.pro")
+kotlin {
+    android()
 
-        ksp {
-            arg("room.schemaLocation", "$rootDir/schemas")
+    sourceSets {
+        val commonMain by getting {
+            dependencies {
+                implementation(libs.watchconnection.platform.wearos)
+                api(libs.wire.runtime)
+                implementation(libs.sqldelight.runtime)
+                implementation(libs.sqldelight.coroutines)
+            }
+        }
+        val androidMain by getting {
+            dependencies {
+                implementation(libs.sqldelight.android)
+                implementation(libs.androidx.datastore.proto)
+            }
         }
     }
 }
 
-dependencies {
-    implementation(projects.common)
-    implementation(libs.watchconnection.platform.wearos)
-
-    implementation(libs.androidx.datastore.proto)
-
-    implementation(libs.bundles.room)
-    ksp(libs.androidx.room.compiler)
+android {
+    compileSdk = PackageInfo.targetSdk
+    sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
+    defaultConfig {
+        minSdk = 23
+        targetSdk = PackageInfo.targetSdk
+        consumerProguardFile("proguard-rules.pro")
+    }
 }
 
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
@@ -35,5 +43,14 @@ tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach 
 }
 
 wire {
+    sourcePath {
+        srcDir("src/commonMain/proto")
+    }
     kotlin { }
+}
+
+sqldelight {
+    database("RegisteredWatchDatabase") {
+        packageName = "com.boswelja.smartwatchextensions.watchmanager.database"
+    }
 }
