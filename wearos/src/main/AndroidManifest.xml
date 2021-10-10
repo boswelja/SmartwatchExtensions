@@ -118,7 +118,7 @@
         </receiver>
 
         <receiver
-            android:name=".appmanager.AppManagerCommandReceiver"
+            android:name=".appmanager.AppManagerCacheValidatorReceiver"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.boswelja.watchconnection.common.message.MessageReceived" />
