@@ -1,0 +1,34 @@
+import kotlin.collections.List;
+
+CREATE TABLE watchApp (
+    watch_id TEXT NOT NULL,
+    package_name TEXT NOT NULL,
+    icon_uri TEXT,
+    label TEXT NOT NULL,
+    version_name TEXT NOT NULL,
+    version_code INTEGER NOT NULL,
+    system_app INTEGER AS Boolean NOT NULL,
+    launchable INTEGER AS Boolean NOT NULL,
+    enabled INTEGER AS Boolean NOT NULL,
+    install_time INTEGER NOT NULL,
+    update_time INTEGER,
+    permissions TEXT AS List<String> NOT NULL,
+    PRIMARY KEY (watch_id, package_name)
+);
+
+insert:
+INSERT OR REPLACE INTO watchApp
+VALUES ?;
+
+getDisplayItemsFor:
+SELECT icon_uri, label, version_name FROM watchApp
+WHERE watch_id = ?;
+
+getDetailsFor:
+SELECT * FROM watchApp
+WHERE watch_id = ? AND package_name = ?
+LIMIT 1;
+
+removeFor:
+DELETE FROM watchApp
+WHERE watch_id = ?;
