@@ -1,0 +1,18 @@
+CREATE TABLE boolSetting (
+    watch_id TEXT NOT NULL,
+    key TEXT NOT NULL,
+    value INTEGER AS Boolean NOT NULL,
+    PRIMARY KEY (watch_id, key)
+);
+
+update:
+INSERT OR REPLACE INTO boolSetting
+VALUES ?;
+
+get:
+SELECT value FROM boolSetting
+WHERE watch_id = ? AND key = ?;
+
+deleteFor:
+DELETE FROM boolSetting
+WHERE watch_id = ?;

@@ -1,0 +1,18 @@
+CREATE TABLE intSetting (
+    watch_id TEXT NOT NULL,
+    key TEXT NOT NULL,
+    value INTEGER AS Int NOT NULL,
+    PRIMARY KEY (watch_id, key)
+);
+
+update:
+INSERT OR REPLACE INTO intSetting
+VALUES ?;
+
+get:
+SELECT value FROM intSetting
+WHERE watch_id = ? AND key = ?;
+
+deleteFor:
+DELETE FROM intSetting
+WHERE watch_id = ?;

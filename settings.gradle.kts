@@ -8,6 +8,7 @@ include(
     ":dndsync",
     ":phonelocking",
     ":settings:common",
+    ":settings:mobile",
     ":versionsync",
     ":watchmanager",
     ":mobile",
