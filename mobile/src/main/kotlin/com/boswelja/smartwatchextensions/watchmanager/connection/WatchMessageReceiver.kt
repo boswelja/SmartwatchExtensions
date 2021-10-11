@@ -13,11 +13,14 @@ import com.boswelja.smartwatchextensions.common.connection.Messages.WATCH_REGIST
 import com.boswelja.smartwatchextensions.common.startActivity
 import com.boswelja.smartwatchextensions.dndsync.DND_STATUS_PATH
 import com.boswelja.smartwatchextensions.main.ui.MainActivity
-import com.boswelja.smartwatchextensions.watchmanager.database.WatchDatabase
+import com.boswelja.smartwatchextensions.watchmanager.WatchDbRepository
+import com.boswelja.smartwatchextensions.watchmanager.database.RegisteredWatchDatabaseLoader
 import com.boswelja.watchconection.common.message.MessageReceiver
 import com.boswelja.watchconnection.common.message.Message
 import com.boswelja.watchconnection.common.message.ReceivedMessage
+import com.boswelja.watchconnection.core.discovery.DiscoveryClient
 import com.boswelja.watchconnection.core.message.MessageClient
+import com.boswelja.watchconnection.wearos.discovery.WearOSDiscoveryPlatform
 import com.boswelja.watchconnection.wearos.message.WearOSMessagePlatform
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.firstOrNull
@@ -64,8 +67,15 @@ class WatchMessageReceiver : MessageReceiver<Nothing?>(
     private suspend fun sendIsWatchRegistered(context: Context, watchId: String) {
         Timber.i("sendIsWatchRegistered() called")
         withContext(Dispatchers.IO) {
-            val database = WatchDatabase.getInstance(context)
-            val watch = database.getById(watchId).firstOrNull()
+            val repository = WatchDbRepository(
+                DiscoveryClient(
+                    listOf(
+                        WearOSDiscoveryPlatform(context)
+                    )
+                ),
+                RegisteredWatchDatabaseLoader(context).createDatabase()
+            )
+            val watch = repository.getWatchById(watchId).firstOrNull()
             // If watch is found in the database, let it know it's registered
             watch?.let {
                 MessageClient(

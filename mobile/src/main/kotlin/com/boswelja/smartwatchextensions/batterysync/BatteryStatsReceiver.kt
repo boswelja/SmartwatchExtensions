@@ -23,8 +23,12 @@ import com.boswelja.smartwatchextensions.settings.IntSettingKeys.BATTERY_LOW_THR
 import com.boswelja.smartwatchextensions.settings.WatchSettingsDbRepository
 import com.boswelja.smartwatchextensions.settings.WatchSettingsRepository
 import com.boswelja.smartwatchextensions.settings.database.WatchSettingsDatabaseLoader
-import com.boswelja.smartwatchextensions.watchmanager.database.WatchDatabase
+import com.boswelja.smartwatchextensions.watchmanager.WatchDbRepository
+import com.boswelja.smartwatchextensions.watchmanager.WatchRepository
+import com.boswelja.smartwatchextensions.watchmanager.database.RegisteredWatchDatabaseLoader
 import com.boswelja.watchconnection.common.Watch
+import com.boswelja.watchconnection.core.discovery.DiscoveryClient
+import com.boswelja.watchconnection.wearos.discovery.WearOSDiscoveryPlatform
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
@@ -45,8 +49,16 @@ class BatteryStatsReceiver : BaseBatteryStatsReceiver() {
         batteryStats: BatteryStats
     ) {
         withContext(Dispatchers.IO) {
-            val database = WatchDatabase.getInstance(context)
-            database.getById(sourceUid).firstOrNull()?.let { watch ->
+            val watchRepository: WatchRepository =
+                WatchDbRepository(
+                    DiscoveryClient(
+                        listOf(
+                            WearOSDiscoveryPlatform(context)
+                        )
+                    ),
+                    RegisteredWatchDatabaseLoader(context).createDatabase()
+                )
+            watchRepository.getWatchById(sourceUid).firstOrNull()?.let { watch ->
                 val notificationManager = context.getSystemService<NotificationManager>()!!
                 settingsRepository = WatchSettingsDbRepository(
                     WatchSettingsDatabaseLoader(context).createDatabase()
