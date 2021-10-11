@@ -15,7 +15,6 @@ import com.boswelja.smartwatchextensions.batterysync.BatteryStatsRepository
 import com.boswelja.smartwatchextensions.batterysync.BatteryStatsRepositoryLoader
 import com.boswelja.smartwatchextensions.batterysync.BatteryStatsSerializer
 import com.boswelja.smartwatchextensions.common.SingletonHolder
-import com.boswelja.smartwatchextensions.common.connection.Capability
 import com.boswelja.smartwatchextensions.common.connection.Messages
 import com.boswelja.smartwatchextensions.common.connection.Messages.CLEAR_PREFERENCES
 import com.boswelja.smartwatchextensions.dndsync.DnDStatusSerializer
@@ -28,8 +27,7 @@ import com.boswelja.smartwatchextensions.settings.UPDATE_INT_PREFERENCE
 import com.boswelja.smartwatchextensions.settings.WatchSettingsDbRepository
 import com.boswelja.smartwatchextensions.settings.WatchSettingsRepository
 import com.boswelja.smartwatchextensions.settings.database.WatchSettingsDatabaseLoader
-import com.boswelja.smartwatchextensions.watchmanager.database.DbWatch.Companion.toDbWatch
-import com.boswelja.smartwatchextensions.watchmanager.database.WatchDatabase
+import com.boswelja.smartwatchextensions.watchmanager.database.RegisteredWatchDatabaseLoader
 import com.boswelja.smartwatchextensions.widget.widgetIdStore
 import com.boswelja.watchconnection.common.Watch
 import com.boswelja.watchconnection.common.message.Message
@@ -42,7 +40,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
@@ -51,7 +48,6 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import timber.log.Timber
 
 /**
  * Provides a simplified interface for interacting with all watch-related classes.
@@ -60,18 +56,27 @@ import timber.log.Timber
 class WatchManager internal constructor(
     private val context: Context,
     val settingsRepository: WatchSettingsRepository,
-    private val watchDatabase: WatchDatabase,
+    private val watchRepository: WatchRepository,
     private val messageClient: MessageClient,
     private val discoveryClient: DiscoveryClient,
     private val analytics: Analytics,
     private val dataStore: DataStore<AppState>,
-    private val coroutineScope: CoroutineScope
+    coroutineScope: CoroutineScope,
+    private val selectedWatchManager: SelectedWatchManager =
+        SelectedWatchStoreManager(context.selectedWatchStateStore, watchRepository)
 ) {
 
     constructor(context: Context) : this(
         context.applicationContext,
         WatchSettingsDbRepository(WatchSettingsDatabaseLoader(context).createDatabase()),
-        WatchDatabase.getInstance(context),
+        WatchDbRepository(
+            DiscoveryClient(
+                listOf(
+                    WearOSDiscoveryPlatform(context)
+                )
+            ),
+            RegisteredWatchDatabaseLoader(context).createDatabase()
+        ),
         MessageClient(
             serializers = listOf(
                 IntSettingSerializer,
@@ -94,32 +99,21 @@ class WatchManager internal constructor(
         CoroutineScope(Dispatchers.IO)
     )
 
-    private val _selectedWatchId = MutableStateFlow<String?>(null)
-    private val _selectedWatch = _selectedWatchId.flatMapLatest { id ->
-        id?.let {
-            watchDatabase.getById(id)
-        } ?: flowOf(null)
-    }
+    val registeredWatches: Flow<List<Watch>> = watchRepository.registeredWatches
 
-    val registeredWatches: Flow<List<Watch>>
-        get() = watchDatabase.getAll()
-
-    val availableWatches: Flow<List<Watch>>
-        get() = discoveryClient.watchesWithCapability(CAPABILITY_WATCH_APP)
+    val availableWatches: Flow<List<Watch>> = watchRepository.availableWatches
 
     /**
      * The currently selected watch
      */
-    val selectedWatch: Flow<Watch?> = _selectedWatch
+    val selectedWatch: Flow<Watch?> = selectedWatchManager.selectedWatch
 
     init {
-        Timber.d("Creating WatchManager")
         // Set the initial selectedWatch value if possible.
         coroutineScope.launch {
             dataStore.data.map { it.lastSelectedWatchId }.collect {
                 if (it.isNotBlank()) selectWatchById(it)
                 else {
-                    Timber.w("No watch previously selected")
                     registeredWatches.first().firstOrNull()?.let { watch ->
                         selectWatchById(watch.uid)
                     }
@@ -131,7 +125,7 @@ class WatchManager internal constructor(
     suspend fun registerWatch(watch: Watch) {
         withContext(Dispatchers.IO) {
             messageClient.sendMessage(watch, Message(Messages.WATCH_REGISTERED_PATH, null))
-            watchDatabase.watchDao().add(watch.toDbWatch())
+            watchRepository.registerWatch(watch)
             BaseAppCacheUpdateWorker.enqueueWorkerFor<AppCacheUpdateWorker>(context, watch.uid)
             analytics.logWatchRegistered()
         }
@@ -153,7 +147,7 @@ class WatchManager internal constructor(
         withContext(Dispatchers.IO) {
             batteryStatsDatabase.removeStatsFor(watch.uid)
             messageClient.sendMessage(watch, Message(Messages.RESET_APP, null))
-            watchDatabase.removeWatch(watch)
+            watchRepository.deregisterWatch(watch)
             removeWidgetsForWatch(watch, widgetIdStore)
             BaseAppCacheUpdateWorker.stopWorkerFor(context, watch.uid)
             analytics.logWatchRemoved()
@@ -162,7 +156,7 @@ class WatchManager internal constructor(
 
     suspend fun renameWatch(watch: Watch, newName: String) {
         withContext(Dispatchers.IO) {
-            watchDatabase.renameWatch(watch, newName)
+            watchRepository.renameWatch(watch, newName)
             analytics.logWatchRenamed()
         }
     }
@@ -205,15 +199,7 @@ class WatchManager internal constructor(
      * Selects a watch by a given [Watch.uid]. This will update [selectedWatch].
      * @param watchId The ID of the [Watch] to select.
      */
-    fun selectWatchById(watchId: String) {
-        Timber.d("selectWatchById(%s) called", watchId)
-        coroutineScope.launch {
-            _selectedWatchId.emit(watchId)
-            dataStore.updateData { settings ->
-                settings.copy(lastSelectedWatchId = watchId)
-            }
-        }
-    }
+    suspend fun selectWatchById(watchId: String) = selectedWatchManager.selectWatch(watchId)
 
     fun getStatusFor(watch: Watch) = discoveryClient.connectionModeFor(watch)
 
@@ -223,9 +209,9 @@ class WatchManager internal constructor(
         }
 
     fun selectedWatchHasCapability(capability: Capability): Flow<Boolean> =
-        _selectedWatch.flatMapLatest { watch ->
+        selectedWatch.flatMapLatest { watch ->
             watch?.let {
-                discoveryClient.hasCapability(watch, capability.name)
+                watchRepository.watchHasCapability(watch, capability)
             } ?: flowOf(false)
         }
 
@@ -245,7 +231,7 @@ class WatchManager internal constructor(
         return if (watch != null) {
             settingsRepository.getBoolean(watch.uid, key, default)
         } else {
-            _selectedWatch.flatMapLatest { selectedWatch ->
+            selectedWatch.flatMapLatest { selectedWatch ->
                 if (selectedWatch != null) {
                     settingsRepository.getBoolean(selectedWatch.uid, key, default)
                 } else {
@@ -259,7 +245,7 @@ class WatchManager internal constructor(
         return if (watch != null) {
             settingsRepository.getInt(watch.uid, key, default)
         } else {
-            _selectedWatch.flatMapLatest { selectedWatch ->
+            selectedWatch.flatMapLatest { selectedWatch ->
                 if (selectedWatch != null) {
                     settingsRepository.getInt(selectedWatch.uid, key, default)
                 } else {
@@ -276,7 +262,6 @@ class WatchManager internal constructor(
      * @param value The new preference value.
      */
     suspend fun updatePreference(watch: Watch, key: String, value: Any) {
-        Timber.d("updatePreference(%s, %s, %s) called", watch.toString(), key, value.toString())
         withContext(Dispatchers.IO) {
             when (value) {
                 is Boolean -> {
@@ -311,18 +296,16 @@ class WatchManager internal constructor(
      * @param value The new preference value.
      */
     suspend fun updatePreference(key: String, value: Boolean) {
-        watchDatabase.getAll().first().forEach {
+        registeredWatches.first().forEach {
             updatePreference(it, key, value)
         }
     }
 
-    fun getWatchById(id: String): Flow<Watch?> = watchDatabase.getById(id)
+    fun getWatchById(id: String): Flow<Watch?> = watchRepository.getWatchById(id)
 
     fun incomingMessages() = messageClient.rawIncomingMessages()
     fun <T> incomingMessages(serializer: MessageSerializer<T>) =
         messageClient.incomingMessages(serializer)
 
-    companion object : SingletonHolder<WatchManager, Context>(::WatchManager) {
-        const val CAPABILITY_WATCH_APP = "extensions_watch_app"
-    }
+    companion object : SingletonHolder<WatchManager, Context>(::WatchManager)
 }

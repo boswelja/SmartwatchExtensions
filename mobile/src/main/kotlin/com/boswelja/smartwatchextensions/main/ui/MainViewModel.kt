@@ -2,8 +2,10 @@ package com.boswelja.smartwatchextensions.main.ui
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.viewModelScope
 import com.boswelja.smartwatchextensions.watchmanager.WatchManager
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
 
 class MainViewModel internal constructor(
     application: Application,
@@ -21,5 +23,9 @@ class MainViewModel internal constructor(
 
     val needsSetup = registeredWatches.map { it.isNullOrEmpty() }
 
-    fun selectWatchById(watchId: String) = watchManager.selectWatchById(watchId)
+    fun selectWatchById(watchId: String) {
+        viewModelScope.launch {
+            watchManager.selectWatchById(watchId)
+        }
+    }
 }

@@ -71,6 +71,7 @@ dependencies {
     implementation(projects.phonelocking)
     implementation(projects.settings.mobile)
     implementation(projects.versionsync)
+    implementation(projects.watchmanager)
 
     implementation(libs.firebase.analytics)
 
