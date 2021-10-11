@@ -14,7 +14,10 @@ kotlin {
             }
         }
         val androidMain by getting {
-            dependencies { }
+            dependencies {
+                implementation(libs.androidx.lifecycle.service)
+                implementation(libs.androidx.lifecycle.runtime)
+            }
         }
     }
 }
