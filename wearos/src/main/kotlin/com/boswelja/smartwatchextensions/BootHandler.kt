@@ -16,7 +16,7 @@ import androidx.work.OutOfQuotaPolicy
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
 import com.boswelja.smartwatchextensions.capability.CapabilityUpdater
-import com.boswelja.smartwatchextensions.dndsync.DnDLocalChangeListener
+import com.boswelja.smartwatchextensions.dndsync.LocalDnDAndTheaterCollectorService
 import com.boswelja.smartwatchextensions.extensions.extensionSettingsStore
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
@@ -57,7 +57,7 @@ class BootWorker(
             val dndSyncWithTheater = applicationContext.extensionSettingsStore.data
                 .map { it.dndSyncWithTheater }.first()
             if (dndSyncToPhone || dndSyncWithTheater) {
-                Intent(applicationContext, DnDLocalChangeListener::class.java).also {
+                Intent(applicationContext, LocalDnDAndTheaterCollectorService::class.java).also {
                     ContextCompat.startForegroundService(applicationContext, it)
                 }
             }

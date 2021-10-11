@@ -4,7 +4,7 @@ import android.content.Context
 import android.content.Intent
 import androidx.core.content.ContextCompat
 import com.boswelja.smartwatchextensions.batterysync.PhoneBatteryComplicationProvider
-import com.boswelja.smartwatchextensions.dndsync.DnDLocalChangeListener
+import com.boswelja.smartwatchextensions.dndsync.LocalDnDAndTheaterCollectorService
 import com.boswelja.smartwatchextensions.extensions.extensionSettingsStore
 import com.boswelja.smartwatchextensions.proximity.SeparationObserverService
 import com.boswelja.smartwatchextensions.settings.BoolSetting
@@ -80,7 +80,7 @@ class BoolSettingChangeReceiver : MessageReceiver<BoolSetting>(BoolSettingSerial
     }
 
     private fun startDnDListenerService(context: Context) {
-        Intent(context, DnDLocalChangeListener::class.java).also {
+        Intent(context, LocalDnDAndTheaterCollectorService::class.java).also {
             ContextCompat.startForegroundService(context, it)
         }
     }

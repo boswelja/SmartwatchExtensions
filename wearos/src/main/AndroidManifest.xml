@@ -126,7 +126,7 @@
         </receiver>
 
         <service
-            android:name=".dndsync.DnDLocalChangeListener"
+            android:name=".dndsync.LocalDnDAndTheaterCollectorService"
             android:exported="false" />
 
         <service
