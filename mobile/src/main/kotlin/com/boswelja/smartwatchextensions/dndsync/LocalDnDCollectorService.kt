@@ -5,7 +5,6 @@ import android.app.PendingIntent
 import android.content.Intent
 import androidx.core.app.NotificationCompat
 import androidx.core.content.getSystemService
-import androidx.lifecycle.LifecycleService
 import androidx.lifecycle.lifecycleScope
 import com.boswelja.smartwatchextensions.NotificationChannelHelper
 import com.boswelja.smartwatchextensions.common.R
@@ -15,25 +14,24 @@ import com.boswelja.smartwatchextensions.watchmanager.WatchManager
 import com.boswelja.watchconnection.common.Watch
 import com.boswelja.watchconnection.common.message.Message
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
-class DnDLocalChangeService : LifecycleService() {
-
-    private val dndCollectorJob = Job()
+class LocalDnDCollectorService : BaseLocalDnDCollectorService() {
 
     private val watchManager by lazy { WatchManager.getInstance(this) }
 
     private val targetWatches = ArrayList<Watch>()
 
+    override suspend fun onDnDChanged(dndState: Boolean) {
+        sendNewDnDState(dndState)
+    }
+
     @OptIn(ExperimentalCoroutinesApi::class)
     override fun onCreate() {
         super.onCreate()
-        Timber.i("onCreate() called")
 
         lifecycleScope.launch {
             watchManager.settingsRepository
@@ -48,23 +46,11 @@ class DnDLocalChangeService : LifecycleService() {
                     stopIfUnneeded()
                 }
         }
-
-        lifecycleScope.launch(dndCollectorJob) {
-            dndState().collect { sendNewDnDState(it) }
-        }
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        Timber.i("onStartCommand() called")
         startForeground(SERVICE_NOTIFICATION_ID, createNotification())
         return super.onStartCommand(intent, flags, startId)
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        Timber.i("onDestroy() called")
-
-        dndCollectorJob.cancel()
     }
 
     /**
@@ -95,31 +81,24 @@ class DnDLocalChangeService : LifecycleService() {
     }
 
     /**
-     * Push the new DnD state to the [DataClient] for any watches to retrieve.
+     * Notify target watches of the DnD state change.
      * @param dndEnabled The new state of Do not Disturb.
      */
-    private fun sendNewDnDState(dndEnabled: Boolean) {
-        Timber.i("sendNewDnDState($dndEnabled) called")
-        lifecycleScope.launch {
-            targetWatches.forEach { watch ->
-                val result = watchManager.sendMessage(
-                    watch,
-                    Message(
-                        DND_STATUS_PATH,
-                        dndEnabled
-                    )
+    private suspend fun sendNewDnDState(dndEnabled: Boolean) {
+        targetWatches.forEach { watch ->
+            watchManager.sendMessage(
+                watch,
+                Message(
+                    DND_STATUS_PATH,
+                    dndEnabled
                 )
-                if (!result) {
-                    Timber.w("Failed to update DnD on ${watch.name}")
-                }
-            }
+            )
         }
     }
 
     /** Stops the service if it doesn't need to be running any more. */
     private fun stopIfUnneeded() {
         if (targetWatches.isEmpty()) {
-            Timber.i("Service unneeded, stopping")
             stopForeground(true)
             stopSelf()
         }

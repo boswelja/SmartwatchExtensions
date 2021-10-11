@@ -83,7 +83,7 @@
             </intent-filter>
         </receiver>
         <service
-            android:name=".dndsync.DnDLocalChangeService"
+            android:name=".dndsync.LocalDnDCollectorService"
             android:exported="false" />
 
         <receiver

@@ -8,7 +8,7 @@ import kotlinx.coroutines.launch
 /**
  * A [LifecycleService] that collects the device's DnD state throughout it's lifecycle.
  */
-abstract class BaseLocalDnDListenerService : LifecycleService() {
+abstract class BaseLocalDnDCollectorService : LifecycleService() {
 
     /**
      * Called when the device's DnD state changes.

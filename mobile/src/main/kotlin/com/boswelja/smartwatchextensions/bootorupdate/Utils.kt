@@ -3,7 +3,7 @@ package com.boswelja.smartwatchextensions.bootorupdate
 import android.content.Context
 import android.content.Intent
 import androidx.core.content.ContextCompat
-import com.boswelja.smartwatchextensions.dndsync.DnDLocalChangeService
+import com.boswelja.smartwatchextensions.dndsync.LocalDnDCollectorService
 import com.boswelja.smartwatchextensions.proximity.SeparationObserverService
 import com.boswelja.smartwatchextensions.settings.BoolSettingKeys.DND_SYNC_TO_WATCH_KEY
 import com.boswelja.smartwatchextensions.settings.BoolSettingKeys.WATCH_SEPARATION_NOTI_KEY
@@ -32,7 +32,7 @@ private suspend fun Context.tryStartInterruptFilterSyncService(repository: Watch
     if (dndSyncToWatchEnabled) {
         ContextCompat.startForegroundService(
             applicationContext,
-            Intent(applicationContext, DnDLocalChangeService::class.java)
+            Intent(applicationContext, LocalDnDCollectorService::class.java)
         )
     }
 }

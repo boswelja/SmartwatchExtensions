@@ -5,9 +5,9 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 /**
- * A [BaseLocalDnDListenerService] that also collects Theater Mode changes.
+ * A [BaseLocalDnDCollectorService] that also collects Theater Mode changes.
  */
-abstract class BaseLocalDnDAndTheaterCollectorService : BaseLocalDnDListenerService() {
+abstract class BaseLocalDnDAndTheaterCollectorService : BaseLocalDnDCollectorService() {
 
     /**
      * Called when the device's Theater Mode state changes.
