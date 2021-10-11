@@ -4,10 +4,8 @@ import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
-import com.boswelja.smartwatchextensions.AppState
 import com.boswelja.smartwatchextensions.analytics.Analytics
 import com.boswelja.smartwatchextensions.analytics.getAnalytics
-import com.boswelja.smartwatchextensions.appStateStore
 import com.boswelja.smartwatchextensions.appmanager.AppCacheUpdateWorker
 import com.boswelja.smartwatchextensions.appmanager.BaseAppCacheUpdateWorker
 import com.boswelja.smartwatchextensions.appmanager.CacheValidationSerializer
@@ -36,17 +34,13 @@ import com.boswelja.watchconnection.core.discovery.DiscoveryClient
 import com.boswelja.watchconnection.core.message.MessageClient
 import com.boswelja.watchconnection.wearos.discovery.WearOSDiscoveryPlatform
 import com.boswelja.watchconnection.wearos.message.WearOSMessagePlatform
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 /**
@@ -60,8 +54,6 @@ class WatchManager internal constructor(
     private val messageClient: MessageClient,
     private val discoveryClient: DiscoveryClient,
     private val analytics: Analytics,
-    private val dataStore: DataStore<AppState>,
-    coroutineScope: CoroutineScope,
     private val selectedWatchManager: SelectedWatchManager =
         SelectedWatchStoreManager(context.selectedWatchStateStore, watchRepository)
 ) {
@@ -94,9 +86,7 @@ class WatchManager internal constructor(
                 WearOSDiscoveryPlatform(context)
             )
         ),
-        getAnalytics(),
-        context.appStateStore,
-        CoroutineScope(Dispatchers.IO)
+        getAnalytics()
     )
 
     val registeredWatches: Flow<List<Watch>> = watchRepository.registeredWatches
@@ -107,20 +97,6 @@ class WatchManager internal constructor(
      * The currently selected watch
      */
     val selectedWatch: Flow<Watch?> = selectedWatchManager.selectedWatch
-
-    init {
-        // Set the initial selectedWatch value if possible.
-        coroutineScope.launch {
-            dataStore.data.map { it.lastSelectedWatchId }.collect {
-                if (it.isNotBlank()) selectWatchById(it)
-                else {
-                    registeredWatches.first().firstOrNull()?.let { watch ->
-                        selectWatchById(watch.uid)
-                    }
-                }
-            }
-        }
-    }
 
     suspend fun registerWatch(watch: Watch) {
         withContext(Dispatchers.IO) {
