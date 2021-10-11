@@ -10,12 +10,15 @@ import androidx.lifecycle.lifecycleScope
 import com.boswelja.smartwatchextensions.NotificationChannelHelper
 import com.boswelja.smartwatchextensions.common.R
 import com.boswelja.smartwatchextensions.main.ui.MainActivity
+import com.boswelja.smartwatchextensions.settings.BoolSettingKeys.DND_SYNC_TO_WATCH_KEY
 import com.boswelja.smartwatchextensions.watchmanager.WatchManager
 import com.boswelja.watchconnection.common.Watch
 import com.boswelja.watchconnection.common.message.Message
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -33,19 +36,17 @@ class DnDLocalChangeService : LifecycleService() {
         Timber.i("onCreate() called")
 
         lifecycleScope.launch {
-            // TODO Restore get by key functionality
-//            watchManager.settingsRepository.boolSettings().getByKey(DND_SYNC_TO_WATCH_KEY)
-//                .mapLatest { settings ->
-//                    settings.filter { setting ->
-//                        setting.value
-//                    }.mapNotNull { setting ->
-//                        watchManager.getWatchById(setting.watchId).firstOrNull()
-//                    }
-//                }.collect {
-//                    targetWatches.clear()
-//                    targetWatches.addAll(it)
-//                    stopIfUnneeded()
-//                }
+            watchManager.settingsRepository
+                .getIdsWithBooleanSet(DND_SYNC_TO_WATCH_KEY, true)
+                .map { ids ->
+                    ids.mapNotNull { id ->
+                        watchManager.getWatchById(id).firstOrNull()
+                    }
+                }.collect {
+                    targetWatches.clear()
+                    targetWatches.addAll(it)
+                    stopIfUnneeded()
+                }
         }
 
         lifecycleScope.launch(dndCollectorJob) {

@@ -12,6 +12,7 @@ import androidx.lifecycle.LifecycleService
 import androidx.lifecycle.lifecycleScope
 import com.boswelja.smartwatchextensions.NotificationChannelHelper
 import com.boswelja.smartwatchextensions.R
+import com.boswelja.smartwatchextensions.settings.BoolSettingKeys.WATCH_SEPARATION_NOTI_KEY
 import com.boswelja.smartwatchextensions.watchmanager.WatchManager
 import com.boswelja.watchconnection.common.Watch
 import com.boswelja.watchconnection.common.discovery.ConnectionMode
@@ -23,7 +24,6 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -51,16 +51,15 @@ class SeparationObserverService : LifecycleService() {
 
     @OptIn(ExperimentalCoroutinesApi::class)
     private suspend fun startCollectingSettings() {
-        // TODO Restore get by key functionality
-//        watchManager.settingsRepository.boolSettings().getByKey(WATCH_SEPARATION_NOTI_KEY).mapLatest {
-//            it.filter { setting -> setting.value }.map { setting -> setting.watchId }
-//        }.collect { watchIds ->
-//            if (watchIds.isEmpty()) {
-//                tryStop()
-//            } else {
-//                collectStatusesFor(watchIds)
-//            }
-//        }
+        watchManager.settingsRepository
+            .getIdsWithBooleanSet(WATCH_SEPARATION_NOTI_KEY, true)
+            .collect { watchIds ->
+                if (watchIds.isEmpty()) {
+                    tryStop()
+                } else {
+                    collectStatusesFor(watchIds)
+                }
+            }
     }
 
     @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
