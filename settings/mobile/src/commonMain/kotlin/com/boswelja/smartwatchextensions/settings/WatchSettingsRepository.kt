@@ -40,6 +40,20 @@ interface WatchSettingsRepository {
     fun getInt(watchId: String, key: String, defaultValue: Int = 0): Flow<Int>
 
     /**
+     * Flow a list of watch UIDs that have a specified key/value pair stored.
+     * @param key The setting key to look up.
+     * @param value The setting value required.
+     */
+    fun getIdsWithBooleanSet(key: String, value: Boolean): Flow<List<String>>
+
+    /**
+     * Flow a list of watch UIDs that have a specified key/value pair stored.
+     * @param key The setting key to look up.
+     * @param value The setting value required.
+     */
+    fun getIdsWithIntSet(key: String, value: Int): Flow<List<String>>
+
+    /**
      * Delete all settings for a watch with the given ID.
      * @param watchId The watch UID to delete settings for.
      */
