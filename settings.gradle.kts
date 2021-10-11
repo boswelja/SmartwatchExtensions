@@ -6,6 +6,7 @@ include(
     ":batterysync:mobile",
     ":batterysync:wear",
     ":dndsync:common",
+    ":dndsync:wear",
     ":phonelocking",
     ":settings:common",
     ":settings:mobile",
