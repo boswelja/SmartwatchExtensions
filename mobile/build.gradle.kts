@@ -68,6 +68,7 @@ dependencies {
     implementation(projects.appmanager.mobile)
     implementation(projects.batterysync.mobile)
     implementation(projects.dndsync.common)
+    implementation(projects.messages.mobile)
     implementation(projects.phonelocking)
     implementation(projects.settings.mobile)
     implementation(projects.versionsync)

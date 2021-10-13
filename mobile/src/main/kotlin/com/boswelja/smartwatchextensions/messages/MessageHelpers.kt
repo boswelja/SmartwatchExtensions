@@ -6,7 +6,7 @@ import androidx.core.app.NotificationCompat
 import androidx.core.content.getSystemService
 import com.boswelja.smartwatchextensions.NotificationChannelHelper
 import com.boswelja.smartwatchextensions.R
-import com.boswelja.smartwatchextensions.messages.database.MessageDatabase
+import com.boswelja.smartwatchextensions.messages.database.MessagesDatabaseLoader
 
 /**
  * Notification channel ID for our messages
@@ -21,10 +21,11 @@ const val MESSAGE_NOTIFICATION_CHANNEL_ID = "system_messages"
 suspend fun Context.sendMessage(
     message: Message,
     priority: Priority = Priority.LOW,
-    database: MessageDatabase = MessageDatabase.getInstance(this),
+    repository: MessagesRepository =
+        MessagesDbRepository(MessagesDatabaseLoader(this).createDatabase()),
     notificationManager: NotificationManager = getSystemService()!!
 ) {
-    val id = database.messages().send(message)
+    repository.insert(message, null)
     if (priority == Priority.HIGH) {
         NotificationChannelHelper.createForSystemMessages(this, notificationManager)
         val notification =
@@ -33,6 +34,6 @@ suspend fun Context.sendMessage(
                 .setContentTitle(message.title)
                 .setContentText(message.text)
                 .build()
-        notificationManager.notify(id.toInt(), notification)
+        notificationManager.notify(message.hashCode(), notification)
     }
 }

@@ -147,7 +147,7 @@ class BatteryStatsReceiver : BaseBatteryStatsReceiver() {
                         Message.Icon.ERROR,
                         context.getString(R.string.battery_charge_noti_issue_title),
                         context.getString(R.string.battery_charge_noti_issue_summary),
-                        Message.Action.LAUNCH_NOTIFICATION_SETTINGS
+                        Message.Action.NOTIFICATION_SETTINGS
                     )
                 )
             }
@@ -208,7 +208,7 @@ class BatteryStatsReceiver : BaseBatteryStatsReceiver() {
                         Message.Icon.ERROR,
                         context.getString(R.string.battery_low_noti_issue_title),
                         context.getString(R.string.battery_low_noti_issue_summary),
-                        Message.Action.LAUNCH_NOTIFICATION_SETTINGS
+                        Message.Action.NOTIFICATION_SETTINGS
                     )
                 )
             }

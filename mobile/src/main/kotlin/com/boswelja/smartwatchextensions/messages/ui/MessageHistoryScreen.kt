@@ -28,7 +28,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.boswelja.smartwatchextensions.R
-import com.boswelja.smartwatchextensions.messages.Message
+import com.boswelja.smartwatchextensions.messages.DisplayMessage
 import kotlinx.coroutines.launch
 
 @Composable
@@ -49,14 +49,13 @@ fun MessageHistoryScreen(
             val historyClearedText = stringResource(R.string.message_history_cleared)
             MessagesHistoryList(
                 modifier = Modifier.padding(contentPadding),
-                messages = messages,
-                onClearAll = {
-                    scope.launch {
-                        viewModel.clearMessageHistory()
-                        onShowSnackbar(historyClearedText)
-                    }
+                messages = messages
+            ) {
+                scope.launch {
+                    viewModel.clearMessageHistory()
+                    onShowSnackbar(historyClearedText)
                 }
-            )
+            }
         } else NoMessageHistory(Modifier.fillMaxSize().padding(contentPadding))
     }
 }
@@ -80,7 +79,7 @@ fun NoMessageHistory(
 @Composable
 fun MessagesHistoryList(
     modifier: Modifier = Modifier,
-    messages: List<Message>,
+    messages: List<DisplayMessage>,
     onClearAll: () -> Unit
 ) {
     Card(modifier) {

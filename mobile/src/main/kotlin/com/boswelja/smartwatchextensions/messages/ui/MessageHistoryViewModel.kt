@@ -2,25 +2,27 @@ package com.boswelja.smartwatchextensions.messages.ui
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
-import com.boswelja.smartwatchextensions.messages.database.MessageDatabase
+import com.boswelja.smartwatchextensions.messages.MessagesDbRepository
+import com.boswelja.smartwatchextensions.messages.MessagesRepository
+import com.boswelja.smartwatchextensions.messages.database.MessagesDatabaseLoader
 
 class MessageHistoryViewModel internal constructor(
     application: Application,
-    private val messageDatabase: MessageDatabase,
+    private val messagesRepository: MessagesRepository,
 ) : AndroidViewModel(application) {
 
     @Suppress("unused")
     constructor(application: Application) : this(
         application,
-        MessageDatabase.getInstance(application)
+        MessagesDbRepository(MessagesDatabaseLoader(application).createDatabase())
     )
 
-    val dismissedMessagesFlow = messageDatabase.messages().dismissedMessages()
+    val dismissedMessagesFlow = messagesRepository.getAllWhere(archived = true)
 
     /**
      * Deletes all dismissed messages from the database, effectively clearing message history.
      */
     suspend fun clearMessageHistory() {
-        messageDatabase.messages().deleteDismissed()
+        messagesRepository.deleteArchived()
     }
 }
