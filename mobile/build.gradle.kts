@@ -3,7 +3,6 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
     id("com.android.application")
     kotlin("android")
-    id("com.google.devtools.ksp") version "1.5.31-1.0.0"
     id("com.google.gms.google-services")
     id("com.squareup.wire")
 }
@@ -21,10 +20,6 @@ android {
 
         testApplicationId = PackageInfo.packageName + ".test"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-
-        ksp {
-            arg("room.schemaLocation", "$rootDir/schemas")
-        }
     }
 
     buildFeatures.compose = true
@@ -80,7 +75,6 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.core.splashscreen)
     implementation(libs.bundles.lifecycle)
-    implementation(libs.bundles.room)
     implementation(libs.androidx.work.ktx)
     implementation(libs.androidx.datastore.preferences)
     implementation(libs.androidx.datastore.proto)
@@ -93,8 +87,6 @@ dependencies {
     implementation(libs.watchconnection.platform.wearos)
 
     implementation(libs.bundles.compose.mobile)
-
-    ksp(libs.androidx.room.compiler)
 
     testImplementation(libs.androidx.work.test)
     testImplementation(libs.androidx.test.corektx)
