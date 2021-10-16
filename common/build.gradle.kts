@@ -9,7 +9,6 @@ android {
     defaultConfig {
         minSdk = 23
         targetSdk = PackageInfo.targetSdk
-        consumerProguardFile("proguard-rules.pro")
     }
 
     compileOptions {
