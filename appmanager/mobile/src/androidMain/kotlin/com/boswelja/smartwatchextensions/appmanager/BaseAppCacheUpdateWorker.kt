@@ -12,9 +12,9 @@ import androidx.work.workDataOf
 import com.boswelja.smartwatchextensions.appmanager.database.WatchAppDatabaseLoader
 import com.boswelja.watchconnection.common.Watch
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
 import java.util.UUID
 import java.util.concurrent.TimeUnit
-import kotlinx.coroutines.flow.map
 
 /**
  * A [CoroutineWorker] designed to validate app cache for the given watch.
@@ -73,7 +73,7 @@ actual abstract class BaseAppCacheUpdateWorker(
          * @param watchId The [Watch.uid] of the watch associated with the worker.
          * @return The ID of the work request.
          */
-        inline fun <reified T: BaseAppCacheUpdateWorker> enqueueWorkerFor(
+        inline fun <reified T : BaseAppCacheUpdateWorker> enqueueWorkerFor(
             context: Context,
             watchId: String
         ): UUID {

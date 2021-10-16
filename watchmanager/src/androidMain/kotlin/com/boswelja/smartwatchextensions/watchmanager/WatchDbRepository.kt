@@ -13,7 +13,7 @@ import kotlinx.coroutines.flow.Flow
 class WatchDbRepository(
     private val discoveryClient: DiscoveryClient,
     private val database: RegisteredWatchDatabase
-): WatchRepository {
+) : WatchRepository {
 
     override val registeredWatches: Flow<List<Watch>>
         get() = database.registeredWatchQueries
@@ -53,9 +53,9 @@ class WatchDbRepository(
         discoveryClient.connectionModeFor(watch)
 
     override fun getWatchById(id: String): Flow<Watch?> = database.registeredWatchQueries
-            .get(id) { uid, name, _ ->
-                Watch(uid, name)
-            }
+        .get(id) { uid, name, _ ->
+            Watch(uid, name)
+        }
         .asFlow()
         .mapToOne()
 

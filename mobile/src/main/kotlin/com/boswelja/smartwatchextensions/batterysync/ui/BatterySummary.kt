@@ -19,8 +19,8 @@ import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.batterysync.BatteryStats
 import com.boswelja.smartwatchextensions.common.BatteryIcon
 import com.boswelja.smartwatchextensions.common.ui.FeatureSummarySmall
-import java.util.concurrent.TimeUnit
 import kotlinx.coroutines.delay
+import java.util.concurrent.TimeUnit
 
 @Composable
 fun BatterySummarySmall(

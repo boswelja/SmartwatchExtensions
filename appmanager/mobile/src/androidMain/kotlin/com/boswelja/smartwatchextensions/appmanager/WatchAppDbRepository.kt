@@ -52,18 +52,18 @@ class WatchAppDbRepository(
     override fun getDetailsFor(watchId: String, packageName: String): Flow<WatchAppDetails> =
         database.watchAppQueries
             .getDetailsFor(watchId, packageName) {
-                    watch_id,
-                    package_name,
-                    icon_path,
-                    label,
-                    version_name,
-                    version_code,
-                    system_app,
-                    launchable,
-                    enabled,
-                    install_time,
-                    update_time,
-                    permissions ->
+                watch_id,
+                package_name,
+                icon_path,
+                label,
+                version_name,
+                version_code,
+                system_app,
+                launchable,
+                enabled,
+                install_time,
+                update_time,
+                permissions ->
                 WatchAppDetails(
                     watchId = watch_id,
                     packageName = package_name,

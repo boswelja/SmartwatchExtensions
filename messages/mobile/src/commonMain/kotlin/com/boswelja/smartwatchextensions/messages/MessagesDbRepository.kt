@@ -36,13 +36,13 @@ class MessagesDbRepository(
     override fun getAllWhere(archived: Boolean): Flow<List<DisplayMessage>> =
         database.messageQueries
             .getAll(archived) {
-                    id: Long,
-                    source_uid: String?,
-                    icon: Message.Icon,
-                    title: String,
-                    text: String,
-                    action: Message.Action,
-                    timestamp: Long ->
+                id: Long,
+                source_uid: String?,
+                icon: Message.Icon,
+                title: String,
+                text: String,
+                action: Message.Action,
+                timestamp: Long ->
                 DisplayMessage(
                     id,
                     source_uid,
