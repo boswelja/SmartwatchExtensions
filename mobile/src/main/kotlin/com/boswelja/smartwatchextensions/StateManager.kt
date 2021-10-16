@@ -22,7 +22,6 @@ val Context.appStateStore: DataStore<AppState> by dataStore(
 class AppStateSerializer : Serializer<AppState> {
     override val defaultValue = AppState(
         false,
-        "",
         0
     )
 

@@ -56,7 +56,13 @@ android {
 }
 
 dependencies {
-    implementation(projects.common)
+    implementation(projects.appmanager.wear)
+    implementation(projects.batterysync.wear)
+    implementation(projects.devicemanagement.common)
+    implementation(projects.dndsync.wear)
+    implementation(projects.phonelocking)
+    implementation(projects.settings.common)
+    implementation(projects.versionsync)
 
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.core.ktx)
@@ -67,11 +73,10 @@ dependencies {
     implementation(libs.androidx.work.ktx)
 
     implementation(libs.timber)
-    implementation(libs.watchconnection.wear.wearos)
+    implementation(libs.watchconnection.wear)
 
     implementation(libs.bundles.compose.wear)
 
-    testImplementation(libs.androidx.arch.core.test)
     testImplementation(libs.androidx.test.corektx)
     testImplementation(libs.androidx.test.ext.junit)
     testImplementation(libs.kotlinx.coroutines.test)
@@ -81,7 +86,6 @@ dependencies {
     testImplementation(libs.mockk.core)
     testImplementation(libs.robolectric)
 
-    androidTestImplementation(libs.androidx.arch.core.test)
     androidTestImplementation(libs.androidx.test.espresso)
     androidTestImplementation(libs.androidx.test.runner)
     androidTestImplementation(libs.androidx.test.rules)

@@ -2,12 +2,8 @@ package com.boswelja.smartwatchextensions.phonelocking
 
 import android.accessibilityservice.AccessibilityService
 import android.view.accessibility.AccessibilityEvent
-import com.boswelja.smartwatchextensions.common.connection.Messages.LOCK_PHONE
-import com.boswelja.smartwatchextensions.common.preference.PreferenceKey.PHONE_LOCKING_ENABLED_KEY
+import com.boswelja.smartwatchextensions.settings.BoolSettingKeys.PHONE_LOCKING_ENABLED_KEY
 import com.boswelja.smartwatchextensions.watchmanager.WatchManager
-import com.boswelja.watchconnection.core.Watch
-import com.google.android.gms.wearable.MessageEvent
-import java.util.UUID
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -33,7 +29,7 @@ class PhoneLockingAccessibilityService : AccessibilityService() {
         Timber.i("onServiceConnected() called")
         coroutineScope.launch {
             watchManager.incomingMessages().filter { it.path == LOCK_PHONE }.collect { message ->
-                tryLockDevice(message.sourceWatchID)
+                tryLockDevice(message.sourceUid)
             }
         }
     }
@@ -53,9 +49,9 @@ class PhoneLockingAccessibilityService : AccessibilityService() {
 
     /**
      * Tries to lock the device after receiving a [MessageEvent].
-     * @param watchId The [Watch.id] of the watch requesting a device lock.
+     * @param watchId The [Watch.uid] of the watch requesting a device lock.
      */
-    private fun tryLockDevice(watchId: UUID) {
+    private fun tryLockDevice(watchId: String) {
         coroutineScope.launch(Dispatchers.IO) {
             val watch = watchManager.getWatchById(watchId).firstOrNull()
             if (watch != null) {

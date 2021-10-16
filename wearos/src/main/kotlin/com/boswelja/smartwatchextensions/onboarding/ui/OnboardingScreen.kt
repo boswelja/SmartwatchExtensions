@@ -127,7 +127,7 @@ fun PhoneSetupInstructions() {
             textAlign = TextAlign.Center
         )
         Text(
-            watchName,
+            text = watchName,
             style = MaterialTheme.typography.display3
         )
         Text(

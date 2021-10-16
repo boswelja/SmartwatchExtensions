@@ -3,7 +3,6 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
     id("com.android.application")
     kotlin("android")
-    id("com.google.devtools.ksp") version "1.5.31-1.0.0"
     id("com.google.gms.google-services")
     id("com.squareup.wire")
 }
@@ -21,10 +20,6 @@ android {
 
         testApplicationId = PackageInfo.packageName + ".test"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-
-        ksp {
-            arg("room.schemaLocation", "$rootDir/schemas")
-        }
     }
 
     buildFeatures.compose = true
@@ -64,7 +59,14 @@ android {
 }
 
 dependencies {
-    implementation(projects.common)
+    implementation(projects.appmanager.mobile)
+    implementation(projects.batterysync.mobile)
+    implementation(projects.devicemanagement.mobile)
+    implementation(projects.dndsync.common)
+    implementation(projects.messages.mobile)
+    implementation(projects.phonelocking)
+    implementation(projects.settings.mobile)
+    implementation(projects.versionsync)
 
     implementation(libs.firebase.analytics)
 
@@ -72,7 +74,6 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.core.splashscreen)
     implementation(libs.bundles.lifecycle)
-    implementation(libs.bundles.room)
     implementation(libs.androidx.work.ktx)
     implementation(libs.androidx.datastore.preferences)
     implementation(libs.androidx.datastore.proto)
@@ -85,12 +86,8 @@ dependencies {
     implementation(libs.watchconnection.platform.wearos)
 
     implementation(libs.bundles.compose.mobile)
-    implementation(libs.androidx.compose.ui.viewbinding)
-
-    ksp(libs.androidx.room.compiler)
 
     testImplementation(libs.androidx.work.test)
-    testImplementation(libs.androidx.arch.core.test)
     testImplementation(libs.androidx.test.corektx)
     testImplementation(libs.androidx.test.ext.junit)
     testImplementation(libs.kotlinx.coroutines.test)
@@ -100,7 +97,6 @@ dependencies {
     testImplementation(libs.mockk.core)
     testImplementation(libs.robolectric)
 
-    androidTestImplementation(libs.androidx.arch.core.test)
     androidTestImplementation(libs.androidx.test.espresso)
     androidTestImplementation(libs.androidx.test.runner)
     androidTestImplementation(libs.androidx.test.rules)

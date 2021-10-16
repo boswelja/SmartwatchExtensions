@@ -33,7 +33,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.core.net.toUri
 import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.common.startActivity
-import com.boswelja.watchconnection.core.Watch
+import com.boswelja.watchconnection.common.Watch
 
 @Composable
 fun UpNavigationAppBar(

@@ -1,12 +1,11 @@
 package com.boswelja.smartwatchextensions.aboutapp.ui
 
 import android.os.Build
-import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.boswelja.smartwatchextensions.common.connection.Messages
+import com.boswelja.smartwatchextensions.versionsync.REQUEST_APP_VERSION
 import com.boswelja.smartwatchextensions.watchmanager.WatchManager
-import com.boswelja.watchconnection.core.Watch
+import com.boswelja.watchconnection.common.Watch
 import io.mockk.MockKAnnotations
 import io.mockk.coVerify
 import io.mockk.every
@@ -15,7 +14,6 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.runBlocking
 import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.annotation.Config
@@ -24,9 +22,6 @@ import org.robolectric.annotation.Config
 @RunWith(AndroidJUnit4::class)
 @Config(sdk = [Build.VERSION_CODES.R])
 class AboutAppViewModelTest {
-
-    @get:Rule
-    val taskExecutorRule = InstantTaskExecutorRule()
 
     private val selectedWatch = MutableStateFlow<Watch?>(null)
 
@@ -52,14 +47,14 @@ class AboutAppViewModelTest {
 
     @Test
     fun `Watch version update requested on init`() {
-        coVerify { watchManager.sendMessage(dummyWatch1, Messages.REQUEST_APP_VERSION, null) }
+        coVerify { watchManager.sendMessage(dummyWatch1, REQUEST_APP_VERSION, null) }
     }
 
     @Test
     fun `Switching selected watch requests new watch version`(): Unit = runBlocking {
         selectedWatch.emit(dummyWatch1)
-        coVerify { watchManager.sendMessage(dummyWatch1, Messages.REQUEST_APP_VERSION, null) }
+        coVerify { watchManager.sendMessage(dummyWatch1, REQUEST_APP_VERSION, null) }
         selectedWatch.emit(dummyWatch2)
-        coVerify { watchManager.sendMessage(dummyWatch1, Messages.REQUEST_APP_VERSION, null) }
+        coVerify { watchManager.sendMessage(dummyWatch1, REQUEST_APP_VERSION, null) }
     }
 }

@@ -3,7 +3,6 @@ package com.boswelja.smartwatchextensions
 import android.content.Context
 import android.content.Intent
 import androidx.core.net.toUri
-import com.boswelja.smartwatchextensions.common.R
 
 object GooglePlayUtils {
 

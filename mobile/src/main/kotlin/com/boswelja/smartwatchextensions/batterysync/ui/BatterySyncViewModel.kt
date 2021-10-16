@@ -3,19 +3,20 @@ package com.boswelja.smartwatchextensions.batterysync.ui
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import com.boswelja.smartwatchextensions.batterysync.BaseBatterySyncWorker
+import com.boswelja.smartwatchextensions.batterysync.BatteryStatsRepository
+import com.boswelja.smartwatchextensions.batterysync.BatteryStatsRepositoryLoader
 import com.boswelja.smartwatchextensions.batterysync.BatterySyncWorker
-import com.boswelja.smartwatchextensions.batterysync.Utils.updateBatteryStats
-import com.boswelja.smartwatchextensions.batterysync.database.WatchBatteryStatsDatabase
 import com.boswelja.smartwatchextensions.batterysync.quicksettings.WatchBatteryTileService
 import com.boswelja.smartwatchextensions.common.WatchWidgetProvider
-import com.boswelja.smartwatchextensions.common.connection.Capability
-import com.boswelja.smartwatchextensions.common.preference.PreferenceKey.BATTERY_CHARGE_THRESHOLD_KEY
-import com.boswelja.smartwatchextensions.common.preference.PreferenceKey.BATTERY_LOW_THRESHOLD_KEY
-import com.boswelja.smartwatchextensions.common.preference.PreferenceKey.BATTERY_PHONE_CHARGE_NOTI_KEY
-import com.boswelja.smartwatchextensions.common.preference.PreferenceKey.BATTERY_PHONE_LOW_NOTI_KEY
-import com.boswelja.smartwatchextensions.common.preference.PreferenceKey.BATTERY_SYNC_ENABLED_KEY
-import com.boswelja.smartwatchextensions.common.preference.PreferenceKey.BATTERY_WATCH_CHARGE_NOTI_KEY
-import com.boswelja.smartwatchextensions.common.preference.PreferenceKey.BATTERY_WATCH_LOW_NOTI_KEY
+import com.boswelja.smartwatchextensions.devicemanagement.Capability
+import com.boswelja.smartwatchextensions.settings.BoolSettingKeys.BATTERY_PHONE_CHARGE_NOTI_KEY
+import com.boswelja.smartwatchextensions.settings.BoolSettingKeys.BATTERY_PHONE_LOW_NOTI_KEY
+import com.boswelja.smartwatchextensions.settings.BoolSettingKeys.BATTERY_SYNC_ENABLED_KEY
+import com.boswelja.smartwatchextensions.settings.BoolSettingKeys.BATTERY_WATCH_CHARGE_NOTI_KEY
+import com.boswelja.smartwatchextensions.settings.BoolSettingKeys.BATTERY_WATCH_LOW_NOTI_KEY
+import com.boswelja.smartwatchextensions.settings.IntSettingKeys.BATTERY_CHARGE_THRESHOLD_KEY
+import com.boswelja.smartwatchextensions.settings.IntSettingKeys.BATTERY_LOW_THRESHOLD_KEY
 import com.boswelja.smartwatchextensions.watchmanager.WatchManager
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
@@ -23,7 +24,6 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -41,8 +41,8 @@ class BatterySyncViewModel internal constructor(
         Dispatchers.IO
     )
 
-    private val database: WatchBatteryStatsDatabase =
-        WatchBatteryStatsDatabase.getInstance(application)
+    private val repository: BatteryStatsRepository =
+        BatteryStatsRepositoryLoader.getInstance(application)
 
     val batterySyncEnabled = watchManager.getBoolSetting(BATTERY_SYNC_ENABLED_KEY)
     val phoneChargeNotiEnabled = watchManager.getBoolSetting(BATTERY_PHONE_CHARGE_NOTI_KEY)
@@ -52,27 +52,23 @@ class BatterySyncViewModel internal constructor(
     val watchLowNotiEnabled = watchManager.getBoolSetting(BATTERY_WATCH_LOW_NOTI_KEY)
     val batteryLowThreshold = watchManager.getIntSetting(BATTERY_LOW_THRESHOLD_KEY)
 
-    val canSyncBattery = watchManager.selectedWatchCapabilities().mapLatest { capabilities ->
-        capabilities.contains(Capability.SYNC_BATTERY)
-    }
+    val canSyncBattery = watchManager.selectedWatchHasCapability(Capability.SYNC_BATTERY)
 
     val batteryStats = watchManager.selectedWatch.flatMapLatest {
-        it?.let { database.batteryStatsDao().getStats(it.id) } ?: flow { }
+        it?.let { repository.batteryStatsFor(it.uid) } ?: flow { }
     }
 
     fun setBatterySyncEnabled(isEnabled: Boolean) {
         viewModelScope.launch(dispatcher) {
             val selectedWatch = watchManager.selectedWatch.first()
             if (isEnabled) {
-                val workerStartSuccessful = BatterySyncWorker.startWorker(
-                    getApplication(), selectedWatch!!.id
-                )
+                val workerStartSuccessful = BaseBatterySyncWorker
+                    .startSyncingFor<BatterySyncWorker>(getApplication(), selectedWatch!!.uid)
                 if (workerStartSuccessful) {
                     watchManager.updatePreference(
                         selectedWatch,
                         BATTERY_SYNC_ENABLED_KEY, isEnabled
                     )
-                    updateBatteryStats(getApplication(), selectedWatch)
                 } else {
                     Timber.w("Failed to enable battery sync")
                 }
@@ -80,8 +76,8 @@ class BatterySyncViewModel internal constructor(
                 watchManager.updatePreference(
                     selectedWatch!!, BATTERY_SYNC_ENABLED_KEY, isEnabled
                 )
-                BatterySyncWorker.stopWorker(
-                    getApplication(), selectedWatch.id
+                BaseBatterySyncWorker.stopSyncingFor(
+                    getApplication(), selectedWatch.uid
                 )
                 WatchBatteryTileService.requestTileUpdate(getApplication())
                 WatchWidgetProvider.updateWidgets(getApplication())

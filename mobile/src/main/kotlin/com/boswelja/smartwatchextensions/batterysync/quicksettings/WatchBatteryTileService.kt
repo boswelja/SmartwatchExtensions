@@ -7,14 +7,15 @@ import android.graphics.drawable.Icon
 import android.os.Build
 import android.service.quicksettings.Tile
 import com.boswelja.smartwatchextensions.R
-import com.boswelja.smartwatchextensions.batterysync.database.WatchBatteryStatsDatabase
+import com.boswelja.smartwatchextensions.batterysync.BatteryStatsRepositoryLoader
+import com.boswelja.smartwatchextensions.batterysync.common.getBatteryDrawableRes
 import com.boswelja.smartwatchextensions.common.WatchTileService
-import com.boswelja.smartwatchextensions.common.getBatteryDrawable
-import com.boswelja.smartwatchextensions.common.preference.PreferenceKey.BATTERY_SYNC_ENABLED_KEY
 import com.boswelja.smartwatchextensions.main.ui.MainActivity
 import com.boswelja.smartwatchextensions.main.ui.MainActivity.Companion.EXTRA_WATCH_ID
-import com.boswelja.smartwatchextensions.watchmanager.database.WatchSettingsDatabase
-import com.boswelja.watchconnection.core.Watch
+import com.boswelja.smartwatchextensions.settings.BoolSettingKeys.BATTERY_SYNC_ENABLED_KEY
+import com.boswelja.smartwatchextensions.settings.WatchSettingsDbRepository
+import com.boswelja.smartwatchextensions.settings.database.WatchSettingsDatabaseLoader
+import com.boswelja.watchconnection.common.Watch
 import kotlinx.coroutines.flow.first
 
 class WatchBatteryTileService : WatchTileService() {
@@ -49,18 +50,14 @@ class WatchBatteryTileService : WatchTileService() {
             return
         }
 
-        val isBatterySyncEnabled = WatchSettingsDatabase
-            .getInstance(this@WatchBatteryTileService)
-            .boolSettings()
-            .get(watch.id, BATTERY_SYNC_ENABLED_KEY)
-            .first()
-            ?.value ?: false
+        val isBatterySyncEnabled = WatchSettingsDbRepository(
+            WatchSettingsDatabaseLoader(this).createDatabase()
+        ).getBoolean(watch.uid, BATTERY_SYNC_ENABLED_KEY, false).first()
 
         if (isBatterySyncEnabled) {
-            val batteryStats = WatchBatteryStatsDatabase
+            val batteryStats = BatteryStatsRepositoryLoader
                 .getInstance(this@WatchBatteryTileService)
-                .batteryStatsDao()
-                .getStats(watch.id)
+                .batteryStatsFor(watch.uid)
                 .first()
 
             updateTile {
@@ -76,7 +73,7 @@ class WatchBatteryTileService : WatchTileService() {
                 }
                 state = Tile.STATE_ACTIVE
                 icon = Icon.createWithResource(
-                    this@WatchBatteryTileService, getBatteryDrawable(batteryStats.percent)
+                    this@WatchBatteryTileService, getBatteryDrawableRes(batteryStats.percent)
                 )
             }
         } else {

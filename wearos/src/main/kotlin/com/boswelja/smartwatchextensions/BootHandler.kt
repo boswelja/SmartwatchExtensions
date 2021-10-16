@@ -6,7 +6,6 @@ import android.app.NotificationManager.IMPORTANCE_LOW
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.getSystemService
@@ -17,7 +16,7 @@ import androidx.work.OutOfQuotaPolicy
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
 import com.boswelja.smartwatchextensions.capability.CapabilityUpdater
-import com.boswelja.smartwatchextensions.dndsync.DnDLocalChangeListener
+import com.boswelja.smartwatchextensions.dndsync.LocalDnDAndTheaterCollectorService
 import com.boswelja.smartwatchextensions.extensions.extensionSettingsStore
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
@@ -58,7 +57,7 @@ class BootWorker(
             val dndSyncWithTheater = applicationContext.extensionSettingsStore.data
                 .map { it.dndSyncWithTheater }.first()
             if (dndSyncToPhone || dndSyncWithTheater) {
-                Intent(applicationContext, DnDLocalChangeListener::class.java).also {
+                Intent(applicationContext, LocalDnDAndTheaterCollectorService::class.java).also {
                     ContextCompat.startForegroundService(applicationContext, it)
                 }
             }

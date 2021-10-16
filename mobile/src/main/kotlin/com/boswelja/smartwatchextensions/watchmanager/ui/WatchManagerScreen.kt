@@ -31,7 +31,7 @@ import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.common.ui.Card
 import com.boswelja.smartwatchextensions.common.ui.CardHeader
 import com.boswelja.smartwatchextensions.watchmanager.ui.info.WatchInfoScreen
-import com.boswelja.watchconnection.core.Watch
+import com.boswelja.watchconnection.common.Watch
 import kotlinx.coroutines.Dispatchers
 
 @OptIn(ExperimentalMaterialApi::class)

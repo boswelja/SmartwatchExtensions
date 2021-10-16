@@ -11,11 +11,18 @@ import androidx.compose.material.ListItem
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedButton
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.ErrorOutline
+import androidx.compose.material.icons.outlined.HelpOutline
+import androidx.compose.material.icons.outlined.Update
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.boswelja.smartwatchextensions.R
+import com.boswelja.smartwatchextensions.messages.DisplayMessage
 import com.boswelja.smartwatchextensions.messages.Message
 import java.util.Date
 import java.util.concurrent.TimeUnit
@@ -40,14 +47,29 @@ private fun getReceivedString(timeInMillis: Long): String {
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun MessageItem(
-    message: Message,
+    message: DisplayMessage,
     showAction: Boolean = true,
     onActionClick: (Message.Action) -> Unit = { }
 ) {
+    val icon = remember(message) {
+        when (message.icon) {
+            Message.Icon.ERROR -> Icons.Outlined.ErrorOutline
+            Message.Icon.UPDATE -> Icons.Outlined.Update
+            Message.Icon.HELP -> Icons.Outlined.HelpOutline
+        }
+    }
+    val actionLabelRes = remember(message) {
+        when (message.action) {
+            Message.Action.NONE -> null
+            Message.Action.NOTIFICATION_SETTINGS -> R.string.message_action_noti_settings
+            Message.Action.CHANGELOG -> R.string.message_action_changelog
+            Message.Action.INSTALL_UPDATE -> R.string.message_action_install_update
+        }
+    }
     ListItem(
         icon = {
             Icon(
-                message.icon.imageVector,
+                icon,
                 null,
                 Modifier.size(40.dp)
             )
@@ -64,16 +86,14 @@ fun MessageItem(
                     message.text,
                     style = MaterialTheme.typography.body2
                 )
-                if (showAction) {
-                    message.action?.let {
-                        OutlinedButton(
-                            onClick = { onActionClick(it) },
-                            content = { Text(stringResource(it.labelRes)) },
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(vertical = 8.dp)
-                        )
-                    }
+                if (showAction && actionLabelRes != null) {
+                    OutlinedButton(
+                        onClick = { onActionClick(message.action) },
+                        content = { Text(stringResource(actionLabelRes)) },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 8.dp)
+                    )
                 }
             }
         },

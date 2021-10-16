@@ -5,35 +5,31 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.core.content.getSystemService
 import androidx.datastore.core.DataStore
 import com.boswelja.smartwatchextensions.PhoneState
 import com.boswelja.smartwatchextensions.R
-import com.boswelja.smartwatchextensions.common.batterysync.BatteryStats
-import com.boswelja.smartwatchextensions.common.batterysync.BatteryStatsSerializer
-import com.boswelja.smartwatchextensions.common.batterysync.References.BATTERY_STATUS_PATH
-import com.boswelja.smartwatchextensions.common.batterysync.batteryStats
+import com.boswelja.smartwatchextensions.discoveryClient
 import com.boswelja.smartwatchextensions.extensions.ExtensionSettings
 import com.boswelja.smartwatchextensions.extensions.extensionSettingsStore
 import com.boswelja.smartwatchextensions.main.ui.MainActivity
 import com.boswelja.smartwatchextensions.messageClient
 import com.boswelja.smartwatchextensions.phoneStateStore
+import com.boswelja.watchconection.common.message.MessageReceiver
+import com.boswelja.watchconnection.common.message.Message
 import com.boswelja.watchconnection.common.message.ReceivedMessage
-import com.boswelja.watchconnection.common.message.serialized.TypedMessage
-import com.boswelja.watchconnection.common.message.serialized.TypedMessageReceiver
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import timber.log.Timber
 
-class PhoneBatteryUpdateReceiver : TypedMessageReceiver<BatteryStats?>(BatteryStatsSerializer()) {
+class PhoneBatteryUpdateReceiver : MessageReceiver<BatteryStats?>(BatteryStatsSerializer) {
 
     private lateinit var notificationManager: NotificationManager
     private lateinit var phoneStateStore: DataStore<PhoneState>
     private lateinit var extensionSettingsStore: DataStore<ExtensionSettings>
 
-    override suspend fun onTypedMessageReceived(
+    override suspend fun onMessageReceived(
         context: Context,
         message: ReceivedMessage<BatteryStats?>
     ) {
@@ -49,9 +45,7 @@ class PhoneBatteryUpdateReceiver : TypedMessageReceiver<BatteryStats?>(BatterySt
                 cancelChargeNoti()
                 handleLowNotification(context, batteryStats)
             }
-            context.phoneStateStore.updateData {
-                it.copy(batteryPercent = batteryStats.percent)
-            }
+            BatteryStatsStore(context.batteryStatsStore).updateStatsForPhone(batteryStats)
             sendBatteryStatsUpdate(context)
             PhoneBatteryComplicationProvider.updateAll(context)
         }
@@ -63,25 +57,20 @@ class PhoneBatteryUpdateReceiver : TypedMessageReceiver<BatteryStats?>(BatterySt
      * @param batteryStats The [BatteryStats] object to read data from.
      */
     private suspend fun handleChargeNotification(context: Context, batteryStats: BatteryStats) {
-        Timber.d("handleChargeNotification($batteryStats) called")
-        val shouldNotifyUser = extensionSettingsStore.data
-            .map { it.phoneChargeNotiEnabled }
-            .first()
-        if (shouldNotifyUser) {
-            val chargeThreshold = extensionSettingsStore.data
-                .map { it.batteryChargeThreshold }.first()
-            val hasNotiBeenSent = phoneStateStore.data.map { it.chargeNotiSent }.first()
+        val notificationsEnabled = extensionSettingsStore.data
+            .map { it.phoneChargeNotiEnabled }.first()
+        val chargeThreshold = extensionSettingsStore.data
+            .map { it.batteryChargeThreshold }.first()
+        val hasNotiBeenSent = phoneStateStore.data.map { it.chargeNotiSent }.first()
 
-            Timber.d(
-                "chargeThreshold = %s, percent = %s, hasNotiBeenSent = %s",
-                chargeThreshold,
-                batteryStats.percent,
-                hasNotiBeenSent
-            )
-            if (batteryStats.percent >= chargeThreshold && !hasNotiBeenSent) {
-                val phoneName = phoneStateStore.data.map { it.name }.first()
-                notifyBatteryCharged(context, phoneName, chargeThreshold)
-            }
+        val shouldNotify = batteryStats.shouldPostChargeNotification(
+            chargeThreshold,
+            notificationsEnabled,
+            hasNotiBeenSent
+        )
+        if (shouldNotify) {
+            val phoneName = phoneStateStore.data.map { it.name }.first()
+            notifyBatteryCharged(context, phoneName, chargeThreshold)
         }
     }
 
@@ -111,20 +100,19 @@ class PhoneBatteryUpdateReceiver : TypedMessageReceiver<BatteryStats?>(BatterySt
         batteryStats: BatteryStats
     ) {
         Timber.d("handleLowNotification($batteryStats) called")
-        val shouldNotifyUser = extensionSettingsStore.data.map { it.phoneLowNotiEnabled }.first()
-        if (shouldNotifyUser) {
-            val lowThreshold = extensionSettingsStore.data.map { it.batteryLowThreshold }.first()
-            val hasNotiBeenSent = phoneStateStore.data.map { it.lowNotiSent }.first()
-            Timber.d(
-                "lowThreshold = %s, percent = %s, hasNotiBeenSent = %s",
-                lowThreshold,
-                batteryStats.percent,
-                hasNotiBeenSent
-            )
-            if (batteryStats.percent <= lowThreshold && !hasNotiBeenSent) {
-                val phoneName = phoneStateStore.data.map { it.name }.first()
-                notifyBatteryLow(context, phoneName, lowThreshold)
-            }
+        val notificationsEnabled = extensionSettingsStore.data
+            .map { it.phoneLowNotiEnabled }.first()
+        val lowThreshold = extensionSettingsStore.data.map { it.batteryLowThreshold }.first()
+        val hasNotiBeenSent = phoneStateStore.data.map { it.lowNotiSent }.first()
+
+        val shouldNotify = batteryStats.shouldPostLowNotification(
+            lowThreshold,
+            notificationsEnabled,
+            hasNotiBeenSent
+        )
+        if (shouldNotify) {
+            val phoneName = phoneStateStore.data.map { it.name }.first()
+            notifyBatteryLow(context, phoneName, lowThreshold)
         }
     }
 
@@ -210,8 +198,9 @@ class PhoneBatteryUpdateReceiver : TypedMessageReceiver<BatteryStats?>(BatterySt
     private suspend fun sendBatteryStatsUpdate(context: Context) {
         val batteryStats = context.batteryStats()
         if (batteryStats != null) {
-            context.messageClient(listOf(BatteryStatsSerializer())).sendMessage(
-                TypedMessage(BATTERY_STATUS_PATH, batteryStats)
+            context.messageClient(listOf(BatteryStatsSerializer)).sendMessage(
+                context.discoveryClient().pairedPhone()!!,
+                Message(BATTERY_STATUS_PATH, batteryStats)
             )
         } else {
             Timber.w("batteryStats null, skipping...")
@@ -219,9 +208,7 @@ class PhoneBatteryUpdateReceiver : TypedMessageReceiver<BatteryStats?>(BatterySt
     }
 
     private fun createNotificationChannel(context: Context) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O &&
-            notificationManager.getNotificationChannel(BATTERY_STATS_NOTI_CHANNEL_ID) == null
-        ) {
+        if (notificationManager.getNotificationChannel(BATTERY_STATS_NOTI_CHANNEL_ID) == null) {
             Timber.i("Creating notification channel")
             val channel =
                 NotificationChannel(

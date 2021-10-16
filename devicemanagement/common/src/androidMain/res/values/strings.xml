@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="play_store_link" translatable="false">https://play.google.com/store/apps/details?id=com.boswelja.smartwatchextensions</string>
+
+    <string name="capability_manage_apps">Open &amp; uninstall apps</string>
+    <string name="capability_sync_battery">See battery stat changes</string>
+    <string name="capability_send_dnd">See Do not Disturb changes</string>
+    <string name="capability_receive_dnd">Toggle Do not Disturb</string>
+
+</resources>

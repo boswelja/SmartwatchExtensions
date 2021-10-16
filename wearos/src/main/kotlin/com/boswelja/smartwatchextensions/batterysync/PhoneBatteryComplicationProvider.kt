@@ -16,12 +16,10 @@ import androidx.wear.complications.datasource.ComplicationDataSourceUpdateReques
 import androidx.wear.complications.datasource.ComplicationRequest
 import com.boswelja.smartwatchextensions.ActionsActivity
 import com.boswelja.smartwatchextensions.R
-import com.boswelja.smartwatchextensions.common.batterysync.References.REQUEST_BATTERY_UPDATE_PATH
-import com.boswelja.smartwatchextensions.common.ui.getBatteryResource
-import com.boswelja.smartwatchextensions.phoneStateStore
+import com.boswelja.smartwatchextensions.batterysync.common.getBatteryDrawableRes
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -38,14 +36,15 @@ class PhoneBatteryComplicationProvider : ComplicationDataSourceService() {
         listener: ComplicationRequestListener
     ) {
         coroutineScope.launch {
-            phoneStateStore.data.map { it.batteryPercent }.collect {
-                val complicationData = createComplicationDataFor(it, request.complicationType)
+            val batteryStats = BatteryStatsStore(batteryStatsStore).getStatsForPhone()
+                .map { it.percent }
+                .first()
+            val complicationData = createComplicationDataFor(batteryStats, request.complicationType)
 
-                if (complicationData != null) {
-                    listener.onComplicationData(complicationData)
-                } else {
-                    Timber.w("Complication type ${request.complicationType} invalid")
-                }
+            if (complicationData != null) {
+                listener.onComplicationData(complicationData)
+            } else {
+                Timber.w("Complication type ${request.complicationType} invalid")
             }
         }
     }
@@ -69,7 +68,7 @@ class PhoneBatteryComplicationProvider : ComplicationDataSourceService() {
             if (percent > 0) String.format(getString(R.string.battery_percent), percent)
             else getString(R.string.battery_percent_unknown)
         val icon = MonochromaticImage.Builder(
-            Icon.createWithResource(this, getBatteryResource(percent))
+            Icon.createWithResource(this, getBatteryDrawableRes(percent))
         ).build()
 
         val complicationText = PlainComplicationText.Builder(text).build()

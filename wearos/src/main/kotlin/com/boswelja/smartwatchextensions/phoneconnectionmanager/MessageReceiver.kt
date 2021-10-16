@@ -1,82 +1,59 @@
 package com.boswelja.smartwatchextensions.phoneconnectionmanager
 
 import android.app.ActivityManager
-import android.app.NotificationManager
 import android.content.Context
-import android.os.Build
 import androidx.core.content.getSystemService
 import com.boswelja.smartwatchextensions.BuildConfig
 import com.boswelja.smartwatchextensions.capability.CapabilityUpdater
-import com.boswelja.smartwatchextensions.common.connection.Messages.CLEAR_PREFERENCES
-import com.boswelja.smartwatchextensions.common.connection.Messages.REQUEST_APP_VERSION
-import com.boswelja.smartwatchextensions.common.connection.Messages.REQUEST_UPDATE_CAPABILITIES
-import com.boswelja.smartwatchextensions.common.connection.Messages.RESET_APP
-import com.boswelja.smartwatchextensions.common.dndsync.References.REQUEST_INTERRUPT_FILTER_ACCESS_STATUS_PATH
-import com.boswelja.smartwatchextensions.common.dndsync.References.REQUEST_SDK_INT_PATH
-import com.boswelja.smartwatchextensions.common.toByteArray
-import com.boswelja.smartwatchextensions.common.versioning.Version
-import com.boswelja.smartwatchextensions.common.versioning.VersionSerializer
+import com.boswelja.smartwatchextensions.common.EmptySerializer
+import com.boswelja.smartwatchextensions.devicemanagement.REQUEST_UPDATE_CAPABILITIES
+import com.boswelja.smartwatchextensions.devicemanagement.RESET_APP
+import com.boswelja.smartwatchextensions.discoveryClient
+import com.boswelja.smartwatchextensions.dndsync.REQUEST_SDK_INT_PATH
 import com.boswelja.smartwatchextensions.extensions.SettingsSerializer
 import com.boswelja.smartwatchextensions.extensions.extensionSettingsStore
 import com.boswelja.smartwatchextensions.messageClient
-import com.boswelja.watchconnection.common.message.ByteArrayMessage
-import com.boswelja.watchconnection.common.message.serialized.TypedMessage
-import com.google.android.gms.wearable.MessageEvent
-import com.google.android.gms.wearable.WearableListenerService
-import kotlinx.coroutines.runBlocking
-import timber.log.Timber
+import com.boswelja.smartwatchextensions.settings.RESET_SETTINGS
+import com.boswelja.smartwatchextensions.versionsync.REQUEST_APP_VERSION
+import com.boswelja.smartwatchextensions.versionsync.Version
+import com.boswelja.smartwatchextensions.versionsync.VersionSerializer
+import com.boswelja.watchconection.common.message.MessageReceiver
+import com.boswelja.watchconnection.common.message.Message
+import com.boswelja.watchconnection.common.message.ReceivedMessage
 
-class MessageReceiver : WearableListenerService() {
+class MessageReceiver : MessageReceiver<Nothing?>(
+    EmptySerializer(
+        messagePaths = setOf(
+            REQUEST_APP_VERSION,
+            REQUEST_SDK_INT_PATH,
+            RESET_APP,
+            RESET_SETTINGS,
+            REQUEST_UPDATE_CAPABILITIES
+        )
+    )
+) {
 
-    override fun onMessageReceived(messageEvent: MessageEvent?) {
-        Timber.d("Received ${messageEvent?.path}")
-        when (messageEvent?.path) {
-            REQUEST_INTERRUPT_FILTER_ACCESS_STATUS_PATH -> {
-                val hasDnDAccess =
-                    getSystemService<NotificationManager>()!!.isNotificationPolicyAccessGranted
-                runBlocking {
-                    messageClient(listOf()).sendMessage(
-                        ByteArrayMessage(
-                            REQUEST_INTERRUPT_FILTER_ACCESS_STATUS_PATH,
-                            hasDnDAccess.toByteArray()
-                        )
-                    )
-                }
-            }
+    override suspend fun onMessageReceived(context: Context, message: ReceivedMessage<Nothing?>) {
+        when (message.path) {
             REQUEST_APP_VERSION -> {
-                runBlocking {
-                    val version = Version(BuildConfig.VERSION_CODE, BuildConfig.VERSION_NAME)
-                    messageClient(listOf(VersionSerializer)).sendMessage(
-                        TypedMessage(REQUEST_APP_VERSION, version)
-                    )
-                }
-            }
-            REQUEST_SDK_INT_PATH -> {
-                runBlocking {
-                    messageClient(listOf()).sendMessage(
-                        ByteArrayMessage(
-                            REQUEST_SDK_INT_PATH,
-                            Build.VERSION.SDK_INT.toBigInteger().toByteArray()
-                        )
-                    )
-                }
+                val version = Version(BuildConfig.VERSION_CODE, BuildConfig.VERSION_NAME)
+                context.messageClient(listOf(VersionSerializer)).sendMessage(
+                    context.discoveryClient().pairedPhone()!!,
+                    Message(REQUEST_APP_VERSION, version)
+                )
             }
             RESET_APP -> {
-                val activityManager = getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
-                activityManager.clearApplicationUserData()
+                val activityManager = context.getSystemService<ActivityManager>()
+                activityManager?.clearApplicationUserData()
             }
-            CLEAR_PREFERENCES -> {
-                runBlocking {
-                    extensionSettingsStore.updateData {
-                        // Recreate the DataStore with default values
-                        SettingsSerializer().defaultValue
-                    }
+            RESET_SETTINGS -> {
+                context.extensionSettingsStore.updateData {
+                    // Recreate the DataStore with default values
+                    SettingsSerializer().defaultValue
                 }
             }
             REQUEST_UPDATE_CAPABILITIES -> {
-                runBlocking {
-                    CapabilityUpdater(this@MessageReceiver).updateCapabilities()
-                }
+                CapabilityUpdater(context).updateCapabilities()
             }
         }
     }

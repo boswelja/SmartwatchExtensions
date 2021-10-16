@@ -23,7 +23,6 @@ import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.icons.outlined.Watch
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
@@ -38,10 +37,10 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.boswelja.smartwatchextensions.R
-import com.boswelja.smartwatchextensions.common.connection.Capability
 import com.boswelja.smartwatchextensions.common.ui.BigButton
-import com.boswelja.watchconnection.core.Watch
-import kotlinx.coroutines.Dispatchers
+import com.boswelja.smartwatchextensions.devicemanagement.Capability
+import com.boswelja.smartwatchextensions.devicemanagement.labelRes
+import com.boswelja.watchconnection.common.Watch
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -58,7 +57,9 @@ fun WatchInfoScreen(
     val scope = rememberCoroutineScope()
     val scrollState = rememberScrollState()
 
-    val capabilities by viewModel.getCapabilities(watch).collectAsState(emptyList(), Dispatchers.IO)
+    LaunchedEffect(key1 = watch) {
+        viewModel.getCapabilities(watch)
+    }
 
     Column(
         modifier = modifier
@@ -87,7 +88,7 @@ fun WatchInfoScreen(
             modifier = Modifier.fillMaxWidth(),
             contentPadding = contentPadding,
             watch = watch,
-            capabilities = capabilities,
+            capabilities = viewModel.watchCapabilities,
             onNicknameChanged = { scope.launch { viewModel.updateWatchName(watch, it) } }
         )
     }
@@ -166,7 +167,7 @@ fun WatchCapabilities(
     ) {
         Text(stringResource(R.string.capabilities_title))
         capabilities.forEach { capability ->
-            Text(stringResource(capability.label))
+            Text(stringResource(capability.labelRes()))
         }
     }
 }

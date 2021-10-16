@@ -6,9 +6,9 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
 import androidx.core.content.getSystemService
-import com.boswelja.smartwatchextensions.common.connection.Capability
+import com.boswelja.smartwatchextensions.devicemanagement.Capability
 import com.boswelja.smartwatchextensions.discoveryClient
-import com.boswelja.watchconnection.wearos.discovery.DiscoveryClient
+import com.boswelja.watchconnection.wear.discovery.DiscoveryClient
 import timber.log.Timber
 
 /**
@@ -36,7 +36,7 @@ class CapabilityUpdater(
      */
     internal suspend fun updateSendDnD() {
         // We can always read DnD state
-        capabilityClient.addCapability(Capability.SEND_DND.name)
+        capabilityClient.addLocalCapability(Capability.SEND_DND.name)
     }
 
     /**
@@ -46,9 +46,9 @@ class CapabilityUpdater(
         // Either the watch is capable of granting ACCESS_NOTIFICATION_POLICY (via older SDKs), or
         // it's already granted.
         if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.O || hasNotiPolicyAccess()) {
-            capabilityClient.addCapability(Capability.RECEIVE_DND.name)
+            capabilityClient.addLocalCapability(Capability.RECEIVE_DND.name)
         } else {
-            capabilityClient.removeCapability(Capability.RECEIVE_DND.name)
+            capabilityClient.removeLocalCapability(Capability.RECEIVE_DND.name)
         }
     }
 
@@ -57,7 +57,7 @@ class CapabilityUpdater(
      */
     internal suspend fun updateSendBattery() {
         // We can always get battery stats
-        capabilityClient.addCapability(Capability.SYNC_BATTERY.name)
+        capabilityClient.addLocalCapability(Capability.SYNC_BATTERY.name)
     }
 
     /**
@@ -67,9 +67,9 @@ class CapabilityUpdater(
         // QUERY_ALL_APPS should be granted automatically upon app install, so we only check if it's
         // been granted.
         if (canQueryAllPackages()) {
-            capabilityClient.addCapability(Capability.MANAGE_APPS.name)
+            capabilityClient.addLocalCapability(Capability.MANAGE_APPS.name)
         } else {
-            capabilityClient.removeCapability(Capability.MANAGE_APPS.name)
+            capabilityClient.removeLocalCapability(Capability.MANAGE_APPS.name)
         }
     }
 

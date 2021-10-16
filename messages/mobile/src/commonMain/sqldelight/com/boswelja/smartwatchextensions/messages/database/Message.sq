@@ -1,0 +1,34 @@
+import com.boswelja.smartwatchextensions.messages.Message;
+
+CREATE TABLE messageDb (
+    id INTEGER AS Long NOT NULL PRIMARY KEY AUTOINCREMENT,
+    source_uid TEXT,
+    icon TEXT AS Message.Icon NOT NULL,
+    title TEXT NOT NULL,
+    text TEXT NOT NULL,
+    action TEXT AS Message.Action NOT NULL,
+    timestamp INTEGER AS Long NOT NULL,
+    archived INTEGER AS Boolean NOT NULL
+);
+
+insert:
+INSERT INTO messageDb
+VALUES (?, ?, ?, ?, ?, ?, ?, ?);
+
+getAll:
+SELECT id, source_uid, icon, title, text, action, timestamp FROM messageDb
+WHERE archived = ?
+ORDER BY timestamp ASC;
+
+setArchived:
+UPDATE messageDb
+SET archived = ?
+WHERE id = ?;
+
+deleteArchived:
+DELETE FROM messageDb
+WHERE archived = 1;
+
+deleteForSource:
+DELETE FROM messageDb
+WHERE source_uid = ?;

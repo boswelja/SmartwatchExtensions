@@ -12,11 +12,10 @@ import androidx.lifecycle.LifecycleService
 import androidx.lifecycle.lifecycleScope
 import com.boswelja.smartwatchextensions.NotificationChannelHelper
 import com.boswelja.smartwatchextensions.R
-import com.boswelja.smartwatchextensions.common.preference.PreferenceKey.WATCH_SEPARATION_NOTI_KEY
+import com.boswelja.smartwatchextensions.settings.BoolSettingKeys.WATCH_SEPARATION_NOTI_KEY
 import com.boswelja.smartwatchextensions.watchmanager.WatchManager
-import com.boswelja.watchconnection.common.discovery.Status
-import com.boswelja.watchconnection.core.Watch
-import java.util.UUID
+import com.boswelja.watchconnection.common.Watch
+import com.boswelja.watchconnection.common.discovery.ConnectionMode
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
@@ -25,7 +24,6 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -33,7 +31,7 @@ import timber.log.Timber
 class SeparationObserverService : LifecycleService() {
 
     private val watchManager by lazy { WatchManager.getInstance(this) }
-    private val hasSentNotiMap = hashMapOf<UUID, Boolean>()
+    private val hasSentNotiMap = hashMapOf<String, Boolean>()
     private var statusCollectorJob: Job? = null
 
     override fun onBind(intent: Intent): IBinder {
@@ -53,20 +51,19 @@ class SeparationObserverService : LifecycleService() {
 
     @OptIn(ExperimentalCoroutinesApi::class)
     private suspend fun startCollectingSettings() {
-        Timber.d("Collecting settings changes")
-        watchManager.settingsDatabase.boolSettings().getByKey(WATCH_SEPARATION_NOTI_KEY).mapLatest {
-            it.filter { setting -> setting.value }.map { setting -> setting.watchId }
-        }.collect { watchIds ->
-            if (watchIds.isEmpty()) {
-                tryStop()
-            } else {
-                collectStatusesFor(watchIds)
+        watchManager.settingsRepository
+            .getIdsWithBooleanSet(WATCH_SEPARATION_NOTI_KEY, true)
+            .collect { watchIds ->
+                if (watchIds.isEmpty()) {
+                    tryStop()
+                } else {
+                    collectStatusesFor(watchIds)
+                }
             }
-        }
     }
 
     @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
-    private suspend fun collectStatusesFor(watchIds: List<UUID>) {
+    private suspend fun collectStatusesFor(watchIds: List<String>) {
         // Map IDs to a list of Flows
         val flows = watchIds.mapNotNull { watchId ->
             // Get the associated watch
@@ -74,7 +71,7 @@ class SeparationObserverService : LifecycleService() {
 
             // Try get watch status
             watch?.let {
-                watchManager.getStatusFor(it)?.debounce(100)?.map { status ->
+                watchManager.getStatusFor(it).debounce(100).map { status ->
                     // Pair watch ID to status
                     watch to status
                 }
@@ -91,17 +88,17 @@ class SeparationObserverService : LifecycleService() {
         }
     }
 
-    private fun handleStatusChange(watch: Watch, newStatus: Status) {
+    private fun handleStatusChange(watch: Watch, newStatus: ConnectionMode) {
         Timber.d("%s status changed to %s", watch.name, newStatus)
         val notificationManager = getSystemService<NotificationManager>()!!
-        val notiId = watch.id.hashCode()
-        if (newStatus == Status.CONNECTED_NEARBY) {
+        val notiId = watch.uid.hashCode()
+        if (newStatus == ConnectionMode.Bluetooth) {
             notificationManager.cancel(notiId)
-            hasSentNotiMap[watch.id] = false
-        } else if (hasSentNotiMap[watch.id] != true) {
+            hasSentNotiMap[watch.uid] = false
+        } else if (hasSentNotiMap[watch.uid] != true) {
             val notification = createSeparationNotification(watch.name)
             notificationManager.notify(notiId, notification)
-            hasSentNotiMap[watch.id] = true
+            hasSentNotiMap[watch.uid] = true
         }
     }
 

@@ -6,25 +6,28 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import com.boswelja.smartwatchextensions.appmanager.database.DbApp
-import com.boswelja.smartwatchextensions.appmanager.database.WatchAppDatabase
-import com.boswelja.smartwatchextensions.common.appmanager.CacheValidation
-import com.boswelja.smartwatchextensions.common.appmanager.Messages.APP_SENDING_COMPLETE
-import com.boswelja.smartwatchextensions.common.appmanager.Messages.APP_SENDING_START
-import com.boswelja.smartwatchextensions.common.appmanager.Messages.REQUEST_OPEN_PACKAGE
-import com.boswelja.smartwatchextensions.common.appmanager.Messages.REQUEST_UNINSTALL_PACKAGE
-import com.boswelja.smartwatchextensions.common.appmanager.Messages.VALIDATE_CACHE
-import com.boswelja.smartwatchextensions.common.toByteArray
+import com.boswelja.smartwatchextensions.appmanager.APP_SENDING_COMPLETE
+import com.boswelja.smartwatchextensions.appmanager.APP_SENDING_START
+import com.boswelja.smartwatchextensions.appmanager.CacheValidation
+import com.boswelja.smartwatchextensions.appmanager.REQUEST_OPEN_PACKAGE
+import com.boswelja.smartwatchextensions.appmanager.REQUEST_UNINSTALL_PACKAGE
+import com.boswelja.smartwatchextensions.appmanager.VALIDATE_CACHE
+import com.boswelja.smartwatchextensions.appmanager.WatchApp
+import com.boswelja.smartwatchextensions.appmanager.WatchAppDbRepository
+import com.boswelja.smartwatchextensions.appmanager.WatchAppDetails
+import com.boswelja.smartwatchextensions.appmanager.WatchAppRepository
+import com.boswelja.smartwatchextensions.appmanager.database.WatchAppDatabaseLoader
 import com.boswelja.smartwatchextensions.watchmanager.WatchManager
-import com.boswelja.watchconnection.common.discovery.Status
-import com.boswelja.watchconnection.core.Watch
+import com.boswelja.watchconnection.common.Watch
+import com.boswelja.watchconnection.common.discovery.ConnectionMode
+import com.boswelja.watchconnection.common.message.Message
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.launch
@@ -33,22 +36,22 @@ import timber.log.Timber
 @OptIn(ExperimentalCoroutinesApi::class)
 class AppManagerViewModel internal constructor(
     application: Application,
-    private val appDatabase: WatchAppDatabase,
+    private val appRepository: WatchAppRepository,
     private val watchManager: WatchManager
 ) : AndroidViewModel(application) {
 
     @Suppress("unused")
     constructor(application: Application) : this(
         application,
-        WatchAppDatabase.getInstance(application),
+        WatchAppDbRepository(WatchAppDatabaseLoader(application).createDatabase()),
         WatchManager.getInstance(application)
     )
 
     @OptIn(FlowPreview::class)
     private val allApps = watchManager.selectedWatch.flatMapLatest { watch ->
         watch?.let {
-            appDatabase.apps().allForWatch(watch.id)
-        } ?: flow { emit(emptyList<DbApp>()) }
+            appRepository.getAppsFor(watch.uid)
+        } ?: flowOf(emptyList())
     }.debounce(APP_DEBOUNCE_MILLIS)
 
     /**
@@ -75,11 +78,9 @@ class AppManagerViewModel internal constructor(
     val isWatchConnected = watchManager.selectedWatch.flatMapLatest { watch ->
         watch?.let {
             watchManager.getStatusFor(watch)
-        } ?: flow { emit(Status.ERROR) }
+        } ?: flowOf(false)
     }.map { status ->
-        status == Status.CONNECTING ||
-            status == Status.CONNECTED ||
-            status == Status.CONNECTED_NEARBY
+        status != ConnectionMode.Disconnected
     }
 
     /**
@@ -126,11 +127,11 @@ class AppManagerViewModel internal constructor(
     }
 
     /**
-     * Requests the selected watch launch a given [DbApp].
-     * @param app The [DbApp] to try launch.
+     * Requests the selected watch launch a given [WatchAppDetails].
+     * @param app The [WatchAppDetails] to try launch.
      * @return true if the request was sent successfully, false otherwise.
      */
-    suspend fun sendOpenRequest(app: DbApp): Boolean {
+    suspend fun sendOpenRequest(app: WatchAppDetails): Boolean {
         return selectedWatch?.let { watch ->
             val data = app.packageName.toByteArray(Charsets.UTF_8)
             watchManager.sendMessage(watch, REQUEST_OPEN_PACKAGE, data)
@@ -138,14 +139,14 @@ class AppManagerViewModel internal constructor(
     }
 
     /**
-     * Requests the selected watch uninstall a given [DbApp].
-     * @param app The [DbApp] to try uninstall.
+     * Requests the selected watch uninstall a given [WatchAppDetails].
+     * @param app The [WatchAppDetails] to try uninstall.
      * @return true if the request was sent successfully, false otherwise.
      */
-    suspend fun sendUninstallRequest(app: DbApp): Boolean {
+    suspend fun sendUninstallRequest(app: WatchAppDetails): Boolean {
         return selectedWatch?.let { watch ->
             val data = app.packageName.toByteArray(Charsets.UTF_8)
-            appDatabase.apps().remove(app)
+            appRepository.delete(app.watchId, app.packageName)
             watchManager.sendMessage(watch, REQUEST_UNINSTALL_PACKAGE, data)
         } ?: false
     }
@@ -155,14 +156,20 @@ class AppManagerViewModel internal constructor(
      */
     suspend fun validateCache() {
         selectedWatch?.let { watch ->
-            Timber.d("Validating cache for %s", watch.id)
+            Timber.d("Validating cache for %s", watch.uid)
             // Get a list of packages we have for the given watch
-            val apps = appDatabase.apps().allForWatch(watch.id)
-                .map { apps -> apps.map { it.packageName to it.lastUpdateTime } }
+            val apps = appRepository.getAppVersionsFor(watch.uid)
+                .map { apps -> apps.map { it.packageName to it.updateTime } }
                 .first()
             val cacheHash = CacheValidation.getHashCode(apps)
-            val result = watchManager.sendMessage(watch, VALIDATE_CACHE, cacheHash.toByteArray())
+            val result = watchManager.sendMessage(watch, Message(VALIDATE_CACHE, cacheHash))
             if (!result) Timber.w("Failed to request cache validation")
+        }
+    }
+
+    suspend fun getDetailsFor(app: WatchApp): WatchAppDetails? {
+        return selectedWatch?.let {
+            appRepository.getDetailsFor(it.uid, app.packageName).first()
         }
     }
 

@@ -17,7 +17,7 @@ import com.boswelja.smartwatchextensions.common.ui.FeatureSummarySmall
 @Composable
 fun AppSummarySmall(
     modifier: Modifier = Modifier,
-    appCount: Int
+    appCount: Long
 ) {
     val context = LocalContext.current
     FeatureSummarySmall(
@@ -34,7 +34,7 @@ fun AppSummarySmall(
         text = {
             Text(
                 context.resources.getQuantityString(
-                    R.plurals.app_manager_app_count, appCount, appCount
+                    R.plurals.app_manager_app_count, appCount.toInt(), appCount
                 ),
                 textAlign = TextAlign.Center,
                 style = MaterialTheme.typography.h5

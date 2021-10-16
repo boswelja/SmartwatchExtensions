@@ -1,15 +1,14 @@
 package com.boswelja.smartwatchextensions.batterysync.ui
 
 import android.os.Build
-import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.boswelja.smartwatchextensions.common.connection.Capability
-import com.boswelja.smartwatchextensions.common.preference.PreferenceKey.BATTERY_LOW_THRESHOLD_KEY
-import com.boswelja.smartwatchextensions.common.preference.PreferenceKey.BATTERY_PHONE_LOW_NOTI_KEY
-import com.boswelja.smartwatchextensions.common.preference.PreferenceKey.BATTERY_WATCH_LOW_NOTI_KEY
+import com.boswelja.smartwatchextensions.devicemanagement.Capability
+import com.boswelja.smartwatchextensions.settings.BoolSettingKeys.BATTERY_PHONE_LOW_NOTI_KEY
+import com.boswelja.smartwatchextensions.settings.BoolSettingKeys.BATTERY_WATCH_LOW_NOTI_KEY
+import com.boswelja.smartwatchextensions.settings.IntSettingKeys.BATTERY_LOW_THRESHOLD_KEY
 import com.boswelja.smartwatchextensions.watchmanager.WatchManager
-import com.boswelja.watchconnection.core.Watch
+import com.boswelja.watchconnection.common.Watch
 import io.mockk.MockKAnnotations
 import io.mockk.coVerify
 import io.mockk.every
@@ -21,7 +20,6 @@ import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.annotation.Config
@@ -34,10 +32,8 @@ import strikt.assertions.isTrue
 @Config(sdk = [Build.VERSION_CODES.R])
 class BatterySyncViewModelTest {
 
-    @get:Rule val taskExecutorRule = InstantTaskExecutorRule()
-
     private val dummyWatch = Watch("Name", "id", "platform")
-    private val dummyCapabilities = MutableStateFlow<List<Capability>>(emptyList())
+    private val hasCapability = MutableStateFlow(false)
     private val dummyWatchLive = MutableStateFlow(dummyWatch)
     private val testDispatcher = TestCoroutineDispatcher()
 
@@ -49,9 +45,11 @@ class BatterySyncViewModelTest {
     fun setUp() {
         MockKAnnotations.init(this)
 
-        runBlocking { dummyCapabilities.emit(emptyList()) }
+        runBlocking { hasCapability.emit(false) }
 
-        every { watchManager.selectedWatchCapabilities() } returns dummyCapabilities
+        every {
+            watchManager.selectedWatchHasCapability(Capability.SYNC_BATTERY)
+        } returns hasCapability
         every { watchManager.selectedWatch } returns dummyWatchLive
 
         viewModel = BatterySyncViewModel(
@@ -100,7 +98,7 @@ class BatterySyncViewModelTest {
     @Test
     fun `canSyncBattery flows true when capability is present`(): Unit = runBlocking {
         // Emulate capability presence
-        dummyCapabilities.emit(listOf(Capability.SYNC_BATTERY))
+        hasCapability.emit(true)
 
         // Check canSyncBattery
         viewModel.canSyncBattery.take(1).collect {
@@ -111,7 +109,7 @@ class BatterySyncViewModelTest {
     @Test
     fun `canSyncBattery flows false when capability is missing`(): Unit = runBlocking {
         // Emulate capability missing
-        dummyCapabilities.emit(emptyList())
+        hasCapability.emit(false)
 
         // Check canSyncBattery
         viewModel.canSyncBattery.take(1).collect {

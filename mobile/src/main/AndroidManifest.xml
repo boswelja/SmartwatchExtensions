@@ -40,10 +40,6 @@
         </activity>
 
         <activity
-            android:name=".dndsync.ui.helper.DnDSyncHelperActivity"
-            android:exported="false" />
-
-        <activity
             android:name=".onboarding.ui.OnboardingActivity"
             android:exported="false" />
 
@@ -79,23 +75,22 @@
             </intent-filter>
         </receiver>
 
-        <service
-            android:name=".dndsync.DnDLocalChangeService"
-            android:exported="false" />
-
         <receiver
-            android:name=".appmanager.WatchAppReceiver"
+            android:name=".batterysync.BatteryStatsReceiver"
             android:exported="false">
             <intent-filter>
-                <action android:name="com.boswelja.watchconnection.messages.ACTION_MESSAGE_RECEIVED" />
+                <action android:name="com.boswelja.watchconnection.common.message.MessageReceived" />
             </intent-filter>
         </receiver>
+        <service
+            android:name=".dndsync.LocalDnDCollectorService"
+            android:exported="false" />
 
         <receiver
             android:name=".watchmanager.connection.WatchMessageReceiver"
             android:exported="false">
             <intent-filter>
-                <action android:name="com.boswelja.watchconnection.messages.ACTION_MESSAGE_RECEIVED" />
+                <action android:name="com.boswelja.watchconnection.common.message.MessageReceived" />
             </intent-filter>
         </receiver>
 

@@ -20,13 +20,11 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.boswelja.smartwatchextensions.R
-import com.boswelja.smartwatchextensions.common.preference.PreferenceKey.DND_SYNC_TO_PHONE_KEY
-import com.boswelja.smartwatchextensions.common.preference.PreferenceKey.DND_SYNC_WITH_THEATER_KEY
-import com.boswelja.smartwatchextensions.common.startActivity
 import com.boswelja.smartwatchextensions.common.ui.Card
 import com.boswelja.smartwatchextensions.common.ui.CardHeader
 import com.boswelja.smartwatchextensions.common.ui.SwitchSetting
-import com.boswelja.smartwatchextensions.dndsync.ui.helper.DnDSyncHelperActivity
+import com.boswelja.smartwatchextensions.settings.BoolSettingKeys.DND_SYNC_TO_PHONE_KEY
+import com.boswelja.smartwatchextensions.settings.BoolSettingKeys.DND_SYNC_WITH_THEATER_KEY
 import kotlinx.coroutines.Dispatchers
 
 @Composable
@@ -91,11 +89,7 @@ fun DndSyncSettingsCard(modifier: Modifier = Modifier) {
                 enabled = canReceiveDnD,
                 checked = syncToWatch,
                 onCheckChanged = {
-                    if (!it) {
-                        viewModel.setSyncToWatch(false)
-                    } else {
-                        context.startActivity<DnDSyncHelperActivity>()
-                    }
+                    viewModel.setSyncToWatch(it)
                 }
             )
             SyncToPhoneSetting(

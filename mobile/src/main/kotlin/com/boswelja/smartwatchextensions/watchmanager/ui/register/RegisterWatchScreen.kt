@@ -26,7 +26,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.boswelja.smartwatchextensions.R
-import com.boswelja.watchconnection.core.Watch
+import com.boswelja.watchconnection.common.Watch
 
 @Composable
 fun RegisterWatchScreen(

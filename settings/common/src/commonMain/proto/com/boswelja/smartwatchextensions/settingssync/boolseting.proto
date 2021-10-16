@@ -1,0 +1,8 @@
+syntax = "proto3";
+package com.boswelja.smartwatchextensions.settings;
+
+/* Contains an int setting key/value pair */
+message BoolSetting {
+  string key = 1;
+  bool value = 2;
+}

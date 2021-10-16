@@ -17,7 +17,6 @@ import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedButton
 import androidx.compose.material.SnackbarDuration
-import androidx.compose.material.SnackbarResult
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Archive
@@ -41,6 +40,7 @@ import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.common.startActivity
 import com.boswelja.smartwatchextensions.common.ui.AnimatedVisibilityItem
 import com.boswelja.smartwatchextensions.common.ui.SwipeDismissItem
+import com.boswelja.smartwatchextensions.messages.DisplayMessage
 import com.boswelja.smartwatchextensions.messages.Message
 import kotlinx.coroutines.launch
 
@@ -48,7 +48,7 @@ import kotlinx.coroutines.launch
 fun MessagesScreen(
     modifier: Modifier = Modifier,
     contentPadding: Dp = 16.dp,
-    onShowSnackbar: suspend (String, String, SnackbarDuration) -> SnackbarResult,
+    onShowSnackbar: suspend (String, SnackbarDuration) -> Unit,
     onNavigateTo: (MessageDestination) -> Unit
 ) {
     val context = LocalContext.current
@@ -65,19 +65,15 @@ fun MessagesScreen(
                 onMessageDismissed = { message ->
                     scope.launch {
                         viewModel.dismissMessage(message.id)
-                        val result = onShowSnackbar(
+                        onShowSnackbar(
                             context.getString(R.string.message_dismissed),
-                            context.getString(R.string.button_undo),
                             SnackbarDuration.Long
                         )
-                        if (result == SnackbarResult.ActionPerformed) {
-                            viewModel.restoreMessage(message.id)
-                        }
                     }
                 },
                 onMessageActionClicked = { action ->
                     when (action) {
-                        Message.Action.LAUNCH_NOTIFICATION_SETTINGS -> {
+                        Message.Action.NOTIFICATION_SETTINGS -> {
                             val intent = Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS)
                                 .apply {
                                     putExtra(
@@ -88,7 +84,7 @@ fun MessagesScreen(
                                 }
                             context.startActivity(intent)
                         }
-                        Message.Action.LAUNCH_CHANGELOG -> {
+                        Message.Action.CHANGELOG -> {
                             context.startActivity { intent ->
                                 intent.action = Intent.ACTION_VIEW
                                 intent.data = context.getString(R.string.changelog_url).toUri()
@@ -97,6 +93,7 @@ fun MessagesScreen(
                         }
                         Message.Action.INSTALL_UPDATE ->
                             viewModel.startUpdateFlow(context as Activity)
+                        Message.Action.NONE -> { } // Do nothing
                     }
                 }
             )
@@ -113,8 +110,8 @@ fun MessagesScreen(
 fun MessagesList(
     modifier: Modifier = Modifier,
     contentPadding: Dp = 16.dp,
-    messages: List<Message>,
-    onMessageDismissed: (Message) -> Unit,
+    messages: List<DisplayMessage>,
+    onMessageDismissed: (DisplayMessage) -> Unit,
     onMessageActionClicked: (Message.Action) -> Unit
 ) {
     LazyColumn(

@@ -34,7 +34,7 @@ fun NavGraphBuilder.messagesGraph(
         MessagesScreen(
             modifier = modifier,
             contentPadding = contentPadding,
-            onShowSnackbar = onShowSnackbar,
+            onShowSnackbar = { text, duration -> onShowSnackbar(text, null, duration) },
             onNavigateTo = { navController.navigate(it.route) }
         )
     }

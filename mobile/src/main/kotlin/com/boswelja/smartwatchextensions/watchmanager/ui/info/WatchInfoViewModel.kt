@@ -1,16 +1,21 @@
 package com.boswelja.smartwatchextensions.watchmanager.ui.info
 
 import android.app.Application
+import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.viewModelScope
+import com.boswelja.smartwatchextensions.devicemanagement.Capability
 import com.boswelja.smartwatchextensions.watchmanager.WatchManager
-import com.boswelja.watchconnection.core.Watch
-import kotlinx.coroutines.flow.flowOf
+import com.boswelja.watchconnection.common.Watch
+import kotlinx.coroutines.launch
 import timber.log.Timber
 
 class WatchInfoViewModel internal constructor(
     application: Application,
     private val watchManager: WatchManager
 ) : AndroidViewModel(application) {
+
+    val watchCapabilities = mutableStateListOf<Capability>()
 
     @Suppress("unused")
     constructor(application: Application) : this(
@@ -26,8 +31,14 @@ class WatchInfoViewModel internal constructor(
         watchManager.renameWatch(watch, name)
     }
 
-    fun getCapabilities(watch: Watch) = watchManager.getCapabilitiesFor(watch)
-        ?: flowOf(emptyList())
+    fun getCapabilities(watch: Watch) {
+        viewModelScope.launch {
+            watchManager.getCapabilitiesFor(watch).let {
+                watchCapabilities.clear()
+                watchCapabilities.addAll(it)
+            }
+        }
+    }
 
     /**
      * Forgets the current watch.

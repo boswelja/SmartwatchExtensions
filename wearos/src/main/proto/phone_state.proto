@@ -7,7 +7,6 @@ message PhoneState {
   string id = 1;
   string name = 2;
 
-  int32 batteryPercent = 3;
   bool chargeNotiSent = 4;
   bool lowNotiSent = 5;
 }
