@@ -1,5 +1,0 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
-
-    <string name="global_app_name" tools:keep="@string/global_app_name">Smartwatch Extensions</string>
-
-</resources>

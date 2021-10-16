@@ -16,8 +16,7 @@ include(
     ":settings:mobile",
     ":versionsync",
     ":mobile",
-    ":wearos",
-    ":common"
+    ":wearos"
 )
 pluginManagement {
     repositories {

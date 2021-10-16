@@ -59,7 +59,6 @@ android {
 }
 
 dependencies {
-    implementation(projects.common)
     implementation(projects.appmanager.mobile)
     implementation(projects.batterysync.mobile)
     implementation(projects.devicemanagement.mobile)
