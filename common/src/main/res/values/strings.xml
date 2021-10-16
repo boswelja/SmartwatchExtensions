@@ -2,15 +2,6 @@
 
     <string name="global_app_name" tools:keep="@string/global_app_name">Smartwatch Extensions</string>
 
-    <string name="interrupt_filter_sync_active_noti_title">Do not Disturb Sync</string>
-    <string name="interrupt_filter_sync_to_phone_noti_desc">Syncing phone Do not Disturb state with watch DnD</string>
-
-    <string name="device_battery_charged_noti_title">%s Charged</string>
-    <string name="device_battery_charged_noti_desc">Your %s is charged to above %s%%</string>
-
-    <string name="device_battery_low_noti_title">%s Low Battery</string>
-    <string name="device_battery_low_noti_desc">Your %s battery is at or below %s%%</string>
-
     <string name="play_store_link" translatable="false">https://play.google.com/store/apps/details?id=com.boswelja.smartwatchextensions</string>
 
     <string name="capability_manage_apps">Open &amp; uninstall apps</string>

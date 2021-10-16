@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="device_battery_charged_noti_title">%s Charged</string>
+    <string name="device_battery_charged_noti_desc">Your %s is charged to above %s%%</string>
+
+    <string name="device_battery_low_noti_title">%s Low Battery</string>
+    <string name="device_battery_low_noti_desc">Your %s battery is at or below %s%%</string>
+
+</resources>
