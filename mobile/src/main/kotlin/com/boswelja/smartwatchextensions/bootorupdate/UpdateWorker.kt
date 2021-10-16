@@ -12,12 +12,21 @@ import com.boswelja.smartwatchextensions.BuildConfig
 import com.boswelja.smartwatchextensions.NotificationChannelHelper
 import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.messages.Message
+import com.boswelja.smartwatchextensions.messages.MessagesRepository
 import com.boswelja.smartwatchextensions.messages.sendMessage
+import org.kodein.di.DI
+import org.kodein.di.DIAware
+import org.kodein.di.android.closestDI
+import org.kodein.di.instance
 
 class UpdateWorker(
     appContext: Context,
     workerParams: WorkerParameters
-) : CoroutineWorker(appContext, workerParams) {
+) : CoroutineWorker(appContext, workerParams), DIAware {
+
+    override val di: DI by closestDI(applicationContext)
+
+    private val messagesRepository: MessagesRepository by instance()
 
     override suspend fun doWork(): Result {
         // Perform any pending updates
@@ -37,7 +46,7 @@ class UpdateWorker(
                         R.string.update_complete_text, BuildConfig.VERSION_NAME
                     )
                 )
-                applicationContext.sendMessage(message)
+                applicationContext.sendMessage(message, repository = messagesRepository)
                 success()
             }
             com.boswelja.migration.Result.FAILED -> failure()
