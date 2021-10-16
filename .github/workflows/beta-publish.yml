@@ -12,30 +12,16 @@ jobs:
         with:
           ref: ${{ github.head_ref }}   # checkout the correct branch name
           fetch-depth: 0                # fetch the whole repo history
-      - uses: actions/setup-java@v2
+      - uses: actions/setup-java@v2.3.1
         with:
           distribution: 'adopt'
           java-version: 11
+          cache: 'gradle'
       - name: Git Version
         uses: codacy/git-version@2.5.3
         id: version
         with:
           release-branch: main
-      - name: Cache Gradle Packages
-        uses: actions/cache@v2.1.6
-        with:
-          path: ~/.gradle/caches
-          key: ${{ runner.os }}-gradle-cache-${{ hashFiles('gradle/libs.versions.toml') }}
-      - name: Cache Gradle Wrapper
-        uses: actions/cache@v2.1.6
-        with:
-          path: ~/.gradle/wrapper
-          key: ${{ runner.os }}-gradle-wrapper-${{ hashFiles('gradle/wrapper/gradle-wrapper.properties') }}
-      - name: Cache Build
-        uses: actions/cache@v2.1.6
-        with:
-          path: ./**/build/
-          key: ${{ runner.os }}-build-${{ github.sha }}
       - name: Build Mobile Release Artifacts
         run: ./gradlew :mobile:bundleRelease
         env:
