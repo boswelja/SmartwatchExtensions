@@ -7,9 +7,9 @@ import com.boswelja.smartwatchextensions.appmanager.APP_SENDING_START
 import com.boswelja.smartwatchextensions.batterysync.BATTERY_STATUS_PATH
 import com.boswelja.smartwatchextensions.common.EmptySerializer
 import com.boswelja.smartwatchextensions.common.connection.Messages.CHECK_WATCH_REGISTERED_PATH
-import com.boswelja.smartwatchextensions.common.connection.Messages.LAUNCH_APP
 import com.boswelja.smartwatchextensions.common.connection.Messages.WATCH_REGISTERED_PATH
 import com.boswelja.smartwatchextensions.common.startActivity
+import com.boswelja.smartwatchextensions.devicemanagement.LAUNCH_APP
 import com.boswelja.smartwatchextensions.dndsync.DND_STATUS_PATH
 import com.boswelja.smartwatchextensions.main.ui.MainActivity
 import com.boswelja.smartwatchextensions.watchmanager.WatchDbRepository
