@@ -8,7 +8,7 @@ import com.boswelja.watchconnection.common.discovery.ConnectionMode
 import com.boswelja.watchconnection.core.discovery.DiscoveryClient
 import com.squareup.sqldelight.runtime.coroutines.asFlow
 import com.squareup.sqldelight.runtime.coroutines.mapToList
-import com.squareup.sqldelight.runtime.coroutines.mapToOne
+import com.squareup.sqldelight.runtime.coroutines.mapToOneOrNull
 import kotlinx.coroutines.flow.Flow
 
 class WatchDbRepository(
@@ -58,7 +58,7 @@ class WatchDbRepository(
             Watch(uid, name)
         }
         .asFlow()
-        .mapToOne()
+        .mapToOneOrNull()
 
     override fun watchHasCapability(watch: Watch, capability: Capability): Flow<Boolean> =
         discoveryClient.hasCapability(watch, capability.name)
