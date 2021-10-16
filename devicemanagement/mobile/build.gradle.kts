@@ -15,6 +15,7 @@ kotlin {
                 api(libs.wire.runtime)
                 implementation(libs.sqldelight.runtime)
                 implementation(libs.sqldelight.coroutines)
+                implementation(libs.kodein.core)
                 api(projects.devicemanagement.common)
             }
         }
