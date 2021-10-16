@@ -3,34 +3,45 @@ package com.boswelja.smartwatchextensions.messages
 import com.boswelja.smartwatchextensions.messages.database.MessageDatabase
 import com.squareup.sqldelight.runtime.coroutines.asFlow
 import com.squareup.sqldelight.runtime.coroutines.mapToList
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.withContext
 
 class MessagesDbRepository(
-    private val database: MessageDatabase
+    private val database: MessageDatabase,
+    private val dispatcher: CoroutineDispatcher
 ) : MessagesRepository {
     override suspend fun insert(message: Message, sourceUid: String?) {
-        database.messageQueries.insert(
-            id = null,
-            source_uid = sourceUid,
-            icon = message.icon,
-            title = message.title,
-            text = message.text,
-            action = message.action,
-            timestamp = message.timestamp,
-            archived = false
-        )
+        withContext(dispatcher) {
+            database.messageQueries.insert(
+                id = null,
+                source_uid = sourceUid,
+                icon = message.icon,
+                title = message.title,
+                text = message.text,
+                action = message.action,
+                timestamp = message.timestamp,
+                archived = false
+            )
+        }
     }
 
     override suspend fun archive(id: Long) {
-        database.messageQueries.setArchived(true, id)
+        withContext(dispatcher) {
+            database.messageQueries.setArchived(true, id)
+        }
     }
 
     override suspend fun deleteArchived() {
-        database.messageQueries.deleteArchived()
+        withContext(dispatcher) {
+            database.messageQueries.deleteArchived()
+        }
     }
 
     override suspend fun deleteForSource(sourceUid: String) {
-        database.messageQueries.deleteForSource(sourceUid)
+        withContext(dispatcher) {
+            database.messageQueries.deleteForSource(sourceUid)
+        }
     }
 
     override fun getAllWhere(archived: Boolean): Flow<List<DisplayMessage>> =

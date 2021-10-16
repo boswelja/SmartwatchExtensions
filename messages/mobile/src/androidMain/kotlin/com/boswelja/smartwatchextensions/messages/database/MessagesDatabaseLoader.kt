@@ -3,6 +3,7 @@ package com.boswelja.smartwatchextensions.messages.database
 import android.content.Context
 import com.squareup.sqldelight.EnumColumnAdapter
 import com.squareup.sqldelight.android.AndroidSqliteDriver
+import kotlinx.coroutines.Dispatchers
 
 actual class MessagesDatabaseLoader(private val context: Context) {
     actual fun createDatabase(): MessageDatabase {
@@ -19,3 +20,5 @@ actual class MessagesDatabaseLoader(private val context: Context) {
         )
     }
 }
+
+actual val DB_DISPATCHER = Dispatchers.IO
