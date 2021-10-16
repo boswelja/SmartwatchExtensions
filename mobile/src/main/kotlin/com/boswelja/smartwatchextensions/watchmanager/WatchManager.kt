@@ -13,9 +13,9 @@ import com.boswelja.smartwatchextensions.batterysync.BatteryStatsRepository
 import com.boswelja.smartwatchextensions.batterysync.BatteryStatsRepositoryLoader
 import com.boswelja.smartwatchextensions.batterysync.BatteryStatsSerializer
 import com.boswelja.smartwatchextensions.common.SingletonHolder
-import com.boswelja.smartwatchextensions.common.connection.Messages
 import com.boswelja.smartwatchextensions.devicemanagement.Capability
 import com.boswelja.smartwatchextensions.devicemanagement.RESET_APP
+import com.boswelja.smartwatchextensions.devicemanagement.WATCH_REGISTERED_PATH
 import com.boswelja.smartwatchextensions.dndsync.DnDStatusSerializer
 import com.boswelja.smartwatchextensions.settings.BoolSetting
 import com.boswelja.smartwatchextensions.settings.BoolSettingSerializer
@@ -102,7 +102,7 @@ class WatchManager internal constructor(
 
     suspend fun registerWatch(watch: Watch) {
         withContext(Dispatchers.IO) {
-            messageClient.sendMessage(watch, Message(Messages.WATCH_REGISTERED_PATH, null))
+            messageClient.sendMessage(watch, Message(WATCH_REGISTERED_PATH, null))
             watchRepository.registerWatch(watch)
             BaseAppCacheUpdateWorker.enqueueWorkerFor<AppCacheUpdateWorker>(context, watch.uid)
             analytics.logWatchRegistered()

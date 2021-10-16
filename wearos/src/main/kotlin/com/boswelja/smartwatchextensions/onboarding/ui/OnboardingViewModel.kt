@@ -6,7 +6,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.boswelja.smartwatchextensions.PhoneState
 import com.boswelja.smartwatchextensions.common.EmptySerializer
-import com.boswelja.smartwatchextensions.common.connection.Messages.WATCH_REGISTERED_PATH
+import com.boswelja.smartwatchextensions.devicemanagement.WATCH_REGISTERED_PATH
 import com.boswelja.smartwatchextensions.phoneStateStore
 import com.boswelja.watchconnection.wear.discovery.DiscoveryClient
 import com.boswelja.watchconnection.wear.message.MessageClient
