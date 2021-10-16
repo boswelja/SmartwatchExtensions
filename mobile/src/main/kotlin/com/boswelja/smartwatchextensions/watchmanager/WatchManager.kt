@@ -15,6 +15,7 @@ import com.boswelja.smartwatchextensions.batterysync.BatteryStatsSerializer
 import com.boswelja.smartwatchextensions.common.SingletonHolder
 import com.boswelja.smartwatchextensions.common.connection.Messages
 import com.boswelja.smartwatchextensions.devicemanagement.Capability
+import com.boswelja.smartwatchextensions.devicemanagement.RESET_APP
 import com.boswelja.smartwatchextensions.dndsync.DnDStatusSerializer
 import com.boswelja.smartwatchextensions.settings.BoolSetting
 import com.boswelja.smartwatchextensions.settings.BoolSettingSerializer
@@ -123,7 +124,7 @@ class WatchManager internal constructor(
     ) {
         withContext(Dispatchers.IO) {
             batteryStatsDatabase.removeStatsFor(watch.uid)
-            messageClient.sendMessage(watch, Message(Messages.RESET_APP, null))
+            messageClient.sendMessage(watch, Message(RESET_APP, null))
             watchRepository.deregisterWatch(watch)
             removeWidgetsForWatch(watch, widgetIdStore)
             BaseAppCacheUpdateWorker.stopWorkerFor(context, watch.uid)
