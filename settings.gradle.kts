@@ -13,7 +13,7 @@ include(
     ":settings:common",
     ":settings:mobile",
     ":versionsync",
-    ":watchmanager",
+    ":devicemanagement:mobile",
     ":mobile",
     ":wearos",
     ":common"

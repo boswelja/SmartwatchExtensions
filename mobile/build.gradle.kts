@@ -62,12 +62,12 @@ dependencies {
     implementation(projects.common)
     implementation(projects.appmanager.mobile)
     implementation(projects.batterysync.mobile)
+    implementation(projects.devicemanagement.mobile)
     implementation(projects.dndsync.common)
     implementation(projects.messages.mobile)
     implementation(projects.phonelocking)
     implementation(projects.settings.mobile)
     implementation(projects.versionsync)
-    implementation(projects.watchmanager)
 
     implementation(libs.firebase.analytics)
 
