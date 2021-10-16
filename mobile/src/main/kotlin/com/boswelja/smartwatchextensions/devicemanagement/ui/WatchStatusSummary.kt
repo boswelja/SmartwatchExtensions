@@ -1,4 +1,4 @@
-package com.boswelja.smartwatchextensions.watchmanager.ui
+package com.boswelja.smartwatchextensions.devicemanagement.ui
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Icon

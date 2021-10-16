@@ -2,10 +2,10 @@ package com.boswelja.smartwatchextensions.proximity.ui
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
+import com.boswelja.smartwatchextensions.devicemanagement.WatchManager
 import com.boswelja.smartwatchextensions.proximity.SeparationObserverService
 import com.boswelja.smartwatchextensions.settings.BoolSettingKeys.PHONE_SEPARATION_NOTI_KEY
 import com.boswelja.smartwatchextensions.settings.BoolSettingKeys.WATCH_SEPARATION_NOTI_KEY
-import com.boswelja.smartwatchextensions.watchmanager.WatchManager
 import kotlinx.coroutines.flow.first
 
 class ProximitySettingsViewModel internal constructor(

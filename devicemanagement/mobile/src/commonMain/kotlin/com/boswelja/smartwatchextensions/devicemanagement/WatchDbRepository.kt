@@ -1,19 +1,21 @@
-package com.boswelja.smartwatchextensions.watchmanager
+package com.boswelja.smartwatchextensions.devicemanagement
 
-import com.boswelja.smartwatchextensions.devicemanagement.Capability
-import com.boswelja.smartwatchextensions.watchmanager.database.RegisteredWatch
-import com.boswelja.smartwatchextensions.watchmanager.database.RegisteredWatchDatabase
+import com.boswelja.smartwatchextensions.devicemanagement.database.RegisteredWatch
+import com.boswelja.smartwatchextensions.devicemanagement.database.RegisteredWatchDatabase
 import com.boswelja.watchconnection.common.Watch
 import com.boswelja.watchconnection.common.discovery.ConnectionMode
 import com.boswelja.watchconnection.core.discovery.DiscoveryClient
 import com.squareup.sqldelight.runtime.coroutines.asFlow
 import com.squareup.sqldelight.runtime.coroutines.mapToList
 import com.squareup.sqldelight.runtime.coroutines.mapToOneOrNull
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.withContext
 
 class WatchDbRepository(
     private val discoveryClient: DiscoveryClient,
-    private val database: RegisteredWatchDatabase
+    private val database: RegisteredWatchDatabase,
+    private val dispatcher: CoroutineDispatcher
 ) : WatchRepository {
 
     override val registeredWatches: Flow<List<Watch>>
@@ -28,21 +30,27 @@ class WatchDbRepository(
         get() = discoveryClient.allWatches()
 
     override suspend fun registerWatch(watch: Watch) {
-        database.registeredWatchQueries.insert(
-            RegisteredWatch(
-                watch.uid,
-                watch.name,
-                watch.platform
+        withContext(dispatcher) {
+            database.registeredWatchQueries.insert(
+                RegisteredWatch(
+                    watch.uid,
+                    watch.name,
+                    watch.platform
+                )
             )
-        )
+        }
     }
 
     override suspend fun deregisterWatch(watch: Watch) {
-        database.registeredWatchQueries.delete(watch.uid)
+        withContext(dispatcher) {
+            database.registeredWatchQueries.delete(watch.uid)
+        }
     }
 
     override suspend fun renameWatch(watch: Watch, newName: String) {
-        database.registeredWatchQueries.rename(watch.uid, newName)
+        withContext(dispatcher) {
+            database.registeredWatchQueries.rename(watch.uid, newName)
+        }
     }
 
     override suspend fun getCapabilitiesFor(watch: Watch): List<Capability> =

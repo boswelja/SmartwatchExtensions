@@ -2,7 +2,7 @@ package com.boswelja.smartwatchextensions.batterysync
 
 import android.content.Context
 import androidx.work.WorkerParameters
-import com.boswelja.smartwatchextensions.watchmanager.WatchManager
+import com.boswelja.smartwatchextensions.devicemanagement.WatchManager
 import com.boswelja.watchconnection.common.message.Message
 import kotlinx.coroutines.flow.firstOrNull
 

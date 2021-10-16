@@ -3,8 +3,8 @@ package com.boswelja.smartwatchextensions.aboutapp.ui
 import android.os.Build
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.boswelja.smartwatchextensions.devicemanagement.WatchManager
 import com.boswelja.smartwatchextensions.versionsync.REQUEST_APP_VERSION
-import com.boswelja.smartwatchextensions.watchmanager.WatchManager
 import com.boswelja.watchconnection.common.Watch
 import io.mockk.MockKAnnotations
 import io.mockk.coVerify

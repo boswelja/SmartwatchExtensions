@@ -1,4 +1,4 @@
-package com.boswelja.smartwatchextensions.watchmanager.connection
+package com.boswelja.smartwatchextensions.devicemanagement.connection
 
 import android.content.Context
 import android.content.Intent
@@ -10,10 +10,10 @@ import com.boswelja.smartwatchextensions.common.startActivity
 import com.boswelja.smartwatchextensions.devicemanagement.CHECK_WATCH_REGISTERED_PATH
 import com.boswelja.smartwatchextensions.devicemanagement.LAUNCH_APP
 import com.boswelja.smartwatchextensions.devicemanagement.WATCH_REGISTERED_PATH
+import com.boswelja.smartwatchextensions.devicemanagement.WatchDbRepository
+import com.boswelja.smartwatchextensions.devicemanagement.database.RegisteredWatchDatabaseLoader
 import com.boswelja.smartwatchextensions.dndsync.DND_STATUS_PATH
 import com.boswelja.smartwatchextensions.main.ui.MainActivity
-import com.boswelja.smartwatchextensions.watchmanager.WatchDbRepository
-import com.boswelja.smartwatchextensions.watchmanager.database.RegisteredWatchDatabaseLoader
 import com.boswelja.watchconection.common.message.MessageReceiver
 import com.boswelja.watchconnection.common.message.Message
 import com.boswelja.watchconnection.common.message.ReceivedMessage
@@ -67,7 +67,8 @@ class WatchMessageReceiver : MessageReceiver<Nothing?>(
                         WearOSDiscoveryPlatform(context)
                     )
                 ),
-                RegisteredWatchDatabaseLoader(context).createDatabase()
+                RegisteredWatchDatabaseLoader(context).createDatabase(),
+                Dispatchers.IO
             )
             val watch = repository.getWatchById(watchId).firstOrNull()
             // If watch is found in the database, let it know it's registered

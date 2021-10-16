@@ -1,4 +1,4 @@
-package com.boswelja.smartwatchextensions.watchmanager
+package com.boswelja.smartwatchextensions.devicemanagement
 
 import android.content.Context
 import androidx.datastore.core.DataStore
@@ -13,9 +13,7 @@ import com.boswelja.smartwatchextensions.batterysync.BatteryStatsRepository
 import com.boswelja.smartwatchextensions.batterysync.BatteryStatsRepositoryLoader
 import com.boswelja.smartwatchextensions.batterysync.BatteryStatsSerializer
 import com.boswelja.smartwatchextensions.common.SingletonHolder
-import com.boswelja.smartwatchextensions.devicemanagement.Capability
-import com.boswelja.smartwatchextensions.devicemanagement.RESET_APP
-import com.boswelja.smartwatchextensions.devicemanagement.WATCH_REGISTERED_PATH
+import com.boswelja.smartwatchextensions.devicemanagement.database.RegisteredWatchDatabaseLoader
 import com.boswelja.smartwatchextensions.dndsync.DnDStatusSerializer
 import com.boswelja.smartwatchextensions.settings.BoolSetting
 import com.boswelja.smartwatchextensions.settings.BoolSettingSerializer
@@ -27,7 +25,6 @@ import com.boswelja.smartwatchextensions.settings.UPDATE_INT_PREFERENCE
 import com.boswelja.smartwatchextensions.settings.WatchSettingsDbRepository
 import com.boswelja.smartwatchextensions.settings.WatchSettingsRepository
 import com.boswelja.smartwatchextensions.settings.database.WatchSettingsDatabaseLoader
-import com.boswelja.smartwatchextensions.watchmanager.database.RegisteredWatchDatabaseLoader
 import com.boswelja.smartwatchextensions.widget.widgetIdStore
 import com.boswelja.watchconnection.common.Watch
 import com.boswelja.watchconnection.common.message.Message
@@ -69,7 +66,8 @@ class WatchManager internal constructor(
                     WearOSDiscoveryPlatform(context)
                 )
             ),
-            RegisteredWatchDatabaseLoader(context).createDatabase()
+            RegisteredWatchDatabaseLoader(context).createDatabase(),
+            Dispatchers.IO
         ),
         MessageClient(
             serializers = listOf(

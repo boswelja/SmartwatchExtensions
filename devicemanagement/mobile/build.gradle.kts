@@ -51,6 +51,6 @@ wire {
 
 sqldelight {
     database("RegisteredWatchDatabase") {
-        packageName = "com.boswelja.smartwatchextensions.watchmanager.database"
+        packageName = "com.boswelja.smartwatchextensions.devicemanagement.database"
     }
 }

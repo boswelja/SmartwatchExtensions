@@ -11,6 +11,9 @@ import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.batterysync.Utils.BATTERY_STATS_NOTI_CHANNEL_ID
 import com.boswelja.smartwatchextensions.batterysync.quicksettings.WatchBatteryTileService
 import com.boswelja.smartwatchextensions.common.WatchWidgetProvider
+import com.boswelja.smartwatchextensions.devicemanagement.WatchDbRepository
+import com.boswelja.smartwatchextensions.devicemanagement.WatchRepository
+import com.boswelja.smartwatchextensions.devicemanagement.database.RegisteredWatchDatabaseLoader
 import com.boswelja.smartwatchextensions.main.ui.MainActivity
 import com.boswelja.smartwatchextensions.messages.Message
 import com.boswelja.smartwatchextensions.messages.MessagesRepository
@@ -24,9 +27,6 @@ import com.boswelja.smartwatchextensions.settings.IntSettingKeys.BATTERY_LOW_THR
 import com.boswelja.smartwatchextensions.settings.WatchSettingsDbRepository
 import com.boswelja.smartwatchextensions.settings.WatchSettingsRepository
 import com.boswelja.smartwatchextensions.settings.database.WatchSettingsDatabaseLoader
-import com.boswelja.smartwatchextensions.watchmanager.WatchDbRepository
-import com.boswelja.smartwatchextensions.watchmanager.WatchRepository
-import com.boswelja.smartwatchextensions.watchmanager.database.RegisteredWatchDatabaseLoader
 import com.boswelja.watchconnection.common.Watch
 import com.boswelja.watchconnection.core.discovery.DiscoveryClient
 import com.boswelja.watchconnection.wearos.discovery.WearOSDiscoveryPlatform
@@ -65,7 +65,8 @@ class BatteryStatsReceiver : BaseBatteryStatsReceiver(), DIAware {
                             WearOSDiscoveryPlatform(context)
                         )
                     ),
-                    RegisteredWatchDatabaseLoader(context).createDatabase()
+                    RegisteredWatchDatabaseLoader(context).createDatabase(),
+                    Dispatchers.IO
                 )
             watchRepository.getWatchById(sourceUid).firstOrNull()?.let { watch ->
                 val notificationManager = context.getSystemService<NotificationManager>()!!

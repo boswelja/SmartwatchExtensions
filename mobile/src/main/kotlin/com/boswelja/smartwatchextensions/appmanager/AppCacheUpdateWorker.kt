@@ -3,7 +3,7 @@ package com.boswelja.smartwatchextensions.appmanager
 import android.content.Context
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
-import com.boswelja.smartwatchextensions.watchmanager.WatchManager
+import com.boswelja.smartwatchextensions.devicemanagement.WatchManager
 import com.boswelja.watchconnection.common.message.Message
 import kotlinx.coroutines.flow.first
 

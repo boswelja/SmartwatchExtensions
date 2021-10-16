@@ -1,4 +1,4 @@
-package com.boswelja.smartwatchextensions.watchmanager.ui
+package com.boswelja.smartwatchextensions.devicemanagement.ui
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.Crossfade
@@ -30,7 +30,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.common.ui.Card
 import com.boswelja.smartwatchextensions.common.ui.CardHeader
-import com.boswelja.smartwatchextensions.watchmanager.ui.info.WatchInfoScreen
+import com.boswelja.smartwatchextensions.devicemanagement.ui.info.WatchInfoScreen
 import com.boswelja.watchconnection.common.Watch
 import kotlinx.coroutines.Dispatchers
 

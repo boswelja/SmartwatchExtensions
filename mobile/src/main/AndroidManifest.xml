@@ -87,7 +87,7 @@
             android:exported="false" />
 
         <receiver
-            android:name=".watchmanager.connection.WatchMessageReceiver"
+            android:name=".devicemanagement.connection.WatchMessageReceiver"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.boswelja.watchconnection.common.message.MessageReceived" />

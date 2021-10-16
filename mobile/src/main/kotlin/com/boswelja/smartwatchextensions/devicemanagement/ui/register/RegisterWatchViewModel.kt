@@ -1,10 +1,10 @@
-package com.boswelja.smartwatchextensions.watchmanager.ui.register
+package com.boswelja.smartwatchextensions.devicemanagement.ui.register
 
 import android.app.Application
 import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import com.boswelja.smartwatchextensions.watchmanager.WatchManager
+import com.boswelja.smartwatchextensions.devicemanagement.WatchManager
 import com.boswelja.watchconnection.common.Watch
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch

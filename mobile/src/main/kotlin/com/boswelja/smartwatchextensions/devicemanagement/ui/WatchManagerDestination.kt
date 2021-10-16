@@ -1,4 +1,4 @@
-package com.boswelja.smartwatchextensions.watchmanager.ui
+package com.boswelja.smartwatchextensions.devicemanagement.ui
 
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
@@ -6,7 +6,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
-import com.boswelja.smartwatchextensions.watchmanager.ui.register.RegisterWatchScreen
+import com.boswelja.smartwatchextensions.devicemanagement.ui.register.RegisterWatchScreen
 
 enum class WatchManagerDestination(val route: String) {
     REGISTER_WATCHES("register-watches")

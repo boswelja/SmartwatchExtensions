@@ -3,7 +3,7 @@ package com.boswelja.smartwatchextensions.main.ui
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import com.boswelja.smartwatchextensions.watchmanager.WatchManager
+import com.boswelja.smartwatchextensions.devicemanagement.WatchManager
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 

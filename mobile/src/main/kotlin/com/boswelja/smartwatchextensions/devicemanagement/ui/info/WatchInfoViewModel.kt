@@ -1,11 +1,11 @@
-package com.boswelja.smartwatchextensions.watchmanager.ui.info
+package com.boswelja.smartwatchextensions.devicemanagement.ui.info
 
 import android.app.Application
 import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.boswelja.smartwatchextensions.devicemanagement.Capability
-import com.boswelja.smartwatchextensions.watchmanager.WatchManager
+import com.boswelja.smartwatchextensions.devicemanagement.WatchManager
 import com.boswelja.watchconnection.common.Watch
 import kotlinx.coroutines.launch
 import timber.log.Timber

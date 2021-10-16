@@ -1,8 +1,8 @@
-package com.boswelja.smartwatchextensions.watchmanager.ui
+package com.boswelja.smartwatchextensions.devicemanagement.ui
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
-import com.boswelja.smartwatchextensions.watchmanager.WatchManager
+import com.boswelja.smartwatchextensions.devicemanagement.WatchManager
 
 class WatchManagerViewModel internal constructor(
     application: Application,

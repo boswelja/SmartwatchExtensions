@@ -1,4 +1,4 @@
-package com.boswelja.smartwatchextensions.watchmanager.database
+package com.boswelja.smartwatchextensions.devicemanagement.database
 
 import android.content.Context
 import com.squareup.sqldelight.android.AndroidSqliteDriver

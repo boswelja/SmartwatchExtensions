@@ -31,7 +31,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.common.startActivity
-import com.boswelja.smartwatchextensions.watchmanager.ui.register.RegisterWatchScreen
+import com.boswelja.smartwatchextensions.devicemanagement.ui.register.RegisterWatchScreen
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
