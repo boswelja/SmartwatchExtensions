@@ -84,6 +84,7 @@ googleplay-corektx = { module = "com.google.android.play:core-ktx", version.ref 
 junit = { module = "junit:junit", version.ref = "junit" }
 kodein-core = { module = "org.kodein.di:kodein-di", version.ref = "kodein" }
 kodein-android = { module = "org.kodein.di:kodein-di-framework-android-core", version.ref = "kodein" }
+kodein-androidx = { module = "org.kodein.di:kodein-di-framework-android-x", version.ref = "kodein" }
 kotlinx-coroutines-playservices = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-play-services", version.ref = "coroutines" }
 kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "coroutines" }
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm", version.ref = "coroutines" }

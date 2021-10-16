@@ -21,6 +21,7 @@ kotlin {
             dependencies {
                 implementation(libs.sqldelight.android)
                 implementation(libs.androidx.work.ktx)
+                implementation(libs.kodein.android)
             }
         }
     }
