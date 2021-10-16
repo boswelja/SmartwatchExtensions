@@ -7,7 +7,6 @@ object Messages {
     const val LAUNCH_APP = "/launch_app"
 
     const val RESET_APP = "/reset_app"
-    const val CLEAR_PREFERENCES = "/clear_preferences"
 
     const val REQUEST_UPDATE_CAPABILITIES = "/update_capabilities"
 

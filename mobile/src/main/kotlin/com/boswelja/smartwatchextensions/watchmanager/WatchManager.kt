@@ -14,13 +14,13 @@ import com.boswelja.smartwatchextensions.batterysync.BatteryStatsRepositoryLoade
 import com.boswelja.smartwatchextensions.batterysync.BatteryStatsSerializer
 import com.boswelja.smartwatchextensions.common.SingletonHolder
 import com.boswelja.smartwatchextensions.common.connection.Messages
-import com.boswelja.smartwatchextensions.common.connection.Messages.CLEAR_PREFERENCES
 import com.boswelja.smartwatchextensions.devicemanagement.Capability
 import com.boswelja.smartwatchextensions.dndsync.DnDStatusSerializer
 import com.boswelja.smartwatchextensions.settings.BoolSetting
 import com.boswelja.smartwatchextensions.settings.BoolSettingSerializer
 import com.boswelja.smartwatchextensions.settings.IntSetting
 import com.boswelja.smartwatchextensions.settings.IntSettingSerializer
+import com.boswelja.smartwatchextensions.settings.RESET_SETTINGS
 import com.boswelja.smartwatchextensions.settings.UPDATE_BOOL_PREFERENCE
 import com.boswelja.smartwatchextensions.settings.UPDATE_INT_PREFERENCE
 import com.boswelja.smartwatchextensions.settings.WatchSettingsDbRepository
@@ -152,7 +152,7 @@ class WatchManager internal constructor(
         watch: Watch
     ) {
         batteryStatsDatabase.removeStatsFor(watch.uid)
-        messageClient.sendMessage(watch, Message(CLEAR_PREFERENCES, null))
+        messageClient.sendMessage(watch, Message(RESET_SETTINGS, null))
         settingsRepository.deleteForWatch(watch.uid)
         removeWidgetsForWatch(watch, widgetIdStore)
     }

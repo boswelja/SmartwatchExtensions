@@ -6,7 +6,6 @@ import androidx.core.content.getSystemService
 import com.boswelja.smartwatchextensions.BuildConfig
 import com.boswelja.smartwatchextensions.capability.CapabilityUpdater
 import com.boswelja.smartwatchextensions.common.EmptySerializer
-import com.boswelja.smartwatchextensions.common.connection.Messages.CLEAR_PREFERENCES
 import com.boswelja.smartwatchextensions.common.connection.Messages.REQUEST_UPDATE_CAPABILITIES
 import com.boswelja.smartwatchextensions.common.connection.Messages.RESET_APP
 import com.boswelja.smartwatchextensions.discoveryClient
@@ -14,6 +13,7 @@ import com.boswelja.smartwatchextensions.dndsync.REQUEST_SDK_INT_PATH
 import com.boswelja.smartwatchextensions.extensions.SettingsSerializer
 import com.boswelja.smartwatchextensions.extensions.extensionSettingsStore
 import com.boswelja.smartwatchextensions.messageClient
+import com.boswelja.smartwatchextensions.settings.RESET_SETTINGS
 import com.boswelja.smartwatchextensions.versionsync.REQUEST_APP_VERSION
 import com.boswelja.smartwatchextensions.versionsync.Version
 import com.boswelja.smartwatchextensions.versionsync.VersionSerializer
@@ -27,7 +27,7 @@ class MessageReceiver : MessageReceiver<Nothing?>(
             REQUEST_APP_VERSION,
             REQUEST_SDK_INT_PATH,
             RESET_APP,
-            CLEAR_PREFERENCES,
+            RESET_SETTINGS,
             REQUEST_UPDATE_CAPABILITIES
         )
     )
@@ -46,7 +46,7 @@ class MessageReceiver : MessageReceiver<Nothing?>(
                 val activityManager = context.getSystemService<ActivityManager>()
                 activityManager?.clearApplicationUserData()
             }
-            CLEAR_PREFERENCES -> {
+            RESET_SETTINGS -> {
                 context.extensionSettingsStore.updateData {
                     // Recreate the DataStore with default values
                     SettingsSerializer().defaultValue
