@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">@string/global_app_name</string>
+    <string name="app_name">Smartwatch Extensions</string>
 
     <!-- Lock Phone strings -->
     <string name="lock_phone_label">Lock phone</string>
