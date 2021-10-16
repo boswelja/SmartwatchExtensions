@@ -6,7 +6,7 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
 import androidx.core.content.getSystemService
-import com.boswelja.smartwatchextensions.common.connection.Capability
+import com.boswelja.smartwatchextensions.devicemanagement.Capability
 import com.boswelja.smartwatchextensions.discoveryClient
 import com.boswelja.watchconnection.wear.discovery.DiscoveryClient
 import timber.log.Timber

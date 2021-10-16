@@ -59,6 +59,7 @@ dependencies {
     implementation(projects.common)
     implementation(projects.appmanager.wear)
     implementation(projects.batterysync.wear)
+    implementation(projects.devicemanagement.common)
     implementation(projects.dndsync.wear)
     implementation(projects.phonelocking)
     implementation(projects.settings.common)
