@@ -33,7 +33,7 @@ class WatchInfoViewModel internal constructor(
 
     fun getCapabilities(watch: Watch) {
         viewModelScope.launch {
-            watchManager.getCapabilitiesFor(watch)?.let {
+            watchManager.getCapabilitiesFor(watch).let {
                 watchCapabilities.clear()
                 watchCapabilities.addAll(it)
             }

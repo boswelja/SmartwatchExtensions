@@ -180,7 +180,7 @@ class WatchManager internal constructor(
     fun getStatusFor(watch: Watch) = discoveryClient.connectionModeFor(watch)
 
     suspend fun getCapabilitiesFor(watch: Watch) =
-        discoveryClient.getCapabilitiesFor(watch)?.map { capability ->
+        discoveryClient.getCapabilitiesFor(watch).map { capability ->
             Capability.valueOf(capability)
         }
 

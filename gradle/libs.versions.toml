@@ -33,7 +33,7 @@ robolectric = "4.6.1"
 strikt = "0.31.0"
 sqldelight = "1.5.0"
 timber = "4.7.1"
-watchconnection = "6.0.2"
+watchconnection = "6.0.3"
 wire = "3.7.0"
 
 [libraries]
