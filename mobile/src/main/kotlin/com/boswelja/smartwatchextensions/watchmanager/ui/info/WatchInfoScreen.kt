@@ -39,6 +39,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.common.ui.BigButton
 import com.boswelja.smartwatchextensions.devicemanagement.Capability
+import com.boswelja.smartwatchextensions.devicemanagement.labelRes
 import com.boswelja.watchconnection.common.Watch
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -166,8 +167,7 @@ fun WatchCapabilities(
     ) {
         Text(stringResource(R.string.capabilities_title))
         capabilities.forEach { capability ->
-            // TODO Map capabilities to human-readable strings
-            Text(capability.name)
+            Text(stringResource(capability.labelRes()))
         }
     }
 }
