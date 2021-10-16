@@ -113,8 +113,9 @@ fun AppManagerScreen(
                     disabledApps = disabledApps,
                     systemApps = systemApps,
                     onAppClick = { app ->
-                        // TODO Fix app details
-                        // selectedApp = app
+                        coroutineScope.launch {
+                            selectedApp = viewModel.getDetailsFor(app)
+                        }
                     }
                 )
             }

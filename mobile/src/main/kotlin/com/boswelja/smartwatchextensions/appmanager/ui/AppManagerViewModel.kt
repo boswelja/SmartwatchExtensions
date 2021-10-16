@@ -12,6 +12,7 @@ import com.boswelja.smartwatchextensions.appmanager.CacheValidation
 import com.boswelja.smartwatchextensions.appmanager.REQUEST_OPEN_PACKAGE
 import com.boswelja.smartwatchextensions.appmanager.REQUEST_UNINSTALL_PACKAGE
 import com.boswelja.smartwatchextensions.appmanager.VALIDATE_CACHE
+import com.boswelja.smartwatchextensions.appmanager.WatchApp
 import com.boswelja.smartwatchextensions.appmanager.WatchAppDbRepository
 import com.boswelja.smartwatchextensions.appmanager.WatchAppDetails
 import com.boswelja.smartwatchextensions.appmanager.WatchAppRepository
@@ -163,6 +164,12 @@ class AppManagerViewModel internal constructor(
             val cacheHash = CacheValidation.getHashCode(apps)
             val result = watchManager.sendMessage(watch, Message(VALIDATE_CACHE, cacheHash))
             if (!result) Timber.w("Failed to request cache validation")
+        }
+    }
+
+    suspend fun getDetailsFor(app: WatchApp): WatchAppDetails? {
+        return selectedWatch?.let {
+            appRepository.getDetailsFor(it.uid, app.packageName).first()
         }
     }
 

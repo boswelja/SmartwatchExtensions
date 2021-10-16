@@ -5,7 +5,6 @@ import android.content.Intent
 import com.boswelja.smartwatchextensions.appmanager.APP_SENDING_COMPLETE
 import com.boswelja.smartwatchextensions.appmanager.APP_SENDING_START
 import com.boswelja.smartwatchextensions.batterysync.BATTERY_STATUS_PATH
-import com.boswelja.smartwatchextensions.batterysync.REQUEST_BATTERY_UPDATE_PATH
 import com.boswelja.smartwatchextensions.common.EmptySerializer
 import com.boswelja.smartwatchextensions.common.connection.Messages.CHECK_WATCH_REGISTERED_PATH
 import com.boswelja.smartwatchextensions.common.connection.Messages.LAUNCH_APP
@@ -32,7 +31,6 @@ class WatchMessageReceiver : MessageReceiver<Nothing?>(
         messagePaths = setOf(
             APP_SENDING_START,
             APP_SENDING_COMPLETE,
-            REQUEST_BATTERY_UPDATE_PATH,
             BATTERY_STATUS_PATH,
             DND_STATUS_PATH
         )
@@ -42,10 +40,6 @@ class WatchMessageReceiver : MessageReceiver<Nothing?>(
     override suspend fun onMessageReceived(context: Context, message: ReceivedMessage<Nothing?>) {
         when (message.path) {
             LAUNCH_APP -> launchApp(context)
-            REQUEST_BATTERY_UPDATE_PATH -> {
-                // TODO Re-enable battery stats refresh
-                // BaseBatterySyncWorker.sendBatteryStats(context, message.sourceUid)
-            }
             CHECK_WATCH_REGISTERED_PATH -> sendIsWatchRegistered(context, message.sourceUid)
         }
     }
