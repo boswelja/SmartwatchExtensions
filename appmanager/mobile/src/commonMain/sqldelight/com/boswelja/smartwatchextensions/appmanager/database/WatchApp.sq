@@ -21,7 +21,7 @@ INSERT OR REPLACE INTO watchAppDb
 VALUES ?;
 
 getDisplayItemsFor:
-SELECT icon_path, label, version_name, system_app, enabled FROM watchAppDb
+SELECT package_name, icon_path, label, version_name, system_app, enabled FROM watchAppDb
 WHERE watch_id = ?;
 
 getDetailsFor:

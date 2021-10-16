@@ -16,6 +16,7 @@ data class WatchAppDetails(
 )
 
 data class WatchApp(
+    val packageName: String,
     val iconPath: String?,
     val label: String,
     val versionName: String,

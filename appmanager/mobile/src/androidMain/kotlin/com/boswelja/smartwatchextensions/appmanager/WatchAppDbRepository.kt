@@ -84,8 +84,8 @@ class WatchAppDbRepository(
 
     override fun getAppsFor(watchId: String): Flow<List<WatchApp>> =
         database.watchAppQueries
-            .getDisplayItemsFor(watchId) { icon_path, label, version_name, system_app, enabled ->
-                WatchApp(icon_path, label, version_name, system_app, enabled)
+            .getDisplayItemsFor(watchId) { package_name, icon_path, label, version_name, system_app, enabled ->
+                WatchApp(package_name, icon_path, label, version_name, system_app, enabled)
             }
             .asFlow()
             .mapToList()
