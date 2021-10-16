@@ -16,7 +16,7 @@ import androidx.wear.complications.datasource.ComplicationDataSourceUpdateReques
 import androidx.wear.complications.datasource.ComplicationRequest
 import com.boswelja.smartwatchextensions.ActionsActivity
 import com.boswelja.smartwatchextensions.R
-import com.boswelja.smartwatchextensions.common.ui.getBatteryResource
+import com.boswelja.smartwatchextensions.batterysync.common.getBatteryDrawableRes
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
@@ -68,7 +68,7 @@ class PhoneBatteryComplicationProvider : ComplicationDataSourceService() {
             if (percent > 0) String.format(getString(R.string.battery_percent), percent)
             else getString(R.string.battery_percent_unknown)
         val icon = MonochromaticImage.Builder(
-            Icon.createWithResource(this, getBatteryResource(percent))
+            Icon.createWithResource(this, getBatteryDrawableRes(percent))
         ).build()
 
         val complicationText = PlainComplicationText.Builder(text).build()

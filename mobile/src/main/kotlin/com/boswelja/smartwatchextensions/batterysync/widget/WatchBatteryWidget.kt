@@ -6,8 +6,8 @@ import android.content.Intent
 import android.widget.RemoteViews
 import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.batterysync.BatteryStatsRepositoryLoader
+import com.boswelja.smartwatchextensions.batterysync.common.getBatteryDrawableRes
 import com.boswelja.smartwatchextensions.common.WatchWidgetProvider
-import com.boswelja.smartwatchextensions.common.getBatteryDrawable
 import com.boswelja.smartwatchextensions.main.ui.MainActivity
 import com.boswelja.smartwatchextensions.settings.BoolSettingKeys.BATTERY_SYNC_ENABLED_KEY
 import com.boswelja.smartwatchextensions.settings.WatchSettingsDbRepository
@@ -47,7 +47,7 @@ class WatchBatteryWidget : WatchWidgetProvider() {
 
             // Set battery indicator image
             remoteViews.setImageViewResource(
-                R.id.battery_indicator, getBatteryDrawable(batteryPercent)
+                R.id.battery_indicator, getBatteryDrawableRes(batteryPercent)
             )
 
             // Set battery indicator text

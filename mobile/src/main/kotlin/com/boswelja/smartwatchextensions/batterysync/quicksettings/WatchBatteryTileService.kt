@@ -8,8 +8,8 @@ import android.os.Build
 import android.service.quicksettings.Tile
 import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.batterysync.BatteryStatsRepositoryLoader
+import com.boswelja.smartwatchextensions.batterysync.common.getBatteryDrawableRes
 import com.boswelja.smartwatchextensions.common.WatchTileService
-import com.boswelja.smartwatchextensions.common.getBatteryDrawable
 import com.boswelja.smartwatchextensions.main.ui.MainActivity
 import com.boswelja.smartwatchextensions.main.ui.MainActivity.Companion.EXTRA_WATCH_ID
 import com.boswelja.smartwatchextensions.settings.BoolSettingKeys.BATTERY_SYNC_ENABLED_KEY
@@ -73,7 +73,7 @@ class WatchBatteryTileService : WatchTileService() {
                 }
                 state = Tile.STATE_ACTIVE
                 icon = Icon.createWithResource(
-                    this@WatchBatteryTileService, getBatteryDrawable(batteryStats.percent)
+                    this@WatchBatteryTileService, getBatteryDrawableRes(batteryStats.percent)
                 )
             }
         } else {
