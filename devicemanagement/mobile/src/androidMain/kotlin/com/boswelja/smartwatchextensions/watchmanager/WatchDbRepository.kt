@@ -1,5 +1,6 @@
 package com.boswelja.smartwatchextensions.watchmanager
 
+import com.boswelja.smartwatchextensions.devicemanagement.Capability
 import com.boswelja.smartwatchextensions.watchmanager.database.RegisteredWatch
 import com.boswelja.smartwatchextensions.watchmanager.database.RegisteredWatchDatabase
 import com.boswelja.watchconnection.common.Watch

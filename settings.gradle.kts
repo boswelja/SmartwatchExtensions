@@ -5,6 +5,8 @@ include(
     ":batterysync:common",
     ":batterysync:mobile",
     ":batterysync:wear",
+    ":devicemanagement:common",
+    ":devicemanagement:mobile",
     ":dndsync:common",
     ":dndsync:wear",
     ":messages:common",
@@ -13,7 +15,6 @@ include(
     ":settings:common",
     ":settings:mobile",
     ":versionsync",
-    ":devicemanagement:mobile",
     ":mobile",
     ":wearos",
     ":common"

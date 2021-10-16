@@ -15,6 +15,7 @@ kotlin {
                 api(libs.wire.runtime)
                 implementation(libs.sqldelight.runtime)
                 implementation(libs.sqldelight.coroutines)
+                api(projects.devicemanagement.common)
             }
         }
         val androidMain by getting {

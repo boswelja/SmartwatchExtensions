@@ -1,4 +1,4 @@
-package com.boswelja.smartwatchextensions.watchmanager
+package com.boswelja.smartwatchextensions.devicemanagement
 
 /**
  * Definitions for different watch capabilities
