@@ -21,6 +21,7 @@ import com.boswelja.smartwatchextensions.watchmanager.WatchManager
 import com.boswelja.watchconnection.common.Watch
 import com.boswelja.watchconnection.common.discovery.ConnectionMode
 import com.boswelja.watchconnection.common.message.Message
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.collect
@@ -43,7 +44,7 @@ class AppManagerViewModel internal constructor(
     @Suppress("unused")
     constructor(application: Application) : this(
         application,
-        WatchAppDbRepository(WatchAppDatabaseLoader(application).createDatabase()),
+        WatchAppDbRepository(WatchAppDatabaseLoader(application).createDatabase(), Dispatchers.IO),
         WatchManager.getInstance(application)
     )
 

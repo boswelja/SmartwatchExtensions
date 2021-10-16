@@ -11,6 +11,7 @@ import androidx.work.WorkerParameters
 import androidx.work.workDataOf
 import com.boswelja.smartwatchextensions.appmanager.database.WatchAppDatabaseLoader
 import com.boswelja.watchconnection.common.Watch
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import java.util.UUID
@@ -25,7 +26,7 @@ actual abstract class BaseAppCacheUpdateWorker(
 ) : CoroutineWorker(context, workerParams) {
 
     private val appRepository: WatchAppRepository by lazy {
-        WatchAppDbRepository(WatchAppDatabaseLoader(applicationContext).createDatabase())
+        WatchAppDbRepository(WatchAppDatabaseLoader(applicationContext).createDatabase(), Dispatchers.IO)
     }
 
     actual abstract suspend fun onSendCacheState(

@@ -5,15 +5,16 @@ import com.boswelja.smartwatchextensions.appmanager.database.WatchAppDb
 import com.squareup.sqldelight.runtime.coroutines.asFlow
 import com.squareup.sqldelight.runtime.coroutines.mapToList
 import com.squareup.sqldelight.runtime.coroutines.mapToOne
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 
 class WatchAppDbRepository(
-    private val database: WatchAppDatabase
+    private val database: WatchAppDatabase,
+    private val dispatcher: CoroutineDispatcher
 ) : WatchAppRepository {
     override suspend fun updateAll(apps: List<WatchAppDetails>) {
-        withContext(Dispatchers.IO) {
+        withContext(dispatcher) {
             database.watchAppQueries.transaction {
                 apps.forEach { app ->
                     database.watchAppQueries.insert(
@@ -38,13 +39,13 @@ class WatchAppDbRepository(
     }
 
     override suspend fun deleteFor(watchId: String) {
-        withContext(Dispatchers.IO) {
+        withContext(dispatcher) {
             database.watchAppQueries.removeFor(watchId)
         }
     }
 
     override suspend fun delete(watchId: String, packageName: String) {
-        withContext(Dispatchers.IO) {
+        withContext(dispatcher) {
             database.watchAppQueries.remove(watchId, packageName)
         }
     }
