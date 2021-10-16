@@ -6,7 +6,7 @@ import androidx.core.content.getSystemService
 import com.boswelja.smartwatchextensions.BuildConfig
 import com.boswelja.smartwatchextensions.capability.CapabilityUpdater
 import com.boswelja.smartwatchextensions.common.EmptySerializer
-import com.boswelja.smartwatchextensions.common.connection.Messages.REQUEST_UPDATE_CAPABILITIES
+import com.boswelja.smartwatchextensions.devicemanagement.REQUEST_UPDATE_CAPABILITIES
 import com.boswelja.smartwatchextensions.devicemanagement.RESET_APP
 import com.boswelja.smartwatchextensions.discoveryClient
 import com.boswelja.smartwatchextensions.dndsync.REQUEST_SDK_INT_PATH
