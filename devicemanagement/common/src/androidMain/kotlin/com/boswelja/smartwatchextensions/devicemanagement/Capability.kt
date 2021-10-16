@@ -1,6 +1,6 @@
 package com.boswelja.smartwatchextensions.devicemanagement
 
-import com.boswelja.smartwatchextensions.watchmanager.common.R
+import com.boswelja.smartwatchextensions.devicemanagement.common.R
 
 /**
  * Get the label string resource associated with this capability.
