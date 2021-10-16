@@ -3,10 +3,10 @@ package com.boswelja.smartwatchextensions.batterysync.ui
 import android.os.Build
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.boswelja.smartwatchextensions.common.connection.Capability
 import com.boswelja.smartwatchextensions.settings.BoolSettingKeys.BATTERY_PHONE_LOW_NOTI_KEY
 import com.boswelja.smartwatchextensions.settings.BoolSettingKeys.BATTERY_WATCH_LOW_NOTI_KEY
 import com.boswelja.smartwatchextensions.settings.IntSettingKeys.BATTERY_LOW_THRESHOLD_KEY
+import com.boswelja.smartwatchextensions.watchmanager.Capability
 import com.boswelja.smartwatchextensions.watchmanager.WatchManager
 import com.boswelja.watchconnection.common.Watch
 import io.mockk.MockKAnnotations
