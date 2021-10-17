@@ -45,13 +45,13 @@ class WatchInfoViewModel(
      * Forgets the current watch.
      */
     suspend fun forgetWatch(watch: Watch) {
-        watchManager.forgetWatch(getApplication(), watch)
+        watchManager.forgetWatch(getApplication<Application>(), watch)
     }
 
     /**
      * Resets the current watch preferences.
      */
     suspend fun resetWatchPreferences(watch: Watch) {
-        watchManager.resetWatchPreferences(getApplication(), watch)
+        watchManager.resetWatchPreferences(getApplication<Application>(), watch)
     }
 }

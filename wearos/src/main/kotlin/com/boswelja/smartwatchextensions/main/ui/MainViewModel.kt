@@ -7,13 +7,22 @@ import androidx.lifecycle.viewModelScope
 import com.boswelja.smartwatchextensions.PhoneState
 import com.boswelja.smartwatchextensions.capability.CapabilityUpdater
 import com.boswelja.smartwatchextensions.phoneStateStore
+import com.boswelja.watchconnection.wear.discovery.DiscoveryClient
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import org.kodein.di.DI
+import org.kodein.di.DIAware
+import org.kodein.di.android.closestDI
+import org.kodein.di.instance
 
 class MainViewModel internal constructor(
     application: Application,
     dataStore: DataStore<PhoneState>
-) : AndroidViewModel(application) {
+) : AndroidViewModel(application), DIAware {
+
+    override val di: DI by closestDI(application)
+
+    private val discoveryClient: DiscoveryClient by instance()
 
     @Suppress("unused")
     constructor(application: Application) : this(
@@ -25,7 +34,7 @@ class MainViewModel internal constructor(
 
     init {
         viewModelScope.launch {
-            CapabilityUpdater(application).updateCapabilities()
+            CapabilityUpdater(application, discoveryClient).updateCapabilities()
         }
     }
 }
