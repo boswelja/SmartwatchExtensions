@@ -24,7 +24,6 @@ import kotlin.math.floor
 
 class ManageSpaceViewModel internal constructor(
     application: Application,
-    private val watchManager: WatchManager,
     private val appSettingsDataStore: DataStore<Settings>,
     private val coroutineDispatcher: CoroutineDispatcher
 ) : AndroidViewModel(application), DIAware {
@@ -32,12 +31,12 @@ class ManageSpaceViewModel internal constructor(
     override val di: DI by closestDI()
 
     private val analytics: Analytics by instance()
+    private val watchManager: WatchManager by instance()
     private var registeredWatches: List<Watch>? = null
 
     @Suppress("unused")
     constructor(application: Application) : this(
         application,
-        WatchManager.getInstance(application),
         application.appSettingsStore,
         Dispatchers.IO
     )

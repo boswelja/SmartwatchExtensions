@@ -8,20 +8,21 @@ import com.boswelja.smartwatchextensions.devicemanagement.Capability
 import com.boswelja.smartwatchextensions.devicemanagement.WatchManager
 import com.boswelja.watchconnection.common.Watch
 import kotlinx.coroutines.launch
+import org.kodein.di.DI
+import org.kodein.di.DIAware
+import org.kodein.di.android.x.closestDI
+import org.kodein.di.instance
 import timber.log.Timber
 
-class WatchInfoViewModel internal constructor(
-    application: Application,
-    private val watchManager: WatchManager
-) : AndroidViewModel(application) {
+class WatchInfoViewModel(
+    application: Application
+) : AndroidViewModel(application), DIAware {
+
+    override val di: DI by closestDI()
+
+    private val watchManager: WatchManager by instance()
 
     val watchCapabilities = mutableStateListOf<Capability>()
-
-    @Suppress("unused")
-    constructor(application: Application) : this(
-        application,
-        WatchManager.getInstance(application)
-    )
 
     /**
      * Updates [Watch.name] in the database for the current watch.

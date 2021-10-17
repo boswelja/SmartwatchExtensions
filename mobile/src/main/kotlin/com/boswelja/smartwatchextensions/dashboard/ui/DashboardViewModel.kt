@@ -19,18 +19,17 @@ import org.kodein.di.instance
 @OptIn(ExperimentalCoroutinesApi::class)
 class DashboardViewModel internal constructor(
     application: Application,
-    private val watchManager: WatchManager,
     private val batteryStatsRepository: BatteryStatsRepository
 ) : AndroidViewModel(application), DIAware {
 
     override val di: DI by closestDI()
 
     private val appRepository: WatchAppRepository by instance()
+    private val watchManager: WatchManager by instance()
 
     @Suppress("unused")
     constructor(application: Application) : this(
         application,
-        WatchManager.getInstance(application),
         BatteryStatsRepositoryLoader.getInstance(application)
     )
 

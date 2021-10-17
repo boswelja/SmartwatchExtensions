@@ -13,18 +13,24 @@ import com.boswelja.smartwatchextensions.settings.BoolSettingKeys.DND_SYNC_WITH_
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import org.kodein.di.DI
+import org.kodein.di.DIAware
+import org.kodein.di.android.x.closestDI
+import org.kodein.di.instance
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class DnDSyncSettingsViewModel internal constructor(
     application: Application,
-    val watchManager: WatchManager,
     private val notificationManager: NotificationManager
-) : AndroidViewModel(application) {
+) : AndroidViewModel(application), DIAware {
+
+    override val di: DI by closestDI()
+
+    val watchManager: WatchManager by instance()
 
     @Suppress("unused")
     constructor(application: Application) : this(
         application,
-        WatchManager.getInstance(application),
         application.getSystemService<NotificationManager>()!!
     )
 

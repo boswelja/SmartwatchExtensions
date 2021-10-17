@@ -26,11 +26,18 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.launch
+import org.kodein.di.DI
+import org.kodein.di.DIAware
+import org.kodein.di.android.closestDI
+import org.kodein.di.instance
 import timber.log.Timber
 
-class SeparationObserverService : LifecycleService() {
+class SeparationObserverService : LifecycleService(), DIAware {
 
-    private val watchManager by lazy { WatchManager.getInstance(this) }
+    override val di: DI by closestDI()
+
+    private val watchManager: WatchManager by instance()
+
     private val hasSentNotiMap = hashMapOf<String, Boolean>()
     private var statusCollectorJob: Job? = null
 

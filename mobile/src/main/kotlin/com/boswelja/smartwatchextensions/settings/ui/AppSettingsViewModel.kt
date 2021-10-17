@@ -22,13 +22,13 @@ import org.kodein.di.instance
 
 class AppSettingsViewModel internal constructor(
     application: Application,
-    private val dataStore: DataStore<Settings>,
-    private val watchManager: WatchManager
+    private val dataStore: DataStore<Settings>
 ) : AndroidViewModel(application), DIAware {
 
     override val di: DI by closestDI()
 
     private val analytics: Analytics by instance()
+    private val watchManager: WatchManager by instance()
 
     val analyticsEnabled = dataStore.data.map { it.analyticsEnabled }
     val registeredWatches = watchManager.registeredWatches
@@ -47,8 +47,7 @@ class AppSettingsViewModel internal constructor(
     @Suppress("unused")
     constructor(application: Application) : this(
         application,
-        application.appSettingsStore,
-        WatchManager.getInstance(application)
+        application.appSettingsStore
     )
 
     fun setAnalyticsEnabled(analyticsEnabled: Boolean) {

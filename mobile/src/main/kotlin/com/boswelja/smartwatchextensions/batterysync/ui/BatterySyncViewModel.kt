@@ -25,19 +25,25 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
+import org.kodein.di.DI
+import org.kodein.di.DIAware
+import org.kodein.di.android.x.closestDI
+import org.kodein.di.instance
 import timber.log.Timber
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class BatterySyncViewModel internal constructor(
     application: Application,
-    private val watchManager: WatchManager,
     private val dispatcher: CoroutineDispatcher
-) : AndroidViewModel(application) {
+) : AndroidViewModel(application), DIAware {
+
+    override val di: DI by closestDI()
+
+    private val watchManager: WatchManager by instance()
 
     @Suppress("unused")
     constructor(application: Application) : this(
         application,
-        WatchManager.getInstance(application),
         Dispatchers.IO
     )
 

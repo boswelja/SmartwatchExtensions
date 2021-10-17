@@ -8,6 +8,7 @@ import com.boswelja.smartwatchextensions.analytics.LoggingAnalytics
 import com.boswelja.smartwatchextensions.appmanager.CacheValidationSerializer
 import com.boswelja.smartwatchextensions.appmanager.appManagerModule
 import com.boswelja.smartwatchextensions.batterysync.BatteryStatsSerializer
+import com.boswelja.smartwatchextensions.devicemanagement.WatchManager
 import com.boswelja.smartwatchextensions.devicemanagement.deviceManagementModule
 import com.boswelja.smartwatchextensions.dndsync.DnDStatusSerializer
 import com.boswelja.smartwatchextensions.messages.messagesModule
@@ -64,6 +65,17 @@ class MainApplication : Application(), DIAware {
             } else {
                 FirebaseAnalytics()
             }
+        }
+        bind<WatchManager>() with singleton {
+            WatchManager(
+                instance(),
+                instance(),
+                instance(),
+                instance(),
+                instance(),
+                instance(),
+                instance()
+            )
         }
     }
 

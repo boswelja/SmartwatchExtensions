@@ -37,19 +37,13 @@ import timber.log.Timber
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class AppManagerViewModel internal constructor(
-    application: Application,
-    private val watchManager: WatchManager
+    application: Application
 ) : AndroidViewModel(application), DIAware {
 
     override val di: DI by closestDI()
 
     private val appRepository: WatchAppRepository by instance()
-
-    @Suppress("unused")
-    constructor(application: Application) : this(
-        application,
-        WatchManager.getInstance(application)
-    )
+    private val watchManager: WatchManager by instance()
 
     @OptIn(FlowPreview::class)
     private val allApps = watchManager.selectedWatch.flatMapLatest { watch ->

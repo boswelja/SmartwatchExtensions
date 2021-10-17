@@ -9,7 +9,6 @@ import com.boswelja.smartwatchextensions.appmanager.AppCacheUpdateWorker
 import com.boswelja.smartwatchextensions.appmanager.BaseAppCacheUpdateWorker
 import com.boswelja.smartwatchextensions.batterysync.BatteryStatsRepository
 import com.boswelja.smartwatchextensions.batterysync.BatteryStatsRepositoryLoader
-import com.boswelja.smartwatchextensions.common.SingletonHolder
 import com.boswelja.smartwatchextensions.settings.BoolSetting
 import com.boswelja.smartwatchextensions.settings.IntSetting
 import com.boswelja.smartwatchextensions.settings.RESET_SETTINGS
@@ -30,27 +29,20 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.withContext
-import org.kodein.di.DI
-import org.kodein.di.DIAware
-import org.kodein.di.android.closestDI
-import org.kodein.di.instance
 
 /**
  * Provides a simplified interface for interacting with all watch-related classes.
  */
 @OptIn(ExperimentalCoroutinesApi::class)
 class WatchManager(
-    private val context: Context
-) : DIAware {
-
-    override val di: DI by closestDI(context)
-
-    private val analytics: Analytics by instance()
-    private val messageClient: MessageClient by instance()
-    private val discoveryClient: DiscoveryClient by instance()
-    private val watchRepository: WatchRepository by instance()
-    private val selectedWatchManager: SelectedWatchManager by instance()
-    val settingsRepository: WatchSettingsRepository by instance()
+    private val context: Context,
+    private val analytics: Analytics,
+    private val messageClient: MessageClient,
+    private val discoveryClient: DiscoveryClient,
+    private val watchRepository: WatchRepository,
+    private val selectedWatchManager: SelectedWatchManager,
+    val settingsRepository: WatchSettingsRepository
+) {
 
     val registeredWatches: Flow<List<Watch>> = watchRepository.registeredWatches
 
@@ -245,6 +237,4 @@ class WatchManager(
     fun incomingMessages() = messageClient.rawIncomingMessages()
     fun <T> incomingMessages(serializer: MessageSerializer<T>) =
         messageClient.incomingMessages(serializer)
-
-    companion object : SingletonHolder<WatchManager, Context>(::WatchManager)
 }

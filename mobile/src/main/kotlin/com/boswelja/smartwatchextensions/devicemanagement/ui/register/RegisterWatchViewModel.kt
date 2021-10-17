@@ -8,21 +8,22 @@ import com.boswelja.smartwatchextensions.devicemanagement.WatchManager
 import com.boswelja.watchconnection.common.Watch
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import org.kodein.di.DI
+import org.kodein.di.DIAware
+import org.kodein.di.android.x.closestDI
+import org.kodein.di.instance
 import timber.log.Timber
 
 /**
  * A ViewModel for handling the discovery and registration of watches.
  */
-class RegisterWatchViewModel internal constructor(
-    application: Application,
-    private val watchManager: WatchManager
-) : AndroidViewModel(application) {
+class RegisterWatchViewModel(
+    application: Application
+) : AndroidViewModel(application), DIAware {
 
-    @Suppress("unused")
-    constructor(application: Application) : this(
-        application,
-        WatchManager.getInstance(application)
-    )
+    override val di: DI by closestDI()
+
+    private val watchManager: WatchManager by instance()
 
     var discoveredWatches = mutableStateListOf<Watch>()
 
