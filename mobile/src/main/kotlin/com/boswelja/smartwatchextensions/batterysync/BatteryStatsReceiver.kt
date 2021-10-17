@@ -11,8 +11,10 @@ import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.batterysync.Utils.BATTERY_STATS_NOTI_CHANNEL_ID
 import com.boswelja.smartwatchextensions.batterysync.quicksettings.WatchBatteryTileService
 import com.boswelja.smartwatchextensions.common.WatchWidgetProvider
+import com.boswelja.smartwatchextensions.devicemanagement.WatchRepository
 import com.boswelja.smartwatchextensions.main.ui.MainActivity
 import com.boswelja.smartwatchextensions.messages.Message
+import com.boswelja.smartwatchextensions.messages.MessagesRepository
 import com.boswelja.smartwatchextensions.messages.sendMessage
 import com.boswelja.smartwatchextensions.settings.BoolSettingKeys.BATTERY_CHARGED_NOTI_SENT
 import com.boswelja.smartwatchextensions.settings.BoolSettingKeys.BATTERY_LOW_NOTI_SENT
@@ -20,49 +22,39 @@ import com.boswelja.smartwatchextensions.settings.BoolSettingKeys.BATTERY_WATCH_
 import com.boswelja.smartwatchextensions.settings.BoolSettingKeys.BATTERY_WATCH_LOW_NOTI_KEY
 import com.boswelja.smartwatchextensions.settings.IntSettingKeys.BATTERY_CHARGE_THRESHOLD_KEY
 import com.boswelja.smartwatchextensions.settings.IntSettingKeys.BATTERY_LOW_THRESHOLD_KEY
-import com.boswelja.smartwatchextensions.settings.WatchSettingsDbRepository
 import com.boswelja.smartwatchextensions.settings.WatchSettingsRepository
-import com.boswelja.smartwatchextensions.settings.database.WatchSettingsDatabaseLoader
-import com.boswelja.smartwatchextensions.watchmanager.WatchDbRepository
-import com.boswelja.smartwatchextensions.watchmanager.WatchRepository
-import com.boswelja.smartwatchextensions.watchmanager.database.RegisteredWatchDatabaseLoader
 import com.boswelja.watchconnection.common.Watch
-import com.boswelja.watchconnection.core.discovery.DiscoveryClient
-import com.boswelja.watchconnection.wearos.discovery.WearOSDiscoveryPlatform
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.withContext
+import org.kodein.di.DIAware
+import org.kodein.di.LateInitDI
+import org.kodein.di.instance
 import timber.log.Timber
 import java.util.Locale
 
 private const val BATTERY_CHARGED_NOTI_ID = 408565
 private const val BATTERY_LOW_NOTI_ID = 408566
 
-class BatteryStatsReceiver : BaseBatteryStatsReceiver() {
+class BatteryStatsReceiver : BaseBatteryStatsReceiver(), DIAware {
 
-    private lateinit var settingsRepository: WatchSettingsRepository
+    override val di = LateInitDI()
+
+    private val messagesRepository: MessagesRepository by instance()
+    private val watchRepository: WatchRepository by instance()
+    private val settingsRepository: WatchSettingsRepository by instance()
 
     override suspend fun onBatteryStatsReceived(
         context: Context,
         sourceUid: String,
         batteryStats: BatteryStats
     ) {
+        di.baseDI = (context.applicationContext as DIAware).di
+        // TODO This can be optimised
         withContext(Dispatchers.IO) {
-            val watchRepository: WatchRepository =
-                WatchDbRepository(
-                    DiscoveryClient(
-                        listOf(
-                            WearOSDiscoveryPlatform(context)
-                        )
-                    ),
-                    RegisteredWatchDatabaseLoader(context).createDatabase()
-                )
             watchRepository.getWatchById(sourceUid).firstOrNull()?.let { watch ->
                 val notificationManager = context.getSystemService<NotificationManager>()!!
-                settingsRepository = WatchSettingsDbRepository(
-                    WatchSettingsDatabaseLoader(context).createDatabase()
-                )
                 if (batteryStats.charging) {
                     dismissLowNoti(
                         notificationManager,
@@ -148,7 +140,8 @@ class BatteryStatsReceiver : BaseBatteryStatsReceiver() {
                         context.getString(R.string.battery_charge_noti_issue_title),
                         context.getString(R.string.battery_charge_noti_issue_summary),
                         Message.Action.NOTIFICATION_SETTINGS
-                    )
+                    ),
+                    repository = messagesRepository
                 )
             }
             settingsRepository.putBoolean(watch.uid, BATTERY_CHARGED_NOTI_SENT, true)
@@ -209,7 +202,8 @@ class BatteryStatsReceiver : BaseBatteryStatsReceiver() {
                         context.getString(R.string.battery_low_noti_issue_title),
                         context.getString(R.string.battery_low_noti_issue_summary),
                         Message.Action.NOTIFICATION_SETTINGS
-                    )
+                    ),
+                    repository = messagesRepository
                 )
             }
             settingsRepository.putBoolean(watch.uid, BATTERY_LOW_NOTI_SENT, true)

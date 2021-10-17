@@ -13,11 +13,9 @@ import com.boswelja.smartwatchextensions.appmanager.REQUEST_OPEN_PACKAGE
 import com.boswelja.smartwatchextensions.appmanager.REQUEST_UNINSTALL_PACKAGE
 import com.boswelja.smartwatchextensions.appmanager.VALIDATE_CACHE
 import com.boswelja.smartwatchextensions.appmanager.WatchApp
-import com.boswelja.smartwatchextensions.appmanager.WatchAppDbRepository
 import com.boswelja.smartwatchextensions.appmanager.WatchAppDetails
 import com.boswelja.smartwatchextensions.appmanager.WatchAppRepository
-import com.boswelja.smartwatchextensions.appmanager.database.WatchAppDatabaseLoader
-import com.boswelja.smartwatchextensions.watchmanager.WatchManager
+import com.boswelja.smartwatchextensions.devicemanagement.WatchManager
 import com.boswelja.watchconnection.common.Watch
 import com.boswelja.watchconnection.common.discovery.ConnectionMode
 import com.boswelja.watchconnection.common.message.Message
@@ -31,21 +29,21 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.launch
+import org.kodein.di.DI
+import org.kodein.di.DIAware
+import org.kodein.di.android.x.closestDI
+import org.kodein.di.instance
 import timber.log.Timber
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class AppManagerViewModel internal constructor(
-    application: Application,
-    private val appRepository: WatchAppRepository,
-    private val watchManager: WatchManager
-) : AndroidViewModel(application) {
+    application: Application
+) : AndroidViewModel(application), DIAware {
 
-    @Suppress("unused")
-    constructor(application: Application) : this(
-        application,
-        WatchAppDbRepository(WatchAppDatabaseLoader(application).createDatabase()),
-        WatchManager.getInstance(application)
-    )
+    override val di: DI by closestDI()
+
+    private val appRepository: WatchAppRepository by instance()
+    private val watchManager: WatchManager by instance()
 
     @OptIn(FlowPreview::class)
     private val allApps = watchManager.selectedWatch.flatMapLatest { watch ->

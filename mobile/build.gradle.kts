@@ -85,6 +85,8 @@ dependencies {
     implementation(libs.timber)
     implementation(libs.watchconnection.platform.wearos)
 
+    implementation(libs.kodein.androidx)
+
     implementation(libs.bundles.compose.mobile)
 
     testImplementation(libs.androidx.work.test)

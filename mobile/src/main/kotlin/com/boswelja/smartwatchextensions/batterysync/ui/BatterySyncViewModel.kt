@@ -5,11 +5,11 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.boswelja.smartwatchextensions.batterysync.BaseBatterySyncWorker
 import com.boswelja.smartwatchextensions.batterysync.BatteryStatsRepository
-import com.boswelja.smartwatchextensions.batterysync.BatteryStatsRepositoryLoader
 import com.boswelja.smartwatchextensions.batterysync.BatterySyncWorker
 import com.boswelja.smartwatchextensions.batterysync.quicksettings.WatchBatteryTileService
 import com.boswelja.smartwatchextensions.common.WatchWidgetProvider
 import com.boswelja.smartwatchextensions.devicemanagement.Capability
+import com.boswelja.smartwatchextensions.devicemanagement.WatchManager
 import com.boswelja.smartwatchextensions.settings.BoolSettingKeys.BATTERY_PHONE_CHARGE_NOTI_KEY
 import com.boswelja.smartwatchextensions.settings.BoolSettingKeys.BATTERY_PHONE_LOW_NOTI_KEY
 import com.boswelja.smartwatchextensions.settings.BoolSettingKeys.BATTERY_SYNC_ENABLED_KEY
@@ -17,7 +17,6 @@ import com.boswelja.smartwatchextensions.settings.BoolSettingKeys.BATTERY_WATCH_
 import com.boswelja.smartwatchextensions.settings.BoolSettingKeys.BATTERY_WATCH_LOW_NOTI_KEY
 import com.boswelja.smartwatchextensions.settings.IntSettingKeys.BATTERY_CHARGE_THRESHOLD_KEY
 import com.boswelja.smartwatchextensions.settings.IntSettingKeys.BATTERY_LOW_THRESHOLD_KEY
-import com.boswelja.smartwatchextensions.watchmanager.WatchManager
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -25,24 +24,28 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
+import org.kodein.di.DI
+import org.kodein.di.DIAware
+import org.kodein.di.android.x.closestDI
+import org.kodein.di.instance
 import timber.log.Timber
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class BatterySyncViewModel internal constructor(
     application: Application,
-    private val watchManager: WatchManager,
     private val dispatcher: CoroutineDispatcher
-) : AndroidViewModel(application) {
+) : AndroidViewModel(application), DIAware {
+
+    override val di: DI by closestDI()
+
+    private val watchManager: WatchManager by instance()
+    private val repository: BatteryStatsRepository by instance()
 
     @Suppress("unused")
     constructor(application: Application) : this(
         application,
-        WatchManager.getInstance(application),
         Dispatchers.IO
     )
-
-    private val repository: BatteryStatsRepository =
-        BatteryStatsRepositoryLoader.getInstance(application)
 
     val batterySyncEnabled = watchManager.getBoolSetting(BATTERY_SYNC_ENABLED_KEY)
     val phoneChargeNotiEnabled = watchManager.getBoolSetting(BATTERY_PHONE_CHARGE_NOTI_KEY)

@@ -9,10 +9,13 @@ import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
 import androidx.work.workDataOf
-import com.boswelja.smartwatchextensions.appmanager.database.WatchAppDatabaseLoader
 import com.boswelja.watchconnection.common.Watch
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
+import org.kodein.di.DI
+import org.kodein.di.DIAware
+import org.kodein.di.android.closestDI
+import org.kodein.di.instance
 import java.util.UUID
 import java.util.concurrent.TimeUnit
 
@@ -22,11 +25,11 @@ import java.util.concurrent.TimeUnit
 actual abstract class BaseAppCacheUpdateWorker(
     context: Context,
     workerParams: WorkerParameters
-) : CoroutineWorker(context, workerParams) {
+) : CoroutineWorker(context, workerParams), DIAware {
 
-    private val appRepository: WatchAppRepository by lazy {
-        WatchAppDbRepository(WatchAppDatabaseLoader(applicationContext).createDatabase())
-    }
+    override val di: DI by closestDI(context)
+
+    private val appRepository: WatchAppRepository by instance()
 
     actual abstract suspend fun onSendCacheState(
         targetUid: String,

@@ -15,6 +15,7 @@ kotlin {
                 api(libs.wire.runtime)
                 implementation(libs.sqldelight.runtime)
                 implementation(libs.sqldelight.coroutines)
+                implementation(libs.kodein.core)
                 api(projects.devicemanagement.common)
             }
         }
@@ -51,6 +52,6 @@ wire {
 
 sqldelight {
     database("RegisteredWatchDatabase") {
-        packageName = "com.boswelja.smartwatchextensions.watchmanager.database"
+        packageName = "com.boswelja.smartwatchextensions.devicemanagement.database"
     }
 }

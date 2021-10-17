@@ -2,33 +2,29 @@ package com.boswelja.smartwatchextensions.dashboard.ui
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
-import com.boswelja.smartwatchextensions.appmanager.WatchAppDbRepository
 import com.boswelja.smartwatchextensions.appmanager.WatchAppRepository
-import com.boswelja.smartwatchextensions.appmanager.database.WatchAppDatabaseLoader
 import com.boswelja.smartwatchextensions.batterysync.BatteryStatsRepository
-import com.boswelja.smartwatchextensions.batterysync.BatteryStatsRepositoryLoader
-import com.boswelja.smartwatchextensions.watchmanager.WatchManager
+import com.boswelja.smartwatchextensions.devicemanagement.WatchManager
 import com.boswelja.watchconnection.common.discovery.ConnectionMode
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
+import org.kodein.di.DI
+import org.kodein.di.DIAware
+import org.kodein.di.android.x.closestDI
+import org.kodein.di.instance
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class DashboardViewModel internal constructor(
-    application: Application,
-    private val watchManager: WatchManager,
-    private val batteryStatsRepository: BatteryStatsRepository,
-    private val appRepository: WatchAppRepository
-) : AndroidViewModel(application) {
+class DashboardViewModel(
+    application: Application
+) : AndroidViewModel(application), DIAware {
 
-    @Suppress("unused")
-    constructor(application: Application) : this(
-        application,
-        WatchManager.getInstance(application),
-        BatteryStatsRepositoryLoader.getInstance(application),
-        WatchAppDbRepository(WatchAppDatabaseLoader(application).createDatabase())
-    )
+    override val di: DI by closestDI()
+
+    private val batteryStatsRepository: BatteryStatsRepository by instance()
+    private val appRepository: WatchAppRepository by instance()
+    private val watchManager: WatchManager by instance()
 
     val status = watchManager.selectedWatch.flatMapLatest { watch ->
         watch?.let {

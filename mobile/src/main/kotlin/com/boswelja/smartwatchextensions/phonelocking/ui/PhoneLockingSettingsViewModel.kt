@@ -3,9 +3,9 @@ package com.boswelja.smartwatchextensions.phonelocking.ui
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import com.boswelja.smartwatchextensions.devicemanagement.WatchManager
 import com.boswelja.smartwatchextensions.phonelocking.Utils.isAccessibilityServiceEnabled
 import com.boswelja.smartwatchextensions.settings.BoolSettingKeys.PHONE_LOCKING_ENABLED_KEY
-import com.boswelja.smartwatchextensions.watchmanager.WatchManager
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -13,12 +13,19 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
+import org.kodein.di.DI
+import org.kodein.di.DIAware
+import org.kodein.di.android.x.closestDI
+import org.kodein.di.instance
 
 class PhoneLockingSettingsViewModel internal constructor(
     application: Application,
-    private val dispatcher: CoroutineDispatcher,
-    private val watchManager: WatchManager
-) : AndroidViewModel(application) {
+    private val dispatcher: CoroutineDispatcher
+) : AndroidViewModel(application), DIAware {
+
+    override val di: DI by closestDI()
+
+    private val watchManager: WatchManager by instance()
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val phoneLockingEnabled = watchManager.selectedWatch.flatMapLatest {
@@ -30,8 +37,7 @@ class PhoneLockingSettingsViewModel internal constructor(
     @Suppress("unused")
     constructor(application: Application) : this(
         application,
-        Dispatchers.IO,
-        WatchManager.getInstance(application)
+        Dispatchers.IO
     )
 
     fun setPhoneLockingEnabled(isEnabled: Boolean): Boolean {

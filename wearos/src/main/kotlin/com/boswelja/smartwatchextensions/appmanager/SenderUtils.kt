@@ -1,8 +1,6 @@
 package com.boswelja.smartwatchextensions.appmanager
 
 import android.content.Context
-import com.boswelja.smartwatchextensions.discoveryClient
-import com.boswelja.smartwatchextensions.messageClient
 import com.boswelja.watchconnection.common.message.Message
 import com.boswelja.watchconnection.wear.discovery.DiscoveryClient
 import com.boswelja.watchconnection.wear.message.MessageClient
@@ -12,10 +10,8 @@ import com.boswelja.watchconnection.wear.message.MessageClient
  * @param messageClient The [MessageClient] instance to use.
  */
 suspend fun Context.sendAllApps(
-    messageClient: MessageClient = messageClient(
-        listOf(AppListSerializer)
-    ),
-    discoveryClient: DiscoveryClient = discoveryClient()
+    messageClient: MessageClient,
+    discoveryClient: DiscoveryClient
 ) {
     val pairedPhone = discoveryClient.pairedPhone()!!
 

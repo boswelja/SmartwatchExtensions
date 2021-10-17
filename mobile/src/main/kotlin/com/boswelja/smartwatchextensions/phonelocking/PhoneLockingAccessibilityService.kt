@@ -2,8 +2,8 @@ package com.boswelja.smartwatchextensions.phonelocking
 
 import android.accessibilityservice.AccessibilityService
 import android.view.accessibility.AccessibilityEvent
+import com.boswelja.smartwatchextensions.devicemanagement.WatchManager
 import com.boswelja.smartwatchextensions.settings.BoolSettingKeys.PHONE_LOCKING_ENABLED_KEY
-import com.boswelja.smartwatchextensions.watchmanager.WatchManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -13,15 +13,19 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.kodein.di.DI
+import org.kodein.di.DIAware
+import org.kodein.di.android.closestDI
+import org.kodein.di.instance
 import timber.log.Timber
 
 @ExperimentalCoroutinesApi
-class PhoneLockingAccessibilityService : AccessibilityService() {
+class PhoneLockingAccessibilityService : AccessibilityService(), DIAware {
+
+    override val di: DI by closestDI()
 
     private val coroutineScope = CoroutineScope(Dispatchers.IO)
-    private val watchManager: WatchManager by lazy {
-        WatchManager.getInstance(this)
-    }
+    private val watchManager: WatchManager by instance()
 
     private var isStopping = false
 

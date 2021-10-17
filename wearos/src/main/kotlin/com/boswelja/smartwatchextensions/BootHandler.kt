@@ -18,10 +18,15 @@ import androidx.work.WorkerParameters
 import com.boswelja.smartwatchextensions.capability.CapabilityUpdater
 import com.boswelja.smartwatchextensions.dndsync.LocalDnDAndTheaterCollectorService
 import com.boswelja.smartwatchextensions.extensions.extensionSettingsStore
+import com.boswelja.watchconnection.wear.discovery.DiscoveryClient
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
+import org.kodein.di.DI
+import org.kodein.di.DIAware
+import org.kodein.di.android.closestDI
+import org.kodein.di.instance
 import timber.log.Timber
 
 class BootHandler : BroadcastReceiver() {
@@ -47,10 +52,14 @@ class BootHandler : BroadcastReceiver() {
 class BootWorker(
     appContext: Context,
     workerParams: WorkerParameters
-) : CoroutineWorker(appContext, workerParams) {
+) : CoroutineWorker(appContext, workerParams), DIAware {
+
+    override val di: DI by closestDI(applicationContext)
+
+    private val discoveryClient: DiscoveryClient by instance()
 
     override suspend fun doWork(): Result {
-        CapabilityUpdater(applicationContext).updateCapabilities()
+        CapabilityUpdater(applicationContext, discoveryClient).updateCapabilities()
         withContext(Dispatchers.IO) {
             val dndSyncToPhone = applicationContext.extensionSettingsStore.data
                 .map { it.dndSyncToPhone }.first()

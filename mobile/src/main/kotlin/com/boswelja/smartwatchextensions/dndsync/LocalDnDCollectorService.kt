@@ -7,10 +7,10 @@ import androidx.core.app.NotificationCompat
 import androidx.core.content.getSystemService
 import androidx.lifecycle.lifecycleScope
 import com.boswelja.smartwatchextensions.NotificationChannelHelper
+import com.boswelja.smartwatchextensions.devicemanagement.WatchManager
 import com.boswelja.smartwatchextensions.dndsync.common.R
 import com.boswelja.smartwatchextensions.main.ui.MainActivity
 import com.boswelja.smartwatchextensions.settings.BoolSettingKeys.DND_SYNC_TO_WATCH_KEY
-import com.boswelja.smartwatchextensions.watchmanager.WatchManager
 import com.boswelja.watchconnection.common.Watch
 import com.boswelja.watchconnection.common.message.Message
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -18,10 +18,16 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import org.kodein.di.DI
+import org.kodein.di.DIAware
+import org.kodein.di.android.closestDI
+import org.kodein.di.instance
 
-class LocalDnDCollectorService : BaseLocalDnDCollectorService() {
+class LocalDnDCollectorService : BaseLocalDnDCollectorService(), DIAware {
 
-    private val watchManager by lazy { WatchManager.getInstance(this) }
+    override val di: DI by closestDI()
+
+    private val watchManager: WatchManager by instance()
 
     private val targetWatches = ArrayList<Watch>()
 

@@ -6,7 +6,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
-import com.boswelja.smartwatchextensions.watchmanager.ui.watchManagerGraph
+import com.boswelja.smartwatchextensions.devicemanagement.ui.watchManagerGraph
 
 enum class SettingsDestination(
     val route: String

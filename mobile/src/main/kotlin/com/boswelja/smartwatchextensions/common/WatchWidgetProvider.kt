@@ -12,9 +12,9 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.batterysync.widget.WatchBatteryWidget
+import com.boswelja.smartwatchextensions.devicemanagement.WatchManager
 import com.boswelja.smartwatchextensions.main.ui.MainActivity
 import com.boswelja.smartwatchextensions.main.ui.MainActivity.Companion.EXTRA_WATCH_ID
-import com.boswelja.smartwatchextensions.watchmanager.WatchManager
 import com.boswelja.smartwatchextensions.widget.widgetIdStore
 import com.boswelja.watchconnection.common.Watch
 import kotlinx.coroutines.CoroutineScope
@@ -22,12 +22,19 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import org.kodein.di.DIAware
+import org.kodein.di.LateInitDI
+import org.kodein.di.instance
 import timber.log.Timber
 
 /**
  * An [AppWidgetProvider] provides the [Watch] from this widget's config.
  */
-abstract class WatchWidgetProvider : AppWidgetProvider() {
+abstract class WatchWidgetProvider : AppWidgetProvider(), DIAware {
+
+    override val di = LateInitDI()
+
+    private val watchManager: WatchManager by instance()
 
     private val coroutineScope = CoroutineScope(Dispatchers.Default)
 
@@ -127,13 +134,15 @@ abstract class WatchWidgetProvider : AppWidgetProvider() {
         width: Int,
         height: Int
     ): RemoteViews {
+        di.baseDI = (context.applicationContext as DIAware).di
+
         // Get watch ID
         val widgetIdStore = context.widgetIdStore
         val watchId = widgetIdStore.data.map { preferences ->
             preferences[stringPreferencesKey(appWidgetId.toString())]
         }.firstOrNull()
         val watch = watchId?.let {
-            WatchManager.getInstance(context)
+            watchManager
                 .getWatchById(watchId)
                 .firstOrNull()
         }

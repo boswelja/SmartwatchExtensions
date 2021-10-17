@@ -3,12 +3,21 @@ package com.boswelja.smartwatchextensions.batterysync
 import android.content.Context
 import com.boswelja.watchconection.common.message.MessageReceiver
 import com.boswelja.watchconnection.common.message.ReceivedMessage
+import org.kodein.di.DIAware
+import org.kodein.di.LateInitDI
+import org.kodein.di.instance
 
 /**
- * A [MessageReceiver] to receive [BatteryStats] and update [BatteryStatsRepository] with the new
+ * A [MessageReceiver] to receive [BatteryStats] and update [BatteryStatsDbRepository] with the new
  * data.
  */
-abstract class BaseBatteryStatsReceiver : MessageReceiver<BatteryStats?>(BatteryStatsSerializer) {
+abstract class BaseBatteryStatsReceiver :
+    MessageReceiver<BatteryStats?>(BatteryStatsSerializer),
+    DIAware {
+
+    override val di = LateInitDI()
+
+    private val batteryStatsRepository: BatteryStatsRepository by instance()
 
     /**
      * Called after battery stats have been saved into the repository.
@@ -26,8 +35,10 @@ abstract class BaseBatteryStatsReceiver : MessageReceiver<BatteryStats?>(Battery
         context: Context,
         message: ReceivedMessage<BatteryStats?>
     ) {
+        di.baseDI = (context.applicationContext as DIAware).di
+
         message.data?.let { batteryStats ->
-            BatteryStatsRepositoryLoader.getInstance(context).updateStatsFor(
+            batteryStatsRepository.updateStatsFor(
                 message.sourceUid,
                 batteryStats
             )

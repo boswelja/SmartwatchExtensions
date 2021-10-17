@@ -30,7 +30,7 @@ import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.appmanager.ui.AppSummarySmall
 import com.boswelja.smartwatchextensions.batterysync.ui.BatterySummarySmall
 import com.boswelja.smartwatchextensions.common.ui.StaggeredVerticalGrid
-import com.boswelja.smartwatchextensions.watchmanager.ui.WatchStatusSummarySmall
+import com.boswelja.smartwatchextensions.devicemanagement.ui.WatchStatusSummarySmall
 import com.boswelja.watchconnection.common.discovery.ConnectionMode
 import kotlinx.coroutines.Dispatchers
 

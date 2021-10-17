@@ -5,18 +5,25 @@ import android.content.Context
 import android.content.Intent
 import android.widget.RemoteViews
 import com.boswelja.smartwatchextensions.R
-import com.boswelja.smartwatchextensions.batterysync.BatteryStatsRepositoryLoader
+import com.boswelja.smartwatchextensions.batterysync.BatteryStatsRepository
 import com.boswelja.smartwatchextensions.batterysync.common.getBatteryDrawableRes
 import com.boswelja.smartwatchextensions.common.WatchWidgetProvider
 import com.boswelja.smartwatchextensions.main.ui.MainActivity
 import com.boswelja.smartwatchextensions.settings.BoolSettingKeys.BATTERY_SYNC_ENABLED_KEY
-import com.boswelja.smartwatchextensions.settings.WatchSettingsDbRepository
-import com.boswelja.smartwatchextensions.settings.database.WatchSettingsDatabaseLoader
+import com.boswelja.smartwatchextensions.settings.WatchSettingsRepository
 import com.boswelja.watchconnection.common.Watch
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
+import org.kodein.di.DIAware
+import org.kodein.di.LateInitDI
+import org.kodein.di.instance
 
-class WatchBatteryWidget : WatchWidgetProvider() {
+class WatchBatteryWidget : WatchWidgetProvider(), DIAware {
+
+    override val di = LateInitDI()
+
+    private val settingsRepository: WatchSettingsRepository by instance()
+    private val batteryStatsRepository: BatteryStatsRepository by instance()
 
     override suspend fun onUpdateView(
         context: Context,
@@ -24,6 +31,8 @@ class WatchBatteryWidget : WatchWidgetProvider() {
         height: Int,
         watch: Watch
     ): RemoteViews {
+        di.baseDI = (context.applicationContext as DIAware).di
+
         val remoteViews = RemoteViews(context.packageName, R.layout.widget_watch_battery)
 
         remoteViews.setTextViewText(R.id.watch_name, watch.name)
@@ -38,11 +47,10 @@ class WatchBatteryWidget : WatchWidgetProvider() {
             remoteViews.setOnClickPendingIntent(R.id.widget_background, it)
         }
 
-        val isBatterySyncEnabled = WatchSettingsDbRepository(
-            WatchSettingsDatabaseLoader(context).createDatabase()
-        ).getBoolean(watch.uid, BATTERY_SYNC_ENABLED_KEY, false).first()
+        val isBatterySyncEnabled = settingsRepository
+            .getBoolean(watch.uid, BATTERY_SYNC_ENABLED_KEY, false).first()
         if (isBatterySyncEnabled) {
-            val batteryPercent = BatteryStatsRepositoryLoader.getInstance(context)
+            val batteryPercent = batteryStatsRepository
                 .batteryStatsFor(watch.uid).firstOrNull()?.percent ?: -1
 
             // Set battery indicator image

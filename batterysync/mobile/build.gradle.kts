@@ -14,6 +14,7 @@ kotlin {
                 api(libs.watchconnection.common)
                 implementation(libs.sqldelight.runtime)
                 implementation(libs.sqldelight.coroutines)
+                implementation(libs.kodein.core)
             }
         }
         val androidMain by getting {

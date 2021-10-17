@@ -7,18 +7,26 @@ import android.graphics.drawable.Icon
 import android.os.Build
 import android.service.quicksettings.Tile
 import com.boswelja.smartwatchextensions.R
-import com.boswelja.smartwatchextensions.batterysync.BatteryStatsRepositoryLoader
+import com.boswelja.smartwatchextensions.batterysync.BatteryStatsRepository
 import com.boswelja.smartwatchextensions.batterysync.common.getBatteryDrawableRes
 import com.boswelja.smartwatchextensions.common.WatchTileService
 import com.boswelja.smartwatchextensions.main.ui.MainActivity
 import com.boswelja.smartwatchextensions.main.ui.MainActivity.Companion.EXTRA_WATCH_ID
 import com.boswelja.smartwatchextensions.settings.BoolSettingKeys.BATTERY_SYNC_ENABLED_KEY
-import com.boswelja.smartwatchextensions.settings.WatchSettingsDbRepository
-import com.boswelja.smartwatchextensions.settings.database.WatchSettingsDatabaseLoader
+import com.boswelja.smartwatchextensions.settings.WatchSettingsRepository
 import com.boswelja.watchconnection.common.Watch
 import kotlinx.coroutines.flow.first
+import org.kodein.di.DI
+import org.kodein.di.DIAware
+import org.kodein.di.android.closestDI
+import org.kodein.di.instance
 
-class WatchBatteryTileService : WatchTileService() {
+class WatchBatteryTileService : WatchTileService(), DIAware {
+
+    override val di: DI by closestDI()
+
+    private val settingsRepository: WatchSettingsRepository by instance()
+    private val batteryStatsRepository: BatteryStatsRepository by instance()
 
     override fun onClick() {
         val intent = Intent(this, MainActivity::class.java).apply {
@@ -50,13 +58,11 @@ class WatchBatteryTileService : WatchTileService() {
             return
         }
 
-        val isBatterySyncEnabled = WatchSettingsDbRepository(
-            WatchSettingsDatabaseLoader(this).createDatabase()
-        ).getBoolean(watch.uid, BATTERY_SYNC_ENABLED_KEY, false).first()
+        val isBatterySyncEnabled = settingsRepository
+            .getBoolean(watch.uid, BATTERY_SYNC_ENABLED_KEY, false).first()
 
         if (isBatterySyncEnabled) {
-            val batteryStats = BatteryStatsRepositoryLoader
-                .getInstance(this@WatchBatteryTileService)
+            val batteryStats = batteryStatsRepository
                 .batteryStatsFor(watch.uid)
                 .first()
 

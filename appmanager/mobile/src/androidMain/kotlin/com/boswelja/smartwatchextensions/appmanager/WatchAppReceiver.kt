@@ -4,10 +4,11 @@ import android.content.Context
 import com.boswelja.smartwatchextensions.appmanager.database.WatchAppDatabaseLoader
 import com.boswelja.watchconection.common.message.MessageReceiver
 import com.boswelja.watchconnection.common.message.ReceivedMessage
+import kotlinx.coroutines.Dispatchers
 
 class WatchAppReceiver : MessageReceiver<AppList>(AppListSerializer) {
     override suspend fun onMessageReceived(context: Context, message: ReceivedMessage<AppList>) {
-        val repository = WatchAppDbRepository(WatchAppDatabaseLoader(context).createDatabase())
+        val repository = WatchAppDbRepository(WatchAppDatabaseLoader(context).createDatabase(), Dispatchers.IO)
         val apps = message.data.apps.map {
             WatchAppDetails(
                 message.sourceUid,

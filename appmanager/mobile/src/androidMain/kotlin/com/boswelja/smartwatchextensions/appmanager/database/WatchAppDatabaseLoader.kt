@@ -3,6 +3,7 @@ package com.boswelja.smartwatchextensions.appmanager.database
 import android.content.Context
 import com.squareup.sqldelight.ColumnAdapter
 import com.squareup.sqldelight.android.AndroidSqliteDriver
+import kotlinx.coroutines.Dispatchers
 
 actual class WatchAppDatabaseLoader(private val context: Context) {
     actual fun createDatabase(): WatchAppDatabase {
@@ -24,3 +25,5 @@ actual class WatchAppDatabaseLoader(private val context: Context) {
         )
     }
 }
+
+actual val DB_DISPATCHER = Dispatchers.IO
