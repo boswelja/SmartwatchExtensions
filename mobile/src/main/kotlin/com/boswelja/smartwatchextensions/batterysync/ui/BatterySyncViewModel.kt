@@ -5,7 +5,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.boswelja.smartwatchextensions.batterysync.BaseBatterySyncWorker
 import com.boswelja.smartwatchextensions.batterysync.BatteryStatsDbRepository
-import com.boswelja.smartwatchextensions.batterysync.BatteryStatsRepositoryLoader
+import com.boswelja.smartwatchextensions.batterysync.BatteryStatsDbRepositoryLoader
 import com.boswelja.smartwatchextensions.batterysync.BatterySyncWorker
 import com.boswelja.smartwatchextensions.batterysync.quicksettings.WatchBatteryTileService
 import com.boswelja.smartwatchextensions.common.WatchWidgetProvider
@@ -48,7 +48,7 @@ class BatterySyncViewModel internal constructor(
     )
 
     private val repository: BatteryStatsDbRepository =
-        BatteryStatsRepositoryLoader.getInstance(application)
+        BatteryStatsDbRepositoryLoader.getInstance(application)
 
     val batterySyncEnabled = watchManager.getBoolSetting(BATTERY_SYNC_ENABLED_KEY)
     val phoneChargeNotiEnabled = watchManager.getBoolSetting(BATTERY_PHONE_CHARGE_NOTI_KEY)

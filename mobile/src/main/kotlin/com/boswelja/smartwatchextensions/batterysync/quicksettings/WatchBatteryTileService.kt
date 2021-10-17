@@ -7,7 +7,7 @@ import android.graphics.drawable.Icon
 import android.os.Build
 import android.service.quicksettings.Tile
 import com.boswelja.smartwatchextensions.R
-import com.boswelja.smartwatchextensions.batterysync.BatteryStatsRepositoryLoader
+import com.boswelja.smartwatchextensions.batterysync.BatteryStatsDbRepositoryLoader
 import com.boswelja.smartwatchextensions.batterysync.common.getBatteryDrawableRes
 import com.boswelja.smartwatchextensions.common.WatchTileService
 import com.boswelja.smartwatchextensions.main.ui.MainActivity
@@ -61,7 +61,7 @@ class WatchBatteryTileService : WatchTileService(), DIAware {
             .getBoolean(watch.uid, BATTERY_SYNC_ENABLED_KEY, false).first()
 
         if (isBatterySyncEnabled) {
-            val batteryStats = BatteryStatsRepositoryLoader
+            val batteryStats = BatteryStatsDbRepositoryLoader
                 .getInstance(this@WatchBatteryTileService)
                 .batteryStatsFor(watch.uid)
                 .first()

@@ -5,7 +5,7 @@ import com.boswelja.smartwatchextensions.batterysync.database.BatteryStatsDataba
 import com.boswelja.smartwatchextensions.batterysync.database.DatabaseDriverFactory
 import kotlinx.coroutines.Dispatchers
 
-object BatteryStatsRepositoryLoader : SingletonHolder<BatteryStatsDbRepository, Context>(
+object BatteryStatsDbRepositoryLoader : SingletonHolder<BatteryStatsDbRepository, Context>(
     {
         val driver = DatabaseDriverFactory(it.applicationContext).createDriver()
         val database = BatteryStatsDatabase(driver)

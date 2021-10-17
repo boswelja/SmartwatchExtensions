@@ -4,7 +4,7 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import com.boswelja.smartwatchextensions.appmanager.WatchAppRepository
 import com.boswelja.smartwatchextensions.batterysync.BatteryStatsDbRepository
-import com.boswelja.smartwatchextensions.batterysync.BatteryStatsRepositoryLoader
+import com.boswelja.smartwatchextensions.batterysync.BatteryStatsDbRepositoryLoader
 import com.boswelja.smartwatchextensions.devicemanagement.WatchManager
 import com.boswelja.watchconnection.common.discovery.ConnectionMode
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -30,7 +30,7 @@ class DashboardViewModel internal constructor(
     @Suppress("unused")
     constructor(application: Application) : this(
         application,
-        BatteryStatsRepositoryLoader.getInstance(application)
+        BatteryStatsDbRepositoryLoader.getInstance(application)
     )
 
     val status = watchManager.selectedWatch.flatMapLatest { watch ->

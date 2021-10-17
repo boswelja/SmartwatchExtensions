@@ -5,7 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.widget.RemoteViews
 import com.boswelja.smartwatchextensions.R
-import com.boswelja.smartwatchextensions.batterysync.BatteryStatsRepositoryLoader
+import com.boswelja.smartwatchextensions.batterysync.BatteryStatsDbRepositoryLoader
 import com.boswelja.smartwatchextensions.batterysync.common.getBatteryDrawableRes
 import com.boswelja.smartwatchextensions.common.WatchWidgetProvider
 import com.boswelja.smartwatchextensions.main.ui.MainActivity
@@ -49,7 +49,7 @@ class WatchBatteryWidget : WatchWidgetProvider(), DIAware {
         val isBatterySyncEnabled = settingsRepository
             .getBoolean(watch.uid, BATTERY_SYNC_ENABLED_KEY, false).first()
         if (isBatterySyncEnabled) {
-            val batteryPercent = BatteryStatsRepositoryLoader.getInstance(context)
+            val batteryPercent = BatteryStatsDbRepositoryLoader.getInstance(context)
                 .batteryStatsFor(watch.uid).firstOrNull()?.percent ?: -1
 
             // Set battery indicator image

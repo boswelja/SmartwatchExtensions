@@ -8,7 +8,7 @@ import com.boswelja.smartwatchextensions.analytics.Analytics
 import com.boswelja.smartwatchextensions.appmanager.AppCacheUpdateWorker
 import com.boswelja.smartwatchextensions.appmanager.BaseAppCacheUpdateWorker
 import com.boswelja.smartwatchextensions.batterysync.BatteryStatsDbRepository
-import com.boswelja.smartwatchextensions.batterysync.BatteryStatsRepositoryLoader
+import com.boswelja.smartwatchextensions.batterysync.BatteryStatsDbRepositoryLoader
 import com.boswelja.smartwatchextensions.settings.BoolSetting
 import com.boswelja.smartwatchextensions.settings.IntSetting
 import com.boswelja.smartwatchextensions.settings.RESET_SETTINGS
@@ -65,7 +65,7 @@ class WatchManager(
     suspend fun forgetWatch(context: Context, watch: Watch) {
         forgetWatch(
             context.widgetIdStore,
-            BatteryStatsRepositoryLoader.getInstance(context),
+            BatteryStatsDbRepositoryLoader.getInstance(context),
             watch
         )
     }
@@ -95,7 +95,7 @@ class WatchManager(
     suspend fun resetWatchPreferences(context: Context, watch: Watch) {
         resetWatchPreferences(
             context.widgetIdStore,
-            BatteryStatsRepositoryLoader.getInstance(context),
+            BatteryStatsDbRepositoryLoader.getInstance(context),
             watch
         )
     }

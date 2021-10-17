@@ -27,7 +27,7 @@ abstract class BaseBatteryStatsReceiver : MessageReceiver<BatteryStats?>(Battery
         message: ReceivedMessage<BatteryStats?>
     ) {
         message.data?.let { batteryStats ->
-            BatteryStatsRepositoryLoader.getInstance(context).updateStatsFor(
+            BatteryStatsDbRepositoryLoader.getInstance(context).updateStatsFor(
                 message.sourceUid,
                 batteryStats
             )
