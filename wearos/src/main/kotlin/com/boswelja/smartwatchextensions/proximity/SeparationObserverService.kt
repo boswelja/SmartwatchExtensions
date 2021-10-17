@@ -13,20 +13,26 @@ import androidx.core.content.getSystemService
 import androidx.lifecycle.LifecycleService
 import androidx.lifecycle.lifecycleScope
 import com.boswelja.smartwatchextensions.R
-import com.boswelja.smartwatchextensions.discoveryClient
 import com.boswelja.smartwatchextensions.extensions.extensionSettingsStore
 import com.boswelja.smartwatchextensions.phoneStateStore
 import com.boswelja.watchconnection.common.discovery.ConnectionMode
+import com.boswelja.watchconnection.wear.discovery.DiscoveryClient
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import org.kodein.di.DI
+import org.kodein.di.DIAware
+import org.kodein.di.android.closestDI
+import org.kodein.di.instance
 import timber.log.Timber
 
-class SeparationObserverService : LifecycleService() {
+class SeparationObserverService : LifecycleService(), DIAware {
 
-    private val discoveryClient by lazy { discoveryClient() }
+    override val di: DI by closestDI()
+
+    private val discoveryClient: DiscoveryClient by instance()
     private val notificationManager by lazy { getSystemService<NotificationManager>()!! }
     private var hasNotifiedThisDisconnect = false
 

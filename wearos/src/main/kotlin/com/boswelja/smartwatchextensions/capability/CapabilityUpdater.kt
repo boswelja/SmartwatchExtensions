@@ -7,7 +7,6 @@ import android.content.pm.PackageManager
 import android.os.Build
 import androidx.core.content.getSystemService
 import com.boswelja.smartwatchextensions.devicemanagement.Capability
-import com.boswelja.smartwatchextensions.discoveryClient
 import com.boswelja.watchconnection.wear.discovery.DiscoveryClient
 import timber.log.Timber
 
@@ -17,7 +16,7 @@ import timber.log.Timber
  */
 class CapabilityUpdater(
     private val context: Context,
-    private val capabilityClient: DiscoveryClient = context.discoveryClient()
+    private val capabilityClient: DiscoveryClient
 ) {
 
     /**

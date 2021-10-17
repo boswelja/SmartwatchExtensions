@@ -10,20 +10,28 @@ import androidx.core.content.getSystemService
 import androidx.datastore.core.DataStore
 import com.boswelja.smartwatchextensions.PhoneState
 import com.boswelja.smartwatchextensions.R
-import com.boswelja.smartwatchextensions.discoveryClient
 import com.boswelja.smartwatchextensions.extensions.ExtensionSettings
 import com.boswelja.smartwatchextensions.extensions.extensionSettingsStore
 import com.boswelja.smartwatchextensions.main.ui.MainActivity
-import com.boswelja.smartwatchextensions.messageClient
 import com.boswelja.smartwatchextensions.phoneStateStore
 import com.boswelja.watchconection.common.message.MessageReceiver
 import com.boswelja.watchconnection.common.message.Message
 import com.boswelja.watchconnection.common.message.ReceivedMessage
+import com.boswelja.watchconnection.wear.discovery.DiscoveryClient
+import com.boswelja.watchconnection.wear.message.MessageClient
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
+import org.kodein.di.DIAware
+import org.kodein.di.LateInitDI
+import org.kodein.di.instance
 import timber.log.Timber
 
-class PhoneBatteryUpdateReceiver : MessageReceiver<BatteryStats?>(BatteryStatsSerializer) {
+class PhoneBatteryUpdateReceiver : MessageReceiver<BatteryStats?>(BatteryStatsSerializer), DIAware {
+
+    override val di = LateInitDI()
+
+    private val messageClient: MessageClient by instance()
+    private val discoveryClient: DiscoveryClient by instance()
 
     private lateinit var notificationManager: NotificationManager
     private lateinit var phoneStateStore: DataStore<PhoneState>
@@ -33,6 +41,8 @@ class PhoneBatteryUpdateReceiver : MessageReceiver<BatteryStats?>(BatteryStatsSe
         context: Context,
         message: ReceivedMessage<BatteryStats?>
     ) {
+        di.baseDI = (context.applicationContext as DIAware).di
+
         message.data?.let { batteryStats ->
             notificationManager = context.getSystemService()!!
             phoneStateStore = context.phoneStateStore
@@ -198,8 +208,8 @@ class PhoneBatteryUpdateReceiver : MessageReceiver<BatteryStats?>(BatteryStatsSe
     private suspend fun sendBatteryStatsUpdate(context: Context) {
         val batteryStats = context.batteryStats()
         if (batteryStats != null) {
-            context.messageClient(listOf(BatteryStatsSerializer)).sendMessage(
-                context.discoveryClient().pairedPhone()!!,
+            messageClient.sendMessage(
+                discoveryClient.pairedPhone()!!,
                 Message(BATTERY_STATUS_PATH, batteryStats)
             )
         } else {

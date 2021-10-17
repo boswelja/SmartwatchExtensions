@@ -75,6 +75,8 @@ dependencies {
     implementation(libs.timber)
     implementation(libs.watchconnection.wear)
 
+    implementation(libs.kodein.android)
+
     implementation(libs.bundles.compose.wear)
 
     testImplementation(libs.androidx.test.corektx)

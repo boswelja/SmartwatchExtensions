@@ -5,30 +5,34 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Intent
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import androidx.core.content.getSystemService
 import androidx.lifecycle.LifecycleService
 import androidx.lifecycle.lifecycleScope
 import com.boswelja.smartwatchextensions.R
-import com.boswelja.smartwatchextensions.discoveryClient
 import com.boswelja.smartwatchextensions.extensions.extensionSettingsStore
 import com.boswelja.smartwatchextensions.main.ui.MainActivity
-import com.boswelja.smartwatchextensions.messageClient
 import com.boswelja.watchconnection.common.message.Message
+import com.boswelja.watchconnection.wear.discovery.DiscoveryClient
+import com.boswelja.watchconnection.wear.message.MessageClient
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import org.kodein.di.DI
+import org.kodein.di.DIAware
+import org.kodein.di.android.closestDI
+import org.kodein.di.instance
 
 /**
  * A [LifecycleService] that listens for changes in the appropriate settings, and sends DnD change
  * requests to the connected phone.
  */
-class LocalDnDAndTheaterCollectorService : BaseLocalDnDAndTheaterCollectorService() {
+class LocalDnDAndTheaterCollectorService : BaseLocalDnDAndTheaterCollectorService(), DIAware {
 
-    private val discoveryClient by lazy { discoveryClient() }
-    private val messageClient by lazy { messageClient(listOf(DnDStatusSerializer)) }
+    override val di: DI by closestDI()
+
+    private val discoveryClient: DiscoveryClient by instance()
+    private val messageClient: MessageClient by instance()
 
     private var dndSyncToPhone: Boolean = false
     private var dndSyncWithTheater: Boolean = false
@@ -121,7 +125,6 @@ class LocalDnDAndTheaterCollectorService : BaseLocalDnDAndTheaterCollectorServic
     /**
      * Creates a [NotificationChannel] for [DND_SYNC_NOTI_CHANNEL_ID].
      */
-    @RequiresApi(Build.VERSION_CODES.O)
     fun createNotificationChannel() {
         val notificationManager = getSystemService<NotificationManager>()!!
         if (notificationManager.getNotificationChannel(DND_SYNC_NOTI_CHANNEL_ID) == null) {
