@@ -11,7 +11,9 @@ import com.boswelja.smartwatchextensions.messages.messagesModule
 import com.boswelja.smartwatchextensions.settings.BoolSettingSerializer
 import com.boswelja.smartwatchextensions.settings.IntSettingSerializer
 import com.boswelja.smartwatchextensions.settings.settingsModule
+import com.boswelja.watchconnection.core.discovery.DiscoveryClient
 import com.boswelja.watchconnection.core.message.MessageClient
+import com.boswelja.watchconnection.wearos.discovery.WearOSDiscoveryPlatform
 import com.boswelja.watchconnection.wearos.message.WearOSMessagePlatform
 import org.kodein.di.DI
 import org.kodein.di.DIAware
@@ -43,6 +45,13 @@ class MainApplication : Application(), DIAware {
                 ),
                 platforms = listOf(
                     WearOSMessagePlatform(instance<Context>())
+                )
+            )
+        }
+        bind<DiscoveryClient>() with singleton {
+            DiscoveryClient(
+                platforms = listOf(
+                    WearOSDiscoveryPlatform(instance())
                 )
             )
         }
