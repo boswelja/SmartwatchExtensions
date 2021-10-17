@@ -2,6 +2,7 @@ package com.boswelja.smartwatchextensions
 
 import android.app.Application
 import com.boswelja.smartwatchextensions.appmanager.appManagerModule
+import com.boswelja.smartwatchextensions.devicemanagement.deviceManagementModule
 import com.boswelja.smartwatchextensions.messages.messagesModule
 import org.kodein.di.DI
 import org.kodein.di.DIAware
@@ -15,6 +16,7 @@ class MainApplication : Application(), DIAware {
         import(androidXModule(this@MainApplication))
         importAll(
             appManagerModule,
+            deviceManagementModule,
             messagesModule
         )
     }

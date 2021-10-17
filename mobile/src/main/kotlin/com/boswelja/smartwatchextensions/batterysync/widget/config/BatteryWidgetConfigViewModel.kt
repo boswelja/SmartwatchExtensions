@@ -2,31 +2,19 @@ package com.boswelja.smartwatchextensions.batterysync.widget.config
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
-import com.boswelja.smartwatchextensions.devicemanagement.WatchDbRepository
 import com.boswelja.smartwatchextensions.devicemanagement.WatchRepository
-import com.boswelja.smartwatchextensions.devicemanagement.database.RegisteredWatchDatabaseLoader
-import com.boswelja.watchconnection.core.discovery.DiscoveryClient
-import com.boswelja.watchconnection.wearos.discovery.WearOSDiscoveryPlatform
-import kotlinx.coroutines.Dispatchers
+import org.kodein.di.DI
+import org.kodein.di.DIAware
+import org.kodein.di.android.x.closestDI
+import org.kodein.di.instance
 
-class BatteryWidgetConfigViewModel internal constructor(
-    application: Application,
-    watchRepository: WatchRepository
-) : AndroidViewModel(application) {
+class BatteryWidgetConfigViewModel(
+    application: Application
+) : AndroidViewModel(application), DIAware {
 
-    @Suppress("unused")
-    constructor(application: Application) : this(
-        application,
-        WatchDbRepository(
-            DiscoveryClient(
-                listOf(
-                    WearOSDiscoveryPlatform(application)
-                )
-            ),
-            RegisteredWatchDatabaseLoader(application).createDatabase(),
-            Dispatchers.IO
-        )
-    )
+    override val di: DI by closestDI()
+
+    private val watchRepository: WatchRepository by instance()
 
     val registeredWatches = watchRepository.registeredWatches
 }

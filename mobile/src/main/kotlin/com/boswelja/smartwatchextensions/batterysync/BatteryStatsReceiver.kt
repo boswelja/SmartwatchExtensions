@@ -11,9 +11,7 @@ import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.batterysync.Utils.BATTERY_STATS_NOTI_CHANNEL_ID
 import com.boswelja.smartwatchextensions.batterysync.quicksettings.WatchBatteryTileService
 import com.boswelja.smartwatchextensions.common.WatchWidgetProvider
-import com.boswelja.smartwatchextensions.devicemanagement.WatchDbRepository
 import com.boswelja.smartwatchextensions.devicemanagement.WatchRepository
-import com.boswelja.smartwatchextensions.devicemanagement.database.RegisteredWatchDatabaseLoader
 import com.boswelja.smartwatchextensions.main.ui.MainActivity
 import com.boswelja.smartwatchextensions.messages.Message
 import com.boswelja.smartwatchextensions.messages.MessagesRepository
@@ -28,8 +26,6 @@ import com.boswelja.smartwatchextensions.settings.WatchSettingsDbRepository
 import com.boswelja.smartwatchextensions.settings.WatchSettingsRepository
 import com.boswelja.smartwatchextensions.settings.database.WatchSettingsDatabaseLoader
 import com.boswelja.watchconnection.common.Watch
-import com.boswelja.watchconnection.core.discovery.DiscoveryClient
-import com.boswelja.watchconnection.wearos.discovery.WearOSDiscoveryPlatform
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
@@ -48,6 +44,7 @@ class BatteryStatsReceiver : BaseBatteryStatsReceiver(), DIAware {
     override val di = LateInitDI()
 
     private val messagesRepository: MessagesRepository by instance()
+    private val watchRepository: WatchRepository by instance()
 
     private lateinit var settingsRepository: WatchSettingsRepository
 
@@ -57,17 +54,8 @@ class BatteryStatsReceiver : BaseBatteryStatsReceiver(), DIAware {
         batteryStats: BatteryStats
     ) {
         di.baseDI = (context.applicationContext as DIAware).di
+        // TODO This can be optimised
         withContext(Dispatchers.IO) {
-            val watchRepository: WatchRepository =
-                WatchDbRepository(
-                    DiscoveryClient(
-                        listOf(
-                            WearOSDiscoveryPlatform(context)
-                        )
-                    ),
-                    RegisteredWatchDatabaseLoader(context).createDatabase(),
-                    Dispatchers.IO
-                )
             watchRepository.getWatchById(sourceUid).firstOrNull()?.let { watch ->
                 val notificationManager = context.getSystemService<NotificationManager>()!!
                 settingsRepository = WatchSettingsDbRepository(

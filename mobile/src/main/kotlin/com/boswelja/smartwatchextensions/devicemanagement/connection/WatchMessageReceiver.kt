@@ -10,34 +10,41 @@ import com.boswelja.smartwatchextensions.common.startActivity
 import com.boswelja.smartwatchextensions.devicemanagement.CHECK_WATCH_REGISTERED_PATH
 import com.boswelja.smartwatchextensions.devicemanagement.LAUNCH_APP
 import com.boswelja.smartwatchextensions.devicemanagement.WATCH_REGISTERED_PATH
-import com.boswelja.smartwatchextensions.devicemanagement.WatchDbRepository
-import com.boswelja.smartwatchextensions.devicemanagement.database.RegisteredWatchDatabaseLoader
+import com.boswelja.smartwatchextensions.devicemanagement.WatchRepository
 import com.boswelja.smartwatchextensions.dndsync.DND_STATUS_PATH
 import com.boswelja.smartwatchextensions.main.ui.MainActivity
 import com.boswelja.watchconection.common.message.MessageReceiver
 import com.boswelja.watchconnection.common.message.Message
 import com.boswelja.watchconnection.common.message.ReceivedMessage
-import com.boswelja.watchconnection.core.discovery.DiscoveryClient
 import com.boswelja.watchconnection.core.message.MessageClient
-import com.boswelja.watchconnection.wearos.discovery.WearOSDiscoveryPlatform
 import com.boswelja.watchconnection.wearos.message.WearOSMessagePlatform
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.withContext
+import org.kodein.di.DIAware
+import org.kodein.di.LateInitDI
+import org.kodein.di.instance
 import timber.log.Timber
 
-class WatchMessageReceiver : MessageReceiver<Nothing?>(
-    EmptySerializer(
-        messagePaths = setOf(
-            APP_SENDING_START,
-            APP_SENDING_COMPLETE,
-            BATTERY_STATUS_PATH,
-            DND_STATUS_PATH
+class WatchMessageReceiver :
+    MessageReceiver<Nothing?>(
+        EmptySerializer(
+            messagePaths = setOf(
+                APP_SENDING_START,
+                APP_SENDING_COMPLETE,
+                BATTERY_STATUS_PATH,
+                DND_STATUS_PATH
+            )
         )
-    )
-) {
+    ),
+    DIAware {
+
+    override val di = LateInitDI()
+
+    private val watchRepository: WatchRepository by instance()
 
     override suspend fun onMessageReceived(context: Context, message: ReceivedMessage<Nothing?>) {
+        di.baseDI = (context.applicationContext as DIAware).di
         when (message.path) {
             LAUNCH_APP -> launchApp(context)
             CHECK_WATCH_REGISTERED_PATH -> sendIsWatchRegistered(context, message.sourceUid)
@@ -61,16 +68,7 @@ class WatchMessageReceiver : MessageReceiver<Nothing?>(
     private suspend fun sendIsWatchRegistered(context: Context, watchId: String) {
         Timber.i("sendIsWatchRegistered() called")
         withContext(Dispatchers.IO) {
-            val repository = WatchDbRepository(
-                DiscoveryClient(
-                    listOf(
-                        WearOSDiscoveryPlatform(context)
-                    )
-                ),
-                RegisteredWatchDatabaseLoader(context).createDatabase(),
-                Dispatchers.IO
-            )
-            val watch = repository.getWatchById(watchId).firstOrNull()
+            val watch = watchRepository.getWatchById(watchId).firstOrNull()
             // If watch is found in the database, let it know it's registered
             watch?.let {
                 MessageClient(

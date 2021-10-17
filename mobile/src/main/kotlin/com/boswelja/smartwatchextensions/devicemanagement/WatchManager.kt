@@ -13,7 +13,6 @@ import com.boswelja.smartwatchextensions.batterysync.BatteryStatsRepository
 import com.boswelja.smartwatchextensions.batterysync.BatteryStatsRepositoryLoader
 import com.boswelja.smartwatchextensions.batterysync.BatteryStatsSerializer
 import com.boswelja.smartwatchextensions.common.SingletonHolder
-import com.boswelja.smartwatchextensions.devicemanagement.database.RegisteredWatchDatabaseLoader
 import com.boswelja.smartwatchextensions.dndsync.DnDStatusSerializer
 import com.boswelja.smartwatchextensions.settings.BoolSetting
 import com.boswelja.smartwatchextensions.settings.BoolSettingSerializer
@@ -41,6 +40,10 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.withContext
+import org.kodein.di.DI
+import org.kodein.di.DIAware
+import org.kodein.di.android.closestDI
+import org.kodein.di.instance
 
 /**
  * Provides a simplified interface for interacting with all watch-related classes.
@@ -49,26 +52,14 @@ import kotlinx.coroutines.withContext
 class WatchManager internal constructor(
     private val context: Context,
     val settingsRepository: WatchSettingsRepository,
-    private val watchRepository: WatchRepository,
     private val messageClient: MessageClient,
     private val discoveryClient: DiscoveryClient,
-    private val analytics: Analytics,
-    private val selectedWatchManager: SelectedWatchManager =
-        SelectedWatchStoreManager(context.selectedWatchStateStore, watchRepository)
-) {
+    private val analytics: Analytics
+) : DIAware {
 
     constructor(context: Context) : this(
         context.applicationContext,
         WatchSettingsDbRepository(WatchSettingsDatabaseLoader(context).createDatabase()),
-        WatchDbRepository(
-            DiscoveryClient(
-                listOf(
-                    WearOSDiscoveryPlatform(context)
-                )
-            ),
-            RegisteredWatchDatabaseLoader(context).createDatabase(),
-            Dispatchers.IO
-        ),
         MessageClient(
             serializers = listOf(
                 IntSettingSerializer,
@@ -88,6 +79,11 @@ class WatchManager internal constructor(
         ),
         getAnalytics()
     )
+
+    override val di: DI by closestDI(context)
+
+    private val watchRepository: WatchRepository by instance()
+    private val selectedWatchManager: SelectedWatchManager by instance()
 
     val registeredWatches: Flow<List<Watch>> = watchRepository.registeredWatches
 
