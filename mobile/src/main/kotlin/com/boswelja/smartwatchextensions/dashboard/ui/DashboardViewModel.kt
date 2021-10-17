@@ -3,7 +3,7 @@ package com.boswelja.smartwatchextensions.dashboard.ui
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import com.boswelja.smartwatchextensions.appmanager.WatchAppRepository
-import com.boswelja.smartwatchextensions.batterysync.BatteryStatsRepository
+import com.boswelja.smartwatchextensions.batterysync.BatteryStatsDbRepository
 import com.boswelja.smartwatchextensions.batterysync.BatteryStatsRepositoryLoader
 import com.boswelja.smartwatchextensions.devicemanagement.WatchManager
 import com.boswelja.watchconnection.common.discovery.ConnectionMode
@@ -19,7 +19,7 @@ import org.kodein.di.instance
 @OptIn(ExperimentalCoroutinesApi::class)
 class DashboardViewModel internal constructor(
     application: Application,
-    private val batteryStatsRepository: BatteryStatsRepository
+    private val batteryStatsRepository: BatteryStatsDbRepository
 ) : AndroidViewModel(application), DIAware {
 
     override val di: DI by closestDI()

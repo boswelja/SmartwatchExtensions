@@ -7,7 +7,7 @@ import androidx.datastore.preferences.core.edit
 import com.boswelja.smartwatchextensions.analytics.Analytics
 import com.boswelja.smartwatchextensions.appmanager.AppCacheUpdateWorker
 import com.boswelja.smartwatchextensions.appmanager.BaseAppCacheUpdateWorker
-import com.boswelja.smartwatchextensions.batterysync.BatteryStatsRepository
+import com.boswelja.smartwatchextensions.batterysync.BatteryStatsDbRepository
 import com.boswelja.smartwatchextensions.batterysync.BatteryStatsRepositoryLoader
 import com.boswelja.smartwatchextensions.settings.BoolSetting
 import com.boswelja.smartwatchextensions.settings.IntSetting
@@ -72,7 +72,7 @@ class WatchManager(
 
     internal suspend fun forgetWatch(
         widgetIdStore: DataStore<Preferences>,
-        batteryStatsDatabase: BatteryStatsRepository,
+        batteryStatsDatabase: BatteryStatsDbRepository,
         watch: Watch
     ) {
         withContext(Dispatchers.IO) {
@@ -102,7 +102,7 @@ class WatchManager(
 
     internal suspend fun resetWatchPreferences(
         widgetIdStore: DataStore<Preferences>,
-        batteryStatsDatabase: BatteryStatsRepository,
+        batteryStatsDatabase: BatteryStatsDbRepository,
         watch: Watch
     ) {
         batteryStatsDatabase.removeStatsFor(watch.uid)

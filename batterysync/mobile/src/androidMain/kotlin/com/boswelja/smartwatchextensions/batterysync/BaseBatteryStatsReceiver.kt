@@ -5,7 +5,7 @@ import com.boswelja.watchconection.common.message.MessageReceiver
 import com.boswelja.watchconnection.common.message.ReceivedMessage
 
 /**
- * A [MessageReceiver] to receive [BatteryStats] and update [BatteryStatsRepository] with the new
+ * A [MessageReceiver] to receive [BatteryStats] and update [BatteryStatsDbRepository] with the new
  * data.
  */
 abstract class BaseBatteryStatsReceiver : MessageReceiver<BatteryStats?>(BatteryStatsSerializer) {
