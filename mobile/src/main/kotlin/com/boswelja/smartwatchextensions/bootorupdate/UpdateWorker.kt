@@ -14,6 +14,7 @@ import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.messages.Message
 import com.boswelja.smartwatchextensions.messages.MessagesRepository
 import com.boswelja.smartwatchextensions.messages.sendMessage
+import com.boswelja.smartwatchextensions.settings.WatchSettingsRepository
 import org.kodein.di.DI
 import org.kodein.di.DIAware
 import org.kodein.di.android.closestDI
@@ -27,6 +28,7 @@ class UpdateWorker(
     override val di: DI by closestDI(applicationContext)
 
     private val messagesRepository: MessagesRepository by instance()
+    private val settingsRepository: WatchSettingsRepository by instance()
 
     override suspend fun doWork(): Result {
         // Perform any pending updates
@@ -34,7 +36,7 @@ class UpdateWorker(
         val result = updater.migrate()
 
         // Restart services
-        applicationContext.restartServices()
+        applicationContext.restartServices(settingsRepository)
 
         return when (result) {
             com.boswelja.migration.Result.SUCCESS,

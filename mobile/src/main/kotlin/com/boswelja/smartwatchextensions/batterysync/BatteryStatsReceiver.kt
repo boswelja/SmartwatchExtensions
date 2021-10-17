@@ -22,9 +22,7 @@ import com.boswelja.smartwatchextensions.settings.BoolSettingKeys.BATTERY_WATCH_
 import com.boswelja.smartwatchextensions.settings.BoolSettingKeys.BATTERY_WATCH_LOW_NOTI_KEY
 import com.boswelja.smartwatchextensions.settings.IntSettingKeys.BATTERY_CHARGE_THRESHOLD_KEY
 import com.boswelja.smartwatchextensions.settings.IntSettingKeys.BATTERY_LOW_THRESHOLD_KEY
-import com.boswelja.smartwatchextensions.settings.WatchSettingsDbRepository
 import com.boswelja.smartwatchextensions.settings.WatchSettingsRepository
-import com.boswelja.smartwatchextensions.settings.database.WatchSettingsDatabaseLoader
 import com.boswelja.watchconnection.common.Watch
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
@@ -45,8 +43,7 @@ class BatteryStatsReceiver : BaseBatteryStatsReceiver(), DIAware {
 
     private val messagesRepository: MessagesRepository by instance()
     private val watchRepository: WatchRepository by instance()
-
-    private lateinit var settingsRepository: WatchSettingsRepository
+    private val settingsRepository: WatchSettingsRepository by instance()
 
     override suspend fun onBatteryStatsReceived(
         context: Context,
@@ -58,10 +55,6 @@ class BatteryStatsReceiver : BaseBatteryStatsReceiver(), DIAware {
         withContext(Dispatchers.IO) {
             watchRepository.getWatchById(sourceUid).firstOrNull()?.let { watch ->
                 val notificationManager = context.getSystemService<NotificationManager>()!!
-                settingsRepository = WatchSettingsDbRepository(
-                    WatchSettingsDatabaseLoader(context).createDatabase(),
-                    Dispatchers.IO
-                )
                 if (batteryStats.charging) {
                     dismissLowNoti(
                         notificationManager,

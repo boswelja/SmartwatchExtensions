@@ -21,9 +21,7 @@ import com.boswelja.smartwatchextensions.settings.IntSettingSerializer
 import com.boswelja.smartwatchextensions.settings.RESET_SETTINGS
 import com.boswelja.smartwatchextensions.settings.UPDATE_BOOL_PREFERENCE
 import com.boswelja.smartwatchextensions.settings.UPDATE_INT_PREFERENCE
-import com.boswelja.smartwatchextensions.settings.WatchSettingsDbRepository
 import com.boswelja.smartwatchextensions.settings.WatchSettingsRepository
-import com.boswelja.smartwatchextensions.settings.database.WatchSettingsDatabaseLoader
 import com.boswelja.smartwatchextensions.widget.widgetIdStore
 import com.boswelja.watchconnection.common.Watch
 import com.boswelja.watchconnection.common.message.Message
@@ -51,7 +49,6 @@ import org.kodein.di.instance
 @OptIn(ExperimentalCoroutinesApi::class)
 class WatchManager internal constructor(
     private val context: Context,
-    val settingsRepository: WatchSettingsRepository,
     private val messageClient: MessageClient,
     private val discoveryClient: DiscoveryClient,
     private val analytics: Analytics
@@ -59,10 +56,6 @@ class WatchManager internal constructor(
 
     constructor(context: Context) : this(
         context.applicationContext,
-        WatchSettingsDbRepository(
-            WatchSettingsDatabaseLoader(context).createDatabase(),
-            Dispatchers.IO
-        ),
         MessageClient(
             serializers = listOf(
                 IntSettingSerializer,
@@ -87,6 +80,7 @@ class WatchManager internal constructor(
 
     private val watchRepository: WatchRepository by instance()
     private val selectedWatchManager: SelectedWatchManager by instance()
+    val settingsRepository: WatchSettingsRepository by instance()
 
     val registeredWatches: Flow<List<Watch>> = watchRepository.registeredWatches
 
