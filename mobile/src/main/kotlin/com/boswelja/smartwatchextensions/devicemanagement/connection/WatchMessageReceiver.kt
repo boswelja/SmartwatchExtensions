@@ -17,7 +17,6 @@ import com.boswelja.watchconection.common.message.MessageReceiver
 import com.boswelja.watchconnection.common.message.Message
 import com.boswelja.watchconnection.common.message.ReceivedMessage
 import com.boswelja.watchconnection.core.message.MessageClient
-import com.boswelja.watchconnection.wearos.message.WearOSMessagePlatform
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.withContext
@@ -42,12 +41,13 @@ class WatchMessageReceiver :
     override val di = LateInitDI()
 
     private val watchRepository: WatchRepository by instance()
+    private val messageClient: MessageClient by instance()
 
     override suspend fun onMessageReceived(context: Context, message: ReceivedMessage<Nothing?>) {
         di.baseDI = (context.applicationContext as DIAware).di
         when (message.path) {
             LAUNCH_APP -> launchApp(context)
-            CHECK_WATCH_REGISTERED_PATH -> sendIsWatchRegistered(context, message.sourceUid)
+            CHECK_WATCH_REGISTERED_PATH -> sendIsWatchRegistered(message.sourceUid)
         }
     }
 
@@ -62,18 +62,15 @@ class WatchMessageReceiver :
 
     /**
      * Tells the source node whether it is registered with Smartwatch Extensions.
-     * @param context [Context].
      * @param watchId The target watch ID to send the response to.
      */
-    private suspend fun sendIsWatchRegistered(context: Context, watchId: String) {
+    private suspend fun sendIsWatchRegistered(watchId: String) {
         Timber.i("sendIsWatchRegistered() called")
         withContext(Dispatchers.IO) {
             val watch = watchRepository.getWatchById(watchId).firstOrNull()
             // If watch is found in the database, let it know it's registered
             watch?.let {
-                MessageClient(
-                    platforms = listOf(WearOSMessagePlatform(context))
-                ).sendMessage(watch, Message(WATCH_REGISTERED_PATH, null))
+                messageClient.sendMessage(watch, Message(WATCH_REGISTERED_PATH, null))
             }
         }
     }

@@ -8,16 +8,11 @@ import com.boswelja.smartwatchextensions.analytics.Analytics
 import com.boswelja.smartwatchextensions.analytics.getAnalytics
 import com.boswelja.smartwatchextensions.appmanager.AppCacheUpdateWorker
 import com.boswelja.smartwatchextensions.appmanager.BaseAppCacheUpdateWorker
-import com.boswelja.smartwatchextensions.appmanager.CacheValidationSerializer
 import com.boswelja.smartwatchextensions.batterysync.BatteryStatsRepository
 import com.boswelja.smartwatchextensions.batterysync.BatteryStatsRepositoryLoader
-import com.boswelja.smartwatchextensions.batterysync.BatteryStatsSerializer
 import com.boswelja.smartwatchextensions.common.SingletonHolder
-import com.boswelja.smartwatchextensions.dndsync.DnDStatusSerializer
 import com.boswelja.smartwatchextensions.settings.BoolSetting
-import com.boswelja.smartwatchextensions.settings.BoolSettingSerializer
 import com.boswelja.smartwatchextensions.settings.IntSetting
-import com.boswelja.smartwatchextensions.settings.IntSettingSerializer
 import com.boswelja.smartwatchextensions.settings.RESET_SETTINGS
 import com.boswelja.smartwatchextensions.settings.UPDATE_BOOL_PREFERENCE
 import com.boswelja.smartwatchextensions.settings.UPDATE_INT_PREFERENCE
@@ -29,7 +24,6 @@ import com.boswelja.watchconnection.common.message.MessageSerializer
 import com.boswelja.watchconnection.core.discovery.DiscoveryClient
 import com.boswelja.watchconnection.core.message.MessageClient
 import com.boswelja.watchconnection.wearos.discovery.WearOSDiscoveryPlatform
-import com.boswelja.watchconnection.wearos.message.WearOSMessagePlatform
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -49,25 +43,12 @@ import org.kodein.di.instance
 @OptIn(ExperimentalCoroutinesApi::class)
 class WatchManager internal constructor(
     private val context: Context,
-    private val messageClient: MessageClient,
     private val discoveryClient: DiscoveryClient,
     private val analytics: Analytics
 ) : DIAware {
 
     constructor(context: Context) : this(
         context.applicationContext,
-        MessageClient(
-            serializers = listOf(
-                IntSettingSerializer,
-                BoolSettingSerializer,
-                DnDStatusSerializer,
-                CacheValidationSerializer,
-                BatteryStatsSerializer
-            ),
-            platforms = listOf(
-                WearOSMessagePlatform(context)
-            )
-        ),
         DiscoveryClient(
             listOf(
                 WearOSDiscoveryPlatform(context)
@@ -78,6 +59,7 @@ class WatchManager internal constructor(
 
     override val di: DI by closestDI(context)
 
+    private val messageClient: MessageClient by instance()
     private val watchRepository: WatchRepository by instance()
     private val selectedWatchManager: SelectedWatchManager by instance()
     val settingsRepository: WatchSettingsRepository by instance()

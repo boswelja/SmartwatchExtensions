@@ -1,13 +1,24 @@
 package com.boswelja.smartwatchextensions
 
 import android.app.Application
+import android.content.Context
+import com.boswelja.smartwatchextensions.appmanager.CacheValidationSerializer
 import com.boswelja.smartwatchextensions.appmanager.appManagerModule
+import com.boswelja.smartwatchextensions.batterysync.BatteryStatsSerializer
 import com.boswelja.smartwatchextensions.devicemanagement.deviceManagementModule
+import com.boswelja.smartwatchextensions.dndsync.DnDStatusSerializer
 import com.boswelja.smartwatchextensions.messages.messagesModule
+import com.boswelja.smartwatchextensions.settings.BoolSettingSerializer
+import com.boswelja.smartwatchextensions.settings.IntSettingSerializer
 import com.boswelja.smartwatchextensions.settings.settingsModule
+import com.boswelja.watchconnection.core.message.MessageClient
+import com.boswelja.watchconnection.wearos.message.WearOSMessagePlatform
 import org.kodein.di.DI
 import org.kodein.di.DIAware
 import org.kodein.di.android.x.androidXModule
+import org.kodein.di.bind
+import org.kodein.di.instance
+import org.kodein.di.singleton
 import timber.log.Timber
 
 @Suppress("unused")
@@ -21,6 +32,20 @@ class MainApplication : Application(), DIAware {
             messagesModule,
             settingsModule
         )
+        bind<MessageClient>() with singleton {
+            MessageClient(
+                serializers = listOf(
+                    IntSettingSerializer,
+                    BoolSettingSerializer,
+                    DnDStatusSerializer,
+                    CacheValidationSerializer,
+                    BatteryStatsSerializer
+                ),
+                platforms = listOf(
+                    WearOSMessagePlatform(instance<Context>())
+                )
+            )
+        }
     }
 
     override fun onCreate() {
