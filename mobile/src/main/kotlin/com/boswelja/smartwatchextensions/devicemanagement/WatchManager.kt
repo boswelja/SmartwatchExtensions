@@ -59,7 +59,10 @@ class WatchManager internal constructor(
 
     constructor(context: Context) : this(
         context.applicationContext,
-        WatchSettingsDbRepository(WatchSettingsDatabaseLoader(context).createDatabase()),
+        WatchSettingsDbRepository(
+            WatchSettingsDatabaseLoader(context).createDatabase(),
+            Dispatchers.IO
+        ),
         MessageClient(
             serializers = listOf(
                 IntSettingSerializer,

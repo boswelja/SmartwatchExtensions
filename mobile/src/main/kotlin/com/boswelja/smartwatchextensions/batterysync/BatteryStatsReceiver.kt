@@ -59,7 +59,8 @@ class BatteryStatsReceiver : BaseBatteryStatsReceiver(), DIAware {
             watchRepository.getWatchById(sourceUid).firstOrNull()?.let { watch ->
                 val notificationManager = context.getSystemService<NotificationManager>()!!
                 settingsRepository = WatchSettingsDbRepository(
-                    WatchSettingsDatabaseLoader(context).createDatabase()
+                    WatchSettingsDatabaseLoader(context).createDatabase(),
+                    Dispatchers.IO
                 )
                 if (batteryStats.charging) {
                     dismissLowNoti(

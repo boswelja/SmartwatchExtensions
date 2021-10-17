@@ -13,6 +13,7 @@ import com.boswelja.smartwatchextensions.settings.BoolSettingKeys.BATTERY_SYNC_E
 import com.boswelja.smartwatchextensions.settings.WatchSettingsDbRepository
 import com.boswelja.smartwatchextensions.settings.database.WatchSettingsDatabaseLoader
 import com.boswelja.watchconnection.common.Watch
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 
@@ -39,7 +40,8 @@ class WatchBatteryWidget : WatchWidgetProvider() {
         }
 
         val isBatterySyncEnabled = WatchSettingsDbRepository(
-            WatchSettingsDatabaseLoader(context).createDatabase()
+            WatchSettingsDatabaseLoader(context).createDatabase(),
+            Dispatchers.IO
         ).getBoolean(watch.uid, BATTERY_SYNC_ENABLED_KEY, false).first()
         if (isBatterySyncEnabled) {
             val batteryPercent = BatteryStatsRepositoryLoader.getInstance(context)

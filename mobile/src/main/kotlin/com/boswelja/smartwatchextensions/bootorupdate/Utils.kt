@@ -10,6 +10,7 @@ import com.boswelja.smartwatchextensions.settings.BoolSettingKeys.WATCH_SEPARATI
 import com.boswelja.smartwatchextensions.settings.WatchSettingsDbRepository
 import com.boswelja.smartwatchextensions.settings.WatchSettingsRepository
 import com.boswelja.smartwatchextensions.settings.database.WatchSettingsDatabaseLoader
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 
@@ -17,8 +18,10 @@ const val BOOT_OR_UPDATE_NOTI_CHANNEL_ID = "boot_or_update_noti_channel"
 internal const val NOTI_ID = 69102
 
 internal suspend fun Context.restartServices() {
-    val repository: WatchSettingsRepository =
-        WatchSettingsDbRepository(WatchSettingsDatabaseLoader(this).createDatabase())
+    val repository: WatchSettingsRepository = WatchSettingsDbRepository(
+        WatchSettingsDatabaseLoader(this).createDatabase(),
+        Dispatchers.IO
+    )
     tryStartInterruptFilterSyncService(repository)
     tryStartSeparationObserverService(repository)
 }
