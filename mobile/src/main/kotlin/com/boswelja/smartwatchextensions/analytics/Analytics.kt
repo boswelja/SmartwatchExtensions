@@ -1,18 +1,5 @@
 package com.boswelja.smartwatchextensions.analytics
 
-import com.boswelja.smartwatchextensions.BuildConfig
-
-/**
- * Get an instance of [Analytics] to use.
- */
-fun getAnalytics(): Analytics {
-    return if (BuildConfig.DEBUG) {
-        LoggingAnalytics()
-    } else {
-        FirebaseAnalytics()
-    }
-}
-
 /**
  * A generic interface for analytic collection
  */

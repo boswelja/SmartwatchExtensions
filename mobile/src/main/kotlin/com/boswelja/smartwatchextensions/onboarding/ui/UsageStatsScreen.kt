@@ -20,26 +20,22 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.boswelja.smartwatchextensions.R
-import com.boswelja.smartwatchextensions.analytics.getAnalytics
 import com.boswelja.smartwatchextensions.common.ui.Card
 import com.boswelja.smartwatchextensions.common.ui.CardHeader
-import com.boswelja.smartwatchextensions.settings.appSettingsStore
-import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun UsageStatsScreen(
     modifier: Modifier = Modifier,
     contentPadding: Dp = 16.dp,
+    onSetAnalyticsEnabled: (Boolean) -> Unit,
     onShowPrivacyPolicy: () -> Unit,
     onNavigateTo: (OnboardingDestination) -> Unit
 ) {
@@ -56,6 +52,7 @@ fun UsageStatsScreen(
         UsageStatsCard(
             modifier = Modifier.fillMaxWidth(),
             contentPadding = contentPadding,
+            onSetAnalyticsEnabled = onSetAnalyticsEnabled,
             onShowPrivacyPolicy = onShowPrivacyPolicy
         )
         ExtendedFloatingActionButton(
@@ -71,11 +68,9 @@ fun UsageStatsScreen(
 fun UsageStatsCard(
     modifier: Modifier = Modifier,
     contentPadding: Dp,
+    onSetAnalyticsEnabled: (Boolean) -> Unit,
     onShowPrivacyPolicy: () -> Unit
 ) {
-    val coroutineScope = rememberCoroutineScope()
-    val context = LocalContext.current
-    val analytics = getAnalytics()
     var checkboxChecked by remember { mutableStateOf(true) }
 
     Card(
@@ -98,12 +93,7 @@ fun UsageStatsCard(
                         value = checkboxChecked,
                         onValueChange = {
                             checkboxChecked = it
-                            coroutineScope.launch {
-                                analytics.setAnalyticsEnabled(it)
-                                context.appSettingsStore.updateData { settings ->
-                                    settings.copy(analyticsEnabled = it)
-                                }
-                            }
+                            onSetAnalyticsEnabled(it)
                         }
                     )
                     .padding(contentPadding)

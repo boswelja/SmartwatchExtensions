@@ -5,7 +5,6 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import com.boswelja.smartwatchextensions.analytics.Analytics
-import com.boswelja.smartwatchextensions.analytics.getAnalytics
 import com.boswelja.smartwatchextensions.appmanager.AppCacheUpdateWorker
 import com.boswelja.smartwatchextensions.appmanager.BaseAppCacheUpdateWorker
 import com.boswelja.smartwatchextensions.batterysync.BatteryStatsRepository
@@ -40,18 +39,13 @@ import org.kodein.di.instance
  * Provides a simplified interface for interacting with all watch-related classes.
  */
 @OptIn(ExperimentalCoroutinesApi::class)
-class WatchManager internal constructor(
-    private val context: Context,
-    private val analytics: Analytics
+class WatchManager(
+    private val context: Context
 ) : DIAware {
-
-    constructor(context: Context) : this(
-        context.applicationContext,
-        getAnalytics()
-    )
 
     override val di: DI by closestDI(context)
 
+    private val analytics: Analytics by instance()
     private val messageClient: MessageClient by instance()
     private val discoveryClient: DiscoveryClient by instance()
     private val watchRepository: WatchRepository by instance()

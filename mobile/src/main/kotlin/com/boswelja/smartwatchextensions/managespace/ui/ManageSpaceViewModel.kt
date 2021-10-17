@@ -5,7 +5,6 @@ import androidx.datastore.core.DataStore
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.boswelja.smartwatchextensions.analytics.Analytics
-import com.boswelja.smartwatchextensions.analytics.getAnalytics
 import com.boswelja.smartwatchextensions.devicemanagement.WatchManager
 import com.boswelja.smartwatchextensions.settings.AppSettingsSerializer
 import com.boswelja.smartwatchextensions.settings.Settings
@@ -16,23 +15,28 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.kodein.di.DI
+import org.kodein.di.DIAware
+import org.kodein.di.android.x.closestDI
+import org.kodein.di.instance
 import timber.log.Timber
 import kotlin.math.floor
 
 class ManageSpaceViewModel internal constructor(
     application: Application,
-    private val analytics: Analytics,
     private val watchManager: WatchManager,
     private val appSettingsDataStore: DataStore<Settings>,
     private val coroutineDispatcher: CoroutineDispatcher
-) : AndroidViewModel(application) {
+) : AndroidViewModel(application), DIAware {
 
+    override val di: DI by closestDI()
+
+    private val analytics: Analytics by instance()
     private var registeredWatches: List<Watch>? = null
 
     @Suppress("unused")
     constructor(application: Application) : this(
         application,
-        getAnalytics(),
         WatchManager.getInstance(application),
         application.appSettingsStore,
         Dispatchers.IO

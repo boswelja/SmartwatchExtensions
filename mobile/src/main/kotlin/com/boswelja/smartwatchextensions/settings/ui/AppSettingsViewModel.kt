@@ -5,7 +5,6 @@ import androidx.datastore.core.DataStore
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.boswelja.smartwatchextensions.analytics.Analytics
-import com.boswelja.smartwatchextensions.analytics.getAnalytics
 import com.boswelja.smartwatchextensions.batterysync.quicksettings.WatchBatteryTileService
 import com.boswelja.smartwatchextensions.devicemanagement.WatchManager
 import com.boswelja.smartwatchextensions.settings.Settings
@@ -16,13 +15,20 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import org.kodein.di.DI
+import org.kodein.di.DIAware
+import org.kodein.di.android.x.closestDI
+import org.kodein.di.instance
 
 class AppSettingsViewModel internal constructor(
     application: Application,
     private val dataStore: DataStore<Settings>,
-    private val analytics: Analytics,
     private val watchManager: WatchManager
-) : AndroidViewModel(application) {
+) : AndroidViewModel(application), DIAware {
+
+    override val di: DI by closestDI()
+
+    private val analytics: Analytics by instance()
 
     val analyticsEnabled = dataStore.data.map { it.analyticsEnabled }
     val registeredWatches = watchManager.registeredWatches
@@ -42,7 +48,6 @@ class AppSettingsViewModel internal constructor(
     constructor(application: Application) : this(
         application,
         application.appSettingsStore,
-        getAnalytics(),
         WatchManager.getInstance(application)
     )
 

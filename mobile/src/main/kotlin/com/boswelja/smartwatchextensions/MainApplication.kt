@@ -2,6 +2,9 @@ package com.boswelja.smartwatchextensions
 
 import android.app.Application
 import android.content.Context
+import com.boswelja.smartwatchextensions.analytics.Analytics
+import com.boswelja.smartwatchextensions.analytics.FirebaseAnalytics
+import com.boswelja.smartwatchextensions.analytics.LoggingAnalytics
 import com.boswelja.smartwatchextensions.appmanager.CacheValidationSerializer
 import com.boswelja.smartwatchextensions.appmanager.appManagerModule
 import com.boswelja.smartwatchextensions.batterysync.BatteryStatsSerializer
@@ -54,6 +57,13 @@ class MainApplication : Application(), DIAware {
                     WearOSDiscoveryPlatform(instance())
                 )
             )
+        }
+        bind<Analytics>() with singleton {
+            if (BuildConfig.DEBUG) {
+                LoggingAnalytics()
+            } else {
+                FirebaseAnalytics()
+            }
         }
     }
 

@@ -26,6 +26,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -41,6 +42,7 @@ fun OnboardingScreen(
     navController: NavHostController,
     onFinished: () -> Unit
 ) {
+    val viewModel: OnboardingViewModel by viewModel()
     val context = LocalContext.current
     NavHost(
         navController = navController,
@@ -64,6 +66,7 @@ fun OnboardingScreen(
                         intent
                     }
                 },
+                onSetAnalyticsEnabled = viewModel::setAnalyticsEnabled,
                 onNavigateTo = { navController.navigate(it.route) }
             )
         }
