@@ -109,7 +109,7 @@ class WatchAppDbRepositoryTest {
             isSystemApp = false,
             label = "App",
             packageName = "com.package.name",
-            permissions = listOf(),
+            permissions = listOf("permission"),
             versionCode = 0,
             versionName = "0"
         )
