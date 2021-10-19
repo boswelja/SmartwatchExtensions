@@ -34,6 +34,7 @@ robolectric = "4.6.1"
 strikt = "0.31.0"
 sqldelight = "1.5.0"
 timber = "4.7.1"
+turbine = "0.6.1"
 watchconnection = "6.0.3"
 wire = "3.7.0"
 
@@ -103,6 +104,8 @@ wire-runtime = { module = "com.squareup.wire:wire-runtime", version.ref = "wire"
 sqldelight-runtime = { module = "com.squareup.sqldelight:runtime", version.ref = "sqldelight" }
 sqldelight-coroutines = { module = "com.squareup.sqldelight:coroutines-extensions", version.ref = "sqldelight" }
 sqldelight-android = { module = "com.squareup.sqldelight:android-driver", version.ref = "sqldelight" }
+sqldelight-sqlitedriver = { module = "com.squareup.sqldelight:sqlite-driver", version.ref = "sqldelight" }
+turbine = { module = "app.cash.turbine:turbine", version.ref = "turbine" }
 
 [bundles]
 compose-mobile = [

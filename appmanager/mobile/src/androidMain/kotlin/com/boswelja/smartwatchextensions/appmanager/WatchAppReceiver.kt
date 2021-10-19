@@ -1,30 +1,21 @@
 package com.boswelja.smartwatchextensions.appmanager
 
 import android.content.Context
-import com.boswelja.smartwatchextensions.appmanager.database.WatchAppDatabaseLoader
 import com.boswelja.watchconection.common.message.MessageReceiver
 import com.boswelja.watchconnection.common.message.ReceivedMessage
-import kotlinx.coroutines.Dispatchers
+import org.kodein.di.DIAware
+import org.kodein.di.LateInitDI
+import org.kodein.di.instance
 
-class WatchAppReceiver : MessageReceiver<AppList>(AppListSerializer) {
+class WatchAppReceiver : MessageReceiver<AppList>(AppListSerializer), DIAware {
+    override val di = LateInitDI()
+
+    private val repository: WatchAppRepository by instance()
+
     override suspend fun onMessageReceived(context: Context, message: ReceivedMessage<AppList>) {
-        val repository = WatchAppDbRepository(WatchAppDatabaseLoader(context).createDatabase(), Dispatchers.IO)
-        val apps = message.data.apps.map {
-            WatchAppDetails(
-                message.sourceUid,
-                it.packageName,
-                null,
-                it.label,
-                it.version,
-                0,
-                it.isSystemApp,
-                it.hasLaunchActivity,
-                it.isEnabled,
-                it.installTime,
-                it.lastUpdateTime,
-                it.requestedPermissions
-            )
-        }
+        di.baseDI = (context.applicationContext as DIAware).di
+
+        val apps = message.data.mapToWatchAppDetails(message.sourceUid)
         repository.updateAll(apps)
     }
 }

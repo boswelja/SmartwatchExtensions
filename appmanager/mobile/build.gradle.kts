@@ -17,11 +17,22 @@ kotlin {
                 implementation(libs.kodein.core)
             }
         }
+        val commonTest by getting {
+            dependencies {
+                implementation(kotlin("test"))
+                implementation(libs.turbine)
+            }
+        }
         val androidMain by getting {
             dependencies {
                 implementation(libs.sqldelight.android)
                 implementation(libs.androidx.work.ktx)
                 implementation(libs.kodein.android)
+            }
+        }
+        val androidTest by getting {
+            dependencies {
+                implementation(libs.sqldelight.sqlitedriver)
             }
         }
     }
