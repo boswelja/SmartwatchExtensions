@@ -10,10 +10,10 @@ import androidx.work.WorkManager
 import androidx.work.WorkerParameters
 import java.util.concurrent.TimeUnit
 
-actual abstract class BaseBatterySyncWorker(appContext: Context, workerParams: WorkerParameters) :
+abstract class BaseBatterySyncWorker(appContext: Context, workerParams: WorkerParameters) :
     CoroutineWorker(appContext, workerParams) {
 
-    actual abstract suspend fun onSendBatteryStats(
+    abstract suspend fun onSendBatteryStats(
         targetUid: String,
         batteryStats: BatteryStats
     ): Boolean
