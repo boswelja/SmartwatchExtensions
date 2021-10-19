@@ -15,22 +15,7 @@ class WatchAppReceiver : MessageReceiver<AppList>(AppListSerializer), DIAware {
     override suspend fun onMessageReceived(context: Context, message: ReceivedMessage<AppList>) {
         di.baseDI = (context.applicationContext as DIAware).di
 
-        val apps = message.data.apps.map {
-            WatchAppDetails(
-                message.sourceUid,
-                it.packageName,
-                null,
-                it.label,
-                it.version,
-                0,
-                it.isSystemApp,
-                it.hasLaunchActivity,
-                it.isEnabled,
-                it.installTime,
-                it.lastUpdateTime,
-                it.requestedPermissions
-            )
-        }
+        val apps = message.data.mapToWatchAppDetails(message.sourceUid)
         repository.updateAll(apps)
     }
 }
