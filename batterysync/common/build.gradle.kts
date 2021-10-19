@@ -14,6 +14,11 @@ kotlin {
                 api(libs.wire.runtime)
             }
         }
+        val commonTest by getting {
+            dependencies {
+                implementation(kotlin("test"))
+            }
+        }
         val androidMain by getting {
             dependencies { }
         }
