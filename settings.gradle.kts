@@ -14,7 +14,6 @@ include(
     ":phonelocking",
     ":settings:common",
     ":settings:mobile",
-    ":versionsync",
     ":mobile",
     ":wearos"
 )
