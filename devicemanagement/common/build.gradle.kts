@@ -1,6 +1,7 @@
 plugins {
     kotlin("multiplatform")
     id("com.android.library")
+    id("com.squareup.wire")
 }
 
 kotlin {
@@ -8,7 +9,10 @@ kotlin {
 
     sourceSets {
         val commonMain by getting {
-            dependencies { }
+            dependencies {
+                api(libs.watchconnection.common)
+                implementation(libs.wire.runtime)
+            }
         }
         val androidMain by getting {
             dependencies { }
@@ -29,4 +33,11 @@ tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach 
     kotlinOptions {
         freeCompilerArgs = freeCompilerArgs + "-Xopt-in=kotlin.RequiresOptIn"
     }
+}
+
+wire {
+    sourcePath {
+        srcDir("src/commonMain/proto")
+    }
+    kotlin { }
 }
