@@ -3,8 +3,8 @@ package com.boswelja.smartwatchextensions
 import android.app.Application
 import com.boswelja.smartwatchextensions.appmanager.AppListSerializer
 import com.boswelja.smartwatchextensions.batterysync.BatteryStatsSerializer
+import com.boswelja.smartwatchextensions.devicemanagement.VersionSerializer
 import com.boswelja.smartwatchextensions.dndsync.DnDStatusSerializer
-import com.boswelja.smartwatchextensions.versionsync.VersionSerializer
 import com.boswelja.watchconnection.wear.discovery.DiscoveryClient
 import com.boswelja.watchconnection.wear.message.MessageClient
 import org.kodein.di.DI
