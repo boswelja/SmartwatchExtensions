@@ -62,9 +62,10 @@ class WatchBatteryTileService : WatchTileService(), DIAware {
             .getBoolean(watch.uid, BATTERY_SYNC_ENABLED_KEY, false).first()
 
         if (isBatterySyncEnabled) {
+            // TODO Handle null cases
             val batteryStats = batteryStatsRepository
                 .batteryStatsFor(watch.uid)
-                .first()
+                .first()!!
 
             updateTile {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {

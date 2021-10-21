@@ -2,7 +2,7 @@ package com.boswelja.smartwatchextensions.batterysync
 
 import com.boswelja.smartwatchextensions.batterysync.database.BatteryStatsDatabase
 import com.squareup.sqldelight.runtime.coroutines.asFlow
-import com.squareup.sqldelight.runtime.coroutines.mapToOneNotNull
+import com.squareup.sqldelight.runtime.coroutines.mapToOneOrNull
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 import kotlin.coroutines.CoroutineContext
@@ -19,13 +19,13 @@ class BatteryStatsDbRepository(
      * Flow the battery stats for a watch with a given ID.
      * @param watchId The ID of the watch to flow stats for.
      */
-    override fun batteryStatsFor(watchId: String): Flow<BatteryStats> = database
+    override fun batteryStatsFor(watchId: String): Flow<BatteryStats?> = database
         .watchBatteryStatsQueries
         .getFor(watchId) { _, percent, charging, timestamp ->
             BatteryStats(percent, charging, timestamp)
         }
         .asFlow()
-        .mapToOneNotNull()
+        .mapToOneOrNull()
 
     /**
      * Remove the battery stats for a watch with the given ID.

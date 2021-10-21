@@ -3,11 +3,12 @@ package com.boswelja.smartwatchextensions.batterysync
 import kotlinx.coroutines.flow.Flow
 
 interface BatteryStatsRepository {
+
     /**
      * Flow the battery stats for a watch with a given ID.
      * @param watchId The ID of the watch to flow stats for.
      */
-    fun batteryStatsFor(watchId: String): Flow<BatteryStats>
+    fun batteryStatsFor(watchId: String): Flow<BatteryStats?>
 
     /**
      * Remove the battery stats for a watch with the given ID.
