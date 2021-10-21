@@ -66,7 +66,6 @@ dependencies {
     implementation(projects.messages.mobile)
     implementation(projects.phonelocking)
     implementation(projects.settings.mobile)
-    implementation(projects.versionsync)
 
     implementation(libs.firebase.analytics)
 
