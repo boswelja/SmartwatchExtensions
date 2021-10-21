@@ -3,10 +3,10 @@ package com.boswelja.smartwatchextensions.aboutapp.ui
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import com.boswelja.smartwatchextensions.devicemanagement.REQUEST_APP_VERSION
+import com.boswelja.smartwatchextensions.devicemanagement.Version
+import com.boswelja.smartwatchextensions.devicemanagement.VersionSerializer
 import com.boswelja.smartwatchextensions.devicemanagement.WatchManager
-import com.boswelja.smartwatchextensions.versionsync.REQUEST_APP_VERSION
-import com.boswelja.smartwatchextensions.versionsync.Version
-import com.boswelja.smartwatchextensions.versionsync.VersionSerializer
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow

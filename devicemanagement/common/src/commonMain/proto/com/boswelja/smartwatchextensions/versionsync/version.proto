@@ -1,5 +1,5 @@
 syntax = "proto3";
-package com.boswelja.smartwatchextensions.versionsync;
+package com.boswelja.smartwatchextensions.devicemanagement;
 
 /* Contains information about the installed app's version. */
 message Version {

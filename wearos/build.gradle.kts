@@ -62,7 +62,6 @@ dependencies {
     implementation(projects.dndsync.wear)
     implementation(projects.phonelocking)
     implementation(projects.settings.common)
-    implementation(projects.versionsync)
 
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.core.ktx)

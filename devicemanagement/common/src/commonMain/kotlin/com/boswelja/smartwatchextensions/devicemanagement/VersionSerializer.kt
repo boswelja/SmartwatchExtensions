@@ -1,4 +1,4 @@
-package com.boswelja.smartwatchextensions.versionsync
+package com.boswelja.smartwatchextensions.devicemanagement
 
 import com.boswelja.watchconnection.common.message.MessageSerializer
 
