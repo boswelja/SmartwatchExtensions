@@ -1,19 +1,18 @@
 package com.boswelja.smartwatchextensions.devicemanagement
 
 import android.content.Context
-import com.boswelja.smartwatchextensions.devicemanagement.database.RegisteredWatchDatabase
 import com.boswelja.smartwatchextensions.devicemanagement.database.RegisteredWatchDatabaseLoader
-import org.kodein.di.DI
-import org.kodein.di.bind
-import org.kodein.di.instance
-import org.kodein.di.singleton
+import kotlinx.coroutines.Dispatchers
+import org.koin.dsl.module
 
-val deviceManagementModule = DI.Module(name = "DeviceManagement") {
-    import(deviceManagementCommonModule)
-    bind<RegisteredWatchDatabase>() with singleton {
-        RegisteredWatchDatabaseLoader(instance()).createDatabase()
+val deviceManagementModule = module {
+    single {
+        RegisteredWatchDatabaseLoader(get()).createDatabase()
     }
-    bind<SelectedWatchManager>() with singleton {
-        SelectedWatchStoreManager(instance<Context>().selectedWatchStateStore, instance())
+    single<SelectedWatchManager> {
+        SelectedWatchStoreManager(get<Context>().selectedWatchStateStore, get())
+    }
+    single<WatchRepository> {
+        WatchDbRepository(get(), get(), Dispatchers.IO)
     }
 }
