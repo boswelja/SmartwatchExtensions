@@ -1,13 +1,10 @@
 package com.boswelja.smartwatchextensions.messages
 
-import com.boswelja.smartwatchextensions.messages.database.MessageDatabase
 import com.boswelja.smartwatchextensions.messages.database.MessagesDatabaseLoader
-import org.kodein.di.DI
-import org.kodein.di.bind
-import org.kodein.di.instance
-import org.kodein.di.singleton
+import kotlinx.coroutines.Dispatchers
+import org.koin.dsl.module
 
-val messagesModule = DI.Module(name = "Messages") {
-    import(messagesCommonModule)
-    bind<MessageDatabase>() with singleton { MessagesDatabaseLoader(instance()).createDatabase() }
+val messagesModule = module {
+    single<MessagesRepository> { MessagesDbRepository(get(), Dispatchers.IO) }
+    single { MessagesDatabaseLoader(get()).createDatabase() }
 }
