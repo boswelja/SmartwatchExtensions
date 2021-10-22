@@ -26,6 +26,7 @@ firebaseAnalytics = "19.0.1"
 googlePlayCore = "1.10.2"
 googlePlayCoreKtx = "1.8.1"
 junit = "4.13.2"
+koin = "3.1.2"
 kodein = "7.8.0"
 migration = "2.1.0"
 mockk = "1.12.0"
@@ -106,6 +107,12 @@ sqldelight-coroutines = { module = "com.squareup.sqldelight:coroutines-extension
 sqldelight-android = { module = "com.squareup.sqldelight:android-driver", version.ref = "sqldelight" }
 sqldelight-sqlitedriver = { module = "com.squareup.sqldelight:sqlite-driver", version.ref = "sqldelight" }
 turbine = { module = "app.cash.turbine:turbine", version.ref = "turbine" }
+
+koin-android = { module = "io.insert-koin:koin-android", version.ref = "koin" }
+koin-compose = { module = "io.insert-koin:koin-androidx-compose", version.ref = "koin" }
+koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
+koin-test = { module = "io.insert-koin:koin-test", version.ref = "koin" }
+koin-workmanager = { module = "io.insert-koin:koin-androidx-workmanager", version.ref = "koin" }
 
 [bundles]
 compose-mobile = [
