@@ -3,9 +3,8 @@ package com.boswelja.smartwatchextensions.batterysync
 import android.content.Context
 import com.boswelja.watchconection.common.message.MessageReceiver
 import com.boswelja.watchconnection.common.message.ReceivedMessage
-import org.kodein.di.DIAware
-import org.kodein.di.LateInitDI
-import org.kodein.di.instance
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 
 /**
  * A [MessageReceiver] to receive [BatteryStats] and update [BatteryStatsDbRepository] with the new
@@ -13,11 +12,9 @@ import org.kodein.di.instance
  */
 abstract class BaseBatteryStatsReceiver :
     MessageReceiver<BatteryStats?>(BatteryStatsSerializer),
-    DIAware {
+    KoinComponent {
 
-    override val di = LateInitDI()
-
-    private val batteryStatsRepository: BatteryStatsRepository by instance()
+    private val batteryStatsRepository: BatteryStatsRepository by inject()
 
     /**
      * Called after battery stats have been saved into the repository.
@@ -35,8 +32,6 @@ abstract class BaseBatteryStatsReceiver :
         context: Context,
         message: ReceivedMessage<BatteryStats?>
     ) {
-        di.baseDI = (context.applicationContext as DIAware).di
-
         message.data?.let { batteryStats ->
             batteryStatsRepository.updateStatsFor(
                 message.sourceUid,

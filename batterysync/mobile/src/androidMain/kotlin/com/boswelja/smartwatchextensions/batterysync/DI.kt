@@ -1,15 +1,10 @@
 package com.boswelja.smartwatchextensions.batterysync
 
-import com.boswelja.smartwatchextensions.batterysync.database.BatteryStatsDatabase
 import com.boswelja.smartwatchextensions.batterysync.database.BatteryStatsDatabaseLoader
-import org.kodein.di.DI
-import org.kodein.di.bind
-import org.kodein.di.instance
-import org.kodein.di.singleton
+import kotlinx.coroutines.Dispatchers
+import org.koin.dsl.module
 
-val batterySyncModule = DI.Module(name = "BatterySync") {
-    import(batterySyncCommonModule)
-    bind<BatteryStatsDatabase>() with singleton {
-        BatteryStatsDatabaseLoader(instance()).createDatabase()
-    }
+val batterySyncModule = module {
+    single { BatteryStatsDatabaseLoader(get()).createDatabase() }
+    single<BatteryStatsRepository> { BatteryStatsDbRepository(get(), Dispatchers.IO) }
 }
