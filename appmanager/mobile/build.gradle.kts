@@ -14,7 +14,6 @@ kotlin {
                 api(projects.appmanager.common)
                 implementation(libs.sqldelight.runtime)
                 implementation(libs.sqldelight.coroutines)
-                implementation(libs.kodein.core)
             }
         }
         val commonTest by getting {
@@ -27,7 +26,7 @@ kotlin {
             dependencies {
                 implementation(libs.sqldelight.android)
                 implementation(libs.androidx.work.ktx)
-                implementation(libs.kodein.android)
+                implementation(libs.koin.android)
             }
         }
         val androidTest by getting {

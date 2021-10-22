@@ -12,10 +12,8 @@ import androidx.work.workDataOf
 import com.boswelja.watchconnection.common.Watch
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
-import org.kodein.di.DI
-import org.kodein.di.DIAware
-import org.kodein.di.android.closestDI
-import org.kodein.di.instance
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 import java.util.UUID
 import java.util.concurrent.TimeUnit
 
@@ -25,11 +23,9 @@ import java.util.concurrent.TimeUnit
 actual abstract class BaseAppCacheUpdateWorker(
     context: Context,
     workerParams: WorkerParameters
-) : CoroutineWorker(context, workerParams), DIAware {
+) : CoroutineWorker(context, workerParams), KoinComponent {
 
-    override val di: DI by closestDI(context)
-
-    private val appRepository: WatchAppRepository by instance()
+    private val appRepository: WatchAppRepository by inject()
 
     actual abstract suspend fun onSendCacheState(
         targetUid: String,
