@@ -33,13 +33,13 @@ class MainApplication : Application(), DIAware {
 
     override val di: DI by DI.lazy {
         import(androidXModule(this@MainApplication))
-        importAll(
-            appManagerModule,
-            batterySyncModule,
-            deviceManagementModule,
-            messagesModule,
-            settingsModule
-        )
+//        importAll(
+//            appManagerModule,
+//            batterySyncModule,
+//            deviceManagementModule,
+//            messagesModule,
+//            settingsModule
+//        )
         bind<MessageClient>() with singleton {
             MessageClient(
                 serializers = listOf(
