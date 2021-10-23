@@ -5,8 +5,9 @@ import com.boswelja.smartwatchextensions.settings.database.IntSetting
 import com.boswelja.smartwatchextensions.settings.database.WatchSettingsDatabase
 import com.squareup.sqldelight.runtime.coroutines.asFlow
 import com.squareup.sqldelight.runtime.coroutines.mapToList
-import com.squareup.sqldelight.runtime.coroutines.mapToOne
+import com.squareup.sqldelight.runtime.coroutines.mapToOneOrNull
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import kotlin.coroutines.CoroutineContext
 
@@ -14,6 +15,7 @@ class WatchSettingsDbRepository(
     private val database: WatchSettingsDatabase,
     private val dispatcher: CoroutineContext
 ) : WatchSettingsRepository {
+
     override suspend fun putBoolean(watchId: String, key: String, value: Boolean) {
         withContext(dispatcher) {
             database.boolSettingQueries.update(
@@ -34,13 +36,15 @@ class WatchSettingsDbRepository(
         database.boolSettingQueries
             .get(watchId, key)
             .asFlow()
-            .mapToOne()
+            .mapToOneOrNull()
+            .map { it ?: defaultValue }
 
     override fun getInt(watchId: String, key: String, defaultValue: Int): Flow<Int> =
         database.intSettingQueries
             .get(watchId, key)
             .asFlow()
-            .mapToOne()
+            .mapToOneOrNull()
+            .map { it ?: defaultValue }
 
     override fun getIdsWithBooleanSet(key: String, value: Boolean): Flow<List<String>> =
         database.boolSettingQueries
