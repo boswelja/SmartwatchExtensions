@@ -14,6 +14,7 @@ kotlin {
                 api(projects.appmanager.common)
                 implementation(libs.sqldelight.runtime)
                 implementation(libs.sqldelight.coroutines)
+                implementation(libs.koin.core)
             }
         }
         val commonTest by getting {

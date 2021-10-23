@@ -87,6 +87,8 @@ dependencies {
     implementation(libs.koin.android)
     implementation(libs.koin.compose)
 
+    implementation(libs.sqldelight.android)
+
     implementation(libs.bundles.compose.mobile)
 
     testImplementation(libs.androidx.work.test)

@@ -14,12 +14,12 @@ kotlin {
                 api(projects.settings.common)
                 implementation(libs.sqldelight.runtime)
                 implementation(libs.sqldelight.coroutines)
+                implementation(libs.koin.core)
             }
         }
         val androidMain by getting {
             dependencies {
                 implementation(libs.sqldelight.android)
-                implementation(libs.koin.android)
             }
         }
     }

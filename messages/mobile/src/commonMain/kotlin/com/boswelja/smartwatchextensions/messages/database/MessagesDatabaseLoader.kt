@@ -1,5 +1,8 @@
 package com.boswelja.smartwatchextensions.messages.database
 
-expect class MessagesDatabaseLoader {
-    fun createDatabase(): MessageDatabase
-}
+import com.squareup.sqldelight.EnumColumnAdapter
+
+internal val messagesDbAdapter = MessageDb.Adapter(
+    iconAdapter = EnumColumnAdapter(),
+    actionAdapter = EnumColumnAdapter()
+)
