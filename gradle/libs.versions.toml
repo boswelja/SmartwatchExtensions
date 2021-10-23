@@ -27,7 +27,6 @@ googlePlayCore = "1.10.2"
 googlePlayCoreKtx = "1.8.1"
 junit = "4.13.2"
 koin = "3.1.2"
-kodein = "7.8.0"
 migration = "2.1.0"
 mockk = "1.12.0"
 playServicesWearable = "17.1.0"
@@ -84,9 +83,6 @@ firebase-analytics = { module = "com.google.firebase:firebase-analytics-ktx", ve
 googleplay-core = { module = "com.google.android.play:core", version.ref = "googlePlayCore" }
 googleplay-corektx = { module = "com.google.android.play:core-ktx", version.ref = "googlePlayCoreKtx" }
 junit = { module = "junit:junit", version.ref = "junit" }
-kodein-core = { module = "org.kodein.di:kodein-di", version.ref = "kodein" }
-kodein-android = { module = "org.kodein.di:kodein-di-framework-android-core", version.ref = "kodein" }
-kodein-androidx = { module = "org.kodein.di:kodein-di-framework-android-x", version.ref = "kodein" }
 kotlinx-coroutines-playservices = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-play-services", version.ref = "coroutines" }
 kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "coroutines" }
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm", version.ref = "coroutines" }
