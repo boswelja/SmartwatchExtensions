@@ -21,10 +21,13 @@ import com.boswelja.smartwatchextensions.messages.messagesModule
 import com.boswelja.smartwatchextensions.messages.messagesUiModule
 import com.boswelja.smartwatchextensions.onboarding.onboardingModule
 import com.boswelja.smartwatchextensions.phonelocking.phoneLockingModule
+import com.boswelja.smartwatchextensions.proximity.proximityModule
 import com.boswelja.smartwatchextensions.settings.BoolSettingSerializer
 import com.boswelja.smartwatchextensions.settings.IntSettingSerializer
 import com.boswelja.smartwatchextensions.settings.appSettingsModule
 import com.boswelja.smartwatchextensions.settings.settingsModule
+import com.boswelja.smartwatchextensions.updatechecker.GooglePlayUpdateChecker
+import com.boswelja.smartwatchextensions.updatechecker.UpdateChecker
 import com.boswelja.watchconnection.core.discovery.DiscoveryClient
 import com.boswelja.watchconnection.core.message.MessageClient
 import com.boswelja.watchconnection.wearos.discovery.WearOSDiscoveryPlatform
@@ -75,7 +78,8 @@ class MainApplication : Application() {
                 messagesUiModule,
                 onboardingModule,
                 phoneLockingModule,
-                appSettingsModule
+                appSettingsModule,
+                proximityModule
             )
         }
     }
@@ -127,6 +131,9 @@ val clientsModule = module {
                 WearOSDiscoveryPlatform(get())
             )
         )
+    }
+    single<UpdateChecker> {
+        GooglePlayUpdateChecker(get())
     }
 }
 

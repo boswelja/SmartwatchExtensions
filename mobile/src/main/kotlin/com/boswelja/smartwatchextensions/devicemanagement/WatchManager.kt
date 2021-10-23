@@ -112,8 +112,12 @@ class WatchManager(
     fun getStatusFor(watch: Watch) = discoveryClient.connectionModeFor(watch)
 
     suspend fun getCapabilitiesFor(watch: Watch) =
-        discoveryClient.getCapabilitiesFor(watch).map { capability ->
-            Capability.valueOf(capability)
+        discoveryClient.getCapabilitiesFor(watch).mapNotNull { capability ->
+            try {
+                Capability.valueOf(capability)
+            } catch (e: Exception) {
+                null
+            }
         }
 
     fun selectedWatchHasCapability(capability: Capability): Flow<Boolean> =

@@ -3,13 +3,13 @@ package com.boswelja.smartwatchextensions.messages
 import com.boswelja.smartwatchextensions.messages.database.MessageDatabase
 import com.squareup.sqldelight.runtime.coroutines.asFlow
 import com.squareup.sqldelight.runtime.coroutines.mapToList
-import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
+import kotlin.coroutines.CoroutineContext
 
 class MessagesDbRepository(
     private val database: MessageDatabase,
-    private val dispatcher: CoroutineDispatcher
+    private val dispatcher: CoroutineContext
 ) : MessagesRepository {
     override suspend fun insert(message: Message, sourceUid: String?) {
         withContext(dispatcher) {
