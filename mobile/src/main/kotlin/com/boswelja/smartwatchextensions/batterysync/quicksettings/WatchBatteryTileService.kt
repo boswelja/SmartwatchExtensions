@@ -16,17 +16,12 @@ import com.boswelja.smartwatchextensions.settings.BoolSettingKeys.BATTERY_SYNC_E
 import com.boswelja.smartwatchextensions.settings.WatchSettingsRepository
 import com.boswelja.watchconnection.common.Watch
 import kotlinx.coroutines.flow.first
-import org.kodein.di.DI
-import org.kodein.di.DIAware
-import org.kodein.di.android.closestDI
-import org.kodein.di.instance
+import org.koin.android.ext.android.inject
 
-class WatchBatteryTileService : WatchTileService(), DIAware {
+class WatchBatteryTileService : WatchTileService() {
 
-    override val di: DI by closestDI()
-
-    private val settingsRepository: WatchSettingsRepository by instance()
-    private val batteryStatsRepository: BatteryStatsRepository by instance()
+    private val settingsRepository: WatchSettingsRepository by inject()
+    private val batteryStatsRepository: BatteryStatsRepository by inject()
 
     override fun onClick() {
         val intent = Intent(this, MainActivity::class.java).apply {

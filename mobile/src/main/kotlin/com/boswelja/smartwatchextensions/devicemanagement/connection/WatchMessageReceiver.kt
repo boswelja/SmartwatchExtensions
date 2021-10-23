@@ -20,9 +20,8 @@ import com.boswelja.watchconnection.core.message.MessageClient
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.withContext
-import org.kodein.di.DIAware
-import org.kodein.di.LateInitDI
-import org.kodein.di.instance
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 import timber.log.Timber
 
 class WatchMessageReceiver :
@@ -36,15 +35,12 @@ class WatchMessageReceiver :
             )
         )
     ),
-    DIAware {
+    KoinComponent {
 
-    override val di = LateInitDI()
-
-    private val watchRepository: WatchRepository by instance()
-    private val messageClient: MessageClient by instance()
+    private val watchRepository: WatchRepository by inject()
+    private val messageClient: MessageClient by inject()
 
     override suspend fun onMessageReceived(context: Context, message: ReceivedMessage<Nothing?>) {
-        di.baseDI = (context.applicationContext as DIAware).di
         when (message.path) {
             LAUNCH_APP -> launchApp(context)
             CHECK_WATCH_REGISTERED_PATH -> sendIsWatchRegistered(message.sourceUid)

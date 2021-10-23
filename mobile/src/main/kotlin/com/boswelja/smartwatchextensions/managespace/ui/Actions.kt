@@ -16,10 +16,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.common.ui.Card
 import com.boswelja.smartwatchextensions.common.ui.CardHeader
+import org.koin.androidx.compose.getViewModel
 
 @Composable
 fun Action(
@@ -55,7 +55,7 @@ fun ClearCacheAction(
     onActionFinished: (success: Boolean) -> Unit,
     onProgressChange: (Float) -> Unit
 ) {
-    val viewModel: ManageSpaceViewModel = viewModel()
+    val viewModel: ManageSpaceViewModel = getViewModel()
     Action(
         modifier = modifier,
         title = stringResource(R.string.clear_cache_title),
@@ -75,7 +75,7 @@ fun ResetAnalyticsAction(
     modifier: Modifier = Modifier,
     onActionFinished: (success: Boolean) -> Unit,
 ) {
-    val viewModel: ManageSpaceViewModel = viewModel()
+    val viewModel: ManageSpaceViewModel = getViewModel()
     Action(
         modifier = modifier,
         title = stringResource(R.string.reset_analytics_title),
@@ -95,7 +95,7 @@ fun ResetAppSettingsAction(
     onActionFinished: (success: Boolean) -> Unit,
     onProgressChange: (Float) -> Unit
 ) {
-    val viewModel: ManageSpaceViewModel = viewModel()
+    val viewModel: ManageSpaceViewModel = getViewModel()
     var dialogVisible by remember { mutableStateOf(false) }
     Action(
         modifier = modifier,
@@ -135,7 +135,7 @@ fun ResetExtensionsAction(
     onActionFinished: (success: Boolean) -> Unit,
     onProgressChange: (Float) -> Unit
 ) {
-    val viewModel: ManageSpaceViewModel = viewModel()
+    val viewModel: ManageSpaceViewModel = getViewModel()
     var dialogVisible by remember { mutableStateOf(false) }
     Action(
         modifier = modifier,
@@ -175,7 +175,7 @@ fun ResetAppAction(
     onActionFinished: (success: Boolean) -> Unit,
     onProgressChange: (Float) -> Unit
 ) {
-    val viewModel: ManageSpaceViewModel = viewModel()
+    val viewModel: ManageSpaceViewModel = getViewModel()
     var dialogVisible by remember { mutableStateOf(false) }
     Action(
         modifier = modifier,

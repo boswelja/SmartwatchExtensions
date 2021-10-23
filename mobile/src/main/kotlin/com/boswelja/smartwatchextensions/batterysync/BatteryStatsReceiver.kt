@@ -28,29 +28,24 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.withContext
-import org.kodein.di.DIAware
-import org.kodein.di.LateInitDI
-import org.kodein.di.instance
+import org.koin.core.component.inject
 import timber.log.Timber
 import java.util.Locale
 
 private const val BATTERY_CHARGED_NOTI_ID = 408565
 private const val BATTERY_LOW_NOTI_ID = 408566
 
-class BatteryStatsReceiver : BaseBatteryStatsReceiver(), DIAware {
+class BatteryStatsReceiver : BaseBatteryStatsReceiver() {
 
-    override val di = LateInitDI()
-
-    private val messagesRepository: MessagesRepository by instance()
-    private val watchRepository: WatchRepository by instance()
-    private val settingsRepository: WatchSettingsRepository by instance()
+    private val messagesRepository: MessagesRepository by inject()
+    private val watchRepository: WatchRepository by inject()
+    private val settingsRepository: WatchSettingsRepository by inject()
 
     override suspend fun onBatteryStatsReceived(
         context: Context,
         sourceUid: String,
         batteryStats: BatteryStats
     ) {
-        di.baseDI = (context.applicationContext as DIAware).di
         // TODO This can be optimised
         withContext(Dispatchers.IO) {
             watchRepository.getWatchById(sourceUid).firstOrNull()?.let { watch ->

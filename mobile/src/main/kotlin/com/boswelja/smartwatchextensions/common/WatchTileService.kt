@@ -12,20 +12,15 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
-import org.kodein.di.DI
-import org.kodein.di.DIAware
-import org.kodein.di.android.closestDI
-import org.kodein.di.instance
+import org.koin.android.ext.android.inject
 
 /**
  * An abstract implementation of [TileService] that provides the watch tied to QS Tiles, as well as
  * a coroutine wrapper.
  */
-abstract class WatchTileService : TileService(), DIAware {
+abstract class WatchTileService : TileService() {
 
-    override val di: DI by closestDI()
-
-    private val watchManager: WatchManager by instance()
+    private val watchManager: WatchManager by inject()
 
     private val coroutineScope = CoroutineScope(Dispatchers.IO)
     private var coroutineJob: Job? = null

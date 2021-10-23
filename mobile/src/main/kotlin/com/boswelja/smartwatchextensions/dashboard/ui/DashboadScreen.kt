@@ -25,7 +25,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.appmanager.ui.AppSummarySmall
 import com.boswelja.smartwatchextensions.batterysync.ui.BatterySummarySmall
@@ -33,6 +32,7 @@ import com.boswelja.smartwatchextensions.common.ui.StaggeredVerticalGrid
 import com.boswelja.smartwatchextensions.devicemanagement.ui.WatchStatusSummarySmall
 import com.boswelja.watchconnection.common.discovery.ConnectionMode
 import kotlinx.coroutines.Dispatchers
+import org.koin.androidx.compose.getViewModel
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -42,7 +42,7 @@ fun DashboardScreen(
     onNavigateTo: (DashboardDestination) -> Unit
 ) {
     val scrollState = rememberScrollState()
-    val viewModel: DashboardViewModel = viewModel()
+    val viewModel: DashboardViewModel = getViewModel()
     val watchStatus by viewModel.status.collectAsState(ConnectionMode.Disconnected, Dispatchers.IO)
     val batteryStats by viewModel.batteryStats.collectAsState(null, Dispatchers.IO)
     val appCount by viewModel.appCount.collectAsState(0, Dispatchers.IO)

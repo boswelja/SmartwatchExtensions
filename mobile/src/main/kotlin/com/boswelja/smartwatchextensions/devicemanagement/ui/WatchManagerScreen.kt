@@ -26,13 +26,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.common.ui.Card
 import com.boswelja.smartwatchextensions.common.ui.CardHeader
 import com.boswelja.smartwatchextensions.devicemanagement.ui.info.WatchInfoScreen
 import com.boswelja.watchconnection.common.Watch
 import kotlinx.coroutines.Dispatchers
+import org.koin.androidx.compose.getViewModel
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -42,7 +42,7 @@ fun WatchManagerScreen(
     onShowSnackbar: suspend (String) -> Unit,
     onNavigateTo: (WatchManagerDestination) -> Unit
 ) {
-    val viewModel: WatchManagerViewModel = viewModel()
+    val viewModel: WatchManagerViewModel = getViewModel()
     val registeredWatches by viewModel.registeredWatches.collectAsState(emptyList(), Dispatchers.IO)
 
     var visibleWatch by rememberSaveable { mutableStateOf<Watch?>(null) }

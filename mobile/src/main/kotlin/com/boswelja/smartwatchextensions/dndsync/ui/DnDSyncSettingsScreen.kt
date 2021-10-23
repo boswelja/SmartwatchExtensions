@@ -26,6 +26,7 @@ import com.boswelja.smartwatchextensions.common.ui.SwitchSetting
 import com.boswelja.smartwatchextensions.settings.BoolSettingKeys.DND_SYNC_TO_PHONE_KEY
 import com.boswelja.smartwatchextensions.settings.BoolSettingKeys.DND_SYNC_WITH_THEATER_KEY
 import kotlinx.coroutines.Dispatchers
+import org.koin.androidx.compose.getViewModel
 
 @Composable
 fun DnDSyncSettingsScreen(
@@ -43,7 +44,7 @@ fun DnDSyncSettingsScreen(
 @Composable
 fun DndSyncSettingsCard(modifier: Modifier = Modifier) {
     val context = LocalContext.current
-    val viewModel: DnDSyncSettingsViewModel = viewModel()
+    val viewModel: DnDSyncSettingsViewModel = getViewModel()
     var changingKey = rememberSaveable { "" }
 
     val canReceiveDnD by viewModel.canReceiveDnD.collectAsState(false, Dispatchers.IO)

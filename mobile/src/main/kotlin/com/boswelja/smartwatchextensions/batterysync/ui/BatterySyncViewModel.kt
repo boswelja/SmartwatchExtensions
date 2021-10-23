@@ -24,22 +24,18 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
-import org.kodein.di.DI
-import org.kodein.di.DIAware
-import org.kodein.di.android.x.closestDI
-import org.kodein.di.instance
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 import timber.log.Timber
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class BatterySyncViewModel internal constructor(
     application: Application,
     private val dispatcher: CoroutineDispatcher
-) : AndroidViewModel(application), DIAware {
+) : AndroidViewModel(application), KoinComponent {
 
-    override val di: DI by closestDI()
-
-    private val watchManager: WatchManager by instance()
-    private val repository: BatteryStatsRepository by instance()
+    private val watchManager: WatchManager by inject()
+    private val repository: BatteryStatsRepository by inject()
 
     @Suppress("unused")
     constructor(application: Application) : this(

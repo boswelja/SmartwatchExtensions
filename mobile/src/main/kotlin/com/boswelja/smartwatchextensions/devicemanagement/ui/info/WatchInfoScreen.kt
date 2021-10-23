@@ -35,7 +35,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.common.ui.BigButton
 import com.boswelja.smartwatchextensions.devicemanagement.Capability
@@ -43,6 +42,7 @@ import com.boswelja.smartwatchextensions.devicemanagement.labelRes
 import com.boswelja.watchconnection.common.Watch
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import org.koin.androidx.compose.getViewModel
 
 @Composable
 fun WatchInfoScreen(
@@ -53,7 +53,7 @@ fun WatchInfoScreen(
     onWatchRemoved: () -> Unit
 ) {
     val context = LocalContext.current
-    val viewModel: WatchInfoViewModel = viewModel()
+    val viewModel: WatchInfoViewModel = getViewModel()
     val scope = rememberCoroutineScope()
     val scrollState = rememberScrollState()
 

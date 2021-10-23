@@ -13,13 +13,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.common.ui.Card
 import com.boswelja.smartwatchextensions.common.ui.CardHeader
 import com.boswelja.smartwatchextensions.common.ui.SwitchSetting
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import org.koin.androidx.compose.getViewModel
 
 @Composable
 fun ProximitySettingsScreen(
@@ -37,7 +37,7 @@ fun ProximitySettingsScreen(
 @Composable
 fun SeparationSettingsCard(modifier: Modifier = Modifier) {
     val scope = rememberCoroutineScope()
-    val viewModel = viewModel<ProximitySettingsViewModel>()
+    val viewModel = getViewModel<ProximitySettingsViewModel>()
     val phoneProximityNotiEnabled by viewModel.phoneProximityNotiSetting
         .collectAsState(false, Dispatchers.IO)
     val watchProximityNotiEnabled by viewModel.watchProximityNotiSetting

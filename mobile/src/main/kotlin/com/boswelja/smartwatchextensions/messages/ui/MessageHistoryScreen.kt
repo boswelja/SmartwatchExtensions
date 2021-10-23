@@ -26,10 +26,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.messages.DisplayMessage
 import kotlinx.coroutines.launch
+import org.koin.androidx.compose.getViewModel
 
 @Composable
 fun MessageHistoryScreen(
@@ -37,7 +37,7 @@ fun MessageHistoryScreen(
     contentPadding: Dp = 16.dp,
     onShowSnackbar: suspend (String) -> Unit
 ) {
-    val viewModel: MessageHistoryViewModel = viewModel()
+    val viewModel: MessageHistoryViewModel = getViewModel()
     val messages by viewModel.dismissedMessagesFlow.collectAsState(emptyList())
     val scope = rememberCoroutineScope()
 

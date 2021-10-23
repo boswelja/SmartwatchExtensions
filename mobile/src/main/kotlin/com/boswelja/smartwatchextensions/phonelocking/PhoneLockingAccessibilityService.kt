@@ -13,19 +13,14 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import org.kodein.di.DI
-import org.kodein.di.DIAware
-import org.kodein.di.android.closestDI
-import org.kodein.di.instance
+import org.koin.android.ext.android.inject
 import timber.log.Timber
 
 @ExperimentalCoroutinesApi
-class PhoneLockingAccessibilityService : AccessibilityService(), DIAware {
-
-    override val di: DI by closestDI()
+class PhoneLockingAccessibilityService : AccessibilityService() {
 
     private val coroutineScope = CoroutineScope(Dispatchers.IO)
-    private val watchManager: WatchManager by instance()
+    private val watchManager: WatchManager by inject()
 
     private var isStopping = false
 

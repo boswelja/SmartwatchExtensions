@@ -22,19 +22,16 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
-import org.kodein.di.DIAware
-import org.kodein.di.LateInitDI
-import org.kodein.di.instance
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 import timber.log.Timber
 
 /**
  * An [AppWidgetProvider] provides the [Watch] from this widget's config.
  */
-abstract class WatchWidgetProvider : AppWidgetProvider(), DIAware {
+abstract class WatchWidgetProvider : AppWidgetProvider(), KoinComponent {
 
-    override val di = LateInitDI()
-
-    private val watchManager: WatchManager by instance()
+    private val watchManager: WatchManager by inject()
 
     private val coroutineScope = CoroutineScope(Dispatchers.Default)
 
@@ -134,8 +131,6 @@ abstract class WatchWidgetProvider : AppWidgetProvider(), DIAware {
         width: Int,
         height: Int
     ): RemoteViews {
-        di.baseDI = (context.applicationContext as DIAware).di
-
         // Get watch ID
         val widgetIdStore = context.widgetIdStore
         val watchId = widgetIdStore.data.map { preferences ->

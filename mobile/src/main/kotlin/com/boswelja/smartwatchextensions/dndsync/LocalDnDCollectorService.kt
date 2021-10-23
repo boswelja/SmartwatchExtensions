@@ -18,16 +18,11 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
-import org.kodein.di.DI
-import org.kodein.di.DIAware
-import org.kodein.di.android.closestDI
-import org.kodein.di.instance
+import org.koin.android.ext.android.inject
 
-class LocalDnDCollectorService : BaseLocalDnDCollectorService(), DIAware {
+class LocalDnDCollectorService : BaseLocalDnDCollectorService() {
 
-    override val di: DI by closestDI()
-
-    private val watchManager: WatchManager by instance()
+    private val watchManager: WatchManager by inject()
 
     private val targetWatches = ArrayList<Watch>()
 

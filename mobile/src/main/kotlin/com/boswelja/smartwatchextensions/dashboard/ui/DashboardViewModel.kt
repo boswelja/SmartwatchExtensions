@@ -1,7 +1,6 @@
 package com.boswelja.smartwatchextensions.dashboard.ui
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.ViewModel
 import com.boswelja.smartwatchextensions.appmanager.WatchAppRepository
 import com.boswelja.smartwatchextensions.batterysync.BatteryStatsRepository
 import com.boswelja.smartwatchextensions.devicemanagement.WatchManager
@@ -10,21 +9,13 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
-import org.kodein.di.DI
-import org.kodein.di.DIAware
-import org.kodein.di.android.x.closestDI
-import org.kodein.di.instance
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class DashboardViewModel(
-    application: Application
-) : AndroidViewModel(application), DIAware {
-
-    override val di: DI by closestDI()
-
-    private val batteryStatsRepository: BatteryStatsRepository by instance()
-    private val appRepository: WatchAppRepository by instance()
-    private val watchManager: WatchManager by instance()
+    private val batteryStatsRepository: BatteryStatsRepository,
+    private val appRepository: WatchAppRepository,
+    private val watchManager: WatchManager
+) : ViewModel() {
 
     val status = watchManager.selectedWatch.flatMapLatest { watch ->
         watch?.let {

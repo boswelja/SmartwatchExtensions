@@ -29,12 +29,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.common.ui.AppTheme
 import com.boswelja.smartwatchextensions.common.ui.BaseWidgetConfigActivity
 import com.boswelja.smartwatchextensions.common.ui.UpNavigationAppBar
 import com.boswelja.watchconnection.common.Watch
+import org.koin.androidx.viewmodel.ext.android.getViewModel
 
 class BatteryWidgetConfigActivity : BaseWidgetConfigActivity() {
 
@@ -61,7 +61,7 @@ class BatteryWidgetConfigActivity : BaseWidgetConfigActivity() {
                     }
                 ) {
                     Column(Modifier.fillMaxSize()) {
-                        val viewModel: BatteryWidgetConfigViewModel = viewModel()
+                        val viewModel: BatteryWidgetConfigViewModel = getViewModel()
                         val registeredWatches by viewModel.registeredWatches.collectAsState(
                             emptyList()
                         )

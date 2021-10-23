@@ -29,21 +29,17 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.launch
-import org.kodein.di.DI
-import org.kodein.di.DIAware
-import org.kodein.di.android.x.closestDI
-import org.kodein.di.instance
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 import timber.log.Timber
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class AppManagerViewModel internal constructor(
     application: Application
-) : AndroidViewModel(application), DIAware {
+) : AndroidViewModel(application), KoinComponent {
 
-    override val di: DI by closestDI()
-
-    private val appRepository: WatchAppRepository by instance()
-    private val watchManager: WatchManager by instance()
+    private val appRepository: WatchAppRepository by inject()
+    private val watchManager: WatchManager by inject()
 
     @OptIn(FlowPreview::class)
     private val allApps = watchManager.selectedWatch.flatMapLatest { watch ->
