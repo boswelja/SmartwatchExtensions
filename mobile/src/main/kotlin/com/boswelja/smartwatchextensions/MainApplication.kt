@@ -37,6 +37,7 @@ import org.koin.core.context.startKoin
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 import timber.log.Timber
+import kotlin.coroutines.CoroutineContext
 
 @Suppress("unused")
 class MainApplication : Application() {
@@ -133,5 +134,5 @@ val databaseModule = module {
     factory<SqlDriver> { params ->
         AndroidSqliteDriver(params.get(), get(), params.get())
     }
-    single(named("database")) { Dispatchers.IO }
+    single<CoroutineContext>(named("database")) { Dispatchers.IO }
 }

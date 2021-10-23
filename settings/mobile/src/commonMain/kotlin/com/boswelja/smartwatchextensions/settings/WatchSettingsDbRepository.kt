@@ -6,13 +6,13 @@ import com.boswelja.smartwatchextensions.settings.database.WatchSettingsDatabase
 import com.squareup.sqldelight.runtime.coroutines.asFlow
 import com.squareup.sqldelight.runtime.coroutines.mapToList
 import com.squareup.sqldelight.runtime.coroutines.mapToOne
-import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
+import kotlin.coroutines.CoroutineContext
 
 class WatchSettingsDbRepository(
     private val database: WatchSettingsDatabase,
-    private val dispatcher: CoroutineDispatcher
+    private val dispatcher: CoroutineContext
 ) : WatchSettingsRepository {
     override suspend fun putBoolean(watchId: String, key: String, value: Boolean) {
         withContext(dispatcher) {
