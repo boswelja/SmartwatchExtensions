@@ -19,9 +19,8 @@ import com.boswelja.watchconnection.common.message.Message
 import com.boswelja.watchconnection.common.message.ReceivedMessage
 import com.boswelja.watchconnection.wear.discovery.DiscoveryClient
 import com.boswelja.watchconnection.wear.message.MessageClient
-import org.kodein.di.DIAware
-import org.kodein.di.LateInitDI
-import org.kodein.di.instance
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 
 class MessageReceiver :
     MessageReceiver<Nothing?>(
@@ -35,16 +34,12 @@ class MessageReceiver :
             )
         )
     ),
-    DIAware {
+    KoinComponent {
 
-    override val di = LateInitDI()
-
-    private val messageClient: MessageClient by instance()
-    private val discoveryClient: DiscoveryClient by instance()
+    private val messageClient: MessageClient by inject()
+    private val discoveryClient: DiscoveryClient by inject()
 
     override suspend fun onMessageReceived(context: Context, message: ReceivedMessage<Nothing?>) {
-        di.baseDI = (context.applicationContext as DIAware).di
-
         when (message.path) {
             REQUEST_APP_VERSION -> {
                 val version = Version(BuildConfig.VERSION_CODE, BuildConfig.VERSION_NAME)

@@ -21,17 +21,16 @@ import com.boswelja.watchconnection.wear.discovery.DiscoveryClient
 import com.boswelja.watchconnection.wear.message.MessageClient
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
-import org.kodein.di.DIAware
-import org.kodein.di.LateInitDI
-import org.kodein.di.instance
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 import timber.log.Timber
 
-class PhoneBatteryUpdateReceiver : MessageReceiver<BatteryStats?>(BatteryStatsSerializer), DIAware {
+class PhoneBatteryUpdateReceiver :
+    MessageReceiver<BatteryStats?>(BatteryStatsSerializer),
+    KoinComponent {
 
-    override val di = LateInitDI()
-
-    private val messageClient: MessageClient by instance()
-    private val discoveryClient: DiscoveryClient by instance()
+    private val messageClient: MessageClient by inject()
+    private val discoveryClient: DiscoveryClient by inject()
 
     private lateinit var notificationManager: NotificationManager
     private lateinit var phoneStateStore: DataStore<PhoneState>
@@ -41,8 +40,6 @@ class PhoneBatteryUpdateReceiver : MessageReceiver<BatteryStats?>(BatteryStatsSe
         context: Context,
         message: ReceivedMessage<BatteryStats?>
     ) {
-        di.baseDI = (context.applicationContext as DIAware).di
-
         message.data?.let { batteryStats ->
             notificationManager = context.getSystemService()!!
             phoneStateStore = context.phoneStateStore
