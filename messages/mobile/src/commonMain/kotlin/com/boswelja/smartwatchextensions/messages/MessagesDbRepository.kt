@@ -11,6 +11,7 @@ class MessagesDbRepository(
     private val database: MessageDatabase,
     private val dispatcher: CoroutineContext
 ) : MessagesRepository {
+
     override suspend fun insert(message: Message, sourceUid: String?) {
         withContext(dispatcher) {
             database.messageQueries.insert(
