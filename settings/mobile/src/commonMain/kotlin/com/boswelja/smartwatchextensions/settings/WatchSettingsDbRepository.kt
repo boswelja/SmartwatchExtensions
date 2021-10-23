@@ -14,6 +14,7 @@ class WatchSettingsDbRepository(
     private val database: WatchSettingsDatabase,
     private val dispatcher: CoroutineContext
 ) : WatchSettingsRepository {
+
     override suspend fun putBoolean(watchId: String, key: String, value: Boolean) {
         withContext(dispatcher) {
             database.boolSettingQueries.update(
