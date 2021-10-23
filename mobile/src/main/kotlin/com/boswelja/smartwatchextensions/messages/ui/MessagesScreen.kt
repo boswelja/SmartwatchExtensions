@@ -35,7 +35,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.common.startActivity
 import com.boswelja.smartwatchextensions.common.ui.AnimatedVisibilityItem
@@ -43,6 +42,7 @@ import com.boswelja.smartwatchextensions.common.ui.SwipeDismissItem
 import com.boswelja.smartwatchextensions.messages.DisplayMessage
 import com.boswelja.smartwatchextensions.messages.Message
 import kotlinx.coroutines.launch
+import org.koin.androidx.compose.getViewModel
 
 @Composable
 fun MessagesScreen(
@@ -52,7 +52,7 @@ fun MessagesScreen(
     onNavigateTo: (MessageDestination) -> Unit
 ) {
     val context = LocalContext.current
-    val viewModel: MessagesViewModel = viewModel()
+    val viewModel: MessagesViewModel = getViewModel()
     val scope = rememberCoroutineScope()
     val messages by viewModel.activeMessagesFlow.collectAsState(emptyList())
 

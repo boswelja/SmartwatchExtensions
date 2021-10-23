@@ -7,18 +7,11 @@ import com.boswelja.smartwatchextensions.proximity.SeparationObserverService
 import com.boswelja.smartwatchextensions.settings.BoolSettingKeys.PHONE_SEPARATION_NOTI_KEY
 import com.boswelja.smartwatchextensions.settings.BoolSettingKeys.WATCH_SEPARATION_NOTI_KEY
 import kotlinx.coroutines.flow.first
-import org.kodein.di.DI
-import org.kodein.di.DIAware
-import org.kodein.di.android.x.closestDI
-import org.kodein.di.instance
 
 class ProximitySettingsViewModel(
-    application: Application
-) : AndroidViewModel(application), DIAware {
-
-    override val di: DI by closestDI()
-
-    private val watchManager: WatchManager by instance()
+    application: Application,
+    private val watchManager: WatchManager
+) : AndroidViewModel(application) {
 
     val phoneProximityNotiSetting = watchManager.getBoolSetting(PHONE_SEPARATION_NOTI_KEY)
 

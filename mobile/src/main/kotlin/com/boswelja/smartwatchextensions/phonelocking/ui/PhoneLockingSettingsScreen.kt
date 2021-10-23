@@ -26,12 +26,12 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.common.ui.Card
 import com.boswelja.smartwatchextensions.common.ui.CardHeader
 import com.boswelja.smartwatchextensions.common.ui.SwitchSetting
 import kotlinx.coroutines.Dispatchers
+import org.koin.androidx.compose.getViewModel
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -51,7 +51,7 @@ fun PhoneLockingSettingsScreen(
 @Composable
 fun PhoneLockingSettingsCard(modifier: Modifier = Modifier) {
     val context = LocalContext.current
-    val viewModel: PhoneLockingSettingsViewModel = viewModel()
+    val viewModel: PhoneLockingSettingsViewModel = getViewModel()
     val phoneLockingEnabled by viewModel.phoneLockingEnabled.collectAsState(false, Dispatchers.IO)
     var phoneLockingSetupVisible by remember { mutableStateOf(false) }
     Card(

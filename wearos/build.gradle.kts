@@ -74,7 +74,7 @@ dependencies {
     implementation(libs.timber)
     implementation(libs.watchconnection.wear)
 
-    implementation(libs.kodein.android)
+    implementation(libs.koin.android)
 
     implementation(libs.bundles.compose.wear)
 

@@ -1,21 +1,16 @@
 package com.boswelja.smartwatchextensions.onboarding.ui
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
+import androidx.datastore.core.DataStore
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.boswelja.smartwatchextensions.analytics.Analytics
-import com.boswelja.smartwatchextensions.settings.appSettingsStore
+import com.boswelja.smartwatchextensions.settings.Settings
 import kotlinx.coroutines.launch
-import org.kodein.di.DI
-import org.kodein.di.DIAware
-import org.kodein.di.android.x.closestDI
-import org.kodein.di.instance
 
-class OnboardingViewModel(application: Application) : AndroidViewModel(application), DIAware {
-    override val di: DI by closestDI()
-
-    private val analytics: Analytics by instance()
-    private val appSettingsStore = application.appSettingsStore
+class OnboardingViewModel(
+    private val analytics: Analytics,
+    private val appSettingsStore: DataStore<Settings>
+) : ViewModel() {
 
     fun setAnalyticsEnabled(enabled: Boolean) {
         viewModelScope.launch {

@@ -13,10 +13,8 @@ import com.boswelja.smartwatchextensions.messages.Message
 import com.boswelja.smartwatchextensions.messages.MessagesRepository
 import com.boswelja.smartwatchextensions.messages.Priority
 import com.boswelja.smartwatchextensions.messages.sendMessage
-import org.kodein.di.DI
-import org.kodein.di.DIAware
-import org.kodein.di.android.closestDI
-import org.kodein.di.instance
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 import java.util.concurrent.TimeUnit
 
 /**
@@ -25,11 +23,9 @@ import java.util.concurrent.TimeUnit
 class UpdateCheckWorker(
     appContext: Context,
     workerParams: WorkerParameters
-) : CoroutineWorker(appContext, workerParams), DIAware {
+) : CoroutineWorker(appContext, workerParams), KoinComponent {
 
-    override val di: DI by closestDI(applicationContext)
-
-    private val messagesRepository: MessagesRepository by instance()
+    private val messagesRepository: MessagesRepository by inject()
 
     override suspend fun doWork(): Result {
         val updater = GooglePlayUpdateChecker(applicationContext)

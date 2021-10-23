@@ -9,19 +9,15 @@ import androidx.work.WorkerParameters
 import com.boswelja.smartwatchextensions.NotificationChannelHelper
 import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.settings.WatchSettingsRepository
-import org.kodein.di.DI
-import org.kodein.di.DIAware
-import org.kodein.di.android.closestDI
-import org.kodein.di.instance
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 
 class BootWorker(
     appContext: Context,
     workerParams: WorkerParameters
-) : CoroutineWorker(appContext, workerParams), DIAware {
+) : CoroutineWorker(appContext, workerParams), KoinComponent {
 
-    override val di: DI by closestDI(applicationContext)
-
-    private val settingsRepository: WatchSettingsRepository by instance()
+    private val settingsRepository: WatchSettingsRepository by inject()
 
     override suspend fun doWork(): Result {
         applicationContext.restartServices(settingsRepository)

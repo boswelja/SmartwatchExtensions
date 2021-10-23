@@ -84,7 +84,10 @@ dependencies {
     implementation(libs.timber)
     implementation(libs.watchconnection.platform.wearos)
 
-    implementation(libs.kodein.androidx)
+    implementation(libs.koin.android)
+    implementation(libs.koin.compose)
+
+    implementation(libs.sqldelight.android)
 
     implementation(libs.bundles.compose.mobile)
 

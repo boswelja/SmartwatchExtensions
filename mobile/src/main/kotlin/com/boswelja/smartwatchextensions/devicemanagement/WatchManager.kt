@@ -14,7 +14,6 @@ import com.boswelja.smartwatchextensions.settings.RESET_SETTINGS
 import com.boswelja.smartwatchextensions.settings.UPDATE_BOOL_PREFERENCE
 import com.boswelja.smartwatchextensions.settings.UPDATE_INT_PREFERENCE
 import com.boswelja.smartwatchextensions.settings.WatchSettingsRepository
-import com.boswelja.smartwatchextensions.widget.widgetIdStore
 import com.boswelja.watchconnection.common.Watch
 import com.boswelja.watchconnection.common.message.Message
 import com.boswelja.watchconnection.common.message.MessageSerializer
@@ -62,22 +61,13 @@ class WatchManager(
         }
     }
 
-    suspend fun forgetWatch(context: Context, watch: Watch) {
-        forgetWatch(
-            context.widgetIdStore,
-            watch
-        )
-    }
-
-    internal suspend fun forgetWatch(
-        widgetIdStore: DataStore<Preferences>,
+    suspend fun forgetWatch(
         watch: Watch
     ) {
         withContext(Dispatchers.IO) {
             batteryStatsRepository.removeStatsFor(watch.uid)
             messageClient.sendMessage(watch, Message(RESET_APP, null))
             watchRepository.deregisterWatch(watch)
-            removeWidgetsForWatch(watch, widgetIdStore)
             BaseAppCacheUpdateWorker.stopWorkerFor(context, watch.uid)
             analytics.logWatchRemoved()
         }
@@ -90,21 +80,12 @@ class WatchManager(
         }
     }
 
-    suspend fun resetWatchPreferences(context: Context, watch: Watch) {
-        resetWatchPreferences(
-            context.widgetIdStore,
-            watch
-        )
-    }
-
-    internal suspend fun resetWatchPreferences(
-        widgetIdStore: DataStore<Preferences>,
+    suspend fun resetWatchPreferences(
         watch: Watch
     ) {
         batteryStatsRepository.removeStatsFor(watch.uid)
         messageClient.sendMessage(watch, Message(RESET_SETTINGS, null))
         settingsRepository.deleteForWatch(watch.uid)
-        removeWidgetsForWatch(watch, widgetIdStore)
     }
 
     internal suspend fun removeWidgetsForWatch(

@@ -8,38 +8,23 @@ import com.boswelja.smartwatchextensions.analytics.Analytics
 import com.boswelja.smartwatchextensions.devicemanagement.WatchManager
 import com.boswelja.smartwatchextensions.settings.AppSettingsSerializer
 import com.boswelja.smartwatchextensions.settings.Settings
-import com.boswelja.smartwatchextensions.settings.appSettingsStore
 import com.boswelja.watchconnection.common.Watch
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import org.kodein.di.DI
-import org.kodein.di.DIAware
-import org.kodein.di.android.x.closestDI
-import org.kodein.di.instance
-import timber.log.Timber
 import kotlin.math.floor
 
-class ManageSpaceViewModel internal constructor(
+class ManageSpaceViewModel(
     application: Application,
+    private val analytics: Analytics,
+    private val watchManager: WatchManager,
     private val appSettingsDataStore: DataStore<Settings>,
     private val coroutineDispatcher: CoroutineDispatcher
-) : AndroidViewModel(application), DIAware {
+) : AndroidViewModel(application) {
 
-    override val di: DI by closestDI()
-
-    private val analytics: Analytics by instance()
-    private val watchManager: WatchManager by instance()
     private var registeredWatches: List<Watch>? = null
-
-    @Suppress("unused")
-    constructor(application: Application) : this(
-        application,
-        application.appSettingsStore,
-        Dispatchers.IO
-    )
 
     init {
         viewModelScope.launch {
@@ -79,7 +64,7 @@ class ManageSpaceViewModel internal constructor(
                 val progressMultiplier =
                     floor(MAX_PROGRESS / watchCount).toInt()
                 registeredWatches.forEachIndexed { index, watch ->
-                    watchManager.resetWatchPreferences(getApplication<Application>(), watch)
+                    watchManager.resetWatchPreferences(watch)
                     progress = (index + 1) * progressMultiplier
                     withContext(Dispatchers.Main) { onProgressChanged(progress) }
                 }
@@ -121,7 +106,7 @@ class ManageSpaceViewModel internal constructor(
                 var progress: Int
                 val progressMultiplier = floor(MAX_PROGRESS / (watchCount + 1)).toInt()
                 registeredWatches.forEachIndexed { index, watch ->
-                    watchManager.forgetWatch(getApplication<Application>(), watch)
+                    watchManager.forgetWatch(watch)
                     progress = (index + 1) * progressMultiplier
                     withContext(Dispatchers.Main) { onProgressChanged(progress) }
                 }
@@ -145,22 +130,17 @@ class ManageSpaceViewModel internal constructor(
             val context = getApplication<Application>()
             val cacheFiles = (context.cacheDir.walkBottomUp() + context.codeCacheDir.walkBottomUp())
                 .toList()
-            Timber.d("Got ${cacheFiles.count()} cache files")
             if (cacheFiles.isNotEmpty()) {
                 val progressMultiplier = floor(MAX_PROGRESS / cacheFiles.size).toInt()
                 var progress: Int
                 cacheFiles.forEachIndexed { index, file ->
-                    Timber.d("Deleting ${file.path}")
                     if (!file.delete()) {
-                        Timber.w("Failed to delete cache file ${file.absolutePath}")
                         withContext(Dispatchers.Main) { onCompleteFunction(false) }
                         return@launch
                     }
                     progress = (index + 1) * progressMultiplier
                     withContext(Dispatchers.Main) { onProgressChanged(progress) }
                 }
-            } else {
-                Timber.w("Cache files null or empty")
             }
             withContext(Dispatchers.Main) { onCompleteFunction(true) }
         }

@@ -1,20 +1,11 @@
 package com.boswelja.smartwatchextensions.messages.ui
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.ViewModel
 import com.boswelja.smartwatchextensions.messages.MessagesRepository
-import org.kodein.di.DI
-import org.kodein.di.DIAware
-import org.kodein.di.android.x.closestDI
-import org.kodein.di.instance
 
-class MessageHistoryViewModel internal constructor(
-    application: Application
-) : AndroidViewModel(application), DIAware {
-
-    override val di: DI by closestDI()
-
-    private val messagesRepository: MessagesRepository by instance()
+class MessageHistoryViewModel(
+    private val messagesRepository: MessagesRepository
+) : ViewModel() {
 
     val dismissedMessagesFlow = messagesRepository.getAllWhere(archived = true)
 

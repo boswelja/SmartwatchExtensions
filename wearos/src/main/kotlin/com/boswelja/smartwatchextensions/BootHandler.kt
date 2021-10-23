@@ -23,10 +23,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
-import org.kodein.di.DI
-import org.kodein.di.DIAware
-import org.kodein.di.android.closestDI
-import org.kodein.di.instance
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 import timber.log.Timber
 
 class BootHandler : BroadcastReceiver() {
@@ -52,11 +50,9 @@ class BootHandler : BroadcastReceiver() {
 class BootWorker(
     appContext: Context,
     workerParams: WorkerParameters
-) : CoroutineWorker(appContext, workerParams), DIAware {
+) : CoroutineWorker(appContext, workerParams), KoinComponent {
 
-    override val di: DI by closestDI(applicationContext)
-
-    private val discoveryClient: DiscoveryClient by instance()
+    private val discoveryClient: DiscoveryClient by inject()
 
     override suspend fun doWork(): Result {
         CapabilityUpdater(applicationContext, discoveryClient).updateCapabilities()

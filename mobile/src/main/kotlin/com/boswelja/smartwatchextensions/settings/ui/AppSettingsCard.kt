@@ -20,7 +20,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.common.startActivity
 import com.boswelja.smartwatchextensions.common.ui.Card
@@ -28,11 +27,12 @@ import com.boswelja.smartwatchextensions.common.ui.CardHeader
 import com.boswelja.smartwatchextensions.common.ui.CheckboxSetting
 import com.boswelja.smartwatchextensions.managespace.ui.ManageSpaceActivity
 import kotlinx.coroutines.Dispatchers
+import org.koin.androidx.compose.getViewModel
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun AppSettingsCard(modifier: Modifier = Modifier) {
-    val viewModel: AppSettingsViewModel = viewModel()
+    val viewModel: AppSettingsViewModel = getViewModel()
     val context = LocalContext.current
     val checkUpdatesDaily by viewModel.checkUpdatesDaily.collectAsState(false, Dispatchers.IO)
     val analyticsEnabled by viewModel.analyticsEnabled.collectAsState(false, Dispatchers.IO)

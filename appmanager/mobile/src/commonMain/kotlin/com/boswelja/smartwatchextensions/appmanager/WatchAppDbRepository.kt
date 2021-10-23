@@ -5,13 +5,13 @@ import com.boswelja.smartwatchextensions.appmanager.database.WatchAppDb
 import com.squareup.sqldelight.runtime.coroutines.asFlow
 import com.squareup.sqldelight.runtime.coroutines.mapToList
 import com.squareup.sqldelight.runtime.coroutines.mapToOne
-import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
+import kotlin.coroutines.CoroutineContext
 
 class WatchAppDbRepository(
     private val database: WatchAppDatabase,
-    private val dispatcher: CoroutineDispatcher
+    private val dispatcher: CoroutineContext
 ) : WatchAppRepository {
     override suspend fun updateAll(apps: List<WatchAppDetails>) {
         withContext(dispatcher) {

@@ -18,21 +18,16 @@ import com.boswelja.watchconnection.wear.message.MessageClient
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
-import org.kodein.di.DI
-import org.kodein.di.DIAware
-import org.kodein.di.android.closestDI
-import org.kodein.di.instance
+import org.koin.android.ext.android.inject
 
 /**
  * A [LifecycleService] that listens for changes in the appropriate settings, and sends DnD change
  * requests to the connected phone.
  */
-class LocalDnDAndTheaterCollectorService : BaseLocalDnDAndTheaterCollectorService(), DIAware {
+class LocalDnDAndTheaterCollectorService : BaseLocalDnDAndTheaterCollectorService() {
 
-    override val di: DI by closestDI()
-
-    private val discoveryClient: DiscoveryClient by instance()
-    private val messageClient: MessageClient by instance()
+    private val discoveryClient: DiscoveryClient by inject()
+    private val messageClient: MessageClient by inject()
 
     private var dndSyncToPhone: Boolean = false
     private var dndSyncWithTheater: Boolean = false

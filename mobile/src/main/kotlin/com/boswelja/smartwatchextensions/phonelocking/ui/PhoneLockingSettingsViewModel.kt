@@ -13,19 +13,12 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
-import org.kodein.di.DI
-import org.kodein.di.DIAware
-import org.kodein.di.android.x.closestDI
-import org.kodein.di.instance
 
-class PhoneLockingSettingsViewModel internal constructor(
+class PhoneLockingSettingsViewModel(
     application: Application,
-    private val dispatcher: CoroutineDispatcher
-) : AndroidViewModel(application), DIAware {
-
-    override val di: DI by closestDI()
-
-    private val watchManager: WatchManager by instance()
+    private val watchManager: WatchManager,
+    private val dispatcher: CoroutineDispatcher = Dispatchers.IO
+) : AndroidViewModel(application) {
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val phoneLockingEnabled = watchManager.selectedWatch.flatMapLatest {
@@ -33,12 +26,6 @@ class PhoneLockingSettingsViewModel internal constructor(
             watchManager.getBoolSetting(PHONE_LOCKING_ENABLED_KEY, watch)
         } ?: flow { }
     }
-
-    @Suppress("unused")
-    constructor(application: Application) : this(
-        application,
-        Dispatchers.IO
-    )
 
     fun setPhoneLockingEnabled(isEnabled: Boolean): Boolean {
         // Return false if we're trying to enable phone locking but we can't

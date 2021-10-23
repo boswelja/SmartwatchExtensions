@@ -26,13 +26,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.common.startActivity
 import com.boswelja.smartwatchextensions.devicemanagement.ui.register.RegisterWatchScreen
+import org.koin.androidx.compose.getViewModel
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
@@ -42,7 +42,7 @@ fun OnboardingScreen(
     navController: NavHostController,
     onFinished: () -> Unit
 ) {
-    val viewModel: OnboardingViewModel by viewModel()
+    val viewModel: OnboardingViewModel by getViewModel()
     val context = LocalContext.current
     NavHost(
         navController = navController,

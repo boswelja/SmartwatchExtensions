@@ -5,22 +5,17 @@ import com.boswelja.watchconection.common.message.MessageReceiver
 import com.boswelja.watchconnection.common.message.ReceivedMessage
 import com.boswelja.watchconnection.wear.discovery.DiscoveryClient
 import com.boswelja.watchconnection.wear.message.MessageClient
-import org.kodein.di.DIAware
-import org.kodein.di.LateInitDI
-import org.kodein.di.instance
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 
 class AppManagerCacheValidatorReceiver :
     MessageReceiver<Int>(CacheValidationSerializer),
-    DIAware {
+    KoinComponent {
 
-    override val di = LateInitDI()
-
-    private val messageClient: MessageClient by instance()
-    private val discoveryClient: DiscoveryClient by instance()
+    private val messageClient: MessageClient by inject()
+    private val discoveryClient: DiscoveryClient by inject()
 
     override suspend fun onMessageReceived(context: Context, message: ReceivedMessage<Int>) {
-        di.baseDI = (context.applicationContext as DIAware).di
-
         // Get a list of apps installed on this device, and format for cache validation.
         val currentPackages = context.packageManager.getInstalledPackages(0)
             .map { it.packageName to it.lastUpdateTime }

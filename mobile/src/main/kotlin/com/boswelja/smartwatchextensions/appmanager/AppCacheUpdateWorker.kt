@@ -6,10 +6,8 @@ import androidx.work.WorkerParameters
 import com.boswelja.smartwatchextensions.devicemanagement.WatchManager
 import com.boswelja.watchconnection.common.message.Message
 import kotlinx.coroutines.flow.first
-import org.kodein.di.DI
-import org.kodein.di.DIAware
-import org.kodein.di.android.closestDI
-import org.kodein.di.instance
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 
 /**
  * A [CoroutineWorker] designed to validate app cache for the given watch.
@@ -17,11 +15,9 @@ import org.kodein.di.instance
 class AppCacheUpdateWorker(
     context: Context,
     workerParams: WorkerParameters
-) : BaseAppCacheUpdateWorker(context, workerParams), DIAware {
+) : BaseAppCacheUpdateWorker(context, workerParams), KoinComponent {
 
-    override val di: DI by closestDI(applicationContext)
-
-    private val watchManager: WatchManager by instance()
+    private val watchManager: WatchManager by inject()
 
     override suspend fun onSendCacheState(targetUid: String, cacheHash: Int): Boolean {
         val watch = watchManager.getWatchById(targetUid).first() ?: return false

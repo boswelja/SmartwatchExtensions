@@ -28,13 +28,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.boswelja.smartwatchextensions.BuildConfig
 import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.common.startActivity
 import com.boswelja.smartwatchextensions.common.ui.Card
 import com.boswelja.smartwatchextensions.common.ui.CardHeader
 import com.boswelja.smartwatchextensions.donate.ui.DonateActivity
+import org.koin.androidx.compose.getViewModel
 
 @Composable
 fun AboutAppScreen(
@@ -111,7 +111,7 @@ fun AboutApp(modifier: Modifier = Modifier) {
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun Versions(modifier: Modifier = Modifier) {
-    val viewModelAbout: AboutAppViewModel = viewModel()
+    val viewModelAbout: AboutAppViewModel = getViewModel()
     val watchVersion by viewModelAbout.watchAppVersion.collectAsState(null)
     Card(
         modifier = modifier,

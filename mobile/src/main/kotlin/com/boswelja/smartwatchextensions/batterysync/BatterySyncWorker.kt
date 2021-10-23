@@ -5,19 +5,15 @@ import androidx.work.WorkerParameters
 import com.boswelja.smartwatchextensions.devicemanagement.WatchManager
 import com.boswelja.watchconnection.common.message.Message
 import kotlinx.coroutines.flow.firstOrNull
-import org.kodein.di.DI
-import org.kodein.di.DIAware
-import org.kodein.di.android.closestDI
-import org.kodein.di.instance
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 
 class BatterySyncWorker(
     appContext: Context,
     workerParams: WorkerParameters
-) : BaseBatterySyncWorker(appContext, workerParams), DIAware {
+) : BaseBatterySyncWorker(appContext, workerParams), KoinComponent {
 
-    override val di: DI by closestDI(applicationContext)
-
-    private val watchManager: WatchManager by instance()
+    private val watchManager: WatchManager by inject()
 
     override suspend fun onSendBatteryStats(
         targetUid: String,

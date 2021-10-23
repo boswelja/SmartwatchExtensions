@@ -22,17 +22,12 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
-import org.kodein.di.DI
-import org.kodein.di.DIAware
-import org.kodein.di.android.closestDI
-import org.kodein.di.instance
+import org.koin.android.ext.android.inject
 import timber.log.Timber
 
-class SeparationObserverService : LifecycleService(), DIAware {
+class SeparationObserverService : LifecycleService() {
 
-    override val di: DI by closestDI()
-
-    private val discoveryClient: DiscoveryClient by instance()
+    private val discoveryClient: DiscoveryClient by inject()
     private val notificationManager by lazy { getSystemService<NotificationManager>()!! }
     private var hasNotifiedThisDisconnect = false
 

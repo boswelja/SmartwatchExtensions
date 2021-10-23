@@ -14,7 +14,7 @@ kotlin {
                 api(projects.settings.common)
                 implementation(libs.sqldelight.runtime)
                 implementation(libs.sqldelight.coroutines)
-                implementation(libs.kodein.core)
+                implementation(libs.koin.core)
             }
         }
         val androidMain by getting {

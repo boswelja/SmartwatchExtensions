@@ -1,7 +1,6 @@
 package com.boswelja.smartwatchextensions.aboutapp.ui
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.boswelja.smartwatchextensions.devicemanagement.REQUEST_APP_VERSION
 import com.boswelja.smartwatchextensions.devicemanagement.Version
@@ -12,20 +11,10 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
-import org.kodein.di.DI
-import org.kodein.di.DIAware
-import org.kodein.di.android.x.closestDI
-import org.kodein.di.instance
 import timber.log.Timber
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class AboutAppViewModel internal constructor(
-    application: Application
-) : AndroidViewModel(application), DIAware {
-
-    override val di: DI by closestDI()
-
-    private val watchManager: WatchManager by instance()
+class AboutAppViewModel(private val watchManager: WatchManager) : ViewModel() {
 
     private val _watchAppVersion = MutableStateFlow<Version?>(null)
     val watchAppVersion: Flow<Version?>

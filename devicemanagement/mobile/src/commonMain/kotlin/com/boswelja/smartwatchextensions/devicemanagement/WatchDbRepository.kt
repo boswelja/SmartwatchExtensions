@@ -8,14 +8,14 @@ import com.boswelja.watchconnection.core.discovery.DiscoveryClient
 import com.squareup.sqldelight.runtime.coroutines.asFlow
 import com.squareup.sqldelight.runtime.coroutines.mapToList
 import com.squareup.sqldelight.runtime.coroutines.mapToOneOrNull
-import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
+import kotlin.coroutines.CoroutineContext
 
 class WatchDbRepository(
     private val discoveryClient: DiscoveryClient,
     private val database: RegisteredWatchDatabase,
-    private val dispatcher: CoroutineDispatcher
+    private val dispatcher: CoroutineContext
 ) : WatchRepository {
 
     override val registeredWatches: Flow<List<Watch>>

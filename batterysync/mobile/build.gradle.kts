@@ -14,7 +14,7 @@ kotlin {
                 api(libs.watchconnection.common)
                 implementation(libs.sqldelight.runtime)
                 implementation(libs.sqldelight.coroutines)
-                implementation(libs.kodein.core)
+                implementation(libs.koin.core)
             }
         }
         val commonTest by getting {
@@ -27,6 +27,7 @@ kotlin {
             dependencies {
                 implementation(libs.sqldelight.android)
                 implementation(libs.androidx.work.ktx)
+                implementation(libs.koin.android)
             }
         }
         val androidTest by getting {

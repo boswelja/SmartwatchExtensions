@@ -15,7 +15,6 @@ kotlin {
                 api(libs.wire.runtime)
                 implementation(libs.sqldelight.runtime)
                 implementation(libs.sqldelight.coroutines)
-                implementation(libs.kodein.core)
                 api(projects.devicemanagement.common)
             }
         }
@@ -23,6 +22,7 @@ kotlin {
             dependencies {
                 implementation(libs.sqldelight.android)
                 implementation(libs.androidx.datastore.proto)
+                implementation(libs.koin.android)
             }
         }
     }

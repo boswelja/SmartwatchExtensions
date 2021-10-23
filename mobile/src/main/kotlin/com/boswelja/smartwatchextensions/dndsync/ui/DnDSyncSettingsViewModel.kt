@@ -1,9 +1,7 @@
 package com.boswelja.smartwatchextensions.dndsync.ui
 
-import android.app.Application
 import android.app.NotificationManager
-import androidx.core.content.getSystemService
-import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.boswelja.smartwatchextensions.devicemanagement.Capability
 import com.boswelja.smartwatchextensions.devicemanagement.WatchManager
@@ -13,26 +11,12 @@ import com.boswelja.smartwatchextensions.settings.BoolSettingKeys.DND_SYNC_WITH_
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
-import org.kodein.di.DI
-import org.kodein.di.DIAware
-import org.kodein.di.android.x.closestDI
-import org.kodein.di.instance
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class DnDSyncSettingsViewModel internal constructor(
-    application: Application,
-    private val notificationManager: NotificationManager
-) : AndroidViewModel(application), DIAware {
-
-    override val di: DI by closestDI()
-
-    val watchManager: WatchManager by instance()
-
-    @Suppress("unused")
-    constructor(application: Application) : this(
-        application,
-        application.getSystemService<NotificationManager>()!!
-    )
+class DnDSyncSettingsViewModel(
+    private val notificationManager: NotificationManager,
+    val watchManager: WatchManager
+) : ViewModel() {
 
     val canSendDnD = watchManager.selectedWatchHasCapability(Capability.SEND_DND)
     val canReceiveDnD = watchManager.selectedWatchHasCapability(Capability.RECEIVE_DND)

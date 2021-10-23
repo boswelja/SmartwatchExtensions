@@ -1,9 +1,8 @@
 package com.boswelja.smartwatchextensions.messages.database
 
-import kotlinx.coroutines.CoroutineDispatcher
+import com.squareup.sqldelight.EnumColumnAdapter
 
-expect class MessagesDatabaseLoader {
-    fun createDatabase(): MessageDatabase
-}
-
-expect val DB_DISPATCHER: CoroutineDispatcher
+internal val messagesDbAdapter = MessageDb.Adapter(
+    iconAdapter = EnumColumnAdapter(),
+    actionAdapter = EnumColumnAdapter()
+)

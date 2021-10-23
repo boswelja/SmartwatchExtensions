@@ -24,9 +24,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.boswelja.smartwatchextensions.R
 import com.boswelja.watchconnection.common.Watch
+import org.koin.androidx.compose.getViewModel
 
 @Composable
 fun RegisterWatchScreen(
@@ -34,7 +34,7 @@ fun RegisterWatchScreen(
     contentPadding: Dp = 16.dp,
     onWatchRegistered: (() -> Unit)? = null
 ) {
-    val viewModel: RegisterWatchViewModel = viewModel()
+    val viewModel: RegisterWatchViewModel = getViewModel()
     val discoveredWatches = viewModel.discoveredWatches
 
     Column(
