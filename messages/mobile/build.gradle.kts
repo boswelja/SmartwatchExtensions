@@ -16,9 +16,20 @@ kotlin {
                 implementation(libs.koin.core)
             }
         }
+        val commonTest by getting {
+            dependencies {
+                implementation(kotlin("test"))
+                implementation(libs.turbine)
+            }
+        }
         val androidMain by getting {
             dependencies {
                 implementation(libs.sqldelight.android)
+            }
+        }
+        val androidTest by getting {
+            dependencies {
+                implementation(libs.sqldelight.sqlitedriver)
             }
         }
     }
