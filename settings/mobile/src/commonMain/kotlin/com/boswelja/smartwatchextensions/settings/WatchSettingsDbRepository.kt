@@ -11,6 +11,9 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import kotlin.coroutines.CoroutineContext
 
+/**
+ * A [WatchSettingsRepository] implementation backed by a SQLDelight database.
+ */
 class WatchSettingsDbRepository(
     private val database: WatchSettingsDatabase,
     private val dispatcher: CoroutineContext
