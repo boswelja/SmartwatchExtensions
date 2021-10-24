@@ -10,7 +10,6 @@ import com.boswelja.smartwatchextensions.devicemanagement.REQUEST_APP_VERSION
 import com.boswelja.smartwatchextensions.devicemanagement.REQUEST_UPDATE_CAPABILITIES
 import com.boswelja.smartwatchextensions.devicemanagement.RESET_APP
 import com.boswelja.smartwatchextensions.devicemanagement.Version
-import com.boswelja.smartwatchextensions.dndsync.REQUEST_SDK_INT_PATH
 import com.boswelja.smartwatchextensions.extensions.SettingsSerializer
 import com.boswelja.smartwatchextensions.extensions.extensionSettingsStore
 import com.boswelja.smartwatchextensions.settings.RESET_SETTINGS
@@ -27,7 +26,6 @@ class MessageReceiver :
         EmptySerializer(
             messagePaths = setOf(
                 REQUEST_APP_VERSION,
-                REQUEST_SDK_INT_PATH,
                 RESET_APP,
                 RESET_SETTINGS,
                 REQUEST_UPDATE_CAPABILITIES

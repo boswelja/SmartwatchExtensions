@@ -2,6 +2,9 @@ package com.boswelja.smartwatchextensions.dndsync
 
 import com.boswelja.watchconnection.common.message.MessageSerializer
 
+/**
+ * A [MessageSerializer] for handling DnD status.
+ */
 object DnDStatusSerializer : MessageSerializer<Boolean>(
     messagePaths = setOf(DND_STATUS_PATH)
 ) {
