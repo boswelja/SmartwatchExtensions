@@ -20,14 +20,19 @@ import java.util.concurrent.TimeUnit
 /**
  * A [CoroutineWorker] designed to validate app cache for the given watch.
  */
-actual abstract class BaseAppCacheUpdateWorker(
+abstract class BaseAppCacheUpdateWorker(
     context: Context,
     workerParams: WorkerParameters
 ) : CoroutineWorker(context, workerParams), KoinComponent {
 
     private val appRepository: WatchAppRepository by inject()
 
-    actual abstract suspend fun onSendCacheState(
+    /**
+     * Called when the cache hash is ready to be sent. Sending logic should be handled here.
+     * @param targetUid The target device UID.
+     * @param cacheHash The cache hash.
+     */
+    abstract suspend fun onSendCacheState(
         targetUid: String,
         cacheHash: Int
     ): Boolean
@@ -46,13 +51,18 @@ actual abstract class BaseAppCacheUpdateWorker(
             .first()
         val cacheHash = CacheValidation.getHashCode(apps)
 
-        if (onSendCacheState(watchId, cacheHash)) {
-            return Result.success()
+        return if (onSendCacheState(watchId, cacheHash)) {
+            Result.success()
+        } else {
+            Result.retry()
         }
-        return Result.retry()
     }
 
     companion object {
+
+        /**
+         * The key for the extra containing the target device UID.
+         */
         const val EXTRA_WATCH_ID: String = "extra_watch_id"
 
         /**

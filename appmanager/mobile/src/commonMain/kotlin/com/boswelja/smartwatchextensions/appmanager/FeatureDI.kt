@@ -6,6 +6,9 @@ import org.koin.core.parameter.parametersOf
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
+/**
+ * A Koin module for providing repositories for App Manager.
+ */
 val appManagerModule = module {
     single {
         WatchAppDatabase(

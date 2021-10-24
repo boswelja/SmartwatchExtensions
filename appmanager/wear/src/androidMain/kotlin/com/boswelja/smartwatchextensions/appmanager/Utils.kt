@@ -62,8 +62,8 @@ private fun PackageManager.getLocalizedPermissions(
     return packageInfo.requestedPermissions?.map { permission ->
         try {
             val permissionInfo = getPermissionInfo(permission, PackageManager.GET_META_DATA)
-            permissionInfo?.loadLabel(this)?.toString() ?: permission
-        } catch (e: Exception) {
+            permissionInfo?.loadDescription(this)?.toString() ?: permission
+        } catch (_: PackageManager.NameNotFoundException) {
             permission
         }
     }?.sorted() ?: emptyList()

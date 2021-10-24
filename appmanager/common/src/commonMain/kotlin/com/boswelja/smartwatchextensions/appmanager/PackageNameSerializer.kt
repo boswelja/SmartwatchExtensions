@@ -2,6 +2,9 @@ package com.boswelja.smartwatchextensions.appmanager
 
 import com.boswelja.watchconnection.common.message.MessageSerializer
 
+/**
+ * A [MessageSerializer] to handle serialization for a package name.
+ */
 object PackageNameSerializer : MessageSerializer<String>(
     messagePaths = setOf(
         REQUEST_OPEN_PACKAGE,
