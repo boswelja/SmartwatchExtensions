@@ -21,7 +21,7 @@ jobs:
           java-version: 11
           cache: 'gradle'
       - name: Build
-        run: bash ./gradlew assemble --stacktrace
+        run: bash ./gradlew assemble
 
   test:
     name: Unit Tests
@@ -35,7 +35,7 @@ jobs:
           java-version: 11
           cache: 'gradle'
       - name: Unit tests
-        run: bash ./gradlew test --stacktrace
+        run: bash ./gradlew test
       - uses: actions/upload-artifact@v2.2.4
         if: failure()
         with:
@@ -54,20 +54,4 @@ jobs:
           distribution: 'adopt'
           java-version: 11
           cache: 'gradle'
-      - name: Run ktlint
-        uses: musichin/ktlint-check@v1
-        with:
-          version: '0.42.1'
-          annotate: true
-          relative: true
-      - run: bash ./gradlew lint
-      - uses: yutailang0119/action-android-lint@v1.1.1
-        if: ${{ always() }}
-        continue-on-error: true
-        with:
-          xml_path: mobile/build/reports/lint-results-debug.xml
-      - uses: yutailang0119/action-android-lint@v1.1.1
-        if: ${{ always() }}
-        continue-on-error: true
-        with:
-          xml_path: wearos/build/reports/lint-results-debug.xml
+      - run: bash ./gradlew detekt
