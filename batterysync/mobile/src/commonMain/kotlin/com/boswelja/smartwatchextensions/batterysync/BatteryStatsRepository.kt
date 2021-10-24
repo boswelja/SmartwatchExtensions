@@ -2,6 +2,9 @@ package com.boswelja.smartwatchextensions.batterysync
 
 import kotlinx.coroutines.flow.Flow
 
+/**
+ * A repository for managing [BatteryStats] for different devices.
+ */
 interface BatteryStatsRepository {
 
     /**
