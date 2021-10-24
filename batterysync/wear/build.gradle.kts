@@ -1,7 +1,6 @@
 plugins {
     kotlin("multiplatform")
     id("com.android.library")
-    id("io.gitlab.arturbosch.detekt").version("1.18.1")
 }
 
 kotlin {
@@ -30,12 +29,6 @@ android {
         targetSdk = PackageInfo.targetSdk
         consumerProguardFile("proguard-rules.pro")
     }
-}
-
-detekt {
-    config = files("$rootDir/config/detekt/detekt.yml")
-    source = files("src")
-    buildUponDefaultConfig = true
 }
 
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
