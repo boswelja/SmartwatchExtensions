@@ -10,6 +10,7 @@ import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
+import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
 
 class WatchAppDbRepositoryTest {
@@ -120,7 +121,10 @@ class WatchAppDbRepositoryTest {
         )
         repository.updateAll(listOf(initialAppDetails))
 
-        repository.getDetailsFor(initialAppDetails.watchId, initialAppDetails.packageName).test {
+        repository.getDetailsFor(
+            initialAppDetails.watchId,
+            initialAppDetails.packageName
+        ).test(timeout = Duration.seconds(2)) {
             // Check first item is emitted correctly
             assertEquals(initialAppDetails, awaitItem())
 
