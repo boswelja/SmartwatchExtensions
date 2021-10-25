@@ -5,16 +5,20 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.boswelja.smartwatchextensions.PhoneState
 import com.boswelja.smartwatchextensions.capability.CapabilityUpdater
-import com.boswelja.watchconnection.wear.discovery.DiscoveryClient
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
+/**
+ * A [ViewModel] that provides data for [MainActivity].
+ */
 class MainViewModel(
     dataStore: DataStore<PhoneState>,
-    private val discoveryClient: DiscoveryClient,
     private val capabilityUpdater: CapabilityUpdater
 ) : ViewModel() {
 
+    /**
+     * Flow whether this watch is registered
+     */
     val isRegistered = dataStore.data.map { it.id.isNotBlank() }
 
     init {

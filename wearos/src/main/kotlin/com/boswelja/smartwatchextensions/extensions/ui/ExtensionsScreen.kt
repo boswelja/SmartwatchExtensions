@@ -20,6 +20,12 @@ import com.boswelja.smartwatchextensions.phonelocking.ui.PhoneLockingChip
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
+/**
+ * A Composable for displaying available Extensions.
+ * @param modifier [Modifier].
+ * @param extensionModifier A [Modifier] to be applied to each Extension Composable.
+ * @param contentPadding The padding around the content.
+ */
 @Composable
 fun Extensions(
     modifier: Modifier = Modifier,

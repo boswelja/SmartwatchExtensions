@@ -8,6 +8,9 @@ import com.boswelja.watchconnection.wear.message.MessageClient
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
+/**
+ * A [MessageReceiver] for receiving app cache validation requests.
+ */
 class AppManagerCacheValidatorReceiver :
     MessageReceiver<Int>(CacheValidationSerializer),
     KoinComponent {

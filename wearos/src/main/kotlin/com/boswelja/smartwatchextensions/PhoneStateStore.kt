@@ -7,13 +7,16 @@ import androidx.datastore.dataStore
 import java.io.InputStream
 import java.io.OutputStream
 
+/**
+ * A [DataStore]for tracking [PhoneState].
+ */
 val Context.phoneStateStore: DataStore<PhoneState> by dataStore(
     "phoneState.pb",
     PhoneStateSerializer()
 )
 
 @Suppress("BlockingMethodInNonBlockingContext")
-class PhoneStateSerializer : Serializer<PhoneState> {
+private class PhoneStateSerializer : Serializer<PhoneState> {
     override val defaultValue = PhoneState(
         id = "",
         name = "Phone",

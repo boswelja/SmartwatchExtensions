@@ -8,6 +8,9 @@ import com.boswelja.smartwatchextensions.settings.IntSettingSerializer
 import com.boswelja.watchconection.common.message.MessageReceiver
 import com.boswelja.watchconnection.common.message.ReceivedMessage
 
+/**
+ * A [MessageReceiver] for receiving [IntSetting].
+ */
 class IntSettingChangeReceiver : MessageReceiver<IntSetting>(IntSettingSerializer) {
 
     override suspend fun onMessageReceived(context: Context, message: ReceivedMessage<IntSetting>) {

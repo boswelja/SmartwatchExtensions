@@ -76,8 +76,8 @@ class PhoneBatteryComplicationProvider : ComplicationDataSourceService() {
             ComplicationType.RANGED_VALUE -> {
                 RangedValueComplicationData.Builder(
                     percent.toFloat(),
-                    0f,
-                    100f,
+                    RANGE_MIN,
+                    RANGE_MAX,
                     complicationText
                 )
                     .setText(complicationText)
@@ -96,10 +96,18 @@ class PhoneBatteryComplicationProvider : ComplicationDataSourceService() {
     }
 
     override fun getPreviewData(type: ComplicationType): ComplicationData? {
-        return createComplicationDataFor(66, type)
+        return createComplicationDataFor(PREVIEW_PERCENT, type)
     }
 
     companion object {
+
+        private const val PREVIEW_PERCENT = 66
+        private const val RANGE_MIN = 0f
+        private const val RANGE_MAX = 100f
+
+        /**
+         * Update all phone battery complications.
+         */
         fun updateAll(context: Context) {
             ComplicationDataSourceUpdateRequester.create(
                 context,

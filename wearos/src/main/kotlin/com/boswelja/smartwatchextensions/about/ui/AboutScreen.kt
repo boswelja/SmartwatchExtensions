@@ -42,6 +42,9 @@ import com.boswelja.smartwatchextensions.common.ui.RoundScreenDefaults.VerticalP
 import com.boswelja.smartwatchextensions.common.ui.roundScreenPadding
 import kotlinx.coroutines.launch
 
+/**
+ * A screen for displaying info about the app.
+ */
 @Composable
 fun AboutScreen(
     modifier: Modifier = Modifier
@@ -68,6 +71,9 @@ fun AboutScreen(
     }
 }
 
+/**
+ * A Composable for showing some info about the app.
+ */
 @Composable
 fun AppInfo(
     modifier: Modifier = Modifier
@@ -96,6 +102,9 @@ fun AppInfo(
     }
 }
 
+/**
+ * A Composable for offering quick links to app-related pages.
+ */
 @Composable
 fun Links(
     modifier: Modifier = Modifier

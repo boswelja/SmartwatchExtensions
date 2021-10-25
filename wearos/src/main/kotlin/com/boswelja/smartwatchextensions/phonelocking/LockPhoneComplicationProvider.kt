@@ -14,6 +14,9 @@ import com.boswelja.smartwatchextensions.ActionsActivity
 import com.boswelja.smartwatchextensions.R
 import timber.log.Timber
 
+/**
+ * A [ComplicationDataSourceService] for phone locking.
+ */
 class LockPhoneComplicationProvider : ComplicationDataSourceService() {
 
     override fun onComplicationRequest(

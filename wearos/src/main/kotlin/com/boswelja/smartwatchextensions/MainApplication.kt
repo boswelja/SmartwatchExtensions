@@ -14,6 +14,9 @@ import org.koin.core.context.startKoin
 import org.koin.dsl.module
 import timber.log.Timber
 
+/**
+ * A custom [Application] implementation for starting Koin.
+ */
 @Suppress("unused")
 class MainApplication : Application() {
 
@@ -28,10 +31,16 @@ class MainApplication : Application() {
     }
 }
 
+/**
+ * A Koin module for providing CapabilityUpdater.
+ */
 val miscModule = module {
     single { CapabilityUpdater(get(), get()) }
 }
 
+/**
+ * A Koin module for providing clients.
+ */
 val clientsModule = module {
     single {
         MessageClient(

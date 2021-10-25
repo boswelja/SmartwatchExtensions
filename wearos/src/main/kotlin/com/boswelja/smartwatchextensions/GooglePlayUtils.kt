@@ -4,6 +4,9 @@ import android.content.Context
 import android.content.Intent
 import androidx.core.net.toUri
 
+/**
+ * Contains helper functions related to Google Play.
+ */
 object GooglePlayUtils {
 
     /**

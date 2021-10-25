@@ -27,6 +27,9 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import timber.log.Timber
 
+/**
+ * A [BroadcastReceiver] for receiving [Intent.ACTION_BOOT_COMPLETED].
+ */
 class BootHandler : BroadcastReceiver() {
 
     override fun onReceive(context: Context?, intent: Intent?) {
@@ -47,6 +50,9 @@ class BootHandler : BroadcastReceiver() {
     }
 }
 
+/**
+ * A [CoroutineWorker] to restart services as needed.
+ */
 class BootWorker(
     appContext: Context,
     workerParams: WorkerParameters
@@ -102,7 +108,7 @@ class BootWorker(
     }
 
     companion object {
-        const val BOOT_OR_UPDATE_NOTI_CHANNEL_ID = "boot_or_update_noti_channel"
-        const val NOTI_ID = 69102
+        private const val BOOT_OR_UPDATE_NOTI_CHANNEL_ID = "boot_or_update_noti_channel"
+        private const val NOTI_ID = 69102
     }
 }

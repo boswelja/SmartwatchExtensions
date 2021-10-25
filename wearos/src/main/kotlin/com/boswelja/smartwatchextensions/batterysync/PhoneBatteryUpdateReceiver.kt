@@ -25,6 +25,9 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import timber.log.Timber
 
+/**
+ * A [MessageReceiver] for receiving [BatteryStats] for the paired phone.
+ */
 class PhoneBatteryUpdateReceiver :
     MessageReceiver<BatteryStats?>(BatteryStatsSerializer),
     KoinComponent {
@@ -232,10 +235,16 @@ class PhoneBatteryUpdateReceiver :
 
     private fun getNotiPendingIntent(context: Context): PendingIntent {
         val intent = Intent(context, MainActivity::class.java)
-        return PendingIntent.getActivity(context, 123, intent, PendingIntent.FLAG_IMMUTABLE)
+        return PendingIntent.getActivity(
+            context,
+            START_ACTIVITY_REQUEST_CODE,
+            intent,
+            PendingIntent.FLAG_IMMUTABLE
+        )
     }
 
     companion object {
+        private const val START_ACTIVITY_REQUEST_CODE = 123
         private const val BATTERY_CHARGED_NOTI_ID = 408565
         private const val BATTERY_LOW_NOTI_ID = 408566
         private const val BATTERY_STATS_NOTI_CHANNEL_ID = "companion_device_charged"

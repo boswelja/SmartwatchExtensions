@@ -7,6 +7,11 @@ import androidx.compose.ui.res.painterResource
 import androidx.wear.compose.material.Icon
 import com.boswelja.smartwatchextensions.batterysync.common.getBatteryDrawableRes
 
+/**
+ * An [Icon] for displaying a battery percent.
+ * @param percent The battery percent to display.
+ * @param modifier [Modifier].
+ */
 @Composable
 fun BatteryIcon(
     percent: Int,
