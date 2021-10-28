@@ -8,14 +8,15 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.selection.toggleable
 import androidx.compose.material.Checkbox
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.ExtendedFloatingActionButton
-import androidx.compose.material.Icon
 import androidx.compose.material.ListItem
-import androidx.compose.material.OutlinedButton
-import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Analytics
 import androidx.compose.material.icons.outlined.NavigateNext
+import androidx.compose.material3.ExtendedFloatingActionButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -27,7 +28,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.boswelja.smartwatchextensions.R
-import com.boswelja.smartwatchextensions.common.ui.Card
 import com.boswelja.smartwatchextensions.common.ui.CardHeader
 
 /**
@@ -38,7 +38,6 @@ import com.boswelja.smartwatchextensions.common.ui.CardHeader
  * @param onShowPrivacyPolicy Called when the user requests the privacy policy.
  * @param onNavigateTo Called when navigation is requested.
  */
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun UsageStatsScreen(
     modifier: Modifier = Modifier,
@@ -88,15 +87,13 @@ fun UsageStatsCard(
 ) {
     var checkboxChecked by remember { mutableStateOf(true) }
 
-    Card(
-        modifier = modifier,
-        header = {
+    Surface(
+        modifier = modifier
+    ) {
+        Column(Modifier.padding(contentPadding)) {
             CardHeader(
                 title = { Text(stringResource(R.string.share_usage_title)) }
             )
-        }
-    ) {
-        Column(Modifier.padding(contentPadding)) {
             Text(stringResource(R.string.share_usage_desc))
             ListItem(
                 text = { Text(stringResource(R.string.share_usage_title)) },
