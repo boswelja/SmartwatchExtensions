@@ -66,8 +66,7 @@ fun OnboardingScreen(
         }
         composable(OnboardingDestination.SHARE_USAGE_STATS.route) {
             UsageStatsScreen(
-                modifier = modifier,
-                contentPadding = contentPadding,
+                modifier = modifier.padding(contentPadding),
                 onShowPrivacyPolicy = {
                     context.startActivity { intent ->
                         intent.action = Intent.ACTION_VIEW

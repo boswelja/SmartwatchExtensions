@@ -6,13 +6,12 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Analytics
 import androidx.compose.material.icons.filled.NavigateNext
-import androidx.compose.material.icons.outlined.Analytics
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -21,45 +20,38 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.boswelja.smartwatchextensions.R
 
 /**
  * A Composable screen for displaying analytics information, and allowing the user to opt-in/out.
  * @param modifier [Modifier].
- * @param contentPadding The screen padding.
  * @param onShowPrivacyPolicy Called when the user requests the privacy policy.
  * @param onNavigateNext Called when navigation is requested.
  */
 @Composable
 fun UsageStatsScreen(
     modifier: Modifier = Modifier,
-    contentPadding: Dp = 16.dp,
     onShowPrivacyPolicy: () -> Unit,
     onNavigateNext: () -> Unit,
     onOptOut: () -> Unit
 ) {
     Column(
-        modifier = modifier.padding(contentPadding),
-        verticalArrangement = Arrangement.spacedBy(contentPadding, Alignment.CenterVertically),
+        modifier = modifier,
+        verticalArrangement = Arrangement.SpaceBetween,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Icon(
-            Icons.Outlined.Analytics,
+            Icons.Default.Analytics,
             null,
             Modifier.size(180.dp)
         )
         AnalyticsInformation(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(contentPadding),
+            modifier = Modifier.fillMaxWidth(),
             onShowPrivacyPolicy = onShowPrivacyPolicy
         )
         AnalyticsActionButtons(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(contentPadding),
+            modifier = Modifier.fillMaxWidth(),
             onNavigateNext = onNavigateNext,
             onOptOut = onOptOut
         )
