@@ -11,6 +11,10 @@ import org.koin.dsl.module
  */
 val onboardingModule = module {
     viewModel {
-        OnboardingViewModel(get(), get<Context>().appSettingsStore)
+        OnboardingViewModel(
+            get(),
+            get<Context>().appSettingsStore,
+            CheckCompatibilityUseCase(get())
+        )
     }
 }

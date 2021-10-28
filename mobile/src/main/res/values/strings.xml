@@ -158,6 +158,8 @@
     <string name="welcome_to_text">Welcome to</string>
     <string name="share_usage_title">Share Usage Stats</string>
     <string name="share_usage_desc">By continuing, you allow Smartwatch Extensions to collect anonymous usage data. This data is used to help us improve everyone\'s experience.</string>
+    <string name="onboarding_not_compatible_title">Device Not Supported</string>
+    <string name="onboarding_not_compatible_desc">No compatible smartwatch platforms were found on your device. Smartwatch Extensions currently supports Wear OS, please make sure you have the Wear OS app installed.</string>
 
     <!-- Manage Space strings -->
     <string name="manage_space_title">Manage Space</string>

@@ -34,7 +34,8 @@ class OnboardingActivity : AppCompatActivity() {
                         onFinished = {
                             startActivity<MainActivity>()
                             finish()
-                        }
+                        },
+                        onAbort = { finish() }
                     )
                 }
             }
