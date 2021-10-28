@@ -18,6 +18,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -45,21 +46,10 @@ fun WelcomeScreen(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        val context = LocalContext.current
-        val appImageSizeDp = remember { 180.dp }
-        val appImageSizePx = remember(appImageSizeDp) {
-            TypedValue.applyDimension(
-                TypedValue.COMPLEX_UNIT_DIP,
-                appImageSizeDp.value,
-                context.resources.displayMetrics
-            ).toInt()
-        }
+        val appImageSizeDp = 180.dp
         Spacer(Modifier.weight(1f))
         Image(
-            ContextCompat.getDrawable(context, R.mipmap.ic_launcher)!!.toBitmap(
-                width = appImageSizePx,
-                height = appImageSizePx
-            ).asImageBitmap(),
+            painterAppIcon(size = appImageSizeDp),
             null,
             Modifier.size(appImageSizeDp)
         )
@@ -81,4 +71,30 @@ fun WelcomeScreen(
         )
         Spacer(Modifier.weight(1f))
     }
+}
+
+/**
+ * Get an [ImageBitmap] for the app icon.
+ * @param size The target icon size (width and height).
+ * @return The [ImageBitmap] for the app icon.
+ */
+@Composable
+fun painterAppIcon(
+    size: Dp
+): ImageBitmap {
+    val context = LocalContext.current
+    val appImageSizePx = remember(size) {
+        TypedValue.applyDimension(
+            TypedValue.COMPLEX_UNIT_DIP,
+            size.value,
+            context.resources.displayMetrics
+        ).toInt()
+    }
+    val drawable = remember(appImageSizePx, context) {
+        ContextCompat.getDrawable(context, R.mipmap.ic_launcher)!!.toBitmap(
+            width = appImageSizePx,
+            height = appImageSizePx
+        ).asImageBitmap()
+    }
+    return drawable
 }
