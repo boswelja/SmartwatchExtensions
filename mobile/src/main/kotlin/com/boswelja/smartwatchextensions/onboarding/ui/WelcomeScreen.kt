@@ -33,13 +33,13 @@ import com.boswelja.smartwatchextensions.R
  * A Composable screen for displaying a greeting to the user.
  * @param modifier [Modifier].
  * @param contentPadding The screen padding.
- * @param onNavigateTo Called when navigation is requested.
+ * @param onNavigateNext Called when navigation is requested.
  */
 @Composable
 fun WelcomeScreen(
     modifier: Modifier = Modifier,
     contentPadding: Dp = 16.dp,
-    onNavigateTo: (OnboardingDestination) -> Unit
+    onNavigateNext: () -> Unit
 ) {
     Column(
         modifier.padding(contentPadding),
@@ -67,7 +67,7 @@ fun WelcomeScreen(
         ExtendedFloatingActionButton(
             text = { Text(stringResource(R.string.get_started)) },
             icon = { Icon(Icons.Outlined.NavigateNext, null) },
-            onClick = { onNavigateTo(OnboardingDestination.SHARE_USAGE_STATS) }
+            onClick = onNavigateNext
         )
         Spacer(Modifier.weight(1f))
     }

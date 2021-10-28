@@ -59,7 +59,9 @@ fun OnboardingScreen(
             WelcomeScreen(
                 modifier = modifier,
                 contentPadding = contentPadding,
-                onNavigateTo = { navController.navigate(it.route) }
+                onNavigateNext = {
+                    navController.navigate(OnboardingDestination.SHARE_USAGE_STATS.route)
+                }
             )
         }
         composable(OnboardingDestination.SHARE_USAGE_STATS.route) {
