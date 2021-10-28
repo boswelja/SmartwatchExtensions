@@ -1,5 +1,6 @@
 package com.boswelja.smartwatchextensions.onboarding.ui
 
+import android.util.TypedValue
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -14,6 +15,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.asImageBitmap
@@ -44,10 +46,21 @@ fun WelcomeScreen(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         val context = LocalContext.current
+        val appImageSizeDp = remember { 180.dp }
+        val appImageSizePx = remember(appImageSizeDp) {
+            TypedValue.applyDimension(
+                TypedValue.COMPLEX_UNIT_DIP,
+                appImageSizeDp.value,
+                context.resources.displayMetrics
+            ).toInt()
+        }
         Image(
-            ContextCompat.getDrawable(context, R.mipmap.ic_launcher)!!.toBitmap().asImageBitmap(),
+            ContextCompat.getDrawable(context, R.mipmap.ic_launcher)!!.toBitmap(
+                width = appImageSizePx,
+                height = appImageSizePx
+            ).asImageBitmap(),
             null,
-            Modifier.size(180.dp)
+            Modifier.size(appImageSizeDp)
         )
         Spacer(Modifier.height(contentPadding))
         Text(
