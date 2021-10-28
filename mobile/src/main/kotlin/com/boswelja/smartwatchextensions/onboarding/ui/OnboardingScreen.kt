@@ -1,6 +1,5 @@
 package com.boswelja.smartwatchextensions.onboarding.ui
 
-import android.content.Intent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.expandIn
@@ -21,16 +20,13 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.core.net.toUri
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.boswelja.smartwatchextensions.R
-import com.boswelja.smartwatchextensions.common.startActivity
 import com.boswelja.smartwatchextensions.devicemanagement.ui.register.RegisterWatchScreen
 import org.koin.androidx.compose.getViewModel
 
@@ -50,7 +46,6 @@ fun OnboardingScreen(
     onFinished: () -> Unit
 ) {
     val viewModel = getViewModel<OnboardingViewModel>()
-    val context = LocalContext.current
     NavHost(
         navController = navController,
         startDestination = OnboardingDestination.WELCOME.route
@@ -65,15 +60,8 @@ fun OnboardingScreen(
             )
         }
         composable(OnboardingDestination.SHARE_USAGE_STATS.route) {
-            UsageStatsScreen(
+            AnalyticsScreen(
                 modifier = modifier.padding(contentPadding),
-                onShowPrivacyPolicy = {
-                    context.startActivity { intent ->
-                        intent.action = Intent.ACTION_VIEW
-                        intent.data = context.getString(R.string.privacy_policy_url).toUri()
-                        intent
-                    }
-                },
                 onNavigateNext = {
                     viewModel.setAnalyticsEnabled(true)
                     navController.navigate(OnboardingDestination.REGISTER_WATCHES.route)

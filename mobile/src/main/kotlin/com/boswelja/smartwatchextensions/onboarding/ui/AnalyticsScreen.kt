@@ -1,5 +1,6 @@
 package com.boswelja.smartwatchextensions.onboarding.ui
 
+import android.content.Intent
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -19,23 +20,27 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.core.net.toUri
 import com.boswelja.smartwatchextensions.R
+import com.boswelja.smartwatchextensions.common.startActivity
 
 /**
  * A Composable screen for displaying analytics information, and allowing the user to opt-in/out.
  * @param modifier [Modifier].
- * @param onShowPrivacyPolicy Called when the user requests the privacy policy.
- * @param onNavigateNext Called when navigation is requested.
+ * @param onNavigateNext Called the user accepts and continues.
+ * @param onOptOut Called when the user opts out.
  */
 @Composable
-fun UsageStatsScreen(
+fun AnalyticsScreen(
     modifier: Modifier = Modifier,
-    onShowPrivacyPolicy: () -> Unit,
     onNavigateNext: () -> Unit,
     onOptOut: () -> Unit
 ) {
+    val context = LocalContext.current
+
     Column(
         modifier = modifier,
         verticalArrangement = Arrangement.SpaceBetween,
@@ -48,7 +53,13 @@ fun UsageStatsScreen(
         )
         AnalyticsInformation(
             modifier = Modifier.fillMaxWidth(),
-            onShowPrivacyPolicy = onShowPrivacyPolicy
+            onShowPrivacyPolicy = {
+                context.startActivity { intent ->
+                    intent.action = Intent.ACTION_VIEW
+                    intent.data = context.getString(R.string.privacy_policy_url).toUri()
+                    intent
+                }
+            }
         )
         AnalyticsActionButtons(
             modifier = Modifier.fillMaxWidth(),
