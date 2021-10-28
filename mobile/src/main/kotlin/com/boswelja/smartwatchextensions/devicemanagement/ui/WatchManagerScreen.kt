@@ -34,6 +34,13 @@ import com.boswelja.watchconnection.common.Watch
 import kotlinx.coroutines.Dispatchers
 import org.koin.androidx.compose.getViewModel
 
+/**
+ * A Composable screen for displaying Watch Manager actions.
+ * @param modifier [Modifier].
+ * @param contentPadding The screen padding.
+ * @param onShowSnackbar Called when a snackbar should be shown.
+ * @param onNavigateTo Called when navigation is requested.
+ */
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun WatchManagerScreen(
@@ -72,6 +79,14 @@ fun WatchManagerScreen(
     }
 }
 
+/**
+ * A Composable for displaying Watch Manager settings.
+ * @param modifier [Modifier].
+ * @param contentPadding The content padding.
+ * @param registeredWatches The list of registered watches.
+ * @param onWatchSelected Called when a watch is selected.
+ * @param onAddClicked Called when Add a Watch is clicked.
+ */
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun WatchManagerCard(

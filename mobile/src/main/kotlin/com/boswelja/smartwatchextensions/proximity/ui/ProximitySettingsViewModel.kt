@@ -8,21 +8,36 @@ import com.boswelja.smartwatchextensions.settings.BoolSettingKeys.PHONE_SEPARATI
 import com.boswelja.smartwatchextensions.settings.BoolSettingKeys.WATCH_SEPARATION_NOTI_KEY
 import kotlinx.coroutines.flow.first
 
+/**
+ * A ViewModel for providing data to Proximity Settings.
+ */
 class ProximitySettingsViewModel(
     application: Application,
     private val watchManager: WatchManager
 ) : AndroidViewModel(application) {
 
+    /**
+     * Flow whether phone separation alerts are enabled.
+     */
     val phoneProximityNotiSetting = watchManager.getBoolSetting(PHONE_SEPARATION_NOTI_KEY)
 
+    /**
+     * Flow whether watch separation alerts are enabled.
+     */
     val watchProximityNotiSetting = watchManager.getBoolSetting(WATCH_SEPARATION_NOTI_KEY)
 
+    /**
+     * Set whether phone separation alerts are enabled.
+     */
     suspend fun setPhoneProximityNotiEnabled(enabled: Boolean) {
         watchManager.selectedWatch.first()?.let {
             watchManager.updatePreference(it, PHONE_SEPARATION_NOTI_KEY, enabled)
         }
     }
 
+    /**
+     * Set whether watch separation alerts are enabled.
+     */
     suspend fun setWatchProximityNotiEnabled(enabled: Boolean) {
         watchManager.selectedWatch.first()?.let {
             watchManager.updatePreference(it, WATCH_SEPARATION_NOTI_KEY, enabled)

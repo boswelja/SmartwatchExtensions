@@ -21,6 +21,16 @@ import com.boswelja.smartwatchextensions.common.ui.Card
 import com.boswelja.smartwatchextensions.common.ui.CardHeader
 import org.koin.androidx.compose.getViewModel
 
+private const val PROGRESS_DIVISOR = 100f
+
+/**
+ * A base Action Composable for [ManageSpaceScreen].
+ * @param modifier [Modifier].
+ * @param title The action title.
+ * @param desc The action description.
+ * @param buttonLabel The action button label.
+ * @param onButtonClick Called when the action button is clicked.
+ */
 @Composable
 fun Action(
     modifier: Modifier = Modifier,
@@ -49,6 +59,12 @@ fun Action(
     }
 }
 
+/**
+ * An [Action] for clearing cache.
+ * @param modifier [Modifier].
+ * @param onActionFinished Called when the action has finished running.
+ * @param onProgressChange Called when the action progress changes.
+ */
 @Composable
 fun ClearCacheAction(
     modifier: Modifier = Modifier,
@@ -63,13 +79,18 @@ fun ClearCacheAction(
         buttonLabel = stringResource(R.string.clear_cache_title),
         onButtonClick = {
             viewModel.clearCache(
-                { onProgressChange(it / 100f) },
+                { onProgressChange(it / PROGRESS_DIVISOR) },
                 { onActionFinished(it) }
             )
         }
     )
 }
 
+/**
+ * An [Action] for resetting analytics.
+ * @param modifier [Modifier].
+ * @param onActionFinished Called when the action has finished executing.
+ */
 @Composable
 fun ResetAnalyticsAction(
     modifier: Modifier = Modifier,
@@ -89,6 +110,12 @@ fun ResetAnalyticsAction(
     )
 }
 
+/**
+ * An [Action] for resetting app settings.
+ * @param modifier [Modifier].
+ * @param onActionFinished Called when the action has finished executing.
+ * @param onProgressChange Called when the progress has changed.
+ */
 @Composable
 fun ResetAppSettingsAction(
     modifier: Modifier = Modifier,
@@ -129,6 +156,12 @@ fun ResetAppSettingsAction(
     }
 }
 
+/**
+ * An [Action] for resetting extension settings.
+ * @param modifier [Modifier].
+ * @param onActionFinished Called when the action has finished executing.
+ * @param onProgressChange Called when the progress has changed.
+ */
 @Composable
 fun ResetExtensionsAction(
     modifier: Modifier = Modifier,
@@ -154,7 +187,7 @@ fun ResetExtensionsAction(
                     onClick = {
                         dialogVisible = false
                         viewModel.resetExtensionSettings(
-                            { onProgressChange(it / 100f) },
+                            { onProgressChange(it / PROGRESS_DIVISOR) },
                             { onActionFinished(it) }
                         )
                     }
@@ -169,6 +202,12 @@ fun ResetExtensionsAction(
     }
 }
 
+/**
+ * An [Action] for resetting the app.
+ * @param modifier [Modifier].
+ * @param onActionFinished Called when the action has finished executing.
+ * @param onProgressChange Called when the progress has changed.
+ */
 @Composable
 fun ResetAppAction(
     modifier: Modifier = Modifier,
@@ -194,7 +233,7 @@ fun ResetAppAction(
                     onClick = {
                         dialogVisible = false
                         viewModel.resetApp(
-                            { onProgressChange(it / 100f) },
+                            { onProgressChange(it / PROGRESS_DIVISOR) },
                             { onActionFinished(it) }
                         )
                     }

@@ -30,11 +30,15 @@ import com.boswelja.smartwatchextensions.dashboard.ui.dashboardGraph
 import com.boswelja.smartwatchextensions.messages.ui.messagesGraph
 import com.boswelja.smartwatchextensions.onboarding.ui.OnboardingActivity
 import com.boswelja.smartwatchextensions.settings.ui.appSettingsGraph
+import com.boswelja.watchconnection.common.Watch
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
+/**
+ * The main app entry point.
+ */
 class MainActivity : ComponentActivity() {
 
     private val viewModel: MainViewModel by viewModel()
@@ -62,20 +66,13 @@ class MainActivity : ComponentActivity() {
                     topBar = {
                         val showUpButton = BottomNavDestination.values()
                             .none { it.route == backStackEntry?.destination?.route }
-                        if (showUpButton) {
-                            UpNavigationWatchPickerAppBar(
-                                selectedWatch = selectedWatch,
-                                watches = registeredWatches,
-                                onWatchSelected = { viewModel.selectWatchById(it.uid) },
-                                onNavigateUp = navController::navigateUp
-                            )
-                        } else {
-                            WatchPickerAppBar(
-                                selectedWatch = selectedWatch,
-                                watches = registeredWatches,
-                                onWatchSelected = { viewModel.selectWatchById(it.uid) }
-                            )
-                        }
+                        MainAppBar(
+                            showUpButton = showUpButton,
+                            selectedWatch = selectedWatch,
+                            registeredWatches = registeredWatches,
+                            onWatchSelected = viewModel::selectWatchById,
+                            onNavigateUp = navController::navigateUp
+                        )
                     },
                     bottomBar = {
                         BottonNav(
@@ -103,9 +100,7 @@ class MainActivity : ComponentActivity() {
         lifecycleScope.launch {
             viewModel.needsSetup.collect {
                 if (it) {
-                    startActivity(
-                        Intent(this@MainActivity, OnboardingActivity::class.java)
-                    )
+                    startActivity(Intent(this@MainActivity, OnboardingActivity::class.java))
                     finish()
                 }
             }
@@ -113,10 +108,53 @@ class MainActivity : ComponentActivity() {
     }
 
     companion object {
+
+        /**
+         * The watch ID to select on launch.
+         */
         const val EXTRA_WATCH_ID = "extra_watch_id"
     }
 }
 
+/**
+ * A Composable to display the main app bar.
+ * @param showUpButton Whether a button to navigate up should be shown.
+ * @param selectedWatch The currently selected watch.
+ * @param registeredWatches Currently registered watches.
+ * @param onWatchSelected Called when a new watch is selected.
+ * @param onNavigateUp Called when up navigation is requested.
+ */
+@Composable
+fun MainAppBar(
+    showUpButton: Boolean,
+    selectedWatch: Watch?,
+    registeredWatches: List<Watch>,
+    onWatchSelected: (String) -> Unit,
+    onNavigateUp: () -> Unit
+) {
+    if (showUpButton) {
+        UpNavigationWatchPickerAppBar(
+            selectedWatch = selectedWatch,
+            watches = registeredWatches,
+            onWatchSelected = { onWatchSelected(it.uid) },
+            onNavigateUp = onNavigateUp
+        )
+    } else {
+        WatchPickerAppBar(
+            selectedWatch = selectedWatch,
+            watches = registeredWatches,
+            onWatchSelected = { onWatchSelected(it.uid) }
+        )
+    }
+}
+
+/**
+ * A Composable screen for displaying the main content.
+ * @param modifier [Modifier].
+ * @param contentPadding The padding around the screen.
+ * @param scaffoldState [ScaffoldState].
+ * @param navController [NavHostController].
+ */
 @Composable
 fun MainScreen(
     modifier: Modifier = Modifier,

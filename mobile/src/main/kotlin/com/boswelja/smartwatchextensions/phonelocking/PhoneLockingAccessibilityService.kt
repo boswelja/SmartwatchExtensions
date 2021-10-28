@@ -16,6 +16,9 @@ import kotlinx.coroutines.withContext
 import org.koin.android.ext.android.inject
 import timber.log.Timber
 
+/**
+ * An accessibility service for locking the device on request.
+ */
 @ExperimentalCoroutinesApi
 class PhoneLockingAccessibilityService : AccessibilityService() {
 
@@ -46,10 +49,6 @@ class PhoneLockingAccessibilityService : AccessibilityService() {
         super.onDestroy()
     }
 
-    /**
-     * Tries to lock the device after receiving a [MessageEvent].
-     * @param watchId The [Watch.uid] of the watch requesting a device lock.
-     */
     private fun tryLockDevice(watchId: String) {
         coroutineScope.launch(Dispatchers.IO) {
             val watch = watchManager.getWatchById(watchId).firstOrNull()

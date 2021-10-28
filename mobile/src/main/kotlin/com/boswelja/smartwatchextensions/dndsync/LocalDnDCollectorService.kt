@@ -20,6 +20,10 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 
+/**
+ * An implementation of [BaseLocalDnDCollectorService] that observes the setting state for all
+ * registered watches.
+ */
 class LocalDnDCollectorService : BaseLocalDnDCollectorService() {
 
     private val watchManager: WatchManager by inject()

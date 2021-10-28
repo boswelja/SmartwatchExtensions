@@ -7,6 +7,9 @@ import kotlinx.coroutines.Dispatchers
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
+/**
+ * A Koin module for providing Manage Space classes.
+ */
 val manageSpaceModule = module {
     viewModel {
         ManageSpaceViewModel(get(), get(), get(), get<Context>().appSettingsStore, Dispatchers.IO)

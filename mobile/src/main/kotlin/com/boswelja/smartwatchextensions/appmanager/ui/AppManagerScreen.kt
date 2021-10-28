@@ -6,20 +6,12 @@ import androidx.compose.animation.Crossfade
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.shrinkVertically
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.Divider
-import androidx.compose.material.Icon
 import androidx.compose.material.LinearProgressIndicator
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
-import androidx.compose.material.TextButton
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Info
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -29,16 +21,20 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.appmanager.WatchAppDetails
-import com.boswelja.smartwatchextensions.common.ui.Banner
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
+/**
+ * A Composable screen to display App Manager.
+ * @param modifier [Modifier].
+ * @param contentPadding The screen padding.
+ * @param onShowSnackbar Called when a snackbar should be displayed.
+ */
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun AppManagerScreen(
@@ -53,25 +49,18 @@ fun AppManagerScreen(
     val userApps by viewModel.userApps.collectAsState(emptyList(), Dispatchers.IO)
     val disabledApps by viewModel.disabledApps.collectAsState(emptyList(), Dispatchers.IO)
     val systemApps by viewModel.systemApps.collectAsState(emptyList(), Dispatchers.IO)
-    val isWatchConnected by viewModel.isWatchConnected.collectAsState(true, Dispatchers.IO)
     // Only check system apps (for now). It's effectively guaranteed we'll have some on any device
     val isLoading = systemApps.isEmpty() || viewModel.isUpdatingCache
 
     var selectedApp by remember { mutableStateOf<WatchAppDetails?>(null) }
-    var watchConnectionWarningVisible by remember(isLoading, isWatchConnected) {
-        mutableStateOf(!isLoading && !isWatchConnected)
-    }
 
-    BackHandler(enabled = selectedApp != null) {
-        selectedApp = null
-    }
+    BackHandler(enabled = selectedApp != null) { selectedApp = null }
 
     Crossfade(targetState = selectedApp) {
         if (it != null) {
             AppInfo(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(MaterialTheme.colors.background)
                     .padding(16.dp),
                 app = it,
                 onOpenClicked = {
@@ -103,19 +92,13 @@ fun AppManagerScreen(
                     modifier = Modifier.fillMaxWidth(),
                     isLoading = isLoading
                 )
-                WatchStatusIndicator(
-                    visible = watchConnectionWarningVisible,
-                    onDismissRequest = { watchConnectionWarningVisible = false }
-                )
                 AppList(
                     contentPadding = contentPadding,
                     userApps = userApps,
                     disabledApps = disabledApps,
                     systemApps = systemApps,
                     onAppClick = { app ->
-                        coroutineScope.launch {
-                            selectedApp = viewModel.getDetailsFor(app)
-                        }
+                        coroutineScope.launch { selectedApp = viewModel.getDetailsFor(app) }
                     }
                 )
             }
@@ -123,6 +106,11 @@ fun AppManagerScreen(
     }
 }
 
+/**
+ * A Composable for displaying a horizontal loading indicator.
+ * @param modifier [Modifier].
+ * @param isLoading Whether the loading indicator is visible.
+ */
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun LoadingIndicator(
@@ -135,39 +123,5 @@ fun LoadingIndicator(
         exit = shrinkVertically()
     ) {
         LinearProgressIndicator(modifier)
-    }
-}
-
-@OptIn(ExperimentalAnimationApi::class)
-@Composable
-fun WatchStatusIndicator(
-    modifier: Modifier = Modifier,
-    visible: Boolean,
-    onDismissRequest: () -> Unit
-) {
-    AnimatedVisibility(
-        visible = visible,
-        enter = expandVertically(),
-        exit = shrinkVertically()
-    ) {
-        Column {
-            Banner(
-                modifier = modifier,
-                icon = {
-                    Icon(
-                        modifier = Modifier.fillMaxSize(),
-                        imageVector = Icons.Outlined.Info,
-                        contentDescription = null
-                    )
-                },
-                text = { Text(stringResource(R.string.app_manager_watch_disconnected)) },
-                primaryButton = {
-                    TextButton(onClick = onDismissRequest) {
-                        Text(stringResource(R.string.watch_connection_dismiss))
-                    }
-                }
-            )
-            Divider()
-        }
     }
 }

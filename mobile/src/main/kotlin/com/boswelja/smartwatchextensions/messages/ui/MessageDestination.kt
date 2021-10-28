@@ -9,6 +9,10 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 
+/**
+ * All Messages navigation destinations.
+ * @param route The navigation route.
+ */
 enum class MessageDestination(
     val route: String
 ) {

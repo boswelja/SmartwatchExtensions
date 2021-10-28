@@ -24,6 +24,9 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import timber.log.Timber
 
+/**
+ * A [MessageReceiver] to handle messages received with no data.
+ */
 class WatchMessageReceiver :
     MessageReceiver<Nothing?>(
         EmptySerializer(

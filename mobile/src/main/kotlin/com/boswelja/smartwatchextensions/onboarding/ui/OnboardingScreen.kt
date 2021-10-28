@@ -34,6 +34,13 @@ import com.boswelja.smartwatchextensions.common.startActivity
 import com.boswelja.smartwatchextensions.devicemanagement.ui.register.RegisterWatchScreen
 import org.koin.androidx.compose.getViewModel
 
+/**
+ * A Composable screen to handle the onboarding flow.
+ * @param modifier [Modifier].
+ * @param contentPadding The screen padding.
+ * @param navController [NavHostController].
+ * @param onFinished Called when onboarding is complete.
+ */
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun OnboardingScreen(
@@ -42,7 +49,7 @@ fun OnboardingScreen(
     navController: NavHostController,
     onFinished: () -> Unit
 ) {
-    val viewModel: OnboardingViewModel by getViewModel()
+    val viewModel = getViewModel<OnboardingViewModel>()
     val context = LocalContext.current
     NavHost(
         navController = navController,
@@ -101,6 +108,10 @@ fun OnboardingScreen(
     }
 }
 
+/**
+ * All available navigation destinations for the onboarding flow.
+ * @param route The navigation route.
+ */
 enum class OnboardingDestination(val route: String) {
     WELCOME("welcome"),
     SHARE_USAGE_STATS("usage-stats"),

@@ -33,6 +33,9 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import timber.log.Timber
 
+/**
+ * A ViewModel for providing data to App Manager.
+ */
 @OptIn(ExperimentalCoroutinesApi::class)
 class AppManagerViewModel internal constructor(
     application: Application
@@ -161,6 +164,9 @@ class AppManagerViewModel internal constructor(
         }
     }
 
+    /**
+     * Get more app details for a given watch app.
+     */
     suspend fun getDetailsFor(app: WatchApp): WatchAppDetails? {
         return selectedWatch?.let {
             appRepository.getDetailsFor(it.uid, app.packageName).first()

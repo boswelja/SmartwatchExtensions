@@ -12,6 +12,10 @@ import com.boswelja.smartwatchextensions.dndsync.ui.DnDSyncSettingsScreen
 import com.boswelja.smartwatchextensions.phonelocking.ui.PhoneLockingSettingsScreen
 import com.boswelja.smartwatchextensions.proximity.ui.ProximitySettingsScreen
 
+/**
+ * All dashboard navigation destinations.
+ * @param route The navigation route.
+ */
 enum class DashboardDestination(
     val route: String
 ) {

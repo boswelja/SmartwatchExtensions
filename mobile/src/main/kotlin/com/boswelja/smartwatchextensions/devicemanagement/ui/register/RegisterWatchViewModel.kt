@@ -16,13 +16,16 @@ class RegisterWatchViewModel(
     private val watchManager: WatchManager
 ) : ViewModel() {
 
+    /**
+     * A list of watches that have been discovered and registered so far.
+     */
     var discoveredWatches = mutableStateListOf<Watch>()
 
     init {
         startRegisteringWatches()
     }
 
-    fun startRegisteringWatches() {
+    private fun startRegisteringWatches() {
         viewModelScope.launch {
             watchManager.availableWatches.collect { watches ->
                 Timber.d("Got %s watches", watches.count())
@@ -34,7 +37,7 @@ class RegisterWatchViewModel(
         }
     }
 
-    suspend fun addWatch(watch: Watch) {
+    private suspend fun addWatch(watch: Watch) {
         Timber.d("registerWatch($watch) called")
         if (!discoveredWatches.contains(watch)) {
             discoveredWatches.add(watch)

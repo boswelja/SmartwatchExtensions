@@ -9,13 +9,16 @@ import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream
 
+/**
+ * A [DataStore] for tracking [Settings].
+ */
 val Context.appSettingsStore: DataStore<Settings> by dataStore(
     "appSettings.pb",
     AppSettingsSerializer()
 )
 
 @Suppress("BlockingMethodInNonBlockingContext")
-class AppSettingsSerializer : Serializer<Settings> {
+private class AppSettingsSerializer : Serializer<Settings> {
     override val defaultValue = Settings(
         true,
         "",

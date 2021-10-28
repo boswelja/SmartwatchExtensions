@@ -20,6 +20,11 @@ import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.common.BatteryIcon
 import kotlinx.coroutines.Dispatchers
 
+private const val HEADER_ASPECT_RATIO = 3f
+
+/**
+ * Display a header for Battery Sync settings.
+ */
 @Composable
 fun BatterySyncSettingsHeader() {
     val viewModel: BatterySyncViewModel = viewModel()
@@ -29,7 +34,7 @@ fun BatterySyncSettingsHeader() {
         batteryStats.let {
             if (it != null) {
                 BatterySummaryLarge(
-                    Modifier.fillMaxWidth().aspectRatio(3f).padding(16.dp),
+                    Modifier.fillMaxWidth().aspectRatio(HEADER_ASPECT_RATIO).padding(16.dp),
                     it
                 )
             } else {
@@ -41,12 +46,15 @@ fun BatterySyncSettingsHeader() {
     }
 }
 
+/**
+ * Display the Battery Sync status.
+ */
 @Composable
 fun BatterySyncStatus(statusText: String) {
     Row(
         Modifier
             .fillMaxWidth()
-            .aspectRatio(3f)
+            .aspectRatio(HEADER_ASPECT_RATIO)
             .padding(16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {

@@ -35,6 +35,12 @@ import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.common.startActivity
 import com.boswelja.watchconnection.common.Watch
 
+/**
+ * An app bar with a navigate up action.
+ * @param backgroundColor The app bar background color.
+ * @param elevation The app bar elevation.
+ * @param onNavigateUp Called when up navigation is requested.
+ */
 @Composable
 fun UpNavigationAppBar(
     title: @Composable () -> Unit = { },
@@ -59,6 +65,14 @@ fun UpNavigationAppBar(
     )
 }
 
+/**
+ * An app bar with a watch picker.
+ * @param selectedWatch The currently selected watch.
+ * @param watches The list of available watches.
+ * @param backgroundColor The app bar background color.
+ * @param elevation The app bar elevation.
+ * @param onWatchSelected Called when a watch is selected.
+ */
 @Composable
 fun WatchPickerAppBar(
     selectedWatch: Watch?,
@@ -81,6 +95,15 @@ fun WatchPickerAppBar(
     )
 }
 
+/**
+ * An app bar with a watch picker and navigate up action.
+ * @param selectedWatch The currently selected watch.
+ * @param watches The list of available watches.
+ * @param backgroundColor The app bar background color.
+ * @param elevation The app bar elevation.
+ * @param onWatchSelected Called when a watch is selected.
+ * @param onNavigateUp Called when up navigation is requested.
+ */
 @Composable
 fun UpNavigationWatchPickerAppBar(
     selectedWatch: Watch?,
@@ -105,6 +128,9 @@ fun UpNavigationWatchPickerAppBar(
     )
 }
 
+/**
+ * An app bar action for launching the wiki.
+ */
 @Composable
 fun WikiAction() {
     val context = LocalContext.current
@@ -121,6 +147,12 @@ fun WikiAction() {
     }
 }
 
+/**
+ * A dropdown for selecting a watch from a list.
+ * @param selectedWatch The currently selected watch.
+ * @param watches The list of available watches.
+ * @param onWatchSelected Called when a watch was selected.
+ */
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun WatchPickerDropdown(

@@ -12,6 +12,17 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
+/**
+ * A big button.
+ * @param modifier [Modifier].
+ * @param backgroundColor The background color.
+ * @param contentColor The content color.
+ * @param contentPadding The content padding.
+ * @param icon The button icon.
+ * @param text The button text.
+ * @param onClick Called when the button is clicked.
+ * @param enabled Whether the button is enabled.
+ */
 @Composable
 fun BigButton(
     modifier: Modifier = Modifier,

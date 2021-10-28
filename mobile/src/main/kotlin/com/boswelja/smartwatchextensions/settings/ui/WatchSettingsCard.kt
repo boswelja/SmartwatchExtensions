@@ -15,6 +15,11 @@ import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.common.ui.Card
 import com.boswelja.smartwatchextensions.common.ui.CardHeader
 
+/**
+ * A Composable for displaying watch settings.
+ * @param modifier [Modifier].
+ * @param onNavigateTo Called when navigation is requested.
+ */
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun WatchSettings(

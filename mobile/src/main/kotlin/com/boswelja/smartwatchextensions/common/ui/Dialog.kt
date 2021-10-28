@@ -16,7 +16,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Divider
-import androidx.compose.material.LinearProgressIndicator
 import androidx.compose.material.LocalTextStyle
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.RadioButton
@@ -41,6 +40,10 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.boswelja.smartwatchextensions.R
 
+/**
+ * A box styled for a dialog header. Padding, alignment and text style are applied automatically.
+ * @param title The title text Composable.
+ */
 @Composable
 fun DialogHeader(
     title: @Composable () -> Unit
@@ -58,6 +61,12 @@ fun DialogHeader(
     }
 }
 
+/**
+ * A row of buttons for a material dialog. Spacing is applied automatically.
+ * @param positiveButton The positive button Composable.
+ * @param negativeButton The negative button Composable. This is optional.
+ * @param neutralButton The neutral button Composable. This is optional.
+ */
 @Composable
 fun DialogButtons(
     positiveButton: @Composable () -> Unit,
@@ -77,6 +86,17 @@ fun DialogButtons(
     }
 }
 
+/**
+ * A base material dialog with support for shape, colour, elevation.
+ * @param modifier [Modifier].
+ * @param elevation The dialog elevation.
+ * @param shape The dialog shape.
+ * @param backgroundColor The dialog background color.
+ * @param contentColor The dialog content color.
+ * @param dialogProperties [DialogProperties].
+ * @param onDismissRequest Called when the dialog should be dismissed.
+ * @param content The dialog content.
+ */
 @Composable
 fun MaterialDialog(
     modifier: Modifier = Modifier,
@@ -103,6 +123,22 @@ fun MaterialDialog(
     }
 }
 
+/**
+ * A material dialog for selecting an option from a list of available options.
+ * @param modifier [Modifier].
+ * @param title The dialog title.
+ * @param onDismissRequest Called when the dialog should be dismissed.
+ * @param itemContent The item content Composable. This content automatically has a RadioButton
+ * added to the start of the layout.
+ * @param items The list of available items.
+ * @param selectedItem The current selected item.
+ * @param onItemSelectionChanged Called when a new item is selected.
+ * @param elevation The dialog elevation.
+ * @param shape The dialog shape.
+ * @param backgroundColor The dialog background color.
+ * @param contentColor The dialog content color.
+ * @param dialogProperties [DialogProperties].
+ */
 @Composable
 fun <T> ConfirmationDialog(
     modifier: Modifier = Modifier,
@@ -167,37 +203,6 @@ fun <T> ConfirmationDialog(
                         Text(stringResource(R.string.dialog_button_cancel))
                     }
                 }
-            )
-        }
-    }
-}
-
-@Composable
-fun ProgressDialog(
-    modifier: Modifier = Modifier,
-    elevation: Dp = 24.dp,
-    shape: Shape = MaterialTheme.shapes.medium,
-    backgroundColor: Color = MaterialTheme.colors.surface,
-    contentColor: Color = MaterialTheme.colors.contentColorFor(backgroundColor),
-    dialogProperties: DialogProperties = DialogProperties(),
-    onDismissRequest: () -> Unit,
-    title: @Composable () -> Unit,
-    progress: Float
-) {
-    MaterialDialog(
-        modifier = modifier,
-        elevation = elevation,
-        shape = shape,
-        contentColor = contentColor,
-        backgroundColor = backgroundColor,
-        dialogProperties = dialogProperties,
-        onDismissRequest = onDismissRequest
-    ) {
-        Column {
-            DialogHeader(title = title)
-            LinearProgressIndicator(
-                modifier = Modifier.padding(16.dp),
-                progress = progress
             )
         }
     }

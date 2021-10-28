@@ -34,6 +34,12 @@ import com.boswelja.watchconnection.common.discovery.ConnectionMode
 import kotlinx.coroutines.Dispatchers
 import org.koin.androidx.compose.getViewModel
 
+/**
+ * A screen to display the dashboard.
+ * @param modifier [Modifier].
+ * @param contentPadding The screen padding.
+ * @param onNavigateTo Called when navigation is requested.
+ */
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun DashboardScreen(
@@ -86,6 +92,13 @@ fun DashboardScreen(
     }
 }
 
+/**
+ * A Card to display an item on the dashboard.
+ * @param modifier [Modifier].
+ * @param content The card content.
+ * @param titleText The title of the card.
+ * @param onClick Called when the card is clicked.
+ */
 @Composable
 fun DashboardItem(
     modifier: Modifier = Modifier,

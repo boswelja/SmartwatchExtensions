@@ -36,6 +36,11 @@ import com.boswelja.smartwatchextensions.common.ui.CardHeader
 import com.boswelja.smartwatchextensions.donate.ui.DonateActivity
 import org.koin.androidx.compose.getViewModel
 
+/**
+ * A Composable screen for displaying app-related information.
+ * @param modifier [Modifier].
+ * @param contentPadding The screen padding.
+ */
 @Composable
 fun AboutAppScreen(
     modifier: Modifier = Modifier,
@@ -58,6 +63,10 @@ fun AboutAppScreen(
     }
 }
 
+/**
+ * A Composable for displaying info about the app.
+ * @param modifier [Modifier].
+ */
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun AboutApp(modifier: Modifier = Modifier) {
@@ -108,6 +117,10 @@ fun AboutApp(modifier: Modifier = Modifier) {
     }
 }
 
+/**
+ * A Composable for displaying app version information.
+ * @param modifier [Modifier].
+ */
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun Versions(modifier: Modifier = Modifier) {
@@ -147,6 +160,10 @@ fun Versions(modifier: Modifier = Modifier) {
     }
 }
 
+/**
+ * A Composable for displaying options for supporting the app.
+ * @param modifier [Modifier].
+ */
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun SupportApp(
@@ -161,7 +178,7 @@ fun SupportApp(
                 scheme(ContentResolver.SCHEME_ANDROID_RESOURCE)
                 authority(context.resources.getResourcePackageName(R.mipmap.ic_launcher))
                 appendPath(context.resources.getResourceTypeName(R.mipmap.ic_launcher))
-                appendPath((context.resources.getResourceEntryName(R.mipmap.ic_launcher)))
+                appendPath(context.resources.getResourceEntryName(R.mipmap.ic_launcher))
             }
             .build()
 

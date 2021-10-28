@@ -2,7 +2,6 @@ package com.boswelja.smartwatchextensions.dndsync.ui
 
 import android.content.Intent
 import android.provider.Settings
-import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
@@ -14,11 +13,9 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.common.ui.Card
 import com.boswelja.smartwatchextensions.common.ui.CardHeader
@@ -28,6 +25,11 @@ import com.boswelja.smartwatchextensions.settings.BoolSettingKeys.DND_SYNC_WITH_
 import kotlinx.coroutines.Dispatchers
 import org.koin.androidx.compose.getViewModel
 
+/**
+ * A Composable screen for displaying DnD Sync settings.
+ * @param modifier [Modifier].
+ * @param contentPadding The screen padding.
+ */
 @Composable
 fun DnDSyncSettingsScreen(
     modifier: Modifier = Modifier,
@@ -41,9 +43,12 @@ fun DnDSyncSettingsScreen(
     }
 }
 
+/**
+ * A Composable for displaying DnD Sync settings.
+ * @param modifier [Modifier].
+ */
 @Composable
 fun DndSyncSettingsCard(modifier: Modifier = Modifier) {
-    val context = LocalContext.current
     val viewModel: DnDSyncSettingsViewModel = getViewModel()
     var changingKey = rememberSaveable { "" }
 
@@ -66,32 +71,19 @@ fun DndSyncSettingsCard(modifier: Modifier = Modifier) {
     }
     val onRequestNotiPolicyAccess = { key: String ->
         changingKey = key
-        Toast.makeText(
-            context,
-            context.getString(R.string.dnd_sync_request_policy_access_message),
-            Toast.LENGTH_SHORT
-        ).show()
         notiPolicyAccessLauncher
             .launch(Intent(Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS))
     }
 
     Card(
         modifier = modifier,
-        header = {
-            CardHeader(
-                title = {
-                    Text(stringResource(R.string.main_dnd_sync_title))
-                }
-            )
-        }
+        header = { CardHeader(title = { Text(stringResource(R.string.main_dnd_sync_title)) }) }
     ) {
         Column {
             SyncToWatchSetting(
                 enabled = canReceiveDnD,
                 checked = syncToWatch,
-                onCheckChanged = {
-                    viewModel.setSyncToWatch(it)
-                }
+                onCheckChanged = { viewModel.setSyncToWatch(it) }
             )
             SyncToPhoneSetting(
                 enabled = canSendDnD,
@@ -99,9 +91,7 @@ fun DndSyncSettingsCard(modifier: Modifier = Modifier) {
                 onCheckChanged = {
                     if (it && !viewModel.hasNotificationPolicyAccess) {
                         onRequestNotiPolicyAccess(DND_SYNC_TO_PHONE_KEY)
-                    } else {
-                        viewModel.setSyncToPhone(it)
-                    }
+                    } else viewModel.setSyncToPhone(it)
                 }
             )
             SyncWithTheaterSetting(
@@ -110,15 +100,20 @@ fun DndSyncSettingsCard(modifier: Modifier = Modifier) {
                 onCheckChanged = {
                     if (it && !viewModel.hasNotificationPolicyAccess) {
                         onRequestNotiPolicyAccess(DND_SYNC_WITH_THEATER_KEY)
-                    } else {
-                        viewModel.setSyncWithTheater(it)
-                    }
+                    } else viewModel.setSyncWithTheater(it)
                 }
             )
         }
     }
 }
 
+/**
+ * A Composable for displaying DnD Sync to Watch setting.
+ * @param modifier [Modifier].
+ * @param checked Whether the setting is checked.
+ * @param enabled Whether the setting is enabled.
+ * @param onCheckChanged Called when the check state changes.
+ */
 @Composable
 fun SyncToWatchSetting(
     modifier: Modifier = Modifier,
@@ -142,6 +137,13 @@ fun SyncToWatchSetting(
     )
 }
 
+/**
+ * A Composable for displaying DnD Sync to Phone setting.
+ * @param modifier [Modifier].
+ * @param checked Whether the setting is checked.
+ * @param enabled Whether the setting is enabled.
+ * @param onCheckChanged Called when the check state changes.
+ */
 @Composable
 fun SyncToPhoneSetting(
     modifier: Modifier = Modifier,
@@ -165,6 +167,13 @@ fun SyncToPhoneSetting(
     )
 }
 
+/**
+ * A Composable for displaying DnD Sync with Theater setting.
+ * @param modifier [Modifier].
+ * @param checked Whether the setting is checked.
+ * @param enabled Whether the setting is enabled.
+ * @param onCheckChanged Called when the check state changes.
+ */
 @Composable
 fun SyncWithTheaterSetting(
     modifier: Modifier = Modifier,

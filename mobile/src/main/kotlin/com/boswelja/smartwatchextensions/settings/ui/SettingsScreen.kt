@@ -8,6 +8,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
+/**
+ * A Composable screen for displaying app settings.
+ * @param modifier [Modifier].
+ * @param contentPadding The screen padding.
+ * @param onNavigateTo Called when navigation is requested.
+ */
 @Composable
 fun AppSettingsScreen(
     modifier: Modifier = Modifier,

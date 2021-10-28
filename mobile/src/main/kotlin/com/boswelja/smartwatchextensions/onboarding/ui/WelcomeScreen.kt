@@ -26,6 +26,12 @@ import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toBitmap
 import com.boswelja.smartwatchextensions.R
 
+/**
+ * A Composable screen for displaying a greeting to the user.
+ * @param modifier [Modifier].
+ * @param contentPadding The screen padding.
+ * @param onNavigateTo Called when navigation is requested.
+ */
 @Composable
 fun WelcomeScreen(
     modifier: Modifier = Modifier,

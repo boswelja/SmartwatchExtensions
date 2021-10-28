@@ -18,6 +18,10 @@ import com.boswelja.smartwatchextensions.settings.WatchSettingsRepository
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
+/**
+ * A [CoroutineWorker] to be launched when the app is updated. This is responsible for handling any
+ * post-update migrations if needed.
+ */
 class UpdateWorker(
     appContext: Context,
     workerParams: WorkerParameters

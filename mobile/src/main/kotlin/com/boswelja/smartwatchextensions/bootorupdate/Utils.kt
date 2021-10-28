@@ -11,18 +11,22 @@ import com.boswelja.smartwatchextensions.settings.WatchSettingsRepository
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 
+/**
+ * A notification channel ID for boot/update worker status notifications.
+ */
 const val BOOT_OR_UPDATE_NOTI_CHANNEL_ID = "boot_or_update_noti_channel"
+
 internal const val NOTI_ID = 69102
 
 internal suspend fun Context.restartServices(
     settingsRepository: WatchSettingsRepository
 ) {
-    tryStartInterruptFilterSyncService(settingsRepository)
-    tryStartSeparationObserverService(settingsRepository)
+    tryStartInterruptFilterSync(settingsRepository)
+    tryStartSeparationObserver(settingsRepository)
 }
 
 /** Try to start Do not Disturb change listener service if needed. */
-private suspend fun Context.tryStartInterruptFilterSyncService(repository: WatchSettingsRepository) {
+private suspend fun Context.tryStartInterruptFilterSync(repository: WatchSettingsRepository) {
     val dndSyncToWatchEnabled = repository
         .getIdsWithBooleanSet(DND_SYNC_TO_WATCH_KEY, true)
         .map { it.isNotEmpty() }
@@ -35,7 +39,7 @@ private suspend fun Context.tryStartInterruptFilterSyncService(repository: Watch
     }
 }
 
-private suspend fun Context.tryStartSeparationObserverService(repository: WatchSettingsRepository) {
+private suspend fun Context.tryStartSeparationObserver(repository: WatchSettingsRepository) {
     val watchSeparationAlertsEnabled = repository
         .getIdsWithBooleanSet(WATCH_SEPARATION_NOTI_KEY, true)
         .map { it.isNotEmpty() }

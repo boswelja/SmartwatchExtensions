@@ -37,6 +37,9 @@ import com.boswelja.smartwatchextensions.common.ui.ExpandableCard
 import java.text.SimpleDateFormat
 import java.util.Locale
 
+/**
+ * Displays detailed information about an app.
+ */
 @Composable
 fun AppInfo(
     modifier: Modifier = Modifier,
@@ -73,6 +76,9 @@ fun AppInfo(
     }
 }
 
+/**
+ * Displays a header for an app, including app icon and name.
+ */
 @Composable
 fun AppHeaderView(
     modifier: Modifier = Modifier,
@@ -103,6 +109,9 @@ fun AppHeaderView(
     }
 }
 
+/**
+ * Displays actions the user can take for an app.
+ */
 @Composable
 fun AppActionButtons(
     modifier: Modifier = Modifier,
@@ -138,6 +147,9 @@ fun AppActionButtons(
     }
 }
 
+/**
+ * Displays information about an app's permissions.
+ */
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun PermissionsInfo(
@@ -170,6 +182,9 @@ fun PermissionsInfo(
     }
 }
 
+/**
+ * Display app install time information.
+ */
 @Composable
 fun AppInstallInfo(
     modifier: Modifier = Modifier,

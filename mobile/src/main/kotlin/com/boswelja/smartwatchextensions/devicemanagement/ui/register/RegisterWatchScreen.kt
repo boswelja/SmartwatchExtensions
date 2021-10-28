@@ -28,6 +28,12 @@ import com.boswelja.smartwatchextensions.R
 import com.boswelja.watchconnection.common.Watch
 import org.koin.androidx.compose.getViewModel
 
+/**
+ * A Composable screen for displaying the watch registration flow.
+ * @param modifier [Modifier].
+ * @param contentPadding The screen padding.
+ * @param onWatchRegistered Called when a watch was registered.
+ */
 @Composable
 fun RegisterWatchScreen(
     modifier: Modifier = Modifier,
@@ -63,6 +69,10 @@ fun RegisterWatchScreen(
     }
 }
 
+/**
+ * A Composable to display a watch registration flow header.
+ * @param modifier [Modifier].
+ */
 @Composable
 fun RegisterWatchesHeader(
     modifier: Modifier = Modifier
@@ -84,6 +94,12 @@ fun RegisterWatchesHeader(
     }
 }
 
+/**
+ * A Composable for displaying a list of discovered watches.
+ * @param modifier [Modifier].
+ * @param contentPadding The content padding.
+ * @param discoveredWatches The list of discovered watches to display.
+ */
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun DiscoveredWatchesList(

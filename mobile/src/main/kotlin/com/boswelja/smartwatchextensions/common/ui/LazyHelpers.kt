@@ -37,6 +37,8 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 
+private const val DEFAULT_DISMISS_THRESHOLD = 0.5f
+
 /**
  * A Composable to handle animating LazyColumn/LazyRow item visibility.
  * @param modifier A [Modifier] to be applied to the [AnimatedVisibility] wrapping your content.
@@ -105,7 +107,9 @@ fun <T> LazyItemScope.SwipeDismissItem(
     backgroundShape: Shape = MaterialTheme.shapes.medium,
     directions: Set<DismissDirection> =
         setOf(DismissDirection.StartToEnd, DismissDirection.EndToStart),
-    dismissThresholds: (DismissDirection) -> ThresholdConfig = { FractionalThreshold(0.5f) },
+    dismissThresholds: (DismissDirection) -> ThresholdConfig = {
+        FractionalThreshold(DEFAULT_DISMISS_THRESHOLD)
+    },
     onDismissingChanged: ((isDismissing: Boolean) -> Unit)? = null,
     onItemDismissed: (T) -> Unit,
     content: @Composable (LazyItemScope.(T) -> Unit)

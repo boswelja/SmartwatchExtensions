@@ -6,7 +6,6 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.boswelja.smartwatchextensions.analytics.Analytics
 import com.boswelja.smartwatchextensions.devicemanagement.WatchManager
-import com.boswelja.smartwatchextensions.settings.AppSettingsSerializer
 import com.boswelja.smartwatchextensions.settings.Settings
 import com.boswelja.watchconnection.common.Watch
 import kotlinx.coroutines.CoroutineDispatcher
@@ -16,6 +15,9 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlin.math.floor
 
+/**
+ * A ViewModel for providing data to Manage Space.
+ */
 class ManageSpaceViewModel(
     application: Application,
     private val analytics: Analytics,
@@ -82,7 +84,7 @@ class ManageSpaceViewModel(
     ) {
         viewModelScope.launch(coroutineDispatcher) {
             appSettingsDataStore.updateData {
-                AppSettingsSerializer().defaultValue
+                Settings()
             }
             withContext(Dispatchers.Main) { onCompleteFunction(true) }
         }

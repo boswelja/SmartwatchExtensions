@@ -8,6 +8,9 @@ import androidx.work.OutOfQuotaPolicy
 import androidx.work.WorkManager
 import timber.log.Timber
 
+/**
+ * A [BroadcastReceiver] to handle enqueueing [BootWorker] or [UpdateWorker] as needed.
+ */
 class BootOrUpdateReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context?, intent: Intent?) {
