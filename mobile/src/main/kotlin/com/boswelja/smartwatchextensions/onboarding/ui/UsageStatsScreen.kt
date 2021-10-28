@@ -2,49 +2,43 @@ package com.boswelja.smartwatchextensions.onboarding.ui
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.selection.toggleable
-import androidx.compose.material.Checkbox
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.ListItem
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.NavigateNext
 import androidx.compose.material.icons.outlined.Analytics
-import androidx.compose.material.icons.outlined.NavigateNext
-import androidx.compose.material3.ExtendedFloatingActionButton
+import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
-import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.boswelja.smartwatchextensions.R
-import com.boswelja.smartwatchextensions.common.ui.CardHeader
 
 /**
  * A Composable screen for displaying analytics information, and allowing the user to opt-in/out.
  * @param modifier [Modifier].
  * @param contentPadding The screen padding.
- * @param onSetAnalyticsEnabled Called when analytics has been set.
  * @param onShowPrivacyPolicy Called when the user requests the privacy policy.
- * @param onNavigateTo Called when navigation is requested.
+ * @param onNavigateNext Called when navigation is requested.
  */
 @Composable
 fun UsageStatsScreen(
     modifier: Modifier = Modifier,
     contentPadding: Dp = 16.dp,
-    onSetAnalyticsEnabled: (Boolean) -> Unit,
     onShowPrivacyPolicy: () -> Unit,
-    onNavigateTo: (OnboardingDestination) -> Unit
+    onNavigateNext: () -> Unit,
+    onOptOut: () -> Unit
 ) {
     Column(
         modifier = modifier.padding(contentPadding),
@@ -56,66 +50,69 @@ fun UsageStatsScreen(
             null,
             Modifier.size(180.dp)
         )
-        UsageStatsCard(
-            modifier = Modifier.fillMaxWidth(),
-            contentPadding = contentPadding,
-            onSetAnalyticsEnabled = onSetAnalyticsEnabled,
+        AnalyticsInformation(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(contentPadding),
             onShowPrivacyPolicy = onShowPrivacyPolicy
         )
-        ExtendedFloatingActionButton(
-            text = { Text(stringResource(R.string.button_next)) },
-            icon = { Icon(Icons.Outlined.NavigateNext, null) },
-            onClick = { onNavigateTo(OnboardingDestination.REGISTER_WATCHES) }
+        AnalyticsActionButtons(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(contentPadding),
+            onNavigateNext = onNavigateNext,
+            onOptOut = onOptOut
         )
+    }
+}
+
+/**
+ * Display actions for the user to take regarding analytics.
+ * @param modifier [Modifier].
+ * @param onNavigateNext Called when the user accepts and continues.
+ * @param onOptOut Called when the user opts out and continues.
+ */
+@Composable
+fun AnalyticsActionButtons(
+    modifier: Modifier = Modifier,
+    onNavigateNext: () -> Unit,
+    onOptOut: () -> Unit
+) {
+    Row(
+        modifier = modifier,
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        TextButton(onClick = onOptOut) {
+            Text(text = stringResource(R.string.button_opt_out))
+        }
+        Button(
+            onClick = onNavigateNext,
+            contentPadding = PaddingValues(start = 16.dp, end = 24.dp)
+        ) {
+            Icon(Icons.Default.NavigateNext, null)
+            Spacer(Modifier.width(8.dp))
+            Text(text = stringResource(R.string.button_next))
+        }
     }
 }
 
 /**
  * A Composable for displaying a brief overview of analytics, along with a quick opt-in/out switch.
  * @param modifier [Modifier].
- * @param contentPadding The screen padding.
- * @param onSetAnalyticsEnabled Called when analytics has been set.
  * @param onShowPrivacyPolicy Called when the user requests the privacy policy.
  */
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun UsageStatsCard(
+fun AnalyticsInformation(
     modifier: Modifier = Modifier,
-    contentPadding: Dp,
-    onSetAnalyticsEnabled: (Boolean) -> Unit,
     onShowPrivacyPolicy: () -> Unit
 ) {
-    var checkboxChecked by remember { mutableStateOf(true) }
-
-    Surface(
-        modifier = modifier
-    ) {
-        Column(Modifier.padding(contentPadding)) {
-            CardHeader(
-                title = { Text(stringResource(R.string.share_usage_title)) }
-            )
-            Text(stringResource(R.string.share_usage_desc))
-            ListItem(
-                text = { Text(stringResource(R.string.share_usage_title)) },
-                trailing = {
-                    Checkbox(checked = checkboxChecked, onCheckedChange = null)
-                },
-                modifier = Modifier
-                    .toggleable(
-                        value = checkboxChecked,
-                        onValueChange = {
-                            checkboxChecked = it
-                            onSetAnalyticsEnabled(it)
-                        }
-                    )
-                    .padding(contentPadding)
-            )
-            OutlinedButton(
-                onClick = onShowPrivacyPolicy,
-                modifier = Modifier.padding(top = contentPadding)
-            ) {
-                Text(stringResource(R.string.about_priv_policy_title))
-            }
+    Column(modifier) {
+        Text(stringResource(R.string.share_usage_desc))
+        TextButton(
+            onClick = onShowPrivacyPolicy,
+        ) {
+            Text(stringResource(R.string.about_priv_policy_title))
         }
     }
 }

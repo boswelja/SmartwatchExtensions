@@ -210,11 +210,13 @@
 
     <!-- QS Tile strings -->
     <string name="battery_percent_qs_tile_fallback">%s%% (%s)</string>
+
     <string name="button_undo">Undo</string>
     <string name="button_done">Done</string>
     <string name="button_next">Continue</string>
     <string name="button_finish">Finish</string>
     <string name="button_forget_watch">Forget Watch</string>
+    <string name="button_opt_out">Opt-Out</string>
 
     <string name="privacy_policy_url" translatable="false">https://github.com/boswelja/SmartwatchExtensions/blob/main/PRIVACY.md</string>
     <string name="github_url" translatable="false">https://github.com/boswelja/SmartwatchExtensions</string>

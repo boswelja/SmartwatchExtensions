@@ -75,8 +75,14 @@ fun OnboardingScreen(
                         intent
                     }
                 },
-                onSetAnalyticsEnabled = viewModel::setAnalyticsEnabled,
-                onNavigateTo = { navController.navigate(it.route) }
+                onNavigateNext = {
+                    viewModel.setAnalyticsEnabled(true)
+                    navController.navigate(OnboardingDestination.REGISTER_WATCHES.route)
+                },
+                onOptOut = {
+                    viewModel.setAnalyticsEnabled(false)
+                    navController.navigate(OnboardingDestination.REGISTER_WATCHES.route)
+                }
             )
         }
         composable(OnboardingDestination.REGISTER_WATCHES.route) {
