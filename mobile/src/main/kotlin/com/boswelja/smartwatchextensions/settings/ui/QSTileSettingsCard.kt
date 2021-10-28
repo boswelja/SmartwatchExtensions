@@ -17,6 +17,10 @@ import com.boswelja.smartwatchextensions.common.ui.CardHeader
 import com.boswelja.smartwatchextensions.common.ui.DialogSetting
 import kotlinx.coroutines.Dispatchers
 
+/**
+ * A Composable for displaying QS Tile settings.
+ * @param modifier [Modifier].
+ */
 @Composable
 fun QSTileSettingsCard(
     modifier: Modifier = Modifier

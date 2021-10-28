@@ -9,10 +9,17 @@ import com.boswelja.watchconnection.common.Watch
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
+/**
+ * A ViewModel for providing data to Watch Info.
+ */
 class WatchInfoViewModel(
     private val watchManager: WatchManager
 ) : ViewModel() {
 
+    /**
+     * A list of capabilities the watch has. Note you should call [getCapabilities] to refresh this
+     * list.
+     */
     val watchCapabilities = mutableStateListOf<Capability>()
 
     /**
@@ -23,6 +30,10 @@ class WatchInfoViewModel(
         watchManager.renameWatch(watch, name)
     }
 
+    /**
+     * Refresh capabilities for the given watch. Refreshed capabilities will be posted in
+     * [watchCapabilities].
+     */
     fun getCapabilities(watch: Watch) {
         viewModelScope.launch {
             watchManager.getCapabilitiesFor(watch).let {

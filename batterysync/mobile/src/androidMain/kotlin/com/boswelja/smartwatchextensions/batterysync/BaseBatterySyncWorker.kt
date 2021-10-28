@@ -10,9 +10,18 @@ import androidx.work.WorkManager
 import androidx.work.WorkerParameters
 import java.util.concurrent.TimeUnit
 
+/**
+ * A base [CoroutineWorker] to handle getting battery stats for the device.
+ */
 abstract class BaseBatterySyncWorker(appContext: Context, workerParams: WorkerParameters) :
     CoroutineWorker(appContext, workerParams) {
 
+    /**
+     * Called when the device battery stats are ready to send. Sending battery stats should be
+     * handled here.
+     * @param targetUid The target device UID.
+     * @param batteryStats The device battery stats to send.
+     */
     abstract suspend fun onSendBatteryStats(
         targetUid: String,
         batteryStats: BatteryStats
@@ -27,9 +36,21 @@ abstract class BaseBatterySyncWorker(appContext: Context, workerParams: WorkerPa
     }
 
     companion object {
+
+        /**
+         * The worker sync interval in minutes.
+         */
         const val SYNC_INTERVAL_MINUTES = 15L
+
+        /**
+         * The key for the extra containing the target device UID.
+         */
         const val EXTRA_WATCH_ID: String = "extra_watch_id"
 
+        /**
+         * Returns a unique worker ID for battery sync with the target UID.
+         * @param watchId The target device UID.
+         */
         fun getWorkerIdFor(watchId: String): String = "$watchId-batterysync"
 
         /** Starts a battery sync worker for the watch with a given ID. */

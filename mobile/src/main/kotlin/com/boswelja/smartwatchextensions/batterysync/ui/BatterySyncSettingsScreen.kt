@@ -23,6 +23,17 @@ import com.boswelja.smartwatchextensions.common.ui.CheckboxSetting
 import com.boswelja.smartwatchextensions.common.ui.SliderSetting
 import com.boswelja.smartwatchextensions.common.ui.SwitchSetting
 
+private const val PROGRESS_FACTOR = 100f
+private const val BATTERY_CHARGE_MIN = 0.6f
+private const val BATTERY_LOW_MAX = 0.35f
+private const val BATTERY_CHARGE_DEFAULT = 90
+private const val BATTERY_LOW_DEFAULT = 20
+
+/**
+ * A Composable screen for displaying Battery Sync settings.
+ * @param modifier [Modifier].
+ * @param contentPadding The padding around the screen content.
+ */
 @Composable
 fun BatterySyncSettingsScreen(
     modifier: Modifier = Modifier,
@@ -54,6 +65,10 @@ fun BatterySyncSettingsScreen(
     }
 }
 
+/**
+ * A Composable to display Battery Sync settings.
+ * @param modifier [Modifier].
+ */
 @Composable
 fun BatterySyncSettings(
     modifier: Modifier = Modifier
@@ -85,6 +100,11 @@ fun BatterySyncSettings(
     }
 }
 
+/**
+ * A Composable for displaying charge notification settings.
+ * @param modifier [Modifier].
+ * @param isEnabled Whether all settings in this group are enabled.
+ */
 @Composable
 fun ChargeNotificationSettings(
     modifier: Modifier = Modifier,
@@ -94,16 +114,12 @@ fun ChargeNotificationSettings(
 
     val phoneChargeNotiEnabled by viewModel.phoneChargeNotiEnabled.collectAsState(false)
     val watchChargeNotiEnabled by viewModel.watchChargeNotiEnabled.collectAsState(false)
-    val chargeThreshold by viewModel.chargeThreshold.collectAsState(90)
-    var currentThreshold by remember {
-        mutableStateOf(chargeThreshold / 100f)
-    }
+    val chargeThreshold by viewModel.chargeThreshold.collectAsState(BATTERY_CHARGE_DEFAULT)
+    var currentThreshold by remember { mutableStateOf(chargeThreshold / PROGRESS_FACTOR) }
 
     Card(
         modifier = modifier,
-        header = {
-            CardHeader(title = { Text(stringResource(R.string.category_charge_notifications)) })
-        }
+        header = { CardHeader(title = { Text(stringResource(R.string.category_charge_notifications)) }) }
     ) {
         Column {
             CheckboxSetting(
@@ -111,48 +127,51 @@ fun ChargeNotificationSettings(
                 summary = {
                     val text = stringResource(
                         R.string.battery_sync_phone_charge_noti_summary,
-                        (currentThreshold * 100).toInt().toString()
+                        (currentThreshold * PROGRESS_FACTOR).toInt().toString()
                     )
                     Text(text)
                 },
                 checked = phoneChargeNotiEnabled,
                 enabled = isEnabled,
-                onCheckChanged = {
-                    viewModel.setPhoneChargeNotiEnabled(it)
-                }
+                onCheckChanged = { viewModel.setPhoneChargeNotiEnabled(it) }
             )
             CheckboxSetting(
                 label = { Text(stringResource(R.string.battery_sync_watch_charge_noti_title)) },
                 summary = {
                     val text = stringResource(
                         R.string.battery_sync_watch_charge_noti_summary,
-                        (currentThreshold * 100).toInt().toString()
+                        (currentThreshold * PROGRESS_FACTOR).toInt().toString()
                     )
                     Text(text)
                 },
                 checked = watchChargeNotiEnabled,
                 enabled = isEnabled,
-                onCheckChanged = {
-                    viewModel.setWatchChargeNotiEnabled(it)
-                }
+                onCheckChanged = { viewModel.setWatchChargeNotiEnabled(it) }
             )
             SliderSetting(
                 label = { Text(stringResource(R.string.battery_sync_charge_threshold_title)) },
-                valueRange = 0.6f..1f,
+                trailing = { value ->
+                    Text(stringResource(R.string.battery_percent, value * PROGRESS_FACTOR))
+                },
+                valueRange = BATTERY_CHARGE_MIN..1f,
                 value = currentThreshold,
                 enabled = isEnabled,
-                trailingFormat = stringResource(R.string.battery_percent),
                 onSliderValueChanged = {
                     currentThreshold = it
                 },
                 onSliderValueFinished = {
-                    viewModel.setChargeThreshold((currentThreshold * 100).toInt())
+                    viewModel.setChargeThreshold((currentThreshold * PROGRESS_FACTOR).toInt())
                 }
             )
         }
     }
 }
 
+/**
+ * A Composable for displaying low battery notification settings.
+ * @param modifier [Modifier].
+ * @param isEnabled Whether all settings in this group are enabled.
+ */
 @Composable
 fun LowBatteryNotificationSettings(
     modifier: Modifier = Modifier,
@@ -162,16 +181,12 @@ fun LowBatteryNotificationSettings(
 
     val phoneLowNotiEnabled by viewModel.phoneLowNotiEnabled.collectAsState(false)
     val watchLowNotiEnabled by viewModel.watchLowNotiEnabled.collectAsState(false)
-    val batteryLowThreshold by viewModel.batteryLowThreshold.collectAsState(20)
-    var currentThreshold by remember {
-        mutableStateOf(batteryLowThreshold / 100f)
-    }
+    val batteryLowThreshold by viewModel.batteryLowThreshold.collectAsState(BATTERY_LOW_DEFAULT)
+    var currentThreshold by remember { mutableStateOf(batteryLowThreshold / PROGRESS_FACTOR) }
 
     Card(
         modifier = modifier,
-        header = {
-            CardHeader(title = { Text(stringResource(R.string.category_low_notifications)) })
-        }
+        header = { CardHeader(title = { Text(stringResource(R.string.category_low_notifications)) }) }
     ) {
         Column {
             CheckboxSetting(
@@ -179,42 +194,38 @@ fun LowBatteryNotificationSettings(
                 summary = {
                     val text = stringResource(
                         R.string.battery_sync_phone_low_noti_summary,
-                        (currentThreshold * 100).toInt().toString()
+                        (currentThreshold * PROGRESS_FACTOR).toInt().toString()
                     )
                     Text(text)
                 },
                 enabled = isEnabled,
                 checked = phoneLowNotiEnabled,
-                onCheckChanged = {
-                    viewModel.setPhoneLowNotiEnabled(it)
-                }
+                onCheckChanged = { viewModel.setPhoneLowNotiEnabled(it) }
             )
             CheckboxSetting(
                 label = { Text(stringResource(R.string.battery_sync_watch_low_noti_title)) },
                 summary = {
                     val text = stringResource(
                         R.string.battery_sync_watch_low_noti_summary,
-                        (currentThreshold * 100).toInt().toString()
+                        (currentThreshold * PROGRESS_FACTOR).toInt().toString()
                     )
                     Text(text)
                 },
                 enabled = isEnabled,
                 checked = watchLowNotiEnabled,
-                onCheckChanged = {
-                    viewModel.setWatchLowNotiEnabled(it)
-                }
+                onCheckChanged = { viewModel.setWatchLowNotiEnabled(it) }
             )
             SliderSetting(
                 label = { Text(stringResource(R.string.battery_sync_low_threshold_title)) },
-                valueRange = 0.05f..0.35f,
+                trailing = { value ->
+                    Text(stringResource(R.string.battery_percent, value * PROGRESS_FACTOR))
+                },
+                valueRange = 0f..BATTERY_LOW_MAX,
                 value = currentThreshold,
                 enabled = isEnabled,
-                trailingFormat = stringResource(R.string.battery_percent),
-                onSliderValueChanged = {
-                    currentThreshold = it
-                },
+                onSliderValueChanged = { currentThreshold = it },
                 onSliderValueFinished = {
-                    viewModel.setLowBatteryThreshold((currentThreshold * 100).toInt())
+                    viewModel.setLowBatteryThreshold((currentThreshold * PROGRESS_FACTOR).toInt())
                 }
             )
         }

@@ -42,6 +42,9 @@ import org.koin.dsl.module
 import timber.log.Timber
 import kotlin.coroutines.CoroutineContext
 
+/**
+ * A custom [Application] for starting Koin.
+ */
 @Suppress("unused")
 class MainApplication : Application() {
 
@@ -85,6 +88,9 @@ class MainApplication : Application() {
     }
 }
 
+/**
+ * A Koin module for providing analytics.
+ */
 val analyticsModule = module {
     single {
         if (BuildConfig.DEBUG) {
@@ -95,6 +101,9 @@ val analyticsModule = module {
     }
 }
 
+/**
+ * A Koin module for providing [WatchManager].
+ */
 val watchManagerModule = module {
     single {
         WatchManager(
@@ -110,6 +119,9 @@ val watchManagerModule = module {
     }
 }
 
+/**
+ * A Koin module for providing watch connection clients.
+ */
 val clientsModule = module {
     single {
         MessageClient(
@@ -137,6 +149,9 @@ val clientsModule = module {
     }
 }
 
+/**
+ * A Koin module for providing database-related classes.
+ */
 val databaseModule = module {
     factory<SqlDriver> { params ->
         AndroidSqliteDriver(params.get(), get(), params.get())

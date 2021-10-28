@@ -6,6 +6,10 @@ import com.boswelja.smartwatchextensions.appStateStore
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 
+/**
+ * A [Migrator] to handle app updates.
+ * @param context [Context].
+ */
 class Updater(private val context: Context) : Migrator(
     currentVersion = 1,
     migrations = listOf()

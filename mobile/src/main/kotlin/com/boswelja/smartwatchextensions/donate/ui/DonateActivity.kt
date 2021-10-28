@@ -48,6 +48,11 @@ import com.boswelja.smartwatchextensions.common.ui.UpNavigationAppBar
 import com.boswelja.smartwatchextensions.donate.DonationClient
 import kotlinx.coroutines.launch
 
+private const val HEADER_ASPECT_RATIO = 3f
+
+/**
+ * An Activity to accept donations.
+ */
 class DonateActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -78,6 +83,12 @@ class DonateActivity : ComponentActivity() {
     }
 }
 
+/**
+ * A Composable screen for displaying donation options.
+ * @param modifier [Modifier].
+ * @param onShowSnackbar Called when a snackbar needs to be displayed.
+ * @param onDonate Called when the user donates.
+ */
 @Composable
 fun DonateScreen(
     modifier: Modifier = Modifier,
@@ -106,13 +117,16 @@ fun DonateScreen(
     }
 }
 
+/**
+ * A Composable to display a header regarding donations.
+ */
 @Composable
 fun DonateHeader() {
     Row(
         Modifier
             .fillMaxWidth()
             .padding(16.dp)
-            .aspectRatio(3f),
+            .aspectRatio(HEADER_ASPECT_RATIO),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Icon(
@@ -131,6 +145,11 @@ fun DonateHeader() {
     }
 }
 
+/**
+ * A Composable for displaying a donation option.
+ * @param skuDetails The donation details.
+ * @param onClick Called when the donation item is clicked.
+ */
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun DonateItem(skuDetails: SkuDetails, onClick: (SkuDetails) -> Unit) {
@@ -148,6 +167,11 @@ fun DonateItem(skuDetails: SkuDetails, onClick: (SkuDetails) -> Unit) {
     )
 }
 
+/**
+ * A Composable for displaying a list of donation options.
+ * @param donateOptions The list of options to display.
+ * @param onClick Called when the donation item is clicked.
+ */
 @Composable
 fun DonateList(donateOptions: List<SkuDetails>, onClick: (SkuDetails) -> Unit) {
     if (donateOptions.isNotEmpty()) {
@@ -169,6 +193,10 @@ fun DonateList(donateOptions: List<SkuDetails>, onClick: (SkuDetails) -> Unit) {
     }
 }
 
+/**
+ * A Composable for displaying all donation options.
+ * @param onDonationClick Called when the user clicks a donation option.
+ */
 @Composable
 fun DonateOptions(
     onDonationClick: (SkuDetails) -> Unit

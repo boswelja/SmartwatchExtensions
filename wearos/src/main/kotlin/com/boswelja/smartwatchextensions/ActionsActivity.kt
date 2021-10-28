@@ -146,21 +146,19 @@ class ActionsActivity : ComponentActivity() {
             return
         }
 
-        try {
-            messageClient.sendMessage(
-                phone,
-                Message(
-                    action,
-                    null
-                )
+        val success = messageClient.sendMessage(
+            phone,
+            Message(
+                action,
+                null
             )
-            // If we get this far, we've succeeded
+        )
+        if (success) {
             showConfirmationOverlay(
                 ConfirmationOverlay.SUCCESS_ANIMATION,
                 successMessage
             )
-        } catch (e: Exception) {
-            // Message send failed
+        } else {
             showConfirmationOverlay(
                 ConfirmationOverlay.FAILURE_ANIMATION,
                 failMessage

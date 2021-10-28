@@ -49,6 +49,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.getViewModel
 
+/**
+ * The main entry point of the app.
+ */
 class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -74,6 +77,12 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+/**
+ * The main Composable of the app.
+ * @param modifier [Modifier].
+ * @param contentPadding The padding around the content.
+ * @param groupPadding The padding between groups.
+ */
 @OptIn(ExperimentalWearMaterialApi::class, ExperimentalAnimationApi::class)
 @Composable
 fun MainScreen(
@@ -129,6 +138,11 @@ fun MainScreen(
     }
 }
 
+/**
+ * A [Chip] for displaying app info.
+ * @param modifier [Modifier].
+ * @param onAboutClick Called when the chip is clicked.
+ */
 @Composable
 fun AppInfoChip(
     modifier: Modifier = Modifier,

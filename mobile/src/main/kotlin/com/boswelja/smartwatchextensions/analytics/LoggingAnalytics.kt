@@ -2,6 +2,9 @@ package com.boswelja.smartwatchextensions.analytics
 
 import timber.log.Timber
 
+/**
+ * An [Analytics] implementation that logs to LogCat.
+ */
 class LoggingAnalytics : Analytics {
 
     private var enabled: Boolean = false

@@ -13,6 +13,9 @@ import com.boswelja.smartwatchextensions.settings.BoolSettingSerializer
 import com.boswelja.watchconection.common.message.MessageReceiver
 import com.boswelja.watchconnection.common.message.ReceivedMessage
 
+/**
+ * A [MessageReceiver] for receiving [BoolSetting].
+ */
 class BoolSettingChangeReceiver : MessageReceiver<BoolSetting>(BoolSettingSerializer) {
 
     override suspend fun onMessageReceived(

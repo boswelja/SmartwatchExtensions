@@ -30,6 +30,14 @@ import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.common.ui.Card
 import com.boswelja.smartwatchextensions.common.ui.CardHeader
 
+/**
+ * A Composable screen for displaying analytics information, and allowing the user to opt-in/out.
+ * @param modifier [Modifier].
+ * @param contentPadding The screen padding.
+ * @param onSetAnalyticsEnabled Called when analytics has been set.
+ * @param onShowPrivacyPolicy Called when the user requests the privacy policy.
+ * @param onNavigateTo Called when navigation is requested.
+ */
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun UsageStatsScreen(
@@ -63,6 +71,13 @@ fun UsageStatsScreen(
     }
 }
 
+/**
+ * A Composable for displaying a brief overview of analytics, along with a quick opt-in/out switch.
+ * @param modifier [Modifier].
+ * @param contentPadding The screen padding.
+ * @param onSetAnalyticsEnabled Called when analytics has been set.
+ * @param onShowPrivacyPolicy Called when the user requests the privacy policy.
+ */
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun UsageStatsCard(

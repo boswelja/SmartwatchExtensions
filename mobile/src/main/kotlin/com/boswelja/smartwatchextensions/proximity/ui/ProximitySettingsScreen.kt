@@ -21,6 +21,11 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.getViewModel
 
+/**
+ * A Composable screen for displaying proximity settings.
+ * @param modifier [Modifier].
+ * @param contentPadding The screen padding.
+ */
 @Composable
 fun ProximitySettingsScreen(
     modifier: Modifier = Modifier,
@@ -34,6 +39,10 @@ fun ProximitySettingsScreen(
     }
 }
 
+/**
+ * A Composable for displaying separation settings.
+ * @param modifier [Modifier].
+ */
 @Composable
 fun SeparationSettingsCard(modifier: Modifier = Modifier) {
     val scope = rememberCoroutineScope()

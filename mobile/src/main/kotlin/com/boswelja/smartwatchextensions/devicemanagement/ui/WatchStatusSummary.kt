@@ -14,6 +14,11 @@ import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.common.ui.FeatureSummarySmall
 import com.boswelja.watchconnection.common.discovery.ConnectionMode
 
+/**
+ * A Composable for displaying a small watch status summary.
+ * @param modifier [Modifier].
+ * @param watchStatus The watch status to display info for.
+ */
 @Composable
 fun WatchStatusSummarySmall(
     modifier: Modifier = Modifier,

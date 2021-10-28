@@ -32,6 +32,14 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
+/**
+ * A card header with slots for a title, subtitle, icon, action.
+ * @param modifier [Modifier].
+ * @param title The header title.
+ * @param subtitle The header subtitle.
+ * @param icon The header icon.
+ * @param action The header action.
+ */
 @Composable
 fun CardHeader(
     modifier: Modifier = Modifier,
@@ -69,6 +77,18 @@ fun CardHeader(
     }
 }
 
+/**
+ * A card with a slot for a header.
+ * @param modifier [Modifier].
+ * @param header The card header Composable.
+ * @param shape The card shape.
+ * @param backgroundColor The card background color.
+ * @param contentColor The card content color.
+ * @param border The card border stroke.
+ * @param elevation The card elevation.
+ * @param dividerVisible Whether the header divider is visible.
+ * @param content The card content.
+ */
 @Composable
 fun Card(
     modifier: Modifier = Modifier,
@@ -97,6 +117,19 @@ fun Card(
     }
 }
 
+/**
+ * A card with support for expanding & collapsing.
+ * @param modifier [Modifier].
+ * @param title The card title.
+ * @param shape The card shape.
+ * @param backgroundColor The card background color.
+ * @param contentColor The card content color.
+ * @param border The card border stroke.
+ * @param elevation The card elevation.
+ * @param expanded Whether the card is currently expanded.
+ * @param toggleExpanded Called when the card expanded state should be toggled.
+ * @param content The card content.
+ */
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun ExpandableCard(

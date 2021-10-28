@@ -11,6 +11,13 @@ import androidx.wear.compose.material.Icon
 import androidx.wear.compose.material.Text
 import com.boswelja.smartwatchextensions.R
 
+/**
+ * A [Chip] for displaying Phone Locking info.
+ * @param modifier [Modifier].
+ * @param phoneName The paired phone's name.
+ * @param enabled Whether phone locking is enabled.
+ * @param onClick Called when the chip is clicked.
+ */
 @Composable
 fun PhoneLockingChip(
     modifier: Modifier = Modifier,

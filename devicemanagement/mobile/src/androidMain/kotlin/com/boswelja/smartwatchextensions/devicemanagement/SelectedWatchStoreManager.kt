@@ -7,6 +7,9 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 
+/**
+ * A [SelectedWatchManager] backed by a [DataStore].
+ */
 class SelectedWatchStoreManager(
     private val dataStore: DataStore<SelectedWatchState>,
     private val watchRepository: WatchRepository

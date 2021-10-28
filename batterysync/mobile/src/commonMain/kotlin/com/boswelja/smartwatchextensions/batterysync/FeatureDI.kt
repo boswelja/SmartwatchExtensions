@@ -5,6 +5,9 @@ import org.koin.core.parameter.parametersOf
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
+/**
+ * A Koin module for providing Battery Sync repositories.
+ */
 val batterySyncModule = module {
     single {
         BatteryStatsDatabase(

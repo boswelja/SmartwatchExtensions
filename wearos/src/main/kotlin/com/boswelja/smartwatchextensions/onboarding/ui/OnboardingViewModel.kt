@@ -14,6 +14,9 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 
+/**
+ * A [AndroidViewModel] to provide data to onboarding Composables.
+ */
 class OnboardingViewModel internal constructor(
     application: Application,
     private val discoveryClient: DiscoveryClient,
@@ -29,6 +32,9 @@ class OnboardingViewModel internal constructor(
         application.phoneStateStore
     )
 
+    /**
+     * Retrieve the local device name.
+     */
     fun watchName() = flow {
         val node = discoveryClient.localWatch()
         emit(node.name)

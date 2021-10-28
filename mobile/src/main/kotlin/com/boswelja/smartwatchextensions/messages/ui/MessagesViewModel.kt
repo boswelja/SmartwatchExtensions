@@ -9,11 +9,17 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 
+/**
+ * A ViewModel for providing data to Messages.
+ */
 class MessagesViewModel(
     private val messagesRepository: MessagesRepository,
     private val updateChecker: UpdateChecker
 ) : ViewModel() {
 
+    /**
+     * Flow a list of currently active messages.
+     */
     val activeMessagesFlow: Flow<List<DisplayMessage>> =
         messagesRepository.getAllWhere(archived = false)
 
@@ -24,6 +30,9 @@ class MessagesViewModel(
         updateChecker.launchDownloadScreen(context)
     }
 
+    /**
+     * Move a message to the archive.
+     */
     suspend fun dismissMessage(messageId: Long) {
         withContext(Dispatchers.IO) {
             messagesRepository.archive(messageId)

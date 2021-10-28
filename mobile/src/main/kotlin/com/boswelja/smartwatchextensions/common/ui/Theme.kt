@@ -17,16 +17,16 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
-private val Purple200 = Color(0xffce93d8)
-private val Purple500 = Color(0xff9c27b0)
-private val Purple50 = Color(0xfff0eaf1)
-private val Purple10 = Color(0xfffdfbfe)
-private val Purple900 = Color(0xff130e15)
+private const val PURPLE_10 = 0xfffdfbfe
+private const val PURPLE_50 = 0xfff0eaf1
+private const val PURPLE_200 = 0xffce93d8
+private const val PURPLE_500 = 0xff9c27b0
+private const val PURPLE_900 = 0xff130e15
 
-private const val useMonet = true
+private const val MONET_ENABLED = true
 
 @Composable
-fun getColors(darkTheme: Boolean): Colors {
+private fun getColors(darkTheme: Boolean): Colors {
     val context = LocalContext.current
     return remember(darkTheme) {
         if (darkTheme) {
@@ -54,50 +54,50 @@ fun getColors(darkTheme: Boolean): Colors {
 }
 
 private fun Context.getDarkPrimaryColor(): Color {
-    return if (useMonet && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+    return if (MONET_ENABLED && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
         Color(getColor(android.R.color.system_accent1_200))
     } else {
-        Purple200
+        Color(PURPLE_200)
     }
 }
 
 private fun Context.getLightPrimaryColor(): Color {
-    return if (useMonet && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+    return if (MONET_ENABLED && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
         Color(getColor(android.R.color.system_accent1_500))
     } else {
-        Purple500
+        Color(PURPLE_500)
     }
 }
 
 private fun Context.getLightBackgroundColor(): Color {
-    return if (useMonet && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+    return if (MONET_ENABLED && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
         Color(getColor(android.R.color.system_neutral1_50))
     } else {
-        Purple50
+        Color(PURPLE_50)
     }
 }
 
 private fun Context.getLightSurfaceColor(): Color {
-    return if (useMonet && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+    return if (MONET_ENABLED && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
         Color(getColor(android.R.color.system_neutral1_10))
     } else {
-        Purple10
+        Color(PURPLE_10)
     }
 }
 
 private fun Context.getDarkBackgroundColor(): Color {
-    return if (useMonet && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+    return if (MONET_ENABLED && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
         Color(getColor(android.R.color.system_neutral1_900))
     } else {
-        Purple900
+        Color(PURPLE_900)
     }
 }
 
 private fun Context.getDarkSurfaceColor(): Color {
-    return if (useMonet && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+    return if (MONET_ENABLED && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
         Color(getColor(android.R.color.system_neutral1_900))
     } else {
-        Purple900
+        Color(PURPLE_900)
     }
 }
 
@@ -107,6 +107,9 @@ private val shapes = Shapes(
     large = RoundedCornerShape(8.dp)
 )
 
+/**
+ * Apples [MaterialTheme] with the app colours to the child Composables.
+ */
 @Composable
 fun AppTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),

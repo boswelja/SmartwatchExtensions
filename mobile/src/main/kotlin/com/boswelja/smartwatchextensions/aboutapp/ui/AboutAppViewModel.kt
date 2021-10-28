@@ -13,10 +13,17 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
+/**
+ * A ViewModel for providing data to [AboutAppScreen].
+ */
 @OptIn(ExperimentalCoroutinesApi::class)
 class AboutAppViewModel(private val watchManager: WatchManager) : ViewModel() {
 
     private val _watchAppVersion = MutableStateFlow<Version?>(null)
+
+    /**
+     * Flow the current version of the app on the selected watch.
+     */
     val watchAppVersion: Flow<Version?>
         get() = _watchAppVersion
 

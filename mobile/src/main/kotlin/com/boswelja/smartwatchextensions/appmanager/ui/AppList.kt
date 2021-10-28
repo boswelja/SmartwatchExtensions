@@ -25,6 +25,15 @@ import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.appmanager.WatchApp
 import com.boswelja.smartwatchextensions.common.ui.ExpandableCard
 
+/**
+ * A Composable for displaying a list of apps.
+ * @param modifier [Modifier].
+ * @param contentPadding The content padding.
+ * @param userApps The list of user apps.
+ * @param disabledApps The list of disabled apps.
+ * @param systemApps The list of system apps.
+ * @param onAppClick Called when an app is clicked.
+ */
 @Composable
 fun AppList(
     modifier: Modifier = Modifier,
@@ -51,12 +60,7 @@ fun AppList(
                     toggleExpanded = { userAppsExpanded = !userAppsExpanded }
                 ) {
                     Column {
-                        userApps.forEach { app ->
-                            AppItem(
-                                app = app,
-                                onClick = onAppClick
-                            )
-                        }
+                        userApps.forEach { app -> AppItem(app = app, onClick = onAppClick) }
                     }
                 }
             }
@@ -69,12 +73,7 @@ fun AppList(
                     toggleExpanded = { disabledAppsExpanded = !disabledAppsExpanded }
                 ) {
                     Column {
-                        disabledApps.forEach { app ->
-                            AppItem(
-                                app = app,
-                                onClick = onAppClick
-                            )
-                        }
+                        disabledApps.forEach { app -> AppItem(app = app, onClick = onAppClick) }
                     }
                 }
             }
@@ -87,12 +86,7 @@ fun AppList(
                     toggleExpanded = { systemAppsExpanded = !systemAppsExpanded }
                 ) {
                     Column {
-                        systemApps.forEach { app ->
-                            AppItem(
-                                app = app,
-                                onClick = onAppClick
-                            )
-                        }
+                        systemApps.forEach { app -> AppItem(app = app, onClick = onAppClick) }
                     }
                 }
             }
@@ -100,6 +94,12 @@ fun AppList(
     }
 }
 
+/**
+ * A Composable for displaying an app.
+ * @param modifier [Modifier].
+ * @param app The app to display.
+ * @param onClick Called when the app is clicked.
+ */
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun AppItem(

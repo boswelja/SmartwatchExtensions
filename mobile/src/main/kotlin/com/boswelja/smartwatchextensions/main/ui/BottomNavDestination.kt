@@ -19,6 +19,12 @@ import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hierarchy
 import com.boswelja.smartwatchextensions.R
 
+/**
+ * All top-level destinations to be shown in the bottom navigation bar.
+ * @param route The navigation route for the destination.
+ * @param labelRes The string resource used to label the destination.
+ * @param icon The destination icon.
+ */
 enum class BottomNavDestination(
     val route: String,
     @StringRes val labelRes: Int,
@@ -46,6 +52,11 @@ enum class BottomNavDestination(
     )
 }
 
+/**
+ * A Composable for displaying the bottom navigation bar.
+ * @param currentDestination The current destination.
+ * @param onNavigateTo Called when the user navigates to another destination.
+ */
 @Composable
 fun BottonNav(
     currentDestination: NavDestination?,

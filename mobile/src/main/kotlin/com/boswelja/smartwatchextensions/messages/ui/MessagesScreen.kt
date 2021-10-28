@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Card
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedButton
@@ -44,6 +45,13 @@ import com.boswelja.smartwatchextensions.messages.Message
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.getViewModel
 
+/**
+ * A Composable screen for displaying messages.
+ * @param modifier [Modifier].
+ * @param contentPadding The screen padding.
+ * @param onShowSnackbar Called when a snackbar should be displayed.
+ * @param onNavigateTo Called when navigation is requested.
+ */
 @Composable
 fun MessagesScreen(
     modifier: Modifier = Modifier,
@@ -106,6 +114,15 @@ fun MessagesScreen(
     }
 }
 
+/**
+ * A Composable for displaying a list of messages.
+ * @param modifier [Modifier].
+ * @param contentPadding The list padding.
+ * @param messages The list of messages.
+ * @param onMessageDismissed Called when a message is dismissed.
+ * @param onMessageActionClicked Called when a message action is clicked.
+ */
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun MessagesList(
     modifier: Modifier = Modifier,
@@ -150,6 +167,11 @@ fun MessagesList(
     }
 }
 
+/**
+ * A Composable to indicate there are currently no messages.
+ * @param modifier [Modifier].
+ * @param onNavigateTo Called when navigation is requested.
+ */
 @Composable
 fun NoMessagesView(
     modifier: Modifier = Modifier,

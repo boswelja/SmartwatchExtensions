@@ -2,10 +2,6 @@ package com.boswelja.smartwatchextensions.updatechecker
 
 import android.content.Context
 
-fun getUpdateChecker(context: Context): UpdateChecker {
-    return GooglePlayUpdateChecker(context)
-}
-
 /**
  * An interface for a basic app update checker.
  */

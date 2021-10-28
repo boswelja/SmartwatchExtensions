@@ -2,6 +2,9 @@ package com.boswelja.smartwatchextensions.settings
 
 import com.boswelja.watchconnection.common.message.MessageSerializer
 
+/**
+ * A [MessageSerializer] to handle [IntSetting].
+ */
 object IntSettingSerializer : MessageSerializer<IntSetting>(
     messagePaths = setOf(UPDATE_INT_PREFERENCE)
 ) {

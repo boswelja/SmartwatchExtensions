@@ -22,6 +22,13 @@ import com.boswelja.smartwatchextensions.common.ui.FeatureSummarySmall
 import kotlinx.coroutines.delay
 import java.util.concurrent.TimeUnit
 
+private const val ICON_WIDTH_PERCENT = 0.33f
+
+/**
+ * A Composable for displaying a small summary of a [BatteryStats].
+ * @param modifier [Modifier].
+ * @param batteryStats The battery stats to show info for.
+ */
 @Composable
 fun BatterySummarySmall(
     modifier: Modifier = Modifier,
@@ -33,7 +40,7 @@ fun BatterySummarySmall(
             BatteryIcon(
                 percent = batteryStats.percent,
                 modifier = Modifier
-                    .fillMaxWidth(0.33f)
+                    .fillMaxWidth(ICON_WIDTH_PERCENT)
                     .aspectRatio(1f)
             )
         },
@@ -46,6 +53,11 @@ fun BatterySummarySmall(
     )
 }
 
+/**
+ * A Composable for displaying a large summary of a [BatteryStats].
+ * @param modifier [Modifier].
+ * @param batteryStats The battery stats to show info for.
+ */
 @Composable
 fun BatterySummaryLarge(
     modifier: Modifier = Modifier,
@@ -90,6 +102,11 @@ fun BatterySummaryLarge(
     }
 }
 
+/**
+ * Convert a timestamp to a human readable age value.
+ * @param timestamp The timestamp in milliseconds to convert.
+ * @param ageUnit The [TimeUnit] to display the age in.
+ */
 @Composable
 fun timestampToAge(timestamp: Long, ageUnit: TimeUnit) = produceState(
     initialValue = ageUnit.convert(System.currentTimeMillis() - timestamp, TimeUnit.MILLISECONDS)

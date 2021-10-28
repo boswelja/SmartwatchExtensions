@@ -8,6 +8,10 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import com.boswelja.smartwatchextensions.devicemanagement.ui.watchManagerGraph
 
+/**
+ * All destinations reachable from withing App Settings.
+ * @param route The navigation route for the destination.
+ */
 enum class SettingsDestination(
     val route: String
 ) {

@@ -29,6 +29,10 @@ import com.boswelja.smartwatchextensions.managespace.ui.ManageSpaceActivity
 import kotlinx.coroutines.Dispatchers
 import org.koin.androidx.compose.getViewModel
 
+/**
+ * A Composable for displaying app settings.
+ * @param modifier [Modifier].
+ */
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun AppSettingsCard(modifier: Modifier = Modifier) {

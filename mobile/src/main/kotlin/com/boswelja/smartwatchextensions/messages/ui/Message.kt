@@ -36,7 +36,7 @@ import java.util.concurrent.TimeUnit
 private fun getReceivedString(timeInMillis: Long): String {
     val todayMillis = System.currentTimeMillis()
     val received = Date(timeInMillis)
-    val isToday = (todayMillis - timeInMillis) < TimeUnit.DAYS.toMillis(1)
+    val isToday = todayMillis - timeInMillis < TimeUnit.DAYS.toMillis(1)
     return if (isToday) {
         DateFormat.getTimeFormat(LocalContext.current).format(received)
     } else {
@@ -44,6 +44,12 @@ private fun getReceivedString(timeInMillis: Long): String {
     }
 }
 
+/**
+ * A Composable to display a Message.
+ * @param message The message to display.
+ * @param showAction Whether the message action should be visible, if any.
+ * @param onActionClick Called when the action is clicked.
+ */
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun MessageItem(

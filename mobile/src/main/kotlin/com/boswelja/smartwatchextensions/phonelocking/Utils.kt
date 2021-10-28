@@ -5,6 +5,9 @@ import android.content.Context
 import android.view.accessibility.AccessibilityManager
 import androidx.core.content.getSystemService
 
+/**
+ * Contains helper functions for Phone Locking.
+ */
 object Utils {
 
     /**

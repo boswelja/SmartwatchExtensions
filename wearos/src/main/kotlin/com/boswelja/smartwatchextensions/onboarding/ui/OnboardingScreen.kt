@@ -34,6 +34,9 @@ import com.boswelja.smartwatchextensions.common.ui.RotaryHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
+/**
+ * A Composable screen for displaying Onboarding info.
+ */
 @Composable
 fun OnboardingScreen() {
     val state = rememberLazyListState()
@@ -60,6 +63,9 @@ fun OnboardingScreen() {
     }
 }
 
+/**
+ * A Composable screen for greeting the user.
+ */
 @Composable
 fun WelcomeScreen() {
     val context = LocalContext.current
@@ -90,6 +96,9 @@ fun WelcomeScreen() {
     }
 }
 
+/**
+ * A Composable screen for displaying install instructions for the paired phone.
+ */
 @Composable
 fun PhoneInstallInstructions() {
     Column(
@@ -109,6 +118,9 @@ fun PhoneInstallInstructions() {
     }
 }
 
+/**
+ * A Composable screen for displaying pairing info.
+ */
 @Composable
 fun PhoneSetupInstructions() {
     val viewModel: OnboardingViewModel = viewModel()
@@ -138,6 +150,9 @@ fun PhoneSetupInstructions() {
     }
 }
 
+/**
+ * An [Icon] to indicate the user can continue scrolling down.
+ */
 @Composable
 fun DownArrow() {
     Icon(

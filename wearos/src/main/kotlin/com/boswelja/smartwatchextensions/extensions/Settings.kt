@@ -7,13 +7,16 @@ import androidx.datastore.dataStore
 import java.io.InputStream
 import java.io.OutputStream
 
+/**
+ * A [DataStore] for tracking [ExtensionSettings].
+ */
 val Context.extensionSettingsStore: DataStore<ExtensionSettings> by dataStore(
     "extensionSettings.pb",
     SettingsSerializer()
 )
 
 @Suppress("BlockingMethodInNonBlockingContext")
-class SettingsSerializer : Serializer<ExtensionSettings> {
+private class SettingsSerializer : Serializer<ExtensionSettings> {
     override val defaultValue = ExtensionSettings(
         phoneLockingEnabled = false,
         batterySyncEnabled = false,

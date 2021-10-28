@@ -29,6 +29,9 @@ import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 import timber.log.Timber
 
+/**
+ * A service for observing the connection status of specified watches.
+ */
 class SeparationObserverService : LifecycleService() {
 
     private val watchManager: WatchManager by inject()
@@ -73,7 +76,7 @@ class SeparationObserverService : LifecycleService() {
 
             // Try get watch status
             watch?.let {
-                watchManager.getStatusFor(it).debounce(100).map { status ->
+                watchManager.getStatusFor(it).debounce(SEPARATION_DEBOUNCE_MILLIS).map { status ->
                     // Pair watch ID to status
                     watch to status
                 }
@@ -86,7 +89,7 @@ class SeparationObserverService : LifecycleService() {
 
         // Start collecting new values
         statusCollectorJob = lifecycleScope.launch(Dispatchers.Default) {
-            merge(*flows).collect { handleStatusChange(it.first, it.second) }
+            flows.toList().merge().collect { handleStatusChange(it.first, it.second) }
         }
     }
 
@@ -132,10 +135,22 @@ class SeparationObserverService : LifecycleService() {
     }
 
     companion object {
-        const val FOREGROUND_NOTI_ID = 51126
+        private const val SEPARATION_DEBOUNCE_MILLIS = 100L
+        private const val FOREGROUND_NOTI_ID = 51126
+
+        /**
+         * A notification channel ID for persistent observer service notifications.
+         */
         const val OBSERVER_NOTI_CHANNEL_ID = "proximity-observer"
+
+        /**
+         * A notification channel ID for posting separation alerts.
+         */
         const val SEPARATION_NOTI_CHANNEL_ID = "watch-separation"
 
+        /**
+         * Start the service.
+         */
         fun start(context: Context) {
             context.startForegroundService(Intent(context, SeparationObserverService::class.java))
         }

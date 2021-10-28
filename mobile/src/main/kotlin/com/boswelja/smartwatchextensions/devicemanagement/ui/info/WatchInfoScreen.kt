@@ -44,6 +44,14 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.getViewModel
 
+/**
+ * A screen displaying information & actions related to the given watch.
+ * @param modifier [Modifier].
+ * @param contentPadding The screen padding.
+ * @param watch The watch to show info & actions for.
+ * @param onShowSnackbar Called when a snackbar should be displayed.
+ * @param onWatchRemoved Called when the watch was removed.
+ */
 @Composable
 fun WatchInfoScreen(
     modifier: Modifier = Modifier,
@@ -94,6 +102,14 @@ fun WatchInfoScreen(
     }
 }
 
+/**
+ * A card to display details for a given watch.
+ * @param modifier [Modifier].
+ * @param contentPadding The card content padding.
+ * @param watch The watch to displat details for.
+ * @param capabilities The watches capabilities.
+ * @param onNicknameChanged Called when the watch nickname changes.
+ */
 @Composable
 fun WatchDetailsCard(
     modifier: Modifier = Modifier,
@@ -119,6 +135,14 @@ fun WatchDetailsCard(
     }
 }
 
+/**
+ * A TextField to allow editing a watches name.
+ * @param modifier [Modifier].
+ * @param debounce The debounce between data updates.
+ * @param watchName The current watch name.
+ * @param onWatchNameChanged Called when the watch name has changed. This will be called in
+ * intervals no sooner than [debounce] milliseconds while the user is editing.
+ */
 @Composable
 fun WatchNameField(
     modifier: Modifier = Modifier,
@@ -155,6 +179,11 @@ fun WatchNameField(
     }
 }
 
+/**
+ * A list of capabilities.
+ * @param modifier [Modifier].
+ * @param capabilities The list of capabilities to display.
+ */
 @Composable
 fun WatchCapabilities(
     modifier: Modifier = Modifier,
@@ -172,6 +201,14 @@ fun WatchCapabilities(
     }
 }
 
+/**
+ * A row of actions that can be taken for a watch.
+ * @param modifier [Modifier].
+ * @param contentSpacing The content spacing.
+ * @param watchName The name of the watch the actions are for.
+ * @param onResetSettings Called when reset settings is clicked.
+ * @param onForgetWatch Called when forget watch is selected.
+ */
 @Composable
 fun WatchActions(
     modifier: Modifier = Modifier,
@@ -216,22 +253,29 @@ fun WatchActions(
     if (forgetWatchDialogVisible) {
         ForgetWatchDialog(
             watchName = watchName,
-            onDismissDialog = { forgetWatchDialogVisible = false },
+            onDismissRequest = { forgetWatchDialogVisible = false },
             onForgetWatch = onForgetWatch
         )
     }
 }
 
+/**
+ * A dialog to request deregistering a watch.
+ * @param modifier [Modifier].
+ * @param watchName The name of the watch whose extension settings will be cleared.
+ * @param onDismissRequest Called when the dialog should be dismissed.
+ * @param onForgetWatch Called when the deregister request is accepted.
+ */
 @Composable
 fun ForgetWatchDialog(
     modifier: Modifier = Modifier,
     watchName: String,
-    onDismissDialog: () -> Unit,
+    onDismissRequest: () -> Unit,
     onForgetWatch: () -> Unit
 ) {
     AlertDialog(
         modifier = modifier,
-        onDismissRequest = onDismissDialog,
+        onDismissRequest = onDismissRequest,
         title = { Text(stringResource(R.string.forget_watch_dialog_title)) },
         text = {
             Text(stringResource(R.string.forget_watch_dialog_message, watchName, watchName))
@@ -242,13 +286,20 @@ fun ForgetWatchDialog(
             }
         },
         dismissButton = {
-            TextButton(onClick = onDismissDialog) {
+            TextButton(onClick = onDismissRequest) {
                 Text(stringResource(R.string.dialog_button_cancel))
             }
         }
     )
 }
 
+/**
+ * A dialog to request resetting extension settings for a watch.
+ * @param modifier [Modifier].
+ * @param watchName The name of the watch whose extension settings will be cleared.
+ * @param onDismissRequest Called when the dialog should be dismissed.
+ * @param onResetSettings Called when the reset request is accepted.
+ */
 @Composable
 fun ResetSettingsDialog(
     modifier: Modifier = Modifier,

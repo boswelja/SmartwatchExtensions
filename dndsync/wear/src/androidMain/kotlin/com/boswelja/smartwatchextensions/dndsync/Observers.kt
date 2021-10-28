@@ -8,7 +8,7 @@ import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 
-const val THEATER_MODE = "theater_mode_on"
+private const val THEATER_MODE = "theater_mode_on"
 
 /**
  * Gets a [Flow] of this watches Theater Mode state.

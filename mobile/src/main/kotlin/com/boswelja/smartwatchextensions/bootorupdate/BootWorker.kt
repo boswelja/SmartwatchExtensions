@@ -12,6 +12,10 @@ import com.boswelja.smartwatchextensions.settings.WatchSettingsRepository
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
+/**
+ * A [CoroutineWorker] to be called when the device reboots. This is responsible for restarting any
+ * services needed for the user's desired operation.
+ */
 class BootWorker(
     appContext: Context,
     workerParams: WorkerParameters

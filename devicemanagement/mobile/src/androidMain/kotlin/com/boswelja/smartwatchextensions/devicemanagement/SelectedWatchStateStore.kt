@@ -8,13 +8,16 @@ import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream
 
+/**
+ * A [DataStore] for storing [SelectedWatchState].
+ */
 val Context.selectedWatchStateStore: DataStore<SelectedWatchState> by dataStore(
     "selectedWatchState.pb",
     SelectedWatchStateSerializer()
 )
 
 @Suppress("BlockingMethodInNonBlockingContext")
-class SelectedWatchStateSerializer : Serializer<SelectedWatchState> {
+private class SelectedWatchStateSerializer : Serializer<SelectedWatchState> {
     override val defaultValue = SelectedWatchState(
         ""
     )
@@ -22,7 +25,7 @@ class SelectedWatchStateSerializer : Serializer<SelectedWatchState> {
     override suspend fun readFrom(input: InputStream): SelectedWatchState {
         return try {
             SelectedWatchState.ADAPTER.decode(input)
-        } catch (exception: IOException) {
+        } catch (_: IOException) {
             defaultValue
         }
     }

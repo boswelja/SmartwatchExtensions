@@ -40,8 +40,7 @@ class DonationClient(application: Application) {
                 }
             }
         } else {
-            if (purchaseResultChannel.trySend(false).isFailure)
-                Timber.w("Failed to post update to channel")
+            purchaseResultChannel.trySend(false)
         }
     }
 
@@ -75,6 +74,10 @@ class DonationClient(application: Application) {
             .build()
 
     private val _clientConnected = MutableStateFlow(false)
+
+    /**
+     * Flow whether the billing client is connected.
+     */
     val clientConnected: Flow<Boolean>
         get() = _clientConnected
 

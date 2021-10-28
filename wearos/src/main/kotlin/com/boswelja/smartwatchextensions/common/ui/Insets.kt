@@ -9,13 +9,35 @@ import androidx.compose.ui.composed
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 
+/**
+ * Contains default inset values for round screens.
+ */
 object RoundScreenDefaults {
+
+    /**
+     * The default vertical padding for screens.
+     */
     val VerticalPadding = 64.dp
+
+    /**
+     * The default horizontal padding for screens.
+     */
     val HorizontalPadding = 8.dp
 }
 
+/**
+ * Contains default inset values for square screens.
+ */
 object SquareScreenDefaults {
+
+    /**
+     * The default vertical padding for screens.
+     */
     val VerticalPadding = 8.dp
+
+    /**
+     * The default horizontal padding for screens.
+     */
     val HorizontalPadding = 8.dp
 }
 

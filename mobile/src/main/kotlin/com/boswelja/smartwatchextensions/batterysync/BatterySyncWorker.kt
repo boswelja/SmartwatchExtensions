@@ -8,6 +8,9 @@ import kotlinx.coroutines.flow.firstOrNull
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
+/**
+ * A [BaseBatterySyncWorker] that sends battery stats to a specified watch.
+ */
 class BatterySyncWorker(
     appContext: Context,
     workerParams: WorkerParameters

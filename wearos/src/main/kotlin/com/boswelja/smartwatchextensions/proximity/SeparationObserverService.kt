@@ -25,6 +25,9 @@ import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 import timber.log.Timber
 
+/**
+ * A service for observing the connection status for the local device.
+ */
 class SeparationObserverService : LifecycleService() {
 
     private val discoveryClient: DiscoveryClient by inject()
@@ -38,8 +41,8 @@ class SeparationObserverService : LifecycleService() {
 
     override fun onCreate() {
         super.onCreate()
-        createObserverNotificationChannel()
-        createSeparationNotificationChannel()
+        createObserverNotiChannel()
+        createSeparationNotiChannel()
         startForeground(FOREGROUND_NOTI_ID, createForegroundNotification())
         collectSettingChanges()
         collectPhoneState()
@@ -94,7 +97,7 @@ class SeparationObserverService : LifecycleService() {
             .build()
     }
 
-    private fun createObserverNotificationChannel() {
+    private fun createObserverNotiChannel() {
         if (notificationManager.getNotificationChannel(OBSERVER_NOTI_CHANNEL_ID) == null) {
             NotificationChannel(
                 OBSERVER_NOTI_CHANNEL_ID,
@@ -110,7 +113,7 @@ class SeparationObserverService : LifecycleService() {
         }
     }
 
-    private fun createSeparationNotificationChannel() {
+    private fun createSeparationNotiChannel() {
         if (notificationManager.getNotificationChannel(SEPARATION_NOTI_CHANNEL_ID) == null) {
             NotificationChannel(
                 SEPARATION_NOTI_CHANNEL_ID,
@@ -128,11 +131,30 @@ class SeparationObserverService : LifecycleService() {
     }
 
     companion object {
+
+        /**
+         * A notification ID for separation alerts.
+         */
         const val SEPARATION_NOTI_ID = 11
+
+        /**
+         * A notification ID for the local separation observer.
+         */
         const val FOREGROUND_NOTI_ID = 51126
+
+        /**
+         * The notification channel ID for the local separation observer.
+         */
         const val OBSERVER_NOTI_CHANNEL_ID = "proximity-observer"
+
+        /**
+         * The notification channel ID for separation alerts.
+         */
         const val SEPARATION_NOTI_CHANNEL_ID = "phone-separation"
 
+        /**
+         * Start the [SeparationObserverService].
+         */
         fun start(context: Context) {
             ContextCompat.startForegroundService(
                 context, Intent(context, SeparationObserverService::class.java)

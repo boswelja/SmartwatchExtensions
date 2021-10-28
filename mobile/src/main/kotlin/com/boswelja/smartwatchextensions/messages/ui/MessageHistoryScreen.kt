@@ -31,6 +31,12 @@ import com.boswelja.smartwatchextensions.messages.DisplayMessage
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.getViewModel
 
+/**
+ * A Composable screen for displaying Message History.
+ * @param modifier [Modifier].
+ * @param contentPadding The screen padding.
+ * @param onShowSnackbar Called when a snackbar should be shown.
+ */
 @Composable
 fun MessageHistoryScreen(
     modifier: Modifier = Modifier,
@@ -60,6 +66,10 @@ fun MessageHistoryScreen(
     }
 }
 
+/**
+ * A Composable to display an empty list indicator.
+ * @param modifier [Modifier].
+ */
 @Composable
 fun NoMessageHistory(
     modifier: Modifier = Modifier
@@ -75,6 +85,12 @@ fun NoMessageHistory(
     }
 }
 
+/**
+ * A Composable for displaying a list of archived messages.
+ * @param modifier [Modifier].
+ * @param messages The list of archived messages.
+ * @param onClearAll Called when Clear All is clicked.
+ */
 @OptIn(ExperimentalMaterialApi::class, ExperimentalFoundationApi::class)
 @Composable
 fun MessagesHistoryList(

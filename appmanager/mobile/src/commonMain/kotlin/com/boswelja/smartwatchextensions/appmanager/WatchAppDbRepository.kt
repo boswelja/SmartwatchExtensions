@@ -9,6 +9,11 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 import kotlin.coroutines.CoroutineContext
 
+/**
+ * A [WatchAppRepository] backed by a SQLDelight database implementation.
+ * @param database The [WatchAppDatabase] implementation to call.
+ * @param dispatcher The [CoroutineContext] to move blocking calls to.
+ */
 class WatchAppDbRepository(
     private val database: WatchAppDatabase,
     private val dispatcher: CoroutineContext

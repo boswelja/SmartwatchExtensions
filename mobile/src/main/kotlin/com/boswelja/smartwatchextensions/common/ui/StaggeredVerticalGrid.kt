@@ -9,6 +9,13 @@ import androidx.compose.ui.layout.Placeable
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
+/**
+ * A vertical grid that contains children of varied height and staggers them in the layout.
+ * @param modifier [Modifier].
+ * @param cells The [GridCells] to calculate child width by.
+ * @param contentSpacing The spacing between child Composables.
+ * @param content The grid content.
+ */
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun StaggeredVerticalGrid(
@@ -31,7 +38,7 @@ fun StaggeredVerticalGrid(
             is GridCells.Adaptive -> {
                 val columns = constraints.maxWidth / cells.minSize.roundToPx()
                 val columnWidth =
-                    (constraints.maxWidth - (contentSpacingPx * (columns - 1))) / columns
+                    (constraints.maxWidth - contentSpacingPx * (columns - 1)) / columns
                 Pair(columns, columnWidth)
             }
             is GridCells.Fixed -> {
@@ -46,7 +53,7 @@ fun StaggeredVerticalGrid(
         val placeables = measurables.map { measurable ->
             val column = shortestColumn(colHeights)
             val placeable = measurable.measure(itemConstraints)
-            val x = columnWidth * column + (contentSpacingPx * column)
+            val x = columnWidth * column + contentSpacingPx * column
             placeableXY[placeable] = Pair(x, colHeights[column])
             colHeights[column] += placeable.height + contentSpacingPx
             placeable

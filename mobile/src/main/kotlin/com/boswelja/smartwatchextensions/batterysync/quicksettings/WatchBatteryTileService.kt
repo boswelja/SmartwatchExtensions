@@ -18,6 +18,9 @@ import com.boswelja.watchconnection.common.Watch
 import kotlinx.coroutines.flow.first
 import org.koin.android.ext.android.inject
 
+/**
+ * A [WatchTileService] to display battery stats for a selected watch.
+ */
 class WatchBatteryTileService : WatchTileService() {
 
     private val settingsRepository: WatchSettingsRepository by inject()

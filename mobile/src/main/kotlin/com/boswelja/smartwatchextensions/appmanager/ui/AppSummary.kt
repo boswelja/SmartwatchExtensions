@@ -14,6 +14,11 @@ import androidx.compose.ui.text.style.TextAlign
 import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.common.ui.FeatureSummarySmall
 
+private const val ICON_WIDTH_PERCENT = 0.33f
+
+/**
+ * A Composable for displaying a summary of apps installed on a watch.
+ */
 @Composable
 fun AppSummarySmall(
     modifier: Modifier = Modifier,
@@ -27,7 +32,7 @@ fun AppSummarySmall(
                 Icons.Outlined.Apps,
                 contentDescription = null,
                 modifier = Modifier
-                    .fillMaxWidth(0.33f)
+                    .fillMaxWidth(ICON_WIDTH_PERCENT)
                     .aspectRatio(1f)
             )
         },

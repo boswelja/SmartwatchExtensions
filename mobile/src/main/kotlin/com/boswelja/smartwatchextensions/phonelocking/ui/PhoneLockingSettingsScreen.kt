@@ -33,6 +33,11 @@ import com.boswelja.smartwatchextensions.common.ui.SwitchSetting
 import kotlinx.coroutines.Dispatchers
 import org.koin.androidx.compose.getViewModel
 
+/**
+ * A Composable screen for displaying Phone Locking settings.
+ * @param modifier [Modifier].
+ * @param contentPadding The padding for the screen.
+ */
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun PhoneLockingSettingsScreen(
@@ -47,6 +52,10 @@ fun PhoneLockingSettingsScreen(
     }
 }
 
+/**
+ * A Composable for showing Phone Locking settings.
+ * @param modifier [Modifier].
+ */
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun PhoneLockingSettingsCard(modifier: Modifier = Modifier) {
@@ -58,18 +67,14 @@ fun PhoneLockingSettingsCard(modifier: Modifier = Modifier) {
         modifier = modifier,
         header = {
             CardHeader(
-                title = {
-                    Text(stringResource(R.string.main_phone_locking_title))
-                }
+                title = { Text(stringResource(R.string.main_phone_locking_title)) }
             )
         }
     ) {
         Column {
             ListItem(
                 icon = { Icon(Icons.Outlined.Settings, null) },
-                text = {
-                    Text(stringResource(R.string.phone_locking_accessibility_settings))
-                },
+                text = { Text(stringResource(R.string.phone_locking_accessibility_settings)) },
                 modifier = Modifier.clickable {
                     context.startActivity(Intent(ACTION_ACCESSIBILITY_SETTINGS))
                 }

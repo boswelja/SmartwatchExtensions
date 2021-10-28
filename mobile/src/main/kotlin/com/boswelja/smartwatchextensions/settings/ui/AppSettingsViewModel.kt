@@ -15,6 +15,9 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
+/**
+ * A ViewModel for providing data to App Settings.
+ */
 class AppSettingsViewModel(
     application: Application,
     private val analytics: Analytics,
@@ -22,8 +25,19 @@ class AppSettingsViewModel(
     private val dataStore: DataStore<Settings>
 ) : AndroidViewModel(application) {
 
+    /**
+     * Flow whether analytics are enabled.
+     */
     val analyticsEnabled = dataStore.data.map { it.analyticsEnabled }
+
+    /**
+     * Flow the currently registered watches.
+     */
     val registeredWatches = watchManager.registeredWatches
+
+    /**
+     * Flow the currently selected watch for QS Tile data.
+     */
     @OptIn(ExperimentalCoroutinesApi::class)
     val qsTilesWatch = dataStore.data.map {
         it.qsTileWatchId
@@ -34,8 +48,15 @@ class AppSettingsViewModel(
             watchManager.registeredWatches.map { it.firstOrNull() }
         }
     }
+
+    /**
+     * Flow whether daily update checks are enabled.
+     */
     val checkUpdatesDaily = dataStore.data.map { it.checkForUpdates }
 
+    /**
+     * Set whether analytics are enabled.
+     */
     fun setAnalyticsEnabled(analyticsEnabled: Boolean) {
         viewModelScope.launch {
             analytics.setAnalyticsEnabled(analyticsEnabled)
@@ -45,6 +66,9 @@ class AppSettingsViewModel(
         }
     }
 
+    /**
+     * Set a watch for QS Tiles to display data for.
+     */
     fun setQSTilesWatch(watch: Watch) {
         viewModelScope.launch {
             dataStore.updateData {
@@ -55,6 +79,9 @@ class AppSettingsViewModel(
         }
     }
 
+    /**
+     * Set whether daily update checking is enabled.
+     */
     fun setCheckUpdatesDaily(newValue: Boolean) {
         viewModelScope.launch {
             dataStore.updateData {

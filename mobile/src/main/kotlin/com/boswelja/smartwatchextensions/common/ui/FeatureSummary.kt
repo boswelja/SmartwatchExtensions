@@ -8,6 +8,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
+/**
+ * A Row with some common parameters for displaying a small feature summary.
+ * @param modifier [Modifier].
+ * @param icon The feature icon Composable.
+ * @param text The feature text Composable.
+ */
 @Composable
 fun FeatureSummarySmall(
     modifier: Modifier = Modifier,

@@ -17,6 +17,10 @@ import kotlinx.coroutines.flow.firstOrNull
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
+/**
+ * A [WatchWidgetProvider] for Battery Sync. This provides the user a widget that can display
+ * battery stats for the chosen watch.
+ */
 class WatchBatteryWidget : WatchWidgetProvider(), KoinComponent {
 
     private val settingsRepository: WatchSettingsRepository by inject()

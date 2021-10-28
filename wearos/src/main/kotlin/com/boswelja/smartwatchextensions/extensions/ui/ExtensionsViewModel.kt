@@ -18,6 +18,9 @@ import com.boswelja.watchconnection.wear.message.MessageClient
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 
+/**
+ * A [AndroidViewModel] for providing data to Extension Composables.
+ */
 class ExtensionsViewModel internal constructor(
     application: Application,
     private val messageClient: MessageClient,
@@ -37,13 +40,30 @@ class ExtensionsViewModel internal constructor(
         application.extensionSettingsStore
     )
 
+    /**
+     * Flow whether phone locking is enabled.
+     */
     val phoneLockingEnabled = extensionSettingsStore.data.map { it.phoneLockingEnabled }
+
+    /**
+     * Flow whether Battery Sync is enabled.
+     */
     val batterySyncEnabled = extensionSettingsStore.data.map { it.batterySyncEnabled }
 
+    /**
+     * Flow the connected phone's battery percent.
+     */
     val batteryPercent = batteryStatsStore.getStatsForPhone().map { it.percent }
+
+    /**
+     * Flow the paired phone name.
+     */
     val phoneName = phoneStateStore.data.map { it.name }
 
-    fun phoneConected() = discoveryClient.connectionMode()
+    /**
+     * Flow whether the paired phone is connected.
+     */
+    fun phoneConnected() = discoveryClient.connectionMode()
         .map { it != ConnectionMode.Disconnected }
 
     /**
@@ -51,7 +71,7 @@ class ExtensionsViewModel internal constructor(
      * @return true if the request was sent successfully, false otherwise.
      */
     suspend fun requestBatteryStats(): Boolean {
-        if (phoneConected().first()) {
+        if (phoneConnected().first()) {
             val phoneId = discoveryClient.pairedPhone()!!
             return messageClient.sendMessage(
                 phoneId,
@@ -69,7 +89,7 @@ class ExtensionsViewModel internal constructor(
      * @return true if the request was sent successfully, false otherwise.
      */
     suspend fun requestLockPhone(): Boolean {
-        if (phoneConected().first()) {
+        if (phoneConnected().first()) {
             val phoneId = discoveryClient.pairedPhone()!!
             return messageClient.sendMessage(phoneId, Message(LOCK_PHONE, null))
         }

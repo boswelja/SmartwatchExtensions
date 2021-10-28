@@ -14,12 +14,18 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 
+/**
+ * A ViewModel for providing data to Phone Locking settings.
+ */
 class PhoneLockingSettingsViewModel(
     application: Application,
     private val watchManager: WatchManager,
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : AndroidViewModel(application) {
 
+    /**
+     * Flow whether phone locking is enabled for the selected watch.
+     */
     @OptIn(ExperimentalCoroutinesApi::class)
     val phoneLockingEnabled = watchManager.selectedWatch.flatMapLatest {
         it?.let { watch ->
@@ -27,6 +33,9 @@ class PhoneLockingSettingsViewModel(
         } ?: flow { }
     }
 
+    /**
+     * Set whether phone locking is enabled.
+     */
     fun setPhoneLockingEnabled(isEnabled: Boolean): Boolean {
         // Return false if we're trying to enable phone locking but we can't
         if (isEnabled && !canEnablePhoneLocking()) return false

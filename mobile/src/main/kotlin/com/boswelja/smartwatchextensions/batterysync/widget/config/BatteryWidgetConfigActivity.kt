@@ -36,6 +36,9 @@ import com.boswelja.smartwatchextensions.common.ui.UpNavigationAppBar
 import com.boswelja.watchconnection.common.Watch
 import org.koin.androidx.viewmodel.ext.android.getViewModel
 
+/**
+ * A [BaseWidgetConfigActivity] for configuring a Battery Sync widget.
+ */
 class BatteryWidgetConfigActivity : BaseWidgetConfigActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -82,6 +85,12 @@ class BatteryWidgetConfigActivity : BaseWidgetConfigActivity() {
         }
     }
 
+    /**
+     * Displays a column of watches and allows the user to select a watch.
+     * @param watches The list of available watches.
+     * @param selectedWatch The currently selected watch.
+     * @param onWatchSelected Called when a new watch is selected.
+     */
     @OptIn(ExperimentalMaterialApi::class)
     @Composable
     fun WatchPickerList(

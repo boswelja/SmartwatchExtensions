@@ -12,6 +12,9 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 import kotlin.coroutines.CoroutineContext
 
+/**
+ * A [WatchRepository] implementation backed by a SQLDelight database.
+ */
 class WatchDbRepository(
     private val discoveryClient: DiscoveryClient,
     private val database: RegisteredWatchDatabase,

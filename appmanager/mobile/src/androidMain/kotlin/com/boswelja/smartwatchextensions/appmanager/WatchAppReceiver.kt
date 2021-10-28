@@ -6,6 +6,9 @@ import com.boswelja.watchconnection.common.message.ReceivedMessage
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
+/**
+ * A [MessageReceiver] for receiving [AppList] changes and updating the repository.
+ */
 class WatchAppReceiver : MessageReceiver<AppList>(AppListSerializer), KoinComponent {
 
     private val repository: WatchAppRepository by inject()

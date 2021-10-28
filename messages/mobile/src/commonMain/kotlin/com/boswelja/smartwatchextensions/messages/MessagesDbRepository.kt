@@ -7,6 +7,9 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 import kotlin.coroutines.CoroutineContext
 
+/**
+ * A [MessagesRepository] implementation backed by a SQLDelight database.
+ */
 class MessagesDbRepository(
     private val database: MessageDatabase,
     private val dispatcher: CoroutineContext

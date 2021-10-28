@@ -6,6 +6,9 @@ import org.koin.core.parameter.parametersOf
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
+/**
+ * A Koin module that provides repositories for messages.
+ */
 val messagesModule = module {
     single<MessagesRepository> { MessagesDbRepository(get(), get(named("database"))) }
     single {
