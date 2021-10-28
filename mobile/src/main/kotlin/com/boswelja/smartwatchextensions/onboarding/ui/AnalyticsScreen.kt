@@ -44,14 +44,15 @@ fun AnalyticsScreen(
 
     Column(
         modifier = modifier,
-        verticalArrangement = Arrangement.SpaceBetween,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        Spacer(Modifier.weight(1f))
         Icon(
             Icons.Default.Analytics,
             null,
             Modifier.size(180.dp)
         )
+        Spacer(Modifier.weight(1f))
         AnalyticsInformation(
             modifier = Modifier.fillMaxWidth(),
             onShowPrivacyPolicy = {
@@ -62,6 +63,7 @@ fun AnalyticsScreen(
                 }
             }
         )
+        Spacer(Modifier.weight(2f))
         AnalyticsActionButtons(
             modifier = Modifier.fillMaxWidth(),
             onNavigateNext = onNavigateNext,
