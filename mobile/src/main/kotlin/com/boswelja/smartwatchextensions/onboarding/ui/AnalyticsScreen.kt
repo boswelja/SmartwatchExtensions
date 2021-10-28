@@ -22,6 +22,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
 import com.boswelja.smartwatchextensions.R
@@ -110,8 +111,14 @@ fun AnalyticsInformation(
     modifier: Modifier = Modifier,
     onShowPrivacyPolicy: () -> Unit
 ) {
-    Column(modifier) {
-        Text(stringResource(R.string.share_usage_desc))
+    Column(
+        modifier = modifier,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(
+            text = stringResource(R.string.share_usage_desc),
+            textAlign = TextAlign.Center
+        )
         TextButton(
             onClick = onShowPrivacyPolicy,
         ) {
