@@ -54,6 +54,7 @@ fun WelcomeScreen(
                 context.resources.displayMetrics
             ).toInt()
         }
+        Spacer(Modifier.weight(1f))
         Image(
             ContextCompat.getDrawable(context, R.mipmap.ic_launcher)!!.toBitmap(
                 width = appImageSizePx,
@@ -72,11 +73,12 @@ fun WelcomeScreen(
             textAlign = TextAlign.Center,
             style = MaterialTheme.typography.headlineMedium
         )
-        Spacer(Modifier.height(contentPadding))
+        Spacer(Modifier.weight(2f))
         ExtendedFloatingActionButton(
             text = { Text(stringResource(R.string.get_started)) },
             icon = { Icon(Icons.Outlined.NavigateNext, null) },
             onClick = { onNavigateTo(OnboardingDestination.SHARE_USAGE_STATS) }
         )
+        Spacer(Modifier.weight(1f))
     }
 }
