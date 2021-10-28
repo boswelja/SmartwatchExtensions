@@ -17,6 +17,7 @@ androidxWork = "2.7.0-rc01"
 accompanist = "0.20.0"
 activityCompose = "1.4.0"
 compose = "1.1.0-beta01"
+material3 = "1.0.0-alpha01"
 navigationCompose = "2.4.0-beta01"
 wearCompose = "1.0.0-alpha09"
 # Misc versions
@@ -69,6 +70,7 @@ androidx-compose-ui-viewbinding = { module = "androidx.compose.ui:ui-viewbinding
 androidx-compose-ui-test = { module = "androidx.compose.ui:ui-test-junit4", version.ref = "compose" }
 androidx-compose-foundation = { module = "androidx.compose.foundation:foundation", version.ref = "compose" }
 androidx-compose-material-core = { module = "androidx.compose.material:material", version.ref = "compose" }
+androidx-compose-material3 = { module = "androidx.compose.material3:material3", version.ref = "material3" }
 androidx-compose-material-icons-core = { module = "androidx.compose.material:material-icons-core", version.ref = "compose" }
 androidx-compose-material-icons-extended = { module = "androidx.compose.material:material-icons-extended", version.ref = "compose" }
 androidx-compose-activity = { module = "androidx.activity:activity-compose", version.ref = "activityCompose" }
@@ -116,6 +118,7 @@ compose-mobile = [
     "androidx-compose-ui-tooling",
     "androidx-compose-foundation",
     "androidx-compose-material-core",
+    "androidx-compose-material3",
     "androidx-compose-material-icons-core",
     "androidx-compose-material-icons-extended",
     "androidx-compose-activity",
