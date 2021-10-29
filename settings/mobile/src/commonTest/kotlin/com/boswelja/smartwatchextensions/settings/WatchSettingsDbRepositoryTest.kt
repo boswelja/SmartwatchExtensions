@@ -10,6 +10,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
+import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
 
 class WatchSettingsDbRepositoryTest {
@@ -78,7 +79,7 @@ class WatchSettingsDbRepositoryTest {
         // Put initial value
         repository.putBoolean(testId, testKey, false)
 
-        repository.getBoolean(testId, testKey).test {
+        repository.getBoolean(testId, testKey).test(Duration.seconds(2)) {
             // Check initial value
             assertEquals(false, awaitItem())
 
@@ -109,7 +110,7 @@ class WatchSettingsDbRepositoryTest {
         // Put initial value
         repository.putInt(testId, testKey, 0)
 
-        repository.getInt(testId, testKey).test {
+        repository.getInt(testId, testKey).test(Duration.seconds(2)) {
             // Check initial value
             assertEquals(0, awaitItem())
 
@@ -128,7 +129,7 @@ class WatchSettingsDbRepositoryTest {
         // Clear all data first
         watchIds.forEach { repository.deleteForWatch(it) }
 
-        repository.getIdsWithBooleanSet(testKey, testValue).test {
+        repository.getIdsWithBooleanSet(testKey, testValue).test(Duration.seconds(2)) {
             // Check initial value is empty
             assertTrue { awaitItem().isEmpty() }
 
@@ -151,7 +152,7 @@ class WatchSettingsDbRepositoryTest {
         // Clear all data first
         watchIds.forEach { repository.deleteForWatch(it) }
 
-        repository.getIdsWithIntSet(testKey, testValue).test {
+        repository.getIdsWithIntSet(testKey, testValue).test(Duration.seconds(2)) {
             // Check initial value is empty
             assertTrue { awaitItem().isEmpty() }
 
