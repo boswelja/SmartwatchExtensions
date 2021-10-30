@@ -44,8 +44,7 @@ fun RegisterWatchScreen(
     val discoveredWatches = viewModel.discoveredWatches
 
     Column(
-        modifier.padding(contentPadding),
-        verticalArrangement = Arrangement.spacedBy(contentPadding)
+        modifier.padding(contentPadding)
     ) {
         RegisterWatchesHeader(
             modifier = Modifier.padding(contentPadding)

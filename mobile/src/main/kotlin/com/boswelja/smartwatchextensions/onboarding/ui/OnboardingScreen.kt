@@ -51,6 +51,9 @@ fun OnboardingScreen(
     var compatibilityDialogVisible by remember {
         mutableStateOf(false)
     }
+    var isFinished by rememberSaveable {
+        mutableStateOf(false)
+    }
     NavHost(
         navController = navController,
         startDestination = OnboardingDestination.WELCOME.route
@@ -84,30 +87,18 @@ fun OnboardingScreen(
         }
         composable(OnboardingDestination.REGISTER_WATCHES.route) {
             Box {
-                var finishVisible by rememberSaveable {
-                    mutableStateOf(false)
-                }
                 RegisterWatchScreen(
                     modifier = modifier.padding(bottom = 64.dp),
                     contentPadding = contentPadding,
                     onWatchRegistered = {
-                        finishVisible = true
+                        isFinished = true
                     }
                 )
-                AnimatedVisibility(
+                FinishButton(
                     modifier = Modifier.align(Alignment.BottomCenter),
-                    visible = finishVisible,
-                    enter = expandIn() + fadeIn(),
-                    exit = shrinkOut() + fadeOut()
-                ) {
-                    ExtendedFloatingActionButton(
-                        modifier = Modifier
-                            .padding(contentPadding),
-                        text = { Text(stringResource(R.string.button_finish)) },
-                        icon = { Icon(Icons.Outlined.Check, null) },
-                        onClick = onFinished
-                    )
-                }
+                    visible = isFinished,
+                    onClick = onFinished
+                )
             }
         }
     }
@@ -115,6 +106,33 @@ fun OnboardingScreen(
         visible = compatibilityDialogVisible,
         onDismissRequest = onAbort
     )
+}
+
+/**
+ * Displays the finish button to the user if [visible]. The button will be animated in/out as
+ * needed.
+ * @param modifier [Modifier].
+ * @param visible Whether the button is visible.
+ * @param onClick Called when the button is clicked.
+ */
+@Composable
+fun FinishButton(
+    modifier: Modifier = Modifier,
+    visible: Boolean,
+    onClick: () -> Unit
+) {
+    AnimatedVisibility(
+        modifier = modifier,
+        visible = visible,
+        enter = expandIn() + fadeIn(),
+        exit = shrinkOut() + fadeOut()
+    ) {
+        ExtendedFloatingActionButton(
+            text = { Text(stringResource(R.string.button_finish)) },
+            icon = { Icon(Icons.Outlined.Check, null) },
+            onClick = onClick
+        )
+    }
 }
 
 /**
