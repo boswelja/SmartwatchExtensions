@@ -5,8 +5,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.NavigateNext
@@ -32,17 +30,15 @@ import com.boswelja.smartwatchextensions.R
 /**
  * A Composable screen for displaying a greeting to the user.
  * @param modifier [Modifier].
- * @param contentPadding The screen padding.
  * @param onNavigateNext Called when navigation is requested.
  */
 @Composable
 fun WelcomeScreen(
     modifier: Modifier = Modifier,
-    contentPadding: Dp = 16.dp,
     onNavigateNext: () -> Unit
 ) {
     Column(
-        modifier.padding(contentPadding),
+        modifier,
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -53,7 +49,7 @@ fun WelcomeScreen(
             null,
             Modifier.size(appImageSizeDp)
         )
-        Spacer(Modifier.height(contentPadding))
+        Spacer(Modifier.weight(1f))
         Text(
             stringResource(R.string.welcome_to_text),
             style = MaterialTheme.typography.headlineSmall

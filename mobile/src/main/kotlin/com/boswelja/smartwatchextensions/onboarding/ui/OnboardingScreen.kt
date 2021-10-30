@@ -57,8 +57,7 @@ fun OnboardingScreen(
     ) {
         composable(OnboardingDestination.WELCOME.route) {
             WelcomeScreen(
-                modifier = modifier,
-                contentPadding = contentPadding,
+                modifier = modifier.padding(contentPadding),
                 onNavigateNext = {
                     viewModel.checkSmartwatchesSupported {
                         if (it) {
