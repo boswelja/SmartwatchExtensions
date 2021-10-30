@@ -1,6 +1,5 @@
 package com.boswelja.smartwatchextensions.devicemanagement.ui.register
 
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -31,28 +30,20 @@ import org.koin.androidx.compose.getViewModel
 /**
  * A Composable screen for displaying the watch registration flow.
  * @param modifier [Modifier].
- * @param contentPadding The screen padding.
  * @param onWatchRegistered Called when a watch was registered.
  */
 @Composable
 fun RegisterWatchScreen(
     modifier: Modifier = Modifier,
-    contentPadding: Dp = 16.dp,
     onWatchRegistered: (() -> Unit)? = null
 ) {
     val viewModel: RegisterWatchViewModel = getViewModel()
     val discoveredWatches = viewModel.discoveredWatches
 
-    Column(
-        modifier.padding(contentPadding)
-    ) {
-        RegisterWatchesHeader(
-            modifier = Modifier.padding(contentPadding)
-        )
+    Column(modifier) {
+        RegisterWatchesHeader()
         Card {
-            Column(
-                verticalArrangement = Arrangement.spacedBy(contentPadding)
-            ) {
+            Column {
                 LinearProgressIndicator(Modifier.fillMaxWidth())
                 DiscoveredWatchesList(
                     discoveredWatches = discoveredWatches

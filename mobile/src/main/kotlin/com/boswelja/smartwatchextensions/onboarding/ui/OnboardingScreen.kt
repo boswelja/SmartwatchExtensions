@@ -88,8 +88,7 @@ fun OnboardingScreen(
         composable(OnboardingDestination.REGISTER_WATCHES.route) {
             Box {
                 RegisterWatchScreen(
-                    modifier = modifier.padding(bottom = 64.dp),
-                    contentPadding = contentPadding,
+                    modifier = modifier.padding(bottom = 64.dp).padding(contentPadding),
                     onWatchRegistered = {
                         isFinished = true
                     }
