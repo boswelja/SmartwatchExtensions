@@ -22,7 +22,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -34,7 +33,6 @@ import org.koin.androidx.compose.getViewModel
 /**
  * A Composable screen to handle the onboarding flow.
  * @param modifier [Modifier].
- * @param contentPadding The screen padding.
  * @param navController [NavHostController].
  * @param onFinished Called when onboarding is complete.
  */
@@ -42,7 +40,6 @@ import org.koin.androidx.compose.getViewModel
 @Composable
 fun OnboardingScreen(
     modifier: Modifier = Modifier,
-    contentPadding: Dp = 16.dp,
     navController: NavHostController,
     onFinished: () -> Unit,
     onAbort: () -> Unit
@@ -60,7 +57,7 @@ fun OnboardingScreen(
     ) {
         composable(OnboardingDestination.WELCOME.route) {
             WelcomeScreen(
-                modifier = modifier.padding(contentPadding),
+                modifier = modifier,
                 onNavigateNext = {
                     viewModel.checkSmartwatchesSupported {
                         if (it) {
@@ -74,7 +71,7 @@ fun OnboardingScreen(
         }
         composable(OnboardingDestination.SHARE_USAGE_STATS.route) {
             AnalyticsScreen(
-                modifier = modifier.padding(contentPadding),
+                modifier = modifier,
                 onNavigateNext = {
                     viewModel.setAnalyticsEnabled(true)
                     navController.navigate(OnboardingDestination.REGISTER_WATCHES.route)
@@ -88,10 +85,8 @@ fun OnboardingScreen(
         composable(OnboardingDestination.REGISTER_WATCHES.route) {
             Box {
                 RegisterWatchScreen(
-                    modifier = modifier.padding(bottom = 64.dp).padding(contentPadding),
-                    onWatchRegistered = {
-                        isFinished = true
-                    }
+                    modifier = modifier.padding(bottom = 64.dp),
+                    onWatchRegistered = { isFinished = true }
                 )
                 FinishButton(
                     modifier = Modifier.align(Alignment.BottomCenter),

@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.rememberNavController
 import com.boswelja.smartwatchextensions.common.startActivity
 import com.boswelja.smartwatchextensions.common.ui.AppTheme3
@@ -29,7 +30,8 @@ class OnboardingActivity : AppCompatActivity() {
                     OnboardingScreen(
                         modifier = Modifier
                             .fillMaxSize()
-                            .padding(it),
+                            .padding(it)
+                            .padding(16.dp),
                         navController = navController,
                         onFinished = {
                             startActivity<MainActivity>()
