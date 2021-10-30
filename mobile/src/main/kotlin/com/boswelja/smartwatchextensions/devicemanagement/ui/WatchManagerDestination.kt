@@ -1,5 +1,6 @@
 package com.boswelja.smartwatchextensions.devicemanagement.ui
 
+import androidx.compose.foundation.layout.padding
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -41,8 +42,7 @@ fun NavGraphBuilder.watchManagerGraph(
     }
     composable(WatchManagerDestination.REGISTER_WATCHES.route) {
         RegisterWatchScreen(
-            modifier = modifier,
-            contentPadding = contentPadding
+            modifier = modifier.padding(contentPadding)
         )
     }
 }
