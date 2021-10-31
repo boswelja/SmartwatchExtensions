@@ -1,16 +1,6 @@
 package com.boswelja.smartwatchextensions.onboarding.ui
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.animation.expandIn
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.shrinkOut
-import androidx.compose.material.ExtendedFloatingActionButton
-import androidx.compose.material.Icon
-import androidx.compose.material.Text
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Check
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -18,11 +8,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.boswelja.smartwatchextensions.R
 import org.koin.androidx.compose.getViewModel
 
 /**
@@ -79,7 +67,8 @@ fun OnboardingScreen(
                 .collectAsState(initial = emptyList())
             RegisterWatchScreen(
                 availableWatches,
-                onWatchRegistered = { }
+                onWatchRegistered = onFinished,
+                registerWatch = viewModel::registerWatch
             )
         }
     }
@@ -87,33 +76,6 @@ fun OnboardingScreen(
         visible = compatibilityDialogVisible,
         onDismissRequest = onAbort
     )
-}
-
-/**
- * Displays the finish button to the user if [visible]. The button will be animated in/out as
- * needed.
- * @param modifier [Modifier].
- * @param visible Whether the button is visible.
- * @param onClick Called when the button is clicked.
- */
-@Composable
-fun FinishButton(
-    modifier: Modifier = Modifier,
-    visible: Boolean,
-    onClick: () -> Unit
-) {
-    AnimatedVisibility(
-        modifier = modifier,
-        visible = visible,
-        enter = expandIn() + fadeIn(),
-        exit = shrinkOut() + fadeOut()
-    ) {
-        ExtendedFloatingActionButton(
-            text = { Text(stringResource(R.string.button_finish)) },
-            icon = { Icon(Icons.Outlined.Check, null) },
-            onClick = onClick
-        )
-    }
 }
 
 /**

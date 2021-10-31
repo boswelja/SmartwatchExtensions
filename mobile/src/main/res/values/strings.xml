@@ -156,10 +156,16 @@
     <!-- Onboarding strings -->
     <string name="get_started">Get Started</string>
     <string name="welcome_to_text">Welcome to</string>
-    <string name="share_usage_title">Share Usage Stats</string>
     <string name="share_usage_desc">By continuing, you allow Smartwatch Extensions to collect anonymous usage data. This data is used to help us improve everyone\'s experience.</string>
     <string name="onboarding_not_compatible_title">Device Not Supported</string>
     <string name="onboarding_not_compatible_desc">No compatible smartwatch platforms were found on your device. Smartwatch Extensions currently supports Wear OS, please make sure you have the Wear OS app installed.</string>
+    <string name="onboarding_register_watch_title">Add a Watch</string>
+    <string name="onboarding_analytics_title">Share Usage Stats</string>
+    <string name="onboarding_registering_watch">Registering your %s</string>
+    <string name="onboarding_register_failed_title">Failed to register your watch</string>
+    <string name="onboarding_register_failed_desc">Your %s didn\'t respond. Please make sure the device is nearby and try again.</string>
+    <string name="onboarding_register_success_title">Successfully registered your watch</string>
+    <string name="onboarding_register_success_desc">Your %s is ready to go!</string>
 
     <!-- Manage Space strings -->
     <string name="manage_space_title">Manage Space</string>
@@ -219,6 +225,7 @@
     <string name="button_finish">Finish</string>
     <string name="button_forget_watch">Forget Watch</string>
     <string name="button_opt_out">Opt-Out</string>
+    <string name="button_ok">OK</string>
 
     <string name="privacy_policy_url" translatable="false">https://github.com/boswelja/SmartwatchExtensions/blob/main/PRIVACY.md</string>
     <string name="github_url" translatable="false">https://github.com/boswelja/SmartwatchExtensions</string>
