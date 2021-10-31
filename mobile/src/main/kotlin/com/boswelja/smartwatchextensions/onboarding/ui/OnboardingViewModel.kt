@@ -4,6 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.boswelja.smartwatchextensions.onboarding.CheckCompatibilityUseCase
 import com.boswelja.smartwatchextensions.onboarding.ConfigureAnalyticsUseCase
+import com.boswelja.smartwatchextensions.onboarding.RegisterWatchUseCase
+import com.boswelja.watchconnection.common.Watch
 import kotlinx.coroutines.launch
 
 /**
@@ -11,7 +13,8 @@ import kotlinx.coroutines.launch
  */
 class OnboardingViewModel(
     private val configureAnalyticsUseCase: ConfigureAnalyticsUseCase,
-    private val checkCompatibilityUseCase: CheckCompatibilityUseCase
+    private val checkCompatibilityUseCase: CheckCompatibilityUseCase,
+    private val registerWatchUseCase: RegisterWatchUseCase
 ) : ViewModel() {
 
     /**
@@ -33,4 +36,8 @@ class OnboardingViewModel(
             configureAnalyticsUseCase.setAnalyticsEnabled(enabled)
         }
     }
+
+    fun availableWatches() = registerWatchUseCase.availableWatches()
+
+    suspend fun registerWatch(watch: Watch) = registerWatchUseCase.registerWatch(watch)
 }
