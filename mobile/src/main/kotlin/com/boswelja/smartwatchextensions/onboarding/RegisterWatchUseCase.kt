@@ -25,9 +25,14 @@ class RegisterWatchUseCase(
      * @return true if registration was successful, false otherwise.
      */
     suspend fun registerWatch(watch: Watch): Boolean {
-        watchRepository.registerWatch(watch)
-        val success = registrationMessageHandler.sendRegisteredMessage(watch.uid)
-        return success &&
-            registrationMessageHandler.awaitRegistrationAcknowledged(watch.uid, registrationTimeout)
+        val messageSent = registrationMessageHandler.sendRegisteredMessage(watch.uid)
+        if (messageSent) {
+            val registrationAcknowledged = registrationMessageHandler.awaitRegistrationAcknowledged(
+                watch.uid,
+                registrationTimeout
+            )
+            if (registrationAcknowledged) watchRepository.registerWatch(watch)
+        }
+        return false
     }
 }
