@@ -6,6 +6,8 @@ import com.boswelja.smartwatchextensions.devicemanagement.REQUEST_APP_VERSION
 import com.boswelja.smartwatchextensions.devicemanagement.Version
 import com.boswelja.smartwatchextensions.devicemanagement.VersionSerializer
 import com.boswelja.smartwatchextensions.devicemanagement.WatchManager
+import com.boswelja.watchconnection.core.message.MessageClient
+import com.boswelja.watchconnection.serialization.MessageHandler
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -17,9 +19,13 @@ import timber.log.Timber
  * A ViewModel for providing data to [AboutAppScreen].
  */
 @OptIn(ExperimentalCoroutinesApi::class)
-class AboutAppViewModel(private val watchManager: WatchManager) : ViewModel() {
+class AboutAppViewModel(
+    private val watchManager: WatchManager,
+    messageClient: MessageClient
+) : ViewModel() {
 
     private val _watchAppVersion = MutableStateFlow<Version?>(null)
+    private val messageHandler = MessageHandler(VersionSerializer, messageClient)
 
     /**
      * Flow the current version of the app on the selected watch.
@@ -43,7 +49,7 @@ class AboutAppViewModel(private val watchManager: WatchManager) : ViewModel() {
 
         // Listen for app version responses
         viewModelScope.launch {
-            watchManager.incomingMessages(VersionSerializer)
+            messageHandler.incomingMessages()
                 .collect { message -> _watchAppVersion.tryEmit(message.data) }
         }
     }

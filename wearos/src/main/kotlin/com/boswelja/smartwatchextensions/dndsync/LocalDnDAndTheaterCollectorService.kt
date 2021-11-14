@@ -13,6 +13,7 @@ import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.extensions.extensionSettingsStore
 import com.boswelja.smartwatchextensions.main.ui.MainActivity
 import com.boswelja.watchconnection.common.message.Message
+import com.boswelja.watchconnection.serialization.MessageHandler
 import com.boswelja.watchconnection.wear.discovery.DiscoveryClient
 import com.boswelja.watchconnection.wear.message.MessageClient
 import kotlinx.coroutines.flow.collect
@@ -28,6 +29,9 @@ class LocalDnDAndTheaterCollectorService : BaseLocalDnDAndTheaterCollectorServic
 
     private val discoveryClient: DiscoveryClient by inject()
     private val messageClient: MessageClient by inject()
+    private val messageHandler: MessageHandler<Boolean> by lazy {
+        MessageHandler(DnDStatusSerializer, messageClient)
+    }
 
     private var dndSyncToPhone: Boolean = false
     private var dndSyncWithTheater: Boolean = false
@@ -111,8 +115,8 @@ class LocalDnDAndTheaterCollectorService : BaseLocalDnDAndTheaterCollectorServic
      * @param dndSyncEnabled Whether Interruption Filter should be enabled.
      */
     private suspend fun updateDnDState(dndSyncEnabled: Boolean) {
-        messageClient.sendMessage(
-            discoveryClient.pairedPhone()!!,
+        messageHandler.sendMessage(
+            discoveryClient.pairedPhone()!!.uid,
             Message(DND_STATUS_PATH, dndSyncEnabled)
         )
     }

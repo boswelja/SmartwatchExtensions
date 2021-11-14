@@ -6,16 +6,18 @@ import com.boswelja.smartwatchextensions.appmanager.AppCacheUpdateWorker
 import com.boswelja.smartwatchextensions.appmanager.BaseAppCacheUpdateWorker
 import com.boswelja.smartwatchextensions.batterysync.BatteryStatsRepository
 import com.boswelja.smartwatchextensions.settings.BoolSetting
+import com.boswelja.smartwatchextensions.settings.BoolSettingSerializer
 import com.boswelja.smartwatchextensions.settings.IntSetting
+import com.boswelja.smartwatchextensions.settings.IntSettingSerializer
 import com.boswelja.smartwatchextensions.settings.RESET_SETTINGS
 import com.boswelja.smartwatchextensions.settings.UPDATE_BOOL_PREFERENCE
 import com.boswelja.smartwatchextensions.settings.UPDATE_INT_PREFERENCE
 import com.boswelja.smartwatchextensions.settings.WatchSettingsRepository
 import com.boswelja.watchconnection.common.Watch
 import com.boswelja.watchconnection.common.message.Message
-import com.boswelja.watchconnection.common.message.MessageSerializer
 import com.boswelja.watchconnection.core.discovery.DiscoveryClient
 import com.boswelja.watchconnection.core.message.MessageClient
+import com.boswelja.watchconnection.serialization.MessageHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -61,7 +63,7 @@ class WatchManager(
      */
     suspend fun registerWatch(watch: Watch) {
         withContext(Dispatchers.IO) {
-            messageClient.sendMessage(watch, Message(WATCH_REGISTERED_PATH, null))
+            messageClient.sendMessage(watch.uid, Message(WATCH_REGISTERED_PATH, null))
             watchRepository.registerWatch(watch)
             BaseAppCacheUpdateWorker.enqueueWorkerFor<AppCacheUpdateWorker>(context, watch.uid)
             analytics.logWatchRegistered()
@@ -77,7 +79,7 @@ class WatchManager(
     ) {
         withContext(Dispatchers.IO) {
             batteryStatsRepository.removeStatsFor(watch.uid)
-            messageClient.sendMessage(watch, Message(RESET_APP, null))
+            messageClient.sendMessage(watch.uid, Message(RESET_APP, null))
             watchRepository.deregisterWatch(watch)
             BaseAppCacheUpdateWorker.stopWorkerFor(context, watch.uid)
             analytics.logWatchRemoved()
@@ -104,7 +106,7 @@ class WatchManager(
         watch: Watch
     ) {
         batteryStatsRepository.removeStatsFor(watch.uid)
-        messageClient.sendMessage(watch, Message(RESET_SETTINGS, null))
+        messageClient.sendMessage(watch.uid, Message(RESET_SETTINGS, null))
         settingsRepository.deleteForWatch(watch.uid)
     }
 
@@ -118,14 +120,14 @@ class WatchManager(
      * Flow the status for a given watch.
      * @param watch The watch whose status to collect.
      */
-    fun getStatusFor(watch: Watch) = discoveryClient.connectionModeFor(watch)
+    fun getStatusFor(watch: Watch) = discoveryClient.connectionModeFor(watch.uid)
 
     /**
      * Get all capabilities for a given watch.
      * @param watch The watch to get capabilities for.
      */
     suspend fun getCapabilitiesFor(watch: Watch) =
-        discoveryClient.getCapabilitiesFor(watch).mapNotNull { capability ->
+        discoveryClient.getCapabilitiesFor(watch.uid).mapNotNull { capability ->
             try {
                 Capability.valueOf(capability)
             } catch (_: IllegalArgumentException) {
@@ -156,7 +158,7 @@ class WatchManager(
         message: String,
         data: ByteArray? = null,
         priority: Message.Priority = Message.Priority.LOW
-    ) = messageClient.sendMessage(watch, Message(message, data, priority))
+    ) = messageClient.sendMessage(watch.uid, Message(message, data, priority))
 
     /**
      * Send a message to a target watch.
@@ -165,8 +167,8 @@ class WatchManager(
      */
     suspend fun sendMessage(
         watch: Watch,
-        message: Message<*>
-    ) = messageClient.sendMessage(watch, message)
+        message: Message<ByteArray?>
+    ) = messageClient.sendMessage(watch.uid, message)
 
     /**
      * Retrieve a boolean setting.
@@ -216,12 +218,14 @@ class WatchManager(
      * @param key The preference key to update.
      * @param value The new preference value.
      */
+    @Deprecated("Use an appropriate MessageHandler instead")
     suspend fun updatePreference(watch: Watch, key: String, value: Any) {
         withContext(Dispatchers.IO) {
             when (value) {
                 is Boolean -> {
-                    messageClient.sendMessage(
-                        watch,
+                    val handler = MessageHandler(BoolSettingSerializer, messageClient)
+                    handler.sendMessage(
+                        watch.uid,
                         Message(
                             UPDATE_BOOL_PREFERENCE,
                             BoolSetting(key, value)
@@ -230,8 +234,9 @@ class WatchManager(
                     settingsRepository.putBoolean(watch.uid, key, value)
                 }
                 is Int -> {
-                    messageClient.sendMessage(
-                        watch,
+                    val handler = MessageHandler(IntSettingSerializer, messageClient)
+                    handler.sendMessage(
+                        watch.uid,
                         Message(
                             UPDATE_INT_PREFERENCE,
                             IntSetting(key, value)
@@ -265,12 +270,5 @@ class WatchManager(
     /**
      * Flow incoming messages.
      */
-    fun incomingMessages() = messageClient.rawIncomingMessages()
-
-    /**
-     * Flow incoming messages that can be deserialized by the given serializer.
-     * @param serializer The serializer to use.
-     */
-    fun <T> incomingMessages(serializer: MessageSerializer<T>) =
-        messageClient.incomingMessages(serializer)
+    fun incomingMessages() = messageClient.incomingMessages()
 }

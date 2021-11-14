@@ -34,7 +34,7 @@ import timber.log.Timber
 class ActionsActivity : ComponentActivity() {
 
     private val discoveryClient by lazy { DiscoveryClient(this) }
-    private val messageClient by lazy { MessageClient(this, listOf()) }
+    private val messageClient by lazy { MessageClient(this) }
 
     private var isLoading by mutableStateOf(true)
 
@@ -147,7 +147,7 @@ class ActionsActivity : ComponentActivity() {
         }
 
         val success = messageClient.sendMessage(
-            phone,
+            phone.uid,
             Message(
                 action,
                 null

@@ -1,13 +1,11 @@
 package com.boswelja.smartwatchextensions.appmanager
 
-import com.boswelja.watchconnection.common.message.MessageSerializer
+import com.boswelja.watchconnection.serialization.MessageSerializer
 
 /**
  * A [MessageSerializer] to handle serialization for a cache hash.
  */
-object CacheValidationSerializer : MessageSerializer<Int>(
-    messagePaths = setOf(VALIDATE_CACHE)
-) {
+object CacheValidationSerializer : MessageSerializer<Int> {
 
     private const val BYTE_MASK = 0xff
 
@@ -20,8 +18,10 @@ object CacheValidationSerializer : MessageSerializer<Int>(
     private const val FOURTH_BYTE_INDEX = 3
     private const val FOURTH_BYTE_SHIFT = 0
 
-    override suspend fun deserialize(bytes: ByteArray): Int {
-        require(bytes.size == Int.SIZE_BYTES) { "Invalid Int received" }
+    override val messagePaths: Set<String> = setOf(VALIDATE_CACHE)
+
+    override suspend fun deserialize(bytes: ByteArray?): Int {
+        require(bytes!!.size == Int.SIZE_BYTES) { "Invalid Int received" }
 
         return BYTE_MASK and bytes[FIRST_BYTE_INDEX].toInt() shl FIRST_BYTE_SHIFT or
             (BYTE_MASK and bytes[SECOND_BYTE_INDEX].toInt() shl SECOND_BYTE_SHIFT) or

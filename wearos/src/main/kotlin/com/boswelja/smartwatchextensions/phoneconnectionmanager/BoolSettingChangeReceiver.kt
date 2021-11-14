@@ -10,8 +10,8 @@ import com.boswelja.smartwatchextensions.proximity.SeparationObserverService
 import com.boswelja.smartwatchextensions.settings.BoolSetting
 import com.boswelja.smartwatchextensions.settings.BoolSettingKeys
 import com.boswelja.smartwatchextensions.settings.BoolSettingSerializer
-import com.boswelja.watchconection.common.message.MessageReceiver
 import com.boswelja.watchconnection.common.message.ReceivedMessage
+import com.boswelja.watchconnection.serialization.MessageReceiver
 
 /**
  * A [MessageReceiver] for receiving [BoolSetting].

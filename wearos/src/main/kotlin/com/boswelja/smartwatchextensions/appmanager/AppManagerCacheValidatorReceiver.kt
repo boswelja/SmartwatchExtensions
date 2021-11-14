@@ -1,8 +1,8 @@
 package com.boswelja.smartwatchextensions.appmanager
 
 import android.content.Context
-import com.boswelja.watchconection.common.message.MessageReceiver
 import com.boswelja.watchconnection.common.message.ReceivedMessage
+import com.boswelja.watchconnection.serialization.MessageReceiver
 import com.boswelja.watchconnection.wear.discovery.DiscoveryClient
 import com.boswelja.watchconnection.wear.message.MessageClient
 import org.koin.core.component.KoinComponent

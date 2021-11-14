@@ -5,8 +5,6 @@ import androidx.datastore.core.DataStore
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.boswelja.smartwatchextensions.PhoneState
-import com.boswelja.smartwatchextensions.common.EmptySerializer
-import com.boswelja.smartwatchextensions.devicemanagement.WATCH_REGISTERED_PATH
 import com.boswelja.smartwatchextensions.phoneStateStore
 import com.boswelja.watchconnection.wear.discovery.DiscoveryClient
 import com.boswelja.watchconnection.wear.message.MessageClient
@@ -28,7 +26,7 @@ class OnboardingViewModel internal constructor(
     constructor(application: Application) : this(
         application,
         DiscoveryClient(application),
-        MessageClient(application, listOf()),
+        MessageClient(application),
         application.phoneStateStore
     )
 
@@ -42,9 +40,7 @@ class OnboardingViewModel internal constructor(
 
     init {
         viewModelScope.launch {
-            messageClient.incomingMessages(
-                EmptySerializer(setOf(WATCH_REGISTERED_PATH))
-            ).collect {
+            messageClient.incomingMessages().collect {
                 dataStore.updateData { state ->
                     state.copy(id = it.sourceUid)
                 }

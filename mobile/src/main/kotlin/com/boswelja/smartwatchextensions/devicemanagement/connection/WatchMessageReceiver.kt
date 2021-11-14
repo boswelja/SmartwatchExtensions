@@ -2,19 +2,14 @@ package com.boswelja.smartwatchextensions.devicemanagement.connection
 
 import android.content.Context
 import android.content.Intent
-import com.boswelja.smartwatchextensions.appmanager.APP_SENDING_COMPLETE
-import com.boswelja.smartwatchextensions.appmanager.APP_SENDING_START
-import com.boswelja.smartwatchextensions.batterysync.BATTERY_STATUS_PATH
-import com.boswelja.smartwatchextensions.common.EmptySerializer
 import com.boswelja.smartwatchextensions.common.startActivity
 import com.boswelja.smartwatchextensions.devicemanagement.CHECK_WATCH_REGISTERED_PATH
 import com.boswelja.smartwatchextensions.devicemanagement.LAUNCH_APP
 import com.boswelja.smartwatchextensions.devicemanagement.WATCH_REGISTERED_PATH
 import com.boswelja.smartwatchextensions.devicemanagement.WatchRepository
-import com.boswelja.smartwatchextensions.dndsync.DND_STATUS_PATH
 import com.boswelja.smartwatchextensions.main.ui.MainActivity
-import com.boswelja.watchconection.common.message.MessageReceiver
 import com.boswelja.watchconnection.common.message.Message
+import com.boswelja.watchconnection.common.message.MessageReceiver
 import com.boswelja.watchconnection.common.message.ReceivedMessage
 import com.boswelja.watchconnection.core.message.MessageClient
 import kotlinx.coroutines.Dispatchers
@@ -28,22 +23,13 @@ import timber.log.Timber
  * A [MessageReceiver] to handle messages received with no data.
  */
 class WatchMessageReceiver :
-    MessageReceiver<Nothing?>(
-        EmptySerializer(
-            messagePaths = setOf(
-                APP_SENDING_START,
-                APP_SENDING_COMPLETE,
-                BATTERY_STATUS_PATH,
-                DND_STATUS_PATH
-            )
-        )
-    ),
+    MessageReceiver(),
     KoinComponent {
 
     private val watchRepository: WatchRepository by inject()
     private val messageClient: MessageClient by inject()
 
-    override suspend fun onMessageReceived(context: Context, message: ReceivedMessage<Nothing?>) {
+    override suspend fun onMessageReceived(context: Context, message: ReceivedMessage<ByteArray?>) {
         when (message.path) {
             LAUNCH_APP -> launchApp(context)
             CHECK_WATCH_REGISTERED_PATH -> sendIsWatchRegistered(message.sourceUid)
@@ -69,7 +55,7 @@ class WatchMessageReceiver :
             val watch = watchRepository.getWatchById(watchId).firstOrNull()
             // If watch is found in the database, let it know it's registered
             watch?.let {
-                messageClient.sendMessage(watch, Message(WATCH_REGISTERED_PATH, null))
+                messageClient.sendMessage(watch.uid, Message(WATCH_REGISTERED_PATH, null))
             }
         }
     }

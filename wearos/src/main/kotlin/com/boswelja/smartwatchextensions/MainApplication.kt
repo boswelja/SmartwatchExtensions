@@ -43,15 +43,7 @@ val miscModule = module {
  */
 val clientsModule = module {
     single {
-        MessageClient(
-            get(),
-            listOf(
-                AppListSerializer,
-                BatteryStatsSerializer,
-                DnDStatusSerializer,
-                VersionSerializer
-            )
-        )
+        MessageClient(get())
     }
     single {
         DiscoveryClient(get())

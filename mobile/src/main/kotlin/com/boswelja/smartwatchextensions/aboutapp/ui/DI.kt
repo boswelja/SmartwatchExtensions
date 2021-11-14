@@ -7,5 +7,5 @@ import org.koin.dsl.module
  * A Koin module to provide About App classes.
  */
 val aboutAppModule = module {
-    viewModel { AboutAppViewModel(get()) }
+    viewModel { AboutAppViewModel(get(), get()) }
 }

@@ -11,6 +11,7 @@ kotlin {
         val commonMain by getting {
             dependencies {
                 api(libs.watchconnection.common)
+                api(libs.watchconnection.serialization)
                 api(libs.wire.runtime)
             }
         }
