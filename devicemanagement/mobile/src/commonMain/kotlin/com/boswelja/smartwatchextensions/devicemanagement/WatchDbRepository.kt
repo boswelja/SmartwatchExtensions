@@ -57,12 +57,12 @@ class WatchDbRepository(
     }
 
     override suspend fun getCapabilitiesFor(watch: Watch): List<Capability> =
-        discoveryClient.getCapabilitiesFor(watch).map { capability ->
+        discoveryClient.getCapabilitiesFor(watch.uid).map { capability ->
             Capability.valueOf(capability)
         }
 
     override fun getStatusFor(watch: Watch): Flow<ConnectionMode> =
-        discoveryClient.connectionModeFor(watch)
+        discoveryClient.connectionModeFor(watch.uid)
 
     override fun getWatchById(id: String): Flow<Watch?> = database.registeredWatchQueries
         .get(id) { uid, name, _ ->
@@ -72,5 +72,5 @@ class WatchDbRepository(
         .mapToOneOrNull()
 
     override fun watchHasCapability(watch: Watch, capability: Capability): Flow<Boolean> =
-        discoveryClient.hasCapability(watch, capability.name)
+        discoveryClient.hasCapability(watch.uid, capability.name)
 }

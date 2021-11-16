@@ -15,13 +15,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.common.ui.Card
 import com.boswelja.smartwatchextensions.common.ui.CardHeader
 import com.boswelja.smartwatchextensions.common.ui.CheckboxSetting
 import com.boswelja.smartwatchextensions.common.ui.SliderSetting
 import com.boswelja.smartwatchextensions.common.ui.SwitchSetting
+import org.koin.androidx.compose.getViewModel
 
 private const val PROGRESS_FACTOR = 100f
 private const val BATTERY_CHARGE_MIN = 0.6f
@@ -39,7 +39,7 @@ fun BatterySyncSettingsScreen(
     modifier: Modifier = Modifier,
     contentPadding: Dp = 16.dp
 ) {
-    val viewModel: BatterySyncViewModel = viewModel()
+    val viewModel: BatterySyncViewModel = getViewModel()
     val batterySyncEnabled by viewModel.batterySyncEnabled.collectAsState(false)
     LazyColumn(
         modifier = modifier,
@@ -73,7 +73,7 @@ fun BatterySyncSettingsScreen(
 fun BatterySyncSettings(
     modifier: Modifier = Modifier
 ) {
-    val viewModel: BatterySyncViewModel = viewModel()
+    val viewModel: BatterySyncViewModel = getViewModel()
 
     val canSyncBattery by viewModel.canSyncBattery.collectAsState(false)
     val batterySyncEnabled by viewModel.batterySyncEnabled.collectAsState(false)
@@ -110,7 +110,7 @@ fun ChargeNotificationSettings(
     modifier: Modifier = Modifier,
     isEnabled: Boolean = true
 ) {
-    val viewModel: BatterySyncViewModel = viewModel()
+    val viewModel: BatterySyncViewModel = getViewModel()
 
     val phoneChargeNotiEnabled by viewModel.phoneChargeNotiEnabled.collectAsState(false)
     val watchChargeNotiEnabled by viewModel.watchChargeNotiEnabled.collectAsState(false)
@@ -177,7 +177,7 @@ fun LowBatteryNotificationSettings(
     modifier: Modifier = Modifier,
     isEnabled: Boolean = true
 ) {
-    val viewModel: BatterySyncViewModel = viewModel()
+    val viewModel: BatterySyncViewModel = getViewModel()
 
     val phoneLowNotiEnabled by viewModel.phoneLowNotiEnabled.collectAsState(false)
     val watchLowNotiEnabled by viewModel.watchLowNotiEnabled.collectAsState(false)
