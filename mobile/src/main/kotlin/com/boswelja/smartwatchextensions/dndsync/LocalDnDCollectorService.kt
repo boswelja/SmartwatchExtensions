@@ -13,6 +13,8 @@ import com.boswelja.smartwatchextensions.main.ui.MainActivity
 import com.boswelja.smartwatchextensions.settings.BoolSettingKeys.DND_SYNC_TO_WATCH_KEY
 import com.boswelja.watchconnection.common.Watch
 import com.boswelja.watchconnection.common.message.Message
+import com.boswelja.watchconnection.core.message.MessageClient
+import com.boswelja.watchconnection.serialization.MessageHandler
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.firstOrNull
@@ -27,6 +29,8 @@ import org.koin.android.ext.android.inject
 class LocalDnDCollectorService : BaseLocalDnDCollectorService() {
 
     private val watchManager: WatchManager by inject()
+    private val messageClient: MessageClient by inject()
+    private val messageHandler by lazy { MessageHandler(DnDStatusSerializer, messageClient) }
 
     private val targetWatches = ArrayList<Watch>()
 
@@ -91,8 +95,8 @@ class LocalDnDCollectorService : BaseLocalDnDCollectorService() {
      */
     private suspend fun sendNewDnDState(dndEnabled: Boolean) {
         targetWatches.forEach { watch ->
-            watchManager.sendMessage(
-                watch,
+            messageHandler.sendMessage(
+                watch.uid,
                 Message(
                     DND_STATUS_PATH,
                     dndEnabled

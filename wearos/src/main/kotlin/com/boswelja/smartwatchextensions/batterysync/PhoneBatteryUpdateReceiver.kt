@@ -14,9 +14,10 @@ import com.boswelja.smartwatchextensions.extensions.ExtensionSettings
 import com.boswelja.smartwatchextensions.extensions.extensionSettingsStore
 import com.boswelja.smartwatchextensions.main.ui.MainActivity
 import com.boswelja.smartwatchextensions.phoneStateStore
-import com.boswelja.watchconection.common.message.MessageReceiver
 import com.boswelja.watchconnection.common.message.Message
 import com.boswelja.watchconnection.common.message.ReceivedMessage
+import com.boswelja.watchconnection.serialization.MessageHandler
+import com.boswelja.watchconnection.serialization.MessageReceiver
 import com.boswelja.watchconnection.wear.discovery.DiscoveryClient
 import com.boswelja.watchconnection.wear.message.MessageClient
 import kotlinx.coroutines.flow.first
@@ -206,10 +207,11 @@ class PhoneBatteryUpdateReceiver :
 
     /** Sends a battery status update to connected devices. */
     private suspend fun sendBatteryStatsUpdate(context: Context) {
+        val handler = MessageHandler(BatteryStatsSerializer, messageClient)
         val batteryStats = context.batteryStats()
         if (batteryStats != null) {
-            messageClient.sendMessage(
-                discoveryClient.pairedPhone()!!,
+            handler.sendMessage(
+                discoveryClient.pairedPhone()!!.uid,
                 Message(BATTERY_STATUS_PATH, batteryStats)
             )
         } else {

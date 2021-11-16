@@ -2,8 +2,8 @@ package com.boswelja.smartwatchextensions.dndsync
 
 import android.app.NotificationManager
 import android.content.Context
-import com.boswelja.watchconection.common.message.MessageReceiver
 import com.boswelja.watchconnection.common.message.ReceivedMessage
+import com.boswelja.watchconnection.serialization.MessageReceiver
 
 /**
  * A [MessageReceiver] that receives DnD status changes and tries to apply the new value.

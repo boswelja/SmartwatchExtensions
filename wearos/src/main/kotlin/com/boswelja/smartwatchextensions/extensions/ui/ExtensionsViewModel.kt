@@ -33,7 +33,7 @@ class ExtensionsViewModel internal constructor(
     @Suppress("unused")
     constructor(application: Application) : this(
         application,
-        MessageClient(application, listOf()),
+        MessageClient(application),
         DiscoveryClient(application),
         application.phoneStateStore,
         BatteryStatsStore(application.batteryStatsStore),
@@ -72,7 +72,7 @@ class ExtensionsViewModel internal constructor(
      */
     suspend fun requestBatteryStats(): Boolean {
         if (phoneConnected().first()) {
-            val phoneId = discoveryClient.pairedPhone()!!
+            val phoneId = discoveryClient.pairedPhone()!!.uid
             return messageClient.sendMessage(
                 phoneId,
                 Message(
@@ -90,7 +90,7 @@ class ExtensionsViewModel internal constructor(
      */
     suspend fun requestLockPhone(): Boolean {
         if (phoneConnected().first()) {
-            val phoneId = discoveryClient.pairedPhone()!!
+            val phoneId = discoveryClient.pairedPhone()!!.uid
             return messageClient.sendMessage(phoneId, Message(LOCK_PHONE, null))
         }
         return false

@@ -2,6 +2,7 @@ package com.boswelja.smartwatchextensions.appmanager
 
 import android.content.Context
 import com.boswelja.watchconnection.common.message.Message
+import com.boswelja.watchconnection.serialization.MessageHandler
 import com.boswelja.watchconnection.wear.discovery.DiscoveryClient
 import com.boswelja.watchconnection.wear.message.MessageClient
 
@@ -15,18 +16,19 @@ suspend fun Context.sendAllApps(
 ) {
     val pairedPhone = discoveryClient.pairedPhone()!!
 
+    val messageHandler = MessageHandler(AppListSerializer, messageClient)
     // Get all current packages
     val allApps = getAllApps()
 
     // Let the phone know what we're doing
     messageClient.sendMessage(
-        pairedPhone,
+        pairedPhone.uid,
         Message(APP_SENDING_START, null)
     )
 
     // Send all apps
-    messageClient.sendMessage(
-        pairedPhone,
+    messageHandler.sendMessage(
+        pairedPhone.uid,
         Message(
             APP_LIST,
             AppList(allApps)
@@ -35,7 +37,7 @@ suspend fun Context.sendAllApps(
 
     // Send a message notifying the phone of a successful operation
     messageClient.sendMessage(
-        pairedPhone,
+        pairedPhone.uid,
         Message(APP_SENDING_COMPLETE, null)
     )
 }

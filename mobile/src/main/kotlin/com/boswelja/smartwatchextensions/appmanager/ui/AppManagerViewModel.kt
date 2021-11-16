@@ -9,6 +9,7 @@ import androidx.lifecycle.viewModelScope
 import com.boswelja.smartwatchextensions.appmanager.APP_SENDING_COMPLETE
 import com.boswelja.smartwatchextensions.appmanager.APP_SENDING_START
 import com.boswelja.smartwatchextensions.appmanager.CacheValidation
+import com.boswelja.smartwatchextensions.appmanager.CacheValidationSerializer
 import com.boswelja.smartwatchextensions.appmanager.REQUEST_OPEN_PACKAGE
 import com.boswelja.smartwatchextensions.appmanager.REQUEST_UNINSTALL_PACKAGE
 import com.boswelja.smartwatchextensions.appmanager.VALIDATE_CACHE
@@ -19,6 +20,8 @@ import com.boswelja.smartwatchextensions.devicemanagement.WatchManager
 import com.boswelja.watchconnection.common.Watch
 import com.boswelja.watchconnection.common.discovery.ConnectionMode
 import com.boswelja.watchconnection.common.message.Message
+import com.boswelja.watchconnection.core.message.MessageClient
+import com.boswelja.watchconnection.serialization.MessageHandler
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.collect
@@ -43,6 +46,8 @@ class AppManagerViewModel internal constructor(
 
     private val appRepository: WatchAppRepository by inject()
     private val watchManager: WatchManager by inject()
+    private val messageClient: MessageClient by inject()
+    private val messageHandler by lazy { MessageHandler(CacheValidationSerializer, messageClient) }
 
     @OptIn(FlowPreview::class)
     private val allApps = watchManager.selectedWatch.flatMapLatest { watch ->
@@ -159,7 +164,7 @@ class AppManagerViewModel internal constructor(
                 .map { apps -> apps.map { it.packageName to it.updateTime } }
                 .first()
             val cacheHash = CacheValidation.getHashCode(apps)
-            val result = watchManager.sendMessage(watch, Message(VALIDATE_CACHE, cacheHash))
+            val result = messageHandler.sendMessage(watch.uid, Message(VALIDATE_CACHE, cacheHash))
             if (!result) Timber.w("Failed to request cache validation")
         }
     }

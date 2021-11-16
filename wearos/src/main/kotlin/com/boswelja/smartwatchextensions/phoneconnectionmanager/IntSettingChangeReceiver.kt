@@ -5,8 +5,8 @@ import com.boswelja.smartwatchextensions.extensions.extensionSettingsStore
 import com.boswelja.smartwatchextensions.settings.IntSetting
 import com.boswelja.smartwatchextensions.settings.IntSettingKeys
 import com.boswelja.smartwatchextensions.settings.IntSettingSerializer
-import com.boswelja.watchconection.common.message.MessageReceiver
 import com.boswelja.watchconnection.common.message.ReceivedMessage
+import com.boswelja.watchconnection.serialization.MessageReceiver
 
 /**
  * A [MessageReceiver] for receiving [IntSetting].
