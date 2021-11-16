@@ -41,6 +41,7 @@ import kotlinx.coroutines.launch
 fun OnboardingScreen() {
     val state = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
+    val viewModel: OnboardingViewModel = viewModel()
 
     RotaryHandler { delta ->
         coroutineScope.launch {
@@ -58,7 +59,8 @@ fun OnboardingScreen() {
             PhoneInstallInstructions()
         }
         item {
-            PhoneSetupInstructions()
+            val watchName by viewModel.watchName().collectAsState("Error", Dispatchers.Default)
+            PhoneSetupInstructions(watchName)
         }
     }
 }
@@ -122,9 +124,9 @@ fun PhoneInstallInstructions() {
  * A Composable screen for displaying pairing info.
  */
 @Composable
-fun PhoneSetupInstructions() {
-    val viewModel: OnboardingViewModel = viewModel()
-    val watchName by viewModel.watchName().collectAsState("Error", Dispatchers.Default)
+fun PhoneSetupInstructions(
+    watchName: String
+) {
     Column(
         Modifier
             .fillMaxWidth()
