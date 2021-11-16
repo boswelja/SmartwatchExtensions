@@ -17,7 +17,6 @@ import com.boswelja.smartwatchextensions.settings.BoolSettingKeys.BATTERY_WATCH_
 import com.boswelja.smartwatchextensions.settings.BoolSettingKeys.BATTERY_WATCH_LOW_NOTI_KEY
 import com.boswelja.smartwatchextensions.settings.IntSettingKeys.BATTERY_CHARGE_THRESHOLD_KEY
 import com.boswelja.smartwatchextensions.settings.IntSettingKeys.BATTERY_LOW_THRESHOLD_KEY
-import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
@@ -31,7 +30,6 @@ import timber.log.Timber
 @OptIn(ExperimentalCoroutinesApi::class)
 class BatterySyncViewModel(
     application: Application,
-    private val dispatcher: CoroutineDispatcher,
     private val watchManager: WatchManager,
     private val repository: BatteryStatsRepository
 ) : AndroidViewModel(application) {
@@ -87,7 +85,7 @@ class BatterySyncViewModel(
      * Set whether Battery Sync is enabled.
      */
     fun setBatterySyncEnabled(isEnabled: Boolean) {
-        viewModelScope.launch(dispatcher) {
+        viewModelScope.launch {
             val selectedWatch = watchManager.selectedWatch.first()
             if (isEnabled) {
                 val workerStartSuccessful = BaseBatterySyncWorker
@@ -117,7 +115,7 @@ class BatterySyncViewModel(
      * Set the charge notification threshold.
      */
     fun setChargeThreshold(chargeThreshold: Int) {
-        viewModelScope.launch(dispatcher) {
+        viewModelScope.launch {
             val selectedWatch = watchManager.selectedWatch.first()
             watchManager.updatePreference(
                 selectedWatch!!,
@@ -130,7 +128,7 @@ class BatterySyncViewModel(
      * Set whether phone charge notifications are enabled.
      */
     fun setPhoneChargeNotiEnabled(isEnabled: Boolean) {
-        viewModelScope.launch(dispatcher) {
+        viewModelScope.launch {
             val selectedWatch = watchManager.selectedWatch.first()
             watchManager.updatePreference(
                 selectedWatch!!, BATTERY_PHONE_CHARGE_NOTI_KEY, isEnabled
@@ -142,7 +140,7 @@ class BatterySyncViewModel(
      * Set whether watch charge notifications are enabled.
      */
     fun setWatchChargeNotiEnabled(isEnabled: Boolean) {
-        viewModelScope.launch(dispatcher) {
+        viewModelScope.launch {
             val selectedWatch = watchManager.selectedWatch.first()
             watchManager.updatePreference(
                 selectedWatch!!, BATTERY_WATCH_CHARGE_NOTI_KEY, isEnabled
@@ -154,7 +152,7 @@ class BatterySyncViewModel(
      * Set whether phone low notifications are enabled.
      */
     fun setPhoneLowNotiEnabled(isEnabled: Boolean) {
-        viewModelScope.launch(dispatcher) {
+        viewModelScope.launch {
             val selectedWatch = watchManager.selectedWatch.first()
             watchManager.updatePreference(
                 selectedWatch!!, BATTERY_PHONE_LOW_NOTI_KEY, isEnabled
@@ -166,7 +164,7 @@ class BatterySyncViewModel(
      * Set whether watch low notifications are enabled.
      */
     fun setWatchLowNotiEnabled(isEnabled: Boolean) {
-        viewModelScope.launch(dispatcher) {
+        viewModelScope.launch {
             val selectedWatch = watchManager.selectedWatch.first()
             watchManager.updatePreference(
                 selectedWatch!!, BATTERY_WATCH_LOW_NOTI_KEY, isEnabled
@@ -178,7 +176,7 @@ class BatterySyncViewModel(
      * Set the low battery notification threshold.
      */
     fun setLowBatteryThreshold(lowThreshold: Int) {
-        viewModelScope.launch(dispatcher) {
+        viewModelScope.launch {
             val selectedWatch = watchManager.selectedWatch.first()
             watchManager.updatePreference(
                 selectedWatch!!, BATTERY_LOW_THRESHOLD_KEY, lowThreshold
