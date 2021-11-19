@@ -30,6 +30,7 @@ kotlin {
                 implementation(libs.sqldelight.android)
                 implementation(libs.androidx.work.ktx)
                 implementation(libs.koin.android)
+                implementation(libs.koin.compose)
                 implementation(libs.bundles.lifecycle)
                 implementation(libs.bundles.compose.mobile)
             }
