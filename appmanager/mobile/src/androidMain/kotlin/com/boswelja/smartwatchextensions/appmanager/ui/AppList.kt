@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ListItem
 import androidx.compose.material.Text
@@ -47,10 +48,10 @@ fun AppList(
         }
         if (userApps.isNotEmpty()) {
             items(
-                count = systemApps.size,
-                key = { systemApps[it].packageName }
-            ) {
-                AppItem(app = systemApps[it], onClick = onAppClick)
+                items = userApps,
+                key = { it.packageName }
+            ) { app ->
+                AppItem(app = app, onClick = onAppClick)
             }
         }
         item {
@@ -58,10 +59,10 @@ fun AppList(
         }
         if (disabledApps.isNotEmpty()) {
             items(
-                count = disabledApps.size,
-                key = { disabledApps[it].packageName }
-            ) {
-                AppItem(app = disabledApps[it], onClick = onAppClick)
+                items = disabledApps,
+                key = { it.packageName }
+            ) { app ->
+                AppItem(app = app, onClick = onAppClick)
             }
         }
         item {
@@ -69,10 +70,10 @@ fun AppList(
         }
         if (systemApps.isNotEmpty()) {
             items(
-                count = systemApps.size,
-                key = { systemApps[it].packageName }
-            ) {
-                AppItem(app = systemApps[it], onClick = onAppClick)
+                items = systemApps,
+                key = { it.packageName }
+            ) { app ->
+                AppItem(app = app, onClick = onAppClick)
             }
         }
     }
