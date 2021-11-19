@@ -19,10 +19,7 @@ import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.OpenInNew
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -30,10 +27,8 @@ import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.boswelja.smartwatchextensions.R
+import com.boswelja.smartwatchextensions.appmanager.R
 import com.boswelja.smartwatchextensions.appmanager.WatchAppDetails
-import com.boswelja.smartwatchextensions.common.ui.BigButton
-import com.boswelja.smartwatchextensions.common.ui.ExpandableCard
 import java.text.SimpleDateFormat
 import java.util.Locale
 
@@ -132,14 +127,14 @@ fun AppActionButtons(
             BigButton(
                 modifier = Modifier.weight(1f),
                 icon = { Icon(Icons.Outlined.OpenInNew, null) },
-                text = { Text(stringResource(R.string.app_info_open_button)) },
+                text = { Text(stringResource(R.string.appinfo_open)) },
                 onClick = onOpenClicked,
                 enabled = openEnabled
             )
             BigButton(
                 modifier = Modifier.weight(1f),
                 icon = { Icon(Icons.Outlined.Delete, null) },
-                text = { Text(stringResource(R.string.app_info_uninstall_button)) },
+                text = { Text(stringResource(R.string.appinfo_uninstall)) },
                 onClick = onUninstallClicked,
                 enabled = uninstallEnabled
             )
@@ -153,31 +148,26 @@ fun AppActionButtons(
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun PermissionsInfo(
-    modifier: Modifier = Modifier,
-    permissions: List<String>
+    permissions: List<String>,
+    modifier: Modifier = Modifier
 ) {
     if (permissions.isNotEmpty()) {
-        var isExpanded by remember { mutableStateOf(false) }
-        ExpandableCard(
+        val context = LocalContext.current
+        val permissionText = remember(context) {
+            context.resources.getQuantityString(
+                R.plurals.appinfo_requested_permissions_count,
+                permissions.count(),
+                permissions.count()
+            )
+        }
+        ListItem(
             modifier = modifier,
-            title = {
-                val permissionText = LocalContext.current.resources.getQuantityString(
-                    R.plurals.app_info_requested_permissions_count,
-                    permissions.count(),
-                    permissions.count()
-                )
-                Text(permissionText)
-            },
-            expanded = isExpanded,
-            toggleExpanded = { isExpanded = !isExpanded }
-        ) {
-            Column {
-                permissions.forEach { permission ->
-                    ListItem(
-                        text = { Text(permission) }
-                    )
-                }
-            }
+            text = { Text(permissionText) }
+        )
+        permissions.forEach { permission ->
+            ListItem(
+                text = { Text(permission) }
+            )
         }
     }
 }
@@ -200,7 +190,7 @@ fun AppInstallInfo(
         if (!app.isSystemApp) {
             Text(
                 stringResource(
-                    R.string.app_info_first_installed_prefix,
+                    R.string.appinfo_first_installed,
                     dateFormatter.format(app.installTime)
                 ),
                 style = MaterialTheme.typography.body2
@@ -209,14 +199,14 @@ fun AppInstallInfo(
         if (app.installTime < app.updateTime) {
             Text(
                 stringResource(
-                    R.string.app_info_last_updated_prefix,
+                    R.string.appinfo_last_updated,
                     dateFormatter.format(app.updateTime)
                 ),
                 style = MaterialTheme.typography.body2
             )
         }
         Text(
-            stringResource(R.string.app_info_version_prefix, app.versionName),
+            stringResource(R.string.appinfo_version, app.versionName),
             style = MaterialTheme.typography.body2
         )
     }

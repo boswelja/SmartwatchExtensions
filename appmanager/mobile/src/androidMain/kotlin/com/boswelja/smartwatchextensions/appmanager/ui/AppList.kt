@@ -44,7 +44,7 @@ fun AppList(
         verticalArrangement = Arrangement.spacedBy(contentPadding)
     ) {
         item {
-            Text(stringResource(R.string.appmanager_section_user_apps))
+            Text(stringResource(R.string.appmanager_section_user))
         }
         if (userApps.isNotEmpty()) {
             items(
@@ -55,7 +55,7 @@ fun AppList(
             }
         }
         item {
-            Text(stringResource(R.string.appmanager_section_disabled_apps))
+            Text(stringResource(R.string.appmanager_section_disabled))
         }
         if (disabledApps.isNotEmpty()) {
             items(
@@ -66,7 +66,7 @@ fun AppList(
             }
         }
         item {
-            Text(stringResource(R.string.appmanager_section_system_apps))
+            Text(stringResource(R.string.appmanager_section_system))
         }
         if (systemApps.isNotEmpty()) {
             items(
