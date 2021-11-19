@@ -3,7 +3,6 @@ package com.boswelja.smartwatchextensions.devicemanagement
 import android.content.Context
 import com.boswelja.smartwatchextensions.analytics.Analytics
 import com.boswelja.smartwatchextensions.appmanager.AppCacheUpdateWorker
-import com.boswelja.smartwatchextensions.appmanager.BaseAppCacheUpdateWorker
 import com.boswelja.smartwatchextensions.batterysync.BatteryStatsRepository
 import com.boswelja.smartwatchextensions.settings.BoolSetting
 import com.boswelja.smartwatchextensions.settings.BoolSettingSerializer
@@ -65,7 +64,7 @@ class WatchManager(
         withContext(Dispatchers.IO) {
             messageClient.sendMessage(watch.uid, Message(WATCH_REGISTERED_PATH, null))
             watchRepository.registerWatch(watch)
-            BaseAppCacheUpdateWorker.enqueueWorkerFor<AppCacheUpdateWorker>(context, watch.uid)
+            AppCacheUpdateWorker.enqueueWorkerFor(context, watch.uid)
             analytics.logWatchRegistered()
         }
     }
@@ -81,7 +80,7 @@ class WatchManager(
             batteryStatsRepository.removeStatsFor(watch.uid)
             messageClient.sendMessage(watch.uid, Message(RESET_APP, null))
             watchRepository.deregisterWatch(watch)
-            BaseAppCacheUpdateWorker.stopWorkerFor(context, watch.uid)
+            AppCacheUpdateWorker.stopWorkerFor(context, watch.uid)
             analytics.logWatchRemoved()
         }
     }
