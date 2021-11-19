@@ -25,13 +25,13 @@ import androidx.compose.ui.unit.dp
  */
 @Composable
 fun BigButton(
+    icon: @Composable () -> Unit,
+    text: @Composable () -> Unit,
+    onClick: () -> Unit,
     modifier: Modifier = Modifier,
     backgroundColor: Color = MaterialTheme.colors.surface,
     contentColor: Color = MaterialTheme.colors.primary,
     contentPadding: Dp = 16.dp,
-    icon: @Composable () -> Unit,
-    text: @Composable () -> Unit,
-    onClick: () -> Unit,
     enabled: Boolean = true
 ) {
     Surface(

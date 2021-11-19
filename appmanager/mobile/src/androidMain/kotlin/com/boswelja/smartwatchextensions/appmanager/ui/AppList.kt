@@ -22,21 +22,21 @@ import com.boswelja.smartwatchextensions.appmanager.WatchApp
 
 /**
  * A Composable for displaying a list of apps.
- * @param modifier [Modifier].
- * @param contentPadding The content padding.
  * @param userApps The list of user apps.
  * @param disabledApps The list of disabled apps.
  * @param systemApps The list of system apps.
  * @param onAppClick Called when an app is clicked.
+ * @param modifier [Modifier].
+ * @param contentPadding The content padding.
  */
 @Composable
 fun AppList(
-    modifier: Modifier = Modifier,
-    contentPadding: Dp = 16.dp,
     userApps: List<WatchApp>,
     disabledApps: List<WatchApp>,
     systemApps: List<WatchApp>,
-    onAppClick: (WatchApp) -> Unit
+    onAppClick: (WatchApp) -> Unit,
+    modifier: Modifier = Modifier,
+    contentPadding: Dp = 16.dp
 ) {
     LazyColumn(
         modifier = modifier,
@@ -81,16 +81,16 @@ fun AppList(
 
 /**
  * A Composable for displaying an app.
- * @param modifier [Modifier].
  * @param app The app to display.
  * @param onClick Called when the app is clicked.
+ * @param modifier [Modifier].
  */
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun AppItem(
-    modifier: Modifier = Modifier,
     app: WatchApp,
-    onClick: (WatchApp) -> Unit
+    onClick: (WatchApp) -> Unit,
+    modifier: Modifier = Modifier
 ) {
     ListItem(
         text = { Text(app.label) },
