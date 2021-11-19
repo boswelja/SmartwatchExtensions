@@ -15,9 +15,9 @@ import com.boswelja.smartwatchextensions.appmanager.WatchAppDetails
 import com.boswelja.smartwatchextensions.appmanager.WatchAppRepository
 import com.boswelja.smartwatchextensions.devicemanagement.SelectedWatchManager
 import com.boswelja.watchconnection.common.discovery.ConnectionMode
-import com.boswelja.watchconnection.common.discovery.DiscoveryClient
 import com.boswelja.watchconnection.common.message.Message
-import com.boswelja.watchconnection.common.message.MessageClient
+import com.boswelja.watchconnection.core.discovery.DiscoveryClient
+import com.boswelja.watchconnection.core.message.MessageClient
 import com.boswelja.watchconnection.serialization.MessageHandler
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview

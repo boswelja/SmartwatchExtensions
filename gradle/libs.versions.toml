@@ -93,6 +93,7 @@ strikt-core = { module = "io.strikt:strikt-core", version.ref = "strikt" }
 strikt-mockk = { module = "io.strikt:strikt-mockk", version.ref = "strikt" }
 timber = { module = "com.jakewharton.timber:timber", version.ref = "timber" }
 watchconnection-common = { module = "io.github.boswelja.watchconnection:common", version.ref = "watchconnection" }
+watchconnection-mobile-core = { module = "io.github.boswelja.watchconnection:mobile-core", version.ref = "watchconnection" }
 watchconnection-serialization = { module = "io.github.boswelja.watchconnection:serialization", version.ref = "watchconnection" }
 watchconnection-platform-wearos = { module = "io.github.boswelja.watchconnection:platform-wearos", version.ref = "watchconnection" }
 watchconnection-wear = { module = "io.github.boswelja.watchconnection:wear", version.ref = "watchconnection" }
