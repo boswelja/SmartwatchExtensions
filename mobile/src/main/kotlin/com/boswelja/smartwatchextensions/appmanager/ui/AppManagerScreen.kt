@@ -23,10 +23,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.appmanager.WatchAppDetails
 import kotlinx.coroutines.launch
+import org.koin.androidx.compose.getViewModel
 
 /**
  * A Composable screen to display App Manager.
@@ -41,7 +41,7 @@ fun AppManagerScreen(
     contentPadding: Dp = 16.dp,
     onShowSnackbar: suspend (String) -> Unit
 ) {
-    val viewModel: AppManagerViewModel = viewModel()
+    val viewModel: AppManagerViewModel = getViewModel()
     val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
 
