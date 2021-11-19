@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="appmanager_section_user_apps">User Apps</string>
+    <string name="appmanager_section_disabled_apps">Disabled Apps</string>
+    <string name="appmanager_section_system_apps">System Apps</string>
+</resources>
