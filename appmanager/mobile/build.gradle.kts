@@ -25,9 +25,11 @@ kotlin {
         }
         val androidMain by getting {
             dependencies {
+                implementation(projects.devicemanagement.mobile)
                 implementation(libs.sqldelight.android)
                 implementation(libs.androidx.work.ktx)
                 implementation(libs.koin.android)
+                implementation(libs.bundles.lifecycle)
             }
         }
         val androidTest by getting {

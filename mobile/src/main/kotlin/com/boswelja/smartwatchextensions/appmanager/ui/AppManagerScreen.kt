@@ -49,8 +49,9 @@ fun AppManagerScreen(
     val userApps by viewModel.userApps.collectAsState(emptyList(), Dispatchers.IO)
     val disabledApps by viewModel.disabledApps.collectAsState(emptyList(), Dispatchers.IO)
     val systemApps by viewModel.systemApps.collectAsState(emptyList(), Dispatchers.IO)
+    val isUpdatingCache by viewModel.isUpdatingCache.collectAsState()
     // Only check system apps (for now). It's effectively guaranteed we'll have some on any device
-    val isLoading = systemApps.isEmpty() || viewModel.isUpdatingCache
+    val isLoading = systemApps.isEmpty() || isUpdatingCache
 
     var selectedApp by remember { mutableStateOf<WatchAppDetails?>(null) }
 
