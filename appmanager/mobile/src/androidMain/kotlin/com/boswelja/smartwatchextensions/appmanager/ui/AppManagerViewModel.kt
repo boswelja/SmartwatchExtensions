@@ -1,7 +1,6 @@
 package com.boswelja.smartwatchextensions.appmanager.ui
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.boswelja.smartwatchextensions.appmanager.APP_SENDING_COMPLETE
 import com.boswelja.smartwatchextensions.appmanager.APP_SENDING_START
@@ -33,21 +32,18 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
 
 /**
  * A ViewModel for providing data to App Manager.
  */
 @OptIn(ExperimentalCoroutinesApi::class)
 class AppManagerViewModel(
-    application: Application
-) : AndroidViewModel(application), KoinComponent {
+    private val appRepository: WatchAppRepository,
+    private val messageClient: MessageClient,
+    private val discoveryClient: DiscoveryClient,
+    private val selectedWatchManager: SelectedWatchManager
+) : ViewModel() {
 
-    private val appRepository: WatchAppRepository by inject()
-    private val messageClient: MessageClient by inject()
-    private val discoveryClient: DiscoveryClient by inject()
-    private val selectedWatchManager: SelectedWatchManager by inject()
     private val cacheMessageHandler by lazy { MessageHandler(CacheValidationSerializer, messageClient) }
     private val packageMessageHandler by lazy { MessageHandler(PackageNameSerializer, messageClient) }
 

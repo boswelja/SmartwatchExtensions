@@ -9,7 +9,7 @@ import org.koin.dsl.module
 /**
  * A Koin module for providing repositories for App Manager.
  */
-val appManagerModule = module {
+internal val appManagerCommonModule = module {
     single {
         WatchAppDatabase(
             get { parametersOf(WatchAppDatabase.Schema, "watchapps.db") },
