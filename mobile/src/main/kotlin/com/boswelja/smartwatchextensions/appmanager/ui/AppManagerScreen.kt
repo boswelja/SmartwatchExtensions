@@ -26,7 +26,6 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.appmanager.WatchAppDetails
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 /**
@@ -46,9 +45,9 @@ fun AppManagerScreen(
     val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
 
-    val userApps by viewModel.userApps.collectAsState(emptyList(), Dispatchers.IO)
-    val disabledApps by viewModel.disabledApps.collectAsState(emptyList(), Dispatchers.IO)
-    val systemApps by viewModel.systemApps.collectAsState(emptyList(), Dispatchers.IO)
+    val userApps by viewModel.userApps.collectAsState()
+    val disabledApps by viewModel.disabledApps.collectAsState()
+    val systemApps by viewModel.systemApps.collectAsState()
     val isUpdatingCache by viewModel.isUpdatingCache.collectAsState()
     // Only check system apps (for now). It's effectively guaranteed we'll have some on any device
     val isLoading = systemApps.isEmpty() || isUpdatingCache
