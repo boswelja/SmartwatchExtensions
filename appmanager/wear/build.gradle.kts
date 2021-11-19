@@ -11,6 +11,8 @@ kotlin {
             dependencies {
                 api(libs.watchconnection.common)
                 api(projects.appmanager.common)
+                implementation(libs.watchconnection.wear)
+                implementation(libs.koin.core)
             }
         }
         val androidMain by getting {

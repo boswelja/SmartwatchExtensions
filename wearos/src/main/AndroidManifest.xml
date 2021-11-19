@@ -117,14 +117,6 @@
             </intent-filter>
         </receiver>
 
-        <receiver
-            android:name=".appmanager.AppManagerCacheValidatorReceiver"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="com.boswelja.watchconnection.common.message.MessageReceived" />
-            </intent-filter>
-        </receiver>
-
         <service
             android:name=".dndsync.LocalDnDAndTheaterCollectorService"
             android:exported="false" />
