@@ -30,6 +30,7 @@ kotlin {
                 implementation(libs.androidx.work.ktx)
                 implementation(libs.koin.android)
                 implementation(libs.bundles.lifecycle)
+                implementation(libs.bundles.compose.mobile)
             }
         }
         val androidTest by getting {
@@ -46,6 +47,11 @@ android {
     defaultConfig {
         minSdk = 23
         targetSdk = PackageInfo.targetSdk
+    }
+
+    buildFeatures.compose = true
+    composeOptions {
+        kotlinCompilerExtensionVersion = libs.versions.compose.get()
     }
 }
 
