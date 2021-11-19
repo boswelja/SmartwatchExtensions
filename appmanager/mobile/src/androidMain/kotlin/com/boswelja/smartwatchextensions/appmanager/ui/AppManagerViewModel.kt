@@ -6,12 +6,7 @@ import com.boswelja.smartwatchextensions.appmanager.APP_SENDING_COMPLETE
 import com.boswelja.smartwatchextensions.appmanager.APP_SENDING_START
 import com.boswelja.smartwatchextensions.appmanager.CacheValidation
 import com.boswelja.smartwatchextensions.appmanager.CacheValidationSerializer
-import com.boswelja.smartwatchextensions.appmanager.PackageNameSerializer
-import com.boswelja.smartwatchextensions.appmanager.REQUEST_OPEN_PACKAGE
-import com.boswelja.smartwatchextensions.appmanager.REQUEST_UNINSTALL_PACKAGE
 import com.boswelja.smartwatchextensions.appmanager.VALIDATE_CACHE
-import com.boswelja.smartwatchextensions.appmanager.WatchApp
-import com.boswelja.smartwatchextensions.appmanager.WatchAppDetails
 import com.boswelja.smartwatchextensions.appmanager.WatchAppRepository
 import com.boswelja.smartwatchextensions.devicemanagement.SelectedWatchManager
 import com.boswelja.watchconnection.common.discovery.ConnectionMode
@@ -45,7 +40,6 @@ class AppManagerViewModel(
 ) : ViewModel() {
 
     private val cacheMessageHandler by lazy { MessageHandler(CacheValidationSerializer, messageClient) }
-    private val packageMessageHandler by lazy { MessageHandler(PackageNameSerializer, messageClient) }
 
     @OptIn(FlowPreview::class)
     private val allApps = selectedWatchManager.selectedWatch
@@ -156,52 +150,6 @@ class AppManagerViewModel(
                     Message.Priority.HIGH
                 )
             )
-        }
-    }
-
-    /**
-     * Requests the selected watch launch a given [WatchAppDetails].
-     * @param app The [WatchAppDetails] to try launch.
-     * @return true if the request was sent successfully, false otherwise.
-     */
-    suspend fun sendOpenRequest(app: WatchAppDetails): Boolean {
-        return selectedWatchManager.selectedWatch.first()?.let { watch ->
-            packageMessageHandler.sendMessage(
-                watch.uid,
-                Message(
-                    REQUEST_OPEN_PACKAGE,
-                    app.packageName,
-                    Message.Priority.HIGH
-                )
-            )
-        } ?: false
-    }
-
-    /**
-     * Requests the selected watch uninstall a given [WatchAppDetails].
-     * @param app The [WatchAppDetails] to try uninstall.
-     * @return true if the request was sent successfully, false otherwise.
-     */
-    suspend fun sendUninstallRequest(app: WatchAppDetails): Boolean {
-        return selectedWatchManager.selectedWatch.first()?.let { watch ->
-            appRepository.delete(app.watchId, app.packageName)
-            packageMessageHandler.sendMessage(
-                watch.uid,
-                Message(
-                    REQUEST_UNINSTALL_PACKAGE,
-                    app.packageName,
-                    Message.Priority.HIGH
-                )
-            )
-        } ?: false
-    }
-
-    /**
-     * Get more app details for a given watch app.
-     */
-    suspend fun getDetailsFor(app: WatchApp): WatchAppDetails? {
-        return selectedWatchManager.selectedWatch.first()?.let {
-            appRepository.getDetailsFor(it.uid, app.packageName).first()
         }
     }
 

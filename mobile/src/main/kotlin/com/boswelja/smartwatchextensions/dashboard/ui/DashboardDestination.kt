@@ -6,7 +6,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
-import com.boswelja.smartwatchextensions.appmanager.ui.AppManagerScreen
+import com.boswelja.smartwatchextensions.appmanager.ui.appManagerNavigation
 import com.boswelja.smartwatchextensions.batterysync.ui.BatterySyncSettingsScreen
 import com.boswelja.smartwatchextensions.dndsync.ui.DnDSyncSettingsScreen
 import com.boswelja.smartwatchextensions.phonelocking.ui.PhoneLockingSettingsScreen
@@ -48,13 +48,11 @@ fun NavGraphBuilder.dashboardGraph(
             onNavigateTo = { navController.navigate(it.route) }
         )
     }
-    composable(DashboardDestination.APP_MANAGER.route) {
-        AppManagerScreen(
-            modifier = modifier,
-            contentPadding = contentPadding,
-            onShowSnackbar = onShowSnackbar
-        )
-    }
+    appManagerNavigation(
+        DashboardDestination.APP_MANAGER.route,
+        onShowSnackbar = onShowSnackbar,
+        onNavigate = { navController.navigate(it) }
+    )
     composable(DashboardDestination.BATTERY_SYNC_SETTINGS.route) {
         BatterySyncSettingsScreen(
             modifier = modifier,
