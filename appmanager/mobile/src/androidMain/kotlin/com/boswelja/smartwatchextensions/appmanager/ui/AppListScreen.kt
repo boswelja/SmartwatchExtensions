@@ -26,9 +26,8 @@ import org.koin.androidx.compose.getViewModel
 fun AppListScreen(
     onAppClicked: (WatchApp) -> Unit,
     modifier: Modifier = Modifier,
+    viewModel: AppManagerViewModel = getViewModel()
 ) {
-    val viewModel: AppManagerViewModel = getViewModel()
-
     val userApps by viewModel.userApps.collectAsState()
     val disabledApps by viewModel.disabledApps.collectAsState()
     val systemApps by viewModel.systemApps.collectAsState()

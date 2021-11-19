@@ -37,11 +37,11 @@ import java.util.Locale
  */
 @Composable
 fun AppInfo(
-    modifier: Modifier = Modifier,
     app: WatchAppDetails,
-    interactionEnabled: Boolean = true,
     onOpenClicked: (WatchAppDetails) -> Unit,
-    onUninstallClicked: (WatchAppDetails) -> Unit
+    onUninstallClicked: (WatchAppDetails) -> Unit,
+    modifier: Modifier = Modifier,
+    interactionEnabled: Boolean = true
 ) {
     val scrollState = rememberScrollState()
     Column(
