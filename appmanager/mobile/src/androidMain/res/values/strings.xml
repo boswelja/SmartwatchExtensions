@@ -3,6 +3,8 @@
     <string name="appmanager_section_user">User Apps</string>
     <string name="appmanager_section_disabled">Disabled Apps</string>
     <string name="appmanager_section_system">System Apps</string>
+    <string name="appmanager_continue_on_watch">Continue on your watch</string>
+
     <string name="appinfo_version">Version %s</string>
     <string name="appinfo_first_installed">First installed: %s</string>
     <string name="appinfo_last_updated">Last updated: %s</string>

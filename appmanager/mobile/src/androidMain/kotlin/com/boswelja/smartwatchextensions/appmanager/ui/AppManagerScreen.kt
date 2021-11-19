@@ -23,7 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.boswelja.smartwatchextensions.R
+import com.boswelja.smartwatchextensions.appmanager.R
 import com.boswelja.smartwatchextensions.appmanager.WatchAppDetails
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.getViewModel
@@ -67,7 +67,7 @@ fun AppManagerScreen(
                     coroutineScope.launch {
                         if (viewModel.sendOpenRequest(it)) {
                             onShowSnackbar(
-                                context.getString(R.string.watch_manager_action_continue_on_watch)
+                                context.getString(R.string.appmanager_continue_on_watch)
                             )
                         }
                     }
@@ -77,7 +77,7 @@ fun AppManagerScreen(
                         if (viewModel.sendUninstallRequest(it)) {
                             selectedApp = null
                             onShowSnackbar(
-                                context.getString(R.string.watch_manager_action_continue_on_watch)
+                                context.getString(R.string.appmanager_continue_on_watch)
                             )
                         }
                     }
