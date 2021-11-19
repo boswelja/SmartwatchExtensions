@@ -23,14 +23,15 @@ import com.boswelja.watchconnection.serialization.MessageHandler
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -51,11 +52,17 @@ class AppManagerViewModel(
     private val packageMessageHandler by lazy { MessageHandler(PackageNameSerializer, messageClient) }
 
     @OptIn(FlowPreview::class)
-    private val allApps = selectedWatchManager.selectedWatch.flatMapLatest { watch ->
-        watch?.let {
+    private val allApps = selectedWatchManager.selectedWatch
+        .filterNotNull()
+        .flatMapLatest { watch ->
             appRepository.getAppsFor(watch.uid)
-        } ?: flowOf(emptyList())
-    }.debounce(APP_DEBOUNCE_MILLIS)
+        }
+        .debounce(APP_DEBOUNCE_MILLIS)
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(FLOW_KEEP_ALIVE_TIME),
+            initialValue = emptyList()
+        )
 
     private val _isUpdatingCache = MutableStateFlow(false)
 
@@ -79,23 +86,41 @@ class AppManagerViewModel(
     /**
      * A [kotlinx.coroutines.flow.Flow] of user-installed apps on the currently selected watch.
      */
-    val userApps = allApps.map { apps ->
-        apps.filter { !it.isSystemApp && it.isEnabled }.sortedBy { it.label }
-    }
+    val userApps = allApps
+        .map { apps ->
+            apps.filter { !it.isSystemApp && it.isEnabled }.sortedBy { it.label }
+        }
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(FLOW_KEEP_ALIVE_TIME),
+            initialValue = emptyList()
+        )
 
     /**
      * A [kotlinx.coroutines.flow.Flow] of disabled apps on the currently selected watch.
      */
-    val disabledApps = allApps.map { apps ->
-        apps.filter { !it.isEnabled }.sortedBy { it.label }
-    }
+    val disabledApps = allApps
+        .map { apps ->
+            apps.filter { !it.isEnabled }.sortedBy { it.label }
+        }
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(FLOW_KEEP_ALIVE_TIME),
+            initialValue = emptyList()
+        )
 
     /**
      * A [kotlinx.coroutines.flow.Flow] of system apps on the currently selected watch.
      */
-    val systemApps = allApps.map { apps ->
-        apps.filter { it.isSystemApp && it.isEnabled }.sortedBy { it.label }
-    }
+    val systemApps = allApps
+        .map { apps ->
+            apps.filter { it.isSystemApp && it.isEnabled }.sortedBy { it.label }
+        }
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(FLOW_KEEP_ALIVE_TIME),
+            initialValue = emptyList()
+        )
 
     init {
         viewModelScope.launch {
@@ -114,6 +139,27 @@ class AppManagerViewModel(
                     }
                 }
             }
+        }
+    }
+
+    /**
+     * Requests cache validation for the selected watch.
+     */
+    private suspend fun validateCache() {
+        selectedWatchManager.selectedWatch.first()?.let { watch ->
+            // Get a list of packages we have for the given watch
+            val apps = appRepository.getAppVersionsFor(watch.uid)
+                .map { apps -> apps.map { it.packageName to it.updateTime } }
+                .first()
+            val cacheHash = CacheValidation.getHashCode(apps)
+            cacheMessageHandler.sendMessage(
+                watch.uid,
+                Message(
+                    VALIDATE_CACHE,
+                    cacheHash,
+                    Message.Priority.HIGH
+                )
+            )
         }
     }
 
@@ -155,27 +201,6 @@ class AppManagerViewModel(
     }
 
     /**
-     * Requests cache validation for the selected watch.
-     */
-    suspend fun validateCache() {
-        selectedWatchManager.selectedWatch.first()?.let { watch ->
-            // Get a list of packages we have for the given watch
-            val apps = appRepository.getAppVersionsFor(watch.uid)
-                .map { apps -> apps.map { it.packageName to it.updateTime } }
-                .first()
-            val cacheHash = CacheValidation.getHashCode(apps)
-            cacheMessageHandler.sendMessage(
-                watch.uid,
-                Message(
-                    VALIDATE_CACHE,
-                    cacheHash,
-                    Message.Priority.HIGH
-                )
-            )
-        }
-    }
-
-    /**
      * Get more app details for a given watch app.
      */
     suspend fun getDetailsFor(app: WatchApp): WatchAppDetails? {
@@ -189,5 +214,10 @@ class AppManagerViewModel(
          * Controls the debounce time for app list updates. See [debounce].
          */
         private const val APP_DEBOUNCE_MILLIS = 250L
+
+        /**
+         * Controls the amount of time to keep stateIn Flows alive for.
+         */
+        private const val FLOW_KEEP_ALIVE_TIME = 500L
     }
 }
