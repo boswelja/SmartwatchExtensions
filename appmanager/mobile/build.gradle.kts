@@ -15,6 +15,7 @@ kotlin {
                 implementation(libs.sqldelight.runtime)
                 implementation(libs.sqldelight.coroutines)
                 implementation(libs.koin.core)
+                implementation(libs.watchconnection.mobile.core)
             }
         }
         val commonTest by getting {
@@ -64,5 +65,26 @@ tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach 
 sqldelight {
     database("WatchAppDatabase") {
         packageName = "com.boswelja.smartwatchextensions.appmanager.database"
+    }
+}
+
+// Workaround for https://youtrack.jetbrains.com/issue/KT-38694
+configurations {
+    create("composeCompiler") {
+        isCanBeConsumed = false
+    }
+}
+dependencies {
+    "composeCompiler"("androidx.compose.compiler:compiler:${libs.versions.compose.get()}")
+}
+android {
+    afterEvaluate {
+        val composeCompilerJar = configurations["composeCompiler"]
+            .resolve()
+            .singleOrNull()
+            ?: error("Missing Compose compiler")
+        tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
+            kotlinOptions.freeCompilerArgs += listOf("-Xuse-ir", "-Xplugin=$composeCompilerJar")
+        }
     }
 }
