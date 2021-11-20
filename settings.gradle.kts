@@ -32,9 +32,6 @@ pluginManagement {
                 "com.squareup.wire" ->
                     useModule("com.squareup.wire:wire-gradle-plugin:${requested.version}")
             }
-            if (requested.id.id == "com.google.gms.google-services") {
-                useModule("com.google.gms:google-services:${requested.version}")
-            }
         }
     }
 }
