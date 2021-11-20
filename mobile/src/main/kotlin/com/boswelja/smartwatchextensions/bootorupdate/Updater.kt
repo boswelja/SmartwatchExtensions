@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.map
  * @param context [Context].
  */
 class Updater(private val context: Context) : Migrator(
-    currentVersion = 1,
+    currentVersion = 0,
     migrations = listOf()
 ) {
     override suspend fun onMigratedTo(version: Int) {

@@ -1,25 +1,14 @@
-buildscript {
-    val kotlinVersion = "1.5.31"
-
-    repositories {
-        google()
-        mavenCentral()
-        gradlePluginPortal()
-    }
-    dependencies {
-        classpath("com.android.tools.build:gradle:7.2.0-alpha05")
-        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion")
-        classpath("com.google.gms:google-services:4.3.10")
-        classpath("com.squareup.wire:wire-gradle-plugin:${libs.versions.wire.get()}")
-        classpath("com.squareup.sqldelight:gradle-plugin:${libs.versions.sqldelight.get()}")
-    }
-}
-
 plugins {
+    id("com.android.application") version "7.2.0-alpha05" apply false
+    id("com.android.library") version "7.2.0-alpha05" apply false
+    id("org.jetbrains.kotlin.android") version "1.5.31" apply false
+    id("com.squareup.sqldelight") version libs.versions.sqldelight.get() apply false
+    id("com.squareup.wire") version libs.versions.wire.get() apply false
+    id("com.google.gms.google-services") version "4.3.10" apply false
     id("io.gitlab.arturbosch.detekt") version "1.18.1"
 }
 
-allprojects {
+subprojects {
     apply(plugin = "io.gitlab.arturbosch.detekt")
     repositories {
         google()

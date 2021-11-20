@@ -21,6 +21,28 @@ pluginManagement {
     repositories {
         gradlePluginPortal()
         google()
+        mavenCentral()
+    }
+    resolutionStrategy {
+        eachPlugin {
+            when (requested.id.id) {
+                "com.google.gms.google-services" ->
+                    useModule("com.google.gms:google-services:${requested.version}")
+                // Wire can be removed with 4.0.0
+                "com.squareup.wire" ->
+                    useModule("com.squareup.wire:wire-gradle-plugin:${requested.version}")
+            }
+            if (requested.id.id == "com.google.gms.google-services") {
+                useModule("com.google.gms:google-services:${requested.version}")
+            }
+        }
+    }
+}
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        google()
+        mavenCentral()
     }
 }
 
