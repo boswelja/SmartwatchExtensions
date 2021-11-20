@@ -13,7 +13,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.boswelja.smartwatchextensions.appmanager.WatchApp
+import com.boswelja.smartwatchextensions.appmanager.WatchAppWithIcon
 import org.koin.androidx.compose.getViewModel
 
 /**
@@ -24,7 +24,7 @@ import org.koin.androidx.compose.getViewModel
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun AppListScreen(
-    onAppClicked: (WatchApp) -> Unit,
+    onAppClicked: (WatchAppWithIcon) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: AppManagerViewModel = getViewModel()
 ) {
