@@ -48,9 +48,9 @@ data class WatchApp(
 /**
  * A data class containing version info for an app on a device.
  * @param packageName The package name of the app.
- * @param updateTime The app last update time in milliseconds.
+ * @param versionCode The app version code.
  */
 data class WatchAppVersion(
     val packageName: String,
-    val updateTime: Long
+    val versionCode: Long
 )

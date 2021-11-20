@@ -36,25 +36,23 @@ class AppCacheUpdateWorker(
         requireNotNull(watchId)
 
         // Get cache hash
-        val cacheHash = calculateCacheHash(watchId)
+        val appVersions = getCachedVersions(watchId)
 
-        return if (sendCacheState(watchId, cacheHash)) {
+        return if (sendCacheState(watchId, appVersions)) {
             Result.success()
         } else {
             Result.retry()
         }
     }
 
-    private suspend fun calculateCacheHash(targetUid: String): Int {
-        val apps = appRepository.getAppVersionsFor(targetUid)
-            .map { apps ->
-                apps.map { it.packageName to it.updateTime }
-            }
+    private suspend fun getCachedVersions(targetUid: String): AppVersions {
+        val appVersions = appRepository.getAppVersionsFor(targetUid)
+            .map { apps -> apps.map { AppVersion(it.packageName, it.versionCode) } }
             .first()
-        return CacheValidation.getHashCode(apps)
+        return AppVersions(appVersions)
     }
 
-    private suspend fun sendCacheState(targetUid: String, cacheHash: Int): Boolean {
+    private suspend fun sendCacheState(targetUid: String, cacheHash: AppVersions): Boolean {
         val handler = MessageHandler(CacheValidationSerializer, messageClient)
         return handler.sendMessage(
             targetUid,

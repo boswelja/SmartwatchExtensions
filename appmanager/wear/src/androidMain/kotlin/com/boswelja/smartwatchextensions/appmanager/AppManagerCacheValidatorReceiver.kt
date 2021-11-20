@@ -1,6 +1,7 @@
 package com.boswelja.smartwatchextensions.appmanager
 
 import android.content.Context
+import androidx.core.content.pm.PackageInfoCompat
 import androidx.core.graphics.drawable.toBitmap
 import com.boswelja.watchconnection.common.message.Message
 import com.boswelja.watchconnection.common.message.ReceivedMessage
@@ -15,19 +16,25 @@ import org.koin.core.component.inject
  * A [MessageReceiver] for receiving app cache validation requests.
  */
 class AppManagerCacheValidatorReceiver :
-    MessageReceiver<Int>(CacheValidationSerializer),
+    MessageReceiver<AppVersions>(CacheValidationSerializer),
     KoinComponent {
 
     private val messageClient: MessageClient by inject()
 
-    override suspend fun onMessageReceived(context: Context, message: ReceivedMessage<Int>) {
+    override suspend fun onMessageReceived(
+        context: Context,
+        message: ReceivedMessage<AppVersions>
+    ) {
         // Get a list of apps installed on this device, and format for cache validation.
         val currentPackages = context.packageManager.getInstalledPackages(0)
-            .map { it.packageName to it.lastUpdateTime }
+            .map { AppVersion(it.packageName, PackageInfoCompat.getLongVersionCode(it)) }
 
         // Get the hash code for our local app list, and check against the remote cache
-        val currentHash = CacheValidation.getHashCode(currentPackages)
-        if (message.data != currentHash) {
+        val cacheValid = areVersionsEqual(
+            currentPackages,
+            message.data.versions
+        )
+        if (!cacheValid) {
             // Get all current packages
             val allApps = context.getAllApps()
             sendAllApps(message.sourceUid, allApps)
@@ -91,5 +98,13 @@ class AppManagerCacheValidatorReceiver :
                 )
             } catch (_: Exception) { }
         }
+    }
+
+    private fun areVersionsEqual(
+        localVersions: List<AppVersion>,
+        remoteVersions: List<AppVersion>
+    ): Boolean {
+        if (localVersions.count() != remoteVersions.count()) return false
+        return localVersions.containsAll(remoteVersions)
     }
 }
