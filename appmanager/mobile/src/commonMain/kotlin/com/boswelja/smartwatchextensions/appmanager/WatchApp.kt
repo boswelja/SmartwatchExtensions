@@ -4,7 +4,7 @@ package com.boswelja.smartwatchextensions.appmanager
  * A data class containing detailed info for an app on a device.
  * @param watchId The UID of the device the app is installed on.
  * @param packageName The package name of the app.
- * @param iconPath The path to the icon drawable, or null if the app has no icon.
+ * @param iconUri The path to the icon drawable, or null if the app has no icon.
  * @param label The app label.
  * @param versionName The app version name.
  * @param versionCode The app version code.
@@ -19,7 +19,7 @@ package com.boswelja.smartwatchextensions.appmanager
 data class WatchAppDetails(
     val watchId: String,
     val packageName: String,
-    val iconPath: String?,
+    val iconUri: String?,
     val label: String,
     val versionName: String,
     val versionCode: Long,
@@ -34,7 +34,7 @@ data class WatchAppDetails(
 /**
  * A data class containing basic info for an app on a device.
  * @param packageName The package name of the app.
- * @param iconPath The path to the icon drawable, or null if the app has no icon.
+ * @param iconUri The path to the icon drawable, or null if the app has no icon.
  * @param label The app label.
  * @param versionName The app version name.
  * @param isSystemApp Whether the app is a system app.
@@ -42,7 +42,7 @@ data class WatchAppDetails(
  */
 data class WatchApp(
     val packageName: String,
-    val iconPath: String?,
+    val iconUri: String?,
     val label: String,
     val versionName: String,
     val isSystemApp: Boolean,

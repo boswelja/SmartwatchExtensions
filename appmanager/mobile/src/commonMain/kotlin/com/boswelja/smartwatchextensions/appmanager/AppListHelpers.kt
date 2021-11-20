@@ -9,7 +9,7 @@ fun AppList.mapToWatchAppDetails(sourceUid: String): List<WatchAppDetails> {
         WatchAppDetails(
             watchId = sourceUid,
             packageName = it.packageName,
-            iconPath = null,
+            iconUri = null,
             label = it.label,
             versionName = it.version,
             versionCode = 0,
