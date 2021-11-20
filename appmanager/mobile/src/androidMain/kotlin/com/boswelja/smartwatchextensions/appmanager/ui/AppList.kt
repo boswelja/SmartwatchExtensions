@@ -1,20 +1,23 @@
 package com.boswelja.smartwatchextensions.appmanager.ui
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.ListItem
+import androidx.compose.material.Divider
+import androidx.compose.material.Icon
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.SyncProblem
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -22,7 +25,9 @@ import com.boswelja.smartwatchextensions.appmanager.R
 import com.boswelja.smartwatchextensions.appmanager.WatchApp
 import com.boswelja.smartwatchextensions.appmanager.ui.AppListDefaults.DefaultIcon
 import com.boswelja.smartwatchextensions.appmanager.ui.AppListDefaults.DefaultIconSize
+import com.boswelja.smartwatchextensions.appmanager.ui.AppListDefaults.DividerContentPadding
 import com.boswelja.smartwatchextensions.appmanager.ui.AppListDefaults.ItemContentPadding
+import com.boswelja.smartwatchextensions.appmanager.ui.AppListDefaults.ItemTextPadding
 import com.boswelja.smartwatchextensions.appmanager.ui.AppListDefaults.ListContentPadding
 
 /**
@@ -56,10 +61,11 @@ fun AppList(
                 Text(stringResource(R.string.appmanager_section_user))
             },
             noApps = {
-
+                Text(stringResource(R.string.appmanager_section_user_empty))
             },
             contentPadding = itemPadding
         )
+        dividerItem()
         appListItems(
             apps = disabledApps,
             onAppClick = onAppClick,
@@ -67,10 +73,11 @@ fun AppList(
                 Text(stringResource(R.string.appmanager_section_disabled))
             },
             noApps = {
-
+                Text(stringResource(R.string.appmanager_section_disabled_empty))
             },
             contentPadding = itemPadding
         )
+        dividerItem()
         appListItems(
             apps = systemApps,
             onAppClick = onAppClick,
@@ -78,7 +85,7 @@ fun AppList(
                 Text(stringResource(R.string.appmanager_section_system))
             },
             noApps = {
-
+                Text(stringResource(R.string.appmanager_section_system_empty))
             },
             contentPadding = itemPadding
         )
@@ -127,48 +134,96 @@ fun LazyListScope.appListItems(
 }
 
 /**
+ * Adds a divider to the lazy list.
+ * @param contentPadding The default padding to apply to the divider.
+ */
+fun LazyListScope.dividerItem(
+    contentPadding: PaddingValues = DividerContentPadding
+) {
+    item {
+        Divider(modifier = Modifier.padding(contentPadding))
+    }
+}
+
+/**
  * A Composable for displaying an app.
  * @param app The app to display.
  * @param onClick Called when the app is clicked.
  * @param modifier [Modifier].
  */
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun AppItem(
     app: WatchApp,
     onClick: (WatchApp) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    ListItem(
-        text = { Text(app.label) },
-        secondaryText = { Text(app.versionName) },
-        icon = {
-            Image(
-                DefaultIcon,
-                contentDescription = null,
-                Modifier.size(DefaultIconSize)
+    Row(
+        modifier = Modifier
+            .clickable(
+                onClickLabel = app.label
+            ) { onClick(app) }
+            .then(modifier)
+    ) {
+        Icon(
+            DefaultIcon,
+            contentDescription = null,
+            modifier = Modifier.size(DefaultIconSize)
+        )
+        Column(
+            modifier = Modifier
+                .padding(ItemTextPadding)
+                .weight(1f)
+                .align(Alignment.CenterVertically)
+        ) {
+            Text(
+                text = app.label,
+                style = MaterialTheme.typography.subtitle1
             )
-        },
-        modifier = modifier.clickable { onClick(app) }
-    )
+            Text(
+                text = app.versionName,
+                style = MaterialTheme.typography.caption
+            )
+        }
+    }
 }
 
 /**
  * Contains default values used by [AppList].
  */
 object AppListDefaults {
-    private val ListContentHorizontalPadding = 16.dp
-    private val ListContentVerticalPadding = 16.dp
+    private val ListContentHorizontalPadding = 0.dp
+    private val ListContentVerticalPadding = 0.dp
+
+    private val ListItemHorizontalPadding = 16.dp
+    private val ListItemVerticalPadding = 16.dp
+
+    private val DividerVerticalPadding = 8.dp
 
     /**
      * The default padding values used by [AppList].
      */
-    val ListContentPadding = PaddingValues(vertical = ListContentVerticalPadding)
+    val ListContentPadding = PaddingValues(
+        horizontal = ListContentHorizontalPadding,
+        vertical = ListContentVerticalPadding
+    )
 
     /**
      * The default padding values used by [AppItem].
      */
-    val ItemContentPadding = PaddingValues(horizontal = ListContentHorizontalPadding)
+    val ItemContentPadding = PaddingValues(
+        horizontal = ListItemHorizontalPadding,
+        vertical = ListItemVerticalPadding
+    )
+
+    /**
+     * The default padding values for [AppItem] text.
+     */
+    val ItemTextPadding = PaddingValues(start = ListItemHorizontalPadding)
+
+    /**
+     * The default padding values used by Divider.
+     */
+    val DividerContentPadding = PaddingValues(vertical = DividerVerticalPadding)
 
     /**
      * The default app icon size for [AppInfo].
