@@ -16,5 +16,5 @@ val appManagerModule = module {
     single<WatchAppIconRepository> { WatchAppIconFsRepository(get<Context>().filesDir) }
 
     viewModel { AppManagerViewModel(get(), get(), get(), get(), get()) }
-    viewModel { AppInfoViewModel(get(), get(), get()) }
+    viewModel { AppInfoViewModel(get(), get(), get(), get()) }
 }

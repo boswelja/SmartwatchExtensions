@@ -32,7 +32,22 @@ data class WatchAppDetailsWithIcon(
     val installTime: Long,
     val updateTime: Long,
     val permissions: List<String>
-)
+) {
+    constructor(details: WatchAppDetails, icon: Bitmap?) : this(
+        watchId = details.watchId,
+        packageName = details.packageName,
+        icon = icon,
+        label =  details.label,
+        versionName = details.versionName,
+        versionCode = details.versionCode,
+        isSystemApp = details.isSystemApp,
+        isLaunchable = details.isLaunchable,
+        isEnabled = details.isEnabled,
+        installTime = details.installTime,
+        updateTime = details.updateTime,
+        permissions = details.permissions
+    )
+}
 
 /**
  * A data class containing basic info for an app on a device.

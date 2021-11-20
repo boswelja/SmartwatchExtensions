@@ -10,7 +10,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import com.boswelja.smartwatchextensions.appmanager.R
-import com.boswelja.smartwatchextensions.appmanager.WatchAppDetails
+import com.boswelja.smartwatchextensions.appmanager.WatchAppDetailsWithIcon
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.getViewModel
 
@@ -30,7 +30,7 @@ fun AppInfoScreen(
     val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
 
-    var appDetails: WatchAppDetails?  by remember { mutableStateOf(null) }
+    var appDetails: WatchAppDetailsWithIcon?  by remember { mutableStateOf(null) }
     LaunchedEffect(packageName) {
         appDetails = viewModel.getDetailsFor(packageName)
     }
