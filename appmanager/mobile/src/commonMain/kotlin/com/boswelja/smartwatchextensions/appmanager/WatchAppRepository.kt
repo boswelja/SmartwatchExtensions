@@ -8,14 +8,6 @@ import kotlinx.coroutines.flow.Flow
 interface WatchAppRepository {
 
     /**
-     * Update the icon Uri for a given package on a given watch.
-     * @param watchId The UID of the watch that owns the package.
-     * @param packageName The package name of the app.
-     * @param iconUri The new icon Uri.
-     */
-    suspend fun setIconFor(watchId: String, packageName: String, iconUri: String?)
-
-    /**
      * Store a list of [WatchAppDetails] in the repository. Existing packages will be replaced.
      * @param apps The [List] of [WatchAppDetails].
      */

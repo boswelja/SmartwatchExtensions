@@ -102,7 +102,7 @@ class WatchAppDbRepositoryTest {
     fun getDetailsForUpdatesWithSource() = runSuspendingTest {
         val initialAppDetails = WatchAppDetails(
             watchId = watchIds.first(),
-            iconUri = null,
+            iconPath = null,
             installTime = 0,
             updateTime = 0,
             isEnabled = true,
@@ -194,7 +194,7 @@ class WatchAppDbRepositoryTest {
                 allList.add(
                     WatchAppDetails(
                         watchId = watchId,
-                        iconUri = null,
+                        iconPath = null,
                         installTime = 0,
                         updateTime = 0,
                         isEnabled = true,
