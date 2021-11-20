@@ -18,6 +18,17 @@ class WatchAppDbRepository(
     private val database: WatchAppDatabase,
     private val dispatcher: CoroutineContext
 ) : WatchAppRepository {
+
+    override suspend fun setIconFor(watchId: String, packageName: String, iconUri: String?) {
+        withContext(dispatcher) {
+            database.watchAppQueries.setIconFor(
+                icon_uri = iconUri,
+                watch_id = watchId,
+                package_name = packageName
+            )
+        }
+    }
+
     override suspend fun updateAll(apps: List<WatchAppDetails>) {
         withContext(dispatcher) {
             database.watchAppQueries.transaction {
@@ -26,7 +37,7 @@ class WatchAppDbRepository(
                         WatchAppDb(
                             app.watchId,
                             app.packageName,
-                            app.iconPath,
+                            app.iconUri,
                             app.label,
                             app.versionName,
                             app.versionCode,
@@ -73,7 +84,7 @@ class WatchAppDbRepository(
                 WatchAppDetails(
                     watchId = watch_id,
                     packageName = package_name,
-                    iconPath = icon_path,
+                    iconUri = icon_path,
                     label = label,
                     versionName = version_name,
                     versionCode = version_code,
