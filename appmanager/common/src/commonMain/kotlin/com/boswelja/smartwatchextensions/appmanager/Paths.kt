@@ -26,6 +26,11 @@ const val APP_SENDING_COMPLETE = "/app_manager_sending_complete"
 const val APP_LIST = "/app_manager_all_apps"
 
 /**
+ * A message containing an app icon.
+ */
+const val APP_ICON = "/appmanager_app_icon"
+
+/**
  * Requests cache validation. A hash code obtained from [CacheValidation.getHashCode] should be
  * sent alongside this.
  */

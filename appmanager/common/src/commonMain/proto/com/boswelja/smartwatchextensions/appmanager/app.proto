@@ -18,3 +18,9 @@ message App {
 message AppList {
   repeated App apps = 1;
 }
+
+/* Contains an icon for a given package */
+message AppIcon {
+  string packageName = 1; // The app package name
+  bytes iconBytes = 2; // The serialized icon bytes
+}
