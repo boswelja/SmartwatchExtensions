@@ -6,6 +6,7 @@ import android.content.pm.ApplicationInfo
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.net.Uri
+import androidx.core.content.pm.PackageInfoCompat
 
 /**
  * Gets a launch intent for a given package and try start a new activity for it.
@@ -37,7 +38,8 @@ fun Context.requestUninstallPackage(packageName: String) {
 fun Context.getAllApps(): List<App> {
     return packageManager.getInstalledPackages(PackageManager.GET_PERMISSIONS).map {
         App(
-            version = it.versionName,
+            versionName = it.versionName,
+            versionCode = PackageInfoCompat.getLongVersionCode(it),
             packageName = it.packageName,
             label = it.applicationInfo.loadLabel(packageManager).toString(),
             isSystemApp = it.applicationInfo.flags.and(

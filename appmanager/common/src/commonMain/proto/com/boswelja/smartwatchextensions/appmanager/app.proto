@@ -3,15 +3,16 @@ package com.boswelja.smartwatchextensions.appmanager;
 
 /* Contains information about a package installed on the device. */
 message App {
-  string version = 1; // The package version
-  string packageName = 2; // The package name
-  string label = 3; // The application label
-  bool isSystemApp = 4; // Whether this package is a system app
-  bool hasLaunchActivity = 5; // Whether this application has a launch activity
-  bool isEnabled = 6; // Whether this package is enabled
-  int64 installTime = 7; // The install time of this package in milliseconds since UNIX epoch
-  int64 lastUpdateTime = 8; // The last update time of this package in milliseconds since UNIX epoch
-  repeated string requestedPermissions = 9; // The permissions requested by this package
+  string versionName = 1; // The package version name
+  int64 versionCode = 2; // The package version code
+  string packageName = 3; // The package name
+  string label = 4; // The application label
+  bool isSystemApp = 5; // Whether this package is a system app
+  bool hasLaunchActivity = 6; // Whether this application has a launch activity
+  bool isEnabled = 7; // Whether this package is enabled
+  int64 installTime = 8; // The install time of this package in milliseconds since UNIX epoch
+  int64 lastUpdateTime = 9; // The last update time of this package in milliseconds since UNIX epoch
+  repeated string requestedPermissions = 10; // The permissions requested by this package
 }
 
 /* Contains a list of App messages */
