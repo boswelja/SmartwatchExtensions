@@ -1,5 +1,6 @@
 package com.boswelja.smartwatchextensions.appmanager.ui
 
+import android.graphics.BitmapFactory
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.boswelja.smartwatchextensions.appmanager.APP_SENDING_COMPLETE
@@ -7,7 +8,9 @@ import com.boswelja.smartwatchextensions.appmanager.APP_SENDING_START
 import com.boswelja.smartwatchextensions.appmanager.CacheValidation
 import com.boswelja.smartwatchextensions.appmanager.CacheValidationSerializer
 import com.boswelja.smartwatchextensions.appmanager.VALIDATE_CACHE
+import com.boswelja.smartwatchextensions.appmanager.WatchAppIconRepository
 import com.boswelja.smartwatchextensions.appmanager.WatchAppRepository
+import com.boswelja.smartwatchextensions.appmanager.WatchAppWithIcon
 import com.boswelja.smartwatchextensions.devicemanagement.SelectedWatchManager
 import com.boswelja.watchconnection.common.discovery.ConnectionMode
 import com.boswelja.watchconnection.common.message.Message
@@ -36,7 +39,8 @@ class AppManagerViewModel(
     private val appRepository: WatchAppRepository,
     private val messageClient: MessageClient,
     private val discoveryClient: DiscoveryClient,
-    private val selectedWatchManager: SelectedWatchManager
+    private val selectedWatchManager: SelectedWatchManager,
+    private val appIconRepository: WatchAppIconRepository
 ) : ViewModel() {
 
     private val cacheMessageHandler by lazy { MessageHandler(CacheValidationSerializer, messageClient) }
@@ -46,6 +50,20 @@ class AppManagerViewModel(
         .filterNotNull()
         .flatMapLatest { watch ->
             appRepository.getAppsFor(watch.uid)
+                .map { apps ->
+                    apps.map { app ->
+                        val icon = appIconRepository.retrieveIconFor(
+                            watch.uid,
+                            app.packageName
+                        )?.let {
+                            BitmapFactory.decodeByteArray(it, 0, it.size)
+                        }
+                        WatchAppWithIcon(
+                            app,
+                            icon
+                        )
+                    }
+                }
         }
         .debounce(APP_DEBOUNCE_MILLIS)
         .stateIn(

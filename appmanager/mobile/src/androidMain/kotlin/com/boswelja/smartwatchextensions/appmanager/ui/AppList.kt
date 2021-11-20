@@ -1,5 +1,6 @@
 package com.boswelja.smartwatchextensions.appmanager.ui
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -19,10 +20,11 @@ import androidx.compose.material.icons.filled.SyncProblem
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.boswelja.smartwatchextensions.appmanager.R
-import com.boswelja.smartwatchextensions.appmanager.WatchApp
+import com.boswelja.smartwatchextensions.appmanager.WatchAppWithIcon
 import com.boswelja.smartwatchextensions.appmanager.ui.AppListDefaults.DefaultIcon
 import com.boswelja.smartwatchextensions.appmanager.ui.AppListDefaults.DefaultIconSize
 import com.boswelja.smartwatchextensions.appmanager.ui.AppListDefaults.DividerContentPadding
@@ -42,10 +44,10 @@ import com.boswelja.smartwatchextensions.appmanager.ui.AppListDefaults.ListConte
  */
 @Composable
 fun AppList(
-    userApps: List<WatchApp>,
-    disabledApps: List<WatchApp>,
-    systemApps: List<WatchApp>,
-    onAppClick: (WatchApp) -> Unit,
+    userApps: List<WatchAppWithIcon>,
+    disabledApps: List<WatchAppWithIcon>,
+    systemApps: List<WatchAppWithIcon>,
+    onAppClick: (WatchAppWithIcon) -> Unit,
     modifier: Modifier = Modifier,
     listPadding: PaddingValues = ListContentPadding,
     itemPadding: PaddingValues = ItemContentPadding
@@ -101,8 +103,8 @@ fun AppList(
  * @param contentPadding The padding values to apply to items.
  */
 fun LazyListScope.appListItems(
-    apps: List<WatchApp>,
-    onAppClick: (WatchApp) -> Unit,
+    apps: List<WatchAppWithIcon>,
+    onAppClick: (WatchAppWithIcon) -> Unit,
     header: @Composable () -> Unit,
     noApps: @Composable () -> Unit,
     contentPadding: PaddingValues = ItemContentPadding
@@ -153,8 +155,8 @@ fun LazyListScope.dividerItem(
  */
 @Composable
 fun AppItem(
-    app: WatchApp,
-    onClick: (WatchApp) -> Unit,
+    app: WatchAppWithIcon,
+    onClick: (WatchAppWithIcon) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Row(
@@ -164,11 +166,20 @@ fun AppItem(
             ) { onClick(app) }
             .then(modifier)
     ) {
-        Icon(
-            DefaultIcon,
-            contentDescription = null,
-            modifier = Modifier.size(DefaultIconSize)
-        )
+        val iconModifier = Modifier.size(DefaultIconSize)
+        if (app.icon == null) {
+            Icon(
+                DefaultIcon,
+                contentDescription = null,
+                modifier = iconModifier
+            )
+        } else {
+            Image(
+                bitmap = app.icon.asImageBitmap(),
+                contentDescription = null,
+                modifier = iconModifier
+            )
+        }
         Column(
             modifier = Modifier
                 .padding(ItemTextPadding)
