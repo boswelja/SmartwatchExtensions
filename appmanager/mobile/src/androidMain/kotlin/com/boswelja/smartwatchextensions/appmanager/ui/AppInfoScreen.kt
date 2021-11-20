@@ -24,11 +24,11 @@ import org.koin.androidx.compose.getViewModel
 fun AppInfoScreen(
     packageName: String,
     onShowSnackbar: suspend (String) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    viewModel: AppInfoViewModel = getViewModel()
 ) {
     val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
-    val viewModel: AppInfoViewModel = getViewModel()
 
     var appDetails: WatchAppDetails?  by remember { mutableStateOf(null) }
     LaunchedEffect(packageName) {
