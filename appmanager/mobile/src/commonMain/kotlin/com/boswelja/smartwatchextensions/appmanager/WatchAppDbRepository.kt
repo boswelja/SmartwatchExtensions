@@ -95,8 +95,8 @@ class WatchAppDbRepository(
 
     override fun getAppVersionsFor(watchId: String): Flow<List<WatchAppVersion>> =
         database.watchAppQueries
-            .getVersionsFor(watchId) { package_name, update_time ->
-                WatchAppVersion(package_name, update_time)
+            .getVersionsFor(watchId) { package_name, version_code ->
+                WatchAppVersion(package_name, version_code)
             }
             .asFlow()
             .mapToList()

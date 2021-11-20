@@ -29,7 +29,7 @@ WHERE watch_id = ? AND package_name = ?
 LIMIT 1;
 
 getVersionsFor:
-SELECT package_name, update_time FROM watchAppDb
+SELECT package_name, version_code FROM watchAppDb
 WHERE watch_id = ?;
 
 removeFor:

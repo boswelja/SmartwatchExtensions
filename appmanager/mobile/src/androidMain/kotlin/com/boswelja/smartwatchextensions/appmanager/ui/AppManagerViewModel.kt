@@ -5,7 +5,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.boswelja.smartwatchextensions.appmanager.APP_SENDING_COMPLETE
 import com.boswelja.smartwatchextensions.appmanager.APP_SENDING_START
-import com.boswelja.smartwatchextensions.appmanager.CacheValidation
+import com.boswelja.smartwatchextensions.appmanager.AppVersion
+import com.boswelja.smartwatchextensions.appmanager.AppVersions
 import com.boswelja.smartwatchextensions.appmanager.CacheValidationSerializer
 import com.boswelja.smartwatchextensions.appmanager.VALIDATE_CACHE
 import com.boswelja.smartwatchextensions.appmanager.WatchAppIconRepository
@@ -156,15 +157,14 @@ class AppManagerViewModel(
     private suspend fun validateCache() {
         selectedWatchManager.selectedWatch.first()?.let { watch ->
             // Get a list of packages we have for the given watch
-            val apps = appRepository.getAppVersionsFor(watch.uid)
-                .map { apps -> apps.map { it.packageName to it.updateTime } }
+            val appVersionList = appRepository.getAppVersionsFor(watch.uid)
+                .map { apps -> apps.map { AppVersion(it.packageName, it.versionCode) } }
                 .first()
-            val cacheHash = CacheValidation.getHashCode(apps)
             cacheMessageHandler.sendMessage(
                 watch.uid,
                 Message(
                     VALIDATE_CACHE,
-                    cacheHash,
+                    AppVersions(appVersionList),
                     Message.Priority.HIGH
                 )
             )

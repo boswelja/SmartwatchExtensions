@@ -31,7 +31,6 @@ const val APP_LIST = "/app_manager_all_apps"
 const val APP_ICON = "/appmanager_app_icon"
 
 /**
- * Requests cache validation. A hash code obtained from [CacheValidation.getHashCode] should be
- * sent alongside this.
+ * Requests app cache validation.
  */
-const val VALIDATE_CACHE = "/app_manager_cache_check"
+const val VALIDATE_CACHE = "/appmanager_cache_check"
