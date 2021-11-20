@@ -24,11 +24,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.boswelja.smartwatchextensions.appmanager.R
-import com.boswelja.smartwatchextensions.appmanager.WatchAppDetails
+import com.boswelja.smartwatchextensions.appmanager.WatchAppDetailsWithIcon
 import java.text.SimpleDateFormat
 import java.util.Locale
 
@@ -37,9 +38,9 @@ import java.util.Locale
  */
 @Composable
 fun AppInfo(
-    app: WatchAppDetails,
-    onOpenClicked: (WatchAppDetails) -> Unit,
-    onUninstallClicked: (WatchAppDetails) -> Unit,
+    app: WatchAppDetailsWithIcon,
+    onOpenClicked: (WatchAppDetailsWithIcon) -> Unit,
+    onUninstallClicked: (WatchAppDetailsWithIcon) -> Unit,
     modifier: Modifier = Modifier,
     interactionEnabled: Boolean = true
 ) {
@@ -50,7 +51,7 @@ fun AppInfo(
     ) {
         AppHeaderView(
             modifier = Modifier.fillMaxWidth(),
-            appIcon = null,
+            appIcon = app.icon?.asImageBitmap(),
             appName = app.label
         )
         AppActionButtons(
@@ -178,7 +179,7 @@ fun PermissionsInfo(
 @Composable
 fun AppInstallInfo(
     modifier: Modifier = Modifier,
-    app: WatchAppDetails
+    app: WatchAppDetailsWithIcon
 ) {
     val dateFormatter = remember {
         SimpleDateFormat("dd MMM yyyy, h:mm aa", Locale.getDefault())

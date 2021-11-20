@@ -1,10 +1,13 @@
 package com.boswelja.smartwatchextensions.appmanager.ui
 
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import androidx.lifecycle.ViewModel
 import com.boswelja.smartwatchextensions.appmanager.PackageNameSerializer
 import com.boswelja.smartwatchextensions.appmanager.REQUEST_OPEN_PACKAGE
 import com.boswelja.smartwatchextensions.appmanager.REQUEST_UNINSTALL_PACKAGE
-import com.boswelja.smartwatchextensions.appmanager.WatchAppDetails
+import com.boswelja.smartwatchextensions.appmanager.WatchAppDetailsWithIcon
+import com.boswelja.smartwatchextensions.appmanager.WatchAppIconRepository
 import com.boswelja.smartwatchextensions.appmanager.WatchAppRepository
 import com.boswelja.smartwatchextensions.devicemanagement.SelectedWatchManager
 import com.boswelja.watchconnection.common.message.Message
@@ -18,17 +21,18 @@ import kotlinx.coroutines.flow.first
 class AppInfoViewModel(
     private val appRepository: WatchAppRepository,
     private val messageClient: MessageClient,
-    private val selectedWatchManager: SelectedWatchManager
+    private val selectedWatchManager: SelectedWatchManager,
+    private val appIconRepository: WatchAppIconRepository
 ) : ViewModel() {
 
     private val packageMessageHandler by lazy { MessageHandler(PackageNameSerializer, messageClient) }
 
     /**
-     * Requests the selected watch launch a given [WatchAppDetails].
-     * @param app The [WatchAppDetails] to try launch.
+     * Requests the selected watch launch a given [WatchAppDetailsWithIcon].
+     * @param app The [WatchAppDetailsWithIcon] to try launch.
      * @return true if the request was sent successfully, false otherwise.
      */
-    suspend fun sendOpenRequest(app: WatchAppDetails): Boolean {
+    suspend fun sendOpenRequest(app: WatchAppDetailsWithIcon): Boolean {
         return selectedWatchManager.selectedWatch.first()?.let { watch ->
             packageMessageHandler.sendMessage(
                 watch.uid,
@@ -42,11 +46,11 @@ class AppInfoViewModel(
     }
 
     /**
-     * Requests the selected watch uninstall a given [WatchAppDetails].
-     * @param app The [WatchAppDetails] to try uninstall.
+     * Requests the selected watch uninstall a given [WatchAppDetailsWithIcon].
+     * @param app The [WatchAppDetailsWithIcon] to try uninstall.
      * @return true if the request was sent successfully, false otherwise.
      */
-    suspend fun sendUninstallRequest(app: WatchAppDetails): Boolean {
+    suspend fun sendUninstallRequest(app: WatchAppDetailsWithIcon): Boolean {
         return selectedWatchManager.selectedWatch.first()?.let { watch ->
             appRepository.delete(app.watchId, app.packageName)
             packageMessageHandler.sendMessage(
@@ -63,9 +67,19 @@ class AppInfoViewModel(
     /**
      * Get more app details for a given watch app.
      */
-    suspend fun getDetailsFor(packageName: String): WatchAppDetails? {
+    suspend fun getDetailsFor(packageName: String): WatchAppDetailsWithIcon? {
         return selectedWatchManager.selectedWatch.first()?.let {
-            appRepository.getDetailsFor(it.uid, packageName).first()
+            val details = appRepository.getDetailsFor(it.uid, packageName).first()
+            WatchAppDetailsWithIcon(details, loadIconOrNull(it.uid, details.packageName))
+        }
+    }
+
+    /**
+     * Load the icon for the given package, or null if no icon is available.
+     */
+    private suspend fun loadIconOrNull(watchId: String, packageName: String): Bitmap? {
+        return appIconRepository.retrieveIconFor(watchId, packageName)?.let { bytes ->
+            BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
         }
     }
 }
