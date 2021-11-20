@@ -1,12 +1,13 @@
 package com.boswelja.smartwatchextensions.appmanager
 
 import android.content.Context
+import androidx.core.graphics.drawable.toBitmap
 import com.boswelja.watchconnection.common.message.Message
 import com.boswelja.watchconnection.common.message.ReceivedMessage
 import com.boswelja.watchconnection.serialization.MessageHandler
 import com.boswelja.watchconnection.serialization.MessageReceiver
-import com.boswelja.watchconnection.wear.discovery.DiscoveryClient
 import com.boswelja.watchconnection.wear.message.MessageClient
+import okio.ByteString.Companion.toByteString
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
@@ -18,7 +19,6 @@ class AppManagerCacheValidatorReceiver :
     KoinComponent {
 
     private val messageClient: MessageClient by inject()
-    private val discoveryClient: DiscoveryClient by inject()
 
     override suspend fun onMessageReceived(context: Context, message: ReceivedMessage<Int>) {
         // Get a list of apps installed on this device, and format for cache validation.
@@ -28,32 +28,32 @@ class AppManagerCacheValidatorReceiver :
         // Get the hash code for our local app list, and check against the remote cache
         val currentHash = CacheValidation.getHashCode(currentPackages)
         if (message.data != currentHash) {
-            sendAllApps(context)
+            // Get all current packages
+            val allApps = context.getAllApps()
+            sendAllApps(message.sourceUid, allApps)
+            sendAllIcons(context, message.sourceUid, allApps)
         }
     }
 
     /**
      * Send all apps installed to the companion phone with a given ID.
-     * @param context [Context].
+     * @param allApps The list of apps to send.
      */
     private suspend fun sendAllApps(
-        context: Context
+        targetUid: String,
+        allApps: List<App>
     ) {
-        val pairedPhone = discoveryClient.pairedPhone()!!
-
         val messageHandler = MessageHandler(AppListSerializer, messageClient)
-        // Get all current packages
-        val allApps = context.getAllApps()
 
         // Let the phone know what we're doing
         messageClient.sendMessage(
-            pairedPhone.uid,
+            targetUid,
             Message(APP_SENDING_START, null)
         )
 
         // Send all apps
         messageHandler.sendMessage(
-            pairedPhone.uid,
+            targetUid,
             Message(
                 APP_LIST,
                 AppList(allApps)
@@ -62,9 +62,34 @@ class AppManagerCacheValidatorReceiver :
 
         // Send a message notifying the phone of a successful operation
         messageClient.sendMessage(
-            pairedPhone.uid,
+            targetUid,
             Message(APP_SENDING_COMPLETE, null)
         )
     }
 
+    private suspend fun sendAllIcons(
+        context: Context,
+        targetUid: String,
+        allApps: List<App>
+    ) {
+        val messageHandler = MessageHandler(AppIconSerializer, messageClient)
+        allApps.forEach { app ->
+            try {
+                // Load icon
+                val drawable = context.packageManager.getApplicationIcon(app.packageName)
+                val bitmap = drawable.toBitmap()
+                val bytes = bitmap.toByteArray()
+                messageHandler.sendMessage(
+                    targetUid,
+                    Message(
+                        APP_ICON,
+                        AppIcon(
+                            app.packageName,
+                            bytes.toByteString()
+                        )
+                    )
+                )
+            } catch (_: Exception) { }
+        }
+    }
 }

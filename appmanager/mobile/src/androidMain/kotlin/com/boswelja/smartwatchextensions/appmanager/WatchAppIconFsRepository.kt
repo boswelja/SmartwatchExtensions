@@ -1,5 +1,7 @@
 package com.boswelja.smartwatchextensions.appmanager
 
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.io.File
 
 /**
@@ -9,9 +11,13 @@ class WatchAppIconFsRepository(
     private val rootFolder: File
 ): WatchAppIconRepository {
 
+    @Suppress("BlockingMethodInNonBlockingContext")
     override suspend fun storeIconFor(watchId: String, packageName: String, iconBytes: ByteArray) {
-        val targetFile = getTargetFile(watchId, packageName)
-        targetFile.writeBytes(iconBytes)
+        withContext(Dispatchers.IO) {
+            val targetFile = getTargetFile(watchId, packageName)
+            targetFile.createNewFile()
+            targetFile.writeBytes(iconBytes)
+        }
     }
 
     override suspend fun removeIconFor(watchId: String, packageName: String): Boolean {
@@ -29,6 +35,8 @@ class WatchAppIconFsRepository(
     }
 
     private fun getTargetFile(watchId: String, packageName: String): File {
-        return File(rootFolder, "$watchId/$packageName")
+        val folder = File(rootFolder, watchId)
+        folder.mkdirs()
+        return File(folder, packageName)
     }
 }
