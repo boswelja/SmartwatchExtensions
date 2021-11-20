@@ -51,7 +51,8 @@ fun NavGraphBuilder.dashboardGraph(
     appManagerNavigation(
         DashboardDestination.APP_MANAGER.route,
         onShowSnackbar = onShowSnackbar,
-        onNavigate = { navController.navigate(it) }
+        onNavigate = { navController.navigate(it) },
+        screenModifier = modifier
     )
     composable(DashboardDestination.BATTERY_SYNC_SETTINGS.route) {
         BatterySyncSettingsScreen(
