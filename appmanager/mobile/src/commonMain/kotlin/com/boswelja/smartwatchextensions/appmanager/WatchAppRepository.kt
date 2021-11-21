@@ -27,6 +27,13 @@ interface WatchAppRepository {
     suspend fun delete(watchId: String, packageName: String)
 
     /**
+     * Delete a list of package names for the device with the given UID.
+     * @param watchId The target UID to delete packages for.
+     * @param packages The list of package names to remove.
+     */
+    suspend fun delete(watchId: String, packages: List<String>)
+
+    /**
      * Flow a [WatchAppDetails] for a package on a given device.
      * @param watchId The target UID the package belongs to.
      * @param packageName The app package name to get details for.

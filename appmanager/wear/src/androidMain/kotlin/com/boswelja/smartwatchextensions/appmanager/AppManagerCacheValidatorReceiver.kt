@@ -1,6 +1,8 @@
 package com.boswelja.smartwatchextensions.appmanager
 
 import android.content.Context
+import android.content.pm.PackageInfo
+import android.content.pm.PackageManager
 import androidx.core.content.pm.PackageInfoCompat
 import androidx.core.graphics.drawable.toBitmap
 import com.boswelja.watchconnection.common.message.Message
@@ -26,46 +28,75 @@ class AppManagerCacheValidatorReceiver :
         message: ReceivedMessage<AppVersions>
     ) {
         // Get a list of apps installed on this device, and format for cache validation.
-        val currentPackages = context.packageManager.getInstalledPackages(0)
-            .map { AppVersion(it.packageName, PackageInfoCompat.getLongVersionCode(it)) }
+        val currentPackages = context.packageManager
+            .getInstalledPackages(PackageManager.GET_PERMISSIONS)
 
-        // Get the hash code for our local app list, and check against the remote cache
-        val cacheValid = areVersionsEqual(
-            currentPackages,
-            message.data.versions
+        val addedApps = getAddedPackages(context, currentPackages, message.data.versions)
+        val updatedApps = getUpdatedPackages(context, currentPackages, message.data.versions)
+        val removedApps = getRemovedPackages(currentPackages, message.data.versions)
+        sendAppChanges(
+            message.sourceUid,
+            addedApps,
+            updatedApps,
+            removedApps
         )
-        if (!cacheValid) {
-            // Get all current packages
-            val allApps = context.getAllApps()
-            sendAllApps(message.sourceUid, allApps)
-            sendAllIcons(context, message.sourceUid, allApps)
-        }
+        sendAllIcons(
+            context,
+            message.sourceUid,
+            addedApps.apps + updatedApps.apps
+        )
     }
 
     /**
      * Send all apps installed to the companion phone with a given ID.
-     * @param allApps The list of apps to send.
      */
-    private suspend fun sendAllApps(
+    private suspend fun sendAppChanges(
         targetUid: String,
-        allApps: List<App>
+        addedApps: AppList,
+        updatedApps: AppList,
+        removedApps: RemovedApps
     ) {
-        val messageHandler = MessageHandler(AppListSerializer, messageClient)
-
         // Let the phone know what we're doing
         messageClient.sendMessage(
             targetUid,
             Message(APP_SENDING_START, null)
         )
 
-        // Send all apps
-        messageHandler.sendMessage(
-            targetUid,
-            Message(
-                APP_LIST,
-                AppList(allApps)
+        val hasAddedApps = addedApps.isNotEmpty()
+        val hasUpdatedApps = updatedApps.isNotEmpty()
+        val hasRemovedApps = removedApps.isNotEmpty()
+
+        if (hasAddedApps || hasUpdatedApps) {
+            val addedOrUpdatedMessageHandler = MessageHandler(AddedOrUpdatedAppsSerializer, messageClient)
+            if (hasAddedApps) {
+                addedOrUpdatedMessageHandler.sendMessage(
+                    targetUid,
+                    Message(
+                        ADDED_APPS,
+                        addedApps
+                    )
+                )
+            }
+            if (hasUpdatedApps) {
+                addedOrUpdatedMessageHandler.sendMessage(
+                    targetUid,
+                    Message(
+                        UPDATED_APPS,
+                        updatedApps
+                    )
+                )
+            }
+        }
+        if (hasRemovedApps) {
+            val removedAppMessageHandler = MessageHandler(RemovedAppsSerializer, messageClient)
+            removedAppMessageHandler.sendMessage(
+                targetUid,
+                Message(
+                    REMOVED_APPS,
+                    removedApps
+                )
             )
-        )
+        }
 
         // Send a message notifying the phone of a successful operation
         messageClient.sendMessage(
@@ -100,11 +131,44 @@ class AppManagerCacheValidatorReceiver :
         }
     }
 
-    private fun areVersionsEqual(
-        localVersions: List<AppVersion>,
-        remoteVersions: List<AppVersion>
-    ): Boolean {
-        if (localVersions.count() != remoteVersions.count()) return false
-        return localVersions.containsAll(remoteVersions)
+    private fun getAddedPackages(
+        context: Context,
+        currentPackages: List<PackageInfo>,
+        cachedPackages: List<AppVersion>
+    ): AppList {
+        val addedApps = currentPackages
+            .filter { packageInfo ->
+                cachedPackages.none { packageInfo.packageName == it.packageName }
+            }
+            .map { it.toApp(context.packageManager) }
+        return AppList(addedApps)
+    }
+
+    private fun getUpdatedPackages(
+        context: Context,
+        currentPackages: List<PackageInfo>,
+        cachedPackages: List<AppVersion>
+    ): AppList {
+        val addedApps = currentPackages
+            .filter { packageInfo ->
+                val longVersionCode = PackageInfoCompat.getLongVersionCode(packageInfo)
+                cachedPackages.any {
+                    packageInfo.packageName == it.packageName && longVersionCode != it.versionCode
+                }
+            }
+            .map { it.toApp(context.packageManager) }
+        return AppList(addedApps)
+    }
+
+    private fun getRemovedPackages(
+        currentPackages: List<PackageInfo>,
+        cachedPackages: List<AppVersion>
+    ): RemovedApps {
+        val removedPackages = cachedPackages
+            .map { it.packageName }
+            .filter { cachedApp ->
+                currentPackages.none { cachedApp == it.packageName }
+            }
+        return RemovedApps(removedPackages)
     }
 }

@@ -4,13 +4,13 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFails
 
-class AppListSerializerTest {
+class AddedOrUpdatedAppsSerializerTest {
 
     @Test
     fun serializesCorrectly() = runSuspendingTest {
         val appList = createAppList(100)
-        val bytes = AppListSerializer.serialize(appList)
-        val deserializedList = AppListSerializer.deserialize(bytes)
+        val bytes = AddedOrUpdatedAppsSerializer.serialize(appList)
+        val deserializedList = AddedOrUpdatedAppsSerializer.deserialize(bytes)
         assertEquals(appList, deserializedList)
     }
 
@@ -18,7 +18,7 @@ class AppListSerializerTest {
     fun throwsWhenBytesInvalid() = runSuspendingTest {
         val bytes = byteArrayOf(1)
         assertFails {
-            AppListSerializer.deserialize(bytes)
+            AddedOrUpdatedAppsSerializer.deserialize(bytes)
         }
     }
 

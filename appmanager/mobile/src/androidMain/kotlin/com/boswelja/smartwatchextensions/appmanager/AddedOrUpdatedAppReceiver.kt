@@ -9,7 +9,7 @@ import org.koin.core.component.inject
 /**
  * A [MessageReceiver] for receiving [AppList] changes and updating the repository.
  */
-class WatchAppReceiver : MessageReceiver<AppList>(AppListSerializer), KoinComponent {
+class AddedOrUpdatedAppReceiver : MessageReceiver<AppList>(AddedOrUpdatedAppsSerializer), KoinComponent {
 
     private val repository: WatchAppRepository by inject()
 

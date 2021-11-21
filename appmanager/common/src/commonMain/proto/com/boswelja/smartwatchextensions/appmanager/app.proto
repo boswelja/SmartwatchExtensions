@@ -25,3 +25,8 @@ message AppIcon {
   string packageName = 1; // The app package name
   bytes iconBytes = 2; // The serialized icon bytes
 }
+
+/* Contains a list of apps that were removed */
+message RemovedApps {
+  repeated string packages = 1; // The list of package names that were removed
+}

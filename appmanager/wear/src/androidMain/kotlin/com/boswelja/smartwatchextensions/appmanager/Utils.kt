@@ -37,20 +37,7 @@ fun Context.requestUninstallPackage(packageName: String) {
  */
 fun Context.getAllApps(): List<App> {
     return packageManager.getInstalledPackages(PackageManager.GET_PERMISSIONS).map {
-        App(
-            versionName = it.versionName,
-            versionCode = PackageInfoCompat.getLongVersionCode(it),
-            packageName = it.packageName,
-            label = it.applicationInfo.loadLabel(packageManager).toString(),
-            isSystemApp = it.applicationInfo.flags.and(
-                ApplicationInfo.FLAG_SYSTEM or ApplicationInfo.FLAG_UPDATED_SYSTEM_APP
-            ) != 0,
-            hasLaunchActivity = packageManager.getLaunchIntentForPackage(it.packageName) != null,
-            isEnabled = it.applicationInfo.enabled,
-            installTime = it.firstInstallTime,
-            lastUpdateTime = it.lastUpdateTime,
-            requestedPermissions = packageManager.getLocalizedPermissions(it)
-        )
+        it.toApp(packageManager)
     }
 }
 
@@ -84,3 +71,24 @@ private fun Context.isPackageInstalled(packageName: String): Boolean {
         false
     }
 }
+
+internal fun PackageInfo.toApp(packageManager: PackageManager): App {
+    return App(
+        versionName = versionName,
+        versionCode = PackageInfoCompat.getLongVersionCode(this),
+        packageName = packageName,
+        label = applicationInfo.loadLabel(packageManager).toString(),
+        isSystemApp = applicationInfo.flags.and(
+            ApplicationInfo.FLAG_SYSTEM or ApplicationInfo.FLAG_UPDATED_SYSTEM_APP
+        ) != 0,
+        hasLaunchActivity = packageManager.getLaunchIntentForPackage(packageName) != null,
+        isEnabled = applicationInfo.enabled,
+        installTime = firstInstallTime,
+        lastUpdateTime = lastUpdateTime,
+        requestedPermissions = packageManager.getLocalizedPermissions(this)
+    )
+}
+
+internal fun AppList.isNotEmpty() = apps.isNotEmpty()
+
+internal fun RemovedApps.isNotEmpty() = packages.isNotEmpty()

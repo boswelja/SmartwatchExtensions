@@ -54,6 +54,16 @@ class WatchAppDbRepository(
         }
     }
 
+    override suspend fun delete(watchId: String, packages: List<String>) {
+        withContext(dispatcher) {
+            database.watchAppQueries.transaction {
+                packages.forEach { packageName ->
+                    database.watchAppQueries.remove(watchId, packageName)
+                }
+            }
+        }
+    }
+
     override fun getDetailsFor(watchId: String, packageName: String): Flow<WatchAppDetails> =
         database.watchAppQueries
             .getDetailsFor(watchId, packageName) {
