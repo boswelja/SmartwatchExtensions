@@ -23,7 +23,23 @@ const val APP_SENDING_COMPLETE = "/app_manager_sending_complete"
 /**
  * A message containing [AppList].
  */
+@Deprecated("Use ADDED_APPS instead")
 const val APP_LIST = "/app_manager_all_apps"
+
+/**
+ * Notifies the host that a list of apps were removed from the device.
+ */
+const val REMOVED_APPS = "/appmanager_removed_apps"
+
+/**
+ * Notifies the host that a list of apps were added to the device
+ */
+const val ADDED_APPS = "/appmanager_added_apps"
+
+/**
+ * Notifies the host that a list of apps were updated on the device
+ */
+const val UPDATED_APPS = "/appmanager_updated_apps"
 
 /**
  * A message containing an app icon.
