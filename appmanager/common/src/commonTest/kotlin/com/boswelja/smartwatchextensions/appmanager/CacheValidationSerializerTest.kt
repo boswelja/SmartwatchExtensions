@@ -8,7 +8,7 @@ class CacheValidationSerializerTest {
 
     @Test
     fun serializesCorrectly() = runSuspendingTest {
-        val data = 3214
+        val data = createAppVersions(100)
         val bytes = CacheValidationSerializer.serialize(data)
         val deserializedData = CacheValidationSerializer.deserialize(bytes)
         assertEquals(data, deserializedData)
@@ -20,5 +20,12 @@ class CacheValidationSerializerTest {
         assertFails {
             CacheValidationSerializer.deserialize(bytes)
         }
+    }
+
+    private fun createAppVersions(count: Int): AppVersions {
+        val versions = (0 until count).map {
+            AppVersion(it.toString(), it.toLong())
+        }
+        return AppVersions(versions)
     }
 }
