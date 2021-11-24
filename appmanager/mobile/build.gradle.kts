@@ -63,6 +63,15 @@ android {
     composeOptions {
         kotlinCompilerExtensionVersion = libs.versions.compose.get()
     }
+    testOptions {
+        devices {
+            create<com.android.build.api.dsl.ManagedVirtualDevice>("pixel5api31") {
+                device = "Pixel 5"
+                apiLevel = 31
+                systemImageSource = "aosp"
+            }
+        }
+    }
 }
 
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
