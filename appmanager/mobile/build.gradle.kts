@@ -40,6 +40,13 @@ kotlin {
                 implementation(libs.sqldelight.sqlitedriver)
             }
         }
+        val androidAndroidTest by getting {
+            dependencies {
+                implementation(libs.androidx.test.corektx)
+                implementation(libs.androidx.test.runner)
+                implementation(libs.koin.test)
+            }
+        }
     }
 }
 
@@ -49,6 +56,7 @@ android {
     defaultConfig {
         minSdk = 23
         targetSdk = PackageInfo.targetSdk
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildFeatures.compose = true
