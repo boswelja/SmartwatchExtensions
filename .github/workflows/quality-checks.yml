@@ -36,7 +36,7 @@ jobs:
           cache: 'gradle'
       - name: Unit tests
         run: bash ./gradlew test
-      - uses: actions/upload-artifact@v2.2.4
+      - uses: actions/upload-artifact@v2.3.0
         if: failure()
         with:
           name: Unit test results
