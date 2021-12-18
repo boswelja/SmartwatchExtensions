@@ -12,6 +12,7 @@ kotlin {
             dependencies {
                 api(libs.watchconnection.common)
                 api(projects.appmanager.common)
+                api(libs.kotlinx.coroutines.core)
                 implementation(libs.sqldelight.runtime)
                 implementation(libs.sqldelight.coroutines)
                 implementation(libs.koin.core)
@@ -45,6 +46,7 @@ kotlin {
                 implementation(libs.androidx.test.corektx)
                 implementation(libs.androidx.test.runner)
                 implementation(libs.koin.test)
+                implementation(libs.mockk.android)
             }
         }
     }

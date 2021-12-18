@@ -21,7 +21,7 @@ navigationCompose = "2.4.0-beta02"
 wearCompose = "1.0.0-alpha11"
 # Misc versions
 billingClient = "4.0.0"
-coroutines = "1.5.2"
+coroutines = "1.6.0-RC3"
 firebaseAnalytics = "20.0.0"
 googlePlayCore = "1.10.2"
 googlePlayCoreKtx = "1.8.1"
@@ -35,7 +35,7 @@ strikt = "0.33.0"
 sqldelight = "1.5.2"
 timber = "4.7.1"
 turbine = "0.7.0"
-watchconnection = "7.0.5"
+watchconnection = "7.0.6"
 wire = "3.7.1"
 
 [libraries]

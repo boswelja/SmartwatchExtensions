@@ -2,7 +2,6 @@ package com.boswelja.smartwatchextensions.dndsync
 
 import androidx.lifecycle.LifecycleService
 import androidx.lifecycle.lifecycleScope
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 /**
