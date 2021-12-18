@@ -20,10 +20,7 @@ import com.boswelja.watchconnection.core.message.MessageClient
 import com.boswelja.watchconnection.serialization.MessageHandler
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
@@ -67,18 +64,24 @@ class AppManagerViewModel(
                 }
         }
         .debounce(APP_DEBOUNCE_MILLIS)
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(FLOW_KEEP_ALIVE_TIME),
-            initialValue = emptyList()
-        )
-
-    private val _isUpdatingCache = MutableStateFlow(false)
 
     /**
      * A boolean indicating whether App Manager cache is currently being updated.
      */
-    val isUpdatingCache = _isUpdatingCache.asStateFlow()
+    val isUpdatingCache = messageClient.incomingMessages()
+        .map {
+            when (it.path) {
+                APP_SENDING_COMPLETE -> false
+                APP_SENDING_START -> true
+                else -> null
+            }
+        }
+        .filterNotNull()
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(FLOW_KEEP_ALIVE_TIME),
+            initialValue = false
+        )
 
     /**
      * A [kotlinx.coroutines.flow.Flow] of Boolean indicating whether the currently selected watch
@@ -91,6 +94,11 @@ class AppManagerViewModel(
         }.map { status ->
             status != ConnectionMode.Disconnected
         }
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(FLOW_KEEP_ALIVE_TIME),
+            initialValue = true
+        )
 
     /**
      * A [kotlinx.coroutines.flow.Flow] of user-installed apps on the currently selected watch.
@@ -133,21 +141,11 @@ class AppManagerViewModel(
 
     init {
         viewModelScope.launch {
-            launch {
-                selectedWatchManager.selectedWatch
-                    .filterNotNull()
-                    .collect {
-                        validateCache()
-                    }
-            }
-            launch {
-                messageClient.incomingMessages().collect { message ->
-                    when (message.path) {
-                        APP_SENDING_COMPLETE -> _isUpdatingCache.emit(false)
-                        APP_SENDING_START -> _isUpdatingCache.emit(true)
-                    }
+            selectedWatchManager.selectedWatch
+                .filterNotNull()
+                .collect {
+                    validateCache()
                 }
-            }
         }
     }
 
