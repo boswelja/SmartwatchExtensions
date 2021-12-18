@@ -95,7 +95,7 @@ configurations {
     }
 }
 dependencies {
-    "composeCompiler"("androidx.compose.compiler:compiler:${libs.versions.compose.get()}")
+    "composeCompiler"("androidx.compose.compiler:compiler:${libs.versions.composeCompiler.get()}")
 }
 android {
     afterEvaluate {
