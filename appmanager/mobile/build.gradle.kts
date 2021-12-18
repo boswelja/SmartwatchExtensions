@@ -39,6 +39,8 @@ kotlin {
         val androidTest by getting {
             dependencies {
                 implementation(libs.sqldelight.sqlitedriver)
+                implementation(libs.mockk.core)
+                implementation(libs.kotlinx.coroutines.test)
             }
         }
         val androidAndroidTest by getting {
