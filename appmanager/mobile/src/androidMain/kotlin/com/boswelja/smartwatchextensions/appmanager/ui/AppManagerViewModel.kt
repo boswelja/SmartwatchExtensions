@@ -66,41 +66,6 @@ class AppManagerViewModel(
         .debounce(APP_DEBOUNCE_MILLIS)
 
     /**
-     * A boolean indicating whether App Manager cache is currently being updated.
-     */
-    val isUpdatingCache = messageClient.incomingMessages()
-        .map {
-            when (it.path) {
-                APP_SENDING_COMPLETE -> false
-                APP_SENDING_START -> true
-                else -> null
-            }
-        }
-        .filterNotNull()
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(FLOW_KEEP_ALIVE_TIME),
-            initialValue = false
-        )
-
-    /**
-     * A [kotlinx.coroutines.flow.Flow] of Boolean indicating whether the currently selected watch
-     * is connected.
-     */
-    val isWatchConnected = selectedWatchManager.selectedWatch
-        .filterNotNull()
-        .flatMapLatest { watch ->
-            discoveryClient.connectionModeFor(watch.uid)
-        }.map { status ->
-            status != ConnectionMode.Disconnected
-        }
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(FLOW_KEEP_ALIVE_TIME),
-            initialValue = true
-        )
-
-    /**
      * A [kotlinx.coroutines.flow.Flow] of user-installed apps on the currently selected watch.
      */
     val userApps = allApps
@@ -137,6 +102,41 @@ class AppManagerViewModel(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(FLOW_KEEP_ALIVE_TIME),
             initialValue = emptyList()
+        )
+
+    /**
+     * A boolean indicating whether App Manager cache is currently being updated.
+     */
+    val isUpdatingCache = messageClient.incomingMessages()
+        .map {
+            when (it.path) {
+                APP_SENDING_COMPLETE -> false
+                APP_SENDING_START -> true
+                else -> null
+            }
+        }
+        .filterNotNull()
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(FLOW_KEEP_ALIVE_TIME),
+            initialValue = false
+        )
+
+    /**
+     * A [kotlinx.coroutines.flow.Flow] of Boolean indicating whether the currently selected watch
+     * is connected.
+     */
+    val isWatchConnected = selectedWatchManager.selectedWatch
+        .filterNotNull()
+        .flatMapLatest { watch ->
+            discoveryClient.connectionModeFor(watch.uid)
+        }.map { status ->
+            status != ConnectionMode.Disconnected
+        }
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(FLOW_KEEP_ALIVE_TIME),
+            initialValue = true
         )
 
     init {
