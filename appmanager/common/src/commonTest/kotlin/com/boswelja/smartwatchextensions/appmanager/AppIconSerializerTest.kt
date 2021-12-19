@@ -25,5 +25,4 @@ class AppIconSerializerTest {
             AddedOrUpdatedAppsSerializer.deserialize(bytes)
         }
     }
-
 }
