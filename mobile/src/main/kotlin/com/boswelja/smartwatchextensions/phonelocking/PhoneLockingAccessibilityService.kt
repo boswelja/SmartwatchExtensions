@@ -33,9 +33,13 @@ class PhoneLockingAccessibilityService : AccessibilityService() {
         }
     }
 
-    override fun onAccessibilityEvent(event: AccessibilityEvent?) { }
+    override fun onAccessibilityEvent(event: AccessibilityEvent?) {
+        // This is irrelevant for phone locking
+    }
 
-    override fun onInterrupt() { }
+    override fun onInterrupt() {
+        // This is irrelevant for phone locking
+    }
 
     override fun onDestroy() {
         stop()
