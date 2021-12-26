@@ -77,7 +77,6 @@ dependencies {
     implementation(libs.androidx.datastore.preferences)
     implementation(libs.androidx.datastore.proto)
 
-    implementation(libs.billingclient)
     implementation(libs.googleplay.core)
     implementation(libs.googleplay.corektx)
     implementation(libs.migration)

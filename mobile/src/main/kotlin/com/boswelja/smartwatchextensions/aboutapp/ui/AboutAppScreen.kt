@@ -14,7 +14,6 @@ import androidx.compose.material.ListItem
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ChangeHistory
-import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.Policy
 import androidx.compose.material.icons.outlined.Share
@@ -33,7 +32,6 @@ import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.common.startActivity
 import com.boswelja.smartwatchextensions.common.ui.Card
 import com.boswelja.smartwatchextensions.common.ui.CardHeader
-import com.boswelja.smartwatchextensions.donate.ui.DonateActivity
 import org.koin.androidx.compose.getViewModel
 
 /**
@@ -189,13 +187,6 @@ fun SupportApp(
         }
     ) {
         Column {
-            ListItem(
-                text = { Text(stringResource(R.string.about_donate_title)) },
-                icon = { Icon(Icons.Outlined.FavoriteBorder, null) },
-                modifier = Modifier.clickable {
-                    context.startActivity<DonateActivity>()
-                }
-            )
             ListItem(
                 text = { Text(stringResource(R.string.about_share_title)) },
                 icon = { Icon(Icons.Outlined.Share, null) },
