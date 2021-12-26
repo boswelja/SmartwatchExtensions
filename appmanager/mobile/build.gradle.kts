@@ -47,6 +47,7 @@ kotlin {
             dependencies {
                 implementation(libs.androidx.test.corektx)
                 implementation(libs.androidx.test.runner)
+                implementation(libs.androidx.work.test)
                 implementation(libs.koin.test)
                 implementation(libs.mockk.android)
                 // Workaround for MockK 1.11.0 including a broken objenesis
