@@ -18,12 +18,10 @@ import com.boswelja.smartwatchextensions.phoneStateStore
 import com.boswelja.watchconnection.common.discovery.ConnectionMode
 import com.boswelja.watchconnection.wear.discovery.DiscoveryClient
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
-import timber.log.Timber
 
 /**
  * A service for observing the connection status for the local device.
@@ -62,7 +60,6 @@ class SeparationObserverService : LifecycleService() {
         val phoneStateStore = phoneStateStore
         lifecycleScope.launch(Dispatchers.Default) {
             discoveryClient.connectionMode().collect { status ->
-                Timber.d("Got status %s", status)
                 val phoneName = phoneStateStore.data.map { it.name }
                 if (status == ConnectionMode.Bluetooth) {
                     notificationManager.cancel(SEPARATION_NOTI_ID)

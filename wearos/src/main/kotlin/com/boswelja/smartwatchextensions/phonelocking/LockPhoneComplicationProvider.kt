@@ -12,7 +12,6 @@ import androidx.wear.watchface.complications.datasource.ComplicationDataSourceSe
 import androidx.wear.watchface.complications.datasource.ComplicationRequest
 import com.boswelja.smartwatchextensions.ActionsActivity
 import com.boswelja.smartwatchextensions.R
-import timber.log.Timber
 
 /**
  * A [ComplicationDataSourceService] for phone locking.
@@ -27,8 +26,6 @@ class LockPhoneComplicationProvider : ComplicationDataSourceService() {
 
         if (complicationData != null) {
             listener.onComplicationData(complicationData)
-        } else {
-            Timber.w("Complication type ${request.complicationType} invalid")
         }
     }
 

@@ -8,7 +8,6 @@ import android.os.Build
 import androidx.core.content.getSystemService
 import com.boswelja.smartwatchextensions.devicemanagement.Capability
 import com.boswelja.watchconnection.wear.discovery.DiscoveryClient
-import timber.log.Timber
 
 /**
  * A class for handling adding and removing local capabilities based on what permissions the watch
@@ -23,7 +22,6 @@ class CapabilityUpdater(
      * Update all capabilities.
      */
     suspend fun updateCapabilities() {
-        Timber.d("Updating capabilities")
         updateSendDnD()
         updateReceiveDnD()
         updateSendBattery()

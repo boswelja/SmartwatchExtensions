@@ -17,7 +17,6 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.withContext
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
-import timber.log.Timber
 
 /**
  * A [MessageReceiver] to handle messages received with no data.
@@ -41,7 +40,6 @@ class WatchMessageReceiver :
      * @param context [Context].
      */
     private fun launchApp(context: Context) {
-        Timber.i("launchApp() called")
         context.startActivity<MainActivity>(flags = Intent.FLAG_ACTIVITY_NEW_TASK)
     }
 
@@ -50,7 +48,6 @@ class WatchMessageReceiver :
      * @param watchId The target watch ID to send the response to.
      */
     private suspend fun sendIsWatchRegistered(watchId: String) {
-        Timber.i("sendIsWatchRegistered() called")
         withContext(Dispatchers.IO) {
             val watch = watchRepository.getWatchById(watchId).firstOrNull()
             // If watch is found in the database, let it know it's registered

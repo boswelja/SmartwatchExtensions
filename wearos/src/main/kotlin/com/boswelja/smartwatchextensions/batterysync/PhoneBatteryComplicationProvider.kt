@@ -22,7 +22,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
 /**
  * A [ComplicationDataSourceService] for displaying info about the connected phone's battery.
@@ -43,8 +42,6 @@ class PhoneBatteryComplicationProvider : ComplicationDataSourceService() {
 
             if (complicationData != null) {
                 listener.onComplicationData(complicationData)
-            } else {
-                Timber.w("Complication type ${request.complicationType} invalid")
             }
         }
     }

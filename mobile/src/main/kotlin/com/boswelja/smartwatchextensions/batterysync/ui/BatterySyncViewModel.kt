@@ -22,7 +22,6 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
 /**
  * A ViewModel to provide data for Battery Sync
@@ -95,8 +94,6 @@ class BatterySyncViewModel(
                         selectedWatch,
                         BATTERY_SYNC_ENABLED_KEY, isEnabled
                     )
-                } else {
-                    Timber.w("Failed to enable battery sync")
                 }
             } else {
                 watchManager.updatePreference(
