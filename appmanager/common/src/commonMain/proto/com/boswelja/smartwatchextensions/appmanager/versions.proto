@@ -1,0 +1,13 @@
+syntax = "proto3";
+package com.boswelja.smartwatchextensions.appmanager;
+
+/* Contains information about a single package's version */
+message AppVersion {
+  string packageName = 1; // The package name of the app
+  int64 versionCode = 2; // The version code of the app
+}
+
+/* Contains a list of AppVersion */
+message AppVersions {
+  repeated AppVersion versions = 1; // The list of versions
+}

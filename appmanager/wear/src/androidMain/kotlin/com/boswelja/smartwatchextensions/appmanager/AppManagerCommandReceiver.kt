@@ -9,9 +9,11 @@ import com.boswelja.watchconnection.serialization.MessageReceiver
  */
 class AppManagerCommandReceiver : MessageReceiver<String>(PackageNameSerializer) {
     override suspend fun onMessageReceived(context: Context, message: ReceivedMessage<String>) {
-        when (message.path) {
-            REQUEST_UNINSTALL_PACKAGE -> context.requestUninstallPackage(message.data)
-            REQUEST_OPEN_PACKAGE -> context.openPackage(message.data)
+        val intent = when (message.path) {
+            REQUEST_UNINSTALL_PACKAGE -> context.packageManager.requestUninstallIntent(message.data)
+            REQUEST_OPEN_PACKAGE -> context.packageManager.launchIntent(message.data)
+            else -> null
         }
+        context.startActivity(intent)
     }
 }

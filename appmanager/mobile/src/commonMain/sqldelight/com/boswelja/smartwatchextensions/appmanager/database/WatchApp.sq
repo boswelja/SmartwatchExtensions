@@ -3,7 +3,6 @@ import kotlin.collections.List;
 CREATE TABLE watchAppDb (
     watch_id TEXT NOT NULL,
     package_name TEXT NOT NULL,
-    icon_path TEXT,
     label TEXT NOT NULL,
     version_name TEXT NOT NULL,
     version_code INTEGER NOT NULL,
@@ -21,7 +20,7 @@ INSERT OR REPLACE INTO watchAppDb
 VALUES ?;
 
 getDisplayItemsFor:
-SELECT package_name, icon_path, label, version_name, system_app, enabled FROM watchAppDb
+SELECT package_name, label, version_name, system_app, enabled FROM watchAppDb
 WHERE watch_id = ?;
 
 getDetailsFor:
@@ -30,7 +29,7 @@ WHERE watch_id = ? AND package_name = ?
 LIMIT 1;
 
 getVersionsFor:
-SELECT package_name, update_time FROM watchAppDb
+SELECT package_name, version_code FROM watchAppDb
 WHERE watch_id = ?;
 
 removeFor:

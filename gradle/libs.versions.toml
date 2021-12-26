@@ -15,27 +15,28 @@ androidxWork = "2.7.0"
 # Compose versions
 accompanist = "0.20.2"
 activityCompose = "1.4.0"
-compose = "1.1.0-beta03"
+compose = "1.1.0-rc01"
+composeCompiler = "1.1.0-rc02"
 material3 = "1.0.0-alpha01"
 navigationCompose = "2.4.0-beta02"
 wearCompose = "1.0.0-alpha11"
 # Misc versions
 billingClient = "4.0.0"
-coroutines = "1.5.2"
+coroutines = "1.6.0"
 firebaseAnalytics = "20.0.0"
 googlePlayCore = "1.10.2"
 googlePlayCoreKtx = "1.8.1"
 junit = "4.13.2"
 koin = "3.1.3"
 migration = "2.1.0"
-mockk = "1.12.1"
+mockk = "1.11.0"
 playServicesWearable = "17.1.0"
 robolectric = "4.7"
 strikt = "0.33.0"
 sqldelight = "1.5.2"
 timber = "4.7.1"
 turbine = "0.7.0"
-watchconnection = "7.0.5"
+watchconnection = "7.0.6"
 wire = "3.7.1"
 
 [libraries]
@@ -93,6 +94,7 @@ strikt-core = { module = "io.strikt:strikt-core", version.ref = "strikt" }
 strikt-mockk = { module = "io.strikt:strikt-mockk", version.ref = "strikt" }
 timber = { module = "com.jakewharton.timber:timber", version.ref = "timber" }
 watchconnection-common = { module = "io.github.boswelja.watchconnection:common", version.ref = "watchconnection" }
+watchconnection-mobile-core = { module = "io.github.boswelja.watchconnection:mobile-core", version.ref = "watchconnection" }
 watchconnection-serialization = { module = "io.github.boswelja.watchconnection:serialization", version.ref = "watchconnection" }
 watchconnection-platform-wearos = { module = "io.github.boswelja.watchconnection:platform-wearos", version.ref = "watchconnection" }
 watchconnection-wear = { module = "io.github.boswelja.watchconnection:wear", version.ref = "watchconnection" }
@@ -106,7 +108,7 @@ turbine = { module = "app.cash.turbine:turbine", version.ref = "turbine" }
 koin-android = { module = "io.insert-koin:koin-android", version.ref = "koin" }
 koin-compose = { module = "io.insert-koin:koin-androidx-compose", version.ref = "koin" }
 koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
-koin-test = { module = "io.insert-koin:koin-test", version.ref = "koin" }
+koin-test = { module = "io.insert-koin:koin-test-junit4", version.ref = "koin" }
 koin-workmanager = { module = "io.insert-koin:koin-androidx-workmanager", version.ref = "koin" }
 
 [bundles]

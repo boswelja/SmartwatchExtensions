@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="appmanager_section_user">User Apps</string>
+    <string name="appmanager_section_user_empty">You haven\'t installed any apps.</string>
+    <string name="appmanager_section_disabled">Disabled Apps</string>
+    <string name="appmanager_section_disabled_empty">You haven\'t disabled any apps.</string>
+    <string name="appmanager_section_system">System Apps</string>
+    <string name="appmanager_section_system_empty">No system apps found. This should never happen, please file an issue.</string>
+    <string name="appmanager_continue_on_watch">Continue on your watch</string>
+
+    <string name="appinfo_version">Version %s</string>
+    <string name="appinfo_first_installed">First installed: %s</string>
+    <string name="appinfo_last_updated">Last updated: %s</string>
+    <string name="appinfo_open">Open</string>
+    <string name="appinfo_uninstall">Uninstall</string>
+</resources>

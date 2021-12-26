@@ -5,14 +5,16 @@ import com.boswelja.smartwatchextensions.appmanager.database.WatchAppDatabase
 import com.boswelja.smartwatchextensions.appmanager.database.watchAppDbAdapter
 import com.squareup.sqldelight.db.SqlDriver
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.withContext
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
-import kotlin.time.Duration
-import kotlin.time.ExperimentalTime
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class WatchAppDbRepositoryTest {
 
     private val watchIds = listOf("id1", "id2", "id3")
@@ -34,7 +36,7 @@ class WatchAppDbRepositoryTest {
     }
 
     @Test
-    fun updateAllAddsAll() = runSuspendingTest {
+    fun updateAllAddsAll() = runTest {
         // Create app details and put them in the repository
         val countPerWatch = 100
         val allAppDetails = createAppDetailsForWatches(countPerWatch)
@@ -47,7 +49,7 @@ class WatchAppDbRepositoryTest {
     }
 
     @Test
-    fun updateAllAddsNoDuplicates() = runSuspendingTest {
+    fun updateAllAddsNoDuplicates() = runTest {
         // Create app details and put them in the repository
         val countPerWatch = 100
         val allAppDetails = createAppDetailsForWatches(countPerWatch)
@@ -63,7 +65,7 @@ class WatchAppDbRepositoryTest {
     }
 
     @Test
-    fun deleteForDeletesForWatchId() = runSuspendingTest {
+    fun deleteForDeletesForWatchId() = runTest {
         val countPerWatch = 100
         val allAppDetails = createAppDetailsForWatches(countPerWatch)
         repository.updateAll(allAppDetails)
@@ -83,7 +85,7 @@ class WatchAppDbRepositoryTest {
     }
 
     @Test
-    fun deleteDeletesItem() = runSuspendingTest {
+    fun deleteDeletesItem() = runTest {
         val countPerWatch = 1
         val allAppDetails = createAppDetailsForWatches(countPerWatch)
         repository.updateAll(allAppDetails)
@@ -97,12 +99,10 @@ class WatchAppDbRepositoryTest {
         assertTrue { apps.none { it.packageName == itemToDelete.packageName } }
     }
 
-    @OptIn(ExperimentalTime::class)
     @Test
-    fun getDetailsForUpdatesWithSource() = runSuspendingTest {
+    fun getDetailsForUpdatesWithSource() = runTest {
         val initialAppDetails = WatchAppDetails(
             watchId = watchIds.first(),
-            iconPath = null,
             installTime = 0,
             updateTime = 0,
             isEnabled = true,
@@ -121,69 +121,73 @@ class WatchAppDbRepositoryTest {
         )
         repository.updateAll(listOf(initialAppDetails))
 
-        repository.getDetailsFor(
-            initialAppDetails.watchId,
-            initialAppDetails.packageName
-        ).test(timeout = Duration.seconds(2)) {
-            // Check first item is emitted correctly
-            assertEquals(initialAppDetails, awaitItem())
+        withContext(Dispatchers.Default) {
+            repository.getDetailsFor(
+                initialAppDetails.watchId,
+                initialAppDetails.packageName
+            ).test(2000) {
+                // Check first item is emitted correctly
+                assertEquals(initialAppDetails, awaitItem())
 
-            // Check updated item is emitted correctly
-            repository.updateAll(listOf(updatedAppDetails))
-            assertEquals(updatedAppDetails, awaitItem())
+                // Check updated item is emitted correctly
+                repository.updateAll(listOf(updatedAppDetails))
+                assertEquals(updatedAppDetails, awaitItem())
 
-            cancel()
+                cancel()
+            }
         }
     }
 
-    @OptIn(ExperimentalTime::class)
     @Test
-    fun getAppsForUpdatesWithSource() = runSuspendingTest {
+    fun getAppsForUpdatesWithSource() = runTest {
         val countPerWatch = 100
         val allAppDetails = createAppDetailsForWatches(countPerWatch)
         val watchId = watchIds.first()
 
-        repository.getAppsFor(watchId).test {
-            // Check list is empty
-            assertTrue { awaitItem().isEmpty() }
+        withContext(Dispatchers.Default) {
+            repository.getAppsFor(watchId).test {
+                // Check list is empty
+                assertTrue { awaitItem().isEmpty() }
 
-            // Update the sources and check again
-            repository.updateAll(allAppDetails)
-            assertTrue { awaitItem().count() == countPerWatch }
+                // Update the sources and check again
+                repository.updateAll(allAppDetails)
+                assertTrue { awaitItem().count() == countPerWatch }
 
-            // Remove items and check again
-            repository.deleteFor(watchId)
-            assertTrue { awaitItem().isEmpty() }
+                // Remove items and check again
+                repository.deleteFor(watchId)
+                assertTrue { awaitItem().isEmpty() }
 
-            cancel()
+                cancel()
+            }
         }
     }
 
-    @OptIn(ExperimentalTime::class)
     @Test
-    fun countForUpdatesWithSource() = runSuspendingTest {
+    fun countForUpdatesWithSource() = runTest {
         val initialCount = 50
         val initialApps = createAppDetailsForWatches(initialCount)
         val endCount = 100
         val endApps = createAppDetailsForWatches(endCount)
         val watchId = watchIds.first()
 
-        repository.countFor(watchId).test {
-            assertTrue { awaitItem() == 0L }
+        withContext(Dispatchers.Default) {
+            repository.countFor(watchId).test {
+                assertTrue { awaitItem() == 0L }
 
-            // Check initial count
-            repository.updateAll(initialApps)
-            assertTrue { awaitItem() == initialCount.toLong() }
+                // Check initial count
+                repository.updateAll(initialApps)
+                assertTrue { awaitItem() == initialCount.toLong() }
 
-            // Check updated count
-            repository.updateAll(endApps)
-            assertTrue { awaitItem() == endCount.toLong() }
+                // Check updated count
+                repository.updateAll(endApps)
+                assertTrue { awaitItem() == endCount.toLong() }
 
-            // Remove all and check again
-            repository.deleteFor(watchId)
-            assertTrue { awaitItem() == 0L }
+                // Remove all and check again
+                repository.deleteFor(watchId)
+                assertTrue { awaitItem() == 0L }
 
-            cancel()
+                cancel()
+            }
         }
     }
 
@@ -194,7 +198,6 @@ class WatchAppDbRepositoryTest {
                 allList.add(
                     WatchAppDetails(
                         watchId = watchId,
-                        iconPath = null,
                         installTime = 0,
                         updateTime = 0,
                         isEnabled = true,

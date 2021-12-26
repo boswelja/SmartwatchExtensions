@@ -9,10 +9,9 @@ fun AppList.mapToWatchAppDetails(sourceUid: String): List<WatchAppDetails> {
         WatchAppDetails(
             watchId = sourceUid,
             packageName = it.packageName,
-            iconPath = null,
             label = it.label,
-            versionName = it.version,
-            versionCode = 0,
+            versionName = it.versionName,
+            versionCode = it.versionCode,
             isSystemApp = it.isSystemApp,
             isLaunchable = it.hasLaunchActivity,
             isEnabled = it.isEnabled,

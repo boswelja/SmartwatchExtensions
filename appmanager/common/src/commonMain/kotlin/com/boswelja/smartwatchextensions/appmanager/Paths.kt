@@ -21,12 +21,26 @@ const val APP_SENDING_START = "/app_manager_sending_all"
 const val APP_SENDING_COMPLETE = "/app_manager_sending_complete"
 
 /**
- * A message containing [AppList].
+ * Notifies the host that a list of apps were removed from the device.
  */
-const val APP_LIST = "/app_manager_all_apps"
+const val REMOVED_APPS = "/appmanager_removed_apps"
 
 /**
- * Requests cache validation. A hash code obtained from [CacheValidation.getHashCode] should be
- * sent alongside this.
+ * Notifies the host that a list of apps were added to the device
  */
-const val VALIDATE_CACHE = "/app_manager_cache_check"
+const val ADDED_APPS = "/appmanager_added_apps"
+
+/**
+ * Notifies the host that a list of apps were updated on the device
+ */
+const val UPDATED_APPS = "/appmanager_updated_apps"
+
+/**
+ * A message containing an app icon.
+ */
+const val APP_ICON = "/appmanager_app_icon"
+
+/**
+ * Requests app cache validation.
+ */
+const val VALIDATE_CACHE = "/appmanager_cache_check"

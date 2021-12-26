@@ -3,7 +3,21 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
     <application>
         <receiver
-            android:name=".WatchAppReceiver"
+            android:name=".AddedOrUpdatedAppReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.boswelja.watchconnection.common.message.MessageReceived" />
+            </intent-filter>
+        </receiver>
+        <receiver
+            android:name=".RemovedAppReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.boswelja.watchconnection.common.message.MessageReceived" />
+            </intent-filter>
+        </receiver>
+        <receiver
+            android:name=".WatchAppIconReceiver"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.boswelja.watchconnection.common.message.MessageReceived" />
