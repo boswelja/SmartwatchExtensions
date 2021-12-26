@@ -131,7 +131,7 @@ class AppManagerCacheValidatorReceiver :
         }
     }
 
-    private fun getAddedPackages(
+    internal fun getAddedPackages(
         context: Context,
         currentPackages: List<PackageInfo>,
         cachedPackages: List<AppVersion>
@@ -144,7 +144,7 @@ class AppManagerCacheValidatorReceiver :
         return AppList(addedApps)
     }
 
-    private fun getUpdatedPackages(
+    internal fun getUpdatedPackages(
         context: Context,
         currentPackages: List<PackageInfo>,
         cachedPackages: List<AppVersion>
@@ -160,7 +160,7 @@ class AppManagerCacheValidatorReceiver :
         return AppList(addedApps)
     }
 
-    private fun getRemovedPackages(
+    internal fun getRemovedPackages(
         currentPackages: List<PackageInfo>,
         cachedPackages: List<AppVersion>
     ): RemovedApps {
