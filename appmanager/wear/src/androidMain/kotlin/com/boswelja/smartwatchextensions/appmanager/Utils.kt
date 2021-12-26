@@ -7,7 +7,7 @@ import androidx.core.content.pm.PackageInfoCompat
 
 internal fun PackageInfo.toApp(packageManager: PackageManager): App {
     return App(
-        versionName = versionName,
+        versionName = versionName ?: "0",
         versionCode = PackageInfoCompat.getLongVersionCode(this),
         packageName = packageName,
         label = applicationInfo.loadLabel(packageManager).toString(),
