@@ -48,6 +48,7 @@ internal fun PackageManager.isPackageInstalled(packageName: String): Boolean {
 /**
  * Gets a launch intent for a given package and try start a new activity for it.
  * @param packageName The name of the package to try open.
+ * @return An [Intent] that can be used to launch the given package, or null if the package isn't launchable.
  */
 fun PackageManager.launchIntent(packageName: String): Intent? {
     return getLaunchIntentForPackage(packageName)
@@ -57,6 +58,8 @@ fun PackageManager.launchIntent(packageName: String): Intent? {
 /**
  * If a package is installed, shows a prompt to allow the user to uninstall it.
  * @param packageName The name of the package to try uninstall.
+ * @return An [Intent] that can be used to request the user uninstalls the given package, or null if
+ * the package doesn't exist.
  */
 fun PackageManager.requestUninstallIntent(packageName: String): Intent? {
     return if (isPackageInstalled(packageName)) {
