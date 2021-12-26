@@ -25,7 +25,6 @@ import com.boswelja.watchconnection.wear.message.MessageClient
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
 /**
  * An Activity for handling Actions triggered when the app is not running, e.g. from Complications,
@@ -68,18 +67,9 @@ class ActionsActivity : ComponentActivity() {
      */
     private suspend fun handleAction() {
         when (intent.action) {
-            LOCK_PHONE -> {
-                Timber.d("Trying to lock phone")
-                tryLockPhone()
-            }
-            REQUEST_BATTERY_UPDATE_PATH -> {
-                Timber.d("Trying to update battery stats")
-                tryUpdateBatteryStats()
-            }
-            else -> {
-                Timber.w("Invalid action code received")
-                finish()
-            }
+            LOCK_PHONE -> tryLockPhone()
+            REQUEST_BATTERY_UPDATE_PATH -> tryUpdateBatteryStats()
+            else -> finish()
         }
     }
 

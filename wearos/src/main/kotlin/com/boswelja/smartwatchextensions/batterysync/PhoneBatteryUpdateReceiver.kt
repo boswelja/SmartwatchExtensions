@@ -24,7 +24,6 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
-import timber.log.Timber
 
 /**
  * A [MessageReceiver] for receiving [BatteryStats] for the paired phone.
@@ -86,7 +85,6 @@ class PhoneBatteryUpdateReceiver :
     }
 
     private suspend fun cancelChargeNoti() {
-        Timber.i("Cancelling any existing charge notifications")
         notificationManager.cancel(BATTERY_CHARGED_NOTI_ID)
         phoneStateStore.updateData {
             it.copy(chargeNotiSent = false)
@@ -94,7 +92,6 @@ class PhoneBatteryUpdateReceiver :
     }
 
     private suspend fun cancelLowNoti() {
-        Timber.i("Cancelling any existing low notifications")
         notificationManager.cancel(BATTERY_LOW_NOTI_ID)
         phoneStateStore.updateData {
             it.copy(lowNotiSent = false)
@@ -110,7 +107,6 @@ class PhoneBatteryUpdateReceiver :
         context: Context,
         batteryStats: BatteryStats
     ) {
-        Timber.d("handleLowNotification($batteryStats) called")
         val notificationsEnabled = extensionSettingsStore.data
             .map { it.phoneLowNotiEnabled }.first()
         val lowThreshold = extensionSettingsStore.data.map { it.batteryLowThreshold }.first()
@@ -139,7 +135,6 @@ class PhoneBatteryUpdateReceiver :
         deviceName: String,
         chargeThreshold: Int
     ) {
-        Timber.d("notifyCharged($deviceName, $chargeThreshold) called")
         createNotificationChannel(context)
 
         val noti =
@@ -163,7 +158,6 @@ class PhoneBatteryUpdateReceiver :
         phoneStateStore.updateData {
             it.copy(lowNotiSent = true)
         }
-        Timber.i("Notification sent")
     }
 
     /**
@@ -178,7 +172,6 @@ class PhoneBatteryUpdateReceiver :
         deviceName: String,
         chargeThreshold: Int
     ) {
-        Timber.d("notifyCharged($deviceName, $chargeThreshold) called")
         createNotificationChannel(context)
 
         val noti =
@@ -202,7 +195,6 @@ class PhoneBatteryUpdateReceiver :
         phoneStateStore.updateData {
             it.copy(chargeNotiSent = true)
         }
-        Timber.i("Notification sent")
     }
 
     /** Sends a battery status update to connected devices. */
@@ -214,14 +206,11 @@ class PhoneBatteryUpdateReceiver :
                 discoveryClient.pairedPhone()!!.uid,
                 Message(BATTERY_STATUS_PATH, batteryStats)
             )
-        } else {
-            Timber.w("batteryStats null, skipping...")
         }
     }
 
     private fun createNotificationChannel(context: Context) {
         if (notificationManager.getNotificationChannel(BATTERY_STATS_NOTI_CHANNEL_ID) == null) {
-            Timber.i("Creating notification channel")
             val channel =
                 NotificationChannel(
                     BATTERY_STATS_NOTI_CHANNEL_ID,

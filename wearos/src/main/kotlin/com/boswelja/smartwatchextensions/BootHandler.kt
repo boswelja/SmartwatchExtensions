@@ -25,7 +25,6 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
-import timber.log.Timber
 
 /**
  * A [BroadcastReceiver] for receiving [Intent.ACTION_BOOT_COMPLETED].
@@ -33,14 +32,11 @@ import timber.log.Timber
 class BootHandler : BroadcastReceiver() {
 
     override fun onReceive(context: Context?, intent: Intent?) {
-        Timber.d("Intent received")
         if (context == null) {
-            Timber.w("Context null")
             return
         }
         when (intent?.action) {
             Intent.ACTION_BOOT_COMPLETED -> {
-                Timber.d("Handling ${intent.action}")
                 val workRequest = OneTimeWorkRequestBuilder<BootWorker>()
                     .setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
                     .build()
