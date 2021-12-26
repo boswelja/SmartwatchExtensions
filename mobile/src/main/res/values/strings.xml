@@ -51,8 +51,6 @@
 
     <!-- App Manager strings -->
     <string name="main_app_manager_title">App Manager</string>
-    <string name="app_manager_watch_disconnected">We can\'t reach your watch right now. You may still view your apps, but you cannot make any changes</string>
-    <string name="watch_connection_dismiss">Dismiss</string>
 
     <!-- Phone Locking strings -->
     <string name="main_phone_locking_title">Phone Locking</string>
