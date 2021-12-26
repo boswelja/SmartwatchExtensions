@@ -6,7 +6,6 @@ import android.content.Intent
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.OutOfQuotaPolicy
 import androidx.work.WorkManager
-import timber.log.Timber
 
 /**
  * A [BroadcastReceiver] to handle enqueueing [BootWorker] or [UpdateWorker] as needed.
@@ -14,12 +13,7 @@ import timber.log.Timber
 class BootOrUpdateReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context?, intent: Intent?) {
-        Timber.i("Received a broadcast")
-
-        if (context == null) {
-            Timber.w("Null context")
-            return
-        }
+        if (context == null) return
 
         val workRequest = when (intent?.action) {
             Intent.ACTION_MY_PACKAGE_REPLACED -> {

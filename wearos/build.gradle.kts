@@ -71,7 +71,6 @@ dependencies {
     implementation(libs.androidx.wear.complications.data.source)
     implementation(libs.androidx.work.ktx)
 
-    implementation(libs.timber)
     implementation(libs.watchconnection.wear)
 
     implementation(libs.koin.android)

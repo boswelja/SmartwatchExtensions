@@ -12,7 +12,6 @@ import com.boswelja.smartwatchextensions.widget.widgetIdStore
 import com.boswelja.watchconnection.common.Watch
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
 /**
  * An activity containing common code for widget configuration activities
@@ -43,7 +42,6 @@ abstract class BaseWidgetConfigActivity : AppCompatActivity() {
      * @param watch The [Watch] to configure the widget for.
      */
     internal fun finishWidgetConfig(watch: Watch) {
-        Timber.d("finishWidgetConfig($watch) called")
         setResult(RESULT_OK, resultIntent)
 
         lifecycleScope.launch(Dispatchers.IO) {

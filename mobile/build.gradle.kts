@@ -80,7 +80,6 @@ dependencies {
     implementation(libs.googleplay.core)
     implementation(libs.googleplay.corektx)
     implementation(libs.migration)
-    implementation(libs.timber)
     implementation(libs.watchconnection.platform.wearos)
 
     implementation(libs.koin.android)

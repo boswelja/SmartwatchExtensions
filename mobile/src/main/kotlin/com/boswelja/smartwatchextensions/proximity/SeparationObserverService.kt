@@ -27,7 +27,6 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
-import timber.log.Timber
 
 /**
  * A service for observing the connection status of specified watches.
@@ -82,7 +81,6 @@ class SeparationObserverService : LifecycleService() {
                 }
             }
         }.toTypedArray()
-        Timber.d("Collecting statuses for %s watches", flows.count())
 
         // Cancel any existing jobs
         statusCollectorJob?.cancel()
@@ -94,7 +92,6 @@ class SeparationObserverService : LifecycleService() {
     }
 
     private fun handleStatusChange(watch: Watch, newStatus: ConnectionMode) {
-        Timber.d("%s status changed to %s", watch.name, newStatus)
         val notificationManager = getSystemService<NotificationManager>()!!
         val notiId = watch.uid.hashCode()
         if (newStatus == ConnectionMode.Bluetooth) {
@@ -128,7 +125,6 @@ class SeparationObserverService : LifecycleService() {
     }
 
     private fun tryStop() {
-        Timber.d("Stopping service")
         statusCollectorJob?.cancel()
         stopForeground(true)
         stopSelf()

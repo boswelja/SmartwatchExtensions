@@ -24,7 +24,6 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
-import timber.log.Timber
 
 /**
  * An [AppWidgetProvider] provides the [Watch] from this widget's config.
@@ -75,13 +74,11 @@ abstract class WatchWidgetProvider : AppWidgetProvider(), KoinComponent {
 
     override fun onDeleted(context: Context?, appWidgetIds: IntArray?) {
         super.onDeleted(context, appWidgetIds)
-        Timber.d("onDeleted called")
         if (context != null && appWidgetIds != null && appWidgetIds.isNotEmpty()) {
             val pendingResult = goAsync()
             coroutineScope.launch {
                 context.widgetIdStore.edit { widgetIds ->
                     appWidgetIds.forEach { widgetId ->
-                        Timber.d("Removing widget with id = %s", widgetId)
                         widgetIds.remove(stringPreferencesKey(widgetId.toString()))
                     }
                 }
@@ -95,10 +92,8 @@ abstract class WatchWidgetProvider : AppWidgetProvider(), KoinComponent {
         appWidgetManager: AppWidgetManager?,
         appWidgetIds: IntArray?
     ) {
-        Timber.d("onUpdate called")
         if (context != null && appWidgetManager != null) {
             appWidgetIds?.forEach { widgetId ->
-                Timber.i("Widget %s updated", widgetId)
                 val options = appWidgetManager.getAppWidgetOptions(widgetId)
                 updateView(context, widgetId, options, appWidgetManager)
             }
@@ -111,7 +106,6 @@ abstract class WatchWidgetProvider : AppWidgetProvider(), KoinComponent {
         appWidgetId: Int,
         newOptions: Bundle?
     ) {
-        Timber.i("Widget %s options changed", appWidgetId)
         if (context != null && newOptions != null && appWidgetManager != null) {
             updateView(context, appWidgetId, newOptions, appWidgetManager)
         }
@@ -143,16 +137,13 @@ abstract class WatchWidgetProvider : AppWidgetProvider(), KoinComponent {
         }
         val widgetContent = if (watch != null) {
             // Get the widget content from child class
-            Timber.d("Getting widget content")
             onUpdateView(context, width, height, watch)
         } else {
-            Timber.w("Watch ID for widget %s is null", appWidgetId)
             // Set error view
             RemoteViews(context.packageName, R.layout.common_widget_error)
         }
         // Set click PendingIntent
         onCreateClickIntent(context, watchId)?.let {
-            Timber.d("Setting widget click intent")
             widgetContent.setOnClickPendingIntent(android.R.id.background, it)
         }
 

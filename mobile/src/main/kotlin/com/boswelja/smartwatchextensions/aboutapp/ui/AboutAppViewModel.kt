@@ -13,7 +13,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
 /**
  * A ViewModel for providing data to [AboutAppScreen].
@@ -41,7 +40,6 @@ class AboutAppViewModel(
                     watchManager.sendMessage(watch, REQUEST_APP_VERSION, null)
                     _watchAppVersion.emit(null)
                 } else {
-                    Timber.w("Selected watch null")
                     _watchAppVersion.emit(null)
                 }
             }

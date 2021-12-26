@@ -29,7 +29,6 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.withContext
 import org.koin.core.component.inject
-import timber.log.Timber
 import java.util.Locale
 
 private const val BATTERY_CHARGED_NOTI_ID = 408565
@@ -197,7 +196,6 @@ class BatteryStatsReceiver : BaseBatteryStatsReceiver() {
                     .setLocalOnly(true)
                     .also { notificationManager.notify(BATTERY_LOW_NOTI_ID, it.build()) }
             } else {
-                Timber.w("Failed to send battery low notification")
                 context.sendMessage(
                     Message(
                         Message.Icon.ERROR,
@@ -221,7 +219,6 @@ class BatteryStatsReceiver : BaseBatteryStatsReceiver() {
         notificationManager: NotificationManager,
         watch: Watch
     ) {
-        Timber.d("Dismissing charge notification for %s", watch.uid)
         notificationManager.cancel(BATTERY_CHARGED_NOTI_ID)
         settingsRepository.putBoolean(watch.uid, BATTERY_CHARGED_NOTI_SENT, false)
     }
@@ -235,7 +232,6 @@ class BatteryStatsReceiver : BaseBatteryStatsReceiver() {
         notificationManager: NotificationManager,
         watch: Watch
     ) {
-        Timber.d("Dismissing low notification for %s", watch.uid)
         notificationManager.cancel(BATTERY_LOW_NOTI_ID)
         settingsRepository.putBoolean(watch.uid, BATTERY_LOW_NOTI_SENT, false)
     }

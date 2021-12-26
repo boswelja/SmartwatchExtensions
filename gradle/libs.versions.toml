@@ -33,7 +33,6 @@ playServicesWearable = "17.1.0"
 robolectric = "4.7"
 strikt = "0.33.0"
 sqldelight = "1.5.2"
-timber = "4.7.1"
 turbine = "0.7.0"
 watchconnection = "7.0.6"
 wire = "3.7.1"
@@ -90,7 +89,6 @@ play-services-wearable = { module = "com.google.android.gms:play-services-wearab
 robolectric = { module = "org.robolectric:robolectric", version.ref = "robolectric" }
 strikt-core = { module = "io.strikt:strikt-core", version.ref = "strikt" }
 strikt-mockk = { module = "io.strikt:strikt-mockk", version.ref = "strikt" }
-timber = { module = "com.jakewharton.timber:timber", version.ref = "timber" }
 watchconnection-common = { module = "io.github.boswelja.watchconnection:common", version.ref = "watchconnection" }
 watchconnection-mobile-core = { module = "io.github.boswelja.watchconnection:mobile-core", version.ref = "watchconnection" }
 watchconnection-serialization = { module = "io.github.boswelja.watchconnection:serialization", version.ref = "watchconnection" }
