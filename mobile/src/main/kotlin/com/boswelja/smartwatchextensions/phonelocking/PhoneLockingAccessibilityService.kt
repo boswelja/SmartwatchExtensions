@@ -7,14 +7,12 @@ import com.boswelja.smartwatchextensions.settings.BoolSettingKeys.PHONE_LOCKING_
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koin.android.ext.android.inject
-import timber.log.Timber
 
 /**
  * An accessibility service for locking the device on request.
@@ -28,7 +26,6 @@ class PhoneLockingAccessibilityService : AccessibilityService() {
     private var isStopping = false
 
     override fun onServiceConnected() {
-        Timber.i("onServiceConnected() called")
         coroutineScope.launch {
             watchManager.incomingMessages().filter { it.path == LOCK_PHONE }.collect { message ->
                 tryLockDevice(message.sourceUid)
@@ -36,13 +33,9 @@ class PhoneLockingAccessibilityService : AccessibilityService() {
         }
     }
 
-    override fun onAccessibilityEvent(event: AccessibilityEvent?) {
-        Timber.v("onAccessibilityEvent() called")
-    }
+    override fun onAccessibilityEvent(event: AccessibilityEvent?) { }
 
-    override fun onInterrupt() {
-        Timber.v("onInterrupt() called")
-    }
+    override fun onInterrupt() { }
 
     override fun onDestroy() {
         stop()
@@ -57,15 +50,11 @@ class PhoneLockingAccessibilityService : AccessibilityService() {
                     PHONE_LOCKING_ENABLED_KEY, watch
                 ).first()
                 if (phoneLockingEnabledForWatch) {
-                    Timber.i("Trying to lock phone")
                     withContext(Dispatchers.Main) {
                         performGlobalAction(GLOBAL_ACTION_LOCK_SCREEN)
                     }
-                } else {
-                    Timber.w("$watchId tried to lock phone, doesn't have permission")
                 }
             } else {
-                Timber.w("Sending watch not registered")
                 // TODO tell the watch it isn't registered
             }
         }
@@ -73,13 +62,10 @@ class PhoneLockingAccessibilityService : AccessibilityService() {
 
     /** Cleans up in preparation for stopping the service. */
     private fun stop() {
-        Timber.i("stop() called")
         if (!isStopping) {
-            Timber.i("Stopping")
             isStopping = true
             // runBlocking here so we can update stuff without onDestroy returning
             coroutineScope.launch(Dispatchers.IO) {
-                Timber.d("Disabling phone locking on all devices")
                 watchManager.updatePreference(PHONE_LOCKING_ENABLED_KEY, false)
             }
         }

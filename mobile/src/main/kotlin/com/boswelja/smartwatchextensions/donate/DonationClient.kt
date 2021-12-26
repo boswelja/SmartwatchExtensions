@@ -19,7 +19,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.runBlocking
-import timber.log.Timber
 
 /**
  * A wrapper class for [BillingClient] to simplify making purchase requests.
@@ -86,7 +85,6 @@ class DonationClient(application: Application) {
     }
 
     private fun consumeOneTimePurchase(purchase: Purchase) {
-        Timber.d("consumeOneTimePurchase($purchase) called")
         val params = ConsumeParams.newBuilder().setPurchaseToken(purchase.purchaseToken).build()
         billingClient.consumeAsync(params) { result, _ ->
             handlePurchaseResult(result)
@@ -94,7 +92,6 @@ class DonationClient(application: Application) {
     }
 
     private fun acknowledgeRecurringPurchase(purchase: Purchase) {
-        Timber.d("acknowledgeRecurringPurchase($purchase) called")
         val params = AcknowledgePurchaseParams.newBuilder()
             .setPurchaseToken(purchase.purchaseToken)
             .build()
@@ -110,12 +107,6 @@ class DonationClient(application: Application) {
                     it.copy(hasDonated = true)
                 }
             }
-
-            if (purchaseResultChannel.trySend(true).isFailure)
-                Timber.w("Failed to post update to channel")
-        } else {
-            if (!purchaseResultChannel.trySend(false).isFailure)
-                Timber.w("Failed to post update to channel")
         }
     }
 

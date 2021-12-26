@@ -7,7 +7,6 @@ import com.boswelja.smartwatchextensions.devicemanagement.Capability
 import com.boswelja.smartwatchextensions.devicemanagement.WatchManager
 import com.boswelja.watchconnection.common.Watch
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
 /**
  * A ViewModel for providing data to Watch Info.
@@ -26,7 +25,6 @@ class WatchInfoViewModel(
      * Updates [Watch.name] in the database for the current watch.
      */
     suspend fun updateWatchName(watch: Watch, name: String) {
-        Timber.d("updateWatchName($name) called")
         watchManager.renameWatch(watch, name)
     }
 
