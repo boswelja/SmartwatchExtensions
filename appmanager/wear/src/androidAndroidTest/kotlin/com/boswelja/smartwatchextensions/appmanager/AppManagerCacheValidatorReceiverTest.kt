@@ -1,8 +1,6 @@
 package com.boswelja.smartwatchextensions.appmanager
 
 import android.content.Context
-import android.content.pm.ApplicationInfo
-import android.content.pm.PackageInfo
 import androidx.test.core.app.ApplicationProvider
 import com.boswelja.watchconnection.wear.message.MessageClient
 import io.mockk.mockk
@@ -41,32 +39,30 @@ class AppManagerCacheValidatorReceiverTest {
     fun getAddedPackages_returnsAddedApps() {
         // Create data
         val receiver = AppManagerCacheValidatorReceiver()
-        val currentPackages = createPackageInfos(100)
+        val currentPackages = createApps(100)
         val cachedPackages = currentPackages
             .drop(10)
-            .map { AppVersion(it.packageName, it.longVersionCode) }
+            .map { AppVersion(it.packageName, it.versionCode) }
         val trueAddedApps = currentPackages
             .filterNot { packageInfo -> cachedPackages.any { it.packageName == packageInfo.packageName } }
-            .map { it.toApp(context.packageManager) }
 
         // Make the call and check the result
-        val addedApps = receiver.getAddedPackages(context, currentPackages, cachedPackages)
+        val addedApps = receiver.getAddedPackages(currentPackages, cachedPackages)
         assertEquals(trueAddedApps.count(), addedApps.apps.count())
         assertTrue { trueAddedApps.containsAll(addedApps.apps) }
 
         // Check with empty cache
-        val addedAppsNoCache = receiver.getAddedPackages(context, currentPackages, emptyList())
+        val addedAppsNoCache = receiver.getAddedPackages(currentPackages, emptyList())
         assertEquals(currentPackages.count(), addedAppsNoCache.apps.count())
 
         // Check with empty current packages
-        val addedAppsNoCurrent = receiver.getAddedPackages(context, emptyList(), cachedPackages)
+        val addedAppsNoCurrent = receiver.getAddedPackages(emptyList(), cachedPackages)
         assertEquals(0, addedAppsNoCurrent.apps.count())
 
         // Check with identical cache and current
         val addedAppsIdentical = receiver.getAddedPackages(
-            context,
             currentPackages,
-            currentPackages.map { AppVersion(it.packageName, it.longVersionCode) }
+            currentPackages.map { AppVersion(it.packageName, it.versionCode) }
         )
         assertEquals(0, addedAppsIdentical.apps.count())
     }
@@ -75,37 +71,35 @@ class AppManagerCacheValidatorReceiverTest {
     fun getUpdatedPackages_returnsUpdatedApps() {
         // Create data
         val receiver = AppManagerCacheValidatorReceiver()
-        val currentPackages = createPackageInfos(100)
+        val currentPackages = createApps(100)
         val cachedPackages = currentPackages
             .map {
                 val shouldDowngrade = Random.nextInt(0, 10) <= 1
                 AppVersion(
                     it.packageName,
-                    if (shouldDowngrade) it.longVersionCode - 1 else it.longVersionCode
+                    if (shouldDowngrade) it.versionCode - 1 else it.versionCode
                 )
             }
         val trueUpdatedApps = currentPackages
-            .filter { packageInfo -> cachedPackages.any { it.packageName == packageInfo.packageName && it.versionCode < packageInfo.longVersionCode } }
-            .map { it.toApp(context.packageManager) }
+            .filter { packageInfo -> cachedPackages.any { it.packageName == packageInfo.packageName && it.versionCode < packageInfo.versionCode } }
 
         // Make the call and check the result
-        val updatedApps = receiver.getUpdatedPackages(context, currentPackages, cachedPackages)
+        val updatedApps = receiver.getUpdatedPackages(currentPackages, cachedPackages)
         assertEquals(trueUpdatedApps.count(), updatedApps.apps.count())
         assertTrue { trueUpdatedApps.containsAll(updatedApps.apps) }
 
         // Check with empty cache
-        val updatedAppsNoCache = receiver.getUpdatedPackages(context, currentPackages, emptyList())
+        val updatedAppsNoCache = receiver.getUpdatedPackages(currentPackages, emptyList())
         assertEquals(0, updatedAppsNoCache.apps.count())
 
         // Check with empty current packages
-        val updatedAppsNoCurrent = receiver.getUpdatedPackages(context, emptyList(), cachedPackages)
+        val updatedAppsNoCurrent = receiver.getUpdatedPackages(emptyList(), cachedPackages)
         assertEquals(0, updatedAppsNoCurrent.apps.count())
 
         // Check with identical cache and current
         val updatedAppsIdentical = receiver.getUpdatedPackages(
-            context,
             currentPackages,
-            currentPackages.map { AppVersion(it.packageName, it.longVersionCode) }
+            currentPackages.map { AppVersion(it.packageName, it.versionCode) }
         )
         assertEquals(0, updatedAppsIdentical.apps.count())
     }
@@ -114,9 +108,9 @@ class AppManagerCacheValidatorReceiverTest {
     fun getRemovedPackages_returnsRemovedApps() {
         // Create data
         val receiver = AppManagerCacheValidatorReceiver()
-        val maxPackages = createPackageInfos(100)
+        val maxPackages = createApps(100)
         val currentPackages = maxPackages.drop(10)
-        val cachedPackages = maxPackages.map { AppVersion(it.packageName, it.longVersionCode) }
+        val cachedPackages = maxPackages.map { AppVersion(it.packageName, it.versionCode) }
         val trueRemovedApps = cachedPackages
             .filter { packageInfo -> currentPackages.none { it.packageName == packageInfo.packageName } }
             .map { it.packageName }
@@ -137,26 +131,25 @@ class AppManagerCacheValidatorReceiverTest {
         // Check with identical cache and current
         val removedAppsIdentical = receiver.getRemovedPackages(
             currentPackages,
-            currentPackages.map { AppVersion(it.packageName, it.longVersionCode) }
+            currentPackages.map { AppVersion(it.packageName, it.versionCode) }
         )
         assertEquals(0, removedAppsIdentical.packages.count())
     }
 
-    private fun createPackageInfos(count: Int): List<PackageInfo> {
+    private fun createApps(count: Int): List<App> {
         return (0 until count).map {
-            PackageInfo().apply {
-                versionName = "2.0"
-                longVersionCode = 2
-                packageName = "com.package.number$it"
-                lastUpdateTime = 2
-                firstInstallTime = 1
-                permissions = emptyArray()
-                applicationInfo = ApplicationInfo().apply {
-                    enabled = true
-                    flags = 0
-                    nonLocalizedLabel = "My App $it"
-                }
-            }
+            App(
+                versionName = "2.0",
+                versionCode = 2,
+                packageName = "com.package.number$it",
+                label = "My App $it",
+                isSystemApp = false,
+                hasLaunchActivity = true,
+                isEnabled = true,
+                installTime = 1,
+                lastUpdateTime = 2,
+                requestedPermissions = emptyList()
+            )
         }
     }
 }

@@ -1,9 +1,6 @@
 package com.boswelja.smartwatchextensions.appmanager
 
 import android.content.Context
-import android.content.pm.PackageInfo
-import android.content.pm.PackageManager
-import androidx.core.content.pm.PackageInfoCompat
 import androidx.core.graphics.drawable.toBitmap
 import com.boswelja.watchconnection.common.message.Message
 import com.boswelja.watchconnection.common.message.ReceivedMessage
@@ -28,11 +25,10 @@ class AppManagerCacheValidatorReceiver :
         message: ReceivedMessage<AppVersions>
     ) {
         // Get a list of apps installed on this device, and format for cache validation.
-        val currentPackages = context.packageManager
-            .getInstalledPackages(PackageManager.GET_PERMISSIONS)
+        val currentPackages = context.packageManager.getAllApps()
 
-        val addedApps = getAddedPackages(context, currentPackages, message.data.versions)
-        val updatedApps = getUpdatedPackages(context, currentPackages, message.data.versions)
+        val addedApps = getAddedPackages(currentPackages, message.data.versions)
+        val updatedApps = getUpdatedPackages(currentPackages, message.data.versions)
         val removedApps = getRemovedPackages(currentPackages, message.data.versions)
         sendAppChanges(
             message.sourceUid,
@@ -132,36 +128,31 @@ class AppManagerCacheValidatorReceiver :
     }
 
     internal fun getAddedPackages(
-        context: Context,
-        currentPackages: List<PackageInfo>,
+        currentPackages: List<App>,
         cachedPackages: List<AppVersion>
     ): AppList {
         val addedApps = currentPackages
             .filter { packageInfo ->
                 cachedPackages.none { packageInfo.packageName == it.packageName }
             }
-            .map { it.toApp(context.packageManager) }
         return AppList(addedApps)
     }
 
     internal fun getUpdatedPackages(
-        context: Context,
-        currentPackages: List<PackageInfo>,
+        currentPackages: List<App>,
         cachedPackages: List<AppVersion>
     ): AppList {
         val addedApps = currentPackages
             .filter { packageInfo ->
-                val longVersionCode = PackageInfoCompat.getLongVersionCode(packageInfo)
                 cachedPackages.any {
-                    packageInfo.packageName == it.packageName && longVersionCode != it.versionCode
+                    packageInfo.packageName == it.packageName && packageInfo.versionCode != it.versionCode
                 }
             }
-            .map { it.toApp(context.packageManager) }
         return AppList(addedApps)
     }
 
     internal fun getRemovedPackages(
-        currentPackages: List<PackageInfo>,
+        currentPackages: List<App>,
         cachedPackages: List<AppVersion>
     ): RemovedApps {
         val removedPackages = cachedPackages

@@ -35,9 +35,9 @@ fun Context.requestUninstallPackage(packageName: String) {
 /**
  * Get all packages installed on this device, and convert them to [App] instances.
  */
-fun Context.getAllApps(): List<App> {
-    return packageManager.getInstalledPackages(PackageManager.GET_PERMISSIONS).map {
-        it.toApp(packageManager)
+fun PackageManager.getAllApps(): List<App> {
+    return getInstalledPackages(PackageManager.GET_PERMISSIONS).map {
+        it.toApp(this)
     }
 }
 
