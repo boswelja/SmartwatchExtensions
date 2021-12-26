@@ -81,7 +81,11 @@ class AppManagerCacheValidatorReceiverTest {
                 )
             }
         val trueUpdatedApps = currentPackages
-            .filter { packageInfo -> cachedPackages.any { it.packageName == packageInfo.packageName && it.versionCode < packageInfo.versionCode } }
+            .filter { packageInfo ->
+                cachedPackages.any {
+                    it.packageName == packageInfo.packageName && it.versionCode < packageInfo.versionCode
+                }
+            }
 
         // Make the call and check the result
         val updatedApps = receiver.getUpdatedPackages(currentPackages, cachedPackages)
