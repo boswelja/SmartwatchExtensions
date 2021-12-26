@@ -1,13 +1,16 @@
 package com.boswelja.smartwatchextensions.appmanager
 
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFails
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class CacheValidationSerializerTest {
 
     @Test
-    fun serializesCorrectly() = runSuspendingTest {
+    fun serializesCorrectly() = runTest {
         val data = createAppVersions(100)
         val bytes = CacheValidationSerializer.serialize(data)
         val deserializedData = CacheValidationSerializer.deserialize(bytes)
@@ -15,7 +18,7 @@ class CacheValidationSerializerTest {
     }
 
     @Test
-    fun throwsWhenBytesInvalid() = runSuspendingTest {
+    fun throwsWhenBytesInvalid() = runTest {
         val bytes = byteArrayOf(1)
         assertFails {
             CacheValidationSerializer.deserialize(bytes)

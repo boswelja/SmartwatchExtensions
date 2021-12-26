@@ -30,6 +30,7 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.resetMain
+import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import org.junit.After
 import org.junit.Before
@@ -38,6 +39,7 @@ import kotlin.random.Random
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class AppManagerViewModelTest {
 
     private lateinit var appRepository: WatchAppRepository
@@ -97,7 +99,7 @@ class AppManagerViewModelTest {
     }
 
     @Test
-    fun validateCache_sendsCacheState(): Unit = runBlocking {
+    fun validateCache_sendsCacheState() = runTest {
         val watchUid = Watch.createUid("platform", "id")
         val watch = Watch(watchUid, "Watch")
         val versions = listOf(
