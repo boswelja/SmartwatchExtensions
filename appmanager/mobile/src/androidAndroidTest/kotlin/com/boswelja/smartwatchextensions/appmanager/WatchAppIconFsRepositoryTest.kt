@@ -55,7 +55,7 @@ class WatchAppIconFsRepositoryTest {
         appIconRepository.storeIconFor(watchUid, packageName, bytes)
 
         // Remove it and check the result
-        val result = appIconRepository.removeIconFor("uid", "com.package")
+        val result = appIconRepository.removeIconFor(watchUid, packageName)
         assertTrue(result)
     }
 
