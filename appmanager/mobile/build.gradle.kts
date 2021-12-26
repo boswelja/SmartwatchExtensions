@@ -49,6 +49,8 @@ kotlin {
                 implementation(libs.androidx.test.runner)
                 implementation(libs.koin.test)
                 implementation(libs.mockk.android)
+                // Workaround for MockK 1.11.0 including a broken objenesis
+                implementation("org.objenesis:objenesis:3.2")
             }
         }
     }
