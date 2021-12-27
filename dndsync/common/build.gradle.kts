@@ -1,5 +1,6 @@
 plugins {
     id("com.boswelja.smartwatchextensions.library")
+    id("com.boswelja.smartwatchextensions.detekt")
 }
 
 kotlin {

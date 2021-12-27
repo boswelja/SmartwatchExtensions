@@ -5,6 +5,7 @@ plugins {
     kotlin("android")
     id("com.google.gms.google-services")
     kotlin("plugin.serialization") version "1.6.10"
+    id("com.boswelja.smartwatchextensions.detekt")
 }
 
 android {

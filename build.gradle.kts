@@ -6,17 +6,3 @@ plugins {
     id("com.google.gms.google-services") version "4.3.10" apply false
     id("io.gitlab.arturbosch.detekt") version "1.18.1"
 }
-
-subprojects {
-    apply(plugin = "io.gitlab.arturbosch.detekt")
-    repositories {
-        google()
-        mavenCentral()
-    }
-    detekt {
-        config = files("$rootDir/config/detekt/detekt.yml")
-        source = files("src")
-        buildUponDefaultConfig = true
-        parallel = true
-    }
-}
