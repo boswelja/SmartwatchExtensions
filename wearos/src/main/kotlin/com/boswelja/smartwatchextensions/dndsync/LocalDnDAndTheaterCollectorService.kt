@@ -12,11 +12,11 @@ import androidx.lifecycle.lifecycleScope
 import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.extensions.extensionSettingsStore
 import com.boswelja.smartwatchextensions.main.ui.MainActivity
+import com.boswelja.smartwatchextensions.phoneStateStore
 import com.boswelja.watchconnection.common.message.Message
 import com.boswelja.watchconnection.serialization.MessageHandler
-import com.boswelja.watchconnection.wear.discovery.DiscoveryClient
 import com.boswelja.watchconnection.wear.message.MessageClient
-import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
@@ -27,7 +27,7 @@ import org.koin.android.ext.android.inject
  */
 class LocalDnDAndTheaterCollectorService : BaseLocalDnDAndTheaterCollectorService() {
 
-    private val discoveryClient: DiscoveryClient by inject()
+    private val phoneState by lazy { phoneStateStore }
     private val messageClient: MessageClient by inject()
     private val messageHandler: MessageHandler<Boolean> by lazy {
         MessageHandler(DnDStatusSerializer, messageClient)
@@ -115,8 +115,9 @@ class LocalDnDAndTheaterCollectorService : BaseLocalDnDAndTheaterCollectorServic
      * @param dndSyncEnabled Whether Interruption Filter should be enabled.
      */
     private suspend fun updateDnDState(dndSyncEnabled: Boolean) {
+        val phoneId = phoneState.data.map { it.id }.first()
         messageHandler.sendMessage(
-            discoveryClient.pairedPhone()!!.uid,
+            phoneId,
             Message(DND_STATUS_PATH, dndSyncEnabled)
         )
     }
