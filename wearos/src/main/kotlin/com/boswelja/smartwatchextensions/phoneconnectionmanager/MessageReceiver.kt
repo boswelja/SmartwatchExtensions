@@ -49,7 +49,17 @@ class MessageReceiver :
             RESET_SETTINGS -> {
                 context.extensionSettingsStore.updateData {
                     // Recreate the DataStore with default values
-                    ExtensionSettings()
+                    ExtensionSettings(
+                        phoneLockingEnabled = false,
+                        batterySyncEnabled = false,
+                        phoneChargeNotiEnabled = false,
+                        phoneLowNotiEnabled = false,
+                        batteryLowThreshold = 10,
+                        batteryChargeThreshold = 90,
+                        dndSyncToPhone = false,
+                        dndSyncWithTheater = false,
+                        phoneSeparationNotis = false
+                    )
                 }
             }
             REQUEST_UPDATE_CAPABILITIES -> {
