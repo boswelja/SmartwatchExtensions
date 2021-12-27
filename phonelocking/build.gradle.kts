@@ -10,12 +10,9 @@ kotlin {
         val commonMain by getting {
             dependencies {
                 api(libs.watchconnection.common)
-                api(libs.wire.runtime)
             }
         }
-        val androidMain by getting {
-            dependencies { }
-        }
+        val androidMain by getting
     }
 }
 

@@ -11,7 +11,6 @@ kotlin {
             dependencies {
                 api(libs.watchconnection.common)
                 api(libs.watchconnection.serialization)
-                api(libs.wire.runtime)
                 api(libs.kotlinx.coroutines.core)
             }
         }
