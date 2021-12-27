@@ -97,8 +97,6 @@ dependencies {
     testImplementation(libs.androidx.test.ext.junit)
     testImplementation(libs.kotlinx.coroutines.test)
     testImplementation(libs.junit)
-    testImplementation(libs.strikt.core)
-    testImplementation(libs.strikt.mockk)
     testImplementation(libs.mockk.core)
     testImplementation(libs.robolectric)
 
@@ -106,9 +104,7 @@ dependencies {
     androidTestImplementation(libs.androidx.test.runner)
     androidTestImplementation(libs.androidx.test.rules)
     androidTestImplementation(libs.androidx.test.corektx)
-    androidTestImplementation(libs.strikt.core)
-    androidTestImplementation(libs.strikt.mockk)
-    androidTestImplementation(libs.androidx.compose.ui.test)
+    androidTestImplementation(libs.compose.ui.test)
     androidTestImplementation(libs.mockk.android)
 }
 
