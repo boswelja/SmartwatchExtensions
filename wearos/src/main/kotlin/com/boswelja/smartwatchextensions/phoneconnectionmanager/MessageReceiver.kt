@@ -36,7 +36,7 @@ class MessageReceiver :
         when (message.path) {
             REQUEST_APP_VERSION -> {
                 val handler = MessageHandler(VersionSerializer, messageClient)
-                val version = Version(BuildConfig.VERSION_CODE, BuildConfig.VERSION_NAME)
+                val version = Version(BuildConfig.VERSION_CODE.toLong(), BuildConfig.VERSION_NAME)
                 handler.sendMessage(
                     discoveryClient.pairedPhone()!!.uid,
                     Message(REQUEST_APP_VERSION, version)

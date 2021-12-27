@@ -1,6 +1,0 @@
-syntax = "proto3";
-package com.boswelja.smartwatchextensions.devicemanagement;
-
-message SelectedWatchState {
-  string selectedWatchId = 1;
-}
