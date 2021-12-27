@@ -28,7 +28,11 @@ class MessagesDbRepositoryTest {
     @Test
     fun insertInsertsMessage() = runSuspendingTest {
         val testMessage = Message(
-            title = "SomeUniqueTitle"
+            icon = Message.Icon.ERROR,
+            title = "SomeUniqueTitle",
+            text = "Some text",
+            action = Message.Action.NONE,
+            timestamp = 0
         )
 
         // Insert message
@@ -43,7 +47,11 @@ class MessagesDbRepositoryTest {
     @Test
     fun archiveArchivesMessage() = runSuspendingTest {
         val testMessage = Message(
-            title = "SomeUniqueTitle"
+            icon = Message.Icon.ERROR,
+            title = "SomeUniqueTitle",
+            text = "Some text",
+            action = Message.Action.NONE,
+            timestamp = 0
         )
 
         // Insert message
@@ -75,7 +83,13 @@ class MessagesDbRepositoryTest {
     @Test
     fun deleteForSourceDeletesForSource() = runSuspendingTest {
         val sourceUid = "uid"
-        val testMessage = Message()
+        val testMessage = Message(
+            icon = Message.Icon.ERROR,
+            title = "SomeUniqueTitle",
+            text = "Some text",
+            action = Message.Action.NONE,
+            timestamp = 0
+        )
 
         // Insert message
         repository.insert(testMessage, sourceUid)
@@ -91,14 +105,32 @@ class MessagesDbRepositoryTest {
     @Test
     fun getAllWhereFlowsUpdates() = runSuspendingTest {
         // Insert a message
-        repository.insert(Message(), null)
+        repository.insert(
+            Message(
+                icon = Message.Icon.ERROR,
+                title = "SomeUniqueTitle",
+                text = "Some text",
+                action = Message.Action.NONE,
+                timestamp = 0
+            ),
+            null
+        )
 
         repository.getAllWhere(false).test {
             // Check initial value
             assertEquals(1, awaitItem().count())
 
             // Add 1 and check again
-            repository.insert(Message(), null)
+            repository.insert(
+                Message(
+                    icon = Message.Icon.ERROR,
+                    title = "SomeUniqueTitle",
+                    text = "Some text",
+                    action = Message.Action.NONE,
+                    timestamp = 0
+                ),
+                null
+            )
             val items = awaitItem()
             assertEquals(2, items.count())
 
