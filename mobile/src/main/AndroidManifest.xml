@@ -43,10 +43,6 @@
             android:name=".onboarding.ui.OnboardingActivity"
             android:exported="false" />
 
-        <activity
-            android:name=".donate.ui.DonateActivity"
-            android:exported="true" />
-
         <service
             android:name=".phonelocking.PhoneLockingAccessibilityService"
             android:label="@string/phone_locking_accessibility_service_label"
@@ -88,6 +84,14 @@
 
         <receiver
             android:name=".devicemanagement.connection.WatchMessageReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.boswelja.watchconnection.common.message.MessageReceived" />
+            </intent-filter>
+        </receiver>
+
+        <receiver
+            android:name=".dndsync.DnDStatusReceiver"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.boswelja.watchconnection.common.message.MessageReceived" />
