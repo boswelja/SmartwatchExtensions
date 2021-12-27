@@ -26,7 +26,19 @@ class AddedOrUpdatedAppsSerializerTest {
     }
 
     private fun createAppList(count: Int): AppList {
-        val listOfApps = (0 until count).map { App() }
+        val listOfApps = (0 until count).map {
+            App(
+                versionName = "2.0",
+                versionCode = 2,
+                packageName = "com.package.number$it",
+                label = "My App $it",
+                isSystemApp = false,
+                hasLaunchActivity = true,
+                isEnabled = true,
+                installTime = 1,
+                updateTime = 2
+            )
+        }
         return AppList(listOfApps)
     }
 }

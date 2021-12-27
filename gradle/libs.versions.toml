@@ -36,6 +36,7 @@ sqldelight = "1.5.2"
 turbine = "0.7.0"
 watchconnection = "7.0.6"
 wire = "3.7.1"
+serialization = "1.3.2"
 
 [libraries]
 # AndroidX Libraries
@@ -100,6 +101,8 @@ sqldelight-coroutines = { module = "com.squareup.sqldelight:coroutines-extension
 sqldelight-android = { module = "com.squareup.sqldelight:android-driver", version.ref = "sqldelight" }
 sqldelight-sqlitedriver = { module = "com.squareup.sqldelight:sqlite-driver", version.ref = "sqldelight" }
 turbine = { module = "app.cash.turbine:turbine", version.ref = "turbine" }
+
+kotlinx-serialization-protobuf = { module = "org.jetbrains.kotlinx:kotlinx-serialization-protobuf", version.ref = "serialization" }
 
 koin-android = { module = "io.insert-koin:koin-android", version.ref = "koin" }
 koin-compose = { module = "io.insert-koin:koin-androidx-compose", version.ref = "koin" }

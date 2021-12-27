@@ -1,7 +1,7 @@
 plugins {
     kotlin("multiplatform")
     id("com.android.library")
-    id("com.squareup.wire")
+    kotlin("plugin.serialization") version "1.6.10"
 }
 
 kotlin {
@@ -12,7 +12,7 @@ kotlin {
             dependencies {
                 api(libs.watchconnection.common)
                 api(libs.watchconnection.serialization)
-                api(libs.wire.runtime)
+                implementation(libs.kotlinx.serialization.protobuf)
             }
         }
         val commonTest by getting {
@@ -21,9 +21,7 @@ kotlin {
                 implementation(libs.kotlinx.coroutines.test)
             }
         }
-        val androidMain by getting {
-            dependencies { }
-        }
+        val androidMain by getting
     }
 }
 
@@ -40,11 +38,4 @@ tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach 
     kotlinOptions {
         freeCompilerArgs = freeCompilerArgs + "-Xopt-in=kotlin.RequiresOptIn"
     }
-}
-
-wire {
-    sourcePath {
-        srcDir("src/commonMain/proto")
-    }
-    kotlin { }
 }

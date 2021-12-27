@@ -4,6 +4,7 @@ plugins {
     id("org.jetbrains.kotlin.android") version "1.6.10" apply false
     id("com.squareup.sqldelight") version libs.versions.sqldelight.get() apply false
     id("com.squareup.wire") version libs.versions.wire.get() apply false
+    id("com.google.protobuf") version "0.8.18" apply false
     id("com.google.gms.google-services") version "4.3.10" apply false
     id("io.gitlab.arturbosch.detekt") version "1.18.1"
 }
