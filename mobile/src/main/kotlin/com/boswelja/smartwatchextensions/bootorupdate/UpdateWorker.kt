@@ -46,7 +46,9 @@ class UpdateWorker(
                     applicationContext.getString(R.string.update_completed_title),
                     applicationContext.getString(
                         R.string.update_complete_text, BuildConfig.VERSION_NAME
-                    )
+                    ),
+                    action = Message.Action.NONE,
+                    timestamp = System.currentTimeMillis()
                 )
                 applicationContext.sendMessage(message, repository = messagesRepository)
                 success()
