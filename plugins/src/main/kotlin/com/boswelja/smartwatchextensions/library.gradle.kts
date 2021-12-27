@@ -1,3 +1,5 @@
+package com.boswelja.smartwatchextensions
+
 plugins {
     kotlin("multiplatform")
     id("com.android.library")

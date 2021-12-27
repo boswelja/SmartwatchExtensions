@@ -1,5 +1,5 @@
 plugins {
-    id("multiplatform-module")
+    id("com.boswelja.smartwatchextensions.library")
     kotlin("plugin.serialization") version "1.6.10"
 }
 

@@ -1,6 +1,6 @@
 plugins {
     kotlin("multiplatform")
-    id("multiplatform-module")
+    id("com.boswelja.smartwatchextensions.library")
 }
 
 kotlin {
