@@ -1,3 +1,4 @@
+includeBuild("plugins")
 include(
     ":appmanager:common",
     ":appmanager:mobile",
