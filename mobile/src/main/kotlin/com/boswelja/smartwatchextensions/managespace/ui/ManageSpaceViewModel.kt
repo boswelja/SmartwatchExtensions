@@ -10,7 +10,6 @@ import com.boswelja.smartwatchextensions.settings.Settings
 import com.boswelja.watchconnection.common.Watch
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlin.math.floor
@@ -84,7 +83,11 @@ class ManageSpaceViewModel(
     ) {
         viewModelScope.launch(coroutineDispatcher) {
             appSettingsDataStore.updateData {
-                Settings()
+                Settings(
+                    analyticsEnabled = false,
+                    qsTileWatchId = "",
+                    checkForUpdates = false
+                )
             }
             withContext(Dispatchers.Main) { onCompleteFunction(true) }
         }

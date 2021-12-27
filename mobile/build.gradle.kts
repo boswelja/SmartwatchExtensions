@@ -4,7 +4,7 @@ plugins {
     id("com.android.application")
     kotlin("android")
     id("com.google.gms.google-services")
-    id("com.squareup.wire")
+    kotlin("plugin.serialization") version "1.6.10"
 }
 
 android {
@@ -77,6 +77,8 @@ dependencies {
     implementation(libs.androidx.datastore.preferences)
     implementation(libs.androidx.datastore.proto)
 
+    implementation(libs.kotlinx.serialization.protobuf)
+
     implementation(libs.googleplay.core)
     implementation(libs.googleplay.corektx)
     implementation(libs.migration)
@@ -107,12 +109,6 @@ dependencies {
     androidTestImplementation(libs.strikt.mockk)
     androidTestImplementation(libs.androidx.compose.ui.test)
     androidTestImplementation(libs.mockk.android)
-}
-
-wire {
-    kotlin {
-        android = true
-    }
 }
 
 tasks.withType<KotlinCompile>().configureEach {
