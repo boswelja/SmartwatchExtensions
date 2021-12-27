@@ -17,7 +17,7 @@ class WatchAppIconReceiver : MessageReceiver<AppIcon>(AppIconSerializer), KoinCo
         watchAppIconRepository.storeIconFor(
             message.sourceUid,
             message.data.packageName,
-            message.data.iconBytes.toByteArray()
+            message.data.iconBytes
         )
     }
 }

@@ -7,7 +7,6 @@ import com.boswelja.watchconnection.common.message.ReceivedMessage
 import com.boswelja.watchconnection.serialization.MessageHandler
 import com.boswelja.watchconnection.serialization.MessageReceiver
 import com.boswelja.watchconnection.wear.message.MessageClient
-import okio.ByteString.Companion.toByteString
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
@@ -119,7 +118,7 @@ class AppManagerCacheValidatorReceiver :
                         APP_ICON,
                         AppIcon(
                             app.packageName,
-                            bytes.toByteString()
+                            bytes
                         )
                     )
                 )

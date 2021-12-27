@@ -2,7 +2,6 @@ package com.boswelja.smartwatchextensions.appmanager
 
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
-import okio.ByteString.Companion.toByteString
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFails
@@ -14,7 +13,7 @@ class AppIconSerializerTest {
     fun serializesCorrectly() = runTest {
         val appIcon = AppIcon(
             packageName = "com.my.package",
-            iconBytes = byteArrayOf().toByteString()
+            iconBytes = byteArrayOf()
         )
         val bytes = AppIconSerializer.serialize(appIcon)
         val deserializedIcon = AppIconSerializer.deserialize(bytes)

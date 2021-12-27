@@ -1,7 +1,7 @@
 plugins {
     kotlin("multiplatform")
     id("com.android.library")
-    id("com.squareup.wire")
+    kotlin("plugin.serialization") version "1.6.10"
     id("com.squareup.sqldelight")
 }
 
@@ -12,10 +12,10 @@ kotlin {
         val commonMain by getting {
             dependencies {
                 implementation(libs.watchconnection.platform.wearos)
-                api(libs.wire.runtime)
                 implementation(libs.sqldelight.runtime)
                 implementation(libs.sqldelight.coroutines)
                 api(projects.devicemanagement.common)
+                implementation(libs.kotlinx.serialization.protobuf)
             }
         }
         val androidMain by getting {
@@ -41,13 +41,6 @@ tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach 
     kotlinOptions {
         freeCompilerArgs = freeCompilerArgs + "-Xopt-in=kotlin.RequiresOptIn"
     }
-}
-
-wire {
-    sourcePath {
-        srcDir("src/commonMain/proto")
-    }
-    kotlin { }
 }
 
 sqldelight {

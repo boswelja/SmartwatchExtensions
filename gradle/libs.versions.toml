@@ -35,7 +35,7 @@ strikt = "0.33.0"
 sqldelight = "1.5.2"
 turbine = "0.7.0"
 watchconnection = "7.0.6"
-wire = "3.7.1"
+serialization = "1.3.2"
 
 [libraries]
 # AndroidX Libraries
@@ -94,12 +94,13 @@ watchconnection-mobile-core = { module = "io.github.boswelja.watchconnection:mob
 watchconnection-serialization = { module = "io.github.boswelja.watchconnection:serialization", version.ref = "watchconnection" }
 watchconnection-platform-wearos = { module = "io.github.boswelja.watchconnection:platform-wearos", version.ref = "watchconnection" }
 watchconnection-wear = { module = "io.github.boswelja.watchconnection:wear", version.ref = "watchconnection" }
-wire-runtime = { module = "com.squareup.wire:wire-runtime", version.ref = "wire" }
 sqldelight-runtime = { module = "com.squareup.sqldelight:runtime", version.ref = "sqldelight" }
 sqldelight-coroutines = { module = "com.squareup.sqldelight:coroutines-extensions", version.ref = "sqldelight" }
 sqldelight-android = { module = "com.squareup.sqldelight:android-driver", version.ref = "sqldelight" }
 sqldelight-sqlitedriver = { module = "com.squareup.sqldelight:sqlite-driver", version.ref = "sqldelight" }
 turbine = { module = "app.cash.turbine:turbine", version.ref = "turbine" }
+
+kotlinx-serialization-protobuf = { module = "org.jetbrains.kotlinx:kotlinx-serialization-protobuf", version.ref = "serialization" }
 
 koin-android = { module = "io.insert-koin:koin-android", version.ref = "koin" }
 koin-compose = { module = "io.insert-koin:koin-androidx-compose", version.ref = "koin" }

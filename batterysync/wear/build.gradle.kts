@@ -16,6 +16,7 @@ kotlin {
         val androidMain by getting {
             dependencies {
                 implementation(libs.androidx.datastore.proto)
+                implementation(libs.kotlinx.serialization.protobuf)
             }
         }
     }

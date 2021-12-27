@@ -36,7 +36,7 @@ class MessageReceiver :
         when (message.path) {
             REQUEST_APP_VERSION -> {
                 val handler = MessageHandler(VersionSerializer, messageClient)
-                val version = Version(BuildConfig.VERSION_CODE, BuildConfig.VERSION_NAME)
+                val version = Version(BuildConfig.VERSION_CODE.toLong(), BuildConfig.VERSION_NAME)
                 handler.sendMessage(
                     discoveryClient.pairedPhone()!!.uid,
                     Message(REQUEST_APP_VERSION, version)
@@ -49,7 +49,17 @@ class MessageReceiver :
             RESET_SETTINGS -> {
                 context.extensionSettingsStore.updateData {
                     // Recreate the DataStore with default values
-                    ExtensionSettings()
+                    ExtensionSettings(
+                        phoneLockingEnabled = false,
+                        batterySyncEnabled = false,
+                        phoneChargeNotiEnabled = false,
+                        phoneLowNotiEnabled = false,
+                        batteryLowThreshold = 10,
+                        batteryChargeThreshold = 90,
+                        dndSyncToPhone = false,
+                        dndSyncWithTheater = false,
+                        phoneSeparationNotis = false
+                    )
                 }
             }
             REQUEST_UPDATE_CAPABILITIES -> {

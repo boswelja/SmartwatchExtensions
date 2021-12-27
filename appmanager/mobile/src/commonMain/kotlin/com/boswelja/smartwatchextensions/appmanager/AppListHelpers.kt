@@ -16,7 +16,7 @@ fun AppList.mapToWatchAppDetails(sourceUid: String): List<WatchAppDetails> {
             isLaunchable = it.hasLaunchActivity,
             isEnabled = it.isEnabled,
             installTime = it.installTime,
-            updateTime = it.lastUpdateTime,
+            updateTime = it.updateTime,
             permissions = it.requestedPermissions
         )
     }

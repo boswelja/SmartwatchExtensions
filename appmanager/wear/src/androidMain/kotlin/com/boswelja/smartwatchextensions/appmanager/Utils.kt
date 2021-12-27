@@ -17,7 +17,7 @@ internal fun PackageInfo.toApp(packageManager: PackageManager): App {
         hasLaunchActivity = packageManager.getLaunchIntentForPackage(packageName) != null,
         isEnabled = applicationInfo.enabled,
         installTime = firstInstallTime,
-        lastUpdateTime = lastUpdateTime,
+        updateTime = lastUpdateTime,
         requestedPermissions = packageManager.getLocalizedPermissions(this)
     )
 }

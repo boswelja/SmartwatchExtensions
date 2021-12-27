@@ -4,7 +4,11 @@ import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.core.Serializer
 import androidx.datastore.dataStore
-import java.io.IOException
+import kotlinx.serialization.ExperimentalSerializationApi
+import kotlinx.serialization.SerializationException
+import kotlinx.serialization.decodeFromByteArray
+import kotlinx.serialization.encodeToByteArray
+import kotlinx.serialization.protobuf.ProtoBuf
 import java.io.InputStream
 import java.io.OutputStream
 
@@ -16,7 +20,7 @@ val Context.selectedWatchStateStore: DataStore<SelectedWatchState> by dataStore(
     SelectedWatchStateSerializer()
 )
 
-@Suppress("BlockingMethodInNonBlockingContext")
+@OptIn(ExperimentalSerializationApi::class)
 private class SelectedWatchStateSerializer : Serializer<SelectedWatchState> {
     override val defaultValue = SelectedWatchState(
         ""
@@ -24,13 +28,13 @@ private class SelectedWatchStateSerializer : Serializer<SelectedWatchState> {
 
     override suspend fun readFrom(input: InputStream): SelectedWatchState {
         return try {
-            SelectedWatchState.ADAPTER.decode(input)
-        } catch (_: IOException) {
+            ProtoBuf.decodeFromByteArray(input.readBytes())
+        } catch (_: SerializationException) {
             defaultValue
         }
     }
 
-    override suspend fun writeTo(t: SelectedWatchState, output: OutputStream) {
-        t.encode(output)
-    }
+    @Suppress("BlockingMethodInNonBlockingContext")
+    override suspend fun writeTo(t: SelectedWatchState, output: OutputStream) =
+        output.write(ProtoBuf.encodeToByteArray(t))
 }

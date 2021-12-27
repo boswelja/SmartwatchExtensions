@@ -34,7 +34,8 @@ class UpdateCheckWorker(
                 icon = Message.Icon.UPDATE,
                 title = applicationContext.getString(R.string.update_available_title),
                 text = applicationContext.getString(R.string.update_available_text),
-                action = Message.Action.INSTALL_UPDATE
+                action = Message.Action.INSTALL_UPDATE,
+                timestamp = System.currentTimeMillis()
             )
             applicationContext.sendMessage(message, Priority.HIGH, repository = messagesRepository)
         }

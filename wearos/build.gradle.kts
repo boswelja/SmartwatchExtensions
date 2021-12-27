@@ -1,7 +1,7 @@
 plugins {
     id("com.android.application")
     kotlin("android")
-    id("com.squareup.wire")
+    kotlin("plugin.serialization") version "1.6.10"
 }
 
 android {
@@ -71,6 +71,8 @@ dependencies {
     implementation(libs.androidx.wear.complications.data.source)
     implementation(libs.androidx.work.ktx)
 
+    implementation(libs.kotlinx.serialization.protobuf)
+
     implementation(libs.watchconnection.wear)
 
     implementation(libs.koin.android)
@@ -94,12 +96,6 @@ dependencies {
     androidTestImplementation(libs.strikt.mockk)
     androidTestImplementation(libs.androidx.compose.ui.test)
     androidTestImplementation(libs.mockk.android)
-}
-
-wire {
-    kotlin {
-        android = true
-    }
 }
 
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
