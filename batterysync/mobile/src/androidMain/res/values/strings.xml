@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <resources>
+    <string name="battery_percent">%s%%</string>
+    <string name="battery_sync_last_update_recent">Last updated less than a minute ago</string>
     <string name="battery_charge_noti_issue_title">Error sending battery charge notification</string>
     <string name="battery_charge_noti_issue_summary">We were unable to notify you when your watch battery was charged, due to notifications being disabled in your system settings. We have disabled watch battery charge notifications because of this.</string>
     <string name="battery_low_noti_issue_title">Error sending battery low notification</string>

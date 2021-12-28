@@ -1,4 +1,4 @@
-package com.boswelja.smartwatchextensions.common
+package com.boswelja.smartwatchextensions.batterysync.ui
 
 import androidx.compose.material.Icon
 import androidx.compose.runtime.Composable
