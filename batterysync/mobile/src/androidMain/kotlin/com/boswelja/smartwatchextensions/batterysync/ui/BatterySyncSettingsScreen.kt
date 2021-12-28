@@ -16,7 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.boswelja.smartwatchextensions.R
+import com.boswelja.smartwatchextensions.batterysync.R
 import com.boswelja.smartwatchextensions.settings.ui.CheckboxSetting
 import com.boswelja.smartwatchextensions.settings.ui.SliderSetting
 import com.boswelja.smartwatchextensions.settings.ui.SwitchSetting
@@ -79,7 +79,7 @@ fun BatterySyncSettingsScreen(
             )
         } else {
             item {
-                Text(text = stringResource(id = R.string.capability_not_supported))
+                Text("Your watch has indicated it doesn't support Battery Sync")
             }
         }
     }
