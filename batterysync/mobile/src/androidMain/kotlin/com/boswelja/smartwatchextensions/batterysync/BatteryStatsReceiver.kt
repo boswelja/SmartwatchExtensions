@@ -1,21 +1,17 @@
 package com.boswelja.smartwatchextensions.batterysync
 
+import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
-import android.content.Intent
+import android.os.Build
 import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.getSystemService
-import com.boswelja.smartwatchextensions.NotificationChannelHelper
-import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.batterysync.Utils.BATTERY_STATS_NOTI_CHANNEL_ID
-import com.boswelja.smartwatchextensions.batterysync.quicksettings.WatchBatteryTileService
-import com.boswelja.smartwatchextensions.common.WatchWidgetProvider
 import com.boswelja.smartwatchextensions.devicemanagement.WatchRepository
-import com.boswelja.smartwatchextensions.main.ui.MainActivity
 import com.boswelja.smartwatchextensions.messages.Message
 import com.boswelja.smartwatchextensions.messages.MessagesRepository
-import com.boswelja.smartwatchextensions.messages.sendMessage
 import com.boswelja.smartwatchextensions.settings.BoolSettingKeys.BATTERY_CHARGED_NOTI_SENT
 import com.boswelja.smartwatchextensions.settings.BoolSettingKeys.BATTERY_LOW_NOTI_SENT
 import com.boswelja.smartwatchextensions.settings.BoolSettingKeys.BATTERY_WATCH_CHARGE_NOTI_KEY
@@ -24,10 +20,13 @@ import com.boswelja.smartwatchextensions.settings.IntSettingKeys.BATTERY_CHARGE_
 import com.boswelja.smartwatchextensions.settings.IntSettingKeys.BATTERY_LOW_THRESHOLD_KEY
 import com.boswelja.smartwatchextensions.settings.WatchSettingsRepository
 import com.boswelja.watchconnection.common.Watch
+import com.boswelja.watchconnection.common.message.ReceivedMessage
+import com.boswelja.watchconnection.serialization.MessageReceiver
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.withContext
+import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import java.util.Locale
 
@@ -39,15 +38,38 @@ private const val BATTERY_CHARGE_DEFAULT = 90
 private const val BATTERY_LOW_DEFAULT = 20
 
 /**
- * An implementation of [BaseBatteryStatsReceiver] for handling received battery stats.
+ * A [MessageReceiver] to receive [BatteryStats] and update [BatteryStatsDbRepository] with the new
+ * data.
  */
-class BatteryStatsReceiver : BaseBatteryStatsReceiver() {
+class BatteryStatsReceiver :
+    MessageReceiver<BatteryStats?>(BatteryStatsSerializer),
+    KoinComponent {
 
+    private val batteryStatsRepository: BatteryStatsRepository by inject()
     private val messagesRepository: MessagesRepository by inject()
     private val watchRepository: WatchRepository by inject()
     private val settingsRepository: WatchSettingsRepository by inject()
 
-    override suspend fun onBatteryStatsReceived(
+    override suspend fun onMessageReceived(
+        context: Context,
+        message: ReceivedMessage<BatteryStats?>
+    ) {
+        message.data?.let { batteryStats ->
+            batteryStatsRepository.updateStatsFor(
+                message.sourceUid,
+                batteryStats
+            )
+            onBatteryStatsReceived(context, message.sourceUid, batteryStats)
+        }
+    }
+
+    /**
+     * Called after battery stats have been saved into the repository.
+     * @param context [Context].
+     * @param sourceUid The source UID that sent the battery stats.
+     * @param batteryStats The [BatteryStats] object.
+     */
+    private suspend fun onBatteryStatsReceived(
         context: Context,
         sourceUid: String,
         batteryStats: BatteryStats
@@ -81,11 +103,12 @@ class BatteryStatsReceiver : BaseBatteryStatsReceiver() {
                 }
             }
 
-            // Update battery stat widgets
-            WatchWidgetProvider.updateWidgets(context)
-
-            // Update QS Tile
-            WatchBatteryTileService.requestTileUpdate(context)
+            // TODO Restore this
+//            // Update battery stat widgets
+//            WatchWidgetProvider.updateWidgets(context)
+//
+//            // Update QS Tile
+//            WatchBatteryTileService.requestTileUpdate(context)
         }
     }
 
@@ -95,7 +118,7 @@ class BatteryStatsReceiver : BaseBatteryStatsReceiver() {
      * @param batteryStats The [BatteryStats] to send a notification for.
      * @param watch The [Watch] to send a notification for.
      */
-    suspend fun handleWatchChargeNoti(
+    private suspend fun handleWatchChargeNoti(
         context: Context,
         notificationManager: NotificationManager,
         batteryStats: BatteryStats,
@@ -117,7 +140,7 @@ class BatteryStatsReceiver : BaseBatteryStatsReceiver() {
             hasSentNoti
         )
         if (shouldNotify) {
-            NotificationChannelHelper.createForBatteryStats(context, notificationManager)
+            createNotificationChannel(context, notificationManager)
             if (areNotificationsEnabled(context)) {
                 NotificationCompat.Builder(
                     context,
@@ -135,7 +158,7 @@ class BatteryStatsReceiver : BaseBatteryStatsReceiver() {
                     .setLocalOnly(true)
                     .also { notificationManager.notify(BATTERY_CHARGED_NOTI_ID, it.build()) }
             } else {
-                context.sendMessage(
+                messagesRepository.insert(
                     Message(
                         Message.Icon.ERROR,
                         context.getString(R.string.battery_charge_noti_issue_title),
@@ -143,7 +166,7 @@ class BatteryStatsReceiver : BaseBatteryStatsReceiver() {
                         Message.Action.NOTIFICATION_SETTINGS,
                         System.currentTimeMillis()
                     ),
-                    repository = messagesRepository
+                    null
                 )
             }
             settingsRepository.putBoolean(watch.uid, BATTERY_CHARGED_NOTI_SENT, true)
@@ -155,7 +178,7 @@ class BatteryStatsReceiver : BaseBatteryStatsReceiver() {
      * @param batteryStats The [BatteryStats] to send a notification for.
      * @param watch The [Watch] to send a notification for.
      */
-    suspend fun handleWatchLowNoti(
+    private suspend fun handleWatchLowNoti(
         context: Context,
         notificationManager: NotificationManager,
         batteryStats: BatteryStats,
@@ -179,7 +202,7 @@ class BatteryStatsReceiver : BaseBatteryStatsReceiver() {
             hasSentNoti
         )
         if (shouldNotify) {
-            NotificationChannelHelper.createForBatteryStats(context, notificationManager)
+            createNotificationChannel(context, notificationManager)
             if (areNotificationsEnabled(context)) {
                 NotificationCompat.Builder(
                     context,
@@ -197,7 +220,7 @@ class BatteryStatsReceiver : BaseBatteryStatsReceiver() {
                     .setLocalOnly(true)
                     .also { notificationManager.notify(BATTERY_LOW_NOTI_ID, it.build()) }
             } else {
-                context.sendMessage(
+                messagesRepository.insert(
                     Message(
                         Message.Icon.ERROR,
                         context.getString(R.string.battery_low_noti_issue_title),
@@ -205,7 +228,7 @@ class BatteryStatsReceiver : BaseBatteryStatsReceiver() {
                         Message.Action.NOTIFICATION_SETTINGS,
                         System.currentTimeMillis()
                     ),
-                    repository = messagesRepository
+                    null
                 )
             }
             settingsRepository.putBoolean(watch.uid, BATTERY_LOW_NOTI_SENT, true)
@@ -217,7 +240,7 @@ class BatteryStatsReceiver : BaseBatteryStatsReceiver() {
      * @param notificationManager [NotificationManager].
      * @param watch The watch whose charge notification should be dismissed.
      */
-    suspend fun dismissChargeNoti(
+    private suspend fun dismissChargeNoti(
         notificationManager: NotificationManager,
         watch: Watch
     ) {
@@ -230,7 +253,7 @@ class BatteryStatsReceiver : BaseBatteryStatsReceiver() {
      * @param notificationManager [NotificationManager].
      * @param watch The watch whose low notification should be dismissed.
      */
-    suspend fun dismissLowNoti(
+    private suspend fun dismissLowNoti(
         notificationManager: NotificationManager,
         watch: Watch
     ) {
@@ -239,7 +262,7 @@ class BatteryStatsReceiver : BaseBatteryStatsReceiver() {
     }
 
     private fun getNotiPendingIntent(context: Context): PendingIntent {
-        val intent = Intent(context, MainActivity::class.java)
+        val intent = context.packageManager.getLaunchIntentForPackage(context.packageName)
         return PendingIntent.getActivity(
             context,
             START_ACTIVITY_REQUEST_CODE,
@@ -254,8 +277,31 @@ class BatteryStatsReceiver : BaseBatteryStatsReceiver() {
      */
     private fun areNotificationsEnabled(context: Context): Boolean {
         val notificationManager = context.getSystemService<NotificationManager>()!!
-        notificationManager.getNotificationChannel(BATTERY_STATS_NOTI_CHANNEL_ID).let {
-            return it != null && it.importance != NotificationManager.IMPORTANCE_NONE
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            notificationManager.getNotificationChannel(BATTERY_STATS_NOTI_CHANNEL_ID).let {
+                it != null && it.importance != NotificationManager.IMPORTANCE_NONE
+            }
+        } else {
+            NotificationManagerCompat.from(context).areNotificationsEnabled()
+        }
+    }
+
+    /**
+     * Create a notification channel for battery stats notifications.
+     */
+    private fun createNotificationChannel(context: Context, notificationManager: NotificationManager) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            if (notificationManager.getNotificationChannel(BATTERY_STATS_NOTI_CHANNEL_ID) == null) {
+                NotificationChannel(
+                    BATTERY_STATS_NOTI_CHANNEL_ID,
+                    context.getString(R.string.noti_channel_watch_charged_title),
+                    NotificationManager.IMPORTANCE_HIGH
+                ).apply {
+                    enableLights(false)
+                    enableVibration(true)
+                    setShowBadge(true)
+                }.also { notificationManager.createNotificationChannel(it) }
+            }
         }
     }
 }
