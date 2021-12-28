@@ -148,7 +148,7 @@ fun LazyListScope.chargeNotificationSettings(
         )
     }
     item {
-        var currentThreshold by remember { mutableStateOf(chargeThreshold / PROGRESS_FACTOR) }
+        var currentThreshold by remember(chargeThreshold) { mutableStateOf(chargeThreshold / PROGRESS_FACTOR) }
         SliderSetting(
             label = { Text(stringResource(R.string.battery_sync_charge_threshold_title)) },
             trailing = { value ->
@@ -211,7 +211,7 @@ fun LazyListScope.lowNotificationSettings(
         )
     }
     item {
-        var currentThreshold by remember { mutableStateOf(lowThreshold / PROGRESS_FACTOR) }
+        var currentThreshold by remember(lowThreshold) { mutableStateOf(lowThreshold / PROGRESS_FACTOR) }
         SliderSetting(
             label = { Text(stringResource(R.string.battery_sync_low_threshold_title)) },
             trailing = { value ->
