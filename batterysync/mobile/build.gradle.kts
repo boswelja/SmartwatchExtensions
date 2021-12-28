@@ -9,7 +9,7 @@ kotlin {
         val commonMain by getting {
             dependencies {
                 api(projects.batterysync.common)
-                api(libs.watchconnection.common)
+                api(libs.watchconnection.mobile.core)
                 implementation(projects.devicemanagement.mobile)
                 implementation(projects.settings.mobile)
                 implementation(projects.messages.mobile)

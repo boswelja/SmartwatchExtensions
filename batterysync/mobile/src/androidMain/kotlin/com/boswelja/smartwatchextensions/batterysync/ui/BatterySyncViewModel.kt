@@ -22,9 +22,9 @@ import com.boswelja.smartwatchextensions.settings.UPDATE_BOOL_PREFERENCE
 import com.boswelja.smartwatchextensions.settings.UPDATE_INT_PREFERENCE
 import com.boswelja.smartwatchextensions.settings.WatchSettingsRepository
 import com.boswelja.watchconnection.common.Watch
-import com.boswelja.watchconnection.common.discovery.DiscoveryClient
 import com.boswelja.watchconnection.common.message.Message
-import com.boswelja.watchconnection.common.message.MessageClient
+import com.boswelja.watchconnection.core.discovery.DiscoveryClient
+import com.boswelja.watchconnection.core.message.MessageClient
 import com.boswelja.watchconnection.serialization.MessageHandler
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
