@@ -18,7 +18,6 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.common.BatteryIcon
-import kotlinx.coroutines.Dispatchers
 
 private const val HEADER_ASPECT_RATIO = 3f
 
@@ -28,9 +27,9 @@ private const val HEADER_ASPECT_RATIO = 3f
 @Composable
 fun BatterySyncSettingsHeader() {
     val viewModel: BatterySyncViewModel = viewModel()
-    val batterySyncEnabled by viewModel.batterySyncEnabled.collectAsState(false)
+    val batterySyncEnabled by viewModel.batterySyncEnabled.collectAsState()
     if (batterySyncEnabled) {
-        val batteryStats by viewModel.batteryStats.collectAsState(null, Dispatchers.IO)
+        val batteryStats by viewModel.batteryStats.collectAsState()
         batteryStats.let {
             if (it != null) {
                 BatterySummaryLarge(

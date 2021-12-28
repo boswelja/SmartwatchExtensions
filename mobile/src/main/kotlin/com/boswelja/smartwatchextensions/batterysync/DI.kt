@@ -8,5 +8,5 @@ import org.koin.dsl.module
  * A Koin module for providing Battery Sync UI classes.
  */
 val batterySyncUiModule = module {
-    viewModel { BatterySyncViewModel(get(), get(), get()) }
+    viewModel { BatterySyncViewModel(get(), get(), get(), get(), get(), get()) }
 }

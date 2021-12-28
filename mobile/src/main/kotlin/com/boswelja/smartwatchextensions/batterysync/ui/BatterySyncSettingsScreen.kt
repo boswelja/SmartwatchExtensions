@@ -26,8 +26,6 @@ import org.koin.androidx.compose.getViewModel
 private const val PROGRESS_FACTOR = 100f
 private const val BATTERY_CHARGE_MIN = 0.6f
 private const val BATTERY_LOW_MAX = 0.35f
-private const val BATTERY_CHARGE_DEFAULT = 90
-private const val BATTERY_LOW_DEFAULT = 20
 
 /**
  * A Composable screen for displaying Battery Sync settings.
@@ -40,7 +38,7 @@ fun BatterySyncSettingsScreen(
     contentPadding: Dp = 16.dp
 ) {
     val viewModel: BatterySyncViewModel = getViewModel()
-    val batterySyncEnabled by viewModel.batterySyncEnabled.collectAsState(false)
+    val batterySyncEnabled by viewModel.batterySyncEnabled.collectAsState()
     LazyColumn(
         modifier = modifier,
         contentPadding = PaddingValues(contentPadding),
@@ -75,8 +73,8 @@ fun BatterySyncSettings(
 ) {
     val viewModel: BatterySyncViewModel = getViewModel()
 
-    val canSyncBattery by viewModel.canSyncBattery.collectAsState(false)
-    val batterySyncEnabled by viewModel.batterySyncEnabled.collectAsState(false)
+    val canSyncBattery by viewModel.canSyncBattery.collectAsState()
+    val batterySyncEnabled by viewModel.batterySyncEnabled.collectAsState()
 
     Card(
         modifier = modifier,
@@ -112,9 +110,9 @@ fun ChargeNotificationSettings(
 ) {
     val viewModel: BatterySyncViewModel = getViewModel()
 
-    val phoneChargeNotiEnabled by viewModel.phoneChargeNotiEnabled.collectAsState(false)
-    val watchChargeNotiEnabled by viewModel.watchChargeNotiEnabled.collectAsState(false)
-    val chargeThreshold by viewModel.chargeThreshold.collectAsState(BATTERY_CHARGE_DEFAULT)
+    val phoneChargeNotiEnabled by viewModel.phoneChargeNotiEnabled.collectAsState()
+    val watchChargeNotiEnabled by viewModel.watchChargeNotiEnabled.collectAsState()
+    val chargeThreshold by viewModel.chargeThreshold.collectAsState()
     var currentThreshold by remember { mutableStateOf(chargeThreshold / PROGRESS_FACTOR) }
 
     Card(
@@ -179,9 +177,9 @@ fun LowBatteryNotificationSettings(
 ) {
     val viewModel: BatterySyncViewModel = getViewModel()
 
-    val phoneLowNotiEnabled by viewModel.phoneLowNotiEnabled.collectAsState(false)
-    val watchLowNotiEnabled by viewModel.watchLowNotiEnabled.collectAsState(false)
-    val batteryLowThreshold by viewModel.batteryLowThreshold.collectAsState(BATTERY_LOW_DEFAULT)
+    val phoneLowNotiEnabled by viewModel.phoneLowNotiEnabled.collectAsState()
+    val watchLowNotiEnabled by viewModel.watchLowNotiEnabled.collectAsState()
+    val batteryLowThreshold by viewModel.batteryLowThreshold.collectAsState()
     var currentThreshold by remember { mutableStateOf(batteryLowThreshold / PROGRESS_FACTOR) }
 
     Card(
