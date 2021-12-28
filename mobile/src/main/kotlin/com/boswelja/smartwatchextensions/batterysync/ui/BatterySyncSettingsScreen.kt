@@ -56,29 +56,32 @@ fun BatterySyncSettingsScreen(
             BatterySyncSettingsHeader()
             Divider()
         }
-        batterySyncSettings(
-            canSyncBattery,
-            batterySyncEnabled,
-            viewModel::setBatterySyncEnabled
-        )
-        chargeNotificationSettings(
-            canSyncBattery,
-            phoneChargeNotiEnabled,
-            watchChargeNotiEnabled,
-            chargeThreshold,
-            viewModel::setPhoneChargeNotiEnabled,
-            viewModel::setWatchChargeNotiEnabled,
-            viewModel::setChargeThreshold
-        )
-        lowNotificationSettings(
-            canSyncBattery,
-            phoneLowNotiEnabled,
-            watchLowNotiEnabled,
-            lowThreshold,
-            viewModel::setPhoneLowNotiEnabled,
-            viewModel::setWatchLowNotiEnabled,
-            viewModel::setLowBatteryThreshold
-        )
+        if (canSyncBattery) {
+            batterySyncSettings(
+                batterySyncEnabled,
+                viewModel::setBatterySyncEnabled
+            )
+            chargeNotificationSettings(
+                phoneChargeNotiEnabled,
+                watchChargeNotiEnabled,
+                chargeThreshold,
+                viewModel::setPhoneChargeNotiEnabled,
+                viewModel::setWatchChargeNotiEnabled,
+                viewModel::setChargeThreshold
+            )
+            lowNotificationSettings(
+                phoneLowNotiEnabled,
+                watchLowNotiEnabled,
+                lowThreshold,
+                viewModel::setPhoneLowNotiEnabled,
+                viewModel::setWatchLowNotiEnabled,
+                viewModel::setLowBatteryThreshold
+            )
+        } else {
+            item {
+                Text(text = stringResource(id = R.string.capability_not_supported))
+            }
+        }
     }
 }
 
@@ -87,29 +90,22 @@ fun BatterySyncSettingsScreen(
  */
 @OptIn(ExperimentalMaterialApi::class)
 fun LazyListScope.batterySyncSettings(
-    canSyncBattery: Boolean,
     batterySyncEnabled: Boolean,
     onBatterySyncEnabledChanged: (Boolean) -> Unit
 ) {
     item {
         SwitchSetting(
             label = { Text(stringResource(R.string.battery_sync_toggle_title)) },
-            summary = if (!canSyncBattery) {
-                { Text(stringResource(R.string.capability_not_supported)) }
-            } else null,
             checked = batterySyncEnabled,
-            onCheckChanged = onBatterySyncEnabledChanged,
-            enabled = canSyncBattery
+            onCheckChanged = onBatterySyncEnabledChanged
         )
     }
 }
 
 /**
  * A Composable for displaying charge notification settings.
- * @param interactionEnabled Whether all settings in this group are enabled.
  */
 fun LazyListScope.chargeNotificationSettings(
-    interactionEnabled: Boolean,
     phoneChargeNotiEnabled: Boolean,
     watchChargeNotiEnabled: Boolean,
     chargeThreshold: Int,
@@ -128,7 +124,6 @@ fun LazyListScope.chargeNotificationSettings(
                 Text(text)
             },
             checked = phoneChargeNotiEnabled,
-            enabled = interactionEnabled,
             onCheckChanged = onPhoneChargeNotiEnabledChanged
         )
     }
@@ -143,7 +138,6 @@ fun LazyListScope.chargeNotificationSettings(
                 Text(text)
             },
             checked = watchChargeNotiEnabled,
-            enabled = interactionEnabled,
             onCheckChanged = onWatchChargeNotiEnabledChanged
         )
     }
@@ -156,7 +150,6 @@ fun LazyListScope.chargeNotificationSettings(
             },
             valueRange = BATTERY_CHARGE_MIN..1f,
             value = currentThreshold,
-            enabled = interactionEnabled,
             onSliderValueChanged = {
                 currentThreshold = it
             },
@@ -169,10 +162,8 @@ fun LazyListScope.chargeNotificationSettings(
 
 /**
  * A Composable for displaying low battery notification settings.
- * @param interactionEnabled Whether all settings in this group are enabled.
  */
 fun LazyListScope.lowNotificationSettings(
-    interactionEnabled: Boolean,
     phoneLowNotiEnabled: Boolean,
     watchLowNotiEnabled: Boolean,
     lowThreshold: Int,
@@ -191,7 +182,6 @@ fun LazyListScope.lowNotificationSettings(
                 Text(text)
             },
             checked = phoneLowNotiEnabled,
-            enabled = interactionEnabled,
             onCheckChanged = onPhoneLowNotiEnabledChanged
         )
     }
@@ -206,7 +196,6 @@ fun LazyListScope.lowNotificationSettings(
                 Text(text)
             },
             checked = watchLowNotiEnabled,
-            enabled = interactionEnabled,
             onCheckChanged = onWatchLowNotiEnabledChanged
         )
     }
@@ -219,7 +208,6 @@ fun LazyListScope.lowNotificationSettings(
             },
             valueRange = 0.05f..BATTERY_LOW_MAX,
             value = currentThreshold,
-            enabled = interactionEnabled,
             onSliderValueChanged = {
                 currentThreshold = it
             },
