@@ -17,9 +17,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.boswelja.smartwatchextensions.R
-import com.boswelja.smartwatchextensions.common.ui.CheckboxSetting
-import com.boswelja.smartwatchextensions.common.ui.SliderSetting
-import com.boswelja.smartwatchextensions.common.ui.SwitchSetting
+import com.boswelja.smartwatchextensions.settings.ui.CheckboxSetting
+import com.boswelja.smartwatchextensions.settings.ui.SliderSetting
+import com.boswelja.smartwatchextensions.settings.ui.SwitchSetting
 import org.koin.androidx.compose.getViewModel
 import kotlin.math.round
 

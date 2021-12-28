@@ -1,4 +1,4 @@
-package com.boswelja.smartwatchextensions.common.ui
+package com.boswelja.smartwatchextensions.settings.ui
 
 import androidx.compose.foundation.clickable
 import androidx.compose.material.Checkbox
@@ -7,10 +7,6 @@ import androidx.compose.material.ListItem
 import androidx.compose.material.Slider
 import androidx.compose.material.Switch
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 
 /**
@@ -133,51 +129,4 @@ fun SliderSetting(
             }
         }
     )
-}
-
-/**
- * A settings item that allows the user to select from a list of values offered in a dialog.
- * @param modifier A [Modifier] to apply to the setting item.
- * @param dialogModifier A [Modifier] to apply to the dialog.
- * @param label The setting label Composable. This will be applied to the setting item and dialog.
- * @param summary The setting summary Composable. This will be applied to the setting item.
- * @param icon The setting icon Composable. This will be applied to the setting item.
- * @param enabled Whether the setting is enabled. If disabled, clicks will not be registered.
- * @param values The list of values the user can choose from.
- * @param value The current value.
- * @param onValueChanged Called when the current value changes.
- * @param valueLabel The value label Composable. This will be used in the dialog.
- */
-@OptIn(ExperimentalMaterialApi::class)
-@Composable
-fun <T> DialogSetting(
-    modifier: Modifier = Modifier,
-    dialogModifier: Modifier = Modifier,
-    label: @Composable () -> Unit,
-    summary: @Composable (() -> Unit)? = null,
-    icon: @Composable (() -> Unit)? = null,
-    enabled: Boolean = true,
-    values: List<T>,
-    value: T,
-    onValueChanged: (T) -> Unit,
-    valueLabel: @Composable (T) -> Unit
-) {
-    var dialogVisible by remember { mutableStateOf(false) }
-    ListItem(
-        text = label,
-        secondaryText = summary,
-        icon = icon,
-        modifier = modifier.clickable(enabled = enabled) { dialogVisible = true }
-    )
-    if (dialogVisible) {
-        ConfirmationDialog(
-            modifier = dialogModifier,
-            title = label,
-            onDismissRequest = { dialogVisible = false },
-            itemContent = { item -> valueLabel(item) },
-            items = values,
-            selectedItem = value,
-            onItemSelectionChanged = onValueChanged
-        )
-    }
 }
