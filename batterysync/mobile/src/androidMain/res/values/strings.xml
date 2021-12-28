@@ -2,9 +2,11 @@
 <resources>
     <string name="battery_percent">%s%%</string>
     <string name="battery_sync_last_update_recent">Last updated less than a minute ago</string>
+    <string name="battery_sync_disabled">Battery Sync disabled</string>
     <string name="battery_charge_noti_issue_title">Error sending battery charge notification</string>
     <string name="battery_charge_noti_issue_summary">We were unable to notify you when your watch battery was charged, due to notifications being disabled in your system settings. We have disabled watch battery charge notifications because of this.</string>
     <string name="battery_low_noti_issue_title">Error sending battery low notification</string>
     <string name="battery_low_noti_issue_summary">We were unable to notify you when your watch battery was low, due to notifications being disabled in your system settings. We have disabled watch battery low notifications because of this.</string>
     <string name="noti_channel_watch_charged_title">Watch Charged</string>
+    <string name="please_wait">Please Wait…</string>
 </resources>

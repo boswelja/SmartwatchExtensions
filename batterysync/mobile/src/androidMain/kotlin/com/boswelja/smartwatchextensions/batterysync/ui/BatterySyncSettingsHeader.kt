@@ -16,7 +16,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.boswelja.smartwatchextensions.R
+import com.boswelja.smartwatchextensions.batterysync.R
 
 private const val HEADER_ASPECT_RATIO = 3f
 
