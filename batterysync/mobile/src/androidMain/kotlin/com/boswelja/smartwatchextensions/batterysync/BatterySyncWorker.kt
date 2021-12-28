@@ -8,13 +8,33 @@ import androidx.work.PeriodicWorkRequest
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
+import com.boswelja.smartwatchextensions.devicemanagement.WatchRepository
+import com.boswelja.watchconnection.common.message.Message
+import com.boswelja.watchconnection.common.message.MessageClient
+import com.boswelja.watchconnection.serialization.MessageHandler
+import kotlinx.coroutines.flow.firstOrNull
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 import java.util.concurrent.TimeUnit
 
 /**
- * A base [CoroutineWorker] to handle getting battery stats for the device.
+ * A [CoroutineWorker] to handle syncing battery stats for a watch.
  */
-abstract class BaseBatterySyncWorker(appContext: Context, workerParams: WorkerParameters) :
-    CoroutineWorker(appContext, workerParams) {
+class BatterySyncWorker(appContext: Context, workerParams: WorkerParameters) :
+    CoroutineWorker(appContext, workerParams), KoinComponent {
+
+    private val watchRepository: WatchRepository by inject()
+    private val messageClient: MessageClient by inject()
+
+    override suspend fun doWork(): Result {
+        val watchId = inputData.getString(EXTRA_WATCH_ID) ?: return Result.failure()
+        val batteryStats = applicationContext.batteryStats() ?: return Result.retry()
+        return if (onSendBatteryStats(watchId, batteryStats)) {
+            Result.success()
+        } else {
+            Result.retry()
+        }
+    }
 
     /**
      * Called when the device battery stats are ready to send. Sending battery stats should be
@@ -22,17 +42,14 @@ abstract class BaseBatterySyncWorker(appContext: Context, workerParams: WorkerPa
      * @param targetUid The target device UID.
      * @param batteryStats The device battery stats to send.
      */
-    abstract suspend fun onSendBatteryStats(
+    private suspend fun onSendBatteryStats(
         targetUid: String,
         batteryStats: BatteryStats
-    ): Boolean
-
-    override suspend fun doWork(): Result {
-        val watchId = inputData.getString(EXTRA_WATCH_ID)!!
-        val batteryStats = applicationContext.batteryStats()!!
-        if (onSendBatteryStats(watchId, batteryStats)) return Result.success()
-
-        return Result.retry()
+    ): Boolean {
+        val handler = MessageHandler(BatteryStatsSerializer, messageClient)
+        return watchRepository.getWatchById(targetUid).firstOrNull()?.let { watch ->
+            handler.sendMessage(watch.uid, Message(BATTERY_STATUS_PATH, batteryStats))
+        } ?: false
     }
 
     companion object {
@@ -40,7 +57,7 @@ abstract class BaseBatterySyncWorker(appContext: Context, workerParams: WorkerPa
         /**
          * The worker sync interval in minutes.
          */
-        const val SYNC_INTERVAL_MINUTES = 15L
+        private const val SYNC_INTERVAL_MINUTES = 15L
 
         /**
          * The key for the extra containing the target device UID.
@@ -51,12 +68,12 @@ abstract class BaseBatterySyncWorker(appContext: Context, workerParams: WorkerPa
          * Returns a unique worker ID for battery sync with the target UID.
          * @param watchId The target device UID.
          */
-        fun getWorkerIdFor(watchId: String): String = "$watchId-batterysync"
+        private fun getWorkerIdFor(watchId: String): String = "$watchId-batterysync"
 
         /** Starts a battery sync worker for the watch with a given ID. */
-        inline fun <reified T : BaseBatterySyncWorker> startSyncingFor(context: Context, watchId: String): Boolean {
+        fun startSyncingFor(context: Context, watchId: String): Boolean {
             val data = Data.Builder().putString(EXTRA_WATCH_ID, watchId).build()
-            val request = PeriodicWorkRequestBuilder<T>(
+            val request = PeriodicWorkRequestBuilder<BatterySyncWorker>(
                 SYNC_INTERVAL_MINUTES, TimeUnit.MINUTES,
                 PeriodicWorkRequest.MIN_PERIODIC_FLEX_MILLIS, TimeUnit.MILLISECONDS
             ).apply {

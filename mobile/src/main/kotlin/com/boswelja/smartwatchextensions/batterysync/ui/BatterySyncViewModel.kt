@@ -3,7 +3,6 @@ package com.boswelja.smartwatchextensions.batterysync.ui
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import com.boswelja.smartwatchextensions.batterysync.BaseBatterySyncWorker
 import com.boswelja.smartwatchextensions.batterysync.BatteryStatsRepository
 import com.boswelja.smartwatchextensions.batterysync.BatterySyncWorker
 import com.boswelja.smartwatchextensions.batterysync.quicksettings.WatchBatteryTileService
@@ -87,8 +86,8 @@ class BatterySyncViewModel(
         viewModelScope.launch {
             val selectedWatch = watchManager.selectedWatch.first()
             if (isEnabled) {
-                val workerStartSuccessful = BaseBatterySyncWorker
-                    .startSyncingFor<BatterySyncWorker>(getApplication(), selectedWatch!!.uid)
+                val workerStartSuccessful = BatterySyncWorker
+                    .startSyncingFor(getApplication(), selectedWatch!!.uid)
                 if (workerStartSuccessful) {
                     watchManager.updatePreference(
                         selectedWatch,
@@ -99,7 +98,7 @@ class BatterySyncViewModel(
                 watchManager.updatePreference(
                     selectedWatch!!, BATTERY_SYNC_ENABLED_KEY, isEnabled
                 )
-                BaseBatterySyncWorker.stopSyncingFor(
+                BatterySyncWorker.stopSyncingFor(
                     getApplication(), selectedWatch.uid
                 )
                 WatchBatteryTileService.requestTileUpdate(getApplication())

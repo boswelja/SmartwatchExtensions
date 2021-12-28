@@ -10,6 +10,7 @@ kotlin {
             dependencies {
                 api(projects.batterysync.common)
                 api(libs.watchconnection.common)
+                implementation(projects.devicemanagement.mobile)
                 implementation(libs.sqldelight.runtime)
                 implementation(libs.sqldelight.coroutines)
                 implementation(libs.koin.core)
