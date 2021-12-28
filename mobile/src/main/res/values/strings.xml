@@ -23,9 +23,6 @@
     <string name="battery_sync_watch_charge_noti_title">Watch Charged Notification</string>
     <string name="battery_sync_watch_charge_noti_summary">Get a notification on your phone when your watch is %s%% charged</string>
     <string name="battery_sync_charge_threshold_title">Battery Charge Threshold</string>
-    <string name="category_charge_notifications">Charge Notifications</string>
-    <string name="category_low_notifications">Low Battery Notifications</string>
-    <string name="category_battery_sync_settings">Battery Sync Settings</string>
     <string name="battery_sync_phone_low_noti_title">Phone Low Notification</string>
     <string name="battery_sync_phone_low_noti_summary">Get a notification on your watch when your phone has less than %s%% battery</string>
     <string name="battery_sync_watch_low_noti_title">Watch Low Notification</string>
