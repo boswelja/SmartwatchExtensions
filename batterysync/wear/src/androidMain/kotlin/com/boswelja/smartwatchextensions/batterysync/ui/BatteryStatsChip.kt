@@ -8,8 +8,7 @@ import androidx.wear.compose.material.Chip
 import androidx.wear.compose.material.ChipDefaults
 import androidx.wear.compose.material.Icon
 import androidx.wear.compose.material.Text
-import com.boswelja.smartwatchextensions.R
-import com.boswelja.smartwatchextensions.common.ui.BatteryIcon
+import com.boswelja.smartwatchextensions.batterysync.R
 
 /**
  * A [Chip] for showing Battery Stats info.
