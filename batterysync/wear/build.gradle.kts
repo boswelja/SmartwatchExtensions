@@ -9,13 +9,14 @@ kotlin {
         val commonMain by getting {
             dependencies {
                 api(projects.batterysync.common)
-                api(libs.watchconnection.common)
+                implementation(libs.watchconnection.wear)
             }
         }
         val androidMain by getting {
             dependencies {
                 implementation(libs.androidx.datastore.proto)
                 implementation(libs.kotlinx.serialization.protobuf)
+                implementation(libs.androidx.wear.complications.data.source)
             }
         }
     }
