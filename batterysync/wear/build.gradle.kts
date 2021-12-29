@@ -10,6 +10,7 @@ kotlin {
             dependencies {
                 api(projects.batterysync.common)
                 implementation(libs.watchconnection.wear)
+                implementation(libs.koin.core)
             }
         }
         val androidMain by getting {
@@ -18,6 +19,7 @@ kotlin {
                 implementation(libs.kotlinx.serialization.protobuf)
                 implementation(libs.androidx.wear.complications.data.source)
                 implementation(libs.bundles.compose.wear)
+                implementation(libs.koin.android)
             }
         }
     }

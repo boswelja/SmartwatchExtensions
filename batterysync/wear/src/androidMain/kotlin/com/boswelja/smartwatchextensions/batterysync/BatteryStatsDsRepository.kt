@@ -5,6 +5,7 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.core.Serializer
 import androidx.datastore.dataStore
 import kotlinx.coroutines.flow.Flow
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.decodeFromByteArray
 import kotlinx.serialization.encodeToByteArray
 import kotlinx.serialization.protobuf.ProtoBuf
@@ -20,6 +21,7 @@ val Context.batteryStatsStore: DataStore<BatteryStats> by dataStore(
 )
 
 @Suppress("BlockingMethodInNonBlockingContext")
+@OptIn(ExperimentalSerializationApi::class)
 private object BatteryStatsStoreSerializer : Serializer<BatteryStats> {
     override val defaultValue = BatteryStats(0, false, 0)
 
@@ -33,18 +35,13 @@ private object BatteryStatsStoreSerializer : Serializer<BatteryStats> {
 /**
  * A class for storing and updating the battery stats of the connected phone.
  */
-actual class BatteryStatsStore(private val batteryStatsStore: DataStore<BatteryStats>) {
+class BatteryStatsDsRepository(context: Context): BatteryStatsRepository {
 
-    /**
-     * Flow the connected phone's [BatteryStats].
-     */
-    actual fun getStatsForPhone(): Flow<BatteryStats> = batteryStatsStore.data
+    private val dataStore: DataStore<BatteryStats> = context.batteryStatsStore
 
-    /**
-     * Update the connected phone's [BatteryStats].
-     * @param newStats The new [BatteryStats] to store.
-     */
-    actual suspend fun updateStatsForPhone(newStats: BatteryStats) {
-        batteryStatsStore.updateData { newStats }
+    override fun getPhoneBatteryStats(): Flow<BatteryStats> = dataStore.data
+
+    override suspend fun updatePhoneBatteryStats(newStats: BatteryStats) {
+        dataStore.updateData { newStats }
     }
 }

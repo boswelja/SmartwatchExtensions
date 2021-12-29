@@ -4,9 +4,9 @@ import android.app.Application
 import androidx.datastore.core.DataStore
 import androidx.lifecycle.AndroidViewModel
 import com.boswelja.smartwatchextensions.PhoneState
-import com.boswelja.smartwatchextensions.batterysync.BatteryStatsStore
+import com.boswelja.smartwatchextensions.batterysync.BatteryStatsDsRepository
+import com.boswelja.smartwatchextensions.batterysync.BatteryStatsRepository
 import com.boswelja.smartwatchextensions.batterysync.REQUEST_BATTERY_UPDATE_PATH
-import com.boswelja.smartwatchextensions.batterysync.batteryStatsStore
 import com.boswelja.smartwatchextensions.extensions.ExtensionSettings
 import com.boswelja.smartwatchextensions.extensions.extensionSettingsStore
 import com.boswelja.smartwatchextensions.phoneStateStore
@@ -26,7 +26,7 @@ class ExtensionsViewModel internal constructor(
     private val messageClient: MessageClient,
     private val discoveryClient: DiscoveryClient,
     phoneStateStore: DataStore<PhoneState>,
-    batteryStatsStore: BatteryStatsStore,
+    batteryStatsRepository: BatteryStatsRepository,
     extensionSettingsStore: DataStore<ExtensionSettings>
 ) : AndroidViewModel(application) {
 
@@ -36,7 +36,7 @@ class ExtensionsViewModel internal constructor(
         MessageClient(application),
         DiscoveryClient(application),
         application.phoneStateStore,
-        BatteryStatsStore(application.batteryStatsStore),
+        BatteryStatsDsRepository(application),
         application.extensionSettingsStore
     )
 
@@ -53,7 +53,7 @@ class ExtensionsViewModel internal constructor(
     /**
      * Flow the connected phone's battery percent.
      */
-    val batteryPercent = batteryStatsStore.getStatsForPhone().map { it.percent }
+    val batteryPercent = batteryStatsRepository.getPhoneBatteryStats().map { it.percent }
 
     /**
      * Flow the paired phone name.

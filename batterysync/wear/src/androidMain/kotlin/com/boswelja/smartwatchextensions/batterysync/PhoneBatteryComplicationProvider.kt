@@ -18,6 +18,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import org.koin.android.ext.android.inject
 
 /**
  * A [ComplicationDataSourceService] for displaying info about the connected phone's battery.
@@ -26,12 +27,14 @@ class PhoneBatteryComplicationProvider : ComplicationDataSourceService() {
 
     private val coroutineScope = CoroutineScope(Dispatchers.IO)
 
+    private val batteryStatsRepository: BatteryStatsRepository by inject()
+
     override fun onComplicationRequest(
         request: ComplicationRequest,
         listener: ComplicationRequestListener
     ) {
         coroutineScope.launch {
-            val batteryStats = BatteryStatsStore(batteryStatsStore).getStatsForPhone()
+            val batteryStats = batteryStatsRepository.getPhoneBatteryStats()
                 .map { it.percent }
                 .first()
             val complicationData = createComplicationDataFor(batteryStats, request.complicationType)

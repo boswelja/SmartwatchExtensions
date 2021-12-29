@@ -34,6 +34,7 @@ class PhoneBatteryUpdateReceiver :
 
     private val messageClient: MessageClient by inject()
     private val discoveryClient: DiscoveryClient by inject()
+    private val batteryStatsRepository: BatteryStatsRepository by inject()
 
     private lateinit var notificationManager: NotificationManager
     private lateinit var phoneStateStore: DataStore<PhoneState>
@@ -55,7 +56,7 @@ class PhoneBatteryUpdateReceiver :
                 cancelChargeNoti()
                 handleLowNotification(context, batteryStats)
             }
-            BatteryStatsStore(context.batteryStatsStore).updateStatsForPhone(batteryStats)
+            batteryStatsRepository.updatePhoneBatteryStats(batteryStats)
             sendBatteryStatsUpdate(context)
             PhoneBatteryComplicationProvider.updateAll(context)
         }
