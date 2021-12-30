@@ -11,4 +11,6 @@
     <string name="battery_sync_refresh_failed">Failed to update phone battery stats</string>
     <string name="battery_sync_refresh_success">Updated battery stats</string>
     <string name="battery_sync_hint_text">%s Battery</string>
+
+    <string name="battery_sync_complication_disabled">Disabled</string>
 </resources>
