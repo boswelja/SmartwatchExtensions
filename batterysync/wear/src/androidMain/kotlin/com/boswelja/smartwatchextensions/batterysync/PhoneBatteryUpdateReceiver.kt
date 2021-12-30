@@ -25,7 +25,7 @@ import org.koin.core.component.inject
  * A [MessageReceiver] for receiving [BatteryStats] for the paired phone.
  */
 class PhoneBatteryUpdateReceiver :
-    MessageReceiver<BatteryStats?>(BatteryStatsSerializer),
+    MessageReceiver<BatteryStats>(BatteryStatsSerializer),
     KoinComponent {
 
     private val messageClient: MessageClient by inject()
@@ -38,9 +38,9 @@ class PhoneBatteryUpdateReceiver :
 
     override suspend fun onMessageReceived(
         context: Context,
-        message: ReceivedMessage<BatteryStats?>
+        message: ReceivedMessage<BatteryStats>
     ) {
-        message.data?.let { batteryStats ->
+        message.data.let { batteryStats ->
             notificationManager = context.getSystemService()!!
             phoneStateStore = context.phoneStateStore
 

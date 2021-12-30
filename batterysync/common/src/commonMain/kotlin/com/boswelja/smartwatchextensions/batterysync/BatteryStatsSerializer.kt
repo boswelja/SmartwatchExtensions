@@ -10,12 +10,12 @@ import kotlinx.serialization.protobuf.ProtoBuf
  * A [MessageSerializer] for handling [BatteryStats].
  */
 @OptIn(ExperimentalSerializationApi::class)
-object BatteryStatsSerializer : MessageSerializer<BatteryStats?> {
+object BatteryStatsSerializer : MessageSerializer<BatteryStats> {
     override val messagePaths: Set<String> = setOf(BATTERY_STATUS_PATH)
 
-    override suspend fun deserialize(bytes: ByteArray?): BatteryStats? {
+    override suspend fun deserialize(bytes: ByteArray?): BatteryStats {
         return ProtoBuf.decodeFromByteArray(bytes!!)
     }
 
-    override suspend fun serialize(data: BatteryStats?): ByteArray = ProtoBuf.encodeToByteArray(data)
+    override suspend fun serialize(data: BatteryStats): ByteArray = ProtoBuf.encodeToByteArray(data)
 }

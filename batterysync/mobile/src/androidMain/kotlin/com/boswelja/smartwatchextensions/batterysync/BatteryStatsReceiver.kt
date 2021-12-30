@@ -42,7 +42,7 @@ private const val BATTERY_LOW_DEFAULT = 20
  * data.
  */
 class BatteryStatsReceiver :
-    MessageReceiver<BatteryStats?>(BatteryStatsSerializer),
+    MessageReceiver<BatteryStats>(BatteryStatsSerializer),
     KoinComponent {
 
     private val batteryStatsRepository: BatteryStatsRepository by inject()
@@ -52,15 +52,13 @@ class BatteryStatsReceiver :
 
     override suspend fun onMessageReceived(
         context: Context,
-        message: ReceivedMessage<BatteryStats?>
+        message: ReceivedMessage<BatteryStats>
     ) {
-        message.data?.let { batteryStats ->
-            batteryStatsRepository.updateStatsFor(
-                message.sourceUid,
-                batteryStats
-            )
-            onBatteryStatsReceived(context, message.sourceUid, batteryStats)
-        }
+        batteryStatsRepository.updateStatsFor(
+            message.sourceUid,
+            message.data
+        )
+        onBatteryStatsReceived(context, message.sourceUid, message.data)
     }
 
     /**
