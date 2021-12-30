@@ -3,15 +3,15 @@ package com.boswelja.smartwatchextensions.extensions.ui
 import android.app.Application
 import androidx.datastore.core.DataStore
 import androidx.lifecycle.AndroidViewModel
-import com.boswelja.smartwatchextensions.PhoneState
 import com.boswelja.smartwatchextensions.batterysync.BatteryStatsDsRepository
 import com.boswelja.smartwatchextensions.batterysync.BatteryStatsRepository
 import com.boswelja.smartwatchextensions.batterysync.BatterySyncStateDsRepository
 import com.boswelja.smartwatchextensions.batterysync.BatterySyncStateRepository
 import com.boswelja.smartwatchextensions.batterysync.REQUEST_BATTERY_UPDATE_PATH
+import com.boswelja.smartwatchextensions.devicemanagement.PhoneState
+import com.boswelja.smartwatchextensions.devicemanagement.phoneStateStore
 import com.boswelja.smartwatchextensions.extensions.ExtensionSettings
 import com.boswelja.smartwatchextensions.extensions.extensionSettingsStore
-import com.boswelja.smartwatchextensions.phoneStateStore
 import com.boswelja.smartwatchextensions.phonelocking.LOCK_PHONE
 import com.boswelja.watchconnection.common.discovery.ConnectionMode
 import com.boswelja.watchconnection.common.message.Message

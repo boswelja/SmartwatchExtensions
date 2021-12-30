@@ -10,9 +10,9 @@ import androidx.core.content.getSystemService
 import androidx.lifecycle.LifecycleService
 import androidx.lifecycle.lifecycleScope
 import com.boswelja.smartwatchextensions.R
+import com.boswelja.smartwatchextensions.devicemanagement.phoneStateStore
 import com.boswelja.smartwatchextensions.extensions.extensionSettingsStore
 import com.boswelja.smartwatchextensions.main.ui.MainActivity
-import com.boswelja.smartwatchextensions.phoneStateStore
 import com.boswelja.watchconnection.common.message.Message
 import com.boswelja.watchconnection.serialization.MessageHandler
 import com.boswelja.watchconnection.wear.message.MessageClient

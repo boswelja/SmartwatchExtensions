@@ -8,10 +8,10 @@ import android.content.Intent
 import androidx.core.app.NotificationCompat
 import androidx.core.content.getSystemService
 import androidx.datastore.core.DataStore
-import com.boswelja.smartwatchextensions.PhoneState
 import com.boswelja.smartwatchextensions.R
+import com.boswelja.smartwatchextensions.devicemanagement.PhoneState
+import com.boswelja.smartwatchextensions.devicemanagement.phoneStateStore
 import com.boswelja.smartwatchextensions.main.ui.MainActivity
-import com.boswelja.smartwatchextensions.phoneStateStore
 import com.boswelja.watchconnection.common.message.Message
 import com.boswelja.watchconnection.common.message.ReceivedMessage
 import com.boswelja.watchconnection.serialization.MessageHandler
