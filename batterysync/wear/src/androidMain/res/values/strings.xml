@@ -2,6 +2,8 @@
 <resources>
     <string name="battery_sync_complication_label">Phone Battery</string>
 
+    <string name="noti_channel_battery_stats_title">Phone Battery Alerts</string>
+
     <string name="battery_percent">%s%%</string>
     <string name="battery_sync_disabled">Battery Sync disabled</string>
 

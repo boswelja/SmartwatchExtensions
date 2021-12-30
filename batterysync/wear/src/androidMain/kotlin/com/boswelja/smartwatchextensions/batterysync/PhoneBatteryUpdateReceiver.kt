@@ -4,14 +4,12 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
-import android.content.Intent
+import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.core.content.getSystemService
 import androidx.datastore.core.DataStore
-import com.boswelja.smartwatchextensions.R
 import com.boswelja.smartwatchextensions.devicemanagement.PhoneState
 import com.boswelja.smartwatchextensions.devicemanagement.phoneStateStore
-import com.boswelja.smartwatchextensions.main.ui.MainActivity
 import com.boswelja.watchconnection.common.message.Message
 import com.boswelja.watchconnection.common.message.ReceivedMessage
 import com.boswelja.watchconnection.serialization.MessageHandler
@@ -211,22 +209,24 @@ class PhoneBatteryUpdateReceiver :
     }
 
     private fun createNotificationChannel(context: Context) {
-        if (notificationManager.getNotificationChannel(BATTERY_STATS_NOTI_CHANNEL_ID) == null) {
-            val channel =
-                NotificationChannel(
-                    BATTERY_STATS_NOTI_CHANNEL_ID,
-                    context.getString(R.string.noti_channel_battery_stats_title),
-                    NotificationManager.IMPORTANCE_HIGH
-                ).apply {
-                    enableVibration(true)
-                    setShowBadge(true)
-                }
-            notificationManager.createNotificationChannel(channel)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            if (notificationManager.getNotificationChannel(BATTERY_STATS_NOTI_CHANNEL_ID) == null) {
+                val channel =
+                    NotificationChannel(
+                        BATTERY_STATS_NOTI_CHANNEL_ID,
+                        context.getString(R.string.noti_channel_battery_stats_title),
+                        NotificationManager.IMPORTANCE_HIGH
+                    ).apply {
+                        enableVibration(true)
+                        setShowBadge(true)
+                    }
+                notificationManager.createNotificationChannel(channel)
+            }
         }
     }
 
     private fun getNotiPendingIntent(context: Context): PendingIntent {
-        val intent = Intent(context, MainActivity::class.java)
+        val intent = context.packageManager.getLaunchIntentForPackage(context.packageName)
         return PendingIntent.getActivity(
             context,
             START_ACTIVITY_REQUEST_CODE,

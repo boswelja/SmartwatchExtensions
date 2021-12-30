@@ -83,14 +83,6 @@
         </receiver>
 
         <receiver
-            android:name=".batterysync.PhoneBatteryUpdateReceiver"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="com.boswelja.watchconnection.common.message.MessageReceived" />
-            </intent-filter>
-        </receiver>
-
-        <receiver
             android:name=".phoneconnectionmanager.MessageReceiver"
             android:exported="false">
             <intent-filter>

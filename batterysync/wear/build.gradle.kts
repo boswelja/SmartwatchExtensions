@@ -10,6 +10,7 @@ kotlin {
         val commonMain by getting {
             dependencies {
                 api(projects.batterysync.common)
+                implementation(projects.devicemanagement.wear)
                 implementation(libs.kotlinx.serialization.protobuf)
                 implementation(libs.watchconnection.wear)
                 implementation(libs.koin.core)
