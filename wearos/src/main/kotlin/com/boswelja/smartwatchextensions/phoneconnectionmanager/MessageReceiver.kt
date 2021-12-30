@@ -47,15 +47,11 @@ class MessageReceiver :
                 activityManager?.clearApplicationUserData()
             }
             RESET_SETTINGS -> {
+                // TODO Add battery sync state
                 context.extensionSettingsStore.updateData {
                     // Recreate the DataStore with default values
                     ExtensionSettings(
                         phoneLockingEnabled = false,
-                        batterySyncEnabled = false,
-                        phoneChargeNotiEnabled = false,
-                        phoneLowNotiEnabled = false,
-                        batteryLowThreshold = 10,
-                        batteryChargeThreshold = 90,
                         dndSyncToPhone = false,
                         dndSyncWithTheater = false,
                         phoneSeparationNotis = false

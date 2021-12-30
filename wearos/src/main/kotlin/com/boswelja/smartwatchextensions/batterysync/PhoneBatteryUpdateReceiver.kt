@@ -10,8 +10,6 @@ import androidx.core.content.getSystemService
 import androidx.datastore.core.DataStore
 import com.boswelja.smartwatchextensions.PhoneState
 import com.boswelja.smartwatchextensions.R
-import com.boswelja.smartwatchextensions.extensions.ExtensionSettings
-import com.boswelja.smartwatchextensions.extensions.extensionSettingsStore
 import com.boswelja.smartwatchextensions.main.ui.MainActivity
 import com.boswelja.smartwatchextensions.phoneStateStore
 import com.boswelja.watchconnection.common.message.Message
@@ -35,10 +33,10 @@ class PhoneBatteryUpdateReceiver :
     private val messageClient: MessageClient by inject()
     private val discoveryClient: DiscoveryClient by inject()
     private val batteryStatsRepository: BatteryStatsRepository by inject()
+    private val batterySyncStateRepository: BatterySyncStateRepository by inject()
 
     private lateinit var notificationManager: NotificationManager
     private lateinit var phoneStateStore: DataStore<PhoneState>
-    private lateinit var extensionSettingsStore: DataStore<ExtensionSettings>
 
     override suspend fun onMessageReceived(
         context: Context,
@@ -47,7 +45,6 @@ class PhoneBatteryUpdateReceiver :
         message.data?.let { batteryStats ->
             notificationManager = context.getSystemService()!!
             phoneStateStore = context.phoneStateStore
-            extensionSettingsStore = context.extensionSettingsStore
 
             if (batteryStats.charging) {
                 cancelLowNoti()
@@ -68,11 +65,12 @@ class PhoneBatteryUpdateReceiver :
      * @param batteryStats The [BatteryStats] object to read data from.
      */
     private suspend fun handleChargeNotification(context: Context, batteryStats: BatteryStats) {
-        val notificationsEnabled = extensionSettingsStore.data
-            .map { it.phoneChargeNotiEnabled }.first()
-        val chargeThreshold = extensionSettingsStore.data
-            .map { it.batteryChargeThreshold }.first()
-        val hasNotiBeenSent = phoneStateStore.data.map { it.chargeNotiSent }.first()
+        val notificationsEnabled = batterySyncStateRepository.getBatterySyncState()
+            .map { it.phoneChargeNotificationEnabled }.first()
+        val chargeThreshold = batterySyncStateRepository.getBatterySyncState()
+            .map { it.phoneChargeThreshold }.first()
+        val hasNotiBeenSent = batterySyncStateRepository.getBatterySyncState()
+            .map { it.notificationPosted }.first()
 
         val shouldNotify = batteryStats.shouldPostChargeNotification(
             chargeThreshold,
@@ -87,15 +85,15 @@ class PhoneBatteryUpdateReceiver :
 
     private suspend fun cancelChargeNoti() {
         notificationManager.cancel(BATTERY_CHARGED_NOTI_ID)
-        phoneStateStore.updateData {
-            it.copy(chargeNotiSent = false)
+        batterySyncStateRepository.updateBatterySyncState {
+            it.copy(notificationPosted = false)
         }
     }
 
     private suspend fun cancelLowNoti() {
         notificationManager.cancel(BATTERY_LOW_NOTI_ID)
-        phoneStateStore.updateData {
-            it.copy(lowNotiSent = false)
+        batterySyncStateRepository.updateBatterySyncState {
+            it.copy(notificationPosted = false)
         }
     }
 
@@ -108,10 +106,12 @@ class PhoneBatteryUpdateReceiver :
         context: Context,
         batteryStats: BatteryStats
     ) {
-        val notificationsEnabled = extensionSettingsStore.data
-            .map { it.phoneLowNotiEnabled }.first()
-        val lowThreshold = extensionSettingsStore.data.map { it.batteryLowThreshold }.first()
-        val hasNotiBeenSent = phoneStateStore.data.map { it.lowNotiSent }.first()
+        val notificationsEnabled = batterySyncStateRepository.getBatterySyncState()
+            .map { it.phoneLowNotificationEnabled }.first()
+        val lowThreshold = batterySyncStateRepository.getBatterySyncState()
+            .map { it.phoneLowThreshold }.first()
+        val hasNotiBeenSent = batterySyncStateRepository.getBatterySyncState()
+            .map { it.notificationPosted }.first()
 
         val shouldNotify = batteryStats.shouldPostLowNotification(
             lowThreshold,
@@ -156,8 +156,8 @@ class PhoneBatteryUpdateReceiver :
                 .build()
 
         notificationManager.notify(BATTERY_LOW_NOTI_ID, noti)
-        phoneStateStore.updateData {
-            it.copy(lowNotiSent = true)
+        batterySyncStateRepository.updateBatterySyncState {
+            it.copy(notificationPosted = true)
         }
     }
 
@@ -193,8 +193,8 @@ class PhoneBatteryUpdateReceiver :
                 .build()
 
         notificationManager.notify(BATTERY_CHARGED_NOTI_ID, noti)
-        phoneStateStore.updateData {
-            it.copy(chargeNotiSent = true)
+        batterySyncStateRepository.updateBatterySyncState {
+            it.copy(notificationPosted = true)
         }
     }
 

@@ -3,6 +3,7 @@ package com.boswelja.smartwatchextensions.phoneconnectionmanager
 import android.content.Context
 import android.content.Intent
 import androidx.core.content.ContextCompat
+import com.boswelja.smartwatchextensions.batterysync.BatterySyncStateRepository
 import com.boswelja.smartwatchextensions.batterysync.PhoneBatteryComplicationProvider
 import com.boswelja.smartwatchextensions.dndsync.LocalDnDAndTheaterCollectorService
 import com.boswelja.smartwatchextensions.extensions.extensionSettingsStore
@@ -12,11 +13,15 @@ import com.boswelja.smartwatchextensions.settings.BoolSettingKeys
 import com.boswelja.smartwatchextensions.settings.BoolSettingSerializer
 import com.boswelja.watchconnection.common.message.ReceivedMessage
 import com.boswelja.watchconnection.serialization.MessageReceiver
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 
 /**
  * A [MessageReceiver] for receiving [BoolSetting].
  */
-class BoolSettingChangeReceiver : MessageReceiver<BoolSetting>(BoolSettingSerializer) {
+class BoolSettingChangeReceiver : MessageReceiver<BoolSetting>(BoolSettingSerializer), KoinComponent {
+
+    private val batterySyncStateRepository: BatterySyncStateRepository by inject()
 
     override suspend fun onMessageReceived(
         context: Context,
@@ -31,10 +36,7 @@ class BoolSettingChangeReceiver : MessageReceiver<BoolSetting>(BoolSettingSerial
         value: Boolean
     ) {
         context.extensionSettingsStore.updateData {
-            var batterySyncEnabled = it.batterySyncEnabled
             var phoneLockingEnabled = it.phoneLockingEnabled
-            var phoneChargeNotiEnabled = it.phoneChargeNotiEnabled
-            var phoneLowNotiEnabled = it.phoneLowNotiEnabled
             var dndSyncToPhone = it.dndSyncToPhone
             var dndSyncWithTheater = it.dndSyncWithTheater
             var phoneSeparationNotis = it.phoneSeparationNotis
@@ -43,13 +45,19 @@ class BoolSettingChangeReceiver : MessageReceiver<BoolSetting>(BoolSettingSerial
                 BoolSettingKeys.PHONE_LOCKING_ENABLED_KEY ->
                     phoneLockingEnabled = value
                 BoolSettingKeys.BATTERY_SYNC_ENABLED_KEY -> {
-                    batterySyncEnabled = value
+                    batterySyncStateRepository.updateBatterySyncState {
+                        it.copy(batterySyncEnabled = value)
+                    }
                     PhoneBatteryComplicationProvider.updateAll(context)
                 }
                 BoolSettingKeys.BATTERY_PHONE_CHARGE_NOTI_KEY ->
-                    phoneChargeNotiEnabled = value
+                    batterySyncStateRepository.updateBatterySyncState {
+                        it.copy(phoneChargeNotificationEnabled = value)
+                    }
                 BoolSettingKeys.BATTERY_PHONE_LOW_NOTI_KEY ->
-                    phoneLowNotiEnabled = value
+                    batterySyncStateRepository.updateBatterySyncState {
+                        it.copy(phoneLowNotificationEnabled = value)
+                    }
                 BoolSettingKeys.DND_SYNC_TO_PHONE_KEY -> {
                     dndSyncToPhone = value
                     if (dndSyncToPhone) {
@@ -72,9 +80,6 @@ class BoolSettingChangeReceiver : MessageReceiver<BoolSetting>(BoolSettingSerial
 
             it.copy(
                 phoneLockingEnabled = phoneLockingEnabled,
-                batterySyncEnabled = batterySyncEnabled,
-                phoneChargeNotiEnabled = phoneChargeNotiEnabled,
-                phoneLowNotiEnabled = phoneLowNotiEnabled,
                 dndSyncToPhone = dndSyncToPhone,
                 dndSyncWithTheater = dndSyncWithTheater,
                 phoneSeparationNotis = phoneSeparationNotis
