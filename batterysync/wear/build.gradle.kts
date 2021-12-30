@@ -2,6 +2,7 @@ plugins {
     kotlin("multiplatform")
     id("com.boswelja.smartwatchextensions.detekt")
     id("com.boswelja.smartwatchextensions.library")
+    kotlin("plugin.serialization") version "1.6.10"
 }
 
 kotlin {
@@ -9,6 +10,7 @@ kotlin {
         val commonMain by getting {
             dependencies {
                 api(projects.batterysync.common)
+                implementation(libs.kotlinx.serialization.protobuf)
                 implementation(libs.watchconnection.wear)
                 implementation(libs.koin.core)
             }
