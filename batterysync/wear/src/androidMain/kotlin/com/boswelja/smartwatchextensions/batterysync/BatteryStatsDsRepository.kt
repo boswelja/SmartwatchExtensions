@@ -12,10 +12,7 @@ import kotlinx.serialization.protobuf.ProtoBuf
 import java.io.InputStream
 import java.io.OutputStream
 
-/**
- * Gets a [DataStore] for storing [BatteryStats].
- */
-val Context.batteryStatsStore: DataStore<BatteryStats> by dataStore(
+private val Context.batteryStatsStore: DataStore<BatteryStats> by dataStore(
     "batterystats.pb",
     BatteryStatsStoreSerializer
 )
