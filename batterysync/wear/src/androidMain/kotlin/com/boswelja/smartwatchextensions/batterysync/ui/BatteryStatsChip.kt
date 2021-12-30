@@ -12,19 +12,19 @@ import com.boswelja.smartwatchextensions.batterysync.R
 
 /**
  * A [Chip] for showing Battery Stats info.
- * @param modifier [Modifier].
  * @param percent The paired phone battery percent.
  * @param phoneName The paired phone name.
  * @param enabled Whether Battery Sync is enabled.
  * @param onClick Called when the chip is clicked.
+ * @param modifier [Modifier].
  */
 @Composable
 fun BatteryStatsChip(
-    modifier: Modifier = Modifier,
     percent: Int,
     phoneName: String,
     enabled: Boolean,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     val colors = if (enabled)
         ChipDefaults.gradientBackgroundChipColors()
