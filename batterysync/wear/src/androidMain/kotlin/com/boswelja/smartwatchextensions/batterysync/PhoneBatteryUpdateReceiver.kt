@@ -1,5 +1,6 @@
 package com.boswelja.smartwatchextensions.batterysync
 
+import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
@@ -14,7 +15,6 @@ import com.boswelja.watchconnection.common.message.Message
 import com.boswelja.watchconnection.common.message.ReceivedMessage
 import com.boswelja.watchconnection.serialization.MessageHandler
 import com.boswelja.watchconnection.serialization.MessageReceiver
-import com.boswelja.watchconnection.wear.discovery.DiscoveryClient
 import com.boswelja.watchconnection.wear.message.MessageClient
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
@@ -29,7 +29,6 @@ class PhoneBatteryUpdateReceiver :
     KoinComponent {
 
     private val messageClient: MessageClient by inject()
-    private val discoveryClient: DiscoveryClient by inject()
     private val batteryStatsRepository: BatteryStatsRepository by inject()
     private val batterySyncStateRepository: BatterySyncStateRepository by inject()
 
@@ -40,20 +39,26 @@ class PhoneBatteryUpdateReceiver :
         context: Context,
         message: ReceivedMessage<BatteryStats>
     ) {
-        message.data.let { batteryStats ->
-            notificationManager = context.getSystemService()!!
-            phoneStateStore = context.phoneStateStore
+        val batteryStats = message.data
+        val batterySyncState = batterySyncStateRepository.getBatterySyncState().first()
 
-            if (batteryStats.charging) {
-                cancelLowNoti()
-                handleChargeNotification(context, batteryStats)
-            } else {
-                cancelChargeNoti()
-                handleLowNotification(context, batteryStats)
-            }
-            batteryStatsRepository.updatePhoneBatteryStats(batteryStats)
-            sendBatteryStatsUpdate(context)
-            PhoneBatteryComplicationProvider.updateAll(context)
+        check(!batterySyncState.batterySyncEnabled) { "Received Battery Sync update while sync is disabled!" }
+
+        // Store updated stats
+        batteryStatsRepository.updatePhoneBatteryStats(batteryStats)
+        sendBatteryStatsUpdate(context, message.sourceUid)
+        PhoneBatteryComplicationProvider.updateAll(context)
+
+        // Handle notifications
+        notificationManager = context.getSystemService()!!
+        phoneStateStore = context.phoneStateStore
+        createNotificationChannel(context)
+        if (batteryStats.charging && batterySyncState.phoneChargeNotificationEnabled) {
+            handleChargeNotification(context, batteryStats, batterySyncState.phoneChargeThreshold)
+        } else if (!batteryStats.charging && batterySyncState.phoneLowNotificationEnabled) {
+            handleLowNotification(context, batteryStats, batterySyncState.phoneLowThreshold)
+        } else {
+            cancelNotification()
         }
     }
 
@@ -62,36 +67,28 @@ class PhoneBatteryUpdateReceiver :
      * the notification or cancels any existing notifications accordingly.
      * @param batteryStats The [BatteryStats] object to read data from.
      */
-    private suspend fun handleChargeNotification(context: Context, batteryStats: BatteryStats) {
-        val notificationsEnabled = batterySyncStateRepository.getBatterySyncState()
-            .map { it.phoneChargeNotificationEnabled }.first()
-        val chargeThreshold = batterySyncStateRepository.getBatterySyncState()
-            .map { it.phoneChargeThreshold }.first()
-        val hasNotiBeenSent = batterySyncStateRepository.getBatterySyncState()
-            .map { it.notificationPosted }.first()
-
-        val shouldNotify = batteryStats.shouldPostChargeNotification(
-            chargeThreshold,
-            notificationsEnabled,
-            hasNotiBeenSent
-        )
+    private suspend fun handleChargeNotification(
+        context: Context,
+        batteryStats: BatteryStats,
+        chargeThreshold: Int
+    ) {
+        val shouldNotify = batteryStats.percent >= chargeThreshold
         if (shouldNotify) {
             val phoneName = phoneStateStore.data.map { it.name }.first()
-            notifyBatteryCharged(context, phoneName, chargeThreshold)
-        }
-    }
-
-    private suspend fun cancelChargeNoti() {
-        notificationManager.cancel(BATTERY_CHARGED_NOTI_ID)
-        batterySyncStateRepository.updateBatterySyncState {
-            it.copy(notificationPosted = false)
-        }
-    }
-
-    private suspend fun cancelLowNoti() {
-        notificationManager.cancel(BATTERY_LOW_NOTI_ID)
-        batterySyncStateRepository.updateBatterySyncState {
-            it.copy(notificationPosted = false)
+            val notification = createBaseNotificationBuilder(context)
+                .setSmallIcon(R.drawable.battery_full)
+                .setContentTitle(
+                    context.getString(R.string.device_battery_charged_noti_title, phoneName)
+                )
+                .setContentText(
+                    context.getString(
+                        R.string.device_battery_charged_noti_desc,
+                        phoneName,
+                        chargeThreshold.toString()
+                    )
+                )
+                .build()
+            postNotification(notification)
         }
     }
 
@@ -102,112 +99,59 @@ class PhoneBatteryUpdateReceiver :
      */
     private suspend fun handleLowNotification(
         context: Context,
-        batteryStats: BatteryStats
+        batteryStats: BatteryStats,
+        lowThreshold: Int
     ) {
-        val notificationsEnabled = batterySyncStateRepository.getBatterySyncState()
-            .map { it.phoneLowNotificationEnabled }.first()
-        val lowThreshold = batterySyncStateRepository.getBatterySyncState()
-            .map { it.phoneLowThreshold }.first()
-        val hasNotiBeenSent = batterySyncStateRepository.getBatterySyncState()
-            .map { it.notificationPosted }.first()
-
-        val shouldNotify = batteryStats.shouldPostLowNotification(
-            lowThreshold,
-            notificationsEnabled,
-            hasNotiBeenSent
-        )
+        val shouldNotify = batteryStats.percent <= lowThreshold
         if (shouldNotify) {
             val phoneName = phoneStateStore.data.map { it.name }.first()
-            notifyBatteryLow(context, phoneName, lowThreshold)
-        }
-    }
-
-    /**
-     * Creates and sends the device charged [NotificationCompat]. This will also create the required
-     * [NotificationChannel] if necessary.
-     * @param deviceName The name of the device that's charged.
-     * @param chargeThreshold The minimum charge percent required to send the device charged
-     * notification.
-     */
-    private suspend fun notifyBatteryLow(
-        context: Context,
-        deviceName: String,
-        chargeThreshold: Int
-    ) {
-        createNotificationChannel(context)
-
-        val noti =
-            NotificationCompat.Builder(context, BATTERY_STATS_NOTI_CHANNEL_ID)
+            val notification = createBaseNotificationBuilder(context)
                 .setSmallIcon(R.drawable.battery_alert)
                 .setContentTitle(
-                    context.getString(R.string.device_battery_low_noti_title, deviceName)
+                    context.getString(R.string.device_battery_low_noti_title, phoneName)
                 )
                 .setContentText(
                     context.getString(
                         R.string.device_battery_low_noti_desc,
-                        deviceName,
-                        chargeThreshold.toString()
+                        phoneName,
+                        lowThreshold.toString()
                     )
                 )
-                .setContentIntent(getNotiPendingIntent(context))
-                .setLocalOnly(true)
                 .build()
+            postNotification(notification)
+        }
+    }
 
-        notificationManager.notify(BATTERY_LOW_NOTI_ID, noti)
+    private suspend fun postNotification(notification: Notification) {
+        notificationManager.notify(BATTERY_NOTI_ID, notification)
         batterySyncStateRepository.updateBatterySyncState {
             it.copy(notificationPosted = true)
         }
     }
 
-    /**
-     * Creates and sends the device charged [NotificationCompat]. This will also create the required
-     * [NotificationChannel] if necessary.
-     * @param deviceName The name of the device that's charged.
-     * @param chargeThreshold The minimum charge percent required to send the device charged
-     * notification.
-     */
-    private suspend fun notifyBatteryCharged(
-        context: Context,
-        deviceName: String,
-        chargeThreshold: Int
-    ) {
-        createNotificationChannel(context)
-
-        val noti =
-            NotificationCompat.Builder(context, BATTERY_STATS_NOTI_CHANNEL_ID)
-                .setSmallIcon(R.drawable.battery_full)
-                .setContentTitle(
-                    context.getString(R.string.device_battery_charged_noti_title, deviceName)
-                )
-                .setContentText(
-                    context.getString(
-                        R.string.device_battery_charged_noti_desc,
-                        deviceName,
-                        chargeThreshold.toString()
-                    )
-                )
-                .setContentIntent(getNotiPendingIntent(context))
-                .setLocalOnly(true)
-                .build()
-
-        notificationManager.notify(BATTERY_CHARGED_NOTI_ID, noti)
+    private suspend fun cancelNotification() {
+        notificationManager.cancel(BATTERY_NOTI_ID)
         batterySyncStateRepository.updateBatterySyncState {
-            it.copy(notificationPosted = true)
+            it.copy(notificationPosted = false)
         }
     }
 
     /** Sends a battery status update to connected devices. */
-    private suspend fun sendBatteryStatsUpdate(context: Context) {
+    private suspend fun sendBatteryStatsUpdate(context: Context, targetUid: String) {
         val handler = MessageHandler(BatteryStatsSerializer, messageClient)
         val batteryStats = context.batteryStats()
         if (batteryStats != null) {
             handler.sendMessage(
-                discoveryClient.pairedPhone()!!.uid,
+                targetUid,
                 Message(BATTERY_STATUS_PATH, batteryStats)
             )
         }
     }
 
+    /**
+     * If needed, creates a notification channel to post Battery Sync notifications to.
+     * @param context [Context].
+     */
     private fun createNotificationChannel(context: Context) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             if (notificationManager.getNotificationChannel(BATTERY_STATS_NOTI_CHANNEL_ID) == null) {
@@ -225,7 +169,23 @@ class PhoneBatteryUpdateReceiver :
         }
     }
 
-    private fun getNotiPendingIntent(context: Context): PendingIntent {
+    /**
+     * Create a base [NotificationCompat.Builder] for Battery Sync notifications. All posted
+     * notifications should build from this for consistency.
+     * @param context [Context].
+     */
+    private fun createBaseNotificationBuilder(context: Context): NotificationCompat.Builder {
+        return NotificationCompat.Builder(context, BATTERY_STATS_NOTI_CHANNEL_ID)
+            .setContentIntent(createLaunchPendingIntent(context))
+            .setLocalOnly(true)
+            .setOnlyAlertOnce(true)
+    }
+
+    /**
+     * Create a [PendingIntent] to launch the app.
+     * @param context [Context].
+     */
+    private fun createLaunchPendingIntent(context: Context): PendingIntent {
         val intent = context.packageManager.getLaunchIntentForPackage(context.packageName)
         return PendingIntent.getActivity(
             context,
@@ -237,8 +197,7 @@ class PhoneBatteryUpdateReceiver :
 
     companion object {
         private const val START_ACTIVITY_REQUEST_CODE = 123
-        private const val BATTERY_CHARGED_NOTI_ID = 408565
-        private const val BATTERY_LOW_NOTI_ID = 408566
+        private const val BATTERY_NOTI_ID = 408565
         private const val BATTERY_STATS_NOTI_CHANNEL_ID = "companion_device_charged"
     }
 }
