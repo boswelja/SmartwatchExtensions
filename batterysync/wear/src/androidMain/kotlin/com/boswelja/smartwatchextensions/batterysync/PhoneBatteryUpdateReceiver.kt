@@ -54,20 +54,21 @@ class PhoneBatteryUpdateReceiver :
         phoneStateStore = context.phoneStateStore
         createNotificationChannel(context)
         if (batteryStats.charging && batterySyncState.phoneChargeNotificationEnabled) {
-            handleChargeNotification(context, batteryStats, batterySyncState.phoneChargeThreshold)
+            tryPostChargeNotification(context, batteryStats, batterySyncState.phoneChargeThreshold)
         } else if (!batteryStats.charging && batterySyncState.phoneLowNotificationEnabled) {
-            handleLowNotification(context, batteryStats, batterySyncState.phoneLowThreshold)
+            tryPostLowNotification(context, batteryStats, batterySyncState.phoneLowThreshold)
         } else {
             cancelNotification()
         }
     }
 
     /**
-     * Decides whether a device charged notification should be sent to the user, and either sends
-     * the notification or cancels any existing notifications accordingly.
-     * @param batteryStats The [BatteryStats] object to read data from.
+     * If all conditions are met, posts a notification informing the user their phone is charged.
+     * @param context [Context].
+     * @param batteryStats The [BatteryStats] sent from the phone.
+     * @param chargeThreshold The battery percent threshold to consider the device charged at.
      */
-    private suspend fun handleChargeNotification(
+    private suspend fun tryPostChargeNotification(
         context: Context,
         batteryStats: BatteryStats,
         chargeThreshold: Int
@@ -93,11 +94,12 @@ class PhoneBatteryUpdateReceiver :
     }
 
     /**
-     * Decides whether a device charged notification should be sent to the user, and either sends
-     * the notification or cancels any existing notifications accordingly.
-     * @param batteryStats The [BatteryStats] object to read data from.
+     * If all conditions are met, posts a notification informing the user their phone is low.
+     * @param context [Context].
+     * @param batteryStats The [BatteryStats] sent from the phone.
+     * @param lowThreshold The battery percent threshold to consider the device low at.
      */
-    private suspend fun handleLowNotification(
+    private suspend fun tryPostLowNotification(
         context: Context,
         batteryStats: BatteryStats,
         lowThreshold: Int
@@ -122,6 +124,9 @@ class PhoneBatteryUpdateReceiver :
         }
     }
 
+    /**
+     * Post the given notification to the system.
+     */
     private suspend fun postNotification(notification: Notification) {
         notificationManager.notify(BATTERY_NOTI_ID, notification)
         batterySyncStateRepository.updateBatterySyncState {
@@ -129,6 +134,9 @@ class PhoneBatteryUpdateReceiver :
         }
     }
 
+    /**
+     * Cancel any notifications sent by Battery Sync.
+     */
     private suspend fun cancelNotification() {
         notificationManager.cancel(BATTERY_NOTI_ID)
         batterySyncStateRepository.updateBatterySyncState {
@@ -136,7 +144,11 @@ class PhoneBatteryUpdateReceiver :
         }
     }
 
-    /** Sends a battery status update to connected devices. */
+    /**
+     *  Get an up to date [BatteryStats] and send it to the given target.
+     *  @param context [Context].
+     *  @param targetUid The target device UID.
+     */
     private suspend fun sendBatteryStatsUpdate(context: Context, targetUid: String) {
         val handler = MessageHandler(BatteryStatsSerializer, messageClient)
         val batteryStats = context.batteryStats()
