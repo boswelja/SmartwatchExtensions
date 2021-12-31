@@ -13,4 +13,6 @@
     <string name="battery_sync_hint_text">%s Battery</string>
 
     <string name="battery_sync_complication_disabled">Disabled</string>
+
+    <string name="phone_not_connected">Can\'t connect to your phone</string>
 </resources>

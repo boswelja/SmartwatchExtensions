@@ -23,6 +23,8 @@ kotlin {
                 implementation(libs.androidx.wear.complications.data.source)
                 implementation(libs.bundles.compose.wear)
                 implementation(libs.koin.android)
+                implementation(libs.koin.compose)
+                implementation(libs.androidx.wear.core)
             }
         }
     }

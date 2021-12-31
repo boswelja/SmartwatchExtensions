@@ -8,8 +8,6 @@
     <string name="lock_phone_success">Successfully locked your phone</string>
     <string name="lock_phone">Tap to lock your %s</string>
 
-    <!-- Battery Sync strings -->
-
     <!-- DnD Sync strings -->
     <string name="dnd_sync_active_noti_title">DnD Sync</string>
     <string name="dnd_sync_with_theater_noti_desc">Syncing phone DnD with Theater Mode</string>
@@ -43,7 +41,6 @@
     <string name="getting_ready">Getting Ready</string>
     <string name="loading">Loading</string>
     <string name="default_phone_name">Phone</string>
-    <string name="phone_not_connected">Can\'t connect to your phone</string>
 
     <!-- Notification Channel strings -->
     <string name="noti_channel_dnd_sync_title">Do not Disturb Sync</string>

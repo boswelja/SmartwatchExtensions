@@ -40,34 +40,14 @@ fun Extensions(
         val coroutineScope = rememberCoroutineScope()
         val viewModel: ExtensionsViewModel = viewModel()
 
-        val batterySyncEnabled by viewModel.batterySyncEnabled.collectAsState(false, Dispatchers.IO)
         val phoneLockingEnabled by viewModel.phoneLockingEnabled
             .collectAsState(false, Dispatchers.IO)
-        val batteryPercent by viewModel.batteryPercent.collectAsState(0, Dispatchers.IO)
         val phoneName by viewModel.phoneName
             .collectAsState(stringResource(R.string.default_phone_name), Dispatchers.IO)
 
         BatterySyncChip(
             modifier = extensionModifier,
-            enabled = batterySyncEnabled,
-            percent = batteryPercent,
-            phoneName = phoneName,
-            onClick=  {
-                coroutineScope.launch {
-                    val result = viewModel.requestBatteryStats()
-                    if (result) {
-                        view.showConfirmationOverlay(
-                            type = ConfirmationOverlay.SUCCESS_ANIMATION,
-                            message = view.context.getString(R.string.battery_sync_refresh_success)
-                        )
-                    } else {
-                        view.showConfirmationOverlay(
-                            type = ConfirmationOverlay.FAILURE_ANIMATION,
-                            message = view.context.getString(R.string.phone_not_connected)
-                        )
-                    }
-                }
-            }
+            phoneName = phoneName
         )
         PhoneLockingChip(
             modifier = extensionModifier,
