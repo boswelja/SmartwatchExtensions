@@ -14,7 +14,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.wear.widget.ConfirmationOverlay
 import com.boswelja.smartwatchextensions.R
-import com.boswelja.smartwatchextensions.batterysync.ui.BatteryStatsChip
+import com.boswelja.smartwatchextensions.batterysync.ui.BatterySyncChip
 import com.boswelja.smartwatchextensions.common.ui.showConfirmationOverlay
 import com.boswelja.smartwatchextensions.phonelocking.ui.PhoneLockingChip
 import kotlinx.coroutines.Dispatchers
@@ -47,7 +47,7 @@ fun Extensions(
         val phoneName by viewModel.phoneName
             .collectAsState(stringResource(R.string.default_phone_name), Dispatchers.IO)
 
-        BatteryStatsChip(
+        BatterySyncChip(
             modifier = extensionModifier,
             enabled = batterySyncEnabled,
             percent = batteryPercent,
