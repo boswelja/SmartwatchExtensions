@@ -42,7 +42,7 @@ class PhoneBatteryUpdateReceiver :
         val batteryStats = message.data
         val batterySyncState = batterySyncStateRepository.getBatterySyncState().first()
 
-        check(!batterySyncState.batterySyncEnabled) { "Received Battery Sync update while sync is disabled!" }
+        check(batterySyncState.batterySyncEnabled) { "Received Battery Sync update while sync is disabled!" }
 
         // Store updated stats
         batteryStatsRepository.updatePhoneBatteryStats(batteryStats)

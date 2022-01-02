@@ -1,5 +1,6 @@
 package com.boswelja.smartwatchextensions.batterysync
 
+import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
@@ -12,8 +13,8 @@ import com.boswelja.smartwatchextensions.batterysync.Utils.BATTERY_STATS_NOTI_CH
 import com.boswelja.smartwatchextensions.devicemanagement.WatchRepository
 import com.boswelja.smartwatchextensions.messages.Message
 import com.boswelja.smartwatchextensions.messages.MessagesRepository
-import com.boswelja.smartwatchextensions.settings.BoolSettingKeys.BATTERY_CHARGED_NOTI_SENT
-import com.boswelja.smartwatchextensions.settings.BoolSettingKeys.BATTERY_LOW_NOTI_SENT
+import com.boswelja.smartwatchextensions.settings.BoolSettingKeys.BATTERY_STATS_NOTIFICATION_SENT
+import com.boswelja.smartwatchextensions.settings.BoolSettingKeys.BATTERY_SYNC_ENABLED_KEY
 import com.boswelja.smartwatchextensions.settings.BoolSettingKeys.BATTERY_WATCH_CHARGE_NOTI_KEY
 import com.boswelja.smartwatchextensions.settings.BoolSettingKeys.BATTERY_WATCH_LOW_NOTI_KEY
 import com.boswelja.smartwatchextensions.settings.IntSettingKeys.BATTERY_CHARGE_THRESHOLD_KEY
@@ -22,16 +23,10 @@ import com.boswelja.smartwatchextensions.settings.WatchSettingsRepository
 import com.boswelja.watchconnection.common.Watch
 import com.boswelja.watchconnection.common.message.ReceivedMessage
 import com.boswelja.watchconnection.serialization.MessageReceiver
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.firstOrNull
-import kotlinx.coroutines.withContext
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
-import java.util.Locale
 
-private const val BATTERY_CHARGED_NOTI_ID = 408565
-private const val BATTERY_LOW_NOTI_ID = 408566
 private const val START_ACTIVITY_REQUEST_CODE = 123
 
 private const val BATTERY_CHARGE_DEFAULT = 90
@@ -50,6 +45,8 @@ class BatteryStatsReceiver :
     private val watchRepository: WatchRepository by inject()
     private val settingsRepository: WatchSettingsRepository by inject()
 
+    private lateinit var notificationManager: NotificationManager
+
     override suspend fun onMessageReceived(
         context: Context,
         message: ReceivedMessage<BatteryStats>
@@ -58,6 +55,7 @@ class BatteryStatsReceiver :
             message.sourceUid,
             message.data
         )
+        notificationManager = context.getSystemService()!!
         onBatteryStatsReceived(context, message.sourceUid, message.data)
     }
 
@@ -72,41 +70,30 @@ class BatteryStatsReceiver :
         sourceUid: String,
         batteryStats: BatteryStats
     ) {
-        // TODO This can be optimised
-        withContext(Dispatchers.IO) {
-            watchRepository.getWatchById(sourceUid).firstOrNull()?.let { watch ->
-                val notificationManager = context.getSystemService<NotificationManager>()!!
-                if (batteryStats.charging) {
-                    dismissLowNoti(
-                        notificationManager,
-                        watch
-                    )
-                    handleWatchChargeNoti(
-                        context,
-                        notificationManager,
-                        batteryStats,
-                        watch
-                    )
-                } else {
-                    dismissChargeNoti(
-                        notificationManager,
-                        watch
-                    )
-                    handleWatchLowNoti(
-                        context,
-                        notificationManager,
-                        batteryStats,
-                        watch
-                    )
-                }
-            }
+        val batterySyncEnabled = settingsRepository.getBoolean(sourceUid, BATTERY_SYNC_ENABLED_KEY, false).first()
+        check(batterySyncEnabled) { "Received Battery Sync update while sync is disabled!" }
+        val watch = watchRepository.getWatchById(sourceUid).first()
+        checkNotNull(watch) { "Received battery stats for a watch that isn't registered!" }
 
-            // TODO Restore this
-//            // Update battery stat widgets
-//            WatchWidgetProvider.updateWidgets(context)
-//
-//            // Update QS Tile
-//            WatchBatteryTileService.requestTileUpdate(context)
+        val chargeNotificationsEnabled = settingsRepository
+            .getBoolean(sourceUid, BATTERY_WATCH_CHARGE_NOTI_KEY, false).first()
+        val lowNotificationsEnabled = settingsRepository
+            .getBoolean(sourceUid, BATTERY_WATCH_LOW_NOTI_KEY, false).first()
+
+        if (batteryStats.charging && chargeNotificationsEnabled) {
+            handleWatchChargeNoti(
+                context,
+                batteryStats,
+                watch
+            )
+        } else if (!batteryStats.charging && lowNotificationsEnabled) {
+            handleWatchLowNoti(
+                context,
+                batteryStats,
+                watch
+            )
+        } else {
+            cancelNotificationFor(sourceUid)
         }
     }
 
@@ -118,7 +105,6 @@ class BatteryStatsReceiver :
      */
     private suspend fun handleWatchChargeNoti(
         context: Context,
-        notificationManager: NotificationManager,
         batteryStats: BatteryStats,
         watch: Watch
     ) {
@@ -129,7 +115,7 @@ class BatteryStatsReceiver :
             .getBoolean(watch.uid, BATTERY_WATCH_CHARGE_NOTI_KEY, false)
             .first()
         val hasSentNoti = settingsRepository
-            .getBoolean(watch.uid, BATTERY_CHARGED_NOTI_SENT, false)
+            .getBoolean(watch.uid, BATTERY_STATS_NOTIFICATION_SENT, false)
             .first()
 
         val shouldNotify = batteryStats.shouldPostChargeNotification(
@@ -138,23 +124,24 @@ class BatteryStatsReceiver :
             hasSentNoti
         )
         if (shouldNotify) {
-            createNotificationChannel(context, notificationManager)
+            createNotificationChannel(context)
             if (areNotificationsEnabled(context)) {
-                NotificationCompat.Builder(
-                    context,
-                    BATTERY_STATS_NOTI_CHANNEL_ID
-                )
+                val notification = NotificationCompat.Builder(context, BATTERY_STATS_NOTI_CHANNEL_ID)
                     .setSmallIcon(R.drawable.battery_full)
                     .setContentTitle(
                         context.getString(R.string.device_battery_charged_noti_title, watch.name)
                     )
                     .setContentText(
-                        context.getString(R.string.device_battery_charged_noti_desc)
-                            .format(Locale.getDefault(), watch.name, chargeThreshold)
+                        context.getString(
+                            R.string.device_battery_charged_noti_desc,
+                            watch.name,
+                            chargeThreshold.toString()
+                        )
                     )
                     .setContentIntent(getNotiPendingIntent(context))
                     .setLocalOnly(true)
-                    .also { notificationManager.notify(BATTERY_CHARGED_NOTI_ID, it.build()) }
+                    .build()
+                postNotificationFor(watch.uid, notification)
             } else {
                 messagesRepository.insert(
                     Message(
@@ -167,7 +154,6 @@ class BatteryStatsReceiver :
                     null
                 )
             }
-            settingsRepository.putBoolean(watch.uid, BATTERY_CHARGED_NOTI_SENT, true)
         }
     }
 
@@ -178,7 +164,6 @@ class BatteryStatsReceiver :
      */
     private suspend fun handleWatchLowNoti(
         context: Context,
-        notificationManager: NotificationManager,
         batteryStats: BatteryStats,
         watch: Watch
     ) {
@@ -189,7 +174,7 @@ class BatteryStatsReceiver :
             .getBoolean(watch.uid, BATTERY_WATCH_LOW_NOTI_KEY, false)
             .first()
         val hasSentNoti = settingsRepository
-            .getBoolean(watch.uid, BATTERY_LOW_NOTI_SENT, false)
+            .getBoolean(watch.uid, BATTERY_STATS_NOTIFICATION_SENT, false)
             .first()
 
         // We can send a low noti if the user has enabled them, we haven't already sent it and
@@ -200,23 +185,20 @@ class BatteryStatsReceiver :
             hasSentNoti
         )
         if (shouldNotify) {
-            createNotificationChannel(context, notificationManager)
+            createNotificationChannel(context)
             if (areNotificationsEnabled(context)) {
-                NotificationCompat.Builder(
-                    context,
-                    BATTERY_STATS_NOTI_CHANNEL_ID
-                )
+                val notification = NotificationCompat.Builder(context, BATTERY_STATS_NOTI_CHANNEL_ID)
                     .setSmallIcon(R.drawable.battery_alert)
                     .setContentTitle(
                         context.getString(R.string.device_battery_low_noti_title, watch.name)
                     )
                     .setContentIntent(getNotiPendingIntent(context))
                     .setContentText(
-                        context.getString(R.string.device_battery_low_noti_desc)
-                            .format(Locale.getDefault(), watch.name, lowThreshold)
+                        context.getString(R.string.device_battery_low_noti_desc, watch.name, lowThreshold.toString())
                     )
                     .setLocalOnly(true)
-                    .also { notificationManager.notify(BATTERY_LOW_NOTI_ID, it.build()) }
+                    .build()
+                postNotificationFor(watch.uid, notification)
             } else {
                 messagesRepository.insert(
                     Message(
@@ -229,34 +211,7 @@ class BatteryStatsReceiver :
                     null
                 )
             }
-            settingsRepository.putBoolean(watch.uid, BATTERY_LOW_NOTI_SENT, true)
         }
-    }
-
-    /**
-     * Dismiss a device charge notification for the given watch if it exists.
-     * @param notificationManager [NotificationManager].
-     * @param watch The watch whose charge notification should be dismissed.
-     */
-    private suspend fun dismissChargeNoti(
-        notificationManager: NotificationManager,
-        watch: Watch
-    ) {
-        notificationManager.cancel(BATTERY_CHARGED_NOTI_ID)
-        settingsRepository.putBoolean(watch.uid, BATTERY_CHARGED_NOTI_SENT, false)
-    }
-
-    /**
-     * Dismiss a device low notification for the given watch if it exists.
-     * @param notificationManager [NotificationManager].
-     * @param watch The watch whose low notification should be dismissed.
-     */
-    private suspend fun dismissLowNoti(
-        notificationManager: NotificationManager,
-        watch: Watch
-    ) {
-        notificationManager.cancel(BATTERY_LOW_NOTI_ID)
-        settingsRepository.putBoolean(watch.uid, BATTERY_LOW_NOTI_SENT, false)
     }
 
     private fun getNotiPendingIntent(context: Context): PendingIntent {
@@ -274,7 +229,6 @@ class BatteryStatsReceiver :
      * @return true if notifications are enabled, false otherwise.
      */
     private fun areNotificationsEnabled(context: Context): Boolean {
-        val notificationManager = context.getSystemService<NotificationManager>()!!
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             notificationManager.getNotificationChannel(BATTERY_STATS_NOTI_CHANNEL_ID).let {
                 it != null && it.importance != NotificationManager.IMPORTANCE_NONE
@@ -287,7 +241,7 @@ class BatteryStatsReceiver :
     /**
      * Create a notification channel for battery stats notifications.
      */
-    private fun createNotificationChannel(context: Context, notificationManager: NotificationManager) {
+    private fun createNotificationChannel(context: Context) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             if (notificationManager.getNotificationChannel(BATTERY_STATS_NOTI_CHANNEL_ID) == null) {
                 NotificationChannel(
@@ -302,4 +256,16 @@ class BatteryStatsReceiver :
             }
         }
     }
+
+    private suspend fun postNotificationFor(watchUid: String, notification: Notification) {
+        notificationManager.notify(calculateNotificationId(watchUid), notification)
+        settingsRepository.putBoolean(watchUid, BATTERY_STATS_NOTIFICATION_SENT, true)
+    }
+
+    private suspend fun cancelNotificationFor(watchUid: String) {
+        notificationManager.cancel(calculateNotificationId(watchUid))
+        settingsRepository.putBoolean(watchUid, BATTERY_STATS_NOTIFICATION_SENT, false)
+    }
+
+    private fun calculateNotificationId(watchUid: String): Int = watchUid.hashCode()
 }
