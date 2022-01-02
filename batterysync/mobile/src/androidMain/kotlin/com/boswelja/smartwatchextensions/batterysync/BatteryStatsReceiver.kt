@@ -105,22 +105,16 @@ class BatteryStatsReceiver :
         val chargeThreshold = settingsRepository
             .getInt(watch.uid, BATTERY_CHARGE_THRESHOLD_KEY, BATTERY_CHARGE_DEFAULT)
             .first()
-        val shouldSendChargeNotis = settingsRepository
-            .getBoolean(watch.uid, BATTERY_WATCH_CHARGE_NOTI_KEY, false)
-            .first()
         val hasSentNoti = settingsRepository
             .getBoolean(watch.uid, BATTERY_STATS_NOTIFICATION_SENT, false)
             .first()
 
-        val shouldNotify = batteryStats.shouldPostChargeNotification(
-            chargeThreshold,
-            shouldSendChargeNotis,
-            hasSentNoti
-        )
+        val shouldNotify = !hasSentNoti && batteryStats.percent >= chargeThreshold
+
         if (shouldNotify) {
             createNotificationChannel(context)
             if (areNotificationsEnabled(context)) {
-                val notification = NotificationCompat.Builder(context, BATTERY_STATS_NOTI_CHANNEL_ID)
+                val notification = createBaseNotificationBuilder(context)
                     .setSmallIcon(R.drawable.battery_full)
                     .setContentTitle(
                         context.getString(R.string.device_battery_charged_noti_title, watch.name)
@@ -132,8 +126,6 @@ class BatteryStatsReceiver :
                             chargeThreshold.toString()
                         )
                     )
-                    .setContentIntent(getNotiPendingIntent(context))
-                    .setLocalOnly(true)
                     .build()
                 postNotificationFor(watch.uid, notification)
             } else {
@@ -164,33 +156,24 @@ class BatteryStatsReceiver :
         val lowThreshold = settingsRepository
             .getInt(watch.uid, BATTERY_LOW_THRESHOLD_KEY, BATTERY_LOW_DEFAULT)
             .first()
-        val shouldSendLowNoti = settingsRepository
-            .getBoolean(watch.uid, BATTERY_WATCH_LOW_NOTI_KEY, false)
-            .first()
         val hasSentNoti = settingsRepository
             .getBoolean(watch.uid, BATTERY_STATS_NOTIFICATION_SENT, false)
             .first()
 
         // We can send a low noti if the user has enabled them, we haven't already sent it and
         // the watch is sufficiently discharged.
-        val shouldNotify = batteryStats.shouldPostLowNotification(
-            lowThreshold,
-            shouldSendLowNoti,
-            hasSentNoti
-        )
+        val shouldNotify = !hasSentNoti && batteryStats.percent <= lowThreshold
         if (shouldNotify) {
             createNotificationChannel(context)
             if (areNotificationsEnabled(context)) {
-                val notification = NotificationCompat.Builder(context, BATTERY_STATS_NOTI_CHANNEL_ID)
+                val notification = createBaseNotificationBuilder(context)
                     .setSmallIcon(R.drawable.battery_alert)
                     .setContentTitle(
                         context.getString(R.string.device_battery_low_noti_title, watch.name)
                     )
-                    .setContentIntent(getNotiPendingIntent(context))
                     .setContentText(
                         context.getString(R.string.device_battery_low_noti_desc, watch.name, lowThreshold.toString())
                     )
-                    .setLocalOnly(true)
                     .build()
                 postNotificationFor(watch.uid, notification)
             } else {
@@ -208,7 +191,14 @@ class BatteryStatsReceiver :
         }
     }
 
-    private fun getNotiPendingIntent(context: Context): PendingIntent {
+    private fun createBaseNotificationBuilder(context: Context): NotificationCompat.Builder {
+        return NotificationCompat.Builder(context, BATTERY_STATS_NOTI_CHANNEL_ID)
+            .setLocalOnly(true)
+            .setOnlyAlertOnce(true)
+            .setContentIntent(createNotificationIntent(context))
+    }
+
+    private fun createNotificationIntent(context: Context): PendingIntent {
         val intent = context.packageManager.getLaunchIntentForPackage(context.packageName)
         return PendingIntent.getActivity(
             context,
