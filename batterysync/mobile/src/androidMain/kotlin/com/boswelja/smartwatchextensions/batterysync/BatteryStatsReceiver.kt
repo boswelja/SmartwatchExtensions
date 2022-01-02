@@ -9,7 +9,6 @@ import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.getSystemService
-import com.boswelja.smartwatchextensions.batterysync.Utils.BATTERY_STATS_NOTI_CHANNEL_ID
 import com.boswelja.smartwatchextensions.devicemanagement.WatchRepository
 import com.boswelja.smartwatchextensions.messages.Message
 import com.boswelja.smartwatchextensions.messages.MessagesRepository
@@ -26,11 +25,6 @@ import com.boswelja.watchconnection.serialization.MessageReceiver
 import kotlinx.coroutines.flow.first
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
-
-private const val START_ACTIVITY_REQUEST_CODE = 123
-
-private const val BATTERY_CHARGE_DEFAULT = 90
-private const val BATTERY_LOW_DEFAULT = 20
 
 /**
  * A [MessageReceiver] to receive [BatteryStats] and update [BatteryStatsDbRepository] with the new
@@ -268,4 +262,16 @@ class BatteryStatsReceiver :
     }
 
     private fun calculateNotificationId(watchUid: String): Int = watchUid.hashCode()
+
+    companion object {
+        /**
+         * A notification channel ID to use for battery stats
+         */
+        private const val BATTERY_STATS_NOTI_CHANNEL_ID = "companion_device_charged"
+
+        private const val START_ACTIVITY_REQUEST_CODE = 123
+
+        private const val BATTERY_CHARGE_DEFAULT = 90
+        private const val BATTERY_LOW_DEFAULT = 20
+    }
 }
