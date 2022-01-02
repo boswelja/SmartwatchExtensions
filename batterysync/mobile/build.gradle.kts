@@ -30,6 +30,7 @@ kotlin {
                 implementation(libs.androidx.work.ktx)
                 implementation(libs.koin.android)
                 implementation(libs.koin.compose)
+                implementation(libs.koin.workmanager)
                 implementation(libs.bundles.lifecycle)
                 implementation(libs.bundles.compose.mobile)
             }

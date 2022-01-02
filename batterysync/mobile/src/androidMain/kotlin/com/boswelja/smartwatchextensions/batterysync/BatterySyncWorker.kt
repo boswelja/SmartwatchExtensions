@@ -2,33 +2,30 @@ package com.boswelja.smartwatchextensions.batterysync
 
 import android.content.Context
 import androidx.work.CoroutineWorker
-import androidx.work.Data
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.PeriodicWorkRequest
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
-import com.boswelja.smartwatchextensions.devicemanagement.WatchRepository
+import androidx.work.await
+import androidx.work.workDataOf
 import com.boswelja.watchconnection.common.message.Message
-import com.boswelja.watchconnection.common.message.MessageClient
+import com.boswelja.watchconnection.core.message.MessageClient
 import com.boswelja.watchconnection.serialization.MessageHandler
-import kotlinx.coroutines.flow.firstOrNull
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
 import java.util.concurrent.TimeUnit
 
 /**
  * A [CoroutineWorker] to handle syncing battery stats for a watch.
  */
-class BatterySyncWorker(appContext: Context, workerParams: WorkerParameters) :
-    CoroutineWorker(appContext, workerParams), KoinComponent {
-
-    private val watchRepository: WatchRepository by inject()
-    private val messageClient: MessageClient by inject()
+class BatterySyncWorker(
+    private val messageClient: MessageClient,
+    appContext: Context,
+    workerParams: WorkerParameters
+) : CoroutineWorker(appContext, workerParams) {
 
     override suspend fun doWork(): Result {
         val watchId = inputData.getString(EXTRA_WATCH_ID) ?: return Result.failure()
-        val batteryStats = applicationContext.batteryStats() ?: return Result.retry()
+        val batteryStats = applicationContext.batteryStats()!!
         return if (onSendBatteryStats(watchId, batteryStats)) {
             Result.success()
         } else {
@@ -47,22 +44,15 @@ class BatterySyncWorker(appContext: Context, workerParams: WorkerParameters) :
         batteryStats: BatteryStats
     ): Boolean {
         val handler = MessageHandler(BatteryStatsSerializer, messageClient)
-        return watchRepository.getWatchById(targetUid).firstOrNull()?.let { watch ->
-            handler.sendMessage(watch.uid, Message(BATTERY_STATUS_PATH, batteryStats))
-        } ?: false
+        return handler.sendMessage(targetUid, Message(BATTERY_STATUS_PATH, batteryStats))
     }
 
     companion object {
 
         /**
-         * The worker sync interval in minutes.
-         */
-        private const val SYNC_INTERVAL_MINUTES = 15L
-
-        /**
          * The key for the extra containing the target device UID.
          */
-        const val EXTRA_WATCH_ID: String = "extra_watch_id"
+        private const val EXTRA_WATCH_ID: String = "extra_watch_id"
 
         /**
          * Returns a unique worker ID for battery sync with the target UID.
@@ -71,19 +61,20 @@ class BatterySyncWorker(appContext: Context, workerParams: WorkerParameters) :
         private fun getWorkerIdFor(watchId: String): String = "$watchId-batterysync"
 
         /** Starts a battery sync worker for the watch with a given ID. */
-        fun startSyncingFor(context: Context, watchId: String): Boolean {
-            val data = Data.Builder().putString(EXTRA_WATCH_ID, watchId).build()
+        suspend fun startSyncingFor(context: Context, watchId: String): Boolean {
+            val workerId = getWorkerIdFor(watchId)
+            // Don't specify flex interval. Seems like the worker doesn't get executed anymore
             val request = PeriodicWorkRequestBuilder<BatterySyncWorker>(
-                SYNC_INTERVAL_MINUTES, TimeUnit.MINUTES,
-                PeriodicWorkRequest.MIN_PERIODIC_FLEX_MILLIS, TimeUnit.MILLISECONDS
-            ).apply {
-                setInputData(data)
-            }.build()
+                PeriodicWorkRequest.MIN_PERIODIC_INTERVAL_MILLIS,
+                TimeUnit.MILLISECONDS
+            ).setInputData(workDataOf(EXTRA_WATCH_ID to watchId))
+                .addTag(workerId)
+                .build()
             WorkManager.getInstance(context).enqueueUniquePeriodicWork(
-                getWorkerIdFor(watchId),
+                workerId,
                 ExistingPeriodicWorkPolicy.REPLACE,
                 request
-            )
+            ).result.await()
             return true
         }
 
