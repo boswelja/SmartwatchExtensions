@@ -9,13 +9,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Get last release name
-        uses: pozetroninc/github-action-get-latest-release@v0.5.0
+        uses: pozetroninc/github-action-get-latest-release@v0.6.0
         id: old_release
         with:
           repository: "boswelja/SmartwatchExtensions"
           excludes: 'prerelease,draft'
       - name: Get new release name
-        uses: pozetroninc/github-action-get-latest-release@v0.5.0
+        uses: pozetroninc/github-action-get-latest-release@v0.6.0
         id: new_release
         with:
           repository: "boswelja/SmartwatchExtensions"
