@@ -2,15 +2,15 @@ package com.boswelja.smartwatchextensions.batterysync
 
 abstract class BatterySyncNotificationHandler {
 
-    internal abstract suspend fun getChargeNotificationsEnabled(targetUid: String): Boolean
+    abstract suspend fun getChargeNotificationsEnabled(targetUid: String): Boolean
 
-    internal abstract suspend fun getLowNotificationsEnabled(targetUid: String): Boolean
+    abstract suspend fun getLowNotificationsEnabled(targetUid: String): Boolean
 
-    internal abstract suspend fun getChargeThreshold(targetUid: String): Int
+    abstract suspend fun getChargeThreshold(targetUid: String): Int
 
-    internal abstract suspend fun getLowThreshold(targetUid: String): Int
+    abstract suspend fun getLowThreshold(targetUid: String): Int
 
-    internal abstract suspend fun getNotificationAlreadySent(targetUid: String): Boolean
+    abstract suspend fun getNotificationAlreadySent(targetUid: String): Boolean
 
     internal abstract suspend fun cancelNotificationFor(targetUid: String)
 

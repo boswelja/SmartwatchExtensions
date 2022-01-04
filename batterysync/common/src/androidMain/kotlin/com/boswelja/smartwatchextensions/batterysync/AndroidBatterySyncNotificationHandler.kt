@@ -11,11 +11,11 @@ abstract class AndroidBatterySyncNotificationHandler(
     private val notificationManager: NotificationManager
 ) : BatterySyncNotificationHandler() {
 
-    internal abstract suspend fun onNotificationPosted(targetUid: String)
+    abstract suspend fun onNotificationPosted(targetUid: String)
 
-    internal abstract suspend fun onNotificationCancelled(targetUid: String)
+    abstract suspend fun onNotificationCancelled(targetUid: String)
 
-    internal abstract suspend fun getDeviceName(targetUid: String)
+    abstract suspend fun getDeviceName(targetUid: String): String
 
     final override suspend fun postChargeNotificationFor(targetUid: String, batteryStats: BatteryStats) {
         val deviceName = getDeviceName(targetUid)
