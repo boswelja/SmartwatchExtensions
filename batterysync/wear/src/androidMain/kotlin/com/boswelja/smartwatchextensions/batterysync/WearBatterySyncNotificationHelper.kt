@@ -7,6 +7,9 @@ import com.boswelja.smartwatchextensions.devicemanagement.PhoneState
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 
+/**
+ * A [AndroidBatterySyncNotificationHandler] specifically for Wear.
+ */
 class WearBatterySyncNotificationHelper(
     private val batterySyncStateRepository: BatterySyncStateRepository,
     private val phoneStateStore: DataStore<PhoneState>,

@@ -11,14 +11,15 @@ import com.boswelja.smartwatchextensions.settings.IntSettingKeys.BATTERY_LOW_THR
 import com.boswelja.smartwatchextensions.settings.WatchSettingsRepository
 import kotlinx.coroutines.flow.first
 
+/**
+ * A [AndroidBatterySyncNotificationHandler] specifically for Mobile.
+ */
 class MobileBatterySyncNotificationHandler(
     private val settingsRepository: WatchSettingsRepository,
     private val watchRepository: WatchRepository,
     context: Context,
     notificationManager: NotificationManager
-) : AndroidBatterySyncNotificationHandler(
-    context, notificationManager
-) {
+) : AndroidBatterySyncNotificationHandler(context, notificationManager) {
     override suspend fun getDeviceName(targetUid: String): String {
         return watchRepository.getWatchById(targetUid).first()?.name ?: targetUid
     }
