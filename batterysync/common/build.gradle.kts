@@ -18,6 +18,10 @@ kotlin {
                 implementation(kotlin("test"))
             }
         }
-        val androidMain by getting
+        val androidMain by getting {
+            dependencies {
+                implementation(libs.androidx.appcompat)
+            }
+        }
     }
 }
