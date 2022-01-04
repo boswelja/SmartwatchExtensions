@@ -15,7 +15,7 @@ class BatteryStatsReceiver :
     KoinComponent {
 
     private val batteryStatsRepository: BatteryStatsRepository by inject()
-    private val batterySyncNotificationHandler: BatterySyncNotificationHandler by inject()
+    private val batterySyncNotificationHandler: BaseBatterySyncNotificationHandler by inject()
 
     override suspend fun onMessageReceived(
         context: Context,

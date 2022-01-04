@@ -8,14 +8,14 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 
 /**
- * A [AndroidBatterySyncNotificationHandler] specifically for Wear.
+ * A [BatterySyncNotificationHandler] specifically for Wear.
  */
 class WearBatterySyncNotificationHelper(
     private val batterySyncStateRepository: BatterySyncStateRepository,
     private val phoneStateStore: DataStore<PhoneState>,
     context: Context,
     notificationManager: NotificationManager
-) : AndroidBatterySyncNotificationHandler(context, notificationManager) {
+) : BatterySyncNotificationHandler(context, notificationManager) {
 
     override suspend fun onNotificationPosted(targetUid: String) {
         batterySyncStateRepository.updateBatterySyncState {

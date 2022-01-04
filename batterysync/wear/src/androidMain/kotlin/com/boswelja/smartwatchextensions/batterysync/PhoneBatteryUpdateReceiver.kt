@@ -20,7 +20,7 @@ class PhoneBatteryUpdateReceiver :
     private val messageClient: MessageClient by inject()
     private val batteryStatsRepository: BatteryStatsRepository by inject()
     private val batterySyncStateRepository: BatterySyncStateRepository by inject()
-    private val batterySyncNotificationHandler: BatterySyncNotificationHandler by inject()
+    private val batterySyncNotificationHandler: BaseBatterySyncNotificationHandler by inject()
 
     override suspend fun onMessageReceived(
         context: Context,
