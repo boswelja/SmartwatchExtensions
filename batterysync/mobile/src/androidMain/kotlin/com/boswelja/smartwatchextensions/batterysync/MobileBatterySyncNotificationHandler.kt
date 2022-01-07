@@ -20,9 +20,6 @@ class MobileBatterySyncNotificationHandler(
     context: Context,
     notificationManager: NotificationManager
 ) : BatterySyncNotificationHandler(context, notificationManager) {
-    override suspend fun getDeviceName(targetUid: String): String {
-        return watchRepository.getWatchById(targetUid).first()?.name ?: targetUid
-    }
 
     override suspend fun onNotificationPosted(targetUid: String) {
         settingsRepository.putBoolean(targetUid, BATTERY_STATS_NOTIFICATION_SENT, true)
@@ -32,23 +29,25 @@ class MobileBatterySyncNotificationHandler(
         settingsRepository.putBoolean(targetUid, BATTERY_STATS_NOTIFICATION_SENT, false)
     }
 
-    override suspend fun getNotificationAlreadySent(targetUid: String): Boolean {
-        return settingsRepository.getBoolean(targetUid, BATTERY_STATS_NOTIFICATION_SENT, false).first()
-    }
+    override suspend fun getDeviceName(targetUid: String): String =
+        watchRepository.getWatchById(targetUid).first()?.name ?: targetUid
 
-    override suspend fun getChargeNotificationsEnabled(targetUid: String): Boolean {
-        return settingsRepository.getBoolean(targetUid, BATTERY_WATCH_CHARGE_NOTI_KEY, false).first()
-    }
+    override suspend fun getNotificationAlreadySent(targetUid: String): Boolean =
+        settingsRepository.getBoolean(targetUid, BATTERY_STATS_NOTIFICATION_SENT, false).first()
 
-    override suspend fun getLowNotificationsEnabled(targetUid: String): Boolean {
-        return settingsRepository.getBoolean(targetUid, BATTERY_WATCH_LOW_NOTI_KEY, false).first()
-    }
+    override suspend fun getChargeNotificationsEnabled(targetUid: String): Boolean =
+        settingsRepository
+            .getBoolean(targetUid, BATTERY_WATCH_CHARGE_NOTI_KEY, DefaultValues.NOTIFICATIONS_ENABLED)
+            .first()
 
-    override suspend fun getChargeThreshold(targetUid: String): Int {
-        return settingsRepository.getInt(targetUid, BATTERY_CHARGE_THRESHOLD_KEY, 90).first()
-    }
+    override suspend fun getLowNotificationsEnabled(targetUid: String): Boolean =
+        settingsRepository
+            .getBoolean(targetUid, BATTERY_WATCH_LOW_NOTI_KEY, DefaultValues.NOTIFICATIONS_ENABLED)
+            .first()
 
-    override suspend fun getLowThreshold(targetUid: String): Int {
-        return settingsRepository.getInt(targetUid, BATTERY_LOW_THRESHOLD_KEY, 20).first()
-    }
+    override suspend fun getChargeThreshold(targetUid: String): Int =
+        settingsRepository.getInt(targetUid, BATTERY_CHARGE_THRESHOLD_KEY, DefaultValues.CHARGE_THRESHOLD).first()
+
+    override suspend fun getLowThreshold(targetUid: String): Int =
+        settingsRepository.getInt(targetUid, BATTERY_LOW_THRESHOLD_KEY, DefaultValues.LOW_THRESHOLD).first()
 }

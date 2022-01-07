@@ -5,6 +5,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.boswelja.smartwatchextensions.batterysync.BatteryStatsRepository
 import com.boswelja.smartwatchextensions.batterysync.BatterySyncWorker
+import com.boswelja.smartwatchextensions.batterysync.DefaultValues
 import com.boswelja.smartwatchextensions.devicemanagement.Capability
 import com.boswelja.smartwatchextensions.devicemanagement.SelectedWatchManager
 import com.boswelja.smartwatchextensions.settings.BoolSetting
@@ -76,28 +77,28 @@ class BatterySyncViewModel(
     /**
      * Flow the charge percent threshold.
      */
-    val chargeThreshold = mapStateForSelectedWatch(90) {
+    val chargeThreshold = mapStateForSelectedWatch(DefaultValues.CHARGE_THRESHOLD) {
         settingsRepository.getInt(it.uid, BATTERY_CHARGE_THRESHOLD_KEY)
     }
 
     /**
      * Flow whether phone low notifications are enabled for the selected watch.
      */
-    val phoneLowNotiEnabled = mapStateForSelectedWatch(false) {
+    val phoneLowNotiEnabled = mapStateForSelectedWatch(DefaultValues.NOTIFICATIONS_ENABLED) {
         settingsRepository.getBoolean(it.uid, BATTERY_PHONE_LOW_NOTI_KEY)
     }
 
     /**
      * Flow whether watch low notifications are enabled for the selected watch.
      */
-    val watchLowNotiEnabled = mapStateForSelectedWatch(false) {
+    val watchLowNotiEnabled = mapStateForSelectedWatch(DefaultValues.NOTIFICATIONS_ENABLED) {
         settingsRepository.getBoolean(it.uid, BATTERY_WATCH_LOW_NOTI_KEY)
     }
 
     /**
      * Flow the low percent threshold.
      */
-    val batteryLowThreshold = mapStateForSelectedWatch(15) {
+    val batteryLowThreshold = mapStateForSelectedWatch(DefaultValues.LOW_THRESHOLD) {
         settingsRepository.getInt(it.uid, BATTERY_LOW_THRESHOLD_KEY)
     }
 

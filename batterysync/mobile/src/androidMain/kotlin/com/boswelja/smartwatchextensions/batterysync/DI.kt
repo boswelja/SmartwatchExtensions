@@ -9,7 +9,7 @@ import org.koin.core.context.loadKoinModules
 import org.koin.dsl.module
 
 /**
- * A Koin module for providing Battery Sync UI classes.
+ * A Koin module for providing Battery Sync classes.
  */
 val batterySyncModule = module {
     loadKoinModules(batterySyncCommonModule)

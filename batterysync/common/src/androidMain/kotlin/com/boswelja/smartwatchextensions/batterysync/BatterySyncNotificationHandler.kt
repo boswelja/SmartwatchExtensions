@@ -6,6 +6,11 @@ import android.content.Context
 import androidx.core.app.NotificationCompat
 import com.boswelja.smartwatchextensions.batterysync.common.R
 
+/**
+ * The base class for handling Battery Sync notifications.
+ * @param context [Context].
+ * @param notificationManager [NotificationManager].
+ */
 actual abstract class BatterySyncNotificationHandler(
     private val context: Context,
     private val notificationManager: NotificationManager
@@ -43,11 +48,11 @@ actual abstract class BatterySyncNotificationHandler(
         val notification = createBaseNotificationBuilder()
             .setSmallIcon(R.drawable.battery_full)
             .setContentTitle(
-                context.getString(R.string.device_battery_charged_noti_title, deviceName)
+                context.getString(R.string.charged_notification_title, deviceName)
             )
             .setContentText(
                 context.getString(
-                    R.string.device_battery_charged_noti_desc,
+                    R.string.charged_notification_desc,
                     deviceName,
                     batteryStats.percent.toString()
                 )
@@ -69,11 +74,11 @@ actual abstract class BatterySyncNotificationHandler(
         val notification = createBaseNotificationBuilder()
             .setSmallIcon(R.drawable.battery_alert)
             .setContentTitle(
-                context.getString(R.string.device_battery_low_noti_title, deviceName)
+                context.getString(R.string.low_notification_title, deviceName)
             )
             .setContentText(
                 context.getString(
-                    R.string.device_battery_low_noti_desc,
+                    R.string.low_notification_desc,
                     deviceName,
                     batteryStats.percent.toString()
                 )
@@ -101,7 +106,7 @@ actual abstract class BatterySyncNotificationHandler(
     }
 
     private fun createBaseNotificationBuilder(): NotificationCompat.Builder {
-        return NotificationCompat.Builder(context, BATTERY_STATS_NOTI_CHANNEL_ID)
+        return NotificationCompat.Builder(context, NOTIFICATION_CHANNEL_ID)
             .setContentIntent(createLaunchPendingIntent())
             .setLocalOnly(true)
             .setOnlyAlertOnce(true)
@@ -110,7 +115,7 @@ actual abstract class BatterySyncNotificationHandler(
     private fun calculateNotificationId(targetUid: String): Int = "$targetUid-batterysync".hashCode()
 
     companion object {
-        private const val BATTERY_STATS_NOTI_CHANNEL_ID = "companion_device_charged"
+        private const val NOTIFICATION_CHANNEL_ID = "companion_device_charged"
         private const val START_ACTIVITY_REQUEST_CODE = 123
     }
 

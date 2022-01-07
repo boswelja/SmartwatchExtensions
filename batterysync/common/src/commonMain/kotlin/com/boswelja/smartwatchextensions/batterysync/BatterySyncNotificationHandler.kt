@@ -1,6 +1,10 @@
 package com.boswelja.smartwatchextensions.batterysync
 
+/**
+ * The base class for handling Battery Sync notifications.
+ */
 expect abstract class BatterySyncNotificationHandler : BaseBatterySyncNotificationHandler {
+
     override suspend fun cancelNotificationFor(targetUid: String)
     override suspend fun postChargeNotificationFor(targetUid: String, batteryStats: BatteryStats)
     override suspend fun postLowNotificationFor(targetUid: String, batteryStats: BatteryStats)
@@ -23,5 +27,4 @@ expect abstract class BatterySyncNotificationHandler : BaseBatterySyncNotificati
      * @return The name of the device.
      */
     abstract suspend fun getDeviceName(targetUid: String): String
-
 }
