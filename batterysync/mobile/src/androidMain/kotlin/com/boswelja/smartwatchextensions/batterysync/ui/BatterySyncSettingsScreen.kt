@@ -9,21 +9,17 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.boswelja.smartwatchextensions.batterysync.R
+import com.boswelja.smartwatchextensions.batterysync.ui.BatterySliderDefaults.PROGRESS_FACTOR
 import com.boswelja.smartwatchextensions.settings.ui.CheckboxSetting
-import com.boswelja.smartwatchextensions.settings.ui.SliderSetting
 import com.boswelja.smartwatchextensions.settings.ui.SwitchSetting
 import org.koin.androidx.compose.getViewModel
 import kotlin.math.round
 
-private const val PROGRESS_FACTOR = 100f
 private const val BATTERY_CHARGE_MIN = 0.6f
 private const val BATTERY_LOW_MAX = 0.35f
 
@@ -142,20 +138,11 @@ fun LazyListScope.chargeNotificationSettings(
         )
     }
     item {
-        var currentThreshold by remember(chargeThreshold) { mutableStateOf(chargeThreshold / PROGRESS_FACTOR) }
-        SliderSetting(
-            label = { Text(stringResource(R.string.battery_sync_charge_threshold_title)) },
-            trailing = { value ->
-                Text(stringResource(R.string.battery_percent, round(value * PROGRESS_FACTOR)))
-            },
+        BatterySliderSetting(
             valueRange = BATTERY_CHARGE_MIN..1f,
-            value = currentThreshold,
-            onSliderValueChanged = {
-                currentThreshold = it
-            },
-            onSliderValueFinished = {
-                onChargeThresholdChanged(round(currentThreshold * PROGRESS_FACTOR).toInt())
-            }
+            value = chargeThreshold / PROGRESS_FACTOR,
+            onValueChanged ={ onChargeThresholdChanged(round(it * PROGRESS_FACTOR).toInt()) },
+            text = { Text(stringResource(R.string.battery_sync_charge_threshold_title)) }
         )
     }
 }
@@ -200,20 +187,11 @@ fun LazyListScope.lowNotificationSettings(
         )
     }
     item {
-        var currentThreshold by remember(lowThreshold) { mutableStateOf(lowThreshold / PROGRESS_FACTOR) }
-        SliderSetting(
-            label = { Text(stringResource(R.string.battery_sync_low_threshold_title)) },
-            trailing = { value ->
-                Text(stringResource(R.string.battery_percent, round(value * PROGRESS_FACTOR)))
-            },
+        BatterySliderSetting(
             valueRange = 0.05f..BATTERY_LOW_MAX,
-            value = currentThreshold,
-            onSliderValueChanged = {
-                currentThreshold = it
-            },
-            onSliderValueFinished = {
-                onLowThresholdChanged(round(currentThreshold * PROGRESS_FACTOR).toInt())
-            }
+            value = lowThreshold / PROGRESS_FACTOR,
+            onValueChanged = { onLowThresholdChanged(round(it * PROGRESS_FACTOR).toInt())},
+            text = { Text(stringResource(R.string.battery_sync_low_threshold_title)) }
         )
     }
 }

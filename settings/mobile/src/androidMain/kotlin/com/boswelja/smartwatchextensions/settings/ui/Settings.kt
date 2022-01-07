@@ -4,7 +4,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.material.Checkbox
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ListItem
-import androidx.compose.material.Slider
 import androidx.compose.material.Switch
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -81,52 +80,6 @@ fun CheckboxSetting(
         },
         modifier = modifier.clickable(enabled = enabled) {
             onCheckChanged(!checked)
-        }
-    )
-}
-
-/**
- * A setting to allow the user to select a value from a range in a slider.
- * @param modifier [Modifier].
- * @param label The setting label Composable.
- * @param icon The setting icon Composable.
- * @param trailing The trailing Composable. This can be used to display the current value.
- * @param valueRange The range of values selectable by the slider.
- * @param value The current slider value.
- * @param enabled Whether the setting is enabled.
- * @param onSliderValueChanged Called when the slider value changes.
- * @param onSliderValueFinished Called when the user stops adjusting the slider value.
- */
-@OptIn(ExperimentalMaterialApi::class)
-@Composable
-fun SliderSetting(
-    modifier: Modifier = Modifier,
-    label: @Composable () -> Unit,
-    icon: @Composable (() -> Unit)? = null,
-    trailing: @Composable ((Float) -> Unit)? = null,
-    valueRange: ClosedFloatingPointRange<Float> = 0f..1f,
-    value: Float,
-    enabled: Boolean = true,
-    onSliderValueChanged: (Float) -> Unit,
-    onSliderValueFinished: () -> Unit
-) {
-    ListItem(
-        modifier = modifier,
-        text = label,
-        icon = icon,
-        secondaryText = {
-            Slider(
-                value = value,
-                valueRange = valueRange,
-                onValueChange = onSliderValueChanged,
-                onValueChangeFinished = onSliderValueFinished,
-                enabled = enabled
-            )
-        },
-        trailing = trailing?.let {
-            {
-                it(value)
-            }
         }
     )
 }
