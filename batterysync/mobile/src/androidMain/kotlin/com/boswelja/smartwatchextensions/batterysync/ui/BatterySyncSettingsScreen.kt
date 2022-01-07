@@ -37,9 +37,7 @@ fun BatterySyncSettingsScreen(
 
     val canSyncBattery by viewModel.canSyncBattery.collectAsState()
     val batterySyncEnabled by viewModel.batterySyncEnabled.collectAsState()
-    val watchChargeNotiEnabled by viewModel.watchChargeNotiEnabled.collectAsState()
     val chargeThreshold by viewModel.chargeThreshold.collectAsState()
-    val watchLowNotiEnabled by viewModel.watchLowNotiEnabled.collectAsState()
     val lowThreshold by viewModel.batteryLowThreshold.collectAsState()
 
     val scrollState = rememberScrollState()
@@ -61,16 +59,18 @@ fun BatterySyncSettingsScreen(
                     onNavigate(BatterySyncDestinations.PHONE_BATTERY_NOTIFICATION_SETTINGS.route)
                 }
             )
+            ListItem(
+                text = { Text("Watch Battery Notifications") },
+                modifier = Modifier.clickable {
+                    onNavigate(BatterySyncDestinations.WATCH_BATTERY_NOTIFICATION_SETTINGS.route)
+                }
+            )
             ChargeNotificationSettings(
-                watchChargeNotiEnabled = watchChargeNotiEnabled,
                 chargeThreshold = chargeThreshold,
-                onWatchChargeNotiEnabledChanged = viewModel::setWatchChargeNotiEnabled,
                 onChargeThresholdChanged = viewModel::setChargeThreshold
             )
             LowNotificationSettings(
-                watchLowNotiEnabled = watchLowNotiEnabled,
                 lowThreshold = lowThreshold,
-                onWatchLowNotiEnabledChanged = viewModel::setWatchLowNotiEnabled,
                 onLowThresholdChanged = viewModel::setLowBatteryThreshold
             )
         } else {
@@ -101,27 +101,12 @@ fun BatterySyncSettings(
  */
 @Composable
 fun ChargeNotificationSettings(
-    watchChargeNotiEnabled: Boolean,
     chargeThreshold: Int,
-    onWatchChargeNotiEnabledChanged: (Boolean) -> Unit,
     onChargeThresholdChanged: (Int) -> Unit,
     modifier: Modifier = Modifier,
     settingModifier: Modifier = Modifier
 ) {
     Column(modifier) {
-        SwitchSetting(
-            label = { Text(stringResource(R.string.battery_sync_watch_charge_noti_title)) },
-            summary = {
-                val text = stringResource(
-                    R.string.battery_sync_watch_charge_noti_summary,
-                    chargeThreshold
-                )
-                Text(text)
-            },
-            checked = watchChargeNotiEnabled,
-            onCheckChanged = onWatchChargeNotiEnabledChanged,
-            modifier = settingModifier
-        )
         BatterySliderSetting(
             valueRange = BATTERY_CHARGE_MIN..1f,
             value = chargeThreshold / PROGRESS_FACTOR,
@@ -137,24 +122,12 @@ fun ChargeNotificationSettings(
  */
 @Composable
 fun LowNotificationSettings(
-    watchLowNotiEnabled: Boolean,
     lowThreshold: Int,
-    onWatchLowNotiEnabledChanged: (Boolean) -> Unit,
     onLowThresholdChanged: (Int) -> Unit,
     modifier: Modifier = Modifier,
     settingModifier: Modifier = Modifier
 ) {
     Column(modifier) {
-        SwitchSetting(
-            label = { Text(stringResource(R.string.battery_sync_watch_low_noti_title)) },
-            summary = {
-                val text = stringResource(R.string.battery_sync_watch_low_noti_summary, lowThreshold)
-                Text(text)
-            },
-            checked = watchLowNotiEnabled,
-            onCheckChanged = onWatchLowNotiEnabledChanged,
-            modifier = settingModifier
-        )
         BatterySliderSetting(
             valueRange = BATTERY_LOW_MIN..BATTERY_LOW_MAX,
             value = lowThreshold / PROGRESS_FACTOR,

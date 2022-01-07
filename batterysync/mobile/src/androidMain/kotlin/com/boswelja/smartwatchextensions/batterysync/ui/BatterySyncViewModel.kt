@@ -59,24 +59,10 @@ class BatterySyncViewModel(
     }
 
     /**
-     * Flow whether watch charge notifications are enabled for the selected watch.
-     */
-    val watchChargeNotiEnabled = mapStateForSelectedWatch(false) {
-        settingsRepository.getBoolean(it.uid, BATTERY_WATCH_CHARGE_NOTI_KEY)
-    }
-
-    /**
      * Flow the charge percent threshold.
      */
     val chargeThreshold = mapStateForSelectedWatch(DefaultValues.CHARGE_THRESHOLD) {
         settingsRepository.getInt(it.uid, BATTERY_CHARGE_THRESHOLD_KEY)
-    }
-
-    /**
-     * Flow whether watch low notifications are enabled for the selected watch.
-     */
-    val watchLowNotiEnabled = mapStateForSelectedWatch(DefaultValues.NOTIFICATIONS_ENABLED) {
-        settingsRepository.getBoolean(it.uid, BATTERY_WATCH_LOW_NOTI_KEY)
     }
 
     /**
@@ -139,26 +125,6 @@ class BatterySyncViewModel(
         viewModelScope.launch {
             val selectedWatch = selectedWatchManager.selectedWatch.first()
             updateIntSetting(selectedWatch!!.uid, BATTERY_CHARGE_THRESHOLD_KEY, chargeThreshold)
-        }
-    }
-
-    /**
-     * Set whether watch charge notifications are enabled.
-     */
-    fun setWatchChargeNotiEnabled(isEnabled: Boolean) {
-        viewModelScope.launch {
-            val selectedWatch = selectedWatchManager.selectedWatch.first()
-            updateBoolSetting(selectedWatch!!.uid, BATTERY_WATCH_CHARGE_NOTI_KEY, isEnabled)
-        }
-    }
-
-    /**
-     * Set whether watch low notifications are enabled.
-     */
-    fun setWatchLowNotiEnabled(isEnabled: Boolean) {
-        viewModelScope.launch {
-            val selectedWatch = selectedWatchManager.selectedWatch.first()
-            updateBoolSetting(selectedWatch!!.uid, BATTERY_WATCH_LOW_NOTI_KEY, isEnabled)
         }
     }
 
