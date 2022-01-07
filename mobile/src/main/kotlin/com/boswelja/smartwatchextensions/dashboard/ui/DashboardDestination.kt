@@ -56,7 +56,6 @@ fun NavGraphBuilder.dashboardGraph(
     )
     batterySyncNavigation(
         DashboardDestination.BATTERY_SYNC_SETTINGS.route,
-        onShowSnackbar = onShowSnackbar,
         onNavigate = { navController.navigate(it) },
         screenModifier = modifier
     )

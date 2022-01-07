@@ -7,9 +7,11 @@ import androidx.navigation.navigation
 import com.boswelja.smartwatchextensions.batterysync.ui.phonebatterynoti.PhoneBatteryNotiSettingsScreen
 import com.boswelja.smartwatchextensions.batterysync.ui.watchbatterynoti.WatchBatteryNotiSettingsScreen
 
+/**
+ * Adds the Battery Sync navigation graph to the host Nav Graph.
+ */
 fun NavGraphBuilder.batterySyncNavigation(
     graphRoute: String,
-    onShowSnackbar: suspend (String) -> Unit,
     onNavigate: (route: String) -> Unit,
     screenModifier: Modifier = Modifier
 ) = navigation(

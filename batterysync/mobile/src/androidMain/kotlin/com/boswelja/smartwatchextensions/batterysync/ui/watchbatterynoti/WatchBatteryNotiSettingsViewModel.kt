@@ -18,6 +18,9 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
+/**
+ * A ViewModel to provide data for watch battery notification settings.
+ */
 class WatchBatteryNotiSettingsViewModel(
     private val selectedWatchManager: SelectedWatchManager,
     private val settingsRepository: WatchSettingsRepository
