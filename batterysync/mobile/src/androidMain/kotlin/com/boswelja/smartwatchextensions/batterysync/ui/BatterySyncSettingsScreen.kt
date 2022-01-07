@@ -49,7 +49,7 @@ fun BatterySyncSettingsScreen(
                 batterySyncEnabled = batterySyncEnabled,
                 onBatterySyncEnabledChanged = viewModel::setBatterySyncEnabled
             )
-            BatteryChargeNotificationSettings(
+            ChargeNotificationSettings(
                 phoneChargeNotiEnabled = phoneChargeNotiEnabled,
                 watchChargeNotiEnabled = watchChargeNotiEnabled,
                 chargeThreshold = chargeThreshold,
@@ -57,7 +57,7 @@ fun BatterySyncSettingsScreen(
                 onWatchChargeNotiEnabledChanged = viewModel::setWatchChargeNotiEnabled,
                 onChargeThresholdChanged = viewModel::setChargeThreshold
             )
-            BatteryLowNotificationSettings(
+            LowNotificationSettings(
                 phoneLowNotiEnabled = phoneLowNotiEnabled,
                 watchLowNotiEnabled = watchLowNotiEnabled,
                 lowThreshold = lowThreshold,
@@ -92,7 +92,7 @@ fun BatterySyncSettings(
  * A Composable for displaying charge notification settings.
  */
 @Composable
-fun BatteryChargeNotificationSettings(
+fun ChargeNotificationSettings(
     phoneChargeNotiEnabled: Boolean,
     watchChargeNotiEnabled: Boolean,
     chargeThreshold: Int,
@@ -143,7 +143,7 @@ fun BatteryChargeNotificationSettings(
  * A Composable for displaying low battery notification settings.
  */
 @Composable
-fun BatteryLowNotificationSettings(
+fun LowNotificationSettings(
     phoneLowNotiEnabled: Boolean,
     watchLowNotiEnabled: Boolean,
     lowThreshold: Int,
