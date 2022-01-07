@@ -49,91 +49,37 @@ fun BatterySyncSettingsScreen(
         BatterySyncSettingsHeader()
         Divider()
         if (canSyncBattery) {
-            BatterySyncSettings(
-                batterySyncEnabled = batterySyncEnabled,
-                onBatterySyncEnabledChanged = viewModel::setBatterySyncEnabled
+            SwitchSetting(
+                label = { Text(stringResource(R.string.battery_sync_toggle_title)) },
+                checked = batterySyncEnabled,
+                onCheckChanged = viewModel::setBatterySyncEnabled
+            )
+            BatterySliderSetting(
+                valueRange = BATTERY_CHARGE_MIN..1f,
+                value = chargeThreshold / PROGRESS_FACTOR,
+                onValueChanged = { viewModel.setChargeThreshold(round(it * PROGRESS_FACTOR).toInt()) },
+                text = { Text(stringResource(R.string.battery_sync_charge_threshold_title)) }
+            )
+            BatterySliderSetting(
+                valueRange = BATTERY_LOW_MIN..BATTERY_LOW_MAX,
+                value = lowThreshold / PROGRESS_FACTOR,
+                onValueChanged = { viewModel.setLowBatteryThreshold(round(it * PROGRESS_FACTOR).toInt()) },
+                text = { Text(stringResource(R.string.battery_sync_low_threshold_title)) }
             )
             ListItem(
-                text = { Text("Phone Battery Notifications") },
+                text = { Text(stringResource(R.string.phone_battery_noti_title)) },
                 modifier = Modifier.clickable {
                     onNavigate(BatterySyncDestinations.PHONE_BATTERY_NOTIFICATION_SETTINGS.route)
                 }
             )
             ListItem(
-                text = { Text("Watch Battery Notifications") },
+                text = { Text(stringResource(R.string.watch_battery_noti_title)) },
                 modifier = Modifier.clickable {
                     onNavigate(BatterySyncDestinations.WATCH_BATTERY_NOTIFICATION_SETTINGS.route)
                 }
             )
-            ChargeNotificationSettings(
-                chargeThreshold = chargeThreshold,
-                onChargeThresholdChanged = viewModel::setChargeThreshold
-            )
-            LowNotificationSettings(
-                lowThreshold = lowThreshold,
-                onLowThresholdChanged = viewModel::setLowBatteryThreshold
-            )
         } else {
-            Text("Your watch has indicated it doesn't support Battery Sync")
+            Text(stringResource(R.string.battery_sync_not_supported))
         }
-    }
-}
-
-/**
- * A Composable to display Battery Sync settings.
- */
-@Composable
-fun BatterySyncSettings(
-    batterySyncEnabled: Boolean,
-    onBatterySyncEnabledChanged: (Boolean) -> Unit,
-    modifier: Modifier = Modifier
-) {
-    SwitchSetting(
-        label = { Text(stringResource(R.string.battery_sync_toggle_title)) },
-        checked = batterySyncEnabled,
-        onCheckChanged = onBatterySyncEnabledChanged,
-        modifier = modifier
-    )
-}
-
-/**
- * A Composable for displaying charge notification settings.
- */
-@Composable
-fun ChargeNotificationSettings(
-    chargeThreshold: Int,
-    onChargeThresholdChanged: (Int) -> Unit,
-    modifier: Modifier = Modifier,
-    settingModifier: Modifier = Modifier
-) {
-    Column(modifier) {
-        BatterySliderSetting(
-            valueRange = BATTERY_CHARGE_MIN..1f,
-            value = chargeThreshold / PROGRESS_FACTOR,
-            onValueChanged ={ onChargeThresholdChanged(round(it * PROGRESS_FACTOR).toInt()) },
-            text = { Text(stringResource(R.string.battery_sync_charge_threshold_title)) },
-            modifier = settingModifier
-        )
-    }
-}
-
-/**
- * A Composable for displaying low battery notification settings.
- */
-@Composable
-fun LowNotificationSettings(
-    lowThreshold: Int,
-    onLowThresholdChanged: (Int) -> Unit,
-    modifier: Modifier = Modifier,
-    settingModifier: Modifier = Modifier
-) {
-    Column(modifier) {
-        BatterySliderSetting(
-            valueRange = BATTERY_LOW_MIN..BATTERY_LOW_MAX,
-            value = lowThreshold / PROGRESS_FACTOR,
-            onValueChanged = { onLowThresholdChanged(round(it * PROGRESS_FACTOR).toInt())},
-            text = { Text(stringResource(R.string.battery_sync_low_threshold_title)) },
-            modifier = settingModifier
-        )
     }
 }

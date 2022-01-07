@@ -21,6 +21,6 @@ val batterySyncModule = module {
     }
     viewModel { BatterySyncViewModel(androidApplication(), get(), get(), get(), get(), get()) }
     viewModel { PhoneBatteryNotiSettingsViewModel(get(), get(), get()) }
-    viewModel { WatchBatteryNotiSettingsViewModel(get(), get(), get()) }
+    viewModel { WatchBatteryNotiSettingsViewModel(get(), get()) }
     worker { BatterySyncWorker(get(), androidContext(), get()) }
 }

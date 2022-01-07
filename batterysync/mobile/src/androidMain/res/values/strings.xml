@@ -21,4 +21,9 @@
     <string name="battery_charge_noti_issue_summary">We were unable to notify you when your watch battery was charged, due to notifications being disabled in your system settings. We have disabled watch battery charge notifications because of this.</string>
     <string name="battery_low_noti_issue_title">Error sending battery low notification</string>
     <string name="battery_low_noti_issue_summary">We were unable to notify you when your watch battery was low, due to notifications being disabled in your system settings. We have disabled watch battery low notifications because of this.</string>
+
+    <string name="phone_battery_noti_title">Phone Battery Alerts</string>
+    <string name="watch_battery_noti_title">Watch Battery Alerts</string>
+
+    <string name="battery_sync_not_supported">Your watch has indicated it doesn\'t support Battery Sync</string>
 </resources>
