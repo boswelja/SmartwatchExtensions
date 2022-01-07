@@ -16,7 +16,8 @@ import com.boswelja.smartwatchextensions.settings.ui.SwitchSetting
 import org.koin.androidx.compose.getViewModel
 import kotlin.math.round
 
-private const val BATTERY_CHARGE_MIN = 0.6f
+private const val BATTERY_CHARGE_MIN = 0.7f
+private const val BATTERY_LOW_MIN = 0.05f
 private const val BATTERY_LOW_MAX = 0.35f
 
 /**
@@ -175,7 +176,7 @@ fun LowNotificationSettings(
             modifier = settingModifier
         )
         BatterySliderSetting(
-            valueRange = 0.05f..BATTERY_LOW_MAX,
+            valueRange = BATTERY_LOW_MIN..BATTERY_LOW_MAX,
             value = lowThreshold / PROGRESS_FACTOR,
             onValueChanged = { onLowThresholdChanged(round(it * PROGRESS_FACTOR).toInt())},
             text = { Text(stringResource(R.string.battery_sync_low_threshold_title)) },
