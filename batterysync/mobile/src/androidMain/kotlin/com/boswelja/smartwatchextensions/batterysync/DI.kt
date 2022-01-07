@@ -2,6 +2,7 @@ package com.boswelja.smartwatchextensions.batterysync
 
 import androidx.core.content.getSystemService
 import com.boswelja.smartwatchextensions.batterysync.ui.BatterySyncViewModel
+import com.boswelja.smartwatchextensions.batterysync.ui.phonebatterynoti.PhoneBatteryNotiSettingsViewModel
 import org.koin.android.ext.koin.androidApplication
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
@@ -18,5 +19,6 @@ val batterySyncModule = module {
         MobileBatterySyncNotificationHandler(get(), get(), androidContext(), androidContext().getSystemService()!!)
     }
     viewModel { BatterySyncViewModel(androidApplication(), get(), get(), get(), get(), get()) }
+    viewModel { PhoneBatteryNotiSettingsViewModel(get(), get(), get()) }
     worker { BatterySyncWorker(get(), androidContext(), get()) }
 }
