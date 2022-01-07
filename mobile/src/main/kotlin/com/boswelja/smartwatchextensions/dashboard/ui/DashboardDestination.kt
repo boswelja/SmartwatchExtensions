@@ -1,5 +1,6 @@
 package com.boswelja.smartwatchextensions.dashboard.ui
 
+import androidx.compose.foundation.layout.padding
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -56,8 +57,7 @@ fun NavGraphBuilder.dashboardGraph(
     )
     composable(DashboardDestination.BATTERY_SYNC_SETTINGS.route) {
         BatterySyncSettingsScreen(
-            modifier = modifier,
-            contentPadding = contentPadding
+            modifier = modifier.padding(vertical = contentPadding),
         )
     }
     composable(DashboardDestination.DND_SYNC_SETTINGS.route) {
