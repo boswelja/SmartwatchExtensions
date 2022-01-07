@@ -15,7 +15,7 @@ import androidx.compose.ui.res.stringResource
 import com.boswelja.smartwatchextensions.batterysync.R
 import com.boswelja.smartwatchextensions.batterysync.ui.BatterySliderDefaults.PROGRESS_FACTOR
 import com.boswelja.smartwatchextensions.batterysync.ui.BatterySliderDefaults.STEP_SIZE
-import kotlin.math.round
+import kotlin.math.roundToInt
 
 /**
  * A [ListItem] containing some text and a slider. This allows the user to pick a battery percent value.
@@ -38,14 +38,14 @@ fun BatterySliderSetting(
 ) {
     var currentValue by remember(value) { mutableStateOf(value) }
     val steps = remember(valueRange) {
-        ((valueRange.endInclusive - valueRange.start) / STEP_SIZE).toInt()
+        ((valueRange.endInclusive - valueRange.start) / STEP_SIZE).roundToInt() - 1
     }
     ListItem(
         modifier = modifier,
         text = text,
         secondaryText = {
             Column {
-                Text(stringResource(R.string.battery_percent, round(currentValue * PROGRESS_FACTOR).toInt()))
+                Text(stringResource(R.string.battery_percent, (currentValue * PROGRESS_FACTOR).roundToInt()))
                 Slider(
                     value = currentValue,
                     valueRange = valueRange,
