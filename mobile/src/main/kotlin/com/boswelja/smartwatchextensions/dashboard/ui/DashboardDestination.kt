@@ -1,6 +1,5 @@
 package com.boswelja.smartwatchextensions.dashboard.ui
 
-import androidx.compose.foundation.layout.padding
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -8,7 +7,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import com.boswelja.smartwatchextensions.appmanager.ui.appManagerNavigation
-import com.boswelja.smartwatchextensions.batterysync.ui.BatterySyncSettingsScreen
+import com.boswelja.smartwatchextensions.batterysync.ui.batterySyncNavigation
 import com.boswelja.smartwatchextensions.dndsync.ui.DnDSyncSettingsScreen
 import com.boswelja.smartwatchextensions.phonelocking.ui.PhoneLockingSettingsScreen
 import com.boswelja.smartwatchextensions.proximity.ui.ProximitySettingsScreen
@@ -55,11 +54,12 @@ fun NavGraphBuilder.dashboardGraph(
         onNavigate = { navController.navigate(it) },
         screenModifier = modifier
     )
-    composable(DashboardDestination.BATTERY_SYNC_SETTINGS.route) {
-        BatterySyncSettingsScreen(
-            modifier = modifier.padding(vertical = contentPadding),
-        )
-    }
+    batterySyncNavigation(
+        DashboardDestination.BATTERY_SYNC_SETTINGS.route,
+        onShowSnackbar = onShowSnackbar,
+        onNavigate = { navController.navigate(it) },
+        screenModifier = modifier
+    )
     composable(DashboardDestination.DND_SYNC_SETTINGS.route) {
         DnDSyncSettingsScreen(
             modifier = modifier,
