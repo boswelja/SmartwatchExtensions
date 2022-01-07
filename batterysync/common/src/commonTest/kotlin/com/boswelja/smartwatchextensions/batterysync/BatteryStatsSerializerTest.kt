@@ -2,7 +2,7 @@ package com.boswelja.smartwatchextensions.batterysync
 
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertNull
+import kotlin.test.assertFails
 
 class BatteryStatsSerializerTest {
 
@@ -19,8 +19,10 @@ class BatteryStatsSerializerTest {
     }
 
     @Test
-    fun nullWhenBytesInvalid() = runSuspendingTest {
+    fun throwsWhenBytesInvalid() = runSuspendingTest {
         val bytes = byteArrayOf(1)
-        assertNull(BatteryStatsSerializer.deserialize(bytes))
+        assertFails {
+            BatteryStatsSerializer.deserialize(bytes)
+        }
     }
 }
