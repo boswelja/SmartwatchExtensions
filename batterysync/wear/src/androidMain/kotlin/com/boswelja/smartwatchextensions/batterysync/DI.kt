@@ -1,6 +1,9 @@
 package com.boswelja.smartwatchextensions.batterysync
 
+import androidx.core.content.getSystemService
 import com.boswelja.smartwatchextensions.batterysync.ui.BatteryStatsViewModel
+import com.boswelja.smartwatchextensions.devicemanagement.phoneStateStore
+import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
@@ -10,5 +13,13 @@ import org.koin.dsl.module
 val batterySyncModule = module {
     single<BatteryStatsRepository> { BatteryStatsDsRepository(get()) }
     single<BatterySyncStateRepository> { BatterySyncStateDsRepository(get()) }
+    single<BatterySyncNotificationHandler> {
+        WearBatterySyncNotificationHelper(
+            get(),
+            androidContext().phoneStateStore,
+            androidContext(),
+            androidContext().getSystemService()!!
+        )
+    }
     viewModel { BatteryStatsViewModel(get(), get(), get(), get()) }
 }
