@@ -12,7 +12,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.boswelja.smartwatchextensions.batterysync.R
 import com.boswelja.smartwatchextensions.batterysync.ui.BatterySliderDefaults.PROGRESS_FACTOR
-import com.boswelja.smartwatchextensions.settings.ui.CheckboxSetting
 import com.boswelja.smartwatchextensions.settings.ui.SwitchSetting
 import org.koin.androidx.compose.getViewModel
 import kotlin.math.round
@@ -104,7 +103,7 @@ fun BatteryChargeNotificationSettings(
     settingModifier: Modifier = Modifier
 ) {
     Column(modifier) {
-        CheckboxSetting(
+        SwitchSetting(
             label = { Text(stringResource(R.string.battery_sync_phone_charge_noti_title)) },
             summary = {
                 val text = stringResource(
@@ -117,7 +116,7 @@ fun BatteryChargeNotificationSettings(
             onCheckChanged = onPhoneChargeNotiEnabledChanged,
             modifier = settingModifier
         )
-        CheckboxSetting(
+        SwitchSetting(
             label = { Text(stringResource(R.string.battery_sync_watch_charge_noti_title)) },
             summary = {
                 val text = stringResource(
@@ -155,7 +154,7 @@ fun BatteryLowNotificationSettings(
     settingModifier: Modifier = Modifier
 ) {
     Column(modifier) {
-        CheckboxSetting(
+        SwitchSetting(
             label = { Text(stringResource(R.string.battery_sync_phone_low_noti_title)) },
             summary = {
                 val text = stringResource(R.string.battery_sync_phone_low_noti_summary, lowThreshold)
@@ -165,7 +164,7 @@ fun BatteryLowNotificationSettings(
             onCheckChanged = onPhoneLowNotiEnabledChanged,
             modifier = settingModifier
         )
-        CheckboxSetting(
+        SwitchSetting(
             label = { Text(stringResource(R.string.battery_sync_watch_low_noti_title)) },
             summary = {
                 val text = stringResource(R.string.battery_sync_watch_low_noti_summary, lowThreshold)
