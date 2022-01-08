@@ -62,29 +62,27 @@ fun BatterySyncSettingsScreen(
                 valueRange = BATTERY_CHARGE_MIN..1f,
                 value = chargeThreshold / PROGRESS_FACTOR,
                 onValueChanged = { viewModel.setChargeThreshold(round(it * PROGRESS_FACTOR).toInt()) },
-                text = { Text(stringResource(R.string.battery_sync_charge_threshold_title)) }
+                text = { Text(stringResource(R.string.battery_sync_charge_threshold_title)) },
+                enabled = batterySyncEnabled
             )
             BatterySliderSetting(
                 valueRange = BATTERY_LOW_MIN..BATTERY_LOW_MAX,
                 value = lowThreshold / PROGRESS_FACTOR,
                 onValueChanged = { viewModel.setLowBatteryThreshold(round(it * PROGRESS_FACTOR).toInt()) },
-                text = { Text(stringResource(R.string.battery_sync_low_threshold_title)) }
+                text = { Text(stringResource(R.string.battery_sync_low_threshold_title)) },
+                enabled = batterySyncEnabled
             )
             ListItem(
                 text = { Text(stringResource(R.string.phone_battery_noti_title)) },
-                secondaryText = {
-                    Text(notificationSummaryText(phoneLowNotiEnabled, phoneChargeNotiEnabled))
-                },
-                modifier = Modifier.clickable {
+                secondaryText = { Text(notificationSummaryText(phoneLowNotiEnabled, phoneChargeNotiEnabled)) },
+                modifier = Modifier.clickable(enabled = batterySyncEnabled) {
                     onNavigate(BatterySyncDestinations.PHONE_BATTERY_NOTIFICATION_SETTINGS.route)
                 }
             )
             ListItem(
                 text = { Text(stringResource(R.string.watch_battery_noti_title)) },
-                secondaryText = {
-                    Text(notificationSummaryText(watchLowNotiEnabled, watchChargeNotiEnabled))
-                },
-                modifier = Modifier.clickable {
+                secondaryText = { Text(notificationSummaryText(watchLowNotiEnabled, watchChargeNotiEnabled)) },
+                modifier = Modifier.clickable(enabled = batterySyncEnabled) {
                     onNavigate(BatterySyncDestinations.WATCH_BATTERY_NOTIFICATION_SETTINGS.route)
                 }
             )

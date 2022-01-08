@@ -34,6 +34,7 @@ fun BatterySliderSetting(
     value: Float,
     onValueChanged: (Float) -> Unit,
     text: @Composable () -> Unit,
+    enabled: Boolean,
     modifier: Modifier = Modifier
 ) {
     var currentValue by remember(value) { mutableStateOf(value) }
@@ -53,7 +54,8 @@ fun BatterySliderSetting(
                     onValueChange = { currentValue = it },
                     onValueChangeFinished = {
                         onValueChanged(currentValue)
-                    }
+                    },
+                    enabled = enabled
                 )
             }
         }
