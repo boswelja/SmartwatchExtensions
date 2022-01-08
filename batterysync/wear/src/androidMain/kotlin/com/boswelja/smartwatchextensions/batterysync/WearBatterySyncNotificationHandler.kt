@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.map
 /**
  * A [BatterySyncNotificationHandler] specifically for Wear.
  */
-class WearBatterySyncNotificationHelper(
+class WearBatterySyncNotificationHandler(
     private val batterySyncStateRepository: BatterySyncStateRepository,
     private val phoneStateStore: DataStore<PhoneState>,
     context: Context,

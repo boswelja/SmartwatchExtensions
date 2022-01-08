@@ -14,7 +14,7 @@ val batterySyncModule = module {
     single<BatteryStatsRepository> { BatteryStatsDsRepository(get()) }
     single<BatterySyncStateRepository> { BatterySyncStateDsRepository(get()) }
     single<BatterySyncNotificationHandler> {
-        WearBatterySyncNotificationHelper(
+        WearBatterySyncNotificationHandler(
             get(),
             androidContext().phoneStateStore,
             androidContext(),
