@@ -31,4 +31,7 @@
     <string name="battery_noti_low">Battery Low</string>
     <string name="battery_noti_charged">Battery Charged</string>
     <string name="battery_noti_low_and_charged">Battery Low &amp; Charged</string>
+
+    <string name="battery_sync_header_disabled">N/A</string>
+    <string name="battery_sync_header_loading">Fetching Data</string>
 </resources>

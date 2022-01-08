@@ -2,8 +2,8 @@
 <resources>
 
     <plurals name="battery_sync_last_updated_minutes">
-        <item quantity="one">Last updated %s minute ago</item>
-        <item quantity="other">Last updated %s minutes ago</item>
+        <item quantity="one">Updated %s minute ago</item>
+        <item quantity="other">Updated %s minutes ago</item>
     </plurals>
 
 </resources>
