@@ -45,8 +45,8 @@ fun BatterySyncSettingsHeader(
         },
         secondaryText = {
             val text = if (batterySyncEnabled) {
-                batteryStats?.timestamp?.let {
-                    val dataAgeMinutes by it.toMinutes()
+                batteryStats?.let {
+                    val dataAgeMinutes by it.timestamp.toMinutes()
                     if (dataAgeMinutes > 0) {
                         resources.getQuantityString(
                             R.plurals.battery_sync_last_updated_minutes,
@@ -101,10 +101,11 @@ fun BatteryStatsSummaryLarge(
  */
 @Composable
 internal fun Long.toMinutes() = produceState(
-    initialValue = TimeUnit.MINUTES.convert(System.currentTimeMillis() - this, TimeUnit.MILLISECONDS)
+    initialValue = TimeUnit.MINUTES.convert(System.currentTimeMillis() - this, TimeUnit.MILLISECONDS),
+    key1 = this
 ) {
     while (true) {
+        value = TimeUnit.MINUTES.convert(System.currentTimeMillis() - this@toMinutes, TimeUnit.MILLISECONDS)
         delay(1.minutes)
-        value += 1
     }
 }
