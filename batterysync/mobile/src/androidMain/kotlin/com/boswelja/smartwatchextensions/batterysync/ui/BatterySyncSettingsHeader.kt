@@ -32,8 +32,8 @@ fun BatterySyncSettingsHeader() {
         batteryStats.let {
             if (it != null) {
                 BatterySummaryLarge(
-                    Modifier.fillMaxWidth().aspectRatio(HEADER_ASPECT_RATIO).padding(16.dp),
-                    it
+                    it,
+                    Modifier.fillMaxWidth().padding(16.dp)
                 )
             } else {
                 BatterySyncStatus(stringResource(R.string.please_wait))
