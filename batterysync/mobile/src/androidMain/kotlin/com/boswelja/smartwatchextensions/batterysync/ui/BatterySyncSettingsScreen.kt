@@ -2,6 +2,8 @@ package com.boswelja.smartwatchextensions.batterysync.ui
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Divider
@@ -13,6 +15,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import com.boswelja.smartwatchextensions.batterysync.R
 import com.boswelja.smartwatchextensions.batterysync.ui.BatterySliderDefaults.PROGRESS_FACTOR
 import com.boswelja.smartwatchextensions.settings.ui.SwitchSetting
@@ -43,14 +46,17 @@ fun BatterySyncSettingsScreen(
     val phoneLowNotiEnabled by viewModel.phoneLowNotiEnabled.collectAsState()
     val watchChargeNotiEnabled by viewModel.watchChargeNotiEnabled.collectAsState()
     val watchLowNotiEnabled by viewModel.watchLowNotiEnabled.collectAsState()
+    val batteryStats by viewModel.batteryStats.collectAsState()
 
     val scrollState = rememberScrollState()
     Column(
-        Modifier
-            .verticalScroll(scrollState)
-            .then(modifier)
+        Modifier.verticalScroll(scrollState).then(modifier)
     ) {
-        BatterySyncSettingsHeader()
+        BatterySyncSettingsHeader(
+            batterySyncEnabled = batterySyncEnabled,
+            batteryStats = batteryStats,
+            modifier = Modifier.fillMaxWidth().padding(16.dp)
+        )
         Divider()
         if (canSyncBattery) {
             SwitchSetting(
