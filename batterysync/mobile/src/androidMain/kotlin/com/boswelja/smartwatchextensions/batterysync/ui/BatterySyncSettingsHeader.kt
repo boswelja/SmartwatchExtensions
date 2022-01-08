@@ -19,6 +19,7 @@ import com.boswelja.smartwatchextensions.batterysync.R
 import com.boswelja.smartwatchextensions.batterysync.ui.BatterySliderDefaults.PROGRESS_FACTOR
 import kotlinx.coroutines.delay
 import java.util.concurrent.TimeUnit
+import kotlin.time.Duration.Companion.minutes
 
 /**
  * Display a header for Battery Sync settings.
@@ -45,10 +46,7 @@ fun BatterySyncSettingsHeader(
         secondaryText = {
             val text = if (batterySyncEnabled) {
                 batteryStats?.timestamp?.let {
-                    val dataAgeMinutes by timestampToAge(
-                        timestamp = it,
-                        ageUnit = TimeUnit.MINUTES
-                    )
+                    val dataAgeMinutes by it.toMinutes()
                     if (dataAgeMinutes > 0) {
                         resources.getQuantityString(
                             R.plurals.battery_sync_last_updated_minutes,
@@ -99,16 +97,14 @@ fun BatteryStatsSummaryLarge(
 }
 
 /**
- * Convert a timestamp to a human readable age value.
- * @param timestamp The timestamp in milliseconds to convert.
- * @param ageUnit The [TimeUnit] to display the age in.
+ * Return a State that produces the elapsed minutes since this timestamp.
  */
 @Composable
-fun timestampToAge(timestamp: Long, ageUnit: TimeUnit) = produceState(
-    initialValue = ageUnit.convert(System.currentTimeMillis() - timestamp, TimeUnit.MILLISECONDS)
+internal fun Long.toMinutes() = produceState(
+    initialValue = TimeUnit.MINUTES.convert(System.currentTimeMillis() - this, TimeUnit.MILLISECONDS)
 ) {
     while (true) {
-        delay(ageUnit.toMillis(1))
-        value = ageUnit.convert(System.currentTimeMillis() - timestamp, TimeUnit.MILLISECONDS)
+        delay(1.minutes)
+        value += 1
     }
 }
