@@ -26,4 +26,9 @@
     <string name="watch_battery_noti_title">Watch Battery Alerts</string>
 
     <string name="battery_sync_not_supported">Your watch has indicated it doesn\'t support Battery Sync</string>
+
+    <string name="battery_noti_none">None</string>
+    <string name="battery_noti_low">Battery Low</string>
+    <string name="battery_noti_charged">Battery Charged</string>
+    <string name="battery_noti_low_and_charged">Battery Low &amp; Charged</string>
 </resources>

@@ -39,6 +39,10 @@ fun BatterySyncSettingsScreen(
     val batterySyncEnabled by viewModel.batterySyncEnabled.collectAsState()
     val chargeThreshold by viewModel.chargeThreshold.collectAsState()
     val lowThreshold by viewModel.batteryLowThreshold.collectAsState()
+    val phoneChargeNotiEnabled by viewModel.phoneChargeNotiEnabled.collectAsState()
+    val phoneLowNotiEnabled by viewModel.phoneLowNotiEnabled.collectAsState()
+    val watchChargeNotiEnabled by viewModel.watchChargeNotiEnabled.collectAsState()
+    val watchLowNotiEnabled by viewModel.watchLowNotiEnabled.collectAsState()
 
     val scrollState = rememberScrollState()
     Column(
@@ -68,12 +72,18 @@ fun BatterySyncSettingsScreen(
             )
             ListItem(
                 text = { Text(stringResource(R.string.phone_battery_noti_title)) },
+                secondaryText = {
+                    Text(notificationSummaryText(phoneLowNotiEnabled, phoneChargeNotiEnabled))
+                },
                 modifier = Modifier.clickable {
                     onNavigate(BatterySyncDestinations.PHONE_BATTERY_NOTIFICATION_SETTINGS.route)
                 }
             )
             ListItem(
                 text = { Text(stringResource(R.string.watch_battery_noti_title)) },
+                secondaryText = {
+                    Text(notificationSummaryText(watchLowNotiEnabled, watchChargeNotiEnabled))
+                },
                 modifier = Modifier.clickable {
                     onNavigate(BatterySyncDestinations.WATCH_BATTERY_NOTIFICATION_SETTINGS.route)
                 }
@@ -81,5 +91,23 @@ fun BatterySyncSettingsScreen(
         } else {
             Text(stringResource(R.string.battery_sync_not_supported))
         }
+    }
+}
+
+/**
+ * Gets the appropriate battery notification summary text for the provided parameters.
+ * @param lowNotificationEnabled Whether low notifications are enabled.
+ * @param chargeNotificationEnabled Whether charge notifications are enabled.
+ */
+@Composable
+fun notificationSummaryText(lowNotificationEnabled: Boolean, chargeNotificationEnabled: Boolean): String {
+    return if (lowNotificationEnabled && chargeNotificationEnabled) {
+        stringResource(R.string.battery_noti_low_and_charged)
+    } else if (chargeNotificationEnabled) {
+        stringResource(R.string.battery_noti_charged)
+    } else if (lowNotificationEnabled) {
+        stringResource(R.string.battery_noti_low)
+    } else {
+        stringResource(R.string.battery_noti_none)
     }
 }

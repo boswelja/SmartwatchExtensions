@@ -9,6 +9,7 @@ import com.boswelja.smartwatchextensions.batterysync.DefaultValues
 import com.boswelja.smartwatchextensions.devicemanagement.Capability
 import com.boswelja.smartwatchextensions.devicemanagement.SelectedWatchManager
 import com.boswelja.smartwatchextensions.settings.BoolSetting
+import com.boswelja.smartwatchextensions.settings.BoolSettingKeys
 import com.boswelja.smartwatchextensions.settings.BoolSettingKeys.BATTERY_SYNC_ENABLED_KEY
 import com.boswelja.smartwatchextensions.settings.BoolSettingSerializer
 import com.boswelja.smartwatchextensions.settings.IntSetting
@@ -68,6 +69,34 @@ class BatterySyncViewModel(
      */
     val batteryLowThreshold = mapStateForSelectedWatch(DefaultValues.LOW_THRESHOLD) {
         settingsRepository.getInt(it.uid, BATTERY_LOW_THRESHOLD_KEY)
+    }
+
+    /**
+     * Flow whether watch charge notifications are enabled for the selected watch.
+     */
+    val watchChargeNotiEnabled = mapStateForSelectedWatch(false) {
+        settingsRepository.getBoolean(it.uid, BoolSettingKeys.BATTERY_WATCH_CHARGE_NOTI_KEY)
+    }
+
+    /**
+     * Flow whether watch low notifications are enabled for the selected watch.
+     */
+    val watchLowNotiEnabled = mapStateForSelectedWatch(DefaultValues.NOTIFICATIONS_ENABLED) {
+        settingsRepository.getBoolean(it.uid, BoolSettingKeys.BATTERY_WATCH_LOW_NOTI_KEY)
+    }
+
+    /**
+     * Flow whether phone charge notifications are enabled for the selected watch.
+     */
+    val phoneChargeNotiEnabled = mapStateForSelectedWatch(false) {
+        settingsRepository.getBoolean(it.uid, BoolSettingKeys.BATTERY_PHONE_CHARGE_NOTI_KEY)
+    }
+
+    /**
+     * Flow whether phone low notifications are enabled for the selected watch.
+     */
+    val phoneLowNotiEnabled = mapStateForSelectedWatch(DefaultValues.NOTIFICATIONS_ENABLED) {
+        settingsRepository.getBoolean(it.uid, BoolSettingKeys.BATTERY_PHONE_LOW_NOTI_KEY)
     }
 
     /**
