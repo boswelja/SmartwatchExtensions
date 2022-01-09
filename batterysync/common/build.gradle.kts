@@ -25,5 +25,11 @@ kotlin {
                 implementation(libs.androidx.appcompat)
             }
         }
+        val androidTest by getting {
+            dependencies {
+                implementation(libs.mockk.core)
+                implementation(libs.kotlinx.coroutines.test)
+            }
+        }
     }
 }
