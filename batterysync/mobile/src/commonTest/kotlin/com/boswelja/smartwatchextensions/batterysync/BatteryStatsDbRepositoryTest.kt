@@ -4,12 +4,15 @@ import app.cash.turbine.test
 import com.boswelja.smartwatchextensions.batterysync.database.BatteryStatsDatabase
 import com.squareup.sqldelight.db.SqlDriver
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.withContext
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
-import kotlin.time.ExperimentalTime
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class BatteryStatsDbRepositoryTest {
 
     private val watchIds = listOf("id1", "id2", "id3")
@@ -27,9 +30,8 @@ class BatteryStatsDbRepositoryTest {
         )
     }
 
-    @OptIn(ExperimentalTime::class)
     @Test
-    fun removeStatsForRemovesStats() = runSuspendingTest {
+    fun removeStatsForRemovesStats() = runTest {
         // Populate the repository
         createStatsForWatches().forEach { (id, stats) ->
             repository.updateStatsFor(id, stats)
@@ -40,14 +42,15 @@ class BatteryStatsDbRepositoryTest {
         repository.removeStatsFor(idToRemove)
 
         // Check result
-        repository.batteryStatsFor(idToRemove).test {
-            assertNull(awaitItem())
+        withContext(Dispatchers.Default) {
+            repository.batteryStatsFor(idToRemove).test {
+                assertNull(awaitItem())
+            }
         }
     }
 
-    @OptIn(ExperimentalTime::class)
     @Test
-    fun getStatsForFlowsUpdates() = runSuspendingTest {
+    fun getStatsForFlowsUpdates() = runTest {
         // Set up values
         val idToTest = watchIds.first()
         val initialStats = BatteryStats(
@@ -65,13 +68,15 @@ class BatteryStatsDbRepositoryTest {
         repository.updateStatsFor(idToTest, initialStats)
 
         // Test the Flow
-        repository.batteryStatsFor(idToTest).test {
-            // Check the first value matches
-            assertEquals(initialStats, awaitItem())
+        withContext(Dispatchers.Default) {
+            repository.batteryStatsFor(idToTest).test {
+                // Check the first value matches
+                assertEquals(initialStats, awaitItem())
 
-            // Check the second value is updated
-            repository.updateStatsFor(idToTest, updatedStats)
-            assertEquals(updatedStats, awaitItem())
+                // Check the second value is updated
+                repository.updateStatsFor(idToTest, updatedStats)
+                assertEquals(updatedStats, awaitItem())
+            }
         }
     }
 
